@@ -83,6 +83,13 @@ namespace Plugin.Google.CloudIap.Gui
         {
             PostInitialize(node);
             
+            // If node refers to a node in a virtual group like "Connected Servers",
+            // perform a dereference first.
+            if (node is ServerRef serverRef)
+            {
+                node = serverRef.ServerNode;
+            }
+
             if (node is FileGroup fileGroup)
             {
                 ToolStripMenuItem loadServers = new ToolStripMenuItem(
