@@ -1,4 +1,24 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!--
+    Copyright 2019 Google LLC
+    
+    Licensed to the Apache Software Foundation (ASF) under one
+    or more contributor license agreements.  See the NOTICE file
+    distributed with this work for additional information
+    regarding copyright ownership.  The ASF licenses this file
+    to you under the Apache License, Version 2.0 (the
+    "License"); you may not use this file except in compliance
+    with the License.  You may obtain a copy of the License at
+    
+      http://www.apache.org/licenses/LICENSE-2.0
+    
+    Unless required by applicable law or agreed to in writing,
+    software distributed under the License is distributed on an
+    "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+    KIND, either express or implied.  See the License for the
+    specific language governing permissions and limitations
+    under the License.
+--> 
 <Wix xmlns="http://wixtoolset.org/schemas/v4/wxs">
 	<Product Id="*" 
            Name="Cloud IAP plugin for RDCMan" 
@@ -6,21 +26,28 @@
            Version="$(var.VERSION)" 
            Manufacturer="Google Inc" 
            UpgradeCode="9a2e9c0c-739b-48be-ad49-395cbfd58c59">
-		<Package InstallerVersion="200" Compressed="yes" InstallScope="perMachine" />
+		<Package InstallerVersion="200" Compressed="yes" InstallScope="perMachine" Platform="x86" />
 
 		<MajorUpgrade 
            AllowSameVersionUpgrades="yes" 
            DowngradeErrorMessage="A newer version of [ProductName] is already installed." />
 		<MediaTemplate EmbedCab="yes" />
 
-    <!-- Find rdcman.exe -->
+    <!-- Find rdcman.exe (which is always 32bit) -->
     <Property Id="RDCMANDIR">
-      <ComponentSearch Id="MainComponentSearch" Type="file" Guid="37A9C997-24F1-4955-A496-5DA0702B3F05">
-        <DirectorySearch Id="MainComponentDirectorySearch" AssignToProperty="yes"  Depth="0" />
+      <ComponentSearch Id="RdcmanComponentSearch" Type="file" Guid="37A9C997-24F1-4955-A496-5DA0702B3F05">
+        <DirectorySearch Id="RdcmanDirectorySearch" AssignToProperty="yes"  Depth="0" />
       </ComponentSearch>
     </Property>
 
     <Condition Message="Remote Desktop Connection Manager is not installed on this machine">RDCMANDIR</Condition>
+
+    <!-- Find Cloud SDK (which is always 32bit) -->
+    <Property Id="CLOUDSDKDIR">
+      <RegistrySearch Id="CloudSdkRegistrySearch" Type="directory" Root="HKLM" Key="SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\Google Cloud SDK" Name="InstallLocation"/>
+    </Property>
+
+    <Condition Message="Google Cloud SDK is not installed on this machine">CLOUDSDKDIR</Condition>
 
     <!-- Install to the directory rdcman.exe is located in -->
     <CustomAction Id="SetInstallFolder" Directory="TARGETDIR" Value="[RDCMANDIR]" />
