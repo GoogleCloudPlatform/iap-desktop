@@ -21,6 +21,14 @@
 
 $Msbuild = (Resolve-Path ([IO.Path]::Combine(${Env:ProgramFiles(x86)}, 'Microsoft Visual Studio', '*', '*', 'MSBuild', '*' , 'bin' , 'msbuild.exe'))).Path
 $Nuget = "c:\nuget\nuget.exe"
+$RdcManDownloadUrl = "https://download.microsoft.com/download/A/F/0/AF0071F3-B198-4A35-AA90-C68D103BDCCF/rdcman.msi"
+
+Write-Host "=== Install RDCMan ==="
+(New-Object System.Net.WebClient).DownloadFile($RdcManDownloadUrl, $env:TEMP + "\Rdcman.msi")
+
+& msiexec /i $env:TEMP\Rdcman.msi /quiet /qn /norestart /log $env:TEMP\Rdcman.log | Out-Default
+Get-Content -Path $env:TEMP\Rdcman.log
+
 
 Write-Host "=== Restore Nuget packages ==="
 & $Nuget restore | Out-Default
@@ -28,6 +36,7 @@ if ($LastExitCode -ne 0)
 {
     exit $LastExitCode
 }
+
 
 Write-Host "=== Build solution ==="
 & $Msbuild  "/t:Plugin_Google_CloudIap:Rebuild" "/p:Configuration=Release;Platform=x86" | Out-Default
