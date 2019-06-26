@@ -21,6 +21,10 @@ rem specific language governing permissions and limitations
 rem under the License.
 rem
 
+rem Change to the directory where this script is located in
+cd %~dp0
+
+rem Invoke build.
 powershell -NoProfile -ExecutionPolicy Bypass -File build.ps1
 
 exit /b %ERRORLEVEL%
