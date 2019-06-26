@@ -19,35 +19,69 @@
 # under the License.
 #
 
+$MsbuildDir = (Resolve-Path ([IO.Path]::Combine(${Env:ProgramFiles(x86)}, 'Microsoft Visual Studio', '*', '*', 'MSBuild'))).Path
 $Msbuild = (Resolve-Path ([IO.Path]::Combine(${Env:ProgramFiles(x86)}, 'Microsoft Visual Studio', '*', '*', 'MSBuild', '*' , 'bin' , 'msbuild.exe'))).Path
 $Nuget = "c:\nuget\nuget.exe"
 $RdcManDownloadUrl = "https://download.microsoft.com/download/A/F/0/AF0071F3-B198-4A35-AA90-C68D103BDCCF/rdcman.msi"
 $WixToolsetDownloadUrl = "https://wixtoolset.org/downloads/v4.0.0.5205/wix40.exe"
+$WixDefaultInstallDir = "${Env:ProgramFiles(x86)}\WiX Toolset v4.0"
 
+Write-Host "========================================================"
+Write-Host "=== Preparing build                                 ==="
+Write-Host "========================================================"
+Write-Host "Using MSBuild: $Msbuild"
 
-Write-Host "=== Install RDCMan ==="
+Write-Host "========================================================"
+Write-Host "=== Install RDCMan                                   ==="
+Write-Host "========================================================"
+
 (New-Object System.Net.WebClient).DownloadFile($RdcManDownloadUrl, $env:TEMP + "\Rdcman.msi")
 
 & msiexec /i $env:TEMP\Rdcman.msi /quiet /qn /norestart /log $env:TEMP\Rdcman.log | Out-Default
 Get-Content -Path $env:TEMP\Rdcman.log
 
-
-Write-Host "=== Install Wix Toolset ==="
-(New-Object System.Net.WebClient).DownloadFile($WixToolsetDownloadUrl, $env:TEMP + "\Wix.exe")
-& $env:TEMP\Wix.exe -quiet -log $env:TEMP\wix.log | Out-Default
-Get-Content -Path $env:TEMP\wix.log
-
-
-Write-Host "=== Restore Nuget packages ==="
-& $Nuget restore | Out-Default
 if ($LastExitCode -ne 0)
 {
     exit $LastExitCode
 }
 
 
-Write-Host "=== Build solution ==="
+Write-Host "========================================================"
+Write-Host "=== Install Wix Toolset                              ==="
+Write-Host "========================================================"
+
+(New-Object System.Net.WebClient).DownloadFile($WixToolsetDownloadUrl, $env:TEMP + "\Wix.exe")
+& $env:TEMP\Wix.exe -quiet -log $env:TEMP\wix.log | Out-Default
+Get-Content -Path $env:TEMP\wix.log
+
+if ($LastExitCode -ne 0)
+{
+    exit $LastExitCode
+}
+
+# Install targets so that msbuild can find them.
+New-Item -path "$MsbuildDir\WiX Toolset\v4" -type directory
+Copy-Item -Path "$WixDefaultInstallDir\bin\*.targets" -Destination "$MsbuildDir\WiX Toolset\v4"
+
+
+Write-Host "========================================================"
+Write-Host "=== Restore Nuget packages                           ==="
+Write-Host "========================================================"
+
+& $Nuget restore | Out-Default
+
+if ($LastExitCode -ne 0)
+{
+    exit $LastExitCode
+}
+
+
+Write-Host "========================================================"
+Write-Host "=== Build solution                                   ==="
+Write-Host "========================================================"
+
 & $Msbuild  "/t:Rebuild" "/p:Configuration=Release;Platform=x86" | Out-Default
+
 if ($LastExitCode -ne 0)
 {
     exit $LastExitCode
