@@ -20,8 +20,17 @@
 #
 
 $Msbuild = (Resolve-Path ([IO.Path]::Combine(${Env:ProgramFiles(x86)}, 'Microsoft Visual Studio', '*', '*', 'MSBuild', '*' , 'bin' , 'msbuild.exe'))).Path
+$Nuget = "c:\nuget\nuget.exe"
 
-& $Msbuild  "/t:Plugin_Google_CloudIap:Rebuild" "/p:Configuration=Release;Platform=x86" | Out-Default
+Write-Host "=== Restore Nuget packages ==="
+& $Nuget restore | Out-Default
+if ($LastExitCode -ne 0)
+{
+    exit $LastExitCode
+}
+
+Write-Host "=== Build solution ==="
+#& $Msbuild  "/t:Plugin_Google_CloudIap:Rebuild" "/p:Configuration=Release;Platform=x86" | Out-Default
 if ($LastExitCode -ne 0)
 {
     exit $LastExitCode
