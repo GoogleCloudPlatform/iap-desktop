@@ -68,7 +68,7 @@ Write-Host "========================================================"
 
 (New-Object System.Net.WebClient).DownloadFile($WixToolsetExtensionDownloadUrl, $env:TEMP + "\Votive.vsix")
 
-VSIXInstaller.exe /quiet $env:TEMP\Votive.vsix
+& $VsixInstaller /quiet $env:TEMP\Votive.vsix | Out-Default
 
 if ($LastExitCode -ne 0)
 {
