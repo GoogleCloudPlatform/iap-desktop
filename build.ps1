@@ -30,7 +30,7 @@ if ($LastExitCode -ne 0)
 }
 
 Write-Host "=== Build solution ==="
-#& $Msbuild  "/t:Plugin_Google_CloudIap:Rebuild" "/p:Configuration=Release;Platform=x86" | Out-Default
+& $Msbuild  "/t:Plugin_Google_CloudIap:Rebuild" "/p:Configuration=Release;Platform=x86" | Out-Default
 if ($LastExitCode -ne 0)
 {
     exit $LastExitCode
