@@ -19,17 +19,19 @@
 # under the License.
 #
 
-$MsbuildDir = (Resolve-Path ([IO.Path]::Combine(${Env:ProgramFiles(x86)}, 'Microsoft Visual Studio', '*', '*', 'MSBuild'))).Path
 $Msbuild = (Resolve-Path ([IO.Path]::Combine(${Env:ProgramFiles(x86)}, 'Microsoft Visual Studio', '*', '*', 'MSBuild', '*' , 'bin' , 'msbuild.exe'))).Path
+$VsixInstaller = (Resolve-Path ([IO.Path]::Combine(${Env:ProgramFiles(x86)}, 'Microsoft Visual Studio', '*', '*', 'Common7', 'IDE', 'VSIXInstaller.exe'))).Path
 $Nuget = "c:\nuget\nuget.exe"
+
 $RdcManDownloadUrl = "https://download.microsoft.com/download/A/F/0/AF0071F3-B198-4A35-AA90-C68D103BDCCF/rdcman.msi"
 $WixToolsetDownloadUrl = "https://wixtoolset.org/downloads/v4.0.0.5205/wix40.exe"
-$WixDefaultInstallDir = "${Env:ProgramFiles(x86)}\WiX Toolset v4.0"
+$WixToolsetExtensionDownloadUrl = "https://robmensching.gallerycdn.vsassets.io/extensions/robmensching/wixtoolsetvisualstudio2017extension/0.9.21.62588/1494013210879/250616/4/Votive2017.vsix"
 
 Write-Host "========================================================"
 Write-Host "=== Preparing build                                 ==="
 Write-Host "========================================================"
 Write-Host "Using MSBuild: $Msbuild"
+Write-Host "Using VsixInstaller: $VsixInstaller"
 
 Write-Host "========================================================"
 Write-Host "=== Install RDCMan                                   ==="
@@ -59,9 +61,19 @@ if ($LastExitCode -ne 0)
     exit $LastExitCode
 }
 
-# Install targets so that msbuild can find them.
-New-Item -path "$MsbuildDir\WiX Toolset\v4" -type directory
-Copy-Item -Path "$WixDefaultInstallDir\bin\*.targets" -Destination "$MsbuildDir\WiX Toolset\v4"
+
+Write-Host "========================================================"
+Write-Host "=== Install Wix Toolset Extension (Votive)           ==="
+Write-Host "========================================================"
+
+(New-Object System.Net.WebClient).DownloadFile($WixToolsetExtensionDownloadUrl, $env:TEMP + "\Votive.vsix")
+
+VSIXInstaller.exe /quiet $env:TEMP\Votive.vsix
+
+if ($LastExitCode -ne 0)
+{
+    exit $LastExitCode
+}
 
 
 Write-Host "========================================================"
