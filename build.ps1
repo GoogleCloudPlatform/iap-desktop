@@ -19,6 +19,9 @@
 # under the License.
 #
 
+# Product version to be used for MSI (2 digit).
+$ProductVersion="1.0"
+
 $Msbuild = (Resolve-Path ([IO.Path]::Combine(${Env:ProgramFiles(x86)}, 'Microsoft Visual Studio', '*', '*', 'MSBuild', '*' , 'bin' , 'msbuild.exe'))).Path
 $VsixInstaller = (Resolve-Path ([IO.Path]::Combine(${Env:ProgramFiles(x86)}, 'Microsoft Visual Studio', '*', '*', 'Common7', 'IDE', 'VSIXInstaller.exe'))).Path
 $Nuget = "c:\nuget\nuget.exe"
@@ -92,7 +95,7 @@ Write-Host "========================================================"
 Write-Host "=== Build solution                                   ==="
 Write-Host "========================================================"
 
-& $Msbuild  "/t:Rebuild" "/p:Configuration=Release;Platform=x86" | Out-Default
+& $Msbuild  "/t:Rebuild" "/p:Configuration=Release;Platform=x86;AssemblyVersionNumber=$ProductVersion.${env:KOKORO_BUILD_NUMBER}.0" | Out-Default
 
 if ($LastExitCode -ne 0)
 {
