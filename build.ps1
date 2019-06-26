@@ -22,12 +22,20 @@
 $Msbuild = (Resolve-Path ([IO.Path]::Combine(${Env:ProgramFiles(x86)}, 'Microsoft Visual Studio', '*', '*', 'MSBuild', '*' , 'bin' , 'msbuild.exe'))).Path
 $Nuget = "c:\nuget\nuget.exe"
 $RdcManDownloadUrl = "https://download.microsoft.com/download/A/F/0/AF0071F3-B198-4A35-AA90-C68D103BDCCF/rdcman.msi"
+$WixToolsetDownloadUrl = "https://wixtoolset.org/downloads/v4.0.0.5205/wix40.exe"
+
 
 Write-Host "=== Install RDCMan ==="
 (New-Object System.Net.WebClient).DownloadFile($RdcManDownloadUrl, $env:TEMP + "\Rdcman.msi")
 
 & msiexec /i $env:TEMP\Rdcman.msi /quiet /qn /norestart /log $env:TEMP\Rdcman.log | Out-Default
 Get-Content -Path $env:TEMP\Rdcman.log
+
+
+Write-Host "=== Install Wix Toolset ==="
+(New-Object System.Net.WebClient).DownloadFile($WixToolsetDownloadUrl, $env:TEMP + "\Wix.exe")
+& $env:TEMP\Wix.exe -quiet -log $env:TEMP\wix.log | Out-Default
+Get-Content -Path $env:TEMP\wix.log
 
 
 Write-Host "=== Restore Nuget packages ==="
@@ -39,7 +47,7 @@ if ($LastExitCode -ne 0)
 
 
 Write-Host "=== Build solution ==="
-& $Msbuild  "/t:Plugin_Google_CloudIap:Rebuild" "/p:Configuration=Release;Platform=x86" | Out-Default
+& $Msbuild  "/t:Rebuild" "/p:Configuration=Release;Platform=x86" | Out-Default
 if ($LastExitCode -ne 0)
 {
     exit $LastExitCode
