@@ -25,6 +25,7 @@ $ProductVersion="1.0"
 $Msbuild = (Resolve-Path ([IO.Path]::Combine(${Env:ProgramFiles(x86)}, 'Microsoft Visual Studio', '*', '*', 'MSBuild', '*' , 'bin' , 'msbuild.exe'))).Path
 $VsixInstaller = (Resolve-Path ([IO.Path]::Combine(${Env:ProgramFiles(x86)}, 'Microsoft Visual Studio', '*', '*', 'Common7', 'IDE', 'VSIXInstaller.exe'))).Path
 $Nuget = "c:\nuget\nuget.exe"
+$Signtool = "c:\Program Files (x86)\Windows kits\10\bin\x86\signtool.exe"
 
 $RdcManDownloadUrl = "https://download.microsoft.com/download/A/F/0/AF0071F3-B198-4A35-AA90-C68D103BDCCF/rdcman.msi"
 $WixToolsetDownloadUrl = "https://wixtoolset.org/downloads/v4.0.0.5205/wix40.exe"
@@ -101,3 +102,13 @@ if ($LastExitCode -ne 0)
 {
     exit $LastExitCode
 }
+
+
+Write-Host "========================================================"
+Write-Host "=== Sign installer                                   ==="
+Write-Host "========================================================"
+
+$InstallerMsi = (Resolve-Path ([IO.Path]::Combine("Plugin.Google.CloudIap.Installer", "bin", "Release", "*.msi"))).Path
+
+Write-Host "Signing MSI $InstallerMsi..."
+& $Signtool sign /v /tr http://timestamp.digicert.com /i "SHA2" /fd sha256 /td sha256 $InstallerMsi | Out-Default
