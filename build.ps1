@@ -102,13 +102,3 @@ if ($LastExitCode -ne 0)
 {
     exit $LastExitCode
 }
-
-
-Write-Host "========================================================"
-Write-Host "=== Sign installer                                   ==="
-Write-Host "========================================================"
-
-$InstallerMsi = (Resolve-Path ([IO.Path]::Combine("Plugin.Google.CloudIap.Installer", "bin", "Release", "*.msi"))).Path
-
-Write-Host "Signing MSI $InstallerMsi..."
-& $Signtool sign /v /tr http://timestamp.digicert.com /i "SHA2" /fd sha256 /td sha256 $InstallerMsi | Out-Default
