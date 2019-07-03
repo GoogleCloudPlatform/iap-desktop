@@ -47,6 +47,16 @@ namespace Plugin.Google.CloudIap.Integration
             this.configuration = configuration;
         }
 
+        public IEnumerable<IapTunnel> OpenTunnels
+        {
+            get
+            {
+                return this.tunnels.Values
+                    .Where(t => t.IsCompleted && !t.IsFaulted)
+                    .Select(t => t.Result);
+            }
+        }
+
         private Task<IapTunnel> ConnectAndCache(IapTunnelEndpoint endpoint, TimeSpan timeout)
         {
             var tunnel = IapTunnel.Open(
@@ -95,16 +105,32 @@ namespace Plugin.Google.CloudIap.Integration
             }
         }
 
+        public void CloseTunnel(IapTunnelEndpoint endpoint)
+        {
+            lock (this.tunnelsLock)
+            {
+                if (!this.tunnels.TryGetValue(endpoint, out var tunnel))
+                { 
+                    throw new KeyNotFoundException($"No active tunnel to {endpoint}");
+                }
+
+                tunnel.Result.Close();
+                this.tunnels.Remove(endpoint);
+            }
+        }
+
         public void CloseTunnels()
         {
             lock (this.tunnelsLock)
             {
+                var copyOfEndpoints = new List<IapTunnelEndpoint>(this.tunnels.Keys);
+
                 var exceptions = new List<Exception>();
-                foreach (var tunnel in this.tunnels.Values)
+                foreach (var endpoint in copyOfEndpoints)
                 {
                     try
                     {
-                        tunnel.Result.Close();
+                        CloseTunnel(endpoint);
                     }
                     catch (Exception e)
                     {
@@ -153,7 +179,7 @@ namespace Plugin.Google.CloudIap.Integration
 
         public override string ToString()
         {
-            return $"{this.Instance.InstanceName}:${this.RemotePort}";
+            return $"{this.Instance.InstanceName}:{this.RemotePort}";
         }
     }
 
@@ -171,6 +197,8 @@ namespace Plugin.Google.CloudIap.Integration
         public IapTunnelEndpoint Endpoint { get; private set; }
 
         public int LocalPort { get; private set; }
+
+        public int ProcessId => this.gcloudProcess.Id;
 
         private  IapTunnel(GCloudIapTunnelProcess gcloudProcess, IapTunnelEndpoint endpoint, int localPort)
         {

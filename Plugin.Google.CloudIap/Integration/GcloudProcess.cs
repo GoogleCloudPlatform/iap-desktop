@@ -65,6 +65,8 @@ namespace Plugin.Google.CloudIap.Integration
             public uint Id;
         }
 
+        public int Id => this.wrapperProcess.Id;
+
         protected GcloudProcess(Process wrapperProcess)
         {
             this.wrapperProcess = wrapperProcess;

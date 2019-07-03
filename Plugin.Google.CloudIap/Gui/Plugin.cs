@@ -176,7 +176,7 @@ namespace Plugin.Google.CloudIap.Gui
         {
             this.mainMenu = context.MainForm.MainMenuStrip;
 
-            // Add Tools > Cloud IAP Settings menu item
+            // Add Tools menu items
             var configMenuItem = new ToolStripMenuItem("Cloud IAP &Settings...");
             configMenuItem.Click += (sender, args) =>
             {
@@ -188,11 +188,17 @@ namespace Plugin.Google.CloudIap.Gui
                 }
             };
 
-            var toolsMenuStrip = this.mainMenu.Items
+            var tunnelsMenuItem = new ToolStripMenuItem("Cloud IAP Tunnels...");
+            tunnelsMenuItem.Click += (sender, args) =>
+            {
+                TunnelsWindow.ShowDialog(this.mainForm, this.tunnelManager);
+            };
+
+            this.mainMenu.Items
                 .Cast<ToolStripMenuItem>()
                 .First(i => i.Name == "Tools")
                 .DropDownItems
-                .Add(configMenuItem);
+                .AddRange(new ToolStripMenuItem[] { configMenuItem, tunnelsMenuItem });
 
             // Adjust states of Session > xxx menu items depending on selected server.
             this.mainMenu.MenuActivate += (sender, args) =>

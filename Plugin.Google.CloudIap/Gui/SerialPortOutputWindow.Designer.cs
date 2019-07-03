@@ -57,9 +57,10 @@ namespace Plugin.Google.CloudIap.Gui
             // 
             this.closeButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.closeButton.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.closeButton.Location = new System.Drawing.Point(842, 621);
+            this.closeButton.Location = new System.Drawing.Point(632, 505);
+            this.closeButton.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.closeButton.Name = "closeButton";
-            this.closeButton.Size = new System.Drawing.Size(110, 34);
+            this.closeButton.Size = new System.Drawing.Size(82, 28);
             this.closeButton.TabIndex = 2;
             this.closeButton.Text = "C&lose";
             this.closeButton.UseVisualStyleBackColor = true;
@@ -72,24 +73,27 @@ namespace Plugin.Google.CloudIap.Gui
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.log.Font = new System.Drawing.Font("Consolas", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.log.Location = new System.Drawing.Point(13, 13);
+            this.log.Location = new System.Drawing.Point(10, 11);
+            this.log.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.log.Multiline = true;
             this.log.Name = "log";
             this.log.ReadOnly = true;
             this.log.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.log.Size = new System.Drawing.Size(939, 594);
+            this.log.Size = new System.Drawing.Size(705, 483);
             this.log.TabIndex = 3;
             // 
             // SerialPortOutputWindow
             // 
             this.AcceptButton = this.closeButton;
-            this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.closeButton;
-            this.ClientSize = new System.Drawing.Size(964, 667);
+            this.ClientSize = new System.Drawing.Size(723, 542);
             this.Controls.Add(this.log);
             this.Controls.Add(this.closeButton);
+            this.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.Name = "SerialPortOutputWindow";
+            this.ShowIcon = false;
             this.Text = "Serial Port Output";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.SerialPortOutputWindow_FormClosing);
             this.ResumeLayout(false);
