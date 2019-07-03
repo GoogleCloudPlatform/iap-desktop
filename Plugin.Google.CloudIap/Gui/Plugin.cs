@@ -83,6 +83,13 @@ namespace Plugin.Google.CloudIap.Gui
         {
             PostInitialize(node);
             
+            // If node refers to a node in a virtual group like "Connected Servers",
+            // perform a dereference first.
+            if (node is ServerRef serverRef)
+            {
+                node = serverRef.ServerNode;
+            }
+
             if (node is FileGroup fileGroup)
             {
                 ToolStripMenuItem loadServers = new ToolStripMenuItem(
@@ -98,8 +105,14 @@ namespace Plugin.Google.CloudIap.Gui
                 ToolStripMenuItem iapConnect = new ToolStripMenuItem(
                    $"Connect server via Cloud &IAP",
                    Resources.RemoteDesktop);
-                iapConnect.Click += (sender, args) => OnIapConnectClick(server);
+                iapConnect.Click += (sender, args) => OnIapConnectClick(server, false);
                 iapConnect.Enabled = !server.IsConnected;
+
+                ToolStripMenuItem iapConnectAs = new ToolStripMenuItem(
+                   $"Connect server via Cloud &IAP as...",
+                   Resources.RemoteDesktop);
+                iapConnectAs.Click += (sender, args) => OnIapConnectClick(server, true);
+                iapConnectAs.Enabled = !server.IsConnected;
 
                 ToolStripMenuItem resetPassword = new ToolStripMenuItem(
                    $"Generate &Windows logon credentials...",
@@ -125,6 +138,7 @@ namespace Plugin.Google.CloudIap.Gui
                 int index = 2;
                 contextMenuStrip.Items.Insert(index++, new ToolStripSeparator());
                 contextMenuStrip.Items.Insert(index++, iapConnect);
+                contextMenuStrip.Items.Insert(index++, iapConnectAs);
                 contextMenuStrip.Items.Insert(index++, resetPassword);
                 contextMenuStrip.Items.Insert(index++, showSerialPortOutput);
                 contextMenuStrip.Items.Insert(index++, openCloudConsole);
@@ -337,7 +351,7 @@ namespace Plugin.Google.CloudIap.Gui
                 });
         }
 
-        private void OnIapConnectClick(Server server)
+        private void OnIapConnectClick(Server server, bool connectAs)
         {
             VmInstanceReference instance = new VmInstanceReference(
                 server.FileGroup.Text,
@@ -365,7 +379,14 @@ namespace Plugin.Google.CloudIap.Gui
 
                         // Set focus on selected server and connect.
                         server.TreeView.SelectedNode = server;
-                        server.Connect();
+                        if (connectAs)
+                        {
+                            server.DoConnectAs();
+                        }
+                        else
+                        {
+                            server.Connect();
+                        }
                     }
                     finally
                     {
