@@ -135,6 +135,7 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
+    <Compile Include="Util\LazyWithRetry.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

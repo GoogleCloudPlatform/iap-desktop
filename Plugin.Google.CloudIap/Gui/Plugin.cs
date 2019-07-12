@@ -21,6 +21,7 @@
 
 using Plugin.Google.CloudIap.Configuration;
 using Plugin.Google.CloudIap.Integration;
+using Plugin.Google.CloudIap.Util;
 using RdcMan;
 using System;
 using System.Collections.Generic;
@@ -48,7 +49,7 @@ namespace Plugin.Google.CloudIap.Gui
         private readonly PluginConfiguration configuration;
         private readonly IapTunnelManager tunnelManager;
         private readonly WindowsPasswordManager windowsPasswordManager;
-        private readonly Lazy<ProjectCollection> projects = new Lazy<ProjectCollection>(
+        private readonly LazyWithRetry<ProjectCollection> projects = new LazyWithRetry<ProjectCollection>(
             () => new ProjectCollection(ComputeEngineAdapter.Create(GcloudAccountConfiguration.ActiveAccount.Credential)));
 
         private Form mainForm = null;

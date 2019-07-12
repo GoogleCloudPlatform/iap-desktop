@@ -33,7 +33,6 @@ namespace Plugin.Google.CloudIap.Integration
     internal class Project
     {
         private readonly string projectId;
-        private readonly IEnumerable<string> zones;
         private readonly ComputeEngineAdapter adapter;
 
         public Project(string projectId, IEnumerable<string> zones, ComputeEngineAdapter adapter)
