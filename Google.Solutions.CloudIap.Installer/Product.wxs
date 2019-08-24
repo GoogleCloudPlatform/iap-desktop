@@ -1,0 +1,188 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    Copyright 2019 Google LLC
+    
+    Licensed to the Apache Software Foundation (ASF) under one
+    or more contributor license agreements.  See the NOTICE file
+    distributed with this work for additional information
+    regarding copyright ownership.  The ASF licenses this file
+    to you under the Apache License, Version 2.0 (the
+    "License"); you may not use this file except in compliance
+    with the License.  You may obtain a copy of the License at
+    
+      http://www.apache.org/licenses/LICENSE-2.0
+    
+    Unless required by applicable law or agreed to in writing,
+    software distributed under the License is distributed on an
+    "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+    KIND, either express or implied.  See the License for the
+    specific language governing permissions and limitations
+    under the License.
+--> 
+<Wix xmlns="http://wixtoolset.org/schemas/v4/wxs">
+	<Product Id="*" 
+           Name="Cloud IAP plugin for RDCMan" 
+           Language="1033" 
+           Version="$(var.VERSION)" 
+           Manufacturer="Google Inc" 
+           UpgradeCode="9a2e9c0c-739b-48be-ad49-395cbfd58c59">
+		<Package InstallerVersion="200" Compressed="yes" InstallScope="perMachine" Platform="x86" />
+
+		<MajorUpgrade 
+           AllowSameVersionUpgrades="yes" 
+           DowngradeErrorMessage="A newer version of [ProductName] is already installed." />
+		<MediaTemplate EmbedCab="yes" />
+
+    <!-- Find rdcman.exe (which is always 32bit) -->
+    <Property Id="RDCMANDIR">
+      <ComponentSearch Id="RdcmanComponentSearch" Type="file" Guid="37A9C997-24F1-4955-A496-5DA0702B3F05">
+        <DirectorySearch Id="RdcmanDirectorySearch" AssignToProperty="yes"  Depth="0" />
+      </ComponentSearch>
+    </Property>
+
+    <Condition Message="Remote Desktop Connection Manager is not installed on this machine">RDCMANDIR</Condition>
+
+    <!-- Find Cloud SDK (which is always 32bit) -->
+    <Property Id="CLOUDSDKDIR">
+      <RegistrySearch Id="CloudSdkRegistrySearch" Type="directory" Root="HKLM" Key="SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\Google Cloud SDK" Name="InstallLocation"/>
+    </Property>
+
+    <Condition Message="Google Cloud SDK is not installed on this machine">CLOUDSDKDIR</Condition>
+
+    <!-- Install to the directory rdcman.exe is located in -->
+    <CustomAction Id="SetInstallFolder" Directory="TARGETDIR" Value="[RDCMANDIR]" />
+    <InstallExecuteSequence>
+      <Custom Action="SetInstallFolder" After="CostFinalize">NOT Installed</Custom>
+    </InstallExecuteSequence>
+
+		<Feature Id="ProductFeature" Title="Cloud IAP plugin" Level="1">
+			<ComponentGroupRef Id="ProductComponents" />
+		</Feature>
+
+
+    <WixVariable Id="WixUILicenseRtf" Value="License.rtf" />
+    <WixVariable Id="WixUIDialogBmp" Value="Background.bmp" />
+    <WixVariable Id="WixUIBannerBmp" Value="Header.bmp" />
+
+    <UIRef Id="WixUI_Common" />
+    
+    <UI>
+      <TextStyle Id="WixUI_Font_Normal" FaceName="Tahoma" Size="8" />
+      <TextStyle Id="WixUI_Font_Bigger" FaceName="Tahoma" Size="12" />
+      <TextStyle Id="WixUI_Font_Title" FaceName="Tahoma" Size="9" Bold="yes" />
+
+      <Property Id="DefaultUIFont" Value="WixUI_Font_Normal" />
+      <Property Id="WixUI_Mode" Value="Mondo" />
+
+      <DialogRef Id="ErrorDlg" />
+      <DialogRef Id="FatalError" />
+      <DialogRef Id="FilesInUse" />
+      <DialogRef Id="MsiRMFilesInUse" />
+      <DialogRef Id="PrepareDlg" />
+      <DialogRef Id="ProgressDlg" />
+      <DialogRef Id="ResumeDlg" />
+      <DialogRef Id="UserExit" />
+
+      <Publish Dialog="ExitDialog" Control="Finish" Event="EndDialog" Value="Return" Order="999">1</Publish>
+
+      <Publish Dialog="WelcomeDlg" Control="Next" Event="NewDialog" Value="LicenseAgreementDlg">NOT Installed AND NOT PATCH</Publish>
+      <Publish Dialog="WelcomeDlg" Control="Next" Event="NewDialog" Value="VerifyReadyDlg">Installed AND PATCH</Publish>
+
+      <Publish Dialog="LicenseAgreementDlg" Control="Back" Event="NewDialog" Value="WelcomeDlg">1</Publish>
+      <Publish Dialog="LicenseAgreementDlg" Control="Next" Event="NewDialog" Value="VerifyReadyDlg" Order="2">LicenseAccepted = "1"</Publish>
+
+
+      <Publish Dialog="VerifyReadyDlg" Control="Back" Event="NewDialog" Value="LicenseAgreementDlg" Order="1">1</Publish>
+      <Publish Dialog="VerifyReadyDlg" Control="Back" Event="NewDialog" Value="WelcomeDlg" Order="2">WixUI_InstallMode = "Update"</Publish>
+
+      <Property Id="ARPNOMODIFY" Value="1" />
+    </UI>
+
+	</Product>
+
+	<Fragment>
+		<Directory Id="TARGETDIR" Name="SourceDir">
+      
+		</Directory>
+	</Fragment>
+
+	<Fragment>
+		<ComponentGroup Id="ProductComponents" Directory="TARGETDIR">
+      <Component Id="CompReadme" Guid="80b122c4-7b0d-11e9-8f9e-2a86e4085a59">
+        <File
+          Id="FileReadme"
+          Name="README.md"
+          DiskId="1"
+          Source="..\README.md"
+          Vital="yes"/>
+      </Component>
+
+      <Component Id="CompPluginGoogleCloudIapDlll" Guid="80b128b4-7b0d-11e9-8f9e-2a86e4085a59">
+        <File
+          Id="FilePluginGoogleCloudIapDll"
+          Name="Plugin.Google.CloudIap.dll"
+          DiskId="1"
+          Source="..\Google.Solutions.CloudIap.Plugin\bin\$(var.CONFIGURATION)\Plugin.Google.CloudIap.dll"
+          Vital="yes"/>
+      </Component>
+      
+      <!-- SDK and dependencies -->
+      <Component Id="CompGoogleApisAuthDll" Guid="80b12a8a-7b0d-11e9-8f9e-2a86e4085a59">
+        <File
+          Id="FileGoogleApisAuthDll"
+          Name="Google.Apis.Auth.dll"
+          DiskId="1"
+          Source="..\Google.Solutions.CloudIap.Plugin\bin\$(var.CONFIGURATION)\Google.Apis.Auth.dll"
+          Vital="yes"/>
+      </Component>
+      <Component Id="CompGoogleApisAuthPlatformServicesDll" Guid="80b12e2c-7b0d-11e9-8f9e-2a86e4085a59">
+        <File
+          Id="FileGoogleApisAuthPlatformServicesDll"
+          Name="Google.Apis.Auth.PlatformServices.dll"
+          DiskId="1"
+          Source="..\Google.Solutions.CloudIap.Plugin\bin\$(var.CONFIGURATION)\Google.Apis.Auth.PlatformServices.dll"
+          Vital="yes"/>
+      </Component>
+      <Component Id="CompGoogleApisComputeV1Dll" Guid="80b12f8a-7b0d-11e9-8f9e-2a86e4085a59">
+        <File
+          Id="FileGoogleApisComputeV1Dll"
+          Name="Google.Apis.Compute.v1.dll"
+          DiskId="1"
+          Source="..\Google.Solutions.CloudIap.Plugin\bin\$(var.CONFIGURATION)\Google.Apis.Compute.v1.dll"
+          Vital="yes"/>
+      </Component>
+      <Component Id="CompGoogleApisCoreDll" Guid="80b130b6-7b0d-11e9-8f9e-2a86e4085a59">
+        <File
+          Id="FileGoogleApisCoreDll"
+          Name="Google.Apis.Core.dll"
+          DiskId="1"
+          Source="..\Google.Solutions.CloudIap.Plugin\bin\$(var.CONFIGURATION)\Google.Apis.Core.dll"
+          Vital="yes"/>
+      </Component>
+      <Component Id="CompGoogleApisDll" Guid="80b13714-7b0d-11e9-8f9e-2a86e4085a59">
+        <File
+          Id="FileGoogleApisDll"
+          Name="Google.Apis.dll"
+          DiskId="1"
+          Source="..\Google.Solutions.CloudIap.Plugin\bin\$(var.CONFIGURATION)\Google.Apis.dll"
+          Vital="yes"/>
+      </Component>
+      <Component Id="CompGoogleApisPlatformServicesDll" Guid="80b131ec-7b0d-11e9-8f9e-2a86e4085a59">
+        <File
+          Id="FileGoogleApisPlatformServicesDll"
+          Name="Google.Apis.PlatformServices.dll"
+          DiskId="1"
+          Source="..\Google.Solutions.CloudIap.Plugin\bin\$(var.CONFIGURATION)\Google.Apis.PlatformServices.dll"
+          Vital="yes"/>
+      </Component>
+      <Component Id="CompNewtonsoftJsonDll" Guid="80b13318-7b0d-11e9-8f9e-2a86e4085a59">
+        <File
+          Id="FileNewtonsoftJsonDll"
+          Name="Newtonsoft.Json.dll"
+          DiskId="1"
+          Source="..\Google.Solutions.CloudIap.Plugin\bin\$(var.CONFIGURATION)\Newtonsoft.Json.dll"
+          Vital="yes"/>
+      </Component>
+		</ComponentGroup>
+	</Fragment>
+</Wix>
