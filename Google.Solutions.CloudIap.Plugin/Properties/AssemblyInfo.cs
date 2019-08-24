@@ -21,10 +21,10 @@
 
 using System.Reflection;
 
-[assembly: AssemblyTitle("Plugin.Google.CloudIap")]
+[assembly: AssemblyTitle("Cloud IAP for Remote Desktop plugin")]
 [assembly: AssemblyDescription("RDC Connection Manager plugin for Google Cloud IAP")]
 [assembly: AssemblyCompany("Google")]
-[assembly: AssemblyProduct("Plugin.Google.CloudIap")]
+[assembly: AssemblyProduct("Cloud IAP for Remote Desktop")]
 [assembly: AssemblyCopyright("Copyright ©  2019")]
 [assembly: AssemblyTrademark("Google")]
 
