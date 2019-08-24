@@ -101,3 +101,25 @@ if ($LastExitCode -ne 0)
 {
     exit $LastExitCode
 }
+
+
+Write-Host "========================================================"
+Write-Host "=== Run unit tests                                   ==="
+Write-Host "========================================================"
+
+# The XSLT does not have a license, so we cannot embed it into the Git
+# repo and have to download it every time.
+Invoke-WebRequest -Uri `
+    "https://raw.githubusercontent.com/nunit/nunit-transforms/master/nunit3-junit/nunit3-junit.xslt" `
+    -OutFile nunit3-junit.xslt.tmp
+
+$Nunit = (Resolve-Path -Path "packages\NUnit.ConsoleRunner.*\tools\nunit3-console.exe").Path
+& $Nunit Google.Solutions.Compute.Test\bin\release\Google.Solutions.Compute.Test.dll `
+   "--result=sponge_log.xml;transform=nunit3-junit.xslt.tmp" `
+   --out sponge_log.log `
+   --where "cat != IntegrationTest" | Out-Default
+
+if ($LastExitCode -ne 0)
+{
+    exit $LastExitCode
+}
