@@ -21,9 +21,11 @@
 
 using Google.Apis.Auth.OAuth2;
 using Google.Solutions.Compute.Iap;
+using Google.Solutions.Compute.Net;
 using Google.Solutions.Compute.Test.Env;
 using NUnit.Framework;
 using System;
+using System.Threading.Tasks;
 
 namespace Google.Solutions.Compute.Test.Iap
 {
@@ -45,7 +47,7 @@ namespace Google.Solutions.Compute.Test.Iap
                     IapTunnelingEndpoint.DefaultNetworkInterface));
 
             AssertEx.ThrowsAggregateException<UnauthorizedException>(() =>
-                prober.ProbeConnectionAsync(TimeSpan.FromSeconds(2)).Wait());
+                prober.ProbeConnectionAsync(TimeSpan.FromSeconds(10)).Wait());
         }
 
         [Test]
@@ -62,7 +64,7 @@ namespace Google.Solutions.Compute.Test.Iap
                     IapTunnelingEndpoint.DefaultNetworkInterface));
 
             AssertEx.ThrowsAggregateException<UnauthorizedException>(() =>
-                prober.ProbeConnectionAsync(TimeSpan.FromSeconds(2)).Wait());
+                prober.ProbeConnectionAsync(TimeSpan.FromSeconds(10)).Wait());
         }
 
         [Test]
@@ -79,7 +81,40 @@ namespace Google.Solutions.Compute.Test.Iap
                     IapTunnelingEndpoint.DefaultNetworkInterface));
 
             AssertEx.ThrowsAggregateException<UnauthorizedException>(() =>
-                prober.ProbeConnectionAsync(TimeSpan.FromSeconds(2)).Wait());
+                prober.ProbeConnectionAsync(TimeSpan.FromSeconds(10)).Wait());
+        }
+
+        [Test]
+        public async Task ProbeExistingInstanceOverRdpSucceeds(
+             [WindowsInstance] InstanceRequest testInstance)
+        {
+            await testInstance.AwaitReady();
+
+            var prober = new SshRelayProber(
+                new IapTunnelingEndpoint(
+                    GoogleCredential.GetApplicationDefault(),
+                    testInstance.InstanceReference,
+                    3389,
+                    IapTunnelingEndpoint.DefaultNetworkInterface));
+
+            await prober.ProbeConnectionAsync(TimeSpan.FromSeconds(10));
+        }
+
+        [Test]
+        public async Task ProbeExistingInstanceOverWrongCausesNetworkStreamClosedException(
+             [WindowsInstance] InstanceRequest testInstance)
+        {
+            await testInstance.AwaitReady();
+
+            var prober = new SshRelayProber(
+                new IapTunnelingEndpoint(
+                    GoogleCredential.GetApplicationDefault(),
+                    testInstance.InstanceReference,
+                    22,
+                    IapTunnelingEndpoint.DefaultNetworkInterface));
+
+            AssertEx.ThrowsAggregateException<NetworkStreamClosedException>(() =>
+                prober.ProbeConnectionAsync(TimeSpan.FromSeconds(5)).Wait());
         }
     }
 }

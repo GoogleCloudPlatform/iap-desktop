@@ -122,8 +122,6 @@ namespace Google.Solutions.Compute.Net
                 // Do not try to read, it cannot succeed anyway.
                 throw this.closeByServerReceived;
             }
-
-
         }
 
         protected override async Task<int> ProtectedReadAsync(
@@ -134,7 +132,9 @@ namespace Google.Solutions.Compute.Net
         {
             VerifyConnectionNotClosedAlready();
 
-            if (count < this.MinReadSize)
+            // Check buffer size. Zero-sized buffers are allowed for 
+            // connection probing.
+            if (count > 0 && count < this.MinReadSize)
             {
                 throw new IndexOutOfRangeException($"Read buffer too small, must be at least {this.MinReadSize}");
             }
@@ -145,7 +145,7 @@ namespace Google.Solutions.Compute.Net
                 WebSocketReceiveResult result;
                 do
                 {
-                    if (bytesReceived == count)
+                    if (bytesReceived > 0 && bytesReceived == count)
                     {
                         throw new OverflowException("Buffer too small to receive an entire message");
                     }
@@ -161,7 +161,7 @@ namespace Google.Solutions.Compute.Net
 
                     Compute.Trace.TraceVerbose($"WebSocketStream: end ReadAsync() - {result.Count} bytes read [socket: {this.socket.State}]");
                 }
-                while (!result.EndOfMessage);
+                while (count > 0 && !result.EndOfMessage);
 
                 if (result.CloseStatus != null)
                 {
@@ -171,7 +171,7 @@ namespace Google.Solutions.Compute.Net
 
                     this.closeByServerReceived = new WebSocketStreamClosedByServerException(
                         result.CloseStatus.Value,
-                        "Server closed connection");
+                        result.CloseStatusDescription);
 
                     // In case of a normal close, it is preferable to simply return 0. But
                     // if the connection was closed abnormally, the client needs to know
