@@ -180,6 +180,35 @@ namespace Google.Solutions.Compute.Iap
             }
         }
 
+        public async Task TestConnectionAsync(TimeSpan timeout)
+        {
+            // Open a WebSocketStream, without wrapping it as a SshRelayStream
+            // and do a zero-byte read. This will fail if access is denied.
+            try
+            {
+                using (var cts = new CancellationTokenSource())
+                {
+                    // If access to the instance is allowed, but the instance
+                    // simply does not listen on this port, the connect or read 
+                    // will hang. Therefore, apply a timeout.
+                    cts.CancelAfter(timeout);
+
+                    var connection = await this.endpoint.ConnectAsync(cts.Token).ConfigureAwait(false);
+                    await connection.ReadAsync(new byte[0], 0, 0, cts.Token).ConfigureAwait(false);
+                    await connection.CloseAsync(cts.Token);
+                }
+            }
+            catch (WebSocketStreamClosedByServerException e) 
+                when ((CloseCode)e.CloseStatus == CloseCode.NOT_AUTHORIZED)
+            {
+                throw new UnauthorizedException(e.CloseStatusDescription);
+            }
+            catch (OperationCanceledException)
+            {
+                throw new NetworkStreamClosedException("Connection timed out");
+            }
+        }
+
         //---------------------------------------------------------------------
         // SingleReaderSingleWriterStream implementation
         //---------------------------------------------------------------------

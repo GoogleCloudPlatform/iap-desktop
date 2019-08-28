@@ -44,30 +44,10 @@ namespace Google.Solutions.Compute.Iap
 
         public async Task ProbeConnectionAsync(TimeSpan timeout)
         {
-            using (var cts = new CancellationTokenSource())
             using (var stream = new SshRelayStream(this.endpoint))
             {
-                cts.CancelAfter(timeout);
-
-                try
-                {
-                    // Perform a read without sending any request. If the 
-                    // connection is good, the read will not return anything.
-                    // If anything goes wrong, the read will fail.
-                    var buffer = new byte[stream.MinReadSize];
-                    await stream.ReadAsync(
-                        buffer,
-                        0,
-                        buffer.Length,
-                        cts.Token);
-                }
-                catch (OperationCanceledException)
-                {
-                    // No response within allotted time, depending on the
-                    // protocol, that might just be normal.
-                    // The connection was not aborted immediately, so we 
-                    // count that as a success.
-                }
+                // TODO: get rid of indirection
+                await stream.TestConnectionAsync(timeout);
             }
         }
     }
