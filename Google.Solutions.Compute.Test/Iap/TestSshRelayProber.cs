@@ -36,7 +36,7 @@ namespace Google.Solutions.Compute.Test.Iap
         [Test]
         public void ProbingNonexistingProjectCausesUnauthorizedException()
         {
-            var prober = new SshRelayProber(
+            using (var stream = new SshRelayStream(
                 new IapTunnelingEndpoint(
                     GoogleCredential.GetApplicationDefault(),
                     new VmInstanceReference(
@@ -44,33 +44,35 @@ namespace Google.Solutions.Compute.Test.Iap
                         Defaults.Zone,
                         "invalid"),
                     80,
-                    IapTunnelingEndpoint.DefaultNetworkInterface));
-
-            AssertEx.ThrowsAggregateException<UnauthorizedException>(() =>
-                prober.ProbeConnectionAsync(TimeSpan.FromSeconds(10)).Wait());
+                    IapTunnelingEndpoint.DefaultNetworkInterface)))
+            {
+                AssertEx.ThrowsAggregateException<UnauthorizedException>(() =>
+                    stream.TestConnectionAsync(TimeSpan.FromSeconds(10)).Wait());
+            }
         }
 
         [Test]
         public void ProbingNonexistingZoneCausesUnauthorizedException()
         {
-            var prober = new SshRelayProber(
-                new IapTunnelingEndpoint(
+            using (var stream = new SshRelayStream(
+               new IapTunnelingEndpoint(
                     GoogleCredential.GetApplicationDefault(),
                     new VmInstanceReference(
                         Defaults.ProjectId,
                         "invalid",
                         "invalid"),
                     80,
-                    IapTunnelingEndpoint.DefaultNetworkInterface));
-
-            AssertEx.ThrowsAggregateException<UnauthorizedException>(() =>
-                prober.ProbeConnectionAsync(TimeSpan.FromSeconds(10)).Wait());
+                    IapTunnelingEndpoint.DefaultNetworkInterface)))
+            {
+                AssertEx.ThrowsAggregateException<UnauthorizedException>(() =>
+                    stream.TestConnectionAsync(TimeSpan.FromSeconds(10)).Wait());
+            }
         }
 
         [Test]
         public void ProbingNonexistingInstanceCausesUnauthorizedException()
         {
-            var prober = new SshRelayProber(
+            using (var stream = new SshRelayStream(
                 new IapTunnelingEndpoint(
                     GoogleCredential.GetApplicationDefault(),
                     new VmInstanceReference(
@@ -78,10 +80,11 @@ namespace Google.Solutions.Compute.Test.Iap
                         Defaults.Zone,
                         "invalid"),
                     80,
-                    IapTunnelingEndpoint.DefaultNetworkInterface));
-
-            AssertEx.ThrowsAggregateException<UnauthorizedException>(() =>
-                prober.ProbeConnectionAsync(TimeSpan.FromSeconds(10)).Wait());
+                    IapTunnelingEndpoint.DefaultNetworkInterface)))
+            {
+                AssertEx.ThrowsAggregateException<UnauthorizedException>(() =>
+                    stream.TestConnectionAsync(TimeSpan.FromSeconds(10)).Wait());
+            }
         }
 
         [Test]
@@ -90,14 +93,15 @@ namespace Google.Solutions.Compute.Test.Iap
         {
             await testInstance.AwaitReady();
 
-            var prober = new SshRelayProber(
+            using (var stream = new SshRelayStream(
                 new IapTunnelingEndpoint(
                     GoogleCredential.GetApplicationDefault(),
                     testInstance.InstanceReference,
                     3389,
-                    IapTunnelingEndpoint.DefaultNetworkInterface));
-
-            await prober.ProbeConnectionAsync(TimeSpan.FromSeconds(10));
+                    IapTunnelingEndpoint.DefaultNetworkInterface)))
+            {
+                await stream.TestConnectionAsync(TimeSpan.FromSeconds(10));
+            }
         }
 
         [Test]
@@ -106,15 +110,16 @@ namespace Google.Solutions.Compute.Test.Iap
         {
             await testInstance.AwaitReady();
 
-            var prober = new SshRelayProber(
+            using (var stream = new SshRelayStream(
                 new IapTunnelingEndpoint(
                     GoogleCredential.GetApplicationDefault(),
                     testInstance.InstanceReference,
                     22,
-                    IapTunnelingEndpoint.DefaultNetworkInterface));
-
-            AssertEx.ThrowsAggregateException<NetworkStreamClosedException>(() =>
-                prober.ProbeConnectionAsync(TimeSpan.FromSeconds(5)).Wait());
+                    IapTunnelingEndpoint.DefaultNetworkInterface)))
+            {
+                AssertEx.ThrowsAggregateException<NetworkStreamClosedException>(() =>
+                    stream.TestConnectionAsync(TimeSpan.FromSeconds(5)).Wait());
+            }
         }
     }
 }
