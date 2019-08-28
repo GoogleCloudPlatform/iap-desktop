@@ -70,7 +70,10 @@ namespace Google.Solutions.CloudIap.IapClient
                     IapTunnelingEndpoint.DefaultNetworkInterface);
 
             // Probe connection.
-            await new SshRelayProber(iapEndpoint).ProbeConnectionAsync(TimeSpan.FromSeconds(2));
+            using (var stream = new SshRelayStream(iapEndpoint))
+            {
+                await stream.TestConnectionAsync(TimeSpan.FromSeconds(2)).ConfigureAwait(false);
+            }
 
             // Start listener to enable clients to connect.
             var listener = SshRelayListener.CreateLocalListener(iapEndpoint);
