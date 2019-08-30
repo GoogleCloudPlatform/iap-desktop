@@ -302,7 +302,7 @@ namespace Google.Solutions.Compute.Iap
                                 this.bytesSentAndAcknoledged = ackMessage.Ack;
 
                                 // The server might be acknolodging multiple messages at once.
-                                while (this.sentButUnacknoledgedQueue.Any() &&
+                                while (this.sentButUnacknoledgedQueue.Count > 0 &&
                                        this.sentButUnacknoledgedQueue.Peek().ExpectedAck 
                                             <= Thread.VolatileRead(ref this.bytesSentAndAcknoledged))
                                 {
@@ -439,6 +439,11 @@ namespace Google.Solutions.Compute.Iap
 
                     TraceLine($"Sending DATA #{newMessage.SequenceNumber}...");
 
+                    // Update bytesSent before we write the data to the wire,
+                    // otherwise we might see an ACK before bytesSent even reflects
+                    // that the data has been sent.
+                    this.bytesSent = Thread.VolatileRead(ref this.bytesSent) + (ulong)count;
+
                     await connection.WriteAsync(
                         newMessage.Buffer,
                         0,
@@ -447,8 +452,6 @@ namespace Google.Solutions.Compute.Iap
 
                     // We should get an ACK for this message.
                     this.sentButUnacknoledgedQueue.Enqueue(newMessage);
-
-                    this.bytesSent += (ulong)count;
 
                     return;
                 }
