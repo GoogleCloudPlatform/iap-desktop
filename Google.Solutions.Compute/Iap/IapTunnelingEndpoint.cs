@@ -101,6 +101,7 @@ namespace Google.Solutions.Compute.Iap
             websocket.Options.AddSubProtocol(SubprotocolName);
             websocket.Options.SetRequestHeader("Authorization", "Bearer " + accessToken);
             websocket.Options.SetRequestHeader("Origin", Origin);
+            websocket.Options.KeepAliveInterval = TimeSpan.FromMinutes(1);
 
             await websocket.ConnectAsync(uri, token).ConfigureAwait(false);
 
