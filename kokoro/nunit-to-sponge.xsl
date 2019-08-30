@@ -57,12 +57,6 @@
     </testcase>
   </xsl:template>
 
-  <xsl:template match="output">
-    <system-out>
-      <xsl:value-of select="."/>
-    </system-out>
-  </xsl:template>
-
   <xsl:template match="test-case/failure">
     <failure message="{./message}">
       <xsl:value-of select="./stack-trace"/>
@@ -73,6 +67,7 @@
     <skipped message="{./message}"/>
   </xsl:template>
 
+  <xsl:template match="output"/>
   <xsl:template match="filter"/>
   <xsl:template match="command-line"/>
   <xsl:template match="settings"/>
