@@ -35,8 +35,7 @@
           errors="{@testcasecount - @passed - @skipped - @failed}"
           failures="{@failed}"
           skipped="{@skipped}"
-          time="{@duration}"
-          timestamp="{@start-time}">
+          time="{@duration}">
 
       <xsl:apply-templates select="test-case"/>
     </testsuite>
@@ -44,17 +43,25 @@
   </xsl:template>
 
   <xsl:template match="test-case">
-    <testcase
-          name="{@name}"
-          time="{@duration}"
-          status="{@result}"
-          classname="{@classname}">
-
-      <xsl:if test="@runstate = 'Skipped' or @runstate = 'Ignored'">
-        <skipped/>
-      </xsl:if>
-      <xsl:apply-templates/>
-    </testcase>
+    <xsl:choose>
+      <xsl:when test="@runstate = 'Skipped' or @runstate = 'Ignored'">
+        <testcase
+              name="{@name}"
+              status="notrun"
+              classname="{@classname}">
+          <xsl:apply-templates/>
+        </testcase>
+      </xsl:when>
+      <xsl:otherwise>
+        <testcase
+              name="{@name}"
+              time="{@duration}"
+              status="run"
+              classname="{@classname}">
+          <xsl:apply-templates/>
+        </testcase>
+      </xsl:otherwise>
+    </xsl:choose>
   </xsl:template>
 
   <xsl:template match="test-case/failure">
