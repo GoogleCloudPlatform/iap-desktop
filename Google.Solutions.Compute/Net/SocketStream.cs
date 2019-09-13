@@ -26,6 +26,9 @@ using System.Threading.Tasks;
 
 namespace Google.Solutions.Compute.Net
 {
+    /// <summary>
+    ///  Raw socket stream.
+    /// </summary>
     public class SocketStream : OneTimeUseStream
     {
         private readonly Socket socket;

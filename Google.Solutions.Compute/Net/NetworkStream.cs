@@ -26,10 +26,16 @@ using System.Threading.Tasks;
 
 namespace Google.Solutions.Compute.Net
 {
+    /// <summary>
+    /// Extension methods for INetworkStream.
+    /// </summary>
     public static class NetworkStream
     {
         private const int MaxBufferSize = 64 * 1024;
 
+        /// <summary>
+        /// Relay all received by one stream to another stream.
+        /// </summary>
         public static Task RelayToAsync(
             this INetworkStream readStream, 
             INetworkStream writeStream, 

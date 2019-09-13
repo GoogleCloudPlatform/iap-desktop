@@ -23,6 +23,9 @@ using System;
 
 namespace Google.Solutions.Compute
 {
+    /// <summary>
+    /// BigEndian de/encoding helper methods.
+    /// </summary>
     internal static class BigEndian
     {
         public static UInt16 DecodeUInt16(byte[] buffer, int offset)

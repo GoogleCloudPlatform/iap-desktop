@@ -25,6 +25,10 @@ using System.Threading.Tasks;
 
 namespace Google.Solutions.Compute.Net
 {
+    /// <summary>
+    ///  Base class protecting against usage after
+    ///  the stream has been closed or has failed.
+    /// </summary>
     public abstract class OneTimeUseStream : INetworkStream
     {
         private volatile bool closed;
