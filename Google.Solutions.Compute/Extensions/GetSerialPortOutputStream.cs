@@ -25,8 +25,14 @@ using System.Threading.Tasks;
 
 namespace Google.Solutions.Compute.Extensions
 {
+    /// <summary>
+    /// Extend 'InstancesResource' by a 'GetSerialPortOutputStream' method.
+    /// </summary>
     public static class GetSerialPortOutputStreamExtensions
     {
+        /// <summary>
+        /// Read serial port output as a continuous stream.
+        /// </summary>
         public static SerialPortStream GetSerialPortOutputStream(
             this InstancesResource resource,
             string project,
@@ -40,6 +46,9 @@ namespace Google.Solutions.Compute.Extensions
                 port);
         }
 
+        /// <summary>
+        /// Read serial port output as a continuous stream.
+        /// </summary>
         public static SerialPortStream GetSerialPortOutputStream(
             this InstancesResource resource,
             VmInstanceReference instanceRef,

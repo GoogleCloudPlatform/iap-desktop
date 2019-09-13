@@ -27,8 +27,15 @@ using System.Threading.Tasks;
 
 namespace Google.Solutions.Compute.Extensions
 {
+    /// <summary>
+    /// Extend 'InstancesResource' by a 'AddMetadataAsync' method. 
+    /// </summary>
     public static class AddMetadataExtensions
     {
+        /// <summary>
+        /// Adds or overwrites a metadata key/value pair to a GCE 
+        /// instance. Any existing metadata is kept as is.
+        /// </summary>
         public static Task AddMetadataAsync(
             this InstancesResource resource,
             string project,
@@ -44,6 +51,10 @@ namespace Google.Solutions.Compute.Extensions
                 value);
         }
 
+        /// <summary>
+        /// Adds or overwrites a metadata key/value pair to a GCE 
+        /// instance. Any existing metadata is kept as is.
+        /// </summary>
         public static async Task AddMetadataAsync(
             this InstancesResource resource,
             VmInstanceReference instanceRef,

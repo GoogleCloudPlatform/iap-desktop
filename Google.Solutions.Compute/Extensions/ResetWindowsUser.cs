@@ -30,12 +30,20 @@ using System.Threading.Tasks;
 
 namespace Google.Solutions.Compute.Extensions
 {
+    /// <summary>
+    /// Extend 'InstancesResource' by a 'ResetWindowsUserAsync' method.
+    /// </summary>
     public static class ResetWindowsUserExtensions
     {
         private const int RsaKeySize = 2048;
         private const int SerialPort = 4;
         private const string MetadataKey = "windows-keys";
 
+        /// <summary>
+        /// Reset a SAM account password. If the SAM account does not exist,
+        /// it is created and made a local Administrator.
+        /// </summary>
+        /// <see href="https://cloud.google.com/compute/docs/instances/windows/automate-pw-generation"/>
         public static Task<NetworkCredential> ResetWindowsUserAsync(
             this InstancesResource resource,
             string project,
@@ -49,6 +57,11 @@ namespace Google.Solutions.Compute.Extensions
                 username);
         }
 
+        /// <summary>
+        /// Reset a SAM account password. If the SAM account does not exist,
+        /// it is created and made a local Administrator.
+        /// </summary>
+        /// <see href="https://cloud.google.com/compute/docs/instances/windows/automate-pw-generation"/>
         public static async Task<NetworkCredential> ResetWindowsUserAsync(
             this InstancesResource resource,
             VmInstanceReference instanceRef,
