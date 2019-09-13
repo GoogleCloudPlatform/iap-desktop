@@ -29,6 +29,11 @@ using System.Threading.Tasks;
 
 namespace Google.Solutions.Compute.Iap
 {
+    /// <summary>
+    /// Opens a TCP local socket and relays all sent data to an
+    /// SSH Relay tunnel (and vice versa). The local socket effectively
+    /// serves as a "proxy" for the target port of the SSH Relay tunnel.
+    /// </summary>
     public class SshRelayListener
     {
         private const int BacklogLength = 32;
@@ -109,11 +114,17 @@ namespace Google.Solutions.Compute.Iap
         // Publics
         //---------------------------------------------------------------------
 
+        /// <summary>
+        ///  Create a listener using a dynamically selected, unused local port.
+        /// </summary>
         public static SshRelayListener CreateLocalListener(ISshRelayEndpoint server)
         {
             return CreateLocalListener(server, PortFinder.FindFreeLocalPort());
         }
 
+        /// <summary>
+        ///  Create a listener using a defined local port.
+        /// </summary>
         public static SshRelayListener CreateLocalListener(ISshRelayEndpoint server, int port)
         {
             if (port < 0 || port > ushort.MaxValue)
@@ -124,6 +135,9 @@ namespace Google.Solutions.Compute.Iap
             return new SshRelayListener(server, port);
         }
 
+        /// <summary>
+        /// Perpetually listen and relay traffic until cancelled.
+        /// </summary>
         public Task ListenAsync(CancellationToken token)
         {
             return Task.Run(() =>

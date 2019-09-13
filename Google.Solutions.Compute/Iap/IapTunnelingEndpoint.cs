@@ -31,6 +31,9 @@ using System.Threading.Tasks;
 
 namespace Google.Solutions.Compute.Iap
 {
+    /// <summary>
+    /// Cloud IAP endpoint for establishing SSH Relay tunnels.
+    /// </summary>
     public class IapTunnelingEndpoint : ISshRelayEndpoint
     {
         private const string BaseUri = "wss://tunnel.cloudproxy.app/v4/";

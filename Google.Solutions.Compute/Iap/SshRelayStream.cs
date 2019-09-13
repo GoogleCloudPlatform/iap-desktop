@@ -31,6 +31,10 @@ using System.Threading.Tasks;
 
 namespace Google.Solutions.Compute.Iap
 {
+    /// <summary>
+    /// Factory for creating (Web Socket) connections to the tunneling 
+    /// endpoint (for ex, Cloud IAP).
+    /// </summary>
     public interface ISshRelayEndpoint
     {
         Task<INetworkStream> ConnectAsync(CancellationToken token);
@@ -41,6 +45,12 @@ namespace Google.Solutions.Compute.Iap
             CancellationToken token);
     }
 
+    /// <summary>
+    /// NetworkStream that implements the SSH Relay v4 protocol. Because
+    /// the protocol supports connection reestablishment, a SshRelayStream
+    /// needs to be created by using a ISshRelayEndpoint, which serves
+    /// as the factory for underlying WebSocket connections.
+    /// </summary>
     public class SshRelayStream : SingleReaderSingleWriterStream
     {
         private readonly ISshRelayEndpoint endpoint;

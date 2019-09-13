@@ -24,6 +24,10 @@ using System.Text;
 
 namespace Google.Solutions.Compute.Iap
 {
+    /// <summary>
+    /// Buffer for reading an arbitrary message and then
+    /// reinterpreting it as message based on the tag.
+    /// </summary>
     internal class MessageBuffer
     {
         public byte[] Buffer { get; }
@@ -59,6 +63,9 @@ namespace Google.Solutions.Compute.Iap
         }
     }
 
+    /// <summary>
+    /// Message tags used by SSH Relay v4.
+    /// </summary>
     internal enum MessageTag : UInt16
     {
         UNUSED = 0,
@@ -71,6 +78,9 @@ namespace Google.Solutions.Compute.Iap
         ACK = 7
     };
 
+    /// <summary>
+    /// Connection close codes used by SSH Relay v4.
+    /// </summary>
     public enum CloseCode : int
     {
         NORMAL = 1000,
@@ -90,6 +100,9 @@ namespace Google.Solutions.Compute.Iap
         NOT_AUTHORIZED = 4033
     }
 
+    /// <summary>
+    /// Base class for messages.
+    /// </summary>
     internal abstract class MessageBase 
     {
         public byte[] Buffer { get; }
@@ -108,6 +121,10 @@ namespace Google.Solutions.Compute.Iap
         }
     }
 
+    /// <summary>
+    /// Data message. These messages are used for sending or receiving
+    /// arbitrary payloads.
+    /// </summary>
     internal class DataMessage : MessageBase
     {
         public const uint DataOffset = 6;
@@ -159,6 +176,9 @@ namespace Google.Solutions.Compute.Iap
         }
     }
 
+    /// <summary>
+    /// SID message, to be received after establishing a tunnel.
+    /// </summary>
     internal class SidMessage : DataMessage
     {
         public const uint MinimumExpectedLength = 7;
@@ -189,6 +209,9 @@ namespace Google.Solutions.Compute.Iap
         }
     }
 
+    /// <summary>
+    /// ACK message, used for acknoledging sent and received data.
+    /// </summary>
     internal class AckMessage : MessageBase
     {
         public const uint ExpectedLength = 10;

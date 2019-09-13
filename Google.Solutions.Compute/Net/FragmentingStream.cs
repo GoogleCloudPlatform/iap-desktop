@@ -25,6 +25,10 @@ using System.Threading.Tasks;
 
 namespace Google.Solutions.Compute.Net
 {
+    /// <summary>
+    /// Adapter that connects two different NetworkStreams with incompatible
+    /// min/max buffer size demands.
+    /// </summary>
     public class FragmentingStream : SingleReaderSingleWriterStream
     {
         private readonly INetworkStream stream;
