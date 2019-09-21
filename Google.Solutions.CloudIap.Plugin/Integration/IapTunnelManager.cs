@@ -59,15 +59,17 @@ namespace Google.Solutions.CloudIap.Plugin.Integration
 
         private Task<IapTunnel> ConnectAndCache(IapTunnelEndpoint endpoint, TimeSpan timeout)
         {
-            var gcloudPath = configuration.GcloudCommandPath;
-            if (gcloudPath == null)
+            if (string.IsNullOrEmpty(configuration.GcloudCommandPath) ||
+                !File.Exists(configuration.GcloudCommandPath) ||
+                !configuration.GcloudCommandPath.EndsWith("gcloud.cmd", StringComparison.OrdinalIgnoreCase))
             {
-                throw new GCloudCommandException(
-                    "gcloud not found. Please provide a path to gcloud in the settings");
+                throw new ApplicationException(
+                    "Cloud SDK not found. \n\n" +
+                    "Use the settings dialog to configure the path to 'gcloud.cmd'.");
             }
 
             var tunnel = IapTunnel.Open(
-                        new FileInfo(gcloudPath),
+                        new FileInfo(configuration.GcloudCommandPath),
                         endpoint,
                         configuration.IapConnectionTimeout);
             this.tunnels[endpoint] = tunnel;

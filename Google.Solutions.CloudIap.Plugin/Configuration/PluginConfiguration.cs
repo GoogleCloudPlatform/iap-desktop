@@ -37,7 +37,7 @@ namespace Google.Solutions.CloudIap.Plugin.Configuration
 
         [Category(DefaultCategoryName)]
         [Browsable(true)]
-        [Description("Path to gcloud command line executable")]
+        [Description("Path to gcloud.cmd in Cloud SDK installation folder")]
         [DisplayName("Path to gcloud")]
         [EditorAttribute(typeof(System.Windows.Forms.Design.FileNameEditor), typeof(System.Drawing.Design.UITypeEditor))]
         public string GcloudCommandPath { get; set; }
