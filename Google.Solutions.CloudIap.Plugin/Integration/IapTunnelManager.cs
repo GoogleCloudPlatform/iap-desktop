@@ -59,8 +59,15 @@ namespace Google.Solutions.CloudIap.Plugin.Integration
 
         private Task<IapTunnel> ConnectAndCache(IapTunnelEndpoint endpoint, TimeSpan timeout)
         {
+            var gcloudPath = configuration.GcloudCommandPath;
+            if (gcloudPath == null)
+            {
+                throw new GCloudCommandException(
+                    "gcloud not found. Please provide a path to gcloud in the settings");
+            }
+
             var tunnel = IapTunnel.Open(
-                        configuration.GcloudCommandPath,
+                        new FileInfo(gcloudPath),
                         endpoint,
                         configuration.IapConnectionTimeout);
             this.tunnels[endpoint] = tunnel;

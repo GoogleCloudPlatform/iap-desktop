@@ -40,14 +40,7 @@ namespace Google.Solutions.CloudIap.Plugin.Configuration
         [Description("Path to gcloud command line executable")]
         [DisplayName("Path to gcloud")]
         [EditorAttribute(typeof(System.Windows.Forms.Design.FileNameEditor), typeof(System.Drawing.Design.UITypeEditor))]
-        public string GcloudCommandPathAsString
-        {
-            get { return this.GcloudCommandPath.FullName; }
-            set { this.GcloudCommandPath = new FileInfo(value); }
-        }
-
-        [Browsable(false)]
-        public FileInfo GcloudCommandPath { get; set; }
+        public string GcloudCommandPath { get; set; }
 
         [Category(DefaultCategoryName)]
         [Browsable(true)]
@@ -100,11 +93,15 @@ namespace Google.Solutions.CloudIap.Plugin.Configuration
 
         private static string FindGcloudInPath()
         {
-            var path = System.Environment.GetEnvironmentVariable("PATH")
+            var path = System.Environment.GetEnvironmentVariable("PATH");
+            if (path != null)
+            {
+                path = path
                 .Split(';')
                 .Select(x => Path.Combine(x, "gcloud.cmd"))
                    .Where(x => File.Exists(x))
                    .FirstOrDefault();
+            }
 
             return path;
         }
@@ -114,22 +111,24 @@ namespace Google.Solutions.CloudIap.Plugin.Configuration
             this.configKey.Dispose();
         }
 
-        public FileInfo GcloudCommandPath {
+        public string GcloudCommandPath {
             get
             {
                 var customValue = this.configKey.GetValue("GcloudCommandPath");
-                if (customValue != null && customValue is string)
+                if (customValue is string customValueString &&
+                    customValueString != null &&
+                    !string.IsNullOrWhiteSpace(customValueString))
                 {
-                    return new FileInfo((string)customValue);
+                    return customValueString;
                 }
                 else
                 {
-                    return new FileInfo(FindGcloudInPath());
+                    return FindGcloudInPath();
                 }
             }
             set
             {
-                if (value.FullName == FindGcloudInPath())
+                if (value == FindGcloudInPath())
                 {
                     // Do not save default values.
                     try
@@ -142,7 +141,7 @@ namespace Google.Solutions.CloudIap.Plugin.Configuration
                 {
                     this.configKey.SetValue(
                         "GcloudCommandPath",
-                        value.FullName,
+                        value,
                         RegistryValueKind.ExpandString);
                 }
             }
