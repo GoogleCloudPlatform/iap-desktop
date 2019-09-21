@@ -42,13 +42,6 @@
 
     <Condition Message="Remote Desktop Connection Manager is not installed on this machine">RDCMANDIR</Condition>
 
-    <!-- Find Cloud SDK (which is always 32bit) -->
-    <Property Id="CLOUDSDKDIR">
-      <RegistrySearch Id="CloudSdkRegistrySearch" Type="directory" Root="HKLM" Key="SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\Google Cloud SDK" Name="InstallLocation"/>
-    </Property>
-
-    <Condition Message="Google Cloud SDK is not installed on this machine">CLOUDSDKDIR</Condition>
-
     <!-- Install to the directory rdcman.exe is located in -->
     <CustomAction Id="SetInstallFolder" Directory="TARGETDIR" Value="[RDCMANDIR]" />
     <InstallExecuteSequence>
