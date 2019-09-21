@@ -47,18 +47,20 @@ namespace Google.Solutions.CloudIap.Plugin.Integration
             VmInstanceReference instance,
             string username)
         {
-            var gcloudPath = configuration.GcloudCommandPath;
-            if (gcloudPath == null)
+            if (string.IsNullOrEmpty(configuration.GcloudCommandPath) ||
+                !File.Exists(configuration.GcloudCommandPath) ||
+                !configuration.GcloudCommandPath.EndsWith("gcloud.cmd", StringComparison.OrdinalIgnoreCase))
             {
-                throw new GCloudCommandException(
-                    "gcloud not found. Please provide a path to gcloud in the settings");
+                throw new ApplicationException(
+                    "Cloud SDK not found. \n\n" +
+                    "Use the settings dialog to configure the path to 'gcloud.cmd'.");
             }
 
             // For some reason, the .NET API does not allow resetting
             // passwords, so we have to revert to invoking gcloud for this
             // purpose.
             using (var process = GcloudResetWindowsPasswordProcess.Start(
-                new FileInfo(gcloudPath), instance, username))
+                new FileInfo(configuration.GcloudCommandPath), instance, username))
             {
                 return await process.WaitForCredentials();
             }
