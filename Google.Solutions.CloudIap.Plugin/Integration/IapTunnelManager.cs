@@ -256,7 +256,7 @@ namespace Google.Solutions.CloudIap.Plugin.Integration
         {
             var startInfo = GcloudProcess.CreateStartInfo(
                 gcloudExecutable,
-                "beta compute start-iap-tunnel " +
+                "compute start-iap-tunnel " +
                     $"{endpoint.Instance.InstanceName} {endpoint.RemotePort} " +
                     $"--local-host-port=localhost:{listenPort} " +
                     $"--project={endpoint.Instance.ProjectId} " +

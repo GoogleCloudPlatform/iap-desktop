@@ -41,9 +41,6 @@ of having to expose any ports to the internet.
 
 * You have to have the Cloud SDK installed. If you have not, 
   [download and install it first](https://cloud.google.com/sdk/docs/downloads-interactive).
-* Install the [GCloud Beta commands](https://cloud.google.com/sdk/gcloud/reference/beta/) (which contain
-  the necessary Cloud IAP functionality) by running `gcloud components install beta` (in an elevated command
-  prompt).
 * [Microsoft Remote Desktop Connection Manager](https://www.microsoft.com/en-us/download/details.aspx?id=44989) 
   2.7 must be installed
 * .NET Framework (same as RDCMan)
@@ -137,7 +134,7 @@ If you have trouble using _Connect server via Cloud IAP_ function, try manually 
 a Cloud IAP TCP forwarding tunnel:
 
 1. Open a command prompt window (`cmd.exe`).
-2. Run the following command: `gcloud beta compute start-iap-tunnel [INSTANCE_NAME] 3389 
+2. Run the following command: `gcloud compute start-iap-tunnel [INSTANCE_NAME] 3389 
   --project=[PROJECT] --zone=[ZONE] --local-host-port=localhost:13389`
    Replace `[INSTANCE_NAME]` by the name of an instance and `[PROJECT]` and `[ZONE]` by 
    the project and zone the instance is located in.
