@@ -83,7 +83,7 @@ namespace Google.Solutions.CloudIap.Plugin.Gui
                 configurationStore,
                 authorization,
                 mainForm,
-                context.MainForm.MainMenuStrip);
+                context);
         }
 
         public void OnContextMenu(ContextMenuStrip contextMenuStrip, RdcTreeNode node)

@@ -28,6 +28,7 @@ using RdcMan;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
@@ -44,18 +45,18 @@ namespace Google.Solutions.CloudIap.Plugin.Gui
         private readonly IAuthorization authorization;
 
         private readonly Form mainForm;
-        private readonly MenuStrip mainMenu;
+        private readonly IPluginContext pluginContext;
 
         public PluginEventHandler(
             PluginConfigurationStore configurationStore,
             IAuthorization authorization,
             Form mainForm,
-            MenuStrip mainMenu)
+            IPluginContext pluginContext)
         {
             this.configurationStore = configurationStore;
             this.authorization = authorization;
             this.mainForm = mainForm;
-            this.mainMenu = mainMenu;
+            this.pluginContext = pluginContext;
 
             // N.B. Do not pre-create a ComputeEngineAdapter because the 
             // underlying ComputeService caches OAuth credentials, defying
@@ -69,7 +70,15 @@ namespace Google.Solutions.CloudIap.Plugin.Gui
                 ? (TunnelManagerBase)new GcloudTunnelManager(this.configurationStore)
                 : (TunnelManagerBase)new DefaultTunnelingManager(authorization.Credential);
 
+            ExtendMainMenu();
+        }
+
+        private void ExtendMainMenu()
+        {
             // Add menu items.
+            var addProjectMenuItem = new ToolStripMenuItem("Add &project...");
+            addProjectMenuItem.Click += OnAddProjectClick;
+
             var configMenuItem = new ToolStripMenuItem("&Settings...");
             configMenuItem.Click += (sender, args) =>
             {
@@ -110,18 +119,19 @@ namespace Google.Solutions.CloudIap.Plugin.Gui
             var pluginMenuItem = new ToolStripMenuItem("Cloud &IAP");
             pluginMenuItem
                 .DropDownItems
-                .AddRange(new ToolStripMenuItem[] { 
+                .AddRange(new ToolStripMenuItem[] {
+                    addProjectMenuItem,
                     configMenuItem,
                     tunnelsMenuItem,
                     signOutMenuItem,
                 });
 
-            this.mainMenu.Items.Insert(
-                this.mainMenu.Items.Count - 1,
+            this.pluginContext.MainForm.MainMenuStrip.Items.Insert(
+                this.pluginContext.MainForm.MainMenuStrip.Items.Count - 1,
                 pluginMenuItem);
-            
+
             // Adjust states of Session > xxx menu items depending on selected server.
-            this.mainMenu.MenuActivate += (sender, args) =>
+            this.pluginContext.MainForm.MainMenuStrip.MenuActivate += (sender, args) =>
             {
                 // The plugin API does not provide access to the currently selected node
                 // in the server tree, so we need to access an internal member to get hold
@@ -134,7 +144,7 @@ namespace Google.Solutions.CloudIap.Plugin.Gui
 
                 if (selectedNode is Server server)
                 {
-                    var sessionsMenuStrip = this.mainMenu.Items
+                    var sessionsMenuStrip = this.pluginContext.MainForm.MainMenuStrip.Items
                         .Cast<ToolStripMenuItem>()
                         .First(i => i.Name == "Session");
 
@@ -269,6 +279,51 @@ namespace Google.Solutions.CloudIap.Plugin.Gui
         //---------------------------------------------------------------------
         // Custom event handlers
         //---------------------------------------------------------------------
+
+        private void OnAddProjectClick(object sender, EventArgs e)
+        {
+            // Show project picker.
+            var projectId = ProjectPickerDialog.SelectProjectId(
+                ResourceManagerAdapter.Create(this.authorization.Credential), 
+                this.mainForm);
+            if (projectId == null)
+            {
+                // Cancelled.
+                return;
+            }
+
+            // TODO: check if exists
+            try
+            {
+                var folderPath = Path.Combine(
+                    Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
+                    @"Google\Cloud IAP Plugin");
+                if (!Directory.Exists(folderPath))
+                {
+                    Directory.CreateDirectory(folderPath);
+                }
+
+                // The plugin lacks an API to create new file nodes, so we have to call
+                // an internal API for that.
+                var constructor = typeof(FileGroup)
+                    .GetConstructor(
+                        BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic,
+                        null,
+                        new[] { typeof(string) },
+                        null);
+                var fileGroup = (FileGroup)constructor
+                    .Invoke(new [] { Path.Combine(folderPath, projectId + ".rdg") });
+
+                // Hydrate the group.
+                OnLoadServersClick(fileGroup);
+
+                this.pluginContext.Tree.AddNode(fileGroup, this.pluginContext.Tree.RootNode);
+            }
+            catch (Exception ex)
+            {
+                ExceptionUtil.HandleException(this.mainForm, "Project", ex);
+            }
+        }
 
         private void OnLoadServersClick(FileGroup fileGroup)
         {
