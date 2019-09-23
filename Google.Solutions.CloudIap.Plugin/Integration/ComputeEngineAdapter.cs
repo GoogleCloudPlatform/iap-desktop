@@ -20,6 +20,7 @@
 //
 
 using Google.Apis.Auth.OAuth2;
+using Google.Apis.CloudResourceManager.v1.Data;
 using Google.Apis.Compute.v1;
 using Google.Apis.Compute.v1.Data;
 using Google.Apis.Requests;
@@ -58,35 +59,9 @@ namespace Google.Solutions.CloudIap.Plugin.Integration
             this.service = service;
         }
 
-        private async Task<IEnumerable<TValue>> QueryPagedResourceAsync<TRequest, TResponse, TValue>(
-            TRequest request,
-            Func<TResponse, IEnumerable<TValue>> mapFunc,
-            Func<TResponse, string> getNextPageTokenFunc,
-            Action<TRequest, string> setPageTokenFunc)
-            where TRequest : IClientServiceRequest<TResponse>
-        {
-            TResponse response;
-            var allValues = new List<TValue>();
-            do
-            {
-                response = await request.ExecuteAsync();
-
-                IEnumerable<TValue> pageValues = mapFunc(response);
-                if (pageValues != null)
-                {
-                    allValues.AddRange(pageValues);
-                }
-
-                setPageTokenFunc(request, getNextPageTokenFunc(response));
-            }
-            while (getNextPageTokenFunc(response) != null);
-
-            return allValues;
-        }
-
         public async Task<IEnumerable<string>> QueryZonesAsync(string projectId)
         {
-            var zones = await QueryPagedResourceAsync<ZonesResource.ListRequest, ZoneList, Zone>(
+            var zones = await PageHelper.JoinPagesAsync<ZonesResource.ListRequest, ZoneList, Zone>(
                  this.service.Zones.List(projectId),
                  zone => zone.Items,
                  response => response.NextPageToken,
@@ -96,7 +71,7 @@ namespace Google.Solutions.CloudIap.Plugin.Integration
 
         public Task<IEnumerable<Instance>> QueryInstancesAsync(string projectId, string zone)
         {
-            return QueryPagedResourceAsync<InstancesResource.ListRequest, InstanceList, Instance>(
+            return PageHelper.JoinPagesAsync<InstancesResource.ListRequest, InstanceList, Instance>(
                  this.service.Instances.List(projectId, zone),
                  instances => instances.Items,
                  response => response.NextPageToken,
@@ -105,7 +80,7 @@ namespace Google.Solutions.CloudIap.Plugin.Integration
 
         public async Task<IEnumerable<Instance>> QueryInstancesAsync(string projectId)
         {
-            var zones = await QueryPagedResourceAsync<
+            var zones = await PageHelper.JoinPagesAsync<
                         InstancesResource.AggregatedListRequest, 
                         InstanceAggregatedList, 
                         InstancesScopedList>(
