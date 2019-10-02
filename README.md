@@ -148,6 +148,29 @@ from binding to a local port or blocking communication with Cloud IAP.
 
 To build the plugin, check out the [prerequisites](BUILDING.md).
 
+## Privacy
+
+This plugin accesses Google Cloud Platform in order to:
+
+* establish Cloud IAP TCP tunnels to VM instances
+* list VMs and obtain metadata and logs for VM instances  
+* generate Windows logon credentials if requested
+
+The plugin uses your local installation of [gcloud](https://cloud.google.com/sdk/gcloud/) 
+as well as the following APIs for this purpose:
+
+* [Compute Engine API](https://cloud.google.com/compute/docs/reference/rest/v1/)
+* [Google OAuth](https://developers.google.com/identity/protocols/OAuth2)
+
+Authentication is performed using your locally saved gcloud credentials.
+
+The plugin does not disclose or transmit any user data to APIs other than the
+ones listed above.
+
+## Support
+
+This is not an officially supported Google product.
+
 ## License
 
 All files in this repository are under the
