@@ -163,9 +163,12 @@ as well as the following APIs for this purpose:
 * [Google OAuth](https://developers.google.com/identity/protocols/OAuth2)
 
 Authentication is performed using your locally saved gcloud credentials.
+See [Authorizing Cloud SDK tools](https://cloud.google.com/sdk/docs/authorizing) 
+for further details on how gcloud credentials are managed.
 
 The plugin does not disclose or transmit any user data to APIs other than the
-ones listed above.
+ones listed above. For data transmitted by gcloud, refer to the
+[product documentation](https://cloud.google.com/sdk/usage-statistics).
 
 ## Support
 
