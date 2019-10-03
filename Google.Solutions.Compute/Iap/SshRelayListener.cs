@@ -140,10 +140,12 @@ namespace Google.Solutions.Compute.Iap
         /// </summary>
         public Task ListenAsync(CancellationToken token)
         {
+            // Start listening before returning from the menthod.
+            this.listener.Start(BacklogLength);
+
+            // All communication is then handled asynchronously.
             return Task.Run(() =>
             {
-                this.listener.Start(BacklogLength);
-
                 using (token.Register(this.listener.Stop))
                 {
                     while (this.ClientAcceptLimit == 0 || this.ClientAcceptLimit > this.ClientsAccepted)

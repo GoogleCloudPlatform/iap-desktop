@@ -85,6 +85,20 @@ namespace Google.Solutions.CloudIap.Plugin.Integration
             this.wrapperProcess.BeginErrorReadLine();
         }
 
+        protected GcloudProcess(
+            FileInfo gcloudExecutable,
+            string arguments) : this(Process.Start(new ProcessStartInfo()
+            {
+                UseShellExecute = false,
+                RedirectStandardError = true,
+                FileName = gcloudExecutable.FullName,
+                WindowStyle = ProcessWindowStyle.Hidden,
+                CreateNoWindow = true,
+                Arguments = arguments
+            }))
+        {
+        }
+
         private static IEnumerable<ProcessReference> FindChildProcesses(ProcessReference parent)
         {
             ManagementObjectSearcher searcher = new ManagementObjectSearcher(
@@ -120,7 +134,7 @@ namespace Google.Solutions.CloudIap.Plugin.Integration
             return accumulator;
         }
 
-        protected Task<Process> GetWorkerProcess()
+        private Task<Process> GetWorkerProcess()
         {
             return Task.Run(() =>
             {
@@ -150,19 +164,6 @@ namespace Google.Solutions.CloudIap.Plugin.Integration
                     "Failed to launch gcloud",
                     new GCloudCommandException(this.errorBuffer.ToString()));
             });
-        }
-
-        protected static ProcessStartInfo CreateStartInfo(FileInfo gcloudExecutable, string arguments)
-        {
-            return new ProcessStartInfo()
-            {
-                UseShellExecute = false,
-                RedirectStandardError = true,
-                FileName = gcloudExecutable.FullName,
-                WindowStyle = ProcessWindowStyle.Hidden,
-                CreateNoWindow = true,
-                Arguments = arguments
-            };
         }
 
         public void Kill()

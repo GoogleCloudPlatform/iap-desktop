@@ -19,9 +19,12 @@
 // under the License.
 //
 
+using Google.Apis.Util.Store;
+using Google.Solutions.Compute.Auth;
 using Microsoft.Win32;
 using System;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 
@@ -47,6 +50,28 @@ namespace Google.Solutions.CloudIap.Plugin.Configuration
         [Description("Timeout for establishing a Cloud IAP tunnel")]
         [DisplayName("IAP Connection Timeout")]
         public TimeSpan IapConnectionTimeout { get; set; }
+
+
+        [Category(DefaultCategoryName)]
+        [Browsable(true)]
+        [Description("IAP tunneling implementation to use (change requires restart)")]
+        [DisplayName("Tunneling implementation")]
+        public Tunneler Tunneler { get; set; }
+
+        [Category(DefaultCategoryName)]
+        [Browsable(false)]
+        [Description("Tracing level")]
+        [DisplayName("Tracing level")]
+        public SourceLevels TracingLevel { get; set; }
+    }
+
+    public enum Tunneler
+    {
+        [Description("Default (built-in)")]
+        Builtin = 0,
+
+        [Description("gcloud (requires Cloud SDK)")]
+        Gcloud = 1
     }
 
     /// <summary>
@@ -54,24 +79,13 @@ namespace Google.Solutions.CloudIap.Plugin.Configuration
     /// </summary>
     internal class PluginConfigurationStore : IDisposable
     {
-        private const string RegistryPath = "Software\\Google\\RdcMan.Plugin\\1.0";
-        private readonly TimeSpan DefaultIapConnectionTimeout = TimeSpan.FromSeconds(10);
+        private readonly int DefaultIapConnectionTimeout = 30*1000;
         private readonly RegistryKey configKey;
 
-        private PluginConfigurationStore(RegistryKey configKey)
+        public PluginConfigurationStore(RegistryHive hive, string configKeyPath)
         {
-            this.configKey = configKey;
-        }
-
-        public static PluginConfigurationStore ForCurrentWindowsUser
-        {
-            get
-            {
-                return new PluginConfigurationStore(
-                    RegistryKey.OpenBaseKey(RegistryHive.CurrentUser, RegistryView.Default).CreateSubKey(
-                        RegistryPath,
-                        true));
-            }
+            this.configKey = RegistryKey.OpenBaseKey(hive, RegistryView.Default)
+                                .CreateSubKey(configKeyPath, true);
         }
 
         public PluginConfiguration Configuration
@@ -80,20 +94,53 @@ namespace Google.Solutions.CloudIap.Plugin.Configuration
             {
                 return new PluginConfiguration()
                 {
-                    GcloudCommandPath = this.GcloudCommandPath,
-                    IapConnectionTimeout = this.IapConnectionTimeout
+                    GcloudCommandPath = GetConfig(
+                        "GcloudCommandPath",
+                        RegistryValueKind.String,
+                        FindGcloudInPath()),
+                    IapConnectionTimeout = TimeSpan.FromMilliseconds(GetConfig<int>(
+                        "IapConnectionTimeout",
+                        RegistryValueKind.DWord,
+                        DefaultIapConnectionTimeout)),
+                    Tunneler = (Tunneler)GetConfig<int>(
+                        "Tunneler",
+                        RegistryValueKind.DWord,
+                        (int)Tunneler.Builtin),
+                    TracingLevel = (SourceLevels)GetConfig<int>(
+                        "TracingLevel",
+                        RegistryValueKind.DWord,
+                        (int)SourceLevels.Off)
                 };
             }
             set
             {
-                this.GcloudCommandPath = value.GcloudCommandPath;
-                this.IapConnectionTimeout = value.IapConnectionTimeout;
+                SetConfig(
+                    "GcloudCommandPath",
+                    RegistryValueKind.String,
+                    value.GcloudCommandPath,
+                    FindGcloudInPath());
+                SetConfig<int>(
+                    "IapConnectionTimeout",
+                    RegistryValueKind.DWord, 
+                    (int)value.IapConnectionTimeout.TotalMilliseconds, 
+                    DefaultIapConnectionTimeout);
+                SetConfig<int>(
+                    "Tunneler",
+                    RegistryValueKind.DWord,
+                    (int)value.Tunneler,
+                    (int)Tunneler.Builtin);
+                SetConfig<int>(
+                    "TracingLevel",
+                    RegistryValueKind.DWord,
+                    (int)value.TracingLevel,
+                    (int)SourceLevels.Off);
             }
         }
 
         private static string FindGcloudInPath()
         {
             var path = System.Environment.GetEnvironmentVariable("PATH");
+
             if (path != null)
             {
                 path = path
@@ -108,76 +155,51 @@ namespace Google.Solutions.CloudIap.Plugin.Configuration
 
         public void Dispose()
         {
-            this.configKey.Dispose();
+            Dispose(true);
+            GC.SuppressFinalize(this);
         }
 
-        public string GcloudCommandPath {
-            get
+        protected void Dispose(bool disposing)
+        {
+            if (disposing)
             {
-                var customValue = this.configKey.GetValue("GcloudCommandPath");
-                if (customValue is string customValueString &&
-                    customValueString != null &&
-                    !string.IsNullOrWhiteSpace(customValueString))
-                {
-                    return customValueString;
-                }
-                else
-                {
-                    return FindGcloudInPath();
-                }
+                this.configKey.Dispose();
             }
-            set
+        }
+        
+        private T GetConfig<T>(
+            string name,
+            RegistryValueKind kind,
+            T defaultValue)
+        {
+            var customValue = this.configKey.GetValue(name);
+            if (customValue != null && customValue is T)
             {
-                if (value == FindGcloudInPath())
-                {
-                    // Do not save default values.
-                    try
-                    {
-                        this.configKey.DeleteValue("GcloudCommandPath");
-                    }
-                    catch (Exception) { }
-                }
-                else
-                {
-                    this.configKey.SetValue(
-                        "GcloudCommandPath",
-                        value,
-                        RegistryValueKind.ExpandString);
-                }
+                return (T)customValue;
+            }
+            else
+            {
+                return defaultValue;
             }
         }
 
-        public TimeSpan IapConnectionTimeout {
-            get
+        private void SetConfig<T>(
+            string name,
+            RegistryValueKind kind,
+            T value,
+            T defaultValue)
+        {
+            if (value == null || value.Equals(defaultValue))
             {
-                var customValue = this.configKey.GetValue("IapConnectionTimeout");
-                if (customValue != null && customValue is int)
+                try
                 {
-                    return TimeSpan.FromMilliseconds((int)customValue);
+                    this.configKey.DeleteValue(name);
                 }
-                else
-                {
-                    return DefaultIapConnectionTimeout;
-                }
+                catch (Exception) { }
             }
-            set
+            else
             {
-                // Do not save default values.
-                if (value == DefaultIapConnectionTimeout)
-                {
-                    try
-                    {
-                        this.configKey.DeleteValue("IapConnectionTimeout");
-                    }
-                    catch (Exception) { }
-                }
-                else
-                {
-                    this.configKey.SetValue(
-                        "IapConnectionTimeout",
-                        value.TotalMilliseconds,
-                        RegistryValueKind.DWord);
-                }
+                this.configKey.SetValue(name, value, kind);
             }
         }
     }

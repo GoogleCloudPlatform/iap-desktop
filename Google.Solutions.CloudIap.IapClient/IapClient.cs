@@ -52,11 +52,7 @@ namespace Google.Solutions.CloudIap.IapClient
         public async Task RunAsync(CancellationToken token)
         {
             ICredential credential = await GoogleWebAuthorizationBroker.AuthorizeAsync(
-                new ClientSecrets()
-                {
-                    ClientId = "78381520511-4fu6ve6b49kknk3dkdnpudoi0tivq6jn.apps.googleusercontent.com",
-                    ClientSecret = "dRgZl1efp_JKcUqQusuaVIrS"
-                },
+                OAuthClient.Secrets,
                 new[] { IapTunnelingEndpoint.RequiredScope },
                 Environment.UserName,
                 CancellationToken.None,

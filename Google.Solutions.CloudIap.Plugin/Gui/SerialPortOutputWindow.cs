@@ -30,6 +30,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using Google.Solutions.CloudIap.Plugin.Integration;
+using Google.Solutions.Compute.Extensions;
 
 namespace Google.Solutions.CloudIap.Plugin.Gui
 {
@@ -49,7 +50,7 @@ namespace Google.Solutions.CloudIap.Plugin.Gui
             Close();
         }
 
-        internal void TailSerialPortStream(ComputeEngineAdapter.SerialPortStream stream)
+        internal void TailSerialPortStream(SerialPortStream stream)
         {
             Task.Run(async () =>
             {
@@ -69,10 +70,10 @@ namespace Google.Solutions.CloudIap.Plugin.Gui
             });
         }
 
-        internal static void Show(IWin32Window owner, ComputeEngineAdapter.SerialPortStream stream)
+        internal static void Show(IWin32Window owner, string windowTitle, SerialPortStream stream)
         {
             var window = new SerialPortOutputWindow();
-            window.Text += $": {stream.Instance.InstanceName} ({stream.Instance.Zone})";
+            window.Text += ": " + windowTitle;
             window.TailSerialPortStream(stream);
             window.Show(owner);
             window.Activate();

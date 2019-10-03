@@ -39,11 +39,8 @@ of having to expose any ports to the internet.
 
 ## Prerequisites
 
-* You have to have the Cloud SDK installed. If you have not, 
-  [download and install it first](https://cloud.google.com/sdk/docs/downloads-interactive).
 * [Microsoft Remote Desktop Connection Manager](https://www.microsoft.com/en-us/download/details.aspx?id=44989) 
   2.7 must be installed
-* .NET Framework (same as RDCMan)
 
 ## Installation
 
@@ -130,19 +127,68 @@ Additional features exposed in the context menu:
 
 ## Troubleshooting
 
-If you have trouble using _Connect server via Cloud IAP_ function, try manually establishing
+
+**Error "Timeout waiting for TCP tunnel to be created. Check that the respective VM 
+instance permits RDP ingress traffic from Cloud IAP."**
+
+1. Verify that your VPC permits ingress traffic from Cloud IAP as described in the
+   previous section.
+2. Check that your firewall rules allow TCP ingress traffic to port 3389 of your
+   VM instance.
+
+
+**Error "The WebSocket protocol is not supported on this platform."**
+
+Windows 7 and Windows Server 2008 have limited support for Web Sockets, so you have to 
+configure the plugin to use gcloud instead of the the builtin tunneling implemenation:
+
+1. If you have not installed the Cloud SDK yet, 
+   [download and install it first](https://cloud.google.com/sdk/docs/downloads-interactive).
+2. In RDCMan, select **Tools** > **Cloud IAP Settings**
+3. Set **Tunneling implementation** to **Gcloud**
+4. Click **OK**
+5. Restart RDCMan any try connecting again.
+
+*Note:* When you use gcloud for tunneling, the connection will be established using the
+gcloud credentials. These credentials might be different than the ones you used to 
+authorize the plugin. Run `gcloud auth login` to change the credentials used by gcloud.
+
+
+
+**Error "gcloud failed to create IAP tunnel"** with details 
+**Insufficient Permission: Request had insufficient authentication scopes.**
+
+gcloud does not have sufficient rights to establish a IAP TCP tunnel to the VM instance.
+
+1. Run `gcloud auth list` to verify that gcloud is using the right account.
+2. If necessary, run `gcloud auth login` to change the credentials used by gcloud.
+3. Verify that the IAP policy of your GCP project permits IAP tunneling access to the VM.
+
+**Desktop firewall warnings**
+
+For each VM instance you connect to via Cloud IAP, the plugin opens a TCP
+socket that listens on `127.0.0.1` (using a dynamic port number). This port
+is necessary to relay the RDP traffic from the Remote Desktop component 
+to Cloud IAP.
+
+**Other errors**
+
+If you are seeting other error messages, try manually establishing
 a Cloud IAP TCP forwarding tunnel:
 
-1. Open a command prompt window (`cmd.exe`).
-2. Run the following command: `gcloud compute start-iap-tunnel [INSTANCE_NAME] 3389 
+1. If you have not installed the Cloud SDK yet, 
+   [download and install it first](https://cloud.google.com/sdk/docs/downloads-interactive).
+2. Open a command prompt window (`cmd.exe`).
+3. Run the following command: `gcloud compute start-iap-tunnel [INSTANCE_NAME] 3389 
   --project=[PROJECT] --zone=[ZONE] --local-host-port=localhost:13389`
    Replace `[INSTANCE_NAME]` by the name of an instance and `[PROJECT]` and `[ZONE]` by 
    the project and zone the instance is located in.
 4. Wait for the output `Listening on port [13389].` to appear.
-3. Launch `mstsc.exe` and try to connect to `localhost:13389`.
+5. Launch `mstsc.exe` and try to connect to `localhost:13389`.
 
 If establishing the tunnel does not work, check if a local firewall is blocking `gcloud`
 from binding to a local port or blocking communication with Cloud IAP.
+
 
 ## Building the plugin
 
@@ -156,13 +202,20 @@ This plugin accesses Google Cloud Platform in order to:
 * list VMs and obtain metadata and logs for VM instances  
 * generate Windows logon credentials if requested
 
-The plugin uses your local installation of [gcloud](https://cloud.google.com/sdk/gcloud/) 
-as well as the following APIs for this purpose:
+The plugin uses the following APIs for this purpose:
 
 * [Compute Engine API](https://cloud.google.com/compute/docs/reference/rest/v1/)
 * [Google OAuth](https://developers.google.com/identity/protocols/OAuth2)
 
-Authentication is performed using your locally saved gcloud credentials.
+When you use the plugin for the first time, you have to authorize it to 
+access your Google Cloud Platform resources on your behalf. The plugin
+maintains an OAuth refresh token that allows it to re-authenticate 
+automatically the next time you use it. The refresh token
+is encrypted by using DPAPI and stored in the registry. You can revoke
+your authorization at any time by selecting **Cloud IAP > Sign out**
+in the menu.
+
+Alternatively, you can instruct the plugin to use your locally saved gcloud credentials.
 See [Authorizing Cloud SDK tools](https://cloud.google.com/sdk/docs/authorizing) 
 for further details on how gcloud credentials are managed.
 
