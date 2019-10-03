@@ -60,7 +60,7 @@ namespace Google.Solutions.CloudIap.IapClient
                 new[] { IapTunnelingEndpoint.RequiredScope },
                 Environment.UserName,
                 CancellationToken.None,
-                new FileDataStore(GetType().Namespace),
+                new FileDataStore("Google.Solutions.CloudIap"),
                 new LocalServerCodeReceiver(Resources.AuthorizationSuccessful));
 
             var iapEndpoint = new IapTunnelingEndpoint(

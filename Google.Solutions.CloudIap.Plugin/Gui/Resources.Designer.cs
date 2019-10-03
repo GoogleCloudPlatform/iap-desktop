@@ -71,6 +71,35 @@ namespace Google.Solutions.CloudIap.Plugin.Gui {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to &lt;!DOCTYPE html&gt;
+        ///&lt;html&gt;
+        ///    &lt;head&gt;
+        ///        &lt;title&gt;Authorization successful&lt;/title&gt;
+        ///        &lt;style&gt;
+        ///            #banner {
+        ///                height: 200px;
+        ///                width: 300px;
+        ///                position: fixed;
+        ///                top: 50%;
+        ///                left: 50%;
+        ///                margin-top: -100px;
+        ///                margin-left: -200px;
+        ///                font-family: Arial, Helvetica, sans-serif;
+        ///            }
+        ///
+        ///            img {
+        ///                vertical-align: middle;
+        ///            }
+        ///
+        ///      [rest of string was truncated]&quot;;.
+        /// </summary>
+        internal static string AuthorizationSuccessful {
+            get {
+                return ResourceManager.GetString("AuthorizationSuccessful", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
         internal static System.Drawing.Bitmap ChangePassword {

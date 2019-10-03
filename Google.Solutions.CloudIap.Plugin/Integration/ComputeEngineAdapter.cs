@@ -24,9 +24,12 @@ using Google.Apis.Compute.v1;
 using Google.Apis.Compute.v1.Data;
 using Google.Apis.Requests;
 using Google.Apis.Services;
+using Google.Solutions.Compute;
+using Google.Solutions.Compute.Extensions;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Threading.Tasks;
 
 namespace Google.Solutions.CloudIap.Plugin.Integration
@@ -36,16 +39,15 @@ namespace Google.Solutions.CloudIap.Plugin.Integration
     /// </summary>
     internal class ComputeEngineAdapter
     {
-        private const string CloudPlatformScope = "https://www.googleapis.com/auth/cloud-platform";
-
         private readonly ComputeService service;
 
-        public static ComputeEngineAdapter Create(GoogleCredential credential)
+        public static ComputeEngineAdapter Create(ICredential credential)
         {
+            var assemblyName = typeof(ComputeEngineAdapter).Assembly.GetName();
             return new ComputeEngineAdapter(new ComputeService(new BaseClientService.Initializer
             {
                 HttpClientInitializer = credential,
-                ApplicationName = "RdcPlugin/0.1",
+                ApplicationName = $"{assemblyName.Name}/{assemblyName.Version}"
             }));
         }
 
@@ -98,73 +100,43 @@ namespace Google.Solutions.CloudIap.Plugin.Integration
                  response => response.NextPageToken,
                  (request, token) => { request.PageToken = token; });
         }
+
+        public async Task<IEnumerable<Instance>> QueryInstancesAsync(string projectId)
+        {
+            var zones = await QueryPagedResourceAsync<
+                        InstancesResource.AggregatedListRequest, 
+                        InstanceAggregatedList, 
+                        InstancesScopedList>(
+                this.service.Instances.AggregatedList(projectId),
+                instances => instances.Items.Values.Where(v => v != null),
+                response => response.NextPageToken,
+                (request, token) => { request.PageToken = token; });
+
+            return zones
+                .Where(z => z.Instances != null)    // API returns null for empty zones.
+                .SelectMany(zone => zone.Instances);
+        }
+
         public Task<Instance> QueryInstanceAsync(string projectId, string zone, string instanceName)
         {
             return this.service.Instances.Get(projectId, zone, instanceName).ExecuteAsync();
         }
 
-        public class SerialPortStream
+        public Task<Instance> QueryInstanceAsync(VmInstanceReference instanceRef)
         {
-            private readonly ComputeService service;
-            private string lastBuffer = string.Empty;
-            public VmInstanceReference Instance { get; private set; }
-
-            public SerialPortStream(ComputeService service, VmInstanceReference instanceRef)
-            {
-                this.service = service;
-                this.Instance = instanceRef;
-            }
-
-            public async Task<string> ReadAsync()
-            {
-                var output = await this.service.Instances.GetSerialPortOutput(
-                    this.Instance.ProjectId,
-                    this.Instance.Zone,
-                    this.Instance.InstanceName).ExecuteAsync();
-
-                // N.B. The first call will return a genuinely new buffer
-                // of output. On subsequent calls, we will receive the same
-                // output again, potenially with some extra data at the end.
-                string newOutput = null;
-                if (output.Contents.Length > this.lastBuffer.Length)
-                {
-                    // New data received. 
-                    newOutput = output.Contents.Substring(this.lastBuffer.Length);
-                }
-                else if (output.Contents == this.lastBuffer)
-                {
-                    // Nothing happened since last read.
-                    return string.Empty;
-                }
-                else if (output.Contents.Length == this.lastBuffer.Length)
-                {
-                    // We must have reached the max buffer size. Assuming the buffers
-                    // still overlap, we can try to stitch things together.
-                    int lastBufferTailLength = Math.Min(128, this.lastBuffer.Length);
-                    var lastBufferTail = this.lastBuffer.Substring(
-                        this.lastBuffer.Length - lastBufferTailLength, 
-                        lastBufferTailLength);
-
-                    int indexOfLastBufferTailInOutput = output.Contents.LastIndexOf(lastBufferTail);
-                    if (indexOfLastBufferTailInOutput > 0)
-                    {
-                        newOutput = output.Contents.Substring(indexOfLastBufferTailInOutput + lastBufferTailLength);
-                    }
-                    else
-                    {
-                        // Seems like there is no overlap -- just return everyting then.
-                        newOutput = output.Contents;
-                    }
-                }
-
-                this.lastBuffer = output.Contents;
-                return newOutput;
-            }
+            return QueryInstanceAsync(instanceRef.ProjectId, instanceRef.Zone, instanceRef.InstanceName);
         }
 
         public SerialPortStream GetSerialPortOutput(VmInstanceReference instanceRef)
         {
-            return new SerialPortStream(this.service, instanceRef);
+            return this.service.Instances.GetSerialPortOutputStream(instanceRef, 1);
+        }
+
+        public Task<NetworkCredential> ResetWindowsUserAsync(
+            VmInstanceReference instanceRef, 
+            string username)
+        {
+            return this.service.Instances.ResetWindowsUserAsync(instanceRef, username);
         }
 
         public static bool IsWindowsInstance(Instance instance)

@@ -29,7 +29,7 @@ namespace Google.Solutions.Compute.Test.Net
     /// <summary>
     /// Helper class to find unsed local TCP ports.
     /// </summary>
-    internal static class PortFinder
+    public static class PortFinder
     {
         public static HashSet<int> QueryOccupiedPorts()
         {

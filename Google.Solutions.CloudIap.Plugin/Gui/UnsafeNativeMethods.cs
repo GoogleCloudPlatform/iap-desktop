@@ -21,7 +21,6 @@
 
 using System;
 using System.Runtime.InteropServices;
-using System.Text;
 
 namespace Google.Solutions.CloudIap.Plugin.Gui
 {
@@ -114,16 +113,6 @@ namespace Google.Solutions.CloudIap.Plugin.Gui
         }
 
         internal delegate int TaskDialogCallback([In] IntPtr hwnd, [In] uint msg, [In] UIntPtr wParam, [In] IntPtr lParam, [In] IntPtr refData);
-
-        [DllImport("kernel32.dll", CharSet = CharSet.Unicode)]
-        internal static extern int GetPrivateProfileString(
-                    string section,
-                    string key,
-                    string defaultValue,
-                    StringBuilder value,
-                    int size,
-                    string filePath);
-
 
         [DllImport("ComCtl32", CharSet = CharSet.Unicode, PreserveSig = false)]
         internal static extern void TaskDialogIndirect(
