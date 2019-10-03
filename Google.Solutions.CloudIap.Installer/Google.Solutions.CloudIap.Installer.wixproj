@@ -8,7 +8,7 @@
     <SchemaVersion>2.0</SchemaVersion>
     <OutputType>Package</OutputType>
     <WixTargetsPath Condition=" '$(WixTargetsPath)' == '' ">$(MSBuildExtensionsPath)\WiX Toolset\v4\wix.targets</WixTargetsPath>
-    <AssemblyVersionNumber>1.0.1.0</AssemblyVersionNumber>
+    <AssemblyVersionNumber>1.1.0.0</AssemblyVersionNumber>
     <OutputName>CloudIap-Plugin-$(AssemblyVersionNumber)</OutputName>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">

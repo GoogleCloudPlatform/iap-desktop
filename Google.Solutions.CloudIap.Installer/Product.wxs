@@ -118,6 +118,15 @@
           Source="..\Google.Solutions.CloudIap.Plugin\bin\$(var.CONFIGURATION)\Plugin.Google.CloudIap.dll"
           Vital="yes"/>
       </Component>
+
+      <Component Id="CompGoogleSolutionsComputeDll" Guid="c3d65508-cced-4752-8bf5-516c5f831135">
+        <File
+          Id="FileGoogleSolutionsComputeDll"
+          Name="Google.Solutions.Compute.dll"
+          DiskId="1"
+          Source="..\Google.Solutions.CloudIap.Plugin\bin\$(var.CONFIGURATION)\Google.Solutions.Compute.dll"
+          Vital="yes"/>
+      </Component>
       
       <!-- SDK and dependencies -->
       <Component Id="CompGoogleApisAuthDll" Guid="80b12a8a-7b0d-11e9-8f9e-2a86e4085a59">

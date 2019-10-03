@@ -29,7 +29,7 @@ namespace Google.Solutions.CloudIap.Plugin.Gui
 {
     public partial class TunnelsWindow : Form
     {
-        private IapTunnelManager TunnelManager { get; set; }
+        private TunnelManagerBase TunnelManager { get; set; }
 
         public TunnelsWindow()
         {
@@ -47,7 +47,7 @@ namespace Google.Solutions.CloudIap.Plugin.Gui
                     tunnel.Endpoint.Instance.ProjectId,
                     tunnel.Endpoint.Instance.Zone,
                     tunnel.LocalPort.ToString(),
-                    tunnel.ProcessId.ToString()
+                    tunnel.ProcessId != null ? tunnel.ProcessId.ToString() : string.Empty
                 });
                 item.Tag = tunnel;
                 this.tunnelsList.Items.Add(item);
@@ -69,7 +69,7 @@ namespace Google.Solutions.CloudIap.Plugin.Gui
                 return;
             }
 
-            var selectedTunnel = (IapTunnel)selectedItem.Tag;
+            var selectedTunnel = (ITunnel)selectedItem.Tag;
 
             if (MessageBox.Show(
                 this,
@@ -89,7 +89,7 @@ namespace Google.Solutions.CloudIap.Plugin.Gui
             }
         }
 
-        internal static void ShowDialog(IWin32Window owner, IapTunnelManager tunnelManager)
+        internal static void ShowDialog(IWin32Window owner, TunnelManagerBase tunnelManager)
         {
             var window = new TunnelsWindow()
             {
