@@ -37,6 +37,13 @@ Write-Host "Using MSBuild: $Msbuild"
 Write-Host "Using VsixInstaller: $VsixInstaller"
 
 Write-Host "========================================================"
+Write-Host "=== Get OAuth credentials                            ==="
+Write-Host "========================================================"
+
+& gsutil cp gs://iap-windows-rdc-plugin/OAuthClient.cs Google.Solutions.CloudIap.Plugin\OAuthClient.cs | Out-Default
+& gsutil cp gs://iap-windows-rdc-plugin/OAuthClient.cs Google.Solutions.CloudIap.IapClient\OAuthClient.cs | Out-Default
+
+Write-Host "========================================================"
 Write-Host "=== Install RDCMan                                   ==="
 Write-Host "========================================================"
 
