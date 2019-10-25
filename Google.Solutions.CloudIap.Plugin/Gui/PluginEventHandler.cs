@@ -29,6 +29,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace Google.Solutions.CloudIap.Plugin.Gui
@@ -335,7 +336,8 @@ namespace Google.Solutions.CloudIap.Plugin.Gui
 
                         zoneGroup.Expand();
                     }
-                });
+                },
+                this.authorization.ReauthorizeAsync);
         }
 
         private void OnIapConnectClick(Server server, bool connectAs)
@@ -383,7 +385,8 @@ namespace Google.Solutions.CloudIap.Plugin.Gui
                         server.ConnectionSettings.Port.Value = originalServerPort;
                         server.ConnectionSettings.InheritSettingsType.Mode = originalInheritMode;
                     }
-                });
+                },
+                this.authorization.ReauthorizeAsync);
         }
 
         private void OnResetPasswordClick(Server server)
@@ -421,7 +424,8 @@ namespace Google.Solutions.CloudIap.Plugin.Gui
                     server.LogonCredentials.Domain.Value = "localhost";
                     server.LogonCredentials.UserName.Value = credentials.UserName;
                     server.LogonCredentials.SetPassword(credentials.Password);
-                });
+                },
+                this.authorization.ReauthorizeAsync);
         }
 
         private void OnShowSerialPortOutputClick(Server server)
@@ -431,6 +435,7 @@ namespace Google.Solutions.CloudIap.Plugin.Gui
                 server.Parent.Text,
                 server.DisplayName);
 
+            // TODO: Handle reauth.
             SerialPortOutputWindow.Show(
                 this.mainForm,
                 $"{instanceRef.InstanceName} ({instanceRef.Zone})",
@@ -473,7 +478,8 @@ namespace Google.Solutions.CloudIap.Plugin.Gui
                         FileName = "https://console.cloud.google.com/logs/viewer?" +
                               $"resource=gce_instance%2Finstance_id%2F{instanceDetails.Id}&project={instance.ProjectId}"
                     });
-                });
+                },
+                this.authorization.ReauthorizeAsync);
         }
     }
 }

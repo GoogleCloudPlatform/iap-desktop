@@ -36,26 +36,36 @@ namespace Google.Solutions.Compute.Auth
         string UserId { get; }
 
         Task RevokeAsync();
+
+        Task ReauthorizeAsync();
     }
 
     public class OAuthAuthorization : IAuthorization
     {
         public const string StoreUserId = "oauth";
 
-        private readonly UserCredential credential;
+        private readonly GoogleAuthorizationCodeFlow.Initializer initializer;
+        private readonly string closePageReponse;
         private readonly IDataStore credentialStore;
 
-        public OAuthAuthorization(
-            UserCredential credential,
-            IDataStore credentialStore)
+        // Current credential - changes during reauth.
+        private UserCredential currentCredential;
+
+        internal OAuthAuthorization(
+            GoogleAuthorizationCodeFlow.Initializer initializer,
+            string closePageReponse,
+            IDataStore credentialStore,
+            UserCredential currentCredential)
         {
-            this.credential = credential;
+            this.initializer = initializer;
+            this.closePageReponse = closePageReponse;
             this.credentialStore = credentialStore;
+            this.currentCredential = currentCredential;
         }
 
-        public ICredential Credential => this.credential;
+        public ICredential Credential => this.currentCredential;
 
-        public string UserId => this.credential.UserId;
+        public string UserId => this.currentCredential.UserId;
 
         public Task RevokeAsync()
         {
@@ -78,12 +88,16 @@ namespace Google.Solutions.Compute.Auth
 
                 if (!installedApp.ShouldRequestAuthorizationCode(existingTokenResponse))
                 {
+                    // N.B. Do not dispose the GoogleAuthorizationCodeFlow as it might
+                    // be needed for re-auth later.
                     return new OAuthAuthorization(
+                        initializer,
+                        closePageReponse,
+                        initializer.DataStore,
                         new UserCredential(
                             new GoogleAuthorizationCodeFlow(initializer),
                             OAuthAuthorization.StoreUserId,
-                            existingTokenResponse),
-                        initializer.DataStore);
+                            existingTokenResponse));
                 }
                 else
                 {
@@ -96,18 +110,28 @@ namespace Google.Solutions.Compute.Auth
             GoogleAuthorizationCodeFlow.Initializer initializer,
             string closePageReponse)
         {
-            using (var flow = new GoogleAuthorizationCodeFlow(initializer))
-            {
-                var installedApp = new AuthorizationCodeInstalledApp(
-                    flow,
-                    new LocalServerCodeReceiver(closePageReponse));
+            // N.B. Do not dispose the GoogleAuthorizationCodeFlow as it might
+            // be needed for re-auth later.
+            var installedApp = new AuthorizationCodeInstalledApp(
+                new GoogleAuthorizationCodeFlow(initializer),
+                new LocalServerCodeReceiver(closePageReponse));
 
-                return new OAuthAuthorization(
-                    await installedApp.AuthorizeAsync(
-                        OAuthAuthorization.StoreUserId,
-                        CancellationToken.None),
-                    initializer.DataStore);
-            }
+            return new OAuthAuthorization(
+                initializer,
+                closePageReponse,
+                initializer.DataStore,
+                await installedApp.AuthorizeAsync(
+                    OAuthAuthorization.StoreUserId,
+                    CancellationToken.None));
+        }
+
+        public Task ReauthorizeAsync()
+        {
+            // As this is a 3p OAuth app, we do not support Gnubby/Password-based
+            // reauth. Instead, we simply trigger a new authorization (code flow).
+            return OAuthAuthorization.CreateAuthorizationAsync(
+                this.initializer, 
+                this.closePageReponse);
         }
     }
 
@@ -179,6 +203,12 @@ namespace Google.Solutions.Compute.Auth
             }
 
             return authorization;
+        }
+
+        public Task ReauthorizeAsync()
+        {
+            throw new NotImplementedException(
+                "Reauth is currently not supported when using gcloud for authorization");
         }
     }
 }
