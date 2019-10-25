@@ -29,6 +29,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace Google.Solutions.CloudIap.Plugin.Gui
@@ -39,7 +40,6 @@ namespace Google.Solutions.CloudIap.Plugin.Gui
 
         private readonly PluginConfigurationStore configurationStore;
         private readonly TunnelManagerBase tunnelManager;
-        private readonly ComputeEngineAdapter computeEngine;
         private readonly IAuthorization authorization;
 
         private readonly Form mainForm;
@@ -53,9 +53,12 @@ namespace Google.Solutions.CloudIap.Plugin.Gui
         {
             this.configurationStore = configurationStore;
             this.authorization = authorization;
-            this.computeEngine = ComputeEngineAdapter.Create(authorization.Credential);
             this.mainForm = mainForm;
             this.mainMenu = mainMenu;
+
+            // N.B. Do not pre-create a ComputeEngineAdapter because the 
+            // underlying ComputeService caches OAuth credentials, defying
+            // re-auth.
 
             var configuration = configurationStore.Configuration;
             Compute.Compute.Trace.Listeners.Add(new DefaultTraceListener());
@@ -273,7 +276,7 @@ namespace Google.Solutions.CloudIap.Plugin.Gui
             WaitDialog.RunWithDialog(
                 this.mainForm,
                 "Loading instances...",
-                () => this.computeEngine.QueryInstancesAsync(projectId),
+                () => ComputeEngineAdapter.Create(authorization.Credential).QueryInstancesAsync(projectId),
                 allInstances =>
                 {
                     // Narrow the list down to Windows instances - there is no point 
@@ -335,7 +338,8 @@ namespace Google.Solutions.CloudIap.Plugin.Gui
 
                         zoneGroup.Expand();
                     }
-                });
+                },
+                this.authorization.ReauthorizeAsync);
         }
 
         private void OnIapConnectClick(Server server, bool connectAs)
@@ -383,7 +387,8 @@ namespace Google.Solutions.CloudIap.Plugin.Gui
                         server.ConnectionSettings.Port.Value = originalServerPort;
                         server.ConnectionSettings.InheritSettingsType.Mode = originalInheritMode;
                     }
-                });
+                },
+                this.authorization.ReauthorizeAsync);
         }
 
         private void OnResetPasswordClick(Server server)
@@ -406,7 +411,7 @@ namespace Google.Solutions.CloudIap.Plugin.Gui
             WaitDialog.RunWithDialog(
                 this.mainForm,
                 "Generating Windows logon credentials...",
-                () => this.computeEngine.ResetWindowsUserAsync(instance, username),
+                () => ComputeEngineAdapter.Create(authorization.Credential).ResetWindowsUserAsync(instance, username),
                 credentials =>
                 {
                     ShowCredentialsDialog.ShowDialog(
@@ -418,7 +423,8 @@ namespace Google.Solutions.CloudIap.Plugin.Gui
                     server.LogonCredentials.Domain.Value = "localhost";
                     server.LogonCredentials.UserName.Value = credentials.UserName;
                     server.LogonCredentials.SetPassword(credentials.Password);
-                });
+                },
+                this.authorization.ReauthorizeAsync);
         }
 
         private void OnShowSerialPortOutputClick(Server server)
@@ -428,10 +434,11 @@ namespace Google.Solutions.CloudIap.Plugin.Gui
                 server.Parent.Text,
                 server.DisplayName);
 
+            // TODO: Handle reauth.
             SerialPortOutputWindow.Show(
                 this.mainForm,
                 $"{instanceRef.InstanceName} ({instanceRef.Zone})",
-                this.computeEngine.GetSerialPortOutput(instanceRef));
+                ComputeEngineAdapter.Create(authorization.Credential).GetSerialPortOutput(instanceRef));
         }
 
         private void OnOpenCloudConsoleClick(Server server)
@@ -460,7 +467,7 @@ namespace Google.Solutions.CloudIap.Plugin.Gui
             WaitDialog.RunWithDialog(
                 this.mainForm,
                 "Loading instance information...",
-                () => this.computeEngine.QueryInstanceAsync(instance),
+                () => ComputeEngineAdapter.Create(authorization.Credential).QueryInstanceAsync(instance),
                 instanceDetails =>
                 {
                     Process.Start(new ProcessStartInfo()
@@ -470,7 +477,8 @@ namespace Google.Solutions.CloudIap.Plugin.Gui
                         FileName = "https://console.cloud.google.com/logs/viewer?" +
                               $"resource=gce_instance%2Finstance_id%2F{instanceDetails.Id}&project={instance.ProjectId}"
                     });
-                });
+                },
+                this.authorization.ReauthorizeAsync);
         }
     }
 }

@@ -124,11 +124,51 @@ namespace Google.Solutions.CloudIap.Plugin.Gui
             Control parent,
             string message,
             Func<Task<T>> slowFunc,
-            Action<T> updateGuiFunc)
+            Action<T> updateGuiFunc,
+            Func<Task> reauthorize)
         {
             try
             {
-                Run(parent, message, slowFunc, updateGuiFunc);
+                bool reauthAndRetry;
+                do
+                {
+                    reauthAndRetry = false;
+
+                    try
+                    {
+                        Run(parent, message, slowFunc, updateGuiFunc);
+                    }
+                    catch (TokenResponseException tokenException) 
+                        when (tokenException.Error.Error == "invalid_grant")
+                    {
+                        // Reauth required or authorization has been revoked.
+                        if (MessageBox.Show(
+                            parent,
+                            "Your session has expired or the authorization has been revoked. "+
+                            "Do you want to sign in again?",
+                            "Authorization required",
+                            MessageBoxButtons.YesNoCancel,
+                            MessageBoxIcon.Warning) == DialogResult.Yes)
+                        {
+                            // Reauthorize. This might take a while since the user has to use 
+                            // a browser - show the WaitDialog in the meantime.
+                            Run<T>(
+                                parent, 
+                                "Authorizing", 
+                                async () => 
+                                {
+                                    await reauthorize();
+                                    return default(T);
+                                },
+                                _ => 
+                                {
+                                    // No GUI update required.
+                                });
+                            reauthAndRetry = true;
+                        }
+                    }
+                }
+                while (reauthAndRetry);
             }
             catch (Exception e)
             {
