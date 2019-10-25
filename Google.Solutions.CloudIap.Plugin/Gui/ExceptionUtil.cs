@@ -32,12 +32,19 @@ namespace Google.Solutions.CloudIap.Plugin.Gui
     /// </summary>
     public class ExceptionUtil
     {
-        public static void HandleException(IWin32Window parent, string caption, Exception e)
+        public static Exception Unwrap(Exception e)
         {
             if (e is AggregateException aggregate)
             {
                 e = aggregate.InnerException;
             }
+
+            return e;
+        }
+
+        public static void HandleException(IWin32Window parent, string caption, Exception e)
+        {
+            e = Unwrap(e);
 
             var details = new StringBuilder();
             for (var innerException = e.InnerException; 
