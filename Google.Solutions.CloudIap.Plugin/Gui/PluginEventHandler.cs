@@ -388,11 +388,8 @@ namespace Google.Solutions.CloudIap.Plugin.Gui
 
         private void OnResetPasswordClick(Server server)
         {
-            // Derive a suggested username from the Google username.
-            var googleUsername = this.authorization.UserId;
-            var suggestedUsername = googleUsername.IndexOf('@') > 0
-                ? googleUsername.Substring(0, googleUsername.IndexOf('@'))
-                : googleUsername;
+            // Derive a suggested username from the Windows login name.
+            var suggestedUsername = Environment.UserName;
 
             // Prompt for username to use.
             var username = GenerateCredentialsDialog.PromptForUsername(this.mainForm, suggestedUsername);
