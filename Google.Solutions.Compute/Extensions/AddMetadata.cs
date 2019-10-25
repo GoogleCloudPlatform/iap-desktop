@@ -52,6 +52,30 @@ namespace Google.Solutions.Compute.Extensions
         }
 
         /// <summary>
+        /// Query a metadata entry for an instance.
+        /// </summary>
+        /// <returns>null if not set/found</returns>
+        public static async Task<Metadata.ItemsData> QueryMetadataKeyAsync(
+            this InstancesResource resource,
+            VmInstanceReference instanceRef,
+            string key)
+        {
+            var instance = await resource.Get(
+                instanceRef.ProjectId,
+                instanceRef.Zone,
+                instanceRef.InstanceName).ExecuteAsync().ConfigureAwait(false);
+
+            if (instance.Metadata == null || instance.Metadata.Items == null)
+            {
+                return null;
+            }
+
+            return instance.Metadata.Items
+                .Where(i => i.Key == key)
+                .FirstOrDefault();
+        }
+
+        /// <summary>
         /// Adds or overwrites a metadata key/value pair to a GCE 
         /// instance. Any existing metadata is kept as is.
         /// </summary>
