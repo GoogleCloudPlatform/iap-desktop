@@ -19,6 +19,7 @@
 // under the License.
 //
 
+using Google.Apis.Auth.OAuth2.Responses;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
@@ -73,12 +74,13 @@ namespace Google.Solutions.CloudIap.Plugin.Gui
             };
         }
 
-        public static void RunWithDialog<T>(
+        public static void Run<T>(
             Control parent,
-            string message, 
+            string message,
             Func<Task<T>> slowFunc,
             Action<T> updateGuiFunc)
         {
+            Exception exception = null;
             using (var waitDialog = WaitDialog.ForMessage(message))
             {
                 Task.Run(() =>
@@ -98,19 +100,39 @@ namespace Google.Solutions.CloudIap.Plugin.Gui
                     }
                     catch (Exception e)
                     {
+                        exception = e;
                         parent.BeginInvoke((Action)(() =>
                         {
                             if (!waitDialog.CancellationToken.IsCancellationRequested)
                             {
-                                // TODO: Dialog is still shown under message box
                                 waitDialog.Close();
-                                ExceptionUtil.HandleException(parent, message, e);
                             }
                         }));
                     }
                 });
 
                 waitDialog.ShowDialog(parent);
+
+                if (exception != null)
+                {
+                    throw ExceptionUtil.Unwrap(exception);
+                }
+            }
+        }
+
+        public static void RunWithDialog<T>(
+            Control parent,
+            string message,
+            Func<Task<T>> slowFunc,
+            Action<T> updateGuiFunc)
+        {
+            try
+            {
+                Run(parent, message, slowFunc, updateGuiFunc);
+            }
+            catch (Exception e)
+            {
+                ExceptionUtil.HandleException(parent, message, e);
             }
         }
     }
