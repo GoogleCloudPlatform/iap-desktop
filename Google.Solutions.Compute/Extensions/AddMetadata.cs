@@ -117,6 +117,27 @@ namespace Google.Solutions.Compute.Extensions
                 instanceRef.ProjectId,
                 instanceRef.Zone,
                 instanceRef.InstanceName).ExecuteAsync().ConfigureAwait(false);
+
+            // Setting the metadata might fail silently, cf b/140226028 - so check if
+            // it worked. Sometimes, the change also takes a few seconds to apply (sic).
+            for (int attempt = 0; attempt < 10; attempt++)
+            {
+                var appliedValue = await resource.QueryMetadataKeyAsync(
+                    instanceRef,
+                    key).ConfigureAwait(false);
+                if (appliedValue != null && appliedValue.Value == value)
+                {
+                    // Success.
+                    return;
+                }
+                else
+                {
+                    // Wait and retry.
+                    await Task.Delay(500).ConfigureAwait(false);
+                }
+            }
+
+            throw new GoogleApiException("Compute", "Setting metdata failed");
         }
     }
 }
