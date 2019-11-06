@@ -81,22 +81,20 @@ namespace Google.Solutions.Compute.Extensions
                 };
 
                 // Send the request to the instance via a special metadata entry.
-                var requestJson = JsonConvert.SerializeObject(requestPayload);
-                await resource.AddMetadataAsync(
-                    instanceRef,
-                    MetadataKey,
-                    requestJson).ConfigureAwait(false);
-
-                // Setting the metadata might fail silently, cf b/140226028 - so check if
-                // it worked.
-                if (!(await resource.QueryMetadataKeyAsync(
-                        instanceRef, 
-                        MetadataKey).ConfigureAwait(false)).Value.Contains(requestPayload.Modulus))
+                try
+                {
+                    var requestJson = JsonConvert.SerializeObject(requestPayload);
+                    await resource.AddMetadataAsync(
+                        instanceRef,
+                        MetadataKey,
+                        requestJson).ConfigureAwait(false);
+                }
+                catch (GoogleApiException)
                 {
                     // Setting metadata failed, most likely because of lack of permissions.
                     throw new PasswordResetException(
                         "Failed to update metadata of instance. " +
-                        "Make sure you are in the 'Service Account User' to reset a Windows password");
+                        "Make sure you have the 'Service Account User' to reset a Windows password");
                 }
 
                 // Read response from serial port.
