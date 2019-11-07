@@ -29,6 +29,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using Google.Apis.Auth.OAuth2.Responses;
 using Google.Solutions.CloudIap.Plugin.Integration;
 using Google.Solutions.Compute.Extensions;
 
@@ -54,11 +55,27 @@ namespace Google.Solutions.CloudIap.Plugin.Gui
         {
             Task.Run(async () =>
             {
-                while (this.keepTailing)
+                bool exceptionCaught = false;
+                while (this.keepTailing && !exceptionCaught)
                 {
-                    var newOutput = await stream.ReadAsync();
-
-                    newOutput = newOutput.Replace("\n", "\r\n");
+                    string newOutput;
+                    try
+                    {
+                        newOutput = await stream.ReadAsync();
+                        newOutput = newOutput.Replace("\n", "\r\n");
+                    }
+                    catch (TokenResponseException e)
+                    {
+                        newOutput = "Reading from serial port failed - session timed out " +
+                            $"({e.Error.ErrorDescription})";
+                        exceptionCaught = true;
+                    }
+                    catch (Exception e)
+                    {
+                        newOutput = "Reading from serial port failed: " +
+                            ExceptionUtil.Unwrap(e).Message;
+                        exceptionCaught = true;
+                    }
 
                     if (this.keepTailing)
                     { 
