@@ -67,7 +67,7 @@ namespace Google.Solutions.CloudIap.Plugin.Integration
             }
         }
 
-        public Task<ITunnel> ConnectAsync(TunnelDestination endpoint, TimeSpan timeout)
+        private Task<ITunnel> ConnectIfNecessaryAsync(TunnelDestination endpoint, TimeSpan timeout)
         {
             lock (this.tunnelsLock)
             {
@@ -88,6 +88,18 @@ namespace Google.Solutions.CloudIap.Plugin.Integration
                     return tunnel;
                 }
             }
+        }
+
+        public async Task<ITunnel> ConnectAsync(TunnelDestination endpoint, TimeSpan timeout)
+        {
+            var tunnel = await ConnectIfNecessaryAsync(endpoint, timeout);
+
+            // Whether it is a new or existing tunnel, probe it first before 
+            // handing it out. It might be broken after all (because of reauth
+            // or for other reasons).
+            await tunnel.Probe(timeout);
+
+            return tunnel;
         }
 
         public void CloseTunnel(TunnelDestination endpoint)
@@ -140,6 +152,8 @@ namespace Google.Solutions.CloudIap.Plugin.Integration
         int? ProcessId { get; }
 
         void Close();
+
+        Task Probe(TimeSpan timeout);
     }
 
     internal class TunnelDestination : IEquatable<TunnelDestination>
