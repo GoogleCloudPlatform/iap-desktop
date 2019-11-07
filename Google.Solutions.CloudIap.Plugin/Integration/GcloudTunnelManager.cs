@@ -117,6 +117,11 @@ namespace Google.Solutions.CloudIap.Plugin.Integration
         {
             this.gcloudProcess.Kill();
         }
+
+        public Task Probe(TimeSpan timeout)
+        {
+            return Task.FromResult<int>(0);
+        }
     }
 
     internal class GcloudTunnelProcess : GcloudProcess

@@ -46,12 +46,6 @@ namespace Google.Solutions.CloudIap.Plugin.Integration
                 tunnelEndpoint.RemotePort,
                 IapTunnelingEndpoint.DefaultNetworkInterface);
 
-            // Probe connection to fail fast if there is an 'access denied'
-            // issue.
-            using (var stream = new SshRelayStream(iapEndpoint))
-            {
-                await stream.TestConnectionAsync(timeout).ConfigureAwait(false);
-            }
 
             // Start listener to enable clients to connect. Do not await
             // the listener as we want to continue listeining in the
@@ -63,24 +57,27 @@ namespace Google.Solutions.CloudIap.Plugin.Integration
 
             // Return the tunnel which allows the listener to be stopped
             // via the CancellationTokenSource.
-            return new Tunnel(tunnelEndpoint, listener, cts);
+            return new Tunnel(iapEndpoint, listener, cts);
         }
 
         internal class Tunnel : ITunnel
         {
             private readonly CancellationTokenSource cancellationTokenSource;
             private readonly SshRelayListener listener;
+            private readonly IapTunnelingEndpoint endpoint;
 
-            public TunnelDestination Endpoint { get; }
+            public TunnelDestination Endpoint => new TunnelDestination(
+                this.endpoint.VmInstance, this.endpoint.Port);
+
             public int LocalPort => listener.LocalPort;
             public int? ProcessId => null;
 
             public Tunnel(
-                TunnelDestination endpoint, 
+                IapTunnelingEndpoint endpoint, 
                 SshRelayListener listener,
                 CancellationTokenSource cancellationTokenSource)
             {
-                this.Endpoint = endpoint;
+                this.endpoint = endpoint;
                 this.listener = listener;
                 this.cancellationTokenSource = cancellationTokenSource;
             }
@@ -88,6 +85,16 @@ namespace Google.Solutions.CloudIap.Plugin.Integration
             public void Close()
             {
                 this.cancellationTokenSource.Cancel();
+            }
+
+            public async Task Probe(TimeSpan timeout)
+            {
+                // Probe connection to fail fast if there is an 'access denied'
+                // issue.
+                using (var stream = new SshRelayStream(this.endpoint))
+                {
+                    await stream.TestConnectionAsync(timeout).ConfigureAwait(false);
+                }
             }
         }
     }
