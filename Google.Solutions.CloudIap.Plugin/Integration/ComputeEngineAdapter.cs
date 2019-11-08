@@ -39,6 +39,8 @@ namespace Google.Solutions.CloudIap.Plugin.Integration
     /// </summary>
     internal class ComputeEngineAdapter
     {
+        private const string WindowsCloudLicenses = "https://www.googleapis.com/compute/v1/projects/windows-cloud/global/licenses";
+
         private readonly ComputeService service;
 
         public static ComputeEngineAdapter Create(ICredential credential)
@@ -139,14 +141,31 @@ namespace Google.Solutions.CloudIap.Plugin.Integration
             return this.service.Instances.ResetWindowsUserAsync(instanceRef, username);
         }
 
-        public static bool IsWindowsInstance(Instance instance)
+        private static bool IsWindowsInstanceByGuestOsFeature(Instance instance)
         {
             // For an instance to be a valid Windows instance, at least one of the disks
             // (the boot disk) has to be marked as "WINDOWS". 
+            // Note that older disks might lack this feature.
             return instance.Disks
                 .Where(d => d.GuestOsFeatures != null)
                 .SelectMany(d => d.GuestOsFeatures)
                 .Any(f => f.Type == "WINDOWS");
+        }
+
+        private static bool IsWindowsInstanceByLicense(Instance instance)
+        {
+            // For an instance to be a valid Windows instance, at least one of the disks
+            // has to have an associated Windows license. This is also true for
+            // BYOL'ed instances.
+            return instance.Disks
+                .SelectMany(d => d.Licenses)
+                .Any(l => l.StartsWith(WindowsCloudLicenses));
+        }
+
+        public static bool IsWindowsInstance(Instance instance)
+        {
+            return IsWindowsInstanceByGuestOsFeature(instance) ||
+                   IsWindowsInstanceByLicense(instance);
         }
     }
 }
