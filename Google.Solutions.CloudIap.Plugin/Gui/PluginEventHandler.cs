@@ -160,7 +160,10 @@ namespace Google.Solutions.CloudIap.Plugin.Gui
             if (node is FileGroup fileGroup)
             {
                 ToolStripMenuItem loadServers = new ToolStripMenuItem(
-                    $"Add GCE &instances from {node.Text}", 
+                    string.Format(
+                        "{0} GCE &instances from {1}",
+                        fileGroup.Nodes.Count == 0 ? "Add" : "Refresh",
+                        node.Text), 
                     Resources.DownloadWebSetting.WithMagentaAsTransparent());
                 loadServers.Click += (sender, args) => this.OnLoadServersClick(fileGroup);
 
