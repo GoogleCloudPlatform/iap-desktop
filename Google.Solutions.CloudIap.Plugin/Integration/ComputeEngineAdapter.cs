@@ -158,6 +158,7 @@ namespace Google.Solutions.CloudIap.Plugin.Integration
             // has to have an associated Windows license. This is also true for
             // BYOL'ed instances.
             return instance.Disks
+                .Where(d => d.Licenses != null)
                 .SelectMany(d => d.Licenses)
                 .Any(l => l.StartsWith(WindowsCloudLicenses));
         }
