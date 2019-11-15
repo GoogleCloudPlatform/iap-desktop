@@ -23,6 +23,7 @@ using Google.Solutions.CloudIap.Plugin.Configuration;
 using Google.Solutions.CloudIap.Plugin.Integration;
 using Google.Solutions.Compute;
 using Google.Solutions.Compute.Auth;
+using Google.Solutions.Compute.Net;
 using RdcMan;
 using System;
 using System.Collections.Generic;
@@ -353,12 +354,25 @@ namespace Google.Solutions.CloudIap.Plugin.Gui
                 server.DisplayName);
 
             WaitDialog.RunWithDialog(
-               this.mainForm,
-               "Opening Cloud IAP tunnel...",
-               () => this.tunnelManager.ConnectAsync(new TunnelDestination(
-                    instance,
-                    RemoteDesktopPort),
-                    this.configurationStore.Configuration.IapConnectionTimeout),
+                this.mainForm,
+                "Opening Cloud IAP tunnel...",
+                async () => {
+                    try
+                    {
+                        return await this.tunnelManager.ConnectAsync(new TunnelDestination(
+                            instance,
+                            RemoteDesktopPort),
+                            this.configurationStore.Configuration.IapConnectionTimeout);
+                    }
+                    catch (NetworkStreamClosedException e)
+                    {
+                        throw new ApplicationException(
+                            "Connecting to the instance failed. Make sure that you have "+
+                            "configured your firewall rules to permit Cloud IAP access " +
+                            $"to {instance.InstanceName}", 
+                            e);
+                    }
+                },
                 tunnel =>
                 {
                     var originalInheritMode = server.ConnectionSettings.InheritSettingsType.Mode;
