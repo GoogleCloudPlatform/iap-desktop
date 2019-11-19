@@ -34,7 +34,7 @@
 		<MediaTemplate EmbedCab="yes" />
 
     <!-- Find rdcman.exe (which is always 32bit) -->
-    <Property Id="RDCMANDIR">
+    <Property Id="RDCMANDIR" Secure="yes">
       <ComponentSearch Id="RdcmanComponentSearch" Type="file" Guid="37A9C997-24F1-4955-A496-5DA0702B3F05">
         <DirectorySearch Id="RdcmanDirectorySearch" AssignToProperty="yes"  Depth="0" />
       </ComponentSearch>
