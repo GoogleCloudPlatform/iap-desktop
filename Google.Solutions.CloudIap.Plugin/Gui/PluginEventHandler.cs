@@ -352,6 +352,23 @@ namespace Google.Solutions.CloudIap.Plugin.Gui
                 server.Parent.Text,
                 server.DisplayName);
 
+            // Silly workaround for an RDCMan bug: When the server tree is set to
+            // auto-hide and you trigger this action, the WM_KILLFOCUS message is not
+            // handled properly by the respective ServerLabel. By activating the 
+            // server tree, we prevent that from happening (at the expense of 
+            // having the server tree briefly pop up).
+            try
+            {
+                mainForm.GetType().GetMethod(
+                    "GoToServerTree",
+                    BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic).Invoke(
+                        this.mainForm,
+                        new object[0]);
+            }
+            catch (Exception)
+            {
+            }
+
             WaitDialog.RunWithDialog(
                this.mainForm,
                "Opening Cloud IAP tunnel...",
