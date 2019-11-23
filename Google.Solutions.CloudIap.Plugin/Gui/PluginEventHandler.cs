@@ -292,7 +292,23 @@ namespace Google.Solutions.CloudIap.Plugin.Gui
                 return;
             }
 
-            // TODO: check if exists
+            // Check if project already loaded.
+            var treeView = (TreeView)this.pluginContext.Tree;
+            if (treeView.Nodes
+                .Cast<TreeNode>()
+                .Where(node => node.Text == projectId)
+                .Any())
+            {
+                MessageBox.Show(
+                    this.mainForm,
+                    $"The project {projectId} has already been added",
+                    "Add ´project",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Information);
+                return;
+            }
+
+            // Create a new file group for the given project.
             try
             {
                 var folderPath = Path.Combine(
