@@ -64,9 +64,9 @@ namespace Google.Solutions.CloudIap.Plugin.Gui
             }
             else
             {
-                // Current list items do not match the prefix - reload.
-                Debug.WriteLine("Loading " + prefix);
+                // Current list items do not match the prefix - clear suggestions and reload.
                 var suggestions = new AutoCompleteStringCollection();
+
                 foreach (var project in await this.resourceManager.QueryProjectsByPrefix(prefix))
                 {
                     suggestions.Add($"{project.Name} ({project.ProjectId})");

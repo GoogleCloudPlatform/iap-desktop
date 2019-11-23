@@ -25,6 +25,7 @@ using Google.Apis.CloudResourceManager.v1.Data;
 using Google.Apis.Services;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using System.Linq;
 
 namespace Google.Solutions.CloudIap.Plugin.Integration
 {
@@ -51,7 +52,7 @@ namespace Google.Solutions.CloudIap.Plugin.Integration
 
         public async Task<IEnumerable<Project>> QueryProjects(string filter)
         {
-            return await PageHelper.JoinPagesAsync<ProjectsResource.ListRequest, ListProjectsResponse, Project>(
+            var projects = await PageHelper.JoinPagesAsync<ProjectsResource.ListRequest, ListProjectsResponse, Project>(
                 new ProjectsResource.ListRequest(this.service)
                 {
                     Filter = filter
@@ -59,6 +60,9 @@ namespace Google.Solutions.CloudIap.Plugin.Integration
                 page => page.Projects,
                 response => response.NextPageToken,
                 (request, token) => { request.PageToken = token; });
+
+            // Filter projects in deleted/pending delete state.
+            return projects.Where(p => p.LifecycleState == "ACTIVE");
         }
 
         public Task<IEnumerable<Project>> QueryProjectsByPrefix(string idOrNamePrefix)
