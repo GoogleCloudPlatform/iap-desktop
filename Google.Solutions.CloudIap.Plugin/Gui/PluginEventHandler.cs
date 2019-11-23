@@ -319,6 +319,29 @@ namespace Google.Solutions.CloudIap.Plugin.Gui
                     Directory.CreateDirectory(folderPath);
                 }
 
+                var rdgFilePath = Path.Combine(folderPath, projectId + ".rdg");
+                if (File.Exists(rdgFilePath))
+                {
+                    // If the file exist, we must not create a new FileGroup. Instead,
+                    // the file must be opened properly. But there is no API for that.
+                    if (MessageBox.Show(
+                        this.mainForm,
+                        "There is an existing .rdg file for this project. \n"+
+                        "Do you want to overwrite this file?",
+                        "Add project",
+                        MessageBoxButtons.YesNoCancel,
+                        MessageBoxIcon.Warning) == DialogResult.Yes)
+                    {
+                        // Delete and re-create.
+                        File.Delete(rdgFilePath);
+                    }
+                    else
+                    {
+                        // Stop.
+                        return;
+                    }
+                }
+
                 // The plugin lacks an API to create new file nodes, so we have to call
                 // an internal API for that.
                 var constructor = typeof(FileGroup)
@@ -328,7 +351,7 @@ namespace Google.Solutions.CloudIap.Plugin.Gui
                         new[] { typeof(string) },
                         null);
                 var fileGroup = (FileGroup)constructor
-                    .Invoke(new [] { Path.Combine(folderPath, projectId + ".rdg") });
+                    .Invoke(new [] { rdgFilePath });
 
                 // Hydrate the group.
                 OnLoadServersClick(fileGroup);
@@ -351,7 +374,18 @@ namespace Google.Solutions.CloudIap.Plugin.Gui
             WaitDialog.RunWithDialog(
                 this.mainForm,
                 "Loading instances...",
-                () => ComputeEngineAdapter.Create(authorization.Credential).QueryInstancesAsync(projectId),
+                async () => {
+                    try
+                    {
+                        return await ComputeEngineAdapter.Create(authorization.Credential)
+                            .QueryInstancesAsync(projectId);
+                    }
+                    catch (GoogleApiException e) when (e.Error.Code == 403)
+                    {
+                        throw new ApplicationException(
+                            "You do not have sufficient acces to this project", e);
+                    }
+                },
                 allInstances =>
                 {
                     // Narrow the list down to Windows instances - there is no point 
