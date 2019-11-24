@@ -31,6 +31,7 @@ namespace Google.Solutions.Compute.Test.Iap
 {
     [TestFixture]
     [Category("IntegrationTest")]
+    [Category("IAP")]
     public class TestSshRelayProber : FixtureBase
     {
         [Test]
@@ -38,7 +39,7 @@ namespace Google.Solutions.Compute.Test.Iap
         {
             using (var stream = new SshRelayStream(
                 new IapTunnelingEndpoint(
-                    GoogleCredential.GetApplicationDefault(),
+                    Defaults.GetCredential(),
                     new VmInstanceReference(
                         "invalid",
                         Defaults.Zone,
@@ -56,7 +57,7 @@ namespace Google.Solutions.Compute.Test.Iap
         {
             using (var stream = new SshRelayStream(
                new IapTunnelingEndpoint(
-                    GoogleCredential.GetApplicationDefault(),
+                    Defaults.GetCredential(),
                     new VmInstanceReference(
                         Defaults.ProjectId,
                         "invalid",
@@ -74,7 +75,7 @@ namespace Google.Solutions.Compute.Test.Iap
         {
             using (var stream = new SshRelayStream(
                 new IapTunnelingEndpoint(
-                    GoogleCredential.GetApplicationDefault(),
+                    Defaults.GetCredential(),
                     new VmInstanceReference(
                         Defaults.ProjectId,
                         Defaults.Zone,
@@ -95,7 +96,7 @@ namespace Google.Solutions.Compute.Test.Iap
 
             using (var stream = new SshRelayStream(
                 new IapTunnelingEndpoint(
-                    GoogleCredential.GetApplicationDefault(),
+                    Defaults.GetCredential(),
                     testInstance.InstanceReference,
                     3389,
                     IapTunnelingEndpoint.DefaultNetworkInterface)))
@@ -112,7 +113,7 @@ namespace Google.Solutions.Compute.Test.Iap
 
             using (var stream = new SshRelayStream(
                 new IapTunnelingEndpoint(
-                    GoogleCredential.GetApplicationDefault(),
+                    Defaults.GetCredential(),
                     testInstance.InstanceReference,
                     22,
                     IapTunnelingEndpoint.DefaultNetworkInterface)))

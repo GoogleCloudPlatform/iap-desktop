@@ -21,7 +21,6 @@
 
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Compute.v1;
-using Google.Apis.Compute.v1.Data;
 using Google.Apis.Services;
 
 namespace Google.Solutions.Compute.Test.Env
@@ -45,7 +44,7 @@ namespace Google.Solutions.Compute.Test.Env
 
         public static ComputeEngine Connect()
         {
-            return Connect(GoogleCredential.GetApplicationDefault());
+            return Connect(Defaults.GetCredential());
         }
     }
 }

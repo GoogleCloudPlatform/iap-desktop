@@ -34,13 +34,14 @@ namespace Google.Solutions.Compute.Test.Iap
 {
     [TestFixture]
     [Category("IntegrationTest")]
+    [Category("IAP")]
     public class TestHttpOverIapIndirectTunnel : TestHttpOverIapTunnelBase
     {
         protected override INetworkStream ConnectToWebServer(VmInstanceReference vmRef)
         {
             var listener = SshRelayListener.CreateLocalListener(
                 new IapTunnelingEndpoint(
-                    GoogleCredential.GetApplicationDefault(),
+                    Defaults.GetCredential(),
                     vmRef,
                     80,
                     IapTunnelingEndpoint.DefaultNetworkInterface));
