@@ -22,19 +22,21 @@
 using Google.Apis.Auth.OAuth2;
 using Google.Solutions.Compute.Iap;
 using Google.Solutions.Compute.Net;
+using Google.Solutions.Compute.Test.Env;
 using NUnit.Framework;
 
 namespace Google.Solutions.Compute.Test.Iap
 {
     [TestFixture]
     [Category("IntegrationTest")]
+    [Category("IAP")]
     public class TestEchoOverIapDirectTunnel : TestEchoOverIapBase
     {
         protected override INetworkStream ConnectToEchoServer(VmInstanceReference vmRef)
         {
             return new FragmentingStream(new SshRelayStream(
                 new IapTunnelingEndpoint(
-                    GoogleCredential.GetApplicationDefault(),
+                    Defaults.GetCredential(),
                     vmRef,
                     7,
                     IapTunnelingEndpoint.DefaultNetworkInterface)));

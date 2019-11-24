@@ -30,6 +30,7 @@ namespace Google.Solutions.Compute.Test.Extensions
 {
     [TestFixture]
     [Category("IntegrationTest")]
+    [Category("Windows")]
     public class TestResetWindowsUser : FixtureBase
     {
         private InstancesResource instancesResource;

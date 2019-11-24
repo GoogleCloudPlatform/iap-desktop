@@ -8,6 +8,9 @@ EndProject
 Project("{930C7802-8A8C-48F9-8165-68863BCCD9DD}") = "Google.Solutions.CloudIap.Installer", "Google.Solutions.CloudIap.Installer\Google.Solutions.CloudIap.Installer.wixproj", "{87F9B34D-3B3D-4F86-866E-5A6C7E269706}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{11EC701A-8732-4231-B3C6-543D226959D5}"
+	ProjectSection(SolutionItems) = preProject
+		build.ps1 = build.ps1
+	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Google.Solutions.Compute", "Google.Solutions.Compute\Google.Solutions.Compute.csproj", "{D9493479-1751-402B-880F-60ED33EBB885}"
 EndProject

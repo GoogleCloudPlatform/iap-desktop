@@ -19,6 +19,8 @@
 # under the License.
 #
 
+$ErrorActionPreference = "stop"
+
 # Product version to be used for MSI (2 digit).
 $ProductVersion="1.1"
 
@@ -111,14 +113,17 @@ if ($LastExitCode -ne 0)
 
 
 Write-Host "========================================================"
-Write-Host "=== Run unit tests                                   ==="
+Write-Host "=== Run tests                                        ==="
 Write-Host "========================================================"
+
+$Env:GOOGLE_APPLICATION_CREDENTIALS = "${env:KOKORO_GFILE_DIR}\iap-windows-rdc-plugin-tests.json"
+$Env:GOOGLE_CLOUD_PROJECT = (Get-Content $Env:GOOGLE_APPLICATION_CREDENTIALS | Out-String | ConvertFrom-Json).project_id
 
 $Nunit = (Resolve-Path -Path "packages\NUnit.ConsoleRunner.*\tools\nunit3-console.exe").Path
 & $Nunit Google.Solutions.Compute.Test\bin\release\Google.Solutions.Compute.Test.dll `
    "--result=sponge_log.xml;transform=kokoro\nunit-to-sponge.xsl" `
    --out sponge_log.log `
-   --where "cat != IntegrationTest" | Out-Default
+   --where "cat != IAP"| Out-Default
 
 if ($LastExitCode -ne 0)
 {
