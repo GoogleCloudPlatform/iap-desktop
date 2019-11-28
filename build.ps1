@@ -24,8 +24,8 @@ $ErrorActionPreference = "stop"
 # Product version to be used for MSI (2 digit).
 $ProductVersion="1.1"
 
-$Msbuild = (Resolve-Path ([IO.Path]::Combine(${Env:ProgramFiles(x86)}, 'Microsoft Visual Studio', '*', '*', 'MSBuild', '*' , 'bin' , 'msbuild.exe'))).Path
-$VsixInstaller = (Resolve-Path ([IO.Path]::Combine(${Env:ProgramFiles(x86)}, 'Microsoft Visual Studio', '*', '*', 'Common7', 'IDE', 'VSIXInstaller.exe'))).Path
+$Msbuild = (Resolve-Path ([IO.Path]::Combine(${Env:ProgramFiles(x86)}, 'Microsoft Visual Studio', '*', '*', 'MSBuild', '*' , 'bin' , 'msbuild.exe'))).Path		| Select-Object -First 1
+$VsixInstaller = (Resolve-Path ([IO.Path]::Combine(${Env:ProgramFiles(x86)}, 'Microsoft Visual Studio', '*', '*', 'Common7', 'IDE', 'VSIXInstaller.exe'))).Path | Select-Object -First 1
 $Nuget = "c:\nuget\nuget.exe"
 
 $RdcManDownloadUrl = "https://download.microsoft.com/download/A/F/0/AF0071F3-B198-4A35-AA90-C68D103BDCCF/rdcman.msi"
@@ -37,6 +37,7 @@ Write-Host "=== Preparing build                                 ==="
 Write-Host "========================================================"
 Write-Host "Using MSBuild: $Msbuild"
 Write-Host "Using VsixInstaller: $VsixInstaller"
+
 
 Write-Host "========================================================"
 Write-Host "=== Patch OAuth credentials                          ==="
