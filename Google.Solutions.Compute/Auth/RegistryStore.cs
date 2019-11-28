@@ -80,14 +80,25 @@ namespace Google.Solutions.Compute.Auth
 
             if (encryptedValue is byte[] encryptedValueBytes)
             {
-                var plaintextString = Encoding.UTF8.GetString(
-                    ProtectedData.Unprotect(
-                        (byte[])encryptedValue,
-                        Encoding.UTF8.GetBytes(entryKey),
-                        this.ProtectionScope));
+                try
+                {
+                    var plaintextString = Encoding.UTF8.GetString(
+                        ProtectedData.Unprotect(
+                            (byte[])encryptedValue,
+                            Encoding.UTF8.GetBytes(entryKey),
+                            this.ProtectionScope));
 
-                return Task.FromResult(
-                    NewtonsoftJsonSerializer.Instance.Deserialize<T>(plaintextString));
+                    return Task.FromResult(
+                        NewtonsoftJsonSerializer.Instance.Deserialize<T>(plaintextString));
+                }
+                catch (CryptographicException)
+                {
+                    // Value cannot be decrypted. This can happen if it was
+                    // written by a different user or if the current user's
+                    // key has changed (for example, because its credentials
+                    // been reset on GCE).
+                    return Task.FromResult(default(T));
+                }
             }
             else
             {
