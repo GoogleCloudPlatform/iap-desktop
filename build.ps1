@@ -26,8 +26,8 @@ $ProductVersion="1.1"
 
 $Msbuild = (Resolve-Path ([IO.Path]::Combine(${Env:ProgramFiles(x86)}, 'Microsoft Visual Studio', '*', '*', 'MSBuild', '*' , 'bin' , 'msbuild.exe'))).Path		| Select-Object -First 1
 $VsixInstaller = (Resolve-Path ([IO.Path]::Combine(${Env:ProgramFiles(x86)}, 'Microsoft Visual Studio', '*', '*', 'Common7', 'IDE', 'VSIXInstaller.exe'))).Path | Select-Object -First 1
-$Nuget = "c:\nuget\nuget.exe"
 
+$NugetDownloadUrl = "https://dist.nuget.org/win-x86-commandline/latest/nuget.exe"
 $RdcManDownloadUrl = "https://download.microsoft.com/download/A/F/0/AF0071F3-B198-4A35-AA90-C68D103BDCCF/rdcman.msi"
 $WixToolsetDownloadUrl = "https://wixtoolset.org/downloads/v4.0.0.5205/wix40.exe"
 $WixToolsetExtensionDownloadUrl = "https://robmensching.gallerycdn.vsassets.io/extensions/robmensching/wixtoolsetvisualstudio2017extension/0.9.21.62588/1494013210879/250616/4/Votive2017.vsix"
@@ -45,6 +45,14 @@ Write-Host "========================================================"
 
 Copy-Item -Path "${env:KOKORO_GFILE_DIR}\OAuthClient.cs" -Destination "Google.Solutions.CloudIap.IapClient\OAuthClient.cs" -Force
 Copy-Item -Path "${env:KOKORO_GFILE_DIR}\OAuthClient.cs" -Destination "Google.Solutions.CloudIap.Plugin\OAuthClient.cs" -Force
+
+Write-Host "========================================================"
+Write-Host "=== Install Nuget                                    ==="
+Write-Host "========================================================"
+
+$Nuget = $env:TEMP + "\nuget.exe"
+(New-Object System.Net.WebClient).DownloadFile($NugetDownloadUrl, $Nuget)
+
 
 Write-Host "========================================================"
 Write-Host "=== Install RDCMan                                   ==="
