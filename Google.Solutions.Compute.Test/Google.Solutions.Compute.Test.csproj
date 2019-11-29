@@ -81,6 +81,7 @@
     <Compile Include="Env\ComputeEngine.cs" />
     <Compile Include="Env\Defaults.cs" />
     <Compile Include="Env\InstanceAttribute.cs" />
+    <Compile Include="Extensions\TestGetSerialPortOutputStream.cs" />
     <Compile Include="Extensions\TestResetWindowsUser.cs" />
     <Compile Include="FixtureBase.cs" />
     <Compile Include="IapClient\TestCommandLine.cs" />
