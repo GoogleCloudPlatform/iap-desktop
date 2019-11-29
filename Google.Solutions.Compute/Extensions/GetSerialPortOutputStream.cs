@@ -63,7 +63,9 @@ namespace Google.Solutions.Compute.Extensions
         private readonly InstancesResource instancesResource;
         private readonly VmInstanceReference instance;
         private readonly ushort port;
-        private string lastBuffer = string.Empty;
+
+        // Offset of next character to be read.
+        private long nextOffset = 0;
 
         public SerialPortStream(
             InstancesResource instancesResource, 
@@ -82,45 +84,13 @@ namespace Google.Solutions.Compute.Extensions
                 this.instance.Zone,
                 this.instance.InstanceName);
             request.Port = this.port;
+            request.Start = this.nextOffset;
             var output = await request.ExecuteAsync().ConfigureAwait(false);
 
-            // N.B. The first call will return a genuinely new buffer
-            // of output. On subsequent calls, we will receive the same
-            // output again, potenially with some extra data at the end.
-            string newOutput = null;
-            if (output.Contents.Length > this.lastBuffer.Length)
-            {
-                // New data received. 
-                newOutput = output.Contents.Substring(this.lastBuffer.Length);
-            }
-            else if (output.Contents == this.lastBuffer)
-            {
-                // Nothing happened since last read.
-                return string.Empty;
-            }
-            else if (output.Contents.Length == this.lastBuffer.Length)
-            {
-                // We must have reached the max buffer size. Assuming the buffers
-                // still overlap, we can try to stitch things together.
-                int lastBufferTailLength = Math.Min(128, this.lastBuffer.Length);
-                var lastBufferTail = this.lastBuffer.Substring(
-                    this.lastBuffer.Length - lastBufferTailLength,
-                    lastBufferTailLength);
-
-                int indexOfLastBufferTailInOutput = output.Contents.LastIndexOf(lastBufferTail);
-                if (indexOfLastBufferTailInOutput > 0)
-                {
-                    newOutput = output.Contents.Substring(indexOfLastBufferTailInOutput + lastBufferTailLength);
-                }
-                else
-                {
-                    // Seems like there is no overlap -- just return everyting then.
-                    newOutput = output.Contents;
-                }
-            }
-
-            this.lastBuffer = output.Contents;
-            return newOutput;
+            // If there is no new data, then output.Next == this.nextOffset
+            // and output.Contents is an empty string.
+            this.nextOffset = output.Next.Value;
+            return output.Contents;
         }
     }
 }
