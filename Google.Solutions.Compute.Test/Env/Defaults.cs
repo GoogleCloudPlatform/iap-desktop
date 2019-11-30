@@ -34,15 +34,10 @@ namespace Google.Solutions.Compute.Test.Env
 
         public static GoogleCredential GetCredential()
         {
-            var keyFile = Environment.GetEnvironmentVariable("GOOGLE_APPLICATION_CREDENTIALS");
-            if (keyFile != null && File.Exists(keyFile))
-            {
-                return GoogleCredential.FromFile(keyFile).CreateScoped(CloudPlatformScope);
-            }
-            else
-            {
-                return GoogleCredential.GetApplicationDefault();
-            }
+            var credential = GoogleCredential.GetApplicationDefault();
+            return credential.IsCreateScopedRequired
+                ? credential.CreateScoped(CloudPlatformScope)
+                : credential;
         }
     }
 }
