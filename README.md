@@ -1,59 +1,61 @@
-﻿# Google Cloud IAP for Remote Desktop
+# Google Cloud IAP for Remote Desktop
 
-Exposing RDP over the public internet is a security risk and not recommeneded. If you have
-set up [hybrid connectivity](https://cloud.google.com/hybrid-connectivity/) to your local network,
-then you can securely access your Windows instances over the private network without having 
-to expose RDP to the internet.
-
-A more flexible option which works regardless of your location and network is
-to use [Cloud IAP TCP forwarding](https://cloud.google.com/iap/docs/tcp-forwarding-overview):
-Cloud IAP TCP forwarding works like fully managed bastion host and allows you to create TCP 
-tunnels from your local machine to resources running inside your VPC. By creating a tunnel to port 
-3389 of a Windows instance running on GCP, you can securely connect to a Remote Desktop from anywhere 
-without having to expose any ports to the internet. At the same time, administrators have 
-fine-grained control over who is permitted to create tunnels to which resources.
+Google Cloud IAP for Remote Desktop is a plugin for 
+[Microsoft Remote Desktop Connection Manager](https://www.microsoft.com/en-us/download/details.aspx?id=44989)
+that allows you to connect to VM instances running on Google Cloud via a
+[Cloud IAP TCP forwarding](https://cloud.google.com/iap/docs/tcp-forwarding-overview) tunnel. 
 
 ![Architecture](doc/images/Architecture.svg)
 
-Cloud IAP TCP forwarding works for any ports and protocols, which makes the service very versatile.
-If you want to use RDP to connect to multiple servers, then this versatility can cause TCP forwarding
-to become inconvenient to use as you have to manually set up multiple tunnels before you can open 
-Remote Desktop connections.
-
-This repository contains tools that simplify using Cloud IAP TCP forwarding for Remote Desktop 
-so that you can use it to securely connect to your servers on an everyday basis.
-
-## Plugin for Microsoft Remote Desktop Connection Manager
-
-Microsoft Remote Desktop Connection Manager (RDCMan) is a popular tool for managing Remote Desktop
-connections to fleets of servers. The Cloud IAP plugin extends RDCMan by the ability to remotely
-connect to servers via a Cloud IAP TCP forwarding tunnel. 
+When you click _Connect to server via Cloud IAP_, the plugin automatically creates a 
+[Cloud IAP TCP forwarding](https://cloud.google.com/iap/docs/tcp-forwarding-overview) tunnel for 
+you in the background and connects you to the remote desktop of the server. 
 
 ![Context Menu](doc/images/ContextMenu.png)
 
-If you click _Connect to server via Cloud IAP_, the plugin automatically creates a TCP tunnel for 
-you in the background using your local [GCloud credentials](https://cloud.google.com/sdk/docs/authorizing)
-and connects you to the remote desktop of the server. The feature makes connecting to a VM instance 
-via Cloud IAP TCP forwarding just as convenient as connecting directly, but without the security risk 
-of having to expose any ports to the internet.
+Using RDP over a Cloud IAP TCP forwarding has several key advantages:
 
-## Prerequisites
+* You can connect to VM instance that do not have a public IP address or NAT access to the internet.
+* Because the TCP forwarding tunnel is established over HTTPS, you can connect even if your workstation
+  is behind a corporate firewall or proxy.
+* You can control who should be allowed to connect to a VM in a fine-grained manner by using 
+  [Cloud IAM](https://cloud.google.com/iap/docs/using-tcp-forwarding#configuring_access_and_permissions).
+* You do not need to expose RDP over the public internet. 
 
-* [Microsoft Remote Desktop Connection Manager](https://www.microsoft.com/en-us/download/details.aspx?id=44989) 
-  2.7 must be installed
+The plugin also adds a number of additional features to the Microsoft Remote Desktop Connection Manager
+GUI which make working with Windows VMs on Google Cloud more convinient:
+
+* _Generate Windows logon credentials_ 
+  lets you create a user and [generates a password for a Windows VM instance](https://cloud.google.com/compute/docs/instances/windows/creating-passwords-for-windows-instances) 
+  and saves the credentials in RDCMan. If a Windows account does not exist on the instance yet, 
+  the command will create a new local Administrator account, otherwise it will reset the
+  password of the existing account. 
+  This feature requires the _Compute Engine Admin_ role in GCP.
+* _Show serial port output_ tails the [serial port output](https://cloud.google.com/compute/docs/instances/viewing-serial-port-output)
+  of an instance. This feature allows you to observe the boot process or analyze startup issues.
+* _Open in Cloud Console_ takes you to the instance details in the Cloud Console.
+* _Show Stackdriver logs_ takes you to the logs of the VM instance.
+
+
 
 ## Installation
 
+### Installing the plugin
+
+1. Make yure you have [Microsoft Remote Desktop Connection Manager](https://www.microsoft.com/en-us/download/details.aspx?id=44989) 
+   2.7 installed on your workstation.
 1. Download and run the MSI installer. The installer will install the necessary DLLs into the 
    installation folder of RDCMan (Usually, that is 
   `C:\Program Files (x86)\Microsoft\Remote Desktop Connection Manager\` but the installer
    will automatically detect if you have installed RDCMan to a different location). 
-2. Restart RDCMan.
-3. Done.
+2. Restart Microsoft Remote Desktop Connection Manager.
+3. On first use, the plugin will prompt you to sign in using your Google credentials and grant the plugin access
+   to your GCP projects.
 
-## Granting Cloud IAP access to your VM instances
+### Preparing your GCP project for Cloud IAP access
 
-### Firewall rules
+
+#### Firewall rules
 
 To enable Cloud IAP to establish a TCP tunnel between your local workstation and a VM instance,
 Cloud IAP has to be able to access the RDP port of your VM instance. By default, the VPC firewall rules
@@ -82,7 +84,7 @@ Although `35.235.240.0/20` looks like an external IP address range, Cloud IAP wi
 its internal IP address. VM instances do not need an external IP address for Cloud IAP
 TCP tunneling to work.
 
-### IAM policies
+#### IAM policies
 
 By default, only _Project Owners_ are allowed to use Cloud IAP TCP tunneling to access 
 VM instances. To allow other users to use Cloud IAP TCP tunneling, adjust the IAM policy 
@@ -93,10 +95,7 @@ of your project:
 3. Select the servers you want to grant access to
 4. In the info panel, add the user and assign the **IAP-secured Tunnel User** role.
 
-
-
-
-## Using the plugin
+### Using the plugin
 
 1. In RDCMan, select **File** > **New...** in the main menu to create a new server group. 
 2. Name the file `[PROJECT-ID].rdg` where `[PROJECT-ID]` is the name of the GCP project
@@ -111,19 +110,6 @@ of your project:
 
 All existing RDCMan features are still available and you can choose whether to connect via Cloud IAP
 or directly on a server-by-server basis.
-
-Additional features exposed in the context menu:
-* _Generate Windows logon credentials_ 
-  lets you create a user and [generates a password for a Windows VM instance](https://cloud.google.com/compute/docs/instances/windows/creating-passwords-for-windows-instances) 
-  and saves the credentials in RDCMan. If a Windows account does not exist on the instance yet, 
-  the command will create a new local Administrator account, otherwise it will reset the
-  password of the existing account. 
-  This feature requires the _Compute Engine Admin_ role in GCP.
-* _Show serial port output_ tails the [serial port output](https://cloud.google.com/compute/docs/instances/viewing-serial-port-output)
-  of an instance. This feature allows you to observe the boot process or analyze startup issues.
-* _Open in Cloud Console_ takes you to the instance details in the Cloud Console.
-* _Show Stackdriver logs_ takes you to the logs of the VM instance.
-
 
 ## Troubleshooting
 
