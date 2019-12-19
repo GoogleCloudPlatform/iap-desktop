@@ -97,13 +97,15 @@ of your project:
 
 ### Using the plugin
 
-1. In RDCMan, select **File** > **New...** in the main menu to create a new server group. 
-2. Name the file `[PROJECT-ID].rdg` where `[PROJECT-ID]` is the name of the GCP project
-   containing the VM instances you want to connect to, for example, `my-gcp-project-123.rdg`. 
-   Save the file anywhere you like.
-3. Right-click the file in the server tree and click _Add GCE instances from [PROJECT-ID]_. This 
-   automatially add servers to the server tree for each VM instance in your project. Of course,
-   you can also add servers manually as long as their name matches their instance name in GCE.
+1. In RDCMan, select **Cloud IAM** > **Add project...** in the main menu.
+2. In the project picker dialog, type the name or ID of the project to add, then click **OK**.
+
+   ![Project Picker](doc/images/ProjectPicker.png)
+3. A new server group containing all Windows VMs of the selected project is automatically 
+   added to the server tree:
+
+   ![Server Tree](doc/images/ServerTree.png)
+
 4. Righ-click a server and click _Connect server via Cloud IAP_. This works like _Connect server_,
    but it will establish the connection via a Cloud IAP TCP tunnel. Therefore, this option will 
    work even if you are in a public network.
