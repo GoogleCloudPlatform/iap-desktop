@@ -153,6 +153,14 @@
           Source="..\Google.Solutions.CloudIap.Plugin\bin\$(var.CONFIGURATION)\Google.Apis.Compute.v1.dll"
           Vital="yes"/>
       </Component>
+      <Component Id="CompGoogleApisCloudResourceManagerV1Dll" Guid="b29b5cb8-a2c3-4814-86b2-d81171bb2d90">
+        <File
+          Id="FileGoogleApisCloudResourceManagerV1Dll"
+          Name="Google.Apis.CloudResourceManager.v1.dll"
+          DiskId="1"
+          Source="..\Google.Solutions.CloudIap.Plugin\bin\$(var.CONFIGURATION)\Google.Apis.CloudResourceManager.v1.dll"
+          Vital="yes"/>
+      </Component>
       <Component Id="CompGoogleApisCoreDll" Guid="80b130b6-7b0d-11e9-8f9e-2a86e4085a59">
         <File
           Id="FileGoogleApisCoreDll"
