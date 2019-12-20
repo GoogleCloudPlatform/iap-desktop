@@ -31,6 +31,7 @@ namespace Google.Solutions.CloudIap.Plugin.Gui
     {
         private int ticksElapsed = 0;
         private double seriesValue = 0;
+        private volatile bool formShown = false;
 
         public WaitDialog()
         {
@@ -66,6 +67,11 @@ namespace Google.Solutions.CloudIap.Plugin.Gui
             this.Close();
         }
 
+        private void WaitDialog_Shown(object sender, EventArgs e)
+        {
+            this.formShown = true;
+        }
+
         public static WaitDialog ForMessage(string message)
         {
             return new WaitDialog()
@@ -89,12 +95,28 @@ namespace Google.Solutions.CloudIap.Plugin.Gui
                     {
                         T result = slowFunc().Result;
 
+                        // If the function finished fast, it is possible that the dialog
+                        // has not even been shown yet - that would cause BeginInvoke
+                        // to fail.
+
+                        while (!waitDialog.formShown)
+                        {
+                            Thread.Sleep(10);
+                        }
+
                         if (!waitDialog.CancellationToken.IsCancellationRequested)
                         {
+                            // Close the dialog immediately...
+                            waitDialog.Invoke((Action)(() =>
+                            {
+                                waitDialog.Close();
+                            }));
+
+                            // ...then run the GUI function. If this function opens
+                            // another dialog, the two dialogs will not overlap.
                             parent.BeginInvoke((Action)(() =>
                             {
                                 updateGuiFunc(result);
-                                waitDialog.Close();
                             }));
                         }
                     }
