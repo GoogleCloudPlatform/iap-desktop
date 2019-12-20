@@ -282,38 +282,46 @@ namespace Google.Solutions.CloudIap.Plugin.Gui
 
         private void OnAddProjectClick(object sender, EventArgs e)
         {
-            // Show project picker.
-            var projectId = ProjectPickerDialog.SelectProjectId(
-                ResourceManagerAdapter.Create(this.authorization.Credential), 
-                this.mainForm);
-            if (projectId == null)
-            {
-                // Cancelled.
-                return;
-            }
+            // To make sure we have a valid auth session,
+            // force a token refresh first.
+            WaitDialog.RunWithDialog(
+                this.mainForm,
+                "Loading projects...",
+                () => this.authorization.Credential.GetAccessTokenForRequestAsync(),
+                _ => { },
+                this.authorization.ReauthorizeAsync);
 
-            // Check if project already loaded.
-            var treeView = (TreeView)this.pluginContext.Tree;
-            if (treeView.Nodes
-                .Cast<TreeNode>()
-                .Where(node => node.Text == projectId)
-                .Any())
-            {
-                MessageBox.Show(
-                    this.mainForm,
-                    $"The project {projectId} has already been added",
-                    "Add ´project",
-                    MessageBoxButtons.OK,
-                    MessageBoxIcon.Information);
-                return;
-            }
-
-            // Create a new file group for the given project.
             try
             {
-                var folderPath = Path.Combine(
-                    Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
-                    @"Google\Cloud IAP Plugin");
+                // Show project picker. 
+                string projectId = projectId = ProjectPickerDialog.SelectProjectId(
+                    ResourceManagerAdapter.Create(this.authorization.Credential),
+                    this.mainForm);
+
+                if (projectId == null)
+                {
+                    // Cancelled.
+                    return;
+                }
+
+                // Check if project already loaded.
+                var treeView = (TreeView)this.pluginContext.Tree;
+                if (treeView.Nodes
+                    .Cast<TreeNode>()
+                    .Where(node => node.Text == projectId)
+                    .Any())
+                {
+                    MessageBox.Show(
+                        this.mainForm,
+                        $"The project {projectId} has already been added",
+                        "Add project",
+                        MessageBoxButtons.OK,
+                        MessageBoxIcon.Information);
+                    return;
+                }
+
+                // Create a new file group for the given project.
+                var folderPath = this.configurationStore.Configuration.AppDataLocation;
                 if (!Directory.Exists(folderPath))
                 {
                     Directory.CreateDirectory(folderPath);
