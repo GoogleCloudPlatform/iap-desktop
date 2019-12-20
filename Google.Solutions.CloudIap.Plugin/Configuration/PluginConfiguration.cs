@@ -63,6 +63,11 @@ namespace Google.Solutions.CloudIap.Plugin.Configuration
         [Description("Tracing level")]
         [DisplayName("Tracing level")]
         public SourceLevels TracingLevel { get; set; }
+
+        [Browsable(false)]
+        public string AppDataLocation => Path.Combine(
+            Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
+            @"Google\Cloud IAP Plugin");
     }
 
     public enum Tunneler
