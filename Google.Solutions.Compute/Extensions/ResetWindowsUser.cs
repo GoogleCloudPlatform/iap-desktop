@@ -26,6 +26,7 @@ using System.Linq;
 using System.Net;
 using System.Security.Cryptography;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Google.Solutions.Compute.Extensions
@@ -62,10 +63,49 @@ namespace Google.Solutions.Compute.Extensions
         /// it is created and made a local Administrator.
         /// </summary>
         /// <see href="https://cloud.google.com/compute/docs/instances/windows/automate-pw-generation"/>
-        public static async Task<NetworkCredential> ResetWindowsUserAsync(
+        public static Task<NetworkCredential> ResetWindowsUserAsync(
             this InstancesResource resource,
             VmInstanceReference instanceRef,
             string username)
+        {
+            return ResetWindowsUserAsync(resource, instanceRef, username, TimeSpan.FromSeconds(30));
+        }
+
+        /// <summary>
+        /// Reset a SAM account password. If the SAM account does not exist,
+        /// it is created and made a local Administrator.
+        /// </summary>
+        /// <see href="https://cloud.google.com/compute/docs/instances/windows/automate-pw-generation"/>
+        public static async Task<NetworkCredential> ResetWindowsUserAsync(
+            this InstancesResource resource,
+            VmInstanceReference instanceRef,
+            string username,
+            TimeSpan timeout)
+        {
+            try
+            {
+                using (var cts = new CancellationTokenSource())
+                {
+                    cts.CancelAfter(timeout);
+                    return await ResetWindowsUserAsync(resource, instanceRef, username, cts.Token);
+                }
+            }
+            catch (OperationCanceledException)
+            {
+                throw new TimeoutException("Timeout waiting for password reset");
+            }
+        }
+
+        /// <summary>
+        /// Reset a SAM account password. If the SAM account does not exist,
+        /// it is created and made a local Administrator.
+        /// </summary>
+        /// <see href="https://cloud.google.com/compute/docs/instances/windows/automate-pw-generation"/>
+        public static async Task<NetworkCredential> ResetWindowsUserAsync(
+            this InstancesResource resource,
+            VmInstanceReference instanceRef,
+            string username,
+            CancellationToken token)
         {
             using (RSACryptoServiceProvider rsa = new RSACryptoServiceProvider(RsaKeySize))
             {
@@ -98,38 +138,51 @@ namespace Google.Solutions.Compute.Extensions
                 }
 
                 // Read response from serial port.
-                for (int attempt = 0; attempt < 40; attempt++)
+                var serialPortStream = resource.GetSerialPortOutputStream(
+                    instanceRef,
+                    SerialPort);
+
+                // It is rare, but sometimes a single JSON can be split over multiple
+                // API reads. Therefore, maintain a buffer.
+                var logBuffer = new StringBuilder(64*1024);
+                while (true)
                 {
-                    string buffer = await resource.GetSerialPortOutputStream(
-                        instanceRef, 
-                        SerialPort).ReadAsync().ConfigureAwait(false);
-                    var response = buffer.Split('\n')
+                    token.ThrowIfCancellationRequested();
+
+                    string logDelta = await serialPortStream.ReadAsync().ConfigureAwait(false);
+                    if (string.IsNullOrEmpty(logDelta))
+                    {
+                        // Reached end of stream, wait and try again.
+                        await Task.Delay(500, token).ConfigureAwait(false);
+                        continue;
+                    }
+
+                    logBuffer.Append(logDelta);
+
+                    var response = logBuffer.ToString().Split('\n')
                         .Where(line => line.Contains(requestPayload.Modulus))
                         .FirstOrDefault();
                     if (response == null)
                     {
-                        await Task.Delay(500).ConfigureAwait(false);
+                        // That was not the output we are looking for, keep reading.
+                        continue;
                     }
-                    else
+
+                    var responsePayload = JsonConvert.DeserializeObject<ResponsePayload>(response);
+                    if (!string.IsNullOrEmpty(responsePayload.ErrorMessage))
                     {
-                        var responsePayload = JsonConvert.DeserializeObject<ResponsePayload>(response);
-                        if (!string.IsNullOrEmpty(responsePayload.ErrorMessage))
-                        {
-                            throw new PasswordResetException(responsePayload.ErrorMessage);
-                        }
-
-                        var password = rsa.Decrypt(
-                            Convert.FromBase64String(responsePayload.EncryptedPassword),
-                            true);
-
-                        return new NetworkCredential(
-                            username,
-                            new UTF8Encoding().GetString(password),
-                            null);
+                        throw new PasswordResetException(responsePayload.ErrorMessage);
                     }
-                }
 
-                throw new TimeoutException("Timeout waiting for password reset");
+                    var password = rsa.Decrypt(
+                        Convert.FromBase64String(responsePayload.EncryptedPassword),
+                        true);
+
+                    return new NetworkCredential(
+                        username,
+                        new UTF8Encoding().GetString(password),
+                        null);
+                }
             }
         }
 
