@@ -60,10 +60,9 @@ namespace Google.Solutions.CloudIap.Plugin.Gui
             // cancelButton
             // 
             this.cancelButton.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.cancelButton.Location = new System.Drawing.Point(360, 70);
-            this.cancelButton.Margin = new System.Windows.Forms.Padding(4);
+            this.cancelButton.Location = new System.Drawing.Point(270, 57);
             this.cancelButton.Name = "cancelButton";
-            this.cancelButton.Size = new System.Drawing.Size(109, 34);
+            this.cancelButton.Size = new System.Drawing.Size(82, 28);
             this.cancelButton.TabIndex = 0;
             this.cancelButton.Text = "Cancel";
             this.cancelButton.UseVisualStyleBackColor = true;
@@ -72,19 +71,17 @@ namespace Google.Solutions.CloudIap.Plugin.Gui
             // messageLabel
             // 
             this.messageLabel.AutoSize = true;
-            this.messageLabel.Location = new System.Drawing.Point(12, 47);
-            this.messageLabel.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.messageLabel.Location = new System.Drawing.Point(9, 38);
             this.messageLabel.Name = "messageLabel";
-            this.messageLabel.Size = new System.Drawing.Size(24, 17);
+            this.messageLabel.Size = new System.Drawing.Size(19, 13);
             this.messageLabel.TabIndex = 1;
             this.messageLabel.Text = " ...";
             // 
             // progressBar
             // 
-            this.progressBar.Location = new System.Drawing.Point(16, 15);
-            this.progressBar.Margin = new System.Windows.Forms.Padding(4);
+            this.progressBar.Location = new System.Drawing.Point(12, 12);
             this.progressBar.Name = "progressBar";
-            this.progressBar.Size = new System.Drawing.Size(453, 28);
+            this.progressBar.Size = new System.Drawing.Size(340, 23);
             this.progressBar.TabIndex = 2;
             // 
             // timer
@@ -94,16 +91,15 @@ namespace Google.Solutions.CloudIap.Plugin.Gui
             // 
             // WaitDialog
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.cancelButton;
-            this.ClientSize = new System.Drawing.Size(483, 137);
+            this.ClientSize = new System.Drawing.Size(362, 111);
             this.ControlBox = false;
             this.Controls.Add(this.progressBar);
             this.Controls.Add(this.messageLabel);
             this.Controls.Add(this.cancelButton);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
-            this.Margin = new System.Windows.Forms.Padding(4);
             this.MaximizeBox = false;
             this.MinimizeBox = false;
             this.Name = "WaitDialog";
@@ -112,6 +108,7 @@ namespace Google.Solutions.CloudIap.Plugin.Gui
             this.SizeGripStyle = System.Windows.Forms.SizeGripStyle.Hide;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "WaitDialog";
+            this.Shown += new System.EventHandler(this.WaitDialog_Shown);
             this.ResumeLayout(false);
             this.PerformLayout();
 

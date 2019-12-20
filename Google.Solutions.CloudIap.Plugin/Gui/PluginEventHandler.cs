@@ -288,88 +288,81 @@ namespace Google.Solutions.CloudIap.Plugin.Gui
                 this.mainForm,
                 "Loading projects...",
                 () => this.authorization.Credential.GetAccessTokenForRequestAsync(),
-                _ => { },
-                this.authorization.ReauthorizeAsync);
+                _ => {
+                    // Show project picker. 
+                    string projectId = projectId = ProjectPickerDialog.SelectProjectId(
+                        ResourceManagerAdapter.Create(this.authorization.Credential),
+                        this.mainForm);
 
-            try
-            {
-                // Show project picker. 
-                string projectId = projectId = ProjectPickerDialog.SelectProjectId(
-                    ResourceManagerAdapter.Create(this.authorization.Credential),
-                    this.mainForm);
-
-                if (projectId == null)
-                {
-                    // Cancelled.
-                    return;
-                }
-
-                // Check if project already loaded.
-                var treeView = (TreeView)this.pluginContext.Tree;
-                if (treeView.Nodes
-                    .Cast<TreeNode>()
-                    .Where(node => node.Text == projectId)
-                    .Any())
-                {
-                    MessageBox.Show(
-                        this.mainForm,
-                        $"The project {projectId} has already been added",
-                        "Add project",
-                        MessageBoxButtons.OK,
-                        MessageBoxIcon.Information);
-                    return;
-                }
-
-                // Create a new file group for the given project.
-                var folderPath = this.configurationStore.Configuration.AppDataLocation;
-                if (!Directory.Exists(folderPath))
-                {
-                    Directory.CreateDirectory(folderPath);
-                }
-
-                var rdgFilePath = Path.Combine(folderPath, projectId + ".rdg");
-                if (File.Exists(rdgFilePath))
-                {
-                    // If the file exist, we must not create a new FileGroup. Instead,
-                    // the file must be opened properly. But there is no API for that.
-                    if (MessageBox.Show(
-                        this.mainForm,
-                        "There is an existing .rdg file for this project. \n"+
-                        "Do you want to overwrite this file?",
-                        "Add project",
-                        MessageBoxButtons.YesNoCancel,
-                        MessageBoxIcon.Warning) == DialogResult.Yes)
+                    if (projectId == null)
                     {
-                        // Delete and re-create.
-                        File.Delete(rdgFilePath);
-                    }
-                    else
-                    {
-                        // Stop.
+                        // Cancelled.
                         return;
                     }
-                }
 
-                // The plugin lacks an API to create new file nodes, so we have to call
-                // an internal API for that.
-                var constructor = typeof(FileGroup)
-                    .GetConstructor(
-                        BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic,
-                        null,
-                        new[] { typeof(string) },
-                        null);
-                var fileGroup = (FileGroup)constructor
-                    .Invoke(new [] { rdgFilePath });
+                    // Check if project already loaded.
+                    var treeView = (TreeView)this.pluginContext.Tree;
+                    if (treeView.Nodes
+                        .Cast<TreeNode>()
+                        .Where(node => node.Text == projectId)
+                        .Any())
+                    {
+                        MessageBox.Show(
+                            this.mainForm,
+                            $"The project {projectId} has already been added",
+                            "Add project",
+                            MessageBoxButtons.OK,
+                            MessageBoxIcon.Information);
+                        return;
+                    }
 
-                // Hydrate the group.
-                OnLoadServersClick(fileGroup);
+                    // Create a new file group for the given project.
+                    var folderPath = this.configurationStore.Configuration.AppDataLocation;
+                    if (!Directory.Exists(folderPath))
+                    {
+                        Directory.CreateDirectory(folderPath);
+                    }
 
-                this.pluginContext.Tree.AddNode(fileGroup, this.pluginContext.Tree.RootNode);
-            }
-            catch (Exception ex)
-            {
-                ExceptionUtil.HandleException(this.mainForm, "Project", ex);
-            }
+                    var rdgFilePath = Path.Combine(folderPath, projectId + ".rdg");
+                    if (File.Exists(rdgFilePath))
+                    {
+                        // If the file exist, we must not create a new FileGroup. Instead,
+                        // the file must be opened properly. But there is no API for that.
+                        if (MessageBox.Show(
+                            this.mainForm,
+                            "There is an existing .rdg file for this project. \n" +
+                            "Do you want to overwrite this file?",
+                            "Add project",
+                            MessageBoxButtons.YesNoCancel,
+                            MessageBoxIcon.Warning) == DialogResult.Yes)
+                        {
+                            // Delete and re-create.
+                            File.Delete(rdgFilePath);
+                        }
+                        else
+                        {
+                            // Stop.
+                            return;
+                        }
+                    }
+
+                    // The plugin lacks an API to create new file nodes, so we have to call
+                    // an internal API for that.
+                    var constructor = typeof(FileGroup)
+                        .GetConstructor(
+                            BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic,
+                            null,
+                            new[] { typeof(string) },
+                            null);
+                    var fileGroup = (FileGroup)constructor
+                        .Invoke(new[] { rdgFilePath });
+
+                    // Hydrate the group.
+                    OnLoadServersClick(fileGroup);
+
+                    this.pluginContext.Tree.AddNode(fileGroup, this.pluginContext.Tree.RootNode);
+                },
+                this.authorization.ReauthorizeAsync);
         }
 
         private void OnLoadServersClick(FileGroup fileGroup)
