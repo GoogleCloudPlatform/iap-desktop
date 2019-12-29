@@ -33,6 +33,8 @@ namespace Google.Solutions.CloudIap.Plugin.Integration
         private readonly IDictionary<TunnelDestination, Task<ITunnel>> tunnels =
             new Dictionary<TunnelDestination, Task<ITunnel>>();
 
+        // TODO: use CTS instead of timeout
+
         public IEnumerable<ITunnel> OpenTunnels
         {
             get

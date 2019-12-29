@@ -31,6 +31,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Google.Solutions.CloudIap.Plugin.Integration
@@ -111,9 +112,10 @@ namespace Google.Solutions.CloudIap.Plugin.Integration
 
         public Task<NetworkCredential> ResetWindowsUserAsync(
             VmInstanceReference instanceRef, 
-            string username)
+            string username,
+            CancellationToken token)
         {
-            return this.service.Instances.ResetWindowsUserAsync(instanceRef, username);
+            return this.service.Instances.ResetWindowsUserAsync(instanceRef, username, token);
         }
 
         private static bool IsWindowsInstanceByGuestOsFeature(Instance instance)
