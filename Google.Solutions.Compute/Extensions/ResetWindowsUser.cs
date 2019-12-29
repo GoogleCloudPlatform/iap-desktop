@@ -50,50 +50,14 @@ namespace Google.Solutions.Compute.Extensions
             string project,
             string zone,
             string instance,
-            string username)
+            string username,
+            CancellationToken token)
         {
             return ResetWindowsUserAsync(
                 resource,
                 new VmInstanceReference(project, zone, instance),
-                username);
-        }
-
-        /// <summary>
-        /// Reset a SAM account password. If the SAM account does not exist,
-        /// it is created and made a local Administrator.
-        /// </summary>
-        /// <see href="https://cloud.google.com/compute/docs/instances/windows/automate-pw-generation"/>
-        public static Task<NetworkCredential> ResetWindowsUserAsync(
-            this InstancesResource resource,
-            VmInstanceReference instanceRef,
-            string username)
-        {
-            return ResetWindowsUserAsync(resource, instanceRef, username, TimeSpan.FromSeconds(30));
-        }
-
-        /// <summary>
-        /// Reset a SAM account password. If the SAM account does not exist,
-        /// it is created and made a local Administrator.
-        /// </summary>
-        /// <see href="https://cloud.google.com/compute/docs/instances/windows/automate-pw-generation"/>
-        public static async Task<NetworkCredential> ResetWindowsUserAsync(
-            this InstancesResource resource,
-            VmInstanceReference instanceRef,
-            string username,
-            TimeSpan timeout)
-        {
-            try
-            {
-                using (var cts = new CancellationTokenSource())
-                {
-                    cts.CancelAfter(timeout);
-                    return await ResetWindowsUserAsync(resource, instanceRef, username, cts.Token);
-                }
-            }
-            catch (OperationCanceledException)
-            {
-                throw new TimeoutException("Timeout waiting for password reset");
-            }
+                username,
+                token);
         }
 
         /// <summary>

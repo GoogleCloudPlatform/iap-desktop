@@ -61,7 +61,7 @@ namespace Google.Solutions.CloudIap.Plugin.Integration
             return GcloudTunnel.Open(
                 new FileInfo(configuration.GcloudCommandPath),
                 endpoint,
-                configuration.IapConnectionTimeout);
+                timeout);
         }
     }
     

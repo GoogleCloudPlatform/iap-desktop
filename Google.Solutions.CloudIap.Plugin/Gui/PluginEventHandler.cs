@@ -287,7 +287,7 @@ namespace Google.Solutions.CloudIap.Plugin.Gui
             WaitDialog.RunWithDialog(
                 this.mainForm,
                 "Loading projects...",
-                () => this.authorization.Credential.GetAccessTokenForRequestAsync(),
+                _ => this.authorization.Credential.GetAccessTokenForRequestAsync(),
                 _ => {
                     // Show project picker. 
                     string projectId = projectId = ProjectPickerDialog.SelectProjectId(
@@ -375,7 +375,7 @@ namespace Google.Solutions.CloudIap.Plugin.Gui
             WaitDialog.RunWithDialog(
                 this.mainForm,
                 "Loading instances...",
-                async () => {
+                async _ => {
                     try
                     {
                         return await ComputeEngineAdapter.Create(authorization.Credential)
@@ -479,7 +479,7 @@ namespace Google.Solutions.CloudIap.Plugin.Gui
             WaitDialog.RunWithDialog(
                 this.mainForm,
                 "Opening Cloud IAP tunnel...",
-                async () => {
+                async _ => {
                     try
                     {
                         return await this.tunnelManager.ConnectAsync(new TunnelDestination(
@@ -551,7 +551,7 @@ namespace Google.Solutions.CloudIap.Plugin.Gui
             WaitDialog.RunWithDialog(
                 this.mainForm,
                 "Generating Windows logon credentials...",
-                () => ComputeEngineAdapter.Create(authorization.Credential).ResetWindowsUserAsync(instance, username),
+                token => ComputeEngineAdapter.Create(authorization.Credential).ResetWindowsUserAsync(instance, username, token),
                 credentials =>
                 {
                     ShowCredentialsDialog.ShowDialog(
@@ -607,7 +607,7 @@ namespace Google.Solutions.CloudIap.Plugin.Gui
             WaitDialog.RunWithDialog(
                 this.mainForm,
                 "Loading instance information...",
-                () => ComputeEngineAdapter.Create(authorization.Credential).QueryInstanceAsync(instance),
+                _ => ComputeEngineAdapter.Create(authorization.Credential).QueryInstanceAsync(instance),
                 instanceDetails =>
                 {
                     Process.Start(new ProcessStartInfo()
