@@ -28,6 +28,8 @@ using Microsoft.Win32;
 using RdcMan;
 using System;
 using System.ComponentModel.Composition;
+using System.Net;
+using System.Threading;
 using System.Windows.Forms;
 using System.Xml;
 
@@ -48,13 +50,15 @@ namespace Google.Solutions.CloudIap.Plugin.Gui
         private PluginConfigurationStore configurationStore;
         private RegistryStore credentialStore;
 
+        private Form mainForm;
+
         //---------------------------------------------------------------------
         // IPlugin implementation
         //---------------------------------------------------------------------
 
         public void PostLoad(IPluginContext context)
         {
-            var mainForm = context.MainForm.MainMenuStrip.FindForm();
+            this.mainForm = context.MainForm.MainMenuStrip.FindForm();
 
             // Load credential store. Keep the reference around because
             // AuthorizeDialog.Authorize will use it for asynchronous
@@ -84,6 +88,11 @@ namespace Google.Solutions.CloudIap.Plugin.Gui
                 authorization,
                 mainForm,
                 context);
+
+            // Use TLS 1.2 if possible.
+            System.Net.ServicePointManager.SecurityProtocol =
+                SecurityProtocolType.Tls12 |
+                SecurityProtocolType.Tls11;
         }
 
         public void OnContextMenu(ContextMenuStrip contextMenuStrip, RdcTreeNode node)

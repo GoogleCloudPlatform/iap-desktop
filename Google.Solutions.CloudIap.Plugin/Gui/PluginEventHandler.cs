@@ -32,6 +32,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
@@ -120,10 +121,11 @@ namespace Google.Solutions.CloudIap.Plugin.Gui
             var pluginMenuItem = new ToolStripMenuItem("Cloud &IAP");
             pluginMenuItem
                 .DropDownItems
-                .AddRange(new ToolStripMenuItem[] {
+                .AddRange(new ToolStripItem[] {
                     addProjectMenuItem,
-                    configMenuItem,
                     tunnelsMenuItem,
+                    new ToolStripSeparator(),
+                    configMenuItem,
                     signOutMenuItem,
                 });
 
@@ -274,6 +276,81 @@ namespace Google.Solutions.CloudIap.Plugin.Gui
                 // It is pretty likely that some python.exe process will be leaked
                 // though.
                 Debug.WriteLine($"Failed to close tunnels: {e.Message}");
+            }
+
+            CheckForUpdates();
+        }
+
+        private void CheckForUpdates()
+        {
+            if (!this.configurationStore.Configuration.CheckForUpdates)
+            {
+                return;
+            }
+
+            // Determine latest available version.
+            GithubAdapter.Release latestRelease;
+            using (var cts = new CancellationTokenSource())
+            {
+                // Do not delay the shutdown unnecessarily.
+                cts.CancelAfter(TimeSpan.FromSeconds(5));
+
+                // When this code run, the main form is already hidden. With
+                // no GUI shown, blocking the main thread is okay.
+                latestRelease = GithubAdapter.FindLatestReleaseAsync(cts.Token).Result;
+            }
+
+            var installedVersion = this.configurationStore.Configuration.Version;
+
+            if (latestRelease == null ||
+                latestRelease.TagVersion.CompareTo(installedVersion) <= 0)
+            {
+                // Installed version is up to date.
+                return;
+            }
+
+            // Prompt for upgrade.
+            int selectedOption = UnsafeNativeMethods.ShowOptionsTaskDialog(
+                this.mainForm,
+                "Update available",
+                "An update is available for the Cloud IAP plugin",
+                "Would you like to download the update now?",
+                $"Installed version: {installedVersion}\nAvailable version: {latestRelease.TagVersion}",
+                new[]
+                {
+                    "Yes, download now",
+                    "More information",     // Same as pressing 'OK'
+                    "No, download later"    // Same as pressing 'Cancel'
+                },
+                "Do not check for updates again",
+                out bool donotCheckForUpdatesAgain);
+
+            if (selectedOption == 2)
+            {
+                // Cancel.
+                return;
+            }
+
+            if (donotCheckForUpdatesAgain)
+            {
+                var config = this.configurationStore.Configuration;
+                config.CheckForUpdates = !donotCheckForUpdatesAgain;
+                this.configurationStore.Configuration = config;
+            }
+
+            using (var launchBrowser = new Process())
+            {
+                if (selectedOption == 0 && latestRelease.Assets.Any())
+                {
+                    launchBrowser.StartInfo.FileName = latestRelease.Assets.First().DownloadUrl;
+                }
+                else
+                {
+                    launchBrowser.StartInfo.FileName = latestRelease.HtmlUrl;
+                }
+
+                launchBrowser.StartInfo.UseShellExecute = true;
+                launchBrowser.Start();
             }
         }
 
