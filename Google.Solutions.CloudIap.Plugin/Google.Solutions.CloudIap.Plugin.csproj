@@ -125,12 +125,14 @@
     </Compile>
     <Compile Include="Gui\UnsafeNativeMethods.cs" />
     <Compile Include="Integration\ResourceManagerAdapter.cs" />
+    <Compile Include="Integration\GithubAdapter.cs" />
     <Compile Include="Integration\ComputeEngineAdapter.cs" />
     <Compile Include="Gui\PluginEventHandler.cs" />
     <Compile Include="Integration\DefaultTunnelingManager.cs" />
     <Compile Include="Integration\GcloudProcess.cs" />
     <Compile Include="Integration\GcloudTunnelManager.cs" />
     <Compile Include="Integration\PageHelper.cs" />
+    <Compile Include="Integration\RestClient.cs" />
     <Compile Include="Integration\TunnelManagerBase.cs" />
     <Compile Include="OAuthClient.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

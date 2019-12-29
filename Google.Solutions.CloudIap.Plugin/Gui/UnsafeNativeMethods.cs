@@ -20,7 +20,10 @@
 //
 
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Runtime.InteropServices;
+using System.Windows.Forms;
 
 namespace Google.Solutions.CloudIap.Plugin.Gui
 {
@@ -60,6 +63,9 @@ namespace Google.Solutions.CloudIap.Plugin.Gui
 
         public static readonly IntPtr TD_ERROR_ICON = new IntPtr(65534);
         public static readonly IntPtr TD_INFORMATION_ICON = new IntPtr(65533);
+        public static readonly IntPtr TD_SHIELD_ICON = new IntPtr(65532);
+        public static readonly IntPtr TD_SHIELD_ICON_INFO_BACKGROUND = new IntPtr(65531);
+        public static readonly IntPtr TD_SHIELD_ICON_WARNING_BACKGROUND = new IntPtr(65530);
 
         [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Unicode, Pack = 1)]
         internal struct TASKDIALOGCONFIG
@@ -91,7 +97,7 @@ namespace Google.Solutions.CloudIap.Plugin.Gui
             public int nDefaultRadioButton;
 
             [MarshalAs(UnmanagedType.LPWStr)]
-            private string pszVerificationText;
+            public string pszVerificationText;
 
             [MarshalAs(UnmanagedType.LPWStr)]
             public string pszExpandedInformation;
@@ -112,6 +118,14 @@ namespace Google.Solutions.CloudIap.Plugin.Gui
             public uint cxWidth;
         }
 
+        [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Unicode, Pack = 1)]
+        internal struct TASKDIALOG_BUTTON_RAW
+        {
+            public int nButtonID;
+
+            public IntPtr pszButtonText;
+        }
+
         internal delegate int TaskDialogCallback([In] IntPtr hwnd, [In] uint msg, [In] UIntPtr wParam, [In] IntPtr lParam, [In] IntPtr refData);
 
         [DllImport("ComCtl32", CharSet = CharSet.Unicode, PreserveSig = false)]
@@ -120,5 +134,77 @@ namespace Google.Solutions.CloudIap.Plugin.Gui
             [Out] out int pnButton,
             [Out] out int pnRadioButton,
             [Out] out bool pfVerificationFlagChecked);
+
+        internal static int ShowOptionsTaskDialog(
+            IWin32Window parent,
+            string windowTitle,
+            string mainInstruction,
+            string content,
+            string details,
+            IList<string> optionCaptions,
+            string verificationText,
+            out bool verificationFlagPressed)
+        {
+            // The options to show.
+            var options = optionCaptions
+                .Select(caption => Marshal.StringToHGlobalUni(caption))
+                .ToArray();
+
+            // Wrap each option by a TASKDIALOG_BUTTON_RAW structure and 
+            // marshal them one by one into a native memory buffer.
+            var buttonsBuffer = Marshal.AllocHGlobal(
+                Marshal.SizeOf<TASKDIALOG_BUTTON_RAW>() * options.Length);
+
+            var currentButton = buttonsBuffer;
+            for (int i = 0; i < options.Length; i++)
+            {
+                Marshal.StructureToPtr<TASKDIALOG_BUTTON_RAW>(
+                    new TASKDIALOG_BUTTON_RAW()
+                    {
+                        nButtonID = i,
+                        pszButtonText = options[i]
+                    },
+                    currentButton,
+                    false);
+                currentButton += Marshal.SizeOf<TASKDIALOG_BUTTON_RAW>();
+            }
+
+            try
+            {
+                var config = new TASKDIALOGCONFIG()
+                {
+                    cbSize = (uint)Marshal.SizeOf(typeof(TASKDIALOGCONFIG)),
+                    hwndParent = parent.Handle,
+                    dwFlags = TASKDIALOG_FLAGS.TDF_USE_COMMAND_LINKS,
+                    dwCommonButtons = TASKDIALOG_COMMON_BUTTON_FLAGS.TDCBF_OK_BUTTON | 
+                                      TASKDIALOG_COMMON_BUTTON_FLAGS.TDCBF_CANCEL_BUTTON,
+                    pszWindowTitle = windowTitle,
+                    MainIcon = TD_SHIELD_ICON_INFO_BACKGROUND,
+                    pszMainInstruction = mainInstruction,
+                    pszContent = content,
+                    pButtons = buttonsBuffer,
+                    cButtons = (uint)options.Length,
+                    pszExpandedInformation = details,
+                    pszVerificationText = verificationText
+                };
+
+                TaskDialogIndirect(
+                    ref config,
+                    out int buttonPressed,
+                    out int radioButtonPressed,
+                    out verificationFlagPressed);
+
+                return buttonPressed;
+            }
+            finally
+            {
+                foreach (var option in options)
+                {
+                    Marshal.FreeHGlobal(option);
+                }
+
+                Marshal.FreeHGlobal(buttonsBuffer);
+            }
+        }
     }
 }

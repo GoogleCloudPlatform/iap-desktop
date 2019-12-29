@@ -37,26 +37,38 @@ namespace Google.Solutions.CloudIap.Plugin.Configuration
     internal class PluginConfiguration
     {
         private const string DefaultCategoryName = "General";
+        private const string TunnelingCategoryName = "Tunneling";
 
-        [Category(DefaultCategoryName)]
+        [Category(TunnelingCategoryName)]
         [Browsable(true)]
         [Description("Path to gcloud.cmd in Cloud SDK installation folder")]
         [DisplayName("Path to gcloud")]
         [EditorAttribute(typeof(System.Windows.Forms.Design.FileNameEditor), typeof(System.Drawing.Design.UITypeEditor))]
         public string GcloudCommandPath { get; set; }
 
-        [Category(DefaultCategoryName)]
+        [Category(TunnelingCategoryName)]
+        [Browsable(true)]
+        [Description("IAP tunneling implementation to use (change requires restart)")]
+        [DisplayName("Tunneling implementation")]
+        public Tunneler Tunneler { get; set; }
+
+        [Category(TunnelingCategoryName)]
         [Browsable(true)]
         [Description("Timeout for establishing a Cloud IAP tunnel")]
         [DisplayName("IAP Connection Timeout")]
         public TimeSpan IapConnectionTimeout { get; set; }
 
+        [Category(DefaultCategoryName)]
+        [Browsable(true)]
+        [Description("Automatically check for updates when closing application")]
+        [DisplayName("Check for updates")]
+        public bool CheckForUpdates { get; set; }
 
         [Category(DefaultCategoryName)]
         [Browsable(true)]
-        [Description("IAP tunneling implementation to use (change requires restart)")]
-        [DisplayName("Tunneling implementation")]
-        public Tunneler Tunneler { get; set; }
+        [Description("Version of plugin")]
+        [DisplayName("Plugin version")]
+        public Version Version => GetType().Assembly.GetName().Version;
 
         [Category(DefaultCategoryName)]
         [Browsable(false)]
@@ -84,6 +96,7 @@ namespace Google.Solutions.CloudIap.Plugin.Configuration
     /// </summary>
     internal class PluginConfigurationStore : IDisposable
     {
+        private readonly int DefaultCheckForUpdates = 1;
         private readonly int DefaultIapConnectionTimeout = 30*1000;
         private readonly RegistryKey configKey;
 
@@ -107,6 +120,10 @@ namespace Google.Solutions.CloudIap.Plugin.Configuration
                         "IapConnectionTimeout",
                         RegistryValueKind.DWord,
                         DefaultIapConnectionTimeout)),
+                    CheckForUpdates = GetConfig(
+                        "CheckForUpdates",
+                        RegistryValueKind.DWord,
+                        DefaultCheckForUpdates) == 1,
                     Tunneler = (Tunneler)GetConfig<int>(
                         "Tunneler",
                         RegistryValueKind.DWord,
@@ -129,6 +146,11 @@ namespace Google.Solutions.CloudIap.Plugin.Configuration
                     RegistryValueKind.DWord, 
                     (int)value.IapConnectionTimeout.TotalMilliseconds, 
                     DefaultIapConnectionTimeout);
+                SetConfig<int>(
+                   "CheckForUpdates",
+                   RegistryValueKind.DWord,
+                   value.CheckForUpdates ? 1 : 0,
+                   DefaultCheckForUpdates);
                 SetConfig<int>(
                     "Tunneler",
                     RegistryValueKind.DWord,
