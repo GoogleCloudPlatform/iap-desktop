@@ -39,7 +39,7 @@ namespace Google.Solutions.CloudIap.Plugin.Gui
             this.timer.Start();
         }
 
-        public CancellationTokenSource CancellationToken { get; set; } = new CancellationTokenSource();
+        public CancellationTokenSource CancellationSource { get; set; } = new CancellationTokenSource();
 
         public string Message
         {
@@ -63,7 +63,7 @@ namespace Google.Solutions.CloudIap.Plugin.Gui
 
         private void cancelButton_Click(object sender, EventArgs e)
         {
-            this.CancellationToken.Cancel();
+            this.CancellationSource.Cancel();
             this.Close();
         }
 
@@ -83,7 +83,7 @@ namespace Google.Solutions.CloudIap.Plugin.Gui
         public static void Run<T>(
             Control parent,
             string message,
-            Func<Task<T>> slowFunc,
+            Func<CancellationToken, Task<T>> slowFunc,
             Action<T> updateGuiFunc)
         {
             Exception exception = null;
@@ -93,7 +93,7 @@ namespace Google.Solutions.CloudIap.Plugin.Gui
                 {
                     try
                     {
-                        T result = slowFunc().Result;
+                        T result = slowFunc(waitDialog.CancellationSource.Token).Result;
 
                         // If the function finished fast, it is possible that the dialog
                         // has not even been shown yet - that would cause BeginInvoke
@@ -104,7 +104,7 @@ namespace Google.Solutions.CloudIap.Plugin.Gui
                             Thread.Sleep(10);
                         }
 
-                        if (!waitDialog.CancellationToken.IsCancellationRequested)
+                        if (!waitDialog.CancellationSource.IsCancellationRequested)
                         {
                             // Close the dialog immediately...
                             waitDialog.Invoke((Action)(() =>
@@ -125,7 +125,9 @@ namespace Google.Solutions.CloudIap.Plugin.Gui
                         exception = e;
                         parent.BeginInvoke((Action)(() =>
                         {
-                            if (!waitDialog.CancellationToken.IsCancellationRequested)
+                            // The 'Cancel' button closes the dialog, do not close again
+                            // if the user clicked that button.
+                            if (!waitDialog.CancellationSource.IsCancellationRequested)
                             {
                                 waitDialog.Close();
                             }
@@ -145,7 +147,7 @@ namespace Google.Solutions.CloudIap.Plugin.Gui
         public static void RunWithDialog<T>(
             Control parent,
             string message,
-            Func<Task<T>> slowFunc,
+            Func<CancellationToken, Task<T>> slowFunc,
             Action<T> updateGuiFunc,
             Func<Task> reauthorize)
         {
@@ -177,7 +179,7 @@ namespace Google.Solutions.CloudIap.Plugin.Gui
                             Run<T>(
                                 parent, 
                                 "Authorizing", 
-                                async () => 
+                                async _ => 
                                 {
                                     await reauthorize();
                                     return default(T);

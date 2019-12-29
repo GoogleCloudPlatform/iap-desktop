@@ -37,7 +37,7 @@ namespace Google.Solutions.CloudIap.Plugin.Gui
             if (disposing && (components != null))
             {
                 components.Dispose();
-                this.CancellationToken.Dispose();
+                this.CancellationSource.Dispose();
             }
             base.Dispose(disposing);
         }

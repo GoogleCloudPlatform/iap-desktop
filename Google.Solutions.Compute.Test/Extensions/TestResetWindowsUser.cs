@@ -25,6 +25,7 @@ using NUnit.Framework;
 using System;
 using System.Threading.Tasks;
 using Google.Apis.Compute.v1;
+using System.Threading;
 
 namespace Google.Solutions.Compute.Test.Extensions
 {
@@ -52,7 +53,8 @@ namespace Google.Solutions.Compute.Test.Extensions
             {
                 await this.instancesResource.ResetWindowsUserAsync(
                     testInstance.InstanceReference, 
-                    username);
+                    username,
+                    CancellationToken.None);
                 Assert.Fail();
             }
             catch (PasswordResetException e)
@@ -70,7 +72,8 @@ namespace Google.Solutions.Compute.Test.Extensions
             var username = "test" + Guid.NewGuid().ToString().Substring(20);
             var credentials = await this.instancesResource.ResetWindowsUserAsync(
                 testInstance.InstanceReference, 
-                username);
+                username,
+                CancellationToken.None);
 
             Assert.AreEqual(username, credentials.UserName);
             Assert.IsEmpty(credentials.Domain);
@@ -86,10 +89,12 @@ namespace Google.Solutions.Compute.Test.Extensions
             var username = "existinguser";
             await this.instancesResource.ResetWindowsUserAsync(
                 testInstance.InstanceReference, 
-                username);
+                username,
+                CancellationToken.None);
             var credentials = await this.instancesResource.ResetWindowsUserAsync(
                 testInstance.InstanceReference, 
-                username);
+                username,
+                CancellationToken.None);
 
             Assert.AreEqual(username, credentials.UserName);
             Assert.IsEmpty(credentials.Domain);
