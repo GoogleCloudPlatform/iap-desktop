@@ -93,12 +93,16 @@ namespace Google.Solutions.Compute.Extensions
                         MetadataKey,
                         requestJson).ConfigureAwait(false);
                 }
-                catch (GoogleApiException)
+                catch (GoogleApiException e) when (e.Error == null || e.Error.Code == 403)
                 {
-                    // Setting metadata failed, most likely because of lack of permissions.
+                    // Setting metadata failed due to lack of permissions. Note that
+                    // the Error object is not always populated, hence the OR filter.
+
                     throw new PasswordResetException(
-                        "Failed to update metadata of instance. " +
-                        "Make sure you have the 'Service Account User' to reset a Windows password");
+                        "You do not have sufficient permissions to reset a Windows password. " +
+                        "You need the 'Service Account User' and " + 
+                        "'Compute Instance Admin' roles (or equivalent custom roles) " +
+                        "to perform this action.");
                 }
 
                 // Read response from serial port.

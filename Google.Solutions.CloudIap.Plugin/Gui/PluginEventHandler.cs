@@ -23,6 +23,7 @@ using Google.Solutions.CloudIap.Plugin.Configuration;
 using Google.Solutions.CloudIap.Plugin.Integration;
 using Google.Solutions.Compute;
 using Google.Solutions.Compute.Auth;
+using Google.Solutions.Compute.Iap;
 using Google.Solutions.Compute.Net;
 using RdcMan;
 using System;
@@ -381,7 +382,7 @@ namespace Google.Solutions.CloudIap.Plugin.Gui
                         return await ComputeEngineAdapter.Create(authorization.Credential)
                             .QueryInstancesAsync(projectId);
                     }
-                    catch (GoogleApiException e) when (e.Error.Code == 403)
+                    catch (GoogleApiException e) when (e.Error != null && e.Error.Code == 403)
                     {
                         throw new ApplicationException(
                             "You do not have sufficient acces to this project", e);
@@ -454,7 +455,7 @@ namespace Google.Solutions.CloudIap.Plugin.Gui
 
         private void OnIapConnectClick(Server server, bool connectAs)
         {
-            var instance = new VmInstanceReference(
+            var instanceRef = new VmInstanceReference(
                 server.FileGroup.Text,
                 server.Parent.Text,
                 server.DisplayName);
@@ -483,7 +484,7 @@ namespace Google.Solutions.CloudIap.Plugin.Gui
                     try
                     {
                         return await this.tunnelManager.ConnectAsync(new TunnelDestination(
-                            instance,
+                            instanceRef,
                             RemoteDesktopPort),
                             this.configurationStore.Configuration.IapConnectionTimeout);
                     }
@@ -492,8 +493,18 @@ namespace Google.Solutions.CloudIap.Plugin.Gui
                         throw new ApplicationException(
                             "Connecting to the instance failed. Make sure that you have "+
                             "configured your firewall rules to permit Cloud IAP access " +
-                            $"to {instance.InstanceName}", 
+                            $"to {instanceRef.InstanceName}", 
                             e);
+                    }
+                    catch (UnauthorizedException)
+                    {
+                        // Throw a more precise exception if this is because the instance
+                        // is not running.
+                        await VerifyInstanceIsRunning(instanceRef);
+
+                        // Instance exists and is running, so it must be a genuine permission
+                        // problem.
+                        throw new ApplicationException("You are not authorized to connect to this VM instance");
                     }
                 },
                 tunnel =>
@@ -543,7 +554,7 @@ namespace Google.Solutions.CloudIap.Plugin.Gui
                 return;
             }
 
-            VmInstanceReference instance = new VmInstanceReference(
+            VmInstanceReference instanceRef = new VmInstanceReference(
                 server.FileGroup.Text,
                 server.Parent.Text,
                 server.DisplayName);
@@ -551,7 +562,22 @@ namespace Google.Solutions.CloudIap.Plugin.Gui
             WaitDialog.RunWithDialog(
                 this.mainForm,
                 "Generating Windows logon credentials...",
-                token => ComputeEngineAdapter.Create(authorization.Credential).ResetWindowsUserAsync(instance, username, token),
+                async token => {
+                    try
+                    {
+                        return await ComputeEngineAdapter.Create(authorization.Credential)
+                            .ResetWindowsUserAsync(instanceRef, username, token);
+                    }
+                    catch (GoogleApiException)
+                    {
+                        // Throw a more precise exception if this is because the instance
+                        // is not running.
+                        await VerifyInstanceIsRunning(instanceRef);
+
+                        // Must be some other problem.
+                        throw;
+                    }
+                },
                 credentials =>
                 {
                     ShowCredentialsDialog.ShowDialog(
@@ -619,6 +645,25 @@ namespace Google.Solutions.CloudIap.Plugin.Gui
                     });
                 },
                 this.authorization.ReauthorizeAsync);
+        }
+
+        private async Task VerifyInstanceIsRunning(VmInstanceReference instanceRef)
+        {
+            try
+            {
+                var instance = await ComputeEngineAdapter.Create(authorization.Credential)
+                    .QueryInstanceAsync(instanceRef);
+                if (instance.Status != "RUNNING")
+                {
+                    throw new ApplicationException(
+                        $"VM instance '{instanceRef.InstanceName}' is in {instance.Status} state");
+                }
+            }
+            catch (GoogleApiException e) when (e.Error != null && e.Error.Code == 404)
+            {
+                throw new ApplicationException(
+                    $"VM instance '{instanceRef.InstanceName}' does not exist or you lack permission to access it");
+            }
         }
     }
 }
