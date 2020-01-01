@@ -51,19 +51,13 @@ namespace Google.Solutions.CloudIap.IapClient
 
         public async Task RunAsync(CancellationToken token)
         {
-            ICredential credential = await GoogleWebAuthorizationBroker.AuthorizeAsync(
-                OAuthClient.Secrets,
-                new[] { IapTunnelingEndpoint.RequiredScope },
-                Environment.UserName,
-                CancellationToken.None,
-                new FileDataStore(GetType().Namespace),
-                new LocalServerCodeReceiver(Resources.AuthorizationSuccessful));
+            ICredential credential = GoogleCredential.GetApplicationDefault();
 
             var iapEndpoint = new IapTunnelingEndpoint(
-                    credential,
-                    this.Instance,
-                    this.Port,
-                    IapTunnelingEndpoint.DefaultNetworkInterface);
+                credential,
+                this.Instance,
+                this.Port,
+                IapTunnelingEndpoint.DefaultNetworkInterface);
 
             // Probe connection.
             using (var stream = new SshRelayStream(iapEndpoint))

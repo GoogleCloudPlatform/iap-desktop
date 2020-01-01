@@ -43,7 +43,6 @@ Write-Host "========================================================"
 Write-Host "=== Patch OAuth credentials                          ==="
 Write-Host "========================================================"
 
-Copy-Item -Path "${env:KOKORO_GFILE_DIR}\OAuthClient.cs" -Destination "Google.Solutions.CloudIap.IapClient\OAuthClient.cs" -Force
 Copy-Item -Path "${env:KOKORO_GFILE_DIR}\OAuthClient.cs" -Destination "Google.Solutions.CloudIap.Plugin\OAuthClient.cs" -Force
 
 Write-Host "========================================================"
