@@ -29,7 +29,18 @@ namespace Google.Solutions.Compute
 
         public static void TraceVerbose(this TraceSource source, string message)
         {
-            source.TraceData(TraceEventType.Verbose, 0, message);
+            if (source.Switch.ShouldTrace(TraceEventType.Verbose))
+            {
+                source.TraceData(TraceEventType.Verbose, 0, message);
+            }
+        }
+
+        public static void TraceVerbose(this TraceSource source, string message, params object[] args)
+        {
+            if (source.Switch.ShouldTrace(TraceEventType.Verbose))
+            {
+                source.TraceData(TraceEventType.Verbose, 0, string.Format(message, args));
+            }
         }
     }
 }

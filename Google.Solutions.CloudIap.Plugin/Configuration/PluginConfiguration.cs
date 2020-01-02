@@ -52,7 +52,7 @@ namespace Google.Solutions.CloudIap.Plugin.Configuration
 
         [Category(TunnelingCategoryName)]
         [Browsable(true)]
-        [Description("IAP tunneling implementation to use (change requires restart)")]
+        [Description("IAP tunneling implementation to use. Change requires application restart.")]
         [DisplayName("Tunneling implementation")]
         public Tunneler Tunneler { get; set; }
 
@@ -85,12 +85,16 @@ namespace Google.Solutions.CloudIap.Plugin.Configuration
         [DisplayName("Last update check")]
         public DateTime LastUpdateCheck { get; set; }
 
+        [Category(SoftwareCategoryName)]
+        [Browsable(true)]
+        [Description("Configure tracing. Traces can be viewed using DbgView. Note that verbose " +
+                     "tracing degrades tunneling performance. Change requires restart.")]
+        [DisplayName("Tracing")]
+        public SourceLevels TracingLevel { get; set; }
+
         //---------------------------------------------------------------------
         // Hidden
         //---------------------------------------------------------------------
-
-        [Browsable(false)]
-        public SourceLevels TracingLevel { get; set; }
 
         [Browsable(false)]
         public string AppDataLocation => Path.Combine(
