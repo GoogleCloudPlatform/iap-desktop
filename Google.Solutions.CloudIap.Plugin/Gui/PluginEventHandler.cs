@@ -283,8 +283,15 @@ namespace Google.Solutions.CloudIap.Plugin.Gui
 
         private void CheckForUpdates()
         {
-            if (!this.configurationStore.Configuration.CheckForUpdates)
+            var currentConfiguration = this.configurationStore.Configuration;
+            if (!currentConfiguration.CheckForUpdates)
             {
+                return;
+            }
+
+            if ((DateTime.UtcNow - currentConfiguration.LastUpdateCheck).Days < 7)
+            {
+                // Last update check was less than a week ago - so back off.
                 return;
             }
 
@@ -325,17 +332,16 @@ namespace Google.Solutions.CloudIap.Plugin.Gui
                 "Do not check for updates again",
                 out bool donotCheckForUpdatesAgain);
 
+            // Update settings.
+            var newConfiguration = this.configurationStore.Configuration;
+            newConfiguration.CheckForUpdates = !donotCheckForUpdatesAgain;
+            newConfiguration.LastUpdateCheck = DateTime.UtcNow;
+            this.configurationStore.Configuration = newConfiguration;
+
             if (selectedOption == 2)
             {
                 // Cancel.
                 return;
-            }
-
-            if (donotCheckForUpdatesAgain)
-            {
-                var config = this.configurationStore.Configuration;
-                config.CheckForUpdates = !donotCheckForUpdatesAgain;
-                this.configurationStore.Configuration = config;
             }
 
             using (var launchBrowser = new Process())
