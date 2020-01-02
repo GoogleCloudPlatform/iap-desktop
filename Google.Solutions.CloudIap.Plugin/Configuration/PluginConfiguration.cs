@@ -36,8 +36,12 @@ namespace Google.Solutions.CloudIap.Plugin.Configuration
     /// </summary>
     internal class PluginConfiguration
     {
-        private const string DefaultCategoryName = "General";
         private const string TunnelingCategoryName = "Tunneling";
+        private const string SoftwareCategoryName = "Software";
+
+        //---------------------------------------------------------------------
+        // Tunneling
+        //---------------------------------------------------------------------
 
         [Category(TunnelingCategoryName)]
         [Browsable(true)]
@@ -58,22 +62,34 @@ namespace Google.Solutions.CloudIap.Plugin.Configuration
         [DisplayName("IAP Connection Timeout")]
         public TimeSpan IapConnectionTimeout { get; set; }
 
-        [Category(DefaultCategoryName)]
+        //---------------------------------------------------------------------
+        // Software
+        //---------------------------------------------------------------------
+
+        [Category(SoftwareCategoryName)]
         [Browsable(true)]
         [Description("Automatically check for updates when closing application")]
         [DisplayName("Check for updates")]
         public bool CheckForUpdates { get; set; }
 
-        [Category(DefaultCategoryName)]
+        [Category(SoftwareCategoryName)]
         [Browsable(true)]
         [Description("Version of plugin")]
         [DisplayName("Plugin version")]
         public Version Version => GetType().Assembly.GetName().Version;
 
-        [Category(DefaultCategoryName)]
+        [Category(SoftwareCategoryName)]
+        [Browsable(true)]
+        [ReadOnly(true)]
+        [Description("Last time an update check was performed")]
+        [DisplayName("Last update check")]
+        public DateTime LastUpdateCheck { get; set; }
+
+        //---------------------------------------------------------------------
+        // Hidden
+        //---------------------------------------------------------------------
+
         [Browsable(false)]
-        [Description("Tracing level")]
-        [DisplayName("Tracing level")]
         public SourceLevels TracingLevel { get; set; }
 
         [Browsable(false)]
@@ -124,6 +140,10 @@ namespace Google.Solutions.CloudIap.Plugin.Configuration
                         "CheckForUpdates",
                         RegistryValueKind.DWord,
                         DefaultCheckForUpdates) == 1,
+                    LastUpdateCheck = DateTime.FromBinary(GetConfig<long>(
+                        "LastUpdateCheck",
+                        RegistryValueKind.QWord,
+                        0)),
                     Tunneler = (Tunneler)GetConfig<int>(
                         "Tunneler",
                         RegistryValueKind.DWord,
@@ -151,6 +171,11 @@ namespace Google.Solutions.CloudIap.Plugin.Configuration
                    RegistryValueKind.DWord,
                    value.CheckForUpdates ? 1 : 0,
                    DefaultCheckForUpdates);
+                SetConfig<long>(
+                   "LastUpdateCheck",
+                   RegistryValueKind.QWord,
+                   value.LastUpdateCheck.ToBinary(),
+                   0);
                 SetConfig<int>(
                     "Tunneler",
                     RegistryValueKind.DWord,
