@@ -187,6 +187,16 @@ namespace Google.Solutions.CloudIap.Plugin.Gui
                 contextMenuStrip.Items.Insert(contextMenuStrip.Items.Count - 1, loadServers);
                 contextMenuStrip.Items.Insert(contextMenuStrip.Items.Count - 1, new ToolStripSeparator());
             }
+            else if (node is Group && node.Parent != null && node.Parent is FileGroup parentFileGroup)
+            {
+                ToolStripMenuItem loadServers = new ToolStripMenuItem(
+                    $"Refresh GCE &instances from {parentFileGroup.Text}",
+                    Resources.DownloadWebSetting.WithMagentaAsTransparent());
+                loadServers.Click += (sender, args) => this.OnLoadServersClick(parentFileGroup);
+
+                contextMenuStrip.Items.Insert(contextMenuStrip.Items.Count - 1, loadServers);
+                contextMenuStrip.Items.Insert(contextMenuStrip.Items.Count - 1, new ToolStripSeparator());
+            }
             else if (node is Server server && node.Parent != null && node.Parent is Group)
             {
                 ToolStripMenuItem iapConnect = new ToolStripMenuItem(
