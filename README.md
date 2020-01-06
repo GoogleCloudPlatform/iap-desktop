@@ -42,8 +42,10 @@ GUI which make working with Windows VMs on Google Cloud more convinient:
 
 ### Installing the plugin
 
-1. Make yure you have [Microsoft Remote Desktop Connection Manager](https://www.microsoft.com/en-us/download/details.aspx?id=44989) 
-   2.7 installed on your workstation.
+1. Install [Microsoft Remote Desktop Connection Manager](https://www.microsoft.com/en-us/download/details.aspx?id=44989) 
+   2.7 on your workstation. The installation requires administrative privileges by default. To install 
+   Remote Desktop Connection Manager as limited user,
+   [perform an administrative installion](https://jpassing.com/2020/01/06/installing-remote-desktop-connection-manager-as-limited-user/) of the MSI package.
 1. Download and run the MSI installer. The installer will install the necessary DLLs into the 
    installation folder of RDCMan (Usually, that is 
   `C:\Program Files (x86)\Microsoft\Remote Desktop Connection Manager\` but the installer
