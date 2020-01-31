@@ -19,30 +19,21 @@
 // under the License.
 //
 
-using System.Collections.Generic;
+using NUnit.Framework;
 using System.Linq;
+using System.Collections.Generic;
 
-namespace Google.Solutions.Compute
+namespace Google.Solutions.Compute.Test.Extensions
 {
-    public static class LinqExtensions
+    [TestFixture]
+    public class TestLinqExtensions
     {
-        public static HashSet<T> ToHashSet<T>(
-            this IEnumerable<T> source,
-            IEqualityComparer<T> comparer = null)
+        [Test]
+        public void NullConvertedToEmpty()
         {
-            return new HashSet<T>(source, comparer);
-        }
-
-        public static HashSet<T> Subtract<T>(this HashSet<T> set, HashSet<T> toSubtract)
-        {
-            var copy = new HashSet<T>(set);
-            copy.ExceptWith(toSubtract);
-            return copy;
-        }
-
-        public static IEnumerable<T> EnsureNotNull<T>(this IEnumerable<T> e)
-        {
-            return e == null ? Enumerable.Empty<T>() : e;
+            IEnumerable<string> e = null;
+            Assert.IsNotNull(e.EnsureNotNull());
+            Assert.AreEqual(0, e.EnsureNotNull().Count());
         }
     }
 }

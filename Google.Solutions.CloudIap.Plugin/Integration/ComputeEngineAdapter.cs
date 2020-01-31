@@ -124,8 +124,10 @@ namespace Google.Solutions.CloudIap.Plugin.Integration
             // (the boot disk) has to be marked as "WINDOWS". 
             // Note that older disks might lack this feature.
             return instance.Disks
+                .EnsureNotNull()
                 .Where(d => d.GuestOsFeatures != null)
                 .SelectMany(d => d.GuestOsFeatures)
+                .EnsureNotNull()
                 .Any(f => f.Type == "WINDOWS");
         }
 
@@ -135,8 +137,10 @@ namespace Google.Solutions.CloudIap.Plugin.Integration
             // has to have an associated Windows license. This is also true for
             // BYOL'ed instances.
             return instance.Disks
+                .EnsureNotNull()
                 .Where(d => d.Licenses != null)
                 .SelectMany(d => d.Licenses)
+                .EnsureNotNull()
                 .Any(l => l.StartsWith(WindowsCloudLicenses));
         }
 
