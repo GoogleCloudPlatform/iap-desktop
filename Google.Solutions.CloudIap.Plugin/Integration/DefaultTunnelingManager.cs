@@ -36,7 +36,7 @@ namespace Google.Solutions.CloudIap.Plugin.Integration
             this.credential = credential;
         }
 
-        protected async override Task<ITunnel> CreateTunnelAsync(
+        protected override Task<ITunnel> CreateTunnelAsync(
             TunnelDestination tunnelEndpoint, 
             TimeSpan timeout)
         {
@@ -57,7 +57,7 @@ namespace Google.Solutions.CloudIap.Plugin.Integration
 
             // Return the tunnel which allows the listener to be stopped
             // via the CancellationTokenSource.
-            return new Tunnel(iapEndpoint, listener, cts);
+            return Task.FromResult<ITunnel>(new Tunnel(iapEndpoint, listener, cts));
         }
 
         internal class Tunnel : ITunnel
