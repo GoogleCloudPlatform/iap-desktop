@@ -116,7 +116,7 @@ namespace Google.Solutions.Compute.Test.Iap
         }
 
         [Test]
-        public void UnrecognizedMessageTagCausesException(
+        public void UnrecognizedMessageTagAtStartCausesException(
             [Values(
                 (byte)MessageTag.UNUSED,
                 (byte)MessageTag.DEPRECATED,
@@ -145,6 +145,39 @@ namespace Google.Solutions.Compute.Test.Iap
                 byte[] buffer = new byte[relay.MinReadSize];
                 relay.ReadAsync(buffer, 0, buffer.Length, tokenSource.Token).Wait();
             });
+        }
+
+        [Test]
+        public async Task UnrecognizedMessageTagAfterStartCausesException(
+            [Values(
+                (byte)MessageTag.UNUSED,
+                (byte)MessageTag.DEPRECATED,
+                (byte)MessageTag.ACK_LATENCY,
+                (byte)MessageTag.REPLY_LATENCY,
+                (byte)MessageTag.ACK + 1)] byte tag)
+        {
+            var stream = new MockStream()
+            {
+                ExpectedReadData = new byte[][]
+                {
+                    new byte[]{ 0, (byte)MessageTag.CONNECT_SUCCESS_SID, 0, 0, 0, 1, 0 },
+                    new byte[]{ 0, tag },
+                    new byte[]{ 0, (byte)MessageTag.DATA, 0, 0, 0, 2, 0xA, 0xB },
+                    new byte[]{ 0, tag },
+                    new byte[]{ }
+                }
+            };
+            var endpoint = new MockSshRelayEndpoint()
+            {
+                ExpectedStream = stream
+            };
+            var relay = new SshRelayStream(endpoint);
+
+            byte[] buffer = new byte[relay.MinReadSize];
+            int bytesRead = await relay.ReadAsync(buffer, 0, buffer.Length, tokenSource.Token);
+            Assert.AreEqual(2, bytesRead);
+                    Assert.AreEqual(0xA, buffer[0]);
+                    Assert.AreEqual(0xB, buffer[1]);
         }
 
         [Test]

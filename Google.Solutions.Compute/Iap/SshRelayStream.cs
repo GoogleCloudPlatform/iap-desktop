@@ -345,7 +345,19 @@ namespace Google.Solutions.Compute.Iap
                             }
 
                         default:
-                            throw new InvalidServerResponseException($"Unknown tag: {tag}");
+                            if (this.Sid == null)
+                            {
+                                // An unrecognized tag at the start of a connection means that we are
+                                // essentially reading junk, so bail out.
+                                throw new InvalidServerResponseException($"Unknown tag: {tag}");
+                            }
+                            else
+                            {
+                                // The connection was properly opened - an unrecognized tag merely
+                                // means that the server uses a feature that we do not support (yet).
+                                // In accordance with the protocol specification, ignore this tag.
+                                break;
+                            }
                     }
                 }
                 catch (WebSocketStreamClosedByClientException)
