@@ -87,15 +87,24 @@ namespace Google.Solutions.CloudIap.Plugin.Gui
             {
                 // The auto completer does not support associating any kind of tag,
                 // so we have to extract the project ID from the displayed text.
+                // If the entered text does not match the pattern produced by the
+                // automcompleter, then it is probably a project ID that the user
+                // pasted (or entered faster than the autocomplee
                 var match = new Regex(@".*\((.+)\)").Match(this.projectComboBox.Text);
-                return match.Success ? match.Groups[1].Value : null;
+                return match.Success ? match.Groups[1].Value : this.projectComboBox.Text;
             }
         }
 
         private async void okButton_Click(object sender, EventArgs e)
         {
+            // NB. The DialogResult property of the button is not set so that this
+            // event handler is run to completion *before* ShowDialog returns.
             var project = await this.resourceManager.QueryProjectsById(this.SelectedProjectId);
-            if (!project.Any())
+            if (project.Any())
+            {
+                this.DialogResult = DialogResult.OK;
+            }
+            else
             {
                 // Invalid project ID.
                 MessageBox.Show(

@@ -52,7 +52,6 @@
             // 
             // okButton
             // 
-            this.okButton.DialogResult = System.Windows.Forms.DialogResult.OK;
             this.okButton.Enabled = false;
             this.okButton.Location = new System.Drawing.Point(150, 136);
             this.okButton.Margin = new System.Windows.Forms.Padding(2);
