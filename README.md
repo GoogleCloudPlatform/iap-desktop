@@ -1,7 +1,13 @@
 # Google Cloud IAP for Remote Desktop
 
+**Important**: On March 10, 2020 Microsoft [unexpectedly discontinued](https://portal.msrc.microsoft.com/en-US/security-guidance/advisory/CVE-2020-0765) _Microsoft Remote Desktop Connection Manager_ and the tool is no longer available for download from the Microsoft website. 
+
+For existing Remote Desktop Connection Manager installations, the Google Cloud IAP for Remote Desktop plugin continues to work. We are  evaluating options to evolve the plugin so that it does not depend on _Microsoft Remote Desktop Connection Manager_ anymore.
+
+## Overview
+
 Google Cloud IAP for Remote Desktop is a plugin for 
-[Microsoft Remote Desktop Connection Manager](https://www.microsoft.com/en-us/download/details.aspx?id=44989)
+_Microsoft Remote Desktop Connection Manager_
 that allows you to connect to VM instances running on Google Cloud via a
 [Cloud IAP TCP forwarding](https://cloud.google.com/iap/docs/tcp-forwarding-overview) tunnel. 
 
