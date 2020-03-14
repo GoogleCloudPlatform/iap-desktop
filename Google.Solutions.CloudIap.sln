@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
-VisualStudioVersion = 15.0.27130.0
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.29806.167
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Google.Solutions.CloudIap.Plugin", "Google.Solutions.CloudIap.Plugin\Google.Solutions.CloudIap.Plugin.csproj", "{831ADC20-C0E4-4C1D-90D1-8076A9C9572D}"
 EndProject
@@ -18,6 +18,12 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Google.Solutions.Compute.Test", "Google.Solutions.Compute.Test\Google.Solutions.Compute.Test.csproj", "{9C1AA910-798A-4571-9266-7280A677FE9F}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Google.Solutions.CloudIap.IapClient", "Google.Solutions.CloudIap.IapClient\Google.Solutions.CloudIap.IapClient.csproj", "{B6EE7DCF-D396-4EDD-967F-198753BE9D0B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Google.Solutions.CloudIap.IapDesktop.Application", "Google.Solutions.CloudIap.IapDesktop.Application\Google.Solutions.CloudIap.IapDesktop.Application.csproj", "{842B003E-6EEB-429D-A3A1-53B4E642E83B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Google.Solutions.CloudIap.IapDesktop.Application.Test", "Google.Solutions.CloudIap.IapDesktop.Application.Test\Google.Solutions.CloudIap.IapDesktop.Application.Test.csproj", "{BD834B99-2AEE-4160-BC38-1821695D4174}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Google.Solutions.CloudIap.IapDesktop", "Google.Solutions.CloudIap.IapDesktop\Google.Solutions.CloudIap.IapDesktop.csproj", "{274DA71A-6CD4-4E11-B3E9-1B39767039D5}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -65,6 +71,30 @@ Global
 		{B6EE7DCF-D396-4EDD-967F-198753BE9D0B}.Release|Any CPU.Build.0 = Release|Any CPU
 		{B6EE7DCF-D396-4EDD-967F-198753BE9D0B}.Release|x86.ActiveCfg = Release|Any CPU
 		{B6EE7DCF-D396-4EDD-967F-198753BE9D0B}.Release|x86.Build.0 = Release|Any CPU
+		{842B003E-6EEB-429D-A3A1-53B4E642E83B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{842B003E-6EEB-429D-A3A1-53B4E642E83B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{842B003E-6EEB-429D-A3A1-53B4E642E83B}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{842B003E-6EEB-429D-A3A1-53B4E642E83B}.Debug|x86.Build.0 = Debug|Any CPU
+		{842B003E-6EEB-429D-A3A1-53B4E642E83B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{842B003E-6EEB-429D-A3A1-53B4E642E83B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{842B003E-6EEB-429D-A3A1-53B4E642E83B}.Release|x86.ActiveCfg = Release|Any CPU
+		{842B003E-6EEB-429D-A3A1-53B4E642E83B}.Release|x86.Build.0 = Release|Any CPU
+		{BD834B99-2AEE-4160-BC38-1821695D4174}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BD834B99-2AEE-4160-BC38-1821695D4174}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BD834B99-2AEE-4160-BC38-1821695D4174}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{BD834B99-2AEE-4160-BC38-1821695D4174}.Debug|x86.Build.0 = Debug|Any CPU
+		{BD834B99-2AEE-4160-BC38-1821695D4174}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BD834B99-2AEE-4160-BC38-1821695D4174}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BD834B99-2AEE-4160-BC38-1821695D4174}.Release|x86.ActiveCfg = Release|Any CPU
+		{BD834B99-2AEE-4160-BC38-1821695D4174}.Release|x86.Build.0 = Release|Any CPU
+		{274DA71A-6CD4-4E11-B3E9-1B39767039D5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{274DA71A-6CD4-4E11-B3E9-1B39767039D5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{274DA71A-6CD4-4E11-B3E9-1B39767039D5}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{274DA71A-6CD4-4E11-B3E9-1B39767039D5}.Debug|x86.Build.0 = Debug|Any CPU
+		{274DA71A-6CD4-4E11-B3E9-1B39767039D5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{274DA71A-6CD4-4E11-B3E9-1B39767039D5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{274DA71A-6CD4-4E11-B3E9-1B39767039D5}.Release|x86.ActiveCfg = Release|Any CPU
+		{274DA71A-6CD4-4E11-B3E9-1B39767039D5}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

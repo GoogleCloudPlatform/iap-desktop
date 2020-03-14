@@ -43,7 +43,7 @@ Write-Host "========================================================"
 Write-Host "=== Patch OAuth credentials                          ==="
 Write-Host "========================================================"
 
-Copy-Item -Path "${env:KOKORO_GFILE_DIR}\OAuthClient.cs" -Destination "Google.Solutions.CloudIap.Plugin\OAuthClient.cs" -Force
+Copy-Item -Path "${env:KOKORO_GFILE_DIR}\OAuthClient.cs" -Destination "Google.Solutions.CloudIap.IapDesktop\OAuthClient.cs" -Force
 
 Write-Host "========================================================"
 Write-Host "=== Install Nuget                                    ==="
@@ -51,21 +51,6 @@ Write-Host "========================================================"
 
 $Nuget = $env:TEMP + "\nuget.exe"
 (New-Object System.Net.WebClient).DownloadFile($NugetDownloadUrl, $Nuget)
-
-
-Write-Host "========================================================"
-Write-Host "=== Install RDCMan                                   ==="
-Write-Host "========================================================"
-
-(New-Object System.Net.WebClient).DownloadFile($RdcManDownloadUrl, $env:TEMP + "\Rdcman.msi")
-
-& msiexec /i $env:TEMP\Rdcman.msi /quiet /qn /norestart /log $env:TEMP\Rdcman.log | Out-Default
-Get-Content -Path $env:TEMP\Rdcman.log
-
-if ($LastExitCode -ne 0)
-{
-    exit $LastExitCode
-}
 
 
 Write-Host "========================================================"
