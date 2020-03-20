@@ -1,6 +1,7 @@
 ﻿using Google.Apis.Compute.v1.Data;
 using Google.Solutions.CloudIap.IapDesktop.Windows;
 using Google.Solutions.Compute.Auth;
+using Google.Solutions.Compute;
 using Google.Solutions.IapDesktop.Application.Adapters;
 using Google.Solutions.IapDesktop.Application.ObjectModel;
 using Google.Solutions.IapDesktop.Application.Services;
