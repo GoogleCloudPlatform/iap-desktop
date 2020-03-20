@@ -8,8 +8,8 @@ namespace Google.Solutions.IapDesktop.Application.ObjectModel
 {
     public interface IEventService
     {
-        void Bind<TEvent>(Func<TEvent, Task> handler);
-        void Bind<TEvent>(Action<TEvent> handler);
+        void BindAsyncHandler<TEvent>(Func<TEvent, Task> handler);
+        void BindHandler<TEvent>(Action<TEvent> handler);
 
 
         /// <summary>
@@ -37,7 +37,7 @@ namespace Google.Solutions.IapDesktop.Application.ObjectModel
             this.invoker = invoker;
         }
 
-        public void Bind<TEvent>(Func<TEvent, Task> handler)
+        public void BindAsyncHandler<TEvent>(Func<TEvent, Task> handler)
         {
             if (!this.bindings.ContainsKey(typeof(TEvent)))
             {
@@ -47,9 +47,9 @@ namespace Google.Solutions.IapDesktop.Application.ObjectModel
             this.bindings[typeof(TEvent)].Add(e => handler((TEvent)e));
         }
 
-        public void Bind<TEvent>(Action<TEvent> handler)
+        public void BindHandler<TEvent>(Action<TEvent> handler)
         {
-            Bind<TEvent>(e =>
+            BindAsyncHandler<TEvent>(e =>
             {
                 handler(e);
                 return CompletedTask;

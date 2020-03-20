@@ -52,8 +52,8 @@ namespace Google.Solutions.CloudIap.IapDesktop.ProjectExplorer
             this.projectInventoryService = Program.Services.GetService<ProjectInventoryService>();
             this.computeEngineAdapter = Program.Services.GetService<ComputeEngineAdapter>();
 
-            this.eventService.Bind<ProjectInventoryService.ProjectAddedEvent>(OnProjectAdded);
-            this.eventService.Bind<ProjectInventoryService.ProjectDeletedEvent>(OnProjectDeleted);
+            this.eventService.BindAsyncHandler<ProjectInventoryService.ProjectAddedEvent>(OnProjectAdded);
+            this.eventService.BindHandler<ProjectInventoryService.ProjectDeletedEvent>(OnProjectDeleted);
         }
 
         private void RefreshProject(string projectId, IEnumerable<Instance> instances)

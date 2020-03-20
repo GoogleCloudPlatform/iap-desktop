@@ -9,11 +9,11 @@ namespace Google.Solutions.CloudIap.IapDesktop.Application.Test.ServiceModel
 {
     class MockEventService : IEventService
     {
-        public virtual void Bind<TEvent>(Action<TEvent> handler)
+        public virtual void BindHandler<TEvent>(Action<TEvent> handler)
         {
         }
 
-        public virtual void Bind<TEvent>(Func<TEvent, Task> handler)
+        public virtual void BindAsyncHandler<TEvent>(Func<TEvent, Task> handler)
         {
         }
 

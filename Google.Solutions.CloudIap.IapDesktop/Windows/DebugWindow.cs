@@ -20,12 +20,12 @@ namespace Google.Solutions.CloudIap.IapDesktop.Windows
             InitializeComponent();
             this.TabText = this.Text;
 
-            this.eventService.Bind<StatusUpdatedEvent>(
+            this.eventService.BindHandler<StatusUpdatedEvent>(
                 e =>
                 {
                     this.label.Text = e.Status;
                 });
-            this.eventService.Bind<StatusUpdatedEvent>(
+            this.eventService.BindAsyncHandler<StatusUpdatedEvent>(
                 async e =>
                 {
                     await Task.Delay(10);
