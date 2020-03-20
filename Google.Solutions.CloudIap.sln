@@ -3,10 +3,6 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.29806.167
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Google.Solutions.CloudIap.Plugin", "Google.Solutions.CloudIap.Plugin\Google.Solutions.CloudIap.Plugin.csproj", "{831ADC20-C0E4-4C1D-90D1-8076A9C9572D}"
-EndProject
-Project("{930C7802-8A8C-48F9-8165-68863BCCD9DD}") = "Google.Solutions.CloudIap.Installer", "Google.Solutions.CloudIap.Installer\Google.Solutions.CloudIap.Installer.wixproj", "{87F9B34D-3B3D-4F86-866E-5A6C7E269706}"
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{11EC701A-8732-4231-B3C6-543D226959D5}"
 	ProjectSection(SolutionItems) = preProject
 		build.ps1 = build.ps1
@@ -33,18 +29,6 @@ Global
 		Release|x86 = Release|x86
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{831ADC20-C0E4-4C1D-90D1-8076A9C9572D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{831ADC20-C0E4-4C1D-90D1-8076A9C9572D}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{831ADC20-C0E4-4C1D-90D1-8076A9C9572D}.Debug|x86.Build.0 = Debug|Any CPU
-		{831ADC20-C0E4-4C1D-90D1-8076A9C9572D}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{831ADC20-C0E4-4C1D-90D1-8076A9C9572D}.Release|x86.ActiveCfg = Release|Any CPU
-		{831ADC20-C0E4-4C1D-90D1-8076A9C9572D}.Release|x86.Build.0 = Release|Any CPU
-		{87F9B34D-3B3D-4F86-866E-5A6C7E269706}.Debug|Any CPU.ActiveCfg = Debug|x86
-		{87F9B34D-3B3D-4F86-866E-5A6C7E269706}.Debug|x86.ActiveCfg = Debug|x86
-		{87F9B34D-3B3D-4F86-866E-5A6C7E269706}.Debug|x86.Build.0 = Debug|x86
-		{87F9B34D-3B3D-4F86-866E-5A6C7E269706}.Release|Any CPU.ActiveCfg = Release|x86
-		{87F9B34D-3B3D-4F86-866E-5A6C7E269706}.Release|x86.ActiveCfg = Release|x86
-		{87F9B34D-3B3D-4F86-866E-5A6C7E269706}.Release|x86.Build.0 = Release|x86
 		{D9493479-1751-402B-880F-60ED33EBB885}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{D9493479-1751-402B-880F-60ED33EBB885}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D9493479-1751-402B-880F-60ED33EBB885}.Debug|x86.ActiveCfg = Debug|Any CPU
