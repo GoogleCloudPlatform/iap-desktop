@@ -128,6 +128,7 @@ namespace Google.Solutions.CloudIap.IapDesktop.Windows
             Program.Services.AddSingleton<IProjectExplorer>(new ProjectExplorerWindow(this.dockPanel));
 
             var settingsWindow = new SettingsWindow();
+            settingsWindow.Show(dockPanel, DockState.DockRight);
             //settingsWindow.Show(projectExplorer.Pane, DockAlignment.Bottom, 0.3);
 
 #if DEBUG

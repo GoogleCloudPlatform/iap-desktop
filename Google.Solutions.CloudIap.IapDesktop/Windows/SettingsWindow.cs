@@ -1,4 +1,6 @@
-﻿using System;
+﻿using Google.Solutions.CloudIap.IapDesktop.Application.Settings;
+using Google.Solutions.CloudIap.IapDesktop.Settings;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -17,6 +19,10 @@ namespace Google.Solutions.CloudIap.IapDesktop.Windows
             InitializeComponent();
 
             this.TabText = this.Text;
+
+            this.propertyGrid.SelectedObject = new VirtualMachineSettingsEditor(
+                null,
+                new VirtualMachineSettings());
         }
     }
 }

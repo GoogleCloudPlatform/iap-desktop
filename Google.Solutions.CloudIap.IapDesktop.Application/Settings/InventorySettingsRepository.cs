@@ -3,6 +3,7 @@ using Google.Solutions.CloudIap.IapDesktop.Application.Registry;
 using Microsoft.Win32;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Security;
 using System.Security.Cryptography;
@@ -65,23 +66,6 @@ namespace Google.Solutions.CloudIap.IapDesktop.Application.Settings
 
 
         //---------------------------------------------------------------------
-        // Regions.
-        //---------------------------------------------------------------------
-
-        public RegionSettings GetRegionSettings(string projectId, string regionId)
-        {
-            var settings = Get<RegionSettings>($@"{projectId}\{RegionPrefix}{regionId}");
-            settings.RegionId = regionId;
-            return settings;
-        }
-
-        public void SetRegionSettings(string projectId, RegionSettings settings)
-        {
-            Set<RegionSettings>($@"{projectId}\{RegionPrefix}{settings.RegionId}", settings);
-        }
-
-
-        //---------------------------------------------------------------------
         // Zones.
         //---------------------------------------------------------------------
 
@@ -115,6 +99,58 @@ namespace Google.Solutions.CloudIap.IapDesktop.Application.Settings
         }
     }
 
+
+    // NB. The values do not map to RDP interface values.
+
+    public enum RdpConnectionBarState
+    {
+        AutoHide = 0,
+        Pinned = 1,
+        Off = 2,
+
+        [Browsable(false)]
+        _Default = AutoHide
+    }
+
+    public enum RdpDesktopSize
+    {
+        ClientSize = 0,
+        ScreenSize = 1,
+
+        [Browsable(false)]
+        _Default = ClientSize
+    }
+
+    public enum RdpAuthenticationLevel
+    {
+        AttemptServerAuthentication = 0,
+        RequireServerAuthentication = 1,
+
+        [Browsable(false)]
+        _Default = AttemptServerAuthentication
+    }
+
+    public enum RdpColorDepth
+    {
+        HighColor = 0,
+        TrueColor = 1,
+        DeepColor = 2,
+
+        [Browsable(false)]
+        _Default = TrueColor
+    }
+
+    public enum RdpAudioMode
+    {
+        PlayLocally = 0,
+        PlayOnServer = 1,
+        DoNotPlay = 2,
+
+        [Browsable(false)]
+        _Default = PlayLocally
+    }
+
+
     public abstract class InventorySettingsBase
     {
         //---------------------------------------------------------------------
@@ -129,55 +165,14 @@ namespace Google.Solutions.CloudIap.IapDesktop.Application.Settings
 
         [StringRegistryValue("Domain")]
         public string Domain { get; set; }
-    }
 
-    public class VirtualMachineSettings : InventorySettingsBase
-    {
-        // NB. The values of the enums are so that 0 is a sane default.
-        // The values do not map to RDP interface values.
-        public enum RdpConnectionBarState
-        {
-            AutoHide = 0,
-            Pinned = 1,
-            Off = 2
-        }
-
-        public enum RdpDesktopSize
-        {
-            ClientSize = 0,
-            ScreenSize = 1
-        }
-
-        public enum RdpAuthenticationLevel
-        {
-            AttemptServerAuthentication = 0,
-            RequireServerAuthentication = 1
-        }
-
-        public enum RdpColorDepth
-        {
-            HighColor = 0,
-            TrueColor = 1,
-            DeepColor = 2
-        }
-
-        public enum RdpAudioMode
-        {
-            PlayLocally = 0,
-            PlayOnServer = 1,
-            DoNotPlay = 2
-        }
-
-
-        public string InstanceName { get; set; }
-
-        public RdpConnectionBarState ConnectionBar { get; set; } 
+        public RdpConnectionBarState ConnectionBar { get; set; }
             = RdpConnectionBarState.AutoHide;
 
-        public RdpDesktopSize DesktopSize { get; set; } 
+        public RdpDesktopSize DesktopSize { get; set; }
             = RdpDesktopSize.ClientSize;
 
-        public RdpAuthenticationLevel AuthenticationLevel { get; set; } 
+        public RdpAuthenticationLevel AuthenticationLevel { get; set; }
             = RdpAuthenticationLevel.AttemptServerAuthentication;
 
         public RdpColorDepth ColorDepth { get; set; }
@@ -189,9 +184,9 @@ namespace Google.Solutions.CloudIap.IapDesktop.Application.Settings
         public bool RedirectClipboard { get; set; } = true;
     }
 
-    public class RegionSettings : InventorySettingsBase
+    public class VirtualMachineSettings : InventorySettingsBase
     {
-        public string RegionId { get; set; }
+        public string InstanceName { get; set; }
     }
 
     public class ZoneSettings : InventorySettingsBase

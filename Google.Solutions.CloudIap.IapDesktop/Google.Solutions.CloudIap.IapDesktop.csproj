@@ -95,6 +95,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RemoteDesktop\RdpExceptions.cs" />
     <Compile Include="RemoteDesktop\RemoteDesktopService.cs" />
+    <Compile Include="Settings\SettingsEditor.cs" />
     <Compile Include="Windows\AboutWindow.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -251,9 +252,6 @@
       <Isolated>False</Isolated>
       <EmbedInteropTypes>True</EmbedInteropTypes>
     </COMReference>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\Disconnect_16x.png" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="logo.ico" />

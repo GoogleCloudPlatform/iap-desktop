@@ -6,6 +6,8 @@ namespace Google.Solutions.CloudIap.IapDesktop.Windows
 {
     public partial class ToolWindow : DockContent
     {
+        public ContextMenuStrip TabContextStrip => this.contextMenuStrip;
+
         public ToolWindow()
         {
             InitializeComponent();
@@ -17,7 +19,6 @@ namespace Google.Solutions.CloudIap.IapDesktop.Windows
             this.CloseSafely();
         }
 
-        public ContextMenuStrip TabContextStrip => this.contextMenuStrip;
 
         private void ToolWindow_KeyUp(object sender, KeyEventArgs e)
         {

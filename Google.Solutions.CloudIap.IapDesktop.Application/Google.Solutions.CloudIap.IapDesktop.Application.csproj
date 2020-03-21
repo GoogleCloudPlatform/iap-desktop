@@ -89,7 +89,6 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Registry\RegistryBinder.cs" />
     <Compile Include="Registry\RegistryValueAttribute.cs" />
-    <Compile Include="Settings\SettingsEditor.cs" />
     <Compile Include="Settings\InventorySettingsRepository.cs" />
   </ItemGroup>
   <ItemGroup>

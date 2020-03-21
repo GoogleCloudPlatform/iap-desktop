@@ -79,7 +79,7 @@ namespace Google.Solutions.CloudIap.IapDesktop.RemoteDesktop
 			nonScriptable.PromptForCredentials = false;
 			nonScriptable.NegotiateSecurityLayer = true;
 
-			if (settings.AuthenticationLevel == VirtualMachineSettings.RdpAuthenticationLevel.RequireServerAuthentication)
+			if (settings.AuthenticationLevel == RdpAuthenticationLevel.RequireServerAuthentication)
 			{
 				advancedSettings.AuthenticationLevel = 1;
 			}
@@ -100,9 +100,9 @@ namespace Google.Solutions.CloudIap.IapDesktop.RemoteDesktop
 			// Behavior settings.
 			//
 			advancedSettings.DisplayConnectionBar = 
-				(settings.ConnectionBar != VirtualMachineSettings.RdpConnectionBarState.Off);
+				(settings.ConnectionBar != RdpConnectionBarState.Off);
 			advancedSettings.PinConnectionBar = 
-				(settings.ConnectionBar == VirtualMachineSettings.RdpConnectionBarState.Pinned);
+				(settings.ConnectionBar == RdpConnectionBarState.Pinned);
 			advancedSettings.EnableWindowsKey = 1;
 			advancedSettings.GrabFocusOnConnect = false;
 
@@ -112,13 +112,13 @@ namespace Google.Solutions.CloudIap.IapDesktop.RemoteDesktop
 			advancedSettings.RedirectClipboard = settings.RedirectClipboard;
 			switch (settings.AudioMode)
 			{
-				case VirtualMachineSettings.RdpAudioMode.PlayLocally:
+				case RdpAudioMode.PlayLocally:
 					securedSettings2.AudioRedirectionMode = 0;
 					break;
-				case VirtualMachineSettings.RdpAudioMode.PlayOnServer:
+				case RdpAudioMode.PlayOnServer:
 					securedSettings2.AudioRedirectionMode = 1;
 					break;
-				case VirtualMachineSettings.RdpAudioMode.DoNotPlay:
+				case RdpAudioMode.DoNotPlay:
 					securedSettings2.AudioRedirectionMode = 2;
 					break;
 			}
@@ -130,18 +130,18 @@ namespace Google.Solutions.CloudIap.IapDesktop.RemoteDesktop
 			
 			switch (settings.ColorDepth)
 			{
-				case VirtualMachineSettings.RdpColorDepth.HighColor:
+				case RdpColorDepth.HighColor:
 					this.rdpClient.ColorDepth = 16;
 					break;
-				case VirtualMachineSettings.RdpColorDepth.TrueColor:
+				case RdpColorDepth.TrueColor:
 					this.rdpClient.ColorDepth = 24;
 					break;
-				case VirtualMachineSettings.RdpColorDepth.DeepColor:
+				case RdpColorDepth.DeepColor:
 					this.rdpClient.ColorDepth = 32;
 					break;
 			}
 			
-			if (settings.DesktopSize == VirtualMachineSettings.RdpDesktopSize.ScreenSize)
+			if (settings.DesktopSize == RdpDesktopSize.ScreenSize)
 			{
 				var screenSize = Screen.GetBounds(this);
 				this.rdpClient.DesktopHeight = screenSize.Height;
