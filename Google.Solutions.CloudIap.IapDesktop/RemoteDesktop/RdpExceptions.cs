@@ -20,11 +20,11 @@ namespace Google.Solutions.CloudIap.IapDesktop.RemoteDesktop
         {
             // Documented error descrriptions from 
             // https://docs.microsoft.com/en-us/windows/win32/termserv/imstscaxevents-onlogonerror
-            {-5, "Winlogon is displaying the Session Contention dialog box."},
-            {-2, "Winlogon is continuing with the logon process."},
-            {-3, "Winlogon is ending silently."},
-            {-6, "Winlogon is displaying the No Permissions dialog box."},
             {-7, "Winlogon is displaying the Disconnect Refused dialog box."},
+            {-6, "Winlogon is displaying the No Permissions dialog box."},
+            {-5, "Winlogon is displaying the Session Contention dialog box."},
+            {-3, "Winlogon is ending silently."},
+            {-2, "Winlogon is continuing with the logon process."},
             {-4, "Winlogon is displaying the Reconnect dialog box."},
             {-1, "The user was denied access."},
             {0, "The logon failed because the logon credentials are not valid."},
@@ -37,6 +37,8 @@ namespace Google.Solutions.CloudIap.IapDesktop.RemoteDesktop
         };
 
         public int ErrorCode { get; }
+
+        public bool IsIgnorable => this.ErrorCode < -1;
 
         public override string Message
         {

@@ -253,9 +253,11 @@ namespace Google.Solutions.CloudIap.IapDesktop.RemoteDesktop
 			object sender, 
 			IMsTscAxEvents_OnLogonErrorEvent args)
 		{
-			ShowErrorAndClose(
-				"Logon failed",
-				new RdpLogonException(args.lError));
+			var e = new RdpLogonException(args.lError);
+			if (!e.IsIgnorable)
+			{
+				ShowErrorAndClose("Logon failed", e);
+			}
 		}
 
 		private void rdpClient_OnDisconnected(
