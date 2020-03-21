@@ -33,6 +33,11 @@
           InstallPrivileges="limited"
           Platform="x86" />
 
+    <Icon Id="IapDesktopIco" SourceFile="$(var.BASEDIR)\icon.ico" />
+    <Property Id='ARPHELPLINK'>https://github.com/GoogleCloudPlatform/iap-windows-rdc-plugin/</Property>
+    <Property Id='ARPURLINFOABOUT'>https://github.com/GoogleCloudPlatform/iap-windows-rdc-plugin/</Property>
+    <Property Id='ARPPRODUCTICON'>IapDesktopIco</Property>
+    
 		<MajorUpgrade 
            AllowSameVersionUpgrades="yes" 
            DowngradeErrorMessage="A newer version of [ProductName] is already installed." />
