@@ -19,7 +19,7 @@
     specific language governing permissions and limitations
     under the License.
 --> 
-<Wix xmlns="http://wixtoolset.org/schemas/v4/wxs">
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
 	<Product Id="*" 
            Name="Cloud IAP plugin for RDCMan" 
            Language="1033" 
@@ -53,9 +53,9 @@
 		</Feature>
 
 
-    <WixVariable Id="WixUILicenseRtf" Value="License.rtf" />
-    <WixVariable Id="WixUIDialogBmp" Value="Background.bmp" />
-    <WixVariable Id="WixUIBannerBmp" Value="Header.bmp" />
+    <WixVariable Id="WixUILicenseRtf" Value="Google.Solutions.CloudIap.Installer\License.rtf" />
+    <WixVariable Id="WixUIDialogBmp" Value="Google.Solutions.CloudIap.Installer\Background.bmp" />
+    <WixVariable Id="WixUIBannerBmp" Value="Google.Solutions.CloudIap.Installer\Header.bmp" />
 
     <UIRef Id="WixUI_Common" />
     
@@ -106,25 +106,25 @@
           Id="FileReadme"
           Name="README.md"
           DiskId="1"
-          Source="..\README.md"
+          Source="README.md"
           Vital="yes"/>
       </Component>
-
-      <Component Id="CompPluginGoogleCloudIapDlll" Guid="80b128b4-7b0d-11e9-8f9e-2a86e4085a59">
+      
+      <!--<Component Id="CompPluginGoogleCloudIapDlll" Guid="80b128b4-7b0d-11e9-8f9e-2a86e4085a59">
         <File
           Id="FilePluginGoogleCloudIapDll"
           Name="Plugin.Google.CloudIap.dll"
           DiskId="1"
-          Source="..\Google.Solutions.CloudIap.Plugin\bin\$(var.CONFIGURATION)\Plugin.Google.CloudIap.dll"
+          Source="Google.Solutions.CloudIap.IapDesktop\bin\$(var.CONFIGURATION)\Plugin.Google.CloudIap.dll"
           Vital="yes"/>
-      </Component>
+      </Component>-->
 
       <Component Id="CompGoogleSolutionsComputeDll" Guid="c3d65508-cced-4752-8bf5-516c5f831135">
         <File
           Id="FileGoogleSolutionsComputeDll"
           Name="Google.Solutions.Compute.dll"
           DiskId="1"
-          Source="..\Google.Solutions.CloudIap.Plugin\bin\$(var.CONFIGURATION)\Google.Solutions.Compute.dll"
+          Source="Google.Solutions.CloudIap.IapDesktop\bin\$(var.CONFIGURATION)\Google.Solutions.Compute.dll"
           Vital="yes"/>
       </Component>
       
@@ -134,7 +134,7 @@
           Id="FileGoogleApisAuthDll"
           Name="Google.Apis.Auth.dll"
           DiskId="1"
-          Source="..\Google.Solutions.CloudIap.Plugin\bin\$(var.CONFIGURATION)\Google.Apis.Auth.dll"
+          Source="Google.Solutions.CloudIap.IapDesktop\bin\$(var.CONFIGURATION)\Google.Apis.Auth.dll"
           Vital="yes"/>
       </Component>
       <Component Id="CompGoogleApisAuthPlatformServicesDll" Guid="80b12e2c-7b0d-11e9-8f9e-2a86e4085a59">
@@ -142,7 +142,7 @@
           Id="FileGoogleApisAuthPlatformServicesDll"
           Name="Google.Apis.Auth.PlatformServices.dll"
           DiskId="1"
-          Source="..\Google.Solutions.CloudIap.Plugin\bin\$(var.CONFIGURATION)\Google.Apis.Auth.PlatformServices.dll"
+          Source="Google.Solutions.CloudIap.IapDesktop\bin\$(var.CONFIGURATION)\Google.Apis.Auth.PlatformServices.dll"
           Vital="yes"/>
       </Component>
       <Component Id="CompGoogleApisComputeV1Dll" Guid="80b12f8a-7b0d-11e9-8f9e-2a86e4085a59">
@@ -150,7 +150,7 @@
           Id="FileGoogleApisComputeV1Dll"
           Name="Google.Apis.Compute.v1.dll"
           DiskId="1"
-          Source="..\Google.Solutions.CloudIap.Plugin\bin\$(var.CONFIGURATION)\Google.Apis.Compute.v1.dll"
+          Source="Google.Solutions.CloudIap.IapDesktop\bin\$(var.CONFIGURATION)\Google.Apis.Compute.v1.dll"
           Vital="yes"/>
       </Component>
       <Component Id="CompGoogleApisCloudResourceManagerV1Dll" Guid="b29b5cb8-a2c3-4814-86b2-d81171bb2d90">
@@ -158,7 +158,7 @@
           Id="FileGoogleApisCloudResourceManagerV1Dll"
           Name="Google.Apis.CloudResourceManager.v1.dll"
           DiskId="1"
-          Source="..\Google.Solutions.CloudIap.Plugin\bin\$(var.CONFIGURATION)\Google.Apis.CloudResourceManager.v1.dll"
+          Source="Google.Solutions.CloudIap.IapDesktop\bin\$(var.CONFIGURATION)\Google.Apis.CloudResourceManager.v1.dll"
           Vital="yes"/>
       </Component>
       <Component Id="CompGoogleApisCoreDll" Guid="80b130b6-7b0d-11e9-8f9e-2a86e4085a59">
@@ -166,7 +166,7 @@
           Id="FileGoogleApisCoreDll"
           Name="Google.Apis.Core.dll"
           DiskId="1"
-          Source="..\Google.Solutions.CloudIap.Plugin\bin\$(var.CONFIGURATION)\Google.Apis.Core.dll"
+          Source="Google.Solutions.CloudIap.IapDesktop\bin\$(var.CONFIGURATION)\Google.Apis.Core.dll"
           Vital="yes"/>
       </Component>
       <Component Id="CompGoogleApisDll" Guid="80b13714-7b0d-11e9-8f9e-2a86e4085a59">
@@ -174,7 +174,7 @@
           Id="FileGoogleApisDll"
           Name="Google.Apis.dll"
           DiskId="1"
-          Source="..\Google.Solutions.CloudIap.Plugin\bin\$(var.CONFIGURATION)\Google.Apis.dll"
+          Source="Google.Solutions.CloudIap.IapDesktop\bin\$(var.CONFIGURATION)\Google.Apis.dll"
           Vital="yes"/>
       </Component>
       <Component Id="CompGoogleApisPlatformServicesDll" Guid="80b131ec-7b0d-11e9-8f9e-2a86e4085a59">
@@ -182,7 +182,7 @@
           Id="FileGoogleApisPlatformServicesDll"
           Name="Google.Apis.PlatformServices.dll"
           DiskId="1"
-          Source="..\Google.Solutions.CloudIap.Plugin\bin\$(var.CONFIGURATION)\Google.Apis.PlatformServices.dll"
+          Source="Google.Solutions.CloudIap.IapDesktop\bin\$(var.CONFIGURATION)\Google.Apis.PlatformServices.dll"
           Vital="yes"/>
       </Component>
       <Component Id="CompNewtonsoftJsonDll" Guid="80b13318-7b0d-11e9-8f9e-2a86e4085a59">
@@ -190,7 +190,7 @@
           Id="FileNewtonsoftJsonDll"
           Name="Newtonsoft.Json.dll"
           DiskId="1"
-          Source="..\Google.Solutions.CloudIap.Plugin\bin\$(var.CONFIGURATION)\Newtonsoft.Json.dll"
+          Source="Google.Solutions.CloudIap.IapDesktop\bin\$(var.CONFIGURATION)\Newtonsoft.Json.dll"
           Vital="yes"/>
       </Component>
 		</ComponentGroup>

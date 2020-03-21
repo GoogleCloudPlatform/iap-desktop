@@ -29,8 +29,6 @@ $VsixInstaller = (Resolve-Path ([IO.Path]::Combine(${Env:ProgramFiles(x86)}, 'Mi
 
 $NugetDownloadUrl = "https://dist.nuget.org/win-x86-commandline/latest/nuget.exe"
 $RdcManDownloadUrl = "https://download.microsoft.com/download/A/F/0/AF0071F3-B198-4A35-AA90-C68D103BDCCF/rdcman.msi"
-$WixToolsetDownloadUrl = "https://wixtoolset.org/downloads/v4.0.0.5205/wix40.exe"
-$WixToolsetExtensionDownloadUrl = "https://robmensching.gallerycdn.vsassets.io/extensions/robmensching/wixtoolsetvisualstudio2017extension/0.9.21.62588/1494013210879/250616/4/Votive2017.vsix"
 
 Write-Host "========================================================"
 Write-Host "=== Preparing build                                 ==="
