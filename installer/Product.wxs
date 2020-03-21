@@ -42,12 +42,20 @@
            AllowSameVersionUpgrades="yes" 
            DowngradeErrorMessage="A newer version of [ProductName] is already installed." />
 		<MediaTemplate EmbedCab="yes" />
+
+    <Condition Message="This application is only supported on Windows 8, Windows Server 2012, or higher.">
+      <!-- 
+        The WebSocket implementation is only available in Windows 8/2012 and higher,
+        see https://docs.microsoft.com/en-us/dotnet/api/system.net.websockets.clientwebsocket?view=netframework-4.8.
+        Plus, older versions of Windows are out of support by now anyway.
+      -->
+      <![CDATA[Installed OR (VersionNT >= 602)]]>
+    </Condition>
     
 		<Feature Id="ProductFeature" Title="Cloud IAP Desktop" Level="1">
 			<ComponentGroupRef Id="ProgramFiles" />
       <ComponentGroupRef Id="StartMenuShortcuts" />
 		</Feature>
-
 
     <WixVariable Id="WixUILicenseRtf" Value="$(var.BASEDIR)\License.rtf" />
     <WixVariable Id="WixUIDialogBmp" Value="$(var.BASEDIR)\Background.bmp" />
