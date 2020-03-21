@@ -39,12 +39,12 @@ namespace Google.Solutions.CloudIap.IapDesktop.Windows
             this.contextMenuStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.closeMenuItem});
             this.contextMenuStrip.Name = "contextMenuStrip1";
-            this.contextMenuStrip.Size = new System.Drawing.Size(181, 48);
+            this.contextMenuStrip.Size = new System.Drawing.Size(104, 26);
             // 
             // closeMenuItem
             // 
             this.closeMenuItem.Name = "closeMenuItem";
-            this.closeMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.closeMenuItem.Size = new System.Drawing.Size(103, 22);
             this.closeMenuItem.Text = "Close";
             this.closeMenuItem.Click += new System.EventHandler(this.closeMenuItem_Click);
             // 
@@ -55,10 +55,12 @@ namespace Google.Solutions.CloudIap.IapDesktop.Windows
             | WeifenLuo.WinFormsUI.Docking.DockAreas.DockRight) 
             | WeifenLuo.WinFormsUI.Docking.DockAreas.DockTop) 
             | WeifenLuo.WinFormsUI.Docking.DockAreas.DockBottom)));
+            this.KeyPreview = true;
             this.Name = "ToolWindow";
             this.TabPageContextMenuStrip = this.contextMenuStrip;
             this.TabText = "ToolWindow";
             this.Text = "ToolWindow";
+            this.KeyUp += new System.Windows.Forms.KeyEventHandler(this.ToolWindow_KeyUp);
             this.contextMenuStrip.ResumeLayout(false);
             this.ResumeLayout(false);
 

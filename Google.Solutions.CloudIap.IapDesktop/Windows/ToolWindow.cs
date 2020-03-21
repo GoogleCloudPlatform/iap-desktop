@@ -14,10 +14,29 @@ namespace Google.Solutions.CloudIap.IapDesktop.Windows
 
         private void closeMenuItem_Click(object sender, System.EventArgs e)
         {
-            this.Close();
+            this.CloseSafely();
         }
 
         public ContextMenuStrip TabContextStrip => this.contextMenuStrip;
 
+        private void ToolWindow_KeyUp(object sender, KeyEventArgs e)
+        {
+            if (e.Shift && e.KeyCode == Keys.Escape)
+            {
+                CloseSafely();
+            }
+        }
+
+        protected void CloseSafely()
+        {
+            if (this.HideOnClose)
+            {
+                Hide();
+            }
+            else
+            {
+                Close();
+            }
+        }
     }    
 }
