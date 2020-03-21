@@ -52,34 +52,6 @@ $Nuget = $env:TEMP + "\nuget.exe"
 
 
 Write-Host "========================================================"
-Write-Host "=== Install Wix Toolset                              ==="
-Write-Host "========================================================"
-
-(New-Object System.Net.WebClient).DownloadFile($WixToolsetDownloadUrl, $env:TEMP + "\Wix.exe")
-& $env:TEMP\Wix.exe -quiet -log $env:TEMP\wix.log | Out-Default
-Get-Content -Path $env:TEMP\wix.log
-
-if ($LastExitCode -ne 0)
-{
-    exit $LastExitCode
-}
-
-
-Write-Host "========================================================"
-Write-Host "=== Install Wix Toolset Extension (Votive)           ==="
-Write-Host "========================================================"
-
-(New-Object System.Net.WebClient).DownloadFile($WixToolsetExtensionDownloadUrl, $env:TEMP + "\Votive.vsix")
-
-& $VsixInstaller /quiet $env:TEMP\Votive.vsix | Out-Default
-
-if ($LastExitCode -ne 0)
-{
-    exit $LastExitCode
-}
-
-
-Write-Host "========================================================"
 Write-Host "=== Restore Nuget packages                           ==="
 Write-Host "========================================================"
 
@@ -96,6 +68,18 @@ Write-Host "=== Build solution                                   ==="
 Write-Host "========================================================"
 
 & $Msbuild  "/t:Rebuild" "/p:Configuration=Release;Platform=x86;AssemblyVersionNumber=$ProductVersion.${env:KOKORO_BUILD_NUMBER}.0" | Out-Default
+
+if ($LastExitCode -ne 0)
+{
+    exit $LastExitCode
+}
+
+
+Write-Host "========================================================"
+Write-Host "=== Build installer                                  ==="
+Write-Host "========================================================"
+
+.\build-installer.ps1 -ProductVersion "$ProductVersion.${env:KOKORO_BUILD_NUMBER}.0" -Configuration Release
 
 if ($LastExitCode -ne 0)
 {
