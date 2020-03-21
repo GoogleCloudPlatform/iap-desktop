@@ -17,6 +17,7 @@ namespace Google.Solutions.CloudIap.IapDesktop
 
         public static readonly ServiceRegistry Services = new ServiceRegistry();
 
+        public static Version ProgramVersion => typeof(Program).Assembly.GetName().Version;
 
         /// <summary>
         /// The main entry point for the application.

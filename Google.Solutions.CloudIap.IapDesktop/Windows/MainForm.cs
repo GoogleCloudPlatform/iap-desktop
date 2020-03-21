@@ -140,6 +140,11 @@ namespace Google.Solutions.CloudIap.IapDesktop.Windows
             ResumeLayout();
         }
 
+        private void aboutToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            new AboutWindow().ShowDialog(this);
+        }
+
         //---------------------------------------------------------------------
         // IEventRoutingHost.
         //---------------------------------------------------------------------
