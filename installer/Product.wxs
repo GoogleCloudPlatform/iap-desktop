@@ -39,7 +39,8 @@
 		<MediaTemplate EmbedCab="yes" />
     
 		<Feature Id="ProductFeature" Title="Cloud IAP Desktop" Level="1">
-			<ComponentGroupRef Id="ProductComponents" />
+			<ComponentGroupRef Id="ProgramFiles" />
+      <ComponentGroupRef Id="StartMenuShortcuts" />
 		</Feature>
 
 
@@ -85,6 +86,8 @@
 
 	<Fragment>
     <Directory Id="TARGETDIR" Name="SourceDir">
+      <Directory Id="ProgramMenuFolder">
+      </Directory>
       <Directory Id="AppDataFolder">
         <Directory Id="DirGoogle" Name="Google">
           <Directory Id="DirIapDesktop" Name="Cloud IAP Desktop">
@@ -95,7 +98,26 @@
 	</Fragment>
 
 	<Fragment>
-		<ComponentGroup Id="ProductComponents" Directory="DirIapDesktop">
+    <ComponentGroup Id="StartMenuShortcuts" Directory="ProgramMenuFolder">
+      <Component Id="CompStartMenu" Guid="80774ea2-6b47-11ea-bc55-0242ac130003">
+        <RegistryValue
+          Id="RegStartMenuShortcuts"
+          Root="HKCU"
+          Key="HKEY_CURRENT_USER\Software\Google\IapDesktop\Installer"
+          Name="StartMenuShortcuts"
+          Type="integer"
+          KeyPath="yes"
+          Value="1" />
+        
+        <Shortcut Id="Shortcut"
+          Name="Cloud IAP Desktop"
+          Description="Identity-Aware Proxy for Remote Desktop"
+          Target="[#FileIapDesktopExe]"
+          WorkingDirectory="DirIapDesktop"/>
+      </Component>
+    </ComponentGroup>
+    
+		<ComponentGroup Id="ProgramFiles" Directory="DirIapDesktop">
       <Component Id="CompProgramFiles" Guid="80773b6a-6b47-11ea-bc55-0242ac130003">
         <RegistryValue
           Id="RegProgramFiles"
@@ -105,8 +127,10 @@
           Type="integer"
           KeyPath="yes"
           Value="1" />
-        <RemoveFolder Id="DirIapDesktop" On="uninstall"/>
-      
+
+        <RemoveFolder Id="DirGoogle" Directory="DirGoogle" On="uninstall"/>
+        <RemoveFolder Id="DirIapDesktop" Directory="DirIapDesktop" On="uninstall"/>
+
         <File
           Id="FileReadme"
           Name="README.md"
@@ -218,7 +242,6 @@
   <!--
     Spare sequential GUIDs:
     
-    80774ea2-6b47-11ea-bc55-0242ac130003
     80774f6a-6b47-11ea-bc55-0242ac130003
     80775028-6b47-11ea-bc55-0242ac130003
     807750dc-6b47-11ea-bc55-0242ac130003

@@ -47,6 +47,7 @@ $ObjDir = "installer\obj"
 & $Light `
     -nologo `
     -out "$ObjDir\$Configuration\IapDesktop-$ProductVersion.msi" `
+    -sw1076 `
     -cultures:null `
     -ext "$WixTools\WixUIExtension.dll" `
     "$ObjDir\$Configuration\Product.wixobj"
