@@ -1,4 +1,4 @@
-﻿namespace Google.Solutions.CloudIap.IapDesktop.Windows
+﻿namespace Google.Solutions.CloudIap.IapDesktop.Settings
 {
     partial class SettingsWindow
     {

@@ -86,6 +86,7 @@
     <Compile Include="OAuthClient.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="ProjectExplorer\IProjectExplorer.cs" />
+    <Compile Include="ProjectExplorer\ProjectExplorerSelectionChangedEvent.cs" />
     <Compile Include="ProjectExplorer\ProjectPickerDialog.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -138,10 +139,10 @@
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
     </Compile>
-    <Compile Include="Windows\SettingsWindow.cs">
+    <Compile Include="Settings\SettingsWindow.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Windows\SettingsWindow.Designer.cs">
+    <Compile Include="Settings\SettingsWindow.Designer.cs">
       <DependentUpon>SettingsWindow.cs</DependentUpon>
     </Compile>
     <Compile Include="Windows\ToolWindow.cs">
@@ -192,7 +193,7 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
-    <EmbeddedResource Include="Windows\SettingsWindow.resx">
+    <EmbeddedResource Include="Settings\SettingsWindow.resx">
       <DependentUpon>SettingsWindow.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Windows\ToolWindow.resx">

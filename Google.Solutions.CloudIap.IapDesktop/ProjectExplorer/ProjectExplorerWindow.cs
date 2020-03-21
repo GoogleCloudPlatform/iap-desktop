@@ -201,6 +201,23 @@ namespace Google.Solutions.CloudIap.IapDesktop.ProjectExplorer
             }
         }
 
+        private async void treeView_AfterSelect(object sender, TreeViewEventArgs args)
+        {
+            try
+            {
+                await this.eventService.FireAsync(
+                    ((ProjectExplorerNode)args.Node).CreateSelectedEvent());
+            }
+            catch (TaskCanceledException)
+            {
+                // Ignore.
+            }
+            catch (Exception e)
+            {
+                ExceptionDialog.Show(this, "An error occured", e);
+            }
+        }
+
         //---------------------------------------------------------------------
         // Service event handlers.
         //---------------------------------------------------------------------
@@ -275,24 +292,37 @@ namespace Google.Solutions.CloudIap.IapDesktop.ProjectExplorer
         // Nodes.
         //---------------------------------------------------------------------
 
-        class CloudNode : TreeNode
+        private abstract class ProjectExplorerNode : TreeNode
+        {
+            public ProjectExplorerNode(string name, int iconIndex)
+                : base("Google Cloud", iconIndex, iconIndex)
+            {
+            }
+
+            public abstract ProjectExplorerNodeSelectedEvent CreateSelectedEvent();
+        }
+
+        private class CloudNode : ProjectExplorerNode
         {
             private const int IconIndex = 0;
 
             public CloudNode()
-                : base("Google Cloud", IconIndex, IconIndex)
+                : base("Google Cloud", IconIndex)
             {
             }
+
+            public override ProjectExplorerNodeSelectedEvent CreateSelectedEvent()
+                => new ProjectExplorerCloudNodeSelectedEvent();
         }
 
-        class ProjectNode : TreeNode
+        private class ProjectNode : ProjectExplorerNode
         {
             private const int IconIndex = 1;
 
             public string ProjectId => this.Text;
 
             public ProjectNode(string projectId)
-                : base(projectId, IconIndex, IconIndex)
+                : base(projectId, IconIndex)
             {
             }
 
@@ -329,27 +359,42 @@ namespace Google.Solutions.CloudIap.IapDesktop.ProjectExplorer
 
                 Expand();
             }
+            public override ProjectExplorerNodeSelectedEvent CreateSelectedEvent()
+                => new ProjectExplorerProjectNodeSelectedEvent(this.ProjectId);
         }
 
-        class ZoneNode : TreeNode
+        private class ZoneNode : ProjectExplorerNode
         {
             private const int IconIndex = 3;
 
+            public string ProjectId => ((ProjectNode)this.Parent).ProjectId;
+            public string ZoneId => this.Text;
+
             public ZoneNode(string zoneId)
-                : base(zoneId, IconIndex, IconIndex)
+                : base(zoneId, IconIndex)
             {
             }
+
+            public override ProjectExplorerNodeSelectedEvent CreateSelectedEvent()
+                => new ProjectExplorerZoneNodeSelectedEvent(this.ProjectId, this.ZoneId);
         }
 
-        class VmInstanceNode : TreeNode
+        private class VmInstanceNode : ProjectExplorerNode
         {
             private const int IconIndex = 4;
             private const int ActiveIconIndex = 4;
 
+            public string ProjectId => ((ZoneNode)this.Parent).ProjectId;
+            public string ZoneId => ((ZoneNode)this.Parent).ZoneId;
+            public string InstanceName => this.Text;
+
             public VmInstanceNode(string instanceName)
-                : base(instanceName, IconIndex, IconIndex)
+                : base(instanceName, IconIndex)
             {
             }
+
+            public override ProjectExplorerNodeSelectedEvent CreateSelectedEvent()
+                => new ProjectExplorerVmInstanceNodeSelectedEvent(this.ProjectId, this.ZoneId, this.InstanceName);
         }
     }
 }

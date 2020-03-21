@@ -1,5 +1,6 @@
 ﻿using Google.Solutions.CloudIap.IapDesktop.Application.Settings;
 using Google.Solutions.CloudIap.IapDesktop.Settings;
+using Google.Solutions.CloudIap.IapDesktop.Windows;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -10,7 +11,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-namespace Google.Solutions.CloudIap.IapDesktop.Windows
+namespace Google.Solutions.CloudIap.IapDesktop.Settings
 {
     public partial class SettingsWindow : ToolWindow
     {
@@ -19,10 +20,11 @@ namespace Google.Solutions.CloudIap.IapDesktop.Windows
             InitializeComponent();
 
             this.TabText = this.Text;
-
-            this.propertyGrid.SelectedObject = new VirtualMachineSettingsEditor(
-                null,
-                new VirtualMachineSettings());
+            //
+            // This window is a singleton, so we never want it to be closed,
+            // just hidden.
+            //
+            this.HideOnClose = true;
         }
     }
 }
