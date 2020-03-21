@@ -31,20 +31,22 @@ $WixTools = (Resolve-Path ([IO.Path]::Combine('packages', 'WiX.*', 'tools'))).Pa
 $Candle = Join-Path $WixTools 'candle.exe'
 $Light = Join-Path $WixTools 'light.exe'
 
-$ObjDir = "Google.Solutions.CloudIap.Installer\obj"
+$SourcesDir = "installer"
+$ObjDir = "installer\obj"
 
 & $Candle `
     -nologo `
     -out "$ObjDir\$Configuration\" `
     "-dCONFIGURATION=$Configuration" `
     "-dVERSION=$ProductVersion" `
+    "-dBASEDIR=$SourcesDir" `
     -arch x86 `
     -ext "$WixTools\WixUIExtension.dll" `
-    Google.Solutions.CloudIap.Installer\Product.wxs
+    "$SourcesDir\Product.wxs"
 
 & $Light `
     -nologo `
-    -out "$ObjDir\$Configuration\CloudIap-Plugin-$ProductVersion.msi" `
+    -out "$ObjDir\$Configuration\IapDesktop-$ProductVersion.msi" `
     -cultures:null `
     -ext "$WixTools\WixUIExtension.dll" `
     "$ObjDir\$Configuration\Product.wixobj"
