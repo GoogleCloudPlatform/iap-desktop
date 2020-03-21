@@ -1,200 +1,137 @@
-﻿using Google.Solutions.CloudIap.IapDesktop.Application.Registry;
-using Google.Solutions.CloudIap.IapDesktop.Application.Settings;
+﻿using Google.Solutions.CloudIap.IapDesktop.Application.Settings;
+using Google.Solutions.CloudIap.IapDesktop.ProjectExplorer;
+using Google.Solutions.CloudIap.IapDesktop.Settings;
+using Google.Solutions.CloudIap.IapDesktop.Windows;
+using Google.Solutions.IapDesktop.Application.ObjectModel;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Data;
+using System.Drawing;
 using System.Linq;
-using System.Net;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Forms;
+using WeifenLuo.WinFormsUI.Docking;
 
 namespace Google.Solutions.CloudIap.IapDesktop.Settings
 {
-    public abstract class SettingsEditorBase
+    internal partial class SettingsEditor : ToolWindow, ISettingsEditor
     {
-        protected readonly SettingsEditorBase parent;
-        protected readonly InventorySettingsBase settings;
+        private readonly DockPanel dockPanel;
+        private readonly IEventService eventService;
+        private readonly InventorySettingsRepository inventorySettingsRepository;
 
-        public SettingsEditorBase(SettingsEditorBase parent, InventorySettingsBase settings)
+        public SettingsEditor()
         {
-            this.parent = parent;
-            this.settings = settings;
+            InitializeComponent();
+
+            this.TabText = this.Text;
+            //
+            // This window is a singleton, so we never want it to be closed,
+            // just hidden.
+            //
+            this.HideOnClose = true;
+
+            this.eventService = Program.Services.GetService<IEventService>();
+            this.inventorySettingsRepository = Program.Services.GetService<InventorySettingsRepository>();
+
+            this.eventService.BindHandler<ProjectExplorerNodeSelectedEvent>(OnProjectExplorerNodeSelected);
+        }
+
+        public SettingsEditor(DockPanel dockPanel) : this()
+        {
+            this.dockPanel = dockPanel;
+        }
+
+        private GlobalSettingsEditorNode GetGlobalSettingsEditor()
+            => new GlobalSettingsEditorNode(this.inventorySettingsRepository.GetSettings());
+
+        private ProjectSettingsEditorNode GetProjectSettingsEditor(string projectId)
+            => new ProjectSettingsEditorNode(
+                GetGlobalSettingsEditor(),
+                this.inventorySettingsRepository.GetProjectSettings(projectId));
+
+        private ZoneSettingsEditorNode GetZoneSettingsEditor(
+            string projectId, 
+            string zoneId)
+            => new ZoneSettingsEditorNode(
+                GetProjectSettingsEditor(projectId),
+                this.inventorySettingsRepository.GetZoneSettings(projectId, zoneId));
+
+
+        private VmInstanceSettingsEditorNode GetVmInstanceSettingsEditor(
+            string projectId, 
+            string zoneId, 
+            string instanceName)
+            => new VmInstanceSettingsEditorNode(
+                GetZoneSettingsEditor(projectId, zoneId),
+                this.inventorySettingsRepository.GetVirtualMachineSettings(projectId, instanceName));
+
+        private void SetEditorNode(SettingsEditorNode settingsNode)
+        {
+            this.propertyGrid.SelectedObject = settingsNode;
+        }
+
+        private SettingsEditorNode LookupEditorNode(IProjectExplorerNode node)
+        {
+            if (node is IProjectExplorerCloudNode cloudNode)
+            {
+                return GetGlobalSettingsEditor();
+            }
+            else if (node is IProjectExplorerProjectNode projectNode)
+            {
+                return GetProjectSettingsEditor(
+                    projectNode.ProjectId);
+            }
+            else if (node is IProjectExplorerZoneNode zoneNode)
+            {
+                return GetZoneSettingsEditor(
+                    zoneNode.ProjectId,
+                    zoneNode.ZoneId);
+            }
+            else if (node is IProjectExplorerVmInstanceNode vmInstanceNode)
+            {
+                return GetVmInstanceSettingsEditor(
+                    vmInstanceNode.ProjectId,
+                    vmInstanceNode.ZoneId,
+                    vmInstanceNode.InstanceName);
+            }
+            else
+            {
+                throw new ArgumentException("Unrecognized node");
+            }
         }
 
         //---------------------------------------------------------------------
-        // Credentials.
+        // Service event handlers.
         //---------------------------------------------------------------------
 
-        [Browsable(true)]
-        [Category("Credentials")]
-        [DisplayName("Username")]
-        [Description("Windows logon username")]
-        public string Username
+        private void OnProjectExplorerNodeSelected(ProjectExplorerNodeSelectedEvent e)
         {
-            get => this.settings.Username ?? this.parent?.Username;
-            set => this.settings.Username = value;
+            //
+            // If the window is visible, switch to a different editor. Otherwise,
+            // ignore the event.
+            //
+            if (this.Visible)
+            {
+                SetEditorNode(LookupEditorNode(e.SelectedNode));
+            }
         }
 
-        public bool ShouldSerializeUsername() => this.settings.Username != null;
+        //---------------------------------------------------------------------
+        // ISettingsEditor.
+        //---------------------------------------------------------------------
 
-
-        [Browsable(true)]
-        [Category("Credentials")]
-        [DisplayName("Password")]
-        [Description("Windows logon password")]
-        [PasswordPropertyText(true)]
-        public string Password
+        public void ShowWindow(SettingsEditorNode settingsNode)
         {
-            get => ShouldSerializePassword()
-                ? new string('*', this.settings.Password.Length)
-                : this.parent?.Password;
-            set => this.settings.Password = SecureStringExtensions.FromClearText(value);
+            SetEditorNode(settingsNode);
+            Show();
         }
 
-        public bool ShouldSerializePassword() => this.settings.Password != null;
-
-
-        [Browsable(true)]
-        [Category("Credentials")]
-        [DisplayName("Domain")]
-        [Description("Windows logon domain")]
-        public string Domain
+        public void ShowWindow(IProjectExplorerNode node)
         {
-            get => this.settings.Domain ?? this.parent?.Domain;
-            set => this.settings.Domain = value;
+            ShowWindow(LookupEditorNode(node));
         }
-
-        public bool ShouldSerializeDomain() => this.settings.Domain != null;
-
-
-        [Browsable(true)]
-        [Category("Display")]
-        [DisplayName("Show connection bar")]
-        [Description("Show connection bar in full-screen mode")]
-        public RdpConnectionBarState ConnectionBar
-        {
-            get => ShouldSerializeConnectionBar()
-                ? this.settings.ConnectionBar
-                : (this.parent != null ? this.parent.ConnectionBar : RdpConnectionBarState._Default);
-            set => this.settings.ConnectionBar = value;
-        }
-
-        public bool ShouldSerializeConnectionBar() 
-            => this.settings.ConnectionBar != RdpConnectionBarState._Default;
-
-
-        [Browsable(true)]
-        [Category("Display")]
-        [DisplayName("Desktop size")]
-        [Description("Size of remote desktop")]
-        public RdpDesktopSize DesktopSize
-        {
-            get => ShouldSerializeDesktopSize()
-                ? this.settings.DesktopSize
-                : (this.parent != null ? this.parent.DesktopSize : RdpDesktopSize._Default);
-            set => this.settings.DesktopSize = value;
-        }
-
-        public bool ShouldSerializeDesktopSize()
-            => this.settings.DesktopSize != RdpDesktopSize._Default;
-
-
-        [Browsable(true)]
-        [Category("Display")]
-        [DisplayName("Color depth")]
-        [Description("Color depth of remote desktop")]
-        public RdpColorDepth ColorDepth
-        {
-            get => ShouldSerializeColorDepth()
-                ? this.settings.ColorDepth
-                : (this.parent != null ? this.parent.ColorDepth : RdpColorDepth._Default);
-            set => this.settings.ColorDepth = value;
-        }
-
-        public bool ShouldSerializeColorDepth()
-            => this.settings.ColorDepth != RdpColorDepth._Default;
-
-
-        [Browsable(true)]
-        [Category("Connection")]
-        [DisplayName("Server authentication")]
-        [Description("Require server authentication when connecting")]
-        public RdpAuthenticationLevel AuthenticationLevel
-        {
-            get => ShouldSerializeAuthenticationLevel()
-                ? this.settings.AuthenticationLevel
-                : (this.parent != null ? this.parent.AuthenticationLevel : RdpAuthenticationLevel._Default);
-            set => this.settings.AuthenticationLevel = value;
-        }
-
-        public bool ShouldSerializeAuthenticationLevel()
-            => this.settings.AuthenticationLevel != RdpAuthenticationLevel._Default;
-
-
-        [Browsable(true)]
-        [Category("Local resources")]
-        [DisplayName("Redirect clipboard")]
-        [Description("Allow clipboard contents to be shared with remote desktop")]
-        public bool RedirectClipboard
-        {
-            get => ShouldSerializeRedirectClipboard()
-                ? this.settings.RedirectClipboard
-                : (this.parent != null ? this.parent.RedirectClipboard : true);
-            set => this.settings.RedirectClipboard = value;
-        }
-
-        public bool ShouldSerializeRedirectClipboard()
-            => !this.settings.RedirectClipboard;
-
-
-        [Browsable(true)]
-        [Category("Local resources")]
-        [DisplayName("Audio mode")]
-        [Description("Redirect audio when playing on server")]
-        public RdpAudioMode AudioMode
-        {
-            get => ShouldSerializeAudioMode()
-                ? this.settings.AudioMode
-                : (this.parent != null ? this.parent.AudioMode : RdpAudioMode._Default);
-            set => this.settings.AudioMode = value;
-        }
-
-        public bool ShouldSerializeAudioMode()
-            => this.settings.AudioMode != RdpAudioMode._Default;
-
     }
-
-
-    public class GlobalSettingsEditor : SettingsEditorBase
-    {
-        public GlobalSettingsEditor(InventorySettings settings) : base(null, settings)
-        { }
-    }
-
-    public class ProjectSettingsEditor : SettingsEditorBase
-    {
-        public ProjectSettingsEditor(GlobalSettingsEditor parent, ProjectSettings settings)
-            : base(parent, settings)
-        { }
-    }
-
-    public class ZoneSettingsEditor : SettingsEditorBase
-    {
-        public ZoneSettingsEditor(ProjectSettingsEditor parent, ZoneSettings settings)
-            : base(parent, settings)
-        { }
-    }
-
-    public class VirtualMachineSettingsEditor : SettingsEditorBase
-    {
-        public VirtualMachineSettingsEditor(ZoneSettingsEditor parent, VirtualMachineSettings settings)
-            : base(parent, settings)
-        { }
-
-        [Browsable(true)]
-        [Category("Instance")]
-        [DisplayName("Name")]
-        public string InstanceName => ((VirtualMachineSettings)this.settings).InstanceName;
-    }
-
 }

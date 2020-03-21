@@ -128,7 +128,7 @@ namespace Google.Solutions.CloudIap.IapDesktop.Windows
             Program.Services.AddSingleton<RemoteDesktopService>(new RemoteDesktopService(this.dockPanel));
             Program.Services.AddSingleton<IProjectExplorer>(new ProjectExplorerWindow(this.dockPanel));
 
-            var settingsWindow = new SettingsWindow();
+            var settingsWindow = new SettingsEditor();
             settingsWindow.Show(dockPanel, DockState.DockRight);
             //settingsWindow.Show(projectExplorer.Pane, DockAlignment.Bottom, 0.3);
 

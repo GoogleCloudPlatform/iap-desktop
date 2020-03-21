@@ -19,10 +19,9 @@ using WeifenLuo.WinFormsUI.Docking;
 
 namespace Google.Solutions.CloudIap.IapDesktop.ProjectExplorer
 {
-    public partial class ProjectExplorerWindow : ToolWindow, IProjectExplorer
+    internal partial class ProjectExplorerWindow : ToolWindow, IProjectExplorer
     {
         private readonly DockPanel dockPanel;
-
         private readonly IMainForm mainForm;
         private readonly IEventService eventService;
         private readonly JobService jobService;
@@ -206,7 +205,8 @@ namespace Google.Solutions.CloudIap.IapDesktop.ProjectExplorer
             try
             {
                 await this.eventService.FireAsync(
-                    ((ProjectExplorerNode)args.Node).CreateSelectedEvent());
+                    new ProjectExplorerNodeSelectedEvent(
+                        ((IProjectExplorerNode)args.Node)));
             }
             catch (TaskCanceledException)
             {
@@ -292,17 +292,15 @@ namespace Google.Solutions.CloudIap.IapDesktop.ProjectExplorer
         // Nodes.
         //---------------------------------------------------------------------
 
-        private abstract class ProjectExplorerNode : TreeNode
+        private abstract class ProjectExplorerNode : TreeNode, IProjectExplorerNode
         {
             public ProjectExplorerNode(string name, int iconIndex)
-                : base("Google Cloud", iconIndex, iconIndex)
+                : base(name, iconIndex, iconIndex)
             {
             }
-
-            public abstract ProjectExplorerNodeSelectedEvent CreateSelectedEvent();
         }
 
-        private class CloudNode : ProjectExplorerNode
+        private class CloudNode : ProjectExplorerNode, IProjectExplorerCloudNode
         {
             private const int IconIndex = 0;
 
@@ -310,12 +308,9 @@ namespace Google.Solutions.CloudIap.IapDesktop.ProjectExplorer
                 : base("Google Cloud", IconIndex)
             {
             }
-
-            public override ProjectExplorerNodeSelectedEvent CreateSelectedEvent()
-                => new ProjectExplorerCloudNodeSelectedEvent();
         }
 
-        private class ProjectNode : ProjectExplorerNode
+        private class ProjectNode : ProjectExplorerNode, IProjectExplorerProjectNode
         {
             private const int IconIndex = 1;
 
@@ -359,11 +354,9 @@ namespace Google.Solutions.CloudIap.IapDesktop.ProjectExplorer
 
                 Expand();
             }
-            public override ProjectExplorerNodeSelectedEvent CreateSelectedEvent()
-                => new ProjectExplorerProjectNodeSelectedEvent(this.ProjectId);
         }
 
-        private class ZoneNode : ProjectExplorerNode
+        private class ZoneNode : ProjectExplorerNode, IProjectExplorerZoneNode
         {
             private const int IconIndex = 3;
 
@@ -374,12 +367,9 @@ namespace Google.Solutions.CloudIap.IapDesktop.ProjectExplorer
                 : base(zoneId, IconIndex)
             {
             }
-
-            public override ProjectExplorerNodeSelectedEvent CreateSelectedEvent()
-                => new ProjectExplorerZoneNodeSelectedEvent(this.ProjectId, this.ZoneId);
         }
 
-        private class VmInstanceNode : ProjectExplorerNode
+        private class VmInstanceNode : ProjectExplorerNode, IProjectExplorerVmInstanceNode
         {
             private const int IconIndex = 4;
             private const int ActiveIconIndex = 4;
@@ -392,9 +382,6 @@ namespace Google.Solutions.CloudIap.IapDesktop.ProjectExplorer
                 : base(instanceName, IconIndex)
             {
             }
-
-            public override ProjectExplorerNodeSelectedEvent CreateSelectedEvent()
-                => new ProjectExplorerVmInstanceNodeSelectedEvent(this.ProjectId, this.ZoneId, this.InstanceName);
         }
     }
 }
