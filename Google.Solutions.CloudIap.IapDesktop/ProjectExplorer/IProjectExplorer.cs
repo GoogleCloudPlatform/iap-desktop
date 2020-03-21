@@ -8,6 +8,7 @@ namespace Google.Solutions.CloudIap.IapDesktop.ProjectExplorer
 {
     internal interface IProjectExplorer
     {
+        void ShowWindow();
         Task RefreshProject(string projectId);
         Task RefreshAllProjects();
     }

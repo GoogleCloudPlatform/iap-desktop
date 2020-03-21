@@ -68,8 +68,6 @@ namespace Google.Solutions.CloudIap.IapDesktop.Windows
             {
                 InitializeComponent();
             }
-
-            Program.Services.AddSingleton<RemoteDesktopService>(new RemoteDesktopService(this.dockPanel));
         }
 
         private void MainForm_FormClosing(object sender, FormClosingEventArgs e)
@@ -124,11 +122,13 @@ namespace Google.Solutions.CloudIap.IapDesktop.Windows
                 VisualStudioToolStripExtender.VsVersion.Vs2015,
                 this.vs2015LightTheme);
 
-            var projectExplorer = new ProjectExplorerWindow();
-            projectExplorer.Show(dockPanel, DockState.DockLeft);
+
+
+            Program.Services.AddSingleton<RemoteDesktopService>(new RemoteDesktopService(this.dockPanel));
+            Program.Services.AddSingleton<IProjectExplorer>(new ProjectExplorerWindow(this.dockPanel));
 
             var settingsWindow = new SettingsWindow();
-            settingsWindow.Show(projectExplorer.Pane, DockAlignment.Bottom, 0.3);
+            //settingsWindow.Show(projectExplorer.Pane, DockAlignment.Bottom, 0.3);
 
 #if DEBUG
             var debugWindow = new DebugWindow();
@@ -143,6 +143,16 @@ namespace Google.Solutions.CloudIap.IapDesktop.Windows
         private void aboutToolStripMenuItem_Click(object sender, EventArgs e)
         {
             new AboutWindow().ShowDialog(this);
+        }
+
+        private void exitToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            Close();
+        }
+
+        private void projectExplorerToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            Program.Services.GetService<IProjectExplorer>().ShowWindow();
         }
 
         //---------------------------------------------------------------------
@@ -160,6 +170,7 @@ namespace Google.Solutions.CloudIap.IapDesktop.Windows
                 return dialog != null && dialog.IsShowing;
             }
         }
+
 
         public void ShowWaitDialog(JobDescription jobDescription, CancellationTokenSource cts)
         {

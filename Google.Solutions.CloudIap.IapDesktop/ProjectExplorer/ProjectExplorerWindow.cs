@@ -21,6 +21,8 @@ namespace Google.Solutions.CloudIap.IapDesktop.ProjectExplorer
 {
     public partial class ProjectExplorerWindow : ToolWindow, IProjectExplorer
     {
+        private readonly DockPanel dockPanel;
+
         private readonly IMainForm mainForm;
         private readonly IEventService eventService;
         private readonly JobService jobService;
@@ -56,6 +58,12 @@ namespace Google.Solutions.CloudIap.IapDesktop.ProjectExplorer
 
             this.eventService.BindAsyncHandler<ProjectInventoryService.ProjectAddedEvent>(OnProjectAdded);
             this.eventService.BindHandler<ProjectInventoryService.ProjectDeletedEvent>(OnProjectDeleted);
+        }
+
+        public ProjectExplorerWindow(DockPanel dockPanel) : this()
+        {
+            this.dockPanel = dockPanel;
+            ShowWindow();
         }
 
         private void RefreshProject(string projectId, IEnumerable<Instance> instances)
@@ -222,6 +230,11 @@ namespace Google.Solutions.CloudIap.IapDesktop.ProjectExplorer
         //---------------------------------------------------------------------
         // IProjectExplorer.
         //---------------------------------------------------------------------
+
+        public void ShowWindow()
+        {
+            Show(this.dockPanel, DockState.DockLeft);
+        }
 
         public async Task RefreshAllProjects()
         {
