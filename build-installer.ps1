@@ -42,6 +42,7 @@ $ObjDir = "installer\obj"
     "-dBASEDIR=$SourcesDir" `
     -arch x86 `
     -ext "$WixTools\WixUIExtension.dll" `
+    -ext "$WixTools\WixUtilExtension.dll" `
     "$SourcesDir\Product.wxs"
 
 & $Light `
@@ -50,4 +51,5 @@ $ObjDir = "installer\obj"
     -sw1076 `
     -cultures:null `
     -ext "$WixTools\WixUIExtension.dll" `
+    -ext "$WixTools\WixUtilExtension.dll" `
     "$ObjDir\$Configuration\Product.wixobj"
