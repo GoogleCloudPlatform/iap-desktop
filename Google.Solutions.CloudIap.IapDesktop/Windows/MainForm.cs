@@ -21,7 +21,12 @@ using WeifenLuo.WinFormsUI.Docking;
 
 namespace Google.Solutions.CloudIap.IapDesktop.Windows
 {
-    public partial class MainForm : Form, IJobHost
+    public interface IMainForm
+    {
+        void Close();
+    }
+
+    public partial class MainForm : Form, IJobHost, IMainForm
     {
         private readonly WindowSettingsRepository windowSettings;
         private readonly AuthSettingsRepository authSettings;
@@ -35,6 +40,7 @@ namespace Google.Solutions.CloudIap.IapDesktop.Windows
             this.authSettings = Program.Services.GetService<AuthSettingsRepository>();
             this.inventorySettings = Program.Services.GetService<InventorySettingsRepository>();
 
+            Program.Services.AddSingleton<IMainForm>(this);
             Program.Services.AddSingleton(new JobService(this, Program.Services));
             Program.Services.AddSingleton<IEventService>(new EventService(this));
             Program.Services.AddTransient<ProjectInventoryService>();

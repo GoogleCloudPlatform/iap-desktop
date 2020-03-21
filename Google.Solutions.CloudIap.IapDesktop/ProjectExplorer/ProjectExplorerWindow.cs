@@ -21,6 +21,7 @@ namespace Google.Solutions.CloudIap.IapDesktop.ProjectExplorer
 {
     public partial class ProjectExplorerWindow : ToolWindow, IProjectExplorer
     {
+        private readonly IMainForm mainForm;
         private readonly IEventService eventService;
         private readonly JobService jobService;
         private readonly ProjectInventoryService projectInventoryService;
@@ -47,6 +48,7 @@ namespace Google.Solutions.CloudIap.IapDesktop.ProjectExplorer
 
             this.treeView.Nodes.Add(this.rootNode);
 
+            this.mainForm = Program.Services.GetService<IMainForm>();
             this.eventService = Program.Services.GetService<IEventService>();
             this.jobService = Program.Services.GetService<JobService>();
             this.projectInventoryService = Program.Services.GetService<ProjectInventoryService>();
@@ -77,9 +79,23 @@ namespace Google.Solutions.CloudIap.IapDesktop.ProjectExplorer
             this.rootNode.Expand();
         }
 
-        private async void ProjectExplorerWindow_Shown(object sender, EventArgs e)
+        private async void ProjectExplorerWindow_Shown(object sender, EventArgs _)
         {
-            await RefreshAllProjects();
+            try
+            {
+                await RefreshAllProjects();
+            }
+            catch (TaskCanceledException)
+            {
+                // Most likely, the user rejected to reauthorize. Quit the app.
+                this.mainForm.Close();
+                
+            }
+            catch (Exception e)
+            {
+                ExceptionDialog.Show(this, "Loading projects failed", e);
+                this.mainForm.Close();
+            }
         }
 
         //---------------------------------------------------------------------
