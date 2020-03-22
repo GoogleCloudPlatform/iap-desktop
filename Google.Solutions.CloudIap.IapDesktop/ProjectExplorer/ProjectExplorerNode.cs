@@ -1,4 +1,5 @@
 ﻿using Google.Apis.Compute.v1.Data;
+using Google.Solutions.CloudIap.IapDesktop.Application.Settings;
 using Google.Solutions.Compute;
 using Google.Solutions.IapDesktop.Application.Adapters;
 using System;
@@ -32,11 +33,16 @@ namespace Google.Solutions.CloudIap.IapDesktop.ProjectExplorer
     {
         private const int IconIndex = 1;
 
+        private readonly InventorySettingsRepository settingsRepository;
+        private readonly ProjectSettings settings;
+
         public string ProjectId => this.Text;
 
-        public ProjectNode(string projectId)
+        public ProjectNode(InventorySettingsRepository settingsRepository, string projectId)
             : base(projectId, IconIndex)
         {
+            this.settingsRepository = settingsRepository;
+            this.settings = settingsRepository.GetProjectSettings(projectId);
         }
 
         private string longZoneToShortZoneId(string zone) => zone.Substring(zone.LastIndexOf("/") + 1);
@@ -52,7 +58,10 @@ namespace Google.Solutions.CloudIap.IapDesktop.ProjectExplorer
 
             foreach (var zoneId in zoneIds)
             {
-                var zoneNode = new ZoneNode(zoneId);
+                var zoneSettings = this.settingsRepository.GetZoneSettings(
+                    this.ProjectId, 
+                    zoneId);
+                var zoneNode = new ZoneNode(zoneSettings);
 
                 var instancesInZone = instances
                     .Where(i => longZoneToShortZoneId(i.Zone) == zoneId)
@@ -61,7 +70,10 @@ namespace Google.Solutions.CloudIap.IapDesktop.ProjectExplorer
 
                 foreach (var instanceName in instancesInZone)
                 {
-                    var instanceNode = new VmInstanceNode(instanceName);
+                    var instanceSettings = this.settingsRepository.GetVmInstanceSettings(
+                        this.ProjectId, 
+                        instanceName);
+                    var instanceNode = new VmInstanceNode(instanceSettings);
 
                     zoneNode.Nodes.Add(instanceNode);
                 }
@@ -78,12 +90,15 @@ namespace Google.Solutions.CloudIap.IapDesktop.ProjectExplorer
     {
         private const int IconIndex = 3;
 
+        private readonly ZoneSettings settings;
+
         public string ProjectId => ((ProjectNode)this.Parent).ProjectId;
         public string ZoneId => this.Text;
 
-        public ZoneNode(string zoneId)
-            : base(zoneId, IconIndex)
+        public ZoneNode(ZoneSettings settings)
+            : base(settings.ZoneId, IconIndex)
         {
+            this.settings = settings;
         }
     }
 
@@ -92,13 +107,16 @@ namespace Google.Solutions.CloudIap.IapDesktop.ProjectExplorer
         private const int IconIndex = 4;
         private const int ActiveIconIndex = 4;
 
+        private readonly VmInstanceSettings settings;
+
         public string ProjectId => ((ZoneNode)this.Parent).ProjectId;
         public string ZoneId => ((ZoneNode)this.Parent).ZoneId;
         public string InstanceName => this.Text;
 
-        public VmInstanceNode(string instanceName)
-            : base(instanceName, IconIndex)
+        public VmInstanceNode(VmInstanceSettings settings)
+            : base(settings.InstanceName, IconIndex)
         {
+            this.settings = settings;
         }
     }
 }

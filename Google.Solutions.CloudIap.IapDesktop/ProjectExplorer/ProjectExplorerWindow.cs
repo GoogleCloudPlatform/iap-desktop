@@ -1,4 +1,5 @@
 ﻿using Google.Apis.Compute.v1.Data;
+using Google.Solutions.CloudIap.IapDesktop.Application.Settings;
 using Google.Solutions.CloudIap.IapDesktop.Windows;
 using Google.Solutions.Compute.Auth;
 using Google.Solutions.IapDesktop.Application.Adapters;
@@ -26,6 +27,7 @@ namespace Google.Solutions.CloudIap.IapDesktop.ProjectExplorer
         private readonly JobService jobService;
         private readonly ProjectInventoryService projectInventoryService;
         private readonly ComputeEngineAdapter computeEngineAdapter;
+        private readonly InventorySettingsRepository settingsRepository;
 
         private readonly CloudNode rootNode = new CloudNode();
 
@@ -53,6 +55,7 @@ namespace Google.Solutions.CloudIap.IapDesktop.ProjectExplorer
             this.jobService = Program.Services.GetService<JobService>();
             this.projectInventoryService = Program.Services.GetService<ProjectInventoryService>();
             this.computeEngineAdapter = Program.Services.GetService<ComputeEngineAdapter>();
+            this.settingsRepository = Program.Services.GetService<InventorySettingsRepository>();
 
             this.eventService.BindAsyncHandler<ProjectInventoryService.ProjectAddedEvent>(OnProjectAdded);
             this.eventService.BindHandler<ProjectInventoryService.ProjectDeletedEvent>(OnProjectDeleted);
@@ -77,7 +80,7 @@ namespace Google.Solutions.CloudIap.IapDesktop.ProjectExplorer
             }
             else
             {
-                projectNode = new ProjectNode(projectId);
+                projectNode = new ProjectNode(this.settingsRepository, projectId);
                 projectNode.Populate(instances);
                 this.rootNode.Nodes.Add(projectNode);
             }
