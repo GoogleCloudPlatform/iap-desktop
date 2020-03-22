@@ -39,8 +39,10 @@ namespace Google.Solutions.CloudIap.IapDesktop.ProjectExplorer
 
         public void SaveChanges()
         {
-            
+
         }
+
+        internal static string ShortIdFromUrl(string url) => url.Substring(url.LastIndexOf("/") + 1);
 
         //---------------------------------------------------------------------
         // PropertyGrid-compatible settings properties.
@@ -58,7 +60,7 @@ namespace Google.Solutions.CloudIap.IapDesktop.ProjectExplorer
         }
 
         public bool ShouldSerializeUsername() => this.settings.Username != null;
-                     
+
 
         [Browsable(true)]
         [BrowsableSetting]
@@ -203,15 +205,13 @@ namespace Google.Solutions.CloudIap.IapDesktop.ProjectExplorer
 
         public ProjectNode(InventorySettingsRepository settingsRepository, string projectId)
             : base(
-                  projectId, 
+                  projectId,
                   IconIndex,
                   settingsRepository.GetProjectSettings(projectId),
                   null)
         {
             this.settingsRepository = settingsRepository;
         }
-
-        private string longZoneToShortZoneId(string zone) => zone.Substring(zone.LastIndexOf("/") + 1);
 
         public void Populate(IEnumerable<Instance> allInstances)
         {
@@ -220,26 +220,28 @@ namespace Google.Solutions.CloudIap.IapDesktop.ProjectExplorer
             // Narrow the list down to Windows instances - there is no point 
             // of adding Linux instanes to the list of servers.
             var instances = allInstances.Where(i => ComputeEngineAdapter.IsWindowsInstance(i));
-            var zoneIds = instances.Select(i => longZoneToShortZoneId(i.Zone)).ToHashSet();
+            var zoneIds = instances.Select(i => InventoryNode.ShortIdFromUrl(i.Zone)).ToHashSet();
 
             foreach (var zoneId in zoneIds)
             {
                 var zoneSettings = this.settingsRepository.GetZoneSettings(
-                    this.ProjectId, 
+                    this.ProjectId,
                     zoneId);
                 var zoneNode = new ZoneNode(zoneSettings, this);
 
                 var instancesInZone = instances
-                    .Where(i => longZoneToShortZoneId(i.Zone) == zoneId)
-                    .OrderBy(i => i.Name)
-                    .Select(i => i.Name);
+                    .Where(i => InventoryNode.ShortIdFromUrl(i.Zone) == zoneId)
+                    .OrderBy(i => i.Name);
 
-                foreach (var instanceName in instancesInZone)
+                foreach (var instance in instancesInZone)
                 {
                     var instanceSettings = this.settingsRepository.GetVmInstanceSettings(
-                        this.ProjectId, 
-                        instanceName);
-                    var instanceNode = new VmInstanceNode(instanceSettings, zoneNode);
+                        this.ProjectId,
+                        instance.Name);
+                    var instanceNode = new VmInstanceNode(
+                        instance,
+                        instanceSettings,
+                        zoneNode);
 
                     zoneNode.Nodes.Add(instanceNode);
                 }
@@ -261,7 +263,7 @@ namespace Google.Solutions.CloudIap.IapDesktop.ProjectExplorer
 
         public ZoneNode(ZoneSettings settings, ProjectNode parent)
             : base(
-                  settings.ZoneId, 
+                  settings.ZoneId,
                   IconIndex,
                   settings,
                   parent)
@@ -277,19 +279,93 @@ namespace Google.Solutions.CloudIap.IapDesktop.ProjectExplorer
         public string ProjectId => ((ZoneNode)this.Parent).ProjectId;
         public string ZoneId => ((ZoneNode)this.Parent).ZoneId;
 
-        public VmInstanceNode(VmInstanceSettings settings, ZoneNode parent)
+        private static string InternalIpFromInstance(Instance instance)
+        {
+            if (instance == null)
+            {
+                return null;
+            }
+
+            return instance
+                .NetworkInterfaces
+                .EnsureNotNull()
+                .Select(nic => nic.NetworkIP)
+                .FirstOrDefault();
+        }
+        private static string ExternalIpFromInstance(Instance instance)
+        {
+            if (instance == null)
+            {
+                return null;
+            }
+
+            return instance
+                .NetworkInterfaces
+                .EnsureNotNull()
+                .Where(nic => nic.AccessConfigs != null)
+                .SelectMany(nic => nic.AccessConfigs)
+                .EnsureNotNull()
+                .Where(accessConfig => accessConfig.Type == "ONE_TO_ONE_NAT")
+                .Select(accessConfig => accessConfig.NatIP)
+                .FirstOrDefault();
+        }
+
+        public VmInstanceNode(Instance instance, VmInstanceSettings settings, ZoneNode parent)
             : base(
-                  settings.InstanceName, 
+                  settings.InstanceName,
                   IconIndex,
                   settings,
                   parent)
         {
+            this.Status = instance.Status;
+            this.Hostname = instance.Hostname;
+            this.MachineType = InventoryNode.ShortIdFromUrl(instance.MachineType);
+            this.Tags = instance.Tags != null && instance.Tags.Items != null
+                ? string.Join(", ", instance.Tags.Items) : null;
+            this.InternalIp = InternalIpFromInstance(instance);
+            this.ExternalIp = ExternalIpFromInstance(instance);
         }
 
         [Browsable(true)]
         [BrowsableSetting]
-        [Category("Instance")]
+        [Category("VM Instance")]
         [DisplayName("Name")]
         public string InstanceName => this.Text;
+
+        [Browsable(true)]
+        [BrowsableSetting]
+        [Category("VM Instance")]
+        [DisplayName("Status")]
+        public string Status { get; }
+
+        [Browsable(true)]
+        [BrowsableSetting]
+        [Category("VM Instance")]
+        [DisplayName("Hostname")]
+        public string Hostname { get; }
+
+        [Browsable(true)]
+        [BrowsableSetting]
+        [Category("VM Instance")]
+        [DisplayName("Machine type")]
+        public string MachineType { get; }
+
+        [Browsable(true)]
+        [BrowsableSetting]
+        [Category("VM Instance")]
+        [DisplayName("Network tags")]
+        public string Tags { get; }
+
+        [Browsable(true)]
+        [BrowsableSetting]
+        [Category("VM Instance")]
+        [DisplayName("IP address (internal)")]
+        public string InternalIp { get; }
+
+        [Browsable(true)]
+        [BrowsableSetting]
+        [Category("VM Instance")]
+        [DisplayName("IP address (external)")]
+        public string ExternalIp { get; }
     }
 }
