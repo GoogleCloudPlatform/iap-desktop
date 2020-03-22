@@ -120,7 +120,7 @@
   <data name="legalTextBox.Text" xml:space="preserve">
     <value>This software is licensed under the Apache License, version 2.0.
    
-The third party-licenses used by this software include DockPanel Suite (http://dockpanelsuite.com/) and Json.NET (https://github.com/JamesNK/Newtonsoft.Json), both licensed under the MIT license:
+Third-party libraries used by this software include DockPanel Suite (http://dockpanelsuite.com/) and Json.NET (https://github.com/JamesNK/Newtonsoft.Json), both licensed under the MIT license. A copy of the MIT license is included below.
 
 
 Apache License
