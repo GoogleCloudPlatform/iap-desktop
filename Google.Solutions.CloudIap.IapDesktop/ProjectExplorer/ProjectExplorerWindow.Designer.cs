@@ -33,6 +33,7 @@
             this.toolStrip = new System.Windows.Forms.ToolStrip();
             this.refreshButton = new System.Windows.Forms.ToolStripButton();
             this.addButton = new System.Windows.Forms.ToolStripButton();
+            this.openSettingsButton = new System.Windows.Forms.ToolStripButton();
             this.vsToolStripExtender = new WeifenLuo.WinFormsUI.Docking.VisualStudioToolStripExtender(this.components);
             this.vs2015LightTheme = new WeifenLuo.WinFormsUI.Docking.VS2015LightTheme();
             this.treeView = new System.Windows.Forms.TreeView();
@@ -40,8 +41,8 @@
             this.refreshToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.refreshAllProjectsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.unloadProjectToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.imageList = new System.Windows.Forms.ImageList(this.components);
             this.propertiesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.imageList = new System.Windows.Forms.ImageList(this.components);
             this.toolStrip.SuspendLayout();
             this.contextMenu.SuspendLayout();
             this.SuspendLayout();
@@ -50,7 +51,8 @@
             // 
             this.toolStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.refreshButton,
-            this.addButton});
+            this.addButton,
+            this.openSettingsButton});
             this.toolStrip.Location = new System.Drawing.Point(0, 0);
             this.toolStrip.Name = "toolStrip";
             this.toolStrip.Size = new System.Drawing.Size(800, 25);
@@ -76,6 +78,16 @@
             this.addButton.Size = new System.Drawing.Size(23, 22);
             this.addButton.Text = "Add project";
             this.addButton.Click += new System.EventHandler(this.addButton_Click);
+            // 
+            // openSettingsButton
+            // 
+            this.openSettingsButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.openSettingsButton.Image = ((System.Drawing.Image)(resources.GetObject("openSettingsButton.Image")));
+            this.openSettingsButton.ImageTransparentColor = System.Drawing.Color.White;
+            this.openSettingsButton.Name = "openSettingsButton";
+            this.openSettingsButton.Size = new System.Drawing.Size(23, 22);
+            this.openSettingsButton.Text = "Settings";
+            this.openSettingsButton.Click += new System.EventHandler(this.openSettingsButton_Click);
             // 
             // vsToolStripExtender
             // 
@@ -103,29 +115,36 @@
             this.unloadProjectToolStripMenuItem,
             this.propertiesToolStripMenuItem});
             this.contextMenu.Name = "contextMenu";
-            this.contextMenu.Size = new System.Drawing.Size(181, 114);
+            this.contextMenu.Size = new System.Drawing.Size(174, 92);
             this.contextMenu.Opening += new System.ComponentModel.CancelEventHandler(this.contextMenu_Opening);
             // 
             // refreshToolStripMenuItem
             // 
             this.refreshToolStripMenuItem.Name = "refreshToolStripMenuItem";
-            this.refreshToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.refreshToolStripMenuItem.Size = new System.Drawing.Size(173, 22);
             this.refreshToolStripMenuItem.Text = "&Refresh project";
             this.refreshToolStripMenuItem.Click += new System.EventHandler(this.refreshToolStripMenuItem_Click);
             // 
             // refreshAllProjectsToolStripMenuItem
             // 
             this.refreshAllProjectsToolStripMenuItem.Name = "refreshAllProjectsToolStripMenuItem";
-            this.refreshAllProjectsToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.refreshAllProjectsToolStripMenuItem.Size = new System.Drawing.Size(173, 22);
             this.refreshAllProjectsToolStripMenuItem.Text = "Refresh &all projects";
             this.refreshAllProjectsToolStripMenuItem.Click += new System.EventHandler(this.refreshAllProjectsToolStripMenuItem_Click);
             // 
             // unloadProjectToolStripMenuItem
             // 
             this.unloadProjectToolStripMenuItem.Name = "unloadProjectToolStripMenuItem";
-            this.unloadProjectToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.unloadProjectToolStripMenuItem.Size = new System.Drawing.Size(173, 22);
             this.unloadProjectToolStripMenuItem.Text = "&Unload project";
             this.unloadProjectToolStripMenuItem.Click += new System.EventHandler(this.unloadProjectToolStripMenuItem_Click);
+            // 
+            // propertiesToolStripMenuItem
+            // 
+            this.propertiesToolStripMenuItem.Name = "propertiesToolStripMenuItem";
+            this.propertiesToolStripMenuItem.Size = new System.Drawing.Size(173, 22);
+            this.propertiesToolStripMenuItem.Text = "P&roperties";
+            this.propertiesToolStripMenuItem.Click += new System.EventHandler(this.propertiesToolStripMenuItem_Click);
             // 
             // imageList
             // 
@@ -138,13 +157,6 @@
             this.imageList.Images.SetKeyName(4, "Vm.ico");
             this.imageList.Images.SetKeyName(5, "VmBlue.ico");
             // 
-            // propertiesToolStripMenuItem
-            // 
-            this.propertiesToolStripMenuItem.Name = "propertiesToolStripMenuItem";
-            this.propertiesToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
-            this.propertiesToolStripMenuItem.Text = "P&roperties";
-            this.propertiesToolStripMenuItem.Click += new System.EventHandler(this.propertiesToolStripMenuItem_Click);
-            // 
             // ProjectExplorerWindow
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -155,6 +167,7 @@
             this.Name = "ProjectExplorerWindow";
             this.Text = "Project Explorer";
             this.Shown += new System.EventHandler(this.ProjectExplorerWindow_Shown);
+            this.KeyUp += new System.Windows.Forms.KeyEventHandler(this.ProjectExplorerWindow_KeyUp);
             this.toolStrip.ResumeLayout(false);
             this.toolStrip.PerformLayout();
             this.contextMenu.ResumeLayout(false);
@@ -177,5 +190,6 @@
         private System.Windows.Forms.ToolStripMenuItem refreshAllProjectsToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem unloadProjectToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem propertiesToolStripMenuItem;
+        private System.Windows.Forms.ToolStripButton openSettingsButton;
     }
 }

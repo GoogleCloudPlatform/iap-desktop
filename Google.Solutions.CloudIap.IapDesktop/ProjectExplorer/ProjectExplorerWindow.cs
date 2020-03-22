@@ -154,12 +154,7 @@ namespace Google.Solutions.CloudIap.IapDesktop.ProjectExplorer
         }
 
         private void propertiesToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            if (this.treeView.SelectedNode is InventoryNode inventoryNode)
-            {
-                this.settingsEditor.ShowWindow(inventoryNode);
-            }
-        }
+            => openSettingsButton_Click(sender, e);
 
         //---------------------------------------------------------------------
         // Tool bar event handlers.
@@ -212,10 +207,23 @@ namespace Google.Solutions.CloudIap.IapDesktop.ProjectExplorer
             }
         }
 
+        private void openSettingsButton_Click(object sender, EventArgs _)
+        {
+            if (this.treeView.SelectedNode is InventoryNode inventoryNode)
+            {
+                this.settingsEditor.ShowWindow(inventoryNode);
+            }
+        }
+
+        //---------------------------------------------------------------------
+        // Other Windows event handlers.
+        //---------------------------------------------------------------------
+
         private async void treeView_AfterSelect(object sender, TreeViewEventArgs args)
         {
             try
             {
+                this.openSettingsButton.Enabled = args.Node is InventoryNode;
                 await this.eventService.FireAsync(
                     new ProjectExplorerNodeSelectedEvent(
                         ((IProjectExplorerNode)args.Node)));
@@ -227,6 +235,13 @@ namespace Google.Solutions.CloudIap.IapDesktop.ProjectExplorer
             catch (Exception e)
             {
                 ExceptionDialog.Show(this, "An error occured", e);
+            }
+        }
+        private void ProjectExplorerWindow_KeyUp(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.F4)
+            {
+                openSettingsButton_Click(sender, EventArgs.Empty);
             }
         }
 
@@ -302,6 +317,7 @@ namespace Google.Solutions.CloudIap.IapDesktop.ProjectExplorer
 
             RefreshProject(projectId, instances);
         }
+
     }
 }
 
