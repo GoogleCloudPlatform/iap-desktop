@@ -1,5 +1,6 @@
 ﻿using Google.Apis.Auth.OAuth2.Responses;
 using Google.Solutions.Compute.Auth;
+using Google.Solutions.IapDesktop.Application.Services;
 using System;
 using System.ComponentModel;
 using System.Diagnostics;
@@ -20,12 +21,12 @@ namespace Google.Solutions.IapDesktop.Application.ObjectModel
     public class JobService
     {
         private readonly IJobHost host;
-        private readonly IServiceProvider serviceProvider;
+        private readonly IAuthorizationService authService;
 
         public JobService(IJobHost host, IServiceProvider serviceProvider)
         {
             this.host = host;
-            this.serviceProvider = serviceProvider;
+            this.authService = serviceProvider.GetService<IAuthorizationService>();
         }
 
         public Task<T> RunInBackgroundWithoutReauth<T>(
@@ -114,10 +115,6 @@ namespace Google.Solutions.IapDesktop.Application.ObjectModel
             JobDescription jobDescription,
             Func<CancellationToken, Task<T>> jobFunc)
         {
-            // NB. Authorization is registered late in the startup process,
-            // so we look it up here instead of in the constructor.
-            var authorization = this.serviceProvider.GetService<IAuthorization>();
-
             for (int attempt = 0; ; attempt++)
             {
                 try
@@ -141,7 +138,7 @@ namespace Google.Solutions.IapDesktop.Application.ObjectModel
                             new JobDescription("Authorizing"),
                             async _ =>
                             {
-                                await authorization.ReauthorizeAsync();
+                                await this.authService.Authorization.ReauthorizeAsync();
                                 return default(T);
                             });
                     }

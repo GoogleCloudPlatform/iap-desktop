@@ -29,30 +29,28 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Linq;
+using Google.Solutions.IapDesktop.Application.Services;
 
 namespace Google.Solutions.IapDesktop.Application.Adapters
 {
     public class ResourceManagerAdapter
     {
         private readonly CloudResourceManagerService service;
-        private readonly IAuthorization authorization;
 
-        public ResourceManagerAdapter(IAuthorization authorization)
+        public ResourceManagerAdapter(IAuthorizationService authService)
         {
-            this.authorization = authorization;
-
             var assemblyName = typeof(ResourceManagerAdapter).Assembly.GetName();
 
             this.service = new CloudResourceManagerService(
                 new BaseClientService.Initializer
                 {
-                    HttpClientInitializer = authorization.Credential,
+                    HttpClientInitializer = authService.Authorization.Credential,
                     ApplicationName = $"{assemblyName.Name}/{assemblyName.Version}"
                 });
         }
 
         public ResourceManagerAdapter(IServiceProvider serviceProvider)
-            : this(serviceProvider.GetService<IAuthorization>())
+            : this(serviceProvider.GetService<IAuthorizationService>())
         {
         }
 

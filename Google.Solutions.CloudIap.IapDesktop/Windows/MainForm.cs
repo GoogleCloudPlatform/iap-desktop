@@ -27,7 +27,7 @@ namespace Google.Solutions.CloudIap.IapDesktop.Windows
         void Close();
     }
 
-    public partial class MainForm : Form, IJobHost, IMainForm
+    public partial class MainForm : Form, IJobHost, IMainForm, IAuthorizationService
     {
         private readonly WindowSettingsRepository windowSettings;
         private readonly AuthSettingsRepository authSettings;
@@ -42,6 +42,7 @@ namespace Google.Solutions.CloudIap.IapDesktop.Windows
             this.inventorySettings = Program.Services.GetService<InventorySettingsRepository>();
 
             Program.Services.AddSingleton<IMainForm>(this);
+            Program.Services.AddSingleton<IAuthorizationService>(this);
             Program.Services.AddSingleton(new JobService(this, Program.Services));
             Program.Services.AddSingleton<IEventService>(new EventService(this));
             Program.Services.AddTransient<ProjectInventoryService>();
@@ -90,23 +91,17 @@ namespace Google.Solutions.CloudIap.IapDesktop.Windows
             //
             // Authorize.
             //
-            var authorization = AuthorizeDialog.Authorize(
+            this.Authorization = AuthorizeDialog.Authorize(
                 this,
                 OAuthClient.Secrets,
                 new[] { IapTunnelingEndpoint.RequiredScope },
                 this.authSettings);
 
-            if (authorization != null)
-            {
-                Program.Services.AddSingleton(authorization);
-            }
-            else
+            if (this.Authorization == null)
             {
                 // Not authorized -> close.
                 Close();
             }
-
-
 
             // 
             // Set up sub-windows.
@@ -160,6 +155,12 @@ namespace Google.Solutions.CloudIap.IapDesktop.Windows
         }
 
         //---------------------------------------------------------------------
+        // IAuthorizationService.
+        //---------------------------------------------------------------------
+
+        public IAuthorization Authorization { get; private set; }
+
+        //---------------------------------------------------------------------
         // IEventRoutingHost.
         //---------------------------------------------------------------------
 
@@ -174,7 +175,6 @@ namespace Google.Solutions.CloudIap.IapDesktop.Windows
                 return dialog != null && dialog.IsShowing;
             }
         }
-
 
         public void ShowWaitDialog(JobDescription jobDescription, CancellationTokenSource cts)
         {

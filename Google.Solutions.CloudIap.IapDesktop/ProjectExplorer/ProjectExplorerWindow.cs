@@ -30,6 +30,7 @@ namespace Google.Solutions.CloudIap.IapDesktop.ProjectExplorer
         private readonly ComputeEngineAdapter computeEngineAdapter;
         private readonly InventorySettingsRepository settingsRepository;
         private readonly ISettingsEditor settingsEditor;
+        private readonly IAuthorizationService authService;
 
         private readonly CloudNode rootNode = new CloudNode();
 
@@ -59,6 +60,7 @@ namespace Google.Solutions.CloudIap.IapDesktop.ProjectExplorer
             this.computeEngineAdapter = Program.Services.GetService<ComputeEngineAdapter>();
             this.settingsRepository = Program.Services.GetService<InventorySettingsRepository>();
             this.settingsEditor = Program.Services.GetService<ISettingsEditor>();
+            this.authService = Program.Services.GetService<IAuthorizationService>();
 
             this.eventService.BindAsyncHandler<ProjectInventoryService.ProjectAddedEvent>(OnProjectAdded);
             this.eventService.BindHandler<ProjectInventoryService.ProjectDeletedEvent>(OnProjectDeleted);
@@ -180,11 +182,9 @@ namespace Google.Solutions.CloudIap.IapDesktop.ProjectExplorer
         {
             try
             {
-                var authorization = Program.Services.GetService<IAuthorization>();
-                // Force authentication refresh.
                 await this.jobService.RunInBackground(
                     new JobDescription("Loading projects..."),
-                    _ => authorization.Credential.GetAccessTokenForRequestAsync());
+                    _ => this.authService.Authorization.Credential.GetAccessTokenForRequestAsync());
 
                 // Show project picker
                 string projectId = projectId = ProjectPickerDialog.SelectProjectId(this);

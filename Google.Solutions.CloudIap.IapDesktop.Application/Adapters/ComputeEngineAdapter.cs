@@ -29,6 +29,7 @@ using Google.Solutions.Compute;
 using Google.Solutions.Compute.Auth;
 using Google.Solutions.Compute.Extensions;
 using Google.Solutions.IapDesktop.Application.ObjectModel;
+using Google.Solutions.IapDesktop.Application.Services;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -47,18 +48,18 @@ namespace Google.Solutions.IapDesktop.Application.Adapters
 
         private readonly ComputeService service;
 
-        public ComputeEngineAdapter(IAuthorization authorization)
+        public ComputeEngineAdapter(IAuthorizationService authService)
         {
             var assemblyName = typeof(ComputeEngineAdapter).Assembly.GetName();
             this.service = new ComputeService(new BaseClientService.Initializer
             {
-                HttpClientInitializer = authorization.Credential,
+                HttpClientInitializer = authService.Authorization.Credential,
                 ApplicationName = $"{assemblyName.Name}/{assemblyName.Version}"
             });
         }
 
         public ComputeEngineAdapter(IServiceProvider serviceProvider)
-            : this(serviceProvider.GetService<IAuthorization>())
+            : this(serviceProvider.GetService<IAuthorizationService>())
         {
         }
 
