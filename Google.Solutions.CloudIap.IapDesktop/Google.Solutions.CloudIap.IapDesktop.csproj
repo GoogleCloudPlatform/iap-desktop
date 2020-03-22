@@ -90,6 +90,8 @@
     <Compile Include="OAuthClient.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="ProjectExplorer\IProjectExplorer.cs" />
+    <Compile Include="ProjectExplorer\IProjectExplorerNode.cs" />
+    <Compile Include="ProjectExplorer\ProjectExplorerNode.cs" />
     <Compile Include="ProjectExplorer\ProjectExplorerSelectionChangedEvent.cs" />
     <Compile Include="ProjectExplorer\ProjectPickerDialog.cs">
       <SubType>Form</SubType>
