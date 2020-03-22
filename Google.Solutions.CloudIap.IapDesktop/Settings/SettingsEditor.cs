@@ -66,7 +66,7 @@ namespace Google.Solutions.CloudIap.IapDesktop.Settings
             string instanceName)
             => new VmInstanceSettingsEditorNode(
                 GetZoneSettingsEditor(projectId, zoneId),
-                this.inventorySettingsRepository.GetVirtualMachineSettings(projectId, instanceName));
+                this.inventorySettingsRepository.GetVmInstanceSettings(projectId, instanceName));
 
         private void SetEditorNode(SettingsEditorNode settingsNode)
         {

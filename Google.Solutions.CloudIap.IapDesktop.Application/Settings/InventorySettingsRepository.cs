@@ -86,16 +86,16 @@ namespace Google.Solutions.CloudIap.IapDesktop.Application.Settings
         // Virtual Machines.
         //---------------------------------------------------------------------
 
-        public VirtualMachineSettings GetVirtualMachineSettings(string projectId, string instanceName)
+        public VmInstanceSettings GetVmInstanceSettings(string projectId, string instanceName)
         {
-            var settings = Get<VirtualMachineSettings>(new[] { projectId, VmPrefix + instanceName });
+            var settings = Get<VmInstanceSettings>(new[] { projectId, VmPrefix + instanceName });
             settings.InstanceName = instanceName;
             return settings;
         }
 
-        public void SetVirtualMachineSettings(string projectId, VirtualMachineSettings settings)
+        public void SetVmInstanceSettings(string projectId, VmInstanceSettings settings)
         {
-            Set<VirtualMachineSettings>(new[] { projectId, VmPrefix + settings.InstanceName }, settings);
+            Set<VmInstanceSettings>(new[] { projectId, VmPrefix + settings.InstanceName }, settings);
         }
     }
 
@@ -184,7 +184,7 @@ namespace Google.Solutions.CloudIap.IapDesktop.Application.Settings
         public bool RedirectClipboard { get; set; } = true;
     }
 
-    public class VirtualMachineSettings : InventorySettingsBase
+    public class VmInstanceSettings : InventorySettingsBase
     {
         public string InstanceName { get; set; }
     }

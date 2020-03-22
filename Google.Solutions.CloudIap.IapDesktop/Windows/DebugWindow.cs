@@ -164,7 +164,7 @@ namespace Google.Solutions.CloudIap.IapDesktop.Windows
                 this.rdpService.Connect(
                     server[0],
                     (ushort)(server.Length > 1 ? int.Parse(server[1]) : 3389),
-                    new VirtualMachineSettings()
+                    new VmInstanceSettings()
                     {
 
                     });

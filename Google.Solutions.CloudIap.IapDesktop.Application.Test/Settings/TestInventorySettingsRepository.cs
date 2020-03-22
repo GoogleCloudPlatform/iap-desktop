@@ -236,23 +236,23 @@ namespace Google.Solutions.CloudIap.IapDesktop.Application.Test.Settings
         }
 
         //---------------------------------------------------------------------
-        // VirtualMachines.
+        // VmInstances.
         //---------------------------------------------------------------------
 
         [Test]
-        public void WhenProjectIdDoesNotExist_GetVirtualMachineSettingsThrowsKeyNotFoundException()
+        public void WhenProjectIdDoesNotExist_GetVmInstanceSettingsThrowsKeyNotFoundException()
         {
             var baseKey = hkcu.CreateSubKey(TestKeyPath);
             var repository = new InventorySettingsRepository(baseKey);
 
             Assert.Throws<KeyNotFoundException>(() =>
             {
-                repository.GetVirtualMachineSettings("nonexisting-project", "vm-id");
+                repository.GetVmInstanceSettings("nonexisting-project", "vm-id");
             });
         }
 
         [Test]
-        public void WhenVirtualMachineIdDoesNotExist_GetVirtualMachineSettingsReturnsDefaults()
+        public void WhenVmInstanceIdDoesNotExist_GetVmInstanceSettingsReturnsDefaults()
         {
             var baseKey = hkcu.CreateSubKey(TestKeyPath);
             var repository = new InventorySettingsRepository(baseKey);
@@ -262,13 +262,13 @@ namespace Google.Solutions.CloudIap.IapDesktop.Application.Test.Settings
                 ProjectId = "pro-1"
             });
 
-            var settings = repository.GetVirtualMachineSettings("pro-1", "some-vm");
+            var settings = repository.GetVmInstanceSettings("pro-1", "some-vm");
             Assert.AreEqual("some-vm", settings.InstanceName);
             Assert.IsNull(settings.Username);
         }
 
         [Test]
-        public void WhenSetValidVirtualMachineSettings_GetVirtualMachineSettingsReturnSameValues()
+        public void WhenSetValidVmInstanceSettings_GetVmInstanceSettingsReturnSameValues()
         {
             var baseKey = hkcu.CreateSubKey(TestKeyPath);
             var repository = new InventorySettingsRepository(baseKey);
@@ -277,17 +277,17 @@ namespace Google.Solutions.CloudIap.IapDesktop.Application.Test.Settings
             {
                 ProjectId = "pro-1"
             });
-            repository.SetVirtualMachineSettings("pro-1", new VirtualMachineSettings()
+            repository.SetVmInstanceSettings("pro-1", new VmInstanceSettings()
             {
                 InstanceName = "vm-1",
                 Username = "user-1"
             });
 
-            Assert.AreEqual("user-1", repository.GetVirtualMachineSettings("pro-1", "vm-1").Username);
+            Assert.AreEqual("user-1", repository.GetVmInstanceSettings("pro-1", "vm-1").Username);
         }
 
         [Test]
-        public void WhenProjectSettingsDeleted_VirtualMachineSettingsAreDeletedToo()
+        public void WhenProjectSettingsDeleted_VmInstanceSettingsAreDeletedToo()
         {
             var baseKey = hkcu.CreateSubKey(TestKeyPath);
             var repository = new InventorySettingsRepository(baseKey);
@@ -296,7 +296,7 @@ namespace Google.Solutions.CloudIap.IapDesktop.Application.Test.Settings
             {
                 ProjectId = "pro-1"
             });
-            repository.SetVirtualMachineSettings("pro-1", new VirtualMachineSettings()
+            repository.SetVmInstanceSettings("pro-1", new VmInstanceSettings()
             {
                 InstanceName = "vm-1",
                 Username = "user-1"
@@ -305,7 +305,7 @@ namespace Google.Solutions.CloudIap.IapDesktop.Application.Test.Settings
 
             Assert.Throws<KeyNotFoundException>(() =>
             {
-                repository.GetVirtualMachineSettings("pro-1", "vm-1");
+                repository.GetVmInstanceSettings("pro-1", "vm-1");
             });
         }
     }

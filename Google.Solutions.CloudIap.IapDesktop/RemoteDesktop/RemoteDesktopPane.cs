@@ -52,7 +52,7 @@ namespace Google.Solutions.CloudIap.IapDesktop.RemoteDesktop
 		public void Connect(
 			string server,
 			ushort port,
-			VirtualMachineSettings settings)
+			VmInstanceSettings settings)
 		{
 			// NB. The initialization needs to happen after the pane is shown, otherwise
 			// an error happens indicating that the control does not have a Window handle.

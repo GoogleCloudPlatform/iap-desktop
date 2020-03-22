@@ -187,14 +187,14 @@ namespace Google.Solutions.CloudIap.IapDesktop.Settings
 
     public class VmInstanceSettingsEditorNode : SettingsEditorNode
     {
-        public VmInstanceSettingsEditorNode(ZoneSettingsEditorNode parent, VirtualMachineSettings settings)
+        public VmInstanceSettingsEditorNode(ZoneSettingsEditorNode parent, VmInstanceSettings settings)
             : base(parent, settings)
         { }
 
         [Browsable(true)]
         [Category("Instance")]
         [DisplayName("Name")]
-        public string InstanceName => ((VirtualMachineSettings)this.settings).InstanceName;
+        public string InstanceName => ((VmInstanceSettings)this.settings).InstanceName;
     }
 
 }

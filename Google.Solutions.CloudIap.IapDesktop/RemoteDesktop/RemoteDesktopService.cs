@@ -21,7 +21,7 @@ namespace Google.Solutions.CloudIap.IapDesktop.RemoteDesktop
         public void Connect(
             string server,
             ushort port,
-            VirtualMachineSettings settings)
+            VmInstanceSettings settings)
         {
             var rdpPane = new RemoteDesktopPane();
             rdpPane.Show(this.dockPanel, DockState.Document);
