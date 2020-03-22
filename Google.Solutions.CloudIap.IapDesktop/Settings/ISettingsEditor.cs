@@ -9,7 +9,10 @@ namespace Google.Solutions.CloudIap.IapDesktop.Settings
 {
     internal interface ISettingsEditor
     {
-        void ShowWindow(SettingsEditorNode settingsNode);
-        void ShowWindow(IProjectExplorerNode projectExplorerNode);
+        void ShowWindow(object settingsObject);
+    }
+
+    public class BrowsableSettingAttribute : Attribute
+    {
     }
 }

@@ -41,6 +41,7 @@
             this.refreshAllProjectsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.unloadProjectToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.imageList = new System.Windows.Forms.ImageList(this.components);
+            this.propertiesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStrip.SuspendLayout();
             this.contextMenu.SuspendLayout();
             this.SuspendLayout();
@@ -99,29 +100,30 @@
             this.contextMenu.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.refreshToolStripMenuItem,
             this.refreshAllProjectsToolStripMenuItem,
-            this.unloadProjectToolStripMenuItem});
+            this.unloadProjectToolStripMenuItem,
+            this.propertiesToolStripMenuItem});
             this.contextMenu.Name = "contextMenu";
-            this.contextMenu.Size = new System.Drawing.Size(174, 70);
+            this.contextMenu.Size = new System.Drawing.Size(181, 114);
             this.contextMenu.Opening += new System.ComponentModel.CancelEventHandler(this.contextMenu_Opening);
             // 
             // refreshToolStripMenuItem
             // 
             this.refreshToolStripMenuItem.Name = "refreshToolStripMenuItem";
-            this.refreshToolStripMenuItem.Size = new System.Drawing.Size(173, 22);
+            this.refreshToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.refreshToolStripMenuItem.Text = "&Refresh project";
             this.refreshToolStripMenuItem.Click += new System.EventHandler(this.refreshToolStripMenuItem_Click);
             // 
             // refreshAllProjectsToolStripMenuItem
             // 
             this.refreshAllProjectsToolStripMenuItem.Name = "refreshAllProjectsToolStripMenuItem";
-            this.refreshAllProjectsToolStripMenuItem.Size = new System.Drawing.Size(173, 22);
+            this.refreshAllProjectsToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.refreshAllProjectsToolStripMenuItem.Text = "Refresh &all projects";
             this.refreshAllProjectsToolStripMenuItem.Click += new System.EventHandler(this.refreshAllProjectsToolStripMenuItem_Click);
             // 
             // unloadProjectToolStripMenuItem
             // 
             this.unloadProjectToolStripMenuItem.Name = "unloadProjectToolStripMenuItem";
-            this.unloadProjectToolStripMenuItem.Size = new System.Drawing.Size(173, 22);
+            this.unloadProjectToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.unloadProjectToolStripMenuItem.Text = "&Unload project";
             this.unloadProjectToolStripMenuItem.Click += new System.EventHandler(this.unloadProjectToolStripMenuItem_Click);
             // 
@@ -135,6 +137,13 @@
             this.imageList.Images.SetKeyName(3, "Zone.ico");
             this.imageList.Images.SetKeyName(4, "Vm.ico");
             this.imageList.Images.SetKeyName(5, "VmBlue.ico");
+            // 
+            // propertiesToolStripMenuItem
+            // 
+            this.propertiesToolStripMenuItem.Name = "propertiesToolStripMenuItem";
+            this.propertiesToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.propertiesToolStripMenuItem.Text = "P&roperties";
+            this.propertiesToolStripMenuItem.Click += new System.EventHandler(this.propertiesToolStripMenuItem_Click);
             // 
             // ProjectExplorerWindow
             // 
@@ -167,5 +176,6 @@
         private System.Windows.Forms.ToolStripMenuItem refreshToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem refreshAllProjectsToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem unloadProjectToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem propertiesToolStripMenuItem;
     }
 }

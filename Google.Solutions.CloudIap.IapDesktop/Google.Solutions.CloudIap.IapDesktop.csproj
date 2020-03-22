@@ -103,7 +103,6 @@
     <Compile Include="RemoteDesktop\RdpExceptions.cs" />
     <Compile Include="RemoteDesktop\RemoteDesktopService.cs" />
     <Compile Include="Settings\ISettingsEditor.cs" />
-    <Compile Include="Settings\SettingsEditorNode.cs" />
     <Compile Include="Windows\AboutWindow.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -146,11 +145,11 @@
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
     </Compile>
-    <Compile Include="Settings\SettingsEditor.cs">
+    <Compile Include="Settings\SettingsEditorWindow.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Settings\SettingsEditor.Designer.cs">
-      <DependentUpon>SettingsEditor.cs</DependentUpon>
+    <Compile Include="Settings\SettingsEditorWindow.Designer.cs">
+      <DependentUpon>SettingsEditorWindow.cs</DependentUpon>
     </Compile>
     <Compile Include="Windows\ToolWindow.cs">
       <SubType>Form</SubType>
@@ -200,8 +199,8 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
-    <EmbeddedResource Include="Settings\SettingsEditor.resx">
-      <DependentUpon>SettingsEditor.cs</DependentUpon>
+    <EmbeddedResource Include="Settings\SettingsEditorWindow.resx">
+      <DependentUpon>SettingsEditorWindow.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Windows\ToolWindow.resx">
       <DependentUpon>ToolWindow.cs</DependentUpon>

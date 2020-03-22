@@ -1,5 +1,6 @@
 ﻿using Google.Apis.Compute.v1.Data;
 using Google.Solutions.CloudIap.IapDesktop.Application.Settings;
+using Google.Solutions.CloudIap.IapDesktop.Settings;
 using Google.Solutions.CloudIap.IapDesktop.Windows;
 using Google.Solutions.Compute.Auth;
 using Google.Solutions.IapDesktop.Application.Adapters;
@@ -28,6 +29,7 @@ namespace Google.Solutions.CloudIap.IapDesktop.ProjectExplorer
         private readonly ProjectInventoryService projectInventoryService;
         private readonly ComputeEngineAdapter computeEngineAdapter;
         private readonly InventorySettingsRepository settingsRepository;
+        private readonly ISettingsEditor settingsEditor;
 
         private readonly CloudNode rootNode = new CloudNode();
 
@@ -56,6 +58,7 @@ namespace Google.Solutions.CloudIap.IapDesktop.ProjectExplorer
             this.projectInventoryService = Program.Services.GetService<ProjectInventoryService>();
             this.computeEngineAdapter = Program.Services.GetService<ComputeEngineAdapter>();
             this.settingsRepository = Program.Services.GetService<InventorySettingsRepository>();
+            this.settingsEditor = Program.Services.GetService<ISettingsEditor>();
 
             this.eventService.BindAsyncHandler<ProjectInventoryService.ProjectAddedEvent>(OnProjectAdded);
             this.eventService.BindHandler<ProjectInventoryService.ProjectDeletedEvent>(OnProjectDeleted);
@@ -123,11 +126,10 @@ namespace Google.Solutions.CloudIap.IapDesktop.ProjectExplorer
         {
             var selectedNode = this.treeView.SelectedNode;
             
-            e.Cancel = (selectedNode is ZoneNode);
-
             this.refreshToolStripMenuItem.Visible = 
                 this.unloadProjectToolStripMenuItem.Visible = (selectedNode is ProjectNode);
             this.refreshAllProjectsToolStripMenuItem.Visible = (selectedNode is CloudNode);
+            this.propertiesToolStripMenuItem.Visible = (selectedNode is InventoryNode);
         }
 
         private async void refreshAllProjectsToolStripMenuItem_Click(object sender, EventArgs e)
@@ -148,6 +150,14 @@ namespace Google.Solutions.CloudIap.IapDesktop.ProjectExplorer
             if (this.treeView.SelectedNode is ProjectNode projectNode)
             {
                 await this.projectInventoryService.DeleteProjectAsync(projectNode.ProjectId);
+            }
+        }
+
+        private void propertiesToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (this.treeView.SelectedNode is InventoryNode inventoryNode)
+            {
+                this.settingsEditor.ShowWindow(inventoryNode);
             }
         }
 
