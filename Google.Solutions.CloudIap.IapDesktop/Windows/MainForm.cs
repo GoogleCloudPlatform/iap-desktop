@@ -139,14 +139,33 @@ namespace Google.Solutions.CloudIap.IapDesktop.Windows
         }
 
 
-        private void aboutToolStripMenuItem_Click(object sender, EventArgs e)
+        private void aboutToolStripMenuItem_Click(object sender, EventArgs _)
         {
             new AboutWindow().ShowDialog(this);
         }
 
-        private void exitToolStripMenuItem_Click(object sender, EventArgs e)
+        private void exitToolStripMenuItem_Click(object sender, EventArgs _)
         {
             Close();
+        }
+
+        private async void signoutToolStripMenuItem_Click(object sender, EventArgs _)
+        {
+            try
+            {
+                await this.Authorization.RevokeAsync();
+                MessageBox.Show(
+                    this,
+                    "The authorization for this application has been revoked.\n\n"+
+                    "You will be prompted to sign in again the next time you start the application.",
+                    "Signed out",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Information);
+            }
+            catch (Exception e)
+            {
+                ExceptionDialog.Show(this, "Sign out", e);
+            }
         }
 
         private void projectExplorerToolStripMenuItem_Click(object sender, EventArgs e)
