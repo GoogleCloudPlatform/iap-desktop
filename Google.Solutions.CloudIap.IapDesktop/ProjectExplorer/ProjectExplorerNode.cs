@@ -25,7 +25,7 @@ namespace Google.Solutions.CloudIap.IapDesktop.ProjectExplorer
         }
     }
 
-    internal class InventoryNode : TreeNode, IProjectExplorerNode
+    internal abstract class InventoryNode : TreeNode, IProjectExplorerNode, ISettingsObject
     {
         private readonly InventoryNode parent;
         private readonly InventorySettingsBase settings;
@@ -35,6 +35,11 @@ namespace Google.Solutions.CloudIap.IapDesktop.ProjectExplorer
         {
             this.settings = settings;
             this.parent = parent;
+        }
+
+        public void SaveChanges()
+        {
+            
         }
 
         //---------------------------------------------------------------------

@@ -44,13 +44,37 @@ namespace Google.Solutions.CloudIap.IapDesktop.Settings
             this.dockPanel = dockPanel;
         }
 
-        private void SetEditorObject(object settingsObject)
+        private ISettingsObject EditorObject
         {
-            // The object might contain a bunch of properties that should not really
-            // be displayed, so narrow down the list of properties to properties
-            // that have a BrowsableSetting attribute.
-            this.propertyGrid.SelectedObject = 
-                new FilteringTypeDescriptor<BrowsableSettingAttribute>(settingsObject);
+            set
+            {
+                if (value == null)
+                {
+                    this.propertyGrid.SelectedObject = null;
+                }
+                else
+                {
+                    // The object might contain a bunch of properties that should not really
+                    // be displayed, so narrow down the list of properties to properties
+                    // that have a BrowsableSetting attribute.
+                    this.propertyGrid.SelectedObject =
+                        new FilteringTypeDescriptor<ISettingsObject, BrowsableSettingAttribute>(value);
+                }
+            }
+            get
+            {
+                return ((FilteringTypeDescriptor<ISettingsObject, BrowsableSettingAttribute>)
+                    this.propertyGrid.SelectedObject).Target;
+            }
+        }
+
+        //---------------------------------------------------------------------
+        // Window event handlers.
+        //---------------------------------------------------------------------
+
+        private void propertyGrid_PropertyValueChanged(object s, PropertyValueChangedEventArgs e)
+        {
+            this.EditorObject.SaveChanges();
         }
 
         //---------------------------------------------------------------------
@@ -63,9 +87,13 @@ namespace Google.Solutions.CloudIap.IapDesktop.Settings
             // If the window is visible, switch to a different editor. Otherwise,
             // ignore the event.
             //
-            if (this.Visible)
+            if (this.Visible && e.SelectedNode is ISettingsObject settingsObject)
             {
-                SetEditorObject(e.SelectedNode);
+                this.EditorObject = settingsObject;
+            }
+            else
+            {
+                this.EditorObject = null;
             }
         }
 
@@ -73,17 +101,22 @@ namespace Google.Solutions.CloudIap.IapDesktop.Settings
         // ISettingsEditor.
         //---------------------------------------------------------------------
 
-        public void ShowWindow(object settingsObject)
+        public void ShowWindow(ISettingsObject settingsObject)
         {
-            SetEditorObject(settingsObject);
+            this.EditorObject = settingsObject;
             Show(this.dockPanel);
             Activate();
         }
 
-        private class FilteringTypeDescriptor<TAttribute> : CustomTypeDescriptor 
+
+        //---------------------------------------------------------------------
+        // Custom type descriptor.
+        //---------------------------------------------------------------------
+
+        private class FilteringTypeDescriptor<T, TAttribute> : CustomTypeDescriptor 
             where TAttribute : Attribute, new()
         {
-            private readonly object target;
+            public T Target { get; }
 
             private static ICustomTypeDescriptor GetTypeDescriptor(object obj)
             {
@@ -92,10 +125,10 @@ namespace Google.Solutions.CloudIap.IapDesktop.Settings
                 return provider.GetTypeDescriptor(type, obj);
             }
 
-            public FilteringTypeDescriptor(object target)
+            public FilteringTypeDescriptor(T target)
                 :base(GetTypeDescriptor(target))
             {
-                this.target = target;
+                this.Target = target;
             }
 
             public override PropertyDescriptorCollection GetProperties()

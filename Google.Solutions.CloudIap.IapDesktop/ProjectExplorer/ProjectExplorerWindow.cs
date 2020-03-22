@@ -269,6 +269,9 @@ namespace Google.Solutions.CloudIap.IapDesktop.ProjectExplorer
         {
             Debug.Assert(!this.InvokeRequired);
 
+            // Move selection to a "safe" spot.
+            this.treeView.SelectedNode = this.rootNode;
+
             var projectsAndInstances = await this.jobService.RunInBackground(
                 new JobDescription("Loading projects..."),
                 async token => {
