@@ -33,15 +33,18 @@
             this.vs2015LightTheme = new WeifenLuo.WinFormsUI.Docking.VS2015LightTheme();
             this.mainMenu = new System.Windows.Forms.MenuStrip();
             this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.signoutToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.exitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.viewToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.projectExplorerToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.helpToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.aboutToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.openIapDocsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.openIapAccessDocsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.vsToolStripExtender = new WeifenLuo.WinFormsUI.Docking.VisualStudioToolStripExtender(this.components);
             this.statusStrip = new System.Windows.Forms.StatusStrip();
             this.dockPanel = new WeifenLuo.WinFormsUI.Docking.DockPanel();
-            this.signoutToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.aboutSeparatorToolStripMenuItem = new System.Windows.Forms.ToolStripSeparator();
             this.mainMenu.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -66,11 +69,18 @@
             this.fileToolStripMenuItem.Size = new System.Drawing.Size(37, 20);
             this.fileToolStripMenuItem.Text = "&File";
             // 
+            // signoutToolStripMenuItem
+            // 
+            this.signoutToolStripMenuItem.Name = "signoutToolStripMenuItem";
+            this.signoutToolStripMenuItem.Size = new System.Drawing.Size(135, 22);
+            this.signoutToolStripMenuItem.Text = "Sign &out";
+            this.signoutToolStripMenuItem.Click += new System.EventHandler(this.signoutToolStripMenuItem_Click);
+            // 
             // exitToolStripMenuItem
             // 
             this.exitToolStripMenuItem.Name = "exitToolStripMenuItem";
             this.exitToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Alt | System.Windows.Forms.Keys.F4)));
-            this.exitToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.exitToolStripMenuItem.Size = new System.Drawing.Size(135, 22);
             this.exitToolStripMenuItem.Text = "E&xit";
             this.exitToolStripMenuItem.Click += new System.EventHandler(this.exitToolStripMenuItem_Click);
             // 
@@ -94,6 +104,9 @@
             // helpToolStripMenuItem
             // 
             this.helpToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.openIapDocsToolStripMenuItem,
+            this.openIapAccessDocsToolStripMenuItem,
+            this.aboutSeparatorToolStripMenuItem,
             this.aboutToolStripMenuItem});
             this.helpToolStripMenuItem.Name = "helpToolStripMenuItem";
             this.helpToolStripMenuItem.Size = new System.Drawing.Size(44, 20);
@@ -102,9 +115,23 @@
             // aboutToolStripMenuItem
             // 
             this.aboutToolStripMenuItem.Name = "aboutToolStripMenuItem";
-            this.aboutToolStripMenuItem.Size = new System.Drawing.Size(107, 22);
+            this.aboutToolStripMenuItem.Size = new System.Drawing.Size(286, 22);
             this.aboutToolStripMenuItem.Text = "&About";
             this.aboutToolStripMenuItem.Click += new System.EventHandler(this.aboutToolStripMenuItem_Click);
+            // 
+            // openIapDocsToolStripMenuItem
+            // 
+            this.openIapDocsToolStripMenuItem.Name = "openIapDocsToolStripMenuItem";
+            this.openIapDocsToolStripMenuItem.Size = new System.Drawing.Size(286, 22);
+            this.openIapDocsToolStripMenuItem.Text = "Overview of Cloud &IAP TCP forwarding...";
+            this.openIapDocsToolStripMenuItem.Click += new System.EventHandler(this.openIapDocsToolStripMenuItem_Click);
+            // 
+            // openIapAccessDocsToolStripMenuItem
+            // 
+            this.openIapAccessDocsToolStripMenuItem.Name = "openIapAccessDocsToolStripMenuItem";
+            this.openIapAccessDocsToolStripMenuItem.Size = new System.Drawing.Size(286, 22);
+            this.openIapAccessDocsToolStripMenuItem.Text = "&Configuring access to Cloud IAP...";
+            this.openIapAccessDocsToolStripMenuItem.Click += new System.EventHandler(this.openIapAccessDocsToolStripMenuItem_Click);
             // 
             // vsToolStripExtender
             // 
@@ -126,12 +153,10 @@
             this.dockPanel.Size = new System.Drawing.Size(984, 615);
             this.dockPanel.TabIndex = 9;
             // 
-            // signoutToolStripMenuItem
+            // aboutSeparatorToolStripMenuItem
             // 
-            this.signoutToolStripMenuItem.Name = "signoutToolStripMenuItem";
-            this.signoutToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
-            this.signoutToolStripMenuItem.Text = "Sign &out";
-            this.signoutToolStripMenuItem.Click += new System.EventHandler(this.signoutToolStripMenuItem_Click);
+            this.aboutSeparatorToolStripMenuItem.Name = "aboutSeparatorToolStripMenuItem";
+            this.aboutSeparatorToolStripMenuItem.Size = new System.Drawing.Size(283, 6);
             // 
             // MainForm
             // 
@@ -170,5 +195,8 @@
         private System.Windows.Forms.ToolStripMenuItem viewToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem projectExplorerToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem signoutToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem openIapDocsToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem openIapAccessDocsToolStripMenuItem;
+        private System.Windows.Forms.ToolStripSeparator aboutSeparatorToolStripMenuItem;
     }
 }

@@ -1,6 +1,7 @@
 ﻿using Google.Solutions.CloudIap.IapDesktop.Application.Settings;
 using Google.Solutions.CloudIap.IapDesktop.ProjectExplorer;
 using Google.Solutions.CloudIap.IapDesktop.RemoteDesktop;
+using Google.Solutions.CloudIap.IapDesktop.Services;
 using Google.Solutions.CloudIap.IapDesktop.Settings;
 using Google.Solutions.Compute.Auth;
 using Google.Solutions.Compute.Iap;
@@ -48,6 +49,7 @@ namespace Google.Solutions.CloudIap.IapDesktop.Windows
             Program.Services.AddTransient<ProjectInventoryService>();
             Program.Services.AddTransient<ResourceManagerAdapter>();
             Program.Services.AddTransient<ComputeEngineAdapter>();
+            Program.Services.AddTransient<CloudConsoleService>();
 
             // 
             // Restore window settings.
@@ -171,6 +173,16 @@ namespace Google.Solutions.CloudIap.IapDesktop.Windows
         private void projectExplorerToolStripMenuItem_Click(object sender, EventArgs e)
         {
             Program.Services.GetService<IProjectExplorer>().ShowWindow();
+        }
+
+        private void openIapDocsToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            Program.Services.GetService<CloudConsoleService>().OpenIapOverviewDocs();
+        }
+
+        private void openIapAccessDocsToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            Program.Services.GetService<CloudConsoleService>().OpenIapAccessDocs();
         }
 
         //---------------------------------------------------------------------

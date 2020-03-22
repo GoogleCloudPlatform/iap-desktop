@@ -276,6 +276,9 @@ namespace Google.Solutions.CloudIap.IapDesktop.ProjectExplorer
         private const int IconIndex = 4;
         private const int ActiveIconIndex = 4;
 
+        public VmInstanceReference Reference 
+            => new VmInstanceReference(this.ProjectId, this.ZoneId, this.InstanceName);
+
         public string ProjectId => ((ZoneNode)this.Parent).ProjectId;
         public string ZoneId => ((ZoneNode)this.Parent).ZoneId;
 
@@ -317,6 +320,7 @@ namespace Google.Solutions.CloudIap.IapDesktop.ProjectExplorer
                   settings,
                   parent)
         {
+            this.InstanceId = instance.Id.Value;
             this.Status = instance.Status;
             this.Hostname = instance.Hostname;
             this.MachineType = InventoryNode.ShortIdFromUrl(instance.MachineType);
@@ -331,6 +335,12 @@ namespace Google.Solutions.CloudIap.IapDesktop.ProjectExplorer
         [Category("VM Instance")]
         [DisplayName("Name")]
         public string InstanceName => this.Text;
+
+        [Browsable(true)]
+        [BrowsableSetting]
+        [Category("VM Instance")]
+        [DisplayName("ID")]
+        public ulong InstanceId { get; }
 
         [Browsable(true)]
         [BrowsableSetting]

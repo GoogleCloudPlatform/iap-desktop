@@ -42,6 +42,11 @@
             this.refreshAllProjectsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.unloadProjectToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.propertiesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.iapSeparatorToolStripMenuItem = new System.Windows.Forms.ToolStripSeparator();
+            this.configureIapAccessToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.cloudConsoleSeparatorToolStripMenuItem = new System.Windows.Forms.ToolStripSeparator();
+            this.openInCloudConsoleToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.openlogsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.imageList = new System.Windows.Forms.ImageList(this.components);
             this.toolStrip.SuspendLayout();
             this.contextMenu.SuspendLayout();
@@ -113,38 +118,74 @@
             this.refreshToolStripMenuItem,
             this.refreshAllProjectsToolStripMenuItem,
             this.unloadProjectToolStripMenuItem,
-            this.propertiesToolStripMenuItem});
+            this.propertiesToolStripMenuItem,
+            this.iapSeparatorToolStripMenuItem,
+            this.configureIapAccessToolStripMenuItem,
+            this.cloudConsoleSeparatorToolStripMenuItem,
+            this.openInCloudConsoleToolStripMenuItem,
+            this.openlogsToolStripMenuItem});
             this.contextMenu.Name = "contextMenu";
-            this.contextMenu.Size = new System.Drawing.Size(174, 92);
+            this.contextMenu.Size = new System.Drawing.Size(207, 192);
             this.contextMenu.Opening += new System.ComponentModel.CancelEventHandler(this.contextMenu_Opening);
             // 
             // refreshToolStripMenuItem
             // 
             this.refreshToolStripMenuItem.Name = "refreshToolStripMenuItem";
-            this.refreshToolStripMenuItem.Size = new System.Drawing.Size(173, 22);
+            this.refreshToolStripMenuItem.Size = new System.Drawing.Size(206, 22);
             this.refreshToolStripMenuItem.Text = "&Refresh project";
             this.refreshToolStripMenuItem.Click += new System.EventHandler(this.refreshToolStripMenuItem_Click);
             // 
             // refreshAllProjectsToolStripMenuItem
             // 
             this.refreshAllProjectsToolStripMenuItem.Name = "refreshAllProjectsToolStripMenuItem";
-            this.refreshAllProjectsToolStripMenuItem.Size = new System.Drawing.Size(173, 22);
+            this.refreshAllProjectsToolStripMenuItem.Size = new System.Drawing.Size(206, 22);
             this.refreshAllProjectsToolStripMenuItem.Text = "Refresh &all projects";
             this.refreshAllProjectsToolStripMenuItem.Click += new System.EventHandler(this.refreshAllProjectsToolStripMenuItem_Click);
             // 
             // unloadProjectToolStripMenuItem
             // 
             this.unloadProjectToolStripMenuItem.Name = "unloadProjectToolStripMenuItem";
-            this.unloadProjectToolStripMenuItem.Size = new System.Drawing.Size(173, 22);
+            this.unloadProjectToolStripMenuItem.Size = new System.Drawing.Size(206, 22);
             this.unloadProjectToolStripMenuItem.Text = "&Unload project";
             this.unloadProjectToolStripMenuItem.Click += new System.EventHandler(this.unloadProjectToolStripMenuItem_Click);
             // 
             // propertiesToolStripMenuItem
             // 
             this.propertiesToolStripMenuItem.Name = "propertiesToolStripMenuItem";
-            this.propertiesToolStripMenuItem.Size = new System.Drawing.Size(173, 22);
+            this.propertiesToolStripMenuItem.Size = new System.Drawing.Size(206, 22);
             this.propertiesToolStripMenuItem.Text = "P&roperties";
             this.propertiesToolStripMenuItem.Click += new System.EventHandler(this.propertiesToolStripMenuItem_Click);
+            // 
+            // iapSeparatorToolStripMenuItem
+            // 
+            this.iapSeparatorToolStripMenuItem.Name = "iapSeparatorToolStripMenuItem";
+            this.iapSeparatorToolStripMenuItem.Size = new System.Drawing.Size(203, 6);
+            // 
+            // configureIapAccessToolStripMenuItem
+            // 
+            this.configureIapAccessToolStripMenuItem.Name = "configureIapAccessToolStripMenuItem";
+            this.configureIapAccessToolStripMenuItem.Size = new System.Drawing.Size(206, 22);
+            this.configureIapAccessToolStripMenuItem.Text = "Configure IAP a&ccess...";
+            this.configureIapAccessToolStripMenuItem.Click += new System.EventHandler(this.configureIapAccessToolStripMenuItem_Click);
+            // 
+            // cloudConsoleSeparatorToolStripMenuItem
+            // 
+            this.cloudConsoleSeparatorToolStripMenuItem.Name = "cloudConsoleSeparatorToolStripMenuItem";
+            this.cloudConsoleSeparatorToolStripMenuItem.Size = new System.Drawing.Size(203, 6);
+            // 
+            // openInCloudConsoleToolStripMenuItem
+            // 
+            this.openInCloudConsoleToolStripMenuItem.Name = "openInCloudConsoleToolStripMenuItem";
+            this.openInCloudConsoleToolStripMenuItem.Size = new System.Drawing.Size(206, 22);
+            this.openInCloudConsoleToolStripMenuItem.Text = "Open in Cloud Consol&e...";
+            this.openInCloudConsoleToolStripMenuItem.Click += new System.EventHandler(this.openInCloudConsoleToolStripMenuItem_Click);
+            // 
+            // openlogsToolStripMenuItem
+            // 
+            this.openlogsToolStripMenuItem.Name = "openlogsToolStripMenuItem";
+            this.openlogsToolStripMenuItem.Size = new System.Drawing.Size(206, 22);
+            this.openlogsToolStripMenuItem.Text = "Open &logs...";
+            this.openlogsToolStripMenuItem.Click += new System.EventHandler(this.openlogsToolStripMenuItem_Click);
             // 
             // imageList
             // 
@@ -191,5 +232,10 @@
         private System.Windows.Forms.ToolStripMenuItem unloadProjectToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem propertiesToolStripMenuItem;
         private System.Windows.Forms.ToolStripButton openSettingsButton;
+        private System.Windows.Forms.ToolStripMenuItem openInCloudConsoleToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem openlogsToolStripMenuItem;
+        private System.Windows.Forms.ToolStripSeparator cloudConsoleSeparatorToolStripMenuItem;
+        private System.Windows.Forms.ToolStripSeparator iapSeparatorToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem configureIapAccessToolStripMenuItem;
     }
 }

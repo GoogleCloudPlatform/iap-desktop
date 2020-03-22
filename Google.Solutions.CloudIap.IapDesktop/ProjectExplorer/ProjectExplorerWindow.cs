@@ -1,5 +1,6 @@
 ﻿using Google.Apis.Compute.v1.Data;
 using Google.Solutions.CloudIap.IapDesktop.Application.Settings;
+using Google.Solutions.CloudIap.IapDesktop.Services;
 using Google.Solutions.CloudIap.IapDesktop.Settings;
 using Google.Solutions.CloudIap.IapDesktop.Windows;
 using Google.Solutions.Compute.Auth;
@@ -31,6 +32,7 @@ namespace Google.Solutions.CloudIap.IapDesktop.ProjectExplorer
         private readonly InventorySettingsRepository settingsRepository;
         private readonly ISettingsEditor settingsEditor;
         private readonly IAuthorizationService authService;
+        private readonly CloudConsoleService cloudConsoleService;
 
         private readonly CloudNode rootNode = new CloudNode();
 
@@ -61,6 +63,7 @@ namespace Google.Solutions.CloudIap.IapDesktop.ProjectExplorer
             this.settingsRepository = Program.Services.GetService<InventorySettingsRepository>();
             this.settingsEditor = Program.Services.GetService<ISettingsEditor>();
             this.authService = Program.Services.GetService<IAuthorizationService>();
+            this.cloudConsoleService = Program.Services.GetService<CloudConsoleService>();
 
             this.eventService.BindAsyncHandler<ProjectInventoryService.ProjectAddedEvent>(OnProjectAdded);
             this.eventService.BindHandler<ProjectInventoryService.ProjectDeletedEvent>(OnProjectDeleted);
@@ -132,6 +135,14 @@ namespace Google.Solutions.CloudIap.IapDesktop.ProjectExplorer
                 this.unloadProjectToolStripMenuItem.Visible = (selectedNode is ProjectNode);
             this.refreshAllProjectsToolStripMenuItem.Visible = (selectedNode is CloudNode);
             this.propertiesToolStripMenuItem.Visible = (selectedNode is InventoryNode);
+
+            this.cloudConsoleSeparatorToolStripMenuItem.Visible =
+                this.openInCloudConsoleToolStripMenuItem.Visible =
+                this.openlogsToolStripMenuItem.Visible = (selectedNode is VmInstanceNode);
+
+            this.iapSeparatorToolStripMenuItem.Visible =
+                this.configureIapAccessToolStripMenuItem.Visible =
+                     (selectedNode is VmInstanceNode || selectedNode is ProjectNode);
         }
 
         private async void refreshAllProjectsToolStripMenuItem_Click(object sender, EventArgs e)
@@ -157,6 +168,34 @@ namespace Google.Solutions.CloudIap.IapDesktop.ProjectExplorer
 
         private void propertiesToolStripMenuItem_Click(object sender, EventArgs e)
             => openSettingsButton_Click(sender, e);
+
+        private void openInCloudConsoleToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (this.treeView.SelectedNode is VmInstanceNode vmInstanceNode)
+            {
+                this.cloudConsoleService.OpenVmInstance(vmInstanceNode.Reference);
+            }
+        }
+
+        private void openlogsToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (this.treeView.SelectedNode is VmInstanceNode vmInstanceNode)
+            {
+                this.cloudConsoleService.OpenVmInstanceLogs(vmInstanceNode.Reference, vmInstanceNode.InstanceId);
+            }
+        }
+
+        private void configureIapAccessToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (this.treeView.SelectedNode is ProjectNode projectNode)
+            {
+                this.cloudConsoleService.ConfigureIapAccess(projectNode.ProjectId);
+            }
+            else if (this.treeView.SelectedNode is VmInstanceNode vmInstanceNode)
+            {
+                this.cloudConsoleService.ConfigureIapAccess(vmInstanceNode.ProjectId);
+            }
+        }
 
         //---------------------------------------------------------------------
         // Tool bar event handlers.
@@ -317,7 +356,6 @@ namespace Google.Solutions.CloudIap.IapDesktop.ProjectExplorer
 
             RefreshProject(projectId, instances);
         }
-
     }
 }
 
