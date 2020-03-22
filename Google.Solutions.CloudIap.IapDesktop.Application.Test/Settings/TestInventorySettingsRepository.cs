@@ -150,14 +150,14 @@ namespace Google.Solutions.CloudIap.IapDesktop.Application.Test.Settings
         }
 
         [Test]
-        public void WhenIdDoesNotExist_GetProjectSettingsThrowsKeyNotFoundException()
+        public void WhenIdDoesNotExist_GetProjectSettingsReturnsDefaults()
         {
             var baseKey = hkcu.CreateSubKey(TestKeyPath);
             var repository = new InventorySettingsRepository(baseKey);
 
             Assert.Throws<KeyNotFoundException>(() =>
             {
-                repository.GetProjectSettings("nonexisting");
+                repository.GetProjectSettings("some-project");
             });
         }
 
@@ -179,7 +179,7 @@ namespace Google.Solutions.CloudIap.IapDesktop.Application.Test.Settings
         }
 
         [Test]
-        public void WhenZoneIdDoesNotExist_GetZoneSettingsThrowsKeyNotFoundException()
+        public void WhenZoneIdDoesNotExist_GetZoneSettingsReturnsDefaults()
         {
             var baseKey = hkcu.CreateSubKey(TestKeyPath);
             var repository = new InventorySettingsRepository(baseKey);
@@ -189,10 +189,8 @@ namespace Google.Solutions.CloudIap.IapDesktop.Application.Test.Settings
                 ProjectId = "pro-1"
             });
 
-            Assert.Throws<KeyNotFoundException>(() =>
-            {
-                repository.GetZoneSettings("pro-1", "nonexisting-zone");
-            });
+            var settings = repository.GetZoneSettings("pro-1", "some-zone");
+            Assert.AreEqual("some-zone", settings.ZoneId);
         }
 
         [Test]
@@ -254,7 +252,7 @@ namespace Google.Solutions.CloudIap.IapDesktop.Application.Test.Settings
         }
 
         [Test]
-        public void WhenVirtualMachineIdDoesNotExist_GetVirtualMachineSettingsThrowsKeyNotFoundException()
+        public void WhenVirtualMachineIdDoesNotExist_GetVirtualMachineSettingsReturnsDefaults()
         {
             var baseKey = hkcu.CreateSubKey(TestKeyPath);
             var repository = new InventorySettingsRepository(baseKey);
@@ -264,10 +262,9 @@ namespace Google.Solutions.CloudIap.IapDesktop.Application.Test.Settings
                 ProjectId = "pro-1"
             });
 
-            Assert.Throws<KeyNotFoundException>(() =>
-            {
-                repository.GetVirtualMachineSettings("pro-1", "nonexisting-vm");
-            });
+            var settings = repository.GetVirtualMachineSettings("pro-1", "some-vm");
+            Assert.AreEqual("some-vm", settings.InstanceName);
+            Assert.IsNull(settings.Username);
         }
 
         [Test]

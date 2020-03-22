@@ -1,6 +1,8 @@
 ﻿using Google.Solutions.CloudIap.IapDesktop.Application.Registry;
+using Google.Solutions.Compute;
 using Microsoft.Win32;
 using System;
+using System.Linq;
 using System.Collections.Generic;
 
 namespace Google.Solutions.CloudIap.IapDesktop.Application.Settings
@@ -14,29 +16,43 @@ namespace Google.Solutions.CloudIap.IapDesktop.Application.Settings
             this.baseKey = baseKey;
         }
 
-
-        protected T Get<T>(string keyName) where T : new()
+        private bool DoesKeyExist(IEnumerable<string> keyPath)
         {
-            using (var key = this.baseKey.OpenSubKey(keyName))
+            using (var key = this.baseKey.OpenSubKey(string.Join("\\", keyPath)))
             {
-                if (key == null)
-                {
-                    throw new KeyNotFoundException(keyName);
-                }
-
-                return new RegistryBinder<T>().Load(key);
+                return key != null;
             }
         }
 
-        protected void Set<T>(string keyName, T settings) where T : new()
+        protected T Get<T>(IEnumerable<string> keyPath) where T : new()
         {
-            using (var key = this.baseKey.CreateSubKey(keyName))
+            using (var key = this.baseKey.OpenSubKey(string.Join("\\", keyPath)))
             {
                 if (key == null)
                 {
-                    throw new ArgumentException(keyName);
+                    if (keyPath.Count() == 0 || DoesKeyExist(keyPath.Take(1)))
+                    {
+                        // The first segment of the path exists, it is safe to return
+                        // defaults then.
+                        return new T();
+                    }
+                    else
+                    {
+                        // The parent key does not exist, that's an error.
+                        throw new KeyNotFoundException(string.Join("\\", keyPath));
+                    }
                 }
+                else
+                {
+                    return new RegistryBinder<T>().Load(key);
+                }
+            }
+        }
 
+        protected void Set<T>(IEnumerable<string> keyPath, T settings) where T : new()
+        {
+            using (var key = this.baseKey.CreateSubKey(string.Join("\\", keyPath)))
+            {
                 new RegistryBinder<T>().Store(settings, key);
             }
         }

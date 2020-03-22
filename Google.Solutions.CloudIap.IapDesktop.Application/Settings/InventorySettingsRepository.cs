@@ -49,14 +49,14 @@ namespace Google.Solutions.CloudIap.IapDesktop.Application.Settings
 
         public ProjectSettings GetProjectSettings(string projectId)
         {
-            var settings = Get<ProjectSettings>(projectId);
+            var settings = Get<ProjectSettings>(new[] { projectId });
             settings.ProjectId = projectId;
             return settings;
         }
 
         public void SetProjectSettings(ProjectSettings settings)
         {
-            Set<ProjectSettings>(settings.ProjectId, settings);
+            Set<ProjectSettings>(new[] { settings.ProjectId }, settings);
         }
 
         public void DeleteProjectSettings(string projectId)
@@ -71,14 +71,14 @@ namespace Google.Solutions.CloudIap.IapDesktop.Application.Settings
 
         public ZoneSettings GetZoneSettings(string projectId, string zoneId)
         {
-            var settings = Get<ZoneSettings>($@"{projectId}\{ZonePrefix}{zoneId}");
+            var settings = Get<ZoneSettings>(new[] { projectId, ZonePrefix + zoneId });
             settings.ZoneId = zoneId;
             return settings;
         }
 
         public void SetZoneSettings(string projectId, ZoneSettings settings)
         {
-            Set<ZoneSettings>($@"{projectId}\{ZonePrefix}{settings.ZoneId}", settings);
+            Set<ZoneSettings>(new[] { projectId, ZonePrefix + settings.ZoneId}, settings);
         }
 
 
@@ -88,14 +88,14 @@ namespace Google.Solutions.CloudIap.IapDesktop.Application.Settings
 
         public VirtualMachineSettings GetVirtualMachineSettings(string projectId, string instanceName)
         {
-            var settings = Get<VirtualMachineSettings>($@"{projectId}\{VmPrefix}{instanceName}");
+            var settings = Get<VirtualMachineSettings>(new[] { projectId, VmPrefix + instanceName });
             settings.InstanceName = instanceName;
             return settings;
         }
 
         public void SetVirtualMachineSettings(string projectId, VirtualMachineSettings settings)
         {
-            Set<VirtualMachineSettings>($@"{projectId}\{VmPrefix}{settings.InstanceName}", settings);
+            Set<VirtualMachineSettings>(new[] { projectId, VmPrefix + settings.InstanceName }, settings);
         }
     }
 
