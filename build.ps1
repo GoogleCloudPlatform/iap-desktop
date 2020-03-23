@@ -41,7 +41,7 @@ Write-Host "========================================================"
 Write-Host "=== Patch OAuth credentials                          ==="
 Write-Host "========================================================"
 
-Copy-Item -Path "${env:KOKORO_GFILE_DIR}\OAuthClient.cs" -Destination "Google.Solutions.CloudIap.IapDesktop\OAuthClient.cs" -Force
+Copy-Item -Path "${env:KOKORO_GFILE_DIR}\OAuthClient.cs" -Destination "Google.Solutions.IapDesktop\OAuthClient.cs" -Force
 
 Write-Host "========================================================"
 Write-Host "=== Install Nuget                                    ==="
@@ -97,7 +97,7 @@ $Env:GOOGLE_CLOUD_PROJECT = (Get-Content $Env:GOOGLE_APPLICATION_CREDENTIALS | O
 $Nunit = (Resolve-Path -Path "packages\NUnit.ConsoleRunner.*\tools\nunit3-console.exe").Path
 & $Nunit `
     Google.Solutions.Compute.Test\bin\release\Google.Solutions.Compute.Test.dll `
-    Google.Solutions.CloudIap.IapDesktop.Application.Test\bin\release\Google.Solutions.CloudIap.IapDesktop.Application.Test.dll `
+    Google.Solutions.IapDesktop.Application.Test\bin\release\Google.Solutions.IapDesktop.Application.Test.dll `
     "--result=sponge_log.xml;transform=kokoro\nunit-to-sponge.xsl" `
     --out sponge_log.log `
     --where "cat != IAP"| Out-Default

@@ -167,25 +167,25 @@
           Id="FileIapDesktopExe"
           Name="IapDesktop.exe"
           DiskId="1"
-          Source="Google.Solutions.CloudIap.IapDesktop\bin\$(var.CONFIGURATION)\IapDesktop.exe"
+          Source="Google.Solutions.IapDesktop\bin\$(var.CONFIGURATION)\IapDesktop.exe"
           Vital="yes"/>
         <File
           Id="FileIapDesktopExeConfig"
           Name="IapDesktop.exe.config"
           DiskId="1"
-          Source="Google.Solutions.CloudIap.IapDesktop\bin\$(var.CONFIGURATION)\IapDesktop.exe.config"
+          Source="Google.Solutions.IapDesktop\bin\$(var.CONFIGURATION)\IapDesktop.exe.config"
           Vital="yes"/>
         <File
           Id="FileGoogleSolutionsIapDesktopApplicationDll"
           Name="Google.Solutions.IapDesktop.Application.dll"
           DiskId="1"
-          Source="Google.Solutions.CloudIap.IapDesktop\bin\$(var.CONFIGURATION)\Google.Solutions.IapDesktop.Application.dll"
+          Source="Google.Solutions.IapDesktop\bin\$(var.CONFIGURATION)\Google.Solutions.IapDesktop.Application.dll"
           Vital="yes"/>
         <File
           Id="FileGoogleSolutionsComputeDll"
           Name="Google.Solutions.Compute.dll"
           DiskId="1"
-          Source="Google.Solutions.CloudIap.IapDesktop\bin\$(var.CONFIGURATION)\Google.Solutions.Compute.dll"
+          Source="Google.Solutions.IapDesktop\bin\$(var.CONFIGURATION)\Google.Solutions.Compute.dll"
           Vital="yes"/>
       
         <!-- SDK and dependencies -->
@@ -193,73 +193,73 @@
           Id="FileWeifenLuoWinFormsUIDockingDll"
           Name="WeifenLuo.WinFormsUI.Docking.dll"
           DiskId="1"
-          Source="Google.Solutions.CloudIap.IapDesktop\bin\$(var.CONFIGURATION)\WeifenLuo.WinFormsUI.Docking.dll"
+          Source="Google.Solutions.IapDesktop\bin\$(var.CONFIGURATION)\WeifenLuo.WinFormsUI.Docking.dll"
           Vital="yes"/>
         <File
           Id="FileWeifenLuoWinFormsUIDockingThemeVS2015Dll"
           Name="WeifenLuo.WinFormsUI.Docking.ThemeVS2015.dll"
           DiskId="1"
-          Source="Google.Solutions.CloudIap.IapDesktop\bin\$(var.CONFIGURATION)\WeifenLuo.WinFormsUI.Docking.ThemeVS2015.dll"
+          Source="Google.Solutions.IapDesktop\bin\$(var.CONFIGURATION)\WeifenLuo.WinFormsUI.Docking.ThemeVS2015.dll"
           Vital="yes"/>
         <File
           Id="FileAxInteropMSTSCLibDll"
           Name="AxInterop.MSTSCLib.dll"
           DiskId="1"
-          Source="Google.Solutions.CloudIap.IapDesktop\bin\$(var.CONFIGURATION)\AxInterop.MSTSCLib.dll"
+          Source="Google.Solutions.IapDesktop\bin\$(var.CONFIGURATION)\AxInterop.MSTSCLib.dll"
           Vital="yes"/>
         <File
           Id="FileInteropMSTSCLibDll"
           Name="Interop.MSTSCLib.dll"
           DiskId="1"
-          Source="Google.Solutions.CloudIap.IapDesktop\bin\$(var.CONFIGURATION)\Interop.MSTSCLib.dll"
+          Source="Google.Solutions.IapDesktop\bin\$(var.CONFIGURATION)\Interop.MSTSCLib.dll"
           Vital="yes"/>
         <File
           Id="FileGoogleApisAuthDll"
           Name="Google.Apis.Auth.dll"
           DiskId="1"
-          Source="Google.Solutions.CloudIap.IapDesktop\bin\$(var.CONFIGURATION)\Google.Apis.Auth.dll"
+          Source="Google.Solutions.IapDesktop\bin\$(var.CONFIGURATION)\Google.Apis.Auth.dll"
           Vital="yes"/>
         <File
           Id="FileGoogleApisAuthPlatformServicesDll"
           Name="Google.Apis.Auth.PlatformServices.dll"
           DiskId="1"
-          Source="Google.Solutions.CloudIap.IapDesktop\bin\$(var.CONFIGURATION)\Google.Apis.Auth.PlatformServices.dll"
+          Source="Google.Solutions.IapDesktop\bin\$(var.CONFIGURATION)\Google.Apis.Auth.PlatformServices.dll"
           Vital="yes"/>
         <File
           Id="FileGoogleApisComputeV1Dll"
           Name="Google.Apis.Compute.v1.dll"
           DiskId="1"
-          Source="Google.Solutions.CloudIap.IapDesktop\bin\$(var.CONFIGURATION)\Google.Apis.Compute.v1.dll"
+          Source="Google.Solutions.IapDesktop\bin\$(var.CONFIGURATION)\Google.Apis.Compute.v1.dll"
           Vital="yes"/>
         <File
           Id="FileGoogleApisCloudResourceManagerV1Dll"
           Name="Google.Apis.CloudResourceManager.v1.dll"
           DiskId="1"
-          Source="Google.Solutions.CloudIap.IapDesktop\bin\$(var.CONFIGURATION)\Google.Apis.CloudResourceManager.v1.dll"
+          Source="Google.Solutions.IapDesktop\bin\$(var.CONFIGURATION)\Google.Apis.CloudResourceManager.v1.dll"
           Vital="yes"/>
         <File
           Id="FileGoogleApisCoreDll"
           Name="Google.Apis.Core.dll"
           DiskId="1"
-          Source="Google.Solutions.CloudIap.IapDesktop\bin\$(var.CONFIGURATION)\Google.Apis.Core.dll"
+          Source="Google.Solutions.IapDesktop\bin\$(var.CONFIGURATION)\Google.Apis.Core.dll"
           Vital="yes"/>
         <File
           Id="FileGoogleApisDll"
           Name="Google.Apis.dll"
           DiskId="1"
-          Source="Google.Solutions.CloudIap.IapDesktop\bin\$(var.CONFIGURATION)\Google.Apis.dll"
+          Source="Google.Solutions.IapDesktop\bin\$(var.CONFIGURATION)\Google.Apis.dll"
           Vital="yes"/>
         <File
           Id="FileGoogleApisPlatformServicesDll"
           Name="Google.Apis.PlatformServices.dll"
           DiskId="1"
-          Source="Google.Solutions.CloudIap.IapDesktop\bin\$(var.CONFIGURATION)\Google.Apis.PlatformServices.dll"
+          Source="Google.Solutions.IapDesktop\bin\$(var.CONFIGURATION)\Google.Apis.PlatformServices.dll"
           Vital="yes"/>
         <File
           Id="FileNewtonsoftJsonDll"
           Name="Newtonsoft.Json.dll"
           DiskId="1"
-          Source="Google.Solutions.CloudIap.IapDesktop\bin\$(var.CONFIGURATION)\Newtonsoft.Json.dll"
+          Source="Google.Solutions.IapDesktop\bin\$(var.CONFIGURATION)\Newtonsoft.Json.dll"
           Vital="yes"/>
       </Component>
 		</ComponentGroup>

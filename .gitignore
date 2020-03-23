@@ -262,4 +262,4 @@ __pycache__/
 
 Google.Solutions.CloudIap.IapClient/OAuthClient.cs
 Google.Solutions.CloudIap.Plugin/OAuthClient.cs
-Google.Solutions.CloudIap.IapDesktop/OAuthClient.cs
+Google.Solutions.IapDesktop/OAuthClient.cs
