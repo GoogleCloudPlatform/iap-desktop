@@ -1,7 +1,6 @@
 ﻿using Google.Solutions.IapDesktop.Application.Settings;
 using Google.Solutions.IapDesktop.ProjectExplorer;
 using Google.Solutions.IapDesktop.RemoteDesktop;
-using Google.Solutions.IapDesktop.Services;
 using Google.Solutions.IapDesktop.Settings;
 using Google.Solutions.Compute.Auth;
 using Google.Solutions.Compute.Iap;

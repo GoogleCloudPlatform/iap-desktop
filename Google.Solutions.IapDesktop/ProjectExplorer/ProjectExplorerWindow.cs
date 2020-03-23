@@ -1,6 +1,5 @@
 ﻿using Google.Apis.Compute.v1.Data;
 using Google.Solutions.IapDesktop.Application.Settings;
-using Google.Solutions.IapDesktop.Services;
 using Google.Solutions.IapDesktop.Settings;
 using Google.Solutions.IapDesktop.Windows;
 using Google.Solutions.Compute.Auth;

@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Google.Solutions.CloudIap.IapDesktop.Application.Services
+namespace Google.Solutions.IapDesktop.Application.Services
 {
     public class CloudConsoleService
     {

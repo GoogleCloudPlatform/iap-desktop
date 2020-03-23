@@ -85,7 +85,6 @@
     <Compile Include="Extensions\TestGetSerialPortOutputStream.cs" />
     <Compile Include="Extensions\TestResetWindowsUser.cs" />
     <Compile Include="FixtureBase.cs" />
-    <Compile Include="IapClient\TestCommandLine.cs" />
     <Compile Include="Iap\Mocks.cs" />
     <Compile Include="Iap\TestEchoOverIapBase.cs" />
     <Compile Include="Iap\TestEchoOverIapDirectTunnel.cs" />
@@ -107,10 +106,6 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Google.Solutions.CloudIap.IapClient\Google.Solutions.CloudIap.IapClient.csproj">
-      <Project>{b6ee7dcf-d396-4edd-967f-198753be9d0b}</Project>
-      <Name>Google.Solutions.CloudIap.IapClient</Name>
-    </ProjectReference>
     <ProjectReference Include="..\Google.Solutions.Compute\Google.Solutions.Compute.csproj">
       <Project>{d9493479-1751-402b-880f-60ed33ebb885}</Project>
       <Name>Google.Solutions.Compute</Name>

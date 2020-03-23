@@ -87,6 +87,7 @@
     <Compile Include="ObjectModel\JobService.cs" />
     <Compile Include="ObjectModel\ServiceRegistry.cs" />
     <Compile Include="ExceptionExtensions.cs" />
+    <Compile Include="Services\CloudConsoleService.cs" />
     <Compile Include="Services\IAuthorizationService.cs" />
     <Compile Include="Services\ProjectInventoryService.cs" />
     <Compile Include="Settings\AuthSettingsRepository.cs" />
