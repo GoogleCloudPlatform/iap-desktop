@@ -9,6 +9,9 @@ using System.Windows.Forms;
 using Google.Solutions.Compute.Auth;
 using Google.Solutions.IapDesktop.Application.ObjectModel;
 using Google.Solutions.IapDesktop.Application;
+using Google.Solutions.IapDesktop.Application.Windows;
+using Google.Solutions.IapDesktop.Application.Services;
+using Google.Solutions.IapDesktop.Application.Adapters;
 
 namespace Google.Solutions.IapDesktop
 {
@@ -37,7 +40,16 @@ namespace Google.Solutions.IapDesktop
             System.Windows.Forms.Application.EnableVisualStyles();
             System.Windows.Forms.Application.SetCompatibleTextRenderingDefault(false);
 
-            var mainForm = new MainForm();
+            var mainForm = new MainForm(TempProgram.Services);
+            TempProgram.Services.AddSingleton<IMainForm>(mainForm);
+            TempProgram.Services.AddSingleton<IAuthorizationService>(mainForm);
+            TempProgram.Services.AddSingleton(new JobService(mainForm, TempProgram.Services));
+            TempProgram.Services.AddSingleton<IEventService>(new EventService(mainForm));
+            TempProgram.Services.AddTransient<ProjectInventoryService>();
+            TempProgram.Services.AddTransient<ResourceManagerAdapter>();
+            TempProgram.Services.AddTransient<ComputeEngineAdapter>();
+            TempProgram.Services.AddTransient<CloudConsoleService>();
+
 
             System.Windows.Forms.Application.Run(mainForm);
         }

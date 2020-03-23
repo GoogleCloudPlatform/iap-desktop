@@ -34,20 +34,11 @@ namespace Google.Solutions.IapDesktop.Windows
 
         private WaitDialog waitDialog = null;
 
-        public MainForm()
+        public MainForm(IServiceProvider serviceProvider)
         {
-            this.windowSettings = TempProgram.Services.GetService<WindowSettingsRepository>();
-            this.authSettings = TempProgram.Services.GetService<AuthSettingsRepository>();
-            this.inventorySettings = TempProgram.Services.GetService<InventorySettingsRepository>();
-
-            TempProgram.Services.AddSingleton<IMainForm>(this);
-            TempProgram.Services.AddSingleton<IAuthorizationService>(this);
-            TempProgram.Services.AddSingleton(new JobService(this, TempProgram.Services));
-            TempProgram.Services.AddSingleton<IEventService>(new EventService(this));
-            TempProgram.Services.AddTransient<ProjectInventoryService>();
-            TempProgram.Services.AddTransient<ResourceManagerAdapter>();
-            TempProgram.Services.AddTransient<ComputeEngineAdapter>();
-            TempProgram.Services.AddTransient<CloudConsoleService>();
+            this.windowSettings = serviceProvider.GetService<WindowSettingsRepository>();
+            this.authSettings = serviceProvider.GetService<AuthSettingsRepository>();
+            this.inventorySettings = serviceProvider.GetService<InventorySettingsRepository>();
 
             // 
             // Restore window settings.
