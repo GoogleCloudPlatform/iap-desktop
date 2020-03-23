@@ -75,7 +75,7 @@ namespace Google.Solutions.CloudIap.IapDesktop.ProjectExplorer
             ShowWindow();
         }
 
-        private void RefreshProject(string projectId, IEnumerable<Instance> instances)
+        private void PopulateProjectNode(string projectId, IEnumerable<Instance> instances)
         {
             Debug.Assert(!this.InvokeRequired);
 
@@ -96,22 +96,32 @@ namespace Google.Solutions.CloudIap.IapDesktop.ProjectExplorer
             this.rootNode.Expand();
         }
 
-        private async void ProjectExplorerWindow_Shown(object sender, EventArgs _)
+        private async Task AddProjectAsync()
         {
             try
             {
-                await RefreshAllProjects();
+                await this.jobService.RunInBackground(
+                    new JobDescription("Loading projects..."),
+                    _ => this.authService.Authorization.Credential.GetAccessTokenForRequestAsync());
+
+                // Show project picker
+                string projectId = projectId = ProjectPickerDialog.SelectProjectId(this);
+
+                if (projectId == null)
+                {
+                    // Cancelled.
+                    return;
+                }
+
+                await this.projectInventoryService.AddProjectAsync(projectId);
             }
             catch (TaskCanceledException)
             {
-                // Most likely, the user rejected to reauthorize. Quit the app.
-                this.mainForm.Close();
-                
+                // Ignore.
             }
             catch (Exception e)
             {
-                ExceptionDialog.Show(this, "Loading projects failed", e);
-                this.mainForm.Close();
+                ExceptionDialog.Show(this, "Adding project failed", e);
             }
         }
 
@@ -145,16 +155,38 @@ namespace Google.Solutions.CloudIap.IapDesktop.ProjectExplorer
                      (selectedNode is VmInstanceNode || selectedNode is ProjectNode);
         }
 
-        private async void refreshAllProjectsToolStripMenuItem_Click(object sender, EventArgs e)
+        private async void refreshAllProjectsToolStripMenuItem_Click(object sender, EventArgs _)
         {
-            await RefreshAllProjects();
+            try
+            { 
+                await RefreshAllProjects();
+            }
+            catch (TaskCanceledException)
+            {
+                // Ignore.
+            }
+            catch (Exception e)
+            {
+                ExceptionDialog.Show(this, "Refreshing project failed", e);
+            }
         }
 
-        private async void refreshToolStripMenuItem_Click(object sender, EventArgs e)
+        private async void refreshToolStripMenuItem_Click(object sender, EventArgs _)
         {
-            if (this.treeView.SelectedNode is ProjectNode projectNode)
+            try
+            { 
+                if (this.treeView.SelectedNode is ProjectNode projectNode)
+                {
+                    await RefreshProject(projectNode.ProjectId);
+                }
+            }
+            catch (TaskCanceledException)
             {
-                await RefreshProject(projectNode.ProjectId);
+                // Ignore.
+            }
+            catch (Exception e)
+            {
+                ExceptionDialog.Show(this, "Refreshing project failed", e);
             }
         }
 
@@ -219,31 +251,7 @@ namespace Google.Solutions.CloudIap.IapDesktop.ProjectExplorer
 
         private async void addButton_Click(object sender, EventArgs args)
         {
-            try
-            {
-                await this.jobService.RunInBackground(
-                    new JobDescription("Loading projects..."),
-                    _ => this.authService.Authorization.Credential.GetAccessTokenForRequestAsync());
-
-                // Show project picker
-                string projectId = projectId = ProjectPickerDialog.SelectProjectId(this);
-
-                if (projectId == null)
-                {
-                    // Cancelled.
-                    return;
-                }
-
-                await this.projectInventoryService.AddProjectAsync(projectId);
-            }
-            catch (TaskCanceledException)
-            {
-                // Ignore.
-            }
-            catch (Exception e)
-            {
-                ExceptionDialog.Show(this, "Adding project failed", e);
-            }
+            await AddProjectAsync();
         }
 
         private void openSettingsButton_Click(object sender, EventArgs _)
@@ -257,6 +265,28 @@ namespace Google.Solutions.CloudIap.IapDesktop.ProjectExplorer
         //---------------------------------------------------------------------
         // Other Windows event handlers.
         //---------------------------------------------------------------------
+
+        private async void ProjectExplorerWindow_Shown(object sender, EventArgs _)
+        {
+            try
+            {
+                await RefreshAllProjects();
+            }
+            catch (TaskCanceledException)
+            {
+                // Most likely, the user rejected to reauthorize. Quit the app.
+                this.mainForm.Close();
+
+            }
+            catch (Exception e)
+            {
+                ExceptionDialog.Show(this, "Loading projects failed", e);
+                
+                // Do not close the application, otherwise the user has no 
+                // chance to remediate the situation by unloading the offending
+                // project.
+            }
+        }
 
         private async void treeView_AfterSelect(object sender, TreeViewEventArgs args)
         {
@@ -326,6 +356,8 @@ namespace Google.Solutions.CloudIap.IapDesktop.ProjectExplorer
             // Move selection to a "safe" spot.
             this.treeView.SelectedNode = this.rootNode;
 
+            var failedProjects = new Dictionary<string, Exception>();
+
             var projectsAndInstances = await this.jobService.RunInBackground(
                 new JobDescription("Loading projects..."),
                 async token => {
@@ -333,8 +365,16 @@ namespace Google.Solutions.CloudIap.IapDesktop.ProjectExplorer
 
                     foreach (var project in await this.projectInventoryService.ListProjectsAsync())
                     {
-                        accumulator[project.Name] =
-                            await this.computeEngineAdapter.QueryInstancesAsync(project.Name);
+                        try
+                        {
+                            accumulator[project.Name] =
+                                await this.computeEngineAdapter.QueryInstancesAsync(project.Name);
+                        }
+                        catch (Exception e)
+                        {
+                            // If one project fails to load, we should stil load the other onces.
+                            failedProjects[project.Name] = e;
+                        }
                     }
 
                     return accumulator;
@@ -342,7 +382,20 @@ namespace Google.Solutions.CloudIap.IapDesktop.ProjectExplorer
 
             foreach (var entry in projectsAndInstances)
             {
-                RefreshProject(entry.Key, entry.Value);
+                PopulateProjectNode(entry.Key, entry.Value);
+            }
+
+            if (failedProjects.Any())
+            {
+                // Add an (empty) project node so that the user can at least unload the project.
+                foreach (string projectId in failedProjects.Keys)
+                {
+                    PopulateProjectNode(projectId, Enumerable.Empty<Instance>());
+                }
+
+                throw new AggregateException(
+                    $"The following projects failed to refresh: {string.Join(", ", failedProjects.Keys)}", 
+                    failedProjects.Values.Cast<Exception>());
             }
         }
 
@@ -354,7 +407,14 @@ namespace Google.Solutions.CloudIap.IapDesktop.ProjectExplorer
                 new JobDescription("Loading project inventory..."),
                 token => this.computeEngineAdapter.QueryInstancesAsync(projectId));
 
-            RefreshProject(projectId, instances);
+            PopulateProjectNode(projectId, instances);
+        }
+
+        public async Task ShowAddProjectDialogAsync()
+        {
+            ShowWindow();
+
+            await AddProjectAsync();
         }
     }
 }

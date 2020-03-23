@@ -140,6 +140,10 @@ namespace Google.Solutions.CloudIap.IapDesktop.Windows
             ResumeLayout();
         }
 
+        //---------------------------------------------------------------------
+        // Main menu events.
+        //---------------------------------------------------------------------
+
 
         private void aboutToolStripMenuItem_Click(object sender, EventArgs _)
         {
@@ -170,19 +174,24 @@ namespace Google.Solutions.CloudIap.IapDesktop.Windows
             }
         }
 
-        private void projectExplorerToolStripMenuItem_Click(object sender, EventArgs e)
+        private void projectExplorerToolStripMenuItem_Click(object sender, EventArgs _)
         {
             Program.Services.GetService<IProjectExplorer>().ShowWindow();
         }
 
-        private void openIapDocsToolStripMenuItem_Click(object sender, EventArgs e)
+        private void openIapDocsToolStripMenuItem_Click(object sender, EventArgs _)
         {
             Program.Services.GetService<CloudConsoleService>().OpenIapOverviewDocs();
         }
 
-        private void openIapAccessDocsToolStripMenuItem_Click(object sender, EventArgs e)
+        private void openIapAccessDocsToolStripMenuItem_Click(object sender, EventArgs _)
         {
             Program.Services.GetService<CloudConsoleService>().OpenIapAccessDocs();
+        }
+
+        private async void addProjectToolStripMenuItem_Click(object sender, EventArgs _)
+        {
+            await Program.Services.GetService<IProjectExplorer>().ShowAddProjectDialogAsync();
         }
 
         //---------------------------------------------------------------------

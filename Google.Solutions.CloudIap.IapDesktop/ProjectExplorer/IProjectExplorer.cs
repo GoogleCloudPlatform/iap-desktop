@@ -11,6 +11,7 @@ namespace Google.Solutions.CloudIap.IapDesktop.ProjectExplorer
         void ShowWindow();
         Task RefreshProject(string projectId);
         Task RefreshAllProjects();
+        Task ShowAddProjectDialogAsync();
     }
 
 }

@@ -75,27 +75,43 @@ namespace Google.Solutions.IapDesktop.Application.Adapters
 
         public Task<IEnumerable<Instance>> QueryInstancesAsync(string projectId, string zone)
         {
-            return PageHelper.JoinPagesAsync<InstancesResource.ListRequest, InstanceList, Instance>(
-                 this.service.Instances.List(projectId, zone),
-                 instances => instances.Items,
-                 response => response.NextPageToken,
-                 (request, token) => { request.PageToken = token; });
+            try
+            {
+                return PageHelper.JoinPagesAsync<InstancesResource.ListRequest, InstanceList, Instance>(
+                    this.service.Instances.List(projectId, zone),
+                    instances => instances.Items,
+                    response => response.NextPageToken,
+                    (request, token) => { request.PageToken = token; });
+            }
+            catch (GoogleApiException e) when (e.Error != null && e.Error.Code == 403)
+            {
+                throw new ComputeEngineException(
+                    $"Access to VM instances in project {projectId} has been denied", e);
+            }
         }
 
         public async Task<IEnumerable<Instance>> QueryInstancesAsync(string projectId)
         {
-            var zones = await PageHelper.JoinPagesAsync<
-                        InstancesResource.AggregatedListRequest, 
-                        InstanceAggregatedList, 
-                        InstancesScopedList>(
-                this.service.Instances.AggregatedList(projectId),
-                instances => instances.Items.Values.Where(v => v != null),
-                response => response.NextPageToken,
-                (request, token) => { request.PageToken = token; });
+            try
+            {
+                var zones = await PageHelper.JoinPagesAsync<
+                            InstancesResource.AggregatedListRequest,
+                            InstanceAggregatedList,
+                            InstancesScopedList>(
+                    this.service.Instances.AggregatedList(projectId),
+                    instances => instances.Items.Values.Where(v => v != null),
+                    response => response.NextPageToken,
+                    (request, token) => { request.PageToken = token; });
 
-            return zones
-                .Where(z => z.Instances != null)    // API returns null for empty zones.
-                .SelectMany(zone => zone.Instances);
+                return zones
+                    .Where(z => z.Instances != null)    // API returns null for empty zones.
+                    .SelectMany(zone => zone.Instances);
+            }
+            catch (GoogleApiException e) when (e.Error != null && e.Error.Code == 403)
+            {
+                throw new ComputeEngineException(
+                    $"Access to VM instances in project {projectId} has been denied", e);
+            }
         }
 
         public Task<Instance> QueryInstanceAsync(string projectId, string zone, string instanceName)
@@ -151,6 +167,14 @@ namespace Google.Solutions.IapDesktop.Application.Adapters
         {
             return IsWindowsInstanceByGuestOsFeature(instance) ||
                    IsWindowsInstanceByLicense(instance);
+        }
+    }
+
+    public class ComputeEngineException : Exception
+    {
+        public ComputeEngineException(string message, Exception inner)
+            : base(message, inner)
+        {
         }
     }
 }
