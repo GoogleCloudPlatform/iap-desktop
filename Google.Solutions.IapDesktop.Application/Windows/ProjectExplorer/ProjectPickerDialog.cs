@@ -22,11 +22,11 @@ namespace Google.Solutions.IapDesktop.Application.ProjectExplorer
         private string suggestionsPrefix = null;
         private readonly ResourceManagerAdapter resourceManager;
 
-        public ProjectPickerDialog(ResourceManagerAdapter resourceManager)
+        public ProjectPickerDialog(IServiceProvider serviceProvider)
         {
             InitializeComponent();
 
-            this.resourceManager = resourceManager;
+            this.resourceManager = serviceProvider.GetService<ResourceManagerAdapter>();
         }
 
         private void projectComboBox_Enter(object sender, EventArgs e)
@@ -116,14 +116,11 @@ namespace Google.Solutions.IapDesktop.Application.ProjectExplorer
             }
         }
 
-        internal static string SelectProjectId(
-            ResourceManagerAdapter resourceManager,
-            IWin32Window owner)
+        internal string SelectProjectId(IWin32Window owner)
         {
-            var dialog = new ProjectPickerDialog(resourceManager);
-            if (dialog.ShowDialog(owner) == DialogResult.OK)
+            if (ShowDialog(owner) == DialogResult.OK)
             {
-                return dialog.SelectedProjectId;
+                return this.SelectedProjectId;
             }
             else
             {

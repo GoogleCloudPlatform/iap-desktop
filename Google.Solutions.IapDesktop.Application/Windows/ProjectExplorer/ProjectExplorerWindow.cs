@@ -100,9 +100,8 @@ namespace Google.Solutions.IapDesktop.Application.ProjectExplorer
                 _ => this.authService.Authorization.Credential.GetAccessTokenForRequestAsync());
 
             // Show project picker
-            string projectId = projectId = ProjectPickerDialog.SelectProjectId(
-                this.serviceProvider.GetService<ResourceManagerAdapter>(),
-                this);
+            var dialog = this.serviceProvider.GetService<ProjectPickerDialog>();
+            string projectId = projectId = dialog.SelectProjectId(this);
 
             if (projectId == null)
             {
