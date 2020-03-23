@@ -1,20 +1,15 @@
-﻿using Google.Solutions.IapDesktop.Windows;
+﻿using Google.Solutions.Compute.Auth;
+using Google.Solutions.IapDesktop.Application.Adapters;
+using Google.Solutions.IapDesktop.Application.ObjectModel;
+using Google.Solutions.IapDesktop.Application.ProjectExplorer;
+using Google.Solutions.IapDesktop.Application.Services;
 using Google.Solutions.IapDesktop.Application.Settings;
+using Google.Solutions.IapDesktop.Application.SettingsEditor;
+using Google.Solutions.IapDesktop.Application.Windows;
+using Google.Solutions.IapDesktop.Application.Windows.RemoteDesktop;
+using Google.Solutions.IapDesktop.Windows;
 using Microsoft.Win32;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using System.Windows.Forms;
-using Google.Solutions.Compute.Auth;
-using Google.Solutions.IapDesktop.Application.ObjectModel;
-using Google.Solutions.IapDesktop.Application;
-using Google.Solutions.IapDesktop.Application.Windows;
-using Google.Solutions.IapDesktop.Application.Services;
-using Google.Solutions.IapDesktop.Application.Adapters;
-using Google.Solutions.IapDesktop.Application.Windows.RemoteDesktop;
-using Google.Solutions.IapDesktop.Application.SettingsEditor;
-using Google.Solutions.IapDesktop.Application.ProjectExplorer;
 
 namespace Google.Solutions.IapDesktop
 {
@@ -50,6 +45,7 @@ namespace Google.Solutions.IapDesktop
             serviceRegistry.AddSingleton<IAuthorizationService>(mainForm);
             serviceRegistry.AddSingleton(new JobService(mainForm, serviceRegistry));
             serviceRegistry.AddSingleton<IEventService>(new EventService(mainForm));
+
             serviceRegistry.AddTransient<ProjectInventoryService>();
             serviceRegistry.AddTransient<ResourceManagerAdapter>();
             serviceRegistry.AddTransient<ComputeEngineAdapter>();

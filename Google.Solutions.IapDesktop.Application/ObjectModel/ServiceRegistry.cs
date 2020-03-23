@@ -1,13 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Google.Solutions.IapDesktop.Application.ObjectModel
 {
-    
+
     public class ServiceRegistry : IServiceProvider
     {
         private readonly IDictionary<Type, object> singletons = new Dictionary<Type, object>();
@@ -16,13 +13,13 @@ namespace Google.Solutions.IapDesktop.Application.ObjectModel
         private TService CreateInstance<TService>()
         {
             var constructorWithServiceProvider = typeof(TService).GetConstructor(
-                BindingFlags.Public | BindingFlags.Instance, 
-                null, 
+                BindingFlags.Public | BindingFlags.Instance,
+                null,
                 new[] { typeof(IServiceProvider) },
                 null);
             if (constructorWithServiceProvider != null)
             {
-                return (TService) Activator.CreateInstance(typeof(TService), (IServiceProvider)this);
+                return (TService)Activator.CreateInstance(typeof(TService), (IServiceProvider)this);
             }
 
             var defaultConstructor = typeof(TService).GetConstructor(
@@ -44,7 +41,7 @@ namespace Google.Solutions.IapDesktop.Application.ObjectModel
             this.singletons[typeof(TService)] = singleton;
         }
 
-        public void AddSingleton<TService>() 
+        public void AddSingleton<TService>()
         {
             this.singletons[typeof(TService)] = CreateInstance<TService>();
         }

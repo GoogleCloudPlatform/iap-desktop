@@ -19,17 +19,15 @@
 // under the License.
 //
 
-using Google.Apis.Auth.OAuth2;
 using Google.Apis.CloudResourceManager.v1;
 using Google.Apis.CloudResourceManager.v1.Data;
 using Google.Apis.Services;
-using Google.Solutions.Compute.Auth;
 using Google.Solutions.IapDesktop.Application.ObjectModel;
+using Google.Solutions.IapDesktop.Application.Services;
 using System;
 using System.Collections.Generic;
-using System.Threading.Tasks;
 using System.Linq;
-using Google.Solutions.IapDesktop.Application.Services;
+using System.Threading.Tasks;
 
 namespace Google.Solutions.IapDesktop.Application.Adapters
 {

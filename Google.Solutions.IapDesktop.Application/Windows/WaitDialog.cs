@@ -34,7 +34,7 @@ namespace Google.Solutions.IapDesktop.Application.Windows
         private readonly CancellationTokenSource cancellationSource;
 
         public bool IsShowing => this.formShown;
-        
+
         public WaitDialog() : this(null, null)
         {
             // For Designer only.
@@ -58,7 +58,7 @@ namespace Google.Solutions.IapDesktop.Application.Windows
             // to take. So show a fake progress bar that tracks a series
             // that converges to 100% but gets increasingly slower.
             this.seriesValue += 1.0 / (1 + Math.Pow(2, this.ticksElapsed));
-            this.progressBar.Value = (int) (this.seriesValue * 100);
+            this.progressBar.Value = (int)(this.seriesValue * 100);
         }
 
         private void cancelButton_Click(object sender, EventArgs e)

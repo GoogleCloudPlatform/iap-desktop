@@ -40,8 +40,8 @@ namespace Google.Solutions.IapDesktop.Windows
             e = e.Unwrap();
 
             var details = new StringBuilder();
-            for (var innerException = e.InnerException; 
-                 innerException != null; innerException = 
+            for (var innerException = e.InnerException;
+                 innerException != null; innerException =
                  innerException.InnerException)
             {
                 details.Append(e.InnerException.GetType().Name);

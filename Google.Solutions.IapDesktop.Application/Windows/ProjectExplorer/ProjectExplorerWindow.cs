@@ -1,23 +1,20 @@
 ﻿using Google.Apis.Compute.v1.Data;
-using Google.Solutions.IapDesktop.Application.Settings;
-using Google.Solutions.IapDesktop.Windows;
-using Google.Solutions.Compute.Auth;
 using Google.Solutions.IapDesktop.Application.Adapters;
 using Google.Solutions.IapDesktop.Application.ObjectModel;
 using Google.Solutions.IapDesktop.Application.Services;
+using Google.Solutions.IapDesktop.Application.Settings;
+using Google.Solutions.IapDesktop.Application.SettingsEditor;
+using Google.Solutions.IapDesktop.Application.Windows;
+using Google.Solutions.IapDesktop.Windows;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Diagnostics;
-using System.Drawing;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using WeifenLuo.WinFormsUI.Docking;
-using Google.Solutions.IapDesktop.Application.Windows;
-using Google.Solutions.IapDesktop.Application.SettingsEditor;
 
 namespace Google.Solutions.IapDesktop.Application.ProjectExplorer
 {
@@ -110,7 +107,7 @@ namespace Google.Solutions.IapDesktop.Application.ProjectExplorer
             }
 
             await this.projectInventoryService.AddProjectAsync(projectId);
-            
+
         }
 
         //---------------------------------------------------------------------
@@ -128,8 +125,8 @@ namespace Google.Solutions.IapDesktop.Application.ProjectExplorer
         private void contextMenu_Opening(object sender, CancelEventArgs e)
         {
             var selectedNode = this.treeView.SelectedNode;
-            
-            this.refreshToolStripMenuItem.Visible = 
+
+            this.refreshToolStripMenuItem.Visible =
                 this.unloadProjectToolStripMenuItem.Visible = (selectedNode is ProjectNode);
             this.refreshAllProjectsToolStripMenuItem.Visible = (selectedNode is CloudNode);
             this.propertiesToolStripMenuItem.Visible = (selectedNode is InventoryNode);
@@ -146,7 +143,7 @@ namespace Google.Solutions.IapDesktop.Application.ProjectExplorer
         private async void refreshAllProjectsToolStripMenuItem_Click(object sender, EventArgs _)
         {
             try
-            { 
+            {
                 await RefreshAllProjects();
             }
             catch (TaskCanceledException)
@@ -162,7 +159,7 @@ namespace Google.Solutions.IapDesktop.Application.ProjectExplorer
         private async void refreshToolStripMenuItem_Click(object sender, EventArgs _)
         {
             try
-            { 
+            {
                 if (this.treeView.SelectedNode is ProjectNode projectNode)
                 {
                     await RefreshProject(projectNode.ProjectId);
@@ -240,7 +237,7 @@ namespace Google.Solutions.IapDesktop.Application.ProjectExplorer
         private async void addButton_Click(object sender, EventArgs args)
         {
             try
-            { 
+            {
                 await AddProjectAsync();
             }
             catch (TaskCanceledException)
@@ -280,7 +277,7 @@ namespace Google.Solutions.IapDesktop.Application.ProjectExplorer
             catch (Exception e)
             {
                 ExceptionDialog.Show(this, "Loading projects failed", e);
-                
+
                 // Do not close the application, otherwise the user has no 
                 // chance to remediate the situation by unloading the offending
                 // project.
@@ -361,7 +358,8 @@ namespace Google.Solutions.IapDesktop.Application.ProjectExplorer
 
             var projectsAndInstances = await this.jobService.RunInBackground(
                 new JobDescription("Loading projects..."),
-                async token => {
+                async token =>
+                {
                     var accumulator = new Dictionary<string, IEnumerable<Instance>>();
 
                     foreach (var project in await this.projectInventoryService.ListProjectsAsync())
@@ -395,7 +393,7 @@ namespace Google.Solutions.IapDesktop.Application.ProjectExplorer
                 }
 
                 throw new AggregateException(
-                    $"The following projects failed to refresh: {string.Join(", ", failedProjects.Keys)}", 
+                    $"The following projects failed to refresh: {string.Join(", ", failedProjects.Keys)}",
                     failedProjects.Values.Cast<Exception>());
             }
         }

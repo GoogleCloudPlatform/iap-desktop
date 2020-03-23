@@ -1,9 +1,8 @@
 ﻿using Google.Solutions.IapDesktop.Application.Registry;
-using Google.Solutions.Compute;
 using Microsoft.Win32;
 using System;
-using System.Linq;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Google.Solutions.IapDesktop.Application.Settings
 {

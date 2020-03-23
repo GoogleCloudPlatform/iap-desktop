@@ -1,16 +1,14 @@
 ﻿using Google.Apis.Compute.v1.Data;
-using Google.Solutions.IapDesktop.Application.Registry;
-using Google.Solutions.IapDesktop.Application.Settings;
 using Google.Solutions.Compute;
 using Google.Solutions.IapDesktop.Application.Adapters;
+using Google.Solutions.IapDesktop.Application.Registry;
+using Google.Solutions.IapDesktop.Application.Settings;
+using Google.Solutions.IapDesktop.Application.SettingsEditor;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
-using Google.Solutions.IapDesktop.Application.SettingsEditor;
 
 namespace Google.Solutions.IapDesktop.Application.ProjectExplorer
 {
@@ -31,9 +29,9 @@ namespace Google.Solutions.IapDesktop.Application.ProjectExplorer
         private readonly Action<InventorySettingsBase> saveSettings;
 
         public InventoryNode(
-            string name, 
-            int iconIndex, 
-            InventorySettingsBase settings, 
+            string name,
+            int iconIndex,
+            InventorySettingsBase settings,
             Action<InventorySettingsBase> saveSettings,
             InventoryNode parent)
             : base(name, iconIndex, iconIndex)
@@ -214,7 +212,7 @@ namespace Google.Solutions.IapDesktop.Application.ProjectExplorer
                   projectId,
                   IconIndex,
                   settingsRepository.GetProjectSettings(projectId),
-                  settings => settingsRepository.SetProjectSettings((ProjectSettings) settings),
+                  settings => settingsRepository.SetProjectSettings((ProjectSettings)settings),
                   null)
         {
             this.settingsRepository = settingsRepository;
@@ -235,7 +233,7 @@ namespace Google.Solutions.IapDesktop.Application.ProjectExplorer
                     this.ProjectId,
                     zoneId);
                 var zoneNode = new ZoneNode(
-                    zoneSettings, 
+                    zoneSettings,
                     changedSettings => this.settingsRepository.SetZoneSettings(this.ProjectId, changedSettings),
                     this);
 
@@ -273,7 +271,7 @@ namespace Google.Solutions.IapDesktop.Application.ProjectExplorer
         public string ZoneId => this.Text;
 
         public ZoneNode(
-            ZoneSettings settings, 
+            ZoneSettings settings,
             Action<ZoneSettings> saveSettings,
             ProjectNode parent)
             : base(
@@ -291,7 +289,7 @@ namespace Google.Solutions.IapDesktop.Application.ProjectExplorer
         private const int IconIndex = 4;
         private const int ActiveIconIndex = 4;
 
-        public VmInstanceReference Reference 
+        public VmInstanceReference Reference
             => new VmInstanceReference(this.ProjectId, this.ZoneId, this.InstanceName);
 
         public string ProjectId => ((ZoneNode)this.Parent).ProjectId;
@@ -329,9 +327,9 @@ namespace Google.Solutions.IapDesktop.Application.ProjectExplorer
         }
 
         public VmInstanceNode(
-            Instance instance, 
+            Instance instance,
             VmInstanceSettings settings,
-            Action<VmInstanceSettings> saveSettings, 
+            Action<VmInstanceSettings> saveSettings,
             ZoneNode parent)
             : base(
                   settings.InstanceName,

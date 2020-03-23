@@ -19,14 +19,10 @@
 // under the License.
 //
 
-using Google.Apis.Auth.OAuth2;
-using Google.Apis.CloudResourceManager.v1.Data;
 using Google.Apis.Compute.v1;
 using Google.Apis.Compute.v1.Data;
-using Google.Apis.Requests;
 using Google.Apis.Services;
 using Google.Solutions.Compute;
-using Google.Solutions.Compute.Auth;
 using Google.Solutions.Compute.Extensions;
 using Google.Solutions.IapDesktop.Application.ObjectModel;
 using Google.Solutions.IapDesktop.Application.Services;
@@ -130,7 +126,7 @@ namespace Google.Solutions.IapDesktop.Application.Adapters
         }
 
         public Task<NetworkCredential> ResetWindowsUserAsync(
-            VmInstanceReference instanceRef, 
+            VmInstanceReference instanceRef,
             string username,
             CancellationToken token)
         {

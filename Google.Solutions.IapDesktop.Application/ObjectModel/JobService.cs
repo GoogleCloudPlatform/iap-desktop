@@ -1,5 +1,4 @@
 ﻿using Google.Apis.Auth.OAuth2.Responses;
-using Google.Solutions.Compute.Auth;
 using Google.Solutions.IapDesktop.Application.Services;
 using System;
 using System.ComponentModel;
@@ -30,7 +29,7 @@ namespace Google.Solutions.IapDesktop.Application.ObjectModel
         }
 
         public Task<T> RunInBackgroundWithoutReauth<T>(
-            JobDescription jobDescription, 
+            JobDescription jobDescription,
             Func<CancellationToken, Task<T>> jobFunc)
         {
             Debug.Assert(!this.host.Invoker.InvokeRequired, "RunInBackground must be called on UI thread");
@@ -99,7 +98,7 @@ namespace Google.Solutions.IapDesktop.Application.ObjectModel
                     }
                 }
             });
-            
+
 
             this.host.ShowWaitDialog(jobDescription, cts);
 
@@ -130,7 +129,7 @@ namespace Google.Solutions.IapDesktop.Application.ObjectModel
                         // Retrying a second time is pointless.
                         throw;
                     }
-                    else if(this.host.ConfirmReauthorization())
+                    else if (this.host.ConfirmReauthorization())
                     {
                         // Reauthorize. This might take a while since the user has to use 
                         // a browser - show the WaitDialog in the meantime.

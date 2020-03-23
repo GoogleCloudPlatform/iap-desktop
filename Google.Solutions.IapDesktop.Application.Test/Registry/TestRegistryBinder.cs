@@ -2,13 +2,9 @@
 using Microsoft.Win32;
 using NUnit.Framework;
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Net;
 using System.Security;
 using System.Security.Cryptography;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Google.Solutions.IapDesktop.Application.Test.Registry
 {
@@ -249,7 +245,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Registry
                 new KeyWithSecureString()
                 {
                     Secure = SecureStringExtensions.FromClearText("secure!!!")
-                }, 
+                },
                 registryKey);
             new RegistryBinder<KeyWithSecureString>().Store(
                 new KeyWithSecureString()

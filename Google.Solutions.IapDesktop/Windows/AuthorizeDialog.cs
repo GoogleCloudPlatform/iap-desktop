@@ -22,10 +22,10 @@
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Auth.OAuth2.Flows;
 using Google.Apis.Util.Store;
+using Google.Solutions.Compute.Auth;
 using System;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using Google.Solutions.Compute.Auth;
 
 namespace Google.Solutions.IapDesktop.Windows
 {
@@ -46,10 +46,10 @@ namespace Google.Solutions.IapDesktop.Windows
 
             this.signInButton.Focus();
         }
-        
+
         public static IAuthorization Authorize(
-            Control parent, 
-            ClientSecrets clientSecrets, 
+            Control parent,
+            ClientSecrets clientSecrets,
             string[] scopes,
             IDataStore dataStore)
         {

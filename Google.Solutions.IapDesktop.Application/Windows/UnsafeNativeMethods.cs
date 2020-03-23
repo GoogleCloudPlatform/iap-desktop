@@ -176,7 +176,7 @@ namespace Google.Solutions.IapDesktop.Application.Windows
                     cbSize = (uint)Marshal.SizeOf(typeof(TASKDIALOGCONFIG)),
                     hwndParent = parent.Handle,
                     dwFlags = TASKDIALOG_FLAGS.TDF_USE_COMMAND_LINKS,
-                    dwCommonButtons = TASKDIALOG_COMMON_BUTTON_FLAGS.TDCBF_OK_BUTTON | 
+                    dwCommonButtons = TASKDIALOG_COMMON_BUTTON_FLAGS.TDCBF_OK_BUTTON |
                                       TASKDIALOG_COMMON_BUTTON_FLAGS.TDCBF_CANCEL_BUTTON,
                     pszWindowTitle = windowTitle,
                     MainIcon = TD_SHIELD_ICON_INFO_BACKGROUND,

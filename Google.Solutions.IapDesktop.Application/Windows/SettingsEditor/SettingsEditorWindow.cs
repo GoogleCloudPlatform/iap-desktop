@@ -1,17 +1,13 @@
-﻿using Google.Solutions.IapDesktop.Application.Settings;
+﻿using Google.Solutions.IapDesktop.Application.ObjectModel;
 using Google.Solutions.IapDesktop.Application.ProjectExplorer;
-using Google.Solutions.IapDesktop.Application.ObjectModel;
+using Google.Solutions.IapDesktop.Application.Settings;
+using Google.Solutions.IapDesktop.Application.Windows;
 using System;
-using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
-using System.Drawing;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 using WeifenLuo.WinFormsUI.Docking;
-using Google.Solutions.IapDesktop.Application.Windows;
 
 namespace Google.Solutions.IapDesktop.Application.SettingsEditor
 {
@@ -113,7 +109,7 @@ namespace Google.Solutions.IapDesktop.Application.SettingsEditor
         // Custom type descriptor.
         //---------------------------------------------------------------------
 
-        private class FilteringTypeDescriptor<T, TAttribute> : CustomTypeDescriptor 
+        private class FilteringTypeDescriptor<T, TAttribute> : CustomTypeDescriptor
             where TAttribute : Attribute, new()
         {
             public T Target { get; }
@@ -126,7 +122,7 @@ namespace Google.Solutions.IapDesktop.Application.SettingsEditor
             }
 
             public FilteringTypeDescriptor(T target)
-                :base(GetTypeDescriptor(target))
+                : base(GetTypeDescriptor(target))
             {
                 this.Target = target;
             }

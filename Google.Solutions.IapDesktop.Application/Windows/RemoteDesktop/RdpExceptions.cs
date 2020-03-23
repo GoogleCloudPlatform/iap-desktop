@@ -1,11 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Google.Solutions.IapDesktop.Application.Windows.RemoteDesktop
-{ 
+{
     internal class RdpException : ApplicationException
     {
         public override string ToString()
@@ -44,7 +41,7 @@ namespace Google.Solutions.IapDesktop.Application.Windows.RemoteDesktop
         {
             get
             {
-                
+
                 if (knownErrors.TryGetValue(this.ErrorCode, out string message))
                 {
                     return message;

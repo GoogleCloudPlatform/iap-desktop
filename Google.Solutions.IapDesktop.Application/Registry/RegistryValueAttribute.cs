@@ -2,7 +2,6 @@
 using Microsoft.Win32;
 using System;
 using System.Diagnostics;
-using System.Net;
 using System.Reflection;
 using System.Security;
 using System.Security.Cryptography;
@@ -275,8 +274,8 @@ namespace Google.Solutions.IapDesktop.Application.Registry
                         this.scope));
 
                 base.SetValue<SecureString>(
-                    obj, 
-                    property, 
+                    obj,
+                    property,
                     SecureStringExtensions.FromClearText(plaintextString));
             }
             catch (CryptographicException)

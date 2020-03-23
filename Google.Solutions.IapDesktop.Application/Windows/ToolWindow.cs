@@ -39,5 +39,5 @@ namespace Google.Solutions.IapDesktop.Application.Windows
                 Close();
             }
         }
-    }    
+    }
 }

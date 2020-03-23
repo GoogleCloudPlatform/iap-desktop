@@ -1,21 +1,17 @@
 ﻿using Google.Solutions.IapDesktop.Application.ObjectModel;
 using NUnit.Framework;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Google.Solutions.IapDesktop.Application.Test
 {
     [TestFixture]
     public class TestServiceRegistry
     {
-        public class ServiceWithDefaultConstructor 
+        public class ServiceWithDefaultConstructor
         {
         }
 
-        public class ServiceWithServiceProviderConstructor 
+        public class ServiceWithServiceProviderConstructor
         {
             public IServiceProvider provider;
 

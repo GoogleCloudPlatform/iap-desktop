@@ -20,7 +20,6 @@
 //
 
 using System.Reflection;
-using System.Runtime.CompilerServices;
 
 [assembly: AssemblyTitle("IAP Desktop")]
 [assembly: AssemblyDescription("IAP Desktop")]

@@ -1,31 +1,23 @@
-﻿using Google.Solutions.IapDesktop.Application.Settings;
-using Google.Solutions.IapDesktop.Application.ProjectExplorer;
-using Google.Solutions.IapDesktop.Application.Windows.RemoteDesktop;
+﻿using Google.Solutions.CloudIap;
 using Google.Solutions.Compute.Auth;
 using Google.Solutions.Compute.Iap;
-using Google.Solutions.IapDesktop.Application.Adapters;
 using Google.Solutions.IapDesktop.Application.ObjectModel;
+using Google.Solutions.IapDesktop.Application.ProjectExplorer;
 using Google.Solutions.IapDesktop.Application.Services;
+using Google.Solutions.IapDesktop.Application.Settings;
+using Google.Solutions.IapDesktop.Application.Windows;
 using System;
-using System.Collections.Generic;
 using System.ComponentModel;
-using System.Data;
 using System.Diagnostics;
 using System.Drawing;
-using System.Linq;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using WeifenLuo.WinFormsUI.Docking;
-using Google.Solutions.CloudIap;
-using Google.Solutions.IapDesktop.Application.Windows;
-using Google.Solutions.IapDesktop.Application.SettingsEditor;
-using Google.Solutions.IapDesktop.Application;
 
 namespace Google.Solutions.IapDesktop.Windows
 {
-    
+
     public partial class MainForm : Form, IJobHost, IMainForm, IAuthorizationService
     {
         private readonly WindowSettingsRepository windowSettings;
@@ -41,7 +33,7 @@ namespace Google.Solutions.IapDesktop.Windows
             this.windowSettings = serviceProvider.GetService<WindowSettingsRepository>();
             this.authSettings = serviceProvider.GetService<AuthSettingsRepository>();
             this.inventorySettings = serviceProvider.GetService<InventorySettingsRepository>();
-            
+
             // 
             // Restore window settings.
             //
@@ -154,7 +146,7 @@ namespace Google.Solutions.IapDesktop.Windows
                 await this.Authorization.RevokeAsync();
                 MessageBox.Show(
                     this,
-                    "The authorization for this application has been revoked.\n\n"+
+                    "The authorization for this application has been revoked.\n\n" +
                     "You will be prompted to sign in again the next time you start the application.",
                     "Signed out",
                     MessageBoxButtons.OK,

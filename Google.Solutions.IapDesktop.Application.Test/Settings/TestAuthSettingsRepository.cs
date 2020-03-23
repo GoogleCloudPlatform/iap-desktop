@@ -2,10 +2,7 @@
 using Google.Solutions.IapDesktop.Application.Settings;
 using Microsoft.Win32;
 using NUnit.Framework;
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace Google.Solutions.IapDesktop.Application.Test.Settings
@@ -51,7 +48,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Settings
             var settings = repository.GetSettings();
 
             Assert.AreEqual(
-                "secure", 
+                "secure",
                 settings.Credentials.AsClearText());
         }
 

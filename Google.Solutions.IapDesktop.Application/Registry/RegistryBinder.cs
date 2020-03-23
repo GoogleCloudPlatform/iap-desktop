@@ -82,7 +82,7 @@ namespace Google.Solutions.IapDesktop.Application.Registry
         public TDataClass Load(RegistryKey source)
         {
             Utilities.ThrowIfNull(source, nameof(source));
-            
+
             var target = new TDataClass();
 
             foreach (var valueName in this.ValueNames)

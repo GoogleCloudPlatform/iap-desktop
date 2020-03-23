@@ -1,12 +1,12 @@
 ﻿using Google.Apis.Auth.OAuth2.Responses;
+using Google.Solutions.IapDesktop.Application.ObjectModel;
 using Google.Solutions.IapDesktop.Application.Settings;
 using Google.Solutions.IapDesktop.Application.Windows.RemoteDesktop;
-using Google.Solutions.IapDesktop.Application.ObjectModel;
+using Google.Solutions.IapDesktop.Windows;
 using System;
 using System.Diagnostics;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using Google.Solutions.IapDesktop.Windows;
 using WeifenLuo.WinFormsUI.Docking;
 
 namespace Google.Solutions.IapDesktop.Application.Windows
@@ -42,7 +42,7 @@ namespace Google.Solutions.IapDesktop.Application.Windows
 
 
             this.dockPanel = serviceProvider.GetService<IMainForm>().MainPanel;
-            
+
         }
 
         public void ShowWindow()

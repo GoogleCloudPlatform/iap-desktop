@@ -1,12 +1,10 @@
-﻿using Google.Solutions.IapDesktop.Application.Settings;
-using Google.Solutions.IapDesktop.Application.Adapters;
+﻿using Google.Apis.Compute.v1.Data;
 using Google.Solutions.IapDesktop.Application.ObjectModel;
-using Google.Apis.Compute.v1.Data;
+using Google.Solutions.IapDesktop.Application.Settings;
 using System;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace Google.Solutions.IapDesktop.Application.Services
 {
@@ -30,7 +28,7 @@ namespace Google.Solutions.IapDesktop.Application.Services
             : this(
                 provider.GetService<InventorySettingsRepository>(),
                 provider.GetService<IEventService>())
-        {}
+        { }
 
         public async Task AddProjectAsync(string projectId)
         {
@@ -59,7 +57,7 @@ namespace Google.Solutions.IapDesktop.Application.Services
                 }));
         }
 
-        public class ProjectAddedEvent 
+        public class ProjectAddedEvent
         {
             public string ProjectId { get; }
 

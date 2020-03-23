@@ -3,12 +3,9 @@ using Google.Apis.Util;
 using Google.Apis.Util.Store;
 using Google.Solutions.IapDesktop.Application.Registry;
 using Microsoft.Win32;
-using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Security;
 using System.Security.Cryptography;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace Google.Solutions.IapDesktop.Application.Settings
@@ -19,7 +16,7 @@ namespace Google.Solutions.IapDesktop.Application.Settings
     public class AuthSettingsRepository : SettingsRepositoryBase<AuthSettings>, IDataStore
     {
         private static readonly Task CompletedTask = Task.FromResult(0);
-        
+
         public string CredentialStoreKey { get; }
 
         public AuthSettingsRepository(RegistryKey baseKey, string credentialStoreKey) : base(baseKey)

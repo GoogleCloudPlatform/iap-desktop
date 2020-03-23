@@ -1,14 +1,10 @@
 ﻿using Google.Apis.Util;
 using Google.Solutions.IapDesktop.Application.Registry;
 using Microsoft.Win32;
-using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Linq;
 using System.Security;
 using System.Security.Cryptography;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Google.Solutions.IapDesktop.Application.Settings
 {
@@ -78,7 +74,7 @@ namespace Google.Solutions.IapDesktop.Application.Settings
 
         public void SetZoneSettings(string projectId, ZoneSettings settings)
         {
-            Set<ZoneSettings>(new[] { projectId, ZonePrefix + settings.ZoneId}, settings);
+            Set<ZoneSettings>(new[] { projectId, ZonePrefix + settings.ZoneId }, settings);
         }
 
 
@@ -176,8 +172,8 @@ namespace Google.Solutions.IapDesktop.Application.Settings
         protected int? _ConnectionBar
         {
             get => (int)this.ConnectionBar;
-            set => this.ConnectionBar = value != null 
-                ? (RdpConnectionBarState)value 
+            set => this.ConnectionBar = value != null
+                ? (RdpConnectionBarState)value
                 : RdpConnectionBarState._Default;
         }
 
@@ -228,7 +224,7 @@ namespace Google.Solutions.IapDesktop.Application.Settings
                 ? (RdpAudioMode)value
                 : RdpAudioMode._Default;
         }
-         
+
         [BoolRegistryValue("RedirectClipboard")]
         public bool RedirectClipboard { get; set; } = true;
     }
