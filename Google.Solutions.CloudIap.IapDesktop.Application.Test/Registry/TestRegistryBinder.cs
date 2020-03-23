@@ -238,6 +238,30 @@ namespace Google.Solutions.CloudIap.IapDesktop.Application.Test.Registry
 
             Assert.IsNull(copy.Secure);
         }
+
+        [Test]
+        public void WhenSecureStringIsDeleted_RemainsNull()
+        {
+            this.hkcu.DeleteSubKeyTree(TestKeyPath, false);
+            var registryKey = hkcu.CreateSubKey(TestKeyPath);
+
+            new RegistryBinder<KeyWithSecureString>().Store(
+                new KeyWithSecureString()
+                {
+                    Secure = SecureStringExtensions.FromClearText("secure!!!")
+                }, 
+                registryKey);
+            new RegistryBinder<KeyWithSecureString>().Store(
+                new KeyWithSecureString()
+                {
+                    Secure = null
+                },
+                registryKey);
+
+            var copy = new RegistryBinder<KeyWithSecureString>().Load(registryKey);
+
+            Assert.IsNull(copy.Secure);
+        }
     }
 }
 
