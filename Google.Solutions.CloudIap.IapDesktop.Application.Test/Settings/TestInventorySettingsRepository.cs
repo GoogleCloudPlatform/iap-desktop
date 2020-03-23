@@ -280,10 +280,24 @@ namespace Google.Solutions.CloudIap.IapDesktop.Application.Test.Settings
             repository.SetVmInstanceSettings("pro-1", new VmInstanceSettings()
             {
                 InstanceName = "vm-1",
-                Username = "user-1"
+                Username = "user-1",
+                ConnectionBar = RdpConnectionBarState.Pinned,
+                DesktopSize = RdpDesktopSize.ScreenSize,
+                AuthenticationLevel = RdpAuthenticationLevel.RequireServerAuthentication,
+                ColorDepth = RdpColorDepth.DeepColor,
+                AudioMode = RdpAudioMode.DoNotPlay,
+                RedirectClipboard = true
             });
 
-            Assert.AreEqual("user-1", repository.GetVmInstanceSettings("pro-1", "vm-1").Username);
+            var settings = repository.GetVmInstanceSettings("pro-1", "vm-1");
+
+            Assert.AreEqual("user-1", settings.Username);
+            Assert.AreEqual(RdpConnectionBarState.Pinned, settings.ConnectionBar);
+            Assert.AreEqual(RdpDesktopSize.ScreenSize, settings.DesktopSize);
+            Assert.AreEqual(RdpAuthenticationLevel.RequireServerAuthentication, settings.AuthenticationLevel);
+            Assert.AreEqual(RdpColorDepth.DeepColor, settings.ColorDepth);
+            Assert.AreEqual(RdpAudioMode.DoNotPlay, settings.AudioMode);
+            Assert.IsTrue(settings.RedirectClipboard);
         }
 
         [Test]

@@ -15,7 +15,7 @@ namespace Google.Solutions.CloudIap.IapDesktop.Application.Registry
     public class RegistryBinder<TDataClass> where TDataClass : new()
     {
         public IEnumerable<string> ValueNames =>
-            typeof(TDataClass).GetProperties(BindingFlags.Public | BindingFlags.Instance)
+            typeof(TDataClass).GetProperties(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance)
                 .SelectMany(property => property.GetCustomAttributes(true))
                 .OfType<RegistryValueAttribute>()
                 .Where(attribute => attribute.Name != null)
@@ -23,7 +23,7 @@ namespace Google.Solutions.CloudIap.IapDesktop.Application.Registry
 
         private PropertyInfo GetPropertyByValueName(string valueName)
         {
-            return typeof(TDataClass).GetProperties(BindingFlags.Public | BindingFlags.Instance)
+            return typeof(TDataClass).GetProperties(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance)
                 .FirstOrDefault(property => property
                     .GetCustomAttributes()
                     .OfType<RegistryValueAttribute>()

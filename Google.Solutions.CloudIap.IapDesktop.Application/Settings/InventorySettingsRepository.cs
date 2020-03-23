@@ -100,7 +100,10 @@ namespace Google.Solutions.CloudIap.IapDesktop.Application.Settings
     }
 
 
-    // NB. The values do not map to RDP interface values.
+    //
+    // NB. The values do not map to RDP interface values. But the numeric values
+    // must be kept unchanged as they are persisted in the registry.
+    //
 
     public enum RdpConnectionBarState
     {
@@ -169,18 +172,64 @@ namespace Google.Solutions.CloudIap.IapDesktop.Application.Settings
         public RdpConnectionBarState ConnectionBar { get; set; }
             = RdpConnectionBarState.AutoHide;
 
+        [DwordRegistryValueAttribute("ConnectionBar")]
+        protected int? _ConnectionBar
+        {
+            get => (int)this.ConnectionBar;
+            set => this.ConnectionBar = value != null 
+                ? (RdpConnectionBarState)value 
+                : RdpConnectionBarState._Default;
+        }
+
         public RdpDesktopSize DesktopSize { get; set; }
             = RdpDesktopSize.ClientSize;
+
+        [DwordRegistryValueAttribute("DesktopSize")]
+        protected int? _DesktopSize
+        {
+            get => (int)this.DesktopSize;
+            set => this.DesktopSize = value != null
+                ? (RdpDesktopSize)value
+                : RdpDesktopSize._Default;
+        }
 
         public RdpAuthenticationLevel AuthenticationLevel { get; set; }
             = RdpAuthenticationLevel.AttemptServerAuthentication;
 
+        [DwordRegistryValueAttribute("AuthenticationLevel")]
+        protected int? _AuthenticationLevel
+        {
+            get => (int)this.AuthenticationLevel;
+            set => this.AuthenticationLevel = value != null
+                ? (RdpAuthenticationLevel)value
+                : RdpAuthenticationLevel._Default;
+        }
+
         public RdpColorDepth ColorDepth { get; set; }
             = RdpColorDepth.TrueColor;
+
+        [DwordRegistryValueAttribute("ColorDepth")]
+        protected int? _ColorDepth
+        {
+            get => (int)this.ColorDepth;
+            set => this.ColorDepth = value != null
+                ? (RdpColorDepth)value
+                : RdpColorDepth._Default;
+        }
 
         public RdpAudioMode AudioMode { get; set; }
             = RdpAudioMode.PlayLocally;
 
+        [DwordRegistryValueAttribute("AudioMode")]
+        protected int? _AudioMode
+        {
+            get => (int)this.AudioMode;
+            set => this.AudioMode = value != null
+                ? (RdpAudioMode)value
+                : RdpAudioMode._Default;
+        }
+         
+        [BoolRegistryValue("RedirectClipboard")]
         public bool RedirectClipboard { get; set; } = true;
     }
 

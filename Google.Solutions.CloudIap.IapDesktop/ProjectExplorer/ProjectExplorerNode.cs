@@ -29,20 +29,24 @@ namespace Google.Solutions.CloudIap.IapDesktop.ProjectExplorer
     {
         private readonly InventoryNode parent;
         private readonly InventorySettingsBase settings;
+        private readonly Action<InventorySettingsBase> saveSettings;
 
         public InventoryNode(
             string name, 
             int iconIndex, 
             InventorySettingsBase settings, 
+            Action<InventorySettingsBase> saveSettings,
             InventoryNode parent)
             : base(name, iconIndex, iconIndex)
         {
             this.settings = settings;
+            this.saveSettings = saveSettings;
             this.parent = parent;
         }
 
         public void SaveChanges()
         {
+            this.saveSettings(this.settings);
         }
 
         internal static string ShortIdFromUrl(string url) => url.Substring(url.LastIndexOf("/") + 1);
@@ -211,6 +215,7 @@ namespace Google.Solutions.CloudIap.IapDesktop.ProjectExplorer
                   projectId,
                   IconIndex,
                   settingsRepository.GetProjectSettings(projectId),
+                  settings => settingsRepository.SetProjectSettings((ProjectSettings) settings),
                   null)
         {
             this.settingsRepository = settingsRepository;
@@ -230,7 +235,10 @@ namespace Google.Solutions.CloudIap.IapDesktop.ProjectExplorer
                 var zoneSettings = this.settingsRepository.GetZoneSettings(
                     this.ProjectId,
                     zoneId);
-                var zoneNode = new ZoneNode(zoneSettings, this);
+                var zoneNode = new ZoneNode(
+                    zoneSettings, 
+                    changedSettings => this.settingsRepository.SetZoneSettings(this.ProjectId, changedSettings),
+                    this);
 
                 var instancesInZone = instances
                     .Where(i => InventoryNode.ShortIdFromUrl(i.Zone) == zoneId)
@@ -244,6 +252,7 @@ namespace Google.Solutions.CloudIap.IapDesktop.ProjectExplorer
                     var instanceNode = new VmInstanceNode(
                         instance,
                         instanceSettings,
+                        changedSettings => this.settingsRepository.SetVmInstanceSettings(this.ProjectId, changedSettings),
                         zoneNode);
 
                     zoneNode.Nodes.Add(instanceNode);
@@ -264,11 +273,15 @@ namespace Google.Solutions.CloudIap.IapDesktop.ProjectExplorer
         public string ProjectId => ((ProjectNode)this.Parent).ProjectId;
         public string ZoneId => this.Text;
 
-        public ZoneNode(ZoneSettings settings, ProjectNode parent)
+        public ZoneNode(
+            ZoneSettings settings, 
+            Action<ZoneSettings> saveSettings,
+            ProjectNode parent)
             : base(
                   settings.ZoneId,
                   IconIndex,
                   settings,
+                  changedSettings => saveSettings((ZoneSettings)changedSettings),
                   parent)
         {
         }
@@ -316,11 +329,16 @@ namespace Google.Solutions.CloudIap.IapDesktop.ProjectExplorer
                 .FirstOrDefault();
         }
 
-        public VmInstanceNode(Instance instance, VmInstanceSettings settings, ZoneNode parent)
+        public VmInstanceNode(
+            Instance instance, 
+            VmInstanceSettings settings,
+            Action<VmInstanceSettings> saveSettings, 
+            ZoneNode parent)
             : base(
                   settings.InstanceName,
                   IconIndex,
                   settings,
+                  changedSettings => saveSettings((VmInstanceSettings)changedSettings),
                   parent)
         {
             this.InstanceId = instance.Id.Value;
