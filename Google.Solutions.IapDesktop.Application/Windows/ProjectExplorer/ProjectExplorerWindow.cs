@@ -36,9 +36,12 @@ namespace Google.Solutions.IapDesktop.Application.ProjectExplorer
 
         private readonly CloudNode rootNode = new CloudNode();
 
-        public ProjectExplorerWindow()
+
+        public ProjectExplorerWindow(IServiceProvider serviceProvider)
         {
             InitializeComponent();
+
+            this.dockPanel = serviceProvider.GetService<IMainForm>().MainPanel;
 
             this.TabText = this.Text;
 
@@ -55,23 +58,19 @@ namespace Google.Solutions.IapDesktop.Application.ProjectExplorer
 
             this.treeView.Nodes.Add(this.rootNode);
 
-            this.mainForm = TempProgram.Services.GetService<IMainForm>();
-            this.eventService = TempProgram.Services.GetService<IEventService>();
-            this.jobService = TempProgram.Services.GetService<JobService>();
-            this.projectInventoryService = TempProgram.Services.GetService<ProjectInventoryService>();
-            this.computeEngineAdapter = TempProgram.Services.GetService<ComputeEngineAdapter>();
-            this.settingsRepository = TempProgram.Services.GetService<InventorySettingsRepository>();
-            this.settingsEditor = TempProgram.Services.GetService<ISettingsEditor>();
-            this.authService = TempProgram.Services.GetService<IAuthorizationService>();
-            this.cloudConsoleService = TempProgram.Services.GetService<CloudConsoleService>();
+            this.mainForm = serviceProvider.GetService<IMainForm>();
+            this.eventService = serviceProvider.GetService<IEventService>();
+            this.jobService = serviceProvider.GetService<JobService>();
+            this.projectInventoryService = serviceProvider.GetService<ProjectInventoryService>();
+            this.computeEngineAdapter = serviceProvider.GetService<ComputeEngineAdapter>();
+            this.settingsRepository = serviceProvider.GetService<InventorySettingsRepository>();
+            this.settingsEditor = serviceProvider.GetService<ISettingsEditor>();
+            this.authService = serviceProvider.GetService<IAuthorizationService>();
+            this.cloudConsoleService = serviceProvider.GetService<CloudConsoleService>();
 
             this.eventService.BindAsyncHandler<ProjectInventoryService.ProjectAddedEvent>(OnProjectAdded);
             this.eventService.BindHandler<ProjectInventoryService.ProjectDeletedEvent>(OnProjectDeleted);
-        }
 
-        public ProjectExplorerWindow(DockPanel dockPanel) : this()
-        {
-            this.dockPanel = dockPanel;
             ShowWindow();
         }
 
