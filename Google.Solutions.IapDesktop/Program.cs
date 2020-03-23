@@ -12,6 +12,9 @@ using Google.Solutions.IapDesktop.Application;
 using Google.Solutions.IapDesktop.Application.Windows;
 using Google.Solutions.IapDesktop.Application.Services;
 using Google.Solutions.IapDesktop.Application.Adapters;
+using Google.Solutions.IapDesktop.Application.Windows.RemoteDesktop;
+using Google.Solutions.IapDesktop.Application.SettingsEditor;
+using Google.Solutions.IapDesktop.Application.ProjectExplorer;
 
 namespace Google.Solutions.IapDesktop
 {
@@ -28,28 +31,37 @@ namespace Google.Solutions.IapDesktop
         {
             var hkcu = RegistryKey.OpenBaseKey(RegistryHive.CurrentUser, RegistryView.Default);
 
-            TempProgram.Services.AddSingleton(new WindowSettingsRepository(
+            var serviceRegistry = new ServiceRegistry();
+
+            serviceRegistry.AddSingleton(new WindowSettingsRepository(
                 hkcu.CreateSubKey($@"{BaseRegistryKeyPath}\Window")));
-            TempProgram.Services.AddSingleton(new AuthSettingsRepository(
+            serviceRegistry.AddSingleton(new AuthSettingsRepository(
                 hkcu.CreateSubKey($@"{BaseRegistryKeyPath}\Auth"),
                 OAuthAuthorization.StoreUserId));
-            TempProgram.Services.AddSingleton(new InventorySettingsRepository(
+            serviceRegistry.AddSingleton(new InventorySettingsRepository(
                 hkcu.CreateSubKey($@"{BaseRegistryKeyPath}\Inventory")));
 
 
             System.Windows.Forms.Application.EnableVisualStyles();
             System.Windows.Forms.Application.SetCompatibleTextRenderingDefault(false);
 
-            var mainForm = new MainForm(TempProgram.Services);
-            TempProgram.Services.AddSingleton<IMainForm>(mainForm);
-            TempProgram.Services.AddSingleton<IAuthorizationService>(mainForm);
-            TempProgram.Services.AddSingleton(new JobService(mainForm, TempProgram.Services));
-            TempProgram.Services.AddSingleton<IEventService>(new EventService(mainForm));
-            TempProgram.Services.AddTransient<ProjectInventoryService>();
-            TempProgram.Services.AddTransient<ResourceManagerAdapter>();
-            TempProgram.Services.AddTransient<ComputeEngineAdapter>();
-            TempProgram.Services.AddTransient<CloudConsoleService>();
+            var mainForm = new MainForm(serviceRegistry);
+            serviceRegistry.AddSingleton<IMainForm>(mainForm);
+            serviceRegistry.AddSingleton<IAuthorizationService>(mainForm);
+            serviceRegistry.AddSingleton(new JobService(mainForm, serviceRegistry));
+            serviceRegistry.AddSingleton<IEventService>(new EventService(mainForm));
+            serviceRegistry.AddTransient<ProjectInventoryService>();
+            serviceRegistry.AddTransient<ResourceManagerAdapter>();
+            serviceRegistry.AddTransient<ComputeEngineAdapter>();
+            serviceRegistry.AddTransient<CloudConsoleService>();
 
+            serviceRegistry.AddSingleton<RemoteDesktopService>();
+            serviceRegistry.AddSingleton<ISettingsEditor, SettingsEditorWindow>();
+            serviceRegistry.AddSingleton<IProjectExplorer, ProjectExplorerWindow>();
+
+#if DEBUG
+            serviceRegistry.AddSingleton<DebugWindow>();
+#endif
 
             System.Windows.Forms.Application.Run(mainForm);
         }

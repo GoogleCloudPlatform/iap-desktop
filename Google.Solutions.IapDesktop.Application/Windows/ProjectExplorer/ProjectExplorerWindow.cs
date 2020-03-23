@@ -28,11 +28,11 @@ namespace Google.Solutions.IapDesktop.Application.ProjectExplorer
         private readonly IEventService eventService;
         private readonly JobService jobService;
         private readonly ProjectInventoryService projectInventoryService;
-        private readonly ComputeEngineAdapter computeEngineAdapter;
         private readonly InventorySettingsRepository settingsRepository;
         private readonly ISettingsEditor settingsEditor;
         private readonly IAuthorizationService authService;
         private readonly CloudConsoleService cloudConsoleService;
+        private readonly IServiceProvider serviceProvider;
 
         private readonly CloudNode rootNode = new CloudNode();
 
@@ -42,6 +42,7 @@ namespace Google.Solutions.IapDesktop.Application.ProjectExplorer
             InitializeComponent();
 
             this.dockPanel = serviceProvider.GetService<IMainForm>().MainPanel;
+            this.serviceProvider = serviceProvider;
 
             this.TabText = this.Text;
 
@@ -62,7 +63,6 @@ namespace Google.Solutions.IapDesktop.Application.ProjectExplorer
             this.eventService = serviceProvider.GetService<IEventService>();
             this.jobService = serviceProvider.GetService<JobService>();
             this.projectInventoryService = serviceProvider.GetService<ProjectInventoryService>();
-            this.computeEngineAdapter = serviceProvider.GetService<ComputeEngineAdapter>();
             this.settingsRepository = serviceProvider.GetService<InventorySettingsRepository>();
             this.settingsEditor = serviceProvider.GetService<ISettingsEditor>();
             this.authService = serviceProvider.GetService<IAuthorizationService>();
@@ -70,8 +70,6 @@ namespace Google.Solutions.IapDesktop.Application.ProjectExplorer
 
             this.eventService.BindAsyncHandler<ProjectInventoryService.ProjectAddedEvent>(OnProjectAdded);
             this.eventService.BindHandler<ProjectInventoryService.ProjectDeletedEvent>(OnProjectDeleted);
-
-            ShowWindow();
         }
 
         private void PopulateProjectNode(string projectId, IEnumerable<Instance> instances)
@@ -102,7 +100,9 @@ namespace Google.Solutions.IapDesktop.Application.ProjectExplorer
                 _ => this.authService.Authorization.Credential.GetAccessTokenForRequestAsync());
 
             // Show project picker
-            string projectId = projectId = ProjectPickerDialog.SelectProjectId(this);
+            string projectId = projectId = ProjectPickerDialog.SelectProjectId(
+                this.serviceProvider.GetService<ResourceManagerAdapter>(),
+                this);
 
             if (projectId == null)
             {
@@ -356,6 +356,8 @@ namespace Google.Solutions.IapDesktop.Application.ProjectExplorer
             // Move selection to a "safe" spot.
             this.treeView.SelectedNode = this.rootNode;
 
+            var computeEngineAdapter = this.serviceProvider.GetService<ComputeEngineAdapter>();
+
             var failedProjects = new Dictionary<string, Exception>();
 
             var projectsAndInstances = await this.jobService.RunInBackground(
@@ -368,7 +370,7 @@ namespace Google.Solutions.IapDesktop.Application.ProjectExplorer
                         try
                         {
                             accumulator[project.Name] =
-                                await this.computeEngineAdapter.QueryInstancesAsync(project.Name);
+                                await computeEngineAdapter.QueryInstancesAsync(project.Name);
                         }
                         catch (Exception e)
                         {
@@ -403,9 +405,10 @@ namespace Google.Solutions.IapDesktop.Application.ProjectExplorer
         {
             Debug.Assert(!this.InvokeRequired);
 
+            var computeEngineAdapter = this.serviceProvider.GetService<ComputeEngineAdapter>();
             var instances = await this.jobService.RunInBackground(
                 new JobDescription("Loading project inventory..."),
-                token => this.computeEngineAdapter.QueryInstancesAsync(projectId));
+                token => computeEngineAdapter.QueryInstancesAsync(projectId));
 
             PopulateProjectNode(projectId, instances);
         }

@@ -7,6 +7,7 @@ using System.Diagnostics;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using Google.Solutions.IapDesktop.Windows;
+using WeifenLuo.WinFormsUI.Docking;
 
 namespace Google.Solutions.IapDesktop.Application.Windows
 {
@@ -15,6 +16,7 @@ namespace Google.Solutions.IapDesktop.Application.Windows
         private readonly JobService jobService;
         private readonly IEventService eventService;
         private readonly RemoteDesktopService rdpService;
+        private readonly DockPanel dockPanel;
 
         public DebugWindow(IServiceProvider serviceProvider)
         {
@@ -37,6 +39,15 @@ namespace Google.Solutions.IapDesktop.Application.Windows
                     await Task.Delay(10);
                     Debug.WriteLine("Delayed in event handler");
                 });
+
+
+            this.dockPanel = serviceProvider.GetService<IMainForm>().MainPanel;
+            
+        }
+
+        public void ShowWindow()
+        {
+            Show(this.dockPanel, DockState.DockRight);
         }
 
         public class StatusUpdatedEvent

@@ -31,15 +31,17 @@ namespace Google.Solutions.IapDesktop.Windows
         private readonly WindowSettingsRepository windowSettings;
         private readonly AuthSettingsRepository authSettings;
         private readonly InventorySettingsRepository inventorySettings;
+        private readonly IServiceProvider serviceProvider;
 
         private WaitDialog waitDialog = null;
 
         public MainForm(IServiceProvider serviceProvider)
         {
+            this.serviceProvider = serviceProvider;
             this.windowSettings = serviceProvider.GetService<WindowSettingsRepository>();
             this.authSettings = serviceProvider.GetService<AuthSettingsRepository>();
             this.inventorySettings = serviceProvider.GetService<InventorySettingsRepository>();
-
+            
             // 
             // Restore window settings.
             //
@@ -111,21 +113,17 @@ namespace Google.Solutions.IapDesktop.Windows
 
 
 
-            TempProgram.Services.AddSingleton<RemoteDesktopService>();
-            TempProgram.Services.AddSingleton<ISettingsEditor, SettingsEditorWindow>();
-            TempProgram.Services.AddSingleton<IProjectExplorer, ProjectExplorerWindow>();
 
             //settingsWindow.Show(projectExplorer.Pane, DockAlignment.Bottom, 0.3);
 
-#if DEBUG
-            TempProgram.Services.AddTransient<DebugWindow>();
-
-            TempProgram.Services.GetService<DebugWindow>().Show(dockPanel, DockState.DockRight);
-#endif
-
-
 
             ResumeLayout();
+
+            this.serviceProvider.GetService<IProjectExplorer>().ShowWindow();
+
+#if DEBUG
+            this.serviceProvider.GetService<DebugWindow>().ShowWindow();
+#endif
         }
 
         //---------------------------------------------------------------------
@@ -170,24 +168,24 @@ namespace Google.Solutions.IapDesktop.Windows
 
         private void projectExplorerToolStripMenuItem_Click(object sender, EventArgs _)
         {
-            TempProgram.Services.GetService<IProjectExplorer>().ShowWindow();
+            this.serviceProvider.GetService<IProjectExplorer>().ShowWindow();
         }
 
         private void openIapDocsToolStripMenuItem_Click(object sender, EventArgs _)
         {
-            TempProgram.Services.GetService<CloudConsoleService>().OpenIapOverviewDocs();
+            this.serviceProvider.GetService<CloudConsoleService>().OpenIapOverviewDocs();
         }
 
         private void openIapAccessDocsToolStripMenuItem_Click(object sender, EventArgs _)
         {
-            TempProgram.Services.GetService<CloudConsoleService>().OpenIapAccessDocs();
+            this.serviceProvider.GetService<CloudConsoleService>().OpenIapAccessDocs();
         }
 
         private async void addProjectToolStripMenuItem_Click(object sender, EventArgs _)
         {
             try
             {
-                await TempProgram.Services.GetService<IProjectExplorer>().ShowAddProjectDialogAsync();
+                await this.serviceProvider.GetService<IProjectExplorer>().ShowAddProjectDialogAsync();
             }
             catch (TaskCanceledException)
             {
