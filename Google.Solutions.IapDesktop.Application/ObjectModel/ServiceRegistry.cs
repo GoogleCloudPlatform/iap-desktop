@@ -13,7 +13,7 @@ namespace Google.Solutions.IapDesktop.Application.ObjectModel
         private readonly IDictionary<Type, object> singletons = new Dictionary<Type, object>();
         private readonly IDictionary<Type, Func<object>> transients = new Dictionary<Type, Func<object>>();
 
-        private TService CreateTransient<TService>()
+        private TService CreateInstance<TService>()
         {
             var constructorWithServiceProvider = typeof(TService).GetConstructor(
                 BindingFlags.Public | BindingFlags.Instance, 
@@ -44,9 +44,14 @@ namespace Google.Solutions.IapDesktop.Application.ObjectModel
             this.singletons[typeof(TService)] = singleton;
         }
 
+        public void AddSingleton<TService, TServiceClass>() 
+        {
+            this.singletons[typeof(TService)] = CreateInstance<TServiceClass>();
+        }
+
         public void AddTransient<TService>()
         {
-            this.transients[typeof(TService)] = () => CreateTransient<TService>();
+            this.transients[typeof(TService)] = () => CreateInstance<TService>();
         }
 
         public object GetService(Type serviceType)

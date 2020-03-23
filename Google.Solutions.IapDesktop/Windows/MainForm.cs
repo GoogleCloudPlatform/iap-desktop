@@ -121,11 +121,9 @@ namespace Google.Solutions.IapDesktop.Windows
 
 
             TempProgram.Services.AddSingleton<RemoteDesktopService>(new RemoteDesktopService(this.dockPanel));
-            TempProgram.Services.AddSingleton<ISettingsEditor>(new SettingsEditorWindow(this.dockPanel));
+            TempProgram.Services.AddSingleton<ISettingsEditor, SettingsEditorWindow>();
             TempProgram.Services.AddSingleton<IProjectExplorer>(new ProjectExplorerWindow(this.dockPanel));
 
-            var settingsWindow = new SettingsEditorWindow();
-            settingsWindow.Show(dockPanel, DockState.DockRight);
             //settingsWindow.Show(projectExplorer.Pane, DockAlignment.Bottom, 0.3);
 
 #if DEBUG
@@ -138,6 +136,12 @@ namespace Google.Solutions.IapDesktop.Windows
 
             ResumeLayout();
         }
+
+        //---------------------------------------------------------------------
+        // IMainForm.
+        //---------------------------------------------------------------------
+
+        public DockPanel MainPanel => this.dockPanel;
 
         //---------------------------------------------------------------------
         // Main menu events.

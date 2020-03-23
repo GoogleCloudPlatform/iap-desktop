@@ -23,7 +23,13 @@ namespace Google.Solutions.IapDesktop.Application.SettingsEditor
 
         public SettingsEditorWindow()
         {
+        }
+
+        public SettingsEditorWindow(IServiceProvider serviceProvider)
+        {
             InitializeComponent();
+
+            this.dockPanel = serviceProvider.GetService<IMainForm>().MainPanel;
 
             this.TabText = this.Text;
             //
@@ -32,15 +38,10 @@ namespace Google.Solutions.IapDesktop.Application.SettingsEditor
             //
             this.HideOnClose = true;
 
-            this.eventService = TempProgram.Services.GetService<IEventService>();
-            this.inventorySettingsRepository = TempProgram.Services.GetService<InventorySettingsRepository>();
+            this.eventService = serviceProvider.GetService<IEventService>();
+            this.inventorySettingsRepository = serviceProvider.GetService<InventorySettingsRepository>();
 
             this.eventService.BindHandler<ProjectExplorerNodeSelectedEvent>(OnProjectExplorerNodeSelected);
-        }
-
-        public SettingsEditorWindow(DockPanel dockPanel) : this()
-        {
-            this.dockPanel = dockPanel;
         }
 
         private ISettingsObject EditorObject
