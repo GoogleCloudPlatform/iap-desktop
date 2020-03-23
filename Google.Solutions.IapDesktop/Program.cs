@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using Google.Solutions.Compute.Auth;
 using Google.Solutions.IapDesktop.Application.ObjectModel;
+using Google.Solutions.IapDesktop.Application;
 
 namespace Google.Solutions.IapDesktop
 {
@@ -15,9 +16,6 @@ namespace Google.Solutions.IapDesktop
     {
         private const string BaseRegistryKeyPath = @"Software\Google\IapDesktop\1.0";
 
-        public static readonly ServiceRegistry Services = new ServiceRegistry();
-
-        public static Version ProgramVersion => typeof(Program).Assembly.GetName().Version;
 
         /// <summary>
         /// The main entry point for the application.
@@ -27,12 +25,12 @@ namespace Google.Solutions.IapDesktop
         {
             var hkcu = RegistryKey.OpenBaseKey(RegistryHive.CurrentUser, RegistryView.Default);
 
-            Services.AddSingleton(new WindowSettingsRepository(
+            TempProgram.Services.AddSingleton(new WindowSettingsRepository(
                 hkcu.CreateSubKey($@"{BaseRegistryKeyPath}\Window")));
-            Services.AddSingleton(new AuthSettingsRepository(
+            TempProgram.Services.AddSingleton(new AuthSettingsRepository(
                 hkcu.CreateSubKey($@"{BaseRegistryKeyPath}\Auth"),
                 OAuthAuthorization.StoreUserId));
-            Services.AddSingleton(new InventorySettingsRepository(
+            TempProgram.Services.AddSingleton(new InventorySettingsRepository(
                 hkcu.CreateSubKey($@"{BaseRegistryKeyPath}\Inventory")));
 
 

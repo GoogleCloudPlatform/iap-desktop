@@ -1,7 +1,6 @@
 ﻿using Google.Solutions.IapDesktop.Application.Settings;
-using Google.Solutions.IapDesktop.ProjectExplorer;
-using Google.Solutions.IapDesktop.RemoteDesktop;
-using Google.Solutions.IapDesktop.Settings;
+using Google.Solutions.IapDesktop.Application.ProjectExplorer;
+using Google.Solutions.IapDesktop.Application.Windows.RemoteDesktop;
 using Google.Solutions.Compute.Auth;
 using Google.Solutions.Compute.Iap;
 using Google.Solutions.IapDesktop.Application.Adapters;
@@ -19,14 +18,14 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using WeifenLuo.WinFormsUI.Docking;
+using Google.Solutions.CloudIap;
+using Google.Solutions.IapDesktop.Application.Windows;
+using Google.Solutions.IapDesktop.Application.SettingsEditor;
+using Google.Solutions.IapDesktop.Application;
 
 namespace Google.Solutions.IapDesktop.Windows
 {
-    public interface IMainForm
-    {
-        void Close();
-    }
-
+    
     public partial class MainForm : Form, IJobHost, IMainForm, IAuthorizationService
     {
         private readonly WindowSettingsRepository windowSettings;
@@ -37,18 +36,18 @@ namespace Google.Solutions.IapDesktop.Windows
 
         public MainForm()
         {
-            this.windowSettings = Program.Services.GetService<WindowSettingsRepository>();
-            this.authSettings = Program.Services.GetService<AuthSettingsRepository>();
-            this.inventorySettings = Program.Services.GetService<InventorySettingsRepository>();
+            this.windowSettings = TempProgram.Services.GetService<WindowSettingsRepository>();
+            this.authSettings = TempProgram.Services.GetService<AuthSettingsRepository>();
+            this.inventorySettings = TempProgram.Services.GetService<InventorySettingsRepository>();
 
-            Program.Services.AddSingleton<IMainForm>(this);
-            Program.Services.AddSingleton<IAuthorizationService>(this);
-            Program.Services.AddSingleton(new JobService(this, Program.Services));
-            Program.Services.AddSingleton<IEventService>(new EventService(this));
-            Program.Services.AddTransient<ProjectInventoryService>();
-            Program.Services.AddTransient<ResourceManagerAdapter>();
-            Program.Services.AddTransient<ComputeEngineAdapter>();
-            Program.Services.AddTransient<CloudConsoleService>();
+            TempProgram.Services.AddSingleton<IMainForm>(this);
+            TempProgram.Services.AddSingleton<IAuthorizationService>(this);
+            TempProgram.Services.AddSingleton(new JobService(this, TempProgram.Services));
+            TempProgram.Services.AddSingleton<IEventService>(new EventService(this));
+            TempProgram.Services.AddTransient<ProjectInventoryService>();
+            TempProgram.Services.AddTransient<ResourceManagerAdapter>();
+            TempProgram.Services.AddTransient<ComputeEngineAdapter>();
+            TempProgram.Services.AddTransient<CloudConsoleService>();
 
             // 
             // Restore window settings.
@@ -121,9 +120,9 @@ namespace Google.Solutions.IapDesktop.Windows
 
 
 
-            Program.Services.AddSingleton<RemoteDesktopService>(new RemoteDesktopService(this.dockPanel));
-            Program.Services.AddSingleton<ISettingsEditor>(new SettingsEditorWindow(this.dockPanel));
-            Program.Services.AddSingleton<IProjectExplorer>(new ProjectExplorerWindow(this.dockPanel));
+            TempProgram.Services.AddSingleton<RemoteDesktopService>(new RemoteDesktopService(this.dockPanel));
+            TempProgram.Services.AddSingleton<ISettingsEditor>(new SettingsEditorWindow(this.dockPanel));
+            TempProgram.Services.AddSingleton<IProjectExplorer>(new ProjectExplorerWindow(this.dockPanel));
 
             var settingsWindow = new SettingsEditorWindow();
             settingsWindow.Show(dockPanel, DockState.DockRight);
@@ -175,24 +174,24 @@ namespace Google.Solutions.IapDesktop.Windows
 
         private void projectExplorerToolStripMenuItem_Click(object sender, EventArgs _)
         {
-            Program.Services.GetService<IProjectExplorer>().ShowWindow();
+            TempProgram.Services.GetService<IProjectExplorer>().ShowWindow();
         }
 
         private void openIapDocsToolStripMenuItem_Click(object sender, EventArgs _)
         {
-            Program.Services.GetService<CloudConsoleService>().OpenIapOverviewDocs();
+            TempProgram.Services.GetService<CloudConsoleService>().OpenIapOverviewDocs();
         }
 
         private void openIapAccessDocsToolStripMenuItem_Click(object sender, EventArgs _)
         {
-            Program.Services.GetService<CloudConsoleService>().OpenIapAccessDocs();
+            TempProgram.Services.GetService<CloudConsoleService>().OpenIapAccessDocs();
         }
 
         private async void addProjectToolStripMenuItem_Click(object sender, EventArgs _)
         {
             try
             {
-                await Program.Services.GetService<IProjectExplorer>().ShowAddProjectDialogAsync();
+                await TempProgram.Services.GetService<IProjectExplorer>().ShowAddProjectDialogAsync();
             }
             catch (TaskCanceledException)
             {
