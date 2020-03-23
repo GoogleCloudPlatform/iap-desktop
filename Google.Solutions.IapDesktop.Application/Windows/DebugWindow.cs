@@ -6,20 +6,24 @@ using System;
 using System.Diagnostics;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using Google.Solutions.IapDesktop.Application.Windows;
 using Google.Solutions.IapDesktop.Windows;
 
 namespace Google.Solutions.IapDesktop.Application.Windows
 {
     public partial class DebugWindow : ToolWindow
     {
-        private readonly JobService jobService = TempProgram.Services.GetService<JobService>();
-        private readonly IEventService eventService = TempProgram.Services.GetService<IEventService>();
-        private readonly RemoteDesktopService rdpService = TempProgram.Services.GetService<RemoteDesktopService>();
+        private readonly JobService jobService;
+        private readonly IEventService eventService;
+        private readonly RemoteDesktopService rdpService;
 
-        public DebugWindow()
+        public DebugWindow(IServiceProvider serviceProvider)
         {
             InitializeComponent();
+
+            this.jobService = serviceProvider.GetService<JobService>();
+            this.eventService = serviceProvider.GetService<IEventService>();
+            this.rdpService = serviceProvider.GetService<RemoteDesktopService>();
+
             this.TabText = this.Text;
 
             this.eventService.BindHandler<StatusUpdatedEvent>(

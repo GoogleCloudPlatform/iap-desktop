@@ -129,8 +129,9 @@ namespace Google.Solutions.IapDesktop.Windows
             //settingsWindow.Show(projectExplorer.Pane, DockAlignment.Bottom, 0.3);
 
 #if DEBUG
-            var debugWindow = new DebugWindow();
-            debugWindow.Show(dockPanel, DockState.DockRight);
+            TempProgram.Services.AddTransient<DebugWindow>();
+
+            TempProgram.Services.GetService<DebugWindow>().Show(dockPanel, DockState.DockRight);
 #endif
 
 
