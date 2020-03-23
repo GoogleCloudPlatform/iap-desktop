@@ -128,6 +128,7 @@ namespace Google.Solutions.IapDesktop.Application.Windows
 
         internal delegate int TaskDialogCallback([In] IntPtr hwnd, [In] uint msg, [In] UIntPtr wParam, [In] IntPtr lParam, [In] IntPtr refData);
 
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Interoperability", "CA1400:PInvokeEntryPointsShouldExist")]
         [DllImport("ComCtl32", CharSet = CharSet.Unicode, PreserveSig = false)]
         internal static extern void TaskDialogIndirect(
             [In] ref TASKDIALOGCONFIG pTaskConfig,

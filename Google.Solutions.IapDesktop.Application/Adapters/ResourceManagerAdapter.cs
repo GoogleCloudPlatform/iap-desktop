@@ -31,7 +31,7 @@ using System.Threading.Tasks;
 
 namespace Google.Solutions.IapDesktop.Application.Adapters
 {
-    public class ResourceManagerAdapter
+    public class ResourceManagerAdapter : IDisposable
     {
         private readonly CloudResourceManagerService service;
 
@@ -75,6 +75,20 @@ namespace Google.Solutions.IapDesktop.Application.Adapters
         public Task<IEnumerable<Project>> QueryProjectsById(string projectId)
         {
             return QueryProjects($"id:\"{projectId}\"");
+        }
+
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                this.service.Dispose();
+            }
         }
     }
 }

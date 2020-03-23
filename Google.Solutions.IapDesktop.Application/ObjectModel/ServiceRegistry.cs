@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Reflection;
+using System.Runtime.Serialization;
 
 namespace Google.Solutions.IapDesktop.Application.ObjectModel
 {
@@ -80,8 +81,14 @@ namespace Google.Solutions.IapDesktop.Application.ObjectModel
         }
     }
 
+    [Serializable]
     public class UnknownServiceException : ApplicationException
     {
+        protected UnknownServiceException(SerializationInfo info, StreamingContext context)
+            : base(info, context)
+        {
+        }
+
         public UnknownServiceException(string service) : base(service)
         {
         }

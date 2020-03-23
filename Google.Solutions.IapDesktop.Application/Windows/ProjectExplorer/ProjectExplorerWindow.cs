@@ -352,49 +352,51 @@ namespace Google.Solutions.IapDesktop.Application.ProjectExplorer
             // Move selection to a "safe" spot.
             this.treeView.SelectedNode = this.rootNode;
 
-            var computeEngineAdapter = this.serviceProvider.GetService<ComputeEngineAdapter>();
+            using (var computeEngineAdapter = this.serviceProvider.GetService<ComputeEngineAdapter>())
+            {
 
-            var failedProjects = new Dictionary<string, Exception>();
+                var failedProjects = new Dictionary<string, Exception>();
 
-            var projectsAndInstances = await this.jobService.RunInBackground(
-                new JobDescription("Loading projects..."),
-                async token =>
-                {
-                    var accumulator = new Dictionary<string, IEnumerable<Instance>>();
-
-                    foreach (var project in await this.projectInventoryService.ListProjectsAsync())
+                var projectsAndInstances = await this.jobService.RunInBackground(
+                    new JobDescription("Loading projects..."),
+                    async token =>
                     {
-                        try
+                        var accumulator = new Dictionary<string, IEnumerable<Instance>>();
+
+                        foreach (var project in await this.projectInventoryService.ListProjectsAsync())
                         {
-                            accumulator[project.Name] =
-                                await computeEngineAdapter.QueryInstancesAsync(project.Name);
+                            try
+                            {
+                                accumulator[project.Name] =
+                                    await computeEngineAdapter.QueryInstancesAsync(project.Name);
+                            }
+                            catch (Exception e)
+                            {
+                                // If one project fails to load, we should stil load the other onces.
+                                failedProjects[project.Name] = e;
+                            }
                         }
-                        catch (Exception e)
-                        {
-                            // If one project fails to load, we should stil load the other onces.
-                            failedProjects[project.Name] = e;
-                        }
-                    }
 
-                    return accumulator;
-                });
+                        return accumulator;
+                    });
 
-            foreach (var entry in projectsAndInstances)
-            {
-                PopulateProjectNode(entry.Key, entry.Value);
-            }
-
-            if (failedProjects.Any())
-            {
-                // Add an (empty) project node so that the user can at least unload the project.
-                foreach (string projectId in failedProjects.Keys)
+                foreach (var entry in projectsAndInstances)
                 {
-                    PopulateProjectNode(projectId, Enumerable.Empty<Instance>());
+                    PopulateProjectNode(entry.Key, entry.Value);
                 }
 
-                throw new AggregateException(
-                    $"The following projects failed to refresh: {string.Join(", ", failedProjects.Keys)}",
-                    failedProjects.Values.Cast<Exception>());
+                if (failedProjects.Any())
+                {
+                    // Add an (empty) project node so that the user can at least unload the project.
+                    foreach (string projectId in failedProjects.Keys)
+                    {
+                        PopulateProjectNode(projectId, Enumerable.Empty<Instance>());
+                    }
+
+                    throw new AggregateException(
+                        $"The following projects failed to refresh: {string.Join(", ", failedProjects.Keys)}",
+                        failedProjects.Values.Cast<Exception>());
+                }
             }
         }
 
@@ -402,12 +404,14 @@ namespace Google.Solutions.IapDesktop.Application.ProjectExplorer
         {
             Debug.Assert(!this.InvokeRequired);
 
-            var computeEngineAdapter = this.serviceProvider.GetService<ComputeEngineAdapter>();
-            var instances = await this.jobService.RunInBackground(
-                new JobDescription("Loading project inventory..."),
-                token => computeEngineAdapter.QueryInstancesAsync(projectId));
+            using (var computeEngineAdapter = this.serviceProvider.GetService<ComputeEngineAdapter>())
+            {
+                var instances = await this.jobService.RunInBackground(
+                    new JobDescription("Loading project inventory..."),
+                    token => computeEngineAdapter.QueryInstancesAsync(projectId));
 
-            PopulateProjectNode(projectId, instances);
+                PopulateProjectNode(projectId, instances);
+            }
         }
 
         public async Task ShowAddProjectDialogAsync()

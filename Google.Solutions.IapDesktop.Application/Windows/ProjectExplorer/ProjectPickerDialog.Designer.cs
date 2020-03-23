@@ -16,6 +16,7 @@
             if (disposing && (components != null))
             {
                 components.Dispose();
+                this.resourceManager.Dispose();
             }
             base.Dispose(disposing);
         }

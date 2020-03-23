@@ -30,6 +30,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
+using System.Runtime.Serialization;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -38,7 +39,7 @@ namespace Google.Solutions.IapDesktop.Application.Adapters
     /// <summary>
     /// Adapter class for the Compute Engine API.
     /// </summary>
-    public class ComputeEngineAdapter
+    public class ComputeEngineAdapter : IDisposable
     {
         private const string WindowsCloudLicenses = "https://www.googleapis.com/compute/v1/projects/windows-cloud/global/licenses";
 
@@ -164,10 +165,30 @@ namespace Google.Solutions.IapDesktop.Application.Adapters
             return IsWindowsInstanceByGuestOsFeature(instance) ||
                    IsWindowsInstanceByLicense(instance);
         }
+
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                this.service.Dispose();
+            }
+        }
     }
 
+    [Serializable]
     public class ComputeEngineException : Exception
     {
+        protected ComputeEngineException(SerializationInfo info, StreamingContext context)
+            : base(info, context)
+        {
+        }
+
         public ComputeEngineException(string message, Exception inner)
             : base(message, inner)
         {

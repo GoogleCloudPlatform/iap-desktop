@@ -1,10 +1,21 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Runtime.Serialization;
 
 namespace Google.Solutions.IapDesktop.Application.Windows.RemoteDesktop
 {
+    [Serializable]
     internal class RdpException : ApplicationException
     {
+        protected RdpException(SerializationInfo info, StreamingContext context)
+            : base(info, context)
+        {
+        }
+
+        public RdpException()
+        {
+        }
+
         public override string ToString()
         {
             return this.Message;
@@ -53,7 +64,7 @@ namespace Google.Solutions.IapDesktop.Application.Windows.RemoteDesktop
             }
         }
 
-        public RdpLogonException(int errorCode)
+        public RdpLogonException(int errorCode) : base()
         {
             this.ErrorCode = errorCode;
         }
