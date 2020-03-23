@@ -120,7 +120,7 @@ namespace Google.Solutions.IapDesktop.Windows
 
 
 
-            TempProgram.Services.AddSingleton<RemoteDesktopService>(new RemoteDesktopService(this.dockPanel));
+            TempProgram.Services.AddSingleton<RemoteDesktopService>();
             TempProgram.Services.AddSingleton<ISettingsEditor, SettingsEditorWindow>();
             TempProgram.Services.AddSingleton<IProjectExplorer>(new ProjectExplorerWindow(this.dockPanel));
 

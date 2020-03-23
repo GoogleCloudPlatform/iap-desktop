@@ -1,4 +1,5 @@
 ﻿using Google.Solutions.IapDesktop.Application.Settings;
+using Google.Solutions.IapDesktop.Application.ObjectModel;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,9 +14,9 @@ namespace Google.Solutions.IapDesktop.Application.Windows.RemoteDesktop
     {
         private readonly DockPanel dockPanel;
 
-        public RemoteDesktopService(DockPanel dockPanel)
+        public RemoteDesktopService(IServiceProvider serviceProvider)
         {
-            this.dockPanel = dockPanel;
+            this.dockPanel = serviceProvider.GetService<IMainForm>().MainPanel;
         }
 
         public void Connect(

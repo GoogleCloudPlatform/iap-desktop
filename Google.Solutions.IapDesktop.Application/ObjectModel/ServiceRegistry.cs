@@ -44,7 +44,12 @@ namespace Google.Solutions.IapDesktop.Application.ObjectModel
             this.singletons[typeof(TService)] = singleton;
         }
 
-        public void AddSingleton<TService, TServiceClass>() 
+        public void AddSingleton<TService>() 
+        {
+            this.singletons[typeof(TService)] = CreateInstance<TService>();
+        }
+
+        public void AddSingleton<TService, TServiceClass>()
         {
             this.singletons[typeof(TService)] = CreateInstance<TServiceClass>();
         }
