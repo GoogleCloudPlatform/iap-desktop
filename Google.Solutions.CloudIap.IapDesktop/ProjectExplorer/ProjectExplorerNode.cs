@@ -30,7 +30,11 @@ namespace Google.Solutions.CloudIap.IapDesktop.ProjectExplorer
         private readonly InventoryNode parent;
         private readonly InventorySettingsBase settings;
 
-        public InventoryNode(string name, int iconIndex, InventorySettingsBase settings, InventoryNode parent)
+        public InventoryNode(
+            string name, 
+            int iconIndex, 
+            InventorySettingsBase settings, 
+            InventoryNode parent)
             : base(name, iconIndex, iconIndex)
         {
             this.settings = settings;
@@ -39,7 +43,6 @@ namespace Google.Solutions.CloudIap.IapDesktop.ProjectExplorer
 
         public void SaveChanges()
         {
-
         }
 
         internal static string ShortIdFromUrl(string url) => url.Substring(url.LastIndexOf("/") + 1);

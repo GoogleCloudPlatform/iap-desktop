@@ -98,31 +98,21 @@ namespace Google.Solutions.CloudIap.IapDesktop.ProjectExplorer
 
         private async Task AddProjectAsync()
         {
-            try
-            {
-                await this.jobService.RunInBackground(
-                    new JobDescription("Loading projects..."),
-                    _ => this.authService.Authorization.Credential.GetAccessTokenForRequestAsync());
+            await this.jobService.RunInBackground(
+                new JobDescription("Loading projects..."),
+                _ => this.authService.Authorization.Credential.GetAccessTokenForRequestAsync());
 
-                // Show project picker
-                string projectId = projectId = ProjectPickerDialog.SelectProjectId(this);
+            // Show project picker
+            string projectId = projectId = ProjectPickerDialog.SelectProjectId(this);
 
-                if (projectId == null)
-                {
-                    // Cancelled.
-                    return;
-                }
+            if (projectId == null)
+            {
+                // Cancelled.
+                return;
+            }
 
-                await this.projectInventoryService.AddProjectAsync(projectId);
-            }
-            catch (TaskCanceledException)
-            {
-                // Ignore.
-            }
-            catch (Exception e)
-            {
-                ExceptionDialog.Show(this, "Adding project failed", e);
-            }
+            await this.projectInventoryService.AddProjectAsync(projectId);
+            
         }
 
         //---------------------------------------------------------------------
@@ -251,7 +241,18 @@ namespace Google.Solutions.CloudIap.IapDesktop.ProjectExplorer
 
         private async void addButton_Click(object sender, EventArgs args)
         {
-            await AddProjectAsync();
+            try
+            { 
+                await AddProjectAsync();
+            }
+            catch (TaskCanceledException)
+            {
+                // Ignore.
+            }
+            catch (Exception e)
+            {
+                ExceptionDialog.Show(this, "Adding project failed", e);
+            }
         }
 
         private void openSettingsButton_Click(object sender, EventArgs _)

@@ -191,7 +191,18 @@ namespace Google.Solutions.CloudIap.IapDesktop.Windows
 
         private async void addProjectToolStripMenuItem_Click(object sender, EventArgs _)
         {
-            await Program.Services.GetService<IProjectExplorer>().ShowAddProjectDialogAsync();
+            try
+            {
+                await Program.Services.GetService<IProjectExplorer>().ShowAddProjectDialogAsync();
+            }
+            catch (TaskCanceledException)
+            {
+                // Ignore.
+            }
+            catch (Exception e)
+            {
+                ExceptionDialog.Show(this, "Adding project failed", e);
+            }
         }
 
         //---------------------------------------------------------------------
