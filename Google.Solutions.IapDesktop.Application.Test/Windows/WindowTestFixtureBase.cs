@@ -64,6 +64,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows
         [TearDown]
         public void TearDown()
         {
+            PumpWindowMessages();
             this.mainForm.Close();
         }
 

@@ -84,6 +84,7 @@
     <Compile Include="Adapters\ComputeEngineAdapter.cs" />
     <Compile Include="Adapters\PageHelper.cs" />
     <Compile Include="Adapters\ResourceManagerAdapter.cs" />
+    <Compile Include="Global.cs" />
     <Compile Include="ObjectModel\EventService.cs" />
     <Compile Include="ObjectModel\JobService.cs" />
     <Compile Include="ObjectModel\ServiceRegistry.cs" />
@@ -100,7 +101,6 @@
     <Compile Include="Registry\SecureStringExtensions.cs" />
     <Compile Include="Settings\WindowSettingsRepository.cs" />
     <Compile Include="Settings\SettingRepositoryBase.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Registry\RegistryBinder.cs" />
     <Compile Include="Registry\RegistryValueAttribute.cs" />
     <Compile Include="Settings\InventorySettingsRepository.cs" />

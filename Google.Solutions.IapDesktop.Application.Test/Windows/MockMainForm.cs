@@ -20,6 +20,8 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows
 {
     public partial class MockMainForm : Form, IMainForm, IJobHost, IAuthorizationService
     {
+        private readonly MockWaitDialog waitDialog = new MockWaitDialog();
+
         public MockMainForm()
         {
             InitializeComponent();
@@ -42,6 +44,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows
 
         public void CloseWaitDialog()
         {
+            this.waitDialog.Close();
         }
 
         public bool ConfirmReauthorization()
@@ -51,6 +54,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows
 
         public void ShowWaitDialog(JobDescription jobDescription, CancellationTokenSource cts)
         {
+            this.waitDialog.ShowDialog();
         }
 
         //---------------------------------------------------------------------
