@@ -170,16 +170,16 @@ namespace Google.Solutions.IapDesktop.Application.ProjectExplorer
         [Category("Local resources")]
         [DisplayName("Redirect clipboard")]
         [Description("Allow clipboard contents to be shared with remote desktop")]
-        public bool RedirectClipboard
+        public RdpRedirectClipboard RedirectClipboard
         {
             get => ShouldSerializeRedirectClipboard()
                 ? this.settings.RedirectClipboard
-                : (this.parent != null ? this.parent.RedirectClipboard : true);
+                : (this.parent != null ? this.parent.RedirectClipboard : RdpRedirectClipboard._Default);
             set => this.settings.RedirectClipboard = value;
         }
 
         public bool ShouldSerializeRedirectClipboard()
-            => !this.settings.RedirectClipboard;
+            => this.settings.RedirectClipboard != RdpRedirectClipboard._Default;
 
 
         [Browsable(true)]

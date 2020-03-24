@@ -286,7 +286,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Settings
                 AuthenticationLevel = RdpAuthenticationLevel.RequireServerAuthentication,
                 ColorDepth = RdpColorDepth.DeepColor,
                 AudioMode = RdpAudioMode.DoNotPlay,
-                RedirectClipboard = true
+                RedirectClipboard = RdpRedirectClipboard.Enabled
             });
 
             var settings = repository.GetVmInstanceSettings("pro-1", "vm-1");
@@ -297,7 +297,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Settings
             Assert.AreEqual(RdpAuthenticationLevel.RequireServerAuthentication, settings.AuthenticationLevel);
             Assert.AreEqual(RdpColorDepth.DeepColor, settings.ColorDepth);
             Assert.AreEqual(RdpAudioMode.DoNotPlay, settings.AudioMode);
-            Assert.IsTrue(settings.RedirectClipboard);
+            Assert.AreEqual(RdpRedirectClipboard.Enabled, settings.RedirectClipboard);
         }
 
         [Test]

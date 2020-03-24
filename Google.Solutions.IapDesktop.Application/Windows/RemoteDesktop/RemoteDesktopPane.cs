@@ -108,7 +108,9 @@ namespace Google.Solutions.IapDesktop.Application.Windows.RemoteDesktop
             //
             // Local resources settings.
             //
-            advancedSettings.RedirectClipboard = settings.RedirectClipboard;
+            advancedSettings.RedirectClipboard = 
+                settings.RedirectClipboard == RdpRedirectClipboard.Enabled;
+
             switch (settings.AudioMode)
             {
                 case RdpAudioMode.PlayLocally:

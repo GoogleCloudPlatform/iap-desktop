@@ -1,4 +1,5 @@
-﻿using Google.Solutions.IapDesktop.Application.ObjectModel;
+﻿using Google.Apis.Compute.v1.Data;
+using Google.Solutions.IapDesktop.Application.ObjectModel;
 using Google.Solutions.IapDesktop.Application.Services;
 using Google.Solutions.IapDesktop.Application.Settings;
 using Google.Solutions.IapDesktop.Application.SettingsEditor;
@@ -65,6 +66,28 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows
         {
             PumpWindowMessages();
             this.mainForm.Close();
+        }
+        protected static Instance CreateInstance(string instanceName, string zone, bool windows)
+        {
+            return new Instance()
+            {
+                Id = 1,
+                Name = instanceName,
+                Zone = "projects/-/zones/" + zone,
+                MachineType = "zones/-/machineTypes/n1-standard-1",
+                Disks = new[] {
+                        new AttachedDisk()
+                        {
+                            GuestOsFeatures = new []
+                            {
+                                new GuestOsFeature()
+                                {
+                                    Type = windows ? "WINDOWS" : "WHATEVER"
+                                }
+                            }
+                        }
+                    }
+            };
         }
 
         protected class MockExceptionDialog : IExceptionDialog

@@ -28,7 +28,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows
         }
 
         [Test]
-        public void WhenNoProjectsLoaded_ThenRootNodeHasNoChildren()
+        public void WhenNoProjectsLoaded_ThenRootNodeIsEmpty()
         {
             var computeEngineAdapter = new Mock<IComputeEngineAdapter>();
             this.serviceRegistry.AddSingleton<IComputeEngineAdapter>(computeEngineAdapter.Object);
@@ -44,29 +44,6 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows
             Assert.AreEqual(0, rootNode.Nodes.Count);
 
             Assert.IsNull(this.exceptionDialog.ExceptionShown);
-        }
-
-        private Instance CreateInstance(string instanceName, string zone, bool windows)
-        {
-            return new Instance()
-            {
-                Id = 1,
-                Name = instanceName,
-                Zone = "projects/-/zones/" + zone,
-                MachineType = "zones/-/machineTypes/n1-standard-1",
-                Disks = new[] {
-                        new AttachedDisk()
-                        {
-                            GuestOsFeatures = new []
-                            {
-                                new GuestOsFeature()
-                                {
-                                    Type = windows ? "WINDOWS" : "WHATEVER"
-                                }
-                            }
-                        }
-                    }
-            };
         }
 
         [Test]

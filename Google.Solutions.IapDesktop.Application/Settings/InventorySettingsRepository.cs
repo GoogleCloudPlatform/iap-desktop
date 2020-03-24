@@ -149,6 +149,14 @@ namespace Google.Solutions.IapDesktop.Application.Settings
         _Default = PlayLocally
     }
 
+    public enum RdpRedirectClipboard
+    {
+        Disabled = 0,
+        Enabled = 1,
+
+        [Browsable(false)]
+        _Default = Enabled
+    }
 
     public abstract class InventorySettingsBase
     {
@@ -225,8 +233,16 @@ namespace Google.Solutions.IapDesktop.Application.Settings
                 : RdpAudioMode._Default;
         }
 
-        [BoolRegistryValue("RedirectClipboard")]
-        public bool RedirectClipboard { get; set; } = true;
+        public RdpRedirectClipboard RedirectClipboard { get; set; }
+
+        [DwordRegistryValueAttribute("RedirectClipboard")]
+        protected int? _RedirectClipboard
+        {
+            get => (int)this.RedirectClipboard;
+            set => this.RedirectClipboard = value != null
+                ? (RdpRedirectClipboard)value
+                : RdpRedirectClipboard._Default;
+        }
     }
 
     public class VmInstanceSettings : InventorySettingsBase
