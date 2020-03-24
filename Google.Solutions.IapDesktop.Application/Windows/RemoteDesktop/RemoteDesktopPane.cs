@@ -1,4 +1,6 @@
 ﻿using AxMSTSCLib;
+using Google.Solutions.Compute;
+using Google.Solutions.IapDesktop.Application.ObjectModel;
 using Google.Solutions.IapDesktop.Application.Registry;
 using Google.Solutions.IapDesktop.Application.Settings;
 using Google.Solutions.IapDesktop.Windows;
@@ -9,6 +11,7 @@ using System.Data;
 using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 using WeifenLuo.WinFormsUI.Docking;
 
@@ -17,10 +20,18 @@ namespace Google.Solutions.IapDesktop.Application.Windows.RemoteDesktop
     public partial class RemoteDesktopPane : ToolWindow
     {
         private readonly IExceptionDialog exceptionDialog;
+        private readonly IEventService eventService;
 
-        public RemoteDesktopPane(IExceptionDialog exceptionDialog)
+        private readonly VmInstanceReference vmInstance;
+
+        public RemoteDesktopPane(
+            IEventService eventService, 
+            IExceptionDialog exceptionDialog,
+            VmInstanceReference vmInstance)
         {
             this.exceptionDialog = exceptionDialog;
+            this.eventService = eventService;
+            this.vmInstance = vmInstance;
 
             this.TabText = this.Text;
             this.DockAreas = DockAreas.Document;
@@ -183,8 +194,10 @@ namespace Google.Solutions.IapDesktop.Application.Windows.RemoteDesktop
                 (this.Size.Height - this.spinner.Height) / 2);
         }
 
-        private void ShowErrorAndClose(string caption, Exception e)
+        private async Task ShowErrorAndClose(string caption, RdpException e)
         {
+            await this.eventService.FireAsync(
+                new RemoteDesktopConnectionFailedEvent(this.vmInstance, e));
             this.exceptionDialog.Show(this, caption, e);
             Close();
         }
@@ -198,7 +211,7 @@ namespace Google.Solutions.IapDesktop.Application.Windows.RemoteDesktop
             UpdateLayout();
         }
 
-        private void RemoteDesktopPane_FormClosing(object sender, FormClosingEventArgs args)
+        private async void RemoteDesktopPane_FormClosing(object sender, FormClosingEventArgs args)
         {
             if (this.IsConnecting)
             {
@@ -208,6 +221,7 @@ namespace Google.Solutions.IapDesktop.Application.Windows.RemoteDesktop
             }
 
             Debug.WriteLine("FormClosing");
+
             if (this.IsConnected)
             {
                 try
@@ -221,6 +235,9 @@ namespace Google.Solutions.IapDesktop.Application.Windows.RemoteDesktop
                     this.exceptionDialog.Show(this, "Disconnecting failed", e);
                 }
             }
+
+            await this.eventService.FireAsync(
+                new RemoteDesktopWindowClosedEvent(this.vmInstance));
         }
 
         private void tabContextStrip_Opening(object sender, CancelEventArgs e)
@@ -241,27 +258,27 @@ namespace Google.Solutions.IapDesktop.Application.Windows.RemoteDesktop
         // RDP callbacks.
         //---------------------------------------------------------------------
 
-        private void rdpClient_OnFatalError(
+        private async void rdpClient_OnFatalError(
             object sender,
             IMsTscAxEvents_OnFatalErrorEvent args)
         {
-            ShowErrorAndClose(
+            await ShowErrorAndClose(
                 "Fatal error",
                 new RdpFatalException(args.errorCode));
         }
 
-        private void rdpClient_OnLogonError(
+        private async void rdpClient_OnLogonError(
             object sender,
             IMsTscAxEvents_OnLogonErrorEvent args)
         {
             var e = new RdpLogonException(args.lError);
             if (!e.IsIgnorable)
             {
-                ShowErrorAndClose("Logon failed", e);
+                await ShowErrorAndClose("Logon failed", e);
             }
         }
 
-        private void rdpClient_OnDisconnected(
+        private async void rdpClient_OnDisconnected(
             object sender,
             IMsTscAxEvents_OnDisconnectedEvent args)
         {
@@ -277,14 +294,16 @@ namespace Google.Solutions.IapDesktop.Application.Windows.RemoteDesktop
             }
             else
             {
-                ShowErrorAndClose("Disconnected", e);
+                await ShowErrorAndClose("Disconnected", e);
             }
         }
 
-        private void rdpClient_OnConnected(object sender, EventArgs e)
+        private async void rdpClient_OnConnected(object sender, EventArgs e)
         {
             Debug.WriteLine($"OnConnected - {this.rdpClient.ConnectedStatusText}");
             this.spinner.Visible = false;
+            await this.eventService.FireAsync(
+                new RemoteDesktopConnectionSuceededEvent(this.vmInstance));
         }
 
 

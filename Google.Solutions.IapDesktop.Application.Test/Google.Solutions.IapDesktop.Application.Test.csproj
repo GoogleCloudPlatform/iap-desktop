@@ -106,6 +106,7 @@
     </Compile>
     <Compile Include="Windows\TestProjectExplorer.cs" />
     <Compile Include="Windows\TestProjectExplorerNode.cs" />
+    <Compile Include="Windows\TestRemoteDesktop.cs" />
     <Compile Include="Windows\WindowTestFixtureBase.cs" />
     <Compile Include="Windows\TestSettingsEditor.cs" />
   </ItemGroup>

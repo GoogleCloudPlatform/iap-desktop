@@ -124,6 +124,7 @@ namespace Google.Solutions.IapDesktop.Application.Settings
     {
         AttemptServerAuthentication = 0,
         RequireServerAuthentication = 1,
+        NoServerAuthentication = 3,
 
         [Browsable(false)]
         _Default = AttemptServerAuthentication

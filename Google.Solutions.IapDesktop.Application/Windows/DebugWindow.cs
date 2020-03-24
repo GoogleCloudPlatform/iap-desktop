@@ -1,4 +1,5 @@
 ﻿using Google.Apis.Auth.OAuth2.Responses;
+using Google.Solutions.Compute;
 using Google.Solutions.IapDesktop.Application.ObjectModel;
 using Google.Solutions.IapDesktop.Application.Settings;
 using Google.Solutions.IapDesktop.Application.Windows.RemoteDesktop;
@@ -180,6 +181,7 @@ namespace Google.Solutions.IapDesktop.Application.Windows
             try
             {
                 this.rdpService.Connect(
+                    null, 
                     server[0],
                     (ushort)(server.Length > 1 ? int.Parse(server[1]) : 3389),
                     new VmInstanceSettings()

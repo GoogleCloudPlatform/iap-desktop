@@ -5,7 +5,7 @@ using System.Runtime.Serialization;
 namespace Google.Solutions.IapDesktop.Application.Windows.RemoteDesktop
 {
     [Serializable]
-    internal class RdpException : ApplicationException
+    public  class RdpException : ApplicationException
     {
         protected RdpException(SerializationInfo info, StreamingContext context)
             : base(info, context)
@@ -22,7 +22,7 @@ namespace Google.Solutions.IapDesktop.Application.Windows.RemoteDesktop
         }
     }
 
-    internal class RdpLogonException : RdpException
+    public class RdpLogonException : RdpException
     {
         private readonly static IDictionary<int, string> knownErrors = new Dictionary<int, string>
         {
@@ -70,7 +70,7 @@ namespace Google.Solutions.IapDesktop.Application.Windows.RemoteDesktop
         }
     }
 
-    internal class RdpFatalException : RdpException
+    public class RdpFatalException : RdpException
     {
         private readonly static IDictionary<int, string> knownErrors = new Dictionary<int, string>
         {
@@ -107,7 +107,7 @@ namespace Google.Solutions.IapDesktop.Application.Windows.RemoteDesktop
         }
     }
 
-    internal class RdpDisconnectedException : RdpException
+    public class RdpDisconnectedException : RdpException
     {
         private readonly static IDictionary<int, string> knownErrors = new Dictionary<int, string>
         {
