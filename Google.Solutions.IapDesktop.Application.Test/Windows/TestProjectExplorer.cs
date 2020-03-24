@@ -16,14 +16,16 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows
     [TestFixture]
     public class TestProjectExplorer : WindowTestFixtureBase
     {
-        
 
-        //[Test]
-        //public void When_Then()
-        //{
-        //    var window = new ProjectExplorerWindow(this.serviceProvider);
-        //    window.ShowWindow();
-        //    PumpWindowMessages();
-        //}
+
+        [Test]
+        public void When_Then()
+        {
+            var window = new ProjectExplorerWindow(this.serviceProvider);
+            window.ShowWindow();
+            PumpWindowMessages();
+
+            Assert.IsNull(this.exceptionDialog.ExceptionShown);
+        }
     }
 }
