@@ -46,6 +46,29 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows
             Assert.IsNull(this.exceptionDialog.ExceptionShown);
         }
 
+        private Instance CreateInstance(string instanceName, string zone, bool windows)
+        {
+            return new Instance()
+            {
+                Id = 1,
+                Name = instanceName,
+                Zone = "projects/-/zones/" + zone,
+                MachineType = "zones/-/machineTypes/n1-standard-1",
+                Disks = new[] {
+                        new AttachedDisk()
+                        {
+                            GuestOsFeatures = new []
+                            {
+                                new GuestOsFeature()
+                                {
+                                    Type = windows ? "WINDOWS" : "WHATEVER"
+                                }
+                            }
+                        }
+                    }
+            };
+        }
+
         [Test]
         public void WhenProjectAdded_ThenWindowsInstancesAreListed()
         {
@@ -55,42 +78,8 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows
             // Add some instances.
             var instances = new[]
             {
-                new Instance()
-                {
-                    Id = 1,
-                    Name = "instance-1a",
-                    Zone = "https://www.googleapis.com/compute/v1/projects/project-1/zones/antarctica1-a",
-                    Disks = new [] {
-                        new AttachedDisk()
-                        {
-                            GuestOsFeatures = new []
-                            {
-                                new GuestOsFeature()
-                                {
-                                    Type = "WINDOWS"
-                                }
-                            }
-                        }
-                    }
-                },
-                new Instance()
-                {
-                    Id = 1,
-                    Name = "instance-1b",
-                    Zone = "https://www.googleapis.com/compute/v1/projects/project-1/zones/antarctica1-b",
-                    Disks = new [] {
-                        new AttachedDisk()
-                        {
-                            GuestOsFeatures = new []
-                            {
-                                new GuestOsFeature()
-                                {
-                                    Type = "WINDOWS"
-                                }
-                            }
-                        }
-                    }
-                }
+                CreateInstance("instance-1a", "antarctica1-a", true),
+                CreateInstance("instance-1b", "antarctica1-b", true)
             };
 
             // Open window.
@@ -125,7 +114,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows
         }
 
         [Test]
-        public void WhenProjectAdded_ThenLinuxInstancesAreIgnored()
+        public void WhenProjectAdded_ThenLinuxInstancesAndInstancesWithoutDiskAreIgnored()
         {
             // Add a project.
             this.serviceProvider.GetService<ProjectInventoryService>().AddProjectAsync("project-1").Wait();
@@ -133,41 +122,14 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows
             // Add some instances.
             var instances = new[]
             {
+                CreateInstance("windows", "antarctica1-a", true),
+                CreateInstance("linux", "antarctica1-b", false),
                 new Instance()
                 {
                     Id = 1,
-                    Name = "windows",
-                    Zone = "https://www.googleapis.com/compute/v1/projects/project-1/zones/antarctica1-a",
-                    Disks = new [] {
-                        new AttachedDisk()
-                        {
-                            GuestOsFeatures = new []
-                            {
-                                new GuestOsFeature()
-                                {
-                                    Type = "WINDOWS"
-                                }
-                            }
-                        }
-                    }
-                },
-                new Instance()
-                {
-                    Id = 1,
-                    Name = "linus",
-                    Zone = "https://www.googleapis.com/compute/v1/projects/project-1/zones/antarctica1-a",
-                    Disks = new [] {
-                        new AttachedDisk()
-                        {
-                            GuestOsFeatures = new []
-                            {
-                                new GuestOsFeature()
-                                {
-                                    Type = "WHATEVER"
-                                }
-                            }
-                        }
-                    }
+                    Name = "nodisk",
+                    Zone = "projects/-/zones/antarctica1-a",
+                    MachineType = "zones/-/machineTypes/n1-standard-1"
                 }
             };
 
@@ -196,11 +158,49 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows
             Assert.AreEqual(1, zoneAnode.Nodes.Count);
 
             var vmNode = (VmInstanceNode)zoneAnode.FirstNode;
-            Assert.AreEqual("instance-1a", vmNode.Text);
             Assert.AreEqual(0, vmNode.Nodes.Count);
             Assert.AreEqual("windows", vmNode.Text);
 
             Assert.IsNull(this.exceptionDialog.ExceptionShown);
+        }
+
+        [Test]
+        public void WhenQueryInstanceFails_ProjectIsShownAsEmpty()
+        {
+            // Add a project.
+            this.serviceProvider.GetService<ProjectInventoryService>().AddProjectAsync("valid-project").Wait();
+            this.serviceProvider.GetService<ProjectInventoryService>().AddProjectAsync("forbidden-project").Wait();
+
+            // Add some instances to project-1.
+            var instances = new[]
+            {
+                CreateInstance("windows", "antarctica1-a", true)
+            };
+
+            // Open window.
+            var computeEngineAdapter = new Mock<IComputeEngineAdapter>();
+            this.serviceRegistry.AddSingleton<IComputeEngineAdapter>(computeEngineAdapter.Object);
+
+            computeEngineAdapter
+                .Setup(o => o.QueryInstancesAsync("valid-project"))
+                .Returns(Task.FromResult<IEnumerable<Instance>>(instances));
+            computeEngineAdapter
+                .Setup(o => o.QueryInstancesAsync("forbidden-project"))
+                .Throws(new ComputeEngineException("Access denied or something", null));
+
+            var window = new ProjectExplorerWindow(this.serviceProvider);
+            window.ShowWindow();
+            PumpWindowMessages();
+
+            // Check tree.
+            var rootNode = GetRootNode(window);
+
+            Assert.AreEqual(2, rootNode.Nodes.Cast<ProjectNode>().Count());
+
+            var projectNode = rootNode.Nodes.Cast<ProjectNode>()
+                .Where(n => n.ProjectId == "forbidden-project")
+                .FirstOrDefault(); ;
+            Assert.AreEqual(0, projectNode.Nodes.Count);
         }
     }
 }

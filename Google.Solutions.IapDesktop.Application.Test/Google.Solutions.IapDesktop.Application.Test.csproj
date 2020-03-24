@@ -104,12 +104,6 @@
     <Compile Include="Windows\MockMainForm.Designer.cs">
       <DependentUpon>MockMainForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="Windows\MockWaitDialog.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Windows\MockWaitDialog.Designer.cs">
-      <DependentUpon>MockWaitDialog.cs</DependentUpon>
-    </Compile>
     <Compile Include="Windows\TestProjectExplorer.cs" />
     <Compile Include="Windows\WindowTestFixtureBase.cs" />
     <Compile Include="Windows\TestSettingsEditor.cs" />
@@ -135,9 +129,6 @@
   <ItemGroup>
     <EmbeddedResource Include="Windows\MockMainForm.resx">
       <DependentUpon>MockMainForm.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Windows\MockWaitDialog.resx">
-      <DependentUpon>MockWaitDialog.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

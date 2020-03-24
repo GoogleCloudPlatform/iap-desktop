@@ -17,7 +17,14 @@ namespace Google.Solutions.IapDesktop.Application.ObjectModel
     /// Execution Thread: Thread pool (ensured by JobService)
     /// Continuation thread: UI thread (ensured by JobService)
     /// </summary>
-    public class JobService
+    public interface IJobService
+    {
+        Task<T> RunInBackground<T>(
+            JobDescription jobDescription,
+            Func<CancellationToken, Task<T>> jobFunc);
+    }
+
+    public class JobService : IJobService
     {
         private readonly IJobHost host;
         private readonly IAuthorizationService authService;

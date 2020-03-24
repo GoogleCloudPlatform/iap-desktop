@@ -23,7 +23,7 @@ namespace Google.Solutions.IapDesktop.Application.ProjectExplorer
         private readonly DockPanel dockPanel;
         private readonly IMainForm mainForm;
         private readonly IEventService eventService;
-        private readonly JobService jobService;
+        private readonly IJobService jobService;
         private readonly ProjectInventoryService projectInventoryService;
         private readonly InventorySettingsRepository settingsRepository;
         private readonly IAuthorizationService authService;
@@ -56,7 +56,7 @@ namespace Google.Solutions.IapDesktop.Application.ProjectExplorer
 
             this.mainForm = serviceProvider.GetService<IMainForm>();
             this.eventService = serviceProvider.GetService<IEventService>();
-            this.jobService = serviceProvider.GetService<JobService>();
+            this.jobService = serviceProvider.GetService<IJobService>();
             this.projectInventoryService = serviceProvider.GetService<ProjectInventoryService>();
             this.settingsRepository = serviceProvider.GetService<InventorySettingsRepository>();
             this.authService = serviceProvider.GetService<IAuthorizationService>();

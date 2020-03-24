@@ -44,10 +44,9 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows
 
             var mainForm = new MockMainForm();
             registry.AddSingleton<IMainForm>(mainForm);
-            registry.AddSingleton<IJobHost>(mainForm);
+            registry.AddSingleton<IJobService>(mainForm);
             registry.AddSingleton<IAuthorizationService>(mainForm);
             registry.AddSingleton<IEventService>(new EventService(mainForm));
-            registry.AddSingleton<JobService>();
 
             this.exceptionDialog = new MockExceptionDialog();
             registry.AddSingleton<IExceptionDialog>(this.exceptionDialog);

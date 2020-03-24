@@ -18,10 +18,8 @@ using WeifenLuo.WinFormsUI.Docking;
 
 namespace Google.Solutions.IapDesktop.Application.Test.Windows
 {
-    public partial class MockMainForm : Form, IMainForm, IJobHost, IAuthorizationService
+    public partial class MockMainForm : Form, IMainForm, IAuthorizationService, IJobService
     {
-        private readonly MockWaitDialog waitDialog = new MockWaitDialog();
-
         public MockMainForm()
         {
             InitializeComponent();
@@ -34,27 +32,14 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows
         public DockPanel MainPanel => this.dockPanel;
 
         //---------------------------------------------------------------------
-        // IJobHost.
+        // IJobService.
         //---------------------------------------------------------------------
 
-        public ISynchronizeInvoke Invoker => this;
-
-        public bool IsWaitDialogShowing => true;
-
-
-        public void CloseWaitDialog()
+        public Task<T> RunInBackground<T>(JobDescription jobDescription, Func<CancellationToken, Task<T>> jobFunc)
         {
-            this.waitDialog.Close();
-        }
-
-        public bool ConfirmReauthorization()
-        {
-            return true;
-        }
-
-        public void ShowWaitDialog(JobDescription jobDescription, CancellationTokenSource cts)
-        {
-            this.waitDialog.ShowDialog();
+            // Run on UI thread to avoid multthreading issues in tests.
+            var result = jobFunc(CancellationToken.None).Result;
+            return Task.FromResult(result);
         }
 
         //---------------------------------------------------------------------

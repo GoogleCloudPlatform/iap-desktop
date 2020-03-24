@@ -13,7 +13,7 @@ namespace Google.Solutions.IapDesktop.Application.Windows
 {
     public partial class DebugWindow : ToolWindow
     {
-        private readonly JobService jobService;
+        private readonly IJobService jobService;
         private readonly IEventService eventService;
         private readonly RemoteDesktopService rdpService;
         private readonly DockPanel dockPanel;
@@ -23,7 +23,7 @@ namespace Google.Solutions.IapDesktop.Application.Windows
         {
             InitializeComponent();
 
-            this.jobService = serviceProvider.GetService<JobService>();
+            this.jobService = serviceProvider.GetService<IJobService>();
             this.eventService = serviceProvider.GetService<IEventService>();
             this.rdpService = serviceProvider.GetService<RemoteDesktopService>();
 
