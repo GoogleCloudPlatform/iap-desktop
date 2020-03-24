@@ -57,6 +57,11 @@ namespace Google.Solutions.IapDesktop.Application.ObjectModel
             this.transients[typeof(TService)] = () => CreateInstance<TService>();
         }
 
+        public void AddTransient<TService, TServiceClass>()
+        {
+            this.transients[typeof(TService)] = () => CreateInstance<TServiceClass>();
+        }
+
         public object GetService(Type serviceType)
         {
             if (this.singletons.TryGetValue(serviceType, out object singleton))

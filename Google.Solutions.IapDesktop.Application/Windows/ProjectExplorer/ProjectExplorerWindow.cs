@@ -370,7 +370,7 @@ namespace Google.Solutions.IapDesktop.Application.ProjectExplorer
             // Move selection to a "safe" spot.
             this.treeView.SelectedNode = this.rootNode;
 
-            using (var computeEngineAdapter = this.serviceProvider.GetService<ComputeEngineAdapter>())
+            using (var computeEngineAdapter = this.serviceProvider.GetService<IComputeEngineAdapter>())
             {
 
                 var failedProjects = new Dictionary<string, Exception>();
@@ -422,7 +422,7 @@ namespace Google.Solutions.IapDesktop.Application.ProjectExplorer
         {
             Debug.Assert(!this.InvokeRequired);
 
-            using (var computeEngineAdapter = this.serviceProvider.GetService<ComputeEngineAdapter>())
+            using (var computeEngineAdapter = this.serviceProvider.GetService<IComputeEngineAdapter>())
             {
                 var instances = await this.jobService.RunInBackground(
                     new JobDescription("Loading project inventory..."),

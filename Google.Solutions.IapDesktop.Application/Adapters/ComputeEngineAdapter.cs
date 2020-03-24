@@ -36,10 +36,15 @@ using System.Threading.Tasks;
 
 namespace Google.Solutions.IapDesktop.Application.Adapters
 {
+    public interface IComputeEngineAdapter : IDisposable
+    {
+        Task<IEnumerable<Instance>> QueryInstancesAsync(string projectId);
+    }
+
     /// <summary>
     /// Adapter class for the Compute Engine API.
     /// </summary>
-    public class ComputeEngineAdapter : IDisposable
+    public class ComputeEngineAdapter : IComputeEngineAdapter
     {
         private const string WindowsCloudLicenses = "https://www.googleapis.com/compute/v1/projects/windows-cloud/global/licenses";
 
@@ -47,7 +52,7 @@ namespace Google.Solutions.IapDesktop.Application.Adapters
 
         public ComputeEngineAdapter(IAuthorizationService authService)
         {
-            var assemblyName = typeof(ComputeEngineAdapter).Assembly.GetName();
+            var assemblyName = typeof(IComputeEngineAdapter).Assembly.GetName();
             this.service = new ComputeService(new BaseClientService.Initializer
             {
                 HttpClientInitializer = authService.Authorization.Credential,

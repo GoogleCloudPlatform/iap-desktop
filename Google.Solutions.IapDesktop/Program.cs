@@ -49,10 +49,10 @@ namespace Google.Solutions.IapDesktop
 
             serviceRegistry.AddTransient<ProjectInventoryService>();
             serviceRegistry.AddTransient<ResourceManagerAdapter>();
-            serviceRegistry.AddTransient<ComputeEngineAdapter>();
+            serviceRegistry.AddTransient<IComputeEngineAdapter, ComputeEngineAdapter>();
             serviceRegistry.AddTransient<CloudConsoleService>();
             serviceRegistry.AddTransient<ProjectPickerDialog>();
-            serviceRegistry.AddSingleton<IExceptionDialog, ExceptionDialog>();
+            serviceRegistry.AddTransient<IExceptionDialog, ExceptionDialog>();
 
             serviceRegistry.AddSingleton<RemoteDesktopService>();
             serviceRegistry.AddSingleton<ISettingsEditor, SettingsEditorWindow>();
