@@ -14,13 +14,13 @@ namespace Google.Solutions.IapDesktop.Application.ProjectExplorer
         private bool clearedInput = false;
         private bool updatingSuggestions = false;
         private string suggestionsPrefix = null;
-        private readonly ResourceManagerAdapter resourceManager;
+        private readonly IResourceManagerAdapter resourceManager;
 
         public ProjectPickerDialog(IServiceProvider serviceProvider)
         {
             InitializeComponent();
 
-            this.resourceManager = serviceProvider.GetService<ResourceManagerAdapter>();
+            this.resourceManager = serviceProvider.GetService<IResourceManagerAdapter>();
         }
 
         private void projectComboBox_Enter(object sender, EventArgs e)

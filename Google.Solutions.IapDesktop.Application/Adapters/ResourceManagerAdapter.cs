@@ -31,13 +31,22 @@ using System.Threading.Tasks;
 
 namespace Google.Solutions.IapDesktop.Application.Adapters
 {
-    public class ResourceManagerAdapter : IDisposable
+    public interface IResourceManagerAdapter : IDisposable
+    {
+        Task<IEnumerable<Project>> QueryProjects(string filter);
+
+        Task<IEnumerable<Project>> QueryProjectsByPrefix(string idOrNamePrefix);
+
+        Task<IEnumerable<Project>> QueryProjectsById(string projectId);
+    }
+
+    public class ResourceManagerAdapter : IResourceManagerAdapter
     {
         private readonly CloudResourceManagerService service;
 
         public ResourceManagerAdapter(IAuthorizationService authService)
         {
-            var assemblyName = typeof(ResourceManagerAdapter).Assembly.GetName();
+            var assemblyName = typeof(IResourceManagerAdapter).Assembly.GetName();
 
             this.service = new CloudResourceManagerService(
                 new BaseClientService.Initializer

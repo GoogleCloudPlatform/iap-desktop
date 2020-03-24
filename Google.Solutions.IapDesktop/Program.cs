@@ -48,7 +48,7 @@ namespace Google.Solutions.IapDesktop
             serviceRegistry.AddSingleton<IEventService>(new EventService(mainForm));
 
             serviceRegistry.AddTransient<ProjectInventoryService>();
-            serviceRegistry.AddTransient<ResourceManagerAdapter>();
+            serviceRegistry.AddTransient<IResourceManagerAdapter, ResourceManagerAdapter>();
             serviceRegistry.AddTransient<IComputeEngineAdapter, ComputeEngineAdapter>();
             serviceRegistry.AddTransient<CloudConsoleService>();
             serviceRegistry.AddTransient<ProjectPickerDialog>();
