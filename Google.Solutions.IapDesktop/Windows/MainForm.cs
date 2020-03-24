@@ -154,7 +154,9 @@ namespace Google.Solutions.IapDesktop.Windows
             }
             catch (Exception e)
             {
-                ExceptionDialog.Show(this, "Sign out", e);
+                this.serviceProvider
+                    .GetService<IExceptionDialog>()
+                    .Show(this, "Sign out", e);
             }
         }
 
@@ -185,7 +187,9 @@ namespace Google.Solutions.IapDesktop.Windows
             }
             catch (Exception e)
             {
-                ExceptionDialog.Show(this, "Adding project failed", e);
+                this.serviceProvider
+                    .GetService<IExceptionDialog>()
+                    .Show(this, "Adding project failed", e);
             }
         }
 

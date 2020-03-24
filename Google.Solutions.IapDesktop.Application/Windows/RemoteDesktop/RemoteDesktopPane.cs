@@ -16,8 +16,11 @@ namespace Google.Solutions.IapDesktop.Application.Windows.RemoteDesktop
 {
     public partial class RemoteDesktopPane : ToolWindow
     {
-        public RemoteDesktopPane()
+        private readonly IExceptionDialog exceptionDialog;
+
+        public RemoteDesktopPane(IExceptionDialog exceptionDialog)
         {
+            this.exceptionDialog = exceptionDialog;
 
             this.TabText = this.Text;
             this.DockAreas = DockAreas.Document;
@@ -180,7 +183,7 @@ namespace Google.Solutions.IapDesktop.Application.Windows.RemoteDesktop
 
         private void ShowErrorAndClose(string caption, Exception e)
         {
-            ExceptionDialog.Show(this, caption, e);
+            this.exceptionDialog.Show(this, caption, e);
             Close();
         }
 
@@ -213,7 +216,7 @@ namespace Google.Solutions.IapDesktop.Application.Windows.RemoteDesktop
                 catch (Exception e)
                 {
                     // TODO: Ignore?
-                    ExceptionDialog.Show(this, "Disconnecting failed", e);
+                    this.exceptionDialog.Show(this, "Disconnecting failed", e);
                 }
             }
         }

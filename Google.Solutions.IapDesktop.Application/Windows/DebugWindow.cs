@@ -17,6 +17,7 @@ namespace Google.Solutions.IapDesktop.Application.Windows
         private readonly IEventService eventService;
         private readonly RemoteDesktopService rdpService;
         private readonly DockPanel dockPanel;
+        private readonly IServiceProvider serviceProvider;
 
         public DebugWindow(IServiceProvider serviceProvider)
         {
@@ -42,7 +43,7 @@ namespace Google.Solutions.IapDesktop.Application.Windows
 
 
             this.dockPanel = serviceProvider.GetService<IMainForm>().MainPanel;
-
+            this.serviceProvider = serviceProvider;
         }
 
         public void ShowWindow()
@@ -188,7 +189,9 @@ namespace Google.Solutions.IapDesktop.Application.Windows
             }
             catch (Exception e)
             {
-                ExceptionDialog.Show(this, "RDP failed", e);
+                this.serviceProvider
+                    .GetService<IExceptionDialog>()
+                    .Show(this, "RDP failed", e);
             }
         }
     }

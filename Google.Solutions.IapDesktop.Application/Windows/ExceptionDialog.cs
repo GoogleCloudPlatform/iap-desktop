@@ -29,13 +29,18 @@ using System.Windows.Forms;
 
 namespace Google.Solutions.IapDesktop.Windows
 {
+    public interface IExceptionDialog
+    {
+        void Show(IWin32Window parent, string caption, Exception e);
+    }
+
     /// <summary>
     /// Utility class for displaying exception information using 
     /// a "Vista style" dialog.
     /// </summary>
-    public class ExceptionDialog
+    public class ExceptionDialog : IExceptionDialog
     {
-        public static void Show(IWin32Window parent, string caption, Exception e)
+        public void Show(IWin32Window parent, string caption, Exception e)
         {
             e = e.Unwrap();
 

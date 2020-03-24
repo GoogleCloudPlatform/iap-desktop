@@ -148,7 +148,9 @@ namespace Google.Solutions.IapDesktop.Application.ProjectExplorer
             }
             catch (Exception e)
             {
-                ExceptionDialog.Show(this, "Refreshing project failed", e);
+                this.serviceProvider
+                    .GetService<IExceptionDialog>()
+                    .Show(this, "Refreshing project failed", e);
             }
         }
 
@@ -167,7 +169,9 @@ namespace Google.Solutions.IapDesktop.Application.ProjectExplorer
             }
             catch (Exception e)
             {
-                ExceptionDialog.Show(this, "Refreshing project failed", e);
+                this.serviceProvider
+                    .GetService<IExceptionDialog>()
+                    .Show(this, "Refreshing project failed", e);
             }
         }
 
@@ -234,7 +238,9 @@ namespace Google.Solutions.IapDesktop.Application.ProjectExplorer
             }
             catch (Exception e)
             {
-                ExceptionDialog.Show(this, "Refreshing projects failed", e);
+                this.serviceProvider
+                    .GetService<IExceptionDialog>()
+                    .Show(this, "Refreshing projects failed", e);
             }
         }
 
@@ -250,7 +256,9 @@ namespace Google.Solutions.IapDesktop.Application.ProjectExplorer
             }
             catch (Exception e)
             {
-                ExceptionDialog.Show(this, "Adding project failed", e);
+                this.serviceProvider
+                    .GetService<IExceptionDialog>()
+                    .Show(this, "Adding project failed", e);
             }
         }
 
@@ -282,7 +290,9 @@ namespace Google.Solutions.IapDesktop.Application.ProjectExplorer
             }
             catch (Exception e)
             {
-                ExceptionDialog.Show(this, "Loading projects failed", e);
+                this.serviceProvider
+                    .GetService<IExceptionDialog>()
+                    .Show(this, "Loading projects failed", e);
 
                 // Do not close the application, otherwise the user has no 
                 // chance to remediate the situation by unloading the offending
@@ -305,7 +315,9 @@ namespace Google.Solutions.IapDesktop.Application.ProjectExplorer
             }
             catch (Exception e)
             {
-                ExceptionDialog.Show(this, "An error occured", e);
+                this.serviceProvider
+                    .GetService<IExceptionDialog>()
+                    .Show(this, "An error occured", e);
             }
         }
         private void ProjectExplorerWindow_KeyUp(object sender, KeyEventArgs e)
