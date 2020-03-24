@@ -1,4 +1,5 @@
 ﻿using Google.Solutions.IapDesktop.Application.ObjectModel;
+using Google.Solutions.IapDesktop.Application.Services;
 using Google.Solutions.IapDesktop.Application.Settings;
 using Google.Solutions.IapDesktop.Application.SettingsEditor;
 using Google.Solutions.IapDesktop.Application.Windows;
@@ -20,7 +21,46 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows
     [Apartment(ApartmentState.STA)]
     public class WindowTestFixtureBase
     {
+        private const string TestKeyPath = @"Software\Google\__Test";
 
+        protected ServiceRegistry serviceRegistry;
+        protected IServiceProvider serviceProvider;
+        protected IMainForm mainForm;
+
+        protected void PumpWindowMessages()
+            => System.Windows.Forms.Application.DoEvents();
+
+        [SetUp]
+        public void SetUp()
+        {
+            var hkcu = RegistryKey.OpenBaseKey(RegistryHive.CurrentUser, RegistryView.Default);
+            hkcu.DeleteSubKeyTree(TestKeyPath, false);
+
+            var registry = new ServiceRegistry();
+            registry.AddSingleton(new InventorySettingsRepository(hkcu.CreateSubKey(TestKeyPath)));
+            registry.AddTransient<ProjectInventoryService>();
+
+            var mainForm = new MockMainForm();
+            registry.AddSingleton<IMainForm>(mainForm);
+            registry.AddSingleton<IJobHost>(mainForm);
+            registry.AddSingleton<IAuthorizationService>(mainForm);
+            registry.AddSingleton<IEventService>(new EventService(mainForm));
+            registry.AddSingleton<JobService>();
+
+            this.mainForm = mainForm;
+            this.serviceRegistry = registry;
+            this.serviceProvider = registry;
+
+            mainForm.Show();
+
+            PumpWindowMessages();
+        }
+
+        [TearDown]
+        public void TearDown()
+        {
+            this.mainForm.Close();
+        }
     }
 
     internal static class ControlTestExtensions

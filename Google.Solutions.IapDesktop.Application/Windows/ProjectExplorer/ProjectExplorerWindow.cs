@@ -26,9 +26,7 @@ namespace Google.Solutions.IapDesktop.Application.ProjectExplorer
         private readonly JobService jobService;
         private readonly ProjectInventoryService projectInventoryService;
         private readonly InventorySettingsRepository settingsRepository;
-        private readonly ISettingsEditor settingsEditor;
         private readonly IAuthorizationService authService;
-        private readonly CloudConsoleService cloudConsoleService;
         private readonly IServiceProvider serviceProvider;
 
         private readonly CloudNode rootNode = new CloudNode();
@@ -61,9 +59,7 @@ namespace Google.Solutions.IapDesktop.Application.ProjectExplorer
             this.jobService = serviceProvider.GetService<JobService>();
             this.projectInventoryService = serviceProvider.GetService<ProjectInventoryService>();
             this.settingsRepository = serviceProvider.GetService<InventorySettingsRepository>();
-            this.settingsEditor = serviceProvider.GetService<ISettingsEditor>();
             this.authService = serviceProvider.GetService<IAuthorizationService>();
-            this.cloudConsoleService = serviceProvider.GetService<CloudConsoleService>();
 
             this.eventService.BindAsyncHandler<ProjectInventoryService.ProjectAddedEvent>(OnProjectAdded);
             this.eventService.BindHandler<ProjectInventoryService.ProjectDeletedEvent>(OnProjectDeleted);
@@ -190,7 +186,9 @@ namespace Google.Solutions.IapDesktop.Application.ProjectExplorer
         {
             if (this.treeView.SelectedNode is VmInstanceNode vmInstanceNode)
             {
-                this.cloudConsoleService.OpenVmInstance(vmInstanceNode.Reference);
+                this.serviceProvider
+                    .GetService<CloudConsoleService>()
+                    .OpenVmInstance(vmInstanceNode.Reference);
             }
         }
 
@@ -198,7 +196,9 @@ namespace Google.Solutions.IapDesktop.Application.ProjectExplorer
         {
             if (this.treeView.SelectedNode is VmInstanceNode vmInstanceNode)
             {
-                this.cloudConsoleService.OpenVmInstanceLogs(vmInstanceNode.Reference, vmInstanceNode.InstanceId);
+                this.serviceProvider
+                    .GetService<CloudConsoleService>()
+                    .OpenVmInstanceLogs(vmInstanceNode.Reference, vmInstanceNode.InstanceId);
             }
         }
 
@@ -206,11 +206,15 @@ namespace Google.Solutions.IapDesktop.Application.ProjectExplorer
         {
             if (this.treeView.SelectedNode is ProjectNode projectNode)
             {
-                this.cloudConsoleService.ConfigureIapAccess(projectNode.ProjectId);
+                this.serviceProvider
+                    .GetService<CloudConsoleService>()
+                    .ConfigureIapAccess(projectNode.ProjectId);
             }
             else if (this.treeView.SelectedNode is VmInstanceNode vmInstanceNode)
             {
-                this.cloudConsoleService.ConfigureIapAccess(vmInstanceNode.ProjectId);
+                this.serviceProvider
+                    .GetService<CloudConsoleService>()
+                    .ConfigureIapAccess(vmInstanceNode.ProjectId);
             }
         }
 
@@ -254,7 +258,9 @@ namespace Google.Solutions.IapDesktop.Application.ProjectExplorer
         {
             if (this.treeView.SelectedNode is InventoryNode inventoryNode)
             {
-                this.settingsEditor.ShowWindow(inventoryNode);
+                this.serviceProvider
+                    .GetService<ISettingsEditor>()
+                    .ShowWindow(inventoryNode);
             }
         }
 

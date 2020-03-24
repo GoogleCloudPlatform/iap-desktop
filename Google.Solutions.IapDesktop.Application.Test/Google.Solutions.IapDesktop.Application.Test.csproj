@@ -91,10 +91,15 @@
     <Compile Include="Windows\MockMainForm.Designer.cs">
       <DependentUpon>MockMainForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="Windows\TestProjectExplorer.cs" />
     <Compile Include="Windows\WindowTestFixtureBase.cs" />
     <Compile Include="Windows\TestSettingsEditor.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Google.Solutions.Compute.Test\Google.Solutions.Compute.Test.csproj">
+      <Project>{9c1aa910-798a-4571-9266-7280a677fe9f}</Project>
+      <Name>Google.Solutions.Compute.Test</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Google.Solutions.IapDesktop.Application\Google.Solutions.IapDesktop.Application.csproj">
       <Project>{842b003e-6eeb-429d-a3a1-53b4e642e83b}</Project>
       <Name>Google.Solutions.IapDesktop.Application</Name>

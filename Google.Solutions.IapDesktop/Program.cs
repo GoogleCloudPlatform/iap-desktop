@@ -43,7 +43,8 @@ namespace Google.Solutions.IapDesktop
             var mainForm = new MainForm(serviceRegistry);
             serviceRegistry.AddSingleton<IMainForm>(mainForm);
             serviceRegistry.AddSingleton<IAuthorizationService>(mainForm);
-            serviceRegistry.AddSingleton(new JobService(mainForm, serviceRegistry));
+            serviceRegistry.AddSingleton<IJobHost>(mainForm);
+            serviceRegistry.AddSingleton<JobService>();
             serviceRegistry.AddSingleton<IEventService>(new EventService(mainForm));
 
             serviceRegistry.AddTransient<ProjectInventoryService>();

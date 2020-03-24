@@ -22,9 +22,9 @@ namespace Google.Solutions.IapDesktop.Application.ObjectModel
         private readonly IJobHost host;
         private readonly IAuthorizationService authService;
 
-        public JobService(IJobHost host, IServiceProvider serviceProvider)
+        public JobService(IServiceProvider serviceProvider)
         {
-            this.host = host;
+            this.host = serviceProvider.GetService<IJobHost>();
             this.authService = serviceProvider.GetService<IAuthorizationService>();
         }
 
