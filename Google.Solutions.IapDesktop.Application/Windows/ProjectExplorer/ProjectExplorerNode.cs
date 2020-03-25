@@ -286,8 +286,8 @@ namespace Google.Solutions.IapDesktop.Application.ProjectExplorer
 
     internal class VmInstanceNode : InventoryNode, IProjectExplorerVmInstanceNode
     {
-        private const int IconIndex = 4;
-        private const int ActiveIconIndex = 4;
+        private const int DisconnectedIconIndex = 4;
+        private const int ConnectedIconIndex = 5;
 
         public VmInstanceReference Reference
             => new VmInstanceReference(this.ProjectId, this.ZoneId, this.InstanceName);
@@ -335,7 +335,7 @@ namespace Google.Solutions.IapDesktop.Application.ProjectExplorer
             ZoneNode parent)
             : base(
                   settings.InstanceName,
-                  IconIndex,
+                  DisconnectedIconIndex,
                   settings,
                   changedSettings => saveSettings((VmInstanceSettings)changedSettings),
                   parent)
@@ -400,5 +400,13 @@ namespace Google.Solutions.IapDesktop.Application.ProjectExplorer
         public string ExternalIp { get; }
 
         internal bool IsRunning => this.Status == "RUNNING";
+
+        internal bool IsConnected
+        {
+            get => this.ImageIndex == ConnectedIconIndex;
+            set => this.ImageIndex = this.SelectedImageIndex = value 
+                ? ConnectedIconIndex 
+                : DisconnectedIconIndex;
+        }
     }
 }

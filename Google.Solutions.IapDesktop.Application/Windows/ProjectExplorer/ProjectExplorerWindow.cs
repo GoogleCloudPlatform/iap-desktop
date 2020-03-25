@@ -1,4 +1,5 @@
 ﻿using Google.Apis.Compute.v1.Data;
+using Google.Solutions.Compute;
 using Google.Solutions.Compute.Iap;
 using Google.Solutions.Compute.Net;
 using Google.Solutions.IapDesktop.Application.Adapters;
@@ -72,6 +73,8 @@ namespace Google.Solutions.IapDesktop.Application.ProjectExplorer
 
             this.eventService.BindAsyncHandler<ProjectInventoryService.ProjectAddedEvent>(OnProjectAdded);
             this.eventService.BindHandler<ProjectInventoryService.ProjectDeletedEvent>(OnProjectDeleted);
+            this.eventService.BindHandler<RemoteDesktopConnectionSuceededEvent>(OnRdpConnectionSucceeded);
+            this.eventService.BindHandler<RemoteDesktopWindowClosedEvent>(OnRdpConnectionClosed);
         }
 
         private void PopulateProjectNode(string projectId, IEnumerable<Instance> instances)
@@ -93,6 +96,17 @@ namespace Google.Solutions.IapDesktop.Application.ProjectExplorer
             }
 
             this.rootNode.Expand();
+        }
+
+        private VmInstanceNode FindNode(VmInstanceReference reference)
+        {
+            return this.rootNode.Nodes
+                .OfType<ProjectNode>()
+                .Where(p => p.ProjectId == reference.ProjectId)
+                .SelectMany(p => p.Nodes.Cast<ZoneNode>())
+                .Where(z => z.ZoneId == reference.Zone)
+                .SelectMany(z => z.Nodes.Cast<VmInstanceNode>())
+                .FirstOrDefault(vm => vm.InstanceName == reference.InstanceName); ;
         }
 
         private async Task AddProjectAsync()
@@ -149,6 +163,7 @@ namespace Google.Solutions.IapDesktop.Application.ProjectExplorer
             // Fire an event to update anybody using the node.
             await this.eventService.FireAsync(new ProjectExplorerNodeSelectedEvent(vmNode));
         }
+
         private async Task ConnectInstance(VmInstanceNode vmNode)
         {
             if (this.remoteDesktopService.TryActivate(vmNode.Reference))
@@ -501,6 +516,25 @@ namespace Google.Solutions.IapDesktop.Application.ProjectExplorer
             {
                 // Remove corresponding node from tree.
                 this.rootNode.Nodes.Remove(node);
+            }
+        }
+
+        private void OnRdpConnectionSucceeded(RemoteDesktopConnectionSuceededEvent e)
+        {
+            var node = FindNode(e.Instance);
+            if (node != null)
+            {
+                node.IsConnected = true;
+            }
+        }
+
+
+        private void OnRdpConnectionClosed(RemoteDesktopWindowClosedEvent e)
+        {
+            var node = FindNode(e.Instance);
+            if (node != null)
+            {
+                node.IsConnected = false;
             }
         }
 
