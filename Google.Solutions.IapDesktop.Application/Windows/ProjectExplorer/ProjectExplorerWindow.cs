@@ -1,10 +1,13 @@
 ﻿using Google.Apis.Compute.v1.Data;
+using Google.Solutions.Compute.Iap;
+using Google.Solutions.Compute.Net;
 using Google.Solutions.IapDesktop.Application.Adapters;
 using Google.Solutions.IapDesktop.Application.ObjectModel;
 using Google.Solutions.IapDesktop.Application.Services;
 using Google.Solutions.IapDesktop.Application.Settings;
 using Google.Solutions.IapDesktop.Application.SettingsEditor;
 using Google.Solutions.IapDesktop.Application.Windows;
+using Google.Solutions.IapDesktop.Application.Windows.RemoteDesktop;
 using Google.Solutions.IapDesktop.Windows;
 using System;
 using System.Collections.Generic;
@@ -20,6 +23,8 @@ namespace Google.Solutions.IapDesktop.Application.ProjectExplorer
 {
     public partial class ProjectExplorerWindow : ToolWindow, IProjectExplorer
     {
+        private const int RemoteDesktopPort = 3389;
+
         private readonly DockPanel dockPanel;
         private readonly IMainForm mainForm;
         private readonly IEventService eventService;
@@ -28,6 +33,8 @@ namespace Google.Solutions.IapDesktop.Application.ProjectExplorer
         private readonly InventorySettingsRepository settingsRepository;
         private readonly IAuthorizationService authService;
         private readonly IServiceProvider serviceProvider;
+        private readonly TunnelBrokerService tunnelBrokerService;
+        private readonly RemoteDesktopService remoteDesktopService;
 
         private readonly CloudNode rootNode = new CloudNode();
 
@@ -60,6 +67,8 @@ namespace Google.Solutions.IapDesktop.Application.ProjectExplorer
             this.projectInventoryService = serviceProvider.GetService<ProjectInventoryService>();
             this.settingsRepository = serviceProvider.GetService<InventorySettingsRepository>();
             this.authService = serviceProvider.GetService<IAuthorizationService>();
+            this.tunnelBrokerService = serviceProvider.GetService<TunnelBrokerService>();
+            this.remoteDesktopService = serviceProvider.GetService<RemoteDesktopService>();
 
             this.eventService.BindAsyncHandler<ProjectInventoryService.ProjectAddedEvent>(OnProjectAdded);
             this.eventService.BindHandler<ProjectInventoryService.ProjectDeletedEvent>(OnProjectDeleted);
@@ -139,6 +148,41 @@ namespace Google.Solutions.IapDesktop.Application.ProjectExplorer
 
             // Fire an event to update anybody using the node.
             await this.eventService.FireAsync(new ProjectExplorerNodeSelectedEvent(vmNode));
+        }
+        private async Task ConnectInstance(VmInstanceNode vmNode)
+        {
+            var destination = new TunnelDestination(vmNode.Reference, RemoteDesktopPort);
+
+            // TODO: make configurable
+            var timeout = TimeSpan.FromSeconds(30);
+
+            var tunnel = await this.jobService.RunInBackground(
+                new JobDescription("Opening Cloud IAP tunnel..."),
+                async token =>
+                {
+                    try
+                    {
+                        return await this.tunnelBrokerService.ConnectAsync(destination, timeout);
+                    }
+                    catch (NetworkStreamClosedException e)
+                    {
+                        throw new ApplicationException(
+                            "Connecting to the instance failed. Make sure that you have " +
+                            "configured your firewall rules to permit Cloud IAP access " +
+                            $"to {vmNode.InstanceName}",
+                            e);
+                    }
+                    catch (UnauthorizedException)
+                    {
+                        throw new ApplicationException("You are not authorized to connect to this VM instance");
+                    }
+                });
+
+            this.remoteDesktopService.Connect(
+                vmNode.Reference,
+                "localhost",
+                (ushort)tunnel.LocalPort,
+                vmNode.Settings);
         }
 
         //---------------------------------------------------------------------
@@ -239,8 +283,14 @@ namespace Google.Solutions.IapDesktop.Application.ProjectExplorer
             }
         }
 
-        private async void generateCredentialsToolStripMenuItem_Click(object sender, EventArgs e)
+        private void generateCredentialsToolStripMenuItem_Click(object sender, EventArgs e)
             => generateCredentialsToolStripButton_Click(sender, e);
+
+        private void connectToolStripMenuItem_Click(object sender, EventArgs e)
+            => connectToolStripButton_Click(sender, e);
+
+        private void treeView_NodeMouseDoubleClick(object sender, TreeNodeMouseClickEventArgs e)
+            => connectToolStripButton_Click(sender, e);
 
         //---------------------------------------------------------------------
         // Tool bar event handlers.
@@ -313,6 +363,28 @@ namespace Google.Solutions.IapDesktop.Application.ProjectExplorer
             }
         }
 
+        private async void connectToolStripButton_Click(object sender, EventArgs _)
+        {
+            try
+            {
+                if (this.treeView.SelectedNode is VmInstanceNode vmNode)
+                {
+                    await ConnectInstance(vmNode);
+                }
+            }
+            catch (TaskCanceledException)
+            {
+                // Ignore.
+            }
+            catch (Exception e)
+            {
+                this.serviceProvider
+                    .GetService<IExceptionDialog>()
+                    .Show(this, "Generating credentials failed", e);
+            }
+        }
+
+
         //---------------------------------------------------------------------
         // Other Windows event handlers.
         //---------------------------------------------------------------------
@@ -352,6 +424,8 @@ namespace Google.Solutions.IapDesktop.Application.ProjectExplorer
                 //
                 this.openSettingsButton.Enabled = (args.Node is InventoryNode);
                 this.generateCredentialsToolStripButton.Enabled = (selectedNode is VmInstanceNode);
+                this.connectToolStripButton.Enabled = 
+                    (selectedNode is VmInstanceNode) && ((VmInstanceNode)selectedNode).IsRunning;
 
                 //
                 // Update context menu state.
@@ -370,6 +444,9 @@ namespace Google.Solutions.IapDesktop.Application.ProjectExplorer
                          (selectedNode is VmInstanceNode || selectedNode is ProjectNode);
 
                 this.generateCredentialsToolStripMenuItem.Visible = (selectedNode is VmInstanceNode);
+                this.generateCredentialsToolStripMenuItem.Enabled =
+                    this.connectToolStripMenuItem.Enabled =
+                        (selectedNode is VmInstanceNode) && ((VmInstanceNode)selectedNode).IsRunning;
 
                 //
                 // Fire event.

@@ -36,7 +36,7 @@ namespace Google.Solutions.IapDesktop.Application.Windows.RemoteDesktop
             this.vmInstance = vmInstance;
             this.settings = settings;
 
-            this.TabText = this.Text;
+            this.TabText = settings.InstanceName;
             this.DockAreas = DockAreas.Document;
 
             var fullScreenMenuItem = new ToolStripMenuItem("&Full screen");

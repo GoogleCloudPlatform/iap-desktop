@@ -33,11 +33,15 @@
             this.toolStrip = new System.Windows.Forms.ToolStrip();
             this.refreshButton = new System.Windows.Forms.ToolStripButton();
             this.addButton = new System.Windows.Forms.ToolStripButton();
+            this.vmToolStripSeparator = new System.Windows.Forms.ToolStripSeparator();
+            this.connectToolStripButton = new System.Windows.Forms.ToolStripButton();
             this.openSettingsButton = new System.Windows.Forms.ToolStripButton();
+            this.generateCredentialsToolStripButton = new System.Windows.Forms.ToolStripButton();
             this.vsToolStripExtender = new WeifenLuo.WinFormsUI.Docking.VisualStudioToolStripExtender(this.components);
             this.vs2015LightTheme = new WeifenLuo.WinFormsUI.Docking.VS2015LightTheme();
             this.treeView = new System.Windows.Forms.TreeView();
             this.contextMenu = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.connectToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.generateCredentialsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.refreshToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.refreshAllProjectsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -49,8 +53,6 @@
             this.openInCloudConsoleToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.openlogsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.imageList = new System.Windows.Forms.ImageList(this.components);
-            this.vmToolStripSeparator = new System.Windows.Forms.ToolStripSeparator();
-            this.generateCredentialsToolStripButton = new System.Windows.Forms.ToolStripButton();
             this.toolStrip.SuspendLayout();
             this.contextMenu.SuspendLayout();
             this.SuspendLayout();
@@ -61,6 +63,7 @@
             this.refreshButton,
             this.addButton,
             this.vmToolStripSeparator,
+            this.connectToolStripButton,
             this.openSettingsButton,
             this.generateCredentialsToolStripButton});
             this.toolStrip.Location = new System.Drawing.Point(0, 0);
@@ -89,6 +92,21 @@
             this.addButton.Text = "Add project";
             this.addButton.Click += new System.EventHandler(this.addButton_Click);
             // 
+            // vmToolStripSeparator
+            // 
+            this.vmToolStripSeparator.Name = "vmToolStripSeparator";
+            this.vmToolStripSeparator.Size = new System.Drawing.Size(6, 25);
+            // 
+            // connectToolStripButton
+            // 
+            this.connectToolStripButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.connectToolStripButton.Image = ((System.Drawing.Image)(resources.GetObject("connectToolStripButton.Image")));
+            this.connectToolStripButton.ImageTransparentColor = System.Drawing.Color.White;
+            this.connectToolStripButton.Name = "connectToolStripButton";
+            this.connectToolStripButton.Size = new System.Drawing.Size(23, 22);
+            this.connectToolStripButton.Text = "toolStripButton1";
+            this.connectToolStripButton.Click += new System.EventHandler(this.connectToolStripButton_Click);
+            // 
             // openSettingsButton
             // 
             this.openSettingsButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
@@ -98,6 +116,16 @@
             this.openSettingsButton.Size = new System.Drawing.Size(23, 22);
             this.openSettingsButton.Text = "Settings";
             this.openSettingsButton.Click += new System.EventHandler(this.openSettingsButton_Click);
+            // 
+            // generateCredentialsToolStripButton
+            // 
+            this.generateCredentialsToolStripButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.generateCredentialsToolStripButton.Image = ((System.Drawing.Image)(resources.GetObject("generateCredentialsToolStripButton.Image")));
+            this.generateCredentialsToolStripButton.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.generateCredentialsToolStripButton.Name = "generateCredentialsToolStripButton";
+            this.generateCredentialsToolStripButton.Size = new System.Drawing.Size(23, 22);
+            this.generateCredentialsToolStripButton.Text = "toolStripButton1";
+            this.generateCredentialsToolStripButton.Click += new System.EventHandler(this.generateCredentialsToolStripButton_Click);
             // 
             // vsToolStripExtender
             // 
@@ -116,10 +144,12 @@
             this.treeView.TabIndex = 1;
             this.treeView.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.treeView_AfterSelect);
             this.treeView.NodeMouseClick += new System.Windows.Forms.TreeNodeMouseClickEventHandler(this.treeView_NodeMouseClick);
+            this.treeView.NodeMouseDoubleClick += new System.Windows.Forms.TreeNodeMouseClickEventHandler(this.treeView_NodeMouseDoubleClick);
             // 
             // contextMenu
             // 
             this.contextMenu.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.connectToolStripMenuItem,
             this.generateCredentialsToolStripMenuItem,
             this.refreshToolStripMenuItem,
             this.refreshAllProjectsToolStripMenuItem,
@@ -131,7 +161,14 @@
             this.openInCloudConsoleToolStripMenuItem,
             this.openlogsToolStripMenuItem});
             this.contextMenu.Name = "contextMenu";
-            this.contextMenu.Size = new System.Drawing.Size(277, 192);
+            this.contextMenu.Size = new System.Drawing.Size(277, 214);
+            // 
+            // connectToolStripMenuItem
+            // 
+            this.connectToolStripMenuItem.Name = "connectToolStripMenuItem";
+            this.connectToolStripMenuItem.Size = new System.Drawing.Size(276, 22);
+            this.connectToolStripMenuItem.Text = "&Connect";
+            this.connectToolStripMenuItem.Click += new System.EventHandler(this.connectToolStripMenuItem_Click);
             // 
             // generateCredentialsToolStripMenuItem
             // 
@@ -210,21 +247,6 @@
             this.imageList.Images.SetKeyName(4, "Vm.ico");
             this.imageList.Images.SetKeyName(5, "VmBlue.ico");
             // 
-            // vmToolStripSeparator
-            // 
-            this.vmToolStripSeparator.Name = "vmToolStripSeparator";
-            this.vmToolStripSeparator.Size = new System.Drawing.Size(6, 25);
-            // 
-            // generateCredentialsToolStripButton
-            // 
-            this.generateCredentialsToolStripButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.generateCredentialsToolStripButton.Image = ((System.Drawing.Image)(resources.GetObject("generateCredentialsToolStripButton.Image")));
-            this.generateCredentialsToolStripButton.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.generateCredentialsToolStripButton.Name = "generateCredentialsToolStripButton";
-            this.generateCredentialsToolStripButton.Size = new System.Drawing.Size(23, 22);
-            this.generateCredentialsToolStripButton.Text = "toolStripButton1";
-            this.generateCredentialsToolStripButton.Click += new System.EventHandler(this.generateCredentialsToolStripButton_Click);
-            // 
             // ProjectExplorerWindow
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -267,5 +289,7 @@
         private System.Windows.Forms.ToolStripMenuItem generateCredentialsToolStripMenuItem;
         private System.Windows.Forms.ToolStripSeparator vmToolStripSeparator;
         private System.Windows.Forms.ToolStripButton generateCredentialsToolStripButton;
+        private System.Windows.Forms.ToolStripMenuItem connectToolStripMenuItem;
+        private System.Windows.Forms.ToolStripButton connectToolStripButton;
     }
 }

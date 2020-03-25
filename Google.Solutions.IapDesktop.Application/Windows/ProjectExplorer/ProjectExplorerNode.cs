@@ -292,6 +292,8 @@ namespace Google.Solutions.IapDesktop.Application.ProjectExplorer
         public VmInstanceReference Reference
             => new VmInstanceReference(this.ProjectId, this.ZoneId, this.InstanceName);
 
+        public VmInstanceSettings Settings { get; }
+
         public string ProjectId => ((ZoneNode)this.Parent).ProjectId;
         public string ZoneId => ((ZoneNode)this.Parent).ZoneId;
 
@@ -339,6 +341,7 @@ namespace Google.Solutions.IapDesktop.Application.ProjectExplorer
                   parent)
         {
             this.InstanceId = instance.Id.Value;
+            this.Settings = settings;
             this.Status = instance.Status;
             this.Hostname = instance.Hostname;
             this.MachineType = InventoryNode.ShortIdFromUrl(instance.MachineType);
@@ -395,5 +398,7 @@ namespace Google.Solutions.IapDesktop.Application.ProjectExplorer
         [Category("VM Instance")]
         [DisplayName("IP address (external)")]
         public string ExternalIp { get; }
+
+        internal bool IsRunning => this.Status == "RUNNING";
     }
 }

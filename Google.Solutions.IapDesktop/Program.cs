@@ -53,6 +53,8 @@ namespace Google.Solutions.IapDesktop
             serviceRegistry.AddTransient<CloudConsoleService>();
             serviceRegistry.AddTransient<ProjectPickerDialog>();
             serviceRegistry.AddTransient<IExceptionDialog, ExceptionDialog>();
+            serviceRegistry.AddTransient<ITunnelService, TunnelService>();
+            serviceRegistry.AddSingleton<TunnelBrokerService>();
 
             serviceRegistry.AddSingleton<RemoteDesktopService>();
             serviceRegistry.AddSingleton<ISettingsEditor, SettingsEditorWindow>();

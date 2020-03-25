@@ -14,7 +14,7 @@ namespace Google.Solutions.IapDesktop.Application.Services
         Task<Tunnel> CreateTunnelAsync(TunnelDestination tunnelEndpoint);
     }
 
-    public class TunnelService
+    public class TunnelService : ITunnelService
     {
         private readonly IAuthorizationService authorizationService;
 
