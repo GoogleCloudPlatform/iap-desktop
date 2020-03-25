@@ -151,6 +151,12 @@ namespace Google.Solutions.IapDesktop.Application.ProjectExplorer
         }
         private async Task ConnectInstance(VmInstanceNode vmNode)
         {
+            if (this.remoteDesktopService.TryActivate(vmNode.Reference))
+            {
+                // RDP session was already open, nothing left to do.
+                return;
+            }
+
             var destination = new TunnelDestination(vmNode.Reference, RemoteDesktopPort);
 
             // TODO: make configurable

@@ -3,6 +3,7 @@ using Google.Solutions.IapDesktop.Application.ObjectModel;
 using Google.Solutions.IapDesktop.Application.Settings;
 using Google.Solutions.IapDesktop.Windows;
 using System;
+using System.Linq;
 using WeifenLuo.WinFormsUI.Docking;
 
 namespace Google.Solutions.IapDesktop.Application.Windows.RemoteDesktop
@@ -25,6 +26,26 @@ namespace Google.Solutions.IapDesktop.Application.Windows.RemoteDesktop
             this.eventService = serviceProvider.GetService<IEventService>();
         }
 
+        public bool TryActivate(VmInstanceReference vmInstance)
+        {
+            // Check if there is an existing session/pane.
+            var rdpPane = this.dockPanel.Documents
+                .EnsureNotNull()
+                .OfType<RemoteDesktopPane>()
+                .Where(pane => pane.Instance == vmInstance)
+                .FirstOrDefault();
+            if (rdpPane != null)
+            {
+                // Pane found, activate.
+                rdpPane.Show(this.dockPanel, DockState.Document);
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
+
         public IRemoteDesktiopSession Connect(
             VmInstanceReference vmInstance,
             string server,
@@ -37,7 +58,7 @@ namespace Google.Solutions.IapDesktop.Application.Windows.RemoteDesktop
                 vmInstance,
                 settings);
             rdpPane.Show(this.dockPanel, DockState.Document);
-            
+
             rdpPane.Connect(server, port);
 
             return rdpPane;

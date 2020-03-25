@@ -49,7 +49,7 @@ namespace Google.Solutions.IapDesktop.Application.Windows
 
         public void ShowWindow()
         {
-            Show(this.dockPanel, DockState.DockRight);
+            Show(this.dockPanel, DockState.DockRightAutoHide);
         }
 
         public class StatusUpdatedEvent

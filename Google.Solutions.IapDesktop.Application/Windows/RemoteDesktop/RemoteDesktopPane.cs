@@ -21,10 +21,11 @@ namespace Google.Solutions.IapDesktop.Application.Windows.RemoteDesktop
     {
         private readonly IExceptionDialog exceptionDialog;
         private readonly IEventService eventService;
-
-        private readonly VmInstanceReference vmInstance;
         private readonly VmInstanceSettings settings;
 
+        public VmInstanceReference Instance;
+
+        
         public RemoteDesktopPane(
             IEventService eventService, 
             IExceptionDialog exceptionDialog,
@@ -33,7 +34,7 @@ namespace Google.Solutions.IapDesktop.Application.Windows.RemoteDesktop
         {
             this.exceptionDialog = exceptionDialog;
             this.eventService = eventService;
-            this.vmInstance = vmInstance;
+            this.Instance = vmInstance;
             this.settings = settings;
 
             this.TabText = settings.InstanceName;
@@ -208,7 +209,7 @@ namespace Google.Solutions.IapDesktop.Application.Windows.RemoteDesktop
         private async Task ShowErrorAndClose(string caption, RdpException e)
         {
             await this.eventService.FireAsync(
-                new RemoteDesktopConnectionFailedEvent(this.vmInstance, e));
+                new RemoteDesktopConnectionFailedEvent(this.Instance, e));
             this.exceptionDialog.Show(this, caption, e);
             Close();
         }
@@ -248,7 +249,7 @@ namespace Google.Solutions.IapDesktop.Application.Windows.RemoteDesktop
             }
 
             await this.eventService.FireAsync(
-                new RemoteDesktopWindowClosedEvent(this.vmInstance));
+                new RemoteDesktopWindowClosedEvent(this.Instance));
         }
 
         private void tabContextStrip_Opening(object sender, CancelEventArgs e)
@@ -314,7 +315,7 @@ namespace Google.Solutions.IapDesktop.Application.Windows.RemoteDesktop
             Debug.WriteLine($"OnConnected - {this.rdpClient.ConnectedStatusText}");
             this.spinner.Visible = false;
             await this.eventService.FireAsync(
-                new RemoteDesktopConnectionSuceededEvent(this.vmInstance));
+                new RemoteDesktopConnectionSuceededEvent(this.Instance));
         }
 
 
@@ -323,7 +324,7 @@ namespace Google.Solutions.IapDesktop.Application.Windows.RemoteDesktop
             Debug.WriteLine("OnConnecting");
         }
 
-        private async void rdpClient_OnAuthenticationWarningDisplayed(object sender, EventArgs _)
+        private void rdpClient_OnAuthenticationWarningDisplayed(object sender, EventArgs _)
         {
             Debug.WriteLine("OnAuthenticationWarningDisplayed");
         }
