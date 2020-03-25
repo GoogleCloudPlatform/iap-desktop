@@ -26,14 +26,20 @@ namespace Google.Solutions.IapDesktop.Application.Windows.RemoteDesktop
             this.eventService = serviceProvider.GetService<IEventService>();
         }
 
-        public bool TryActivate(VmInstanceReference vmInstance)
-        {
-            // Check if there is an existing session/pane.
-            var rdpPane = this.dockPanel.Documents
+        private RemoteDesktopPane TryGetExistingPane(VmInstanceReference vmInstance)
+            => this.dockPanel.Documents
                 .EnsureNotNull()
                 .OfType<RemoteDesktopPane>()
                 .Where(pane => pane.Instance == vmInstance)
                 .FirstOrDefault();
+
+        public bool IsConnected(VmInstanceReference vmInstance)
+            => TryGetExistingPane(vmInstance) != null;
+
+        public bool TryActivate(VmInstanceReference vmInstance)
+        {
+            // Check if there is an existing session/pane.
+            var rdpPane = TryGetExistingPane(vmInstance);
             if (rdpPane != null)
             {
                 // Pane found, activate.

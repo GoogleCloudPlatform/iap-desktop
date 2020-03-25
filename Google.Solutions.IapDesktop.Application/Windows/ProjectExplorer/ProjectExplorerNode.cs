@@ -218,7 +218,9 @@ namespace Google.Solutions.IapDesktop.Application.ProjectExplorer
             this.settingsRepository = settingsRepository;
         }
 
-        public void Populate(IEnumerable<Instance> allInstances)
+        public void Populate(
+            IEnumerable<Instance> allInstances,
+            Func<VmInstanceReference, bool> isConnected)
         {
             this.Nodes.Clear();
 
@@ -251,6 +253,8 @@ namespace Google.Solutions.IapDesktop.Application.ProjectExplorer
                         instanceSettings,
                         changedSettings => this.settingsRepository.SetVmInstanceSettings(this.ProjectId, changedSettings),
                         zoneNode);
+                    instanceNode.IsConnected = isConnected(
+                        new VmInstanceReference(this.ProjectId, zoneId, instance.Name));
 
                     zoneNode.Nodes.Add(instanceNode);
                 }

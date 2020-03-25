@@ -32,7 +32,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows
             };
 
             this.projectNode = new ProjectNode(settingsService, "project-1");
-            this.projectNode.Populate(instances);
+            this.projectNode.Populate(instances, _ => false);
         }
 
         [Test]

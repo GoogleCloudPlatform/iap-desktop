@@ -86,12 +86,16 @@ namespace Google.Solutions.IapDesktop.Application.ProjectExplorer
                 .FirstOrDefault(n => n.ProjectId == projectId);
             if (projectNode != null)
             {
-                projectNode.Populate(instances);
+                projectNode.Populate(
+                    instances,
+                    this.remoteDesktopService.IsConnected);
             }
             else
             {
                 projectNode = new ProjectNode(this.settingsRepository, projectId);
-                projectNode.Populate(instances);
+                projectNode.Populate(
+                    instances,
+                    this.remoteDesktopService.IsConnected);
                 this.rootNode.Nodes.Add(projectNode);
             }
 
