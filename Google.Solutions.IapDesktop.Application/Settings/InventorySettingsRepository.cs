@@ -159,6 +159,15 @@ namespace Google.Solutions.IapDesktop.Application.Settings
         _Default = Enabled
     }
 
+    public enum RdpUserAuthenticationBehavior
+    {
+        PromptOnFailure = 0,
+        AbortOnFailure = 1,
+
+        [Browsable(false)]
+        _Default = PromptOnFailure
+    }
+
     public abstract class InventorySettingsBase
     {
         //---------------------------------------------------------------------
@@ -244,6 +253,9 @@ namespace Google.Solutions.IapDesktop.Application.Settings
                 ? (RdpRedirectClipboard)value
                 : RdpRedirectClipboard._Default;
         }
+
+        public RdpUserAuthenticationBehavior UserAuthenticationBehavior { get; set; }
+            = RdpUserAuthenticationBehavior.PromptOnFailure;
     }
 
     public class VmInstanceSettings : InventorySettingsBase

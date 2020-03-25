@@ -1,6 +1,6 @@
 ﻿namespace Google.Solutions.IapDesktop.Application.Test.Windows
 {
-    partial class MockMainForm
+    partial class TestMainForm
     {
         /// <summary>
         /// Required designer variable.

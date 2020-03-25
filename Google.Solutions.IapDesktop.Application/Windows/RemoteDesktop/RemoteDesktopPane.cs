@@ -17,21 +17,24 @@ using WeifenLuo.WinFormsUI.Docking;
 
 namespace Google.Solutions.IapDesktop.Application.Windows.RemoteDesktop
 {
-    public partial class RemoteDesktopPane : ToolWindow
+    public partial class RemoteDesktopPane : ToolWindow, IRemoteDesktiopSession
     {
         private readonly IExceptionDialog exceptionDialog;
         private readonly IEventService eventService;
 
         private readonly VmInstanceReference vmInstance;
+        private readonly VmInstanceSettings settings;
 
         public RemoteDesktopPane(
             IEventService eventService, 
             IExceptionDialog exceptionDialog,
-            VmInstanceReference vmInstance)
+            VmInstanceReference vmInstance,
+            VmInstanceSettings settings)
         {
             this.exceptionDialog = exceptionDialog;
             this.eventService = eventService;
             this.vmInstance = vmInstance;
+            this.settings = settings;
 
             this.TabText = this.Text;
             this.DockAreas = DockAreas.Document;
@@ -61,8 +64,7 @@ namespace Google.Solutions.IapDesktop.Application.Windows.RemoteDesktop
 
         public void Connect(
             string server,
-            ushort port,
-            VmInstanceSettings settings)
+            ushort port)
         {
             // NB. The initialization needs to happen after the pane is shown, otherwise
             // an error happens indicating that the control does not have a Window handle.
@@ -70,17 +72,17 @@ namespace Google.Solutions.IapDesktop.Application.Windows.RemoteDesktop
             UpdateLayout();
 
             var advancedSettings = this.rdpClient.AdvancedSettings7;
-            var nonScriptable = (IMsRdpClientNonScriptable4)this.rdpClient.GetOcx();
+            var nonScriptable = (IMsRdpClientNonScriptable5)this.rdpClient.GetOcx();
             var securedSettings2 = this.rdpClient.SecuredSettings2;
 
             //
-            // Basic connection settings.
+            // Basic connection this.settings.
             //
             this.rdpClient.Server = server;
-            this.rdpClient.Domain = settings.Domain;
-            this.rdpClient.UserName = settings.Username;
+            this.rdpClient.Domain = this.settings.Domain;
+            this.rdpClient.UserName = this.settings.Username;
             advancedSettings.RDPPort = port;
-            advancedSettings.ClearTextPassword = settings.Password.AsClearText();
+            advancedSettings.ClearTextPassword = this.settings.Password.AsClearText();
 
             //
             // Connection security settings.
@@ -88,18 +90,27 @@ namespace Google.Solutions.IapDesktop.Application.Windows.RemoteDesktop
             advancedSettings.EnableCredSspSupport = true;
             nonScriptable.PromptForCredentials = false;
             nonScriptable.NegotiateSecurityLayer = true;
+            
+            switch (this.settings.AuthenticationLevel)
+            {
+                case RdpAuthenticationLevel.NoServerAuthentication:
+                    advancedSettings.AuthenticationLevel = 0;
+                    break;
 
-            if (settings.AuthenticationLevel == RdpAuthenticationLevel.RequireServerAuthentication)
-            {
-                advancedSettings.AuthenticationLevel = 1;
+                case RdpAuthenticationLevel.RequireServerAuthentication:
+                    advancedSettings.AuthenticationLevel = 1;
+                    break;
+
+                case RdpAuthenticationLevel.AttemptServerAuthentication:
+                    advancedSettings.AuthenticationLevel = 2;
+                    break;
             }
-            else
-            {
-                advancedSettings.AuthenticationLevel = 2;
-            }
+
+            nonScriptable.AllowPromptingForCredentials =
+                this.settings.UserAuthenticationBehavior == RdpUserAuthenticationBehavior.PromptOnFailure;
 
             //
-            // Advanced connection settings.
+            // Advanced connection this.settings.
             //
             advancedSettings.keepAliveInterval = 60000;
             advancedSettings.PerformanceFlags = 0; // Enable all features, it's 2020.
@@ -107,22 +118,22 @@ namespace Google.Solutions.IapDesktop.Application.Windows.RemoteDesktop
             advancedSettings.MaxReconnectAttempts = 10;
 
             //
-            // Behavior settings.
+            // Behavior this.settings.
             //
             advancedSettings.DisplayConnectionBar =
-                (settings.ConnectionBar != RdpConnectionBarState.Off);
+                (this.settings.ConnectionBar != RdpConnectionBarState.Off);
             advancedSettings.PinConnectionBar =
-                (settings.ConnectionBar == RdpConnectionBarState.Pinned);
+                (this.settings.ConnectionBar == RdpConnectionBarState.Pinned);
             advancedSettings.EnableWindowsKey = 1;
             advancedSettings.GrabFocusOnConnect = false;
 
             //
-            // Local resources settings.
+            // Local resources this.settings.
             //
             advancedSettings.RedirectClipboard = 
-                settings.RedirectClipboard == RdpRedirectClipboard.Enabled;
+                this.settings.RedirectClipboard == RdpRedirectClipboard.Enabled;
 
-            switch (settings.AudioMode)
+            switch (this.settings.AudioMode)
             {
                 case RdpAudioMode.PlayLocally:
                     securedSettings2.AudioRedirectionMode = 0;
@@ -136,11 +147,11 @@ namespace Google.Solutions.IapDesktop.Application.Windows.RemoteDesktop
             }
 
             //
-            // Display settings.
+            // Display this.settings.
             //
             this.rdpClient.FullScreen = false;
 
-            switch (settings.ColorDepth)
+            switch (this.settings.ColorDepth)
             {
                 case RdpColorDepth.HighColor:
                     this.rdpClient.ColorDepth = 16;
@@ -153,7 +164,7 @@ namespace Google.Solutions.IapDesktop.Application.Windows.RemoteDesktop
                     break;
             }
 
-            if (settings.DesktopSize == RdpDesktopSize.ScreenSize)
+            if (this.settings.DesktopSize == RdpDesktopSize.ScreenSize)
             {
                 var screenSize = Screen.GetBounds(this);
                 this.rdpClient.DesktopHeight = screenSize.Height;
@@ -166,7 +177,7 @@ namespace Google.Solutions.IapDesktop.Application.Windows.RemoteDesktop
             }
 
             //
-            // Keyboard settings.
+            // Keyboard this.settings.
             //
             // TODO: Map advancedSettings2.HotKey*
             //
@@ -312,7 +323,7 @@ namespace Google.Solutions.IapDesktop.Application.Windows.RemoteDesktop
             Debug.WriteLine("OnConnecting");
         }
 
-        private void rdpClient_OnAuthenticationWarningDisplayed(object sender, EventArgs args)
+        private async void rdpClient_OnAuthenticationWarningDisplayed(object sender, EventArgs _)
         {
             Debug.WriteLine("OnAuthenticationWarningDisplayed");
         }

@@ -7,6 +7,11 @@ using WeifenLuo.WinFormsUI.Docking;
 
 namespace Google.Solutions.IapDesktop.Application.Windows.RemoteDesktop
 {
+    public interface IRemoteDesktiopSession
+    {
+        void Close();
+    }
+
     public class RemoteDesktopService
     {
         private readonly IExceptionDialog exceptionDialog;
@@ -20,7 +25,7 @@ namespace Google.Solutions.IapDesktop.Application.Windows.RemoteDesktop
             this.eventService = serviceProvider.GetService<IEventService>();
         }
 
-        public void Connect(
+        public IRemoteDesktiopSession Connect(
             VmInstanceReference vmInstance,
             string server,
             ushort port,
@@ -29,13 +34,13 @@ namespace Google.Solutions.IapDesktop.Application.Windows.RemoteDesktop
             var rdpPane = new RemoteDesktopPane(
                 this.eventService,
                 this.exceptionDialog,
-                vmInstance);
-            rdpPane.Show(this.dockPanel, DockState.Document);
-            //rdpPane.Show();
-            rdpPane.Connect(
-                server,
-                port,
+                vmInstance,
                 settings);
+            rdpPane.Show(this.dockPanel, DockState.Document);
+            
+            rdpPane.Connect(server, port);
+
+            return rdpPane;
         }
     }
 

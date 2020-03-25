@@ -98,15 +98,16 @@
     <Compile Include="Settings\TestAuthSettingsRepository.cs" />
     <Compile Include="Settings\TestInventorySettingsRepository.cs" />
     <Compile Include="ServiceModel\TestServiceRegistry.cs" />
-    <Compile Include="Windows\MockMainForm.cs">
+    <Compile Include="Windows\TestMainForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Windows\MockMainForm.Designer.cs">
-      <DependentUpon>MockMainForm.cs</DependentUpon>
+    <Compile Include="Windows\TestMainForm.Designer.cs">
+      <DependentUpon>TestMainForm.cs</DependentUpon>
     </Compile>
     <Compile Include="Windows\TestProjectExplorer.cs" />
     <Compile Include="Windows\TestProjectExplorerNode.cs" />
     <Compile Include="Windows\TestRemoteDesktop.cs" />
+    <Compile Include="Windows\TestRemoteDesktopOverIap.cs" />
     <Compile Include="Windows\WindowTestFixtureBase.cs" />
     <Compile Include="Windows\TestSettingsEditor.cs" />
   </ItemGroup>
@@ -129,8 +130,8 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Windows\MockMainForm.resx">
-      <DependentUpon>MockMainForm.cs</DependentUpon>
+    <EmbeddedResource Include="Windows\TestMainForm.resx">
+      <DependentUpon>TestMainForm.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

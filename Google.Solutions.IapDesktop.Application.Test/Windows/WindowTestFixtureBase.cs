@@ -28,10 +28,21 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows
         protected ServiceRegistry serviceRegistry;
         protected IServiceProvider serviceProvider;
         protected IMainForm mainForm;
-        protected MockExceptionDialog exceptionDialog;
 
-        protected void PumpWindowMessages()
-            => System.Windows.Forms.Application.DoEvents();
+        private IEventService eventService;
+        private MockExceptionDialog exceptionDialog;
+
+        protected Exception ExceptionShown => this.exceptionDialog.ExceptionShown;
+
+        private class MockExceptionDialog : IExceptionDialog
+        {
+            public Exception ExceptionShown { get; private set; }
+
+            public void Show(IWin32Window parent, string caption, Exception e)
+            {
+                this.ExceptionShown = e;
+            }
+        }
 
         [SetUp]
         public void SetUp()
@@ -43,11 +54,13 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows
             registry.AddSingleton(new InventorySettingsRepository(hkcu.CreateSubKey(TestKeyPath)));
             registry.AddTransient<ProjectInventoryService>();
 
-            var mainForm = new MockMainForm();
+            var mainForm = new TestMainForm();
             registry.AddSingleton<IMainForm>(mainForm);
             registry.AddSingleton<IJobService>(mainForm);
             registry.AddSingleton<IAuthorizationService>(mainForm);
-            registry.AddSingleton<IEventService>(new EventService(mainForm));
+
+            this.eventService = new EventService(mainForm);
+            registry.AddSingleton<IEventService>(this.eventService);
 
             this.exceptionDialog = new MockExceptionDialog();
             registry.AddSingleton<IExceptionDialog>(this.exceptionDialog);
@@ -67,6 +80,27 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows
             PumpWindowMessages();
             this.mainForm.Close();
         }
+
+        protected void PumpWindowMessages()
+            => System.Windows.Forms.Application.DoEvents();
+
+        protected TEvent AwaitEvent<TEvent>() where TEvent : class
+        {
+            TEvent deliveredEvent = null;
+
+            this.eventService.BindHandler<TEvent>(e =>
+            {
+                deliveredEvent = e;
+            });
+
+            while (deliveredEvent == null)
+            {
+                PumpWindowMessages();
+            }
+
+            return deliveredEvent;
+        }
+
         protected static Instance CreateInstance(string instanceName, string zone, bool windows)
         {
             return new Instance()
@@ -90,15 +124,6 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows
             };
         }
 
-        protected class MockExceptionDialog : IExceptionDialog
-        {
-            public Exception ExceptionShown { get; private set; }
-
-            public void Show(IWin32Window parent, string caption, Exception e)
-            {
-                this.ExceptionShown = e;
-            }
-        }
     }
 
     internal static class ControlTestExtensions

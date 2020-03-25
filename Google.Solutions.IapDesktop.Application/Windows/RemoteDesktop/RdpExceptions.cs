@@ -16,6 +16,10 @@ namespace Google.Solutions.IapDesktop.Application.Windows.RemoteDesktop
         {
         }
 
+        public RdpException(string message) : base(message)
+        {
+        }
+
         public override string ToString()
         {
             return this.Message;

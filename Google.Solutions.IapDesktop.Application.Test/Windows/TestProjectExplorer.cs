@@ -43,7 +43,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows
             Assert.IsInstanceOf(typeof(CloudNode), rootNode);
             Assert.AreEqual(0, rootNode.Nodes.Count);
 
-            Assert.IsNull(this.exceptionDialog.ExceptionShown);
+            Assert.IsNull(this.ExceptionShown);
         }
 
         [Test]
@@ -87,7 +87,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows
             Assert.AreEqual("instance-1a", vmNode.Text);
             Assert.AreEqual(0, vmNode.Nodes.Count);
 
-            Assert.IsNull(this.exceptionDialog.ExceptionShown);
+            Assert.IsNull(this.ExceptionShown);
         }
 
         [Test]
@@ -138,7 +138,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows
             Assert.AreEqual(0, vmNode.Nodes.Count);
             Assert.AreEqual("windows", vmNode.Text);
 
-            Assert.IsNull(this.exceptionDialog.ExceptionShown);
+            Assert.IsNull(this.ExceptionShown);
         }
 
         [Test]
