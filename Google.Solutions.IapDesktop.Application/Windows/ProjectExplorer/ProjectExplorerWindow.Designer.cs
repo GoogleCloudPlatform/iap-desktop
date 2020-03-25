@@ -38,6 +38,7 @@
             this.vs2015LightTheme = new WeifenLuo.WinFormsUI.Docking.VS2015LightTheme();
             this.treeView = new System.Windows.Forms.TreeView();
             this.contextMenu = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.generateCredentialsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.refreshToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.refreshAllProjectsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.unloadProjectToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -48,7 +49,8 @@
             this.openInCloudConsoleToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.openlogsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.imageList = new System.Windows.Forms.ImageList(this.components);
-            this.generateCredentialsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.vmToolStripSeparator = new System.Windows.Forms.ToolStripSeparator();
+            this.generateCredentialsToolStripButton = new System.Windows.Forms.ToolStripButton();
             this.toolStrip.SuspendLayout();
             this.contextMenu.SuspendLayout();
             this.SuspendLayout();
@@ -58,7 +60,9 @@
             this.toolStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.refreshButton,
             this.addButton,
-            this.openSettingsButton});
+            this.vmToolStripSeparator,
+            this.openSettingsButton,
+            this.generateCredentialsToolStripButton});
             this.toolStrip.Location = new System.Drawing.Point(0, 0);
             this.toolStrip.Name = "toolStrip";
             this.toolStrip.Size = new System.Drawing.Size(800, 25);
@@ -127,8 +131,14 @@
             this.openInCloudConsoleToolStripMenuItem,
             this.openlogsToolStripMenuItem});
             this.contextMenu.Name = "contextMenu";
-            this.contextMenu.Size = new System.Drawing.Size(277, 214);
-            this.contextMenu.Opening += new System.ComponentModel.CancelEventHandler(this.contextMenu_Opening);
+            this.contextMenu.Size = new System.Drawing.Size(277, 192);
+            // 
+            // generateCredentialsToolStripMenuItem
+            // 
+            this.generateCredentialsToolStripMenuItem.Name = "generateCredentialsToolStripMenuItem";
+            this.generateCredentialsToolStripMenuItem.Size = new System.Drawing.Size(276, 22);
+            this.generateCredentialsToolStripMenuItem.Text = "Generate &Windows logon credentials...";
+            this.generateCredentialsToolStripMenuItem.Click += new System.EventHandler(this.generateCredentialsToolStripMenuItem_Click);
             // 
             // refreshToolStripMenuItem
             // 
@@ -200,12 +210,20 @@
             this.imageList.Images.SetKeyName(4, "Vm.ico");
             this.imageList.Images.SetKeyName(5, "VmBlue.ico");
             // 
-            // generateCredentialsToolStripMenuItem
+            // vmToolStripSeparator
             // 
-            this.generateCredentialsToolStripMenuItem.Name = "generateCredentialsToolStripMenuItem";
-            this.generateCredentialsToolStripMenuItem.Size = new System.Drawing.Size(276, 22);
-            this.generateCredentialsToolStripMenuItem.Text = "Generate &Windows logon credentials...";
-            this.generateCredentialsToolStripMenuItem.Click += new System.EventHandler(this.generateCredentialsToolStripMenuItem_Click);
+            this.vmToolStripSeparator.Name = "vmToolStripSeparator";
+            this.vmToolStripSeparator.Size = new System.Drawing.Size(6, 25);
+            // 
+            // generateCredentialsToolStripButton
+            // 
+            this.generateCredentialsToolStripButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.generateCredentialsToolStripButton.Image = ((System.Drawing.Image)(resources.GetObject("generateCredentialsToolStripButton.Image")));
+            this.generateCredentialsToolStripButton.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.generateCredentialsToolStripButton.Name = "generateCredentialsToolStripButton";
+            this.generateCredentialsToolStripButton.Size = new System.Drawing.Size(23, 22);
+            this.generateCredentialsToolStripButton.Text = "toolStripButton1";
+            this.generateCredentialsToolStripButton.Click += new System.EventHandler(this.generateCredentialsToolStripButton_Click);
             // 
             // ProjectExplorerWindow
             // 
@@ -247,5 +265,7 @@
         private System.Windows.Forms.ToolStripSeparator iapSeparatorToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem configureIapAccessToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem generateCredentialsToolStripMenuItem;
+        private System.Windows.Forms.ToolStripSeparator vmToolStripSeparator;
+        private System.Windows.Forms.ToolStripButton generateCredentialsToolStripButton;
     }
 }

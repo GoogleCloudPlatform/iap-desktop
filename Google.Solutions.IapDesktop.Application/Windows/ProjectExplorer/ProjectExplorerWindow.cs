@@ -153,26 +153,6 @@ namespace Google.Solutions.IapDesktop.Application.ProjectExplorer
             }
         }
 
-        private void contextMenu_Opening(object sender, CancelEventArgs e)
-        {
-            var selectedNode = this.treeView.SelectedNode;
-
-            this.refreshToolStripMenuItem.Visible =
-                this.unloadProjectToolStripMenuItem.Visible = (selectedNode is ProjectNode);
-            this.refreshAllProjectsToolStripMenuItem.Visible = (selectedNode is CloudNode);
-            this.propertiesToolStripMenuItem.Visible = (selectedNode is InventoryNode);
-
-            this.cloudConsoleSeparatorToolStripMenuItem.Visible =
-                this.openInCloudConsoleToolStripMenuItem.Visible =
-                this.openlogsToolStripMenuItem.Visible = (selectedNode is VmInstanceNode);
-
-            this.iapSeparatorToolStripMenuItem.Visible =
-                this.configureIapAccessToolStripMenuItem.Visible =
-                     (selectedNode is VmInstanceNode || selectedNode is ProjectNode);
-
-            this.generateCredentialsToolStripMenuItem.Visible = (selectedNode is VmInstanceNode);
-        }
-
         private async void refreshAllProjectsToolStripMenuItem_Click(object sender, EventArgs _)
         {
             try
@@ -259,26 +239,8 @@ namespace Google.Solutions.IapDesktop.Application.ProjectExplorer
             }
         }
 
-        private async void generateCredentialsToolStripMenuItem_Click(object sender, EventArgs _)
-        {
-            try
-            {
-                if (this.treeView.SelectedNode is VmInstanceNode vmNode)
-                {
-                    await GenerateCredentials(vmNode);
-                }
-            }
-            catch (TaskCanceledException)
-            {
-                // Ignore.
-            }
-            catch (Exception e)
-            {
-                this.serviceProvider
-                    .GetService<IExceptionDialog>()
-                    .Show(this, "Generating credentials failed", e);
-            }
-        }
+        private async void generateCredentialsToolStripMenuItem_Click(object sender, EventArgs e)
+            => generateCredentialsToolStripButton_Click(sender, e);
 
         //---------------------------------------------------------------------
         // Tool bar event handlers.
@@ -330,6 +292,27 @@ namespace Google.Solutions.IapDesktop.Application.ProjectExplorer
             }
         }
 
+        private async void generateCredentialsToolStripButton_Click(object sender, EventArgs _)
+        {
+            try
+            {
+                if (this.treeView.SelectedNode is VmInstanceNode vmNode)
+                {
+                    await GenerateCredentials(vmNode);
+                }
+            }
+            catch (TaskCanceledException)
+            {
+                // Ignore.
+            }
+            catch (Exception e)
+            {
+                this.serviceProvider
+                    .GetService<IExceptionDialog>()
+                    .Show(this, "Generating credentials failed", e);
+            }
+        }
+
         //---------------------------------------------------------------------
         // Other Windows event handlers.
         //---------------------------------------------------------------------
@@ -362,10 +345,36 @@ namespace Google.Solutions.IapDesktop.Application.ProjectExplorer
         {
             try
             {
-                this.openSettingsButton.Enabled = args.Node is InventoryNode;
-                await this.eventService.FireAsync(
-                    new ProjectExplorerNodeSelectedEvent(
-                        ((IProjectExplorerNode)args.Node)));
+                var selectedNode = (IProjectExplorerNode)args.Node;
+
+                //
+                // Update toolbar state.
+                //
+                this.openSettingsButton.Enabled = (args.Node is InventoryNode);
+                this.generateCredentialsToolStripButton.Enabled = (selectedNode is VmInstanceNode);
+
+                //
+                // Update context menu state.
+                //
+                this.refreshToolStripMenuItem.Visible =
+                this.unloadProjectToolStripMenuItem.Visible = (selectedNode is ProjectNode);
+                this.refreshAllProjectsToolStripMenuItem.Visible = (selectedNode is CloudNode);
+                this.propertiesToolStripMenuItem.Visible = (selectedNode is InventoryNode);
+
+                this.cloudConsoleSeparatorToolStripMenuItem.Visible =
+                    this.openInCloudConsoleToolStripMenuItem.Visible =
+                    this.openlogsToolStripMenuItem.Visible = (selectedNode is VmInstanceNode);
+
+                this.iapSeparatorToolStripMenuItem.Visible =
+                    this.configureIapAccessToolStripMenuItem.Visible =
+                         (selectedNode is VmInstanceNode || selectedNode is ProjectNode);
+
+                this.generateCredentialsToolStripMenuItem.Visible = (selectedNode is VmInstanceNode);
+
+                //
+                // Fire event.
+                //
+                await this.eventService.FireAsync(new ProjectExplorerNodeSelectedEvent(selectedNode));
             }
             catch (TaskCanceledException)
             {
