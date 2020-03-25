@@ -61,11 +61,10 @@ namespace Google.Solutions.IapDesktop.Application.Windows.RemoteDesktop
             var rdpPane = new RemoteDesktopPane(
                 this.eventService,
                 this.exceptionDialog,
-                vmInstance,
-                settings);
+                vmInstance);
             rdpPane.Show(this.dockPanel, DockState.Document);
 
-            rdpPane.Connect(server, port);
+            rdpPane.Connect(server, port, settings);
 
             return rdpPane;
         }

@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Google.Solutions.IapDesktop.Application.Registry;
 
 namespace Google.Solutions.IapDesktop.Application.Test.Windows
 {
@@ -98,7 +99,6 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows
         }
 
         [Test]
-
         public void WhenDesktopSizeSetInProjectAndZone_ZoneValueIsInheritedDownToVm()
         {
             this.projectNode.DesktopSize = RdpDesktopSize.ClientSize;
@@ -116,6 +116,44 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows
 
             Assert.AreEqual(RdpDesktopSize.ScreenSize, instanceA.DesktopSize);
             Assert.AreEqual(RdpDesktopSize.ClientSize, instanceB.DesktopSize);
+        }
+
+        [Test]
+        public void WhenSettingsAppliedOnProjectAndZone_ThenEffectiveSettingsReflectThese()
+        {
+            this.projectNode.AuthenticationLevel = RdpAuthenticationLevel.RequireServerAuthentication;
+            
+            var zoneA = (ZoneNode)this.projectNode.FirstNode;
+            zoneA.Username = "zone";
+
+            var instanceA = (VmInstanceNode)zoneA.FirstNode;
+            instanceA.Domain = "instance";
+
+            var effective = instanceA.EffectiveSettingsWithInheritanceApplied;
+
+            Assert.AreEqual(RdpAuthenticationLevel.RequireServerAuthentication, effective.AuthenticationLevel);
+            Assert.AreEqual("zone", effective.Username);
+            Assert.AreEqual("instance", effective.Domain);
+        }
+
+        [Test]
+        public void WhenSettingPassword_CleartextPasswordIsMasked()
+        {
+            this.projectNode.CleartextPassword = "actual password";
+
+            Assert.AreEqual("********", this.projectNode.CleartextPassword);
+        }
+
+        [Test]
+        public void WhenSettingPassword_EffectiveSettingsContainRealPassword()
+        {
+            this.projectNode.CleartextPassword = "actual password";
+
+            var zoneA = (ZoneNode)this.projectNode.FirstNode;
+            var instanceA = (VmInstanceNode)zoneA.FirstNode;
+            var effective = instanceA.EffectiveSettingsWithInheritanceApplied;
+
+            Assert.AreEqual("actual password", effective.Password.AsClearText());
         }
     }
 }

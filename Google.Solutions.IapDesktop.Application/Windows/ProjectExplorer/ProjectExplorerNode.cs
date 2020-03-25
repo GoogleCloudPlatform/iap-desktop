@@ -8,6 +8,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
+using System.Security;
 using System.Windows.Forms;
 
 namespace Google.Solutions.IapDesktop.Application.ProjectExplorer
@@ -72,12 +73,20 @@ namespace Google.Solutions.IapDesktop.Application.ProjectExplorer
         [DisplayName("Password")]
         [Description("Windows logon password")]
         [PasswordPropertyText(true)]
-        public string Password
+        public string CleartextPassword
         {
             get => ShouldSerializePassword()
-                ? new string('*', this.settings.Password.Length)
+                ? new string('*', 8)
+                : string.Empty;
+            set => this.Password = SecureStringExtensions.FromClearText(value);
+        }
+
+        protected SecureString Password
+        {
+            get => ShouldSerializePassword()
+                ? this.settings.Password
                 : this.parent?.Password;
-            set => this.settings.Password = SecureStringExtensions.FromClearText(value);
+            set => this.settings.Password = value;
         }
 
         public bool ShouldSerializePassword() => this.settings.Password != null;
@@ -296,10 +305,24 @@ namespace Google.Solutions.IapDesktop.Application.ProjectExplorer
         public VmInstanceReference Reference
             => new VmInstanceReference(this.ProjectId, this.ZoneId, this.InstanceName);
 
-        public VmInstanceSettings Settings { get; }
-
         public string ProjectId => ((ZoneNode)this.Parent).ProjectId;
         public string ZoneId => ((ZoneNode)this.Parent).ZoneId;
+
+        public VmInstanceSettings EffectiveSettingsWithInheritanceApplied
+            => new VmInstanceSettings()
+            {
+                InstanceName = this.InstanceName,
+                AudioMode = this.AudioMode,
+                AuthenticationLevel = this.AuthenticationLevel,
+                ColorDepth = this.ColorDepth,
+                ConnectionBar = this.ConnectionBar,
+                DesktopSize = this.DesktopSize,
+                RedirectClipboard = this.RedirectClipboard,
+                UserAuthenticationBehavior = RdpUserAuthenticationBehavior._Default,
+                Username = this.Username,
+                Password = this.Password,
+                Domain = this.Domain
+            };
 
         private static string InternalIpFromInstance(Instance instance)
         {
@@ -345,7 +368,6 @@ namespace Google.Solutions.IapDesktop.Application.ProjectExplorer
                   parent)
         {
             this.InstanceId = instance.Id.Value;
-            this.Settings = settings;
             this.Status = instance.Status;
             this.Hostname = instance.Hostname;
             this.MachineType = InventoryNode.ShortIdFromUrl(instance.MachineType);

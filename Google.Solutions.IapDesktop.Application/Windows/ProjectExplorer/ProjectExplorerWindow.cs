@@ -160,7 +160,7 @@ namespace Google.Solutions.IapDesktop.Application.ProjectExplorer
 
             // Update node to persist settings.
             vmNode.Username = credentials.UserName;
-            vmNode.Password = credentials.Password;
+            vmNode.CleartextPassword = credentials.Password;
             vmNode.Domain = null;
             vmNode.SaveChanges();
 
@@ -207,7 +207,7 @@ namespace Google.Solutions.IapDesktop.Application.ProjectExplorer
                 vmNode.Reference,
                 "localhost",
                 (ushort)tunnel.LocalPort,
-                vmNode.Settings);
+                vmNode.EffectiveSettingsWithInheritanceApplied);
         }
 
         //---------------------------------------------------------------------
