@@ -33,20 +33,20 @@
             this.vs2015LightTheme = new WeifenLuo.WinFormsUI.Docking.VS2015LightTheme();
             this.mainMenu = new System.Windows.Forms.MenuStrip();
             this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.addProjectToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.fileSeparatorToolStripMenuItem = new System.Windows.Forms.ToolStripSeparator();
             this.signoutToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.exitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.viewToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.projectExplorerToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.helpToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.aboutToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.openIapDocsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.openIapAccessDocsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.aboutSeparatorToolStripMenuItem = new System.Windows.Forms.ToolStripSeparator();
+            this.aboutToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.vsToolStripExtender = new WeifenLuo.WinFormsUI.Docking.VisualStudioToolStripExtender(this.components);
             this.statusStrip = new System.Windows.Forms.StatusStrip();
             this.dockPanel = new WeifenLuo.WinFormsUI.Docking.DockPanel();
-            this.aboutSeparatorToolStripMenuItem = new System.Windows.Forms.ToolStripSeparator();
-            this.fileSeparatorToolStripMenuItem = new System.Windows.Forms.ToolStripSeparator();
-            this.addProjectToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.mainMenu.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -72,6 +72,18 @@
             this.fileToolStripMenuItem.Name = "fileToolStripMenuItem";
             this.fileToolStripMenuItem.Size = new System.Drawing.Size(37, 20);
             this.fileToolStripMenuItem.Text = "&File";
+            // 
+            // addProjectToolStripMenuItem
+            // 
+            this.addProjectToolStripMenuItem.Name = "addProjectToolStripMenuItem";
+            this.addProjectToolStripMenuItem.Size = new System.Drawing.Size(221, 22);
+            this.addProjectToolStripMenuItem.Text = "&Add Google Cloud project...";
+            this.addProjectToolStripMenuItem.Click += new System.EventHandler(this.addProjectToolStripMenuItem_Click);
+            // 
+            // fileSeparatorToolStripMenuItem
+            // 
+            this.fileSeparatorToolStripMenuItem.Name = "fileSeparatorToolStripMenuItem";
+            this.fileSeparatorToolStripMenuItem.Size = new System.Drawing.Size(218, 6);
             // 
             // signoutToolStripMenuItem
             // 
@@ -116,13 +128,6 @@
             this.helpToolStripMenuItem.Size = new System.Drawing.Size(44, 20);
             this.helpToolStripMenuItem.Text = "&Help";
             // 
-            // aboutToolStripMenuItem
-            // 
-            this.aboutToolStripMenuItem.Name = "aboutToolStripMenuItem";
-            this.aboutToolStripMenuItem.Size = new System.Drawing.Size(286, 22);
-            this.aboutToolStripMenuItem.Text = "&About";
-            this.aboutToolStripMenuItem.Click += new System.EventHandler(this.aboutToolStripMenuItem_Click);
-            // 
             // openIapDocsToolStripMenuItem
             // 
             this.openIapDocsToolStripMenuItem.Name = "openIapDocsToolStripMenuItem";
@@ -136,6 +141,18 @@
             this.openIapAccessDocsToolStripMenuItem.Size = new System.Drawing.Size(286, 22);
             this.openIapAccessDocsToolStripMenuItem.Text = "&Configuring access to Cloud IAP...";
             this.openIapAccessDocsToolStripMenuItem.Click += new System.EventHandler(this.openIapAccessDocsToolStripMenuItem_Click);
+            // 
+            // aboutSeparatorToolStripMenuItem
+            // 
+            this.aboutSeparatorToolStripMenuItem.Name = "aboutSeparatorToolStripMenuItem";
+            this.aboutSeparatorToolStripMenuItem.Size = new System.Drawing.Size(283, 6);
+            // 
+            // aboutToolStripMenuItem
+            // 
+            this.aboutToolStripMenuItem.Name = "aboutToolStripMenuItem";
+            this.aboutToolStripMenuItem.Size = new System.Drawing.Size(286, 22);
+            this.aboutToolStripMenuItem.Text = "&About";
+            this.aboutToolStripMenuItem.Click += new System.EventHandler(this.aboutToolStripMenuItem_Click);
             // 
             // vsToolStripExtender
             // 
@@ -152,27 +169,12 @@
             // dockPanel
             // 
             this.dockPanel.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.dockPanel.DockLeftPortion = 0.15D;
+            this.dockPanel.DockRightPortion = 0.15D;
             this.dockPanel.Location = new System.Drawing.Point(0, 24);
             this.dockPanel.Name = "dockPanel";
             this.dockPanel.Size = new System.Drawing.Size(984, 615);
             this.dockPanel.TabIndex = 9;
-            // 
-            // aboutSeparatorToolStripMenuItem
-            // 
-            this.aboutSeparatorToolStripMenuItem.Name = "aboutSeparatorToolStripMenuItem";
-            this.aboutSeparatorToolStripMenuItem.Size = new System.Drawing.Size(283, 6);
-            // 
-            // fileSeparatorToolStripMenuItem
-            // 
-            this.fileSeparatorToolStripMenuItem.Name = "fileSeparatorToolStripMenuItem";
-            this.fileSeparatorToolStripMenuItem.Size = new System.Drawing.Size(218, 6);
-            // 
-            // addProjectToolStripMenuItem
-            // 
-            this.addProjectToolStripMenuItem.Name = "addProjectToolStripMenuItem";
-            this.addProjectToolStripMenuItem.Size = new System.Drawing.Size(221, 22);
-            this.addProjectToolStripMenuItem.Text = "&Add Google Cloud project...";
-            this.addProjectToolStripMenuItem.Click += new System.EventHandler(this.addProjectToolStripMenuItem_Click);
             // 
             // MainForm
             // 

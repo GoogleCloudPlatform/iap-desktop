@@ -55,6 +55,10 @@ namespace Google.Solutions.IapDesktop.Windows
             {
                 InitializeComponent();
             }
+
+            // Set fixed size for the left/right panels.
+            this.dockPanel.DockLeftPortion =
+                this.dockPanel.DockRightPortion = (300.0f / this.Width);
         }
 
         private void MainForm_FormClosing(object sender, FormClosingEventArgs e)
