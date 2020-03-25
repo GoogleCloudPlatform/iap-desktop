@@ -39,6 +39,11 @@ namespace Google.Solutions.IapDesktop.Application.Adapters
     public interface IComputeEngineAdapter : IDisposable
     {
         Task<IEnumerable<Instance>> QueryInstancesAsync(string projectId);
+
+        Task<NetworkCredential> ResetWindowsUserAsync(
+            VmInstanceReference instanceRef,
+            string username,
+            CancellationToken token);
     }
 
     /// <summary>

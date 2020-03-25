@@ -48,6 +48,7 @@
             this.openInCloudConsoleToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.openlogsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.imageList = new System.Windows.Forms.ImageList(this.components);
+            this.generateCredentialsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStrip.SuspendLayout();
             this.contextMenu.SuspendLayout();
             this.SuspendLayout();
@@ -115,6 +116,7 @@
             // contextMenu
             // 
             this.contextMenu.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.generateCredentialsToolStripMenuItem,
             this.refreshToolStripMenuItem,
             this.refreshAllProjectsToolStripMenuItem,
             this.unloadProjectToolStripMenuItem,
@@ -125,65 +127,65 @@
             this.openInCloudConsoleToolStripMenuItem,
             this.openlogsToolStripMenuItem});
             this.contextMenu.Name = "contextMenu";
-            this.contextMenu.Size = new System.Drawing.Size(207, 192);
+            this.contextMenu.Size = new System.Drawing.Size(277, 214);
             this.contextMenu.Opening += new System.ComponentModel.CancelEventHandler(this.contextMenu_Opening);
             // 
             // refreshToolStripMenuItem
             // 
             this.refreshToolStripMenuItem.Name = "refreshToolStripMenuItem";
-            this.refreshToolStripMenuItem.Size = new System.Drawing.Size(206, 22);
+            this.refreshToolStripMenuItem.Size = new System.Drawing.Size(276, 22);
             this.refreshToolStripMenuItem.Text = "&Refresh project";
             this.refreshToolStripMenuItem.Click += new System.EventHandler(this.refreshToolStripMenuItem_Click);
             // 
             // refreshAllProjectsToolStripMenuItem
             // 
             this.refreshAllProjectsToolStripMenuItem.Name = "refreshAllProjectsToolStripMenuItem";
-            this.refreshAllProjectsToolStripMenuItem.Size = new System.Drawing.Size(206, 22);
+            this.refreshAllProjectsToolStripMenuItem.Size = new System.Drawing.Size(276, 22);
             this.refreshAllProjectsToolStripMenuItem.Text = "Refresh &all projects";
             this.refreshAllProjectsToolStripMenuItem.Click += new System.EventHandler(this.refreshAllProjectsToolStripMenuItem_Click);
             // 
             // unloadProjectToolStripMenuItem
             // 
             this.unloadProjectToolStripMenuItem.Name = "unloadProjectToolStripMenuItem";
-            this.unloadProjectToolStripMenuItem.Size = new System.Drawing.Size(206, 22);
+            this.unloadProjectToolStripMenuItem.Size = new System.Drawing.Size(276, 22);
             this.unloadProjectToolStripMenuItem.Text = "&Unload project";
             this.unloadProjectToolStripMenuItem.Click += new System.EventHandler(this.unloadProjectToolStripMenuItem_Click);
             // 
             // propertiesToolStripMenuItem
             // 
             this.propertiesToolStripMenuItem.Name = "propertiesToolStripMenuItem";
-            this.propertiesToolStripMenuItem.Size = new System.Drawing.Size(206, 22);
+            this.propertiesToolStripMenuItem.Size = new System.Drawing.Size(276, 22);
             this.propertiesToolStripMenuItem.Text = "P&roperties";
             this.propertiesToolStripMenuItem.Click += new System.EventHandler(this.propertiesToolStripMenuItem_Click);
             // 
             // iapSeparatorToolStripMenuItem
             // 
             this.iapSeparatorToolStripMenuItem.Name = "iapSeparatorToolStripMenuItem";
-            this.iapSeparatorToolStripMenuItem.Size = new System.Drawing.Size(203, 6);
+            this.iapSeparatorToolStripMenuItem.Size = new System.Drawing.Size(273, 6);
             // 
             // configureIapAccessToolStripMenuItem
             // 
             this.configureIapAccessToolStripMenuItem.Name = "configureIapAccessToolStripMenuItem";
-            this.configureIapAccessToolStripMenuItem.Size = new System.Drawing.Size(206, 22);
+            this.configureIapAccessToolStripMenuItem.Size = new System.Drawing.Size(276, 22);
             this.configureIapAccessToolStripMenuItem.Text = "Configure IAP a&ccess...";
             this.configureIapAccessToolStripMenuItem.Click += new System.EventHandler(this.configureIapAccessToolStripMenuItem_Click);
             // 
             // cloudConsoleSeparatorToolStripMenuItem
             // 
             this.cloudConsoleSeparatorToolStripMenuItem.Name = "cloudConsoleSeparatorToolStripMenuItem";
-            this.cloudConsoleSeparatorToolStripMenuItem.Size = new System.Drawing.Size(203, 6);
+            this.cloudConsoleSeparatorToolStripMenuItem.Size = new System.Drawing.Size(273, 6);
             // 
             // openInCloudConsoleToolStripMenuItem
             // 
             this.openInCloudConsoleToolStripMenuItem.Name = "openInCloudConsoleToolStripMenuItem";
-            this.openInCloudConsoleToolStripMenuItem.Size = new System.Drawing.Size(206, 22);
+            this.openInCloudConsoleToolStripMenuItem.Size = new System.Drawing.Size(276, 22);
             this.openInCloudConsoleToolStripMenuItem.Text = "Open in Cloud Consol&e...";
             this.openInCloudConsoleToolStripMenuItem.Click += new System.EventHandler(this.openInCloudConsoleToolStripMenuItem_Click);
             // 
             // openlogsToolStripMenuItem
             // 
             this.openlogsToolStripMenuItem.Name = "openlogsToolStripMenuItem";
-            this.openlogsToolStripMenuItem.Size = new System.Drawing.Size(206, 22);
+            this.openlogsToolStripMenuItem.Size = new System.Drawing.Size(276, 22);
             this.openlogsToolStripMenuItem.Text = "Open &logs...";
             this.openlogsToolStripMenuItem.Click += new System.EventHandler(this.openlogsToolStripMenuItem_Click);
             // 
@@ -197,6 +199,13 @@
             this.imageList.Images.SetKeyName(3, "Zone.ico");
             this.imageList.Images.SetKeyName(4, "Vm.ico");
             this.imageList.Images.SetKeyName(5, "VmBlue.ico");
+            // 
+            // generateCredentialsToolStripMenuItem
+            // 
+            this.generateCredentialsToolStripMenuItem.Name = "generateCredentialsToolStripMenuItem";
+            this.generateCredentialsToolStripMenuItem.Size = new System.Drawing.Size(276, 22);
+            this.generateCredentialsToolStripMenuItem.Text = "Generate &Windows logon credentials...";
+            this.generateCredentialsToolStripMenuItem.Click += new System.EventHandler(this.generateCredentialsToolStripMenuItem_Click);
             // 
             // ProjectExplorerWindow
             // 
@@ -237,5 +246,6 @@
         private System.Windows.Forms.ToolStripSeparator cloudConsoleSeparatorToolStripMenuItem;
         private System.Windows.Forms.ToolStripSeparator iapSeparatorToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem configureIapAccessToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem generateCredentialsToolStripMenuItem;
     }
 }

@@ -118,6 +118,12 @@
     </Compile>
     <Compile Include="Windows\ExceptionDialog.cs" />
     <Compile Include="Windows\IMainForm.cs" />
+    <Compile Include="Windows\ProjectExplorer\GenerateCredentialsDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Windows\ProjectExplorer\GenerateCredentialsDialog.designer.cs">
+      <DependentUpon>GenerateCredentialsDialog.cs</DependentUpon>
+    </Compile>
     <Compile Include="Windows\ProjectExplorer\IProjectExplorer.cs" />
     <Compile Include="Windows\ProjectExplorer\IProjectExplorerNode.cs" />
     <Compile Include="Windows\ProjectExplorer\ProjectExplorerNode.cs" />
@@ -133,6 +139,12 @@
     </Compile>
     <Compile Include="Windows\ProjectExplorer\ProjectPickerDialog.Designer.cs">
       <DependentUpon>ProjectPickerDialog.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Windows\ProjectExplorer\ShowCredentialsDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Windows\ProjectExplorer\ShowCredentialsDialog.designer.cs">
+      <DependentUpon>ShowCredentialsDialog.cs</DependentUpon>
     </Compile>
     <Compile Include="Windows\RemoteDesktop\RdpExceptions.cs" />
     <Compile Include="Windows\RemoteDesktop\RemoteDesktopPane.cs">
@@ -201,11 +213,17 @@
     <EmbeddedResource Include="Windows\DebugWindow.resx">
       <DependentUpon>DebugWindow.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Windows\ProjectExplorer\GenerateCredentialsDialog.resx">
+      <DependentUpon>GenerateCredentialsDialog.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Windows\ProjectExplorer\ProjectExplorerWindow.resx">
       <DependentUpon>ProjectExplorerWindow.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Windows\ProjectExplorer\ProjectPickerDialog.resx">
       <DependentUpon>ProjectPickerDialog.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Windows\ProjectExplorer\ShowCredentialsDialog.resx">
+      <DependentUpon>ShowCredentialsDialog.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Windows\RemoteDesktop\RemoteDesktopPane.resx">
       <DependentUpon>RemoteDesktopPane.cs</DependentUpon>
@@ -231,6 +249,9 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\Project_small.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Copy_16x.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="..\packages\MSBuild.AssemblyVersion.1.2.0\build\MSBuild.AssemblyVersion.targets" Condition="Exists('..\packages\MSBuild.AssemblyVersion.1.2.0\build\MSBuild.AssemblyVersion.targets')" />

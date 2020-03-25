@@ -106,6 +106,41 @@ namespace Google.Solutions.IapDesktop.Application.ProjectExplorer
 
         }
 
+        private async Task GenerateCredentials(VmInstanceNode vmNode)
+        {
+            // Derive a suggested username from the Windows login name.
+            var suggestedUsername = Environment.UserName;
+
+            // Prompt for username to use.
+            var username = new GenerateCredentialsDialog().PromptForUsername(this, suggestedUsername);
+            if (username == null)
+            {
+                return;
+            }
+
+            var credentials = await this.jobService.RunInBackground(
+                new JobDescription("Generating Windows logon credentials..."),
+                token =>
+                {
+                    return this.serviceProvider.GetService<IComputeEngineAdapter>()
+                        .ResetWindowsUserAsync(vmNode.Reference, username, token);
+                });
+
+            new ShowCredentialsDialog().ShowDialog(
+                this,
+                credentials.UserName,
+                credentials.Password);
+
+            // Update node to persist settings.
+            vmNode.Username = credentials.UserName;
+            vmNode.Password = credentials.Password;
+            vmNode.Domain = null;
+            vmNode.SaveChanges();
+
+            // Fire an event to update anybody using the node.
+            await this.eventService.FireAsync(new ProjectExplorerNodeSelectedEvent(vmNode));
+        }
+
         //---------------------------------------------------------------------
         // Context menu event handlers.
         //---------------------------------------------------------------------
@@ -134,6 +169,8 @@ namespace Google.Solutions.IapDesktop.Application.ProjectExplorer
             this.iapSeparatorToolStripMenuItem.Visible =
                 this.configureIapAccessToolStripMenuItem.Visible =
                      (selectedNode is VmInstanceNode || selectedNode is ProjectNode);
+
+            this.generateCredentialsToolStripMenuItem.Visible = (selectedNode is VmInstanceNode);
         }
 
         private async void refreshAllProjectsToolStripMenuItem_Click(object sender, EventArgs _)
@@ -219,6 +256,27 @@ namespace Google.Solutions.IapDesktop.Application.ProjectExplorer
                 this.serviceProvider
                     .GetService<CloudConsoleService>()
                     .ConfigureIapAccess(vmInstanceNode.ProjectId);
+            }
+        }
+
+        private async void generateCredentialsToolStripMenuItem_Click(object sender, EventArgs _)
+        {
+            try
+            {
+                if (this.treeView.SelectedNode is VmInstanceNode vmNode)
+                {
+                    await GenerateCredentials(vmNode);
+                }
+            }
+            catch (TaskCanceledException)
+            {
+                // Ignore.
+            }
+            catch (Exception e)
+            {
+                this.serviceProvider
+                    .GetService<IExceptionDialog>()
+                    .Show(this, "Generating credentials failed", e);
             }
         }
 
