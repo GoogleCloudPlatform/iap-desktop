@@ -99,7 +99,7 @@
     <Compile Include="Services\ITunnel.cs" />
     <Compile Include="Services\ProjectInventoryService.cs" />
     <Compile Include="Services\TunnelBrokerService.cs" />
-    <Compile Include="Services\TunnelService.cs" />
+    <Compile Include="Services\ITunnelService.cs" />
     <Compile Include="Settings\AuthSettingsRepository.cs" />
     <Compile Include="Registry\SecureStringExtensions.cs" />
     <Compile Include="Settings\WindowSettingsRepository.cs" />

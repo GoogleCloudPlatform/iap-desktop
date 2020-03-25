@@ -9,6 +9,11 @@ using Google.Solutions.IapDesktop.Application.ObjectModel;
 
 namespace Google.Solutions.IapDesktop.Application.Services
 {
+    public interface ITunnelService
+    {
+        Task<Tunnel> CreateTunnelAsync(TunnelDestination tunnelEndpoint);
+    }
+
     public class TunnelService
     {
         private readonly IAuthorizationService authorizationService;

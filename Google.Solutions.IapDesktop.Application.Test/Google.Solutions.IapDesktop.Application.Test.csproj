@@ -95,6 +95,7 @@
     <Compile Include="Registry\TestRegistryBinder.cs" />
     <Compile Include="ServiceModel\MockEventService.cs" />
     <Compile Include="Services\TestProjectInventoryService.cs" />
+    <Compile Include="Services\TestTunnelBrokerService.cs" />
     <Compile Include="Settings\TestAuthSettingsRepository.cs" />
     <Compile Include="Settings\TestInventorySettingsRepository.cs" />
     <Compile Include="ServiceModel\TestServiceRegistry.cs" />

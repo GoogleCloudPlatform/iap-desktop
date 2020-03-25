@@ -33,12 +33,12 @@ namespace Google.Solutions.IapDesktop.Application.Services
             this.cancellationTokenSource = cancellationTokenSource;
         }
 
-        public void Close()
+        public virtual void Close()
         {
             this.cancellationTokenSource.Cancel();
         }
 
-        public async Task Probe(TimeSpan timeout)
+        public virtual async Task Probe(TimeSpan timeout)
         {
             // Probe connection to fail fast if there is an 'access denied'
             // issue.

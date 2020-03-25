@@ -9,14 +9,19 @@ namespace Google.Solutions.IapDesktop.Application.Services
 {
     public class TunnelBrokerService
     {
-        private readonly TunnelService tunnelService;
+        private readonly ITunnelService tunnelService;
         private readonly object tunnelsLock = new object();
         private readonly IDictionary<TunnelDestination, Task<Tunnel>> tunnels =
             new Dictionary<TunnelDestination, Task<Tunnel>>();
 
-        public TunnelBrokerService(IServiceProvider serviceProvider)
+        public TunnelBrokerService(ITunnelService tunnelService)
         {
-            this.tunnelService = serviceProvider.GetService<TunnelService>();
+            this.tunnelService = tunnelService;
+        }
+
+        public TunnelBrokerService(IServiceProvider serviceProvider)
+            : this(serviceProvider.GetService<ITunnelService>())
+        {
         }
 
         public IEnumerable<Tunnel> OpenTunnels =>
@@ -73,10 +78,19 @@ namespace Google.Solutions.IapDesktop.Application.Services
         {
             var tunnel = await ConnectIfNecessaryAsync(endpoint);
 
-            // Whether it is a new or existing tunnel, probe it first before 
-            // handing it out. It might be broken after all (because of reauth
-            // or for other reasons).
-            await tunnel.Probe(timeout);
+            try
+            {
+                // Whether it is a new or existing tunnel, probe it first before 
+                // handing it out. It might be broken after all (because of reauth
+                // or for other reasons).
+                await tunnel.Probe(timeout);
+            }
+            catch (Exception)
+            {
+                // Un-cache this broken tunnel.
+                CloseTunnel(endpoint);
+                throw;
+            }
 
             return tunnel;
         }
