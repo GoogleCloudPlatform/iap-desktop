@@ -1,4 +1,4 @@
-﻿//
+//
 // Copyright 2019 Google LLC
 //
 // Licensed to the Apache Software Foundation (ASF) under one
@@ -20,6 +20,7 @@
 //
 
 using System.Reflection;
+using System.Runtime.CompilerServices;
 
 [assembly: AssemblyTitle("IAP Desktop")]
 [assembly: AssemblyDescription("IAP Desktop")]
