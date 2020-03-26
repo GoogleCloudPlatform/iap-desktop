@@ -108,6 +108,7 @@
     <Compile Include="Registry\RegistryBinder.cs" />
     <Compile Include="Registry\RegistryValueAttribute.cs" />
     <Compile Include="Settings\InventorySettingsRepository.cs" />
+    <Compile Include="Util\RestClient.cs" />
     <Compile Include="Windows\AboutWindow.cs">
       <SubType>Form</SubType>
     </Compile>

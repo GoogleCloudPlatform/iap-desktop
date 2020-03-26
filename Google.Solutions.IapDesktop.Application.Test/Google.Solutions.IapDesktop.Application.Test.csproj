@@ -90,6 +90,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Adapters\TestGithubAdapter.cs" />
     <Compile Include="AssertEx.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Registry\TestRegistryBinder.cs" />
