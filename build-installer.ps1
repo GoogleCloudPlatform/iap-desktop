@@ -32,7 +32,7 @@ $Candle = Join-Path $WixTools 'candle.exe'
 $Light = Join-Path $WixTools 'light.exe'
 
 $SourcesDir = "installer"
-$ObjDir = "installer\obj"
+$ObjDir = "installer\bin"
 
 & $Candle `
     -nologo `
