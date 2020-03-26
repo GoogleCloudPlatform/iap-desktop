@@ -10,17 +10,24 @@ namespace Google.Solutions.IapDesktop.Application.Services
     public class TunnelBrokerService
     {
         private readonly ITunnelService tunnelService;
+        private readonly IEventService eventService;
+
         private readonly object tunnelsLock = new object();
         private readonly IDictionary<TunnelDestination, Task<Tunnel>> tunnels =
             new Dictionary<TunnelDestination, Task<Tunnel>>();
 
-        public TunnelBrokerService(ITunnelService tunnelService)
+        public TunnelBrokerService(
+            ITunnelService tunnelService,
+            IEventService eventService)
         {
             this.tunnelService = tunnelService;
+            this.eventService = eventService;
         }
 
         public TunnelBrokerService(IServiceProvider serviceProvider)
-            : this(serviceProvider.GetService<ITunnelService>())
+            : this(
+                  serviceProvider.GetService<ITunnelService>(),
+                  serviceProvider.GetService<IEventService>())
         {
         }
 
@@ -88,14 +95,16 @@ namespace Google.Solutions.IapDesktop.Application.Services
             catch (Exception)
             {
                 // Un-cache this broken tunnel.
-                CloseTunnel(endpoint);
+                await DisconnectAsync(endpoint);
                 throw;
             }
+
+            await this.eventService.FireAsync(new TunnelOpenedEvent(endpoint));
 
             return tunnel;
         }
 
-        public void CloseTunnel(TunnelDestination endpoint)
+        public async Task DisconnectAsync(TunnelDestination endpoint)
         {
             lock (this.tunnelsLock)
             {
@@ -107,32 +116,52 @@ namespace Google.Solutions.IapDesktop.Application.Services
                 tunnel.Result.Close();
                 this.tunnels.Remove(endpoint);
             }
+
+            await this.eventService.FireAsync(new TunnelClosedEvent(endpoint));
         }
 
-        public void CloseTunnels()
+        public async Task DisconnectAllAsync()
         {
-            lock (this.tunnelsLock)
+            // Create a copy of the list to avoid race conditions.
+            var copyOfEndpoints = new List<TunnelDestination>(this.tunnels.Keys);
+
+            var exceptions = new List<Exception>();
+            foreach (var endpoint in copyOfEndpoints)
             {
-                var copyOfEndpoints = new List<TunnelDestination>(this.tunnels.Keys);
-
-                var exceptions = new List<Exception>();
-                foreach (var endpoint in copyOfEndpoints)
+                try
                 {
-                    try
-                    {
-                        CloseTunnel(endpoint);
-                    }
-                    catch (Exception e)
-                    {
-                        exceptions.Add(e);
-                    }
+                    await DisconnectAsync(endpoint);
                 }
-
-                if (exceptions.Any())
+                catch (Exception e)
                 {
-                    throw new AggregateException(exceptions);
+                    exceptions.Add(e);
                 }
             }
+
+            if (exceptions.Any())
+            {
+                throw new AggregateException(exceptions);
+            }
+        }
+    }
+
+    public class TunnelOpenedEvent
+    {
+        public TunnelDestination Destination { get; }
+
+        public TunnelOpenedEvent(TunnelDestination destination)
+        {
+            this.Destination = destination;
+        }
+    }
+
+    public class TunnelClosedEvent
+    {
+        public TunnelDestination Destination { get; }
+
+        public TunnelClosedEvent(TunnelDestination destination)
+        {
+            this.Destination = destination;
         }
     }
 }

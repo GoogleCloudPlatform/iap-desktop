@@ -28,49 +28,51 @@
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(TunnelsWindow));
             this.toolStrip = new System.Windows.Forms.ToolStrip();
-            this.terminateToolStripButton = new System.Windows.Forms.ToolStripButton();
+            this.disconnectToolStripButton = new System.Windows.Forms.ToolStripButton();
             this.tunnelsList = new System.Windows.Forms.ListView();
             this.instanceHeader = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.projectIdHeader = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.zoneHeader = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.localPortHeader = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-            this.pidHeader = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.contextMenuStrip = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.disconnectTunnelToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStrip.SuspendLayout();
+            this.contextMenuStrip.SuspendLayout();
             this.SuspendLayout();
             // 
             // toolStrip
             // 
             this.toolStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.terminateToolStripButton});
+            this.disconnectToolStripButton});
             this.toolStrip.Location = new System.Drawing.Point(0, 0);
             this.toolStrip.Name = "toolStrip";
             this.toolStrip.Size = new System.Drawing.Size(455, 25);
             this.toolStrip.TabIndex = 5;
             this.toolStrip.Text = "toolStrip";
             // 
-            // terminateToolStripButton
+            // disconnectToolStripButton
             // 
-            this.terminateToolStripButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.terminateToolStripButton.Enabled = false;
-            this.terminateToolStripButton.Image = ((System.Drawing.Image)(resources.GetObject("terminateToolStripButton.Image")));
-            this.terminateToolStripButton.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.terminateToolStripButton.Name = "terminateToolStripButton";
-            this.terminateToolStripButton.Size = new System.Drawing.Size(23, 22);
-            this.terminateToolStripButton.Text = "toolStripButton1";
-            this.terminateToolStripButton.Click += new System.EventHandler(this.terminateToolStripButton_Click);
+            this.disconnectToolStripButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.disconnectToolStripButton.Enabled = false;
+            this.disconnectToolStripButton.Image = ((System.Drawing.Image)(resources.GetObject("disconnectToolStripButton.Image")));
+            this.disconnectToolStripButton.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.disconnectToolStripButton.Name = "disconnectToolStripButton";
+            this.disconnectToolStripButton.Size = new System.Drawing.Size(23, 22);
+            this.disconnectToolStripButton.Text = "Disconnect tunnel";
+            this.disconnectToolStripButton.Click += new System.EventHandler(this.disconnectToolStripButton_Click);
             // 
             // tunnelsList
             // 
-            this.tunnelsList.BackColor = System.Drawing.SystemColors.Control;
             this.tunnelsList.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.tunnelsList.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
             this.instanceHeader,
             this.projectIdHeader,
             this.zoneHeader,
-            this.localPortHeader,
-            this.pidHeader});
+            this.localPortHeader});
+            this.tunnelsList.ContextMenuStrip = this.contextMenuStrip;
             this.tunnelsList.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tunnelsList.FullRowSelect = true;
             this.tunnelsList.GridLines = true;
@@ -83,31 +85,42 @@
             this.tunnelsList.TabIndex = 6;
             this.tunnelsList.UseCompatibleStateImageBehavior = false;
             this.tunnelsList.View = System.Windows.Forms.View.Details;
+            this.tunnelsList.SelectedIndexChanged += new System.EventHandler(this.tunnelsList_SelectedIndexChanged);
             // 
             // instanceHeader
             // 
             this.instanceHeader.Text = "Instance";
-            this.instanceHeader.Width = 100;
+            this.instanceHeader.Width = 130;
             // 
             // projectIdHeader
             // 
             this.projectIdHeader.Text = "Project ID";
-            this.projectIdHeader.Width = 100;
+            this.projectIdHeader.Width = 130;
             // 
             // zoneHeader
             // 
             this.zoneHeader.Text = "Zone";
-            this.zoneHeader.Width = 80;
+            this.zoneHeader.Width = 130;
             // 
             // localPortHeader
             // 
             this.localPortHeader.Text = "Local Port";
             this.localPortHeader.Width = 70;
             // 
-            // pidHeader
+            // contextMenuStrip
             // 
-            this.pidHeader.Text = "Process ID";
-            this.pidHeader.Width = 70;
+            this.contextMenuStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.disconnectTunnelToolStripMenuItem});
+            this.contextMenuStrip.Name = "contextMenuStrip";
+            this.contextMenuStrip.Size = new System.Drawing.Size(171, 26);
+            // 
+            // disconnectTunnelToolStripMenuItem
+            // 
+            this.disconnectTunnelToolStripMenuItem.Enabled = false;
+            this.disconnectTunnelToolStripMenuItem.Name = "disconnectTunnelToolStripMenuItem";
+            this.disconnectTunnelToolStripMenuItem.Size = new System.Drawing.Size(170, 22);
+            this.disconnectTunnelToolStripMenuItem.Text = "&Disconnect tunnel";
+            this.disconnectTunnelToolStripMenuItem.Click += new System.EventHandler(this.disconnectToolStripButton_Click);
             // 
             // TunnelsWindow
             // 
@@ -122,6 +135,7 @@
             this.Text = "Active IAP tunnels";
             this.toolStrip.ResumeLayout(false);
             this.toolStrip.PerformLayout();
+            this.contextMenuStrip.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -129,12 +143,13 @@
 
         #endregion
         private System.Windows.Forms.ToolStrip toolStrip;
-        private System.Windows.Forms.ToolStripButton terminateToolStripButton;
+        private System.Windows.Forms.ToolStripButton disconnectToolStripButton;
         private System.Windows.Forms.ListView tunnelsList;
         private System.Windows.Forms.ColumnHeader instanceHeader;
         private System.Windows.Forms.ColumnHeader projectIdHeader;
         private System.Windows.Forms.ColumnHeader zoneHeader;
         private System.Windows.Forms.ColumnHeader localPortHeader;
-        private System.Windows.Forms.ColumnHeader pidHeader;
+        private System.Windows.Forms.ContextMenuStrip contextMenuStrip;
+        private System.Windows.Forms.ToolStripMenuItem disconnectTunnelToolStripMenuItem;
     }
 }

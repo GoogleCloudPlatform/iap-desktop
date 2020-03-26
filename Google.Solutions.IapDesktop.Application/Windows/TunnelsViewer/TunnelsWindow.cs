@@ -24,6 +24,7 @@ using Google.Solutions.IapDesktop.Application.Services;
 using Google.Solutions.IapDesktop.Windows;
 using System;
 using System.Data;
+using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
 using WeifenLuo.WinFormsUI.Docking;
@@ -51,6 +52,11 @@ namespace Google.Solutions.IapDesktop.Application.Windows.TunnelsViewer
             // just hidden.
             //
             this.HideOnClose = true;
+
+            // Keep the list up tp date.
+            var eventService = serviceProvider.GetService<IEventService>();
+            eventService.BindHandler<TunnelOpenedEvent>(_ => RefreshTunnels());
+            eventService.BindHandler<TunnelClosedEvent>(_ => RefreshTunnels());
         }
 
         private void RefreshTunnels()
@@ -63,8 +69,7 @@ namespace Google.Solutions.IapDesktop.Application.Windows.TunnelsViewer
                     tunnel.Destination.Instance.InstanceName,
                     tunnel.Destination.Instance.ProjectId,
                     tunnel.Destination.Instance.Zone,
-                    tunnel.LocalPort.ToString(),
-                    tunnel.ProcessId != null ? tunnel.ProcessId.ToString() : string.Empty
+                    tunnel.LocalPort.ToString()
                 });
                 item.Tag = tunnel;
                 this.tunnelsList.Items.Add(item);
@@ -91,10 +96,12 @@ namespace Google.Solutions.IapDesktop.Application.Windows.TunnelsViewer
 
         private void tunnelsList_SelectedIndexChanged(object sender, EventArgs eventArgs)
         {
-            this.terminateToolStripButton.Enabled = this.tunnelsList.SelectedIndices.Count > 0;
+            this.disconnectToolStripButton.Enabled = 
+                this.disconnectTunnelToolStripMenuItem.Enabled =
+                this.tunnelsList.SelectedIndices.Count > 0;
         }
 
-        private void terminateToolStripButton_Click(object sender, EventArgs eventArgse)
+        private async void disconnectToolStripButton_Click(object sender, EventArgs eventArgse)
         {
             var selectedItem = this.tunnelsList.SelectedItems
                 .Cast<ListViewItem>()
@@ -114,7 +121,7 @@ namespace Google.Solutions.IapDesktop.Application.Windows.TunnelsViewer
             {
                 try
                 {
-                    this.tunnelBrokerService.CloseTunnel(selectedTunnel.Destination);
+                    await this.tunnelBrokerService.DisconnectAsync(selectedTunnel.Destination);
                     RefreshTunnels();
                 }
                 catch (Exception e)

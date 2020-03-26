@@ -19,7 +19,6 @@ namespace Google.Solutions.IapDesktop.Application.Services
             this.Endpoint.VmInstance, this.Endpoint.Port);
 
         public int LocalPort => listener.LocalPort;
-        public int? ProcessId => null;
 
         public IapTunnelingEndpoint Endpoint => endpoint;
 
