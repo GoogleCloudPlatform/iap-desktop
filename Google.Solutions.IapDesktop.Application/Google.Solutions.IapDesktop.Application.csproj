@@ -82,6 +82,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Adapters\ComputeEngineAdapter.cs" />
+    <Compile Include="Adapters\GithubAdapter.cs" />
     <Compile Include="Adapters\PageHelper.cs" />
     <Compile Include="Adapters\ResourceManagerAdapter.cs" />
     <Compile Include="Global.cs" />

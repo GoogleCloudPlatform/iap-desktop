@@ -1,6 +1,7 @@
 ﻿using Google.Solutions.CloudIap;
 using Google.Solutions.Compute.Auth;
 using Google.Solutions.Compute.Iap;
+using Google.Solutions.IapDesktop.Application.Adapters;
 using Google.Solutions.IapDesktop.Application.ObjectModel;
 using Google.Solutions.IapDesktop.Application.ProjectExplorer;
 using Google.Solutions.IapDesktop.Application.Services;
@@ -183,6 +184,11 @@ namespace Google.Solutions.IapDesktop.Windows
         private void activeTunnelsToolStripMenuItem_Click(object sender, EventArgs e)
         {
             this.serviceProvider.GetService<ITunnelsViewer>().ShowWindow();
+        }
+
+        private void reportIssueToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            this.serviceProvider.GetService<GithubAdapter>().ReportIssue();
         }
 
         private async void addProjectToolStripMenuItem_Click(object sender, EventArgs _)

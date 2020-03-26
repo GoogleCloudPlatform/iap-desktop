@@ -52,6 +52,7 @@ namespace Google.Solutions.IapDesktop
             serviceRegistry.AddTransient<ProjectInventoryService>();
             serviceRegistry.AddTransient<IResourceManagerAdapter, ResourceManagerAdapter>();
             serviceRegistry.AddTransient<IComputeEngineAdapter, ComputeEngineAdapter>();
+            serviceRegistry.AddTransient<GithubAdapter>();
             serviceRegistry.AddTransient<CloudConsoleService>();
             serviceRegistry.AddTransient<ProjectPickerDialog>();
             serviceRegistry.AddTransient<IExceptionDialog, ExceptionDialog>();

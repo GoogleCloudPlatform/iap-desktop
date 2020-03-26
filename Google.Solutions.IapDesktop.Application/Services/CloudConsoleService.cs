@@ -12,7 +12,7 @@ namespace Google.Solutions.IapDesktop.Application.Services
                 UseShellExecute = true,
                 Verb = "open",
                 FileName = url
-            }); ;
+            });
         }
 
         public void OpenVmInstance(VmInstanceReference instance)
