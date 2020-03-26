@@ -4,9 +4,7 @@ using Google.Solutions.IapDesktop.Application.Services;
 using Moq;
 using NUnit.Framework;
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace Google.Solutions.IapDesktop.Application.Test.Services
@@ -18,7 +16,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services
         public async Task WhenConnectSuccessful_ThenOpenTunnelsIncludesTunnel()
         {
             var mockTunnelService = new Mock<ITunnelService>();
-            
+
             var mockEventService = new Mock<IEventService>();
             mockEventService.Setup(s => s.FireAsync(It.IsAny<TunnelOpenedEvent>()))
                 .Returns(Task.FromResult(true));

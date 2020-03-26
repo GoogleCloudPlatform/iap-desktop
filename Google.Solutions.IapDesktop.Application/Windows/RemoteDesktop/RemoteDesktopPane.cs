@@ -24,9 +24,9 @@ namespace Google.Solutions.IapDesktop.Application.Windows.RemoteDesktop
 
         public VmInstanceReference Instance;
 
-        
+
         public RemoteDesktopPane(
-            IEventService eventService, 
+            IEventService eventService,
             IExceptionDialog exceptionDialog,
             VmInstanceReference vmInstance)
         {
@@ -90,7 +90,7 @@ namespace Google.Solutions.IapDesktop.Application.Windows.RemoteDesktop
             advancedSettings.EnableCredSspSupport = true;
             nonScriptable.PromptForCredentials = false;
             nonScriptable.NegotiateSecurityLayer = true;
-            
+
             switch (settings.AuthenticationLevel)
             {
                 case RdpAuthenticationLevel.NoServerAuthentication:
@@ -130,7 +130,7 @@ namespace Google.Solutions.IapDesktop.Application.Windows.RemoteDesktop
             //
             // Local resources settings.
             //
-            advancedSettings.RedirectClipboard = 
+            advancedSettings.RedirectClipboard =
                 settings.RedirectClipboard == RdpRedirectClipboard.Enabled;
 
             switch (settings.AudioMode)

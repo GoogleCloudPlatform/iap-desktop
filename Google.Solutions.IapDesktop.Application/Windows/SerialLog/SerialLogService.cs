@@ -1,13 +1,10 @@
 ﻿using Google.Solutions.Compute;
-using Google.Solutions.IapDesktop.Windows;
-using Google.Solutions.IapDesktop.Application.ObjectModel;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using WeifenLuo.WinFormsUI.Docking;
 using Google.Solutions.IapDesktop.Application.Adapters;
+using Google.Solutions.IapDesktop.Application.ObjectModel;
+using Google.Solutions.IapDesktop.Windows;
+using System;
+using System.Linq;
+using WeifenLuo.WinFormsUI.Docking;
 
 namespace Google.Solutions.IapDesktop.Application.Windows.SerialLog
 {
@@ -37,7 +34,7 @@ namespace Google.Solutions.IapDesktop.Application.Windows.SerialLog
             if (window == null)
             {
                 var gceAdapter = this.serviceProvider.GetService<IComputeEngineAdapter>();
-                
+
                 window = new SerialLogWindow(vmInstance);
                 window.TailSerialPortStream(gceAdapter.GetSerialPortOutput(vmInstance));
             }

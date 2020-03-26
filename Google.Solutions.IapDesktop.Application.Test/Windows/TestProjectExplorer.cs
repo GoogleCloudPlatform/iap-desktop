@@ -1,21 +1,15 @@
-﻿using Google.Solutions.IapDesktop.Application.ObjectModel;
-using Google.Solutions.IapDesktop.Application.Settings;
-using Google.Solutions.IapDesktop.Application.SettingsEditor;
-using Google.Solutions.IapDesktop.Application.Windows;
-using Microsoft.Win32;
-using NUnit.Framework;
-using System;
-using System.Linq;
-using System.ComponentModel;
-using System.Windows.Forms;
-using Google.Solutions.IapDesktop.Application.Services;
-using Google.Solutions.IapDesktop.Application.ProjectExplorer;
-using Moq;
+﻿using Google.Apis.Compute.v1.Data;
 using Google.Solutions.IapDesktop.Application.Adapters;
-using System.Threading.Tasks;
-using Google.Apis.Compute.v1.Data;
-using System.Collections.Generic;
+using Google.Solutions.IapDesktop.Application.ObjectModel;
+using Google.Solutions.IapDesktop.Application.ProjectExplorer;
+using Google.Solutions.IapDesktop.Application.Services;
 using Google.Solutions.IapDesktop.Application.Windows.RemoteDesktop;
+using Moq;
+using NUnit.Framework;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using System.Windows.Forms;
 
 namespace Google.Solutions.IapDesktop.Application.Test.Windows
 {

@@ -1,23 +1,14 @@
 ﻿using Google.Solutions.Compute;
-using Google.Solutions.Compute.Iap;
-using Google.Solutions.Compute.Test.Env;
-using Google.Solutions.IapDesktop.Application.Registry;
 using Google.Solutions.IapDesktop.Application.Settings;
 using Google.Solutions.IapDesktop.Application.Windows.RemoteDesktop;
 using NUnit.Framework;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
 
 namespace Google.Solutions.IapDesktop.Application.Test.Windows
 {
     [TestFixture]
     public class TestRemoteDesktop : WindowTestFixtureBase
     {
-        private readonly VmInstanceReference instanceReference = 
+        private readonly VmInstanceReference instanceReference =
             new VmInstanceReference("project", "zone", "instance");
 
         [Test]
@@ -26,8 +17,8 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows
             var rdpService = new RemoteDesktopService(this.serviceProvider);
             rdpService.Connect(
                 this.instanceReference,
-                "invalid.corp", 
-                3389, 
+                "invalid.corp",
+                3389,
                 new VmInstanceSettings());
 
             AwaitEvent<RemoteDesktopConnectionFailedEvent>();
@@ -41,8 +32,8 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows
             var rdpService = new RemoteDesktopService(this.serviceProvider);
             rdpService.Connect(
                 this.instanceReference,
-                "localhost", 
-                1, 
+                "localhost",
+                1,
                 new VmInstanceSettings());
 
             AwaitEvent<RemoteDesktopConnectionFailedEvent>();

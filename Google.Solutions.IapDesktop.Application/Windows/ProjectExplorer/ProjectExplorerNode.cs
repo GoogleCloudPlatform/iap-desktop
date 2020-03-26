@@ -430,8 +430,8 @@ namespace Google.Solutions.IapDesktop.Application.ProjectExplorer
         internal bool IsConnected
         {
             get => this.ImageIndex == ConnectedIconIndex;
-            set => this.ImageIndex = this.SelectedImageIndex = value 
-                ? ConnectedIconIndex 
+            set => this.ImageIndex = this.SelectedImageIndex = value
+                ? ConnectedIconIndex
                 : DisconnectedIconIndex;
         }
     }

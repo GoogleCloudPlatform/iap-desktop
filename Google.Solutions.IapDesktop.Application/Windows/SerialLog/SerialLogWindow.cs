@@ -19,21 +19,13 @@
 // under the License.
 //
 
-using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Diagnostics;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
-using System.Windows.Forms;
 using Google.Apis.Auth.OAuth2.Responses;
 using Google.Solutions.Compute;
 using Google.Solutions.Compute.Extensions;
-using WeifenLuo.WinFormsUI.Docking;
+using System;
+using System.Threading;
+using System.Threading.Tasks;
+using System.Windows.Forms;
 
 namespace Google.Solutions.IapDesktop.Application.Windows.SerialLog
 {
@@ -83,7 +75,7 @@ namespace Google.Solutions.IapDesktop.Application.Windows.SerialLog
                     // By the time we read the data, the form might have begun closing. In this
                     // case, updating the UI would cause an exception.
                     if (!this.formClosing)
-                    { 
+                    {
                         BeginInvoke((Action)(() => this.log.AppendText(newOutput)));
                     }
 

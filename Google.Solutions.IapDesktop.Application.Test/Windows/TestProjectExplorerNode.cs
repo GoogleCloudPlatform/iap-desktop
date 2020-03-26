@@ -1,13 +1,8 @@
-﻿using Google.Solutions.IapDesktop.Application.ProjectExplorer;
-using Google.Solutions.IapDesktop.Application.ObjectModel;
+﻿using Google.Solutions.IapDesktop.Application.ObjectModel;
+using Google.Solutions.IapDesktop.Application.ProjectExplorer;
+using Google.Solutions.IapDesktop.Application.Registry;
 using Google.Solutions.IapDesktop.Application.Settings;
 using NUnit.Framework;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Google.Solutions.IapDesktop.Application.Registry;
 
 namespace Google.Solutions.IapDesktop.Application.Test.Windows
 {
@@ -57,7 +52,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows
         }
 
         [Test]
-        
+
         public void WhenDesktopSizeSetInProject_ProjectValueIsInheritedDownToVm(
             [Values(RdpDesktopSize.ClientSize, RdpDesktopSize.ScreenSize)]
             RdpDesktopSize size
@@ -122,7 +117,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows
         public void WhenSettingsAppliedOnProjectAndZone_ThenEffectiveSettingsReflectThese()
         {
             this.projectNode.AuthenticationLevel = RdpAuthenticationLevel.RequireServerAuthentication;
-            
+
             var zoneA = (ZoneNode)this.projectNode.FirstNode;
             zoneA.Username = "zone";
 

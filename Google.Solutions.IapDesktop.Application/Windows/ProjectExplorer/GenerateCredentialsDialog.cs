@@ -28,7 +28,7 @@ namespace Google.Solutions.IapDesktop.Application.ProjectExplorer
         // SAM usernames do not permit these characters, see
         // https://docs.microsoft.com/en-us/windows/desktop/adschema/a-samaccountname
         private readonly string DisallowsCharactersInUsername = "\"/\\[]:;|=,+*?<>";
-        
+
 
         public GenerateCredentialsDialog()
         {

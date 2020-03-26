@@ -91,7 +91,7 @@ namespace Google.Solutions.IapDesktop.Application.Windows.RemoteDesktop
     {
         public RdpException Exception { get; }
 
-        public RemoteDesktopConnectionFailedEvent(VmInstanceReference vmInstance, RdpException exception) 
+        public RemoteDesktopConnectionFailedEvent(VmInstanceReference vmInstance, RdpException exception)
             : base(vmInstance)
         {
             this.Exception = exception;

@@ -9,9 +9,6 @@ using Google.Solutions.IapDesktop.Application.Settings;
 using Google.Solutions.IapDesktop.Application.Windows.RemoteDesktop;
 using NUnit.Framework;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -122,8 +119,8 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows
             using (var gceAdapter = new ComputeEngineAdapter(this.serviceProvider.GetService<IAuthorizationService>()))
             {
                 var credentials = await gceAdapter.ResetWindowsUserAsync(
-                    testInstance.InstanceReference, 
-                    "test", 
+                    testInstance.InstanceReference,
+                    "test",
                     CancellationToken.None);
 
                 var rdpService = new RemoteDesktopService(this.serviceProvider);

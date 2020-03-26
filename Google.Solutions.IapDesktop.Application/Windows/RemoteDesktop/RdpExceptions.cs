@@ -5,7 +5,7 @@ using System.Runtime.Serialization;
 namespace Google.Solutions.IapDesktop.Application.Windows.RemoteDesktop
 {
     [Serializable]
-    public  class RdpException : ApplicationException
+    public class RdpException : ApplicationException
     {
         protected RdpException(SerializationInfo info, StreamingContext context)
             : base(info, context)

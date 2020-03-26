@@ -24,7 +24,6 @@ using Google.Solutions.IapDesktop.Application.Services;
 using Google.Solutions.IapDesktop.Windows;
 using System;
 using System.Data;
-using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
 using WeifenLuo.WinFormsUI.Docking;
@@ -96,7 +95,7 @@ namespace Google.Solutions.IapDesktop.Application.Windows.TunnelsViewer
 
         private void tunnelsList_SelectedIndexChanged(object sender, EventArgs eventArgs)
         {
-            this.disconnectToolStripButton.Enabled = 
+            this.disconnectToolStripButton.Enabled =
                 this.disconnectTunnelToolStripMenuItem.Enabled =
                 this.tunnelsList.SelectedIndices.Count > 0;
         }

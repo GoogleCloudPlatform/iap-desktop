@@ -13,7 +13,6 @@ using Google.Solutions.IapDesktop.Application.Windows.SerialLog;
 using Google.Solutions.IapDesktop.Windows;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Data;
 using System.Diagnostics;
 using System.Linq;
@@ -474,7 +473,7 @@ namespace Google.Solutions.IapDesktop.Application.ProjectExplorer
                 this.openSettingsButton.Enabled = (args.Node is InventoryNode);
                 this.connectToolStripButton.Enabled =
                     this.generateCredentialsToolStripButton.Enabled =
-                    this.showSerialLogToolStripButton.Enabled = 
+                    this.showSerialLogToolStripButton.Enabled =
                         (selectedNode is VmInstanceNode) && ((VmInstanceNode)selectedNode).IsRunning;
 
                 //

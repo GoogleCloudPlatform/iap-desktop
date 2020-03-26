@@ -1,9 +1,8 @@
-﻿using System;
+﻿using Google.Solutions.IapDesktop.Application.ObjectModel;
+using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
-using Google.Solutions.IapDesktop.Application.ObjectModel;
 
 namespace Google.Solutions.IapDesktop.Application.Services
 {
