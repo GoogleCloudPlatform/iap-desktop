@@ -53,6 +53,8 @@
             this.openInCloudConsoleToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.openlogsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.imageList = new System.Windows.Forms.ImageList(this.components);
+            this.showSerialLogToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.showSerialLogToolStripButton = new System.Windows.Forms.ToolStripButton();
             this.toolStrip.SuspendLayout();
             this.contextMenu.SuspendLayout();
             this.SuspendLayout();
@@ -65,7 +67,8 @@
             this.vmToolStripSeparator,
             this.connectToolStripButton,
             this.openSettingsButton,
-            this.generateCredentialsToolStripButton});
+            this.generateCredentialsToolStripButton,
+            this.showSerialLogToolStripButton});
             this.toolStrip.Location = new System.Drawing.Point(0, 0);
             this.toolStrip.Name = "toolStrip";
             this.toolStrip.Size = new System.Drawing.Size(800, 25);
@@ -151,6 +154,7 @@
             this.contextMenu.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.connectToolStripMenuItem,
             this.generateCredentialsToolStripMenuItem,
+            this.showSerialLogToolStripMenuItem,
             this.refreshToolStripMenuItem,
             this.refreshAllProjectsToolStripMenuItem,
             this.unloadProjectToolStripMenuItem,
@@ -161,7 +165,7 @@
             this.openInCloudConsoleToolStripMenuItem,
             this.openlogsToolStripMenuItem});
             this.contextMenu.Name = "contextMenu";
-            this.contextMenu.Size = new System.Drawing.Size(277, 214);
+            this.contextMenu.Size = new System.Drawing.Size(277, 236);
             // 
             // connectToolStripMenuItem
             // 
@@ -247,6 +251,23 @@
             this.imageList.Images.SetKeyName(4, "Vm.ico");
             this.imageList.Images.SetKeyName(5, "VmBlue.ico");
             // 
+            // showSerialLogToolStripMenuItem
+            // 
+            this.showSerialLogToolStripMenuItem.Name = "showSerialLogToolStripMenuItem";
+            this.showSerialLogToolStripMenuItem.Size = new System.Drawing.Size(276, 22);
+            this.showSerialLogToolStripMenuItem.Text = "Show serial &log";
+            this.showSerialLogToolStripMenuItem.Click += new System.EventHandler(this.showSerialLogToolStripMenuItem_Click);
+            // 
+            // showSerialLogToolStripButton
+            // 
+            this.showSerialLogToolStripButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.showSerialLogToolStripButton.Image = ((System.Drawing.Image)(resources.GetObject("showSerialLogToolStripButton.Image")));
+            this.showSerialLogToolStripButton.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.showSerialLogToolStripButton.Name = "showSerialLogToolStripButton";
+            this.showSerialLogToolStripButton.Size = new System.Drawing.Size(23, 22);
+            this.showSerialLogToolStripButton.Text = "Show serial &log";
+            this.showSerialLogToolStripButton.Click += new System.EventHandler(this.showSerialLogToolStripButton_Click);
+            // 
             // ProjectExplorerWindow
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -291,5 +312,7 @@
         private System.Windows.Forms.ToolStripButton generateCredentialsToolStripButton;
         private System.Windows.Forms.ToolStripMenuItem connectToolStripMenuItem;
         private System.Windows.Forms.ToolStripButton connectToolStripButton;
+        private System.Windows.Forms.ToolStripMenuItem showSerialLogToolStripMenuItem;
+        private System.Windows.Forms.ToolStripButton showSerialLogToolStripButton;
     }
 }

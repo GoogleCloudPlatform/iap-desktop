@@ -44,6 +44,8 @@ namespace Google.Solutions.IapDesktop.Application.Adapters
             VmInstanceReference instanceRef,
             string username,
             CancellationToken token);
+
+        SerialPortStream GetSerialPortOutput(VmInstanceReference instanceRef);
     }
 
     /// <summary>

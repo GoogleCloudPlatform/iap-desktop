@@ -9,6 +9,7 @@ using Google.Solutions.IapDesktop.Application.Settings;
 using Google.Solutions.IapDesktop.Application.SettingsEditor;
 using Google.Solutions.IapDesktop.Application.Windows;
 using Google.Solutions.IapDesktop.Application.Windows.RemoteDesktop;
+using Google.Solutions.IapDesktop.Application.Windows.SerialLog;
 using Google.Solutions.IapDesktop.Windows;
 using System;
 using System.Collections.Generic;
@@ -316,6 +317,9 @@ namespace Google.Solutions.IapDesktop.Application.ProjectExplorer
         private void treeView_NodeMouseDoubleClick(object sender, TreeNodeMouseClickEventArgs e)
             => connectToolStripButton_Click(sender, e);
 
+        private void showSerialLogToolStripMenuItem_Click(object sender, EventArgs e)
+            => showSerialLogToolStripButton_Click(sender, e);
+
         //---------------------------------------------------------------------
         // Tool bar event handlers.
         //---------------------------------------------------------------------
@@ -408,6 +412,27 @@ namespace Google.Solutions.IapDesktop.Application.ProjectExplorer
             }
         }
 
+        private void showSerialLogToolStripButton_Click(object sender, EventArgs _)
+        {
+            try
+            {
+                if (this.treeView.SelectedNode is VmInstanceNode vmNode)
+                {
+                    this.serviceProvider.GetService<SerialLogService>()
+                        .ShowSerialLog(vmNode.Reference);
+                }
+            }
+            catch (TaskCanceledException)
+            {
+                // Ignore.
+            }
+            catch (Exception e)
+            {
+                this.serviceProvider
+                    .GetService<IExceptionDialog>()
+                    .Show(this, "Opening serial log failed", e);
+            }
+        }
 
         //---------------------------------------------------------------------
         // Other Windows event handlers.
@@ -447,9 +472,10 @@ namespace Google.Solutions.IapDesktop.Application.ProjectExplorer
                 // Update toolbar state.
                 //
                 this.openSettingsButton.Enabled = (args.Node is InventoryNode);
-                this.generateCredentialsToolStripButton.Enabled = (selectedNode is VmInstanceNode);
-                this.connectToolStripButton.Enabled = 
-                    (selectedNode is VmInstanceNode) && ((VmInstanceNode)selectedNode).IsRunning;
+                this.connectToolStripButton.Enabled =
+                    this.generateCredentialsToolStripButton.Enabled =
+                    this.showSerialLogToolStripButton.Enabled = 
+                        (selectedNode is VmInstanceNode) && ((VmInstanceNode)selectedNode).IsRunning;
 
                 //
                 // Update context menu state.
@@ -467,9 +493,12 @@ namespace Google.Solutions.IapDesktop.Application.ProjectExplorer
                     this.configureIapAccessToolStripMenuItem.Visible =
                          (selectedNode is VmInstanceNode || selectedNode is ProjectNode);
 
-                this.generateCredentialsToolStripMenuItem.Visible = (selectedNode is VmInstanceNode);
-                this.generateCredentialsToolStripMenuItem.Enabled =
-                    this.connectToolStripMenuItem.Enabled =
+                this.connectToolStripMenuItem.Visible =
+                    this.generateCredentialsToolStripMenuItem.Visible =
+                    this.showSerialLogToolStripMenuItem.Visible = (selectedNode is VmInstanceNode);
+                this.connectToolStripMenuItem.Enabled =
+                    this.generateCredentialsToolStripMenuItem.Enabled =
+                    this.showSerialLogToolStripMenuItem.Enabled =
                         (selectedNode is VmInstanceNode) && ((VmInstanceNode)selectedNode).IsRunning;
 
                 //
