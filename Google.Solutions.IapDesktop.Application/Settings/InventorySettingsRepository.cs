@@ -244,6 +244,7 @@ namespace Google.Solutions.IapDesktop.Application.Settings
         }
 
         public RdpRedirectClipboard RedirectClipboard { get; set; }
+            = RdpRedirectClipboard.Enabled;
 
         [DwordRegistryValueAttribute("RedirectClipboard")]
         protected int? _RedirectClipboard
