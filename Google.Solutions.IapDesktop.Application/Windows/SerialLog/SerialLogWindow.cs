@@ -23,6 +23,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
+using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
 using System.Text;
@@ -32,12 +33,15 @@ using System.Windows.Forms;
 using Google.Apis.Auth.OAuth2.Responses;
 using Google.Solutions.Compute;
 using Google.Solutions.Compute.Extensions;
+using WeifenLuo.WinFormsUI.Docking;
 
 namespace Google.Solutions.IapDesktop.Application.Windows.SerialLog
 {
     public partial class SerialLogWindow : ToolWindow
     {
-        private volatile bool keepTailing = true;
+        private readonly ManualResetEvent keepTailing = new ManualResetEvent(true);
+        private volatile bool formClosing = false;
+
         public VmInstanceReference Instance { get; }
 
         public SerialLogWindow(VmInstanceReference vmInstance)
@@ -48,14 +52,16 @@ namespace Google.Solutions.IapDesktop.Application.Windows.SerialLog
             this.Instance = vmInstance;
         }
 
-
         internal void TailSerialPortStream(SerialPortStream stream)
         {
             Task.Run(async () =>
             {
                 bool exceptionCaught = false;
-                while (this.keepTailing && !exceptionCaught)
+                while (!exceptionCaught)
                 {
+                    // Check if we can continue to tail.
+                    this.keepTailing.WaitOne();
+
                     string newOutput;
                     try
                     {
@@ -74,7 +80,9 @@ namespace Google.Solutions.IapDesktop.Application.Windows.SerialLog
                         exceptionCaught = true;
                     }
 
-                    if (this.keepTailing)
+                    // By the time we read the data, the form might have begun closing. In this
+                    // case, updating the UI would cause an exception.
+                    if (!this.formClosing)
                     { 
                         BeginInvoke((Action)(() => this.log.AppendText(newOutput)));
                     }
@@ -86,7 +94,19 @@ namespace Google.Solutions.IapDesktop.Application.Windows.SerialLog
 
         private void SerialPortOutputWindow_FormClosing(object sender, FormClosingEventArgs e)
         {
-            this.keepTailing = false;
+            this.formClosing = true;
+        }
+
+        private void SerialLogWindow_Enter(object sender, EventArgs e)
+        {
+            // Start tailing (again).
+            this.keepTailing.Set();
+        }
+
+        private void SerialLogWindow_Leave(object sender, EventArgs e)
+        {
+            // Pause.
+            this.keepTailing.Reset();
         }
     }
 }

@@ -66,17 +66,19 @@ namespace Google.Solutions.IapDesktop.Application.Windows.SerialLog
             this.log.Size = new System.Drawing.Size(723, 542);
             this.log.TabIndex = 3;
             // 
-            // SerialPortOutputWindow
+            // SerialLogWindow
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(723, 542);
             this.Controls.Add(this.log);
             this.Margin = new System.Windows.Forms.Padding(2);
-            this.Name = "SerialPortOutputWindow";
+            this.Name = "SerialLogWindow";
             this.ShowIcon = false;
             this.Text = "Serial Port Output";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.SerialPortOutputWindow_FormClosing);
+            this.Enter += new System.EventHandler(this.SerialLogWindow_Enter);
+            this.Leave += new System.EventHandler(this.SerialLogWindow_Leave);
             this.ResumeLayout(false);
             this.PerformLayout();
 
