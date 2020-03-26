@@ -19,6 +19,7 @@
 // under the License.
 //
 
+using Google.Solutions.Compute.Test;
 using Google.Solutions.IapDesktop.Application.Registry;
 using Google.Solutions.IapDesktop.Application.Settings;
 using Microsoft.Win32;
@@ -33,7 +34,6 @@ namespace Google.Solutions.IapDesktop.Application.Test.Settings
     {
         private const string TestKeyPath = @"Software\Google\__Test";
         private readonly RegistryKey hkcu = RegistryKey.OpenBaseKey(RegistryHive.CurrentUser, RegistryView.Default);
-
 
         [SetUp]
         public void SetUp()
