@@ -51,6 +51,15 @@
       -->
       <![CDATA[Installed OR (VersionNT >= 602)]]>
     </Condition>
+    <Condition Message="On Windows Server, admin rights are required to install the product. Plase use an elevated command prompt to run the installer.">
+      <!-- 
+        On Workstation SKU, non-elevated installs are fine, but on Server, they
+        are disallowed by policy (by default, anyway).
+        
+        See https://serverfault.com/questions/580972/why-is-this-preventing-me-installing-an-msi-the-system-administrator-has-set-po.
+      -->
+      <![CDATA[Installed OR (MsiNTProductType = 1) OR MsiRunningElevated]]>
+    </Condition>
     
 		<Feature Id="ProductFeature" Title="Cloud IAP Desktop" Level="1">
 			<ComponentGroupRef Id="ProgramFiles" />
