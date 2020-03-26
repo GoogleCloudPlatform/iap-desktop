@@ -34,7 +34,6 @@ namespace Google.Solutions.IapDesktop.Application.ProjectExplorer
         private readonly InventorySettingsRepository settingsRepository;
         private readonly IAuthorizationService authService;
         private readonly IServiceProvider serviceProvider;
-        private readonly TunnelBrokerService tunnelBrokerService;
         private readonly RemoteDesktopService remoteDesktopService;
 
         private readonly CloudNode rootNode = new CloudNode();
@@ -68,7 +67,6 @@ namespace Google.Solutions.IapDesktop.Application.ProjectExplorer
             this.projectInventoryService = serviceProvider.GetService<ProjectInventoryService>();
             this.settingsRepository = serviceProvider.GetService<InventorySettingsRepository>();
             this.authService = serviceProvider.GetService<IAuthorizationService>();
-            this.tunnelBrokerService = serviceProvider.GetService<TunnelBrokerService>();
             this.remoteDesktopService = serviceProvider.GetService<RemoteDesktopService>();
 
             this.eventService.BindAsyncHandler<ProjectInventoryService.ProjectAddedEvent>(OnProjectAdded);
@@ -187,7 +185,8 @@ namespace Google.Solutions.IapDesktop.Application.ProjectExplorer
                 {
                     try
                     {
-                        return await this.tunnelBrokerService.ConnectAsync(destination, timeout);
+                        var tunnelBrokerService = this.serviceProvider.GetService<TunnelBrokerService>();
+                        return await tunnelBrokerService.ConnectAsync(destination, timeout);
                     }
                     catch (NetworkStreamClosedException e)
                     {

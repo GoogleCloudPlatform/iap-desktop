@@ -15,6 +15,7 @@ using Google.Solutions.IapDesktop.Application.Adapters;
 using System.Threading.Tasks;
 using Google.Apis.Compute.v1.Data;
 using System.Collections.Generic;
+using Google.Solutions.IapDesktop.Application.Windows.RemoteDesktop;
 
 namespace Google.Solutions.IapDesktop.Application.Test.Windows
 {
@@ -25,6 +26,12 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows
         {
             var tree = window.GetChild<TreeView>("treeView");
             return tree.Nodes.Cast<TreeNode>().First();
+        }
+
+        [SetUp]
+        public void RegisterServices()
+        {
+            this.serviceRegistry.AddSingleton<RemoteDesktopService>();
         }
 
         [Test]
