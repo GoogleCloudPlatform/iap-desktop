@@ -28,6 +28,7 @@ namespace Google.Solutions.IapDesktop.Application.SettingsEditor
             this.dockPanel = serviceProvider.GetService<IMainForm>().MainPanel;
 
             this.TabText = this.Text;
+
             //
             // This window is a singleton, so we never want it to be closed,
             // just hidden.

@@ -6,6 +6,7 @@ using Google.Solutions.IapDesktop.Application.ProjectExplorer;
 using Google.Solutions.IapDesktop.Application.Services;
 using Google.Solutions.IapDesktop.Application.Settings;
 using Google.Solutions.IapDesktop.Application.Windows;
+using Google.Solutions.IapDesktop.Application.Windows.TunnelsViewer;
 using System;
 using System.ComponentModel;
 using System.Diagnostics;
@@ -177,6 +178,11 @@ namespace Google.Solutions.IapDesktop.Windows
         private void openIapAccessDocsToolStripMenuItem_Click(object sender, EventArgs _)
         {
             this.serviceProvider.GetService<CloudConsoleService>().OpenIapAccessDocs();
+        }
+
+        private void activeTunnelsToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            this.serviceProvider.GetService<ITunnelsViewer>().ShowWindow();
         }
 
         private async void addProjectToolStripMenuItem_Click(object sender, EventArgs _)

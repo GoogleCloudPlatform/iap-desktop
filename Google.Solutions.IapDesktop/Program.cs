@@ -8,6 +8,7 @@ using Google.Solutions.IapDesktop.Application.SettingsEditor;
 using Google.Solutions.IapDesktop.Application.Windows;
 using Google.Solutions.IapDesktop.Application.Windows.RemoteDesktop;
 using Google.Solutions.IapDesktop.Application.Windows.SerialLog;
+using Google.Solutions.IapDesktop.Application.Windows.TunnelsViewer;
 using Google.Solutions.IapDesktop.Windows;
 using Microsoft.Win32;
 using System;
@@ -61,6 +62,7 @@ namespace Google.Solutions.IapDesktop
             serviceRegistry.AddSingleton<SerialLogService>();
             serviceRegistry.AddSingleton<ISettingsEditor, SettingsEditorWindow>();
             serviceRegistry.AddSingleton<IProjectExplorer, ProjectExplorerWindow>();
+            serviceRegistry.AddSingleton<ITunnelsViewer, TunnelsWindow>();
 
 #if DEBUG
             serviceRegistry.AddSingleton<DebugWindow>();

@@ -47,6 +47,7 @@
             this.vsToolStripExtender = new WeifenLuo.WinFormsUI.Docking.VisualStudioToolStripExtender(this.components);
             this.statusStrip = new System.Windows.Forms.StatusStrip();
             this.dockPanel = new WeifenLuo.WinFormsUI.Docking.DockPanel();
+            this.activeTunnelsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.mainMenu.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -103,7 +104,8 @@
             // viewToolStripMenuItem
             // 
             this.viewToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.projectExplorerToolStripMenuItem});
+            this.projectExplorerToolStripMenuItem,
+            this.activeTunnelsToolStripMenuItem});
             this.viewToolStripMenuItem.Name = "viewToolStripMenuItem";
             this.viewToolStripMenuItem.Size = new System.Drawing.Size(44, 20);
             this.viewToolStripMenuItem.Text = "&View";
@@ -113,7 +115,7 @@
             this.projectExplorerToolStripMenuItem.Name = "projectExplorerToolStripMenuItem";
             this.projectExplorerToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)(((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Alt) 
             | System.Windows.Forms.Keys.L)));
-            this.projectExplorerToolStripMenuItem.Size = new System.Drawing.Size(220, 22);
+            this.projectExplorerToolStripMenuItem.Size = new System.Drawing.Size(233, 22);
             this.projectExplorerToolStripMenuItem.Text = "&Project Explorer";
             this.projectExplorerToolStripMenuItem.Click += new System.EventHandler(this.projectExplorerToolStripMenuItem_Click);
             // 
@@ -176,6 +178,15 @@
             this.dockPanel.Size = new System.Drawing.Size(984, 615);
             this.dockPanel.TabIndex = 9;
             // 
+            // activeTunnelsToolStripMenuItem
+            // 
+            this.activeTunnelsToolStripMenuItem.Name = "activeTunnelsToolStripMenuItem";
+            this.activeTunnelsToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)(((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Alt) 
+            | System.Windows.Forms.Keys.T)));
+            this.activeTunnelsToolStripMenuItem.Size = new System.Drawing.Size(233, 22);
+            this.activeTunnelsToolStripMenuItem.Text = "Active IAP &tunnels";
+            this.activeTunnelsToolStripMenuItem.Click += new System.EventHandler(this.activeTunnelsToolStripMenuItem_Click);
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -218,5 +229,6 @@
         private System.Windows.Forms.ToolStripSeparator aboutSeparatorToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem addProjectToolStripMenuItem;
         private System.Windows.Forms.ToolStripSeparator fileSeparatorToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem activeTunnelsToolStripMenuItem;
     }
 }
