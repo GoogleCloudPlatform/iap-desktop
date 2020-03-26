@@ -87,7 +87,7 @@
     <Compile Include="Adapters\ResourceManagerAdapter.cs" />
     <Compile Include="Global.cs" />
     <Compile Include="ObjectModel\EventService.cs" />
-    <Compile Include="ObjectModel\IJobService.cs" />
+    <Compile Include="Services\JobService.cs" />
     <Compile Include="ObjectModel\ServiceRegistry.cs" />
     <Compile Include="ExceptionExtensions.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

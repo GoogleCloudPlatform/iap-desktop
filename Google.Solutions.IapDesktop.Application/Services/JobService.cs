@@ -20,14 +20,14 @@
 //
 
 using Google.Apis.Auth.OAuth2.Responses;
-using Google.Solutions.IapDesktop.Application.Services;
+using Google.Solutions.IapDesktop.Application.ObjectModel;
 using System;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Google.Solutions.IapDesktop.Application.ObjectModel
+namespace Google.Solutions.IapDesktop.Application.Services
 {
     /// <summary>
     /// Allows long-running background jobs to be run. While the job is run,
