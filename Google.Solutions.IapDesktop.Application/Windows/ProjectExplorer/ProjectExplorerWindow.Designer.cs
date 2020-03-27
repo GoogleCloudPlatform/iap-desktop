@@ -58,12 +58,14 @@ namespace Google.Solutions.IapDesktop.Application.ProjectExplorer
             this.connectToolStripButton = new System.Windows.Forms.ToolStripButton();
             this.openSettingsButton = new System.Windows.Forms.ToolStripButton();
             this.generateCredentialsToolStripButton = new System.Windows.Forms.ToolStripButton();
+            this.showSerialLogToolStripButton = new System.Windows.Forms.ToolStripButton();
             this.vsToolStripExtender = new WeifenLuo.WinFormsUI.Docking.VisualStudioToolStripExtender(this.components);
             this.vs2015LightTheme = new WeifenLuo.WinFormsUI.Docking.VS2015LightTheme();
             this.treeView = new System.Windows.Forms.TreeView();
             this.contextMenu = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.connectToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.generateCredentialsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.showSerialLogToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.refreshToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.refreshAllProjectsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.unloadProjectToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -74,8 +76,6 @@ namespace Google.Solutions.IapDesktop.Application.ProjectExplorer
             this.openInCloudConsoleToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.openlogsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.imageList = new System.Windows.Forms.ImageList(this.components);
-            this.showSerialLogToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.showSerialLogToolStripButton = new System.Windows.Forms.ToolStripButton();
             this.toolStrip.SuspendLayout();
             this.contextMenu.SuspendLayout();
             this.SuspendLayout();
@@ -151,6 +151,16 @@ namespace Google.Solutions.IapDesktop.Application.ProjectExplorer
             this.generateCredentialsToolStripButton.Text = "toolStripButton1";
             this.generateCredentialsToolStripButton.Click += new System.EventHandler(this.generateCredentialsToolStripButton_Click);
             // 
+            // showSerialLogToolStripButton
+            // 
+            this.showSerialLogToolStripButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.showSerialLogToolStripButton.Image = ((System.Drawing.Image)(resources.GetObject("showSerialLogToolStripButton.Image")));
+            this.showSerialLogToolStripButton.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.showSerialLogToolStripButton.Name = "showSerialLogToolStripButton";
+            this.showSerialLogToolStripButton.Size = new System.Drawing.Size(23, 22);
+            this.showSerialLogToolStripButton.Text = "Show serial &log";
+            this.showSerialLogToolStripButton.Click += new System.EventHandler(this.showSerialLogToolStripButton_Click);
+            // 
             // vsToolStripExtender
             // 
             this.vsToolStripExtender.DefaultRenderer = null;
@@ -201,6 +211,13 @@ namespace Google.Solutions.IapDesktop.Application.ProjectExplorer
             this.generateCredentialsToolStripMenuItem.Size = new System.Drawing.Size(276, 22);
             this.generateCredentialsToolStripMenuItem.Text = "Generate &Windows logon credentials...";
             this.generateCredentialsToolStripMenuItem.Click += new System.EventHandler(this.generateCredentialsToolStripMenuItem_Click);
+            // 
+            // showSerialLogToolStripMenuItem
+            // 
+            this.showSerialLogToolStripMenuItem.Name = "showSerialLogToolStripMenuItem";
+            this.showSerialLogToolStripMenuItem.Size = new System.Drawing.Size(276, 22);
+            this.showSerialLogToolStripMenuItem.Text = "Show serial &log";
+            this.showSerialLogToolStripMenuItem.Click += new System.EventHandler(this.showSerialLogToolStripMenuItem_Click);
             // 
             // refreshToolStripMenuItem
             // 
@@ -269,25 +286,10 @@ namespace Google.Solutions.IapDesktop.Application.ProjectExplorer
             this.imageList.Images.SetKeyName(1, "Project.ico");
             this.imageList.Images.SetKeyName(2, "Region.ico");
             this.imageList.Images.SetKeyName(3, "Zone.ico");
-            this.imageList.Images.SetKeyName(4, "Vm.ico");
-            this.imageList.Images.SetKeyName(5, "VmBlue.ico");
-            // 
-            // showSerialLogToolStripMenuItem
-            // 
-            this.showSerialLogToolStripMenuItem.Name = "showSerialLogToolStripMenuItem";
-            this.showSerialLogToolStripMenuItem.Size = new System.Drawing.Size(276, 22);
-            this.showSerialLogToolStripMenuItem.Text = "Show serial &log";
-            this.showSerialLogToolStripMenuItem.Click += new System.EventHandler(this.showSerialLogToolStripMenuItem_Click);
-            // 
-            // showSerialLogToolStripButton
-            // 
-            this.showSerialLogToolStripButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.showSerialLogToolStripButton.Image = ((System.Drawing.Image)(resources.GetObject("showSerialLogToolStripButton.Image")));
-            this.showSerialLogToolStripButton.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.showSerialLogToolStripButton.Name = "showSerialLogToolStripButton";
-            this.showSerialLogToolStripButton.Size = new System.Drawing.Size(23, 22);
-            this.showSerialLogToolStripButton.Text = "Show serial &log";
-            this.showSerialLogToolStripButton.Click += new System.EventHandler(this.showSerialLogToolStripButton_Click);
+            this.imageList.Images.SetKeyName(4, "Computer_16.png");
+            this.imageList.Images.SetKeyName(5, "ComputerBlue_16.png");
+            this.imageList.Images.SetKeyName(6, "Vm.ico");
+            this.imageList.Images.SetKeyName(7, "VmBlue.ico");
             // 
             // ProjectExplorerWindow
             // 
