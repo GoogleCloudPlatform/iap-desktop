@@ -45,7 +45,6 @@ namespace Google.Solutions.IapDesktop.Application.Windows.RemoteDesktop
 
         public VmInstanceReference Instance;
 
-
         public RemoteDesktopPane(
             IEventService eventService,
             IExceptionDialog exceptionDialog,
@@ -87,6 +86,9 @@ namespace Google.Solutions.IapDesktop.Application.Windows.RemoteDesktop
             VmInstanceSettings settings
             )
         {
+            TraceSources.IapDesktop.TraceVerbose(
+                "RemoteDesktopPane: Connect({0}, {1})", server, port);
+
             // NB. The initialization needs to happen after the pane is shown, otherwise
             // an error happens indicating that the control does not have a Window handle.
             InitializeComponent();
@@ -228,6 +230,9 @@ namespace Google.Solutions.IapDesktop.Application.Windows.RemoteDesktop
 
         private async Task ShowErrorAndClose(string caption, RdpException e)
         {
+            TraceSources.IapDesktop.TraceVerbose(
+                "RemoteDesktopPane: ShowErrorAndClose({0})", e.Message);
+
             await this.eventService.FireAsync(
                 new RemoteDesktopConnectionFailedEvent(this.Instance, e));
             this.exceptionDialog.Show(this, caption, e);
@@ -247,7 +252,9 @@ namespace Google.Solutions.IapDesktop.Application.Windows.RemoteDesktop
         {
             if (this.IsConnecting)
             {
-                Debug.WriteLine("Aborting FormClosing because control is in connecting");
+                TraceSources.IapDesktop.TraceVerbose(
+                    "RemoteDesktopPane: Aborting FormClosing because control is in connecting");
+
                 args.Cancel = true;
                 return;
             }
@@ -263,6 +270,9 @@ namespace Google.Solutions.IapDesktop.Application.Windows.RemoteDesktop
                 }
                 catch (Exception e)
                 {
+                    TraceSources.IapDesktop.TraceVerbose(
+                        "RemoteDesktopPane: Disconnecting failed");
+
                     // TODO: Ignore?
                     this.exceptionDialog.Show(this, "Disconnecting failed", e);
                 }
@@ -332,7 +342,9 @@ namespace Google.Solutions.IapDesktop.Application.Windows.RemoteDesktop
 
         private async void rdpClient_OnConnected(object sender, EventArgs e)
         {
-            Debug.WriteLine($"OnConnected - {this.rdpClient.ConnectedStatusText}");
+            TraceSources.IapDesktop.TraceVerbose(
+                "RemoteDesktopPane: OnConnected({0})", this.rdpClient.ConnectedStatusText);
+
             this.spinner.Visible = false;
             await this.eventService.FireAsync(
                 new RemoteDesktopConnectionSuceededEvent(this.Instance));
@@ -341,19 +353,19 @@ namespace Google.Solutions.IapDesktop.Application.Windows.RemoteDesktop
 
         private void rdpClient_OnConnecting(object sender, EventArgs e)
         {
-            Debug.WriteLine("OnConnecting");
+            TraceSources.IapDesktop.TraceVerbose("RemoteDesktopPane: OnConnecting");
         }
 
         private void rdpClient_OnAuthenticationWarningDisplayed(object sender, EventArgs _)
         {
-            Debug.WriteLine("OnAuthenticationWarningDisplayed");
+            TraceSources.IapDesktop.TraceVerbose("RemoteDesktopPane: OnAuthenticationWarningDisplayed");
         }
 
         private void rdpClient_OnWarning(
             object sender,
             IMsTscAxEvents_OnWarningEvent args)
         {
-            Debug.WriteLine($"OnWarning: {args.warningCode}");
+            TraceSources.IapDesktop.TraceVerbose("RemoteDesktopPane: OnWarning: {0}", args.warningCode);
         }
 
         private void rdpClient_OnAutoReconnecting2(
@@ -363,26 +375,32 @@ namespace Google.Solutions.IapDesktop.Application.Windows.RemoteDesktop
             var e = new RdpDisconnectedException(
                 args.disconnectReason,
                 this.rdpClient.GetErrorDescription((uint)args.disconnectReason, 0));
-            Debug.WriteLine($"OnAutoReconnecting2: {args.attemptCount}/{args.maxAttemptCount} - {e}, Net: {args.networkAvailable}");
+
+            TraceSources.IapDesktop.TraceVerbose(
+                "RemoteDesktopPane: OnAutoReconnecting2: {0}/{1} - {2} - {3}",
+                args.attemptCount,
+                args.maxAttemptCount,
+                e.Message,
+                args.networkAvailable);
         }
 
         private void rdpClient_OnAutoReconnected(object sender, EventArgs e)
         {
-            Debug.WriteLine("OnAutoReconnected");
+            TraceSources.IapDesktop.TraceVerbose("RemoteDesktopPane: OnAutoReconnected");
         }
 
         private void rdpClient_OnFocusReleased(
             object sender,
             IMsTscAxEvents_OnFocusReleasedEvent e)
         {
-            Debug.WriteLine("OnFocusReleased");
+            TraceSources.IapDesktop.TraceVerbose("RemoteDesktopPane: OnFocusReleased");
         }
 
         private void rdpClient_OnRemoteDesktopSizeChange(
             object sender,
             IMsTscAxEvents_OnRemoteDesktopSizeChangeEvent e)
         {
-            Debug.WriteLine("OnRemoteDesktopSizeChange");
+            TraceSources.IapDesktop.TraceVerbose("RemoteDesktopPane: OnRemoteDesktopSizeChange");
         }
     }
 }

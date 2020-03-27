@@ -72,35 +72,10 @@ namespace Google.Solutions.IapDesktop.Application.Adapters
         {
         }
 
-        public async Task<IEnumerable<string>> QueryZonesAsync(string projectId)
-        {
-            var zones = await PageHelper.JoinPagesAsync<ZonesResource.ListRequest, ZoneList, Zone>(
-                 this.service.Zones.List(projectId),
-                 zone => zone.Items,
-                 response => response.NextPageToken,
-                 (request, token) => { request.PageToken = token; });
-            return zones.Select(z => z.Name);
-        }
-
-        public Task<IEnumerable<Instance>> QueryInstancesAsync(string projectId, string zone)
-        {
-            try
-            {
-                return PageHelper.JoinPagesAsync<InstancesResource.ListRequest, InstanceList, Instance>(
-                    this.service.Instances.List(projectId, zone),
-                    instances => instances.Items,
-                    response => response.NextPageToken,
-                    (request, token) => { request.PageToken = token; });
-            }
-            catch (GoogleApiException e) when (e.Error != null && e.Error.Code == 403)
-            {
-                throw new ComputeEngineException(
-                    $"Access to VM instances in project {projectId} has been denied", e);
-            }
-        }
-
         public async Task<IEnumerable<Instance>> QueryInstancesAsync(string projectId)
         {
+            TraceSources.IapDesktop.TraceVerbose("ComputeEngineAdapter: QueryInstancesAsync({0})", projectId);
+
             try
             {
                 var zones = await PageHelper.JoinPagesAsync<
@@ -112,9 +87,15 @@ namespace Google.Solutions.IapDesktop.Application.Adapters
                     response => response.NextPageToken,
                     (request, token) => { request.PageToken = token; });
 
-                return zones
+                var result = zones
                     .Where(z => z.Instances != null)    // API returns null for empty zones.
                     .SelectMany(zone => zone.Instances);
+
+
+                TraceSources.IapDesktop.TraceVerbose(
+                    "ComputeEngineAdapter: QueryInstancesAsync - found {0} instances", result.Count());
+
+                return result;
             }
             catch (GoogleApiException e) when (e.Error != null && e.Error.Code == 403)
             {
@@ -135,6 +116,8 @@ namespace Google.Solutions.IapDesktop.Application.Adapters
 
         public SerialPortStream GetSerialPortOutput(VmInstanceReference instanceRef)
         {
+            TraceSources.IapDesktop.TraceVerbose("ComputeEngineAdapter: GetSerialPortOutput({0})", instanceRef);
+
             return this.service.Instances.GetSerialPortOutputStream(instanceRef, 1);
         }
 
@@ -143,6 +126,8 @@ namespace Google.Solutions.IapDesktop.Application.Adapters
             string username,
             CancellationToken token)
         {
+            TraceSources.IapDesktop.TraceVerbose("ComputeEngineAdapter: ResetWindowsUserAsync({0})", instanceRef);
+
             return this.service.Instances.ResetWindowsUserAsync(instanceRef, username, token);
         }
 

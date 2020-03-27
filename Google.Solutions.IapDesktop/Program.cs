@@ -20,6 +20,7 @@
 //
 
 using Google.Solutions.Compute.Auth;
+using Google.Solutions.IapDesktop.Application;
 using Google.Solutions.IapDesktop.Application.Adapters;
 using Google.Solutions.IapDesktop.Application.ObjectModel;
 using Google.Solutions.IapDesktop.Application.ProjectExplorer;
@@ -88,6 +89,7 @@ namespace Google.Solutions.IapDesktop
 
 #if DEBUG
             serviceRegistry.AddSingleton<DebugWindow>();
+            TraceSources.IapDesktop.Switch.Level = System.Diagnostics.SourceLevels.Verbose;
 #endif
 
             System.Windows.Forms.Application.Run(mainForm);

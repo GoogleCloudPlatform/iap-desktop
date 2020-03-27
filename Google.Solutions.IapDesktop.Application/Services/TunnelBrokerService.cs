@@ -59,6 +59,10 @@ namespace Google.Solutions.IapDesktop.Application.Services
         private Task<Tunnel> ConnectAndCacheAsync(TunnelDestination endpoint)
         {
             var tunnel = this.tunnelService.CreateTunnelAsync(endpoint);
+
+            TraceSources.IapDesktop.TraceVerbose(
+                "TunnelBrokerService: Created tunnel to {0}", endpoint);
+
             this.tunnels[endpoint] = tunnel;
             return tunnel;
         }
@@ -88,12 +92,18 @@ namespace Google.Solutions.IapDesktop.Application.Services
                 }
                 else if (tunnel.IsFaulted)
                 {
+                    TraceSources.IapDesktop.TraceVerbose(
+                        "TunnelBrokerService: Tunnel to {0} is faulted.. reconnecting", endpoint);
+
                     // There is no point in handing out a faulty attempt
                     // to create a tunnel. So start anew.
                     return ConnectAndCacheAsync(endpoint);
                 }
                 else
                 {
+                    TraceSources.IapDesktop.TraceVerbose(
+                        "TunnelBrokerService: Reusing tunnel to {0}", endpoint);
+
                     // This tunnel is good or still in the process
                     // of connecting.
                     return tunnel;
@@ -103,6 +113,9 @@ namespace Google.Solutions.IapDesktop.Application.Services
 
         public async Task<Tunnel> ConnectAsync(TunnelDestination endpoint, TimeSpan timeout)
         {
+            TraceSources.IapDesktop.TraceVerbose(
+                "TunnelBrokerService: ConnectAsync({0})", endpoint);
+
             var tunnel = await ConnectIfNecessaryAsync(endpoint);
 
             try
@@ -111,9 +124,15 @@ namespace Google.Solutions.IapDesktop.Application.Services
                 // handing it out. It might be broken after all (because of reauth
                 // or for other reasons).
                 await tunnel.Probe(timeout);
+
+                TraceSources.IapDesktop.TraceVerbose(
+                    "TunnelBrokerService: Probing tunnel to {0} succeeded", endpoint);
             }
-            catch (Exception)
+            catch (Exception e)
             {
+                TraceSources.IapDesktop.TraceVerbose(
+                    "TunnelBrokerService: Probing tunnel to {0} failed: {1}", endpoint, e.Message);
+
                 // Un-cache this broken tunnel.
                 await DisconnectAsync(endpoint);
                 throw;
@@ -126,6 +145,9 @@ namespace Google.Solutions.IapDesktop.Application.Services
 
         public async Task DisconnectAsync(TunnelDestination endpoint)
         {
+            TraceSources.IapDesktop.TraceVerbose(
+                "TunnelBrokerService: DisconnectAsync({0})", endpoint);
+
             lock (this.tunnelsLock)
             {
                 if (!this.tunnels.TryGetValue(endpoint, out var tunnel))
@@ -142,6 +164,9 @@ namespace Google.Solutions.IapDesktop.Application.Services
 
         public async Task DisconnectAllAsync()
         {
+            TraceSources.IapDesktop.TraceVerbose(
+                "TunnelBrokerService: DisconnectAllAsync");
+
             // Create a copy of the list to avoid race conditions.
             var copyOfEndpoints = new List<TunnelDestination>(this.tunnels.Keys);
 

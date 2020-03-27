@@ -66,6 +66,8 @@ namespace Google.Solutions.IapDesktop.Application.Adapters
 
         public async Task<Release> FindLatestReleaseAsync(CancellationToken cancellationToken)
         {
+            TraceSources.IapDesktop.TraceVerbose("GithubAdapter: FindLatestReleaseAsync");
+
             var assemblyName = typeof(ComputeEngineAdapter).Assembly.GetName();
             var client = new RestClient($"{assemblyName.Name}/{assemblyName.Version}");
 
@@ -78,6 +80,9 @@ namespace Google.Solutions.IapDesktop.Application.Adapters
             }
             else
             {
+                TraceSources.IapDesktop.TraceVerbose(
+                    "GithubAdapter: FindLatestReleaseAsync - found new release: {0}", latestRelease.TagName);
+
                 // New release available.
                 return latestRelease;
             }

@@ -63,6 +63,9 @@ namespace Google.Solutions.IapDesktop.Application.Adapters
 
         public async Task<IEnumerable<Project>> QueryProjects(string filter)
         {
+            TraceSources.IapDesktop.TraceVerbose(
+                "ResourceManagerAdapter: QueryProjects({0}", filter);
+
             var projects = await PageHelper.JoinPagesAsync<ProjectsResource.ListRequest, ListProjectsResponse, Project>(
                 new ProjectsResource.ListRequest(this.service)
                 {
@@ -73,7 +76,12 @@ namespace Google.Solutions.IapDesktop.Application.Adapters
                 (request, token) => { request.PageToken = token; });
 
             // Filter projects in deleted/pending delete state.
-            return projects.Where(p => p.LifecycleState == "ACTIVE");
+            var result = projects.Where(p => p.LifecycleState == "ACTIVE");
+
+            TraceSources.IapDesktop.TraceVerbose
+                ("ResourceManagerAdapter: QueryProjects - found {0} projects", result.Count());
+
+            return result;
         }
 
         public Task<IEnumerable<Project>> QueryProjectsByPrefix(string idOrNamePrefix)

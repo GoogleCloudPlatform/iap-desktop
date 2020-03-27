@@ -21,15 +21,15 @@
 
 using System.Diagnostics;
 
-namespace Google.Solutions.Compute
+namespace Google.Solutions.IapDesktop.Application
 {
-    internal static class TraceSources
+    public static class TraceSources
     {
-        public static readonly TraceSource Compute = new TraceSource(typeof(TraceSources).Namespace);
+        public static readonly TraceSource IapDesktop = new TraceSource(typeof(TraceSources).Namespace);
     }
 
     internal static class TraceSourceExtensions
-    { 
+    {
         public static void TraceVerbose(this TraceSource source, string message)
         {
             if (source.Switch.ShouldTrace(TraceEventType.Verbose))

@@ -101,7 +101,7 @@
     <Compile Include="Services\ITunnel.cs" />
     <Compile Include="Services\ProjectInventoryService.cs" />
     <Compile Include="Services\TunnelBrokerService.cs" />
-    <Compile Include="Services\ITunnelService.cs" />
+    <Compile Include="Services\TunnelService.cs" />
     <Compile Include="Settings\AuthSettingsRepository.cs" />
     <Compile Include="Registry\SecureStringExtensions.cs" />
     <Compile Include="Settings\WindowSettingsRepository.cs" />
@@ -109,6 +109,7 @@
     <Compile Include="Registry\RegistryBinder.cs" />
     <Compile Include="Registry\RegistryValueAttribute.cs" />
     <Compile Include="Settings\InventorySettingsRepository.cs" />
+    <Compile Include="TraceSources.cs" />
     <Compile Include="Util\RestClient.cs" />
     <Compile Include="Windows\AboutWindow.cs">
       <SubType>Form</SubType>

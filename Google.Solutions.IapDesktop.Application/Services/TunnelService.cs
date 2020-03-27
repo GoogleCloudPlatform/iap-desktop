@@ -43,6 +43,8 @@ namespace Google.Solutions.IapDesktop.Application.Services
 
         public Task<Tunnel> CreateTunnelAsync(TunnelDestination tunnelEndpoint)
         {
+            TraceSources.IapDesktop.TraceVerbose("TunnelService: CreateTunnelAsync({0})", tunnelEndpoint);
+
             var iapEndpoint = new IapTunnelingEndpoint(
                 this.authorizationService.Authorization.Credential,
                 tunnelEndpoint.Instance,
