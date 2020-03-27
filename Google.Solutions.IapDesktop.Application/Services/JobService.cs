@@ -194,7 +194,7 @@ namespace Google.Solutions.IapDesktop.Application.Services
             }
             else
             {
-                return true;
+                return false;
             }
         }
     }
