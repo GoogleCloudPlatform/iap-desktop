@@ -88,9 +88,9 @@ namespace Google.Solutions.Compute.Iap
 
         private void TraceLine(string message)
         {
-            if (Compute.Trace.Switch.ShouldTrace(TraceEventType.Verbose))
+            if (TraceSources.Compute.Switch.ShouldTrace(TraceEventType.Verbose))
             {
-                Compute.Trace.TraceVerbose("SshRelayStream [" +
+                TraceSources.Compute.TraceVerbose("SshRelayStream [" +
                     $"TX: {Thread.VolatileRead(ref this.bytesSent)} " +
                     $"TXA: {Thread.VolatileRead(ref this.bytesSentAndAcknoledged)} " +
                     $"RX: {Thread.VolatileRead(ref this.bytesReceived)} " +

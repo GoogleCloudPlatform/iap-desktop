@@ -112,7 +112,7 @@ namespace Google.Solutions.Compute.Extensions
                 });
             }
 
-            Compute.Trace.TraceVerbose("Setting metdata {0} on {1}...", key, instanceRef.InstanceName);
+            TraceSources.Compute.TraceVerbose("Setting metdata {0} on {1}...", key, instanceRef.InstanceName);
 
             await resource.SetMetadata(
                 metadata,
@@ -135,7 +135,7 @@ namespace Google.Solutions.Compute.Extensions
                 else
                 {
                     // Wait and retry.
-                    Compute.Trace.TraceVerbose("Metdata change not applied yet, trying again...");
+                    TraceSources.Compute.TraceVerbose("Metdata change not applied yet, trying again...");
 
                     await Task.Delay(500).ConfigureAwait(false);
                 }

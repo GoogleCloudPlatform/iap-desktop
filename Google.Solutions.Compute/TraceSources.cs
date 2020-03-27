@@ -23,10 +23,13 @@ using System.Diagnostics;
 
 namespace Google.Solutions.Compute
 {
-    public static class Compute
+    public static class TraceSources
     {
-        public static readonly TraceSource Trace = new TraceSource(typeof(Compute).Namespace);
+        public static readonly TraceSource Compute = new TraceSource(typeof(TraceSources).Namespace);
+    }
 
+    internal static class TraceSourceExtensions
+    { 
         public static void TraceVerbose(this TraceSource source, string message)
         {
             if (source.Switch.ShouldTrace(TraceEventType.Verbose))

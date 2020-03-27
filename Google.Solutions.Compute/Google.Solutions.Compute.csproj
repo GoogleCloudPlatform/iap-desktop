@@ -82,7 +82,7 @@
     <Compile Include="Auth\RegistryStore.cs" />
     <Compile Include="Auth\UnsafeNativeMethods.cs" />
     <Compile Include="BigEndian.cs" />
-    <Compile Include="Compute.cs" />
+    <Compile Include="TraceSources.cs" />
     <Compile Include="Extensions\ResetWindowsUser.cs" />
     <Compile Include="Extensions\AddMetadata.cs" />
     <Compile Include="Iap\IapTunnelingEndpoint.cs" />

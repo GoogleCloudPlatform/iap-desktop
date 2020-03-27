@@ -163,7 +163,7 @@ namespace Google.Solutions.Compute.Iap
                                     serverStream.RelayToAsync(clientStream, token))
                                 .ContinueWith(t =>
                                 {
-                                    Compute.Trace.TraceVerbose("SshRelayListener: Closed connection");
+                                    TraceSources.Compute.TraceVerbose("SshRelayListener: Closed connection");
 
                                     if (t.IsFaulted)
                                     {

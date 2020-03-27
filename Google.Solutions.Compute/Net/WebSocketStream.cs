@@ -150,7 +150,7 @@ namespace Google.Solutions.Compute.Net
                         throw new OverflowException("Buffer too small to receive an entire message");
                     }
 
-                    Compute.Trace.TraceVerbose($"WebSocketStream: begin ReadAsync()... [socket: {this.socket.State}]");
+                    TraceSources.Compute.TraceVerbose($"WebSocketStream: begin ReadAsync()... [socket: {this.socket.State}]");
                     result = await this.socket.ReceiveAsync(
                         new ArraySegment<byte>(
                             buffer,
@@ -159,7 +159,7 @@ namespace Google.Solutions.Compute.Net
                         cancellationToken).ConfigureAwait(false);
                     bytesReceived += result.Count;
 
-                    Compute.Trace.TraceVerbose($"WebSocketStream: end ReadAsync() - {result.Count} bytes read [socket: {this.socket.State}]");
+                    TraceSources.Compute.TraceVerbose($"WebSocketStream: end ReadAsync() - {result.Count} bytes read [socket: {this.socket.State}]");
                 }
                 while (count > 0 && !result.EndOfMessage);
 
@@ -167,7 +167,7 @@ namespace Google.Solutions.Compute.Net
                 {
                     Debug.Assert(bytesReceived == 0);
 
-                    Compute.Trace.TraceVerbose($"Connection closed by server: {result.CloseStatus}");
+                    TraceSources.Compute.TraceVerbose($"Connection closed by server: {result.CloseStatus}");
 
                     this.closeByServerReceived = new WebSocketStreamClosedByServerException(
                         result.CloseStatus.Value,
@@ -190,7 +190,7 @@ namespace Google.Solutions.Compute.Net
             }
             catch (Exception e) when (IsSocketError(e, SocketError.ConnectionAborted))
             {
-                Compute.Trace.TraceVerbose($"WebSocketStream.Receive: connection aborted - {e}");
+                TraceSources.Compute.TraceVerbose($"WebSocketStream.Receive: connection aborted - {e}");
 
                 // ClientWebSocket/WinHttp can also throw an exception if
                 // the connection has been closed.
@@ -213,17 +213,17 @@ namespace Google.Solutions.Compute.Net
 
             try
             {
-                Compute.Trace.TraceVerbose($"WebSocketStream: begin WriteAsync({count} bytes)... [socket: {this.socket.State}]");
+                TraceSources.Compute.TraceVerbose($"WebSocketStream: begin WriteAsync({count} bytes)... [socket: {this.socket.State}]");
                 await this.socket.SendAsync(
                     new ArraySegment<byte>(buffer, offset, count),
                     WebSocketMessageType.Binary,
                     true,
                     cancellationToken).ConfigureAwait(false);
-                Compute.Trace.TraceVerbose($"WebSocketStream: end WriteAsync()... [socket: {this.socket.State}]");
+                TraceSources.Compute.TraceVerbose($"WebSocketStream: end WriteAsync()... [socket: {this.socket.State}]");
             }
             catch (Exception e) when (IsSocketError(e, SocketError.ConnectionAborted))
             {
-                Compute.Trace.TraceVerbose($"WebSocketStream.Send: connection aborted - {e}");
+                TraceSources.Compute.TraceVerbose($"WebSocketStream.Send: connection aborted - {e}");
 
                 this.closeByServerReceived = new WebSocketStreamClosedByServerException(
                     WebSocketCloseStatus.NormalClosure,

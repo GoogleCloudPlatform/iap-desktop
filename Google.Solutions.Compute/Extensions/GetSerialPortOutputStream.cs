@@ -87,7 +87,7 @@ namespace Google.Solutions.Compute.Extensions
             request.Start = this.nextOffset;
             var output = await request.ExecuteAsync().ConfigureAwait(false);
 
-            Compute.Trace.TraceVerbose(
+            TraceSources.Compute.TraceVerbose(
                 "Read {0} chars from serial port [start={1}, next={2}]",
                 output.Contents == null ? 0 : output.Contents.Length,
                 output.Start.Value,
