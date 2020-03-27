@@ -79,7 +79,7 @@ namespace Google.Solutions.IapDesktop.Application.Windows.TunnelsViewer
             this.disconnectToolStripButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
             this.disconnectToolStripButton.Enabled = false;
             this.disconnectToolStripButton.Image = ((System.Drawing.Image)(resources.GetObject("disconnectToolStripButton.Image")));
-            this.disconnectToolStripButton.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.disconnectToolStripButton.ImageTransparentColor = System.Drawing.Color.White;
             this.disconnectToolStripButton.Name = "disconnectToolStripButton";
             this.disconnectToolStripButton.Size = new System.Drawing.Size(23, 22);
             this.disconnectToolStripButton.Text = "Disconnect tunnel";

@@ -52,30 +52,30 @@ namespace Google.Solutions.IapDesktop.Application.ProjectExplorer
             this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(ProjectExplorerWindow));
             this.toolStrip = new System.Windows.Forms.ToolStrip();
-            this.refreshButton = new System.Windows.Forms.ToolStripButton();
-            this.addButton = new System.Windows.Forms.ToolStripButton();
             this.vmToolStripSeparator = new System.Windows.Forms.ToolStripSeparator();
-            this.connectToolStripButton = new System.Windows.Forms.ToolStripButton();
-            this.openSettingsButton = new System.Windows.Forms.ToolStripButton();
-            this.generateCredentialsToolStripButton = new System.Windows.Forms.ToolStripButton();
-            this.showSerialLogToolStripButton = new System.Windows.Forms.ToolStripButton();
             this.vsToolStripExtender = new WeifenLuo.WinFormsUI.Docking.VisualStudioToolStripExtender(this.components);
             this.vs2015LightTheme = new WeifenLuo.WinFormsUI.Docking.VS2015LightTheme();
             this.treeView = new System.Windows.Forms.TreeView();
             this.contextMenu = new System.Windows.Forms.ContextMenuStrip(this.components);
-            this.connectToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.generateCredentialsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.showSerialLogToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.refreshToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.refreshAllProjectsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.unloadProjectToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.propertiesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.iapSeparatorToolStripMenuItem = new System.Windows.Forms.ToolStripSeparator();
             this.configureIapAccessToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.cloudConsoleSeparatorToolStripMenuItem = new System.Windows.Forms.ToolStripSeparator();
             this.openInCloudConsoleToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.openlogsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.imageList = new System.Windows.Forms.ImageList(this.components);
+            this.connectToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.generateCredentialsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.showSerialLogToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.refreshToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.propertiesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.refreshButton = new System.Windows.Forms.ToolStripButton();
+            this.addButton = new System.Windows.Forms.ToolStripButton();
+            this.connectToolStripButton = new System.Windows.Forms.ToolStripButton();
+            this.openSettingsButton = new System.Windows.Forms.ToolStripButton();
+            this.generateCredentialsToolStripButton = new System.Windows.Forms.ToolStripButton();
+            this.showSerialLogToolStripButton = new System.Windows.Forms.ToolStripButton();
             this.toolStrip.SuspendLayout();
             this.contextMenu.SuspendLayout();
             this.SuspendLayout();
@@ -96,70 +96,10 @@ namespace Google.Solutions.IapDesktop.Application.ProjectExplorer
             this.toolStrip.TabIndex = 0;
             this.toolStrip.Text = "toolStrip1";
             // 
-            // refreshButton
-            // 
-            this.refreshButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.refreshButton.Image = ((System.Drawing.Image)(resources.GetObject("refreshButton.Image")));
-            this.refreshButton.ImageTransparentColor = System.Drawing.Color.White;
-            this.refreshButton.Name = "refreshButton";
-            this.refreshButton.Size = new System.Drawing.Size(23, 22);
-            this.refreshButton.Text = "Refresh";
-            this.refreshButton.Click += new System.EventHandler(this.refreshButton_Click);
-            // 
-            // addButton
-            // 
-            this.addButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.addButton.Image = ((System.Drawing.Image)(resources.GetObject("addButton.Image")));
-            this.addButton.ImageTransparentColor = System.Drawing.Color.White;
-            this.addButton.Name = "addButton";
-            this.addButton.Size = new System.Drawing.Size(23, 22);
-            this.addButton.Text = "Add project";
-            this.addButton.Click += new System.EventHandler(this.addButton_Click);
-            // 
             // vmToolStripSeparator
             // 
             this.vmToolStripSeparator.Name = "vmToolStripSeparator";
             this.vmToolStripSeparator.Size = new System.Drawing.Size(6, 25);
-            // 
-            // connectToolStripButton
-            // 
-            this.connectToolStripButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.connectToolStripButton.Image = ((System.Drawing.Image)(resources.GetObject("connectToolStripButton.Image")));
-            this.connectToolStripButton.ImageTransparentColor = System.Drawing.Color.White;
-            this.connectToolStripButton.Name = "connectToolStripButton";
-            this.connectToolStripButton.Size = new System.Drawing.Size(23, 22);
-            this.connectToolStripButton.Text = "toolStripButton1";
-            this.connectToolStripButton.Click += new System.EventHandler(this.connectToolStripButton_Click);
-            // 
-            // openSettingsButton
-            // 
-            this.openSettingsButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.openSettingsButton.Image = ((System.Drawing.Image)(resources.GetObject("openSettingsButton.Image")));
-            this.openSettingsButton.ImageTransparentColor = System.Drawing.Color.White;
-            this.openSettingsButton.Name = "openSettingsButton";
-            this.openSettingsButton.Size = new System.Drawing.Size(23, 22);
-            this.openSettingsButton.Text = "Settings";
-            this.openSettingsButton.Click += new System.EventHandler(this.openSettingsButton_Click);
-            // 
-            // generateCredentialsToolStripButton
-            // 
-            this.generateCredentialsToolStripButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.generateCredentialsToolStripButton.Image = ((System.Drawing.Image)(resources.GetObject("generateCredentialsToolStripButton.Image")));
-            this.generateCredentialsToolStripButton.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.generateCredentialsToolStripButton.Name = "generateCredentialsToolStripButton";
-            this.generateCredentialsToolStripButton.Size = new System.Drawing.Size(23, 22);
-            this.generateCredentialsToolStripButton.Text = "toolStripButton1";
-            this.generateCredentialsToolStripButton.Click += new System.EventHandler(this.generateCredentialsToolStripButton_Click);
-            // 
-            // showSerialLogToolStripButton
-            // 
-            this.showSerialLogToolStripButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.showSerialLogToolStripButton.Image = ((System.Drawing.Image)(resources.GetObject("showSerialLogToolStripButton.Image")));
-            this.showSerialLogToolStripButton.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.showSerialLogToolStripButton.Name = "showSerialLogToolStripButton";
-            this.showSerialLogToolStripButton.Size = new System.Drawing.Size(23, 22);
-            this.showSerialLogToolStripButton.Text = "Show serial &log";
-            this.showSerialLogToolStripButton.Click += new System.EventHandler(this.showSerialLogToolStripButton_Click);
             // 
             // vsToolStripExtender
             // 
@@ -198,36 +138,9 @@ namespace Google.Solutions.IapDesktop.Application.ProjectExplorer
             this.contextMenu.Name = "contextMenu";
             this.contextMenu.Size = new System.Drawing.Size(277, 236);
             // 
-            // connectToolStripMenuItem
-            // 
-            this.connectToolStripMenuItem.Name = "connectToolStripMenuItem";
-            this.connectToolStripMenuItem.Size = new System.Drawing.Size(276, 22);
-            this.connectToolStripMenuItem.Text = "&Connect";
-            this.connectToolStripMenuItem.Click += new System.EventHandler(this.connectToolStripMenuItem_Click);
-            // 
-            // generateCredentialsToolStripMenuItem
-            // 
-            this.generateCredentialsToolStripMenuItem.Name = "generateCredentialsToolStripMenuItem";
-            this.generateCredentialsToolStripMenuItem.Size = new System.Drawing.Size(276, 22);
-            this.generateCredentialsToolStripMenuItem.Text = "Generate &Windows logon credentials...";
-            this.generateCredentialsToolStripMenuItem.Click += new System.EventHandler(this.generateCredentialsToolStripMenuItem_Click);
-            // 
-            // showSerialLogToolStripMenuItem
-            // 
-            this.showSerialLogToolStripMenuItem.Name = "showSerialLogToolStripMenuItem";
-            this.showSerialLogToolStripMenuItem.Size = new System.Drawing.Size(276, 22);
-            this.showSerialLogToolStripMenuItem.Text = "Show serial &log";
-            this.showSerialLogToolStripMenuItem.Click += new System.EventHandler(this.showSerialLogToolStripMenuItem_Click);
-            // 
-            // refreshToolStripMenuItem
-            // 
-            this.refreshToolStripMenuItem.Name = "refreshToolStripMenuItem";
-            this.refreshToolStripMenuItem.Size = new System.Drawing.Size(276, 22);
-            this.refreshToolStripMenuItem.Text = "&Refresh project";
-            this.refreshToolStripMenuItem.Click += new System.EventHandler(this.refreshToolStripMenuItem_Click);
-            // 
             // refreshAllProjectsToolStripMenuItem
             // 
+            this.refreshAllProjectsToolStripMenuItem.Image = global::Google.Solutions.IapDesktop.Application.Properties.Resources.Refresh_161;
             this.refreshAllProjectsToolStripMenuItem.Name = "refreshAllProjectsToolStripMenuItem";
             this.refreshAllProjectsToolStripMenuItem.Size = new System.Drawing.Size(276, 22);
             this.refreshAllProjectsToolStripMenuItem.Text = "Refresh &all projects";
@@ -239,13 +152,6 @@ namespace Google.Solutions.IapDesktop.Application.ProjectExplorer
             this.unloadProjectToolStripMenuItem.Size = new System.Drawing.Size(276, 22);
             this.unloadProjectToolStripMenuItem.Text = "&Unload project";
             this.unloadProjectToolStripMenuItem.Click += new System.EventHandler(this.unloadProjectToolStripMenuItem_Click);
-            // 
-            // propertiesToolStripMenuItem
-            // 
-            this.propertiesToolStripMenuItem.Name = "propertiesToolStripMenuItem";
-            this.propertiesToolStripMenuItem.Size = new System.Drawing.Size(276, 22);
-            this.propertiesToolStripMenuItem.Text = "P&roperties";
-            this.propertiesToolStripMenuItem.Click += new System.EventHandler(this.propertiesToolStripMenuItem_Click);
             // 
             // iapSeparatorToolStripMenuItem
             // 
@@ -290,6 +196,106 @@ namespace Google.Solutions.IapDesktop.Application.ProjectExplorer
             this.imageList.Images.SetKeyName(5, "ComputerBlue_16.png");
             this.imageList.Images.SetKeyName(6, "Vm.ico");
             this.imageList.Images.SetKeyName(7, "VmBlue.ico");
+            // 
+            // connectToolStripMenuItem
+            // 
+            this.connectToolStripMenuItem.Image = global::Google.Solutions.IapDesktop.Application.Properties.Resources.Connect_16;
+            this.connectToolStripMenuItem.Name = "connectToolStripMenuItem";
+            this.connectToolStripMenuItem.Size = new System.Drawing.Size(276, 22);
+            this.connectToolStripMenuItem.Text = "&Connect";
+            this.connectToolStripMenuItem.Click += new System.EventHandler(this.connectToolStripMenuItem_Click);
+            // 
+            // generateCredentialsToolStripMenuItem
+            // 
+            this.generateCredentialsToolStripMenuItem.Image = global::Google.Solutions.IapDesktop.Application.Properties.Resources.Password_16;
+            this.generateCredentialsToolStripMenuItem.Name = "generateCredentialsToolStripMenuItem";
+            this.generateCredentialsToolStripMenuItem.Size = new System.Drawing.Size(276, 22);
+            this.generateCredentialsToolStripMenuItem.Text = "Generate &Windows logon credentials...";
+            this.generateCredentialsToolStripMenuItem.Click += new System.EventHandler(this.generateCredentialsToolStripMenuItem_Click);
+            // 
+            // showSerialLogToolStripMenuItem
+            // 
+            this.showSerialLogToolStripMenuItem.Image = global::Google.Solutions.IapDesktop.Application.Properties.Resources.Log_16;
+            this.showSerialLogToolStripMenuItem.Name = "showSerialLogToolStripMenuItem";
+            this.showSerialLogToolStripMenuItem.Size = new System.Drawing.Size(276, 22);
+            this.showSerialLogToolStripMenuItem.Text = "Show serial &log";
+            this.showSerialLogToolStripMenuItem.Click += new System.EventHandler(this.showSerialLogToolStripMenuItem_Click);
+            // 
+            // refreshToolStripMenuItem
+            // 
+            this.refreshToolStripMenuItem.Image = global::Google.Solutions.IapDesktop.Application.Properties.Resources.Refresh_16;
+            this.refreshToolStripMenuItem.Name = "refreshToolStripMenuItem";
+            this.refreshToolStripMenuItem.Size = new System.Drawing.Size(276, 22);
+            this.refreshToolStripMenuItem.Text = "&Refresh project";
+            this.refreshToolStripMenuItem.Click += new System.EventHandler(this.refreshToolStripMenuItem_Click);
+            // 
+            // propertiesToolStripMenuItem
+            // 
+            this.propertiesToolStripMenuItem.Image = global::Google.Solutions.IapDesktop.Application.Properties.Resources.Settings_16;
+            this.propertiesToolStripMenuItem.Name = "propertiesToolStripMenuItem";
+            this.propertiesToolStripMenuItem.Size = new System.Drawing.Size(276, 22);
+            this.propertiesToolStripMenuItem.Text = "&Settings";
+            this.propertiesToolStripMenuItem.Click += new System.EventHandler(this.propertiesToolStripMenuItem_Click);
+            // 
+            // refreshButton
+            // 
+            this.refreshButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.refreshButton.Image = ((System.Drawing.Image)(resources.GetObject("refreshButton.Image")));
+            this.refreshButton.ImageTransparentColor = System.Drawing.Color.White;
+            this.refreshButton.Name = "refreshButton";
+            this.refreshButton.Size = new System.Drawing.Size(23, 22);
+            this.refreshButton.Text = "Refresh";
+            this.refreshButton.Click += new System.EventHandler(this.refreshButton_Click);
+            // 
+            // addButton
+            // 
+            this.addButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.addButton.Image = ((System.Drawing.Image)(resources.GetObject("addButton.Image")));
+            this.addButton.ImageTransparentColor = System.Drawing.Color.White;
+            this.addButton.Name = "addButton";
+            this.addButton.Size = new System.Drawing.Size(23, 22);
+            this.addButton.Text = "Add project";
+            this.addButton.Click += new System.EventHandler(this.addButton_Click);
+            // 
+            // connectToolStripButton
+            // 
+            this.connectToolStripButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.connectToolStripButton.Image = ((System.Drawing.Image)(resources.GetObject("connectToolStripButton.Image")));
+            this.connectToolStripButton.ImageTransparentColor = System.Drawing.Color.White;
+            this.connectToolStripButton.Name = "connectToolStripButton";
+            this.connectToolStripButton.Size = new System.Drawing.Size(23, 22);
+            this.connectToolStripButton.Text = "toolStripButton1";
+            this.connectToolStripButton.Click += new System.EventHandler(this.connectToolStripButton_Click);
+            // 
+            // openSettingsButton
+            // 
+            this.openSettingsButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.openSettingsButton.Image = ((System.Drawing.Image)(resources.GetObject("openSettingsButton.Image")));
+            this.openSettingsButton.ImageTransparentColor = System.Drawing.Color.White;
+            this.openSettingsButton.Name = "openSettingsButton";
+            this.openSettingsButton.Size = new System.Drawing.Size(23, 22);
+            this.openSettingsButton.Text = "Settings";
+            this.openSettingsButton.Click += new System.EventHandler(this.openSettingsButton_Click);
+            // 
+            // generateCredentialsToolStripButton
+            // 
+            this.generateCredentialsToolStripButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.generateCredentialsToolStripButton.Image = ((System.Drawing.Image)(resources.GetObject("generateCredentialsToolStripButton.Image")));
+            this.generateCredentialsToolStripButton.ImageTransparentColor = System.Drawing.Color.White;
+            this.generateCredentialsToolStripButton.Name = "generateCredentialsToolStripButton";
+            this.generateCredentialsToolStripButton.Size = new System.Drawing.Size(23, 22);
+            this.generateCredentialsToolStripButton.Text = "toolStripButton1";
+            this.generateCredentialsToolStripButton.Click += new System.EventHandler(this.generateCredentialsToolStripButton_Click);
+            // 
+            // showSerialLogToolStripButton
+            // 
+            this.showSerialLogToolStripButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.showSerialLogToolStripButton.Image = ((System.Drawing.Image)(resources.GetObject("showSerialLogToolStripButton.Image")));
+            this.showSerialLogToolStripButton.ImageTransparentColor = System.Drawing.Color.White;
+            this.showSerialLogToolStripButton.Name = "showSerialLogToolStripButton";
+            this.showSerialLogToolStripButton.Size = new System.Drawing.Size(23, 22);
+            this.showSerialLogToolStripButton.Text = "Show serial &log";
+            this.showSerialLogToolStripButton.Click += new System.EventHandler(this.showSerialLogToolStripButton_Click);
             // 
             // ProjectExplorerWindow
             // 

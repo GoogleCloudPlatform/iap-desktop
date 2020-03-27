@@ -124,10 +124,9 @@
   <data name="disconnectToolStripButton.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
         iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8
-        YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAACmSURBVDhPzY/bCcQgEEVTmwXYhDVYgrX4bxdW4b8PNssG
-        f2e5A0p2kSiBhR048Q44x8kmpaQYI4P83W+zwkVjDIMcQiClVO+nkpQSDwgheKhlnEsCrTWdJW0Ymyz9
-        Ai61tZtgeX3U+XWcLUNSa53SBcA5R957zhCgb1uNYAE+1loqpdD+eDI5ZzpeR+9HfAjQjC5d8TsB8hVT
-        wSp/KLgDC1AI96j0BoYponYytVczAAAAAElFTkSuQmCC
+        YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAABpSURBVDhPzY1BCsAgEAP9tHryNeJpH2mxpCWHpJ5aOjAg
+        MtH0X1prM+d8us64fqb3fo+cq0H+EupXFplHjVhkHjVikXnUiEXmUSMWmUeNWGQeNWKRedTosta6f2CM
+        IcellBkR+wc+JqUDj2zOFNeF7+sAAAAASUVORK5CYII=
 </value>
   </data>
   <metadata name="contextMenuStrip.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
