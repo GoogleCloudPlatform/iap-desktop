@@ -543,6 +543,10 @@ namespace Google.Solutions.IapDesktop.Application.ProjectExplorer
             {
                 openSettingsButton_Click(sender, EventArgs.Empty);
             }
+            else if (e.KeyCode == Keys.F5)
+            {
+                refreshAllProjectsToolStripMenuItem_Click(sender, EventArgs.Empty);
+            }
             else if (e.KeyCode == Keys.Enter)
             {
                 connectToolStripButton_Click(sender, EventArgs.Empty);
