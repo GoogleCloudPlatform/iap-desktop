@@ -94,6 +94,7 @@ namespace Google.Solutions.IapDesktop.Application.Windows.RemoteDesktop
             this.ClientSize = new System.Drawing.Size(763, 431);
             this.Controls.Add(this.spinner);
             this.Controls.Add(this.rdpClient);
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "RemoteDesktopPane";
             this.Text = "RemoteDesktopPane";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.RemoteDesktopPane_FormClosing);
