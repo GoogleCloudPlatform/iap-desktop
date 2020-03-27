@@ -50,18 +50,23 @@ namespace Google.Solutions.IapDesktop.Application.Services
         private readonly IJobHost host;
         private readonly IAuthorizationService authService;
 
-        public JobService(IServiceProvider serviceProvider)
+        public JobService(IAuthorizationService authService, IJobHost host)
         {
-            this.host = serviceProvider.GetService<IJobHost>();
-            this.authService = serviceProvider.GetService<IAuthorizationService>();
+            this.authService = authService;
+            this.host = host;
+        }
+
+        public JobService(IServiceProvider serviceProvider)
+            : this(
+                  serviceProvider.GetService<IAuthorizationService>(),
+                  serviceProvider.GetService<IJobHost>())
+        {
         }
 
         public Task<T> RunInBackgroundWithoutReauth<T>(
             JobDescription jobDescription,
             Func<CancellationToken, Task<T>> jobFunc)
         {
-            Debug.Assert(!this.host.Invoker.InvokeRequired, "RunInBackground must be called on UI thread");
-
             var completionSource = new TaskCompletionSource<T>();
             var cts = new CancellationTokenSource();
 
@@ -142,14 +147,15 @@ namespace Google.Solutions.IapDesktop.Application.Services
             JobDescription jobDescription,
             Func<CancellationToken, Task<T>> jobFunc)
         {
+            Debug.Assert(!this.host.Invoker.InvokeRequired, "RunInBackground must be called on UI thread");
+
             for (int attempt = 0; ; attempt++)
             {
                 try
                 {
                     return await RunInBackgroundWithoutReauth(jobDescription, jobFunc);
                 }
-                catch (TokenResponseException tokenException)
-                    when (tokenException.Error.Error == "invalid_grant")
+                catch (Exception e) when (IsReauthError(e))
                 {
                     // Reauth required or authorization has been revoked.
                     if (attempt >= 1)
@@ -174,6 +180,21 @@ namespace Google.Solutions.IapDesktop.Application.Services
                         throw new TaskCanceledException("Reauthorization aborted");
                     }
                 }
+            }
+        }
+
+        private static bool IsReauthError(Exception e)
+        {
+            // The TokenResponseException might be hiding in an AggregateException
+            e = e.Unwrap();
+
+            if (e is TokenResponseException tokenException)
+            {
+                return tokenException.Error.Error == "invalid_grant";
+            }
+            else
+            {
+                return true;
             }
         }
     }
