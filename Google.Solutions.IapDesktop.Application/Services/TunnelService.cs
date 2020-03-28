@@ -43,26 +43,27 @@ namespace Google.Solutions.IapDesktop.Application.Services
 
         public Task<Tunnel> CreateTunnelAsync(TunnelDestination tunnelEndpoint)
         {
-            TraceSources.IapDesktop.TraceVerbose("TunnelService: CreateTunnelAsync({0})", tunnelEndpoint);
+            using (TraceSources.IapDesktop.TraceMethod().WithParameters(tunnelEndpoint))
+            {
+                var iapEndpoint = new IapTunnelingEndpoint(
+                    this.authorizationService.Authorization.Credential,
+                    tunnelEndpoint.Instance,
+                    tunnelEndpoint.RemotePort,
+                    IapTunnelingEndpoint.DefaultNetworkInterface);
 
-            var iapEndpoint = new IapTunnelingEndpoint(
-                this.authorizationService.Authorization.Credential,
-                tunnelEndpoint.Instance,
-                tunnelEndpoint.RemotePort,
-                IapTunnelingEndpoint.DefaultNetworkInterface);
 
+                // Start listener to enable clients to connect. Do not await
+                // the listener as we want to continue listeining in the
+                // background.
+                var listener = SshRelayListener.CreateLocalListener(iapEndpoint);
+                var cts = new CancellationTokenSource();
 
-            // Start listener to enable clients to connect. Do not await
-            // the listener as we want to continue listeining in the
-            // background.
-            var listener = SshRelayListener.CreateLocalListener(iapEndpoint);
-            var cts = new CancellationTokenSource();
+                _ = listener.ListenAsync(cts.Token);
 
-            _ = listener.ListenAsync(cts.Token);
-
-            // Return the tunnel which allows the listener to be stopped
-            // via the CancellationTokenSource.
-            return Task.FromResult(new Tunnel(iapEndpoint, listener, cts));
+                // Return the tunnel which allows the listener to be stopped
+                // via the CancellationTokenSource.
+                return Task.FromResult(new Tunnel(iapEndpoint, listener, cts));
+            }
         }
     }
 }

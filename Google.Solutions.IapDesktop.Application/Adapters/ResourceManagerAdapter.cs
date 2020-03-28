@@ -63,25 +63,24 @@ namespace Google.Solutions.IapDesktop.Application.Adapters
 
         public async Task<IEnumerable<Project>> QueryProjects(string filter)
         {
-            TraceSources.IapDesktop.TraceVerbose(
-                "ResourceManagerAdapter: QueryProjects({0}", filter);
+            using (TraceSources.IapDesktop.TraceMethod().WithParameters(filter))
+            {
+                var projects = await PageHelper.JoinPagesAsync<ProjectsResource.ListRequest, ListProjectsResponse, Project>(
+                    new ProjectsResource.ListRequest(this.service)
+                    {
+                        Filter = filter
+                    },
+                    page => page.Projects,
+                    response => response.NextPageToken,
+                    (request, token) => { request.PageToken = token; });
 
-            var projects = await PageHelper.JoinPagesAsync<ProjectsResource.ListRequest, ListProjectsResponse, Project>(
-                new ProjectsResource.ListRequest(this.service)
-                {
-                    Filter = filter
-                },
-                page => page.Projects,
-                response => response.NextPageToken,
-                (request, token) => { request.PageToken = token; });
+                // Filter projects in deleted/pending delete state.
+                var result = projects.Where(p => p.LifecycleState == "ACTIVE");
 
-            // Filter projects in deleted/pending delete state.
-            var result = projects.Where(p => p.LifecycleState == "ACTIVE");
+                TraceSources.IapDesktop.TraceVerbose("Found {0} projects", result.Count());
 
-            TraceSources.IapDesktop.TraceVerbose
-                ("ResourceManagerAdapter: QueryProjects - found {0} projects", result.Count());
-
-            return result;
+                return result;
+            }
         }
 
         public Task<IEnumerable<Project>> QueryProjectsByPrefix(string idOrNamePrefix)

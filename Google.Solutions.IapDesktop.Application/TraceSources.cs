@@ -19,7 +19,9 @@
 // under the License.
 //
 
+using System;
 using System.Diagnostics;
+using System.Runtime.CompilerServices;
 
 namespace Google.Solutions.IapDesktop.Application
 {
@@ -46,5 +48,68 @@ namespace Google.Solutions.IapDesktop.Application
             }
         }
 
+        public static void TraceError(this TraceSource source, string message, params object[] args)
+        {
+            if (source.Switch.ShouldTrace(TraceEventType.Verbose))
+            {
+                source.TraceData(TraceEventType.Error, 0, string.Format(message, args));
+            }
+        }
+
+        public static TraceCallScope TraceMethod(
+            this TraceSource source,
+            [CallerMemberName] string method = null)
+        {
+            return new TraceCallScope(source, method);
+        }
+
+        public class TraceCallScope : IDisposable
+        {
+            private readonly TraceSource source;
+            private readonly string method;
+
+            public TraceCallScope(TraceSource source, string method)
+            {
+                this.source = source;
+                this.method = method;
+            }
+
+            public TraceCallScope WithoutParameters()
+            {
+                if (source.Switch.ShouldTrace(TraceEventType.Verbose))
+                {
+                    source.TraceData(
+                        TraceEventType.Verbose,
+                        0,
+                        string.Format("Enter {0}()", this.method));
+                }
+
+                return this;
+            }
+
+            public TraceCallScope WithParameters(params object[] args)
+            {
+                if (source.Switch.ShouldTrace(TraceEventType.Verbose))
+                {
+                    source.TraceData(
+                        TraceEventType.Verbose,
+                        0,
+                        string.Format("Enter {0}({1})", this.method, string.Join(", ", args)));
+                }
+
+                return this;
+            }
+
+            public void Dispose()
+            {
+                if (source.Switch.ShouldTrace(TraceEventType.Verbose))
+                {
+                    source.TraceData(
+                        TraceEventType.Verbose,
+                        0,
+                        string.Format("Exit {0}()", this.method));
+                }
+            }
+        }
     }
 }

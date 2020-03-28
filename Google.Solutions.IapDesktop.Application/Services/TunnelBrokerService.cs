@@ -60,8 +60,7 @@ namespace Google.Solutions.IapDesktop.Application.Services
         {
             var tunnel = this.tunnelService.CreateTunnelAsync(endpoint);
 
-            TraceSources.IapDesktop.TraceVerbose(
-                "TunnelBrokerService: Created tunnel to {0}", endpoint);
+            TraceSources.IapDesktop.TraceVerbose("Created tunnel to {0}", endpoint);
 
             this.tunnels[endpoint] = tunnel;
             return tunnel;
@@ -93,7 +92,7 @@ namespace Google.Solutions.IapDesktop.Application.Services
                 else if (tunnel.IsFaulted)
                 {
                     TraceSources.IapDesktop.TraceVerbose(
-                        "TunnelBrokerService: Tunnel to {0} is faulted.. reconnecting", endpoint);
+                        "Tunnel to {0} is faulted.. reconnecting", endpoint);
 
                     // There is no point in handing out a faulty attempt
                     // to create a tunnel. So start anew.
@@ -102,7 +101,7 @@ namespace Google.Solutions.IapDesktop.Application.Services
                 else
                 {
                     TraceSources.IapDesktop.TraceVerbose(
-                        "TunnelBrokerService: Reusing tunnel to {0}", endpoint);
+                        "Reusing tunnel to {0}", endpoint);
 
                     // This tunnel is good or still in the process
                     // of connecting.
@@ -113,79 +112,79 @@ namespace Google.Solutions.IapDesktop.Application.Services
 
         public async Task<Tunnel> ConnectAsync(TunnelDestination endpoint, TimeSpan timeout)
         {
-            TraceSources.IapDesktop.TraceVerbose(
-                "TunnelBrokerService: ConnectAsync({0})", endpoint);
-
-            var tunnel = await ConnectIfNecessaryAsync(endpoint);
-
-            try
+            using (TraceSources.IapDesktop.TraceMethod().WithParameters(endpoint, timeout))
             {
-                // Whether it is a new or existing tunnel, probe it first before 
-                // handing it out. It might be broken after all (because of reauth
-                // or for other reasons).
-                await tunnel.Probe(timeout);
+                var tunnel = await ConnectIfNecessaryAsync(endpoint);
 
-                TraceSources.IapDesktop.TraceVerbose(
-                    "TunnelBrokerService: Probing tunnel to {0} succeeded", endpoint);
+                try
+                {
+                    // Whether it is a new or existing tunnel, probe it first before 
+                    // handing it out. It might be broken after all (because of reauth
+                    // or for other reasons).
+                    await tunnel.Probe(timeout);
+
+                    TraceSources.IapDesktop.TraceVerbose(
+                        "Probing tunnel to {0} succeeded", endpoint);
+                }
+                catch (Exception e)
+                {
+                    TraceSources.IapDesktop.TraceVerbose(
+                        "Probing tunnel to {0} failed: {1}", endpoint, e.Message);
+
+                    // Un-cache this broken tunnel.
+                    await DisconnectAsync(endpoint);
+                    throw;
+                }
+
+                await this.eventService.FireAsync(new TunnelOpenedEvent(endpoint));
+
+                return tunnel;
             }
-            catch (Exception e)
-            {
-                TraceSources.IapDesktop.TraceVerbose(
-                    "TunnelBrokerService: Probing tunnel to {0} failed: {1}", endpoint, e.Message);
-
-                // Un-cache this broken tunnel.
-                await DisconnectAsync(endpoint);
-                throw;
-            }
-
-            await this.eventService.FireAsync(new TunnelOpenedEvent(endpoint));
-
-            return tunnel;
         }
 
         public async Task DisconnectAsync(TunnelDestination endpoint)
         {
-            TraceSources.IapDesktop.TraceVerbose(
-                "TunnelBrokerService: DisconnectAsync({0})", endpoint);
-
-            lock (this.tunnelsLock)
+            using (TraceSources.IapDesktop.TraceMethod().WithParameters(endpoint))
             {
-                if (!this.tunnels.TryGetValue(endpoint, out var tunnel))
+                lock (this.tunnelsLock)
                 {
-                    throw new KeyNotFoundException($"No active tunnel to {endpoint}");
+                    if (!this.tunnels.TryGetValue(endpoint, out var tunnel))
+                    {
+                        throw new KeyNotFoundException($"No active tunnel to {endpoint}");
+                    }
+
+                    tunnel.Result.Close();
+                    this.tunnels.Remove(endpoint);
                 }
 
-                tunnel.Result.Close();
-                this.tunnels.Remove(endpoint);
+                await this.eventService.FireAsync(new TunnelClosedEvent(endpoint));
             }
-
-            await this.eventService.FireAsync(new TunnelClosedEvent(endpoint));
         }
 
         public async Task DisconnectAllAsync()
         {
-            TraceSources.IapDesktop.TraceVerbose(
-                "TunnelBrokerService: DisconnectAllAsync");
-
-            // Create a copy of the list to avoid race conditions.
-            var copyOfEndpoints = new List<TunnelDestination>(this.tunnels.Keys);
-
-            var exceptions = new List<Exception>();
-            foreach (var endpoint in copyOfEndpoints)
+            using (TraceSources.IapDesktop.TraceMethod().WithoutParameters())
             {
-                try
-                {
-                    await DisconnectAsync(endpoint);
-                }
-                catch (Exception e)
-                {
-                    exceptions.Add(e);
-                }
-            }
+                // Create a copy of the list to avoid race conditions.
+                var copyOfEndpoints = new List<TunnelDestination>(this.tunnels.Keys);
 
-            if (exceptions.Any())
-            {
-                throw new AggregateException(exceptions);
+                var exceptions = new List<Exception>();
+                foreach (var endpoint in copyOfEndpoints)
+                {
+                    try
+                    {
+                        await DisconnectAsync(endpoint);
+                    }
+                    catch (Exception e)
+                    {
+                        exceptions.Add(e);
+                    }
+                }
+
+                if (exceptions.Any())
+                {
+                    throw new AggregateException(exceptions);
+                }
             }
         }
     }

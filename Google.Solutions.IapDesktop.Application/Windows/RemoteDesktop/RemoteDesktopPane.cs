@@ -86,129 +86,129 @@ namespace Google.Solutions.IapDesktop.Application.Windows.RemoteDesktop
             VmInstanceSettings settings
             )
         {
-            TraceSources.IapDesktop.TraceVerbose(
-                "RemoteDesktopPane: Connect({0}, {1})", server, port);
-
-            // NB. The initialization needs to happen after the pane is shown, otherwise
-            // an error happens indicating that the control does not have a Window handle.
-            InitializeComponent();
-            UpdateLayout();
-
-            var advancedSettings = this.rdpClient.AdvancedSettings7;
-            var nonScriptable = (IMsRdpClientNonScriptable5)this.rdpClient.GetOcx();
-            var securedSettings2 = this.rdpClient.SecuredSettings2;
-
-            //
-            // Basic connection settings.
-            //
-            this.rdpClient.Server = server;
-            this.rdpClient.Domain = settings.Domain;
-            this.rdpClient.UserName = settings.Username;
-            advancedSettings.RDPPort = port;
-            advancedSettings.ClearTextPassword = settings.Password.AsClearText();
-
-            //
-            // Connection security settings.
-            //
-            advancedSettings.EnableCredSspSupport = true;
-            nonScriptable.PromptForCredentials = false;
-            nonScriptable.NegotiateSecurityLayer = true;
-
-            switch (settings.AuthenticationLevel)
+            using (TraceSources.IapDesktop.TraceMethod().WithParameters(server, port))
             {
-                case RdpAuthenticationLevel.NoServerAuthentication:
-                    advancedSettings.AuthenticationLevel = 0;
-                    break;
+                // NB. The initialization needs to happen after the pane is shown, otherwise
+                // an error happens indicating that the control does not have a Window handle.
+                InitializeComponent();
+                UpdateLayout();
 
-                case RdpAuthenticationLevel.RequireServerAuthentication:
-                    advancedSettings.AuthenticationLevel = 1;
-                    break;
+                var advancedSettings = this.rdpClient.AdvancedSettings7;
+                var nonScriptable = (IMsRdpClientNonScriptable5)this.rdpClient.GetOcx();
+                var securedSettings2 = this.rdpClient.SecuredSettings2;
 
-                case RdpAuthenticationLevel.AttemptServerAuthentication:
-                    advancedSettings.AuthenticationLevel = 2;
-                    break;
+                //
+                // Basic connection settings.
+                //
+                this.rdpClient.Server = server;
+                this.rdpClient.Domain = settings.Domain;
+                this.rdpClient.UserName = settings.Username;
+                advancedSettings.RDPPort = port;
+                advancedSettings.ClearTextPassword = settings.Password.AsClearText();
+
+                //
+                // Connection security settings.
+                //
+                advancedSettings.EnableCredSspSupport = true;
+                nonScriptable.PromptForCredentials = false;
+                nonScriptable.NegotiateSecurityLayer = true;
+
+                switch (settings.AuthenticationLevel)
+                {
+                    case RdpAuthenticationLevel.NoServerAuthentication:
+                        advancedSettings.AuthenticationLevel = 0;
+                        break;
+
+                    case RdpAuthenticationLevel.RequireServerAuthentication:
+                        advancedSettings.AuthenticationLevel = 1;
+                        break;
+
+                    case RdpAuthenticationLevel.AttemptServerAuthentication:
+                        advancedSettings.AuthenticationLevel = 2;
+                        break;
+                }
+
+                nonScriptable.AllowPromptingForCredentials =
+                    settings.UserAuthenticationBehavior == RdpUserAuthenticationBehavior.PromptOnFailure;
+
+                //
+                // Advanced connection settings.
+                //
+                advancedSettings.keepAliveInterval = 60000;
+                advancedSettings.PerformanceFlags = 0; // Enable all features, it's 2020.
+                advancedSettings.EnableAutoReconnect = true;
+                advancedSettings.MaxReconnectAttempts = 10;
+
+                //
+                // Behavior settings.
+                //
+                advancedSettings.DisplayConnectionBar =
+                    (settings.ConnectionBar != RdpConnectionBarState.Off);
+                advancedSettings.PinConnectionBar =
+                    (settings.ConnectionBar == RdpConnectionBarState.Pinned);
+                advancedSettings.EnableWindowsKey = 1;
+                advancedSettings.GrabFocusOnConnect = false;
+
+                //
+                // Local resources settings.
+                //
+                advancedSettings.RedirectClipboard =
+                    settings.RedirectClipboard == RdpRedirectClipboard.Enabled;
+
+                switch (settings.AudioMode)
+                {
+                    case RdpAudioMode.PlayLocally:
+                        securedSettings2.AudioRedirectionMode = 0;
+                        break;
+                    case RdpAudioMode.PlayOnServer:
+                        securedSettings2.AudioRedirectionMode = 1;
+                        break;
+                    case RdpAudioMode.DoNotPlay:
+                        securedSettings2.AudioRedirectionMode = 2;
+                        break;
+                }
+
+                //
+                // Display settings.
+                //
+                this.rdpClient.FullScreen = false;
+
+                switch (settings.ColorDepth)
+                {
+                    case RdpColorDepth.HighColor:
+                        this.rdpClient.ColorDepth = 16;
+                        break;
+                    case RdpColorDepth.TrueColor:
+                        this.rdpClient.ColorDepth = 24;
+                        break;
+                    case RdpColorDepth.DeepColor:
+                        this.rdpClient.ColorDepth = 32;
+                        break;
+                }
+
+                if (settings.DesktopSize == RdpDesktopSize.ScreenSize)
+                {
+                    var screenSize = Screen.GetBounds(this);
+                    this.rdpClient.DesktopHeight = screenSize.Height;
+                    this.rdpClient.DesktopWidth = screenSize.Width;
+                }
+                else
+                {
+                    this.rdpClient.DesktopHeight = this.Size.Height;
+                    this.rdpClient.DesktopWidth = this.Size.Width;
+                }
+
+                //
+                // Keyboard settings.
+                //
+                // TODO: Map advancedSettings2.HotKey*
+                //
+                // NB. Apply key combinations to the remote server only when the client is running 
+                // in full-screen mode.
+                this.rdpClient.SecuredSettings2.KeyboardHookMode = 2;
+
+                this.rdpClient.Connect();
             }
-
-            nonScriptable.AllowPromptingForCredentials =
-                settings.UserAuthenticationBehavior == RdpUserAuthenticationBehavior.PromptOnFailure;
-
-            //
-            // Advanced connection settings.
-            //
-            advancedSettings.keepAliveInterval = 60000;
-            advancedSettings.PerformanceFlags = 0; // Enable all features, it's 2020.
-            advancedSettings.EnableAutoReconnect = true;
-            advancedSettings.MaxReconnectAttempts = 10;
-
-            //
-            // Behavior settings.
-            //
-            advancedSettings.DisplayConnectionBar =
-                (settings.ConnectionBar != RdpConnectionBarState.Off);
-            advancedSettings.PinConnectionBar =
-                (settings.ConnectionBar == RdpConnectionBarState.Pinned);
-            advancedSettings.EnableWindowsKey = 1;
-            advancedSettings.GrabFocusOnConnect = false;
-
-            //
-            // Local resources settings.
-            //
-            advancedSettings.RedirectClipboard =
-                settings.RedirectClipboard == RdpRedirectClipboard.Enabled;
-
-            switch (settings.AudioMode)
-            {
-                case RdpAudioMode.PlayLocally:
-                    securedSettings2.AudioRedirectionMode = 0;
-                    break;
-                case RdpAudioMode.PlayOnServer:
-                    securedSettings2.AudioRedirectionMode = 1;
-                    break;
-                case RdpAudioMode.DoNotPlay:
-                    securedSettings2.AudioRedirectionMode = 2;
-                    break;
-            }
-
-            //
-            // Display settings.
-            //
-            this.rdpClient.FullScreen = false;
-
-            switch (settings.ColorDepth)
-            {
-                case RdpColorDepth.HighColor:
-                    this.rdpClient.ColorDepth = 16;
-                    break;
-                case RdpColorDepth.TrueColor:
-                    this.rdpClient.ColorDepth = 24;
-                    break;
-                case RdpColorDepth.DeepColor:
-                    this.rdpClient.ColorDepth = 32;
-                    break;
-            }
-
-            if (settings.DesktopSize == RdpDesktopSize.ScreenSize)
-            {
-                var screenSize = Screen.GetBounds(this);
-                this.rdpClient.DesktopHeight = screenSize.Height;
-                this.rdpClient.DesktopWidth = screenSize.Width;
-            }
-            else
-            {
-                this.rdpClient.DesktopHeight = this.Size.Height;
-                this.rdpClient.DesktopWidth = this.Size.Width;
-            }
-
-            //
-            // Keyboard settings.
-            //
-            // TODO: Map advancedSettings2.HotKey*
-            //
-            // NB. Apply key combinations to the remote server only when the client is running 
-            // in full-screen mode.
-            this.rdpClient.SecuredSettings2.KeyboardHookMode = 2;
-
-            this.rdpClient.Connect();
         }
 
         public bool IsConnected => this.rdpClient.Connected == 1;
@@ -230,13 +230,13 @@ namespace Google.Solutions.IapDesktop.Application.Windows.RemoteDesktop
 
         private async Task ShowErrorAndClose(string caption, RdpException e)
         {
-            TraceSources.IapDesktop.TraceVerbose(
-                "RemoteDesktopPane: ShowErrorAndClose({0})", e.Message);
-
-            await this.eventService.FireAsync(
-                new RemoteDesktopConnectionFailedEvent(this.Instance, e));
-            this.exceptionDialog.Show(this, caption, e);
-            Close();
+            using (TraceSources.IapDesktop.TraceMethod().WithParameters(e.Message))
+            {
+                await this.eventService.FireAsync(
+                    new RemoteDesktopConnectionFailedEvent(this.Instance, e));
+                this.exceptionDialog.Show(this, caption, e);
+                Close();
+            }
         }
 
         //---------------------------------------------------------------------
@@ -342,65 +342,74 @@ namespace Google.Solutions.IapDesktop.Application.Windows.RemoteDesktop
 
         private async void rdpClient_OnConnected(object sender, EventArgs e)
         {
-            TraceSources.IapDesktop.TraceVerbose(
-                "RemoteDesktopPane: OnConnected({0})", this.rdpClient.ConnectedStatusText);
-
-            this.spinner.Visible = false;
-            await this.eventService.FireAsync(
-                new RemoteDesktopConnectionSuceededEvent(this.Instance));
+            using (TraceSources.IapDesktop.TraceMethod().WithParameters(this.rdpClient.ConnectedStatusText))
+            {
+                this.spinner.Visible = false;
+                await this.eventService.FireAsync(
+                    new RemoteDesktopConnectionSuceededEvent(this.Instance));
+            }
         }
 
 
         private void rdpClient_OnConnecting(object sender, EventArgs e)
         {
-            TraceSources.IapDesktop.TraceVerbose("RemoteDesktopPane: OnConnecting");
+            using (TraceSources.IapDesktop.TraceMethod().WithoutParameters())
+            { }
         }
 
         private void rdpClient_OnAuthenticationWarningDisplayed(object sender, EventArgs _)
         {
-            TraceSources.IapDesktop.TraceVerbose("RemoteDesktopPane: OnAuthenticationWarningDisplayed");
+            using (TraceSources.IapDesktop.TraceMethod().WithoutParameters())
+            { }
         }
 
         private void rdpClient_OnWarning(
             object sender,
             IMsTscAxEvents_OnWarningEvent args)
         {
-            TraceSources.IapDesktop.TraceVerbose("RemoteDesktopPane: OnWarning: {0}", args.warningCode);
+            using (TraceSources.IapDesktop.TraceMethod().WithParameters(args.warningCode))
+            { }
         }
 
         private void rdpClient_OnAutoReconnecting2(
             object sender,
             IMsTscAxEvents_OnAutoReconnecting2Event args)
         {
-            var e = new RdpDisconnectedException(
-                args.disconnectReason,
-                this.rdpClient.GetErrorDescription((uint)args.disconnectReason, 0));
+            using (TraceSources.IapDesktop.TraceMethod().WithoutParameters())
+            {
+                var e = new RdpDisconnectedException(
+                    args.disconnectReason,
+                    this.rdpClient.GetErrorDescription((uint)args.disconnectReason, 0));
 
-            TraceSources.IapDesktop.TraceVerbose(
-                "RemoteDesktopPane: OnAutoReconnecting2: {0}/{1} - {2} - {3}",
-                args.attemptCount,
-                args.maxAttemptCount,
-                e.Message,
-                args.networkAvailable);
+                TraceSources.IapDesktop.TraceVerbose(
+                    "Reconnect attempt {0}/{1} - {2} - {3}",
+                    args.attemptCount,
+                    args.maxAttemptCount,
+                    e.Message,
+                    args.networkAvailable);
+            }
         }
 
         private void rdpClient_OnAutoReconnected(object sender, EventArgs e)
         {
-            TraceSources.IapDesktop.TraceVerbose("RemoteDesktopPane: OnAutoReconnected");
+            using (TraceSources.IapDesktop.TraceMethod().WithoutParameters())
+            { }
         }
 
         private void rdpClient_OnFocusReleased(
             object sender,
             IMsTscAxEvents_OnFocusReleasedEvent e)
         {
-            TraceSources.IapDesktop.TraceVerbose("RemoteDesktopPane: OnFocusReleased");
+            using (TraceSources.IapDesktop.TraceMethod().WithoutParameters())
+            { }
         }
 
         private void rdpClient_OnRemoteDesktopSizeChange(
             object sender,
             IMsTscAxEvents_OnRemoteDesktopSizeChangeEvent e)
         {
-            TraceSources.IapDesktop.TraceVerbose("RemoteDesktopPane: OnRemoteDesktopSizeChange");
+            using (TraceSources.IapDesktop.TraceMethod().WithoutParameters())
+            { }
         }
     }
 }

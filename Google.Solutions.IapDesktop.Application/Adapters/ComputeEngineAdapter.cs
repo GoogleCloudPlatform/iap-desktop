@@ -74,61 +74,69 @@ namespace Google.Solutions.IapDesktop.Application.Adapters
 
         public async Task<IEnumerable<Instance>> QueryInstancesAsync(string projectId)
         {
-            TraceSources.IapDesktop.TraceVerbose("ComputeEngineAdapter: QueryInstancesAsync({0})", projectId);
-
-            try
+            using (TraceSources.IapDesktop.TraceMethod().WithParameters(projectId))
             {
-                var zones = await PageHelper.JoinPagesAsync<
-                            InstancesResource.AggregatedListRequest,
-                            InstanceAggregatedList,
-                            InstancesScopedList>(
-                    this.service.Instances.AggregatedList(projectId),
-                    instances => instances.Items.Values.Where(v => v != null),
-                    response => response.NextPageToken,
-                    (request, token) => { request.PageToken = token; });
+                try
+                {
+                    var zones = await PageHelper.JoinPagesAsync<
+                                InstancesResource.AggregatedListRequest,
+                                InstanceAggregatedList,
+                                InstancesScopedList>(
+                        this.service.Instances.AggregatedList(projectId),
+                        instances => instances.Items.Values.Where(v => v != null),
+                        response => response.NextPageToken,
+                        (request, token) => { request.PageToken = token; });
 
-                var result = zones
-                    .Where(z => z.Instances != null)    // API returns null for empty zones.
-                    .SelectMany(zone => zone.Instances);
+                    var result = zones
+                        .Where(z => z.Instances != null)    // API returns null for empty zones.
+                        .SelectMany(zone => zone.Instances);
 
 
-                TraceSources.IapDesktop.TraceVerbose(
-                    "ComputeEngineAdapter: QueryInstancesAsync - found {0} instances", result.Count());
+                    TraceSources.IapDesktop.TraceVerbose("Found {0} instances", result.Count());
 
-                return result;
-            }
-            catch (GoogleApiException e) when (e.Error != null && e.Error.Code == 403)
-            {
-                throw new ComputeEngineException(
-                    $"Access to VM instances in project {projectId} has been denied", e);
+                    return result;
+                }
+                catch (GoogleApiException e) when (e.Error != null && e.Error.Code == 403)
+                {
+                    throw new ComputeEngineException(
+                        $"Access to VM instances in project {projectId} has been denied", e);
+                }
             }
         }
 
-        public Task<Instance> QueryInstanceAsync(string projectId, string zone, string instanceName)
+        public async Task<Instance> QueryInstanceAsync(string projectId, string zone, string instanceName)
         {
-            return this.service.Instances.Get(projectId, zone, instanceName).ExecuteAsync();
+            using (TraceSources.IapDesktop.TraceMethod().WithParameters(projectId, zone, instanceName))
+            {
+                return await this.service.Instances.Get(projectId, zone, instanceName).ExecuteAsync();
+            }
         }
 
-        public Task<Instance> QueryInstanceAsync(VmInstanceReference instanceRef)
+        public async Task<Instance> QueryInstanceAsync(VmInstanceReference instanceRef)
         {
-            return QueryInstanceAsync(instanceRef.ProjectId, instanceRef.Zone, instanceRef.InstanceName);
+            using (TraceSources.IapDesktop.TraceMethod().WithParameters(instanceRef))
+            {
+                return await QueryInstanceAsync(instanceRef.ProjectId, instanceRef.Zone, instanceRef.InstanceName);
+            }
         }
 
         public SerialPortStream GetSerialPortOutput(VmInstanceReference instanceRef)
         {
-            TraceSources.IapDesktop.TraceVerbose("ComputeEngineAdapter: GetSerialPortOutput({0})", instanceRef);
-
-            return this.service.Instances.GetSerialPortOutputStream(instanceRef, 1);
+            using (TraceSources.IapDesktop.TraceMethod().WithParameters(instanceRef))
+            {
+                return this.service.Instances.GetSerialPortOutputStream(instanceRef, 1);
+            }
         }
 
-        public Task<NetworkCredential> ResetWindowsUserAsync(
+        public async Task<NetworkCredential> ResetWindowsUserAsync(
             VmInstanceReference instanceRef,
             string username,
             CancellationToken token)
         {
-            TraceSources.IapDesktop.TraceVerbose("ComputeEngineAdapter: ResetWindowsUserAsync({0})", instanceRef);
-
-            return this.service.Instances.ResetWindowsUserAsync(instanceRef, username, token);
+            using (TraceSources.IapDesktop.TraceMethod().WithParameters(instanceRef))
+            {
+                return await this.service.Instances.ResetWindowsUserAsync(instanceRef, username, token);
+            }
         }
 
         private static bool IsWindowsInstanceByGuestOsFeature(Instance instance)

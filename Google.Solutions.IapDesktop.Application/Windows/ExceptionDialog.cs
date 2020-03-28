@@ -44,36 +44,40 @@ namespace Google.Solutions.IapDesktop.Windows
         {
             e = e.Unwrap();
 
-            var details = new StringBuilder();
-            for (var innerException = e.InnerException;
-                 innerException != null; innerException =
-                 innerException.InnerException)
+            using (TraceSources.IapDesktop.TraceMethod().WithParameters(caption, e))
             {
-                details.Append(e.InnerException.GetType().Name);
-                details.Append(":\n");
-                details.Append(innerException.Message);
-                details.Append("\n");
+                var details = new StringBuilder();
+                for (var innerException = e.InnerException;
+                     innerException != null; innerException =
+                     innerException.InnerException)
+                {
+                    details.Append(e.InnerException.GetType().Name);
+                    details.Append(":\n");
+                    details.Append(innerException.Message);
+                    details.Append("\n");
+                }
+
+                TraceSources.IapDesktop.TraceError($"Exception: {details}");
+
+                var config = new UnsafeNativeMethods.TASKDIALOGCONFIG()
+                {
+                    cbSize = (uint)Marshal.SizeOf(typeof(UnsafeNativeMethods.TASKDIALOGCONFIG)),
+                    hwndParent = parent.Handle,
+                    dwFlags = 0,
+                    dwCommonButtons = UnsafeNativeMethods.TASKDIALOG_COMMON_BUTTON_FLAGS.TDCBF_OK_BUTTON,
+                    pszWindowTitle = "An error occured",
+                    MainIcon = UnsafeNativeMethods.TD_ERROR_ICON,
+                    pszMainInstruction = caption,
+                    pszContent = e.Message,
+                    pszExpandedInformation = details.ToString()
+                };
+
+                UnsafeNativeMethods.TaskDialogIndirect(
+                    ref config,
+                    out int buttonPressed,
+                    out int radioButtonPressed,
+                    out bool verificationFlagPressed);
             }
-
-            var config = new UnsafeNativeMethods.TASKDIALOGCONFIG()
-            {
-                cbSize = (uint)Marshal.SizeOf(typeof(UnsafeNativeMethods.TASKDIALOGCONFIG)),
-                hwndParent = parent.Handle,
-                dwFlags = 0,
-                dwCommonButtons = UnsafeNativeMethods.TASKDIALOG_COMMON_BUTTON_FLAGS.TDCBF_OK_BUTTON,
-                pszWindowTitle = "An error occured",
-                MainIcon = UnsafeNativeMethods.TD_ERROR_ICON,
-                pszMainInstruction = caption,
-                pszContent = e.Message,
-                pszExpandedInformation = details.ToString()
-            };
-
-            UnsafeNativeMethods.TaskDialogIndirect(
-                ref config,
-                out int buttonPressed,
-                out int radioButtonPressed,
-                out bool verificationFlagPressed);
         }
-
     }
 }
