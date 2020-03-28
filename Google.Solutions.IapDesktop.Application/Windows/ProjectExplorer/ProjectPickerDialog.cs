@@ -29,7 +29,12 @@ using System.Windows.Forms;
 
 namespace Google.Solutions.IapDesktop.Application.ProjectExplorer
 {
-    public partial class ProjectPickerDialog : Form
+    public interface IProjectPickerDialog
+    {
+        string SelectProjectId(IWin32Window owner);
+    }
+
+    public partial class ProjectPickerDialog : Form, IProjectPickerDialog
     {
         private const int MinimumInputLengthForAutocomplete = 2;
         private bool clearedInput = false;
@@ -131,7 +136,7 @@ namespace Google.Solutions.IapDesktop.Application.ProjectExplorer
             }
         }
 
-        internal string SelectProjectId(IWin32Window owner)
+        public string SelectProjectId(IWin32Window owner)
         {
             if (ShowDialog(owner) == DialogResult.OK)
             {

@@ -54,9 +54,9 @@ namespace Google.Solutions.IapDesktop.Application.ProjectExplorer
             this.okButton = new System.Windows.Forms.Button();
             this.panel = new System.Windows.Forms.Panel();
             this.topPane = new System.Windows.Forms.Label();
+            this.projectIcon = new System.Windows.Forms.PictureBox();
             this.projectLabel = new System.Windows.Forms.Label();
             this.projectComboBox = new System.Windows.Forms.ComboBox();
-            this.projectIcon = new System.Windows.Forms.PictureBox();
             this.panel.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.projectIcon)).BeginInit();
             this.SuspendLayout();
@@ -99,12 +99,20 @@ namespace Google.Solutions.IapDesktop.Application.ProjectExplorer
             // topPane
             // 
             this.topPane.AutoSize = true;
-            this.topPane.Location = new System.Drawing.Point(64, 14);
+            this.topPane.Location = new System.Drawing.Point(64, 22);
             this.topPane.Name = "topPane";
-            this.topPane.Size = new System.Drawing.Size(232, 39);
+            this.topPane.Size = new System.Drawing.Size(200, 26);
             this.topPane.TabIndex = 10;
-            this.topPane.Text = "Type the name of the project to connect to.\r\nAll Windows-based VM instances will " +
-    "be added \r\nto the server tree.";
+            this.topPane.Text = "Type the name of a project to add to the \r\nProject Explorer.";
+            // 
+            // projectIcon
+            // 
+            this.projectIcon.Image = global::Google.Solutions.IapDesktop.Application.Properties.Resources.Project_small;
+            this.projectIcon.Location = new System.Drawing.Point(18, 14);
+            this.projectIcon.Name = "projectIcon";
+            this.projectIcon.Size = new System.Drawing.Size(40, 50);
+            this.projectIcon.TabIndex = 9;
+            this.projectIcon.TabStop = false;
             // 
             // projectLabel
             // 
@@ -126,15 +134,6 @@ namespace Google.Solutions.IapDesktop.Application.ProjectExplorer
             this.projectComboBox.TabIndex = 1;
             this.projectComboBox.Text = "Type project name...";
             this.projectComboBox.TextUpdate += new System.EventHandler(this.projectComboBox_TextUpdate);
-            // 
-            // projectIcon
-            // 
-            this.projectIcon.Image = global::Google.Solutions.IapDesktop.Application.Properties.Resources.Project_small;
-            this.projectIcon.Location = new System.Drawing.Point(18, 14);
-            this.projectIcon.Name = "projectIcon";
-            this.projectIcon.Size = new System.Drawing.Size(40, 50);
-            this.projectIcon.TabIndex = 9;
-            this.projectIcon.TabStop = false;
             // 
             // ProjectPickerDialog
             // 

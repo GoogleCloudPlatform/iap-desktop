@@ -140,7 +140,7 @@ namespace Google.Solutions.IapDesktop
             serviceRegistry.AddTransient<IComputeEngineAdapter, ComputeEngineAdapter>();
             serviceRegistry.AddTransient<GithubAdapter>();
             serviceRegistry.AddTransient<CloudConsoleService>();
-            serviceRegistry.AddTransient<ProjectPickerDialog>();
+            serviceRegistry.AddTransient<IProjectPickerDialog, ProjectPickerDialog>();
             serviceRegistry.AddTransient<AboutWindow>();
             serviceRegistry.AddTransient<IExceptionDialog, ExceptionDialog>();
             serviceRegistry.AddTransient<ITunnelService, TunnelService>();

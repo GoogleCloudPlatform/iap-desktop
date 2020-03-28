@@ -139,7 +139,7 @@ namespace Google.Solutions.IapDesktop.Application.ProjectExplorer
                 _ => this.authService.Authorization.Credential.GetAccessTokenForRequestAsync());
 
             // Show project picker
-            var dialog = this.serviceProvider.GetService<ProjectPickerDialog>();
+            var dialog = this.serviceProvider.GetService<IProjectPickerDialog>();
             string projectId = projectId = dialog.SelectProjectId(this);
 
             if (projectId == null)
@@ -463,6 +463,13 @@ namespace Google.Solutions.IapDesktop.Application.ProjectExplorer
             try
             {
                 await RefreshAllProjects();
+
+                if (this.rootNode.Nodes.Count == 0)
+                {
+                    // No projects in inventory yet - pop open the 'Add Project'
+                    // dialog to get the user started.
+                    await AddProjectAsync();
+                }
             }
             catch (TaskCanceledException)
             {

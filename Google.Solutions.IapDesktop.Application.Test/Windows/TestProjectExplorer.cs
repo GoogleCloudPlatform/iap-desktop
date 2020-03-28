@@ -50,9 +50,14 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows
         }
 
         [Test]
-        public void WhenNoProjectsLoaded_ThenRootNodeIsEmpty()
+        public void WhenNoProjectsLoaded_ThenRootNodeIsEmptyAndProjectPickerOpens()
         {
+            var projectPicker = new Mock<IProjectPickerDialog>();
+            projectPicker.Setup(p => p.SelectProjectId(It.IsAny<IWin32Window>())).Returns((string)null);
+
             var computeEngineAdapter = new Mock<IComputeEngineAdapter>();
+
+            this.serviceRegistry.AddSingleton<IProjectPickerDialog>(projectPicker.Object);
             this.serviceRegistry.AddSingleton<IComputeEngineAdapter>(computeEngineAdapter.Object);
 
             // Open window.
@@ -64,6 +69,9 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows
             var rootNode = GetRootNode(window);
             Assert.IsInstanceOf(typeof(CloudNode), rootNode);
             Assert.AreEqual(0, rootNode.Nodes.Count);
+
+            // Check picker
+            projectPicker.Verify(p => p.SelectProjectId(It.IsAny<IWin32Window>()), Times.Once);
 
             Assert.IsNull(this.ExceptionShown);
         }
