@@ -78,9 +78,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Auth\Authorization.cs" />
-    <Compile Include="Auth\GcloudAccount.cs" />
-    <Compile Include="Auth\RegistryStore.cs" />
-    <Compile Include="Auth\UnsafeNativeMethods.cs" />
     <Compile Include="BigEndian.cs" />
     <Compile Include="TraceSources.cs" />
     <Compile Include="Extensions\ResetWindowsUser.cs" />
