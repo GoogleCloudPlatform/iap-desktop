@@ -98,7 +98,7 @@ namespace Google.Solutions.IapDesktop.Windows
                 try
                 {
                     var updateService = this.serviceProvider.GetService<IUpdateService>();
-                    updateService.CheckForUpdatesAsync(
+                    updateService.CheckForUpdates(
                         this,
                         TimeSpan.FromSeconds(5),
                         out bool donotCheckForUpdatesAgain);

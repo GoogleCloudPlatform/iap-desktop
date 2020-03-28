@@ -36,7 +36,7 @@ namespace Google.Solutions.IapDesktop.Application.Services
     public interface IUpdateService
     {
         Version InstalledVersion { get; }
-        void CheckForUpdatesAsync(IWin32Window parent, TimeSpan timeout, out bool donotCheckForUpdatesAgain);
+        void CheckForUpdates(IWin32Window parent, TimeSpan timeout, out bool donotCheckForUpdatesAgain);
     }
 
     public class UpdateService : IUpdateService
@@ -53,7 +53,7 @@ namespace Google.Solutions.IapDesktop.Application.Services
         /// <summary>
         /// Check for updates and prompt the user to update.
         /// </summary>
-        public void CheckForUpdatesAsync(IWin32Window parent, TimeSpan timeout, out bool donotCheckForUpdatesAgain)
+        public void CheckForUpdates(IWin32Window parent, TimeSpan timeout, out bool donotCheckForUpdatesAgain)
         {
             donotCheckForUpdatesAgain = false;
             using (var cts = new CancellationTokenSource())

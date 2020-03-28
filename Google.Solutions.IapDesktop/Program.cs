@@ -47,6 +47,60 @@ namespace Google.Solutions.IapDesktop
 
         private static bool tracingEnabled = false;
 
+        private static TraceSource[] Traces = new[]
+        {
+            Google.Solutions.Compute.TraceSources.Compute,
+            Google.Solutions.IapDesktop.Application.TraceSources.IapDesktop
+        };
+
+        public static string LogFile =>
+            Path.Combine(
+                Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
+                "Google",
+                "Cloud IAP Desktop",
+                "Logs",
+                $"{DateTime.Now:yyyy-MM-dd_HHmm}.log");
+
+        public static bool IsLoggingEnabled
+        {
+            get
+            {
+                return tracingEnabled;
+            }
+            set
+            {
+                tracingEnabled = value;
+
+
+                if (tracingEnabled)
+                {
+                    var logFilePath = LogFile;
+                    Directory.CreateDirectory(new FileInfo(logFilePath).DirectoryName);
+                    var logListener = new TextWriterTraceListener(logFilePath);
+
+                    foreach (var trace in Traces)
+                    {
+                        trace.Listeners.Add(new DefaultTraceListener());
+                        trace.Listeners.Add(logListener);
+                        trace.Switch.Level = System.Diagnostics.SourceLevels.Verbose;
+                    }
+                }
+                else
+                {
+                    foreach (var trace in Traces)
+                    {
+                        foreach (var listener in trace.Listeners.Cast<TraceListener>())
+                        {
+                            listener.Flush();
+                        }
+
+                        trace.Switch.Level = System.Diagnostics.SourceLevels.Off;
+                    }
+                }
+            }
+        }
+
+        
         /// <summary>
         /// The main entry point for the application.
         /// </summary>
@@ -108,59 +162,6 @@ namespace Google.Solutions.IapDesktop
 
             // Ensure logs are flushed.
             IsLoggingEnabled = false;
-        }
-
-        private static TraceSource[] Traces = new[]
-        {
-            Google.Solutions.Compute.TraceSources.Compute,
-            Google.Solutions.IapDesktop.Application.TraceSources.IapDesktop
-        };
-
-        public static string LogFile =>
-            Path.Combine(
-                Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
-                "Google",
-                "Cloud IAP Desktop",
-                "Logs",
-                $"{DateTime.Now:yyyy-MM-dd_HHmm}.log");
-
-        public static bool IsLoggingEnabled
-        {
-            get
-            {
-                return tracingEnabled;
-            }
-            set
-            {
-                tracingEnabled = value;
-
-
-                if (tracingEnabled)
-                {
-                    var logFilePath = LogFile;
-                    Directory.CreateDirectory(new FileInfo(logFilePath).DirectoryName);
-                    var logListener = new TextWriterTraceListener(logFilePath);
-
-                    foreach (var trace in Traces)
-                    {
-                        trace.Listeners.Add(new DefaultTraceListener());
-                        trace.Listeners.Add(logListener);
-                        trace.Switch.Level = System.Diagnostics.SourceLevels.Verbose;
-                    }
-                }
-                else
-                {
-                    foreach (var trace in Traces)
-                    {
-                        foreach (var listener in trace.Listeners.Cast<TraceListener>())
-                        {
-                            listener.Flush();
-                        }
-
-                        trace.Switch.Level = System.Diagnostics.SourceLevels.Off;
-                    }
-                }
-            }
         }
     }
 }
