@@ -632,6 +632,11 @@ namespace Google.Solutions.IapDesktop.Application.ProjectExplorer
                                 accumulator[project.Name] =
                                     await computeEngineAdapter.QueryInstancesAsync(project.Name);
                             }
+                            catch (Exception e) when (e.IsReauthError())
+                            {
+                                // Propagate reauth errors so that the reauth logic kicks in.
+                                throw;
+                            }
                             catch (Exception e)
                             {
                                 // If one project fails to load, we should stil load the other onces.

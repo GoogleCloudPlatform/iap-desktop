@@ -40,6 +40,25 @@ namespace Google.Solutions.IapDesktop.Application.Services
     /// </summary>
     public interface IJobService
     {
+        /// <summary>
+        /// Run a potentially slow or blocking function in the background while
+        /// shwowing a wait animation in the GUI. The GUI is being kept responsive
+        /// while the background job is running.
+        /// 
+        /// If a reauth error is thrown, a reauthorization is performed and the
+        /// job is retried. For this logic to work, it is important that the
+        /// jobFunc does not swallow reauth errors.
+        /// 
+        /// If necessary, add a handler like:
+        /// 
+        /// catch (Exception e) when (e.IsReauthError())
+        /// {
+        ///     // Propagate reauth errors so that the reauth logic kicks in.
+        ///     throw;
+        /// }
+        ///
+        /// to ensure reauth errors are propagated.
+        /// </summary>
         Task<T> RunInBackground<T>(
             JobDescription jobDescription,
             Func<CancellationToken, Task<T>> jobFunc);
@@ -155,7 +174,7 @@ namespace Google.Solutions.IapDesktop.Application.Services
                 {
                     return await RunInBackgroundWithoutReauth(jobDescription, jobFunc);
                 }
-                catch (Exception e) when (IsReauthError(e))
+                catch (Exception e) when (e.IsReauthError())
                 {
                     // Reauth required or authorization has been revoked.
                     if (attempt >= 1)
@@ -183,7 +202,12 @@ namespace Google.Solutions.IapDesktop.Application.Services
             }
         }
 
-        private static bool IsReauthError(Exception e)
+        
+    }
+
+    public static class ExceptionExtensions
+    {
+        public static bool IsReauthError(this Exception e)
         {
             // The TokenResponseException might be hiding in an AggregateException
             e = e.Unwrap();

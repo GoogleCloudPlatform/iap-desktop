@@ -45,5 +45,6 @@ namespace Google.Solutions.IapDesktop.Application
                 source.TraceData(TraceEventType.Verbose, 0, string.Format(message, args));
             }
         }
+
     }
 }
