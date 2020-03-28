@@ -281,13 +281,13 @@ namespace Google.Solutions.Compute.Iap
                             {
                                 var reconnectMessage = receiveBuffer.AsAckMessage();
                                 var lastAckReceived = Thread.VolatileRead(ref this.bytesSentAndAcknoledged);
-                                if (lastAckReceived > reconnectMessage.Ack)
+                                if (lastAckReceived < reconnectMessage.Ack)
                                 {
                                     TraceLine("Last ACK sent by server was not received");
 
                                     bytesSentAndAcknoledged = reconnectMessage.Ack;
                                 }
-                                else if (lastAckReceived < reconnectMessage.Ack)
+                                else if (lastAckReceived > reconnectMessage.Ack)
                                 {
                                     Debug.Assert(false, "Server acked backwards");
                                     throw new Exception("Server acked backwards");
