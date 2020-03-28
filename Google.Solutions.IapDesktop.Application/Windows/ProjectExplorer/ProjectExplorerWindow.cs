@@ -621,14 +621,16 @@ namespace Google.Solutions.IapDesktop.Application.ProjectExplorer
             // Move selection to a "safe" spot.
             this.treeView.SelectedNode = this.rootNode;
 
-            using (var computeEngineAdapter = this.serviceProvider.GetService<IComputeEngineAdapter>())
-            {
 
-                var failedProjects = new Dictionary<string, Exception>();
+            var failedProjects = new Dictionary<string, Exception>();
 
-                var projectsAndInstances = await this.jobService.RunInBackground(
-                    new JobDescription("Loading projects..."),
-                    async token =>
+            var projectsAndInstances = await this.jobService.RunInBackground(
+                new JobDescription("Loading projects..."),
+                async token =>
+                {
+                    // NB. It is important to create a new adapter instance _within_ the job func
+                    // so that when the job is retried due to reauth, we use a fresh instance.
+                    using (var computeEngineAdapter = this.serviceProvider.GetService<IComputeEngineAdapter>())
                     {
                         var accumulator = new Dictionary<string, IEnumerable<Instance>>();
 
@@ -652,25 +654,25 @@ namespace Google.Solutions.IapDesktop.Application.ProjectExplorer
                         }
 
                         return accumulator;
-                    });
-
-                foreach (var entry in projectsAndInstances)
-                {
-                    PopulateProjectNode(entry.Key, entry.Value);
-                }
-
-                if (failedProjects.Any())
-                {
-                    // Add an (empty) project node so that the user can at least unload the project.
-                    foreach (string projectId in failedProjects.Keys)
-                    {
-                        PopulateProjectNode(projectId, Enumerable.Empty<Instance>());
                     }
+                });
 
-                    throw new AggregateException(
-                        $"The following projects failed to refresh: {string.Join(", ", failedProjects.Keys)}",
-                        failedProjects.Values.Cast<Exception>());
+            foreach (var entry in projectsAndInstances)
+            {
+                PopulateProjectNode(entry.Key, entry.Value);
+            }
+
+            if (failedProjects.Any())
+            {
+                // Add an (empty) project node so that the user can at least unload the project.
+                foreach (string projectId in failedProjects.Keys)
+                {
+                    PopulateProjectNode(projectId, Enumerable.Empty<Instance>());
                 }
+
+                throw new AggregateException(
+                    $"The following projects failed to refresh: {string.Join(", ", failedProjects.Keys)}",
+                    failedProjects.Values.Cast<Exception>());
             }
         }
 
