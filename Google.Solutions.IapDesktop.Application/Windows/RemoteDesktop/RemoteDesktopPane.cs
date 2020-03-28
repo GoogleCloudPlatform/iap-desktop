@@ -250,36 +250,37 @@ namespace Google.Solutions.IapDesktop.Application.Windows.RemoteDesktop
 
         private async void RemoteDesktopPane_FormClosing(object sender, FormClosingEventArgs args)
         {
-            if (this.IsConnecting)
+            using (TraceSources.IapDesktop.TraceMethod().WithoutParameters())
             {
-                TraceSources.IapDesktop.TraceVerbose(
-                    "RemoteDesktopPane: Aborting FormClosing because control is in connecting");
-
-                args.Cancel = true;
-                return;
-            }
-
-            Debug.WriteLine("FormClosing");
-
-            if (this.IsConnected)
-            {
-                try
-                {
-                    // NB. This does not trigger an OnDisconnected event.
-                    this.rdpClient.Disconnect();
-                }
-                catch (Exception e)
+                if (this.IsConnecting)
                 {
                     TraceSources.IapDesktop.TraceVerbose(
-                        "RemoteDesktopPane: Disconnecting failed");
+                        "RemoteDesktopPane: Aborting FormClosing because control is in connecting");
 
-                    // TODO: Ignore?
-                    this.exceptionDialog.Show(this, "Disconnecting failed", e);
+                    args.Cancel = true;
+                    return;
                 }
-            }
 
-            await this.eventService.FireAsync(
-                new RemoteDesktopWindowClosedEvent(this.Instance));
+                if (this.IsConnected)
+                {
+                    try
+                    {
+                        // NB. This does not trigger an OnDisconnected event.
+                        this.rdpClient.Disconnect();
+                    }
+                    catch (Exception e)
+                    {
+                        TraceSources.IapDesktop.TraceVerbose(
+                            "RemoteDesktopPane: Disconnecting failed");
+
+                        // TODO: Ignore?
+                        this.exceptionDialog.Show(this, "Disconnecting failed", e);
+                    }
+                }
+
+                await this.eventService.FireAsync(
+                    new RemoteDesktopWindowClosedEvent(this.Instance));
+            }
         }
 
         private void tabContextStrip_Opening(object sender, CancelEventArgs e)
@@ -328,15 +329,16 @@ namespace Google.Solutions.IapDesktop.Application.Windows.RemoteDesktop
                 args.discReason,
                 this.rdpClient.GetErrorDescription((uint)args.discReason, 0));
 
-            Debug.WriteLine($"OnDisconnected: {e}");
-
-            if (e.IsIgnorable)
+            using (TraceSources.IapDesktop.TraceMethod().WithParameters(e.Message))
             {
-                Close();
-            }
-            else
-            {
-                await ShowErrorAndClose("Disconnected", e);
+                if (e.IsIgnorable)
+                {
+                    Close();
+                }
+                else
+                {
+                    await ShowErrorAndClose("Disconnected", e);
+                }
             }
         }
 

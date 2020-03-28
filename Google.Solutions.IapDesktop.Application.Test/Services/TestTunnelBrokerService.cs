@@ -32,7 +32,7 @@ using System.Threading.Tasks;
 namespace Google.Solutions.IapDesktop.Application.Test.Services
 {
     [TestFixture]
-    public class TestTunnelBrokerService
+    public class TestTunnelBrokerService : FixtureBase
     {
         [Test]
         public async Task WhenConnectSuccessful_ThenOpenTunnelsIncludesTunnel()

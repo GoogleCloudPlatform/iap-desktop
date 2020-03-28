@@ -37,7 +37,7 @@ using System.Windows.Forms;
 namespace Google.Solutions.IapDesktop.Application.Test.Services
 {
     [TestFixture]
-    public class TestJobService
+    public class TestJobService : FixtureBase
     {
         private class SynchronousInvoker : ISynchronizeInvoke
         {

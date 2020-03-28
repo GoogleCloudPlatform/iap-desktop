@@ -30,7 +30,7 @@ using System.Security.Cryptography;
 namespace Google.Solutions.IapDesktop.Application.Test.Registry
 {
     [TestFixture]
-    public class TestRegistryBinder
+    public class TestRegistryBinder : FixtureBase
     {
         private const string TestKeyPath = @"Software\Google\__Test";
         private readonly RegistryKey hkcu = RegistryKey.OpenBaseKey(RegistryHive.CurrentUser, RegistryView.Default);

@@ -28,7 +28,7 @@ using System.Linq;
 namespace Google.Solutions.IapDesktop.Application.Test.Settings
 {
     [TestFixture]
-    public class TestInventorySettingsRepository
+    public class TestInventorySettingsRepository : FixtureBase
     {
         private const string TestKeyPath = @"Software\Google\__Test";
         private readonly RegistryKey hkcu = RegistryKey.OpenBaseKey(RegistryHive.CurrentUser, RegistryView.Default);

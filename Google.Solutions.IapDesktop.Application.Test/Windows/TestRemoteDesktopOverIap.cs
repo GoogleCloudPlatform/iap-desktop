@@ -132,7 +132,9 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows
             [Values(RdpRedirectClipboard.Disabled, RdpRedirectClipboard.Enabled)]
             RdpRedirectClipboard redirectClipboard,
 
-            [WindowsInstance] InstanceRequest testInstance)
+            // Use a slightly larger machine type as all this RDP'ing consumes a fair
+            // amount of memory.
+            [WindowsInstance(MachineType = "n1-standard-2")] InstanceRequest testInstance)
         {
             await testInstance.AwaitReady();
 

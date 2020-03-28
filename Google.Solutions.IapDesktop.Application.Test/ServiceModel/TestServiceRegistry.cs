@@ -26,7 +26,7 @@ using System;
 namespace Google.Solutions.IapDesktop.Application.Test
 {
     [TestFixture]
-    public class TestServiceRegistry
+    public class TestServiceRegistry : FixtureBase
     {
         public class ServiceWithDefaultConstructor
         {

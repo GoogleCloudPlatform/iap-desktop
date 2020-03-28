@@ -36,7 +36,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows
 {
     [TestFixture]
     [Apartment(ApartmentState.STA)]
-    public class WindowTestFixtureBase
+    public class WindowTestFixtureBase : FixtureBase
     {
         private const string TestKeyPath = @"Software\Google\__Test";
 

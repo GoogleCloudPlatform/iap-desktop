@@ -30,7 +30,7 @@ using System.Threading.Tasks;
 namespace Google.Solutions.IapDesktop.Application.Test.Settings
 {
     [TestFixture]
-    public class TestAuthSettingsRepository
+    public class TestAuthSettingsRepository : FixtureBase
     {
         private const string TestKeyPath = @"Software\Google\__Test";
         private readonly RegistryKey hkcu = RegistryKey.OpenBaseKey(RegistryHive.CurrentUser, RegistryView.Default);
