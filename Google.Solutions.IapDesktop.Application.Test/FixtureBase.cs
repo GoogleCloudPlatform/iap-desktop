@@ -26,11 +26,22 @@ namespace Google.Solutions.IapDesktop.Application.Test
 {
     public abstract class FixtureBase
     {
+        private static TraceSource[] Traces = new[]
+        {
+            Google.Solutions.Compute.TraceSources.Compute,
+            Google.Solutions.IapDesktop.Application.TraceSources.IapDesktop
+        };
+
         [SetUp]
         public void SetUpTracing()
         {
-            TraceSources.IapDesktop.Listeners.Add(new ConsoleTraceListener());
-            TraceSources.IapDesktop.Switch.Level = SourceLevels.Verbose;
+            var listener = new ConsoleTraceListener();
+
+            foreach (var trace in Traces)
+            {
+                trace.Listeners.Add(listener);
+                trace.Switch.Level = System.Diagnostics.SourceLevels.Verbose;
+            }
         }
     }
 }
