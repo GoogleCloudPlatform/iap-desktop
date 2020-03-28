@@ -50,8 +50,8 @@ namespace Google.Solutions.IapDesktop.Windows
         private void InitializeComponent()
         {
             this.signInButton = new System.Windows.Forms.Button();
-            this.signInLabel = new System.Windows.Forms.Label();
             this.spinner = new System.Windows.Forms.PictureBox();
+            this.aboutLabel = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.spinner)).BeginInit();
             this.SuspendLayout();
             // 
@@ -65,26 +65,27 @@ namespace Google.Solutions.IapDesktop.Windows
             this.signInButton.UseVisualStyleBackColor = true;
             this.signInButton.Visible = false;
             // 
-            // signInLabel
-            // 
-            this.signInLabel.AutoSize = true;
-            this.signInLabel.BackColor = System.Drawing.Color.White;
-            this.signInLabel.Location = new System.Drawing.Point(343, 107);
-            this.signInLabel.Name = "signInLabel";
-            this.signInLabel.Size = new System.Drawing.Size(183, 26);
-            this.signInLabel.TabIndex = 1;
-            this.signInLabel.Text = "Sign in to your Google Cloud account\r\nto access your VM instances";
-            this.signInLabel.Visible = false;
-            // 
             // spinner
             // 
             this.spinner.BackColor = System.Drawing.Color.White;
             this.spinner.Image = global::Google.Solutions.IapDesktop.Windows.Resources.Spinner;
-            this.spinner.Location = new System.Drawing.Point(420, 136);
+            this.spinner.Location = new System.Drawing.Point(420, 113);
             this.spinner.Name = "spinner";
             this.spinner.Size = new System.Drawing.Size(44, 44);
             this.spinner.TabIndex = 2;
             this.spinner.TabStop = false;
+            // 
+            // aboutLabel
+            // 
+            this.aboutLabel.AutoSize = true;
+            this.aboutLabel.BackColor = System.Drawing.Color.White;
+            this.aboutLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Italic, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.aboutLabel.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
+            this.aboutLabel.Location = new System.Drawing.Point(25, 40);
+            this.aboutLabel.Name = "aboutLabel";
+            this.aboutLabel.Size = new System.Drawing.Size(189, 34);
+            this.aboutLabel.TabIndex = 3;
+            this.aboutLabel.Text = "Securely connect to your \r\nVM instances from anywhere";
             // 
             // AuthorizeDialog
             // 
@@ -92,8 +93,8 @@ namespace Google.Solutions.IapDesktop.Windows
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackgroundImage = global::Google.Solutions.IapDesktop.Properties.Resources.Splash;
             this.ClientSize = new System.Drawing.Size(634, 290);
+            this.Controls.Add(this.aboutLabel);
             this.Controls.Add(this.spinner);
-            this.Controls.Add(this.signInLabel);
             this.Controls.Add(this.signInButton);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
             this.Name = "AuthorizeDialog";
@@ -111,7 +112,7 @@ namespace Google.Solutions.IapDesktop.Windows
         #endregion
 
         private System.Windows.Forms.Button signInButton;
-        private System.Windows.Forms.Label signInLabel;
         private System.Windows.Forms.PictureBox spinner;
+        private System.Windows.Forms.Label aboutLabel;
     }
 }

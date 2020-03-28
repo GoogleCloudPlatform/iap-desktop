@@ -42,7 +42,6 @@ namespace Google.Solutions.IapDesktop.Windows
         {
             this.spinner.Visible = !this.spinner.Visible;
             this.signInButton.Visible = !this.signInButton.Visible;
-            this.signInLabel.Visible = !this.signInLabel.Visible;
 
             this.signInButton.Focus();
         }
