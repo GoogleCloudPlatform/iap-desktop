@@ -26,17 +26,17 @@ using Microsoft.Win32;
 namespace Google.Solutions.IapDesktop.Application.Settings
 {
     /// <summary>
-    /// Registry-backed repository for UI layout settings.
+    /// Registry-backed repository for app settings.
     /// </summary>
-    public class WindowSettingsRepository : SettingsRepositoryBase<WindowSettings>
+    public class ApplicationSettingsRepository : SettingsRepositoryBase<ApplicationSettings>
     {
-        public WindowSettingsRepository(RegistryKey baseKey) : base(baseKey)
+        public ApplicationSettingsRepository(RegistryKey baseKey) : base(baseKey)
         {
             Utilities.ThrowIfNull(baseKey, nameof(baseKey));
         }
     }
 
-    public class WindowSettings
+    public class ApplicationSettings
     {
         [BoolRegistryValue("IsMainWindowMaximized")]
         public bool IsMainWindowMaximized { get; set; }
@@ -46,5 +46,11 @@ namespace Google.Solutions.IapDesktop.Application.Settings
 
         [DwordRegistryValue("WindowWidth")]
         public int MainWindowWidth { get; set; }
+
+        [BoolRegistryValue("IsUpdateCheckEnabled")]
+        public bool IsUpdateCheckEnabled { get; set; } = true;
+
+        [QwordRegistryValue("LastUpdateCheck")]
+        public long LastUpdateCheck { get; set; }
     }
 }

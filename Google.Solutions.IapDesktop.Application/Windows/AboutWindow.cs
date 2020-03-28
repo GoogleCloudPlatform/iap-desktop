@@ -19,6 +19,8 @@
 // under the License.
 //
 
+using Google.Solutions.IapDesktop.Application.Services;
+using Google.Solutions.IapDesktop.Application.ObjectModel;
 using System;
 using System.Windows.Forms;
 
@@ -28,11 +30,12 @@ namespace Google.Solutions.IapDesktop.Application.Windows
     {
         public static Version ProgramVersion => typeof(AboutWindow).Assembly.GetName().Version;
 
-        public AboutWindow()
+        public AboutWindow(IServiceProvider serviceProvider)
         {
             InitializeComponent();
 
-            this.infoLabel.Text = $"IAP Desktop\nVersion {ProgramVersion}";
+            var updateService = serviceProvider.GetService<IUpdateService>();
+            this.infoLabel.Text = $"IAP Desktop\nVersion {updateService.InstalledVersion}";
         }
     }
 }

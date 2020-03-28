@@ -102,9 +102,10 @@
     <Compile Include="Services\ProjectInventoryService.cs" />
     <Compile Include="Services\TunnelBrokerService.cs" />
     <Compile Include="Services\TunnelService.cs" />
+    <Compile Include="Services\UpdateService.cs" />
     <Compile Include="Settings\AuthSettingsRepository.cs" />
     <Compile Include="Registry\SecureStringExtensions.cs" />
-    <Compile Include="Settings\WindowSettingsRepository.cs" />
+    <Compile Include="Settings\ApplicationSettingsRepository.cs" />
     <Compile Include="Settings\SettingRepositoryBase.cs" />
     <Compile Include="Registry\RegistryBinder.cs" />
     <Compile Include="Registry\RegistryValueAttribute.cs" />

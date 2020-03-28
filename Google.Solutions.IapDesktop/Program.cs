@@ -37,6 +37,7 @@ using System;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Net;
 
 namespace Google.Solutions.IapDesktop
 {
@@ -53,18 +54,22 @@ namespace Google.Solutions.IapDesktop
         static void Main()
         {
             IsLoggingEnabled = false;
-            
-            var serviceRegistry = new ServiceRegistry();
 
+            // Use TLS 1.2 if possible.
+            System.Net.ServicePointManager.SecurityProtocol =
+                SecurityProtocolType.Tls12 |
+                SecurityProtocolType.Tls11;
+
+            // Register services.
+            var serviceRegistry = new ServiceRegistry();
             var hkcu = RegistryKey.OpenBaseKey(RegistryHive.CurrentUser, RegistryView.Default);
-            serviceRegistry.AddSingleton(new WindowSettingsRepository(
-                hkcu.CreateSubKey($@"{BaseRegistryKeyPath}\Window")));
+            serviceRegistry.AddSingleton(new ApplicationSettingsRepository(
+                hkcu.CreateSubKey($@"{BaseRegistryKeyPath}\Application")));
             serviceRegistry.AddSingleton(new AuthSettingsRepository(
                 hkcu.CreateSubKey($@"{BaseRegistryKeyPath}\Auth"),
                 OAuthAuthorization.StoreUserId));
             serviceRegistry.AddSingleton(new InventorySettingsRepository(
                 hkcu.CreateSubKey($@"{BaseRegistryKeyPath}\Inventory")));
-
 
             System.Windows.Forms.Application.EnableVisualStyles();
             System.Windows.Forms.Application.SetCompatibleTextRenderingDefault(false);
@@ -82,9 +87,11 @@ namespace Google.Solutions.IapDesktop
             serviceRegistry.AddTransient<GithubAdapter>();
             serviceRegistry.AddTransient<CloudConsoleService>();
             serviceRegistry.AddTransient<ProjectPickerDialog>();
+            serviceRegistry.AddTransient<AboutWindow>();
             serviceRegistry.AddTransient<IExceptionDialog, ExceptionDialog>();
             serviceRegistry.AddTransient<ITunnelService, TunnelService>();
             serviceRegistry.AddSingleton<TunnelBrokerService>();
+            serviceRegistry.AddTransient<IUpdateService, UpdateService>();
 
             serviceRegistry.AddSingleton<RemoteDesktopService>();
             serviceRegistry.AddSingleton<SerialLogService>();
@@ -96,6 +103,7 @@ namespace Google.Solutions.IapDesktop
             serviceRegistry.AddSingleton<DebugWindow>();
 #endif
 
+            // Run app.
             System.Windows.Forms.Application.Run(mainForm);
 
             // Ensure logs are flushed.

@@ -43,7 +43,7 @@ namespace Google.Solutions.IapDesktop.Windows
 
     public partial class MainForm : Form, IJobHost, IMainForm, IAuthorizationService
     {
-        private readonly WindowSettingsRepository windowSettings;
+        private readonly ApplicationSettingsRepository applicationSettings;
         private readonly AuthSettingsRepository authSettings;
         private readonly InventorySettingsRepository inventorySettings;
         private readonly IServiceProvider serviceProvider;
@@ -53,14 +53,14 @@ namespace Google.Solutions.IapDesktop.Windows
         public MainForm(IServiceProvider serviceProvider)
         {
             this.serviceProvider = serviceProvider;
-            this.windowSettings = serviceProvider.GetService<WindowSettingsRepository>();
+            this.applicationSettings = serviceProvider.GetService<ApplicationSettingsRepository>();
             this.authSettings = serviceProvider.GetService<AuthSettingsRepository>();
             this.inventorySettings = serviceProvider.GetService<InventorySettingsRepository>();
 
             // 
             // Restore window settings.
             //
-            var windowSettings = this.windowSettings.GetSettings();
+            var windowSettings = this.applicationSettings.GetSettings();
             if (windowSettings.IsMainWindowMaximized)
             {
                 this.WindowState = FormWindowState.Maximized;
@@ -82,16 +82,42 @@ namespace Google.Solutions.IapDesktop.Windows
             // Set fixed size for the left/right panels.
             this.dockPanel.DockLeftPortion =
                 this.dockPanel.DockRightPortion = (300.0f / this.Width);
+
+            this.checkForUpdatesOnExitToolStripMenuItem.Checked 
+                = this.applicationSettings.GetSettings().IsUpdateCheckEnabled;
         }
 
         private void MainForm_FormClosing(object sender, FormClosingEventArgs e)
         {
-            this.windowSettings.SetSettings(new WindowSettings()
+            var settings = this.applicationSettings.GetSettings();
+
+            if (settings.IsUpdateCheckEnabled &&
+                (DateTime.UtcNow - DateTime.FromBinary(settings.LastUpdateCheck)).Days > 7)
             {
-                IsMainWindowMaximized = this.WindowState == FormWindowState.Maximized,
-                MainWindowHeight = this.Size.Height,
-                MainWindowWidth = this.Size.Width
-            });
+                // Time to check for updates again.
+                try
+                {
+                    var updateService = this.serviceProvider.GetService<IUpdateService>();
+                    updateService.CheckForUpdatesAsync(
+                        this,
+                        TimeSpan.FromSeconds(5),
+                        out bool donotCheckForUpdatesAgain);
+
+                    settings.IsUpdateCheckEnabled = !donotCheckForUpdatesAgain;
+                    settings.LastUpdateCheck = DateTime.UtcNow.ToBinary();
+                }
+                catch (Exception)
+                {
+                    // Nevermind.
+                }
+            }
+
+            // Save window state.
+            settings.IsMainWindowMaximized = this.WindowState == FormWindowState.Maximized;
+            settings.MainWindowHeight = this.Size.Height;
+            settings.MainWindowWidth = this.Size.Width;
+
+            this.applicationSettings.SetSettings(settings);
         }
 
         private void MainForm_Load(object sender, EventArgs e)
@@ -130,12 +156,6 @@ namespace Google.Solutions.IapDesktop.Windows
                 VisualStudioToolStripExtender.VsVersion.Vs2015,
                 this.vs2015LightTheme);
 
-
-
-
-            //settingsWindow.Show(projectExplorer.Pane, DockAlignment.Bottom, 0.3);
-
-
             ResumeLayout();
 
             this.serviceProvider.GetService<IProjectExplorer>().ShowWindow();
@@ -158,7 +178,7 @@ namespace Google.Solutions.IapDesktop.Windows
 
         private void aboutToolStripMenuItem_Click(object sender, EventArgs _)
         {
-            new AboutWindow().ShowDialog(this);
+            this.serviceProvider.GetService<AboutWindow>().ShowDialog(this);
         }
 
         private void exitToolStripMenuItem_Click(object sender, EventArgs _)
@@ -258,6 +278,19 @@ namespace Google.Solutions.IapDesktop.Windows
                     .GetService<IExceptionDialog>()
                     .Show(this, "Configuring logging failed", e);
             }
+        }
+
+        private void checkForUpdatesOnExitToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            var updateEnabled = !checkForUpdatesOnExitToolStripMenuItem.Checked;
+
+            var settings = this.applicationSettings.GetSettings();
+            settings.IsUpdateCheckEnabled = updateEnabled;
+            this.applicationSettings.SetSettings(settings);
+
+            // Toggle menu.
+            checkForUpdatesOnExitToolStripMenuItem.Checked =
+                !checkForUpdatesOnExitToolStripMenuItem.Checked;
         }
 
         //---------------------------------------------------------------------

@@ -61,6 +61,8 @@ namespace Google.Solutions.IapDesktop.Windows
             this.viewToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.projectExplorerToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.activeTunnelsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.optionsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.enableloggingToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.helpToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.openIapDocsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.openIapAccessDocsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -69,10 +71,9 @@ namespace Google.Solutions.IapDesktop.Windows
             this.aboutToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.vsToolStripExtender = new WeifenLuo.WinFormsUI.Docking.VisualStudioToolStripExtender(this.components);
             this.statusStrip = new System.Windows.Forms.StatusStrip();
-            this.dockPanel = new WeifenLuo.WinFormsUI.Docking.DockPanel();
             this.toolStripStatusLabel = new System.Windows.Forms.ToolStripStatusLabel();
-            this.optionsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.enableloggingToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.dockPanel = new WeifenLuo.WinFormsUI.Docking.DockPanel();
+            this.checkForUpdatesOnExitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.mainMenu.SuspendLayout();
             this.statusStrip.SuspendLayout();
             this.SuspendLayout();
@@ -155,6 +156,22 @@ namespace Google.Solutions.IapDesktop.Windows
             this.activeTunnelsToolStripMenuItem.Text = "Active IAP &tunnels";
             this.activeTunnelsToolStripMenuItem.Click += new System.EventHandler(this.activeTunnelsToolStripMenuItem_Click);
             // 
+            // optionsToolStripMenuItem
+            // 
+            this.optionsToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.checkForUpdatesOnExitToolStripMenuItem,
+            this.enableloggingToolStripMenuItem});
+            this.optionsToolStripMenuItem.Name = "optionsToolStripMenuItem";
+            this.optionsToolStripMenuItem.Size = new System.Drawing.Size(61, 20);
+            this.optionsToolStripMenuItem.Text = "&Options";
+            // 
+            // enableloggingToolStripMenuItem
+            // 
+            this.enableloggingToolStripMenuItem.Name = "enableloggingToolStripMenuItem";
+            this.enableloggingToolStripMenuItem.Size = new System.Drawing.Size(209, 22);
+            this.enableloggingToolStripMenuItem.Text = "Enable &logging";
+            this.enableloggingToolStripMenuItem.Click += new System.EventHandler(this.enableloggingToolStripMenuItem_Click);
+            // 
             // helpToolStripMenuItem
             // 
             this.helpToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
@@ -214,6 +231,11 @@ namespace Google.Solutions.IapDesktop.Windows
             this.statusStrip.TabIndex = 5;
             this.statusStrip.Text = "statusStrip";
             // 
+            // toolStripStatusLabel
+            // 
+            this.toolStripStatusLabel.Name = "toolStripStatusLabel";
+            this.toolStripStatusLabel.Size = new System.Drawing.Size(0, 17);
+            // 
             // dockPanel
             // 
             this.dockPanel.Dock = System.Windows.Forms.DockStyle.Fill;
@@ -224,25 +246,12 @@ namespace Google.Solutions.IapDesktop.Windows
             this.dockPanel.Size = new System.Drawing.Size(984, 615);
             this.dockPanel.TabIndex = 9;
             // 
-            // toolStripStatusLabel
+            // checkForUpdatesOnExitToolStripMenuItem
             // 
-            this.toolStripStatusLabel.Name = "toolStripStatusLabel";
-            this.toolStripStatusLabel.Size = new System.Drawing.Size(0, 17);
-            // 
-            // optionsToolStripMenuItem
-            // 
-            this.optionsToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.enableloggingToolStripMenuItem});
-            this.optionsToolStripMenuItem.Name = "optionsToolStripMenuItem";
-            this.optionsToolStripMenuItem.Size = new System.Drawing.Size(61, 20);
-            this.optionsToolStripMenuItem.Text = "&Options";
-            // 
-            // enableloggingToolStripMenuItem
-            // 
-            this.enableloggingToolStripMenuItem.Name = "enableloggingToolStripMenuItem";
-            this.enableloggingToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
-            this.enableloggingToolStripMenuItem.Text = "Enable &logging";
-            this.enableloggingToolStripMenuItem.Click += new System.EventHandler(this.enableloggingToolStripMenuItem_Click);
+            this.checkForUpdatesOnExitToolStripMenuItem.Name = "checkForUpdatesOnExitToolStripMenuItem";
+            this.checkForUpdatesOnExitToolStripMenuItem.Size = new System.Drawing.Size(209, 22);
+            this.checkForUpdatesOnExitToolStripMenuItem.Text = "Check for &updates on exit";
+            this.checkForUpdatesOnExitToolStripMenuItem.Click += new System.EventHandler(this.checkForUpdatesOnExitToolStripMenuItem_Click);
             // 
             // MainForm
             // 
@@ -293,5 +302,6 @@ namespace Google.Solutions.IapDesktop.Windows
         private System.Windows.Forms.ToolStripMenuItem optionsToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem enableloggingToolStripMenuItem;
         private System.Windows.Forms.ToolStripStatusLabel toolStripStatusLabel;
+        private System.Windows.Forms.ToolStripMenuItem checkForUpdatesOnExitToolStripMenuItem;
     }
 }
