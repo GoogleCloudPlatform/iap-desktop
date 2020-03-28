@@ -21,7 +21,7 @@
 --> 
 <Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
 	<Product Id="*" 
-           Name="Cloud IAP Desktop" 
+           Name="IAP Desktop" 
            Language="1033" 
            Version="$(var.VERSION)" 
            Manufacturer="Google Inc" 
@@ -61,7 +61,7 @@
       <![CDATA[Installed OR (MsiNTProductType = 1) OR MsiRunningElevated]]>
     </Condition>
     
-		<Feature Id="ProductFeature" Title="Cloud IAP Desktop" Level="1">
+		<Feature Id="ProductFeature" Title="IAP Desktop" Level="1">
 			<ComponentGroupRef Id="ProgramFiles" />
       <ComponentGroupRef Id="StartMenuShortcuts" />
 		</Feature>
@@ -109,7 +109,7 @@
     </UI>
 
 
-    <Property Id="WIXUI_EXITDIALOGOPTIONALCHECKBOXTEXT" Value="Launch Cloud IAP Desktop" />
+    <Property Id="WIXUI_EXITDIALOGOPTIONALCHECKBOXTEXT" Value="Launch IAP Desktop" />
     <Property Id="WIXUI_EXITDIALOGOPTIONALCHECKBOX" Value="1" />
     <Property Id="WixShellExecTarget" Value="[#FileIapDesktopExe]" />
     <CustomAction Id="LaunchApplication"
@@ -125,7 +125,7 @@
       </Directory>
       <Directory Id="AppDataFolder">
         <Directory Id="DirGoogle" Name="Google">
-          <Directory Id="DirIapDesktop" Name="Cloud IAP Desktop">
+          <Directory Id="DirIapDesktop" Name="IAP Desktop">
           </Directory>
         </Directory>
       </Directory>
@@ -145,7 +145,7 @@
           Value="1" />
         
         <Shortcut Id="Shortcut"
-          Name="Cloud IAP Desktop"
+          Name="IAP Desktop"
           Description="Identity-Aware Proxy for Remote Desktop"
           Target="[#FileIapDesktopExe]"
           WorkingDirectory="DirIapDesktop"/>
