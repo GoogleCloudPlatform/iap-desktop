@@ -34,6 +34,9 @@ using Google.Solutions.IapDesktop.Application.Windows.TunnelsViewer;
 using Google.Solutions.IapDesktop.Windows;
 using Microsoft.Win32;
 using System;
+using System.Diagnostics;
+using System.IO;
+using System.Linq;
 
 namespace Google.Solutions.IapDesktop
 {
@@ -41,6 +44,7 @@ namespace Google.Solutions.IapDesktop
     {
         private const string BaseRegistryKeyPath = @"Software\Google\IapDesktop\1.0";
 
+        private static bool tracingEnabled = false;
 
         /// <summary>
         /// The main entry point for the application.
@@ -48,10 +52,11 @@ namespace Google.Solutions.IapDesktop
         [STAThread]
         static void Main()
         {
-            var hkcu = RegistryKey.OpenBaseKey(RegistryHive.CurrentUser, RegistryView.Default);
-
+            IsLoggingEnabled = false;
+            
             var serviceRegistry = new ServiceRegistry();
 
+            var hkcu = RegistryKey.OpenBaseKey(RegistryHive.CurrentUser, RegistryView.Default);
             serviceRegistry.AddSingleton(new WindowSettingsRepository(
                 hkcu.CreateSubKey($@"{BaseRegistryKeyPath}\Window")));
             serviceRegistry.AddSingleton(new AuthSettingsRepository(
@@ -89,10 +94,65 @@ namespace Google.Solutions.IapDesktop
 
 #if DEBUG
             serviceRegistry.AddSingleton<DebugWindow>();
-            TraceSources.IapDesktop.Switch.Level = System.Diagnostics.SourceLevels.Verbose;
 #endif
 
             System.Windows.Forms.Application.Run(mainForm);
+
+            // Ensure logs are flushed.
+            IsLoggingEnabled = false;
+        }
+
+        private static TraceSource[] Traces = new[]
+        {
+            Google.Solutions.Compute.TraceSources.Compute,
+            Google.Solutions.IapDesktop.Application.TraceSources.IapDesktop
+        };
+
+        public static string LogFile =>
+            Path.Combine(
+                Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
+                "Google",
+                "Cloud IAP Desktop",
+                "Logs",
+                $"{DateTime.Now:yyyy-MM-dd_HHmm}.log");
+
+        public static bool IsLoggingEnabled
+        {
+            get
+            {
+                return tracingEnabled;
+            }
+            set
+            {
+                tracingEnabled = value;
+
+
+                if (tracingEnabled)
+                {
+                    var logFilePath = LogFile;
+                    Directory.CreateDirectory(new FileInfo(logFilePath).DirectoryName);
+                    var logListener = new TextWriterTraceListener(logFilePath);
+
+                    foreach (var trace in Traces)
+                    {
+                        trace.Listeners.Add(new DefaultTraceListener());
+                        trace.Listeners.Add(logListener);
+                        trace.Switch.Level = System.Diagnostics.SourceLevels.Verbose;
+                    }
+                }
+                else
+                {
+                    foreach (var trace in Traces)
+                    {
+                        foreach (var listener in trace.Listeners.Cast<TraceListener>())
+                        {
+                            listener.Flush();
+                        }
+
+                        trace.Switch.Level = System.Diagnostics.SourceLevels.Off;
+                    }
+                }
+            }
         }
     }
 }

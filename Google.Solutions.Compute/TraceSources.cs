@@ -23,7 +23,7 @@ using System.Diagnostics;
 
 namespace Google.Solutions.Compute
 {
-    internal static class TraceSources
+    public static class TraceSources
     {
         public static readonly TraceSource Compute = new TraceSource(typeof(TraceSources).Namespace);
     }

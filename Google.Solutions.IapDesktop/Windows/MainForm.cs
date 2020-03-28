@@ -230,6 +230,36 @@ namespace Google.Solutions.IapDesktop.Windows
             }
         }
 
+        private void enableloggingToolStripMenuItem_Click(object sender, EventArgs _)
+        {
+            var loggingEnabled = 
+                this.enableloggingToolStripMenuItem.Checked = 
+                !this.enableloggingToolStripMenuItem.Checked;
+
+            try
+            {
+                Program.IsLoggingEnabled = loggingEnabled;
+
+                if (loggingEnabled)
+                {
+                    this.toolStripStatusLabel.Text = $"Logging to {Program.LogFile}, performance " +
+                        "might be degraded while logging is enabled.";
+                    this.statusStrip.BackColor = Color.Red;
+                }
+                else
+                {
+                    this.toolStripStatusLabel.Text = string.Empty;
+                    this.statusStrip.BackColor = this.vs2015LightTheme.ColorPalette.ToolWindowCaptionActive.Background;
+                }
+            }
+            catch (Exception e)
+            {
+                this.serviceProvider
+                    .GetService<IExceptionDialog>()
+                    .Show(this, "Configuring logging failed", e);
+            }
+        }
+
         //---------------------------------------------------------------------
         // IAuthorizationService.
         //---------------------------------------------------------------------
