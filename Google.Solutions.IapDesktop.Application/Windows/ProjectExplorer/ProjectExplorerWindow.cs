@@ -219,7 +219,10 @@ namespace Google.Solutions.IapDesktop.Application.ProjectExplorer
                     }
                     catch (UnauthorizedException)
                     {
-                        throw new ApplicationException("You are not authorized to connect to this VM instance");
+                        throw new ApplicationException(
+                            "You are not authorized to connect to this VM instance.\n\n"+
+                            $"Verify that the Cloud IAP API is enabled in the project {vmNode.Reference.ProjectId} "+
+                            "and that your user has the 'IAP-secured Tunnel User' role.");
                     }
                 });
 
@@ -428,7 +431,7 @@ namespace Google.Solutions.IapDesktop.Application.ProjectExplorer
             {
                 this.serviceProvider
                     .GetService<IExceptionDialog>()
-                    .Show(this, "Generating credentials failed", e);
+                    .Show(this, "Connecting to VM instance failed", e);
             }
         }
 

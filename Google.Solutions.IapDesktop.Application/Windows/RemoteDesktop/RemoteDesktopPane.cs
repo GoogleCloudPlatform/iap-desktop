@@ -63,23 +63,6 @@ namespace Google.Solutions.IapDesktop.Application.Windows.RemoteDesktop
             this.TabContextStrip.Opening += tabContextStrip_Opening;
         }
 
-        //private void InitializeRdpControl()
-        //{
-        //	// NB. The initialization needs to happen after the pane is shown, otherwise
-        //	// an error happens indicating that the control does not have a Window handle.
-        //	System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(RemoteDesktopPane));
-        //	this.rdpClient = new AxMsRdpClient9NotSafeForScripting();
-        //	((System.ComponentModel.ISupportInitialize)(this.rdpClient)).BeginInit();
-        //	this.rdpClient.Dock = System.Windows.Forms.DockStyle.Fill;
-        //	this.rdpClient.Enabled = true;
-        //	this.rdpClient.Location = new System.Drawing.Point(0, 0);
-        //	this.rdpClient.Name = "rdpClient";
-        //	this.rdpClient.OcxState = ((System.Windows.Forms.AxHost.State)(resources.GetObject("rdpClient.OcxState")));
-        //	this.rdpClient.Size = this.Size;
-        //	this.rdpClient.TabIndex = 1;
-        //	((System.ComponentModel.ISupportInitialize)(this.rdpClient)).EndInit();
-        //}
-
         public void Connect(
             string server,
             ushort port,

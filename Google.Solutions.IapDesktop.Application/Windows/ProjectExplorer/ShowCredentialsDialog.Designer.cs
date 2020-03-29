@@ -65,10 +65,9 @@ namespace Google.Solutions.IapDesktop.Application.ProjectExplorer
             // closeButton
             // 
             this.closeButton.DialogResult = System.Windows.Forms.DialogResult.OK;
-            this.closeButton.Location = new System.Drawing.Point(279, 221);
-            this.closeButton.Margin = new System.Windows.Forms.Padding(4);
+            this.closeButton.Location = new System.Drawing.Point(209, 208);
             this.closeButton.Name = "closeButton";
-            this.closeButton.Size = new System.Drawing.Size(109, 34);
+            this.closeButton.Size = new System.Drawing.Size(82, 28);
             this.closeButton.TabIndex = 3;
             this.closeButton.Text = "Close";
             this.closeButton.UseVisualStyleBackColor = true;
@@ -79,9 +78,11 @@ namespace Google.Solutions.IapDesktop.Application.ProjectExplorer
             this.groupBox.Controls.Add(this.passwordLabel);
             this.groupBox.Controls.Add(this.usernameLabel);
             this.groupBox.Controls.Add(this.usernameText);
-            this.groupBox.Location = new System.Drawing.Point(24, 26);
+            this.groupBox.Location = new System.Drawing.Point(18, 21);
+            this.groupBox.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.groupBox.Name = "groupBox";
-            this.groupBox.Size = new System.Drawing.Size(364, 133);
+            this.groupBox.Padding = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.groupBox.Size = new System.Drawing.Size(273, 108);
             this.groupBox.TabIndex = 4;
             this.groupBox.TabStop = false;
             this.groupBox.Text = "Logon credentials";
@@ -89,72 +90,80 @@ namespace Google.Solutions.IapDesktop.Application.ProjectExplorer
             // passwordText
             // 
             this.passwordText.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.passwordText.Location = new System.Drawing.Point(116, 86);
+            this.passwordText.Location = new System.Drawing.Point(87, 70);
+            this.passwordText.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.passwordText.Multiline = true;
             this.passwordText.Name = "passwordText";
             this.passwordText.PasswordChar = '*';
             this.passwordText.ReadOnly = true;
-            this.passwordText.Size = new System.Drawing.Size(224, 29);
+            this.passwordText.Size = new System.Drawing.Size(169, 24);
             this.passwordText.TabIndex = 3;
             // 
             // passwordLabel
             // 
             this.passwordLabel.AutoSize = true;
-            this.passwordLabel.Location = new System.Drawing.Point(16, 91);
+            this.passwordLabel.Location = new System.Drawing.Point(12, 74);
+            this.passwordLabel.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.passwordLabel.Name = "passwordLabel";
-            this.passwordLabel.Size = new System.Drawing.Size(69, 17);
+            this.passwordLabel.Size = new System.Drawing.Size(53, 13);
             this.passwordLabel.TabIndex = 2;
             this.passwordLabel.Text = "Password";
             // 
             // usernameLabel
             // 
             this.usernameLabel.AutoSize = true;
-            this.usernameLabel.Location = new System.Drawing.Point(16, 44);
+            this.usernameLabel.Location = new System.Drawing.Point(12, 36);
+            this.usernameLabel.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.usernameLabel.Name = "usernameLabel";
-            this.usernameLabel.Size = new System.Drawing.Size(73, 17);
+            this.usernameLabel.Size = new System.Drawing.Size(55, 13);
             this.usernameLabel.TabIndex = 1;
             this.usernameLabel.Text = "Username";
             // 
             // usernameText
             // 
             this.usernameText.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.usernameText.Location = new System.Drawing.Point(116, 39);
+            this.usernameText.Location = new System.Drawing.Point(87, 32);
+            this.usernameText.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.usernameText.Multiline = true;
             this.usernameText.Name = "usernameText";
             this.usernameText.ReadOnly = true;
-            this.usernameText.Size = new System.Drawing.Size(224, 29);
+            this.usernameText.Size = new System.Drawing.Size(169, 24);
             this.usernameText.TabIndex = 0;
             // 
             // statusIcon
             // 
             this.statusIcon.Image = ((System.Drawing.Image)(resources.GetObject("statusIcon.Image")));
-            this.statusIcon.Location = new System.Drawing.Point(17, 180);
+            this.statusIcon.Location = new System.Drawing.Point(17, 146);
+            this.statusIcon.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.statusIcon.Name = "statusIcon";
-            this.statusIcon.Size = new System.Drawing.Size(31, 29);
+            this.statusIcon.Size = new System.Drawing.Size(23, 24);
             this.statusIcon.TabIndex = 8;
             this.statusIcon.TabStop = false;
             // 
             // savePwdNote
             // 
             this.savePwdNote.AutoSize = true;
-            this.savePwdNote.Location = new System.Drawing.Point(44, 174);
+            this.savePwdNote.Location = new System.Drawing.Point(37, 141);
+            this.savePwdNote.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.savePwdNote.Name = "savePwdNote";
-            this.savePwdNote.Size = new System.Drawing.Size(329, 34);
+            this.savePwdNote.Size = new System.Drawing.Size(215, 52);
             this.savePwdNote.TabIndex = 7;
-            this.savePwdNote.Text = "The server properties will be updated automatically\r\nto use these credentials.\r\n";
+            this.savePwdNote.Text = "The VM instance settings will be updated \r\nautomatically to use these credentials" +
+    ".\r\n\r\nCredentials are encrypted and stored locally.";
             // 
             // ShowCredentialsDialog
             // 
             this.AcceptButton = this.closeButton;
-            this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(412, 306);
+            this.ClientSize = new System.Drawing.Size(309, 247);
             this.ControlBox = false;
             this.Controls.Add(this.statusIcon);
             this.Controls.Add(this.savePwdNote);
             this.Controls.Add(this.groupBox);
             this.Controls.Add(this.closeButton);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
+            this.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.MaximizeBox = false;
             this.MinimizeBox = false;
             this.Name = "ShowCredentialsDialog";
