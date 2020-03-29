@@ -229,7 +229,7 @@ namespace Google.Solutions.IapDesktop.Application.Settings
         }
 
         public RdpAuthenticationLevel AuthenticationLevel { get; set; }
-            = RdpAuthenticationLevel.AttemptServerAuthentication;
+            = RdpAuthenticationLevel.NoServerAuthentication;
 
         [DwordRegistryValueAttribute("AuthenticationLevel")]
         protected int? _AuthenticationLevel
