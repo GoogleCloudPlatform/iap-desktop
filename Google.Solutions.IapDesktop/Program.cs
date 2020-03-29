@@ -57,7 +57,7 @@ namespace Google.Solutions.IapDesktop
             Path.Combine(
                 Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
                 "Google",
-                "Cloud IAP Desktop",
+                "IAP Desktop",
                 "Logs",
                 $"{DateTime.Now:yyyy-MM-dd_HHmm}.log");
 
