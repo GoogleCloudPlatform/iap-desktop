@@ -61,19 +61,69 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows
 
             var zoneA = (ZoneNode)this.projectNode.FirstNode;
             var zoneB = (ZoneNode)this.projectNode.FirstNode.NextNode;
-
-            Assert.AreEqual(username, zoneA.Username);
-            Assert.AreEqual(username, zoneB.Username);
-
             var instanceA = (VmInstanceNode)zoneA.FirstNode;
             var instanceB = (VmInstanceNode)zoneB.FirstNode;
+            
+            instanceA.Username = null;
+            instanceB.Username = "";
 
+            // Inherited value is shown...
             Assert.AreEqual(username, instanceA.Username);
             Assert.AreEqual(username, instanceB.Username);
+
+            // ...and takes effect.
+            Assert.AreEqual(username, instanceA.EffectiveSettingsWithInheritanceApplied.Username);
+            Assert.AreEqual(username, instanceB.EffectiveSettingsWithInheritanceApplied.Username);
         }
 
         [Test]
+        public void WhenDomainSetInProject_ProjectValueIsInheritedDownToVm(
+            [Values("domain", null)]
+            string domain)
+        {
+            this.projectNode.Domain = domain;
 
+            var zoneA = (ZoneNode)this.projectNode.FirstNode;
+            var zoneB = (ZoneNode)this.projectNode.FirstNode.NextNode;
+            var instanceA = (VmInstanceNode)zoneA.FirstNode;
+            var instanceB = (VmInstanceNode)zoneB.FirstNode;
+
+            instanceA.Domain = null;
+            instanceB.Domain = "";
+
+            // Inherited value is shown...
+            Assert.AreEqual(domain, instanceA.Domain);
+            Assert.AreEqual(domain, instanceB.Domain);
+                            
+            // ...and takes effect
+            Assert.AreEqual(domain, instanceA.EffectiveSettingsWithInheritanceApplied.Domain);
+            Assert.AreEqual(domain, instanceB.EffectiveSettingsWithInheritanceApplied.Domain);
+        }
+
+        [Test]
+        public void WhenPasswordSetInProject_ProjectValueIsInheritedDownToVm()
+        {
+            var password = "secret";
+            this.projectNode.CleartextPassword = password;
+
+            var zoneA = (ZoneNode)this.projectNode.FirstNode;
+            var zoneB = (ZoneNode)this.projectNode.FirstNode.NextNode;
+            var instanceA = (VmInstanceNode)zoneA.FirstNode;
+            var instanceB = (VmInstanceNode)zoneB.FirstNode;
+
+            instanceA.CleartextPassword = null;
+            instanceB.CleartextPassword = "";
+
+            // Inherited value is not shown...
+            Assert.AreEqual("********", instanceA.CleartextPassword);
+            Assert.AreEqual("********", instanceB.CleartextPassword);
+
+            // ...but takes effect
+            Assert.AreEqual(password, instanceA.EffectiveSettingsWithInheritanceApplied.Password.AsClearText());
+            Assert.AreEqual(password, instanceB.EffectiveSettingsWithInheritanceApplied.Password.AsClearText());
+        }
+
+        [Test]
         public void WhenDesktopSizeSetInProject_ProjectValueIsInheritedDownToVm(
             [Values(RdpDesktopSize.ClientSize, RdpDesktopSize.ScreenSize)]
             RdpDesktopSize size

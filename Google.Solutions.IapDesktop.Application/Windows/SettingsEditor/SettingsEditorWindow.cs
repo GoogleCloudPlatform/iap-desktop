@@ -94,6 +94,30 @@ namespace Google.Solutions.IapDesktop.Application.SettingsEditor
         {
             this.EditorObject.SaveChanges();
         }
+        private void contextMenuStrip_Opening(object sender, CancelEventArgs e)
+        {
+            var property = this.propertyGrid.SelectedGridItem?.PropertyDescriptor;
+
+            // We only allow resetting strings.
+            this.resetToolStripMenuItem.Enabled =
+                property != null && property.PropertyType == typeof(string);
+        }
+
+        private void resetToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            var property = this.propertyGrid.SelectedGridItem?.PropertyDescriptor;
+
+            if (property != null)
+            {
+                property.SetValue(this.propertyGrid.SelectedObject, null);
+
+                // The grid does not notice this change, so we need to explicitly
+                // save and refresh.
+
+                this.EditorObject.SaveChanges();
+                this.propertyGrid.Refresh();
+            }
+        }
 
         //---------------------------------------------------------------------
         // Service event handlers.
@@ -166,5 +190,6 @@ namespace Google.Solutions.IapDesktop.Application.SettingsEditor
                 return new PropertyDescriptorCollection(filteredProperties.ToArray());
             }
         }
+
     }
 }

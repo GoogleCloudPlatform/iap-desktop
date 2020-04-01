@@ -72,6 +72,10 @@ namespace Google.Solutions.IapDesktop.Application.ProjectExplorer
 
         //---------------------------------------------------------------------
         // PropertyGrid-compatible settings properties.
+        //
+        // The ShouldSerializeXxx callbacks control whether a property is shown
+        // bold (true) or regular (false). Note that these callbacks cease
+        // working once a Default attribute is applied.
         //---------------------------------------------------------------------
 
         [Browsable(true)]
@@ -81,11 +85,14 @@ namespace Google.Solutions.IapDesktop.Application.ProjectExplorer
         [Description("Windows logon username")]
         public string Username
         {
-            get => this.settings.Username ?? this.parent?.Username;
-            set => this.settings.Username = value;
+            get => IsUsernameSet
+                ? this.settings.Username
+                : this.parent?.Username;
+            set => this.settings.Username = string.IsNullOrEmpty(value) ? null : value;
         }
 
-        public bool ShouldSerializeUsername() => this.settings.Username != null;
+        protected bool IsUsernameSet => this.settings.Username != null;
+        public bool ShouldSerializeUsername() => IsUsernameSet;
 
 
         [Browsable(true)]
@@ -96,21 +103,24 @@ namespace Google.Solutions.IapDesktop.Application.ProjectExplorer
         [PasswordPropertyText(true)]
         public string CleartextPassword
         {
-            get => ShouldSerializePassword()
+            get => IsPasswordSet
                 ? new string('*', 8)
-                : string.Empty;
-            set => this.Password = SecureStringExtensions.FromClearText(value);
+                : this.parent?.CleartextPassword;
+            set => this.Password = string.IsNullOrEmpty(value)
+                ? null
+                : SecureStringExtensions.FromClearText(value);
         }
 
         protected SecureString Password
         {
-            get => ShouldSerializePassword()
+            get => IsPasswordSet
                 ? this.settings.Password
                 : this.parent?.Password;
             set => this.settings.Password = value;
         }
 
-        public bool ShouldSerializePassword() => this.settings.Password != null;
+        protected bool IsPasswordSet => this.settings.Password != null;
+        public bool ShouldSerializeCleartextPassword() => IsPasswordSet;
 
 
         [Browsable(true)]
@@ -120,11 +130,14 @@ namespace Google.Solutions.IapDesktop.Application.ProjectExplorer
         [Description("Windows logon domain")]
         public string Domain
         {
-            get => this.settings.Domain ?? this.parent?.Domain;
-            set => this.settings.Domain = value;
+            get => IsDomainSet
+                ? this.settings.Domain 
+                : this.parent?.Domain;
+            set => this.settings.Domain = string.IsNullOrEmpty(value) ? null : value;
         }
 
-        public bool ShouldSerializeDomain() => this.settings.Domain != null;
+        protected bool IsDomainSet => this.settings.Domain != null;
+        public bool ShouldSerializeDomain() => IsDomainSet;
 
 
         [Browsable(true)]

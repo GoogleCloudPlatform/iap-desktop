@@ -148,7 +148,7 @@ namespace Google.Solutions.IapDesktop.Application.Settings
         NoServerAuthentication = 3,
 
         [Browsable(false)]
-        _Default = AttemptServerAuthentication
+        _Default = NoServerAuthentication
     }
 
     public enum RdpColorDepth
@@ -217,7 +217,7 @@ namespace Google.Solutions.IapDesktop.Application.Settings
         }
 
         public RdpDesktopSize DesktopSize { get; set; }
-            = RdpDesktopSize.ClientSize;
+            = RdpDesktopSize._Default;
 
         [DwordRegistryValueAttribute("DesktopSize")]
         protected int? _DesktopSize
@@ -229,7 +229,7 @@ namespace Google.Solutions.IapDesktop.Application.Settings
         }
 
         public RdpAuthenticationLevel AuthenticationLevel { get; set; }
-            = RdpAuthenticationLevel.NoServerAuthentication;
+            = RdpAuthenticationLevel._Default;
 
         [DwordRegistryValueAttribute("AuthenticationLevel")]
         protected int? _AuthenticationLevel
@@ -241,7 +241,7 @@ namespace Google.Solutions.IapDesktop.Application.Settings
         }
 
         public RdpColorDepth ColorDepth { get; set; }
-            = RdpColorDepth.TrueColor;
+            = RdpColorDepth._Default;
 
         [DwordRegistryValueAttribute("ColorDepth")]
         protected int? _ColorDepth
@@ -253,7 +253,7 @@ namespace Google.Solutions.IapDesktop.Application.Settings
         }
 
         public RdpAudioMode AudioMode { get; set; }
-            = RdpAudioMode.PlayLocally;
+            = RdpAudioMode._Default;
 
         [DwordRegistryValueAttribute("AudioMode")]
         protected int? _AudioMode
@@ -265,7 +265,7 @@ namespace Google.Solutions.IapDesktop.Application.Settings
         }
 
         public RdpRedirectClipboard RedirectClipboard { get; set; }
-            = RdpRedirectClipboard.Enabled;
+            = RdpRedirectClipboard._Default;
 
         [DwordRegistryValueAttribute("RedirectClipboard")]
         protected int? _RedirectClipboard
@@ -277,7 +277,7 @@ namespace Google.Solutions.IapDesktop.Application.Settings
         }
 
         public RdpUserAuthenticationBehavior UserAuthenticationBehavior { get; set; }
-            = RdpUserAuthenticationBehavior.PromptOnFailure;
+            = RdpUserAuthenticationBehavior._Default;
     }
 
     public class VmInstanceSettings : InventorySettingsBase
