@@ -23,18 +23,18 @@ using Google.Solutions.Compute;
 using Google.Solutions.Compute.Test.Env;
 using Google.Solutions.IapDesktop.Application.Adapters;
 using Google.Solutions.IapDesktop.Application.ObjectModel;
-using Google.Solutions.IapDesktop.Application.Registry;
 using Google.Solutions.IapDesktop.Application.Services;
 using Google.Solutions.IapDesktop.Application.Settings;
 using Google.Solutions.IapDesktop.Application.Windows.RemoteDesktop;
 using NUnit.Framework;
-using System;
 using System.Threading;
 using System.Threading.Tasks;
 
 namespace Google.Solutions.IapDesktop.Application.Test.Windows
 {
     [TestFixture]
+    [Category("IntegrationTest")]
+    [Category("IAP")]
     public class TestRemoteDesktopWithServerSideGroupPolicies : WindowTestFixtureBase
     {
         private async Task<IRemoteDesktiopSession> Connect(
