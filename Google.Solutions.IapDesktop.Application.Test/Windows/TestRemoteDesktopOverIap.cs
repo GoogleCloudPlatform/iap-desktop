@@ -19,8 +19,6 @@
 // under the License.
 //
 
-using Google.Solutions.Compute;
-using Google.Solutions.Compute.Iap;
 using Google.Solutions.Compute.Test.Env;
 using Google.Solutions.IapDesktop.Application.Adapters;
 using Google.Solutions.IapDesktop.Application.ObjectModel;
@@ -29,7 +27,6 @@ using Google.Solutions.IapDesktop.Application.Services;
 using Google.Solutions.IapDesktop.Application.Settings;
 using Google.Solutions.IapDesktop.Application.Windows.RemoteDesktop;
 using NUnit.Framework;
-using System;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -40,41 +37,6 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows
     [Category("IAP")]
     public class TestRemoteDesktopOverIap : WindowTestFixtureBase
     {
-        private class RdpTunnel : IDisposable
-        {
-            private readonly SshRelayListener listener;
-            private readonly CancellationTokenSource tokenSource;
-
-            public int LocalPort => listener.LocalPort;
-
-            public void Dispose()
-            {
-                this.tokenSource.Cancel();
-            }
-
-            private RdpTunnel(SshRelayListener listener, CancellationTokenSource tokenSource)
-            {
-                this.listener = listener;
-                this.tokenSource = tokenSource;
-            }
-
-            public static RdpTunnel Create(VmInstanceReference vmRef)
-            {
-                var listener = SshRelayListener.CreateLocalListener(
-                    new IapTunnelingEndpoint(
-                        Defaults.GetCredential(),
-                        vmRef,
-                        3389,
-                        IapTunnelingEndpoint.DefaultNetworkInterface));
-
-                var tokenSource = new CancellationTokenSource();
-                listener.ListenAsync(tokenSource.Token);
-
-                return new RdpTunnel(listener, tokenSource);
-            }
-        }
-
-
         [Test]
         public async Task WhenCredentialsInvalid_ThenErrorIsShownAndWindowIsClosed(
             [WindowsInstance] InstanceRequest testInstance)

@@ -165,7 +165,7 @@ namespace Google.Solutions.IapDesktop.Application.Windows.RemoteDesktop
             {2052, "Bad IP address specified."},
             {2055, "Login failed."},
             {2056, "License negotiation failed."},
-            {2308, "Socket closed."},
+            {2308, "Connection to server lost."},
             {2310, "Internal security error."},
             {2312, "Licensing time-out."},
             {2566, "Internal security error."},
@@ -195,7 +195,6 @@ namespace Google.Solutions.IapDesktop.Application.Windows.RemoteDesktop
         public bool IsIgnorable =>
             this.DisconnectReason <= 3 ||
             this.DisconnectReason == 263 ||  // Dismissed server auth warning.
-            this.DisconnectReason == 2308 || // Socket closed - that happens when you restart the VM.
             this.DisconnectReason == 7943;   // Dismissed login prompt.
 
         public override string Message

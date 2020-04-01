@@ -93,6 +93,7 @@
     <Compile Include="Adapters\TestGithubAdapter.cs" />
     <Compile Include="FixtureBase.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="RdpTunnel.cs" />
     <Compile Include="Registry\TestRegistryBinder.cs" />
     <Compile Include="ServiceModel\MockEventService.cs" />
     <Compile Include="Services\TestJobService.cs" />
@@ -109,6 +110,7 @@
     </Compile>
     <Compile Include="Windows\TestProjectExplorer.cs" />
     <Compile Include="Windows\TestProjectExplorerNode.cs" />
+    <Compile Include="Windows\TestRemoteDesktopGroupPolicies.cs" />
     <Compile Include="Windows\TestRemoteDesktop.cs" />
     <Compile Include="Windows\TestRemoteDesktopOverIap.cs" />
     <Compile Include="Windows\WindowTestFixtureBase.cs" />
