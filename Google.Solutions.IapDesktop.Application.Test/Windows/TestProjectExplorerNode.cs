@@ -74,6 +74,9 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows
             // ...and takes effect.
             Assert.AreEqual(username, instanceA.EffectiveSettingsWithInheritanceApplied.Username);
             Assert.AreEqual(username, instanceB.EffectiveSettingsWithInheritanceApplied.Username);
+
+            Assert.IsFalse(instanceA.ShouldSerializeUsername());
+            Assert.IsFalse(instanceB.ShouldSerializeUsername());
         }
 
         [Test]
@@ -98,6 +101,9 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows
             // ...and takes effect
             Assert.AreEqual(domain, instanceA.EffectiveSettingsWithInheritanceApplied.Domain);
             Assert.AreEqual(domain, instanceB.EffectiveSettingsWithInheritanceApplied.Domain);
+
+            Assert.IsFalse(instanceA.ShouldSerializeDomain());
+            Assert.IsFalse(instanceB.ShouldSerializeDomain());
         }
 
         [Test]
@@ -105,6 +111,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows
         {
             var password = "secret";
             this.projectNode.CleartextPassword = password;
+            Assert.IsTrue(this.projectNode.ShouldSerializeCleartextPassword());
 
             var zoneA = (ZoneNode)this.projectNode.FirstNode;
             var zoneB = (ZoneNode)this.projectNode.FirstNode.NextNode;
@@ -121,6 +128,9 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows
             // ...but takes effect
             Assert.AreEqual(password, instanceA.EffectiveSettingsWithInheritanceApplied.Password.AsClearText());
             Assert.AreEqual(password, instanceB.EffectiveSettingsWithInheritanceApplied.Password.AsClearText());
+
+            Assert.IsFalse(instanceA.ShouldSerializeCleartextPassword());
+            Assert.IsFalse(instanceB.ShouldSerializeCleartextPassword());
         }
 
         [Test]
@@ -142,6 +152,12 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows
 
             Assert.AreEqual(size, instanceA.DesktopSize);
             Assert.AreEqual(size, instanceB.DesktopSize);
+
+            Assert.AreEqual(size, instanceA.EffectiveSettingsWithInheritanceApplied.DesktopSize);
+            Assert.AreEqual(size, instanceB.EffectiveSettingsWithInheritanceApplied.DesktopSize);
+
+            Assert.IsFalse(instanceA.ShouldSerializeDesktopSize());
+            Assert.IsFalse(instanceB.ShouldSerializeDesktopSize());
         }
 
         [Test]
@@ -156,12 +172,20 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows
             zoneB.Username = null;
             Assert.AreEqual("overriden-value", zoneA.Username);
             Assert.AreEqual("root-value", zoneB.Username);
+            Assert.IsTrue(zoneA.ShouldSerializeUsername());
+            Assert.IsFalse(zoneB.ShouldSerializeUsername());
 
             var instanceA = (VmInstanceNode)zoneA.FirstNode;
             var instanceB = (VmInstanceNode)zoneB.FirstNode;
 
             Assert.AreEqual("overriden-value", instanceA.Username);
             Assert.AreEqual("root-value", instanceB.Username);
+
+            Assert.AreEqual("overriden-value", instanceA.EffectiveSettingsWithInheritanceApplied.Username);
+            Assert.AreEqual("root-value", instanceB.EffectiveSettingsWithInheritanceApplied.Username);
+            
+            Assert.IsFalse(instanceA.ShouldSerializeUsername());
+            Assert.IsFalse(instanceB.ShouldSerializeUsername());
         }
 
         [Test]
@@ -176,13 +200,56 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows
             zoneB.DesktopSize = RdpDesktopSize.ClientSize;
             Assert.AreEqual(RdpDesktopSize.ScreenSize, zoneA.DesktopSize);
             Assert.AreEqual(RdpDesktopSize.ClientSize, zoneB.DesktopSize);
+            Assert.IsTrue(zoneA.ShouldSerializeDesktopSize());
+            Assert.IsFalse(zoneB.ShouldSerializeDesktopSize());
 
             var instanceA = (VmInstanceNode)zoneA.FirstNode;
             var instanceB = (VmInstanceNode)zoneB.FirstNode;
 
             Assert.AreEqual(RdpDesktopSize.ScreenSize, instanceA.DesktopSize);
             Assert.AreEqual(RdpDesktopSize.ClientSize, instanceB.DesktopSize);
+
+            Assert.AreEqual(RdpDesktopSize.ScreenSize, instanceA.EffectiveSettingsWithInheritanceApplied.DesktopSize);
+            Assert.AreEqual(RdpDesktopSize.ClientSize, instanceB.EffectiveSettingsWithInheritanceApplied.DesktopSize);
+            
+            Assert.IsFalse(instanceA.ShouldSerializeDesktopSize());
+            Assert.IsFalse(instanceB.ShouldSerializeDesktopSize());
         }
+
+        [Test]
+        public void WhenAuthenticationLevelSetInProjectAndZone_ZoneValueIsInheritedDownToVm()
+        {
+            this.projectNode.AuthenticationLevel = RdpAuthenticationLevel.RequireServerAuthentication;
+
+            var zoneA = (ZoneNode)this.projectNode.FirstNode;
+
+            zoneA.AuthenticationLevel = RdpAuthenticationLevel.AttemptServerAuthentication;
+            Assert.AreEqual(RdpAuthenticationLevel.AttemptServerAuthentication, zoneA.AuthenticationLevel);
+            Assert.IsTrue(zoneA.ShouldSerializeAuthenticationLevel());
+
+            var instanceA = (VmInstanceNode)zoneA.FirstNode;
+            Assert.AreEqual(RdpAuthenticationLevel.AttemptServerAuthentication, instanceA.AuthenticationLevel);
+            Assert.AreEqual(RdpAuthenticationLevel.AttemptServerAuthentication, instanceA.EffectiveSettingsWithInheritanceApplied.AuthenticationLevel);
+            Assert.IsFalse(instanceA.ShouldSerializeAuthenticationLevel());
+        }
+
+        [Test]
+        public void WhenBitmapPersistenceSetInProjectAndZone_ZoneValueIsInheritedDownToVm()
+        {
+            this.projectNode.BitmapPersistence = RdpBitmapPersistence.Disabled;
+
+            var zoneA = (ZoneNode)this.projectNode.FirstNode;
+
+            zoneA.BitmapPersistence = RdpBitmapPersistence.Enabled;
+            Assert.AreEqual(RdpBitmapPersistence.Enabled, zoneA.BitmapPersistence );
+            Assert.IsTrue(zoneA.ShouldSerializeBitmapPersistence());
+
+            var instanceA = (VmInstanceNode)zoneA.FirstNode;
+            Assert.AreEqual(RdpBitmapPersistence.Enabled, instanceA.BitmapPersistence);
+            Assert.AreEqual(RdpBitmapPersistence.Enabled, instanceA.EffectiveSettingsWithInheritanceApplied.BitmapPersistence);
+            Assert.IsFalse(instanceA.ShouldSerializeBitmapPersistence());
+        }
+
 
         [Test]
         public void WhenSettingsAppliedOnProjectAndZone_ThenEffectiveSettingsReflectThese()

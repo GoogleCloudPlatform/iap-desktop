@@ -240,6 +240,23 @@ namespace Google.Solutions.IapDesktop.Application.ProjectExplorer
 
         public bool ShouldSerializeAudioMode()
             => this.settings.AudioMode != RdpAudioMode._Default;
+
+
+        [Browsable(true)]
+        [BrowsableSetting]
+        [Category("Performance")]
+        [DisplayName("Bitmap caching")]
+        [Description("Use persistent bitmap cache")]
+        public RdpBitmapPersistence BitmapPersistence
+        {
+            get => ShouldSerializeBitmapPersistence()
+                ? this.settings.BitmapPersistence
+                : (this.parent != null ? this.parent.BitmapPersistence : RdpBitmapPersistence._Default);
+            set => this.settings.BitmapPersistence = value;
+        }
+
+        public bool ShouldSerializeBitmapPersistence()
+            => this.settings.BitmapPersistence != RdpBitmapPersistence._Default;
     }
 
     internal class ProjectNode : InventoryNode, IProjectExplorerProjectNode
@@ -355,7 +372,8 @@ namespace Google.Solutions.IapDesktop.Application.ProjectExplorer
                 UserAuthenticationBehavior = RdpUserAuthenticationBehavior._Default,
                 Username = this.Username,
                 Password = this.Password,
-                Domain = this.Domain
+                Domain = this.Domain,
+                BitmapPersistence = this.BitmapPersistence
             };
 
         private static string InternalIpFromInstance(Instance instance)

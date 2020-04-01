@@ -189,6 +189,15 @@ namespace Google.Solutions.IapDesktop.Application.Settings
         _Default = PromptOnFailure
     }
 
+    public enum RdpBitmapPersistence
+    {
+        Disabled = 0,
+        Enabled = 1,
+
+        [Browsable(false)]
+        _Default = Disabled
+    }
+
     public abstract class InventorySettingsBase
     {
         //---------------------------------------------------------------------
@@ -278,6 +287,18 @@ namespace Google.Solutions.IapDesktop.Application.Settings
 
         public RdpUserAuthenticationBehavior UserAuthenticationBehavior { get; set; }
             = RdpUserAuthenticationBehavior._Default;
+
+        public RdpBitmapPersistence BitmapPersistence { get; set; }
+            = RdpBitmapPersistence._Default;
+
+        [DwordRegistryValueAttribute("BitmapPersistence")]
+        protected int? _BitmapPersistence
+        {
+            get => (int)this.BitmapPersistence;
+            set => this.BitmapPersistence = value != null
+                ? (RdpBitmapPersistence)value
+                : RdpBitmapPersistence._Default;
+        }
     }
 
     public class VmInstanceSettings : InventorySettingsBase

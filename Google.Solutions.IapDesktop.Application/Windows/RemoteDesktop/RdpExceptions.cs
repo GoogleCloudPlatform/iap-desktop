@@ -175,6 +175,7 @@ namespace Google.Solutions.IapDesktop.Application.Windows.RemoteDesktop
             {3078, "Decryption error."},
             {3079, "The account is restricted."},
             {3080, "Decompression error."},
+            {3334, "System ran out of resources. Consider disabling bitmap caching."},
             {3335, "The account is locked out."},
             {3591, "The account is expired."},
             {3847, "The password is expired."},

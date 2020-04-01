@@ -159,7 +159,8 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows
                         DesktopSize = desktopSize,
                         AudioMode = audioMode,
                         RedirectClipboard = redirectClipboard,
-                        AuthenticationLevel = RdpAuthenticationLevel.NoServerAuthentication
+                        AuthenticationLevel = RdpAuthenticationLevel.NoServerAuthentication,
+                        BitmapPersistence = RdpBitmapPersistence.Disabled
                     });
 
                 AwaitEvent<RemoteDesktopConnectionSuceededEvent>();

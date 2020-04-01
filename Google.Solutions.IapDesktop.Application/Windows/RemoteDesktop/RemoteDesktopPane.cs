@@ -181,6 +181,19 @@ namespace Google.Solutions.IapDesktop.Application.Windows.RemoteDesktop
                     this.rdpClient.DesktopWidth = this.Size.Width;
                 }
 
+                switch (settings.BitmapPersistence)
+                {
+                    case RdpBitmapPersistence.Disabled:
+                        advancedSettings.BitmapPersistence = 0;
+                        break;
+
+                    case RdpBitmapPersistence.Enabled:
+                        // This setting can cause disconnects when running more than
+                        // ~4 sessions in parallel.
+                        advancedSettings.BitmapPersistence = 1;
+                        break;
+                }
+
                 //
                 // Keyboard settings.
                 //
