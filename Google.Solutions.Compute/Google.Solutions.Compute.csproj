@@ -78,6 +78,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Auth\Authorization.cs" />
+    <Compile Include="Auth\OidcConfiguration.cs" />
+    <Compile Include="Auth\OidcUserInfo.cs" />
     <Compile Include="BigEndian.cs" />
     <Compile Include="Net\RestClient.cs" />
     <Compile Include="TraceSources.cs" />

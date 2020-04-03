@@ -22,11 +22,12 @@
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Auth.OAuth2.Flows;
 using Google.Apis.Util.Store;
-using System;
+using System.Linq;
 using System.Threading.Tasks;
 using System.Threading;
 using System.IO;
 using Google.Apis.Http;
+using System.Diagnostics;
 
 namespace Google.Solutions.Compute.Auth
 {
@@ -43,6 +44,11 @@ namespace Google.Solutions.Compute.Auth
     {
         public const string StoreUserId = "oauth";
 
+        /// <summary>
+        /// Scope required to query email from UserInfo endpoint
+        /// </summary>
+        private const string EmailScope = "https://www.googleapis.com/auth/userinfo.email";
+
         private readonly GoogleAuthorizationCodeFlow.Initializer initializer;
         private readonly string closePageReponse;
         private readonly IDataStore credentialStore;
@@ -51,11 +57,12 @@ namespace Google.Solutions.Compute.Auth
         // a SwappableCredential as indirection.
         private readonly SwappableCredential credential;
 
-        internal OAuthAuthorization(
+        private OAuthAuthorization(
             GoogleAuthorizationCodeFlow.Initializer initializer,
             string closePageReponse,
             IDataStore credentialStore,
-            ICredential initialCredential)
+            ICredential initialCredential,
+            OidcUserInfo userInfo)
         {
             this.initializer = initializer;
             this.closePageReponse = closePageReponse;
@@ -74,6 +81,9 @@ namespace Google.Solutions.Compute.Auth
             GoogleAuthorizationCodeFlow.Initializer initializer,
             string closePageReponse)
         {
+            // Make sure we can use the UserInfo endpoint later.
+            initializer.AddScope(EmailScope);
+
             using (var flow = new GoogleAuthorizationCodeFlow(initializer))
             {
                 var installedApp = new AuthorizationCodeInstalledApp(
@@ -84,14 +94,25 @@ namespace Google.Solutions.Compute.Auth
                     OAuthAuthorization.StoreUserId,
                     CancellationToken.None);
 
-                if (!installedApp.ShouldRequestAuthorizationCode(existingTokenResponse))
+                if (!existingTokenResponse.Scope.Split(' ').Contains(EmailScope))
                 {
+                    TraceSources.Compute.TraceVerbose(
+                        "Dropping existing credential as it lacks email scope");
+
+                    // The existing auth might be fine, but it lacks a scope.
+                    // Delete it so that it does not cause harm later.
+                    await initializer.DataStore.DeleteAsync<object>(OAuthAuthorization.StoreUserId);
+                    return null;
+                }
+                else if (!installedApp.ShouldRequestAuthorizationCode(existingTokenResponse))
+                {
+                    TraceSources.Compute.TraceVerbose("Authorizing using existing credentials");
+
                     // N.B. Do not dispose the GoogleAuthorizationCodeFlow as it might
                     // be needed for re-auth later.
-                    return new OAuthAuthorization(
+                    return await CreateAuthorizationAsync(
                         initializer,
                         closePageReponse,
-                        initializer.DataStore,
                         new UserCredential(
                             new GoogleAuthorizationCodeFlow(initializer),
                             OAuthAuthorization.StoreUserId,
@@ -108,19 +129,47 @@ namespace Google.Solutions.Compute.Auth
             GoogleAuthorizationCodeFlow.Initializer initializer,
             string closePageReponse)
         {
+            // Make sure we can use the UserInfo endpoint later.
+            initializer.AddScope(EmailScope);
+
             // N.B. Do not dispose the GoogleAuthorizationCodeFlow as it might
             // be needed for re-auth later.
             var installedApp = new AuthorizationCodeInstalledApp(
                 new GoogleAuthorizationCodeFlow(initializer),
                 new LocalServerCodeReceiver(closePageReponse));
 
+            TraceSources.Compute.TraceVerbose("Authorizing");
+
+            // Pop up browser window.
+            var credential = await installedApp.AuthorizeAsync(
+                OAuthAuthorization.StoreUserId,
+                CancellationToken.None);
+
+            return await CreateAuthorizationAsync(
+                initializer,
+                closePageReponse,
+                credential);
+        }
+
+        private static async Task<OAuthAuthorization> CreateAuthorizationAsync(
+            GoogleAuthorizationCodeFlow.Initializer initializer,
+            string closePageReponse,
+            ICredential credential)
+        {
+            Debug.Assert(initializer.Scopes.Contains(EmailScope));
+
+            var configuration = await OidcConfiguration.QueryMetadataAsync(CancellationToken.None);
+            var userInfo = await OidcUserInfo.QueryUserInfoAsync(
+                configuration, 
+                credential,
+                CancellationToken.None);
+
             return new OAuthAuthorization(
                 initializer,
                 closePageReponse,
                 initializer.DataStore,
-                await installedApp.AuthorizeAsync(
-                    OAuthAuthorization.StoreUserId,
-                    CancellationToken.None));
+                credential,
+                userInfo);
         }
 
         public async Task ReauthorizeAsync()
@@ -161,6 +210,16 @@ namespace Google.Solutions.Compute.Auth
             {
                 return this.currentCredential.GetAccessTokenForRequestAsync(authUri, cancellationToken);
             }
+        }
+    }
+
+    internal static class AuthorizationCodeFlowInitializerExtensions
+    {
+        public static void AddScope(this AuthorizationCodeFlow.Initializer initializer, string scope)
+        {
+            var allScopes = initializer.Scopes.ToHashSet();
+            allScopes.Add(scope);
+            initializer.Scopes = allScopes;
         }
     }
 }
