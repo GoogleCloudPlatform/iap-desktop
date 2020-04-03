@@ -116,6 +116,7 @@ namespace Google.Solutions.Compute.Test.Iap
 
 
         [Test]
+        [Ignore("Can also throw an UnauthorizedException")]
         public async Task ServerNotListeningCausesException(
             [LinuxInstance] InstanceRequest vm)
         {
