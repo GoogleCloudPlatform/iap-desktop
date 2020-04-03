@@ -102,6 +102,7 @@
     <Compile Include="Settings\TestAuthSettingsRepository.cs" />
     <Compile Include="Settings\TestInventorySettingsRepository.cs" />
     <Compile Include="ServiceModel\TestServiceRegistry.cs" />
+    <Compile Include="TestExceptionExtensions.cs" />
     <Compile Include="Windows\TestMainForm.cs">
       <SubType>Form</SubType>
     </Compile>
