@@ -1,0 +1,304 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{842B003E-6EEB-429D-A3A1-53B4E642E83B}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Google.Solutions.IapDesktop.Application</RootNamespace>
+    <AssemblyName>Google.Solutions.IapDesktop.Application</AssemblyName>
+    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <Deterministic>true</Deterministic>
+    <TargetFrameworkProfile />
+    <AssemblyVersionNumber>1.0.1.0</AssemblyVersionNumber>
+    <NuGetPackageImportStamp>
+    </NuGetPackageImportStamp>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Google.Apis, Version=1.40.3.0, Culture=neutral, PublicKeyToken=4b01fa6e34db77ab, processorArchitecture=MSIL">
+      <HintPath>..\packages\Google.Apis.1.40.3\lib\net45\Google.Apis.dll</HintPath>
+    </Reference>
+    <Reference Include="Google.Apis.Auth, Version=1.40.3.0, Culture=neutral, PublicKeyToken=4b01fa6e34db77ab, processorArchitecture=MSIL">
+      <HintPath>..\packages\Google.Apis.Auth.1.40.3\lib\net45\Google.Apis.Auth.dll</HintPath>
+    </Reference>
+    <Reference Include="Google.Apis.Auth.PlatformServices, Version=1.40.3.0, Culture=neutral, PublicKeyToken=4b01fa6e34db77ab, processorArchitecture=MSIL">
+      <HintPath>..\packages\Google.Apis.Auth.1.40.3\lib\net45\Google.Apis.Auth.PlatformServices.dll</HintPath>
+    </Reference>
+    <Reference Include="Google.Apis.CloudResourceManager.v1, Version=1.40.3.1702, Culture=neutral, PublicKeyToken=4b01fa6e34db77ab, processorArchitecture=MSIL">
+      <HintPath>..\packages\Google.Apis.CloudResourceManager.v1.1.40.3.1702\lib\net45\Google.Apis.CloudResourceManager.v1.dll</HintPath>
+    </Reference>
+    <Reference Include="Google.Apis.Compute.v1, Version=1.40.3.1687, Culture=neutral, PublicKeyToken=4b01fa6e34db77ab, processorArchitecture=MSIL">
+      <HintPath>..\packages\Google.Apis.Compute.v1.1.40.3.1687\lib\net45\Google.Apis.Compute.v1.dll</HintPath>
+    </Reference>
+    <Reference Include="Google.Apis.Core, Version=1.40.3.0, Culture=neutral, PublicKeyToken=4b01fa6e34db77ab, processorArchitecture=MSIL">
+      <HintPath>..\packages\Google.Apis.Core.1.40.3\lib\net45\Google.Apis.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="Google.Apis.PlatformServices, Version=1.40.3.0, Culture=neutral, PublicKeyToken=4b01fa6e34db77ab, processorArchitecture=MSIL">
+      <HintPath>..\packages\Google.Apis.1.40.3\lib\net45\Google.Apis.PlatformServices.dll</HintPath>
+    </Reference>
+    <Reference Include="MSBuild.AssemblyVersion, Version=0.1.2.3, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\MSBuild.AssemblyVersion.1.2.0\lib\net452\MSBuild.AssemblyVersion.dll</HintPath>
+    </Reference>
+    <Reference Include="Newtonsoft.Json, Version=12.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.12.0.2\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Security" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Xml" />
+    <Reference Include="WeifenLuo.WinFormsUI.Docking, Version=3.0.6.0, Culture=neutral, PublicKeyToken=5cded1a1a0a7b481, processorArchitecture=MSIL">
+      <HintPath>..\packages\DockPanelSuite.3.0.6\lib\net40\WeifenLuo.WinFormsUI.Docking.dll</HintPath>
+    </Reference>
+    <Reference Include="WeifenLuo.WinFormsUI.Docking.ThemeVS2015, Version=3.0.6.0, Culture=neutral, PublicKeyToken=5cded1a1a0a7b481, processorArchitecture=MSIL">
+      <HintPath>..\packages\DockPanelSuite.ThemeVS2015.3.0.6\lib\net40\WeifenLuo.WinFormsUI.Docking.ThemeVS2015.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Adapters\ComputeEngineAdapter.cs" />
+    <Compile Include="Adapters\GithubAdapter.cs" />
+    <Compile Include="Adapters\PageHelper.cs" />
+    <Compile Include="Adapters\ResourceManagerAdapter.cs" />
+    <Compile Include="Global.cs" />
+    <Compile Include="ObjectModel\EventService.cs" />
+    <Compile Include="Services\JobService.cs" />
+    <Compile Include="ObjectModel\ServiceRegistry.cs" />
+    <Compile Include="ExceptionExtensions.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+    <Compile Include="Services\CloudConsoleService.cs" />
+    <Compile Include="Services\IAuthorizationService.cs" />
+    <Compile Include="Services\ITunnel.cs" />
+    <Compile Include="Services\ProjectInventoryService.cs" />
+    <Compile Include="Services\TunnelBrokerService.cs" />
+    <Compile Include="Services\TunnelService.cs" />
+    <Compile Include="Services\UpdateService.cs" />
+    <Compile Include="Settings\AuthSettingsRepository.cs" />
+    <Compile Include="Registry\SecureStringExtensions.cs" />
+    <Compile Include="Settings\ApplicationSettingsRepository.cs" />
+    <Compile Include="Settings\SettingRepositoryBase.cs" />
+    <Compile Include="Registry\RegistryBinder.cs" />
+    <Compile Include="Registry\RegistryValueAttribute.cs" />
+    <Compile Include="Settings\InventorySettingsRepository.cs" />
+    <Compile Include="TraceSources.cs" />
+    <Compile Include="Util\RestClient.cs" />
+    <Compile Include="Windows\AboutWindow.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Windows\AboutWindow.Designer.cs">
+      <DependentUpon>AboutWindow.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Windows\DebugWindow.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Windows\DebugWindow.Designer.cs">
+      <DependentUpon>DebugWindow.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Windows\ExceptionDialog.cs" />
+    <Compile Include="Windows\IMainForm.cs" />
+    <Compile Include="Windows\ProjectExplorer\GenerateCredentialsDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Windows\ProjectExplorer\GenerateCredentialsDialog.designer.cs">
+      <DependentUpon>GenerateCredentialsDialog.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Windows\ProjectExplorer\IProjectExplorer.cs" />
+    <Compile Include="Windows\ProjectExplorer\IProjectExplorerNode.cs" />
+    <Compile Include="Windows\ProjectExplorer\ProjectExplorerNode.cs" />
+    <Compile Include="Windows\ProjectExplorer\ProjectExplorerSelectionChangedEvent.cs" />
+    <Compile Include="Windows\ProjectExplorer\ProjectExplorerWindow.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Windows\ProjectExplorer\ProjectExplorerWindow.Designer.cs">
+      <DependentUpon>ProjectExplorerWindow.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Windows\ProjectExplorer\ProjectPickerDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Windows\ProjectExplorer\ProjectPickerDialog.Designer.cs">
+      <DependentUpon>ProjectPickerDialog.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Windows\ProjectExplorer\ShowCredentialsDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Windows\ProjectExplorer\ShowCredentialsDialog.designer.cs">
+      <DependentUpon>ShowCredentialsDialog.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Windows\RemoteDesktop\RdpExceptions.cs" />
+    <Compile Include="Windows\RemoteDesktop\RemoteDesktopPane.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Windows\RemoteDesktop\RemoteDesktopPane.Designer.cs">
+      <DependentUpon>RemoteDesktopPane.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Windows\RemoteDesktop\RemoteDesktopService.cs" />
+    <Compile Include="Windows\SerialLog\SerialLogService.cs" />
+    <Compile Include="Windows\SerialLog\SerialLogWindow.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Windows\SerialLog\SerialLogWindow.designer.cs">
+      <DependentUpon>SerialLogWindow.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Windows\SettingsEditor\ISettingsEditor.cs" />
+    <Compile Include="Windows\SettingsEditor\SettingsEditorWindow.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Windows\SettingsEditor\SettingsEditorWindow.Designer.cs">
+      <DependentUpon>SettingsEditorWindow.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Windows\ToolWindow.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Windows\ToolWindow.Designer.cs">
+      <DependentUpon>ToolWindow.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Windows\TunnelsViewer\ITunnelsViewer.cs" />
+    <Compile Include="Windows\TunnelsViewer\TunnelsWindow.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Windows\TunnelsViewer\TunnelsWindow.designer.cs">
+      <DependentUpon>TunnelsWindow.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Windows\UnsafeNativeMethods.cs" />
+    <Compile Include="Windows\WaitDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Windows\WaitDialog.Designer.cs">
+      <DependentUpon>WaitDialog.cs</DependentUpon>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Google.Solutions.Compute\Google.Solutions.Compute.csproj">
+      <Project>{d9493479-1751-402b-880f-60ed33ebb885}</Project>
+      <Name>Google.Solutions.Compute</Name>
+    </ProjectReference>
+    <COMReference Include="AxMSTSCLib">
+      <Guid>{8C11EFA1-92C3-11D1-BC1E-00C04FA31489}</Guid>
+      <VersionMajor>1</VersionMajor>
+      <VersionMinor>0</VersionMinor>
+      <Lcid>0</Lcid>
+      <WrapperTool>aximp</WrapperTool>
+      <Isolated>False</Isolated>
+    </COMReference>
+    <COMReference Include="MSTSCLib">
+      <Guid>{8C11EFA1-92C3-11D1-BC1E-00C04FA31489}</Guid>
+      <VersionMajor>1</VersionMajor>
+      <VersionMinor>0</VersionMinor>
+      <Lcid>0</Lcid>
+      <WrapperTool>tlbimp</WrapperTool>
+      <Isolated>False</Isolated>
+      <EmbedInteropTypes>True</EmbedInteropTypes>
+    </COMReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="app.config" />
+    <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Windows\AboutWindow.resx">
+      <DependentUpon>AboutWindow.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Windows\DebugWindow.resx">
+      <DependentUpon>DebugWindow.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Windows\ProjectExplorer\GenerateCredentialsDialog.resx">
+      <DependentUpon>GenerateCredentialsDialog.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Windows\ProjectExplorer\ProjectExplorerWindow.resx">
+      <DependentUpon>ProjectExplorerWindow.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Windows\ProjectExplorer\ProjectPickerDialog.resx">
+      <DependentUpon>ProjectPickerDialog.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Windows\ProjectExplorer\ShowCredentialsDialog.resx">
+      <DependentUpon>ShowCredentialsDialog.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Windows\RemoteDesktop\RemoteDesktopPane.resx">
+      <DependentUpon>RemoteDesktopPane.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Windows\SerialLog\SerialLogWindow.resx">
+      <DependentUpon>SerialLogWindow.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Windows\SettingsEditor\SettingsEditorWindow.resx">
+      <DependentUpon>SettingsEditorWindow.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Windows\ToolWindow.resx">
+      <DependentUpon>ToolWindow.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Windows\TunnelsViewer\TunnelsWindow.resx">
+      <DependentUpon>TunnelsWindow.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Windows\WaitDialog.resx">
+      <DependentUpon>WaitDialog.cs</DependentUpon>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\About.bmp" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Spinner.gif" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Project.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Project_small.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Copy_16x.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Connect_16.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Password_16.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Log_16.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Settings_16.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Refresh_16.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Refresh_161.png" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <Import Project="..\packages\MSBuild.AssemblyVersion.1.2.0\build\MSBuild.AssemblyVersion.targets" Condition="Exists('..\packages\MSBuild.AssemblyVersion.1.2.0\build\MSBuild.AssemblyVersion.targets')" />
+</Project>

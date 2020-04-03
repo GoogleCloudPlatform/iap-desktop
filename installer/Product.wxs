@@ -1,0 +1,290 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    Copyright 2019 Google LLC
+    
+    Licensed to the Apache Software Foundation (ASF) under one
+    or more contributor license agreements.  See the NOTICE file
+    distributed with this work for additional information
+    regarding copyright ownership.  The ASF licenses this file
+    to you under the Apache License, Version 2.0 (the
+    "License"); you may not use this file except in compliance
+    with the License.  You may obtain a copy of the License at
+    
+      http://www.apache.org/licenses/LICENSE-2.0
+    
+    Unless required by applicable law or agreed to in writing,
+    software distributed under the License is distributed on an
+    "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+    KIND, either express or implied.  See the License for the
+    specific language governing permissions and limitations
+    under the License.
+--> 
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
+	<Product Id="*" 
+           Name="IAP Desktop" 
+           Language="1033" 
+           Version="$(var.VERSION)" 
+           Manufacturer="Google Inc" 
+           UpgradeCode="8077382c-6b47-11ea-bc55-0242ac130003">
+		<Package 
+          InstallerVersion="200" 
+          Compressed="yes" 
+          InstallScope="perUser" 
+          InstallPrivileges="limited"
+          Platform="x86" />
+
+    <Icon Id="IapDesktopIco" SourceFile="$(var.BASEDIR)\icon.ico" />
+    <Property Id='ARPHELPLINK'>https://github.com/GoogleCloudPlatform/iap-windows-rdc-plugin/</Property>
+    <Property Id='ARPURLINFOABOUT'>https://github.com/GoogleCloudPlatform/iap-windows-rdc-plugin/</Property>
+    <Property Id='ARPPRODUCTICON'>IapDesktopIco</Property>
+    
+		<MajorUpgrade 
+           AllowSameVersionUpgrades="yes" 
+           DowngradeErrorMessage="A newer version of [ProductName] is already installed." />
+		<MediaTemplate EmbedCab="yes" />
+
+    <Condition Message="This application is only supported on Windows 8, Windows Server 2012, or higher.">
+      <!-- 
+        The WebSocket implementation is only available in Windows 8/2012 and higher,
+        see https://docs.microsoft.com/en-us/dotnet/api/system.net.websockets.clientwebsocket?view=netframework-4.8.
+        Plus, older versions of Windows are out of support by now anyway.
+      -->
+      <![CDATA[Installed OR (VersionNT >= 602)]]>
+    </Condition>
+    <Condition Message="On Windows Server, admin rights are required to install the product. Plase use an elevated command prompt to run the installer.">
+      <!-- 
+        On Workstation SKU, non-elevated installs are fine, but on Server, they
+        are disallowed by policy (by default, anyway).
+        
+        See https://serverfault.com/questions/580972/why-is-this-preventing-me-installing-an-msi-the-system-administrator-has-set-po.
+      -->
+      <![CDATA[Installed OR (MsiNTProductType = 1) OR MsiRunningElevated]]>
+    </Condition>
+    
+		<Feature Id="ProductFeature" Title="IAP Desktop" Level="1">
+			<ComponentGroupRef Id="ProgramFiles" />
+      <ComponentGroupRef Id="StartMenuShortcuts" />
+		</Feature>
+
+    <WixVariable Id="WixUILicenseRtf" Value="$(var.BASEDIR)\License.rtf" />
+    <WixVariable Id="WixUIDialogBmp" Value="$(var.BASEDIR)\Background.bmp" />
+    <WixVariable Id="WixUIBannerBmp" Value="$(var.BASEDIR)\Header.bmp" />
+
+    <UIRef Id="WixUI_Common" />
+    
+    <UI>
+      <TextStyle Id="WixUI_Font_Normal" FaceName="Tahoma" Size="8" />
+      <TextStyle Id="WixUI_Font_Bigger" FaceName="Tahoma" Size="12" />
+      <TextStyle Id="WixUI_Font_Title" FaceName="Tahoma" Size="9" Bold="yes" />
+
+      <Property Id="DefaultUIFont" Value="WixUI_Font_Normal" />
+      <Property Id="WixUI_Mode" Value="Mondo" />
+
+      <DialogRef Id="ErrorDlg" />
+      <DialogRef Id="FatalError" />
+      <DialogRef Id="FilesInUse" />
+      <DialogRef Id="MsiRMFilesInUse" />
+      <DialogRef Id="PrepareDlg" />
+      <DialogRef Id="ProgressDlg" />
+      <DialogRef Id="ResumeDlg" />
+      <DialogRef Id="UserExit" />
+
+      <Publish Dialog="ExitDialog" Control="Finish" Event="EndDialog" Value="Return" Order="999">1</Publish>
+      <Publish Dialog="ExitDialog"
+           Control="Finish"
+           Event="DoAction"
+           Value="LaunchApplication">WIXUI_EXITDIALOGOPTIONALCHECKBOX = 1 and NOT Installed</Publish>
+
+      <Publish Dialog="WelcomeDlg" Control="Next" Event="NewDialog" Value="LicenseAgreementDlg">NOT Installed AND NOT PATCH</Publish>
+      <Publish Dialog="WelcomeDlg" Control="Next" Event="NewDialog" Value="VerifyReadyDlg">Installed AND PATCH</Publish>
+
+      <Publish Dialog="LicenseAgreementDlg" Control="Back" Event="NewDialog" Value="WelcomeDlg">1</Publish>
+      <Publish Dialog="LicenseAgreementDlg" Control="Next" Event="NewDialog" Value="VerifyReadyDlg" Order="2">LicenseAccepted = "1"</Publish>
+
+
+      <Publish Dialog="VerifyReadyDlg" Control="Back" Event="NewDialog" Value="LicenseAgreementDlg" Order="1">1</Publish>
+      <Publish Dialog="VerifyReadyDlg" Control="Back" Event="NewDialog" Value="WelcomeDlg" Order="2">WixUI_InstallMode = "Update"</Publish>
+
+      <Property Id="ARPNOMODIFY" Value="1" />
+    </UI>
+
+
+    <Property Id="WIXUI_EXITDIALOGOPTIONALCHECKBOXTEXT" Value="Launch IAP Desktop" />
+    <Property Id="WIXUI_EXITDIALOGOPTIONALCHECKBOX" Value="1" />
+    <Property Id="WixShellExecTarget" Value="[#FileIapDesktopExe]" />
+    <CustomAction Id="LaunchApplication"
+        BinaryKey="WixCA"
+        DllEntry="WixShellExec"
+        Impersonate="yes" />
+    
+	</Product>
+
+	<Fragment>
+    <Directory Id="TARGETDIR" Name="SourceDir">
+      <Directory Id="ProgramMenuFolder">
+      </Directory>
+      <Directory Id="AppDataFolder">
+        <Directory Id="DirGoogle" Name="Google">
+          <Directory Id="DirIapDesktop" Name="IAP Desktop">
+          </Directory>
+        </Directory>
+      </Directory>
+    </Directory>
+	</Fragment>
+
+	<Fragment>
+    <ComponentGroup Id="StartMenuShortcuts" Directory="ProgramMenuFolder">
+      <Component Id="CompStartMenu" Guid="80774ea2-6b47-11ea-bc55-0242ac130003">
+        <RegistryValue
+          Id="RegStartMenuShortcuts"
+          Root="HKCU"
+          Key="HKEY_CURRENT_USER\Software\Google\IapDesktop\Installer"
+          Name="StartMenuShortcuts"
+          Type="integer"
+          KeyPath="yes"
+          Value="1" />
+        
+        <Shortcut Id="Shortcut"
+          Name="IAP Desktop"
+          Description="Identity-Aware Proxy for Remote Desktop"
+          Target="[#FileIapDesktopExe]"
+          WorkingDirectory="DirIapDesktop"/>
+      </Component>
+    </ComponentGroup>
+    
+		<ComponentGroup Id="ProgramFiles" Directory="DirIapDesktop">
+      <Component Id="CompProgramFiles" Guid="80773b6a-6b47-11ea-bc55-0242ac130003">
+        <RegistryValue
+          Id="RegProgramFiles"
+          Root="HKCU"
+          Key="HKEY_CURRENT_USER\Software\Google\IapDesktop\Installer"
+          Name="ProgramFiles"
+          Type="integer"
+          KeyPath="yes"
+          Value="1" />
+
+        <RemoveFolder Id="DirGoogle" Directory="DirGoogle" On="uninstall"/>
+        <RemoveFolder Id="DirIapDesktop" Directory="DirIapDesktop" On="uninstall"/>
+
+        <File
+          Id="FileReadme"
+          Name="README.md"
+          DiskId="1"
+          Source="README.md"
+          Vital="yes"/>
+        <File
+          Id="FileIapDesktopExe"
+          Name="IapDesktop.exe"
+          DiskId="1"
+          Source="Google.Solutions.IapDesktop\bin\$(var.CONFIGURATION)\IapDesktop.exe"
+          Vital="yes"/>
+        <File
+          Id="FileIapDesktopExeConfig"
+          Name="IapDesktop.exe.config"
+          DiskId="1"
+          Source="Google.Solutions.IapDesktop\bin\$(var.CONFIGURATION)\IapDesktop.exe.config"
+          Vital="yes"/>
+        <File
+          Id="FileGoogleSolutionsIapDesktopApplicationDll"
+          Name="Google.Solutions.IapDesktop.Application.dll"
+          DiskId="1"
+          Source="Google.Solutions.IapDesktop\bin\$(var.CONFIGURATION)\Google.Solutions.IapDesktop.Application.dll"
+          Vital="yes"/>
+        <File
+          Id="FileGoogleSolutionsComputeDll"
+          Name="Google.Solutions.Compute.dll"
+          DiskId="1"
+          Source="Google.Solutions.IapDesktop\bin\$(var.CONFIGURATION)\Google.Solutions.Compute.dll"
+          Vital="yes"/>
+      
+        <!-- SDK and dependencies -->
+        <File
+          Id="FileWeifenLuoWinFormsUIDockingDll"
+          Name="WeifenLuo.WinFormsUI.Docking.dll"
+          DiskId="1"
+          Source="Google.Solutions.IapDesktop\bin\$(var.CONFIGURATION)\WeifenLuo.WinFormsUI.Docking.dll"
+          Vital="yes"/>
+        <File
+          Id="FileWeifenLuoWinFormsUIDockingThemeVS2015Dll"
+          Name="WeifenLuo.WinFormsUI.Docking.ThemeVS2015.dll"
+          DiskId="1"
+          Source="Google.Solutions.IapDesktop\bin\$(var.CONFIGURATION)\WeifenLuo.WinFormsUI.Docking.ThemeVS2015.dll"
+          Vital="yes"/>
+        <File
+          Id="FileAxInteropMSTSCLibDll"
+          Name="AxInterop.MSTSCLib.dll"
+          DiskId="1"
+          Source="Google.Solutions.IapDesktop\bin\$(var.CONFIGURATION)\AxInterop.MSTSCLib.dll"
+          Vital="yes"/>
+        <File
+          Id="FileInteropMSTSCLibDll"
+          Name="Interop.MSTSCLib.dll"
+          DiskId="1"
+          Source="Google.Solutions.IapDesktop\bin\$(var.CONFIGURATION)\Interop.MSTSCLib.dll"
+          Vital="yes"/>
+        <File
+          Id="FileGoogleApisAuthDll"
+          Name="Google.Apis.Auth.dll"
+          DiskId="1"
+          Source="Google.Solutions.IapDesktop\bin\$(var.CONFIGURATION)\Google.Apis.Auth.dll"
+          Vital="yes"/>
+        <File
+          Id="FileGoogleApisAuthPlatformServicesDll"
+          Name="Google.Apis.Auth.PlatformServices.dll"
+          DiskId="1"
+          Source="Google.Solutions.IapDesktop\bin\$(var.CONFIGURATION)\Google.Apis.Auth.PlatformServices.dll"
+          Vital="yes"/>
+        <File
+          Id="FileGoogleApisComputeV1Dll"
+          Name="Google.Apis.Compute.v1.dll"
+          DiskId="1"
+          Source="Google.Solutions.IapDesktop\bin\$(var.CONFIGURATION)\Google.Apis.Compute.v1.dll"
+          Vital="yes"/>
+        <File
+          Id="FileGoogleApisCloudResourceManagerV1Dll"
+          Name="Google.Apis.CloudResourceManager.v1.dll"
+          DiskId="1"
+          Source="Google.Solutions.IapDesktop\bin\$(var.CONFIGURATION)\Google.Apis.CloudResourceManager.v1.dll"
+          Vital="yes"/>
+        <File
+          Id="FileGoogleApisCoreDll"
+          Name="Google.Apis.Core.dll"
+          DiskId="1"
+          Source="Google.Solutions.IapDesktop\bin\$(var.CONFIGURATION)\Google.Apis.Core.dll"
+          Vital="yes"/>
+        <File
+          Id="FileGoogleApisDll"
+          Name="Google.Apis.dll"
+          DiskId="1"
+          Source="Google.Solutions.IapDesktop\bin\$(var.CONFIGURATION)\Google.Apis.dll"
+          Vital="yes"/>
+        <File
+          Id="FileGoogleApisPlatformServicesDll"
+          Name="Google.Apis.PlatformServices.dll"
+          DiskId="1"
+          Source="Google.Solutions.IapDesktop\bin\$(var.CONFIGURATION)\Google.Apis.PlatformServices.dll"
+          Vital="yes"/>
+        <File
+          Id="FileNewtonsoftJsonDll"
+          Name="Newtonsoft.Json.dll"
+          DiskId="1"
+          Source="Google.Solutions.IapDesktop\bin\$(var.CONFIGURATION)\Newtonsoft.Json.dll"
+          Vital="yes"/>
+      </Component>
+		</ComponentGroup>
+	</Fragment>
+  
+  <!--
+    Spare sequential GUIDs:
+    
+    80774f6a-6b47-11ea-bc55-0242ac130003
+    80775028-6b47-11ea-bc55-0242ac130003
+    807750dc-6b47-11ea-bc55-0242ac130003
+    807751a4-6b47-11ea-bc55-0242ac130003
+    8077526c-6b47-11ea-bc55-0242ac130003
+    80775334-6b47-11ea-bc55-0242ac130003
+    80775b0e-6b47-11ea-bc55-0242ac130003
+    80775c44-6b47-11ea-bc55-0242ac130003
+    80775d0c-6b47-11ea-bc55-0242ac130003
+  -->
+</Wix>

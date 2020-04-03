@@ -59,7 +59,7 @@ namespace Google.Solutions.Compute.Net
 
                     try
                     {
-                        Compute.Trace.TraceVerbose($"NetworkStream [{readStream} > {writeStream}]: Reading...");
+                        TraceSources.Compute.TraceVerbose($"NetworkStream [{readStream} > {writeStream}]: Reading...");
                         int bytesRead = await readStream.ReadAsync(
                             buffer,
                             0,
@@ -68,13 +68,13 @@ namespace Google.Solutions.Compute.Net
 
                         if (bytesRead > 0)
                         {
-                            Compute.Trace.TraceVerbose($"NetworkStream [{readStream} > {writeStream}]: Read {bytesRead} bytes");
+                            TraceSources.Compute.TraceVerbose($"NetworkStream [{readStream} > {writeStream}]: Read {bytesRead} bytes");
 
                             await writeStream.WriteAsync(buffer, 0, bytesRead, token).ConfigureAwait(false);
                         }
                         else
                         {
-                            Compute.Trace.TraceVerbose($"NetworkStream [{readStream} > {writeStream}]: gracefully closed connection");
+                            TraceSources.Compute.TraceVerbose($"NetworkStream [{readStream} > {writeStream}]: gracefully closed connection");
 
                             // Propagate.
                             await writeStream.CloseAsync(token).ConfigureAwait(false);
@@ -84,7 +84,7 @@ namespace Google.Solutions.Compute.Net
                     }
                     catch (NetworkStreamClosedException)
                     {
-                        Compute.Trace.TraceVerbose($"NetworkStream [{readStream} > {writeStream}]: forcefully closed connection");
+                        TraceSources.Compute.TraceVerbose($"NetworkStream [{readStream} > {writeStream}]: forcefully closed connection");
 
                         // Propagate.
                         await writeStream.CloseAsync(token).ConfigureAwait(false);
@@ -93,7 +93,7 @@ namespace Google.Solutions.Compute.Net
                     }
                     catch (Exception)
                     {
-                        Compute.Trace.TraceVerbose($"NetworkStream [{readStream} > {writeStream}]: Caught unhandled exception");
+                        TraceSources.Compute.TraceVerbose($"NetworkStream [{readStream} > {writeStream}]: Caught unhandled exception");
 
                         throw;
                     }

@@ -1,0 +1,15 @@
+﻿using Google.Apis.Auth.OAuth2;
+
+namespace Google.Solutions.CloudIap.IapDesktop
+{
+    internal class OAuthClient
+    {
+        internal static readonly ClientSecrets Secrets = new ClientSecrets()
+        {
+            // TODO: Add development credentials and rename file to OAuthClient.cs
+            
+            ClientId = "<<your-client-id-here>>",
+            ClientSecret = "<<your-client-secret-here>>"
+        };
+    }
+}

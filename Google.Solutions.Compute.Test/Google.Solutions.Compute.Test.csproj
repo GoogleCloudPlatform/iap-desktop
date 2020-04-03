@@ -52,8 +52,8 @@
     <Reference Include="Google.Apis.Auth.PlatformServices, Version=1.40.3.0, Culture=neutral, PublicKeyToken=4b01fa6e34db77ab, processorArchitecture=MSIL">
       <HintPath>..\packages\Google.Apis.Auth.1.40.3\lib\net45\Google.Apis.Auth.PlatformServices.dll</HintPath>
     </Reference>
-    <Reference Include="Google.Apis.Compute.v1, Version=1.40.3.1635, Culture=neutral, PublicKeyToken=4b01fa6e34db77ab, processorArchitecture=MSIL">
-      <HintPath>..\packages\Google.Apis.Compute.v1.1.40.3.1635\lib\net45\Google.Apis.Compute.v1.dll</HintPath>
+    <Reference Include="Google.Apis.Compute.v1, Version=1.40.3.1687, Culture=neutral, PublicKeyToken=4b01fa6e34db77ab, processorArchitecture=MSIL">
+      <HintPath>..\packages\Google.Apis.Compute.v1.1.40.3.1687\lib\net45\Google.Apis.Compute.v1.dll</HintPath>
     </Reference>
     <Reference Include="Google.Apis.Core, Version=1.40.3.0, Culture=neutral, PublicKeyToken=4b01fa6e34db77ab, processorArchitecture=MSIL">
       <HintPath>..\packages\Google.Apis.Core.1.40.3\lib\net45\Google.Apis.Core.dll</HintPath>
@@ -78,14 +78,12 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AssertEx.cs" />
-    <Compile Include="Auth\TestRegistryStore.cs" />
     <Compile Include="Env\ComputeEngine.cs" />
     <Compile Include="Env\Defaults.cs" />
     <Compile Include="Env\InstanceAttribute.cs" />
     <Compile Include="Extensions\TestGetSerialPortOutputStream.cs" />
     <Compile Include="Extensions\TestResetWindowsUser.cs" />
     <Compile Include="FixtureBase.cs" />
-    <Compile Include="IapClient\TestCommandLine.cs" />
     <Compile Include="Iap\Mocks.cs" />
     <Compile Include="Iap\TestEchoOverIapBase.cs" />
     <Compile Include="Iap\TestEchoOverIapDirectTunnel.cs" />
@@ -107,10 +105,6 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Google.Solutions.CloudIap.IapClient\Google.Solutions.CloudIap.IapClient.csproj">
-      <Project>{b6ee7dcf-d396-4edd-967f-198753be9d0b}</Project>
-      <Name>Google.Solutions.CloudIap.IapClient</Name>
-    </ProjectReference>
     <ProjectReference Include="..\Google.Solutions.Compute\Google.Solutions.Compute.csproj">
       <Project>{d9493479-1751-402b-880f-60ed33ebb885}</Project>
       <Name>Google.Solutions.Compute</Name>

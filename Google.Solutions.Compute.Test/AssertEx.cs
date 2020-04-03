@@ -24,7 +24,7 @@ using System;
 
 namespace Google.Solutions.Compute.Test
 {
-    internal static class AssertEx
+    public static class AssertEx
     {
         public static TActual ThrowsAggregateException<TActual>(TestDelegate code) where TActual : Exception
         {

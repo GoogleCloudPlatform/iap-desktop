@@ -117,7 +117,7 @@ namespace Google.Solutions.Compute.Test.Iap
 
                     if (response.IsComplete)
                     {
-                        Compute.Trace.TraceVerbose("Got full response");
+                        TraceSources.Compute.TraceVerbose("Got full response");
                         break;
                     }
                 }

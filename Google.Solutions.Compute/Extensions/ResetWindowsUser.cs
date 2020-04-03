@@ -95,7 +95,7 @@ namespace Google.Solutions.Compute.Extensions
                 }
                 catch (GoogleApiException e) when (e.Error == null || e.Error.Code == 403)
                 {
-                    Compute.Trace.TraceVerbose("Setting request payload metadata failed: {0}", e.Message);
+                    TraceSources.Compute.TraceVerbose("Setting request payload metadata failed: {0}", e.Message);
 
                     // Setting metadata failed due to lack of permissions. Note that
                     // the Error object is not always populated, hence the OR filter.
@@ -117,7 +117,7 @@ namespace Google.Solutions.Compute.Extensions
                 var logBuffer = new StringBuilder(64*1024);
                 while (true)
                 {
-                    Compute.Trace.TraceVerbose("Waiting for agent to supply response...");
+                    TraceSources.Compute.TraceVerbose("Waiting for agent to supply response...");
 
                     token.ThrowIfCancellationRequested();
 

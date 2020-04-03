@@ -29,8 +29,8 @@ namespace Google.Solutions.Compute.Test
         [SetUp]
         public void SetUpTracing()
         {
-            Compute.Trace.Listeners.Add(new ConsoleTraceListener());
-            Compute.Trace.Switch.Level = SourceLevels.Verbose;
+            TraceSources.Compute.Listeners.Add(new ConsoleTraceListener());
+            TraceSources.Compute.Switch.Level = SourceLevels.Verbose;
         }
     }
 }
