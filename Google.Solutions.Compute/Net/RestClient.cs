@@ -27,9 +27,9 @@ using System.Runtime.Serialization;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Google.Solutions.IapDesktop.Application.Util
+namespace Google.Solutions.Compute.Test.Net
 {
-    internal class RestClient
+    public class RestClient
     {
         private readonly string userAgent;
 
