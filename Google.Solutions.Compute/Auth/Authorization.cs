@@ -200,7 +200,7 @@ namespace Google.Solutions.Compute.Auth
             // The user might have changed to a different user account,
             // so we have to re-fetch user information.
             var newUserInfo = await QueryUserInfoAsync(
-                credential,
+                newCredential,
                 token);
 
             this.credential.SwapCredential(newCredential, newUserInfo);
