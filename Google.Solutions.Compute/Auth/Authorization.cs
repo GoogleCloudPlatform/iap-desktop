@@ -43,14 +43,14 @@ namespace Google.Solutions.Compute.Auth
         // Scope required to query email from UserInfo endpoint.
         private const string EmailScope = "https://www.googleapis.com/auth/userinfo.email";
 
-        private readonly IOAuthAdapter adapter;
+        private readonly IAuthAdapter adapter;
 
         // The OAuth credential changes after each reauth. Therefore, use
         // a SwappableCredential as indirection.
         private readonly SwappableCredential credential;
 
         private OAuthAuthorization(
-            IOAuthAdapter adapter,
+            IAuthAdapter adapter,
             ICredential initialCredential,
             UserInfo userInfo)
         {
@@ -66,15 +66,6 @@ namespace Google.Solutions.Compute.Auth
             return this.adapter.DeleteStoredRefreshToken();
         }
 
-        private static async Task<UserInfo> QueryUserInfoAsync(ICredential credential, CancellationToken token)
-        {
-            var configuration = await IdpConfiguration.QueryMetadataAsync(token);
-            return await UserInfo.QueryUserInfoAsync(
-                configuration,
-                credential,
-                CancellationToken.None);
-        }
-
         public static async Task<OAuthAuthorization> TryLoadExistingAuthorizationAsync(
             GoogleAuthorizationCodeFlow.Initializer initializer,
             string closePageReponse,
@@ -85,7 +76,7 @@ namespace Google.Solutions.Compute.Auth
 
             // N.B. Do not dispose the adapter (and embedded GoogleAuthorizationCodeFlow)
             // as it might be needed for token refreshes later.
-            var oauthAdapter = new GoogleOAuthAdapter(initializer, closePageReponse);
+            var oauthAdapter = new GoogleAuthAdapter(initializer, closePageReponse);
             
             var existingTokenResponse = await oauthAdapter.GetStoredRefreshTokenAsync(token);
 
@@ -108,7 +99,7 @@ namespace Google.Solutions.Compute.Auth
                 {
                     var credential = oauthAdapter.AuthorizeUsingRefreshToken(existingTokenResponse);
 
-                    var userInfo = await QueryUserInfoAsync(
+                    var userInfo = await oauthAdapter.QueryUserInfoAsync(
                         credential,
                         token);
 
@@ -134,14 +125,14 @@ namespace Google.Solutions.Compute.Auth
 
             // N.B. Do not dispose the adapter (and embedded GoogleAuthorizationCodeFlow)
             // as it might be needed for token refreshes later.
-            var oauthAdapter = new GoogleOAuthAdapter(initializer, closePageReponse);
+            var oauthAdapter = new GoogleAuthAdapter(initializer, closePageReponse);
 
             TraceSources.Compute.TraceVerbose("Authorizing");
 
             // Pop up browser window.
             var credential = await oauthAdapter.AuthorizeUsingBrowserAsync(token);
 
-            var userInfo = await QueryUserInfoAsync(
+            var userInfo = await oauthAdapter.QueryUserInfoAsync(
                 credential,
                 token);
 
@@ -159,7 +150,7 @@ namespace Google.Solutions.Compute.Auth
 
             // The user might have changed to a different user account,
             // so we have to re-fetch user information.
-            var newUserInfo = await QueryUserInfoAsync(
+            var newUserInfo = await this.adapter.QueryUserInfoAsync(
                 newCredential,
                 token);
 

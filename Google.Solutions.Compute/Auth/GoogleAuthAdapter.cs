@@ -22,34 +22,26 @@
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Auth.OAuth2.Flows;
 using Google.Apis.Auth.OAuth2.Responses;
-using System;
+using Google.Solutions.Compute.Test.Net;
+using Newtonsoft.Json;
 using System.Threading;
 using System.Threading.Tasks;
 
 namespace Google.Solutions.Compute.Auth
 {
-    public interface IOAuthAdapter : IDisposable
-    {
-        Task<TokenResponse> GetStoredRefreshTokenAsync(CancellationToken token);
-        
-        bool IsRefreshTokenValid(TokenResponse tokenResponse);
 
-        Task DeleteStoredRefreshToken();
-        
-        ICredential AuthorizeUsingRefreshToken(TokenResponse tokenResponse);
-        
-        Task<ICredential> AuthorizeUsingBrowserAsync(CancellationToken token);
-    }
-
-    public class GoogleOAuthAdapter : IOAuthAdapter
+    public class GoogleAuthAdapter : IAuthAdapter
     {
+        private const string ConfigurationEndpoint = 
+            "https://accounts.google.com/.well-known/openid-configuration";
+
         public const string StoreUserId = "oauth";
 
         private readonly GoogleAuthorizationCodeFlow.Initializer initializer;
         private readonly GoogleAuthorizationCodeFlow flow;
         private readonly AuthorizationCodeInstalledApp installedApp;
 
-        public GoogleOAuthAdapter(
+        public GoogleAuthAdapter(
             GoogleAuthorizationCodeFlow.Initializer initializer,
             string closePageReponse)
         {
@@ -95,6 +87,32 @@ namespace Google.Solutions.Compute.Auth
         public void Dispose()
         {
             this.flow.Dispose();
+        }
+
+        public async Task<UserInfo> QueryUserInfoAsync(
+            ICredential credential,
+            CancellationToken token)
+        {
+            var client = new RestClient()
+            {
+                Credential = credential
+            };
+
+            var configuration = await client.GetAsync<OpenIdConfiguration>(
+                ConfigurationEndpoint,
+                token).ConfigureAwait(false);
+
+            return await client.GetAsync<UserInfo>(
+                configuration.UserInfoEndpoint,
+                token).ConfigureAwait(false);
+        }
+
+        public class OpenIdConfiguration
+        {
+            private const string Endpoint = "https://accounts.google.com/.well-known/openid-configuration";
+
+            [JsonProperty("userinfo_endpoint")]
+            public string UserInfoEndpoint { get; set; }
         }
     }
 }

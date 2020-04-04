@@ -20,31 +20,32 @@
 //
 
 using Google.Apis.Auth.OAuth2;
-using Google.Solutions.Compute.Test.Net;
+using Google.Apis.Auth.OAuth2.Responses;
 using Newtonsoft.Json;
+using System;
 using System.Threading;
 using System.Threading.Tasks;
 
 namespace Google.Solutions.Compute.Auth
 {
+    public interface IAuthAdapter : IDisposable
+    {
+        Task<TokenResponse> GetStoredRefreshTokenAsync(CancellationToken token);
+
+        bool IsRefreshTokenValid(TokenResponse tokenResponse);
+
+        Task DeleteStoredRefreshToken();
+
+        ICredential AuthorizeUsingRefreshToken(TokenResponse tokenResponse);
+
+        Task<ICredential> AuthorizeUsingBrowserAsync(CancellationToken token);
+
+        Task<UserInfo> QueryUserInfoAsync(ICredential credential, CancellationToken token);
+    }
+
     public class UserInfo
     {
         [JsonProperty("email")]
-        public string Email{ get; set; }
-
-        public static async Task<UserInfo> QueryUserInfoAsync(
-            IdpConfiguration configuration,
-            ICredential credential,
-            CancellationToken token)
-        {
-            var client = new RestClient()
-            {
-                Credential = credential
-            };
-
-            return await client.GetAsync<UserInfo>(
-                configuration.UserInfoEndpoint,
-                token).ConfigureAwait(false);
-        }
+        public string Email { get; set; }
     }
 }
