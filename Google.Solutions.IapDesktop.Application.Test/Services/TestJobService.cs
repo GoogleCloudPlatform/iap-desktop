@@ -69,7 +69,8 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services
         public void SetUp()
         {
             this.authz = new Mock<IAuthorization>();
-            this.authz.Setup(a => a.ReauthorizeAsync()).Returns(Task.FromResult(true));
+            this.authz.Setup(a => a.ReauthorizeAsync(It.IsAny<CancellationToken>()))
+                .Returns(Task.FromResult(true));
 
             var authService = new Mock<IAuthorizationService>();
             authService.SetupGet(a => a.Authorization).Returns(this.authz.Object);
@@ -168,7 +169,8 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services
         public void WhenReauthFailed_ThenExceptionIsPropagated()
         {
             this.jobHost.Setup(h => h.ConfirmReauthorization()).Returns(true);
-            this.authz.Setup(a => a.ReauthorizeAsync()).Returns(Task.FromException(new ApplicationException()));
+            this.authz.Setup(a => a.ReauthorizeAsync(It.IsAny<CancellationToken>()))
+                .Returns(Task.FromException(new ApplicationException()));
 
             AssertEx.ThrowsAggregateException<ApplicationException>(() =>
             {
@@ -275,7 +277,8 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services
         public void WhenReauthFailed_ThenExceptionIsPropagated_WithAggregateException()
         {
             this.jobHost.Setup(h => h.ConfirmReauthorization()).Returns(true);
-            this.authz.Setup(a => a.ReauthorizeAsync()).Returns(Task.FromException(new ApplicationException()));
+            this.authz.Setup(a => a.ReauthorizeAsync(It.IsAny<CancellationToken>()))
+                .Returns(Task.FromException(new ApplicationException()));
 
             AssertEx.ThrowsAggregateException<ApplicationException>(() =>
             {

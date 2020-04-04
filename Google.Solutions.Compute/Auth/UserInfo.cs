@@ -27,13 +27,13 @@ using System.Threading.Tasks;
 
 namespace Google.Solutions.Compute.Auth
 {
-    public class OidcUserInfo
+    public class UserInfo
     {
         [JsonProperty("email")]
         public string Email{ get; set; }
 
-        public static async Task<OidcUserInfo> QueryUserInfoAsync(
-            OidcConfiguration configuration,
+        public static async Task<UserInfo> QueryUserInfoAsync(
+            IdpConfiguration configuration,
             ICredential credential,
             CancellationToken token)
         {
@@ -42,7 +42,7 @@ namespace Google.Solutions.Compute.Auth
                 Credential = credential
             };
 
-            return await client.GetAsync<OidcUserInfo>(
+            return await client.GetAsync<UserInfo>(
                 configuration.UserInfoEndpoint,
                 token).ConfigureAwait(false);
         }

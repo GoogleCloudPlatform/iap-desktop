@@ -24,6 +24,7 @@ using Google.Apis.Auth.OAuth2.Flows;
 using Google.Apis.Util.Store;
 using Google.Solutions.Compute.Auth;
 using System;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
@@ -68,7 +69,8 @@ namespace Google.Solutions.IapDesktop.Windows
                         // Try to authorize using OAuth.
                         dialog.authorization = await OAuthAuthorization.TryLoadExistingAuthorizationAsync(
                             initializer,
-                            Resources.AuthorizationSuccessful);
+                            Resources.AuthorizationSuccessful,
+                            CancellationToken.None);
 
                         if (dialog.authorization != null)
                         {
@@ -97,7 +99,8 @@ namespace Google.Solutions.IapDesktop.Windows
 
                     dialog.authorization = await OAuthAuthorization.CreateAuthorizationAsync(
                         initializer,
-                        Resources.AuthorizationSuccessful);
+                        Resources.AuthorizationSuccessful,
+                        CancellationToken.None);
 
                     dialog.Close();
                 };

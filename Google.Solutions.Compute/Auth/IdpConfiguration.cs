@@ -26,18 +26,18 @@ using System.Threading.Tasks;
 
 namespace Google.Solutions.Compute.Auth
 {
-    public class OidcConfiguration
+    public class IdpConfiguration
     {
         private const string Endpoint = "https://accounts.google.com/.well-known/openid-configuration";
 
         [JsonProperty("userinfo_endpoint")]
         public string UserInfoEndpoint { get; set; }
 
-        public static async Task<OidcConfiguration> QueryMetadataAsync(CancellationToken token)
+        public static async Task<IdpConfiguration> QueryMetadataAsync(CancellationToken token)
         {
             var client = new RestClient();
 
-            return await client.GetAsync<OidcConfiguration>(
+            return await client.GetAsync<IdpConfiguration>(
                 Endpoint,
                 token).ConfigureAwait(false);
         }

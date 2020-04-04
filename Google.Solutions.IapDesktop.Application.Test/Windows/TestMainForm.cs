@@ -70,7 +70,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows
                 this.Credential = credential;
             }
 
-            public Task ReauthorizeAsync()
+            public Task ReauthorizeAsync(CancellationToken token)
             {
                 throw new NotImplementedException();
             }
