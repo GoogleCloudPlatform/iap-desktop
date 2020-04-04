@@ -44,6 +44,7 @@ namespace Google.Solutions.Compute
         {
             return e == null ? Enumerable.Empty<T>() : e;
         }
+
         public static IEnumerable<T> SkipLast<T>(this IEnumerable<T> source)
         {
             using (var e = source.GetEnumerator())
@@ -56,6 +57,11 @@ namespace Google.Solutions.Compute
                     }
                 }
             }
+        }
+
+        public static bool ContainsAll<T>(this IEnumerable<T> sequence, IEnumerable<T> lookup)
+        {
+            return !lookup.Except(sequence).Any();
         }
     }
 }

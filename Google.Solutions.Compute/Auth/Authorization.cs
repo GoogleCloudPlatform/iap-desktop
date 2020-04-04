@@ -27,7 +27,9 @@ using System.Threading.Tasks;
 using System.Threading;
 using System.IO;
 using Google.Apis.Http;
+using Google.Solutions.Compute;
 using System.Diagnostics;
+using System;
 
 namespace Google.Solutions.Compute.Auth
 {
@@ -94,29 +96,33 @@ namespace Google.Solutions.Compute.Auth
                     OAuthAuthorization.StoreUserId,
                     CancellationToken.None);
 
-                if (!existingTokenResponse.Scope.Split(' ').Contains(EmailScope))
+                if (!installedApp.ShouldRequestAuthorizationCode(existingTokenResponse))
                 {
-                    TraceSources.Compute.TraceVerbose(
-                        "Dropping existing credential as it lacks email scope");
+                    TraceSources.Compute.TraceVerbose("Found existing credentials");
 
-                    // The existing auth might be fine, but it lacks a scope.
-                    // Delete it so that it does not cause harm later.
-                    await initializer.DataStore.DeleteAsync<object>(OAuthAuthorization.StoreUserId);
-                    return null;
-                }
-                else if (!installedApp.ShouldRequestAuthorizationCode(existingTokenResponse))
-                {
-                    TraceSources.Compute.TraceVerbose("Authorizing using existing credentials");
+                    var scopesOfExistingTokenResponse = existingTokenResponse.Scope.Split(' ');
+                    if (!scopesOfExistingTokenResponse.ContainsAll(initializer.Scopes))
+                    {
+                        TraceSources.Compute.TraceVerbose(
+                            "Dropping existing credential as it lacks one or more scopes");
 
-                    // N.B. Do not dispose the GoogleAuthorizationCodeFlow as it might
-                    // be needed for re-auth later.
-                    return await CreateAuthorizationAsync(
-                        initializer,
-                        closePageReponse,
-                        new UserCredential(
-                            new GoogleAuthorizationCodeFlow(initializer),
-                            OAuthAuthorization.StoreUserId,
-                            existingTokenResponse));
+                        // The existing auth might be fine, but it lacks a scope.
+                        // Delete it so that it does not cause harm later.
+                        await initializer.DataStore.DeleteAsync<object>(OAuthAuthorization.StoreUserId);
+                        return null;
+                    }
+                    else
+                    {
+                        // N.B. Do not dispose the GoogleAuthorizationCodeFlow as it might
+                        // be needed for re-auth later.
+                        return await CreateAuthorizationAsync(
+                            initializer,
+                            closePageReponse,
+                            new UserCredential(
+                                new GoogleAuthorizationCodeFlow(initializer),
+                                OAuthAuthorization.StoreUserId,
+                                existingTokenResponse));
+                    }
                 }
                 else
                 {
