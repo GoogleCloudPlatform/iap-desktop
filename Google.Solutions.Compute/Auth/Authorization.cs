@@ -30,6 +30,7 @@ using Google.Apis.Http;
 using Google.Solutions.Compute;
 using System.Diagnostics;
 using System;
+using Google.Apis.Auth.OAuth2.Responses;
 
 namespace Google.Solutions.Compute.Auth
 {
@@ -121,7 +122,7 @@ namespace Google.Solutions.Compute.Auth
 
                         // The existing auth might be fine, but it lacks a scope.
                         // Delete it so that it does not cause harm later.
-                        await initializer.DataStore.DeleteAsync<object>(OAuthAuthorization.StoreUserId);
+                        await initializer.DataStore.DeleteAsync<TokenResponse>(OAuthAuthorization.StoreUserId);
                         return null;
                     }
                     else
