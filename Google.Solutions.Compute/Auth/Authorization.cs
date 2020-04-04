@@ -100,17 +100,11 @@ namespace Google.Solutions.Compute.Auth
             // Make sure we can use the UserInfo endpoint later.
             initializer.AddScope(EmailScope);
 
-            using (var flow = new GoogleAuthorizationCodeFlow(initializer))
+            using (var oauthClient = new GoogleOAuthAdapter(initializer, closePageReponse))
             {
-                var installedApp = new AuthorizationCodeInstalledApp(
-                    flow,
-                    new LocalServerCodeReceiver(closePageReponse));
+                var existingTokenResponse = await oauthClient.GetStoredRefreshTokenAsync(token);
 
-                var existingTokenResponse = await flow.LoadTokenAsync(
-                    OAuthAuthorization.StoreUserId,
-                    token);
-
-                if (!installedApp.ShouldRequestAuthorizationCode(existingTokenResponse))
+                if (oauthClient.IsRefreshTokenValid(existingTokenResponse))
                 {
                     TraceSources.Compute.TraceVerbose("Found existing credentials");
 
@@ -122,17 +116,14 @@ namespace Google.Solutions.Compute.Auth
 
                         // The existing auth might be fine, but it lacks a scope.
                         // Delete it so that it does not cause harm later.
-                        await initializer.DataStore.DeleteAsync<TokenResponse>(OAuthAuthorization.StoreUserId);
+                        await oauthClient.DeleteStoredRefreshToken();
                         return null;
                     }
                     else
                     {
                         // N.B. Do not dispose the GoogleAuthorizationCodeFlow as it might
                         // be needed for re-auth later.
-                        var credential = new UserCredential(
-                            new GoogleAuthorizationCodeFlow(initializer),
-                                OAuthAuthorization.StoreUserId,
-                                existingTokenResponse);
+                        var credential = oauthClient.AuthorizeUsingRefreshToken(existingTokenResponse);
 
                         var userInfo = await QueryUserInfoAsync(
                             credential,
@@ -161,18 +152,14 @@ namespace Google.Solutions.Compute.Auth
             // Make sure we can use the UserInfo endpoint later.
             initializer.AddScope(EmailScope);
 
-            // N.B. Do not dispose the GoogleAuthorizationCodeFlow as it might
-            // be needed for re-auth later.
-            var installedApp = new AuthorizationCodeInstalledApp(
-                new GoogleAuthorizationCodeFlow(initializer),
-                new LocalServerCodeReceiver(closePageReponse));
+            // N.B. Do not dispose the client (and embedded GoogleAuthorizationCodeFlow)
+            // as it might be needed for token refreshes later.
+            var oauthClient = new GoogleOAuthAdapter(initializer, closePageReponse);
 
             TraceSources.Compute.TraceVerbose("Authorizing");
 
             // Pop up browser window.
-            var credential = await installedApp.AuthorizeAsync(
-                OAuthAuthorization.StoreUserId,
-                token);
+            var credential = await oauthClient.AuthorizeUsingBrowserAsync(token);
 
             var userInfo = await QueryUserInfoAsync(
                 credential,
@@ -190,13 +177,9 @@ namespace Google.Solutions.Compute.Auth
         {
             // As this is a 3p OAuth app, we do not support Gnubby/Password-based
             // reauth. Instead, we simply trigger a new authorization (code flow).
-            var installedApp = new AuthorizationCodeInstalledApp(
-                new GoogleAuthorizationCodeFlow(this.initializer),
-                new LocalServerCodeReceiver(this.closePageReponse));
+            var oauthClient = new GoogleOAuthAdapter(this.initializer, this.closePageReponse);
 
-            var newCredential = await installedApp.AuthorizeAsync(
-                OAuthAuthorization.StoreUserId,
-                token);
+            var newCredential = await oauthClient.AuthorizeUsingBrowserAsync(token);
 
             // The user might have changed to a different user account,
             // so we have to re-fetch user information.
