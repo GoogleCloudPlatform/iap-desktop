@@ -1,4 +1,25 @@
-﻿using Google.Apis.Auth.OAuth2;
+﻿//
+// Copyright 2019 Google LLC
+//
+// Licensed to the Apache Software Foundation (ASF) under one
+// or more contributor license agreements.  See the NOTICE file
+// distributed with this work for additional information
+// regarding copyright ownership.  The ASF licenses this file
+// to you under the Apache License, Version 2.0 (the
+// "License"); you may not use this file except in compliance
+// with the License.  You may obtain a copy of the License at
+// 
+//   http://www.apache.org/licenses/LICENSE-2.0
+// 
+// Unless required by applicable law or agreed to in writing,
+// software distributed under the License is distributed on an
+// "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+// KIND, either express or implied.  See the License for the
+// specific language governing permissions and limitations
+// under the License.
+//
+
+using Google.Apis.Auth.OAuth2;
 using Google.Apis.Auth.OAuth2.Flows;
 using Google.Apis.Auth.OAuth2.Responses;
 using System;
@@ -22,6 +43,8 @@ namespace Google.Solutions.Compute.Auth
 
     public class GoogleOAuthAdapter : IOAuthAdapter
     {
+        public const string StoreUserId = "oauth";
+
         private readonly GoogleAuthorizationCodeFlow.Initializer initializer;
         private readonly GoogleAuthorizationCodeFlow flow;
         private readonly AuthorizationCodeInstalledApp installedApp;
@@ -40,27 +63,27 @@ namespace Google.Solutions.Compute.Auth
         public Task<TokenResponse> GetStoredRefreshTokenAsync(CancellationToken token)
         {
             return this.flow.LoadTokenAsync(
-                OAuthAuthorization.StoreUserId,
+                StoreUserId,
                 token);
         }
 
         public Task DeleteStoredRefreshToken()
         {
-            return this.initializer.DataStore.DeleteAsync<TokenResponse>(OAuthAuthorization.StoreUserId);
+            return this.initializer.DataStore.DeleteAsync<TokenResponse>(StoreUserId);
         }
 
         public ICredential AuthorizeUsingRefreshToken(TokenResponse tokenResponse)
         {
             return new UserCredential(
-                new GoogleAuthorizationCodeFlow(this.initializer),
-                    OAuthAuthorization.StoreUserId,
-                    tokenResponse);
+                this.flow,
+                StoreUserId,
+                tokenResponse);
         }
 
         public async Task<ICredential> AuthorizeUsingBrowserAsync(CancellationToken token)
         {
             return await this.installedApp.AuthorizeAsync(
-                OAuthAuthorization.StoreUserId,
+                StoreUserId,
                 token);
         }
 

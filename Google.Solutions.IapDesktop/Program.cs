@@ -121,7 +121,7 @@ namespace Google.Solutions.IapDesktop
                 hkcu.CreateSubKey($@"{BaseRegistryKeyPath}\Application")));
             serviceRegistry.AddSingleton(new AuthSettingsRepository(
                 hkcu.CreateSubKey($@"{BaseRegistryKeyPath}\Auth"),
-                OAuthAuthorization.StoreUserId));
+                GoogleOAuthAdapter.StoreUserId));
             serviceRegistry.AddSingleton(new InventorySettingsRepository(
                 hkcu.CreateSubKey($@"{BaseRegistryKeyPath}\Inventory")));
 

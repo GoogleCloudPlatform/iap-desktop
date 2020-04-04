@@ -21,16 +21,9 @@
 
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Auth.OAuth2.Flows;
-using Google.Apis.Util.Store;
-using System.Linq;
 using System.Threading.Tasks;
 using System.Threading;
-using System.IO;
 using Google.Apis.Http;
-using Google.Solutions.Compute;
-using System.Diagnostics;
-using System;
-using Google.Apis.Auth.OAuth2.Responses;
 
 namespace Google.Solutions.Compute.Auth
 {
@@ -47,31 +40,21 @@ namespace Google.Solutions.Compute.Auth
 
     public class OAuthAuthorization : IAuthorization
     {
-        public const string StoreUserId = "oauth";
-
-        /// <summary>
-        /// Scope required to query email from UserInfo endpoint
-        /// </summary>
+        // Scope required to query email from UserInfo endpoint.
         private const string EmailScope = "https://www.googleapis.com/auth/userinfo.email";
 
-        private readonly GoogleAuthorizationCodeFlow.Initializer initializer;
-        private readonly string closePageReponse;
-        private readonly IDataStore credentialStore;
+        private readonly IOAuthAdapter adapter;
 
-        // The OAuth credential change after each reauth. Therefore, use
+        // The OAuth credential changes after each reauth. Therefore, use
         // a SwappableCredential as indirection.
         private readonly SwappableCredential credential;
 
         private OAuthAuthorization(
-            GoogleAuthorizationCodeFlow.Initializer initializer,
-            string closePageReponse,
-            IDataStore credentialStore,
+            IOAuthAdapter adapter,
             ICredential initialCredential,
             UserInfo userInfo)
         {
-            this.initializer = initializer;
-            this.closePageReponse = closePageReponse;
-            this.credentialStore = credentialStore;
+            this.adapter = adapter;
             this.credential = new SwappableCredential(initialCredential, userInfo);
         }
 
@@ -80,7 +63,7 @@ namespace Google.Solutions.Compute.Auth
 
         public Task RevokeAsync()
         {
-            return this.credentialStore.DeleteAsync<object>(StoreUserId);
+            return this.adapter.DeleteStoredRefreshToken();
         }
 
         private static async Task<UserInfo> QueryUserInfoAsync(ICredential credential, CancellationToken token)
@@ -100,47 +83,44 @@ namespace Google.Solutions.Compute.Auth
             // Make sure we can use the UserInfo endpoint later.
             initializer.AddScope(EmailScope);
 
-            using (var oauthClient = new GoogleOAuthAdapter(initializer, closePageReponse))
+            // N.B. Do not dispose the adapter (and embedded GoogleAuthorizationCodeFlow)
+            // as it might be needed for token refreshes later.
+            var oauthAdapter = new GoogleOAuthAdapter(initializer, closePageReponse);
+            
+            var existingTokenResponse = await oauthAdapter.GetStoredRefreshTokenAsync(token);
+
+            if (oauthAdapter.IsRefreshTokenValid(existingTokenResponse))
             {
-                var existingTokenResponse = await oauthClient.GetStoredRefreshTokenAsync(token);
+                TraceSources.Compute.TraceVerbose("Found existing credentials");
 
-                if (oauthClient.IsRefreshTokenValid(existingTokenResponse))
+                var scopesOfExistingTokenResponse = existingTokenResponse.Scope.Split(' ');
+                if (!scopesOfExistingTokenResponse.ContainsAll(initializer.Scopes))
                 {
-                    TraceSources.Compute.TraceVerbose("Found existing credentials");
+                    TraceSources.Compute.TraceVerbose(
+                        "Dropping existing credential as it lacks one or more scopes");
 
-                    var scopesOfExistingTokenResponse = existingTokenResponse.Scope.Split(' ');
-                    if (!scopesOfExistingTokenResponse.ContainsAll(initializer.Scopes))
-                    {
-                        TraceSources.Compute.TraceVerbose(
-                            "Dropping existing credential as it lacks one or more scopes");
-
-                        // The existing auth might be fine, but it lacks a scope.
-                        // Delete it so that it does not cause harm later.
-                        await oauthClient.DeleteStoredRefreshToken();
-                        return null;
-                    }
-                    else
-                    {
-                        // N.B. Do not dispose the GoogleAuthorizationCodeFlow as it might
-                        // be needed for re-auth later.
-                        var credential = oauthClient.AuthorizeUsingRefreshToken(existingTokenResponse);
-
-                        var userInfo = await QueryUserInfoAsync(
-                            credential,
-                            token);
-
-                        return new OAuthAuthorization(
-                            initializer,
-                            closePageReponse,
-                            initializer.DataStore,
-                            credential,
-                            userInfo);
-                    }
+                    // The existing auth might be fine, but it lacks a scope.
+                    // Delete it so that it does not cause harm later.
+                    await oauthAdapter.DeleteStoredRefreshToken();
+                    return null;
                 }
                 else
                 {
-                    return null;
+                    var credential = oauthAdapter.AuthorizeUsingRefreshToken(existingTokenResponse);
+
+                    var userInfo = await QueryUserInfoAsync(
+                        credential,
+                        token);
+
+                    return new OAuthAuthorization(
+                        oauthAdapter,
+                        credential,
+                        userInfo);
                 }
+            }
+            else
+            {
+                return null;
             }
         }
 
@@ -152,23 +132,21 @@ namespace Google.Solutions.Compute.Auth
             // Make sure we can use the UserInfo endpoint later.
             initializer.AddScope(EmailScope);
 
-            // N.B. Do not dispose the client (and embedded GoogleAuthorizationCodeFlow)
+            // N.B. Do not dispose the adapter (and embedded GoogleAuthorizationCodeFlow)
             // as it might be needed for token refreshes later.
-            var oauthClient = new GoogleOAuthAdapter(initializer, closePageReponse);
+            var oauthAdapter = new GoogleOAuthAdapter(initializer, closePageReponse);
 
             TraceSources.Compute.TraceVerbose("Authorizing");
 
             // Pop up browser window.
-            var credential = await oauthClient.AuthorizeUsingBrowserAsync(token);
+            var credential = await oauthAdapter.AuthorizeUsingBrowserAsync(token);
 
             var userInfo = await QueryUserInfoAsync(
                 credential,
                 token);
 
             return new OAuthAuthorization(
-                initializer,
-                closePageReponse,
-                initializer.DataStore,
+                oauthAdapter,
                 credential,
                 userInfo);
         }
@@ -177,9 +155,7 @@ namespace Google.Solutions.Compute.Auth
         {
             // As this is a 3p OAuth app, we do not support Gnubby/Password-based
             // reauth. Instead, we simply trigger a new authorization (code flow).
-            var oauthClient = new GoogleOAuthAdapter(this.initializer, this.closePageReponse);
-
-            var newCredential = await oauthClient.AuthorizeUsingBrowserAsync(token);
+            var newCredential = await this.adapter.AuthorizeUsingBrowserAsync(token);
 
             // The user might have changed to a different user account,
             // so we have to re-fetch user information.
