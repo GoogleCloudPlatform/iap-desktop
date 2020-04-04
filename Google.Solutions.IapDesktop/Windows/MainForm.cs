@@ -308,6 +308,11 @@ namespace Google.Solutions.IapDesktop.Windows
 
         public IAuthorization Authorization { get; private set; }
 
+        public async Task ReauthorizeAsync(CancellationToken token)
+        {
+            await this.Authorization.ReauthorizeAsync(token);
+        }
+
         //---------------------------------------------------------------------
         // IEventRoutingHost.
         //---------------------------------------------------------------------

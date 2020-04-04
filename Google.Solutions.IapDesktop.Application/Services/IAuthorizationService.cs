@@ -20,11 +20,15 @@
 //
 
 using Google.Solutions.Compute.Auth;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace Google.Solutions.IapDesktop.Application.Services
 {
     public interface IAuthorizationService
     {
         IAuthorization Authorization { get; }
+
+        Task ReauthorizeAsync(CancellationToken token);
     }
 }
