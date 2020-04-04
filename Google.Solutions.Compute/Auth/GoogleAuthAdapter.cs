@@ -57,7 +57,7 @@ namespace Google.Solutions.Compute.Auth
                 DataStore = initializer.DataStore
             };
 
-            this.flow = new GoogleAuthorizationCodeFlow(initializer);
+            this.flow = new GoogleAuthorizationCodeFlow(this.initializer);
             this.installedApp = new AuthorizationCodeInstalledApp(
                 this.flow,
                 new LocalServerCodeReceiver(closePageReponse));

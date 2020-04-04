@@ -60,7 +60,7 @@ namespace Google.Solutions.IapDesktop.Windows
                 new GoogleAuthorizationCodeFlow.Initializer
                 {
                     ClientSecrets = clientSecrets,
-                    Scopes = scopes.Concat(new[] { GoogleAuthAdapter.EmailScope }),
+                    Scopes = scopes,
                     DataStore = dataStore
                 }, 
                 Resources.AuthorizationSuccessful);
