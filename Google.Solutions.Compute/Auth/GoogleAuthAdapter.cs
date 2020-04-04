@@ -24,14 +24,18 @@ using Google.Apis.Auth.OAuth2.Flows;
 using Google.Apis.Auth.OAuth2.Responses;
 using Google.Solutions.Compute.Test.Net;
 using Newtonsoft.Json;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
 namespace Google.Solutions.Compute.Auth
 {
-
     public class GoogleAuthAdapter : IAuthAdapter
     {
+        // Scope required to query email from UserInfo endpoint.
+        public const string EmailScope = "https://www.googleapis.com/auth/userinfo.email";
+
         private const string ConfigurationEndpoint = 
             "https://accounts.google.com/.well-known/openid-configuration";
 
@@ -45,12 +49,21 @@ namespace Google.Solutions.Compute.Auth
             GoogleAuthorizationCodeFlow.Initializer initializer,
             string closePageReponse)
         {
-            this.initializer = initializer;
+            // Add email scope.
+            this.initializer = new GoogleAuthorizationCodeFlow.Initializer
+            {
+                ClientSecrets = initializer.ClientSecrets,
+                Scopes = initializer.Scopes.Concat(new[] { GoogleAuthAdapter.EmailScope }),
+                DataStore = initializer.DataStore
+            };
+
             this.flow = new GoogleAuthorizationCodeFlow(initializer);
             this.installedApp = new AuthorizationCodeInstalledApp(
                 this.flow,
                 new LocalServerCodeReceiver(closePageReponse));
         }
+
+        public IEnumerable<string> Scopes => this.initializer.Scopes;
 
         public Task<TokenResponse> GetStoredRefreshTokenAsync(CancellationToken token)
         {

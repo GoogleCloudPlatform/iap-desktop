@@ -23,6 +23,8 @@ using Google.Apis.Auth.OAuth2;
 using Google.Apis.Auth.OAuth2.Responses;
 using Newtonsoft.Json;
 using System;
+using System.Collections;
+using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -30,6 +32,8 @@ namespace Google.Solutions.Compute.Auth
 {
     public interface IAuthAdapter : IDisposable
     {
+        IEnumerable<string> Scopes { get; }
+
         Task<TokenResponse> GetStoredRefreshTokenAsync(CancellationToken token);
 
         bool IsRefreshTokenValid(TokenResponse tokenResponse);

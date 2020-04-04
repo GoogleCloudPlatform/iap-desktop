@@ -20,20 +20,12 @@ namespace Google.Solutions.Compute.Test.Auth
         [Test]
         public async Task WhenNoExistingAuthPresent_TryLoadExistingAuthorizationAsyncReturnsNull()
         {
-            var initializer = new GoogleAuthorizationCodeFlow.Initializer
-            {
-                ClientSecrets = new ClientSecrets()
-                {
-                    ClientId = "id",
-                    ClientSecret = "secret"
-                },
-                Scopes = new[] { "one", "two" },
-                DataStore = new NullDataStore()
-            };
-
+            var adapter = new Mock<IAuthAdapter>();
+            adapter.Setup(a => a.GetStoredRefreshTokenAsync(It.IsAny<CancellationToken>()))
+                .Returns(Task.FromResult<TokenResponse>(null));
+            
             var authz = await OAuthAuthorization.TryLoadExistingAuthorizationAsync(
-                initializer,
-                "<html/>",
+                adapter.Object,
                 CancellationToken.None);
 
             Assert.IsNull(authz);
@@ -45,32 +37,53 @@ namespace Google.Solutions.Compute.Test.Auth
             var tokenResponse = new TokenResponse()
             {
                 RefreshToken = "rt",
-                Scope = "one two" // lacks email scope
+                Scope = "one two"
             };
 
-            var dataStore = new Mock<IDataStore>();
-            dataStore.Setup(ds => ds.GetAsync<TokenResponse>(It.IsAny<string>()))
+            var adapter = new Mock<IAuthAdapter>();
+            adapter.Setup(a => a.GetStoredRefreshTokenAsync(It.IsAny<CancellationToken>()))
                 .Returns(Task.FromResult(tokenResponse));
-
-            var initializer = new GoogleAuthorizationCodeFlow.Initializer
-            {
-                ClientSecrets = new ClientSecrets()
-                {
-                    ClientId = "id",
-                    ClientSecret = "secret"
-                },
-                Scopes = new[] { "one", "two" },
-                DataStore = dataStore.Object
-            };
+            adapter.Setup(a => a.IsRefreshTokenValid(tokenResponse))
+                .Returns(true);
+            adapter.SetupGet(a => a.Scopes)
+                .Returns(new[] { "one", "two", "email" });
 
             var authz = await OAuthAuthorization.TryLoadExistingAuthorizationAsync(
-                initializer,
-                "<html/>",
+                adapter.Object,
                 CancellationToken.None);
 
             Assert.IsNull(authz);
 
-            dataStore.Verify(ds => ds.DeleteAsync<TokenResponse>(It.IsAny<string>()), Times.Once);
+            adapter.Verify(a => a.DeleteStoredRefreshToken(), Times.Once);
+        }
+
+        [Test]
+        public async Task WhenExistingAuthIsOk_TryLoadExistingAuthorizationAsyncReturnsAuthorization()
+        {
+            var tokenResponse = new TokenResponse()
+            {
+                RefreshToken = "rt",
+                Scope = "email one two"
+            };
+
+            var adapter = new Mock<IAuthAdapter>();
+            adapter.Setup(a => a.GetStoredRefreshTokenAsync(It.IsAny<CancellationToken>()))
+                .Returns(Task.FromResult(tokenResponse));
+            adapter.Setup(a => a.IsRefreshTokenValid(tokenResponse))
+                .Returns(true);
+            adapter.SetupGet(a => a.Scopes)
+                .Returns(new[] { "one", "two", "email" });
+
+            var authz = await OAuthAuthorization.TryLoadExistingAuthorizationAsync(
+                adapter.Object,
+                CancellationToken.None);
+
+            Assert.IsNotNull(authz);
+
+            adapter.Verify(a => a.AuthorizeUsingRefreshToken(tokenResponse), Times.Once);
+            adapter.Verify(a => a.QueryUserInfoAsync(
+                It.IsAny<ICredential>(),
+                It.IsAny<CancellationToken>()), Times.Once);
         }
     }
 }

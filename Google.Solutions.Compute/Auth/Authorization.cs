@@ -24,6 +24,8 @@ using Google.Apis.Auth.OAuth2.Flows;
 using System.Threading.Tasks;
 using System.Threading;
 using Google.Apis.Http;
+using System.Diagnostics;
+using System.Linq;
 
 namespace Google.Solutions.Compute.Auth
 {
@@ -40,8 +42,6 @@ namespace Google.Solutions.Compute.Auth
 
     public class OAuthAuthorization : IAuthorization
     {
-        // Scope required to query email from UserInfo endpoint.
-        private const string EmailScope = "https://www.googleapis.com/auth/userinfo.email";
 
         private readonly IAuthAdapter adapter;
 
@@ -67,17 +67,9 @@ namespace Google.Solutions.Compute.Auth
         }
 
         public static async Task<OAuthAuthorization> TryLoadExistingAuthorizationAsync(
-            GoogleAuthorizationCodeFlow.Initializer initializer,
-            string closePageReponse,
+            IAuthAdapter oauthAdapter,
             CancellationToken token)
         {
-            // Make sure we can use the UserInfo endpoint later.
-            initializer.AddScope(EmailScope);
-
-            // N.B. Do not dispose the adapter (and embedded GoogleAuthorizationCodeFlow)
-            // as it might be needed for token refreshes later.
-            var oauthAdapter = new GoogleAuthAdapter(initializer, closePageReponse);
-            
             var existingTokenResponse = await oauthAdapter.GetStoredRefreshTokenAsync(token);
 
             if (oauthAdapter.IsRefreshTokenValid(existingTokenResponse))
@@ -85,7 +77,7 @@ namespace Google.Solutions.Compute.Auth
                 TraceSources.Compute.TraceVerbose("Found existing credentials");
 
                 var scopesOfExistingTokenResponse = existingTokenResponse.Scope.Split(' ');
-                if (!scopesOfExistingTokenResponse.ContainsAll(initializer.Scopes))
+                if (!scopesOfExistingTokenResponse.ContainsAll(oauthAdapter.Scopes))
                 {
                     TraceSources.Compute.TraceVerbose(
                         "Dropping existing credential as it lacks one or more scopes");
@@ -116,17 +108,9 @@ namespace Google.Solutions.Compute.Auth
         }
 
         public static async Task<OAuthAuthorization> CreateAuthorizationAsync(
-            GoogleAuthorizationCodeFlow.Initializer initializer,
-            string closePageReponse,
+            IAuthAdapter oauthAdapter,
             CancellationToken token)
         {
-            // Make sure we can use the UserInfo endpoint later.
-            initializer.AddScope(EmailScope);
-
-            // N.B. Do not dispose the adapter (and embedded GoogleAuthorizationCodeFlow)
-            // as it might be needed for token refreshes later.
-            var oauthAdapter = new GoogleAuthAdapter(initializer, closePageReponse);
-
             TraceSources.Compute.TraceVerbose("Authorizing");
 
             // Pop up browser window.
@@ -186,16 +170,6 @@ namespace Google.Solutions.Compute.Auth
             {
                 return this.currentCredential.GetAccessTokenForRequestAsync(authUri, cancellationToken);
             }
-        }
-    }
-
-    internal static class AuthorizationCodeFlowInitializerExtensions
-    {
-        public static void AddScope(this AuthorizationCodeFlow.Initializer initializer, string scope)
-        {
-            var allScopes = initializer.Scopes.ToHashSet();
-            allScopes.Add(scope);
-            initializer.Scopes = allScopes;
         }
     }
 }
