@@ -65,6 +65,8 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows
         {
             public ICredential Credential { get; }
 
+            public string Email => "test@example.com";
+
             public SimpleAuthorization(ICredential credential)
             {
                 this.Credential = credential;

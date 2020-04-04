@@ -40,6 +40,8 @@ namespace Google.Solutions.Compute.Auth
         Task RevokeAsync();
 
         Task ReauthorizeAsync(CancellationToken token);
+
+        string Email { get; }
     }
 
     public class OAuthAuthorization : IAuthorization
@@ -73,6 +75,7 @@ namespace Google.Solutions.Compute.Auth
         }
 
         public ICredential Credential => this.credential;
+        public string Email => this.credential.UserInfo.Email;
 
         public Task RevokeAsync()
         {
@@ -206,18 +209,19 @@ namespace Google.Solutions.Compute.Auth
         private class SwappableCredential : ICredential
         {
             private ICredential currentCredential;
-            private UserInfo currentUserInfo;
+
+            public UserInfo UserInfo { get; private set; }
 
             public SwappableCredential(ICredential curentCredential, UserInfo currentUserInfo)
             {
                 this.currentCredential = curentCredential;
-                this.currentUserInfo = currentUserInfo;
+                this.UserInfo = currentUserInfo;
             }
 
             public void SwapCredential(ICredential newCredential, UserInfo newUserInfo)
             {
                 this.currentCredential = newCredential;
-                this.currentUserInfo = newUserInfo;
+                this.UserInfo = newUserInfo;
             }
 
             public void Initialize(ConfigurableHttpClient httpClient)
