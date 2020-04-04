@@ -165,6 +165,9 @@ namespace Google.Solutions.IapDesktop.Windows
                 VisualStudioToolStripExtender.VsVersion.Vs2015,
                 this.vs2015LightTheme);
 
+            // Show who is signed in.
+            this.toolStripEmail.Text = this.Authorization.Email;
+
             ResumeLayout();
 
             this.serviceProvider.GetService<IProjectExplorer>().ShowWindow();
@@ -271,13 +274,13 @@ namespace Google.Solutions.IapDesktop.Windows
 
                 if (loggingEnabled)
                 {
-                    this.toolStripStatusLabel.Text = $"Logging to {Program.LogFile}, performance " +
+                    this.toolStripStatus.Text = $"Logging to {Program.LogFile}, performance " +
                         "might be degraded while logging is enabled.";
                     this.statusStrip.BackColor = Color.Red;
                 }
                 else
                 {
-                    this.toolStripStatusLabel.Text = string.Empty;
+                    this.toolStripStatus.Text = string.Empty;
                     this.statusStrip.BackColor = this.vs2015LightTheme.ColorPalette.ToolWindowCaptionActive.Background;
                 }
             }
@@ -311,6 +314,9 @@ namespace Google.Solutions.IapDesktop.Windows
         public async Task ReauthorizeAsync(CancellationToken token)
         {
             await this.Authorization.ReauthorizeAsync(token);
+
+            // Update status bar in case the user switched identities.
+            this.toolStripEmail.Text = this.Authorization.Email;
         }
 
         //---------------------------------------------------------------------
