@@ -290,7 +290,7 @@ namespace Google.Solutions.IapDesktop.Application.Windows.RemoteDesktop
 
         private void fullScreenMenuItem_Click(object sender, EventArgs e)
         {
-            this.rdpClient.FullScreen = true;
+            TrySetFullscreen(true);
         }
 
         //---------------------------------------------------------------------
@@ -408,6 +408,23 @@ namespace Google.Solutions.IapDesktop.Application.Windows.RemoteDesktop
         {
             using (TraceSources.IapDesktop.TraceMethod().WithoutParameters())
             { }
+        }
+
+
+        //---------------------------------------------------------------------
+        // IRemoteDesktopSession.
+        //---------------------------------------------------------------------
+
+        public bool TrySetFullscreen(bool fullscreen)
+        {
+            if (this.IsConnecting)
+            {
+                // Do not mess with the control while connecting.
+                return false;
+            }
+
+            this.rdpClient.FullScreen = fullscreen;
+            return true;
         }
     }
 }

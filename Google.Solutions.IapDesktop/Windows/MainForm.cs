@@ -28,11 +28,13 @@ using Google.Solutions.IapDesktop.Application.ProjectExplorer;
 using Google.Solutions.IapDesktop.Application.Services;
 using Google.Solutions.IapDesktop.Application.Settings;
 using Google.Solutions.IapDesktop.Application.Windows;
+using Google.Solutions.IapDesktop.Application.Windows.RemoteDesktop;
 using Google.Solutions.IapDesktop.Application.Windows.TunnelsViewer;
 using System;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Drawing;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -303,6 +305,51 @@ namespace Google.Solutions.IapDesktop.Windows
             // Toggle menu.
             checkForUpdatesOnExitToolStripMenuItem.Checked =
                 !checkForUpdatesOnExitToolStripMenuItem.Checked;
+        }
+
+        private void desktopToolStripMenuItem_DropDownOpening(object sender, EventArgs e)
+        {
+            var session = this.serviceProvider.GetService<RemoteDesktopService>().ActiveSession;
+            foreach (var item in this.desktopToolStripMenuItem.DropDownItems.Cast<ToolStripDropDownItem>())
+            {
+                item.Enabled = session != null && session.IsConnected;
+            }
+        }
+
+        private void fullScreenToolStripMenuItem_Click(object sender, EventArgs _)
+        {
+            try
+            {
+                var session = this.serviceProvider.GetService<RemoteDesktopService>().ActiveSession;
+                if (session != null)
+                {
+                    session.TrySetFullscreen(true);
+                }
+            }
+            catch (Exception e)
+            {
+                this.serviceProvider
+                    .GetService<IExceptionDialog>()
+                    .Show(this, "Entering full screen failed", e);
+            }
+        }
+
+        private void disconnectToolStripMenuItem_Click(object sender, EventArgs _)
+        {
+            try
+            {
+                var session = this.serviceProvider.GetService<RemoteDesktopService>().ActiveSession;
+                if (session != null)
+                {
+                    session.Close();
+                }
+            }
+            catch (Exception e)
+            {
+                this.serviceProvider
+                    .GetService<IExceptionDialog>()
+                    .Show(this, "Disconnecting from VM instancefailed", e);
+            }
         }
 
         //---------------------------------------------------------------------

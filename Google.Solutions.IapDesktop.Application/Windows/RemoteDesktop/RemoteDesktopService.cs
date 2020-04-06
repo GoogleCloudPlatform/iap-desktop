@@ -32,6 +32,10 @@ namespace Google.Solutions.IapDesktop.Application.Windows.RemoteDesktop
     public interface IRemoteDesktopSession
     {
         void Close();
+
+        bool TrySetFullscreen(bool fullscreen);
+
+        bool IsConnected { get; }
     }
 
     public class RemoteDesktopService
@@ -53,6 +57,9 @@ namespace Google.Solutions.IapDesktop.Application.Windows.RemoteDesktop
                 .OfType<RemoteDesktopPane>()
                 .Where(pane => pane.Instance == vmInstance)
                 .FirstOrDefault();
+
+        public IRemoteDesktopSession ActiveSession
+            => (IRemoteDesktopSession)this.dockPanel.ActiveDocument;
 
         public bool IsConnected(VmInstanceReference vmInstance)
             => TryGetExistingPane(vmInstance) != null;
