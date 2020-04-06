@@ -124,16 +124,25 @@ namespace Google.Solutions.IapDesktop.Windows
         {
         }
 
-        private void MainForm_Shown(object sender, EventArgs e)
+        private void MainForm_Shown(object sender, EventArgs _)
         {
             //
             // Authorize.
             //
-            this.Authorization = AuthorizeDialog.Authorize(
-                this,
-                OAuthClient.Secrets,
-                new[] { IapTunnelingEndpoint.RequiredScope },
-                this.authSettings);
+            try
+            {
+                this.Authorization = AuthorizeDialog.Authorize(
+                    this,
+                    OAuthClient.Secrets,
+                    new[] { IapTunnelingEndpoint.RequiredScope },
+                    this.authSettings);
+            }
+            catch (Exception e)
+            {
+                this.serviceProvider
+                    .GetService<IExceptionDialog>()
+                    .Show(this, "Authorization failed", e);
+            }
 
             if (this.Authorization == null)
             {
@@ -155,6 +164,9 @@ namespace Google.Solutions.IapDesktop.Windows
                 this.statusStrip,
                 VisualStudioToolStripExtender.VsVersion.Vs2015,
                 this.vs2015LightTheme);
+
+            // Show who is signed in.
+            this.toolStripEmail.Text = this.Authorization.Email;
 
             ResumeLayout();
 
@@ -262,13 +274,13 @@ namespace Google.Solutions.IapDesktop.Windows
 
                 if (loggingEnabled)
                 {
-                    this.toolStripStatusLabel.Text = $"Logging to {Program.LogFile}, performance " +
+                    this.toolStripStatus.Text = $"Logging to {Program.LogFile}, performance " +
                         "might be degraded while logging is enabled.";
                     this.statusStrip.BackColor = Color.Red;
                 }
                 else
                 {
-                    this.toolStripStatusLabel.Text = string.Empty;
+                    this.toolStripStatus.Text = string.Empty;
                     this.statusStrip.BackColor = this.vs2015LightTheme.ColorPalette.ToolWindowCaptionActive.Background;
                 }
             }
@@ -298,6 +310,14 @@ namespace Google.Solutions.IapDesktop.Windows
         //---------------------------------------------------------------------
 
         public IAuthorization Authorization { get; private set; }
+
+        public async Task ReauthorizeAsync(CancellationToken token)
+        {
+            await this.Authorization.ReauthorizeAsync(token);
+
+            // Update status bar in case the user switched identities.
+            this.toolStripEmail.Text = this.Authorization.Email;
+        }
 
         //---------------------------------------------------------------------
         // IEventRoutingHost.

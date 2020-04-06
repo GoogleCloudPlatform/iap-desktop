@@ -19,31 +19,45 @@
 // under the License.
 //
 
+using Google.Apis.Auth.OAuth2;
 using Newtonsoft.Json;
 using System;
 using System.IO;
 using System.Net.Http;
+using System.Net.Http.Headers;
 using System.Runtime.Serialization;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Google.Solutions.IapDesktop.Application.Util
+namespace Google.Solutions.Compute.Test.Net
 {
-    internal class RestClient
+    public class RestClient
     {
-        private readonly string userAgent;
+        public string UserAgent { get; set; }
+        public ICredential Credential { get; set; }
 
-        public RestClient(string userAgent)
-        {
-            this.userAgent = userAgent;
-        }
-
-        public async Task<TModel> GetAsync<TModel>(string url, CancellationToken cancellationToken)
+        public async Task<TModel> GetAsync<TModel>(
+            string url, 
+            CancellationToken cancellationToken)
         {
             using (var client = new HttpClient())
             using (var request = new HttpRequestMessage(HttpMethod.Get, url))
             {
-                request.Headers.UserAgent.ParseAdd(this.userAgent);
+                if (this.UserAgent != null)
+                {
+                    request.Headers.UserAgent.ParseAdd(this.UserAgent);
+                }
+
+                if (this.Credential != null)
+                {
+                    var accessToken = await this.Credential.GetAccessTokenForRequestAsync(
+                        null,
+                        cancellationToken);
+                    request.Headers.Authorization = new AuthenticationHeaderValue(
+                        "Bearer",
+                        accessToken);
+                }
+
                 using (var response = await client.SendAsync(
                     request,
                     HttpCompletionOption.ResponseHeadersRead,

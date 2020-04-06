@@ -21,12 +21,11 @@
 
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Auth.OAuth2.Flows;
-using Google.Apis.Util.Store;
-using System;
 using System.Threading.Tasks;
 using System.Threading;
-using System.IO;
 using Google.Apis.Http;
+using System.Diagnostics;
+using System.Linq;
 
 namespace Google.Solutions.Compute.Auth
 {
@@ -36,118 +35,128 @@ namespace Google.Solutions.Compute.Auth
 
         Task RevokeAsync();
 
-        Task ReauthorizeAsync();
+        Task ReauthorizeAsync(CancellationToken token);
+
+        string Email { get; }
     }
 
     public class OAuthAuthorization : IAuthorization
     {
-        public const string StoreUserId = "oauth";
 
-        private readonly GoogleAuthorizationCodeFlow.Initializer initializer;
-        private readonly string closePageReponse;
-        private readonly IDataStore credentialStore;
+        private readonly IAuthAdapter adapter;
 
-        // The OAuth credential change after each reauth. Therefore, use
+        // The OAuth credential changes after each reauth. Therefore, use
         // a SwappableCredential as indirection.
         private readonly SwappableCredential credential;
 
-        internal OAuthAuthorization(
-            GoogleAuthorizationCodeFlow.Initializer initializer,
-            string closePageReponse,
-            IDataStore credentialStore,
-            ICredential initialCredential)
+        private OAuthAuthorization(
+            IAuthAdapter adapter,
+            ICredential initialCredential,
+            UserInfo userInfo)
         {
-            this.initializer = initializer;
-            this.closePageReponse = closePageReponse;
-            this.credentialStore = credentialStore;
-            this.credential = new SwappableCredential(initialCredential);
+            this.adapter = adapter;
+            this.credential = new SwappableCredential(initialCredential, userInfo);
         }
 
         public ICredential Credential => this.credential;
+        public string Email => this.credential.UserInfo.Email;
 
         public Task RevokeAsync()
         {
-            return this.credentialStore.DeleteAsync<object>(StoreUserId);
+            return this.adapter.DeleteStoredRefreshToken();
         }
 
         public static async Task<OAuthAuthorization> TryLoadExistingAuthorizationAsync(
-            GoogleAuthorizationCodeFlow.Initializer initializer,
-            string closePageReponse)
+            IAuthAdapter oauthAdapter,
+            CancellationToken token)
         {
-            using (var flow = new GoogleAuthorizationCodeFlow(initializer))
+            var existingTokenResponse = await oauthAdapter.GetStoredRefreshTokenAsync(token);
+
+            if (oauthAdapter.IsRefreshTokenValid(existingTokenResponse))
             {
-                var installedApp = new AuthorizationCodeInstalledApp(
-                    flow,
-                    new LocalServerCodeReceiver(closePageReponse));
+                TraceSources.Compute.TraceVerbose("Found existing credentials");
 
-                var existingTokenResponse = await flow.LoadTokenAsync(
-                    OAuthAuthorization.StoreUserId,
-                    CancellationToken.None);
-
-                if (!installedApp.ShouldRequestAuthorizationCode(existingTokenResponse))
+                var scopesOfExistingTokenResponse = existingTokenResponse.Scope.Split(' ');
+                if (!scopesOfExistingTokenResponse.ContainsAll(oauthAdapter.Scopes))
                 {
-                    // N.B. Do not dispose the GoogleAuthorizationCodeFlow as it might
-                    // be needed for re-auth later.
-                    return new OAuthAuthorization(
-                        initializer,
-                        closePageReponse,
-                        initializer.DataStore,
-                        new UserCredential(
-                            new GoogleAuthorizationCodeFlow(initializer),
-                            OAuthAuthorization.StoreUserId,
-                            existingTokenResponse));
+                    TraceSources.Compute.TraceVerbose(
+                        "Dropping existing credential as it lacks one or more scopes");
+
+                    // The existing auth might be fine, but it lacks a scope.
+                    // Delete it so that it does not cause harm later.
+                    await oauthAdapter.DeleteStoredRefreshToken();
+                    return null;
                 }
                 else
                 {
-                    return null;
+                    var credential = oauthAdapter.AuthorizeUsingRefreshToken(existingTokenResponse);
+
+                    var userInfo = await oauthAdapter.QueryUserInfoAsync(
+                        credential,
+                        token);
+
+                    return new OAuthAuthorization(
+                        oauthAdapter,
+                        credential,
+                        userInfo);
                 }
+            }
+            else
+            {
+                return null;
             }
         }
 
         public static async Task<OAuthAuthorization> CreateAuthorizationAsync(
-            GoogleAuthorizationCodeFlow.Initializer initializer,
-            string closePageReponse)
+            IAuthAdapter oauthAdapter,
+            CancellationToken token)
         {
-            // N.B. Do not dispose the GoogleAuthorizationCodeFlow as it might
-            // be needed for re-auth later.
-            var installedApp = new AuthorizationCodeInstalledApp(
-                new GoogleAuthorizationCodeFlow(initializer),
-                new LocalServerCodeReceiver(closePageReponse));
+            TraceSources.Compute.TraceVerbose("Authorizing");
+
+            // Pop up browser window.
+            var credential = await oauthAdapter.AuthorizeUsingBrowserAsync(token);
+
+            var userInfo = await oauthAdapter.QueryUserInfoAsync(
+                credential,
+                token);
 
             return new OAuthAuthorization(
-                initializer,
-                closePageReponse,
-                initializer.DataStore,
-                await installedApp.AuthorizeAsync(
-                    OAuthAuthorization.StoreUserId,
-                    CancellationToken.None));
+                oauthAdapter,
+                credential,
+                userInfo);
         }
 
-        public async Task ReauthorizeAsync()
+        public async Task ReauthorizeAsync(CancellationToken token)
         {
             // As this is a 3p OAuth app, we do not support Gnubby/Password-based
             // reauth. Instead, we simply trigger a new authorization (code flow).
-            var installedApp = new AuthorizationCodeInstalledApp(
-                new GoogleAuthorizationCodeFlow(this.initializer),
-                new LocalServerCodeReceiver(this.closePageReponse));
+            var newCredential = await this.adapter.AuthorizeUsingBrowserAsync(token);
 
-            this.credential.SwapCredential(await installedApp.AuthorizeAsync(
-                OAuthAuthorization.StoreUserId,
-                CancellationToken.None));
+            // The user might have changed to a different user account,
+            // so we have to re-fetch user information.
+            var newUserInfo = await this.adapter.QueryUserInfoAsync(
+                newCredential,
+                token);
+
+            this.credential.SwapCredential(newCredential, newUserInfo);
         }
 
         private class SwappableCredential : ICredential
         {
             private ICredential currentCredential;
 
-            public SwappableCredential(ICredential curentCredential)
+            public UserInfo UserInfo { get; private set; }
+
+            public SwappableCredential(ICredential curentCredential, UserInfo currentUserInfo)
             {
                 this.currentCredential = curentCredential;
+                this.UserInfo = currentUserInfo;
             }
 
-            public void SwapCredential(ICredential credential)
+            public void SwapCredential(ICredential newCredential, UserInfo newUserInfo)
             {
-                this.currentCredential = credential;
+                this.currentCredential = newCredential;
+                this.UserInfo = newUserInfo;
             }
 
             public void Initialize(ConfigurableHttpClient httpClient)

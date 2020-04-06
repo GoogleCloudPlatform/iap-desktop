@@ -61,18 +61,19 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services
             }
         }
 
-        private Mock<IAuthorization> authz = null;
+        private Mock<IAuthorizationService> authService = null;
         private Mock<IJobHost> jobHost = null;
         private JobService jobService = null;
 
         [SetUp]
         public void SetUp()
         {
-            this.authz = new Mock<IAuthorization>();
-            this.authz.Setup(a => a.ReauthorizeAsync()).Returns(Task.FromResult(true));
+            var authz = new Mock<IAuthorization>();
 
-            var authService = new Mock<IAuthorizationService>();
-            authService.SetupGet(a => a.Authorization).Returns(this.authz.Object);
+            this.authService = new Mock<IAuthorizationService>();
+            this.authService.SetupGet(a => a.Authorization).Returns(authz.Object);
+            this.authService.Setup(a => a.ReauthorizeAsync(It.IsAny<CancellationToken>()))
+                .Returns(Task.FromResult(true));
 
             var invoker = new SynchronousInvoker();
 
@@ -168,7 +169,8 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services
         public void WhenReauthFailed_ThenExceptionIsPropagated()
         {
             this.jobHost.Setup(h => h.ConfirmReauthorization()).Returns(true);
-            this.authz.Setup(a => a.ReauthorizeAsync()).Returns(Task.FromException(new ApplicationException()));
+            this.authService.Setup(a => a.ReauthorizeAsync(It.IsAny<CancellationToken>()))
+                .Returns(Task.FromException(new ApplicationException()));
 
             AssertEx.ThrowsAggregateException<ApplicationException>(() =>
             {
@@ -275,7 +277,8 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services
         public void WhenReauthFailed_ThenExceptionIsPropagated_WithAggregateException()
         {
             this.jobHost.Setup(h => h.ConfirmReauthorization()).Returns(true);
-            this.authz.Setup(a => a.ReauthorizeAsync()).Returns(Task.FromException(new ApplicationException()));
+            this.authService.Setup(a => a.ReauthorizeAsync(It.IsAny<CancellationToken>()))
+                .Returns(Task.FromException(new ApplicationException()));
 
             AssertEx.ThrowsAggregateException<ApplicationException>(() =>
             {

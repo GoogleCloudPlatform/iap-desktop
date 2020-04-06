@@ -29,11 +29,38 @@ namespace Google.Solutions.Compute.Test.Extensions
     public class TestLinqExtensions
     {
         [Test]
-        public void NullConvertedToEmpty()
+        public void WhenEnumIsNull_EnsureNotNullReturnsEmpty()
         {
             IEnumerable<string> e = null;
             Assert.IsNotNull(e.EnsureNotNull());
             Assert.AreEqual(0, e.EnsureNotNull().Count());
+        }
+
+        [Test]
+        public void WhenListsDontIntersect_ContainsAllIsFalse()
+        {
+            var list = new [] { "a", "b" };
+            var lookup = new[] { "c", "d" };
+
+            Assert.IsFalse(list.ContainsAll(lookup));
+        }
+
+        [Test]
+        public void WhenListsPartiallyIntersect_ContainsAllIsFalse()
+        {
+            var list = new[] { "a", "b" };
+            var lookup = new[] { "b", "c" };
+
+            Assert.IsFalse(list.ContainsAll(lookup));
+        }
+
+        [Test]
+        public void WhenListsOverlap_ContainsAllIsTrue()
+        {
+            var list = new[] { "a", "b", "c", "d" };
+            var lookup = new[] { "c", "d" };
+
+            Assert.IsTrue(list.ContainsAll(lookup));
         }
     }
 }

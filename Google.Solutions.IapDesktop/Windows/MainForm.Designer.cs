@@ -62,6 +62,7 @@ namespace Google.Solutions.IapDesktop.Windows
             this.projectExplorerToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.activeTunnelsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.optionsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.checkForUpdatesOnExitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.enableloggingToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.helpToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.openIapDocsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -71,9 +72,9 @@ namespace Google.Solutions.IapDesktop.Windows
             this.aboutToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.vsToolStripExtender = new WeifenLuo.WinFormsUI.Docking.VisualStudioToolStripExtender(this.components);
             this.statusStrip = new System.Windows.Forms.StatusStrip();
-            this.toolStripStatusLabel = new System.Windows.Forms.ToolStripStatusLabel();
+            this.toolStripStatus = new System.Windows.Forms.ToolStripStatusLabel();
+            this.toolStripEmail = new System.Windows.Forms.ToolStripStatusLabel();
             this.dockPanel = new WeifenLuo.WinFormsUI.Docking.DockPanel();
-            this.checkForUpdatesOnExitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.mainMenu.SuspendLayout();
             this.statusStrip.SuspendLayout();
             this.SuspendLayout();
@@ -165,6 +166,13 @@ namespace Google.Solutions.IapDesktop.Windows
             this.optionsToolStripMenuItem.Size = new System.Drawing.Size(61, 20);
             this.optionsToolStripMenuItem.Text = "&Options";
             // 
+            // checkForUpdatesOnExitToolStripMenuItem
+            // 
+            this.checkForUpdatesOnExitToolStripMenuItem.Name = "checkForUpdatesOnExitToolStripMenuItem";
+            this.checkForUpdatesOnExitToolStripMenuItem.Size = new System.Drawing.Size(209, 22);
+            this.checkForUpdatesOnExitToolStripMenuItem.Text = "Check for &updates on exit";
+            this.checkForUpdatesOnExitToolStripMenuItem.Click += new System.EventHandler(this.checkForUpdatesOnExitToolStripMenuItem_Click);
+            // 
             // enableloggingToolStripMenuItem
             // 
             this.enableloggingToolStripMenuItem.Name = "enableloggingToolStripMenuItem";
@@ -224,17 +232,26 @@ namespace Google.Solutions.IapDesktop.Windows
             // statusStrip
             // 
             this.statusStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.toolStripStatusLabel});
+            this.toolStripStatus,
+            this.toolStripEmail});
             this.statusStrip.Location = new System.Drawing.Point(0, 639);
             this.statusStrip.Name = "statusStrip";
             this.statusStrip.Size = new System.Drawing.Size(984, 22);
             this.statusStrip.TabIndex = 5;
             this.statusStrip.Text = "statusStrip";
             // 
-            // toolStripStatusLabel
+            // toolStripStatus
             // 
-            this.toolStripStatusLabel.Name = "toolStripStatusLabel";
-            this.toolStripStatusLabel.Size = new System.Drawing.Size(0, 17);
+            this.toolStripStatus.Name = "toolStripStatus";
+            this.toolStripStatus.Size = new System.Drawing.Size(854, 17);
+            this.toolStripStatus.Spring = true;
+            this.toolStripStatus.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            // 
+            // toolStripEmail
+            // 
+            this.toolStripEmail.Name = "toolStripEmail";
+            this.toolStripEmail.Size = new System.Drawing.Size(84, 17);
+            this.toolStripEmail.Text = "(not signed in)";
             // 
             // dockPanel
             // 
@@ -245,13 +262,6 @@ namespace Google.Solutions.IapDesktop.Windows
             this.dockPanel.Name = "dockPanel";
             this.dockPanel.Size = new System.Drawing.Size(984, 615);
             this.dockPanel.TabIndex = 9;
-            // 
-            // checkForUpdatesOnExitToolStripMenuItem
-            // 
-            this.checkForUpdatesOnExitToolStripMenuItem.Name = "checkForUpdatesOnExitToolStripMenuItem";
-            this.checkForUpdatesOnExitToolStripMenuItem.Size = new System.Drawing.Size(209, 22);
-            this.checkForUpdatesOnExitToolStripMenuItem.Text = "Check for &updates on exit";
-            this.checkForUpdatesOnExitToolStripMenuItem.Click += new System.EventHandler(this.checkForUpdatesOnExitToolStripMenuItem_Click);
             // 
             // MainForm
             // 
@@ -301,7 +311,8 @@ namespace Google.Solutions.IapDesktop.Windows
         private System.Windows.Forms.ToolStripMenuItem reportIssueToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem optionsToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem enableloggingToolStripMenuItem;
-        private System.Windows.Forms.ToolStripStatusLabel toolStripStatusLabel;
         private System.Windows.Forms.ToolStripMenuItem checkForUpdatesOnExitToolStripMenuItem;
+        private System.Windows.Forms.ToolStripStatusLabel toolStripStatus;
+        private System.Windows.Forms.ToolStripStatusLabel toolStripEmail;
     }
 }

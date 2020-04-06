@@ -20,6 +20,7 @@
 //
 
 using System;
+using System.Reflection;
 
 namespace Google.Solutions.IapDesktop.Application
 {
@@ -30,6 +31,11 @@ namespace Google.Solutions.IapDesktop.Application
             if (e is AggregateException aggregate)
             {
                 e = aggregate.InnerException;
+            }
+
+            if (e is TargetInvocationException target)
+            {
+                e = target.InnerException;
             }
 
             return e;

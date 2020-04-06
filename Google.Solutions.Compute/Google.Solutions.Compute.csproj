@@ -78,7 +78,10 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Auth\Authorization.cs" />
+    <Compile Include="Auth\IAuthAdapter.cs" />
+    <Compile Include="Auth\GoogleAuthAdapter.cs" />
     <Compile Include="BigEndian.cs" />
+    <Compile Include="Net\RestClient.cs" />
     <Compile Include="TraceSources.cs" />
     <Compile Include="Extensions\ResetWindowsUser.cs" />
     <Compile Include="Extensions\AddMetadata.cs" />
@@ -100,6 +103,9 @@
     <Compile Include="VmInstanceReference.cs" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="..\.editorconfig">
+      <Link>.editorconfig</Link>
+    </None>
     <None Include="app.config" />
     <None Include="packages.config" />
   </ItemGroup>

@@ -190,7 +190,7 @@ namespace Google.Solutions.IapDesktop.Application.Services
                             new JobDescription("Authorizing"),
                             async _ =>
                             {
-                                await this.authService.Authorization.ReauthorizeAsync();
+                                await this.authService.ReauthorizeAsync(CancellationToken.None);
                                 return default(T);
                             });
                     }

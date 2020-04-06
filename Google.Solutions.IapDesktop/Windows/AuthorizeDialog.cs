@@ -24,6 +24,8 @@ using Google.Apis.Auth.OAuth2.Flows;
 using Google.Apis.Util.Store;
 using Google.Solutions.Compute.Auth;
 using System;
+using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
@@ -52,12 +54,16 @@ namespace Google.Solutions.IapDesktop.Windows
             string[] scopes,
             IDataStore dataStore)
         {
-            var initializer = new GoogleAuthorizationCodeFlow.Initializer
-            {
-                ClientSecrets = clientSecrets,
-                Scopes = scopes,
-                DataStore = dataStore
-            };
+            // N.B. Do not dispose the adapter (and embedded GoogleAuthorizationCodeFlow)
+            // as it might be needed for token refreshes later.
+            var oauthAdapter = new GoogleAuthAdapter(
+                new GoogleAuthorizationCodeFlow.Initializer
+                {
+                    ClientSecrets = clientSecrets,
+                    Scopes = scopes,
+                    DataStore = dataStore
+                }, 
+                Resources.AuthorizationSuccessful);
 
             using (var dialog = new AuthorizeDialog())
             {
@@ -67,8 +73,8 @@ namespace Google.Solutions.IapDesktop.Windows
                     {
                         // Try to authorize using OAuth.
                         dialog.authorization = await OAuthAuthorization.TryLoadExistingAuthorizationAsync(
-                            initializer,
-                            Resources.AuthorizationSuccessful);
+                            oauthAdapter,
+                            CancellationToken.None);
 
                         if (dialog.authorization != null)
                         {
@@ -96,8 +102,8 @@ namespace Google.Solutions.IapDesktop.Windows
                     dialog.ToggleSignInButton();
 
                     dialog.authorization = await OAuthAuthorization.CreateAuthorizationAsync(
-                        initializer,
-                        Resources.AuthorizationSuccessful);
+                        oauthAdapter,
+                        CancellationToken.None);
 
                     dialog.Close();
                 };

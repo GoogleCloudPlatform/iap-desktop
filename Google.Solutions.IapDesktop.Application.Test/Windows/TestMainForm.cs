@@ -65,12 +65,14 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows
         {
             public ICredential Credential { get; }
 
+            public string Email => "test@example.com";
+
             public SimpleAuthorization(ICredential credential)
             {
                 this.Credential = credential;
             }
 
-            public Task ReauthorizeAsync()
+            public Task ReauthorizeAsync(CancellationToken token)
             {
                 throw new NotImplementedException();
             }
@@ -82,5 +84,8 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows
         }
 
         public IAuthorization Authorization => new SimpleAuthorization(Defaults.GetCredential());
+
+        public Task ReauthorizeAsync(CancellationToken token) 
+            => this.Authorization.ReauthorizeAsync(token);
     }
 }

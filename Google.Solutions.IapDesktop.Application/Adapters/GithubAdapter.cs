@@ -19,7 +19,7 @@
 // under the License.
 //
 
-using Google.Solutions.IapDesktop.Application.Util;
+using Google.Solutions.Compute.Test.Net;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -69,7 +69,10 @@ namespace Google.Solutions.IapDesktop.Application.Adapters
             using (TraceSources.IapDesktop.TraceMethod().WithoutParameters())
             {
                 var assemblyName = typeof(ComputeEngineAdapter).Assembly.GetName();
-                var client = new RestClient($"{assemblyName.Name}/{assemblyName.Version}");
+                var client = new RestClient()
+                {
+                    UserAgent = $"{assemblyName.Name}/{assemblyName.Version}"
+                };
 
                 var latestRelease = await client.GetAsync<Release>(
                     LatestReleaseUrl,

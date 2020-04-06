@@ -1,5 +1,5 @@
 ﻿//
-// Copyright 2020 Google LLC
+// Copyright 2019 Google LLC
 //
 // Licensed to the Apache Software Foundation (ASF) under one
 // or more contributor license agreements.  See the NOTICE file
@@ -19,16 +19,37 @@
 // under the License.
 //
 
-using Google.Solutions.Compute.Auth;
+using Google.Apis.Auth.OAuth2;
+using Google.Apis.Auth.OAuth2.Responses;
+using Newtonsoft.Json;
+using System;
+using System.Collections;
+using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Google.Solutions.IapDesktop.Application.Services
+namespace Google.Solutions.Compute.Auth
 {
-    public interface IAuthorizationService
+    public interface IAuthAdapter : IDisposable
     {
-        IAuthorization Authorization { get; }
+        IEnumerable<string> Scopes { get; }
 
-        Task ReauthorizeAsync(CancellationToken token);
+        Task<TokenResponse> GetStoredRefreshTokenAsync(CancellationToken token);
+
+        bool IsRefreshTokenValid(TokenResponse tokenResponse);
+
+        Task DeleteStoredRefreshToken();
+
+        ICredential AuthorizeUsingRefreshToken(TokenResponse tokenResponse);
+
+        Task<ICredential> AuthorizeUsingBrowserAsync(CancellationToken token);
+
+        Task<UserInfo> QueryUserInfoAsync(ICredential credential, CancellationToken token);
+    }
+
+    public class UserInfo
+    {
+        [JsonProperty("email")]
+        public string Email { get; set; }
     }
 }
