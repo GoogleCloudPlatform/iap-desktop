@@ -29,7 +29,7 @@ using WeifenLuo.WinFormsUI.Docking;
 
 namespace Google.Solutions.IapDesktop.Application.Windows.RemoteDesktop
 {
-    public interface IRemoteDesktiopSession
+    public interface IRemoteDesktopSession
     {
         void Close();
     }
@@ -73,7 +73,7 @@ namespace Google.Solutions.IapDesktop.Application.Windows.RemoteDesktop
             }
         }
 
-        public IRemoteDesktiopSession Connect(
+        public IRemoteDesktopSession Connect(
             VmInstanceReference vmInstance,
             string server,
             ushort port,

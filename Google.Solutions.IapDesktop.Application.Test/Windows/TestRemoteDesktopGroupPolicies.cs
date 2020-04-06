@@ -37,7 +37,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows
     [Category("IAP")]
     public class TestRemoteDesktopWithServerSideGroupPolicies : WindowTestFixtureBase
     {
-        private async Task<IRemoteDesktiopSession> Connect(
+        private async Task<IRemoteDesktopSession> Connect(
             RdpTunnel tunnel,
             VmInstanceReference vmInstanceReference)
         {

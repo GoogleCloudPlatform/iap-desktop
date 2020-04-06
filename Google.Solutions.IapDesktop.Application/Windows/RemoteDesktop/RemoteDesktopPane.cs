@@ -38,7 +38,7 @@ using WeifenLuo.WinFormsUI.Docking;
 
 namespace Google.Solutions.IapDesktop.Application.Windows.RemoteDesktop
 {
-    public partial class RemoteDesktopPane : ToolWindow, IRemoteDesktiopSession
+    public partial class RemoteDesktopPane : ToolWindow, IRemoteDesktopSession
     {
         private readonly IExceptionDialog exceptionDialog;
         private readonly IEventService eventService;
