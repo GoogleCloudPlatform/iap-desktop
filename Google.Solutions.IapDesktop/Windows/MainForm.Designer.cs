@@ -80,6 +80,7 @@ namespace Google.Solutions.IapDesktop.Windows
             this.disconnectToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripMenuItemSeparator = new System.Windows.Forms.ToolStripSeparator();
             this.showSecurityScreenToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.showtaskManagerToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.mainMenu.SuspendLayout();
             this.statusStrip.SuspendLayout();
             this.SuspendLayout();
@@ -142,7 +143,8 @@ namespace Google.Solutions.IapDesktop.Windows
             this.fullScreenToolStripMenuItem,
             this.disconnectToolStripMenuItem,
             this.toolStripMenuItemSeparator,
-            this.showSecurityScreenToolStripMenuItem});
+            this.showSecurityScreenToolStripMenuItem,
+            this.showtaskManagerToolStripMenuItem});
             this.desktopToolStripMenuItem.Name = "desktopToolStripMenuItem";
             this.desktopToolStripMenuItem.Size = new System.Drawing.Size(62, 20);
             this.desktopToolStripMenuItem.Text = "Desktop";
@@ -306,8 +308,15 @@ namespace Google.Solutions.IapDesktop.Windows
             // 
             this.showSecurityScreenToolStripMenuItem.Name = "showSecurityScreenToolStripMenuItem";
             this.showSecurityScreenToolStripMenuItem.Size = new System.Drawing.Size(184, 22);
-            this.showSecurityScreenToolStripMenuItem.Text = "&Show security screen";
+            this.showSecurityScreenToolStripMenuItem.Text = "Show &security screen";
             this.showSecurityScreenToolStripMenuItem.Click += new System.EventHandler(this.showSecurityScreenToolStripMenuItem_Click);
+            // 
+            // showtaskManagerToolStripMenuItem
+            // 
+            this.showtaskManagerToolStripMenuItem.Name = "showtaskManagerToolStripMenuItem";
+            this.showtaskManagerToolStripMenuItem.Size = new System.Drawing.Size(184, 22);
+            this.showtaskManagerToolStripMenuItem.Text = "Show &task manager";
+            this.showtaskManagerToolStripMenuItem.Click += new System.EventHandler(this.showtaskManagerToolStripMenuItem_Click);
             // 
             // MainForm
             // 
@@ -365,5 +374,6 @@ namespace Google.Solutions.IapDesktop.Windows
         private System.Windows.Forms.ToolStripMenuItem disconnectToolStripMenuItem;
         private System.Windows.Forms.ToolStripSeparator toolStripMenuItemSeparator;
         private System.Windows.Forms.ToolStripMenuItem showSecurityScreenToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem showtaskManagerToolStripMenuItem;
     }
 }

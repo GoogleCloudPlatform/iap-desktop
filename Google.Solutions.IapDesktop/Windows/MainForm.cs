@@ -369,6 +369,23 @@ namespace Google.Solutions.IapDesktop.Windows
                     .Show(this, "Failed to send key sequence", e);
             }
         }
+        private void showtaskManagerToolStripMenuItem_Click(object sender, EventArgs _)
+        {
+            try
+            {
+                var session = this.serviceProvider.GetService<RemoteDesktopService>().ActiveSession;
+                if (session != null)
+                {
+                    session.ShowTaskManager();
+                }
+            }
+            catch (Exception e)
+            {
+                this.serviceProvider
+                    .GetService<IExceptionDialog>()
+                    .Show(this, "Failed to send key sequence", e);
+            }
+        }
 
         //---------------------------------------------------------------------
         // IAuthorizationService.
@@ -426,6 +443,7 @@ namespace Google.Solutions.IapDesktop.Windows
                 MessageBoxButtons.YesNoCancel,
                 MessageBoxIcon.Warning) == DialogResult.Yes;
         }
+
     }
 
     internal abstract class AsyncEvent

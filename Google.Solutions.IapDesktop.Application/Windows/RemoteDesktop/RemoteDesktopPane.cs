@@ -441,5 +441,17 @@ namespace Google.Solutions.IapDesktop.Application.Windows.RemoteDesktop
                 Keys.Menu,
                 Keys.Delete);
         }
+
+        public void ShowTaskManager()
+        {
+            var nonScriptable = (IMsRdpClientNonScriptable5)this.rdpClient.GetOcx();
+
+            this.rdpClient.Focus();
+
+            nonScriptable.SendKeys(
+                Keys.ControlKey,
+                Keys.ShiftKey,
+                Keys.Escape);
+        }
     }
 }

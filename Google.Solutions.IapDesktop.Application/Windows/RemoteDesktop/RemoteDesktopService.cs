@@ -38,6 +38,8 @@ namespace Google.Solutions.IapDesktop.Application.Windows.RemoteDesktop
         bool IsConnected { get; }
 
         void ShowSecurityScreen();
+
+        void ShowTaskManager();
     }
 
     public class RemoteDesktopService
