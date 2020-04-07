@@ -25,6 +25,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -33,6 +34,7 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Google.Apis, Version=1.40.3.0, Culture=neutral, PublicKeyToken=4b01fa6e34db77ab, processorArchitecture=MSIL">
@@ -153,6 +155,7 @@
     <Compile Include="Windows\ProjectExplorer\ShowCredentialsDialog.designer.cs">
       <DependentUpon>ShowCredentialsDialog.cs</DependentUpon>
     </Compile>
+    <Compile Include="Windows\RemoteDesktop\RdpClientExtensions.cs" />
     <Compile Include="Windows\RemoteDesktop\RdpExceptions.cs" />
     <Compile Include="Windows\RemoteDesktop\RemoteDesktopPane.cs">
       <SubType>Form</SubType>

@@ -29,7 +29,6 @@ using MSTSCLib;
 using System;
 using System.ComponentModel;
 using System.Data;
-using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
 using System.Threading.Tasks;
@@ -38,12 +37,42 @@ using WeifenLuo.WinFormsUI.Docking;
 
 namespace Google.Solutions.IapDesktop.Application.Windows.RemoteDesktop
 {
-    public partial class RemoteDesktopPane : ToolWindow, IRemoteDesktiopSession
+    public partial class RemoteDesktopPane : ToolWindow, IRemoteDesktopSession
     {
         private readonly IExceptionDialog exceptionDialog;
         private readonly IEventService eventService;
 
-        public VmInstanceReference Instance;
+        private int keysSent = 0;
+
+        public VmInstanceReference Instance { get; }
+
+        private void UpdateLayout()
+        {
+            // NB. Docking does not work reliably with the OCX, so keep the size
+            // in sync programmatically.
+            this.rdpClient.Size = this.Size;
+
+            // It would be nice to update the desktop size as well, but that's not
+            // supported by the control.
+
+            this.spinner.Location = new Point(
+                (this.Size.Width - this.spinner.Width) / 2,
+                (this.Size.Height - this.spinner.Height) / 2);
+        }
+
+        private async Task ShowErrorAndClose(string caption, RdpException e)
+        {
+            using (TraceSources.IapDesktop.TraceMethod().WithParameters(e.Message))
+            {
+                await this.eventService.FireAsync(
+                    new RemoteDesktopConnectionFailedEvent(this.Instance, e));
+                this.exceptionDialog.Show(this, caption, e);
+                Close();
+            }
+        }
+        //---------------------------------------------------------------------
+        // Publics.
+        //---------------------------------------------------------------------
 
         public RemoteDesktopPane(
             IEventService eventService,
@@ -197,11 +226,11 @@ namespace Google.Solutions.IapDesktop.Application.Windows.RemoteDesktop
                 //
                 // Keyboard settings.
                 //
-                // TODO: Map advancedSettings2.HotKey*
-                //
                 // NB. Apply key combinations to the remote server only when the client is running 
                 // in full-screen mode.
                 this.rdpClient.SecuredSettings2.KeyboardHookMode = 2;
+
+                advancedSettings.allowBackgroundInput = 1;
 
                 this.rdpClient.Connect();
             }
@@ -209,31 +238,6 @@ namespace Google.Solutions.IapDesktop.Application.Windows.RemoteDesktop
 
         public bool IsConnected => this.rdpClient.Connected == 1;
         public bool IsConnecting => this.rdpClient.Connected == 2;
-
-        private void UpdateLayout()
-        {
-            // NB. Docking does not work reliably with the OCX, so keep the size
-            // in sync programmatically.
-            this.rdpClient.Size = this.Size;
-
-            // It would be nice to update the desktop size as well, but that's not
-            // supported by the control.
-
-            this.spinner.Location = new Point(
-                (this.Size.Width - this.spinner.Width) / 2,
-                (this.Size.Height - this.spinner.Height) / 2);
-        }
-
-        private async Task ShowErrorAndClose(string caption, RdpException e)
-        {
-            using (TraceSources.IapDesktop.TraceMethod().WithParameters(e.Message))
-            {
-                await this.eventService.FireAsync(
-                    new RemoteDesktopConnectionFailedEvent(this.Instance, e));
-                this.exceptionDialog.Show(this, caption, e);
-                Close();
-            }
-        }
 
         //---------------------------------------------------------------------
         // Window events.
@@ -290,7 +294,7 @@ namespace Google.Solutions.IapDesktop.Application.Windows.RemoteDesktop
 
         private void fullScreenMenuItem_Click(object sender, EventArgs e)
         {
-            this.rdpClient.FullScreen = true;
+            TrySetFullscreen(true);
         }
 
         //---------------------------------------------------------------------
@@ -408,6 +412,67 @@ namespace Google.Solutions.IapDesktop.Application.Windows.RemoteDesktop
         {
             using (TraceSources.IapDesktop.TraceMethod().WithoutParameters())
             { }
+        }
+
+
+        //---------------------------------------------------------------------
+        // IRemoteDesktopSession.
+        //---------------------------------------------------------------------
+
+        public bool TrySetFullscreen(bool fullscreen)
+        {
+            using (TraceSources.IapDesktop.TraceMethod().WithoutParameters())
+            {
+                if (this.IsConnecting)
+                {
+                    // Do not mess with the control while connecting.
+                    return false;
+                }
+
+                this.rdpClient.FullScreen = fullscreen;
+                return true;
+            }
+        }
+
+        public void ShowSecurityScreen()
+        {
+            using (TraceSources.IapDesktop.TraceMethod().WithoutParameters())
+            {
+                SendKeys(
+                    Keys.ControlKey,
+                    Keys.Menu,
+                    Keys.Delete);
+            }
+        }
+
+        public void ShowTaskManager()
+        {
+            using (TraceSources.IapDesktop.TraceMethod().WithoutParameters())
+            {
+                SendKeys(
+                    Keys.ControlKey,
+                    Keys.ShiftKey,
+                    Keys.Escape);
+            }
+        }
+
+        public void SendKeys(params Keys[] keys)
+        {
+            using (TraceSources.IapDesktop.TraceMethod().WithoutParameters())
+            {
+                this.rdpClient.Focus();
+
+                var nonScriptable = (IMsRdpClientNonScriptable5)this.rdpClient.GetOcx();
+
+                if (this.keysSent++ == 0)
+                {
+                    // The RDP control sometimes swallows the first key combination
+                    // that is sent. So start by a harmess ESC.
+                    SendKeys(Keys.Escape);
+                }
+
+                nonScriptable.SendKeys(keys);
+            }
         }
     }
 }

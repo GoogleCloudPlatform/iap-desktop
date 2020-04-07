@@ -58,6 +58,8 @@ namespace Google.Solutions.IapDesktop.Windows
             this.fileSeparatorToolStripMenuItem = new System.Windows.Forms.ToolStripSeparator();
             this.signoutToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.exitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.desktopToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.fullScreenToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.viewToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.projectExplorerToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.activeTunnelsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -75,6 +77,10 @@ namespace Google.Solutions.IapDesktop.Windows
             this.toolStripStatus = new System.Windows.Forms.ToolStripStatusLabel();
             this.toolStripEmail = new System.Windows.Forms.ToolStripStatusLabel();
             this.dockPanel = new WeifenLuo.WinFormsUI.Docking.DockPanel();
+            this.disconnectToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripMenuItemSeparator = new System.Windows.Forms.ToolStripSeparator();
+            this.showSecurityScreenToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.showtaskManagerToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.mainMenu.SuspendLayout();
             this.statusStrip.SuspendLayout();
             this.SuspendLayout();
@@ -83,6 +89,7 @@ namespace Google.Solutions.IapDesktop.Windows
             // 
             this.mainMenu.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.fileToolStripMenuItem,
+            this.desktopToolStripMenuItem,
             this.viewToolStripMenuItem,
             this.optionsToolStripMenuItem,
             this.helpToolStripMenuItem});
@@ -129,6 +136,27 @@ namespace Google.Solutions.IapDesktop.Windows
             this.exitToolStripMenuItem.Size = new System.Drawing.Size(221, 22);
             this.exitToolStripMenuItem.Text = "E&xit";
             this.exitToolStripMenuItem.Click += new System.EventHandler(this.exitToolStripMenuItem_Click);
+            // 
+            // desktopToolStripMenuItem
+            // 
+            this.desktopToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.fullScreenToolStripMenuItem,
+            this.disconnectToolStripMenuItem,
+            this.toolStripMenuItemSeparator,
+            this.showSecurityScreenToolStripMenuItem,
+            this.showtaskManagerToolStripMenuItem});
+            this.desktopToolStripMenuItem.Name = "desktopToolStripMenuItem";
+            this.desktopToolStripMenuItem.Size = new System.Drawing.Size(62, 20);
+            this.desktopToolStripMenuItem.Text = "Desktop";
+            this.desktopToolStripMenuItem.DropDownOpening += new System.EventHandler(this.desktopToolStripMenuItem_DropDownOpening);
+            // 
+            // fullScreenToolStripMenuItem
+            // 
+            this.fullScreenToolStripMenuItem.Name = "fullScreenToolStripMenuItem";
+            this.fullScreenToolStripMenuItem.ShortcutKeys = System.Windows.Forms.Keys.F11;
+            this.fullScreenToolStripMenuItem.Size = new System.Drawing.Size(184, 22);
+            this.fullScreenToolStripMenuItem.Text = "&Full screen";
+            this.fullScreenToolStripMenuItem.Click += new System.EventHandler(this.fullScreenToolStripMenuItem_Click);
             // 
             // viewToolStripMenuItem
             // 
@@ -243,7 +271,7 @@ namespace Google.Solutions.IapDesktop.Windows
             // toolStripStatus
             // 
             this.toolStripStatus.Name = "toolStripStatus";
-            this.toolStripStatus.Size = new System.Drawing.Size(854, 17);
+            this.toolStripStatus.Size = new System.Drawing.Size(885, 17);
             this.toolStripStatus.Spring = true;
             this.toolStripStatus.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
@@ -262,6 +290,33 @@ namespace Google.Solutions.IapDesktop.Windows
             this.dockPanel.Name = "dockPanel";
             this.dockPanel.Size = new System.Drawing.Size(984, 615);
             this.dockPanel.TabIndex = 9;
+            // 
+            // disconnectToolStripMenuItem
+            // 
+            this.disconnectToolStripMenuItem.Name = "disconnectToolStripMenuItem";
+            this.disconnectToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.F4)));
+            this.disconnectToolStripMenuItem.Size = new System.Drawing.Size(184, 22);
+            this.disconnectToolStripMenuItem.Text = "&Disconnect";
+            this.disconnectToolStripMenuItem.Click += new System.EventHandler(this.disconnectToolStripMenuItem_Click);
+            // 
+            // toolStripMenuItemSeparator
+            // 
+            this.toolStripMenuItemSeparator.Name = "toolStripMenuItemSeparator";
+            this.toolStripMenuItemSeparator.Size = new System.Drawing.Size(181, 6);
+            // 
+            // showSecurityScreenToolStripMenuItem
+            // 
+            this.showSecurityScreenToolStripMenuItem.Name = "showSecurityScreenToolStripMenuItem";
+            this.showSecurityScreenToolStripMenuItem.Size = new System.Drawing.Size(184, 22);
+            this.showSecurityScreenToolStripMenuItem.Text = "Show &security screen";
+            this.showSecurityScreenToolStripMenuItem.Click += new System.EventHandler(this.showSecurityScreenToolStripMenuItem_Click);
+            // 
+            // showtaskManagerToolStripMenuItem
+            // 
+            this.showtaskManagerToolStripMenuItem.Name = "showtaskManagerToolStripMenuItem";
+            this.showtaskManagerToolStripMenuItem.Size = new System.Drawing.Size(184, 22);
+            this.showtaskManagerToolStripMenuItem.Text = "Show &task manager";
+            this.showtaskManagerToolStripMenuItem.Click += new System.EventHandler(this.showtaskManagerToolStripMenuItem_Click);
             // 
             // MainForm
             // 
@@ -314,5 +369,11 @@ namespace Google.Solutions.IapDesktop.Windows
         private System.Windows.Forms.ToolStripMenuItem checkForUpdatesOnExitToolStripMenuItem;
         private System.Windows.Forms.ToolStripStatusLabel toolStripStatus;
         private System.Windows.Forms.ToolStripStatusLabel toolStripEmail;
+        private System.Windows.Forms.ToolStripMenuItem desktopToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem fullScreenToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem disconnectToolStripMenuItem;
+        private System.Windows.Forms.ToolStripSeparator toolStripMenuItemSeparator;
+        private System.Windows.Forms.ToolStripMenuItem showSecurityScreenToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem showtaskManagerToolStripMenuItem;
     }
 }

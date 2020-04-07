@@ -224,7 +224,7 @@ namespace Google.Solutions.Compute.Test.Env
     {
         public const string DefaultMachineType = "n1-standard-1";
 
-        public const string WindowsServer2019 = "projects/windows-cloud/global/images/family/windows-core";
+        public const string WindowsServer2019 = "projects/windows-cloud/global/images/family/windows-2019";
         public const string WindowsServerCore2019 = "projects/windows-cloud/global/images/family/windows-2019-core";
 
         protected override string InstanceNamePrefix => "w";

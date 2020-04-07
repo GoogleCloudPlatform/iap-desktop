@@ -29,6 +29,7 @@ using Google.Solutions.IapDesktop.Application.Windows.RemoteDesktop;
 using NUnit.Framework;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Windows.Forms;
 
 namespace Google.Solutions.IapDesktop.Application.Test.Windows
 {
@@ -139,6 +140,46 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows
                 session.Close();
 
                 Assert.IsNotNull(expectedEvent);
+            }
+        }
+
+        [Test, Ignore("Unreliable in CI")]
+        public async Task WhenSigningOutPerSendKeys_ThenWindowIsClosed(
+            [WindowsInstance(ImageFamily = WindowsInstanceAttribute.WindowsServer2019)] 
+            InstanceRequest testInstance)
+        {
+            await testInstance.AwaitReady();
+
+            using (var tunnel = RdpTunnel.Create(testInstance.InstanceReference))
+            using (var gceAdapter = new ComputeEngineAdapter(this.serviceProvider.GetService<IAuthorizationService>()))
+            {
+                var credentials = await gceAdapter.ResetWindowsUserAsync(
+                       testInstance.InstanceReference,
+                       "test",
+                       CancellationToken.None);
+
+                var rdpService = new RemoteDesktopService(this.serviceProvider);
+                var session = (RemoteDesktopPane)rdpService.Connect(
+                    testInstance.InstanceReference,
+                    "localhost",
+                    (ushort)tunnel.LocalPort,
+                    new VmInstanceSettings()
+                    {
+                        Username = credentials.UserName,
+                        Password = credentials.SecurePassword,
+                        AuthenticationLevel = RdpAuthenticationLevel.NoServerAuthentication,
+                        BitmapPersistence = RdpBitmapPersistence.Disabled
+                    });
+
+                AwaitEvent<RemoteDesktopConnectionSuceededEvent>();
+
+                Thread.Sleep(5000);
+                session.ShowSecurityScreen();
+                Thread.Sleep(1000);
+                session.SendKeys(Keys.Menu, Keys.S); // Sign out.
+
+                AwaitEvent<RemoteDesktopWindowClosedEvent>();
+                Assert.IsNull(this.ExceptionShown);
             }
         }
     }
