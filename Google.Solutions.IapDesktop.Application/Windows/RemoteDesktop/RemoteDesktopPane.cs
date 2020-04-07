@@ -225,11 +225,10 @@ namespace Google.Solutions.IapDesktop.Application.Windows.RemoteDesktop
                 //
                 // Keyboard settings.
                 //
-                // TODO: Map advancedSettings2.HotKey*
-                //
                 // NB. Apply key combinations to the remote server only when the client is running 
                 // in full-screen mode.
                 this.rdpClient.SecuredSettings2.KeyboardHookMode = 2;
+
                 advancedSettings.allowBackgroundInput = 1;
 
                 this.rdpClient.Connect();
@@ -434,10 +433,8 @@ namespace Google.Solutions.IapDesktop.Application.Windows.RemoteDesktop
         public void ShowSecurityScreen()
         {
             var nonScriptable = (IMsRdpClientNonScriptable5)this.rdpClient.GetOcx();
-            //nonScriptable.SendKeys(
-            //    Keys.Menu,
-            //    Keys.ShiftKey,
-            //    Keys.Space);
+
+            this.rdpClient.Focus();
 
             nonScriptable.SendKeys(
                 Keys.ControlKey,
