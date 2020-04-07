@@ -143,7 +143,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows
             }
         }
 
-        [Test]
+        [Test, Ignore("Unreliable in CI")]
         public async Task WhenSigningOutPerSendKeys_ThenWindowIsClosed(
             [WindowsInstance(ImageFamily = WindowsInstanceAttribute.WindowsServer2019)] 
             InstanceRequest testInstance)
