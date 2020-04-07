@@ -29,7 +29,6 @@ using MSTSCLib;
 using System;
 using System.ComponentModel;
 using System.Data;
-using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
 using System.Threading.Tasks;
@@ -43,7 +42,9 @@ namespace Google.Solutions.IapDesktop.Application.Windows.RemoteDesktop
         private readonly IExceptionDialog exceptionDialog;
         private readonly IEventService eventService;
 
-        public VmInstanceReference Instance;
+        private int keysSent = 0;
+
+        public VmInstanceReference Instance { get; }
 
         private void UpdateLayout()
         {
@@ -420,38 +421,58 @@ namespace Google.Solutions.IapDesktop.Application.Windows.RemoteDesktop
 
         public bool TrySetFullscreen(bool fullscreen)
         {
-            if (this.IsConnecting)
+            using (TraceSources.IapDesktop.TraceMethod().WithoutParameters())
             {
-                // Do not mess with the control while connecting.
-                return false;
-            }
+                if (this.IsConnecting)
+                {
+                    // Do not mess with the control while connecting.
+                    return false;
+                }
 
-            this.rdpClient.FullScreen = fullscreen;
-            return true;
+                this.rdpClient.FullScreen = fullscreen;
+                return true;
+            }
         }
 
         public void ShowSecurityScreen()
         {
-            var nonScriptable = (IMsRdpClientNonScriptable5)this.rdpClient.GetOcx();
-
-            this.rdpClient.Focus();
-
-            nonScriptable.SendKeys(
-                Keys.ControlKey,
-                Keys.Menu,
-                Keys.Delete);
+            using (TraceSources.IapDesktop.TraceMethod().WithoutParameters())
+            {
+                SendKeys(
+                    Keys.ControlKey,
+                    Keys.Menu,
+                    Keys.Delete);
+            }
         }
 
         public void ShowTaskManager()
         {
-            var nonScriptable = (IMsRdpClientNonScriptable5)this.rdpClient.GetOcx();
+            using (TraceSources.IapDesktop.TraceMethod().WithoutParameters())
+            {
+                SendKeys(
+                    Keys.ControlKey,
+                    Keys.ShiftKey,
+                    Keys.Escape);
+            }
+        }
 
-            this.rdpClient.Focus();
+        public void SendKeys(params Keys[] keys)
+        {
+            using (TraceSources.IapDesktop.TraceMethod().WithoutParameters())
+            {
+                this.rdpClient.Focus();
 
-            nonScriptable.SendKeys(
-                Keys.ControlKey,
-                Keys.ShiftKey,
-                Keys.Escape);
+                var nonScriptable = (IMsRdpClientNonScriptable5)this.rdpClient.GetOcx();
+
+                if (this.keysSent++ == 0)
+                {
+                    // The RDP control sometimes swallows the first key combination
+                    // that is sent. So start by a harmess ESC.
+                    SendKeys(Keys.Escape);
+                }
+
+                nonScriptable.SendKeys(keys);
+            }
         }
     }
 }
