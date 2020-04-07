@@ -316,74 +316,33 @@ namespace Google.Solutions.IapDesktop.Windows
             }
         }
 
-        private void fullScreenToolStripMenuItem_Click(object sender, EventArgs _)
-        {
-            try
-            {
-                var session = this.serviceProvider.GetService<RemoteDesktopService>().ActiveSession;
-                if (session != null)
-                {
-                    session.TrySetFullscreen(true);
-                }
-            }
-            catch (Exception e)
-            {
-                this.serviceProvider
-                    .GetService<IExceptionDialog>()
-                    .Show(this, "Entering full screen failed", e);
-            }
-        }
+        private void fullScreenToolStripMenuItem_Click(object sender, EventArgs args)
+            => DoWithActiveSession(session => session.TrySetFullscreen(true));
 
-        private void disconnectToolStripMenuItem_Click(object sender, EventArgs _)
-        {
-            try
-            {
-                var session = this.serviceProvider.GetService<RemoteDesktopService>().ActiveSession;
-                if (session != null)
-                {
-                    session.Close();
-                }
-            }
-            catch (Exception e)
-            {
-                this.serviceProvider
-                    .GetService<IExceptionDialog>()
-                    .Show(this, "Disconnecting from VM instancefailed", e);
-            }
-        }
+        private void disconnectToolStripMenuItem_Click(object sender, EventArgs args)
+            => DoWithActiveSession(session => session.Close()); 
 
-        private void showSecurityScreenToolStripMenuItem_Click(object sender, EventArgs _)
+        private void showSecurityScreenToolStripMenuItem_Click(object sender, EventArgs args)
+            => DoWithActiveSession(session => session.ShowSecurityScreen()); 
+
+        private void showtaskManagerToolStripMenuItem_Click(object sender, EventArgs args)
+            => DoWithActiveSession(session => session.ShowTaskManager());
+
+        private void DoWithActiveSession(Action<IRemoteDesktopSession> action)
         {
             try
             {
                 var session = this.serviceProvider.GetService<RemoteDesktopService>().ActiveSession;
                 if (session != null)
                 {
-                    session.ShowSecurityScreen();
+                    action(session);
                 }
             }
             catch (Exception e)
             {
                 this.serviceProvider
                     .GetService<IExceptionDialog>()
-                    .Show(this, "Failed to send key sequence", e);
-            }
-        }
-        private void showtaskManagerToolStripMenuItem_Click(object sender, EventArgs _)
-        {
-            try
-            {
-                var session = this.serviceProvider.GetService<RemoteDesktopService>().ActiveSession;
-                if (session != null)
-                {
-                    session.ShowTaskManager();
-                }
-            }
-            catch (Exception e)
-            {
-                this.serviceProvider
-                    .GetService<IExceptionDialog>()
-                    .Show(this, "Failed to send key sequence", e);
+                    .Show(this, "Remote Desktop action failed", e);
             }
         }
 
