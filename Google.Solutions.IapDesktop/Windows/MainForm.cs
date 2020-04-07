@@ -310,7 +310,7 @@ namespace Google.Solutions.IapDesktop.Windows
         private void desktopToolStripMenuItem_DropDownOpening(object sender, EventArgs e)
         {
             var session = this.serviceProvider.GetService<RemoteDesktopService>().ActiveSession;
-            foreach (var item in this.desktopToolStripMenuItem.DropDownItems.Cast<ToolStripDropDownItem>())
+            foreach (var item in this.desktopToolStripMenuItem.DropDownItems.OfType<ToolStripDropDownItem>())
             {
                 item.Enabled = session != null && session.IsConnected;
             }
@@ -349,6 +349,24 @@ namespace Google.Solutions.IapDesktop.Windows
                 this.serviceProvider
                     .GetService<IExceptionDialog>()
                     .Show(this, "Disconnecting from VM instancefailed", e);
+            }
+        }
+
+        private void showSecurityScreenToolStripMenuItem_Click(object sender, EventArgs _)
+        {
+            try
+            {
+                var session = this.serviceProvider.GetService<RemoteDesktopService>().ActiveSession;
+                if (session != null)
+                {
+                    session.ShowSecurityScreen();
+                }
+            }
+            catch (Exception e)
+            {
+                this.serviceProvider
+                    .GetService<IExceptionDialog>()
+                    .Show(this, "Failed to send key sequence", e);
             }
         }
 

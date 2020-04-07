@@ -36,6 +36,8 @@ namespace Google.Solutions.IapDesktop.Application.Windows.RemoteDesktop
         bool TrySetFullscreen(bool fullscreen);
 
         bool IsConnected { get; }
+
+        void ShowSecurityScreen();
     }
 
     public class RemoteDesktopService

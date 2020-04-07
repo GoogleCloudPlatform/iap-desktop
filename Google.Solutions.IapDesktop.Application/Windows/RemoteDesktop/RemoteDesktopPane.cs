@@ -45,6 +45,34 @@ namespace Google.Solutions.IapDesktop.Application.Windows.RemoteDesktop
 
         public VmInstanceReference Instance;
 
+        private void UpdateLayout()
+        {
+            // NB. Docking does not work reliably with the OCX, so keep the size
+            // in sync programmatically.
+            this.rdpClient.Size = this.Size;
+
+            // It would be nice to update the desktop size as well, but that's not
+            // supported by the control.
+
+            this.spinner.Location = new Point(
+                (this.Size.Width - this.spinner.Width) / 2,
+                (this.Size.Height - this.spinner.Height) / 2);
+        }
+
+        private async Task ShowErrorAndClose(string caption, RdpException e)
+        {
+            using (TraceSources.IapDesktop.TraceMethod().WithParameters(e.Message))
+            {
+                await this.eventService.FireAsync(
+                    new RemoteDesktopConnectionFailedEvent(this.Instance, e));
+                this.exceptionDialog.Show(this, caption, e);
+                Close();
+            }
+        }
+        //---------------------------------------------------------------------
+        // Publics.
+        //---------------------------------------------------------------------
+
         public RemoteDesktopPane(
             IEventService eventService,
             IExceptionDialog exceptionDialog,
@@ -202,6 +230,7 @@ namespace Google.Solutions.IapDesktop.Application.Windows.RemoteDesktop
                 // NB. Apply key combinations to the remote server only when the client is running 
                 // in full-screen mode.
                 this.rdpClient.SecuredSettings2.KeyboardHookMode = 2;
+                advancedSettings.allowBackgroundInput = 1;
 
                 this.rdpClient.Connect();
             }
@@ -209,31 +238,6 @@ namespace Google.Solutions.IapDesktop.Application.Windows.RemoteDesktop
 
         public bool IsConnected => this.rdpClient.Connected == 1;
         public bool IsConnecting => this.rdpClient.Connected == 2;
-
-        private void UpdateLayout()
-        {
-            // NB. Docking does not work reliably with the OCX, so keep the size
-            // in sync programmatically.
-            this.rdpClient.Size = this.Size;
-
-            // It would be nice to update the desktop size as well, but that's not
-            // supported by the control.
-
-            this.spinner.Location = new Point(
-                (this.Size.Width - this.spinner.Width) / 2,
-                (this.Size.Height - this.spinner.Height) / 2);
-        }
-
-        private async Task ShowErrorAndClose(string caption, RdpException e)
-        {
-            using (TraceSources.IapDesktop.TraceMethod().WithParameters(e.Message))
-            {
-                await this.eventService.FireAsync(
-                    new RemoteDesktopConnectionFailedEvent(this.Instance, e));
-                this.exceptionDialog.Show(this, caption, e);
-                Close();
-            }
-        }
 
         //---------------------------------------------------------------------
         // Window events.
@@ -425,6 +429,20 @@ namespace Google.Solutions.IapDesktop.Application.Windows.RemoteDesktop
 
             this.rdpClient.FullScreen = fullscreen;
             return true;
+        }
+
+        public void ShowSecurityScreen()
+        {
+            var nonScriptable = (IMsRdpClientNonScriptable5)this.rdpClient.GetOcx();
+            //nonScriptable.SendKeys(
+            //    Keys.Menu,
+            //    Keys.ShiftKey,
+            //    Keys.Space);
+
+            nonScriptable.SendKeys(
+                Keys.ControlKey,
+                Keys.Menu,
+                Keys.Delete);
         }
     }
 }
