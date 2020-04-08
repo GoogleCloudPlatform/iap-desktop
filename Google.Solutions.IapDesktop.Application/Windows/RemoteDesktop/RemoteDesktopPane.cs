@@ -29,6 +29,7 @@ using MSTSCLib;
 using System;
 using System.ComponentModel;
 using System.Data;
+using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
 using System.Threading.Tasks;
@@ -43,6 +44,7 @@ namespace Google.Solutions.IapDesktop.Application.Windows.RemoteDesktop
         private readonly IEventService eventService;
 
         private int keysSent = 0;
+        private bool autoResize = false;
 
         public VmInstanceReference Instance { get; }
 
@@ -198,16 +200,26 @@ namespace Google.Solutions.IapDesktop.Application.Windows.RemoteDesktop
                         break;
                 }
 
-                if (settings.DesktopSize == RdpDesktopSize.ScreenSize)
+                switch (settings.DesktopSize)
                 {
-                    var screenSize = Screen.GetBounds(this);
-                    this.rdpClient.DesktopHeight = screenSize.Height;
-                    this.rdpClient.DesktopWidth = screenSize.Width;
-                }
-                else
-                {
-                    this.rdpClient.DesktopHeight = this.Size.Height;
-                    this.rdpClient.DesktopWidth = this.Size.Width;
+                    case RdpDesktopSize.ScreenSize:
+                        var screenSize = Screen.GetBounds(this);
+                        this.rdpClient.DesktopHeight = screenSize.Height;
+                        this.rdpClient.DesktopWidth = screenSize.Width;
+                        this.autoResize = false;
+                        break;
+
+                    case RdpDesktopSize.ClientSize:
+                        this.rdpClient.DesktopHeight = this.Size.Height;
+                        this.rdpClient.DesktopWidth = this.Size.Width;
+                        this.autoResize = false;
+                        break;
+
+                    case RdpDesktopSize.AutoAdjust:
+                        this.rdpClient.DesktopHeight = this.Size.Height;
+                        this.rdpClient.DesktopWidth = this.Size.Width;
+                        this.autoResize = true;
+                        break;
                 }
 
                 switch (settings.BitmapPersistence)
@@ -246,6 +258,14 @@ namespace Google.Solutions.IapDesktop.Application.Windows.RemoteDesktop
         private void RemoteDesktopPane_SizeChanged(object sender, EventArgs e)
         {
             UpdateLayout();
+
+            if (this.autoResize)
+            {
+                // Do not resize immediately since there might be another resitze
+                // event coming in a few miliseconds. Instead, delay the operation
+                // by deferring it to a timer.
+                this.reconnectToResizeTimer.Start();
+            }
         }
 
         private async void RemoteDesktopPane_FormClosing(object sender, FormClosingEventArgs args)
@@ -295,6 +315,22 @@ namespace Google.Solutions.IapDesktop.Application.Windows.RemoteDesktop
         private void fullScreenMenuItem_Click(object sender, EventArgs e)
         {
             TrySetFullscreen(true);
+        }
+
+        private void reconnectToResizeTimer_Tick(object sender, EventArgs e)
+        {
+            using (TraceSources.IapDesktop.TraceMethod().WithoutParameters())
+            {
+                if (!this.IsConnecting)
+                {
+                    Debug.WriteLine("resizing");
+
+                    var status = this.rdpClient.Reconnect((uint)this.Size.Width, (uint)this.Size.Height);
+                }
+
+                // Do not fire again.
+                reconnectToResizeTimer.Stop();
+            }
         }
 
         //---------------------------------------------------------------------

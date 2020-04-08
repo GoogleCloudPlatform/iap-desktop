@@ -49,9 +49,11 @@ namespace Google.Solutions.IapDesktop.Application.Windows.RemoteDesktop
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(RemoteDesktopPane));
             this.rdpClient = new AxMSTSCLib.AxMsRdpClient9NotSafeForScripting();
             this.spinner = new System.Windows.Forms.PictureBox();
+            this.reconnectToResizeTimer = new System.Windows.Forms.Timer(this.components);
             ((System.ComponentModel.ISupportInitialize)(this.rdpClient)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.spinner)).BeginInit();
             this.SuspendLayout();
@@ -87,6 +89,11 @@ namespace Google.Solutions.IapDesktop.Application.Windows.RemoteDesktop
             this.spinner.TabIndex = 3;
             this.spinner.TabStop = false;
             // 
+            // reconnectToResizeTimer
+            // 
+            this.reconnectToResizeTimer.Interval = 1000;
+            this.reconnectToResizeTimer.Tick += new System.EventHandler(this.reconnectToResizeTimer_Tick);
+            // 
             // RemoteDesktopPane
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -109,5 +116,6 @@ namespace Google.Solutions.IapDesktop.Application.Windows.RemoteDesktop
 
         private AxMSTSCLib.AxMsRdpClient9NotSafeForScripting rdpClient;
         private System.Windows.Forms.PictureBox spinner;
+        private System.Windows.Forms.Timer reconnectToResizeTimer;
     }
 }
