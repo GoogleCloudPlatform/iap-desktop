@@ -92,8 +92,10 @@ namespace Google.Solutions.IapDesktop.Application.ProjectExplorer
         }
 
         protected bool IsUsernameSet => this.settings.Username != null;
+
         public bool ShouldSerializeUsername() => IsUsernameSet;
 
+        //---------------------------------------------------------------------
 
         [Browsable(true)]
         [BrowsableSetting]
@@ -120,8 +122,10 @@ namespace Google.Solutions.IapDesktop.Application.ProjectExplorer
         }
 
         protected bool IsPasswordSet => this.settings.Password != null;
+
         public bool ShouldSerializeCleartextPassword() => IsPasswordSet;
 
+        //---------------------------------------------------------------------
 
         [Browsable(true)]
         [BrowsableSetting]
@@ -137,8 +141,10 @@ namespace Google.Solutions.IapDesktop.Application.ProjectExplorer
         }
 
         protected bool IsDomainSet => this.settings.Domain != null;
+
         public bool ShouldSerializeDomain() => IsDomainSet;
 
+        //---------------------------------------------------------------------
 
         [Browsable(true)]
         [BrowsableSetting]
@@ -147,15 +153,18 @@ namespace Google.Solutions.IapDesktop.Application.ProjectExplorer
         [Description("Show connection bar in full-screen mode")]
         public RdpConnectionBarState ConnectionBar
         {
-            get => ShouldSerializeConnectionBar()
+            get => IsConnectionBarSet
                 ? this.settings.ConnectionBar
                 : (this.parent != null ? this.parent.ConnectionBar : RdpConnectionBarState._Default);
             set => this.settings.ConnectionBar = value;
         }
 
-        public bool ShouldSerializeConnectionBar()
+        protected bool IsConnectionBarSet 
             => this.settings.ConnectionBar != RdpConnectionBarState._Default;
 
+        public bool ShouldSerializeConnectionBar() => IsConnectionBarSet;
+
+        //---------------------------------------------------------------------
 
         [Browsable(true)]
         [BrowsableSetting]
@@ -164,15 +173,18 @@ namespace Google.Solutions.IapDesktop.Application.ProjectExplorer
         [Description("Size of remote desktop")]
         public RdpDesktopSize DesktopSize
         {
-            get => ShouldSerializeDesktopSize()
+            get => IsDesktopSizeSet
                 ? this.settings.DesktopSize
                 : (this.parent != null ? this.parent.DesktopSize : RdpDesktopSize._Default);
             set => this.settings.DesktopSize = value;
         }
 
-        public bool ShouldSerializeDesktopSize()
+        protected bool IsDesktopSizeSet 
             => this.settings.DesktopSize != RdpDesktopSize._Default;
 
+        public bool ShouldSerializeDesktopSize() => IsDesktopSizeSet;
+
+        //---------------------------------------------------------------------
 
         [Browsable(true)]
         [BrowsableSetting]
@@ -181,15 +193,18 @@ namespace Google.Solutions.IapDesktop.Application.ProjectExplorer
         [Description("Color depth of remote desktop")]
         public RdpColorDepth ColorDepth
         {
-            get => ShouldSerializeColorDepth()
+            get => IsColorDepthSet
                 ? this.settings.ColorDepth
                 : (this.parent != null ? this.parent.ColorDepth : RdpColorDepth._Default);
             set => this.settings.ColorDepth = value;
         }
 
-        public bool ShouldSerializeColorDepth()
+        protected bool IsColorDepthSet 
             => this.settings.ColorDepth != RdpColorDepth._Default;
 
+        public bool ShouldSerializeColorDepth() => IsColorDepthSet;
+
+        //---------------------------------------------------------------------
 
         [Browsable(true)]
         [BrowsableSetting]
@@ -198,15 +213,18 @@ namespace Google.Solutions.IapDesktop.Application.ProjectExplorer
         [Description("Require server authentication when connecting")]
         public RdpAuthenticationLevel AuthenticationLevel
         {
-            get => ShouldSerializeAuthenticationLevel()
+            get => IsAuthenticationLevelSet
                 ? this.settings.AuthenticationLevel
                 : (this.parent != null ? this.parent.AuthenticationLevel : RdpAuthenticationLevel._Default);
             set => this.settings.AuthenticationLevel = value;
         }
 
-        public bool ShouldSerializeAuthenticationLevel()
+        protected bool IsAuthenticationLevelSet 
             => this.settings.AuthenticationLevel != RdpAuthenticationLevel._Default;
 
+        public bool ShouldSerializeAuthenticationLevel() => IsAuthenticationLevelSet;
+
+        //---------------------------------------------------------------------
 
         [Browsable(true)]
         [BrowsableSetting]
@@ -215,15 +233,18 @@ namespace Google.Solutions.IapDesktop.Application.ProjectExplorer
         [Description("Allow clipboard contents to be shared with remote desktop")]
         public RdpRedirectClipboard RedirectClipboard
         {
-            get => ShouldSerializeRedirectClipboard()
+            get => IsRedirectClipboardSet
                 ? this.settings.RedirectClipboard
                 : (this.parent != null ? this.parent.RedirectClipboard : RdpRedirectClipboard._Default);
             set => this.settings.RedirectClipboard = value;
         }
 
-        public bool ShouldSerializeRedirectClipboard()
+        protected bool IsRedirectClipboardSet 
             => this.settings.RedirectClipboard != RdpRedirectClipboard._Default;
 
+        public bool ShouldSerializeRedirectClipboard() => IsRedirectClipboardSet;
+
+        //---------------------------------------------------------------------
 
         [Browsable(true)]
         [BrowsableSetting]
@@ -232,15 +253,18 @@ namespace Google.Solutions.IapDesktop.Application.ProjectExplorer
         [Description("Redirect audio when playing on server")]
         public RdpAudioMode AudioMode
         {
-            get => ShouldSerializeAudioMode()
+            get => IsAudioModeSet
                 ? this.settings.AudioMode
                 : (this.parent != null ? this.parent.AudioMode : RdpAudioMode._Default);
             set => this.settings.AudioMode = value;
         }
 
-        public bool ShouldSerializeAudioMode()
+        protected bool IsAudioModeSet
             => this.settings.AudioMode != RdpAudioMode._Default;
 
+        public bool ShouldSerializeAudioMode() => IsAudioModeSet;
+
+        //---------------------------------------------------------------------
 
         [Browsable(true)]
         [BrowsableSetting]
@@ -249,14 +273,16 @@ namespace Google.Solutions.IapDesktop.Application.ProjectExplorer
         [Description("Use persistent bitmap cache")]
         public RdpBitmapPersistence BitmapPersistence
         {
-            get => ShouldSerializeBitmapPersistence()
+            get => IsBitmapPersistenceSet
                 ? this.settings.BitmapPersistence
                 : (this.parent != null ? this.parent.BitmapPersistence : RdpBitmapPersistence._Default);
             set => this.settings.BitmapPersistence = value;
         }
 
-        public bool ShouldSerializeBitmapPersistence()
+        protected bool IsBitmapPersistenceSet 
             => this.settings.BitmapPersistence != RdpBitmapPersistence._Default;
+
+        public bool ShouldSerializeBitmapPersistence() => IsBitmapPersistenceSet;
     }
 
     internal class ProjectNode : InventoryNode, IProjectExplorerProjectNode
