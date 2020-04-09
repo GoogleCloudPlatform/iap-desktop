@@ -179,6 +179,7 @@ namespace Google.Solutions.IapDesktop.Application.Windows.RemoteDesktop
             {3335, "The account is locked out."},
             {3591, "The account is expired."},
             {3847, "The password is expired."},
+            {4360, "Connection to server was lost." },
             {4615, "The user password must be changed before logging on for the first time."},
             {5639, "The policy does not support delegation of credentials to the target server."},
             {5895, "Delegation of credentials to the target server is not allowed unless mutual authentication has been achieved."},

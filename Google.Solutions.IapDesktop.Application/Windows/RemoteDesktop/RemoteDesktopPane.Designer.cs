@@ -49,9 +49,11 @@ namespace Google.Solutions.IapDesktop.Application.Windows.RemoteDesktop
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(RemoteDesktopPane));
             this.rdpClient = new AxMSTSCLib.AxMsRdpClient9NotSafeForScripting();
             this.spinner = new System.Windows.Forms.PictureBox();
+            this.reconnectToResizeTimer = new System.Windows.Forms.Timer(this.components);
             ((System.ComponentModel.ISupportInitialize)(this.rdpClient)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.spinner)).BeginInit();
             this.SuspendLayout();
@@ -67,6 +69,8 @@ namespace Google.Solutions.IapDesktop.Application.Windows.RemoteDesktop
             this.rdpClient.OnConnecting += new System.EventHandler(this.rdpClient_OnConnecting);
             this.rdpClient.OnConnected += new System.EventHandler(this.rdpClient_OnConnected);
             this.rdpClient.OnDisconnected += new AxMSTSCLib.IMsTscAxEvents_OnDisconnectedEventHandler(this.rdpClient_OnDisconnected);
+            this.rdpClient.OnEnterFullScreenMode += new System.EventHandler(this.rdpClient_OnEnterFullScreenMode);
+            this.rdpClient.OnLeaveFullScreenMode += new System.EventHandler(this.rdpClient_OnLeaveFullScreenMode);
             this.rdpClient.OnFatalError += new AxMSTSCLib.IMsTscAxEvents_OnFatalErrorEventHandler(this.rdpClient_OnFatalError);
             this.rdpClient.OnWarning += new AxMSTSCLib.IMsTscAxEvents_OnWarningEventHandler(this.rdpClient_OnWarning);
             this.rdpClient.OnRemoteDesktopSizeChange += new AxMSTSCLib.IMsTscAxEvents_OnRemoteDesktopSizeChangeEventHandler(this.rdpClient_OnRemoteDesktopSizeChange);
@@ -86,6 +90,11 @@ namespace Google.Solutions.IapDesktop.Application.Windows.RemoteDesktop
             this.spinner.Size = new System.Drawing.Size(44, 44);
             this.spinner.TabIndex = 3;
             this.spinner.TabStop = false;
+            // 
+            // reconnectToResizeTimer
+            // 
+            this.reconnectToResizeTimer.Interval = 1000;
+            this.reconnectToResizeTimer.Tick += new System.EventHandler(this.reconnectToResizeTimer_Tick);
             // 
             // RemoteDesktopPane
             // 
@@ -109,5 +118,6 @@ namespace Google.Solutions.IapDesktop.Application.Windows.RemoteDesktop
 
         private AxMSTSCLib.AxMsRdpClient9NotSafeForScripting rdpClient;
         private System.Windows.Forms.PictureBox spinner;
+        private System.Windows.Forms.Timer reconnectToResizeTimer;
     }
 }

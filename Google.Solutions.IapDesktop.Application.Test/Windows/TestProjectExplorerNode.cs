@@ -197,7 +197,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows
             var zoneB = (ZoneNode)this.projectNode.FirstNode.NextNode;
 
             zoneA.DesktopSize = RdpDesktopSize.ScreenSize;
-            zoneB.DesktopSize = RdpDesktopSize.ClientSize;
+            zoneB.DesktopSize = RdpDesktopSize._Default;
             Assert.AreEqual(RdpDesktopSize.ScreenSize, zoneA.DesktopSize);
             Assert.AreEqual(RdpDesktopSize.ClientSize, zoneB.DesktopSize);
             Assert.IsTrue(zoneA.ShouldSerializeDesktopSize());

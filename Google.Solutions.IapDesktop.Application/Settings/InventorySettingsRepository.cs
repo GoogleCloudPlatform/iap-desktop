@@ -136,9 +136,10 @@ namespace Google.Solutions.IapDesktop.Application.Settings
     {
         ClientSize = 0,
         ScreenSize = 1,
+        AutoAdjust = 2,
 
         [Browsable(false)]
-        _Default = ClientSize
+        _Default = AutoAdjust
     }
 
     public enum RdpAuthenticationLevel
