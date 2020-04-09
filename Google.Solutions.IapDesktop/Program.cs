@@ -109,11 +109,6 @@ namespace Google.Solutions.IapDesktop
         {
             IsLoggingEnabled = false;
 
-#if DEBUG
-            Google.Solutions.IapDesktop.Application.TraceSources.IapDesktop.Switch.Level = SourceLevels.Verbose;
-            Google.Solutions.IapDesktop.Application.TraceSources.IapDesktop.Listeners.Add(new DefaultTraceListener());
-#endif
-
             // Use TLS 1.2 if possible.
             System.Net.ServicePointManager.SecurityProtocol =
                 SecurityProtocolType.Tls12 |

@@ -45,6 +45,7 @@ namespace Google.Solutions.IapDesktop.Application.Windows.RemoteDesktop
 
         private int keysSent = 0;
         private bool autoResize = false;
+        private bool connecting = false;
 
         public VmInstanceReference Instance { get; }
 
@@ -244,12 +245,13 @@ namespace Google.Solutions.IapDesktop.Application.Windows.RemoteDesktop
 
                 advancedSettings.allowBackgroundInput = 1;
 
+                this.connecting = true;
                 this.rdpClient.Connect();
             }
         }
 
-        public bool IsConnected => this.rdpClient.Connected == 1;
-        public bool IsConnecting => this.rdpClient.Connected == 2;
+        public bool IsConnected => this.rdpClient.Connected == 1 && !this.connecting;
+        public bool IsConnecting => this.rdpClient.Connected == 2 && !this.connecting;
 
         //---------------------------------------------------------------------
         // Window events.
@@ -280,6 +282,9 @@ namespace Google.Solutions.IapDesktop.Application.Windows.RemoteDesktop
                     args.Cancel = true;
                     return;
                 }
+
+                // Stop the timer, otherwise it might touch a disposing control.
+                this.reconnectToResizeTimer.Stop();
 
                 if (this.IsConnected)
                 {
@@ -319,17 +324,47 @@ namespace Google.Solutions.IapDesktop.Application.Windows.RemoteDesktop
 
         private void reconnectToResizeTimer_Tick(object sender, EventArgs e)
         {
+            Debug.Assert(this.autoResize);
+
             using (TraceSources.IapDesktop.TraceMethod().WithoutParameters())
             {
+                if (!this.Visible)
+                {
+                    // Form is closing, better not touch anything.
+                    return;
+                }
+
                 if (!this.IsConnecting)
                 {
-                    Debug.WriteLine("resizing");
-
-                    var status = this.rdpClient.Reconnect((uint)this.Size.Width, (uint)this.Size.Height);
+                    // Reconnect to resize remote desktop.
+                    this.rdpClient.Reconnect((uint)this.Size.Width, (uint)this.Size.Height);
                 }
 
                 // Do not fire again.
                 reconnectToResizeTimer.Stop();
+            }
+        }
+
+        private void rdpClient_OnEnterFullScreenMode(object sender, EventArgs e)
+        {
+            if (!this.IsConnecting && this.autoResize)
+            {
+                // Adjust desktop size to full screen.
+                var screenSize = Screen.GetBounds(this);
+
+                this.connecting = true;
+                this.rdpClient.Reconnect((uint)screenSize.Width, (uint)screenSize.Height);
+            }
+        }
+
+        private void rdpClient_OnLeaveFullScreenMode(object sender, EventArgs e)
+        {
+            if (!this.IsConnecting && this.autoResize)
+            {
+                // Return to normal size.
+
+                this.connecting = true;
+                this.rdpClient.Reconnect((uint)this.Size.Width, (uint)this.Size.Height);
             }
         }
 
@@ -382,9 +417,18 @@ namespace Google.Solutions.IapDesktop.Application.Windows.RemoteDesktop
         {
             using (TraceSources.IapDesktop.TraceMethod().WithParameters(this.rdpClient.ConnectedStatusText))
             {
+                Debug.Assert(this.connecting, "Connecting flag must have been set");
+
                 this.spinner.Visible = false;
+
+                // Notify our listeners.
                 await this.eventService.FireAsync(
                     new RemoteDesktopConnectionSuceededEvent(this.Instance));
+
+                // Wait a bit before clearing the connecting flag. The control can
+                // get flaky if connect operations are done too soon.
+                await Task.Delay(2000);
+                this.connecting = false;
             }
         }
 
@@ -428,10 +472,18 @@ namespace Google.Solutions.IapDesktop.Application.Windows.RemoteDesktop
             }
         }
 
-        private void rdpClient_OnAutoReconnected(object sender, EventArgs e)
+        private async void rdpClient_OnAutoReconnected(object sender, EventArgs e)
         {
             using (TraceSources.IapDesktop.TraceMethod().WithoutParameters())
-            { }
+            {
+                if (this.connecting)
+                {
+                    // Wait a bit before clearing the connecting flag. The control can
+                    // get flaky if connect operations are done too soon.
+                    await Task.Delay(2000);
+                    this.connecting = false;
+                }
+            }
         }
 
         private void rdpClient_OnFocusReleased(
@@ -465,6 +517,7 @@ namespace Google.Solutions.IapDesktop.Application.Windows.RemoteDesktop
                     return false;
                 }
 
+                TraceSources.IapDesktop.TraceVerbose("Setting full screen mode to ", fullscreen);
                 this.rdpClient.FullScreen = fullscreen;
                 return true;
             }

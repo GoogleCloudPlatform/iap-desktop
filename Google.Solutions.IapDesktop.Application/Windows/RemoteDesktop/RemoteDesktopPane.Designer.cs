@@ -69,6 +69,8 @@ namespace Google.Solutions.IapDesktop.Application.Windows.RemoteDesktop
             this.rdpClient.OnConnecting += new System.EventHandler(this.rdpClient_OnConnecting);
             this.rdpClient.OnConnected += new System.EventHandler(this.rdpClient_OnConnected);
             this.rdpClient.OnDisconnected += new AxMSTSCLib.IMsTscAxEvents_OnDisconnectedEventHandler(this.rdpClient_OnDisconnected);
+            this.rdpClient.OnEnterFullScreenMode += new System.EventHandler(this.rdpClient_OnEnterFullScreenMode);
+            this.rdpClient.OnLeaveFullScreenMode += new System.EventHandler(this.rdpClient_OnLeaveFullScreenMode);
             this.rdpClient.OnFatalError += new AxMSTSCLib.IMsTscAxEvents_OnFatalErrorEventHandler(this.rdpClient_OnFatalError);
             this.rdpClient.OnWarning += new AxMSTSCLib.IMsTscAxEvents_OnWarningEventHandler(this.rdpClient_OnWarning);
             this.rdpClient.OnRemoteDesktopSizeChange += new AxMSTSCLib.IMsTscAxEvents_OnRemoteDesktopSizeChangeEventHandler(this.rdpClient_OnRemoteDesktopSizeChange);
