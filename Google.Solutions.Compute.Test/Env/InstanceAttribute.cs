@@ -131,6 +131,20 @@ namespace Google.Solutions.Compute.Test.Env
             }
             catch (Exception)
             {
+                var metadata = new List<Metadata.ItemsData>(this.Metadata.ToList());
+
+                // Add metdata that marks this instance as temporary.
+                metadata.Add(new Metadata.ItemsData()
+                {
+                    Key = "type",
+                    Value = "auto-cleanup"
+                });
+                metadata.Add(new Metadata.ItemsData()
+                {
+                    Key = "ttl",
+                    Value = "60" // minutes
+                });
+
                 await computeEngine.Service.Instances.Insert(
                     new Apis.Compute.v1.Data.Instance()
                     {
@@ -150,7 +164,7 @@ namespace Google.Solutions.Compute.Test.Env
                         },
                         Metadata = new Metadata()
                         {
-                            Items = this.Metadata.ToList()
+                            Items = metadata
                         },
                         NetworkInterfaces = new []
                         {
