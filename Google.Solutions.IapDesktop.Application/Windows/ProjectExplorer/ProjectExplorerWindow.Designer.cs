@@ -307,7 +307,7 @@ namespace Google.Solutions.IapDesktop.Application.ProjectExplorer
             this.Name = "ProjectExplorerWindow";
             this.Text = "Project Explorer";
             this.Shown += new System.EventHandler(this.ProjectExplorerWindow_Shown);
-            this.KeyUp += new System.Windows.Forms.KeyEventHandler(this.ProjectExplorerWindow_KeyUp);
+            this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.ProjectExplorerWindow_KeyDown);
             this.toolStrip.ResumeLayout(false);
             this.toolStrip.PerformLayout();
             this.contextMenu.ResumeLayout(false);

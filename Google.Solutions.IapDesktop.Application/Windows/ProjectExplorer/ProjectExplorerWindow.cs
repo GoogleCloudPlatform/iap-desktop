@@ -547,8 +547,13 @@ namespace Google.Solutions.IapDesktop.Application.ProjectExplorer
                     .Show(this, "An error occured", e);
             }
         }
-        private void ProjectExplorerWindow_KeyUp(object sender, KeyEventArgs e)
+
+        private void ProjectExplorerWindow_KeyDown(object sender, KeyEventArgs e)
         {
+            // NB. Hook KeyDown instead of KeyUp event to not interfere with 
+            // child dialogs. With KeyUp, we'd get an event if a child dialog
+            // is dismissed by pressing Enter.
+
             if (e.KeyCode == Keys.F4)
             {
                 openSettingsButton_Click(sender, EventArgs.Empty);
