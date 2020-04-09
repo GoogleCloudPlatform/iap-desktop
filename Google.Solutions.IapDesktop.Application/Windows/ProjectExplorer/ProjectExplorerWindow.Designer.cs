@@ -169,6 +169,7 @@ namespace Google.Solutions.IapDesktop.Application.ProjectExplorer
             // 
             this.treeView.ContextMenuStrip = this.contextMenu;
             this.treeView.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.treeView.HideSelection = false;
             this.treeView.ImageIndex = 0;
             this.treeView.ImageList = this.imageList;
             this.treeView.Location = new System.Drawing.Point(0, 25);
