@@ -134,30 +134,23 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows
         }
 
         [Test]
-        public void WhenDesktopSizeSetInProject_ProjectValueIsInheritedDownToVm(
-            [Values(RdpDesktopSize.ClientSize, RdpDesktopSize.ScreenSize)]
-            RdpDesktopSize size
-            )
+        public void WhenSettingPassword_CleartextPasswordIsMasked()
         {
-            this.projectNode.DesktopSize = size;
+            this.projectNode.CleartextPassword = "actual password";
+
+            Assert.AreEqual("********", this.projectNode.CleartextPassword);
+        }
+
+        [Test]
+        public void WhenSettingPassword_EffectiveSettingsContainRealPassword()
+        {
+            this.projectNode.CleartextPassword = "actual password";
 
             var zoneA = (ZoneNode)this.projectNode.FirstNode;
-            var zoneB = (ZoneNode)this.projectNode.FirstNode.NextNode;
-
-            Assert.AreEqual(size, zoneA.DesktopSize);
-            Assert.AreEqual(size, zoneB.DesktopSize);
-
             var instanceA = (VmInstanceNode)zoneA.FirstNode;
-            var instanceB = (VmInstanceNode)zoneB.FirstNode;
+            var effective = instanceA.EffectiveSettingsWithInheritanceApplied;
 
-            Assert.AreEqual(size, instanceA.DesktopSize);
-            Assert.AreEqual(size, instanceB.DesktopSize);
-
-            Assert.AreEqual(size, instanceA.EffectiveSettingsWithInheritanceApplied.DesktopSize);
-            Assert.AreEqual(size, instanceB.EffectiveSettingsWithInheritanceApplied.DesktopSize);
-
-            Assert.IsFalse(instanceA.ShouldSerializeDesktopSize());
-            Assert.IsFalse(instanceB.ShouldSerializeDesktopSize());
+            Assert.AreEqual("actual password", effective.Password.AsClearText());
         }
 
         [Test]
@@ -189,6 +182,33 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows
         }
 
         [Test]
+        public void WhenDesktopSizeSetInProject_ProjectValueIsInheritedDownToVm(
+            [Values(RdpDesktopSize.ClientSize, RdpDesktopSize.ScreenSize)]
+            RdpDesktopSize size
+            )
+        {
+            this.projectNode.DesktopSize = size;
+
+            var zoneA = (ZoneNode)this.projectNode.FirstNode;
+            var zoneB = (ZoneNode)this.projectNode.FirstNode.NextNode;
+
+            Assert.AreEqual(size, zoneA.DesktopSize);
+            Assert.AreEqual(size, zoneB.DesktopSize);
+
+            var instanceA = (VmInstanceNode)zoneA.FirstNode;
+            var instanceB = (VmInstanceNode)zoneB.FirstNode;
+
+            Assert.AreEqual(size, instanceA.DesktopSize);
+            Assert.AreEqual(size, instanceB.DesktopSize);
+
+            Assert.AreEqual(size, instanceA.EffectiveSettingsWithInheritanceApplied.DesktopSize);
+            Assert.AreEqual(size, instanceB.EffectiveSettingsWithInheritanceApplied.DesktopSize);
+
+            Assert.IsFalse(instanceA.ShouldSerializeDesktopSize());
+            Assert.IsFalse(instanceB.ShouldSerializeDesktopSize());
+        }
+
+        [Test]
         public void WhenDesktopSizeSetInProjectAndZone_ZoneValueIsInheritedDownToVm()
         {
             this.projectNode.DesktopSize = RdpDesktopSize.ClientSize;
@@ -217,6 +237,20 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows
         }
 
         [Test]
+        public void WhenDesktopSizeSetInProjectAndResetInVm_DefaultApplies()
+        {
+            this.projectNode.DesktopSize = RdpDesktopSize.ScreenSize;
+            Assert.AreNotEqual(RdpDesktopSize._Default, this.projectNode.DesktopSize);
+
+            var instanceA = (VmInstanceNode)this.projectNode.FirstNode.FirstNode;
+            instanceA.DesktopSize = RdpDesktopSize._Default;
+
+            Assert.AreEqual(RdpDesktopSize._Default, instanceA.DesktopSize);
+            Assert.AreEqual(RdpDesktopSize._Default, instanceA.EffectiveSettingsWithInheritanceApplied.DesktopSize);
+            Assert.IsFalse(instanceA.ShouldSerializeDesktopSize());
+        }
+
+        [Test]
         public void WhenAuthenticationLevelSetInProjectAndZone_ZoneValueIsInheritedDownToVm()
         {
             this.projectNode.AuthenticationLevel = RdpAuthenticationLevel.RequireServerAuthentication;
@@ -230,6 +264,20 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows
             var instanceA = (VmInstanceNode)zoneA.FirstNode;
             Assert.AreEqual(RdpAuthenticationLevel.AttemptServerAuthentication, instanceA.AuthenticationLevel);
             Assert.AreEqual(RdpAuthenticationLevel.AttemptServerAuthentication, instanceA.EffectiveSettingsWithInheritanceApplied.AuthenticationLevel);
+            Assert.IsFalse(instanceA.ShouldSerializeAuthenticationLevel());
+        }
+
+        [Test]
+        public void WhenAuthenticationLevelSetInProjectAndResetInVm_DefaultApplies()
+        {
+            this.projectNode.AuthenticationLevel = RdpAuthenticationLevel.RequireServerAuthentication;
+            Assert.AreNotEqual(RdpAuthenticationLevel._Default, this.projectNode.AuthenticationLevel);
+
+            var instanceA = (VmInstanceNode)this.projectNode.FirstNode.FirstNode;
+            instanceA.AuthenticationLevel = RdpAuthenticationLevel._Default;
+
+            Assert.AreEqual(RdpAuthenticationLevel._Default, instanceA.AuthenticationLevel);
+            Assert.AreEqual(RdpAuthenticationLevel._Default, instanceA.EffectiveSettingsWithInheritanceApplied.AuthenticationLevel);
             Assert.IsFalse(instanceA.ShouldSerializeAuthenticationLevel());
         }
 
@@ -250,43 +298,80 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows
             Assert.IsFalse(instanceA.ShouldSerializeBitmapPersistence());
         }
 
-
         [Test]
-        public void WhenSettingsAppliedOnProjectAndZone_ThenEffectiveSettingsReflectThese()
+        public void WhenBitmapPersistenceSetInProjectAndResetInVm_DefaultApplies()
         {
-            this.projectNode.AuthenticationLevel = RdpAuthenticationLevel.RequireServerAuthentication;
+            this.projectNode.BitmapPersistence = RdpBitmapPersistence.Enabled;
+            Assert.AreNotEqual(RdpBitmapPersistence._Default, this.projectNode.BitmapPersistence);
 
-            var zoneA = (ZoneNode)this.projectNode.FirstNode;
-            zoneA.Username = "zone";
+            var instanceA = (VmInstanceNode)this.projectNode.FirstNode.FirstNode;
+            instanceA.BitmapPersistence = RdpBitmapPersistence._Default;
 
-            var instanceA = (VmInstanceNode)zoneA.FirstNode;
-            instanceA.Domain = "instance";
-
-            var effective = instanceA.EffectiveSettingsWithInheritanceApplied;
-
-            Assert.AreEqual(RdpAuthenticationLevel.RequireServerAuthentication, effective.AuthenticationLevel);
-            Assert.AreEqual("zone", effective.Username);
-            Assert.AreEqual("instance", effective.Domain);
+            Assert.AreEqual(RdpBitmapPersistence._Default, instanceA.BitmapPersistence);
+            Assert.AreEqual(RdpBitmapPersistence._Default, instanceA.EffectiveSettingsWithInheritanceApplied.BitmapPersistence);
+            Assert.IsFalse(instanceA.ShouldSerializeBitmapPersistence());
         }
 
         [Test]
-        public void WhenSettingPassword_CleartextPasswordIsMasked()
+        public void WhenAudioModeSetInProjectAndZone_ZoneValueIsInheritedDownToVm()
         {
-            this.projectNode.CleartextPassword = "actual password";
+            this.projectNode.AudioMode = RdpAudioMode.DoNotPlay;
 
-            Assert.AreEqual("********", this.projectNode.CleartextPassword);
+            var zoneA = (ZoneNode)this.projectNode.FirstNode;
+
+            zoneA.AudioMode = RdpAudioMode.PlayOnServer;
+            Assert.AreEqual(RdpAudioMode.PlayOnServer, zoneA.AudioMode);
+            Assert.IsTrue(zoneA.ShouldSerializeAudioMode());
+
+            var instanceA = (VmInstanceNode)zoneA.FirstNode;
+            Assert.AreEqual(RdpAudioMode.PlayOnServer, instanceA.AudioMode);
+            Assert.AreEqual(RdpAudioMode.PlayOnServer, instanceA.EffectiveSettingsWithInheritanceApplied.AudioMode);
+            Assert.IsFalse(instanceA.ShouldSerializeAudioMode());
         }
 
         [Test]
-        public void WhenSettingPassword_EffectiveSettingsContainRealPassword()
+        public void WhenAudioModeSetInProjectAndResetInVm_DefaultApplies()
         {
-            this.projectNode.CleartextPassword = "actual password";
+            this.projectNode.AudioMode = RdpAudioMode.PlayOnServer;
+            Assert.AreNotEqual(RdpAudioMode._Default, this.projectNode.AudioMode);
+
+            var instanceA = (VmInstanceNode)this.projectNode.FirstNode.FirstNode;
+            instanceA.AudioMode = RdpAudioMode._Default;
+
+            Assert.AreEqual(RdpAudioMode._Default, instanceA.AudioMode);
+            Assert.AreEqual(RdpAudioMode._Default, instanceA.EffectiveSettingsWithInheritanceApplied.AudioMode);
+            Assert.IsFalse(instanceA.ShouldSerializeAudioMode());
+        }
+
+        [Test]
+        public void WhenColorDepthSetInProjectAndZone_ZoneValueIsInheritedDownToVm()
+        {
+            this.projectNode.ColorDepth = RdpColorDepth.HighColor;
 
             var zoneA = (ZoneNode)this.projectNode.FirstNode;
-            var instanceA = (VmInstanceNode)zoneA.FirstNode;
-            var effective = instanceA.EffectiveSettingsWithInheritanceApplied;
 
-            Assert.AreEqual("actual password", effective.Password.AsClearText());
+            zoneA.ColorDepth = RdpColorDepth.DeepColor;
+            Assert.AreEqual(RdpColorDepth.DeepColor, zoneA.ColorDepth);
+            Assert.IsTrue(zoneA.ShouldSerializeColorDepth());
+
+            var instanceA = (VmInstanceNode)zoneA.FirstNode;
+            Assert.AreEqual(RdpColorDepth.DeepColor, instanceA.ColorDepth);
+            Assert.AreEqual(RdpColorDepth.DeepColor, instanceA.EffectiveSettingsWithInheritanceApplied.ColorDepth);
+            Assert.IsFalse(instanceA.ShouldSerializeColorDepth());
+        }
+
+        [Test]
+        public void WhenColorDepthSetInProjectAndResetInVm_DefaultApplies()
+        {
+            this.projectNode.ColorDepth = RdpColorDepth.DeepColor;
+            Assert.AreNotEqual(RdpColorDepth._Default, this.projectNode.ColorDepth);
+
+            var instanceA = (VmInstanceNode)this.projectNode.FirstNode.FirstNode;
+            instanceA.ColorDepth = RdpColorDepth._Default;
+
+            Assert.AreEqual(RdpColorDepth._Default, instanceA.ColorDepth);
+            Assert.AreEqual(RdpColorDepth._Default, instanceA.EffectiveSettingsWithInheritanceApplied.ColorDepth);
+            Assert.IsFalse(instanceA.ShouldSerializeColorDepth());
         }
     }
 }
