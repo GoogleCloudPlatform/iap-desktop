@@ -64,6 +64,8 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows
             {
                 this.SaveChangesCalls++;
             }
+
+            public string InformationText => null;
         }
 
         class MockSettingsObject : ISettingsObject
@@ -74,6 +76,8 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows
             {
                 this.SaveChangesCalls++;
             }
+
+            public string InformationText => null;
 
             [BrowsableSetting]
             [Browsable(true)]

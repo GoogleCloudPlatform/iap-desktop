@@ -68,6 +68,8 @@ namespace Google.Solutions.IapDesktop.Application.ProjectExplorer
             this.saveSettings(this.settings);
         }
 
+        public virtual string InformationText => null;
+
         internal static string ShortIdFromUrl(string url) => url.Substring(url.LastIndexOf("/") + 1);
 
         //---------------------------------------------------------------------
@@ -454,6 +456,10 @@ namespace Google.Solutions.IapDesktop.Application.ProjectExplorer
             this.InternalIp = InternalIpFromInstance(instance);
             this.ExternalIp = ExternalIpFromInstance(instance);
         }
+
+        public override string InformationText => this.IsConnected
+            ? "Changes only take effect after reconnecting"
+            : null;
 
         [Browsable(true)]
         [BrowsableSetting]

@@ -117,6 +117,10 @@ namespace Google.Solutions.IapDesktop.Application.SettingsEditor
                     // that have a BrowsableSetting attribute.
                     this.propertyGrid.SelectedObject =
                         new FilteringTypeDescriptor<ISettingsObject, BrowsableSettingAttribute>(value);
+
+                    // Update gold bar.
+                    this.ShowGoldBar = value.InformationText != null;
+                    this.infoLabel.Text = value.InformationText ?? string.Empty;
                 }
             }
             get
@@ -186,22 +190,10 @@ namespace Google.Solutions.IapDesktop.Application.SettingsEditor
         public void ShowWindow(ISettingsObject settingsObject)
         {
             this.EditorObject = settingsObject;
+
             Show(this.dockPanel, DockState.DockRightAutoHide);
             this.dockPanel.ActiveAutoHideContent = this;
             Activate();
-        }
-
-        public string NotificationText
-        {
-            set
-            {
-                this.ShowGoldBar = value != null;
-                this.infoLabel.Text = value ?? string.Empty;
-            }
-            get
-            {
-                return this.infoLabel.Text;
-            }
         }
 
         //---------------------------------------------------------------------
