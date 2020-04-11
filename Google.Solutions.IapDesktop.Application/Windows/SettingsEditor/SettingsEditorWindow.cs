@@ -26,6 +26,7 @@ using Google.Solutions.IapDesktop.Application.Windows;
 using System;
 using System.ComponentModel;
 using System.Data;
+using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
 using WeifenLuo.WinFormsUI.Docking;
@@ -34,6 +35,8 @@ namespace Google.Solutions.IapDesktop.Application.SettingsEditor
 {
     public partial class SettingsEditorWindow : ToolWindow, ISettingsEditor
     {
+        private const int GoldBarHeight = 22;
+
         private readonly DockPanel dockPanel;
         private readonly IEventService eventService;
         private readonly InventorySettingsRepository inventorySettingsRepository;
@@ -49,6 +52,7 @@ namespace Google.Solutions.IapDesktop.Application.SettingsEditor
             this.dockPanel = serviceProvider.GetService<IMainForm>().MainPanel;
 
             this.TabText = this.Text;
+            this.ShowGoldBar = false;
 
             //
             // This window is a singleton, so we never want it to be closed,
@@ -62,6 +66,42 @@ namespace Google.Solutions.IapDesktop.Application.SettingsEditor
             this.eventService.BindHandler<ProjectExplorerNodeSelectedEvent>(OnProjectExplorerNodeSelected);
         }
 
+        public bool ShowGoldBar
+        {
+            get
+            {
+                return this.goldBar.Height > 0;
+            }
+            set
+            {
+                if (value == this.goldBar.Height > 0)
+                {
+                    // No change.
+                    return;
+                }
+
+                if (value)
+                {
+                    this.goldBar.Height = GoldBarHeight;
+                    this.propertyGrid.Location = new Point(
+                        this.propertyGrid.Location.X,
+                        this.propertyGrid.Location.Y + GoldBarHeight);
+                    this.propertyGrid.Size = new Size(
+                        this.propertyGrid.Size.Width,
+                        this.propertyGrid.Size.Height - GoldBarHeight);
+                }
+                else
+                {
+                    this.goldBar.Height = 0;
+                    this.propertyGrid.Location = new Point(
+                        this.propertyGrid.Location.X,
+                        this.propertyGrid.Location.Y - GoldBarHeight);
+                    this.propertyGrid.Size = new Size(
+                        this.propertyGrid.Size.Width,
+                        this.propertyGrid.Size.Height + GoldBarHeight);
+                }
+            }
+        }
         private ISettingsObject EditorObject
         {
             set
@@ -151,6 +191,18 @@ namespace Google.Solutions.IapDesktop.Application.SettingsEditor
             Activate();
         }
 
+        public string NotificationText
+        {
+            set
+            {
+                this.ShowGoldBar = value != null;
+                this.infoLabel.Text = value ?? string.Empty;
+            }
+            get
+            {
+                return this.infoLabel.Text;
+            }
+        }
 
         //---------------------------------------------------------------------
         // Custom type descriptor.

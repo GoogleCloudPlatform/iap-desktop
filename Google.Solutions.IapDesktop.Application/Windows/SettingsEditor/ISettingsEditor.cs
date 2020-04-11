@@ -26,6 +26,8 @@ namespace Google.Solutions.IapDesktop.Application.SettingsEditor
     public interface ISettingsEditor
     {
         void ShowWindow(ISettingsObject settingsObject);
+
+        string NotificationText { get; set; }
     }
 
     public class BrowsableSettingAttribute : Attribute

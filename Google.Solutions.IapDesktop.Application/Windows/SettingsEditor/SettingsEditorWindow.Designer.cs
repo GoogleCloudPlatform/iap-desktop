@@ -70,7 +70,7 @@ namespace Google.Solutions.IapDesktop.Application.SettingsEditor
             this.propertyGrid.ContextMenuStrip = this.contextMenuStrip;
             this.propertyGrid.Location = new System.Drawing.Point(0, 22);
             this.propertyGrid.Name = "propertyGrid";
-            this.propertyGrid.Size = new System.Drawing.Size(800, 429);
+            this.propertyGrid.Size = new System.Drawing.Size(800, 428);
             this.propertyGrid.TabIndex = 0;
             this.propertyGrid.PropertyValueChanged += new System.Windows.Forms.PropertyValueChangedEventHandler(this.propertyGrid_PropertyValueChanged);
             // 
