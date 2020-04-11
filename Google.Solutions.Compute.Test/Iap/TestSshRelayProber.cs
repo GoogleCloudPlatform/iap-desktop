@@ -35,7 +35,7 @@ namespace Google.Solutions.Compute.Test.Iap
     public class TestSshRelayProber : FixtureBase
     {
         [Test]
-        public void ProbingNonexistingProjectCausesUnauthorizedException()
+        public void WhenProjectDoesntExist_ThenProbeFailsWithUnauthorizedException()
         {
             using (var stream = new SshRelayStream(
                 new IapTunnelingEndpoint(
@@ -53,7 +53,7 @@ namespace Google.Solutions.Compute.Test.Iap
         }
 
         [Test]
-        public void ProbingNonexistingZoneCausesUnauthorizedException()
+        public void WhenZoneDoesntExist_ThenProbeFailsWithUnauthorizedException()
         {
             using (var stream = new SshRelayStream(
                new IapTunnelingEndpoint(
@@ -71,7 +71,7 @@ namespace Google.Solutions.Compute.Test.Iap
         }
 
         [Test]
-        public void ProbingNonexistingInstanceCausesUnauthorizedException()
+        public void WhenInstanceDoesntExist_ThenProbeFailsWithUnauthorizedException()
         {
             using (var stream = new SshRelayStream(
                 new IapTunnelingEndpoint(
@@ -89,7 +89,7 @@ namespace Google.Solutions.Compute.Test.Iap
         }
 
         [Test]
-        public async Task ProbeExistingInstanceOverRdpSucceeds(
+        public async Task WhenInstanceExistsAndIsListening_ThenProbeSucceeds(
              [WindowsInstance] InstanceRequest testInstance)
         {
             await testInstance.AwaitReady();
@@ -106,7 +106,7 @@ namespace Google.Solutions.Compute.Test.Iap
         }
 
         [Test]
-        public async Task ProbeExistingInstanceOverWrongCausesNetworkStreamClosedException(
+        public async Task WhenInstanceExistsButNotListening_ThenProbeFailsWithNetworkStreamClosedException(
              [WindowsInstance] InstanceRequest testInstance)
         {
             await testInstance.AwaitReady();

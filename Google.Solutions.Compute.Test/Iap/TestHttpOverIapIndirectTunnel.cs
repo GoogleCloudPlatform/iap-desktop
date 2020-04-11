@@ -56,7 +56,7 @@ namespace Google.Solutions.Compute.Test.Iap
 
 
         [Test]
-        public async Task ServerNotListeningCausesZeroRead(
+        public async Task WhenServerNotListening_ThenReadReturnsZero(
             [LinuxInstance] InstanceRequest vm)
         {
             await vm.AwaitReady();

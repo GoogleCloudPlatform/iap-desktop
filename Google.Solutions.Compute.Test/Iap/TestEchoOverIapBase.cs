@@ -61,7 +61,7 @@ namespace Google.Solutions.Compute.Test.Iap
         }
 
         [Test]
-        public async Task MessagesAreEchoedVerbatim(
+        public async Task WhenSendingMessagesToEchoServer_MessagesAreReceivedVerbatim(
             [LinuxInstance(InitializeScript = InstallEchoServer)] InstanceRequest vm,
             [Values(
                 1, 

@@ -42,7 +42,7 @@ namespace Google.Solutions.Compute.Test.Iap
         }
 
         [Test]
-        public async Task ConnectionOpenedByFirstWrite()
+        public async Task WhenPerformingFirstWrite_ThenConnectionIsOpened()
         {
             var stream = new MockStream();
             var endpoint = new MockSshRelayEndpoint()
@@ -60,7 +60,7 @@ namespace Google.Solutions.Compute.Test.Iap
         }
 
         [Test]
-        public async Task AckSentBeforeSubsequentWrite()
+        public async Task WhenPerformingWrite_ThenAckIsSentFirst()
         {
             var stream = new MockStream()
             {
@@ -102,7 +102,7 @@ namespace Google.Solutions.Compute.Test.Iap
         }
 
         [Test]
-        public async Task NoAckSentOnSubsequentWriteIfNoDataReceived()
+        public async Task WhenPerformingWriteWithoutPreviousRead_ThenNoAckIsSent()
         {
             var stream = new MockStream()
             {
@@ -131,7 +131,7 @@ namespace Google.Solutions.Compute.Test.Iap
 
 
         [Test]
-        public async Task WriteAfterDestinationWriteFailCausesException()
+        public async Task WhenPerformingWriteAfterDestinationWriteFailed_ThenWriteFailsWithException()
         {
             var stream = new MockStream()
             {
@@ -160,7 +160,7 @@ namespace Google.Solutions.Compute.Test.Iap
         }
 
         [Test]
-        public async Task WriteAfterClientCloseCausesException()
+        public async Task WhenClientClosedConnection_ThenSubsequentWriteFailsWithException()
         {
             var stream = new MockStream()
             {
@@ -189,7 +189,7 @@ namespace Google.Solutions.Compute.Test.Iap
         }
 
         [Test]
-        public async Task WriteAfterServerCloseCausesException()
+        public async Task WhenServerClosedConnection_ThenSubsequentWriteFailsWithException()
         {
             var stream = new MockStream()
             {
@@ -218,7 +218,7 @@ namespace Google.Solutions.Compute.Test.Iap
         }
 
         [Test]
-        public async Task WriteAfterForcefulServerCloseCausesAnotherConnectAndDataBeingResentIfNoDataReadBefore(
+        public async Task WhenServerClosesConnectionForcefullyOnFirstWrite_ThenConnectIsRetriedAndDataIsResent(
             [Values(
                 WebSocketCloseStatus.EndpointUnavailable,
                 WebSocketCloseStatus.InvalidMessageType,
@@ -277,7 +277,7 @@ namespace Google.Solutions.Compute.Test.Iap
         }
 
         [Test]
-        public async Task WriteAfterForcefulServerCloseCausesReconnectAndDataBeingResentIfDataReadBefore(
+        public async Task WhenDataReadAndServerClosesConnectionForcefullyOnSubsequentWrite_ThenConnectIsRetriedAndDataIsResent(
             [Values(
                 WebSocketCloseStatus.EndpointUnavailable,
                 WebSocketCloseStatus.InvalidMessageType,
@@ -345,7 +345,7 @@ namespace Google.Solutions.Compute.Test.Iap
         }
 
         [Test]
-        public void NotAuthorizedCausesException()
+        public void WhenServerClosesConnectionWithNotAuthorizedCode_ThenWriteFailsWithUnauthorizedException()
         {
             var stream = new MockStream()
             {

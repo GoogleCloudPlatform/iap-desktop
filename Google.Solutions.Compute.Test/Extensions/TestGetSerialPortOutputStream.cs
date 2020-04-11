@@ -22,7 +22,7 @@ namespace Google.Solutions.Compute.Test.Extensions
         }
 
         [Test]
-        public async Task TestResetPasswordForSuperLongUsernameFails(
+        public async Task WhenLaunchingInstance_ThenInstanceSetupFinishedTextAppearsInStream(
            [WindowsInstance] InstanceRequest testInstance)
         {
             await testInstance.AwaitReady();

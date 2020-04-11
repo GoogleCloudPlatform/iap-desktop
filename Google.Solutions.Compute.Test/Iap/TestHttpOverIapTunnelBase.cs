@@ -70,7 +70,7 @@ namespace Google.Solutions.Compute.Test.Iap
         }
 
         [Test, Repeat(RepeatCount)]
-        public async Task ServerCloseAfterSingleHttpRequestEndsRelay(
+        public async Task WhenServerClosesConnectionAfterSingleHttpRequest_ThenRelayEnds(
             [LinuxInstance(InitializeScript = InstallApache)] InstanceRequest vm)
         {
             await vm.AwaitReady();
@@ -95,7 +95,7 @@ namespace Google.Solutions.Compute.Test.Iap
         }
 
         [Test, Repeat(RepeatCount)]
-        public async Task ServerCloseAfterMultipleSingleHttpRequestsEndsRelay(
+        public async Task WhenServerClosesConnectionMultipleHttpRequests_ThenRelayEnds(
             [LinuxInstance(InitializeScript = InstallApache)] InstanceRequest vm)
         {
             await vm.AwaitReady();
@@ -129,7 +129,7 @@ namespace Google.Solutions.Compute.Test.Iap
         }
 
         [Test, Repeat(RepeatCount)]
-        public async Task ClientCloseAfterSingleSingleHttpRequestEndsRelay(
+        public async Task WhenClientClosesConnectionAfterSingleHttpRequest_ThenRelayEnds(
             [LinuxInstance(InitializeScript = InstallApache)] InstanceRequest vm)
         {
             await vm.AwaitReady();
