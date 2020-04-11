@@ -35,5 +35,7 @@ namespace Google.Solutions.IapDesktop.Application.SettingsEditor
     public interface ISettingsObject
     {
         void SaveChanges();
+
+        string InformationText { get; }
     }
 }
