@@ -37,7 +37,7 @@ namespace Google.Solutions.Compute.Test.Iap
         private readonly CancellationTokenSource tokenSource = new CancellationTokenSource();
         
         [Test]
-        public async Task ConnectionOpenedByFirstRead()
+        public async Task WhenPerformingFirstRead_ThenConnectionIsOpened()
         {
             var stream = new MockStream()
             {
@@ -62,7 +62,7 @@ namespace Google.Solutions.Compute.Test.Iap
         }
 
         [Test]
-        public void TinyBufferCausesIndexOutOfRangeException()
+        public void WhenBufferIsTiny_ThenReadFailsWithIndexOutOfRangeException()
         {
             var stream = new MockStream()
             {
@@ -89,7 +89,7 @@ namespace Google.Solutions.Compute.Test.Iap
         }
 
         [Test]
-        public void TruncatedMessageCausesException()
+        public void WhenReadingTruncatedMessage_ThenReadFailsWithInvalidServerResponseException()
         {
             var stream = new MockStream()
             {
@@ -116,7 +116,7 @@ namespace Google.Solutions.Compute.Test.Iap
         }
 
         [Test]
-        public void UnrecognizedMessageTagAtStartCausesException(
+        public void WhenFirstReadEncountersUnrecognizedMessageTag_ThenReadFailsWithInvalidServerResponseException(
             [Values(
                 (byte)MessageTag.UNUSED,
                 (byte)MessageTag.DEPRECATED,
@@ -148,7 +148,7 @@ namespace Google.Solutions.Compute.Test.Iap
         }
 
         [Test]
-        public async Task UnrecognizedMessageTagAfterStartCausesException(
+        public async Task WhenSubsequentReadEncountersUnrecognizedMessageTag_ThenReadFailsWithInvalidServerResponseException(
             [Values(
                 (byte)MessageTag.UNUSED,
                 (byte)MessageTag.DEPRECATED,
@@ -181,7 +181,7 @@ namespace Google.Solutions.Compute.Test.Iap
         }
 
         [Test]
-        public async Task AckTrimsUnacknoledgedQueue()
+        public async Task WhenAckIsRead_ThenUnacknoledgedQueueIsTrimmed()
         {
             byte[] request = new byte[] { 1, 2, 3, 4 };
 
@@ -221,7 +221,7 @@ namespace Google.Solutions.Compute.Test.Iap
         }
 
         [Test]
-        public async Task ZeroAckCausesException()
+        public async Task WhenAckIsZero_ThenReadFailsWithInvalidServerResponseException()
         {
             var endpoint = new MockSshRelayEndpoint()
             {
@@ -249,7 +249,7 @@ namespace Google.Solutions.Compute.Test.Iap
         }
 
         [Test]
-        public async Task MismatchedAckCausesException()
+        public async Task WhenAckIsMismatched_ThenReadFailsWithInvalidServerResponseException()
         {
             var endpoint = new MockSshRelayEndpoint()
             {
@@ -277,7 +277,7 @@ namespace Google.Solutions.Compute.Test.Iap
         }
 
         [Test]
-        public async Task DataHeaderIsTrimmed()
+        public async Task WhenReadingData_ThenDataHeaderIsTrimmed()
         {
             var endpoint = new MockSshRelayEndpoint()
             {
@@ -301,7 +301,7 @@ namespace Google.Solutions.Compute.Test.Iap
         }
 
         [Test]
-        public async Task ReadAfterGracefulServerCloseReturnsZero()
+        public async Task WhenServerClosesConnectionGracefully_ThenReadReturnsZero()
         {
             var stream = new MockStream()
             {
@@ -327,7 +327,7 @@ namespace Google.Solutions.Compute.Test.Iap
         }
 
         [Test]
-        public async Task ReadAfterDestinationReadFailedReturnsZero()
+        public async Task WhenServerClosesConnectionWithDestinationReadFailedCode_ThenReadReturnsZero()
         {
             var stream = new MockStream()
             {
@@ -353,7 +353,7 @@ namespace Google.Solutions.Compute.Test.Iap
         }
 
         [Test]
-        public async Task ReadAfterForcefulServerCloseCausesAnotherConnectIfNoDataReadBefore(
+        public async Task WhenServerClosesConnectionForcefullyOnFirstRead_ThenConnectIsRetried(
             [Values(
                 WebSocketCloseStatus.EndpointUnavailable,
                 WebSocketCloseStatus.InvalidMessageType,
@@ -394,7 +394,7 @@ namespace Google.Solutions.Compute.Test.Iap
 
 
         [Test]
-        public async Task ReadFailedReconnectCausesException(
+        public async Task WhenServerClosesConnectionForcefullyOnSubsequentReadAndReconnectFails_ThenReadFailsWithException(
             [Values(
                 (WebSocketCloseStatus)CloseCode.SID_UNKNOWN,
                 (WebSocketCloseStatus)CloseCode.SID_IN_USE
@@ -433,7 +433,7 @@ namespace Google.Solutions.Compute.Test.Iap
         }
 
         [Test]
-        public async Task ReadAfterForcefulServerCloseCausesReconnectIfDataReadBefore(
+        public async Task WhenServerClosesConnectionForcefullyOnSubsequentRead_ThenReconnectIsPerformed(
             [Values(
                 WebSocketCloseStatus.EndpointUnavailable,
                 WebSocketCloseStatus.InvalidMessageType,
@@ -483,7 +483,7 @@ namespace Google.Solutions.Compute.Test.Iap
 
 
         [Test]
-        public async Task ReadAfterWriteAndForcefulServerCloseCausesReconnect(
+        public async Task WhenServerClosesConnectionForcefullyOnWriteAndSubsequentRead_ThenReconnectIsPerformed(
             [Values(
                 WebSocketCloseStatus.EndpointUnavailable,
                 WebSocketCloseStatus.InvalidMessageType,
@@ -540,7 +540,7 @@ namespace Google.Solutions.Compute.Test.Iap
         }
 
         [Test]
-        public async Task ReadAfterClientCloseCausesException()
+        public async Task WhenClientClosedConnection_SubsequentReadFailsWithException()
         {
             var endpoint = new MockSshRelayEndpoint()
             {

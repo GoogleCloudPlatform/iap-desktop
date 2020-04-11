@@ -43,7 +43,7 @@ namespace Google.Solutions.Compute.Test.Extensions
         }
 
         [Test]
-        public async Task TestResetPasswordForSuperLongUsernameFails(
+        public async Task WhenUsernameIsSuperLong_ThenResetPasswordFails(
             [WindowsInstance] InstanceRequest testInstance)
         {
             await testInstance.AwaitReady();
@@ -64,7 +64,7 @@ namespace Google.Solutions.Compute.Test.Extensions
         }
 
         [Test]
-        public async Task TestResetPasswordForNonexistingUserSucceeds(
+        public async Task WhenUserDoesntExist_ThenResetPasswordCreatesNewUser(
             [WindowsInstance] InstanceRequest testInstance)
         {
             await testInstance.AwaitReady();
@@ -81,7 +81,7 @@ namespace Google.Solutions.Compute.Test.Extensions
         }
 
         [Test]
-        public async Task TestResetPasswordForExistingUserSucceeds(
+        public async Task WhenUserExists_ThenResetPasswordUpdatesPassword(
             [WindowsInstance] InstanceRequest testInstance)
         {
             await testInstance.AwaitReady();

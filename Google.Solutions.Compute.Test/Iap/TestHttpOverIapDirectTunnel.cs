@@ -47,7 +47,7 @@ namespace Google.Solutions.Compute.Test.Iap
         }
 
         [Test]
-        public async Task ReadingWithTinyBufferCausesIndexOutOfRangeException(
+        public async Task WhenBufferIsTiny_ThenReadingFailsWithIndexOutOfRangeException(
             [LinuxInstance(InitializeScript = InstallApache)] InstanceRequest vm)
         {
             await vm.AwaitReady();
@@ -66,7 +66,8 @@ namespace Google.Solutions.Compute.Test.Iap
         }
 
         [Test]
-        public async Task InvalidAccessTokenCausesUnauthorizedException([LinuxInstance(InitializeScript = InstallApache)] InstanceRequest vm)
+        public async Task WhenConnectingWithInvalidAccessToken_ThenReadingFailsWithUnauthorizedException
+            ([LinuxInstance(InitializeScript = InstallApache)] InstanceRequest vm)
         {
             await vm.AwaitReady();
 
@@ -94,7 +95,8 @@ namespace Google.Solutions.Compute.Test.Iap
         }
 
         [Test]
-        public async Task SidAvailableAfterFirstRead([LinuxInstance(InitializeScript = InstallApache)] InstanceRequest vm)
+        public async Task WhenFirstReadCompleted_ThenSidIsAvailable(
+            [LinuxInstance(InitializeScript = InstallApache)] InstanceRequest vm)
         {
             await vm.AwaitReady();
             var stream = (SshRelayStream)ConnectToWebServer(vm.InstanceReference);
@@ -117,7 +119,7 @@ namespace Google.Solutions.Compute.Test.Iap
 
         [Test]
         [Ignore("Can also throw an UnauthorizedException")]
-        public async Task ServerNotListeningCausesException(
+        public async Task WhenServerNotListening_ThenReadFails(
             [LinuxInstance] InstanceRequest vm)
         {
             await vm.AwaitReady();
