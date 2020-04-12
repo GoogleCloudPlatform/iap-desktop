@@ -60,5 +60,31 @@ namespace Google.Solutions.IapDesktop.Application.Windows
                 Close();
             }
         }
+
+        public void ShowOrActivate(DockPanel dockPanel, DockState defaultState)
+        {
+            // NB. IsHidden indicates that the window is not shown at all,
+            // not even as auto-hide.
+            if (this.IsHidden)
+            {
+                // Show in default position.
+                Show(dockPanel, defaultState);
+            }
+
+            // If the window is in auto-hide mode, simply activating
+            // is not enough.
+            switch (this.VisibleState)
+            {
+                case DockState.DockTopAutoHide:
+                case DockState.DockBottomAutoHide:
+                case DockState.DockLeftAutoHide:
+                case DockState.DockRightAutoHide:
+                    dockPanel.ActiveAutoHideContent = this;
+                    break;
+            }
+
+            // Move focus to window.
+            Activate();
+        }
     }
 }

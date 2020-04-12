@@ -82,9 +82,7 @@ namespace Google.Solutions.IapDesktop.Application.Windows.TunnelsViewer
 
         public void ShowWindow()
         {
-            Show(this.dockPanel, DockState.DockBottomAutoHide);
-            this.dockPanel.ActiveAutoHideContent = this;
-            Activate();
+            ShowOrActivate(this.dockPanel, DockState.DockBottomAutoHide);
 
             RefreshTunnels();
         }

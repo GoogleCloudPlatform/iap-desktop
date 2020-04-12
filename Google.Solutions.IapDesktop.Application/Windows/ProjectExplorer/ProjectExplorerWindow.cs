@@ -619,7 +619,7 @@ namespace Google.Solutions.IapDesktop.Application.ProjectExplorer
 
         public void ShowWindow()
         {
-            Show(this.dockPanel, DockState.DockLeft);
+            ShowOrActivate(this.dockPanel, DockState.DockLeft);
         }
 
         public async Task RefreshAllProjects()
