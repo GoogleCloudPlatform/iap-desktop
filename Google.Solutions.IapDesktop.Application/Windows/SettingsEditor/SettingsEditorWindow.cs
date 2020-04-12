@@ -190,10 +190,7 @@ namespace Google.Solutions.IapDesktop.Application.SettingsEditor
         public void ShowWindow(ISettingsObject settingsObject)
         {
             this.EditorObject = settingsObject;
-
-            Show(this.dockPanel, DockState.DockRightAutoHide);
-            this.dockPanel.ActiveAutoHideContent = this;
-            Activate();
+            ShowOrActivate(this.dockPanel, DockState.DockRightAutoHide);
         }
 
         //---------------------------------------------------------------------
