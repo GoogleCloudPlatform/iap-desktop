@@ -38,6 +38,26 @@ Write-Host "Using VsixInstaller: $VsixInstaller"
 
 
 Write-Host "========================================================"
+Write-Host "=== Checking copyright headers                       ==="
+Write-Host "========================================================"
+
+$FilesWithoutCopyrightHeader = (Get-ChildItem -Recurse `
+    | Where-Object {$_.Name.EndsWith(".cs")} `
+    | Where-Object {$_.Name -ne "OAuthClient.cs"} `
+    | Where-Object {$_.Name -ne "Settings.Designer.cs"} `
+    | Where-Object {$_.Name -ne "Resources.Designer.cs"} `
+    | Where-Object {-not $_.Name.StartsWith("TemporaryGeneratedFile")} `
+    | Where-Object {-not [System.IO.File]::ReadAllText($_.FullName).Contains("Copyright")}  `
+    | Select-Object -ExpandProperty FullName)
+    
+if ($FilesWithoutCopyrightHeader)
+{
+    Write-Host("Multiple files lack a copyright header")
+    $FilesWithoutCopyrightHeader
+    exit 1
+}
+
+Write-Host "========================================================"
 Write-Host "=== Patch OAuth credentials                          ==="
 Write-Host "========================================================"
 
