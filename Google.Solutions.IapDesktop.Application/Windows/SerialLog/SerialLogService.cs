@@ -60,9 +60,7 @@ namespace Google.Solutions.IapDesktop.Application.Windows.SerialLog
                 window.TailSerialPortStream(gceAdapter.GetSerialPortOutput(vmInstance));
             }
 
-            window.Show(this.dockPanel, DockState.DockBottomAutoHide);
-            this.dockPanel.ActiveAutoHideContent = window;
-            window.Activate();
+            window.ShowOrActivate(this.dockPanel, DockState.DockBottomAutoHide);
         }
     }
 }
