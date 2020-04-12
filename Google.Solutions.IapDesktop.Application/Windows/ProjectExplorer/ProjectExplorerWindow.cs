@@ -31,6 +31,7 @@ using Google.Solutions.IapDesktop.Application.SettingsEditor;
 using Google.Solutions.IapDesktop.Application.Windows;
 using Google.Solutions.IapDesktop.Application.Windows.RemoteDesktop;
 using Google.Solutions.IapDesktop.Application.Windows.SerialLog;
+using Google.Solutions.IapDesktop.Application.Util;
 using Google.Solutions.IapDesktop.Windows;
 using System;
 using System.Collections.Generic;
@@ -154,8 +155,7 @@ namespace Google.Solutions.IapDesktop.Application.ProjectExplorer
 
         private async Task GenerateCredentials(VmInstanceNode vmNode)
         {
-            // Derive a suggested username from the Windows login name.
-            var suggestedUsername = Environment.UserName;
+            var suggestedUsername = this.authService.Authorization.SuggestWindowsUsername();
 
             // Prompt for username to use.
             var username = new GenerateCredentialsDialog().PromptForUsername(this, suggestedUsername);
