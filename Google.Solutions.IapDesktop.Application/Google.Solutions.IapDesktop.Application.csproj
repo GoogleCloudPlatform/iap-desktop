@@ -113,6 +113,7 @@
     <Compile Include="Registry\RegistryValueAttribute.cs" />
     <Compile Include="Settings\InventorySettingsRepository.cs" />
     <Compile Include="TraceSources.cs" />
+    <Compile Include="Util\AuthorizationExtensions.cs" />
     <Compile Include="Windows\AboutWindow.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -301,9 +302,7 @@
   <ItemGroup>
     <None Include="Resources\Refresh_161.png" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Util\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="..\packages\MSBuild.AssemblyVersion.1.2.0\build\MSBuild.AssemblyVersion.targets" Condition="Exists('..\packages\MSBuild.AssemblyVersion.1.2.0\build\MSBuild.AssemblyVersion.targets')" />
 </Project>
