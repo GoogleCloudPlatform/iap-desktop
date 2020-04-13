@@ -37,6 +37,7 @@ namespace Google.Solutions.IapDesktop.Application.Windows.SerialLog
             if (disposing && (components != null))
             {
                 components.Dispose();
+                this.keepTailing.Dispose();
             }
             base.Dispose(disposing);
         }

@@ -40,6 +40,8 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using WeifenLuo.WinFormsUI.Docking;
 
+#pragma warning disable IDE1006 // Naming Styles
+
 namespace Google.Solutions.IapDesktop.Windows
 {
 
@@ -47,7 +49,6 @@ namespace Google.Solutions.IapDesktop.Windows
     {
         private readonly ApplicationSettingsRepository applicationSettings;
         private readonly AuthSettingsRepository authSettings;
-        private readonly InventorySettingsRepository inventorySettings;
         private readonly IServiceProvider serviceProvider;
 
         private WaitDialog waitDialog = null;
@@ -57,7 +58,6 @@ namespace Google.Solutions.IapDesktop.Windows
             this.serviceProvider = serviceProvider;
             this.applicationSettings = serviceProvider.GetService<ApplicationSettingsRepository>();
             this.authSettings = serviceProvider.GetService<AuthSettingsRepository>();
-            this.inventorySettings = serviceProvider.GetService<InventorySettingsRepository>();
 
             // 
             // Restore window settings.

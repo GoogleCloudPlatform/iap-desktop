@@ -25,6 +25,7 @@ using Google.Apis.Util.Store;
 using Google.Solutions.IapDesktop.Application.Registry;
 using Microsoft.Win32;
 using System.Collections.Generic;
+using System.Runtime.InteropServices;
 using System.Security;
 using System.Security.Cryptography;
 using System.Threading.Tasks;
@@ -34,6 +35,7 @@ namespace Google.Solutions.IapDesktop.Application.Settings
     /// <summary>
     /// Registry-backed repository for UI layout settings.
     /// </summary>
+    [ComVisible(false)]
     public class AuthSettingsRepository : SettingsRepositoryBase<AuthSettings>, IDataStore
     {
         private static readonly Task CompletedTask = Task.FromResult(0);

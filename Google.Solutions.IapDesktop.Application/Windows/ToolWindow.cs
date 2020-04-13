@@ -19,12 +19,14 @@
 // under the License.
 //
 
+using System.Runtime.InteropServices;
 using System.Windows.Forms;
 using WeifenLuo.WinFormsUI.Docking;
 
 namespace Google.Solutions.IapDesktop.Application.Windows
 
 {
+    [ComVisible(false)]
     public partial class ToolWindow : DockContent
     {
         public ContextMenuStrip TabContextStrip => this.contextMenuStrip;

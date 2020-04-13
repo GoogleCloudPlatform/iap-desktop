@@ -28,22 +28,26 @@ using Google.Solutions.IapDesktop.Application.ObjectModel;
 using Google.Solutions.IapDesktop.Application.Services;
 using Google.Solutions.IapDesktop.Application.Settings;
 using Google.Solutions.IapDesktop.Application.SettingsEditor;
+using Google.Solutions.IapDesktop.Application.Util;
 using Google.Solutions.IapDesktop.Application.Windows;
 using Google.Solutions.IapDesktop.Application.Windows.RemoteDesktop;
 using Google.Solutions.IapDesktop.Application.Windows.SerialLog;
-using Google.Solutions.IapDesktop.Application.Util;
 using Google.Solutions.IapDesktop.Windows;
 using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Diagnostics;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using WeifenLuo.WinFormsUI.Docking;
 
+#pragma warning disable IDE1006 // Naming Styles
+
 namespace Google.Solutions.IapDesktop.Application.ProjectExplorer
 {
+    [ComVisible(false)]
     public partial class ProjectExplorerWindow : ToolWindow, IProjectExplorer
     {
         private const int RemoteDesktopPort = 3389;
@@ -220,8 +224,8 @@ namespace Google.Solutions.IapDesktop.Application.ProjectExplorer
                     catch (UnauthorizedException)
                     {
                         throw new ApplicationException(
-                            "You are not authorized to connect to this VM instance.\n\n"+
-                            $"Verify that the Cloud IAP API is enabled in the project {vmNode.Reference.ProjectId} "+
+                            "You are not authorized to connect to this VM instance.\n\n" +
+                            $"Verify that the Cloud IAP API is enabled in the project {vmNode.Reference.ProjectId} " +
                             "and that your user has the 'IAP-secured Tunnel User' role.");
                     }
                 });

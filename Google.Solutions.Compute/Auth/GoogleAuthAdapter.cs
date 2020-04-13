@@ -133,8 +133,6 @@ namespace Google.Solutions.Compute.Auth
 
         public class OpenIdConfiguration
         {
-            private const string Endpoint = "https://accounts.google.com/.well-known/openid-configuration";
-
             [JsonProperty("userinfo_endpoint")]
             public string UserInfoEndpoint { get; set; }
         }

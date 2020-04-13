@@ -24,6 +24,7 @@ using Google.Solutions.IapDesktop.Application.Registry;
 using Microsoft.Win32;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Runtime.InteropServices;
 using System.Security;
 using System.Security.Cryptography;
 
@@ -41,9 +42,9 @@ namespace Google.Solutions.IapDesktop.Application.Settings
     ///      + vm-[instance-name]   => values...
     ///      
     /// </summary>
+    [ComVisible(false)]
     public class InventorySettingsRepository : SettingsRepositoryBase<InventorySettings>
     {
-        private const string RegionPrefix = "region-";
         private const string ZonePrefix = "zone-";
         private const string VmPrefix = "vm-";
 

@@ -23,12 +23,14 @@ using Google.Apis.Auth.OAuth2.Responses;
 using Google.Solutions.Compute;
 using Google.Solutions.Compute.Extensions;
 using System;
+using System.Runtime.InteropServices;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace Google.Solutions.IapDesktop.Application.Windows.SerialLog
 {
+    [ComVisible(false)]
     public partial class SerialLogWindow : ToolWindow
     {
         private readonly ManualResetEvent keepTailing = new ManualResetEvent(true);
