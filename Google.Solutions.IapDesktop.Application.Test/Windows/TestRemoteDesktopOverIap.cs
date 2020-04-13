@@ -145,7 +145,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows
 
         [Test, Ignore("Unreliable in CI")]
         public async Task WhenSigningOutPerSendKeys_ThenWindowIsClosed(
-            [WindowsInstance(ImageFamily = WindowsInstanceAttribute.WindowsServer2019)] 
+            [WindowsInstance(ImageFamily = WindowsInstanceAttribute.WindowsServer2019)]
             InstanceRequest testInstance)
         {
             await testInstance.AwaitReady();

@@ -64,7 +64,7 @@ namespace Google.Solutions.Compute.Test.Iap
         public async Task WhenSendingMessagesToEchoServer_MessagesAreReceivedVerbatim(
             [LinuxInstance(InitializeScript = InstallEchoServer)] InstanceRequest vm,
             [Values(
-                1, 
+                1,
                 (int)DataMessage.MaxDataLength - 1,
                 (int)DataMessage.MaxDataLength,
                 (int)DataMessage.MaxDataLength + 1,

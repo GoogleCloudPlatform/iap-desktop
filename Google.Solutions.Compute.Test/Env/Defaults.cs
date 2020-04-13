@@ -21,7 +21,6 @@
 
 using Google.Apis.Auth.OAuth2;
 using System;
-using System.IO;
 
 namespace Google.Solutions.Compute.Test.Env
 {

@@ -91,8 +91,8 @@ namespace Google.Solutions.Compute.Iap
                 urlParams.Select(kvp => kvp.Key + "=" + WebUtility.UrlEncode(kvp.Value)));
 
             var uri = new Uri(
-                BaseUri + 
-                (sid == null ? "connect" : "reconnect" ) +
+                BaseUri +
+                (sid == null ? "connect" : "reconnect") +
                 "?" +
                 queryString);
 

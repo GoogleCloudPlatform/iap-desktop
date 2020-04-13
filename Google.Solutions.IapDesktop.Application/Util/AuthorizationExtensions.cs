@@ -21,7 +21,6 @@
 
 using Google.Solutions.Compute.Auth;
 using System;
-using System.Diagnostics;
 
 namespace Google.Solutions.IapDesktop.Application.Util
 {

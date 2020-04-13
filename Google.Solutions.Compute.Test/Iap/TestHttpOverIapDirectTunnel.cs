@@ -19,15 +19,15 @@
 // under the License.
 //
 
-using Google.Solutions.Compute.Iap;
 using Google.Apis.Auth.OAuth2;
+using Google.Solutions.Compute.Iap;
+using Google.Solutions.Compute.Net;
+using Google.Solutions.Compute.Test.Env;
 using NUnit.Framework;
 using System;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using Google.Solutions.Compute.Net;
-using Google.Solutions.Compute.Test.Env;
 
 namespace Google.Solutions.Compute.Test.Iap
 {
@@ -89,7 +89,7 @@ namespace Google.Solutions.Compute.Test.Iap
             {
 
 
-                byte[] buffer = new byte[64*1024];
+                byte[] buffer = new byte[64 * 1024];
                 stream.ReadAsync(buffer, 0, buffer.Length, CancellationToken.None).Wait();
             });
         }

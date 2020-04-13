@@ -103,7 +103,7 @@ namespace Google.Solutions.Compute.Iap
     /// <summary>
     /// Base class for messages.
     /// </summary>
-    internal abstract class MessageBase 
+    internal abstract class MessageBase
     {
         public byte[] Buffer { get; }
 
@@ -145,7 +145,7 @@ namespace Google.Solutions.Compute.Iap
 
         public ulong SequenceNumber { get; set; }
 
-        public ulong ExpectedAck => SequenceNumber + (ulong) DataLength; 
+        public ulong ExpectedAck => SequenceNumber + (ulong)DataLength;
 
         public uint DataLength
         {
@@ -168,7 +168,7 @@ namespace Google.Solutions.Compute.Iap
         {
             get { return (int)(DataOffset + this.DataLength); }
         }
- 
+
         public override string ToString()
         {
             return $"Data [Seq: {this.SequenceNumber}, Len: {this.DataLength} " +

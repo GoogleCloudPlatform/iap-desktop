@@ -150,7 +150,7 @@ namespace Google.Solutions.Compute.Test.Env
                     {
                         Name = vmRef.InstanceName,
                         MachineType = $"zones/{this.Zone}/machineTypes/{this.MachineType}",
-                        Disks = new []
+                        Disks = new[]
                         {
                             new AttachedDisk()
                             {
@@ -166,7 +166,7 @@ namespace Google.Solutions.Compute.Test.Env
                         {
                             Items = metadata
                         },
-                        NetworkInterfaces = new []
+                        NetworkInterfaces = new[]
                         {
                             new NetworkInterface()
                             {
@@ -214,7 +214,7 @@ namespace Google.Solutions.Compute.Test.Env
         }
 
         protected virtual async Task<bool> IsReadyAsync(
-            ComputeEngine engine, 
+            ComputeEngine engine,
             VmInstanceReference instanceRef,
             Instance instance)
         {
@@ -266,11 +266,11 @@ namespace Google.Solutions.Compute.Test.Env
                 yield return new Metadata.ItemsData()
                 {
                     Key = "windows-startup-script-ps1",
-                    Value = "Invoke-RestMethod "+
+                    Value = "Invoke-RestMethod " +
                         "-Headers @{\"Metadata-Flavor\"=\"Google\"} " +
                         "-Method PUT " +
-                        "-Uri http://metadata.google.internal/computeMetadata/v1/instance/"+
-                        $"guest-attributes/{GuestAttributeNamespace}/{GuestAttributeKey} "+
+                        "-Uri http://metadata.google.internal/computeMetadata/v1/instance/" +
+                        $"guest-attributes/{GuestAttributeNamespace}/{GuestAttributeKey} " +
                         "-Body TRUE"
                 };
             }
@@ -308,9 +308,9 @@ namespace Google.Solutions.Compute.Test.Env
                 {
                     Key = "startup-script",
                     Value = script +
-                        "curl -X PUT --data \"TRUE\" "+
-                        "http://metadata.google.internal/computeMetadata/v1/instance/"+
-                        $"guest-attributes/{GuestAttributeNamespace}/{GuestAttributeKey} "+
+                        "curl -X PUT --data \"TRUE\" " +
+                        "http://metadata.google.internal/computeMetadata/v1/instance/" +
+                        $"guest-attributes/{GuestAttributeNamespace}/{GuestAttributeKey} " +
                         "-H \"Metadata-Flavor: Google\""
                 };
             }

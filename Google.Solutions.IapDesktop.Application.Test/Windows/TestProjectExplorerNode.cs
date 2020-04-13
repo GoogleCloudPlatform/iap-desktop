@@ -63,7 +63,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows
             var zoneB = (ZoneNode)this.projectNode.FirstNode.NextNode;
             var instanceA = (VmInstanceNode)zoneA.FirstNode;
             var instanceB = (VmInstanceNode)zoneB.FirstNode;
-            
+
             instanceA.Username = null;
             instanceB.Username = "";
 
@@ -97,7 +97,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows
             // Inherited value is shown...
             Assert.AreEqual(domain, instanceA.Domain);
             Assert.AreEqual(domain, instanceB.Domain);
-                            
+
             // ...and takes effect
             Assert.AreEqual(domain, instanceA.EffectiveSettingsWithInheritanceApplied.Domain);
             Assert.AreEqual(domain, instanceB.EffectiveSettingsWithInheritanceApplied.Domain);
@@ -176,7 +176,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows
 
             Assert.AreEqual("overriden-value", instanceA.EffectiveSettingsWithInheritanceApplied.Username);
             Assert.AreEqual("root-value", instanceB.EffectiveSettingsWithInheritanceApplied.Username);
-            
+
             Assert.IsFalse(instanceA.ShouldSerializeUsername());
             Assert.IsFalse(instanceB.ShouldSerializeUsername());
         }
@@ -232,7 +232,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows
 
             Assert.AreEqual(RdpDesktopSize.ScreenSize, instanceA.EffectiveSettingsWithInheritanceApplied.DesktopSize);
             Assert.AreEqual(RdpDesktopSize.ClientSize, instanceB.EffectiveSettingsWithInheritanceApplied.DesktopSize);
-            
+
             Assert.IsFalse(instanceA.ShouldSerializeDesktopSize());
             Assert.IsFalse(instanceB.ShouldSerializeDesktopSize());
         }
@@ -290,7 +290,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows
             var zoneA = (ZoneNode)this.projectNode.FirstNode;
 
             zoneA.BitmapPersistence = RdpBitmapPersistence.Enabled;
-            Assert.AreEqual(RdpBitmapPersistence.Enabled, zoneA.BitmapPersistence );
+            Assert.AreEqual(RdpBitmapPersistence.Enabled, zoneA.BitmapPersistence);
             Assert.IsTrue(zoneA.ShouldSerializeBitmapPersistence());
 
             var instanceA = (VmInstanceNode)zoneA.FirstNode;

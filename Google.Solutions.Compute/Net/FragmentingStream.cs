@@ -69,13 +69,13 @@ namespace Google.Solutions.Compute.Net
         }
 
         protected override async Task<int> ProtectedReadAsync(
-            byte[] buffer, 
-            int offset, 
-            int count, 
+            byte[] buffer,
+            int offset,
+            int count,
             CancellationToken cancellationToken)
         {
             while (true)
-            { 
+            {
                 var bytesLeftInBuffer = this.readBufferCount - this.readBufferOffset;
                 if (bytesLeftInBuffer > 0)
                 {
@@ -127,14 +127,14 @@ namespace Google.Solutions.Compute.Net
         }
 
         protected override async Task ProtectedWriteAsync(
-            byte[] buffer, 
-            int offset, 
-            int count, 
+            byte[] buffer,
+            int offset,
+            int count,
             CancellationToken cancellationToken)
         {
             var windowSize = this.stream.MaxWriteSize;
-            for (int windowOffset = 0; 
-                 windowOffset < buffer.Length; 
+            for (int windowOffset = 0;
+                 windowOffset < buffer.Length;
                  windowOffset += windowSize)
             {
                 await this.stream.WriteAsync(

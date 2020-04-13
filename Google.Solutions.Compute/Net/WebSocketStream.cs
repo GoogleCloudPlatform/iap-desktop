@@ -125,9 +125,9 @@ namespace Google.Solutions.Compute.Net
         }
 
         protected override async Task<int> ProtectedReadAsync(
-            byte[] buffer, 
-            int offset, 
-            int count, 
+            byte[] buffer,
+            int offset,
+            int count,
             CancellationToken cancellationToken)
         {
             VerifyConnectionNotClosedAlready();
@@ -204,9 +204,9 @@ namespace Google.Solutions.Compute.Net
         }
 
         protected override async Task ProtectedWriteAsync(
-            byte[] buffer, 
-            int offset, 
-            int count, 
+            byte[] buffer,
+            int offset,
+            int count,
             CancellationToken cancellationToken)
         {
             VerifyConnectionNotClosedAlready();

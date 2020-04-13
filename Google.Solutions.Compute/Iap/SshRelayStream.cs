@@ -40,7 +40,7 @@ namespace Google.Solutions.Compute.Iap
         Task<INetworkStream> ConnectAsync(CancellationToken token);
 
         Task<INetworkStream> ReconnectAsync(
-            string sid, 
+            string sid,
             ulong lastByteConsumedByClient,
             CancellationToken token);
     }
@@ -69,10 +69,10 @@ namespace Google.Solutions.Compute.Iap
 
         private ulong lastAck = 0;
 
-        internal ulong ExpectedAck => this.sentButUnacknoledgedQueue.Any() 
+        internal ulong ExpectedAck => this.sentButUnacknoledgedQueue.Any()
             ? this.sentButUnacknoledgedQueue.Last().ExpectedAck : 0;
         internal int UnacknoledgedMessageCount => this.sentButUnacknoledgedQueue.Count;
-        
+
         //---------------------------------------------------------------------
         // Ctor
         //---------------------------------------------------------------------
@@ -113,7 +113,7 @@ namespace Google.Solutions.Compute.Iap
                     {
                         // First attempt to open a connection. 
                         TraceLine("Connecting...");
-                        this.__currentConnection = 
+                        this.__currentConnection =
                             await this.endpoint.ConnectAsync(cancellationToken).ConfigureAwait(false);
                     }
                     else
@@ -208,7 +208,7 @@ namespace Google.Solutions.Compute.Iap
                     await connection.CloseAsync(cts.Token);
                 }
             }
-            catch (WebSocketStreamClosedByServerException e) 
+            catch (WebSocketStreamClosedByServerException e)
                 when ((CloseCode)e.CloseStatus == CloseCode.NOT_AUTHORIZED)
             {
                 throw new UnauthorizedException(e.CloseStatusDescription);
@@ -227,9 +227,9 @@ namespace Google.Solutions.Compute.Iap
         public override int MinReadSize => (int)DataMessage.MaxDataLength;
 
         protected override async Task<int> ProtectedReadAsync(
-            byte[] buffer, 
-            int offset, 
-            int count, 
+            byte[] buffer,
+            int offset,
+            int count,
             CancellationToken cancellationToken)
         {
             if (count < this.MinReadSize)
@@ -313,7 +313,7 @@ namespace Google.Solutions.Compute.Iap
 
                                 // The server might be acknolodging multiple messages at once.
                                 while (this.sentButUnacknoledgedQueue.Count > 0 &&
-                                       this.sentButUnacknoledgedQueue.Peek().ExpectedAck 
+                                       this.sentButUnacknoledgedQueue.Peek().ExpectedAck
                                             <= Thread.VolatileRead(ref this.bytesSentAndAcknoledged))
                                 {
                                     this.sentButUnacknoledgedQueue.Dequeue();
@@ -414,9 +414,9 @@ namespace Google.Solutions.Compute.Iap
         }
 
         protected override async Task ProtectedWriteAsync(
-            byte[] buffer, 
-            int offset, 
-            int count, 
+            byte[] buffer,
+            int offset,
+            int count,
             CancellationToken cancellationToken)
         {
             if (count > this.MaxWriteSize)

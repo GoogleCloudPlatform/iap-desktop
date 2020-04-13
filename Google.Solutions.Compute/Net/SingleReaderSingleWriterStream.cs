@@ -19,7 +19,6 @@
 // under the License.
 //
 
-using System;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -58,9 +57,9 @@ namespace Google.Solutions.Compute.Net
         //---------------------------------------------------------------------
 
         protected override async Task<int> ReadAsyncWithCloseProtection(
-            byte[] buffer, 
-            int offset, 
-            int count, 
+            byte[] buffer,
+            int offset,
+            int count,
             CancellationToken cancellationToken)
         {
             try
@@ -70,9 +69,9 @@ namespace Google.Solutions.Compute.Net
                 await this.readerSemaphore.WaitAsync(cancellationToken).ConfigureAwait(false);
 
                 return await ProtectedReadAsync(
-                    buffer, 
-                    offset, 
-                    count, 
+                    buffer,
+                    offset,
+                    count,
                     cancellationToken).ConfigureAwait(false);
             }
             finally
@@ -90,9 +89,9 @@ namespace Google.Solutions.Compute.Net
                 await this.writerSemaphore.WaitAsync(cancellationToken).ConfigureAwait(false);
 
                 await ProtectedWriteAsync(
-                    buffer, 
-                    offset, 
-                    count, 
+                    buffer,
+                    offset,
+                    count,
                     cancellationToken).ConfigureAwait(false);
             }
             finally

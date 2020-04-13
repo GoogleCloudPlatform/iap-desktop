@@ -19,12 +19,12 @@
 // under the License.
 //
 
-using Google.Solutions.Compute.Test.Env;
+using Google.Apis.Compute.v1;
 using Google.Solutions.Compute.Extensions;
+using Google.Solutions.Compute.Test.Env;
 using NUnit.Framework;
 using System;
 using System.Threading.Tasks;
-using Google.Apis.Compute.v1;
 
 namespace Google.Solutions.Compute.Test.Extensions
 {
@@ -48,11 +48,11 @@ namespace Google.Solutions.Compute.Test.Extensions
             await testInstance.AwaitReady();
 
             var stream = this.instancesResource.GetSerialPortOutputStream(
-                testInstance.InstanceReference, 
+                testInstance.InstanceReference,
                 1);
 
             var startTime = DateTime.Now;
-            
+
             while (DateTime.Now < startTime.AddMinutes(3))
             {
                 var log = await stream.ReadAsync();

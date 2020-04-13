@@ -112,9 +112,9 @@ namespace Google.Solutions.Compute.Net
         public override int MinReadSize => 1;
 
         protected override async Task<int> ReadAsyncWithCloseProtection(
-            byte[] buffer, 
-            int offset, 
-            int count, 
+            byte[] buffer,
+            int offset,
+            int count,
             CancellationToken cancellationToken)
         {
             using (var args = new SocketAsyncEventArgs())
@@ -128,9 +128,9 @@ namespace Google.Solutions.Compute.Net
         }
 
         protected override async Task WriteAsyncWithCloseProtection(
-            byte[] buffer, 
-            int offset, 
-            int count, 
+            byte[] buffer,
+            int offset,
+            int count,
             CancellationToken cancellationToken)
         {
             using (var args = new SocketAsyncEventArgs())

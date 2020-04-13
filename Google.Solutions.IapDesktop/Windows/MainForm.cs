@@ -85,7 +85,7 @@ namespace Google.Solutions.IapDesktop.Windows
             this.dockPanel.DockLeftPortion =
                 this.dockPanel.DockRightPortion = (300.0f / this.Width);
 
-            this.checkForUpdatesOnExitToolStripMenuItem.Checked 
+            this.checkForUpdatesOnExitToolStripMenuItem.Checked
                 = this.applicationSettings.GetSettings().IsUpdateCheckEnabled;
         }
 
@@ -266,8 +266,8 @@ namespace Google.Solutions.IapDesktop.Windows
 
         private void enableloggingToolStripMenuItem_Click(object sender, EventArgs _)
         {
-            var loggingEnabled = 
-                this.enableloggingToolStripMenuItem.Checked = 
+            var loggingEnabled =
+                this.enableloggingToolStripMenuItem.Checked =
                 !this.enableloggingToolStripMenuItem.Checked;
 
             try
@@ -320,10 +320,10 @@ namespace Google.Solutions.IapDesktop.Windows
             => DoWithActiveSession(session => session.TrySetFullscreen(true));
 
         private void disconnectToolStripMenuItem_Click(object sender, EventArgs args)
-            => DoWithActiveSession(session => session.Close()); 
+            => DoWithActiveSession(session => session.Close());
 
         private void showSecurityScreenToolStripMenuItem_Click(object sender, EventArgs args)
-            => DoWithActiveSession(session => session.ShowSecurityScreen()); 
+            => DoWithActiveSession(session => session.ShowSecurityScreen());
 
         private void showtaskManagerToolStripMenuItem_Click(object sender, EventArgs args)
             => DoWithActiveSession(session => session.ShowTaskManager());

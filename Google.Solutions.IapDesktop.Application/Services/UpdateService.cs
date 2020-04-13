@@ -20,15 +20,12 @@
 //
 
 using Google.Solutions.IapDesktop.Application.Adapters;
-using Google.Solutions.IapDesktop.Application.Windows;
 using Google.Solutions.IapDesktop.Application.ObjectModel;
+using Google.Solutions.IapDesktop.Application.Windows;
 using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-using System.Text;
 using System.Threading;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace Google.Solutions.IapDesktop.Application.Services

@@ -36,7 +36,7 @@ namespace Google.Solutions.Compute.Auth
         // Scope required to query email from UserInfo endpoint.
         public const string EmailScope = "https://www.googleapis.com/auth/userinfo.email";
 
-        private const string ConfigurationEndpoint = 
+        private const string ConfigurationEndpoint =
             "https://accounts.google.com/.well-known/openid-configuration";
 
         public const string StoreUserId = "oauth";

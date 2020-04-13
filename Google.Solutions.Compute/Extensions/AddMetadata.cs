@@ -82,12 +82,12 @@ namespace Google.Solutions.Compute.Extensions
         public static async Task AddMetadataAsync(
             this InstancesResource resource,
             VmInstanceReference instanceRef,
-            string key, 
+            string key,
             string value)
         {
             var instance = await resource.Get(
-                instanceRef.ProjectId, 
-                instanceRef.Zone, 
+                instanceRef.ProjectId,
+                instanceRef.Zone,
                 instanceRef.InstanceName).ExecuteAsync().ConfigureAwait(false);
             var metadata = instance.Metadata;
 

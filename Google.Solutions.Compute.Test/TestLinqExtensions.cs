@@ -20,8 +20,8 @@
 //
 
 using NUnit.Framework;
-using System.Linq;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Google.Solutions.Compute.Test.Extensions
 {
@@ -39,7 +39,7 @@ namespace Google.Solutions.Compute.Test.Extensions
         [Test]
         public void WhenListsDontIntersect_ContainsAllIsFalse()
         {
-            var list = new [] { "a", "b" };
+            var list = new[] { "a", "b" };
             var lookup = new[] { "c", "d" };
 
             Assert.IsFalse(list.ContainsAll(lookup));

@@ -20,7 +20,6 @@
 //
 
 using System;
-using System.Diagnostics;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -37,8 +36,8 @@ namespace Google.Solutions.Compute.Net
         /// Relay all received by one stream to another stream.
         /// </summary>
         public static Task RelayToAsync(
-            this INetworkStream readStream, 
-            INetworkStream writeStream, 
+            this INetworkStream readStream,
+            INetworkStream writeStream,
             CancellationToken token)
         {
             return Task.Run(async () =>
@@ -50,7 +49,7 @@ namespace Google.Solutions.Compute.Net
                     Math.Max(
                         MaxBufferSize,
                         readStream.MinReadSize));
-                
+
                 var buffer = new byte[bufferSize];
 
                 while (true)
