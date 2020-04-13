@@ -153,7 +153,7 @@ namespace Google.Solutions.IapDesktop.Application.ProjectExplorer
 
         }
 
-        private async Task GenerateCredentials(VmInstanceNode vmNode)
+        private async Task<bool> GenerateCredentials(VmInstanceNode vmNode)
         {
             var suggestedUsername = this.authService.Authorization.SuggestWindowsUsername();
 
@@ -161,7 +161,7 @@ namespace Google.Solutions.IapDesktop.Application.ProjectExplorer
             var username = new GenerateCredentialsDialog().PromptForUsername(this, suggestedUsername);
             if (username == null)
             {
-                return;
+                return false;
             }
 
             var credentials = await this.jobService.RunInBackground(
@@ -185,17 +185,58 @@ namespace Google.Solutions.IapDesktop.Application.ProjectExplorer
 
             // Fire an event to update anybody using the node.
             await this.eventService.FireAsync(new ProjectExplorerNodeSelectedEvent(vmNode));
+            
+            return true;
         }
 
         private async Task ConnectInstance(VmInstanceNode vmNode)
         {
             if (this.remoteDesktopService.TryActivate(vmNode.Reference))
             {
-                // RDP session was already open, nothing left to do.
+                // RDP session was active, nothing left to do.
                 return;
             }
 
-            var destination = new TunnelDestination(vmNode.Reference, RemoteDesktopPort);
+            if (string.IsNullOrEmpty(vmNode.Username) || vmNode.Password.Length == 0)
+            {
+                int selectedOption = UnsafeNativeMethods.ShowOptionsTaskDialog(
+                    this,
+                    UnsafeNativeMethods.TD_INFORMATION_ICON,
+                    "Credentials",
+                    $"You have not configured any credentials for {vmNode.InstanceName}",
+                    "Would you like to configure or generate credentials now?",
+                    null,
+                    new[]
+                    {
+                        "Configure credentials",
+                        "Generate new credentials",     // Same as pressing 'OK'
+                        "Connect anyway"                // Same as pressing 'Cancel'
+                    },
+                    null,//"Do not show this prompt again",
+                    out bool donotAskAgain);
+
+                if (selectedOption == 0)
+                {
+                    // Configure credentials -> jump to settings.
+                    this.serviceProvider
+                        .GetService<ISettingsEditor>()
+                        .ShowWindow(vmNode);
+
+                    return;
+                }
+                else if (selectedOption == 1)
+                {
+                    // Generate new credentials.
+                    if (!await GenerateCredentials(vmNode))
+                    {
+                        return;
+                    }
+                }
+                else if (selectedOption == 2)
+                {
+                    // Cancel - just continue connecting.
+                }
+            }
 
             // TODO: make configurable
             var timeout = TimeSpan.FromSeconds(30);
@@ -207,6 +248,7 @@ namespace Google.Solutions.IapDesktop.Application.ProjectExplorer
                     try
                     {
                         var tunnelBrokerService = this.serviceProvider.GetService<TunnelBrokerService>();
+                        var destination = new TunnelDestination(vmNode.Reference, RemoteDesktopPort);
                         return await tunnelBrokerService.ConnectAsync(destination, timeout);
                     }
                     catch (NetworkStreamClosedException e)

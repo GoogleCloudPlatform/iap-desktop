@@ -138,6 +138,7 @@ namespace Google.Solutions.IapDesktop.Application.Windows
 
         internal static int ShowOptionsTaskDialog(
             IWin32Window parent,
+            IntPtr mainIcon,
             string windowTitle,
             string mainInstruction,
             string content,
@@ -180,7 +181,7 @@ namespace Google.Solutions.IapDesktop.Application.Windows
                     dwCommonButtons = TASKDIALOG_COMMON_BUTTON_FLAGS.TDCBF_OK_BUTTON |
                                       TASKDIALOG_COMMON_BUTTON_FLAGS.TDCBF_CANCEL_BUTTON,
                     pszWindowTitle = windowTitle,
-                    MainIcon = TD_SHIELD_ICON_INFO_BACKGROUND,
+                    MainIcon = mainIcon,
                     pszMainInstruction = mainInstruction,
                     pszContent = content,
                     pButtons = buttonsBuffer,
