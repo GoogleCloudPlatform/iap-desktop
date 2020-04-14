@@ -81,6 +81,7 @@ namespace Google.Solutions.IapDesktop.Application.Services
                 // Prompt for upgrade.
                 int selectedOption = UnsafeNativeMethods.ShowOptionsTaskDialog(
                     parent,
+                    UnsafeNativeMethods.TD_SHIELD_ICON_INFO_BACKGROUND,
                     "Update available",
                     "An update is available for the Cloud IAP plugin",
                     "Would you like to download the update now?",

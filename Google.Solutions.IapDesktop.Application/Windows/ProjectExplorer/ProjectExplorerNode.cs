@@ -115,7 +115,7 @@ namespace Google.Solutions.IapDesktop.Application.ProjectExplorer
                 : SecureStringExtensions.FromClearText(value);
         }
 
-        protected SecureString Password
+        public SecureString Password
         {
             get => IsPasswordSet
                 ? this.settings.Password
