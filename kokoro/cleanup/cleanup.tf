@@ -52,7 +52,7 @@ resource "google_cloud_scheduler_job" "cleanup-schedule" {
   project     = var.project_id
   name        = "cleanup"
   description = "Cleanup temporary VM instances"
-  schedule    = "*/2 * * * *"
+  schedule    = "0 * * * *"
 
   pubsub_target {
     topic_name = google_pubsub_topic.cleanup.id
