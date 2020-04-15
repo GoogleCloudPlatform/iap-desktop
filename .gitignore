@@ -265,4 +265,5 @@ Google.Solutions.CloudIap.Plugin/OAuthClient.cs
 Google.Solutions.IapDesktop/OAuthClient.cs
 
 .terraform/
-.tfstate
+*.tfstate
+*.tfstate.backup

@@ -34,12 +34,9 @@ resource "google_service_account" "cleanup" {
   display_name = "Cleanup"
 }
 
-resource "google_project_iam_binding" "cleanup_service_account_iam" {
+resource "google_project_iam_member" "cleanup_service_account_iam" {
   role    = "roles/compute.instanceAdmin.v1"
-
-  members = [
-    "serviceAccount:${google_service_account.cleanup.email}",
-  ]
+  member  = "serviceAccount:${google_service_account.cleanup.email}"
 }
 
 #------------------------------------------------------------------------------
@@ -47,16 +44,19 @@ resource "google_project_iam_binding" "cleanup_service_account_iam" {
 #------------------------------------------------------------------------------
 
 resource "google_pubsub_topic" "cleanup" {
+  project     = var.project_id
   name = "cleanup"
 }
 
 resource "google_cloud_scheduler_job" "cleanup-schedule" {
+  project     = var.project_id
   name        = "cleanup"
   description = "Cleanup temporary VM instances"
   schedule    = "*/2 * * * *"
 
   pubsub_target {
     topic_name = google_pubsub_topic.cleanup.id
+    data      = base64encode("{data: null}")
   }
 }
 
@@ -65,7 +65,7 @@ resource "google_cloud_scheduler_job" "cleanup-schedule" {
 #------------------------------------------------------------------------------
 
 resource "google_storage_bucket" "code-bucket" {
-  name = "cleanup-function"
+  name = "${var.project_id}-cleanup"
 }
 
 data "archive_file" "code_zip" {
@@ -75,7 +75,9 @@ data "archive_file" "code_zip" {
 }
 
 resource "google_storage_bucket_object" "code" {
-  name   = "index.zip"
+  # Use a file name that changes when the code in the archive changes so that 
+  # the Cloud Function is redeployed.
+  name = "${data.archive_file.code_zip.output_base64sha256}.zip"
   bucket = google_storage_bucket.code-bucket.name
   source = "obj/function.zip"
 }

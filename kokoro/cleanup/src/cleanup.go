@@ -29,10 +29,9 @@ func isDueForCleanup(instance *compute.Instance) (due bool, err error) {
 	ttlString, ok := getMetadata(instance, TtlLabelName)
 	if ok {
 		// Parse ttl metadata value
-		ttlInHours, err := strconv.Atoi(ttlString)
+		ttlInMinutes, err := strconv.Atoi(ttlString)
 		if err != nil {
-			// No such metadata key, that implies that this is not a
-			// temporary instance.
+			// No such metadata key, that implies that this is not a temporary instance.
 			return false, nil
 		}
 
@@ -42,7 +41,11 @@ func isDueForCleanup(instance *compute.Instance) (due bool, err error) {
 			return false, fmt.Errorf("Failed to parset creation date of VM: %v", err)
 		}
 
-		return ttlInHours*3600 > int(time.Since(creationTimestamp).Seconds()), nil
+		ageInMinutes := int(time.Since(creationTimestamp).Minutes())
+		fmt.Printf("Instance %s was created %d minutes ago, the max age is %d minutes\n",
+			instance.Name, ageInMinutes, ttlInMinutes)
+
+		return ttlInMinutes < ageInMinutes, nil
 	}
 
 	return false, nil
