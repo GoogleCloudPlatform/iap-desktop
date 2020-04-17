@@ -156,7 +156,7 @@ namespace Google.Solutions.IapDesktop.Windows
             this.fullScreenToolStripMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("fullScreenToolStripMenuItem.Image")));
             this.fullScreenToolStripMenuItem.Name = "fullScreenToolStripMenuItem";
             this.fullScreenToolStripMenuItem.ShortcutKeys = System.Windows.Forms.Keys.F11;
-            this.fullScreenToolStripMenuItem.Size = new System.Drawing.Size(184, 22);
+            this.fullScreenToolStripMenuItem.Size = new System.Drawing.Size(294, 22);
             this.fullScreenToolStripMenuItem.Text = "&Full screen";
             this.fullScreenToolStripMenuItem.Click += new System.EventHandler(this.fullScreenToolStripMenuItem_Click);
             // 
@@ -165,27 +165,27 @@ namespace Google.Solutions.IapDesktop.Windows
             this.disconnectToolStripMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("disconnectToolStripMenuItem.Image")));
             this.disconnectToolStripMenuItem.Name = "disconnectToolStripMenuItem";
             this.disconnectToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.F4)));
-            this.disconnectToolStripMenuItem.Size = new System.Drawing.Size(184, 22);
+            this.disconnectToolStripMenuItem.Size = new System.Drawing.Size(294, 22);
             this.disconnectToolStripMenuItem.Text = "&Disconnect";
             this.disconnectToolStripMenuItem.Click += new System.EventHandler(this.disconnectToolStripMenuItem_Click);
             // 
             // toolStripMenuItemSeparator
             // 
             this.toolStripMenuItemSeparator.Name = "toolStripMenuItemSeparator";
-            this.toolStripMenuItemSeparator.Size = new System.Drawing.Size(181, 6);
+            this.toolStripMenuItemSeparator.Size = new System.Drawing.Size(291, 6);
             // 
             // showSecurityScreenToolStripMenuItem
             // 
             this.showSecurityScreenToolStripMenuItem.Name = "showSecurityScreenToolStripMenuItem";
-            this.showSecurityScreenToolStripMenuItem.Size = new System.Drawing.Size(184, 22);
-            this.showSecurityScreenToolStripMenuItem.Text = "Show &security screen";
+            this.showSecurityScreenToolStripMenuItem.Size = new System.Drawing.Size(292, 22);
+            this.showSecurityScreenToolStripMenuItem.Text = "Show &security screen (send Ctrl+Alt+Esc)";
             this.showSecurityScreenToolStripMenuItem.Click += new System.EventHandler(this.showSecurityScreenToolStripMenuItem_Click);
             // 
             // showtaskManagerToolStripMenuItem
             // 
             this.showtaskManagerToolStripMenuItem.Name = "showtaskManagerToolStripMenuItem";
-            this.showtaskManagerToolStripMenuItem.Size = new System.Drawing.Size(184, 22);
-            this.showtaskManagerToolStripMenuItem.Text = "Show &task manager";
+            this.showtaskManagerToolStripMenuItem.Size = new System.Drawing.Size(292, 22);
+            this.showtaskManagerToolStripMenuItem.Text = "Show &task manager (send Ctrl+Shift+Esc)";
             this.showtaskManagerToolStripMenuItem.Click += new System.EventHandler(this.showtaskManagerToolStripMenuItem_Click);
             // 
             // viewToolStripMenuItem
