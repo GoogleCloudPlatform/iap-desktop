@@ -27,12 +27,16 @@ using Google.Solutions.IapDesktop.Application.Windows.RemoteDesktop;
 using Google.Solutions.IapDesktop.Windows;
 using System;
 using System.Diagnostics;
+using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using WeifenLuo.WinFormsUI.Docking;
 
+#pragma warning disable IDE1006 // Naming Styles
+
 namespace Google.Solutions.IapDesktop.Application.Windows
 {
+    [ComVisible(false)]
     public partial class DebugWindow : ToolWindow
     {
         private readonly IJobService jobService;

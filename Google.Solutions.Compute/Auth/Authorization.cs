@@ -20,12 +20,9 @@
 //
 
 using Google.Apis.Auth.OAuth2;
-using Google.Apis.Auth.OAuth2.Flows;
-using System.Threading.Tasks;
-using System.Threading;
 using Google.Apis.Http;
-using System.Diagnostics;
-using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace Google.Solutions.Compute.Auth
 {
@@ -165,7 +162,7 @@ namespace Google.Solutions.Compute.Auth
             }
 
             public Task<string> GetAccessTokenForRequestAsync(
-                string authUri = null, 
+                string authUri = null,
                 CancellationToken cancellationToken = default(CancellationToken))
             {
                 return this.currentCredential.GetAccessTokenForRequestAsync(authUri, cancellationToken);

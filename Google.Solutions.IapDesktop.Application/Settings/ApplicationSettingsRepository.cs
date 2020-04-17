@@ -22,12 +22,14 @@
 using Google.Apis.Util;
 using Google.Solutions.IapDesktop.Application.Registry;
 using Microsoft.Win32;
+using System.Runtime.InteropServices;
 
 namespace Google.Solutions.IapDesktop.Application.Settings
 {
     /// <summary>
     /// Registry-backed repository for app settings.
     /// </summary>
+    [ComVisible(false)]
     public class ApplicationSettingsRepository : SettingsRepositoryBase<ApplicationSettings>
     {
         public ApplicationSettingsRepository(RegistryKey baseKey) : base(baseKey)

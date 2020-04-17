@@ -47,6 +47,7 @@ namespace Google.Solutions.IapDesktop.Application.Windows.RemoteDesktop
         }
     }
 
+    [Serializable]
     public class RdpLogonException : RdpException
     {
         private readonly static IDictionary<int, string> knownErrors = new Dictionary<int, string>
@@ -93,8 +94,14 @@ namespace Google.Solutions.IapDesktop.Application.Windows.RemoteDesktop
         {
             this.ErrorCode = errorCode;
         }
+
+        protected RdpLogonException(SerializationInfo info, StreamingContext context)
+            : base(info, context)
+        {
+        }
     }
 
+    [Serializable]
     public class RdpFatalException : RdpException
     {
         private readonly static IDictionary<int, string> knownErrors = new Dictionary<int, string>
@@ -130,8 +137,14 @@ namespace Google.Solutions.IapDesktop.Application.Windows.RemoteDesktop
         {
             this.ErrorCode = errorCode;
         }
+
+        protected RdpFatalException(SerializationInfo info, StreamingContext context)
+            : base(info, context)
+        {
+        }
     }
 
+    [Serializable]
     public class RdpDisconnectedException : RdpException
     {
         private readonly static IDictionary<int, string> knownErrors = new Dictionary<int, string>
@@ -217,7 +230,12 @@ namespace Google.Solutions.IapDesktop.Application.Windows.RemoteDesktop
         public RdpDisconnectedException(int disconnectReason, string description)
             : base()
         {
+            // TODO: use description?
             this.DisconnectReason = disconnectReason;
+        }
+        protected RdpDisconnectedException(SerializationInfo info, StreamingContext context)
+            : base(info, context)
+        {
         }
     }
 }

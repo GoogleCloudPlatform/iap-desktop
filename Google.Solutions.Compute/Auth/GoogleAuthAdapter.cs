@@ -24,6 +24,7 @@ using Google.Apis.Auth.OAuth2.Flows;
 using Google.Apis.Auth.OAuth2.Responses;
 using Google.Solutions.Compute.Test.Net;
 using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
@@ -36,7 +37,7 @@ namespace Google.Solutions.Compute.Auth
         // Scope required to query email from UserInfo endpoint.
         public const string EmailScope = "https://www.googleapis.com/auth/userinfo.email";
 
-        private const string ConfigurationEndpoint = 
+        private const string ConfigurationEndpoint =
             "https://accounts.google.com/.well-known/openid-configuration";
 
         public const string StoreUserId = "oauth";
@@ -99,7 +100,17 @@ namespace Google.Solutions.Compute.Auth
 
         public void Dispose()
         {
-            this.flow.Dispose();
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        // Protected implementation of Dispose pattern.
+        protected virtual void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                this.flow.Dispose();
+            }
         }
 
         public async Task<UserInfo> QueryUserInfoAsync(
@@ -122,8 +133,6 @@ namespace Google.Solutions.Compute.Auth
 
         public class OpenIdConfiguration
         {
-            private const string Endpoint = "https://accounts.google.com/.well-known/openid-configuration";
-
             [JsonProperty("userinfo_endpoint")]
             public string UserInfoEndpoint { get; set; }
         }

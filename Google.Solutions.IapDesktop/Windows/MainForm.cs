@@ -40,6 +40,8 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using WeifenLuo.WinFormsUI.Docking;
 
+#pragma warning disable IDE1006 // Naming Styles
+
 namespace Google.Solutions.IapDesktop.Windows
 {
 
@@ -47,7 +49,6 @@ namespace Google.Solutions.IapDesktop.Windows
     {
         private readonly ApplicationSettingsRepository applicationSettings;
         private readonly AuthSettingsRepository authSettings;
-        private readonly InventorySettingsRepository inventorySettings;
         private readonly IServiceProvider serviceProvider;
 
         private WaitDialog waitDialog = null;
@@ -57,7 +58,6 @@ namespace Google.Solutions.IapDesktop.Windows
             this.serviceProvider = serviceProvider;
             this.applicationSettings = serviceProvider.GetService<ApplicationSettingsRepository>();
             this.authSettings = serviceProvider.GetService<AuthSettingsRepository>();
-            this.inventorySettings = serviceProvider.GetService<InventorySettingsRepository>();
 
             // 
             // Restore window settings.
@@ -85,7 +85,7 @@ namespace Google.Solutions.IapDesktop.Windows
             this.dockPanel.DockLeftPortion =
                 this.dockPanel.DockRightPortion = (300.0f / this.Width);
 
-            this.checkForUpdatesOnExitToolStripMenuItem.Checked 
+            this.checkForUpdatesOnExitToolStripMenuItem.Checked
                 = this.applicationSettings.GetSettings().IsUpdateCheckEnabled;
         }
 
@@ -266,8 +266,8 @@ namespace Google.Solutions.IapDesktop.Windows
 
         private void enableloggingToolStripMenuItem_Click(object sender, EventArgs _)
         {
-            var loggingEnabled = 
-                this.enableloggingToolStripMenuItem.Checked = 
+            var loggingEnabled =
+                this.enableloggingToolStripMenuItem.Checked =
                 !this.enableloggingToolStripMenuItem.Checked;
 
             try
@@ -320,10 +320,10 @@ namespace Google.Solutions.IapDesktop.Windows
             => DoWithActiveSession(session => session.TrySetFullscreen(true));
 
         private void disconnectToolStripMenuItem_Click(object sender, EventArgs args)
-            => DoWithActiveSession(session => session.Close()); 
+            => DoWithActiveSession(session => session.Close());
 
         private void showSecurityScreenToolStripMenuItem_Click(object sender, EventArgs args)
-            => DoWithActiveSession(session => session.ShowSecurityScreen()); 
+            => DoWithActiveSession(session => session.ShowSecurityScreen());
 
         private void showtaskManagerToolStripMenuItem_Click(object sender, EventArgs args)
             => DoWithActiveSession(session => session.ShowTaskManager());

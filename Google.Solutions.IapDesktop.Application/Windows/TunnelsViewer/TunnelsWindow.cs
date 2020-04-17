@@ -25,11 +25,15 @@ using Google.Solutions.IapDesktop.Windows;
 using System;
 using System.Data;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Windows.Forms;
 using WeifenLuo.WinFormsUI.Docking;
 
+#pragma warning disable IDE1006 // Naming Styles
+
 namespace Google.Solutions.IapDesktop.Application.Windows.TunnelsViewer
 {
+    [ComVisible(false)]
     public partial class TunnelsWindow : ToolWindow, ITunnelsViewer
     {
         private readonly DockPanel dockPanel;

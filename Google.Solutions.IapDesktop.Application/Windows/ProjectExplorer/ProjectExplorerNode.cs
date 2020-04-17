@@ -32,6 +32,8 @@ using System.Linq;
 using System.Security;
 using System.Windows.Forms;
 
+#pragma warning disable IDE1006 // Naming Styles
+
 namespace Google.Solutions.IapDesktop.Application.ProjectExplorer
 {
     internal class CloudNode : TreeNode, IProjectExplorerCloudNode
@@ -137,7 +139,7 @@ namespace Google.Solutions.IapDesktop.Application.ProjectExplorer
         public string Domain
         {
             get => IsDomainSet
-                ? this.settings.Domain 
+                ? this.settings.Domain
                 : this.parent?.Domain;
             set => this.settings.Domain = string.IsNullOrEmpty(value) ? null : value;
         }
@@ -161,7 +163,7 @@ namespace Google.Solutions.IapDesktop.Application.ProjectExplorer
             set => this.settings.ConnectionBar = value;
         }
 
-        protected bool IsConnectionBarSet 
+        protected bool IsConnectionBarSet
             => this.settings.ConnectionBar != RdpConnectionBarState._Default;
 
         public bool ShouldSerializeConnectionBar() => IsConnectionBarSet;
@@ -181,7 +183,7 @@ namespace Google.Solutions.IapDesktop.Application.ProjectExplorer
             set => this.settings.DesktopSize = value;
         }
 
-        protected bool IsDesktopSizeSet 
+        protected bool IsDesktopSizeSet
             => this.settings.DesktopSize != RdpDesktopSize._Default;
 
         public bool ShouldSerializeDesktopSize() => IsDesktopSizeSet;
@@ -201,7 +203,7 @@ namespace Google.Solutions.IapDesktop.Application.ProjectExplorer
             set => this.settings.ColorDepth = value;
         }
 
-        protected bool IsColorDepthSet 
+        protected bool IsColorDepthSet
             => this.settings.ColorDepth != RdpColorDepth._Default;
 
         public bool ShouldSerializeColorDepth() => IsColorDepthSet;
@@ -221,7 +223,7 @@ namespace Google.Solutions.IapDesktop.Application.ProjectExplorer
             set => this.settings.AuthenticationLevel = value;
         }
 
-        protected bool IsAuthenticationLevelSet 
+        protected bool IsAuthenticationLevelSet
             => this.settings.AuthenticationLevel != RdpAuthenticationLevel._Default;
 
         public bool ShouldSerializeAuthenticationLevel() => IsAuthenticationLevelSet;
@@ -241,7 +243,7 @@ namespace Google.Solutions.IapDesktop.Application.ProjectExplorer
             set => this.settings.RedirectClipboard = value;
         }
 
-        protected bool IsRedirectClipboardSet 
+        protected bool IsRedirectClipboardSet
             => this.settings.RedirectClipboard != RdpRedirectClipboard._Default;
 
         public bool ShouldSerializeRedirectClipboard() => IsRedirectClipboardSet;
@@ -281,7 +283,7 @@ namespace Google.Solutions.IapDesktop.Application.ProjectExplorer
             set => this.settings.BitmapPersistence = value;
         }
 
-        protected bool IsBitmapPersistenceSet 
+        protected bool IsBitmapPersistenceSet
             => this.settings.BitmapPersistence != RdpBitmapPersistence._Default;
 
         public bool ShouldSerializeBitmapPersistence() => IsBitmapPersistenceSet;

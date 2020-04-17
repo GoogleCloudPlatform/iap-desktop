@@ -28,18 +28,19 @@ using System.ComponentModel;
 using System.Data;
 using System.Drawing;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Windows.Forms;
 using WeifenLuo.WinFormsUI.Docking;
 
 namespace Google.Solutions.IapDesktop.Application.SettingsEditor
 {
+    [ComVisible(false)]
     public partial class SettingsEditorWindow : ToolWindow, ISettingsEditor
     {
         private const int GoldBarHeight = 22;
 
         private readonly DockPanel dockPanel;
         private readonly IEventService eventService;
-        private readonly InventorySettingsRepository inventorySettingsRepository;
 
         public SettingsEditorWindow()
         {
@@ -61,8 +62,6 @@ namespace Google.Solutions.IapDesktop.Application.SettingsEditor
             this.HideOnClose = true;
 
             this.eventService = serviceProvider.GetService<IEventService>();
-            this.inventorySettingsRepository = serviceProvider.GetService<InventorySettingsRepository>();
-
             this.eventService.BindHandler<ProjectExplorerNodeSelectedEvent>(OnProjectExplorerNodeSelected);
         }
 

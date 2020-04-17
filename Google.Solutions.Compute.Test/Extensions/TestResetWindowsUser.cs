@@ -19,13 +19,13 @@
 // under the License.
 //
 
-using Google.Solutions.Compute.Test.Env;
+using Google.Apis.Compute.v1;
 using Google.Solutions.Compute.Extensions;
+using Google.Solutions.Compute.Test.Env;
 using NUnit.Framework;
 using System;
-using System.Threading.Tasks;
-using Google.Apis.Compute.v1;
 using System.Threading;
+using System.Threading.Tasks;
 
 namespace Google.Solutions.Compute.Test.Extensions
 {
@@ -52,7 +52,7 @@ namespace Google.Solutions.Compute.Test.Extensions
             try
             {
                 await this.instancesResource.ResetWindowsUserAsync(
-                    testInstance.InstanceReference, 
+                    testInstance.InstanceReference,
                     username,
                     CancellationToken.None);
                 Assert.Fail();
@@ -71,7 +71,7 @@ namespace Google.Solutions.Compute.Test.Extensions
 
             var username = "test" + Guid.NewGuid().ToString().Substring(20);
             var credentials = await this.instancesResource.ResetWindowsUserAsync(
-                testInstance.InstanceReference, 
+                testInstance.InstanceReference,
                 username,
                 CancellationToken.None);
 
@@ -88,11 +88,11 @@ namespace Google.Solutions.Compute.Test.Extensions
 
             var username = "existinguser";
             await this.instancesResource.ResetWindowsUserAsync(
-                testInstance.InstanceReference, 
+                testInstance.InstanceReference,
                 username,
                 CancellationToken.None);
             var credentials = await this.instancesResource.ResetWindowsUserAsync(
-                testInstance.InstanceReference, 
+                testInstance.InstanceReference,
                 username,
                 CancellationToken.None);
 

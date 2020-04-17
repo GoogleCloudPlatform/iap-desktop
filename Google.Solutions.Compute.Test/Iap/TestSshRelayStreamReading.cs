@@ -29,13 +29,13 @@ using System.Threading.Tasks;
 
 namespace Google.Solutions.Compute.Test.Iap
 {
-    
+
 
     [TestFixture]
     public class TestSshRelayStreamReading : FixtureBase
     {
         private readonly CancellationTokenSource tokenSource = new CancellationTokenSource();
-        
+
         [Test]
         public async Task WhenPerformingFirstRead_ThenConnectionIsOpened()
         {
@@ -176,8 +176,8 @@ namespace Google.Solutions.Compute.Test.Iap
             byte[] buffer = new byte[relay.MinReadSize];
             int bytesRead = await relay.ReadAsync(buffer, 0, buffer.Length, tokenSource.Token);
             Assert.AreEqual(2, bytesRead);
-                    Assert.AreEqual(0xA, buffer[0]);
-                    Assert.AreEqual(0xB, buffer[1]);
+            Assert.AreEqual(0xA, buffer[0]);
+            Assert.AreEqual(0xB, buffer[1]);
         }
 
         [Test]

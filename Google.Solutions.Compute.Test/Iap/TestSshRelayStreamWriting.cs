@@ -234,7 +234,7 @@ namespace Google.Solutions.Compute.Test.Iap
         {
             var endpoint = new MockSshRelayEndpoint()
             {
-                ExpectedStreams = new []
+                ExpectedStreams = new[]
                 {
                     new MockStream()
                     {

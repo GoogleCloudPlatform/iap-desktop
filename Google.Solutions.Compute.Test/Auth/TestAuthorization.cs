@@ -38,7 +38,7 @@ namespace Google.Solutions.Compute.Test.Auth
             var adapter = new Mock<IAuthAdapter>();
             adapter.Setup(a => a.GetStoredRefreshTokenAsync(It.IsAny<CancellationToken>()))
                 .Returns(Task.FromResult<TokenResponse>(null));
-            
+
             var authz = await OAuthAuthorization.TryLoadExistingAuthorizationAsync(
                 adapter.Object,
                 CancellationToken.None);

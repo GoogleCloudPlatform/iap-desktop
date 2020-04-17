@@ -202,7 +202,7 @@ namespace Google.Solutions.IapDesktop.Application.Services
             }
         }
 
-        
+
     }
 
     public static class ExceptionExtensions

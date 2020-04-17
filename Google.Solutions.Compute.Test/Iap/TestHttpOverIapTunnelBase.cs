@@ -19,13 +19,13 @@
 // under the License.
 //
 
+using Google.Solutions.Compute.Net;
+using Google.Solutions.Compute.Test.Env;
 using NUnit.Framework;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
-using Google.Solutions.Compute.Net;
-using Google.Solutions.Compute.Test.Env;
 
 namespace Google.Solutions.Compute.Test.Iap
 {

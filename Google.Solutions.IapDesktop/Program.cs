@@ -20,7 +20,6 @@
 //
 
 using Google.Solutions.Compute.Auth;
-using Google.Solutions.IapDesktop.Application;
 using Google.Solutions.IapDesktop.Application.Adapters;
 using Google.Solutions.IapDesktop.Application.ObjectModel;
 using Google.Solutions.IapDesktop.Application.ProjectExplorer;
@@ -100,7 +99,7 @@ namespace Google.Solutions.IapDesktop
             }
         }
 
-        
+
         /// <summary>
         /// The main entry point for the application.
         /// </summary>

@@ -20,7 +20,6 @@
 //
 
 using Google.Apis.Compute.v1;
-using System;
 using System.Threading.Tasks;
 
 namespace Google.Solutions.Compute.Extensions
@@ -68,8 +67,8 @@ namespace Google.Solutions.Compute.Extensions
         private long nextOffset = 0;
 
         public SerialPortStream(
-            InstancesResource instancesResource, 
-            VmInstanceReference instanceRef, 
+            InstancesResource instancesResource,
+            VmInstanceReference instanceRef,
             ushort port)
         {
             this.instancesResource = instancesResource;

@@ -29,7 +29,7 @@ namespace Google.Solutions.Compute
     }
 
     internal static class TraceSourceExtensions
-    { 
+    {
         public static void TraceVerbose(this TraceSource source, string message)
         {
             if (source.Switch.ShouldTrace(TraceEventType.Verbose))

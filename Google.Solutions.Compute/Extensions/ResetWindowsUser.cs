@@ -102,7 +102,7 @@ namespace Google.Solutions.Compute.Extensions
 
                     throw new PasswordResetException(
                         "You do not have sufficient permissions to reset a Windows password. " +
-                        "You need the 'Service Account User' and " + 
+                        "You need the 'Service Account User' and " +
                         "'Compute Instance Admin' roles (or equivalent custom roles) " +
                         "to perform this action.");
                 }
@@ -114,7 +114,7 @@ namespace Google.Solutions.Compute.Extensions
 
                 // It is rare, but sometimes a single JSON can be split over multiple
                 // API reads. Therefore, maintain a buffer.
-                var logBuffer = new StringBuilder(64*1024);
+                var logBuffer = new StringBuilder(64 * 1024);
                 while (true)
                 {
                     TraceSources.Compute.TraceVerbose("Waiting for agent to supply response...");

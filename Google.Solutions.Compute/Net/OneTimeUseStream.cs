@@ -76,9 +76,9 @@ namespace Google.Solutions.Compute.Net
         }
 
         public async Task<int> ReadAsync(
-            byte[] buffer, 
-            int offset, 
-            int count, 
+            byte[] buffer,
+            int offset,
+            int count,
             CancellationToken cancellationToken)
         {
             VerifyStreamNotClosed();
@@ -86,9 +86,9 @@ namespace Google.Solutions.Compute.Net
             try
             {
                 int bytesRead = await ReadAsyncWithCloseProtection(
-                    buffer, 
-                    offset, 
-                    count, 
+                    buffer,
+                    offset,
+                    count,
                     cancellationToken).ConfigureAwait(false);
                 if (bytesRead == 0)
                 {
@@ -105,9 +105,9 @@ namespace Google.Solutions.Compute.Net
         }
 
         public async Task WriteAsync(
-            byte[] buffer, 
-            int offset, 
-            int count, 
+            byte[] buffer,
+            int offset,
+            int count,
             CancellationToken cancellationToken)
         {
             VerifyStreamNotClosed();
@@ -115,9 +115,9 @@ namespace Google.Solutions.Compute.Net
             try
             {
                 await WriteAsyncWithCloseProtection(
-                    buffer, 
-                    offset, 
-                    count, 
+                    buffer,
+                    offset,
+                    count,
                     cancellationToken).ConfigureAwait(false);
             }
             catch (NetworkStreamClosedException)

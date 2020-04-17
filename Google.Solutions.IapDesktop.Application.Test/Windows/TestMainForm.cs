@@ -22,7 +22,6 @@
 using Google.Apis.Auth.OAuth2;
 using Google.Solutions.Compute.Auth;
 using Google.Solutions.Compute.Test.Env;
-using Google.Solutions.IapDesktop.Application.ObjectModel;
 using Google.Solutions.IapDesktop.Application.Services;
 using Google.Solutions.IapDesktop.Application.Windows;
 using System;
@@ -85,7 +84,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows
 
         public IAuthorization Authorization => new SimpleAuthorization(Defaults.GetCredential());
 
-        public Task ReauthorizeAsync(CancellationToken token) 
+        public Task ReauthorizeAsync(CancellationToken token)
             => this.Authorization.ReauthorizeAsync(token);
     }
 }

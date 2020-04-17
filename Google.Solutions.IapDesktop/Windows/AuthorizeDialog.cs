@@ -24,7 +24,6 @@ using Google.Apis.Auth.OAuth2.Flows;
 using Google.Apis.Util.Store;
 using Google.Solutions.Compute.Auth;
 using System;
-using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -62,7 +61,7 @@ namespace Google.Solutions.IapDesktop.Windows
                     ClientSecrets = clientSecrets,
                     Scopes = scopes,
                     DataStore = dataStore
-                }, 
+                },
                 Resources.AuthorizationSuccessful);
 
             using (var dialog = new AuthorizeDialog())

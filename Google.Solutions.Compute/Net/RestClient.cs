@@ -37,7 +37,7 @@ namespace Google.Solutions.Compute.Test.Net
         public ICredential Credential { get; set; }
 
         public async Task<TModel> GetAsync<TModel>(
-            string url, 
+            string url,
             CancellationToken cancellationToken)
         {
             using (var client = new HttpClient())
