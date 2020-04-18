@@ -56,7 +56,8 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows
                         Username = "wrong",
                         Password = SecureStringExtensions.FromClearText("wrong"),
                         AuthenticationLevel = RdpAuthenticationLevel.NoServerAuthentication,
-                        UserAuthenticationBehavior = RdpUserAuthenticationBehavior.AbortOnFailure
+                        UserAuthenticationBehavior = RdpUserAuthenticationBehavior.AbortOnFailure,
+                        DesktopSize = RdpDesktopSize.ClientSize
                     });
 
                 AwaitEvent<RemoteDesktopConnectionFailedEvent>();
@@ -168,7 +169,8 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows
                         Username = credentials.UserName,
                         Password = credentials.SecurePassword,
                         AuthenticationLevel = RdpAuthenticationLevel.NoServerAuthentication,
-                        BitmapPersistence = RdpBitmapPersistence.Disabled
+                        BitmapPersistence = RdpBitmapPersistence.Disabled,
+                        DesktopSize = RdpDesktopSize.ClientSize
                     });
 
                 AwaitEvent<RemoteDesktopConnectionSuceededEvent>();

@@ -330,7 +330,7 @@ namespace Google.Solutions.IapDesktop.Application.Windows.RemoteDesktop
         {
             Debug.Assert(this.autoResize);
 
-            using (TraceSources.IapDesktop.TraceMethod().WithoutParameters())
+            using (TraceSources.IapDesktop.TraceMethod().WithParameters(this.autoResize))
             {
                 if (!this.Visible)
                 {
@@ -502,7 +502,7 @@ namespace Google.Solutions.IapDesktop.Application.Windows.RemoteDesktop
             object sender,
             IMsTscAxEvents_OnRemoteDesktopSizeChangeEvent e)
         {
-            using (TraceSources.IapDesktop.TraceMethod().WithoutParameters())
+            using (TraceSources.IapDesktop.TraceMethod().WithParameters(this.autoResize))
             { }
         }
 

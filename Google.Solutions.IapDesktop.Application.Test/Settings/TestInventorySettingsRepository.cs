@@ -307,7 +307,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Settings
                 AuthenticationLevel = RdpAuthenticationLevel.RequireServerAuthentication,
                 ColorDepth = RdpColorDepth.DeepColor,
                 AudioMode = RdpAudioMode.DoNotPlay,
-                RedirectClipboard = RdpRedirectClipboard.Enabled
+                RedirectClipboard = RdpRedirectClipboard.Enabled,
             });
 
             var settings = repository.GetVmInstanceSettings("pro-1", "vm-1");

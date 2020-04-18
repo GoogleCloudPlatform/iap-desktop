@@ -58,7 +58,8 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows
                         Username = credentials.UserName,
                         Password = credentials.SecurePassword,
                         AuthenticationLevel = RdpAuthenticationLevel.NoServerAuthentication,
-                        BitmapPersistence = RdpBitmapPersistence.Disabled
+                        BitmapPersistence = RdpBitmapPersistence.Disabled,
+                        DesktopSize = RdpDesktopSize.ClientSize
                     });
             }
         }
