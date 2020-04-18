@@ -41,6 +41,7 @@ namespace Google.Solutions.IapDesktop.Application.Test
             {
                 if (!trace.Listeners.Contains(listener))
                 {
+                    listener.TraceOutputOptions = TraceOptions.DateTime;
                     trace.Listeners.Add(listener);
                     trace.Switch.Level = System.Diagnostics.SourceLevels.Verbose;
                 }

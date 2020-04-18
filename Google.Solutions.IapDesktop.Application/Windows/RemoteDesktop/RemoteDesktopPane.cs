@@ -263,14 +263,17 @@ namespace Google.Solutions.IapDesktop.Application.Windows.RemoteDesktop
 
         private void RemoteDesktopPane_SizeChanged(object sender, EventArgs e)
         {
-            UpdateLayout();
-
-            if (this.autoResize)
+            using (TraceSources.IapDesktop.TraceMethod().WithParameters(this.autoResize))
             {
-                // Do not resize immediately since there might be another resitze
-                // event coming in a few miliseconds. Instead, delay the operation
-                // by deferring it to a timer.
-                this.reconnectToResizeTimer.Start();
+                UpdateLayout();
+
+                if (this.autoResize)
+                {
+                    // Do not resize immediately since there might be another resitze
+                    // event coming in a few miliseconds. Instead, delay the operation
+                    // by deferring it to a timer.
+                    this.reconnectToResizeTimer.Start();
+                }
             }
         }
 
@@ -335,10 +338,8 @@ namespace Google.Solutions.IapDesktop.Application.Windows.RemoteDesktop
                 if (!this.Visible)
                 {
                     // Form is closing, better not touch anything.
-                    return;
                 }
-
-                if (!this.IsConnecting)
+                else if (!this.IsConnecting)
                 {
                     // Reconnect to resize remote desktop.
                     this.rdpClient.Reconnect((uint)this.Size.Width, (uint)this.Size.Height);
