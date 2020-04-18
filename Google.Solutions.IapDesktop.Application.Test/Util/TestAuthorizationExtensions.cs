@@ -28,7 +28,7 @@ using System;
 namespace Google.Solutions.IapDesktop.Application.Test.Util
 {
     [TestFixture]
-    public class TestAuthorizationExtensions
+    public class TestAuthorizationExtensions : FixtureBase
     {
         [Test]
         public void WhenAuthorizationEmailIsNull_ThenSuggestWindowsUsernameReturnsWindowsUsername()

@@ -26,11 +26,16 @@ namespace Google.Solutions.Compute.Test
 {
     public abstract class FixtureBase
     {
+        private static ConsoleTraceListener listener = new ConsoleTraceListener();
+
         [SetUp]
         public void SetUpTracing()
         {
-            TraceSources.Compute.Listeners.Add(new ConsoleTraceListener());
-            TraceSources.Compute.Switch.Level = SourceLevels.Verbose;
+            if (!TraceSources.Compute.Listeners.Contains(listener))
+            {
+                TraceSources.Compute.Listeners.Add(listener);
+                TraceSources.Compute.Switch.Level = SourceLevels.Verbose;
+            }
         }
     }
 }

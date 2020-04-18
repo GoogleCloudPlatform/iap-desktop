@@ -26,6 +26,8 @@ namespace Google.Solutions.IapDesktop.Application.Test
 {
     public abstract class FixtureBase
     {
+        private static ConsoleTraceListener listener = new ConsoleTraceListener();
+
         private static TraceSource[] Traces = new[]
         {
             Google.Solutions.Compute.TraceSources.Compute,
@@ -35,12 +37,13 @@ namespace Google.Solutions.IapDesktop.Application.Test
         [SetUp]
         public void SetUpTracing()
         {
-            var listener = new ConsoleTraceListener();
-
             foreach (var trace in Traces)
             {
-                trace.Listeners.Add(listener);
-                trace.Switch.Level = System.Diagnostics.SourceLevels.Verbose;
+                if (!trace.Listeners.Contains(listener))
+                {
+                    trace.Listeners.Add(listener);
+                    trace.Switch.Level = System.Diagnostics.SourceLevels.Verbose;
+                }
             }
         }
     }
