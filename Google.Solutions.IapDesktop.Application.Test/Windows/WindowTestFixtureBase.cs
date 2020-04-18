@@ -100,8 +100,10 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows
         protected void PumpWindowMessages()
             => System.Windows.Forms.Application.DoEvents();
 
-        protected TEvent AwaitEvent<TEvent>() where TEvent : class
+        protected TEvent AwaitEvent<TEvent>(TimeSpan timeout) where TEvent : class
         {
+            var deadline = DateTime.Now.Add(timeout);
+
             TEvent deliveredEvent = null;
 
             this.eventService.BindHandler<TEvent>(e =>
@@ -111,11 +113,20 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows
 
             while (deliveredEvent == null)
             {
+                if (deadline < DateTime.Now)
+                {
+                    throw new TimeoutException(
+                        $"Timeout waiting for event {typeof(TEvent).Name} elapsed");
+                }
+
                 PumpWindowMessages();
             }
 
             return deliveredEvent;
         }
+
+        protected TEvent AwaitEvent<TEvent>() where TEvent : class
+            => AwaitEvent<TEvent>(TimeSpan.FromSeconds(30));
 
         protected static Instance CreateInstance(string instanceName, string zone, bool windows)
         {
