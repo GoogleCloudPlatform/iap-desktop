@@ -36,6 +36,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows
 {
     [TestFixture]
     [Apartment(ApartmentState.STA)]
+    [Timeout(10 * 60 * 1000)]
     public class WindowTestFixtureBase : FixtureBase
     {
         private const string TestKeyPath = @"Software\Google\__Test";
