@@ -45,5 +45,13 @@ namespace Google.Solutions.Compute
                 source.TraceData(TraceEventType.Verbose, 0, string.Format(message, args));
             }
         }
+
+        public static void TraceWarning(this TraceSource source, string message, params object[] args)
+        {
+            if (source.Switch.ShouldTrace(TraceEventType.Warning))
+            {
+                source.TraceData(TraceEventType.Warning, 0, string.Format(message, args));
+            }
+        }
     }
 }

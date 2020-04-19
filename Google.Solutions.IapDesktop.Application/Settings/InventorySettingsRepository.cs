@@ -301,6 +301,9 @@ namespace Google.Solutions.IapDesktop.Application.Settings
                 ? (RdpBitmapPersistence)value
                 : RdpBitmapPersistence._Default;
         }
+
+        [DwordRegistryValueAttribute("ConnectionTimeout")]
+        public int ConnectionTimeout { get; set; } = 30;
     }
 
     public class VmInstanceSettings : InventorySettingsBase

@@ -242,9 +242,8 @@ namespace Google.Solutions.IapDesktop.Application.ProjectExplorer
                 }
             }
 
-            // TODO: make configurable
-            var timeout = TimeSpan.FromSeconds(30);
-
+            var effectiveSettings = vmNode.EffectiveSettingsWithInheritanceApplied;
+            
             var tunnel = await this.jobService.RunInBackground(
                 new JobDescription("Opening Cloud IAP tunnel..."),
                 async token =>
@@ -253,6 +252,11 @@ namespace Google.Solutions.IapDesktop.Application.ProjectExplorer
                     {
                         var tunnelBrokerService = this.serviceProvider.GetService<TunnelBrokerService>();
                         var destination = new TunnelDestination(vmNode.Reference, RemoteDesktopPort);
+
+                        // Give IAP the same timeout for probing as RDP itself.
+                        // Note that the timeouts are not additive.
+                        var timeout = TimeSpan.FromSeconds(effectiveSettings.ConnectionTimeout);
+
                         return await tunnelBrokerService.ConnectAsync(destination, timeout);
                     }
                     catch (NetworkStreamClosedException e)
@@ -276,7 +280,7 @@ namespace Google.Solutions.IapDesktop.Application.ProjectExplorer
                 vmNode.Reference,
                 "localhost",
                 (ushort)tunnel.LocalPort,
-                vmNode.EffectiveSettingsWithInheritanceApplied);
+                effectiveSettings);
         }
 
         //---------------------------------------------------------------------

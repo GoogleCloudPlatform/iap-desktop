@@ -23,6 +23,7 @@ using Google.Solutions.Compute;
 using Google.Solutions.IapDesktop.Application.Settings;
 using Google.Solutions.IapDesktop.Application.Windows.RemoteDesktop;
 using NUnit.Framework;
+using System;
 
 namespace Google.Solutions.IapDesktop.Application.Test.Windows
 {
@@ -55,7 +56,10 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows
                 this.instanceReference,
                 "localhost",
                 1,
-                new VmInstanceSettings());
+                new VmInstanceSettings()
+                {
+                    ConnectionTimeout = 5
+                });
 
             AwaitEvent<RemoteDesktopConnectionFailedEvent>();
             Assert.IsInstanceOf(typeof(RdpDisconnectedException), this.ExceptionShown);

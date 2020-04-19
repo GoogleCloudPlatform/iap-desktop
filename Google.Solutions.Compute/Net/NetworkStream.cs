@@ -67,13 +67,20 @@ namespace Google.Solutions.Compute.Net
 
                         if (bytesRead > 0)
                         {
-                            TraceSources.Compute.TraceVerbose($"NetworkStream [{readStream} > {writeStream}]: Read {bytesRead} bytes");
+                            TraceSources.Compute.TraceVerbose(
+                                "NetworkStream [{0} > {1}]: Read {2} bytes",
+                                readStream,
+                                writeStream,
+                                bytesRead);
 
                             await writeStream.WriteAsync(buffer, 0, bytesRead, token).ConfigureAwait(false);
                         }
                         else
                         {
-                            TraceSources.Compute.TraceVerbose($"NetworkStream [{readStream} > {writeStream}]: gracefully closed connection");
+                            TraceSources.Compute.TraceVerbose(
+                                "NetworkStream [{0} > {1}]: gracefully closed connection",
+                                readStream,
+                                writeStream);
 
                             // Propagate.
                             await writeStream.CloseAsync(token).ConfigureAwait(false);
@@ -81,18 +88,27 @@ namespace Google.Solutions.Compute.Net
                             break;
                         }
                     }
-                    catch (NetworkStreamClosedException)
+                    catch (NetworkStreamClosedException e)
                     {
-                        TraceSources.Compute.TraceVerbose($"NetworkStream [{readStream} > {writeStream}]: forcefully closed connection");
+                        TraceSources.Compute.TraceWarning(
+                            "NetworkStream [{0} > {1}]: forcefully closed connection: {2}",
+                            readStream,
+                            writeStream,
+                            e.Message);
 
                         // Propagate.
                         await writeStream.CloseAsync(token).ConfigureAwait(false);
 
                         break;
                     }
-                    catch (Exception)
+                    catch (Exception e)
                     {
-                        TraceSources.Compute.TraceVerbose($"NetworkStream [{readStream} > {writeStream}]: Caught unhandled exception");
+                        TraceSources.Compute.TraceWarning(
+                            "NetworkStream [{0} > {1}]: Caught unhandled exception: {2} {3}",
+                            readStream,
+                            writeStream,
+                            e.Message,
+                            e.StackTrace);
 
                         throw;
                     }

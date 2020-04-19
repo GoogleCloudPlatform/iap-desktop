@@ -58,7 +58,8 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows
                         Username = credentials.UserName,
                         Password = credentials.SecurePassword,
                         AuthenticationLevel = RdpAuthenticationLevel.NoServerAuthentication,
-                        BitmapPersistence = RdpBitmapPersistence.Disabled
+                        BitmapPersistence = RdpBitmapPersistence.Disabled,
+                        DesktopSize = RdpDesktopSize.ClientSize
                     });
             }
         }
@@ -79,7 +80,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows
                 AwaitEvent<RemoteDesktopConnectionFailedEvent>();
                 Assert.IsNotNull(this.ExceptionShown);
                 Assert.IsInstanceOf(typeof(RdpDisconnectedException), this.ExceptionShown);
-                Assert.AreEqual(2308, ((RdpDisconnectedException)this.ExceptionShown).DisconnectReason);
+                Assert.AreEqual(264, ((RdpDisconnectedException)this.ExceptionShown).DisconnectReason);
             }
         }
 

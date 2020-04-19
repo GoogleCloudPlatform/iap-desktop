@@ -105,7 +105,10 @@ namespace Google.Solutions.IapDesktop.Application.Windows.RemoteDesktop
             VmInstanceSettings settings
             )
         {
-            using (TraceSources.IapDesktop.TraceMethod().WithParameters(server, port))
+            using (TraceSources.IapDesktop.TraceMethod().WithParameters(
+                server, 
+                port, 
+                settings.ConnectionTimeout))
             {
                 // NB. The initialization needs to happen after the pane is shown, otherwise
                 // an error happens indicating that the control does not have a Window handle.
@@ -157,6 +160,14 @@ namespace Google.Solutions.IapDesktop.Application.Windows.RemoteDesktop
                 advancedSettings.PerformanceFlags = 0; // Enable all features, it's 2020.
                 advancedSettings.EnableAutoReconnect = true;
                 advancedSettings.MaxReconnectAttempts = 10;
+
+                //
+                // Apply timeouts. Note that the control might take
+                // about twice the configured timeout before sending a 
+                // OnDisconnected event.
+                //
+                advancedSettings.singleConnectionTimeout = settings.ConnectionTimeout;
+                advancedSettings.overallConnectionTimeout = settings.ConnectionTimeout;
 
                 //
                 // Behavior settings.
@@ -263,14 +274,17 @@ namespace Google.Solutions.IapDesktop.Application.Windows.RemoteDesktop
 
         private void RemoteDesktopPane_SizeChanged(object sender, EventArgs e)
         {
-            UpdateLayout();
-
-            if (this.autoResize)
+            using (TraceSources.IapDesktop.TraceMethod().WithParameters(this.autoResize))
             {
-                // Do not resize immediately since there might be another resitze
-                // event coming in a few miliseconds. Instead, delay the operation
-                // by deferring it to a timer.
-                this.reconnectToResizeTimer.Start();
+                UpdateLayout();
+
+                if (this.autoResize)
+                {
+                    // Do not resize immediately since there might be another resitze
+                    // event coming in a few miliseconds. Instead, delay the operation
+                    // by deferring it to a timer.
+                    this.reconnectToResizeTimer.Start();
+                }
             }
         }
 
@@ -330,15 +344,13 @@ namespace Google.Solutions.IapDesktop.Application.Windows.RemoteDesktop
         {
             Debug.Assert(this.autoResize);
 
-            using (TraceSources.IapDesktop.TraceMethod().WithoutParameters())
+            using (TraceSources.IapDesktop.TraceMethod().WithParameters(this.autoResize))
             {
                 if (!this.Visible)
                 {
                     // Form is closing, better not touch anything.
-                    return;
                 }
-
-                if (!this.IsConnecting)
+                else if (!this.IsConnecting)
                 {
                     // Reconnect to resize remote desktop.
                     this.rdpClient.Reconnect((uint)this.Size.Width, (uint)this.Size.Height);
@@ -502,7 +514,7 @@ namespace Google.Solutions.IapDesktop.Application.Windows.RemoteDesktop
             object sender,
             IMsTscAxEvents_OnRemoteDesktopSizeChangeEvent e)
         {
-            using (TraceSources.IapDesktop.TraceMethod().WithoutParameters())
+            using (TraceSources.IapDesktop.TraceMethod().WithParameters(this.autoResize))
             { }
         }
 
