@@ -105,7 +105,10 @@ namespace Google.Solutions.IapDesktop.Application.Windows.RemoteDesktop
             VmInstanceSettings settings
             )
         {
-            using (TraceSources.IapDesktop.TraceMethod().WithParameters(server, port))
+            using (TraceSources.IapDesktop.TraceMethod().WithParameters(
+                server, 
+                port, 
+                settings.ConnectionTimeout))
             {
                 // NB. The initialization needs to happen after the pane is shown, otherwise
                 // an error happens indicating that the control does not have a Window handle.
@@ -157,6 +160,8 @@ namespace Google.Solutions.IapDesktop.Application.Windows.RemoteDesktop
                 advancedSettings.PerformanceFlags = 0; // Enable all features, it's 2020.
                 advancedSettings.EnableAutoReconnect = true;
                 advancedSettings.MaxReconnectAttempts = 10;
+                advancedSettings.singleConnectionTimeout = settings.ConnectionTimeout;
+                advancedSettings.overallConnectionTimeout = settings.ConnectionTimeout;
 
                 //
                 // Behavior settings.

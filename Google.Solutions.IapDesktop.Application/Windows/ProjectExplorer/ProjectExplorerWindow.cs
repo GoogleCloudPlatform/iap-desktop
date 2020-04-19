@@ -242,8 +242,9 @@ namespace Google.Solutions.IapDesktop.Application.ProjectExplorer
                 }
             }
 
-            // TODO: make configurable
-            var timeout = TimeSpan.FromSeconds(30);
+            // Give IAP a bit more time than RDP itself.
+            var timeout = TimeSpan.FromSeconds(
+                vmNode.EffectiveSettingsWithInheritanceApplied.ConnectionTimeout + 10);
 
             var tunnel = await this.jobService.RunInBackground(
                 new JobDescription("Opening Cloud IAP tunnel..."),
