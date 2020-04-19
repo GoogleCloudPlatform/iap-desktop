@@ -126,7 +126,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows
         }
 
         protected TEvent AwaitEvent<TEvent>() where TEvent : class
-            => AwaitEvent<TEvent>(TimeSpan.FromSeconds(30));
+            => AwaitEvent<TEvent>(TimeSpan.FromSeconds(90));
 
         protected static Instance CreateInstance(string instanceName, string zone, bool windows)
         {

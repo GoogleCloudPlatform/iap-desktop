@@ -160,6 +160,12 @@ namespace Google.Solutions.IapDesktop.Application.Windows.RemoteDesktop
                 advancedSettings.PerformanceFlags = 0; // Enable all features, it's 2020.
                 advancedSettings.EnableAutoReconnect = true;
                 advancedSettings.MaxReconnectAttempts = 10;
+
+                //
+                // Apply timeouts. Note that the control might take
+                // about twice the configured timeout before sending a 
+                // OnDisconnected event.
+                //
                 advancedSettings.singleConnectionTimeout = settings.ConnectionTimeout;
                 advancedSettings.overallConnectionTimeout = settings.ConnectionTimeout;
 
