@@ -118,8 +118,7 @@ $Nunit = (Resolve-Path -Path "packages\NUnit.ConsoleRunner.*\tools\nunit3-consol
 & $Nunit `
     Google.Solutions.Compute.Test\bin\release\Google.Solutions.Compute.Test.dll `
     Google.Solutions.IapDesktop.Application.Test\bin\release\Google.Solutions.IapDesktop.Application.Test.dll `
-    "--result=sponge_log.xml;transform=kokoro\nunit-to-sponge.xsl" `
-    --out sponge_log.log | Out-Default
+    "--result=sponge_log.xml;transform=kokoro\nunit-to-sponge.xsl" | Out-Default
 
 if ($LastExitCode -ne 0)
 {
