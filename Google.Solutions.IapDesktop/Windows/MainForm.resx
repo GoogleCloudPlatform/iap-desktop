@@ -124,15 +124,6 @@
     <value>171, 17</value>
   </metadata>
   <assembly alias="System.Drawing" name="System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
-  <data name="addProjectToolStripMenuItem.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
-    <value>
-        iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAABGdBTUEAALGPC/xhBQAAAAlwSFlzAAAO
-        wgAADsIBFShKgAAAAKVJREFUOE/Fk7EOBREURH05xcrWtlOI0jb4BD7NyxVXeEusaic5CcNMRCCgGGPi
-        nFeyuaPjOBJjrLJVYozpwsh93+9KrLXDAufc+1Oc59mFYQ6+1rrzlVLz0uu6ElIs0oaRsrSWlHIvJIRI
-        SLHqCWBMKU1AXvjX6g5gPC2A227DiPe+2zwtmL0D8DE0o1Q8XyLMwR+FWnIYFEJY/oVHaFffF4xFyA9v
-        WhKEkKJAqAAAAABJRU5ErkJggg==
-</value>
-  </data>
   <data name="fullScreenToolStripMenuItem.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
         iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAABGdBTUEAALGPC/xhBQAAAAlwSFlzAAAO
@@ -147,6 +138,15 @@
         ysMwZDqVcs7lrusuSVHV9z3eMILCMSgRg4RGk0Jn4OyrAciEEJ4PaK3RjzFi5tEAl1NKxb89wPq2bZXX
         5BvhC0ljNN7+gNeuyoBTn427pNoP4ziKIYnzPNdl7z0a+7+9rmspkCRjWRYMGWNKkItHkl0DXrXWVqZU
         BpL9Tyj1AahVJNj3IdWbAAAAAElFTkSuQmCC
+</value>
+  </data>
+  <data name="addProjectToolStripMenuItem.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+    <value>
+        iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAABGdBTUEAALGPC/xhBQAAAAlwSFlzAAAO
+        wgAADsIBFShKgAAAAKVJREFUOE/Fk7EOBREURH05xcrWtlOI0jb4BD7NyxVXeEusaic5CcNMRCCgGGPi
+        nFeyuaPjOBJjrLJVYozpwsh93+9KrLXDAufc+1Oc59mFYQ6+1rrzlVLz0uu6ElIs0oaRsrSWlHIvJIRI
+        SLHqCWBMKU1AXvjX6g5gPC2A227DiPe+2zwtmL0D8DE0o1Q8XyLMwR+FWnIYFEJY/oVHaFffF4xFyA9v
+        WhKEkKJAqAAAAABJRU5ErkJggg==
 </value>
   </data>
   <data name="openIapDocsToolStripMenuItem.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
