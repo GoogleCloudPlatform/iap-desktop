@@ -149,7 +149,7 @@ namespace Google.Solutions.Compute.Test.Env
                 metadata.Add(new Metadata.ItemsData()
                 {
                     Key = "ttl",
-                    Value = "60" // minutes
+                    Value = "120" // minutes
                 });
 
                 await computeEngine.Service.Instances.Insert(
