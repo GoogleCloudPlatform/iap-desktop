@@ -77,6 +77,13 @@ namespace Google.Solutions.Compute.Test.Env
                 imageSpecification.Append(this.ImageFamily);
                 imageSpecification.Append(this.InitializeScript);
 
+                var kokoroJobType = Environment.GetEnvironmentVariable("KOKORO_JOB_TYPE");
+                if (!string.IsNullOrEmpty(kokoroJobType))
+                {
+                    // Prevent different job types sharing the same VMs.
+                    imageSpecification.Append(kokoroJobType);
+                }
+
                 using (var sha = new System.Security.Cryptography.SHA256Managed())
                 {
                     var imageSpecificationRaw = Encoding.UTF8.GetBytes(imageSpecification.ToString());
