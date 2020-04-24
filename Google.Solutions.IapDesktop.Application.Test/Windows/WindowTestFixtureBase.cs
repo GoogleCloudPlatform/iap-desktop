@@ -119,6 +119,8 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows
                         $"Timeout waiting for event {typeof(TEvent).Name} elapsed");
                 }
 
+                Console.WriteLine($"Still waiting for {typeof(TEvent).Name} (until {deadline})");
+
                 PumpWindowMessages();
             }
 
@@ -127,6 +129,21 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows
 
         protected TEvent AwaitEvent<TEvent>() where TEvent : class
             => AwaitEvent<TEvent>(TimeSpan.FromSeconds(90));
+
+        protected void Delay(TimeSpan timeout)
+        {
+            var deadline = DateTime.Now.Add(timeout);
+
+            while (true)
+            {
+                if (deadline < DateTime.Now)
+                {
+                    return;
+                }
+
+                PumpWindowMessages();
+            }
+        }
 
         protected static Instance CreateInstance(string instanceName, string zone, bool windows)
         {
