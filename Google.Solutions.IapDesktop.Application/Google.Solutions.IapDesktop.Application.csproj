@@ -114,6 +114,7 @@
     <Compile Include="Settings\InventorySettingsRepository.cs" />
     <Compile Include="TraceSources.cs" />
     <Compile Include="Util\AuthorizationExtensions.cs" />
+    <Compile Include="Util\IapRdpUrl.cs" />
     <Compile Include="Windows\AboutWindow.cs">
       <SubType>Form</SubType>
     </Compile>
