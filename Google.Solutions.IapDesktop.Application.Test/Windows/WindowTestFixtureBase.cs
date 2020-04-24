@@ -111,7 +111,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows
                 deliveredEvent = e;
             });
 
-            while (deliveredEvent == null)
+            for (int i = 0; deliveredEvent == null; i++)
             {
                 if (deadline < DateTime.Now)
                 {
@@ -119,7 +119,10 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows
                         $"Timeout waiting for event {typeof(TEvent).Name} elapsed");
                 }
 
-                Console.WriteLine($"Still waiting for {typeof(TEvent).Name} (until {deadline})");
+                if ((i % 100) == 0)
+                {
+                    Console.WriteLine($"Still waiting for {typeof(TEvent).Name} (until {deadline})");
+                }
 
                 PumpWindowMessages();
             }
@@ -134,13 +137,8 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows
         {
             var deadline = DateTime.Now.Add(timeout);
 
-            while (true)
+            while (DateTime.Now < deadline)
             {
-                if (deadline < DateTime.Now)
-                {
-                    return;
-                }
-
                 PumpWindowMessages();
             }
         }
