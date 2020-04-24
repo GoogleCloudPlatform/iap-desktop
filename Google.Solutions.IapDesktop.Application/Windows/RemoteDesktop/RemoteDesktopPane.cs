@@ -308,6 +308,9 @@ namespace Google.Solutions.IapDesktop.Application.Windows.RemoteDesktop
                 {
                     try
                     {
+                        TraceSources.IapDesktop.TraceVerbose(
+                            "RemoteDesktopPane: Disconnecting because form is closing");
+
                         // NB. This does not trigger an OnDisconnected event.
                         this.rdpClient.Disconnect();
                     }

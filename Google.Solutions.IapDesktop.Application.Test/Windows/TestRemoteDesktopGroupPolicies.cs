@@ -27,6 +27,7 @@ using Google.Solutions.IapDesktop.Application.Services;
 using Google.Solutions.IapDesktop.Application.Settings;
 using Google.Solutions.IapDesktop.Application.Windows.RemoteDesktop;
 using NUnit.Framework;
+using System;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -106,6 +107,8 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows
                     {
                         expectedEvent = e;
                     });
+
+                Delay(TimeSpan.FromSeconds(5));
                 session.Close();
 
                 Assert.IsNotNull(expectedEvent);
@@ -134,6 +137,8 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows
                     {
                         expectedEvent = e;
                     });
+
+                Delay(TimeSpan.FromSeconds(5));
                 session.Close();
 
                 Assert.IsNotNull(expectedEvent);
@@ -162,6 +167,8 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows
                     {
                         expectedEvent = e;
                     });
+
+                Delay(TimeSpan.FromSeconds(5));
                 session.Close();
 
                 Assert.IsNotNull(expectedEvent);
@@ -190,6 +197,8 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows
                     {
                         expectedEvent = e;
                     });
+
+                Delay(TimeSpan.FromSeconds(5));
                 session.Close();
 
                 Assert.IsNotNull(expectedEvent);
@@ -218,6 +227,8 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows
                     {
                         expectedEvent = e;
                     });
+
+                Delay(TimeSpan.FromSeconds(5));
                 session.Close();
 
                 Assert.IsNotNull(expectedEvent);
@@ -246,6 +257,8 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows
                     {
                         expectedEvent = e;
                     });
+
+                Delay(TimeSpan.FromSeconds(5));
                 session.Close();
 
                 Assert.IsNotNull(expectedEvent);
@@ -274,6 +287,8 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows
                     {
                         expectedEvent = e;
                     });
+
+                Delay(TimeSpan.FromSeconds(5));
                 session.Close();
 
                 Assert.IsNotNull(expectedEvent);
