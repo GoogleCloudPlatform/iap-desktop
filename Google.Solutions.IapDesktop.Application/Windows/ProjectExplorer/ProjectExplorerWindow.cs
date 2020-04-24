@@ -201,7 +201,7 @@ namespace Google.Solutions.IapDesktop.Application.ProjectExplorer
                 return;
             }
 
-            if (string.IsNullOrEmpty(vmNode.Username) || vmNode.Password.Length == 0)
+            if (string.IsNullOrEmpty(vmNode.Username) || vmNode.Password == null || vmNode.Password.Length == 0)
             {
                 int selectedOption = UnsafeNativeMethods.ShowOptionsTaskDialog(
                     this,
@@ -468,7 +468,8 @@ namespace Google.Solutions.IapDesktop.Application.ProjectExplorer
         {
             try
             {
-                if (this.treeView.SelectedNode is VmInstanceNode vmNode)
+                if (this.treeView.SelectedNode is VmInstanceNode vmNode &&
+                    vmNode.IsRunning)
                 {
                     await ConnectInstance(vmNode);
                 }

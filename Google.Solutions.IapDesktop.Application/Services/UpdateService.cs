@@ -80,7 +80,7 @@ namespace Google.Solutions.IapDesktop.Application.Services
                     parent,
                     UnsafeNativeMethods.TD_SHIELD_ICON_INFO_BACKGROUND,
                     "Update available",
-                    "An update is available for the Cloud IAP plugin",
+                    "An update is available for IAP Desktop",
                     "Would you like to download the update now?",
                     $"Installed version: {this.InstalledVersion}\nAvailable version: {latestRelease.TagVersion}",
                     new[]
