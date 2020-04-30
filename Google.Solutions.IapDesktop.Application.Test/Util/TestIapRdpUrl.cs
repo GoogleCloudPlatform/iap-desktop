@@ -19,6 +19,7 @@
 // under the License.
 //
 
+using Google.Solutions.Compute;
 using Google.Solutions.IapDesktop.Application.Util;
 using NUnit.Framework;
 using System;
@@ -28,6 +29,10 @@ namespace Google.Solutions.IapDesktop.Application.Test.Util
     [TestFixture]
     public class TestIapRdpUrl : FixtureBase
     {
+        //---------------------------------------------------------------------
+        // String parsing.
+        //---------------------------------------------------------------------
+
         [Test]
         public void WhenStringIsNull_ThenFromStringThrowsArgumentNullException()
         {
@@ -123,6 +128,19 @@ namespace Google.Solutions.IapDesktop.Application.Test.Util
         {
             var url = "iap-rdp:///my-project/us-central1-a/my-instance";
             Assert.AreEqual(url, IapRdpUrl.FromString(url).ToString());
+        }
+
+        //---------------------------------------------------------------------
+        // VmInstanceReference handling.
+        //---------------------------------------------------------------------
+
+        [Test]
+        public void WhenNoVmSettingsSpecified_ThenFromInstanceReferenceInitializesDefaultSettings()
+        {
+            var url = IapRdpUrl.FromInstanceReference(
+                new VmInstanceReference("project-1", "us-central-1", "instance-1"));
+
+            Assert.AreEqual("instance-1", url.Settings.InstanceName);
         }
     }
 }

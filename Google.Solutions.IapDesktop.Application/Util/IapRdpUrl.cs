@@ -45,7 +45,7 @@ namespace Google.Solutions.IapDesktop.Application.Util
         public VmInstanceReference Instance { get; }
         public VmInstanceSettings Settings { get; }
 
-        public IapRdpUrl(VmInstanceReference instance, VmInstanceSettings settings)
+        private IapRdpUrl(VmInstanceReference instance, VmInstanceSettings settings)
         {
             this.Instance = instance;
             this.Settings = settings;
@@ -112,12 +112,17 @@ namespace Google.Solutions.IapDesktop.Application.Util
 
         public static IapRdpUrl FromInstanceReference(VmInstanceReference instanceRef)
         {
+            return FromInstanceReference(
+                instanceRef,
+                new VmInstanceSettings());
+        }
+
+        public static IapRdpUrl FromInstanceReference(VmInstanceReference instanceRef, VmInstanceSettings settings)
+        {
+            settings.InstanceName = instanceRef.InstanceName;
             return new IapRdpUrl(
                 instanceRef,
-                new VmInstanceSettings()
-                {
-                    InstanceName = instanceRef.InstanceName
-                });
+                settings);
         }
 
         public override string ToString()
