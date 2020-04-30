@@ -20,6 +20,7 @@
 //
 
 using Google.Apis.Util;
+using Google.Solutions.IapDesktop.Application.Util;
 using Microsoft.Win32;
 using System;
 using System.Diagnostics;

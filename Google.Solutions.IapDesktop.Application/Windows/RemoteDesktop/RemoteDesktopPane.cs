@@ -22,7 +22,7 @@
 using AxMSTSCLib;
 using Google.Solutions.Compute;
 using Google.Solutions.IapDesktop.Application.ObjectModel;
-using Google.Solutions.IapDesktop.Application.Registry;
+using Google.Solutions.IapDesktop.Application.Util;
 using Google.Solutions.IapDesktop.Application.Settings;
 using Google.Solutions.IapDesktop.Windows;
 using MSTSCLib;

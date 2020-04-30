@@ -107,7 +107,7 @@
     <Compile Include="Services\TunnelService.cs" />
     <Compile Include="Services\UpdateService.cs" />
     <Compile Include="Settings\AuthSettingsRepository.cs" />
-    <Compile Include="Registry\SecureStringExtensions.cs" />
+    <Compile Include="Util\SecureStringExtensions.cs" />
     <Compile Include="Settings\ApplicationSettingsRepository.cs" />
     <Compile Include="Settings\SettingRepositoryBase.cs" />
     <Compile Include="Registry\RegistryBinder.cs" />

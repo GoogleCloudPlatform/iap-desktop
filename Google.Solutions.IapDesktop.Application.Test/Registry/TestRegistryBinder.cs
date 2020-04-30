@@ -20,6 +20,7 @@
 //
 
 using Google.Solutions.IapDesktop.Application.Registry;
+using Google.Solutions.IapDesktop.Application.Util;
 using Microsoft.Win32;
 using NUnit.Framework;
 using System;
