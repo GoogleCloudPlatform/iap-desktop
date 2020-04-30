@@ -104,6 +104,7 @@
     <Compile Include="ServiceModel\TestServiceRegistry.cs" />
     <Compile Include="TestExceptionExtensions.cs" />
     <Compile Include="Util\TestAuthorizationExtensions.cs" />
+    <Compile Include="Util\TestIapRdpUrl.cs" />
     <Compile Include="Windows\TestMainForm.cs">
       <SubType>Form</SubType>
     </Compile>

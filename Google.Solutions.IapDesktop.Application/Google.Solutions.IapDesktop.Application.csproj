@@ -68,6 +68,7 @@
     <Reference Include="System.Core" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.Security" />
+    <Reference Include="System.Web" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
@@ -114,6 +115,7 @@
     <Compile Include="Settings\InventorySettingsRepository.cs" />
     <Compile Include="TraceSources.cs" />
     <Compile Include="Util\AuthorizationExtensions.cs" />
+    <Compile Include="Util\IapRdpUrl.cs" />
     <Compile Include="Windows\AboutWindow.cs">
       <SubType>Form</SubType>
     </Compile>

@@ -28,6 +28,9 @@ using System.Runtime.InteropServices;
 using System.Security;
 using System.Security.Cryptography;
 
+#pragma warning disable IDE1006 // Underscores in names.
+#pragma warning disable IDE1027// Mark as flags.
+
 namespace Google.Solutions.IapDesktop.Application.Settings
 {
     /// <summary>
