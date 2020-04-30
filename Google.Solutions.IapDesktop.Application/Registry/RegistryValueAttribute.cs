@@ -19,7 +19,6 @@
 // under the License.
 //
 
-using Google.Apis.Util;
 using Google.Solutions.IapDesktop.Application.Util;
 using Microsoft.Win32;
 using System;
@@ -35,7 +34,7 @@ namespace Google.Solutions.IapDesktop.Application.Registry
     /// Defines a data binding between a property and a registry value.
     /// </summary>
     [AttributeUsage(AttributeTargets.Property, AllowMultiple = false)]
-    public abstract class RegistryValueAttribute : ValueBindingAttribute
+    public abstract class RegistryValueAttribute : MappedPropertyAttribute
     {
         public abstract RegistryValueKind Kind { get; }
 

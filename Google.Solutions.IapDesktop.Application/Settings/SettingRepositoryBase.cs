@@ -64,7 +64,7 @@ namespace Google.Solutions.IapDesktop.Application.Settings
                 }
                 else
                 {
-                    return new RegistryBinder<T>().Load(key);
+                    return new RegistryKeyMapper<T>().MapKeyToObject(key);
                 }
             }
         }
@@ -73,19 +73,19 @@ namespace Google.Solutions.IapDesktop.Application.Settings
         {
             using (var key = this.baseKey.CreateSubKey(string.Join("\\", keyPath)))
             {
-                new RegistryBinder<T>().Store(settings, key);
+                new RegistryKeyMapper<T>().MapObjectToKey(settings, key);
             }
         }
 
 
         public TSettings GetSettings()
         {
-            return new RegistryBinder<TSettings>().Load(this.baseKey);
+            return new RegistryKeyMapper<TSettings>().MapKeyToObject(this.baseKey);
         }
 
         public void SetSettings(TSettings settings)
         {
-            new RegistryBinder<TSettings>().Store(settings, this.baseKey);
+            new RegistryKeyMapper<TSettings>().MapObjectToKey(settings, this.baseKey);
         }
 
 

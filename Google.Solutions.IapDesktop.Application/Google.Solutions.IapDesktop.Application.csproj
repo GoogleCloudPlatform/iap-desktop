@@ -110,13 +110,15 @@
     <Compile Include="Util\SecureStringExtensions.cs" />
     <Compile Include="Settings\ApplicationSettingsRepository.cs" />
     <Compile Include="Settings\SettingRepositoryBase.cs" />
-    <Compile Include="Registry\RegistryBinder.cs" />
+    <Compile Include="Registry\RegistryKeyMapper.cs" />
     <Compile Include="Registry\RegistryValueAttribute.cs" />
     <Compile Include="Settings\InventorySettingsRepository.cs" />
     <Compile Include="TraceSources.cs" />
     <Compile Include="Util\AuthorizationExtensions.cs" />
     <Compile Include="Util\IapRdpUrl.cs" />
     <Compile Include="Util\ValueBindingAttribute.cs" />
+    <Compile Include="Util\MappedPropertyAttribute.cs" />
+    <Compile Include="Util\PropertyMapper.cs" />
     <Compile Include="Windows\AboutWindow.cs">
       <SubType>Form</SubType>
     </Compile>

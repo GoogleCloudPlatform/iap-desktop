@@ -18,6 +18,7 @@
 // specific language governing permissions and limitations
 // under the License.
 //
+
 using Google.Apis.Util;
 using System;
 using System.Reflection;
@@ -28,18 +29,22 @@ namespace Google.Solutions.IapDesktop.Application.Util
     /// Defines a data binding between a property and an external value.
     /// </summary>
     [AttributeUsage(AttributeTargets.Property, AllowMultiple = false)]
-    public abstract class ValueBindingAttribute : Attribute
+    public abstract class MappedPropertyAttribute : Attribute
     {
         public string Name { get; }
         public Type PropertyType { get; }
 
-        protected ValueBindingAttribute(string name, Type propertyType)
+        protected MappedPropertyAttribute(string name, Type propertyType)
         {
             Utilities.ThrowIfNullOrEmpty(name, nameof(name));
 
             this.Name = name;
             this.PropertyType = propertyType;
         }
+
+        //---------------------------------------------------------------------
+        // Type compatibility checks.
+        //---------------------------------------------------------------------
 
         protected bool IsPropertyOfExpectedType(PropertyInfo property)
         {
@@ -91,6 +96,10 @@ namespace Google.Solutions.IapDesktop.Application.Util
                 return false;
             }
         }
+
+        //---------------------------------------------------------------------
+        // Getters/setters.
+        //---------------------------------------------------------------------
 
         public virtual void SetValue(object obj, PropertyInfo property, object value)
         {
@@ -164,6 +173,5 @@ namespace Google.Solutions.IapDesktop.Application.Util
 
             return property.GetValue(obj);
         }
-
     }
 }
