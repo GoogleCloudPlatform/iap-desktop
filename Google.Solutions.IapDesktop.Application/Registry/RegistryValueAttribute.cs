@@ -35,146 +35,14 @@ namespace Google.Solutions.IapDesktop.Application.Registry
     /// Defines a data binding between a property and a registry value.
     /// </summary>
     [AttributeUsage(AttributeTargets.Property, AllowMultiple = false)]
-    public abstract class RegistryValueAttribute : Attribute
+    public abstract class RegistryValueAttribute : ValueBindingAttribute
     {
-        public string Name { get; }
-        public RegistryValueKind Kind { get; }
+        public abstract RegistryValueKind Kind { get; }
 
-        protected RegistryValueAttribute(string name, RegistryValueKind kind)
+        protected RegistryValueAttribute(string name, Type propertyType)
+            : base(name, propertyType)
         {
-            Utilities.ThrowIfNullOrEmpty(name, nameof(name));
-
-            this.Name = name;
-            this.Kind = kind;
         }
-
-        protected bool IsPropertyCompatibleWithValueKind<TValueKind>(PropertyInfo property)
-        {
-            bool propIsNullable = Nullable.GetUnderlyingType(property.PropertyType) != null;
-
-            //
-            // Check if the property can be used for the given value kind.
-            //
-            if (!propIsNullable && property.PropertyType == typeof(TValueKind))
-            {
-                // Property matches the expected value kind.
-                return true;
-            }
-            else if (propIsNullable && Nullable.GetUnderlyingType(property.PropertyType) == typeof(TValueKind))
-            {
-                // Property is nullable, but the underlying type matches the expected value kind.
-                return true;
-            }
-            else
-            {
-                return false;
-            }
-        }
-
-        protected bool IsValueCompatibleWithValueKind<TValueKind>(object value)
-        {
-            if (value == null)
-            {
-                return true;
-            }
-
-            bool valueIsNullable = Nullable.GetUnderlyingType(value.GetType()) != null;
-
-            //
-            // Check if the value can be used for the given value kind.
-            //
-            if (!valueIsNullable && value.GetType() == typeof(TValueKind))
-            {
-                // Value matches the expected value kind.
-                return true;
-            }
-            else if (valueIsNullable && Nullable.GetUnderlyingType(value.GetType()) == typeof(TValueKind))
-            {
-                // Value is nullable, but the underlying type matches the expected value kind.
-                return true;
-            }
-            else
-            {
-                return false;
-            }
-        }
-
-        public void SetValue<TValueKind>(object obj, PropertyInfo property, object value)
-        {
-            //
-            // Check if the property can be used for the given value kind.
-            //
-            if (!IsPropertyCompatibleWithValueKind<TValueKind>(property))
-            {
-                throw new InvalidCastException(
-                    $"Property {property.PropertyType.Name} cannot be bound to a registry value of kind {this.Kind}");
-            }
-
-            //
-            // Check if the value can be used for the given value kind.
-            //
-            if (!IsValueCompatibleWithValueKind<TValueKind>(value))
-            {
-                throw new InvalidCastException(
-                    $"Value cannot be bound to a registry value of kind {this.Kind}");
-            }
-
-            if (value == null)
-            {
-                // Nothing to do.
-                return;
-            }
-
-            bool propIsNullable = Nullable.GetUnderlyingType(property.PropertyType) != null;
-            bool valueIsNullable = Nullable.GetUnderlyingType(value.GetType()) != null;
-
-            //
-            // Convert value to Nullable if necessary.
-            //
-            if (propIsNullable == valueIsNullable)
-            {
-                // Straight assignment should work.
-
-            }
-            else if (propIsNullable && !valueIsNullable)
-            {
-                // Value needs to be wrapped.
-                value = Activator.CreateInstance(
-                    typeof(Nullable<>).MakeGenericType(value.GetType()),
-                    value);
-            }
-            else
-            {
-                throw new InvalidCastException(
-                    $"Value of type {property.PropertyType.Name} cannot be assigned to {value.GetType().Name}");
-            }
-
-            if (!property.PropertyType.IsAssignableFrom(value.GetType()))
-            {
-                throw new ArgumentException(
-                    $"Property {property.Name} must be of type {typeof(TValueKind).Name} (or a nullable thereof) to bind");
-            }
-
-            property.SetValue(obj, value);
-        }
-
-        public abstract void SetValue(object obj, PropertyInfo property, object value);
-
-        public object GetValue<TValueKind>(object obj, PropertyInfo property)
-        {
-            //
-            // Check if the property can be used for the given value kind.
-            //
-            if (!IsPropertyCompatibleWithValueKind<TValueKind>(property))
-            {
-                throw new InvalidCastException(
-                    $"Property {property.PropertyType.Name} cannot be bound to a registry value of kind {this.Kind}");
-            }
-
-            return property.GetValue(obj);
-        }
-
-        public abstract object GetValue(object obj, PropertyInfo property);
     }
 
     /// <summary>
@@ -183,18 +51,10 @@ namespace Google.Solutions.IapDesktop.Application.Registry
     /// </summary>
     public class DwordRegistryValueAttribute : RegistryValueAttribute
     {
-        public DwordRegistryValueAttribute(string name) : base(name, RegistryValueKind.DWord)
-        {
-        }
+        public override RegistryValueKind Kind => RegistryValueKind.DWord;
 
-        public override void SetValue(object obj, PropertyInfo property, object value)
+        public DwordRegistryValueAttribute(string name) : base(name, typeof(Int32))
         {
-            base.SetValue<Int32>(obj, property, value);
-        }
-
-        public override object GetValue(object obj, PropertyInfo property)
-        {
-            return base.GetValue<Int32>(obj, property);
         }
     }
 
@@ -204,18 +64,10 @@ namespace Google.Solutions.IapDesktop.Application.Registry
     /// </summary>
     public class QwordRegistryValueAttribute : RegistryValueAttribute
     {
-        public QwordRegistryValueAttribute(string name) : base(name, RegistryValueKind.QWord)
-        {
-        }
+        public override RegistryValueKind Kind => RegistryValueKind.QWord;
 
-        public override void SetValue(object obj, PropertyInfo property, object value)
+        public QwordRegistryValueAttribute(string name) : base(name, typeof(Int64))
         {
-            base.SetValue<Int64>(obj, property, value);
-        }
-
-        public override object GetValue(object obj, PropertyInfo property)
-        {
-            return base.GetValue<Int64>(obj, property);
         }
     }
 
@@ -225,7 +77,9 @@ namespace Google.Solutions.IapDesktop.Application.Registry
     /// </summary>
     public class BoolRegistryValueAttribute : RegistryValueAttribute
     {
-        public BoolRegistryValueAttribute(string name) : base(name, RegistryValueKind.DWord)
+        public override RegistryValueKind Kind => RegistryValueKind.DWord;
+
+        public BoolRegistryValueAttribute(string name) : base(name, typeof(bool))
         {
         }
 
@@ -233,13 +87,13 @@ namespace Google.Solutions.IapDesktop.Application.Registry
         {
             if (value != null)
             {
-                base.SetValue<bool>(obj, property, ((Int32)value) > 0);
+                base.SetValue(obj, property, ((Int32)value) > 0);
             }
         }
 
         public override object GetValue(object obj, PropertyInfo property)
         {
-            var value = base.GetValue<bool>(obj, property);
+            var value = base.GetValue(obj, property);
             return (value != null && ((bool)value)) ? 1 : 0;
         }
     }
@@ -250,18 +104,10 @@ namespace Google.Solutions.IapDesktop.Application.Registry
     /// </summary>
     public class StringRegistryValueAttribute : RegistryValueAttribute
     {
-        public StringRegistryValueAttribute(string name) : base(name, RegistryValueKind.String)
-        {
-        }
+        public override RegistryValueKind Kind => RegistryValueKind.String;
 
-        public override void SetValue(object obj, PropertyInfo property, object value)
+        public StringRegistryValueAttribute(string name) : base(name, typeof(string))
         {
-            base.SetValue<string>(obj, property, value);
-        }
-
-        public override object GetValue(object obj, PropertyInfo property)
-        {
-            return base.GetValue<string>(obj, property);
         }
     }
 
@@ -272,8 +118,11 @@ namespace Google.Solutions.IapDesktop.Application.Registry
     public class SecureStringRegistryValueAttribute : RegistryValueAttribute
     {
         private readonly DataProtectionScope scope;
+
+        public override RegistryValueKind Kind => RegistryValueKind.Binary;
+
         public SecureStringRegistryValueAttribute(string name, DataProtectionScope scope)
-            : base(name, RegistryValueKind.Binary)
+            : base(name, typeof(SecureString))
         {
             this.scope = scope;
         }
@@ -295,7 +144,7 @@ namespace Google.Solutions.IapDesktop.Application.Registry
                         Encoding.UTF8.GetBytes(property.Name),
                         this.scope));
 
-                base.SetValue<SecureString>(
+                base.SetValue(
                     obj,
                     property,
                     SecureStringExtensions.FromClearText(plaintextString));
@@ -311,7 +160,7 @@ namespace Google.Solutions.IapDesktop.Application.Registry
 
         public override object GetValue(object obj, PropertyInfo property)
         {
-            var secureString = (SecureString)base.GetValue<SecureString>(obj, property);
+            var secureString = (SecureString)base.GetValue(obj, property);
             if (secureString == null)
             {
                 return null;
