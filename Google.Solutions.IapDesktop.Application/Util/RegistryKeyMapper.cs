@@ -22,7 +22,7 @@
 using Google.Solutions.IapDesktop.Application.Util;
 using Microsoft.Win32;
 
-namespace Google.Solutions.IapDesktop.Application.Registry
+namespace Google.Solutions.IapDesktop.Application.Util
 {
     /// <summary>
     /// This class performs data binding between an object and a registry key

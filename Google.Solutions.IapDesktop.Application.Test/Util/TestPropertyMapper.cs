@@ -19,7 +19,6 @@
 // under the License.
 //
 
-using Google.Solutions.IapDesktop.Application.Registry;
 using Google.Solutions.IapDesktop.Application.Util;
 using NUnit.Framework;
 using System.Linq;

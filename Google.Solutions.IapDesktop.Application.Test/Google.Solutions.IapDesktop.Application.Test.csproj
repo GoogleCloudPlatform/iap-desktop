@@ -94,7 +94,7 @@
     <Compile Include="FixtureBase.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RdpTunnel.cs" />
-    <Compile Include="Registry\TestRegistryKeyMapper.cs" />
+    <Compile Include="Util\TestRegistryKeyMapper.cs" />
     <Compile Include="ServiceModel\MockEventService.cs" />
     <Compile Include="Services\TestJobService.cs" />
     <Compile Include="Services\TestProjectInventoryService.cs" />

@@ -19,7 +19,6 @@
 // under the License.
 //
 
-using Google.Solutions.IapDesktop.Application.Registry;
 using Google.Solutions.IapDesktop.Application.Util;
 using Microsoft.Win32;
 using NUnit.Framework;
@@ -28,7 +27,7 @@ using System.Linq;
 using System.Security;
 using System.Security.Cryptography;
 
-namespace Google.Solutions.IapDesktop.Application.Test.Registry
+namespace Google.Solutions.IapDesktop.Application.Test.Util
 {
     [TestFixture]
     public class TestRegistryKeyMapper : FixtureBase

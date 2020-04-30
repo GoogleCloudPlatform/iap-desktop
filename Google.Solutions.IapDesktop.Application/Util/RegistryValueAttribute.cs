@@ -28,7 +28,7 @@ using System.Security;
 using System.Security.Cryptography;
 using System.Text;
 
-namespace Google.Solutions.IapDesktop.Application.Registry
+namespace Google.Solutions.IapDesktop.Application.Util
 {
     /// <summary>
     /// Defines a data binding between a property and a registry value.
