@@ -24,6 +24,10 @@ using Google.Solutions.IapDesktop.Application.Settings;
 using System;
 using System.Diagnostics;
 using System.Text.RegularExpressions;
+using System.Collections.Specialized;
+using System.Diagnostics;
+using System.Text.RegularExpressions;
+using System.Web;
 
 namespace Google.Solutions.IapDesktop.Application.Util
 {
@@ -32,20 +36,21 @@ namespace Google.Solutions.IapDesktop.Application.Util
     /// 
     /// Rules:
     /// * The host part is empty, so a URL has to start with iap-rdp:/ or iap-rdp:///
+    /// * The query string may contains settings, but not all settings are supported
+    ///   (either for security reasons or beause they are just not very relevant).
     /// </summary>
     public class IapRdpUrl
     {
         public const string Scheme = "iap-rdp";
 
-        private static Regex ProjectPattern = new Regex(@"(?:(?:[-a-z0-9]{1,63}\.)*(?:[a-z](?:[-a-z0-9]{0,61}[a-z0-9])?):)?(?:[0-9]{1,19}|(?:[a-z0-9](?:[-a-z0-9]{0,61}[a-z0-9])?))");
-        private static Regex ZonePattern = new Regex(@"[a-z](?:[-a-z0-9]{0,61}[a-z0-9])?");
-        private static Regex InstanceNamePattern = new Regex(@"[a-z](?:[-a-z0-9]{0,61}[a-z0-9])?|[1-9][0-9]{0,19}");
-
+        private static readonly Regex ProjectPattern = new Regex(@"(?:(?:[-a-z0-9]{1,63}\.)*(?:[a-z](?:[-a-z0-9]{0,61}[a-z0-9])?):)?(?:[0-9]{1,19}|(?:[a-z0-9](?:[-a-z0-9]{0,61}[a-z0-9])?))");
+        private static readonly Regex ZonePattern = new Regex(@"[a-z](?:[-a-z0-9]{0,61}[a-z0-9])?");
+        private static readonly Regex InstanceNamePattern = new Regex(@"[a-z](?:[-a-z0-9]{0,61}[a-z0-9])?|[1-9][0-9]{0,19}");
 
         public VmInstanceReference Instance { get; }
         public VmInstanceSettings Settings { get; }
 
-        private IapRdpUrl(VmInstanceReference instance, VmInstanceSettings settings)
+        public IapRdpUrl(VmInstanceReference instance, VmInstanceSettings settings)
         {
             this.Instance = instance;
             this.Settings = settings;
@@ -69,7 +74,7 @@ namespace Google.Solutions.IapDesktop.Application.Util
                 throw new IapRdpUrlFormatException($"Path not in format project/zone/instance-name: {absolutePath}");
             }
 
-            Debug.Assert(pathComponents[0] == string.Empty);
+            Debug.Assert(string.IsNullOrEmpty(pathComponents[0]));
 
             if (!ProjectPattern.IsMatch(pathComponents[1]))
             {
@@ -89,6 +94,45 @@ namespace Google.Solutions.IapDesktop.Application.Util
             return new VmInstanceReference(pathComponents[1], pathComponents[2], pathComponents[3]);
         }
 
+        private static TEnum GetEnumFromQuery<TEnum>(
+            NameValueCollection collection, 
+            string key,
+            TEnum defaultValue) where TEnum : struct
+        {
+            var value = collection.Get(key);
+            if (value != null && 
+                Enum.TryParse<TEnum>(value, out TEnum result) &&
+                Enum.IsDefined(typeof(TEnum), result))
+            {
+                return result;
+            }
+            else
+            {
+                return defaultValue;
+            }
+        }
+
+        private static VmInstanceSettings CreateVmInstanceSettingsFromQuery(
+            VmInstanceReference instanceRef, 
+            string queryString)
+        {
+            var query = HttpUtility.ParseQueryString(queryString);
+
+            return new VmInstanceSettings()
+            {
+                InstanceName = instanceRef.InstanceName,
+
+                Username            = query.Get("Username"),
+                Domain              = query.Get("Domain"),
+                ConnectionBar       = GetEnumFromQuery(query, "ConnectionBar", RdpConnectionBarState._Default),
+                DesktopSize         = GetEnumFromQuery(query, "DesktopSize", RdpDesktopSize._Default),
+                AuthenticationLevel = GetEnumFromQuery(query, "AuthenticationLevel", RdpAuthenticationLevel._Default),
+                ColorDepth          = GetEnumFromQuery(query, "ColorDepth", RdpColorDepth._Default),
+                AudioMode           = GetEnumFromQuery(query, "AudioMode", RdpAudioMode._Default),
+                RedirectClipboard   = GetEnumFromQuery(query, "RedirectClipboard", RdpRedirectClipboard._Default)
+            };
+        }
+
         public static IapRdpUrl FromString(string uri)
         {
             return FromUri(new Uri(uri));
@@ -101,28 +145,16 @@ namespace Google.Solutions.IapDesktop.Application.Util
                 throw new IapRdpUrlFormatException($"Invalid scheme: {uri.Scheme}");
             }
 
-            if (uri.Host != string.Empty)
+            if (!string.IsNullOrEmpty(uri.Host))
             {
                 throw new IapRdpUrlFormatException($"Host part not empty: {uri.Host}");
             }
 
-            // Consider extracting settings from query string.
-            return FromInstanceReference(CreateVmInstanceReferenceFromPath(uri.AbsolutePath));
-        }
-
-        public static IapRdpUrl FromInstanceReference(VmInstanceReference instanceRef)
-        {
-            return FromInstanceReference(
-                instanceRef,
-                new VmInstanceSettings());
-        }
-
-        public static IapRdpUrl FromInstanceReference(VmInstanceReference instanceRef, VmInstanceSettings settings)
-        {
-            settings.InstanceName = instanceRef.InstanceName;
+            var instanceRef = CreateVmInstanceReferenceFromPath(uri.AbsolutePath);
+            
             return new IapRdpUrl(
                 instanceRef,
-                settings);
+                CreateVmInstanceSettingsFromQuery(instanceRef, uri.Query));
         }
 
         public override string ToString()

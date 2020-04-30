@@ -19,7 +19,7 @@
 // under the License.
 //
 
-using Google.Solutions.Compute;
+using Google.Solutions.IapDesktop.Application.Settings;
 using Google.Solutions.IapDesktop.Application.Util;
 using NUnit.Framework;
 using System;
@@ -30,7 +30,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Util
     public class TestIapRdpUrl : FixtureBase
     {
         //---------------------------------------------------------------------
-        // String parsing.
+        // Base URL parsing.
         //---------------------------------------------------------------------
 
         [Test]
@@ -131,16 +131,88 @@ namespace Google.Solutions.IapDesktop.Application.Test.Util
         }
 
         //---------------------------------------------------------------------
-        // VmInstanceReference handling.
+        // Query string parsing.
         //---------------------------------------------------------------------
 
         [Test]
-        public void WhenNoVmSettingsSpecified_ThenFromInstanceReferenceInitializesDefaultSettings()
+        public void WhenQueryStringMissing_ThenSettingsUsesDefaults()
         {
-            var url = IapRdpUrl.FromInstanceReference(
-                new VmInstanceReference("project-1", "us-central-1", "instance-1"));
+            var url = IapRdpUrl.FromString("iap-rdp:///my-project/us-central1-a/my-instance");
+            var settings = url.Settings;
 
-            Assert.AreEqual("instance-1", url.Settings.InstanceName);
+            Assert.IsNull(settings.Username);
+            Assert.IsNull(settings.Password);
+            Assert.IsNull(settings.Domain);
+            Assert.AreEqual(RdpConnectionBarState._Default, settings.ConnectionBar);
+            Assert.AreEqual(RdpDesktopSize._Default, settings.DesktopSize);
+            Assert.AreEqual(RdpAuthenticationLevel._Default, settings.AuthenticationLevel);
+            Assert.AreEqual(RdpColorDepth._Default, settings.ColorDepth);
+            Assert.AreEqual(RdpAudioMode._Default, settings.AudioMode);
+            Assert.AreEqual(RdpRedirectClipboard._Default, settings.RedirectClipboard);
+        }
+
+        [Test]
+        public void WhenQueryStringContainsNonsense_ThenSettingsUsesDefaults()
+        {
+            var url = IapRdpUrl.FromString("iap-rdp:///my-project/us-central1-a/my-instance?a=b&user=wrongcase&_");
+            var settings = url.Settings;
+
+            Assert.IsNull(settings.Username);
+            Assert.IsNull(settings.Password);
+            Assert.IsNull(settings.Domain);
+            Assert.AreEqual(RdpConnectionBarState._Default, settings.ConnectionBar);
+            Assert.AreEqual(RdpDesktopSize._Default, settings.DesktopSize);
+            Assert.AreEqual(RdpAuthenticationLevel._Default, settings.AuthenticationLevel);
+            Assert.AreEqual(RdpColorDepth._Default, settings.ColorDepth);
+            Assert.AreEqual(RdpAudioMode._Default, settings.AudioMode);
+            Assert.AreEqual(RdpRedirectClipboard._Default, settings.RedirectClipboard);
+        }
+
+        [Test]
+        public void WhenQueryStringContainsOutOfRangeValues_ThenSettingsUsesDefaults()
+        {
+            var url = IapRdpUrl.FromString("iap-rdp:///my-project/us-central1-a/my-instance?" +
+                "ConnectionBar=-1&DesktopSize=a&AuthenticationLevel=null&ColorDepth=&" +
+                "AudioMode=9999&RedirectClipboard=b&RedirectClipboard=c");
+            var settings = url.Settings;
+
+            Assert.IsNull(settings.Username);
+            Assert.IsNull(settings.Password);
+            Assert.IsNull(settings.Domain);
+            Assert.AreEqual(RdpConnectionBarState._Default, settings.ConnectionBar);
+            Assert.AreEqual(RdpDesktopSize._Default, settings.DesktopSize);
+            Assert.AreEqual(RdpAuthenticationLevel._Default, settings.AuthenticationLevel);
+            Assert.AreEqual(RdpColorDepth._Default, settings.ColorDepth);
+            Assert.AreEqual(RdpAudioMode._Default, settings.AudioMode);
+            Assert.AreEqual(RdpRedirectClipboard._Default, settings.RedirectClipboard);
+        }
+
+        [Test]
+        public void WhenQueryStringContainsValidUserOrDomain_ThenSettingsUseDecodedValues()
+        {
+            var url = IapRdpUrl.FromString("iap-rdp:///my-project/us-central1-a/my-instance?"+
+                "userNAME=John%20Doe&PassworD=ignore&Domain=%20%20mydomain&");
+            var settings = url.Settings;
+
+            Assert.AreEqual("John Doe", settings.Username);
+            Assert.IsNull(settings.Password);
+            Assert.AreEqual("  mydomain", settings.Domain);
+        }
+
+        [Test]
+        public void WhenQueryStringContainsValidSettings_ThenSettingsUseDecodedValues()
+        {
+            var url = IapRdpUrl.FromString("iap-rdp:///my-project/us-central1-a/my-instance?" +
+                "ConnectionBar=1&DesktopSize=1&AuthenticationLevel=0&ColorDepth=2&" +
+                "AudioMode=2&RedirectClipboard=0");
+            var settings = url.Settings;
+
+            Assert.AreEqual(RdpConnectionBarState.Pinned, settings.ConnectionBar);
+            Assert.AreEqual(RdpDesktopSize.ScreenSize, settings.DesktopSize);
+            Assert.AreEqual(RdpAuthenticationLevel.AttemptServerAuthentication, settings.AuthenticationLevel);
+            Assert.AreEqual(RdpColorDepth.DeepColor, settings.ColorDepth);
+            Assert.AreEqual(RdpAudioMode.DoNotPlay, settings.AudioMode);
+            Assert.AreEqual(RdpRedirectClipboard.Disabled, settings.RedirectClipboard);
         }
     }
 }
