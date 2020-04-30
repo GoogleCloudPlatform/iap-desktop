@@ -19,7 +19,7 @@
 // under the License.
 //
 
-using Google.Solutions.IapDesktop.Application.Registry;
+using Google.Solutions.IapDesktop.Application.Util;
 using Microsoft.Win32;
 using NUnit.Framework;
 using System;
@@ -27,53 +27,13 @@ using System.Linq;
 using System.Security;
 using System.Security.Cryptography;
 
-namespace Google.Solutions.IapDesktop.Application.Test.Registry
+namespace Google.Solutions.IapDesktop.Application.Test.Util
 {
     [TestFixture]
-    public class TestRegistryBinder : FixtureBase
+    public class TestRegistryKeyMapper : FixtureBase
     {
         private const string TestKeyPath = @"Software\Google\__Test";
         private readonly RegistryKey hkcu = RegistryKey.OpenBaseKey(RegistryHive.CurrentUser, RegistryView.Default);
-
-        class EmptyKey
-        {
-        }
-
-        [Test]
-        public void WhenClassHasNoValues_ThenValueNamesReturnsEmptyList()
-        {
-            Assert.IsFalse(new RegistryBinder<EmptyKey>().ValueNames.Any());
-        }
-
-
-        class KeyWithValueWithoutName
-        {
-            [StringRegistryValue(null)]
-            public string IgnoredNullValue { get; }
-        }
-
-        [Test]
-        public void WhenClassHasValueWithoutName_ThenValueIsIgnored()
-        {
-            Assert.IsFalse(new RegistryBinder<EmptyKey>().ValueNames.Any());
-        }
-
-        class KeyWithValues
-        {
-            [StringRegistryValue("str")]
-            public string String { get; } = "test";
-
-            [DwordRegistryValue("dword")]
-            public int Dword { get; } = 42;
-        }
-
-        [Test]
-        public void WhenClassHasValues_ThenValueNamesReturnsNames()
-        {
-            CollectionAssert.AreEqual(
-                new[] { "str", "dword" },
-                new RegistryBinder<KeyWithValues>().ValueNames);
-        }
 
         class KeyWithData
         {
@@ -115,9 +75,9 @@ namespace Google.Solutions.IapDesktop.Application.Test.Registry
                 Bool = true,
                 NullableBool = true
             };
-            new RegistryBinder<KeyWithData>().Store(original, registryKey);
+            new RegistryKeyMapper<KeyWithData>().MapObjectToKey(original, registryKey);
 
-            var copy = new RegistryBinder<KeyWithData>().Load(registryKey);
+            var copy = new RegistryKeyMapper<KeyWithData>().MapKeyToObject(registryKey);
             Assert.AreEqual(original.String, copy.String);
             Assert.AreEqual(original.Dword, copy.Dword);
             Assert.AreEqual(original.NullableDword, copy.NullableDword);
@@ -138,9 +98,9 @@ namespace Google.Solutions.IapDesktop.Application.Test.Registry
                 String = null,
                 NullableDword = null
             };
-            new RegistryBinder<KeyWithData>().Store(original, registryKey);
+            new RegistryKeyMapper<KeyWithData>().MapObjectToKey(original, registryKey);
 
-            var copy = new RegistryBinder<KeyWithData>().Load(registryKey);
+            var copy = new RegistryKeyMapper<KeyWithData>().MapKeyToObject(registryKey);
             Assert.AreEqual(original.String, copy.String);
             Assert.AreEqual(original.Dword, copy.Dword);
             Assert.AreEqual(original.NullableDword, copy.NullableDword);
@@ -166,7 +126,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Registry
 
             Assert.Throws<InvalidCastException>(() =>
             {
-                new RegistryBinder<KeyWithIncompatibleValueKind>().Store(original, registryKey);
+                new RegistryKeyMapper<KeyWithIncompatibleValueKind>().MapObjectToKey(original, registryKey);
             });
         }
 
@@ -178,7 +138,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Registry
 
             Assert.Throws<InvalidCastException>(() =>
             {
-                new RegistryBinder<KeyWithIncompatibleValueKind>().Load(registryKey);
+                new RegistryKeyMapper<KeyWithIncompatibleValueKind>().MapKeyToObject(registryKey);
             });
         }
 
@@ -200,7 +160,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Registry
             hkcu.DeleteSubKeyTree(TestKeyPath, false);
             var registryKey = hkcu.CreateSubKey(TestKeyPath);
 
-            new RegistryBinder<KeyWithString>().Store(
+            new RegistryKeyMapper<KeyWithString>().MapObjectToKey(
                 new KeyWithString()
                 {
                     Data = "dasd"
@@ -209,7 +169,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Registry
 
             Assert.Throws<InvalidCastException>(() =>
             {
-                new RegistryBinder<KeyWithDword>().Load(registryKey);
+                new RegistryKeyMapper<KeyWithDword>().MapKeyToObject(registryKey);
             });
         }
 
@@ -230,9 +190,9 @@ namespace Google.Solutions.IapDesktop.Application.Test.Registry
                 Secure = SecureStringExtensions.FromClearText("secure!!!")
             };
 
-            new RegistryBinder<KeyWithSecureString>().Store(original, registryKey);
+            new RegistryKeyMapper<KeyWithSecureString>().MapObjectToKey(original, registryKey);
 
-            var copy = new RegistryBinder<KeyWithSecureString>().Load(registryKey);
+            var copy = new RegistryKeyMapper<KeyWithSecureString>().MapKeyToObject(registryKey);
 
             Assert.AreEqual(
                 "secure!!!",
@@ -249,9 +209,9 @@ namespace Google.Solutions.IapDesktop.Application.Test.Registry
             {
             };
 
-            new RegistryBinder<KeyWithSecureString>().Store(original, registryKey);
+            new RegistryKeyMapper<KeyWithSecureString>().MapObjectToKey(original, registryKey);
 
-            var copy = new RegistryBinder<KeyWithSecureString>().Load(registryKey);
+            var copy = new RegistryKeyMapper<KeyWithSecureString>().MapKeyToObject(registryKey);
 
             Assert.IsNull(copy.Secure);
         }
@@ -262,20 +222,20 @@ namespace Google.Solutions.IapDesktop.Application.Test.Registry
             this.hkcu.DeleteSubKeyTree(TestKeyPath, false);
             var registryKey = hkcu.CreateSubKey(TestKeyPath);
 
-            new RegistryBinder<KeyWithSecureString>().Store(
+            new RegistryKeyMapper<KeyWithSecureString>().MapObjectToKey(
                 new KeyWithSecureString()
                 {
                     Secure = SecureStringExtensions.FromClearText("secure!!!")
                 },
                 registryKey);
-            new RegistryBinder<KeyWithSecureString>().Store(
+            new RegistryKeyMapper<KeyWithSecureString>().MapObjectToKey(
                 new KeyWithSecureString()
                 {
                     Secure = null
                 },
                 registryKey);
 
-            var copy = new RegistryBinder<KeyWithSecureString>().Load(registryKey);
+            var copy = new RegistryKeyMapper<KeyWithSecureString>().MapKeyToObject(registryKey);
 
             Assert.IsNull(copy.Secure);
         }

@@ -22,7 +22,7 @@
 using Google.Apis.Json;
 using Google.Apis.Util;
 using Google.Apis.Util.Store;
-using Google.Solutions.IapDesktop.Application.Registry;
+using Google.Solutions.IapDesktop.Application.Util;
 using Microsoft.Win32;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
