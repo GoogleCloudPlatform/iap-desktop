@@ -34,7 +34,7 @@ using WeifenLuo.WinFormsUI.Docking;
 
 namespace Google.Solutions.IapDesktop.Application.Test.Windows
 {
-    public partial class TestMainForm : Form, IMainForm, IAuthorizationService, IJobService
+    public partial class TestMainForm : Form, IMainForm, IAuthorizationAdapter, IJobService
     {
         public TestMainForm()
         {

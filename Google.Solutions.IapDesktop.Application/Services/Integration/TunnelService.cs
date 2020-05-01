@@ -35,11 +35,11 @@ namespace Google.Solutions.IapDesktop.Application.Services.Integration
 
     public class TunnelService : ITunnelService
     {
-        private readonly IAuthorizationService authorizationService;
+        private readonly IAuthorizationAdapter authorizationService;
 
         public TunnelService(IServiceProvider serviceProvider)
         {
-            this.authorizationService = serviceProvider.GetService<IAuthorizationService>();
+            this.authorizationService = serviceProvider.GetService<IAuthorizationAdapter>();
         }
 
         public Task<Tunnel> CreateTunnelAsync(TunnelDestination tunnelEndpoint)

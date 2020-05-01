@@ -46,7 +46,7 @@ using Google.Solutions.IapDesktop.Application.Services.Integration;
 namespace Google.Solutions.IapDesktop.Windows
 {
 
-    public partial class MainForm : Form, IJobHost, IMainForm, IAuthorizationService
+    public partial class MainForm : Form, IJobHost, IMainForm, IAuthorizationAdapter
     {
         private readonly ApplicationSettingsRepository applicationSettings;
         private readonly AuthSettingsRepository authSettings;

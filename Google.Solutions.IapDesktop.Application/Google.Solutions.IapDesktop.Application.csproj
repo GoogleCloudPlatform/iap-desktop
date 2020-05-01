@@ -100,7 +100,7 @@
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
     <Compile Include="Services\CloudConsoleService.cs" />
-    <Compile Include="Services\Adapters\IAuthorizationService.cs" />
+    <Compile Include="Services\Adapters\IAuthorizationAdapter.cs" />
     <Compile Include="Services\Integration\ITunnel.cs" />
     <Compile Include="Services\Integration\ProjectInventoryService.cs" />
     <Compile Include="Services\Integration\TunnelBrokerService.cs" />

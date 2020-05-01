@@ -104,7 +104,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows
             await testInstance.AwaitReady();
 
             using (var tunnel = RdpTunnel.Create(testInstance.InstanceReference))
-            using (var gceAdapter = new ComputeEngineAdapter(this.serviceProvider.GetService<IAuthorizationService>()))
+            using (var gceAdapter = new ComputeEngineAdapter(this.serviceProvider.GetService<IAuthorizationAdapter>()))
             {
                 var credentials = await gceAdapter.ResetWindowsUserAsync(
                     testInstance.InstanceReference,
@@ -153,7 +153,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows
             await testInstance.AwaitReady();
 
             using (var tunnel = RdpTunnel.Create(testInstance.InstanceReference))
-            using (var gceAdapter = new ComputeEngineAdapter(this.serviceProvider.GetService<IAuthorizationService>()))
+            using (var gceAdapter = new ComputeEngineAdapter(this.serviceProvider.GetService<IAuthorizationAdapter>()))
             {
                 var credentials = await gceAdapter.ResetWindowsUserAsync(
                        testInstance.InstanceReference,

@@ -43,7 +43,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows
             RdpTunnel tunnel,
             VmInstanceReference vmInstanceReference)
         {
-            using (var gceAdapter = new ComputeEngineAdapter(this.serviceProvider.GetService<IAuthorizationService>()))
+            using (var gceAdapter = new ComputeEngineAdapter(this.serviceProvider.GetService<IAuthorizationAdapter>()))
             {
                 var credentials = await gceAdapter.ResetWindowsUserAsync(
                     vmInstanceReference,

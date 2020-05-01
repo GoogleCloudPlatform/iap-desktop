@@ -44,7 +44,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.Adapters
     {
         private readonly CloudResourceManagerService service;
 
-        public ResourceManagerAdapter(IAuthorizationService authService)
+        public ResourceManagerAdapter(IAuthorizationAdapter authService)
         {
             var assemblyName = typeof(IResourceManagerAdapter).Assembly.GetName();
 
@@ -57,7 +57,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.Adapters
         }
 
         public ResourceManagerAdapter(IServiceProvider serviceProvider)
-            : this(serviceProvider.GetService<IAuthorizationService>())
+            : this(serviceProvider.GetService<IAuthorizationAdapter>())
         {
         }
 

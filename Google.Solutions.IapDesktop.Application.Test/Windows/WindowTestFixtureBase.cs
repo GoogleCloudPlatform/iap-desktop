@@ -75,7 +75,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Windows
             var mainForm = new TestMainForm();
             registry.AddSingleton<IMainForm>(mainForm);
             registry.AddSingleton<IJobService>(mainForm);
-            registry.AddSingleton<IAuthorizationService>(mainForm);
+            registry.AddSingleton<IAuthorizationAdapter>(mainForm);
 
             this.eventService = new EventService(mainForm);
             registry.AddSingleton<IEventService>(this.eventService);

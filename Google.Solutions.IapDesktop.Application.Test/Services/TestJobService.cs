@@ -59,7 +59,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services
             }
         }
 
-        private Mock<IAuthorizationService> authService = null;
+        private Mock<IAuthorizationAdapter> authService = null;
         private Mock<IJobHost> jobHost = null;
         private JobService jobService = null;
 
@@ -70,7 +70,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services
         {
             var authz = new Mock<IAuthorization>();
 
-            this.authService = new Mock<IAuthorizationService>();
+            this.authService = new Mock<IAuthorizationAdapter>();
             this.authService.SetupGet(a => a.Authorization).Returns(authz.Object);
             this.authService.Setup(a => a.ReauthorizeAsync(It.IsAny<CancellationToken>()))
                 .Returns(Task.FromResult(true));

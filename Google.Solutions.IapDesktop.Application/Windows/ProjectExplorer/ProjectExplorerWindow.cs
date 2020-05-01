@@ -59,7 +59,7 @@ namespace Google.Solutions.IapDesktop.Application.ProjectExplorer
         private readonly IJobService jobService;
         private readonly ProjectInventoryService projectInventoryService;
         private readonly InventorySettingsRepository settingsRepository;
-        private readonly IAuthorizationService authService;
+        private readonly IAuthorizationAdapter authService;
         private readonly IServiceProvider serviceProvider;
         private readonly RemoteDesktopService remoteDesktopService;
 
@@ -93,7 +93,7 @@ namespace Google.Solutions.IapDesktop.Application.ProjectExplorer
             this.jobService = serviceProvider.GetService<IJobService>();
             this.projectInventoryService = serviceProvider.GetService<ProjectInventoryService>();
             this.settingsRepository = serviceProvider.GetService<InventorySettingsRepository>();
-            this.authService = serviceProvider.GetService<IAuthorizationService>();
+            this.authService = serviceProvider.GetService<IAuthorizationAdapter>();
             this.remoteDesktopService = serviceProvider.GetService<RemoteDesktopService>();
 
             this.eventService.BindAsyncHandler<ProjectInventoryService.ProjectAddedEvent>(OnProjectAdded);

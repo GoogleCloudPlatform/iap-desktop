@@ -57,7 +57,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.Adapters
 
         private readonly ComputeService service;
 
-        public ComputeEngineAdapter(IAuthorizationService authService)
+        public ComputeEngineAdapter(IAuthorizationAdapter authService)
         {
             var assemblyName = typeof(IComputeEngineAdapter).Assembly.GetName();
             this.service = new ComputeService(new BaseClientService.Initializer
@@ -68,7 +68,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.Adapters
         }
 
         public ComputeEngineAdapter(IServiceProvider serviceProvider)
-            : this(serviceProvider.GetService<IAuthorizationService>())
+            : this(serviceProvider.GetService<IAuthorizationAdapter>())
         {
         }
 
