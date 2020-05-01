@@ -99,6 +99,7 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
+    <Compile Include="Services\Persistence\AppProtocolRegistry.cs" />
     <Compile Include="Services\Windows\CloudConsoleService.cs" />
     <Compile Include="Services\Adapters\IAuthorizationAdapter.cs" />
     <Compile Include="Services\Integration\ITunnel.cs" />
