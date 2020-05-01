@@ -21,7 +21,7 @@
 
 using Google.Solutions.IapDesktop.Application.Services;
 using Google.Solutions.IapDesktop.Application.Settings;
-using Google.Solutions.IapDesktop.Application.Test.ServiceModel;
+using Google.Solutions.IapDesktop.Application.Test.ObjectModel;
 using Microsoft.Win32;
 using NUnit.Framework;
 using System.Linq;

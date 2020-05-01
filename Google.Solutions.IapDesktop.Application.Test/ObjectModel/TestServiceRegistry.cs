@@ -23,7 +23,7 @@ using Google.Solutions.IapDesktop.Application.ObjectModel;
 using NUnit.Framework;
 using System;
 
-namespace Google.Solutions.IapDesktop.Application.Test
+namespace Google.Solutions.IapDesktop.Application.Test.ObjectModel
 {
     [TestFixture]
     public class TestServiceRegistry : FixtureBase
@@ -104,6 +104,16 @@ namespace Google.Solutions.IapDesktop.Application.Test
             {
                 registry.GetService<ServiceWithIncompatibleConstructor>();
             });
+        }
+
+        [Test]
+        public void WhenRequestingUnknownService_ThenParentRegistryIsQuerid()
+        {
+            var parent = new ServiceRegistry();
+            parent.AddTransient<ServiceWithDefaultConstructor>();
+
+            var child = new ServiceRegistry(parent);
+            Assert.IsNotNull(child.GetService<ServiceWithDefaultConstructor>());
         }
     }
 }

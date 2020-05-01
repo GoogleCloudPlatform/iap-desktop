@@ -23,7 +23,7 @@ using Google.Solutions.IapDesktop.Application.ObjectModel;
 using System;
 using System.Threading.Tasks;
 
-namespace Google.Solutions.IapDesktop.Application.Test.ServiceModel
+namespace Google.Solutions.IapDesktop.Application.Test.ObjectModel
 {
     class MockEventService : IEventService
     {
