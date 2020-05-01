@@ -26,7 +26,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace Google.Solutions.IapDesktop.Application.Services
+namespace Google.Solutions.IapDesktop.Application.Services.Integration
 {
     public class TunnelBrokerService
     {

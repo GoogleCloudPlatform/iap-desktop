@@ -23,7 +23,7 @@ using Google.Solutions.Compute.Auth;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Google.Solutions.IapDesktop.Application.Services
+namespace Google.Solutions.IapDesktop.Application.Services.Adapters
 {
     public interface IAuthorizationService
     {

@@ -90,7 +90,7 @@
     <Compile Include="Services\Adapters\ResourceManagerAdapter.cs" />
     <Compile Include="Global.cs" />
     <Compile Include="Services\Integration\EventService.cs" />
-    <Compile Include="Services\JobService.cs" />
+    <Compile Include="Services\Integration\JobService.cs" />
     <Compile Include="ObjectModel\ServiceRegistry.cs" />
     <Compile Include="ExceptionExtensions.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -100,11 +100,11 @@
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
     <Compile Include="Services\CloudConsoleService.cs" />
-    <Compile Include="Services\IAuthorizationService.cs" />
-    <Compile Include="Services\ITunnel.cs" />
-    <Compile Include="Services\ProjectInventoryService.cs" />
-    <Compile Include="Services\TunnelBrokerService.cs" />
-    <Compile Include="Services\TunnelService.cs" />
+    <Compile Include="Services\Adapters\IAuthorizationService.cs" />
+    <Compile Include="Services\Integration\ITunnel.cs" />
+    <Compile Include="Services\Integration\ProjectInventoryService.cs" />
+    <Compile Include="Services\Integration\TunnelBrokerService.cs" />
+    <Compile Include="Services\Integration\TunnelService.cs" />
     <Compile Include="Services\UpdateService.cs" />
     <Compile Include="Services\Persistence\AuthSettingsRepository.cs" />
     <Compile Include="Util\SecureStringExtensions.cs" />

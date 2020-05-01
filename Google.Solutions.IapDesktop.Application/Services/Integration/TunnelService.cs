@@ -21,11 +21,12 @@
 
 using Google.Solutions.Compute.Iap;
 using Google.Solutions.IapDesktop.Application.ObjectModel;
+using Google.Solutions.IapDesktop.Application.Services.Adapters;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Google.Solutions.IapDesktop.Application.Services
+namespace Google.Solutions.IapDesktop.Application.Services.Integration
 {
     public interface ITunnelService
     {

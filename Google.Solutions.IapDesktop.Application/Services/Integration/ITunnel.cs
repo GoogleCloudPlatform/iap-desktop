@@ -25,7 +25,7 @@ using System;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Google.Solutions.IapDesktop.Application.Services
+namespace Google.Solutions.IapDesktop.Application.Services.Integration
 {
     public class Tunnel
     {
