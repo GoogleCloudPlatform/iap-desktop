@@ -171,8 +171,8 @@ namespace Google.Solutions.IapDesktop.Application.Services.Workflows
                 null,
                 new[]
                 {
-                    "Yes, Generate new credentials",     // Same as pressing 'OK'
-                    "No, connect"                        // Same as pressing 'Cancel'
+                    "Yes, generate new credentials",     // Same as pressing 'OK'
+                    "Enter existing credentials"         // Same as pressing 'Cancel'
                 },
                 null,//"Do not show this prompt again",
                 out bool donotAskAgain);

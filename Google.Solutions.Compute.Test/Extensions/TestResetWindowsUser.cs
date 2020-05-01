@@ -43,7 +43,7 @@ namespace Google.Solutions.Compute.Test.Extensions
         }
 
         [Test]
-        public async Task WhenUsernameIsSuperLong_ThenResetPasswordFails(
+        public async Task WhenUsernameIsSuperLong_ThenPasswordResetExceptionIsThrown(
             [WindowsInstance] InstanceRequest testInstance)
         {
             await testInstance.AwaitReady();
@@ -53,6 +53,33 @@ namespace Google.Solutions.Compute.Test.Extensions
             {
                 await this.instancesResource.ResetWindowsUserAsync(
                     testInstance.InstanceReference,
+                    username,
+                    CancellationToken.None);
+                Assert.Fail();
+            }
+            catch (PasswordResetException e)
+            {
+                Assert.IsNotEmpty(e.Message);
+            }
+        }
+
+        [Test]
+        public async Task WhenInstanceDoesntExist_ThenPasswordResetExceptionIsThrown(
+            [WindowsInstance] InstanceRequest testInstance)
+        {
+            await testInstance.AwaitReady();
+
+            var username = "test" + Guid.NewGuid().ToString();
+
+            // Use correct project, but wrong VM.
+            var instanceRef = new VmInstanceReference(
+                testInstance.InstanceReference.ProjectId,
+                testInstance.InstanceReference.Zone,
+                testInstance.InstanceReference.InstanceName + "-x");
+            try
+            {
+                await this.instancesResource.ResetWindowsUserAsync(
+                    instanceRef,
                     username,
                     CancellationToken.None);
                 Assert.Fail();

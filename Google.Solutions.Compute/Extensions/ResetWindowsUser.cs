@@ -93,6 +93,13 @@ namespace Google.Solutions.Compute.Extensions
                         MetadataKey,
                         requestJson).ConfigureAwait(false);
                 }
+                catch (GoogleApiException e) when (e.Error != null && e.Error.Code == 404)
+                {
+                    TraceSources.Compute.TraceVerbose("Instance does not exist: {0}", e.Message);
+
+                    throw new PasswordResetException(
+                        $"Instance {instanceRef.InstanceName} was not found.");
+                }
                 catch (GoogleApiException e) when (e.Error == null || e.Error.Code == 403)
                 {
                     TraceSources.Compute.TraceVerbose("Setting request payload metadata failed: {0}", e.Message);

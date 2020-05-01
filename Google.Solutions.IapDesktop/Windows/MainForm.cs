@@ -182,11 +182,12 @@ namespace Google.Solutions.IapDesktop.Windows
                 this.serviceProvider
                     .GetService<RemoteDesktopConnectionService>()
                     .ActivateOrConnectInstanceWithCredentialPromptAsync(this, this.StartupUrl)
-                    //.ConfigureAwait(continueOnCapturedContext: true)
                     .ContinueWith(t => this.serviceProvider
                             .GetService<IExceptionDialog>()
-                            .Show(this, t.Exception.Message, t.Exception), 
-                        TaskContinuationOptions.OnlyOnFaulted);
+                            .Show(this, "Failed to connect to VM instance", t.Exception), 
+                        CancellationToken.None,
+                        TaskContinuationOptions.OnlyOnFaulted, 
+                        TaskScheduler.FromCurrentSynchronizationContext());
             }
             else
             {
