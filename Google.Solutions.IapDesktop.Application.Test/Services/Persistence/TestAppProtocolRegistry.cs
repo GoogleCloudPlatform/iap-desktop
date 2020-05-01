@@ -22,11 +22,6 @@
 using Google.Solutions.IapDesktop.Application.Services.Persistence;
 using Microsoft.Win32;
 using NUnit.Framework;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Google.Solutions.IapDesktop.Application.Test.Services.Persistence
 {
@@ -46,6 +41,13 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Persistence
         {
             var registry = new AppProtocolRegistry();
             Assert.IsFalse(registry.IsRegistered("unknown-scheme", "app.exe"));
+        }
+
+        [Test]
+        public void WhenProtocolNotRegistered_ThenUnregisterDoesNothing()
+        {
+            var registry = new AppProtocolRegistry();
+            registry.Unregister("unknown-scheme");
         }
 
         [Test]

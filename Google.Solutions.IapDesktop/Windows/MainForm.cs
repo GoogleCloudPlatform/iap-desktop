@@ -52,6 +52,7 @@ namespace Google.Solutions.IapDesktop.Windows
         private readonly ApplicationSettingsRepository applicationSettings;
         private readonly AuthSettingsRepository authSettings;
         private readonly IServiceProvider serviceProvider;
+        private readonly AppProtocolRegistry protocolRegistry;
 
         private WaitDialog waitDialog = null;
 
@@ -62,6 +63,7 @@ namespace Google.Solutions.IapDesktop.Windows
             this.serviceProvider = serviceProvider;
             this.applicationSettings = bootstrappingServiceProvider.GetService<ApplicationSettingsRepository>();
             this.authSettings = bootstrappingServiceProvider.GetService<AuthSettingsRepository>();
+            this.protocolRegistry = bootstrappingServiceProvider.GetService<AppProtocolRegistry>();
 
             // 
             // Restore window settings.
@@ -89,8 +91,10 @@ namespace Google.Solutions.IapDesktop.Windows
             this.dockPanel.DockLeftPortion =
                 this.dockPanel.DockRightPortion = (300.0f / this.Width);
 
-            this.checkForUpdatesOnExitToolStripMenuItem.Checked
-                = this.applicationSettings.GetSettings().IsUpdateCheckEnabled;
+            this.checkForUpdatesOnExitToolStripMenuItem.Checked = 
+                this.applicationSettings.GetSettings().IsUpdateCheckEnabled;
+            this.enableAppProtocolToolStripMenuItem.Checked =
+                this.protocolRegistry.IsRegistered(IapRdpUrl.Scheme, GetType().Assembly.Location);
         }
 
         private void MainForm_FormClosing(object sender, FormClosingEventArgs e)
@@ -314,6 +318,22 @@ namespace Google.Solutions.IapDesktop.Windows
             }
         }
 
+        private void enableAppProtocolToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            var registerProtocol =
+                this.enableAppProtocolToolStripMenuItem.Checked =
+                !this.enableAppProtocolToolStripMenuItem.Checked;
+
+            if (registerProtocol)
+            {
+                this.protocolRegistry.Register(IapRdpUrl.Scheme, this.Text, GetType().Assembly.Location);
+            }
+            else
+            {
+                this.protocolRegistry.Unregister(IapRdpUrl.Scheme);
+            }
+        }
+
         private void checkForUpdatesOnExitToolStripMenuItem_Click(object sender, EventArgs e)
         {
             var updateEnabled = !checkForUpdatesOnExitToolStripMenuItem.Checked;
@@ -422,7 +442,6 @@ namespace Google.Solutions.IapDesktop.Windows
                 MessageBoxButtons.YesNoCancel,
                 MessageBoxIcon.Warning) == DialogResult.Yes;
         }
-
     }
 
     internal abstract class AsyncEvent
