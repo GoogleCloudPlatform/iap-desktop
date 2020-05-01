@@ -31,12 +31,14 @@ using Google.Solutions.IapDesktop.Application.Services.Windows;
 using Google.Solutions.IapDesktop.Application.Services.Windows.RemoteDesktop;
 using Google.Solutions.IapDesktop.Application.Services.Windows.SerialLog;
 using Google.Solutions.IapDesktop.Application.Services.Windows.SettingsEditor;
+using Google.Solutions.IapDesktop.Application.Services.Workflows;
 using Google.Solutions.IapDesktop.Application.Util;
 using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Diagnostics;
 using System.Linq;
+using System.Net;
 using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -156,29 +158,15 @@ namespace Google.Solutions.IapDesktop.Application.ProjectExplorer
 
         }
 
-        private async Task<bool> GenerateCredentials(VmInstanceNode vmNode)
+        private async Task<bool> GenerateAndSaveCredentials(VmInstanceNode vmNode)
         {
-            var suggestedUsername = this.authService.Authorization.SuggestWindowsUsername();
-
-            // Prompt for username to use.
-            var username = new GenerateCredentialsDialog().PromptForUsername(this, suggestedUsername);
-            if (username == null)
+            var credentialService = this.serviceProvider.GetService<CredentialsService>();
+            var credentials = await credentialService.GenerateCredentials(this, vmNode.Reference);
+            if (credentials == null)
             {
+                // Aborted.
                 return false;
             }
-
-            var credentials = await this.jobService.RunInBackground(
-                new JobDescription("Generating Windows logon credentials..."),
-                token =>
-                {
-                    return this.serviceProvider.GetService<IComputeEngineAdapter>()
-                        .ResetWindowsUserAsync(vmNode.Reference, username, token);
-                });
-
-            new ShowCredentialsDialog().ShowDialog(
-                this,
-                credentials.UserName,
-                credentials.Password);
 
             // Update node to persist settings.
             vmNode.Username = credentials.UserName;
@@ -230,7 +218,7 @@ namespace Google.Solutions.IapDesktop.Application.ProjectExplorer
                 else if (selectedOption == 1)
                 {
                     // Generate new credentials.
-                    if (!await GenerateCredentials(vmNode))
+                    if (!await GenerateAndSaveCredentials(vmNode))
                     {
                         return;
                     }
@@ -448,7 +436,7 @@ namespace Google.Solutions.IapDesktop.Application.ProjectExplorer
             {
                 if (this.treeView.SelectedNode is VmInstanceNode vmNode)
                 {
-                    await GenerateCredentials(vmNode);
+                    await GenerateAndSaveCredentials(vmNode);
                 }
             }
             catch (TaskCanceledException)

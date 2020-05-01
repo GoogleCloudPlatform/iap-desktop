@@ -213,6 +213,7 @@ namespace Google.Solutions.IapDesktop
             windowAndWorkflowLayer.AddSingleton<ISettingsEditor, SettingsEditorWindow>();
             windowAndWorkflowLayer.AddSingleton<IProjectExplorer, ProjectExplorerWindow>();
             windowAndWorkflowLayer.AddSingleton<ITunnelsViewer, TunnelsWindow>();
+            windowAndWorkflowLayer.AddTransient<CredentialsService>();
 
 #if DEBUG
             windowAndWorkflowLayer.AddSingleton<DebugWindow>();
