@@ -25,8 +25,6 @@ using System;
 using System.Diagnostics;
 using System.Text.RegularExpressions;
 using System.Collections.Specialized;
-using System.Diagnostics;
-using System.Text.RegularExpressions;
 using System.Web;
 
 namespace Google.Solutions.IapDesktop.Application.Util

@@ -25,11 +25,10 @@ using Google.Solutions.IapDesktop.Application.ObjectModel;
 using Google.Solutions.IapDesktop.Application.ProjectExplorer;
 using Google.Solutions.IapDesktop.Application.Services;
 using Google.Solutions.IapDesktop.Application.Services.Persistence;
-using Google.Solutions.IapDesktop.Application.SettingsEditor;
-using Google.Solutions.IapDesktop.Application.Windows;
-using Google.Solutions.IapDesktop.Application.Windows.RemoteDesktop;
-using Google.Solutions.IapDesktop.Application.Windows.SerialLog;
-using Google.Solutions.IapDesktop.Application.Windows.TunnelsViewer;
+using Google.Solutions.IapDesktop.Application.Services.Windows;
+using Google.Solutions.IapDesktop.Application.Services.Windows.RemoteDesktop;
+using Google.Solutions.IapDesktop.Application.Services.Windows.SerialLog;
+using Google.Solutions.IapDesktop.Application.Services.Windows.TunnelsViewer;
 using Google.Solutions.IapDesktop.Windows;
 using Microsoft.Win32;
 using System;
@@ -38,6 +37,8 @@ using System.IO;
 using System.Linq;
 using System.Net;
 using Google.Solutions.IapDesktop.Application.Services.Integration;
+using Google.Solutions.IapDesktop.Application.Services.Windows.SettingsEditor;
+using Google.Solutions.IapDesktop.Application.Services.Workflows;
 
 namespace Google.Solutions.IapDesktop
 {

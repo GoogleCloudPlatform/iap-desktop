@@ -25,7 +25,7 @@ using Google.Solutions.IapDesktop.Application.ObjectModel;
 using Google.Solutions.IapDesktop.Application.Util;
 using Google.Solutions.IapDesktop.Application.Services;
 using Google.Solutions.IapDesktop.Application.Services.Persistence;
-using Google.Solutions.IapDesktop.Application.Windows.RemoteDesktop;
+using Google.Solutions.IapDesktop.Application.Services.Windows.RemoteDesktop;
 using NUnit.Framework;
 using System.Threading;
 using System.Threading.Tasks;

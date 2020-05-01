@@ -21,7 +21,7 @@
 
 using Google.Solutions.Compute;
 using Google.Solutions.IapDesktop.Application.Services.Persistence;
-using Google.Solutions.IapDesktop.Application.Windows.RemoteDesktop;
+using Google.Solutions.IapDesktop.Application.Services.Windows.RemoteDesktop;
 using NUnit.Framework;
 using System;
 

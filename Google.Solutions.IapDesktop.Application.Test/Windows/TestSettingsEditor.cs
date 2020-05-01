@@ -19,7 +19,7 @@
 // under the License.
 //
 
-using Google.Solutions.IapDesktop.Application.SettingsEditor;
+using Google.Solutions.IapDesktop.Application.Services.Windows.SettingsEditor;
 using NUnit.Framework;
 using System.ComponentModel;
 using System.Windows.Forms;

@@ -24,7 +24,7 @@ using Google.Solutions.IapDesktop.Application.Services.Adapters;
 using Google.Solutions.IapDesktop.Application.ObjectModel;
 using Google.Solutions.IapDesktop.Application.ProjectExplorer;
 using Google.Solutions.IapDesktop.Application.Services;
-using Google.Solutions.IapDesktop.Application.Windows.RemoteDesktop;
+using Google.Solutions.IapDesktop.Application.Services.Windows.RemoteDesktop;
 using Moq;
 using NUnit.Framework;
 using System.Collections.Generic;
