@@ -30,13 +30,17 @@ using Google.Solutions.IapDesktop.Application.Services.Windows.RemoteDesktop;
 using Google.Solutions.IapDesktop.Application.Services.Windows.SerialLog;
 using Google.Solutions.IapDesktop.Application.Services.Windows.SettingsEditor;
 using Google.Solutions.IapDesktop.Application.Services.Workflows;
+using Google.Solutions.IapDesktop.Application.Util;
 using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
+using System.Text;
 using System.Threading.Tasks;
+using System.Web;
 using System.Windows.Forms;
 using WeifenLuo.WinFormsUI.Docking;
 
@@ -380,6 +384,49 @@ namespace Google.Solutions.IapDesktop.Application.ProjectExplorer
             }
         }
 
+        private void generateHtmlPageToolStripMenuItem_Click_1(object sender, EventArgs e)
+        {
+#if DEBUG
+            if (this.treeView.SelectedNode is ProjectNode projectNode)
+            {
+                var buffer = new StringBuilder();
+                buffer.Append("<html><body>");
+
+                buffer.Append($"<h1>{HttpUtility.HtmlEncode(projectNode.ProjectId)}</h1>");
+
+                foreach (var zoneNode in projectNode.Nodes.Cast<ZoneNode>())
+                {
+                    buffer.Append($"<h2>{HttpUtility.HtmlEncode(zoneNode.ZoneId)}</h2>");
+
+                    buffer.Append($"<ul>");
+
+                    foreach (var vmNode in zoneNode.Nodes.Cast<VmInstanceNode>())
+                    {
+                        buffer.Append($"<li>");
+                        buffer.Append($"<a href='{new IapRdpUrl(vmNode.Reference, vmNode.EffectiveSettingsWithInheritanceApplied)}'>");
+                        buffer.Append($"{HttpUtility.HtmlEncode(vmNode.InstanceName)}</a>");
+                        buffer.Append($"</li>");
+                    }
+
+                    buffer.Append($"</ul>");
+                }
+
+                buffer.Append("</body></html>");
+
+                var tempFile = Path.GetTempFileName() + ".html";
+                File.WriteAllText(tempFile, buffer.ToString());
+
+                Process.Start(new ProcessStartInfo()
+                {
+                    UseShellExecute = true,
+                    Verb = "open",
+                    FileName = tempFile
+                });
+
+            }
+#endif
+        }
+
         //---------------------------------------------------------------------
         // Other Windows event handlers.
         //---------------------------------------------------------------------
@@ -453,6 +500,13 @@ namespace Google.Solutions.IapDesktop.Application.ProjectExplorer
                     this.generateCredentialsToolStripMenuItem.Enabled =
                     this.showSerialLogToolStripMenuItem.Enabled =
                         (selectedNode is VmInstanceNode) && ((VmInstanceNode)selectedNode).IsRunning;
+
+#if DEBUG
+                this.debugToolStripMenuItem.Visible = 
+                    this.generateHtmlPageToolStripMenuItem.Visible = (selectedNode is ProjectNode);
+#else
+                this.debugToolStripMenuItem.Visible = false;
+#endif
 
                 //
                 // Fire event.
