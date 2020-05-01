@@ -158,25 +158,31 @@ namespace Google.Solutions.IapDesktop.Application.Util
                 CreateVmInstanceSettingsFromQuery(instanceRef, uri.Query));
         }
 
-        public override string ToString()
+        public string ToString(bool includeSettingsAsQuery)
         {
-            var parameters = new Dictionary<string, string>()
-            {
-                { "Username", this.Settings.Username },
-                { "Domain", this.Settings.Domain },
-                { "ConnectionBar", ((int)this.Settings.ConnectionBar).ToString() },
-                { "DesktopSize", ((int)this.Settings.DesktopSize).ToString() },
-                { "AuthenticationLevel", ((int)this.Settings.AuthenticationLevel).ToString() },
-                { "ColorDepth", ((int)this.Settings.ColorDepth).ToString() },
-                { "AudioMode", ((int)this.Settings.AudioMode).ToString() },
-                { "RedirectClipboard", ((int)this.Settings.RedirectClipboard).ToString() },
-            };
+            var url = $"{Scheme}:///{this.Instance.ProjectId}/{this.Instance.Zone}/{this.Instance.InstanceName}";
 
-            var formattedParameters = parameters.Select(p => p.Key + "=" + HttpUtility.UrlEncode(p.Value));
-            
-            return $"{Scheme}:///{this.Instance.ProjectId}/{this.Instance.Zone}/{this.Instance.InstanceName}?" +
-                String.Join("&", formattedParameters);
+            if (includeSettingsAsQuery)
+            {
+                var parameters = new Dictionary<string, string>()
+                {
+                    { "Username", this.Settings.Username },
+                    { "Domain", this.Settings.Domain },
+                    { "ConnectionBar", ((int)this.Settings.ConnectionBar).ToString() },
+                    { "DesktopSize", ((int)this.Settings.DesktopSize).ToString() },
+                    { "AuthenticationLevel", ((int)this.Settings.AuthenticationLevel).ToString() },
+                    { "ColorDepth", ((int)this.Settings.ColorDepth).ToString() },
+                    { "AudioMode", ((int)this.Settings.AudioMode).ToString() },
+                    { "RedirectClipboard", ((int)this.Settings.RedirectClipboard).ToString() },
+                };
+
+                var formattedParameters = parameters.Select(p => p.Key + "=" + HttpUtility.UrlEncode(p.Value));
+                url += $"?{String.Join("&", formattedParameters)}";
+            }
+
+            return url;
         }
+        public override string ToString() => ToString(true);
     }
 
     [Serializable]

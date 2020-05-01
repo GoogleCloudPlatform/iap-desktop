@@ -128,7 +128,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Util
         public void WhenTripleSlashUsed_ThenToStringReturnsSameString()
         {
             var url = "iap-rdp:///my-project/us-central1-a/my-instance";
-            Assert.AreEqual(url, IapRdpUrl.FromString(url).ToString());
+            Assert.AreEqual(url, IapRdpUrl.FromString(url).ToString(false));
         }
 
         //---------------------------------------------------------------------
