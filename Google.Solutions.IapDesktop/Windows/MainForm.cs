@@ -31,6 +31,7 @@ using Google.Solutions.IapDesktop.Application.Services.Windows;
 using Google.Solutions.IapDesktop.Application.Services.Windows.RemoteDesktop;
 using Google.Solutions.IapDesktop.Application.Services.Windows.TunnelsViewer;
 using Google.Solutions.IapDesktop.Application.Services.Workflows;
+using Google.Solutions.IapDesktop.Application.Util;
 using System;
 using System.ComponentModel;
 using System.Diagnostics;
@@ -53,6 +54,8 @@ namespace Google.Solutions.IapDesktop.Windows
         private readonly IServiceProvider serviceProvider;
 
         private WaitDialog waitDialog = null;
+
+        public IapRdpUrl StartupUrl { get; set; }
 
         public MainForm(IServiceProvider bootstrappingServiceProvider, IServiceProvider serviceProvider)
         {
@@ -173,7 +176,16 @@ namespace Google.Solutions.IapDesktop.Windows
 
             ResumeLayout();
 
-            this.serviceProvider.GetService<IProjectExplorer>().ShowWindow();
+            if (this.StartupUrl != null)
+            {
+                // Dispatch URL.
+                // TODO
+            }
+            else
+            {
+                // No startup URL provided, just show project explorer then.
+                this.serviceProvider.GetService<IProjectExplorer>().ShowWindow();
+            }
 
 #if DEBUG
             this.serviceProvider.GetService<DebugWindow>().ShowWindow();
@@ -189,7 +201,6 @@ namespace Google.Solutions.IapDesktop.Windows
         //---------------------------------------------------------------------
         // Main menu events.
         //---------------------------------------------------------------------
-
 
         private void aboutToolStripMenuItem_Click(object sender, EventArgs _)
         {

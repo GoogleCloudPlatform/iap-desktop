@@ -31,6 +31,7 @@ using Google.Solutions.IapDesktop.Application.Services.Windows.SerialLog;
 using Google.Solutions.IapDesktop.Application.Services.Windows.SettingsEditor;
 using Google.Solutions.IapDesktop.Application.Services.Windows.TunnelsViewer;
 using Google.Solutions.IapDesktop.Application.Services.Workflows;
+using Google.Solutions.IapDesktop.Application.Util;
 using Google.Solutions.IapDesktop.Windows;
 using Microsoft.Win32;
 using System;
@@ -38,6 +39,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Net;
+using System.Windows.Forms;
 
 namespace Google.Solutions.IapDesktop
 {
@@ -100,13 +102,49 @@ namespace Google.Solutions.IapDesktop
             }
         }
 
+        private static IapRdpUrl ParseCommandLine(string[] args)
+        {
+            if (args.Length == 0)
+            {
+                // No arguments passed.
+                return null;
+            }
+            else if (args.Length > 1)
+            {
+                MessageBox.Show(
+                    "Invalid command line options.", 
+                    "IAP Desktop", 
+                    MessageBoxButtons.OK, 
+                    MessageBoxIcon.Error);
+            }
+            else
+            {
+                try
+                {
+                    return IapRdpUrl.FromString(args[0]);
+                }
+                catch (IapRdpUrlFormatException e)
+                {
+                    MessageBox.Show(
+                        "Invalid command line options.\n\n" + e.Message,
+                        "IAP Desktop",
+                        MessageBoxButtons.OK,
+                        MessageBoxIcon.Error);
+                }
+            }
+
+            Environment.Exit(1);
+            return null;
+        }
 
         /// <summary>
         /// The main entry point for the application.
         /// </summary>
         [STAThread]
-        static void Main()
+        static void Main(string[] args)
         {
+            var startupUrl = ParseCommandLine(args);
+
             IsLoggingEnabled = false;
 
             // Use TLS 1.2 if possible.
@@ -140,6 +178,7 @@ namespace Google.Solutions.IapDesktop
                 hkcu.CreateSubKey($@"{BaseRegistryKeyPath}\Inventory")));
 
             var mainForm = new MainForm(persistenceLayer, windowAndWorkflowLayer);
+            mainForm.StartupUrl = startupUrl;
 
             //
             // Adapter layer.
