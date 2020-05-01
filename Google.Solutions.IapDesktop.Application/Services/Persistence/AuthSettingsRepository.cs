@@ -30,7 +30,7 @@ using System.Security;
 using System.Security.Cryptography;
 using System.Threading.Tasks;
 
-namespace Google.Solutions.IapDesktop.Application.Settings
+namespace Google.Solutions.IapDesktop.Application.Services.Persistence
 {
     /// <summary>
     /// Registry-backed repository for UI layout settings.

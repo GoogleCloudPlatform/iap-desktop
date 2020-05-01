@@ -24,7 +24,7 @@ using Google.Solutions.IapDesktop.Application.Util;
 using Microsoft.Win32;
 using System.Runtime.InteropServices;
 
-namespace Google.Solutions.IapDesktop.Application.Settings
+namespace Google.Solutions.IapDesktop.Application.Services.Persistence
 {
     /// <summary>
     /// Registry-backed repository for app settings.

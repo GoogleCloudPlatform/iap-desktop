@@ -20,7 +20,7 @@
 //
 
 using Google.Solutions.Compute;
-using Google.Solutions.IapDesktop.Application.Settings;
+using Google.Solutions.IapDesktop.Application.Services.Persistence;
 using Google.Solutions.IapDesktop.Application.Windows.RemoteDesktop;
 using NUnit.Framework;
 using System;

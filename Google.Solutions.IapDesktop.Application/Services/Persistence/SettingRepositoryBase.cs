@@ -25,7 +25,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Google.Solutions.IapDesktop.Application.Settings
+namespace Google.Solutions.IapDesktop.Application.Services.Persistence
 {
     public class SettingsRepositoryBase<TSettings> : IDisposable where TSettings : new()
     {

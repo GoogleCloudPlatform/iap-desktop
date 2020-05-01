@@ -19,7 +19,7 @@
 // under the License.
 //
 
-using Google.Solutions.IapDesktop.Application.Settings;
+using Google.Solutions.IapDesktop.Application.Services.Persistence;
 using Microsoft.Win32;
 using NUnit.Framework;
 using System.Collections.Generic;

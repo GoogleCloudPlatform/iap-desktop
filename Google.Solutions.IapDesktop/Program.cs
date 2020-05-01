@@ -24,7 +24,7 @@ using Google.Solutions.IapDesktop.Application.Adapters;
 using Google.Solutions.IapDesktop.Application.ObjectModel;
 using Google.Solutions.IapDesktop.Application.ProjectExplorer;
 using Google.Solutions.IapDesktop.Application.Services;
-using Google.Solutions.IapDesktop.Application.Settings;
+using Google.Solutions.IapDesktop.Application.Services.Persistence;
 using Google.Solutions.IapDesktop.Application.SettingsEditor;
 using Google.Solutions.IapDesktop.Application.Windows;
 using Google.Solutions.IapDesktop.Application.Windows.RemoteDesktop;
@@ -137,7 +137,6 @@ namespace Google.Solutions.IapDesktop
                 GoogleAuthAdapter.StoreUserId));
             persistenceLayer.AddSingleton(new InventorySettingsRepository(
                 hkcu.CreateSubKey($@"{BaseRegistryKeyPath}\Inventory")));
-
 
             var mainForm = new MainForm(persistenceLayer, windowAndWorkflowLayer);
             
