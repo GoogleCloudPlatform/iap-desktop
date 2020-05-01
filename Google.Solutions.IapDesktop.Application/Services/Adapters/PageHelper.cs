@@ -24,7 +24,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
-namespace Google.Solutions.IapDesktop.Application.Adapters
+namespace Google.Solutions.IapDesktop.Application.Services.Adapters
 {
     internal static class PageHelper
     {

@@ -29,7 +29,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace Google.Solutions.IapDesktop.Application.Adapters
+namespace Google.Solutions.IapDesktop.Application.Services.Adapters
 {
     public interface IResourceManagerAdapter : IDisposable
     {

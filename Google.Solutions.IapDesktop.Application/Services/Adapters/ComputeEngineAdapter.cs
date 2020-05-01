@@ -34,7 +34,7 @@ using System.Runtime.Serialization;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Google.Solutions.IapDesktop.Application.Adapters
+namespace Google.Solutions.IapDesktop.Application.Services.Adapters
 {
     public interface IComputeEngineAdapter : IDisposable
     {

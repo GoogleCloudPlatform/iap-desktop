@@ -20,7 +20,7 @@
 //
 
 using Google.Apis.Compute.v1.Data;
-using Google.Solutions.IapDesktop.Application.Adapters;
+using Google.Solutions.IapDesktop.Application.Services.Adapters;
 using Google.Solutions.IapDesktop.Application.ObjectModel;
 using Google.Solutions.IapDesktop.Application.ProjectExplorer;
 using Google.Solutions.IapDesktop.Application.Services;

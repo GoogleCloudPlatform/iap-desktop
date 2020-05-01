@@ -22,7 +22,7 @@
 using Google.Solutions.CloudIap;
 using Google.Solutions.Compute.Auth;
 using Google.Solutions.Compute.Iap;
-using Google.Solutions.IapDesktop.Application.Adapters;
+using Google.Solutions.IapDesktop.Application.Services.Adapters;
 using Google.Solutions.IapDesktop.Application.ObjectModel;
 using Google.Solutions.IapDesktop.Application.ProjectExplorer;
 using Google.Solutions.IapDesktop.Application.Services;

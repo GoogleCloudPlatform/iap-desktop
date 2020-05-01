@@ -20,7 +20,7 @@
 //
 
 using Google.Solutions.Compute;
-using Google.Solutions.IapDesktop.Application.Adapters;
+using Google.Solutions.IapDesktop.Application.Services.Adapters;
 using Google.Solutions.IapDesktop.Application.ObjectModel;
 using Google.Solutions.IapDesktop.Windows;
 using System;

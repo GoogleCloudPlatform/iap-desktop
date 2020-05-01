@@ -21,7 +21,7 @@
 
 using Google.Solutions.Compute;
 using Google.Solutions.Compute.Test.Env;
-using Google.Solutions.IapDesktop.Application.Adapters;
+using Google.Solutions.IapDesktop.Application.Services.Adapters;
 using Google.Solutions.IapDesktop.Application.ObjectModel;
 using Google.Solutions.IapDesktop.Application.Services;
 using Google.Solutions.IapDesktop.Application.Services.Persistence;

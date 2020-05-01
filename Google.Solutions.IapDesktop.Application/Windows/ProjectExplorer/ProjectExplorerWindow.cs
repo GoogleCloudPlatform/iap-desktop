@@ -23,7 +23,7 @@ using Google.Apis.Compute.v1.Data;
 using Google.Solutions.Compute;
 using Google.Solutions.Compute.Iap;
 using Google.Solutions.Compute.Net;
-using Google.Solutions.IapDesktop.Application.Adapters;
+using Google.Solutions.IapDesktop.Application.Services.Adapters;
 using Google.Solutions.IapDesktop.Application.ObjectModel;
 using Google.Solutions.IapDesktop.Application.Services;
 using Google.Solutions.IapDesktop.Application.Services.Persistence;

@@ -28,7 +28,7 @@ using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Google.Solutions.IapDesktop.Application.Adapters
+namespace Google.Solutions.IapDesktop.Application.Services.Adapters
 {
     public class GithubAdapter
     {

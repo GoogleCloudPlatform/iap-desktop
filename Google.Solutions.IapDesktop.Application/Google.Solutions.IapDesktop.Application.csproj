@@ -84,10 +84,10 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Adapters\ComputeEngineAdapter.cs" />
-    <Compile Include="Adapters\GithubAdapter.cs" />
-    <Compile Include="Adapters\PageHelper.cs" />
-    <Compile Include="Adapters\ResourceManagerAdapter.cs" />
+    <Compile Include="Services\Adapters\ComputeEngineAdapter.cs" />
+    <Compile Include="Services\Adapters\GithubAdapter.cs" />
+    <Compile Include="Services\Adapters\PageHelper.cs" />
+    <Compile Include="Services\Adapters\ResourceManagerAdapter.cs" />
     <Compile Include="Global.cs" />
     <Compile Include="ObjectModel\EventService.cs" />
     <Compile Include="Services\JobService.cs" />
@@ -106,13 +106,13 @@
     <Compile Include="Services\TunnelBrokerService.cs" />
     <Compile Include="Services\TunnelService.cs" />
     <Compile Include="Services\UpdateService.cs" />
-    <Compile Include="Settings\AuthSettingsRepository.cs" />
+    <Compile Include="Services\Persistence\AuthSettingsRepository.cs" />
     <Compile Include="Util\SecureStringExtensions.cs" />
-    <Compile Include="Settings\ApplicationSettingsRepository.cs" />
-    <Compile Include="Settings\SettingRepositoryBase.cs" />
+    <Compile Include="Services\Persistence\ApplicationSettingsRepository.cs" />
+    <Compile Include="Services\Persistence\SettingRepositoryBase.cs" />
     <Compile Include="Util\RegistryKeyMapper.cs" />
     <Compile Include="Util\RegistryValueAttribute.cs" />
-    <Compile Include="Settings\InventorySettingsRepository.cs" />
+    <Compile Include="Services\Persistence\InventorySettingsRepository.cs" />
     <Compile Include="TraceSources.cs" />
     <Compile Include="Util\AuthorizationExtensions.cs" />
     <Compile Include="Util\IapRdpUrl.cs" />
