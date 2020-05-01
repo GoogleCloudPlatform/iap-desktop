@@ -32,7 +32,6 @@ using Google.Solutions.IapDesktop.Application.Services.Windows.RemoteDesktop;
 using Google.Solutions.IapDesktop.Application.Services.Windows.SerialLog;
 using Google.Solutions.IapDesktop.Application.Services.Windows.SettingsEditor;
 using Google.Solutions.IapDesktop.Application.Services.Workflows;
-using Google.Solutions.IapDesktop.Application.Util;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -158,28 +157,6 @@ namespace Google.Solutions.IapDesktop.Application.ProjectExplorer
 
         }
 
-        private async Task<bool> GenerateAndSaveCredentials(VmInstanceNode vmNode)
-        {
-            var credentialService = this.serviceProvider.GetService<CredentialsService>();
-            var credentials = await credentialService.GenerateCredentials(this, vmNode.Reference);
-            if (credentials == null)
-            {
-                // Aborted.
-                return false;
-            }
-
-            // Update node to persist settings.
-            vmNode.Username = credentials.UserName;
-            vmNode.CleartextPassword = credentials.Password;
-            vmNode.Domain = null;
-            vmNode.SaveChanges();
-
-            // Fire an event to update anybody using the node.
-            await this.eventService.FireAsync(new ProjectExplorerNodeSelectedEvent(vmNode));
-
-            return true;
-        }
-
         private async Task ConnectInstance(VmInstanceNode vmNode)
         {
             if (this.remoteDesktopService.TryActivate(vmNode.Reference))
@@ -218,7 +195,8 @@ namespace Google.Solutions.IapDesktop.Application.ProjectExplorer
                 else if (selectedOption == 1)
                 {
                     // Generate new credentials.
-                    if (!await GenerateAndSaveCredentials(vmNode))
+                    var credentialService = this.serviceProvider.GetService<CredentialsService>();
+                    if ((await credentialService.GenerateAndSaveCredentials(this, vmNode)) == null)
                     {
                         return;
                     }
@@ -436,7 +414,8 @@ namespace Google.Solutions.IapDesktop.Application.ProjectExplorer
             {
                 if (this.treeView.SelectedNode is VmInstanceNode vmNode)
                 {
-                    await GenerateAndSaveCredentials(vmNode);
+                    var credentialService = this.serviceProvider.GetService<CredentialsService>();
+                    await credentialService.GenerateAndSaveCredentials(this, vmNode);
                 }
             }
             catch (TaskCanceledException)

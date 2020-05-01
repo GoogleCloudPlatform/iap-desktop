@@ -106,6 +106,7 @@
     <Compile Include="Services\Integration\TunnelBrokerService.cs" />
     <Compile Include="Services\Integration\TunnelService.cs" />
     <Compile Include="Services\Workflows\CredentialsService.cs" />
+    <Compile Include="Services\Workflows\RemoteDesktopConnectionService.cs" />
     <Compile Include="Services\Workflows\UpdateService.cs" />
     <Compile Include="Services\Persistence\AuthSettingsRepository.cs" />
     <Compile Include="Util\SecureStringExtensions.cs" />
