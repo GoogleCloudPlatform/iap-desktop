@@ -36,6 +36,7 @@ using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using WeifenLuo.WinFormsUI.Docking;
+using Google.Solutions.IapDesktop.Application.Services.Integration;
 
 #pragma warning disable IDE1006 // Naming Styles
 

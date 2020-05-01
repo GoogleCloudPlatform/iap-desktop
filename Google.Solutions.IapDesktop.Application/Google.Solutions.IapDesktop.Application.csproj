@@ -89,7 +89,7 @@
     <Compile Include="Services\Adapters\PageHelper.cs" />
     <Compile Include="Services\Adapters\ResourceManagerAdapter.cs" />
     <Compile Include="Global.cs" />
-    <Compile Include="ObjectModel\EventService.cs" />
+    <Compile Include="Services\Integration\EventService.cs" />
     <Compile Include="Services\JobService.cs" />
     <Compile Include="ObjectModel\ServiceRegistry.cs" />
     <Compile Include="ExceptionExtensions.cs" />

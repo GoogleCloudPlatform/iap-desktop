@@ -30,6 +30,7 @@ using NUnit.Framework;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using Google.Solutions.IapDesktop.Application.Services.Integration;
 
 namespace Google.Solutions.IapDesktop.Application.Test.Windows
 {
