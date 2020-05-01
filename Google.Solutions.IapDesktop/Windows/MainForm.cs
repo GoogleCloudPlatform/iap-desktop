@@ -179,7 +179,14 @@ namespace Google.Solutions.IapDesktop.Windows
             if (this.StartupUrl != null)
             {
                 // Dispatch URL.
-                // TODO
+                this.serviceProvider
+                    .GetService<RemoteDesktopConnectionService>()
+                    .ActivateOrConnectInstanceWithCredentialPromptAsync(this, this.StartupUrl)
+                    //.ConfigureAwait(continueOnCapturedContext: true)
+                    .ContinueWith(t => this.serviceProvider
+                            .GetService<IExceptionDialog>()
+                            .Show(this, t.Exception.Message, t.Exception), 
+                        TaskContinuationOptions.OnlyOnFaulted);
             }
             else
             {

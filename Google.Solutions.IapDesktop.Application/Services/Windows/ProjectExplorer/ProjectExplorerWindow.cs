@@ -35,7 +35,6 @@ using System.Collections.Generic;
 using System.Data;
 using System.Diagnostics;
 using System.Linq;
-using System.Net;
 using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -152,8 +151,6 @@ namespace Google.Solutions.IapDesktop.Application.ProjectExplorer
             await this.projectInventoryService.AddProjectAsync(projectId);
 
         }
-
-        
 
         //---------------------------------------------------------------------
         // Context menu event handlers.
@@ -322,7 +319,7 @@ namespace Google.Solutions.IapDesktop.Application.ProjectExplorer
                 if (this.treeView.SelectedNode is VmInstanceNode vmNode)
                 {
                     var credentialService = this.serviceProvider.GetService<CredentialsService>();
-                    await credentialService.GenerateAndSaveCredentials(this, vmNode);
+                    await credentialService.GenerateAndSaveCredentialsAsync(this, vmNode);
                 }
             }
             catch (TaskCanceledException)
@@ -346,7 +343,7 @@ namespace Google.Solutions.IapDesktop.Application.ProjectExplorer
                 {
                     await this.serviceProvider
                         .GetService<RemoteDesktopConnectionService>()
-                        .ConnectInstance(this, vmNode);
+                        .ActivateOrConnectInstanceWithCredentialPromptAsync(this, vmNode);
                 }
             }
             catch (TaskCanceledException)

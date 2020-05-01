@@ -19,14 +19,17 @@
 // under the License.
 //
 
+using Google.Solutions.Compute;
 using Google.Solutions.Compute.Iap;
 using Google.Solutions.Compute.Net;
 using Google.Solutions.IapDesktop.Application.ObjectModel;
 using Google.Solutions.IapDesktop.Application.ProjectExplorer;
 using Google.Solutions.IapDesktop.Application.Services.Integration;
+using Google.Solutions.IapDesktop.Application.Services.Persistence;
 using Google.Solutions.IapDesktop.Application.Services.Windows;
 using Google.Solutions.IapDesktop.Application.Services.Windows.RemoteDesktop;
 using Google.Solutions.IapDesktop.Application.Services.Windows.SettingsEditor;
+using Google.Solutions.IapDesktop.Application.Util;
 using System;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -52,7 +55,49 @@ namespace Google.Solutions.IapDesktop.Application.Services.Workflows
             this.credentialsService = serviceProvider.GetService<CredentialsService>();
         }
 
-        internal async Task ConnectInstance(
+        private async Task ConnectInstanceAsync(
+            VmInstanceReference instanceRef,
+            VmInstanceSettings settings)
+        {
+            var tunnel = await this.jobService.RunInBackground(
+                new JobDescription("Opening Cloud IAP tunnel..."),
+                async token =>
+                {
+                    try
+                    {
+                        var destination = new TunnelDestination(instanceRef, RemoteDesktopPort);
+
+                        // Give IAP the same timeout for probing as RDP itself.
+                        // Note that the timeouts are not additive.
+                        var timeout = TimeSpan.FromSeconds(settings.ConnectionTimeout);
+
+                        return await this.tunnelBrokerService.ConnectAsync(destination, timeout);
+                    }
+                    catch (NetworkStreamClosedException e)
+                    {
+                        throw new ApplicationException(
+                            "Connecting to the instance failed. Make sure that you have " +
+                            "configured your firewall rules to permit Cloud IAP access " +
+                            $"to {instanceRef.InstanceName}",
+                            e);
+                    }
+                    catch (UnauthorizedException)
+                    {
+                        throw new ApplicationException(
+                            "You are not authorized to connect to this VM instance.\n\n" +
+                            $"Verify that the Cloud IAP API is enabled in the project {instanceRef.ProjectId} " +
+                            "and that your user has the 'IAP-secured Tunnel User' role.");
+                    }
+                });
+
+            this.remoteDesktopService.Connect(
+                instanceRef,
+                "localhost",
+                (ushort)tunnel.LocalPort,
+                settings);
+        }
+
+        internal async Task ActivateOrConnectInstanceWithCredentialPromptAsync(
             IWin32Window owner,
             VmInstanceNode vmNode)
         {
@@ -90,8 +135,9 @@ namespace Google.Solutions.IapDesktop.Application.Services.Workflows
                 else if (selectedOption == 1)
                 {
                     // Generate new credentials.
-                    if ((await this.credentialsService.GenerateAndSaveCredentials(owner, vmNode)) == null)
+                    if ((await this.credentialsService.GenerateAndSaveCredentialsAsync(owner, vmNode)) == null)
                     {
+                        // Aborted.
                         return;
                     }
                 }
@@ -101,44 +147,59 @@ namespace Google.Solutions.IapDesktop.Application.Services.Workflows
                 }
             }
 
-            var effectiveSettings = vmNode.EffectiveSettingsWithInheritanceApplied;
-
-            var tunnel = await this.jobService.RunInBackground(
-                new JobDescription("Opening Cloud IAP tunnel..."),
-                async token =>
-                {
-                    try
-                    {
-                        var destination = new TunnelDestination(vmNode.Reference, RemoteDesktopPort);
-
-                        // Give IAP the same timeout for probing as RDP itself.
-                        // Note that the timeouts are not additive.
-                        var timeout = TimeSpan.FromSeconds(effectiveSettings.ConnectionTimeout);
-
-                        return await this.tunnelBrokerService.ConnectAsync(destination, timeout);
-                    }
-                    catch (NetworkStreamClosedException e)
-                    {
-                        throw new ApplicationException(
-                            "Connecting to the instance failed. Make sure that you have " +
-                            "configured your firewall rules to permit Cloud IAP access " +
-                            $"to {vmNode.InstanceName}",
-                            e);
-                    }
-                    catch (UnauthorizedException)
-                    {
-                        throw new ApplicationException(
-                            "You are not authorized to connect to this VM instance.\n\n" +
-                            $"Verify that the Cloud IAP API is enabled in the project {vmNode.Reference.ProjectId} " +
-                            "and that your user has the 'IAP-secured Tunnel User' role.");
-                    }
-                });
-
-            this.remoteDesktopService.Connect(
+            await ConnectInstanceAsync(
                 vmNode.Reference,
-                "localhost",
-                (ushort)tunnel.LocalPort,
-                effectiveSettings);
+                vmNode.EffectiveSettingsWithInheritanceApplied);
+        }
+
+        public async Task ActivateOrConnectInstanceWithCredentialPromptAsync(
+            IWin32Window owner,
+            IapRdpUrl url)
+        {
+            if (this.remoteDesktopService.TryActivate(url.Instance))
+            {
+                // RDP session was active, nothing left to do.
+                return;
+            }
+
+            int selectedOption = UnsafeNativeMethods.ShowOptionsTaskDialog(
+                owner,
+                UnsafeNativeMethods.TD_INFORMATION_ICON,
+                "Credentials",
+                $"Would you like to generate credentials for {url.Instance.InstanceName} first?",
+                null,
+                null,
+                new[]
+                {
+                    "Yes, Generate new credentials",     // Same as pressing 'OK'
+                    "No, connect"                        // Same as pressing 'Cancel'
+                },
+                null,//"Do not show this prompt again",
+                out bool donotAskAgain);
+
+            if (selectedOption == 0)
+            {
+                // Generate new credentials.
+                var credentials = await this.credentialsService.GenerateCredentialsAsync(owner, url.Instance);
+                if (credentials != null)
+                {
+                    // Amend settings.
+                    url.Settings.Domain = credentials.Domain;
+                    url.Settings.Username = credentials.UserName;
+                    url.Settings.Password = credentials.SecurePassword;
+                }
+                else
+                {
+                    // Aborted.
+                    return;
+                }
+            }
+            else if (selectedOption == 1)
+            {
+                // Cancel - just continue connecting.
+            }
+
+            await ConnectInstanceAsync(url.Instance, url.Settings);
         }
     }
 }

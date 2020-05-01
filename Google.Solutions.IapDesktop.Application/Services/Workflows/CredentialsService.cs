@@ -47,7 +47,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.Workflows
             this.computeEngineAdapter = serviceProvider.GetService<IComputeEngineAdapter>();
         }
 
-        public async Task<NetworkCredential> GenerateCredentials(
+        public async Task<NetworkCredential> GenerateCredentialsAsync(
             IWin32Window owner,
             VmInstanceReference instanceRef)
         {
@@ -75,11 +75,11 @@ namespace Google.Solutions.IapDesktop.Application.Services.Workflows
             return credentials;
         }
 
-        internal async Task<NetworkCredential> GenerateAndSaveCredentials(
+        internal async Task<NetworkCredential> GenerateAndSaveCredentialsAsync(
             IWin32Window owner, 
             VmInstanceNode vmNode)
         {
-            var credentials = await GenerateCredentials(owner, vmNode.Reference);
+            var credentials = await GenerateCredentialsAsync(owner, vmNode.Reference);
             if (credentials == null)
             {
                 // Aborted.
