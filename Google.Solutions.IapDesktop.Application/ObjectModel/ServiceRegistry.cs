@@ -26,7 +26,13 @@ using System.Runtime.Serialization;
 
 namespace Google.Solutions.IapDesktop.Application.ObjectModel
 {
-
+    /// <summary>
+    /// Registry that allows lookup and creation of object by type, similar to a 
+    /// "Kernel" in some IoC frameworks.
+    /// 
+    /// ServiceRegistries can be nested. In this case, a registry first queries its
+    /// own services before delegating to the parent registry.
+    /// </summary>
     public class ServiceRegistry : IServiceProvider
     {
         private readonly ServiceRegistry parent;

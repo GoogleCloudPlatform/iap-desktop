@@ -53,11 +53,11 @@ namespace Google.Solutions.IapDesktop.Windows
 
         private WaitDialog waitDialog = null;
 
-        public MainForm(IServiceProvider serviceProvider)
+        public MainForm(IServiceProvider bootstrappingServiceProvider, IServiceProvider serviceProvider)
         {
             this.serviceProvider = serviceProvider;
-            this.applicationSettings = serviceProvider.GetService<ApplicationSettingsRepository>();
-            this.authSettings = serviceProvider.GetService<AuthSettingsRepository>();
+            this.applicationSettings = bootstrappingServiceProvider.GetService<ApplicationSettingsRepository>();
+            this.authSettings = bootstrappingServiceProvider.GetService<AuthSettingsRepository>();
 
             // 
             // Restore window settings.
