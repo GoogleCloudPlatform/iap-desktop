@@ -22,9 +22,9 @@
 using Google.Solutions.Compute;
 using Google.Solutions.IapDesktop.Application.Services.Persistence;
 using System;
+using System.Collections.Specialized;
 using System.Diagnostics;
 using System.Text.RegularExpressions;
-using System.Collections.Specialized;
 using System.Web;
 
 namespace Google.Solutions.IapDesktop.Application.Util
@@ -93,12 +93,12 @@ namespace Google.Solutions.IapDesktop.Application.Util
         }
 
         private static TEnum GetEnumFromQuery<TEnum>(
-            NameValueCollection collection, 
+            NameValueCollection collection,
             string key,
             TEnum defaultValue) where TEnum : struct
         {
             var value = collection.Get(key);
-            if (value != null && 
+            if (value != null &&
                 Enum.TryParse<TEnum>(value, out TEnum result) &&
                 Enum.IsDefined(typeof(TEnum), result))
             {
@@ -111,7 +111,7 @@ namespace Google.Solutions.IapDesktop.Application.Util
         }
 
         private static VmInstanceSettings CreateVmInstanceSettingsFromQuery(
-            VmInstanceReference instanceRef, 
+            VmInstanceReference instanceRef,
             string queryString)
         {
             var query = HttpUtility.ParseQueryString(queryString);
@@ -120,14 +120,14 @@ namespace Google.Solutions.IapDesktop.Application.Util
             {
                 InstanceName = instanceRef.InstanceName,
 
-                Username            = query.Get("Username"),
-                Domain              = query.Get("Domain"),
-                ConnectionBar       = GetEnumFromQuery(query, "ConnectionBar", RdpConnectionBarState._Default),
-                DesktopSize         = GetEnumFromQuery(query, "DesktopSize", RdpDesktopSize._Default),
+                Username = query.Get("Username"),
+                Domain = query.Get("Domain"),
+                ConnectionBar = GetEnumFromQuery(query, "ConnectionBar", RdpConnectionBarState._Default),
+                DesktopSize = GetEnumFromQuery(query, "DesktopSize", RdpDesktopSize._Default),
                 AuthenticationLevel = GetEnumFromQuery(query, "AuthenticationLevel", RdpAuthenticationLevel._Default),
-                ColorDepth          = GetEnumFromQuery(query, "ColorDepth", RdpColorDepth._Default),
-                AudioMode           = GetEnumFromQuery(query, "AudioMode", RdpAudioMode._Default),
-                RedirectClipboard   = GetEnumFromQuery(query, "RedirectClipboard", RdpRedirectClipboard._Default)
+                ColorDepth = GetEnumFromQuery(query, "ColorDepth", RdpColorDepth._Default),
+                AudioMode = GetEnumFromQuery(query, "AudioMode", RdpAudioMode._Default),
+                RedirectClipboard = GetEnumFromQuery(query, "RedirectClipboard", RdpRedirectClipboard._Default)
             };
         }
 
@@ -149,7 +149,7 @@ namespace Google.Solutions.IapDesktop.Application.Util
             }
 
             var instanceRef = CreateVmInstanceReferenceFromPath(uri.AbsolutePath);
-            
+
             return new IapRdpUrl(
                 instanceRef,
                 CreateVmInstanceSettingsFromQuery(instanceRef, uri.Query));

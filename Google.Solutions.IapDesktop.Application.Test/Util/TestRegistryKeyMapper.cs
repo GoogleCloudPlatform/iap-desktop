@@ -23,7 +23,6 @@ using Google.Solutions.IapDesktop.Application.Util;
 using Microsoft.Win32;
 using NUnit.Framework;
 using System;
-using System.Linq;
 using System.Security;
 using System.Security.Cryptography;
 

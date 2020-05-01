@@ -19,7 +19,6 @@
 // under the License.
 //
 
-using Google.Solutions.IapDesktop.Application.ObjectModel;
 using Google.Solutions.IapDesktop.Application.Services.Integration;
 using System;
 using System.Threading.Tasks;

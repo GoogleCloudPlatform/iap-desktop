@@ -20,8 +20,8 @@
 //
 
 using Google.Solutions.Compute.Test;
-using Google.Solutions.IapDesktop.Application.Util;
 using Google.Solutions.IapDesktop.Application.Services.Persistence;
+using Google.Solutions.IapDesktop.Application.Util;
 using Microsoft.Win32;
 using NUnit.Framework;
 using System.Collections.Generic;

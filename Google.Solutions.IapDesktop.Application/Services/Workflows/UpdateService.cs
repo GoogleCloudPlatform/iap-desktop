@@ -19,8 +19,8 @@
 // under the License.
 //
 
-using Google.Solutions.IapDesktop.Application.Services.Adapters;
 using Google.Solutions.IapDesktop.Application.ObjectModel;
+using Google.Solutions.IapDesktop.Application.Services.Adapters;
 using Google.Solutions.IapDesktop.Application.Services.Windows;
 using System;
 using System.Diagnostics;

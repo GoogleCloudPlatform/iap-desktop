@@ -19,7 +19,6 @@
 // under the License.
 //
 
-using Google.Solutions.IapDesktop.Application.Util;
 using Microsoft.Win32;
 
 namespace Google.Solutions.IapDesktop.Application.Util

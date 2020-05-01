@@ -20,7 +20,6 @@
 //
 
 using Google.Solutions.IapDesktop.Application.ObjectModel;
-using Google.Solutions.IapDesktop.Application.Services;
 using Google.Solutions.IapDesktop.Application.Services.Workflows;
 using System;
 using System.Windows.Forms;

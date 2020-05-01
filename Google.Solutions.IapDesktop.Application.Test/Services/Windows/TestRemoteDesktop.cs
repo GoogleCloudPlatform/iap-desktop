@@ -23,7 +23,6 @@ using Google.Solutions.Compute;
 using Google.Solutions.IapDesktop.Application.Services.Persistence;
 using Google.Solutions.IapDesktop.Application.Services.Windows.RemoteDesktop;
 using NUnit.Framework;
-using System;
 
 namespace Google.Solutions.IapDesktop.Application.Test.Services.Windows
 {

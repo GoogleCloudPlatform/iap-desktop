@@ -21,9 +21,9 @@
 
 using AxMSTSCLib;
 using Google.Solutions.Compute;
-using Google.Solutions.IapDesktop.Application.ObjectModel;
-using Google.Solutions.IapDesktop.Application.Util;
+using Google.Solutions.IapDesktop.Application.Services.Integration;
 using Google.Solutions.IapDesktop.Application.Services.Persistence;
+using Google.Solutions.IapDesktop.Application.Util;
 using MSTSCLib;
 using System;
 using System.ComponentModel;
@@ -35,7 +35,6 @@ using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using WeifenLuo.WinFormsUI.Docking;
-using Google.Solutions.IapDesktop.Application.Services.Integration;
 
 #pragma warning disable IDE1006 // Naming Styles
 
@@ -106,8 +105,8 @@ namespace Google.Solutions.IapDesktop.Application.Services.Windows.RemoteDesktop
             )
         {
             using (TraceSources.IapDesktop.TraceMethod().WithParameters(
-                server, 
-                port, 
+                server,
+                port,
                 settings.ConnectionTimeout))
             {
                 // NB. The initialization needs to happen after the pane is shown, otherwise

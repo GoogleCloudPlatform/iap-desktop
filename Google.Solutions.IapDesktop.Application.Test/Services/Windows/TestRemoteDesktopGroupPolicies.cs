@@ -21,16 +21,15 @@
 
 using Google.Solutions.Compute;
 using Google.Solutions.Compute.Test.Env;
-using Google.Solutions.IapDesktop.Application.Services.Adapters;
 using Google.Solutions.IapDesktop.Application.ObjectModel;
-using Google.Solutions.IapDesktop.Application.Services;
+using Google.Solutions.IapDesktop.Application.Services.Adapters;
+using Google.Solutions.IapDesktop.Application.Services.Integration;
 using Google.Solutions.IapDesktop.Application.Services.Persistence;
 using Google.Solutions.IapDesktop.Application.Services.Windows.RemoteDesktop;
 using NUnit.Framework;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
-using Google.Solutions.IapDesktop.Application.Services.Integration;
 
 namespace Google.Solutions.IapDesktop.Application.Test.Services.Windows
 {

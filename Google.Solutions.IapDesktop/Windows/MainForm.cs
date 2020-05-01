@@ -22,14 +22,15 @@
 using Google.Solutions.CloudIap;
 using Google.Solutions.Compute.Auth;
 using Google.Solutions.Compute.Iap;
-using Google.Solutions.IapDesktop.Application.Services.Adapters;
 using Google.Solutions.IapDesktop.Application.ObjectModel;
 using Google.Solutions.IapDesktop.Application.ProjectExplorer;
-using Google.Solutions.IapDesktop.Application.Services;
+using Google.Solutions.IapDesktop.Application.Services.Adapters;
+using Google.Solutions.IapDesktop.Application.Services.Integration;
 using Google.Solutions.IapDesktop.Application.Services.Persistence;
 using Google.Solutions.IapDesktop.Application.Services.Windows;
 using Google.Solutions.IapDesktop.Application.Services.Windows.RemoteDesktop;
 using Google.Solutions.IapDesktop.Application.Services.Windows.TunnelsViewer;
+using Google.Solutions.IapDesktop.Application.Services.Workflows;
 using System;
 using System.ComponentModel;
 using System.Diagnostics;
@@ -39,8 +40,6 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using WeifenLuo.WinFormsUI.Docking;
-using Google.Solutions.IapDesktop.Application.Services.Integration;
-using Google.Solutions.IapDesktop.Application.Services.Workflows;
 
 #pragma warning disable IDE1006 // Naming Styles
 

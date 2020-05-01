@@ -20,10 +20,10 @@
 //
 
 using Google.Apis.Compute.v1.Data;
-using Google.Solutions.IapDesktop.Application.Services.Adapters;
 using Google.Solutions.IapDesktop.Application.ObjectModel;
 using Google.Solutions.IapDesktop.Application.ProjectExplorer;
-using Google.Solutions.IapDesktop.Application.Services;
+using Google.Solutions.IapDesktop.Application.Services.Adapters;
+using Google.Solutions.IapDesktop.Application.Services.Integration;
 using Google.Solutions.IapDesktop.Application.Services.Windows.RemoteDesktop;
 using Moq;
 using NUnit.Framework;
@@ -31,7 +31,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using Google.Solutions.IapDesktop.Application.Services.Integration;
 
 namespace Google.Solutions.IapDesktop.Application.Test.Services.Windows
 {

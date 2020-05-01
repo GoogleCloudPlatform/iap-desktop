@@ -21,8 +21,8 @@
 
 using Google.Solutions.IapDesktop.Application.ObjectModel;
 using Google.Solutions.IapDesktop.Application.ProjectExplorer;
-using Google.Solutions.IapDesktop.Application.Util;
 using Google.Solutions.IapDesktop.Application.Services.Persistence;
+using Google.Solutions.IapDesktop.Application.Util;
 using NUnit.Framework;
 
 namespace Google.Solutions.IapDesktop.Application.Test.Services.Windows

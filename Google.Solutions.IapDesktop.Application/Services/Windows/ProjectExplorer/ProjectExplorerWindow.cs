@@ -23,14 +23,15 @@ using Google.Apis.Compute.v1.Data;
 using Google.Solutions.Compute;
 using Google.Solutions.Compute.Iap;
 using Google.Solutions.Compute.Net;
-using Google.Solutions.IapDesktop.Application.Services.Adapters;
 using Google.Solutions.IapDesktop.Application.ObjectModel;
-using Google.Solutions.IapDesktop.Application.Services;
+using Google.Solutions.IapDesktop.Application.Services.Adapters;
+using Google.Solutions.IapDesktop.Application.Services.Integration;
 using Google.Solutions.IapDesktop.Application.Services.Persistence;
-using Google.Solutions.IapDesktop.Application.Util;
 using Google.Solutions.IapDesktop.Application.Services.Windows;
 using Google.Solutions.IapDesktop.Application.Services.Windows.RemoteDesktop;
 using Google.Solutions.IapDesktop.Application.Services.Windows.SerialLog;
+using Google.Solutions.IapDesktop.Application.Services.Windows.SettingsEditor;
+using Google.Solutions.IapDesktop.Application.Util;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -40,8 +41,6 @@ using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using WeifenLuo.WinFormsUI.Docking;
-using Google.Solutions.IapDesktop.Application.Services.Integration;
-using Google.Solutions.IapDesktop.Application.Services.Windows.SettingsEditor;
 
 #pragma warning disable IDE1006 // Naming Styles
 
@@ -189,7 +188,7 @@ namespace Google.Solutions.IapDesktop.Application.ProjectExplorer
 
             // Fire an event to update anybody using the node.
             await this.eventService.FireAsync(new ProjectExplorerNodeSelectedEvent(vmNode));
-            
+
             return true;
         }
 
@@ -243,7 +242,7 @@ namespace Google.Solutions.IapDesktop.Application.ProjectExplorer
             }
 
             var effectiveSettings = vmNode.EffectiveSettingsWithInheritanceApplied;
-            
+
             var tunnel = await this.jobService.RunInBackground(
                 new JobDescription("Opening Cloud IAP tunnel..."),
                 async token =>

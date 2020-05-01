@@ -25,7 +25,6 @@ using Google.Apis.Services;
 using Google.Solutions.Compute;
 using Google.Solutions.Compute.Extensions;
 using Google.Solutions.IapDesktop.Application.ObjectModel;
-using Google.Solutions.IapDesktop.Application.Services;
 using System;
 using System.Collections.Generic;
 using System.Linq;

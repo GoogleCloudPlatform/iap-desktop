@@ -21,8 +21,6 @@
 
 using Google.Solutions.Compute;
 using Google.Solutions.Compute.Test;
-using Google.Solutions.IapDesktop.Application.ObjectModel;
-using Google.Solutions.IapDesktop.Application.Services;
 using Google.Solutions.IapDesktop.Application.Services.Integration;
 using Moq;
 using NUnit.Framework;

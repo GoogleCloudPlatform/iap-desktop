@@ -22,15 +22,15 @@
 using Google.Apis.Compute.v1.Data;
 using Google.Solutions.Compute;
 using Google.Solutions.IapDesktop.Application.Services.Adapters;
-using Google.Solutions.IapDesktop.Application.Util;
 using Google.Solutions.IapDesktop.Application.Services.Persistence;
+using Google.Solutions.IapDesktop.Application.Services.Windows.SettingsEditor;
+using Google.Solutions.IapDesktop.Application.Util;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Security;
 using System.Windows.Forms;
-using Google.Solutions.IapDesktop.Application.Services.Windows.SettingsEditor;
 
 #pragma warning disable IDE1006 // Naming Styles
 
