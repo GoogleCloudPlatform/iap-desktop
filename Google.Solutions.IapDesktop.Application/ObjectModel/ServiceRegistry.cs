@@ -26,11 +26,28 @@ using System.Runtime.Serialization;
 
 namespace Google.Solutions.IapDesktop.Application.ObjectModel
 {
-
+    /// <summary>
+    /// Registry that allows lookup and creation of object by type, similar to a 
+    /// "Kernel" in some IoC frameworks.
+    /// 
+    /// ServiceRegistries can be nested. In this case, a registry first queries its
+    /// own services before delegating to the parent registry.
+    /// </summary>
     public class ServiceRegistry : IServiceProvider
     {
+        private readonly ServiceRegistry parent;
         private readonly IDictionary<Type, object> singletons = new Dictionary<Type, object>();
         private readonly IDictionary<Type, Func<object>> transients = new Dictionary<Type, Func<object>>();
+
+        public ServiceRegistry()
+        {
+            this.parent = null;
+        }
+
+        public ServiceRegistry(ServiceRegistry parent)
+        {
+            this.parent = parent;
+        }
 
         private TService CreateInstance<TService>()
         {
@@ -92,6 +109,10 @@ namespace Google.Solutions.IapDesktop.Application.ObjectModel
             else if (this.transients.TryGetValue(serviceType, out Func<object> transientFactory))
             {
                 return transientFactory();
+            }
+            else if (this.parent != null)
+            {
+                return this.parent.GetService(serviceType);
             }
             else
             {

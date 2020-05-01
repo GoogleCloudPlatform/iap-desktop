@@ -22,14 +22,15 @@
 using Google.Solutions.CloudIap;
 using Google.Solutions.Compute.Auth;
 using Google.Solutions.Compute.Iap;
-using Google.Solutions.IapDesktop.Application.Adapters;
 using Google.Solutions.IapDesktop.Application.ObjectModel;
 using Google.Solutions.IapDesktop.Application.ProjectExplorer;
-using Google.Solutions.IapDesktop.Application.Services;
-using Google.Solutions.IapDesktop.Application.Settings;
-using Google.Solutions.IapDesktop.Application.Windows;
-using Google.Solutions.IapDesktop.Application.Windows.RemoteDesktop;
-using Google.Solutions.IapDesktop.Application.Windows.TunnelsViewer;
+using Google.Solutions.IapDesktop.Application.Services.Adapters;
+using Google.Solutions.IapDesktop.Application.Services.Integration;
+using Google.Solutions.IapDesktop.Application.Services.Persistence;
+using Google.Solutions.IapDesktop.Application.Services.Windows;
+using Google.Solutions.IapDesktop.Application.Services.Windows.RemoteDesktop;
+using Google.Solutions.IapDesktop.Application.Services.Windows.TunnelsViewer;
+using Google.Solutions.IapDesktop.Application.Services.Workflows;
 using System;
 using System.ComponentModel;
 using System.Diagnostics;
@@ -45,7 +46,7 @@ using WeifenLuo.WinFormsUI.Docking;
 namespace Google.Solutions.IapDesktop.Windows
 {
 
-    public partial class MainForm : Form, IJobHost, IMainForm, IAuthorizationService
+    public partial class MainForm : Form, IJobHost, IMainForm, IAuthorizationAdapter
     {
         private readonly ApplicationSettingsRepository applicationSettings;
         private readonly AuthSettingsRepository authSettings;
@@ -53,11 +54,11 @@ namespace Google.Solutions.IapDesktop.Windows
 
         private WaitDialog waitDialog = null;
 
-        public MainForm(IServiceProvider serviceProvider)
+        public MainForm(IServiceProvider bootstrappingServiceProvider, IServiceProvider serviceProvider)
         {
             this.serviceProvider = serviceProvider;
-            this.applicationSettings = serviceProvider.GetService<ApplicationSettingsRepository>();
-            this.authSettings = serviceProvider.GetService<AuthSettingsRepository>();
+            this.applicationSettings = bootstrappingServiceProvider.GetService<ApplicationSettingsRepository>();
+            this.authSettings = bootstrappingServiceProvider.GetService<AuthSettingsRepository>();
 
             // 
             // Restore window settings.

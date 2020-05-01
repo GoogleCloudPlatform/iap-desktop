@@ -84,13 +84,13 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Adapters\ComputeEngineAdapter.cs" />
-    <Compile Include="Adapters\GithubAdapter.cs" />
-    <Compile Include="Adapters\PageHelper.cs" />
-    <Compile Include="Adapters\ResourceManagerAdapter.cs" />
+    <Compile Include="Services\Adapters\ComputeEngineAdapter.cs" />
+    <Compile Include="Services\Adapters\GithubAdapter.cs" />
+    <Compile Include="Services\Adapters\PageHelper.cs" />
+    <Compile Include="Services\Adapters\ResourceManagerAdapter.cs" />
     <Compile Include="Global.cs" />
-    <Compile Include="ObjectModel\EventService.cs" />
-    <Compile Include="Services\JobService.cs" />
+    <Compile Include="Services\Integration\EventService.cs" />
+    <Compile Include="Services\Integration\JobService.cs" />
     <Compile Include="ObjectModel\ServiceRegistry.cs" />
     <Compile Include="ExceptionExtensions.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -99,108 +99,108 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
-    <Compile Include="Services\CloudConsoleService.cs" />
-    <Compile Include="Services\IAuthorizationService.cs" />
-    <Compile Include="Services\ITunnel.cs" />
-    <Compile Include="Services\ProjectInventoryService.cs" />
-    <Compile Include="Services\TunnelBrokerService.cs" />
-    <Compile Include="Services\TunnelService.cs" />
-    <Compile Include="Services\UpdateService.cs" />
-    <Compile Include="Settings\AuthSettingsRepository.cs" />
+    <Compile Include="Services\Windows\CloudConsoleService.cs" />
+    <Compile Include="Services\Adapters\IAuthorizationAdapter.cs" />
+    <Compile Include="Services\Integration\ITunnel.cs" />
+    <Compile Include="Services\Integration\ProjectInventoryService.cs" />
+    <Compile Include="Services\Integration\TunnelBrokerService.cs" />
+    <Compile Include="Services\Integration\TunnelService.cs" />
+    <Compile Include="Services\Workflows\UpdateService.cs" />
+    <Compile Include="Services\Persistence\AuthSettingsRepository.cs" />
     <Compile Include="Util\SecureStringExtensions.cs" />
-    <Compile Include="Settings\ApplicationSettingsRepository.cs" />
-    <Compile Include="Settings\SettingRepositoryBase.cs" />
+    <Compile Include="Services\Persistence\ApplicationSettingsRepository.cs" />
+    <Compile Include="Services\Persistence\SettingRepositoryBase.cs" />
     <Compile Include="Util\RegistryKeyMapper.cs" />
     <Compile Include="Util\RegistryValueAttribute.cs" />
-    <Compile Include="Settings\InventorySettingsRepository.cs" />
+    <Compile Include="Services\Persistence\InventorySettingsRepository.cs" />
     <Compile Include="TraceSources.cs" />
     <Compile Include="Util\AuthorizationExtensions.cs" />
     <Compile Include="Util\IapRdpUrl.cs" />
     <Compile Include="Util\MappedPropertyAttribute.cs" />
     <Compile Include="Util\PropertyMapper.cs" />
-    <Compile Include="Windows\AboutWindow.cs">
+    <Compile Include="Services\Windows\AboutWindow.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Windows\AboutWindow.Designer.cs">
+    <Compile Include="Services\Windows\AboutWindow.Designer.cs">
       <DependentUpon>AboutWindow.cs</DependentUpon>
     </Compile>
-    <Compile Include="Windows\DebugWindow.cs">
+    <Compile Include="Services\Windows\DebugWindow.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Windows\DebugWindow.Designer.cs">
+    <Compile Include="Services\Windows\DebugWindow.Designer.cs">
       <DependentUpon>DebugWindow.cs</DependentUpon>
     </Compile>
-    <Compile Include="Windows\ExceptionDialog.cs" />
-    <Compile Include="Windows\IMainForm.cs" />
-    <Compile Include="Windows\ProjectExplorer\GenerateCredentialsDialog.cs">
+    <Compile Include="Services\Windows\ExceptionDialog.cs" />
+    <Compile Include="Services\Windows\IMainForm.cs" />
+    <Compile Include="Services\Windows\ProjectExplorer\GenerateCredentialsDialog.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Windows\ProjectExplorer\GenerateCredentialsDialog.designer.cs">
+    <Compile Include="Services\Windows\ProjectExplorer\GenerateCredentialsDialog.designer.cs">
       <DependentUpon>GenerateCredentialsDialog.cs</DependentUpon>
     </Compile>
-    <Compile Include="Windows\ProjectExplorer\IProjectExplorer.cs" />
-    <Compile Include="Windows\ProjectExplorer\IProjectExplorerNode.cs" />
-    <Compile Include="Windows\ProjectExplorer\ProjectExplorerNode.cs" />
-    <Compile Include="Windows\ProjectExplorer\ProjectExplorerSelectionChangedEvent.cs" />
-    <Compile Include="Windows\ProjectExplorer\ProjectExplorerWindow.cs">
+    <Compile Include="Services\Windows\ProjectExplorer\IProjectExplorer.cs" />
+    <Compile Include="Services\Windows\ProjectExplorer\IProjectExplorerNode.cs" />
+    <Compile Include="Services\Windows\ProjectExplorer\ProjectExplorerNode.cs" />
+    <Compile Include="Services\Windows\ProjectExplorer\ProjectExplorerSelectionChangedEvent.cs" />
+    <Compile Include="Services\Windows\ProjectExplorer\ProjectExplorerWindow.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Windows\ProjectExplorer\ProjectExplorerWindow.Designer.cs">
+    <Compile Include="Services\Windows\ProjectExplorer\ProjectExplorerWindow.Designer.cs">
       <DependentUpon>ProjectExplorerWindow.cs</DependentUpon>
     </Compile>
-    <Compile Include="Windows\ProjectExplorer\ProjectPickerDialog.cs">
+    <Compile Include="Services\Windows\ProjectExplorer\ProjectPickerDialog.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Windows\ProjectExplorer\ProjectPickerDialog.Designer.cs">
+    <Compile Include="Services\Windows\ProjectExplorer\ProjectPickerDialog.Designer.cs">
       <DependentUpon>ProjectPickerDialog.cs</DependentUpon>
     </Compile>
-    <Compile Include="Windows\ProjectExplorer\ShowCredentialsDialog.cs">
+    <Compile Include="Services\Windows\ProjectExplorer\ShowCredentialsDialog.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Windows\ProjectExplorer\ShowCredentialsDialog.designer.cs">
+    <Compile Include="Services\Windows\ProjectExplorer\ShowCredentialsDialog.designer.cs">
       <DependentUpon>ShowCredentialsDialog.cs</DependentUpon>
     </Compile>
-    <Compile Include="Windows\RemoteDesktop\RdpClientExtensions.cs" />
-    <Compile Include="Windows\RemoteDesktop\RdpExceptions.cs" />
-    <Compile Include="Windows\RemoteDesktop\RemoteDesktopPane.cs">
+    <Compile Include="Services\Windows\RemoteDesktop\RdpClientExtensions.cs" />
+    <Compile Include="Services\Windows\RemoteDesktop\RdpExceptions.cs" />
+    <Compile Include="Services\Windows\RemoteDesktop\RemoteDesktopPane.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Windows\RemoteDesktop\RemoteDesktopPane.Designer.cs">
+    <Compile Include="Services\Windows\RemoteDesktop\RemoteDesktopPane.Designer.cs">
       <DependentUpon>RemoteDesktopPane.cs</DependentUpon>
     </Compile>
-    <Compile Include="Windows\RemoteDesktop\RemoteDesktopService.cs" />
-    <Compile Include="Windows\SerialLog\SerialLogService.cs" />
-    <Compile Include="Windows\SerialLog\SerialLogWindow.cs">
+    <Compile Include="Services\Windows\RemoteDesktop\RemoteDesktopService.cs" />
+    <Compile Include="Services\Windows\SerialLog\SerialLogService.cs" />
+    <Compile Include="Services\Windows\SerialLog\SerialLogWindow.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Windows\SerialLog\SerialLogWindow.designer.cs">
+    <Compile Include="Services\Windows\SerialLog\SerialLogWindow.designer.cs">
       <DependentUpon>SerialLogWindow.cs</DependentUpon>
     </Compile>
-    <Compile Include="Windows\SettingsEditor\ISettingsEditor.cs" />
-    <Compile Include="Windows\SettingsEditor\SettingsEditorWindow.cs">
+    <Compile Include="Services\Windows\SettingsEditor\ISettingsEditor.cs" />
+    <Compile Include="Services\Windows\SettingsEditor\SettingsEditorWindow.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Windows\SettingsEditor\SettingsEditorWindow.Designer.cs">
+    <Compile Include="Services\Windows\SettingsEditor\SettingsEditorWindow.Designer.cs">
       <DependentUpon>SettingsEditorWindow.cs</DependentUpon>
     </Compile>
-    <Compile Include="Windows\ToolWindow.cs">
+    <Compile Include="Services\Windows\ToolWindow.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Windows\ToolWindow.Designer.cs">
+    <Compile Include="Services\Windows\ToolWindow.Designer.cs">
       <DependentUpon>ToolWindow.cs</DependentUpon>
     </Compile>
-    <Compile Include="Windows\TunnelsViewer\ITunnelsViewer.cs" />
-    <Compile Include="Windows\TunnelsViewer\TunnelsWindow.cs">
+    <Compile Include="Services\Windows\TunnelsViewer\ITunnelsViewer.cs" />
+    <Compile Include="Services\Windows\TunnelsViewer\TunnelsWindow.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Windows\TunnelsViewer\TunnelsWindow.designer.cs">
+    <Compile Include="Services\Windows\TunnelsViewer\TunnelsWindow.designer.cs">
       <DependentUpon>TunnelsWindow.cs</DependentUpon>
     </Compile>
-    <Compile Include="Windows\UnsafeNativeMethods.cs" />
-    <Compile Include="Windows\WaitDialog.cs">
+    <Compile Include="Services\Windows\UnsafeNativeMethods.cs" />
+    <Compile Include="Services\Windows\WaitDialog.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Windows\WaitDialog.Designer.cs">
+    <Compile Include="Services\Windows\WaitDialog.Designer.cs">
       <DependentUpon>WaitDialog.cs</DependentUpon>
     </Compile>
   </ItemGroup>
@@ -230,46 +230,51 @@
   <ItemGroup>
     <None Include="app.config" />
     <None Include="packages.config" />
+    <None Include="Services\Adapters\README.md" />
+    <None Include="Services\Integration\README.md" />
+    <None Include="Services\Persistence\README.md" />
+    <None Include="Services\Windows\README.md" />
+    <None Include="Services\Workflows\README.md" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
-    <EmbeddedResource Include="Windows\AboutWindow.resx">
+    <EmbeddedResource Include="Services\Windows\AboutWindow.resx">
       <DependentUpon>AboutWindow.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Windows\DebugWindow.resx">
+    <EmbeddedResource Include="Services\Windows\DebugWindow.resx">
       <DependentUpon>DebugWindow.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Windows\ProjectExplorer\GenerateCredentialsDialog.resx">
+    <EmbeddedResource Include="Services\Windows\ProjectExplorer\GenerateCredentialsDialog.resx">
       <DependentUpon>GenerateCredentialsDialog.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Windows\ProjectExplorer\ProjectExplorerWindow.resx">
+    <EmbeddedResource Include="Services\Windows\ProjectExplorer\ProjectExplorerWindow.resx">
       <DependentUpon>ProjectExplorerWindow.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Windows\ProjectExplorer\ProjectPickerDialog.resx">
+    <EmbeddedResource Include="Services\Windows\ProjectExplorer\ProjectPickerDialog.resx">
       <DependentUpon>ProjectPickerDialog.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Windows\ProjectExplorer\ShowCredentialsDialog.resx">
+    <EmbeddedResource Include="Services\Windows\ProjectExplorer\ShowCredentialsDialog.resx">
       <DependentUpon>ShowCredentialsDialog.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Windows\RemoteDesktop\RemoteDesktopPane.resx">
+    <EmbeddedResource Include="Services\Windows\RemoteDesktop\RemoteDesktopPane.resx">
       <DependentUpon>RemoteDesktopPane.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Windows\SerialLog\SerialLogWindow.resx">
+    <EmbeddedResource Include="Services\Windows\SerialLog\SerialLogWindow.resx">
       <DependentUpon>SerialLogWindow.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Windows\SettingsEditor\SettingsEditorWindow.resx">
+    <EmbeddedResource Include="Services\Windows\SettingsEditor\SettingsEditorWindow.resx">
       <DependentUpon>SettingsEditorWindow.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Windows\ToolWindow.resx">
+    <EmbeddedResource Include="Services\Windows\ToolWindow.resx">
       <DependentUpon>ToolWindow.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Windows\TunnelsViewer\TunnelsWindow.resx">
+    <EmbeddedResource Include="Services\Windows\TunnelsViewer\TunnelsWindow.resx">
       <DependentUpon>TunnelsWindow.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Windows\WaitDialog.resx">
+    <EmbeddedResource Include="Services\Windows\WaitDialog.resx">
       <DependentUpon>WaitDialog.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>

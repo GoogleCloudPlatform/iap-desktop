@@ -19,7 +19,7 @@
 // under the License.
 //
 
-using Google.Solutions.IapDesktop.Application.Settings;
+using Google.Solutions.IapDesktop.Application.Services.Persistence;
 using Google.Solutions.IapDesktop.Application.Util;
 using NUnit.Framework;
 using System;
@@ -72,21 +72,21 @@ namespace Google.Solutions.IapDesktop.Application.Test.Util
         [Test]
         public void WhenProjectIdIsIsInvalid_ThenFromStringThrowsIapRdpUrlFormatException()
         {
-            Assert.Throws<IapRdpUrlFormatException>(() => 
+            Assert.Throws<IapRdpUrlFormatException>(() =>
                 IapRdpUrl.FromString("iap-rdp:///__/us-central1-a/my-instance"));
         }
 
         [Test]
         public void WhenZoneIdIsIsInvalid_ThenFromStringThrowsIapRdpUrlFormatException()
         {
-            Assert.Throws<IapRdpUrlFormatException>(() => 
+            Assert.Throws<IapRdpUrlFormatException>(() =>
                 IapRdpUrl.FromString("iap-rdp:///my-project/__/my-instance"));
         }
 
         [Test]
         public void WhenInstanceNameIsIsInvalid_ThenFromStringThrowsIapRdpUrlFormatException()
         {
-            Assert.Throws<IapRdpUrlFormatException>(() => 
+            Assert.Throws<IapRdpUrlFormatException>(() =>
                 IapRdpUrl.FromString("iap-rdp:///my-project/us-central1-a/__"));
         }
 
@@ -190,7 +190,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Util
         [Test]
         public void WhenQueryStringContainsValidUserOrDomain_ThenSettingsUseDecodedValues()
         {
-            var url = IapRdpUrl.FromString("iap-rdp:///my-project/us-central1-a/my-instance?"+
+            var url = IapRdpUrl.FromString("iap-rdp:///my-project/us-central1-a/my-instance?" +
                 "userNAME=John%20Doe&PassworD=ignore&Domain=%20%20mydomain&");
             var settings = url.Settings;
 

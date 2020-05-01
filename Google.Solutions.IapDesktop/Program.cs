@@ -20,16 +20,17 @@
 //
 
 using Google.Solutions.Compute.Auth;
-using Google.Solutions.IapDesktop.Application.Adapters;
 using Google.Solutions.IapDesktop.Application.ObjectModel;
 using Google.Solutions.IapDesktop.Application.ProjectExplorer;
-using Google.Solutions.IapDesktop.Application.Services;
-using Google.Solutions.IapDesktop.Application.Settings;
-using Google.Solutions.IapDesktop.Application.SettingsEditor;
-using Google.Solutions.IapDesktop.Application.Windows;
-using Google.Solutions.IapDesktop.Application.Windows.RemoteDesktop;
-using Google.Solutions.IapDesktop.Application.Windows.SerialLog;
-using Google.Solutions.IapDesktop.Application.Windows.TunnelsViewer;
+using Google.Solutions.IapDesktop.Application.Services.Adapters;
+using Google.Solutions.IapDesktop.Application.Services.Integration;
+using Google.Solutions.IapDesktop.Application.Services.Persistence;
+using Google.Solutions.IapDesktop.Application.Services.Windows;
+using Google.Solutions.IapDesktop.Application.Services.Windows.RemoteDesktop;
+using Google.Solutions.IapDesktop.Application.Services.Windows.SerialLog;
+using Google.Solutions.IapDesktop.Application.Services.Windows.SettingsEditor;
+using Google.Solutions.IapDesktop.Application.Services.Windows.TunnelsViewer;
+using Google.Solutions.IapDesktop.Application.Services.Workflows;
 using Google.Solutions.IapDesktop.Windows;
 using Microsoft.Win32;
 using System;
@@ -113,47 +114,69 @@ namespace Google.Solutions.IapDesktop
                 SecurityProtocolType.Tls12 |
                 SecurityProtocolType.Tls11;
 
-            // Register services.
-            var serviceRegistry = new ServiceRegistry();
-            var hkcu = RegistryKey.OpenBaseKey(RegistryHive.CurrentUser, RegistryView.Default);
-            serviceRegistry.AddSingleton(new ApplicationSettingsRepository(
-                hkcu.CreateSubKey($@"{BaseRegistryKeyPath}\Application")));
-            serviceRegistry.AddSingleton(new AuthSettingsRepository(
-                hkcu.CreateSubKey($@"{BaseRegistryKeyPath}\Auth"),
-                GoogleAuthAdapter.StoreUserId));
-            serviceRegistry.AddSingleton(new InventorySettingsRepository(
-                hkcu.CreateSubKey($@"{BaseRegistryKeyPath}\Inventory")));
-
             System.Windows.Forms.Application.EnableVisualStyles();
             System.Windows.Forms.Application.SetCompatibleTextRenderingDefault(false);
 
-            var mainForm = new MainForm(serviceRegistry);
-            serviceRegistry.AddSingleton<IMainForm>(mainForm);
-            serviceRegistry.AddSingleton<IAuthorizationService>(mainForm);
-            serviceRegistry.AddSingleton<IJobHost>(mainForm);
-            serviceRegistry.AddSingleton<IJobService, JobService>();
-            serviceRegistry.AddSingleton<IEventService>(new EventService(mainForm));
+            //
+            // Set up layers. Services in a layer can lookup services in a lower layer,
+            // but not in a higher layer.
+            //
+            var persistenceLayer = new ServiceRegistry();
+            var adapterLayer = new ServiceRegistry(persistenceLayer);
+            var integrationLayer = new ServiceRegistry(adapterLayer);
+            var windowAndWorkflowLayer = new ServiceRegistry(integrationLayer);
 
-            serviceRegistry.AddTransient<ProjectInventoryService>();
-            serviceRegistry.AddTransient<IResourceManagerAdapter, ResourceManagerAdapter>();
-            serviceRegistry.AddTransient<IComputeEngineAdapter, ComputeEngineAdapter>();
-            serviceRegistry.AddTransient<GithubAdapter>();
-            serviceRegistry.AddTransient<CloudConsoleService>();
-            serviceRegistry.AddTransient<IProjectPickerDialog, ProjectPickerDialog>();
-            serviceRegistry.AddTransient<AboutWindow>();
-            serviceRegistry.AddTransient<IExceptionDialog, ExceptionDialog>();
-            serviceRegistry.AddTransient<ITunnelService, TunnelService>();
-            serviceRegistry.AddSingleton<TunnelBrokerService>();
-            serviceRegistry.AddTransient<IUpdateService, UpdateService>();
+            var hkcu = RegistryKey.OpenBaseKey(RegistryHive.CurrentUser, RegistryView.Default);
 
-            serviceRegistry.AddSingleton<RemoteDesktopService>();
-            serviceRegistry.AddSingleton<SerialLogService>();
-            serviceRegistry.AddSingleton<ISettingsEditor, SettingsEditorWindow>();
-            serviceRegistry.AddSingleton<IProjectExplorer, ProjectExplorerWindow>();
-            serviceRegistry.AddSingleton<ITunnelsViewer, TunnelsWindow>();
+            // 
+            // Persistence layer.
+            //
+            persistenceLayer.AddSingleton(new ApplicationSettingsRepository(
+                hkcu.CreateSubKey($@"{BaseRegistryKeyPath}\Application")));
+            persistenceLayer.AddSingleton(new AuthSettingsRepository(
+                hkcu.CreateSubKey($@"{BaseRegistryKeyPath}\Auth"),
+                GoogleAuthAdapter.StoreUserId));
+            persistenceLayer.AddSingleton(new InventorySettingsRepository(
+                hkcu.CreateSubKey($@"{BaseRegistryKeyPath}\Inventory")));
+
+            var mainForm = new MainForm(persistenceLayer, windowAndWorkflowLayer);
+
+            //
+            // Adapter layer.
+            //
+            adapterLayer.AddSingleton<IAuthorizationAdapter>(mainForm);
+            adapterLayer.AddSingleton<IJobHost>(mainForm);
+            adapterLayer.AddTransient<IResourceManagerAdapter, ResourceManagerAdapter>();
+            adapterLayer.AddTransient<IComputeEngineAdapter, ComputeEngineAdapter>();
+            adapterLayer.AddTransient<GithubAdapter>();
+
+            //
+            // Integration layer.
+            //
+            integrationLayer.AddSingleton<IJobService, JobService>();
+            integrationLayer.AddSingleton<IEventService>(new EventService(mainForm));
+            integrationLayer.AddTransient<ProjectInventoryService>();
+            integrationLayer.AddTransient<ITunnelService, TunnelService>();
+            integrationLayer.AddSingleton<TunnelBrokerService>();
+
+
+            //
+            // Window & workflow layer.
+            //
+            windowAndWorkflowLayer.AddSingleton<IMainForm>(mainForm);
+            windowAndWorkflowLayer.AddTransient<CloudConsoleService>();
+            windowAndWorkflowLayer.AddTransient<IProjectPickerDialog, ProjectPickerDialog>();
+            windowAndWorkflowLayer.AddTransient<AboutWindow>();
+            windowAndWorkflowLayer.AddTransient<IExceptionDialog, ExceptionDialog>();
+            windowAndWorkflowLayer.AddTransient<IUpdateService, UpdateService>();
+            windowAndWorkflowLayer.AddSingleton<RemoteDesktopService>();
+            windowAndWorkflowLayer.AddSingleton<SerialLogService>();
+            windowAndWorkflowLayer.AddSingleton<ISettingsEditor, SettingsEditorWindow>();
+            windowAndWorkflowLayer.AddSingleton<IProjectExplorer, ProjectExplorerWindow>();
+            windowAndWorkflowLayer.AddSingleton<ITunnelsViewer, TunnelsWindow>();
 
 #if DEBUG
-            serviceRegistry.AddSingleton<DebugWindow>();
+            windowAndWorkflowLayer.AddSingleton<DebugWindow>();
 #endif
 
             // Run app.
