@@ -173,6 +173,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.Windows.RemoteDesktop
                 //
                 advancedSettings.DisplayConnectionBar =
                     (settings.ConnectionBar != RdpConnectionBarState.Off);
+                advancedSettings.ConnectionBarShowMinimizeButton = false;
                 advancedSettings.PinConnectionBar =
                     (settings.ConnectionBar == RdpConnectionBarState.Pinned);
                 advancedSettings.EnableWindowsKey = 1;
@@ -517,6 +518,14 @@ namespace Google.Solutions.IapDesktop.Application.Services.Windows.RemoteDesktop
             IMsTscAxEvents_OnRemoteDesktopSizeChangeEvent e)
         {
             using (TraceSources.IapDesktop.TraceMethod().WithParameters(this.autoResize))
+            { }
+        }
+
+        private void rdpClient_OnServiceMessageReceived(
+            object sender,
+            IMsTscAxEvents_OnServiceMessageReceivedEvent e)
+        {
+            using (TraceSources.IapDesktop.TraceMethod().WithParameters(e.serviceMessage))
             { }
         }
 
