@@ -132,7 +132,7 @@ namespace Google.Solutions.IapDesktop.Application.ProjectExplorer
                 .FirstOrDefault(vm => vm.InstanceName == reference.InstanceName); ;
         }
 
-        private async Task AddProjectAsync()
+        private async Task<bool> AddProjectAsync()
         {
             await this.jobService.RunInBackground(
                 new JobDescription("Loading projects..."),
@@ -145,11 +145,11 @@ namespace Google.Solutions.IapDesktop.Application.ProjectExplorer
             if (projectId == null)
             {
                 // Cancelled.
-                return;
+                return false;
             }
 
             await this.projectInventoryService.AddProjectAsync(projectId);
-
+            return true;
         }
 
         //---------------------------------------------------------------------
@@ -623,9 +623,14 @@ namespace Google.Solutions.IapDesktop.Application.ProjectExplorer
 
         public async Task ShowAddProjectDialogAsync()
         {
-            ShowWindow();
-
-            await AddProjectAsync();
+            // NB. The project explorer might be hidden and no project
+            // might have been loaded yet.
+            if (await AddProjectAsync())
+            {
+                // Show the window. That might kick of an asynchronous
+                // Refresh if the window previously was not visible.
+                ShowWindow();
+            }
         }
     }
 }
