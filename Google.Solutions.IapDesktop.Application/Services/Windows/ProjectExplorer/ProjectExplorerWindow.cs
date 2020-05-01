@@ -21,8 +21,6 @@
 
 using Google.Apis.Compute.v1.Data;
 using Google.Solutions.Compute;
-using Google.Solutions.Compute.Iap;
-using Google.Solutions.Compute.Net;
 using Google.Solutions.IapDesktop.Application.ObjectModel;
 using Google.Solutions.IapDesktop.Application.Services.Adapters;
 using Google.Solutions.IapDesktop.Application.Services.Integration;
@@ -50,8 +48,6 @@ namespace Google.Solutions.IapDesktop.Application.ProjectExplorer
     [ComVisible(false)]
     public partial class ProjectExplorerWindow : ToolWindow, IProjectExplorer
     {
-        private const int RemoteDesktopPort = 3389;
-
         private readonly DockPanel dockPanel;
         private readonly IMainForm mainForm;
         private readonly IEventService eventService;
@@ -157,96 +153,7 @@ namespace Google.Solutions.IapDesktop.Application.ProjectExplorer
 
         }
 
-        private async Task ConnectInstance(VmInstanceNode vmNode)
-        {
-            if (this.remoteDesktopService.TryActivate(vmNode.Reference))
-            {
-                // RDP session was active, nothing left to do.
-                return;
-            }
-
-            if (string.IsNullOrEmpty(vmNode.Username) || vmNode.Password == null || vmNode.Password.Length == 0)
-            {
-                int selectedOption = UnsafeNativeMethods.ShowOptionsTaskDialog(
-                    this,
-                    UnsafeNativeMethods.TD_INFORMATION_ICON,
-                    "Credentials",
-                    $"You have not configured any credentials for {vmNode.InstanceName}",
-                    "Would you like to configure or generate credentials now?",
-                    null,
-                    new[]
-                    {
-                        "Configure credentials",
-                        "Generate new credentials",     // Same as pressing 'OK'
-                        "Connect anyway"                // Same as pressing 'Cancel'
-                    },
-                    null,//"Do not show this prompt again",
-                    out bool donotAskAgain);
-
-                if (selectedOption == 0)
-                {
-                    // Configure credentials -> jump to settings.
-                    this.serviceProvider
-                        .GetService<ISettingsEditor>()
-                        .ShowWindow(vmNode);
-
-                    return;
-                }
-                else if (selectedOption == 1)
-                {
-                    // Generate new credentials.
-                    var credentialService = this.serviceProvider.GetService<CredentialsService>();
-                    if ((await credentialService.GenerateAndSaveCredentials(this, vmNode)) == null)
-                    {
-                        return;
-                    }
-                }
-                else if (selectedOption == 2)
-                {
-                    // Cancel - just continue connecting.
-                }
-            }
-
-            var effectiveSettings = vmNode.EffectiveSettingsWithInheritanceApplied;
-
-            var tunnel = await this.jobService.RunInBackground(
-                new JobDescription("Opening Cloud IAP tunnel..."),
-                async token =>
-                {
-                    try
-                    {
-                        var tunnelBrokerService = this.serviceProvider.GetService<TunnelBrokerService>();
-                        var destination = new TunnelDestination(vmNode.Reference, RemoteDesktopPort);
-
-                        // Give IAP the same timeout for probing as RDP itself.
-                        // Note that the timeouts are not additive.
-                        var timeout = TimeSpan.FromSeconds(effectiveSettings.ConnectionTimeout);
-
-                        return await tunnelBrokerService.ConnectAsync(destination, timeout);
-                    }
-                    catch (NetworkStreamClosedException e)
-                    {
-                        throw new ApplicationException(
-                            "Connecting to the instance failed. Make sure that you have " +
-                            "configured your firewall rules to permit Cloud IAP access " +
-                            $"to {vmNode.InstanceName}",
-                            e);
-                    }
-                    catch (UnauthorizedException)
-                    {
-                        throw new ApplicationException(
-                            "You are not authorized to connect to this VM instance.\n\n" +
-                            $"Verify that the Cloud IAP API is enabled in the project {vmNode.Reference.ProjectId} " +
-                            "and that your user has the 'IAP-secured Tunnel User' role.");
-                    }
-                });
-
-            this.remoteDesktopService.Connect(
-                vmNode.Reference,
-                "localhost",
-                (ushort)tunnel.LocalPort,
-                effectiveSettings);
-        }
+        
 
         //---------------------------------------------------------------------
         // Context menu event handlers.
@@ -437,7 +344,9 @@ namespace Google.Solutions.IapDesktop.Application.ProjectExplorer
                 if (this.treeView.SelectedNode is VmInstanceNode vmNode &&
                     vmNode.IsRunning)
                 {
-                    await ConnectInstance(vmNode);
+                    await this.serviceProvider
+                        .GetService<RemoteDesktopConnectionService>()
+                        .ConnectInstance(this, vmNode);
                 }
             }
             catch (TaskCanceledException)
