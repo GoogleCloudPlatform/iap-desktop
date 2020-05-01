@@ -134,6 +134,7 @@ $NunitArguments = `
 
 if ($LastExitCode -ne 0)
 {
+    Write-Host "Tests failed: $LastExitCode"
     exit $LastExitCode
 }
 
