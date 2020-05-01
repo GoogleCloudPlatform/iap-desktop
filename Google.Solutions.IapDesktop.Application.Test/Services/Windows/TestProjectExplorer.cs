@@ -33,7 +33,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using Google.Solutions.IapDesktop.Application.Services.Integration;
 
-namespace Google.Solutions.IapDesktop.Application.Test.Windows
+namespace Google.Solutions.IapDesktop.Application.Test.Services.Windows
 {
     [TestFixture]
     public class TestProjectExplorer : WindowTestFixtureBase

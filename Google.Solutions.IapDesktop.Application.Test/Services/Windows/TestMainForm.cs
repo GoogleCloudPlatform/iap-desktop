@@ -32,7 +32,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using WeifenLuo.WinFormsUI.Docking;
 
-namespace Google.Solutions.IapDesktop.Application.Test.Windows
+namespace Google.Solutions.IapDesktop.Application.Test.Services.Windows
 {
     public partial class TestMainForm : Form, IMainForm, IAuthorizationAdapter, IJobService
     {

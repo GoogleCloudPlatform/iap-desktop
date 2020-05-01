@@ -30,7 +30,7 @@ using System;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace Google.Solutions.IapDesktop.Application.Test.Services
+namespace Google.Solutions.IapDesktop.Application.Test.Services.Integration
 {
     [TestFixture]
     public class TestTunnelBrokerService : FixtureBase

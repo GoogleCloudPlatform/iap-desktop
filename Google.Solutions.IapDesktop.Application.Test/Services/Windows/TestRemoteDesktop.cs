@@ -25,7 +25,7 @@ using Google.Solutions.IapDesktop.Application.Services.Windows.RemoteDesktop;
 using NUnit.Framework;
 using System;
 
-namespace Google.Solutions.IapDesktop.Application.Test.Windows
+namespace Google.Solutions.IapDesktop.Application.Test.Services.Windows
 {
     [TestFixture]
     public class TestRemoteDesktop : WindowTestFixtureBase

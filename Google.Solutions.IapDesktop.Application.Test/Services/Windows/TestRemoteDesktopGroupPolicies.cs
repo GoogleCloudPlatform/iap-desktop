@@ -32,7 +32,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Google.Solutions.IapDesktop.Application.Services.Integration;
 
-namespace Google.Solutions.IapDesktop.Application.Test.Windows
+namespace Google.Solutions.IapDesktop.Application.Test.Services.Windows
 {
     [TestFixture]
     [Category("IntegrationTest")]

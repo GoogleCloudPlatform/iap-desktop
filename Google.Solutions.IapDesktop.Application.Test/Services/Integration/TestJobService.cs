@@ -32,7 +32,7 @@ using System.ComponentModel;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Google.Solutions.IapDesktop.Application.Test.Services
+namespace Google.Solutions.IapDesktop.Application.Test.Services.Integration
 {
     [TestFixture]
     public class TestJobService : FixtureBase

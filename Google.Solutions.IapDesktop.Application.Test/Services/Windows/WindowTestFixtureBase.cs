@@ -33,7 +33,7 @@ using System.Collections.Generic;
 using System.Threading;
 using System.Windows.Forms;
 
-namespace Google.Solutions.IapDesktop.Application.Test.Windows
+namespace Google.Solutions.IapDesktop.Application.Test.Services.Windows
 {
     [TestFixture]
     [Apartment(ApartmentState.STA)]

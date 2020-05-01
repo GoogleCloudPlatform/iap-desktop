@@ -24,7 +24,7 @@ using NUnit.Framework;
 using System.ComponentModel;
 using System.Windows.Forms;
 
-namespace Google.Solutions.IapDesktop.Application.Test.Windows
+namespace Google.Solutions.IapDesktop.Application.Test.Services.Windows
 {
     [TestFixture]
     public class TestSettingsEditor : WindowTestFixtureBase

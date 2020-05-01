@@ -28,7 +28,7 @@ using NUnit.Framework;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace Google.Solutions.IapDesktop.Application.Test.Services
+namespace Google.Solutions.IapDesktop.Application.Test.Services.Integration
 {
     [TestFixture]
     public class TestProjectInventoryService : FixtureBase

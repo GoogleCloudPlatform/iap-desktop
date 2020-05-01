@@ -27,7 +27,7 @@ using NUnit.Framework;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
-namespace Google.Solutions.IapDesktop.Application.Test.Settings
+namespace Google.Solutions.IapDesktop.Application.Test.Services.Persistence
 {
     [TestFixture]
     public class TestAuthSettingsRepository : FixtureBase

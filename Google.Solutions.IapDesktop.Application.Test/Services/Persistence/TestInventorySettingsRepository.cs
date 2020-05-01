@@ -25,7 +25,7 @@ using NUnit.Framework;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Google.Solutions.IapDesktop.Application.Test.Settings
+namespace Google.Solutions.IapDesktop.Application.Test.Services.Persistence
 {
     [TestFixture]
     public class TestInventorySettingsRepository : FixtureBase
