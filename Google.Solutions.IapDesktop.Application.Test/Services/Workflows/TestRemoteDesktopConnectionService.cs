@@ -19,17 +19,22 @@
 // under the License.
 //
 
+using Google.Solutions.Compute;
 using Google.Solutions.IapDesktop.Application.ObjectModel;
 using Google.Solutions.IapDesktop.Application.Services.Integration;
+using Google.Solutions.IapDesktop.Application.Services.Persistence;
+using Google.Solutions.IapDesktop.Application.Services.Windows;
 using Google.Solutions.IapDesktop.Application.Services.Windows.RemoteDesktop;
-using Google.Solutions.IapDesktop.Application.Test.Services.Windows;
+using Google.Solutions.IapDesktop.Application.Services.Windows.SettingsEditor;
+using Google.Solutions.IapDesktop.Application.Services.Workflows;
+using Google.Solutions.IapDesktop.Application.Util;
 using Moq;
 using NUnit.Framework;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+using System.Net;
 using System.Threading.Tasks;
+using System.Windows.Forms;
 
 namespace Google.Solutions.IapDesktop.Application.Test.Services.Workflows
 {
@@ -41,40 +46,165 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Workflows
         [SetUp]
         public void SetUp()
         {
-            var jobService = new Mock<IJobService>();
-            this.serviceRegistry.AddSingleton<IJobService>(jobService.Object);
+            this.serviceRegistry.AddSingleton<IJobService, SynchronousJobService>();
 
+            var tunnel = new Mock<Tunnel>(null, null, null);
+            tunnel.SetupGet(t => t.LocalPort).Returns(1);
 
+            var tunnelBrokerService = new Mock<ITunnelBrokerService>();
+            tunnelBrokerService.Setup(s => s.ConnectAsync(
+                It.IsAny<TunnelDestination>(),
+                It.IsAny<TimeSpan>())).Returns(Task.FromResult(tunnel.Object));
+            this.serviceRegistry.AddSingleton<ITunnelBrokerService>(tunnelBrokerService.Object);
+
+            var settingsEditor = new Mock<ISettingsEditor>();
+            this.serviceRegistry.AddSingleton<ISettingsEditor>(settingsEditor.Object);
+
+            var credentialsService = new Mock<ICredentialsService>();
+            this.serviceRegistry.AddSingleton<ICredentialsService>(credentialsService.Object);
         }
 
         [Test]
-        public void WhenConnectingByUrlWithoutUsername_ThenConnectionIsMadeWithoutUsername()
+        public async Task WhenConnectingByUrlWithoutUsername_ThenConnectionIsMadeWithoutUsername()
         {
+            var taskDialog = new Mock<ITaskDialog>();
+            this.serviceRegistry.AddSingleton<ITaskDialog>(taskDialog.Object);
+            taskDialog.Setup(t => t.ShowOptionsTaskDialog(
+                It.IsAny<IWin32Window>(),
+                It.IsAny<IntPtr>(),
+                It.IsAny<string>(),
+                It.IsAny<string>(),
+                It.IsAny<string>(),
+                It.IsAny<string>(),
+                It.IsAny<IList<string>>(),
+                It.IsAny<string>(),
+                out It.Ref<bool>.IsAny)).Returns(1);    // Enter existing credentials
+
             var remoteDesktopService = new Mock<IRemoteDesktopService>();
+            remoteDesktopService.Setup(s => s.Connect(
+                It.IsAny<VmInstanceReference>(),
+                "localhost",
+                It.IsAny<ushort>(),
+                It.IsAny<VmInstanceSettings>())).Returns<IRemoteDesktopSession>(null);
 
-            var serviceRegistry = new ServiceRegistry();
-            serviceRegistry.AddSingleton<IRemoteDesktopService>(remoteDesktopService.Object);
+            this.serviceRegistry.AddSingleton<IRemoteDesktopService>(remoteDesktopService.Object);
 
-            Assert.Inconclusive();
+            var service = new RemoteDesktopConnectionService(this.serviceRegistry);
+            await service.ActivateOrConnectInstanceWithCredentialPromptAsync(
+                null,
+                IapRdpUrl.FromString("iap-rdp:///project/us-central-1/instance"));
+
+            remoteDesktopService.Verify(s => s.Connect(
+                It.IsAny<VmInstanceReference>(),
+                "localhost",
+                It.IsAny<ushort>(),
+                It.Is<VmInstanceSettings>(i => i.Username == null)), Times.Once);
         }
 
         [Test]
-        public void WhenConnectingByUrlWithUsername_ThenConnectionIsMadeWithThisUsername()
+        public async Task WhenConnectingByUrlWithUsername_ThenConnectionIsMadeWithThisUsername()
         {
-            Assert.Inconclusive();
+            var taskDialog = new Mock<ITaskDialog>();
+            this.serviceRegistry.AddSingleton<ITaskDialog>(taskDialog.Object);
+            taskDialog.Setup(t => t.ShowOptionsTaskDialog(
+                It.IsAny<IWin32Window>(),
+                It.IsAny<IntPtr>(),
+                It.IsAny<string>(),
+                It.IsAny<string>(),
+                It.IsAny<string>(),
+                It.IsAny<string>(),
+                It.IsAny<IList<string>>(),
+                It.IsAny<string>(),
+                out It.Ref<bool>.IsAny)).Returns(1);    // Enter existing credentials
+
+            var remoteDesktopService = new Mock<IRemoteDesktopService>();
+            remoteDesktopService.Setup(s => s.Connect(
+                It.IsAny<VmInstanceReference>(),
+                "localhost",
+                It.IsAny<ushort>(),
+                It.IsAny<VmInstanceSettings>())).Returns<IRemoteDesktopSession>(null);
+
+            this.serviceRegistry.AddSingleton<IRemoteDesktopService>(remoteDesktopService.Object);
+
+            var service = new RemoteDesktopConnectionService(this.serviceRegistry);
+            await service.ActivateOrConnectInstanceWithCredentialPromptAsync(
+                null,
+                IapRdpUrl.FromString("iap-rdp:///project/us-central-1/instance?username=john%20doe"));
+
+            remoteDesktopService.Verify(s => s.Connect(
+                It.IsAny<VmInstanceReference>(),
+                "localhost",
+                It.IsAny<ushort>(),
+                It.Is<VmInstanceSettings>(i => i.Username == "john doe")), Times.Once); 
         }
 
 
         [Test]
-        public void WhenConnectingByUrlWithoutUsername_ThenSuggestedUsernameForCredentialGenerationIsDerivedFromSigninName()
+        public async Task WhenConnectingByUrlWithoutUsername_ThenSuggestedUsernameForCredentialGenerationIsDerivedFromSigninName()
         {
-            Assert.Inconclusive();
+            var taskDialog = new Mock<ITaskDialog>();
+            this.serviceRegistry.AddSingleton<ITaskDialog>(taskDialog.Object);
+            taskDialog.Setup(t => t.ShowOptionsTaskDialog(
+                It.IsAny<IWin32Window>(),
+                It.IsAny<IntPtr>(),
+                It.IsAny<string>(),
+                It.IsAny<string>(),
+                It.IsAny<string>(),
+                It.IsAny<string>(),
+                It.IsAny<IList<string>>(),
+                It.IsAny<string>(),
+                out It.Ref<bool>.IsAny)).Returns(0);    // Generate new credentials
+
+            var credentialsService = new Mock<ICredentialsService>();
+            credentialsService.Setup(s => s.GenerateCredentialsAsync(
+                It.IsAny<IWin32Window>(),
+                It.IsAny<VmInstanceReference>(),
+                It.IsAny<string>())).Returns(Task.FromResult(new NetworkCredential("user", "password")));
+            this.serviceRegistry.AddSingleton<ICredentialsService>(credentialsService.Object);
+
+            var service = new RemoteDesktopConnectionService(this.serviceRegistry);
+            await service.ActivateOrConnectInstanceWithCredentialPromptAsync(
+                null,
+                IapRdpUrl.FromString("iap-rdp:///project/us-central-1/instance"));
+
+            credentialsService.Verify(s => s.GenerateCredentialsAsync(
+                It.IsAny<IWin32Window>(),
+                It.IsAny<VmInstanceReference>(),
+                It.Is<string>(user => user == null)), Times.Once);
         }
 
         [Test]
-        public void WhenConnectingByUrlWithUsername_ThenSuggestedUsernameForCredentialGenerationIsThisUsername()
+        public async Task WhenConnectingByUrlWithUsername_ThenSuggestedUsernameForCredentialGenerationIsThisUsername()
         {
-            Assert.Inconclusive();
+            var taskDialog = new Mock<ITaskDialog>();
+            this.serviceRegistry.AddSingleton<ITaskDialog>(taskDialog.Object);
+            taskDialog.Setup(t => t.ShowOptionsTaskDialog(
+                It.IsAny<IWin32Window>(),
+                It.IsAny<IntPtr>(),
+                It.IsAny<string>(),
+                It.IsAny<string>(),
+                It.IsAny<string>(),
+                It.IsAny<string>(),
+                It.IsAny<IList<string>>(),
+                It.IsAny<string>(),
+                out It.Ref<bool>.IsAny)).Returns(0);    // Generate new credentials
+
+            var credentialsService = new Mock<ICredentialsService>();
+            credentialsService.Setup(s => s.GenerateCredentialsAsync(
+                It.IsAny<IWin32Window>(),
+                It.IsAny<VmInstanceReference>(),
+                It.IsAny<string>())).Returns(Task.FromResult(new NetworkCredential("user", "password")));
+            this.serviceRegistry.AddSingleton<ICredentialsService>(credentialsService.Object);
+
+            var service = new RemoteDesktopConnectionService(this.serviceRegistry);
+            await service.ActivateOrConnectInstanceWithCredentialPromptAsync(
+                null,
+                IapRdpUrl.FromString("iap-rdp:///project/us-central-1/instance?username=john%20doe"));
+
+            credentialsService.Verify(s => s.GenerateCredentialsAsync(
+                It.IsAny<IWin32Window>(),
+                It.IsAny<VmInstanceReference>(),
+                It.Is<string>(user => user == "john doe")), Times.Once);
         }
     }
 }
