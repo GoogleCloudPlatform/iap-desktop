@@ -27,8 +27,6 @@ namespace Google.Solutions.IapDesktop.Application.Services.Windows
 {
     public partial class WaitDialog : Form
     {
-        private int ticksElapsed = 0;
-        private double seriesValue = 0;
         private volatile bool formShown = false;
 
         private readonly CancellationTokenSource cancellationSource;
@@ -46,19 +44,6 @@ namespace Google.Solutions.IapDesktop.Application.Services.Windows
 
             this.messageLabel.Text = message;
             this.cancellationSource = cancellationSource;
-
-            this.timer.Start();
-        }
-
-        private void timer_Tick(object sender, EventArgs e)
-        {
-            this.ticksElapsed++;
-
-            // We do not know how long this operation is actually going
-            // to take. So show a fake progress bar that tracks a series
-            // that converges to 100% but gets increasingly slower.
-            this.seriesValue += 1.0 / (1 + Math.Pow(2, this.ticksElapsed));
-            this.progressBar.Value = (int)(this.seriesValue * 100);
         }
 
         private void cancelButton_Click(object sender, EventArgs e)
