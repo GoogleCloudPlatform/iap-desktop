@@ -127,6 +127,7 @@ $NunitArguments = `
 
 & $OpenCover `
     -register:user `
+    -returntargetcode `
     -target:$Nunit `
     "-targetargs:$NunitArguments" `
     -filter:"+[Google.Solutions.Compute]* +[Google.Solutions.IapDesktop.Application]*" `
