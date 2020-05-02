@@ -298,8 +298,7 @@ namespace Google.Solutions.IapDesktop.Application.ProjectExplorer
             this.imageList.Images.SetKeyName(3, "Zone.ico");
             this.imageList.Images.SetKeyName(4, "Computer_16.png");
             this.imageList.Images.SetKeyName(5, "ComputerBlue_16.png");
-            this.imageList.Images.SetKeyName(6, "Vm.ico");
-            this.imageList.Images.SetKeyName(7, "VmBlue.ico");
+            this.imageList.Images.SetKeyName(6, "ComputerStopped_16.png");
             // 
             // debugToolStripMenuItem
             // 
