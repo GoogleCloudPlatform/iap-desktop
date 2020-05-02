@@ -46,7 +46,7 @@ using WeifenLuo.WinFormsUI.Docking;
 
 #pragma warning disable IDE1006 // Naming Styles
 
-namespace Google.Solutions.IapDesktop.Application.ProjectExplorer
+namespace Google.Solutions.IapDesktop.Application.Services.Windows.ProjectExplorer
 {
     [ComVisible(false)]
     public partial class ProjectExplorerWindow : ToolWindow, IProjectExplorer

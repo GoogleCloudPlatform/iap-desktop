@@ -21,7 +21,7 @@
 
 using System.Threading.Tasks;
 
-namespace Google.Solutions.IapDesktop.Application.ProjectExplorer
+namespace Google.Solutions.IapDesktop.Application.Services.Windows.ProjectExplorer
 {
     public interface IProjectExplorer
     {

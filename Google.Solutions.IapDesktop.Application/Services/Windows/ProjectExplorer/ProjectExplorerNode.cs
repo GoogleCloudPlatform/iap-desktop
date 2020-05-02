@@ -34,7 +34,7 @@ using System.Windows.Forms;
 
 #pragma warning disable IDE1006 // Naming Styles
 
-namespace Google.Solutions.IapDesktop.Application.ProjectExplorer
+namespace Google.Solutions.IapDesktop.Application.Services.Windows.ProjectExplorer
 {
     internal class CloudNode : TreeNode, IProjectExplorerCloudNode
     {
