@@ -114,11 +114,43 @@ Write-Host "========================================================"
 $Env:GOOGLE_APPLICATION_CREDENTIALS = "${env:KOKORO_GFILE_DIR}\iap-windows-rdc-plugin-tests.json"
 $Env:GOOGLE_CLOUD_PROJECT = (Get-Content $Env:GOOGLE_APPLICATION_CREDENTIALS | Out-String | ConvertFrom-Json).project_id
 
+# NB. The OpenCover version must match the CLR version installed on Kokoro. The version
+# is defined in the NuGet dependencies of the main project.
+
+$OpenCover = (Resolve-Path -Path "packages\OpenCover.*\tools\OpenCover.Console.exe").Path
 $Nunit = (Resolve-Path -Path "packages\NUnit.ConsoleRunner.*\tools\nunit3-console.exe").Path
-& $Nunit `
-    Google.Solutions.Compute.Test\bin\release\Google.Solutions.Compute.Test.dll `
-    Google.Solutions.IapDesktop.Application.Test\bin\release\Google.Solutions.IapDesktop.Application.Test.dll `
-    "--result=sponge_log.xml;transform=kokoro\nunit-to-sponge.xsl" | Out-Default
+
+$NunitArguments = `
+    "Google.Solutions.Compute.Test\bin\release\Google.Solutions.Compute.Test.dll " + `
+    "Google.Solutions.IapDesktop.Application.Test\bin\release\Google.Solutions.IapDesktop.Application.Test.dll " + `
+    "--result=sponge_log.xml;transform=kokoro\nunit-to-sponge.xsl "
+#    "--where \""cat != IntegrationTest\"""
+
+& $OpenCover `
+    -register:user `
+    -returntargetcode `
+    -target:$Nunit `
+    "-targetargs:$NunitArguments" `
+    -filter:"+[Google.Solutions.Compute]* +[Google.Solutions.IapDesktop.Application]*" `
+    -output:opencovertests.xml | Out-Default
+
+if ($LastExitCode -ne 0)
+{
+    Write-Host "Tests failed: $LastExitCode"
+    exit $LastExitCode
+}
+
+
+Write-Host "========================================================"
+Write-Host "=== Create code coverage report                      ==="
+Write-Host "========================================================"
+
+$ReportGenerator = (Resolve-Path -Path "packages\ReportGenerator.*\tools\net4*\ReportGenerator.exe").Path
+
+&$ReportGenerator `
+    "-reports:opencovertests.xml" `
+    "-targetdir:coveragereport" `
+    -reporttypes:HTML
 
 if ($LastExitCode -ne 0)
 {

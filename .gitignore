@@ -267,3 +267,7 @@ Google.Solutions.IapDesktop/OAuthClient.cs
 .terraform/
 *.tfstate
 *.tfstate.backup
+
+coveragereport/
+opencovertests.xml
+sponge_log.xml
