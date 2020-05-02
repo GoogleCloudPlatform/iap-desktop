@@ -54,7 +54,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Windows
                     vmInstanceReference,
                     "localhost",
                     (ushort)tunnel.LocalPort,
-                    new VmInstanceSettings()
+                    new VmInstanceConnectionSettings()
                     {
                         Username = credentials.UserName,
                         Password = credentials.SecurePassword,

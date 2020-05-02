@@ -208,7 +208,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.Windows
                     null,
                     server[0],
                     (ushort)(server.Length > 1 ? int.Parse(server[1]) : 3389),
-                    new VmInstanceSettings()
+                    new VmInstanceConnectionSettings()
                     {
 
                     });

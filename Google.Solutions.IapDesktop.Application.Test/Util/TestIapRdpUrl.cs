@@ -221,7 +221,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Util
         {
             var url = new IapRdpUrl(
                 new VmInstanceReference("project-1", "us-central1-a", "instance-1"),
-                new VmInstanceSettings()
+                new VmInstanceConnectionSettings()
                 {
                     Username = "Tom & Jerry?",
                     Domain = "\"?\""
@@ -239,7 +239,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Util
         {
             var url = new IapRdpUrl(
                 new VmInstanceReference("project-1", "us-central1-a", "instance-1"),
-                new VmInstanceSettings()
+                new VmInstanceConnectionSettings()
                 {
                     Username = "user",
                     Domain = "domain",

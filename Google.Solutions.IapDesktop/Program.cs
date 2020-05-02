@@ -175,7 +175,7 @@ namespace Google.Solutions.IapDesktop
             persistenceLayer.AddSingleton(new AuthSettingsRepository(
                 hkcu.CreateSubKey($@"{BaseRegistryKeyPath}\Auth"),
                 GoogleAuthAdapter.StoreUserId));
-            persistenceLayer.AddSingleton(new InventorySettingsRepository(
+            persistenceLayer.AddSingleton(new ConnectionSettingsRepository(
                 hkcu.CreateSubKey($@"{BaseRegistryKeyPath}\Inventory")));
 
             var mainForm = new MainForm(persistenceLayer, windowAndWorkflowLayer);

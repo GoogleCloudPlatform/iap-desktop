@@ -101,7 +101,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.Windows.RemoteDesktop
         public void Connect(
             string server,
             ushort port,
-            VmInstanceSettings settings
+            VmInstanceConnectionSettings settings
             )
         {
             using (TraceSources.IapDesktop.TraceMethod().WithParameters(

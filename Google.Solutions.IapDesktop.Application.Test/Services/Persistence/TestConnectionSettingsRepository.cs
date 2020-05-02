@@ -28,7 +28,7 @@ using System.Linq;
 namespace Google.Solutions.IapDesktop.Application.Test.Services.Persistence
 {
     [TestFixture]
-    public class TestInventorySettingsRepository : FixtureBase
+    public class TestConnectionSettingsRepository : FixtureBase
     {
         private const string TestKeyPath = @"Software\Google\__Test";
         private readonly RegistryKey hkcu = RegistryKey.OpenBaseKey(RegistryHive.CurrentUser, RegistryView.Default);
@@ -44,7 +44,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Persistence
         public void WhenBaseKeyIsEmpty_SettingsAreEmpty()
         {
             var baseKey = hkcu.CreateSubKey(TestKeyPath);
-            var repository = new InventorySettingsRepository(baseKey);
+            var repository = new ConnectionSettingsRepository(baseKey);
 
             var settings = repository.GetSettings();
 
@@ -57,9 +57,9 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Persistence
         public void WhenSettingsSaved_GetSettingsReturnsData()
         {
             var baseKey = hkcu.CreateSubKey(TestKeyPath);
-            var repository = new InventorySettingsRepository(baseKey);
+            var repository = new ConnectionSettingsRepository(baseKey);
 
-            var originalSettings = new InventorySettings()
+            var originalSettings = new ConnectionSettings()
             {
                 Username = "user"
             };
@@ -80,7 +80,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Persistence
         public void WhenBaseKeyDoesNotExist_ListProjectSettingsReturnsEmptyList()
         {
             var baseKey = hkcu.CreateSubKey(TestKeyPath);
-            var repository = new InventorySettingsRepository(baseKey);
+            var repository = new ConnectionSettingsRepository(baseKey);
 
             var projects = repository.ListProjectSettings();
 
@@ -91,9 +91,9 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Persistence
         public void WhenProjectSettingsSaved_ProjectReturnedInListProjects()
         {
             var baseKey = hkcu.CreateSubKey(TestKeyPath);
-            var repository = new InventorySettingsRepository(baseKey);
+            var repository = new ConnectionSettingsRepository(baseKey);
 
-            var originalSettings = new ProjectSettings()
+            var originalSettings = new ProjectConnectionSettings()
             {
                 ProjectId = "pro-1",
                 Username = "user"
@@ -110,9 +110,9 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Persistence
         public void WhenProjectSettingsSaved_GetProjectSettingsReturnsData()
         {
             var baseKey = hkcu.CreateSubKey(TestKeyPath);
-            var repository = new InventorySettingsRepository(baseKey);
+            var repository = new ConnectionSettingsRepository(baseKey);
 
-            var originalSettings = new ProjectSettings()
+            var originalSettings = new ProjectConnectionSettings()
             {
                 ProjectId = "pro-1",
                 Username = "user"
@@ -130,9 +130,9 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Persistence
         public void WhenProjectSettingsSavedTwice_GetProjectSettingsReturnsLatestData()
         {
             var baseKey = hkcu.CreateSubKey(TestKeyPath);
-            var repository = new InventorySettingsRepository(baseKey);
+            var repository = new ConnectionSettingsRepository(baseKey);
 
-            var originalSettings = new ProjectSettings()
+            var originalSettings = new ProjectConnectionSettings()
             {
                 ProjectId = "pro-1",
                 Username = "user"
@@ -153,9 +153,9 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Persistence
         public void WhenProjectSettingsDeleted_GetProjectSettingsThrowsKeyNotFoundException()
         {
             var baseKey = hkcu.CreateSubKey(TestKeyPath);
-            var repository = new InventorySettingsRepository(baseKey);
+            var repository = new ConnectionSettingsRepository(baseKey);
 
-            var originalSettings = new ProjectSettings()
+            var originalSettings = new ProjectConnectionSettings()
             {
                 ProjectId = "pro-1",
                 Username = "user"
@@ -174,7 +174,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Persistence
         public void WhenIdDoesNotExist_GetProjectSettingsReturnsDefaults()
         {
             var baseKey = hkcu.CreateSubKey(TestKeyPath);
-            var repository = new InventorySettingsRepository(baseKey);
+            var repository = new ConnectionSettingsRepository(baseKey);
 
             Assert.Throws<KeyNotFoundException>(() =>
             {
@@ -191,7 +191,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Persistence
         public void WhenProjectIdDoesNotExist_GetZoneSettingsThrowsKeyNotFoundException()
         {
             var baseKey = hkcu.CreateSubKey(TestKeyPath);
-            var repository = new InventorySettingsRepository(baseKey);
+            var repository = new ConnectionSettingsRepository(baseKey);
 
             Assert.Throws<KeyNotFoundException>(() =>
             {
@@ -203,9 +203,9 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Persistence
         public void WhenZoneIdDoesNotExist_GetZoneSettingsReturnsDefaults()
         {
             var baseKey = hkcu.CreateSubKey(TestKeyPath);
-            var repository = new InventorySettingsRepository(baseKey);
+            var repository = new ConnectionSettingsRepository(baseKey);
 
-            repository.SetProjectSettings(new ProjectSettings()
+            repository.SetProjectSettings(new ProjectConnectionSettings()
             {
                 ProjectId = "pro-1"
             });
@@ -218,13 +218,13 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Persistence
         public void WhenSetValidZoneSettings_GetZoneSettingsReturnSameValues()
         {
             var baseKey = hkcu.CreateSubKey(TestKeyPath);
-            var repository = new InventorySettingsRepository(baseKey);
+            var repository = new ConnectionSettingsRepository(baseKey);
 
-            repository.SetProjectSettings(new ProjectSettings()
+            repository.SetProjectSettings(new ProjectConnectionSettings()
             {
                 ProjectId = "pro-1"
             });
-            repository.SetZoneSettings("pro-1", new ZoneSettings()
+            repository.SetZoneSettings("pro-1", new ZoneConnectionSettings()
             {
                 ZoneId = "zone-1",
                 Username = "user-1"
@@ -237,13 +237,13 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Persistence
         public void WhenProjectSettingsDeleted_ZoneSettingsAreDeletedToo()
         {
             var baseKey = hkcu.CreateSubKey(TestKeyPath);
-            var repository = new InventorySettingsRepository(baseKey);
+            var repository = new ConnectionSettingsRepository(baseKey);
 
-            repository.SetProjectSettings(new ProjectSettings()
+            repository.SetProjectSettings(new ProjectConnectionSettings()
             {
                 ProjectId = "pro-1"
             });
-            repository.SetZoneSettings("pro-1", new ZoneSettings()
+            repository.SetZoneSettings("pro-1", new ZoneConnectionSettings()
             {
                 ZoneId = "zone-1",
                 Username = "user-1"
@@ -264,7 +264,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Persistence
         public void WhenProjectIdDoesNotExist_GetVmInstanceSettingsThrowsKeyNotFoundException()
         {
             var baseKey = hkcu.CreateSubKey(TestKeyPath);
-            var repository = new InventorySettingsRepository(baseKey);
+            var repository = new ConnectionSettingsRepository(baseKey);
 
             Assert.Throws<KeyNotFoundException>(() =>
             {
@@ -276,9 +276,9 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Persistence
         public void WhenVmInstanceIdDoesNotExist_GetVmInstanceSettingsReturnsDefaults()
         {
             var baseKey = hkcu.CreateSubKey(TestKeyPath);
-            var repository = new InventorySettingsRepository(baseKey);
+            var repository = new ConnectionSettingsRepository(baseKey);
 
-            repository.SetProjectSettings(new ProjectSettings()
+            repository.SetProjectSettings(new ProjectConnectionSettings()
             {
                 ProjectId = "pro-1"
             });
@@ -292,13 +292,13 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Persistence
         public void WhenSetValidVmInstanceSettings_GetVmInstanceSettingsReturnSameValues()
         {
             var baseKey = hkcu.CreateSubKey(TestKeyPath);
-            var repository = new InventorySettingsRepository(baseKey);
+            var repository = new ConnectionSettingsRepository(baseKey);
 
-            repository.SetProjectSettings(new ProjectSettings()
+            repository.SetProjectSettings(new ProjectConnectionSettings()
             {
                 ProjectId = "pro-1"
             });
-            repository.SetVmInstanceSettings("pro-1", new VmInstanceSettings()
+            repository.SetVmInstanceSettings("pro-1", new VmInstanceConnectionSettings()
             {
                 InstanceName = "vm-1",
                 Username = "user-1",
@@ -325,13 +325,13 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Persistence
         public void WhenProjectSettingsDeleted_VmInstanceSettingsAreDeletedToo()
         {
             var baseKey = hkcu.CreateSubKey(TestKeyPath);
-            var repository = new InventorySettingsRepository(baseKey);
+            var repository = new ConnectionSettingsRepository(baseKey);
 
-            repository.SetProjectSettings(new ProjectSettings()
+            repository.SetProjectSettings(new ProjectConnectionSettings()
             {
                 ProjectId = "pro-1"
             });
-            repository.SetVmInstanceSettings("pro-1", new VmInstanceSettings()
+            repository.SetVmInstanceSettings("pro-1", new VmInstanceConnectionSettings()
             {
                 InstanceName = "vm-1",
                 Username = "user-1"

@@ -34,11 +34,11 @@ namespace Google.Solutions.IapDesktop.Application.Services.Integration
     /// </summary>
     public class ProjectInventoryService
     {
-        private readonly InventorySettingsRepository inventorySettings;
+        private readonly ConnectionSettingsRepository inventorySettings;
         private readonly IEventService eventService;
 
         public ProjectInventoryService(
-            InventorySettingsRepository inventorySettings,
+            ConnectionSettingsRepository inventorySettings,
             IEventService eventService)
         {
             this.inventorySettings = inventorySettings;
@@ -47,13 +47,13 @@ namespace Google.Solutions.IapDesktop.Application.Services.Integration
 
         public ProjectInventoryService(IServiceProvider provider)
             : this(
-                provider.GetService<InventorySettingsRepository>(),
+                provider.GetService<ConnectionSettingsRepository>(),
                 provider.GetService<IEventService>())
         { }
 
         public async Task AddProjectAsync(string projectId)
         {
-            this.inventorySettings.SetProjectSettings(new ProjectSettings()
+            this.inventorySettings.SetProjectSettings(new ProjectConnectionSettings()
             {
                 ProjectId = projectId
             });

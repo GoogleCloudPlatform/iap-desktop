@@ -35,8 +35,8 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Windows
         [SetUp]
         public void PrepareNodes()
         {
-            var settingsService = this.serviceProvider.GetService<InventorySettingsRepository>();
-            settingsService.SetProjectSettings(new ProjectSettings()
+            var settingsService = this.serviceProvider.GetService<ConnectionSettingsRepository>();
+            settingsService.SetProjectSettings(new ProjectConnectionSettings()
             {
                 ProjectId = "project-1"
             });

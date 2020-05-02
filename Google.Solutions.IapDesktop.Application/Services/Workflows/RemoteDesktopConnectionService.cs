@@ -62,7 +62,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.Workflows
 
         private async Task ConnectInstanceAsync(
             VmInstanceReference instanceRef,
-            VmInstanceSettings settings)
+            VmInstanceConnectionSettings settings)
         {
             var tunnel = await this.jobService.RunInBackground(
                 new JobDescription("Opening Cloud IAP tunnel..."),

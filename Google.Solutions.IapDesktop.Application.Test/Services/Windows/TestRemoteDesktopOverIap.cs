@@ -51,7 +51,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Windows
                     testInstance.InstanceReference,
                     "localhost",
                     (ushort)tunnel.LocalPort,
-                    new VmInstanceSettings()
+                    new VmInstanceConnectionSettings()
                     {
                         Username = "wrong",
                         Password = SecureStringExtensions.FromClearText("wrong"),
@@ -115,7 +115,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Windows
                     testInstance.InstanceReference,
                     "localhost",
                     (ushort)tunnel.LocalPort,
-                    new VmInstanceSettings()
+                    new VmInstanceConnectionSettings()
                     {
                         Username = credentials.UserName,
                         Password = credentials.SecurePassword,
@@ -164,7 +164,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Windows
                     testInstance.InstanceReference,
                     "localhost",
                     (ushort)tunnel.LocalPort,
-                    new VmInstanceSettings()
+                    new VmInstanceConnectionSettings()
                     {
                         Username = credentials.UserName,
                         Password = credentials.SecurePassword,

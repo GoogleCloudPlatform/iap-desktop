@@ -49,14 +49,14 @@ namespace Google.Solutions.IapDesktop.Application.Services.Windows.ProjectExplor
     public abstract class InventoryNode : TreeNode, IProjectExplorerNode, ISettingsObject
     {
         private readonly InventoryNode parent;
-        private readonly InventorySettingsBase settings;
-        private readonly Action<InventorySettingsBase> saveSettings;
+        private readonly ConnectionSettingsBase settings;
+        private readonly Action<ConnectionSettingsBase> saveSettings;
 
         public InventoryNode(
             string name,
             int iconIndex,
-            InventorySettingsBase settings,
-            Action<InventorySettingsBase> saveSettings,
+            ConnectionSettingsBase settings,
+            Action<ConnectionSettingsBase> saveSettings,
             InventoryNode parent)
             : base(name, iconIndex, iconIndex)
         {
@@ -293,16 +293,16 @@ namespace Google.Solutions.IapDesktop.Application.Services.Windows.ProjectExplor
     {
         private const int IconIndex = 1;
 
-        private readonly InventorySettingsRepository settingsRepository;
+        private readonly ConnectionSettingsRepository settingsRepository;
 
         public string ProjectId => this.Text;
 
-        internal ProjectNode(InventorySettingsRepository settingsRepository, string projectId)
+        internal ProjectNode(ConnectionSettingsRepository settingsRepository, string projectId)
             : base(
                   projectId,
                   IconIndex,
                   settingsRepository.GetProjectSettings(projectId),
-                  settings => settingsRepository.SetProjectSettings((ProjectSettings)settings),
+                  settings => settingsRepository.SetProjectSettings((ProjectConnectionSettings)settings),
                   null)
         {
             this.settingsRepository = settingsRepository;
@@ -365,14 +365,14 @@ namespace Google.Solutions.IapDesktop.Application.Services.Windows.ProjectExplor
         public string ZoneId => this.Text;
 
         internal ZoneNode(
-            ZoneSettings settings,
-            Action<ZoneSettings> saveSettings,
+            ZoneConnectionSettings settings,
+            Action<ZoneConnectionSettings> saveSettings,
             ProjectNode parent)
             : base(
                   settings.ZoneId,
                   IconIndex,
                   settings,
-                  changedSettings => saveSettings((ZoneSettings)changedSettings),
+                  changedSettings => saveSettings((ZoneConnectionSettings)changedSettings),
                   parent)
         {
         }
@@ -390,8 +390,8 @@ namespace Google.Solutions.IapDesktop.Application.Services.Windows.ProjectExplor
         public string ProjectId => ((ZoneNode)this.Parent).ProjectId;
         public string ZoneId => ((ZoneNode)this.Parent).ZoneId;
 
-        public VmInstanceSettings EffectiveSettingsWithInheritanceApplied
-            => new VmInstanceSettings()
+        public VmInstanceConnectionSettings EffectiveSettingsWithInheritanceApplied
+            => new VmInstanceConnectionSettings()
             {
                 InstanceName = this.InstanceName,
                 AudioMode = this.AudioMode,
@@ -440,14 +440,14 @@ namespace Google.Solutions.IapDesktop.Application.Services.Windows.ProjectExplor
 
         internal VmInstanceNode(
             Instance instance,
-            VmInstanceSettings settings,
-            Action<VmInstanceSettings> saveSettings,
+            VmInstanceConnectionSettings settings,
+            Action<VmInstanceConnectionSettings> saveSettings,
             ZoneNode parent)
             : base(
                   settings.InstanceName,
                   DisconnectedIconIndex,
                   settings,
-                  changedSettings => saveSettings((VmInstanceSettings)changedSettings),
+                  changedSettings => saveSettings((VmInstanceConnectionSettings)changedSettings),
                   parent)
         {
             this.InstanceId = instance.Id.Value;

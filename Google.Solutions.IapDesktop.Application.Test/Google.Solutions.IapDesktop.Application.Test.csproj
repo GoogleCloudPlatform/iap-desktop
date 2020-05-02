@@ -104,7 +104,7 @@
     <Compile Include="Services\Integration\TestProjectInventoryService.cs" />
     <Compile Include="Services\Integration\TestTunnelBrokerService.cs" />
     <Compile Include="Services\Persistence\TestAuthSettingsRepository.cs" />
-    <Compile Include="Services\Persistence\TestInventorySettingsRepository.cs" />
+    <Compile Include="Services\Persistence\TestConnectionSettingsRepository.cs" />
     <Compile Include="ObjectModel\TestServiceRegistry.cs" />
     <Compile Include="TestExceptionExtensions.cs" />
     <Compile Include="Util\TestAuthorizationExtensions.cs" />
