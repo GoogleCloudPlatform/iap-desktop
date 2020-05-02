@@ -152,7 +152,7 @@ $ReportGenerator = (Resolve-Path -Path "packages\ReportGenerator.*\tools\net4*\R
 &$ReportGenerator `
     "-reports:opencovertests.xml" `
     "-targetdir:coveragereport" `
-    -reporttypes:MHTML
+    -reporttypes:HTML
 
 if ($LastExitCode -ne 0)
 {
