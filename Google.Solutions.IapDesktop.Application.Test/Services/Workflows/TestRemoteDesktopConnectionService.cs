@@ -19,7 +19,11 @@
 // under the License.
 //
 
+using Google.Solutions.IapDesktop.Application.ObjectModel;
+using Google.Solutions.IapDesktop.Application.Services.Integration;
+using Google.Solutions.IapDesktop.Application.Services.Windows.RemoteDesktop;
 using Google.Solutions.IapDesktop.Application.Test.Services.Windows;
+using Moq;
 using NUnit.Framework;
 using System;
 using System.Collections.Generic;
@@ -30,11 +34,27 @@ using System.Threading.Tasks;
 namespace Google.Solutions.IapDesktop.Application.Test.Services.Workflows
 {
     [TestFixture]
-    public class TestRemoteDesktopConnectionService : WindowTestFixtureBase
+    public class TestRemoteDesktopConnectionService
     {
+        private readonly ServiceRegistry serviceRegistry = new ServiceRegistry();
+
+        [SetUp]
+        public void SetUp()
+        {
+            var jobService = new Mock<IJobService>();
+            this.serviceRegistry.AddSingleton<IJobService>(jobService.Object);
+
+
+        }
+
         [Test]
         public void WhenConnectingByUrlWithoutUsername_ThenConnectionIsMadeWithoutUsername()
         {
+            var remoteDesktopService = new Mock<IRemoteDesktopService>();
+
+            var serviceRegistry = new ServiceRegistry();
+            serviceRegistry.AddSingleton<IRemoteDesktopService>(remoteDesktopService.Object);
+
             Assert.Inconclusive();
         }
 

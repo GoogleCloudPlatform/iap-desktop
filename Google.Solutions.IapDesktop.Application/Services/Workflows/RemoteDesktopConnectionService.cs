@@ -42,7 +42,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.Workflows
 
         private readonly IJobService jobService;
         private readonly IRemoteDesktopService remoteDesktopService;
-        private readonly TunnelBrokerService tunnelBrokerService;
+        private readonly ITunnelBrokerService tunnelBrokerService;
         private readonly ISettingsEditor settingsEditor;
         private readonly CredentialsService credentialsService;
         private readonly ITaskDialog taskDialog;
@@ -54,7 +54,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.Workflows
         {
             this.jobService = serviceProvider.GetService<IJobService>();
             this.remoteDesktopService = serviceProvider.GetService<IRemoteDesktopService>();
-            this.tunnelBrokerService = serviceProvider.GetService<TunnelBrokerService>();
+            this.tunnelBrokerService = serviceProvider.GetService<ITunnelBrokerService>();
             this.settingsEditor = serviceProvider.GetService<ISettingsEditor>();
             this.credentialsService = serviceProvider.GetService<CredentialsService>();
             this.taskDialog = serviceProvider.GetService<ITaskDialog>();

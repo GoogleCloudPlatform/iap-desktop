@@ -104,7 +104,7 @@
     <Compile Include="Services\Adapters\IAuthorizationAdapter.cs" />
     <Compile Include="Services\Integration\ITunnel.cs" />
     <Compile Include="Services\Integration\ProjectInventoryService.cs" />
-    <Compile Include="Services\Integration\TunnelBrokerService.cs" />
+    <Compile Include="Services\Integration\ITunnelBrokerService.cs" />
     <Compile Include="Services\Integration\TunnelService.cs" />
     <Compile Include="Services\Windows\TaskDialog.cs" />
     <Compile Include="Services\Workflows\CredentialsService.cs" />

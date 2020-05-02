@@ -197,7 +197,7 @@ namespace Google.Solutions.IapDesktop
             integrationLayer.AddSingleton<IEventService>(new EventService(mainForm));
             integrationLayer.AddTransient<ProjectInventoryService>();
             integrationLayer.AddTransient<ITunnelService, TunnelService>();
-            integrationLayer.AddSingleton<TunnelBrokerService>();
+            integrationLayer.AddSingleton<ITunnelBrokerService, TunnelBrokerService>();
 
 
             //
