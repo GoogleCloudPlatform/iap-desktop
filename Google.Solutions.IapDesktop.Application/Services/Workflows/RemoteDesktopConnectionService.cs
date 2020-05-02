@@ -44,7 +44,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.Workflows
         private readonly IRemoteDesktopService remoteDesktopService;
         private readonly ITunnelBrokerService tunnelBrokerService;
         private readonly ISettingsEditor settingsEditor;
-        private readonly CredentialsService credentialsService;
+        private readonly ICredentialsService credentialsService;
         private readonly ITaskDialog taskDialog;
 
         private static string MakeNullIfEmpty(string s)
@@ -56,7 +56,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.Workflows
             this.remoteDesktopService = serviceProvider.GetService<IRemoteDesktopService>();
             this.tunnelBrokerService = serviceProvider.GetService<ITunnelBrokerService>();
             this.settingsEditor = serviceProvider.GetService<ISettingsEditor>();
-            this.credentialsService = serviceProvider.GetService<CredentialsService>();
+            this.credentialsService = serviceProvider.GetService<ICredentialsService>();
             this.taskDialog = serviceProvider.GetService<ITaskDialog>();
         }
 

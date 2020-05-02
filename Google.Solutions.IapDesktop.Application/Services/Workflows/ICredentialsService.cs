@@ -32,7 +32,20 @@ using System.Windows.Forms;
 
 namespace Google.Solutions.IapDesktop.Application.Services.Workflows
 {
-    public class CredentialsService
+    public interface ICredentialsService
+    {
+        Task<NetworkCredential> GenerateCredentialsAsync(
+            IWin32Window owner,
+            VmInstanceReference instanceRef,
+            string suggestedUsername = null);
+
+        Task<NetworkCredential> GenerateAndSaveCredentialsAsync(
+            IWin32Window owner,
+            VmInstanceNode vmNode,
+            string suggestedUsername = null);
+    }
+
+    public class CredentialsService : ICredentialsService
     {
         private readonly IJobService jobService;
         private readonly IEventService eventService;
@@ -76,7 +89,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.Workflows
             return credentials;
         }
 
-        internal async Task<NetworkCredential> GenerateAndSaveCredentialsAsync(
+        public async Task<NetworkCredential> GenerateAndSaveCredentialsAsync(
             IWin32Window owner,
             VmInstanceNode vmNode,
             string suggestedUsername = null)

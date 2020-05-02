@@ -322,7 +322,7 @@ namespace Google.Solutions.IapDesktop.Application.ProjectExplorer
             {
                 if (this.treeView.SelectedNode is VmInstanceNode vmNode)
                 {
-                    var credentialService = this.serviceProvider.GetService<CredentialsService>();
+                    var credentialService = this.serviceProvider.GetService<ICredentialsService>();
                     await credentialService.GenerateAndSaveCredentialsAsync(this, vmNode);
                 }
             }

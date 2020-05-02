@@ -46,7 +46,7 @@ namespace Google.Solutions.IapDesktop.Application.ProjectExplorer
         }
     }
 
-    internal abstract class InventoryNode : TreeNode, IProjectExplorerNode, ISettingsObject
+    public abstract class InventoryNode : TreeNode, IProjectExplorerNode, ISettingsObject
     {
         private readonly InventoryNode parent;
         private readonly InventorySettingsBase settings;
@@ -289,7 +289,7 @@ namespace Google.Solutions.IapDesktop.Application.ProjectExplorer
         public bool ShouldSerializeBitmapPersistence() => IsBitmapPersistenceSet;
     }
 
-    internal class ProjectNode : InventoryNode, IProjectExplorerProjectNode
+    public class ProjectNode : InventoryNode, IProjectExplorerProjectNode
     {
         private const int IconIndex = 1;
 
@@ -297,7 +297,7 @@ namespace Google.Solutions.IapDesktop.Application.ProjectExplorer
 
         public string ProjectId => this.Text;
 
-        public ProjectNode(InventorySettingsRepository settingsRepository, string projectId)
+        internal ProjectNode(InventorySettingsRepository settingsRepository, string projectId)
             : base(
                   projectId,
                   IconIndex,
@@ -357,14 +357,14 @@ namespace Google.Solutions.IapDesktop.Application.ProjectExplorer
         }
     }
 
-    internal class ZoneNode : InventoryNode, IProjectExplorerZoneNode
+    public class ZoneNode : InventoryNode, IProjectExplorerZoneNode
     {
         private const int IconIndex = 3;
 
         public string ProjectId => ((ProjectNode)this.Parent).ProjectId;
         public string ZoneId => this.Text;
 
-        public ZoneNode(
+        internal ZoneNode(
             ZoneSettings settings,
             Action<ZoneSettings> saveSettings,
             ProjectNode parent)
@@ -378,7 +378,7 @@ namespace Google.Solutions.IapDesktop.Application.ProjectExplorer
         }
     }
 
-    internal class VmInstanceNode : InventoryNode, IProjectExplorerVmInstanceNode
+    public class VmInstanceNode : InventoryNode, IProjectExplorerVmInstanceNode
     {
         private const int DisconnectedIconIndex = 4;
         private const int ConnectedIconIndex = 5;
@@ -437,7 +437,7 @@ namespace Google.Solutions.IapDesktop.Application.ProjectExplorer
                 .FirstOrDefault();
         }
 
-        public VmInstanceNode(
+        internal VmInstanceNode(
             Instance instance,
             VmInstanceSettings settings,
             Action<VmInstanceSettings> saveSettings,
