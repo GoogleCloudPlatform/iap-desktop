@@ -20,10 +20,7 @@
 //
 
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Runtime.InteropServices;
-using System.Windows.Forms;
 
 namespace Google.Solutions.IapDesktop.Application.Services.Windows
 {
@@ -135,78 +132,5 @@ namespace Google.Solutions.IapDesktop.Application.Services.Windows
             [Out] out int pnButton,
             [Out] out int pnRadioButton,
             [Out] out bool pfVerificationFlagChecked);
-
-        internal static int ShowOptionsTaskDialog(
-            IWin32Window parent,
-            IntPtr mainIcon,
-            string windowTitle,
-            string mainInstruction,
-            string content,
-            string details,
-            IList<string> optionCaptions,
-            string verificationText,
-            out bool verificationFlagPressed)
-        {
-            // The options to show.
-            var options = optionCaptions
-                .Select(caption => Marshal.StringToHGlobalUni(caption))
-                .ToArray();
-
-            // Wrap each option by a TASKDIALOG_BUTTON_RAW structure and 
-            // marshal them one by one into a native memory buffer.
-            var buttonsBuffer = Marshal.AllocHGlobal(
-                Marshal.SizeOf<TASKDIALOG_BUTTON_RAW>() * options.Length);
-
-            var currentButton = buttonsBuffer;
-            for (int i = 0; i < options.Length; i++)
-            {
-                Marshal.StructureToPtr<TASKDIALOG_BUTTON_RAW>(
-                    new TASKDIALOG_BUTTON_RAW()
-                    {
-                        nButtonID = i,
-                        pszButtonText = options[i]
-                    },
-                    currentButton,
-                    false);
-                currentButton += Marshal.SizeOf<TASKDIALOG_BUTTON_RAW>();
-            }
-
-            try
-            {
-                var config = new TASKDIALOGCONFIG()
-                {
-                    cbSize = (uint)Marshal.SizeOf(typeof(TASKDIALOGCONFIG)),
-                    hwndParent = parent.Handle,
-                    dwFlags = TASKDIALOG_FLAGS.TDF_USE_COMMAND_LINKS,
-                    dwCommonButtons = TASKDIALOG_COMMON_BUTTON_FLAGS.TDCBF_OK_BUTTON |
-                                      TASKDIALOG_COMMON_BUTTON_FLAGS.TDCBF_CANCEL_BUTTON,
-                    pszWindowTitle = windowTitle,
-                    MainIcon = mainIcon,
-                    pszMainInstruction = mainInstruction,
-                    pszContent = content,
-                    pButtons = buttonsBuffer,
-                    cButtons = (uint)options.Length,
-                    pszExpandedInformation = details,
-                    pszVerificationText = verificationText
-                };
-
-                TaskDialogIndirect(
-                    ref config,
-                    out int buttonPressed,
-                    out int radioButtonPressed,
-                    out verificationFlagPressed);
-
-                return buttonPressed;
-            }
-            finally
-            {
-                foreach (var option in options)
-                {
-                    Marshal.FreeHGlobal(option);
-                }
-
-                Marshal.FreeHGlobal(buttonsBuffer);
-            }
-        }
     }
 }

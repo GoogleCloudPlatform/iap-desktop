@@ -31,6 +31,7 @@ using Google.Solutions.IapDesktop.Application.Services.Windows.SerialLog;
 using Google.Solutions.IapDesktop.Application.Services.Windows.SettingsEditor;
 using Google.Solutions.IapDesktop.Application.Services.Windows.TunnelsViewer;
 using Google.Solutions.IapDesktop.Application.Services.Workflows;
+using Google.Solutions.IapDesktop.Application.Util;
 using Google.Solutions.IapDesktop.Windows;
 using Microsoft.Win32;
 using System;
@@ -38,6 +39,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Net;
+using System.Windows.Forms;
 
 namespace Google.Solutions.IapDesktop
 {
@@ -47,7 +49,7 @@ namespace Google.Solutions.IapDesktop
 
         private static bool tracingEnabled = false;
 
-        private static TraceSource[] Traces = new[]
+        private static readonly TraceSource[] Traces = new[]
         {
             Google.Solutions.Compute.TraceSources.Compute,
             Google.Solutions.IapDesktop.Application.TraceSources.IapDesktop
@@ -100,13 +102,49 @@ namespace Google.Solutions.IapDesktop
             }
         }
 
+        private static IapRdpUrl ParseCommandLine(string[] args)
+        {
+            if (args.Length == 0)
+            {
+                // No arguments passed.
+                return null;
+            }
+            else if (args.Length > 1)
+            {
+                MessageBox.Show(
+                    "Invalid command line options.", 
+                    "IAP Desktop", 
+                    MessageBoxButtons.OK, 
+                    MessageBoxIcon.Error);
+            }
+            else
+            {
+                try
+                {
+                    return IapRdpUrl.FromString(args[0]);
+                }
+                catch (IapRdpUrlFormatException e)
+                {
+                    MessageBox.Show(
+                        "Invalid command line options.\n\n" + e.Message,
+                        "IAP Desktop",
+                        MessageBoxButtons.OK,
+                        MessageBoxIcon.Error);
+                }
+            }
+
+            Environment.Exit(1);
+            return null;
+        }
 
         /// <summary>
         /// The main entry point for the application.
         /// </summary>
         [STAThread]
-        static void Main()
+        static void Main(string[] args)
         {
+            var startupUrl = ParseCommandLine(args);
+
             IsLoggingEnabled = false;
 
             // Use TLS 1.2 if possible.
@@ -131,6 +169,7 @@ namespace Google.Solutions.IapDesktop
             // 
             // Persistence layer.
             //
+            persistenceLayer.AddTransient<AppProtocolRegistry>();
             persistenceLayer.AddSingleton(new ApplicationSettingsRepository(
                 hkcu.CreateSubKey($@"{BaseRegistryKeyPath}\Application")));
             persistenceLayer.AddSingleton(new AuthSettingsRepository(
@@ -140,6 +179,7 @@ namespace Google.Solutions.IapDesktop
                 hkcu.CreateSubKey($@"{BaseRegistryKeyPath}\Inventory")));
 
             var mainForm = new MainForm(persistenceLayer, windowAndWorkflowLayer);
+            mainForm.StartupUrl = startupUrl;
 
             //
             // Adapter layer.
@@ -157,7 +197,7 @@ namespace Google.Solutions.IapDesktop
             integrationLayer.AddSingleton<IEventService>(new EventService(mainForm));
             integrationLayer.AddTransient<ProjectInventoryService>();
             integrationLayer.AddTransient<ITunnelService, TunnelService>();
-            integrationLayer.AddSingleton<TunnelBrokerService>();
+            integrationLayer.AddSingleton<ITunnelBrokerService, TunnelBrokerService>();
 
 
             //
@@ -168,12 +208,15 @@ namespace Google.Solutions.IapDesktop
             windowAndWorkflowLayer.AddTransient<IProjectPickerDialog, ProjectPickerDialog>();
             windowAndWorkflowLayer.AddTransient<AboutWindow>();
             windowAndWorkflowLayer.AddTransient<IExceptionDialog, ExceptionDialog>();
+            windowAndWorkflowLayer.AddTransient<ITaskDialog, TaskDialog>();
             windowAndWorkflowLayer.AddTransient<IUpdateService, UpdateService>();
-            windowAndWorkflowLayer.AddSingleton<RemoteDesktopService>();
+            windowAndWorkflowLayer.AddSingleton<IRemoteDesktopService, RemoteDesktopService>();
             windowAndWorkflowLayer.AddSingleton<SerialLogService>();
             windowAndWorkflowLayer.AddSingleton<ISettingsEditor, SettingsEditorWindow>();
             windowAndWorkflowLayer.AddSingleton<IProjectExplorer, ProjectExplorerWindow>();
             windowAndWorkflowLayer.AddSingleton<ITunnelsViewer, TunnelsWindow>();
+            windowAndWorkflowLayer.AddTransient<ICredentialsService, CredentialsService>();
+            windowAndWorkflowLayer.AddTransient<RemoteDesktopConnectionService>();
 
 #if DEBUG
             windowAndWorkflowLayer.AddSingleton<DebugWindow>();

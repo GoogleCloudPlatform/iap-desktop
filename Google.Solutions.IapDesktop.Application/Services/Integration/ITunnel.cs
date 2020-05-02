@@ -36,7 +36,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.Integration
         public TunnelDestination Destination => new TunnelDestination(
             this.Endpoint.VmInstance, this.Endpoint.Port);
 
-        public int LocalPort => listener.LocalPort;
+        public virtual int LocalPort => listener.LocalPort;
 
         public IapTunnelingEndpoint Endpoint => endpoint;
 

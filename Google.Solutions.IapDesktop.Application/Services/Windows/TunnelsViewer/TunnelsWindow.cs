@@ -36,7 +36,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.Windows.TunnelsViewer
     public partial class TunnelsWindow : ToolWindow, ITunnelsViewer
     {
         private readonly DockPanel dockPanel;
-        private readonly TunnelBrokerService tunnelBrokerService;
+        private readonly ITunnelBrokerService tunnelBrokerService;
         private readonly IExceptionDialog exceptionDialog;
 
         public TunnelsWindow(IServiceProvider serviceProvider)
@@ -44,7 +44,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.Windows.TunnelsViewer
             InitializeComponent();
 
             this.dockPanel = serviceProvider.GetService<IMainForm>().MainPanel;
-            this.tunnelBrokerService = serviceProvider.GetService<TunnelBrokerService>();
+            this.tunnelBrokerService = serviceProvider.GetService<ITunnelBrokerService>();
             this.exceptionDialog = serviceProvider.GetService<IExceptionDialog>();
 
             this.TabText = this.Text;

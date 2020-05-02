@@ -31,6 +31,7 @@ using Google.Solutions.IapDesktop.Application.Services.Windows;
 using Google.Solutions.IapDesktop.Application.Services.Windows.RemoteDesktop;
 using Google.Solutions.IapDesktop.Application.Services.Windows.TunnelsViewer;
 using Google.Solutions.IapDesktop.Application.Services.Workflows;
+using Google.Solutions.IapDesktop.Application.Util;
 using System;
 using System.ComponentModel;
 using System.Diagnostics;
@@ -51,14 +52,18 @@ namespace Google.Solutions.IapDesktop.Windows
         private readonly ApplicationSettingsRepository applicationSettings;
         private readonly AuthSettingsRepository authSettings;
         private readonly IServiceProvider serviceProvider;
+        private readonly AppProtocolRegistry protocolRegistry;
 
         private WaitDialog waitDialog = null;
+
+        public IapRdpUrl StartupUrl { get; set; }
 
         public MainForm(IServiceProvider bootstrappingServiceProvider, IServiceProvider serviceProvider)
         {
             this.serviceProvider = serviceProvider;
             this.applicationSettings = bootstrappingServiceProvider.GetService<ApplicationSettingsRepository>();
             this.authSettings = bootstrappingServiceProvider.GetService<AuthSettingsRepository>();
+            this.protocolRegistry = bootstrappingServiceProvider.GetService<AppProtocolRegistry>();
 
             // 
             // Restore window settings.
@@ -86,8 +91,10 @@ namespace Google.Solutions.IapDesktop.Windows
             this.dockPanel.DockLeftPortion =
                 this.dockPanel.DockRightPortion = (300.0f / this.Width);
 
-            this.checkForUpdatesOnExitToolStripMenuItem.Checked
-                = this.applicationSettings.GetSettings().IsUpdateCheckEnabled;
+            this.checkForUpdatesOnExitToolStripMenuItem.Checked = 
+                this.applicationSettings.GetSettings().IsUpdateCheckEnabled;
+            this.enableAppProtocolToolStripMenuItem.Checked =
+                this.protocolRegistry.IsRegistered(IapRdpUrl.Scheme, GetType().Assembly.Location);
         }
 
         private void MainForm_FormClosing(object sender, FormClosingEventArgs e)
@@ -173,7 +180,24 @@ namespace Google.Solutions.IapDesktop.Windows
 
             ResumeLayout();
 
-            this.serviceProvider.GetService<IProjectExplorer>().ShowWindow();
+            if (this.StartupUrl != null)
+            {
+                // Dispatch URL.
+                this.serviceProvider
+                    .GetService<RemoteDesktopConnectionService>()
+                    .ActivateOrConnectInstanceWithCredentialPromptAsync(this, this.StartupUrl)
+                    .ContinueWith(t => this.serviceProvider
+                            .GetService<IExceptionDialog>()
+                            .Show(this, "Failed to connect to VM instance", t.Exception), 
+                        CancellationToken.None,
+                        TaskContinuationOptions.OnlyOnFaulted, 
+                        TaskScheduler.FromCurrentSynchronizationContext());
+            }
+            else
+            {
+                // No startup URL provided, just show project explorer then.
+                this.serviceProvider.GetService<IProjectExplorer>().ShowWindow();
+            }
 
 #if DEBUG
             this.serviceProvider.GetService<DebugWindow>().ShowWindow();
@@ -189,7 +213,6 @@ namespace Google.Solutions.IapDesktop.Windows
         //---------------------------------------------------------------------
         // Main menu events.
         //---------------------------------------------------------------------
-
 
         private void aboutToolStripMenuItem_Click(object sender, EventArgs _)
         {
@@ -295,6 +318,22 @@ namespace Google.Solutions.IapDesktop.Windows
             }
         }
 
+        private void enableAppProtocolToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            var registerProtocol =
+                this.enableAppProtocolToolStripMenuItem.Checked =
+                !this.enableAppProtocolToolStripMenuItem.Checked;
+
+            if (registerProtocol)
+            {
+                this.protocolRegistry.Register(IapRdpUrl.Scheme, this.Text, GetType().Assembly.Location);
+            }
+            else
+            {
+                this.protocolRegistry.Unregister(IapRdpUrl.Scheme);
+            }
+        }
+
         private void checkForUpdatesOnExitToolStripMenuItem_Click(object sender, EventArgs e)
         {
             var updateEnabled = !checkForUpdatesOnExitToolStripMenuItem.Checked;
@@ -310,7 +349,7 @@ namespace Google.Solutions.IapDesktop.Windows
 
         private void desktopToolStripMenuItem_DropDownOpening(object sender, EventArgs e)
         {
-            var session = this.serviceProvider.GetService<RemoteDesktopService>().ActiveSession;
+            var session = this.serviceProvider.GetService<IRemoteDesktopService>().ActiveSession;
             foreach (var item in this.desktopToolStripMenuItem.DropDownItems.OfType<ToolStripDropDownItem>())
             {
                 item.Enabled = session != null && session.IsConnected;
@@ -333,7 +372,7 @@ namespace Google.Solutions.IapDesktop.Windows
         {
             try
             {
-                var session = this.serviceProvider.GetService<RemoteDesktopService>().ActiveSession;
+                var session = this.serviceProvider.GetService<IRemoteDesktopService>().ActiveSession;
                 if (session != null)
                 {
                     action(session);
@@ -403,7 +442,6 @@ namespace Google.Solutions.IapDesktop.Windows
                 MessageBoxButtons.YesNoCancel,
                 MessageBoxIcon.Warning) == DialogResult.Yes;
         }
-
     }
 
     internal abstract class AsyncEvent

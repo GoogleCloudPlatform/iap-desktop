@@ -19,6 +19,7 @@
 // under the License.
 //
 
+using Google.Solutions.Compute;
 using Google.Solutions.IapDesktop.Application.Services.Persistence;
 using Google.Solutions.IapDesktop.Application.Util;
 using NUnit.Framework;
@@ -127,7 +128,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Util
         public void WhenTripleSlashUsed_ThenToStringReturnsSameString()
         {
             var url = "iap-rdp:///my-project/us-central1-a/my-instance";
-            Assert.AreEqual(url, IapRdpUrl.FromString(url).ToString());
+            Assert.AreEqual(url, IapRdpUrl.FromString(url).ToString(false));
         }
 
         //---------------------------------------------------------------------
@@ -213,6 +214,57 @@ namespace Google.Solutions.IapDesktop.Application.Test.Util
             Assert.AreEqual(RdpColorDepth.DeepColor, settings.ColorDepth);
             Assert.AreEqual(RdpAudioMode.DoNotPlay, settings.AudioMode);
             Assert.AreEqual(RdpRedirectClipboard.Disabled, settings.RedirectClipboard);
+        }
+
+        [Test]
+        public void WhenSettingsContainsEscapableChars_ThenToStringEscapesThem()
+        {
+            var url = new IapRdpUrl(
+                new VmInstanceReference("project-1", "us-central1-a", "instance-1"),
+                new VmInstanceSettings()
+                {
+                    Username = "Tom & Jerry?",
+                    Domain = "\"?\""
+                });
+
+            Assert.AreEqual(
+                "iap-rdp:///project-1/us-central1-a/instance-1?" + 
+                    "Username=Tom+%26+Jerry%3f&Domain=%22%3f%22&" +
+                    "ConnectionBar=0&DesktopSize=2&AuthenticationLevel=3&ColorDepth=1&AudioMode=0&RedirectClipboard=1", 
+                url.ToString());
+        }
+
+        [Test]
+        public void WhenParseStringCreatedByToString_ResultIsSame()
+        {
+            var url = new IapRdpUrl(
+                new VmInstanceReference("project-1", "us-central1-a", "instance-1"),
+                new VmInstanceSettings()
+                {
+                    Username = "user",
+                    Domain = "domain",
+                    ConnectionBar = RdpConnectionBarState.Off,
+                    DesktopSize = RdpDesktopSize.ScreenSize,
+                    AuthenticationLevel = RdpAuthenticationLevel.RequireServerAuthentication,
+                    ColorDepth = RdpColorDepth.TrueColor,
+                    AudioMode = RdpAudioMode.PlayOnServer,
+                    RedirectClipboard = RdpRedirectClipboard.Disabled
+                });
+
+            var copy = IapRdpUrl.FromString(url.ToString());
+
+            Assert.AreEqual("project-1", copy.Instance.ProjectId);
+            Assert.AreEqual("us-central1-a", copy.Instance.Zone);
+            Assert.AreEqual("instance-1", copy.Instance.InstanceName);
+
+            Assert.AreEqual("user", copy.Settings.Username);
+            Assert.AreEqual("domain", copy.Settings.Domain);
+            Assert.AreEqual(RdpConnectionBarState.Off, copy.Settings.ConnectionBar);
+            Assert.AreEqual(RdpDesktopSize.ScreenSize, copy.Settings.DesktopSize);
+            Assert.AreEqual(RdpAuthenticationLevel.RequireServerAuthentication, copy.Settings.AuthenticationLevel);
+            Assert.AreEqual(RdpColorDepth.TrueColor, copy.Settings.ColorDepth);
+            Assert.AreEqual(RdpAudioMode.PlayOnServer, copy.Settings.AudioMode);
+            Assert.AreEqual(RdpRedirectClipboard.Disabled, copy.Settings.RedirectClipboard);
         }
     }
 }

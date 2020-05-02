@@ -40,7 +40,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.Windows
     {
         private readonly IJobService jobService;
         private readonly IEventService eventService;
-        private readonly RemoteDesktopService rdpService;
+        private readonly IRemoteDesktopService rdpService;
         private readonly DockPanel dockPanel;
         private readonly IServiceProvider serviceProvider;
 
@@ -50,7 +50,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.Windows
 
             this.jobService = serviceProvider.GetService<IJobService>();
             this.eventService = serviceProvider.GetService<IEventService>();
-            this.rdpService = serviceProvider.GetService<RemoteDesktopService>();
+            this.rdpService = serviceProvider.GetService<IRemoteDesktopService>();
 
             this.TabText = this.Text;
 

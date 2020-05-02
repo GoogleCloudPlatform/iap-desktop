@@ -21,8 +21,6 @@
 
 using Google.Apis.Compute.v1.Data;
 using Google.Solutions.Compute;
-using Google.Solutions.Compute.Iap;
-using Google.Solutions.Compute.Net;
 using Google.Solutions.IapDesktop.Application.ObjectModel;
 using Google.Solutions.IapDesktop.Application.Services.Adapters;
 using Google.Solutions.IapDesktop.Application.Services.Integration;
@@ -31,14 +29,18 @@ using Google.Solutions.IapDesktop.Application.Services.Windows;
 using Google.Solutions.IapDesktop.Application.Services.Windows.RemoteDesktop;
 using Google.Solutions.IapDesktop.Application.Services.Windows.SerialLog;
 using Google.Solutions.IapDesktop.Application.Services.Windows.SettingsEditor;
+using Google.Solutions.IapDesktop.Application.Services.Workflows;
 using Google.Solutions.IapDesktop.Application.Util;
 using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
+using System.Text;
 using System.Threading.Tasks;
+using System.Web;
 using System.Windows.Forms;
 using WeifenLuo.WinFormsUI.Docking;
 
@@ -49,8 +51,6 @@ namespace Google.Solutions.IapDesktop.Application.ProjectExplorer
     [ComVisible(false)]
     public partial class ProjectExplorerWindow : ToolWindow, IProjectExplorer
     {
-        private const int RemoteDesktopPort = 3389;
-
         private readonly DockPanel dockPanel;
         private readonly IMainForm mainForm;
         private readonly IEventService eventService;
@@ -59,7 +59,7 @@ namespace Google.Solutions.IapDesktop.Application.ProjectExplorer
         private readonly InventorySettingsRepository settingsRepository;
         private readonly IAuthorizationAdapter authService;
         private readonly IServiceProvider serviceProvider;
-        private readonly RemoteDesktopService remoteDesktopService;
+        private readonly IRemoteDesktopService remoteDesktopService;
 
         private readonly CloudNode rootNode = new CloudNode();
 
@@ -92,7 +92,7 @@ namespace Google.Solutions.IapDesktop.Application.ProjectExplorer
             this.projectInventoryService = serviceProvider.GetService<ProjectInventoryService>();
             this.settingsRepository = serviceProvider.GetService<InventorySettingsRepository>();
             this.authService = serviceProvider.GetService<IAuthorizationAdapter>();
-            this.remoteDesktopService = serviceProvider.GetService<RemoteDesktopService>();
+            this.remoteDesktopService = serviceProvider.GetService<IRemoteDesktopService>();
 
             this.eventService.BindAsyncHandler<ProjectInventoryService.ProjectAddedEvent>(OnProjectAdded);
             this.eventService.BindHandler<ProjectInventoryService.ProjectDeletedEvent>(OnProjectDeleted);
@@ -136,7 +136,7 @@ namespace Google.Solutions.IapDesktop.Application.ProjectExplorer
                 .FirstOrDefault(vm => vm.InstanceName == reference.InstanceName); ;
         }
 
-        private async Task AddProjectAsync()
+        private async Task<bool> AddProjectAsync()
         {
             await this.jobService.RunInBackground(
                 new JobDescription("Loading projects..."),
@@ -149,137 +149,11 @@ namespace Google.Solutions.IapDesktop.Application.ProjectExplorer
             if (projectId == null)
             {
                 // Cancelled.
-                return;
-            }
-
-            await this.projectInventoryService.AddProjectAsync(projectId);
-
-        }
-
-        private async Task<bool> GenerateCredentials(VmInstanceNode vmNode)
-        {
-            var suggestedUsername = this.authService.Authorization.SuggestWindowsUsername();
-
-            // Prompt for username to use.
-            var username = new GenerateCredentialsDialog().PromptForUsername(this, suggestedUsername);
-            if (username == null)
-            {
                 return false;
             }
 
-            var credentials = await this.jobService.RunInBackground(
-                new JobDescription("Generating Windows logon credentials..."),
-                token =>
-                {
-                    return this.serviceProvider.GetService<IComputeEngineAdapter>()
-                        .ResetWindowsUserAsync(vmNode.Reference, username, token);
-                });
-
-            new ShowCredentialsDialog().ShowDialog(
-                this,
-                credentials.UserName,
-                credentials.Password);
-
-            // Update node to persist settings.
-            vmNode.Username = credentials.UserName;
-            vmNode.CleartextPassword = credentials.Password;
-            vmNode.Domain = null;
-            vmNode.SaveChanges();
-
-            // Fire an event to update anybody using the node.
-            await this.eventService.FireAsync(new ProjectExplorerNodeSelectedEvent(vmNode));
-
+            await this.projectInventoryService.AddProjectAsync(projectId);
             return true;
-        }
-
-        private async Task ConnectInstance(VmInstanceNode vmNode)
-        {
-            if (this.remoteDesktopService.TryActivate(vmNode.Reference))
-            {
-                // RDP session was active, nothing left to do.
-                return;
-            }
-
-            if (string.IsNullOrEmpty(vmNode.Username) || vmNode.Password == null || vmNode.Password.Length == 0)
-            {
-                int selectedOption = UnsafeNativeMethods.ShowOptionsTaskDialog(
-                    this,
-                    UnsafeNativeMethods.TD_INFORMATION_ICON,
-                    "Credentials",
-                    $"You have not configured any credentials for {vmNode.InstanceName}",
-                    "Would you like to configure or generate credentials now?",
-                    null,
-                    new[]
-                    {
-                        "Configure credentials",
-                        "Generate new credentials",     // Same as pressing 'OK'
-                        "Connect anyway"                // Same as pressing 'Cancel'
-                    },
-                    null,//"Do not show this prompt again",
-                    out bool donotAskAgain);
-
-                if (selectedOption == 0)
-                {
-                    // Configure credentials -> jump to settings.
-                    this.serviceProvider
-                        .GetService<ISettingsEditor>()
-                        .ShowWindow(vmNode);
-
-                    return;
-                }
-                else if (selectedOption == 1)
-                {
-                    // Generate new credentials.
-                    if (!await GenerateCredentials(vmNode))
-                    {
-                        return;
-                    }
-                }
-                else if (selectedOption == 2)
-                {
-                    // Cancel - just continue connecting.
-                }
-            }
-
-            var effectiveSettings = vmNode.EffectiveSettingsWithInheritanceApplied;
-
-            var tunnel = await this.jobService.RunInBackground(
-                new JobDescription("Opening Cloud IAP tunnel..."),
-                async token =>
-                {
-                    try
-                    {
-                        var tunnelBrokerService = this.serviceProvider.GetService<TunnelBrokerService>();
-                        var destination = new TunnelDestination(vmNode.Reference, RemoteDesktopPort);
-
-                        // Give IAP the same timeout for probing as RDP itself.
-                        // Note that the timeouts are not additive.
-                        var timeout = TimeSpan.FromSeconds(effectiveSettings.ConnectionTimeout);
-
-                        return await tunnelBrokerService.ConnectAsync(destination, timeout);
-                    }
-                    catch (NetworkStreamClosedException e)
-                    {
-                        throw new ApplicationException(
-                            "Connecting to the instance failed. Make sure that you have " +
-                            "configured your firewall rules to permit Cloud IAP access " +
-                            $"to {vmNode.InstanceName}",
-                            e);
-                    }
-                    catch (UnauthorizedException)
-                    {
-                        throw new ApplicationException(
-                            "You are not authorized to connect to this VM instance.\n\n" +
-                            $"Verify that the Cloud IAP API is enabled in the project {vmNode.Reference.ProjectId} " +
-                            "and that your user has the 'IAP-secured Tunnel User' role.");
-                    }
-                });
-
-            this.remoteDesktopService.Connect(
-                vmNode.Reference,
-                "localhost",
-                (ushort)tunnel.LocalPort,
-                effectiveSettings);
         }
 
         //---------------------------------------------------------------------
@@ -448,7 +322,8 @@ namespace Google.Solutions.IapDesktop.Application.ProjectExplorer
             {
                 if (this.treeView.SelectedNode is VmInstanceNode vmNode)
                 {
-                    await GenerateCredentials(vmNode);
+                    var credentialService = this.serviceProvider.GetService<ICredentialsService>();
+                    await credentialService.GenerateAndSaveCredentialsAsync(this, vmNode);
                 }
             }
             catch (TaskCanceledException)
@@ -470,7 +345,9 @@ namespace Google.Solutions.IapDesktop.Application.ProjectExplorer
                 if (this.treeView.SelectedNode is VmInstanceNode vmNode &&
                     vmNode.IsRunning)
                 {
-                    await ConnectInstance(vmNode);
+                    await this.serviceProvider
+                        .GetService<RemoteDesktopConnectionService>()
+                        .ActivateOrConnectInstanceWithCredentialPromptAsync(this, vmNode);
                 }
             }
             catch (TaskCanceledException)
@@ -505,6 +382,49 @@ namespace Google.Solutions.IapDesktop.Application.ProjectExplorer
                     .GetService<IExceptionDialog>()
                     .Show(this, "Opening serial log failed", e);
             }
+        }
+
+        private void generateHtmlPageToolStripMenuItem_Click_1(object sender, EventArgs e)
+        {
+#if DEBUG
+            if (this.treeView.SelectedNode is ProjectNode projectNode)
+            {
+                var buffer = new StringBuilder();
+                buffer.Append("<html><body>");
+
+                buffer.Append($"<h1>{HttpUtility.HtmlEncode(projectNode.ProjectId)}</h1>");
+
+                foreach (var zoneNode in projectNode.Nodes.Cast<ZoneNode>())
+                {
+                    buffer.Append($"<h2>{HttpUtility.HtmlEncode(zoneNode.ZoneId)}</h2>");
+
+                    buffer.Append($"<ul>");
+
+                    foreach (var vmNode in zoneNode.Nodes.Cast<VmInstanceNode>())
+                    {
+                        buffer.Append($"<li>");
+                        buffer.Append($"<a href='{new IapRdpUrl(vmNode.Reference, vmNode.EffectiveSettingsWithInheritanceApplied)}'>");
+                        buffer.Append($"{HttpUtility.HtmlEncode(vmNode.InstanceName)}</a>");
+                        buffer.Append($"</li>");
+                    }
+
+                    buffer.Append($"</ul>");
+                }
+
+                buffer.Append("</body></html>");
+
+                var tempFile = Path.GetTempFileName() + ".html";
+                File.WriteAllText(tempFile, buffer.ToString());
+
+                Process.Start(new ProcessStartInfo()
+                {
+                    UseShellExecute = true,
+                    Verb = "open",
+                    FileName = tempFile
+                });
+
+            }
+#endif
         }
 
         //---------------------------------------------------------------------
@@ -580,6 +500,13 @@ namespace Google.Solutions.IapDesktop.Application.ProjectExplorer
                     this.generateCredentialsToolStripMenuItem.Enabled =
                     this.showSerialLogToolStripMenuItem.Enabled =
                         (selectedNode is VmInstanceNode) && ((VmInstanceNode)selectedNode).IsRunning;
+
+#if DEBUG
+                this.debugToolStripMenuItem.Visible = 
+                    this.generateHtmlPageToolStripMenuItem.Visible = (selectedNode is ProjectNode);
+#else
+                this.debugToolStripMenuItem.Visible = false;
+#endif
 
                 //
                 // Fire event.
@@ -750,9 +677,14 @@ namespace Google.Solutions.IapDesktop.Application.ProjectExplorer
 
         public async Task ShowAddProjectDialogAsync()
         {
-            ShowWindow();
-
-            await AddProjectAsync();
+            // NB. The project explorer might be hidden and no project
+            // might have been loaded yet.
+            if (await AddProjectAsync())
+            {
+                // Show the window. That might kick of an asynchronous
+                // Refresh if the window previously was not visible.
+                ShowWindow();
+            }
         }
     }
 }

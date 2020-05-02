@@ -46,7 +46,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Windows
         [SetUp]
         public void RegisterServices()
         {
-            this.serviceRegistry.AddSingleton<RemoteDesktopService>();
+            this.serviceRegistry.AddSingleton<IRemoteDesktopService, RemoteDesktopService>();
         }
 
         [Test]

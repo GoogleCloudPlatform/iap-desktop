@@ -27,7 +27,20 @@ using System.Threading.Tasks;
 
 namespace Google.Solutions.IapDesktop.Application.Services.Integration
 {
-    public class TunnelBrokerService
+    public interface ITunnelBrokerService
+    {
+        IEnumerable<Tunnel> OpenTunnels { get; }
+
+        bool IsConnected(TunnelDestination endpoint);
+
+        Task<Tunnel> ConnectAsync(TunnelDestination endpoint, TimeSpan timeout);
+
+        Task DisconnectAsync(TunnelDestination endpoint);
+
+        Task DisconnectAllAsync();
+    }
+
+    public class TunnelBrokerService : ITunnelBrokerService
     {
         private readonly ITunnelService tunnelService;
         private readonly IEventService eventService;

@@ -21,7 +21,7 @@
 using System;
 using System.Windows.Forms;
 
-namespace Google.Solutions.IapDesktop.Application.ProjectExplorer
+namespace Google.Solutions.IapDesktop.Application.Services.Workflows
 {
     public partial class GenerateCredentialsDialog : Form
     {

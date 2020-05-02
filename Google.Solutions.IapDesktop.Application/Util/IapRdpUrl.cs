@@ -22,8 +22,10 @@
 using Google.Solutions.Compute;
 using Google.Solutions.IapDesktop.Application.Services.Persistence;
 using System;
+using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Diagnostics;
+using System.Linq;
 using System.Runtime.Serialization;
 using System.Text.RegularExpressions;
 using System.Web;
@@ -156,10 +158,31 @@ namespace Google.Solutions.IapDesktop.Application.Util
                 CreateVmInstanceSettingsFromQuery(instanceRef, uri.Query));
         }
 
-        public override string ToString()
+        public string ToString(bool includeSettingsAsQuery)
         {
-            return $"{Scheme}:///{this.Instance.ProjectId}/{this.Instance.Zone}/{this.Instance.InstanceName}";
+            var url = $"{Scheme}:///{this.Instance.ProjectId}/{this.Instance.Zone}/{this.Instance.InstanceName}";
+
+            if (includeSettingsAsQuery)
+            {
+                var parameters = new Dictionary<string, string>()
+                {
+                    { "Username", this.Settings.Username },
+                    { "Domain", this.Settings.Domain },
+                    { "ConnectionBar", ((int)this.Settings.ConnectionBar).ToString() },
+                    { "DesktopSize", ((int)this.Settings.DesktopSize).ToString() },
+                    { "AuthenticationLevel", ((int)this.Settings.AuthenticationLevel).ToString() },
+                    { "ColorDepth", ((int)this.Settings.ColorDepth).ToString() },
+                    { "AudioMode", ((int)this.Settings.AudioMode).ToString() },
+                    { "RedirectClipboard", ((int)this.Settings.RedirectClipboard).ToString() },
+                };
+
+                var formattedParameters = parameters.Select(p => p.Key + "=" + HttpUtility.UrlEncode(p.Value));
+                url += $"?{String.Join("&", formattedParameters)}";
+            }
+
+            return url;
         }
+        public override string ToString() => ToString(true);
     }
 
     [Serializable]
