@@ -114,6 +114,9 @@ Write-Host "========================================================"
 $Env:GOOGLE_APPLICATION_CREDENTIALS = "${env:KOKORO_GFILE_DIR}\iap-windows-rdc-plugin-tests.json"
 $Env:GOOGLE_CLOUD_PROJECT = (Get-Content $Env:GOOGLE_APPLICATION_CREDENTIALS | Out-String | ConvertFrom-Json).project_id
 
+# NB. The OpenCover version must match the CLR version installed on Kokoro. The version
+# is defined in the NuGet dependencies of the main project.
+
 $OpenCover = (Resolve-Path -Path "packages\OpenCover.*\tools\OpenCover.Console.exe").Path
 $Nunit = (Resolve-Path -Path "packages\NUnit.ConsoleRunner.*\tools\nunit3-console.exe").Path
 
@@ -149,7 +152,7 @@ $ReportGenerator = (Resolve-Path -Path "packages\ReportGenerator.*\tools\net4*\R
 &$ReportGenerator `
     "-reports:opencovertests.xml" `
     "-targetdir:coveragereport" `
-    -reporttypes:Html
+    -reporttypes:MHTML
 
 if ($LastExitCode -ne 0)
 {
