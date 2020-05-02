@@ -49,12 +49,13 @@ namespace Google.Solutions.IapDesktop.Application.Services.Workflows
 
         public async Task<NetworkCredential> GenerateCredentialsAsync(
             IWin32Window owner,
-            VmInstanceReference instanceRef)
+            VmInstanceReference instanceRef,
+            string suggestedUsername = null)
         {
-            var suggestedUsername = this.authService.Authorization.SuggestWindowsUsername();
-
             // Prompt for username to use.
-            var username = new GenerateCredentialsDialog().PromptForUsername(owner, suggestedUsername);
+            var username = new GenerateCredentialsDialog().PromptForUsername(
+                owner,
+                suggestedUsername ?? this.authService.Authorization.SuggestWindowsUsername());
             if (username == null)
             {
                 return null;
@@ -76,10 +77,14 @@ namespace Google.Solutions.IapDesktop.Application.Services.Workflows
         }
 
         internal async Task<NetworkCredential> GenerateAndSaveCredentialsAsync(
-            IWin32Window owner, 
-            VmInstanceNode vmNode)
+            IWin32Window owner,
+            VmInstanceNode vmNode,
+            string suggestedUsername = null)
         {
-            var credentials = await GenerateCredentialsAsync(owner, vmNode.Reference);
+            var credentials = await GenerateCredentialsAsync(
+                owner,
+                vmNode.Reference,
+                suggestedUsername ?? this.authService.Authorization.SuggestWindowsUsername());
             if (credentials == null)
             {
                 // Aborted.

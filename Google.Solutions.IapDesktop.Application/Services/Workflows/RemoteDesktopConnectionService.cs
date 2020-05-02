@@ -46,6 +46,9 @@ namespace Google.Solutions.IapDesktop.Application.Services.Workflows
         private readonly ISettingsEditor settingsEditor;
         private readonly CredentialsService credentialsService;
 
+        private static string MakeNullIfEmpty(string s)
+            => string.IsNullOrEmpty(s) ? null : s;
+
         public RemoteDesktopConnectionService(IServiceProvider serviceProvider)
         {
             this.jobService = serviceProvider.GetService<IJobService>();
@@ -180,7 +183,10 @@ namespace Google.Solutions.IapDesktop.Application.Services.Workflows
             if (selectedOption == 0)
             {
                 // Generate new credentials.
-                var credentials = await this.credentialsService.GenerateCredentialsAsync(owner, url.Instance);
+                var credentials = await this.credentialsService.GenerateCredentialsAsync(
+                    owner, 
+                    url.Instance,
+                    MakeNullIfEmpty(url.Settings.Username));
                 if (credentials != null)
                 {
                     // Amend settings.
