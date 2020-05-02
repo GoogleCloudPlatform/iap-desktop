@@ -382,6 +382,7 @@ namespace Google.Solutions.IapDesktop.Application.ProjectExplorer
     {
         private const int DisconnectedIconIndex = 4;
         private const int ConnectedIconIndex = 5;
+        private const int StoppedIconIndex = 6;
 
         public VmInstanceReference Reference
             => new VmInstanceReference(this.ProjectId, this.ZoneId, this.InstanceName);
@@ -516,9 +517,21 @@ namespace Google.Solutions.IapDesktop.Application.ProjectExplorer
         internal bool IsConnected
         {
             get => this.ImageIndex == ConnectedIconIndex;
-            set => this.ImageIndex = this.SelectedImageIndex = value
-                ? ConnectedIconIndex
-                : DisconnectedIconIndex;
+            set 
+            {
+                if (value)
+                {
+                    this.ImageIndex = this.SelectedImageIndex = ConnectedIconIndex;
+                }
+                else if (!IsRunning)
+                {
+                    this.ImageIndex = this.SelectedImageIndex = StoppedIconIndex;
+                }
+                else
+                {
+                    this.ImageIndex = this.SelectedImageIndex = DisconnectedIconIndex;
+                }
+            }
         }
     }
 }
