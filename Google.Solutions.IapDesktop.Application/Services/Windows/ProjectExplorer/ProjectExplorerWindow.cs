@@ -59,7 +59,7 @@ namespace Google.Solutions.IapDesktop.Application.ProjectExplorer
         private readonly InventorySettingsRepository settingsRepository;
         private readonly IAuthorizationAdapter authService;
         private readonly IServiceProvider serviceProvider;
-        private readonly RemoteDesktopService remoteDesktopService;
+        private readonly IRemoteDesktopService remoteDesktopService;
 
         private readonly CloudNode rootNode = new CloudNode();
 
@@ -92,7 +92,7 @@ namespace Google.Solutions.IapDesktop.Application.ProjectExplorer
             this.projectInventoryService = serviceProvider.GetService<ProjectInventoryService>();
             this.settingsRepository = serviceProvider.GetService<InventorySettingsRepository>();
             this.authService = serviceProvider.GetService<IAuthorizationAdapter>();
-            this.remoteDesktopService = serviceProvider.GetService<RemoteDesktopService>();
+            this.remoteDesktopService = serviceProvider.GetService<IRemoteDesktopService>();
 
             this.eventService.BindAsyncHandler<ProjectInventoryService.ProjectAddedEvent>(OnProjectAdded);
             this.eventService.BindHandler<ProjectInventoryService.ProjectDeletedEvent>(OnProjectDeleted);

@@ -42,7 +42,22 @@ namespace Google.Solutions.IapDesktop.Application.Services.Windows.RemoteDesktop
         void ShowTaskManager();
     }
 
-    public class RemoteDesktopService
+    public interface IRemoteDesktopService
+    {
+        IRemoteDesktopSession ActiveSession { get; }
+
+        bool IsConnected(VmInstanceReference vmInstance);
+
+        bool TryActivate(VmInstanceReference vmInstance);
+
+        IRemoteDesktopSession Connect(
+            VmInstanceReference vmInstance,
+            string server,
+            ushort port,
+            VmInstanceSettings settings);
+    }
+
+    public class RemoteDesktopService : IRemoteDesktopService
     {
         private readonly IExceptionDialog exceptionDialog;
         private readonly IEventService eventService;

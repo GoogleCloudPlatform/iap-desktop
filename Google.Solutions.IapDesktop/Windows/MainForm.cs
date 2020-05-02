@@ -349,7 +349,7 @@ namespace Google.Solutions.IapDesktop.Windows
 
         private void desktopToolStripMenuItem_DropDownOpening(object sender, EventArgs e)
         {
-            var session = this.serviceProvider.GetService<RemoteDesktopService>().ActiveSession;
+            var session = this.serviceProvider.GetService<IRemoteDesktopService>().ActiveSession;
             foreach (var item in this.desktopToolStripMenuItem.DropDownItems.OfType<ToolStripDropDownItem>())
             {
                 item.Enabled = session != null && session.IsConnected;
@@ -372,7 +372,7 @@ namespace Google.Solutions.IapDesktop.Windows
         {
             try
             {
-                var session = this.serviceProvider.GetService<RemoteDesktopService>().ActiveSession;
+                var session = this.serviceProvider.GetService<IRemoteDesktopService>().ActiveSession;
                 if (session != null)
                 {
                     action(session);

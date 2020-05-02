@@ -41,7 +41,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.Workflows
         private const int RemoteDesktopPort = 3389;
 
         private readonly IJobService jobService;
-        private readonly RemoteDesktopService remoteDesktopService;
+        private readonly IRemoteDesktopService remoteDesktopService;
         private readonly TunnelBrokerService tunnelBrokerService;
         private readonly ISettingsEditor settingsEditor;
         private readonly CredentialsService credentialsService;
@@ -53,7 +53,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.Workflows
         public RemoteDesktopConnectionService(IServiceProvider serviceProvider)
         {
             this.jobService = serviceProvider.GetService<IJobService>();
-            this.remoteDesktopService = serviceProvider.GetService<RemoteDesktopService>();
+            this.remoteDesktopService = serviceProvider.GetService<IRemoteDesktopService>();
             this.tunnelBrokerService = serviceProvider.GetService<TunnelBrokerService>();
             this.settingsEditor = serviceProvider.GetService<ISettingsEditor>();
             this.credentialsService = serviceProvider.GetService<CredentialsService>();

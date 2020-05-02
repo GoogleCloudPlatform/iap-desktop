@@ -172,7 +172,7 @@
     <Compile Include="Services\Windows\RemoteDesktop\RemoteDesktopPane.Designer.cs">
       <DependentUpon>RemoteDesktopPane.cs</DependentUpon>
     </Compile>
-    <Compile Include="Services\Windows\RemoteDesktop\RemoteDesktopService.cs" />
+    <Compile Include="Services\Windows\RemoteDesktop\IRemoteDesktopService.cs" />
     <Compile Include="Services\Windows\SerialLog\SerialLogService.cs" />
     <Compile Include="Services\Windows\SerialLog\SerialLogWindow.cs">
       <SubType>Form</SubType>

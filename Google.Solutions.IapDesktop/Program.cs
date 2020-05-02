@@ -210,7 +210,7 @@ namespace Google.Solutions.IapDesktop
             windowAndWorkflowLayer.AddTransient<IExceptionDialog, ExceptionDialog>();
             windowAndWorkflowLayer.AddTransient<ITaskDialog, TaskDialog>();
             windowAndWorkflowLayer.AddTransient<IUpdateService, UpdateService>();
-            windowAndWorkflowLayer.AddSingleton<RemoteDesktopService>();
+            windowAndWorkflowLayer.AddSingleton<IRemoteDesktopService, RemoteDesktopService>();
             windowAndWorkflowLayer.AddSingleton<SerialLogService>();
             windowAndWorkflowLayer.AddSingleton<ISettingsEditor, SettingsEditorWindow>();
             windowAndWorkflowLayer.AddSingleton<IProjectExplorer, ProjectExplorerWindow>();
