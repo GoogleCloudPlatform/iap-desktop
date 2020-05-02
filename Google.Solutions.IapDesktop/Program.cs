@@ -49,7 +49,7 @@ namespace Google.Solutions.IapDesktop
 
         private static bool tracingEnabled = false;
 
-        private static TraceSource[] Traces = new[]
+        private static readonly TraceSource[] Traces = new[]
         {
             Google.Solutions.Compute.TraceSources.Compute,
             Google.Solutions.IapDesktop.Application.TraceSources.IapDesktop
@@ -208,6 +208,7 @@ namespace Google.Solutions.IapDesktop
             windowAndWorkflowLayer.AddTransient<IProjectPickerDialog, ProjectPickerDialog>();
             windowAndWorkflowLayer.AddTransient<AboutWindow>();
             windowAndWorkflowLayer.AddTransient<IExceptionDialog, ExceptionDialog>();
+            windowAndWorkflowLayer.AddTransient<ITaskDialog, TaskDialog>();
             windowAndWorkflowLayer.AddTransient<IUpdateService, UpdateService>();
             windowAndWorkflowLayer.AddSingleton<RemoteDesktopService>();
             windowAndWorkflowLayer.AddSingleton<SerialLogService>();

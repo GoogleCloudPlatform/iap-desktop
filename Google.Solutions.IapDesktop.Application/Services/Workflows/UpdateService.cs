@@ -39,12 +39,14 @@ namespace Google.Solutions.IapDesktop.Application.Services.Workflows
     public class UpdateService : IUpdateService
     {
         private readonly GithubAdapter githubAdapter;
+        private readonly ITaskDialog taskDialog;
 
         public Version InstalledVersion => typeof(UpdateService).Assembly.GetName().Version;
 
         public UpdateService(IServiceProvider serviceProvider)
         {
             this.githubAdapter = serviceProvider.GetService<GithubAdapter>();
+            this.taskDialog = serviceProvider.GetService<ITaskDialog>();
         }
 
         /// <summary>
@@ -76,7 +78,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.Workflows
                 }
 
                 // Prompt for upgrade.
-                int selectedOption = UnsafeNativeMethods.ShowOptionsTaskDialog(
+                int selectedOption = this.taskDialog.ShowOptionsTaskDialog(
                     parent,
                     UnsafeNativeMethods.TD_SHIELD_ICON_INFO_BACKGROUND,
                     "Update available",

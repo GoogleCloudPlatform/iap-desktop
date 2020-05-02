@@ -45,6 +45,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.Workflows
         private readonly TunnelBrokerService tunnelBrokerService;
         private readonly ISettingsEditor settingsEditor;
         private readonly CredentialsService credentialsService;
+        private readonly ITaskDialog taskDialog;
 
         private static string MakeNullIfEmpty(string s)
             => string.IsNullOrEmpty(s) ? null : s;
@@ -56,6 +57,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.Workflows
             this.tunnelBrokerService = serviceProvider.GetService<TunnelBrokerService>();
             this.settingsEditor = serviceProvider.GetService<ISettingsEditor>();
             this.credentialsService = serviceProvider.GetService<CredentialsService>();
+            this.taskDialog = serviceProvider.GetService<ITaskDialog>();
         }
 
         private async Task ConnectInstanceAsync(
@@ -112,7 +114,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.Workflows
 
             if (string.IsNullOrEmpty(vmNode.Username) || vmNode.Password == null || vmNode.Password.Length == 0)
             {
-                int selectedOption = UnsafeNativeMethods.ShowOptionsTaskDialog(
+                int selectedOption = this.taskDialog.ShowOptionsTaskDialog(
                     owner,
                     UnsafeNativeMethods.TD_INFORMATION_ICON,
                     "Credentials",
@@ -165,7 +167,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.Workflows
                 return;
             }
 
-            int selectedOption = UnsafeNativeMethods.ShowOptionsTaskDialog(
+            int selectedOption = this.taskDialog.ShowOptionsTaskDialog(
                 owner,
                 UnsafeNativeMethods.TD_INFORMATION_ICON,
                 "Credentials",
