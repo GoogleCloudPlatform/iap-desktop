@@ -120,13 +120,11 @@ $Env:GOOGLE_CLOUD_PROJECT = (Get-Content $Env:GOOGLE_APPLICATION_CREDENTIALS | O
 $OpenCover = (Resolve-Path -Path "packages\OpenCover.*\tools\OpenCover.Console.exe").Path
 $Nunit = (Resolve-Path -Path "packages\NUnit.ConsoleRunner.*\tools\nunit3-console.exe").Path
 
-# TODO: remove filter
-
 $NunitArguments = `
     "Google.Solutions.Compute.Test\bin\release\Google.Solutions.Compute.Test.dll " + `
     "Google.Solutions.IapDesktop.Application.Test\bin\release\Google.Solutions.IapDesktop.Application.Test.dll " + `
-    "--result=sponge_log.xml;transform=kokoro\nunit-to-sponge.xsl " + `
-    "--where \""cat != IntegrationTest\"""
+    "--result=sponge_log.xml;transform=kokoro\nunit-to-sponge.xsl "
+#    "--where \""cat != IntegrationTest\"""
 
 & $OpenCover `
     -register:user `
