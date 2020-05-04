@@ -46,7 +46,7 @@ using WeifenLuo.WinFormsUI.Docking;
 
 #pragma warning disable IDE1006 // Naming Styles
 
-namespace Google.Solutions.IapDesktop.Application.ProjectExplorer
+namespace Google.Solutions.IapDesktop.Application.Services.Windows.ProjectExplorer
 {
     [ComVisible(false)]
     public partial class ProjectExplorerWindow : ToolWindow, IProjectExplorer
@@ -56,7 +56,7 @@ namespace Google.Solutions.IapDesktop.Application.ProjectExplorer
         private readonly IEventService eventService;
         private readonly IJobService jobService;
         private readonly ProjectInventoryService projectInventoryService;
-        private readonly InventorySettingsRepository settingsRepository;
+        private readonly ConnectionSettingsRepository settingsRepository;
         private readonly IAuthorizationAdapter authService;
         private readonly IServiceProvider serviceProvider;
         private readonly IRemoteDesktopService remoteDesktopService;
@@ -90,7 +90,7 @@ namespace Google.Solutions.IapDesktop.Application.ProjectExplorer
             this.eventService = serviceProvider.GetService<IEventService>();
             this.jobService = serviceProvider.GetService<IJobService>();
             this.projectInventoryService = serviceProvider.GetService<ProjectInventoryService>();
-            this.settingsRepository = serviceProvider.GetService<InventorySettingsRepository>();
+            this.settingsRepository = serviceProvider.GetService<ConnectionSettingsRepository>();
             this.authService = serviceProvider.GetService<IAuthorizationAdapter>();
             this.remoteDesktopService = serviceProvider.GetService<IRemoteDesktopService>();
 

@@ -49,9 +49,9 @@ namespace Google.Solutions.IapDesktop.Application.Util
         private static readonly Regex InstanceNamePattern = new Regex(@"[a-z](?:[-a-z0-9]{0,61}[a-z0-9])?|[1-9][0-9]{0,19}");
 
         public VmInstanceReference Instance { get; }
-        public VmInstanceSettings Settings { get; }
+        public VmInstanceConnectionSettings Settings { get; }
 
-        public IapRdpUrl(VmInstanceReference instance, VmInstanceSettings settings)
+        public IapRdpUrl(VmInstanceReference instance, VmInstanceConnectionSettings settings)
         {
             this.Instance = instance;
             this.Settings = settings;
@@ -113,13 +113,13 @@ namespace Google.Solutions.IapDesktop.Application.Util
             }
         }
 
-        private static VmInstanceSettings CreateVmInstanceSettingsFromQuery(
+        private static VmInstanceConnectionSettings CreateVmInstanceSettingsFromQuery(
             VmInstanceReference instanceRef,
             string queryString)
         {
             var query = HttpUtility.ParseQueryString(queryString);
 
-            return new VmInstanceSettings()
+            return new VmInstanceConnectionSettings()
             {
                 InstanceName = instanceRef.InstanceName,
 

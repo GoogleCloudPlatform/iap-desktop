@@ -44,7 +44,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Integration
 
             var baseKey = hkcu.CreateSubKey(TestKeyPath);
             this.inventory = new ProjectInventoryService(
-                new InventorySettingsRepository(baseKey),
+                new ConnectionSettingsRepository(baseKey),
                 new MockEventService());
         }
 

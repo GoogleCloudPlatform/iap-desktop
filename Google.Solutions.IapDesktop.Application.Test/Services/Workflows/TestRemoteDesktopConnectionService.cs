@@ -85,7 +85,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Workflows
                 It.IsAny<VmInstanceReference>(),
                 "localhost",
                 It.IsAny<ushort>(),
-                It.IsAny<VmInstanceSettings>())).Returns<IRemoteDesktopSession>(null);
+                It.IsAny<VmInstanceConnectionSettings>())).Returns<IRemoteDesktopSession>(null);
 
             this.serviceRegistry.AddSingleton<IRemoteDesktopService>(remoteDesktopService.Object);
 
@@ -98,7 +98,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Workflows
                 It.IsAny<VmInstanceReference>(),
                 "localhost",
                 It.IsAny<ushort>(),
-                It.Is<VmInstanceSettings>(i => i.Username == null)), Times.Once);
+                It.Is<VmInstanceConnectionSettings>(i => i.Username == null)), Times.Once);
         }
 
         [Test]
@@ -122,7 +122,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Workflows
                 It.IsAny<VmInstanceReference>(),
                 "localhost",
                 It.IsAny<ushort>(),
-                It.IsAny<VmInstanceSettings>())).Returns<IRemoteDesktopSession>(null);
+                It.IsAny<VmInstanceConnectionSettings>())).Returns<IRemoteDesktopSession>(null);
 
             this.serviceRegistry.AddSingleton<IRemoteDesktopService>(remoteDesktopService.Object);
 
@@ -135,7 +135,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Workflows
                 It.IsAny<VmInstanceReference>(),
                 "localhost",
                 It.IsAny<ushort>(),
-                It.Is<VmInstanceSettings>(i => i.Username == "john doe")), Times.Once); 
+                It.Is<VmInstanceConnectionSettings>(i => i.Username == "john doe")), Times.Once); 
         }
 
 

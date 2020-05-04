@@ -40,7 +40,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Windows
                 this.instanceReference,
                 "invalid.corp",
                 3389,
-                new VmInstanceSettings());
+                new VmInstanceConnectionSettings());
 
             AwaitEvent<RemoteDesktopConnectionFailedEvent>();
             Assert.IsInstanceOf(typeof(RdpDisconnectedException), this.ExceptionShown);
@@ -55,7 +55,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Windows
                 this.instanceReference,
                 "localhost",
                 1,
-                new VmInstanceSettings()
+                new VmInstanceConnectionSettings()
                 {
                     ConnectionTimeout = 5
                 });
@@ -74,7 +74,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Windows
                 this.instanceReference,
                 "localhost",
                 135,    // That one will be listening, but it is RPC, not RDP.
-                new VmInstanceSettings());
+                new VmInstanceConnectionSettings());
 
             AwaitEvent<RemoteDesktopConnectionFailedEvent>();
             Assert.IsInstanceOf(typeof(RdpDisconnectedException), this.ExceptionShown);

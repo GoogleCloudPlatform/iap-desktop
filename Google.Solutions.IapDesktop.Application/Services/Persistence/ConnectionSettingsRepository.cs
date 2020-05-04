@@ -34,7 +34,7 @@ using System.Security.Cryptography;
 namespace Google.Solutions.IapDesktop.Application.Services.Persistence
 {
     /// <summary>
-    /// Registry-backed repository for GCE inventory settings.
+    /// Registry-backed repository for connection settings.
     /// 
     /// To simplify key managent, a flat structure is used:
     /// 
@@ -46,12 +46,12 @@ namespace Google.Solutions.IapDesktop.Application.Services.Persistence
     ///      
     /// </summary>
     [ComVisible(false)]
-    public class InventorySettingsRepository : SettingsRepositoryBase<InventorySettings>
+    public class ConnectionSettingsRepository : SettingsRepositoryBase<ConnectionSettings>
     {
         private const string ZonePrefix = "zone-";
         private const string VmPrefix = "vm-";
 
-        public InventorySettingsRepository(RegistryKey baseKey) : base(baseKey)
+        public ConnectionSettingsRepository(RegistryKey baseKey) : base(baseKey)
         {
             Utilities.ThrowIfNull(baseKey, nameof(baseKey));
         }
@@ -60,7 +60,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.Persistence
         // Projects.
         //---------------------------------------------------------------------
 
-        public IEnumerable<ProjectSettings> ListProjectSettings()
+        public IEnumerable<ProjectConnectionSettings> ListProjectSettings()
         {
             foreach (var projectId in this.baseKey.GetSubKeyNames())
             {
@@ -68,16 +68,16 @@ namespace Google.Solutions.IapDesktop.Application.Services.Persistence
             }
         }
 
-        public ProjectSettings GetProjectSettings(string projectId)
+        public ProjectConnectionSettings GetProjectSettings(string projectId)
         {
-            var settings = Get<ProjectSettings>(new[] { projectId });
+            var settings = Get<ProjectConnectionSettings>(new[] { projectId });
             settings.ProjectId = projectId;
             return settings;
         }
 
-        public void SetProjectSettings(ProjectSettings settings)
+        public void SetProjectSettings(ProjectConnectionSettings settings)
         {
-            Set<ProjectSettings>(new[] { settings.ProjectId }, settings);
+            Set<ProjectConnectionSettings>(new[] { settings.ProjectId }, settings);
         }
 
         public void DeleteProjectSettings(string projectId)
@@ -90,16 +90,16 @@ namespace Google.Solutions.IapDesktop.Application.Services.Persistence
         // Zones.
         //---------------------------------------------------------------------
 
-        public ZoneSettings GetZoneSettings(string projectId, string zoneId)
+        public ZoneConnectionSettings GetZoneSettings(string projectId, string zoneId)
         {
-            var settings = Get<ZoneSettings>(new[] { projectId, ZonePrefix + zoneId });
+            var settings = Get<ZoneConnectionSettings>(new[] { projectId, ZonePrefix + zoneId });
             settings.ZoneId = zoneId;
             return settings;
         }
 
-        public void SetZoneSettings(string projectId, ZoneSettings settings)
+        public void SetZoneSettings(string projectId, ZoneConnectionSettings settings)
         {
-            Set<ZoneSettings>(new[] { projectId, ZonePrefix + settings.ZoneId }, settings);
+            Set<ZoneConnectionSettings>(new[] { projectId, ZonePrefix + settings.ZoneId }, settings);
         }
 
 
@@ -107,16 +107,16 @@ namespace Google.Solutions.IapDesktop.Application.Services.Persistence
         // Virtual Machines.
         //---------------------------------------------------------------------
 
-        public VmInstanceSettings GetVmInstanceSettings(string projectId, string instanceName)
+        public VmInstanceConnectionSettings GetVmInstanceSettings(string projectId, string instanceName)
         {
-            var settings = Get<VmInstanceSettings>(new[] { projectId, VmPrefix + instanceName });
+            var settings = Get<VmInstanceConnectionSettings>(new[] { projectId, VmPrefix + instanceName });
             settings.InstanceName = instanceName;
             return settings;
         }
 
-        public void SetVmInstanceSettings(string projectId, VmInstanceSettings settings)
+        public void SetVmInstanceSettings(string projectId, VmInstanceConnectionSettings settings)
         {
-            Set<VmInstanceSettings>(new[] { projectId, VmPrefix + settings.InstanceName }, settings);
+            Set<VmInstanceConnectionSettings>(new[] { projectId, VmPrefix + settings.InstanceName }, settings);
         }
     }
 
@@ -203,7 +203,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.Persistence
         _Default = Disabled
     }
 
-    public abstract class InventorySettingsBase
+    public abstract class ConnectionSettingsBase
     {
         //---------------------------------------------------------------------
         // Credentials.
@@ -309,22 +309,22 @@ namespace Google.Solutions.IapDesktop.Application.Services.Persistence
         public int ConnectionTimeout { get; set; } = 30;
     }
 
-    public class VmInstanceSettings : InventorySettingsBase
+    public class VmInstanceConnectionSettings : ConnectionSettingsBase
     {
         public string InstanceName { get; set; }
     }
 
-    public class ZoneSettings : InventorySettingsBase
+    public class ZoneConnectionSettings : ConnectionSettingsBase
     {
         public string ZoneId { get; set; }
     }
 
-    public class ProjectSettings : InventorySettingsBase
+    public class ProjectConnectionSettings : ConnectionSettingsBase
     {
         public string ProjectId { get; set; }
     }
 
-    public class InventorySettings : InventorySettingsBase
+    public class ConnectionSettings : ConnectionSettingsBase
     {
     }
 }

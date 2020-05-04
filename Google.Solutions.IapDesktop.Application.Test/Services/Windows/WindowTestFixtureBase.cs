@@ -67,7 +67,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Windows
             hkcu.DeleteSubKeyTree(TestKeyPath, false);
 
             var registry = new ServiceRegistry();
-            registry.AddSingleton(new InventorySettingsRepository(hkcu.CreateSubKey(TestKeyPath)));
+            registry.AddSingleton(new ConnectionSettingsRepository(hkcu.CreateSubKey(TestKeyPath)));
             registry.AddTransient<ProjectInventoryService>();
 
             var mainForm = new TestMainForm();

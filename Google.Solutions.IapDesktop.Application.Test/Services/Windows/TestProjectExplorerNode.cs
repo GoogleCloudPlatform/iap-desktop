@@ -20,7 +20,7 @@
 //
 
 using Google.Solutions.IapDesktop.Application.ObjectModel;
-using Google.Solutions.IapDesktop.Application.ProjectExplorer;
+using Google.Solutions.IapDesktop.Application.Services.Windows.ProjectExplorer;
 using Google.Solutions.IapDesktop.Application.Services.Persistence;
 using Google.Solutions.IapDesktop.Application.Util;
 using NUnit.Framework;
@@ -35,8 +35,8 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Windows
         [SetUp]
         public void PrepareNodes()
         {
-            var settingsService = this.serviceProvider.GetService<InventorySettingsRepository>();
-            settingsService.SetProjectSettings(new ProjectSettings()
+            var settingsService = this.serviceProvider.GetService<ConnectionSettingsRepository>();
+            settingsService.SetProjectSettings(new ProjectConnectionSettings()
             {
                 ProjectId = "project-1"
             });

@@ -116,7 +116,7 @@
     <Compile Include="Services\Persistence\SettingRepositoryBase.cs" />
     <Compile Include="Util\RegistryKeyMapper.cs" />
     <Compile Include="Util\RegistryValueAttribute.cs" />
-    <Compile Include="Services\Persistence\InventorySettingsRepository.cs" />
+    <Compile Include="Services\Persistence\ConnectionSettingsRepository.cs" />
     <Compile Include="TraceSources.cs" />
     <Compile Include="Util\AuthorizationExtensions.cs" />
     <Compile Include="Util\IapRdpUrl.cs" />

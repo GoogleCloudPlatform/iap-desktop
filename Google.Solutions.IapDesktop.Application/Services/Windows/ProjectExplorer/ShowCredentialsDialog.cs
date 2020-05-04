@@ -24,7 +24,7 @@ using System;
 using System.Drawing;
 using System.Windows.Forms;
 
-namespace Google.Solutions.IapDesktop.Application.ProjectExplorer
+namespace Google.Solutions.IapDesktop.Application.Services.Windows.ProjectExplorer
 {
     public partial class ShowCredentialsDialog : Form
     {

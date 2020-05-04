@@ -54,7 +54,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.Windows.RemoteDesktop
             VmInstanceReference vmInstance,
             string server,
             ushort port,
-            VmInstanceSettings settings);
+            VmInstanceConnectionSettings settings);
     }
 
     public class RemoteDesktopService : IRemoteDesktopService
@@ -103,7 +103,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.Windows.RemoteDesktop
             VmInstanceReference vmInstance,
             string server,
             ushort port,
-            VmInstanceSettings settings)
+            VmInstanceConnectionSettings settings)
         {
             var rdpPane = new RemoteDesktopPane(
                 this.eventService,

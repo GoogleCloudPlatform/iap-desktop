@@ -27,7 +27,7 @@ using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-namespace Google.Solutions.IapDesktop.Application.ProjectExplorer
+namespace Google.Solutions.IapDesktop.Application.Services.Windows.ProjectExplorer
 {
     public interface IProjectPickerDialog
     {
