@@ -229,22 +229,22 @@ namespace Google.Solutions.IapDesktop.Windows
             // checkForUpdatesOnExitToolStripMenuItem
             // 
             this.checkForUpdatesOnExitToolStripMenuItem.Name = "checkForUpdatesOnExitToolStripMenuItem";
-            this.checkForUpdatesOnExitToolStripMenuItem.Size = new System.Drawing.Size(223, 22);
+            this.checkForUpdatesOnExitToolStripMenuItem.Size = new System.Drawing.Size(243, 22);
             this.checkForUpdatesOnExitToolStripMenuItem.Text = "Check for &updates on exit";
             this.checkForUpdatesOnExitToolStripMenuItem.Click += new System.EventHandler(this.checkForUpdatesOnExitToolStripMenuItem_Click);
             // 
             // enableloggingToolStripMenuItem
             // 
             this.enableloggingToolStripMenuItem.Name = "enableloggingToolStripMenuItem";
-            this.enableloggingToolStripMenuItem.Size = new System.Drawing.Size(223, 22);
+            this.enableloggingToolStripMenuItem.Size = new System.Drawing.Size(243, 22);
             this.enableloggingToolStripMenuItem.Text = "Enable &logging";
             this.enableloggingToolStripMenuItem.Click += new System.EventHandler(this.enableloggingToolStripMenuItem_Click);
             // 
             // enableAppProtocolToolStripMenuItem
             // 
             this.enableAppProtocolToolStripMenuItem.Name = "enableAppProtocolToolStripMenuItem";
-            this.enableAppProtocolToolStripMenuItem.Size = new System.Drawing.Size(223, 22);
-            this.enableAppProtocolToolStripMenuItem.Text = "Enable \'iap-rdp:///\' &protocol";
+            this.enableAppProtocolToolStripMenuItem.Size = new System.Drawing.Size(243, 22);
+            this.enableAppProtocolToolStripMenuItem.Text = "Associate with \'iap-rdp:///\' &links";
             this.enableAppProtocolToolStripMenuItem.Click += new System.EventHandler(this.enableAppProtocolToolStripMenuItem_Click);
             // 
             // helpToolStripMenuItem
