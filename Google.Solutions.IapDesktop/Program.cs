@@ -109,21 +109,19 @@ namespace Google.Solutions.IapDesktop
                 // No arguments passed.
                 return null;
             }
-            else if (args.Length > 1)
+            else if (args.Length > 1 && args[0] == "/url")
             {
-                MessageBox.Show(
-                    "Invalid command line options.", 
-                    "IAP Desktop", 
-                    MessageBoxButtons.OK, 
-                    MessageBoxIcon.Error);
-            }
-            else
-            {
+                // Certain legacy browsers do not properly quote URLs when passing them
+                // as command line arguments. If the URL contains a space, it might be
+                // delivered as two separate arguments.
+
+                var url = string.Join(" ", args.Skip(1)).Trim();
+
                 try
                 {
-                    return IapRdpUrl.FromString(args[0]);
+                    return IapRdpUrl.FromString(url);
                 }
-                catch (IapRdpUrlFormatException e)
+                catch (UriFormatException e)
                 {
                     MessageBox.Show(
                         "Invalid command line options.\n\n" + e.Message,
@@ -131,6 +129,14 @@ namespace Google.Solutions.IapDesktop
                         MessageBoxButtons.OK,
                         MessageBoxIcon.Error);
                 }
+            }
+            else 
+            {
+                MessageBox.Show(
+                    "Invalid command line options.", 
+                    "IAP Desktop", 
+                    MessageBoxButtons.OK, 
+                    MessageBoxIcon.Error);
             }
 
             Environment.Exit(1);

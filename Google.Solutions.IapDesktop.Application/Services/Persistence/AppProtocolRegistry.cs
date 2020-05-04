@@ -48,7 +48,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.Persistence
 
                 using (var commandKey = key.CreateSubKey(@"shell\open\command"))
                 {
-                    commandKey.SetValue("", "\"" + applicationLocation + "\" \"%1\"");
+                    commandKey.SetValue("", "\"" + applicationLocation + "\" /url \"%1\"");
                 }
             }
         }
