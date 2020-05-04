@@ -29,7 +29,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.Persistence
             => $@"SOFTWARE\Classes\{scheme}";
         
         private static string CommandStringFromAppLocation(string applicationLocation) 
-            => $"\"{applicationLocation}\" \"%1\"";
+            => $"\"{applicationLocation}\" /url \"%1\"";
 
         public void Register(
             string scheme,
@@ -48,7 +48,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.Persistence
 
                 using (var commandKey = key.CreateSubKey(@"shell\open\command"))
                 {
-                    commandKey.SetValue("", "\"" + applicationLocation + "\" /url \"%1\"");
+                    commandKey.SetValue("", CommandStringFromAppLocation(applicationLocation));
                 }
             }
         }
