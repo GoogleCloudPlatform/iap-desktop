@@ -115,7 +115,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Windows
             }
         }
 
-        [Test]
+        [Test, Ignore("Unreliable in CI")]
         public async Task WhenSetClientConnectionEncryptionLevelSetToHigh_ThenConnectionSucceeds(
             [WindowsInstance(InitializeScript = @"
                 & reg add ""HKLM\SOFTWARE\Policies\Microsoft\Windows NT\Terminal Services"" /t REG_DWORD /v MinEncryptionLevel /d 3 /f | Out-Default
