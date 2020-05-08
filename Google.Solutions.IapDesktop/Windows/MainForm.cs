@@ -183,15 +183,7 @@ namespace Google.Solutions.IapDesktop.Windows
             if (this.StartupUrl != null)
             {
                 // Dispatch URL.
-                this.serviceProvider
-                    .GetService<RemoteDesktopConnectionService>()
-                    .ActivateOrConnectInstanceWithCredentialPromptAsync(this, this.StartupUrl)
-                    .ContinueWith(t => this.serviceProvider
-                            .GetService<IExceptionDialog>()
-                            .Show(this, "Failed to connect to VM instance", t.Exception), 
-                        CancellationToken.None,
-                        TaskContinuationOptions.OnlyOnFaulted, 
-                        TaskScheduler.FromCurrentSynchronizationContext());
+                ConnectToUrl(this.StartupUrl);
             }
             else
             {
@@ -202,6 +194,19 @@ namespace Google.Solutions.IapDesktop.Windows
 #if DEBUG
             this.serviceProvider.GetService<DebugWindow>().ShowWindow();
 #endif
+        }
+
+        internal void ConnectToUrl(IapRdpUrl url)
+        {
+            this.serviceProvider
+                .GetService<RemoteDesktopConnectionService>()
+                .ActivateOrConnectInstanceWithCredentialPromptAsync(this, url)
+                .ContinueWith(t => this.serviceProvider
+                        .GetService<IExceptionDialog>()
+                        .Show(this, "Failed to connect to VM instance", t.Exception),
+                    CancellationToken.None,
+                    TaskContinuationOptions.OnlyOnFaulted,
+                    TaskScheduler.FromCurrentSynchronizationContext());
         }
 
         //---------------------------------------------------------------------
