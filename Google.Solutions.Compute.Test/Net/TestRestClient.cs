@@ -55,6 +55,7 @@ namespace Google.Solutions.Compute.Test.Net
         }
 
         [Test]
+        [Ignore("Unreliable in CI")]
         public void WhenUrReturns404_ThenHttpExceptionIsThrown()
         {
             var client = new RestClient();
@@ -67,7 +68,7 @@ namespace Google.Solutions.Compute.Test.Net
 
                 Assert.Fail("Expected call to fail");
             }
-            catch (Exception e) when (e.Is< HttpRequestException>())
+            catch (Exception e) when (e.Is<HttpRequestException>())
             {
             }
             catch (Exception e)
