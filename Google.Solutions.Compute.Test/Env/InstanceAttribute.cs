@@ -243,7 +243,7 @@ namespace Google.Solutions.Compute.Test.Env
     [AttributeUsage(AttributeTargets.Parameter, AllowMultiple = false, Inherited = false)]
     public sealed class WindowsInstanceAttribute : InstanceAttribute
     {
-        public const string DefaultMachineType = "n1-standard-1";
+        public const string DefaultMachineType = "n1-standard-2";
 
         public const string WindowsServer2019 = "projects/windows-cloud/global/images/family/windows-2019";
         public const string WindowsServerCore2019 = "projects/windows-cloud/global/images/family/windows-2019-core";
