@@ -158,6 +158,7 @@ namespace Google.Solutions.IapDesktop.Windows
             {
                 // Not authorized -> close.
                 Close();
+                return;
             }
 
             // 

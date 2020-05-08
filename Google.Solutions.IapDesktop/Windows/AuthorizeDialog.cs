@@ -64,6 +64,7 @@ namespace Google.Solutions.IapDesktop.Windows
                 },
                 Resources.AuthorizationSuccessful);
 
+            Exception caughtException = null;
             using (var dialog = new AuthorizeDialog())
             {
                 Task.Run(async () =>
@@ -100,15 +101,30 @@ namespace Google.Solutions.IapDesktop.Windows
                     // Switch to showing spinner so that a user cannot click twice.
                     dialog.ToggleSignInButton();
 
-                    dialog.authorization = await OAuthAuthorization.CreateAuthorizationAsync(
-                        oauthAdapter,
-                        CancellationToken.None);
+                    try
+                    {
+                        dialog.authorization = await OAuthAuthorization.CreateAuthorizationAsync(
+                            oauthAdapter,
+                            CancellationToken.None);
+                    }
+                    catch (Exception e)
+                    {
+                        caughtException = e;
+                    }
 
                     dialog.Close();
                 };
 
                 dialog.ShowDialog(parent);
-                return dialog.authorization;
+
+                if (caughtException != null)
+                {
+                    throw caughtException;
+                }
+                else
+                {
+                    return dialog.authorization;
+                }
             }
         }
     }
