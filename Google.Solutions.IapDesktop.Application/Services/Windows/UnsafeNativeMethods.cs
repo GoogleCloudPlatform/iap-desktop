@@ -132,5 +132,13 @@ namespace Google.Solutions.IapDesktop.Application.Services.Windows
             [Out] out int pnButton,
             [Out] out int pnRadioButton,
             [Out] out bool pfVerificationFlagChecked);
+
+        [DllImport("user32.dll")]
+        internal static extern uint MapVirtualKey(uint uCode, uint uMapType);
+
+        internal const int EM_SETMARGINS = 0xd3;
+        [System.Runtime.InteropServices.DllImport("user32.dll")]
+        internal static extern IntPtr SendMessage(IntPtr hWnd, int msg, IntPtr wp, IntPtr lp);
+
     }
 }

@@ -186,6 +186,7 @@ namespace Google.Solutions.IapDesktop.Application.Util
     }
 
     [Serializable]
+    [ComVisible(false)]
     public class IapRdpUrlFormatException : UriFormatException
     {
         protected IapRdpUrlFormatException(SerializationInfo info, StreamingContext context)
