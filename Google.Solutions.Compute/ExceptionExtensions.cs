@@ -23,7 +23,7 @@ using System;
 using System.Reflection;
 using System.Threading.Tasks;
 
-namespace Google.Solutions.IapDesktop.Application
+namespace Google.Solutions.Compute
 {
     public static class ExceptionExtensions
     {

@@ -76,10 +76,10 @@ namespace Google.Solutions.IapDesktop.Application.Services.Workflows
 
             var credentials = await this.jobService.RunInBackground(
                 new JobDescription("Generating Windows logon credentials..."),
-                token =>
-                {
-                    return this.computeEngineAdapter.ResetWindowsUserAsync(instanceRef, username, token);
-                });
+                token => this.computeEngineAdapter.ResetWindowsUserAsync(
+                    instanceRef, 
+                    username, 
+                    token));
 
             new ShowCredentialsDialog().ShowDialog(
                 owner,

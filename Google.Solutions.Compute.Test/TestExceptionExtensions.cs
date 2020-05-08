@@ -23,7 +23,7 @@ using NUnit.Framework;
 using System;
 using System.Reflection;
 
-namespace Google.Solutions.IapDesktop.Application.Test
+namespace Google.Solutions.Compute.Test.Extensions
 {
     [TestFixture]
     public class TestExceptionExtensions

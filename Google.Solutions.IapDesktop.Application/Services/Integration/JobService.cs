@@ -20,6 +20,7 @@
 //
 
 using Google.Apis.Auth.OAuth2.Responses;
+using Google.Solutions.Compute;
 using Google.Solutions.IapDesktop.Application.ObjectModel;
 using Google.Solutions.IapDesktop.Application.Services.Adapters;
 using System;

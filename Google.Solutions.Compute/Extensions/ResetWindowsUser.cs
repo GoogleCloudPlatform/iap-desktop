@@ -165,6 +165,39 @@ namespace Google.Solutions.Compute.Extensions
             }
         }
 
+        public static async Task<NetworkCredential> ResetWindowsUserAsync(
+            this InstancesResource resource,
+            VmInstanceReference instanceRef,
+            string username,
+            CancellationToken token,
+            TimeSpan timeout)
+        {
+            using (var timeoutCts = new CancellationTokenSource())
+            {
+                timeoutCts.CancelAfter(timeout);
+
+                using (var combinedCts = CancellationTokenSource.CreateLinkedTokenSource(timeoutCts.Token, token))
+                {
+                    try
+                    {
+                        return await ResetWindowsUserAsync(
+                            resource,
+                            instanceRef,
+                            username,
+                            combinedCts.Token);
+                    }
+                    catch (Exception e) when (e.IsCancellation() && timeoutCts.IsCancellationRequested)
+                    {
+                        // This task was cancelled because of a timeout, not because
+                        // the enclosing job was cancelled.
+                        throw new PasswordResetException(
+                            "Timeout waiting for Compute Engine agent to reset password. " +
+                            "Verify that the agent is running.");
+                    }
+                }
+            }
+        }
+
         internal class RequestPayload
         {
             [JsonProperty("userName")]
