@@ -33,30 +33,9 @@ namespace Google.Solutions.Compute
             return new HashSet<T>(source, comparer);
         }
 
-        public static HashSet<T> Subtract<T>(this HashSet<T> set, HashSet<T> toSubtract)
-        {
-            var copy = new HashSet<T>(set);
-            copy.ExceptWith(toSubtract);
-            return copy;
-        }
-
         public static IEnumerable<T> EnsureNotNull<T>(this IEnumerable<T> e)
         {
             return e == null ? Enumerable.Empty<T>() : e;
-        }
-
-        public static IEnumerable<T> SkipLast<T>(this IEnumerable<T> source)
-        {
-            using (var e = source.GetEnumerator())
-            {
-                if (e.MoveNext())
-                {
-                    for (var value = e.Current; e.MoveNext(); value = e.Current)
-                    {
-                        yield return value;
-                    }
-                }
-            }
         }
 
         public static bool ContainsAll<T>(this IEnumerable<T> sequence, IEnumerable<T> lookup)

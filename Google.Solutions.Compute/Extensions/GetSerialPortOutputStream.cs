@@ -34,22 +34,6 @@ namespace Google.Solutions.Compute.Extensions
         /// </summary>
         public static SerialPortStream GetSerialPortOutputStream(
             this InstancesResource resource,
-            string project,
-            string zone,
-            string instance,
-            ushort port)
-        {
-            return GetSerialPortOutputStream(
-                resource,
-                new VmInstanceReference(project, zone, instance),
-                port);
-        }
-
-        /// <summary>
-        /// Read serial port output as a continuous stream.
-        /// </summary>
-        public static SerialPortStream GetSerialPortOutputStream(
-            this InstancesResource resource,
             VmInstanceReference instanceRef,
             ushort port)
         {
