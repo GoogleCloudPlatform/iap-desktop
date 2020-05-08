@@ -1,5 +1,5 @@
 ﻿//
-// Copyright 2020 Google LLC
+// Copyright 2019 Google LLC
 //
 // Licensed to the Apache Software Foundation (ASF) under one
 // or more contributor license agreements.  See the NOTICE file
@@ -19,19 +19,14 @@
 // under the License.
 //
 
-using Google.Solutions.Compute;
-using System.Threading.Tasks;
+using System;
+using System.Runtime.InteropServices;
 
-namespace Google.Solutions.IapDesktop.Application.Services.Windows.ProjectExplorer
+namespace Google.Solutions.IapDesktop
 {
-    public interface IProjectExplorer
+    internal static class UnsafeNativeMethods
     {
-        void ShowWindow();
-        Task RefreshProject(string projectId);
-        Task RefreshAllProjects();
-        Task ShowAddProjectDialogAsync();
-
-        VmInstanceNode TryFindNode(VmInstanceReference reference);
+        [DllImport("user32.dll")]
+        public static extern bool SetForegroundWindow(IntPtr hWnd);
     }
-
 }

@@ -183,15 +183,7 @@ namespace Google.Solutions.IapDesktop.Windows
             if (this.StartupUrl != null)
             {
                 // Dispatch URL.
-                this.serviceProvider
-                    .GetService<RemoteDesktopConnectionService>()
-                    .ActivateOrConnectInstanceWithCredentialPromptAsync(this, this.StartupUrl)
-                    .ContinueWith(t => this.serviceProvider
-                            .GetService<IExceptionDialog>()
-                            .Show(this, "Failed to connect to VM instance", t.Exception), 
-                        CancellationToken.None,
-                        TaskContinuationOptions.OnlyOnFaulted, 
-                        TaskScheduler.FromCurrentSynchronizationContext());
+                ConnectToUrl(this.StartupUrl);
             }
             else
             {
@@ -202,6 +194,41 @@ namespace Google.Solutions.IapDesktop.Windows
 #if DEBUG
             this.serviceProvider.GetService<DebugWindow>().ShowWindow();
 #endif
+        }
+
+        internal void ConnectToUrl(IapRdpUrl url)
+        {
+            var rdcService = this.serviceProvider
+                .GetService<RemoteDesktopConnectionService>();
+
+            var vmNode = this.serviceProvider
+                .GetService<IProjectExplorer>()
+                .TryFindNode(url.Instance);
+
+            if (vmNode != null)
+            {
+                // We have a full set of settings for this VM, so use that.
+                rdcService
+                    .ActivateOrConnectInstanceWithCredentialPromptAsync(this, vmNode)
+                    .ContinueWith(t => this.serviceProvider
+                            .GetService<IExceptionDialog>()
+                            .Show(this, "Failed to connect to VM instance", t.Exception),
+                        CancellationToken.None,
+                        TaskContinuationOptions.OnlyOnFaulted,
+                        TaskScheduler.FromCurrentSynchronizationContext());
+            }
+            else
+            {
+                // We do not know anything other than what's in the URL.
+                rdcService
+                    .ActivateOrConnectInstanceWithCredentialPromptAsync(this, url)
+                    .ContinueWith(t => this.serviceProvider
+                            .GetService<IExceptionDialog>()
+                            .Show(this, "Failed to connect to VM instance", t.Exception),
+                        CancellationToken.None,
+                        TaskContinuationOptions.OnlyOnFaulted,
+                        TaskScheduler.FromCurrentSynchronizationContext());
+            }
         }
 
         //---------------------------------------------------------------------

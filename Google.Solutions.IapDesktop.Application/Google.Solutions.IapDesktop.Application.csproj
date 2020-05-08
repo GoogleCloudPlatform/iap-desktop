@@ -207,6 +207,7 @@
     <Compile Include="Services\Windows\WaitDialog.Designer.cs">
       <DependentUpon>WaitDialog.cs</DependentUpon>
     </Compile>
+    <Compile Include="Util\SingletonApplicationBase.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Google.Solutions.Compute\Google.Solutions.Compute.csproj">
