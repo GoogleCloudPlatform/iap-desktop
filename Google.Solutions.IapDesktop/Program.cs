@@ -252,7 +252,6 @@ namespace Google.Solutions.IapDesktop
         protected override int HandleSubsequentInvocation(string[] args)
         {
             var url = ParseCommandLine(args);
-            Debug.Assert(url != null);
 
             // Make sure the main form is ready.
             this.mainFormInitialized.WaitOne();
@@ -263,7 +262,10 @@ namespace Google.Solutions.IapDesktop
             this.initializedMainForm.Invoke(((Action)(() =>
             {
                 UnsafeNativeMethods.SetForegroundWindow(this.initializedMainForm.Handle);
-                this.initializedMainForm.ConnectToUrl(url);
+                if (url != null)
+                {
+                    this.initializedMainForm.ConnectToUrl(url);
+                }
             })));
 
             return 1;
