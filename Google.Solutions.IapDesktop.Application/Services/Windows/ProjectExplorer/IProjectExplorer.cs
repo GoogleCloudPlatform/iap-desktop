@@ -19,6 +19,7 @@
 // under the License.
 //
 
+using Google.Solutions.Compute;
 using System.Threading.Tasks;
 
 namespace Google.Solutions.IapDesktop.Application.Services.Windows.ProjectExplorer
@@ -29,6 +30,8 @@ namespace Google.Solutions.IapDesktop.Application.Services.Windows.ProjectExplor
         Task RefreshProject(string projectId);
         Task RefreshAllProjects();
         Task ShowAddProjectDialogAsync();
+
+        VmInstanceNode TryFindNode(VmInstanceReference reference);
     }
 
 }

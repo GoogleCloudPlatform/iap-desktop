@@ -102,7 +102,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.Workflows
                 settings);
         }
 
-        internal async Task ActivateOrConnectInstanceWithCredentialPromptAsync(
+        public async Task ActivateOrConnectInstanceWithCredentialPromptAsync(
             IWin32Window owner,
             VmInstanceNode vmNode)
         {

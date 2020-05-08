@@ -125,17 +125,6 @@ namespace Google.Solutions.IapDesktop.Application.Services.Windows.ProjectExplor
             this.rootNode.Expand();
         }
 
-        private VmInstanceNode FindNode(VmInstanceReference reference)
-        {
-            return this.rootNode.Nodes
-                .OfType<ProjectNode>()
-                .Where(p => p.ProjectId == reference.ProjectId)
-                .SelectMany(p => p.Nodes.Cast<ZoneNode>())
-                .Where(z => z.ZoneId == reference.Zone)
-                .SelectMany(z => z.Nodes.Cast<VmInstanceNode>())
-                .FirstOrDefault(vm => vm.InstanceName == reference.InstanceName); ;
-        }
-
         private async Task<bool> AddProjectAsync()
         {
             await this.jobService.RunInBackground(
@@ -573,7 +562,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.Windows.ProjectExplor
 
         private void OnRdpConnectionSucceeded(RemoteDesktopConnectionSuceededEvent e)
         {
-            var node = FindNode(e.Instance);
+            var node = TryFindNode(e.Instance);
             if (node != null)
             {
                 node.IsConnected = true;
@@ -583,7 +572,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.Windows.ProjectExplor
 
         private void OnRdpConnectionClosed(RemoteDesktopWindowClosedEvent e)
         {
-            var node = FindNode(e.Instance);
+            var node = TryFindNode(e.Instance);
             if (node != null)
             {
                 node.IsConnected = false;
@@ -685,6 +674,17 @@ namespace Google.Solutions.IapDesktop.Application.Services.Windows.ProjectExplor
                 // Refresh if the window previously was not visible.
                 ShowWindow();
             }
+        }
+
+        public VmInstanceNode TryFindNode(VmInstanceReference reference)
+        {
+            return this.rootNode.Nodes
+                .OfType<ProjectNode>()
+                .Where(p => p.ProjectId == reference.ProjectId)
+                .SelectMany(p => p.Nodes.Cast<ZoneNode>())
+                .Where(z => z.ZoneId == reference.Zone)
+                .SelectMany(z => z.Nodes.Cast<VmInstanceNode>())
+                .FirstOrDefault(vm => vm.InstanceName == reference.InstanceName); ;
         }
     }
 }
