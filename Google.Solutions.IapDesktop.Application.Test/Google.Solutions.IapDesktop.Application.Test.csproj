@@ -123,6 +123,7 @@
     <Compile Include="Services\Windows\TestRemoteDesktopOverIap.cs" />
     <Compile Include="Services\Windows\WindowTestFixtureBase.cs" />
     <Compile Include="Services\Windows\TestSettingsEditor.cs" />
+    <Compile Include="Util\TestSingletonApplicationBase.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Google.Solutions.Compute.Test\Google.Solutions.Compute.Test.csproj">
