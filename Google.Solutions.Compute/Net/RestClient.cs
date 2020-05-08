@@ -76,17 +76,4 @@ namespace Google.Solutions.Compute.Test.Net
             }
         }
     }
-
-    [Serializable]
-    public class RestClientException : Exception
-    {
-        protected RestClientException(SerializationInfo info, StreamingContext context)
-            : base(info, context)
-        {
-        }
-
-        public RestClientException(string message) : base(message)
-        {
-        }
-    }
 }
