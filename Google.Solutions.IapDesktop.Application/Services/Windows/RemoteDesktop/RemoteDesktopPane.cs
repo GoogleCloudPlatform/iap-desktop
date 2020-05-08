@@ -37,6 +37,7 @@ using System.Windows.Forms;
 using WeifenLuo.WinFormsUI.Docking;
 
 #pragma warning disable IDE1006 // Naming Styles
+#pragma warning disable CA1031 // catch Exception
 
 namespace Google.Solutions.IapDesktop.Application.Services.Windows.RemoteDesktop
 {

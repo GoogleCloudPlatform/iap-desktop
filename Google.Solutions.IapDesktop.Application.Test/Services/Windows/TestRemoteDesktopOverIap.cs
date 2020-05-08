@@ -107,7 +107,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Windows
             {
                 var credentials = await gceAdapter.ResetWindowsUserAsync(
                     testInstance.InstanceReference,
-                    "test",
+                    CreateRandomUsername(),
                     CancellationToken.None);
 
                 var rdpService = new RemoteDesktopService(this.serviceProvider);
@@ -156,7 +156,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Windows
             {
                 var credentials = await gceAdapter.ResetWindowsUserAsync(
                        testInstance.InstanceReference,
-                       "test",
+                       CreateRandomUsername(),
                        CancellationToken.None);
 
                 var rdpService = new RemoteDesktopService(this.serviceProvider);

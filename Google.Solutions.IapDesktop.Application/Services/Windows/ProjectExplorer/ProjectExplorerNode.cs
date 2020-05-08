@@ -29,6 +29,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Security;
 using System.Windows.Forms;
 
@@ -46,13 +47,14 @@ namespace Google.Solutions.IapDesktop.Application.Services.Windows.ProjectExplor
         }
     }
 
+    [ComVisible(false)]
     public abstract class InventoryNode : TreeNode, IProjectExplorerNode, ISettingsObject
     {
         private readonly InventoryNode parent;
         private readonly ConnectionSettingsBase settings;
         private readonly Action<ConnectionSettingsBase> saveSettings;
 
-        public InventoryNode(
+        protected InventoryNode(
             string name,
             int iconIndex,
             ConnectionSettingsBase settings,
@@ -289,6 +291,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.Windows.ProjectExplor
         public bool ShouldSerializeBitmapPersistence() => IsBitmapPersistenceSet;
     }
 
+    [ComVisible(false)]
     public class ProjectNode : InventoryNode, IProjectExplorerProjectNode
     {
         private const int IconIndex = 1;
@@ -357,6 +360,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.Windows.ProjectExplor
         }
     }
 
+    [ComVisible(false)]
     public class ZoneNode : InventoryNode, IProjectExplorerZoneNode
     {
         private const int IconIndex = 3;
@@ -378,6 +382,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.Windows.ProjectExplor
         }
     }
 
+    [ComVisible(false)]
     public class VmInstanceNode : InventoryNode, IProjectExplorerVmInstanceNode
     {
         private const int DisconnectedIconIndex = 4;

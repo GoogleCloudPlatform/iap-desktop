@@ -26,6 +26,7 @@ using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Diagnostics;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Runtime.Serialization;
 using System.Text.RegularExpressions;
 using System.Web;
@@ -186,6 +187,7 @@ namespace Google.Solutions.IapDesktop.Application.Util
     }
 
     [Serializable]
+    [ComVisible(false)]
     public class IapRdpUrlFormatException : UriFormatException
     {
         protected IapRdpUrlFormatException(SerializationInfo info, StreamingContext context)

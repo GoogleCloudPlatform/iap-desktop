@@ -150,7 +150,7 @@ namespace Google.Solutions.IapDesktop
         //---------------------------------------------------------------------
 
         private MainForm initializedMainForm = null;
-        private ManualResetEvent mainFormInitialized = new ManualResetEvent(false);
+        private readonly ManualResetEvent mainFormInitialized = new ManualResetEvent(false);
 
         internal Program() : base("IapDesktop")
         {
@@ -193,8 +193,10 @@ namespace Google.Solutions.IapDesktop
             persistenceLayer.AddSingleton(new ConnectionSettingsRepository(
                 hkcu.CreateSubKey($@"{BaseRegistryKeyPath}\Inventory")));
 
-            var mainForm = new MainForm(persistenceLayer, windowAndWorkflowLayer);
-            mainForm.StartupUrl = startupUrl;
+            var mainForm = new MainForm(persistenceLayer, windowAndWorkflowLayer)
+            {
+                StartupUrl = startupUrl
+            };
 
             //
             // Adapter layer.

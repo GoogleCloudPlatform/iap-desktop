@@ -28,11 +28,6 @@ namespace Google.Solutions.IapDesktop.Application.Services.Windows.ProjectExplor
 {
     public partial class ShowCredentialsDialog : Form
     {
-        private const int EM_SETMARGINS = 0xd3;
-        [System.Runtime.InteropServices.DllImport("user32.dll")]
-
-        private static extern IntPtr SendMessage(IntPtr hWnd, int msg, IntPtr wp, IntPtr lp);
-
         public ShowCredentialsDialog()
         {
             InitializeComponent();
@@ -49,7 +44,11 @@ namespace Google.Solutions.IapDesktop.Application.Services.Windows.ProjectExplor
             passwordText.Controls.Add(copyPasswordButton);
 
             // Send EM_SETMARGINS to prevent text from disappearing underneath the button
-            SendMessage(passwordText.Handle, EM_SETMARGINS, (IntPtr)2, (IntPtr)(copyPasswordButton.Width << 16));
+            UnsafeNativeMethods.SendMessage(
+                passwordText.Handle,
+                UnsafeNativeMethods.EM_SETMARGINS, 
+                (IntPtr)2, 
+                (IntPtr)(copyPasswordButton.Width << 16));
         }
 
         internal void ShowDialog(

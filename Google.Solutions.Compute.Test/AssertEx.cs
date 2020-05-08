@@ -36,7 +36,7 @@ namespace Google.Solutions.Compute.Test
                 }
                 catch (AggregateException e)
                 {
-                    throw e.InnerException;
+                    throw e.Unwrap();
                 }
             });
         }

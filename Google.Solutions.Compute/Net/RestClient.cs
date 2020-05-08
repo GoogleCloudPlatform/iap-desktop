@@ -21,11 +21,9 @@
 
 using Google.Apis.Auth.OAuth2;
 using Newtonsoft.Json;
-using System;
 using System.IO;
 using System.Net.Http;
 using System.Net.Http.Headers;
-using System.Runtime.Serialization;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -74,19 +72,6 @@ namespace Google.Solutions.Compute.Test.Net
                     }
                 }
             }
-        }
-    }
-
-    [Serializable]
-    public class RestClientException : Exception
-    {
-        protected RestClientException(SerializationInfo info, StreamingContext context)
-            : base(info, context)
-        {
-        }
-
-        public RestClientException(string message) : base(message)
-        {
         }
     }
 }

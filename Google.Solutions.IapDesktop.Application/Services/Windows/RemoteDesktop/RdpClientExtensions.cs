@@ -28,9 +28,6 @@ namespace Google.Solutions.IapDesktop.Application.Services.Windows.RemoteDesktop
 {
     internal static class RdpClientExtensions
     {
-        [DllImport("user32.dll")]
-        internal static extern uint MapVirtualKey(uint uCode, uint uMapType);
-
         internal unsafe static void SendKeys(
             this IMsRdpClientNonScriptable5 nonScriptable,
             params Keys[] keyCodes)
@@ -45,7 +42,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.Windows.RemoteDesktop
 
             for (int i = 0; i < keyCodes.Length; i++)
             {
-                var virtualKeyCode = (int)MapVirtualKey((uint)keyCodes[i], 0);
+                var virtualKeyCode = (int)UnsafeNativeMethods.MapVirtualKey((uint)keyCodes[i], 0);
 
                 // Generate DOWN key presses.
                 keyUp[i] = 0;
