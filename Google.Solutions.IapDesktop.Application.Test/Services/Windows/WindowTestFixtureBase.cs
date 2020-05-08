@@ -166,6 +166,11 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Windows
             };
         }
 
+        protected string CreateRandomUsername()
+        {
+            return "test" + Guid.NewGuid().ToString().Substring(0, 4);
+        }
+
     }
 
     internal static class ControlTestExtensions
