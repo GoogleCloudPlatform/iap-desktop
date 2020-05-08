@@ -20,6 +20,7 @@
 //
 
 using System;
+using System.Diagnostics;
 
 namespace Google.Solutions.Compute
 {
@@ -31,6 +32,11 @@ namespace Google.Solutions.Compute
 
         public VmInstanceReference(string projectId, string zone, string instanceName)
         {
+            Debug.Assert(!long.TryParse(projectId, out long _));
+            Debug.Assert(!long.TryParse(instanceName, out long _));
+            Debug.Assert(!projectId.Contains("/"));
+            Debug.Assert(!zone.Contains("/"));
+
             this.ProjectId = projectId;
             this.Zone = zone;
             this.InstanceName = instanceName;
