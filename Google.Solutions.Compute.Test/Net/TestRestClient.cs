@@ -19,15 +19,13 @@
 // under the License.
 //
 
-using Google.Solutions.Compute.Iap;
-using Google.Solutions.Compute.Net;
-using Google.Solutions.Compute.Test.Env;
 using Newtonsoft.Json;
 using NUnit.Framework;
-using System;
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
+
+#pragma warning disable CA1034 // Class nesting
 
 namespace Google.Solutions.Compute.Test.Net
 {
@@ -35,9 +33,8 @@ namespace Google.Solutions.Compute.Test.Net
     [Category("IntegrationTest")]
     public class TestRestClient
     {
-        private string SampleRestUrl = "https://accounts.google.com/.well-known/openid-configuration";
-        private string NotFoundUrl = "http://accounts.google.com/.well-known/openid-configuration";
-        private string RedirectingUrl = "https://accounts.google.com/";
+        private const string SampleRestUrl = "https://accounts.google.com/.well-known/openid-configuration";
+        private const string NotFoundUrl = "http://accounts.google.com/.well-known/openid-configuration";
 
         public class SampleResource
         {

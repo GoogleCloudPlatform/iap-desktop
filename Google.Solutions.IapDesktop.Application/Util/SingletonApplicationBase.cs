@@ -27,6 +27,8 @@ using System.Security.Principal;
 using System.Threading;
 using System.Threading.Tasks;
 
+#pragma warning disable CA1031 // catch Exception
+
 namespace Google.Solutions.IapDesktop.Application.Util
 {
     public abstract class SingletonApplicationBase

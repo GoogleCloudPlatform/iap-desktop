@@ -64,7 +64,7 @@ namespace Google.Solutions.IapDesktop.Application.ObjectModel
             var defaultConstructor = typeof(TService).GetConstructor(
                 BindingFlags.Public | BindingFlags.Instance,
                 null,
-                new Type[0],
+                Array.Empty<Type>(),
                 null);
             if (defaultConstructor != null)
             {
