@@ -21,6 +21,7 @@
 
 using Newtonsoft.Json;
 using NUnit.Framework;
+using System;
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
@@ -54,16 +55,25 @@ namespace Google.Solutions.Compute.Test.Net
         }
 
         [Test]
-        public void WhenUrReturns404_ThenHttpRequestExceptionIsThrown()
+        public void WhenUrReturns404_ThenHttpExceptionIsThrown()
         {
             var client = new RestClient();
 
-            AssertEx.ThrowsAggregateException<HttpRequestException>(() =>
-                {
-                    client.GetAsync<SampleResource>(
-                        NotFoundUrl + "-invalid",
-                        CancellationToken.None).Wait();
-                });
+            try
+            {
+                client.GetAsync<SampleResource>(
+                    NotFoundUrl + "-invalid",
+                    CancellationToken.None).Wait();
+
+                Assert.Fail("Expected call to fail");
+            }
+            catch (Exception e) when (e.Is< HttpRequestException>())
+            {
+            }
+            catch (Exception e)
+            {
+                Assert.Fail($"Did not expect exception of type {e.GetType()}");
+            }
         }
     }
 }
