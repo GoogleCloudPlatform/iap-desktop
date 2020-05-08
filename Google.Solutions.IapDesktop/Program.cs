@@ -40,10 +40,11 @@ using System.IO;
 using System.Linq;
 using System.Net;
 using System.Windows.Forms;
+using System.Threading;
 
 namespace Google.Solutions.IapDesktop
 {
-    static class Program
+    class Program : SingletonApplicationBase
     {
         private const string BaseRegistryKeyPath = @"Software\Google\IapDesktop\1.0";
 
@@ -143,11 +144,19 @@ namespace Google.Solutions.IapDesktop
             return null;
         }
 
-        /// <summary>
-        /// The main entry point for the application.
-        /// </summary>
-        [STAThread]
-        static void Main(string[] args)
+
+        //---------------------------------------------------------------------
+        // SingletonApplicationBase overrides.
+        //---------------------------------------------------------------------
+
+        private MainForm initializedMainForm = null;
+        private ManualResetEvent mainFormInitialized = new ManualResetEvent(false);
+
+        internal Program() : base("IapDesktop")
+        {
+        }
+
+        protected override int HandleFirstInvocation(string[] args)
         {
             var startupUrl = ParseCommandLine(args);
 
@@ -229,10 +238,53 @@ namespace Google.Solutions.IapDesktop
 #endif
 
             // Run app.
+            this.initializedMainForm = mainForm;
+            this.mainFormInitialized.Set();
+
             System.Windows.Forms.Application.Run(mainForm);
 
             // Ensure logs are flushed.
             IsLoggingEnabled = false;
+
+            return 0;
+        }
+
+        protected override int HandleSubsequentInvocation(string[] args)
+        {
+            var url = ParseCommandLine(args);
+
+            // Make sure the main form is ready.
+            this.mainFormInitialized.WaitOne();
+            Debug.Assert(this.initializedMainForm != null);
+
+            // This method is called on the named pipe server thread - switch to 
+            // main thread before doing any GUI stuff.
+            this.initializedMainForm.Invoke(((Action)(() =>
+            {
+                MessageBox.Show(this.initializedMainForm, "Second invocation!");
+            })));
+
+            return 1;
+        }
+
+        protected override void HandleSubsequentInvocationException(Exception e)
+        {
+            // NB. This could be called on any thread, at any time, so avoid
+            // touching the main form.
+            MessageBox.Show(e.Message, "Invocation failed", MessageBoxButtons.OK, MessageBoxIcon.Error);
+        }
+
+        /// <summary>
+        /// The main entry point for the application.
+        /// </summary>
+        [STAThread]
+        static void Main(string[] args)
+        {
+            // Parse command line to catch errors before even passing an invalid
+            // command line to another instance of the app.
+            ParseCommandLine(args);
+
+            new Program().Run(args);
         }
     }
 }
