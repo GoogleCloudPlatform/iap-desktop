@@ -163,7 +163,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.Windows.ProjectExplor
             {
                 await RefreshAllProjects();
             }
-            catch (TaskCanceledException)
+            catch (Exception e) when (e.IsCancellation())
             {
                 // Ignore.
             }
@@ -184,7 +184,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.Windows.ProjectExplor
                     await RefreshProject(projectNode.ProjectId);
                 }
             }
-            catch (TaskCanceledException)
+            catch (Exception e) when (e.IsCancellation())
             {
                 // Ignore.
             }
@@ -265,7 +265,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.Windows.ProjectExplor
             {
                 await RefreshAllProjects();
             }
-            catch (TaskCanceledException)
+            catch (Exception e) when (e.IsCancellation())
             {
                 // Ignore.
             }
@@ -283,7 +283,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.Windows.ProjectExplor
             {
                 await AddProjectAsync();
             }
-            catch (TaskCanceledException)
+            catch (Exception e) when (e.IsCancellation())
             {
                 // Ignore.
             }
@@ -315,7 +315,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.Windows.ProjectExplor
                     await credentialService.GenerateAndSaveCredentialsAsync(this, vmNode);
                 }
             }
-            catch (TaskCanceledException)
+            catch (Exception e) when (e.IsCancellation())
             {
                 // Ignore.
             }
@@ -339,7 +339,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.Windows.ProjectExplor
                         .ActivateOrConnectInstanceWithCredentialPromptAsync(this, vmNode);
                 }
             }
-            catch (TaskCanceledException)
+            catch (Exception e) when (e.IsCancellation())
             {
                 // Ignore.
             }
@@ -361,7 +361,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.Windows.ProjectExplor
                         .ShowSerialLog(vmNode.Reference);
                 }
             }
-            catch (TaskCanceledException)
+            catch (Exception e) when (e.IsCancellation())
             {
                 // Ignore.
             }
@@ -433,7 +433,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.Windows.ProjectExplor
                     await AddProjectAsync();
                 }
             }
-            catch (TaskCanceledException)
+            catch (Exception e) when (e.IsCancellation())
             {
                 // Most likely, the user rejected to reauthorize. Quit the app.
                 this.mainForm.Close();
@@ -502,7 +502,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.Windows.ProjectExplor
                 //
                 await this.eventService.FireAsync(new ProjectExplorerNodeSelectedEvent(selectedNode));
             }
-            catch (TaskCanceledException)
+            catch (Exception e) when (e.IsCancellation())
             {
                 // Ignore.
             }

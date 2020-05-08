@@ -21,8 +21,9 @@
 
 using System;
 using System.Reflection;
+using System.Threading.Tasks;
 
-namespace Google.Solutions.IapDesktop.Application
+namespace Google.Solutions.Compute
 {
     public static class ExceptionExtensions
     {
@@ -39,6 +40,16 @@ namespace Google.Solutions.IapDesktop.Application
             }
 
             return e;
+        }
+
+        public static bool Is<T>(this Exception e) where T : Exception
+        {
+            return e.Unwrap() is T;
+        }
+
+        public static bool IsCancellation(this Exception e) 
+        {
+            return e.Is<TaskCanceledException>() || e.Is<OperationCanceledException>();
         }
     }
 }

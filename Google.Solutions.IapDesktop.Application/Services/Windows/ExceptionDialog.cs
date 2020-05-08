@@ -19,6 +19,7 @@
 // under the License.
 //
 
+using Google.Solutions.Compute;
 using System;
 using System.Runtime.InteropServices;
 using System.Text;

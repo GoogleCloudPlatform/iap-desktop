@@ -44,6 +44,12 @@ namespace Google.Solutions.IapDesktop.Application.Services.Adapters
             string username,
             CancellationToken token);
 
+        Task<NetworkCredential> ResetWindowsUserAsync(
+            VmInstanceReference instanceRef,
+            string username,
+            CancellationToken token,
+            TimeSpan timeout);
+
         SerialPortStream GetSerialPortOutput(VmInstanceReference instanceRef);
     }
 
@@ -53,6 +59,8 @@ namespace Google.Solutions.IapDesktop.Application.Services.Adapters
     public class ComputeEngineAdapter : IComputeEngineAdapter
     {
         private const string WindowsCloudLicenses = "https://www.googleapis.com/compute/v1/projects/windows-cloud/global/licenses";
+
+        private static readonly TimeSpan DefaultPasswordResetTimeout = TimeSpan.FromSeconds(15);
 
         private readonly ComputeService service;
 
@@ -127,14 +135,27 @@ namespace Google.Solutions.IapDesktop.Application.Services.Adapters
             }
         }
 
-        public async Task<NetworkCredential> ResetWindowsUserAsync(
+        public Task<NetworkCredential> ResetWindowsUserAsync(
             VmInstanceReference instanceRef,
             string username,
             CancellationToken token)
         {
-            using (TraceSources.IapDesktop.TraceMethod().WithParameters(instanceRef))
+            return ResetWindowsUserAsync(instanceRef, username, token, DefaultPasswordResetTimeout);
+        }
+
+        public async Task<NetworkCredential> ResetWindowsUserAsync(
+            VmInstanceReference instanceRef,
+            string username,
+            CancellationToken token,
+            TimeSpan timeout)
+        {
+            using (TraceSources.IapDesktop.TraceMethod().WithParameters(instanceRef, timeout))
             {
-                return await this.service.Instances.ResetWindowsUserAsync(instanceRef, username, token);
+                return await this.service.Instances.ResetWindowsUserAsync(
+                    instanceRef,
+                    username,
+                    token,
+                    timeout);
             }
         }
 

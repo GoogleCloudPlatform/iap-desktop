@@ -106,7 +106,6 @@
     <Compile Include="Services\Persistence\TestAuthSettingsRepository.cs" />
     <Compile Include="Services\Persistence\TestConnectionSettingsRepository.cs" />
     <Compile Include="ObjectModel\TestServiceRegistry.cs" />
-    <Compile Include="TestExceptionExtensions.cs" />
     <Compile Include="Util\TestAuthorizationExtensions.cs" />
     <Compile Include="Util\TestIapRdpUrl.cs" />
     <Compile Include="Util\TestPropertyMapper.cs" />
