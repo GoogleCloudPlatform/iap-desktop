@@ -105,6 +105,9 @@
     <Compile Include="Services\Integration\ProjectInventoryService.cs" />
     <Compile Include="Services\Integration\ITunnelBrokerService.cs" />
     <Compile Include="Services\Integration\TunnelService.cs" />
+    <Compile Include="Services\Windows\FlatListView.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="Services\Windows\TaskDialog.cs" />
     <Compile Include="Services\Workflows\ICredentialsService.cs" />
     <Compile Include="Services\Workflows\RemoteDesktopConnectionService.cs" />

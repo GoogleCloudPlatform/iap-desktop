@@ -53,7 +53,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.Windows.TunnelsViewer
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(TunnelsWindow));
             this.toolStrip = new System.Windows.Forms.ToolStrip();
             this.disconnectToolStripButton = new System.Windows.Forms.ToolStripButton();
-            this.tunnelsList = new System.Windows.Forms.ListView();
+            this.tunnelsList = new Google.Solutions.IapDesktop.Application.Services.Windows.FlatListView();
             this.instanceHeader = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.projectIdHeader = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.zoneHeader = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
@@ -87,6 +87,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.Windows.TunnelsViewer
             // 
             // tunnelsList
             // 
+            this.tunnelsList.BackColor = System.Drawing.SystemColors.Control;
             this.tunnelsList.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.tunnelsList.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
             this.instanceHeader,
@@ -102,6 +103,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.Windows.TunnelsViewer
             this.tunnelsList.Location = new System.Drawing.Point(0, 25);
             this.tunnelsList.MultiSelect = false;
             this.tunnelsList.Name = "tunnelsList";
+            this.tunnelsList.OwnerDraw = true;
             this.tunnelsList.Size = new System.Drawing.Size(455, 339);
             this.tunnelsList.TabIndex = 6;
             this.tunnelsList.UseCompatibleStateImageBehavior = false;
@@ -126,7 +128,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.Windows.TunnelsViewer
             // localPortHeader
             // 
             this.localPortHeader.Text = "Local Port";
-            this.localPortHeader.Width = 70;
+            this.localPortHeader.Width = 61;
             // 
             // contextMenuStrip
             // 
@@ -165,7 +167,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.Windows.TunnelsViewer
         #endregion
         private System.Windows.Forms.ToolStrip toolStrip;
         private System.Windows.Forms.ToolStripButton disconnectToolStripButton;
-        private System.Windows.Forms.ListView tunnelsList;
+        private FlatListView tunnelsList;
         private System.Windows.Forms.ColumnHeader instanceHeader;
         private System.Windows.Forms.ColumnHeader projectIdHeader;
         private System.Windows.Forms.ColumnHeader zoneHeader;
