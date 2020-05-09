@@ -71,6 +71,8 @@ namespace Google.Solutions.Compute.Extensions
             string username,
             CancellationToken token)
         {
+            TraceSources.Compute.TraceVerbose("Resetting Windows user for {0} on {1}...", username, instanceRef);
+
             using (RSACryptoServiceProvider rsa = new RSACryptoServiceProvider(RsaKeySize))
             {
                 var keyParameters = rsa.ExportParameters(false);
@@ -102,7 +104,10 @@ namespace Google.Solutions.Compute.Extensions
                 }
                 catch (GoogleApiException e) when (e.Error == null || e.Error.Code == 403)
                 {
-                    TraceSources.Compute.TraceVerbose("Setting request payload metadata failed: {0}", e.Message);
+                    TraceSources.Compute.TraceVerbose(
+                        "Setting request payload metadata failed: {0} ({1})", 
+                        e.Message, 
+                        e.Error.Errors.EnsureNotNull().Select(er => er.Reason).FirstOrDefault());
 
                     // Setting metadata failed due to lack of permissions. Note that
                     // the Error object is not always populated, hence the OR filter.
