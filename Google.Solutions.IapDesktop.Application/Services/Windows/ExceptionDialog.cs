@@ -38,25 +38,10 @@ namespace Google.Solutions.IapDesktop.Application.Services.Windows
     /// </summary>
     public class ExceptionDialog : IExceptionDialog
     {
-        public void Show(IWin32Window parent, string caption, Exception e)
+        private void ShowErrorDialog(IWin32Window parent, string caption, string message, string details)
         {
-            e = e.Unwrap();
-
-            using (TraceSources.IapDesktop.TraceMethod().WithParameters(caption, e))
+            using (TraceSources.IapDesktop.TraceMethod().WithParameters(caption, message, details))
             {
-                var details = new StringBuilder();
-                for (var innerException = e.InnerException;
-                     innerException != null; innerException =
-                     innerException.InnerException)
-                {
-                    details.Append(e.InnerException.GetType().Name);
-                    details.Append(":\n");
-                    details.Append(innerException.Message);
-                    details.Append("\n");
-                }
-
-                TraceSources.IapDesktop.TraceError($"Exception: {details}");
-
                 var config = new UnsafeNativeMethods.TASKDIALOGCONFIG()
                 {
                     cbSize = (uint)Marshal.SizeOf(typeof(UnsafeNativeMethods.TASKDIALOGCONFIG)),
@@ -66,7 +51,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.Windows
                     pszWindowTitle = "An error occured",
                     MainIcon = UnsafeNativeMethods.TD_ERROR_ICON,
                     pszMainInstruction = caption,
-                    pszContent = e.Message,
+                    pszContent = message,
                     pszExpandedInformation = details.ToString()
                 };
 
@@ -75,6 +60,57 @@ namespace Google.Solutions.IapDesktop.Application.Services.Windows
                     out int buttonPressed,
                     out int radioButtonPressed,
                     out bool verificationFlagPressed);
+            }
+        }
+
+        public void Show(IWin32Window parent, string caption, Exception e)
+        {
+            e = e.Unwrap();
+
+            using (TraceSources.IapDesktop.TraceMethod().WithParameters(caption, e))
+            {
+                if (e is GoogleApiException apiException && apiException.Error != null)
+                {
+                    // The .Message property contains a rather ugly concatenation of
+                    // the information enclosed in the .Error object.
+
+                    var details = new StringBuilder();
+                    details.Append($"Status code: {apiException.Error.Code}\n\n");
+
+                    foreach (var error in apiException.Error.Errors)
+                    {
+                        details.Append($"    Domain: {error.Domain}\n");
+                        details.Append($"    Location: {error.Location}\n");
+                        details.Append($"    Reason: {error.Reason}\n");
+                        details.Append("\n");
+                    }
+
+                    ShowErrorDialog(
+                        parent, 
+                        caption, 
+                        apiException.Error.Message, 
+                        details.ToString());
+                }
+                else
+                {
+                    var details = new StringBuilder();
+
+                    for (var innerException = e.InnerException;
+                         innerException != null; innerException =
+                         innerException.InnerException)
+                    {
+                        details.Append(e.InnerException.GetType().Name);
+                        details.Append(":\n");
+                        details.Append(innerException.Message);
+                        details.Append("\n");
+                    }
+
+                    ShowErrorDialog(
+                        parent,
+                        caption,
+                        e.Message,
+                        details.ToString());
+                }
             }
         }
     }
