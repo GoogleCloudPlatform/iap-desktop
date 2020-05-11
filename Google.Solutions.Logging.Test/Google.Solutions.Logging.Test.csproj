@@ -57,11 +57,25 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Events\TestAutomaticRestartEvent.cs" />
+    <Compile Include="Events\TestInsertInstanceEvent.cs" />
+    <Compile Include="Events\TestBetaInsertInstanceEvent.cs" />
+    <Compile Include="Events\TestDeleteInstanceEvent.cs" />
+    <Compile Include="Events\TestGuestTerminateEvent.cs" />
+    <Compile Include="Events\TestMigrateOnHostMaintenanceEvent.cs" />
+    <Compile Include="Events\TestInstanceScheduledEvent.cs" />
+    <Compile Include="Events\TestStartInstanceEvent.cs" />
+    <Compile Include="Events\TestBetaStopInstanceEvent.cs" />
+    <Compile Include="Events\TestTerminateOnHostMaintenanceEvent.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Records\TestAuditLogRecord.cs" />
     <Compile Include="Records\TestLogRecord.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Google.Solutions.Compute\Google.Solutions.Compute.csproj">
+      <Project>{d9493479-1751-402b-880f-60ed33ebb885}</Project>
+      <Name>Google.Solutions.Compute</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Google.Solutions.Logging\Google.Solutions.Logging.csproj">
       <Project>{b804d76c-e02e-4320-94a7-579034644aa0}</Project>
       <Name>Google.Solutions.Logging</Name>
