@@ -20,27 +20,23 @@
 //
 
 using Google.Solutions.Audit.Records;
-using System;
+using System.Diagnostics;
 
-namespace Google.Solutions.Audit.Events
+namespace Google.Solutions.Audit.Events.System
 {
-    public abstract class EventBase
+    public class RecreateInstanceEvent : VmInstanceEventBase
     {
-        public LogRecord LogRecord { get; }
+        public const string Method = "compute.instances.repair.recreateInstance";
 
-        public DateTime Timestamp => this.LogRecord.Timestamp;
-
-        public string Severity => this.LogRecord.Severity;
-
-        public string PrincipalEmail => this.LogRecord.ProtoPayload?.AuthenticationInfo?.PrincipalEmail;
-
-        public StatusInfo Status => this.LogRecord.ProtoPayload?.Status?.Message != null
-            ? this.LogRecord.ProtoPayload?.Status
-            : null;
-
-        protected EventBase(LogRecord logRecord)
+        internal RecreateInstanceEvent(LogRecord logRecord) : base(logRecord)
         {
-            this.LogRecord = logRecord;
+            Debug.Assert(IsRecreateInstanceEvent(logRecord));
+        }
+
+        public static bool IsRecreateInstanceEvent(LogRecord record)
+        {
+            return record.IsSystemEvent &&
+                record.ProtoPayload.MethodName == Method;
         }
     }
 }

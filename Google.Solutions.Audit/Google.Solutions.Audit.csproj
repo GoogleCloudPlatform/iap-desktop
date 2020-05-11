@@ -49,6 +49,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Events\Lifecycle\ResetInstanceEvent.cs" />
+    <Compile Include="Events\System\HostErrorEvent.cs" />
+    <Compile Include="Events\System\RecreateInstanceEvent.cs" />
     <Compile Include="Events\System\AutomaticRestartEvent.cs" />
     <Compile Include="Events\Lifecycle\DeleteInstanceEvent.cs" />
     <Compile Include="Events\EventBase.cs" />

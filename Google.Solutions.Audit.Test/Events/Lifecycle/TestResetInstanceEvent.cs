@@ -28,7 +28,7 @@ using NUnit.Framework;
 namespace Google.Solutions.Audit.Test.Events.Lifecycle
 {
     [TestFixture]
-    public class TestStartInstanceEvent
+    public class TestResetInstanceEvent
     {
         [Test]
         public void WhenSeverityIsNotice_ThenFieldsAreExtracted()
@@ -40,47 +40,40 @@ namespace Google.Solutions.Audit.Test.Events.Lifecycle
                  'authenticationInfo': {
                  },
                  'requestMetadata': {
+                   'callerIp': '1.2.3.4',
+                   'callerSuppliedUserAgent': 'Mozilla'
                  },
                  'serviceName': 'compute.googleapis.com',
-                 'methodName': 'v1.compute.instances.start',
-                 'authorizationInfo': [
-                 ],
+                 'methodName': 'v1.compute.instances.reset',
                  'resourceName': 'projects/project-1/zones/us-central1-a/instances/instance-1',
                  'request': {
-                   '@type': 'type.googleapis.com/compute.instances.start'
-                 },
-                 'response': {
-                 },
-                 'resourceLocation': {
-                   'currentLocations': [
-                     'us-central1-a'
-                   ]
+                   '@type': 'type.googleapis.com/compute.instances.reset'
                  }
                },
-               'insertId': 'vcq6epd7n72',
+               'insertId': 'yz07i2c',
                'resource': {
                  'type': 'gce_instance',
                  'labels': {
-                   'project_id': 'project-1',
                    'instance_id': '4894051111144103',
+                   'project_id': 'project-1',
                    'zone': 'us-central1-a'
                  }
                },
-               'timestamp': '2020-05-04T13:56:26.405Z',
+               'timestamp': '2020-05-11T14:41:30.863Z',
                'severity': 'NOTICE',
                'logName': 'projects/project-1/logs/cloudaudit.googleapis.com%2Factivity',
                'operation': {
-                 'id': 'operation-1588600586345-5a4d2e5a39c56-47d0ce05-a9d7073c',
+                 'id': 'operation-1589208088486-5a5605796a1ac-2d2b0706-bf57b173',
                  'producer': 'compute.googleapis.com',
-                 'first': true
+                 'last': true
                },
-               'receiveTimestamp': '2020-05-04T13:56:27.582777461Z'
+               'receiveTimestamp': '2020-05-11T14:41:31.096086630Z'
              }";
 
             var r = LogRecord.Deserialize(json);
-            Assert.IsTrue(StartInstanceEvent.IsStartInstanceEvent(r));
+            Assert.IsTrue(ResetInstanceEvent.IsResetInstanceEvent(r));
 
-            var e = (StartInstanceEvent)r.ToEvent();
+            var e = (ResetInstanceEvent)r.ToEvent();
 
             Assert.AreEqual(4894051111144103, e.InstanceId);
             Assert.AreEqual("NOTICE", e.Severity);

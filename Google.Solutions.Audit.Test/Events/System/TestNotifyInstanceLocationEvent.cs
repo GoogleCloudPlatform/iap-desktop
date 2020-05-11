@@ -71,6 +71,8 @@ namespace Google.Solutions.Audit.Test.Events.System
             var e = (NotifyInstanceLocationEvent)r.ToEvent();
 
             Assert.AreEqual(7045222222254025, e.InstanceId);
+            Assert.AreEqual("INFO", e.Severity);
+            Assert.IsNull(e.Status);
             Assert.AreEqual("4aaaa7b32a208e7ccb4ee62acedee725", e.ServerId);
             Assert.AreEqual(new DateTime(2020, 5, 4, 1, 50, 10, 917), e.SchedulingTimestamp);
         }

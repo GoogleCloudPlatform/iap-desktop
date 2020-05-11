@@ -78,6 +78,8 @@ namespace Google.Solutions.Audit.Test.Events.System
             var e = (GuestTerminateEvent)r.ToEvent();
 
             Assert.AreEqual(2162224123123123213, e.InstanceId);
+            Assert.AreEqual("INFO", e.Severity);
+            Assert.IsNull(e.Status);
             Assert.AreEqual(
                 new VmInstanceReference("project-1", "us-central1-a", "instance-1"),
                 e.InstanceReference);

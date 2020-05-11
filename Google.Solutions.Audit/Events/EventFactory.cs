@@ -39,9 +39,7 @@ namespace Google.Solutions.Audit.Events
                 { StartInstanceEvent.Method, rec => new StartInstanceEvent(rec) },
                 { StopInstanceEvent.Method, rec => new StopInstanceEvent(rec) },
                 { StopInstanceEvent.BetaMethod, rec => new StopInstanceEvent(rec) },
-
-                // TODO: 
-                // - v1.compute.instances.reset
+                { ResetInstanceEvent.Method, rec => new ResetInstanceEvent(rec) },
             };
 
         private readonly static IDictionary<string, Func<LogRecord, EventBase>> systemEvents
@@ -52,9 +50,8 @@ namespace Google.Solutions.Audit.Events
                 { NotifyInstanceLocationEvent.Method, rec => new NotifyInstanceLocationEvent(rec) },
                 { MigrateOnHostMaintenanceEvent.Method, rec => new MigrateOnHostMaintenanceEvent(rec) },
                 { TerminateOnHostMaintenanceEvent.Method, rec => new TerminateOnHostMaintenanceEvent(rec) },
-
-                // TODO: 
-                // - compute.instances.repair.recreateInstance
+                { RecreateInstanceEvent.Method, rec => new RecreateInstanceEvent(rec) },
+                { HostErrorEvent.Method, rec => new HostErrorEvent(rec) },
             };
 
 

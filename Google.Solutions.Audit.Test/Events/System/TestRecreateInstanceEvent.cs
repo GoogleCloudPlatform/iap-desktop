@@ -20,80 +20,70 @@
 //
 
 using Google.Solutions.Audit.Events;
-using Google.Solutions.Audit.Events.Lifecycle;
+using Google.Solutions.Audit.Events.System;
 using Google.Solutions.Audit.Records;
 using Google.Solutions.Compute;
 using NUnit.Framework;
 
-namespace Google.Solutions.Audit.Test.Events.Lifecycle
+namespace Google.Solutions.Audit.Test.Events.System
 {
     [TestFixture]
-    public class TestStartInstanceEvent
+    public class TestRecreateInstanceEvent
     {
         [Test]
-        public void WhenSeverityIsNotice_ThenFieldsAreExtracted()
+        public void WhenSeverityIsInfo_ThenFieldsAreExtracted()
         {
             var json = @"
-            {
+               {
                'protoPayload': {
                  '@type': 'type.googleapis.com/google.cloud.audit.AuditLog',
+                 'status': {},
                  'authenticationInfo': {
+                   'principalEmail': 'system@google.com'
                  },
                  'requestMetadata': {
+                   'requestAttributes': {},
+                   'destinationAttributes': {}
                  },
                  'serviceName': 'compute.googleapis.com',
-                 'methodName': 'v1.compute.instances.start',
-                 'authorizationInfo': [
-                 ],
+                 'methodName': 'compute.instances.repair.recreateInstance',
                  'resourceName': 'projects/project-1/zones/us-central1-a/instances/instance-1',
                  'request': {
-                   '@type': 'type.googleapis.com/compute.instances.start'
-                 },
-                 'response': {
-                 },
-                 'resourceLocation': {
-                   'currentLocations': [
-                     'us-central1-a'
-                   ]
+                   '@type': 'type.googleapis.com/compute.instances.repair.recreateInstance'
                  }
                },
-               'insertId': 'vcq6epd7n72',
+               'insertId': 'u5trcdfmye',
                'resource': {
                  'type': 'gce_instance',
                  'labels': {
-                   'project_id': 'project-1',
-                   'instance_id': '4894051111144103',
-                   'zone': 'us-central1-a'
+                   'zone': 'us-central1-a',
+                   'instance_id': '2162224123123123213',
+                   'project_id': 'project-1'
                  }
                },
-               'timestamp': '2020-05-04T13:56:26.405Z',
-               'severity': 'NOTICE',
-               'logName': 'projects/project-1/logs/cloudaudit.googleapis.com%2Factivity',
+               'timestamp': '2020-05-03T19:36:19.812Z',
+               'severity': 'INFO',
+               'logName': 'projects/project-1/logs/cloudaudit.googleapis.com%2Fsystem_event',
                'operation': {
-                 'id': 'operation-1588600586345-5a4d2e5a39c56-47d0ce05-a9d7073c',
-                 'producer': 'compute.googleapis.com',
-                 'first': true
+                 'id': 'repair-1588534579592-5a4c387547b81-65d715dc-460e6782',
+                 'producer': 'compute.instances.repair.recreateInstance',
+                 'first': true,
+                 'last': true
                },
-               'receiveTimestamp': '2020-05-04T13:56:27.582777461Z'
+               'receiveTimestamp': '2020-05-03T19:36:20.544388587Z'
              }";
 
             var r = LogRecord.Deserialize(json);
-            Assert.IsTrue(StartInstanceEvent.IsStartInstanceEvent(r));
+            Assert.IsTrue(RecreateInstanceEvent.IsRecreateInstanceEvent(r));
 
-            var e = (StartInstanceEvent)r.ToEvent();
+            var e = (RecreateInstanceEvent)r.ToEvent();
 
-            Assert.AreEqual(4894051111144103, e.InstanceId);
-            Assert.AreEqual("NOTICE", e.Severity);
+            Assert.AreEqual(2162224123123123213, e.InstanceId);
+            Assert.AreEqual("INFO", e.Severity);
             Assert.IsNull(e.Status);
             Assert.AreEqual(
                 new VmInstanceReference("project-1", "us-central1-a", "instance-1"),
                 e.InstanceReference);
-        }
-
-        [Test]
-        public void WhenSeverityIsError_ThenFieldsAreExtracted()
-        {
-            Assert.Inconclusive();
         }
     }
 }
