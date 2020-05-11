@@ -24,7 +24,7 @@ using Newtonsoft.Json.Linq;
 using System;
 using System.Diagnostics;
 
-namespace Google.Solutions.Logging.Events.Lifecycle
+namespace Google.Solutions.Logging.Events.System
 {
     public class InstanceScheduledEvent : VmInstanceEventBase
     {

@@ -20,12 +20,12 @@
 //
 
 using Google.Solutions.Logging.Events;
-using Google.Solutions.Logging.Events.Lifecycle;
+using Google.Solutions.Logging.Events.System;
 using Google.Solutions.Logging.Records;
 using NUnit.Framework;
 using System;
 
-namespace Google.Solutions.Logging.Test.Events.Lifecycle
+namespace Google.Solutions.Logging.Test.Events.System
 {
     [TestFixture]
     public class TestInstanceScheduledEvent

@@ -20,23 +20,25 @@
 //
 
 using Google.Solutions.Logging.Records;
+using Newtonsoft.Json.Linq;
+using System;
 using System.Diagnostics;
 
-namespace Google.Solutions.Logging.Events.Lifecycle
+namespace Google.Solutions.Logging.Events.System
 {
-    public class TerminateOnHostMaintenanceEvent : VmInstanceEventBase
+    public class MigrateOnHostMaintenanceEvent : VmInstanceEventBase
     {
-        public const string Method = "compute.instances.terminateOnHostMaintenance";
+        public const string Method = "compute.instances.migrateOnHostMaintenance";
 
-        public TerminateOnHostMaintenanceEvent(LogRecord logRecord) : base(logRecord)
+        public MigrateOnHostMaintenanceEvent(LogRecord logRecord) : base(logRecord)
         {
-            Debug.Assert(IsTerminateOnHostMaintenanceEvent(logRecord));
+            Debug.Assert(IsMigrateOnHostMaintenanceEvent(logRecord));
         }
 
-        public static bool IsTerminateOnHostMaintenanceEvent(LogRecord record)
+        public static bool IsMigrateOnHostMaintenanceEvent(LogRecord logRecord)
         {
-            return record.IsSystemEvent &&
-                record.ProtoPayload.MethodName == Method;
+            return logRecord.IsSystemEvent &&
+                logRecord.ProtoPayload.MethodName == Method;
         }
     }
 }

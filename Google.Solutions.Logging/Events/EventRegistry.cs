@@ -20,6 +20,7 @@
 //
 
 using Google.Solutions.Logging.Events.Lifecycle;
+using Google.Solutions.Logging.Events.System;
 using Google.Solutions.Logging.Records;
 using System;
 using System.Collections.Generic;
@@ -31,28 +32,44 @@ namespace Google.Solutions.Logging.Events
         private readonly static IDictionary<string, Func<LogRecord, EventBase>> lifecycleEventTypes
             = new Dictionary<string, Func<LogRecord, EventBase>>()
             {
-                { AutomaticRestartEvent.Method, rec => new AutomaticRestartEvent(rec) },
                 { DeleteInstanceEvent.Method, rec => new DeleteInstanceEvent(rec) },
-                { GuestTerminateEvent.Method, rec => new GuestTerminateEvent(rec) },
                 { InsertInstanceEvent.Method, rec => new InsertInstanceEvent(rec) },
                 { InsertInstanceEvent.BetaMethod, rec => new InsertInstanceEvent(rec) },
-                { InstanceScheduledEvent.Method, rec => new InstanceScheduledEvent(rec) },
-                { MigrateOnHostMaintenanceEvent.Method, rec => new MigrateOnHostMaintenanceEvent(rec) },
                 { StartInstanceEvent.Method, rec => new StartInstanceEvent(rec) },
                 { StopInstanceEvent.Method, rec => new StopInstanceEvent(rec) },
                 { StopInstanceEvent.BetaMethod, rec => new StopInstanceEvent(rec) },
+
+                // TODO: 
+                // - v1.compute.instances.reset
+            };
+
+
+        private readonly static IDictionary<string, Func<LogRecord, EventBase>> systemEventTypes
+            = new Dictionary<string, Func<LogRecord, EventBase>>()
+            {
+                { AutomaticRestartEvent.Method, rec => new AutomaticRestartEvent(rec) },
+                { GuestTerminateEvent.Method, rec => new GuestTerminateEvent(rec) },
+                { InstanceScheduledEvent.Method, rec => new InstanceScheduledEvent(rec) },
+                { MigrateOnHostMaintenanceEvent.Method, rec => new MigrateOnHostMaintenanceEvent(rec) },
                 { TerminateOnHostMaintenanceEvent.Method, rec => new TerminateOnHostMaintenanceEvent(rec) },
 
-                // TODO: compute.instances.repair.recreateInstance
+                // TODO: 
+                // - v1.compute.instances.reset
             };
 
         public static EventBase ToEvent(this LogRecord record)
         {
             if (lifecycleEventTypes.TryGetValue(
                 record.ProtoPayload.MethodName, 
-                out Func<LogRecord, EventBase> factoryFunc))
+                out Func<LogRecord, EventBase> lcFactoryFunc))
             {
-                return factoryFunc(record);
+                return lcFactoryFunc(record);
+            }
+            else if (systemEventTypes.TryGetValue(
+                record.ProtoPayload.MethodName,
+                out Func<LogRecord, EventBase> sysFactoryFunc))
+            {
+                return sysFactoryFunc(record);
             }
             else
             {

@@ -22,18 +22,18 @@
 using Google.Solutions.Logging.Records;
 using System.Diagnostics;
 
-namespace Google.Solutions.Logging.Events.Lifecycle
+namespace Google.Solutions.Logging.Events.System
 {
-    public class GuestTerminateEvent : VmInstanceEventBase
+    public class TerminateOnHostMaintenanceEvent : VmInstanceEventBase
     {
-        public const string Method = "compute.instances.guestTerminate";
+        public const string Method = "compute.instances.terminateOnHostMaintenance";
 
-        public GuestTerminateEvent(LogRecord logRecord) : base(logRecord)
+        public TerminateOnHostMaintenanceEvent(LogRecord logRecord) : base(logRecord)
         {
-            Debug.Assert(IsGuestTerminateEvent(logRecord));
+            Debug.Assert(IsTerminateOnHostMaintenanceEvent(logRecord));
         }
 
-        public static bool IsGuestTerminateEvent(LogRecord record)
+        public static bool IsTerminateOnHostMaintenanceEvent(LogRecord record)
         {
             return record.IsSystemEvent &&
                 record.ProtoPayload.MethodName == Method;

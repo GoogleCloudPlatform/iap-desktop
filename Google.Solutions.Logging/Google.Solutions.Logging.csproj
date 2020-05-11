@@ -49,17 +49,17 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Events\Lifecycle\AutomaticRestartEvent.cs" />
+    <Compile Include="Events\System\AutomaticRestartEvent.cs" />
     <Compile Include="Events\Lifecycle\DeleteInstanceEvent.cs" />
     <Compile Include="Events\EventBase.cs" />
     <Compile Include="Events\EventRegistry.cs" />
-    <Compile Include="Events\Lifecycle\GuestTerminateEvent.cs" />
+    <Compile Include="Events\System\GuestTerminateEvent.cs" />
     <Compile Include="Events\Lifecycle\InsertInstanceEvent.cs" />
-    <Compile Include="Events\Lifecycle\MigrateOnHostMaintenanceEvent.cs" />
-    <Compile Include="Events\Lifecycle\InstanceScheduledEvent.cs" />
+    <Compile Include="Events\System\MigrateOnHostMaintenanceEvent.cs" />
+    <Compile Include="Events\System\InstanceScheduledEvent.cs" />
     <Compile Include="Events\Lifecycle\StartInstanceEvent.cs" />
     <Compile Include="Events\Lifecycle\StopInstanceEvent.cs" />
-    <Compile Include="Events\Lifecycle\TerminateOnHostMaintenanceEvent.cs" />
+    <Compile Include="Events\System\TerminateOnHostMaintenanceEvent.cs" />
     <Compile Include="Events\VmInstanceEventBase.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Records\AuditLogRecord.cs" />

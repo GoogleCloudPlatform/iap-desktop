@@ -22,18 +22,18 @@
 using Google.Solutions.Logging.Records;
 using System.Diagnostics;
 
-namespace Google.Solutions.Logging.Events.Lifecycle
+namespace Google.Solutions.Logging.Events.System
 {
-    public class AutomaticRestartEvent : VmInstanceEventBase
+    public class GuestTerminateEvent : VmInstanceEventBase
     {
-        public const string Method = "compute.instances.automaticRestart";
+        public const string Method = "compute.instances.guestTerminate";
 
-        public AutomaticRestartEvent(LogRecord logRecord) : base(logRecord)
+        public GuestTerminateEvent(LogRecord logRecord) : base(logRecord)
         {
-            Debug.Assert(IsAutomaticRestartEvent(logRecord));
+            Debug.Assert(IsGuestTerminateEvent(logRecord));
         }
 
-        public static bool IsAutomaticRestartEvent(LogRecord record)
+        public static bool IsGuestTerminateEvent(LogRecord record)
         {
             return record.IsSystemEvent &&
                 record.ProtoPayload.MethodName == Method;

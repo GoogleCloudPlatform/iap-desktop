@@ -21,20 +21,20 @@
 
 using Google.Solutions.Compute;
 using Google.Solutions.Logging.Events;
-using Google.Solutions.Logging.Events.Lifecycle;
+using Google.Solutions.Logging.Events.System;
 using Google.Solutions.Logging.Records;
 using NUnit.Framework;
 
-namespace Google.Solutions.Logging.Test.Events.Lifecycle
+namespace Google.Solutions.Logging.Test.Events.System
 {
     [TestFixture]
-    public class TestTerminateOnHostMaintenanceEvent
+    public class TestMigrateOnHostMaintenanceEvent
     {
         [Test]
         public void WhenSeverityIsInfo_ThenFieldsAreExtracted()
         {
             var json = @"
-                {
+                 {
                    'protoPayload': {
                      '@type': 'type.googleapis.com/google.cloud.audit.AuditLog',
                      'status': {},
@@ -45,13 +45,13 @@ namespace Google.Solutions.Logging.Test.Events.Lifecycle
                        'destinationAttributes': {}
                      },
                      'serviceName': 'compute.googleapis.com',
-                     'methodName': 'compute.instances.terminateOnHostMaintenance',
+                     'methodName': 'compute.instances.migrateOnHostMaintenance',
                      'resourceName': 'projects/project-1/zones/us-central1-a/instances/instance-1',
                      'request': {
-                       '@type': 'type.googleapis.com/compute.instances.terminateOnHostMaintenance'
+                       '@type': 'type.googleapis.com/compute.instances.migrateOnHostMaintenance'
                      }
                    },
-                   'insertId': 'n164j2e2uprm',
+                   'insertId': 'i1hqcte1ac2c',
                    'resource': {
                      'type': 'gce_instance',
                      'labels': {
@@ -60,26 +60,27 @@ namespace Google.Solutions.Logging.Test.Events.Lifecycle
                        'zone': 'us-central1-a'
                      }
                    },
-                   'timestamp': '2020-05-06T16:10:46.781Z',
+                   'timestamp': '2019-12-19T09:17:30.375Z',
                    'severity': 'INFO',
                    'logName': 'projects/project-1/logs/cloudaudit.googleapis.com%2Fsystem_event',
                    'operation': {
-                     'id': 'systemevent-1588781345487-5a4fcfbb93bc2-b8c0e7d9-37cacfb7',
-                     'producer': 'compute.instances.terminateOnHostMaintenance',
+                     'id': 'systemevent-1576746980000-59a0b03a4c100-8dcda2a6-a91dbf3a',
+                     'producer': 'compute.instances.migrateOnHostMaintenance',
                      'first': true,
                      'last': true
                    },
-                   'receiveTimestamp': '2020-05-06T16:10:47.109548606Z'
+                   'receiveTimestamp': '2019-12-19T09:17:30.737702897Z'
                  }";
 
             var r = LogRecord.Deserialize(json);
-            Assert.IsTrue(TerminateOnHostMaintenanceEvent.IsTerminateOnHostMaintenanceEvent(r));
+            Assert.IsTrue(MigrateOnHostMaintenanceEvent.IsMigrateOnHostMaintenanceEvent(r));
 
+            var e = (MigrateOnHostMaintenanceEvent)r.ToEvent();
 
-            Assert.AreEqual(2162224123123123213, ((TerminateOnHostMaintenanceEvent)r.ToEvent()).InstanceId);
+            Assert.AreEqual(2162224123123123213, e.InstanceId);
             Assert.AreEqual(
                 new VmInstanceReference("project-1", "us-central1-a", "instance-1"),
-                ((TerminateOnHostMaintenanceEvent)r.ToEvent()).InstanceReference);
+                e.InstanceReference);
         }
 
         [Test]
