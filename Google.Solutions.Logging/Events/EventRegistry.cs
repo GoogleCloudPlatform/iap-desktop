@@ -29,7 +29,7 @@ namespace Google.Solutions.Logging.Events
 {
     public static class EventRegistry
     {
-        private readonly static IDictionary<string, Func<LogRecord, EventBase>> lifecycleEventTypes
+        private readonly static IDictionary<string, Func<LogRecord, EventBase>> lifecycleEvents
             = new Dictionary<string, Func<LogRecord, EventBase>>()
             {
                 { DeleteInstanceEvent.Method, rec => new DeleteInstanceEvent(rec) },
@@ -43,13 +43,12 @@ namespace Google.Solutions.Logging.Events
                 // - v1.compute.instances.reset
             };
 
-
-        private readonly static IDictionary<string, Func<LogRecord, EventBase>> systemEventTypes
+        private readonly static IDictionary<string, Func<LogRecord, EventBase>> systemEvents
             = new Dictionary<string, Func<LogRecord, EventBase>>()
             {
                 { AutomaticRestartEvent.Method, rec => new AutomaticRestartEvent(rec) },
                 { GuestTerminateEvent.Method, rec => new GuestTerminateEvent(rec) },
-                { InstanceScheduledEvent.Method, rec => new InstanceScheduledEvent(rec) },
+                { NotifyInstanceLocationEvent.Method, rec => new NotifyInstanceLocationEvent(rec) },
                 { MigrateOnHostMaintenanceEvent.Method, rec => new MigrateOnHostMaintenanceEvent(rec) },
                 { TerminateOnHostMaintenanceEvent.Method, rec => new TerminateOnHostMaintenanceEvent(rec) },
 
@@ -57,19 +56,16 @@ namespace Google.Solutions.Logging.Events
                 // - v1.compute.instances.reset
             };
 
+
         public static EventBase ToEvent(this LogRecord record)
         {
-            if (lifecycleEventTypes.TryGetValue(
-                record.ProtoPayload.MethodName, 
-                out Func<LogRecord, EventBase> lcFactoryFunc))
+            if (lifecycleEvents.TryGetValue(record.ProtoPayload.MethodName, out var lcFunc))
             {
-                return lcFactoryFunc(record);
+                return lcFunc(record);
             }
-            else if (systemEventTypes.TryGetValue(
-                record.ProtoPayload.MethodName,
-                out Func<LogRecord, EventBase> sysFactoryFunc))
+            else if (systemEvents.TryGetValue(record.ProtoPayload.MethodName, out var sysFunc))
             {
-                return sysFactoryFunc(record);
+                return sysFunc(record);
             }
             else
             {

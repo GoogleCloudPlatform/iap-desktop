@@ -28,7 +28,7 @@ using System;
 namespace Google.Solutions.Logging.Test.Events.System
 {
     [TestFixture]
-    public class TestInstanceScheduledEvent
+    public class TestNotifyInstanceLocationEvent
     {
         [Test]
         public void WhenSeverityIsInfo_ThenFieldsAreExtracted()
@@ -66,9 +66,9 @@ namespace Google.Solutions.Logging.Test.Events.System
              } ";
 
             var r = LogRecord.Deserialize(json);
-            Assert.IsTrue(InstanceScheduledEvent.IsInstanceScheduledEvent(r));
+            Assert.IsTrue(NotifyInstanceLocationEvent.IsInstanceScheduledEvent(r));
 
-            var e = (InstanceScheduledEvent)r.ToEvent();
+            var e = (NotifyInstanceLocationEvent)r.ToEvent();
 
             Assert.AreEqual(7045222222254025, e.InstanceId);
             Assert.AreEqual("4aaaa7b32a208e7ccb4ee62acedee725", e.ServerId);

@@ -26,7 +26,7 @@ using System.Diagnostics;
 
 namespace Google.Solutions.Logging.Events.System
 {
-    public class InstanceScheduledEvent : VmInstanceEventBase
+    public class NotifyInstanceLocationEvent : VmInstanceEventBase
     {
         public const string Method = "NotifyInstanceLocation";
 
@@ -34,7 +34,7 @@ namespace Google.Solutions.Logging.Events.System
 
         public DateTime SchedulingTimestamp => base.LogRecord.ProtoPayload.Metadata["timestamp"].Value<DateTime>();
 
-        public InstanceScheduledEvent(LogRecord logRecord) : base(logRecord)
+        public NotifyInstanceLocationEvent(LogRecord logRecord) : base(logRecord)
         {
             Debug.Assert(IsInstanceScheduledEvent(logRecord));
         }

@@ -56,7 +56,7 @@
     <Compile Include="Events\System\GuestTerminateEvent.cs" />
     <Compile Include="Events\Lifecycle\InsertInstanceEvent.cs" />
     <Compile Include="Events\System\MigrateOnHostMaintenanceEvent.cs" />
-    <Compile Include="Events\System\InstanceScheduledEvent.cs" />
+    <Compile Include="Events\System\NotifyInstanceLocationEvent.cs" />
     <Compile Include="Events\Lifecycle\StartInstanceEvent.cs" />
     <Compile Include="Events\Lifecycle\StopInstanceEvent.cs" />
     <Compile Include="Events\System\TerminateOnHostMaintenanceEvent.cs" />

@@ -63,7 +63,7 @@
     <Compile Include="Events\Lifecycle\TestDeleteInstanceEvent.cs" />
     <Compile Include="Events\System\TestGuestTerminateEvent.cs" />
     <Compile Include="Events\System\TestMigrateOnHostMaintenanceEvent.cs" />
-    <Compile Include="Events\System\TestInstanceScheduledEvent.cs" />
+    <Compile Include="Events\System\TestNotifyInstanceLocationEvent.cs" />
     <Compile Include="Events\Lifecycle\TestStartInstanceEvent.cs" />
     <Compile Include="Events\Lifecycle\TestBetaStopInstanceEvent.cs" />
     <Compile Include="Events\System\TestTerminateOnHostMaintenanceEvent.cs" />
