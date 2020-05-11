@@ -28,6 +28,8 @@ namespace Google.Solutions.Audit.Events.System
     {
         public const string Method = "compute.instances.hostError";
 
+        public string Message => "Instance terminated by Compute Engine";
+
         internal HostErrorEvent(LogRecord logRecord) : base(logRecord)
         {
             Debug.Assert(IsHostErrorEvent(logRecord));

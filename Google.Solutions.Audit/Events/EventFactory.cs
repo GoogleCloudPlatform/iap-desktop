@@ -40,6 +40,11 @@ namespace Google.Solutions.Audit.Events
                 { StopInstanceEvent.Method, rec => new StopInstanceEvent(rec) },
                 { StopInstanceEvent.BetaMethod, rec => new StopInstanceEvent(rec) },
                 { ResetInstanceEvent.Method, rec => new ResetInstanceEvent(rec) },
+
+                // Some beta events omitted (based on audit_log_services.ts)
+
+                // TODO: v1.compute.instances.startWithEncryptionKey
+                // TODO: v1.compute.instances.simulateMaintenanceEvent
             };
 
         private readonly static IDictionary<string, Func<LogRecord, EventBase>> systemEvents
@@ -47,11 +52,17 @@ namespace Google.Solutions.Audit.Events
             {
                 { AutomaticRestartEvent.Method, rec => new AutomaticRestartEvent(rec) },
                 { GuestTerminateEvent.Method, rec => new GuestTerminateEvent(rec) },
-                { NotifyInstanceLocationEvent.Method, rec => new NotifyInstanceLocationEvent(rec) },
-                { MigrateOnHostMaintenanceEvent.Method, rec => new MigrateOnHostMaintenanceEvent(rec) },
-                { TerminateOnHostMaintenanceEvent.Method, rec => new TerminateOnHostMaintenanceEvent(rec) },
-                { RecreateInstanceEvent.Method, rec => new RecreateInstanceEvent(rec) },
                 { HostErrorEvent.Method, rec => new HostErrorEvent(rec) },
+                { InstanceManagerHaltForRestartEvent.Method, rec => new InstanceManagerHaltForRestartEvent(rec) },
+                { InstancePreemptedEvent.Method, rec => new InstancePreemptedEvent(rec) },
+                { InstanceResetEvent.Method, rec => new InstanceResetEvent(rec) },
+                { MigrateOnHostMaintenanceEvent.Method, rec => new MigrateOnHostMaintenanceEvent(rec) },
+                { NotifyInstanceLocationEvent.Method, rec => new NotifyInstanceLocationEvent(rec) },
+                { RecreateInstanceEvent.Method, rec => new RecreateInstanceEvent(rec) },
+                { StoppedDueToPdDoubleServeEvent.Method, rec => new StoppedDueToPdDoubleServeEvent(rec) },
+                { TerminateOnHostMaintenanceEvent.Method, rec => new TerminateOnHostMaintenanceEvent(rec) }
+
+                // Some more esoteric event types omitted (based on InstanceEventInfo.java).
             };
 
 
@@ -67,6 +78,8 @@ namespace Google.Solutions.Audit.Events
             }
             else
             {
+                // The list of event types is incomplete any might grow stale over time,
+                // so ensure to fail open.
                 return new UnknownEvent(record);
             }
         }

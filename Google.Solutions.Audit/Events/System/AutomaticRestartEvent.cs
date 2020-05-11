@@ -28,6 +28,8 @@ namespace Google.Solutions.Audit.Events.System
     {
         public const string Method = "compute.instances.automaticRestart";
 
+        public string Message => "Instance automatically restarted by Compute Engine";
+
         internal AutomaticRestartEvent(LogRecord logRecord) : base(logRecord)
         {
             Debug.Assert(IsAutomaticRestartEvent(logRecord));

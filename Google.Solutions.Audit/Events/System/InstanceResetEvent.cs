@@ -24,18 +24,18 @@ using System.Diagnostics;
 
 namespace Google.Solutions.Audit.Events.System
 {
-    public class TerminateOnHostMaintenanceEvent : VmInstanceEventBase
+    public class InstanceResetEvent : VmInstanceEventBase
     {
-        public const string Method = "compute.instances.terminateOnHostMaintenance";
+        public const string Method = "compute.instances.reset";
 
-        public string Message => "Instance terminated during Compute Engine maintenance";
+        public string Message => "Instance was restarted by a Reset operation";
 
-        internal TerminateOnHostMaintenanceEvent(LogRecord logRecord) : base(logRecord)
+        internal InstanceResetEvent(LogRecord logRecord) : base(logRecord)
         {
-            Debug.Assert(IsTerminateOnHostMaintenanceEvent(logRecord));
+            Debug.Assert(IsInstanceResetEvent(logRecord));
         }
 
-        public static bool IsTerminateOnHostMaintenanceEvent(LogRecord record)
+        public static bool IsInstanceResetEvent(LogRecord record)
         {
             return record.IsSystemEvent &&
                 record.ProtoPayload.MethodName == Method;

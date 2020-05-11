@@ -19,26 +19,21 @@
 // under the License.
 //
 
+using Google.Solutions.Audit.Events;
+using Google.Solutions.Audit.Events.System;
 using Google.Solutions.Audit.Records;
-using System.Diagnostics;
+using Google.Solutions.Compute;
+using NUnit.Framework;
 
-namespace Google.Solutions.Audit.Events.System
+namespace Google.Solutions.Audit.Test.Events.System
 {
-    public class TerminateOnHostMaintenanceEvent : VmInstanceEventBase
+    [TestFixture]
+    public class TestInstanceResetEvent
     {
-        public const string Method = "compute.instances.terminateOnHostMaintenance";
-
-        public string Message => "Instance terminated during Compute Engine maintenance";
-
-        internal TerminateOnHostMaintenanceEvent(LogRecord logRecord) : base(logRecord)
+        [Test]
+        public void WhenSeverityIsInfo_ThenFieldsAreExtracted()
         {
-            Debug.Assert(IsTerminateOnHostMaintenanceEvent(logRecord));
-        }
-
-        public static bool IsTerminateOnHostMaintenanceEvent(LogRecord record)
-        {
-            return record.IsSystemEvent &&
-                record.ProtoPayload.MethodName == Method;
+            Assert.Inconclusive();
         }
     }
 }

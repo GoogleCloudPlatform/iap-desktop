@@ -24,18 +24,18 @@ using System.Diagnostics;
 
 namespace Google.Solutions.Audit.Events.System
 {
-    public class TerminateOnHostMaintenanceEvent : VmInstanceEventBase
+    public class StoppedDueToPdDoubleServeEvent : VmInstanceEventBase
     {
-        public const string Method = "compute.instances.terminateOnHostMaintenance";
+        public const string Method = "compute.instances.stoppedDueToPdDoubleServe";
 
-        public string Message => "Instance terminated during Compute Engine maintenance";
+        public string Message => "Instance was stopped because a Regional PD was force-attached";
 
-        internal TerminateOnHostMaintenanceEvent(LogRecord logRecord) : base(logRecord)
+        internal StoppedDueToPdDoubleServeEvent(LogRecord logRecord) : base(logRecord)
         {
-            Debug.Assert(IsTerminateOnHostMaintenanceEvent(logRecord));
+            Debug.Assert(IsStoppedDueToPdDoubleServeEvent(logRecord));
         }
 
-        public static bool IsTerminateOnHostMaintenanceEvent(LogRecord record)
+        public static bool IsStoppedDueToPdDoubleServeEvent(LogRecord record)
         {
             return record.IsSystemEvent &&
                 record.ProtoPayload.MethodName == Method;

@@ -28,6 +28,8 @@ namespace Google.Solutions.Audit.Events.System
     {
         public const string Method = "compute.instances.guestTerminate";
 
+        public string Message => "Instance terminated by guest OS shutdown";
+
         internal GuestTerminateEvent(LogRecord logRecord) : base(logRecord)
         {
             Debug.Assert(IsGuestTerminateEvent(logRecord));

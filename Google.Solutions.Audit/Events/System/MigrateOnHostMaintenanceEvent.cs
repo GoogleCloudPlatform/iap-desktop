@@ -28,6 +28,8 @@ namespace Google.Solutions.Audit.Events.System
     {
         public const string Method = "compute.instances.migrateOnHostMaintenance";
 
+        public string Message => "Instance migrated during Compute Engine maintenance";
+
         internal MigrateOnHostMaintenanceEvent(LogRecord logRecord) : base(logRecord)
         {
             Debug.Assert(IsMigrateOnHostMaintenanceEvent(logRecord));

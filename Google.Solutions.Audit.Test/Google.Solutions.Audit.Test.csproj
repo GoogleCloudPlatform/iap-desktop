@@ -58,6 +58,10 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Events\Lifecycle\TestResetInstanceEvent.cs" />
+    <Compile Include="Events\System\TestStoppedDueToPdDoubleServeEvent.cs" />
+    <Compile Include="Events\System\TestInstanceResetEvent.cs" />
+    <Compile Include="Events\System\TestInstanceManagerHaltForRestartEvent.cs" />
+    <Compile Include="Events\System\TestInstancePreemptedEvent.cs" />
     <Compile Include="Events\System\TestHostErrorEvent.cs" />
     <Compile Include="Events\System\TestRecreateInstanceEvent.cs" />
     <Compile Include="Events\System\TestAutomaticRestartEvent.cs" />

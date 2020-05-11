@@ -50,6 +50,10 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Events\Lifecycle\ResetInstanceEvent.cs" />
+    <Compile Include="Events\System\StoppedDueToPdDoubleServeEvent.cs" />
+    <Compile Include="Events\System\InstanceManagerHaltForRestartEvent.cs" />
+    <Compile Include="Events\System\InstanceResetEvent.cs" />
+    <Compile Include="Events\System\InstancePreemptedEvent.cs" />
     <Compile Include="Events\System\HostErrorEvent.cs" />
     <Compile Include="Events\System\RecreateInstanceEvent.cs" />
     <Compile Include="Events\System\AutomaticRestartEvent.cs" />
