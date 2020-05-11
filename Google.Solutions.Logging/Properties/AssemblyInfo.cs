@@ -1,4 +1,4 @@
-//
+﻿//
 // Copyright 2019 Google LLC
 //
 // Licensed to the Apache Software Foundation (ASF) under one
@@ -20,13 +20,16 @@
 //
 
 using System.Reflection;
+using System.Runtime.CompilerServices;
 
-[assembly: AssemblyTitle("IAP Desktop")]
-[assembly: AssemblyDescription("IAP Desktop")]
+[assembly: AssemblyTitle("Logging extension library")]
+[assembly: AssemblyDescription("Logging extension library")]
 [assembly: AssemblyCompany("Google")]
-[assembly: AssemblyProduct("IAP Desktop")]
-[assembly: AssemblyCopyright("Copyright ©  2019")]
+[assembly: AssemblyProduct("Logging extension library")]
+[assembly: AssemblyCopyright("Copyright ©  2020")]
 [assembly: AssemblyTrademark("Google")]
 
 [assembly: AssemblyVersion("1.0.1.0")]
 [assembly: AssemblyFileVersion("1.0.1.0")]
+
+[assembly: InternalsVisibleTo("Google.Solutions.Logging.Test")]
