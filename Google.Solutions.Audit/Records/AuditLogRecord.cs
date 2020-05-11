@@ -44,6 +44,9 @@ namespace Google.Solutions.Audit.Records
         [JsonProperty("authenticationInfo")]
         public AuthenticationInfo AuthenticationInfo { get; set; }
 
+        [JsonProperty("status")]
+        public StatusInfo Status { get; set; }
+
         //---------------------------------------------------------------------
         // Polymorphic part.
         //---------------------------------------------------------------------
@@ -64,5 +67,14 @@ namespace Google.Solutions.Audit.Records
     {
         [JsonProperty("principalEmail")]
         public string PrincipalEmail { get; set; }
+    }
+
+    public class StatusInfo
+    {
+        [JsonProperty("message")]
+        public string Message { get; set; }
+
+        [JsonProperty("code")]
+        public int Code { get; set; }
     }
 }

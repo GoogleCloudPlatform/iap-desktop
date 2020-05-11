@@ -74,11 +74,5 @@ namespace Google.Solutions.Audit.Test.Events.System
             Assert.AreEqual("4aaaa7b32a208e7ccb4ee62acedee725", e.ServerId);
             Assert.AreEqual(new DateTime(2020, 5, 4, 1, 50, 10, 917), e.SchedulingTimestamp);
         }
-
-        [Test]
-        public void WhenSeverityIsError_ThenFieldsAreExtracted()
-        {
-            Assert.Inconclusive();
-        }
     }
 }

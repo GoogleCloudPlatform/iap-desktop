@@ -75,17 +75,10 @@ namespace Google.Solutions.Audit.Test.Events.System
             var r = LogRecord.Deserialize(json);
             Assert.IsTrue(TerminateOnHostMaintenanceEvent.IsTerminateOnHostMaintenanceEvent(r));
 
-
             Assert.AreEqual(2162224123123123213, ((TerminateOnHostMaintenanceEvent)r.ToEvent()).InstanceId);
             Assert.AreEqual(
                 new VmInstanceReference("project-1", "us-central1-a", "instance-1"),
                 ((TerminateOnHostMaintenanceEvent)r.ToEvent()).InstanceReference);
-        }
-
-        [Test]
-        public void WhenSeverityIsError_ThenFieldsAreExtracted()
-        {
-            Assert.Inconclusive();
         }
     }
 }

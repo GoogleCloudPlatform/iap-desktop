@@ -34,6 +34,8 @@ namespace Google.Solutions.Audit.Events
 
         public string PrincipalEmail => this.LogRecord.ProtoPayload?.AuthenticationInfo?.PrincipalEmail;
 
+        public StatusInfo Status => this.LogRecord.ProtoPayload?.Status;
+
         protected EventBase(LogRecord logRecord)
         {
             this.LogRecord = logRecord;

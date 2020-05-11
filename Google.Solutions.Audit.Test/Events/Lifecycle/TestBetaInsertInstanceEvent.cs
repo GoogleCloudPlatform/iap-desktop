@@ -144,6 +144,8 @@ namespace Google.Solutions.Audit.Test.Events.Lifecycle
             var e = (InsertInstanceEvent)r.ToEvent();
 
             Assert.AreEqual(11111111631960822, e.InstanceId);
+            Assert.AreEqual("NOTICE", e.Severity);
+            Assert.IsNull(e.Status);
             Assert.AreEqual(
                 new VmInstanceReference("project-1", "us-central1-a", "instance-1"),
                 e.InstanceReference);
@@ -152,7 +154,62 @@ namespace Google.Solutions.Audit.Test.Events.Lifecycle
         [Test]
         public void WhenSeverityIsError_ThenFieldsAreExtracted()
         {
-            Assert.Inconclusive();
+            var json = @"
+            {
+                'protoPayload': {
+                    '@type': 'type.googleapis.com/google.cloud.audit.AuditLog',
+                    'status': {
+                    'code': 3,
+                    'message': 'INVALID_ARGUMENT'
+                    },
+                    'authenticationInfo': {
+                    },
+                    'requestMetadata': {
+                    'callerIp': '1.2.3.4',
+                    'callerSuppliedUserAgent': 'google-cloud)',
+                    'requestAttributes': {},
+                    'destinationAttributes': {}
+                    },
+                    'serviceName': 'compute.googleapis.com',
+                    'methodName': 'v1.compute.instances.insert',
+                    'resourceName': 'projects/project-1/zones/us-central1-a/instances/instance-1',
+                    'request': {
+                    '@type': 'type.googleapis.com/compute.instances.insert'
+                    }
+                },
+                'insertId': '-vwncp9d6006',
+                'resource': {
+                    'type': 'gce_instance',
+                    'labels': {
+                    'instance_id': '1123123123',
+                    'project_id': 'ntdev-windows-upgrades',
+                    'zone': 'us-central1-a'
+                    }
+                },
+                'timestamp': '2020-04-24T08:13:39.103Z',
+                'severity': 'ERROR',
+                'logName': 'projects/project-1/logs/cloudaudit.googleapis.com%2Factivity',
+                'operation': {
+                    'id': 'operation-1587715943067-5a404ecca6fa4-dc7e343f-dbc3ca83',
+                    'producer': 'compute.googleapis.com',
+                    'last': true
+                },
+                'receiveTimestamp': '2020-04-24T08:13:40.134230447Z'
+                }
+            ";
+
+            var r = LogRecord.Deserialize(json);
+            Assert.IsTrue(InsertInstanceEvent.IsInsertInstanceEvent(r));
+
+            var e = (InsertInstanceEvent)r.ToEvent();
+
+            Assert.AreEqual(1123123123, e.InstanceId);
+            Assert.AreEqual("ERROR", e.Severity);
+            Assert.AreEqual(3, e.Status.Code);
+            Assert.AreEqual("INVALID_ARGUMENT", e.Status.Message);
+            Assert.AreEqual(
+                new VmInstanceReference("project-1", "us-central1-a", "instance-1"),
+                e.InstanceReference);
         }
     }
 }

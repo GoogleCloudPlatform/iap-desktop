@@ -83,10 +83,5 @@ namespace Google.Solutions.Audit.Test.Events.System
                 e.InstanceReference);
         }
 
-        [Test]
-        public void WhenSeverityIsError_ThenFieldsAreExtracted()
-        {
-            Assert.Inconclusive();
-        }
     }
 }
