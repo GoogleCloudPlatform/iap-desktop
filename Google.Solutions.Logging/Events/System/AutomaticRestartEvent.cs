@@ -28,7 +28,7 @@ namespace Google.Solutions.Logging.Events.System
     {
         public const string Method = "compute.instances.automaticRestart";
 
-        public AutomaticRestartEvent(LogRecord logRecord) : base(logRecord)
+        internal AutomaticRestartEvent(LogRecord logRecord) : base(logRecord)
         {
             Debug.Assert(IsAutomaticRestartEvent(logRecord));
         }

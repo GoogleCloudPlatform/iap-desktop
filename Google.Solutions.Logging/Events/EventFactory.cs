@@ -22,12 +22,13 @@
 using Google.Solutions.Logging.Events.Lifecycle;
 using Google.Solutions.Logging.Events.System;
 using Google.Solutions.Logging.Records;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 
 namespace Google.Solutions.Logging.Events
 {
-    public static class EventRegistry
+    public static class EventFactory
     {
         private readonly static IDictionary<string, Func<LogRecord, EventBase>> lifecycleEvents
             = new Dictionary<string, Func<LogRecord, EventBase>>()
@@ -57,7 +58,7 @@ namespace Google.Solutions.Logging.Events
             };
 
 
-        public static EventBase ToEvent(this LogRecord record)
+        public static EventBase FromRecord(LogRecord record)
         {
             if (lifecycleEvents.TryGetValue(record.ProtoPayload.MethodName, out var lcFunc))
             {
@@ -69,8 +70,30 @@ namespace Google.Solutions.Logging.Events
             }
             else
             {
-                throw new ArgumentException("Unrecognized event with method " +
-                    record.ProtoPayload.MethodName);
+                return new UnknownEvent(record);
+            }
+        }
+
+        public static EventBase ToEvent(this LogRecord record) => FromRecord(record);
+
+        public static IEnumerable<EventBase> Read(JsonReader reader)
+        {
+            //
+            // Deserializing everything would be trmendously inefficient.
+            // Instead, deserialize objects one by one.
+            //
+
+            while (reader.Read())
+            {
+                // Start of a new object.
+                if (reader.TokenType == JsonToken.StartObject)
+                {
+                    var record = LogRecord.Deserialize(reader);
+                    if (record.IsValid)
+                    { 
+                        yield return record.ToEvent();
+                    }
+                }
             }
         }
     }

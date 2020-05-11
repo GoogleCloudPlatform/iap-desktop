@@ -29,7 +29,7 @@ namespace Google.Solutions.Logging.Events.Lifecycle
         public const string BetaMethod = "beta.compute.instances.stop";
         public const string Method = "v1.compute.instances.stop";
 
-        public StopInstanceEvent(LogRecord logRecord) : base(logRecord)
+        internal StopInstanceEvent(LogRecord logRecord) : base(logRecord)
         {
             Debug.Assert(IsStopInstanceEvent(logRecord));
         }

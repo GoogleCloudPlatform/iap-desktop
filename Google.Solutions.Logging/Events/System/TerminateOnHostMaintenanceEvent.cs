@@ -28,7 +28,7 @@ namespace Google.Solutions.Logging.Events.System
     {
         public const string Method = "compute.instances.terminateOnHostMaintenance";
 
-        public TerminateOnHostMaintenanceEvent(LogRecord logRecord) : base(logRecord)
+        internal TerminateOnHostMaintenanceEvent(LogRecord logRecord) : base(logRecord)
         {
             Debug.Assert(IsTerminateOnHostMaintenanceEvent(logRecord));
         }

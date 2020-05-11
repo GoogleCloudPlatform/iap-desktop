@@ -34,7 +34,7 @@ namespace Google.Solutions.Logging.Events.System
 
         public DateTime SchedulingTimestamp => base.LogRecord.ProtoPayload.Metadata["timestamp"].Value<DateTime>();
 
-        public NotifyInstanceLocationEvent(LogRecord logRecord) : base(logRecord)
+        internal NotifyInstanceLocationEvent(LogRecord logRecord) : base(logRecord)
         {
             Debug.Assert(IsInstanceScheduledEvent(logRecord));
         }

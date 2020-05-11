@@ -28,7 +28,7 @@ namespace Google.Solutions.Logging.Events.Lifecycle
     {
         public const string Method = "v1.compute.instances.delete";
 
-        public DeleteInstanceEvent(LogRecord logRecord) : base(logRecord)
+        internal DeleteInstanceEvent(LogRecord logRecord) : base(logRecord)
         {
             Debug.Assert(IsDeleteInstanceEvent(logRecord));
         }

@@ -93,6 +93,12 @@ namespace Google.Solutions.Logging.Records
                 return Deserialize(reader);
             }
         }
+
+        internal bool IsValid
+            => this.ProtoPayload != null && 
+               !string.IsNullOrEmpty(this.LogName) &&
+               !string.IsNullOrEmpty(this.Severity) &&
+               this.ProtoPayload.IsValid;
     }
 
     public class ResourceRecord

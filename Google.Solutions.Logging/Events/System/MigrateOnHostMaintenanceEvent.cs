@@ -30,7 +30,7 @@ namespace Google.Solutions.Logging.Events.System
     {
         public const string Method = "compute.instances.migrateOnHostMaintenance";
 
-        public MigrateOnHostMaintenanceEvent(LogRecord logRecord) : base(logRecord)
+        internal MigrateOnHostMaintenanceEvent(LogRecord logRecord) : base(logRecord)
         {
             Debug.Assert(IsMigrateOnHostMaintenanceEvent(logRecord));
         }

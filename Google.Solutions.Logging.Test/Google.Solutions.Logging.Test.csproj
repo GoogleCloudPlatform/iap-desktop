@@ -67,6 +67,7 @@
     <Compile Include="Events\Lifecycle\TestStartInstanceEvent.cs" />
     <Compile Include="Events\Lifecycle\TestBetaStopInstanceEvent.cs" />
     <Compile Include="Events\System\TestTerminateOnHostMaintenanceEvent.cs" />
+    <Compile Include="Events\TestEventFactory.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Records\TestAuditLogRecord.cs" />
     <Compile Include="Records\TestLogRecord.cs" />

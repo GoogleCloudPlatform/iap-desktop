@@ -28,7 +28,7 @@ namespace Google.Solutions.Logging.Events.System
     {
         public const string Method = "compute.instances.guestTerminate";
 
-        public GuestTerminateEvent(LogRecord logRecord) : base(logRecord)
+        internal GuestTerminateEvent(LogRecord logRecord) : base(logRecord)
         {
             Debug.Assert(IsGuestTerminateEvent(logRecord));
         }

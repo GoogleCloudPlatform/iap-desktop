@@ -35,7 +35,7 @@ namespace Google.Solutions.Logging.Test.Events.Lifecycle
         {
             var json = @"
             {
-                 'protoPayload': {
+               'protoPayload': {
                  '@type': 'type.googleapis.com/google.cloud.audit.AuditLog',
                  'authenticationInfo': {
                  },

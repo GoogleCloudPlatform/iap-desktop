@@ -56,6 +56,8 @@ namespace Google.Solutions.Logging.Records
 
         [JsonProperty("response")]
         public JObject Response { get; set; }
+
+        internal bool IsValid => !string.IsNullOrEmpty(this.MethodName);
     }
 
     public class AuthenticationInfo

@@ -28,7 +28,7 @@ namespace Google.Solutions.Logging.Events.Lifecycle
     {
         public const string Method = "v1.compute.instances.start";
 
-        public StartInstanceEvent(LogRecord logRecord) : base(logRecord)
+        internal StartInstanceEvent(LogRecord logRecord) : base(logRecord)
         {
             Debug.Assert(IsStartInstanceEvent(logRecord));
         }

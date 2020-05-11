@@ -20,25 +20,13 @@
 //
 
 using Google.Solutions.Logging.Records;
-using System.Diagnostics;
 
-namespace Google.Solutions.Logging.Events.Lifecycle
+namespace Google.Solutions.Logging.Events
 {
-    public class InsertInstanceEvent : VmInstanceEventBase
+    internal class UnknownEvent : EventBase
     {
-        public const string Method = "v1.compute.instances.insert";
-        public const string BetaMethod = "beta.compute.instances.insert";
-
-        internal InsertInstanceEvent(LogRecord logRecord) : base(logRecord)
+        public UnknownEvent(LogRecord logRecord) : base(logRecord)
         {
-            Debug.Assert(IsInsertInstanceEvent(logRecord));
-        }
-
-        public static bool IsInsertInstanceEvent(LogRecord record)
-        {
-            return record.IsActivityEvent &&
-                (record.ProtoPayload.MethodName == Method ||
-                 record.ProtoPayload.MethodName == BetaMethod);
         }
     }
 }
