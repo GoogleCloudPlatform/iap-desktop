@@ -22,7 +22,7 @@
 using Google.Solutions.Logging.Records;
 using System.Diagnostics;
 
-namespace Google.Solutions.Logging.Events
+namespace Google.Solutions.Logging.Events.Lifecycle
 {
     public class DeleteInstanceEvent : VmInstanceEventBase
     {

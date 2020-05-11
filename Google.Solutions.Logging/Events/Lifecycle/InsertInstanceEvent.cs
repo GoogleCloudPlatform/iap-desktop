@@ -22,21 +22,23 @@
 using Google.Solutions.Logging.Records;
 using System.Diagnostics;
 
-namespace Google.Solutions.Logging.Events
+namespace Google.Solutions.Logging.Events.Lifecycle
 {
-    public class StartInstanceEvent : VmInstanceEventBase
+    public class InsertInstanceEvent : VmInstanceEventBase
     {
-        public const string Method = "v1.compute.instances.start";
+        public const string Method = "v1.compute.instances.insert";
+        public const string BetaMethod = "beta.compute.instances.insert";
 
-        public StartInstanceEvent(LogRecord logRecord) : base(logRecord)
+        public InsertInstanceEvent(LogRecord logRecord) : base(logRecord)
         {
-            Debug.Assert(IsStartInstanceEvent(logRecord));
+            Debug.Assert(IsInsertInstanceEvent(logRecord));
         }
 
-        public static bool IsStartInstanceEvent(LogRecord record)
+        public static bool IsInsertInstanceEvent(LogRecord record)
         {
             return record.IsActivityEvent &&
-                record.ProtoPayload.MethodName == Method;
+                (record.ProtoPayload.MethodName == Method ||
+                 record.ProtoPayload.MethodName == BetaMethod);
         }
     }
 }

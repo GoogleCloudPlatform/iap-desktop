@@ -49,17 +49,17 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Events\AutomaticRestartEvent.cs" />
-    <Compile Include="Events\DeleteInstanceEvent.cs" />
+    <Compile Include="Events\Lifecycle\AutomaticRestartEvent.cs" />
+    <Compile Include="Events\Lifecycle\DeleteInstanceEvent.cs" />
     <Compile Include="Events\EventBase.cs" />
     <Compile Include="Events\EventRegistry.cs" />
-    <Compile Include="Events\GuestTerminateEvent.cs" />
-    <Compile Include="Events\InsertInstanceEvent.cs" />
-    <Compile Include="Events\MigrateOnHostMaintenanceEvent.cs" />
-    <Compile Include="Events\InstanceScheduledEvent.cs" />
-    <Compile Include="Events\StartInstanceEvent.cs" />
-    <Compile Include="Events\StopInstanceEvent.cs" />
-    <Compile Include="Events\TerminateOnHostMaintenanceEvent.cs" />
+    <Compile Include="Events\Lifecycle\GuestTerminateEvent.cs" />
+    <Compile Include="Events\Lifecycle\InsertInstanceEvent.cs" />
+    <Compile Include="Events\Lifecycle\MigrateOnHostMaintenanceEvent.cs" />
+    <Compile Include="Events\Lifecycle\InstanceScheduledEvent.cs" />
+    <Compile Include="Events\Lifecycle\StartInstanceEvent.cs" />
+    <Compile Include="Events\Lifecycle\StopInstanceEvent.cs" />
+    <Compile Include="Events\Lifecycle\TerminateOnHostMaintenanceEvent.cs" />
     <Compile Include="Events\VmInstanceEventBase.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Records\AuditLogRecord.cs" />

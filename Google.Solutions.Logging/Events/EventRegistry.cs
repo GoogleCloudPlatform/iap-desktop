@@ -19,6 +19,7 @@
 // under the License.
 //
 
+using Google.Solutions.Logging.Events.Lifecycle;
 using Google.Solutions.Logging.Records;
 using System;
 using System.Collections.Generic;
@@ -27,7 +28,7 @@ namespace Google.Solutions.Logging.Events
 {
     public static class EventRegistry
     {
-        private readonly static IDictionary<string, Func<LogRecord, EventBase>> eventTypes
+        private readonly static IDictionary<string, Func<LogRecord, EventBase>> lifecycleEventTypes
             = new Dictionary<string, Func<LogRecord, EventBase>>()
             {
                 { AutomaticRestartEvent.Method, rec => new AutomaticRestartEvent(rec) },
@@ -41,11 +42,13 @@ namespace Google.Solutions.Logging.Events
                 { StopInstanceEvent.Method, rec => new StopInstanceEvent(rec) },
                 { StopInstanceEvent.BetaMethod, rec => new StopInstanceEvent(rec) },
                 { TerminateOnHostMaintenanceEvent.Method, rec => new TerminateOnHostMaintenanceEvent(rec) },
+
+                // TODO: compute.instances.repair.recreateInstance
             };
 
         public static EventBase ToEvent(this LogRecord record)
         {
-            if (eventTypes.TryGetValue(
+            if (lifecycleEventTypes.TryGetValue(
                 record.ProtoPayload.MethodName, 
                 out Func<LogRecord, EventBase> factoryFunc))
             {

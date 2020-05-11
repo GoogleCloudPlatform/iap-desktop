@@ -21,33 +21,33 @@
 
 using Google.Solutions.Compute;
 using Google.Solutions.Logging.Events;
+using Google.Solutions.Logging.Events.Lifecycle;
 using Google.Solutions.Logging.Records;
 using NUnit.Framework;
 
-namespace Google.Solutions.Logging.Test.Events
+namespace Google.Solutions.Logging.Test.Events.Lifecycle
 {
     [TestFixture]
-    public class TestDeleteInstanceEvent
+    public class TestStartInstanceEvent
     {
         [Test]
-        public void WhenSeverityIsInfo_ThenFieldsAreExtracted()
+        public void WhenSeverityIsNotice_ThenFieldsAreExtracted()
         {
             var json = @"
             {
-               'protoPayload': {
+                 'protoPayload': {
                  '@type': 'type.googleapis.com/google.cloud.audit.AuditLog',
                  'authenticationInfo': {
                  },
                  'requestMetadata': {
                  },
                  'serviceName': 'compute.googleapis.com',
-                 'methodName': 'v1.compute.instances.delete',
+                 'methodName': 'v1.compute.instances.start',
                  'authorizationInfo': [
                  ],
-                 'resourceName': 'projects/123/zones/us-central1-a/instances/instance-1',
+                 'resourceName': 'projects/project-1/zones/us-central1-a/instances/instance-1',
                  'request': {
-                   'requestId': 'f802d080-d71e-4cae-a105-41fed099e362',
-                   '@type': 'type.googleapis.com/compute.instances.delete'
+                   '@type': 'type.googleapis.com/compute.instances.start'
                  },
                  'response': {
                  },
@@ -57,32 +57,32 @@ namespace Google.Solutions.Logging.Test.Events
                    ]
                  }
                },
-               'insertId': '7rriyre2bn74',
+               'insertId': 'vcq6epd7n72',
                'resource': {
                  'type': 'gce_instance',
                  'labels': {
-                   'instance_id': '3771111960822',
                    'project_id': 'project-1',
+                   'instance_id': '4894051111144103',
                    'zone': 'us-central1-a'
                  }
                },
-               'timestamp': '2020-05-04T02:07:40.933Z',
+               'timestamp': '2020-05-04T13:56:26.405Z',
                'severity': 'NOTICE',
                'logName': 'projects/project-1/logs/cloudaudit.googleapis.com%2Factivity',
                'operation': {
-                 'id': 'operation-1588558060966-5a4c8feedd25b-f4637780-33f35e50',
+                 'id': 'operation-1588600586345-5a4d2e5a39c56-47d0ce05-a9d7073c',
                  'producer': 'compute.googleapis.com',
                  'first': true
                },
-               'receiveTimestamp': '2020-05-04T02:07:41.604695630Z'
+               'receiveTimestamp': '2020-05-04T13:56:27.582777461Z'
              }";
 
             var r = LogRecord.Deserialize(json);
-            Assert.IsTrue(DeleteInstanceEvent.IsDeleteInstanceEvent(r));
+            Assert.IsTrue(StartInstanceEvent.IsStartInstanceEvent(r));
 
-            var e = (DeleteInstanceEvent)r.ToEvent();
+            var e = (StartInstanceEvent)r.ToEvent();
 
-            Assert.AreEqual(3771111960822, e.InstanceId);
+            Assert.AreEqual(4894051111144103, e.InstanceId);
             Assert.AreEqual(
                 new VmInstanceReference("project-1", "us-central1-a", "instance-1"),
                 e.InstanceReference);

@@ -20,26 +20,20 @@
 //
 
 using Google.Solutions.Logging.Records;
-using Newtonsoft.Json.Linq;
-using System;
 using System.Diagnostics;
 
-namespace Google.Solutions.Logging.Events
+namespace Google.Solutions.Logging.Events.Lifecycle
 {
-    public class InstanceScheduledEvent : VmInstanceEventBase
+    public class AutomaticRestartEvent : VmInstanceEventBase
     {
-        public const string Method = "NotifyInstanceLocation";
+        public const string Method = "compute.instances.automaticRestart";
 
-        public string ServerId => base.LogRecord.ProtoPayload.Metadata["serverId"].Value<string>();
-
-        public DateTime SchedulingTimestamp => base.LogRecord.ProtoPayload.Metadata["timestamp"].Value<DateTime>();
-
-        public InstanceScheduledEvent(LogRecord logRecord) : base(logRecord)
+        public AutomaticRestartEvent(LogRecord logRecord) : base(logRecord)
         {
-            Debug.Assert(IsInstanceScheduledEvent(logRecord));
+            Debug.Assert(IsAutomaticRestartEvent(logRecord));
         }
 
-        public static bool IsInstanceScheduledEvent(LogRecord record)
+        public static bool IsAutomaticRestartEvent(LogRecord record)
         {
             return record.IsSystemEvent &&
                 record.ProtoPayload.MethodName == Method;
