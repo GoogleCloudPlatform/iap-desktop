@@ -20,8 +20,6 @@
 //
 
 using Google.Solutions.Audit.Records;
-using Newtonsoft.Json.Linq;
-using System;
 using System.Diagnostics;
 
 namespace Google.Solutions.Audit.Events.System

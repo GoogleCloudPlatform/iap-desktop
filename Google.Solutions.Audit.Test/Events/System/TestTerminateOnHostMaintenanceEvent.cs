@@ -19,10 +19,10 @@
 // under the License.
 //
 
-using Google.Solutions.Compute;
 using Google.Solutions.Audit.Events;
 using Google.Solutions.Audit.Events.System;
 using Google.Solutions.Audit.Records;
+using Google.Solutions.Compute;
 using NUnit.Framework;
 
 namespace Google.Solutions.Audit.Test.Events.System

@@ -90,7 +90,7 @@ namespace Google.Solutions.Audit.Events
                 {
                     var record = LogRecord.Deserialize(reader);
                     if (record.IsValid)
-                    { 
+                    {
                         yield return record.ToEvent();
                     }
                 }

@@ -19,8 +19,8 @@
 // under the License.
 //
 
-using Google.Solutions.Compute;
 using Google.Solutions.Audit.Records;
+using Google.Solutions.Compute;
 using System;
 
 namespace Google.Solutions.Audit.Events

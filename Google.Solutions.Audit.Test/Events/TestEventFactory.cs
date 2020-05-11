@@ -20,13 +20,11 @@
 //
 
 using Google.Solutions.Audit.Events;
-using Google.Solutions.Audit.Records;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
-using NUnit.Framework;
-using System.Linq;
-using System.IO;
 using Google.Solutions.Audit.Events.Lifecycle;
+using Newtonsoft.Json;
+using NUnit.Framework;
+using System.IO;
+using System.Linq;
 
 namespace Google.Solutions.Audit.Test.Events
 {

@@ -95,7 +95,7 @@ namespace Google.Solutions.Audit.Records
         }
 
         internal bool IsValid
-            => this.ProtoPayload != null && 
+            => this.ProtoPayload != null &&
                !string.IsNullOrEmpty(this.LogName) &&
                !string.IsNullOrEmpty(this.Severity) &&
                this.ProtoPayload.IsValid;
