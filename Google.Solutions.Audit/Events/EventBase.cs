@@ -1,4 +1,4 @@
-//
+﻿//
 // Copyright 2019 Google LLC
 //
 // Licensed to the Apache Software Foundation (ASF) under one
@@ -19,14 +19,24 @@
 // under the License.
 //
 
-using System.Reflection;
+using Google.Solutions.Audit.Records;
+using System;
 
-[assembly: AssemblyTitle("IAP Desktop")]
-[assembly: AssemblyDescription("IAP Desktop")]
-[assembly: AssemblyCompany("Google")]
-[assembly: AssemblyProduct("IAP Desktop")]
-[assembly: AssemblyCopyright("Copyright ©  2019")]
-[assembly: AssemblyTrademark("Google")]
+namespace Google.Solutions.Audit.Events
+{
+    public abstract class EventBase
+    {
+        public LogRecord LogRecord { get; }
 
-[assembly: AssemblyVersion("1.0.1.0")]
-[assembly: AssemblyFileVersion("1.0.1.0")]
+        public DateTime Timestamp => this.LogRecord.Timestamp;
+
+        public string Severity => this.LogRecord.Severity;
+
+        public string PrincipalEmail => this.LogRecord.ProtoPayload?.AuthenticationInfo?.PrincipalEmail;
+
+        protected EventBase(LogRecord logRecord)
+        {
+            this.LogRecord = logRecord;
+        }
+    }
+}

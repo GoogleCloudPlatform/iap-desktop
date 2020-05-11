@@ -1,4 +1,4 @@
-//
+﻿//
 // Copyright 2019 Google LLC
 //
 // Licensed to the Apache Software Foundation (ASF) under one
@@ -19,14 +19,26 @@
 // under the License.
 //
 
-using System.Reflection;
+using Google.Solutions.Audit.Records;
+using System.Diagnostics;
 
-[assembly: AssemblyTitle("IAP Desktop")]
-[assembly: AssemblyDescription("IAP Desktop")]
-[assembly: AssemblyCompany("Google")]
-[assembly: AssemblyProduct("IAP Desktop")]
-[assembly: AssemblyCopyright("Copyright ©  2019")]
-[assembly: AssemblyTrademark("Google")]
+namespace Google.Solutions.Audit.Events.Lifecycle
+{
+    public class InsertInstanceEvent : VmInstanceEventBase
+    {
+        public const string Method = "v1.compute.instances.insert";
+        public const string BetaMethod = "beta.compute.instances.insert";
 
-[assembly: AssemblyVersion("1.0.1.0")]
-[assembly: AssemblyFileVersion("1.0.1.0")]
+        internal InsertInstanceEvent(LogRecord logRecord) : base(logRecord)
+        {
+            Debug.Assert(IsInsertInstanceEvent(logRecord));
+        }
+
+        public static bool IsInsertInstanceEvent(LogRecord record)
+        {
+            return record.IsActivityEvent &&
+                (record.ProtoPayload.MethodName == Method ||
+                 record.ProtoPayload.MethodName == BetaMethod);
+        }
+    }
+}

@@ -26,11 +26,11 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Compute", "Compute", "{7EFB
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "IapDesktop", "IapDesktop", "{5206FD39-47A5-4E69-AA4F-94275A1A4791}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Logging", "Logging", "{06417FC0-CC28-4E03-8F61-02A55304F28B}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Audit", "Audit", "{06417FC0-CC28-4E03-8F61-02A55304F28B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Google.Solutions.Logging", "Google.Solutions.Logging\Google.Solutions.Logging.csproj", "{B804D76C-E02E-4320-94A7-579034644AA0}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Google.Solutions.Audit", "Google.Solutions.Audit\Google.Solutions.Audit.csproj", "{B804D76C-E02E-4320-94A7-579034644AA0}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Google.Solutions.Logging.Test", "Google.Solutions.Logging.Test\Google.Solutions.Logging.Test.csproj", "{8C4F5833-C8B3-4A60-B401-7C4A3346BF59}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Google.Solutions.Audit.Test", "Google.Solutions.Audit.Test\Google.Solutions.Audit.Test.csproj", "{8C4F5833-C8B3-4A60-B401-7C4A3346BF59}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
