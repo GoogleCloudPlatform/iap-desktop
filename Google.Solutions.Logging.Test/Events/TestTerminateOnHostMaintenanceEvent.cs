@@ -74,7 +74,7 @@ namespace Google.Solutions.Logging.Test.Events
             var r = LogRecord.Deserialize(json);
             Assert.IsTrue(TerminateOnHostMaintenanceEvent.IsTerminateOnHostMaintenanceEvent(r));
 
-            var e = new TerminateOnHostMaintenanceEvent(r);
+            var e = (TerminateOnHostMaintenanceEvent)r.ToEvent();
 
             Assert.AreEqual(2162224123123123213, e.InstanceId);
             Assert.AreEqual(

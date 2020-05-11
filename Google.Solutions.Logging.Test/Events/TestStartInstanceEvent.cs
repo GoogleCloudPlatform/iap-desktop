@@ -79,7 +79,7 @@ namespace Google.Solutions.Logging.Test.Events
             var r = LogRecord.Deserialize(json);
             Assert.IsTrue(StartInstanceEvent.IsStartInstanceEvent(r));
 
-            var e = new StartInstanceEvent(r);
+            var e = (StartInstanceEvent)r.ToEvent();
 
             Assert.AreEqual(4894051111144103, e.InstanceId);
             Assert.AreEqual(

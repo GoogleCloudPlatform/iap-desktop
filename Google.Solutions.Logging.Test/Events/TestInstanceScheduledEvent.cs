@@ -67,7 +67,7 @@ namespace Google.Solutions.Logging.Test.Events
             var r = LogRecord.Deserialize(json);
             Assert.IsTrue(InstanceScheduledEvent.IsInstanceScheduledEvent(r));
 
-            var e = new InstanceScheduledEvent(r);
+            var e = (InstanceScheduledEvent)r.ToEvent();
 
             Assert.AreEqual(7045222222254025, e.InstanceId);
             Assert.AreEqual("4aaaa7b32a208e7ccb4ee62acedee725", e.ServerId);

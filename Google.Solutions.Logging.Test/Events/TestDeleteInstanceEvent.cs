@@ -80,7 +80,7 @@ namespace Google.Solutions.Logging.Test.Events
             var r = LogRecord.Deserialize(json);
             Assert.IsTrue(DeleteInstanceEvent.IsDeleteInstanceEvent(r));
 
-            var e = new DeleteInstanceEvent(r);
+            var e = (DeleteInstanceEvent)r.ToEvent();
 
             Assert.AreEqual(3771111960822, e.InstanceId);
             Assert.AreEqual(

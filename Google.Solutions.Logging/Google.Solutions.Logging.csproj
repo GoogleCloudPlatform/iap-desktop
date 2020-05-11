@@ -52,6 +52,7 @@
     <Compile Include="Events\AutomaticRestartEvent.cs" />
     <Compile Include="Events\DeleteInstanceEvent.cs" />
     <Compile Include="Events\EventBase.cs" />
+    <Compile Include="Events\EventRegistry.cs" />
     <Compile Include="Events\GuestTerminateEvent.cs" />
     <Compile Include="Events\InsertInstanceEvent.cs" />
     <Compile Include="Events\MigrateOnHostMaintenanceEvent.cs" />

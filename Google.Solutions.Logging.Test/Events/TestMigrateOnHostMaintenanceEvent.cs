@@ -24,7 +24,7 @@ using Google.Solutions.Logging.Events;
 using Google.Solutions.Logging.Records;
 using NUnit.Framework;
 
-namespace Google.Solutions.Logging.Test.Records
+namespace Google.Solutions.Logging.Test.Events
 {
     [TestFixture]
     public class TestMigrateOnHostMaintenanceEvent
@@ -74,7 +74,7 @@ namespace Google.Solutions.Logging.Test.Records
             var r = LogRecord.Deserialize(json);
             Assert.IsTrue(MigrateOnHostMaintenanceEvent.IsMigrateOnHostMaintenanceEvent(r));
 
-            var e = new MigrateOnHostMaintenanceEvent(r);
+            var e = (MigrateOnHostMaintenanceEvent)r.ToEvent();
 
             Assert.AreEqual(2162224123123123213, e.InstanceId);
             Assert.AreEqual(

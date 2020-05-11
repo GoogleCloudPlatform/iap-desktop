@@ -74,7 +74,7 @@ namespace Google.Solutions.Logging.Test.Events
             var r = LogRecord.Deserialize(json);
             Assert.IsTrue(AutomaticRestartEvent.IsAutomaticRestartEvent(r));
 
-            var e = new AutomaticRestartEvent(r);
+            var e = (AutomaticRestartEvent)r.ToEvent();
 
             Assert.AreEqual(2162224123123123213, e.InstanceId);
             Assert.AreEqual(
