@@ -196,6 +196,12 @@
           DiskId="1"
           Source="Google.Solutions.IapDesktop\bin\$(var.CONFIGURATION)\Google.Solutions.Compute.dll"
           Vital="yes"/>
+        <File
+          Id="FileGoogleSolutionsAuditDll"
+          Name="Google.Solutions.Audit.dll"
+          DiskId="1"
+          Source="Google.Solutions.IapDesktop\bin\$(var.CONFIGURATION)\Google.Solutions.Audit.dll"
+          Vital="yes"/>
       
         <!-- SDK and dependencies -->
         <File

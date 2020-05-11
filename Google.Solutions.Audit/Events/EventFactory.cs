@@ -54,7 +54,7 @@ namespace Google.Solutions.Audit.Events
                 { TerminateOnHostMaintenanceEvent.Method, rec => new TerminateOnHostMaintenanceEvent(rec) },
 
                 // TODO: 
-                // - v1.compute.instances.reset
+                // - compute.instances.repair.recreateInstance
             };
 
 
