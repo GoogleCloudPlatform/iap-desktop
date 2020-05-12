@@ -15,7 +15,7 @@ Desktop connection manager with the advantages of Identity-Aware-Proxy:
 [Download IAP Desktop](https://github.com/GoogleCloudPlatform/iap-windows-rdc-plugin/releases/latest) and learn
 more about how to install and use the application [in the Wiki](https://github.com/GoogleCloudPlatform/iap-windows-rdc-plugin/wiki)
 
-![Screenshot of IAP Desktop](doc/images/Overview.png)
+![Screenshot of IAP Desktop](doc/images/iapdesktop-animated-800.gif)
 
 
 _IAP Desktop is an open-source project and not an officially supported Google product._
