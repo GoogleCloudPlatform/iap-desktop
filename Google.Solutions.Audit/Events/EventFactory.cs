@@ -63,6 +63,8 @@ namespace Google.Solutions.Audit.Events
                 { TerminateOnHostMaintenanceEvent.Method, rec => new TerminateOnHostMaintenanceEvent(rec) }
 
                 // Some more esoteric event types omitted (based on InstanceEventInfo.java).
+
+                // TODO: UnknownSystemEvent
             };
 
 
