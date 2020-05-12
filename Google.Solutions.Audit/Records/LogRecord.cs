@@ -94,7 +94,7 @@ namespace Google.Solutions.Audit.Records
             }
         }
 
-        internal bool IsValid
+        internal bool IsValidAuditLogRecord
             => this.ProtoPayload != null &&
                !string.IsNullOrEmpty(this.LogName) &&
                !string.IsNullOrEmpty(this.Severity) &&

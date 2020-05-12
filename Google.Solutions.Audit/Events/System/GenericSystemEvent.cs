@@ -19,21 +19,16 @@
 // under the License.
 //
 
-using Google.Solutions.Audit.Events;
-using Google.Solutions.Audit.Events.System;
 using Google.Solutions.Audit.Records;
-using Google.Solutions.Compute;
-using NUnit.Framework;
 
-namespace Google.Solutions.Audit.Test.Events.System
+namespace Google.Solutions.Audit.Events.System
 {
-    [TestFixture]
-    public class TestInstanceResetEvent
+    public class GenericSystemEvent : VmInstanceEventBase
     {
-        [Test]
-        public void WhenSeverityIsInfo_ThenFieldsAreExtracted()
+        public string Message => $"System event {this.LogRecord.ProtoPayload.MethodName} occured";
+
+        internal GenericSystemEvent(LogRecord logRecord) : base(logRecord)
         {
-            Assert.Inconclusive();
         }
     }
 }

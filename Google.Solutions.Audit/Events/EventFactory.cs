@@ -59,31 +59,42 @@ namespace Google.Solutions.Audit.Events
                 { MigrateOnHostMaintenanceEvent.Method, rec => new MigrateOnHostMaintenanceEvent(rec) },
                 { NotifyInstanceLocationEvent.Method, rec => new NotifyInstanceLocationEvent(rec) },
                 { RecreateInstanceEvent.Method, rec => new RecreateInstanceEvent(rec) },
-                { StoppedDueToPdDoubleServeEvent.Method, rec => new StoppedDueToPdDoubleServeEvent(rec) },
                 { TerminateOnHostMaintenanceEvent.Method, rec => new TerminateOnHostMaintenanceEvent(rec) }
 
                 // Some more esoteric event types omitted (based on InstanceEventInfo.java).
-
-                // TODO: UnknownSystemEvent
             };
 
 
         public static EventBase FromRecord(LogRecord record)
         {
-            if (lifecycleEvents.TryGetValue(record.ProtoPayload.MethodName, out var lcFunc))
+            if (!record.IsValidAuditLogRecord)
             {
-                return lcFunc(record);
+                throw new ArgumentException("Not a valid audit log record");
             }
-            else if (systemEvents.TryGetValue(record.ProtoPayload.MethodName, out var sysFunc))
+            else if (record.IsSystemEvent)
             {
-                return sysFunc(record);
+                if (systemEvents.TryGetValue(record.ProtoPayload.MethodName, out var sysFunc))
+                {
+                    return sysFunc(record);
+                }
+                else
+                {
+                    // There are some less common/more esoteric system events that do not
+                    // have a wrapper class. Map these to GenericSystemEvent.
+                    return new GenericSystemEvent(record);
+                }
             }
-            else
+            else if (record.IsActivityEvent)
             {
-                // The list of event types is incomplete any might grow stale over time,
-                // so ensure to fail open.
-                return new UnknownEvent(record);
+                if (lifecycleEvents.TryGetValue(record.ProtoPayload.MethodName, out var lcFunc))
+                {
+                    return lcFunc(record);
+                }
             }
+
+            // The list of activity event types is incomplete any might grow stale over time,
+            // so ensure to fail open.
+            return new UnknownEvent(record);
         }
 
         public static EventBase ToEvent(this LogRecord record) => FromRecord(record);
@@ -101,7 +112,7 @@ namespace Google.Solutions.Audit.Events
                 if (reader.TokenType == JsonToken.StartObject)
                 {
                     var record = LogRecord.Deserialize(reader);
-                    if (record.IsValid)
+                    if (record.IsValidAuditLogRecord)
                     {
                         yield return record.ToEvent();
                     }
