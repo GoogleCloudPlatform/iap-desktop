@@ -212,6 +212,10 @@
     <Compile Include="Util\SingletonApplicationBase.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Google.Solutions.Audit\Google.Solutions.Audit.csproj">
+      <Project>{b804d76c-e02e-4320-94a7-579034644aa0}</Project>
+      <Name>Google.Solutions.Audit</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Google.Solutions.Compute\Google.Solutions.Compute.csproj">
       <Project>{d9493479-1751-402b-880f-60ed33ebb885}</Project>
       <Name>Google.Solutions.Compute</Name>
