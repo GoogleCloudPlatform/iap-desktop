@@ -32,8 +32,8 @@ namespace Google.Solutions.IapDesktop.Application.Services.Adapters
 {
     public class GithubAdapter
     {
-        private const string LatestReleaseUrl = "https://api.github.com/repos/GoogleCloudPlatform/iap-windows-rdc-plugin/releases/latest";
-        public const string BaseUrl = "https://github.com/GoogleCloudPlatform/iap-windows-rdc-plugin";
+        private const string LatestReleaseUrl = "https://api.github.com/repos/GoogleCloudPlatform/iap-desktop/releases/latest";
+        public const string BaseUrl = "https://github.com/GoogleCloudPlatform/iap-desktop";
 
         private void OpenUrl(string url)
         {
