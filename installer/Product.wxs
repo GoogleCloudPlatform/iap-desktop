@@ -34,8 +34,8 @@
           Platform="x86" />
 
     <Icon Id="IapDesktopIco" SourceFile="$(var.BASEDIR)\icon.ico" />
-    <Property Id='ARPHELPLINK'>https://github.com/GoogleCloudPlatform/iap-windows-rdc-plugin/</Property>
-    <Property Id='ARPURLINFOABOUT'>https://github.com/GoogleCloudPlatform/iap-windows-rdc-plugin/</Property>
+    <Property Id='ARPHELPLINK'>https://github.com/GoogleCloudPlatform/iap-desktop/</Property>
+    <Property Id='ARPURLINFOABOUT'>https://github.com/GoogleCloudPlatform/iap-desktop/</Property>
     <Property Id='ARPPRODUCTICON'>IapDesktopIco</Property>
     
 		<MajorUpgrade 
