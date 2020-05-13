@@ -4,7 +4,7 @@ IAP Desktop is a Windows application that allows you to manage multiple Remote D
 to Windows VM instances that run on Google Cloud. 
 
 To increase security and flexibility, IAP Desktop uses 
-[Identity-Aware-Proxy TCP tunneling](https://cloud.google.com/iap/docs/tcp-forwarding-overview) to 
+[Identity-Aware-Proxy TCP forwarding](https://cloud.google.com/iap/docs/tcp-forwarding-overview) to 
 connect to VM instance, combining the convenience of a Remote
 Desktop connection manager with the advantages of Identity-Aware-Proxy:
 
