@@ -24,7 +24,7 @@ using System.Diagnostics;
 
 namespace Google.Solutions.Audit.Events.System
 {
-    public class HostErrorEvent : SystemEventBase
+    public class HostErrorEvent : SystemEventBase, IInstanceStateChangeEvent
     {
         public const string Method = "compute.instances.hostError";
 
@@ -40,5 +40,15 @@ namespace Google.Solutions.Audit.Events.System
             return record.IsSystemEvent &&
                 record.ProtoPayload.MethodName == Method;
         }
+
+        //---------------------------------------------------------------------
+        // IInstanceStateChangeEvent.
+        //---------------------------------------------------------------------
+
+        public InstanceState ResultingState(InstanceState preState)
+            => InstanceState.Terminated;
+
+        public bool IsValidInState(InstanceState preState)
+            => true;
     }
 }

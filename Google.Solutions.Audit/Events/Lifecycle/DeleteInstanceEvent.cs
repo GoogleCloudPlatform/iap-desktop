@@ -24,7 +24,7 @@ using System.Diagnostics;
 
 namespace Google.Solutions.Audit.Events.Lifecycle
 {
-    public class DeleteInstanceEvent : LifecycleEventBase
+    public class DeleteInstanceEvent : LifecycleEventBase, IInstanceStateChangeEvent
     {
         public const string Method = "v1.compute.instances.delete";
 
@@ -41,5 +41,15 @@ namespace Google.Solutions.Audit.Events.Lifecycle
             return record.IsActivityEvent &&
                 record.ProtoPayload.MethodName == Method;
         }
+
+        //---------------------------------------------------------------------
+        // IInstanceStateChangeEvent.
+        //---------------------------------------------------------------------
+
+        public InstanceState ResultingState(InstanceState preState)
+            => !IsError ? InstanceState.Deleted : preState;
+
+        public bool IsValidInState(InstanceState preState)
+            => preState != InstanceState.Deleted;
     }
 }

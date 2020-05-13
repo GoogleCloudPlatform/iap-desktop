@@ -49,6 +49,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Events\IInstanceStateChangeEvent.cs" />
     <Compile Include="Events\Lifecycle\LifecycleEventBase.cs" />
     <Compile Include="Events\Lifecycle\ResetInstanceEvent.cs" />
     <Compile Include="Events\Lifecycle\StartWithEncryptionKeyEvent.cs" />

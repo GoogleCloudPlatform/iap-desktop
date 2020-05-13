@@ -24,7 +24,7 @@ using System.Diagnostics;
 
 namespace Google.Solutions.Audit.Events.Lifecycle
 {
-    public class ResetInstanceEvent : LifecycleEventBase
+    public class ResetInstanceEvent : LifecycleEventBase, IInstanceStateChangeEvent
     {
         public const string Method = "v1.compute.instances.reset";
 
@@ -42,5 +42,15 @@ namespace Google.Solutions.Audit.Events.Lifecycle
                 (record.ProtoPayload.MethodName == Method ||
                  record.ProtoPayload.MethodName == Method);
         }
+
+        //---------------------------------------------------------------------
+        // IInstanceStateChangeEvent.
+        //---------------------------------------------------------------------
+
+        public InstanceState ResultingState(InstanceState preState)
+            => !IsError ? InstanceState.Running : preState;
+
+        public bool IsValidInState(InstanceState preState)
+            => preState == InstanceState.Running;
     }
 }

@@ -24,7 +24,7 @@ using System.Diagnostics;
 
 namespace Google.Solutions.Audit.Events.Lifecycle
 {
-    public class StartWithEncryptionKeyEvent : LifecycleEventBase
+    public class StartWithEncryptionKeyEvent : LifecycleEventBase, IInstanceStateChangeEvent
     {
         public const string BetaMethod = "beta.compute.instances.startWithEncryptionKey";
 
@@ -41,5 +41,15 @@ namespace Google.Solutions.Audit.Events.Lifecycle
             return record.IsActivityEvent &&
                 record.ProtoPayload.MethodName == BetaMethod;
         }
+
+        //---------------------------------------------------------------------
+        // IInstanceStateChangeEvent.
+        //---------------------------------------------------------------------
+
+        public InstanceState ResultingState(InstanceState preState)
+            => !IsError ? InstanceState.Running : preState;
+
+        public bool IsValidInState(InstanceState preState)
+            => preState == InstanceState.Terminated;
     }
 }

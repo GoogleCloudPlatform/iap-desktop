@@ -24,7 +24,7 @@ using System.Diagnostics;
 
 namespace Google.Solutions.Audit.Events.Lifecycle
 {
-    public class StopInstanceEvent : LifecycleEventBase
+    public class StopInstanceEvent : LifecycleEventBase, IInstanceStateChangeEvent
     {
         public const string BetaMethod = "beta.compute.instances.stop";
         public const string Method = "v1.compute.instances.stop";
@@ -43,5 +43,15 @@ namespace Google.Solutions.Audit.Events.Lifecycle
                 (record.ProtoPayload.MethodName == BetaMethod ||
                  record.ProtoPayload.MethodName == Method);
         }
+
+        //---------------------------------------------------------------------
+        // IInstanceStateChangeEvent.
+        //---------------------------------------------------------------------
+
+        public InstanceState ResultingState(InstanceState preState)
+            => !IsError ? InstanceState.Terminated : preState;
+
+        public bool IsValidInState(InstanceState preState)
+            => preState == InstanceState.Running;
     }
 }
