@@ -66,7 +66,7 @@ $ObjDir = "installer\bin"
 # Package symbols.
 #
 
-$SymbolsDir = Resolve-Path -Path "$ObjDir\$Configuration\Symbols"
+$SymbolsDir = Join-Path -Path (Resolve-Path -Path "$ObjDir\$Configuration") -ChildPath "Symbols"
 $SymbolsArchive = Join-Path -Path (Resolve-Path -Path "$ObjDir\$Configuration") -ChildPath "Symbols-$ProductVersion.zip"
 
 if (Test-path $SymbolsArchive) {
