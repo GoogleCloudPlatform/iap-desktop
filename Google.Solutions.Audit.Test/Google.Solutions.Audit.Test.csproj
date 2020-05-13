@@ -58,6 +58,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Events\Lifecycle\TestResetInstanceEvent.cs" />
+    <Compile Include="Events\Lifecycle\TestStartWithEncryptionKeyEvent.cs" />
     <Compile Include="Events\System\TestGenericSystemEvent.cs" />
     <Compile Include="Events\System\TestInstancePreemptedEvent.cs" />
     <Compile Include="Events\System\TestHostErrorEvent.cs" />

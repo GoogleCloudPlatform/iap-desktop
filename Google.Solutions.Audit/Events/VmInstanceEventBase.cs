@@ -22,7 +22,6 @@
 using Google.Solutions.Audit.Records;
 using Google.Solutions.Compute;
 using System;
-using System.Diagnostics;
 
 namespace Google.Solutions.Audit.Events
 {
@@ -53,7 +52,9 @@ namespace Google.Solutions.Audit.Events
             }
         }
 
-        public long InstanceId => long.Parse(base.LogRecord.Resource.Labels["instance_id"]);
+        public long InstanceId => string.IsNullOrEmpty(base.LogRecord.Resource.Labels["instance_id"])
+            ? 0 
+            : long.Parse(base.LogRecord.Resource.Labels["instance_id"]);
 
         protected VmInstanceEventBase(LogRecord logRecord)
             : base(logRecord)

@@ -51,6 +51,7 @@
   <ItemGroup>
     <Compile Include="Events\Lifecycle\LifecycleEventBase.cs" />
     <Compile Include="Events\Lifecycle\ResetInstanceEvent.cs" />
+    <Compile Include="Events\Lifecycle\StartWithEncryptionKeyEvent.cs" />
     <Compile Include="Events\System\GenericSystemEvent.cs" />
     <Compile Include="Events\System\InstanceManagerHaltForRestartEvent.cs" />
     <Compile Include="Events\System\InstanceResetEvent.cs" />

@@ -37,14 +37,12 @@ namespace Google.Solutions.Audit.Events
                 { InsertInstanceEvent.Method, rec => new InsertInstanceEvent(rec) },
                 { InsertInstanceEvent.BetaMethod, rec => new InsertInstanceEvent(rec) },
                 { StartInstanceEvent.Method, rec => new StartInstanceEvent(rec) },
+                { StartWithEncryptionKeyEvent.BetaMethod, rec => new StartWithEncryptionKeyEvent(rec) },
                 { StopInstanceEvent.Method, rec => new StopInstanceEvent(rec) },
                 { StopInstanceEvent.BetaMethod, rec => new StopInstanceEvent(rec) },
                 { ResetInstanceEvent.Method, rec => new ResetInstanceEvent(rec) },
 
                 // Some beta events omitted (based on audit_log_services.ts)
-
-                // TODO: v1.compute.instances.startWithEncryptionKey
-                // TODO: v1.compute.instances.simulateMaintenanceEvent
             };
 
         private readonly static IDictionary<string, Func<LogRecord, EventBase>> systemEvents
