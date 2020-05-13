@@ -34,6 +34,10 @@ $Light = Join-Path $WixTools 'light.exe'
 $SourcesDir = "installer"
 $ObjDir = "installer\bin"
 
+#
+# Compile MSI.
+#
+
 & $Candle `
     -nologo `
     -out "$ObjDir\$Configuration\" `
@@ -45,6 +49,10 @@ $ObjDir = "installer\bin"
     -ext "$WixTools\WixUtilExtension.dll" `
     "$SourcesDir\Product.wxs"
 
+#
+# Link MSI.
+#
+
 & $Light `
     -nologo `
     -out "$ObjDir\$Configuration\IapDesktop-$ProductVersion.msi" `
@@ -53,3 +61,20 @@ $ObjDir = "installer\bin"
     -ext "$WixTools\WixUIExtension.dll" `
     -ext "$WixTools\WixUtilExtension.dll" `
     "$ObjDir\$Configuration\Product.wixobj"
+
+#
+# Package symbols.
+#
+
+$SymbolsDir = Join-Path -Path (Resolve-Path -Path "$ObjDir\$Configuration") -ChildPath "Symbols"
+$SymbolsArchive = Join-Path -Path (Resolve-Path -Path "$ObjDir\$Configuration") -ChildPath "Symbols-$ProductVersion.zip"
+
+if (Test-path $SymbolsArchive) {
+    Remove-item $SymbolsArchive
+}
+
+New-Item -Type Directory -Force $SymbolsDir
+Copy-Item -Path "Google.Solutions.IapDesktop\bin\$Configuration\*.pdb" -Destination $SymbolsDir
+
+Add-Type -Assembly "System.IO.Compression.FileSystem"
+[System.IO.Compression.ZipFile]::CreateFromDirectory($SymbolsDir, $SymbolsArchive)
