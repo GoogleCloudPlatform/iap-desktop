@@ -24,11 +24,11 @@ using System.Diagnostics;
 
 namespace Google.Solutions.Audit.Events.System
 {
-    public class TerminateOnHostMaintenanceEvent : VmInstanceEventBase
+    public class TerminateOnHostMaintenanceEvent : SystemEventBase
     {
         public const string Method = "compute.instances.terminateOnHostMaintenance";
 
-        public string Message => "Instance terminated during Compute Engine maintenance";
+        public override string Message => "Instance terminated during Compute Engine maintenance";
 
         internal TerminateOnHostMaintenanceEvent(LogRecord logRecord) : base(logRecord)
         {

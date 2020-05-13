@@ -24,11 +24,11 @@ using System.Diagnostics;
 
 namespace Google.Solutions.Audit.Events.System
 {
-    public class InstanceManagerHaltForRestartEvent : VmInstanceEventBase
+    public class InstanceManagerHaltForRestartEvent : SystemEventBase
     {
         public const string Method = "compute.instances.instanceManagerHaltForRestart";
 
-        public string Message => "Instance terminated by Instance Manager in order to restart the instance";
+        public override string Message => "Instance terminated by Instance Manager in order to restart the instance";
 
         internal InstanceManagerHaltForRestartEvent(LogRecord logRecord) : base(logRecord)
         {

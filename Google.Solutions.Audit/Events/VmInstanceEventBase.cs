@@ -22,6 +22,7 @@
 using Google.Solutions.Audit.Records;
 using Google.Solutions.Compute;
 using System;
+using System.Diagnostics;
 
 namespace Google.Solutions.Audit.Events
 {

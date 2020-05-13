@@ -24,11 +24,11 @@ using System.Diagnostics;
 
 namespace Google.Solutions.Audit.Events.System
 {
-    public class InstancePreemptedEvent : VmInstanceEventBase
+    public class InstancePreemptedEvent : SystemEventBase
     {
         public const string Method = "compute.instances.preempted";
 
-        public string Message => "Instance was preempted";
+        public override string Message => "Instance was preempted";
 
         internal InstancePreemptedEvent(LogRecord logRecord) : base(logRecord)
         {

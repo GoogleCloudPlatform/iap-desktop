@@ -24,11 +24,11 @@ using System.Diagnostics;
 
 namespace Google.Solutions.Audit.Events.System
 {
-    public class InstanceResetEvent : VmInstanceEventBase
+    public class InstanceResetEvent : SystemEventBase
     {
         public const string Method = "compute.instances.reset";
 
-        public string Message => "Instance was restarted by a Reset operation";
+        public override string Message => "Instance was restarted by a Reset operation";
 
         internal InstanceResetEvent(LogRecord logRecord) : base(logRecord)
         {

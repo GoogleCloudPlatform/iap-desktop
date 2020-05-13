@@ -24,9 +24,12 @@ using System.Diagnostics;
 
 namespace Google.Solutions.Audit.Events.Lifecycle
 {
-    public class StartInstanceEvent : VmInstanceEventBase
+    public class StartInstanceEvent : LifecycleEventBase
     {
         public const string Method = "v1.compute.instances.start";
+
+        protected override string SuccessMessage => "Instance started";
+        protected override string ErrorMessage => "Starting instance failed";
 
         internal StartInstanceEvent(LogRecord logRecord) : base(logRecord)
         {

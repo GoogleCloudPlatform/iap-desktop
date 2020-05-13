@@ -49,6 +49,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Events\Lifecycle\LifecycleEventBase.cs" />
     <Compile Include="Events\Lifecycle\ResetInstanceEvent.cs" />
     <Compile Include="Events\System\GenericSystemEvent.cs" />
     <Compile Include="Events\System\InstanceManagerHaltForRestartEvent.cs" />
@@ -66,6 +67,7 @@
     <Compile Include="Events\System\NotifyInstanceLocationEvent.cs" />
     <Compile Include="Events\Lifecycle\StartInstanceEvent.cs" />
     <Compile Include="Events\Lifecycle\StopInstanceEvent.cs" />
+    <Compile Include="Events\System\SystemEventBase.cs" />
     <Compile Include="Events\System\TerminateOnHostMaintenanceEvent.cs" />
     <Compile Include="Events\UnknownEvent.cs" />
     <Compile Include="Events\VmInstanceEventBase.cs" />

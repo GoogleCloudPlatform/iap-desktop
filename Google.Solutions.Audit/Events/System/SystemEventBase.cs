@@ -24,21 +24,14 @@ using System.Diagnostics;
 
 namespace Google.Solutions.Audit.Events.System
 {
-    public class HostErrorEvent : SystemEventBase
+    public abstract class SystemEventBase : VmInstanceEventBase
     {
-        public const string Method = "compute.instances.hostError";
-
-        public override string Message => "Instance terminated by Compute Engine";
-
-        internal HostErrorEvent(LogRecord logRecord) : base(logRecord)
+        public SystemEventBase(LogRecord logRecord) : base(logRecord)
         {
-            Debug.Assert(IsHostErrorEvent(logRecord));
-        }
+            // System events are always INFO-level.
 
-        public static bool IsHostErrorEvent(LogRecord record)
-        {
-            return record.IsSystemEvent &&
-                record.ProtoPayload.MethodName == Method;
+            Debug.Assert(this.Severity == "INFO");
+            Debug.Assert(this.Status == null);
         }
     }
 }

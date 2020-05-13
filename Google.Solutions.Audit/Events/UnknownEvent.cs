@@ -25,6 +25,10 @@ namespace Google.Solutions.Audit.Events
 {
     internal class UnknownEvent : EventBase
     {
+        public override string Message => this.LogRecord.ProtoPayload != null
+            ? $"Event {this.LogRecord.ProtoPayload.MethodName} occured"
+            : $"Unknown event occured";
+
         public UnknownEvent(LogRecord logRecord) : base(logRecord)
         {
         }

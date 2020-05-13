@@ -24,14 +24,17 @@ using System.Diagnostics;
 
 namespace Google.Solutions.Audit.Events.System
 {
-    public class RecreateInstanceEvent : VmInstanceEventBase
+    public class RecreateInstanceEvent : SystemEventBase
     {
         public const string Method = "compute.instances.repair.recreateInstance";
+        
+        public override string Message => "Instance recreated to repair";
 
         internal RecreateInstanceEvent(LogRecord logRecord) : base(logRecord)
         {
             Debug.Assert(IsRecreateInstanceEvent(logRecord));
         }
+
 
         public static bool IsRecreateInstanceEvent(LogRecord record)
         {

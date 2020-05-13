@@ -38,9 +38,16 @@ namespace Google.Solutions.Audit.Events
             ? this.LogRecord.ProtoPayload?.Status
             : null;
 
+        public abstract string Message { get; }
+
         protected EventBase(LogRecord logRecord)
         {
             this.LogRecord = logRecord;
+        }
+
+        public override string ToString()
+        {
+            return $"{this.Timestamp} {this.Severity} {this.Message}";
         }
     }
 }

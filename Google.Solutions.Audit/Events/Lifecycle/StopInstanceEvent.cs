@@ -24,10 +24,13 @@ using System.Diagnostics;
 
 namespace Google.Solutions.Audit.Events.Lifecycle
 {
-    public class StopInstanceEvent : VmInstanceEventBase
+    public class StopInstanceEvent : LifecycleEventBase
     {
         public const string BetaMethod = "beta.compute.instances.stop";
         public const string Method = "v1.compute.instances.stop";
+
+        protected override string SuccessMessage => "Instance stopped";
+        protected override string ErrorMessage => "Stopping instance failed";
 
         internal StopInstanceEvent(LogRecord logRecord) : base(logRecord)
         {

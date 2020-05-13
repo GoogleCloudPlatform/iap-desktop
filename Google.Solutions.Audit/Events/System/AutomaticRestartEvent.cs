@@ -24,11 +24,11 @@ using System.Diagnostics;
 
 namespace Google.Solutions.Audit.Events.System
 {
-    public class AutomaticRestartEvent : VmInstanceEventBase
+    public class AutomaticRestartEvent : SystemEventBase
     {
         public const string Method = "compute.instances.automaticRestart";
 
-        public string Message => "Instance automatically restarted by Compute Engine";
+        public override string Message => "Instance automatically restarted by Compute Engine";
 
         internal AutomaticRestartEvent(LogRecord logRecord) : base(logRecord)
         {

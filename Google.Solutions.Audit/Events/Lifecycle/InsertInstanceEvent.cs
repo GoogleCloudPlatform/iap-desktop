@@ -24,10 +24,13 @@ using System.Diagnostics;
 
 namespace Google.Solutions.Audit.Events.Lifecycle
 {
-    public class InsertInstanceEvent : VmInstanceEventBase
+    public class InsertInstanceEvent : LifecycleEventBase
     {
         public const string Method = "v1.compute.instances.insert";
         public const string BetaMethod = "beta.compute.instances.insert";
+
+        protected override string SuccessMessage => "Instance created";
+        protected override string ErrorMessage => "Creating instance failed";
 
         internal InsertInstanceEvent(LogRecord logRecord) : base(logRecord)
         {

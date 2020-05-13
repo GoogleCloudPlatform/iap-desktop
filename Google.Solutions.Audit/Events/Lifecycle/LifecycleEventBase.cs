@@ -22,23 +22,22 @@
 using Google.Solutions.Audit.Records;
 using System.Diagnostics;
 
-namespace Google.Solutions.Audit.Events.System
+namespace Google.Solutions.Audit.Events.Lifecycle
 {
-    public class HostErrorEvent : SystemEventBase
+    public abstract class LifecycleEventBase : VmInstanceEventBase
     {
-        public const string Method = "compute.instances.hostError";
+        protected abstract string SuccessMessage { get; }
+        protected abstract string ErrorMessage { get; }
 
-        public override string Message => "Instance terminated by Compute Engine";
+        public override string Message => IsError  
+            ? $"{ErrorMessage} ({this.Status.Message})" 
+            : SuccessMessage;
 
-        internal HostErrorEvent(LogRecord logRecord) : base(logRecord)
+        public bool IsError => this.Severity == "ERROR";
+
+        public LifecycleEventBase(LogRecord logRecord) : base(logRecord)
         {
-            Debug.Assert(IsHostErrorEvent(logRecord));
-        }
-
-        public static bool IsHostErrorEvent(LogRecord record)
-        {
-            return record.IsSystemEvent &&
-                record.ProtoPayload.MethodName == Method;
+            Debug.Assert(!IsError || logRecord.ProtoPayload.Status != null);
         }
     }
 }

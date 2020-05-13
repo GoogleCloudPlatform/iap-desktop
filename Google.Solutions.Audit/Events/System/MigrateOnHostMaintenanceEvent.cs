@@ -24,11 +24,11 @@ using System.Diagnostics;
 
 namespace Google.Solutions.Audit.Events.System
 {
-    public class MigrateOnHostMaintenanceEvent : VmInstanceEventBase
+    public class MigrateOnHostMaintenanceEvent : SystemEventBase
     {
         public const string Method = "compute.instances.migrateOnHostMaintenance";
 
-        public string Message => "Instance migrated during Compute Engine maintenance";
+        public override string Message => "Instance migrated during Compute Engine maintenance";
 
         internal MigrateOnHostMaintenanceEvent(LogRecord logRecord) : base(logRecord)
         {

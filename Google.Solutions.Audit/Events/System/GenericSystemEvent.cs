@@ -23,9 +23,9 @@ using Google.Solutions.Audit.Records;
 
 namespace Google.Solutions.Audit.Events.System
 {
-    public class GenericSystemEvent : VmInstanceEventBase
+    public class GenericSystemEvent : SystemEventBase
     {
-        public string Message => $"System event {this.LogRecord.ProtoPayload.MethodName} occured";
+        public override string Message => $"System event {this.LogRecord.ProtoPayload.MethodName} occured";
 
         internal GenericSystemEvent(LogRecord logRecord) : base(logRecord)
         {

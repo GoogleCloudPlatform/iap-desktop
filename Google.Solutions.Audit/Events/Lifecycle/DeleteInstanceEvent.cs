@@ -24,9 +24,12 @@ using System.Diagnostics;
 
 namespace Google.Solutions.Audit.Events.Lifecycle
 {
-    public class DeleteInstanceEvent : VmInstanceEventBase
+    public class DeleteInstanceEvent : LifecycleEventBase
     {
         public const string Method = "v1.compute.instances.delete";
+
+        protected override string SuccessMessage => "Instance deleted";
+        protected override string ErrorMessage => "Deleting instance failed";
 
         internal DeleteInstanceEvent(LogRecord logRecord) : base(logRecord)
         {

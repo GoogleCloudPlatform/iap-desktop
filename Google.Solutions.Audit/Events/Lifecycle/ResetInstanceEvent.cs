@@ -24,9 +24,12 @@ using System.Diagnostics;
 
 namespace Google.Solutions.Audit.Events.Lifecycle
 {
-    public class ResetInstanceEvent : VmInstanceEventBase
+    public class ResetInstanceEvent : LifecycleEventBase
     {
         public const string Method = "v1.compute.instances.reset";
+
+        protected override string SuccessMessage => "Instance reset";
+        protected override string ErrorMessage => "Resetting instance failed";
 
         internal ResetInstanceEvent(LogRecord logRecord) : base(logRecord)
         {

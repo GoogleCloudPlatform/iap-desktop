@@ -26,13 +26,15 @@ using System.Diagnostics;
 
 namespace Google.Solutions.Audit.Events.System
 {
-    public class NotifyInstanceLocationEvent : VmInstanceEventBase
+    public class NotifyInstanceLocationEvent : SystemEventBase
     {
         public const string Method = "NotifyInstanceLocation";
 
         public string ServerId => base.LogRecord.ProtoPayload.Metadata["serverId"].Value<string>();
 
         public DateTime SchedulingTimestamp => base.LogRecord.ProtoPayload.Metadata["timestamp"].Value<DateTime>();
+
+        public override string Message => "Instance scheduled to run on sole tenant node";
 
         internal NotifyInstanceLocationEvent(LogRecord logRecord) : base(logRecord)
         {

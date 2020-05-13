@@ -24,11 +24,11 @@ using System.Diagnostics;
 
 namespace Google.Solutions.Audit.Events.System
 {
-    public class GuestTerminateEvent : VmInstanceEventBase
+    public class GuestTerminateEvent : SystemEventBase
     {
         public const string Method = "compute.instances.guestTerminate";
 
-        public string Message => "Instance terminated by guest OS shutdown";
+        public override string Message => "Instance terminated by guest OS shutdown";
 
         internal GuestTerminateEvent(LogRecord logRecord) : base(logRecord)
         {
