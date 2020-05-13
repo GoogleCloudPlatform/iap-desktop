@@ -107,7 +107,7 @@ namespace Google.Solutions.Compute.Extensions
                     TraceSources.Compute.TraceVerbose(
                         "Setting request payload metadata failed: {0} ({1})", 
                         e.Message, 
-                        e.Error.Errors.EnsureNotNull().Select(er => er.Reason).FirstOrDefault());
+                        e.Error?.Errors.EnsureNotNull().Select(er => er.Reason).FirstOrDefault());
 
                     // Setting metadata failed due to lack of permissions. Note that
                     // the Error object is not always populated, hence the OR filter.
