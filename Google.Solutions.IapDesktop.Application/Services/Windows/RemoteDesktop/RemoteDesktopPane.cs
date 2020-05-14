@@ -275,8 +275,17 @@ namespace Google.Solutions.IapDesktop.Application.Services.Windows.RemoteDesktop
 
         private void RemoteDesktopPane_SizeChanged(object sender, EventArgs e)
         {
-            using (TraceSources.IapDesktop.TraceMethod().WithParameters(this.autoResize))
+            using (TraceSources.IapDesktop.TraceMethod().WithParameters(
+                this.autoResize, this.Size))
             {
+                if (this.Size.Width == 0 || this.Size.Height == 0)
+                {
+                    // Probably the window is being minimized. Ignore
+                    // that event since it merely causes stress on the
+                    // RDP control.
+                    return;
+                }
+
                 UpdateLayout();
 
                 if (this.autoResize)
