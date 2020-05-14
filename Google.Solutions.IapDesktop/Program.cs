@@ -268,7 +268,6 @@ namespace Google.Solutions.IapDesktop
             // main thread before doing any GUI stuff.
             this.initializedMainForm.Invoke(((Action)(() =>
             {
-                UnsafeNativeMethods.SetForegroundWindow(this.initializedMainForm.Handle);
                 if (url != null)
                 {
                     this.initializedMainForm.ConnectToUrl(url);

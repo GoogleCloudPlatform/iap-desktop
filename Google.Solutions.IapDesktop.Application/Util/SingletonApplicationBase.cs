@@ -19,13 +19,16 @@
 // under the License.
 //
 
+using Google.Solutions.IapDesktop.Application.Services.Windows;
 using System;
+using System.Diagnostics;
 using System.IO;
 using System.IO.Pipes;
 using System.Security.AccessControl;
 using System.Security.Principal;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Windows.Forms;
 
 #pragma warning disable CA1031 // catch Exception
 
@@ -97,6 +100,35 @@ namespace Google.Solutions.IapDesktop.Application.Util
             }
         }
 
+        private static void TrySetForegroundWindow(int processId)
+        {
+            // Try to pass focus to other instance. Note that the 
+            // main instance's process cannot claim the focus because
+            // Windows does not allow that.
+            try
+            {
+                var mainProcess = Process.GetProcessById(processId);
+                var mainHwnd = mainProcess.MainWindowHandle;
+                UnsafeNativeMethods.SetForegroundWindow(mainHwnd);
+
+                if (UnsafeNativeMethods.IsIconic(mainHwnd))
+                {
+                    UnsafeNativeMethods.ShowWindow(mainHwnd, UnsafeNativeMethods.SW_RESTORE);
+                }
+            }
+            catch (Exception e)
+            {
+#if DEBUG
+                MessageBox.Show(
+                    e.Message,
+                    "Failed to pass focus to main instance",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Warning);
+#endif
+                // Nevermind.
+            }
+        }
+
         private int PostCommandToNamedPipeServer(string[] args)
         {
             using (var pipe = new NamedPipeClientStream(
@@ -116,7 +148,12 @@ namespace Google.Solutions.IapDesktop.Application.Util
                         writer.Write(args[i]);
                     }
 
-                    return reader.ReadInt32();
+                    int returnCode = reader.ReadInt32();
+                    int processIdOfMainInstance = reader.ReadInt32();
+
+                    TrySetForegroundWindow(processIdOfMainInstance);
+
+                    return returnCode;
                 }
             }
         }
@@ -152,6 +189,7 @@ namespace Google.Solutions.IapDesktop.Application.Util
                         // IN: <string> argument #n
                         // IN:  (repeat...)
                         // OUT: return code
+                        // OUT: process ID
                         //
 
                         using (var reader = new BinaryReader(pipe))
@@ -168,6 +206,7 @@ namespace Google.Solutions.IapDesktop.Application.Util
                             {
                                 int result = HandleSubsequentInvocation(args);
                                 writer.Write(result);
+                                writer.Write(Process.GetCurrentProcess().Id);
                             }
                             catch (Exception e)
                             {
