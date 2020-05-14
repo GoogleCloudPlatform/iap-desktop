@@ -22,6 +22,7 @@
 using System;
 using System.Collections.Generic;
 using System.Runtime.Serialization;
+using System.Text;
 
 namespace Google.Solutions.IapDesktop.Application.Services.Windows.RemoteDesktop
 {
@@ -211,28 +212,37 @@ namespace Google.Solutions.IapDesktop.Application.Services.Windows.RemoteDesktop
             this.DisconnectReason == 263 ||  // Dismissed server auth warning.
             this.DisconnectReason == 7943;   // Dismissed login prompt.
 
-        public override string Message
+        private static string CreateMessage(int disconnectReason, string description)
         {
-            get
+            var message = new StringBuilder();
+            if (!string.IsNullOrWhiteSpace(description))
             {
-
-                if (knownErrors.TryGetValue(this.DisconnectReason, out string message))
-                {
-                    return message;
-                }
-                else
-                {
-                    return $"Disconnected with unknown error code {this.DisconnectReason}";
-                }
+                message.Append(description);
+                message.Append("\n\n");
             }
+
+            if (knownErrors.TryGetValue(disconnectReason, out string reasonText))
+            {
+                message.Append(reasonText);
+            }
+
+
+            if (message.Length == 0)
+            {
+                message.Append("Disconnected with unknown error code");
+            }
+
+            message.Append($"\n\nError code: {disconnectReason}");
+
+            return message.ToString();
         }
 
         public RdpDisconnectedException(int disconnectReason, string description)
-            : base()
+            : base(CreateMessage(disconnectReason, description))
         {
-            // TODO: use description?
             this.DisconnectReason = disconnectReason;
         }
+
         protected RdpDisconnectedException(SerializationInfo info, StreamingContext context)
             : base(info, context)
         {
