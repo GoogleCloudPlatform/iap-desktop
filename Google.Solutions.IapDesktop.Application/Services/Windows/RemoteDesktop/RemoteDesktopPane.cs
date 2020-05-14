@@ -51,6 +51,9 @@ namespace Google.Solutions.IapDesktop.Application.Services.Windows.RemoteDesktop
         private bool autoResize = false;
         private bool connecting = false;
 
+        // Track the (client area) size of the remote connection.
+        private Size connectionSize;
+
         public VmInstanceReference Instance { get; }
 
         private void UpdateLayout()
@@ -262,7 +265,24 @@ namespace Google.Solutions.IapDesktop.Application.Services.Windows.RemoteDesktop
                 advancedSettings.allowBackgroundInput = 1;
 
                 this.connecting = true;
+                this.connectionSize = this.Size;
                 this.rdpClient.Connect();
+            }
+        }
+
+        private void ReconnectToResize(Size size)
+        {
+            using (TraceSources.IapDesktop.TraceMethod().WithParameters(this.connectionSize, size))
+            {
+                this.connecting = true;
+
+                // Only resize if the size really changed, otherwise we put unnecessary
+                // stress on the control (especially if events come in quick succession).
+                if (size != this.connectionSize)
+                {
+                    this.connectionSize = size;
+                    this.rdpClient.Reconnect((uint)size.Width, (uint)size.Height);
+                }
             }
         }
 
@@ -275,8 +295,17 @@ namespace Google.Solutions.IapDesktop.Application.Services.Windows.RemoteDesktop
 
         private void RemoteDesktopPane_SizeChanged(object sender, EventArgs e)
         {
-            using (TraceSources.IapDesktop.TraceMethod().WithParameters(this.autoResize))
+            using (TraceSources.IapDesktop.TraceMethod().WithParameters(
+                this.autoResize, this.Size))
             {
+                if (this.Size.Width == 0 || this.Size.Height == 0)
+                {
+                    // Probably the window is being minimized. Ignore
+                    // that event since it merely causes stress on the
+                    // RDP control.
+                    return;
+                }
+
                 UpdateLayout();
 
                 if (this.autoResize)
@@ -357,7 +386,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.Windows.RemoteDesktop
                 else if (!this.IsConnecting)
                 {
                     // Reconnect to resize remote desktop.
-                    this.rdpClient.Reconnect((uint)this.Size.Width, (uint)this.Size.Height);
+                    ReconnectToResize(this.Size);
                 }
 
                 // Do not fire again.
@@ -372,8 +401,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.Windows.RemoteDesktop
                 // Adjust desktop size to full screen.
                 var screenSize = Screen.GetBounds(this);
 
-                this.connecting = true;
-                this.rdpClient.Reconnect((uint)screenSize.Width, (uint)screenSize.Height);
+                ReconnectToResize(screenSize.Size);
             }
         }
 
@@ -382,9 +410,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.Windows.RemoteDesktop
             if (!this.IsConnecting && this.autoResize)
             {
                 // Return to normal size.
-
-                this.connecting = true;
-                this.rdpClient.Reconnect((uint)this.Size.Width, (uint)this.Size.Height);
+                ReconnectToResize(this.Size);
             }
         }
 
