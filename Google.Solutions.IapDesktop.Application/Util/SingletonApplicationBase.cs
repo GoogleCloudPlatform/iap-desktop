@@ -108,7 +108,13 @@ namespace Google.Solutions.IapDesktop.Application.Util
             try
             {
                 var mainProcess = Process.GetProcessById(processId);
-                UnsafeNativeMethods.SetForegroundWindow(mainProcess.MainWindowHandle);
+                var mainHwnd = mainProcess.MainWindowHandle;
+                UnsafeNativeMethods.SetForegroundWindow(mainHwnd);
+
+                if (UnsafeNativeMethods.IsIconic(mainHwnd))
+                {
+                    UnsafeNativeMethods.ShowWindow(mainHwnd, UnsafeNativeMethods.SW_RESTORE);
+                }
             }
             catch (Exception e)
             {
