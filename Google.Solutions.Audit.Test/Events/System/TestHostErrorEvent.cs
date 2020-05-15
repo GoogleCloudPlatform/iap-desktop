@@ -79,6 +79,9 @@ namespace Google.Solutions.LogAnalysis.Test.Events.System
             var e = (HostErrorEvent)r.ToEvent();
 
             Assert.AreEqual(2162224123123123213, e.InstanceId);
+            Assert.AreEqual("instance-1", e.InstanceReference.InstanceName);
+            Assert.AreEqual("us-central1-a", e.InstanceReference.Zone);
+            Assert.AreEqual("project-1", e.InstanceReference.ProjectId);
             Assert.AreEqual("INFO", e.Severity);
             Assert.IsNull(e.Status);
             Assert.AreEqual(

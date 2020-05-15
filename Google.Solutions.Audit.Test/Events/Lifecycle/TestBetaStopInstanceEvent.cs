@@ -83,6 +83,9 @@ namespace Google.Solutions.LogAnalysis.Test.Events.Lifecycle
             var e = (StopInstanceEvent)r.ToEvent();
 
             Assert.AreEqual(2162224123123123213, e.InstanceId);
+            Assert.AreEqual("instance-1", e.InstanceReference.InstanceName);
+            Assert.AreEqual("us-central1-a", e.InstanceReference.Zone);
+            Assert.AreEqual("project-1", e.InstanceReference.ProjectId);
             Assert.AreEqual(
                 new VmInstanceReference("project-1", "us-central1-a", "instance-1"),
                 e.InstanceReference);

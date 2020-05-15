@@ -36,8 +36,13 @@ namespace Google.Solutions.LogAnalysis.Events
                 // projects/<project-number-or-id>/zones/<zone>/instances/<name>
                 // for instance-related events.
                 //
+                var resourceName = base.LogRecord.ProtoPayload.ResourceName;
+                if (string.IsNullOrEmpty(resourceName))
+                {
+                    return null;
+                }
 
-                var parts = base.LogRecord.ProtoPayload.ResourceName.Split('/');
+                var parts = resourceName.Split('/');
                 if (parts.Length != 6)
                 {
                     throw new ArgumentException(

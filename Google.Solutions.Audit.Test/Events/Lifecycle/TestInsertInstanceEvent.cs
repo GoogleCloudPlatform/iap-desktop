@@ -167,6 +167,9 @@ namespace Google.Solutions.LogAnalysis.Test.Events.Lifecycle
             var e = (InsertInstanceEvent)r.ToEvent();
 
             Assert.AreEqual(11111111631960822, e.InstanceId);
+            Assert.AreEqual("instance-1", e.InstanceReference.InstanceName);
+            Assert.AreEqual("us-central1-a", e.InstanceReference.Zone);
+            Assert.AreEqual("project-1", e.InstanceReference.ProjectId);
             Assert.AreEqual("NOTICE", e.Severity);
             Assert.IsNull(e.Status);
             Assert.AreEqual(
@@ -229,6 +232,9 @@ namespace Google.Solutions.LogAnalysis.Test.Events.Lifecycle
             var e = (InsertInstanceEvent)r.ToEvent();
 
             Assert.AreEqual(11111111631960822, e.InstanceId);
+            Assert.AreEqual("instance-1", e.InstanceReference.InstanceName);
+            Assert.AreEqual("us-central1-a", e.InstanceReference.Zone);
+            Assert.AreEqual("project-1", e.InstanceReference.ProjectId);
             Assert.AreEqual("ERROR", e.Severity);
             Assert.AreEqual(3, e.Status.Code);
             Assert.AreEqual("INVALID_ARGUMENT", e.Status.Message);
