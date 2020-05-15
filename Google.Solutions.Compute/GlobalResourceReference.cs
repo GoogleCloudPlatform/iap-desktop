@@ -20,6 +20,7 @@
 //
 
 using System;
+using System.Linq;
 using System.Diagnostics;
 
 namespace Google.Solutions.Compute
@@ -49,9 +50,10 @@ namespace Google.Solutions.Compute
         public static GlobalResourceReference FromString(string path)
         {
             // The resource name format is 
-            // projects/[project-id]/global/[type]/[name]
+            // projects/[project-id]/global/[type]/[name], but
+            // [name] might contain slashes.
             var parts = path.Split('/');
-            if (parts.Length != 5 ||
+            if (parts.Length < 5 ||
                 string.IsNullOrEmpty(parts[1]) ||
                 string.IsNullOrEmpty(parts[3]) ||
                 string.IsNullOrEmpty(parts[4]) ||
@@ -61,7 +63,10 @@ namespace Google.Solutions.Compute
                 throw new ArgumentException($"'{path}' is not a valid global resource reference");
             }
 
-            return new GlobalResourceReference(parts[1], parts[3], parts[4]);
+            return new GlobalResourceReference(
+                parts[1], 
+                parts[3], 
+                string.Join("/", parts.Skip(4)));
         }
 
         public override int GetHashCode()
