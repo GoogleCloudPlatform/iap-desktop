@@ -27,7 +27,7 @@ using System.Linq;
 
 namespace Google.Solutions.LogAnalysis.History
 {
-    internal class InstanceSetHistoryBuilder
+    internal class InstanceSetHistoryBuilder : IEventProcessor
     {
         private readonly IDictionary<long, InstanceHistoryBuilder> instanceBuilders =
             new Dictionary<long, InstanceHistoryBuilder>();
@@ -75,12 +75,21 @@ namespace Google.Solutions.LogAnalysis.History
         }
 
         //---------------------------------------------------------------------
-        // Lifecycle events that construct the history.
+        // IEventProcessor
         //---------------------------------------------------------------------
 
-        public void OnEvent(VmInstanceEventBase e)
+        public IEnumerable<string> SupportedSeverities => InstanceHistoryBuilder.RequiredSeverities;
+
+        public IEnumerable<string> SupportedMethods => InstanceHistoryBuilder.RequiredMethods;
+
+        public void OnEvent(EventBase e)
         {
-            GetBuilder(e.InstanceId, e.InstanceReference).OnEvent(e);
+            if (e is VmInstanceEventBase instanceEvent)
+            {
+                GetBuilder(
+                    instanceEvent.InstanceId, 
+                    instanceEvent.InstanceReference).OnEvent(e);
+            }
         }
     }
 }

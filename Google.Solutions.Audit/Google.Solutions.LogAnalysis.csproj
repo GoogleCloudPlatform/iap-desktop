@@ -50,6 +50,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="DateTimeUtil.cs" />
+    <Compile Include="Events\IEventProcessor.cs" />
     <Compile Include="Events\IInstanceStateChangeEvent.cs" />
     <Compile Include="Events\Lifecycle\LifecycleEventBase.cs" />
     <Compile Include="Events\Lifecycle\ResetInstanceEvent.cs" />

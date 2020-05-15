@@ -34,11 +34,18 @@ namespace Google.Solutions.LogAnalysis.History
     /// Reconstructs the history of an instance by analyzing
     /// events in reverse chronological order.
     /// </summary>
-    internal class InstanceHistoryBuilder
+    internal class InstanceHistoryBuilder : IEventProcessor
     {
         // NB. Instance IDs stay unique throughout the history while VmInstanceReferences
         // become ambiguous. Therefore, it is important to use instance ID as primary
         // key, even though the reference is more user-friendly and meaningful.
+
+
+        // Error events are not relevant for building the history, we only need
+        // informational records.
+        internal static IEnumerable<string> RequiredSeverities => new[] { "NOTICE", "INFO" };
+        internal static IEnumerable<string> RequiredMethods =>
+            EventFactory.LifecycleEventMethods.Concat(EventFactory.SystemEventMethods);
 
         public long InstanceId { get; }
         private readonly LinkedList<SoleTenantPlacement> placements = new LinkedList<SoleTenantPlacement>();
@@ -258,7 +265,15 @@ namespace Google.Solutions.LogAnalysis.History
             AddPlacement(new SoleTenantPlacement(serverId, date, placedUntil));
         }
 
-        public void OnEvent(VmInstanceEventBase e)
+        //---------------------------------------------------------------------
+        // IEventProcessor
+        //---------------------------------------------------------------------
+
+        public IEnumerable<string> SupportedSeverities => RequiredSeverities;
+
+        public IEnumerable<string> SupportedMethods => RequiredMethods;
+
+        public void OnEvent(EventBase e)
         {
             if (e is NotifyInstanceLocationEvent notifyLocation)
             {

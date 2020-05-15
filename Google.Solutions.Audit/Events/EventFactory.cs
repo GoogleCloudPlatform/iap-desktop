@@ -24,6 +24,7 @@ using Google.Solutions.LogAnalysis.Events.System;
 using Google.Solutions.LogAnalysis.Logs;
 using Newtonsoft.Json;
 using System;
+using System.Linq;
 using System.Collections.Generic;
 
 namespace Google.Solutions.LogAnalysis.Events
@@ -62,6 +63,8 @@ namespace Google.Solutions.LogAnalysis.Events
                 // Some more esoteric event types omitted (based on InstanceEventInfo.java).
             };
 
+        public static IEnumerable<string> LifecycleEventMethods => lifecycleEvents.Keys;
+        public static IEnumerable<string> SystemEventMethods => lifecycleEvents.Keys;
 
         public static EventBase FromRecord(LogRecord record)
         {
