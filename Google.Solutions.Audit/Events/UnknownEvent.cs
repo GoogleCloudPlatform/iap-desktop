@@ -19,11 +19,11 @@
 // under the License.
 //
 
-using Google.Solutions.Audit.Logs;
+using Google.Solutions.LogAnalysis.Logs;
 
-namespace Google.Solutions.Audit.Events
+namespace Google.Solutions.LogAnalysis.Events
 {
-    internal class UnknownEvent : EventBase
+    public class UnknownEvent : EventBase
     {
         public override string Message => this.LogRecord.ProtoPayload != null
             ? $"Event {this.LogRecord.ProtoPayload.MethodName} occured"

@@ -6,9 +6,6 @@ MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{11EC701A-8732-4231-B3C6-543D226959D5}"
 	ProjectSection(SolutionItems) = preProject
 		.editorconfig = .editorconfig
-		build-installer.ps1 = build-installer.ps1
-		build.ps1 = build.ps1
-		installer\Product.wxs = installer\Product.wxs
 		README.md = README.md
 	EndProjectSection
 EndProject
@@ -26,11 +23,18 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Compute", "Compute", "{7EFB
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "IapDesktop", "IapDesktop", "{5206FD39-47A5-4E69-AA4F-94275A1A4791}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Audit", "Audit", "{06417FC0-CC28-4E03-8F61-02A55304F28B}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "LogAnalysis", "LogAnalysis", "{06417FC0-CC28-4E03-8F61-02A55304F28B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Google.Solutions.Audit", "Google.Solutions.Audit\Google.Solutions.Audit.csproj", "{B804D76C-E02E-4320-94A7-579034644AA0}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Google.Solutions.LogAnalysis", "Google.Solutions.Audit\Google.Solutions.LogAnalysis.csproj", "{B804D76C-E02E-4320-94A7-579034644AA0}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Google.Solutions.Audit.Test", "Google.Solutions.Audit.Test\Google.Solutions.Audit.Test.csproj", "{8C4F5833-C8B3-4A60-B401-7C4A3346BF59}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Google.Solutions.LogAnalysis.Test", "Google.Solutions.Audit.Test\Google.Solutions.LogAnalysis.Test.csproj", "{8C4F5833-C8B3-4A60-B401-7C4A3346BF59}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Installer", "Installer", "{78166023-068C-4F6B-B0AF-D9FB2D8FAB56}"
+	ProjectSection(SolutionItems) = preProject
+		build-installer.ps1 = build-installer.ps1
+		build.ps1 = build.ps1
+		installer\Product.wxs = installer\Product.wxs
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

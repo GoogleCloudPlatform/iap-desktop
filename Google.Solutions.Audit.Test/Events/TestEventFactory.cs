@@ -19,16 +19,16 @@
 // under the License.
 //
 
-using Google.Solutions.Audit.Events;
-using Google.Solutions.Audit.Events.Lifecycle;
-using Google.Solutions.Audit.Logs;
+using Google.Solutions.LogAnalysis.Events;
+using Google.Solutions.LogAnalysis.Events.Lifecycle;
+using Google.Solutions.LogAnalysis.Logs;
 using Newtonsoft.Json;
 using NUnit.Framework;
 using System;
 using System.IO;
 using System.Linq;
 
-namespace Google.Solutions.Audit.Test.Events
+namespace Google.Solutions.LogAnalysis.Test.Events
 {
     [TestFixture]
     public class TestEventFactory

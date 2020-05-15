@@ -9,8 +9,8 @@
     <ProjectGuid>{8C4F5833-C8B3-4A60-B401-7C4A3346BF59}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Google.Solutions.Audit.Test</RootNamespace>
-    <AssemblyName>Google.Solutions.Audit.Test</AssemblyName>
+    <RootNamespace>Google.Solutions.LogAnalysis.Test</RootNamespace>
+    <AssemblyName>Google.Solutions.LogAnalysis.Test</AssemblyName>
     <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <Deterministic>true</Deterministic>
@@ -76,17 +76,17 @@
     <Compile Include="Events\TestEventFactory.cs" />
     <Compile Include="Events\TestUnknownEvent.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Records\TestAuditLogRecord.cs" />
-    <Compile Include="Records\TestLogRecord.cs" />
+    <Compile Include="Logs\TestAuditLogRecord.cs" />
+    <Compile Include="Logs\TestLogRecord.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Google.Solutions.Compute\Google.Solutions.Compute.csproj">
       <Project>{d9493479-1751-402b-880f-60ed33ebb885}</Project>
       <Name>Google.Solutions.Compute</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Google.Solutions.Audit\Google.Solutions.Audit.csproj">
+    <ProjectReference Include="..\Google.Solutions.Audit\Google.Solutions.LogAnalysis.csproj">
       <Project>{b804d76c-e02e-4320-94a7-579034644aa0}</Project>
-      <Name>Google.Solutions.Audit</Name>
+      <Name>Google.Solutions.LogAnalysis</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

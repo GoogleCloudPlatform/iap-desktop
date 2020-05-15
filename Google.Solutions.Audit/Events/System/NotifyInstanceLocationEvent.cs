@@ -19,12 +19,12 @@
 // under the License.
 //
 
-using Google.Solutions.Audit.Logs;
+using Google.Solutions.LogAnalysis.Logs;
 using Newtonsoft.Json.Linq;
 using System;
 using System.Diagnostics;
 
-namespace Google.Solutions.Audit.Events.System
+namespace Google.Solutions.LogAnalysis.Events.System
 {
     public class NotifyInstanceLocationEvent : SystemEventBase
     {

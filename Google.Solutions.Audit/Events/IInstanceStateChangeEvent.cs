@@ -19,7 +19,7 @@
 // under the License.
 //
 
-namespace Google.Solutions.Audit.Events
+namespace Google.Solutions.LogAnalysis.Events
 {
     public interface IInstanceStateChangeEvent
     {

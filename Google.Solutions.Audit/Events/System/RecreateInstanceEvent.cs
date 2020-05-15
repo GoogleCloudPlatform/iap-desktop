@@ -19,10 +19,10 @@
 // under the License.
 //
 
-using Google.Solutions.Audit.Logs;
+using Google.Solutions.LogAnalysis.Logs;
 using System.Diagnostics;
 
-namespace Google.Solutions.Audit.Events.System
+namespace Google.Solutions.LogAnalysis.Events.System
 {
     public class RecreateInstanceEvent : SystemEventBase
     {

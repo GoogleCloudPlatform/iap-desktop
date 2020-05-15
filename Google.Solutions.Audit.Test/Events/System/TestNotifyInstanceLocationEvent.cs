@@ -19,13 +19,13 @@
 // under the License.
 //
 
-using Google.Solutions.Audit.Events;
-using Google.Solutions.Audit.Events.System;
-using Google.Solutions.Audit.Logs;
+using Google.Solutions.LogAnalysis.Events;
+using Google.Solutions.LogAnalysis.Events.System;
+using Google.Solutions.LogAnalysis.Logs;
 using NUnit.Framework;
 using System;
 
-namespace Google.Solutions.Audit.Test.Events.System
+namespace Google.Solutions.LogAnalysis.Test.Events.System
 {
     [TestFixture]
     public class TestNotifyInstanceLocationEvent

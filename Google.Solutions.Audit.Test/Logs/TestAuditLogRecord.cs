@@ -19,12 +19,12 @@
 // under the License.
 //
 
-using Google.Solutions.Audit.Logs;
+using Google.Solutions.LogAnalysis.Logs;
 using Newtonsoft.Json.Linq;
 using NUnit.Framework;
 using System;
 
-namespace Google.Solutions.Audit.Test.Logs
+namespace Google.Solutions.LogAnalysis.Test.Logs
 {
     [TestFixture]
     public class TestAuditLogRecord

@@ -19,11 +19,11 @@
 // under the License.
 //
 
-using Google.Solutions.Audit.Logs;
+using Google.Solutions.LogAnalysis.Logs;
 using Google.Solutions.Compute;
 using System;
 
-namespace Google.Solutions.Audit.Events
+namespace Google.Solutions.LogAnalysis.Events
 {
     public abstract class VmInstanceEventBase : EventBase
     {
