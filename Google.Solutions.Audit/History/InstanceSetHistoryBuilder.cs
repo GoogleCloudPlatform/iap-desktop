@@ -78,40 +78,6 @@ namespace Google.Solutions.LogAnalysis.History
         // Lifecycle events that construct the history.
         //---------------------------------------------------------------------
 
-        public void OnInsert(
-            DateTime date, 
-            long instanceId,
-            VmInstanceReference reference,
-            GlobalResourceReference image)
-        {
-            GetBuilder(instanceId, reference).OnInsert(date, image);
-        }
-
-        public void OnStart(
-            DateTime date,
-            long instanceId,
-            VmInstanceReference reference)
-        {
-            GetBuilder(instanceId, reference).OnStart(date);
-        }
-
-        public void OnStop(
-            DateTime date,
-            long instanceId,
-            VmInstanceReference reference)
-        {
-            GetBuilder(instanceId, reference).OnStop(date);
-        }
-
-        public void OnSetPlacement(
-            DateTime date,
-            string serverId, 
-            long instanceId,
-            VmInstanceReference reference)
-        {
-            GetBuilder(instanceId, reference).OnSetPlacement(serverId, date);
-        }
-
         public void OnEvent(VmInstanceEventBase e)
         {
             GetBuilder(e.InstanceId, e.InstanceReference).OnEvent(e);

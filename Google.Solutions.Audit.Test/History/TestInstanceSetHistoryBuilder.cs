@@ -20,9 +20,12 @@
 //
 
 using Google.Solutions.Compute;
+using Google.Solutions.LogAnalysis.Events.Lifecycle;
 using Google.Solutions.LogAnalysis.History;
+using Google.Solutions.LogAnalysis.Logs;
 using NUnit.Framework;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace Google.Solutions.LogAnalysis.Test.History
@@ -56,26 +59,58 @@ namespace Google.Solutions.LogAnalysis.Test.History
         public void WhenInstanceNotAddedButStopEventRecorded_ThenInstanceIncludedInSetAsIncomplete()
         {
             var b = new InstanceSetHistoryBuilder();
-            b.OnStop(DateTime.Now, 1, SampleReference);
+            b.OnEvent(new StopInstanceEvent(new LogRecord()
+            {
+                LogName = "projects/project-1/logs/cloudaudit.googleapis.com%2Factivity",
+                ProtoPayload = new AuditLogRecord()
+                {
+                    MethodName = StopInstanceEvent.Method,
+                    ResourceName = "projects/project-1/zones/us-central1-a/instances/instance-1"
+                },
+                Resource = new ResourceRecord()
+                {
+                    Labels = new Dictionary<string, string>
+                    {
+                        { "instance_id", "123" }
+                    }
+                },
+                Timestamp = new DateTime(2019, 12, 31)
+            }));
 
             var set = b.Build();
 
             Assert.AreEqual(1, set.InstancesWithIncompleteInformation.Count());
             Assert.AreEqual(0, set.Instances.Count());
-            Assert.AreEqual(1, set.InstancesWithIncompleteInformation.First().InstanceId);
+            Assert.AreEqual(123, set.InstancesWithIncompleteInformation.First().InstanceId);
         }
 
         [Test]
         public void WhenInstanceNotAddedButInsertEventRecorded_ThenInstanceIncludedInSet()
         {
             var b = new InstanceSetHistoryBuilder();
-            b.OnInsert(DateTime.Now, 1, SampleReference, SampleImage);
+            b.OnEvent(new InsertInstanceEvent(new LogRecord()
+            {
+                LogName = "projects/project-1/logs/cloudaudit.googleapis.com%2Factivity",
+                ProtoPayload = new AuditLogRecord()
+                {
+                    MethodName = InsertInstanceEvent.Method,
+                    ResourceName = "projects/project-1/zones/us-central1-a/instances/instance-1",
+                },
+                Resource = new ResourceRecord()
+                {
+                    Labels = new Dictionary<string, string>
+                    {
+                        { "instance_id", "123" }
+                    }
+                },
+                Timestamp = new DateTime(2019, 12, 31)
+            }));
 
             var set = b.Build();
 
             Assert.AreEqual(0, set.InstancesWithIncompleteInformation.Count());
             Assert.AreEqual(1, set.Instances.Count());
-            Assert.AreEqual(1, set.Instances.First().InstanceId);
+            Assert.AreEqual(123, set.Instances.First().InstanceId);
         }
     }
 }
