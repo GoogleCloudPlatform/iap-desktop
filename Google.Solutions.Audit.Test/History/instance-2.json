@@ -179,7 +179,7 @@
             "autoDelete": true,
             "initializeParams": {
               "diskSizeGb": "127",
-              "sourceImage": "projects/project-1/global/images/windows-server",
+              "sourceImage": "projects/windows-cloud/global/images/windows-server",
               "diskType": "projects/project-1/zones/us-central1-a/diskTypes/pd-standard"
             }
           }

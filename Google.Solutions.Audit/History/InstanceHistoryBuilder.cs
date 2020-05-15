@@ -123,11 +123,11 @@ namespace Google.Solutions.LogAnalysis.History
                 tenancy);
         }
 
-        internal static InstanceHistoryBuilder ForDeletedInstance(long instanceId, VmInstanceReference reference)
+        internal static InstanceHistoryBuilder ForDeletedInstance(long instanceId)
         {
             return new InstanceHistoryBuilder(
                 instanceId,
-                reference,
+                null,
                 null,
                 InstanceState.Deleted,
                 (DateTime?)null,    // Not clear yet when it was stopped
@@ -154,7 +154,7 @@ namespace Google.Solutions.LogAnalysis.History
                 }
                 else if (this.Tenancy == Tenancy.SoleTenant)
                 {
-                    return this.Image == null;
+                    return this.Image == null || this.Reference == null;
                 }
                 else
                 {
@@ -167,7 +167,7 @@ namespace Google.Solutions.LogAnalysis.History
         // Lifecycle events that construct the history.
         //---------------------------------------------------------------------
 
-        public void OnInsert(DateTime date, GlobalResourceReference image)
+        public void OnInsert(DateTime date, VmInstanceReference reference, GlobalResourceReference image)
         {
             Debug.Assert(date < this.lastEventDate);
             this.lastEventDate = date;
@@ -178,6 +178,10 @@ namespace Google.Solutions.LogAnalysis.History
 
             // NB. We might get multiple calls for a single instance, each providing some, but
             // potentially not all information.
+            if (this.Reference == null)
+            {
+                this.Reference = reference;
+            }
 
             if (this.Tenancy == Tenancy.Unknown)
             {
@@ -192,7 +196,7 @@ namespace Google.Solutions.LogAnalysis.History
             }
         }
 
-        public void OnStart(DateTime date)
+        public void OnStart(DateTime date, VmInstanceReference reference)
         {
             Debug.Assert(date < this.lastEventDate);
             this.lastEventDate = date;
@@ -201,9 +205,14 @@ namespace Google.Solutions.LogAnalysis.History
             // state before the event happened.
             Debug.Assert(this.State == InstanceState.Running);
             this.State = InstanceState.Terminated;
+
+            if (this.Reference == null)
+            {
+                this.Reference = reference;
+            }
         }
 
-        public void OnStop(DateTime date)
+        public void OnStop(DateTime date, VmInstanceReference reference)
         {
             Debug.Assert(date < this.lastEventDate);
             this.lastEventDate = date;
@@ -211,6 +220,11 @@ namespace Google.Solutions.LogAnalysis.History
             this.State = InstanceState.Running;
 
             this.LastStoppedOn = date;
+
+            if (this.Reference == null)
+            {
+                this.Reference = reference;
+            }
         }
 
         public void OnSetPlacement(string serverId, DateTime date)
@@ -281,17 +295,17 @@ namespace Google.Solutions.LogAnalysis.History
             }
             else if (e is InsertInstanceEvent insert)
             {
-                OnInsert(insert.Timestamp, insert.Image);
+                OnInsert(insert.Timestamp, insert.InstanceReference, insert.Image);
             }
             else if (e is IInstanceStateChangeEvent stateChange)
             {
                 if (stateChange.IsStartingInstance)
                 {
-                    OnStart(e.Timestamp);
+                    OnStart(e.Timestamp, ((VmInstanceEventBase)e).InstanceReference);
                 }
                 else if (stateChange.IsTerminatingInstance)
                 {
-                    OnStop(e.Timestamp);
+                    OnStop(e.Timestamp, ((VmInstanceEventBase)e).InstanceReference);
                 }
             }
         }

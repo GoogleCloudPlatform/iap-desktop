@@ -129,7 +129,7 @@ namespace Google.Solutions.LogAnalysis.Test.History
             using (var stream = Assembly.GetExecutingAssembly().GetManifestResourceStream(testDataResource))
             using (var reader = new JsonTextReader(new StreamReader(stream)))
             {
-                foreach (var e in EventFactory.Read(reader))
+                foreach (var e in EventFactory.Read(reader).OrderByDescending(e => e.Timestamp))
                 {
                     b.OnEvent(e);
                 }
@@ -148,8 +148,12 @@ namespace Google.Solutions.LogAnalysis.Test.History
 
             var placement = instance.Placements.First();
             Assert.AreEqual("15934ff9aee7d8c5719fad1053b7fc7d", placement.ServerId);
-            Assert.AreEqual(DateTime.Parse("2020-05-06T14:58:54.747102"), placement.From);
-            Assert.AreEqual(DateTime.Parse("2020-05-06T14:58:54.682442795Z"), placement.To);
+
+            // NotifyInstanceLocation..
+            Assert.AreEqual(DateTime.Parse("2020-05-06T14:58:55.490Z").ToUniversalTime(), placement.From);
+
+            // ..till
+            Assert.AreEqual(DateTime.Parse("2020-05-15T10:57:06.997Z").ToUniversalTime(), placement.To);
         }
 
         [Test]
@@ -164,7 +168,7 @@ namespace Google.Solutions.LogAnalysis.Test.History
             using (var stream = Assembly.GetExecutingAssembly().GetManifestResourceStream(testDataResource))
             using (var reader = new JsonTextReader(new StreamReader(stream)))
             {
-                foreach (var e in EventFactory.Read(reader))
+                foreach (var e in EventFactory.Read(reader).OrderByDescending(e => e.Timestamp))
                 {
                     b.OnEvent(e);
                 }
@@ -183,8 +187,12 @@ namespace Google.Solutions.LogAnalysis.Test.History
 
             var placement = instance.Placements.First();
             Assert.AreEqual("15934ff9aee7d8c5719fad1053b7fc7d", placement.ServerId);
-            Assert.AreEqual(DateTime.Parse("2020-05-06T14:57:48.343629Z"), placement.From);
-            Assert.AreEqual(DateTime.Parse("2020-05-06T14:57:47.838877648Z"), placement.To);
+
+            // NotifyInstanceLocation..
+            Assert.AreEqual(DateTime.Parse("2020-05-06T14:57:49.149Z").ToUniversalTime(), placement.From);
+
+            // ..till GuestTerminate.
+            Assert.AreEqual(DateTime.Parse("2020-05-06T16:03:06.484Z").ToUniversalTime(), placement.To);
         }
     }
 }

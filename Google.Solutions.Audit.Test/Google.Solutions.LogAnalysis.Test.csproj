@@ -93,7 +93,7 @@
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="History\instance-1.json" />
-    <None Include="History\instance-2.json" />
+    <EmbeddedResource Include="History\instance-2.json" />
     <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

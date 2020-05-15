@@ -37,11 +37,10 @@ namespace Google.Solutions.LogAnalysis.Test.History
         [Test]
         public void WhenInstanceIsDeletedAndNoEventsRegistered_ThenImageIsNull()
         {
-            var b = InstanceHistoryBuilder.ForDeletedInstance(1, SampleReference);
+            var b = InstanceHistoryBuilder.ForDeletedInstance(1);
             var i = b.Build();
 
             Assert.AreEqual(1, i.InstanceId);
-            Assert.AreEqual(SampleReference, i.Reference);
 
             Assert.IsNull(i.Image);
         }
@@ -53,7 +52,7 @@ namespace Google.Solutions.LogAnalysis.Test.History
         [Test]
         public void WhenInstanceDeletedAndNoPlacementOrInsertRegistered_TheTenancyIsUnknown()
         {
-            var b = InstanceHistoryBuilder.ForDeletedInstance(1, SampleReference);
+            var b = InstanceHistoryBuilder.ForDeletedInstance(1);
             var i = b.Build();
 
             Assert.AreEqual(1, i.InstanceId);
@@ -65,8 +64,8 @@ namespace Google.Solutions.LogAnalysis.Test.History
         [Test]
         public void WhenInstanceDeletedAndInsertRegistered_TheTenancyIsFleet()
         {
-            var b = InstanceHistoryBuilder.ForDeletedInstance(1, SampleReference);
-            b.OnInsert(new DateTime(2019, 12, 30), SampleImage);
+            var b = InstanceHistoryBuilder.ForDeletedInstance(1);
+            b.OnInsert(new DateTime(2019, 12, 30), SampleReference, SampleImage);
             var i = b.Build();
 
             Assert.AreEqual(Tenancy.Fleet, i.Tenancy);
@@ -75,7 +74,7 @@ namespace Google.Solutions.LogAnalysis.Test.History
         [Test]
         public void WhenInstanceDeletedAndPlacementRegistered_TheTenancyIsSoleTenant()
         {
-            var b = InstanceHistoryBuilder.ForDeletedInstance(1, SampleReference);
+            var b = InstanceHistoryBuilder.ForDeletedInstance(1);
             b.OnSetPlacement("server-1", new DateTime(2019, 12, 30));
 
             var i = b.Build();
@@ -129,7 +128,7 @@ namespace Google.Solutions.LogAnalysis.Test.History
                 Tenancy.SoleTenant);
 
             b.OnSetPlacement("server-1", new DateTime(2019, 12, 30));
-            b.OnStop(new DateTime(2019, 12, 29));
+            b.OnStop(new DateTime(2019, 12, 29), SampleReference);
             b.OnSetPlacement("server-1", new DateTime(2019, 12, 28));
 
             var placements = b.Build().Placements.ToList();
@@ -218,7 +217,7 @@ namespace Google.Solutions.LogAnalysis.Test.History
                 new DateTime(2019, 12, 31),
                 Tenancy.SoleTenant);
             b.OnSetPlacement("server-2", new DateTime(2019, 12, 30));
-            b.OnStop(new DateTime(2019, 12, 29));
+            b.OnStop(new DateTime(2019, 12, 29), SampleReference);
             b.OnSetPlacement("server-1", new DateTime(2019, 12, 28));
 
             var i = b.Build();
@@ -243,9 +242,7 @@ namespace Google.Solutions.LogAnalysis.Test.History
         [Test]
         public void WhenInstanceDeletedAndPlacementRegistered_ThenInstanceIsDefunct()
         {
-            var b = InstanceHistoryBuilder.ForDeletedInstance(
-                1,
-                SampleReference);
+            var b = InstanceHistoryBuilder.ForDeletedInstance(1);
             b.OnSetPlacement("server-1", new DateTime(2019, 12, 30));
 
             Assert.IsTrue(b.IsDefunct);
@@ -254,10 +251,8 @@ namespace Google.Solutions.LogAnalysis.Test.History
         [Test]
         public void WhenInstanceDeletedAndSinglePlacementRegistered_ThenInstanceContainsRightPlacements()
         {
-            var b = InstanceHistoryBuilder.ForDeletedInstance(
-                1,
-                SampleReference);
-            b.OnStop(new DateTime(2019, 12, 31));
+            var b = InstanceHistoryBuilder.ForDeletedInstance(1);
+            b.OnStop(new DateTime(2019, 12, 31), SampleReference);
             b.OnSetPlacement("server-1", new DateTime(2019, 12, 30));
 
             Assert.AreEqual(Tenancy.SoleTenant, b.Tenancy);
@@ -275,10 +270,8 @@ namespace Google.Solutions.LogAnalysis.Test.History
         [Test]
         public void WhenInstanceDeletedAndMultiplePlacementsRegistered_ThenInstanceContainsRightPlacements()
         {
-            var b = InstanceHistoryBuilder.ForDeletedInstance(
-                1,
-                SampleReference);
-            b.OnStop(new DateTime(2019, 12, 31));
+            var b = InstanceHistoryBuilder.ForDeletedInstance(1);
+            b.OnStop(new DateTime(2019, 12, 31), SampleReference);
             b.OnSetPlacement("server-2", new DateTime(2019, 12, 30));
             b.OnSetPlacement("server-1", new DateTime(2019, 12, 29));
 
@@ -300,12 +293,10 @@ namespace Google.Solutions.LogAnalysis.Test.History
         [Test]
         public void WhenInstanceDeletedAndMultiplePlacementWithStopsInBetweenRegistered_ThenInstanceContainsRightPlacements()
         {
-            var b = InstanceHistoryBuilder.ForDeletedInstance(
-                1,
-                SampleReference);
-            b.OnStop(new DateTime(2019, 12, 31));
+            var b = InstanceHistoryBuilder.ForDeletedInstance(1);
+            b.OnStop(new DateTime(2019, 12, 31), SampleReference);
             b.OnSetPlacement("server-2", new DateTime(2019, 12, 30));
-            b.OnStop(new DateTime(2019, 12, 29));
+            b.OnStop(new DateTime(2019, 12, 29), SampleReference);
             b.OnSetPlacement("server-1", new DateTime(2019, 12, 28));
 
             Assert.AreEqual(Tenancy.SoleTenant, b.Tenancy);
@@ -341,21 +332,25 @@ namespace Google.Solutions.LogAnalysis.Test.History
         }
 
         [Test]
+        public void WhenOnlyPlacementRegistered_ThenMoreInformationNeeded()
+        {
+            var b = InstanceHistoryBuilder.ForDeletedInstance(1);
+            b.OnSetPlacement("server-2", new DateTime(2019, 12, 30));
+            Assert.IsTrue(b.IsMoreInformationNeeded);
+        }
+
+        [Test]
         public void WhenInstancDeletedAndNoPlacementRegistered_ThenMoreInformationNeeded()
         {
-            var b = InstanceHistoryBuilder.ForDeletedInstance(
-                1,
-                SampleReference);
+            var b = InstanceHistoryBuilder.ForDeletedInstance(1);
             Assert.IsTrue(b.IsMoreInformationNeeded);
         }
 
         [Test]
         public void WhenInstanceDeletedAndPlacementRegisteredButNoInsertRegistered_ThenMoreInformationNeeded()
         {
-            var b = InstanceHistoryBuilder.ForDeletedInstance(
-                1,
-                SampleReference);
-            b.OnStop(new DateTime(2019, 12, 31));
+            var b = InstanceHistoryBuilder.ForDeletedInstance(1);
+            b.OnStop(new DateTime(2019, 12, 31), SampleReference);
             b.OnSetPlacement("server-2", new DateTime(2019, 12, 30));
             Assert.IsTrue(b.IsMoreInformationNeeded);
         }
@@ -363,22 +358,18 @@ namespace Google.Solutions.LogAnalysis.Test.History
         [Test]
         public void WhenInstanceDeletedAndPlacementAndInsertRegistered_ThenNoMoreInformationNeeded()
         {
-            var b = InstanceHistoryBuilder.ForDeletedInstance(
-                1,
-                SampleReference);
-            b.OnStop(new DateTime(2019, 12, 31));
+            var b = InstanceHistoryBuilder.ForDeletedInstance(1);
+            b.OnStop(new DateTime(2019, 12, 31), SampleReference);
             b.OnSetPlacement("server-2", new DateTime(2019, 12, 30));
-            b.OnInsert(new DateTime(2019, 12, 29), SampleImage);
+            b.OnInsert(new DateTime(2019, 12, 29), SampleReference, SampleImage);
             Assert.IsFalse(b.IsMoreInformationNeeded);
         }
 
         [Test]
         public void WhenInstanceDeletedAndInsertRegistered_ThenNoMoreInformationNeeded()
         {
-            var b = InstanceHistoryBuilder.ForDeletedInstance(
-                1,
-                SampleReference);
-            b.OnInsert(new DateTime(2019, 12, 29), SampleImage);
+            var b = InstanceHistoryBuilder.ForDeletedInstance(1);
+            b.OnInsert(new DateTime(2019, 12, 29), SampleReference, SampleImage);
             Assert.IsFalse(b.IsMoreInformationNeeded);
         }
 

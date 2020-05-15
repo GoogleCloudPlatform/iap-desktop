@@ -32,16 +32,15 @@ namespace Google.Solutions.LogAnalysis.History
         private readonly IDictionary<long, InstanceHistoryBuilder> instanceBuilders =
             new Dictionary<long, InstanceHistoryBuilder>();
 
-        private InstanceHistoryBuilder GetBuilder(long instanceId, VmInstanceReference reference)
+        private InstanceHistoryBuilder GetBuilder(long instanceId)
         {
             if (this.instanceBuilders.TryGetValue(instanceId, out InstanceHistoryBuilder builder))
             {
-                Debug.Assert(builder.Reference == reference);
                 return builder;
             }
             else
             {
-                var newBuilder = InstanceHistoryBuilder.ForDeletedInstance(instanceId, reference);
+                var newBuilder = InstanceHistoryBuilder.ForDeletedInstance(instanceId);
                 this.instanceBuilders[instanceId] = newBuilder;
                 return newBuilder;
             }
@@ -86,9 +85,7 @@ namespace Google.Solutions.LogAnalysis.History
         {
             if (e is VmInstanceEventBase instanceEvent)
             {
-                GetBuilder(
-                    instanceEvent.InstanceId, 
-                    instanceEvent.InstanceReference).OnEvent(e);
+                GetBuilder(instanceEvent.InstanceId).OnEvent(e);
             }
         }
     }
