@@ -83,6 +83,7 @@
     <Compile Include="BigEndian.cs" />
     <Compile Include="ExceptionExtensions.cs" />
     <Compile Include="Net\RestClient.cs" />
+    <Compile Include="ZonalResourceReference.cs" />
     <Compile Include="TraceSources.cs" />
     <Compile Include="Extensions\ResetWindowsUser.cs" />
     <Compile Include="Extensions\AddMetadata.cs" />

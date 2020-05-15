@@ -113,6 +113,7 @@
     <Compile Include="TestBigEndian.cs" />
     <Compile Include="TestExceptionExtensions.cs" />
     <Compile Include="TestLinqExtensions.cs" />
+    <Compile Include="TestZonalResourceReference.cs" />
     <Compile Include="TestVmInstanceReference.cs" />
   </ItemGroup>
   <ItemGroup />
