@@ -76,6 +76,8 @@
     <Compile Include="Events\VmInstanceEventBase.cs" />
     <Compile Include="History\InstanceHistory.cs" />
     <Compile Include="History\InstanceHistoryBuilder.cs" />
+    <Compile Include="History\InstanceSetHistory.cs" />
+    <Compile Include="History\InstanceSetHistoryBuilder.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Logs\AuditLogRecord.cs" />
     <Compile Include="Logs\LogRecord.cs" />

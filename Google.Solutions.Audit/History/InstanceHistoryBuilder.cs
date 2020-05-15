@@ -33,6 +33,10 @@ namespace Google.Solutions.LogAnalysis.History
     /// </summary>
     internal class InstanceHistoryBuilder
     {
+        // NB. Instance IDs stay unique throughout the history while VmInstanceReferences
+        // become ambiguous. Therefore, it is important to use instance ID as primary
+        // key, even though the reference is more user-friendly and meaningful.
+
         public long InstanceId { get; }
         private readonly LinkedList<SoleTenantPlacement> placements = new LinkedList<SoleTenantPlacement>();
 
@@ -139,6 +143,10 @@ namespace Google.Solutions.LogAnalysis.History
                 }
             }
         }
+
+        //---------------------------------------------------------------------
+        // Lifecycle events that construct the history.
+        //---------------------------------------------------------------------
 
         public void OnInsert(DateTime date, GlobalResourceReference image)
         {
