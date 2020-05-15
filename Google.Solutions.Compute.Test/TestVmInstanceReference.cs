@@ -73,7 +73,7 @@ namespace Google.Solutions.Compute.Test
         public void WhenReferencesAreOfDifferentType_ThenEqualsReturnsFalse()
         {
             var ref1 = new VmInstanceReference("proj", "zone", "inst");
-            var ref2 = new ZonalResourceReference("proj", "zone", "instances", "inst");
+            var ref2 = new ResourceReference("proj", "zone", "instances", "inst");
 
             Assert.IsFalse(ref2.Equals(ref1));
             Assert.IsFalse(ref2.Equals((object)ref1));
