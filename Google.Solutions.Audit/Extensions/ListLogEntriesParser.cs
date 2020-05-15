@@ -20,13 +20,47 @@
 //
 
 using Google.Solutions.LogAnalysis.Events;
+using Google.Solutions.LogAnalysis.Logs;
 using Newtonsoft.Json;
 using System;
+using System.Collections.Generic;
 
 namespace Google.Solutions.LogAnalysis.Extensions
 {
-    internal static class ListLogEntriesPage
+    internal static class ListLogEntriesParser
     {
+        /// <summary>
+        /// Reads a sequence of log records from a JSON Reader. The reader is assumed
+        /// to be positioned before the array.
+        /// </summary>
+        private static IEnumerable<EventBase> ReadArray(JsonReader reader)
+        {
+            //
+            // Deserializing everything would be trmendously inefficient.
+            // Instead, deserialize objects one by one.
+            //
+
+            while (reader.Read())
+            {
+                // Start of a new object.
+                if (reader.TokenType == JsonToken.StartArray)
+                {
+                }
+                else if (reader.TokenType == JsonToken.StartObject)
+                {
+                    var record = LogRecord.Deserialize(reader);
+                    if (record.IsValidAuditLogRecord)
+                    {
+                        yield return record.ToEvent();
+                    }
+                }
+                else
+                {
+                    yield break;
+                }
+            }
+        }
+
         internal static string Read(
             JsonReader reader,
             Action<EventBase> callback)
@@ -37,7 +71,7 @@ namespace Google.Solutions.LogAnalysis.Extensions
                 {
                     // Read entire array, parsing and consuming 
                     // records one by one.
-                    foreach (var record in EventFactory.Read(reader))
+                    foreach (var record in ReadArray(reader))
                     {
                         callback(record);
                     }

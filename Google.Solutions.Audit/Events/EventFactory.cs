@@ -98,38 +98,5 @@ namespace Google.Solutions.LogAnalysis.Events
         }
 
         public static EventBase ToEvent(this LogRecord record) => FromRecord(record);
-
-        /// <summary>
-        /// Reads a sequence of log records from a JSON Reader. The reader is assumed
-        /// to be positioned before the array or before the first object.
-        /// </summary>
-        public static IEnumerable<EventBase> Read(JsonReader reader)
-        {
-            //
-            // Deserializing everything would be trmendously inefficient.
-            // Instead, deserialize objects one by one.
-            //
-
-            while (reader.Read())
-            {
-                // Start of a new object.
-                if (reader.TokenType == JsonToken.StartArray)
-                {
-
-                }
-                else if (reader.TokenType == JsonToken.StartObject)
-                {
-                    var record = LogRecord.Deserialize(reader);
-                    if (record.IsValidAuditLogRecord)
-                    {
-                        yield return record.ToEvent();
-                    }
-                }
-                else
-                {
-                    yield break;
-                }
-            }
-        }
     }
 }

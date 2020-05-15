@@ -101,7 +101,7 @@
     <Compile Include="Events\TestEventFactory.cs" />
     <Compile Include="Events\TestUnknownEvent.cs" />
     <Compile Include="Extensions\TestListLogEntriesExtensions.cs" />
-    <Compile Include="Extensions\TestListLogEntriesPage.cs" />
+    <Compile Include="Extensions\TestListLogEntriesParser.cs" />
     <Compile Include="History\TestInstanceHistoryBuilder.cs" />
     <Compile Include="History\TestInstanceSetHistoryBuilder.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

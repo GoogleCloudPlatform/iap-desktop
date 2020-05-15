@@ -58,7 +58,7 @@ namespace Google.Solutions.LogAnalysis.Extensions
                     .ExecuteAsStreamWithRetryAsync(backOff))
                 using (var reader = new JsonTextReader(new StreamReader(stream)))
                 {
-                    nextPageToken = ListLogEntriesPage.Read(reader, callback);
+                    nextPageToken = ListLogEntriesParser.Read(reader, callback);
                 }
             }
             while (nextPageToken != null);

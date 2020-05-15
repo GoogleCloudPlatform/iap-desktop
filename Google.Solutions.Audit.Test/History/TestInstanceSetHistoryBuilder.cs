@@ -129,7 +129,11 @@ namespace Google.Solutions.LogAnalysis.Test.History
             using (var stream = Assembly.GetExecutingAssembly().GetManifestResourceStream(testDataResource))
             using (var reader = new JsonTextReader(new StreamReader(stream)))
             {
-                foreach (var e in EventFactory.Read(reader).OrderByDescending(e => e.Timestamp))
+                var events = new JsonSerializer().Deserialize<LogRecord[]>(reader)
+                    .Select(rec => rec.ToEvent())
+                    .OrderByDescending(e => e.Timestamp);
+
+                foreach (var e in events)
                 {
                     b.Process(e);
                 }
@@ -168,7 +172,11 @@ namespace Google.Solutions.LogAnalysis.Test.History
             using (var stream = Assembly.GetExecutingAssembly().GetManifestResourceStream(testDataResource))
             using (var reader = new JsonTextReader(new StreamReader(stream)))
             {
-                foreach (var e in EventFactory.Read(reader).OrderByDescending(e => e.Timestamp))
+                var events = new JsonSerializer().Deserialize<LogRecord[]>(reader)
+                    .Select(rec => rec.ToEvent())
+                    .OrderByDescending(e => e.Timestamp);
+
+                foreach (var e in events)
                 {
                     b.Process(e);
                 }
