@@ -23,9 +23,8 @@ namespace Google.Solutions.LogAnalysis.Events
 {
     public interface IInstanceStateChangeEvent
     {
-        bool IsValidInState(InstanceState preState);
-
-        InstanceState ResultingState(InstanceState preState);
+        bool IsStartingInstance { get; }
+        bool IsTerminatingInstance { get; }
     }
 
     public enum InstanceState

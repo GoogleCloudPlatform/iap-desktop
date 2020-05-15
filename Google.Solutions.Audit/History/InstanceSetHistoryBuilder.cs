@@ -19,6 +19,7 @@
 // under the License.
 //
 using Google.Solutions.Compute;
+using Google.Solutions.LogAnalysis.Events;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -109,6 +110,11 @@ namespace Google.Solutions.LogAnalysis.History
             VmInstanceReference reference)
         {
             GetBuilder(instanceId, reference).OnSetPlacement(serverId, date);
+        }
+
+        public void OnEvent(VmInstanceEventBase e)
+        {
+            GetBuilder(e.InstanceId, e.InstanceReference).OnEvent(e);
         }
     }
 }

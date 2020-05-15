@@ -45,10 +45,8 @@ namespace Google.Solutions.LogAnalysis.Events.System
         // IInstanceStateChangeEvent.
         //---------------------------------------------------------------------
 
-        public InstanceState ResultingState(InstanceState preState)
-            => InstanceState.Running;
+        public bool IsStartingInstance => true;
 
-        public bool IsValidInState(InstanceState preState)
-            => true;
+        public bool IsTerminatingInstance => false;
     }
 }

@@ -172,6 +172,9 @@ namespace Google.Solutions.LogAnalysis.Test.Events.Lifecycle
             Assert.AreEqual(
                 new VmInstanceReference("project-1", "us-central1-a", "instance-1"),
                 e.InstanceReference);
+            Assert.AreEqual(
+                new GlobalResourceReference("project-1", "images", "image-1"),
+                e.Image);
         }
 
         [Test]
@@ -232,6 +235,7 @@ namespace Google.Solutions.LogAnalysis.Test.Events.Lifecycle
             Assert.AreEqual(
                 new VmInstanceReference("project-1", "us-central1-a", "instance-1"),
                 e.InstanceReference);
+            Assert.IsNull(e.Image);
         }
     }
 }

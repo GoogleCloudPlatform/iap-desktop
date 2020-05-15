@@ -19,7 +19,9 @@
 // under the License.
 //
 
+using Google.Solutions.Compute;
 using Google.Solutions.LogAnalysis.Logs;
+using Newtonsoft.Json.Linq;
 using System.Diagnostics;
 
 namespace Google.Solutions.LogAnalysis.Events.Lifecycle
@@ -32,9 +34,32 @@ namespace Google.Solutions.LogAnalysis.Events.Lifecycle
         protected override string SuccessMessage => "Instance created";
         protected override string ErrorMessage => "Creating instance failed";
 
+        public GlobalResourceReference Image { get; }
+
         internal InsertInstanceEvent(LogRecord logRecord) : base(logRecord)
         {
             Debug.Assert(IsInsertInstanceEvent(logRecord));
+
+            var request = logRecord.ProtoPayload.Request;
+            if (request != null)
+            {
+                var disks = request["disks"];
+                if (disks != null)
+                {
+                    foreach (var disk in ((JArray)disks))
+                    {
+                        if (disk["boot"] != null && (bool)disk["boot"])
+                        {
+                            var initializeParams = disk["initializeParams"];
+                            if (initializeParams != null)
+                            {
+                                this.Image = GlobalResourceReference.FromString(
+                                    initializeParams["sourceImage"].Value<string>());
+                            }
+                        }
+                    }
+                }
+            }
         }
 
         public static bool IsInsertInstanceEvent(LogRecord record)
@@ -49,10 +74,8 @@ namespace Google.Solutions.LogAnalysis.Events.Lifecycle
         // IInstanceStateChangeEvent.
         //---------------------------------------------------------------------
 
-        public InstanceState ResultingState(InstanceState preState)
-            => !IsError ? InstanceState.Running : preState;
+        public bool IsStartingInstance => !this.IsError;
 
-        public bool IsValidInState(InstanceState preState)
-            => preState == InstanceState.Deleted;
+        public bool IsTerminatingInstance => false;
     }
 }

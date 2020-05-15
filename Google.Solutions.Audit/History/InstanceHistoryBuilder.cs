@@ -20,6 +20,9 @@
 //
 
 using Google.Solutions.Compute;
+using Google.Solutions.LogAnalysis.Events;
+using Google.Solutions.LogAnalysis.Events.Lifecycle;
+using Google.Solutions.LogAnalysis.Events.System;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -44,6 +47,8 @@ namespace Google.Solutions.LogAnalysis.History
         public DateTime? LastStoppedOn { get; private set; }
 
         public bool IsDefunct { get; private set; } = false;
+
+        public InstanceState State { get; private set; }
 
         public GlobalResourceReference Image { get; set; }
         public VmInstanceReference Reference { get; set; }
@@ -78,15 +83,17 @@ namespace Google.Solutions.LogAnalysis.History
             long instanceId,
             VmInstanceReference reference,
             GlobalResourceReference image,
+            InstanceState state,
             DateTime? lastStoppedOn,
             Tenancy tenancy)
         {
             Debug.Assert(instanceId != 0);
 
             this.InstanceId = instanceId;
-            this.LastStoppedOn = lastStoppedOn;
             this.Reference = reference;
             this.Image = image;
+            this.State = state;
+            this.LastStoppedOn = lastStoppedOn;
             this.Tenancy = tenancy;
         }
 
@@ -97,11 +104,15 @@ namespace Google.Solutions.LogAnalysis.History
             DateTime lastSeen,
             Tenancy tenancy)
         {
+            // NB. Whether the instance is running or stopped does not
+            // matter. For simplifity's sake, we pretend it is stopped.
+
             return new InstanceHistoryBuilder(
                 instanceId,
                 reference,
                 image,
-                lastSeen,   // Pretend it was stopped when it was last seen.
+                InstanceState.Terminated,
+                lastSeen, 
                 tenancy);
         }
 
@@ -111,6 +122,7 @@ namespace Google.Solutions.LogAnalysis.History
                 instanceId,
                 reference,
                 null,
+                InstanceState.Deleted,
                 (DateTime?)null,    // Not clear yet when it was stopped
                 Tenancy.Unknown);
         }
@@ -153,6 +165,10 @@ namespace Google.Solutions.LogAnalysis.History
             Debug.Assert(date < this.lastEventDate);
             this.lastEventDate = date;
 
+            // Mind you, we are processing history in reverse, so this is the
+            // state before the event happened.
+            this.State = InstanceState.Deleted;
+
             // NB. We might get multiple calls for a single instance, each providing some, but
             // potentially not all information.
 
@@ -174,12 +190,18 @@ namespace Google.Solutions.LogAnalysis.History
             Debug.Assert(date < this.lastEventDate);
             this.lastEventDate = date;
 
+            // Mind you, we are processing history in reverse, so this is the
+            // state before the event happened.
+            Debug.Assert(this.State == InstanceState.Running);
+            this.State = InstanceState.Terminated;
         }
 
         public void OnStop(DateTime date)
         {
             Debug.Assert(date < this.lastEventDate);
             this.lastEventDate = date;
+
+            this.State = InstanceState.Running;
 
             this.LastStoppedOn = date;
         }
@@ -188,6 +210,7 @@ namespace Google.Solutions.LogAnalysis.History
         {
             Debug.Assert(date < this.lastEventDate);
             this.lastEventDate = date;
+            this.State = InstanceState.Running;
 
             // Now we know for sure it is a sole tenant VM.
             this.Tenancy = Tenancy.SoleTenant;
@@ -233,6 +256,29 @@ namespace Google.Solutions.LogAnalysis.History
             // a sole tenant VM.
             this.Tenancy = History.Tenancy.SoleTenant;
             AddPlacement(new SoleTenantPlacement(serverId, date, placedUntil));
+        }
+
+        public void OnEvent(VmInstanceEventBase e)
+        {
+            if (e is NotifyInstanceLocationEvent notifyLocation)
+            {
+                OnSetPlacement(notifyLocation.ServerId, notifyLocation.Timestamp);
+            }
+            else if (e is InsertInstanceEvent insert)
+            {
+                OnInsert(insert.Timestamp, insert.Image);
+            }
+            else if (e is IInstanceStateChangeEvent stateChange)
+            {
+                if (stateChange.IsStartingInstance)
+                {
+                    OnStart(e.Timestamp);
+                }
+                else if (stateChange.IsTerminatingInstance)
+                {
+                    OnStop(e.Timestamp);
+                }
+            }
         }
     }
 }
