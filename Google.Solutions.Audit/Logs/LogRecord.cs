@@ -24,7 +24,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 
-namespace Google.Solutions.Audit.Records
+namespace Google.Solutions.Audit.Logs
 {
     /// <summary>
     /// Class representation of a 'Log record', which is the top-level type all 

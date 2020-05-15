@@ -22,7 +22,7 @@
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
-namespace Google.Solutions.Audit.Records
+namespace Google.Solutions.Audit.Logs
 {
     /// <summary>
     /// Class representation of a 'AuditLog' record, see

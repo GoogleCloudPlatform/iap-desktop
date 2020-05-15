@@ -19,7 +19,7 @@
 // under the License.
 //
 
-using Google.Solutions.Audit.Records;
+using Google.Solutions.Audit.Logs;
 
 namespace Google.Solutions.Audit.Events
 {

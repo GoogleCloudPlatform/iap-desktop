@@ -21,7 +21,7 @@
 
 using Google.Solutions.Audit.Events;
 using Google.Solutions.Audit.Events.System;
-using Google.Solutions.Audit.Records;
+using Google.Solutions.Audit.Logs;
 using Google.Solutions.Compute;
 using NUnit.Framework;
 

@@ -19,7 +19,7 @@
 // under the License.
 //
 
-using Google.Solutions.Audit.Records;
+using Google.Solutions.Audit.Logs;
 using Newtonsoft.Json.Linq;
 using System;
 using System.Diagnostics;

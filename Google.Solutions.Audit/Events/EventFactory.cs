@@ -21,7 +21,7 @@
 
 using Google.Solutions.Audit.Events.Lifecycle;
 using Google.Solutions.Audit.Events.System;
-using Google.Solutions.Audit.Records;
+using Google.Solutions.Audit.Logs;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
