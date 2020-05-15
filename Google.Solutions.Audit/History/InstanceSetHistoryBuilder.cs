@@ -77,15 +77,17 @@ namespace Google.Solutions.LogAnalysis.History
         // IEventProcessor
         //---------------------------------------------------------------------
 
-        public IEnumerable<string> SupportedSeverities => InstanceHistoryBuilder.RequiredSeverities;
+        public EventOrder ExpectedOrder => InstanceHistoryBuilder.ProcessingOrder;
 
-        public IEnumerable<string> SupportedMethods => InstanceHistoryBuilder.RequiredMethods;
+        public IEnumerable<string> SupportedSeverities => InstanceHistoryBuilder.ProcessingSeverities;
 
-        public void OnEvent(EventBase e)
+        public IEnumerable<string> SupportedMethods => InstanceHistoryBuilder.ProcessingMethods;
+
+        public void Process(EventBase e)
         {
             if (e is VmInstanceEventBase instanceEvent)
             {
-                GetBuilder(instanceEvent.InstanceId).OnEvent(e);
+                GetBuilder(instanceEvent.InstanceId).Process(e);
             }
         }
     }

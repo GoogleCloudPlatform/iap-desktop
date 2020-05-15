@@ -26,9 +26,16 @@ namespace Google.Solutions.LogAnalysis.History
 {
     public interface IEventProcessor
     {
+        EventOrder ExpectedOrder { get; }
         IEnumerable<string> SupportedSeverities { get; }
         IEnumerable<string> SupportedMethods { get; }
 
-        void OnEvent(EventBase e);
+        void Process(EventBase e);
+    }
+
+    public enum EventOrder
+    {
+        NewestFirst,
+        OldestFirst
     }
 }

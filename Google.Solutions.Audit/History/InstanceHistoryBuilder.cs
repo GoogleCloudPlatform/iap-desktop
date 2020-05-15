@@ -43,8 +43,9 @@ namespace Google.Solutions.LogAnalysis.History
 
         // Error events are not relevant for building the history, we only need
         // informational records.
-        internal static IEnumerable<string> RequiredSeverities => new[] { "NOTICE", "INFO" };
-        internal static IEnumerable<string> RequiredMethods =>
+        internal static EventOrder ProcessingOrder = EventOrder.NewestFirst;
+        internal static IEnumerable<string> ProcessingSeverities => new[] { "NOTICE", "INFO" };
+        internal static IEnumerable<string> ProcessingMethods =>
             EventFactory.LifecycleEventMethods.Concat(EventFactory.SystemEventMethods);
 
         public long InstanceId { get; }
@@ -283,11 +284,13 @@ namespace Google.Solutions.LogAnalysis.History
         // IEventProcessor
         //---------------------------------------------------------------------
 
-        public IEnumerable<string> SupportedSeverities => RequiredSeverities;
+        public EventOrder ExpectedOrder => ProcessingOrder;
 
-        public IEnumerable<string> SupportedMethods => RequiredMethods;
+        public IEnumerable<string> SupportedSeverities => ProcessingSeverities;
 
-        public void OnEvent(EventBase e)
+        public IEnumerable<string> SupportedMethods => ProcessingMethods;
+
+        public void Process(EventBase e)
         {
             if (e is NotifyInstanceLocationEvent notifyLocation)
             {

@@ -63,7 +63,7 @@ namespace Google.Solutions.LogAnalysis.Test.History
         public void WhenInstanceNotAddedButStopEventRecorded_ThenInstanceIncludedInSetAsIncomplete()
         {
             var b = new InstanceSetHistoryBuilder();
-            b.OnEvent(new StopInstanceEvent(new LogRecord()
+            b.Process(new StopInstanceEvent(new LogRecord()
             {
                 LogName = "projects/project-1/logs/cloudaudit.googleapis.com%2Factivity",
                 ProtoPayload = new AuditLogRecord()
@@ -92,7 +92,7 @@ namespace Google.Solutions.LogAnalysis.Test.History
         public void WhenInstanceNotAddedButInsertEventRecorded_ThenInstanceIncludedInSet()
         {
             var b = new InstanceSetHistoryBuilder();
-            b.OnEvent(new InsertInstanceEvent(new LogRecord()
+            b.Process(new InsertInstanceEvent(new LogRecord()
             {
                 LogName = "projects/project-1/logs/cloudaudit.googleapis.com%2Factivity",
                 ProtoPayload = new AuditLogRecord()
@@ -131,7 +131,7 @@ namespace Google.Solutions.LogAnalysis.Test.History
             {
                 foreach (var e in EventFactory.Read(reader).OrderByDescending(e => e.Timestamp))
                 {
-                    b.OnEvent(e);
+                    b.Process(e);
                 }
             }
 
@@ -170,7 +170,7 @@ namespace Google.Solutions.LogAnalysis.Test.History
             {
                 foreach (var e in EventFactory.Read(reader).OrderByDescending(e => e.Timestamp))
                 {
-                    b.OnEvent(e);
+                    b.Process(e);
                 }
             }
 
