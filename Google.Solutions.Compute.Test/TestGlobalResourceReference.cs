@@ -25,43 +25,42 @@ using System;
 namespace Google.Solutions.Compute.Test
 {
     [TestFixture]
-    public class TestResourceReference : FixtureBase
+    public class TestGlobalResourceReference : FixtureBase
     {
         [Test]
         public void WhenPathIsValid_FromStringReturnsObject()
         {
-            var ref1 = ResourceReference.FromString(
-                "projects/project-1/zones/us-central1-a/diskTypes/pd-standard");
+            var ref1 = GlobalResourceReference.FromString(
+                "projects/project-1/global/images/image-1");
 
-            Assert.AreEqual("diskTypes", ref1.ResourceType);
-            Assert.AreEqual("pd-standard", ref1.ResourceName);
-            Assert.AreEqual("us-central1-a", ref1.Zone);
+            Assert.AreEqual("images", ref1.ResourceType);
+            Assert.AreEqual("image-1", ref1.ResourceName);
             Assert.AreEqual("project-1", ref1.ProjectId);
         }
 
         [Test]
         public void WhenPathLacksProject_FromStringThrowsArgumentException()
         {
-            Assert.Throws<ArgumentException>(() => ResourceReference.FromString(
-                "/project-1/zones/us-central1-a/diskTypes/pd-standard"));
+            Assert.Throws<ArgumentException>(() => GlobalResourceReference.FromString(
+                "/project-1/project-1/global/images/image-1"));
         }
 
         [Test]
         public void WhenPathInvalid_FromStringThrowsArgumentException()
         {
-            Assert.Throws<ArgumentException>(() => ResourceReference.FromString(
-                "/project-1/zones/us-central1-a/diskTypes"));
-            Assert.Throws<ArgumentException>(() => ResourceReference.FromString(
-                "/project-1/zones/us-central1-a/diskTypes/pd-standard"));
-            Assert.Throws<ArgumentException>(() => ResourceReference.FromString(
+            Assert.Throws<ArgumentException>(() => GlobalResourceReference.FromString(
+                "projects/project-1/notglobal/images/image-1"));
+            Assert.Throws<ArgumentException>(() => GlobalResourceReference.FromString(
+                "/project-1/global/images/image-1"));
+            Assert.Throws<ArgumentException>(() => GlobalResourceReference.FromString(
                 "/"));
         }
 
         [Test]
         public void WhenReferencesAreEquivalent_ThenEqualsReturnsTrue()
         {
-            var ref1 = new ResourceReference("proj", "zone", "diskTypes", "inst");
-            var ref2 = new ResourceReference("proj", "zone", "diskTypes", "inst");
+            var ref1 = new GlobalResourceReference("proj", "images", "inst");
+            var ref2 = new GlobalResourceReference("proj", "images", "inst");
 
             Assert.IsTrue(ref1.Equals(ref2));
             Assert.IsTrue(ref1.Equals((object)ref2));
@@ -72,7 +71,7 @@ namespace Google.Solutions.Compute.Test
         [Test]
         public void WhenReferencesAreSame_ThenEqualsReturnsTrue()
         {
-            var ref1 = new ResourceReference("proj", "zone", "diskTypes", "inst");
+            var ref1 = new GlobalResourceReference("proj", "images", "inst");
             var ref2 = ref1;
 
             Assert.IsTrue(ref1.Equals(ref2));
@@ -84,8 +83,8 @@ namespace Google.Solutions.Compute.Test
         [Test]
         public void WhenReferencesAreNotEquivalent_ThenEqualsReturnsFalse()
         {
-            var ref1 = new ResourceReference("proj", "zone", "diskTypes", "inst");
-            var ref2 = new ResourceReference("proj", "zone", "machineTypes", "inst");
+            var ref1 = new GlobalResourceReference("proj", "images", "inst");
+            var ref2 = new GlobalResourceReference("proj", "machineTypes", "inst");
 
             Assert.IsFalse(ref1.Equals(ref2));
             Assert.IsFalse(ref1.Equals((object)ref2));
@@ -96,7 +95,7 @@ namespace Google.Solutions.Compute.Test
         [Test]
         public void TestEqualsNull()
         {
-            var ref1 = new ResourceReference("proj", "zone", "machineTypes", "inst");
+            var ref1 = new GlobalResourceReference("proj", "machineTypes", "inst");
 
             Assert.IsFalse(ref1.Equals(null));
             Assert.IsFalse(ref1.Equals((object)null));

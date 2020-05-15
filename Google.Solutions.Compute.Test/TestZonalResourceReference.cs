@@ -20,24 +20,48 @@
 //
 
 using NUnit.Framework;
+using System;
 
 namespace Google.Solutions.Compute.Test
 {
     [TestFixture]
-    public class TestVmInstanceReference : FixtureBase
+    public class TestZonalResourceReference : FixtureBase
     {
         [Test]
-        public void ToStringReturnsName()
+        public void WhenPathIsValid_FromStringReturnsObject()
         {
-            var ref1 = new VmInstanceReference("proj", "zone", "inst");
-            Assert.AreEqual("inst", ref1.ToString());
+            var ref1 = ZonalResourceReference.FromString(
+                "projects/project-1/zones/us-central1-a/diskTypes/pd-standard");
+
+            Assert.AreEqual("diskTypes", ref1.ResourceType);
+            Assert.AreEqual("pd-standard", ref1.ResourceName);
+            Assert.AreEqual("us-central1-a", ref1.Zone);
+            Assert.AreEqual("project-1", ref1.ProjectId);
+        }
+
+        [Test]
+        public void WhenPathLacksProject_FromStringThrowsArgumentException()
+        {
+            Assert.Throws<ArgumentException>(() => ZonalResourceReference.FromString(
+                "/project-1/zones/us-central1-a/diskTypes/pd-standard"));
+        }
+
+        [Test]
+        public void WhenPathInvalid_FromStringThrowsArgumentException()
+        {
+            Assert.Throws<ArgumentException>(() => ZonalResourceReference.FromString(
+                "/project-1/zones/us-central1-a/diskTypes"));
+            Assert.Throws<ArgumentException>(() => ZonalResourceReference.FromString(
+                "/project-1/zones/us-central1-a/diskTypes/pd-standard"));
+            Assert.Throws<ArgumentException>(() => ZonalResourceReference.FromString(
+                "/"));
         }
 
         [Test]
         public void WhenReferencesAreEquivalent_ThenEqualsReturnsTrue()
         {
-            var ref1 = new VmInstanceReference("proj", "zone", "inst");
-            var ref2 = new VmInstanceReference("proj", "zone", "inst");
+            var ref1 = new ZonalResourceReference("proj", "zone", "diskTypes", "inst");
+            var ref2 = new ZonalResourceReference("proj", "zone", "diskTypes", "inst");
 
             Assert.IsTrue(ref1.Equals(ref2));
             Assert.IsTrue(ref1.Equals((object)ref2));
@@ -48,7 +72,7 @@ namespace Google.Solutions.Compute.Test
         [Test]
         public void WhenReferencesAreSame_ThenEqualsReturnsTrue()
         {
-            var ref1 = new VmInstanceReference("proj", "zone", "inst");
+            var ref1 = new ZonalResourceReference("proj", "zone", "diskTypes", "inst");
             var ref2 = ref1;
 
             Assert.IsTrue(ref1.Equals(ref2));
@@ -60,8 +84,8 @@ namespace Google.Solutions.Compute.Test
         [Test]
         public void WhenReferencesAreNotEquivalent_ThenEqualsReturnsFalse()
         {
-            var ref1 = new VmInstanceReference("proj", "zone", "inst");
-            var ref2 = new VmInstanceReference("proj", "zone", "other");
+            var ref1 = new ZonalResourceReference("proj", "zone", "diskTypes", "inst");
+            var ref2 = new ZonalResourceReference("proj", "zone", "machineTypes", "inst");
 
             Assert.IsFalse(ref1.Equals(ref2));
             Assert.IsFalse(ref1.Equals((object)ref2));
@@ -70,21 +94,9 @@ namespace Google.Solutions.Compute.Test
         }
 
         [Test]
-        public void WhenReferencesAreOfDifferentType_ThenEqualsReturnsFalse()
-        {
-            var ref1 = new VmInstanceReference("proj", "zone", "inst");
-            var ref2 = new ZonalResourceReference("proj", "zone", "instances", "inst");
-
-            Assert.IsFalse(ref2.Equals(ref1));
-            Assert.IsFalse(ref2.Equals((object)ref1));
-            Assert.IsFalse(ref1.Equals(ref2));
-            Assert.IsFalse(ref1.Equals((object)ref2));
-        }
-
-        [Test]
         public void TestEqualsNull()
         {
-            var ref1 = new VmInstanceReference("proj", "zone", "inst");
+            var ref1 = new ZonalResourceReference("proj", "zone", "machineTypes", "inst");
 
             Assert.IsFalse(ref1.Equals(null));
             Assert.IsFalse(ref1.Equals((object)null));

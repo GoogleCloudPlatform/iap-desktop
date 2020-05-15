@@ -29,14 +29,14 @@ namespace Google.Solutions.Compute
     /// 
     /// projects/[project-id]/zones/[zone]/[type]/[name]
     /// </summary>
-    public class ResourceReference : IEquatable<ResourceReference>
+    public class ZonalResourceReference : IEquatable<ZonalResourceReference>
     {
         public string ProjectId { get; }
         public string Zone { get; }
         public string ResourceType { get; }
         public string ResourceName { get; }
 
-        public ResourceReference(string projectId, string zone, string resourceType, string resourceName)
+        public ZonalResourceReference(string projectId, string zone, string resourceType, string resourceName)
         {
             Debug.Assert(!long.TryParse(projectId, out long _));
             Debug.Assert(!long.TryParse(resourceName, out long _));
@@ -49,7 +49,7 @@ namespace Google.Solutions.Compute
             this.ResourceName = resourceName;
         }
 
-        public static ResourceReference FromString(string path)
+        public static ZonalResourceReference FromString(string path)
         {
             // The resource name format is 
             // projects/[project-id]/zones/[zone]/[type]/[name]
@@ -65,7 +65,7 @@ namespace Google.Solutions.Compute
                 throw new ArgumentException($"'{path}' is not a valid zonal resource reference");
             }
 
-            return new ResourceReference(parts[1], parts[3], parts[4], parts[5]);
+            return new ZonalResourceReference(parts[1], parts[3], parts[4], parts[5]);
         }
 
         public override int GetHashCode()
@@ -82,7 +82,7 @@ namespace Google.Solutions.Compute
             return $"projects/{this.ProjectId}/zones/{this.Zone}/{this.ResourceType}/{this.ResourceType}";
         }
 
-        public bool Equals(ResourceReference other)
+        public bool Equals(ZonalResourceReference other)
         {
             return !object.ReferenceEquals(other, null) &&
                 this.ResourceType == other.ResourceType &&
@@ -93,11 +93,11 @@ namespace Google.Solutions.Compute
 
         public override bool Equals(object obj)
         {
-            return obj is ResourceReference &&
-                Equals((ResourceReference)obj);
+            return obj is ZonalResourceReference &&
+                Equals((ZonalResourceReference)obj);
         }
 
-        public static bool operator ==(ResourceReference obj1, ResourceReference obj2)
+        public static bool operator ==(ZonalResourceReference obj1, ZonalResourceReference obj2)
         {
             if (object.ReferenceEquals(obj1, null))
             {
@@ -107,7 +107,7 @@ namespace Google.Solutions.Compute
             return obj1.Equals(obj2);
         }
 
-        public static bool operator !=(ResourceReference obj1, ResourceReference obj2)
+        public static bool operator !=(ZonalResourceReference obj1, ZonalResourceReference obj2)
         {
             return !(obj1 == obj2);
         }
