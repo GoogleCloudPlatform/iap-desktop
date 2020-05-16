@@ -34,7 +34,7 @@ namespace Google.Solutions.LogAnalysis.History
 
         public VmInstanceReference Reference { get; }
 
-        public IEnumerable<SoleTenantPlacement> Placements { get; }
+        public IEnumerable<IPlacement> Placements { get; }
 
         public GlobalResourceReference Image { get; }
 
@@ -45,7 +45,7 @@ namespace Google.Solutions.LogAnalysis.History
             VmInstanceReference reference,
             GlobalResourceReference image,
             Tenancy tenancy,
-            IEnumerable<SoleTenantPlacement> placements
+            IEnumerable<IPlacement> placements
             )
         {
             Debug.Assert(tenancy == Tenancy.SoleTenant || !placements.Any());
@@ -63,7 +63,15 @@ namespace Google.Solutions.LogAnalysis.History
         }
     }
 
-    public class SoleTenantPlacement
+    public interface IPlacement
+    {
+        DateTime From { get; }
+        DateTime To { get; }
+        bool IsAdjacent(IPlacement subsequentPlacement);
+        IPlacement Merge(IPlacement subsequentPlacement);
+    }
+
+    public class SoleTenantPlacement : IPlacement
     {
         public string ServerId { get; }
         public DateTime From { get; }
@@ -74,6 +82,70 @@ namespace Google.Solutions.LogAnalysis.History
             this.ServerId = serverId;
             this.From = from;
             this.To = to;
+        }
+
+        public bool IsAdjacent(IPlacement subsequentPlacement)
+        {
+            if (subsequentPlacement is SoleTenantPlacement soleTenantPlacement)
+            {
+                return this.To == soleTenantPlacement.From &&
+                       this.ServerId == soleTenantPlacement.ServerId;
+            }
+            else
+            {
+                return false;
+            }
+        }
+
+        public IPlacement Merge(IPlacement subsequentPlacement)
+        {
+            Debug.Assert(IsAdjacent(subsequentPlacement));
+            return new SoleTenantPlacement(
+                this.ServerId,
+                this.From,
+                subsequentPlacement.To);
+        }
+
+        public override string ToString()
+        {
+            return $"{this.From} - {this.To} on {this.ServerId}";
+        }
+    }
+
+    public class FleetPlacement : IPlacement
+    {
+        public DateTime From { get; }
+        public DateTime To { get; }
+
+        public FleetPlacement(DateTime from, DateTime to)
+        {
+            this.From = from;
+            this.To = to;
+        }
+
+        public bool IsAdjacent(IPlacement subsequentPlacement)
+        {
+            if (subsequentPlacement is FleetPlacement soleTenantPlacement)
+            {
+                return this.To == soleTenantPlacement.From;
+            }
+            else
+            {
+                return false;
+            }
+        }
+
+        public IPlacement Merge(IPlacement subsequentPlacement)
+        {
+            Debug.Assert(IsAdjacent(subsequentPlacement));
+            return new FleetPlacement(
+                this.From,
+                subsequentPlacement.To);
+        }
+
+        public override string ToString()
+        {
+            return $"{this.From} - {this.To} on fleet";
         }
     }
 

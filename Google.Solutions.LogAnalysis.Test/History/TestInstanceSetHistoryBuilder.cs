@@ -158,7 +158,7 @@ namespace Google.Solutions.LogAnalysis.Test.History
                 instance.Image);
             Assert.AreEqual(1, instance.Placements.Count());
 
-            var placement = instance.Placements.First();
+            var placement = (SoleTenantPlacement)instance.Placements.First();
             Assert.AreEqual("15934ff9aee7d8c5719fad1053b7fc7d", placement.ServerId);
 
             // NotifyInstanceLocation..
@@ -182,7 +182,7 @@ namespace Google.Solutions.LogAnalysis.Test.History
                 instance.Image);
             Assert.AreEqual(1, instance.Placements.Count());
 
-            var placement = instance.Placements.First();
+            var placement = (SoleTenantPlacement)instance.Placements.First();
             Assert.AreEqual("15934ff9aee7d8c5719fad1053b7fc7d", placement.ServerId);
 
             // NotifyInstanceLocation..
@@ -206,7 +206,7 @@ namespace Google.Solutions.LogAnalysis.Test.History
                 instance.Image);
             Assert.AreEqual(2, instance.Placements.Count());
 
-            var firstPlacement = instance.Placements.First();
+            var firstPlacement = (SoleTenantPlacement)instance.Placements.First();
             Assert.AreEqual("413db7b32a208e7ccb4ee62acedee725", firstPlacement.ServerId);
 
             // NotifyInstanceLocation..
@@ -216,7 +216,7 @@ namespace Google.Solutions.LogAnalysis.Test.History
             Assert.AreEqual(DateTime.Parse("2020-05-06T16:10:46.781Z").ToUniversalTime(), firstPlacement.To);
 
 
-            var secondPlacement = instance.Placements.Last();
+            var secondPlacement = (SoleTenantPlacement)instance.Placements.Last();
             Assert.AreEqual("413db7b32a208e7ccb4ee62acedee725", secondPlacement.ServerId);
 
             // NotifyInstanceLocation..

@@ -49,7 +49,7 @@ namespace Google.Solutions.LogAnalysis.History
             EventFactory.LifecycleEventMethods.Concat(EventFactory.SystemEventMethods);
 
         public long InstanceId { get; }
-        private readonly LinkedList<SoleTenantPlacement> placements = new LinkedList<SoleTenantPlacement>();
+        private readonly LinkedList<IPlacement> placements = new LinkedList<IPlacement>();
 
         public Tenancy Tenancy { get; private set; }
         public DateTime? LastStoppedOn { get; private set; }
@@ -68,8 +68,7 @@ namespace Google.Solutions.LogAnalysis.History
             if (this.placements.Any())
             {
                 var subsequentPlacement = this.placements.First();
-                if (placement.To == subsequentPlacement.From &&
-                    placement.ServerId == subsequentPlacement.ServerId)
+                if (placement.IsAdjacent(subsequentPlacement))
                 {
                     // Placement are right adjacent -> merge.
                     placement = new SoleTenantPlacement(

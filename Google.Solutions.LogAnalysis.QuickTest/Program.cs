@@ -81,7 +81,7 @@ namespace Google.Solutions.LogAnalysis.QuickTest
                 Console.WriteLine($"  Instance {instance.Reference} ({instance.InstanceId}) of {instance.Image}");
                 foreach (var placement in instance.Placements)
                 {
-                    Console.WriteLine($"    > {placement.From} - {placement.To} on {placement.ServerId}");
+                    Console.WriteLine($"    > {placement}");
                 }
             }
         }
