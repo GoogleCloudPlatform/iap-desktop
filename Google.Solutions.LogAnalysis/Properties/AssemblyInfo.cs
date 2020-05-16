@@ -1,4 +1,4 @@
-﻿//
+//
 // Copyright 2019 Google LLC
 //
 // Licensed to the Apache Software Foundation (ASF) under one
@@ -29,7 +29,7 @@ using System.Runtime.CompilerServices;
 [assembly: AssemblyCopyright("Copyright ©  2020")]
 [assembly: AssemblyTrademark("Google")]
 
-[assembly: AssemblyVersion("1.0.1.0")]
-[assembly: AssemblyFileVersion("1.0.1.0")]
+[assembly: AssemblyVersion("1.0.0.0")]
+[assembly: AssemblyFileVersion("1.0.0.0")]
 
 [assembly: InternalsVisibleTo("Google.Solutions.LogAnalysis.Test")]
