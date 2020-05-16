@@ -34,7 +34,7 @@ namespace Google.Solutions.LogAnalysis.History
 
         public VmInstanceReference Reference { get; }
 
-        public IEnumerable<IPlacement> Placements { get; }
+        public IEnumerable<Placement> Placements { get; }
 
         public GlobalResourceReference Image { get; }
 
@@ -45,7 +45,7 @@ namespace Google.Solutions.LogAnalysis.History
             VmInstanceReference reference,
             GlobalResourceReference image,
             Tenancy tenancy,
-            IEnumerable<IPlacement> placements
+            IEnumerable<Placement> placements
             )
         {
             Debug.Assert(tenancy == Tenancy.SoleTenant || !placements.Any());
@@ -63,44 +63,43 @@ namespace Google.Solutions.LogAnalysis.History
         }
     }
 
-    public interface IPlacement
+    public class Placement
     {
-        DateTime From { get; }
-        DateTime To { get; }
-        bool IsAdjacent(IPlacement subsequentPlacement);
-        IPlacement Merge(IPlacement subsequentPlacement);
-    }
-
-    public class SoleTenantPlacement : IPlacement
-    {
+        public Tenancy Tenancy { get; }
         public string ServerId { get; }
         public DateTime From { get; }
         public DateTime To { get; }
 
-        public SoleTenantPlacement(string serverId, DateTime from, DateTime to)
+        private Placement(Tenancy tenancy, string serverId, DateTime from, DateTime to)
         {
+            this.Tenancy = tenancy;
             this.ServerId = serverId;
             this.From = from;
             this.To = to;
         }
 
-        public bool IsAdjacent(IPlacement subsequentPlacement)
+        public Placement(DateTime from, DateTime to)
+            :this(Tenancy.Fleet, null, from, to)
         {
-            if (subsequentPlacement is SoleTenantPlacement soleTenantPlacement)
-            {
-                return this.To == soleTenantPlacement.From &&
-                       this.ServerId == soleTenantPlacement.ServerId;
-            }
-            else
-            {
-                return false;
-            }
         }
 
-        public IPlacement Merge(IPlacement subsequentPlacement)
+        public Placement(string serverId, DateTime from, DateTime to)
+            :this(Tenancy.SoleTenant, serverId, from, to)
+        {
+        }
+
+        public bool IsAdjacent(Placement subsequentPlacement)
+        {
+            return this.Tenancy == subsequentPlacement.Tenancy &&
+                    this.To == subsequentPlacement.From &&
+                    this.ServerId == subsequentPlacement.ServerId;
+        }
+
+        public Placement Merge(Placement subsequentPlacement)
         {
             Debug.Assert(IsAdjacent(subsequentPlacement));
-            return new SoleTenantPlacement(
+            return new Placement(
+                this.Tenancy,
                 this.ServerId,
                 this.From,
                 subsequentPlacement.To);
@@ -108,44 +107,10 @@ namespace Google.Solutions.LogAnalysis.History
 
         public override string ToString()
         {
-            return $"{this.From} - {this.To} on {this.ServerId}";
-        }
-    }
-
-    public class FleetPlacement : IPlacement
-    {
-        public DateTime From { get; }
-        public DateTime To { get; }
-
-        public FleetPlacement(DateTime from, DateTime to)
-        {
-            this.From = from;
-            this.To = to;
-        }
-
-        public bool IsAdjacent(IPlacement subsequentPlacement)
-        {
-            if (subsequentPlacement is FleetPlacement soleTenantPlacement)
-            {
-                return this.To == soleTenantPlacement.From;
-            }
-            else
-            {
-                return false;
-            }
-        }
-
-        public IPlacement Merge(IPlacement subsequentPlacement)
-        {
-            Debug.Assert(IsAdjacent(subsequentPlacement));
-            return new FleetPlacement(
-                this.From,
-                subsequentPlacement.To);
-        }
-
-        public override string ToString()
-        {
-            return $"{this.From} - {this.To} on fleet";
+            var where = this.Tenancy == Tenancy.SoleTenant
+                ? this.ServerId
+                : "fleet";
+            return $"{this.From} - {this.To} on {where}";
         }
     }
 

@@ -49,7 +49,7 @@ namespace Google.Solutions.LogAnalysis.History
             EventFactory.LifecycleEventMethods.Concat(EventFactory.SystemEventMethods);
 
         public long InstanceId { get; }
-        private readonly LinkedList<IPlacement> placements = new LinkedList<IPlacement>();
+        private readonly LinkedList<Placement> placements = new LinkedList<Placement>();
 
         public Tenancy Tenancy { get; private set; }
         public DateTime? LastStoppedOn { get; private set; }
@@ -63,7 +63,7 @@ namespace Google.Solutions.LogAnalysis.History
 
         private DateTime lastEventDate = DateTime.MaxValue;
 
-        private void AddPlacement(SoleTenantPlacement placement)
+        private void AddPlacement(Placement placement)
         {
             if (this.placements.Any())
             {
@@ -71,10 +71,7 @@ namespace Google.Solutions.LogAnalysis.History
                 if (placement.IsAdjacent(subsequentPlacement))
                 {
                     // Placement are right adjacent -> merge.
-                    placement = new SoleTenantPlacement(
-                        placement.ServerId,
-                        placement.From,
-                        subsequentPlacement.To);
+                    placement = placement.Merge(subsequentPlacement);
                     this.placements.RemoveFirst();
                 }
             }
@@ -275,7 +272,7 @@ namespace Google.Solutions.LogAnalysis.History
             // For a fleet VM, we'd never receive this kind of VM, so this must be 
             // a sole tenant VM.
             this.Tenancy = History.Tenancy.SoleTenant;
-            AddPlacement(new SoleTenantPlacement(serverId, date, placedUntil));
+            AddPlacement(new Placement(serverId, date, placedUntil));
         }
 
         //---------------------------------------------------------------------

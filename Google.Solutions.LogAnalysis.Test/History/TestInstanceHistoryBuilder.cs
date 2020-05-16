@@ -181,7 +181,7 @@ namespace Google.Solutions.LogAnalysis.Test.History
             Assert.AreEqual(1, i.InstanceId);
             Assert.AreEqual(1, i.Placements.Count());
 
-            var placement = (SoleTenantPlacement)i.Placements.First();
+            var placement = i.Placements.First();
             Assert.AreEqual("server-1", placement.ServerId);
             Assert.AreEqual(new DateTime(2019, 12, 30), placement.From);
             Assert.AreEqual(new DateTime(2019, 12, 31), placement.To);
@@ -205,11 +205,11 @@ namespace Google.Solutions.LogAnalysis.Test.History
             var placements = i.Placements.ToList();
             Assert.AreEqual(2, i.Placements.Count());
 
-            Assert.AreEqual("server-1", ((SoleTenantPlacement)placements[0]).ServerId);
+            Assert.AreEqual("server-1", placements[0].ServerId);
             Assert.AreEqual(new DateTime(2019, 12, 29), placements[0].From);
             Assert.AreEqual(new DateTime(2019, 12, 30), placements[0].To);
 
-            Assert.AreEqual("server-2", ((SoleTenantPlacement)placements[1]).ServerId);
+            Assert.AreEqual("server-2", placements[1].ServerId);
             Assert.AreEqual(new DateTime(2019, 12, 30), placements[1].From);
             Assert.AreEqual(new DateTime(2019, 12, 31), placements[1].To);
         }
@@ -233,11 +233,11 @@ namespace Google.Solutions.LogAnalysis.Test.History
             var placements = i.Placements.ToList();
             Assert.AreEqual(2, i.Placements.Count());
 
-            Assert.AreEqual("server-1", ((SoleTenantPlacement)placements[0]).ServerId);
+            Assert.AreEqual("server-1", placements[0].ServerId);
             Assert.AreEqual(new DateTime(2019, 12, 28), placements[0].From);
             Assert.AreEqual(new DateTime(2019, 12, 29), placements[0].To);
 
-            Assert.AreEqual("server-2", ((SoleTenantPlacement)placements[1]).ServerId);
+            Assert.AreEqual("server-2", placements[1].ServerId);
             Assert.AreEqual(new DateTime(2019, 12, 30), placements[1].From);
             Assert.AreEqual(new DateTime(2019, 12, 31), placements[1].To);
         }
@@ -269,7 +269,7 @@ namespace Google.Solutions.LogAnalysis.Test.History
             Assert.AreEqual(1, i.InstanceId);
             Assert.AreEqual(1, i.Placements.Count());
 
-            var placement = (SoleTenantPlacement)i.Placements.First();
+            var placement = i.Placements.First();
             Assert.AreEqual("server-1", placement.ServerId);
             Assert.AreEqual(new DateTime(2019, 12, 30), placement.From);
             Assert.AreEqual(new DateTime(2019, 12, 31), placement.To);
@@ -289,11 +289,11 @@ namespace Google.Solutions.LogAnalysis.Test.History
             var placements = i.Placements.ToList();
             Assert.AreEqual(2, i.Placements.Count());
 
-            Assert.AreEqual("server-1", ((SoleTenantPlacement)placements[0]).ServerId);
+            Assert.AreEqual("server-1", placements[0].ServerId);
             Assert.AreEqual(new DateTime(2019, 12, 29), placements[0].From);
             Assert.AreEqual(new DateTime(2019, 12, 30), placements[0].To);
 
-            Assert.AreEqual("server-2", ((SoleTenantPlacement)placements[1]).ServerId);
+            Assert.AreEqual("server-2", placements[1].ServerId);
             Assert.AreEqual(new DateTime(2019, 12, 30), placements[1].From);
             Assert.AreEqual(new DateTime(2019, 12, 31), placements[1].To);
         }
@@ -313,11 +313,11 @@ namespace Google.Solutions.LogAnalysis.Test.History
             var placements = i.Placements.ToList();
             Assert.AreEqual(2, i.Placements.Count());
 
-            Assert.AreEqual("server-1", ((SoleTenantPlacement)placements[0]).ServerId);
+            Assert.AreEqual("server-1", placements[0].ServerId);
             Assert.AreEqual(new DateTime(2019, 12, 28), placements[0].From);
             Assert.AreEqual(new DateTime(2019, 12, 29), placements[0].To);
 
-            Assert.AreEqual("server-2", ((SoleTenantPlacement)placements[1]).ServerId);
+            Assert.AreEqual("server-2", placements[1].ServerId);
             Assert.AreEqual(new DateTime(2019, 12, 30), placements[1].From);
             Assert.AreEqual(new DateTime(2019, 12, 31), placements[1].To);
         }
