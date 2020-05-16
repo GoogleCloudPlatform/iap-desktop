@@ -20,13 +20,9 @@
 //
 
 using Google.Solutions.LogAnalysis.Events;
-using Google.Solutions.LogAnalysis.Events.Lifecycle;
 using Google.Solutions.LogAnalysis.Logs;
-using Newtonsoft.Json;
 using NUnit.Framework;
 using System;
-using System.IO;
-using System.Linq;
 
 namespace Google.Solutions.LogAnalysis.Test.Events
 {

@@ -27,7 +27,7 @@ namespace Google.Solutions.LogAnalysis.Events.System
     public class RecreateInstanceEvent : SystemEventBase
     {
         public const string Method = "compute.instances.repair.recreateInstance";
-        
+
         public override string Message => "Instance recreated to repair";
 
         internal RecreateInstanceEvent(LogRecord logRecord) : base(logRecord)

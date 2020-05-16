@@ -22,7 +22,6 @@
 using Google.Solutions.LogAnalysis.Events.Lifecycle;
 using Google.Solutions.LogAnalysis.Events.System;
 using Google.Solutions.LogAnalysis.Logs;
-using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 

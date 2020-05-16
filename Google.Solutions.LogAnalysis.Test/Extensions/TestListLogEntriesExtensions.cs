@@ -57,8 +57,8 @@ namespace Google.Solutions.LogAnalysis.Test.Extensions
                 {
                     "projects/" + Defaults.ProjectId
                 },
-                Filter = $"resource.type=\"gce_instance\" "+
-                    $"AND protoPayload.methodName:* "+
+                Filter = $"resource.type=\"gce_instance\" " +
+                    $"AND protoPayload.methodName:* " +
                     $"AND timestamp > {DateTime.Now.AddDays(-1):yyyy-MM-dd}",
                 PageSize = 1000,
                 OrderBy = "timestamp desc"

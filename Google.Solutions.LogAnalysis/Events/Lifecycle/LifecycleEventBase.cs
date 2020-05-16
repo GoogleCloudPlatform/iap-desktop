@@ -29,8 +29,8 @@ namespace Google.Solutions.LogAnalysis.Events.Lifecycle
         protected abstract string SuccessMessage { get; }
         protected abstract string ErrorMessage { get; }
 
-        public override string Message => IsError  
-            ? $"{ErrorMessage} ({this.Status.Message})" 
+        public override string Message => IsError
+            ? $"{ErrorMessage} ({this.Status.Message})"
             : SuccessMessage;
 
         public bool IsError => this.Severity == "ERROR";

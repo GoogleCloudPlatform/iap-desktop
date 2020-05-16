@@ -73,9 +73,9 @@ namespace Google.Solutions.LogAnalysis.Extensions
             var request = new ListLogEntriesRequest()
             {
                 ResourceNames = projectIds.Select(p => "projects/" + p).ToList(),
-                Filter = $"protoPayload.methodName=(\"{string.Join("\" OR \"", processor.SupportedMethods)}\") "+
+                Filter = $"protoPayload.methodName=(\"{string.Join("\" OR \"", processor.SupportedMethods)}\") " +
                     $"AND severity=(\"{string.Join("\" OR \"", processor.SupportedSeverities)}\") " +
-                    $"AND resource.type=\"gce_instance\" "+
+                    $"AND resource.type=\"gce_instance\" " +
                     $"AND timestamp > {startTime:yyyy-MM-dd} ",
                 PageSize = MaxPageSize,
                 OrderBy = "timestamp desc"

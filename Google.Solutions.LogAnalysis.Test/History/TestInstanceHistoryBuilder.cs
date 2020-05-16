@@ -32,7 +32,7 @@ namespace Google.Solutions.LogAnalysis.Test.History
     public class TestInstanceHistoryBuilder
     {
         private static readonly VmInstanceReference SampleReference = new VmInstanceReference("pro", "zone", "name");
-        private static readonly GlobalResourceReference SampleImage 
+        private static readonly GlobalResourceReference SampleImage
             = GlobalResourceReference.FromString("projects/project-1/global/images/image-1");
 
         [Test]

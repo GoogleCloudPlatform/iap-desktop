@@ -105,7 +105,6 @@
     <Compile Include="History\TestInstanceHistoryBuilder.cs" />
     <Compile Include="History\TestInstanceSetHistoryBuilder.cs" />
     <Compile Include="History\TestPlacement.cs" />
-    <Compile Include="Licensing\TestWindowsByol.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Logs\TestAuditLogRecord.cs" />
     <Compile Include="Logs\TestLogRecord.cs" />

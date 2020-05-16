@@ -21,8 +21,6 @@
 
 using Google.Solutions.Compute;
 using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
 
 namespace Google.Solutions.LogAnalysis.History
 {

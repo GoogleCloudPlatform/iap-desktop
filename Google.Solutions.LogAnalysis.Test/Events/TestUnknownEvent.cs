@@ -20,9 +20,7 @@
 //
 
 using Google.Solutions.LogAnalysis.Events;
-using Google.Solutions.LogAnalysis.Events.Lifecycle;
 using Google.Solutions.LogAnalysis.Logs;
-using Google.Solutions.Compute;
 using NUnit.Framework;
 
 namespace Google.Solutions.LogAnalysis.Test.Events

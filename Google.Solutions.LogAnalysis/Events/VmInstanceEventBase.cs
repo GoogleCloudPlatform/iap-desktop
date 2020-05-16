@@ -19,8 +19,8 @@
 // under the License.
 //
 
-using Google.Solutions.LogAnalysis.Logs;
 using Google.Solutions.Compute;
+using Google.Solutions.LogAnalysis.Logs;
 using System;
 
 namespace Google.Solutions.LogAnalysis.Events
@@ -58,7 +58,7 @@ namespace Google.Solutions.LogAnalysis.Events
         }
 
         public long InstanceId => string.IsNullOrEmpty(base.LogRecord.Resource.Labels["instance_id"])
-            ? 0 
+            ? 0
             : long.Parse(base.LogRecord.Resource.Labels["instance_id"]);
 
         protected VmInstanceEventBase(LogRecord logRecord)
