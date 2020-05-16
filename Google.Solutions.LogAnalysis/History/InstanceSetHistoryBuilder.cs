@@ -87,7 +87,9 @@ namespace Google.Solutions.LogAnalysis.History
 
         public void Process(EventBase e)
         {
-            if (e is VmInstanceEventBase instanceEvent)
+            // NB. Some events (such as recreateInstance) might not have an instance ID.
+            // These are useless for our purpose.
+            if (e is VmInstanceEventBase instanceEvent && instanceEvent.InstanceId != 0)
             {
                 GetBuilder(instanceEvent.InstanceId).Process(e);
             }

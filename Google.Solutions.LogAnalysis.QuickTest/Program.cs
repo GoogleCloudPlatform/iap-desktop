@@ -18,7 +18,7 @@ namespace Google.Solutions.LogAnalysis.QuickTest
     {
         internal static string ShortIdFromUrl(string url) => url.Substring(url.LastIndexOf("/") + 1);
 
-        private static async Task AnalyzeAsync(string projectId)
+        private static async Task AnalyzeAsync(string projectId, int days)
         {
             var loggingService = new LoggingService(new BaseClientService.Initializer
             {
@@ -68,7 +68,7 @@ namespace Google.Solutions.LogAnalysis.QuickTest
 
             await loggingService.Entries.ListInstanceEventsAsync(
                 new[] { projectId },
-                DateTime.Now.AddDays(-30),
+                DateTime.Now.AddDays(-days),
                 instanceSetBuilder);
 
             var set = instanceSetBuilder.Build();
@@ -88,7 +88,7 @@ namespace Google.Solutions.LogAnalysis.QuickTest
 
         static void Main(string[] args)
         {
-            AnalyzeAsync(args[0]).Wait();
+            AnalyzeAsync(args[0], 40).Wait();
         }
     }
 }

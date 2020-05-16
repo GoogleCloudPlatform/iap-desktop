@@ -229,7 +229,7 @@ namespace Google.Solutions.LogAnalysis.History
 
         public void OnSetPlacement(string serverId, DateTime date)
         {
-            Debug.Assert(date < this.lastEventDate);
+            Debug.Assert(date <= this.lastEventDate);
             this.lastEventDate = date;
             this.State = InstanceState.Running;
 
