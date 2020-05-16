@@ -20,6 +20,7 @@
 //
 
 using Google.Solutions.Compute;
+using Google.Solutions.LogAnalysis.Events;
 using Google.Solutions.LogAnalysis.History;
 using NUnit.Framework;
 using System;
@@ -89,6 +90,7 @@ namespace Google.Solutions.LogAnalysis.Test.History
                 1,
                 SampleReference,
                 SampleImage,
+                InstanceState.Running,
                 DateTime.Now,
                 Tenancy.SoleTenant);
             Assert.AreEqual(Tenancy.SoleTenant, b.Tenancy);
@@ -105,6 +107,7 @@ namespace Google.Solutions.LogAnalysis.Test.History
                 1,
                 SampleReference,
                 SampleImage,
+                InstanceState.Terminated,
                 new DateTime(2019, 12, 31),
                 Tenancy.SoleTenant);
 
@@ -124,6 +127,7 @@ namespace Google.Solutions.LogAnalysis.Test.History
                 1,
                 SampleReference,
                 SampleImage,
+                InstanceState.Running,
                 new DateTime(2019, 12, 31),
                 Tenancy.SoleTenant);
 
@@ -146,6 +150,7 @@ namespace Google.Solutions.LogAnalysis.Test.History
                 1,
                 SampleReference,
                 SampleImage,
+                InstanceState.Running,
                 new DateTime(2019, 12, 31),
                 Tenancy.SoleTenant);
             b.OnSetPlacement("server-1", new DateTime(2019, 12, 30));
@@ -166,6 +171,7 @@ namespace Google.Solutions.LogAnalysis.Test.History
                 1,
                 SampleReference,
                 SampleImage,
+                InstanceState.Running,
                 new DateTime(2019, 12, 31),
                 Tenancy.SoleTenant);
             b.OnSetPlacement("server-1", new DateTime(2019, 12, 30));
@@ -188,6 +194,7 @@ namespace Google.Solutions.LogAnalysis.Test.History
                 1,
                 SampleReference,
                 SampleImage,
+                InstanceState.Running,
                 new DateTime(2019, 12, 31),
                 Tenancy.SoleTenant);
             b.OnSetPlacement("server-2", new DateTime(2019, 12, 30));
@@ -214,6 +221,7 @@ namespace Google.Solutions.LogAnalysis.Test.History
                 1,
                 SampleReference,
                 SampleImage,
+                InstanceState.Running,
                 new DateTime(2019, 12, 31),
                 Tenancy.SoleTenant);
             b.OnSetPlacement("server-2", new DateTime(2019, 12, 30));
@@ -326,6 +334,7 @@ namespace Google.Solutions.LogAnalysis.Test.History
                 1,
                 SampleReference,
                 SampleImage,
+                InstanceState.Terminated,
                 DateTime.Now,
                 Tenancy.SoleTenant);
             Assert.IsFalse(b.IsMoreInformationNeeded);

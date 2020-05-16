@@ -31,6 +31,8 @@ namespace Google.Solutions.Compute
     /// </summary>
     public class ZonalResourceReference : IEquatable<ZonalResourceReference>
     {
+        private const string UrlPrefix = "https://compute.googleapis.com/compute/v1/";
+
         public string ProjectId { get; }
         public string Zone { get; }
         public string ResourceType { get; }
@@ -49,11 +51,16 @@ namespace Google.Solutions.Compute
             this.ResourceName = resourceName;
         }
 
-        public static ZonalResourceReference FromString(string path)
+        public static ZonalResourceReference FromString(string url)
         {
+            if (url.StartsWith(UrlPrefix))
+            {
+                url = url.Substring(UrlPrefix.Length);
+            }
+
             // The resource name format is 
             // projects/[project-id]/zones/[zone]/[type]/[name]
-            var parts = path.Split('/');
+            var parts = url.Split('/');
             if (parts.Length != 6 ||
                 string.IsNullOrEmpty(parts[1]) ||
                 string.IsNullOrEmpty(parts[3]) ||
@@ -62,7 +69,7 @@ namespace Google.Solutions.Compute
                 parts[0] != "projects" ||
                 parts[2] != "zones")
             {
-                throw new ArgumentException($"'{path}' is not a valid zonal resource reference");
+                throw new ArgumentException($"'{url}' is not a valid zonal resource reference");
             }
 
             return new ZonalResourceReference(parts[1], parts[3], parts[4], parts[5]);

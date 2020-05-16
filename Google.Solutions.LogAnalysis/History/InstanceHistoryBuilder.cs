@@ -109,18 +109,18 @@ namespace Google.Solutions.LogAnalysis.History
             long instanceId,
             VmInstanceReference reference,
             GlobalResourceReference image,
+            InstanceState state,
             DateTime lastSeen,
             Tenancy tenancy)
         {
-            // NB. Whether the instance is running or stopped does not
-            // matter. For simplifity's sake, we pretend it is stopped.
+            Debug.Assert(state != InstanceState.Deleted);
 
             return new InstanceHistoryBuilder(
                 instanceId,
                 reference,
                 image,
-                InstanceState.Terminated,
-                lastSeen, 
+                state,
+                lastSeen,
                 tenancy);
         }
 
@@ -204,7 +204,6 @@ namespace Google.Solutions.LogAnalysis.History
 
             // Mind you, we are processing history in reverse, so this is the
             // state before the event happened.
-            Debug.Assert(this.State == InstanceState.Running);
             this.State = InstanceState.Terminated;
 
             if (this.Reference == null)

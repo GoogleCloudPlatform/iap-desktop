@@ -50,6 +50,17 @@ namespace Google.Solutions.Compute.Test
         }
 
         [Test]
+        public void WhenUrilIsFullyQualified_FromStringReturnsObject()
+        {
+            var ref1 = GlobalResourceReference.FromString(
+                "https://compute.googleapis.com/compute/v1/projects/debian-cloud/global/images/family/debian-9");
+
+            Assert.AreEqual("images", ref1.ResourceType);
+            Assert.AreEqual("family/debian-9", ref1.ResourceName);
+            Assert.AreEqual("debian-cloud", ref1.ProjectId);
+        }
+
+        [Test]
         public void WhenPathLacksProject_FromStringThrowsArgumentException()
         {
             Assert.Throws<ArgumentException>(() => GlobalResourceReference.FromString(

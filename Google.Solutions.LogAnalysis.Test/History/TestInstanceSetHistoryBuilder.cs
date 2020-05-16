@@ -22,6 +22,7 @@
 using Google.Solutions.Compute;
 using Google.Solutions.LogAnalysis.Events;
 using Google.Solutions.LogAnalysis.Events.Lifecycle;
+using Google.Solutions.LogAnalysis.Events.System;
 using Google.Solutions.LogAnalysis.History;
 using Google.Solutions.LogAnalysis.Logs;
 using Newtonsoft.Json;
@@ -41,6 +42,30 @@ namespace Google.Solutions.LogAnalysis.Test.History
         private static readonly GlobalResourceReference SampleImage
             = GlobalResourceReference.FromString("projects/project-1/global/images/image-1");
 
+        private static InstanceSetHistory BuildHistoryFromResource(string resourceName)
+        {
+            var testDataResource = Assembly.GetExecutingAssembly()
+                .GetManifestResourceNames()
+                .First(n => n.EndsWith(resourceName));
+
+            var b = new InstanceSetHistoryBuilder();
+
+            using (var stream = Assembly.GetExecutingAssembly().GetManifestResourceStream(testDataResource))
+            using (var reader = new JsonTextReader(new StreamReader(stream)))
+            {
+                var events = new JsonSerializer().Deserialize<LogRecord[]>(reader)
+                    .Select(rec => rec.ToEvent())
+                    .OrderByDescending(e => e.Timestamp);
+
+                foreach (var e in events)
+                {
+                    b.Process(e);
+                }
+            }
+
+            return b.Build();
+        }
+
         [Test]
         public void WhenInstanceAdded_ThenInstanceIncludedInSet()
         {
@@ -49,6 +74,7 @@ namespace Google.Solutions.LogAnalysis.Test.History
                 1,
                 SampleReference,
                 SampleImage,
+                InstanceState.Terminated,
                 DateTime.Now,
                 Tenancy.Fleet);
 
@@ -120,26 +146,8 @@ namespace Google.Solutions.LogAnalysis.Test.History
         [Test]
         public void WhenReadingSample1_ThenHistoryIsRestored()
         {
-            var testDataResource = Assembly.GetExecutingAssembly()
-                .GetManifestResourceNames()
-                .First(n => n.EndsWith("instance-1.json"));
+            var set = BuildHistoryFromResource("instance-1.json");
 
-            var b = new InstanceSetHistoryBuilder();
-
-            using (var stream = Assembly.GetExecutingAssembly().GetManifestResourceStream(testDataResource))
-            using (var reader = new JsonTextReader(new StreamReader(stream)))
-            {
-                var events = new JsonSerializer().Deserialize<LogRecord[]>(reader)
-                    .Select(rec => rec.ToEvent())
-                    .OrderByDescending(e => e.Timestamp);
-
-                foreach (var e in events)
-                {
-                    b.Process(e);
-                }
-            }
-
-            var set = b.Build();
             Assert.AreEqual(1, set.Instances.Count());
             Assert.AreEqual(0, set.InstancesWithIncompleteInformation.Count());
 
@@ -163,26 +171,7 @@ namespace Google.Solutions.LogAnalysis.Test.History
         [Test]
         public void WhenReadingSample2_ThenHistoryIsRestored()
         {
-            var testDataResource = Assembly.GetExecutingAssembly()
-                .GetManifestResourceNames()
-                .First(n => n.EndsWith("instance-2.json"));
-
-            var b = new InstanceSetHistoryBuilder();
-
-            using (var stream = Assembly.GetExecutingAssembly().GetManifestResourceStream(testDataResource))
-            using (var reader = new JsonTextReader(new StreamReader(stream)))
-            {
-                var events = new JsonSerializer().Deserialize<LogRecord[]>(reader)
-                    .Select(rec => rec.ToEvent())
-                    .OrderByDescending(e => e.Timestamp);
-
-                foreach (var e in events)
-                {
-                    b.Process(e);
-                }
-            }
-
-            var set = b.Build();
+            var set = BuildHistoryFromResource("instance-2.json");
             Assert.AreEqual(1, set.Instances.Count());
             Assert.AreEqual(0, set.InstancesWithIncompleteInformation.Count());
 
@@ -201,6 +190,52 @@ namespace Google.Solutions.LogAnalysis.Test.History
 
             // ..till GuestTerminate.
             Assert.AreEqual(DateTime.Parse("2020-05-06T16:03:06.484Z").ToUniversalTime(), placement.To);
+        }
+
+        [Test]
+        public void WhenReadingSample3_ThenHistoryIsRestored()
+        {
+            var set = BuildHistoryFromResource("instance-3.json");
+            Assert.AreEqual(1, set.Instances.Count());
+            Assert.AreEqual(0, set.InstancesWithIncompleteInformation.Count());
+
+            var instance = set.Instances.First();
+            Assert.AreEqual(Tenancy.SoleTenant, instance.Tenancy);
+            Assert.AreEqual(
+                GlobalResourceReference.FromString("projects/project-1/global/images/windows-server"),
+                instance.Image);
+            Assert.AreEqual(2, instance.Placements.Count());
+
+            var firstPlacement = instance.Placements.First();
+            Assert.AreEqual("413db7b32a208e7ccb4ee62acedee725", firstPlacement.ServerId);
+
+            // NotifyInstanceLocation..
+            Assert.AreEqual(DateTime.Parse("2020-05-05T08:31:43.735Z").ToUniversalTime(), firstPlacement.From);
+
+            // ..till TerminateOnHostMaintenance.
+            Assert.AreEqual(DateTime.Parse("2020-05-06T16:10:46.781Z").ToUniversalTime(), firstPlacement.To);
+
+
+            var secondPlacement = instance.Placements.Last();
+            Assert.AreEqual("413db7b32a208e7ccb4ee62acedee725", secondPlacement.ServerId);
+
+            // NotifyInstanceLocation..
+            Assert.AreEqual(DateTime.Parse("2020-05-06T16:36:01.441Z").ToUniversalTime(), secondPlacement.From);
+
+            // ..till GuestTerminate.
+            Assert.AreEqual(DateTime.Parse("2020-05-06T17:39:34.635Z").ToUniversalTime(), secondPlacement.To);
+        }
+
+        [Test]
+        public void SupportedMethodsIncludeSystemAndLifecycleEvents()
+        {
+            var b = new InstanceSetHistoryBuilder();
+
+            CollectionAssert.Contains(b.SupportedMethods, NotifyInstanceLocationEvent.Method);
+            CollectionAssert.Contains(b.SupportedMethods, HostErrorEvent.Method);
+
+            CollectionAssert.Contains(b.SupportedMethods, InsertInstanceEvent.Method);
+            CollectionAssert.Contains(b.SupportedMethods, DeleteInstanceEvent.Method);
         }
     }
 }

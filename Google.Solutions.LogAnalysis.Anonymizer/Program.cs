@@ -27,35 +27,49 @@ namespace Google.Solutions.LogAnalysis.Anonymizer
             return parts[1];
         }
 
+        private static void ScrubAndEmitEntry(JObject record, Formatting formatting)
+        {
+            var logName = record["logName"];
+            if (logName == null)
+            {
+                Console.WriteLine("Invalid format: entry does not have a logName");
+                Environment.Exit(1);
+            }
+            var projectId = ExtractProjectIdFromLogName(logName.Value<string>());
+
+            // Scrub request metadata.
+            if (record["protoPayload"] != null)
+            {
+                record["protoPayload"]["requestMetadata"] = null;
+            }
+
+            // Scrub authenticationInfo.
+            if (record["protoPayload"] != null)
+            {
+                record["protoPayload"]["authenticationInfo"] = null;
+            }
+
+            Console.WriteLine(record
+                .ToString(formatting)
+                .Replace(projectId, "project-1"));
+        }
+
         private static void ScrubAndEmitEntry(TextReader reader, Formatting formatting)
         {
             using (var jsonReader = new JsonTextReader(reader))
             {
-                var record = JObject.Load(jsonReader);
-
-                var logName = record["logName"];
-                if (logName == null)
+                var root = JToken.Load(jsonReader);
+                if (root is JArray recordArray)
                 {
-                    Console.WriteLine("Invalid format: entry does not have a logName");
-                    Environment.Exit(1);
+                    foreach (var record in root)
+                    {
+                        ScrubAndEmitEntry((JObject)record, formatting);
+                    }
                 }
-                var projectId = ExtractProjectIdFromLogName(logName.Value<string>());
-
-                // Scrub request metadata.
-                if (record["protoPayload"] != null)
+                else
                 {
-                    record["protoPayload"]["requestMetadata"] = null;
+                    ScrubAndEmitEntry((JObject)root, formatting);
                 }
-
-                // Scrub authenticationInfo.
-                if (record["protoPayload"] != null)
-                {
-                    record["protoPayload"]["authenticationInfo"] = null;
-                }
-
-                Console.WriteLine(record
-                    .ToString(formatting)
-                    .Replace(projectId, "project-1"));
             }
         }
 

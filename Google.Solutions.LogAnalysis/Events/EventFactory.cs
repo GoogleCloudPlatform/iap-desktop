@@ -63,7 +63,7 @@ namespace Google.Solutions.LogAnalysis.Events
             };
 
         public static IEnumerable<string> LifecycleEventMethods => lifecycleEvents.Keys;
-        public static IEnumerable<string> SystemEventMethods => lifecycleEvents.Keys;
+        public static IEnumerable<string> SystemEventMethods => systemEvents.Keys;
 
         public static EventBase FromRecord(LogRecord record)
         {

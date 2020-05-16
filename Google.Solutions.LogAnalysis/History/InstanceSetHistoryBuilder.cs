@@ -27,7 +27,7 @@ using System.Linq;
 
 namespace Google.Solutions.LogAnalysis.History
 {
-    internal class InstanceSetHistoryBuilder : IEventProcessor
+    public class InstanceSetHistoryBuilder : IEventProcessor
     {
         private readonly IDictionary<long, InstanceHistoryBuilder> instanceBuilders =
             new Dictionary<long, InstanceHistoryBuilder>();
@@ -50,6 +50,7 @@ namespace Google.Solutions.LogAnalysis.History
             long instanceId,
             VmInstanceReference reference,
             GlobalResourceReference image,
+            InstanceState state,
             DateTime lastSeen,
             Tenancy tenancy)
         {
@@ -57,6 +58,7 @@ namespace Google.Solutions.LogAnalysis.History
                 instanceId,
                 reference,
                 image,
+                state,
                 lastSeen,
                 tenancy);
         }

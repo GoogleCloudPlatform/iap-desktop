@@ -29,6 +29,7 @@ namespace Google.Solutions.LogAnalysis.History
 {
     public class InstanceHistory
     {
+        // TODO: make ulong
         public long InstanceId { get; }
 
         public VmInstanceReference Reference { get; }
