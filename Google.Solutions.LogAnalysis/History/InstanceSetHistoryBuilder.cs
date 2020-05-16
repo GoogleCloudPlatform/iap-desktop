@@ -31,12 +31,12 @@ namespace Google.Solutions.LogAnalysis.History
 {
     public class InstanceSetHistoryBuilder : IEventProcessor
     {
-        private readonly IDictionary<long, InstanceHistoryBuilder> instanceBuilders =
-            new Dictionary<long, InstanceHistoryBuilder>();
+        private readonly IDictionary<ulong, InstanceHistoryBuilder> instanceBuilders =
+            new Dictionary<ulong, InstanceHistoryBuilder>();
 
         private static string ShortZoneIdFromUrl(string url) => url.Substring(url.LastIndexOf("/") + 1);
 
-        private InstanceHistoryBuilder GetBuilder(long instanceId)
+        private InstanceHistoryBuilder GetBuilder(ulong instanceId)
         {
             if (this.instanceBuilders.TryGetValue(instanceId, out InstanceHistoryBuilder builder))
             {
@@ -51,7 +51,7 @@ namespace Google.Solutions.LogAnalysis.History
         }
 
         public void AddExistingInstance(
-            long instanceId,
+            ulong instanceId,
             VmInstanceReference reference,
             GlobalResourceReference image,
             InstanceState state,
@@ -114,7 +114,7 @@ namespace Google.Solutions.LogAnalysis.History
                     }
 
                     AddExistingInstance(
-                        (long)instance.Id.Value,
+                        (ulong)instance.Id.Value,
                         new VmInstanceReference(
                             projectId,
                             ShortZoneIdFromUrl(instance.Zone),

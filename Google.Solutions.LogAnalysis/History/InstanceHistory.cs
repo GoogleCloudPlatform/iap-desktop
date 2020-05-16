@@ -26,8 +26,7 @@ namespace Google.Solutions.LogAnalysis.History
 {
     public class InstanceHistory
     {
-        // TODO: make ulong
-        public long InstanceId { get; }
+        public ulong InstanceId { get; }
 
         public VmInstanceReference Reference { get; }
 
@@ -38,7 +37,7 @@ namespace Google.Solutions.LogAnalysis.History
         public Tenancy Tenancy { get; }
 
         internal InstanceHistory(
-            long instanceId,
+            ulong instanceId,
             VmInstanceReference reference,
             GlobalResourceReference image,
             Tenancy tenancy,

@@ -47,7 +47,7 @@ namespace Google.Solutions.LogAnalysis.History
         internal static IEnumerable<string> ProcessingMethods =>
             EventFactory.LifecycleEventMethods.Concat(EventFactory.SystemEventMethods);
 
-        public long InstanceId { get; }
+        public ulong InstanceId { get; }
         private readonly LinkedList<Placement> placements = new LinkedList<Placement>();
 
         public Tenancy Tenancy => this.placements.Any()
@@ -139,7 +139,7 @@ namespace Google.Solutions.LogAnalysis.History
         //---------------------------------------------------------------------
 
         private InstanceHistoryBuilder(
-            long instanceId,
+            ulong instanceId,
             VmInstanceReference reference,
             GlobalResourceReference image,
             InstanceState state,
@@ -165,7 +165,7 @@ namespace Google.Solutions.LogAnalysis.History
         }
 
         internal static InstanceHistoryBuilder ForExistingInstance(
-            long instanceId,
+            ulong instanceId,
             VmInstanceReference reference,
             GlobalResourceReference image,
             InstanceState state,
@@ -183,7 +183,7 @@ namespace Google.Solutions.LogAnalysis.History
                 tenancy);
         }
 
-        internal static InstanceHistoryBuilder ForDeletedInstance(long instanceId)
+        internal static InstanceHistoryBuilder ForDeletedInstance(ulong instanceId)
         {
             return new InstanceHistoryBuilder(
                 instanceId,

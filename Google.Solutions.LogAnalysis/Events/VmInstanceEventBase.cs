@@ -57,9 +57,9 @@ namespace Google.Solutions.LogAnalysis.Events
             }
         }
 
-        public long InstanceId => string.IsNullOrEmpty(base.LogRecord.Resource.Labels["instance_id"])
+        public ulong InstanceId => string.IsNullOrEmpty(base.LogRecord.Resource.Labels["instance_id"])
             ? 0
-            : long.Parse(base.LogRecord.Resource.Labels["instance_id"]);
+            : ulong.Parse(base.LogRecord.Resource.Labels["instance_id"]);
 
         protected VmInstanceEventBase(LogRecord logRecord)
             : base(logRecord)
