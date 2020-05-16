@@ -32,19 +32,9 @@ namespace Google.Solutions.Compute
     /// </summary>
     public class GlobalResourceReference : ResourceReference, IEquatable<GlobalResourceReference>
     {
-        public string ProjectId { get; }
-        public string ResourceType { get; }
-        public string ResourceName { get; }
-
         public GlobalResourceReference(string projectId, string resourceType, string resourceName)
+            : base(projectId, resourceType, resourceName)
         {
-            Debug.Assert(!long.TryParse(projectId, out long _));
-            Debug.Assert(!long.TryParse(resourceName, out long _));
-            Debug.Assert(!projectId.Contains("/"));
-
-            this.ProjectId = projectId;
-            this.ResourceType = resourceType;
-            this.ResourceName = resourceName;
         }
 
         public static GlobalResourceReference FromString(string resourceReference)

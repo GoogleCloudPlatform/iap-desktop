@@ -36,22 +36,14 @@ namespace Google.Solutions.Compute
 
         private const string UrlPrefix = "https://compute.googleapis.com/compute/v1/";
 
-        public string ProjectId { get; }
         public string Zone { get; }
-        public string ResourceType { get; }
-        public string ResourceName { get; }
 
         public ZonalResourceReference(string projectId, string zone, string resourceType, string resourceName)
+            : base(projectId, resourceType, resourceName)
         {
-            Debug.Assert(!long.TryParse(projectId, out long _));
-            Debug.Assert(!long.TryParse(resourceName, out long _));
-            Debug.Assert(!projectId.Contains("/"));
             Debug.Assert(!zone.Contains("/"));
 
-            this.ProjectId = projectId;
             this.Zone = zone;
-            this.ResourceType = resourceType;
-            this.ResourceName = resourceName;
         }
 
         public static ZonalResourceReference FromString(string resourceReference)
