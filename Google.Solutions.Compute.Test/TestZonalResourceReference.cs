@@ -40,10 +40,22 @@ namespace Google.Solutions.Compute.Test
         }
 
         [Test]
-        public void WhenUrilIsFullyQualified_FromStringReturnsObject()
+        public void WhenQualifiedByComputeGoogleapisHost_FromStringReturnsObject()
         {
             var ref1 = ZonalResourceReference.FromString(
                 "https://compute.googleapis.com/compute/v1/projects/project-1/zones/us-central1-a/diskTypes/pd-standard");
+
+            Assert.AreEqual("diskTypes", ref1.ResourceType);
+            Assert.AreEqual("pd-standard", ref1.ResourceName);
+            Assert.AreEqual("us-central1-a", ref1.Zone);
+            Assert.AreEqual("project-1", ref1.ProjectId);
+        }
+
+        [Test]
+        public void WhenQualifiedByGoogleapisHost_FromStringReturnsObject()
+        {
+            var ref1 = ZonalResourceReference.FromString(
+                "https://www.googleapis.com/compute/v1/projects/project-1/zones/us-central1-a/diskTypes/pd-standard");
 
             Assert.AreEqual("diskTypes", ref1.ResourceType);
             Assert.AreEqual("pd-standard", ref1.ResourceName);

@@ -51,39 +51,10 @@ namespace Google.Solutions.LogAnalysis.QuickTest
 
 
             var instanceSetBuilder = new InstanceSetHistoryBuilder();
-
-            var instances = await computeService.Instances.AggregatedList(projectId).ExecuteAsync();
-            foreach (var list in instances.Items.Values)
-            {
-                if (list.Instances == null)
-                {
-                    continue;
-                }
-
-                foreach (var instance in list.Instances)
-                {
-                    instanceSetBuilder.AddExistingInstance(
-                        (long)instance.Id.Value,
-                        new VmInstanceReference(
-                            projectId,
-                            ShortIdFromUrl(instance.Zone),
-                            instance.Name),
-                        instance.Disks
-                            .EnsureNotNull()
-                            .Where(d => d.Boot != null && d.Boot.Value)
-                            .EnsureNotNull()
-                            .Where(d => d.InitializeParams != null)
-                            .Select(d => GlobalResourceReference.FromString(d.InitializeParams.SourceImage))
-                            .FirstOrDefault(),
-                        instance.Status == "RUNNING"
-                            ? InstanceState.Running
-                            : InstanceState.Terminated,
-                        DateTime.Now,
-                        instance.Scheduling.NodeAffinities != null && instance.Scheduling.NodeAffinities.Any()
-                            ? Tenancy.SoleTenant
-                            : Tenancy.Fleet);
-                }
-            }
+            await instanceSetBuilder.AddExistingInstances(
+                computeService.Instances,
+                computeService.Disks,
+                projectId);
 
             await loggingService.Entries.ListInstanceEventsAsync(
                 new[] { projectId },

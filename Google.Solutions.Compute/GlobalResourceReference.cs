@@ -30,10 +30,8 @@ namespace Google.Solutions.Compute
     /// 
     /// projects/[project-id]/global/[type]/[name]
     /// </summary>
-    public class GlobalResourceReference : IEquatable<GlobalResourceReference>
+    public class GlobalResourceReference : ResourceReference, IEquatable<GlobalResourceReference>
     {
-        private const string UrlPrefix = "https://compute.googleapis.com/compute/v1/";
-
         public string ProjectId { get; }
         public string ResourceType { get; }
         public string ResourceName { get; }
@@ -49,17 +47,14 @@ namespace Google.Solutions.Compute
             this.ResourceName = resourceName;
         }
 
-        public static GlobalResourceReference FromString(string url)
+        public static GlobalResourceReference FromString(string resourceReference)
         {
-            if (url.StartsWith(UrlPrefix))
-            {
-                url = url.Substring(UrlPrefix.Length);
-            }
+            resourceReference = StripUrlPrefix(resourceReference);
 
             // The resource name format is 
             // projects/[project-id]/global/[type]/[name], but
             // [name] might contain slashes.
-            var parts = url.Split('/');
+            var parts = resourceReference.Split('/');
             if (parts.Length < 5 ||
                 string.IsNullOrEmpty(parts[1]) ||
                 string.IsNullOrEmpty(parts[3]) ||
@@ -67,7 +62,7 @@ namespace Google.Solutions.Compute
                 parts[0] != "projects" ||
                 parts[2] != "global")
             {
-                throw new ArgumentException($"'{url}' is not a valid global resource reference");
+                throw new ArgumentException($"'{resourceReference}' is not a valid global resource reference");
             }
 
             return new GlobalResourceReference(

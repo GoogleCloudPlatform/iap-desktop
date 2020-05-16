@@ -18,12 +18,14 @@
 // specific language governing permissions and limitations
 // under the License.
 //
+using Google.Apis.Compute.v1;
 using Google.Solutions.Compute;
 using Google.Solutions.LogAnalysis.Events;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace Google.Solutions.LogAnalysis.History
 {
@@ -31,6 +33,8 @@ namespace Google.Solutions.LogAnalysis.History
     {
         private readonly IDictionary<long, InstanceHistoryBuilder> instanceBuilders =
             new Dictionary<long, InstanceHistoryBuilder>();
+
+        private static string ShortZoneIdFromUrl(string url) => url.Substring(url.LastIndexOf("/") + 1);
 
         private InstanceHistoryBuilder GetBuilder(long instanceId)
         {
@@ -61,6 +65,70 @@ namespace Google.Solutions.LogAnalysis.History
                 state,
                 lastSeen,
                 tenancy);
+        }
+
+        public async Task AddExistingInstances(
+            InstancesResource instancesResource,
+            DisksResource disksResource,
+            string projectId)
+        {
+            // Instances.list returns the disks associated with each
+            // instance, but lacks the information about the source image.
+            // Therefore, load disks separately.
+
+            // TODO: Tracing
+
+            // TODO: Paging
+            var disks = await disksResource.AggregatedList(projectId).ExecuteAsync();
+            var sourceImagaesByDisk = disks.Items.Values
+                .Where(v => v.Disks != null)
+                .EnsureNotNull()
+                .SelectMany(v => v.Disks)
+                .EnsureNotNull()
+                .ToDictionary(d => d.SelfLink, d => d.SourceImage);
+
+            // TODO: Paging
+            var instances = await instancesResource.AggregatedList(projectId).ExecuteAsync();
+            foreach (var list in instances.Items.Values)
+            {
+                if (list.Instances == null)
+                {
+                    continue;
+                }
+
+                foreach (var instance in list.Instances)
+                {
+                    var bootDiskUrl = instance.Disks
+                        .EnsureNotNull()
+                        .Where(d => d.Boot != null && d.Boot.Value)
+                        .EnsureNotNull()
+                        .Select(d => d.Source)
+                        .EnsureNotNull()
+                        .FirstOrDefault();
+                    GlobalResourceReference image = null;
+                    if (bootDiskUrl != null && 
+                        sourceImagaesByDisk.TryGetValue(bootDiskUrl, out string imageUrl) &&
+                        imageUrl != null)
+                    {
+                        image = GlobalResourceReference.FromString(imageUrl);
+                    }
+
+                    AddExistingInstance(
+                        (long)instance.Id.Value,
+                        new VmInstanceReference(
+                            projectId,
+                            ShortZoneIdFromUrl(instance.Zone),
+                            instance.Name),
+                        image,
+                        instance.Status == "RUNNING"
+                            ? InstanceState.Running
+                            : InstanceState.Terminated,
+                        DateTime.Now,
+                        instance.Scheduling.NodeAffinities != null && instance.Scheduling.NodeAffinities.Any()
+                            ? Tenancy.SoleTenant
+                            : Tenancy.Fleet);
+                }
+            }
         }
 
         public InstanceSetHistory Build()

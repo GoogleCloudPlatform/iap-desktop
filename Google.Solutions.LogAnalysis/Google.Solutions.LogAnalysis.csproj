@@ -42,6 +42,9 @@
     <Reference Include="Google.Apis.Auth.PlatformServices, Version=1.40.3.0, Culture=neutral, PublicKeyToken=4b01fa6e34db77ab, processorArchitecture=MSIL">
       <HintPath>..\packages\Google.Apis.Auth.1.40.3\lib\net45\Google.Apis.Auth.PlatformServices.dll</HintPath>
     </Reference>
+    <Reference Include="Google.Apis.Compute.v1, Version=1.40.3.1687, Culture=neutral, PublicKeyToken=4b01fa6e34db77ab, processorArchitecture=MSIL">
+      <HintPath>..\packages\Google.Apis.Compute.v1.1.40.3.1687\lib\net45\Google.Apis.Compute.v1.dll</HintPath>
+    </Reference>
     <Reference Include="Google.Apis.Core, Version=1.40.3.0, Culture=neutral, PublicKeyToken=4b01fa6e34db77ab, processorArchitecture=MSIL">
       <HintPath>..\packages\Google.Apis.Core.1.40.3\lib\net45\Google.Apis.Core.dll</HintPath>
     </Reference>
@@ -111,8 +114,8 @@
       <Name>Google.Solutions.Compute</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup />
   <ItemGroup>
+    <None Include="app.config" />
     <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

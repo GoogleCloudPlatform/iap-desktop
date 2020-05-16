@@ -50,7 +50,7 @@ namespace Google.Solutions.Compute.Test
         }
 
         [Test]
-        public void WhenUrilIsFullyQualified_FromStringReturnsObject()
+        public void WhenQualifiedByComputeGoogleapisHost_FromStringReturnsObject()
         {
             var ref1 = GlobalResourceReference.FromString(
                 "https://compute.googleapis.com/compute/v1/projects/debian-cloud/global/images/family/debian-9");
@@ -58,6 +58,17 @@ namespace Google.Solutions.Compute.Test
             Assert.AreEqual("images", ref1.ResourceType);
             Assert.AreEqual("family/debian-9", ref1.ResourceName);
             Assert.AreEqual("debian-cloud", ref1.ProjectId);
+        }
+
+        [Test]
+        public void WhenQualifiedByGoogleapisHost_FromStringReturnsObject()
+        {
+            var ref1 = GlobalResourceReference.FromString(
+                "https://www.googleapis.com/compute/v1/projects/windows-cloud/global/licenses/windows-server-core");
+
+            Assert.AreEqual("licenses", ref1.ResourceType);
+            Assert.AreEqual("windows-server-core", ref1.ResourceName);
+            Assert.AreEqual("windows-cloud", ref1.ProjectId);
         }
 
         [Test]

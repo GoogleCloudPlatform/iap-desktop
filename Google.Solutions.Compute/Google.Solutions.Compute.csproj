@@ -84,6 +84,7 @@
     <Compile Include="ExceptionExtensions.cs" />
     <Compile Include="Net\RestClient.cs" />
     <Compile Include="GlobalResourceReference.cs" />
+    <Compile Include="ResourceReference.cs" />
     <Compile Include="ZonalResourceReference.cs" />
     <Compile Include="TraceSources.cs" />
     <Compile Include="Extensions\ResetWindowsUser.cs" />

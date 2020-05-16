@@ -29,8 +29,11 @@ namespace Google.Solutions.Compute
     /// 
     /// projects/[project-id]/zones/[zone]/[type]/[name]
     /// </summary>
-    public class ZonalResourceReference : IEquatable<ZonalResourceReference>
+    public class ZonalResourceReference : ResourceReference, IEquatable<ZonalResourceReference>
     {
+        private const string ComputeGoogleapisPrefix = "https://compute.googleapis.com/compute/v1/";
+        private const string GoogleapisUrlPrefix = "https://www.googleapis.com/compute/v1/";
+
         private const string UrlPrefix = "https://compute.googleapis.com/compute/v1/";
 
         public string ProjectId { get; }
@@ -51,16 +54,13 @@ namespace Google.Solutions.Compute
             this.ResourceName = resourceName;
         }
 
-        public static ZonalResourceReference FromString(string url)
+        public static ZonalResourceReference FromString(string resourceReference)
         {
-            if (url.StartsWith(UrlPrefix))
-            {
-                url = url.Substring(UrlPrefix.Length);
-            }
+            resourceReference = StripUrlPrefix(resourceReference);
 
             // The resource name format is 
             // projects/[project-id]/zones/[zone]/[type]/[name]
-            var parts = url.Split('/');
+            var parts = resourceReference.Split('/');
             if (parts.Length != 6 ||
                 string.IsNullOrEmpty(parts[1]) ||
                 string.IsNullOrEmpty(parts[3]) ||
@@ -69,7 +69,7 @@ namespace Google.Solutions.Compute
                 parts[0] != "projects" ||
                 parts[2] != "zones")
             {
-                throw new ArgumentException($"'{url}' is not a valid zonal resource reference");
+                throw new ArgumentException($"'{resourceReference}' is not a valid zonal resource reference");
             }
 
             return new ZonalResourceReference(parts[1], parts[3], parts[4], parts[5]);
