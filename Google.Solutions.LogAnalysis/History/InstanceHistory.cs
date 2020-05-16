@@ -20,7 +20,6 @@
 //
 
 using Google.Solutions.Compute;
-using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
@@ -48,8 +47,6 @@ namespace Google.Solutions.LogAnalysis.History
             IEnumerable<Placement> placements
             )
         {
-            Debug.Assert(tenancy == Tenancy.SoleTenant || !placements.Any());
-
             this.InstanceId = instanceId;
             this.Reference = reference;
             this.Image = image;
@@ -61,63 +58,5 @@ namespace Google.Solutions.LogAnalysis.History
         {
             return $"{this.Reference} ({this.InstanceId})";
         }
-    }
-
-    public class Placement
-    {
-        public Tenancy Tenancy { get; }
-        public string ServerId { get; }
-        public DateTime From { get; }
-        public DateTime To { get; }
-
-        private Placement(Tenancy tenancy, string serverId, DateTime from, DateTime to)
-        {
-            this.Tenancy = tenancy;
-            this.ServerId = serverId;
-            this.From = from;
-            this.To = to;
-        }
-
-        public Placement(DateTime from, DateTime to)
-            :this(Tenancy.Fleet, null, from, to)
-        {
-        }
-
-        public Placement(string serverId, DateTime from, DateTime to)
-            :this(Tenancy.SoleTenant, serverId, from, to)
-        {
-        }
-
-        public bool IsAdjacent(Placement subsequentPlacement)
-        {
-            return this.Tenancy == subsequentPlacement.Tenancy &&
-                    this.To == subsequentPlacement.From &&
-                    this.ServerId == subsequentPlacement.ServerId;
-        }
-
-        public Placement Merge(Placement subsequentPlacement)
-        {
-            Debug.Assert(IsAdjacent(subsequentPlacement));
-            return new Placement(
-                this.Tenancy,
-                this.ServerId,
-                this.From,
-                subsequentPlacement.To);
-        }
-
-        public override string ToString()
-        {
-            var where = this.Tenancy == Tenancy.SoleTenant
-                ? this.ServerId
-                : "fleet";
-            return $"{this.From} - {this.To} on {where}";
-        }
-    }
-
-    public enum Tenancy
-    {
-        SoleTenant, 
-        Fleet, 
-        Unknown
     }
 }

@@ -40,7 +40,6 @@ namespace Google.Solutions.LogAnalysis.History
         // become ambiguous. Therefore, it is important to use instance ID as primary
         // key, even though the reference is more user-friendly and meaningful.
 
-
         // Error events are not relevant for building the history, we only need
         // informational records.
         internal static EventOrder ProcessingOrder = EventOrder.NewestFirst;
@@ -51,7 +50,10 @@ namespace Google.Solutions.LogAnalysis.History
         public long InstanceId { get; }
         private readonly LinkedList<Placement> placements = new LinkedList<Placement>();
 
-        public Tenancy Tenancy { get; private set; }
+        public Tenancy Tenancy => this.placements.Any()
+            ? this.placements.First().Tenancy
+            : Tenancy.Unknown;
+
         public DateTime? LastStoppedOn { get; private set; }
 
         public bool IsDefunct { get; private set; } = false;
@@ -79,6 +81,59 @@ namespace Google.Solutions.LogAnalysis.History
             this.placements.AddFirst(placement);
         }
 
+        public void AddPlacement(Tenancy tenancy, string serverId, DateTime date)
+        {
+            Debug.Assert(date <= this.lastEventDate);
+            this.lastEventDate = date;
+            this.State = InstanceState.Running;
+
+            DateTime placedUntil;
+            if (this.placements.Count == 0)
+            {
+                if (this.LastStoppedOn.HasValue)
+                {
+                    Debug.Assert(this.LastStoppedOn != null);
+                    Debug.Assert(date <= this.LastStoppedOn);
+
+                    placedUntil = this.LastStoppedOn.Value;
+                }
+                else
+                {
+                    Debug.WriteLine(
+                        $"Instance {this.InstanceId} was placed, but never stopped, " +
+                        "and yet is not running anymore. Flagging as defunct.");
+                    this.IsDefunct = true;
+                    return;
+                }
+            }
+            else
+            {
+                if (this.LastStoppedOn.HasValue)
+                {
+                    Debug.Assert(date <= this.LastStoppedOn);
+                    Debug.Assert(date <= this.placements.First().From);
+
+                    placedUntil = DateTimeUtil.Min(
+                        this.LastStoppedOn.Value,
+                        this.placements.First().From);
+                }
+                else
+                {
+                    Debug.Assert(date <= this.placements.First().From);
+                    placedUntil = this.placements.First().From;
+                }
+            }
+
+            if (tenancy == Tenancy.SoleTenant)
+            {
+                AddPlacement(new Placement(serverId, date, placedUntil));
+            }
+            else
+            {
+                AddPlacement(new Placement(date, placedUntil));
+            }
+        }
+
         //---------------------------------------------------------------------
         // Ctor
         //---------------------------------------------------------------------
@@ -88,7 +143,7 @@ namespace Google.Solutions.LogAnalysis.History
             VmInstanceReference reference,
             GlobalResourceReference image,
             InstanceState state,
-            DateTime? lastStoppedOn,
+            DateTime? lastSeen,
             Tenancy tenancy)
         {
             Debug.Assert(instanceId != 0);
@@ -97,8 +152,16 @@ namespace Google.Solutions.LogAnalysis.History
             this.Reference = reference;
             this.Image = image;
             this.State = state;
-            this.LastStoppedOn = lastStoppedOn;
-            this.Tenancy = tenancy;
+            this.LastStoppedOn = lastSeen;
+
+            if (state == InstanceState.Running)
+            {
+                Debug.Assert(tenancy != Tenancy.Unknown);
+                Debug.Assert(lastSeen != null);
+
+                // Add a synthetic placement.
+                AddPlacement(new Placement(tenancy, null, lastSeen.Value, lastSeen.Value));
+            }
         }
 
         internal static InstanceHistoryBuilder ForExistingInstance(
@@ -166,7 +229,7 @@ namespace Google.Solutions.LogAnalysis.History
 
         public void OnInsert(DateTime date, VmInstanceReference reference, GlobalResourceReference image)
         {
-            Debug.Assert(date < this.lastEventDate);
+            Debug.Assert(date <= this.lastEventDate);
             this.lastEventDate = date;
 
             // Mind you, we are processing history in reverse, so this is the
@@ -180,22 +243,19 @@ namespace Google.Solutions.LogAnalysis.History
                 this.Reference = reference;
             }
 
-            if (this.Tenancy == Tenancy.Unknown)
-            {
-                // We have not seen any OnSetPlacement call - by now, it is therefore 
-                // clear that this is not a sole tenant VM.
-                this.Tenancy = History.Tenancy.Fleet;
-            }
-
             if (this.Image == null)
             {
                 this.Image = image;
             }
+
+            // Register Fleet placement - this might be merged with an existing
+            // SoleTenant placement if there has been one registerd before.
+            AddPlacement(Tenancy.Fleet, null, date);
         }
 
         public void OnStart(DateTime date, VmInstanceReference reference)
         {
-            Debug.Assert(date < this.lastEventDate);
+            Debug.Assert(date <= this.lastEventDate);
             this.lastEventDate = date;
 
             // Mind you, we are processing history in reverse, so this is the
@@ -206,11 +266,15 @@ namespace Google.Solutions.LogAnalysis.History
             {
                 this.Reference = reference;
             }
+
+            // Register Fleet placement - this might be merged with an existing
+            // SoleTenant placement if there has been one registerd before.
+            AddPlacement(Tenancy.Fleet, null, date);
         }
 
         public void OnStop(DateTime date, VmInstanceReference reference)
         {
-            Debug.Assert(date < this.lastEventDate);
+            Debug.Assert(date <= this.lastEventDate);
             this.lastEventDate = date;
 
             this.State = InstanceState.Running;
@@ -229,50 +293,7 @@ namespace Google.Solutions.LogAnalysis.History
             this.lastEventDate = date;
             this.State = InstanceState.Running;
 
-            // Now we know for sure it is a sole tenant VM.
-            this.Tenancy = Tenancy.SoleTenant;
-
-            DateTime placedUntil;
-            if (this.placements.Count == 0)
-            {
-                if (this.LastStoppedOn.HasValue)
-                {
-                    Debug.Assert(this.LastStoppedOn != null);
-                    Debug.Assert(date <= this.LastStoppedOn);
-
-                    placedUntil = this.LastStoppedOn.Value;
-                }
-                else
-                {
-                    Debug.WriteLine(
-                        $"Instance {this.InstanceId} was placed, but never stopped, " +
-                        "and yet is not running anymore. Flagging as defunct.");
-                    this.IsDefunct = true;
-                    return;
-                }
-            }
-            else
-            {
-                if (this.LastStoppedOn.HasValue)
-                {
-                    Debug.Assert(date <= this.LastStoppedOn);
-                    Debug.Assert(date <= this.placements.First().From);
-
-                    placedUntil = DateTimeUtil.Min(
-                        this.LastStoppedOn.Value,
-                        this.placements.First().From);
-                }
-                else
-                {
-                    Debug.Assert(date <= this.placements.First().From);
-                    placedUntil = this.placements.First().From;
-                }
-            }
-
-            // For a fleet VM, we'd never receive this kind of VM, so this must be 
-            // a sole tenant VM.
-            this.Tenancy = History.Tenancy.SoleTenant;
-            AddPlacement(new Placement(serverId, date, placedUntil));
+            AddPlacement(Tenancy.SoleTenant, serverId, date);
         }
 
         //---------------------------------------------------------------------

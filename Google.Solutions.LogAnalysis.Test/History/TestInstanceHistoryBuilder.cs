@@ -66,6 +66,7 @@ namespace Google.Solutions.LogAnalysis.Test.History
         public void WhenInstanceDeletedAndInsertRegistered_TheTenancyIsFleet()
         {
             var b = InstanceHistoryBuilder.ForDeletedInstance(1);
+            b.OnStop(new DateTime(2019, 12, 30), SampleReference);
             b.OnInsert(new DateTime(2019, 12, 30), SampleReference, SampleImage);
             var i = b.Build();
 
@@ -76,6 +77,7 @@ namespace Google.Solutions.LogAnalysis.Test.History
         public void WhenInstanceDeletedAndPlacementRegistered_TheTenancyIsSoleTenant()
         {
             var b = InstanceHistoryBuilder.ForDeletedInstance(1);
+            b.OnStop(new DateTime(2019, 12, 31), SampleReference);
             b.OnSetPlacement("server-1", new DateTime(2019, 12, 30));
 
             var i = b.Build();
@@ -334,7 +336,7 @@ namespace Google.Solutions.LogAnalysis.Test.History
                 1,
                 SampleReference,
                 SampleImage,
-                InstanceState.Terminated,
+                InstanceState.Running,
                 DateTime.Now,
                 Tenancy.SoleTenant);
             Assert.IsFalse(b.IsMoreInformationNeeded);
@@ -370,7 +372,7 @@ namespace Google.Solutions.LogAnalysis.Test.History
             var b = InstanceHistoryBuilder.ForDeletedInstance(1);
             b.OnStop(new DateTime(2019, 12, 31), SampleReference);
             b.OnSetPlacement("server-2", new DateTime(2019, 12, 30));
-            b.OnInsert(new DateTime(2019, 12, 29), SampleReference, SampleImage);
+            b.OnInsert(new DateTime(2019, 12, 30), SampleReference, SampleImage);
             Assert.IsFalse(b.IsMoreInformationNeeded);
         }
 
@@ -378,6 +380,7 @@ namespace Google.Solutions.LogAnalysis.Test.History
         public void WhenInstanceDeletedAndInsertRegistered_ThenNoMoreInformationNeeded()
         {
             var b = InstanceHistoryBuilder.ForDeletedInstance(1);
+            b.OnStop(new DateTime(2019, 12, 29), SampleReference);
             b.OnInsert(new DateTime(2019, 12, 29), SampleReference, SampleImage);
             Assert.IsFalse(b.IsMoreInformationNeeded);
         }

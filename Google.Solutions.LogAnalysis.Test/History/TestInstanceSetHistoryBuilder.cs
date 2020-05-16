@@ -74,7 +74,7 @@ namespace Google.Solutions.LogAnalysis.Test.History
                 1,
                 SampleReference,
                 SampleImage,
-                InstanceState.Terminated,
+                InstanceState.Running,
                 DateTime.Now,
                 Tenancy.Fleet);
 
@@ -118,6 +118,24 @@ namespace Google.Solutions.LogAnalysis.Test.History
         public void WhenInstanceNotAddedButInsertEventRecorded_ThenInstanceIncludedInSet()
         {
             var b = new InstanceSetHistoryBuilder();
+            b.Process(new TerminateOnHostMaintenanceEvent(new LogRecord()
+            {
+                LogName = "projects/project-1/logs/cloudaudit.googleapis.com%2Fsystem_event",
+                ProtoPayload = new AuditLogRecord()
+                {
+                    MethodName = TerminateOnHostMaintenanceEvent.Method,
+                    ResourceName = "projects/project-1/zones/us-central1-a/instances/instance-1",
+                },
+                Resource = new ResourceRecord()
+                {
+                    Labels = new Dictionary<string, string>
+                    {
+                        { "instance_id", "123" }
+                    }
+                },
+                Timestamp = new DateTime(2019, 12, 31),
+                Severity = "INFO"
+            }));
             b.Process(new InsertInstanceEvent(new LogRecord()
             {
                 LogName = "projects/project-1/logs/cloudaudit.googleapis.com%2Factivity",
@@ -161,10 +179,10 @@ namespace Google.Solutions.LogAnalysis.Test.History
             var placement = instance.Placements.First();
             Assert.AreEqual("15934ff9aee7d8c5719fad1053b7fc7d", placement.ServerId);
 
-            // NotifyInstanceLocation..
-            Assert.AreEqual(DateTime.Parse("2020-05-06T14:58:55.490Z").ToUniversalTime(), placement.From);
+            // Insert..
+            Assert.AreEqual(DateTime.Parse("2020-05-06T14:58:53.077Z").ToUniversalTime(), placement.From);
 
-            // ..till
+            // ..till delete
             Assert.AreEqual(DateTime.Parse("2020-05-15T10:57:06.997Z").ToUniversalTime(), placement.To);
         }
 
@@ -185,8 +203,8 @@ namespace Google.Solutions.LogAnalysis.Test.History
             var placement = instance.Placements.First();
             Assert.AreEqual("15934ff9aee7d8c5719fad1053b7fc7d", placement.ServerId);
 
-            // NotifyInstanceLocation..
-            Assert.AreEqual(DateTime.Parse("2020-05-06T14:57:49.149Z").ToUniversalTime(), placement.From);
+            // Insert..
+            Assert.AreEqual(DateTime.Parse("2020-05-06T14:57:46.557Z").ToUniversalTime(), placement.From);
 
             // ..till GuestTerminate.
             Assert.AreEqual(DateTime.Parse("2020-05-06T16:03:06.484Z").ToUniversalTime(), placement.To);
@@ -209,8 +227,8 @@ namespace Google.Solutions.LogAnalysis.Test.History
             var firstPlacement = instance.Placements.First();
             Assert.AreEqual("413db7b32a208e7ccb4ee62acedee725", firstPlacement.ServerId);
 
-            // NotifyInstanceLocation..
-            Assert.AreEqual(DateTime.Parse("2020-05-05T08:31:43.735Z").ToUniversalTime(), firstPlacement.From);
+            // Insert..
+            Assert.AreEqual(DateTime.Parse("2020-05-05T08:31:40.864Z").ToUniversalTime(), firstPlacement.From);
 
             // ..till TerminateOnHostMaintenance.
             Assert.AreEqual(DateTime.Parse("2020-05-06T16:10:46.781Z").ToUniversalTime(), firstPlacement.To);
