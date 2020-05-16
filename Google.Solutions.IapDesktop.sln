@@ -36,8 +36,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Installer", "Installer", "{
 		installer\Product.wxs = installer\Product.wxs
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Google.Solutions.LogAnalysis.Anonymizer", "Google.Solutions.LogAnalysis.Anonymizer\Google.Solutions.LogAnalysis.Anonymizer.csproj", "{8C537B2A-22D5-43CC-A85A-DE4E453A8B43}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Google.Solutions.LogAnalysis.QuickTest", "Google.Solutions.LogAnalysis.QuickTest\Google.Solutions.LogAnalysis.QuickTest.csproj", "{FA26EE39-8446-485F-BFBB-2FC6D27EE67F}"
 EndProject
 Global
