@@ -50,7 +50,9 @@ namespace Google.Solutions.LogAnalysis.QuickTest
             });
 
 
-            var instanceSetBuilder = new InstanceSetHistoryBuilder();
+            var instanceSetBuilder = new InstanceSetHistoryBuilder(
+                DateTime.UtcNow.AddDays(-days),
+                DateTime.UtcNow);
             await instanceSetBuilder.AddExistingInstances(
                 computeService.Instances,
                 computeService.Disks,

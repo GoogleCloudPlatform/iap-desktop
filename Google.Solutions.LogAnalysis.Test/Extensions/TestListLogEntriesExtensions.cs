@@ -51,6 +51,9 @@ namespace Google.Solutions.LogAnalysis.Test.Extensions
                 HttpClientInitializer = Defaults.GetCredential()
             });
 
+            var startDate = DateTime.UtcNow.AddDays(-30);
+            var endDate = DateTime.UtcNow;
+
             var request = new ListLogEntriesRequest()
             {
                 ResourceNames = new[]
@@ -58,17 +61,17 @@ namespace Google.Solutions.LogAnalysis.Test.Extensions
                     "projects/" + Defaults.ProjectId
                 },
                 Filter = $"resource.type=\"gce_instance\" " +
-                    $"AND protoPayload.methodName:* " +
-                    $"AND timestamp > {DateTime.Now.AddDays(-1):yyyy-MM-dd}",
+                    $"AND protoPayload.methodName:{InsertInstanceEvent.Method} " +
+                    $"AND timestamp > {startDate:yyyy-MM-dd}",
                 PageSize = 1000,
                 OrderBy = "timestamp desc"
             };
 
             var events = new List<EventBase>();
-            var instanceBuilder = new InstanceSetHistoryBuilder();
+            var instanceBuilder = new InstanceSetHistoryBuilder(startDate, endDate);
 
             // Creating the VM might be quicker than the logs become available.
-            for (int retry = 0; retry < 3 && !events.Any(); retry++)
+            for (int retry = 0; retry < 4 && !events.Any(); retry++)
             {
                 await Task.Delay(20 * 1000);
                 await loggingService.Entries.ListEventsAsync(

@@ -19,19 +19,27 @@
 // under the License.
 //
 
+using System;
 using System.Collections.Generic;
 
 namespace Google.Solutions.LogAnalysis.History
 {
     public class InstanceSetHistory
     {
+        public DateTime StartDate { get; }
+        public DateTime EndDate { get; }
+
         public IEnumerable<InstanceHistory> Instances { get; }
         public IEnumerable<InstanceHistory> InstancesWithIncompleteInformation { get; }
 
         internal InstanceSetHistory(
+            DateTime startDate,
+            DateTime endDate,
             IEnumerable<InstanceHistory> instances,
             IEnumerable<InstanceHistory> instancesWithIncompleteInformation)
         {
+            this.StartDate = startDate;
+            this.EndDate = endDate;
             this.Instances = instances;
             this.InstancesWithIncompleteInformation = instancesWithIncompleteInformation;
         }

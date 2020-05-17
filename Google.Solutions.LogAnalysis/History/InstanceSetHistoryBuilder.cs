@@ -34,9 +34,12 @@ namespace Google.Solutions.LogAnalysis.History
         private readonly IDictionary<ulong, InstanceHistoryBuilder> instanceBuilders =
             new Dictionary<ulong, InstanceHistoryBuilder>();
 
+        public DateTime StartDate { get; }
+        public DateTime EndDate { get; }
+
         private static string ShortZoneIdFromUrl(string url) => url.Substring(url.LastIndexOf("/") + 1);
 
-        private InstanceHistoryBuilder GetBuilder(ulong instanceId)
+        private InstanceHistoryBuilder GetInstanceHistoryBuilder(ulong instanceId)
         {
             if (this.instanceBuilders.TryGetValue(instanceId, out InstanceHistoryBuilder builder))
             {
@@ -48,6 +51,18 @@ namespace Google.Solutions.LogAnalysis.History
                 this.instanceBuilders[instanceId] = newBuilder;
                 return newBuilder;
             }
+        }
+
+        public InstanceSetHistoryBuilder(
+            DateTime startDate,
+            DateTime endDate)
+        {
+            Debug.Assert(startDate.Kind == DateTimeKind.Utc);
+            Debug.Assert(startDate.Kind == DateTimeKind.Utc);
+            Debug.Assert(startDate < endDate);
+
+            this.StartDate = startDate;
+            this.EndDate = endDate;
         }
 
         public void AddExistingInstance(
@@ -139,6 +154,8 @@ namespace Google.Solutions.LogAnalysis.History
             Debug.Assert(complete.All(i => i.Tenancy != Tenancy.Unknown));
 
             return new InstanceSetHistory(
+                this.StartDate,
+                this.EndDate,
                 complete.Select(b => b.Build()),
                 incomplete.Select(b => b.Build()));
         }
@@ -159,7 +176,7 @@ namespace Google.Solutions.LogAnalysis.History
             // These are useless for our purpose.
             if (e is VmInstanceEventBase instanceEvent && instanceEvent.InstanceId != 0)
             {
-                GetBuilder(instanceEvent.InstanceId).Process(e);
+                GetInstanceHistoryBuilder(instanceEvent.InstanceId).Process(e);
             }
         }
     }

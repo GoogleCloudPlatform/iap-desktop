@@ -48,7 +48,9 @@ namespace Google.Solutions.LogAnalysis.Test.History
                 .GetManifestResourceNames()
                 .First(n => n.EndsWith(resourceName));
 
-            var b = new InstanceSetHistoryBuilder();
+            var b = new InstanceSetHistoryBuilder(
+                new DateTime(2019, 12, 1, 0, 0, 0, DateTimeKind.Utc),
+                new DateTime(2020, 1, 1, 0, 0, 0, DateTimeKind.Utc));
 
             using (var stream = Assembly.GetExecutingAssembly().GetManifestResourceStream(testDataResource))
             using (var reader = new JsonTextReader(new StreamReader(stream)))
@@ -69,7 +71,10 @@ namespace Google.Solutions.LogAnalysis.Test.History
         [Test]
         public void WhenInstanceAdded_ThenInstanceIncludedInSet()
         {
-            var b = new InstanceSetHistoryBuilder();
+            var b = new InstanceSetHistoryBuilder(
+                new DateTime(2019, 12, 1, 0, 0, 0, DateTimeKind.Utc),
+                new DateTime(2020, 1, 1, 0, 0, 0, DateTimeKind.Utc));
+
             b.AddExistingInstance(
                 1,
                 SampleReference,
@@ -88,7 +93,10 @@ namespace Google.Solutions.LogAnalysis.Test.History
         [Test]
         public void WhenInstanceNotAddedButStopEventRecorded_ThenInstanceIncludedInSetAsIncomplete()
         {
-            var b = new InstanceSetHistoryBuilder();
+            var b = new InstanceSetHistoryBuilder(
+                new DateTime(2019, 12, 1, 0, 0, 0, DateTimeKind.Utc),
+                new DateTime(2020, 1, 1, 0, 0, 0, DateTimeKind.Utc));
+
             b.Process(new StopInstanceEvent(new LogRecord()
             {
                 LogName = "projects/project-1/logs/cloudaudit.googleapis.com%2Factivity",
@@ -117,7 +125,10 @@ namespace Google.Solutions.LogAnalysis.Test.History
         [Test]
         public void WhenInstanceNotAddedButInsertEventRecorded_ThenInstanceIncludedInSet()
         {
-            var b = new InstanceSetHistoryBuilder();
+            var b = new InstanceSetHistoryBuilder(
+                new DateTime(2019, 12, 1, 0, 0, 0, DateTimeKind.Utc),
+                new DateTime(2020, 1, 1, 0, 0, 0, DateTimeKind.Utc));
+
             b.Process(new TerminateOnHostMaintenanceEvent(new LogRecord()
             {
                 LogName = "projects/project-1/logs/cloudaudit.googleapis.com%2Fsystem_event",
@@ -247,7 +258,7 @@ namespace Google.Solutions.LogAnalysis.Test.History
         [Test]
         public void SupportedMethodsIncludeSystemAndLifecycleEvents()
         {
-            var b = new InstanceSetHistoryBuilder();
+            var b = new InstanceSetHistoryBuilder(DateTime.UtcNow.AddDays(-1), DateTime.UtcNow);
 
             CollectionAssert.Contains(b.SupportedMethods, NotifyInstanceLocationEvent.Method);
             CollectionAssert.Contains(b.SupportedMethods, HostErrorEvent.Method);
