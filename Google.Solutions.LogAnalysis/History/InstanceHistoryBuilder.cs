@@ -49,21 +49,22 @@ namespace Google.Solutions.LogAnalysis.History
             EventFactory.LifecycleEventMethods.Concat(EventFactory.SystemEventMethods);
 
         public ulong InstanceId { get; }
-        private readonly LinkedList<Placement> placements = new LinkedList<Placement>();
 
         public Tenancy Tenancy => this.placements.Any()
             ? this.placements.First().Tenancy
             : Tenancy.Unknown;
 
-        public DateTime? LastStoppedOn { get; private set; }
-
         public bool IsDefunct { get; private set; } = false;
 
-        public InstanceState State { get; private set; }
+        //
+        // Information accumulated as we go thru history.
+        //
+        private readonly LinkedList<Placement> placements = new LinkedList<Placement>();
 
-        public GlobalResourceReference Image { get; set; }
-        public VmInstanceReference Reference { get; set; }
+        private GlobalResourceReference image;
+        private VmInstanceReference reference;
 
+        private DateTime? lastStoppedOn;
         private DateTime lastEventDate = DateTime.MaxValue;
 
         private void AddPlacement(Placement placement)
@@ -86,17 +87,16 @@ namespace Google.Solutions.LogAnalysis.History
         {
             Debug.Assert(date <= this.lastEventDate);
             this.lastEventDate = date;
-            this.State = InstanceState.Running;
 
             DateTime placedUntil;
             if (this.placements.Count == 0)
             {
-                if (this.LastStoppedOn.HasValue)
+                if (this.lastStoppedOn.HasValue)
                 {
-                    Debug.Assert(this.LastStoppedOn != null);
-                    Debug.Assert(date <= this.LastStoppedOn);
+                    Debug.Assert(this.lastStoppedOn != null);
+                    Debug.Assert(date <= this.lastStoppedOn);
 
-                    placedUntil = this.LastStoppedOn.Value;
+                    placedUntil = this.lastStoppedOn.Value;
                 }
                 else
                 {
@@ -109,13 +109,13 @@ namespace Google.Solutions.LogAnalysis.History
             }
             else
             {
-                if (this.LastStoppedOn.HasValue)
+                if (this.lastStoppedOn.HasValue)
                 {
-                    Debug.Assert(date <= this.LastStoppedOn);
+                    Debug.Assert(date <= this.lastStoppedOn);
                     Debug.Assert(date <= this.placements.First().From);
 
                     placedUntil = DateTimeUtil.Min(
-                        this.LastStoppedOn.Value,
+                        this.lastStoppedOn.Value,
                         this.placements.First().From);
                 }
                 else
@@ -153,10 +153,9 @@ namespace Google.Solutions.LogAnalysis.History
             }
 
             this.InstanceId = instanceId;
-            this.Reference = reference;
-            this.Image = image;
-            this.State = state;
-            this.LastStoppedOn = lastSeen;
+            this.reference = reference;
+            this.image = image;
+            this.lastStoppedOn = lastSeen;
 
             if (state == InstanceState.Running)
             {
@@ -202,8 +201,8 @@ namespace Google.Solutions.LogAnalysis.History
         {
             return new InstanceHistory(
                 this.InstanceId,
-                this.Reference,
-                this.Image,
+                this.reference,
+                this.image,
                 this.Tenancy,
                 this.placements);
         }
@@ -218,7 +217,7 @@ namespace Google.Solutions.LogAnalysis.History
                 }
                 else if (this.Tenancy == Tenancy.SoleTenant)
                 {
-                    return this.Image == null || this.Reference == null;
+                    return this.image == null || this.reference == null;
                 }
                 else
                 {
@@ -236,20 +235,16 @@ namespace Google.Solutions.LogAnalysis.History
             Debug.Assert(date <= this.lastEventDate);
             this.lastEventDate = date;
 
-            // Mind you, we are processing history in reverse, so this is the
-            // state before the event happened.
-            this.State = InstanceState.Deleted;
-
             // NB. We might get multiple calls for a single instance, each providing some, but
             // potentially not all information.
-            if (this.Reference == null)
+            if (this.reference == null)
             {
-                this.Reference = reference;
+                this.reference = reference;
             }
 
-            if (this.Image == null)
+            if (this.image == null)
             {
-                this.Image = image;
+                this.image = image;
             }
 
             // Register Fleet placement - this might be merged with an existing
@@ -262,13 +257,9 @@ namespace Google.Solutions.LogAnalysis.History
             Debug.Assert(date <= this.lastEventDate);
             this.lastEventDate = date;
 
-            // Mind you, we are processing history in reverse, so this is the
-            // state before the event happened.
-            this.State = InstanceState.Terminated;
-
-            if (this.Reference == null)
+            if (this.reference == null)
             {
-                this.Reference = reference;
+                this.reference = reference;
             }
 
             // Register Fleet placement - this might be merged with an existing
@@ -281,13 +272,11 @@ namespace Google.Solutions.LogAnalysis.History
             Debug.Assert(date <= this.lastEventDate);
             this.lastEventDate = date;
 
-            this.State = InstanceState.Running;
+            this.lastStoppedOn = date;
 
-            this.LastStoppedOn = date;
-
-            if (this.Reference == null)
+            if (this.reference == null)
             {
-                this.Reference = reference;
+                this.reference = reference;
             }
         }
 
@@ -295,7 +284,6 @@ namespace Google.Solutions.LogAnalysis.History
         {
             Debug.Assert(date <= this.lastEventDate);
             this.lastEventDate = date;
-            this.State = InstanceState.Running;
 
             AddPlacement(Tenancy.SoleTenant, serverId, date);
         }

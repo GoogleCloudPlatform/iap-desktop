@@ -24,6 +24,11 @@ using System.Diagnostics;
 
 namespace Google.Solutions.LogAnalysis.History
 {
+    /// <summary>
+    /// Tracks that a VM was "placed" on either a sole tenant node or
+    /// on the fleet and was running from a certain point in time till
+    /// a certain point in time.
+    /// </summary>
     public class Placement
     {
         public Tenancy Tenancy { get; }
@@ -50,7 +55,8 @@ namespace Google.Solutions.LogAnalysis.History
 
         internal Placement(Tenancy tenancy, string serverId, DateTime from, DateTime to)
         {
-            //Debug.Assert(tenancy != Tenancy.SoleTenant || serverId != null);
+            Debug.Assert(from <= to);
+            Debug.Assert(tenancy != Tenancy.Unknown);
 
             this.Tenancy = tenancy;
             this.ServerId = serverId;
