@@ -84,8 +84,9 @@ namespace Google.Solutions.LogAnalysis.Test.Extensions
                 }
             }
 
-            var insertEvent = events.OfType<InsertInstanceEvent>().First();
-            Assert.AreEqual(insertEvent.InstanceReference, instanceRef);
+            var insertEvent = events.OfType<InsertInstanceEvent>()
+                .First(e => e.InstanceReference == instanceRef);
+            Assert.IsNotNull(insertEvent);
         }
     }
 }
