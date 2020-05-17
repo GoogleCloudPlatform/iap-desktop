@@ -66,10 +66,16 @@ namespace Google.Solutions.LogAnalysis.Test.Extensions
 
             var events = new List<EventBase>();
             var instanceBuilder = new InstanceSetHistoryBuilder();
-            await loggingService.Entries.ListEventsAsync(
-                request,
-                events.Add,
-                new Apis.Util.ExponentialBackOff());
+
+            // Creating the VM might be quicker than the logs become available.
+            for (int retry = 0; retry < 3 && !events.Any(); retry++)
+            {
+                await Task.Delay(20 * 1000);
+                await loggingService.Entries.ListEventsAsync(
+                    request,
+                    events.Add,
+                    new Apis.Util.ExponentialBackOff());
+            }
 
             var insertEvent = events.OfType<InsertInstanceEvent>().First();
             Assert.AreEqual(insertEvent.InstanceReference, instanceRef);
