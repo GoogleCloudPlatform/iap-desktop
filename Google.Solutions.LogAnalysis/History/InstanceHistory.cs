@@ -20,28 +20,35 @@
 //
 
 using Google.Solutions.Compute;
+using Newtonsoft.Json;
 using System.Collections.Generic;
 
 namespace Google.Solutions.LogAnalysis.History
 {
     public class InstanceHistory
     {
+        [JsonProperty("id")]
         public ulong InstanceId { get; }
 
+        [JsonProperty("vm")]
         public VmInstanceReference Reference { get; }
 
+        [JsonProperty("placements")]
         public IEnumerable<Placement> Placements { get; }
 
+        [JsonProperty("image")]
         public GlobalResourceReference Image { get; }
 
+        [JsonProperty("tenancy")]
         public Tenancy Tenancy { get; }
 
+        [JsonConstructor]
         internal InstanceHistory(
-            ulong instanceId,
-            VmInstanceReference reference,
-            GlobalResourceReference image,
-            Tenancy tenancy,
-            IEnumerable<Placement> placements
+            [JsonProperty("id")] ulong instanceId,
+            [JsonProperty("vm")] VmInstanceReference reference,
+            [JsonProperty("image")] GlobalResourceReference image,
+            [JsonProperty("tenancy")] Tenancy tenancy,
+            [JsonProperty("placements")] IEnumerable<Placement> placements
             )
         {
             this.InstanceId = instanceId;

@@ -19,6 +19,7 @@
 // under the License.
 //
 
+using Newtonsoft.Json;
 using System;
 using System.Diagnostics;
 
@@ -31,9 +32,16 @@ namespace Google.Solutions.LogAnalysis.History
     /// </summary>
     public class Placement
     {
+        [JsonProperty("tenancy")]
         public Tenancy Tenancy { get; }
+
+        [JsonProperty("server")]
         public string ServerId { get; }
+
+        [JsonProperty("from")]
         public DateTime From { get; }
+
+        [JsonProperty("to")]
         public DateTime To { get; }
 
         private static Tenancy MergeTenancy(Tenancy lhs, Tenancy rhs)
@@ -53,7 +61,12 @@ namespace Google.Solutions.LogAnalysis.History
             }
         }
 
-        internal Placement(Tenancy tenancy, string serverId, DateTime from, DateTime to)
+        [JsonConstructor]
+        internal Placement(
+            [JsonProperty("tenancy")] Tenancy tenancy,
+            [JsonProperty("server")] string serverId,
+            [JsonProperty("from")] DateTime from,
+            [JsonProperty("to")] DateTime to)
         {
             Debug.Assert(from <= to);
             Debug.Assert(tenancy != Tenancy.Unknown);
@@ -120,8 +133,8 @@ namespace Google.Solutions.LogAnalysis.History
 
     public enum Tenancy
     {
-        SoleTenant,
-        Fleet,
-        Unknown
+        Unknown = 0,
+        Fleet = 1,
+        SoleTenant = 2
     }
 }

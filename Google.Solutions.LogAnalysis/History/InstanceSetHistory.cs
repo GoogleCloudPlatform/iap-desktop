@@ -19,17 +19,31 @@
 // under the License.
 //
 
+using Newtonsoft.Json;
+using Newtonsoft.Json.Serialization;
 using System;
 using System.Collections.Generic;
+using System.IO;
 
 namespace Google.Solutions.LogAnalysis.History
 {
     public class InstanceSetHistory
     {
+        internal const string TypeAnnotation = "type.googleapis.com/google.solutions.loganalysis.InstanceSetHistory";
+
+        [JsonProperty("@type")]
+        internal string Type => TypeAnnotation;
+
+        [JsonProperty("start")]
         public DateTime StartDate { get; }
+
+        [JsonProperty("end")]
         public DateTime EndDate { get; }
 
+        [JsonProperty("instances")]
         public IEnumerable<InstanceHistory> Instances { get; }
+
+        [JsonProperty("incompleteInstances")]
         public IEnumerable<InstanceHistory> InstancesWithIncompleteInformation { get; }
 
         internal InstanceSetHistory(
@@ -42,6 +56,49 @@ namespace Google.Solutions.LogAnalysis.History
             this.EndDate = endDate;
             this.Instances = instances;
             this.InstancesWithIncompleteInformation = instancesWithIncompleteInformation;
+        }
+
+        [JsonConstructor]
+        internal InstanceSetHistory(
+            [JsonProperty("@type")] string typeAnnotation,
+            [JsonProperty("start")] DateTime startDate,
+            [JsonProperty("end")] DateTime endDate,
+            [JsonProperty("instances")] IEnumerable<InstanceHistory> instances,
+            [JsonProperty("incompleteInstances")] IEnumerable<InstanceHistory> instancesWithIncompleteInformation)
+            : this(startDate, endDate, instances, instancesWithIncompleteInformation)
+        {
+            if (typeAnnotation != TypeAnnotation)
+            {
+                throw new FormatException("Missing type annotation: " + TypeAnnotation);
+            }
+        }
+
+        //---------------------------------------------------------------------
+        // Serialization.
+        //---------------------------------------------------------------------
+
+        private static JsonSerializer CreateSerializer()
+        {
+            return JsonSerializer.Create(
+                new JsonSerializerSettings()
+                {
+                    ContractResolver = new DefaultContractResolver
+                    {
+                        NamingStrategy = new CamelCaseNamingStrategy()
+                    },
+                    NullValueHandling = NullValueHandling.Ignore
+                });
+        }
+
+        public void Serialize(TextWriter writer)
+        {
+            CreateSerializer().Serialize(writer, this);
+        }
+
+        public static InstanceSetHistory Deserialize(TextReader reader)
+        {
+            return CreateSerializer().Deserialize<InstanceSetHistory>(
+                new JsonTextReader(reader));
         }
     }
 }

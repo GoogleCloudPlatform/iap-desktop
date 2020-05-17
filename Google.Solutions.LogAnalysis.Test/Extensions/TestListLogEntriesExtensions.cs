@@ -73,11 +73,15 @@ namespace Google.Solutions.LogAnalysis.Test.Extensions
             // Creating the VM might be quicker than the logs become available.
             for (int retry = 0; retry < 4 && !events.Any(); retry++)
             {
-                await Task.Delay(20 * 1000);
                 await loggingService.Entries.ListEventsAsync(
                     request,
                     events.Add,
                     new Apis.Util.ExponentialBackOff());
+
+                if (!events.Any())
+                {
+                    await Task.Delay(20 * 1000);
+                }
             }
 
             var insertEvent = events.OfType<InsertInstanceEvent>().First();

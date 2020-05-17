@@ -103,6 +103,7 @@
     <Compile Include="Extensions\TestListLogEntriesExtensions.cs" />
     <Compile Include="Extensions\TestListLogEntriesParser.cs" />
     <Compile Include="History\TestInstanceHistoryBuilder.cs" />
+    <Compile Include="History\TestInstanceSetHistory.cs" />
     <Compile Include="History\TestInstanceSetHistoryBuilder.cs" />
     <Compile Include="History\TestPlacement.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
