@@ -19,6 +19,7 @@
 // under the License.
 //
 
+using Google.Apis.Util;
 using Google.Solutions.Compute;
 using Google.Solutions.LogAnalysis.Events;
 using Google.Solutions.LogAnalysis.Events.Lifecycle;
@@ -146,7 +147,10 @@ namespace Google.Solutions.LogAnalysis.History
             DateTime? lastSeen,
             Tenancy tenancy)
         {
-            Debug.Assert(instanceId != 0);
+            if (instanceId == 0)
+            {
+                throw new ArgumentException("Instance ID cannot be 0");
+            }
 
             this.InstanceId = instanceId;
             this.Reference = reference;

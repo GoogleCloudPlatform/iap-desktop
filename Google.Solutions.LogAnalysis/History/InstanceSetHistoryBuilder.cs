@@ -19,6 +19,7 @@
 // under the License.
 //
 using Google.Apis.Compute.v1;
+using Google.Apis.Util;
 using Google.Solutions.Compute;
 using Google.Solutions.LogAnalysis.Events;
 using System;
@@ -57,9 +58,16 @@ namespace Google.Solutions.LogAnalysis.History
             DateTime startDate,
             DateTime endDate)
         {
-            Debug.Assert(startDate.Kind == DateTimeKind.Utc);
-            Debug.Assert(startDate.Kind == DateTimeKind.Utc);
-            Debug.Assert(startDate < endDate);
+            if (startDate.Kind != DateTimeKind.Utc ||
+                startDate.Kind != DateTimeKind.Utc)
+            {
+                throw new ArgumentException("Start/end date must be in UTC time");
+            }
+
+            if (startDate > endDate)
+            {
+                throw new ArgumentException("Start date and end date are reversed");
+            }
 
             this.StartDate = startDate;
             this.EndDate = endDate;
