@@ -49,6 +49,7 @@ namespace Google.Solutions.LogAnalysis.Test.History
                     new InstanceHistory(
                         188550847350222232,
                         new VmInstanceReference("project-1", "us-central1-a", "instance-1"),
+                        InstanceHistoryState.Complete,
                         null,
                         Tenancy.Fleet,
                         new []
@@ -59,13 +60,11 @@ namespace Google.Solutions.LogAnalysis.Test.History
                             new Placement(
                                 new DateTime(2019, 12, 2, 0, 0, 0, DateTimeKind.Utc),
                                 new DateTime(2019, 12, 3, 0, 0, 0, DateTimeKind.Utc))
-                        })
-                },
-                new[]
-                {
+                        }),
                      new InstanceHistory(
                         118550847350222232,
                         null,
+                        InstanceHistoryState.MissingImage,
                         null,
                         Tenancy.SoleTenant,
                         new []
@@ -79,8 +78,8 @@ namespace Google.Solutions.LogAnalysis.Test.History
 
             using (var memoryStream = new MemoryStream())
             {
-                var s = new StringWriter();
-                    history.Serialize(s);
+                //var s = new StringWriter();
+                //    history.Serialize(s);
 
                 var writer = new StreamWriter(memoryStream);
                 history.Serialize(writer);
@@ -94,36 +93,34 @@ namespace Google.Solutions.LogAnalysis.Test.History
                 Assert.AreEqual(history.StartDate, restoredHistory.StartDate);
                 Assert.AreEqual(history.EndDate, restoredHistory.EndDate);
 
-                Assert.AreEqual(1, restoredHistory.Instances.Count());
-                var i = restoredHistory.Instances.First();
+                Assert.AreEqual(2, restoredHistory.Instances.Count());
+                var completeInstance = restoredHistory.Instances.First(i => i.InstanceId == 188550847350222232);
 
-                Assert.AreEqual(history.Instances.First().InstanceId, i.InstanceId);
-                Assert.AreEqual(history.Instances.First().Reference, i.Reference);
-                Assert.AreEqual(history.Instances.First().Tenancy, i.Tenancy);
+                Assert.AreEqual(history.Instances.First().Reference, completeInstance.Reference);
+                Assert.AreEqual(history.Instances.First().Tenancy, completeInstance.Tenancy);
 
-                Assert.AreEqual(history.Instances.First().Placements.Count(), i.Placements.Count());
-                Assert.AreEqual(history.Instances.First().Placements.First().From, i.Placements.First().From);
-                Assert.AreEqual(history.Instances.First().Placements.First().To, i.Placements.First().To);
-                Assert.AreEqual(history.Instances.First().Placements.First().ServerId, i.Placements.First().ServerId);
-                Assert.AreEqual(history.Instances.First().Placements.First().Tenancy, i.Placements.First().Tenancy);
+                Assert.AreEqual(history.Instances.First().Placements.Count(), completeInstance.Placements.Count());
+                Assert.AreEqual(history.Instances.First().Placements.First().From, completeInstance.Placements.First().From);
+                Assert.AreEqual(history.Instances.First().Placements.First().To, completeInstance.Placements.First().To);
+                Assert.AreEqual(history.Instances.First().Placements.First().ServerId, completeInstance.Placements.First().ServerId);
+                Assert.AreEqual(history.Instances.First().Placements.First().Tenancy, completeInstance.Placements.First().Tenancy);
 
-                Assert.AreEqual(history.Instances.First().Placements.Last().From, i.Placements.Last().From);
-                Assert.AreEqual(history.Instances.First().Placements.Last().To, i.Placements.Last().To);
-                Assert.AreEqual(history.Instances.First().Placements.Last().ServerId, i.Placements.Last().ServerId);
-                Assert.AreEqual(history.Instances.First().Placements.Last().Tenancy, i.Placements.Last().Tenancy);
+                Assert.AreEqual(history.Instances.First().Placements.Last().From, completeInstance.Placements.Last().From);
+                Assert.AreEqual(history.Instances.First().Placements.Last().To, completeInstance.Placements.Last().To);
+                Assert.AreEqual(history.Instances.First().Placements.Last().ServerId, completeInstance.Placements.Last().ServerId);
+                Assert.AreEqual(history.Instances.First().Placements.Last().Tenancy, completeInstance.Placements.Last().Tenancy);
 
-                Assert.AreEqual(1, restoredHistory.InstancesWithIncompleteInformation.Count());
-                i = restoredHistory.InstancesWithIncompleteInformation.First();
+                var incompleteInstance = restoredHistory.Instances.First(i => i.InstanceId == 118550847350222232);
 
-                Assert.AreEqual(history.InstancesWithIncompleteInformation.First().InstanceId, i.InstanceId);
-                Assert.AreEqual(history.InstancesWithIncompleteInformation.First().Reference, i.Reference);
-                Assert.AreEqual(history.InstancesWithIncompleteInformation.First().Tenancy, i.Tenancy);
+                Assert.AreEqual(history.Instances.Last().InstanceId, incompleteInstance.InstanceId);
+                Assert.AreEqual(history.Instances.Last().Reference, incompleteInstance.Reference);
+                Assert.AreEqual(history.Instances.Last().Tenancy, incompleteInstance.Tenancy);
 
-                Assert.AreEqual(history.InstancesWithIncompleteInformation.First().Placements.Count(), i.Placements.Count());
-                Assert.AreEqual(history.InstancesWithIncompleteInformation.First().Placements.First().From, i.Placements.First().From);
-                Assert.AreEqual(history.InstancesWithIncompleteInformation.First().Placements.First().To, i.Placements.First().To);
-                Assert.AreEqual(history.InstancesWithIncompleteInformation.First().Placements.First().ServerId, i.Placements.First().ServerId);
-                Assert.AreEqual(history.InstancesWithIncompleteInformation.First().Placements.First().Tenancy, i.Placements.First().Tenancy);
+                Assert.AreEqual(history.Instances.Last().Placements.Count(), incompleteInstance.Placements.Count());
+                Assert.AreEqual(history.Instances.Last().Placements.First().From, incompleteInstance.Placements.First().From);
+                Assert.AreEqual(history.Instances.Last().Placements.First().To, incompleteInstance.Placements.First().To);
+                Assert.AreEqual(history.Instances.Last().Placements.First().ServerId, incompleteInstance.Placements.First().ServerId);
+                Assert.AreEqual(history.Instances.Last().Placements.First().Tenancy, incompleteInstance.Placements.First().Tenancy);
             }
         }
 
@@ -182,10 +179,9 @@ namespace Google.Solutions.LogAnalysis.Test.History
                       'to': '2019-12-03T00:00:00Z'
                     }
                   ],
-                  'tenancy': 1
-                }
-              ],
-              'incompleteInstances': [
+                  'tenancy': 1,
+                  'state': 0
+                },
                 {
                   'id': 118550847350222232,
                   'placements': [
@@ -196,7 +192,8 @@ namespace Google.Solutions.LogAnalysis.Test.History
                       'to': '2019-12-02T00:00:00Z'
                     }
                   ],
-                  'tenancy': 2
+                  'tenancy': 2,
+                  'state': 3
                 }
               ]
             }";
@@ -208,38 +205,37 @@ namespace Google.Solutions.LogAnalysis.Test.History
                 Assert.AreEqual(new DateTime(2019, 12, 1, 0, 0, 0, DateTimeKind.Utc), restoredHistory.StartDate);
                 Assert.AreEqual(new DateTime(2020, 1, 1, 0, 0, 0, DateTimeKind.Utc), restoredHistory.EndDate);
 
-                Assert.AreEqual(1, restoredHistory.Instances.Count());
-                var i = restoredHistory.Instances.First();
+                Assert.AreEqual(2, restoredHistory.Instances.Count());
+                var completeInstance = restoredHistory.Instances.First(i => i.InstanceId == 188550847350222232);
 
-                Assert.AreEqual(188550847350222232, i.InstanceId);
+                Assert.AreEqual(InstanceHistoryState.Complete, completeInstance.State);
                 Assert.AreEqual(
-                    new VmInstanceReference("project-1", "us-central1-a", "instance-1"), 
-                    i.Reference);
-                Assert.AreEqual(Tenancy.Fleet, i.Tenancy);
+                    new VmInstanceReference("project-1", "us-central1-a", "instance-1"),
+                    completeInstance.Reference);
+                Assert.AreEqual(Tenancy.Fleet, completeInstance.Tenancy);
 
-                Assert.AreEqual(2, i.Placements.Count());
-                Assert.AreEqual(new DateTime(2019, 12, 1, 0, 0, 0, DateTimeKind.Utc), i.Placements.First().From);
-                Assert.AreEqual(new DateTime(2019, 12, 2, 0, 0, 0, DateTimeKind.Utc), i.Placements.First().To);
-                Assert.IsNull(i.Placements.First().ServerId);
-                Assert.AreEqual(Tenancy.Fleet, i.Placements.First().Tenancy);
+                Assert.AreEqual(2, completeInstance.Placements.Count());
+                Assert.AreEqual(new DateTime(2019, 12, 1, 0, 0, 0, DateTimeKind.Utc), completeInstance.Placements.First().From);
+                Assert.AreEqual(new DateTime(2019, 12, 2, 0, 0, 0, DateTimeKind.Utc), completeInstance.Placements.First().To);
+                Assert.IsNull(completeInstance.Placements.First().ServerId);
+                Assert.AreEqual(Tenancy.Fleet, completeInstance.Placements.First().Tenancy);
 
-                Assert.AreEqual(new DateTime(2019, 12, 2, 0, 0, 0, DateTimeKind.Utc), i.Placements.Last().From);
-                Assert.AreEqual(new DateTime(2019, 12, 3, 0, 0, 0, DateTimeKind.Utc), i.Placements.Last().To);
-                Assert.IsNull(i.Placements.Last().ServerId);
-                Assert.AreEqual(Tenancy.Fleet, i.Placements.Last().Tenancy);
+                Assert.AreEqual(new DateTime(2019, 12, 2, 0, 0, 0, DateTimeKind.Utc), completeInstance.Placements.Last().From);
+                Assert.AreEqual(new DateTime(2019, 12, 3, 0, 0, 0, DateTimeKind.Utc), completeInstance.Placements.Last().To);
+                Assert.IsNull(completeInstance.Placements.Last().ServerId);
+                Assert.AreEqual(Tenancy.Fleet, completeInstance.Placements.Last().Tenancy);
 
-                Assert.AreEqual(1, restoredHistory.InstancesWithIncompleteInformation.Count());
-                i = restoredHistory.InstancesWithIncompleteInformation.First();
+                var incompleteInstance = restoredHistory.Instances.First(i => i.InstanceId == 118550847350222232);
 
-                Assert.AreEqual(118550847350222232, i.InstanceId);
-                Assert.IsNull(i.Reference);
-                Assert.AreEqual(Tenancy.SoleTenant, i.Tenancy);
+                Assert.AreEqual(InstanceHistoryState.MissingImage, incompleteInstance.State);
+                Assert.IsNull(incompleteInstance.Reference);
+                Assert.AreEqual(Tenancy.SoleTenant, incompleteInstance.Tenancy);
 
-                Assert.AreEqual(1, i.Placements.Count());
-                Assert.AreEqual(new DateTime(2019, 12, 1, 0, 0, 0, DateTimeKind.Utc), i.Placements.First().From);
-                Assert.AreEqual(new DateTime(2019, 12, 2, 0, 0, 0, DateTimeKind.Utc), i.Placements.First().To);
-                Assert.AreEqual("server-1", i.Placements.First().ServerId);
-                Assert.AreEqual(Tenancy.SoleTenant, i.Placements.First().Tenancy);
+                Assert.AreEqual(1, incompleteInstance.Placements.Count());
+                Assert.AreEqual(new DateTime(2019, 12, 1, 0, 0, 0, DateTimeKind.Utc), incompleteInstance.Placements.First().From);
+                Assert.AreEqual(new DateTime(2019, 12, 2, 0, 0, 0, DateTimeKind.Utc), incompleteInstance.Placements.First().To);
+                Assert.AreEqual("server-1", incompleteInstance.Placements.First().ServerId);
+                Assert.AreEqual(Tenancy.SoleTenant, incompleteInstance.Placements.First().Tenancy);
             }
         }
     }

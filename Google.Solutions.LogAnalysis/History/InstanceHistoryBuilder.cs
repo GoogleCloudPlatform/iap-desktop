@@ -202,6 +202,7 @@ namespace Google.Solutions.LogAnalysis.History
             return new InstanceHistory(
                 this.InstanceId,
                 this.reference,
+                this.State,
                 this.image,
                 this.Tenancy,
                 this.placements);
@@ -329,14 +330,5 @@ namespace Google.Solutions.LogAnalysis.History
                 }
             }
         }
-    }
-
-    public enum InstanceHistoryState
-    {
-        Complete,
-        MissingTenancy,
-        MissingName,
-        MissingImage,
-        MissingStopEvent
     }
 }

@@ -156,16 +156,10 @@ namespace Google.Solutions.LogAnalysis.History
 
         public InstanceSetHistory Build()
         {
-            var complete = this.instanceBuilders.Values.Where(b => b.State == InstanceHistoryState.Complete);
-            var incomplete = this.instanceBuilders.Values.Where(b => b.State != InstanceHistoryState.Complete);
-
-            Debug.Assert(complete.All(i => i.Tenancy != Tenancy.Unknown));
-
             return new InstanceSetHistory(
                 this.StartDate,
                 this.EndDate,
-                complete.Select(b => b.Build()),
-                incomplete.Select(b => b.Build()));
+                this.instanceBuilders.Values.Select(b => b.Build()).ToList());
         }
 
         //---------------------------------------------------------------------

@@ -85,13 +85,12 @@ namespace Google.Solutions.LogAnalysis.Test.History
 
             var set = b.Build();
 
-            Assert.AreEqual(0, set.InstancesWithIncompleteInformation.Count());
             Assert.AreEqual(1, set.Instances.Count());
             Assert.AreEqual(1, set.Instances.First().InstanceId);
         }
 
         [Test]
-        public void WhenInstanceNotAddedButStopEventRecorded_ThenInstanceIncludedInSetAsIncomplete()
+        public void WhenInstanceNotAddedButStopEventRecorded_ThenInstanceIncludedInSetAsMissingTenancy()
         {
             var b = new InstanceSetHistoryBuilder(
                 new DateTime(2019, 12, 1, 0, 0, 0, DateTimeKind.Utc),
@@ -117,9 +116,9 @@ namespace Google.Solutions.LogAnalysis.Test.History
 
             var set = b.Build();
 
-            Assert.AreEqual(1, set.InstancesWithIncompleteInformation.Count());
-            Assert.AreEqual(0, set.Instances.Count());
-            Assert.AreEqual(123, set.InstancesWithIncompleteInformation.First().InstanceId);
+            Assert.AreEqual(1, set.Instances.Count());
+            Assert.AreEqual(123, set.Instances.First().InstanceId);
+            Assert.AreEqual(InstanceHistoryState.MissingTenancy, set.Instances.First().State); // TODO
         }
 
         [Test]
@@ -167,7 +166,6 @@ namespace Google.Solutions.LogAnalysis.Test.History
 
             var set = b.Build();
 
-            Assert.AreEqual(0, set.InstancesWithIncompleteInformation.Count());
             Assert.AreEqual(1, set.Instances.Count());
             Assert.AreEqual(123, set.Instances.First().InstanceId);
         }
@@ -178,7 +176,6 @@ namespace Google.Solutions.LogAnalysis.Test.History
             var set = BuildHistoryFromResource("instance-1.json");
 
             Assert.AreEqual(1, set.Instances.Count());
-            Assert.AreEqual(0, set.InstancesWithIncompleteInformation.Count());
 
             var instance = set.Instances.First();
             Assert.AreEqual(Tenancy.SoleTenant, instance.Tenancy);
@@ -202,7 +199,6 @@ namespace Google.Solutions.LogAnalysis.Test.History
         {
             var set = BuildHistoryFromResource("instance-2.json");
             Assert.AreEqual(1, set.Instances.Count());
-            Assert.AreEqual(0, set.InstancesWithIncompleteInformation.Count());
 
             var instance = set.Instances.First();
             Assert.AreEqual(Tenancy.SoleTenant, instance.Tenancy);
@@ -226,7 +222,6 @@ namespace Google.Solutions.LogAnalysis.Test.History
         {
             var set = BuildHistoryFromResource("instance-3.json");
             Assert.AreEqual(1, set.Instances.Count());
-            Assert.AreEqual(0, set.InstancesWithIncompleteInformation.Count());
 
             var instance = set.Instances.First();
             Assert.AreEqual(Tenancy.SoleTenant, instance.Tenancy);

@@ -43,19 +43,14 @@ namespace Google.Solutions.LogAnalysis.History
         [JsonProperty("instances")]
         public IEnumerable<InstanceHistory> Instances { get; }
 
-        [JsonProperty("incompleteInstances")]
-        public IEnumerable<InstanceHistory> InstancesWithIncompleteInformation { get; }
-
         internal InstanceSetHistory(
             DateTime startDate,
             DateTime endDate,
-            IEnumerable<InstanceHistory> instances,
-            IEnumerable<InstanceHistory> instancesWithIncompleteInformation)
+            IEnumerable<InstanceHistory> instances)
         {
             this.StartDate = startDate;
             this.EndDate = endDate;
             this.Instances = instances;
-            this.InstancesWithIncompleteInformation = instancesWithIncompleteInformation;
         }
 
         [JsonConstructor]
@@ -63,9 +58,8 @@ namespace Google.Solutions.LogAnalysis.History
             [JsonProperty("@type")] string typeAnnotation,
             [JsonProperty("start")] DateTime startDate,
             [JsonProperty("end")] DateTime endDate,
-            [JsonProperty("instances")] IEnumerable<InstanceHistory> instances,
-            [JsonProperty("incompleteInstances")] IEnumerable<InstanceHistory> instancesWithIncompleteInformation)
-            : this(startDate, endDate, instances, instancesWithIncompleteInformation)
+            [JsonProperty("instances")] IEnumerable<InstanceHistory> instances)
+            : this(startDate, endDate, instances)
         {
             if (typeAnnotation != TypeAnnotation)
             {

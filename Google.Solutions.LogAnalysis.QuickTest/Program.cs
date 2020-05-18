@@ -65,12 +65,9 @@ namespace Google.Solutions.LogAnalysis.QuickTest
 
             var set = instanceSetBuilder.Build();
 
-            Console.WriteLine($"Instances with incomplete info: {set.InstancesWithIncompleteInformation.Count()}");
-            Console.WriteLine($"Instances with complete info: {set.Instances.Count()}");
-
             foreach (var instance in set.Instances)
             {
-                Console.WriteLine($"  Instance {instance.Reference} ({instance.InstanceId}) of {instance.Image}");
+                Console.WriteLine($"  Instance ({instance.State}) {instance.Reference} ({instance.InstanceId}) of {instance.Image}");
                 foreach (var placement in instance.Placements)
                 {
                     Console.WriteLine($"    > {placement}");

@@ -42,10 +42,14 @@ namespace Google.Solutions.LogAnalysis.History
         [JsonProperty("tenancy")]
         public Tenancy Tenancy { get; }
 
+        [JsonProperty("state")]
+        public InstanceHistoryState State { get; }
+
         [JsonConstructor]
         internal InstanceHistory(
             [JsonProperty("id")] ulong instanceId,
             [JsonProperty("vm")] VmInstanceReference reference,
+            [JsonProperty("state")] InstanceHistoryState state,
             [JsonProperty("image")] GlobalResourceReference image,
             [JsonProperty("tenancy")] Tenancy tenancy,
             [JsonProperty("placements")] IEnumerable<Placement> placements
@@ -53,6 +57,7 @@ namespace Google.Solutions.LogAnalysis.History
         {
             this.InstanceId = instanceId;
             this.Reference = reference;
+            this.State = state;
             this.Image = image;
             this.Tenancy = tenancy;
             this.Placements = placements;
@@ -62,5 +67,14 @@ namespace Google.Solutions.LogAnalysis.History
         {
             return $"{this.Reference} ({this.InstanceId})";
         }
+    }
+
+    public enum InstanceHistoryState
+    {
+        Complete,
+        MissingTenancy,
+        MissingName,
+        MissingImage,
+        MissingStopEvent
     }
 }
