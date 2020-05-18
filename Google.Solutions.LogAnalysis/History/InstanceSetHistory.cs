@@ -50,22 +50,16 @@ namespace Google.Solutions.LogAnalysis.History
             this.Instances = instances;
         }
 
-        public IEnumerable<HistogramDataPoint> GetInstanceCountHistogram(
-            DateTime from,
-            DateTime to)
-        {
-            var placements = this.Instances
-                .Where(i => i.Placements != null)
-                .SelectMany(i => i.Placements);
-            // TODO
-            throw new NotImplementedException();
-        }
-
-        public struct HistogramDataPoint
-        {
-            public DateTime Timestamp;
-            public uint value;
-        }
+        //public IEnumerable<HistogramDataPoint> GetInstanceCountHistogram(
+        //    DateTime from,
+        //    DateTime to)
+        //{
+        //    var placements = this.Instances
+        //        .Where(i => i.Placements != null)
+        //        .SelectMany(i => i.Placements);
+        //    // TODO
+        //    throw new NotImplementedException();
+        //}
 
         //---------------------------------------------------------------------
         // Serialization.

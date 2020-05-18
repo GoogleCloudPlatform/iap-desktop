@@ -98,6 +98,13 @@ namespace Google.Solutions.LogAnalysis.QuickTest
                 {
                     Console.WriteLine($"      - {placement}");
                 }
+
+
+                Console.WriteLine($"     Statistics:");
+                foreach (var dp in node.PlacementHistogram)
+                {
+                    Console.WriteLine($"      - {dp.Timestamp} {new string('#', dp.Value)}");
+                }
             }
         }
 

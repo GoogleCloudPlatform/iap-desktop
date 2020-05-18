@@ -50,7 +50,7 @@ namespace Google.Solutions.LogAnalysis.History
 
             foreach (var server in placementsByServer)
             {
-                var peakInstanceCount = TimeseriesUtil.GetHighWatermark(
+                var peakInstanceCount = (uint)TimeseriesUtil.HighWatermark(
                     server.Select(p => p.From),
                     server.Select(p => p.To));
 

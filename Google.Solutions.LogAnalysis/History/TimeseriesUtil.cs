@@ -28,33 +28,104 @@ namespace Google.Solutions.LogAnalysis.History
 {
     internal static class TimeseriesUtil
     {
-        public static uint GetHighWatermark(
-            IEnumerable<DateTime> joiners,
-            IEnumerable<DateTime> leavers)
+        /// <summary>
+        /// Returns the balance numbers given a stream of joiners
+        /// and leavers. The timestamps in the result are not guaranteed
+        /// to be unique.
+        /// </summary>
+        /// <param name="joinersUnsorted"></param>
+        /// <param name="leaversUnsorted"></param>
+        /// <returns></returns>
+        public static IEnumerable<DataPoint> Balances(
+            IEnumerable<DateTime> joinersUnsorted,
+            IEnumerable<DateTime> leaversUnsorted)
         {
-            Debug.Assert(joiners.Count() == leavers.Count());
+            Debug.Assert(joinersUnsorted.Count() == leaversUnsorted.Count());
 
-            var joinersWithDelta = joiners.Select(t => Tuple.Create(t, 1));
-            var leaversWithDelta = leavers.Select(t => Tuple.Create(t, -1));
+            var joinersWithDelta = joinersUnsorted
+                .Select(t => new DataPoint(t, 1));
+            var leaversWithDelta = leaversUnsorted
+                .Select(t => new DataPoint(t, -1));
 
             // Combine them into a sequence: +1 +1 -1 +1 +1 -1 -1 ...
             var sequence =
                 joinersWithDelta.Concat(leaversWithDelta)
-                .OrderBy(t => t.Item1)  // Order by timestamp
-                .Select(t => t.Item2);  // Only keep the delta
+                .OrderBy(t => t.Timestamp);  // Order by timestamp
 
             int balance = 0;
-            int highWatermark = 0;
             foreach (var delta in sequence)
             {
-                balance += delta;
-                highWatermark = Math.Max(balance, highWatermark);
+                balance += delta.Value;
+
+                Debug.Assert(balance >= 0);
+                yield return new DataPoint(delta.Timestamp, balance);
             }
+        }
 
-            Debug.Assert(balance >= 0);
-            Debug.Assert(highWatermark >= 0);
+        public static int HighWatermark(
+            IEnumerable<DateTime> joinersUnsorted,
+            IEnumerable<DateTime> leaversUnsorted)
+        {
+            return Balances(joinersUnsorted, leaversUnsorted)
+                .Select(d => d.Value)
+                .Max();
+        }
 
-            return (uint)highWatermark;
+        public static IEnumerable<DataPoint> RepeatMissingDataPoints(
+            IEnumerable<DateTime> timestampsSorted,
+            IEnumerable<DataPoint> dataPointsSorted)
+        {
+            Debug.Assert(timestampsSorted.Count() >= dataPointsSorted.Count());
+
+            var dataPointsEnum = dataPointsSorted.GetEnumerator();
+
+            var current = new DataPoint()
+            {
+                Timestamp = timestampsSorted.First(),
+                Value = 0
+            };
+
+            var next = current;
+
+            foreach (var timestamp in timestampsSorted)
+            {
+                if (timestamp >= next.Timestamp)
+                {
+                    current = next;
+                    if (dataPointsEnum.MoveNext())
+                    {
+                        next = dataPointsEnum.Current;
+                    }
+                }
+
+                yield return current;
+            }
+        }
+
+        private static IEnumerable<DateTime> DateSequence(
+            DateTime from, 
+            DateTime to)
+        {
+            for (var d = from.Date; d <= to.Date; d = d.AddDays(1))
+            {
+                yield return d;
+            }
+        }
+
+        public static IEnumerable<DataPoint> DailyHistogram(
+            IEnumerable<DateTime> joinersUnsorted,
+            IEnumerable<DateTime> leaversUnsorted)
+        {
+            var sparseHistogram = Balances(joinersUnsorted, leaversUnsorted)
+                .GroupBy(d => d.Timestamp.Date)
+                .Select(g => new DataPoint(
+                    g.Key, 
+                    g.Select(d => d.Value).Max()))
+                .ToList();
+
+            return RepeatMissingDataPoints(
+                DateSequence(sparseHistogram.First().Timestamp, sparseHistogram.Last().Timestamp),
+                sparseHistogram);
         }
     }
 }

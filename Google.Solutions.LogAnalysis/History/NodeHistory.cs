@@ -20,8 +20,8 @@
 //
 
 using System;
-using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Google.Solutions.LogAnalysis.History
 {
@@ -49,5 +49,12 @@ namespace Google.Solutions.LogAnalysis.History
             this.PeakConcurrentPlacements = peakInstanceCount;
             this.Placements = placements;
         }
+
+        public IEnumerable<DataPoint> PlacementHistogram =>
+            this.Placements == null
+                ? Enumerable.Empty<DataPoint>()
+                : TimeseriesUtil.DailyHistogram(
+                    this.Placements.Select(p => p.From),
+                    this.Placements.Select(p => p.To));
     }
 }
