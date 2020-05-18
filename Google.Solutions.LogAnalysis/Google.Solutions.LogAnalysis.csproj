@@ -107,6 +107,7 @@
     <Compile Include="History\NodeSetHistory.cs" />
     <Compile Include="History\InstancePlacement.cs" />
     <Compile Include="History\NodeHistory.cs" />
+    <Compile Include="History\TimeseriesUtil.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Logs\AuditLogRecord.cs" />
     <Compile Include="Logs\LogRecord.cs" />

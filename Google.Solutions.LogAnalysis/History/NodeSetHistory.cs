@@ -19,9 +19,7 @@
 // under the License.
 //
 
-using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 
 namespace Google.Solutions.LogAnalysis.History
@@ -33,35 +31,6 @@ namespace Google.Solutions.LogAnalysis.History
         private NodeSetHistory(IEnumerable<NodeHistory> nodes)
         {
             this.Nodes = nodes;
-        }
-
-        private static uint FindHighWatermark(
-            IEnumerable<DateTime> joiners,
-            IEnumerable<DateTime> leavers)
-        {
-            Debug.Assert(joiners.Count() == leavers.Count());
-
-            var joinersWithDelta = joiners.Select(t => Tuple.Create(t, 1));
-            var leaversWithDelta = leavers.Select(t => Tuple.Create(t, -1));
-
-            // Combine them into a sequence: +1 +1 -1 +1 +1 -1 -1 ...
-            var sequence =
-                joinersWithDelta.Concat(leaversWithDelta)
-                .OrderBy(t => t.Item1)  // Order by timestamp
-                .Select(t => t.Item2);  // Only keep the delta
-
-            int balance = 0;
-            int highWatermark = 0;
-            foreach (var delta in sequence)
-            {
-                balance += delta;
-                highWatermark = Math.Max(balance, highWatermark);
-            }
-
-            Debug.Assert(balance >= 0);
-            Debug.Assert(highWatermark >= 0);
-            
-            return (uint)highWatermark;
         }
 
         private static IEnumerable<NodeHistory> NodesFromInstanceSetHistory(
@@ -81,7 +50,7 @@ namespace Google.Solutions.LogAnalysis.History
 
             foreach (var server in placementsByServer)
             {
-                var peakInstanceCount = FindHighWatermark(
+                var peakInstanceCount = TimeseriesUtil.GetHighWatermark(
                     server.Select(p => p.From),
                     server.Select(p => p.To));
 

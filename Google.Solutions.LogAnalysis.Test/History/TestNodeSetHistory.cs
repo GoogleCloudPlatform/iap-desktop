@@ -20,18 +20,10 @@
 //
 
 using Google.Solutions.Compute;
-using Google.Solutions.LogAnalysis.Events;
-using Google.Solutions.LogAnalysis.Events.Lifecycle;
-using Google.Solutions.LogAnalysis.Events.System;
 using Google.Solutions.LogAnalysis.History;
-using Google.Solutions.LogAnalysis.Logs;
-using Newtonsoft.Json;
 using NUnit.Framework;
 using System;
-using System.Collections.Generic;
-using System.IO;
 using System.Linq;
-using System.Reflection;
 
 namespace Google.Solutions.LogAnalysis.Test.History
 {
