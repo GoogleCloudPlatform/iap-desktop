@@ -156,8 +156,8 @@ namespace Google.Solutions.LogAnalysis.History
 
         public InstanceSetHistory Build()
         {
-            var complete = this.instanceBuilders.Values.Where(b => !b.IsMoreInformationNeeded);
-            var incomplete = this.instanceBuilders.Values.Where(b => b.IsMoreInformationNeeded);
+            var complete = this.instanceBuilders.Values.Where(b => b.State == InstanceHistoryState.Complete);
+            var incomplete = this.instanceBuilders.Values.Where(b => b.State != InstanceHistoryState.Complete);
 
             Debug.Assert(complete.All(i => i.Tenancy != Tenancy.Unknown));
 

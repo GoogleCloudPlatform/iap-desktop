@@ -54,7 +54,7 @@ namespace Google.Solutions.LogAnalysis.History
             ? this.placements.First().Tenancy
             : Tenancy.Unknown;
 
-        public bool IsDefunct { get; private set; } = false;
+        private bool missingStopEvent = false;
 
         //
         // Information accumulated as we go thru history.
@@ -103,7 +103,7 @@ namespace Google.Solutions.LogAnalysis.History
                     Debug.WriteLine(
                         $"Instance {this.InstanceId} was placed, but never stopped, " +
                         "and yet is not running anymore. Flagging as defunct.");
-                    this.IsDefunct = true;
+                    this.missingStopEvent = true;
                     return;
                 }
             }
@@ -207,22 +207,31 @@ namespace Google.Solutions.LogAnalysis.History
                 this.placements);
         }
 
-        public bool IsMoreInformationNeeded
+        public InstanceHistoryState State
         {
             get
             {
-                if (this.Tenancy == Tenancy.Unknown)
+                if (this.missingStopEvent)
                 {
-                    return true;
+                    return InstanceHistoryState.MissingStopEvent;
                 }
-                else if (this.Tenancy == Tenancy.SoleTenant)
+                else if (this.Tenancy == Tenancy.Unknown)
                 {
-                    return this.image == null || this.reference == null;
+                    return InstanceHistoryState.MissingTenancy;
+                }
+                else if (this.reference == null)
+                {
+                    return InstanceHistoryState.MissingName;
+                }
+                else if (this.Tenancy == Tenancy.SoleTenant && this.image == null)
+                {
+                    return InstanceHistoryState.MissingImage;
                 }
                 else
                 {
-                    return false;
+                    return InstanceHistoryState.Complete;
                 }
+
             }
         }
 
@@ -320,5 +329,14 @@ namespace Google.Solutions.LogAnalysis.History
                 }
             }
         }
+    }
+
+    public enum InstanceHistoryState
+    {
+        Complete,
+        MissingTenancy,
+        MissingName,
+        MissingImage,
+        MissingStopEvent
     }
 }

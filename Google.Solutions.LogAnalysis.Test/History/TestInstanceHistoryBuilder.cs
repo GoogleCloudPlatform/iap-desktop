@@ -249,14 +249,6 @@ namespace Google.Solutions.LogAnalysis.Test.History
         // Placement events for deleted instances.
         //---------------------------------------------------------------------
 
-        [Test]
-        public void WhenInstanceDeletedAndPlacementRegistered_ThenInstanceIsDefunct()
-        {
-            var b = InstanceHistoryBuilder.ForDeletedInstance(1);
-            b.OnSetPlacement("server-1", new DateTime(2019, 12, 30));
-
-            Assert.IsTrue(b.IsDefunct);
-        }
 
         [Test]
         public void WhenInstanceDeletedAndSinglePlacementRegistered_ThenInstanceContainsRightPlacements()
@@ -330,7 +322,7 @@ namespace Google.Solutions.LogAnalysis.Test.History
         //---------------------------------------------------------------------
 
         [Test]
-        public void WhenInstanceExists_ThenNoMoreInformationNeeded()
+        public void WhenInstanceExists_ThenStateIsComplete()
         {
             var b = InstanceHistoryBuilder.ForExistingInstance(
                 1,
@@ -339,51 +331,50 @@ namespace Google.Solutions.LogAnalysis.Test.History
                 InstanceState.Running,
                 DateTime.Now,
                 Tenancy.SoleTenant);
-            Assert.IsFalse(b.IsMoreInformationNeeded);
+            Assert.AreEqual(InstanceHistoryState.Complete, b.State);
         }
 
         [Test]
-        public void WhenOnlyPlacementRegistered_ThenMoreInformationNeeded()
+        public void WhenOnlyPlacementRegistered_ThenStateIsMissingStopEvent()
         {
             var b = InstanceHistoryBuilder.ForDeletedInstance(1);
             b.OnSetPlacement("server-2", new DateTime(2019, 12, 30));
-            Assert.IsTrue(b.IsMoreInformationNeeded);
+            Assert.AreEqual(InstanceHistoryState.MissingStopEvent, b.State);
         }
 
         [Test]
-        public void WhenInstancDeletedAndNoPlacementRegistered_ThenMoreInformationNeeded()
+        public void WhenInstancDeletedAndNoPlacementRegistered_ThenStateIsMissingTenancy()
         {
             var b = InstanceHistoryBuilder.ForDeletedInstance(1);
-            Assert.IsTrue(b.IsMoreInformationNeeded);
+            Assert.AreEqual(InstanceHistoryState.MissingTenancy, b.State);
         }
 
         [Test]
-        public void WhenInstanceDeletedAndPlacementRegisteredButNoInsertRegistered_ThenMoreInformationNeeded()
+        public void WhenInstanceDeletedAndPlacementRegisteredButNoInsertRegistered_ThenStateIsMissingImage()
         {
             var b = InstanceHistoryBuilder.ForDeletedInstance(1);
             b.OnStop(new DateTime(2019, 12, 31), SampleReference);
             b.OnSetPlacement("server-2", new DateTime(2019, 12, 30));
-            Assert.IsTrue(b.IsMoreInformationNeeded);
+            Assert.AreEqual(InstanceHistoryState.MissingImage, b.State);
         }
 
         [Test]
-        public void WhenInstanceDeletedAndPlacementAndInsertRegistered_ThenNoMoreInformationNeeded()
+        public void WhenInstanceDeletedAndPlacementAndInsertRegistered_ThenStateIsComplete()
         {
             var b = InstanceHistoryBuilder.ForDeletedInstance(1);
             b.OnStop(new DateTime(2019, 12, 31), SampleReference);
             b.OnSetPlacement("server-2", new DateTime(2019, 12, 30));
             b.OnInsert(new DateTime(2019, 12, 30), SampleReference, SampleImage);
-            Assert.IsFalse(b.IsMoreInformationNeeded);
+            Assert.AreEqual(InstanceHistoryState.Complete, b.State);
         }
 
         [Test]
-        public void WhenInstanceDeletedAndInsertRegistered_ThenNoMoreInformationNeeded()
+        public void WhenInstanceDeletedAndInsertRegistered_ThenStateIsComplete()
         {
             var b = InstanceHistoryBuilder.ForDeletedInstance(1);
             b.OnStop(new DateTime(2019, 12, 29), SampleReference);
             b.OnInsert(new DateTime(2019, 12, 29), SampleReference, SampleImage);
-            Assert.IsFalse(b.IsMoreInformationNeeded);
+            Assert.AreEqual(InstanceHistoryState.Complete, b.State);
         }
-
     }
 }
