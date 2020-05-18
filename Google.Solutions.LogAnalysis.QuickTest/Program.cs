@@ -65,12 +65,38 @@ namespace Google.Solutions.LogAnalysis.QuickTest
 
             var set = instanceSetBuilder.Build();
 
+            Console.WriteLine(
+                "== Instances ==================================================================");
             foreach (var instance in set.Instances)
             {
-                Console.WriteLine($"  Instance ({instance.State}) {instance.Reference} ({instance.InstanceId}) of {instance.Image}");
-                foreach (var placement in instance.Placements)
+                Console.WriteLine($"  Instance     {instance.Reference} ({instance.InstanceId})");
+                Console.WriteLine($"     State:    {instance.State}");
+                Console.WriteLine($"     Image:    {instance.Image}");
+                Console.WriteLine($"     Tenancy:  {instance.Tenancy}");
+                Console.WriteLine($"     Placements:");
+
+                foreach (var placement in instance.Placements.OrderBy(p => p.From))
                 {
-                    Console.WriteLine($"    > {placement}");
+                    Console.WriteLine($"      - {placement}");
+                }
+            }
+
+            Console.WriteLine();
+            Console.WriteLine(
+                "== Nodes ======================================================================");
+
+            var nodeSet = NodeSetHistory.FromInstancyHistory(set.Instances);
+            foreach (var node in nodeSet.Nodes)
+            {
+                Console.WriteLine($"  Node          {node.ServerId}");
+                Console.WriteLine($"     First use: {node.FirstUse}");
+                Console.WriteLine($"     To:        {node.LastUse}");
+                Console.WriteLine($"     Peak VMs:  {node.PeakConcurrentPlacements}");
+                Console.WriteLine($"     Placements:");
+
+                foreach (var placement in node.Placements.OrderBy(p => p.From))
+                {
+                    Console.WriteLine($"      - {placement}");
                 }
             }
         }

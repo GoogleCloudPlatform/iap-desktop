@@ -103,7 +103,10 @@
     <Compile Include="History\InstanceHistoryBuilder.cs" />
     <Compile Include="History\InstanceSetHistory.cs" />
     <Compile Include="History\InstanceSetHistoryBuilder.cs" />
-    <Compile Include="History\Placement.cs" />
+    <Compile Include="History\NodePlacement.cs" />
+    <Compile Include="History\NodeSetHistory.cs" />
+    <Compile Include="History\InstancePlacement.cs" />
+    <Compile Include="History\NodeHistory.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Logs\AuditLogRecord.cs" />
     <Compile Include="Logs\LogRecord.cs" />

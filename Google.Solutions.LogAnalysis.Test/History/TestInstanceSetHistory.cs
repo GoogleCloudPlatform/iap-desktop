@@ -54,10 +54,10 @@ namespace Google.Solutions.LogAnalysis.Test.History
                         Tenancy.Fleet,
                         new []
                         {
-                            new Placement(
+                            new InstancePlacement(
                                 new DateTime(2019, 12, 1, 0, 0, 0, DateTimeKind.Utc),
                                 new DateTime(2019, 12, 2, 0, 0, 0, DateTimeKind.Utc)),
-                            new Placement(
+                            new InstancePlacement(
                                 new DateTime(2019, 12, 2, 0, 0, 0, DateTimeKind.Utc),
                                 new DateTime(2019, 12, 3, 0, 0, 0, DateTimeKind.Utc))
                         }),
@@ -69,7 +69,7 @@ namespace Google.Solutions.LogAnalysis.Test.History
                         Tenancy.SoleTenant,
                         new []
                         {
-                            new Placement(
+                            new InstancePlacement(
                                 "server-1",
                                 new DateTime(2019, 12, 1, 0, 0, 0, DateTimeKind.Utc),
                                 new DateTime(2019, 12, 2, 0, 0, 0, DateTimeKind.Utc))

@@ -71,7 +71,7 @@ namespace Google.Solutions.Compute
 
         public override string ToString()
         {
-            return $"projects/{this.ProjectId}/global/{this.ResourceType}/{this.ResourceType}";
+            return $"projects/{this.ProjectId}/global/{this.ResourceType}/{this.ResourceName}";
         }
 
         public bool Equals(GlobalResourceReference other)

@@ -30,7 +30,7 @@ namespace Google.Solutions.LogAnalysis.History
     /// on the fleet and was running from a certain point in time till
     /// a certain point in time.
     /// </summary>
-    public class Placement
+    public class InstancePlacement
     {
         [JsonProperty("tenancy")]
         public Tenancy Tenancy { get; }
@@ -62,7 +62,7 @@ namespace Google.Solutions.LogAnalysis.History
         }
 
         [JsonConstructor]
-        internal Placement(
+        internal InstancePlacement(
             [JsonProperty("tenancy")] Tenancy tenancy,
             [JsonProperty("server")] string serverId,
             [JsonProperty("from")] DateTime from,
@@ -77,17 +77,17 @@ namespace Google.Solutions.LogAnalysis.History
             this.To = to;
         }
 
-        public Placement(DateTime from, DateTime to)
+        public InstancePlacement(DateTime from, DateTime to)
             : this(Tenancy.Fleet, null, from, to)
         {
         }
 
-        public Placement(string serverId, DateTime from, DateTime to)
+        public InstancePlacement(string serverId, DateTime from, DateTime to)
             : this(Tenancy.SoleTenant, serverId, from, to)
         {
         }
 
-        public bool IsAdjacent(Placement subsequentPlacement)
+        public bool IsAdjacent(InstancePlacement subsequentPlacement)
         {
             Debug.Assert(this.To <= subsequentPlacement.To);
             Debug.Assert(this.From <= subsequentPlacement.From);
@@ -112,10 +112,10 @@ namespace Google.Solutions.LogAnalysis.History
             }
         }
 
-        public Placement Merge(Placement subsequentPlacement)
+        public InstancePlacement Merge(InstancePlacement subsequentPlacement)
         {
             Debug.Assert(IsAdjacent(subsequentPlacement));
-            return new Placement(
+            return new InstancePlacement(
                 MergeTenancy(this.Tenancy, subsequentPlacement.Tenancy),
                 this.ServerId ?? subsequentPlacement.ServerId,
                 this.From,

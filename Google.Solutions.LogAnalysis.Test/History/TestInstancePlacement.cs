@@ -26,16 +26,16 @@ using System;
 namespace Google.Solutions.LogAnalysis.Test.History
 {
     [TestFixture]
-    public class TestPlacement
+    public class TestInstancePlacement
     {
         [Test]
         public void WhenTwoPlacementsCloseAndNoneHasServer_ThenPlacementIsMerged()
         {
-            var p1 = new Placement(
+            var p1 = new InstancePlacement(
                 null,
                 new DateTime(2020, 1, 1, 10, 0, 0),
                 new DateTime(2020, 1, 1, 11, 0, 0));
-            var p2 = new Placement(
+            var p2 = new InstancePlacement(
                 null,
                 new DateTime(2020, 1, 1, 11, 0, 50),
                 new DateTime(2020, 1, 1, 12, 0, 0));
@@ -55,11 +55,11 @@ namespace Google.Solutions.LogAnalysis.Test.History
         [Test]
         public void WhenTwoPlacementsCloseAndOneHasServer_ThenPlacementIsMerged()
         {
-            var p1 = new Placement(
+            var p1 = new InstancePlacement(
                 null,
                 new DateTime(2020, 1, 1, 10, 0, 0),
                 new DateTime(2020, 1, 1, 11, 0, 0));
-            var p2 = new Placement(
+            var p2 = new InstancePlacement(
                 "server1",
                 new DateTime(2020, 1, 1, 11, 0, 50),
                 new DateTime(2020, 1, 1, 12, 0, 0));
@@ -79,11 +79,11 @@ namespace Google.Solutions.LogAnalysis.Test.History
         [Test]
         public void WhenTwoPlacementsCloseAndBothHaveDifferentServers_ThenPlacementIsNotMerged()
         {
-            var p1 = new Placement(
+            var p1 = new InstancePlacement(
                 "server2",
                 new DateTime(2020, 1, 1, 10, 0, 0),
                 new DateTime(2020, 1, 1, 11, 0, 0));
-            var p2 = new Placement(
+            var p2 = new InstancePlacement(
                 "server1",
                 new DateTime(2020, 1, 1, 11, 0, 50),
                 new DateTime(2020, 1, 1, 12, 0, 0));
@@ -94,11 +94,11 @@ namespace Google.Solutions.LogAnalysis.Test.History
         [Test]
         public void WhenTwoPlacementsNotClose_ThenPlacementIsNotMerged()
         {
-            var p1 = new Placement(
+            var p1 = new InstancePlacement(
                 null,
                 new DateTime(2020, 1, 1, 10, 0, 0),
                 new DateTime(2020, 1, 1, 11, 0, 0));
-            var p2 = new Placement(
+            var p2 = new InstancePlacement(
                 null,
                 new DateTime(2020, 1, 1, 11, 2, 0),
                 new DateTime(2020, 1, 1, 12, 0, 0));

@@ -59,7 +59,7 @@ namespace Google.Solutions.LogAnalysis.History
         //
         // Information accumulated as we go thru history.
         //
-        private readonly LinkedList<Placement> placements = new LinkedList<Placement>();
+        private readonly LinkedList<InstancePlacement> placements = new LinkedList<InstancePlacement>();
 
         private GlobalResourceReference image;
         private VmInstanceReference reference;
@@ -67,7 +67,7 @@ namespace Google.Solutions.LogAnalysis.History
         private DateTime? lastStoppedOn;
         private DateTime lastEventDate = DateTime.MaxValue;
 
-        private void AddPlacement(Placement placement)
+        private void AddPlacement(InstancePlacement placement)
         {
             if (this.placements.Any())
             {
@@ -127,11 +127,11 @@ namespace Google.Solutions.LogAnalysis.History
 
             if (tenancy == Tenancy.SoleTenant)
             {
-                AddPlacement(new Placement(serverId, date, placedUntil));
+                AddPlacement(new InstancePlacement(serverId, date, placedUntil));
             }
             else
             {
-                AddPlacement(new Placement(date, placedUntil));
+                AddPlacement(new InstancePlacement(date, placedUntil));
             }
         }
 
@@ -163,7 +163,7 @@ namespace Google.Solutions.LogAnalysis.History
                 Debug.Assert(lastSeen != null);
 
                 // Add a synthetic placement.
-                AddPlacement(new Placement(tenancy, null, lastSeen.Value, lastSeen.Value));
+                AddPlacement(new InstancePlacement(tenancy, null, lastSeen.Value, lastSeen.Value));
             }
         }
 
