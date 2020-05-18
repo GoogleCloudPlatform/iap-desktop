@@ -79,13 +79,21 @@ namespace Google.Solutions.LogAnalysis.History
 
             var dataPointsEnum = dataPointsSorted.GetEnumerator();
 
-            var current = new DataPoint()
+            DataPoint current = new DataPoint()
             {
                 Timestamp = timestampsSorted.First(),
                 Value = 0
             };
 
-            var next = current;
+            DataPoint next;
+            if (dataPointsEnum.MoveNext())
+            {
+                next = dataPointsEnum.Current;
+            }
+            else
+            {
+                next = current;
+            }
 
             foreach (var timestamp in timestampsSorted)
             {
@@ -98,7 +106,7 @@ namespace Google.Solutions.LogAnalysis.History
                     }
                 }
 
-                yield return current;
+                yield return new DataPoint(timestamp, current.Value);
             }
         }
 
@@ -119,8 +127,9 @@ namespace Google.Solutions.LogAnalysis.History
             var sparseHistogram = Balances(joinersUnsorted, leaversUnsorted)
                 .GroupBy(d => d.Timestamp.Date)
                 .Select(g => new DataPoint(
-                    g.Key, 
+                    g.Key,
                     g.Select(d => d.Value).Max()))
+                .OrderBy(d => d.Timestamp)
                 .ToList();
 
             return RepeatMissingDataPoints(

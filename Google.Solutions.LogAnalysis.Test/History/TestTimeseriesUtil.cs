@@ -146,19 +146,43 @@ namespace Google.Solutions.LogAnalysis.Test.History
 
             var histogram = TimeseriesUtil.DailyHistogram(joiners, leavers).ToList();
 
-            Assert.AreEqual(0, histogram[0].Value);
-            Assert.AreEqual(1, histogram[1].Value);
-            Assert.AreEqual(2, histogram[2].Value);
-            Assert.AreEqual(3, histogram[3].Value);
-            Assert.AreEqual(2, histogram[4].Value);
-            Assert.AreEqual(1, histogram[5].Value);
-            Assert.AreEqual(0, histogram[6].Value);
+            Assert.AreEqual(1, histogram[0].Value);
+            Assert.AreEqual(2, histogram[1].Value);
+            Assert.AreEqual(3, histogram[2].Value);
+            Assert.AreEqual(2, histogram[3].Value);
+            Assert.AreEqual(1, histogram[4].Value);
+            Assert.AreEqual(0, histogram[5].Value);
+            Assert.AreEqual(1, histogram[6].Value);
             Assert.AreEqual(1, histogram[7].Value);
             Assert.AreEqual(1, histogram[8].Value);
             Assert.AreEqual(0, histogram[9].Value);
 
             Assert.AreEqual(baseDate.AddDays(1), histogram[0].Timestamp);
             Assert.AreEqual(baseDate.AddDays(10), histogram[9].Timestamp);
+        }
+
+        [Test]
+        public void WhenJoinerOnFirstDay_ThenDailyHistoramIsÓneAtFirstDay()
+        {
+            var baseDate = new DateTime(2020, 1, 1);
+
+            var joiners = new[]
+            {
+                baseDate
+            };
+
+            var leavers = new[]
+            {
+                baseDate.AddDays(4).AddMinutes(30)
+            };
+
+            var histogram = TimeseriesUtil.DailyHistogram(joiners, leavers).ToList();
+
+            Assert.AreEqual(1, histogram[0].Value);
+            Assert.AreEqual(1, histogram[1].Value);
+            Assert.AreEqual(1, histogram[2].Value);
+            Assert.AreEqual(1, histogram[3].Value);
+            Assert.AreEqual(0, histogram[4].Value);
         }
     }
 }

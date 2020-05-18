@@ -28,7 +28,9 @@ using Google.Solutions.LogAnalysis.Events;
 using Google.Solutions.LogAnalysis.Extensions;
 using Google.Solutions.LogAnalysis.History;
 using System;
+using System.IO;
 using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
 
 namespace Google.Solutions.LogAnalysis.QuickTest
@@ -37,18 +39,26 @@ namespace Google.Solutions.LogAnalysis.QuickTest
     {
         internal static string ShortIdFromUrl(string url) => url.Substring(url.LastIndexOf("/") + 1);
 
-        private static async Task AnalyzeAsync(string projectId, int days)
+        private static LoggingService CreateLoggingService()
         {
-            var loggingService = new LoggingService(new BaseClientService.Initializer
+            return new LoggingService(new BaseClientService.Initializer
             {
                 HttpClientInitializer = GoogleCredential.GetApplicationDefault()
             });
+        }
 
-            var computeService = new ComputeService(new BaseClientService.Initializer
+        private static ComputeService CreateComputeService()
+        {
+            return new ComputeService(new BaseClientService.Initializer
             {
                 HttpClientInitializer = GoogleCredential.GetApplicationDefault()
             });
+        }
 
+        private static async Task DownloadAsync(string projectId, int days, string filePath)
+        {
+            var loggingService = CreateLoggingService();
+            var computeService = CreateComputeService();
 
             var instanceSetBuilder = new InstanceSetHistoryBuilder(
                 DateTime.UtcNow.AddDays(-days),
@@ -63,54 +73,77 @@ namespace Google.Solutions.LogAnalysis.QuickTest
                 DateTime.Now.AddDays(-days),
                 instanceSetBuilder);
 
-            var set = instanceSetBuilder.Build();
-
-            Console.WriteLine(
-                "== Instances ==================================================================");
-            foreach (var instance in set.Instances)
+            using (var writer = new StreamWriter(filePath, false, Encoding.UTF8))
             {
-                Console.WriteLine($"  Instance     {instance.Reference} ({instance.InstanceId})");
-                Console.WriteLine($"     State:    {instance.State}");
-                Console.WriteLine($"     Image:    {instance.Image}");
-                Console.WriteLine($"     Tenancy:  {instance.Tenancy}");
-                Console.WriteLine($"     Placements:");
-
-                foreach (var placement in instance.Placements.OrderBy(p => p.From))
-                {
-                    Console.WriteLine($"      - {placement}");
-                }
+                instanceSetBuilder.Build().Serialize(writer);
             }
+        }
 
-            Console.WriteLine();
-            Console.WriteLine(
-                "== Nodes ======================================================================");
-
-            var nodeSet = NodeSetHistory.FromInstancyHistory(set.Instances);
-            foreach (var node in nodeSet.Nodes)
+        private static void Analyze(string filePath)
+        {
+            using (var reader = new StreamReader(filePath, Encoding.UTF8))
             {
-                Console.WriteLine($"  Node          {node.ServerId}");
-                Console.WriteLine($"     First use: {node.FirstUse}");
-                Console.WriteLine($"     To:        {node.LastUse}");
-                Console.WriteLine($"     Peak VMs:  {node.PeakConcurrentPlacements}");
-                Console.WriteLine($"     Placements:");
+                var set = InstanceSetHistory.Deserialize(reader);
 
-                foreach (var placement in node.Placements.OrderBy(p => p.From))
+                Console.WriteLine(
+                    "== Instances ==================================================================");
+                foreach (var instance in set.Instances)
                 {
-                    Console.WriteLine($"      - {placement}");
+                    Console.WriteLine($"  Instance     {instance.Reference} ({instance.InstanceId})");
+                    Console.WriteLine($"     State:    {instance.State}");
+                    Console.WriteLine($"     Image:    {instance.Image}");
+                    Console.WriteLine($"     Tenancy:  {instance.Tenancy}");
+                    Console.WriteLine($"     Placements:");
+
+                    foreach (var placement in instance.Placements.OrderBy(p => p.From))
+                    {
+                        Console.WriteLine($"      - {placement}");
+                    }
                 }
 
+                Console.WriteLine();
+                Console.WriteLine(
+                    "== Nodes ======================================================================");
 
-                Console.WriteLine($"     Statistics:");
-                foreach (var dp in node.PlacementHistogram)
+                var nodeSet = NodeSetHistory.FromInstancyHistory(set.Instances, true);
+                foreach (var node in nodeSet.Nodes)
                 {
-                    Console.WriteLine($"      - {dp.Timestamp} {new string('#', dp.Value)}");
+                    Console.WriteLine($"  Node          {node.ServerId ?? "FLEET"}");
+                    Console.WriteLine($"     First use: {node.FirstUse}");
+                    Console.WriteLine($"     To:        {node.LastUse}");
+                    Console.WriteLine($"     Peak VMs:  {node.PeakConcurrentPlacements}");
+                    Console.WriteLine($"     Placements:");
+
+                    foreach (var placement in node.Placements.OrderBy(p => p.From))
+                    {
+                        Console.WriteLine($"      - {placement}");
+                    }
+
+                    Console.WriteLine($"     Statistics:");
+                    foreach (var dp in node.PlacementHistogram)
+                    {
+                        Console.WriteLine($"      - {dp.Timestamp:yyyy-MM-dd} \t{new string('#', dp.Value)}");
+                    }
                 }
             }
         }
 
         static void Main(string[] args)
         {
-            AnalyzeAsync(args[0], 40).Wait();
+            if (args.Length >= 4 && args[0] == "download")
+            {
+                DownloadAsync(args[1], int.Parse(args[2]), args[3]).Wait();
+            }
+            else if (args.Length >= 2 && args[0] == "analyze")
+            { 
+                Analyze(args[1]);
+            }
+            else
+            {
+                Console.WriteLine("Usage: <program> download <project> <days> <file>");
+                Console.WriteLine("       <program> analyze <file>");
+                Environment.Exit(1);
+            }
         }
     }
 }

@@ -34,10 +34,16 @@ namespace Google.Solutions.LogAnalysis.History
         }
 
         private static IEnumerable<NodeHistory> NodesFromInstanceSetHistory(
-            IEnumerable<InstanceHistory> instanceHistories)
+            IEnumerable<InstanceHistory> instanceHistories,
+            bool includeNodeForFleet)
         {
+            if (!includeNodeForFleet)
+            {
+                instanceHistories = instanceHistories
+                    .Where(i => i.Tenancy == Tenancy.SoleTenant);
+            }
+
             var placementsByServer = instanceHistories
-                .Where(i => i.Tenancy == Tenancy.SoleTenant)
                 .Where(i => i.Placements != null)
                 .SelectMany(i => i.Placements.Select(p => new
                 {
@@ -64,9 +70,11 @@ namespace Google.Solutions.LogAnalysis.History
         }
 
         public static NodeSetHistory FromInstancyHistory(
-            IEnumerable<InstanceHistory> instanceHistories)
+            IEnumerable<InstanceHistory> instanceHistories,
+            bool includeNodeForFleet)
         {
-            return new NodeSetHistory(NodesFromInstanceSetHistory(instanceHistories));
+            return new NodeSetHistory(
+                NodesFromInstanceSetHistory(instanceHistories, includeNodeForFleet));
         }
     }
 }

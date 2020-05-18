@@ -41,11 +41,40 @@ namespace Google.Solutions.LogAnalysis.Test.History
                     InstanceHistoryState.MissingTenancy,
                     null,
                     Tenancy.Fleet,
-                    null)
+                    new []
+                    {
+                        new InstancePlacement(
+                            new DateTime(2019, 12, 1, 0, 0, 0, DateTimeKind.Utc),
+                            new DateTime(2019, 12, 2, 0, 0, 0, DateTimeKind.Utc))
+                    })
             };
 
-            var nodes = NodeSetHistory.FromInstancyHistory(instances);
+            var nodes = NodeSetHistory.FromInstancyHistory(instances, false);
             Assert.IsFalse(nodes.Nodes.Any());
+        }
+
+        [Test]
+        public void WhenInstancesAreFromFleetAndIncludeFleetIsTrue_ThenSetIncludesNodeForFleet()
+        {
+            var instances = new[]
+            {
+                new InstanceHistory(
+                    1,
+                    new VmInstanceReference("project-1", "zone-1", "instance-1"),
+                    InstanceHistoryState.MissingTenancy,
+                    null,
+                    Tenancy.Fleet,
+                    new []
+                    {
+                        new InstancePlacement(
+                            new DateTime(2019, 12, 1, 0, 0, 0, DateTimeKind.Utc),
+                            new DateTime(2019, 12, 2, 0, 0, 0, DateTimeKind.Utc))
+                    })
+            };
+
+            var nodes = NodeSetHistory.FromInstancyHistory(instances, true);
+            Assert.IsTrue(nodes.Nodes.Any());
+            Assert.IsNull(nodes.Nodes.First().ServerId);
         }
 
         [Test]
@@ -62,7 +91,7 @@ namespace Google.Solutions.LogAnalysis.Test.History
                     null)
             };
 
-            var nodes = NodeSetHistory.FromInstancyHistory(instances);
+            var nodes = NodeSetHistory.FromInstancyHistory(instances, false);
             Assert.IsFalse(nodes.Nodes.Any());
         }
 
@@ -94,7 +123,7 @@ namespace Google.Solutions.LogAnalysis.Test.History
                     })
             };
 
-            var nodes = NodeSetHistory.FromInstancyHistory(instances);
+            var nodes = NodeSetHistory.FromInstancyHistory(instances, false);
             Assert.AreEqual(2, nodes.Nodes.Count());
 
             var server1 = nodes.Nodes.First(n => n.ServerId == "server-1");
@@ -132,7 +161,7 @@ namespace Google.Solutions.LogAnalysis.Test.History
                     })
             };
 
-            var nodes = NodeSetHistory.FromInstancyHistory(instances);
+            var nodes = NodeSetHistory.FromInstancyHistory(instances, false);
             Assert.AreEqual(2, nodes.Nodes.Count());
 
             var server1 = nodes.Nodes.First(n => n.ServerId == "server-1");
@@ -177,7 +206,7 @@ namespace Google.Solutions.LogAnalysis.Test.History
                     })
             };
 
-            var nodes = NodeSetHistory.FromInstancyHistory(instances);
+            var nodes = NodeSetHistory.FromInstancyHistory(instances, false);
             Assert.AreEqual(1, nodes.Nodes.Count());
 
             var server1 = nodes.Nodes.First(n => n.ServerId == "server-1");
@@ -219,7 +248,7 @@ namespace Google.Solutions.LogAnalysis.Test.History
                     })
             };
 
-            var nodes = NodeSetHistory.FromInstancyHistory(instances);
+            var nodes = NodeSetHistory.FromInstancyHistory(instances, false);
             Assert.AreEqual(1, nodes.Nodes.Count());
 
             var server1 = nodes.Nodes.First(n => n.ServerId == "server-1");

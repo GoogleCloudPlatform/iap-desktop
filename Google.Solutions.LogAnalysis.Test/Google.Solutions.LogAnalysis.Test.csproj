@@ -102,6 +102,7 @@
     <Compile Include="Events\TestUnknownEvent.cs" />
     <Compile Include="Extensions\TestListLogEntriesExtensions.cs" />
     <Compile Include="Extensions\TestListLogEntriesParser.cs" />
+    <Compile Include="History\TestDataPoint.cs" />
     <Compile Include="History\TestInstanceHistoryBuilder.cs" />
     <Compile Include="History\TestInstanceSetHistory.cs" />
     <Compile Include="History\TestInstanceSetHistoryBuilder.cs" />

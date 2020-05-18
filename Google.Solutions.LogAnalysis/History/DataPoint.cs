@@ -33,5 +33,45 @@ namespace Google.Solutions.LogAnalysis.History
             this.Timestamp = timestamp;
             this.Value = value;
         }
+
+        public override int GetHashCode()
+        {
+            return
+                this.Timestamp.GetHashCode() ^
+                this.Value;
+        }
+
+        public override string ToString()
+        {
+            return $"({this.Timestamp}, {this.Value})";
+        }
+
+        public bool Equals(DataPoint other)
+        {
+            return !object.ReferenceEquals(other, null) &&
+                this.Timestamp == other.Timestamp &&
+                this.Value == other.Value;
+        }
+
+        public override bool Equals(object obj)
+        {
+            return obj is DataPoint &&
+                Equals((DataPoint)obj);
+        }
+
+        public static bool operator ==(DataPoint obj1, DataPoint obj2)
+        {
+            if (object.ReferenceEquals(obj1, null))
+            {
+                return object.ReferenceEquals(obj2, null);
+            }
+
+            return obj1.Equals(obj2);
+        }
+
+        public static bool operator !=(DataPoint obj1, DataPoint obj2)
+        {
+            return !(obj1 == obj2);
+        }
     }
 }
