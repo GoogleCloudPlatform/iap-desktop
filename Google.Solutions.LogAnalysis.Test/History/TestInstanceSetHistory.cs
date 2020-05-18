@@ -78,8 +78,8 @@ namespace Google.Solutions.LogAnalysis.Test.History
 
             using (var memoryStream = new MemoryStream())
             {
-                //var s = new StringWriter();
-                //    history.Serialize(s);
+                var s = new StringWriter();
+                history.Serialize(s);
 
                 var writer = new StreamWriter(memoryStream);
                 history.Serialize(writer);
@@ -157,45 +157,47 @@ namespace Google.Solutions.LogAnalysis.Test.History
             var json = @"
             {
               '@type': 'type.googleapis.com/google.solutions.loganalysis.InstanceSetHistory',
-              'start': '2019-12-01T00:00:00Z',
-              'end': '2020-01-01T00:00:00Z',
-              'instances': [
-                {
-                  'id': 188550847350222232,
-                  'vm': {
-                    'projectId': 'project-1',
-                    'zone': 'us-central1-a',
-                    'instanceName': 'instance-1'
-                  },
-                  'placements': [
-                    {
-                      'tenancy': 1,
-                      'from': '2019-12-01T00:00:00Z',
-                      'to': '2019-12-02T00:00:00Z'
+              'instanceSetHistory': {
+                'start': '2019-12-01T00:00:00Z',
+                'end': '2020-01-01T00:00:00Z',
+                'instances': [
+                  {
+                    'id': 188550847350222232,
+                    'vm': {
+                      'projectId': 'project-1',
+                      'zone': 'us-central1-a',
+                      'instanceName': 'instance-1'
                     },
-                    {
-                      'tenancy': 1,
-                      'from': '2019-12-02T00:00:00Z',
-                      'to': '2019-12-03T00:00:00Z'
-                    }
-                  ],
-                  'tenancy': 1,
-                  'state': 0
-                },
-                {
-                  'id': 118550847350222232,
-                  'placements': [
-                    {
-                      'tenancy': 2,
-                      'server': 'server-1',
-                      'from': '2019-12-01T00:00:00Z',
-                      'to': '2019-12-02T00:00:00Z'
-                    }
-                  ],
-                  'tenancy': 2,
-                  'state': 3
-                }
-              ]
+                    'placements': [
+                      {
+                        'tenancy': 1,
+                        'from': '2019-12-01T00:00:00Z',
+                        'to': '2019-12-02T00:00:00Z'
+                      },
+                      {
+                        'tenancy': 1,
+                        'from': '2019-12-02T00:00:00Z',
+                        'to': '2019-12-03T00:00:00Z'
+                      }
+                    ],
+                    'tenancy': 1,
+                    'state': 0
+                  },
+                  {
+                    'id': 118550847350222232,
+                    'placements': [
+                      {
+                        'tenancy': 2,
+                        'server': 'server-1',
+                        'from': '2019-12-01T00:00:00Z',
+                        'to': '2019-12-02T00:00:00Z'
+                      }
+                    ],
+                    'tenancy': 2,
+                    'state': 3
+                  }
+                ]
+              }
             }";
 
             using (var reader = new StringReader(json))

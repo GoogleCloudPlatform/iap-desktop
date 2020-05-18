@@ -29,11 +29,6 @@ namespace Google.Solutions.LogAnalysis.History
 {
     public class InstanceSetHistory
     {
-        internal const string TypeAnnotation = "type.googleapis.com/google.solutions.loganalysis.InstanceSetHistory";
-
-        [JsonProperty("@type")]
-        internal string Type => TypeAnnotation;
-
         [JsonProperty("start")]
         public DateTime StartDate { get; }
 
@@ -43,33 +38,49 @@ namespace Google.Solutions.LogAnalysis.History
         [JsonProperty("instances")]
         public IEnumerable<InstanceHistory> Instances { get; }
 
+        [JsonConstructor]
         internal InstanceSetHistory(
-            DateTime startDate,
-            DateTime endDate,
-            IEnumerable<InstanceHistory> instances)
+            [JsonProperty("start")] DateTime startDate,
+            [JsonProperty("end")] DateTime endDate,
+            [JsonProperty("instances")] IEnumerable<InstanceHistory> instances)
         {
             this.StartDate = startDate;
             this.EndDate = endDate;
             this.Instances = instances;
         }
 
-        [JsonConstructor]
-        internal InstanceSetHistory(
-            [JsonProperty("@type")] string typeAnnotation,
-            [JsonProperty("start")] DateTime startDate,
-            [JsonProperty("end")] DateTime endDate,
-            [JsonProperty("instances")] IEnumerable<InstanceHistory> instances)
-            : this(startDate, endDate, instances)
-        {
-            if (typeAnnotation != TypeAnnotation)
-            {
-                throw new FormatException("Missing type annotation: " + TypeAnnotation);
-            }
-        }
-
         //---------------------------------------------------------------------
         // Serialization.
         //---------------------------------------------------------------------
+
+        internal class Envelope
+        {
+            internal const string TypeAnnotation = "type.googleapis.com/google.solutions.loganalysis.InstanceSetHistory";
+
+            [JsonProperty("@type")]
+            internal string Type => TypeAnnotation;
+
+            [JsonProperty("instanceSetHistory")]
+            internal InstanceSetHistory InstanceSetHistory { get; }
+
+            public Envelope(
+                InstanceSetHistory instanceSetHistory)
+            {
+                this.InstanceSetHistory = instanceSetHistory;
+            }
+
+            [JsonConstructor]
+            public Envelope(
+                [JsonProperty("@type")] string typeAnnotation,
+                [JsonProperty("instanceSetHistory")]InstanceSetHistory instanceSetHistory)
+                : this(instanceSetHistory)
+            {
+                if (typeAnnotation != TypeAnnotation)
+                {
+                    throw new FormatException("Missing type annotation: " + TypeAnnotation);
+                }
+            }
+        }
 
         private static JsonSerializer CreateSerializer()
         {
@@ -86,13 +97,13 @@ namespace Google.Solutions.LogAnalysis.History
 
         public void Serialize(TextWriter writer)
         {
-            CreateSerializer().Serialize(writer, this);
+            CreateSerializer().Serialize(writer, new Envelope(this));
         }
 
         public static InstanceSetHistory Deserialize(TextReader reader)
         {
-            return CreateSerializer().Deserialize<InstanceSetHistory>(
-                new JsonTextReader(reader));
+            return CreateSerializer().Deserialize<InstanceSetHistory.Envelope>(
+                new JsonTextReader(reader)).InstanceSetHistory;
         }
     }
 }
