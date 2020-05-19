@@ -40,7 +40,6 @@ namespace Google.Solutions.LogAnalysis.Test.History
                     new VmInstanceReference("project-1", "zone-1", "instance-1"),
                     InstanceHistoryState.MissingTenancy,
                     null,
-                    Tenancy.Fleet,
                     new []
                     {
                         new InstancePlacement(
@@ -63,7 +62,6 @@ namespace Google.Solutions.LogAnalysis.Test.History
                     new VmInstanceReference("project-1", "zone-1", "instance-1"),
                     InstanceHistoryState.MissingTenancy,
                     null,
-                    Tenancy.Fleet,
                     new []
                     {
                         new InstancePlacement(
@@ -87,7 +85,6 @@ namespace Google.Solutions.LogAnalysis.Test.History
                     new VmInstanceReference("project-1", "zone-1", "instance-1"),
                     InstanceHistoryState.Complete,
                     new GlobalResourceReference("project-1", "images", "image-1"),
-                    Tenancy.SoleTenant,
                     null)
             };
 
@@ -105,7 +102,6 @@ namespace Google.Solutions.LogAnalysis.Test.History
                     new VmInstanceReference("project-1", "zone-1", "instance-1"),
                     InstanceHistoryState.MissingTenancy,
                     new GlobalResourceReference("project-1", "images", "image-1"),
-                    Tenancy.SoleTenant,
                     new []
                     {
                         new InstancePlacement(
@@ -143,7 +139,6 @@ namespace Google.Solutions.LogAnalysis.Test.History
                     new VmInstanceReference("project-1", "zone-1", "instance-1"),
                     InstanceHistoryState.MissingTenancy,
                     new GlobalResourceReference("project-1", "images", "image-1"),
-                    Tenancy.SoleTenant,
                     new []
                     {
                         new InstancePlacement(
@@ -183,7 +178,6 @@ namespace Google.Solutions.LogAnalysis.Test.History
                     new VmInstanceReference("project-1", "zone-1", "instance-1"),
                     InstanceHistoryState.MissingTenancy,
                     new GlobalResourceReference("project-1", "images", "image-1"),
-                    Tenancy.SoleTenant,
                     new []
                     {
                         new InstancePlacement(
@@ -196,7 +190,6 @@ namespace Google.Solutions.LogAnalysis.Test.History
                     new VmInstanceReference("project-1", "zone-1", "instance-1"),
                     InstanceHistoryState.MissingTenancy,
                     new GlobalResourceReference("project-1", "images", "image-1"),
-                    Tenancy.SoleTenant,
                     new []
                     {
                         new InstancePlacement(
@@ -225,7 +218,6 @@ namespace Google.Solutions.LogAnalysis.Test.History
                     new VmInstanceReference("project-1", "zone-1", "instance-1"),
                     InstanceHistoryState.MissingTenancy,
                     new GlobalResourceReference("project-1", "images", "image-1"),
-                    Tenancy.SoleTenant,
                     new []
                     {
                         new InstancePlacement(
@@ -238,7 +230,6 @@ namespace Google.Solutions.LogAnalysis.Test.History
                     new VmInstanceReference("project-1", "zone-1", "instance-1"),
                     InstanceHistoryState.MissingTenancy,
                     new GlobalResourceReference("project-1", "images", "image-1"),
-                    Tenancy.SoleTenant,
                     new []
                     {
                         new InstancePlacement(

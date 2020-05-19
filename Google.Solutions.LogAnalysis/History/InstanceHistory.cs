@@ -39,9 +39,6 @@ namespace Google.Solutions.LogAnalysis.History
         [JsonProperty("image")]
         public GlobalResourceReference Image { get; }
 
-        [JsonProperty("tenancy")]
-        public Tenancy Tenancy { get; }
-
         [JsonProperty("state")]
         public InstanceHistoryState State { get; }
 
@@ -51,7 +48,6 @@ namespace Google.Solutions.LogAnalysis.History
             [JsonProperty("vm")] VmInstanceReference reference,
             [JsonProperty("state")] InstanceHistoryState state,
             [JsonProperty("image")] GlobalResourceReference image,
-            [JsonProperty("tenancy")] Tenancy tenancy,
             [JsonProperty("placements")] IEnumerable<InstancePlacement> placements
             )
         {
@@ -59,7 +55,6 @@ namespace Google.Solutions.LogAnalysis.History
             this.Reference = reference;
             this.State = state;
             this.Image = image;
-            this.Tenancy = tenancy;
             this.Placements = placements;
         }
 

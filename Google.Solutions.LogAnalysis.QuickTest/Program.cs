@@ -92,7 +92,6 @@ namespace Google.Solutions.LogAnalysis.QuickTest
                     Console.WriteLine($"  Instance     {instance.Reference} ({instance.InstanceId})");
                     Console.WriteLine($"     State:    {instance.State}");
                     Console.WriteLine($"     Image:    {instance.Image}");
-                    Console.WriteLine($"     Tenancy:  {instance.Tenancy}");
                     Console.WriteLine($"     Placements:");
 
                     foreach (var placement in instance.Placements.OrderBy(p => p.From))

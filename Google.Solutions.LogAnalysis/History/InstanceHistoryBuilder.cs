@@ -204,7 +204,6 @@ namespace Google.Solutions.LogAnalysis.History
                 this.reference,
                 this.State,
                 this.image,
-                this.Tenancy,
                 this.placements);
         }
 

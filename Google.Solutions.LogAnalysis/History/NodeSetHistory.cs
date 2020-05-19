@@ -40,7 +40,8 @@ namespace Google.Solutions.LogAnalysis.History
             if (!includeNodeForFleet)
             {
                 instanceHistories = instanceHistories
-                    .Where(i => i.Tenancy == Tenancy.SoleTenant);
+                    .Where(i => i.Placements != null && 
+                                i.Placements.Any(p => p.Tenancy == Tenancy.SoleTenant));
             }
 
             var placementsByServer = instanceHistories

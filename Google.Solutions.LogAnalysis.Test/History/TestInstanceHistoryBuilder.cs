@@ -47,58 +47,6 @@ namespace Google.Solutions.LogAnalysis.Test.History
         }
 
         //---------------------------------------------------------------------
-        // Tenancy.
-        //---------------------------------------------------------------------
-
-        [Test]
-        public void WhenInstanceDeletedAndNoPlacementOrInsertRegistered_TheTenancyIsUnknown()
-        {
-            var b = InstanceHistoryBuilder.ForDeletedInstance(1);
-            var i = b.Build();
-
-            Assert.AreEqual(1, i.InstanceId);
-
-            Assert.AreEqual(0, i.Placements.Count());
-            Assert.AreEqual(Tenancy.Unknown, i.Tenancy);
-        }
-
-        [Test]
-        public void WhenInstanceDeletedAndInsertRegistered_TheTenancyIsFleet()
-        {
-            var b = InstanceHistoryBuilder.ForDeletedInstance(1);
-            b.OnStop(new DateTime(2019, 12, 30), SampleReference);
-            b.OnInsert(new DateTime(2019, 12, 30), SampleReference, SampleImage);
-            var i = b.Build();
-
-            Assert.AreEqual(Tenancy.Fleet, i.Tenancy);
-        }
-
-        [Test]
-        public void WhenInstanceDeletedAndPlacementRegistered_TheTenancyIsSoleTenant()
-        {
-            var b = InstanceHistoryBuilder.ForDeletedInstance(1);
-            b.OnStop(new DateTime(2019, 12, 31), SampleReference);
-            b.OnSetPlacement("server-1", new DateTime(2019, 12, 30));
-
-            var i = b.Build();
-
-            Assert.AreEqual(Tenancy.SoleTenant, i.Tenancy);
-        }
-
-        [Test]
-        public void WhenInstanceExistsAndIsSoleTenant_ThenTenancyIsSoleTenant()
-        {
-            var b = InstanceHistoryBuilder.ForExistingInstance(
-                1,
-                SampleReference,
-                SampleImage,
-                InstanceState.Running,
-                DateTime.Now,
-                Tenancy.SoleTenant);
-            Assert.AreEqual(Tenancy.SoleTenant, b.Tenancy);
-        }
-
-        //---------------------------------------------------------------------
         // Placements for existing instances.
         //---------------------------------------------------------------------
 

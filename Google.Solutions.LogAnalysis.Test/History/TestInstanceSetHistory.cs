@@ -51,7 +51,6 @@ namespace Google.Solutions.LogAnalysis.Test.History
                         new VmInstanceReference("project-1", "us-central1-a", "instance-1"),
                         InstanceHistoryState.Complete,
                         null,
-                        Tenancy.Fleet,
                         new []
                         {
                             new InstancePlacement(
@@ -66,7 +65,6 @@ namespace Google.Solutions.LogAnalysis.Test.History
                         null,
                         InstanceHistoryState.MissingImage,
                         null,
-                        Tenancy.SoleTenant,
                         new []
                         {
                             new InstancePlacement(
@@ -97,7 +95,6 @@ namespace Google.Solutions.LogAnalysis.Test.History
                 var completeInstance = restoredHistory.Instances.First(i => i.InstanceId == 188550847350222232);
 
                 Assert.AreEqual(history.Instances.First().Reference, completeInstance.Reference);
-                Assert.AreEqual(history.Instances.First().Tenancy, completeInstance.Tenancy);
 
                 Assert.AreEqual(history.Instances.First().Placements.Count(), completeInstance.Placements.Count());
                 Assert.AreEqual(history.Instances.First().Placements.First().From, completeInstance.Placements.First().From);
@@ -114,7 +111,6 @@ namespace Google.Solutions.LogAnalysis.Test.History
 
                 Assert.AreEqual(history.Instances.Last().InstanceId, incompleteInstance.InstanceId);
                 Assert.AreEqual(history.Instances.Last().Reference, incompleteInstance.Reference);
-                Assert.AreEqual(history.Instances.Last().Tenancy, incompleteInstance.Tenancy);
 
                 Assert.AreEqual(history.Instances.Last().Placements.Count(), incompleteInstance.Placements.Count());
                 Assert.AreEqual(history.Instances.Last().Placements.First().From, incompleteInstance.Placements.First().From);
@@ -214,7 +210,6 @@ namespace Google.Solutions.LogAnalysis.Test.History
                 Assert.AreEqual(
                     new VmInstanceReference("project-1", "us-central1-a", "instance-1"),
                     completeInstance.Reference);
-                Assert.AreEqual(Tenancy.Fleet, completeInstance.Tenancy);
 
                 Assert.AreEqual(2, completeInstance.Placements.Count());
                 Assert.AreEqual(new DateTime(2019, 12, 1, 0, 0, 0, DateTimeKind.Utc), completeInstance.Placements.First().From);
@@ -231,7 +226,6 @@ namespace Google.Solutions.LogAnalysis.Test.History
 
                 Assert.AreEqual(InstanceHistoryState.MissingImage, incompleteInstance.State);
                 Assert.IsNull(incompleteInstance.Reference);
-                Assert.AreEqual(Tenancy.SoleTenant, incompleteInstance.Tenancy);
 
                 Assert.AreEqual(1, incompleteInstance.Placements.Count());
                 Assert.AreEqual(new DateTime(2019, 12, 1, 0, 0, 0, DateTimeKind.Utc), incompleteInstance.Placements.First().From);
