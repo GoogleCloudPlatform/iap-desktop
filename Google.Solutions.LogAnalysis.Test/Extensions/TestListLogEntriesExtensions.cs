@@ -19,6 +19,7 @@
 // under the License.
 //
 
+using Google.Apis.Compute.v1;
 using Google.Apis.Logging.v2;
 using Google.Apis.Logging.v2.Data;
 using Google.Apis.Services;
@@ -87,6 +88,42 @@ namespace Google.Solutions.LogAnalysis.Test.Extensions
             var insertEvent = events.OfType<InsertInstanceEvent>()
                 .First(e => e.InstanceReference == instanceRef);
             Assert.IsNotNull(insertEvent);
+        }
+
+        [Test]
+        public async Task WhenInstanceCreated_ThenListInstanceEventsAsyncCanFeedHistorySetBuilder(
+            [LinuxInstance] InstanceRequest testInstance)
+        {
+            await testInstance.AwaitReady();
+            var instanceRef = await testInstance.GetInstanceAsync();
+
+            var loggingService = new LoggingService(new BaseClientService.Initializer
+            {
+                HttpClientInitializer = Defaults.GetCredential()
+            });
+
+            var computeService = new ComputeService(new BaseClientService.Initializer
+            {
+                HttpClientInitializer = Defaults.GetCredential()
+            });
+
+            var instanceBuilder = new InstanceSetHistoryBuilder(
+                DateTime.UtcNow.AddDays(-7),
+                DateTime.UtcNow);
+            await instanceBuilder.AddExistingInstances(
+                computeService.Instances,
+                computeService.Disks,
+                Defaults.ProjectId);
+
+            await loggingService.Entries.ListInstanceEventsAsync(
+                new[] { Defaults.ProjectId },
+                instanceBuilder.StartDate,
+                instanceBuilder);
+
+            var set = instanceBuilder.Build();
+            var testInstanceHistory = set.Instances.FirstOrDefault(i => i.Reference == instanceRef);
+
+            Assert.IsNotNull(testInstanceHistory, "Instance found in history");
         }
     }
 }

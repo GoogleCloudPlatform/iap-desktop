@@ -120,7 +120,7 @@ namespace Google.Solutions.LogAnalysis.Test.History
         }
 
         [Test]
-        public void WhenJoinerOnFirstDay_ThenDailyHistoramIsÓneAtFirstDay()
+        public void WhenJoinerOnFirstDay_ThenDailyHistoramIsOneAtFirstDay()
         {
             var baseDate = new DateTime(2020, 1, 1);
 
