@@ -118,7 +118,7 @@ namespace Google.Solutions.LogAnalysis.Test.History
 
             Assert.AreEqual(1, set.Instances.Count());
             Assert.AreEqual(123, set.Instances.First().InstanceId);
-            Assert.AreEqual(InstanceHistoryState.MissingTenancy, set.Instances.First().State); // TODO
+            Assert.AreEqual(InstanceHistoryState.MissingTenancy, set.Instances.First().State);
         }
 
         [Test]

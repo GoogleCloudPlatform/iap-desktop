@@ -85,19 +85,28 @@ namespace Google.Solutions.LogAnalysis.QuickTest
             {
                 var set = InstanceSetHistory.Deserialize(reader);
 
-                Console.WriteLine(
-                    "== Instances ==================================================================");
-                foreach (var instance in set.Instances)
-                {
-                    Console.WriteLine($"  Instance     {instance.Reference} ({instance.InstanceId})");
-                    Console.WriteLine($"     State:    {instance.State}");
-                    Console.WriteLine($"     Image:    {instance.Image}");
-                    Console.WriteLine($"     Placements:");
+                //Console.WriteLine(
+                //    "== Instances ==================================================================");
+                //foreach (var instance in set.Instances)
+                //{
+                //    Console.WriteLine($"  Instance     {instance.Reference} ({instance.InstanceId})");
+                //    Console.WriteLine($"     State:    {instance.State}");
+                //    Console.WriteLine($"     Image:    {instance.Image}");
+                //    Console.WriteLine($"     Placements:");
 
-                    foreach (var placement in instance.Placements.OrderBy(p => p.From))
-                    {
-                        Console.WriteLine($"      - {placement}");
-                    }
+                //    foreach (var placement in instance.Placements.OrderBy(p => p.From))
+                //    {
+                //        Console.WriteLine($"      - {placement}");
+                //    }
+                //}
+
+                Console.WriteLine();
+                Console.WriteLine(
+                    "== Images =====================================================================");
+
+                foreach (var image in set.Instances.Select(i => i.Image).Distinct())
+                {
+                    Console.WriteLine($"      - {image}");
                 }
 
                 Console.WriteLine();
@@ -119,10 +128,20 @@ namespace Google.Solutions.LogAnalysis.QuickTest
                     }
 
                     Console.WriteLine($"     Statistics:");
-                    foreach (var dp in node.PlacementHistogram)
+                    foreach (var dp in node.MaxInstancePlacementsByDay)
                     {
-                        Console.WriteLine($"      - {dp.Timestamp:yyyy-MM-dd} \t{new string('#', dp.Value)}");
+                        Console.WriteLine($"      - {dp.Timestamp:yyyy-MM-dd} \t|{new string('#', dp.Value)} ({dp.Value})");
                     }
+                }
+
+                Console.WriteLine();
+                Console.WriteLine(
+                    "== Nodes Summary ===============================================================");
+
+
+                foreach (var dp in nodeSet.MaxNodesByDay)
+                {
+                    Console.WriteLine($"      - {dp.Timestamp:yyyy-MM-dd} \t|{new string('#', dp.Value)} ({dp.Value})");
                 }
             }
         }

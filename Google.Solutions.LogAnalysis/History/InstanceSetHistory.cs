@@ -24,7 +24,6 @@ using Newtonsoft.Json.Serialization;
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 
 namespace Google.Solutions.LogAnalysis.History
 {
@@ -49,18 +48,7 @@ namespace Google.Solutions.LogAnalysis.History
             this.EndDate = endDate;
             this.Instances = instances;
         }
-
-        //public IEnumerable<HistogramDataPoint> GetInstanceCountHistogram(
-        //    DateTime from,
-        //    DateTime to)
-        //{
-        //    var placements = this.Instances
-        //        .Where(i => i.Placements != null)
-        //        .SelectMany(i => i.Placements);
-        //    // TODO
-        //    throw new NotImplementedException();
-        //}
-
+        
         //---------------------------------------------------------------------
         // Serialization.
         //---------------------------------------------------------------------

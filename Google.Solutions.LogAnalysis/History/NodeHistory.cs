@@ -50,7 +50,11 @@ namespace Google.Solutions.LogAnalysis.History
             this.Placements = placements;
         }
 
-        public IEnumerable<DataPoint> PlacementHistogram =>
+        /// <summary>
+        /// Create time series indicating the maximum number of parallel 
+        /// placements for each day of this node's existence.
+        /// </summary>
+        public IEnumerable<DataPoint> MaxInstancePlacementsByDay =>
             this.Placements == null
                 ? Enumerable.Empty<DataPoint>()
                 : TimeseriesUtil.DailyHistogram(

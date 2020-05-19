@@ -70,6 +70,17 @@ namespace Google.Solutions.LogAnalysis.History
             }
         }
 
+        /// <summary>
+        /// Create time series indicating the maximum number of parallel 
+        /// nodes for each day of this set's existence.
+        /// </summary>
+        public IEnumerable<DataPoint> MaxNodesByDay =>
+            this.Nodes == null
+                ? Enumerable.Empty<DataPoint>()
+                : TimeseriesUtil.DailyHistogram(
+                    this.Nodes.Select(p => p.FirstUse),
+                    this.Nodes.Select(p => p.LastUse));
+
         public static NodeSetHistory FromInstancyHistory(
             IEnumerable<InstanceHistory> instanceHistories,
             bool includeNodeForFleet)
