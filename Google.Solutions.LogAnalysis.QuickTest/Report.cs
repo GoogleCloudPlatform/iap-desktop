@@ -17,10 +17,15 @@ namespace Google.Solutions.LogAnalysis.QuickTest
         private readonly InstanceSetHistory instanceSet;
         private readonly NodeSetHistory nodeSet;
 
+        private DateTime selectionStartDate;
+        private DateTime selectionEndDate;
+
         public Report(InstanceSetHistory instanceSet, NodeSetHistory nodeSet)
         {
             this.instanceSet = instanceSet;
             this.nodeSet = nodeSet;
+            this.selectionEndDate = instanceSet.StartDate;
+            this.selectionEndDate = instanceSet.EndDate;
 
             InitializeComponent();
 
@@ -32,8 +37,57 @@ namespace Google.Solutions.LogAnalysis.QuickTest
                 this.nodesByDay.Series[0].Points.AddXY(dp.Timestamp, dp.Value);
             }
 
-            RepopulateNodeList(nodeSet.Nodes);
+            RepopulateNodeList();
         }
+
+        private void RepopulateNodeList()
+        {
+            var nodes = this.nodeSet.Nodes.Where(
+                n => n.FirstUse <= this.selectionEndDate && n.LastUse >= this.selectionStartDate);
+
+            this.nodePlacementsList.Items.Clear();
+            this.nodesList.Items.Clear();
+            this.nodesList.Items.AddRange(
+                nodes.Select(n => new ListViewItem(new[]
+                {
+                    n.ServerId,
+                    n.Zone,
+                    n.ProjectId,
+                    n.FirstUse.ToString(),
+                    n.LastUse.ToString(),
+                    Math.Ceiling((n.LastUse - n.FirstUse).TotalDays).ToString(),
+                    n.PeakConcurrentPlacements.ToString()
+                })
+                {
+                    Tag = n
+                })
+                .ToArray());
+        }
+
+
+        private void RepopulateInstancesList(IEnumerable<NodePlacement> placements)
+        {
+            this.nodePlacementsList.Items.Clear();
+            this.nodePlacementsList.Items.AddRange(
+                placements.Select(p => new ListViewItem(new[]
+                {
+                    p.Instance.InstanceId.ToString(),
+                    p.Instance.Reference != null ? p.Instance.Reference.InstanceName : string.Empty,
+                    p.Instance.Reference != null ? p.Instance.Reference.Zone : string.Empty,
+                    p.Instance.Reference != null ? p.Instance.Reference.ProjectId : string.Empty,
+                    p.From.ToString(),
+                    p.To.ToString()
+                })
+                {
+                    Tag = p
+                })
+                .ToArray());
+        }
+
+
+        //---------------------------------------------------------------------
+        // Window event handlers.
+        //---------------------------------------------------------------------
 
         private void nodesByDay_SelectionRangeChanged(object sender, CursorEventArgs e)
         {
@@ -42,29 +96,37 @@ namespace Google.Solutions.LogAnalysis.QuickTest
 
             if (start == end)
             {
-                // Reset.
-                RepopulateNodeList(nodeSet.Nodes);
+                // reset.
+                this.selectionStartDate = this.instanceSet.StartDate;
+                this.selectionEndDate = this.instanceSet.EndDate;
             }
             else
-            { 
-                RepopulateNodeList(this.nodeSet.Nodes
-                    .Where(n => n.FirstUse <= end && n.LastUse >= start));
+            {
+                this.selectionStartDate = start;
+                this.selectionEndDate = end;
             }
+                
+            RepopulateNodeList();
         }
 
-        private void RepopulateNodeList(IEnumerable<NodeHistory> nodes)
+        private void nodesList_Click(object sender, EventArgs e)
         {
-            this.nodesList.Items.Clear();
-            this.nodesList.Items.AddRange(
-                nodes.Select(n => new ListViewItem(new[]
-                {
-                    n.ServerId,
-                    n.FirstUse.ToString(),
-                    n.LastUse.ToString(),
-                    Math.Ceiling((n.LastUse - n.FirstUse).TotalDays).ToString(),
-                    n.PeakConcurrentPlacements.ToString()
-                }))
-                .ToArray());
+            var selectedItem = this.nodesList.SelectedItems
+                .Cast<ListViewItem>()
+                .FirstOrDefault();
+            if (selectedItem == null)
+            {
+                return;
+            }
+
+            var node = (NodeHistory)selectedItem.Tag;
+
+            RepopulateInstancesList(
+                node.Placements.Where(
+                    p => p.From <= this.selectionEndDate && p.To >= this.selectionStartDate));
         }
+
+        private void nodesList_SelectedIndexChanged(object sender, EventArgs e) 
+            => nodesList_Click(sender, e);
     }
 }

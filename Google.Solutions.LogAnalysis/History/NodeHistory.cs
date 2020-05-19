@@ -34,6 +34,14 @@ namespace Google.Solutions.LogAnalysis.History
 
         public IEnumerable<NodePlacement> Placements { get; }
 
+        public string Zone => this.Placements.Any()
+            ? this.Placements.First().Instance.Reference.Zone
+            : null;
+
+        public string ProjectId => this.Placements.Any()
+            ? this.Placements.First().Instance.Reference.ProjectId
+            : null;
+
         public uint PeakConcurrentPlacements { get; }
 
         internal NodeHistory(
