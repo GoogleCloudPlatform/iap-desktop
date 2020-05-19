@@ -32,6 +32,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Forms;
 
 namespace Google.Solutions.LogAnalysis.QuickTest
 {
@@ -146,6 +147,18 @@ namespace Google.Solutions.LogAnalysis.QuickTest
             }
         }
 
+        private static void AnalyzeGui(string filePath)
+        {
+            using (var reader = new StreamReader(filePath, Encoding.UTF8))
+            {
+                var instanceSet = InstanceSetHistory.Deserialize(reader);
+                var nodeSet = NodeSetHistory.FromInstancyHistory(instanceSet.Instances, false);
+                
+                Application.Run(new Report(instanceSet, nodeSet));
+            }
+        }
+
+        [STAThread]
         static void Main(string[] args)
         {
             if (args.Length >= 4 && args[0] == "download")
@@ -153,8 +166,12 @@ namespace Google.Solutions.LogAnalysis.QuickTest
                 DownloadAsync(args[1], int.Parse(args[2]), args[3]).Wait();
             }
             else if (args.Length >= 2 && args[0] == "analyze")
-            { 
+            {
                 Analyze(args[1]);
+            }
+            else if (args.Length >= 2 && args[0] == "analyze-gui")
+            {
+                AnalyzeGui(args[1]);
             }
             else
             {
