@@ -103,53 +103,58 @@ namespace Google.Solutions.LogAnalysis.History
 
             // TODO: Paging
             var disks = await disksResource.AggregatedList(projectId).ExecuteAsync();
-            var sourceImagaesByDisk = disks.Items.Values
-                .Where(v => v.Disks != null)
-                .EnsureNotNull()
-                .SelectMany(v => v.Disks)
-                .EnsureNotNull()
-                .ToDictionary(d => d.SelfLink, d => d.SourceImage);
+            var sourceImagaesByDisk = disks.Items == null
+                ? new Dictionary<string, string>()
+                : disks.Items.Values
+                    .Where(v => v.Disks != null)
+                    .EnsureNotNull()
+                    .SelectMany(v => v.Disks)
+                    .EnsureNotNull()
+                    .ToDictionary(d => d.SelfLink, d => d.SourceImage);
 
             // TODO: Paging
             var instances = await instancesResource.AggregatedList(projectId).ExecuteAsync();
-            foreach (var list in instances.Items.Values)
+            if (instances.Items != null)
             {
-                if (list.Instances == null)
+                foreach (var list in instances.Items.Values)
                 {
-                    continue;
-                }
-
-                foreach (var instance in list.Instances)
-                {
-                    var bootDiskUrl = instance.Disks
-                        .EnsureNotNull()
-                        .Where(d => d.Boot != null && d.Boot.Value)
-                        .EnsureNotNull()
-                        .Select(d => d.Source)
-                        .EnsureNotNull()
-                        .FirstOrDefault();
-                    GlobalResourceReference image = null;
-                    if (bootDiskUrl != null && 
-                        sourceImagaesByDisk.TryGetValue(bootDiskUrl, out string imageUrl) &&
-                        imageUrl != null)
+                    if (list.Instances == null)
                     {
-                        image = GlobalResourceReference.FromString(imageUrl);
+                        continue;
                     }
 
-                    AddExistingInstance(
-                        (ulong)instance.Id.Value,
-                        new VmInstanceReference(
-                            projectId,
-                            ShortZoneIdFromUrl(instance.Zone),
-                            instance.Name),
-                        image,
-                        instance.Status == "RUNNING"
-                            ? InstanceState.Running
-                            : InstanceState.Terminated,
-                        DateTime.Now,
-                        instance.Scheduling.NodeAffinities != null && instance.Scheduling.NodeAffinities.Any()
-                            ? Tenancy.SoleTenant
-                            : Tenancy.Fleet);
+                    foreach (var instance in list.Instances)
+                    {
+                        var bootDiskUrl = instance.Disks
+                            .EnsureNotNull()
+                            .Where(d => d.Boot != null && d.Boot.Value)
+                            .EnsureNotNull()
+                            .Select(d => d.Source)
+                            .EnsureNotNull()
+                            .FirstOrDefault();
+                        GlobalResourceReference image = null;
+                        if (bootDiskUrl != null &&
+                            sourceImagaesByDisk.TryGetValue(bootDiskUrl, out string imageUrl) &&
+                            imageUrl != null)
+                        {
+                            image = GlobalResourceReference.FromString(imageUrl);
+                        }
+
+                        AddExistingInstance(
+                            (ulong)instance.Id.Value,
+                            new VmInstanceReference(
+                                projectId,
+                                ShortZoneIdFromUrl(instance.Zone),
+                                instance.Name),
+                            image,
+                            instance.Status == "RUNNING"
+                                ? InstanceState.Running
+                                : InstanceState.Terminated,
+                            DateTime.Now,
+                            instance.Scheduling.NodeAffinities != null && instance.Scheduling.NodeAffinities.Any()
+                                ? Tenancy.SoleTenant
+                                : Tenancy.Fleet);
+                    }
                 }
             }
         }

@@ -48,6 +48,7 @@
             this.nodesByDay.BackColor = System.Drawing.SystemColors.Control;
             chartArea1.AxisX.MajorGrid.Enabled = false;
             chartArea1.AxisX.ScaleView.Zoomable = false;
+            chartArea1.AxisY.IntervalType = System.Windows.Forms.DataVisualization.Charting.DateTimeIntervalType.Number;
             chartArea1.AxisY.MajorGrid.LineColor = System.Drawing.SystemColors.ControlDarkDark;
             chartArea1.AxisY.MajorGrid.LineDashStyle = System.Windows.Forms.DataVisualization.Charting.ChartDashStyle.Dot;
             chartArea1.BackColor = System.Drawing.SystemColors.Control;
