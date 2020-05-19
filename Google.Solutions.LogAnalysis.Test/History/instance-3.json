@@ -331,7 +331,6 @@
         "progress": "0",
         "zone": "https://www.googleapis.com/compute/beta/projects/project-1/zones/us-central1-a",
         "insertTime": "2020-05-05T10:31:41.73+02:00",
-        "user": "jpassing@google.com"
       },
       "resourceLocation": {
         "currentLocations": [
