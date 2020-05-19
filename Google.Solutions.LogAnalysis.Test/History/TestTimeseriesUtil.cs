@@ -29,6 +29,10 @@ namespace Google.Solutions.LogAnalysis.Test.History
     [TestFixture]
     public class TestTimeseriesUtil
     {
+        //---------------------------------------------------------------------
+        // High watermark tests.
+        //---------------------------------------------------------------------
+        
         [Test]
         public void WhenJoinersAndLeaversAlternate_ThenHighWatermarkIsOne()
         {
@@ -73,55 +77,9 @@ namespace Google.Solutions.LogAnalysis.Test.History
             Assert.AreEqual(3, TimeseriesUtil.HighWatermark(joiners, leavers));
         }
 
-        [Test]
-        public void WhenNoDatapoints_ThenRepeatMissingDataPointsReturnsZeros()
-        {
-            var timestamps = new[]
-            {
-                new DateTime(2020, 1, 1),
-                new DateTime(2020, 1, 2),
-                new DateTime(2020, 1, 3)
-            };
-
-            var result = TimeseriesUtil.RepeatMissingDataPoints(
-                timestamps,
-                Enumerable.Empty<DataPoint>()).ToList();
-
-            Assert.AreEqual(3, result.Count());
-            Assert.AreEqual(0, result[0].Value);
-            Assert.AreEqual(0, result[1].Value);
-            Assert.AreEqual(0, result[2].Value);
-        }
-
-        [Test]
-        public void WhenDatapointsProvided_ThenRepeatMissingDataPointsUsesDatapoints()
-        {
-            var timestamps = new[]
-            {
-                new DateTime(2020, 1, 1),
-                new DateTime(2020, 1, 2),
-                new DateTime(2020, 1, 3),
-                new DateTime(2020, 1, 4),
-                new DateTime(2020, 1, 5),
-            };
-
-            var dataPoints = new[]
-            {
-                new DataPoint(new DateTime(2020, 1, 2), 10),
-                new DataPoint(new DateTime(2020, 1, 3), 20),
-            };
-
-            var result = TimeseriesUtil.RepeatMissingDataPoints(
-                timestamps,
-                dataPoints).ToList();
-
-            Assert.AreEqual(5, result.Count());
-            Assert.AreEqual(0, result[0].Value);
-            Assert.AreEqual(10, result[1].Value);
-            Assert.AreEqual(20, result[2].Value);
-            Assert.AreEqual(20, result[3].Value);
-            Assert.AreEqual(20, result[4].Value);
-        }
+        //---------------------------------------------------------------------
+        // DailyHistogram tests.
+        //---------------------------------------------------------------------
 
         [Test]
         public void WhenJoinersAndLeaversOverlap_ThenDailyHistogramUsesTotal()
@@ -149,13 +107,13 @@ namespace Google.Solutions.LogAnalysis.Test.History
             Assert.AreEqual(1, histogram[0].Value);
             Assert.AreEqual(2, histogram[1].Value);
             Assert.AreEqual(3, histogram[2].Value);
-            Assert.AreEqual(2, histogram[3].Value);
-            Assert.AreEqual(1, histogram[4].Value);
-            Assert.AreEqual(0, histogram[5].Value);
+            Assert.AreEqual(3, histogram[3].Value);
+            Assert.AreEqual(2, histogram[4].Value);
+            Assert.AreEqual(1, histogram[5].Value);
             Assert.AreEqual(1, histogram[6].Value);
             Assert.AreEqual(1, histogram[7].Value);
             Assert.AreEqual(1, histogram[8].Value);
-            Assert.AreEqual(0, histogram[9].Value);
+            Assert.AreEqual(1, histogram[9].Value);
 
             Assert.AreEqual(baseDate.AddDays(1), histogram[0].Timestamp);
             Assert.AreEqual(baseDate.AddDays(10), histogram[9].Timestamp);
@@ -182,7 +140,33 @@ namespace Google.Solutions.LogAnalysis.Test.History
             Assert.AreEqual(1, histogram[1].Value);
             Assert.AreEqual(1, histogram[2].Value);
             Assert.AreEqual(1, histogram[3].Value);
-            Assert.AreEqual(0, histogram[4].Value);
+            Assert.AreEqual(1, histogram[4].Value);
+        }
+
+        [Test]
+        public void WhenBalanceChagesThroughoutDay_ThenDailyHistoramReportsMaxButRepeatsLast()
+        {
+            var baseDate = new DateTime(2020, 1, 1);
+
+            var joiners = new[]
+            {
+                baseDate.AddMinutes(1),
+                baseDate.AddMinutes(2),
+                baseDate.AddMinutes(3),
+            };
+
+            var leavers = new[]
+            {
+                baseDate.AddMinutes(4),
+                baseDate.AddMinutes(5),
+                baseDate.AddDays(2)
+            };
+
+            var histogram = TimeseriesUtil.DailyHistogram(joiners, leavers).ToList();
+
+            Assert.AreEqual(3, histogram[0].Value);
+            Assert.AreEqual(1, histogram[1].Value);
+            Assert.AreEqual(1, histogram[2].Value);
         }
     }
 }

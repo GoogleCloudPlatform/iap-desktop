@@ -71,45 +71,6 @@ namespace Google.Solutions.LogAnalysis.History
                 .Max();
         }
 
-        public static IEnumerable<DataPoint> RepeatMissingDataPoints(
-            IEnumerable<DateTime> timestampsSorted,
-            IEnumerable<DataPoint> dataPointsSorted)
-        {
-            Debug.Assert(timestampsSorted.Count() >= dataPointsSorted.Count());
-
-            var dataPointsEnum = dataPointsSorted.GetEnumerator();
-
-            DataPoint current = new DataPoint()
-            {
-                Timestamp = timestampsSorted.First(),
-                Value = 0
-            };
-
-            DataPoint next;
-            if (dataPointsEnum.MoveNext())
-            {
-                next = dataPointsEnum.Current;
-            }
-            else
-            {
-                next = current;
-            }
-
-            foreach (var timestamp in timestampsSorted)
-            {
-                if (timestamp >= next.Timestamp)
-                {
-                    current = next;
-                    if (dataPointsEnum.MoveNext())
-                    {
-                        next = dataPointsEnum.Current;
-                    }
-                }
-
-                yield return new DataPoint(timestamp, current.Value);
-            }
-        }
-
         private static IEnumerable<DateTime> DateSequence(
             DateTime from, 
             DateTime to)
@@ -124,17 +85,35 @@ namespace Google.Solutions.LogAnalysis.History
             IEnumerable<DateTime> joinersUnsorted,
             IEnumerable<DateTime> leaversUnsorted)
         {
-            var sparseHistogram = Balances(joinersUnsorted, leaversUnsorted)
-                .GroupBy(d => d.Timestamp.Date)
-                .Select(g => new DataPoint(
-                    g.Key,
-                    g.Select(d => d.Value).Max()))
-                .OrderBy(d => d.Timestamp)
-                .ToList();
+            if (!joinersUnsorted.Any())
+            {
+                yield break;
+            }
 
-            return RepeatMissingDataPoints(
-                DateSequence(sparseHistogram.First().Timestamp, sparseHistogram.Last().Timestamp),
-                sparseHistogram);
+            var balancesNonDiscrete = Balances(joinersUnsorted, leaversUnsorted).ToList();
+
+            var lastValue = 0;
+            for (var date = balancesNonDiscrete.First().Timestamp.Date;
+                 date <= balancesNonDiscrete.Last().Timestamp.Date;
+                 date = date.AddDays(1))
+            {
+                // Get all data points on that day... not the most efficient way, but the 
+                // nuber of balances is likely to be pretty small.
+                var valuesOnDay = balancesNonDiscrete
+                    .Where(d => d.Timestamp >= date && d.Timestamp < date.AddDays(1))
+                    .Select(d => d.Value);
+
+                if (valuesOnDay.Any())
+                {
+                    yield return new DataPoint(date, Math.Max(lastValue, valuesOnDay.Max()));
+                    lastValue = valuesOnDay.Last();
+                }
+                else
+                {
+                    yield return new DataPoint(date, lastValue);
+                }
+
+            }
         }
     }
 }
