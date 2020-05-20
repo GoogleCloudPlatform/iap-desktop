@@ -196,7 +196,16 @@
           DiskId="1"
           Source="Google.Solutions.IapDesktop\bin\$(var.CONFIGURATION)\Google.Solutions.Compute.dll"
           Vital="yes"/>
-      
+        
+        <!--
+        <File
+          Id="FileGoogleSolutionsLogAnalysisDll"
+          Name="Google.Solutions.LogAnalysis.dll"
+          DiskId="1"
+          Source="Google.Solutions.IapDesktop\bin\$(var.CONFIGURATION)\Google.Solutions.LogAnalysis.dll"
+          Vital="yes"/>
+        -->
+        
         <!-- SDK and dependencies -->
         <File
           Id="FileWeifenLuoWinFormsUIDockingDll"

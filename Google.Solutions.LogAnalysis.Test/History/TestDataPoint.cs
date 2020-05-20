@@ -19,25 +19,22 @@
 // under the License.
 //
 
+using Google.Solutions.LogAnalysis.History;
 using NUnit.Framework;
+using System;
 
-namespace Google.Solutions.Compute.Test
+namespace Google.Solutions.LogAnalysis.Test.History
 {
     [TestFixture]
-    public class TestVmInstanceReference : FixtureBase
+    public class TestDataPoint
     {
-        [Test]
-        public void ToStringReturnsName()
-        {
-            var ref1 = new VmInstanceReference("proj", "zone", "inst");
-            Assert.AreEqual("inst", ref1.ToString());
-        }
+        private static readonly DateTime SampleDate = new DateTime(2020, 1, 2, 3, 4, 5, 6);
 
         [Test]
         public void WhenReferencesAreEquivalent_ThenEqualsReturnsTrue()
         {
-            var ref1 = new VmInstanceReference("proj", "zone", "inst");
-            var ref2 = new VmInstanceReference("proj", "zone", "inst");
+            var ref1 = new DataPoint(SampleDate, 42);
+            var ref2 = new DataPoint(SampleDate, 42);
 
             Assert.IsTrue(ref1.Equals(ref2));
             Assert.IsTrue(ref1.Equals((object)ref2));
@@ -48,7 +45,7 @@ namespace Google.Solutions.Compute.Test
         [Test]
         public void WhenReferencesAreSame_ThenEqualsReturnsTrue()
         {
-            var ref1 = new VmInstanceReference("proj", "zone", "inst");
+            var ref1 = new DataPoint(SampleDate, 42);
             var ref2 = ref1;
 
             Assert.IsTrue(ref1.Equals(ref2));
@@ -60,8 +57,8 @@ namespace Google.Solutions.Compute.Test
         [Test]
         public void WhenReferencesAreNotEquivalent_ThenEqualsReturnsFalse()
         {
-            var ref1 = new VmInstanceReference("proj", "zone", "inst");
-            var ref2 = new VmInstanceReference("proj", "zone", "other");
+            var ref1 = new DataPoint(SampleDate, 42);
+            var ref2 = new DataPoint(SampleDate, 0);
 
             Assert.IsFalse(ref1.Equals(ref2));
             Assert.IsFalse(ref1.Equals((object)ref2));
@@ -70,21 +67,9 @@ namespace Google.Solutions.Compute.Test
         }
 
         [Test]
-        public void WhenReferencesAreOfDifferentType_ThenEqualsReturnsFalse()
-        {
-            var ref1 = new VmInstanceReference("proj", "zone", "inst");
-            var ref2 = new ZonalResourceReference("proj", "zone", "instances", "inst");
-
-            Assert.IsFalse(ref2.Equals(ref1));
-            Assert.IsFalse(ref2.Equals((object)ref1));
-            Assert.IsFalse(ref1.Equals(ref2));
-            Assert.IsFalse(ref1.Equals((object)ref2));
-        }
-
-        [Test]
         public void TestEqualsNull()
         {
-            var ref1 = new VmInstanceReference("proj", "zone", "inst");
+            var ref1 = new DataPoint(SampleDate, 42);
 
             Assert.IsFalse(ref1.Equals(null));
             Assert.IsFalse(ref1.Equals((object)null));

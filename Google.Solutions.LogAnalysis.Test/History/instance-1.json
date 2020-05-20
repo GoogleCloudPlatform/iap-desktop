@@ -1,0 +1,563 @@
+﻿[
+  {
+    "protoPayload": {
+      "@type": "type.googleapis.com/google.cloud.audit.AuditLog",
+      "authenticationInfo": {
+        "principalEmail": "bob@example.com"
+      },
+      "requestMetadata": {
+      },
+      "serviceName": "compute.googleapis.com",
+      "methodName": "v1.compute.instances.delete",
+      "resourceName": "projects/project-1/zones/us-central1-a/instances/instance-1",
+      "request": {
+        "@type": "type.googleapis.com/compute.instances.delete"
+      }
+    },
+    "insertId": "-q2fk9qcysg",
+    "resource": {
+      "type": "gce_instance",
+      "labels": {
+        "instance_id": "11222333444555",
+        "project_id": "project-1",
+        "zone": "us-central1-a"
+      }
+    },
+    "timestamp": "2020-05-15T10:59:09.637Z",
+    "severity": "NOTICE",
+    "logName": "projects/project-1/logs/cloudaudit.googleapis.com%2Factivity",
+    "operation": {
+      "id": "operation-1589540226707-5a5adac91afa0-e40eb13f-ac0a60fa",
+      "producer": "compute.googleapis.com",
+      "last": true
+    },
+    "receiveTimestamp": "2020-05-15T10:59:10.751459859Z"
+  },
+  {
+    "protoPayload": {
+      "@type": "type.googleapis.com/google.cloud.audit.AuditLog",
+      "authenticationInfo": {
+        "principalEmail": "bob@example.com"
+      },
+      "requestMetadata": {
+      },
+      "serviceName": "compute.googleapis.com",
+      "methodName": "v1.compute.instances.delete",
+      "authorizationInfo": [
+        {
+          "permission": "compute.instances.delete",
+          "granted": true,
+          "resourceAttributes": {
+            "service": "compute",
+            "name": "projects/project-1/zones/us-central1-a/instances/instance-1",
+            "type": "compute.instances"
+          }
+        }
+      ],
+      "resourceName": "projects/project-1/zones/us-central1-a/instances/instance-1",
+      "request": {
+        "@type": "type.googleapis.com/compute.instances.delete"
+      },
+      "response": {
+        "name": "operation-1589540226707-5a5adac91afa0-e40eb13f-ac0a60fa",
+        "targetId": "11222333444555",
+        "id": "8503144433356884844",
+        "@type": "type.googleapis.com/operation",
+        "startTime": "2020-05-15T03:57:07.638-07:00",
+        "progress": "0",
+        "zone": "https://www.googleapis.com/compute/v1/projects/project-1/zones/us-central1-a",
+        "insertTime": "2020-05-15T03:57:07.584-07:00",
+        "user": "bob@example.com",
+        "selfLink": "https://www.googleapis.com/compute/v1/projects/project-1/zones/us-central1-a/operations/operation-1589540226707-5a5adac91afa0-e40eb13f-ac0a60fa",
+        "targetLink": "https://www.googleapis.com/compute/v1/projects/project-1/zones/us-central1-a/instances/instance-1",
+        "operationType": "delete",
+        "selfLinkWithId": "https://www.googleapis.com/compute/v1/projects/project-1/zones/us-central1-a/operations/8503144433356884844",
+        "status": "RUNNING"
+      },
+      "resourceLocation": {
+        "currentLocations": [
+          "us-central1-a"
+        ]
+      }
+    },
+    "insertId": "-6xicile1legc",
+    "resource": {
+      "type": "gce_instance",
+      "labels": {
+        "instance_id": "11222333444555",
+        "project_id": "project-1",
+        "zone": "us-central1-a"
+      }
+    },
+    "timestamp": "2020-05-15T10:57:06.997Z",
+    "severity": "NOTICE",
+    "logName": "projects/project-1/logs/cloudaudit.googleapis.com%2Factivity",
+    "operation": {
+      "id": "operation-1589540226707-5a5adac91afa0-e40eb13f-ac0a60fa",
+      "producer": "compute.googleapis.com",
+      "first": true
+    },
+    "receiveTimestamp": "2020-05-15T10:57:08.310909446Z"
+  },
+  {
+    "protoPayload": {
+      "@type": "type.googleapis.com/google.cloud.audit.AuditLog",
+      "authenticationInfo": {
+        "principalEmail": "bob@example.com"
+      },
+      "requestMetadata": {
+      },
+      "serviceName": "compute.googleapis.com",
+      "methodName": "v1.compute.instances.reset",
+      "resourceName": "projects/project-1/zones/us-central1-a/instances/instance-1",
+      "request": {
+        "@type": "type.googleapis.com/compute.instances.reset"
+      }
+    },
+    "insertId": "khekcc1uy",
+    "resource": {
+      "type": "gce_instance",
+      "labels": {
+        "instance_id": "11222333444555",
+        "project_id": "project-1",
+        "zone": "us-central1-a"
+      }
+    },
+    "timestamp": "2020-05-15T10:54:01.249Z",
+    "severity": "NOTICE",
+    "logName": "projects/project-1/logs/cloudaudit.googleapis.com%2Factivity",
+    "operation": {
+      "id": "operation-1589540037362-5a5ada14882c6-393681b0-e938e45f",
+      "producer": "compute.googleapis.com",
+      "last": true
+    },
+    "receiveTimestamp": "2020-05-15T10:54:02.181618563Z"
+  },
+  {
+    "protoPayload": {
+      "@type": "type.googleapis.com/google.cloud.audit.AuditLog",
+      "authenticationInfo": {
+        "principalEmail": "bob@example.com"
+      },
+      "requestMetadata": {
+      },
+      "serviceName": "compute.googleapis.com",
+      "methodName": "v1.compute.instances.reset",
+      "authorizationInfo": [
+        {
+          "permission": "compute.instances.reset",
+          "granted": true,
+          "resourceAttributes": {
+            "service": "compute",
+            "name": "projects/project-1/zones/us-central1-a/instances/instance-1",
+            "type": "compute.instances"
+          }
+        }
+      ],
+      "resourceName": "projects/project-1/zones/us-central1-a/instances/instance-1",
+      "request": {
+        "@type": "type.googleapis.com/compute.instances.reset"
+      },
+      "response": {
+        "status": "RUNNING",
+        "name": "operation-1589540037362-5a5ada14882c6-393681b0-e938e45f",
+        "targetId": "11222333444555",
+        "id": "7817258716194130474",
+        "@type": "type.googleapis.com/operation",
+        "startTime": "2020-05-15T03:53:58.029-07:00",
+        "progress": "0",
+        "zone": "https://www.googleapis.com/compute/v1/projects/project-1/zones/us-central1-a",
+        "insertTime": "2020-05-15T03:53:57.961-07:00",
+        "user": "bob@example.com",
+        "selfLink": "https://www.googleapis.com/compute/v1/projects/project-1/zones/us-central1-a/operations/operation-1589540037362-5a5ada14882c6-393681b0-e938e45f",
+        "targetLink": "https://www.googleapis.com/compute/v1/projects/project-1/zones/us-central1-a/instances/instance-1",
+        "operationType": "reset",
+        "selfLinkWithId": "https://www.googleapis.com/compute/v1/projects/project-1/zones/us-central1-a/operations/7817258716194130474"
+      },
+      "resourceLocation": {
+        "currentLocations": [
+          "us-central1-a"
+        ]
+      }
+    },
+    "insertId": "n1fgule1o06a",
+    "resource": {
+      "type": "gce_instance",
+      "labels": {
+        "zone": "us-central1-a",
+        "project_id": "project-1",
+        "instance_id": "11222333444555"
+      }
+    },
+    "timestamp": "2020-05-15T10:53:57.452Z",
+    "severity": "NOTICE",
+    "logName": "projects/project-1/logs/cloudaudit.googleapis.com%2Factivity",
+    "operation": {
+      "id": "operation-1589540037362-5a5ada14882c6-393681b0-e938e45f",
+      "producer": "compute.googleapis.com",
+      "first": true
+    },
+    "receiveTimestamp": "2020-05-15T10:53:58.315761443Z"
+  },
+  {
+    "protoPayload": {
+      "@type": "type.googleapis.com/google.cloud.audit.AuditLog",
+      "authenticationInfo": {
+        "principalEmail": "bob@example.com"
+      },
+      "requestMetadata": {
+      },
+      "serviceName": "compute.googleapis.com",
+      "methodName": "v1.compute.instances.setMetadata",
+      "resourceName": "projects/project-1/zones/us-central1-a/instances/instance-1",
+      "request": {
+        "@type": "type.googleapis.com/compute.instances.setMetadata",
+        "Metadata Keys Added": [
+          "windows-keys"
+        ]
+      },
+      "metadata": {
+        "@type": "type.googleapis.com/google.cloud.audit.GceInstanceAuditMetadata",
+        "instanceMetadataDelta": {
+          "addedMetadataKeys": [
+            "windows-keys"
+          ]
+        }
+      }
+    },
+    "insertId": "-ikopvxd47co",
+    "resource": {
+      "type": "gce_instance",
+      "labels": {
+        "zone": "us-central1-a",
+        "instance_id": "11222333444555",
+        "project_id": "project-1"
+      }
+    },
+    "timestamp": "2020-05-13T16:32:24.548Z",
+    "severity": "NOTICE",
+    "logName": "projects/project-1/logs/cloudaudit.googleapis.com%2Factivity",
+    "operation": {
+      "id": "operation-1589387541247-5a58a1fce7733-27b6c27e-05146162",
+      "producer": "compute.googleapis.com",
+      "last": true
+    },
+    "receiveTimestamp": "2020-05-13T16:32:25.714929248Z"
+  },
+  {
+    "protoPayload": {
+      "@type": "type.googleapis.com/google.cloud.audit.AuditLog",
+      "authenticationInfo": {
+        "principalEmail": "bob@example.com"
+      },
+      "requestMetadata": {
+      },
+      "serviceName": "compute.googleapis.com",
+      "methodName": "v1.compute.instances.setMetadata",
+      "authorizationInfo": [
+        {
+          "permission": "compute.instances.setMetadata",
+          "granted": true,
+          "resourceAttributes": {
+            "service": "compute",
+            "name": "projects/project-1/zones/us-central1-a/instances/instance-1",
+            "type": "compute.instances"
+          }
+        }
+      ],
+      "resourceName": "projects/project-1/zones/us-central1-a/instances/instance-1",
+      "request": {
+        "@type": "type.googleapis.com/compute.instances.setMetadata"
+      },
+      "response": {
+        "@type": "type.googleapis.com/operation",
+        "startTime": "2020-05-13T09:32:21.731-07:00",
+        "progress": "0",
+        "zone": "https://www.googleapis.com/compute/v1/projects/project-1/zones/us-central1-a",
+        "insertTime": "2020-05-13T09:32:21.722-07:00",
+        "user": "bob@example.com",
+        "selfLink": "https://www.googleapis.com/compute/v1/projects/project-1/zones/us-central1-a/operations/operation-1589387541247-5a58a1fce7733-27b6c27e-05146162",
+        "targetLink": "https://www.googleapis.com/compute/v1/projects/project-1/zones/us-central1-a/instances/instance-1",
+        "operationType": "setMetadata",
+        "selfLinkWithId": "https://www.googleapis.com/compute/v1/projects/project-1/zones/us-central1-a/operations/260805122329780218",
+        "status": "RUNNING",
+        "name": "operation-1589387541247-5a58a1fce7733-27b6c27e-05146162",
+        "targetId": "11222333444555",
+        "id": "260805122329780218"
+      },
+      "metadata": {
+        "@type": "type.googleapis.com/google.cloud.audit.GceInstanceAuditMetadata",
+        "instanceMetadataDelta": {
+          "addedMetadataKeys": [
+            "windows-keys"
+          ]
+        }
+      },
+      "resourceLocation": {
+        "currentLocations": [
+          "us-central1-a"
+        ]
+      }
+    },
+    "insertId": "yymju6dthxi",
+    "resource": {
+      "type": "gce_instance",
+      "labels": {
+        "zone": "us-central1-a",
+        "instance_id": "11222333444555",
+        "project_id": "project-1"
+      }
+    },
+    "timestamp": "2020-05-13T16:32:21.344Z",
+    "severity": "NOTICE",
+    "logName": "projects/project-1/logs/cloudaudit.googleapis.com%2Factivity",
+    "operation": {
+      "id": "operation-1589387541247-5a58a1fce7733-27b6c27e-05146162",
+      "producer": "compute.googleapis.com",
+      "first": true
+    },
+    "receiveTimestamp": "2020-05-13T16:32:22.185208518Z"
+  },
+  {
+    "protoPayload": {
+      "@type": "type.googleapis.com/google.cloud.audit.AuditLog",
+      "authenticationInfo": {
+        "principalEmail": "bob@example.com"
+      },
+      "requestMetadata": {
+      },
+      "serviceName": "compute.googleapis.com",
+      "methodName": "beta.compute.instances.insert",
+      "resourceName": "projects/project-1/zones/us-central1-a/instances/instance-1",
+      "request": {
+        "@type": "type.googleapis.com/compute.instances.insert"
+      }
+    },
+    "insertId": "dlsxdbdypaq",
+    "resource": {
+      "type": "gce_instance",
+      "labels": {
+        "instance_id": "11222333444555",
+        "project_id": "project-1",
+        "zone": "us-central1-a"
+      }
+    },
+    "timestamp": "2020-05-06T14:58:59.991Z",
+    "severity": "NOTICE",
+    "logName": "projects/project-1/logs/cloudaudit.googleapis.com%2Factivity",
+    "operation": {
+      "id": "operation-1588777133003-5a4fc00a3d256-c3e3c96e-43859f63",
+      "producer": "compute.googleapis.com",
+      "last": true
+    },
+    "receiveTimestamp": "2020-05-06T14:59:00.727159883Z"
+  },
+  {
+    "protoPayload": {
+      "@type": "type.googleapis.com/google.cloud.audit.AuditLog",
+      "authenticationInfo": {
+        "principalEmail": "system@google.com"
+      },
+      "serviceName": "compute.googleapis.com",
+      "methodName": "NotifyInstanceLocation",
+      "request": {
+        "@type": "type.googleapis.com/NotifyInstanceLocation"
+      },
+      "metadata": {
+        "serverId": "15934ff9aee7d8c5719fad1053b7fc7d",
+        "timestamp": "2020-05-06T14:58:54.747102Z",
+        "@type": "type.googleapis.com/google.cloud.audit.GceInstanceLocationMetadata"
+      }
+    },
+    "insertId": "6xsixue47eyw",
+    "resource": {
+      "type": "gce_instance",
+      "labels": {
+        "instance_id": "11222333444555",
+        "project_id": "project-1",
+        "zone": "us-central1-a"
+      }
+    },
+    "timestamp": "2020-05-06T14:58:55.490Z",
+    "severity": "INFO",
+    "logName": "projects/project-1/logs/cloudaudit.googleapis.com%2Fsystem_event",
+    "receiveTimestamp": "2020-05-06T14:58:55.600845535Z"
+  },
+  {
+    "protoPayload": {
+      "@type": "type.googleapis.com/google.cloud.audit.AuditLog",
+      "authenticationInfo": {
+        "principalEmail": "bob@example.com"
+      },
+      "requestMetadata": {
+      },
+      "serviceName": "compute.googleapis.com",
+      "methodName": "beta.compute.instances.insert",
+      "authorizationInfo": [
+        {
+          "permission": "compute.instances.create",
+          "granted": true,
+          "resourceAttributes": {
+            "service": "compute",
+            "name": "projects/project-1/zones/us-central1-a/instances/instance-1",
+            "type": "compute.instances"
+          }
+        },
+        {
+          "permission": "compute.disks.create",
+          "granted": true,
+          "resourceAttributes": {
+            "service": "compute",
+            "name": "projects/project-1/zones/us-central1-a/disks/instance-1",
+            "type": "compute.disks"
+          }
+        },
+        {
+          "permission": "compute.subnetworks.use",
+          "granted": true,
+          "resourceAttributes": {
+            "service": "compute",
+            "name": "projects/project-1/regions/us-central1/subnetworks/default",
+            "type": "compute.subnetworks"
+          }
+        },
+        {
+          "permission": "compute.subnetworks.useExternalIp",
+          "granted": true,
+          "resourceAttributes": {
+            "service": "compute",
+            "name": "projects/project-1/regions/us-central1/subnetworks/default",
+            "type": "compute.subnetworks"
+          }
+        },
+        {
+          "permission": "compute.instances.setMetadata",
+          "granted": true,
+          "resourceAttributes": {
+            "service": "compute",
+            "name": "projects/project-1/zones/us-central1-a/instances/instance-1",
+            "type": "compute.instances"
+          }
+        },
+        {
+          "permission": "compute.instances.setServiceAccount",
+          "granted": true,
+          "resourceAttributes": {
+            "service": "compute",
+            "name": "projects/project-1/zones/us-central1-a/instances/instance-1",
+            "type": "compute.instances"
+          }
+        }
+      ],
+      "resourceName": "projects/project-1/zones/us-central1-a/instances/instance-1",
+      "request": {
+        "machineType": "projects/project-1/zones/us-central1-a/machineTypes/n1-standard-16",
+        "description": "",
+        "shieldedInstanceConfig": {
+          "enableIntegrityMonitoring": true,
+          "enableSecureBoot": false,
+          "enableVtpm": true
+        },
+        "displayDevice": {
+          "enableDisplay": false
+        },
+        "deletionProtection": false,
+        "serviceAccounts": [
+          {
+            "scopes": [
+              "https://www.googleapis.com/auth/devstorage.read_only",
+              "https://www.googleapis.com/auth/logging.write",
+              "https://www.googleapis.com/auth/monitoring.write",
+              "https://www.googleapis.com/auth/servicecontrol",
+              "https://www.googleapis.com/auth/service.management.readonly",
+              "https://www.googleapis.com/auth/trace.append"
+            ],
+            "email": "884959775919-compute@developer.gserviceaccount.com"
+          }
+        ],
+        "name": "instance-1",
+        "disks": [
+          {
+            "autoDelete": true,
+            "initializeParams": {
+              "diskSizeGb": "32",
+              "sourceImage": "projects/windows-cloud/global/images/windows-server",
+              "diskType": "projects/project-1/zones/us-central1-a/diskTypes/pd-standard"
+            },
+            "deviceName": "instance-1",
+            "boot": true,
+            "type": "PERSISTENT",
+            "mode": "READ_WRITE"
+          }
+        ],
+        "@type": "type.googleapis.com/compute.instances.insert",
+        "canIpForward": false,
+        "networkInterfaces": [
+          {
+            "accessConfigs": [
+              {
+                "name": "External NAT",
+                "type": "ONE_TO_ONE_NAT",
+                "networkTier": "PREMIUM"
+              }
+            ],
+            "subnetwork": "projects/project-1/regions/us-central1/subnetworks/default"
+          }
+        ],
+        "scheduling": {
+          "onHostMaintenance": "TERMINATE",
+          "nodeAffinitys": [
+            {
+              "key": "compute.googleapis.com/node-name",
+              "values": [
+                "node-group-1-pkzw"
+              ],
+              "operator": "IN"
+            }
+          ],
+          "preemptible": false,
+          "automaticRestart": true
+        }
+      },
+      "response": {
+        "id": "3015597034315935298",
+        "@type": "type.googleapis.com/operation",
+        "startTime": "2020-05-06T07:58:53.744-07:00",
+        "progress": "0",
+        "zone": "https://www.googleapis.com/compute/beta/projects/project-1/zones/us-central1-a",
+        "insertTime": "2020-05-06T07:58:53.741-07:00",
+        "user": "bob@example.com",
+        "selfLink": "https://www.googleapis.com/compute/beta/projects/project-1/zones/us-central1-a/operations/operation-1588777133003-5a4fc00a3d256-c3e3c96e-43859f63",
+        "targetLink": "https://www.googleapis.com/compute/beta/projects/project-1/zones/us-central1-a/instances/instance-1",
+        "operationType": "insert",
+        "selfLinkWithId": "https://www.googleapis.com/compute/beta/projects/project-1/zones/us-central1-a/operations/3015597034315935298",
+        "status": "RUNNING",
+        "name": "operation-1588777133003-5a4fc00a3d256-c3e3c96e-43859f63",
+        "targetId": "11222333444555"
+      },
+      "resourceLocation": {
+        "currentLocations": [
+          "us-central1-a"
+        ]
+      }
+    },
+    "insertId": "6o1uvqe1w6ms",
+    "resource": {
+      "type": "gce_instance",
+      "labels": {
+        "instance_id": "11222333444555",
+        "project_id": "project-1",
+        "zone": "us-central1-a"
+      }
+    },
+    "timestamp": "2020-05-06T14:58:53.077Z",
+    "severity": "NOTICE",
+    "logName": "projects/project-1/logs/cloudaudit.googleapis.com%2Factivity",
+    "operation": {
+      "id": "operation-1588777133003-5a4fc00a3d256-c3e3c96e-43859f63",
+      "producer": "compute.googleapis.com",
+      "first": true
+    },
+    "receiveTimestamp": "2020-05-06T14:58:54.682442795Z"
+  }
+]
