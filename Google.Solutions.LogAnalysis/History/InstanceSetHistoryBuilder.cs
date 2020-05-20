@@ -20,7 +20,6 @@
 //
 using Google.Solutions.Common.Util;
 using Google.Apis.Compute.v1;
-using Google.Solutions.Compute;
 using Google.Solutions.LogAnalysis.Events;
 using System;
 using System.Collections.Generic;
