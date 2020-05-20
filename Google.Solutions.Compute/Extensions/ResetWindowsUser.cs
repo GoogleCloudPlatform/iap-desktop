@@ -93,7 +93,8 @@ namespace Google.Solutions.Compute.Extensions
                     await resource.AddMetadataAsync(
                         instanceRef,
                         MetadataKey,
-                        requestJson).ConfigureAwait(false);
+                        requestJson,
+                        token).ConfigureAwait(false);
                 }
                 catch (GoogleApiException e) when (e.Error != null && e.Error.Code == 404)
                 {

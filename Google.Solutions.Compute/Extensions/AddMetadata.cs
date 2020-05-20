@@ -23,6 +23,7 @@ using Google.Apis.Compute.v1;
 using Google.Apis.Compute.v1.Data;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Google.Solutions.Compute.Extensions
@@ -42,13 +43,15 @@ namespace Google.Solutions.Compute.Extensions
             string zone,
             string instance,
             string key,
-            string value)
+            string value,
+            CancellationToken token)
         {
             return AddMetadataAsync(
                 resource,
                 new VmInstanceReference(project, zone, instance),
                 key,
-                value);
+                value,
+                token);
         }
 
         /// <summary>
@@ -83,12 +86,13 @@ namespace Google.Solutions.Compute.Extensions
             this InstancesResource resource,
             VmInstanceReference instanceRef,
             string key,
-            string value)
+            string value,
+            CancellationToken token)
         {
             var instance = await resource.Get(
                 instanceRef.ProjectId,
                 instanceRef.Zone,
-                instanceRef.InstanceName).ExecuteAsync().ConfigureAwait(false);
+                instanceRef.InstanceName).ExecuteAsync(token).ConfigureAwait(false);
             var metadata = instance.Metadata;
 
             if (metadata.Items == null)
@@ -114,34 +118,22 @@ namespace Google.Solutions.Compute.Extensions
 
             TraceSources.Compute.TraceVerbose("Setting metdata {0} on {1}...", key, instanceRef.InstanceName);
 
-            await resource.SetMetadata(
-                metadata,
-                instanceRef.ProjectId,
-                instanceRef.Zone,
-                instanceRef.InstanceName).ExecuteAsync().ConfigureAwait(false);
-
-            // Setting the metadata might fail silently, cf b/140226028 - so check if
-            // it worked. Sometimes, the change also takes a few seconds to apply (sic).
-            for (int attempt = 0; attempt < 10; attempt++)
+            try
             {
-                var appliedValue = await resource.QueryMetadataKeyAsync(
-                    instanceRef,
-                    key).ConfigureAwait(false);
-                if (appliedValue != null && appliedValue.Value == value)
-                {
-                    // Success.
-                    return;
-                }
-                else
-                {
-                    // Wait and retry.
-                    TraceSources.Compute.TraceVerbose("Metdata change not applied yet, trying again...");
-
-                    await Task.Delay(500).ConfigureAwait(false);
-                }
+                await resource.SetMetadata(
+                    metadata,
+                    instanceRef.ProjectId,
+                    instanceRef.Zone,
+                    instanceRef.InstanceName).ExecuteAndAwaitOperationAsync(instanceRef.ProjectId, token);
             }
+            catch (GoogleApiException e)
+            {
+                TraceSources.Compute.TraceWarning(
+                    "Setting metdata failed {0} (code error {1})", e.Message, 
+                    e.Error?.Code);
 
-            throw new GoogleApiException("Compute", "Setting metdata failed");
+                throw;
+            }
         }
     }
 }
