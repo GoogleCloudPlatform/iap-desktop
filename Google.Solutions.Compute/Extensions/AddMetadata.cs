@@ -118,11 +118,22 @@ namespace Google.Solutions.Compute.Extensions
 
             TraceSources.Compute.TraceVerbose("Setting metdata {0} on {1}...", key, instanceRef.InstanceName);
 
-            await resource.SetMetadata(
-                metadata,
-                instanceRef.ProjectId,
-                instanceRef.Zone,
-                instanceRef.InstanceName).ExecuteAndAwaitOperationAsync(instanceRef.ProjectId, token);
+            try
+            {
+                await resource.SetMetadata(
+                    metadata,
+                    instanceRef.ProjectId,
+                    instanceRef.Zone,
+                    instanceRef.InstanceName).ExecuteAndAwaitOperationAsync(instanceRef.ProjectId, token);
+            }
+            catch (GoogleApiException e)
+            {
+                TraceSources.Compute.TraceWarning(
+                    "Setting metdata failed {0} (code error {1})", e.Message, 
+                    e.Error?.Code);
+
+                throw;
+            }
         }
     }
 }

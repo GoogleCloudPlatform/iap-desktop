@@ -64,7 +64,7 @@ namespace Google.Solutions.Compute.Extensions
                                 .ToList()
                             : NoErrors;
 
-                        TraceSources.Compute.TraceVerbose("Operation failed: {0}", operation.HttpErrorMessage);
+                        TraceSources.Compute.TraceWarning("Operation failed: {0}", operation.HttpErrorMessage);
 
                         throw new GoogleApiException(
                             "ComputeEngine",
