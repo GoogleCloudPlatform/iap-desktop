@@ -22,7 +22,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Google.Solutions.Compute
+namespace Google.Solutions.Common.Util
 {
     public static class LinqExtensions
     {

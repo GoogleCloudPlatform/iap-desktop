@@ -23,6 +23,7 @@ using Google.Apis.Compute.v1;
 using Google.Apis.Compute.v1.Data;
 using Google.Apis.Services;
 using Google.Solutions.Common.Diagnostics;
+using Google.Solutions.Common.Util;
 using Google.Solutions.Compute;
 using Google.Solutions.Compute.Extensions;
 using Google.Solutions.IapDesktop.Application.ObjectModel;

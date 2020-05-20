@@ -18,13 +18,12 @@
 // specific language governing permissions and limitations
 // under the License.
 //
+using Google.Solutions.Common.Util;
 using Google.Apis.Compute.v1;
-using Google.Apis.Util;
 using Google.Solutions.Compute;
 using Google.Solutions.LogAnalysis.Events;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 
