@@ -64,11 +64,16 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Auth\Authorization.cs" />
+    <Compile Include="Auth\GoogleAuthAdapter.cs" />
+    <Compile Include="Auth\IAuthAdapter.cs" />
     <Compile Include="Diagnostics\TraceCallScope.cs" />
     <Compile Include="Diagnostics\TraceSourceExtensions.cs" />
     <Compile Include="GlobalResourceReference.cs" />
+    <Compile Include="Net\RestClient.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ResourceReference.cs" />
+    <Compile Include="TraceSources.cs" />
     <Compile Include="Util\ExceptionExtensions.cs" />
     <Compile Include="Util\LinqExtensions.cs" />
     <Compile Include="VmInstanceReference.cs" />

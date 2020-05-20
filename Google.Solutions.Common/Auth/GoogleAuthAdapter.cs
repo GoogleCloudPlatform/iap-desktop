@@ -22,7 +22,7 @@
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Auth.OAuth2.Flows;
 using Google.Apis.Auth.OAuth2.Responses;
-using Google.Solutions.Compute.Test.Net;
+using Google.Solutions.Common.Net;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -32,7 +32,7 @@ using System.Threading.Tasks;
 
 #pragma warning disable CA1034 // Class nesting
 
-namespace Google.Solutions.Compute.Auth
+namespace Google.Solutions.Common.Auth
 {
     public class GoogleAuthAdapter : IAuthAdapter
     {

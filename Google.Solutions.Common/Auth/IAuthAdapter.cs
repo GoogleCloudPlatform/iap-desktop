@@ -27,7 +27,7 @@ using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Google.Solutions.Compute.Auth
+namespace Google.Solutions.Common.Auth
 {
     public interface IAuthAdapter : IDisposable
     {

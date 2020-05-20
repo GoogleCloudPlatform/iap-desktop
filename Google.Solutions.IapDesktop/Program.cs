@@ -19,7 +19,6 @@
 // under the License.
 //
 
-using Google.Solutions.Compute.Auth;
 using Google.Solutions.IapDesktop.Application.ObjectModel;
 using Google.Solutions.IapDesktop.Application.Services.Windows.ProjectExplorer;
 using Google.Solutions.IapDesktop.Application.Services.Adapters;
@@ -41,6 +40,7 @@ using System.Linq;
 using System.Net;
 using System.Windows.Forms;
 using System.Threading;
+using Google.Solutions.Common.Auth;
 
 namespace Google.Solutions.IapDesktop
 {
@@ -52,6 +52,7 @@ namespace Google.Solutions.IapDesktop
 
         private static readonly TraceSource[] Traces = new[]
         {
+            Google.Solutions.Common.TraceSources.Common,
             Google.Solutions.Compute.TraceSources.Compute,
             Google.Solutions.IapDesktop.Application.TraceSources.IapDesktop
         };

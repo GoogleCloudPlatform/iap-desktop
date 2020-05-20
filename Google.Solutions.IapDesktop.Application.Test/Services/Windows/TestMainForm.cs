@@ -20,7 +20,7 @@
 //
 
 using Google.Apis.Auth.OAuth2;
-using Google.Solutions.Compute.Auth;
+using Google.Solutions.Common.Auth;
 using Google.Solutions.Common.Test.Testbed;
 using Google.Solutions.IapDesktop.Application.Services.Adapters;
 using Google.Solutions.IapDesktop.Application.Services.Integration;
@@ -30,6 +30,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using WeifenLuo.WinFormsUI.Docking;
+using Google.Solutions.Common.Auth;
 
 namespace Google.Solutions.IapDesktop.Application.Test.Services.Windows
 {

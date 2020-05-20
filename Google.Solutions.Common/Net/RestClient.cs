@@ -27,7 +27,7 @@ using System.Net.Http.Headers;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Google.Solutions.Compute.Test.Net
+namespace Google.Solutions.Common.Net
 {
     public class RestClient
     {

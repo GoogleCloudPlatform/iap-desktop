@@ -1,5 +1,5 @@
 ﻿//
-// Copyright 2020 Google LLC
+// Copyright 2019 Google LLC
 //
 // Licensed to the Apache Software Foundation (ASF) under one
 // or more contributor license agreements.  See the NOTICE file
@@ -19,16 +19,12 @@
 // under the License.
 //
 
-using Google.Solutions.Common.Auth;
-using System.Threading;
-using System.Threading.Tasks;
+using System.Diagnostics;
 
-namespace Google.Solutions.IapDesktop.Application.Services.Adapters
+namespace Google.Solutions.Common
 {
-    public interface IAuthorizationAdapter
+    public static class TraceSources
     {
-        IAuthorization Authorization { get; }
-
-        Task ReauthorizeAsync(CancellationToken token);
+        public static readonly TraceSource Common = new TraceSource(typeof(TraceSources).Namespace);
     }
 }

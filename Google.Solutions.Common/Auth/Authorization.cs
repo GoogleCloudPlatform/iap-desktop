@@ -26,7 +26,7 @@ using Google.Solutions.Common.Util;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Google.Solutions.Compute.Auth
+namespace Google.Solutions.Common.Auth
 {
     public interface IAuthorization
     {
@@ -73,12 +73,12 @@ namespace Google.Solutions.Compute.Auth
 
             if (oauthAdapter.IsRefreshTokenValid(existingTokenResponse))
             {
-                TraceSources.Compute.TraceVerbose("Found existing credentials");
+                TraceSources.Common.TraceVerbose("Found existing credentials");
 
                 var scopesOfExistingTokenResponse = existingTokenResponse.Scope.Split(' ');
                 if (!scopesOfExistingTokenResponse.ContainsAll(oauthAdapter.Scopes))
                 {
-                    TraceSources.Compute.TraceVerbose(
+                    TraceSources.Common.TraceVerbose(
                         "Dropping existing credential as it lacks one or more scopes");
 
                     // The existing auth might be fine, but it lacks a scope.
@@ -110,7 +110,7 @@ namespace Google.Solutions.Compute.Auth
             IAuthAdapter oauthAdapter,
             CancellationToken token)
         {
-            TraceSources.Compute.TraceVerbose("Authorizing");
+            TraceSources.Common.TraceVerbose("Authorizing");
 
             // Pop up browser window.
             var credential = await oauthAdapter.AuthorizeUsingBrowserAsync(token);
