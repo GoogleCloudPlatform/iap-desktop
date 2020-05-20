@@ -29,7 +29,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Google.Solutions.Compute.Test.Env
+namespace Google.Solutions.Common.Test.Testbed
 {
     public class InstanceRequest
     {

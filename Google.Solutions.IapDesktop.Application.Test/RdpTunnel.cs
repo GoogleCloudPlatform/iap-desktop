@@ -21,9 +21,10 @@
 
 using Google.Solutions.Compute;
 using Google.Solutions.Compute.Iap;
-using Google.Solutions.Compute.Test.Env;
+using Google.Solutions.Common.Test.Testbed;
 using System;
 using System.Threading;
+using Google.Solutions.Common;
 
 namespace Google.Solutions.IapDesktop.Application.Test
 {

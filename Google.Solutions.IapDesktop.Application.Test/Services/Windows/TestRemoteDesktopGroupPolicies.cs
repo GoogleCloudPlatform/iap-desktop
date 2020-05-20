@@ -20,7 +20,7 @@
 //
 
 using Google.Solutions.Compute;
-using Google.Solutions.Compute.Test.Env;
+using Google.Solutions.Common.Test.Testbed;
 using Google.Solutions.IapDesktop.Application.ObjectModel;
 using Google.Solutions.IapDesktop.Application.Services.Adapters;
 using Google.Solutions.IapDesktop.Application.Services.Integration;
@@ -30,6 +30,7 @@ using NUnit.Framework;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
+using Google.Solutions.Common;
 
 namespace Google.Solutions.IapDesktop.Application.Test.Services.Windows
 {

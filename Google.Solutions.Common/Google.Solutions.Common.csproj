@@ -71,6 +71,7 @@
     <Compile Include="ResourceReference.cs" />
     <Compile Include="Util\ExceptionExtensions.cs" />
     <Compile Include="Util\LinqExtensions.cs" />
+    <Compile Include="VmInstanceReference.cs" />
     <Compile Include="ZonalResourceReference.cs" />
   </ItemGroup>
   <ItemGroup>

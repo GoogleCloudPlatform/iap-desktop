@@ -29,6 +29,7 @@ using System;
 using System.Net;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using Google.Solutions.Common;
 
 namespace Google.Solutions.IapDesktop.Application.Services.Workflows
 {

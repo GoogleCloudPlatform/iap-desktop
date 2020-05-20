@@ -22,7 +22,7 @@
 using System;
 using System.Diagnostics;
 
-namespace Google.Solutions.Compute
+namespace Google.Solutions.Common
 {
     public class VmInstanceReference : IEquatable<VmInstanceReference>
     {

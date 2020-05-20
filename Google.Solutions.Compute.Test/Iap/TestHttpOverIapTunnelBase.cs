@@ -21,12 +21,13 @@
 
 using Google.Solutions.Common.Diagnostics;
 using Google.Solutions.Compute.Net;
-using Google.Solutions.Compute.Test.Env;
+using Google.Solutions.Common.Test.Testbed;
 using NUnit.Framework;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
+using Google.Solutions.Common;
 
 namespace Google.Solutions.Compute.Test.Iap
 {

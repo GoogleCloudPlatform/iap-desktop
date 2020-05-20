@@ -21,7 +21,7 @@
 
 using Google.Apis.Compute.v1;
 using Google.Solutions.Compute.Extensions;
-using Google.Solutions.Compute.Test.Env;
+using Google.Solutions.Common.Test.Testbed;
 using NUnit.Framework;
 using System;
 using System.Threading.Tasks;

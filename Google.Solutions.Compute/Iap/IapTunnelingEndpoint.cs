@@ -20,6 +20,7 @@
 //
 
 using Google.Apis.Auth.OAuth2;
+using Google.Solutions.Common;
 using Google.Solutions.Compute.Net;
 using System;
 using System.Collections.Generic;

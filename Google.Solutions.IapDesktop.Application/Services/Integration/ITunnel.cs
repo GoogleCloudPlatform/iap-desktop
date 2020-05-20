@@ -19,6 +19,7 @@
 // under the License.
 //
 
+using Google.Solutions.Common;
 using Google.Solutions.Compute;
 using Google.Solutions.Compute.Iap;
 using System;

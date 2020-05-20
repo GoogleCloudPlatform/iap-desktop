@@ -1,5 +1,5 @@
 ﻿//
-// Copyright 2020 Google LLC
+// Copyright 2019 Google LLC
 //
 // Licensed to the Apache Software Foundation (ASF) under one
 // or more contributor license agreements.  See the NOTICE file
@@ -19,20 +19,11 @@
 // under the License.
 //
 
-using Google.Solutions.Common;
-using Google.Solutions.Compute;
-using System.Threading.Tasks;
+using System;
 
-namespace Google.Solutions.IapDesktop.Application.Services.Windows.ProjectExplorer
+namespace Google.Solutions.LogAnalysis.Test.Extensions
 {
-    public interface IProjectExplorer
+    internal class LinuxInstanceAttribute : Attribute
     {
-        void ShowWindow();
-        Task RefreshProject(string projectId);
-        Task RefreshAllProjects();
-        Task ShowAddProjectDialogAsync();
-
-        VmInstanceNode TryFindNode(VmInstanceReference reference);
     }
-
 }

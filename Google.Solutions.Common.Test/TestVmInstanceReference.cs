@@ -22,10 +22,10 @@
 using Google.Solutions.Common;
 using NUnit.Framework;
 
-namespace Google.Solutions.Compute.Test
+namespace Google.Solutions.Common.Test
 {
     [TestFixture]
-    public class TestVmInstanceReference : FixtureBase
+    public class TestVmInstanceReference
     {
         [Test]
         public void ToStringReturnsName()

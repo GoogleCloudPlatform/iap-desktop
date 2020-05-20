@@ -20,23 +20,31 @@
 //
 
 using Google.Apis.Auth.OAuth2;
-using System;
+using Google.Apis.Compute.v1;
+using Google.Apis.Services;
 
-namespace Google.Solutions.Compute.Test.Env
+namespace Google.Solutions.Common.Test.Testbed
 {
-    public static class Defaults
+    public class ComputeEngine
     {
-        private const string CloudPlatformScope = "https://www.googleapis.com/auth/cloud-platform";
+        public ComputeService Service { get; }
 
-        public static readonly string ProjectId = Environment.GetEnvironmentVariable("GOOGLE_CLOUD_PROJECT");
-        public static readonly string Zone = "us-central1-a";
-
-        public static GoogleCredential GetCredential()
+        private ComputeEngine(ComputeService service)
         {
-            var credential = GoogleCredential.GetApplicationDefault();
-            return credential.IsCreateScopedRequired
-                ? credential.CreateScoped(CloudPlatformScope)
-                : credential;
+            this.Service = service;
+        }
+
+        public static ComputeEngine Connect(GoogleCredential credential)
+        {
+            return new ComputeEngine(new ComputeService(new BaseClientService.Initializer
+            {
+                HttpClientInitializer = credential
+            }));
+        }
+
+        public static ComputeEngine Connect()
+        {
+            return Connect(Defaults.GetCredential());
         }
     }
 }

@@ -21,8 +21,9 @@
 
 using Google.Solutions.Compute.Iap;
 using Google.Solutions.Compute.Net;
-using Google.Solutions.Compute.Test.Env;
+using Google.Solutions.Common.Test.Testbed;
 using NUnit.Framework;
+using Google.Solutions.Common;
 
 namespace Google.Solutions.Compute.Test.Iap
 {

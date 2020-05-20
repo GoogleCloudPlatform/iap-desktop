@@ -20,7 +20,6 @@
 //
 
 using Google.Solutions.Common;
-using Google.Solutions.Compute;
 using Google.Solutions.LogAnalysis.History;
 using NUnit.Framework;
 using System;
