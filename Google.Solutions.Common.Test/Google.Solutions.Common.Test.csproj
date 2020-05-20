@@ -68,6 +68,8 @@
   <ItemGroup>
     <Compile Include="AssertEx.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="TestGlobalResourceReference.cs" />
+    <Compile Include="TestZonalResourceReference.cs" />
     <Compile Include="Util\TestExceptionExtensions.cs" />
     <Compile Include="Util\TestLinqExtensions.cs" />
   </ItemGroup>

@@ -23,7 +23,7 @@ using System;
 using System.Linq;
 using System.Diagnostics;
 
-namespace Google.Solutions.Compute
+namespace Google.Solutions.Common
 {
     /// <summary>
     /// Represents a resource reference as used by the GCE APIs:

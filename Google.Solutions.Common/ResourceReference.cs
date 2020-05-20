@@ -22,7 +22,7 @@
 using Google.Apis.Util;
 using System.Diagnostics;
 
-namespace Google.Solutions.Compute
+namespace Google.Solutions.Common
 {
     public abstract class ResourceReference
     {

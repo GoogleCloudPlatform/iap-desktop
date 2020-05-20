@@ -22,78 +22,70 @@
 using NUnit.Framework;
 using System;
 
-namespace Google.Solutions.Compute.Test
+namespace Google.Solutions.Common.Test
 {
     [TestFixture]
-    public class TestGlobalResourceReference : FixtureBase
+    public class TestZonalResourceReference 
     {
         [Test]
         public void WhenPathIsValid_FromStringReturnsObject()
         {
-            var ref1 = GlobalResourceReference.FromString(
-                "projects/project-1/global/images/image-1");
+            var ref1 = ZonalResourceReference.FromString(
+                "projects/project-1/zones/us-central1-a/diskTypes/pd-standard");
 
-            Assert.AreEqual("images", ref1.ResourceType);
-            Assert.AreEqual("image-1", ref1.ResourceName);
+            Assert.AreEqual("diskTypes", ref1.ResourceType);
+            Assert.AreEqual("pd-standard", ref1.ResourceName);
+            Assert.AreEqual("us-central1-a", ref1.Zone);
             Assert.AreEqual("project-1", ref1.ProjectId);
-        }
-
-        [Test]
-        public void WhenResourceNameCotainsSlash_FromStringReturnsObject()
-        {
-            var ref1 = GlobalResourceReference.FromString(
-                "projects/debian-cloud/global/images/family/debian-9");
-
-            Assert.AreEqual("images", ref1.ResourceType);
-            Assert.AreEqual("family/debian-9", ref1.ResourceName);
-            Assert.AreEqual("debian-cloud", ref1.ProjectId);
         }
 
         [Test]
         public void WhenQualifiedByComputeGoogleapisHost_FromStringReturnsObject()
         {
-            var ref1 = GlobalResourceReference.FromString(
-                "https://compute.googleapis.com/compute/v1/projects/debian-cloud/global/images/family/debian-9");
+            var ref1 = ZonalResourceReference.FromString(
+                "https://compute.googleapis.com/compute/v1/projects/project-1/zones/us-central1-a/diskTypes/pd-standard");
 
-            Assert.AreEqual("images", ref1.ResourceType);
-            Assert.AreEqual("family/debian-9", ref1.ResourceName);
-            Assert.AreEqual("debian-cloud", ref1.ProjectId);
+            Assert.AreEqual("diskTypes", ref1.ResourceType);
+            Assert.AreEqual("pd-standard", ref1.ResourceName);
+            Assert.AreEqual("us-central1-a", ref1.Zone);
+            Assert.AreEqual("project-1", ref1.ProjectId);
         }
 
         [Test]
         public void WhenQualifiedByGoogleapisHost_FromStringReturnsObject()
         {
-            var ref1 = GlobalResourceReference.FromString(
-                "https://www.googleapis.com/compute/v1/projects/windows-cloud/global/licenses/windows-server-core");
+            var ref1 = ZonalResourceReference.FromString(
+                "https://www.googleapis.com/compute/v1/projects/project-1/zones/us-central1-a/diskTypes/pd-standard");
 
-            Assert.AreEqual("licenses", ref1.ResourceType);
-            Assert.AreEqual("windows-server-core", ref1.ResourceName);
-            Assert.AreEqual("windows-cloud", ref1.ProjectId);
+            Assert.AreEqual("diskTypes", ref1.ResourceType);
+            Assert.AreEqual("pd-standard", ref1.ResourceName);
+            Assert.AreEqual("us-central1-a", ref1.Zone);
+            Assert.AreEqual("project-1", ref1.ProjectId);
         }
 
         [Test]
         public void WhenPathLacksProject_FromStringThrowsArgumentException()
         {
-            Assert.Throws<ArgumentException>(() => GlobalResourceReference.FromString(
-                "/project-1/project-1/global/images/image-1"));
+            Assert.Throws<ArgumentException>(() => ZonalResourceReference.FromString(
+                "/project-1/zones/us-central1-a/diskTypes/pd-standard"));
         }
 
         [Test]
         public void WhenPathInvalid_FromStringThrowsArgumentException()
         {
-            Assert.Throws<ArgumentException>(() => GlobalResourceReference.FromString(
-                "projects/project-1/notglobal/images/image-1"));
-            Assert.Throws<ArgumentException>(() => GlobalResourceReference.FromString(
-                "/project-1/global/images/image-1"));
-            Assert.Throws<ArgumentException>(() => GlobalResourceReference.FromString(
+            Assert.Throws<ArgumentException>(() => ZonalResourceReference.FromString(
+                "/project-1/zones/us-central1-a/diskTypes"));
+            Assert.Throws<ArgumentException>(() => ZonalResourceReference.FromString(
+                "/project-1/zones/us-central1-a/diskTypes/pd-standard"));
+            Assert.Throws<ArgumentException>(() => ZonalResourceReference.FromString(
                 "/"));
         }
 
         [Test]
         public void WhenReferencesAreEquivalent_ThenEqualsReturnsTrue()
         {
-            var ref1 = new GlobalResourceReference("proj", "images", "inst");
-            var ref2 = new GlobalResourceReference("proj", "images", "inst");
+            var ref1 = new ZonalResourceReference("proj", "zone", "diskTypes", "inst");
+            var ref2 = new ZonalResourceReference("proj", "zone", "diskTypes", "inst");
 
             Assert.IsTrue(ref1.Equals(ref2));
             Assert.IsTrue(ref1.Equals((object)ref2));
@@ -104,7 +96,7 @@ namespace Google.Solutions.Compute.Test
         [Test]
         public void WhenReferencesAreSame_ThenEqualsReturnsTrue()
         {
-            var ref1 = new GlobalResourceReference("proj", "images", "inst");
+            var ref1 = new ZonalResourceReference("proj", "zone", "diskTypes", "inst");
             var ref2 = ref1;
 
             Assert.IsTrue(ref1.Equals(ref2));
@@ -116,8 +108,8 @@ namespace Google.Solutions.Compute.Test
         [Test]
         public void WhenReferencesAreNotEquivalent_ThenEqualsReturnsFalse()
         {
-            var ref1 = new GlobalResourceReference("proj", "images", "inst");
-            var ref2 = new GlobalResourceReference("proj", "machineTypes", "inst");
+            var ref1 = new ZonalResourceReference("proj", "zone", "diskTypes", "inst");
+            var ref2 = new ZonalResourceReference("proj", "zone", "machineTypes", "inst");
 
             Assert.IsFalse(ref1.Equals(ref2));
             Assert.IsFalse(ref1.Equals((object)ref2));
@@ -128,7 +120,7 @@ namespace Google.Solutions.Compute.Test
         [Test]
         public void TestEqualsNull()
         {
-            var ref1 = new GlobalResourceReference("proj", "machineTypes", "inst");
+            var ref1 = new ZonalResourceReference("proj", "zone", "machineTypes", "inst");
 
             Assert.IsFalse(ref1.Equals(null));
             Assert.IsFalse(ref1.Equals((object)null));

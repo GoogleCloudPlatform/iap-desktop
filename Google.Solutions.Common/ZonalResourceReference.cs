@@ -22,7 +22,7 @@
 using System;
 using System.Diagnostics;
 
-namespace Google.Solutions.Compute
+namespace Google.Solutions.Common
 {
     /// <summary>
     /// Represents a resource reference as used by the GCE APIs:
@@ -31,11 +31,6 @@ namespace Google.Solutions.Compute
     /// </summary>
     public class ZonalResourceReference : ResourceReference, IEquatable<ZonalResourceReference>
     {
-        private const string ComputeGoogleapisPrefix = "https://compute.googleapis.com/compute/v1/";
-        private const string GoogleapisUrlPrefix = "https://www.googleapis.com/compute/v1/";
-
-        private const string UrlPrefix = "https://compute.googleapis.com/compute/v1/";
-
         public string Zone { get; }
 
         public ZonalResourceReference(string projectId, string zone, string resourceType, string resourceName)
