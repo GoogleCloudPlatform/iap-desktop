@@ -27,31 +27,4 @@ namespace Google.Solutions.Compute
     {
         public static readonly TraceSource Compute = new TraceSource(typeof(TraceSources).Namespace);
     }
-
-    internal static class TraceSourceExtensions
-    {
-        public static void TraceVerbose(this TraceSource source, string message)
-        {
-            if (source.Switch.ShouldTrace(TraceEventType.Verbose))
-            {
-                source.TraceData(TraceEventType.Verbose, 0, message);
-            }
-        }
-
-        public static void TraceVerbose(this TraceSource source, string message, params object[] args)
-        {
-            if (source.Switch.ShouldTrace(TraceEventType.Verbose))
-            {
-                source.TraceData(TraceEventType.Verbose, 0, string.Format(message, args));
-            }
-        }
-
-        public static void TraceWarning(this TraceSource source, string message, params object[] args)
-        {
-            if (source.Switch.ShouldTrace(TraceEventType.Warning))
-            {
-                source.TraceData(TraceEventType.Warning, 0, string.Format(message, args));
-            }
-        }
-    }
 }

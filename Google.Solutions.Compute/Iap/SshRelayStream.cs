@@ -19,6 +19,7 @@
 // under the License.
 //
 
+using Google.Solutions.Common.Diagnostics;
 using Google.Solutions.Compute.Net;
 using System;
 using System.Collections.Generic;

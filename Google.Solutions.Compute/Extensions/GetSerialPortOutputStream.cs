@@ -20,6 +20,7 @@
 //
 
 using Google.Apis.Compute.v1;
+using Google.Solutions.Common.Diagnostics;
 using System.Threading.Tasks;
 
 namespace Google.Solutions.Compute.Extensions

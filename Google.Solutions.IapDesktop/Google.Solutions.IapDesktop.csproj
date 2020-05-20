@@ -147,6 +147,10 @@
     <None Include="Resources\%24this.Icon.ico" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Google.Solutions.Common\Google.Solutions.Common.csproj">
+      <Project>{fb4c6f4d-32b1-4b0b-ba79-fd47fc4d7912}</Project>
+      <Name>Google.Solutions.Common</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Google.Solutions.IapDesktop.Application\Google.Solutions.IapDesktop.Application.csproj">
       <Project>{842b003e-6eeb-429d-a3a1-53b4e642e83b}</Project>
       <Name>Google.Solutions.IapDesktop.Application</Name>

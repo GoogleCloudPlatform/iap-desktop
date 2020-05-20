@@ -114,6 +114,12 @@
     <None Include="app.config" />
     <None Include="packages.config" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Google.Solutions.Common\Google.Solutions.Common.csproj">
+      <Project>{fb4c6f4d-32b1-4b0b-ba79-fd47fc4d7912}</Project>
+      <Name>Google.Solutions.Common</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="..\packages\MSBuild.AssemblyVersion.1.2.0\build\MSBuild.AssemblyVersion.targets" Condition="Exists('..\packages\MSBuild.AssemblyVersion.1.2.0\build\MSBuild.AssemblyVersion.targets')" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
