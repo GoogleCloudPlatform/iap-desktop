@@ -20,7 +20,7 @@
 //
 
 using Google.Solutions.Common.Diagnostics;
-using Google.Solutions.Compute;
+using Google.Solutions.Common.Util;
 using System;
 using System.Runtime.InteropServices;
 using System.Text;

@@ -20,12 +20,12 @@
 //
 
 using Google.Apis.Compute.v1.Data;
+using Google.Solutions.Common.Util;
 using Google.Solutions.Compute;
 using Google.Solutions.IapDesktop.Application.ObjectModel;
 using Google.Solutions.IapDesktop.Application.Services.Adapters;
 using Google.Solutions.IapDesktop.Application.Services.Integration;
 using Google.Solutions.IapDesktop.Application.Services.Persistence;
-using Google.Solutions.IapDesktop.Application.Services.Windows;
 using Google.Solutions.IapDesktop.Application.Services.Windows.RemoteDesktop;
 using Google.Solutions.IapDesktop.Application.Services.Windows.SerialLog;
 using Google.Solutions.IapDesktop.Application.Services.Windows.SettingsEditor;

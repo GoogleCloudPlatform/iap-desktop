@@ -20,6 +20,7 @@
 //
 
 using Google.Apis.Auth.OAuth2.Responses;
+using Google.Solutions.Common.Util;
 using Google.Solutions.Compute;
 using Google.Solutions.Compute.Extensions;
 using System;

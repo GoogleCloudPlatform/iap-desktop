@@ -19,6 +19,7 @@
 // under the License.
 //
 
+using Google.Solutions.Common.Util;
 using Newtonsoft.Json;
 using NUnit.Framework;
 using System;
