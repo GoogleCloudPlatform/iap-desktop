@@ -20,6 +20,7 @@
 //
 
 using Google.Apis.Auth.OAuth2;
+using Google.Solutions.Common.Test;
 using Google.Solutions.Compute.Iap;
 using Google.Solutions.Compute.Net;
 using Google.Solutions.Compute.Test.Env;

@@ -90,7 +90,6 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AssertEx.cs" />
     <Compile Include="Auth\TestAuthorization.cs" />
     <Compile Include="Env\ComputeEngine.cs" />
     <Compile Include="Env\Defaults.cs" />
@@ -121,6 +120,10 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Google.Solutions.Common.Test\Google.Solutions.Common.Test.csproj">
+      <Project>{aa8cd2fb-d463-42bd-a880-9247c93f9395}</Project>
+      <Name>Google.Solutions.Common.Test</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Google.Solutions.Common\Google.Solutions.Common.csproj">
       <Project>{fb4c6f4d-32b1-4b0b-ba79-fd47fc4d7912}</Project>
       <Name>Google.Solutions.Common</Name>
