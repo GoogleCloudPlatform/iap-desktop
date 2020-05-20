@@ -41,6 +41,7 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Google.Solutions.Common.Test", "Google.Solutions.Common.Test\Google.Solutions.Common.Test.csproj", "{AA8CD2FB-D463-42BD-A880-9247C93F9395}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Google.Solutions.IapTunneling", "Google.Solutions.IapTunneling\Google.Solutions.IapTunneling.csproj", "{D9493479-1751-402B-880F-60ED33EBB885}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Google.Solutions.LogAnalysis.QuickTest", "Google.Solutions.LogAnalysis.QuickTest\Google.Solutions.LogAnalysis.QuickTest.csproj", "{FA26EE39-8446-485F-BFBB-2FC6D27EE67F}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -124,6 +125,7 @@ Global
 		{8C4F5833-C8B3-4A60-B401-7C4A3346BF59}.Release|Any CPU.Build.0 = Release|Any CPU
 		{8C4F5833-C8B3-4A60-B401-7C4A3346BF59}.Release|x86.ActiveCfg = Release|Any CPU
 		{8C4F5833-C8B3-4A60-B401-7C4A3346BF59}.Release|x86.Build.0 = Release|Any CPU
+<<<<<<< HEAD
 		{FB4C6F4D-32B1-4B0B-BA79-FD47FC4D7912}.Debug (OAuth)|Any CPU.ActiveCfg = Debug|Any CPU
 		{FB4C6F4D-32B1-4B0B-BA79-FD47FC4D7912}.Debug (OAuth)|Any CPU.Build.0 = Debug|Any CPU
 		{FB4C6F4D-32B1-4B0B-BA79-FD47FC4D7912}.Debug (OAuth)|x86.ActiveCfg = Debug|Any CPU
@@ -160,6 +162,20 @@ Global
 		{D9493479-1751-402B-880F-60ED33EBB885}.Release|Any CPU.Build.0 = Release|Any CPU
 		{D9493479-1751-402B-880F-60ED33EBB885}.Release|x86.ActiveCfg = Release|Any CPU
 		{D9493479-1751-402B-880F-60ED33EBB885}.Release|x86.Build.0 = Release|Any CPU
+=======
+		{FA26EE39-8446-485F-BFBB-2FC6D27EE67F}.Debug (OAuth)|Any CPU.ActiveCfg = Debug|Any CPU
+		{FA26EE39-8446-485F-BFBB-2FC6D27EE67F}.Debug (OAuth)|Any CPU.Build.0 = Debug|Any CPU
+		{FA26EE39-8446-485F-BFBB-2FC6D27EE67F}.Debug (OAuth)|x86.ActiveCfg = Debug|Any CPU
+		{FA26EE39-8446-485F-BFBB-2FC6D27EE67F}.Debug (OAuth)|x86.Build.0 = Debug|Any CPU
+		{FA26EE39-8446-485F-BFBB-2FC6D27EE67F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FA26EE39-8446-485F-BFBB-2FC6D27EE67F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FA26EE39-8446-485F-BFBB-2FC6D27EE67F}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{FA26EE39-8446-485F-BFBB-2FC6D27EE67F}.Debug|x86.Build.0 = Debug|Any CPU
+		{FA26EE39-8446-485F-BFBB-2FC6D27EE67F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FA26EE39-8446-485F-BFBB-2FC6D27EE67F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FA26EE39-8446-485F-BFBB-2FC6D27EE67F}.Release|x86.ActiveCfg = Release|Any CPU
+		{FA26EE39-8446-485F-BFBB-2FC6D27EE67F}.Release|x86.Build.0 = Release|Any CPU
+>>>>>>> Add test app to visualize node history
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -171,9 +187,13 @@ Global
 		{274DA71A-6CD4-4E11-B3E9-1B39767039D5} = {5206FD39-47A5-4E69-AA4F-94275A1A4791}
 		{B804D76C-E02E-4320-94A7-579034644AA0} = {06417FC0-CC28-4E03-8F61-02A55304F28B}
 		{8C4F5833-C8B3-4A60-B401-7C4A3346BF59} = {06417FC0-CC28-4E03-8F61-02A55304F28B}
+<<<<<<< HEAD
 		{FB4C6F4D-32B1-4B0B-BA79-FD47FC4D7912} = {22C51D9C-CFD8-434C-85A0-8908C3046855}
 		{AA8CD2FB-D463-42BD-A880-9247C93F9395} = {22C51D9C-CFD8-434C-85A0-8908C3046855}
 		{D9493479-1751-402B-880F-60ED33EBB885} = {7EFB4313-FCC0-4109-80EC-4AA017CC5D11}
+=======
+		{FA26EE39-8446-485F-BFBB-2FC6D27EE67F} = {06417FC0-CC28-4E03-8F61-02A55304F28B}
+>>>>>>> Add test app to visualize node history
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {75502EC2-01DB-49D6-B896-7A5DDE267F6A}
