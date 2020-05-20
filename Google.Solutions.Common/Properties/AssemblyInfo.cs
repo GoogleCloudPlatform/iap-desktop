@@ -22,14 +22,14 @@
 using System.Reflection;
 using System.Runtime.CompilerServices;
 
-[assembly: AssemblyTitle("Logging extension library")]
-[assembly: AssemblyDescription("Logging extension library")]
+[assembly: AssemblyTitle("Common")]
+[assembly: AssemblyDescription("Library providing common functionality")]
 [assembly: AssemblyCompany("Google")]
 [assembly: AssemblyProduct("IAP Desktop")]
-[assembly: AssemblyCopyright("Copyright ©  2020")]
+[assembly: AssemblyCopyright("Copyright ©  2019")]
 [assembly: AssemblyTrademark("Google")]
 
 [assembly: AssemblyVersion("1.0.1.0")]
 [assembly: AssemblyFileVersion("1.0.1.0")]
 
-[assembly: InternalsVisibleTo("Google.Solutions.LogAnalysis.Test")]
+[assembly: InternalsVisibleTo("Google.Solutions.Common.Test")]

@@ -25,7 +25,7 @@ using System.Runtime.CompilerServices;
 [assembly: AssemblyTitle("Compute Engine extension library")]
 [assembly: AssemblyDescription("Compute Engine extension library")]
 [assembly: AssemblyCompany("Google")]
-[assembly: AssemblyProduct("Compute Engine extension library")]
+[assembly: AssemblyProduct("IAP Desktop")]
 [assembly: AssemblyCopyright("Copyright ©  2019")]
 [assembly: AssemblyTrademark("Google")]
 

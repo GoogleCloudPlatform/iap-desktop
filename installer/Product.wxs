@@ -196,6 +196,12 @@
           DiskId="1"
           Source="Google.Solutions.IapDesktop\bin\$(var.CONFIGURATION)\Google.Solutions.Compute.dll"
           Vital="yes"/>
+        <File
+          Id="FileGoogleSolutionsCommonDll"
+          Name="Google.Solutions.Common.dll"
+          DiskId="1"
+          Source="Google.Solutions.IapDesktop\bin\$(var.CONFIGURATION)\Google.Solutions.Common.dll"
+          Vital="yes"/>
         
         <!--
         <File
