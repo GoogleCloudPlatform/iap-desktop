@@ -27,6 +27,7 @@ using NUnit.Framework;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
+using Google.Solutions.Common;
 
 namespace Google.Solutions.IapDesktop.Application.Test.Services.Integration
 {
