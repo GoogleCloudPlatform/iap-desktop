@@ -26,7 +26,7 @@ using Google.Solutions.Common;
 using Google.Solutions.Common.Diagnostics;
 using Google.Solutions.Common.Util;
 using Google.Solutions.Compute;
-using Google.Solutions.Compute.Extensions;
+using Google.Solutions.Common.ApiExtensions.Instance;
 using Google.Solutions.IapDesktop.Application.ObjectModel;
 using System;
 using System.Collections.Generic;

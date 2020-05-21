@@ -20,11 +20,10 @@
 //
 
 using Google.Apis.Compute.v1;
-using Google.Solutions.Common;
 using Google.Solutions.Common.Diagnostics;
 using System.Threading.Tasks;
 
-namespace Google.Solutions.Compute.Extensions
+namespace Google.Solutions.Common.ApiExtensions.Instance
 {
     /// <summary>
     /// Extend 'InstancesResource' by a 'GetSerialPortOutputStream' method.
@@ -72,7 +71,7 @@ namespace Google.Solutions.Compute.Extensions
             request.Start = this.nextOffset;
             var output = await request.ExecuteAsync().ConfigureAwait(false);
 
-            TraceSources.Compute.TraceVerbose(
+            TraceSources.Common.TraceVerbose(
                 "Read {0} chars from serial port [start={1}, next={2}]",
                 output.Contents == null ? 0 : output.Contents.Length,
                 output.Start.Value,

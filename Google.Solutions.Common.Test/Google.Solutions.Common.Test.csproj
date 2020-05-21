@@ -82,6 +82,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ApiExtensions\Instance\TestGetSerialPortOutputStream.cs" />
+    <Compile Include="ApiExtensions\Instance\TestResetWindowsUser.cs" />
     <Compile Include="AssertEx.cs" />
     <Compile Include="Auth\TestAuthorization.cs" />
     <Compile Include="Net\TestRestClient.cs" />

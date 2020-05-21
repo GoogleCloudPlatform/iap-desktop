@@ -90,8 +90,6 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Extensions\TestGetSerialPortOutputStream.cs" />
-    <Compile Include="Extensions\TestResetWindowsUser.cs" />
     <Compile Include="FixtureBase.cs" />
     <Compile Include="Iap\Mocks.cs" />
     <Compile Include="Iap\TestEchoOverIapBase.cs" />
@@ -106,7 +104,9 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="TestBigEndian.cs" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Folder Include="Extensions\" />
+  </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
     <None Include="packages.config" />

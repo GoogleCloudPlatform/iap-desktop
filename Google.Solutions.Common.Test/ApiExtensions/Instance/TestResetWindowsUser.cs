@@ -20,7 +20,7 @@
 //
 
 using Google.Apis.Compute.v1;
-using Google.Solutions.Compute.Extensions;
+using Google.Solutions.Common.ApiExtensions.Instance;
 using Google.Solutions.Common.Test.Testbed;
 using NUnit.Framework;
 using System;
@@ -33,7 +33,7 @@ namespace Google.Solutions.Compute.Test.Extensions
     [TestFixture]
     [Category("IntegrationTest")]
     [Category("Windows")]
-    public class TestResetWindowsUser : FixtureBase
+    public class TestResetWindowsUser
     {
         private InstancesResource instancesResource;
 

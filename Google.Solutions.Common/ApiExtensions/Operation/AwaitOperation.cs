@@ -28,7 +28,7 @@ using System.Threading.Tasks;
 using System.Linq;
 using System.Collections.Generic;
 
-namespace Google.Solutions.Compute.Extensions
+namespace Google.Solutions.Common.ApiExtensions.Operation
 {
     public static class AwaitOperation
     {
@@ -38,7 +38,7 @@ namespace Google.Solutions.Compute.Extensions
         private static readonly List<SingleError> NoErrors = new List<SingleError>();
 
         public static async Task ExecuteAndAwaitOperationAsync(
-            this IClientServiceRequest<Operation> request,
+            this IClientServiceRequest<Google.Apis.Compute.v1.Data.Operation> request,
             string projectId,
             CancellationToken token)
         {
@@ -65,7 +65,7 @@ namespace Google.Solutions.Compute.Extensions
                                 .ToList()
                             : NoErrors;
 
-                        TraceSources.Compute.TraceWarning("Operation failed: {0}", operation.HttpErrorMessage);
+                        TraceSources.Common.TraceWarning("Operation failed: {0}", operation.HttpErrorMessage);
 
                         throw new GoogleApiException(
                             "ComputeEngine",
@@ -81,7 +81,7 @@ namespace Google.Solutions.Compute.Extensions
                     }
                     else
                     {
-                        TraceSources.Compute.TraceVerbose("Operation completed");
+                        TraceSources.Common.TraceVerbose("Operation completed");
                         return;
                     }
                 }

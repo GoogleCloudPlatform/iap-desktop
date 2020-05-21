@@ -20,7 +20,7 @@
 //
 
 using Google.Apis.Compute.v1;
-using Google.Solutions.Compute.Extensions;
+using Google.Solutions.Common.ApiExtensions.Instance;
 using Google.Solutions.Common.Test.Testbed;
 using NUnit.Framework;
 using System;

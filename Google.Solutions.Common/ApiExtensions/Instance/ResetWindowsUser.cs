@@ -32,7 +32,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Google.Solutions.Compute.Extensions
+namespace Google.Solutions.Common.ApiExtensions.Instance
 {
     /// <summary>
     /// Extend 'InstancesResource' by a 'ResetWindowsUserAsync' method.
@@ -74,7 +74,7 @@ namespace Google.Solutions.Compute.Extensions
             string username,
             CancellationToken token)
         {
-            TraceSources.Compute.TraceVerbose("Resetting Windows user for {0} on {1}...", username, instanceRef);
+            TraceSources.Common.TraceVerbose("Resetting Windows user for {0} on {1}...", username, instanceRef);
 
             using (RSACryptoServiceProvider rsa = new RSACryptoServiceProvider(RsaKeySize))
             {
@@ -101,14 +101,14 @@ namespace Google.Solutions.Compute.Extensions
                 }
                 catch (GoogleApiException e) when (e.Error != null && e.Error.Code == 404)
                 {
-                    TraceSources.Compute.TraceVerbose("Instance does not exist: {0}", e.Message);
+                    TraceSources.Common.TraceVerbose("Instance does not exist: {0}", e.Message);
 
                     throw new PasswordResetException(
                         $"Instance {instanceRef.InstanceName} was not found.");
                 }
                 catch (GoogleApiException e) when (e.Error == null || e.Error.Code == 403)
                 {
-                    TraceSources.Compute.TraceVerbose(
+                    TraceSources.Common.TraceVerbose(
                         "Setting request payload metadata failed: {0} ({1})", 
                         e.Message, 
                         e.Error?.Errors.EnsureNotNull().Select(er => er.Reason).FirstOrDefault());
@@ -133,7 +133,7 @@ namespace Google.Solutions.Compute.Extensions
                 var logBuffer = new StringBuilder(64 * 1024);
                 while (true)
                 {
-                    TraceSources.Compute.TraceVerbose("Waiting for agent to supply response...");
+                    TraceSources.Common.TraceVerbose("Waiting for agent to supply response...");
 
                     token.ThrowIfCancellationRequested();
 

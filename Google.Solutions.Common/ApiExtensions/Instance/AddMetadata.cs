@@ -27,8 +27,9 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Google.Solutions.Common;
+using Google.Solutions.Common.ApiExtensions.Operation;
 
-namespace Google.Solutions.Compute.Extensions
+namespace Google.Solutions.Common.ApiExtensions.Instance
 {
     /// <summary>
     /// Extend 'InstancesResource' by a 'AddMetadataAsync' method. 
@@ -118,7 +119,7 @@ namespace Google.Solutions.Compute.Extensions
                 });
             }
 
-            TraceSources.Compute.TraceVerbose("Setting metdata {0} on {1}...", key, instanceRef.InstanceName);
+            TraceSources.Common.TraceVerbose("Setting metdata {0} on {1}...", key, instanceRef.InstanceName);
 
             try
             {
@@ -130,7 +131,7 @@ namespace Google.Solutions.Compute.Extensions
             }
             catch (GoogleApiException e)
             {
-                TraceSources.Compute.TraceWarning(
+                TraceSources.Common.TraceWarning(
                     "Setting metdata failed {0} (code error {1})", e.Message, 
                     e.Error?.Code);
 
