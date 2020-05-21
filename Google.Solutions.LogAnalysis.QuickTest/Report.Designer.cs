@@ -30,7 +30,7 @@
         {
             System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea1 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
             System.Windows.Forms.DataVisualization.Charting.Series series1 = new System.Windows.Forms.DataVisualization.Charting.Series();
-            this.nodesByDay = new System.Windows.Forms.DataVisualization.Charting.Chart();
+            this.chart = new System.Windows.Forms.DataVisualization.Charting.Chart();
             this.nodesByDayLabel = new System.Windows.Forms.Label();
             this.nodesList = new System.Windows.Forms.ListView();
             this.serverIdColumnHeader = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
@@ -53,7 +53,7 @@
             this.tabControl = new Google.Solutions.IapDesktop.Application.Services.Windows.FlatVerticalTabControl();
             this.instancesTabPage = new System.Windows.Forms.TabPage();
             this.nodesTabPage = new System.Windows.Forms.TabPage();
-            ((System.ComponentModel.ISupportInitialize)(this.nodesByDay)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.chart)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer)).BeginInit();
             this.splitContainer.Panel1.SuspendLayout();
             this.splitContainer.Panel2.SuspendLayout();
@@ -61,11 +61,11 @@
             this.tabControl.SuspendLayout();
             this.SuspendLayout();
             // 
-            // nodesByDay
+            // chart
             // 
-            this.nodesByDay.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            this.chart.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.nodesByDay.BackColor = System.Drawing.SystemColors.Control;
+            this.chart.BackColor = System.Drawing.SystemColors.Control;
             chartArea1.AxisX.MajorGrid.Enabled = false;
             chartArea1.AxisX.ScaleView.Zoomable = false;
             chartArea1.AxisY.IntervalType = System.Windows.Forms.DataVisualization.Charting.DateTimeIntervalType.Number;
@@ -75,16 +75,16 @@
             chartArea1.BorderColor = System.Drawing.Color.DimGray;
             chartArea1.CursorX.IsUserSelectionEnabled = true;
             chartArea1.Name = "mainArea";
-            this.nodesByDay.ChartAreas.Add(chartArea1);
-            this.nodesByDay.Location = new System.Drawing.Point(146, 30);
-            this.nodesByDay.Name = "nodesByDay";
-            this.nodesByDay.Palette = System.Windows.Forms.DataVisualization.Charting.ChartColorPalette.Grayscale;
+            this.chart.ChartAreas.Add(chartArea1);
+            this.chart.Location = new System.Drawing.Point(146, 30);
+            this.chart.Name = "chart";
+            this.chart.Palette = System.Windows.Forms.DataVisualization.Charting.ChartColorPalette.Grayscale;
             series1.ChartArea = "mainArea";
             series1.Name = "Series1";
-            this.nodesByDay.Series.Add(series1);
-            this.nodesByDay.Size = new System.Drawing.Size(914, 300);
-            this.nodesByDay.TabIndex = 0;
-            this.nodesByDay.SelectionRangeChanged += new System.EventHandler<System.Windows.Forms.DataVisualization.Charting.CursorEventArgs>(this.nodesByDay_SelectionRangeChanged);
+            this.chart.Series.Add(series1);
+            this.chart.Size = new System.Drawing.Size(914, 300);
+            this.chart.TabIndex = 0;
+            this.chart.SelectionRangeChanged += new System.EventHandler<System.Windows.Forms.DataVisualization.Charting.CursorEventArgs>(this.nodesByDay_SelectionRangeChanged);
             // 
             // nodesByDayLabel
             // 
@@ -294,12 +294,12 @@
             this.AutoScrollMinSize = new System.Drawing.Size(810, 880);
             this.ClientSize = new System.Drawing.Size(1072, 911);
             this.Controls.Add(this.nodesByDayLabel);
-            this.Controls.Add(this.nodesByDay);
+            this.Controls.Add(this.chart);
             this.Controls.Add(this.splitContainer);
             this.Controls.Add(this.tabControl);
             this.Name = "Report";
             this.Text = "Report";
-            ((System.ComponentModel.ISupportInitialize)(this.nodesByDay)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.chart)).EndInit();
             this.splitContainer.Panel1.ResumeLayout(false);
             this.splitContainer.Panel1.PerformLayout();
             this.splitContainer.Panel2.ResumeLayout(false);
@@ -314,7 +314,7 @@
 
         #endregion
 
-        private System.Windows.Forms.DataVisualization.Charting.Chart nodesByDay;
+        private System.Windows.Forms.DataVisualization.Charting.Chart chart;
         private System.Windows.Forms.Label nodesByDayLabel;
         private System.Windows.Forms.ListView nodesList;
         private System.Windows.Forms.ColumnHeader serverIdColumnHeader;

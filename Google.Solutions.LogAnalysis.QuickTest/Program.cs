@@ -114,7 +114,7 @@ namespace Google.Solutions.LogAnalysis.QuickTest
                 Console.WriteLine(
                     "== Nodes ======================================================================");
 
-                var nodeSet = NodeSetHistory.FromInstancyHistory(set.Instances, true);
+                var nodeSet = NodeSetHistory.FromInstancyHistory(set.Instances, true, true);
                 foreach (var node in nodeSet.Nodes)
                 {
                     Console.WriteLine($"  Node          {node.ServerId ?? "FLEET"}");
@@ -152,9 +152,8 @@ namespace Google.Solutions.LogAnalysis.QuickTest
             using (var reader = new StreamReader(filePath, Encoding.UTF8))
             {
                 var instanceSet = InstanceSetHistory.Deserialize(reader);
-                var nodeSet = NodeSetHistory.FromInstancyHistory(instanceSet.Instances, false);
                 
-                Application.Run(new Report(instanceSet, nodeSet));
+                Application.Run(new Report(instanceSet));
             }
         }
 
@@ -171,7 +170,7 @@ namespace Google.Solutions.LogAnalysis.QuickTest
             }
             else if (args.Length >= 2 && args[0] == "analyze-gui")
             {
-                AnalyzeGui(args[1]);
+                AnalyzeGui(args[1].Trim());
             }
             else
             {

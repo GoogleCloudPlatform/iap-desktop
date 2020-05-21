@@ -19,6 +19,7 @@
 // under the License.
 //
 
+using Google.Solutions.Common.Util;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -35,13 +36,21 @@ namespace Google.Solutions.IapDesktop.Extensions.LogAnalysis.History
 
         private static IEnumerable<NodeHistory> NodesFromInstanceSetHistory(
             IEnumerable<InstanceHistory> instanceHistories,
-            bool includeNodeForFleet)
+            bool includeFleetInstances,
+            bool includeSoleTenantInstances)
         {
-            if (!includeNodeForFleet)
+            if (!includeFleetInstances)
             {
                 instanceHistories = instanceHistories
                     .Where(i => i.Placements != null &&
-                                i.Placements.Any(p => p.Tenancy == Tenancy.SoleTenant));
+                                i.Placements.Any(p => p.Tenancy != Tenancy.Fleet));
+            }
+
+            if (!includeSoleTenantInstances)
+            {
+                instanceHistories = instanceHistories
+                    .Where(i => i.Placements != null &&
+                                i.Placements.Any(p => p.Tenancy != Tenancy.SoleTenant));
             }
 
             var placementsByServer = instanceHistories
@@ -81,12 +90,28 @@ namespace Google.Solutions.IapDesktop.Extensions.LogAnalysis.History
                     this.Nodes.Select(p => p.FirstUse),
                     this.Nodes.Select(p => p.LastUse));
 
+
+        /// <summary>
+        /// Create time series indicating the maximum number of parallel 
+        /// placements for each day of this node's existence.
+        /// </summary>
+        public IEnumerable<DataPoint> MaxInstancePlacementsByDay =>
+            this.Nodes == null
+                ? Enumerable.Empty<DataPoint>()
+                : TimeseriesUtil.DailyHistogram(
+                    this.Nodes.SelectMany(n => n.Placements).Select(p => p.From),
+                    this.Nodes.SelectMany(n => n.Placements).Select(p => p.To));
+
         public static NodeSetHistory FromInstancyHistory(
             IEnumerable<InstanceHistory> instanceHistories,
-            bool includeNodeForFleet)
+            bool includeFleetInstances,
+            bool includeSoleTenantInstances)
         {
             return new NodeSetHistory(
-                NodesFromInstanceSetHistory(instanceHistories, includeNodeForFleet));
+                NodesFromInstanceSetHistory(
+                    instanceHistories, 
+                    includeFleetInstances,
+                    includeSoleTenantInstances));
         }
     }
 }
