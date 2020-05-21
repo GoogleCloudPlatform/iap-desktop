@@ -90,6 +90,7 @@
             this.chart.Series.Add(series1);
             this.chart.Size = new System.Drawing.Size(914, 300);
             this.chart.TabIndex = 0;
+            this.chart.GetToolTipText += new System.EventHandler<System.Windows.Forms.DataVisualization.Charting.ToolTipEventArgs>(this.chart_GetToolTipText);
             this.chart.SelectionRangeChanged += new System.EventHandler<System.Windows.Forms.DataVisualization.Charting.CursorEventArgs>(this.nodesByDay_SelectionRangeChanged);
             // 
             // chartLabel

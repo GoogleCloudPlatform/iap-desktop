@@ -79,6 +79,7 @@ namespace Google.Solutions.LogAnalysis.QuickTest
             this.chart.Series[0].Points.Clear();
             foreach (var dp in dataPoints)
             {
+                Debug.WriteLine(dp.Value);
                 this.chart.Series[0].Points.AddXY(dp.Timestamp, dp.Value);
             }
         }
@@ -189,6 +190,17 @@ namespace Google.Solutions.LogAnalysis.QuickTest
         private void includeInstancesCheckbox_CheckedChanged(object sender, EventArgs e)
         {
             Repopulate();
+        }
+
+        private void chart_GetToolTipText(object sender, ToolTipEventArgs e)
+        {
+            switch (e.HitTestResult.ChartElementType)
+            {
+                case ChartElementType.DataPoint:
+                    var dataPoint = e.HitTestResult.Series.Points[e.HitTestResult.PointIndex];
+                    e.Text = $"{DateTime.FromOADate(dataPoint.XValue)}: {dataPoint.YValues[0]}";
+                    break;
+            }
         }
     }
 }
