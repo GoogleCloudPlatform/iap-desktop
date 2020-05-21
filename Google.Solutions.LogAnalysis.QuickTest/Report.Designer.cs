@@ -53,6 +53,8 @@
             this.tabControl = new Google.Solutions.IapDesktop.Application.Services.Windows.FlatVerticalTabControl();
             this.instancesTabPage = new System.Windows.Forms.TabPage();
             this.nodesTabPage = new System.Windows.Forms.TabPage();
+            this.includeFleetInstancesCheckBox = new System.Windows.Forms.CheckBox();
+            this.includeSoleTenantInstancesCheckbox = new System.Windows.Forms.CheckBox();
             ((System.ComponentModel.ISupportInitialize)(this.chart)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer)).BeginInit();
             this.splitContainer.Panel1.SuspendLayout();
@@ -286,6 +288,34 @@
             this.nodesTabPage.Text = "Sole-tenant nodes";
             this.nodesTabPage.UseVisualStyleBackColor = true;
             // 
+            // includeFleetInstancesCheckBox
+            // 
+            this.includeFleetInstancesCheckBox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.includeFleetInstancesCheckBox.AutoSize = true;
+            this.includeFleetInstancesCheckBox.Checked = true;
+            this.includeFleetInstancesCheckBox.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.includeFleetInstancesCheckBox.Location = new System.Drawing.Point(751, 313);
+            this.includeFleetInstancesCheckBox.Name = "includeFleetInstancesCheckBox";
+            this.includeFleetInstancesCheckBox.Size = new System.Drawing.Size(148, 17);
+            this.includeFleetInstancesCheckBox.TabIndex = 0;
+            this.includeFleetInstancesCheckBox.Text = "On-demand VM instances";
+            this.includeFleetInstancesCheckBox.UseVisualStyleBackColor = true;
+            this.includeFleetInstancesCheckBox.CheckedChanged += new System.EventHandler(this.includeInstancesCheckbox_CheckedChanged);
+            // 
+            // includeSoleTenantInstancesCheckbox
+            // 
+            this.includeSoleTenantInstancesCheckbox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.includeSoleTenantInstancesCheckbox.AutoSize = true;
+            this.includeSoleTenantInstancesCheckbox.Checked = true;
+            this.includeSoleTenantInstancesCheckbox.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.includeSoleTenantInstancesCheckbox.Location = new System.Drawing.Point(906, 313);
+            this.includeSoleTenantInstancesCheckbox.Name = "includeSoleTenantInstancesCheckbox";
+            this.includeSoleTenantInstancesCheckbox.Size = new System.Drawing.Size(147, 17);
+            this.includeSoleTenantInstancesCheckbox.TabIndex = 5;
+            this.includeSoleTenantInstancesCheckbox.Text = "Sole-tenant VM instances";
+            this.includeSoleTenantInstancesCheckbox.UseVisualStyleBackColor = true;
+            this.includeSoleTenantInstancesCheckbox.CheckedChanged += new System.EventHandler(this.includeInstancesCheckbox_CheckedChanged);
+            // 
             // Report
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -293,6 +323,8 @@
             this.AutoScroll = true;
             this.AutoScrollMinSize = new System.Drawing.Size(810, 880);
             this.ClientSize = new System.Drawing.Size(1072, 911);
+            this.Controls.Add(this.includeSoleTenantInstancesCheckbox);
+            this.Controls.Add(this.includeFleetInstancesCheckBox);
             this.Controls.Add(this.nodesByDayLabel);
             this.Controls.Add(this.chart);
             this.Controls.Add(this.splitContainer);
@@ -337,5 +369,7 @@
         private IapDesktop.Application.Services.Windows.FlatVerticalTabControl tabControl;
         private System.Windows.Forms.TabPage instancesTabPage;
         private System.Windows.Forms.TabPage nodesTabPage;
+        private System.Windows.Forms.CheckBox includeFleetInstancesCheckBox;
+        private System.Windows.Forms.CheckBox includeSoleTenantInstancesCheckbox;
     }
 }

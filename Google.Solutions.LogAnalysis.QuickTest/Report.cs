@@ -49,13 +49,12 @@ namespace Google.Solutions.LogAnalysis.QuickTest
             {
                 this.currentNodeSet = NodeSetHistory.FromInstancyHistory(
                     this.instanceSet.Instances,
-                    true,
-                    false);
-                Debug.Assert(this.currentNodeSet.Nodes.Count() <= 1);
+                    this.includeFleetInstancesCheckBox.Checked,
+                    this.includeSoleTenantInstancesCheckbox.Checked);
 
                 RepopulateChart(this.currentNodeSet.MaxInstancePlacementsByDay);
                 RepopulateNodeList();
-                RepopulateInstancesList(this.currentNodeSet.Nodes.FirstOrDefault());
+                //RepopulateInstancesList(this.currentNodeSet.Nodes.FirstOrDefault());
             }
             else if (this.tabControl.SelectedTab == this.nodesTabPage)
             {
@@ -66,7 +65,7 @@ namespace Google.Solutions.LogAnalysis.QuickTest
 
                 RepopulateChart(this.currentNodeSet.MaxNodesByDay);
                 RepopulateNodeList();
-                RepopulateInstancesList(null);
+                //RepopulateInstancesList(null);
             }
         }
 
@@ -181,6 +180,11 @@ namespace Google.Solutions.LogAnalysis.QuickTest
             => nodesList_Click(sender, e);
 
         private void tabControl_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            Repopulate();
+        }
+
+        private void includeInstancesCheckbox_CheckedChanged(object sender, EventArgs e)
         {
             Repopulate();
         }
