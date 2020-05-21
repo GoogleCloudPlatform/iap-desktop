@@ -94,6 +94,15 @@ namespace Google.Solutions.Common.Test
         }
 
         [Test]
+        public void WhenReferencesAreEquivalent_ThenGetHasCodeIsSame()
+        {
+            var ref1 = new ZonalResourceReference("proj", "zone", "diskTypes", "inst");
+            var ref2 = new ZonalResourceReference("proj", "zone", "diskTypes", "inst");
+
+            Assert.AreEqual(ref1.GetHashCode(), ref2.GetHashCode());
+        }
+
+        [Test]
         public void WhenReferencesAreSame_ThenEqualsReturnsTrue()
         {
             var ref1 = new ZonalResourceReference("proj", "zone", "diskTypes", "inst");
@@ -128,6 +137,27 @@ namespace Google.Solutions.Common.Test
             Assert.IsFalse(null == ref1);
             Assert.IsTrue(ref1 != null);
             Assert.IsTrue(null != ref1);
+        }
+
+        [Test]
+        public void WhenCreatedFromPath_ThenToStringReturnsPath()
+        {
+            var path = "projects/project-1/zones/us-central1-a/diskTypes/pd-standard";
+
+            Assert.AreEqual(
+                path, 
+                ZonalResourceReference.FromString(path).ToString());
+        }
+
+        [Test]
+        public void WhenCreatedFromUrl_ThenToStringReturnsPath()
+        {
+            var path = "projects/project-1/zones/us-central1-a/diskTypes/pd-standard";
+
+            Assert.AreEqual(
+                path, 
+                ZonalResourceReference.FromString(
+                    "https://www.googleapis.com/compute/v1/" + path).ToString());
         }
     }
 }
