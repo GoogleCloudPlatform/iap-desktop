@@ -98,7 +98,6 @@
     <Compile Include="Events\VmInstanceEventBase.cs" />
     <Compile Include="Extensions\ListLogEntriesExtensions.cs" />
     <Compile Include="Extensions\ListLogEntriesParser.cs" />
-    <Compile Include="Extensions\RetryExtensions.cs" />
     <Compile Include="History\DataPoint.cs" />
     <Compile Include="History\InstanceHistory.cs" />
     <Compile Include="History\InstanceHistoryBuilder.cs" />

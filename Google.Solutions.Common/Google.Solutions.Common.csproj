@@ -14,6 +14,7 @@
     <Deterministic>true</Deterministic>
     <NuGetPackageImportStamp>
     </NuGetPackageImportStamp>
+    <AssemblyVersionNumber>1.0.1.0</AssemblyVersionNumber>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -70,7 +71,8 @@
     <Compile Include="ApiExtensions\Instance\AddMetadata.cs" />
     <Compile Include="ApiExtensions\Instance\GetSerialPortOutputStream.cs" />
     <Compile Include="ApiExtensions\Instance\ResetWindowsUser.cs" />
-    <Compile Include="ApiExtensions\Operation\AwaitOperation.cs" />
+    <Compile Include="ApiExtensions\Request\AwaitOperation.cs" />
+    <Compile Include="ApiExtensions\Request\RetryExtensions.cs" />
     <Compile Include="Auth\Authorization.cs" />
     <Compile Include="Auth\GoogleAuthAdapter.cs" />
     <Compile Include="Auth\IAuthAdapter.cs" />

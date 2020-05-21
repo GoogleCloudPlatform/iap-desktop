@@ -28,7 +28,7 @@ using System.Threading.Tasks;
 using System.Linq;
 using System.Collections.Generic;
 
-namespace Google.Solutions.Common.ApiExtensions.Operation
+namespace Google.Solutions.Common.ApiExtensions.Request
 {
     public static class AwaitOperation
     {

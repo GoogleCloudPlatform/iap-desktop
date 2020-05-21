@@ -27,7 +27,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Google.Solutions.Common;
-using Google.Solutions.Common.ApiExtensions.Operation;
+using Google.Solutions.Common.ApiExtensions.Request;
 
 namespace Google.Solutions.Common.ApiExtensions.Instance
 {

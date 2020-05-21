@@ -24,12 +24,10 @@ using Google.Apis.Util;
 using System.IO;
 using System.Threading.Tasks;
 
-namespace Google.Solutions.LogAnalysis.Extensions
+namespace Google.Solutions.Common.ApiExtensions.Request
 {
-    internal static class RetryExtensions
+    public static class RetryExtensions
     {
-        // TODO: Move to commons
-
         public async static Task<Stream> ExecuteAsStreamWithRetryAsync<TResponse>(
             this ClientServiceRequest<TResponse> request,
             ExponentialBackOff backOff)
