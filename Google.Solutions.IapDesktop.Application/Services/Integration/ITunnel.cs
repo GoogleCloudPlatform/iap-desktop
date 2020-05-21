@@ -19,8 +19,8 @@
 // under the License.
 //
 
-using Google.Solutions.Compute;
-using Google.Solutions.Compute.Iap;
+using Google.Solutions.Common;
+using Google.Solutions.IapTunneling.Iap;
 using System;
 using System.Threading;
 using System.Threading.Tasks;

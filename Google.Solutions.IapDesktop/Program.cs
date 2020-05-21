@@ -19,13 +19,13 @@
 // under the License.
 //
 
-using Google.Solutions.Compute.Auth;
+using Google.Solutions.Common.Auth;
 using Google.Solutions.IapDesktop.Application.ObjectModel;
-using Google.Solutions.IapDesktop.Application.Services.Windows.ProjectExplorer;
 using Google.Solutions.IapDesktop.Application.Services.Adapters;
 using Google.Solutions.IapDesktop.Application.Services.Integration;
 using Google.Solutions.IapDesktop.Application.Services.Persistence;
 using Google.Solutions.IapDesktop.Application.Services.Windows;
+using Google.Solutions.IapDesktop.Application.Services.Windows.ProjectExplorer;
 using Google.Solutions.IapDesktop.Application.Services.Windows.RemoteDesktop;
 using Google.Solutions.IapDesktop.Application.Services.Windows.SerialLog;
 using Google.Solutions.IapDesktop.Application.Services.Windows.SettingsEditor;
@@ -39,8 +39,8 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Net;
-using System.Windows.Forms;
 using System.Threading;
+using System.Windows.Forms;
 
 namespace Google.Solutions.IapDesktop
 {
@@ -52,7 +52,8 @@ namespace Google.Solutions.IapDesktop
 
         private static readonly TraceSource[] Traces = new[]
         {
-            Google.Solutions.Compute.TraceSources.Compute,
+            Google.Solutions.Common.TraceSources.Common,
+            Google.Solutions.IapTunneling.TraceSources.Compute,
             Google.Solutions.IapDesktop.Application.TraceSources.IapDesktop
         };
 
@@ -131,12 +132,12 @@ namespace Google.Solutions.IapDesktop
                         MessageBoxIcon.Error);
                 }
             }
-            else 
+            else
             {
                 MessageBox.Show(
-                    "Invalid command line options.", 
-                    "IAP Desktop", 
-                    MessageBoxButtons.OK, 
+                    "Invalid command line options.",
+                    "IAP Desktop",
+                    MessageBoxButtons.OK,
                     MessageBoxIcon.Error);
             }
 

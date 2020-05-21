@@ -19,8 +19,7 @@
 // under the License.
 //
 
-using Google.Apis.Util;
-using Google.Solutions.Compute;
+using Google.Solutions.Common;
 using Google.Solutions.LogAnalysis.Events;
 using Google.Solutions.LogAnalysis.Events.Lifecycle;
 using Google.Solutions.LogAnalysis.Events.System;

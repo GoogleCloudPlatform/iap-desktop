@@ -19,7 +19,8 @@
 // under the License.
 //
 
-using Google.Solutions.Compute.Test.Net;
+using Google.Solutions.Common.Diagnostics;
+using Google.Solutions.Common.Net;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;

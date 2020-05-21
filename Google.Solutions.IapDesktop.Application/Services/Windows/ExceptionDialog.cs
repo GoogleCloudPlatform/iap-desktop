@@ -19,7 +19,8 @@
 // under the License.
 //
 
-using Google.Solutions.Compute;
+using Google.Solutions.Common.Diagnostics;
+using Google.Solutions.Common.Util;
 using System;
 using System.Runtime.InteropServices;
 using System.Text;
@@ -86,9 +87,9 @@ namespace Google.Solutions.IapDesktop.Application.Services.Windows
                     }
 
                     ShowErrorDialog(
-                        parent, 
-                        caption, 
-                        apiException.Error.Message, 
+                        parent,
+                        caption,
+                        apiException.Error.Message,
                         details.ToString());
                 }
                 else

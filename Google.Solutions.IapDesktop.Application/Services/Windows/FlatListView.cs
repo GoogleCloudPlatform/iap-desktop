@@ -40,7 +40,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.Windows
                 widthsOfAllButLastColumns += this.Columns[i].Width;
             }
 
-            this.Columns[this.Columns.Count - 1].Width = 
+            this.Columns[this.Columns.Count - 1].Width =
                 this.Width - widthsOfAllButLastColumns - 4;
         }
 

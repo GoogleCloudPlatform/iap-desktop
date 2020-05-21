@@ -19,7 +19,7 @@
 // under the License.
 //
 
-using Google.Solutions.Compute;
+using Google.Solutions.Common;
 using Google.Solutions.LogAnalysis.Logs;
 using System;
 

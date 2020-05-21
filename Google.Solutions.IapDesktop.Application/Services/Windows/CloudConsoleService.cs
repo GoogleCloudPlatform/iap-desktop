@@ -19,7 +19,7 @@
 // under the License.
 //
 
-using Google.Solutions.Compute;
+using Google.Solutions.Common;
 using System.Diagnostics;
 
 namespace Google.Solutions.IapDesktop.Application.Services.Windows

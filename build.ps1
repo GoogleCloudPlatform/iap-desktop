@@ -121,7 +121,8 @@ $OpenCover = (Resolve-Path -Path "packages\OpenCover.*\tools\OpenCover.Console.e
 $Nunit = (Resolve-Path -Path "packages\NUnit.ConsoleRunner.*\tools\nunit3-console.exe").Path
 
 $NunitArguments = `
-    "Google.Solutions.Compute.Test\bin\release\Google.Solutions.Compute.Test.dll " + `
+    "Google.Solutions.Common.Test\bin\release\Google.Solutions.Common.Test.dll " + `
+    "Google.Solutions.IapTunneling.Test\bin\release\Google.Solutions.IapTunneling.Test.dll " + `
     "Google.Solutions.LogAnalysis.Test\bin\release\Google.Solutions.LogAnalysis.Test.dll " + `
     "Google.Solutions.IapDesktop.Application.Test\bin\release\Google.Solutions.IapDesktop.Application.Test.dll " + `
     "--result=sponge_log.xml;transform=kokoro\nunit-to-sponge.xsl "
@@ -132,7 +133,7 @@ $NunitArguments = `
     -returntargetcode `
     -target:$Nunit `
     "-targetargs:$NunitArguments" `
-    -filter:"+[Google.Solutions.Compute]* +[Google.Solutions.LogAnalysis]* +[Google.Solutions.IapDesktop.Application]*" `
+    -filter:"+[Google.Solutions.Common]* +[Google.Solutions.IapTunneling]* +[Google.Solutions.LogAnalysis]* +[Google.Solutions.IapDesktop.Application]*" `
     -output:opencovertests.xml | Out-Default
 
 if ($LastExitCode -ne 0)

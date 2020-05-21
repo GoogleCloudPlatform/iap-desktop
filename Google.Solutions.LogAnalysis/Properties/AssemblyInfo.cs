@@ -25,7 +25,7 @@ using System.Runtime.CompilerServices;
 [assembly: AssemblyTitle("Logging extension library")]
 [assembly: AssemblyDescription("Logging extension library")]
 [assembly: AssemblyCompany("Google")]
-[assembly: AssemblyProduct("Logging extension library")]
+[assembly: AssemblyProduct("IAP Desktop")]
 [assembly: AssemblyCopyright("Copyright ©  2020")]
 [assembly: AssemblyTrademark("Google")]
 

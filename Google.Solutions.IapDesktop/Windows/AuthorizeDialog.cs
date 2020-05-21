@@ -22,7 +22,7 @@
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Auth.OAuth2.Flows;
 using Google.Apis.Util.Store;
-using Google.Solutions.Compute.Auth;
+using Google.Solutions.Common.Auth;
 using System;
 using System.Threading;
 using System.Threading.Tasks;

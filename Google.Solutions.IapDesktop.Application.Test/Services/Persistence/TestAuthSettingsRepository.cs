@@ -19,7 +19,7 @@
 // under the License.
 //
 
-using Google.Solutions.Compute.Test;
+using Google.Solutions.Common.Test;
 using Google.Solutions.IapDesktop.Application.Services.Persistence;
 using Google.Solutions.IapDesktop.Application.Util;
 using Microsoft.Win32;

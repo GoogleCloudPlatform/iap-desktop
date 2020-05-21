@@ -30,7 +30,7 @@ namespace Google.Solutions.IapDesktop.Application.Test
 
         private static TraceSource[] Traces = new[]
         {
-            Google.Solutions.Compute.TraceSources.Compute,
+            Google.Solutions.IapTunneling.TraceSources.Compute,
             Google.Solutions.IapDesktop.Application.TraceSources.IapDesktop
         };
 

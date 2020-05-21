@@ -42,7 +42,7 @@ namespace Google.Solutions.LogAnalysis.History
 
         public override string ToString()
         {
-            
+
             return $"{this.From} - {this.To} used by {this.Instance.Reference} ({this.Instance.InstanceId})";
         }
     }

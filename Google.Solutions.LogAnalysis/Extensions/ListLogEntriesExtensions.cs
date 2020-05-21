@@ -22,6 +22,7 @@
 using Google.Apis.Logging.v2;
 using Google.Apis.Logging.v2.Data;
 using Google.Apis.Util;
+using Google.Solutions.Common.ApiExtensions.Request;
 using Google.Solutions.LogAnalysis.Events;
 using Google.Solutions.LogAnalysis.History;
 using Newtonsoft.Json;
@@ -38,7 +39,6 @@ namespace Google.Solutions.LogAnalysis.Extensions
         private const int MaxPageSize = 1000;
         private const int MaxRetries = 10;
         private static readonly TimeSpan initialBackOff = TimeSpan.FromMilliseconds(100);
-
 
         public static async Task ListEventsAsync(
             this EntriesResource entriesResource,

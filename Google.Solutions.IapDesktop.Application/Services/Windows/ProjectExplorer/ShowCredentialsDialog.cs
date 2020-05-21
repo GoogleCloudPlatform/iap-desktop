@@ -46,8 +46,8 @@ namespace Google.Solutions.IapDesktop.Application.Services.Windows.ProjectExplor
             // Send EM_SETMARGINS to prevent text from disappearing underneath the button
             UnsafeNativeMethods.SendMessage(
                 passwordText.Handle,
-                UnsafeNativeMethods.EM_SETMARGINS, 
-                (IntPtr)2, 
+                UnsafeNativeMethods.EM_SETMARGINS,
+                (IntPtr)2,
                 (IntPtr)(copyPasswordButton.Width << 16));
         }
 

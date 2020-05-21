@@ -19,7 +19,7 @@
 // under the License.
 //
 
-using Google.Solutions.Compute.Auth;
+using Google.Solutions.Common.Auth;
 using System;
 
 namespace Google.Solutions.IapDesktop.Application.Util

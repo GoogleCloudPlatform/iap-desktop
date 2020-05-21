@@ -72,7 +72,7 @@ namespace Google.Solutions.LogAnalysis.History
         }
 
         private static IEnumerable<DateTime> DateSequence(
-            DateTime from, 
+            DateTime from,
             DateTime to)
         {
             for (var d = from.Date; d <= to.Date; d = d.AddDays(1))

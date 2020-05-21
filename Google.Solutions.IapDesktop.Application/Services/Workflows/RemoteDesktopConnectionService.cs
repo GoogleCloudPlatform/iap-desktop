@@ -19,17 +19,17 @@
 // under the License.
 //
 
-using Google.Solutions.Compute;
-using Google.Solutions.Compute.Iap;
-using Google.Solutions.Compute.Net;
+using Google.Solutions.Common;
 using Google.Solutions.IapDesktop.Application.ObjectModel;
-using Google.Solutions.IapDesktop.Application.Services.Windows.ProjectExplorer;
 using Google.Solutions.IapDesktop.Application.Services.Integration;
 using Google.Solutions.IapDesktop.Application.Services.Persistence;
 using Google.Solutions.IapDesktop.Application.Services.Windows;
+using Google.Solutions.IapDesktop.Application.Services.Windows.ProjectExplorer;
 using Google.Solutions.IapDesktop.Application.Services.Windows.RemoteDesktop;
 using Google.Solutions.IapDesktop.Application.Services.Windows.SettingsEditor;
 using Google.Solutions.IapDesktop.Application.Util;
+using Google.Solutions.IapTunneling.Iap;
+using Google.Solutions.IapTunneling.Net;
 using System;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -186,7 +186,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.Workflows
             {
                 // Generate new credentials.
                 var credentials = await this.credentialsService.GenerateCredentialsAsync(
-                    owner, 
+                    owner,
                     url.Instance,
                     MakeNullIfEmpty(url.Settings.Username));
                 if (credentials != null)

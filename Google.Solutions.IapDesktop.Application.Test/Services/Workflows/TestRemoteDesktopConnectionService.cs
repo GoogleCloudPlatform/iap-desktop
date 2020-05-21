@@ -19,7 +19,7 @@
 // under the License.
 //
 
-using Google.Solutions.Compute;
+using Google.Solutions.Common;
 using Google.Solutions.IapDesktop.Application.ObjectModel;
 using Google.Solutions.IapDesktop.Application.Services.Integration;
 using Google.Solutions.IapDesktop.Application.Services.Persistence;
@@ -135,7 +135,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Workflows
                 It.IsAny<VmInstanceReference>(),
                 "localhost",
                 It.IsAny<ushort>(),
-                It.Is<VmInstanceConnectionSettings>(i => i.Username == "john doe")), Times.Once); 
+                It.Is<VmInstanceConnectionSettings>(i => i.Username == "john doe")), Times.Once);
         }
 
 

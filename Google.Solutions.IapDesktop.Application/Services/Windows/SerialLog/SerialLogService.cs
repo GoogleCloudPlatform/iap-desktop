@@ -19,7 +19,8 @@
 // under the License.
 //
 
-using Google.Solutions.Compute;
+using Google.Solutions.Common;
+using Google.Solutions.Common.Util;
 using Google.Solutions.IapDesktop.Application.ObjectModel;
 using Google.Solutions.IapDesktop.Application.Services.Adapters;
 using System;

@@ -19,11 +19,11 @@
 // under the License.
 //
 
-using Google.Solutions.Compute;
+using Google.Solutions.Common;
 using Google.Solutions.IapDesktop.Application.ObjectModel;
-using Google.Solutions.IapDesktop.Application.Services.Windows.ProjectExplorer;
 using Google.Solutions.IapDesktop.Application.Services.Adapters;
 using Google.Solutions.IapDesktop.Application.Services.Integration;
+using Google.Solutions.IapDesktop.Application.Services.Windows.ProjectExplorer;
 using Google.Solutions.IapDesktop.Application.Util;
 using System;
 using System.Net;
@@ -77,8 +77,8 @@ namespace Google.Solutions.IapDesktop.Application.Services.Workflows
             var credentials = await this.jobService.RunInBackground(
                 new JobDescription("Generating Windows logon credentials..."),
                 token => this.computeEngineAdapter.ResetWindowsUserAsync(
-                    instanceRef, 
-                    username, 
+                    instanceRef,
+                    username,
                     token));
 
             new ShowCredentialsDialog().ShowDialog(

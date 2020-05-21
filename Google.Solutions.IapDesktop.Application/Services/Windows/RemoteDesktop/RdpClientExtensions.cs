@@ -21,7 +21,6 @@
 
 using MSTSCLib;
 using System;
-using System.Runtime.InteropServices;
 using System.Windows.Forms;
 
 namespace Google.Solutions.IapDesktop.Application.Services.Windows.RemoteDesktop

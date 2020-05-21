@@ -20,8 +20,9 @@
 //
 
 using Google.Apis.Auth.OAuth2.Responses;
-using Google.Solutions.Compute;
-using Google.Solutions.Compute.Extensions;
+using Google.Solutions.Common;
+using Google.Solutions.Common.ApiExtensions.Instance;
+using Google.Solutions.Common.Util;
 using System;
 using System.Runtime.InteropServices;
 using System.Threading;
