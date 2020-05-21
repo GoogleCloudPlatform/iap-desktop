@@ -142,8 +142,9 @@ namespace Google.Solutions.Common.ApiExtensions.Instance
 
                             int backoff = 100;
                             TraceSources.Common.TraceWarning(
-                                "SetMetadata failed with {0} - retrying after {backoff]ms", e.Message,
-                                e.Error?.Code);
+                                "SetMetadata failed with {0} - retrying after {1}ms", e.Message,
+                                e.Error?.Code,
+                                backoff);
                             await Task.Delay(backoff);
                         }
                         else

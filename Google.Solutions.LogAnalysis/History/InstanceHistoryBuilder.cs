@@ -20,6 +20,7 @@
 //
 
 using Google.Solutions.Common;
+using Google.Solutions.Common.Diagnostics;
 using Google.Solutions.LogAnalysis.Events;
 using Google.Solutions.LogAnalysis.Events.Lifecycle;
 using Google.Solutions.LogAnalysis.Events.System;
@@ -99,9 +100,10 @@ namespace Google.Solutions.LogAnalysis.History
                 }
                 else
                 {
-                    Debug.WriteLine(
-                        $"Instance {this.InstanceId} was placed, but never stopped, " +
-                        "and yet is not running anymore. Flagging as defunct.");
+                    TraceSources.LogAnalysis.TraceWarning(
+                        "Instance {0} was placed, but never stopped, " +
+                        "and yet is not running anymore. Flagging as defunct.",
+                        this.InstanceId);
                     this.missingStopEvent = true;
                     return;
                 }
@@ -308,23 +310,26 @@ namespace Google.Solutions.LogAnalysis.History
 
         public void Process(EventBase e)
         {
-            if (e is NotifyInstanceLocationEvent notifyLocation)
+            using (TraceSources.LogAnalysis.TraceMethod().WithParameters(e))
             {
-                OnSetPlacement(notifyLocation.ServerId, notifyLocation.Timestamp);
-            }
-            else if (e is InsertInstanceEvent insert)
-            {
-                OnInsert(insert.Timestamp, insert.InstanceReference, insert.Image);
-            }
-            else if (e is IInstanceStateChangeEvent stateChange)
-            {
-                if (stateChange.IsStartingInstance)
+                if (e is NotifyInstanceLocationEvent notifyLocation)
                 {
-                    OnStart(e.Timestamp, ((VmInstanceEventBase)e).InstanceReference);
+                    OnSetPlacement(notifyLocation.ServerId, notifyLocation.Timestamp);
                 }
-                else if (stateChange.IsTerminatingInstance)
+                else if (e is InsertInstanceEvent insert)
                 {
-                    OnStop(e.Timestamp, ((VmInstanceEventBase)e).InstanceReference);
+                    OnInsert(insert.Timestamp, insert.InstanceReference, insert.Image);
+                }
+                else if (e is IInstanceStateChangeEvent stateChange)
+                {
+                    if (stateChange.IsStartingInstance)
+                    {
+                        OnStart(e.Timestamp, ((VmInstanceEventBase)e).InstanceReference);
+                    }
+                    else if (stateChange.IsTerminatingInstance)
+                    {
+                        OnStop(e.Timestamp, ((VmInstanceEventBase)e).InstanceReference);
+                    }
                 }
             }
         }

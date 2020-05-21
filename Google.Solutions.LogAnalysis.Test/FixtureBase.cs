@@ -22,7 +22,7 @@
 using NUnit.Framework;
 using System.Diagnostics;
 
-namespace Google.Solutions.IapDesktop.Application.Test
+namespace Google.Solutions.LogAnalysis.Test
 {
     public abstract class FixtureBase
     {
@@ -31,8 +31,7 @@ namespace Google.Solutions.IapDesktop.Application.Test
         private static TraceSource[] Traces = new[]
         {
             Google.Solutions.Common.TraceSources.Common,
-            Google.Solutions.IapTunneling.TraceSources.Compute,
-            Google.Solutions.IapDesktop.Application.TraceSources.IapDesktop
+            Google.Solutions.LogAnalysis.TraceSources.LogAnalysis,
         };
 
         [SetUp]

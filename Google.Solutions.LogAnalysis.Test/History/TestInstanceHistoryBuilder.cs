@@ -29,7 +29,7 @@ using System.Linq;
 namespace Google.Solutions.LogAnalysis.Test.History
 {
     [TestFixture]
-    public class TestInstanceHistoryBuilder
+    public class TestInstanceHistoryBuilder : FixtureBase
     {
         private static readonly VmInstanceReference SampleReference = new VmInstanceReference("pro", "zone", "name");
         private static readonly GlobalResourceReference SampleImage

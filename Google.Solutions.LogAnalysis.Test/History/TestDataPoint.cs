@@ -26,7 +26,7 @@ using System;
 namespace Google.Solutions.LogAnalysis.Test.History
 {
     [TestFixture]
-    public class TestDataPoint
+    public class TestDataPoint : FixtureBase
     {
         private static readonly DateTime SampleDate = new DateTime(2020, 1, 2, 3, 4, 5, 6);
 

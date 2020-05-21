@@ -28,7 +28,7 @@ using System;
 namespace Google.Solutions.LogAnalysis.Test.Events.System
 {
     [TestFixture]
-    public class TestNotifyInstanceLocationEvent
+    public class TestNotifyInstanceLocationEvent : FixtureBase
     {
         [Test]
         public void WhenSeverityIsInfo_ThenFieldsAreExtracted()

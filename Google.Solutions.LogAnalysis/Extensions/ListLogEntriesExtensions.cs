@@ -23,6 +23,7 @@ using Google.Apis.Logging.v2;
 using Google.Apis.Logging.v2.Data;
 using Google.Apis.Util;
 using Google.Solutions.Common.ApiExtensions.Request;
+using Google.Solutions.Common.Diagnostics;
 using Google.Solutions.LogAnalysis.Events;
 using Google.Solutions.LogAnalysis.History;
 using Newtonsoft.Json;
@@ -46,22 +47,23 @@ namespace Google.Solutions.LogAnalysis.Extensions
             Action<EventBase> callback,
             ExponentialBackOff backOff)
         {
-            // TODO: Trace
-
-            string nextPageToken = null;
-            do
+            using (TraceSources.LogAnalysis.TraceMethod().WithParameters(request.Filter))
             {
-                request.PageToken = nextPageToken;
-
-                using (var stream = await entriesResource
-                    .List(request)
-                    .ExecuteAsStreamWithRetryAsync(backOff))
-                using (var reader = new JsonTextReader(new StreamReader(stream)))
+                string nextPageToken = null;
+                do
                 {
-                    nextPageToken = ListLogEntriesParser.Read(reader, callback);
+                    request.PageToken = nextPageToken;
+
+                    using (var stream = await entriesResource
+                        .List(request)
+                        .ExecuteAsStreamWithRetryAsync(backOff))
+                    using (var reader = new JsonTextReader(new StreamReader(stream)))
+                    {
+                        nextPageToken = ListLogEntriesParser.Read(reader, callback);
+                    }
                 }
+                while (nextPageToken != null);
             }
-            while (nextPageToken != null);
         }
 
         public static async Task ListInstanceEventsAsync(
@@ -70,22 +72,27 @@ namespace Google.Solutions.LogAnalysis.Extensions
             DateTime startTime,
             IEventProcessor processor)
         {
-            var request = new ListLogEntriesRequest()
+            using (TraceSources.LogAnalysis.TraceMethod().WithParameters(
+                string.Join(", ", projectIds), 
+                startTime))
             {
-                ResourceNames = projectIds.Select(p => "projects/" + p).ToList(),
-                Filter = $"protoPayload.methodName=(\"{string.Join("\" OR \"", processor.SupportedMethods)}\") " +
-                    $"AND severity=(\"{string.Join("\" OR \"", processor.SupportedSeverities)}\") " +
-                    $"AND resource.type=\"gce_instance\" " +
-                    $"AND timestamp > {startTime:yyyy-MM-dd} ",
-                PageSize = MaxPageSize,
-                OrderBy = "timestamp desc"
-            };
+                var request = new ListLogEntriesRequest()
+                {
+                    ResourceNames = projectIds.Select(p => "projects/" + p).ToList(),
+                    Filter = $"protoPayload.methodName=(\"{string.Join("\" OR \"", processor.SupportedMethods)}\") " +
+                        $"AND severity=(\"{string.Join("\" OR \"", processor.SupportedSeverities)}\") " +
+                        $"AND resource.type=\"gce_instance\" " +
+                        $"AND timestamp > {startTime:yyyy-MM-dd} ",
+                    PageSize = MaxPageSize,
+                    OrderBy = "timestamp desc"
+                };
 
-            await ListEventsAsync(
-                entriesResource,
-                request,
-                processor.Process,
-                new ExponentialBackOff(initialBackOff, MaxRetries));
+                await ListEventsAsync(
+                    entriesResource,
+                    request,
+                    processor.Process,
+                    new ExponentialBackOff(initialBackOff, MaxRetries));
+            }
         }
     }
 }

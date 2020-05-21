@@ -111,6 +111,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Logs\AuditLogRecord.cs" />
     <Compile Include="Logs\LogRecord.cs" />
+    <Compile Include="TraceSources.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Google.Solutions.Common\Google.Solutions.Common.csproj">

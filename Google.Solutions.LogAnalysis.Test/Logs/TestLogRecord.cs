@@ -26,7 +26,7 @@ using System;
 namespace Google.Solutions.LogAnalysis.Test.Logs
 {
     [TestFixture]
-    public class TestLogRecord
+    public class TestLogRecord : FixtureBase
     {
         [Test]
         public void WhenSystemEventJsonValid_ThenFieldsAreDeserialized()

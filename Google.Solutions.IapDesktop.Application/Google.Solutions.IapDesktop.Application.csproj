@@ -108,6 +108,9 @@
     <Compile Include="Services\Windows\FlatListView.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="Services\Windows\FlatVerticalTabControl.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="Services\Windows\TaskDialog.cs" />
     <Compile Include="Services\Workflows\ICredentialsService.cs" />
     <Compile Include="Services\Workflows\RemoteDesktopConnectionService.cs" />

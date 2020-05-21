@@ -27,7 +27,7 @@ using System.Linq;
 namespace Google.Solutions.LogAnalysis.Test.History
 {
     [TestFixture]
-    public class TestTimeseriesUtil
+    public class TestTimeseriesUtil : FixtureBase
     {
         //---------------------------------------------------------------------
         // High watermark tests.

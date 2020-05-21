@@ -36,7 +36,7 @@ using System.Reflection;
 namespace Google.Solutions.LogAnalysis.Test.History
 {
     [TestFixture]
-    public class TestInstanceSetHistoryBuilder
+    public class TestInstanceSetHistoryBuilder : FixtureBase
     {
         private static readonly VmInstanceReference SampleReference = new VmInstanceReference("pro", "zone", "name");
         private static readonly GlobalResourceReference SampleImage

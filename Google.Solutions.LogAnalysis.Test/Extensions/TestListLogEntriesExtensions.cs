@@ -38,7 +38,7 @@ namespace Google.Solutions.LogAnalysis.Test.Extensions
 {
     [TestFixture]
     [Category("IntegrationTest")]
-    public class TestListLogEntriesExtensions
+    public class TestListLogEntriesExtensions : FixtureBase
     {
         [Test]
         public async Task WhenInstanceCreated_ThenListLogEntriesReturnsInsertEvent(

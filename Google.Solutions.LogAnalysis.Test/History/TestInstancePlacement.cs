@@ -26,7 +26,7 @@ using System;
 namespace Google.Solutions.LogAnalysis.Test.History
 {
     [TestFixture]
-    public class TestInstancePlacement
+    public class TestInstancePlacement : FixtureBase
     {
         [Test]
         public void WhenTwoPlacementsCloseAndNoneHasServer_ThenPlacementIsMerged()

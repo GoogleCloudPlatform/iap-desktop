@@ -19,33 +19,12 @@
 // under the License.
 //
 
-using NUnit.Framework;
 using System.Diagnostics;
 
-namespace Google.Solutions.IapTunneling.Test
+namespace Google.Solutions.LogAnalysis
 {
-    public abstract class FixtureBase
+    public static class TraceSources
     {
-        private static ConsoleTraceListener listener = new ConsoleTraceListener();
-
-        private static TraceSource[] Traces = new[]
-        {
-            Google.Solutions.Common.TraceSources.Common,
-            Google.Solutions.IapTunneling.TraceSources.Compute,
-        };
-
-        [SetUp]
-        public void SetUpTracing()
-        {
-            foreach (var trace in Traces)
-            {
-                if (!trace.Listeners.Contains(listener))
-                {
-                    listener.TraceOutputOptions = TraceOptions.DateTime;
-                    trace.Listeners.Add(listener);
-                    trace.Switch.Level = System.Diagnostics.SourceLevels.Verbose;
-                }
-            }
-        }
+        public static readonly TraceSource LogAnalysis = new TraceSource(typeof(TraceSources).Namespace);
     }
 }
