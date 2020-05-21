@@ -198,7 +198,7 @@ namespace Google.Solutions.LogAnalysis.QuickTest
             {
                 case ChartElementType.DataPoint:
                     var dataPoint = e.HitTestResult.Series.Points[e.HitTestResult.PointIndex];
-                    e.Text = $"{DateTime.FromOADate(dataPoint.XValue)}: {dataPoint.YValues[0]}";
+                    e.Text = $"{DateTime.FromOADate(dataPoint.XValue):d}: {dataPoint.YValues[0]}";
                     break;
             }
         }

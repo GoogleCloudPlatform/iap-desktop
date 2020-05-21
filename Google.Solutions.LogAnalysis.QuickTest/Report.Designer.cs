@@ -176,12 +176,12 @@
             // 
             // firstUseColumnHeader
             // 
-            this.firstUseColumnHeader.Text = "First use";
+            this.firstUseColumnHeader.Text = "First use (UTC)";
             this.firstUseColumnHeader.Width = 130;
             // 
             // lastUseColumnHeader
             // 
-            this.lastUseColumnHeader.Text = "Last Use";
+            this.lastUseColumnHeader.Text = "Last Use (UTC)";
             this.lastUseColumnHeader.Width = 130;
             // 
             // daysUsedColumnHeader
@@ -237,12 +237,12 @@
             // 
             // placedFromColumnHeader
             // 
-            this.placedFromColumnHeader.Text = "From";
+            this.placedFromColumnHeader.Text = "From (UTC)";
             this.placedFromColumnHeader.Width = 130;
             // 
             // placedUntilColumnHeader
             // 
-            this.placedUntilColumnHeader.Text = "To";
+            this.placedUntilColumnHeader.Text = "To (UTC)";
             this.placedUntilColumnHeader.Width = 130;
             // 
             // nodesLabel
