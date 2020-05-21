@@ -21,6 +21,7 @@
 
 using Google.Apis.Requests;
 using Google.Apis.Util;
+using Google.Solutions.Common.Diagnostics;
 using System.IO;
 using System.Threading.Tasks;
 
@@ -32,8 +33,6 @@ namespace Google.Solutions.Common.ApiExtensions.Request
             this ClientServiceRequest<TResponse> request,
             ExponentialBackOff backOff)
         {
-            // TODO: Trace
-
             int retries = 0;
             while (true)
             {
@@ -46,12 +45,16 @@ namespace Google.Solutions.Common.ApiExtensions.Request
                     // Too many requests.
                     if (retries < backOff.MaxNumOfRetries)
                     {
+                        TraceSources.Common.TraceWarning(
+                            "Too many requests - backing of and retrying...", retries);
+
                         retries++;
                         await Task.Delay(backOff.GetNextBackOff(retries));
                     }
                     else
                     {
                         // Retried too often already.
+                        TraceSources.Common.TraceWarning("Giving up after {0} retries", retries);
                         throw;
                     }
                 }

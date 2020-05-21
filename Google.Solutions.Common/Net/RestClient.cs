@@ -20,6 +20,7 @@
 //
 
 using Google.Apis.Auth.OAuth2;
+using Google.Solutions.Common.Diagnostics;
 using Newtonsoft.Json;
 using System.IO;
 using System.Net.Http;
@@ -38,6 +39,7 @@ namespace Google.Solutions.Common.Net
             string url,
             CancellationToken cancellationToken)
         {
+            using (TraceSources.Common.TraceMethod().WithParameters(url))
             using (var client = new HttpClient())
             using (var request = new HttpRequestMessage(HttpMethod.Get, url))
             {

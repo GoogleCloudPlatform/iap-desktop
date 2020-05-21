@@ -74,8 +74,7 @@ namespace Google.Solutions.Common.ApiExtensions.Instance
             string username,
             CancellationToken token)
         {
-            TraceSources.Common.TraceVerbose("Resetting Windows user for {0} on {1}...", username, instanceRef);
-
+            using (TraceSources.Common.TraceMethod().WithParameters(instanceRef, username))
             using (RSACryptoServiceProvider rsa = new RSACryptoServiceProvider(RsaKeySize))
             {
                 var keyParameters = rsa.ExportParameters(false);

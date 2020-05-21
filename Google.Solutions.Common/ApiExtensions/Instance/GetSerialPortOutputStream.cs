@@ -63,24 +63,27 @@ namespace Google.Solutions.Common.ApiExtensions.Instance
 
         public async Task<string> ReadAsync()
         {
-            var request = this.instancesResource.GetSerialPortOutput(
-                this.instance.ProjectId,
-                this.instance.Zone,
-                this.instance.InstanceName);
-            request.Port = this.port;
-            request.Start = this.nextOffset;
-            var output = await request.ExecuteAsync().ConfigureAwait(false);
+            using (TraceSources.Common.TraceMethod().WithParameters(this.nextOffset))
+            {
+                var request = this.instancesResource.GetSerialPortOutput(
+                    this.instance.ProjectId,
+                    this.instance.Zone,
+                    this.instance.InstanceName);
+                request.Port = this.port;
+                request.Start = this.nextOffset;
+                var output = await request.ExecuteAsync().ConfigureAwait(false);
 
-            TraceSources.Common.TraceVerbose(
-                "Read {0} chars from serial port [start={1}, next={2}]",
-                output.Contents == null ? 0 : output.Contents.Length,
-                output.Start.Value,
-                output.Next.Value);
+                TraceSources.Common.TraceVerbose(
+                    "Read {0} chars from serial port [start={1}, next={2}]",
+                    output.Contents == null ? 0 : output.Contents.Length,
+                    output.Start.Value,
+                    output.Next.Value);
 
-            // If there is no new data, then output.Next == this.nextOffset
-            // and output.Contents is an empty string.
-            this.nextOffset = output.Next.Value;
-            return output.Contents;
+                // If there is no new data, then output.Next == this.nextOffset
+                // and output.Contents is an empty string.
+                this.nextOffset = output.Next.Value;
+                return output.Contents;
+            }
         }
     }
 }
