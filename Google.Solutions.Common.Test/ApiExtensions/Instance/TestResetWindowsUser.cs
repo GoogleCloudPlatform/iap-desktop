@@ -26,10 +26,8 @@ using NUnit.Framework;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
-using Google.Solutions.Common;
-using Google.Solutions.Common.Test;
 
-namespace Google.Solutions.IapTunneling.Test.Extensions
+namespace Google.Solutions.Common.Test.Extensions
 {
     [TestFixture]
     [Category("IntegrationTest")]

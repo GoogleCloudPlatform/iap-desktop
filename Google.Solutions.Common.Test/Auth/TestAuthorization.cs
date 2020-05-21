@@ -28,7 +28,7 @@ using NUnit.Framework;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Google.Solutions.IapTunneling.Test.Auth
+namespace Google.Solutions.Common.Test.Auth
 {
     [TestFixture]
     public class TestAuthorization : FixtureBase
