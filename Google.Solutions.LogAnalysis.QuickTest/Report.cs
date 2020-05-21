@@ -36,8 +36,6 @@ namespace Google.Solutions.LogAnalysis.QuickTest
             Repopulate();
         }
 
-
-
         //---------------------------------------------------------------------
         // Data population.
         //---------------------------------------------------------------------
@@ -51,8 +49,8 @@ namespace Google.Solutions.LogAnalysis.QuickTest
 
                 this.currentNodeSet = NodeSetHistory.FromInstancyHistory(
                     this.instanceSet.Instances,
-                    this.includeFleetInstancesCheckBox.Checked,
-                    this.includeSoleTenantInstancesCheckbox.Checked);
+                    this.includeFleetVmInstancesMenuItem.Checked,
+                    this.includeSoleTenantVmInstancesMenuItem.Checked);
 
                 RepopulateChart(this.currentNodeSet.MaxInstancePlacementsByDay);
                 //RepopulateNodeList();
@@ -201,6 +199,23 @@ namespace Google.Solutions.LogAnalysis.QuickTest
                     e.Text = $"{DateTime.FromOADate(dataPoint.XValue)}: {dataPoint.YValues[0]}";
                     break;
             }
+        }
+
+        private void includeInstancesMenuItem_Click(object sender, EventArgs e)
+        {
+            if (sender is ToolStripMenuItem menuItem)
+            {
+                menuItem.Checked = !menuItem.Checked;
+            }
+
+            Repopulate();
+        }
+
+        private void chartMenu_Opening(object sender, CancelEventArgs e)
+        {
+            this.includeSoleTenantVmInstancesMenuItem.Visible =
+                this.includeFleetVmInstancesMenuItem.Visible =
+                (this.tabControl.SelectedTab == this.instancesTabPage);
         }
     }
 }

@@ -28,9 +28,13 @@
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
             System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea1 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
             System.Windows.Forms.DataVisualization.Charting.Series series1 = new System.Windows.Forms.DataVisualization.Charting.Series();
             this.chart = new System.Windows.Forms.DataVisualization.Charting.Chart();
+            this.chartMenu = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.includeFleetVmInstancesMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.includeSoleTenantVmInstancesMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.chartLabel = new System.Windows.Forms.Label();
             this.nodesList = new System.Windows.Forms.ListView();
             this.serverIdColumnHeader = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
@@ -53,9 +57,8 @@
             this.tabControl = new Google.Solutions.IapDesktop.Application.Services.Windows.FlatVerticalTabControl();
             this.instancesTabPage = new System.Windows.Forms.TabPage();
             this.nodesTabPage = new System.Windows.Forms.TabPage();
-            this.includeFleetInstancesCheckBox = new System.Windows.Forms.CheckBox();
-            this.includeSoleTenantInstancesCheckbox = new System.Windows.Forms.CheckBox();
             ((System.ComponentModel.ISupportInitialize)(this.chart)).BeginInit();
+            this.chartMenu.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer)).BeginInit();
             this.splitContainer.Panel1.SuspendLayout();
             this.splitContainer.Panel2.SuspendLayout();
@@ -82,6 +85,7 @@
             chartArea1.Position.Width = 100F;
             chartArea1.Position.Y = 3F;
             this.chart.ChartAreas.Add(chartArea1);
+            this.chart.ContextMenuStrip = this.chartMenu;
             this.chart.Location = new System.Drawing.Point(146, 30);
             this.chart.Name = "chart";
             this.chart.Palette = System.Windows.Forms.DataVisualization.Charting.ChartColorPalette.Grayscale;
@@ -92,6 +96,33 @@
             this.chart.TabIndex = 0;
             this.chart.GetToolTipText += new System.EventHandler<System.Windows.Forms.DataVisualization.Charting.ToolTipEventArgs>(this.chart_GetToolTipText);
             this.chart.SelectionRangeChanged += new System.EventHandler<System.Windows.Forms.DataVisualization.Charting.CursorEventArgs>(this.nodesByDay_SelectionRangeChanged);
+            // 
+            // chartMenu
+            // 
+            this.chartMenu.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.includeFleetVmInstancesMenuItem,
+            this.includeSoleTenantVmInstancesMenuItem});
+            this.chartMenu.Name = "chartMenu";
+            this.chartMenu.Size = new System.Drawing.Size(213, 48);
+            this.chartMenu.Opening += new System.ComponentModel.CancelEventHandler(this.chartMenu_Opening);
+            // 
+            // includeFleetVmInstancesMenuItem
+            // 
+            this.includeFleetVmInstancesMenuItem.Checked = true;
+            this.includeFleetVmInstancesMenuItem.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.includeFleetVmInstancesMenuItem.Name = "includeFleetVmInstancesMenuItem";
+            this.includeFleetVmInstancesMenuItem.Size = new System.Drawing.Size(212, 22);
+            this.includeFleetVmInstancesMenuItem.Text = "On-demand VM instances";
+            this.includeFleetVmInstancesMenuItem.Click += new System.EventHandler(this.includeInstancesMenuItem_Click);
+            // 
+            // includeSoleTenantVmInstancesMenuItem
+            // 
+            this.includeSoleTenantVmInstancesMenuItem.Checked = true;
+            this.includeSoleTenantVmInstancesMenuItem.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.includeSoleTenantVmInstancesMenuItem.Name = "includeSoleTenantVmInstancesMenuItem";
+            this.includeSoleTenantVmInstancesMenuItem.Size = new System.Drawing.Size(212, 22);
+            this.includeSoleTenantVmInstancesMenuItem.Text = "Sole-tenant VM instances";
+            this.includeSoleTenantVmInstancesMenuItem.Click += new System.EventHandler(this.includeInstancesMenuItem_Click);
             // 
             // chartLabel
             // 
@@ -293,36 +324,6 @@
             this.nodesTabPage.Text = "Sole-tenant nodes";
             this.nodesTabPage.UseVisualStyleBackColor = true;
             // 
-            // includeFleetInstancesCheckBox
-            // 
-            this.includeFleetInstancesCheckBox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.includeFleetInstancesCheckBox.AutoSize = true;
-            this.includeFleetInstancesCheckBox.Checked = true;
-            this.includeFleetInstancesCheckBox.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.includeFleetInstancesCheckBox.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.includeFleetInstancesCheckBox.Location = new System.Drawing.Point(761, 316);
-            this.includeFleetInstancesCheckBox.Name = "includeFleetInstancesCheckBox";
-            this.includeFleetInstancesCheckBox.Size = new System.Drawing.Size(145, 17);
-            this.includeFleetInstancesCheckBox.TabIndex = 0;
-            this.includeFleetInstancesCheckBox.Text = "On-demand VM instances";
-            this.includeFleetInstancesCheckBox.UseVisualStyleBackColor = true;
-            this.includeFleetInstancesCheckBox.CheckedChanged += new System.EventHandler(this.includeInstancesCheckbox_CheckedChanged);
-            // 
-            // includeSoleTenantInstancesCheckbox
-            // 
-            this.includeSoleTenantInstancesCheckbox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.includeSoleTenantInstancesCheckbox.AutoSize = true;
-            this.includeSoleTenantInstancesCheckbox.Checked = true;
-            this.includeSoleTenantInstancesCheckbox.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.includeSoleTenantInstancesCheckbox.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.includeSoleTenantInstancesCheckbox.Location = new System.Drawing.Point(916, 316);
-            this.includeSoleTenantInstancesCheckbox.Name = "includeSoleTenantInstancesCheckbox";
-            this.includeSoleTenantInstancesCheckbox.Size = new System.Drawing.Size(144, 17);
-            this.includeSoleTenantInstancesCheckbox.TabIndex = 5;
-            this.includeSoleTenantInstancesCheckbox.Text = "Sole-tenant VM instances";
-            this.includeSoleTenantInstancesCheckbox.UseVisualStyleBackColor = true;
-            this.includeSoleTenantInstancesCheckbox.CheckedChanged += new System.EventHandler(this.includeInstancesCheckbox_CheckedChanged);
-            // 
             // Report
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -330,8 +331,6 @@
             this.AutoScroll = true;
             this.AutoScrollMinSize = new System.Drawing.Size(810, 880);
             this.ClientSize = new System.Drawing.Size(1072, 911);
-            this.Controls.Add(this.includeSoleTenantInstancesCheckbox);
-            this.Controls.Add(this.includeFleetInstancesCheckBox);
             this.Controls.Add(this.chartLabel);
             this.Controls.Add(this.chart);
             this.Controls.Add(this.splitContainer);
@@ -339,6 +338,7 @@
             this.Name = "Report";
             this.Text = "Report";
             ((System.ComponentModel.ISupportInitialize)(this.chart)).EndInit();
+            this.chartMenu.ResumeLayout(false);
             this.splitContainer.Panel1.ResumeLayout(false);
             this.splitContainer.Panel1.PerformLayout();
             this.splitContainer.Panel2.ResumeLayout(false);
@@ -376,7 +376,8 @@
         private IapDesktop.Application.Services.Windows.FlatVerticalTabControl tabControl;
         private System.Windows.Forms.TabPage instancesTabPage;
         private System.Windows.Forms.TabPage nodesTabPage;
-        private System.Windows.Forms.CheckBox includeFleetInstancesCheckBox;
-        private System.Windows.Forms.CheckBox includeSoleTenantInstancesCheckbox;
+        private System.Windows.Forms.ContextMenuStrip chartMenu;
+        private System.Windows.Forms.ToolStripMenuItem includeFleetVmInstancesMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem includeSoleTenantVmInstancesMenuItem;
     }
 }
