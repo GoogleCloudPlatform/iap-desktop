@@ -29,7 +29,7 @@ using System.Linq;
 namespace Google.Solutions.LogAnalysis.Test.History
 {
     [TestFixture]
-    public class TestInstanceSetHistory
+    public class TestInstanceSetHistory : FixtureBase
     {
         [Test]
         public void WhenSerializedAndDeserialized_ThenObjectsAreEquivalent()

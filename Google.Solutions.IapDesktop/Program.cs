@@ -55,6 +55,8 @@ namespace Google.Solutions.IapDesktop
             Google.Solutions.Common.TraceSources.Common,
             Google.Solutions.IapTunneling.TraceSources.Compute,
             Google.Solutions.IapDesktop.Application.TraceSources.IapDesktop
+            // TODO: Add once lib is used
+            // Google.Solutions.LogAnalysis.TraceSources.LogAnalysis
         };
 
         public static string LogFile =>

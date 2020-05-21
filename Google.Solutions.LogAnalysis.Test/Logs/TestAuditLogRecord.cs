@@ -27,7 +27,7 @@ using System;
 namespace Google.Solutions.LogAnalysis.Test.Logs
 {
     [TestFixture]
-    public class TestAuditLogRecord
+    public class TestAuditLogRecord : FixtureBase
     {
         [Test]
         public void WhenJsonContainsAuditLogRecord_ThenAuditLogRecordIsDeserialized()

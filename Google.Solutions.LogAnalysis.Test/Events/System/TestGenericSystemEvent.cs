@@ -28,7 +28,7 @@ using NUnit.Framework;
 namespace Google.Solutions.LogAnalysis.Test.Events.System
 {
     [TestFixture]
-    public class TestGenericSystemEvent
+    public class TestGenericSystemEvent : FixtureBase
     {
         [Test]
         public void WhenSeverityIsInfo_ThenFieldsAreExtracted()

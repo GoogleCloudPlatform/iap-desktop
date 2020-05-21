@@ -28,7 +28,7 @@ using NUnit.Framework;
 namespace Google.Solutions.LogAnalysis.Test.Events.System
 {
     [TestFixture]
-    public class TestMigrateOnHostMaintenanceEvent
+    public class TestMigrateOnHostMaintenanceEvent : FixtureBase
     {
         [Test]
         public void WhenSeverityIsInfo_ThenFieldsAreExtracted()

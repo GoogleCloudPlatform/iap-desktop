@@ -20,6 +20,7 @@
 //
 using Google.Apis.Compute.v1;
 using Google.Solutions.Common;
+using Google.Solutions.Common.Diagnostics;
 using Google.Solutions.Common.Util;
 using Google.Solutions.LogAnalysis.Events;
 using System;
@@ -94,65 +95,69 @@ namespace Google.Solutions.LogAnalysis.History
             DisksResource disksResource,
             string projectId)
         {
-            // Instances.list returns the disks associated with each
+            // NB. Instances.list returns the disks associated with each
             // instance, but lacks the information about the source image.
             // Therefore, load disks separately.
 
-            // TODO: Tracing
-
-            // TODO: Paging
-            var disks = await disksResource.AggregatedList(projectId).ExecuteAsync();
-            var sourceImagaesByDisk = disks.Items == null
-                ? new Dictionary<string, string>()
-                : disks.Items.Values
-                    .Where(v => v.Disks != null)
-                    .EnsureNotNull()
-                    .SelectMany(v => v.Disks)
-                    .EnsureNotNull()
-                    .ToDictionary(d => d.SelfLink, d => d.SourceImage);
-
-            // TODO: Paging
-            var instances = await instancesResource.AggregatedList(projectId).ExecuteAsync();
-            if (instances.Items != null)
+            using (TraceSources.LogAnalysis.TraceMethod().WithParameters(projectId))
             {
-                foreach (var list in instances.Items.Values)
-                {
-                    if (list.Instances == null)
-                    {
-                        continue;
-                    }
 
-                    foreach (var instance in list.Instances)
+                // TODO: Paging
+                var disks = await disksResource.AggregatedList(projectId).ExecuteAsync();
+                var sourceImagaesByDisk = disks.Items == null
+                    ? new Dictionary<string, string>()
+                    : disks.Items.Values
+                        .Where(v => v.Disks != null)
+                        .EnsureNotNull()
+                        .SelectMany(v => v.Disks)
+                        .EnsureNotNull()
+                        .ToDictionary(d => d.SelfLink, d => d.SourceImage);
+
+                // TODO: Paging
+                var instances = await instancesResource.AggregatedList(projectId).ExecuteAsync();
+                if (instances.Items != null)
+                {
+                    foreach (var list in instances.Items.Values)
                     {
-                        var bootDiskUrl = instance.Disks
-                            .EnsureNotNull()
-                            .Where(d => d.Boot != null && d.Boot.Value)
-                            .EnsureNotNull()
-                            .Select(d => d.Source)
-                            .EnsureNotNull()
-                            .FirstOrDefault();
-                        GlobalResourceReference image = null;
-                        if (bootDiskUrl != null &&
-                            sourceImagaesByDisk.TryGetValue(bootDiskUrl, out string imageUrl) &&
-                            imageUrl != null)
+                        if (list.Instances == null)
                         {
-                            image = GlobalResourceReference.FromString(imageUrl);
+                            continue;
                         }
 
-                        AddExistingInstance(
-                            (ulong)instance.Id.Value,
-                            new VmInstanceReference(
-                                projectId,
-                                ShortZoneIdFromUrl(instance.Zone),
-                                instance.Name),
-                            image,
-                            instance.Status == "RUNNING"
-                                ? InstanceState.Running
-                                : InstanceState.Terminated,
-                            DateTime.Now,
-                            instance.Scheduling.NodeAffinities != null && instance.Scheduling.NodeAffinities.Any()
-                                ? Tenancy.SoleTenant
-                                : Tenancy.Fleet);
+                        foreach (var instance in list.Instances)
+                        {
+                            TraceSources.LogAnalysis.TraceVerbose("Adding {0}", instance.Id);
+
+                            var bootDiskUrl = instance.Disks
+                                .EnsureNotNull()
+                                .Where(d => d.Boot != null && d.Boot.Value)
+                                .EnsureNotNull()
+                                .Select(d => d.Source)
+                                .EnsureNotNull()
+                                .FirstOrDefault();
+                            GlobalResourceReference image = null;
+                            if (bootDiskUrl != null &&
+                                sourceImagaesByDisk.TryGetValue(bootDiskUrl, out string imageUrl) &&
+                                imageUrl != null)
+                            {
+                                image = GlobalResourceReference.FromString(imageUrl);
+                            }
+
+                            AddExistingInstance(
+                                (ulong)instance.Id.Value,
+                                new VmInstanceReference(
+                                    projectId,
+                                    ShortZoneIdFromUrl(instance.Zone),
+                                    instance.Name),
+                                image,
+                                instance.Status == "RUNNING"
+                                    ? InstanceState.Running
+                                    : InstanceState.Terminated,
+                                DateTime.Now,
+                                instance.Scheduling.NodeAffinities != null && instance.Scheduling.NodeAffinities.Any()
+                                    ? Tenancy.SoleTenant
+                                    : Tenancy.Fleet);
+                        }
                     }
                 }
             }

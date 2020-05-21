@@ -28,7 +28,7 @@ using System.Linq;
 namespace Google.Solutions.LogAnalysis.Test.History
 {
     [TestFixture]
-    public class TestNodeSetHistory
+    public class TestNodeSetHistory : FixtureBase
     {
         [Test]
         public void WhenInstancesAreFromFleet_ThenSetIsEmpty()

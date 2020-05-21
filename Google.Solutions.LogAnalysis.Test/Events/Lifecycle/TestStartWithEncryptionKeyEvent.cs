@@ -28,7 +28,7 @@ using NUnit.Framework;
 namespace Google.Solutions.LogAnalysis.Test.Events.Lifecycle
 {
     [TestFixture]
-    public class TestStartWithEncryptionKeyEvent
+    public class TestStartWithEncryptionKeyEvent : FixtureBase
     {
         [Test]
         public void WhenSeverityIsNotice_ThenFieldsAreExtracted()

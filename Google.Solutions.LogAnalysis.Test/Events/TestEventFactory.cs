@@ -27,7 +27,7 @@ using System;
 namespace Google.Solutions.LogAnalysis.Test.Events
 {
     [TestFixture]
-    public class TestEventFactory
+    public class TestEventFactory : FixtureBase
     {
         [Test]
         public void WhenRecordIsLegacyRecord_ThenFromRecordThrowsArgumentException()
