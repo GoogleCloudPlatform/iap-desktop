@@ -93,37 +93,37 @@ namespace Google.Solutions.Common.ApiExtensions.Instance
         {
             using (TraceSources.Common.TraceMethod().WithParameters(instanceRef, key))
             {
-                var instance = await resource.Get(
-                    instanceRef.ProjectId,
-                    instanceRef.Zone,
-                    instanceRef.InstanceName).ExecuteAsync(token).ConfigureAwait(false);
-                var metadata = instance.Metadata;
-
-                if (metadata.Items == null)
-                {
-                    metadata.Items = new List<Metadata.ItemsData>();
-                }
-
-                var existingEntry = metadata.Items
-                    .Where(i => i.Key == key)
-                    .FirstOrDefault();
-                if (existingEntry != null)
-                {
-                    existingEntry.Value = value;
-                }
-                else
-                {
-                    metadata.Items.Add(new Metadata.ItemsData()
-                    {
-                        Key = key,
-                        Value = value
-                    });
-                }
-
-                TraceSources.Common.TraceVerbose("Setting metdata {0} on {1}...", key, instanceRef.InstanceName);
-
                 for (int attempt = 0; attempt < 3; attempt++)
                 {
+                    var instance = await resource.Get(
+                        instanceRef.ProjectId,
+                        instanceRef.Zone,
+                        instanceRef.InstanceName).ExecuteAsync(token).ConfigureAwait(false);
+                    var metadata = instance.Metadata;
+
+                    if (metadata.Items == null)
+                    {
+                        metadata.Items = new List<Metadata.ItemsData>();
+                    }
+
+                    var existingEntry = metadata.Items
+                        .Where(i => i.Key == key)
+                        .FirstOrDefault();
+                    if (existingEntry != null)
+                    {
+                        existingEntry.Value = value;
+                    }
+                    else
+                    {
+                        metadata.Items.Add(new Metadata.ItemsData()
+                        {
+                            Key = key,
+                            Value = value
+                        });
+                    }
+
+                    TraceSources.Common.TraceVerbose("Setting metdata {0} on {1}...", key, instanceRef.InstanceName);
+
                     try
                     {
                         await resource.SetMetadata(
@@ -140,9 +140,11 @@ namespace Google.Solutions.Common.ApiExtensions.Instance
                             // Fingerprint mismatch - that happens when somebody else updated metadata
                             // in patallel. 
 
+                            int backoff = 100;
                             TraceSources.Common.TraceWarning(
-                                "SetMetadata failed with {0} - retrying", e.Message,
+                                "SetMetadata failed with {0} - retrying after {backoff]ms", e.Message,
                                 e.Error?.Code);
+                            await Task.Delay(backoff);
                         }
                         else
                         {
