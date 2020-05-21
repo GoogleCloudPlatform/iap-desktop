@@ -53,8 +53,8 @@ namespace Google.Solutions.LogAnalysis.QuickTest
                     this.includeSoleTenantInstancesCheckbox.Checked);
 
                 RepopulateChart(this.currentNodeSet.MaxInstancePlacementsByDay);
-                RepopulateNodeList();
-                //RepopulateInstancesList(this.currentNodeSet.Nodes.FirstOrDefault());
+                //RepopulateNodeList();
+                RepopulateInstancesList(this.currentNodeSet.Nodes.SelectMany(n => n.Placements));
             }
             else if (this.tabControl.SelectedTab == this.nodesTabPage)
             {
@@ -65,8 +65,9 @@ namespace Google.Solutions.LogAnalysis.QuickTest
 
                 RepopulateChart(this.currentNodeSet.MaxNodesByDay);
                 RepopulateNodeList();
-                //RepopulateInstancesList(null);
             }
+
+            this.splitContainer.Panel1Collapsed = (this.tabControl.SelectedTab == this.instancesTabPage);
         }
 
         private void RepopulateChart(IEnumerable<History.DataPoint> dataPoints)
@@ -103,7 +104,7 @@ namespace Google.Solutions.LogAnalysis.QuickTest
             if (nodes.Any())
             {
                 this.nodesList.Items[0].Selected = true;
-                RepopulateInstancesList(nodes.First());
+                RepopulateInstancesList(nodes.First().Placements);
             }
             else
             {
@@ -111,30 +112,27 @@ namespace Google.Solutions.LogAnalysis.QuickTest
             }
         }
 
-        private void RepopulateInstancesList(NodeHistory node)
+        private void RepopulateInstancesList(IEnumerable<NodePlacement> nodePlacements)
         {
             this.nodePlacementsList.Items.Clear();
 
-            if (node != null)
-            {
-                var placements = node.Placements.Where(
-                    p => p.From <= this.selectionEndDate && p.To >= this.selectionStartDate);
+            var placements = nodePlacements.Where(
+                p => p.From <= this.selectionEndDate && p.To >= this.selectionStartDate);
 
-                this.nodePlacementsList.Items.AddRange(
-                    placements.Select(p => new ListViewItem(new[]
-                    {
-                        p.Instance.InstanceId.ToString(),
-                        p.Instance.Reference != null ? p.Instance.Reference.InstanceName : string.Empty,
-                        p.Instance.Reference != null ? p.Instance.Reference.Zone : string.Empty,
-                        p.Instance.Reference != null ? p.Instance.Reference.ProjectId : string.Empty,
-                        p.From.ToString(),
-                        p.To.ToString()
-                    })
-                    {
-                        Tag = p
-                    })
-                    .ToArray());
-            }
+            this.nodePlacementsList.Items.AddRange(
+                placements.Select(p => new ListViewItem(new[]
+                {
+                    p.Instance.InstanceId.ToString(),
+                    p.Instance.Reference != null ? p.Instance.Reference.InstanceName : string.Empty,
+                    p.Instance.Reference != null ? p.Instance.Reference.Zone : string.Empty,
+                    p.Instance.Reference != null ? p.Instance.Reference.ProjectId : string.Empty,
+                    p.From.ToString(),
+                    p.To.ToString()
+                })
+                {
+                    Tag = p
+                })
+                .ToArray());
         }
 
         //---------------------------------------------------------------------
@@ -158,7 +156,7 @@ namespace Google.Solutions.LogAnalysis.QuickTest
                 this.selectionEndDate = end;
             }
 
-            RepopulateNodeList();
+            Repopulate();
         }
 
         private void nodesList_Click(object sender, EventArgs e)
@@ -173,7 +171,7 @@ namespace Google.Solutions.LogAnalysis.QuickTest
 
             var node = (NodeHistory)selectedItem.Tag;
 
-            RepopulateInstancesList(node);
+            RepopulateInstancesList(node.Placements);
         }
 
         private void nodesList_SelectedIndexChanged(object sender, EventArgs e) 
