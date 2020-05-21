@@ -114,6 +114,13 @@ Write-Host "========================================================"
 $Env:GOOGLE_APPLICATION_CREDENTIALS = "${env:KOKORO_GFILE_DIR}\iap-windows-rdc-plugin-tests.json"
 $Env:GOOGLE_CLOUD_PROJECT = (Get-Content $Env:GOOGLE_APPLICATION_CREDENTIALS | Out-String | ConvertFrom-Json).project_id
 
+& gcloud compute firewall-rules create allow-ingress-from-iap `
+    --direction=INGRESS `
+    --action=allow `
+    --rules=tcp `
+    --source-ranges=35.235.240.0/20 `
+    --project=$Env:GOOGLE_CLOUD_PROJECT | Out-Default
+
 # NB. The OpenCover version must match the CLR version installed on Kokoro. The version
 # is defined in the NuGet dependencies of the main project.
 
