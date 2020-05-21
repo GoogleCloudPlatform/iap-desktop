@@ -31,7 +31,7 @@
             System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea1 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
             System.Windows.Forms.DataVisualization.Charting.Series series1 = new System.Windows.Forms.DataVisualization.Charting.Series();
             this.chart = new System.Windows.Forms.DataVisualization.Charting.Chart();
-            this.nodesByDayLabel = new System.Windows.Forms.Label();
+            this.chartLabel = new System.Windows.Forms.Label();
             this.nodesList = new System.Windows.Forms.ListView();
             this.serverIdColumnHeader = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.nodeZoneColumnHeader = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
@@ -77,6 +77,10 @@
             chartArea1.BorderColor = System.Drawing.Color.DimGray;
             chartArea1.CursorX.IsUserSelectionEnabled = true;
             chartArea1.Name = "mainArea";
+            chartArea1.Position.Auto = false;
+            chartArea1.Position.Height = 94F;
+            chartArea1.Position.Width = 100F;
+            chartArea1.Position.Y = 3F;
             this.chart.ChartAreas.Add(chartArea1);
             this.chart.Location = new System.Drawing.Point(146, 30);
             this.chart.Name = "chart";
@@ -88,16 +92,16 @@
             this.chart.TabIndex = 0;
             this.chart.SelectionRangeChanged += new System.EventHandler<System.Windows.Forms.DataVisualization.Charting.CursorEventArgs>(this.nodesByDay_SelectionRangeChanged);
             // 
-            // nodesByDayLabel
+            // chartLabel
             // 
-            this.nodesByDayLabel.AutoSize = true;
-            this.nodesByDayLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 11F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.nodesByDayLabel.ForeColor = System.Drawing.SystemColors.ControlDarkDark;
-            this.nodesByDayLabel.Location = new System.Drawing.Point(146, 9);
-            this.nodesByDayLabel.Name = "nodesByDayLabel";
-            this.nodesByDayLabel.Size = new System.Drawing.Size(274, 18);
-            this.nodesByDayLabel.TabIndex = 1;
-            this.nodesByDayLabel.Text = "Active number of sole-tenant nodes";
+            this.chartLabel.AutoSize = true;
+            this.chartLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 11F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.chartLabel.ForeColor = System.Drawing.SystemColors.ControlDarkDark;
+            this.chartLabel.Location = new System.Drawing.Point(146, 9);
+            this.chartLabel.Name = "chartLabel";
+            this.chartLabel.Size = new System.Drawing.Size(23, 18);
+            this.chartLabel.TabIndex = 1;
+            this.chartLabel.Text = "...";
             // 
             // nodesList
             // 
@@ -174,7 +178,7 @@
             this.nodePlacementsList.HideSelection = false;
             this.nodePlacementsList.Location = new System.Drawing.Point(12, 31);
             this.nodePlacementsList.Name = "nodePlacementsList";
-            this.nodePlacementsList.Size = new System.Drawing.Size(892, 243);
+            this.nodePlacementsList.Size = new System.Drawing.Size(892, 244);
             this.nodePlacementsList.TabIndex = 2;
             this.nodePlacementsList.UseCompatibleStateImageBehavior = false;
             this.nodePlacementsList.View = System.Windows.Forms.View.Details;
@@ -227,16 +231,16 @@
             this.nodePlacementsLabel.ForeColor = System.Drawing.SystemColors.ControlDarkDark;
             this.nodePlacementsLabel.Location = new System.Drawing.Point(9, 9);
             this.nodePlacementsLabel.Name = "nodePlacementsLabel";
-            this.nodePlacementsLabel.Size = new System.Drawing.Size(227, 18);
+            this.nodePlacementsLabel.Size = new System.Drawing.Size(272, 18);
             this.nodePlacementsLabel.TabIndex = 1;
-            this.nodePlacementsLabel.Text = "Instances scheduled on node";
+            this.nodePlacementsLabel.Text = "Scheduling history of VM instances";
             // 
             // splitContainer
             // 
             this.splitContainer.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.splitContainer.Location = new System.Drawing.Point(146, 340);
+            this.splitContainer.Location = new System.Drawing.Point(146, 339);
             this.splitContainer.Name = "splitContainer";
             this.splitContainer.Orientation = System.Windows.Forms.Orientation.Horizontal;
             // 
@@ -249,7 +253,7 @@
             // 
             this.splitContainer.Panel2.Controls.Add(this.nodePlacementsList);
             this.splitContainer.Panel2.Controls.Add(this.nodePlacementsLabel);
-            this.splitContainer.Size = new System.Drawing.Size(916, 564);
+            this.splitContainer.Size = new System.Drawing.Size(916, 565);
             this.splitContainer.SplitterDistance = 281;
             this.splitContainer.TabIndex = 3;
             // 
@@ -294,9 +298,10 @@
             this.includeFleetInstancesCheckBox.AutoSize = true;
             this.includeFleetInstancesCheckBox.Checked = true;
             this.includeFleetInstancesCheckBox.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.includeFleetInstancesCheckBox.Location = new System.Drawing.Point(751, 313);
+            this.includeFleetInstancesCheckBox.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.includeFleetInstancesCheckBox.Location = new System.Drawing.Point(761, 316);
             this.includeFleetInstancesCheckBox.Name = "includeFleetInstancesCheckBox";
-            this.includeFleetInstancesCheckBox.Size = new System.Drawing.Size(148, 17);
+            this.includeFleetInstancesCheckBox.Size = new System.Drawing.Size(145, 17);
             this.includeFleetInstancesCheckBox.TabIndex = 0;
             this.includeFleetInstancesCheckBox.Text = "On-demand VM instances";
             this.includeFleetInstancesCheckBox.UseVisualStyleBackColor = true;
@@ -308,9 +313,10 @@
             this.includeSoleTenantInstancesCheckbox.AutoSize = true;
             this.includeSoleTenantInstancesCheckbox.Checked = true;
             this.includeSoleTenantInstancesCheckbox.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.includeSoleTenantInstancesCheckbox.Location = new System.Drawing.Point(906, 313);
+            this.includeSoleTenantInstancesCheckbox.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.includeSoleTenantInstancesCheckbox.Location = new System.Drawing.Point(916, 316);
             this.includeSoleTenantInstancesCheckbox.Name = "includeSoleTenantInstancesCheckbox";
-            this.includeSoleTenantInstancesCheckbox.Size = new System.Drawing.Size(147, 17);
+            this.includeSoleTenantInstancesCheckbox.Size = new System.Drawing.Size(144, 17);
             this.includeSoleTenantInstancesCheckbox.TabIndex = 5;
             this.includeSoleTenantInstancesCheckbox.Text = "Sole-tenant VM instances";
             this.includeSoleTenantInstancesCheckbox.UseVisualStyleBackColor = true;
@@ -325,7 +331,7 @@
             this.ClientSize = new System.Drawing.Size(1072, 911);
             this.Controls.Add(this.includeSoleTenantInstancesCheckbox);
             this.Controls.Add(this.includeFleetInstancesCheckBox);
-            this.Controls.Add(this.nodesByDayLabel);
+            this.Controls.Add(this.chartLabel);
             this.Controls.Add(this.chart);
             this.Controls.Add(this.splitContainer);
             this.Controls.Add(this.tabControl);
@@ -347,7 +353,7 @@
         #endregion
 
         private System.Windows.Forms.DataVisualization.Charting.Chart chart;
-        private System.Windows.Forms.Label nodesByDayLabel;
+        private System.Windows.Forms.Label chartLabel;
         private System.Windows.Forms.ListView nodesList;
         private System.Windows.Forms.ColumnHeader serverIdColumnHeader;
         private System.Windows.Forms.ColumnHeader firstUseColumnHeader;

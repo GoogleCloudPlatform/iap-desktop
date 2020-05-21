@@ -47,6 +47,8 @@ namespace Google.Solutions.LogAnalysis.QuickTest
 
             if (this.tabControl.SelectedTab == this.instancesTabPage)
             {
+                this.chartLabel.Text = "Active VM instances";
+
                 this.currentNodeSet = NodeSetHistory.FromInstancyHistory(
                     this.instanceSet.Instances,
                     this.includeFleetInstancesCheckBox.Checked,
@@ -58,6 +60,8 @@ namespace Google.Solutions.LogAnalysis.QuickTest
             }
             else if (this.tabControl.SelectedTab == this.nodesTabPage)
             {
+                this.chartLabel.Text = "Active number of sole-tenant nodes";
+
                 this.currentNodeSet = NodeSetHistory.FromInstancyHistory(
                     this.instanceSet.Instances, 
                     false, 
@@ -108,7 +112,7 @@ namespace Google.Solutions.LogAnalysis.QuickTest
             }
             else
             {
-                RepopulateInstancesList(null);
+                RepopulateInstancesList(Enumerable.Empty<NodePlacement>());
             }
         }
 
