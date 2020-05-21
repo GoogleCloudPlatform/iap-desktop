@@ -27,13 +27,14 @@ using System;
 using System.Threading;
 using System.Threading.Tasks;
 using Google.Solutions.Common;
+using Google.Solutions.Common.Test;
 
-namespace Google.Solutions.Compute.Test.Extensions
+namespace Google.Solutions.IapTunneling.Test.Extensions
 {
     [TestFixture]
     [Category("IntegrationTest")]
     [Category("Windows")]
-    public class TestResetWindowsUser
+    public class TestResetWindowsUser : FixtureBase
     {
         private InstancesResource instancesResource;
 

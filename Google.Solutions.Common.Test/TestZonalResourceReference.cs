@@ -25,7 +25,7 @@ using System;
 namespace Google.Solutions.Common.Test
 {
     [TestFixture]
-    public class TestZonalResourceReference 
+    public class TestZonalResourceReference : FixtureBase
     {
         [Test]
         public void WhenPathIsValid_FromStringReturnsObject()

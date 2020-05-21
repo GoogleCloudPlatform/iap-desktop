@@ -22,15 +22,16 @@
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Auth.OAuth2.Responses;
 using Google.Solutions.Common.Auth;
+using Google.Solutions.Common.Test;
 using Moq;
 using NUnit.Framework;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Google.Solutions.Compute.Test.Auth
+namespace Google.Solutions.IapTunneling.Test.Auth
 {
     [TestFixture]
-    public class TestAuthorization
+    public class TestAuthorization : FixtureBase
     {
         [Test]
         public async Task WhenNoExistingAuthPresent_TryLoadExistingAuthorizationAsyncReturnsNull()

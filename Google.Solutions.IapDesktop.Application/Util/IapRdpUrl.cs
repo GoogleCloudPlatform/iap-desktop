@@ -20,7 +20,7 @@
 //
 
 using Google.Solutions.Common;
-using Google.Solutions.Compute;
+using Google.Solutions.IapTunneling;
 using Google.Solutions.IapDesktop.Application.Services.Persistence;
 using System;
 using System.Collections.Generic;

@@ -19,9 +19,9 @@
 // under the License.
 //
 
-using Google.Solutions.Compute;
-using Google.Solutions.Compute.Iap;
-using Google.Solutions.Compute.Net;
+using Google.Solutions.IapTunneling;
+using Google.Solutions.IapTunneling.Iap;
+using Google.Solutions.IapTunneling.Net;
 using Google.Solutions.IapDesktop.Application.ObjectModel;
 using Google.Solutions.IapDesktop.Application.Services.Windows.ProjectExplorer;
 using Google.Solutions.IapDesktop.Application.Services.Integration;

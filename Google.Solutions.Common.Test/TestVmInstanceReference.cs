@@ -25,7 +25,7 @@ using NUnit.Framework;
 namespace Google.Solutions.Common.Test
 {
     [TestFixture]
-    public class TestVmInstanceReference
+    public class TestVmInstanceReference : FixtureBase
     {
         [Test]
         public void ToStringReturnsName()

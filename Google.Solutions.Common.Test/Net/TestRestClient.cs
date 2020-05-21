@@ -34,7 +34,7 @@ namespace Google.Solutions.Common.Test.Net
 {
     [TestFixture]
     [Category("IntegrationTest")]
-    public class TestRestClient
+    public class TestRestClient : FixtureBase
     {
         private const string SampleRestUrl = "https://accounts.google.com/.well-known/openid-configuration";
         private const string NotFoundUrl = "http://accounts.google.com/.well-known/openid-configuration";

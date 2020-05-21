@@ -86,6 +86,7 @@
     <Compile Include="ApiExtensions\Instance\TestResetWindowsUser.cs" />
     <Compile Include="AssertEx.cs" />
     <Compile Include="Auth\TestAuthorization.cs" />
+    <Compile Include="FixtureBase.cs" />
     <Compile Include="Net\TestRestClient.cs" />
     <Compile Include="Testbed\ComputeEngine.cs" />
     <Compile Include="Testbed\Defaults.cs" />

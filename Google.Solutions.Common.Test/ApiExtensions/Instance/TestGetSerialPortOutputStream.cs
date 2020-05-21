@@ -21,17 +21,18 @@
 
 using Google.Apis.Compute.v1;
 using Google.Solutions.Common.ApiExtensions.Instance;
+using Google.Solutions.Common.Test;
 using Google.Solutions.Common.Test.Testbed;
 using NUnit.Framework;
 using System;
 using System.Threading.Tasks;
 
-namespace Google.Solutions.Compute.Test.Extensions
+namespace Google.Solutions.IapTunneling.Test.Extensions
 {
     [TestFixture]
     [Category("IntegrationTest")]
     [Category("Windows")]
-    public class TestGetSerialPortOutputStream
+    public class TestGetSerialPortOutputStream : FixtureBase
     {
         private InstancesResource instancesResource;
 

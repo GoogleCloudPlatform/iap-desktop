@@ -21,7 +21,7 @@
 
 using Google.Solutions.Common.Diagnostics;
 using Google.Solutions.Common.Net;
-using Google.Solutions.Compute.Test.Net;
+using Google.Solutions.IapTunneling.Test.Net;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;

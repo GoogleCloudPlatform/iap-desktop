@@ -53,7 +53,7 @@ namespace Google.Solutions.IapDesktop
         private static readonly TraceSource[] Traces = new[]
         {
             Google.Solutions.Common.TraceSources.Common,
-            Google.Solutions.Compute.TraceSources.Compute,
+            Google.Solutions.IapTunneling.TraceSources.Compute,
             Google.Solutions.IapDesktop.Application.TraceSources.IapDesktop
         };
 

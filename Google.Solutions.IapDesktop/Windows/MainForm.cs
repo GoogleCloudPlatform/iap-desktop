@@ -21,7 +21,7 @@
 
 using Google.Solutions.CloudIap;
 using Google.Solutions.Common.Auth;
-using Google.Solutions.Compute.Iap;
+using Google.Solutions.IapTunneling.Iap;
 using Google.Solutions.IapDesktop.Application.ObjectModel;
 using Google.Solutions.IapDesktop.Application.Services.Windows.ProjectExplorer;
 using Google.Solutions.IapDesktop.Application.Services.Adapters;
