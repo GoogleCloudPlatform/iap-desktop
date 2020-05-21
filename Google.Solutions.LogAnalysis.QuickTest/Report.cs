@@ -42,34 +42,36 @@ namespace Google.Solutions.LogAnalysis.QuickTest
 
         private void Repopulate()
         {
-
-            if (this.tabControl.SelectedTab == this.instancesTabPage)
+            using (new WaitCursor())
             {
-                this.chartLabel.Text = "Active VM instances";
+                if (this.tabControl.SelectedTab == this.instancesTabPage)
+                {
+                    this.chartLabel.Text = "Active VM instances";
 
-                this.currentNodeSet = NodeSetHistory.FromInstancyHistory(
-                    this.instanceSet.Instances,
-                    this.includeFleetVmInstancesMenuItem.Checked,
-                    this.includeSoleTenantVmInstancesMenuItem.Checked);
+                    this.currentNodeSet = NodeSetHistory.FromInstancyHistory(
+                        this.instanceSet.Instances,
+                        this.includeFleetVmInstancesMenuItem.Checked,
+                        this.includeSoleTenantVmInstancesMenuItem.Checked);
 
-                RepopulateChart(this.currentNodeSet.MaxInstancePlacementsByDay);
-                //RepopulateNodeList();
-                RepopulateInstancesList(this.currentNodeSet.Nodes.SelectMany(n => n.Placements));
+                    RepopulateChart(this.currentNodeSet.MaxInstancePlacementsByDay);
+                    //RepopulateNodeList();
+                    RepopulateInstancesList(this.currentNodeSet.Nodes.SelectMany(n => n.Placements));
+                }
+                else if (this.tabControl.SelectedTab == this.nodesTabPage)
+                {
+                    this.chartLabel.Text = "Active number of sole-tenant nodes";
+
+                    this.currentNodeSet = NodeSetHistory.FromInstancyHistory(
+                        this.instanceSet.Instances,
+                        false,
+                        true);
+
+                    RepopulateChart(this.currentNodeSet.MaxNodesByDay);
+                    RepopulateNodeList();
+                }
+
+                this.splitContainer.Panel1Collapsed = (this.tabControl.SelectedTab == this.instancesTabPage);
             }
-            else if (this.tabControl.SelectedTab == this.nodesTabPage)
-            {
-                this.chartLabel.Text = "Active number of sole-tenant nodes";
-
-                this.currentNodeSet = NodeSetHistory.FromInstancyHistory(
-                    this.instanceSet.Instances, 
-                    false, 
-                    true);
-
-                RepopulateChart(this.currentNodeSet.MaxNodesByDay);
-                RepopulateNodeList();
-            }
-
-            this.splitContainer.Panel1Collapsed = (this.tabControl.SelectedTab == this.instancesTabPage);
         }
 
         private void RepopulateChart(IEnumerable<History.DataPoint> dataPoints)
@@ -216,6 +218,20 @@ namespace Google.Solutions.LogAnalysis.QuickTest
             this.includeSoleTenantVmInstancesMenuItem.Visible =
                 this.includeFleetVmInstancesMenuItem.Visible =
                 (this.tabControl.SelectedTab == this.instancesTabPage);
+        }
+    }
+
+
+    internal class WaitCursor : IDisposable
+    {
+        public WaitCursor()
+        {
+            System.Windows.Forms.Cursor.Current = Cursors.WaitCursor;
+        }
+
+        public void Dispose()
+        {
+            System.Windows.Forms.Cursor.Current = Cursors.Default;
         }
     }
 }
