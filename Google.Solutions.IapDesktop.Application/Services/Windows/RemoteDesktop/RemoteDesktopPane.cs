@@ -22,7 +22,6 @@
 using AxMSTSCLib;
 using Google.Solutions.Common;
 using Google.Solutions.Common.Diagnostics;
-using Google.Solutions.IapTunneling;
 using Google.Solutions.IapDesktop.Application.Services.Integration;
 using Google.Solutions.IapDesktop.Application.Services.Persistence;
 using Google.Solutions.IapDesktop.Application.Util;

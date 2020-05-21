@@ -21,9 +21,8 @@
 
 using Google.Apis.Auth.OAuth2.Responses;
 using Google.Solutions.Common;
-using Google.Solutions.Common.Util;
-using Google.Solutions.IapTunneling;
 using Google.Solutions.Common.ApiExtensions.Instance;
+using Google.Solutions.Common.Util;
 using System;
 using System.Runtime.InteropServices;
 using System.Threading;

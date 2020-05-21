@@ -19,15 +19,14 @@
 // under the License.
 //
 
-using Google.Solutions.Common.Diagnostics;
 using Google.Apis.Compute.v1;
 using Google.Apis.Compute.v1.Data;
+using Google.Solutions.Common.ApiExtensions.Request;
+using Google.Solutions.Common.Diagnostics;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using Google.Solutions.Common;
-using Google.Solutions.Common.ApiExtensions.Request;
 
 namespace Google.Solutions.Common.ApiExtensions.Instance
 {

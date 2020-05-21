@@ -48,7 +48,7 @@ namespace Google.Solutions.LogAnalysis.History
             this.EndDate = endDate;
             this.Instances = instances;
         }
-        
+
         //---------------------------------------------------------------------
         // Serialization.
         //---------------------------------------------------------------------

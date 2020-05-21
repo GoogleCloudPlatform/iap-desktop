@@ -21,7 +21,6 @@
 
 using System;
 using System.Linq;
-using System.Diagnostics;
 
 namespace Google.Solutions.Common
 {
@@ -56,8 +55,8 @@ namespace Google.Solutions.Common
             }
 
             return new GlobalResourceReference(
-                parts[1], 
-                parts[3], 
+                parts[1],
+                parts[3],
                 string.Join("/", parts.Skip(4)));
         }
 

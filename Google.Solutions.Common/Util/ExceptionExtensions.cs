@@ -47,7 +47,7 @@ namespace Google.Solutions.Common.Util
             return e.Unwrap() is T;
         }
 
-        public static bool IsCancellation(this Exception e) 
+        public static bool IsCancellation(this Exception e)
         {
             return e.Is<TaskCanceledException>() || e.Is<OperationCanceledException>();
         }

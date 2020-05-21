@@ -50,8 +50,8 @@ namespace Google.Solutions.Common
         }
 
         protected ResourceReference(
-            string projectId, 
-            string resourceType, 
+            string projectId,
+            string resourceType,
             string resourceName)
         {
             Utilities.ThrowIfNull(projectId, nameof(projectId));

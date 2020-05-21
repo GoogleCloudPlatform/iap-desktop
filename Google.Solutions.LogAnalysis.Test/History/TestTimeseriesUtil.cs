@@ -32,7 +32,7 @@ namespace Google.Solutions.LogAnalysis.Test.History
         //---------------------------------------------------------------------
         // High watermark tests.
         //---------------------------------------------------------------------
-        
+
         [Test]
         public void WhenJoinersAndLeaversAlternate_ThenHighWatermarkIsOne()
         {

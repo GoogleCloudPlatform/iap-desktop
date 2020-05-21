@@ -22,7 +22,6 @@
 using Google.Apis.Compute.v1.Data;
 using Google.Solutions.Common;
 using Google.Solutions.Common.Util;
-using Google.Solutions.IapTunneling;
 using Google.Solutions.IapDesktop.Application.ObjectModel;
 using Google.Solutions.IapDesktop.Application.Services.Adapters;
 using Google.Solutions.IapDesktop.Application.Services.Integration;
@@ -492,7 +491,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.Windows.ProjectExplor
                         (selectedNode is VmInstanceNode) && ((VmInstanceNode)selectedNode).IsRunning;
 
 #if DEBUG
-                this.debugToolStripMenuItem.Visible = 
+                this.debugToolStripMenuItem.Visible =
                     this.generateHtmlPageToolStripMenuItem.Visible = (selectedNode is ProjectNode);
 #else
                 this.debugToolStripMenuItem.Visible = false;

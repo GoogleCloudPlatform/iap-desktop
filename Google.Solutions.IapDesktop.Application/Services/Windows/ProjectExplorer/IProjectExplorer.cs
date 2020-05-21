@@ -20,7 +20,6 @@
 //
 
 using Google.Solutions.Common;
-using Google.Solutions.IapTunneling;
 using System.Threading.Tasks;
 
 namespace Google.Solutions.IapDesktop.Application.Services.Windows.ProjectExplorer

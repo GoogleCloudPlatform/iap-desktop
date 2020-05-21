@@ -30,7 +30,6 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using WeifenLuo.WinFormsUI.Docking;
-using Google.Solutions.Common.Auth;
 
 namespace Google.Solutions.IapDesktop.Application.Test.Services.Windows
 {

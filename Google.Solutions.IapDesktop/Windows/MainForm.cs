@@ -21,17 +21,17 @@
 
 using Google.Solutions.CloudIap;
 using Google.Solutions.Common.Auth;
-using Google.Solutions.IapTunneling.Iap;
 using Google.Solutions.IapDesktop.Application.ObjectModel;
-using Google.Solutions.IapDesktop.Application.Services.Windows.ProjectExplorer;
 using Google.Solutions.IapDesktop.Application.Services.Adapters;
 using Google.Solutions.IapDesktop.Application.Services.Integration;
 using Google.Solutions.IapDesktop.Application.Services.Persistence;
 using Google.Solutions.IapDesktop.Application.Services.Windows;
+using Google.Solutions.IapDesktop.Application.Services.Windows.ProjectExplorer;
 using Google.Solutions.IapDesktop.Application.Services.Windows.RemoteDesktop;
 using Google.Solutions.IapDesktop.Application.Services.Windows.TunnelsViewer;
 using Google.Solutions.IapDesktop.Application.Services.Workflows;
 using Google.Solutions.IapDesktop.Application.Util;
+using Google.Solutions.IapTunneling.Iap;
 using System;
 using System.ComponentModel;
 using System.Diagnostics;
@@ -91,7 +91,7 @@ namespace Google.Solutions.IapDesktop.Windows
             this.dockPanel.DockLeftPortion =
                 this.dockPanel.DockRightPortion = (300.0f / this.Width);
 
-            this.checkForUpdatesOnExitToolStripMenuItem.Checked = 
+            this.checkForUpdatesOnExitToolStripMenuItem.Checked =
                 this.applicationSettings.GetSettings().IsUpdateCheckEnabled;
             this.enableAppProtocolToolStripMenuItem.Checked =
                 this.protocolRegistry.IsRegistered(IapRdpUrl.Scheme, GetType().Assembly.Location);

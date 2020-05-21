@@ -20,7 +20,6 @@
 //
 
 using Google.Solutions.Common;
-using Google.Solutions.IapTunneling;
 using Google.Solutions.IapTunneling.Iap;
 using System;
 using System.Threading;

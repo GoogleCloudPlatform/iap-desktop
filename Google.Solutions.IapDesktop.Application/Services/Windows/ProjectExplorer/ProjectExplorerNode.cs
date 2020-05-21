@@ -22,7 +22,6 @@
 using Google.Apis.Compute.v1.Data;
 using Google.Solutions.Common;
 using Google.Solutions.Common.Util;
-using Google.Solutions.IapTunneling;
 using Google.Solutions.IapDesktop.Application.Services.Adapters;
 using Google.Solutions.IapDesktop.Application.Services.Persistence;
 using Google.Solutions.IapDesktop.Application.Services.Windows.SettingsEditor;
@@ -524,7 +523,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.Windows.ProjectExplor
         internal bool IsConnected
         {
             get => this.ImageIndex == ConnectedIconIndex;
-            set 
+            set
             {
                 if (value)
                 {

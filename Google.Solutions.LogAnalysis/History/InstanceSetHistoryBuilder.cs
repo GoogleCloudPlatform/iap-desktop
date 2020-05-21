@@ -18,14 +18,14 @@
 // specific language governing permissions and limitations
 // under the License.
 //
-using Google.Solutions.Common.Util;
 using Google.Apis.Compute.v1;
+using Google.Solutions.Common;
+using Google.Solutions.Common.Util;
 using Google.Solutions.LogAnalysis.Events;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Google.Solutions.Common;
 
 namespace Google.Solutions.LogAnalysis.History
 {

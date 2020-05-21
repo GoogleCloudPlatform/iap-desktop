@@ -25,10 +25,10 @@ namespace Google.Solutions.IapDesktop.Application.Services.Persistence
 {
     public class AppProtocolRegistry
     {
-        private static string KeyPathFromScheme(string scheme) 
+        private static string KeyPathFromScheme(string scheme)
             => $@"SOFTWARE\Classes\{scheme}";
-        
-        private static string CommandStringFromAppLocation(string applicationLocation) 
+
+        private static string CommandStringFromAppLocation(string applicationLocation)
             => $"\"{applicationLocation}\" /url \"%1\"";
 
         public void Register(

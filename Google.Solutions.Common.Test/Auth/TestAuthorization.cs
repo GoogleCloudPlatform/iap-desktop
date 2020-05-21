@@ -22,7 +22,6 @@
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Auth.OAuth2.Responses;
 using Google.Solutions.Common.Auth;
-using Google.Solutions.Common.Test;
 using Moq;
 using NUnit.Framework;
 using System.Threading;

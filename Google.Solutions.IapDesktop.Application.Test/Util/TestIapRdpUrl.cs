@@ -20,7 +20,6 @@
 //
 
 using Google.Solutions.Common;
-using Google.Solutions.IapTunneling;
 using Google.Solutions.IapDesktop.Application.Services.Persistence;
 using Google.Solutions.IapDesktop.Application.Util;
 using NUnit.Framework;
@@ -229,9 +228,9 @@ namespace Google.Solutions.IapDesktop.Application.Test.Util
                 });
 
             Assert.AreEqual(
-                "iap-rdp:///project-1/us-central1-a/instance-1?" + 
+                "iap-rdp:///project-1/us-central1-a/instance-1?" +
                     "Username=Tom+%26+Jerry%3f&Domain=%22%3f%22&" +
-                    "ConnectionBar=0&DesktopSize=2&AuthenticationLevel=3&ColorDepth=1&AudioMode=0&RedirectClipboard=1", 
+                    "ConnectionBar=0&DesktopSize=2&AuthenticationLevel=3&ColorDepth=1&AudioMode=0&RedirectClipboard=1",
                 url.ToString());
         }
 

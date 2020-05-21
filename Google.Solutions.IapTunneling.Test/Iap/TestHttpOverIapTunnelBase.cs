@@ -19,15 +19,15 @@
 // under the License.
 //
 
+using Google.Solutions.Common;
 using Google.Solutions.Common.Diagnostics;
-using Google.Solutions.IapTunneling.Net;
 using Google.Solutions.Common.Test.Testbed;
+using Google.Solutions.IapTunneling.Net;
 using NUnit.Framework;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
-using Google.Solutions.Common;
 
 namespace Google.Solutions.IapTunneling.Test.Iap
 {

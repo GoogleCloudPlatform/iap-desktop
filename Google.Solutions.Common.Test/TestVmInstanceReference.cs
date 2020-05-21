@@ -19,7 +19,6 @@
 // under the License.
 //
 
-using Google.Solutions.Common;
 using NUnit.Framework;
 
 namespace Google.Solutions.Common.Test

@@ -19,7 +19,7 @@
 // under the License.
 //
 
-using Google.Solutions.IapTunneling;
+using Google.Solutions.Common;
 using Google.Solutions.Common.Test.Testbed;
 using Google.Solutions.IapDesktop.Application.ObjectModel;
 using Google.Solutions.IapDesktop.Application.Services.Adapters;
@@ -30,7 +30,6 @@ using NUnit.Framework;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
-using Google.Solutions.Common;
 
 namespace Google.Solutions.IapDesktop.Application.Test.Services.Windows
 {

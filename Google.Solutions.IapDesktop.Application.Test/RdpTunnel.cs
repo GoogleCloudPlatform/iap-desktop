@@ -19,12 +19,11 @@
 // under the License.
 //
 
-using Google.Solutions.IapTunneling;
-using Google.Solutions.IapTunneling.Iap;
+using Google.Solutions.Common;
 using Google.Solutions.Common.Test.Testbed;
+using Google.Solutions.IapTunneling.Iap;
 using System;
 using System.Threading;
-using Google.Solutions.Common;
 
 namespace Google.Solutions.IapDesktop.Application.Test
 {

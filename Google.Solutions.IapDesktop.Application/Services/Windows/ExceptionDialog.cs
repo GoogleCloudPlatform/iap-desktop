@@ -87,9 +87,9 @@ namespace Google.Solutions.IapDesktop.Application.Services.Windows
                     }
 
                     ShowErrorDialog(
-                        parent, 
-                        caption, 
-                        apiException.Error.Message, 
+                        parent,
+                        caption,
+                        apiException.Error.Message,
                         details.ToString());
                 }
                 else
