@@ -1,4 +1,6 @@
-﻿namespace Google.Solutions.LogAnalysis.QuickTest
+﻿using Google.Solutions.IapDesktop.Application.Services.Windows;
+
+namespace Google.Solutions.LogAnalysis.QuickTest
 {
     partial class Report
     {
@@ -36,7 +38,7 @@
             this.includeFleetVmInstancesMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.includeSoleTenantVmInstancesMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.chartLabel = new System.Windows.Forms.Label();
-            this.nodesList = new System.Windows.Forms.ListView();
+            this.nodesList = new FlatListView();
             this.serverIdColumnHeader = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.nodeZoneColumnHeader = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.nodeProjectIdColumnHeader = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
@@ -44,7 +46,7 @@
             this.lastUseColumnHeader = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.daysUsedColumnHeader = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.peakInstancesColumnHeader = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-            this.nodePlacementsList = new System.Windows.Forms.ListView();
+            this.nodePlacementsList = new FlatListView();
             this.instanceIdColumnHeader = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.instanceNameColumnHeader = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.instanceZoneColumnHeader = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
@@ -355,13 +357,13 @@
 
         private System.Windows.Forms.DataVisualization.Charting.Chart chart;
         private System.Windows.Forms.Label chartLabel;
-        private System.Windows.Forms.ListView nodesList;
+        private FlatListView nodesList;
         private System.Windows.Forms.ColumnHeader serverIdColumnHeader;
         private System.Windows.Forms.ColumnHeader firstUseColumnHeader;
         private System.Windows.Forms.ColumnHeader lastUseColumnHeader;
         private System.Windows.Forms.ColumnHeader peakInstancesColumnHeader;
         private System.Windows.Forms.ColumnHeader daysUsedColumnHeader;
-        private System.Windows.Forms.ListView nodePlacementsList;
+        private FlatListView nodePlacementsList;
         private System.Windows.Forms.ColumnHeader instanceIdColumnHeader;
         private System.Windows.Forms.ColumnHeader instanceNameColumnHeader;
         private System.Windows.Forms.ColumnHeader instanceZoneColumnHeader;
