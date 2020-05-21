@@ -28,13 +28,23 @@ namespace Google.Solutions.IapTunneling.Test
     {
         private static ConsoleTraceListener listener = new ConsoleTraceListener();
 
+        private static TraceSource[] Traces = new[]
+        {
+            Google.Solutions.Common.TraceSources.Common,
+            Google.Solutions.IapTunneling.TraceSources.Compute,
+        };
+
         [SetUp]
         public void SetUpTracing()
         {
-            if (!TraceSources.Compute.Listeners.Contains(listener))
+            foreach (var trace in Traces)
             {
-                TraceSources.Compute.Listeners.Add(listener);
-                TraceSources.Compute.Switch.Level = SourceLevels.Verbose;
+                if (!trace.Listeners.Contains(listener))
+                {
+                    listener.TraceOutputOptions = TraceOptions.DateTime;
+                    trace.Listeners.Add(listener);
+                    trace.Switch.Level = System.Diagnostics.SourceLevels.Verbose;
+                }
             }
         }
     }
