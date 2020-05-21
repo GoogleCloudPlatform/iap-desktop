@@ -25,7 +25,7 @@ using System.Windows.Forms;
 
 namespace Google.Solutions.IapDesktop.Application.Services.Windows
 {
-    internal class FlatVerticalTabControl : TabControl
+    public class FlatVerticalTabControl : TabControl
     {
         public FlatVerticalTabControl()
         {

@@ -93,6 +93,10 @@
       <Project>{fb4c6f4d-32b1-4b0b-ba79-fd47fc4d7912}</Project>
       <Name>Google.Solutions.Common</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Google.Solutions.IapDesktop.Application\Google.Solutions.IapDesktop.Application.csproj">
+      <Project>{842b003e-6eeb-429d-a3a1-53b4e642e83b}</Project>
+      <Name>Google.Solutions.IapDesktop.Application</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Google.Solutions.LogAnalysis\Google.Solutions.LogAnalysis.csproj">
       <Project>{b804d76c-e02e-4320-94a7-579034644aa0}</Project>
       <Name>Google.Solutions.LogAnalysis</Name>
