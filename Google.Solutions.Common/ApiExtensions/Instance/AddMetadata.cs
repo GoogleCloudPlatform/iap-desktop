@@ -123,21 +123,37 @@ namespace Google.Solutions.Common.ApiExtensions.Instance
 
                 TraceSources.Common.TraceVerbose("Setting metdata {0} on {1}...", key, instanceRef.InstanceName);
 
-                try
+                for (int attempt = 0; attempt < 3; attempt++)
                 {
-                    await resource.SetMetadata(
-                        metadata,
-                        instanceRef.ProjectId,
-                        instanceRef.Zone,
-                        instanceRef.InstanceName).ExecuteAndAwaitOperationAsync(instanceRef.ProjectId, token);
-                }
-                catch (GoogleApiException e)
-                {
-                    TraceSources.Common.TraceWarning(
-                        "Setting metdata failed {0} (code error {1})", e.Message,
-                        e.Error?.Code);
+                    try
+                    {
+                        await resource.SetMetadata(
+                            metadata,
+                            instanceRef.ProjectId,
+                            instanceRef.Zone,
+                            instanceRef.InstanceName).ExecuteAndAwaitOperationAsync(instanceRef.ProjectId, token);
+                        break;
+                    }
+                    catch (GoogleApiException e)
+                    {
+                        if (e.Error != null && e.Error.Code == 412)
+                        {
+                            // Fingerprint mismatch - that happens when somebody else updated metadata
+                            // in patallel. 
 
-                    throw;
+                            TraceSources.Common.TraceWarning(
+                                "SetMetadata failed with {0} - retrying", e.Message,
+                                e.Error?.Code);
+                        }
+                        else
+                        {
+                            TraceSources.Common.TraceWarning(
+                                "Setting metdata failed {0} (code error {1})", e.Message,
+                                e.Error?.Code);
+
+                            throw;
+                        }
+                    }
                 }
             }
         }
