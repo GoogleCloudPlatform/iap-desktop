@@ -73,7 +73,7 @@ namespace Google.Solutions.Common
 
         public override string ToString()
         {
-            return $"projects/{this.ProjectId}/zones/{this.Zone}/{this.ResourceType}/{this.ResourceType}";
+            return $"projects/{this.ProjectId}/zones/{this.Zone}/{this.ResourceType}/{this.ResourceName}";
         }
 
         public bool Equals(ZonalResourceReference other)
