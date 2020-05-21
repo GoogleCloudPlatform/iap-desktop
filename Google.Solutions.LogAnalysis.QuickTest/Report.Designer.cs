@@ -51,8 +51,8 @@
             this.nodePlacementsLabel = new System.Windows.Forms.Label();
             this.splitContainer = new System.Windows.Forms.SplitContainer();
             this.tabControl = new Google.Solutions.IapDesktop.Application.Services.Windows.FlatVerticalTabControl();
-            this.tabPage2 = new System.Windows.Forms.TabPage();
-            this.tabPage1 = new System.Windows.Forms.TabPage();
+            this.instancesTabPage = new System.Windows.Forms.TabPage();
+            this.nodesTabPage = new System.Windows.Forms.TabPage();
             ((System.ComponentModel.ISupportInitialize)(this.nodesByDay)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer)).BeginInit();
             this.splitContainer.Panel1.SuspendLayout();
@@ -254,8 +254,8 @@
             // tabControl
             // 
             this.tabControl.Alignment = System.Windows.Forms.TabAlignment.Left;
-            this.tabControl.Controls.Add(this.tabPage2);
-            this.tabControl.Controls.Add(this.tabPage1);
+            this.tabControl.Controls.Add(this.instancesTabPage);
+            this.tabControl.Controls.Add(this.nodesTabPage);
             this.tabControl.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tabControl.ItemSize = new System.Drawing.Size(44, 136);
             this.tabControl.Location = new System.Drawing.Point(0, 0);
@@ -265,26 +265,26 @@
             this.tabControl.Size = new System.Drawing.Size(1072, 911);
             this.tabControl.SizeMode = System.Windows.Forms.TabSizeMode.Fixed;
             this.tabControl.TabIndex = 4;
+            this.tabControl.SelectedIndexChanged += new System.EventHandler(this.tabControl_SelectedIndexChanged);
             // 
-            // tabPage2
+            // instancesTabPage
             // 
-            this.tabPage2.Location = new System.Drawing.Point(140, 4);
-            this.tabPage2.Name = "tabPage2";
-            this.tabPage2.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage2.Size = new System.Drawing.Size(928, 903);
-            this.tabPage2.TabIndex = 1;
-            this.tabPage2.Text = "tabPage2";
-            this.tabPage2.UseVisualStyleBackColor = true;
+            this.instancesTabPage.Location = new System.Drawing.Point(140, 4);
+            this.instancesTabPage.Name = "instancesTabPage";
+            this.instancesTabPage.Padding = new System.Windows.Forms.Padding(3);
+            this.instancesTabPage.Size = new System.Drawing.Size(928, 903);
+            this.instancesTabPage.TabIndex = 1;
+            this.instancesTabPage.Text = "Instances";
+            this.instancesTabPage.UseVisualStyleBackColor = true;
             // 
-            // tabPage1
+            // nodesTabPage
             // 
-            this.tabPage1.Location = new System.Drawing.Point(140, 4);
-            this.tabPage1.Name = "tabPage1";
-            this.tabPage1.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage1.Size = new System.Drawing.Size(928, 903);
-            this.tabPage1.TabIndex = 0;
-            this.tabPage1.Text = "tabPage1";
-            this.tabPage1.UseVisualStyleBackColor = true;
+            this.nodesTabPage.Location = new System.Drawing.Point(140, 4);
+            this.nodesTabPage.Name = "nodesTabPage";
+            this.nodesTabPage.Size = new System.Drawing.Size(928, 903);
+            this.nodesTabPage.TabIndex = 2;
+            this.nodesTabPage.Text = "Sole-tenant nodes";
+            this.nodesTabPage.UseVisualStyleBackColor = true;
             // 
             // Report
             // 
@@ -335,7 +335,7 @@
         private System.Windows.Forms.Label nodePlacementsLabel;
         private System.Windows.Forms.SplitContainer splitContainer;
         private IapDesktop.Application.Services.Windows.FlatVerticalTabControl tabControl;
-        private System.Windows.Forms.TabPage tabPage1;
-        private System.Windows.Forms.TabPage tabPage2;
+        private System.Windows.Forms.TabPage instancesTabPage;
+        private System.Windows.Forms.TabPage nodesTabPage;
     }
 }

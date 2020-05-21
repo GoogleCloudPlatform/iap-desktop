@@ -32,19 +32,43 @@ namespace Google.Solutions.LogAnalysis.QuickTest
             // Remove space between bars.
             this.nodesByDay.Series[0]["PointWidth"] = "1";
 
-            foreach (var dp in nodeSet.MaxNodesByDay)
+            Repopulate();
+        }
+
+
+
+        //---------------------------------------------------------------------
+        // Data population.
+        //---------------------------------------------------------------------
+
+        private void Repopulate()
+        {
+            if (this.tabControl.SelectedTab == this.instancesTabPage)
+            {
+                RepopulateChart(Enumerable.Empty<History.DataPoint>());
+                RepopulateNodeList(Enumerable.Empty<NodeHistory>());
+                RepopulateInstancesList(Enumerable.Empty<NodePlacement>());
+
+            }
+            else if (this.tabControl.SelectedTab == this.nodesTabPage)
+            {
+                RepopulateChart(nodeSet.MaxNodesByDay);
+                RepopulateNodeList(this.nodeSet.Nodes);
+                RepopulateInstancesList(Enumerable.Empty<NodePlacement>());
+            }
+        }
+
+        private void RepopulateChart(IEnumerable<History.DataPoint> dataPoints)
+        {
+            this.nodesByDay.Series[0].Points.Clear();
+            foreach (var dp in dataPoints)
             {
                 this.nodesByDay.Series[0].Points.AddXY(dp.Timestamp, dp.Value);
             }
-
-            RepopulateNodeList();
         }
 
-        private void RepopulateNodeList()
+        private void RepopulateNodeList(IEnumerable<NodeHistory> nodes)
         {
-            var nodes = this.nodeSet.Nodes.Where(
-                n => n.FirstUse <= this.selectionEndDate && n.LastUse >= this.selectionStartDate);
-
             this.nodePlacementsList.Items.Clear();
             this.nodesList.Items.Clear();
             this.nodesList.Items.AddRange(
@@ -64,7 +88,6 @@ namespace Google.Solutions.LogAnalysis.QuickTest
                 .ToArray());
         }
 
-
         private void RepopulateInstancesList(IEnumerable<NodePlacement> placements)
         {
             this.nodePlacementsList.Items.Clear();
@@ -83,7 +106,6 @@ namespace Google.Solutions.LogAnalysis.QuickTest
                 })
                 .ToArray());
         }
-
 
         //---------------------------------------------------------------------
         // Window event handlers.
@@ -105,8 +127,11 @@ namespace Google.Solutions.LogAnalysis.QuickTest
                 this.selectionStartDate = start;
                 this.selectionEndDate = end;
             }
-                
-            RepopulateNodeList();
+
+
+            var nodes = this.nodeSet.Nodes.Where(
+                n => n.FirstUse <= this.selectionEndDate && n.LastUse >= this.selectionStartDate);
+            RepopulateNodeList(nodes);
         }
 
         private void nodesList_Click(object sender, EventArgs e)
@@ -128,5 +153,10 @@ namespace Google.Solutions.LogAnalysis.QuickTest
 
         private void nodesList_SelectedIndexChanged(object sender, EventArgs e) 
             => nodesList_Click(sender, e);
+
+        private void tabControl_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            Repopulate();
+        }
     }
 }
