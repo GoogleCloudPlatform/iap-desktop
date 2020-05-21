@@ -103,7 +103,6 @@
     <Compile Include="Events\System\TestTerminateOnHostMaintenanceEvent.cs" />
     <Compile Include="Events\TestEventFactory.cs" />
     <Compile Include="Events\TestUnknownEvent.cs" />
-    <Compile Include="Extensions\LinuxInstanceAttribute.cs" />
     <Compile Include="Extensions\TestListLogEntriesExtensions.cs" />
     <Compile Include="Extensions\TestListLogEntriesParser.cs" />
     <Compile Include="History\TestDataPoint.cs" />
