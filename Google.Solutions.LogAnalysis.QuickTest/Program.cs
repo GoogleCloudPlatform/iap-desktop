@@ -23,7 +23,7 @@ using Google.Apis.Auth.OAuth2;
 using Google.Apis.Compute.v1;
 using Google.Apis.Logging.v2;
 using Google.Apis.Services;
-using Google.Solutions.Compute;
+using Google.Solutions.Common;
 using Google.Solutions.LogAnalysis.Events;
 using Google.Solutions.LogAnalysis.Extensions;
 using Google.Solutions.LogAnalysis.History;

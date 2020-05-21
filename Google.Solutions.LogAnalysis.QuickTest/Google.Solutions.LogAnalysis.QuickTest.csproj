@@ -89,9 +89,9 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Google.Solutions.Compute\Google.Solutions.Compute.csproj">
-      <Project>{d9493479-1751-402b-880f-60ed33ebb885}</Project>
-      <Name>Google.Solutions.Compute</Name>
+    <ProjectReference Include="..\Google.Solutions.Common\Google.Solutions.Common.csproj">
+      <Project>{fb4c6f4d-32b1-4b0b-ba79-fd47fc4d7912}</Project>
+      <Name>Google.Solutions.Common</Name>
     </ProjectReference>
     <ProjectReference Include="..\Google.Solutions.LogAnalysis\Google.Solutions.LogAnalysis.csproj">
       <Project>{b804d76c-e02e-4320-94a7-579034644aa0}</Project>
