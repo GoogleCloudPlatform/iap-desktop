@@ -85,8 +85,10 @@
     <Compile Include="ApiExtensions\Instance\TestGetSerialPortOutputStream.cs" />
     <Compile Include="ApiExtensions\Instance\TestAddMetadata.cs" />
     <Compile Include="ApiExtensions\Instance\TestResetWindowsUser.cs" />
+    <Compile Include="ApiExtensions\Request\TestRetryExtensions.cs" />
     <Compile Include="AssertEx.cs" />
     <Compile Include="Auth\TestAuthorization.cs" />
+    <Compile Include="Auth\TestGoogleAuthAdapter.cs" />
     <Compile Include="FixtureBase.cs" />
     <Compile Include="Net\TestRestClient.cs" />
     <Compile Include="Testbed\ComputeEngine.cs" />

@@ -30,7 +30,7 @@ namespace Google.Solutions.Common.ApiExtensions.Request
     public static class RetryExtensions
     {
         public async static Task<Stream> ExecuteAsStreamWithRetryAsync<TResponse>(
-            this ClientServiceRequest<TResponse> request,
+            this IClientServiceRequest<TResponse> request,
             ExponentialBackOff backOff)
         {
             int retries = 0;
