@@ -21,6 +21,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 
 namespace Google.Solutions.LogAnalysis.History
@@ -35,11 +36,11 @@ namespace Google.Solutions.LogAnalysis.History
         public IEnumerable<NodePlacement> Placements { get; }
 
         public string Zone => this.Placements.Any()
-            ? this.Placements.First().Instance.Reference.Zone
+            ? this.Placements.First().Instance.Reference?.Zone
             : null;
 
         public string ProjectId => this.Placements.Any()
-            ? this.Placements.First().Instance.Reference.ProjectId
+            ? this.Placements.First().Instance.Reference?.ProjectId
             : null;
 
         public uint PeakConcurrentPlacements { get; }
@@ -51,6 +52,9 @@ namespace Google.Solutions.LogAnalysis.History
             uint peakInstanceCount,
             IEnumerable<NodePlacement> placements)
         {
+            Debug.Assert(placements != null);
+            Debug.Assert(firstUse <= lastUse);
+
             this.ServerId = serverId;
             this.FirstUse = firstUse;
             this.LastUse = lastUse;
