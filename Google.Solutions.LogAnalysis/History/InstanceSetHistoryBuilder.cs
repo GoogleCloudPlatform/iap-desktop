@@ -19,7 +19,9 @@
 // under the License.
 //
 using Google.Apis.Compute.v1;
+using Google.Apis.Compute.v1.Data;
 using Google.Solutions.Common;
+using Google.Solutions.Common.ApiExtensions;
 using Google.Solutions.Common.Diagnostics;
 using Google.Solutions.Common.Util;
 using Google.Solutions.LogAnalysis.Events;
@@ -95,70 +97,83 @@ namespace Google.Solutions.LogAnalysis.History
             DisksResource disksResource,
             string projectId)
         {
-            // NB. Instances.list returns the disks associated with each
-            // instance, but lacks the information about the source image.
-            // Therefore, load disks separately.
-
             using (TraceSources.LogAnalysis.TraceMethod().WithParameters(projectId))
             {
+                //
+                // Load disks.
+                //
+                // NB. Instances.list returns the disks associated with each
+                // instance, but lacks the information about the source image.
+                // Therefore, we load disks first and then join the data.
+                //
+                var disksByZone = await PageHelper.JoinPagesAsync<
+                            DisksResource.AggregatedListRequest,
+                            DiskAggregatedList,
+                            DisksScopedList>(
+                    disksResource.AggregatedList(projectId),
+                    i => i.Items.Values.Where(v => v != null),
+                    response => response.NextPageToken,
+                    (request, token) => { request.PageToken = token; });
 
-                // TODO: Paging
-                var disks = await disksResource.AggregatedList(projectId).ExecuteAsync();
-                var sourceImagaesByDisk = disks.Items == null
-                    ? new Dictionary<string, string>()
-                    : disks.Items.Values
-                        .Where(v => v.Disks != null)
-                        .EnsureNotNull()
-                        .SelectMany(v => v.Disks)
-                        .EnsureNotNull()
-                        .ToDictionary(d => d.SelfLink, d => d.SourceImage);
+                var sourceImagesByDisk = disksByZone
+                    .Where(z => z.Disks != null)    // API returns null for empty zones.
+                    .SelectMany(zone => zone.Disks)
+                    .EnsureNotNull()
+                    .ToDictionary(d => d.SelfLink, d => d.SourceImage);
 
-                // TODO: Paging
-                var instances = await instancesResource.AggregatedList(projectId).ExecuteAsync();
-                if (instances.Items != null)
+                TraceSources.LogAnalysis.TraceVerbose("Found {0} existing disks", sourceImagesByDisk.Count());
+
+                //
+                // Load instances.
+                //
+                var instancesByZone = await PageHelper.JoinPagesAsync<
+                            InstancesResource.AggregatedListRequest,
+                            InstanceAggregatedList,
+                            InstancesScopedList>(
+                    instancesResource.AggregatedList(projectId),
+                    i => i.Items.Values.Where(v => v != null),
+                    response => response.NextPageToken,
+                    (request, token) => { request.PageToken = token; });
+
+                var instances = instancesByZone
+                    .Where(z => z.Instances != null)    // API returns null for empty zones.
+                    .SelectMany(zone => zone.Instances);
+
+                TraceSources.LogAnalysis.TraceVerbose("Found {0} existing instances", instances.Count());
+
+                foreach (var instance in instances)
                 {
-                    foreach (var list in instances.Items.Values)
+                    TraceSources.LogAnalysis.TraceVerbose("Adding {0}", instance.Id);
+
+                    var bootDiskUrl = instance.Disks
+                        .EnsureNotNull()
+                        .Where(d => d.Boot != null && d.Boot.Value)
+                        .EnsureNotNull()
+                        .Select(d => d.Source)
+                        .EnsureNotNull()
+                        .FirstOrDefault();
+                    GlobalResourceReference image = null;
+                    if (bootDiskUrl != null &&
+                        sourceImagesByDisk.TryGetValue(bootDiskUrl, out string imageUrl) &&
+                        imageUrl != null)
                     {
-                        if (list.Instances == null)
-                        {
-                            continue;
-                        }
-
-                        foreach (var instance in list.Instances)
-                        {
-                            TraceSources.LogAnalysis.TraceVerbose("Adding {0}", instance.Id);
-
-                            var bootDiskUrl = instance.Disks
-                                .EnsureNotNull()
-                                .Where(d => d.Boot != null && d.Boot.Value)
-                                .EnsureNotNull()
-                                .Select(d => d.Source)
-                                .EnsureNotNull()
-                                .FirstOrDefault();
-                            GlobalResourceReference image = null;
-                            if (bootDiskUrl != null &&
-                                sourceImagaesByDisk.TryGetValue(bootDiskUrl, out string imageUrl) &&
-                                imageUrl != null)
-                            {
-                                image = GlobalResourceReference.FromString(imageUrl);
-                            }
-
-                            AddExistingInstance(
-                                (ulong)instance.Id.Value,
-                                new VmInstanceReference(
-                                    projectId,
-                                    ShortZoneIdFromUrl(instance.Zone),
-                                    instance.Name),
-                                image,
-                                instance.Status == "RUNNING"
-                                    ? InstanceState.Running
-                                    : InstanceState.Terminated,
-                                DateTime.Now,
-                                instance.Scheduling.NodeAffinities != null && instance.Scheduling.NodeAffinities.Any()
-                                    ? Tenancy.SoleTenant
-                                    : Tenancy.Fleet);
-                        }
+                        image = GlobalResourceReference.FromString(imageUrl);
                     }
+
+                    AddExistingInstance(
+                        (ulong)instance.Id.Value,
+                        new VmInstanceReference(
+                            projectId,
+                            ShortZoneIdFromUrl(instance.Zone),
+                            instance.Name),
+                        image,
+                        instance.Status == "RUNNING"
+                            ? InstanceState.Running
+                            : InstanceState.Terminated,
+                        DateTime.Now,
+                        instance.Scheduling.NodeAffinities != null && instance.Scheduling.NodeAffinities.Any()
+                            ? Tenancy.SoleTenant
+                            : Tenancy.Fleet);
                 }
             }
         }
