@@ -86,7 +86,6 @@
   <ItemGroup>
     <Compile Include="Services\Adapters\ComputeEngineAdapter.cs" />
     <Compile Include="Services\Adapters\GithubAdapter.cs" />
-    <Compile Include="Services\Adapters\PageHelper.cs" />
     <Compile Include="Services\Adapters\ResourceManagerAdapter.cs" />
     <Compile Include="Global.cs" />
     <Compile Include="Services\Integration\EventService.cs" />

@@ -23,6 +23,7 @@ using Google.Apis.Compute.v1;
 using Google.Apis.Compute.v1.Data;
 using Google.Apis.Services;
 using Google.Solutions.Common;
+using Google.Solutions.Common.ApiExtensions;
 using Google.Solutions.Common.ApiExtensions.Instance;
 using Google.Solutions.Common.Diagnostics;
 using Google.Solutions.Common.Util;
@@ -99,7 +100,6 @@ namespace Google.Solutions.IapDesktop.Application.Services.Adapters
                     var result = zones
                         .Where(z => z.Instances != null)    // API returns null for empty zones.
                         .SelectMany(zone => zone.Instances);
-
 
                     TraceSources.IapDesktop.TraceVerbose("Found {0} instances", result.Count());
 

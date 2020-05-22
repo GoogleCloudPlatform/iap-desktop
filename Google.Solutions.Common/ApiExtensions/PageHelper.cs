@@ -24,11 +24,11 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
-namespace Google.Solutions.IapDesktop.Application.Services.Adapters
+namespace Google.Solutions.Common.ApiExtensions
 {
-    internal static class PageHelper
+    public static class PageHelper
     {
-        internal static async Task<IEnumerable<TValue>> JoinPagesAsync<TRequest, TResponse, TValue>(
+        public static async Task<IEnumerable<TValue>> JoinPagesAsync<TRequest, TResponse, TValue>(
             TRequest request,
             Func<TResponse, IEnumerable<TValue>> mapFunc,
             Func<TResponse, string> getNextPageTokenFunc,
