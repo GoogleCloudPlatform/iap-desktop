@@ -79,18 +79,20 @@ namespace Google.Solutions.IapDesktop.Application.Util
                     // Successfully took ownership of mutex, so this is the first process.
 
                     // Start named pipe server in background.
-                    var cts = new CancellationTokenSource();
-                    var serverTask = Task.Factory.StartNew(
-                        async () => await RunNamedPipeServer(cts.Token),
-                        TaskCreationOptions.LongRunning);
+                    using (var cts = new CancellationTokenSource())
+                    {
+                        var serverTask = Task.Factory.StartNew(
+                            async () => await RunNamedPipeServer(cts.Token).ConfigureAwait(false),
+                            TaskCreationOptions.LongRunning);
 
-                    // Run main invocation in foreground and wait for it to finish.
-                    var result = HandleFirstInvocation(args);
+                        // Run main invocation in foreground and wait for it to finish.
+                        var result = HandleFirstInvocation(args);
 
-                    // Stop the server.
-                    cts.Cancel();
-                    serverTask.Wait();
-                    return result;
+                        // Stop the server.
+                        cts.Cancel();
+                        serverTask.Wait();
+                        return result;
+                    }
                 }
                 else
                 {
@@ -181,7 +183,7 @@ namespace Google.Solutions.IapDesktop.Application.Util
                         0,
                         pipeSecurity))
                     {
-                        await pipe.WaitForConnectionAsync(token);
+                        await pipe.WaitForConnectionAsync(token).ConfigureAwait(false);
 
                         //
                         // The server expects:
