@@ -91,11 +91,13 @@ namespace Google.Solutions.IapTunneling.Iap
         {
             if (TraceSources.Compute.Switch.ShouldTrace(TraceEventType.Verbose))
             {
-                TraceSources.Compute.TraceVerbose("SshRelayStream [" +
-                    $"TX: {Thread.VolatileRead(ref this.bytesSent)} " +
-                    $"TXA: {Thread.VolatileRead(ref this.bytesSentAndAcknoledged)} " +
-                    $"RX: {Thread.VolatileRead(ref this.bytesReceived)} " +
-                    $"AQ: {this.sentButUnacknoledgedQueue.Count}]: {message}");
+                TraceSources.Compute.TraceVerbose(
+                    "SshRelayStream [TX: {0} TXA: {1} RX: {2} AQ: {3}]: {4}",
+                    Thread.VolatileRead(ref this.bytesSent),
+                    Thread.VolatileRead(ref this.bytesSentAndAcknoledged),
+                    Thread.VolatileRead(ref this.bytesReceived),
+                    this.sentButUnacknoledgedQueue.Count,
+                    message);
             }
         }
 
