@@ -115,18 +115,21 @@ namespace Google.Solutions.Common.Auth
             }
         }
 
+        public static async Task<OpenIdConfiguration> QueryOpenIdConfigurationAsync(
+            CancellationToken token)
+        {
+            return await new RestClient().GetAsync<OpenIdConfiguration>(
+                ConfigurationEndpoint,
+                token).ConfigureAwait(false);
+        }
+
         public async Task<UserInfo> QueryUserInfoAsync(
             ICredential credential,
             CancellationToken token)
         {
-            var client = new RestClient()
-            {
-                Credential = credential
-            };
+            var configuration = await QueryOpenIdConfigurationAsync(token);
 
-            var configuration = await client.GetAsync<OpenIdConfiguration>(
-                ConfigurationEndpoint,
-                token).ConfigureAwait(false);
+            var client = new RestClient(credential);
 
             return await client.GetAsync<UserInfo>(
                 configuration.UserInfoEndpoint,

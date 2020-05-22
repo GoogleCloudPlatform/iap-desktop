@@ -33,7 +33,16 @@ namespace Google.Solutions.Common.Net
     public class RestClient
     {
         public string UserAgent { get; set; }
-        public ICredential Credential { get; set; }
+        public ICredential Credential { get; }
+
+        public RestClient() : this(null)
+        {
+        }
+
+        public RestClient(ICredential credential)
+        {
+            this.Credential = credential;
+        }
 
         public async Task<TModel> GetAsync<TModel>(
             string url,
