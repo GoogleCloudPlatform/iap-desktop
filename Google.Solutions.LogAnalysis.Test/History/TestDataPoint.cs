@@ -43,6 +43,15 @@ namespace Google.Solutions.LogAnalysis.Test.History
         }
 
         [Test]
+        public void WhenReferencesAreEquivalent_ThenHashIsSame()
+        {
+            var ref1 = new DataPoint(SampleDate, 42);
+            var ref2 = new DataPoint(SampleDate, 42);
+
+            Assert.AreEqual(ref1.GetHashCode(), ref2.GetHashCode());
+        }
+
+        [Test]
         public void WhenReferencesAreSame_ThenEqualsReturnsTrue()
         {
             var ref1 = new DataPoint(SampleDate, 42);
@@ -77,6 +86,14 @@ namespace Google.Solutions.LogAnalysis.Test.History
             Assert.IsFalse(null == ref1);
             Assert.IsTrue(ref1 != null);
             Assert.IsTrue(null != ref1);
+        }
+
+        [Test]
+        public void ToStringContainsValue()
+        {
+            var ref1 = new DataPoint(SampleDate, 42);
+
+            StringAssert.Contains("42", ref1.ToString());
         }
     }
 }
