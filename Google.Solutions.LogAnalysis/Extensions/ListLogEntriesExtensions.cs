@@ -31,6 +31,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Google.Solutions.LogAnalysis.Extensions
@@ -45,7 +46,8 @@ namespace Google.Solutions.LogAnalysis.Extensions
             this EntriesResource entriesResource,
             ListLogEntriesRequest request,
             Action<EventBase> callback,
-            ExponentialBackOff backOff)
+            ExponentialBackOff backOff,
+            CancellationToken cancellationToken)
         {
             using (TraceSources.LogAnalysis.TraceMethod().WithParameters(request.Filter))
             {
@@ -56,7 +58,7 @@ namespace Google.Solutions.LogAnalysis.Extensions
 
                     using (var stream = await entriesResource
                         .List(request)
-                        .ExecuteAsStreamWithRetryAsync(backOff))
+                        .ExecuteAsStreamWithRetryAsync(backOff, cancellationToken))
                     using (var reader = new JsonTextReader(new StreamReader(stream)))
                     {
                         nextPageToken = ListLogEntriesParser.Read(reader, callback);
@@ -70,7 +72,8 @@ namespace Google.Solutions.LogAnalysis.Extensions
             this EntriesResource entriesResource,
             IEnumerable<string> projectIds,
             DateTime startTime,
-            IEventProcessor processor)
+            IEventProcessor processor,
+            CancellationToken cancellationToken)
         {
             using (TraceSources.LogAnalysis.TraceMethod().WithParameters(
                 string.Join(", ", projectIds), 
@@ -91,7 +94,8 @@ namespace Google.Solutions.LogAnalysis.Extensions
                     entriesResource,
                     request,
                     processor.Process,
-                    new ExponentialBackOff(initialBackOff, MaxRetries));
+                    new ExponentialBackOff(initialBackOff, MaxRetries),
+                    cancellationToken);
             }
         }
     }

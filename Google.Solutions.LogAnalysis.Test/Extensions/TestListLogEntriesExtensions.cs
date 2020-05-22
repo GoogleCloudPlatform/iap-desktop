@@ -22,7 +22,9 @@
 using Google.Apis.Compute.v1;
 using Google.Apis.Logging.v2;
 using Google.Apis.Logging.v2.Data;
+using Google.Apis.Requests;
 using Google.Apis.Services;
+using Google.Solutions.Common.Test;
 using Google.Solutions.Common.Test.Testbed;
 using Google.Solutions.LogAnalysis.Events;
 using Google.Solutions.LogAnalysis.Events.Lifecycle;
@@ -31,7 +33,9 @@ using Google.Solutions.LogAnalysis.History;
 using NUnit.Framework;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Google.Solutions.LogAnalysis.Test.Extensions
@@ -77,7 +81,8 @@ namespace Google.Solutions.LogAnalysis.Test.Extensions
                 await loggingService.Entries.ListEventsAsync(
                     request,
                     events.Add,
-                    new Apis.Util.ExponentialBackOff());
+                    new Apis.Util.ExponentialBackOff(),
+                    CancellationToken.None);
 
                 if (!events.Any())
                 {
@@ -118,12 +123,44 @@ namespace Google.Solutions.LogAnalysis.Test.Extensions
             await loggingService.Entries.ListInstanceEventsAsync(
                 new[] { Defaults.ProjectId },
                 instanceBuilder.StartDate,
-                instanceBuilder);
+                instanceBuilder,
+                CancellationToken.None);
 
             var set = instanceBuilder.Build();
             var testInstanceHistory = set.Instances.FirstOrDefault(i => i.Reference == instanceRef);
 
             Assert.IsNotNull(testInstanceHistory, "Instance found in history");
+        }
+
+
+        [Test]
+        public void WhenUsingInvalidProjectId_ThenListEventsAsyncThrowsException()
+        {
+            var loggingService = new LoggingService(new BaseClientService.Initializer
+            {
+                HttpClientInitializer = Defaults.GetCredential()
+            });
+
+            var startDate = DateTime.UtcNow.AddDays(-30);
+            var request = new ListLogEntriesRequest()
+            {
+                ResourceNames = new[]
+                {
+                    "projects/invalid"
+                },
+                Filter = $"resource.type=\"gce_instance\" " +
+                    $"AND protoPayload.methodName:{InsertInstanceEvent.Method} " +
+                    $"AND timestamp > {startDate:yyyy-MM-dd}",
+                PageSize = 1000,
+                OrderBy = "timestamp desc"
+            };
+
+            AssertEx.ThrowsAggregateException<GoogleApiException>(
+                () => loggingService.Entries.ListEventsAsync(
+                    request,
+                    _ => { },
+                    new Apis.Util.ExponentialBackOff(),
+                    CancellationToken.None).Wait());
         }
     }
 }

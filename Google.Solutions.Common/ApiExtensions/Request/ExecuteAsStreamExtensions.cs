@@ -23,22 +23,56 @@ using Google.Apis.Requests;
 using Google.Apis.Util;
 using Google.Solutions.Common.Diagnostics;
 using System.IO;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Google.Solutions.Common.ApiExtensions.Request
 {
-    public static class RetryExtensions
+    public static class ExecuteAsStreamExtensions
     {
+        /// <summary>
+        /// Like ExecuteAsStream, but catch non-success HTTP codes and convert them
+        /// into an exception.
+        /// </summary>
+        public async static Task<Stream> ExecuteAsStreamOrThrowAsync<TResponse>(
+            this IClientServiceRequest<TResponse> request,
+            CancellationToken cancellationToken)
+        {
+            using (var httpRequest = request.CreateRequest())
+            {
+                var httpResponse = await request.Service.HttpClient.SendAsync(
+                    httpRequest, 
+                    cancellationToken).ConfigureAwait(false);
+
+                // NB. ExecuteAsStream does not do this check.
+                if (!httpResponse.IsSuccessStatusCode)
+                {
+                    var error = await request.Service.DeserializeError(httpResponse).ConfigureAwait(false);
+                    throw new GoogleApiException(request.Service.Name, error.ToString())
+                    {
+                        Error = error,
+                        HttpStatusCode = httpResponse.StatusCode
+                    };
+                }
+
+                cancellationToken.ThrowIfCancellationRequested();
+                return await httpResponse.Content.ReadAsStreamAsync().ConfigureAwait(false);
+            }
+        }
+
         public async static Task<Stream> ExecuteAsStreamWithRetryAsync<TResponse>(
             this IClientServiceRequest<TResponse> request,
-            ExponentialBackOff backOff)
+            ExponentialBackOff backOff,
+            CancellationToken cancellationToken)
         {
             int retries = 0;
             while (true)
             {
                 try
                 {
-                    return await request.ExecuteAsStreamAsync();
+                    return await request
+                        .ExecuteAsStreamOrThrowAsync(cancellationToken)
+                        .ConfigureAwait(false); ;
                 }
                 catch (GoogleApiException e) when (e.Error != null && e.Error.Code == 429)
                 {
