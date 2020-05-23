@@ -23,7 +23,7 @@ using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Windows.Forms;
 
-namespace Google.Solutions.IapDesktop.Application.Services.Windows
+namespace Google.Solutions.IapDesktop.Application.Controls
 {
     internal class FlatVerticalTabControl : TabControl
     {

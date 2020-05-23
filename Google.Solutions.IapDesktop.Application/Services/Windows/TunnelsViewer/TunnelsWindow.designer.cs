@@ -19,6 +19,8 @@
 // under the License.
 //
 
+using Google.Solutions.IapDesktop.Application.Controls;
+
 namespace Google.Solutions.IapDesktop.Application.Services.Windows.TunnelsViewer
 {
     partial class TunnelsWindow
@@ -53,7 +55,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.Windows.TunnelsViewer
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(TunnelsWindow));
             this.toolStrip = new System.Windows.Forms.ToolStrip();
             this.disconnectToolStripButton = new System.Windows.Forms.ToolStripButton();
-            this.tunnelsList = new Google.Solutions.IapDesktop.Application.Services.Windows.FlatListView();
+            this.tunnelsList = new FlatListView();
             this.instanceHeader = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.projectIdHeader = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.zoneHeader = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));

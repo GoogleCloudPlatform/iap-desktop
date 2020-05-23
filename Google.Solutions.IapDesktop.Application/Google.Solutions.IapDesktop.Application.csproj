@@ -104,10 +104,10 @@
     <Compile Include="Services\Integration\ProjectInventoryService.cs" />
     <Compile Include="Services\Integration\ITunnelBrokerService.cs" />
     <Compile Include="Services\Integration\TunnelService.cs" />
-    <Compile Include="Services\Windows\FlatListView.cs">
+    <Compile Include="Controls\FlatListView.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="Services\Windows\FlatVerticalTabControl.cs">
+    <Compile Include="Controls\FlatVerticalTabControl.cs">
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="Services\Windows\TaskDialog.cs" />
