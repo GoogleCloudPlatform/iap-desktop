@@ -25,6 +25,9 @@ using System.Windows.Forms;
 
 namespace Google.Solutions.IapDesktop.Application.Controls
 {
+    /// <summary>
+    /// Listview with flat, non-clickable headers.
+    /// </summary>
     public class FlatListView : ListView
     {
         public FlatListView()
