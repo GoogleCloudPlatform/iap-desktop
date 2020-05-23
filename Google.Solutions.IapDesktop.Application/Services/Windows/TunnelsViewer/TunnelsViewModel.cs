@@ -23,13 +23,17 @@ using Google.Solutions.IapDesktop.Application.Services.Integration;
 using System.Collections.ObjectModel;
 using System.Threading.Tasks;
 using Google.Solutions.IapDesktop.Application.ObjectModel;
+using System.Collections.Generic;
+using Google.Solutions.Common.Util;
+using System.Linq;
+using System.Diagnostics;
 
 namespace Google.Solutions.IapDesktop.Application.Services.Windows.TunnelsViewer
 {
     internal class TunnelsViewModel : ObservableBase
     {
         private readonly ITunnelBrokerService tunnelBrokerService;
-        private Tunnel selectedTunnel;
+        private IEnumerable<Tunnel> selectedTunnels = Enumerable.Empty<Tunnel>();
 
         //---------------------------------------------------------------------
         // Properties for data binding.
@@ -38,34 +42,22 @@ namespace Google.Solutions.IapDesktop.Application.Services.Windows.TunnelsViewer
         public ObservableCollection<Tunnel> Tunnels { get; }
             = new ObservableCollection<Tunnel>();
 
-        public Tunnel SelectedTunnel
+        public IEnumerable<Tunnel> SelectedTunnels
         {
-            get => this.selectedTunnel;
+            get => this.selectedTunnels;
             set
             {
-                this.selectedTunnel = value;
+                Debug.WriteLine($"SelectedTunnels = {value.EnsureNotNull().FirstOrDefault()}");
+                Debug.WriteLine($"IsDisconnectButtonEnabled = {IsDisconnectButtonEnabled}");
+
+                this.selectedTunnels = value;
+
                 RaisePropertyChange();
+                RaisePropertyChange("IsDisconnectButtonEnabled");
             }
         }
 
-        //public int SelectedTunnelIndex
-        //{
-        //    get => this.selectedTunnel != null
-        //        ? this.Tunnels.IndexOf(this.selectedTunnel)
-        //        : -1;
-        //    set
-        //    {
-        //        if (value < 0)
-        //        {
-        //            this.selectedTunnel = null;
-        //        }
-        //        else
-        //        {
-        //            this.selectedTunnel = this.Tunnels[value];
-        //        }
-        //        RaisePropertyChange();
-        //    }
-        //}
+        public bool IsDisconnectButtonEnabled => this.selectedTunnels.Any();
 
         //---------------------------------------------------------------------
 
@@ -95,13 +87,17 @@ namespace Google.Solutions.IapDesktop.Application.Services.Windows.TunnelsViewer
             }
         }
 
-        public async Task DisconnectActiveTunnel()
+        public async Task DisconnectSelectedTunnels()
         {
-            if (this.selectedTunnel != null)
+            foreach (var tunnel in this.selectedTunnels.EnsureNotNull())
             {
-                await this.tunnelBrokerService.DisconnectAsync(this.selectedTunnel.Destination);
-                RefreshTunnels();
+                await this.tunnelBrokerService.DisconnectAsync(tunnel.Destination);
             }
+
+            // Reset selection.
+            this.SelectedTunnels = Enumerable.Empty<Tunnel>();
+                
+            RefreshTunnels();
         }
     }
 }

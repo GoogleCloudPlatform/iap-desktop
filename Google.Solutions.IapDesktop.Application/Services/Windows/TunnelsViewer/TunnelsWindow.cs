@@ -67,6 +67,19 @@ namespace Google.Solutions.IapDesktop.Application.Services.Windows.TunnelsViewer
             this.tunnelsList.BindColumn(2, t => t.Destination.Instance.Zone);
             this.tunnelsList.BindColumn(3, t => t.LocalPort.ToString());
 
+            this.tunnelsList.Bind(
+                v => this.tunnelsList.SelectedModelItems,
+                this.viewModel,
+                m => this.viewModel.SelectedTunnels);
+            this.disconnectToolStripButton.Bind(
+                b => b.Enabled,
+                this.viewModel,
+                m => m.IsDisconnectButtonEnabled);
+            this.disconnectTunnelToolStripMenuItem.Bind(
+                b => b.Enabled,
+                this.viewModel,
+                m => m.IsDisconnectButtonEnabled);
+
             //this.tunnelsList.DataBindings.Add(
             //    new Binding(
             //        "SelectedModelIndex", 
@@ -94,9 +107,9 @@ namespace Google.Solutions.IapDesktop.Application.Services.Windows.TunnelsViewer
         private void tunnelsList_SelectedIndexChanged(object sender, EventArgs eventArgs)
         {
             // TODO: Solve via binding.
-            this.disconnectToolStripButton.Enabled =
-                this.disconnectTunnelToolStripMenuItem.Enabled =
-                this.tunnelsList.SelectedIndices.Count > 0;
+            //this.disconnectToolStripButton.Enabled =
+            //    this.disconnectTunnelToolStripMenuItem.Enabled =
+            //    this.tunnelsList.SelectedIndices.Count > 0;
 
             //this.viewModel.SelectedTunnel = (Tunnel)this.tunnelsList.SelectedItems
             //    .Cast<ListViewItem>()
@@ -105,18 +118,18 @@ namespace Google.Solutions.IapDesktop.Application.Services.Windows.TunnelsViewer
 
         private async void disconnectToolStripButton_Click(object sender, EventArgs eventArgse)
         {
-            if (this.viewModel.SelectedTunnel != null)
+            if (this.viewModel.SelectedTunnels.Any())
             {
                 if (MessageBox.Show(
                     this,
                     "Are you sure you wish to terminate the tunnel to " + 
-                        this.viewModel.SelectedTunnel.Destination.Instance + "?",
+                        this.viewModel.SelectedTunnels.First().Destination.Instance + "?",
                     "Terminate tunnel",
                     MessageBoxButtons.YesNoCancel) == DialogResult.Yes)
                 {
                     try
                     {
-                        await this.viewModel.DisconnectActiveTunnel();
+                        await this.viewModel.DisconnectSelectedTunnels();
                     }
                     catch (Exception e)
                     {

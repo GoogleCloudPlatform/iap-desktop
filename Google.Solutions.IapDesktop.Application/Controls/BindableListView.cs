@@ -80,20 +80,32 @@ namespace Google.Solutions.IapDesktop.Application.Controls
         // Convenience properties
         //---------------------------------------------------------------------
 
-        //public IEnumerable<TModelItem> SelectedModelItems
-        //{
-        //    get => this.SelectedItems.OfType<TModelItem>();
-        //    set
-        //    {
-        //        this.SelectedIndices.Clear();
+        public event EventHandler SelectedModelItemsChanged;
 
-        //        foreach (var selectedItem in value)
-        //        {
-        //            var index = this.Items.IndexOf(FindViewItem(selectedItem));
-        //            this.SelectedIndices.Add(index);
-        //        }
-        //    }
-        //}
+        public IEnumerable<TModelItem> SelectedModelItems
+        {
+            get => this.SelectedItems
+                .OfType<ListViewItem>()
+                .Select(item => (TModelItem)item.Tag);
+            set
+            {
+                this.SelectedIndices.Clear();
+
+                foreach (var selectedItem in value)
+                {
+                    var index = this.Items.IndexOf(FindViewItem(selectedItem));
+                    this.SelectedIndices.Add(index);
+                }
+
+                this.SelectedModelItemsChanged?.Invoke(this, EventArgs.Empty);
+            }
+        }
+
+        protected override void OnSelectedIndexChanged(EventArgs e)
+        {
+            this.SelectedModelItemsChanged?.Invoke(this, e);
+        }
+
         //public TModelItem SelectedModelItem
         //{
         //    get => this.SelectedItems.OfType<TModelItem>().FirstOrDefault();

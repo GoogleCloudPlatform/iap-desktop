@@ -35,7 +35,7 @@ namespace Google.Solutions.IapDesktop.Application.ObjectModel
     /// </summary>
     internal static class BindingExtensions
     {
-        public static IDisposable OnPropertyChange<TObject, TProperty>(
+        public static Binding OnPropertyChange<TObject, TProperty>(
             this TObject observed,
             Expression<Func<TObject, TProperty>> modelProperty,
             Action<TProperty> newValue)
@@ -57,11 +57,11 @@ namespace Google.Solutions.IapDesktop.Application.ObjectModel
             }
         }
 
-        public static IDisposable OnControlPropertyChange<TControl, TProperty>(
+        public static Binding OnControlPropertyChange<TControl, TProperty>(
             this TControl observed,
             Expression<Func<TControl, TProperty>> controlProperty,
             Action<TProperty> newValue)
-            where TControl : Control
+            where TControl : IComponent
         {
             Debug.Assert(controlProperty.NodeType == ExpressionType.Lambda);
             if (controlProperty.Body is MemberExpression memberExpression &&
@@ -96,10 +96,7 @@ namespace Google.Solutions.IapDesktop.Application.ObjectModel
             if (controlProperty.Body is MemberExpression memberExpression &&
                 memberExpression.Member is PropertyInfo propertyInfo)
             {
-                return value =>
-                {
-                    propertyInfo.SetValue(obj, value);
-                };
+                return value => propertyInfo.SetValue(obj, value);
             }
             else
             {
@@ -113,7 +110,7 @@ namespace Google.Solutions.IapDesktop.Application.ObjectModel
             TModel model,
             Expression<Func<TModel, TProperty>> modelProperty)
             where TModel : INotifyPropertyChanged
-            where TControl : Control
+            where TControl : IComponent
         {
             var forwardBinding = control.OnControlPropertyChange(
                 controlProperty,
@@ -123,11 +120,24 @@ namespace Google.Solutions.IapDesktop.Application.ObjectModel
                 modelProperty,
                 CreateSetter(control, controlProperty));
 
+            // Wire up these two bindings so that we do not deliver
+            // updates in cycles.
+            forwardBinding.Peer = reverseBinding;
+            reverseBinding.Peer = forwardBinding;
+
             return new MultiDisposable(forwardBinding, reverseBinding);
         }
 
-        private sealed class EventHandlerBinding<TControl, TProperty> : IDisposable
-            where TControl : Control
+        public abstract class Binding : IDisposable
+        {
+            public bool IsBusy { get; protected set; } = false;
+            public Binding Peer { get; internal set; }
+
+            public abstract void Dispose();
+        }
+
+        private sealed class EventHandlerBinding<TControl, TProperty> : Binding, IDisposable
+            where TControl : IComponent
         {
             private readonly TControl observed;
             private readonly EventInfo eventInfo;
@@ -136,7 +146,22 @@ namespace Google.Solutions.IapDesktop.Application.ObjectModel
 
             private void Observed_PropertyChanged(object sender, EventArgs e)
             {
-                this.newValueAction(this.readPropertyFunc(this.observed));
+                if (this.Peer != null && this.Peer.IsBusy)
+                {
+                    // Reentrant call - stop here to avoid changes bouncing
+                    // back and forth.
+                    return;
+                }
+
+                try
+                {
+                    this.IsBusy = true;
+                    this.newValueAction(this.readPropertyFunc(this.observed));
+                }
+                finally
+                {
+                    this.IsBusy = false;
+                }
             }
 
             public EventHandlerBinding(
@@ -155,7 +180,7 @@ namespace Google.Solutions.IapDesktop.Application.ObjectModel
                     new EventHandler(Observed_PropertyChanged));
             }
 
-            public void Dispose()
+            public override void Dispose()
             {
                 this.eventInfo.RemoveEventHandler(
                     this.observed,
@@ -163,7 +188,7 @@ namespace Google.Solutions.IapDesktop.Application.ObjectModel
             }
         }
 
-        private sealed class NotifyPropertyChangedBinding<TObject, TProperty> : IDisposable
+        private sealed class NotifyPropertyChangedBinding<TObject, TProperty> : Binding, IDisposable
             where TObject : INotifyPropertyChanged
         {
             private readonly TObject observed;
@@ -174,9 +199,24 @@ namespace Google.Solutions.IapDesktop.Application.ObjectModel
 
             private void Observed_PropertyChanged(object sender, PropertyChangedEventArgs e)
             {
+                if (this.Peer != null && this.Peer.IsBusy)
+                {
+                    // Reentrant call - stop here to avoid changes bouncing
+                    // back and forth.
+                    return;
+                }
+
                 if (e.PropertyName == this.propertyName)
                 {
-                    this.newValueAction(this.readPropertyFunc(this.observed));
+                    try
+                    {
+                        this.IsBusy = true;
+                        this.newValueAction(this.readPropertyFunc(this.observed));
+                    }
+                    finally
+                    {
+                        this.IsBusy = false;
+                    }
                 }
             }
 
@@ -194,7 +234,7 @@ namespace Google.Solutions.IapDesktop.Application.ObjectModel
                 this.observed.PropertyChanged += Observed_PropertyChanged;
             }
 
-            public void Dispose()
+            public override void Dispose()
             {
                 this.observed.PropertyChanged -= Observed_PropertyChanged;
             }
