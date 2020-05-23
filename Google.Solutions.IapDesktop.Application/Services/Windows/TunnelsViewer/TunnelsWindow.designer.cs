@@ -55,7 +55,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.Windows.TunnelsViewer
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(TunnelsWindow));
             this.toolStrip = new System.Windows.Forms.ToolStrip();
             this.disconnectToolStripButton = new System.Windows.Forms.ToolStripButton();
-            this.tunnelsList = new FlatListView();
+            this.tunnelsList = new TunnelsListView();
             this.instanceHeader = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.projectIdHeader = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.zoneHeader = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
@@ -169,7 +169,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.Windows.TunnelsViewer
         #endregion
         private System.Windows.Forms.ToolStrip toolStrip;
         private System.Windows.Forms.ToolStripButton disconnectToolStripButton;
-        private FlatListView tunnelsList;
+        private TunnelsListView tunnelsList;
         private System.Windows.Forms.ColumnHeader instanceHeader;
         private System.Windows.Forms.ColumnHeader projectIdHeader;
         private System.Windows.Forms.ColumnHeader zoneHeader;

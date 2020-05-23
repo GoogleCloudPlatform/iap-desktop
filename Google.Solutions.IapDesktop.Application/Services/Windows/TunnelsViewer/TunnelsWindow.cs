@@ -19,6 +19,7 @@
 // under the License.
 //
 
+using Google.Solutions.IapDesktop.Application.Controls;
 using Google.Solutions.IapDesktop.Application.ObjectModel;
 using Google.Solutions.IapDesktop.Application.Services.Integration;
 using System;
@@ -36,18 +37,18 @@ namespace Google.Solutions.IapDesktop.Application.Services.Windows.TunnelsViewer
     public partial class TunnelsWindow : ToolWindow, ITunnelsViewer
     {
         private readonly DockPanel dockPanel;
-        private readonly ITunnelBrokerService tunnelBrokerService;
         private readonly IExceptionDialog exceptionDialog;
+        private readonly TunnelsViewModel viewModel;
 
         public TunnelsWindow(IServiceProvider serviceProvider)
         {
             InitializeComponent();
 
             this.dockPanel = serviceProvider.GetService<IMainForm>().MainPanel;
-            this.tunnelBrokerService = serviceProvider.GetService<ITunnelBrokerService>();
+            this.TabText = this.Text;
+
             this.exceptionDialog = serviceProvider.GetService<IExceptionDialog>();
 
-            this.TabText = this.Text;
 
             //
             // This window is a singleton, so we never want it to be closed,
@@ -55,29 +56,16 @@ namespace Google.Solutions.IapDesktop.Application.Services.Windows.TunnelsViewer
             //
             this.HideOnClose = true;
 
-            // Keep the list up tp date.
-            var eventService = serviceProvider.GetService<IEventService>();
-            eventService.BindHandler<TunnelOpenedEvent>(_ => RefreshTunnels());
-            eventService.BindHandler<TunnelClosedEvent>(_ => RefreshTunnels());
+            this.viewModel = new TunnelsViewModel(
+                serviceProvider.GetService<ITunnelBrokerService>(),
+                serviceProvider.GetService<IEventService>());
+
+            this.tunnelsList.Model = viewModel.Tunnels;
+            this.tunnelsList.BindColumn(0, t => t.Destination.Instance.InstanceName);
+            this.tunnelsList.BindColumn(1, t => t.Destination.Instance.ProjectId);
+            this.tunnelsList.BindColumn(2, t => t.Destination.Instance.Zone);
+            this.tunnelsList.BindColumn(3, t => t.LocalPort.ToString());
         }
-
-        private void RefreshTunnels()
-        {
-            this.tunnelsList.Items.Clear();
-
-            foreach (var tunnel in this.tunnelBrokerService.OpenTunnels)
-            {
-                ListViewItem item = new ListViewItem(new string[] {
-                    tunnel.Destination.Instance.InstanceName,
-                    tunnel.Destination.Instance.ProjectId,
-                    tunnel.Destination.Instance.Zone,
-                    tunnel.LocalPort.ToString()
-                });
-                item.Tag = tunnel;
-                this.tunnelsList.Items.Add(item);
-            }
-        }
-
 
         //---------------------------------------------------------------------
         // ITunnelsList.
@@ -87,7 +75,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.Windows.TunnelsViewer
         {
             ShowOrActivate(this.dockPanel, DockState.DockBottomAutoHide);
 
-            RefreshTunnels();
+            this.viewModel.RefreshTunnels();
         }
 
         //---------------------------------------------------------------------
@@ -96,39 +84,40 @@ namespace Google.Solutions.IapDesktop.Application.Services.Windows.TunnelsViewer
 
         private void tunnelsList_SelectedIndexChanged(object sender, EventArgs eventArgs)
         {
+            // TODO: Solve via binding.
             this.disconnectToolStripButton.Enabled =
                 this.disconnectTunnelToolStripMenuItem.Enabled =
                 this.tunnelsList.SelectedIndices.Count > 0;
+
+            this.viewModel.SelectedTunnel = (Tunnel)this.tunnelsList.SelectedItems
+                .Cast<ListViewItem>()
+                .FirstOrDefault()?.Tag;
         }
 
         private async void disconnectToolStripButton_Click(object sender, EventArgs eventArgse)
         {
-            var selectedItem = this.tunnelsList.SelectedItems
-                .Cast<ListViewItem>()
-                .FirstOrDefault();
-            if (selectedItem == null)
+            if (this.viewModel.SelectedTunnel != null)
             {
-                return;
-            }
-
-            var selectedTunnel = (Tunnel)selectedItem.Tag;
-
-            if (MessageBox.Show(
-                this,
-                $"Are you sure you wish to terminate the tunnel to {selectedTunnel.Destination.Instance}",
-                "Terminate tunnel",
-                MessageBoxButtons.YesNoCancel) == DialogResult.Yes)
-            {
-                try
+                if (MessageBox.Show(
+                    this,
+                    "Are you sure you wish to terminate the tunnel to " + 
+                        this.viewModel.SelectedTunnel.Destination.Instance + "?",
+                    "Terminate tunnel",
+                    MessageBoxButtons.YesNoCancel) == DialogResult.Yes)
                 {
-                    await this.tunnelBrokerService.DisconnectAsync(selectedTunnel.Destination);
-                    RefreshTunnels();
-                }
-                catch (Exception e)
-                {
-                    this.exceptionDialog.Show(this, "Terminating tunnel failed", e);
+                    try
+                    {
+                        await this.viewModel.DisconnectActiveTunnel();
+                    }
+                    catch (Exception e)
+                    {
+                        this.exceptionDialog.Show(this, "Terminating tunnel failed", e);
+                    }
                 }
             }
         }
     }
+
+    public class TunnelsListView : BindableListView<Tunnel>
+    { }
 }
