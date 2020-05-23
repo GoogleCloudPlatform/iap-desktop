@@ -22,12 +22,14 @@
 using Google.Solutions.IapDesktop.Application.Services.Integration;
 using System.Collections.ObjectModel;
 using System.Threading.Tasks;
+using Google.Solutions.IapDesktop.Application.ObjectModel;
 
 namespace Google.Solutions.IapDesktop.Application.Services.Windows.TunnelsViewer
 {
-    internal class TunnelsViewModel
+    internal class TunnelsViewModel : ObservableBase
     {
         private readonly ITunnelBrokerService tunnelBrokerService;
+        private Tunnel selectedTunnel;
 
         //---------------------------------------------------------------------
         // Properties for data binding.
@@ -36,7 +38,34 @@ namespace Google.Solutions.IapDesktop.Application.Services.Windows.TunnelsViewer
         public ObservableCollection<Tunnel> Tunnels { get; }
             = new ObservableCollection<Tunnel>();
 
-        public Tunnel SelectedTunnel { get; set; }
+        public Tunnel SelectedTunnel
+        {
+            get => this.selectedTunnel;
+            set
+            {
+                this.selectedTunnel = value;
+                RaisePropertyChange();
+            }
+        }
+
+        //public int SelectedTunnelIndex
+        //{
+        //    get => this.selectedTunnel != null
+        //        ? this.Tunnels.IndexOf(this.selectedTunnel)
+        //        : -1;
+        //    set
+        //    {
+        //        if (value < 0)
+        //        {
+        //            this.selectedTunnel = null;
+        //        }
+        //        else
+        //        {
+        //            this.selectedTunnel = this.Tunnels[value];
+        //        }
+        //        RaisePropertyChange();
+        //    }
+        //}
 
         //---------------------------------------------------------------------
 
@@ -68,13 +97,11 @@ namespace Google.Solutions.IapDesktop.Application.Services.Windows.TunnelsViewer
 
         public async Task DisconnectActiveTunnel()
         {
-            if (this.SelectedTunnel == null)
+            if (this.selectedTunnel != null)
             {
-                return;
+                await this.tunnelBrokerService.DisconnectAsync(this.selectedTunnel.Destination);
+                RefreshTunnels();
             }
-
-            await this.tunnelBrokerService.DisconnectAsync(this.SelectedTunnel.Destination);
-            RefreshTunnels();
         }
     }
 }

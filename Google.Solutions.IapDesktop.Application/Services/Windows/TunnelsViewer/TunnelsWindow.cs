@@ -19,6 +19,7 @@
 // under the License.
 //
 
+using Google.Solutions.Common.Util;
 using Google.Solutions.IapDesktop.Application.Controls;
 using Google.Solutions.IapDesktop.Application.ObjectModel;
 using Google.Solutions.IapDesktop.Application.Services.Integration;
@@ -65,6 +66,14 @@ namespace Google.Solutions.IapDesktop.Application.Services.Windows.TunnelsViewer
             this.tunnelsList.BindColumn(1, t => t.Destination.Instance.ProjectId);
             this.tunnelsList.BindColumn(2, t => t.Destination.Instance.Zone);
             this.tunnelsList.BindColumn(3, t => t.LocalPort.ToString());
+
+            //this.tunnelsList.DataBindings.Add(
+            //    new Binding(
+            //        "SelectedModelIndex", 
+            //        this.viewModel,
+            //        "SelectedTunnelIndex", 
+            //        false, 
+            //        DataSourceUpdateMode.OnPropertyChanged));
         }
 
         //---------------------------------------------------------------------
@@ -89,9 +98,9 @@ namespace Google.Solutions.IapDesktop.Application.Services.Windows.TunnelsViewer
                 this.disconnectTunnelToolStripMenuItem.Enabled =
                 this.tunnelsList.SelectedIndices.Count > 0;
 
-            this.viewModel.SelectedTunnel = (Tunnel)this.tunnelsList.SelectedItems
-                .Cast<ListViewItem>()
-                .FirstOrDefault()?.Tag;
+            //this.viewModel.SelectedTunnel = (Tunnel)this.tunnelsList.SelectedItems
+            //    .Cast<ListViewItem>()
+            //    .FirstOrDefault()?.Tag;
         }
 
         private async void disconnectToolStripButton_Click(object sender, EventArgs eventArgse)

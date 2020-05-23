@@ -77,7 +77,49 @@ namespace Google.Solutions.IapDesktop.Application.Controls
         }
 
         //---------------------------------------------------------------------
-        // Binding.
+        // Convenience properties
+        //---------------------------------------------------------------------
+
+        //public IEnumerable<TModelItem> SelectedModelItems
+        //{
+        //    get => this.SelectedItems.OfType<TModelItem>();
+        //    set
+        //    {
+        //        this.SelectedIndices.Clear();
+
+        //        foreach (var selectedItem in value)
+        //        {
+        //            var index = this.Items.IndexOf(FindViewItem(selectedItem));
+        //            this.SelectedIndices.Add(index);
+        //        }
+        //    }
+        //}
+        //public TModelItem SelectedModelItem
+        //{
+        //    get => this.SelectedItems.OfType<TModelItem>().FirstOrDefault();
+        //    set
+        //    {
+        //        this.SelectedIndices.Clear();
+        //        var index = this.Items.IndexOf(FindViewItem(value));
+        //        this.SelectedIndices.Add(index);
+        //    }
+        //}
+
+        //public int SelectedModelIndex
+        //{
+        //    get => this.SelectedIndices.Count > 0 ? this.SelectedIndices[0] : -1;
+        //    set
+        //    {
+        //        this.SelectedIndices.Clear();
+        //        if (value >= 0)
+        //        {
+        //            this.SelectedIndices.Add(value);
+        //        }
+        //    }
+        //}
+
+        //---------------------------------------------------------------------
+        // List Binding.
         //---------------------------------------------------------------------
 
         public ObservableCollection<TModelItem> Model
