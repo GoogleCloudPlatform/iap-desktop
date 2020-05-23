@@ -104,7 +104,6 @@ namespace Google.Solutions.IapDesktop.Application.Services.Windows.TunnelsViewer
             this.tunnelsList.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.Nonclickable;
             this.tunnelsList.HideSelection = false;
             this.tunnelsList.Location = new System.Drawing.Point(0, 25);
-            this.tunnelsList.Model = null;
             this.tunnelsList.MultiSelect = false;
             this.tunnelsList.Name = "tunnelsList";
             this.tunnelsList.OwnerDraw = true;

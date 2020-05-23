@@ -19,12 +19,10 @@
 // under the License.
 //
 
-using Google.Solutions.Common.Util;
 using Google.Solutions.IapDesktop.Application.Controls;
 using Google.Solutions.IapDesktop.Application.ObjectModel;
 using Google.Solutions.IapDesktop.Application.Services.Integration;
 using System;
-using System.Data;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Windows.Forms;
@@ -60,21 +58,21 @@ namespace Google.Solutions.IapDesktop.Application.Services.Windows.TunnelsViewer
                 serviceProvider.GetService<ITunnelBrokerService>(),
                 serviceProvider.GetService<IEventService>());
 
-            this.tunnelsList.Model = viewModel.Tunnels;
+            this.tunnelsList.BindCollection(viewModel.Tunnels);
             this.tunnelsList.BindColumn(0, t => t.Destination.Instance.InstanceName);
             this.tunnelsList.BindColumn(1, t => t.Destination.Instance.ProjectId);
             this.tunnelsList.BindColumn(2, t => t.Destination.Instance.Zone);
             this.tunnelsList.BindColumn(3, t => t.LocalPort.ToString());
 
-            this.tunnelsList.Bind(
+            this.tunnelsList.BindProperty(
                 v => this.tunnelsList.SelectedModelItems,
                 this.viewModel,
                 m => this.viewModel.SelectedTunnels);
-            this.disconnectToolStripButton.Bind(
+            this.disconnectToolStripButton.BindProperty(
                 b => b.Enabled,
                 this.viewModel,
                 m => m.IsDisconnectButtonEnabled);
-            this.disconnectTunnelToolStripMenuItem.Bind(
+            this.disconnectTunnelToolStripMenuItem.BindProperty(
                 b => b.Enabled,
                 this.viewModel,
                 m => m.IsDisconnectButtonEnabled);

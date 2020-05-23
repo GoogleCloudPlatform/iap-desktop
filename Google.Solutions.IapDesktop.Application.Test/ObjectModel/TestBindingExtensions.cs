@@ -59,6 +59,13 @@ namespace Google.Solutions.IapDesktop.Application.Test.ObjectModel
             }
         }
 
+        private class DummyBinding : BindingExtensions.Binding
+        {
+            public override void Dispose()
+            {
+            }
+        }
+
         [Test]
         public void WhenObservedPropertyChanges_ThenOnPropertyChangeTriggersCallback()
         {
@@ -78,7 +85,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.ObjectModel
         }
 
         [Test]
-        public void WhenNonObservedPropertyChanges_ThenOnPropertyChangeIgnoresThis()
+        public void WhenNonObservedPropertyChanges_ThenOnPropertyChangeIgnoresUpdate()
         {
             var callbacks = 0;
             var observed = new Observable();
@@ -88,6 +95,26 @@ namespace Google.Solutions.IapDesktop.Application.Test.ObjectModel
                 v => { callbacks++; }))
             {
                 observed.Two = 2;
+                Assert.AreEqual(0, callbacks);
+            }
+        }
+
+        [Test]
+        public void WhenObservedPropertyChangesButPeerIsBusy_ThenOnPropertyChangeIgnoresUpdate()
+        {
+            var callbacks = 0;
+            var observed = new Observable();
+
+            using (var binding = observed.OnPropertyChange(
+                o => o.One,
+                v => { callbacks++; }))
+            {
+                binding.Peer = new DummyBinding()
+                {
+                    IsBusy = true
+                };
+
+                observed.One = "observed";
                 Assert.AreEqual(0, callbacks);
             }
         }
@@ -130,6 +157,26 @@ namespace Google.Solutions.IapDesktop.Application.Test.ObjectModel
         }
 
         [Test]
+        public void WhenNonObservedControlPropertyChangesButPeerIsBusy_ThenOnPropertyChangeIgnoresUpdate()
+        {
+            var callbacks = 0;
+            var observed = new TextBox();
+
+            using (var binding = observed.OnControlPropertyChange(
+                o => o.Text,
+                v => { callbacks++; }))
+            {
+                binding.Peer = new DummyBinding()
+                {
+                    IsBusy = true
+                }; 
+                
+                observed.TextAlign = HorizontalAlignment.Center;
+                Assert.AreEqual(0, callbacks);
+            }
+        }
+
+        [Test]
         public void WhenControlHasNoAppropriateEvent_ThenOnControlPropertyChangeThrowsArgumentException()
         {
             var observed = new TextBox();
@@ -149,7 +196,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.ObjectModel
             var control = new TextBox();
             var model = new Observable();
 
-            using (control.Bind(
+            using (control.BindProperty(
                 t => t.Text,
                 model,
                 m => m.One))
@@ -166,7 +213,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.ObjectModel
             var control = new TextBox();
             var model = new Observable();
 
-            using (control.Bind(
+            using (control.BindProperty(
                 t => t.Text,
                 model,
                 m => m.One))
@@ -176,5 +223,6 @@ namespace Google.Solutions.IapDesktop.Application.Test.ObjectModel
                 Assert.AreEqual("test", control.Text);
             }
         }
+
     }
 }

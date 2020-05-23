@@ -26,7 +26,6 @@ using Google.Solutions.IapDesktop.Application.ObjectModel;
 using System.Collections.Generic;
 using Google.Solutions.Common.Util;
 using System.Linq;
-using System.Diagnostics;
 
 namespace Google.Solutions.IapDesktop.Application.Services.Windows.TunnelsViewer
 {
@@ -47,9 +46,6 @@ namespace Google.Solutions.IapDesktop.Application.Services.Windows.TunnelsViewer
             get => this.selectedTunnels;
             set
             {
-                Debug.WriteLine($"SelectedTunnels = {value.EnsureNotNull().FirstOrDefault()}");
-                Debug.WriteLine($"IsDisconnectButtonEnabled = {IsDisconnectButtonEnabled}");
-
                 this.selectedTunnels = value;
 
                 RaisePropertyChange();

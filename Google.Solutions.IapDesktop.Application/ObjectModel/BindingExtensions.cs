@@ -104,7 +104,7 @@ namespace Google.Solutions.IapDesktop.Application.ObjectModel
             }
         }
 
-        public static IDisposable Bind<TControl, TProperty, TModel>(
+        public static IDisposable BindProperty<TControl, TProperty, TModel>(
             this TControl control,
             Expression<Func<TControl, TProperty>> controlProperty,
             TModel model,
@@ -130,7 +130,7 @@ namespace Google.Solutions.IapDesktop.Application.ObjectModel
 
         public abstract class Binding : IDisposable
         {
-            public bool IsBusy { get; protected set; } = false;
+            public bool IsBusy { get; internal set; } = false;
             public Binding Peer { get; internal set; }
 
             public abstract void Dispose();

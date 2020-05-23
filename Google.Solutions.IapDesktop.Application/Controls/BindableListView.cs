@@ -110,27 +110,23 @@ namespace Google.Solutions.IapDesktop.Application.Controls
         // List Binding.
         //---------------------------------------------------------------------
 
-        public ObservableCollection<TModelItem> Model
+        public void BindCollection(ObservableCollection<TModelItem> model)
         {
-            get => this.model;
-            set
+            // Reset.
+            if (model != null)
             {
-                // Reset.
-                if (model != null)
-                {
-                    model.CollectionChanged -= Model_CollectionChanged;
-                }
+                model.CollectionChanged -= Model_CollectionChanged;
+            }
 
-                this.Items.Clear();
+            this.Items.Clear();
 
-                // Configure control.
-                this.model = value;
-                if (this.model != null)
-                {
-                    AddViewItems(this.model);
+            // Configure control.
+            this.model = model;
+            if (this.model != null)
+            {
+                AddViewItems(this.model);
 
-                    this.model.CollectionChanged += Model_CollectionChanged;
-                }
+                this.model.CollectionChanged += Model_CollectionChanged;
             }
         }
 
