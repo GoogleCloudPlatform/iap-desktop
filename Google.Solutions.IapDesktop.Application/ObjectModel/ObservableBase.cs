@@ -19,11 +19,7 @@
 // under the License.
 //
 
-using System;
 using System.ComponentModel;
-using System.Diagnostics;
-using System.Linq.Expressions;
-using System.Reflection;
 using System.Runtime.CompilerServices;
 
 namespace Google.Solutions.IapDesktop.Application.ObjectModel
@@ -33,10 +29,7 @@ namespace Google.Solutions.IapDesktop.Application.ObjectModel
         public event PropertyChangedEventHandler PropertyChanged;
         public void RaisePropertyChange([CallerMemberName] string propertyname = null)
         {
-            if (PropertyChanged != null)
-            {
-                PropertyChanged(this, new PropertyChangedEventArgs(propertyname));
-            }
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyname));
         }
     }
 }

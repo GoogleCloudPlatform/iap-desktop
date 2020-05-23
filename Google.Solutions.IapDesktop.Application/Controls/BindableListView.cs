@@ -106,30 +106,6 @@ namespace Google.Solutions.IapDesktop.Application.Controls
             this.SelectedModelItemsChanged?.Invoke(this, e);
         }
 
-        //public TModelItem SelectedModelItem
-        //{
-        //    get => this.SelectedItems.OfType<TModelItem>().FirstOrDefault();
-        //    set
-        //    {
-        //        this.SelectedIndices.Clear();
-        //        var index = this.Items.IndexOf(FindViewItem(value));
-        //        this.SelectedIndices.Add(index);
-        //    }
-        //}
-
-        //public int SelectedModelIndex
-        //{
-        //    get => this.SelectedIndices.Count > 0 ? this.SelectedIndices[0] : -1;
-        //    set
-        //    {
-        //        this.SelectedIndices.Clear();
-        //        if (value >= 0)
-        //        {
-        //            this.SelectedIndices.Add(value);
-        //        }
-        //    }
-        //}
-
         //---------------------------------------------------------------------
         // List Binding.
         //---------------------------------------------------------------------

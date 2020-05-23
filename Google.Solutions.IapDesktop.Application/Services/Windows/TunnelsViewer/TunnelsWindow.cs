@@ -50,7 +50,6 @@ namespace Google.Solutions.IapDesktop.Application.Services.Windows.TunnelsViewer
 
             this.exceptionDialog = serviceProvider.GetService<IExceptionDialog>();
 
-
             //
             // This window is a singleton, so we never want it to be closed,
             // just hidden.
@@ -79,14 +78,6 @@ namespace Google.Solutions.IapDesktop.Application.Services.Windows.TunnelsViewer
                 b => b.Enabled,
                 this.viewModel,
                 m => m.IsDisconnectButtonEnabled);
-
-            //this.tunnelsList.DataBindings.Add(
-            //    new Binding(
-            //        "SelectedModelIndex", 
-            //        this.viewModel,
-            //        "SelectedTunnelIndex", 
-            //        false, 
-            //        DataSourceUpdateMode.OnPropertyChanged));
         }
 
         //---------------------------------------------------------------------
@@ -103,18 +94,6 @@ namespace Google.Solutions.IapDesktop.Application.Services.Windows.TunnelsViewer
         //---------------------------------------------------------------------
         // Window event handlers.
         //---------------------------------------------------------------------
-
-        private void tunnelsList_SelectedIndexChanged(object sender, EventArgs eventArgs)
-        {
-            // TODO: Solve via binding.
-            //this.disconnectToolStripButton.Enabled =
-            //    this.disconnectTunnelToolStripMenuItem.Enabled =
-            //    this.tunnelsList.SelectedIndices.Count > 0;
-
-            //this.viewModel.SelectedTunnel = (Tunnel)this.tunnelsList.SelectedItems
-            //    .Cast<ListViewItem>()
-            //    .FirstOrDefault()?.Tag;
-        }
 
         private async void disconnectToolStripButton_Click(object sender, EventArgs eventArgse)
         {
