@@ -26,6 +26,7 @@ using Google.Solutions.IapDesktop.Application.ObjectModel;
 using System.Collections.Generic;
 using Google.Solutions.Common.Util;
 using System.Linq;
+using System;
 
 namespace Google.Solutions.IapDesktop.Application.Services.Windows.TunnelsViewer
 {
@@ -67,6 +68,13 @@ namespace Google.Solutions.IapDesktop.Application.Services.Windows.TunnelsViewer
             // Keep the model up to date.
             eventService.BindHandler<TunnelOpenedEvent>(_ => RefreshTunnels());
             eventService.BindHandler<TunnelClosedEvent>(_ => RefreshTunnels());
+        }
+
+        public TunnelsViewModel(IServiceProvider serviceProvider)
+            :this(
+                serviceProvider.GetService<ITunnelBrokerService>(),
+                serviceProvider.GetService<IEventService>())
+        {
         }
 
         //---------------------------------------------------------------------

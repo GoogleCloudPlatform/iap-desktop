@@ -54,9 +54,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.Windows.TunnelsViewer
             //
             this.HideOnClose = true;
 
-            this.viewModel = new TunnelsViewModel(
-                serviceProvider.GetService<ITunnelBrokerService>(),
-                serviceProvider.GetService<IEventService>());
+            this.viewModel = new TunnelsViewModel(serviceProvider);
 
             this.tunnelsList.BindCollection(viewModel.Tunnels);
             this.tunnelsList.BindColumn(0, t => t.Destination.Instance.InstanceName);
