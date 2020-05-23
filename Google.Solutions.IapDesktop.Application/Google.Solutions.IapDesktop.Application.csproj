@@ -87,6 +87,7 @@
     <Compile Include="Controls\BindableListView.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="ObjectModel\BindingExtensions.cs" />
     <Compile Include="ObjectModel\ObservableBase.cs" />
     <Compile Include="Services\Adapters\ComputeEngineAdapter.cs" />
     <Compile Include="Services\Adapters\GithubAdapter.cs" />
