@@ -63,9 +63,9 @@ namespace Google.Solutions.IapDesktop.Application.Services.Windows.TunnelsViewer
             this.tunnelsList.BindColumn(3, t => t.LocalPort.ToString());
 
             this.tunnelsList.BindProperty(
-                v => this.tunnelsList.SelectedModelItems,
+                v => this.tunnelsList.SelectedModelItem,
                 this.viewModel,
-                m => this.viewModel.SelectedTunnels);
+                m => this.viewModel.SelectedTunnel);
             this.disconnectToolStripButton.BindProperty(
                 b => b.Enabled,
                 this.viewModel,
@@ -93,18 +93,18 @@ namespace Google.Solutions.IapDesktop.Application.Services.Windows.TunnelsViewer
 
         private async void disconnectToolStripButton_Click(object sender, EventArgs eventArgse)
         {
-            if (this.viewModel.SelectedTunnels.Any())
+            if (this.viewModel.SelectedTunnel != null)
             {
                 if (MessageBox.Show(
                     this,
                     "Are you sure you wish to terminate the tunnel to " + 
-                        this.viewModel.SelectedTunnels.First().Destination.Instance + "?",
+                        this.viewModel.SelectedTunnel.Destination.Instance + "?",
                     "Terminate tunnel",
                     MessageBoxButtons.YesNoCancel) == DialogResult.Yes)
                 {
                     try
                     {
-                        await this.viewModel.DisconnectSelectedTunnels();
+                        await this.viewModel.DisconnectSelectedTunnel();
                     }
                     catch (Exception e)
                     {

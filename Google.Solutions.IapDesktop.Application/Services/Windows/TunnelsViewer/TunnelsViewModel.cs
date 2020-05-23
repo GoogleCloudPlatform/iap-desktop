@@ -33,7 +33,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.Windows.TunnelsViewer
     internal class TunnelsViewModel : ObservableBase
     {
         private readonly ITunnelBrokerService tunnelBrokerService;
-        private IEnumerable<Tunnel> selectedTunnels = Enumerable.Empty<Tunnel>();
+        private Tunnel selectedTunnel = null;
 
         //---------------------------------------------------------------------
         // Properties for data binding.
@@ -42,19 +42,19 @@ namespace Google.Solutions.IapDesktop.Application.Services.Windows.TunnelsViewer
         public ObservableCollection<Tunnel> Tunnels { get; }
             = new ObservableCollection<Tunnel>();
 
-        public IEnumerable<Tunnel> SelectedTunnels
+        public Tunnel SelectedTunnel
         {
-            get => this.selectedTunnels;
+            get => this.selectedTunnel;
             set
             {
-                this.selectedTunnels = value;
+                this.selectedTunnel = value;
 
                 RaisePropertyChange();
                 RaisePropertyChange("IsDisconnectButtonEnabled");
             }
         }
 
-        public bool IsDisconnectButtonEnabled => this.selectedTunnels.Any();
+        public bool IsDisconnectButtonEnabled => this.selectedTunnel != null;
 
         //---------------------------------------------------------------------
 
@@ -91,16 +91,16 @@ namespace Google.Solutions.IapDesktop.Application.Services.Windows.TunnelsViewer
             }
         }
 
-        public async Task DisconnectSelectedTunnels()
+        public async Task DisconnectSelectedTunnel()
         {
-            foreach (var tunnel in this.selectedTunnels.EnsureNotNull())
+            if (this.selectedTunnel != null)
             {
-                await this.tunnelBrokerService.DisconnectAsync(tunnel.Destination);
+                await this.tunnelBrokerService.DisconnectAsync(this.selectedTunnel.Destination);
+            
+                // Reset selection.
+                this.SelectedTunnel = null;
             }
 
-            // Reset selection.
-            this.SelectedTunnels = Enumerable.Empty<Tunnel>();
-                
             RefreshTunnels();
         }
     }

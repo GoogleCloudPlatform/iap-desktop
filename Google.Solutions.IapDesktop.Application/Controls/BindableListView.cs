@@ -24,6 +24,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Linq;
 using System.Windows.Forms;
 
@@ -77,10 +78,17 @@ namespace Google.Solutions.IapDesktop.Application.Controls
         }
 
         //---------------------------------------------------------------------
-        // Convenience properties
+        // Selection properties.
         //---------------------------------------------------------------------
 
         public event EventHandler SelectedModelItemsChanged;
+        public event EventHandler SelectedModelItemChanged;
+
+        protected override void OnSelectedIndexChanged(EventArgs e)
+        {
+            this.SelectedModelItemsChanged?.Invoke(this, e);
+            this.SelectedModelItemChanged?.Invoke(this, e);
+        }
 
         public IEnumerable<TModelItem> SelectedModelItems
         {
@@ -94,6 +102,7 @@ namespace Google.Solutions.IapDesktop.Application.Controls
                 foreach (var selectedItem in value)
                 {
                     var index = this.Items.IndexOf(FindViewItem(selectedItem));
+                    Debug.Assert(index >= 0);
                     this.SelectedIndices.Add(index);
                 }
 
@@ -101,9 +110,26 @@ namespace Google.Solutions.IapDesktop.Application.Controls
             }
         }
 
-        protected override void OnSelectedIndexChanged(EventArgs e)
+
+        public TModelItem SelectedModelItem
         {
-            this.SelectedModelItemsChanged?.Invoke(this, e);
+            get => this.SelectedItems
+                .OfType<ListViewItem>()
+                .Select(item => (TModelItem)item.Tag)
+                .FirstOrDefault();
+            set
+            {
+                this.SelectedIndices.Clear();
+
+                if (value != null)
+                {
+                    var index = this.Items.IndexOf(FindViewItem(value));
+                    Debug.Assert(index >= 0);
+                    this.SelectedIndices.Add(index);
+                }
+
+                this.SelectedModelItemChanged?.Invoke(this, EventArgs.Empty);
+            }
         }
 
         //---------------------------------------------------------------------
