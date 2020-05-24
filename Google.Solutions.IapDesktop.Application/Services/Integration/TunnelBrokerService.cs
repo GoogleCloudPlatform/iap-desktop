@@ -30,7 +30,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.Integration
 {
     public interface ITunnelBrokerService
     {
-        IEnumerable<Tunnel> OpenTunnels { get; }
+        IEnumerable<ITunnel> OpenTunnels { get; }
 
         bool IsConnected(TunnelDestination endpoint);
 
@@ -65,7 +65,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.Integration
         {
         }
 
-        public IEnumerable<Tunnel> OpenTunnels =>
+        public IEnumerable<ITunnel> OpenTunnels =>
             this.tunnels.Values
                 .Where(t => t.IsCompleted && !t.IsFaulted)
                 .Select(t => t.Result);

@@ -38,8 +38,8 @@ namespace Google.Solutions.IapDesktop.Application.Services.Windows.TunnelsViewer
         // Properties for data binding.
         //---------------------------------------------------------------------
 
-        public ObservableCollection<Tunnel> Tunnels { get; }
-            = new ObservableCollection<Tunnel>();
+        public ObservableCollection<ITunnel> Tunnels { get; }
+            = new ObservableCollection<ITunnel>();
 
         public Tunnel SelectedTunnel
         {

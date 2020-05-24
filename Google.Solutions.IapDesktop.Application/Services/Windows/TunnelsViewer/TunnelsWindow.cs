@@ -99,6 +99,6 @@ namespace Google.Solutions.IapDesktop.Application.Services.Windows.TunnelsViewer
             => await this.viewModel.DisconnectSelectedTunnel();
     }
 
-    public class TunnelsListView : BindableListView<Tunnel>
+    public class TunnelsListView : BindableListView<ITunnel>
     { }
 }
