@@ -31,7 +31,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.Integration
 {
     public interface ITunnelService
     {
-        Task<Tunnel> CreateTunnelAsync(TunnelDestination tunnelEndpoint);
+        Task<ITunnel> CreateTunnelAsync(TunnelDestination tunnelEndpoint);
     }
 
     public class TunnelService : ITunnelService
@@ -43,7 +43,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.Integration
             this.authorizationService = serviceProvider.GetService<IAuthorizationAdapter>();
         }
 
-        public Task<Tunnel> CreateTunnelAsync(TunnelDestination tunnelEndpoint)
+        public Task<ITunnel> CreateTunnelAsync(TunnelDestination tunnelEndpoint)
         {
             using (TraceSources.IapDesktop.TraceMethod().WithParameters(tunnelEndpoint))
             {
@@ -64,7 +64,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.Integration
 
                 // Return the tunnel which allows the listener to be stopped
                 // via the CancellationTokenSource.
-                return Task.FromResult(new Tunnel(iapEndpoint, listener, cts));
+                return Task.FromResult<ITunnel>(new Tunnel(iapEndpoint, listener, cts));
             }
         }
     }

@@ -31,6 +31,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.Integration
     {
         TunnelDestination Destination { get; }
         int LocalPort { get; }
+        Task Probe(TimeSpan timeout);
         void Close();
     }
 

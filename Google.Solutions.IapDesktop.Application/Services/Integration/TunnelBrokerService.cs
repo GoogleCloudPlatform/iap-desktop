@@ -34,7 +34,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.Integration
 
         bool IsConnected(TunnelDestination endpoint);
 
-        Task<Tunnel> ConnectAsync(TunnelDestination endpoint, TimeSpan timeout);
+        Task<ITunnel> ConnectAsync(TunnelDestination endpoint, TimeSpan timeout);
 
         Task DisconnectAsync(TunnelDestination endpoint);
 
@@ -47,8 +47,8 @@ namespace Google.Solutions.IapDesktop.Application.Services.Integration
         private readonly IEventService eventService;
 
         private readonly object tunnelsLock = new object();
-        private readonly IDictionary<TunnelDestination, Task<Tunnel>> tunnels =
-            new Dictionary<TunnelDestination, Task<Tunnel>>();
+        private readonly IDictionary<TunnelDestination, Task<ITunnel>> tunnels =
+            new Dictionary<TunnelDestination, Task<ITunnel>>();
 
         public TunnelBrokerService(
             ITunnelService tunnelService,
@@ -70,7 +70,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.Integration
                 .Where(t => t.IsCompleted && !t.IsFaulted)
                 .Select(t => t.Result);
 
-        private Task<Tunnel> ConnectAndCacheAsync(TunnelDestination endpoint)
+        private Task<ITunnel> ConnectAndCacheAsync(TunnelDestination endpoint)
         {
             var tunnel = this.tunnelService.CreateTunnelAsync(endpoint);
 
@@ -84,7 +84,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.Integration
         {
             lock (this.tunnelsLock)
             {
-                if (this.tunnels.TryGetValue(endpoint, out Task<Tunnel> tunnel))
+                if (this.tunnels.TryGetValue(endpoint, out Task<ITunnel> tunnel))
                 {
                     return !tunnel.IsFaulted;
                 }
@@ -95,11 +95,11 @@ namespace Google.Solutions.IapDesktop.Application.Services.Integration
             }
         }
 
-        private Task<Tunnel> ConnectIfNecessaryAsync(TunnelDestination endpoint)
+        private Task<ITunnel> ConnectIfNecessaryAsync(TunnelDestination endpoint)
         {
             lock (this.tunnelsLock)
             {
-                if (!this.tunnels.TryGetValue(endpoint, out Task<Tunnel> tunnel))
+                if (!this.tunnels.TryGetValue(endpoint, out Task<ITunnel> tunnel))
                 {
                     return ConnectAndCacheAsync(endpoint);
                 }
@@ -124,7 +124,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.Integration
             }
         }
 
-        public async Task<Tunnel> ConnectAsync(TunnelDestination endpoint, TimeSpan timeout)
+        public async Task<ITunnel> ConnectAsync(TunnelDestination endpoint, TimeSpan timeout)
         {
             using (TraceSources.IapDesktop.TraceMethod().WithParameters(endpoint, timeout))
             {
