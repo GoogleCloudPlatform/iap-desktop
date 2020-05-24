@@ -65,15 +65,18 @@ namespace Google.Solutions.IapDesktop.Application.Services.Windows.TunnelsViewer
             this.tunnelsList.BindProperty(
                 v => this.tunnelsList.SelectedModelItem,
                 this.viewModel,
-                m => this.viewModel.SelectedTunnel);
+                m => this.viewModel.SelectedTunnel,
+                this.components);
             this.disconnectToolStripButton.BindProperty(
                 b => b.Enabled,
                 this.viewModel,
-                m => m.IsDisconnectButtonEnabled);
+                m => m.IsDisconnectButtonEnabled,
+                this.components);
             this.disconnectTunnelToolStripMenuItem.BindProperty(
                 b => b.Enabled,
                 this.viewModel,
-                m => m.IsDisconnectButtonEnabled);
+                m => m.IsDisconnectButtonEnabled,
+                this.components);
         }
 
         //---------------------------------------------------------------------

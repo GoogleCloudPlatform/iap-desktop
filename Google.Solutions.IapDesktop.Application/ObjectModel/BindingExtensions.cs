@@ -107,7 +107,8 @@ namespace Google.Solutions.IapDesktop.Application.ObjectModel
             this TControl control,
             Expression<Func<TControl, TProperty>> controlProperty,
             TModel model,
-            Expression<Func<TModel, TProperty>> modelProperty)
+            Expression<Func<TModel, TProperty>> modelProperty,
+            IContainer container = null)
             where TModel : INotifyPropertyChanged
             where TControl : IComponent
         {
@@ -124,7 +125,6 @@ namespace Google.Solutions.IapDesktop.Application.ObjectModel
             forwardBinding.Peer = reverseBinding;
             reverseBinding.Peer = forwardBinding;
 
-            var container = control.Site?.Container;
             if (container != null)
             {
                 // To ensure that the bindings are disposed, add them to the
