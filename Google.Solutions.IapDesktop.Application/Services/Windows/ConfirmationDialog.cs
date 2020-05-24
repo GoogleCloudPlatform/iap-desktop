@@ -19,17 +19,24 @@
 // under the License.
 //
 
-using System.ComponentModel;
-using System.Runtime.CompilerServices;
+using System.Windows.Forms;
 
-namespace Google.Solutions.IapDesktop.Application.ObjectModel
+namespace Google.Solutions.IapDesktop.Application.Services.Windows
 {
-    public class ObservableBase : INotifyPropertyChanged
+    public interface IConfirmationDialog
     {
-        public event PropertyChangedEventHandler PropertyChanged;
-        public void RaisePropertyChange([CallerMemberName] string propertyname = null)
+        DialogResult Confirm(IWin32Window parent, string text, string caption);
+    }
+
+    public class ConfirmationDialog : IConfirmationDialog
+    {
+        public DialogResult Confirm(IWin32Window parent, string text, string caption)
         {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyname));
+            return MessageBox.Show(
+                parent,
+                text,
+                caption,
+                MessageBoxButtons.YesNoCancel);
         }
     }
 }

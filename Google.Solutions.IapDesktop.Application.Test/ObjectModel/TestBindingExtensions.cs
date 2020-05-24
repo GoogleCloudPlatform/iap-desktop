@@ -33,7 +33,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.ObjectModel
         // OnPropertyChange tests.
         //---------------------------------------------------------------------
 
-        private class Observable : ObservableBase
+        private class Observable : ViewModelBase
         {
             private string one;
             private int two;

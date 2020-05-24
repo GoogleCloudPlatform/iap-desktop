@@ -55,6 +55,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.Windows.TunnelsViewer
             this.HideOnClose = true;
 
             this.viewModel = new TunnelsViewModel(serviceProvider);
+            this.viewModel.View = this;
 
             this.tunnelsList.BindCollection(viewModel.Tunnels);
             this.tunnelsList.BindColumn(0, t => t.Destination.Instance.InstanceName);
@@ -95,27 +96,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.Windows.TunnelsViewer
         //---------------------------------------------------------------------
 
         private async void disconnectToolStripButton_Click(object sender, EventArgs eventArgse)
-        {
-            if (this.viewModel.SelectedTunnel != null)
-            {
-                if (MessageBox.Show(
-                    this,
-                    "Are you sure you wish to terminate the tunnel to " + 
-                        this.viewModel.SelectedTunnel.Destination.Instance + "?",
-                    "Terminate tunnel",
-                    MessageBoxButtons.YesNoCancel) == DialogResult.Yes)
-                {
-                    try
-                    {
-                        await this.viewModel.DisconnectSelectedTunnel();
-                    }
-                    catch (Exception e)
-                    {
-                        this.exceptionDialog.Show(this, "Terminating tunnel failed", e);
-                    }
-                }
-            }
-        }
+            => await this.viewModel.DisconnectSelectedTunnel();
     }
 
     public class TunnelsListView : BindableListView<Tunnel>
