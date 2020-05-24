@@ -23,9 +23,7 @@ using Google.Solutions.IapDesktop.Application.Controls;
 using Google.Solutions.IapDesktop.Application.ObjectModel;
 using Google.Solutions.IapDesktop.Application.Services.Integration;
 using System;
-using System.Linq;
 using System.Runtime.InteropServices;
-using System.Windows.Forms;
 using WeifenLuo.WinFormsUI.Docking;
 
 #pragma warning disable IDE1006 // Naming Styles
@@ -96,7 +94,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.Windows.TunnelsViewer
         //---------------------------------------------------------------------
 
         private async void disconnectToolStripButton_Click(object sender, EventArgs eventArgse)
-            => await this.viewModel.DisconnectSelectedTunnel();
+            => await this.viewModel.DisconnectSelectedTunnelAsync();
     }
 
     public class TunnelsListView : BindableListView<ITunnel>

@@ -32,7 +32,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.Windows.TunnelsViewer
     {
         private readonly ITunnelBrokerService tunnelBrokerService;
         private readonly IConfirmationDialog confirmationDialog;
-        private Tunnel selectedTunnel = null;
+        private ITunnel selectedTunnel = null;
 
         //---------------------------------------------------------------------
         // Properties for data binding.
@@ -41,7 +41,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.Windows.TunnelsViewer
         public ObservableCollection<ITunnel> Tunnels { get; }
             = new ObservableCollection<ITunnel>();
 
-        public Tunnel SelectedTunnel
+        public ITunnel SelectedTunnel
         {
             get => this.selectedTunnel;
             set
@@ -93,7 +93,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.Windows.TunnelsViewer
             }
         }
 
-        public async Task DisconnectSelectedTunnel()
+        public async Task DisconnectSelectedTunnelAsync()
         {
             if (this.selectedTunnel == null)
             {
