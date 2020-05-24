@@ -61,9 +61,6 @@ namespace Google.Solutions.IapDesktop.Application.Test.ObjectModel
 
         private class DummyBinding : BindingExtensions.Binding
         {
-            public override void Dispose()
-            {
-            }
         }
 
         [Test]
@@ -196,15 +193,14 @@ namespace Google.Solutions.IapDesktop.Application.Test.ObjectModel
             var control = new TextBox();
             var model = new Observable();
 
-            using (control.BindProperty(
+            control.BindProperty(
                 t => t.Text,
                 model,
-                m => m.One))
-            {
-                Assert.IsNull(model.One);
-                control.Text = "test";
-                Assert.AreEqual("test", model.One);
-            }
+                m => m.One);
+            
+            Assert.IsNull(model.One);
+            control.Text = "test";
+            Assert.AreEqual("test", model.One);
         }
 
         [Test]
@@ -213,16 +209,14 @@ namespace Google.Solutions.IapDesktop.Application.Test.ObjectModel
             var control = new TextBox();
             var model = new Observable();
 
-            using (control.BindProperty(
+            control.BindProperty(
                 t => t.Text,
                 model,
-                m => m.One))
-            {
-                Assert.AreEqual("", control.Text);
-                model.One = "test";
-                Assert.AreEqual("test", control.Text);
-            }
-        }
+                m => m.One);
 
+            Assert.AreEqual("", control.Text);
+            model.One = "test";
+            Assert.AreEqual("test", control.Text);
+        }
     }
 }
