@@ -27,7 +27,15 @@ using System.Threading.Tasks;
 
 namespace Google.Solutions.IapDesktop.Application.Services.Integration
 {
-    public class Tunnel
+    public interface ITunnel
+    {
+        TunnelDestination Destination { get; }
+        int LocalPort { get; }
+        Task Probe(TimeSpan timeout);
+        void Close();
+    }
+
+    public class Tunnel : ITunnel
     {
         private readonly CancellationTokenSource cancellationTokenSource;
         private readonly SshRelayListener listener;
@@ -50,7 +58,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.Integration
             this.cancellationTokenSource = cancellationTokenSource;
         }
 
-        public virtual void Close()
+        public void Close()
         {
             this.cancellationTokenSource.Cancel();
         }

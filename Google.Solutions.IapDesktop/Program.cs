@@ -233,6 +233,7 @@ namespace Google.Solutions.IapDesktop
             windowAndWorkflowLayer.AddTransient<IProjectPickerDialog, ProjectPickerDialog>();
             windowAndWorkflowLayer.AddTransient<AboutWindow>();
             windowAndWorkflowLayer.AddTransient<IExceptionDialog, ExceptionDialog>();
+            windowAndWorkflowLayer.AddTransient<IConfirmationDialog, ConfirmationDialog>();
             windowAndWorkflowLayer.AddTransient<ITaskDialog, TaskDialog>();
             windowAndWorkflowLayer.AddTransient<IUpdateService, UpdateService>();
             windowAndWorkflowLayer.AddSingleton<IRemoteDesktopService, RemoteDesktopService>();

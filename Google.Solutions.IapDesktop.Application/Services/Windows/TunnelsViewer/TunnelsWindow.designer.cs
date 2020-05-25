@@ -19,6 +19,8 @@
 // under the License.
 //
 
+using Google.Solutions.IapDesktop.Application.Controls;
+
 namespace Google.Solutions.IapDesktop.Application.Services.Windows.TunnelsViewer
 {
     partial class TunnelsWindow
@@ -53,7 +55,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.Windows.TunnelsViewer
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(TunnelsWindow));
             this.toolStrip = new System.Windows.Forms.ToolStrip();
             this.disconnectToolStripButton = new System.Windows.Forms.ToolStripButton();
-            this.tunnelsList = new Google.Solutions.IapDesktop.Application.Services.Windows.FlatListView();
+            this.tunnelsList = new Google.Solutions.IapDesktop.Application.Services.Windows.TunnelsViewer.TunnelsListView();
             this.instanceHeader = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.projectIdHeader = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.zoneHeader = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
@@ -87,6 +89,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.Windows.TunnelsViewer
             // 
             // tunnelsList
             // 
+            this.tunnelsList.AutoResizeColumnsOnUpdate = false;
             this.tunnelsList.BackColor = System.Drawing.SystemColors.Control;
             this.tunnelsList.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.tunnelsList.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
@@ -108,7 +111,6 @@ namespace Google.Solutions.IapDesktop.Application.Services.Windows.TunnelsViewer
             this.tunnelsList.TabIndex = 6;
             this.tunnelsList.UseCompatibleStateImageBehavior = false;
             this.tunnelsList.View = System.Windows.Forms.View.Details;
-            this.tunnelsList.SelectedIndexChanged += new System.EventHandler(this.tunnelsList_SelectedIndexChanged);
             // 
             // instanceHeader
             // 
@@ -167,7 +169,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.Windows.TunnelsViewer
         #endregion
         private System.Windows.Forms.ToolStrip toolStrip;
         private System.Windows.Forms.ToolStripButton disconnectToolStripButton;
-        private FlatListView tunnelsList;
+        private TunnelsListView tunnelsList;
         private System.Windows.Forms.ColumnHeader instanceHeader;
         private System.Windows.Forms.ColumnHeader projectIdHeader;
         private System.Windows.Forms.ColumnHeader zoneHeader;

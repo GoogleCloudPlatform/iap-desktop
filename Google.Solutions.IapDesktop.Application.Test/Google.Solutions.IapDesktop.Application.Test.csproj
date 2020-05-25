@@ -90,6 +90,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ObjectModel\TestBindingExtensions.cs" />
     <Compile Include="Services\Adapters\TestGithubAdapter.cs" />
     <Compile Include="FixtureBase.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -124,6 +125,7 @@
     <Compile Include="Services\Windows\WindowTestFixtureBase.cs" />
     <Compile Include="Services\Windows\TestSettingsEditor.cs" />
     <Compile Include="Util\TestSingletonApplicationBase.cs" />
+    <Compile Include="Services\Windows\TestTunnelsViewModel.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Google.Solutions.Common.Test\Google.Solutions.Common.Test.csproj">

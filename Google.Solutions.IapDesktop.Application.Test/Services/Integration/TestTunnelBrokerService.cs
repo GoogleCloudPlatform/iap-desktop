@@ -42,7 +42,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Integration
             mockEventService.Setup(s => s.FireAsync(It.IsAny<TunnelOpenedEvent>()))
                 .Returns(Task.FromResult(true));
 
-            var mockTunnel = new Mock<Tunnel>(null, null, null);
+            var mockTunnel = new Mock<ITunnel>();
             mockTunnel.Setup(t => t.Probe(It.IsAny<TimeSpan>()))
                 .Returns(Task.FromResult(true));
 
@@ -69,7 +69,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Integration
             mockEventService.Setup(s => s.FireAsync(It.IsAny<TunnelOpenedEvent>()))
                 .Returns(Task.FromResult(true));
 
-            var mockTunnel = new Mock<Tunnel>(null, null, null);
+            var mockTunnel = new Mock<ITunnel>();
             mockTunnel.Setup(t => t.Probe(It.IsAny<TimeSpan>()))
                 .Returns(Task.FromResult(true));
 
@@ -93,7 +93,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Integration
             mockEventService.Setup(s => s.FireAsync(It.IsAny<TunnelOpenedEvent>()))
                 .Returns(Task.FromResult(true));
 
-            var mockTunnel = new Mock<Tunnel>(null, null, null);
+            var mockTunnel = new Mock<ITunnel>();
             mockTunnel.Setup(t => t.Probe(It.IsAny<TimeSpan>()))
                 .Returns(Task.FromResult(true));
             var broker = new TunnelBrokerService(mockTunnelService.Object, mockEventService.Object);
@@ -125,7 +125,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Integration
             var vmInstanceRef = new VmInstanceReference("project", "zone", "instance");
             var destination = new TunnelDestination(vmInstanceRef, 3389);
             mockTunnelService.Setup(s => s.CreateTunnelAsync(destination))
-                .Returns(Task.FromException<Tunnel>(new ApplicationException()));
+                .Returns(Task.FromException<ITunnel>(new ApplicationException()));
 
             AssertEx.ThrowsAggregateException<ApplicationException>(() =>
             {
@@ -144,7 +144,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Integration
             mockEventService.Setup(s => s.FireAsync(It.IsAny<TunnelOpenedEvent>()))
                 .Returns(Task.FromResult(true));
 
-            var mockTunnel = new Mock<Tunnel>(null, null, null);
+            var mockTunnel = new Mock<ITunnel>();
             mockTunnel.Setup(t => t.Probe(It.IsAny<TimeSpan>()))
                 .Returns(Task.FromException(new ApplicationException()));
 
@@ -171,7 +171,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Integration
             mockEventService.Setup(s => s.FireAsync(It.IsAny<TunnelOpenedEvent>()))
                 .Returns(Task.FromResult(true));
 
-            var mockTunnel = new Mock<Tunnel>(null, null, null);
+            var mockTunnel = new Mock<ITunnel>();
             mockTunnel.Setup(t => t.Probe(It.IsAny<TimeSpan>()))
                 .Returns(Task.FromResult(true));
             mockTunnel.Setup(t => t.Close());
@@ -200,7 +200,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Integration
             mockEventService.Setup(s => s.FireAsync(It.IsAny<TunnelOpenedEvent>()))
                 .Returns(Task.FromResult(true));
 
-            var mockTunnel = new Mock<Tunnel>(null, null, null);
+            var mockTunnel = new Mock<ITunnel>();
             mockTunnel.Setup(t => t.Probe(It.IsAny<TimeSpan>()))
                 .Returns(Task.FromResult(true));
             mockTunnel.Setup(t => t.Close());
@@ -231,7 +231,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Integration
             mockEventService.Setup(s => s.FireAsync(It.IsAny<TunnelClosedEvent>()))
                 .Returns(Task.FromResult(true));
 
-            var mockTunnel = new Mock<Tunnel>(null, null, null);
+            var mockTunnel = new Mock<ITunnel>();
             mockTunnel.Setup(t => t.Probe(It.IsAny<TimeSpan>()))
                 .Returns(Task.FromResult(true));
             mockTunnel.Setup(t => t.Close());
@@ -259,7 +259,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Integration
             mockEventService.Setup(s => s.FireAsync(It.IsAny<TunnelClosedEvent>()))
                 .Returns(Task.FromResult(true));
 
-            var mockTunnel = new Mock<Tunnel>(null, null, null);
+            var mockTunnel = new Mock<ITunnel>();
             mockTunnel.Setup(t => t.Probe(It.IsAny<TimeSpan>()))
                 .Returns(Task.FromResult(true));
             mockTunnel.Setup(t => t.Close());

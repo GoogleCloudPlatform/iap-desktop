@@ -48,7 +48,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Workflows
         {
             this.serviceRegistry.AddSingleton<IJobService, SynchronousJobService>();
 
-            var tunnel = new Mock<Tunnel>(null, null, null);
+            var tunnel = new Mock<ITunnel>();
             tunnel.SetupGet(t => t.LocalPort).Returns(1);
 
             var tunnelBrokerService = new Mock<ITunnelBrokerService>();
