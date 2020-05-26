@@ -1,4 +1,5 @@
-﻿using Google.Solutions.IapDesktop.Application.Services.Windows;
+﻿using Google.Solutions.IapDesktop.Application.Controls;
+using Google.Solutions.IapDesktop.Application.Services.Windows;
 
 namespace Google.Solutions.LogAnalysis.QuickTest
 {

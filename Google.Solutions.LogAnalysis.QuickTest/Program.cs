@@ -31,6 +31,7 @@ using System;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
@@ -72,7 +73,8 @@ namespace Google.Solutions.LogAnalysis.QuickTest
             await loggingService.Entries.ListInstanceEventsAsync(
                 new[] { projectId },
                 DateTime.Now.AddDays(-days),
-                instanceSetBuilder);
+                instanceSetBuilder,
+                CancellationToken.None);
 
             using (var writer = new StreamWriter(filePath, false, Encoding.UTF8))
             {
