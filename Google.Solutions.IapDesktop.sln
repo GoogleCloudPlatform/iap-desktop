@@ -21,11 +21,11 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "IapTunneling", "IapTunnelin
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "IapDesktop", "IapDesktop", "{5206FD39-47A5-4E69-AA4F-94275A1A4791}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "LogAnalysis", "LogAnalysis", "{06417FC0-CC28-4E03-8F61-02A55304F28B}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "IapDesktop.Extensions.LogAnalysis", "IapDesktop.Extensions.LogAnalysis", "{06417FC0-CC28-4E03-8F61-02A55304F28B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Google.Solutions.LogAnalysis", "Google.Solutions.LogAnalysis\Google.Solutions.LogAnalysis.csproj", "{B804D76C-E02E-4320-94A7-579034644AA0}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Google.Solutions.IapDesktop.Extensions.LogAnalysis", "Google.Solutions.IapDesktop.Extensions.LogAnalysis\Google.Solutions.IapDesktop.Extensions.LogAnalysis.csproj", "{B804D76C-E02E-4320-94A7-579034644AA0}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Google.Solutions.LogAnalysis.Test", "Google.Solutions.LogAnalysis.Test\Google.Solutions.LogAnalysis.Test.csproj", "{8C4F5833-C8B3-4A60-B401-7C4A3346BF59}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Google.Solutions.IapDesktop.Extensions.LogAnalysis.Test", "Google.Solutions.IapDesktop.Extensions.LogAnalysis.Test\Google.Solutions.IapDesktop.Extensions.LogAnalysis.Test.csproj", "{8C4F5833-C8B3-4A60-B401-7C4A3346BF59}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Installer", "Installer", "{78166023-068C-4F6B-B0AF-D9FB2D8FAB56}"
 	ProjectSection(SolutionItems) = preProject

@@ -88,6 +88,7 @@
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="ObjectModel\BindingExtensions.cs" />
+    <Compile Include="ObjectModel\ServiceAttribute.cs" />
     <Compile Include="ObjectModel\ViewModelBase.cs" />
     <Compile Include="Services\Adapters\ComputeEngineAdapter.cs" />
     <Compile Include="Services\Adapters\GithubAdapter.cs" />
