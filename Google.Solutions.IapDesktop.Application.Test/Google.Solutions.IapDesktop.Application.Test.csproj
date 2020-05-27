@@ -91,6 +91,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ObjectModel\TestBindingExtensions.cs" />
+    <Compile Include="ObjectModel\TestServiceAttribute.cs" />
     <Compile Include="Services\Adapters\TestGithubAdapter.cs" />
     <Compile Include="FixtureBase.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

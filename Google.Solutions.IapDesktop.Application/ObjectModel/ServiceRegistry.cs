@@ -21,6 +21,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
 using System.Runtime.Serialization;
 
@@ -49,30 +50,35 @@ namespace Google.Solutions.IapDesktop.Application.ObjectModel
             this.parent = parent;
         }
 
-        private TService CreateInstance<TService>()
+        private object CreateInstance(Type serviceType)
         {
-            var constructorWithServiceProvider = typeof(TService).GetConstructor(
+            var constructorWithServiceProvider = serviceType.GetConstructor(
                 BindingFlags.Public | BindingFlags.Instance,
                 null,
                 new[] { typeof(IServiceProvider) },
                 null);
             if (constructorWithServiceProvider != null)
             {
-                return (TService)Activator.CreateInstance(typeof(TService), (IServiceProvider)this);
+                return Activator.CreateInstance(serviceType, (IServiceProvider)this);
             }
 
-            var defaultConstructor = typeof(TService).GetConstructor(
+            var defaultConstructor = serviceType.GetConstructor(
                 BindingFlags.Public | BindingFlags.Instance,
                 null,
                 Array.Empty<Type>(),
                 null);
             if (defaultConstructor != null)
             {
-                return (TService)Activator.CreateInstance(typeof(TService));
+                return Activator.CreateInstance(serviceType);
             }
 
             throw new UnknownServiceException(
-                $"Class {typeof(TService).Name} lacks a suitable constructor to serve as service");
+                $"Class {serviceType.Name} lacks a suitable constructor to serve as service");
+        }
+
+        private TService CreateInstance<TService>()
+        {
+            return (TService)CreateInstance(typeof(TService));
         }
 
         public void AddSingleton<TService>(TService singleton)
@@ -119,7 +125,30 @@ namespace Google.Solutions.IapDesktop.Application.ObjectModel
                 throw new UnknownServiceException(serviceType.Name);
             }
         }
+
+        public void AddExtensionLibrary(Assembly assembly)
+        {
+            foreach (var type in assembly.GetTypes())
+            {
+                if (type.GetCustomAttribute<ServiceAttribute>() is ServiceAttribute attribute)
+                {
+                    if (attribute.Lifetime == ServiceLifetime.Singleton)
+                    {
+                        var instance = CreateInstance(type);
+
+                        this.singletons[attribute.ServiceInterface ?? type] = instance;
+                    }
+                    else
+                    {
+
+                        this.transients[attribute.ServiceInterface ?? type] = 
+                            () => CreateInstance(type);
+                    }
+                }
+            }
+        }
     }
+
     public static class ServiceProviderExtensions
     {
         public static TService GetService<TService>(this IServiceProvider provider)
