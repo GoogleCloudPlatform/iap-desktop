@@ -19,6 +19,7 @@
 // under the License.
 //
 
+using Google.Solutions.Common.Util;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -241,7 +242,10 @@ namespace Google.Solutions.IapDesktop.Application.Controls
                     break;
 
                 case NotifyCollectionChangedAction.Reset:
+                    // Reload everything.
                     this.Items.Clear();
+                    AddViewItems(this.model);
+
                     break;
 
                 default:
