@@ -151,7 +151,7 @@ namespace Google.Solutions.IapDesktop
         {
             return Directory.GetFiles(
                 Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location),
-                "*.Extension.*.dll")
+                "*.Extensions.*.dll")
                 .Select(dllPath => Assembly.LoadFrom(dllPath));
         }
 

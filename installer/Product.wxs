@@ -206,9 +206,9 @@
         <!--
         <File
           Id="FileGoogleSolutionsLogAnalysisDll"
-          Name="Google.Solutions.LogAnalysis.dll"
+          Name="Google.Solutions.IapDesktop.Extensions.LogAnalysis.dll"
           DiskId="1"
-          Source="Google.Solutions.IapDesktop\bin\$(var.CONFIGURATION)\Google.Solutions.LogAnalysis.dll"
+          Source="Google.Solutions.IapDesktop\bin\$(var.CONFIGURATION)\Google.Solutions.IapDesktop.Extensions.LogAnalysis.dll"
           Vital="yes"/>
         -->
         
