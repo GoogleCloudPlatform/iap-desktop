@@ -96,8 +96,8 @@
     <Compile Include="Events\System\TerminateOnHostMaintenanceEvent.cs" />
     <Compile Include="Events\UnknownEvent.cs" />
     <Compile Include="Events\VmInstanceEventBase.cs" />
-    <Compile Include="Extensions\ListLogEntriesExtensions.cs" />
-    <Compile Include="Extensions\ListLogEntriesParser.cs" />
+    <Compile Include="Logs\ListLogEntriesExtensions.cs" />
+    <Compile Include="Logs\ListLogEntriesParser.cs" />
     <Compile Include="History\DataPoint.cs" />
     <Compile Include="History\ImageAnnotation.cs" />
     <Compile Include="History\InstanceHistory.cs" />
@@ -129,6 +129,9 @@
   <ItemGroup>
     <None Include="app.config" />
     <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Extensions\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="..\packages\MSBuild.AssemblyVersion.1.2.0\build\MSBuild.AssemblyVersion.targets" Condition="Exists('..\packages\MSBuild.AssemblyVersion.1.2.0\build\MSBuild.AssemblyVersion.targets')" />

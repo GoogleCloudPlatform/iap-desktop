@@ -22,23 +22,21 @@
 using Google.Apis.Compute.v1;
 using Google.Apis.Logging.v2;
 using Google.Apis.Logging.v2.Data;
-using Google.Apis.Requests;
 using Google.Apis.Services;
 using Google.Solutions.Common.Test;
 using Google.Solutions.Common.Test.Testbed;
 using Google.Solutions.IapDesktop.Extensions.LogAnalysis.Events;
 using Google.Solutions.IapDesktop.Extensions.LogAnalysis.Events.Lifecycle;
-using Google.Solutions.IapDesktop.Extensions.LogAnalysis.Extensions;
 using Google.Solutions.IapDesktop.Extensions.LogAnalysis.History;
+using Google.Solutions.IapDesktop.Extensions.LogAnalysis.Logs;
 using NUnit.Framework;
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Google.Solutions.IapDesktop.Extensions.LogAnalysis.Test.Extensions
+namespace Google.Solutions.IapDesktop.Extensions.LogAnalysis.Test.Logs
 {
     [TestFixture]
     [Category("IntegrationTest")]

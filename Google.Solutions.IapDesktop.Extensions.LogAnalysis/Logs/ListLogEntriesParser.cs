@@ -20,12 +20,11 @@
 //
 
 using Google.Solutions.IapDesktop.Extensions.LogAnalysis.Events;
-using Google.Solutions.IapDesktop.Extensions.LogAnalysis.Logs;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 
-namespace Google.Solutions.IapDesktop.Extensions.LogAnalysis.Extensions
+namespace Google.Solutions.IapDesktop.Extensions.LogAnalysis.Logs
 {
     internal static class ListLogEntriesParser
     {

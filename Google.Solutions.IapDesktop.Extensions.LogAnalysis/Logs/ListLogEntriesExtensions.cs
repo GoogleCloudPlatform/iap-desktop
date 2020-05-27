@@ -34,7 +34,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Google.Solutions.IapDesktop.Extensions.LogAnalysis.Extensions
+namespace Google.Solutions.IapDesktop.Extensions.LogAnalysis.Logs
 {
     public static class ListLogEntriesExtensions
     {

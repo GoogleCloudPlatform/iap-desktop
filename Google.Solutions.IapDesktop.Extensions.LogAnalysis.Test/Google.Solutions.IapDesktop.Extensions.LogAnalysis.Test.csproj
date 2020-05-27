@@ -103,8 +103,8 @@
     <Compile Include="Events\System\TestTerminateOnHostMaintenanceEvent.cs" />
     <Compile Include="Events\TestEventFactory.cs" />
     <Compile Include="Events\TestUnknownEvent.cs" />
-    <Compile Include="Extensions\TestListLogEntriesExtensions.cs" />
-    <Compile Include="Extensions\TestListLogEntriesParser.cs" />
+    <Compile Include="Logs\TestListLogEntriesExtensions.cs" />
+    <Compile Include="Logs\TestListLogEntriesParser.cs" />
     <Compile Include="FixtureBase.cs" />
     <Compile Include="History\TestDataPoint.cs" />
     <Compile Include="History\TestInstanceHistoryBuilder.cs" />
@@ -142,6 +142,9 @@
     <EmbeddedResource Include="History\instance-3.json" />
     <EmbeddedResource Include="History\instance-4.json" />
     <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Extensions\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">

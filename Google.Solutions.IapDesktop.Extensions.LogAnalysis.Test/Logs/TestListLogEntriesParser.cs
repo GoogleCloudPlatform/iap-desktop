@@ -21,14 +21,14 @@
 
 using Google.Solutions.IapDesktop.Extensions.LogAnalysis.Events;
 using Google.Solutions.IapDesktop.Extensions.LogAnalysis.Events.Lifecycle;
-using Google.Solutions.IapDesktop.Extensions.LogAnalysis.Extensions;
+using Google.Solutions.IapDesktop.Extensions.LogAnalysis.Logs;
 using Newtonsoft.Json;
 using NUnit.Framework;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 
-namespace Google.Solutions.IapDesktop.Extensions.LogAnalysis.Test.Extensions
+namespace Google.Solutions.IapDesktop.Extensions.LogAnalysis.Test.Logs
 {
     [TestFixture]
     public class TestListLogEntriesParser : FixtureBase
