@@ -1,10 +1,9 @@
-﻿using Google.Solutions.LogAnalysis.History;
+﻿using Google.Solutions.IapDesktop.Extensions.LogAnalysis.History;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Diagnostics;
-using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
 using System.Windows.Forms.DataVisualization.Charting;
@@ -72,7 +71,7 @@ namespace Google.Solutions.LogAnalysis.QuickTest
             }
         }
 
-        private void RepopulateChart(IEnumerable<History.DataPoint> dataPoints)
+        private void RepopulateChart(IEnumerable<IapDesktop.Extensions.LogAnalysis.History.DataPoint> dataPoints)
         {
             this.chart.Series[0].Points.Clear();
             foreach (var dp in dataPoints)
