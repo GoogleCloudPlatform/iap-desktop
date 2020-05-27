@@ -188,6 +188,21 @@ namespace Google.Solutions.IapDesktop.Application.Test.ObjectModel
         //---------------------------------------------------------------------
 
         [Test]
+        public void WhenControlBound_ThenValueFromModelIsApplied()
+        {
+            var control = new TextBox();
+            var model = new Observable();
+            model.One = "text from model";
+
+            control.BindProperty(
+                t => t.Text,
+                model,
+                m => m.One);
+
+            Assert.AreEqual("text from model", control.Text);
+        }
+
+        [Test]
         public void WhenControlChanges_ThenModelIsUpdated()
         {
             var control = new TextBox();
