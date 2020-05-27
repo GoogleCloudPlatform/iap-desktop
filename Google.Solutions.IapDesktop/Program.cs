@@ -35,10 +35,12 @@ using Google.Solutions.IapDesktop.Application.Util;
 using Google.Solutions.IapDesktop.Windows;
 using Microsoft.Win32;
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Net;
+using System.Reflection;
 using System.Threading;
 using System.Windows.Forms;
 
@@ -55,8 +57,6 @@ namespace Google.Solutions.IapDesktop
             Google.Solutions.Common.TraceSources.Common,
             Google.Solutions.IapTunneling.TraceSources.Compute,
             Google.Solutions.IapDesktop.Application.TraceSources.IapDesktop
-            // TODO: Add once lib is used
-            // Google.Solutions.LogAnalysis.TraceSources.LogAnalysis
         };
 
         public static string LogFile =>
@@ -147,6 +147,13 @@ namespace Google.Solutions.IapDesktop
             return null;
         }
 
+        private IEnumerable<Assembly> LoadExtensionAssemblies()
+        {
+            return Directory.GetFiles(
+                Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location),
+                "*.Extension.*.dll")
+                .Select(dllPath => Assembly.LoadFrom(dllPath));
+        }
 
         //---------------------------------------------------------------------
         // SingletonApplicationBase overrides.
@@ -247,6 +254,14 @@ namespace Google.Solutions.IapDesktop
 #if DEBUG
             windowAndWorkflowLayer.AddSingleton<DebugWindow>();
 #endif
+            //
+            // Extension layer.
+            //
+            var extensionLayer = new ServiceRegistry(windowAndWorkflowLayer);
+            foreach (var extension in LoadExtensionAssemblies())
+            {
+                extensionLayer.AddExtensionAssembly(extension);
+            }
 
             // Run app.
             this.initializedMainForm = mainForm;

@@ -126,7 +126,7 @@ namespace Google.Solutions.IapDesktop.Application.ObjectModel
             }
         }
 
-        public void AddExtensionLibrary(Assembly assembly)
+        public void AddExtensionAssembly(Assembly assembly)
         {
             foreach (var type in assembly.GetTypes())
             {

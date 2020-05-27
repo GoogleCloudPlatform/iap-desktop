@@ -43,7 +43,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.ObjectModel
         public void WhenClassAnnotatedAsSingletonServiceWithInterface_ThenServiceIsRegistered()
         {
             var registry = new ServiceRegistry();
-            registry.AddExtensionLibrary(Assembly.GetExecutingAssembly());
+            registry.AddExtensionAssembly(Assembly.GetExecutingAssembly());
 
             Assert.IsNotNull(registry.GetService<ISingletonServiceInterface>());
             Assert.AreSame(
@@ -62,7 +62,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.ObjectModel
         public void WhenClassAnnotatedAsSingletonService_ThenServiceIsRegistered()
         {
             var registry = new ServiceRegistry();
-            registry.AddExtensionLibrary(Assembly.GetExecutingAssembly());
+            registry.AddExtensionAssembly(Assembly.GetExecutingAssembly());
 
             Assert.IsNotNull(registry.GetService<SingletonService>());
             Assert.AreSame(
@@ -85,7 +85,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.ObjectModel
         public void WhenClassAnnotatedAsTransientServiceWithInterface_ThenServiceIsRegistered()
         {
             var registry = new ServiceRegistry();
-            registry.AddExtensionLibrary(Assembly.GetExecutingAssembly());
+            registry.AddExtensionAssembly(Assembly.GetExecutingAssembly());
 
             Assert.IsNotNull(registry.GetService<ITransientServiceInterface>());
             Assert.AreNotSame(
@@ -104,7 +104,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.ObjectModel
         public void WhenClassAnnotatedAsTransientService_ThenServiceIsRegistered()
         {
             var registry = new ServiceRegistry();
-            registry.AddExtensionLibrary(Assembly.GetExecutingAssembly());
+            registry.AddExtensionAssembly(Assembly.GetExecutingAssembly());
 
             Assert.IsNotNull(registry.GetService<TransientService>());
             Assert.AreNotSame(
