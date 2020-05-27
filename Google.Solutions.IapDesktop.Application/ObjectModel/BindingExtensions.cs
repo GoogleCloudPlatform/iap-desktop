@@ -112,6 +112,10 @@ namespace Google.Solutions.IapDesktop.Application.ObjectModel
             where TModel : INotifyPropertyChanged
             where TControl : IComponent
         {
+            // Apply initial value.
+            var modelValue = modelProperty.Compile()(model);
+            CreateSetter(control, controlProperty)(modelValue);
+
             var forwardBinding = control.OnControlPropertyChange(
                 controlProperty,
                 CreateSetter(model, modelProperty));
