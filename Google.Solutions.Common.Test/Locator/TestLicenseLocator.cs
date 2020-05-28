@@ -157,5 +157,37 @@ namespace Google.Solutions.Common.Test.Locator
                 LicenseLocator.FromString(
                     "https://www.googleapis.com/compute/v1/" + path).ToString());
         }
+
+        [Test]
+        public void WhenLicenseIsFromWindowsCloud_ThenIsWindowsLicenseReturnsTrue()
+        {
+            var locator = LicenseLocator.FromString(
+                "https://www.googleapis.com/compute/v1/projects/windows-cloud/global/licenses/windows-10-enterprise-byol");
+            Assert.IsTrue(locator.IsWindowsLicense());
+        }
+
+        [Test]
+        public void WhenLicenseIsNotFromWindowsCloud_ThenIsWindowsLicenseReturnsFalse()
+        {
+            var locator = LicenseLocator.FromString(
+                "projects/my-project/global/licenses/windows-10-enterprise-byol");
+            Assert.IsFalse(locator.IsWindowsLicense());
+        }
+
+        [Test]
+        public void WhenLicenseHasByolSuffix_ThenIsWindowsByolLicenseReturnsTrue()
+        {
+            var locator = LicenseLocator.FromString(
+                "https://www.googleapis.com/compute/v1/projects/windows-cloud/global/licenses/windows-10-enterprise-byol");
+            Assert.IsTrue(locator.IsWindowsByolLicense());
+        }
+
+        [Test]
+        public void WhenLicenseHasNoByolSuffix_ThenIsWindowsByolLicenseReturnsFalse()
+        {
+            var locator = LicenseLocator.FromString(
+                "projects/windows-cloud/global/licenses/windows-2016");
+            Assert.IsFalse(locator.IsWindowsByolLicense());
+        }
     }
 }

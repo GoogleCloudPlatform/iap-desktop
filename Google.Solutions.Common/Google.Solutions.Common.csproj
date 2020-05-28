@@ -84,6 +84,7 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>GlobalResourceLocator.tt</DependentUpon>
     </Compile>
+    <Compile Include="Locator\LicenseLocatorExtensions.cs" />
     <Compile Include="Locator\ZonalResourceLocator.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>

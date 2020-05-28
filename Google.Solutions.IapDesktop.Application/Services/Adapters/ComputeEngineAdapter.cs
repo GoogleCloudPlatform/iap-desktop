@@ -62,8 +62,6 @@ namespace Google.Solutions.IapDesktop.Application.Services.Adapters
     /// </summary>
     public class ComputeEngineAdapter : IComputeEngineAdapter
     {
-        private const string WindowsCloudLicenses = "https://www.googleapis.com/compute/v1/projects/windows-cloud/global/licenses";
-
         private static readonly TimeSpan DefaultPasswordResetTimeout = TimeSpan.FromSeconds(15);
 
         private readonly ComputeService service;
@@ -185,7 +183,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.Adapters
                 .Where(d => d.Licenses != null)
                 .SelectMany(d => d.Licenses)
                 .EnsureNotNull()
-                .Any(l => l.StartsWith(WindowsCloudLicenses));
+                .Any(l => LicenseLocator.FromString(l).IsWindowsLicense());
         }
 
         public static bool IsWindowsInstance(Instance instance)
