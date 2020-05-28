@@ -20,6 +20,7 @@
 //
 
 using Google.Solutions.Common;
+using Google.Solutions.Common.Locator;
 using Google.Solutions.IapDesktop.Application.Services.Persistence;
 using System;
 using System.Collections.Generic;
@@ -49,16 +50,16 @@ namespace Google.Solutions.IapDesktop.Application.Util
         private static readonly Regex ZonePattern = new Regex(@"[a-z](?:[-a-z0-9]{0,61}[a-z0-9])?");
         private static readonly Regex InstanceNamePattern = new Regex(@"[a-z](?:[-a-z0-9]{0,61}[a-z0-9])?|[1-9][0-9]{0,19}");
 
-        public VmInstanceReference Instance { get; }
+        public InstanceLocator Instance { get; }
         public VmInstanceConnectionSettings Settings { get; }
 
-        public IapRdpUrl(VmInstanceReference instance, VmInstanceConnectionSettings settings)
+        public IapRdpUrl(InstanceLocator instance, VmInstanceConnectionSettings settings)
         {
             this.Instance = instance;
             this.Settings = settings;
         }
 
-        private static VmInstanceReference CreateVmInstanceReferenceFromPath(string absolutePath)
+        private static InstanceLocator CreateVmInstanceReferenceFromPath(string absolutePath)
         {
             if (string.IsNullOrEmpty(absolutePath))
             {
@@ -93,7 +94,7 @@ namespace Google.Solutions.IapDesktop.Application.Util
                 throw new IapRdpUrlFormatException($"Invalid instance name");
             }
 
-            return new VmInstanceReference(pathComponents[1], pathComponents[2], pathComponents[3]);
+            return new InstanceLocator(pathComponents[1], pathComponents[2], pathComponents[3]);
         }
 
         private static TEnum GetEnumFromQuery<TEnum>(
@@ -115,14 +116,14 @@ namespace Google.Solutions.IapDesktop.Application.Util
         }
 
         private static VmInstanceConnectionSettings CreateVmInstanceSettingsFromQuery(
-            VmInstanceReference instanceRef,
+            InstanceLocator instanceRef,
             string queryString)
         {
             var query = HttpUtility.ParseQueryString(queryString);
 
             return new VmInstanceConnectionSettings()
             {
-                InstanceName = instanceRef.InstanceName,
+                InstanceName = instanceRef.Name,
 
                 Username = query.Get("Username"),
                 Domain = query.Get("Domain"),
@@ -161,7 +162,7 @@ namespace Google.Solutions.IapDesktop.Application.Util
 
         public string ToString(bool includeSettingsAsQuery)
         {
-            var url = $"{Scheme}:///{this.Instance.ProjectId}/{this.Instance.Zone}/{this.Instance.InstanceName}";
+            var url = $"{Scheme}:///{this.Instance.ProjectId}/{this.Instance.Zone}/{this.Instance.Name}";
 
             if (includeSettingsAsQuery)
             {

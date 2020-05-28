@@ -20,6 +20,7 @@
 //
 
 using Google.Solutions.Common;
+using Google.Solutions.Common.Locator;
 using Google.Solutions.IapDesktop.Application.ObjectModel;
 using Google.Solutions.IapDesktop.Application.Services.Integration;
 using Google.Solutions.IapDesktop.Application.Services.Persistence;
@@ -82,7 +83,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Workflows
 
             var remoteDesktopService = new Mock<IRemoteDesktopService>();
             remoteDesktopService.Setup(s => s.Connect(
-                It.IsAny<VmInstanceReference>(),
+                It.IsAny<InstanceLocator>(),
                 "localhost",
                 It.IsAny<ushort>(),
                 It.IsAny<VmInstanceConnectionSettings>())).Returns<IRemoteDesktopSession>(null);
@@ -95,7 +96,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Workflows
                 IapRdpUrl.FromString("iap-rdp:///project/us-central-1/instance"));
 
             remoteDesktopService.Verify(s => s.Connect(
-                It.IsAny<VmInstanceReference>(),
+                It.IsAny<InstanceLocator>(),
                 "localhost",
                 It.IsAny<ushort>(),
                 It.Is<VmInstanceConnectionSettings>(i => i.Username == null)), Times.Once);
@@ -119,7 +120,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Workflows
 
             var remoteDesktopService = new Mock<IRemoteDesktopService>();
             remoteDesktopService.Setup(s => s.Connect(
-                It.IsAny<VmInstanceReference>(),
+                It.IsAny<InstanceLocator>(),
                 "localhost",
                 It.IsAny<ushort>(),
                 It.IsAny<VmInstanceConnectionSettings>())).Returns<IRemoteDesktopSession>(null);
@@ -132,7 +133,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Workflows
                 IapRdpUrl.FromString("iap-rdp:///project/us-central-1/instance?username=john%20doe"));
 
             remoteDesktopService.Verify(s => s.Connect(
-                It.IsAny<VmInstanceReference>(),
+                It.IsAny<InstanceLocator>(),
                 "localhost",
                 It.IsAny<ushort>(),
                 It.Is<VmInstanceConnectionSettings>(i => i.Username == "john doe")), Times.Once);
@@ -158,7 +159,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Workflows
             var credentialsService = new Mock<ICredentialsService>();
             credentialsService.Setup(s => s.GenerateCredentialsAsync(
                 It.IsAny<IWin32Window>(),
-                It.IsAny<VmInstanceReference>(),
+                It.IsAny<InstanceLocator>(),
                 It.IsAny<string>())).Returns(Task.FromResult(new NetworkCredential("user", "password")));
             this.serviceRegistry.AddSingleton<ICredentialsService>(credentialsService.Object);
 
@@ -169,7 +170,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Workflows
 
             credentialsService.Verify(s => s.GenerateCredentialsAsync(
                 It.IsAny<IWin32Window>(),
-                It.IsAny<VmInstanceReference>(),
+                It.IsAny<InstanceLocator>(),
                 It.Is<string>(user => user == null)), Times.Once);
         }
 
@@ -192,7 +193,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Workflows
             var credentialsService = new Mock<ICredentialsService>();
             credentialsService.Setup(s => s.GenerateCredentialsAsync(
                 It.IsAny<IWin32Window>(),
-                It.IsAny<VmInstanceReference>(),
+                It.IsAny<InstanceLocator>(),
                 It.IsAny<string>())).Returns(Task.FromResult(new NetworkCredential("user", "password")));
             this.serviceRegistry.AddSingleton<ICredentialsService>(credentialsService.Object);
 
@@ -203,7 +204,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Workflows
 
             credentialsService.Verify(s => s.GenerateCredentialsAsync(
                 It.IsAny<IWin32Window>(),
-                It.IsAny<VmInstanceReference>(),
+                It.IsAny<InstanceLocator>(),
                 It.Is<string>(user => user == "john doe")), Times.Once);
         }
     }

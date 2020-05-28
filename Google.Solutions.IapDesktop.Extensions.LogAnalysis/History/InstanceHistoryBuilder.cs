@@ -63,7 +63,7 @@ namespace Google.Solutions.IapDesktop.Extensions.LogAnalysis.History
         private readonly LinkedList<InstancePlacement> placements = new LinkedList<InstancePlacement>();
 
         private ImageLocator image;
-        private VmInstanceReference reference;
+        private InstanceLocator reference;
 
         private DateTime? lastStoppedOn;
         private DateTime lastEventDate = DateTime.MaxValue;
@@ -143,7 +143,7 @@ namespace Google.Solutions.IapDesktop.Extensions.LogAnalysis.History
 
         private InstanceHistoryBuilder(
             ulong instanceId,
-            VmInstanceReference reference,
+            InstanceLocator reference,
             ImageLocator image,
             InstanceState state,
             DateTime? lastSeen,
@@ -171,7 +171,7 @@ namespace Google.Solutions.IapDesktop.Extensions.LogAnalysis.History
 
         internal static InstanceHistoryBuilder ForExistingInstance(
             ulong instanceId,
-            VmInstanceReference reference,
+            InstanceLocator reference,
             ImageLocator image,
             InstanceState state,
             DateTime lastSeen,
@@ -241,7 +241,7 @@ namespace Google.Solutions.IapDesktop.Extensions.LogAnalysis.History
         // Lifecycle events that construct the history.
         //---------------------------------------------------------------------
 
-        public void OnInsert(DateTime date, VmInstanceReference reference, ImageLocator image)
+        public void OnInsert(DateTime date, InstanceLocator reference, ImageLocator image)
         {
             Debug.Assert(date <= this.lastEventDate);
             this.lastEventDate = date;
@@ -263,7 +263,7 @@ namespace Google.Solutions.IapDesktop.Extensions.LogAnalysis.History
             AddPlacement(Tenancy.Fleet, null, date);
         }
 
-        public void OnStart(DateTime date, VmInstanceReference reference)
+        public void OnStart(DateTime date, InstanceLocator reference)
         {
             Debug.Assert(date <= this.lastEventDate);
             this.lastEventDate = date;
@@ -278,7 +278,7 @@ namespace Google.Solutions.IapDesktop.Extensions.LogAnalysis.History
             AddPlacement(Tenancy.Fleet, null, date);
         }
 
-        public void OnStop(DateTime date, VmInstanceReference reference)
+        public void OnStop(DateTime date, InstanceLocator reference)
         {
             Debug.Assert(date <= this.lastEventDate);
             this.lastEventDate = date;

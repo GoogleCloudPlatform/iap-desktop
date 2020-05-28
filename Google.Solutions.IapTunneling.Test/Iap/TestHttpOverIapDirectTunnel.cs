@@ -21,6 +21,7 @@
 
 using Google.Apis.Auth.OAuth2;
 using Google.Solutions.Common;
+using Google.Solutions.Common.Locator;
 using Google.Solutions.Common.Test;
 using Google.Solutions.Common.Test.Testbed;
 using Google.Solutions.IapTunneling.Iap;
@@ -38,7 +39,7 @@ namespace Google.Solutions.IapTunneling.Test.Iap
     [Category("IAP")]
     public class TestHttpOverIapDirectTunnel : TestHttpOverIapTunnelBase
     {
-        protected override INetworkStream ConnectToWebServer(VmInstanceReference vmRef)
+        protected override INetworkStream ConnectToWebServer(InstanceLocator vmRef)
         {
             return new SshRelayStream(
                 new IapTunnelingEndpoint(

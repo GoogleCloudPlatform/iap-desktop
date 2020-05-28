@@ -20,6 +20,7 @@
 //
 
 using Google.Solutions.Common;
+using Google.Solutions.Common.Locator;
 using Google.Solutions.IapDesktop.Application.Services.Integration;
 using Google.Solutions.IapDesktop.Application.Services.Windows;
 using Google.Solutions.IapDesktop.Application.Services.Windows.TunnelsViewer;
@@ -50,7 +51,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Windows
             var tunnel = new Mock<ITunnel>();
             tunnel.SetupGet(t => t.Destination)
                 .Returns(new TunnelDestination(
-                    new VmInstanceReference("project-1", "zone", instanceName),
+                    new InstanceLocator("project-1", "zone", instanceName),
                     123));
             return tunnel;
         }

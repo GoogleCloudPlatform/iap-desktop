@@ -20,6 +20,7 @@
 //
 
 using Google.Solutions.Common;
+using Google.Solutions.Common.Locator;
 using Google.Solutions.IapDesktop.Extensions.LogAnalysis.Events;
 using Google.Solutions.IapDesktop.Extensions.LogAnalysis.Events.System;
 using Google.Solutions.IapDesktop.Extensions.LogAnalysis.Logs;
@@ -78,13 +79,13 @@ namespace Google.Solutions.IapDesktop.Extensions.LogAnalysis.Test.Events.System
             var e = (TerminateOnHostMaintenanceEvent)r.ToEvent();
 
             Assert.AreEqual(2162224123123123213, e.InstanceId);
-            Assert.AreEqual("instance-1", e.InstanceReference.InstanceName);
+            Assert.AreEqual("instance-1", e.InstanceReference.Name);
             Assert.AreEqual("us-central1-a", e.InstanceReference.Zone);
             Assert.AreEqual("project-1", e.InstanceReference.ProjectId);
             Assert.AreEqual("INFO", e.Severity);
             Assert.IsNull(e.Status);
             Assert.AreEqual(
-                new VmInstanceReference("project-1", "us-central1-a", "instance-1"),
+                new InstanceLocator("project-1", "us-central1-a", "instance-1"),
                 e.InstanceReference);
         }
     }

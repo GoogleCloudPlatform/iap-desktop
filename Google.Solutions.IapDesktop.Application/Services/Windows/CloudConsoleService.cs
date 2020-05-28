@@ -20,6 +20,7 @@
 //
 
 using Google.Solutions.Common;
+using Google.Solutions.Common.Locator;
 using System.Diagnostics;
 
 namespace Google.Solutions.IapDesktop.Application.Services.Windows
@@ -36,13 +37,13 @@ namespace Google.Solutions.IapDesktop.Application.Services.Windows
             });
         }
 
-        public void OpenVmInstance(VmInstanceReference instance)
+        public void OpenVmInstance(InstanceLocator instance)
         {
             OpenUrl("https://console.cloud.google.com/compute/instancesDetail/zones/" +
-                    $"{instance.Zone}/instances/{instance.InstanceName}?project={instance.ProjectId}");
+                    $"{instance.Zone}/instances/{instance.Name}?project={instance.ProjectId}");
         }
 
-        public void OpenVmInstanceLogs(VmInstanceReference instance, ulong instanceId)
+        public void OpenVmInstanceLogs(InstanceLocator instance, ulong instanceId)
         {
             OpenUrl("https://console.cloud.google.com/logs/viewer?" +
                    $"resource=gce_instance%2Finstance_id%2F{instanceId}&project={instance.ProjectId}");

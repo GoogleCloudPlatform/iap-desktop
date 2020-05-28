@@ -21,6 +21,7 @@
 
 using Google.Apis.Compute.v1.Data;
 using Google.Solutions.Common;
+using Google.Solutions.Common.Locator;
 using Google.Solutions.Common.Util;
 using Google.Solutions.IapDesktop.Application.Services.Adapters;
 using Google.Solutions.IapDesktop.Application.Services.Persistence;
@@ -314,7 +315,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.Windows.ProjectExplor
 
         public void Populate(
             IEnumerable<Instance> allInstances,
-            Func<VmInstanceReference, bool> isConnected)
+            Func<InstanceLocator, bool> isConnected)
         {
             this.Nodes.Clear();
 
@@ -348,7 +349,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.Windows.ProjectExplor
                         changedSettings => this.settingsRepository.SetVmInstanceSettings(this.ProjectId, changedSettings),
                         zoneNode);
                     instanceNode.IsConnected = isConnected(
-                        new VmInstanceReference(this.ProjectId, zoneId, instance.Name));
+                        new InstanceLocator(this.ProjectId, zoneId, instance.Name));
 
                     zoneNode.Nodes.Add(instanceNode);
                 }
@@ -390,8 +391,8 @@ namespace Google.Solutions.IapDesktop.Application.Services.Windows.ProjectExplor
         private const int ConnectedIconIndex = 5;
         private const int StoppedIconIndex = 6;
 
-        public VmInstanceReference Reference
-            => new VmInstanceReference(this.ProjectId, this.ZoneId, this.InstanceName);
+        public InstanceLocator Reference
+            => new InstanceLocator(this.ProjectId, this.ZoneId, this.InstanceName);
 
         public string ProjectId => ((ZoneNode)this.Parent).ProjectId;
         public string ZoneId => ((ZoneNode)this.Parent).ZoneId;

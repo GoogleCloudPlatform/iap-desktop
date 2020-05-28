@@ -78,7 +78,7 @@ namespace Google.Solutions.IapDesktop.Extensions.LogAnalysis.History
 
         public void AddExistingInstance(
             ulong instanceId,
-            VmInstanceReference reference,
+            InstanceLocator reference,
             ImageLocator image,
             InstanceState state,
             DateTime lastSeen,
@@ -163,7 +163,7 @@ namespace Google.Solutions.IapDesktop.Extensions.LogAnalysis.History
 
                     AddExistingInstance(
                         (ulong)instance.Id.Value,
-                        new VmInstanceReference(
+                        new InstanceLocator(
                             projectId,
                             ShortZoneIdFromUrl(instance.Zone),
                             instance.Name),

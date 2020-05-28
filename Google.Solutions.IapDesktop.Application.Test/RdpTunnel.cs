@@ -20,6 +20,7 @@
 //
 
 using Google.Solutions.Common;
+using Google.Solutions.Common.Locator;
 using Google.Solutions.Common.Test.Testbed;
 using Google.Solutions.IapTunneling.Iap;
 using System;
@@ -45,7 +46,7 @@ namespace Google.Solutions.IapDesktop.Application.Test
             this.tokenSource = tokenSource;
         }
 
-        public static RdpTunnel Create(VmInstanceReference vmRef)
+        public static RdpTunnel Create(InstanceLocator vmRef)
         {
             var listener = SshRelayListener.CreateLocalListener(
                 new IapTunnelingEndpoint(

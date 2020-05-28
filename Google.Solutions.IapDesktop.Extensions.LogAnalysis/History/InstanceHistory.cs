@@ -32,7 +32,7 @@ namespace Google.Solutions.IapDesktop.Extensions.LogAnalysis.History
         public ulong InstanceId { get; }
 
         [JsonProperty("vm")]
-        public VmInstanceReference Reference { get; }
+        public InstanceLocator Reference { get; }
 
         [JsonProperty("placements")]
         public IEnumerable<InstancePlacement> Placements { get; }
@@ -46,7 +46,7 @@ namespace Google.Solutions.IapDesktop.Extensions.LogAnalysis.History
         [JsonConstructor]
         internal InstanceHistory(
             [JsonProperty("id")] ulong instanceId,
-            [JsonProperty("vm")] VmInstanceReference reference,
+            [JsonProperty("vm")] InstanceLocator reference,
             [JsonProperty("state")] InstanceHistoryState state,
             [JsonProperty("image")] ImageLocator image,
             [JsonProperty("placements")] IEnumerable<InstancePlacement> placements

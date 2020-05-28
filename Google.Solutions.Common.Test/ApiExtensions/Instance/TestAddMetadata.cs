@@ -61,7 +61,7 @@ namespace Google.Solutions.Common.Test.Extensions
             var instance = await this.instancesResource.Get(
                 testInstance.InstanceReference.ProjectId,
                 testInstance.InstanceReference.Zone,
-                testInstance.InstanceReference.InstanceName)
+                testInstance.InstanceReference.Name)
                     .ExecuteAsync(CancellationToken.None)
                     .ConfigureAwait(false);
 
@@ -94,7 +94,7 @@ namespace Google.Solutions.Common.Test.Extensions
             var instance = await this.instancesResource.Get(
                 testInstance.InstanceReference.ProjectId,
                 testInstance.InstanceReference.Zone,
-                testInstance.InstanceReference.InstanceName)
+                testInstance.InstanceReference.Name)
                     .ExecuteAsync(CancellationToken.None)
                     .ConfigureAwait(false);
 

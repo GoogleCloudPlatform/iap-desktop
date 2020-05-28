@@ -20,6 +20,7 @@
 //
 
 using Google.Solutions.Common;
+using Google.Solutions.Common.Locator;
 using Google.Solutions.IapDesktop.Application.Services.Persistence;
 using Google.Solutions.IapDesktop.Application.Util;
 using NUnit.Framework;
@@ -98,7 +99,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Util
 
             Assert.AreEqual("my-project", url.Instance.ProjectId);
             Assert.AreEqual("us-central1-a", url.Instance.Zone);
-            Assert.AreEqual("my-instance", url.Instance.InstanceName);
+            Assert.AreEqual("my-instance", url.Instance.Name);
             Assert.AreEqual("my-instance", url.Settings.InstanceName);
         }
 
@@ -109,7 +110,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Util
 
             Assert.AreEqual("my-project", url.Instance.ProjectId);
             Assert.AreEqual("us-central1-a", url.Instance.Zone);
-            Assert.AreEqual("my-instance", url.Instance.InstanceName);
+            Assert.AreEqual("my-instance", url.Instance.Name);
             Assert.AreEqual("my-instance", url.Settings.InstanceName);
         }
 
@@ -120,7 +121,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Util
 
             Assert.AreEqual("my-project", url.Instance.ProjectId);
             Assert.AreEqual("us-central1-a", url.Instance.Zone);
-            Assert.AreEqual("my-instance", url.Instance.InstanceName);
+            Assert.AreEqual("my-instance", url.Instance.Name);
             Assert.AreEqual("my-instance", url.Settings.InstanceName);
         }
 
@@ -220,7 +221,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Util
         public void WhenSettingsContainsEscapableChars_ThenToStringEscapesThem()
         {
             var url = new IapRdpUrl(
-                new VmInstanceReference("project-1", "us-central1-a", "instance-1"),
+                new InstanceLocator("project-1", "us-central1-a", "instance-1"),
                 new VmInstanceConnectionSettings()
                 {
                     Username = "Tom & Jerry?",
@@ -238,7 +239,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Util
         public void WhenParseStringCreatedByToString_ResultIsSame()
         {
             var url = new IapRdpUrl(
-                new VmInstanceReference("project-1", "us-central1-a", "instance-1"),
+                new InstanceLocator("project-1", "us-central1-a", "instance-1"),
                 new VmInstanceConnectionSettings()
                 {
                     Username = "user",
@@ -255,7 +256,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Util
 
             Assert.AreEqual("project-1", copy.Instance.ProjectId);
             Assert.AreEqual("us-central1-a", copy.Instance.Zone);
-            Assert.AreEqual("instance-1", copy.Instance.InstanceName);
+            Assert.AreEqual("instance-1", copy.Instance.Name);
 
             Assert.AreEqual("user", copy.Settings.Username);
             Assert.AreEqual("domain", copy.Settings.Domain);

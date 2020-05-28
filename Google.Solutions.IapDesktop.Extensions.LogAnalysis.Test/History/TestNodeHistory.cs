@@ -20,6 +20,7 @@
 //
 
 using Google.Solutions.Common;
+using Google.Solutions.Common.Locator;
 using Google.Solutions.IapDesktop.Extensions.LogAnalysis.History;
 using NUnit.Framework;
 using System;
@@ -75,7 +76,7 @@ namespace Google.Solutions.IapDesktop.Extensions.LogAnalysis.Test.History
         {
             var instance = new InstanceHistory(
                 1,
-                new VmInstanceReference("project-1", "zone-1", "instance-1"),
+                new InstanceLocator("project-1", "zone-1", "instance-1"),
                 InstanceHistoryState.MissingImage,
                 null,
                 null);
@@ -115,7 +116,7 @@ namespace Google.Solutions.IapDesktop.Extensions.LogAnalysis.Test.History
             var baselineDate = new DateTime(2020, 1, 1, 0, 0, 0, DateTimeKind.Utc);
             var instance = new InstanceHistory(
                 1,
-                new VmInstanceReference("project-1", "zone-1", "instance-1"),
+                new InstanceLocator("project-1", "zone-1", "instance-1"),
                 InstanceHistoryState.MissingImage,
                 null,
                 null);

@@ -20,6 +20,7 @@
 //
 
 using Google.Solutions.Common;
+using Google.Solutions.Common.Locator;
 using Google.Solutions.IapDesktop.Extensions.LogAnalysis.Events;
 using Google.Solutions.IapDesktop.Extensions.LogAnalysis.Events.Lifecycle;
 using Google.Solutions.IapDesktop.Extensions.LogAnalysis.Logs;
@@ -91,13 +92,13 @@ namespace Google.Solutions.IapDesktop.Extensions.LogAnalysis.Test.Events.Lifecyc
             var e = (StartWithEncryptionKeyEvent)r.ToEvent();
 
             Assert.AreEqual(4894051111144103, e.InstanceId);
-            Assert.AreEqual("instance-1", e.InstanceReference.InstanceName);
+            Assert.AreEqual("instance-1", e.InstanceReference.Name);
             Assert.AreEqual("us-central1-a", e.InstanceReference.Zone);
             Assert.AreEqual("project-1", e.InstanceReference.ProjectId);
             Assert.AreEqual("NOTICE", e.Severity);
             Assert.IsNull(e.Status);
             Assert.AreEqual(
-                new VmInstanceReference("project-1", "us-central1-a", "instance-1"),
+                new InstanceLocator("project-1", "us-central1-a", "instance-1"),
                 e.InstanceReference);
         }
 
@@ -173,14 +174,14 @@ namespace Google.Solutions.IapDesktop.Extensions.LogAnalysis.Test.Events.Lifecyc
             var e = (StartWithEncryptionKeyEvent)r.ToEvent();
 
             Assert.AreEqual(0, e.InstanceId);   // b/156451226
-            Assert.AreEqual("instance-1", e.InstanceReference.InstanceName);
+            Assert.AreEqual("instance-1", e.InstanceReference.Name);
             Assert.AreEqual("us-central1-a", e.InstanceReference.Zone);
             Assert.AreEqual("project-1", e.InstanceReference.ProjectId);
             Assert.AreEqual("ERROR", e.Severity);
             Assert.AreEqual(3, e.Status.Code);
             Assert.AreEqual("INVALID_ARGUMENT", e.Status.Message);
             Assert.AreEqual(
-                new VmInstanceReference("project-1", "us-central1-a", "instance-1"),
+                new InstanceLocator("project-1", "us-central1-a", "instance-1"),
                 e.InstanceReference);
         }
     }

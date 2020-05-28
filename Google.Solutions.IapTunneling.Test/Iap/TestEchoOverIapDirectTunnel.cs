@@ -20,6 +20,7 @@
 //
 
 using Google.Solutions.Common;
+using Google.Solutions.Common.Locator;
 using Google.Solutions.Common.Test.Testbed;
 using Google.Solutions.IapTunneling.Iap;
 using Google.Solutions.IapTunneling.Net;
@@ -32,7 +33,7 @@ namespace Google.Solutions.IapTunneling.Test.Iap
     [Category("IAP")]
     public class TestEchoOverIapDirectTunnel : TestEchoOverIapBase
     {
-        protected override INetworkStream ConnectToEchoServer(VmInstanceReference vmRef)
+        protected override INetworkStream ConnectToEchoServer(InstanceLocator vmRef)
         {
             return new FragmentingStream(new SshRelayStream(
                 new IapTunnelingEndpoint(

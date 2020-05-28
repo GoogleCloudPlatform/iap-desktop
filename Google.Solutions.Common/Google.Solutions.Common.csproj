@@ -95,7 +95,6 @@
     <Compile Include="TraceSources.cs" />
     <Compile Include="Util\ExceptionExtensions.cs" />
     <Compile Include="Util\LinqExtensions.cs" />
-    <Compile Include="VmInstanceReference.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />

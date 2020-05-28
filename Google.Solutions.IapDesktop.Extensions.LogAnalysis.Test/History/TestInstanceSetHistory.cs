@@ -20,6 +20,7 @@
 //
 
 using Google.Solutions.Common;
+using Google.Solutions.Common.Locator;
 using Google.Solutions.IapDesktop.Extensions.LogAnalysis.History;
 using NUnit.Framework;
 using System;
@@ -41,7 +42,7 @@ namespace Google.Solutions.IapDesktop.Extensions.LogAnalysis.Test.History
                 {
                     new InstanceHistory(
                         188550847350222232,
-                        new VmInstanceReference("project-1", "us-central1-a", "instance-1"),
+                        new InstanceLocator("project-1", "us-central1-a", "instance-1"),
                         InstanceHistoryState.Complete,
                         null,
                         new []
@@ -201,7 +202,7 @@ namespace Google.Solutions.IapDesktop.Extensions.LogAnalysis.Test.History
 
                 Assert.AreEqual(InstanceHistoryState.Complete, completeInstance.State);
                 Assert.AreEqual(
-                    new VmInstanceReference("project-1", "us-central1-a", "instance-1"),
+                    new InstanceLocator("project-1", "us-central1-a", "instance-1"),
                     completeInstance.Reference);
 
                 Assert.AreEqual(2, completeInstance.Placements.Count());

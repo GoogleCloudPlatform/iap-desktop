@@ -20,6 +20,7 @@
 //
 
 using Google.Solutions.Common;
+using Google.Solutions.Common.Locator;
 using Google.Solutions.Common.Util;
 using Google.Solutions.IapDesktop.Application.ObjectModel;
 using Google.Solutions.IapDesktop.Application.Services.Adapters;
@@ -42,14 +43,14 @@ namespace Google.Solutions.IapDesktop.Application.Services.Windows.SerialLog
             this.serviceProvider = serviceProvider;
         }
 
-        private SerialLogWindow TryGetExistingWindow(VmInstanceReference vmInstance)
+        private SerialLogWindow TryGetExistingWindow(InstanceLocator vmInstance)
             => this.dockPanel.Contents
                 .EnsureNotNull()
                 .OfType<SerialLogWindow>()
                 .Where(w => w.Instance == vmInstance)
                 .FirstOrDefault();
 
-        public void ShowSerialLog(VmInstanceReference vmInstance)
+        public void ShowSerialLog(InstanceLocator vmInstance)
         {
             var window = TryGetExistingWindow(vmInstance);
             if (window == null)

@@ -30,15 +30,15 @@ namespace Google.Solutions.Common.Test
         [Test]
         public void ToStringReturnsName()
         {
-            var ref1 = new InstanceLocator("proj", "zone", "inst");
+            var ref1 = new Common.Locator.InstanceLocator("proj", "zone", "inst");
             Assert.AreEqual("inst", ref1.ToString());
         }
 
         [Test]
         public void WhenReferencesAreEquivalent_ThenEqualsReturnsTrue()
         {
-            var ref1 = new InstanceLocator("proj", "zone", "inst");
-            var ref2 = new InstanceLocator("proj", "zone", "inst");
+            var ref1 = new Common.Locator.InstanceLocator("proj", "zone", "inst");
+            var ref2 = new Common.Locator.InstanceLocator("proj", "zone", "inst");
 
             Assert.IsTrue(ref1.Equals(ref2));
             Assert.IsTrue(ref1.Equals((object)ref2));
@@ -49,7 +49,7 @@ namespace Google.Solutions.Common.Test
         [Test]
         public void WhenReferencesAreSame_ThenEqualsReturnsTrue()
         {
-            var ref1 = new InstanceLocator("proj", "zone", "inst");
+            var ref1 = new Common.Locator.InstanceLocator("proj", "zone", "inst");
             var ref2 = ref1;
 
             Assert.IsTrue(ref1.Equals(ref2));
@@ -61,8 +61,8 @@ namespace Google.Solutions.Common.Test
         [Test]
         public void WhenReferencesAreNotEquivalent_ThenEqualsReturnsFalse()
         {
-            var ref1 = new InstanceLocator("proj", "zone", "inst");
-            var ref2 = new InstanceLocator("proj", "zone", "other");
+            var ref1 = new Common.Locator.InstanceLocator("proj", "zone", "inst");
+            var ref2 = new Common.Locator.InstanceLocator("proj", "zone", "other");
 
             Assert.IsFalse(ref1.Equals(ref2));
             Assert.IsFalse(ref1.Equals((object)ref2));
@@ -73,7 +73,7 @@ namespace Google.Solutions.Common.Test
         [Test]
         public void WhenReferencesAreOfDifferentType_ThenEqualsReturnsFalse()
         {
-            var ref1 = new InstanceLocator("proj", "zone", "inst");
+            var ref1 = new Common.Locator.InstanceLocator("proj", "zone", "inst");
             var ref2 = new DiskTypeLocator("proj", "zone", "pd-standard");
 
             Assert.IsFalse(ref2.Equals(ref1));
@@ -85,7 +85,7 @@ namespace Google.Solutions.Common.Test
         [Test]
         public void TestEqualsNull()
         {
-            var ref1 = new InstanceLocator("proj", "zone", "inst");
+            var ref1 = new Common.Locator.InstanceLocator("proj", "zone", "inst");
 
             Assert.IsFalse(ref1.Equals(null));
             Assert.IsFalse(ref1.Equals((object)null));

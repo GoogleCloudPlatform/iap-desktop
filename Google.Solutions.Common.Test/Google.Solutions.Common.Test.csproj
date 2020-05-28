@@ -98,7 +98,6 @@
     <Compile Include="Testbed\InstanceAttribute.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Locator\TestImageLocator.cs" />
-    <Compile Include="TestVmInstanceReference.cs" />
     <Compile Include="Locator\TestDiskTypeLocator.cs" />
     <Compile Include="Util\TestExceptionExtensions.cs" />
     <Compile Include="Util\TestLinqExtensions.cs" />

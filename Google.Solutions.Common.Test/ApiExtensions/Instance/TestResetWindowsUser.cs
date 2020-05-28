@@ -21,6 +21,7 @@
 
 using Google.Apis.Compute.v1;
 using Google.Solutions.Common.ApiExtensions.Instance;
+using Google.Solutions.Common.Locator;
 using Google.Solutions.Common.Test.Testbed;
 using NUnit.Framework;
 using System;
@@ -72,10 +73,10 @@ namespace Google.Solutions.Common.Test.Extensions
             var username = "test" + Guid.NewGuid().ToString();
 
             // Use correct project, but wrong VM.
-            var instanceRef = new VmInstanceReference(
+            var instanceRef = new InstanceLocator(
                 testInstance.InstanceReference.ProjectId,
                 testInstance.InstanceReference.Zone,
-                testInstance.InstanceReference.InstanceName + "-x");
+                testInstance.InstanceReference.Name + "-x");
             try
             {
                 await this.instancesResource.ResetWindowsUserAsync(

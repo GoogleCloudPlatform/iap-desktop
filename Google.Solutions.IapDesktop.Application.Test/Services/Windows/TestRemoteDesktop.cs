@@ -20,6 +20,7 @@
 //
 
 using Google.Solutions.Common;
+using Google.Solutions.Common.Locator;
 using Google.Solutions.IapDesktop.Application.Services.Persistence;
 using Google.Solutions.IapDesktop.Application.Services.Windows.RemoteDesktop;
 using NUnit.Framework;
@@ -29,8 +30,8 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Windows
     [TestFixture]
     public class TestRemoteDesktop : WindowTestFixtureBase
     {
-        private readonly VmInstanceReference instanceReference =
-            new VmInstanceReference("project", "zone", "instance");
+        private readonly InstanceLocator instanceReference =
+            new InstanceLocator("project", "zone", "instance");
 
         [Test]
         public void WhenServerInvalid_ThenErrorIsShownAndWindowIsClosed()

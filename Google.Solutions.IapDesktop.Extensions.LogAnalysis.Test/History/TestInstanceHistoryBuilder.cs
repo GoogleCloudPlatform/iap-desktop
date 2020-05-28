@@ -32,7 +32,7 @@ namespace Google.Solutions.IapDesktop.Extensions.LogAnalysis.Test.History
     [TestFixture]
     public class TestInstanceHistoryBuilder : FixtureBase
     {
-        private static readonly VmInstanceReference SampleReference = new VmInstanceReference("pro", "zone", "name");
+        private static readonly InstanceLocator SampleReference = new InstanceLocator("pro", "zone", "name");
         private static readonly ImageLocator SampleImage
             = ImageLocator.FromString("projects/project-1/global/images/image-1");
 

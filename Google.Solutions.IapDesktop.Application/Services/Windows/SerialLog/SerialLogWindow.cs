@@ -22,6 +22,7 @@
 using Google.Apis.Auth.OAuth2.Responses;
 using Google.Solutions.Common;
 using Google.Solutions.Common.ApiExtensions.Instance;
+using Google.Solutions.Common.Locator;
 using Google.Solutions.Common.Util;
 using System;
 using System.Runtime.InteropServices;
@@ -37,13 +38,13 @@ namespace Google.Solutions.IapDesktop.Application.Services.Windows.SerialLog
         private readonly ManualResetEvent keepTailing = new ManualResetEvent(true);
         private volatile bool formClosing = false;
 
-        public VmInstanceReference Instance { get; }
+        public InstanceLocator Instance { get; }
 
-        public SerialLogWindow(VmInstanceReference vmInstance)
+        public SerialLogWindow(InstanceLocator vmInstance)
         {
             InitializeComponent();
 
-            this.TabText = $"Log ({vmInstance.InstanceName})";
+            this.TabText = $"Log ({vmInstance.Name})";
             this.Instance = vmInstance;
         }
 

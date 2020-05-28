@@ -23,6 +23,7 @@ using Google.Apis.Compute.v1;
 using Google.Apis.Compute.v1.Data;
 using Google.Solutions.Common.ApiExtensions.Request;
 using Google.Solutions.Common.Diagnostics;
+using Google.Solutions.Common.Locator;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
@@ -50,7 +51,7 @@ namespace Google.Solutions.Common.ApiExtensions.Instance
         {
             return AddMetadataAsync(
                 resource,
-                new VmInstanceReference(project, zone, instance),
+                new InstanceLocator(project, zone, instance),
                 key,
                 value,
                 token);
@@ -62,13 +63,13 @@ namespace Google.Solutions.Common.ApiExtensions.Instance
         /// <returns>null if not set/found</returns>
         public static async Task<Metadata.ItemsData> QueryMetadataKeyAsync(
             this InstancesResource resource,
-            VmInstanceReference instanceRef,
+            InstanceLocator instanceRef,
             string key)
         {
             var instance = await resource.Get(
                 instanceRef.ProjectId,
                 instanceRef.Zone,
-                instanceRef.InstanceName).ExecuteAsync().ConfigureAwait(false);
+                instanceRef.Name).ExecuteAsync().ConfigureAwait(false);
 
             if (instance.Metadata == null || instance.Metadata.Items == null)
             {
@@ -86,7 +87,7 @@ namespace Google.Solutions.Common.ApiExtensions.Instance
         /// </summary>
         public static async Task AddMetadataAsync(
             this InstancesResource resource,
-            VmInstanceReference instanceRef,
+            InstanceLocator instanceRef,
             string key,
             string value,
             CancellationToken token)
@@ -98,7 +99,7 @@ namespace Google.Solutions.Common.ApiExtensions.Instance
                     var instance = await resource.Get(
                         instanceRef.ProjectId,
                         instanceRef.Zone,
-                        instanceRef.InstanceName).ExecuteAsync(token).ConfigureAwait(false);
+                        instanceRef.Name).ExecuteAsync(token).ConfigureAwait(false);
                     var metadata = instance.Metadata;
 
                     if (metadata.Items == null)
@@ -122,7 +123,7 @@ namespace Google.Solutions.Common.ApiExtensions.Instance
                         });
                     }
 
-                    TraceSources.Common.TraceVerbose("Setting metdata {0} on {1}...", key, instanceRef.InstanceName);
+                    TraceSources.Common.TraceVerbose("Setting metdata {0} on {1}...", key, instanceRef.Name);
 
                     try
                     {
@@ -130,7 +131,7 @@ namespace Google.Solutions.Common.ApiExtensions.Instance
                             metadata,
                             instanceRef.ProjectId,
                             instanceRef.Zone,
-                            instanceRef.InstanceName).ExecuteAndAwaitOperationAsync(instanceRef.ProjectId, token);
+                            instanceRef.Name).ExecuteAndAwaitOperationAsync(instanceRef.ProjectId, token);
                         break;
                     }
                     catch (GoogleApiException e)

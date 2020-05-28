@@ -20,6 +20,7 @@
 //
 
 using Google.Solutions.Common;
+using Google.Solutions.Common.Locator;
 using Google.Solutions.Common.Test.Testbed;
 using Google.Solutions.IapTunneling.Iap;
 using Google.Solutions.IapTunneling.Net;
@@ -37,7 +38,7 @@ namespace Google.Solutions.IapTunneling.Test.Iap
     [Category("IAP")]
     public class TestHttpOverIapIndirectTunnel : TestHttpOverIapTunnelBase
     {
-        protected override INetworkStream ConnectToWebServer(VmInstanceReference vmRef)
+        protected override INetworkStream ConnectToWebServer(InstanceLocator vmRef)
         {
             var listener = SshRelayListener.CreateLocalListener(
                 new IapTunnelingEndpoint(

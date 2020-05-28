@@ -20,6 +20,7 @@
 //
 
 using Google.Solutions.Common;
+using Google.Solutions.Common.Locator;
 using Google.Solutions.Common.Test;
 using Google.Solutions.Common.Test.Testbed;
 using Google.Solutions.IapTunneling.Iap;
@@ -41,7 +42,7 @@ namespace Google.Solutions.IapTunneling.Test.Iap
             using (var stream = new SshRelayStream(
                 new IapTunnelingEndpoint(
                     Defaults.GetCredential(),
-                    new VmInstanceReference(
+                    new InstanceLocator(
                         "invalid",
                         Defaults.Zone,
                         "invalid"),
@@ -59,7 +60,7 @@ namespace Google.Solutions.IapTunneling.Test.Iap
             using (var stream = new SshRelayStream(
                new IapTunnelingEndpoint(
                     Defaults.GetCredential(),
-                    new VmInstanceReference(
+                    new InstanceLocator(
                         Defaults.ProjectId,
                         "invalid",
                         "invalid"),
@@ -77,7 +78,7 @@ namespace Google.Solutions.IapTunneling.Test.Iap
             using (var stream = new SshRelayStream(
                 new IapTunnelingEndpoint(
                     Defaults.GetCredential(),
-                    new VmInstanceReference(
+                    new InstanceLocator(
                         Defaults.ProjectId,
                         Defaults.Zone,
                         "invalid"),
