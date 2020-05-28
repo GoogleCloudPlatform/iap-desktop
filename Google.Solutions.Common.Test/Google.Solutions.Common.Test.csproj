@@ -90,6 +90,7 @@
     <Compile Include="Auth\TestAuthorization.cs" />
     <Compile Include="Auth\TestGoogleAuthAdapter.cs" />
     <Compile Include="FixtureBase.cs" />
+    <Compile Include="Locator\TestLicenseLocator.cs" />
     <Compile Include="Net\TestRestClient.cs" />
     <Compile Include="Testbed\ComputeEngine.cs" />
     <Compile Include="Testbed\Defaults.cs" />
