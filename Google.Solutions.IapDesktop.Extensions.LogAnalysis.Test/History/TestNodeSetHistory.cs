@@ -20,6 +20,7 @@
 //
 
 using Google.Solutions.Common;
+using Google.Solutions.Common.Locator;
 using Google.Solutions.IapDesktop.Extensions.LogAnalysis.History;
 using NUnit.Framework;
 using System;
@@ -84,7 +85,7 @@ namespace Google.Solutions.IapDesktop.Extensions.LogAnalysis.Test.History
                     1,
                     new VmInstanceReference("project-1", "zone-1", "instance-1"),
                     InstanceHistoryState.Complete,
-                    new GlobalResourceReference("project-1", "images", "image-1"),
+                    new ImageLocator("project-1", "image-1"),
                     null)
             };
 
@@ -101,7 +102,7 @@ namespace Google.Solutions.IapDesktop.Extensions.LogAnalysis.Test.History
                     1,
                     new VmInstanceReference("project-1", "zone-1", "instance-1"),
                     InstanceHistoryState.MissingTenancy,
-                    new GlobalResourceReference("project-1", "images", "image-1"),
+                    new ImageLocator("project-1", "image-1"),
                     new []
                     {
                         new InstancePlacement(
@@ -138,7 +139,7 @@ namespace Google.Solutions.IapDesktop.Extensions.LogAnalysis.Test.History
                     1,
                     new VmInstanceReference("project-1", "zone-1", "instance-1"),
                     InstanceHistoryState.MissingTenancy,
-                    new GlobalResourceReference("project-1", "images", "image-1"),
+                    new ImageLocator("project-1", "image-1"),
                     new []
                     {
                         new InstancePlacement(
@@ -177,7 +178,7 @@ namespace Google.Solutions.IapDesktop.Extensions.LogAnalysis.Test.History
                     1,
                     new VmInstanceReference("project-1", "zone-1", "instance-1"),
                     InstanceHistoryState.MissingTenancy,
-                    new GlobalResourceReference("project-1", "images", "image-1"),
+                    new ImageLocator("project-1", "image-1"),
                     new []
                     {
                         new InstancePlacement(
@@ -189,7 +190,7 @@ namespace Google.Solutions.IapDesktop.Extensions.LogAnalysis.Test.History
                     2,
                     new VmInstanceReference("project-1", "zone-1", "instance-1"),
                     InstanceHistoryState.MissingTenancy,
-                    new GlobalResourceReference("project-1", "images", "image-1"),
+                   new ImageLocator("project-1", "image-1"),
                     new []
                     {
                         new InstancePlacement(
@@ -217,7 +218,7 @@ namespace Google.Solutions.IapDesktop.Extensions.LogAnalysis.Test.History
                     1,
                     new VmInstanceReference("project-1", "zone-1", "instance-1"),
                     InstanceHistoryState.MissingTenancy,
-                    new GlobalResourceReference("project-1", "images", "image-1"),
+                    new ImageLocator("project-1", "image-1"),
                     new []
                     {
                         new InstancePlacement(
@@ -229,7 +230,7 @@ namespace Google.Solutions.IapDesktop.Extensions.LogAnalysis.Test.History
                     2,
                     new VmInstanceReference("project-1", "zone-1", "instance-1"),
                     InstanceHistoryState.MissingTenancy,
-                    new GlobalResourceReference("project-1", "images", "image-1"),
+                    new ImageLocator("project-1", "image-1"),
                     new []
                     {
                         new InstancePlacement(

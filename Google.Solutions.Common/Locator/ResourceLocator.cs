@@ -22,15 +22,15 @@
 using Google.Apis.Util;
 using System.Diagnostics;
 
-namespace Google.Solutions.Common
+namespace Google.Solutions.Common.Locator
 {
-    public abstract class ResourceReference
+    public abstract class ResourceLocator
     {
         private const string ComputeGoogleapisPrefix = "https://compute.googleapis.com/compute/v1/";
         private const string GoogleapisUrlPrefix = "https://www.googleapis.com/compute/v1/";
 
         public string ProjectId { get; }
-        public string ResourceType { get; }
+        public abstract string ResourceType { get; }
         public string ResourceName { get; }
 
         protected static string StripUrlPrefix(string resourceReference)
@@ -49,13 +49,11 @@ namespace Google.Solutions.Common
             }
         }
 
-        protected ResourceReference(
+        protected ResourceLocator(
             string projectId,
-            string resourceType,
             string resourceName)
         {
             Utilities.ThrowIfNull(projectId, nameof(projectId));
-            Utilities.ThrowIfNull(resourceType, nameof(resourceType));
             Utilities.ThrowIfNull(resourceName, nameof(resourceName));
 
             Debug.Assert(!long.TryParse(projectId, out long _));
@@ -63,7 +61,6 @@ namespace Google.Solutions.Common
             Debug.Assert(!projectId.Contains("/"));
 
             this.ProjectId = projectId;
-            this.ResourceType = resourceType;
             this.ResourceName = resourceName;
         }
     }

@@ -20,6 +20,7 @@
 //
 
 using Google.Solutions.Common;
+using Google.Solutions.Common.Locator;
 using Google.Solutions.IapDesktop.Extensions.LogAnalysis.Events;
 using Google.Solutions.IapDesktop.Extensions.LogAnalysis.Events.Lifecycle;
 using Google.Solutions.IapDesktop.Extensions.LogAnalysis.Events.System;
@@ -39,8 +40,8 @@ namespace Google.Solutions.IapDesktop.Extensions.LogAnalysis.Test.History
     public class TestInstanceSetHistoryBuilder : FixtureBase
     {
         private static readonly VmInstanceReference SampleReference = new VmInstanceReference("pro", "zone", "name");
-        private static readonly GlobalResourceReference SampleImage
-            = GlobalResourceReference.FromString("projects/project-1/global/images/image-1");
+        private static readonly ImageLocator SampleImage
+            = ImageLocator.FromString("projects/project-1/global/images/image-1");
 
         private static InstanceSetHistory BuildHistoryFromResource(string resourceName)
         {
@@ -179,7 +180,7 @@ namespace Google.Solutions.IapDesktop.Extensions.LogAnalysis.Test.History
 
             var instance = set.Instances.First();
             Assert.AreEqual(
-                GlobalResourceReference.FromString("projects/windows-cloud/global/images/windows-server"),
+                ImageLocator.FromString("projects/windows-cloud/global/images/windows-server"),
                 instance.Image);
             Assert.AreEqual(1, instance.Placements.Count());
 
@@ -202,7 +203,7 @@ namespace Google.Solutions.IapDesktop.Extensions.LogAnalysis.Test.History
 
             var instance = set.Instances.First();
             Assert.AreEqual(
-                GlobalResourceReference.FromString("projects/windows-cloud/global/images/windows-server"),
+                ImageLocator.FromString("projects/windows-cloud/global/images/windows-server"),
                 instance.Image);
             Assert.AreEqual(1, instance.Placements.Count());
 
@@ -225,7 +226,7 @@ namespace Google.Solutions.IapDesktop.Extensions.LogAnalysis.Test.History
 
             var instance = set.Instances.First();
             Assert.AreEqual(
-                GlobalResourceReference.FromString("projects/project-1/global/images/windows-server"),
+                ImageLocator.FromString("projects/project-1/global/images/windows-server"),
                 instance.Image);
             Assert.AreEqual(2, instance.Placements.Count());
 

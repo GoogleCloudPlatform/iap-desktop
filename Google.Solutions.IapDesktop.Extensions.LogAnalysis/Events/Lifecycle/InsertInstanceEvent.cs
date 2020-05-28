@@ -20,6 +20,7 @@
 //
 
 using Google.Solutions.Common;
+using Google.Solutions.Common.Locator;
 using Google.Solutions.IapDesktop.Extensions.LogAnalysis.Logs;
 using Newtonsoft.Json.Linq;
 using System.Diagnostics;
@@ -34,7 +35,7 @@ namespace Google.Solutions.IapDesktop.Extensions.LogAnalysis.Events.Lifecycle
         protected override string SuccessMessage => "Instance created";
         protected override string ErrorMessage => "Creating instance failed";
 
-        public GlobalResourceReference Image { get; }
+        public ImageLocator Image { get; }
 
         internal InsertInstanceEvent(LogRecord logRecord) : base(logRecord)
         {
@@ -53,7 +54,7 @@ namespace Google.Solutions.IapDesktop.Extensions.LogAnalysis.Events.Lifecycle
                             var initializeParams = disk["initializeParams"];
                             if (initializeParams != null)
                             {
-                                this.Image = GlobalResourceReference.FromString(
+                                this.Image = ImageLocator.FromString(
                                     initializeParams["sourceImage"].Value<string>());
                             }
                         }

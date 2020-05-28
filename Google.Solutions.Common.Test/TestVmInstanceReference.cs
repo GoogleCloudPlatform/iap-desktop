@@ -19,6 +19,7 @@
 // under the License.
 //
 
+using Google.Solutions.Common.Locator;
 using NUnit.Framework;
 
 namespace Google.Solutions.Common.Test
@@ -73,7 +74,7 @@ namespace Google.Solutions.Common.Test
         public void WhenReferencesAreOfDifferentType_ThenEqualsReturnsFalse()
         {
             var ref1 = new VmInstanceReference("proj", "zone", "inst");
-            var ref2 = new ZonalResourceReference("proj", "zone", "instances", "inst");
+            var ref2 = new DiskTypeLocator("proj", "zone", "pd-standard");
 
             Assert.IsFalse(ref2.Equals(ref1));
             Assert.IsFalse(ref2.Equals((object)ref1));

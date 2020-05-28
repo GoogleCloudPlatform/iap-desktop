@@ -20,6 +20,7 @@
 //
 
 using Google.Solutions.Common;
+using Google.Solutions.Common.Locator;
 using Google.Solutions.IapDesktop.Extensions.LogAnalysis.Events;
 using Google.Solutions.IapDesktop.Extensions.LogAnalysis.Events.Lifecycle;
 using Google.Solutions.IapDesktop.Extensions.LogAnalysis.Logs;
@@ -176,7 +177,7 @@ namespace Google.Solutions.IapDesktop.Extensions.LogAnalysis.Test.Events.Lifecyc
                 new VmInstanceReference("project-1", "us-central1-a", "instance-1"),
                 e.InstanceReference);
             Assert.AreEqual(
-                new GlobalResourceReference("project-1", "images", "image-1"),
+                new ImageLocator("project-1", "image-1"),
                 e.Image);
         }
 

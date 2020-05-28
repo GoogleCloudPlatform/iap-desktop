@@ -20,6 +20,7 @@
 //
 
 using Google.Solutions.Common;
+using Google.Solutions.Common.Locator;
 using Newtonsoft.Json;
 using System.Collections.Generic;
 
@@ -37,7 +38,7 @@ namespace Google.Solutions.IapDesktop.Extensions.LogAnalysis.History
         public IEnumerable<InstancePlacement> Placements { get; }
 
         [JsonProperty("image")]
-        public GlobalResourceReference Image { get; }
+        public ImageLocator Image { get; }
 
         [JsonProperty("state")]
         public InstanceHistoryState State { get; }
@@ -47,7 +48,7 @@ namespace Google.Solutions.IapDesktop.Extensions.LogAnalysis.History
             [JsonProperty("id")] ulong instanceId,
             [JsonProperty("vm")] VmInstanceReference reference,
             [JsonProperty("state")] InstanceHistoryState state,
-            [JsonProperty("image")] GlobalResourceReference image,
+            [JsonProperty("image")] ImageLocator image,
             [JsonProperty("placements")] IEnumerable<InstancePlacement> placements
             )
         {
