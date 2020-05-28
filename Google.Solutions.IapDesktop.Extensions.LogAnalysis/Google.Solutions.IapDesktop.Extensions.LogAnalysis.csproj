@@ -99,10 +99,13 @@
     <Compile Include="Extensions\ListLogEntriesExtensions.cs" />
     <Compile Include="Extensions\ListLogEntriesParser.cs" />
     <Compile Include="History\DataPoint.cs" />
+    <Compile Include="History\ImageAnnotation.cs" />
     <Compile Include="History\InstanceHistory.cs" />
     <Compile Include="History\InstanceHistoryBuilder.cs" />
     <Compile Include="History\InstanceSetHistory.cs" />
     <Compile Include="History\InstanceSetHistoryBuilder.cs" />
+    <Compile Include="History\AnnotatedInstanceSetHistory.cs" />
+    <Compile Include="History\LicenseLoader.cs" />
     <Compile Include="History\NodePlacement.cs" />
     <Compile Include="History\NodeSetHistory.cs" />
     <Compile Include="History\InstancePlacement.cs" />

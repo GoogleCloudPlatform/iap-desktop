@@ -19,7 +19,6 @@
 // under the License.
 //
 
-using Google.Solutions.Common;
 using Google.Solutions.Common.Locator;
 using Google.Solutions.IapDesktop.Extensions.LogAnalysis.History;
 using NUnit.Framework;
@@ -30,7 +29,7 @@ using System.Linq;
 namespace Google.Solutions.IapDesktop.Extensions.LogAnalysis.Test.History
 {
     [TestFixture]
-    public class TestInstanceSetHistory : FixtureBase
+    public class TestAnnotatedInstanceSetHistory : FixtureBase
     {
         [Test]
         public void WhenSerializedAndDeserialized_ThenObjectsAreEquivalent()
@@ -44,7 +43,7 @@ namespace Google.Solutions.IapDesktop.Extensions.LogAnalysis.Test.History
                         188550847350222232,
                         new InstanceLocator("project-1", "us-central1-a", "instance-1"),
                         InstanceHistoryState.Complete,
-                        null,
+                        new ImageLocator("project-1", "windows"),
                         new []
                         {
                             new InstancePlacement(
@@ -68,19 +67,26 @@ namespace Google.Solutions.IapDesktop.Extensions.LogAnalysis.Test.History
                         })
                 });
 
+            var annotatedHistory = AnnotatedInstanceSetHistory.FromInstanceSetHistory(history);
+            annotatedHistory.AddLicenseAnnotation(
+                new ImageLocator("project-1", "windows"),
+                OperatingSystemTypes.Windows,
+                LicenseTypes.Spla);
+
             using (var memoryStream = new MemoryStream())
             {
                 var s = new StringWriter();
-                history.Serialize(s);
+                annotatedHistory.Serialize(s);
 
                 var writer = new StreamWriter(memoryStream);
-                history.Serialize(writer);
+                annotatedHistory.Serialize(writer);
                 writer.Flush();
 
                 memoryStream.Position = 0;
 
-                var restoredHistory = InstanceSetHistory.Deserialize(
-                    new StreamReader(memoryStream));
+                var restoredAnnotatedHistory = AnnotatedInstanceSetHistory
+                    .Deserialize(new StreamReader(memoryStream));
+                var restoredHistory = restoredAnnotatedHistory.History;
 
                 Assert.AreEqual(history.StartDate, restoredHistory.StartDate);
                 Assert.AreEqual(history.EndDate, restoredHistory.EndDate);
@@ -100,6 +106,11 @@ namespace Google.Solutions.IapDesktop.Extensions.LogAnalysis.Test.History
                 Assert.AreEqual(history.Instances.First().Placements.Last().To, completeInstance.Placements.Last().To);
                 Assert.AreEqual(history.Instances.First().Placements.Last().ServerId, completeInstance.Placements.Last().ServerId);
                 Assert.AreEqual(history.Instances.First().Placements.Last().Tenancy, completeInstance.Placements.Last().Tenancy);
+
+                var annotation = restoredAnnotatedHistory.LicenseAnnotations[history.Instances.First().Image.ToString()];
+                Assert.IsNotNull(annotation);
+                Assert.AreEqual(OperatingSystemTypes.Windows, annotation.OperatingSystem);
+                Assert.AreEqual(LicenseTypes.Spla, annotation.LicenseType);
 
                 var incompleteInstance = restoredHistory.Instances.First(i => i.InstanceId == 118550847350222232);
 
@@ -121,7 +132,7 @@ namespace Google.Solutions.IapDesktop.Extensions.LogAnalysis.Test.History
 
             using (var reader = new StringReader(json))
             {
-                Assert.Throws<FormatException>(() => InstanceSetHistory.Deserialize(reader));
+                Assert.Throws<FormatException>(() => AnnotatedInstanceSetHistory.Deserialize(reader));
             }
         }
 
@@ -137,7 +148,7 @@ namespace Google.Solutions.IapDesktop.Extensions.LogAnalysis.Test.History
 
             using (var reader = new StringReader(json))
             {
-                Assert.Throws<FormatException>(() => InstanceSetHistory.Deserialize(reader));
+                Assert.Throws<FormatException>(() => AnnotatedInstanceSetHistory.Deserialize(reader));
             }
         }
 
@@ -146,53 +157,66 @@ namespace Google.Solutions.IapDesktop.Extensions.LogAnalysis.Test.History
         {
             var json = @"
             {
-              '@type': 'type.googleapis.com/Google.Solutions.IapDesktop.Extensions.LogAnalysis.InstanceSetHistory',
-              'instanceSetHistory': {
-                'start': '2019-12-01T00:00:00Z',
-                'end': '2020-01-01T00:00:00Z',
-                'instances': [
-                  {
-                    'id': 188550847350222232,
-                    'vm': {
-                      'projectId': 'project-1',
-                      'zone': 'us-central1-a',
-                      'name': 'instance-1'
-                    },
-                    'placements': [
-                      {
-                        'tenancy': 1,
-                        'from': '2019-12-01T00:00:00Z',
-                        'to': '2019-12-02T00:00:00Z'
+              '@type': 'type.googleapis.com/Google.Solutions.IapDesktop.Extensions.LogAnalysis.AnnotatedInstanceSetHistory',
+              'annotatedInstanceSetHistory': {
+                'history': {
+                  'start': '2019-12-01T00:00:00Z',
+                  'end': '2020-01-01T00:00:00Z',
+                  'instances': [
+                    {
+                      'id': 188550847350222232,
+                      'vm': {
+                        'zone': 'us-central1-a',
+                        'resourceType': 'instances',
+                        'projectId': 'project-1',
+                        'name': 'instance-1'
                       },
-                      {
-                        'tenancy': 1,
-                        'from': '2019-12-02T00:00:00Z',
-                        'to': '2019-12-03T00:00:00Z'
-                      }
-                    ],
-                    'tenancy': 1,
-                    'state': 0
-                  },
-                  {
-                    'id': 118550847350222232,
-                    'placements': [
-                      {
-                        'tenancy': 2,
-                        'server': 'server-1',
-                        'from': '2019-12-01T00:00:00Z',
-                        'to': '2019-12-02T00:00:00Z'
-                      }
-                    ],
-                    'tenancy': 2,
-                    'state': 3
+                      'placements': [
+                        {
+                          'tenancy': 1,
+                          'from': '2019-12-01T00:00:00Z',
+                          'to': '2019-12-02T00:00:00Z'
+                        },
+                        {
+                          'tenancy': 1,
+                          'from': '2019-12-02T00:00:00Z',
+                          'to': '2019-12-03T00:00:00Z'
+                        }
+                      ],
+                      'image': {
+                        'resourceType': 'images',
+                        'projectId': 'project-1',
+                        'name': 'windows'
+                      },
+                      'state': 0
+                    },
+                    {
+                      'id': 118550847350222232,
+                      'placements': [
+                        {
+                          'tenancy': 2,
+                          'server': 'server-1',
+                          'from': '2019-12-01T00:00:00Z',
+                          'to': '2019-12-02T00:00:00Z'
+                        }
+                      ],
+                      'state': 3
+                    }
+                  ]
+                },
+                'licenseAnnotations': {
+                  'projects/project-1/global/images/windows': {
+                    'licenseType': 4,
+                    'os': 2
                   }
-                ]
+                }
               }
             }";
 
             using (var reader = new StringReader(json))
             {
-                var restoredHistory = InstanceSetHistory.Deserialize(reader);
+                var restoredAnnotatedHistory = AnnotatedInstanceSetHistory.Deserialize(reader);
+                var restoredHistory = restoredAnnotatedHistory.History;
 
                 Assert.AreEqual(new DateTime(2019, 12, 1, 0, 0, 0, DateTimeKind.Utc), restoredHistory.StartDate);
                 Assert.AreEqual(new DateTime(2020, 1, 1, 0, 0, 0, DateTimeKind.Utc), restoredHistory.EndDate);
@@ -216,6 +240,12 @@ namespace Google.Solutions.IapDesktop.Extensions.LogAnalysis.Test.History
                 Assert.IsNull(completeInstance.Placements.Last().ServerId);
                 Assert.AreEqual(Tenancy.Fleet, completeInstance.Placements.Last().Tenancy);
 
+
+                var annotation = restoredAnnotatedHistory.LicenseAnnotations["projects/project-1/global/images/windows"];
+                Assert.IsNotNull(annotation);
+                Assert.AreEqual(OperatingSystemTypes.Windows, annotation.OperatingSystem);
+                Assert.AreEqual(LicenseTypes.Spla, annotation.LicenseType);
+
                 var incompleteInstance = restoredHistory.Instances.First(i => i.InstanceId == 118550847350222232);
 
                 Assert.AreEqual(InstanceHistoryState.MissingImage, incompleteInstance.State);
@@ -227,6 +257,91 @@ namespace Google.Solutions.IapDesktop.Extensions.LogAnalysis.Test.History
                 Assert.AreEqual("server-1", incompleteInstance.Placements.First().ServerId);
                 Assert.AreEqual(Tenancy.SoleTenant, incompleteInstance.Placements.First().Tenancy);
             }
+        }
+
+        [Test]
+        public void WhenImageNotAnnotated_ThenQueryUnknownReturnsInstance()
+        {
+            var history = new InstanceSetHistory(
+                new DateTime(2019, 12, 1, 0, 0, 0, DateTimeKind.Utc),
+                new DateTime(2020, 1, 1, 0, 0, 0, DateTimeKind.Utc),
+                new[]
+                {
+                    new InstanceHistory(
+                        188550847350222232,
+                        new InstanceLocator("project-1", "us-central1-a", "instance-1"),
+                        InstanceHistoryState.Complete,
+                        null,
+                        new []
+                        {
+                            new InstancePlacement(
+                                new DateTime(2019, 12, 1, 0, 0, 0, DateTimeKind.Utc),
+                                new DateTime(2019, 12, 2, 0, 0, 0, DateTimeKind.Utc)),
+                            new InstancePlacement(
+                                new DateTime(2019, 12, 2, 0, 0, 0, DateTimeKind.Utc),
+                                new DateTime(2019, 12, 3, 0, 0, 0, DateTimeKind.Utc))
+                        })
+                });
+
+            var annotatedHistory = AnnotatedInstanceSetHistory.FromInstanceSetHistory(history);
+            Assert.IsTrue(annotatedHistory.GetInstances(
+                    OperatingSystemTypes.Unknown, 
+                    LicenseTypes.Unknown).Any());
+
+            Assert.IsFalse(annotatedHistory.GetInstances(
+                    OperatingSystemTypes.Linux,
+                    LicenseTypes.Unknown).Any());
+
+            Assert.IsFalse(annotatedHistory.GetInstances(
+                    OperatingSystemTypes.Unknown,
+                    LicenseTypes.Spla).Any());
+        }
+
+        [Test]
+        public void WhenImageAnnotatedAsWindowsSpla_ThenQueryWindowsSplaReturnsInstance()
+        {
+            var history = new InstanceSetHistory(
+                new DateTime(2019, 12, 1, 0, 0, 0, DateTimeKind.Utc),
+                new DateTime(2020, 1, 1, 0, 0, 0, DateTimeKind.Utc),
+                new[]
+                {
+                    new InstanceHistory(
+                        188550847350222232,
+                        new InstanceLocator("project-1", "us-central1-a", "instance-1"),
+                        InstanceHistoryState.Complete,
+                        new ImageLocator("project-1", "image"),
+                        new []
+                        {
+                            new InstancePlacement(
+                                new DateTime(2019, 12, 1, 0, 0, 0, DateTimeKind.Utc),
+                                new DateTime(2019, 12, 2, 0, 0, 0, DateTimeKind.Utc)),
+                            new InstancePlacement(
+                                new DateTime(2019, 12, 2, 0, 0, 0, DateTimeKind.Utc),
+                                new DateTime(2019, 12, 3, 0, 0, 0, DateTimeKind.Utc))
+                        })
+                });
+
+            var annotatedHistory = AnnotatedInstanceSetHistory.FromInstanceSetHistory(history);
+            annotatedHistory.AddLicenseAnnotation(
+                new ImageLocator("project-1", "image"),
+                OperatingSystemTypes.Windows,
+                LicenseTypes.Spla);
+
+            Assert.IsTrue(annotatedHistory.GetInstances(
+                    OperatingSystemTypes.Windows,
+                    LicenseTypes.Spla).Any());
+
+            Assert.IsTrue(annotatedHistory.GetInstances(
+                    OperatingSystemTypes.Windows | OperatingSystemTypes.Linux,
+                    LicenseTypes.Spla | LicenseTypes.Byol).Any());
+
+            Assert.IsFalse(annotatedHistory.GetInstances(
+                    OperatingSystemTypes.Linux,
+                    LicenseTypes.Spla).Any());
+
+            Assert.IsFalse(annotatedHistory.GetInstances(
+                    OperatingSystemTypes.Windows,
+                    LicenseTypes.Byol).Any());
         }
     }
 }

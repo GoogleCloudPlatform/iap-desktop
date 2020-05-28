@@ -23,7 +23,6 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 using System;
 using System.Collections.Generic;
-using System.IO;
 
 namespace Google.Solutions.IapDesktop.Extensions.LogAnalysis.History
 {
@@ -47,63 +46,6 @@ namespace Google.Solutions.IapDesktop.Extensions.LogAnalysis.History
             this.StartDate = startDate;
             this.EndDate = endDate;
             this.Instances = instances;
-        }
-
-        //---------------------------------------------------------------------
-        // Serialization.
-        //---------------------------------------------------------------------
-
-        internal class Envelope
-        {
-            internal const string TypeAnnotation = "type.googleapis.com/Google.Solutions.IapDesktop.Extensions.LogAnalysis.InstanceSetHistory";
-
-            [JsonProperty("@type")]
-            internal string Type => TypeAnnotation;
-
-            [JsonProperty("instanceSetHistory")]
-            internal InstanceSetHistory InstanceSetHistory { get; }
-
-            public Envelope(
-                InstanceSetHistory instanceSetHistory)
-            {
-                this.InstanceSetHistory = instanceSetHistory;
-            }
-
-            [JsonConstructor]
-            public Envelope(
-                [JsonProperty("@type")] string typeAnnotation,
-                [JsonProperty("instanceSetHistory")]InstanceSetHistory instanceSetHistory)
-                : this(instanceSetHistory)
-            {
-                if (typeAnnotation != TypeAnnotation)
-                {
-                    throw new FormatException("Missing type annotation: " + TypeAnnotation);
-                }
-            }
-        }
-
-        private static JsonSerializer CreateSerializer()
-        {
-            return JsonSerializer.Create(
-                new JsonSerializerSettings()
-                {
-                    ContractResolver = new DefaultContractResolver
-                    {
-                        NamingStrategy = new CamelCaseNamingStrategy()
-                    },
-                    NullValueHandling = NullValueHandling.Ignore
-                });
-        }
-
-        public void Serialize(TextWriter writer)
-        {
-            CreateSerializer().Serialize(writer, new Envelope(this));
-        }
-
-        public static InstanceSetHistory Deserialize(TextReader reader)
-        {
-            return CreateSerializer().Deserialize<InstanceSetHistory.Envelope>(
-                new JsonTextReader(reader)).InstanceSetHistory;
         }
     }
 }
