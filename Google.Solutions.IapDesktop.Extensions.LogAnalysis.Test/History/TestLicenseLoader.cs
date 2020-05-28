@@ -46,7 +46,7 @@ namespace Google.Solutions.IapDesktop.Extensions.LogAnalysis.Test.History
                     {
                         new InstanceHistory(
                             188550847350222232,
-                            reference: new InstanceLocator("project-1", "us-central1-a", "instance-1"),
+                            new InstanceLocator("project-1", "us-central1-a", "instance-1"),
                             InstanceHistoryState.Complete,
                             image,
                             Enumerable.Empty<InstancePlacement>())
