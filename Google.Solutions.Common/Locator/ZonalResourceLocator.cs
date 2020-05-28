@@ -102,4 +102,81 @@ namespace Google.Solutions.Common.Locator
 
 		}
 
+	
+		public class InstanceLocator : ResourceLocator, IEquatable<InstanceLocator>
+		{
+            public string Zone { get; }
+            public override string ResourceType => "instances";
+            public string Name => this.ResourceName;
+
+		    public InstanceLocator(string projectId, string zone, string resourceName)
+                : base(projectId, resourceName)
+            {
+                this.Zone = zone;
+            }
+
+            public static InstanceLocator FromString(string resourceReference)
+            {
+                resourceReference = StripUrlPrefix(resourceReference);
+
+                // The resource name format is 
+                // projects/[project-id]/zones/[zone]/[type]/[name]
+                var parts = resourceReference.Split('/');
+                if (parts.Length != 6 ||
+                    string.IsNullOrEmpty(parts[1]) ||
+                    string.IsNullOrEmpty(parts[3]) ||
+                    string.IsNullOrEmpty(parts[4]) ||
+                    string.IsNullOrEmpty(parts[5]) ||
+                    parts[0] != "projects" ||
+                    parts[2] != "zones" ||
+                    parts[4] != "instances")
+                {
+                    throw new ArgumentException($"'{resourceReference}' is not a valid zonal resource reference");
+                }
+
+                return new InstanceLocator(parts[1], parts[3], parts[5]);
+            }
+
+            public override int GetHashCode()
+            {
+                return
+                    this.ProjectId.GetHashCode() ^
+                    this.ResourceName.GetHashCode();
+            }
+
+            public override string ToString()
+            {
+                return $"projects/{this.ProjectId}/zones/{this.Zone}/{this.ResourceType}/{this.ResourceName}";
+            }
+
+            public bool Equals(InstanceLocator other)
+            {
+                return other is object &&
+                    this.ResourceName == other.ResourceName &&
+                    this.Zone == other.Zone &&
+                    this.ProjectId == other.ProjectId;
+            }
+
+            public override bool Equals(object obj)
+            {
+                return obj is InstanceLocator locator && Equals(locator);
+            }
+
+            public static bool operator ==(InstanceLocator obj1, InstanceLocator obj2)
+            {
+                if (obj1 is null)
+                {
+                    return obj2 is null;
+                }
+
+                return obj1.Equals(obj2);
+            }
+
+            public static bool operator !=(InstanceLocator obj1, InstanceLocator obj2)
+            {
+                return !(obj1 == obj2);
+            }
+
+		}
+
 	}

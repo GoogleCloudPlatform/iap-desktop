@@ -30,7 +30,7 @@ namespace Google.Solutions.Common.Locator
 {
 
 	<#
-	var classNames = new [] {"DiskType"};
+	var classNames = new [] {"DiskType", "Instance"};
 
 	foreach (var className in classNames)
 	{
