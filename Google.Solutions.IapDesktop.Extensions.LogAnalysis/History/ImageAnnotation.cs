@@ -19,41 +19,75 @@
 // under the License.
 //
 
+using Google.Solutions.Common.Locator;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
+using System;
 
 namespace Google.Solutions.IapDesktop.Extensions.LogAnalysis.History
 {
-
-    public enum LicenseType
+    [Flags]
+    public enum LicenseTypes
     {
-        Unknown = 0,
-        Byol = 1,
-        Spla = 2
+        Unknown = 1,
+        Byol = 2,
+        Spla = 4
     }
 
-    public enum OperatingSystemType
+    [Flags]
+    public enum OperatingSystemTypes
     {
-        Unknown = 0,
-        Windows = 1,
-        Linux = 2
+        Unknown = 1,
+        Windows = 2,
+        Linux = 4
     }
 
     public class ImageAnnotation
     {
-        [JsonProperty("licenseType")]
-        public LicenseType LicenseType { get; }
+        public static readonly ImageAnnotation Default =
+            new ImageAnnotation(OperatingSystemTypes.Unknown, LicenseTypes.Unknown);
 
+        [JsonProperty("licenseType")]
+        public LicenseTypes LicenseType { get; }
 
         [JsonProperty("os")]
-        public OperatingSystemType OperatingSystem { get; }
+        public OperatingSystemTypes OperatingSystem { get; }
 
-        public ImageAnnotation(
-            [JsonProperty("licenseType")] LicenseType licenseType,
-            [JsonProperty("os")] OperatingSystemType osType)
+        [JsonConstructor]
+        internal ImageAnnotation(
+            [JsonProperty("os")] OperatingSystemTypes osType,
+            [JsonProperty("licenseType")] LicenseTypes licenseType)
         {
             this.LicenseType = licenseType;
             this.OperatingSystem = osType;
+        }
+
+        internal static ImageAnnotation FromLicense(LicenseLocator license)
+        {
+            if (license.IsWindowsByolLicense())
+            {
+                return new ImageAnnotation(
+                    OperatingSystemTypes.Windows,
+                    LicenseTypes.Byol);
+            }
+            else if (license.IsWindowsLicense())
+            {
+                return new ImageAnnotation(
+                    OperatingSystemTypes.Windows,
+                    LicenseTypes.Spla);
+            }
+            else if (license != null)
+            {
+                return new ImageAnnotation(
+                    OperatingSystemTypes.Linux,
+                    LicenseTypes.Unknown);
+            }
+            else
+            {
+                return new ImageAnnotation(
+                    OperatingSystemTypes.Unknown,
+                    LicenseTypes.Unknown);
+            }
         }
     }
 }

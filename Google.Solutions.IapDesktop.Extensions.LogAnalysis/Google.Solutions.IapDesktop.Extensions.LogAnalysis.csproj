@@ -105,6 +105,7 @@
     <Compile Include="History\InstanceSetHistory.cs" />
     <Compile Include="History\InstanceSetHistoryBuilder.cs" />
     <Compile Include="History\AnnotatedInstanceSetHistory.cs" />
+    <Compile Include="History\LicenseLoader.cs" />
     <Compile Include="History\NodePlacement.cs" />
     <Compile Include="History\NodeSetHistory.cs" />
     <Compile Include="History\InstancePlacement.cs" />

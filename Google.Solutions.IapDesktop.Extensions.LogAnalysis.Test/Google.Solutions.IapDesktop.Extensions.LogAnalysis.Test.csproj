@@ -111,6 +111,7 @@
     <Compile Include="History\TestAnnotatedInstanceSetHistory.cs" />
     <Compile Include="History\TestInstanceSetHistoryBuilder.cs" />
     <Compile Include="History\TestInstancePlacement.cs" />
+    <Compile Include="History\TestLicenseLoader.cs" />
     <Compile Include="History\TestNodeHistory.cs" />
     <Compile Include="History\TestNodeSetHistory.cs" />
     <Compile Include="History\TestTimeseriesUtil.cs" />

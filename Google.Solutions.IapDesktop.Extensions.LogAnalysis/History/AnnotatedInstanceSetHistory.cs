@@ -19,11 +19,15 @@
 // under the License.
 //
 
+using Google.Apis.Compute.v1;
+using Google.Solutions.Common.Locator;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
+using System.Threading.Tasks;
 
 namespace Google.Solutions.IapDesktop.Extensions.LogAnalysis.History
 {
@@ -32,16 +36,44 @@ namespace Google.Solutions.IapDesktop.Extensions.LogAnalysis.History
         [JsonProperty("history")]
         public InstanceSetHistory History { get; }
 
-        [JsonProperty("annotations")]
-        internal IDictionary<string, ImageAnnotation> Annotations { get; }
+        [JsonProperty("licenseAnnotations")]
+        internal IDictionary<string, ImageAnnotation> LicenseAnnotations { get; }
 
         [JsonConstructor]
         internal AnnotatedInstanceSetHistory(
-            [JsonProperty("history")] InstanceSetHistory InstanceSet,
-            [JsonProperty("annotations")] IDictionary<string, ImageAnnotation> annotations)
+            [JsonProperty("history")] InstanceSetHistory instanceSet,
+            [JsonProperty("licenseAnnotations")] IDictionary<string, ImageAnnotation> annotations)
         {
-            this.History = InstanceSet;
-            this.Annotations = annotations;
+            this.History = instanceSet;
+            this.LicenseAnnotations = annotations;
+        }
+
+        internal AnnotatedInstanceSetHistory(InstanceSetHistory instanceSet)
+            :this(instanceSet, new Dictionary<string, ImageAnnotation>())
+        {
+        }
+
+        public IEnumerable<InstanceHistory> GetInstances(
+            OperatingSystemTypes osTypes,
+            LicenseTypes licenseTypes)
+        {
+            foreach (var instance in this.History.Instances)
+            {
+                ImageAnnotation annotation;
+                if (instance.Image == null ||
+                    !this.LicenseAnnotations.TryGetValue(instance.Image.ToString(), out annotation))
+                {
+                    annotation = ImageAnnotation.Default;
+                }
+
+                Debug.Assert(annotation != null);
+
+                if (osTypes.HasFlag(annotation.OperatingSystem) &&
+                    licenseTypes.HasFlag(annotation.LicenseType))
+                {
+                    yield return instance;
+                }
+            }
         }
 
         public static AnnotatedInstanceSetHistory FromInstanceSetHistory(
@@ -50,6 +82,26 @@ namespace Google.Solutions.IapDesktop.Extensions.LogAnalysis.History
             return new AnnotatedInstanceSetHistory(
                 instanceSet,
                 new Dictionary<string, ImageAnnotation>());
+        }
+
+        public void AddLicenseAnnotation(
+            ImageLocator image, 
+            LicenseLocator license)
+        {
+            this.LicenseAnnotations[image.ToString()] = ImageAnnotation.FromLicense(license);
+        }
+
+        public void AddLicenseAnnotation(
+            ImageLocator image, 
+            OperatingSystemTypes osType, 
+            LicenseTypes licenseType)
+        {
+            this.LicenseAnnotations[image.ToString()] = new ImageAnnotation(osType, licenseType);
+        }
+
+        public async Task LoadLicenseAnnotationsAsync(ImagesResource imagesResource)
+        {
+            await LicenseLoader.LoadLicenseAnnotationsAsync(this, imagesResource);
         }
 
         //---------------------------------------------------------------------
