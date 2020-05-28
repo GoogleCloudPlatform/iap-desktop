@@ -22,16 +22,30 @@
 using Google.Solutions.Common.Locator;
 using NUnit.Framework;
 
-namespace Google.Solutions.Common.Test
+namespace Google.Solutions.Common.Test.Locator
 {
     [TestFixture]
     public class TestInstanceLocator : FixtureBase
     {
         [Test]
-        public void ToStringReturnsName()
+        public void WhenCreatedFromPath_ThenToStringReturnsPath()
         {
-            var ref1 = new Common.Locator.InstanceLocator("proj", "zone", "inst");
-            Assert.AreEqual("inst", ref1.ToString());
+            var path = "projects/project-1/zones/us-central-1/instances/instance-1";
+
+            Assert.AreEqual(
+                path,
+                InstanceLocator.FromString(path).ToString());
+        }
+
+        [Test]
+        public void WhenCreatedFromUrl_ThenToStringReturnsPath()
+        {
+            var path = "projects/project-1/zones/us-central-1/instances/instance-1";
+
+            Assert.AreEqual(
+                path,
+                InstanceLocator.FromString(
+                    "https://www.googleapis.com/compute/v1/" + path).ToString());
         }
 
         [Test]

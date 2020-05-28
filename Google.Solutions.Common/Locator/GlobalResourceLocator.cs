@@ -29,10 +29,9 @@ namespace Google.Solutions.Common.Locator
 		public class ImageLocator : ResourceLocator, IEquatable<ImageLocator>
 		{
             public override string ResourceType => "images";
-            public string Name => this.ResourceName;
 
-		    public ImageLocator(string projectId, string resourceName)
-                : base(projectId, resourceName)
+		    public ImageLocator(string projectId, string name)
+                : base(projectId, name)
             {
             }
 
@@ -64,18 +63,18 @@ namespace Google.Solutions.Common.Locator
             {
                 return
                     this.ProjectId.GetHashCode() ^
-                    this.ResourceName.GetHashCode();
+                    this.Name.GetHashCode();
             }
 
             public override string ToString()
             {
-                return $"projects/{this.ProjectId}/global/{this.ResourceType}/{this.ResourceName}";
+                return $"projects/{this.ProjectId}/global/{this.ResourceType}/{this.Name}";
             }
 
             public bool Equals(ImageLocator other)
             {
                 return other is object &&
-                    this.ResourceName == other.ResourceName &&
+                    this.Name == other.Name &&
                     this.ProjectId == other.ProjectId;
             }
 
@@ -105,10 +104,9 @@ namespace Google.Solutions.Common.Locator
 		public class LicenseLocator : ResourceLocator, IEquatable<LicenseLocator>
 		{
             public override string ResourceType => "licenses";
-            public string Name => this.ResourceName;
 
-		    public LicenseLocator(string projectId, string resourceName)
-                : base(projectId, resourceName)
+		    public LicenseLocator(string projectId, string name)
+                : base(projectId, name)
             {
             }
 
@@ -140,18 +138,18 @@ namespace Google.Solutions.Common.Locator
             {
                 return
                     this.ProjectId.GetHashCode() ^
-                    this.ResourceName.GetHashCode();
+                    this.Name.GetHashCode();
             }
 
             public override string ToString()
             {
-                return $"projects/{this.ProjectId}/global/{this.ResourceType}/{this.ResourceName}";
+                return $"projects/{this.ProjectId}/global/{this.ResourceType}/{this.Name}";
             }
 
             public bool Equals(LicenseLocator other)
             {
                 return other is object &&
-                    this.ResourceName == other.ResourceName &&
+                    this.Name == other.Name &&
                     this.ProjectId == other.ProjectId;
             }
 

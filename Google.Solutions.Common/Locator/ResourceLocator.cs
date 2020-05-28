@@ -31,7 +31,7 @@ namespace Google.Solutions.Common.Locator
 
         public string ProjectId { get; }
         public abstract string ResourceType { get; }
-        public string ResourceName { get; }
+        public string Name { get; }
 
         protected static string StripUrlPrefix(string resourceReference)
         {
@@ -61,7 +61,7 @@ namespace Google.Solutions.Common.Locator
             Debug.Assert(!projectId.Contains("/"));
 
             this.ProjectId = projectId;
-            this.ResourceName = resourceName;
+            this.Name = resourceName;
         }
     }
 }

@@ -35,7 +35,7 @@ namespace Google.Solutions.Common.Test.Locator
                 "projects/project-1/global/images/image-1");
 
             Assert.AreEqual("images", ref1.ResourceType);
-            Assert.AreEqual("image-1", ref1.ResourceName);
+            Assert.AreEqual("image-1", ref1.Name);
             Assert.AreEqual("project-1", ref1.ProjectId);
         }
 
@@ -46,7 +46,7 @@ namespace Google.Solutions.Common.Test.Locator
                 "projects/debian-cloud/global/images/family/debian-9");
 
             Assert.AreEqual("images", ref1.ResourceType);
-            Assert.AreEqual("family/debian-9", ref1.ResourceName);
+            Assert.AreEqual("family/debian-9", ref1.Name);
             Assert.AreEqual("debian-cloud", ref1.ProjectId);
         }
 
@@ -57,7 +57,7 @@ namespace Google.Solutions.Common.Test.Locator
                 "https://compute.googleapis.com/compute/v1/projects/debian-cloud/global/images/family/debian-9");
 
             Assert.AreEqual("images", ref1.ResourceType);
-            Assert.AreEqual("family/debian-9", ref1.ResourceName);
+            Assert.AreEqual("family/debian-9", ref1.Name);
             Assert.AreEqual("debian-cloud", ref1.ProjectId);
         }
 
@@ -68,7 +68,7 @@ namespace Google.Solutions.Common.Test.Locator
                 "https://www.googleapis.com/compute/v1/projects/windows-cloud/global/images/windows-server-core");
 
             Assert.AreEqual("images", ref1.ResourceType);
-            Assert.AreEqual("windows-server-core", ref1.ResourceName);
+            Assert.AreEqual("windows-server-core", ref1.Name);
             Assert.AreEqual("windows-cloud", ref1.ProjectId);
         }
 

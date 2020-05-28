@@ -35,7 +35,7 @@ namespace Google.Solutions.Common.Test.Locator
                 "projects/project-1/global/licenses/windows-10-enterprise-byol");
 
             Assert.AreEqual("licenses", ref1.ResourceType);
-            Assert.AreEqual("windows-10-enterprise-byol", ref1.ResourceName);
+            Assert.AreEqual("windows-10-enterprise-byol", ref1.Name);
             Assert.AreEqual("project-1", ref1.ProjectId);
         }
 
@@ -46,7 +46,7 @@ namespace Google.Solutions.Common.Test.Locator
                 "https://compute.googleapis.com/compute/v1/projects/windows-cloud/global/licenses/windows-10-enterprise-byol");
 
             Assert.AreEqual("licenses", ref1.ResourceType);
-            Assert.AreEqual("windows-10-enterprise-byol", ref1.ResourceName);
+            Assert.AreEqual("windows-10-enterprise-byol", ref1.Name);
             Assert.AreEqual("windows-cloud", ref1.ProjectId);
         }
 
@@ -57,7 +57,7 @@ namespace Google.Solutions.Common.Test.Locator
                 "https://www.googleapis.com/compute/v1/projects/windows-cloud/global/licenses/windows-10-enterprise-byol");
 
             Assert.AreEqual("licenses", ref1.ResourceType);
-            Assert.AreEqual("windows-10-enterprise-byol", ref1.ResourceName);
+            Assert.AreEqual("windows-10-enterprise-byol", ref1.Name);
             Assert.AreEqual("windows-cloud", ref1.ProjectId);
         }
 

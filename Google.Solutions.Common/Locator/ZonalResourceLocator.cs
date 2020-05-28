@@ -30,10 +30,9 @@ namespace Google.Solutions.Common.Locator
 		{
             public string Zone { get; }
             public override string ResourceType => "diskTypes";
-            public string Name => this.ResourceName;
 
-		    public DiskTypeLocator(string projectId, string zone, string resourceName)
-                : base(projectId, resourceName)
+		    public DiskTypeLocator(string projectId, string zone, string name)
+                : base(projectId, name)
             {
                 this.Zone = zone;
             }
@@ -64,18 +63,18 @@ namespace Google.Solutions.Common.Locator
             {
                 return
                     this.ProjectId.GetHashCode() ^
-                    this.ResourceName.GetHashCode();
+                    this.Name.GetHashCode();
             }
 
             public override string ToString()
             {
-                return $"projects/{this.ProjectId}/zones/{this.Zone}/{this.ResourceType}/{this.ResourceName}";
+                return $"projects/{this.ProjectId}/zones/{this.Zone}/{this.ResourceType}/{this.Name}";
             }
 
             public bool Equals(DiskTypeLocator other)
             {
                 return other is object &&
-                    this.ResourceName == other.ResourceName &&
+                    this.Name == other.Name &&
                     this.Zone == other.Zone &&
                     this.ProjectId == other.ProjectId;
             }
@@ -107,10 +106,9 @@ namespace Google.Solutions.Common.Locator
 		{
             public string Zone { get; }
             public override string ResourceType => "instances";
-            public string Name => this.ResourceName;
 
-		    public InstanceLocator(string projectId, string zone, string resourceName)
-                : base(projectId, resourceName)
+		    public InstanceLocator(string projectId, string zone, string name)
+                : base(projectId, name)
             {
                 this.Zone = zone;
             }
@@ -141,18 +139,18 @@ namespace Google.Solutions.Common.Locator
             {
                 return
                     this.ProjectId.GetHashCode() ^
-                    this.ResourceName.GetHashCode();
+                    this.Name.GetHashCode();
             }
 
             public override string ToString()
             {
-                return $"projects/{this.ProjectId}/zones/{this.Zone}/{this.ResourceType}/{this.ResourceName}";
+                return $"projects/{this.ProjectId}/zones/{this.Zone}/{this.ResourceType}/{this.Name}";
             }
 
             public bool Equals(InstanceLocator other)
             {
                 return other is object &&
-                    this.ResourceName == other.ResourceName &&
+                    this.Name == other.Name &&
                     this.Zone == other.Zone &&
                     this.ProjectId == other.ProjectId;
             }

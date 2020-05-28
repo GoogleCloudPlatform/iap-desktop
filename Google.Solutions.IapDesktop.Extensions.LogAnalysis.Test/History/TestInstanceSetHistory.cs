@@ -156,7 +156,7 @@ namespace Google.Solutions.IapDesktop.Extensions.LogAnalysis.Test.History
                     'vm': {
                       'projectId': 'project-1',
                       'zone': 'us-central1-a',
-                      'instanceName': 'instance-1'
+                      'name': 'instance-1'
                     },
                     'placements': [
                       {

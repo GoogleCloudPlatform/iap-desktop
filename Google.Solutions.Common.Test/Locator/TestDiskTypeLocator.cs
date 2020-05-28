@@ -35,7 +35,7 @@ namespace Google.Solutions.Common.Test.Locator
                 "projects/project-1/zones/us-central1-a/diskTypes/pd-standard");
 
             Assert.AreEqual("diskTypes", ref1.ResourceType);
-            Assert.AreEqual("pd-standard", ref1.ResourceName);
+            Assert.AreEqual("pd-standard", ref1.Name);
             Assert.AreEqual("us-central1-a", ref1.Zone);
             Assert.AreEqual("project-1", ref1.ProjectId);
         }
@@ -47,7 +47,7 @@ namespace Google.Solutions.Common.Test.Locator
                 "https://compute.googleapis.com/compute/v1/projects/project-1/zones/us-central1-a/diskTypes/pd-standard");
 
             Assert.AreEqual("diskTypes", ref1.ResourceType);
-            Assert.AreEqual("pd-standard", ref1.ResourceName);
+            Assert.AreEqual("pd-standard", ref1.Name);
             Assert.AreEqual("us-central1-a", ref1.Zone);
             Assert.AreEqual("project-1", ref1.ProjectId);
         }
@@ -59,7 +59,7 @@ namespace Google.Solutions.Common.Test.Locator
                 "https://www.googleapis.com/compute/v1/projects/project-1/zones/us-central1-a/diskTypes/pd-standard");
 
             Assert.AreEqual("diskTypes", ref1.ResourceType);
-            Assert.AreEqual("pd-standard", ref1.ResourceName);
+            Assert.AreEqual("pd-standard", ref1.Name);
             Assert.AreEqual("us-central1-a", ref1.Zone);
             Assert.AreEqual("project-1", ref1.ProjectId);
         }
