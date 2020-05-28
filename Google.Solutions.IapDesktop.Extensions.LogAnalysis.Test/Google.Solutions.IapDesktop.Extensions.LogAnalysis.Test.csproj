@@ -118,6 +118,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Logs\TestAuditLogRecord.cs" />
     <Compile Include="Logs\TestLogRecord.cs" />
+    <Compile Include="Services\UsageReport\TestInstanceReportPaneViewModel.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Google.Solutions.Common.Test\Google.Solutions.Common.Test.csproj">
@@ -127,6 +128,10 @@
     <ProjectReference Include="..\Google.Solutions.Common\Google.Solutions.Common.csproj">
       <Project>{fb4c6f4d-32b1-4b0b-ba79-fd47fc4d7912}</Project>
       <Name>Google.Solutions.Common</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Google.Solutions.IapDesktop.Application\Google.Solutions.IapDesktop.Application.csproj">
+      <Project>{842B003E-6EEB-429D-A3A1-53B4E642E83B}</Project>
+      <Name>Google.Solutions.IapDesktop.Application</Name>
     </ProjectReference>
     <ProjectReference Include="..\Google.Solutions.IapDesktop.Extensions.LogAnalysis\Google.Solutions.IapDesktop.Extensions.LogAnalysis.csproj">
       <Project>{b804d76c-e02e-4320-94a7-579034644aa0}</Project>
@@ -143,9 +148,7 @@
     <EmbeddedResource Include="History\instance-4.json" />
     <None Include="packages.config" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Extensions\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>
