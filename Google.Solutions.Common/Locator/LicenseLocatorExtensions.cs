@@ -1,5 +1,5 @@
 ﻿//
-// Copyright 2019 Google LLC
+// Copyright 2020 Google LLC
 //
 // Licensed to the Apache Software Foundation (ASF) under one
 // or more contributor license agreements.  See the NOTICE file
@@ -19,28 +19,14 @@
 // under the License.
 //
 
-using Google.Solutions.Common;
-using Google.Solutions.Common.Locator;
-using Google.Solutions.Common.Test.Testbed;
-using Google.Solutions.IapTunneling.Iap;
-using Google.Solutions.IapTunneling.Net;
-using NUnit.Framework;
-
-namespace Google.Solutions.IapTunneling.Test.Iap
+namespace Google.Solutions.Common.Locator
 {
-    [TestFixture]
-    [Category("IntegrationTest")]
-    [Category("IAP")]
-    public class TestEchoOverIapDirectTunnel : TestEchoOverIapBase
+    public static class LicenseLocatorExtensions
     {
-        protected override INetworkStream ConnectToEchoServer(InstanceLocator vmRef)
-        {
-            return new FragmentingStream(new SshRelayStream(
-                new IapTunnelingEndpoint(
-                    Defaults.GetCredential(),
-                    vmRef,
-                    7,
-                    IapTunnelingEndpoint.DefaultNetworkInterface)));
-        }
+        public static bool IsWindowsLicense(this LicenseLocator locator)
+            => locator.ProjectId == "windows-cloud";
+
+        public static bool IsWindowsByolLicense(this LicenseLocator locator)
+            => IsWindowsLicense(locator) && locator.Name.EndsWith("-byol");
     }
 }

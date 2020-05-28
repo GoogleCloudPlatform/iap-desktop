@@ -19,22 +19,23 @@
 // under the License.
 //
 
+using Google.Solutions.Common.Locator;
 using NUnit.Framework;
 using System;
 
-namespace Google.Solutions.Common.Test
+namespace Google.Solutions.Common.Test.Locator
 {
     [TestFixture]
-    public class TestZonalResourceReference : FixtureBase
+    public class TestDiskTypeLocator : FixtureBase
     {
         [Test]
         public void WhenPathIsValid_FromStringReturnsObject()
         {
-            var ref1 = ZonalResourceReference.FromString(
+            var ref1 = DiskTypeLocator.FromString(
                 "projects/project-1/zones/us-central1-a/diskTypes/pd-standard");
 
             Assert.AreEqual("diskTypes", ref1.ResourceType);
-            Assert.AreEqual("pd-standard", ref1.ResourceName);
+            Assert.AreEqual("pd-standard", ref1.Name);
             Assert.AreEqual("us-central1-a", ref1.Zone);
             Assert.AreEqual("project-1", ref1.ProjectId);
         }
@@ -42,11 +43,11 @@ namespace Google.Solutions.Common.Test
         [Test]
         public void WhenQualifiedByComputeGoogleapisHost_FromStringReturnsObject()
         {
-            var ref1 = ZonalResourceReference.FromString(
+            var ref1 = DiskTypeLocator.FromString(
                 "https://compute.googleapis.com/compute/v1/projects/project-1/zones/us-central1-a/diskTypes/pd-standard");
 
             Assert.AreEqual("diskTypes", ref1.ResourceType);
-            Assert.AreEqual("pd-standard", ref1.ResourceName);
+            Assert.AreEqual("pd-standard", ref1.Name);
             Assert.AreEqual("us-central1-a", ref1.Zone);
             Assert.AreEqual("project-1", ref1.ProjectId);
         }
@@ -54,11 +55,11 @@ namespace Google.Solutions.Common.Test
         [Test]
         public void WhenQualifiedByGoogleapisHost_FromStringReturnsObject()
         {
-            var ref1 = ZonalResourceReference.FromString(
+            var ref1 = DiskTypeLocator.FromString(
                 "https://www.googleapis.com/compute/v1/projects/project-1/zones/us-central1-a/diskTypes/pd-standard");
 
             Assert.AreEqual("diskTypes", ref1.ResourceType);
-            Assert.AreEqual("pd-standard", ref1.ResourceName);
+            Assert.AreEqual("pd-standard", ref1.Name);
             Assert.AreEqual("us-central1-a", ref1.Zone);
             Assert.AreEqual("project-1", ref1.ProjectId);
         }
@@ -66,26 +67,26 @@ namespace Google.Solutions.Common.Test
         [Test]
         public void WhenPathLacksProject_FromStringThrowsArgumentException()
         {
-            Assert.Throws<ArgumentException>(() => ZonalResourceReference.FromString(
+            Assert.Throws<ArgumentException>(() => DiskTypeLocator.FromString(
                 "/project-1/zones/us-central1-a/diskTypes/pd-standard"));
         }
 
         [Test]
         public void WhenPathInvalid_FromStringThrowsArgumentException()
         {
-            Assert.Throws<ArgumentException>(() => ZonalResourceReference.FromString(
+            Assert.Throws<ArgumentException>(() => DiskTypeLocator.FromString(
                 "/project-1/zones/us-central1-a/diskTypes"));
-            Assert.Throws<ArgumentException>(() => ZonalResourceReference.FromString(
+            Assert.Throws<ArgumentException>(() => DiskTypeLocator.FromString(
                 "/project-1/zones/us-central1-a/diskTypes/pd-standard"));
-            Assert.Throws<ArgumentException>(() => ZonalResourceReference.FromString(
+            Assert.Throws<ArgumentException>(() => DiskTypeLocator.FromString(
                 "/"));
         }
 
         [Test]
         public void WhenReferencesAreEquivalent_ThenEqualsReturnsTrue()
         {
-            var ref1 = new ZonalResourceReference("proj", "zone", "diskTypes", "inst");
-            var ref2 = new ZonalResourceReference("proj", "zone", "diskTypes", "inst");
+            var ref1 = new DiskTypeLocator("proj", "zone", "pd-standard");
+            var ref2 = new DiskTypeLocator("proj", "zone", "pd-standard");
 
             Assert.IsTrue(ref1.Equals(ref2));
             Assert.IsTrue(ref1.Equals((object)ref2));
@@ -96,8 +97,8 @@ namespace Google.Solutions.Common.Test
         [Test]
         public void WhenReferencesAreEquivalent_ThenGetHasCodeIsSame()
         {
-            var ref1 = new ZonalResourceReference("proj", "zone", "diskTypes", "inst");
-            var ref2 = new ZonalResourceReference("proj", "zone", "diskTypes", "inst");
+            var ref1 = new DiskTypeLocator("proj", "zone", "pd-standard");
+            var ref2 = new DiskTypeLocator("proj", "zone", "pd-standard");
 
             Assert.AreEqual(ref1.GetHashCode(), ref2.GetHashCode());
         }
@@ -105,7 +106,7 @@ namespace Google.Solutions.Common.Test
         [Test]
         public void WhenReferencesAreSame_ThenEqualsReturnsTrue()
         {
-            var ref1 = new ZonalResourceReference("proj", "zone", "diskTypes", "inst");
+            var ref1 = new DiskTypeLocator("proj", "zone", "pd-standard");
             var ref2 = ref1;
 
             Assert.IsTrue(ref1.Equals(ref2));
@@ -117,8 +118,8 @@ namespace Google.Solutions.Common.Test
         [Test]
         public void WhenReferencesAreNotEquivalent_ThenEqualsReturnsFalse()
         {
-            var ref1 = new ZonalResourceReference("proj", "zone", "diskTypes", "inst");
-            var ref2 = new ZonalResourceReference("proj", "zone", "machineTypes", "inst");
+            var ref1 = new DiskTypeLocator("proj", "zone1", "pd-standard");
+            var ref2 = new DiskTypeLocator("proj", "zone2", "pd-standard");
 
             Assert.IsFalse(ref1.Equals(ref2));
             Assert.IsFalse(ref1.Equals((object)ref2));
@@ -129,7 +130,7 @@ namespace Google.Solutions.Common.Test
         [Test]
         public void TestEqualsNull()
         {
-            var ref1 = new ZonalResourceReference("proj", "zone", "machineTypes", "inst");
+            var ref1 = new DiskTypeLocator("proj", "zone", "pd-standard");
 
             Assert.IsFalse(ref1.Equals(null));
             Assert.IsFalse(ref1.Equals((object)null));
@@ -146,7 +147,7 @@ namespace Google.Solutions.Common.Test
 
             Assert.AreEqual(
                 path, 
-                ZonalResourceReference.FromString(path).ToString());
+                DiskTypeLocator.FromString(path).ToString());
         }
 
         [Test]
@@ -156,7 +157,7 @@ namespace Google.Solutions.Common.Test
 
             Assert.AreEqual(
                 path, 
-                ZonalResourceReference.FromString(
+                DiskTypeLocator.FromString(
                     "https://www.googleapis.com/compute/v1/" + path).ToString());
         }
     }

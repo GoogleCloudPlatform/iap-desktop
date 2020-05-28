@@ -20,6 +20,7 @@
 //
 
 using Google.Solutions.Common;
+using Google.Solutions.Common.Locator;
 using Google.Solutions.IapDesktop.Application.ObjectModel;
 using Google.Solutions.IapDesktop.Application.Services.Adapters;
 using Google.Solutions.IapDesktop.Application.Services.Integration;
@@ -36,7 +37,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.Workflows
     {
         Task<NetworkCredential> GenerateCredentialsAsync(
             IWin32Window owner,
-            VmInstanceReference instanceRef,
+            InstanceLocator instanceRef,
             string suggestedUsername = null);
 
         Task<NetworkCredential> GenerateAndSaveCredentialsAsync(
@@ -62,7 +63,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.Workflows
 
         public async Task<NetworkCredential> GenerateCredentialsAsync(
             IWin32Window owner,
-            VmInstanceReference instanceRef,
+            InstanceLocator instanceRef,
             string suggestedUsername = null)
         {
             // Prompt for username to use.

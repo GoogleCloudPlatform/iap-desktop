@@ -20,6 +20,7 @@
 //
 
 using Google.Apis.Compute.v1.Data;
+using Google.Solutions.Common.Locator;
 using NUnit.Framework;
 using NUnit.Framework.Interfaces;
 using System;
@@ -33,10 +34,10 @@ namespace Google.Solutions.Common.Test.Testbed
 {
     public class InstanceRequest
     {
-        public Func<Task<VmInstanceReference>> GetInstanceAsync { get; }
-        public VmInstanceReference InstanceReference { get; }
+        public Func<Task<InstanceLocator>> GetInstanceAsync { get; }
+        public InstanceLocator InstanceReference { get; }
 
-        public InstanceRequest(VmInstanceReference instance, Func<Task<VmInstanceReference>> getnstance)
+        public InstanceRequest(InstanceLocator instance, Func<Task<InstanceLocator>> getnstance)
         {
             this.InstanceReference = instance;
             this.GetInstanceAsync = getnstance;
@@ -105,7 +106,7 @@ namespace Google.Solutions.Common.Test.Testbed
         {
             if (parameter.ParameterType == typeof(InstanceRequest))
             {
-                var vmRef = new VmInstanceReference(
+                var vmRef = new InstanceLocator(
                     this.ProjectId,
                     this.Zone,
                     this.UniqueId);
@@ -113,24 +114,24 @@ namespace Google.Solutions.Common.Test.Testbed
             }
             else
             {
-                throw new ArgumentException($"Parameter must be of type {typeof(VmInstanceReference).Name}");
+                throw new ArgumentException($"Parameter must be of type {typeof(InstanceLocator).Name}");
             }
         }
 
-        private async Task<VmInstanceReference> GetInstanceAsync(VmInstanceReference vmRef)
+        private async Task<InstanceLocator> GetInstanceAsync(InstanceLocator vmRef)
         {
             var computeEngine = ComputeEngine.Connect();
 
             try
             {
                 var instance = await computeEngine.Service.Instances
-                    .Get(vmRef.ProjectId, vmRef.Zone, vmRef.InstanceName)
+                    .Get(vmRef.ProjectId, vmRef.Zone, vmRef.Name)
                     .ExecuteAsync();
 
                 if (instance.Status == "STOPPED")
                 {
                     await computeEngine.Service.Instances.Start(
-                        vmRef.ProjectId, vmRef.Zone, vmRef.InstanceName)
+                        vmRef.ProjectId, vmRef.Zone, vmRef.Name)
                         .ExecuteAsync();
                 }
 
@@ -155,7 +156,7 @@ namespace Google.Solutions.Common.Test.Testbed
                 await computeEngine.Service.Instances.Insert(
                     new Apis.Compute.v1.Data.Instance()
                     {
-                        Name = vmRef.InstanceName,
+                        Name = vmRef.Name,
                         MachineType = $"zones/{this.Zone}/machineTypes/{this.MachineType}",
                         Disks = new[]
                         {
@@ -193,7 +194,7 @@ namespace Google.Solutions.Common.Test.Testbed
             return vmRef;
         }
 
-        private Task AwaitReady(ComputeEngine engine, VmInstanceReference instanceRef)
+        private Task AwaitReady(ComputeEngine engine, InstanceLocator instanceRef)
         {
             return Task.Run(async () =>
             {
@@ -202,7 +203,7 @@ namespace Google.Solutions.Common.Test.Testbed
                     try
                     {
                         var instance = await engine.Service.Instances.Get(
-                                instanceRef.ProjectId, instanceRef.Zone, instanceRef.InstanceName)
+                                instanceRef.ProjectId, instanceRef.Zone, instanceRef.Name)
                             .ExecuteAsync();
 
                         if (await IsReadyAsync(engine, instanceRef, instance))
@@ -222,13 +223,13 @@ namespace Google.Solutions.Common.Test.Testbed
 
         protected virtual async Task<bool> IsReadyAsync(
             ComputeEngine engine,
-            VmInstanceReference instanceRef,
+            InstanceLocator instanceRef,
             Instance instance)
         {
             var request = engine.Service.Instances.GetGuestAttributes(
                     instanceRef.ProjectId,
                     instanceRef.Zone,
-                    instanceRef.InstanceName);
+                    instanceRef.Name);
             request.QueryPath = GuestAttributeNamespace + "/";
             var guestAttributes = await request.ExecuteAsync();
 

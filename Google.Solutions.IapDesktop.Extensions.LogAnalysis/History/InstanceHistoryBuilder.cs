@@ -21,6 +21,7 @@
 
 using Google.Solutions.Common;
 using Google.Solutions.Common.Diagnostics;
+using Google.Solutions.Common.Locator;
 using Google.Solutions.IapDesktop.Extensions.LogAnalysis.Events;
 using Google.Solutions.IapDesktop.Extensions.LogAnalysis.Events.Lifecycle;
 using Google.Solutions.IapDesktop.Extensions.LogAnalysis.Events.System;
@@ -61,8 +62,8 @@ namespace Google.Solutions.IapDesktop.Extensions.LogAnalysis.History
         //
         private readonly LinkedList<InstancePlacement> placements = new LinkedList<InstancePlacement>();
 
-        private GlobalResourceReference image;
-        private VmInstanceReference reference;
+        private ImageLocator image;
+        private InstanceLocator reference;
 
         private DateTime? lastStoppedOn;
         private DateTime lastEventDate = DateTime.MaxValue;
@@ -142,8 +143,8 @@ namespace Google.Solutions.IapDesktop.Extensions.LogAnalysis.History
 
         private InstanceHistoryBuilder(
             ulong instanceId,
-            VmInstanceReference reference,
-            GlobalResourceReference image,
+            InstanceLocator reference,
+            ImageLocator image,
             InstanceState state,
             DateTime? lastSeen,
             Tenancy tenancy)
@@ -170,8 +171,8 @@ namespace Google.Solutions.IapDesktop.Extensions.LogAnalysis.History
 
         internal static InstanceHistoryBuilder ForExistingInstance(
             ulong instanceId,
-            VmInstanceReference reference,
-            GlobalResourceReference image,
+            InstanceLocator reference,
+            ImageLocator image,
             InstanceState state,
             DateTime lastSeen,
             Tenancy tenancy)
@@ -240,7 +241,7 @@ namespace Google.Solutions.IapDesktop.Extensions.LogAnalysis.History
         // Lifecycle events that construct the history.
         //---------------------------------------------------------------------
 
-        public void OnInsert(DateTime date, VmInstanceReference reference, GlobalResourceReference image)
+        public void OnInsert(DateTime date, InstanceLocator reference, ImageLocator image)
         {
             Debug.Assert(date <= this.lastEventDate);
             this.lastEventDate = date;
@@ -262,7 +263,7 @@ namespace Google.Solutions.IapDesktop.Extensions.LogAnalysis.History
             AddPlacement(Tenancy.Fleet, null, date);
         }
 
-        public void OnStart(DateTime date, VmInstanceReference reference)
+        public void OnStart(DateTime date, InstanceLocator reference)
         {
             Debug.Assert(date <= this.lastEventDate);
             this.lastEventDate = date;
@@ -277,7 +278,7 @@ namespace Google.Solutions.IapDesktop.Extensions.LogAnalysis.History
             AddPlacement(Tenancy.Fleet, null, date);
         }
 
-        public void OnStop(DateTime date, VmInstanceReference reference)
+        public void OnStop(DateTime date, InstanceLocator reference)
         {
             Debug.Assert(date <= this.lastEventDate);
             this.lastEventDate = date;

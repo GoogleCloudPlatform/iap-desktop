@@ -19,25 +19,40 @@
 // under the License.
 //
 
+using Google.Solutions.Common.Locator;
 using NUnit.Framework;
 
-namespace Google.Solutions.Common.Test
+namespace Google.Solutions.Common.Test.Locator
 {
     [TestFixture]
-    public class TestVmInstanceReference : FixtureBase
+    public class TestInstanceLocator : FixtureBase
     {
         [Test]
-        public void ToStringReturnsName()
+        public void WhenCreatedFromPath_ThenToStringReturnsPath()
         {
-            var ref1 = new VmInstanceReference("proj", "zone", "inst");
-            Assert.AreEqual("inst", ref1.ToString());
+            var path = "projects/project-1/zones/us-central-1/instances/instance-1";
+
+            Assert.AreEqual(
+                path,
+                InstanceLocator.FromString(path).ToString());
+        }
+
+        [Test]
+        public void WhenCreatedFromUrl_ThenToStringReturnsPath()
+        {
+            var path = "projects/project-1/zones/us-central-1/instances/instance-1";
+
+            Assert.AreEqual(
+                path,
+                InstanceLocator.FromString(
+                    "https://www.googleapis.com/compute/v1/" + path).ToString());
         }
 
         [Test]
         public void WhenReferencesAreEquivalent_ThenEqualsReturnsTrue()
         {
-            var ref1 = new VmInstanceReference("proj", "zone", "inst");
-            var ref2 = new VmInstanceReference("proj", "zone", "inst");
+            var ref1 = new Common.Locator.InstanceLocator("proj", "zone", "inst");
+            var ref2 = new Common.Locator.InstanceLocator("proj", "zone", "inst");
 
             Assert.IsTrue(ref1.Equals(ref2));
             Assert.IsTrue(ref1.Equals((object)ref2));
@@ -48,7 +63,7 @@ namespace Google.Solutions.Common.Test
         [Test]
         public void WhenReferencesAreSame_ThenEqualsReturnsTrue()
         {
-            var ref1 = new VmInstanceReference("proj", "zone", "inst");
+            var ref1 = new Common.Locator.InstanceLocator("proj", "zone", "inst");
             var ref2 = ref1;
 
             Assert.IsTrue(ref1.Equals(ref2));
@@ -60,8 +75,8 @@ namespace Google.Solutions.Common.Test
         [Test]
         public void WhenReferencesAreNotEquivalent_ThenEqualsReturnsFalse()
         {
-            var ref1 = new VmInstanceReference("proj", "zone", "inst");
-            var ref2 = new VmInstanceReference("proj", "zone", "other");
+            var ref1 = new Common.Locator.InstanceLocator("proj", "zone", "inst");
+            var ref2 = new Common.Locator.InstanceLocator("proj", "zone", "other");
 
             Assert.IsFalse(ref1.Equals(ref2));
             Assert.IsFalse(ref1.Equals((object)ref2));
@@ -72,8 +87,8 @@ namespace Google.Solutions.Common.Test
         [Test]
         public void WhenReferencesAreOfDifferentType_ThenEqualsReturnsFalse()
         {
-            var ref1 = new VmInstanceReference("proj", "zone", "inst");
-            var ref2 = new ZonalResourceReference("proj", "zone", "instances", "inst");
+            var ref1 = new Common.Locator.InstanceLocator("proj", "zone", "inst");
+            var ref2 = new DiskTypeLocator("proj", "zone", "pd-standard");
 
             Assert.IsFalse(ref2.Equals(ref1));
             Assert.IsFalse(ref2.Equals((object)ref1));
@@ -84,7 +99,7 @@ namespace Google.Solutions.Common.Test
         [Test]
         public void TestEqualsNull()
         {
-            var ref1 = new VmInstanceReference("proj", "zone", "inst");
+            var ref1 = new Common.Locator.InstanceLocator("proj", "zone", "inst");
 
             Assert.IsFalse(ref1.Equals(null));
             Assert.IsFalse(ref1.Equals((object)null));

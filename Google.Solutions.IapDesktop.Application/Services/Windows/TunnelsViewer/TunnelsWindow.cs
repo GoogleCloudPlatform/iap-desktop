@@ -56,7 +56,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.Windows.TunnelsViewer
             this.viewModel.View = this;
 
             this.tunnelsList.BindCollection(viewModel.Tunnels);
-            this.tunnelsList.BindColumn(0, t => t.Destination.Instance.InstanceName);
+            this.tunnelsList.BindColumn(0, t => t.Destination.Instance.Name);
             this.tunnelsList.BindColumn(1, t => t.Destination.Instance.ProjectId);
             this.tunnelsList.BindColumn(2, t => t.Destination.Instance.Zone);
             this.tunnelsList.BindColumn(3, t => t.LocalPort.ToString());

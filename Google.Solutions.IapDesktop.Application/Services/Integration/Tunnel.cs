@@ -20,6 +20,7 @@
 //
 
 using Google.Solutions.Common;
+using Google.Solutions.Common.Locator;
 using Google.Solutions.IapTunneling.Iap;
 using System;
 using System.Threading;
@@ -76,11 +77,11 @@ namespace Google.Solutions.IapDesktop.Application.Services.Integration
 
     public class TunnelDestination : IEquatable<TunnelDestination>
     {
-        public VmInstanceReference Instance { get; private set; }
+        public InstanceLocator Instance { get; private set; }
 
         public ushort RemotePort { get; private set; }
 
-        public TunnelDestination(VmInstanceReference instance, ushort remotePort)
+        public TunnelDestination(InstanceLocator instance, ushort remotePort)
         {
             this.Instance = instance;
             this.RemotePort = remotePort;
@@ -107,7 +108,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.Integration
 
         public override string ToString()
         {
-            return $"{this.Instance.InstanceName}:{this.RemotePort}";
+            return $"{this.Instance.Name}:{this.RemotePort}";
         }
     }
 }

@@ -90,14 +90,15 @@
     <Compile Include="Auth\TestAuthorization.cs" />
     <Compile Include="Auth\TestGoogleAuthAdapter.cs" />
     <Compile Include="FixtureBase.cs" />
+    <Compile Include="Locator\TestLicenseLocator.cs" />
+    <Compile Include="Locator\TestInstanceLocator.cs" />
     <Compile Include="Net\TestRestClient.cs" />
     <Compile Include="Testbed\ComputeEngine.cs" />
     <Compile Include="Testbed\Defaults.cs" />
     <Compile Include="Testbed\InstanceAttribute.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="TestGlobalResourceReference.cs" />
-    <Compile Include="TestVmInstanceReference.cs" />
-    <Compile Include="TestZonalResourceReference.cs" />
+    <Compile Include="Locator\TestImageLocator.cs" />
+    <Compile Include="Locator\TestDiskTypeLocator.cs" />
     <Compile Include="Util\TestExceptionExtensions.cs" />
     <Compile Include="Util\TestLinqExtensions.cs" />
   </ItemGroup>

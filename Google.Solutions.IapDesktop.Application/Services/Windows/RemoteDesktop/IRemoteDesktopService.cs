@@ -20,6 +20,7 @@
 //
 
 using Google.Solutions.Common;
+using Google.Solutions.Common.Locator;
 using Google.Solutions.Common.Util;
 using Google.Solutions.IapDesktop.Application.ObjectModel;
 using Google.Solutions.IapDesktop.Application.Services.Integration;
@@ -47,12 +48,12 @@ namespace Google.Solutions.IapDesktop.Application.Services.Windows.RemoteDesktop
     {
         IRemoteDesktopSession ActiveSession { get; }
 
-        bool IsConnected(VmInstanceReference vmInstance);
+        bool IsConnected(InstanceLocator vmInstance);
 
-        bool TryActivate(VmInstanceReference vmInstance);
+        bool TryActivate(InstanceLocator vmInstance);
 
         IRemoteDesktopSession Connect(
-            VmInstanceReference vmInstance,
+            InstanceLocator vmInstance,
             string server,
             ushort port,
             VmInstanceConnectionSettings settings);
@@ -71,7 +72,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.Windows.RemoteDesktop
             this.eventService = serviceProvider.GetService<IEventService>();
         }
 
-        private RemoteDesktopPane TryGetExistingPane(VmInstanceReference vmInstance)
+        private RemoteDesktopPane TryGetExistingPane(InstanceLocator vmInstance)
             => this.dockPanel.Documents
                 .EnsureNotNull()
                 .OfType<RemoteDesktopPane>()
@@ -81,10 +82,10 @@ namespace Google.Solutions.IapDesktop.Application.Services.Windows.RemoteDesktop
         public IRemoteDesktopSession ActiveSession
             => (IRemoteDesktopSession)this.dockPanel.ActiveDocument;
 
-        public bool IsConnected(VmInstanceReference vmInstance)
+        public bool IsConnected(InstanceLocator vmInstance)
             => TryGetExistingPane(vmInstance) != null;
 
-        public bool TryActivate(VmInstanceReference vmInstance)
+        public bool TryActivate(InstanceLocator vmInstance)
         {
             // Check if there is an existing session/pane.
             var rdpPane = TryGetExistingPane(vmInstance);
@@ -101,7 +102,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.Windows.RemoteDesktop
         }
 
         public IRemoteDesktopSession Connect(
-            VmInstanceReference vmInstance,
+            InstanceLocator vmInstance,
             string server,
             ushort port,
             VmInstanceConnectionSettings settings)
@@ -120,9 +121,9 @@ namespace Google.Solutions.IapDesktop.Application.Services.Windows.RemoteDesktop
 
     public abstract class RemoteDesktopEventBase
     {
-        public VmInstanceReference Instance { get; }
+        public InstanceLocator Instance { get; }
 
-        public RemoteDesktopEventBase(VmInstanceReference vmInstance)
+        public RemoteDesktopEventBase(InstanceLocator vmInstance)
         {
             this.Instance = vmInstance;
         }
@@ -130,7 +131,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.Windows.RemoteDesktop
 
     public class RemoteDesktopConnectionSuceededEvent : RemoteDesktopEventBase
     {
-        public RemoteDesktopConnectionSuceededEvent(VmInstanceReference vmInstance) : base(vmInstance)
+        public RemoteDesktopConnectionSuceededEvent(InstanceLocator vmInstance) : base(vmInstance)
         {
         }
     }
@@ -139,7 +140,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.Windows.RemoteDesktop
     {
         public RdpException Exception { get; }
 
-        public RemoteDesktopConnectionFailedEvent(VmInstanceReference vmInstance, RdpException exception)
+        public RemoteDesktopConnectionFailedEvent(InstanceLocator vmInstance, RdpException exception)
             : base(vmInstance)
         {
             this.Exception = exception;
@@ -150,7 +151,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.Windows.RemoteDesktop
     {
         public RdpException Exception { get; }
 
-        public RemoteDesktopWindowClosedEvent(VmInstanceReference vmInstance) : base(vmInstance)
+        public RemoteDesktopWindowClosedEvent(InstanceLocator vmInstance) : base(vmInstance)
         {
         }
     }

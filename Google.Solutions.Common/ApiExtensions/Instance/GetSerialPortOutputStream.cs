@@ -21,6 +21,7 @@
 
 using Google.Apis.Compute.v1;
 using Google.Solutions.Common.Diagnostics;
+using Google.Solutions.Common.Locator;
 using System.Threading.Tasks;
 
 namespace Google.Solutions.Common.ApiExtensions.Instance
@@ -35,7 +36,7 @@ namespace Google.Solutions.Common.ApiExtensions.Instance
         /// </summary>
         public static SerialPortStream GetSerialPortOutputStream(
             this InstancesResource resource,
-            VmInstanceReference instanceRef,
+            InstanceLocator instanceRef,
             ushort port)
         {
             return new SerialPortStream(resource, instanceRef, port);
@@ -45,7 +46,7 @@ namespace Google.Solutions.Common.ApiExtensions.Instance
     public class SerialPortStream
     {
         private readonly InstancesResource instancesResource;
-        private readonly VmInstanceReference instance;
+        private readonly InstanceLocator instance;
         private readonly ushort port;
 
         // Offset of next character to be read.
@@ -53,7 +54,7 @@ namespace Google.Solutions.Common.ApiExtensions.Instance
 
         public SerialPortStream(
             InstancesResource instancesResource,
-            VmInstanceReference instanceRef,
+            InstanceLocator instanceRef,
             ushort port)
         {
             this.instancesResource = instancesResource;
@@ -68,7 +69,7 @@ namespace Google.Solutions.Common.ApiExtensions.Instance
                 var request = this.instancesResource.GetSerialPortOutput(
                     this.instance.ProjectId,
                     this.instance.Zone,
-                    this.instance.InstanceName);
+                    this.instance.Name);
                 request.Port = this.port;
                 request.Start = this.nextOffset;
                 var output = await request.ExecuteAsync().ConfigureAwait(false);

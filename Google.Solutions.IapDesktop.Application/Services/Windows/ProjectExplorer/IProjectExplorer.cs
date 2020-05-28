@@ -20,6 +20,7 @@
 //
 
 using Google.Solutions.Common;
+using Google.Solutions.Common.Locator;
 using System.Threading.Tasks;
 
 namespace Google.Solutions.IapDesktop.Application.Services.Windows.ProjectExplorer
@@ -31,7 +32,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.Windows.ProjectExplor
         Task RefreshAllProjects();
         Task ShowAddProjectDialogAsync();
 
-        VmInstanceNode TryFindNode(VmInstanceReference reference);
+        VmInstanceNode TryFindNode(InstanceLocator reference);
     }
 
 }

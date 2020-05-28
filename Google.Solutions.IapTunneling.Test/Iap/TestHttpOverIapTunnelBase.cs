@@ -21,6 +21,7 @@
 
 using Google.Solutions.Common;
 using Google.Solutions.Common.Diagnostics;
+using Google.Solutions.Common.Locator;
 using Google.Solutions.Common.Test.Testbed;
 using Google.Solutions.IapTunneling.Net;
 using NUnit.Framework;
@@ -38,7 +39,7 @@ namespace Google.Solutions.IapTunneling.Test.Iap
         private const int RepeatCount = 5;
         private CancellationTokenSource tokenSource = new CancellationTokenSource();
 
-        protected abstract INetworkStream ConnectToWebServer(VmInstanceReference vmRef);
+        protected abstract INetworkStream ConnectToWebServer(InstanceLocator vmRef);
 
         private class HttpResponseAccumulator
         {

@@ -22,6 +22,7 @@
 using AxMSTSCLib;
 using Google.Solutions.Common;
 using Google.Solutions.Common.Diagnostics;
+using Google.Solutions.Common.Locator;
 using Google.Solutions.IapDesktop.Application.Services.Integration;
 using Google.Solutions.IapDesktop.Application.Services.Persistence;
 using Google.Solutions.IapDesktop.Application.Util;
@@ -55,7 +56,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.Windows.RemoteDesktop
         // Track the (client area) size of the remote connection.
         private Size connectionSize;
 
-        public VmInstanceReference Instance { get; }
+        public InstanceLocator Instance { get; }
 
         private void UpdateLayout()
         {
@@ -88,13 +89,13 @@ namespace Google.Solutions.IapDesktop.Application.Services.Windows.RemoteDesktop
         public RemoteDesktopPane(
             IEventService eventService,
             IExceptionDialog exceptionDialog,
-            VmInstanceReference vmInstance)
+            InstanceLocator vmInstance)
         {
             this.exceptionDialog = exceptionDialog;
             this.eventService = eventService;
             this.Instance = vmInstance;
 
-            this.TabText = vmInstance.InstanceName;
+            this.TabText = vmInstance.Name;
             this.DockAreas = DockAreas.Document;
 
             var fullScreenMenuItem = new ToolStripMenuItem("&Full screen");

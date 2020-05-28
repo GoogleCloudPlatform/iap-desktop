@@ -20,6 +20,7 @@
 //
 
 using Google.Solutions.Common;
+using Google.Solutions.Common.Locator;
 using Google.Solutions.IapDesktop.Extensions.LogAnalysis.Logs;
 using System;
 
@@ -27,7 +28,7 @@ namespace Google.Solutions.IapDesktop.Extensions.LogAnalysis.Events
 {
     public abstract class VmInstanceEventBase : EventBase
     {
-        public VmInstanceReference InstanceReference
+        public InstanceLocator InstanceReference
         {
             get
             {
@@ -50,7 +51,7 @@ namespace Google.Solutions.IapDesktop.Extensions.LogAnalysis.Events
                         base.LogRecord.ProtoPayload.ResourceName);
                 }
 
-                return new VmInstanceReference(
+                return new InstanceLocator(
                     base.LogRecord.ProjectId,
                     parts[3],
                     parts[5]);

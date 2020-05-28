@@ -20,6 +20,7 @@
 //
 
 using Google.Solutions.Common;
+using Google.Solutions.Common.Locator;
 using Google.Solutions.Common.Test.Testbed;
 using Google.Solutions.IapTunneling.Iap;
 using Google.Solutions.IapTunneling.Net;
@@ -51,7 +52,7 @@ namespace Google.Solutions.IapTunneling.Test.Iap
         private const int RepeatCount = 10;
         private CancellationTokenSource tokenSource = new CancellationTokenSource();
 
-        protected abstract INetworkStream ConnectToEchoServer(VmInstanceReference vmRef);
+        protected abstract INetworkStream ConnectToEchoServer(InstanceLocator vmRef);
 
         private static void FillArray(byte[] array)
         {

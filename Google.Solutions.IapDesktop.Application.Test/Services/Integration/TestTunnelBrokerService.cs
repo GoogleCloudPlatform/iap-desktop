@@ -20,6 +20,7 @@
 //
 
 using Google.Solutions.Common;
+using Google.Solutions.Common.Locator;
 using Google.Solutions.Common.Test;
 using Google.Solutions.IapDesktop.Application.Services.Integration;
 using Moq;
@@ -47,7 +48,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Integration
                 .Returns(Task.FromResult(true));
 
             var broker = new TunnelBrokerService(mockTunnelService.Object, mockEventService.Object);
-            var vmInstanceRef = new VmInstanceReference("project", "zone", "instance");
+            var vmInstanceRef = new InstanceLocator("project", "zone", "instance");
             var destination = new TunnelDestination(vmInstanceRef, 3389);
             mockTunnelService.Setup(s => s.CreateTunnelAsync(destination))
                 .Returns(Task.FromResult(mockTunnel.Object));
@@ -74,7 +75,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Integration
                 .Returns(Task.FromResult(true));
 
             var broker = new TunnelBrokerService(mockTunnelService.Object, mockEventService.Object);
-            var vmInstanceRef = new VmInstanceReference("project", "zone", "instance");
+            var vmInstanceRef = new InstanceLocator("project", "zone", "instance");
             var destination = new TunnelDestination(vmInstanceRef, 3389);
             mockTunnelService.Setup(s => s.CreateTunnelAsync(destination))
                 .Returns(Task.FromResult(mockTunnel.Object));
@@ -98,7 +99,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Integration
                 .Returns(Task.FromResult(true));
             var broker = new TunnelBrokerService(mockTunnelService.Object, mockEventService.Object);
 
-            var vmInstanceRef = new VmInstanceReference("project", "zone", "instance");
+            var vmInstanceRef = new InstanceLocator("project", "zone", "instance");
             var destination = new TunnelDestination(vmInstanceRef, 3389);
             mockTunnelService.Setup(s => s.CreateTunnelAsync(destination))
                 .Returns(Task.FromResult(mockTunnel.Object));
@@ -122,7 +123,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Integration
                 .Returns(Task.FromResult(true));
 
             var broker = new TunnelBrokerService(mockTunnelService.Object, mockEventService.Object);
-            var vmInstanceRef = new VmInstanceReference("project", "zone", "instance");
+            var vmInstanceRef = new InstanceLocator("project", "zone", "instance");
             var destination = new TunnelDestination(vmInstanceRef, 3389);
             mockTunnelService.Setup(s => s.CreateTunnelAsync(destination))
                 .Returns(Task.FromException<ITunnel>(new ApplicationException()));
@@ -149,7 +150,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Integration
                 .Returns(Task.FromException(new ApplicationException()));
 
             var broker = new TunnelBrokerService(mockTunnelService.Object, mockEventService.Object);
-            var vmInstanceRef = new VmInstanceReference("project", "zone", "instance");
+            var vmInstanceRef = new InstanceLocator("project", "zone", "instance");
             var destination = new TunnelDestination(vmInstanceRef, 3389);
             mockTunnelService.Setup(s => s.CreateTunnelAsync(destination))
                 .Returns(Task.FromResult(mockTunnel.Object));
@@ -177,7 +178,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Integration
             mockTunnel.Setup(t => t.Close());
 
             var broker = new TunnelBrokerService(mockTunnelService.Object, mockEventService.Object);
-            var vmInstanceRef = new VmInstanceReference("project", "zone", "instance");
+            var vmInstanceRef = new InstanceLocator("project", "zone", "instance");
             var destination = new TunnelDestination(vmInstanceRef, 3389);
             mockTunnelService.Setup(s => s.CreateTunnelAsync(destination))
                 .Returns(Task.FromResult(mockTunnel.Object));
@@ -206,7 +207,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Integration
             mockTunnel.Setup(t => t.Close());
 
             var broker = new TunnelBrokerService(mockTunnelService.Object, mockEventService.Object);
-            var vmInstanceRef = new VmInstanceReference("project", "zone", "instance");
+            var vmInstanceRef = new InstanceLocator("project", "zone", "instance");
             var destination = new TunnelDestination(vmInstanceRef, 3389);
             mockTunnelService.Setup(s => s.CreateTunnelAsync(destination))
                 .Returns(Task.FromResult(mockTunnel.Object));
@@ -237,7 +238,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Integration
             mockTunnel.Setup(t => t.Close());
 
             var broker = new TunnelBrokerService(mockTunnelService.Object, mockEventService.Object);
-            var vmInstanceRef = new VmInstanceReference("project", "zone", "instance");
+            var vmInstanceRef = new InstanceLocator("project", "zone", "instance");
             var destination = new TunnelDestination(vmInstanceRef, 3389);
             mockTunnelService.Setup(s => s.CreateTunnelAsync(destination))
                 .Returns(Task.FromResult(mockTunnel.Object));
@@ -265,7 +266,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Integration
             mockTunnel.Setup(t => t.Close());
 
             var broker = new TunnelBrokerService(mockTunnelService.Object, mockEventService.Object);
-            var vmInstanceRef = new VmInstanceReference("project", "zone", "instance");
+            var vmInstanceRef = new InstanceLocator("project", "zone", "instance");
             var destination = new TunnelDestination(vmInstanceRef, 3389);
             mockTunnelService.Setup(s => s.CreateTunnelAsync(destination))
                 .Returns(Task.FromResult(mockTunnel.Object));

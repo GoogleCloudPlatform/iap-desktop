@@ -20,6 +20,7 @@
 //
 
 using Google.Solutions.Common;
+using Google.Solutions.Common.Locator;
 using Google.Solutions.Common.Test.Testbed;
 using Google.Solutions.IapDesktop.Application.ObjectModel;
 using Google.Solutions.IapDesktop.Application.Services.Adapters;
@@ -40,7 +41,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Windows
     {
         private async Task<IRemoteDesktopSession> Connect(
             RdpTunnel tunnel,
-            VmInstanceReference vmInstanceReference)
+            InstanceLocator vmInstanceReference)
         {
             using (var gceAdapter = new ComputeEngineAdapter(this.serviceProvider.GetService<IAuthorizationAdapter>()))
             {

@@ -20,6 +20,7 @@
 //
 
 using Google.Solutions.Common;
+using Google.Solutions.Common.Locator;
 using Google.Solutions.IapDesktop.Application.ObjectModel;
 using Google.Solutions.IapDesktop.Application.Services.Integration;
 using Google.Solutions.IapDesktop.Application.Services.Persistence;
@@ -61,7 +62,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.Workflows
         }
 
         private async Task ConnectInstanceAsync(
-            VmInstanceReference instanceRef,
+            InstanceLocator instanceRef,
             VmInstanceConnectionSettings settings)
         {
             var tunnel = await this.jobService.RunInBackground(
@@ -83,7 +84,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.Workflows
                         throw new ApplicationException(
                             "Connecting to the instance failed. Make sure that you have " +
                             "configured your firewall rules to permit Cloud IAP access " +
-                            $"to {instanceRef.InstanceName}",
+                            $"to {instanceRef.Name}",
                             e);
                     }
                     catch (UnauthorizedException)
@@ -171,7 +172,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.Workflows
                 owner,
                 UnsafeNativeMethods.TD_INFORMATION_ICON,
                 "Credentials",
-                $"Would you like to generate credentials for {url.Instance.InstanceName} first?",
+                $"Would you like to generate credentials for {url.Instance.Name} first?",
                 null,
                 null,
                 new[]

@@ -224,12 +224,12 @@ namespace Google.Solutions.IapDesktop.Extensions.LogAnalysis.Test.Extensions
 
             Assert.IsInstanceOf(typeof(DeleteInstanceEvent), events.First());
             var deleteEvent = (DeleteInstanceEvent)events.First();
-            Assert.AreEqual("instance-1", deleteEvent.InstanceReference.InstanceName);
+            Assert.AreEqual("instance-1", deleteEvent.InstanceReference.Name);
 
 
             Assert.IsInstanceOf(typeof(StartInstanceEvent), events.Last());
             var startEvent = (StartInstanceEvent)events.Last();
-            Assert.AreEqual("instance-2", startEvent.InstanceReference.InstanceName);
+            Assert.AreEqual("instance-2", startEvent.InstanceReference.Name);
         }
 
         [Test]
@@ -333,7 +333,7 @@ namespace Google.Solutions.IapDesktop.Extensions.LogAnalysis.Test.Extensions
 
             Assert.IsInstanceOf(typeof(DeleteInstanceEvent), events.First());
             var deleteEvent = (DeleteInstanceEvent)events.First();
-            Assert.AreEqual("instance-1", deleteEvent.InstanceReference.InstanceName);
+            Assert.AreEqual("instance-1", deleteEvent.InstanceReference.Name);
 
             Assert.IsInstanceOf(typeof(UnknownEvent), events.Last());
         }

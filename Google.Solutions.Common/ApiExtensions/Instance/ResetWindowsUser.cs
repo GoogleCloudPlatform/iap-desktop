@@ -21,6 +21,7 @@
 
 using Google.Apis.Compute.v1;
 using Google.Solutions.Common.Diagnostics;
+using Google.Solutions.Common.Locator;
 using Google.Solutions.Common.Util;
 using Newtonsoft.Json;
 using System;
@@ -57,7 +58,7 @@ namespace Google.Solutions.Common.ApiExtensions.Instance
         {
             return ResetWindowsUserAsync(
                 resource,
-                new VmInstanceReference(project, zone, instance),
+                new InstanceLocator(project, zone, instance),
                 username,
                 token);
         }
@@ -69,7 +70,7 @@ namespace Google.Solutions.Common.ApiExtensions.Instance
         /// <see href="https://cloud.google.com/compute/docs/instances/windows/automate-pw-generation"/>
         public static async Task<NetworkCredential> ResetWindowsUserAsync(
             this InstancesResource resource,
-            VmInstanceReference instanceRef,
+            InstanceLocator instanceRef,
             string username,
             CancellationToken token)
         {
@@ -102,7 +103,7 @@ namespace Google.Solutions.Common.ApiExtensions.Instance
                     TraceSources.Common.TraceVerbose("Instance does not exist: {0}", e.Message);
 
                     throw new PasswordResetException(
-                        $"Instance {instanceRef.InstanceName} was not found.");
+                        $"Instance {instanceRef.Name} was not found.");
                 }
                 catch (GoogleApiException e) when (e.Error == null || e.Error.Code == 403)
                 {
@@ -174,7 +175,7 @@ namespace Google.Solutions.Common.ApiExtensions.Instance
 
         public static async Task<NetworkCredential> ResetWindowsUserAsync(
             this InstancesResource resource,
-            VmInstanceReference instanceRef,
+            InstanceLocator instanceRef,
             string username,
             CancellationToken token,
             TimeSpan timeout)

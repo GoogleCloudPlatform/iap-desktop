@@ -21,6 +21,7 @@
 
 using Google.Apis.Compute.v1.Data;
 using Google.Solutions.Common;
+using Google.Solutions.Common.Locator;
 using Google.Solutions.Common.Util;
 using Google.Solutions.IapDesktop.Application.ObjectModel;
 using Google.Solutions.IapDesktop.Application.Services.Adapters;
@@ -676,7 +677,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.Windows.ProjectExplor
             }
         }
 
-        public VmInstanceNode TryFindNode(VmInstanceReference reference)
+        public VmInstanceNode TryFindNode(InstanceLocator reference)
         {
             return this.rootNode.Nodes
                 .OfType<ProjectNode>()
@@ -684,7 +685,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.Windows.ProjectExplor
                 .SelectMany(p => p.Nodes.Cast<ZoneNode>())
                 .Where(z => z.ZoneId == reference.Zone)
                 .SelectMany(z => z.Nodes.Cast<VmInstanceNode>())
-                .FirstOrDefault(vm => vm.InstanceName == reference.InstanceName); ;
+                .FirstOrDefault(vm => vm.InstanceName == reference.Name); ;
         }
     }
 }

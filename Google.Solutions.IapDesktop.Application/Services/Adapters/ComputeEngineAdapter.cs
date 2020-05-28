@@ -26,6 +26,7 @@ using Google.Solutions.Common;
 using Google.Solutions.Common.ApiExtensions;
 using Google.Solutions.Common.ApiExtensions.Instance;
 using Google.Solutions.Common.Diagnostics;
+using Google.Solutions.Common.Locator;
 using Google.Solutions.Common.Util;
 using Google.Solutions.IapDesktop.Application.ObjectModel;
 using System;
@@ -43,17 +44,17 @@ namespace Google.Solutions.IapDesktop.Application.Services.Adapters
         Task<IEnumerable<Instance>> QueryInstancesAsync(string projectId);
 
         Task<NetworkCredential> ResetWindowsUserAsync(
-            VmInstanceReference instanceRef,
+            InstanceLocator instanceRef,
             string username,
             CancellationToken token);
 
         Task<NetworkCredential> ResetWindowsUserAsync(
-            VmInstanceReference instanceRef,
+            InstanceLocator instanceRef,
             string username,
             CancellationToken token,
             TimeSpan timeout);
 
-        SerialPortStream GetSerialPortOutput(VmInstanceReference instanceRef);
+        SerialPortStream GetSerialPortOutput(InstanceLocator instanceRef);
     }
 
     /// <summary>
@@ -61,8 +62,6 @@ namespace Google.Solutions.IapDesktop.Application.Services.Adapters
     /// </summary>
     public class ComputeEngineAdapter : IComputeEngineAdapter
     {
-        private const string WindowsCloudLicenses = "https://www.googleapis.com/compute/v1/projects/windows-cloud/global/licenses";
-
         private static readonly TimeSpan DefaultPasswordResetTimeout = TimeSpan.FromSeconds(15);
 
         private readonly ComputeService service;
@@ -121,15 +120,15 @@ namespace Google.Solutions.IapDesktop.Application.Services.Adapters
             }
         }
 
-        public async Task<Instance> QueryInstanceAsync(VmInstanceReference instanceRef)
+        public async Task<Instance> QueryInstanceAsync(InstanceLocator instanceRef)
         {
             using (TraceSources.IapDesktop.TraceMethod().WithParameters(instanceRef))
             {
-                return await QueryInstanceAsync(instanceRef.ProjectId, instanceRef.Zone, instanceRef.InstanceName);
+                return await QueryInstanceAsync(instanceRef.ProjectId, instanceRef.Zone, instanceRef.Name);
             }
         }
 
-        public SerialPortStream GetSerialPortOutput(VmInstanceReference instanceRef)
+        public SerialPortStream GetSerialPortOutput(InstanceLocator instanceRef)
         {
             using (TraceSources.IapDesktop.TraceMethod().WithParameters(instanceRef))
             {
@@ -138,7 +137,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.Adapters
         }
 
         public Task<NetworkCredential> ResetWindowsUserAsync(
-            VmInstanceReference instanceRef,
+            InstanceLocator instanceRef,
             string username,
             CancellationToken token)
         {
@@ -146,7 +145,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.Adapters
         }
 
         public async Task<NetworkCredential> ResetWindowsUserAsync(
-            VmInstanceReference instanceRef,
+            InstanceLocator instanceRef,
             string username,
             CancellationToken token,
             TimeSpan timeout)
@@ -184,7 +183,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.Adapters
                 .Where(d => d.Licenses != null)
                 .SelectMany(d => d.Licenses)
                 .EnsureNotNull()
-                .Any(l => l.StartsWith(WindowsCloudLicenses));
+                .Any(l => LicenseLocator.FromString(l).IsWindowsLicense());
         }
 
         public static bool IsWindowsInstance(Instance instance)

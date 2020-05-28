@@ -23,6 +23,7 @@ using Google.Apis.Compute.v1.Data;
 using Google.Solutions.Common;
 using Google.Solutions.Common.ApiExtensions;
 using Google.Solutions.Common.Diagnostics;
+using Google.Solutions.Common.Locator;
 using Google.Solutions.Common.Util;
 using Google.Solutions.IapDesktop.Extensions.LogAnalysis.Events;
 using System;
@@ -77,8 +78,8 @@ namespace Google.Solutions.IapDesktop.Extensions.LogAnalysis.History
 
         public void AddExistingInstance(
             ulong instanceId,
-            VmInstanceReference reference,
-            GlobalResourceReference image,
+            InstanceLocator reference,
+            ImageLocator image,
             InstanceState state,
             DateTime lastSeen,
             Tenancy tenancy)
@@ -152,17 +153,17 @@ namespace Google.Solutions.IapDesktop.Extensions.LogAnalysis.History
                         .Select(d => d.Source)
                         .EnsureNotNull()
                         .FirstOrDefault();
-                    GlobalResourceReference image = null;
+                    ImageLocator image = null;
                     if (bootDiskUrl != null &&
                         sourceImagesByDisk.TryGetValue(bootDiskUrl, out string imageUrl) &&
                         imageUrl != null)
                     {
-                        image = GlobalResourceReference.FromString(imageUrl);
+                        image = ImageLocator.FromString(imageUrl);
                     }
 
                     AddExistingInstance(
                         (ulong)instance.Id.Value,
-                        new VmInstanceReference(
+                        new InstanceLocator(
                             projectId,
                             ShortZoneIdFromUrl(instance.Zone),
                             instance.Name),

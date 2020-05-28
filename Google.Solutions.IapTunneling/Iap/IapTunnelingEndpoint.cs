@@ -21,6 +21,7 @@
 
 using Google.Apis.Auth.OAuth2;
 using Google.Solutions.Common;
+using Google.Solutions.Common.Locator;
 using Google.Solutions.IapTunneling.Net;
 using System;
 using System.Collections.Generic;
@@ -45,7 +46,7 @@ namespace Google.Solutions.IapTunneling.Iap
         // Cf. https://developers.google.com/identity/protocols/googlescopes#iapv1
         public const string RequiredScope = "https://www.googleapis.com/auth/cloud-platform";
 
-        public VmInstanceReference VmInstance { get; }
+        public InstanceLocator VmInstance { get; }
 
         public ushort Port { get; }
 
@@ -53,7 +54,7 @@ namespace Google.Solutions.IapTunneling.Iap
 
         private readonly ICredential credential;
 
-        public IapTunnelingEndpoint(ICredential credential, VmInstanceReference vmInstance, ushort port, string nic)
+        public IapTunnelingEndpoint(ICredential credential, InstanceLocator vmInstance, ushort port, string nic)
         {
             this.credential = credential;
             this.VmInstance = vmInstance;
@@ -75,7 +76,7 @@ namespace Google.Solutions.IapTunneling.Iap
             {
                 { "project", this.VmInstance.ProjectId },
                 { "zone", this.VmInstance.Zone },
-                { "instance", this.VmInstance.InstanceName },
+                { "instance", this.VmInstance.Name },
                 { "interface", this.Interface },
                 { "port", this.Port.ToString() },
                 { "_", Guid.NewGuid().ToString() }  // Cache buster.
