@@ -30,7 +30,7 @@ using System.Linq;
 namespace Google.Solutions.IapDesktop.Extensions.LogAnalysis.Test.History
 {
     [TestFixture]
-    public class TestInstanceSetHistory : FixtureBase
+    public class TestAnnotatedInstanceSetHistory : FixtureBase
     {
         [Test]
         public void WhenSerializedAndDeserialized_ThenObjectsAreEquivalent()
@@ -68,19 +68,22 @@ namespace Google.Solutions.IapDesktop.Extensions.LogAnalysis.Test.History
                         })
                 });
 
+            var annotatedHistory = AnnotatedInstanceSetHistory.FromInstanceSetHistory(history);
+
             using (var memoryStream = new MemoryStream())
             {
                 var s = new StringWriter();
-                history.Serialize(s);
+                annotatedHistory.Serialize(s);
 
                 var writer = new StreamWriter(memoryStream);
-                history.Serialize(writer);
+                annotatedHistory.Serialize(writer);
                 writer.Flush();
 
                 memoryStream.Position = 0;
 
-                var restoredHistory = InstanceSetHistory.Deserialize(
-                    new StreamReader(memoryStream));
+                var restoredHistory = AnnotatedInstanceSetHistory
+                    .Deserialize(new StreamReader(memoryStream))
+                    .History;
 
                 Assert.AreEqual(history.StartDate, restoredHistory.StartDate);
                 Assert.AreEqual(history.EndDate, restoredHistory.EndDate);
@@ -121,7 +124,7 @@ namespace Google.Solutions.IapDesktop.Extensions.LogAnalysis.Test.History
 
             using (var reader = new StringReader(json))
             {
-                Assert.Throws<FormatException>(() => InstanceSetHistory.Deserialize(reader));
+                Assert.Throws<FormatException>(() => AnnotatedInstanceSetHistory.Deserialize(reader));
             }
         }
 
@@ -137,7 +140,7 @@ namespace Google.Solutions.IapDesktop.Extensions.LogAnalysis.Test.History
 
             using (var reader = new StringReader(json))
             {
-                Assert.Throws<FormatException>(() => InstanceSetHistory.Deserialize(reader));
+                Assert.Throws<FormatException>(() => AnnotatedInstanceSetHistory.Deserialize(reader));
             }
         }
 
@@ -146,53 +149,55 @@ namespace Google.Solutions.IapDesktop.Extensions.LogAnalysis.Test.History
         {
             var json = @"
             {
-              '@type': 'type.googleapis.com/Google.Solutions.IapDesktop.Extensions.LogAnalysis.InstanceSetHistory',
-              'instanceSetHistory': {
-                'start': '2019-12-01T00:00:00Z',
-                'end': '2020-01-01T00:00:00Z',
-                'instances': [
-                  {
-                    'id': 188550847350222232,
-                    'vm': {
-                      'projectId': 'project-1',
-                      'zone': 'us-central1-a',
-                      'name': 'instance-1'
-                    },
-                    'placements': [
-                      {
-                        'tenancy': 1,
-                        'from': '2019-12-01T00:00:00Z',
-                        'to': '2019-12-02T00:00:00Z'
+              '@type': 'type.googleapis.com/Google.Solutions.IapDesktop.Extensions.LogAnalysis.AnnotatedInstanceSetHistory',
+              'annotatedInstanceSetHistory': {
+                'history': {
+                  'start': '2019-12-01T00:00:00Z',
+                  'end': '2020-01-01T00:00:00Z',
+                  'instances': [
+                    {
+                      'id': 188550847350222232,
+                      'vm': {
+                        'zone': 'us-central1-a',
+                        'resourceType': 'instances',
+                        'projectId': 'project-1',
+                        'name': 'instance-1'
                       },
-                      {
-                        'tenancy': 1,
-                        'from': '2019-12-02T00:00:00Z',
-                        'to': '2019-12-03T00:00:00Z'
-                      }
-                    ],
-                    'tenancy': 1,
-                    'state': 0
-                  },
-                  {
-                    'id': 118550847350222232,
-                    'placements': [
-                      {
-                        'tenancy': 2,
-                        'server': 'server-1',
-                        'from': '2019-12-01T00:00:00Z',
-                        'to': '2019-12-02T00:00:00Z'
-                      }
-                    ],
-                    'tenancy': 2,
-                    'state': 3
-                  }
-                ]
+                      'placements': [
+                        {
+                          'tenancy': 1,
+                          'from': '2019-12-01T00:00:00Z',
+                          'to': '2019-12-02T00:00:00Z'
+                        },
+                        {
+                          'tenancy': 1,
+                          'from': '2019-12-02T00:00:00Z',
+                          'to': '2019-12-03T00:00:00Z'
+                        }
+                      ],
+                      'state': 0
+                    },
+                    {
+                      'id': 118550847350222232,
+                      'placements': [
+                        {
+                          'tenancy': 2,
+                          'server': 'server-1',
+                          'from': '2019-12-01T00:00:00Z',
+                          'to': '2019-12-02T00:00:00Z'
+                        }
+                      ],
+                      'state': 3
+                    }
+                  ]
+                },
+                'annotations': {}
               }
             }";
 
             using (var reader = new StringReader(json))
             {
-                var restoredHistory = InstanceSetHistory.Deserialize(reader);
+                var restoredHistory = AnnotatedInstanceSetHistory.Deserialize(reader).History;
 
                 Assert.AreEqual(new DateTime(2019, 12, 1, 0, 0, 0, DateTimeKind.Utc), restoredHistory.StartDate);
                 Assert.AreEqual(new DateTime(2020, 1, 1, 0, 0, 0, DateTimeKind.Utc), restoredHistory.EndDate);

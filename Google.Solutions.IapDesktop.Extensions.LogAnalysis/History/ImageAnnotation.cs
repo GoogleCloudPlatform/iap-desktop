@@ -21,31 +21,39 @@
 
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
-using System;
-using System.Collections.Generic;
 
 namespace Google.Solutions.IapDesktop.Extensions.LogAnalysis.History
 {
-    public class InstanceSetHistory
+
+    public enum LicenseType
     {
-        [JsonProperty("start")]
-        public DateTime StartDate { get; }
+        Unknown = 0,
+        Byol = 1,
+        Spla = 2
+    }
 
-        [JsonProperty("end")]
-        public DateTime EndDate { get; }
+    public enum OperatingSystemType
+    {
+        Unknown = 0,
+        Windows = 1,
+        Linux = 2
+    }
 
-        [JsonProperty("instances")]
-        public IEnumerable<InstanceHistory> Instances { get; }
+    public class ImageAnnotation
+    {
+        [JsonProperty("licenseType")]
+        public LicenseType LicenseType { get; }
 
-        [JsonConstructor]
-        internal InstanceSetHistory(
-            [JsonProperty("start")] DateTime startDate,
-            [JsonProperty("end")] DateTime endDate,
-            [JsonProperty("instances")] IEnumerable<InstanceHistory> instances)
+
+        [JsonProperty("os")]
+        public OperatingSystemType OperatingSystem { get; }
+
+        public ImageAnnotation(
+            [JsonProperty("licenseType")] LicenseType licenseType,
+            [JsonProperty("os")] OperatingSystemType osType)
         {
-            this.StartDate = startDate;
-            this.EndDate = endDate;
-            this.Instances = instances;
+            this.LicenseType = licenseType;
+            this.OperatingSystem = osType;
         }
     }
 }
