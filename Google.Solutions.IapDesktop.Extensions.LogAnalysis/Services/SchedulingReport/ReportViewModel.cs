@@ -25,7 +25,13 @@ namespace Google.Solutions.IapDesktop.Extensions.LogAnalysis.Services.Scheduling
 { 
     internal class ReportViewModel : ViewModelBase
     {
-        public NodeReportPaneViewModel NodeReportPane { get; }
-        public InstanceReportPaneViewModel InstanceReportPane { get; }
+        public ReportNodesViewModel NodeReportPane { get; }
+        public ReportInstancesViewModel InstanceReportPane { get; }
+
+        public ReportViewModel(ReportArchive model)
+        {
+            this.NodeReportPane = new ReportNodesViewModel(model);
+            this.InstanceReportPane = new ReportInstancesViewModel(model);
+        }
     }
 }

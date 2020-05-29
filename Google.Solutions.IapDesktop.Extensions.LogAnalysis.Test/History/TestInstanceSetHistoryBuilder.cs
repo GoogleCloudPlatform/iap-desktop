@@ -82,7 +82,7 @@ namespace Google.Solutions.IapDesktop.Extensions.LogAnalysis.Test.History
                 SampleImage,
                 InstanceState.Running,
                 DateTime.Now,
-                Tenancy.Fleet);
+                Tenancies.Fleet);
 
             var set = b.Build();
 
@@ -186,7 +186,7 @@ namespace Google.Solutions.IapDesktop.Extensions.LogAnalysis.Test.History
 
             var placement = instance.Placements.First();
             Assert.AreEqual("15934ff9aee7d8c5719fad1053b7fc7d", placement.ServerId);
-            Assert.AreEqual(Tenancy.SoleTenant, placement.Tenancy);
+            Assert.AreEqual(Tenancies.SoleTenant, placement.Tenancy);
 
             // Insert..
             Assert.AreEqual(DateTime.Parse("2020-05-06T14:58:53.077Z").ToUniversalTime(), placement.From);
@@ -209,7 +209,7 @@ namespace Google.Solutions.IapDesktop.Extensions.LogAnalysis.Test.History
 
             var placement = instance.Placements.First();
             Assert.AreEqual("15934ff9aee7d8c5719fad1053b7fc7d", placement.ServerId);
-            Assert.AreEqual(Tenancy.SoleTenant, placement.Tenancy);
+            Assert.AreEqual(Tenancies.SoleTenant, placement.Tenancy);
 
             // Insert..
             Assert.AreEqual(DateTime.Parse("2020-05-06T14:57:46.557Z").ToUniversalTime(), placement.From);
@@ -232,7 +232,7 @@ namespace Google.Solutions.IapDesktop.Extensions.LogAnalysis.Test.History
 
             var firstPlacement = instance.Placements.First();
             Assert.AreEqual("413db7b32a208e7ccb4ee62acedee725", firstPlacement.ServerId);
-            Assert.AreEqual(Tenancy.SoleTenant, firstPlacement.Tenancy);
+            Assert.AreEqual(Tenancies.SoleTenant, firstPlacement.Tenancy);
 
             // Insert..
             Assert.AreEqual(DateTime.Parse("2020-05-05T08:31:40.864Z").ToUniversalTime(), firstPlacement.From);
@@ -243,7 +243,7 @@ namespace Google.Solutions.IapDesktop.Extensions.LogAnalysis.Test.History
 
             var secondPlacement = instance.Placements.Last();
             Assert.AreEqual("413db7b32a208e7ccb4ee62acedee725", secondPlacement.ServerId);
-            Assert.AreEqual(Tenancy.SoleTenant, secondPlacement.Tenancy);
+            Assert.AreEqual(Tenancies.SoleTenant, secondPlacement.Tenancy);
 
             // Insert..
             Assert.AreEqual(DateTime.Parse("2020-05-06T16:36:01.441Z").ToUniversalTime(), secondPlacement.From);
@@ -262,7 +262,7 @@ namespace Google.Solutions.IapDesktop.Extensions.LogAnalysis.Test.History
             Assert.AreEqual(2, instance.Placements.Count());
 
             var firstPlacement = instance.Placements.First();
-            Assert.AreEqual(Tenancy.Fleet, firstPlacement.Tenancy);
+            Assert.AreEqual(Tenancies.Fleet, firstPlacement.Tenancy);
 
             // Insert..
             Assert.AreEqual(DateTime.Parse("2020-04-23T09:08:19.023Z").ToUniversalTime(), firstPlacement.From);
@@ -273,7 +273,7 @@ namespace Google.Solutions.IapDesktop.Extensions.LogAnalysis.Test.History
 
             var secondPlacement = instance.Placements.Last();
             Assert.AreEqual("15934ff9aee7d8c5719fad1053b7fc7d", secondPlacement.ServerId);
-            Assert.AreEqual(Tenancy.SoleTenant, secondPlacement.Tenancy);
+            Assert.AreEqual(Tenancies.SoleTenant, secondPlacement.Tenancy);
 
             // Start..
             Assert.AreEqual(DateTime.Parse("2020-05-19T08:17:01.685Z").ToUniversalTime(), secondPlacement.From);

@@ -25,21 +25,28 @@ using System.Linq;
 
 namespace Google.Solutions.IapDesktop.Extensions.LogAnalysis.Services.SchedulingReport
 {
-
-    internal class NodeReportPaneViewModel : ReportPaneViewModelBase
+    internal class ReportNodesViewModel : ReportItemsViewModelBase
     {
+        private OperatingSystemTypes osTypes = OperatingSystemTypes.Windows;
+        private LicenseTypes licenseTypes = LicenseTypes.Byol | LicenseTypes.Spla;
+
         private NodeSetHistory currentNodeSet;
         private NodeHistory selectedNode;
 
         protected override void Repopulate()
         {
-            this.currentNodeSet = NodeSetHistory.FromInstancyHistory(
-                this.instanceSet.Instances,
-                false,
-                true);  // Sole tenant nodes only.
+            // Get instances that match the selected OS/license criteria.
+            var instances = this.model.GetInstances(this.osTypes, this.licenseTypes);
 
+            // Derive the set of nodes that were used by those instances.
+            this.currentNodeSet = NodeSetHistory.FromInstancyHistory(
+                instances,
+                Tenancies.SoleTenant);  // Sole tenant nodes only.
+
+            // Create histogram, disregarding the date selection.
             this.Histogram = this.currentNodeSet.MaxNodesByDay;
 
+            // For the list of nodes, apply the date selection.
             this.Nodes.Clear();
             this.Nodes.AddRange(this.currentNodeSet.Nodes
                 .Where(n => n.FirstUse <= this.Selection.EndDate && n.LastUse >= this.Selection.StartDate));
@@ -59,8 +66,8 @@ namespace Google.Solutions.IapDesktop.Extensions.LogAnalysis.Services.Scheduling
             }
         }
 
-        public NodeReportPaneViewModel(InstanceSetHistory instanceSetHistory)
-            : base(instanceSetHistory)
+        public ReportNodesViewModel(ReportArchive model)
+            : base(model)
         {
             Repopulate();
         }
@@ -88,6 +95,54 @@ namespace Google.Solutions.IapDesktop.Extensions.LogAnalysis.Services.Scheduling
 
                 RepopulateNodePlacements();
 
+                RaisePropertyChange();
+            }
+        }
+
+        public bool IncludeLinuxInstances
+        {
+            get => this.osTypes.HasFlag(OperatingSystemTypes.Linux);
+            set
+            {
+                this.osTypes |= OperatingSystemTypes.Linux;
+
+                Repopulate();
+                RaisePropertyChange();
+            }
+        }
+
+        public bool IncludeWindowsInstances
+        {
+            get => this.osTypes.HasFlag(OperatingSystemTypes.Windows);
+            set
+            {
+                this.osTypes |= OperatingSystemTypes.Windows;
+
+                Repopulate();
+                RaisePropertyChange();
+            }
+        }
+
+        public bool IncludeByolInstances
+        {
+            get => this.osTypes.HasFlag(LicenseTypes.Byol);
+            set
+            {
+                this.licenseTypes |= LicenseTypes.Byol;
+
+                Repopulate();
+                RaisePropertyChange();
+            }
+        }
+
+        public bool IncludeSplaInstances
+        {
+            get => this.osTypes.HasFlag(LicenseTypes.Spla);
+            set
+            {
+                this.licenseTypes |= LicenseTypes.Spla;
+
+                Repopulate();
                 RaisePropertyChange();
             }
         }

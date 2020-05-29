@@ -117,7 +117,7 @@ namespace Google.Solutions.LogAnalysis.QuickTest
                 Console.WriteLine(
                     "== Nodes ======================================================================");
 
-                var nodeSet = NodeSetHistory.FromInstancyHistory(set.Instances, true, true);
+                var nodeSet = NodeSetHistory.FromInstancyHistory(set.Instances, Tenancies.SoleTenant | Tenancies.Fleet);
                 foreach (var node in nodeSet.Nodes)
                 {
                     Console.WriteLine($"  Node          {node.ServerId ?? "FLEET"}");

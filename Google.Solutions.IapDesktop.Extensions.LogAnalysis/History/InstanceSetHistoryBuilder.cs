@@ -83,7 +83,7 @@ namespace Google.Solutions.IapDesktop.Extensions.LogAnalysis.History
             ImageLocator image,
             InstanceState state,
             DateTime lastSeen,
-            Tenancy tenancy)
+            Tenancies tenancy)
         {
             Debug.Assert(!tenancy.IsFlagCombination());
             this.instanceBuilders[instanceId] = InstanceHistoryBuilder.ForExistingInstance(
@@ -175,8 +175,8 @@ namespace Google.Solutions.IapDesktop.Extensions.LogAnalysis.History
                             : InstanceState.Terminated,
                         DateTime.Now,
                         instance.Scheduling.NodeAffinities != null && instance.Scheduling.NodeAffinities.Any()
-                            ? Tenancy.SoleTenant
-                            : Tenancy.Fleet);
+                            ? Tenancies.SoleTenant
+                            : Tenancies.Fleet);
                 }
             }
         }

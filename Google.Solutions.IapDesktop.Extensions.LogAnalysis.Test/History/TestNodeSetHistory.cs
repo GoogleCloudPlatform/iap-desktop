@@ -49,10 +49,10 @@ namespace Google.Solutions.IapDesktop.Extensions.LogAnalysis.Test.History
                     })
             };
 
-            var fleetOnly = NodeSetHistory.FromInstancyHistory(instances, true, false);
-            var soleTenantOnly = NodeSetHistory.FromInstancyHistory(instances, false, true);
-            var all = NodeSetHistory.FromInstancyHistory(instances, true, true);
-            var none = NodeSetHistory.FromInstancyHistory(instances, false, false);
+            var fleetOnly = NodeSetHistory.FromInstancyHistory(instances, Tenancies.Fleet);
+            var soleTenantOnly = NodeSetHistory.FromInstancyHistory(instances, Tenancies.SoleTenant);
+            var all = NodeSetHistory.FromInstancyHistory(instances, Tenancies.Fleet | Tenancies.SoleTenant);
+            var none = NodeSetHistory.FromInstancyHistory(instances, Tenancies.Unknown);
             
             Assert.AreEqual(1, fleetOnly.Nodes.Count());
             Assert.AreEqual(1, all.Nodes.Count());
@@ -78,7 +78,7 @@ namespace Google.Solutions.IapDesktop.Extensions.LogAnalysis.Test.History
                     })
             };
 
-            var nodes = NodeSetHistory.FromInstancyHistory(instances, true, false);
+            var nodes = NodeSetHistory.FromInstancyHistory(instances, Tenancies.Fleet);
             Assert.IsTrue(nodes.Nodes.Any());
             Assert.IsNull(nodes.Nodes.First().ServerId);
         }
@@ -96,10 +96,10 @@ namespace Google.Solutions.IapDesktop.Extensions.LogAnalysis.Test.History
                     null)
             };
 
-            var fleetOnly = NodeSetHistory.FromInstancyHistory(instances, true, false);
-            var soleTenantOnly = NodeSetHistory.FromInstancyHistory(instances, false, true);
-            var all = NodeSetHistory.FromInstancyHistory(instances, true, true);
-            var none = NodeSetHistory.FromInstancyHistory(instances, false, false);
+            var fleetOnly = NodeSetHistory.FromInstancyHistory(instances, Tenancies.Fleet);
+            var soleTenantOnly = NodeSetHistory.FromInstancyHistory(instances, Tenancies.SoleTenant);
+            var all = NodeSetHistory.FromInstancyHistory(instances, Tenancies.Fleet | Tenancies.SoleTenant);
+            var none = NodeSetHistory.FromInstancyHistory(instances, Tenancies.Unknown);
 
             Assert.IsFalse(fleetOnly.Nodes.Any());
             Assert.IsFalse(soleTenantOnly.Nodes.Any());
@@ -134,7 +134,7 @@ namespace Google.Solutions.IapDesktop.Extensions.LogAnalysis.Test.History
                     })
             };
 
-            var nodes = NodeSetHistory.FromInstancyHistory(instances, false, true);
+            var nodes = NodeSetHistory.FromInstancyHistory(instances, Tenancies.SoleTenant);
             Assert.AreEqual(2, nodes.Nodes.Count());
 
             var server1 = nodes.Nodes.First(n => n.ServerId == "server-1");
@@ -171,7 +171,7 @@ namespace Google.Solutions.IapDesktop.Extensions.LogAnalysis.Test.History
                     })
             };
 
-            var nodes = NodeSetHistory.FromInstancyHistory(instances, false, true);
+            var nodes = NodeSetHistory.FromInstancyHistory(instances, Tenancies.SoleTenant);
             Assert.AreEqual(2, nodes.Nodes.Count());
 
             var server1 = nodes.Nodes.First(n => n.ServerId == "server-1");
@@ -214,7 +214,7 @@ namespace Google.Solutions.IapDesktop.Extensions.LogAnalysis.Test.History
                     })
             };
 
-            var nodes = NodeSetHistory.FromInstancyHistory(instances, false, true);
+            var nodes = NodeSetHistory.FromInstancyHistory(instances, Tenancies.SoleTenant);
             Assert.AreEqual(1, nodes.Nodes.Count());
 
             var server1 = nodes.Nodes.First(n => n.ServerId == "server-1");
@@ -254,7 +254,7 @@ namespace Google.Solutions.IapDesktop.Extensions.LogAnalysis.Test.History
                     })
             };
 
-            var nodes = NodeSetHistory.FromInstancyHistory(instances, false, true);
+            var nodes = NodeSetHistory.FromInstancyHistory(instances, Tenancies.SoleTenant);
             Assert.AreEqual(1, nodes.Nodes.Count());
 
             var server1 = nodes.Nodes.First(n => n.ServerId == "server-1");

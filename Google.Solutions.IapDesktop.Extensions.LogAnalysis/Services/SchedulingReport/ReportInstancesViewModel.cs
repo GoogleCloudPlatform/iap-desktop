@@ -25,28 +25,34 @@ using System.Linq;
 
 namespace Google.Solutions.IapDesktop.Extensions.LogAnalysis.Services.SchedulingReport
 {
-    internal class InstanceReportPaneViewModel : ReportPaneViewModelBase
+    internal class ReportInstancesViewModel : ReportItemsViewModelBase
     {
-        private bool includeSoleTenantInstances = true;
-        private bool includeFleetInstances = true;
+        private Tenancies tenancies = Tenancies.SoleTenant | Tenancies.Fleet;
+        private OperatingSystemTypes osTypes = OperatingSystemTypes.Windows;
+        private LicenseTypes licenseTypes = LicenseTypes.Byol | LicenseTypes.Spla;
 
         protected override void Repopulate()
         {
-            var nodeSet = NodeSetHistory.FromInstancyHistory(
-                this.instanceSet.Instances,
-                this.includeFleetInstances,
-                this.includeSoleTenantInstances);
+            // Get instances that match the selected OS/license criteria.
+            var instances = this.model.GetInstances(this.osTypes, this.licenseTypes);
 
+            // Derive the set of nodes that were used by those instances.
+            var nodeSet = NodeSetHistory.FromInstancyHistory(
+                instances,
+                this.tenancies);
+
+            // Create histogram, disregarding the date selection.
             this.Histogram = nodeSet.MaxInstancePlacementsByDay;
 
+            // For the list of instances, apply the date selection.
             this.Instances.Clear();
             this.Instances.AddRange(nodeSet.Nodes
                 .SelectMany(n => n.Placements)
                 .Where(p => p.From <= this.Selection.EndDate && p.To >= this.Selection.StartDate));
         }
 
-        public InstanceReportPaneViewModel(InstanceSetHistory instanceSetHistory)
-            : base(instanceSetHistory)
+        public ReportInstancesViewModel(ReportArchive model)
+            : base(model)
         {
             Repopulate();
         }
@@ -64,10 +70,10 @@ namespace Google.Solutions.IapDesktop.Extensions.LogAnalysis.Services.Scheduling
 
         public bool IncludeSoleTenantInstances
         {
-            get => this.includeSoleTenantInstances;
+            get => this.tenancies.HasFlag(Tenancies.SoleTenant);
             set
             {
-                this.includeSoleTenantInstances = value;
+                this.tenancies |= Tenancies.SoleTenant;
 
                 Repopulate();
                 RaisePropertyChange();
@@ -76,10 +82,58 @@ namespace Google.Solutions.IapDesktop.Extensions.LogAnalysis.Services.Scheduling
 
         public bool IncludeFleetInstances
         {
-            get => this.includeFleetInstances;
+            get => this.tenancies.HasFlag(Tenancies.Fleet);
             set
             {
-                this.includeFleetInstances = value;
+                this.tenancies |= Tenancies.Fleet;
+
+                Repopulate();
+                RaisePropertyChange();
+            }
+        }
+
+        public bool IncludeLinuxInstances
+        {
+            get => this.osTypes.HasFlag(OperatingSystemTypes.Linux);
+            set
+            {
+                this.osTypes |= OperatingSystemTypes.Linux;
+
+                Repopulate();
+                RaisePropertyChange();
+            }
+        }
+
+        public bool IncludeWindowsInstances
+        {
+            get => this.osTypes.HasFlag(OperatingSystemTypes.Windows);
+            set
+            {
+                this.osTypes |= OperatingSystemTypes.Windows;
+
+                Repopulate();
+                RaisePropertyChange();
+            }
+        }
+
+        public bool IncludeByolInstances
+        {
+            get => this.osTypes.HasFlag(LicenseTypes.Byol);
+            set
+            {
+                this.licenseTypes |= LicenseTypes.Byol;
+
+                Repopulate();
+                RaisePropertyChange();
+            }
+        }
+
+        public bool IncludeSplaInstances
+        {
+            get => this.osTypes.HasFlag(LicenseTypes.Spla);
+            set
+            {
+                this.licenseTypes |= LicenseTypes.Spla;
 
                 Repopulate();
                 RaisePropertyChange();

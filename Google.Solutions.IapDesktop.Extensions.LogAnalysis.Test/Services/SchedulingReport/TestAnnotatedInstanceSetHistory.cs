@@ -234,12 +234,12 @@ namespace Google.Solutions.IapDesktop.Extensions.LogAnalysis.Test.Services.Sched
                 Assert.AreEqual(new DateTime(2019, 12, 1, 0, 0, 0, DateTimeKind.Utc), completeInstance.Placements.First().From);
                 Assert.AreEqual(new DateTime(2019, 12, 2, 0, 0, 0, DateTimeKind.Utc), completeInstance.Placements.First().To);
                 Assert.IsNull(completeInstance.Placements.First().ServerId);
-                Assert.AreEqual(Tenancy.Fleet, completeInstance.Placements.First().Tenancy);
+                Assert.AreEqual(Tenancies.Fleet, completeInstance.Placements.First().Tenancy);
 
                 Assert.AreEqual(new DateTime(2019, 12, 2, 0, 0, 0, DateTimeKind.Utc), completeInstance.Placements.Last().From);
                 Assert.AreEqual(new DateTime(2019, 12, 3, 0, 0, 0, DateTimeKind.Utc), completeInstance.Placements.Last().To);
                 Assert.IsNull(completeInstance.Placements.Last().ServerId);
-                Assert.AreEqual(Tenancy.Fleet, completeInstance.Placements.Last().Tenancy);
+                Assert.AreEqual(Tenancies.Fleet, completeInstance.Placements.Last().Tenancy);
 
 
                 var annotation = restoredAnnotatedHistory.LicenseAnnotations["projects/project-1/global/images/windows"];
@@ -256,7 +256,7 @@ namespace Google.Solutions.IapDesktop.Extensions.LogAnalysis.Test.Services.Sched
                 Assert.AreEqual(new DateTime(2019, 12, 1, 0, 0, 0, DateTimeKind.Utc), incompleteInstance.Placements.First().From);
                 Assert.AreEqual(new DateTime(2019, 12, 2, 0, 0, 0, DateTimeKind.Utc), incompleteInstance.Placements.First().To);
                 Assert.AreEqual("server-1", incompleteInstance.Placements.First().ServerId);
-                Assert.AreEqual(Tenancy.SoleTenant, incompleteInstance.Placements.First().Tenancy);
+                Assert.AreEqual(Tenancies.SoleTenant, incompleteInstance.Placements.First().Tenancy);
             }
         }
 

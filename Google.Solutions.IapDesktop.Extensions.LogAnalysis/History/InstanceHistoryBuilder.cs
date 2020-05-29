@@ -52,9 +52,9 @@ namespace Google.Solutions.IapDesktop.Extensions.LogAnalysis.History
 
         public ulong InstanceId { get; }
 
-        public Tenancy Tenancy => this.placements.Any()
+        public Tenancies Tenancy => this.placements.Any()
             ? this.placements.First().Tenancy
-            : Tenancy.Unknown;
+            : Tenancies.Unknown;
 
         private bool missingStopEvent = false;
 
@@ -85,7 +85,7 @@ namespace Google.Solutions.IapDesktop.Extensions.LogAnalysis.History
             this.placements.AddFirst(placement);
         }
 
-        public void AddPlacement(Tenancy tenancy, string serverId, DateTime date)
+        public void AddPlacement(Tenancies tenancy, string serverId, DateTime date)
         {
             Debug.Assert(!tenancy.IsFlagCombination());
             Debug.Assert(date <= this.lastEventDate);
@@ -129,7 +129,7 @@ namespace Google.Solutions.IapDesktop.Extensions.LogAnalysis.History
                 }
             }
 
-            if (tenancy == Tenancy.SoleTenant)
+            if (tenancy == Tenancies.SoleTenant)
             {
                 AddPlacement(new InstancePlacement(serverId, date, placedUntil));
             }
@@ -149,7 +149,7 @@ namespace Google.Solutions.IapDesktop.Extensions.LogAnalysis.History
             ImageLocator image,
             InstanceState state,
             DateTime? lastSeen,
-            Tenancy tenancy)
+            Tenancies tenancy)
         {
             Debug.Assert(!tenancy.IsFlagCombination());
             if (instanceId == 0)
@@ -164,7 +164,7 @@ namespace Google.Solutions.IapDesktop.Extensions.LogAnalysis.History
 
             if (state == InstanceState.Running)
             {
-                Debug.Assert(tenancy != Tenancy.Unknown);
+                Debug.Assert(tenancy != Tenancies.Unknown);
                 Debug.Assert(lastSeen != null);
 
                 // Add a synthetic placement.
@@ -178,7 +178,7 @@ namespace Google.Solutions.IapDesktop.Extensions.LogAnalysis.History
             ImageLocator image,
             InstanceState state,
             DateTime lastSeen,
-            Tenancy tenancy)
+            Tenancies tenancy)
         {
             Debug.Assert(!tenancy.IsFlagCombination());
             Debug.Assert(state != InstanceState.Deleted);
@@ -200,7 +200,7 @@ namespace Google.Solutions.IapDesktop.Extensions.LogAnalysis.History
                 null,
                 InstanceState.Deleted,
                 (DateTime?)null,    // Not clear yet when it was stopped
-                Tenancy.Unknown);
+                Tenancies.Unknown);
         }
 
         public InstanceHistory Build()
@@ -221,7 +221,7 @@ namespace Google.Solutions.IapDesktop.Extensions.LogAnalysis.History
                 {
                     return InstanceHistoryState.MissingStopEvent;
                 }
-                else if (this.Tenancy == Tenancy.Unknown)
+                else if (this.Tenancy == Tenancies.Unknown)
                 {
                     return InstanceHistoryState.MissingTenancy;
                 }
@@ -229,7 +229,7 @@ namespace Google.Solutions.IapDesktop.Extensions.LogAnalysis.History
                 {
                     return InstanceHistoryState.MissingName;
                 }
-                else if (this.Tenancy == Tenancy.SoleTenant && this.image == null)
+                else if (this.Tenancy == Tenancies.SoleTenant && this.image == null)
                 {
                     return InstanceHistoryState.MissingImage;
                 }
@@ -264,7 +264,7 @@ namespace Google.Solutions.IapDesktop.Extensions.LogAnalysis.History
 
             // Register Fleet placement - this might be merged with an existing
             // SoleTenant placement if there has been one registerd before.
-            AddPlacement(Tenancy.Fleet, null, date);
+            AddPlacement(Tenancies.Fleet, null, date);
         }
 
         public void OnStart(DateTime date, InstanceLocator reference)
@@ -279,7 +279,7 @@ namespace Google.Solutions.IapDesktop.Extensions.LogAnalysis.History
 
             // Register Fleet placement - this might be merged with an existing
             // SoleTenant placement if there has been one registerd before.
-            AddPlacement(Tenancy.Fleet, null, date);
+            AddPlacement(Tenancies.Fleet, null, date);
         }
 
         public void OnStop(DateTime date, InstanceLocator reference)
@@ -300,7 +300,7 @@ namespace Google.Solutions.IapDesktop.Extensions.LogAnalysis.History
             Debug.Assert(date <= this.lastEventDate);
             this.lastEventDate = date;
 
-            AddPlacement(Tenancy.SoleTenant, serverId, date);
+            AddPlacement(Tenancies.SoleTenant, serverId, date);
         }
 
         //---------------------------------------------------------------------

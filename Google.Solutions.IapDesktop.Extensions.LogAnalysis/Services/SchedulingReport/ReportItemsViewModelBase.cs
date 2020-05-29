@@ -28,21 +28,21 @@ using System.Linq;
 namespace Google.Solutions.IapDesktop.Extensions.LogAnalysis.Services.SchedulingReport
 {
 
-    internal abstract class ReportPaneViewModelBase : ViewModelBase
+    internal abstract class ReportItemsViewModelBase : ViewModelBase
     {
-        protected readonly InstanceSetHistory instanceSet;
+        protected readonly ReportArchive model;
 
         private DateSelection dateSelection;
         private IEnumerable<DataPoint> histogram
             = Enumerable.Empty<DataPoint>();
 
-        public ReportPaneViewModelBase(InstanceSetHistory instanceSetHistory)
+        public ReportItemsViewModelBase(ReportArchive model)
         {
-            this.instanceSet = instanceSetHistory;
+            this.model = model;
             this.dateSelection = new DateSelection()
             {
-                StartDate = instanceSetHistory.StartDate,
-                EndDate = instanceSetHistory.EndDate
+                StartDate = model.History.StartDate,
+                EndDate = model.History.EndDate
             };
         }
 
@@ -51,7 +51,6 @@ namespace Google.Solutions.IapDesktop.Extensions.LogAnalysis.Services.Scheduling
         //---------------------------------------------------------------------
         // Observable "output" properties.
         //---------------------------------------------------------------------
-
 
         public IEnumerable<DataPoint> Histogram
         {
@@ -78,12 +77,10 @@ namespace Google.Solutions.IapDesktop.Extensions.LogAnalysis.Services.Scheduling
             }
         }
     }
+
     internal struct DateSelection
     {
         public DateTime StartDate;
         public DateTime EndDate;
     }
-
-
-
 }

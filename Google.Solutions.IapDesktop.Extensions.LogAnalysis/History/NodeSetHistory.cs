@@ -36,22 +36,11 @@ namespace Google.Solutions.IapDesktop.Extensions.LogAnalysis.History
 
         private static IEnumerable<NodeHistory> NodesFromInstanceSetHistory(
             IEnumerable<InstanceHistory> instanceHistories,
-            bool includeFleetInstances,
-            bool includeSoleTenantInstances)
+            Tenancies tenancies)
         {
-            if (!includeFleetInstances)
-            {
-                instanceHistories = instanceHistories
-                    .Where(i => i.Placements != null &&
-                                i.Placements.Any(p => p.Tenancy != Tenancy.Fleet));
-            }
-
-            if (!includeSoleTenantInstances)
-            {
-                instanceHistories = instanceHistories
-                    .Where(i => i.Placements != null &&
-                                i.Placements.Any(p => p.Tenancy != Tenancy.SoleTenant));
-            }
+            instanceHistories = instanceHistories
+                .Where(i => i.Placements != null &&
+                            i.Placements.Any(p => tenancies.HasFlag(p.Tenancy)));
 
             var placementsByServer = instanceHistories
                 .Where(i => i.Placements != null)
@@ -104,14 +93,12 @@ namespace Google.Solutions.IapDesktop.Extensions.LogAnalysis.History
 
         public static NodeSetHistory FromInstancyHistory(
             IEnumerable<InstanceHistory> instanceHistories,
-            bool includeFleetInstances,
-            bool includeSoleTenantInstances)
+            Tenancies tenancies)
         {
             return new NodeSetHistory(
                 NodesFromInstanceSetHistory(
-                    instanceHistories, 
-                    includeFleetInstances,
-                    includeSoleTenantInstances));
+                    instanceHistories,
+                    tenancies));
         }
     }
 }

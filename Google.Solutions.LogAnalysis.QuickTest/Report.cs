@@ -45,10 +45,20 @@ namespace Google.Solutions.LogAnalysis.QuickTest
                 {
                     this.chartLabel.Text = "Active VM instances";
 
+                    var tenancies = Tenancies.Unknown;
+                    if (this.includeFleetVmInstancesMenuItem.Checked)
+                    {
+                        tenancies |= Tenancies.Fleet;
+                    }
+
+                    if (this.includeSoleTenantVmInstancesMenuItem.Checked)
+                    {
+                        tenancies |= Tenancies.SoleTenant;
+                    }
+
                     this.currentNodeSet = NodeSetHistory.FromInstancyHistory(
                         this.instanceSet.Instances,
-                        this.includeFleetVmInstancesMenuItem.Checked,
-                        this.includeSoleTenantVmInstancesMenuItem.Checked);
+                        tenancies);
 
                     RepopulateChart(this.currentNodeSet.MaxInstancePlacementsByDay);
                     //RepopulateNodeList();
@@ -60,8 +70,7 @@ namespace Google.Solutions.LogAnalysis.QuickTest
 
                     this.currentNodeSet = NodeSetHistory.FromInstancyHistory(
                         this.instanceSet.Instances,
-                        false,
-                        true);
+                        Tenancies.SoleTenant);
 
                     RepopulateChart(this.currentNodeSet.MaxNodesByDay);
                     RepopulateNodeList();

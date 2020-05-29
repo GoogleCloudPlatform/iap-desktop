@@ -34,139 +34,139 @@ namespace Google.Solutions.IapDesktop.Extensions.LogAnalysis.Test.Services.Sched
     {
         private static readonly DateTime BaselineTime = new DateTime(2020, 1, 1, 0, 0, 0, DateTimeKind.Utc);
 
-        [Test]
-        public void WhenInstanceSetEmpty_ThenEmptyDataIsReported()
-        {
-            var builder = new InstanceSetHistoryBuilder(
-                BaselineTime,
-                BaselineTime.AddDays(7));
-            var instanceSet = builder.Build();
+        //[Test]
+        //public void WhenInstanceSetEmpty_ThenEmptyDataIsReported()
+        //{
+        //    var builder = new InstanceSetHistoryBuilder(
+        //        BaselineTime,
+        //        BaselineTime.AddDays(7));
+        //    var instanceSet = builder.Build();
 
-            var viewModel = new InstanceReportPaneViewModel(instanceSet);
+        //    var viewModel = new InstanceReportPaneViewModel(instanceSet);
 
-            Assert.AreEqual(instanceSet.StartDate, viewModel.Selection.StartDate);
-            Assert.AreEqual(instanceSet.EndDate, viewModel.Selection.EndDate);
-            Assert.IsFalse(viewModel.Histogram.Any());
-            Assert.IsFalse(viewModel.Instances.Any());
-        }
+        //    Assert.AreEqual(instanceSet.StartDate, viewModel.Selection.StartDate);
+        //    Assert.AreEqual(instanceSet.EndDate, viewModel.Selection.EndDate);
+        //    Assert.IsFalse(viewModel.Histogram.Any());
+        //    Assert.IsFalse(viewModel.Instances.Any());
+        //}
 
-        [Test]
-        public void WhenInstanceSetNotEmpty_ThenHistogramBoundsAreCalculatedBasedOnPlacements()
-        {
-            var builder = new InstanceSetHistoryBuilder(
-                BaselineTime,
-                BaselineTime.AddDays(7));
-            builder.AddExistingInstance(
-                1,
-                new InstanceLocator("project", "zone", "instance-1"),
-                null,
-                InstanceState.Running, BaselineTime.AddDays(1), Tenancy.Fleet);
-            builder.AddExistingInstance(
-                2,
-                new InstanceLocator("project", "zone", "instance-2"),
-                null,
-                InstanceState.Running, BaselineTime.AddDays(5), Tenancy.Fleet);
+        //[Test]
+        //public void WhenInstanceSetNotEmpty_ThenHistogramBoundsAreCalculatedBasedOnPlacements()
+        //{
+        //    var builder = new InstanceSetHistoryBuilder(
+        //        BaselineTime,
+        //        BaselineTime.AddDays(7));
+        //    builder.AddExistingInstance(
+        //        1,
+        //        new InstanceLocator("project", "zone", "instance-1"),
+        //        null,
+        //        InstanceState.Running, BaselineTime.AddDays(1), Tenancies.Fleet);
+        //    builder.AddExistingInstance(
+        //        2,
+        //        new InstanceLocator("project", "zone", "instance-2"),
+        //        null,
+        //        InstanceState.Running, BaselineTime.AddDays(5), Tenancies.Fleet);
 
-            var instanceSet = builder.Build();
-            var viewModel = new InstanceReportPaneViewModel(instanceSet);
+        //    var instanceSet = builder.Build();
+        //    var viewModel = new InstanceReportPaneViewModel(instanceSet);
 
-            Assert.AreEqual(2, viewModel.Instances.Count());
-            Assert.AreEqual(BaselineTime.AddDays(1), viewModel.Histogram.First().Timestamp);
-            Assert.AreEqual(BaselineTime.AddDays(5), viewModel.Histogram.Last().Timestamp);
-        }
+        //    Assert.AreEqual(2, viewModel.Instances.Count());
+        //    Assert.AreEqual(BaselineTime.AddDays(1), viewModel.Histogram.First().Timestamp);
+        //    Assert.AreEqual(BaselineTime.AddDays(5), viewModel.Histogram.Last().Timestamp);
+        //}
 
-        [Test]
-        public void WhenSelectionChanged_ThenInstancesAreUpdated()
-        {
-            var builder = new InstanceSetHistoryBuilder(
-                BaselineTime,
-                BaselineTime.AddDays(7));
-            builder.AddExistingInstance(
-                1,
-                new InstanceLocator("project", "zone", "instance-1"),
-                null,
-                InstanceState.Running, BaselineTime.AddDays(1), Tenancy.Fleet);
-            builder.AddExistingInstance(
-                2,
-                new InstanceLocator("project", "zone", "instance-2"),
-                null,
-                InstanceState.Running, BaselineTime.AddDays(5), Tenancy.Fleet);
+        //[Test]
+        //public void WhenSelectionChanged_ThenInstancesAreUpdated()
+        //{
+        //    var builder = new InstanceSetHistoryBuilder(
+        //        BaselineTime,
+        //        BaselineTime.AddDays(7));
+        //    builder.AddExistingInstance(
+        //        1,
+        //        new InstanceLocator("project", "zone", "instance-1"),
+        //        null,
+        //        InstanceState.Running, BaselineTime.AddDays(1), Tenancies.Fleet);
+        //    builder.AddExistingInstance(
+        //        2,
+        //        new InstanceLocator("project", "zone", "instance-2"),
+        //        null,
+        //        InstanceState.Running, BaselineTime.AddDays(5), Tenancies.Fleet);
 
-            var instanceSet = builder.Build();
-            var viewModel = new InstanceReportPaneViewModel(instanceSet);
+        //    var instanceSet = builder.Build();
+        //    var viewModel = new InstanceReportPaneViewModel(instanceSet);
 
-            viewModel.Selection = new DateSelection()
-            {
-                StartDate = BaselineTime.AddDays(2),
-                EndDate = BaselineTime.AddDays(8)
-            };
+        //    viewModel.Selection = new DateSelection()
+        //    {
+        //        StartDate = BaselineTime.AddDays(2),
+        //        EndDate = BaselineTime.AddDays(8)
+        //    };
 
-            Assert.AreEqual(1, viewModel.Instances.Count());
-        }
+        //    Assert.AreEqual(1, viewModel.Instances.Count());
+        //}
 
-        [Test]
-        public void WhenSelectionChanged_ThenHistogramStaysUnchanged()
-        {
-            var builder = new InstanceSetHistoryBuilder(
-                BaselineTime,
-                BaselineTime.AddDays(7));
-            builder.AddExistingInstance(
-                1,
-                new InstanceLocator("project", "zone", "instance-1"),
-                null,
-                InstanceState.Running, BaselineTime.AddDays(1), Tenancy.Fleet);
-            builder.AddExistingInstance(
-                2,
-                new InstanceLocator("project", "zone", "instance-2"),
-                null,
-                InstanceState.Running, BaselineTime.AddDays(5), Tenancy.Fleet);
+        //[Test]
+        //public void WhenSelectionChanged_ThenHistogramStaysUnchanged()
+        //{
+        //    var builder = new InstanceSetHistoryBuilder(
+        //        BaselineTime,
+        //        BaselineTime.AddDays(7));
+        //    builder.AddExistingInstance(
+        //        1,
+        //        new InstanceLocator("project", "zone", "instance-1"),
+        //        null,
+        //        InstanceState.Running, BaselineTime.AddDays(1), Tenancies.Fleet);
+        //    builder.AddExistingInstance(
+        //        2,
+        //        new InstanceLocator("project", "zone", "instance-2"),
+        //        null,
+        //        InstanceState.Running, BaselineTime.AddDays(5), Tenancies.Fleet);
 
-            var instanceSet = builder.Build();
-            var viewModel = new InstanceReportPaneViewModel(instanceSet);
+        //    var instanceSet = builder.Build();
+        //    var viewModel = new InstanceReportPaneViewModel(instanceSet);
 
-            Assert.AreEqual(BaselineTime.AddDays(1), viewModel.Histogram.First().Timestamp);
-            Assert.AreEqual(BaselineTime.AddDays(5), viewModel.Histogram.Last().Timestamp);
+        //    Assert.AreEqual(BaselineTime.AddDays(1), viewModel.Histogram.First().Timestamp);
+        //    Assert.AreEqual(BaselineTime.AddDays(5), viewModel.Histogram.Last().Timestamp);
 
-            viewModel.Selection = new DateSelection()
-            {
-                StartDate = BaselineTime.AddDays(2),
-                EndDate = BaselineTime.AddDays(8)
-            };
+        //    viewModel.Selection = new DateSelection()
+        //    {
+        //        StartDate = BaselineTime.AddDays(2),
+        //        EndDate = BaselineTime.AddDays(8)
+        //    };
 
-            Assert.AreEqual(BaselineTime.AddDays(1), viewModel.Histogram.First().Timestamp);
-            Assert.AreEqual(BaselineTime.AddDays(5), viewModel.Histogram.Last().Timestamp);
-        }
+        //    Assert.AreEqual(BaselineTime.AddDays(1), viewModel.Histogram.First().Timestamp);
+        //    Assert.AreEqual(BaselineTime.AddDays(5), viewModel.Histogram.Last().Timestamp);
+        //}
 
-        [Test]
-        public void WhenSelectionReset_ThenFullDateRangeIsUsed()
-        {
-            var builder = new InstanceSetHistoryBuilder(
-                BaselineTime,
-                BaselineTime.AddDays(7));
-            var instanceSet = builder.Build();
-            var viewModel = new InstanceReportPaneViewModel(instanceSet);
+        //[Test]
+        //public void WhenSelectionReset_ThenFullDateRangeIsUsed()
+        //{
+        //    var builder = new InstanceSetHistoryBuilder(
+        //        BaselineTime,
+        //        BaselineTime.AddDays(7));
+        //    var instanceSet = builder.Build();
+        //    var viewModel = new InstanceReportPaneViewModel(instanceSet);
 
-            viewModel.Selection = new DateSelection()
-            {
-                StartDate = BaselineTime.AddDays(8),
-                EndDate = BaselineTime.AddDays(8)
-            };
-            viewModel.Selection = new DateSelection();
+        //    viewModel.Selection = new DateSelection()
+        //    {
+        //        StartDate = BaselineTime.AddDays(8),
+        //        EndDate = BaselineTime.AddDays(8)
+        //    };
+        //    viewModel.Selection = new DateSelection();
 
-            Assert.AreEqual(BaselineTime.AddDays(1), viewModel.Histogram.First().Timestamp);
-            Assert.AreEqual(BaselineTime.AddDays(5), viewModel.Histogram.Last().Timestamp);
-        }
+        //    Assert.AreEqual(BaselineTime.AddDays(1), viewModel.Histogram.First().Timestamp);
+        //    Assert.AreEqual(BaselineTime.AddDays(5), viewModel.Histogram.Last().Timestamp);
+        //}
 
-        [Test]
-        public void WhenIncludeSoleTenantInstancesChanged_ThenHistogramAndInstancesAreUpdated()
-        {
-            Assert.Inconclusive();
-        }
+        //[Test]
+        //public void WhenIncludeSoleTenantInstancesChanged_ThenHistogramAndInstancesAreUpdated()
+        //{
+        //    Assert.Inconclusive();
+        //}
 
-        [Test]
-        public void WhenIncludeFleetInstancesChanged_ThenHistogramAndInstancesAreUpdated()
-        {
-            Assert.Inconclusive();
-        }
+        //[Test]
+        //public void WhenIncludeFleetInstancesChanged_ThenHistogramAndInstancesAreUpdated()
+        //{
+        //    Assert.Inconclusive();
+        //}
     }
 }

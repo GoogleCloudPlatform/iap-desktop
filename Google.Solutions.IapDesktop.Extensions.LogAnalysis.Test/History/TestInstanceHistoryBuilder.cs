@@ -60,7 +60,7 @@ namespace Google.Solutions.IapDesktop.Extensions.LogAnalysis.Test.History
                 SampleImage,
                 InstanceState.Terminated,
                 new DateTime(2019, 12, 31),
-                Tenancy.SoleTenant);
+                Tenancies.SoleTenant);
 
             b.OnSetPlacement("server-1", new DateTime(2019, 12, 30));
             b.OnSetPlacement("server-1", new DateTime(2019, 12, 29));
@@ -80,7 +80,7 @@ namespace Google.Solutions.IapDesktop.Extensions.LogAnalysis.Test.History
                 SampleImage,
                 InstanceState.Running,
                 new DateTime(2019, 12, 31),
-                Tenancy.SoleTenant);
+                Tenancies.SoleTenant);
 
             b.OnSetPlacement("server-1", new DateTime(2019, 12, 30));
             b.OnStop(new DateTime(2019, 12, 29), SampleReference);
@@ -103,7 +103,7 @@ namespace Google.Solutions.IapDesktop.Extensions.LogAnalysis.Test.History
                 SampleImage,
                 InstanceState.Running,
                 new DateTime(2019, 12, 31),
-                Tenancy.SoleTenant);
+                Tenancies.SoleTenant);
             b.OnSetPlacement("server-1", new DateTime(2019, 12, 30));
             b.OnSetPlacement("server-2", new DateTime(2019, 12, 29));
 
@@ -124,7 +124,7 @@ namespace Google.Solutions.IapDesktop.Extensions.LogAnalysis.Test.History
                 SampleImage,
                 InstanceState.Running,
                 new DateTime(2019, 12, 31),
-                Tenancy.SoleTenant);
+                Tenancies.SoleTenant);
             b.OnSetPlacement("server-1", new DateTime(2019, 12, 30));
 
             var i = b.Build();
@@ -147,7 +147,7 @@ namespace Google.Solutions.IapDesktop.Extensions.LogAnalysis.Test.History
                 SampleImage,
                 InstanceState.Running,
                 new DateTime(2019, 12, 31),
-                Tenancy.SoleTenant);
+                Tenancies.SoleTenant);
             b.OnSetPlacement("server-2", new DateTime(2019, 12, 30));
             b.OnSetPlacement("server-1", new DateTime(2019, 12, 29));
 
@@ -174,7 +174,7 @@ namespace Google.Solutions.IapDesktop.Extensions.LogAnalysis.Test.History
                 SampleImage,
                 InstanceState.Running,
                 new DateTime(2019, 12, 31),
-                Tenancy.SoleTenant);
+                Tenancies.SoleTenant);
             b.OnSetPlacement("server-2", new DateTime(2019, 12, 30));
             b.OnStop(new DateTime(2019, 12, 29), SampleReference);
             b.OnSetPlacement("server-1", new DateTime(2019, 12, 28));
@@ -206,7 +206,7 @@ namespace Google.Solutions.IapDesktop.Extensions.LogAnalysis.Test.History
             b.OnStop(new DateTime(2019, 12, 31), SampleReference);
             b.OnSetPlacement("server-1", new DateTime(2019, 12, 30));
 
-            Assert.AreEqual(Tenancy.SoleTenant, b.Tenancy);
+            Assert.AreEqual(Tenancies.SoleTenant, b.Tenancy);
             var i = b.Build();
 
             Assert.AreEqual(1, i.InstanceId);
@@ -226,7 +226,7 @@ namespace Google.Solutions.IapDesktop.Extensions.LogAnalysis.Test.History
             b.OnSetPlacement("server-2", new DateTime(2019, 12, 30));
             b.OnSetPlacement("server-1", new DateTime(2019, 12, 29));
 
-            Assert.AreEqual(Tenancy.SoleTenant, b.Tenancy);
+            Assert.AreEqual(Tenancies.SoleTenant, b.Tenancy);
             var i = b.Build();
 
             var placements = i.Placements.ToList();
@@ -250,7 +250,7 @@ namespace Google.Solutions.IapDesktop.Extensions.LogAnalysis.Test.History
             b.OnStop(new DateTime(2019, 12, 29), SampleReference);
             b.OnSetPlacement("server-1", new DateTime(2019, 12, 28));
 
-            Assert.AreEqual(Tenancy.SoleTenant, b.Tenancy);
+            Assert.AreEqual(Tenancies.SoleTenant, b.Tenancy);
             var i = b.Build();
 
             var placements = i.Placements.ToList();
@@ -279,7 +279,7 @@ namespace Google.Solutions.IapDesktop.Extensions.LogAnalysis.Test.History
                 SampleImage,
                 InstanceState.Running,
                 DateTime.Now,
-                Tenancy.SoleTenant);
+                Tenancies.SoleTenant);
             Assert.AreEqual(InstanceHistoryState.Complete, b.State);
         }
 
