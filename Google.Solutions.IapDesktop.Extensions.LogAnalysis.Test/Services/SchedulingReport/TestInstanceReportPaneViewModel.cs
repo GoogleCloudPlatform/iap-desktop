@@ -23,12 +23,12 @@ using Google.Solutions.Common;
 using Google.Solutions.Common.Locator;
 using Google.Solutions.IapDesktop.Extensions.LogAnalysis.Events;
 using Google.Solutions.IapDesktop.Extensions.LogAnalysis.History;
-using Google.Solutions.IapDesktop.Extensions.LogAnalysis.Services.UsageReport;
+using Google.Solutions.IapDesktop.Extensions.LogAnalysis.Services.SchedulingReport;
 using NUnit.Framework;
 using System;
 using System.Linq;
 
-namespace Google.Solutions.IapDesktop.Extensions.LogAnalysis.Test.Services.UsageReport
+namespace Google.Solutions.IapDesktop.Extensions.LogAnalysis.Test.Services.SchedulingReport
 {
     [TestFixture]
     public class TestInstanceReportPaneViewModel : FixtureBase

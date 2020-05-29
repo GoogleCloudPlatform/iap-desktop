@@ -25,7 +25,7 @@ using Google.Apis.Logging.v2;
 using Google.Apis.Services;
 using Google.Solutions.IapDesktop.Extensions.LogAnalysis.History;
 using Google.Solutions.IapDesktop.Extensions.LogAnalysis.Logs;
-using Google.Solutions.IapDesktop.Extensions.LogAnalysis.Services.UsageReport;
+using Google.Solutions.IapDesktop.Extensions.LogAnalysis.Services.SchedulingReport;
 using System;
 using System.IO;
 using System.Linq;
@@ -77,7 +77,7 @@ namespace Google.Solutions.LogAnalysis.QuickTest
 
             using (var writer = new StreamWriter(filePath, false, Encoding.UTF8))
             {
-                AnnotatedInstanceSetHistory
+                ReportArchive
                     .FromInstanceSetHistory(instanceSetBuilder.Build())
                     .Serialize(writer);
             }
@@ -87,7 +87,7 @@ namespace Google.Solutions.LogAnalysis.QuickTest
         {
             using (var reader = new StreamReader(filePath, Encoding.UTF8))
             {
-                var set = AnnotatedInstanceSetHistory.Deserialize(reader).History;
+                var set = ReportArchive.Deserialize(reader).History;
 
                 //Console.WriteLine(
                 //    "== Instances ==================================================================");
@@ -154,7 +154,7 @@ namespace Google.Solutions.LogAnalysis.QuickTest
         {
             using (var reader = new StreamReader(filePath, Encoding.UTF8))
             {
-                var instanceSet = AnnotatedInstanceSetHistory.Deserialize(reader).History;
+                var instanceSet = ReportArchive.Deserialize(reader).History;
                 Application.Run(new Report(instanceSet));
             }
         }

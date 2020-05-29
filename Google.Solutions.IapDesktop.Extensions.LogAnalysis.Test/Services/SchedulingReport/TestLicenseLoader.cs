@@ -24,22 +24,22 @@ using Google.Apis.Services;
 using Google.Solutions.Common.Locator;
 using Google.Solutions.Common.Test.Testbed;
 using Google.Solutions.IapDesktop.Extensions.LogAnalysis.History;
-using Google.Solutions.IapDesktop.Extensions.LogAnalysis.Services.UsageReport;
+using Google.Solutions.IapDesktop.Extensions.LogAnalysis.Services.SchedulingReport;
 using NUnit.Framework;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace Google.Solutions.IapDesktop.Extensions.LogAnalysis.Test.Services.UsageReport
+namespace Google.Solutions.IapDesktop.Extensions.LogAnalysis.Test.Services.SchedulingReport
 {
 
     [TestFixture]
     [Category("IntegrationTest")]
     public class TestLicenseLoader : FixtureBase
     {
-        private AnnotatedInstanceSetHistory CreateSet(ImageLocator image)
+        private ReportArchive CreateSet(ImageLocator image)
         {
-            return new AnnotatedInstanceSetHistory(
+            return new ReportArchive(
                 new InstanceSetHistory(
                     new DateTime(2019, 12, 1, 0, 0, 0, DateTimeKind.Utc),
                     new DateTime(2020, 1, 1, 0, 0, 0, DateTimeKind.Utc),

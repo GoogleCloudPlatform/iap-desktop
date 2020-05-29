@@ -21,7 +21,7 @@
 
 using Google.Solutions.IapDesktop.Application.ObjectModel;
 
-namespace Google.Solutions.IapDesktop.Extensions.LogAnalysis.Services.UsageReport
+namespace Google.Solutions.IapDesktop.Extensions.LogAnalysis.Services.SchedulingReport
 { 
     internal class ReportViewModel : ViewModelBase
     {

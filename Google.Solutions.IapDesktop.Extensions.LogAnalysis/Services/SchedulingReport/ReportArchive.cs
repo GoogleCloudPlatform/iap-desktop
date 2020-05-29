@@ -30,9 +30,9 @@ using System.Diagnostics;
 using System.IO;
 using System.Threading.Tasks;
 
-namespace Google.Solutions.IapDesktop.Extensions.LogAnalysis.Services.UsageReport
+namespace Google.Solutions.IapDesktop.Extensions.LogAnalysis.Services.SchedulingReport
 {
-    public class AnnotatedInstanceSetHistory
+    public class ReportArchive
     {
         [JsonProperty("history")]
         public InstanceSetHistory History { get; }
@@ -41,7 +41,7 @@ namespace Google.Solutions.IapDesktop.Extensions.LogAnalysis.Services.UsageRepor
         internal IDictionary<string, ImageAnnotation> LicenseAnnotations { get; }
 
         [JsonConstructor]
-        internal AnnotatedInstanceSetHistory(
+        internal ReportArchive(
             [JsonProperty("history")] InstanceSetHistory instanceSet,
             [JsonProperty("licenseAnnotations")] IDictionary<string, ImageAnnotation> annotations)
         {
@@ -49,7 +49,7 @@ namespace Google.Solutions.IapDesktop.Extensions.LogAnalysis.Services.UsageRepor
             this.LicenseAnnotations = annotations;
         }
 
-        internal AnnotatedInstanceSetHistory(InstanceSetHistory instanceSet)
+        internal ReportArchive(InstanceSetHistory instanceSet)
             :this(instanceSet, new Dictionary<string, ImageAnnotation>())
         {
         }
@@ -77,10 +77,10 @@ namespace Google.Solutions.IapDesktop.Extensions.LogAnalysis.Services.UsageRepor
             }
         }
 
-        public static AnnotatedInstanceSetHistory FromInstanceSetHistory(
+        public static ReportArchive FromInstanceSetHistory(
             InstanceSetHistory instanceSet)
         {
-            return new AnnotatedInstanceSetHistory(
+            return new ReportArchive(
                 instanceSet,
                 new Dictionary<string, ImageAnnotation>());
         }
@@ -117,10 +117,10 @@ namespace Google.Solutions.IapDesktop.Extensions.LogAnalysis.Services.UsageRepor
             internal string Type => TypeAnnotation;
 
             [JsonProperty("annotatedInstanceSetHistory")]
-            internal AnnotatedInstanceSetHistory InstanceSetHistory { get; }
+            internal ReportArchive InstanceSetHistory { get; }
 
             public Envelope(
-                AnnotatedInstanceSetHistory instanceSetHistory)
+                ReportArchive instanceSetHistory)
             {
                 this.InstanceSetHistory = instanceSetHistory;
             }
@@ -128,7 +128,7 @@ namespace Google.Solutions.IapDesktop.Extensions.LogAnalysis.Services.UsageRepor
             [JsonConstructor]
             public Envelope(
                 [JsonProperty("@type")] string typeAnnotation,
-                [JsonProperty("instanceSetHistory")] AnnotatedInstanceSetHistory instanceSetHistory)
+                [JsonProperty("instanceSetHistory")] ReportArchive instanceSetHistory)
                 : this(instanceSetHistory)
             {
                 if (typeAnnotation != TypeAnnotation)
@@ -156,9 +156,9 @@ namespace Google.Solutions.IapDesktop.Extensions.LogAnalysis.Services.UsageRepor
             CreateSerializer().Serialize(writer, new Envelope(this));
         }
 
-        public static AnnotatedInstanceSetHistory Deserialize(TextReader reader)
+        public static ReportArchive Deserialize(TextReader reader)
         {
-            return CreateSerializer().Deserialize<AnnotatedInstanceSetHistory.Envelope>(
+            return CreateSerializer().Deserialize<ReportArchive.Envelope>(
                 new JsonTextReader(reader)).InstanceSetHistory;
         }
     }

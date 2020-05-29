@@ -108,17 +108,17 @@
     <Compile Include="FixtureBase.cs" />
     <Compile Include="History\TestDataPoint.cs" />
     <Compile Include="History\TestInstanceHistoryBuilder.cs" />
-    <Compile Include="Services\UsageReport\TestAnnotatedInstanceSetHistory.cs" />
+    <Compile Include="Services\SchedulingReport\TestAnnotatedInstanceSetHistory.cs" />
     <Compile Include="History\TestInstanceSetHistoryBuilder.cs" />
     <Compile Include="History\TestInstancePlacement.cs" />
-    <Compile Include="Services\UsageReport\TestLicenseLoader.cs" />
+    <Compile Include="Services\SchedulingReport\TestLicenseLoader.cs" />
     <Compile Include="History\TestNodeHistory.cs" />
     <Compile Include="History\TestNodeSetHistory.cs" />
     <Compile Include="History\TestTimeseriesUtil.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Logs\TestAuditLogRecord.cs" />
     <Compile Include="Logs\TestLogRecord.cs" />
-    <Compile Include="Services\UsageReport\TestInstanceReportPaneViewModel.cs" />
+    <Compile Include="Services\SchedulingReport\TestInstanceReportPaneViewModel.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Google.Solutions.Common.Test\Google.Solutions.Common.Test.csproj">

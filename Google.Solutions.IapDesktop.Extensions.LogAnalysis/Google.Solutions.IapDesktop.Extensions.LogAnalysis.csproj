@@ -99,13 +99,13 @@
     <Compile Include="Logs\ListLogEntriesExtensions.cs" />
     <Compile Include="Logs\ListLogEntriesParser.cs" />
     <Compile Include="History\DataPoint.cs" />
-    <Compile Include="Services\UsageReport\ImageAnnotation.cs" />
+    <Compile Include="Services\SchedulingReport\ImageAnnotation.cs" />
     <Compile Include="History\InstanceHistory.cs" />
     <Compile Include="History\InstanceHistoryBuilder.cs" />
     <Compile Include="History\InstanceSetHistory.cs" />
     <Compile Include="History\InstanceSetHistoryBuilder.cs" />
-    <Compile Include="Services\UsageReport\AnnotatedInstanceSetHistory.cs" />
-    <Compile Include="Services\UsageReport\LicenseLoader.cs" />
+    <Compile Include="Services\SchedulingReport\ReportArchive.cs" />
+    <Compile Include="Services\SchedulingReport\LicenseLoader.cs" />
     <Compile Include="History\NodePlacement.cs" />
     <Compile Include="History\NodeSetHistory.cs" />
     <Compile Include="History\InstancePlacement.cs" />
@@ -114,10 +114,10 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Logs\AuditLogRecord.cs" />
     <Compile Include="Logs\LogRecord.cs" />
-    <Compile Include="Services\UsageReport\InstanceReportPaneViewModel.cs" />
-    <Compile Include="Services\UsageReport\NodeReportPaneViewModel.cs" />
-    <Compile Include="Services\UsageReport\ReportPaneViewModelBase.cs" />
-    <Compile Include="Services\UsageReport\ReportViewModel.cs" />
+    <Compile Include="Services\SchedulingReport\InstanceReportPaneViewModel.cs" />
+    <Compile Include="Services\SchedulingReport\NodeReportPaneViewModel.cs" />
+    <Compile Include="Services\SchedulingReport\ReportPaneViewModelBase.cs" />
+    <Compile Include="Services\SchedulingReport\ReportViewModel.cs" />
     <Compile Include="TraceSources.cs" />
   </ItemGroup>
   <ItemGroup>

@@ -27,12 +27,12 @@ using System;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace Google.Solutions.IapDesktop.Extensions.LogAnalysis.Services.UsageReport
+namespace Google.Solutions.IapDesktop.Extensions.LogAnalysis.Services.SchedulingReport
 {
     internal static class LicenseLoader
     {
         public static async Task LoadLicenseAnnotationsAsync(
-            AnnotatedInstanceSetHistory annotatedSet,
+            ReportArchive annotatedSet,
             ImagesResource imagesResource)
         {
             foreach (var image in annotatedSet.History.Instances

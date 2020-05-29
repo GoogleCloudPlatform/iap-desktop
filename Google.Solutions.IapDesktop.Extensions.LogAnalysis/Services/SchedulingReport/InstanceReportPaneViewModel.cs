@@ -23,43 +23,29 @@ using Google.Solutions.IapDesktop.Application.Util;
 using Google.Solutions.IapDesktop.Extensions.LogAnalysis.History;
 using System.Linq;
 
-namespace Google.Solutions.IapDesktop.Extensions.LogAnalysis.Services.UsageReport
+namespace Google.Solutions.IapDesktop.Extensions.LogAnalysis.Services.SchedulingReport
 {
-
-    internal class NodeReportPaneViewModel : ReportPaneViewModelBase
+    internal class InstanceReportPaneViewModel : ReportPaneViewModelBase
     {
-        private NodeSetHistory currentNodeSet;
-        private NodeHistory selectedNode;
+        private bool includeSoleTenantInstances = true;
+        private bool includeFleetInstances = true;
 
         protected override void Repopulate()
         {
-            this.currentNodeSet = NodeSetHistory.FromInstancyHistory(
+            var nodeSet = NodeSetHistory.FromInstancyHistory(
                 this.instanceSet.Instances,
-                false,
-                true);  // Sole tenant nodes only.
+                this.includeFleetInstances,
+                this.includeSoleTenantInstances);
 
-            this.Histogram = this.currentNodeSet.MaxNodesByDay;
+            this.Histogram = nodeSet.MaxInstancePlacementsByDay;
 
-            this.Nodes.Clear();
-            this.Nodes.AddRange(this.currentNodeSet.Nodes
-                .Where(n => n.FirstUse <= this.Selection.EndDate && n.LastUse >= this.Selection.StartDate));
-
-            RepopulateNodePlacements();
-        }
-        private void RepopulateNodePlacements()
-        {
-            if (this.selectedNode == null)
-            {
-                this.NodePlacements.Clear();
-            }
-            else
-            {
-                this.NodePlacements.AddRange(this.selectedNode.Placements
-                    .Where(p => p.From <= this.Selection.EndDate && p.From >= this.Selection.StartDate));
-            }
+            this.Instances.Clear();
+            this.Instances.AddRange(nodeSet.Nodes
+                .SelectMany(n => n.Placements)
+                .Where(p => p.From <= this.Selection.EndDate && p.To >= this.Selection.StartDate));
         }
 
-        public NodeReportPaneViewModel(InstanceSetHistory instanceSetHistory)
+        public InstanceReportPaneViewModel(InstanceSetHistory instanceSetHistory)
             : base(instanceSetHistory)
         {
             Repopulate();
@@ -69,25 +55,33 @@ namespace Google.Solutions.IapDesktop.Extensions.LogAnalysis.Services.UsageRepor
         // Observable "output" properties.
         //---------------------------------------------------------------------
 
-        public RangeObservableCollection<NodeHistory> Nodes { get; }
-            = new RangeObservableCollection<NodeHistory>();
-
-        public RangeObservableCollection<NodePlacement> NodePlacements { get; }
+        public RangeObservableCollection<NodePlacement> Instances { get; }
             = new RangeObservableCollection<NodePlacement>();
 
         //---------------------------------------------------------------------
         // "Input" properties.
         //---------------------------------------------------------------------
 
-        public NodeHistory SelectedNode
+        public bool IncludeSoleTenantInstances
         {
-            get => this.selectedNode;
+            get => this.includeSoleTenantInstances;
             set
             {
-                this.selectedNode = value;
+                this.includeSoleTenantInstances = value;
 
-                RepopulateNodePlacements();
+                Repopulate();
+                RaisePropertyChange();
+            }
+        }
 
+        public bool IncludeFleetInstances
+        {
+            get => this.includeFleetInstances;
+            set
+            {
+                this.includeFleetInstances = value;
+
+                Repopulate();
                 RaisePropertyChange();
             }
         }
