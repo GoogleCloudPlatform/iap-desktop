@@ -76,7 +76,9 @@ namespace Google.Solutions.LogAnalysis.QuickTest
 
             using (var writer = new StreamWriter(filePath, false, Encoding.UTF8))
             {
-                instanceSetBuilder.Build().Serialize(writer);
+                AnnotatedInstanceSetHistory
+                    .FromInstanceSetHistory(instanceSetBuilder.Build())
+                    .Serialize(writer);
             }
         }
 
@@ -84,7 +86,7 @@ namespace Google.Solutions.LogAnalysis.QuickTest
         {
             using (var reader = new StreamReader(filePath, Encoding.UTF8))
             {
-                var set = InstanceSetHistory.Deserialize(reader);
+                var set = AnnotatedInstanceSetHistory.Deserialize(reader).History;
 
                 //Console.WriteLine(
                 //    "== Instances ==================================================================");
@@ -151,8 +153,7 @@ namespace Google.Solutions.LogAnalysis.QuickTest
         {
             using (var reader = new StreamReader(filePath, Encoding.UTF8))
             {
-                var instanceSet = InstanceSetHistory.Deserialize(reader);
-                
+                var instanceSet = AnnotatedInstanceSetHistory.Deserialize(reader).History;
                 Application.Run(new Report(instanceSet));
             }
         }
@@ -162,7 +163,7 @@ namespace Google.Solutions.LogAnalysis.QuickTest
         {
             if (args.Length >= 4 && args[0] == "download")
             {
-                DownloadAsync(args[1], int.Parse(args[2]), args[3]).Wait();
+                DownloadAsync(args[1], int.Parse(args[2]), args[3].Trim()).Wait();
             }
             else if (args.Length >= 2 && args[0] == "analyze")
             {

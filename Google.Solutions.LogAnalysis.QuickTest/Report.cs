@@ -125,7 +125,7 @@ namespace Google.Solutions.LogAnalysis.QuickTest
                 placements.Select(p => new ListViewItem(new[]
                 {
                     p.Instance.InstanceId.ToString(),
-                    p.Instance.Reference != null ? p.Instance.Reference.InstanceName : string.Empty,
+                    p.Instance.Reference != null ? p.Instance.Reference.Name : string.Empty,
                     p.Instance.Reference != null ? p.Instance.Reference.Zone : string.Empty,
                     p.Instance.Reference != null ? p.Instance.Reference.ProjectId : string.Empty,
                     p.From.ToString(),

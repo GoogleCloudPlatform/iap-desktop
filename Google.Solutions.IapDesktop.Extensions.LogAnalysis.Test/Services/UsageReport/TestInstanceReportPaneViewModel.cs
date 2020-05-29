@@ -20,6 +20,7 @@
 //
 
 using Google.Solutions.Common;
+using Google.Solutions.Common.Locator;
 using Google.Solutions.IapDesktop.Extensions.LogAnalysis.Events;
 using Google.Solutions.IapDesktop.Extensions.LogAnalysis.History;
 using Google.Solutions.IapDesktop.Extensions.LogAnalysis.Services.UsageReport;
@@ -58,12 +59,12 @@ namespace Google.Solutions.IapDesktop.Extensions.LogAnalysis.Test.Services.Usage
                 BaselineTime.AddDays(7));
             builder.AddExistingInstance(
                 1,
-                new VmInstanceReference("project", "zone", "instance-1"),
+                new InstanceLocator("project", "zone", "instance-1"),
                 null,
                 InstanceState.Running, BaselineTime.AddDays(1), Tenancy.Fleet);
             builder.AddExistingInstance(
                 2,
-                new VmInstanceReference("project", "zone", "instance-2"),
+                new InstanceLocator("project", "zone", "instance-2"),
                 null,
                 InstanceState.Running, BaselineTime.AddDays(5), Tenancy.Fleet);
 
@@ -83,12 +84,12 @@ namespace Google.Solutions.IapDesktop.Extensions.LogAnalysis.Test.Services.Usage
                 BaselineTime.AddDays(7));
             builder.AddExistingInstance(
                 1,
-                new VmInstanceReference("project", "zone", "instance-1"),
+                new InstanceLocator("project", "zone", "instance-1"),
                 null,
                 InstanceState.Running, BaselineTime.AddDays(1), Tenancy.Fleet);
             builder.AddExistingInstance(
                 2,
-                new VmInstanceReference("project", "zone", "instance-2"),
+                new InstanceLocator("project", "zone", "instance-2"),
                 null,
                 InstanceState.Running, BaselineTime.AddDays(5), Tenancy.Fleet);
 
@@ -112,12 +113,12 @@ namespace Google.Solutions.IapDesktop.Extensions.LogAnalysis.Test.Services.Usage
                 BaselineTime.AddDays(7));
             builder.AddExistingInstance(
                 1,
-                new VmInstanceReference("project", "zone", "instance-1"),
+                new InstanceLocator("project", "zone", "instance-1"),
                 null,
                 InstanceState.Running, BaselineTime.AddDays(1), Tenancy.Fleet);
             builder.AddExistingInstance(
                 2,
-                new VmInstanceReference("project", "zone", "instance-2"),
+                new InstanceLocator("project", "zone", "instance-2"),
                 null,
                 InstanceState.Running, BaselineTime.AddDays(5), Tenancy.Fleet);
 
