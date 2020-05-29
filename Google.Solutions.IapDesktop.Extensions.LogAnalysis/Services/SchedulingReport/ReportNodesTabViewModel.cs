@@ -25,23 +25,16 @@ using System.Linq;
 
 namespace Google.Solutions.IapDesktop.Extensions.LogAnalysis.Services.SchedulingReport
 {
-    internal class ReportNodesViewModel : ReportItemsViewModelBase
+    internal class ReportNodesTabViewModel : ReportItemsViewModelBase
     {
-        private OperatingSystemTypes osTypes = OperatingSystemTypes.Windows;
-        private LicenseTypes licenseTypes = LicenseTypes.Byol | LicenseTypes.Spla;
+        private readonly ReportViewModel parent;
 
         private NodeSetHistory currentNodeSet;
         private NodeHistory selectedNode;
 
-        protected override void Repopulate()
+        internal override void Repopulate()
         {
-            // Get instances that match the selected OS/license criteria.
-            var instances = this.model.GetInstances(this.osTypes, this.licenseTypes);
-
-            // Derive the set of nodes that were used by those instances.
-            this.currentNodeSet = NodeSetHistory.FromInstancyHistory(
-                instances,
-                Tenancies.SoleTenant);  // Sole tenant nodes only.
+            this.currentNodeSet = this.parent.GetNodes();
 
             // Create histogram, disregarding the date selection.
             this.Histogram = this.currentNodeSet.MaxNodesByDay;
@@ -66,10 +59,10 @@ namespace Google.Solutions.IapDesktop.Extensions.LogAnalysis.Services.Scheduling
             }
         }
 
-        public ReportNodesViewModel(ReportArchive model)
-            : base(model)
+        public ReportNodesTabViewModel(ReportViewModel parent)
+            : base(parent.Model)
         {
-            Repopulate();
+            this.parent = parent;
         }
 
         //---------------------------------------------------------------------
@@ -95,54 +88,6 @@ namespace Google.Solutions.IapDesktop.Extensions.LogAnalysis.Services.Scheduling
 
                 RepopulateNodePlacements();
 
-                RaisePropertyChange();
-            }
-        }
-
-        public bool IncludeLinuxInstances
-        {
-            get => this.osTypes.HasFlag(OperatingSystemTypes.Linux);
-            set
-            {
-                this.osTypes |= OperatingSystemTypes.Linux;
-
-                Repopulate();
-                RaisePropertyChange();
-            }
-        }
-
-        public bool IncludeWindowsInstances
-        {
-            get => this.osTypes.HasFlag(OperatingSystemTypes.Windows);
-            set
-            {
-                this.osTypes |= OperatingSystemTypes.Windows;
-
-                Repopulate();
-                RaisePropertyChange();
-            }
-        }
-
-        public bool IncludeByolInstances
-        {
-            get => this.osTypes.HasFlag(LicenseTypes.Byol);
-            set
-            {
-                this.licenseTypes |= LicenseTypes.Byol;
-
-                Repopulate();
-                RaisePropertyChange();
-            }
-        }
-
-        public bool IncludeSplaInstances
-        {
-            get => this.osTypes.HasFlag(LicenseTypes.Spla);
-            set
-            {
-                this.licenseTypes |= LicenseTypes.Spla;
-
-                Repopulate();
                 RaisePropertyChange();
             }
         }

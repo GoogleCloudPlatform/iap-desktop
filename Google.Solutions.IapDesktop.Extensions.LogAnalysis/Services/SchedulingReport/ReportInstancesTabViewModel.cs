@@ -19,68 +19,45 @@
 // under the License.
 //
 
-using Google.Solutions.IapDesktop.Application.ObjectModel;
+using Google.Solutions.IapDesktop.Application.Util;
 using Google.Solutions.IapDesktop.Extensions.LogAnalysis.History;
-using System;
-using System.Collections.Generic;
 using System.Linq;
 
 namespace Google.Solutions.IapDesktop.Extensions.LogAnalysis.Services.SchedulingReport
 {
-
-    internal abstract class ReportItemsViewModelBase : ViewModelBase
+    internal class ReportInstancesTabViewModel : ReportItemsViewModelBase
     {
-        protected readonly ReportArchive model;
+        private readonly ReportViewModel parent;
 
-        private DateSelection dateSelection;
-        private IEnumerable<DataPoint> histogram
-            = Enumerable.Empty<DataPoint>();
-
-        public ReportItemsViewModelBase(ReportArchive model)
+        internal override void Repopulate()
         {
-            this.model = model;
-            this.dateSelection = new DateSelection()
-            {
-                StartDate = model.History.StartDate,
-                EndDate = model.History.EndDate
-            };
+            var nodeSet = this.parent.GetNodes();
+
+            // Create histogram, disregarding the date selection.
+            this.Histogram = nodeSet.MaxInstancePlacementsByDay;
+
+            // For the list of instances, apply the date selection.
+            this.Instances.Clear();
+            this.Instances.AddRange(nodeSet.Nodes
+                .SelectMany(n => n.Placements)
+                .Where(p => p.From <= this.Selection.EndDate && p.To >= this.Selection.StartDate));
         }
 
-        internal abstract void Repopulate();
+        public ReportInstancesTabViewModel(ReportViewModel parent)
+            : base(parent.Model)
+        {
+            this.parent = parent;
+        }
 
         //---------------------------------------------------------------------
         // Observable "output" properties.
         //---------------------------------------------------------------------
 
-        public IEnumerable<DataPoint> Histogram
-        {
-            get => this.histogram;
-            protected set
-            {
-                this.histogram = value;
-                RaisePropertyChange();
-            }
-        }
+        public RangeObservableCollection<NodePlacement> Instances { get; }
+            = new RangeObservableCollection<NodePlacement>();
 
         //---------------------------------------------------------------------
         // "Input" properties.
         //---------------------------------------------------------------------
-
-        public DateSelection Selection
-        {
-            get => this.dateSelection;
-            set
-            {
-                this.dateSelection = value;
-                Repopulate();
-                RaisePropertyChange();
-            }
-        }
-    }
-
-    internal struct DateSelection
-    {
-        public DateTime StartDate;
-        public DateTime EndDate;
     }
 }

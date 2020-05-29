@@ -159,6 +159,18 @@ namespace Google.Solutions.LogAnalysis.QuickTest
             }
         }
 
+        private static void AnalyzeGui2(string filePath)
+        {
+            using (var reader = new StreamReader(filePath, Encoding.UTF8))
+            {
+                var archive = ReportArchive.Deserialize(reader);
+                var viewModel = new ReportViewModel(archive);
+
+
+                Application.Run(new ReportView(viewModel));
+            }
+        }
+
         [STAThread]
         static void Main(string[] args)
         {
@@ -173,6 +185,10 @@ namespace Google.Solutions.LogAnalysis.QuickTest
             else if (args.Length >= 2 && args[0] == "analyze-gui")
             {
                 AnalyzeGui(args[1].Trim());
+            }
+            else if (args.Length >= 2 && args[0] == "analyze-gui2")
+            {
+                AnalyzeGui2(args[1].Trim());
             }
             else
             {
