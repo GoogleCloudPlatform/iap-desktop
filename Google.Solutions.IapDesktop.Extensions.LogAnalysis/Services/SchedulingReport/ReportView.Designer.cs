@@ -52,6 +52,8 @@ namespace Google.Solutions.IapDesktop.Extensions.LogAnalysis.Services.Scheduling
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(ReportView));
             System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea1 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
             System.Windows.Forms.DataVisualization.Charting.Series series1 = new System.Windows.Forms.DataVisualization.Charting.Series();
+            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea2 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
+            System.Windows.Forms.DataVisualization.Charting.Series series2 = new System.Windows.Forms.DataVisualization.Charting.Series();
             this.toolStrip = new System.Windows.Forms.ToolStrip();
             this.includeTenancyMenuItem = new System.Windows.Forms.ToolStripDropDownButton();
             this.includeSoleTenantInstancesMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -78,11 +80,15 @@ namespace Google.Solutions.IapDesktop.Extensions.LogAnalysis.Services.Scheduling
             this.instancesHeader = new System.Windows.Forms.Label();
             this.instancesChart = new System.Windows.Forms.DataVisualization.Charting.Chart();
             this.nodesTab = new System.Windows.Forms.TabPage();
+            this.nodesHeadline = new System.Windows.Forms.Label();
+            this.nodesChart = new System.Windows.Forms.DataVisualization.Charting.Chart();
             this.licensesTab = new System.Windows.Forms.TabPage();
             this.toolStrip.SuspendLayout();
             this.tabs.SuspendLayout();
             this.instancesTab.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.instancesChart)).BeginInit();
+            this.nodesTab.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.nodesChart)).BeginInit();
             this.SuspendLayout();
             // 
             // toolStrip
@@ -324,11 +330,13 @@ namespace Google.Solutions.IapDesktop.Extensions.LogAnalysis.Services.Scheduling
             this.instancesChart.Series.Add(series1);
             this.instancesChart.Size = new System.Drawing.Size(738, 300);
             this.instancesChart.TabIndex = 0;
-            this.instancesChart.GetToolTipText += new System.EventHandler<System.Windows.Forms.DataVisualization.Charting.ToolTipEventArgs>(this.instancesChart_GetToolTipText);
+            this.instancesChart.GetToolTipText += new System.EventHandler<System.Windows.Forms.DataVisualization.Charting.ToolTipEventArgs>(this.chart_GetToolTipText);
             this.instancesChart.SelectionRangeChanged += new System.EventHandler<System.Windows.Forms.DataVisualization.Charting.CursorEventArgs>(this.instancesChart_SelectionRangeChanged);
             // 
             // nodesTab
             // 
+            this.nodesTab.Controls.Add(this.nodesHeadline);
+            this.nodesTab.Controls.Add(this.nodesChart);
             this.nodesTab.Location = new System.Drawing.Point(140, 4);
             this.nodesTab.Name = "nodesTab";
             this.nodesTab.Padding = new System.Windows.Forms.Padding(3);
@@ -336,6 +344,47 @@ namespace Google.Solutions.IapDesktop.Extensions.LogAnalysis.Services.Scheduling
             this.nodesTab.TabIndex = 1;
             this.nodesTab.Text = "Sole-tenant nodes";
             this.nodesTab.UseVisualStyleBackColor = true;
+            // 
+            // nodesHeadline
+            // 
+            this.nodesHeadline.AutoSize = true;
+            this.nodesHeadline.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.nodesHeadline.ForeColor = System.Drawing.SystemColors.ControlDarkDark;
+            this.nodesHeadline.Location = new System.Drawing.Point(7, 10);
+            this.nodesHeadline.Name = "nodesHeadline";
+            this.nodesHeadline.Size = new System.Drawing.Size(240, 17);
+            this.nodesHeadline.TabIndex = 2;
+            this.nodesHeadline.Text = "Nodes with scheduled instances";
+            // 
+            // nodesChart
+            // 
+            this.nodesChart.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.nodesChart.BackColor = System.Drawing.SystemColors.Control;
+            chartArea2.AxisX.MajorGrid.Enabled = false;
+            chartArea2.AxisX.ScaleView.Zoomable = false;
+            chartArea2.AxisY.IntervalType = System.Windows.Forms.DataVisualization.Charting.DateTimeIntervalType.Number;
+            chartArea2.AxisY.MajorGrid.LineColor = System.Drawing.SystemColors.ControlDarkDark;
+            chartArea2.AxisY.MajorGrid.LineDashStyle = System.Windows.Forms.DataVisualization.Charting.ChartDashStyle.Dot;
+            chartArea2.BackColor = System.Drawing.SystemColors.Control;
+            chartArea2.BorderColor = System.Drawing.Color.DimGray;
+            chartArea2.CursorX.IsUserSelectionEnabled = true;
+            chartArea2.Name = "mainArea";
+            chartArea2.Position.Auto = false;
+            chartArea2.Position.Height = 94F;
+            chartArea2.Position.Width = 100F;
+            chartArea2.Position.Y = 3F;
+            this.nodesChart.ChartAreas.Add(chartArea2);
+            this.nodesChart.Location = new System.Drawing.Point(6, 30);
+            this.nodesChart.Name = "nodesChart";
+            this.nodesChart.Palette = System.Windows.Forms.DataVisualization.Charting.ChartColorPalette.Grayscale;
+            series2.ChartArea = "mainArea";
+            series2.Name = "Series1";
+            this.nodesChart.Series.Add(series2);
+            this.nodesChart.Size = new System.Drawing.Size(738, 300);
+            this.nodesChart.TabIndex = 1;
+            this.nodesChart.GetToolTipText += new System.EventHandler<System.Windows.Forms.DataVisualization.Charting.ToolTipEventArgs>(this.chart_GetToolTipText);
+            this.nodesChart.SelectionRangeChanged += new System.EventHandler<System.Windows.Forms.DataVisualization.Charting.CursorEventArgs>(this.nodesChart_SelectionRangeChanged);
             // 
             // licensesTab
             // 
@@ -363,6 +412,9 @@ namespace Google.Solutions.IapDesktop.Extensions.LogAnalysis.Services.Scheduling
             this.instancesTab.ResumeLayout(false);
             this.instancesTab.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.instancesChart)).EndInit();
+            this.nodesTab.ResumeLayout(false);
+            this.nodesTab.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.nodesChart)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -397,5 +449,7 @@ namespace Google.Solutions.IapDesktop.Extensions.LogAnalysis.Services.Scheduling
         private System.Windows.Forms.Label instanceSchedulingHistoryHeader;
         private System.Windows.Forms.ToolStripMenuItem includeUnknownOsMenuItem;
         private System.Windows.Forms.ToolStripMenuItem includeUnknownLicenseMenuItem;
+        private System.Windows.Forms.Label nodesHeadline;
+        private System.Windows.Forms.DataVisualization.Charting.Chart nodesChart;
     }
 }

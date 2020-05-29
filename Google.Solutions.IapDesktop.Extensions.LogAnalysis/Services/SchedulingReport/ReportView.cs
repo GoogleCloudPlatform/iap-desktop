@@ -23,8 +23,10 @@ using Google.Solutions.IapDesktop.Application.Controls;
 using Google.Solutions.IapDesktop.Application.ObjectModel;
 using Google.Solutions.IapDesktop.Extensions.LogAnalysis.History;
 using System;
+using System.Collections.Generic;
 using System.Windows.Forms;
 using System.Windows.Forms.DataVisualization.Charting;
+using DataPoint = Google.Solutions.IapDesktop.Extensions.LogAnalysis.History.DataPoint;
 
 namespace Google.Solutions.IapDesktop.Extensions.LogAnalysis.Services.SchedulingReport
 {
@@ -44,6 +46,7 @@ namespace Google.Solutions.IapDesktop.Extensions.LogAnalysis.Services.Scheduling
 
             // Remove space between bars.
             this.instancesChart.Series[0]["PointWidth"] = "1";
+            this.nodesChart.Series[0]["PointWidth"] = "1";
 
             this.theme.ApplyTo(this.toolStrip);
 
@@ -117,17 +120,6 @@ namespace Google.Solutions.IapDesktop.Extensions.LogAnalysis.Services.Scheduling
                 v => v.IncludeFleetInstances,
                 this.components);
 
-            this.components.Add(this.viewModel.InstanceReportPane.OnPropertyChange(
-                v => v.Histogram,
-                dataPoints =>
-                {
-                    this.instancesChart.Series[0].Points.Clear();
-                    foreach (var dp in dataPoints)
-                    {
-                        this.instancesChart.Series[0].Points.AddXY(dp.Timestamp, dp.Value);
-                    }
-                }));
-
             //
             // Instances tab.
             //
@@ -139,7 +131,27 @@ namespace Google.Solutions.IapDesktop.Extensions.LogAnalysis.Services.Scheduling
             this.instancesList.BindColumn(4, n => n.From.ToString());
             this.instancesList.BindColumn(5, n => n.To.ToString());
 
+            this.components.Add(this.viewModel.InstanceReportPane.OnPropertyChange(
+                v => v.Histogram,
+                dataPoints => Plot(dataPoints, this.instancesChart.Series[0])));
+
+            //
+            // Nodes tab.
+            //
+            this.components.Add(this.viewModel.NodeReportPane.OnPropertyChange(
+                v => v.Histogram,
+                dataPoints => Plot(dataPoints, this.nodesChart.Series[0])));
+
             this.viewModel.Repopulate();
+        }
+
+        private static void Plot(IEnumerable<DataPoint> dataPoints, Series series)
+        {
+            series.Points.Clear();
+            foreach (var dp in dataPoints)
+            {
+                series.Points.AddXY(dp.Timestamp, dp.Value);
+            }
         }
 
         //---------------------------------------------------------------------
@@ -164,7 +176,16 @@ namespace Google.Solutions.IapDesktop.Extensions.LogAnalysis.Services.Scheduling
             };
         }
 
-        private void instancesChart_GetToolTipText(object sender, ToolTipEventArgs e)
+        private void nodesChart_SelectionRangeChanged(object sender, CursorEventArgs e)
+        {
+            this.viewModel.NodeReportPane.Selection = new DateSelection()
+            {
+                StartDate = DateTime.FromOADate(Math.Min(e.NewSelectionStart, e.NewSelectionEnd)),
+                EndDate = DateTime.FromOADate(Math.Max(e.NewSelectionStart, e.NewSelectionEnd))
+            };
+        }
+
+        private void chart_GetToolTipText(object sender, ToolTipEventArgs e)
         {
             switch (e.HitTestResult.ChartElementType)
             {
