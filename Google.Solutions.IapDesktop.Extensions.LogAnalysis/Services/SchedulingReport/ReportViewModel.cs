@@ -21,6 +21,8 @@
 
 using Google.Solutions.IapDesktop.Application.ObjectModel;
 using Google.Solutions.IapDesktop.Extensions.LogAnalysis.History;
+using System;
+using System.Runtime.CompilerServices;
 
 namespace Google.Solutions.IapDesktop.Extensions.LogAnalysis.Services.SchedulingReport
 { 
@@ -30,18 +32,18 @@ namespace Google.Solutions.IapDesktop.Extensions.LogAnalysis.Services.Scheduling
 
         private int selectedTabIndex;
 
-        private bool isTenancyMenuEnabled;
-        private bool isOsMenuEnabled;
-        private bool isLicenseMenuEnabled;
+        private bool isTenancyMenuEnabled = true;
+        private bool isOsMenuEnabled = true;
+        private bool isLicenseMenuEnabled = true;
 
         private Tenancies tenancies = Tenancies.SoleTenant | Tenancies.Fleet;
-        private OperatingSystemTypes osTypes = OperatingSystemTypes.Windows;
-        private LicenseTypes licenseTypes = LicenseTypes.Byol | LicenseTypes.Spla;
+        private OperatingSystemTypes osTypes = OperatingSystemTypes.Windows | OperatingSystemTypes.Unknown;
+        private LicenseTypes licenseTypes = LicenseTypes.Byol | LicenseTypes.Spla | LicenseTypes.Unknown;
 
         public ReportNodesTabViewModel NodeReportPane { get; }
         public ReportInstancesTabViewModel InstanceReportPane { get; }
 
-        private void Repopulate()
+        public void Repopulate()
         {
             switch (this.selectedTabIndex)
             {
@@ -71,13 +73,31 @@ namespace Google.Solutions.IapDesktop.Extensions.LogAnalysis.Services.Scheduling
             this.Model = model;
             this.NodeReportPane = new ReportNodesTabViewModel(this);
             this.InstanceReportPane = new ReportInstancesTabViewModel(this);
-            this.SelectedTabIndex = 0;
-            Repopulate();
         }
 
         //---------------------------------------------------------------------
         // "Input" properties.
         //---------------------------------------------------------------------
+
+        private void SetAndRaisePropertyChange<TEnum>(
+            ref TEnum previousValue,
+            TEnum flag,
+            bool enable,
+            [CallerMemberName] string propertyName = null)
+            where TEnum : struct
+        {
+            var previousValueInt = (int)(object)previousValue;
+            var flagInt = (int)(object)flag;
+
+            var result = enable
+                ? previousValueInt | flagInt
+                : previousValueInt & ~flagInt;
+
+            previousValue = (TEnum)(object)result;
+
+            Repopulate();
+            RaisePropertyChange(propertyName);
+        }
 
         public int SelectedTabIndex
         {
@@ -99,73 +119,73 @@ namespace Google.Solutions.IapDesktop.Extensions.LogAnalysis.Services.Scheduling
         public bool IncludeSoleTenantInstances
         {
             get => this.tenancies.HasFlag(Tenancies.SoleTenant);
-            set
-            {
-                this.tenancies |= Tenancies.SoleTenant;
-
-                Repopulate();
-                RaisePropertyChange();
-            }
+            set => SetAndRaisePropertyChange(
+                ref this.tenancies, 
+                Tenancies.SoleTenant, 
+                value);
         }
 
         public bool IncludeFleetInstances
         {
             get => this.tenancies.HasFlag(Tenancies.Fleet);
-            set
-            {
-                this.tenancies |= Tenancies.Fleet;
-
-                Repopulate();
-                RaisePropertyChange();
-            }
+            set => SetAndRaisePropertyChange(
+                ref this.tenancies,
+                Tenancies.Fleet,
+                value);
         }
 
         public bool IncludeLinuxInstances
         {
             get => this.osTypes.HasFlag(OperatingSystemTypes.Linux);
-            set
-            {
-                this.osTypes |= OperatingSystemTypes.Linux;
-
-                Repopulate();
-                RaisePropertyChange();
-            }
+            set => SetAndRaisePropertyChange(
+                ref this.osTypes,
+                OperatingSystemTypes.Linux,
+                value);
         }
 
         public bool IncludeWindowsInstances
         {
             get => this.osTypes.HasFlag(OperatingSystemTypes.Windows);
-            set
-            {
-                this.osTypes |= OperatingSystemTypes.Windows;
+            set => SetAndRaisePropertyChange(
+                ref this.osTypes,
+                OperatingSystemTypes.Windows,
+                value);
+        }
 
-                Repopulate();
-                RaisePropertyChange();
-            }
+        public bool IncludeUnknownOsInstances
+        {
+            get => this.osTypes.HasFlag(OperatingSystemTypes.Unknown);
+            set => SetAndRaisePropertyChange(
+                ref this.osTypes,
+                OperatingSystemTypes.Unknown,
+                value);
         }
 
         public bool IncludeByolInstances
         {
             get => this.licenseTypes.HasFlag(LicenseTypes.Byol);
-            set
-            {
-                this.licenseTypes |= LicenseTypes.Byol;
-
-                Repopulate();
-                RaisePropertyChange();
-            }
+            set => SetAndRaisePropertyChange(
+                ref this.licenseTypes,
+                LicenseTypes.Byol,
+                value);
         }
 
         public bool IncludeSplaInstances
         {
             get => this.licenseTypes.HasFlag(LicenseTypes.Spla);
-            set
-            {
-                this.licenseTypes |= LicenseTypes.Spla;
+            set => SetAndRaisePropertyChange(
+                ref this.licenseTypes,
+                LicenseTypes.Spla,
+                value);
+        }
 
-                Repopulate();
-                RaisePropertyChange();
-            }
+        public bool IncludeUnknownLicensedInstances
+        {
+            get => this.licenseTypes.HasFlag(LicenseTypes.Unknown);
+            set => SetAndRaisePropertyChange(
+                ref this.licenseTypes,
+                LicenseTypes.Unknown,
+                value);
         }
 
         //---------------------------------------------------------------------
