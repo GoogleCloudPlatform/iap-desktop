@@ -27,7 +27,7 @@ using System;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace Google.Solutions.IapDesktop.Extensions.LogAnalysis.History
+namespace Google.Solutions.IapDesktop.Extensions.LogAnalysis.Services.UsageReport
 {
     internal static class LicenseLoader
     {

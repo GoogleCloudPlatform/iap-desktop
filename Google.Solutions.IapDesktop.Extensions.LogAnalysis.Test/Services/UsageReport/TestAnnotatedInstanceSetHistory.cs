@@ -21,12 +21,13 @@
 
 using Google.Solutions.Common.Locator;
 using Google.Solutions.IapDesktop.Extensions.LogAnalysis.History;
+using Google.Solutions.IapDesktop.Extensions.LogAnalysis.Services.UsageReport;
 using NUnit.Framework;
 using System;
 using System.IO;
 using System.Linq;
 
-namespace Google.Solutions.IapDesktop.Extensions.LogAnalysis.Test.History
+namespace Google.Solutions.IapDesktop.Extensions.LogAnalysis.Test.Services.UsageReport
 {
     [TestFixture]
     public class TestAnnotatedInstanceSetHistory : FixtureBase

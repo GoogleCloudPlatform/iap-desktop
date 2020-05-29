@@ -24,12 +24,13 @@ using Google.Apis.Services;
 using Google.Solutions.Common.Locator;
 using Google.Solutions.Common.Test.Testbed;
 using Google.Solutions.IapDesktop.Extensions.LogAnalysis.History;
+using Google.Solutions.IapDesktop.Extensions.LogAnalysis.Services.UsageReport;
 using NUnit.Framework;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace Google.Solutions.IapDesktop.Extensions.LogAnalysis.Test.History
+namespace Google.Solutions.IapDesktop.Extensions.LogAnalysis.Test.Services.UsageReport
 {
 
     [TestFixture]

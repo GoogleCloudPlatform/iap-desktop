@@ -21,6 +21,7 @@
 
 using Google.Apis.Compute.v1;
 using Google.Solutions.Common.Locator;
+using Google.Solutions.IapDesktop.Extensions.LogAnalysis.History;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 using System;
@@ -29,7 +30,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Threading.Tasks;
 
-namespace Google.Solutions.IapDesktop.Extensions.LogAnalysis.History
+namespace Google.Solutions.IapDesktop.Extensions.LogAnalysis.Services.UsageReport
 {
     public class AnnotatedInstanceSetHistory
     {

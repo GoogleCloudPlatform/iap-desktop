@@ -25,6 +25,7 @@ using Google.Apis.Logging.v2;
 using Google.Apis.Services;
 using Google.Solutions.IapDesktop.Extensions.LogAnalysis.History;
 using Google.Solutions.IapDesktop.Extensions.LogAnalysis.Logs;
+using Google.Solutions.IapDesktop.Extensions.LogAnalysis.Services.UsageReport;
 using System;
 using System.IO;
 using System.Linq;
