@@ -22,6 +22,7 @@
 using Google.Solutions.Common;
 using Google.Solutions.Common.Diagnostics;
 using Google.Solutions.Common.Locator;
+using Google.Solutions.Common.Util;
 using Google.Solutions.IapDesktop.Extensions.LogAnalysis.Events;
 using Google.Solutions.IapDesktop.Extensions.LogAnalysis.Events.Lifecycle;
 using Google.Solutions.IapDesktop.Extensions.LogAnalysis.Events.System;
@@ -86,6 +87,7 @@ namespace Google.Solutions.IapDesktop.Extensions.LogAnalysis.History
 
         public void AddPlacement(Tenancy tenancy, string serverId, DateTime date)
         {
+            Debug.Assert(!tenancy.IsFlagCombination());
             Debug.Assert(date <= this.lastEventDate);
             this.lastEventDate = date;
 
@@ -149,6 +151,7 @@ namespace Google.Solutions.IapDesktop.Extensions.LogAnalysis.History
             DateTime? lastSeen,
             Tenancy tenancy)
         {
+            Debug.Assert(!tenancy.IsFlagCombination());
             if (instanceId == 0)
             {
                 throw new ArgumentException("Instance ID cannot be 0");
@@ -177,6 +180,7 @@ namespace Google.Solutions.IapDesktop.Extensions.LogAnalysis.History
             DateTime lastSeen,
             Tenancy tenancy)
         {
+            Debug.Assert(!tenancy.IsFlagCombination());
             Debug.Assert(state != InstanceState.Deleted);
 
             return new InstanceHistoryBuilder(

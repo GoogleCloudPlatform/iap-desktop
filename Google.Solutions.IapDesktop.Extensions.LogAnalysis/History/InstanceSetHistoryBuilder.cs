@@ -28,6 +28,7 @@ using Google.Solutions.Common.Util;
 using Google.Solutions.IapDesktop.Extensions.LogAnalysis.Events;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -84,6 +85,7 @@ namespace Google.Solutions.IapDesktop.Extensions.LogAnalysis.History
             DateTime lastSeen,
             Tenancy tenancy)
         {
+            Debug.Assert(!tenancy.IsFlagCombination());
             this.instanceBuilders[instanceId] = InstanceHistoryBuilder.ForExistingInstance(
                 instanceId,
                 reference,

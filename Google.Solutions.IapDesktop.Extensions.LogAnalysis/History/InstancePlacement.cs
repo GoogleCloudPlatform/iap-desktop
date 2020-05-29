@@ -19,6 +19,7 @@
 // under the License.
 //
 
+using Google.Solutions.Common.Util;
 using Newtonsoft.Json;
 using System;
 using System.Diagnostics;
@@ -46,6 +47,9 @@ namespace Google.Solutions.IapDesktop.Extensions.LogAnalysis.History
 
         private static Tenancy MergeTenancy(Tenancy lhs, Tenancy rhs)
         {
+            Debug.Assert(lhs.IsSingleFlag());
+            Debug.Assert(rhs.IsSingleFlag());
+
             if (lhs == Tenancy.SoleTenant || rhs == Tenancy.SoleTenant)
             {
                 // If one of them is sole tenant, both of them must be.
@@ -70,6 +74,7 @@ namespace Google.Solutions.IapDesktop.Extensions.LogAnalysis.History
         {
             Debug.Assert(from <= to);
             Debug.Assert(tenancy != Tenancy.Unknown);
+            Debug.Assert(!tenancy.IsFlagCombination());
 
             this.Tenancy = tenancy;
             this.ServerId = serverId;
@@ -131,6 +136,7 @@ namespace Google.Solutions.IapDesktop.Extensions.LogAnalysis.History
         }
     }
 
+    [Flags]
     public enum Tenancy
     {
         Unknown = 0,

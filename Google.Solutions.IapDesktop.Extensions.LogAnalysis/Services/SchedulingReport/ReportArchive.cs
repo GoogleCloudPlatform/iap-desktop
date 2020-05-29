@@ -32,6 +32,10 @@ using System.Threading.Tasks;
 
 namespace Google.Solutions.IapDesktop.Extensions.LogAnalysis.Services.SchedulingReport
 {
+    /// <summary>
+    /// Model for the report. A Report archive can be saved and loaded from disk
+    /// so that it can be analyzed again later.
+    /// </summary>
     public class ReportArchive
     {
         [JsonProperty("history")]

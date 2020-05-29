@@ -19,7 +19,6 @@
 // under the License.
 //
 
-using Google.Solutions.Common;
 using Google.Solutions.Common.Locator;
 using Google.Solutions.IapDesktop.Extensions.LogAnalysis.Events;
 using Google.Solutions.IapDesktop.Extensions.LogAnalysis.History;
