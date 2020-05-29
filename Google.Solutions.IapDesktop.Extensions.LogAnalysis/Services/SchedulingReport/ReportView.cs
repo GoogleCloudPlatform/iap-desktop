@@ -22,13 +22,18 @@
 using Google.Solutions.IapDesktop.Application.Controls;
 using Google.Solutions.IapDesktop.Application.ObjectModel;
 using Google.Solutions.IapDesktop.Extensions.LogAnalysis.History;
+using System;
 using System.Windows.Forms;
+using System.Windows.Forms.DataVisualization.Charting;
 
 namespace Google.Solutions.IapDesktop.Extensions.LogAnalysis.Services.SchedulingReport
 {
     public partial class ReportView : Form
     {
         private readonly ReportViewModel viewModel;
+
+        public class InstancesListView : BindableListView<NodePlacement>
+        { }
 
         internal ReportView(ReportViewModel videModel)
         {
@@ -150,7 +155,24 @@ namespace Google.Solutions.IapDesktop.Extensions.LogAnalysis.Services.Scheduling
             }
         }
 
-        public class InstancesListView : BindableListView<NodePlacement>
-        { }
+        private void instancesChart_SelectionRangeChanged(object sender, CursorEventArgs e)
+        {
+            this.viewModel.InstanceReportPane.Selection = new DateSelection()
+            {
+                StartDate = DateTime.FromOADate(Math.Min(e.NewSelectionStart, e.NewSelectionEnd)),
+                EndDate = DateTime.FromOADate(Math.Max(e.NewSelectionStart, e.NewSelectionEnd))
+            };
+        }
+
+        private void instancesChart_GetToolTipText(object sender, ToolTipEventArgs e)
+        {
+            switch (e.HitTestResult.ChartElementType)
+            {
+                case ChartElementType.DataPoint:
+                    var dataPoint = e.HitTestResult.Series.Points[e.HitTestResult.PointIndex];
+                    e.Text = $"{DateTime.FromOADate(dataPoint.XValue):d}: {dataPoint.YValues[0]}";
+                    break;
+            }
+        }
     }
 }

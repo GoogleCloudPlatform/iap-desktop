@@ -324,6 +324,8 @@ namespace Google.Solutions.IapDesktop.Extensions.LogAnalysis.Services.Scheduling
             this.instancesChart.Series.Add(series1);
             this.instancesChart.Size = new System.Drawing.Size(738, 300);
             this.instancesChart.TabIndex = 0;
+            this.instancesChart.GetToolTipText += new System.EventHandler<System.Windows.Forms.DataVisualization.Charting.ToolTipEventArgs>(this.instancesChart_GetToolTipText);
+            this.instancesChart.SelectionRangeChanged += new System.EventHandler<System.Windows.Forms.DataVisualization.Charting.CursorEventArgs>(this.instancesChart_SelectionRangeChanged);
             // 
             // nodesTab
             // 
