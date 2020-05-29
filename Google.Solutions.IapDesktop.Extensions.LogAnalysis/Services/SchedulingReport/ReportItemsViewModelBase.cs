@@ -71,7 +71,20 @@ namespace Google.Solutions.IapDesktop.Extensions.LogAnalysis.Services.Scheduling
             get => this.dateSelection;
             set
             {
-                this.dateSelection = value;
+                if (value.StartDate == value.EndDate)
+                {
+                    // Reset.
+                    this.dateSelection = new DateSelection()
+                    {
+                        StartDate = model.History.StartDate,
+                        EndDate = model.History.EndDate
+                    };
+                }
+                else
+                {
+                    this.dateSelection = value;
+                }
+
                 Repopulate();
                 RaisePropertyChange();
             }

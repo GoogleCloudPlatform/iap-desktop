@@ -34,7 +34,11 @@ namespace Google.Solutions.IapDesktop.Extensions.LogAnalysis.Services.Scheduling
 
         internal override void Repopulate()
         {
-            this.currentNodeSet = this.parent.GetNodes();
+            // Get instances, filtered by whatever filter applies,
+            // then derive sole tenant nodes (ignoring fleet).
+            this.currentNodeSet = NodeSetHistory.FromInstancyHistory(
+                this.parent.GetInstances(),
+                Tenancies.SoleTenant);
 
             // Create histogram, disregarding the date selection.
             this.Histogram = this.currentNodeSet.MaxNodesByDay;

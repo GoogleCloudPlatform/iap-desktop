@@ -31,6 +31,7 @@ namespace Google.Solutions.IapDesktop.Extensions.LogAnalysis.Services.Scheduling
 
         internal override void Repopulate()
         {
+            // Get nodes, filtered by whatever filter applies.
             var nodeSet = this.parent.GetNodes();
 
             // Create histogram, disregarding the date selection.

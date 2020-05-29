@@ -80,6 +80,15 @@ namespace Google.Solutions.IapDesktop.Extensions.LogAnalysis.Services.Scheduling
             this.instancesHeader = new System.Windows.Forms.Label();
             this.instancesChart = new System.Windows.Forms.DataVisualization.Charting.Chart();
             this.nodesTab = new System.Windows.Forms.TabPage();
+            this.nodesSplitContainer = new System.Windows.Forms.SplitContainer();
+            this.nodesList = new Google.Solutions.IapDesktop.Extensions.LogAnalysis.Services.SchedulingReport.ReportView.NodesListView();
+            this.serverIdColumnHeader = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.nodeZoneColumnHeader = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.nodeProjectIdColumnHeader = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.firstUseColumnHeader = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.lastUseColumnHeader = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.daysUsedColumnHeader = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.peakInstancesColumnHeader = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.nodesHeadline = new System.Windows.Forms.Label();
             this.nodesChart = new System.Windows.Forms.DataVisualization.Charting.Chart();
             this.licensesTab = new System.Windows.Forms.TabPage();
@@ -88,6 +97,9 @@ namespace Google.Solutions.IapDesktop.Extensions.LogAnalysis.Services.Scheduling
             this.instancesTab.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.instancesChart)).BeginInit();
             this.nodesTab.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.nodesSplitContainer)).BeginInit();
+            this.nodesSplitContainer.Panel1.SuspendLayout();
+            this.nodesSplitContainer.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.nodesChart)).BeginInit();
             this.SuspendLayout();
             // 
@@ -335,6 +347,7 @@ namespace Google.Solutions.IapDesktop.Extensions.LogAnalysis.Services.Scheduling
             // 
             // nodesTab
             // 
+            this.nodesTab.Controls.Add(this.nodesSplitContainer);
             this.nodesTab.Controls.Add(this.nodesHeadline);
             this.nodesTab.Controls.Add(this.nodesChart);
             this.nodesTab.Location = new System.Drawing.Point(140, 4);
@@ -344,6 +357,80 @@ namespace Google.Solutions.IapDesktop.Extensions.LogAnalysis.Services.Scheduling
             this.nodesTab.TabIndex = 1;
             this.nodesTab.Text = "Sole-tenant nodes";
             this.nodesTab.UseVisualStyleBackColor = true;
+            // 
+            // nodesSplitContainer
+            // 
+            this.nodesSplitContainer.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.nodesSplitContainer.Location = new System.Drawing.Point(10, 336);
+            this.nodesSplitContainer.Name = "nodesSplitContainer";
+            this.nodesSplitContainer.Orientation = System.Windows.Forms.Orientation.Horizontal;
+            // 
+            // nodesSplitContainer.Panel1
+            // 
+            this.nodesSplitContainer.Panel1.Controls.Add(this.nodesList);
+            this.nodesSplitContainer.Size = new System.Drawing.Size(734, 434);
+            this.nodesSplitContainer.SplitterDistance = 217;
+            this.nodesSplitContainer.TabIndex = 3;
+            // 
+            // nodesList
+            // 
+            this.nodesList.AutoResizeColumnsOnUpdate = false;
+            this.nodesList.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
+            this.serverIdColumnHeader,
+            this.nodeZoneColumnHeader,
+            this.nodeProjectIdColumnHeader,
+            this.firstUseColumnHeader,
+            this.lastUseColumnHeader,
+            this.daysUsedColumnHeader,
+            this.peakInstancesColumnHeader});
+            this.nodesList.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.nodesList.FullRowSelect = true;
+            this.nodesList.HideSelection = false;
+            this.nodesList.Location = new System.Drawing.Point(0, 0);
+            this.nodesList.Name = "nodesList";
+            this.nodesList.OwnerDraw = true;
+            this.nodesList.SelectedModelItem = null;
+            this.nodesList.Size = new System.Drawing.Size(734, 217);
+            this.nodesList.TabIndex = 0;
+            this.nodesList.UseCompatibleStateImageBehavior = false;
+            this.nodesList.View = System.Windows.Forms.View.Details;
+            // 
+            // serverIdColumnHeader
+            // 
+            this.serverIdColumnHeader.Text = "Server ID";
+            this.serverIdColumnHeader.Width = 150;
+            // 
+            // nodeZoneColumnHeader
+            // 
+            this.nodeZoneColumnHeader.Text = "Zone";
+            this.nodeZoneColumnHeader.Width = 80;
+            // 
+            // nodeProjectIdColumnHeader
+            // 
+            this.nodeProjectIdColumnHeader.Text = "Project Id";
+            this.nodeProjectIdColumnHeader.Width = 120;
+            // 
+            // firstUseColumnHeader
+            // 
+            this.firstUseColumnHeader.Text = "First use (UTC)";
+            this.firstUseColumnHeader.Width = 130;
+            // 
+            // lastUseColumnHeader
+            // 
+            this.lastUseColumnHeader.Text = "Last Use (UTC)";
+            this.lastUseColumnHeader.Width = 130;
+            // 
+            // daysUsedColumnHeader
+            // 
+            this.daysUsedColumnHeader.Text = "Days used";
+            this.daysUsedColumnHeader.Width = 70;
+            // 
+            // peakInstancesColumnHeader
+            // 
+            this.peakInstancesColumnHeader.Text = "Peak VMs";
+            this.peakInstancesColumnHeader.Width = 46;
             // 
             // nodesHeadline
             // 
@@ -414,6 +501,9 @@ namespace Google.Solutions.IapDesktop.Extensions.LogAnalysis.Services.Scheduling
             ((System.ComponentModel.ISupportInitialize)(this.instancesChart)).EndInit();
             this.nodesTab.ResumeLayout(false);
             this.nodesTab.PerformLayout();
+            this.nodesSplitContainer.Panel1.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.nodesSplitContainer)).EndInit();
+            this.nodesSplitContainer.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.nodesChart)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
@@ -451,5 +541,14 @@ namespace Google.Solutions.IapDesktop.Extensions.LogAnalysis.Services.Scheduling
         private System.Windows.Forms.ToolStripMenuItem includeUnknownLicenseMenuItem;
         private System.Windows.Forms.Label nodesHeadline;
         private System.Windows.Forms.DataVisualization.Charting.Chart nodesChart;
+        private System.Windows.Forms.SplitContainer nodesSplitContainer;
+        private NodesListView nodesList;
+        private System.Windows.Forms.ColumnHeader serverIdColumnHeader;
+        private System.Windows.Forms.ColumnHeader nodeZoneColumnHeader;
+        private System.Windows.Forms.ColumnHeader nodeProjectIdColumnHeader;
+        private System.Windows.Forms.ColumnHeader firstUseColumnHeader;
+        private System.Windows.Forms.ColumnHeader lastUseColumnHeader;
+        private System.Windows.Forms.ColumnHeader peakInstancesColumnHeader;
+        private System.Windows.Forms.ColumnHeader daysUsedColumnHeader;
     }
 }

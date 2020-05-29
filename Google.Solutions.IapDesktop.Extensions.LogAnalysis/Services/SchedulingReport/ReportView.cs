@@ -37,6 +37,9 @@ namespace Google.Solutions.IapDesktop.Extensions.LogAnalysis.Services.Scheduling
         public class InstancesListView : BindableListView<NodePlacement>
         { }
 
+        public class NodesListView : BindableListView<NodeHistory>
+        { }
+
         internal ReportView(ReportViewModel videModel)
         {
             this.viewModel = videModel;
@@ -138,6 +141,15 @@ namespace Google.Solutions.IapDesktop.Extensions.LogAnalysis.Services.Scheduling
             //
             // Nodes tab.
             //
+            this.nodesList.BindCollection(this.viewModel.NodeReportPane.Nodes);
+            this.nodesList.BindColumn(0, n => n.ServerId);
+            this.nodesList.BindColumn(1, n => n.Zone);
+            this.nodesList.BindColumn(2, n => n.ProjectId);
+            this.nodesList.BindColumn(3, n => n.FirstUse.ToString());
+            this.nodesList.BindColumn(4, n => n.LastUse.ToString());
+            this.nodesList.BindColumn(5, n => Math.Ceiling((n.LastUse - n.FirstUse).TotalDays).ToString());
+            this.nodesList.BindColumn(6, n => n.PeakConcurrentPlacements.ToString());
+
             this.components.Add(this.viewModel.NodeReportPane.OnPropertyChange(
                 v => v.Histogram,
                 dataPoints => Plot(dataPoints, this.nodesChart.Series[0])));
