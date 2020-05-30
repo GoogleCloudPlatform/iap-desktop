@@ -24,6 +24,7 @@ using Google.Solutions.IapDesktop.Application.ObjectModel;
 using Google.Solutions.IapDesktop.Extensions.LogAnalysis.History;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Windows.Forms;
 using System.Windows.Forms.DataVisualization.Charting;
 using DataPoint = Google.Solutions.IapDesktop.Extensions.LogAnalysis.History.DataPoint;
@@ -138,7 +139,11 @@ namespace Google.Solutions.IapDesktop.Extensions.LogAnalysis.Services.Scheduling
 
             this.components.Add(this.viewModel.InstanceReportPane.OnPropertyChange(
                 v => v.Histogram,
-                dataPoints => Plot(dataPoints, this.instancesChart.Series[0])));
+                dataPoints =>
+                {
+                    Plot(dataPoints, this.instancesChart.Series[0]);
+                    this.noInstancesDataLabel.Visible = !dataPoints.Any();
+                }));
 
             //
             // Nodes tab.
@@ -168,7 +173,11 @@ namespace Google.Solutions.IapDesktop.Extensions.LogAnalysis.Services.Scheduling
 
             this.components.Add(this.viewModel.NodeReportPane.OnPropertyChange(
                 v => v.Histogram,
-                dataPoints => Plot(dataPoints, this.nodesChart.Series[0])));
+                dataPoints => 
+                {
+                    Plot(dataPoints, this.nodesChart.Series[0]);
+                    this.noNodesDataLabel.Visible = !dataPoints.Any();
+                }));
 
             this.viewModel.Repopulate();
         }

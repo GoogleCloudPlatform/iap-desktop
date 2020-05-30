@@ -69,6 +69,7 @@ namespace Google.Solutions.IapDesktop.Extensions.LogAnalysis.Services.Scheduling
             this.theme = new WeifenLuo.WinFormsUI.Docking.VS2015LightTheme();
             this.tabs = new Google.Solutions.IapDesktop.Application.Services.Windows.FlatVerticalTabControl();
             this.instancesTab = new System.Windows.Forms.TabPage();
+            this.noInstancesDataLabel = new System.Windows.Forms.Label();
             this.instancesList = new Google.Solutions.IapDesktop.Extensions.LogAnalysis.Services.SchedulingReport.ReportView.InstancesListView();
             this.instanceIdColumnHeader = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.instanceNameColumnHeader = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
@@ -76,10 +77,10 @@ namespace Google.Solutions.IapDesktop.Extensions.LogAnalysis.Services.Scheduling
             this.instanceProjectIdColumnHeader = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.placedFromColumnHeader = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.placedUntilColumnHeader = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-            this.instanceSchedulingHistoryHeader = new System.Windows.Forms.Label();
             this.instancesHeader = new System.Windows.Forms.Label();
             this.instancesChart = new System.Windows.Forms.DataVisualization.Charting.Chart();
             this.nodesTab = new System.Windows.Forms.TabPage();
+            this.noNodesDataLabel = new System.Windows.Forms.Label();
             this.nodesSplitContainer = new System.Windows.Forms.SplitContainer();
             this.nodesList = new Google.Solutions.IapDesktop.Extensions.LogAnalysis.Services.SchedulingReport.ReportView.NodesListView();
             this.serverIdColumnHeader = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
@@ -89,16 +90,18 @@ namespace Google.Solutions.IapDesktop.Extensions.LogAnalysis.Services.Scheduling
             this.lastUseColumnHeader = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.daysUsedColumnHeader = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.peakInstancesColumnHeader = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-            this.nodesHeadline = new System.Windows.Forms.Label();
-            this.nodesChart = new System.Windows.Forms.DataVisualization.Charting.Chart();
-            this.licensesTab = new System.Windows.Forms.TabPage();
-            this.nodePlacementsList = new NodesPlacementsListView();
+            this.nodePlacementsHeadline = new System.Windows.Forms.Label();
+            this.nodePlacementsList = new Google.Solutions.IapDesktop.Extensions.LogAnalysis.Services.SchedulingReport.ReportView.NodesPlacementsListView();
             this.nodePlacementInstanceIdColumnHeader = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.nodePlacementInstanceNameColumnHeader = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.nodePlacementZoneColumnHeader = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.nodePlacementProjectIdColumnHeader = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.nodePlacementFromColumnHeader = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.nodePlacementToColumnHeader = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.nodesHeadline = new System.Windows.Forms.Label();
+            this.nodesChart = new System.Windows.Forms.DataVisualization.Charting.Chart();
+            this.licensesTab = new System.Windows.Forms.TabPage();
+            this.byolHeadline = new System.Windows.Forms.Label();
             this.toolStrip.SuspendLayout();
             this.tabs.SuspendLayout();
             this.instancesTab.SuspendLayout();
@@ -109,6 +112,7 @@ namespace Google.Solutions.IapDesktop.Extensions.LogAnalysis.Services.Scheduling
             this.nodesSplitContainer.Panel2.SuspendLayout();
             this.nodesSplitContainer.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.nodesChart)).BeginInit();
+            this.licensesTab.SuspendLayout();
             this.SuspendLayout();
             // 
             // toolStrip
@@ -125,14 +129,13 @@ namespace Google.Solutions.IapDesktop.Extensions.LogAnalysis.Services.Scheduling
             // 
             // includeTenancyMenuItem
             // 
-            this.includeTenancyMenuItem.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
             this.includeTenancyMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.includeSoleTenantInstancesMenuItem,
             this.includeFleetInstancesMenuItem});
             this.includeTenancyMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("includeTenancyMenuItem.Image")));
             this.includeTenancyMenuItem.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.includeTenancyMenuItem.Name = "includeTenancyMenuItem";
-            this.includeTenancyMenuItem.Size = new System.Drawing.Size(63, 22);
+            this.includeTenancyMenuItem.Size = new System.Drawing.Size(79, 22);
             this.includeTenancyMenuItem.Text = "Tenancy";
             // 
             // includeSoleTenantInstancesMenuItem
@@ -151,7 +154,6 @@ namespace Google.Solutions.IapDesktop.Extensions.LogAnalysis.Services.Scheduling
             // 
             // includeOsMenuItem
             // 
-            this.includeOsMenuItem.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
             this.includeOsMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.includeWindowsMenuItem,
             this.includeLinuxMenuItem,
@@ -159,33 +161,32 @@ namespace Google.Solutions.IapDesktop.Extensions.LogAnalysis.Services.Scheduling
             this.includeOsMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("includeOsMenuItem.Image")));
             this.includeOsMenuItem.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.includeOsMenuItem.Name = "includeOsMenuItem";
-            this.includeOsMenuItem.Size = new System.Drawing.Size(35, 22);
+            this.includeOsMenuItem.Size = new System.Drawing.Size(51, 22);
             this.includeOsMenuItem.Text = "OS";
             // 
             // includeWindowsMenuItem
             // 
             this.includeWindowsMenuItem.Name = "includeWindowsMenuItem";
-            this.includeWindowsMenuItem.Size = new System.Drawing.Size(143, 22);
+            this.includeWindowsMenuItem.Size = new System.Drawing.Size(180, 22);
             this.includeWindowsMenuItem.Text = "Windows";
             this.includeWindowsMenuItem.Click += new System.EventHandler(this.menuItemToggle_Click);
             // 
             // includeLinuxMenuItem
             // 
             this.includeLinuxMenuItem.Name = "includeLinuxMenuItem";
-            this.includeLinuxMenuItem.Size = new System.Drawing.Size(143, 22);
+            this.includeLinuxMenuItem.Size = new System.Drawing.Size(180, 22);
             this.includeLinuxMenuItem.Text = "Linux";
             this.includeLinuxMenuItem.Click += new System.EventHandler(this.menuItemToggle_Click);
             // 
             // includeUnknownOsMenuItem
             // 
             this.includeUnknownOsMenuItem.Name = "includeUnknownOsMenuItem";
-            this.includeUnknownOsMenuItem.Size = new System.Drawing.Size(143, 22);
+            this.includeUnknownOsMenuItem.Size = new System.Drawing.Size(180, 22);
             this.includeUnknownOsMenuItem.Text = "Unknown OS";
             this.includeUnknownOsMenuItem.Click += new System.EventHandler(this.menuItemToggle_Click);
             // 
             // includeLicenseMenuItem
             // 
-            this.includeLicenseMenuItem.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
             this.includeLicenseMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.includeByolMenuItem,
             this.includeSplaMenuItem,
@@ -193,7 +194,7 @@ namespace Google.Solutions.IapDesktop.Extensions.LogAnalysis.Services.Scheduling
             this.includeLicenseMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("includeLicenseMenuItem.Image")));
             this.includeLicenseMenuItem.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.includeLicenseMenuItem.Name = "includeLicenseMenuItem";
-            this.includeLicenseMenuItem.Size = new System.Drawing.Size(59, 22);
+            this.includeLicenseMenuItem.Size = new System.Drawing.Size(75, 22);
             this.includeLicenseMenuItem.Text = "License";
             // 
             // includeByolMenuItem
@@ -235,8 +236,8 @@ namespace Google.Solutions.IapDesktop.Extensions.LogAnalysis.Services.Scheduling
             // 
             // instancesTab
             // 
+            this.instancesTab.Controls.Add(this.noInstancesDataLabel);
             this.instancesTab.Controls.Add(this.instancesList);
-            this.instancesTab.Controls.Add(this.instanceSchedulingHistoryHeader);
             this.instancesTab.Controls.Add(this.instancesHeader);
             this.instancesTab.Controls.Add(this.instancesChart);
             this.instancesTab.Location = new System.Drawing.Point(140, 4);
@@ -246,6 +247,18 @@ namespace Google.Solutions.IapDesktop.Extensions.LogAnalysis.Services.Scheduling
             this.instancesTab.TabIndex = 0;
             this.instancesTab.Text = "Instances";
             this.instancesTab.UseVisualStyleBackColor = true;
+            // 
+            // noInstancesDataLabel
+            // 
+            this.noInstancesDataLabel.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.noInstancesDataLabel.AutoSize = true;
+            this.noInstancesDataLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Italic, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.noInstancesDataLabel.Location = new System.Drawing.Point(330, 160);
+            this.noInstancesDataLabel.Name = "noInstancesDataLabel";
+            this.noInstancesDataLabel.Size = new System.Drawing.Size(92, 13);
+            this.noInstancesDataLabel.TabIndex = 5;
+            this.noInstancesDataLabel.Text = "No data to display";
             // 
             // instancesList
             // 
@@ -262,11 +275,11 @@ namespace Google.Solutions.IapDesktop.Extensions.LogAnalysis.Services.Scheduling
             this.placedUntilColumnHeader});
             this.instancesList.FullRowSelect = true;
             this.instancesList.HideSelection = false;
-            this.instancesList.Location = new System.Drawing.Point(6, 360);
+            this.instancesList.Location = new System.Drawing.Point(6, 336);
             this.instancesList.Name = "instancesList";
             this.instancesList.OwnerDraw = true;
             this.instancesList.SelectedModelItem = null;
-            this.instancesList.Size = new System.Drawing.Size(738, 410);
+            this.instancesList.Size = new System.Drawing.Size(738, 434);
             this.instancesList.TabIndex = 2;
             this.instancesList.UseCompatibleStateImageBehavior = false;
             this.instancesList.View = System.Windows.Forms.View.Details;
@@ -300,17 +313,6 @@ namespace Google.Solutions.IapDesktop.Extensions.LogAnalysis.Services.Scheduling
             // 
             this.placedUntilColumnHeader.Text = "To (UTC)";
             this.placedUntilColumnHeader.Width = 150;
-            // 
-            // instanceSchedulingHistoryHeader
-            // 
-            this.instanceSchedulingHistoryHeader.AutoSize = true;
-            this.instanceSchedulingHistoryHeader.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.instanceSchedulingHistoryHeader.ForeColor = System.Drawing.SystemColors.ControlDarkDark;
-            this.instanceSchedulingHistoryHeader.Location = new System.Drawing.Point(7, 340);
-            this.instanceSchedulingHistoryHeader.Name = "instanceSchedulingHistoryHeader";
-            this.instanceSchedulingHistoryHeader.Size = new System.Drawing.Size(142, 17);
-            this.instanceSchedulingHistoryHeader.TabIndex = 1;
-            this.instanceSchedulingHistoryHeader.Text = "Scheduling history";
             // 
             // instancesHeader
             // 
@@ -355,6 +357,7 @@ namespace Google.Solutions.IapDesktop.Extensions.LogAnalysis.Services.Scheduling
             // 
             // nodesTab
             // 
+            this.nodesTab.Controls.Add(this.noNodesDataLabel);
             this.nodesTab.Controls.Add(this.nodesSplitContainer);
             this.nodesTab.Controls.Add(this.nodesHeadline);
             this.nodesTab.Controls.Add(this.nodesChart);
@@ -365,6 +368,18 @@ namespace Google.Solutions.IapDesktop.Extensions.LogAnalysis.Services.Scheduling
             this.nodesTab.TabIndex = 1;
             this.nodesTab.Text = "Sole-tenant nodes";
             this.nodesTab.UseVisualStyleBackColor = true;
+            // 
+            // noNodesDataLabel
+            // 
+            this.noNodesDataLabel.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.noNodesDataLabel.AutoSize = true;
+            this.noNodesDataLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Italic, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.noNodesDataLabel.Location = new System.Drawing.Point(330, 160);
+            this.noNodesDataLabel.Name = "noNodesDataLabel";
+            this.noNodesDataLabel.Size = new System.Drawing.Size(92, 13);
+            this.noNodesDataLabel.TabIndex = 4;
+            this.noNodesDataLabel.Text = "No data to display";
             // 
             // nodesSplitContainer
             // 
@@ -381,6 +396,7 @@ namespace Google.Solutions.IapDesktop.Extensions.LogAnalysis.Services.Scheduling
             // 
             // nodesSplitContainer.Panel2
             // 
+            this.nodesSplitContainer.Panel2.Controls.Add(this.nodePlacementsHeadline);
             this.nodesSplitContainer.Panel2.Controls.Add(this.nodePlacementsList);
             this.nodesSplitContainer.Size = new System.Drawing.Size(734, 434);
             this.nodesSplitContainer.SplitterDistance = 217;
@@ -444,6 +460,68 @@ namespace Google.Solutions.IapDesktop.Extensions.LogAnalysis.Services.Scheduling
             this.peakInstancesColumnHeader.Text = "Peak VMs";
             this.peakInstancesColumnHeader.Width = 46;
             // 
+            // nodePlacementsHeadline
+            // 
+            this.nodePlacementsHeadline.AutoSize = true;
+            this.nodePlacementsHeadline.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.nodePlacementsHeadline.ForeColor = System.Drawing.SystemColors.ControlDarkDark;
+            this.nodePlacementsHeadline.Location = new System.Drawing.Point(-3, 4);
+            this.nodePlacementsHeadline.Name = "nodePlacementsHeadline";
+            this.nodePlacementsHeadline.Size = new System.Drawing.Size(286, 17);
+            this.nodePlacementsHeadline.TabIndex = 3;
+            this.nodePlacementsHeadline.Text = "Instances scheduled on selected node";
+            // 
+            // nodePlacementsList
+            // 
+            this.nodePlacementsList.AutoResizeColumnsOnUpdate = false;
+            this.nodePlacementsList.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
+            this.nodePlacementInstanceIdColumnHeader,
+            this.nodePlacementInstanceNameColumnHeader,
+            this.nodePlacementZoneColumnHeader,
+            this.nodePlacementProjectIdColumnHeader,
+            this.nodePlacementFromColumnHeader,
+            this.nodePlacementToColumnHeader});
+            this.nodePlacementsList.FullRowSelect = true;
+            this.nodePlacementsList.HideSelection = false;
+            this.nodePlacementsList.Location = new System.Drawing.Point(0, 29);
+            this.nodePlacementsList.Name = "nodePlacementsList";
+            this.nodePlacementsList.OwnerDraw = true;
+            this.nodePlacementsList.SelectedModelItem = null;
+            this.nodePlacementsList.Size = new System.Drawing.Size(734, 184);
+            this.nodePlacementsList.TabIndex = 1;
+            this.nodePlacementsList.UseCompatibleStateImageBehavior = false;
+            this.nodePlacementsList.View = System.Windows.Forms.View.Details;
+            // 
+            // nodePlacementInstanceIdColumnHeader
+            // 
+            this.nodePlacementInstanceIdColumnHeader.Text = "Instance ID";
+            this.nodePlacementInstanceIdColumnHeader.Width = 120;
+            // 
+            // nodePlacementInstanceNameColumnHeader
+            // 
+            this.nodePlacementInstanceNameColumnHeader.Text = "Instance name";
+            this.nodePlacementInstanceNameColumnHeader.Width = 130;
+            // 
+            // nodePlacementZoneColumnHeader
+            // 
+            this.nodePlacementZoneColumnHeader.Text = "Zone";
+            this.nodePlacementZoneColumnHeader.Width = 80;
+            // 
+            // nodePlacementProjectIdColumnHeader
+            // 
+            this.nodePlacementProjectIdColumnHeader.Text = "Project Id";
+            this.nodePlacementProjectIdColumnHeader.Width = 120;
+            // 
+            // nodePlacementFromColumnHeader
+            // 
+            this.nodePlacementFromColumnHeader.Text = "From (UTC)";
+            this.nodePlacementFromColumnHeader.Width = 120;
+            // 
+            // nodePlacementToColumnHeader
+            // 
+            this.nodePlacementToColumnHeader.Text = "To (UTC)";
+            this.nodePlacementToColumnHeader.Width = 156;
+            // 
             // nodesHeadline
             // 
             this.nodesHeadline.AutoSize = true;
@@ -487,6 +565,7 @@ namespace Google.Solutions.IapDesktop.Extensions.LogAnalysis.Services.Scheduling
             // 
             // licensesTab
             // 
+            this.licensesTab.Controls.Add(this.byolHeadline);
             this.licensesTab.Location = new System.Drawing.Point(140, 4);
             this.licensesTab.Name = "licensesTab";
             this.licensesTab.Size = new System.Drawing.Size(752, 773);
@@ -494,57 +573,16 @@ namespace Google.Solutions.IapDesktop.Extensions.LogAnalysis.Services.Scheduling
             this.licensesTab.Text = "Licenses";
             this.licensesTab.UseVisualStyleBackColor = true;
             // 
-            // nodePlacementsList
+            // byolHeadline
             // 
-            this.nodePlacementsList.AutoResizeColumnsOnUpdate = false;
-            this.nodePlacementsList.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
-            this.nodePlacementInstanceIdColumnHeader,
-            this.nodePlacementInstanceNameColumnHeader,
-            this.nodePlacementZoneColumnHeader,
-            this.nodePlacementProjectIdColumnHeader,
-            this.nodePlacementFromColumnHeader,
-            this.nodePlacementToColumnHeader});
-            this.nodePlacementsList.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.nodePlacementsList.FullRowSelect = true;
-            this.nodePlacementsList.HideSelection = false;
-            this.nodePlacementsList.Location = new System.Drawing.Point(0, 0);
-            this.nodePlacementsList.Name = "nodePlacementsList";
-            this.nodePlacementsList.OwnerDraw = true;
-            this.nodePlacementsList.SelectedModelItem = null;
-            this.nodePlacementsList.Size = new System.Drawing.Size(734, 213);
-            this.nodePlacementsList.TabIndex = 1;
-            this.nodePlacementsList.UseCompatibleStateImageBehavior = false;
-            this.nodePlacementsList.View = System.Windows.Forms.View.Details;
-            // 
-            // nodePlacementInstanceIdColumnHeader
-            // 
-            this.nodePlacementInstanceIdColumnHeader.Text = "Instance ID";
-            this.nodePlacementInstanceIdColumnHeader.Width = 120;
-            // 
-            // nodePlacementInstanceNameColumnHeader
-            // 
-            this.nodePlacementInstanceNameColumnHeader.Text = "Instance name";
-            this.nodePlacementInstanceNameColumnHeader.Width = 130;
-            // 
-            // nodePlacementZoneColumnHeader
-            // 
-            this.nodePlacementZoneColumnHeader.Text = "Zone";
-            this.nodePlacementZoneColumnHeader.Width = 80;
-            // 
-            // nodePlacementProjectIdColumnHeader
-            // 
-            this.nodePlacementProjectIdColumnHeader.Text = "Project Id";
-            this.nodePlacementProjectIdColumnHeader.Width = 120;
-            // 
-            // nodePlacementFromColumnHeader
-            // 
-            this.nodePlacementFromColumnHeader.Text = "From (UTC)";
-            this.nodePlacementFromColumnHeader.Width = 120;
-            // 
-            // nodePlacementToColumnHeader
-            // 
-            this.nodePlacementToColumnHeader.Text = "To (UTC)";
-            this.nodePlacementToColumnHeader.Width = 156;
+            this.byolHeadline.AutoSize = true;
+            this.byolHeadline.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.byolHeadline.ForeColor = System.Drawing.SystemColors.ControlDarkDark;
+            this.byolHeadline.Location = new System.Drawing.Point(7, 10);
+            this.byolHeadline.Name = "byolHeadline";
+            this.byolHeadline.Size = new System.Drawing.Size(243, 17);
+            this.byolHeadline.TabIndex = 2;
+            this.byolHeadline.Text = "Scheduled Windows BYOL cores";
             // 
             // ReportView
             // 
@@ -567,9 +605,12 @@ namespace Google.Solutions.IapDesktop.Extensions.LogAnalysis.Services.Scheduling
             this.nodesTab.PerformLayout();
             this.nodesSplitContainer.Panel1.ResumeLayout(false);
             this.nodesSplitContainer.Panel2.ResumeLayout(false);
+            this.nodesSplitContainer.Panel2.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.nodesSplitContainer)).EndInit();
             this.nodesSplitContainer.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.nodesChart)).EndInit();
+            this.licensesTab.ResumeLayout(false);
+            this.licensesTab.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -601,7 +642,6 @@ namespace Google.Solutions.IapDesktop.Extensions.LogAnalysis.Services.Scheduling
         private System.Windows.Forms.ColumnHeader instanceProjectIdColumnHeader;
         private System.Windows.Forms.ColumnHeader placedFromColumnHeader;
         private System.Windows.Forms.ColumnHeader placedUntilColumnHeader;
-        private System.Windows.Forms.Label instanceSchedulingHistoryHeader;
         private System.Windows.Forms.ToolStripMenuItem includeUnknownOsMenuItem;
         private System.Windows.Forms.ToolStripMenuItem includeUnknownLicenseMenuItem;
         private System.Windows.Forms.Label nodesHeadline;
@@ -622,5 +662,9 @@ namespace Google.Solutions.IapDesktop.Extensions.LogAnalysis.Services.Scheduling
         private System.Windows.Forms.ColumnHeader nodePlacementProjectIdColumnHeader;
         private System.Windows.Forms.ColumnHeader nodePlacementFromColumnHeader;
         private System.Windows.Forms.ColumnHeader nodePlacementToColumnHeader;
+        private System.Windows.Forms.Label nodePlacementsHeadline;
+        private System.Windows.Forms.Label noInstancesDataLabel;
+        private System.Windows.Forms.Label noNodesDataLabel;
+        private System.Windows.Forms.Label byolHeadline;
     }
 }
