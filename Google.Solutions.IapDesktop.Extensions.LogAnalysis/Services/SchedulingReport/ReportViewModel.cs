@@ -23,6 +23,7 @@ using Google.Solutions.IapDesktop.Application.ObjectModel;
 using Google.Solutions.IapDesktop.Extensions.LogAnalysis.History;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Runtime.CompilerServices;
 
 namespace Google.Solutions.IapDesktop.Extensions.LogAnalysis.Services.SchedulingReport
@@ -58,17 +59,24 @@ namespace Google.Solutions.IapDesktop.Extensions.LogAnalysis.Services.Scheduling
             }
         }
 
-        internal IEnumerable<InstanceHistory> GetInstances()
+        internal IEnumerable<InstanceHistory> GetInstancesMatchingCurrentFilters()
         {
             // Get instances that match the selected OS/license criteria.
             return this.Model.GetInstances(this.osTypes, this.licenseTypes);
+        }
+
+        internal IEnumerable<NodePlacement> GetNodePlacementsMatchingCurrentFilters(NodeHistory node)
+        {
+            return node.Placements
+                .Where(p => this.Model.IsInstanceAnnotatedAs(
+                    p.Instance, this.osTypes, this.licenseTypes));
         }
 
         internal NodeSetHistory GetNodes()
         { 
             // Derive the set of nodes that were used by those instances.
             return NodeSetHistory.FromInstancyHistory(
-                GetInstances(),
+                GetInstancesMatchingCurrentFilters(),
                 this.tenancies);
         }
 

@@ -28,6 +28,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace Google.Solutions.IapDesktop.Extensions.LogAnalysis.Services.SchedulingReport
@@ -58,27 +59,30 @@ namespace Google.Solutions.IapDesktop.Extensions.LogAnalysis.Services.Scheduling
         {
         }
 
+        internal bool IsInstanceAnnotatedAs(
+            InstanceHistory instance,
+            OperatingSystemTypes osTypes,
+            LicenseTypes licenseTypes)
+        {
+            ImageAnnotation annotation;
+            if (instance.Image == null ||
+                !this.LicenseAnnotations.TryGetValue(instance.Image.ToString(), out annotation))
+            {
+                annotation = ImageAnnotation.Default;
+            }
+
+            Debug.Assert(annotation != null);
+
+            return (osTypes.HasFlag(annotation.OperatingSystem) &&
+                licenseTypes.HasFlag(annotation.LicenseType));
+        }
+
         public virtual IEnumerable<InstanceHistory> GetInstances(
             OperatingSystemTypes osTypes,
             LicenseTypes licenseTypes)
         {
-            foreach (var instance in this.History.Instances)
-            {
-                ImageAnnotation annotation;
-                if (instance.Image == null ||
-                    !this.LicenseAnnotations.TryGetValue(instance.Image.ToString(), out annotation))
-                {
-                    annotation = ImageAnnotation.Default;
-                }
-
-                Debug.Assert(annotation != null);
-
-                if (osTypes.HasFlag(annotation.OperatingSystem) &&
-                    licenseTypes.HasFlag(annotation.LicenseType))
-                {
-                    yield return instance;
-                }
-            }
+            return this.History.Instances
+                .Where(i => IsInstanceAnnotatedAs(i, osTypes, licenseTypes));
         }
 
         public static ReportArchive FromInstanceSetHistory(

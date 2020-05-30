@@ -21,6 +21,7 @@
 
 using Google.Solutions.IapDesktop.Application.Util;
 using Google.Solutions.IapDesktop.Extensions.LogAnalysis.History;
+using System.Diagnostics;
 using System.Linq;
 
 namespace Google.Solutions.IapDesktop.Extensions.LogAnalysis.Services.SchedulingReport
@@ -37,29 +38,31 @@ namespace Google.Solutions.IapDesktop.Extensions.LogAnalysis.Services.Scheduling
             // Get instances, filtered by whatever filter applies,
             // then derive sole tenant nodes (ignoring fleet).
             this.currentNodeSet = NodeSetHistory.FromInstancyHistory(
-                this.parent.GetInstances(),
+                this.parent.GetInstancesMatchingCurrentFilters(),
                 Tenancies.SoleTenant);
 
             // Create histogram, disregarding the date selection.
             this.Histogram = this.currentNodeSet.MaxNodesByDay;
+
+            Debug.Assert(this.currentNodeSet.Nodes.All(n => n.ServerId != null));
 
             // For the list of nodes, apply the date selection.
             this.Nodes.Clear();
             this.Nodes.AddRange(this.currentNodeSet.Nodes
                 .Where(n => n.FirstUse <= this.Selection.EndDate && n.LastUse >= this.Selection.StartDate));
 
+            this.selectedNode = null;
             RepopulateNodePlacements();
         }
+
         private void RepopulateNodePlacements()
         {
-            if (this.selectedNode == null)
+            this.NodePlacements.Clear();
+            if (this.selectedNode != null)
             {
-                this.NodePlacements.Clear();
-            }
-            else
-            {
-                this.NodePlacements.AddRange(this.selectedNode.Placements
-                    .Where(p => p.From <= this.Selection.EndDate && p.From >= this.Selection.StartDate));
+                this.NodePlacements.AddRange(
+                    this.parent.GetNodePlacementsMatchingCurrentFilters(this.selectedNode)
+                        .Where(p => p.From <= this.Selection.EndDate && p.To >= this.Selection.StartDate));
             }
         }
 

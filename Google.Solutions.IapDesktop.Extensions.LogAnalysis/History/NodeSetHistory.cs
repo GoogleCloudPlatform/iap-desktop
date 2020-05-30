@@ -38,10 +38,6 @@ namespace Google.Solutions.IapDesktop.Extensions.LogAnalysis.History
             IEnumerable<InstanceHistory> instanceHistories,
             Tenancies tenancies)
         {
-            instanceHistories = instanceHistories
-                .Where(i => i.Placements != null &&
-                            i.Placements.Any(p => tenancies.HasFlag(p.Tenancy)));
-
             var placementsByServer = instanceHistories
                 .Where(i => i.Placements != null)
                 .SelectMany(i => i.Placements.Select(p => new
@@ -49,8 +45,10 @@ namespace Google.Solutions.IapDesktop.Extensions.LogAnalysis.History
                     Instance = i,
                     p.ServerId,
                     p.From,
-                    p.To
+                    p.To,
+                    p.Tenancy
                 }))
+                .Where(p => tenancies.HasFlag(p.Tenancy))
                 .GroupBy(p => p.ServerId);
 
             foreach (var server in placementsByServer)
