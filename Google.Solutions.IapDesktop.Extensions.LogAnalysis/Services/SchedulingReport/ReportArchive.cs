@@ -58,7 +58,7 @@ namespace Google.Solutions.IapDesktop.Extensions.LogAnalysis.Services.Scheduling
         {
         }
 
-        public IEnumerable<InstanceHistory> GetInstances(
+        public virtual IEnumerable<InstanceHistory> GetInstances(
             OperatingSystemTypes osTypes,
             LicenseTypes licenseTypes)
         {

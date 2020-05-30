@@ -30,7 +30,7 @@ using System.Linq;
 namespace Google.Solutions.IapDesktop.Extensions.LogAnalysis.Test.Services.SchedulingReport
 {
     [TestFixture]
-    public class TestAnnotatedInstanceSetHistory : FixtureBase
+    public class TestReportArchive : FixtureBase
     {
         [Test]
         public void WhenSerializedAndDeserialized_ThenObjectsAreEquivalent()
