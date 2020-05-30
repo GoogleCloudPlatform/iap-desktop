@@ -31,13 +31,36 @@ namespace Google.Solutions.IapDesktop.Extensions.LogAnalysis.Services.Scheduling
 {
     internal static class LicenseLoader
     {
+        private static LicenseLocator TryGetRelevantLicenseFromImage(Image imageInfo)
+        {
+            var locators = imageInfo.Licenses
+                .EnsureNotNull()
+                .Select(license => LicenseLocator.FromString(license));
+
+            // Images can contain more than one license, and liceses like 
+            // "/compute/v1/projects/compute-image-tools/global/licenses/virtual-disk-import"
+            // are not helpful here. So do some filtering.
+            if (locators.FirstOrDefault(l => l.IsWindowsByolLicense()) is LicenseLocator byolLocator)
+            {
+                return byolLocator;
+            }
+            else if (locators.FirstOrDefault(l => l.IsWindowsLicense()) is LicenseLocator winLocator)
+            {
+                return winLocator;
+            }
+            else
+            {
+                return locators.FirstOrDefault();
+            }
+        }
+
         public static async Task LoadLicenseAnnotationsAsync(
             ReportArchive annotatedSet,
             ImagesResource imagesResource)
         {
             foreach (var image in annotatedSet.History.Instances
+                    .Where(i => i.Image != null)
                     .Select(i => i.Image)
-                    .EnsureNotNull()
                     .Distinct())
             {
                 try
@@ -56,10 +79,13 @@ namespace Google.Solutions.IapDesktop.Extensions.LogAnalysis.Services.Scheduling
                             .ExecuteAsync();
                     }
 
+                    // Images can contain more than one license, and liceses like 
+                    // "/compute/v1/projects/compute-image-tools/global/licenses/virtual-disk-import"
+                    // are not helpful here. So do some filtering.
+
                     annotatedSet.AddLicenseAnnotation(
                         image,
-                        LicenseLocator.FromString(
-                            imageInfo.Licenses.FirstOrDefault()));
+                        TryGetRelevantLicenseFromImage(imageInfo));
                 }
                 catch (Exception e) when (
                     e.Unwrap() is GoogleApiException apiEx &&

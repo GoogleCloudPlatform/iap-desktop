@@ -75,11 +75,12 @@ namespace Google.Solutions.LogAnalysis.QuickTest
                 instanceSetBuilder,
                 CancellationToken.None);
 
+            var archive = ReportArchive.FromInstanceSetHistory(instanceSetBuilder.Build());
+            await archive.LoadLicenseAnnotationsAsync(computeService.Images);
+
             using (var writer = new StreamWriter(filePath, false, Encoding.UTF8))
             {
-                ReportArchive
-                    .FromInstanceSetHistory(instanceSetBuilder.Build())
-                    .Serialize(writer);
+                archive.Serialize(writer);
             }
         }
 
