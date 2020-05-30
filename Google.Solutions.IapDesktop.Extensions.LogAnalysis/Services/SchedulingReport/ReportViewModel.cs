@@ -103,6 +103,16 @@ namespace Google.Solutions.IapDesktop.Extensions.LogAnalysis.Services.Scheduling
             RaisePropertyChange(propertyName);
         }
 
+        public void SelectInstancesTab()
+        {
+            this.SelectedTabIndex = 0;
+        }
+
+        public void SelectNodeTab()
+        {
+            this.SelectedTabIndex = 1;
+        }
+
         public int SelectedTabIndex
         {
             get => this.selectedTabIndex;

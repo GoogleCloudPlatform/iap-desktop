@@ -119,6 +119,7 @@
     <Compile Include="Logs\TestAuditLogRecord.cs" />
     <Compile Include="Logs\TestLogRecord.cs" />
     <Compile Include="Services\SchedulingReport\TestReportInstancesTabViewModel.cs" />
+    <Compile Include="Services\SchedulingReport\TestReportNodesTabViewModel.cs" />
     <Compile Include="Services\SchedulingReport\TestReportViewModel.cs" />
   </ItemGroup>
   <ItemGroup>

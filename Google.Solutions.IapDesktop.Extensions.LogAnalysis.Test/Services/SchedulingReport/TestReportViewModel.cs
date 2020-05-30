@@ -94,8 +94,8 @@ namespace Google.Solutions.IapDesktop.Extensions.LogAnalysis.Test.Services.Sched
         public void WhenInstancesTabSelected_ThenRightMenusAreEnabled()
         {
             var viewModel = new ReportViewModel(CreateReportArchive());
-            viewModel.SelectedTabIndex = 1;
-            viewModel.SelectedTabIndex = 0;
+            viewModel.SelectNodeTab();
+            viewModel.SelectInstancesTab();
 
             Assert.IsTrue(viewModel.IsTenancyMenuEnabled);
             Assert.IsTrue(viewModel.IsOsMenuEnabled);
@@ -106,7 +106,7 @@ namespace Google.Solutions.IapDesktop.Extensions.LogAnalysis.Test.Services.Sched
         public void WhenNodesTabSelected_ThenRightMenusAreEnabled()
         {
             var viewModel = new ReportViewModel(CreateReportArchive());
-            viewModel.SelectedTabIndex = 1;
+            viewModel.SelectNodeTab();
 
             Assert.IsFalse(viewModel.IsTenancyMenuEnabled);
             Assert.IsTrue(viewModel.IsOsMenuEnabled);

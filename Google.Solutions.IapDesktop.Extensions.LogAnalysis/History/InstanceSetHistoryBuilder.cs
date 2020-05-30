@@ -44,7 +44,7 @@ namespace Google.Solutions.IapDesktop.Extensions.LogAnalysis.History
 
         private static string ShortZoneIdFromUrl(string url) => url.Substring(url.LastIndexOf("/") + 1);
 
-        private InstanceHistoryBuilder GetInstanceHistoryBuilder(ulong instanceId)
+        internal InstanceHistoryBuilder GetInstanceHistoryBuilder(ulong instanceId)
         {
             if (this.instanceBuilders.TryGetValue(instanceId, out InstanceHistoryBuilder builder))
             {
