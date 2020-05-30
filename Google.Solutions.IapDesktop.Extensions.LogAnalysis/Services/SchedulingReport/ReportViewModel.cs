@@ -21,7 +21,6 @@
 
 using Google.Solutions.IapDesktop.Application.ObjectModel;
 using Google.Solutions.IapDesktop.Extensions.LogAnalysis.History;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.CompilerServices;
@@ -43,7 +42,10 @@ namespace Google.Solutions.IapDesktop.Extensions.LogAnalysis.Services.Scheduling
         private LicenseTypes licenseTypes = LicenseTypes.Byol | LicenseTypes.Spla | LicenseTypes.Unknown;
 
         public ReportNodesTabViewModel NodeReportPane { get; }
+
         public ReportInstancesTabViewModel InstanceReportPane { get; }
+
+        public ReportLicensesTabViewModel LicensesReportPane { get; }
 
         public void Repopulate()
         {
@@ -55,6 +57,10 @@ namespace Google.Solutions.IapDesktop.Extensions.LogAnalysis.Services.Scheduling
 
                 case 1:
                     this.NodeReportPane.Repopulate();
+                    break;
+
+                case 2:
+                    this.LicensesReportPane.Repopulate();
                     break;
             }
         }
@@ -85,6 +91,7 @@ namespace Google.Solutions.IapDesktop.Extensions.LogAnalysis.Services.Scheduling
             this.Model = model;
             this.NodeReportPane = new ReportNodesTabViewModel(this);
             this.InstanceReportPane = new ReportInstancesTabViewModel(this);
+            this.LicensesReportPane = new ReportLicensesTabViewModel(this);
         }
 
         //---------------------------------------------------------------------
@@ -121,6 +128,11 @@ namespace Google.Solutions.IapDesktop.Extensions.LogAnalysis.Services.Scheduling
             this.SelectedTabIndex = 1;
         }
 
+        public void SelectLicensesTab()
+        {
+            this.SelectedTabIndex = 2;
+        }
+
         public int SelectedTabIndex
         {
             get => this.selectedTabIndex;
@@ -129,7 +141,7 @@ namespace Google.Solutions.IapDesktop.Extensions.LogAnalysis.Services.Scheduling
                 this.selectedTabIndex = value;
                 
                 this.IsTenancyMenuEnabled = value == 0;
-                this.isLicenseMenuEnabled = value <= 1;
+                this.IsLicenseMenuEnabled = value <= 1;
                 this.IsOsMenuEnabled = value <= 1;
 
                 Repopulate();

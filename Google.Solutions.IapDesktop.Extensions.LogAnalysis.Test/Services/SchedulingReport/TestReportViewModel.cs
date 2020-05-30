@@ -112,5 +112,16 @@ namespace Google.Solutions.IapDesktop.Extensions.LogAnalysis.Test.Services.Sched
             Assert.IsTrue(viewModel.IsOsMenuEnabled);
             Assert.IsTrue(viewModel.IsLicenseMenuEnabled);
         }
+
+        [Test]
+        public void WhenLicensesTabSelected_ThenRightMenusAreEnabled()
+        {
+            var viewModel = new ReportViewModel(CreateReportArchive());
+            viewModel.SelectLicensesTab();
+
+            Assert.IsFalse(viewModel.IsTenancyMenuEnabled);
+            Assert.IsFalse(viewModel.IsOsMenuEnabled);
+            Assert.IsFalse(viewModel.IsLicenseMenuEnabled);
+        }
     }
 }

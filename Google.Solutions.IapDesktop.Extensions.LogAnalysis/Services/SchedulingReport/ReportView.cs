@@ -43,9 +43,9 @@ namespace Google.Solutions.IapDesktop.Extensions.LogAnalysis.Services.Scheduling
         public class NodesPlacementsListView : BindableListView<NodePlacement>
         { }
 
-        internal ReportView(ReportViewModel videModel)
+        internal ReportView(ReportViewModel viewModel)
         {
-            this.viewModel = videModel;
+            this.viewModel = viewModel;
             this.components = new System.ComponentModel.Container();
 
             InitializeComponent();
@@ -53,6 +53,7 @@ namespace Google.Solutions.IapDesktop.Extensions.LogAnalysis.Services.Scheduling
             // Remove space between bars.
             this.instancesChart.Series[0]["PointWidth"] = "1";
             this.nodesChart.Series[0]["PointWidth"] = "1";
+            this.licenseChart.Series[0]["PointWidth"] = "1";
 
             this.theme.ApplyTo(this.toolStrip);
 
@@ -177,6 +178,22 @@ namespace Google.Solutions.IapDesktop.Extensions.LogAnalysis.Services.Scheduling
                 {
                     Plot(dataPoints, this.nodesChart.Series[0]);
                     this.noNodesDataLabel.Visible = !dataPoints.Any();
+                }));
+
+            //
+            // Licenses tab.
+            //
+            this.nodeTypeInfoLabel.BindProperty(
+                l => l.Text,
+                this.viewModel,
+                v => v.LicensesReportPane.NodeTypeWarning,
+                this.components);
+            this.components.Add(this.viewModel.LicensesReportPane.OnPropertyChange(
+                v => v.Histogram,
+                dataPoints =>
+                {
+                    Plot(dataPoints, this.licenseChart.Series[0]);
+                    this.noLicenseDataLabel.Visible = !dataPoints.Any();
                 }));
 
             this.viewModel.Repopulate();

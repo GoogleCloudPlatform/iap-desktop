@@ -50,10 +50,12 @@ namespace Google.Solutions.IapDesktop.Extensions.LogAnalysis.Services.Scheduling
         private void InitializeComponent()
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(ReportView));
+            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea1 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
+            System.Windows.Forms.DataVisualization.Charting.Series series1 = new System.Windows.Forms.DataVisualization.Charting.Series();
+            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea2 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
+            System.Windows.Forms.DataVisualization.Charting.Series series2 = new System.Windows.Forms.DataVisualization.Charting.Series();
             System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea3 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
             System.Windows.Forms.DataVisualization.Charting.Series series3 = new System.Windows.Forms.DataVisualization.Charting.Series();
-            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea4 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
-            System.Windows.Forms.DataVisualization.Charting.Series series4 = new System.Windows.Forms.DataVisualization.Charting.Series();
             this.toolStrip = new System.Windows.Forms.ToolStrip();
             this.includeTenancyMenuItem = new System.Windows.Forms.ToolStripDropDownButton();
             this.includeSoleTenantInstancesMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -101,7 +103,11 @@ namespace Google.Solutions.IapDesktop.Extensions.LogAnalysis.Services.Scheduling
             this.nodesHeadline = new System.Windows.Forms.Label();
             this.nodesChart = new System.Windows.Forms.DataVisualization.Charting.Chart();
             this.licensesTab = new System.Windows.Forms.TabPage();
+            this.noLicenseDataLabel = new System.Windows.Forms.Label();
+            this.licenseChart = new System.Windows.Forms.DataVisualization.Charting.Chart();
             this.byolHeadline = new System.Windows.Forms.Label();
+            this.infoIcon = new System.Windows.Forms.PictureBox();
+            this.nodeTypeInfoLabel = new System.Windows.Forms.Label();
             this.toolStrip.SuspendLayout();
             this.tabs.SuspendLayout();
             this.instancesTab.SuspendLayout();
@@ -113,6 +119,8 @@ namespace Google.Solutions.IapDesktop.Extensions.LogAnalysis.Services.Scheduling
             this.nodesSplitContainer.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.nodesChart)).BeginInit();
             this.licensesTab.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.licenseChart)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.infoIcon)).BeginInit();
             this.SuspendLayout();
             // 
             // toolStrip
@@ -167,21 +175,21 @@ namespace Google.Solutions.IapDesktop.Extensions.LogAnalysis.Services.Scheduling
             // includeWindowsMenuItem
             // 
             this.includeWindowsMenuItem.Name = "includeWindowsMenuItem";
-            this.includeWindowsMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.includeWindowsMenuItem.Size = new System.Drawing.Size(143, 22);
             this.includeWindowsMenuItem.Text = "Windows";
             this.includeWindowsMenuItem.Click += new System.EventHandler(this.menuItemToggle_Click);
             // 
             // includeLinuxMenuItem
             // 
             this.includeLinuxMenuItem.Name = "includeLinuxMenuItem";
-            this.includeLinuxMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.includeLinuxMenuItem.Size = new System.Drawing.Size(143, 22);
             this.includeLinuxMenuItem.Text = "Linux";
             this.includeLinuxMenuItem.Click += new System.EventHandler(this.menuItemToggle_Click);
             // 
             // includeUnknownOsMenuItem
             // 
             this.includeUnknownOsMenuItem.Name = "includeUnknownOsMenuItem";
-            this.includeUnknownOsMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.includeUnknownOsMenuItem.Size = new System.Drawing.Size(143, 22);
             this.includeUnknownOsMenuItem.Text = "Unknown OS";
             this.includeUnknownOsMenuItem.Click += new System.EventHandler(this.menuItemToggle_Click);
             // 
@@ -330,26 +338,26 @@ namespace Google.Solutions.IapDesktop.Extensions.LogAnalysis.Services.Scheduling
             this.instancesChart.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.instancesChart.BackColor = System.Drawing.SystemColors.Control;
-            chartArea3.AxisX.MajorGrid.Enabled = false;
-            chartArea3.AxisX.ScaleView.Zoomable = false;
-            chartArea3.AxisY.IntervalType = System.Windows.Forms.DataVisualization.Charting.DateTimeIntervalType.Number;
-            chartArea3.AxisY.MajorGrid.LineColor = System.Drawing.SystemColors.ControlDarkDark;
-            chartArea3.AxisY.MajorGrid.LineDashStyle = System.Windows.Forms.DataVisualization.Charting.ChartDashStyle.Dot;
-            chartArea3.BackColor = System.Drawing.SystemColors.Control;
-            chartArea3.BorderColor = System.Drawing.Color.DimGray;
-            chartArea3.CursorX.IsUserSelectionEnabled = true;
-            chartArea3.Name = "mainArea";
-            chartArea3.Position.Auto = false;
-            chartArea3.Position.Height = 94F;
-            chartArea3.Position.Width = 100F;
-            chartArea3.Position.Y = 3F;
-            this.instancesChart.ChartAreas.Add(chartArea3);
+            chartArea1.AxisX.MajorGrid.Enabled = false;
+            chartArea1.AxisX.ScaleView.Zoomable = false;
+            chartArea1.AxisY.IntervalType = System.Windows.Forms.DataVisualization.Charting.DateTimeIntervalType.Number;
+            chartArea1.AxisY.MajorGrid.LineColor = System.Drawing.SystemColors.ControlDarkDark;
+            chartArea1.AxisY.MajorGrid.LineDashStyle = System.Windows.Forms.DataVisualization.Charting.ChartDashStyle.Dot;
+            chartArea1.BackColor = System.Drawing.SystemColors.Control;
+            chartArea1.BorderColor = System.Drawing.Color.DimGray;
+            chartArea1.CursorX.IsUserSelectionEnabled = true;
+            chartArea1.Name = "mainArea";
+            chartArea1.Position.Auto = false;
+            chartArea1.Position.Height = 94F;
+            chartArea1.Position.Width = 100F;
+            chartArea1.Position.Y = 3F;
+            this.instancesChart.ChartAreas.Add(chartArea1);
             this.instancesChart.Location = new System.Drawing.Point(6, 30);
             this.instancesChart.Name = "instancesChart";
             this.instancesChart.Palette = System.Windows.Forms.DataVisualization.Charting.ChartColorPalette.Grayscale;
-            series3.ChartArea = "mainArea";
-            series3.Name = "Series1";
-            this.instancesChart.Series.Add(series3);
+            series1.ChartArea = "mainArea";
+            series1.Name = "Series1";
+            this.instancesChart.Series.Add(series1);
             this.instancesChart.Size = new System.Drawing.Size(738, 300);
             this.instancesChart.TabIndex = 0;
             this.instancesChart.GetToolTipText += new System.EventHandler<System.Windows.Forms.DataVisualization.Charting.ToolTipEventArgs>(this.chart_GetToolTipText);
@@ -538,26 +546,26 @@ namespace Google.Solutions.IapDesktop.Extensions.LogAnalysis.Services.Scheduling
             this.nodesChart.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.nodesChart.BackColor = System.Drawing.SystemColors.Control;
-            chartArea4.AxisX.MajorGrid.Enabled = false;
-            chartArea4.AxisX.ScaleView.Zoomable = false;
-            chartArea4.AxisY.IntervalType = System.Windows.Forms.DataVisualization.Charting.DateTimeIntervalType.Number;
-            chartArea4.AxisY.MajorGrid.LineColor = System.Drawing.SystemColors.ControlDarkDark;
-            chartArea4.AxisY.MajorGrid.LineDashStyle = System.Windows.Forms.DataVisualization.Charting.ChartDashStyle.Dot;
-            chartArea4.BackColor = System.Drawing.SystemColors.Control;
-            chartArea4.BorderColor = System.Drawing.Color.DimGray;
-            chartArea4.CursorX.IsUserSelectionEnabled = true;
-            chartArea4.Name = "mainArea";
-            chartArea4.Position.Auto = false;
-            chartArea4.Position.Height = 94F;
-            chartArea4.Position.Width = 100F;
-            chartArea4.Position.Y = 3F;
-            this.nodesChart.ChartAreas.Add(chartArea4);
+            chartArea2.AxisX.MajorGrid.Enabled = false;
+            chartArea2.AxisX.ScaleView.Zoomable = false;
+            chartArea2.AxisY.IntervalType = System.Windows.Forms.DataVisualization.Charting.DateTimeIntervalType.Number;
+            chartArea2.AxisY.MajorGrid.LineColor = System.Drawing.SystemColors.ControlDarkDark;
+            chartArea2.AxisY.MajorGrid.LineDashStyle = System.Windows.Forms.DataVisualization.Charting.ChartDashStyle.Dot;
+            chartArea2.BackColor = System.Drawing.SystemColors.Control;
+            chartArea2.BorderColor = System.Drawing.Color.DimGray;
+            chartArea2.CursorX.IsUserSelectionEnabled = true;
+            chartArea2.Name = "mainArea";
+            chartArea2.Position.Auto = false;
+            chartArea2.Position.Height = 94F;
+            chartArea2.Position.Width = 100F;
+            chartArea2.Position.Y = 3F;
+            this.nodesChart.ChartAreas.Add(chartArea2);
             this.nodesChart.Location = new System.Drawing.Point(6, 30);
             this.nodesChart.Name = "nodesChart";
             this.nodesChart.Palette = System.Windows.Forms.DataVisualization.Charting.ChartColorPalette.Grayscale;
-            series4.ChartArea = "mainArea";
-            series4.Name = "Series1";
-            this.nodesChart.Series.Add(series4);
+            series2.ChartArea = "mainArea";
+            series2.Name = "Series1";
+            this.nodesChart.Series.Add(series2);
             this.nodesChart.Size = new System.Drawing.Size(738, 300);
             this.nodesChart.TabIndex = 1;
             this.nodesChart.GetToolTipText += new System.EventHandler<System.Windows.Forms.DataVisualization.Charting.ToolTipEventArgs>(this.chart_GetToolTipText);
@@ -565,6 +573,10 @@ namespace Google.Solutions.IapDesktop.Extensions.LogAnalysis.Services.Scheduling
             // 
             // licensesTab
             // 
+            this.licensesTab.Controls.Add(this.nodeTypeInfoLabel);
+            this.licensesTab.Controls.Add(this.infoIcon);
+            this.licensesTab.Controls.Add(this.noLicenseDataLabel);
+            this.licensesTab.Controls.Add(this.licenseChart);
             this.licensesTab.Controls.Add(this.byolHeadline);
             this.licensesTab.Location = new System.Drawing.Point(140, 4);
             this.licensesTab.Name = "licensesTab";
@@ -572,6 +584,47 @@ namespace Google.Solutions.IapDesktop.Extensions.LogAnalysis.Services.Scheduling
             this.licensesTab.TabIndex = 2;
             this.licensesTab.Text = "Licenses";
             this.licensesTab.UseVisualStyleBackColor = true;
+            // 
+            // noLicenseDataLabel
+            // 
+            this.noLicenseDataLabel.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.noLicenseDataLabel.AutoSize = true;
+            this.noLicenseDataLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Italic, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.noLicenseDataLabel.Location = new System.Drawing.Point(330, 160);
+            this.noLicenseDataLabel.Name = "noLicenseDataLabel";
+            this.noLicenseDataLabel.Size = new System.Drawing.Size(92, 13);
+            this.noLicenseDataLabel.TabIndex = 7;
+            this.noLicenseDataLabel.Text = "No data to display";
+            // 
+            // licenseChart
+            // 
+            this.licenseChart.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.licenseChart.BackColor = System.Drawing.SystemColors.Control;
+            chartArea3.AxisX.MajorGrid.Enabled = false;
+            chartArea3.AxisX.ScaleView.Zoomable = false;
+            chartArea3.AxisY.IntervalType = System.Windows.Forms.DataVisualization.Charting.DateTimeIntervalType.Number;
+            chartArea3.AxisY.MajorGrid.LineColor = System.Drawing.SystemColors.ControlDarkDark;
+            chartArea3.AxisY.MajorGrid.LineDashStyle = System.Windows.Forms.DataVisualization.Charting.ChartDashStyle.Dot;
+            chartArea3.BackColor = System.Drawing.SystemColors.Control;
+            chartArea3.BorderColor = System.Drawing.Color.DimGray;
+            chartArea3.CursorX.IsUserSelectionEnabled = true;
+            chartArea3.Name = "mainArea";
+            chartArea3.Position.Auto = false;
+            chartArea3.Position.Height = 94F;
+            chartArea3.Position.Width = 100F;
+            chartArea3.Position.Y = 3F;
+            this.licenseChart.ChartAreas.Add(chartArea3);
+            this.licenseChart.Location = new System.Drawing.Point(6, 30);
+            this.licenseChart.Name = "licenseChart";
+            this.licenseChart.Palette = System.Windows.Forms.DataVisualization.Charting.ChartColorPalette.Grayscale;
+            series3.ChartArea = "mainArea";
+            series3.Name = "Series1";
+            this.licenseChart.Series.Add(series3);
+            this.licenseChart.Size = new System.Drawing.Size(738, 300);
+            this.licenseChart.TabIndex = 6;
+            this.licenseChart.GetToolTipText += new System.EventHandler<System.Windows.Forms.DataVisualization.Charting.ToolTipEventArgs>(this.chart_GetToolTipText);
             // 
             // byolHeadline
             // 
@@ -583,6 +636,24 @@ namespace Google.Solutions.IapDesktop.Extensions.LogAnalysis.Services.Scheduling
             this.byolHeadline.Size = new System.Drawing.Size(243, 17);
             this.byolHeadline.TabIndex = 2;
             this.byolHeadline.Text = "Scheduled Windows BYOL cores";
+            // 
+            // infoIcon
+            // 
+            this.infoIcon.Image = ((System.Drawing.Image)(resources.GetObject("infoIcon.Image")));
+            this.infoIcon.Location = new System.Drawing.Point(34, 336);
+            this.infoIcon.Name = "infoIcon";
+            this.infoIcon.Size = new System.Drawing.Size(16, 16);
+            this.infoIcon.TabIndex = 8;
+            this.infoIcon.TabStop = false;
+            // 
+            // nodeTypeInfoLabel
+            // 
+            this.nodeTypeInfoLabel.AutoSize = true;
+            this.nodeTypeInfoLabel.Location = new System.Drawing.Point(56, 339);
+            this.nodeTypeInfoLabel.Name = "nodeTypeInfoLabel";
+            this.nodeTypeInfoLabel.Size = new System.Drawing.Size(33, 13);
+            this.nodeTypeInfoLabel.TabIndex = 9;
+            this.nodeTypeInfoLabel.Text = "Note:";
             // 
             // ReportView
             // 
@@ -612,6 +683,8 @@ namespace Google.Solutions.IapDesktop.Extensions.LogAnalysis.Services.Scheduling
             ((System.ComponentModel.ISupportInitialize)(this.nodesChart)).EndInit();
             this.licensesTab.ResumeLayout(false);
             this.licensesTab.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.licenseChart)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.infoIcon)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -667,5 +740,9 @@ namespace Google.Solutions.IapDesktop.Extensions.LogAnalysis.Services.Scheduling
         private System.Windows.Forms.Label noInstancesDataLabel;
         private System.Windows.Forms.Label noNodesDataLabel;
         private System.Windows.Forms.Label byolHeadline;
+        private System.Windows.Forms.Label noLicenseDataLabel;
+        private System.Windows.Forms.DataVisualization.Charting.Chart licenseChart;
+        private System.Windows.Forms.Label nodeTypeInfoLabel;
+        private System.Windows.Forms.PictureBox infoIcon;
     }
 }
