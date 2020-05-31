@@ -32,6 +32,7 @@ namespace Google.Solutions.IapDesktop.Extensions.LogAnalysis.Services
     {
         public Extension(IServiceProvider serviceProvider)
         {
+            
         }
     }
 }

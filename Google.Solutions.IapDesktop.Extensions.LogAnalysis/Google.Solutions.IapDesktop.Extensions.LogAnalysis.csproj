@@ -120,6 +120,12 @@
     <Compile Include="History\InstanceSetHistory.cs" />
     <Compile Include="History\InstanceSetHistoryBuilder.cs" />
     <Compile Include="Services\SchedulingReport\NodeAnnotation.cs" />
+    <Compile Include="Services\SchedulingReport\CreateReportDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Services\SchedulingReport\CreateReportDialog.Designer.cs">
+      <DependentUpon>CreateReportDialog.cs</DependentUpon>
+    </Compile>
     <Compile Include="Services\SchedulingReport\ReportArchive.cs" />
     <Compile Include="Services\SchedulingReport\LicenseLoader.cs" />
     <Compile Include="History\NodePlacement.cs" />
@@ -162,9 +168,18 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
+    <EmbeddedResource Include="Services\SchedulingReport\CreateReportDialog.resx">
+      <DependentUpon>CreateReportDialog.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Services\SchedulingReport\ReportView.resx">
       <DependentUpon>ReportView.cs</DependentUpon>
     </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Refresh_48.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Refresh_32.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="..\packages\MSBuild.AssemblyVersion.1.2.0\build\MSBuild.AssemblyVersion.targets" Condition="Exists('..\packages\MSBuild.AssemblyVersion.1.2.0\build\MSBuild.AssemblyVersion.targets')" />
