@@ -20,7 +20,10 @@
 //
 
 using Google.Solutions.IapDesktop.Application.ObjectModel;
+using Google.Solutions.IapDesktop.Application.Services.Windows.ProjectExplorer;
+using Google.Solutions.IapDesktop.Extensions.LogAnalysis.Services.SchedulingReport;
 using System;
+using System.Windows.Forms;
 
 namespace Google.Solutions.IapDesktop.Extensions.LogAnalysis.Services
 {
@@ -30,9 +33,32 @@ namespace Google.Solutions.IapDesktop.Extensions.LogAnalysis.Services
     [Service(ServiceLifetime.Singleton)]
     public class Extension
     {
+        private readonly IServiceProvider serviceProvider;
+
+        private void CreateReport(string projectId)
+        {
+            var dialog = this.serviceProvider.GetService<CreateReportDialog>();
+            if (dialog.ShowDialog() == DialogResult.OK)
+            {
+                MessageBox.Show(dialog.SelectedProject);
+            }
+        }
+
         public Extension(IServiceProvider serviceProvider)
         {
-            
+            this.serviceProvider = serviceProvider;
+
+            // Add command to project explorer.
+            serviceProvider.GetService<IProjectExplorer>()
+                .AddCommand(
+                    "Instances/nodes usage report...",
+                    null,
+                    new ProjectExplorerCommand(
+                        context => context is IProjectExplorerProjectNode
+                            ? CommandState.Enabled
+                            : CommandState.Unavailable,
+                        context => CreateReport(((IProjectExplorerProjectNode)context).ProjectId)));
         }
     }
+
 }
