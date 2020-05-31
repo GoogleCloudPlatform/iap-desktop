@@ -44,6 +44,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Windows
         // IMainForm.
         //---------------------------------------------------------------------
 
+        public IWin32Window Window => this;
         public DockPanel MainPanel => this.dockPanel;
 
         //---------------------------------------------------------------------

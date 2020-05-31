@@ -20,6 +20,7 @@
 //
 
 using Google.Solutions.IapDesktop.Application.ObjectModel;
+using Google.Solutions.IapDesktop.Application.Services.Windows;
 using Google.Solutions.IapDesktop.Application.Services.Windows.ProjectExplorer;
 using Google.Solutions.IapDesktop.Extensions.LogAnalysis.Properties;
 using Google.Solutions.IapDesktop.Extensions.LogAnalysis.Services.SchedulingReport;
@@ -44,7 +45,8 @@ namespace Google.Solutions.IapDesktop.Extensions.LogAnalysis.Services
                 dialog.SelectedProjectId = projectNode.ProjectId;
             }
 
-            if (dialog.ShowDialog() == DialogResult.OK)
+            var mainForm = this.serviceProvider.GetService<IMainForm>();
+            if (dialog.ShowDialog(mainForm.Window) == DialogResult.OK)
             {
                 MessageBox.Show(dialog.SelectedProjectId);
             }

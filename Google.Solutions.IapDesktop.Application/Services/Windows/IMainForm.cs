@@ -19,12 +19,14 @@
 // under the License.
 //
 
+using System.Windows.Forms;
 using WeifenLuo.WinFormsUI.Docking;
 
 namespace Google.Solutions.IapDesktop.Application.Services.Windows
 {
     public interface IMainForm
     {
+        IWin32Window Window { get; }
         DockPanel MainPanel { get; }
         void Close();
     }
