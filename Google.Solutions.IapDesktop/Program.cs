@@ -253,6 +253,7 @@ namespace Google.Solutions.IapDesktop
 
 #if DEBUG
             windowAndWorkflowLayer.AddSingleton<DebugWindow>();
+            windowAndWorkflowLayer.AddSingleton<HtmlPageGenerator>();
 #endif
             //
             // Extension layer.

@@ -301,6 +301,8 @@ namespace Google.Solutions.IapDesktop.Application.Services.Windows.ProjectExplor
         private readonly ConnectionSettingsRepository settingsRepository;
 
         public string ProjectId => this.Text;
+        public IEnumerable<IProjectExplorerZoneNode> Zones 
+            => this.Nodes.OfType<IProjectExplorerZoneNode>();
 
         internal ProjectNode(ConnectionSettingsRepository settingsRepository, string projectId)
             : base(
@@ -369,6 +371,8 @@ namespace Google.Solutions.IapDesktop.Application.Services.Windows.ProjectExplor
 
         public string ProjectId => ((ProjectNode)this.Parent).ProjectId;
         public string ZoneId => this.Text;
+        public IEnumerable<IProjectExplorerVmInstanceNode> Instances 
+            => this.Nodes.OfType<VmInstanceNode>();
 
         internal ZoneNode(
             ZoneConnectionSettings settings,
