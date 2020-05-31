@@ -19,6 +19,7 @@
 // under the License.
 //
 
+using Google.Solutions.Common.Util;
 using Google.Solutions.IapDesktop.Application.ObjectModel;
 using System;
 using System.Drawing;
@@ -32,6 +33,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.Windows
     [ComVisible(false)]
     public abstract partial class SlowLoadingPane : ToolWindow
     {
+        private readonly IServiceProvider serviceProvider;
         private readonly CancellationTokenSource loadCancellationTokenSource
             = new CancellationTokenSource();
 
@@ -43,12 +45,17 @@ namespace Google.Solutions.IapDesktop.Application.Services.Windows
 
         public SlowLoadingPane(string title, IServiceProvider serviceProvider)
         {
+            this.serviceProvider = serviceProvider;
+
             // Show the form as normal, which presents the progress bar.
             InitializeComponent();
 
             this.TabText = title;
             this.DockAreas = WeifenLuo.WinFormsUI.Docking.DockAreas.Document;
+        }
 
+        protected void BeginLoad()
+        { 
             // Show status and keep updating while loading.
             UpdateLoadingStatus();
             this.timer.Start();
@@ -63,14 +70,22 @@ namespace Google.Solutions.IapDesktop.Application.Services.Windows
                         // Loading succeeded. Hide the loading anomation
                         // and reveal the real form.
                         this.loadingPanel.Visible = false;
-                        InitializeForm();
+                        OnLoadCompleted();
                     }
                     catch (Exception e)
                     {
-                        // Loading failed.
-                        serviceProvider
-                            .GetService<IExceptionDialog>()
-                            .Show(this, "Loading failed", e);
+                        if (e.IsCancellation())
+                        {
+                            // User closed the window, that is fine.
+                        }
+                        else
+                        {
+                            // Loading failed.
+                            this.serviceProvider
+                                .GetService<IExceptionDialog>()
+                                .Show(this, "Loading failed", e);
+                        }
+
                         CloseSafely();
                     }
                     finally
@@ -92,7 +107,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.Windows
 
         protected abstract Task LoadAsync(CancellationToken token);
 
-        protected abstract void InitializeForm();
+        protected abstract void OnLoadCompleted();
 
         //---------------------------------------------------------------------
         // Window event handlers.

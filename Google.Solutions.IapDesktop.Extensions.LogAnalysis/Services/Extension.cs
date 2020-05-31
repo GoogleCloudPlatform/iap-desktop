@@ -20,11 +20,13 @@
 //
 
 using Google.Solutions.IapDesktop.Application.ObjectModel;
+using Google.Solutions.IapDesktop.Application.Services.Adapters;
 using Google.Solutions.IapDesktop.Application.Services.Windows;
 using Google.Solutions.IapDesktop.Application.Services.Windows.ProjectExplorer;
 using Google.Solutions.IapDesktop.Extensions.LogAnalysis.Properties;
 using Google.Solutions.IapDesktop.Extensions.LogAnalysis.Services.SchedulingReport;
 using System;
+using System.Linq;
 using System.Windows.Forms;
 
 namespace Google.Solutions.IapDesktop.Extensions.LogAnalysis.Services
@@ -35,6 +37,7 @@ namespace Google.Solutions.IapDesktop.Extensions.LogAnalysis.Services
     [Service(ServiceLifetime.Singleton)]
     public class Extension
     {
+        private readonly string Title = "Instances/nodes usage report";
         private readonly IServiceProvider serviceProvider;
 
         private void CreateReport(IProjectExplorerNode contextNode)
@@ -42,17 +45,28 @@ namespace Google.Solutions.IapDesktop.Extensions.LogAnalysis.Services
             var dialog = this.serviceProvider.GetService<CreateReportDialog>();
             if (contextNode is IProjectExplorerProjectNode projectNode)
             {
-                dialog.SelectedProjectId = projectNode.ProjectId;
+                dialog.SelectProjectId(projectNode.ProjectId);
             }
 
             var mainForm = this.serviceProvider.GetService<IMainForm>();
-            if (dialog.ShowDialog(mainForm.Window) == DialogResult.OK)
+            if (dialog.ShowDialog(mainForm.Window) == DialogResult.Cancel ||
+                !dialog.SelectedProjectIds.Any())
             {
-                MessageBox.Show(dialog.SelectedProjectId);
-
-                //var pane = new SlowLoadingPane("Dummy", this.serviceProvider);
-                //pane.ShowOrActivate(mainForm.MainPanel, WeifenLuo.WinFormsUI.Docking.DockState.Document);
+                return;
             }
+
+            var builder = new AuditLogDownloader(
+                this.serviceProvider.GetService<IAuthorizationAdapter>(),
+                dialog.SelectedProjectIds,
+                dialog.SelectedStartDate);
+
+            var view = new ReportView(
+                Title,  // TODO: use better title
+                builder,
+                serviceProvider);
+            view.ShowOrActivate(
+                mainForm.MainPanel,
+                WeifenLuo.WinFormsUI.Docking.DockState.Document);
         }
 
         public Extension(IServiceProvider serviceProvider)
@@ -62,7 +76,7 @@ namespace Google.Solutions.IapDesktop.Extensions.LogAnalysis.Services
             // Add command to project explorer.
             serviceProvider.GetService<IProjectExplorer>()
                 .AddCommand(
-                    "Instances/nodes usage report...",
+                    Title + "...",
                     Resources.Report_16,
                     new ProjectExplorerCommand(
                         context => context is IProjectExplorerProjectNode 

@@ -21,19 +21,23 @@
 
 using Google.Solutions.IapDesktop.Application.Controls;
 using Google.Solutions.IapDesktop.Application.ObjectModel;
+using Google.Solutions.IapDesktop.Application.Services.Windows;
 using Google.Solutions.IapDesktop.Extensions.LogAnalysis.History;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Windows.Forms.DataVisualization.Charting;
 using DataPoint = Google.Solutions.IapDesktop.Extensions.LogAnalysis.History.DataPoint;
 
 namespace Google.Solutions.IapDesktop.Extensions.LogAnalysis.Services.SchedulingReport
 {
-    public partial class ReportView : Form
+    public partial class ReportView : SlowLoadingPane
     {
-        private readonly ReportViewModel viewModel;
+        private ReportViewModel viewModel;
+        private readonly IReportBuilder reportBuilder;
 
         public class InstancesListView : BindableListView<NodePlacement>
         { }
@@ -43,9 +47,32 @@ namespace Google.Solutions.IapDesktop.Extensions.LogAnalysis.Services.Scheduling
         public class NodesPlacementsListView : BindableListView<NodePlacement>
         { }
 
-        internal ReportView(ReportViewModel viewModel)
+        internal ReportView(
+            string title,
+            IReportBuilder reportBuilder,
+            IServiceProvider serviceProvider) 
+            : base(title, serviceProvider)
         {
-            this.viewModel = viewModel;
+            this.reportBuilder = reportBuilder;
+
+            BeginLoad();
+        }
+
+        //---------------------------------------------------------------------
+        // SlowLoadingPane overrides.
+        //---------------------------------------------------------------------
+
+        protected override string LoadingStatusText => this.reportBuilder.BuildStatus;
+        protected override ushort LoadingPercentage => this.reportBuilder.PercentageDone;
+
+        protected override async Task LoadAsync(CancellationToken token)
+        {
+            var model = await this.reportBuilder.BuildAsync(token);
+            this.viewModel = new ReportViewModel(model);
+        }
+
+        protected override void OnLoadCompleted()
+        {
             this.components = new System.ComponentModel.Container();
 
             InitializeComponent();

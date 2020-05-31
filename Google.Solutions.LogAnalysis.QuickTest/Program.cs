@@ -168,7 +168,7 @@ namespace Google.Solutions.LogAnalysis.QuickTest
                 var viewModel = new ReportViewModel(archive);
 
 
-                Application.Run(new ReportView(viewModel));
+                //Application.Run(new ReportView(viewModel));
             }
         }
 

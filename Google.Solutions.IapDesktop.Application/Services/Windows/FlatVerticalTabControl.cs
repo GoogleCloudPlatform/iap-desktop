@@ -43,7 +43,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.Windows
             using (Bitmap b = new Bitmap(Width, Height))
             using (Graphics g = Graphics.FromImage(b))
             {
-                if (!DesignMode)
+                if (!DesignMode && SelectedTab != null)
                 {
                     SelectedTab.BackColor = SystemColors.Control;
                 }

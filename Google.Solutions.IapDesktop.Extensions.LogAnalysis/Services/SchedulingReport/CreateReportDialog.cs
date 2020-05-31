@@ -20,12 +20,10 @@
 //
 
 using Google.Solutions.IapDesktop.Application.ObjectModel;
-using Google.Solutions.IapDesktop.Application.Services.Integration;
 using Google.Solutions.IapDesktop.Application.Services.Persistence;
 using System;
+using System.Collections.Generic;
 using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace Google.Solutions.IapDesktop.Extensions.LogAnalysis.Services.SchedulingReport
@@ -63,18 +61,23 @@ namespace Google.Solutions.IapDesktop.Extensions.LogAnalysis.Services.Scheduling
             // Populate list of time frames.
             this.timeFrameList.Items.AddRange(new[]
             {
+#if DEBUG
+                new TimeFrameItem(
+                    "DEBUG: Last week",
+                    DateTime.UtcNow.Date.AddDays(-7)),
+#endif
                 new TimeFrameItem(
                     "Last month",
-                    DateTime.Now.Date.AddMonths(-1)),
+                    DateTime.UtcNow.Date.AddMonths(-1)),
                 new TimeFrameItem(
                     "Last 3 months",
-                    DateTime.Now.Date.AddMonths(-3)),
+                    DateTime.UtcNow.Date.AddMonths(-3)),
                 new TimeFrameItem(
                     "Last 6 months",
-                    DateTime.Now.Date.AddMonths(-6)),
+                    DateTime.UtcNow.Date.AddMonths(-6)),
                 new TimeFrameItem(
                     "Last 12 months",
-                    DateTime.Now.Date.AddMonths(-12))
+                    DateTime.UtcNow.Date.AddMonths(-12))
             });
             this.timeFrameList.SelectedIndex = 1;
         }
@@ -82,16 +85,14 @@ namespace Google.Solutions.IapDesktop.Extensions.LogAnalysis.Services.Scheduling
         public DateTime SelectedStartDate
             => ((TimeFrameItem)this.timeFrameList.SelectedItem).StartDate;
 
-        public string SelectedProjectId
+        public IEnumerable<string> SelectedProjectIds => this.projectsList.CheckedItems.Cast<string>();
+
+        public void SelectProjectId(string projectId)
         {
-            get => (string)this.projectsList.SelectedItem;
-            set 
+            var index = this.projectsList.Items.IndexOf(projectId);
+            if (index >= 0)
             {
-                var index = this.projectsList.Items.IndexOf(value);
-                if (index >= 0)
-                {
-                    this.projectsList.SetItemChecked(index, true);
-                }
+                this.projectsList.SetItemChecked(index, true);
             }
         }
 

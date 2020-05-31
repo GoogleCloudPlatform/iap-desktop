@@ -139,6 +139,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Logs\AuditLogRecord.cs" />
     <Compile Include="Logs\LogRecord.cs" />
+    <Compile Include="Services\SchedulingReport\ReportBuilder.cs" />
     <Compile Include="Services\SchedulingReport\ReportLicensesTabViewModel.cs" />
     <Compile Include="Services\SchedulingReport\ReportInstancesTabViewModel.cs" />
     <Compile Include="Services\SchedulingReport\ReportNodesTabViewModel.cs" />
@@ -195,6 +196,7 @@
     <Error Condition="!Exists('..\packages\MSBuild.AssemblyVersion.1.2.0\build\MSBuild.AssemblyVersion.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\MSBuild.AssemblyVersion.1.2.0\build\MSBuild.AssemblyVersion.targets'))" />
   </Target>
   <PropertyGroup>
-    <PostBuildEvent>copy /Y $(TargetDir)\$(TargetName).* $(SolutionDir)\Google.Solutions.IapDesktop\$(OutDir)</PostBuildEvent>
+    <PostBuildEvent>copy /Y $(TargetDir)\$(TargetName).* $(SolutionDir)\Google.Solutions.IapDesktop\$(OutDir)
+copy /Y $(TargetDir)\Google.Apis.Logging.* $(SolutionDir)\Google.Solutions.IapDesktop\$(OutDir)</PostBuildEvent>
   </PropertyGroup>
 </Project>

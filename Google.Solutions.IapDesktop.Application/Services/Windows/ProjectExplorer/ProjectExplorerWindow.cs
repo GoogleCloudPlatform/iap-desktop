@@ -674,7 +674,20 @@ namespace Google.Solutions.IapDesktop.Application.Services.Windows.ProjectExplor
                 {
                     if (this.treeView.SelectedNode is IProjectExplorerNode node)
                     {
-                        command.Execute(node);
+                        try
+                        { 
+                            command.Execute(node);
+                        }
+                        catch (Exception e) when (e.IsCancellation())
+                        {
+                            // Ignore.
+                        }
+                        catch (Exception e)
+                        {
+                            this.serviceProvider
+                                .GetService<IExceptionDialog>()
+                                .Show(this, "Command failed", e);
+                        }
                     }
                 })
             {
