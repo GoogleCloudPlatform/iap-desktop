@@ -374,49 +374,6 @@ namespace Google.Solutions.IapDesktop.Application.Services.Windows.ProjectExplor
             }
         }
 
-        private void generateHtmlPageToolStripMenuItem_Click_1(object sender, EventArgs e)
-        {
-#if DEBUG
-            if (this.treeView.SelectedNode is ProjectNode projectNode)
-            {
-                var buffer = new StringBuilder();
-                buffer.Append("<html><body>");
-
-                buffer.Append($"<h1>{HttpUtility.HtmlEncode(projectNode.ProjectId)}</h1>");
-
-                foreach (var zoneNode in projectNode.Nodes.Cast<ZoneNode>())
-                {
-                    buffer.Append($"<h2>{HttpUtility.HtmlEncode(zoneNode.ZoneId)}</h2>");
-
-                    buffer.Append($"<ul>");
-
-                    foreach (var vmNode in zoneNode.Nodes.Cast<VmInstanceNode>())
-                    {
-                        buffer.Append($"<li>");
-                        buffer.Append($"<a href='{new IapRdpUrl(vmNode.Reference, vmNode.EffectiveSettingsWithInheritanceApplied)}'>");
-                        buffer.Append($"{HttpUtility.HtmlEncode(vmNode.InstanceName)}</a>");
-                        buffer.Append($"</li>");
-                    }
-
-                    buffer.Append($"</ul>");
-                }
-
-                buffer.Append("</body></html>");
-
-                var tempFile = Path.GetTempFileName() + ".html";
-                File.WriteAllText(tempFile, buffer.ToString());
-
-                Process.Start(new ProcessStartInfo()
-                {
-                    UseShellExecute = true,
-                    Verb = "open",
-                    FileName = tempFile
-                });
-
-            }
-#endif
-        }
-
         //---------------------------------------------------------------------
         // Other Windows event handlers.
         //---------------------------------------------------------------------
@@ -491,12 +448,29 @@ namespace Google.Solutions.IapDesktop.Application.Services.Windows.ProjectExplor
                     this.showSerialLogToolStripMenuItem.Enabled =
                         (selectedNode is VmInstanceNode) && ((VmInstanceNode)selectedNode).IsRunning;
 
-#if DEBUG
-                this.debugToolStripMenuItem.Visible =
-                    this.generateHtmlPageToolStripMenuItem.Visible = (selectedNode is ProjectNode);
-#else
-                this.debugToolStripMenuItem.Visible = false;
-#endif
+                // 
+                // Handle dynamic menu items.
+                //
+                foreach (var menuItem in this.contextMenu.Items
+                    .OfType<ToolStripMenuItem>()
+                    .Where(m => m.Tag is IProjectExplorerCommand))
+                {
+                    switch (((IProjectExplorerCommand)menuItem.Tag).QueryState(selectedNode))
+                    {
+                        case CommandState.Disabled:
+                            menuItem.Visible = true;
+                            menuItem.Enabled = false;
+                            break;
+
+                        case CommandState.Enabled:
+                            menuItem.Enabled = menuItem.Visible = true;
+                            break;
+
+                        case CommandState.Unavailable:
+                            menuItem.Visible = false;
+                            break;
+                    }
+                }
 
                 //
                 // Fire event.
@@ -686,6 +660,28 @@ namespace Google.Solutions.IapDesktop.Application.Services.Windows.ProjectExplor
                 .Where(z => z.ZoneId == reference.Zone)
                 .SelectMany(z => z.Nodes.Cast<VmInstanceNode>())
                 .FirstOrDefault(vm => vm.InstanceName == reference.Name); ;
+        }
+
+        public void AddCommand(
+            string text,
+            System.Drawing.Image image,
+            IProjectExplorerCommand command)
+        {
+            var menuItem = new ToolStripMenuItem(
+                text,
+                image,
+                (sender, args) =>
+                {
+                    if (this.treeView.SelectedNode is IProjectExplorerNode node)
+                    {
+                        command.Execute(node);
+                    }
+                })
+            {
+                Tag = command
+            };
+
+            this.contextMenu.Items.Add(menuItem);
         }
     }
 }

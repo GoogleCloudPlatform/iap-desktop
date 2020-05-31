@@ -19,28 +19,33 @@
 // under the License.
 //
 
+using System.Collections.Generic;
+
 namespace Google.Solutions.IapDesktop.Application.Services.Windows.ProjectExplorer
 {
-    internal interface IProjectExplorerNode
+    public interface IProjectExplorerNode
     {
     }
 
-    internal interface IProjectExplorerCloudNode : IProjectExplorerNode
+    public interface IProjectExplorerCloudNode : IProjectExplorerNode
     {
     }
 
-    internal interface IProjectExplorerProjectNode : IProjectExplorerNode
+    public interface IProjectExplorerProjectNode : IProjectExplorerNode
     {
         string ProjectId { get; }
+
+        IEnumerable<IProjectExplorerZoneNode> Zones { get; }
     }
 
-    internal interface IProjectExplorerZoneNode : IProjectExplorerNode
+    public interface IProjectExplorerZoneNode : IProjectExplorerNode
     {
         string ProjectId { get; }
         string ZoneId { get; }
+        IEnumerable<IProjectExplorerVmInstanceNode> Instances { get; }
     }
 
-    internal interface IProjectExplorerVmInstanceNode : IProjectExplorerNode
+    public interface IProjectExplorerVmInstanceNode : IProjectExplorerNode
     {
         string ProjectId { get; }
         string ZoneId { get; }

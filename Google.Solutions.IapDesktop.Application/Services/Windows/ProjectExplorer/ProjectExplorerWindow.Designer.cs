@@ -76,8 +76,6 @@ namespace Google.Solutions.IapDesktop.Application.Services.Windows.ProjectExplor
             this.openInCloudConsoleToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.openlogsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.imageList = new System.Windows.Forms.ImageList(this.components);
-            this.debugToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.generateHtmlPageToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStrip.SuspendLayout();
             this.contextMenu.SuspendLayout();
             this.SuspendLayout();
@@ -197,10 +195,9 @@ namespace Google.Solutions.IapDesktop.Application.Services.Windows.ProjectExplor
             this.configureIapAccessToolStripMenuItem,
             this.cloudConsoleSeparatorToolStripMenuItem,
             this.openInCloudConsoleToolStripMenuItem,
-            this.openlogsToolStripMenuItem,
-            this.debugToolStripMenuItem});
+            this.openlogsToolStripMenuItem});
             this.contextMenu.Name = "contextMenu";
-            this.contextMenu.Size = new System.Drawing.Size(277, 280);
+            this.contextMenu.Size = new System.Drawing.Size(277, 258);
             // 
             // connectToolStripMenuItem
             // 
@@ -300,21 +297,6 @@ namespace Google.Solutions.IapDesktop.Application.Services.Windows.ProjectExplor
             this.imageList.Images.SetKeyName(5, "ComputerBlue_16.png");
             this.imageList.Images.SetKeyName(6, "ComputerStopped_16.png");
             // 
-            // debugToolStripMenuItem
-            // 
-            this.debugToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.generateHtmlPageToolStripMenuItem});
-            this.debugToolStripMenuItem.Name = "debugToolStripMenuItem";
-            this.debugToolStripMenuItem.Size = new System.Drawing.Size(276, 22);
-            this.debugToolStripMenuItem.Text = "Debug";
-            // 
-            // generateHtmlPageToolStripMenuItem
-            // 
-            this.generateHtmlPageToolStripMenuItem.Name = "generateHtmlPageToolStripMenuItem";
-            this.generateHtmlPageToolStripMenuItem.Size = new System.Drawing.Size(185, 22);
-            this.generateHtmlPageToolStripMenuItem.Text = "Generate HTML page";
-            this.generateHtmlPageToolStripMenuItem.Click += new System.EventHandler(this.generateHtmlPageToolStripMenuItem_Click_1);
-            // 
             // ProjectExplorerWindow
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -361,7 +343,5 @@ namespace Google.Solutions.IapDesktop.Application.Services.Windows.ProjectExplor
         private System.Windows.Forms.ToolStripButton connectToolStripButton;
         private System.Windows.Forms.ToolStripMenuItem showSerialLogToolStripMenuItem;
         private System.Windows.Forms.ToolStripButton showSerialLogToolStripButton;
-        private System.Windows.Forms.ToolStripMenuItem debugToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem generateHtmlPageToolStripMenuItem;
     }
 }

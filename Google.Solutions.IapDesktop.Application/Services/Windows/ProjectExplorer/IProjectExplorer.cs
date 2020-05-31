@@ -19,7 +19,6 @@
 // under the License.
 //
 
-using Google.Solutions.Common;
 using Google.Solutions.Common.Locator;
 using System.Threading.Tasks;
 
@@ -33,6 +32,23 @@ namespace Google.Solutions.IapDesktop.Application.Services.Windows.ProjectExplor
         Task ShowAddProjectDialogAsync();
 
         VmInstanceNode TryFindNode(InstanceLocator reference);
+
+        void AddCommand(
+            string text,
+            System.Drawing.Image image,
+            IProjectExplorerCommand command);
     }
 
+    public interface IProjectExplorerCommand
+    {
+        CommandState QueryState(IProjectExplorerNode context);
+        void Execute(IProjectExplorerNode context);
+    }
+
+    public enum CommandState
+    {
+        Enabled,
+        Disabled,
+        Unavailable
+    }
 }
