@@ -56,9 +56,9 @@ namespace Google.Solutions.IapDesktop.Extensions.LogAnalysis.Services.Scheduling
             this.projectsList = new System.Windows.Forms.CheckedListBox();
             this.label1 = new System.Windows.Forms.Label();
             this.topPane = new System.Windows.Forms.Label();
-            this.projectIcon = new System.Windows.Forms.PictureBox();
+            this.reportIcon = new System.Windows.Forms.PictureBox();
             this.panel.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.projectIcon)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.reportIcon)).BeginInit();
             this.SuspendLayout();
             // 
             // cancelButton
@@ -91,7 +91,7 @@ namespace Google.Solutions.IapDesktop.Extensions.LogAnalysis.Services.Scheduling
             this.panel.Controls.Add(this.projectsList);
             this.panel.Controls.Add(this.label1);
             this.panel.Controls.Add(this.topPane);
-            this.panel.Controls.Add(this.projectIcon);
+            this.panel.Controls.Add(this.reportIcon);
             this.panel.Location = new System.Drawing.Point(-1, -1);
             this.panel.Name = "panel";
             this.panel.Size = new System.Drawing.Size(334, 165);
@@ -113,6 +113,7 @@ namespace Google.Solutions.IapDesktop.Extensions.LogAnalysis.Services.Scheduling
             this.projectsList.Name = "projectsList";
             this.projectsList.Size = new System.Drawing.Size(230, 64);
             this.projectsList.TabIndex = 12;
+            this.projectsList.ItemCheck += new System.Windows.Forms.ItemCheckEventHandler(this.projectsList_ItemCheck);
             // 
             // label1
             // 
@@ -132,14 +133,14 @@ namespace Google.Solutions.IapDesktop.Extensions.LogAnalysis.Services.Scheduling
             this.topPane.TabIndex = 10;
             this.topPane.Text = "Projects to analyze:";
             // 
-            // projectIcon
+            // reportIcon
             // 
-            this.projectIcon.Image = global::Google.Solutions.IapDesktop.Extensions.LogAnalysis.Properties.Resources.Refresh_32;
-            this.projectIcon.Location = new System.Drawing.Point(18, 14);
-            this.projectIcon.Name = "projectIcon";
-            this.projectIcon.Size = new System.Drawing.Size(32, 32);
-            this.projectIcon.TabIndex = 9;
-            this.projectIcon.TabStop = false;
+            this.reportIcon.Image = global::Google.Solutions.IapDesktop.Extensions.LogAnalysis.Properties.Resources.Report_32;
+            this.reportIcon.Location = new System.Drawing.Point(18, 14);
+            this.reportIcon.Name = "reportIcon";
+            this.reportIcon.Size = new System.Drawing.Size(32, 32);
+            this.reportIcon.TabIndex = 9;
+            this.reportIcon.TabStop = false;
             // 
             // CreateReportDialog
             // 
@@ -160,7 +161,7 @@ namespace Google.Solutions.IapDesktop.Extensions.LogAnalysis.Services.Scheduling
             this.Text = "Create instance and node usage report";
             this.panel.ResumeLayout(false);
             this.panel.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.projectIcon)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.reportIcon)).EndInit();
             this.ResumeLayout(false);
 
         }
@@ -171,7 +172,7 @@ namespace Google.Solutions.IapDesktop.Extensions.LogAnalysis.Services.Scheduling
         private System.Windows.Forms.Button okButton;
         private System.Windows.Forms.Panel panel;
         private System.Windows.Forms.Label topPane;
-        private System.Windows.Forms.PictureBox projectIcon;
+        private System.Windows.Forms.PictureBox reportIcon;
         private System.Windows.Forms.ComboBox timeFrameList;
         private System.Windows.Forms.CheckedListBox projectsList;
         private System.Windows.Forms.Label label1;

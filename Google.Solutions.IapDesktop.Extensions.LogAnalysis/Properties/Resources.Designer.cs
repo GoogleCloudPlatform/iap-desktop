@@ -63,9 +63,9 @@ namespace Google.Solutions.IapDesktop.Extensions.LogAnalysis.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap Refresh_32 {
+        internal static System.Drawing.Bitmap Report_16 {
             get {
-                object obj = ResourceManager.GetObject("Refresh_32", resourceCulture);
+                object obj = ResourceManager.GetObject("Report_16", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -73,9 +73,9 @@ namespace Google.Solutions.IapDesktop.Extensions.LogAnalysis.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap Refresh_48 {
+        internal static System.Drawing.Bitmap Report_32 {
             get {
-                object obj = ResourceManager.GetObject("Refresh_48", resourceCulture);
+                object obj = ResourceManager.GetObject("Report_32", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }

@@ -21,6 +21,7 @@
 
 using Google.Solutions.IapDesktop.Application.ObjectModel;
 using Google.Solutions.IapDesktop.Application.Services.Integration;
+using Google.Solutions.IapDesktop.Application.Services.Persistence;
 using System;
 using System.Linq;
 using System.Threading;
@@ -51,20 +52,13 @@ namespace Google.Solutions.IapDesktop.Extensions.LogAnalysis.Services.Scheduling
             InitializeComponent();
 
             // Populate list of projects.
-            serviceProvider.GetService<ProjectInventoryService>()
-                .ListProjectsAsync()
-                .ContinueWith(
-                    t =>
-                    {
-                        var projectIds = t.Result
-                            .Select(p => p.Name)
-                            .OrderBy(id => id)
-                            .ToArray();
-                        this.projectsList.Items.AddRange(projectIds);
-                    },
-                    CancellationToken.None,
-                    TaskContinuationOptions.OnlyOnFaulted,
-                    TaskScheduler.FromCurrentSynchronizationContext());
+            var projectIds = serviceProvider.GetService<ConnectionSettingsRepository>()
+                .ListProjectSettings()
+                .Select(p => p.ProjectId);
+
+            this.projectsList.Items.AddRange(projectIds
+                .OrderBy(id => id)
+                .ToArray());
 
             // Populate list of time frames.
             this.timeFrameList.Items.AddRange(new[]
@@ -88,10 +82,25 @@ namespace Google.Solutions.IapDesktop.Extensions.LogAnalysis.Services.Scheduling
         public DateTime SelectedStartDate
             => ((TimeFrameItem)this.timeFrameList.SelectedItem).StartDate;
 
-        public string SelectedProject
+        public string SelectedProjectId
         {
             get => (string)this.projectsList.SelectedItem;
-            set => this.projectsList.SelectedItem = value;
+            set 
+            {
+                var index = this.projectsList.Items.IndexOf(value);
+                if (index >= 0)
+                {
+                    this.projectsList.SetItemChecked(index, true);
+                }
+            }
+        }
+
+        private void projectsList_ItemCheck(object sender, ItemCheckEventArgs e)
+        {
+            // NB. The event fires before the CheckedIndices property
+            // is updated.
+            this.okButton.Enabled = this.projectsList.CheckedIndices.Count > 1 ||
+                e.NewValue == CheckState.Checked;
         }
     }
 }
