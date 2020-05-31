@@ -49,6 +49,9 @@ namespace Google.Solutions.IapDesktop.Extensions.LogAnalysis.Services
             if (dialog.ShowDialog(mainForm.Window) == DialogResult.OK)
             {
                 MessageBox.Show(dialog.SelectedProjectId);
+
+                //var pane = new SlowLoadingPane("Dummy", this.serviceProvider);
+                //pane.ShowOrActivate(mainForm.MainPanel, WeifenLuo.WinFormsUI.Docking.DockState.Document);
             }
         }
 
