@@ -19,20 +19,16 @@
 // under the License.
 //
 
-using Google.Apis.Compute.v1;
 using Google.Apis.Compute.v1.Data;
-using Google.Solutions.Common;
-using Google.Solutions.Common.ApiExtensions;
 using Google.Solutions.Common.Diagnostics;
 using Google.Solutions.Common.Locator;
 using Google.Solutions.Common.Util;
+using Google.Solutions.IapDesktop.Application;
 using Google.Solutions.IapDesktop.Extensions.LogAnalysis.Events;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
 
 namespace Google.Solutions.IapDesktop.Extensions.LogAnalysis.History
 {
@@ -102,7 +98,7 @@ namespace Google.Solutions.IapDesktop.Extensions.LogAnalysis.History
             IEnumerable<Disk> disks,
             string projectId)
         {
-            using (TraceSources.LogAnalysis.TraceMethod().WithParameters(projectId))
+            using (TraceSources.IapDesktop.TraceMethod().WithParameters(projectId))
             {
                 //
                 // NB. Instances.list returns the disks associated with each
@@ -113,12 +109,12 @@ namespace Google.Solutions.IapDesktop.Extensions.LogAnalysis.History
                     .EnsureNotNull()
                     .ToDictionary(d => d.SelfLink, d => d.SourceImage);
 
-                TraceSources.LogAnalysis.TraceVerbose("Found {0} existing disks", sourceImagesByDisk.Count());
-                TraceSources.LogAnalysis.TraceVerbose("Found {0} existing instances", instances.Count());
+                TraceSources.IapDesktop.TraceVerbose("Found {0} existing disks", sourceImagesByDisk.Count());
+                TraceSources.IapDesktop.TraceVerbose("Found {0} existing instances", instances.Count());
 
                 foreach (var instance in instances)
                 {
-                    TraceSources.LogAnalysis.TraceVerbose("Adding {0}", instance.Id);
+                    TraceSources.IapDesktop.TraceVerbose("Adding {0}", instance.Id);
 
                     var bootDiskUrl = instance.Disks
                         .EnsureNotNull()

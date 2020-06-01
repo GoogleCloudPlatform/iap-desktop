@@ -26,6 +26,7 @@ using Google.Apis.Services;
 using Google.Apis.Util;
 using Google.Solutions.Common.ApiExtensions.Request;
 using Google.Solutions.Common.Diagnostics;
+using Google.Solutions.IapDesktop.Application;
 using Google.Solutions.IapDesktop.Application.ObjectModel;
 using Google.Solutions.IapDesktop.Application.Services.Adapters;
 using Google.Solutions.IapDesktop.Extensions.LogAnalysis.Events;
@@ -71,7 +72,7 @@ namespace Google.Solutions.IapDesktop.Extensions.LogAnalysis.Services.Adapters
             ExponentialBackOff backOff,
             CancellationToken cancellationToken)
         {
-            using (TraceSources.LogAnalysis.TraceMethod().WithParameters(request.Filter))
+            using (TraceSources.IapDesktop.TraceMethod().WithParameters(request.Filter))
             {
                 try
                 {
@@ -104,7 +105,7 @@ namespace Google.Solutions.IapDesktop.Extensions.LogAnalysis.Services.Adapters
             IEventProcessor processor,
             CancellationToken cancellationToken)
         {
-            using (TraceSources.LogAnalysis.TraceMethod().WithParameters(
+            using (TraceSources.IapDesktop.TraceMethod().WithParameters(
                 string.Join(", ", projectIds), 
                 startTime))
             {

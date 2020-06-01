@@ -19,13 +19,12 @@
 // under the License.
 //
 
-using Google.Apis.Compute.v1;
 using Google.Apis.Compute.v1.Data;
 using Google.Solutions.Common.Diagnostics;
 using Google.Solutions.Common.Locator;
 using Google.Solutions.Common.Util;
+using Google.Solutions.IapDesktop.Application;
 using Google.Solutions.IapDesktop.Application.Services.Adapters;
-using System;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -80,7 +79,7 @@ namespace Google.Solutions.IapDesktop.Extensions.LogAnalysis.Services.Scheduling
                         image,
                         license);
 
-                    TraceSources.LogAnalysis.TraceVerbose("License for {0} is {1}", image, license);
+                    TraceSources.IapDesktop.TraceVerbose("License for {0} is {1}", image, license);
                 }
                 catch (ResourceNotFoundException) when (image.ProjectId == "windows-cloud")
                 {
@@ -91,19 +90,19 @@ namespace Google.Solutions.IapDesktop.Extensions.LogAnalysis.Services.Scheduling
                         OperatingSystemTypes.Windows,
                         LicenseTypes.Spla);
 
-                    TraceSources.LogAnalysis.TraceVerbose(
+                    TraceSources.IapDesktop.TraceVerbose(
                         "License for {0} could not be found, but must be Windows/SPLA", image);
                 }
                 catch (ResourceNotFoundException e) 
                 {
                     // Unknown or inaccessible image, skip.
-                    TraceSources.LogAnalysis.TraceWarning(
+                    TraceSources.IapDesktop.TraceWarning(
                         "License for {0} could not be found: {0}", image, e);
                 }
                 catch (ResourceAccessDeniedException e)
                 {
                     // Unknown or inaccessible image, skip.
-                    TraceSources.LogAnalysis.TraceWarning(
+                    TraceSources.IapDesktop.TraceWarning(
                         "License for {0} could not be accessed: {0}", image, e);
                 }
             }

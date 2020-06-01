@@ -151,7 +151,6 @@
       <DependentUpon>ReportPaneView.cs</DependentUpon>
     </Compile>
     <Compile Include="Services\SchedulingReport\ReportViewModel.cs" />
-    <Compile Include="TraceSources.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Google.Solutions.Common\Google.Solutions.Common.csproj">

@@ -30,6 +30,7 @@ using System.Threading.Tasks;
 using Google.Solutions.IapDesktop.Extensions.LogAnalysis.Events;
 using Google.Solutions.IapDesktop.Extensions.LogAnalysis.Services.Adapters;
 using Google.Solutions.Common.Diagnostics;
+using Google.Solutions.IapDesktop.Application;
 
 namespace Google.Solutions.IapDesktop.Extensions.LogAnalysis.Services.SchedulingReport
 {
@@ -80,7 +81,7 @@ namespace Google.Solutions.IapDesktop.Extensions.LogAnalysis.Services.Scheduling
 
         public async Task<ReportArchive> BuildAsync(CancellationToken cancellationToken)
         {
-            using (TraceSources.LogAnalysis.TraceMethod().WithoutParameters())
+            using (TraceSources.IapDesktop.TraceMethod().WithoutParameters())
             {
                 this.PercentageDone = 5;
                 this.BuildStatus = "Analyzing current state...";

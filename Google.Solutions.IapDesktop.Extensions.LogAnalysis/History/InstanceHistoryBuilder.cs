@@ -19,10 +19,10 @@
 // under the License.
 //
 
-using Google.Solutions.Common;
 using Google.Solutions.Common.Diagnostics;
 using Google.Solutions.Common.Locator;
 using Google.Solutions.Common.Util;
+using Google.Solutions.IapDesktop.Application;
 using Google.Solutions.IapDesktop.Extensions.LogAnalysis.Events;
 using Google.Solutions.IapDesktop.Extensions.LogAnalysis.Events.Lifecycle;
 using Google.Solutions.IapDesktop.Extensions.LogAnalysis.Events.System;
@@ -103,7 +103,7 @@ namespace Google.Solutions.IapDesktop.Extensions.LogAnalysis.History
                 }
                 else
                 {
-                    TraceSources.LogAnalysis.TraceWarning(
+                    TraceSources.IapDesktop.TraceWarning(
                         "Instance {0} was placed, but never stopped, " +
                         "and yet is not running anymore. Flagging as defunct.",
                         this.InstanceId);
@@ -315,7 +315,7 @@ namespace Google.Solutions.IapDesktop.Extensions.LogAnalysis.History
 
         public void Process(EventBase e)
         {
-            using (TraceSources.LogAnalysis.TraceMethod().WithParameters(e))
+            using (TraceSources.IapDesktop.TraceMethod().WithParameters(e))
             {
                 if (e is NotifyInstanceLocationEvent notifyLocation)
                 {
