@@ -29,6 +29,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Google.Solutions.IapDesktop.Extensions.LogAnalysis.Events;
 using Google.Solutions.IapDesktop.Extensions.LogAnalysis.Services.Adapters;
+using Google.Solutions.Common.Diagnostics;
 
 namespace Google.Solutions.IapDesktop.Extensions.LogAnalysis.Services.SchedulingReport
 {
@@ -79,54 +80,57 @@ namespace Google.Solutions.IapDesktop.Extensions.LogAnalysis.Services.Scheduling
 
         public async Task<ReportArchive> BuildAsync(CancellationToken cancellationToken)
         {
-            this.PercentageDone = 5;
-            this.BuildStatus = "Analyzing current state...";
-
-            foreach (var projectId in this.projectIds)
+            using (TraceSources.LogAnalysis.TraceMethod().WithoutParameters())
             {
-                //
-                // Load disks.
-                //
-                // NB. Instances.list returns the disks associated with each
-                // instance, but lacks the information about the source image.
-                // Therefore, we load disks first and then join the data.
-                //
-                var disks = await this.computeEngineAdapter.ListDisksAsync(
-                    projectId, 
+                this.PercentageDone = 5;
+                this.BuildStatus = "Analyzing current state...";
+
+                foreach (var projectId in this.projectIds)
+                {
+                    //
+                    // Load disks.
+                    //
+                    // NB. Instances.list returns the disks associated with each
+                    // instance, but lacks the information about the source image.
+                    // Therefore, we load disks first and then join the data.
+                    //
+                    var disks = await this.computeEngineAdapter.ListDisksAsync(
+                        projectId,
+                        cancellationToken);
+
+                    //
+                    // Load instances.
+                    //
+                    var instances = await this.computeEngineAdapter.ListInstancesAsync(
+                        projectId,
+                        cancellationToken);
+
+                    this.builder.AddExistingInstances(
+                        instances,
+                        disks,
+                        projectId);
+                }
+
+                this.PercentageDone = 10;
+                this.BuildStatus = $"Analyzing changes made since {this.builder.StartDate:d}...";
+
+                await this.auditLogAdapter.ListInstanceEventsAsync(
+                    this.projectIds,
+                    this.builder.StartDate,
+                    this,
                     cancellationToken);
 
-                //
-                // Load instances.
-                //
-                var instances = await this.computeEngineAdapter.ListInstancesAsync(
-                    projectId,
+                this.PercentageDone = 90;
+                this.BuildStatus = "Finalizing report...";
+
+                var archive = ReportArchive.FromInstanceSetHistory(this.builder.Build());
+
+                await archive.LoadLicenseAnnotationsAsync(
+                    this.computeEngineAdapter,
                     cancellationToken);
 
-                this.builder.AddExistingInstances(
-                    instances,
-                    disks,
-                    projectId);
+                return archive;
             }
-
-            this.PercentageDone = 10;
-            this.BuildStatus = $"Analyzing changes made since {this.builder.StartDate:d}...";
-
-            await this.auditLogAdapter.ListInstanceEventsAsync(
-                this.projectIds,
-                this.builder.StartDate,
-                this,
-                cancellationToken);
-
-            this.PercentageDone = 90;
-            this.BuildStatus = "Finalizing report...";
-
-            var archive = ReportArchive.FromInstanceSetHistory(this.builder.Build());
-
-            await archive.LoadLicenseAnnotationsAsync(
-                this.computeEngineAdapter,
-                cancellationToken);
-
-            return archive;
         }
 
         //---------------------------------------------------------------------

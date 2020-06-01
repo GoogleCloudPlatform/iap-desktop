@@ -30,7 +30,6 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Windows.Forms.DataVisualization.Charting;
-using WeifenLuo.WinFormsUI.Docking;
 using DataPoint = Google.Solutions.IapDesktop.Extensions.LogAnalysis.History.DataPoint;
 
 namespace Google.Solutions.IapDesktop.Extensions.LogAnalysis.Services.SchedulingReport

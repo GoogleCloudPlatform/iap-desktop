@@ -21,6 +21,7 @@
 
 using Google.Apis.Compute.v1;
 using Google.Apis.Compute.v1.Data;
+using Google.Solutions.Common.Diagnostics;
 using Google.Solutions.Common.Locator;
 using Google.Solutions.Common.Util;
 using Google.Solutions.IapDesktop.Application.Services.Adapters;
@@ -74,9 +75,12 @@ namespace Google.Solutions.IapDesktop.Extensions.LogAnalysis.Services.Scheduling
                     // "/compute/v1/projects/compute-image-tools/global/licenses/virtual-disk-import"
                     // are not helpful here. So do some filtering.
 
+                    var license = TryGetRelevantLicenseFromImage(imageInfo);
                     annotatedSet.AddLicenseAnnotation(
                         image,
-                        TryGetRelevantLicenseFromImage(imageInfo));
+                        license);
+
+                    TraceSources.LogAnalysis.TraceVerbose("License for {0} is {1}", image, license);
                 }
                 catch (ResourceNotFoundException) when (image.ProjectId == "windows-cloud")
                 {
@@ -86,14 +90,21 @@ namespace Google.Solutions.IapDesktop.Extensions.LogAnalysis.Services.Scheduling
                         image,
                         OperatingSystemTypes.Windows,
                         LicenseTypes.Spla);
+
+                    TraceSources.LogAnalysis.TraceVerbose(
+                        "License for {0} could not be found, but must be Windows/SPLA", image);
                 }
-                catch (ResourceNotFoundException) 
+                catch (ResourceNotFoundException e) 
                 {
                     // Unknown or inaccessible image, skip.
+                    TraceSources.LogAnalysis.TraceWarning(
+                        "License for {0} could not be found: {0}", image, e);
                 }
-                catch (ResourceAccessDeniedException)
+                catch (ResourceAccessDeniedException e)
                 {
                     // Unknown or inaccessible image, skip.
+                    TraceSources.LogAnalysis.TraceWarning(
+                        "License for {0} could not be accessed: {0}", image, e);
                 }
             }
         }
