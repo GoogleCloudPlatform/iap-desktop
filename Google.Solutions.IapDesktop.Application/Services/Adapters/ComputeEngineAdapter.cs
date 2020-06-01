@@ -41,7 +41,9 @@ namespace Google.Solutions.IapDesktop.Application.Services.Adapters
 {
     public interface IComputeEngineAdapter : IDisposable
     {
-        Task<IEnumerable<Instance>> QueryInstancesAsync(string projectId);
+        Task<IEnumerable<Instance>> QueryInstancesAsync(
+            string projectId,
+            CancellationToken cancellationToken);
 
         Task<NetworkCredential> ResetWindowsUserAsync(
             InstanceLocator instanceRef,
@@ -81,7 +83,9 @@ namespace Google.Solutions.IapDesktop.Application.Services.Adapters
         {
         }
 
-        public async Task<IEnumerable<Instance>> QueryInstancesAsync(string projectId)
+        public async Task<IEnumerable<Instance>> QueryInstancesAsync(
+            string projectId,
+            CancellationToken cancellationToken)
         {
             using (TraceSources.IapDesktop.TraceMethod().WithParameters(projectId))
             {
@@ -94,7 +98,8 @@ namespace Google.Solutions.IapDesktop.Application.Services.Adapters
                         this.service.Instances.AggregatedList(projectId),
                         instances => instances.Items.Values.Where(v => v != null),
                         response => response.NextPageToken,
-                        (request, token) => { request.PageToken = token; });
+                        (request, token) => { request.PageToken = token; },
+                        cancellationToken);
 
                     var result = zones
                         .Where(z => z.Instances != null)    // API returns null for empty zones.

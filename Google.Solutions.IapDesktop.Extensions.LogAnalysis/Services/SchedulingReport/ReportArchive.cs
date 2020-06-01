@@ -29,6 +29,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Google.Solutions.IapDesktop.Extensions.LogAnalysis.Services.SchedulingReport
@@ -108,9 +109,14 @@ namespace Google.Solutions.IapDesktop.Extensions.LogAnalysis.Services.Scheduling
             this.LicenseAnnotations[image.ToString()] = new ImageAnnotation(osType, licenseType);
         }
 
-        public async Task LoadLicenseAnnotationsAsync(ImagesResource imagesResource)
+        public async Task LoadLicenseAnnotationsAsync(
+            ImagesResource imagesResource,
+            CancellationToken cancellationToken)
         {
-            await LicenseLoader.LoadLicenseAnnotationsAsync(this, imagesResource);
+            await LicenseLoader.LoadLicenseAnnotationsAsync(
+                this, 
+                imagesResource, 
+                cancellationToken);
         }
 
         //---------------------------------------------------------------------

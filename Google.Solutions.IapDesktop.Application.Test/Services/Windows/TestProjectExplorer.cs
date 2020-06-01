@@ -29,6 +29,7 @@ using Moq;
 using NUnit.Framework;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
@@ -93,7 +94,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Windows
             var computeEngineAdapter = new Mock<IComputeEngineAdapter>();
             this.serviceRegistry.AddSingleton<IComputeEngineAdapter>(computeEngineAdapter.Object);
             computeEngineAdapter
-                .Setup(o => o.QueryInstancesAsync("project-1"))
+                .Setup(o => o.QueryInstancesAsync("project-1", It.IsAny<CancellationToken>()))
                 .Returns(Task.FromResult<IEnumerable<Instance>>(instances));
 
             var window = new ProjectExplorerWindow(this.serviceProvider);
@@ -144,7 +145,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Windows
             var computeEngineAdapter = new Mock<IComputeEngineAdapter>();
             this.serviceRegistry.AddSingleton<IComputeEngineAdapter>(computeEngineAdapter.Object);
             computeEngineAdapter
-                .Setup(o => o.QueryInstancesAsync("project-1"))
+                .Setup(o => o.QueryInstancesAsync("project-1", It.IsAny<CancellationToken>()))
                 .Returns(Task.FromResult<IEnumerable<Instance>>(instances));
 
             var window = new ProjectExplorerWindow(this.serviceProvider);
@@ -189,10 +190,10 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Windows
             this.serviceRegistry.AddSingleton<IComputeEngineAdapter>(computeEngineAdapter.Object);
 
             computeEngineAdapter
-                .Setup(o => o.QueryInstancesAsync("valid-project"))
+                .Setup(o => o.QueryInstancesAsync("valid-project", It.IsAny<CancellationToken>()))
                 .Returns(Task.FromResult<IEnumerable<Instance>>(instances));
             computeEngineAdapter
-                .Setup(o => o.QueryInstancesAsync("forbidden-project"))
+                .Setup(o => o.QueryInstancesAsync("forbidden-project", It.IsAny<CancellationToken>()))
                 .Throws(new ComputeEngineException("Access denied or something", null));
 
             var window = new ProjectExplorerWindow(this.serviceProvider);

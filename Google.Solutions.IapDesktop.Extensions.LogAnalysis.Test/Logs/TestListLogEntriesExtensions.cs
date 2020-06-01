@@ -116,7 +116,8 @@ namespace Google.Solutions.IapDesktop.Extensions.LogAnalysis.Test.Logs
             await instanceBuilder.AddExistingInstances(
                 computeService.Instances,
                 computeService.Disks,
-                Defaults.ProjectId);
+                Defaults.ProjectId,
+                CancellationToken.None);
 
             await loggingService.Entries.ListInstanceEventsAsync(
                 new[] { Defaults.ProjectId },

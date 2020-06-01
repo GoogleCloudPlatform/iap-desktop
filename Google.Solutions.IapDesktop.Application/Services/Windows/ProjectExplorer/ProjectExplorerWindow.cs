@@ -40,6 +40,7 @@ using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Web;
 using System.Windows.Forms;
@@ -588,7 +589,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.Windows.ProjectExplor
                             try
                             {
                                 accumulator[project.Name] =
-                                    await computeEngineAdapter.QueryInstancesAsync(project.Name);
+                                    await computeEngineAdapter.QueryInstancesAsync(project.Name, token);
                             }
                             catch (Exception e) when (e.IsReauthError())
                             {
@@ -633,7 +634,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.Windows.ProjectExplor
             {
                 var instances = await this.jobService.RunInBackground(
                     new JobDescription("Loading project inventory..."),
-                    token => computeEngineAdapter.QueryInstancesAsync(projectId));
+                    token => computeEngineAdapter.QueryInstancesAsync(projectId, CancellationToken.None));
 
                 PopulateProjectNode(projectId, instances);
             }

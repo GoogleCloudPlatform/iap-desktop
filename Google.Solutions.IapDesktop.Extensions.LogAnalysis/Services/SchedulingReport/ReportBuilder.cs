@@ -89,36 +89,37 @@ namespace Google.Solutions.IapDesktop.Extensions.LogAnalysis.Services.Scheduling
 
         public string BuildStatus { get; private set; } = string.Empty;
 
-        public async Task<ReportArchive> BuildAsync(CancellationToken token)
+        public async Task<ReportArchive> BuildAsync(CancellationToken cancellationToken)
         {
             this.PercentageDone = 5;
             this.BuildStatus = "Analyzing current state...";
 
             foreach (var projectId in this.projectIds)
             {
-                // TODO: pass cancellation token
                 await this.builder.AddExistingInstances(
                     computeService.Instances,
                     computeService.Disks,
-                    projectId);
+                    projectId,
+                    cancellationToken);
             }
 
             this.PercentageDone = 10;
-            this.BuildStatus = $"Analyzing changes done since {this.builder.StartDate:d}...";
+            this.BuildStatus = $"Analyzing changes made since {this.builder.StartDate:d}...";
 
             await loggingService.Entries.ListInstanceEventsAsync(
                 this.projectIds,
                 this.builder.StartDate,
                 this,
-                token);
+                cancellationToken);
 
             this.PercentageDone = 90;
             this.BuildStatus = "Finalizing report...";
 
             var archive = ReportArchive.FromInstanceSetHistory(this.builder.Build());
 
-            // TODO: pass cancellation token
-            await archive.LoadLicenseAnnotationsAsync(computeService.Images);
+            await archive.LoadLicenseAnnotationsAsync(
+                computeService.Images,
+                cancellationToken);
 
             return archive;
         }

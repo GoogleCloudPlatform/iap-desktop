@@ -28,6 +28,7 @@ using Google.Solutions.IapDesktop.Extensions.LogAnalysis.Services.SchedulingRepo
 using NUnit.Framework;
 using System;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Google.Solutions.IapDesktop.Extensions.LogAnalysis.Test.Services.SchedulingReport
@@ -69,7 +70,8 @@ namespace Google.Solutions.IapDesktop.Extensions.LogAnalysis.Test.Services.Sched
 
             await LicenseLoader.LoadLicenseAnnotationsAsync(
                 annotatedSet,
-                computeService.Images);
+                computeService.Images,
+                CancellationToken.None);
 
             Assert.AreEqual(1, annotatedSet.LicenseAnnotations.Count());
 
@@ -93,7 +95,8 @@ namespace Google.Solutions.IapDesktop.Extensions.LogAnalysis.Test.Services.Sched
 
             await LicenseLoader.LoadLicenseAnnotationsAsync(
                 annotatedSet,
-                computeService.Images);
+                computeService.Images,
+                CancellationToken.None);
 
             Assert.AreEqual(1, annotatedSet.LicenseAnnotations.Count());
 
@@ -117,7 +120,8 @@ namespace Google.Solutions.IapDesktop.Extensions.LogAnalysis.Test.Services.Sched
 
             await LicenseLoader.LoadLicenseAnnotationsAsync(
                 annotatedSet,
-                computeService.Images);
+                computeService.Images,
+                CancellationToken.None);
 
             Assert.AreEqual(0, annotatedSet.LicenseAnnotations.Count());
         }

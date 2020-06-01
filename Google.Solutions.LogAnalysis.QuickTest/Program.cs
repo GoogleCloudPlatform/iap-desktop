@@ -67,7 +67,8 @@ namespace Google.Solutions.LogAnalysis.QuickTest
             await instanceSetBuilder.AddExistingInstances(
                 computeService.Instances,
                 computeService.Disks,
-                projectId);
+                projectId,
+                CancellationToken.None);
 
             await loggingService.Entries.ListInstanceEventsAsync(
                 new[] { projectId },
@@ -76,7 +77,7 @@ namespace Google.Solutions.LogAnalysis.QuickTest
                 CancellationToken.None);
 
             var archive = ReportArchive.FromInstanceSetHistory(instanceSetBuilder.Build());
-            await archive.LoadLicenseAnnotationsAsync(computeService.Images);
+            await archive.LoadLicenseAnnotationsAsync(computeService.Images, CancellationToken.None);
 
             using (var writer = new StreamWriter(filePath, false, Encoding.UTF8))
             {

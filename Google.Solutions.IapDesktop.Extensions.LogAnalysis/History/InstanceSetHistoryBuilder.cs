@@ -30,6 +30,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Google.Solutions.IapDesktop.Extensions.LogAnalysis.History
@@ -98,7 +99,8 @@ namespace Google.Solutions.IapDesktop.Extensions.LogAnalysis.History
         public async Task AddExistingInstances(
             InstancesResource instancesResource,
             DisksResource disksResource,
-            string projectId)
+            string projectId,
+            CancellationToken cancellationToken)
         {
             using (TraceSources.LogAnalysis.TraceMethod().WithParameters(projectId))
             {
@@ -116,7 +118,8 @@ namespace Google.Solutions.IapDesktop.Extensions.LogAnalysis.History
                     disksResource.AggregatedList(projectId),
                     i => i.Items.Values.Where(v => v != null),
                     response => response.NextPageToken,
-                    (request, token) => { request.PageToken = token; });
+                    (request, token) => { request.PageToken = token; },
+                    cancellationToken);
 
                 var sourceImagesByDisk = disksByZone
                     .Where(z => z.Disks != null)    // API returns null for empty zones.
@@ -136,7 +139,8 @@ namespace Google.Solutions.IapDesktop.Extensions.LogAnalysis.History
                     instancesResource.AggregatedList(projectId),
                     i => i.Items.Values.Where(v => v != null),
                     response => response.NextPageToken,
-                    (request, token) => { request.PageToken = token; });
+                    (request, token) => { request.PageToken = token; },
+                    cancellationToken);
 
                 var instances = instancesByZone
                     .Where(z => z.Instances != null)    // API returns null for empty zones.

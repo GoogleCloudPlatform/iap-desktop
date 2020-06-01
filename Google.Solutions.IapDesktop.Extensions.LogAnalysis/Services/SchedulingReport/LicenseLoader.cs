@@ -25,6 +25,7 @@ using Google.Solutions.Common.Locator;
 using Google.Solutions.Common.Util;
 using System;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Google.Solutions.IapDesktop.Extensions.LogAnalysis.Services.SchedulingReport
@@ -56,7 +57,8 @@ namespace Google.Solutions.IapDesktop.Extensions.LogAnalysis.Services.Scheduling
 
         public static async Task LoadLicenseAnnotationsAsync(
             ReportArchive annotatedSet,
-            ImagesResource imagesResource)
+            ImagesResource imagesResource,
+            CancellationToken cancellationToken)
         {
             foreach (var image in annotatedSet.History.Instances
                     .Where(i => i.Image != null)
@@ -70,13 +72,13 @@ namespace Google.Solutions.IapDesktop.Extensions.LogAnalysis.Services.Scheduling
                     {
                         imageInfo = await imagesResource
                             .GetFromFamily(image.ProjectId, image.Name.Substring(7))
-                            .ExecuteAsync();
+                            .ExecuteAsync(cancellationToken);
                     }
                     else
                     {
                         imageInfo = await imagesResource
                             .Get(image.ProjectId, image.Name)
-                            .ExecuteAsync();
+                            .ExecuteAsync(cancellationToken);
                     }
 
                     // Images can contain more than one license, and liceses like 
