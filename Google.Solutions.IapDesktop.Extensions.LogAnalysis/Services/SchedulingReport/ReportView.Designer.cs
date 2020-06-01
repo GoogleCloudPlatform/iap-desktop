@@ -103,11 +103,11 @@ namespace Google.Solutions.IapDesktop.Extensions.LogAnalysis.Services.Scheduling
             this.nodesHeadline = new System.Windows.Forms.Label();
             this.nodesChart = new System.Windows.Forms.DataVisualization.Charting.Chart();
             this.licensesTab = new System.Windows.Forms.TabPage();
+            this.nodeTypeInfoLabel = new System.Windows.Forms.Label();
+            this.infoIcon = new System.Windows.Forms.PictureBox();
             this.noLicenseDataLabel = new System.Windows.Forms.Label();
             this.licenseChart = new System.Windows.Forms.DataVisualization.Charting.Chart();
             this.byolHeadline = new System.Windows.Forms.Label();
-            this.infoIcon = new System.Windows.Forms.PictureBox();
-            this.nodeTypeInfoLabel = new System.Windows.Forms.Label();
             this.toolStrip.SuspendLayout();
             this.tabs.SuspendLayout();
             this.instancesTab.SuspendLayout();
@@ -119,8 +119,8 @@ namespace Google.Solutions.IapDesktop.Extensions.LogAnalysis.Services.Scheduling
             this.nodesSplitContainer.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.nodesChart)).BeginInit();
             this.licensesTab.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.licenseChart)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.infoIcon)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.licenseChart)).BeginInit();
             this.SuspendLayout();
             // 
             // toolStrip
@@ -260,13 +260,13 @@ namespace Google.Solutions.IapDesktop.Extensions.LogAnalysis.Services.Scheduling
             // 
             this.noInstancesDataLabel.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.noInstancesDataLabel.AutoSize = true;
             this.noInstancesDataLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Italic, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.noInstancesDataLabel.Location = new System.Drawing.Point(330, 160);
             this.noInstancesDataLabel.Name = "noInstancesDataLabel";
             this.noInstancesDataLabel.Size = new System.Drawing.Size(92, 13);
             this.noInstancesDataLabel.TabIndex = 5;
             this.noInstancesDataLabel.Text = "No data to display";
+            this.noInstancesDataLabel.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
             // instancesList
             // 
@@ -381,13 +381,13 @@ namespace Google.Solutions.IapDesktop.Extensions.LogAnalysis.Services.Scheduling
             // 
             this.noNodesDataLabel.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.noNodesDataLabel.AutoSize = true;
             this.noNodesDataLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Italic, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.noNodesDataLabel.Location = new System.Drawing.Point(330, 160);
             this.noNodesDataLabel.Name = "noNodesDataLabel";
             this.noNodesDataLabel.Size = new System.Drawing.Size(92, 13);
             this.noNodesDataLabel.TabIndex = 4;
             this.noNodesDataLabel.Text = "No data to display";
+            this.noNodesDataLabel.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
             // nodesSplitContainer
             // 
@@ -481,6 +481,9 @@ namespace Google.Solutions.IapDesktop.Extensions.LogAnalysis.Services.Scheduling
             // 
             // nodePlacementsList
             // 
+            this.nodePlacementsList.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.nodePlacementsList.AutoResizeColumnsOnUpdate = false;
             this.nodePlacementsList.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
             this.nodePlacementInstanceIdColumnHeader,
@@ -585,17 +588,35 @@ namespace Google.Solutions.IapDesktop.Extensions.LogAnalysis.Services.Scheduling
             this.licensesTab.Text = "Licenses";
             this.licensesTab.UseVisualStyleBackColor = true;
             // 
+            // nodeTypeInfoLabel
+            // 
+            this.nodeTypeInfoLabel.AutoSize = true;
+            this.nodeTypeInfoLabel.Location = new System.Drawing.Point(56, 339);
+            this.nodeTypeInfoLabel.Name = "nodeTypeInfoLabel";
+            this.nodeTypeInfoLabel.Size = new System.Drawing.Size(33, 13);
+            this.nodeTypeInfoLabel.TabIndex = 9;
+            this.nodeTypeInfoLabel.Text = "Note:";
+            // 
+            // infoIcon
+            // 
+            this.infoIcon.Image = ((System.Drawing.Image)(resources.GetObject("infoIcon.Image")));
+            this.infoIcon.Location = new System.Drawing.Point(34, 336);
+            this.infoIcon.Name = "infoIcon";
+            this.infoIcon.Size = new System.Drawing.Size(16, 16);
+            this.infoIcon.TabIndex = 8;
+            this.infoIcon.TabStop = false;
+            // 
             // noLicenseDataLabel
             // 
             this.noLicenseDataLabel.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.noLicenseDataLabel.AutoSize = true;
             this.noLicenseDataLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Italic, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.noLicenseDataLabel.Location = new System.Drawing.Point(330, 160);
             this.noLicenseDataLabel.Name = "noLicenseDataLabel";
             this.noLicenseDataLabel.Size = new System.Drawing.Size(92, 13);
             this.noLicenseDataLabel.TabIndex = 7;
             this.noLicenseDataLabel.Text = "No data to display";
+            this.noLicenseDataLabel.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
             // licenseChart
             // 
@@ -637,24 +658,6 @@ namespace Google.Solutions.IapDesktop.Extensions.LogAnalysis.Services.Scheduling
             this.byolHeadline.TabIndex = 2;
             this.byolHeadline.Text = "Scheduled Windows BYOL cores";
             // 
-            // infoIcon
-            // 
-            this.infoIcon.Image = ((System.Drawing.Image)(resources.GetObject("infoIcon.Image")));
-            this.infoIcon.Location = new System.Drawing.Point(34, 336);
-            this.infoIcon.Name = "infoIcon";
-            this.infoIcon.Size = new System.Drawing.Size(16, 16);
-            this.infoIcon.TabIndex = 8;
-            this.infoIcon.TabStop = false;
-            // 
-            // nodeTypeInfoLabel
-            // 
-            this.nodeTypeInfoLabel.AutoSize = true;
-            this.nodeTypeInfoLabel.Location = new System.Drawing.Point(56, 339);
-            this.nodeTypeInfoLabel.Name = "nodeTypeInfoLabel";
-            this.nodeTypeInfoLabel.Size = new System.Drawing.Size(33, 13);
-            this.nodeTypeInfoLabel.TabIndex = 9;
-            this.nodeTypeInfoLabel.Text = "Note:";
-            // 
             // ReportView
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -683,8 +686,8 @@ namespace Google.Solutions.IapDesktop.Extensions.LogAnalysis.Services.Scheduling
             ((System.ComponentModel.ISupportInitialize)(this.nodesChart)).EndInit();
             this.licensesTab.ResumeLayout(false);
             this.licensesTab.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.licenseChart)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.infoIcon)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.licenseChart)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 

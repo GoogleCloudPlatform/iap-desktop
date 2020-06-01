@@ -31,7 +31,7 @@ using System.Windows.Forms;
 namespace Google.Solutions.IapDesktop.Application.Services.Windows
 {
     [ComVisible(false)]
-    public abstract partial class SlowLoadingPane : ToolWindow
+    public partial class SlowLoadingPane : ToolWindow
     {
         private readonly IServiceProvider serviceProvider;
         private readonly CancellationTokenSource loadCancellationTokenSource
@@ -41,6 +41,11 @@ namespace Google.Solutions.IapDesktop.Application.Services.Windows
         {
             this.progressLabel.Text = this.LoadingStatusText;
             this.progressBar.Value = Math.Min(100, (int)this.LoadingPercentage);
+        }
+
+        internal SlowLoadingPane()
+        {
+            // For designer only.
         }
 
         public SlowLoadingPane(string title, IServiceProvider serviceProvider)
@@ -102,12 +107,13 @@ namespace Google.Solutions.IapDesktop.Application.Services.Windows
         // Abstract methods/properties.
         //---------------------------------------------------------------------
 
-        protected abstract string LoadingStatusText { get; }
-        protected abstract ushort LoadingPercentage { get; }
+        protected virtual string LoadingStatusText => string.Empty;
+        protected virtual ushort LoadingPercentage => 0;
 
-        protected abstract Task LoadAsync(CancellationToken token);
+        protected virtual Task LoadAsync(CancellationToken token) => Task.CompletedTask;
 
-        protected abstract void OnLoadCompleted();
+        protected virtual void OnLoadCompleted()
+        { }
 
         //---------------------------------------------------------------------
         // Window event handlers.
