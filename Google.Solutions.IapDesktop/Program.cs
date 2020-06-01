@@ -20,6 +20,7 @@
 //
 
 using Google.Solutions.Common.Auth;
+using Google.Solutions.Common.Diagnostics;
 using Google.Solutions.IapDesktop.Application.ObjectModel;
 using Google.Solutions.IapDesktop.Application.Services.Adapters;
 using Google.Solutions.IapDesktop.Application.Services.Integration;
@@ -54,6 +55,7 @@ namespace Google.Solutions.IapDesktop
 
         private static readonly TraceSource[] Traces = new[]
         {
+            Google.Solutions.Common.TraceSources.Google,
             Google.Solutions.Common.TraceSources.Common,
             Google.Solutions.IapTunneling.TraceSources.Compute,
             Google.Solutions.IapDesktop.Application.TraceSources.IapDesktop

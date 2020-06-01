@@ -19,19 +19,31 @@
 // under the License.
 //
 
-using Google.Solutions.Common.Diagnostics;
-using System.Diagnostics;
+using System;
 
-namespace Google.Solutions.Common
+namespace Google.Solutions.IapDesktop.Extensions.Activity.History
 {
-    public static class TraceSources
+    public class NodePlacement
     {
-        public static readonly TraceSource Common = new TraceSource(typeof(TraceSources).Namespace);
-        public static readonly TraceSource Google = new TraceSource(typeof(ApplicationContext).Namespace);
+        public DateTime From { get; }
+        public DateTime To { get; }
 
-        static TraceSources()
+        public InstanceHistory Instance { get; }
+
+        public NodePlacement(
+            DateTime from,
+            DateTime to,
+            InstanceHistory instance)
         {
-            ApplicationContext.RegisterLogger(new TraceSourceLogger(Google));
+            this.From = from;
+            this.To = to;
+            this.Instance = instance;
+        }
+
+        public override string ToString()
+        {
+
+            return $"{this.From} - {this.To} used by {this.Instance.Reference} ({this.Instance.InstanceId})";
         }
     }
 }

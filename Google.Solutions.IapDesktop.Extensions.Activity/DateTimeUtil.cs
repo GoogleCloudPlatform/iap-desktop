@@ -19,19 +19,15 @@
 // under the License.
 //
 
-using Google.Solutions.Common.Diagnostics;
-using System.Diagnostics;
+using System;
 
-namespace Google.Solutions.Common
+namespace Google.Solutions.IapDesktop.Extensions.Activity
 {
-    public static class TraceSources
+    internal static class DateTimeUtil
     {
-        public static readonly TraceSource Common = new TraceSource(typeof(TraceSources).Namespace);
-        public static readonly TraceSource Google = new TraceSource(typeof(ApplicationContext).Namespace);
-
-        static TraceSources()
+        public static DateTime Min(DateTime one, DateTime two)
         {
-            ApplicationContext.RegisterLogger(new TraceSourceLogger(Google));
+            return new DateTime(Math.Min(one.Ticks, two.Ticks));
         }
     }
 }

@@ -19,19 +19,17 @@
 // under the License.
 //
 
-using Google.Solutions.Common.Diagnostics;
-using System.Diagnostics;
+using System.Reflection;
+using System.Runtime.CompilerServices;
 
-namespace Google.Solutions.Common
-{
-    public static class TraceSources
-    {
-        public static readonly TraceSource Common = new TraceSource(typeof(TraceSources).Namespace);
-        public static readonly TraceSource Google = new TraceSource(typeof(ApplicationContext).Namespace);
+[assembly: AssemblyTitle("Activity extension library")]
+[assembly: AssemblyDescription("Activity extension library")]
+[assembly: AssemblyCompany("Google")]
+[assembly: AssemblyProduct("IAP Desktop")]
+[assembly: AssemblyCopyright("Copyright ©  2020")]
+[assembly: AssemblyTrademark("Google")]
 
-        static TraceSources()
-        {
-            ApplicationContext.RegisterLogger(new TraceSourceLogger(Google));
-        }
-    }
-}
+[assembly: AssemblyVersion("1.0.1.0")]
+[assembly: AssemblyFileVersion("1.0.1.0")]
+
+[assembly: InternalsVisibleTo("Google.Solutions.IapDesktop.Extensions.Activity.Test")]

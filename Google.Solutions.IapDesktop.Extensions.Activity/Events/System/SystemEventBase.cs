@@ -19,19 +19,18 @@
 // under the License.
 //
 
-using Google.Solutions.Common.Diagnostics;
+using Google.Solutions.IapDesktop.Extensions.Activity.Logs;
 using System.Diagnostics;
 
-namespace Google.Solutions.Common
+namespace Google.Solutions.IapDesktop.Extensions.Activity.Events.System
 {
-    public static class TraceSources
+    public abstract class SystemEventBase : VmInstanceEventBase
     {
-        public static readonly TraceSource Common = new TraceSource(typeof(TraceSources).Namespace);
-        public static readonly TraceSource Google = new TraceSource(typeof(ApplicationContext).Namespace);
-
-        static TraceSources()
+        public SystemEventBase(LogRecord logRecord) : base(logRecord)
         {
-            ApplicationContext.RegisterLogger(new TraceSourceLogger(Google));
+            // System events are always INFO-level.
+
+            Debug.Assert(this.Severity == "INFO");
         }
     }
 }

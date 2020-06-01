@@ -19,19 +19,28 @@
 // under the License.
 //
 
-using Google.Solutions.Common.Diagnostics;
-using System.Diagnostics;
+using Newtonsoft.Json;
 
-namespace Google.Solutions.Common
+namespace Google.Solutions.IapDesktop.Extensions.Activity.Services.SchedulingReport
 {
-    public static class TraceSources
+    public class NodeAnnotation
     {
-        public static readonly TraceSource Common = new TraceSource(typeof(TraceSources).Namespace);
-        public static readonly TraceSource Google = new TraceSource(typeof(ApplicationContext).Namespace);
+        internal static readonly NodeAnnotation Default =
+            new NodeAnnotation("n1-node-96-624", 56);
 
-        static TraceSources()
+        [JsonProperty("physicalCores")]
+        public int PhysicalCores { get; }
+
+        [JsonProperty("nodeType")]
+        public string NodeType { get; }
+
+        [JsonConstructor]
+        internal NodeAnnotation(
+            [JsonProperty("nodeType")] string nodeType,
+            [JsonProperty("physicalCores")] int physicalCores)
         {
-            ApplicationContext.RegisterLogger(new TraceSourceLogger(Google));
+            this.NodeType = nodeType;
+            this.PhysicalCores = physicalCores;
         }
     }
 }

@@ -19,6 +19,8 @@
 // under the License.
 //
 
+using Google.Solutions.Common.Util;
+using System;
 using System.Diagnostics;
 using System.Runtime.CompilerServices;
 
@@ -44,7 +46,7 @@ namespace Google.Solutions.Common.Diagnostics
 
         public static void TraceWarning(this TraceSource source, string message, params object[] args)
         {
-            if (source.Switch.ShouldTrace(TraceEventType.Verbose))
+            if (source.Switch.ShouldTrace(TraceEventType.Warning))
             {
                 source.TraceData(TraceEventType.Warning, 0, string.Format(message, args));
             }
@@ -52,9 +54,17 @@ namespace Google.Solutions.Common.Diagnostics
 
         public static void TraceError(this TraceSource source, string message, params object[] args)
         {
-            if (source.Switch.ShouldTrace(TraceEventType.Verbose))
+            if (source.Switch.ShouldTrace(TraceEventType.Error))
             {
                 source.TraceData(TraceEventType.Error, 0, string.Format(message, args));
+            }
+        }
+
+        public static void TraceError(this TraceSource source, Exception exception)
+        {
+            if (source.Switch.ShouldTrace(TraceEventType.Error))
+            {
+                source.TraceData(TraceEventType.Error, 0, exception.Unwrap());
             }
         }
 
