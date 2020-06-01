@@ -29,6 +29,7 @@ using Google.Solutions.IapDesktop.Extensions.LogAnalysis.Events;
 using Google.Solutions.IapDesktop.Extensions.LogAnalysis.Events.Lifecycle;
 using Google.Solutions.IapDesktop.Extensions.LogAnalysis.History;
 using Google.Solutions.IapDesktop.Extensions.LogAnalysis.Logs;
+using Google.Solutions.IapDesktop.Extensions.LogAnalysis.Services;
 using NUnit.Framework;
 using System;
 using System.Collections.Generic;
@@ -40,7 +41,7 @@ namespace Google.Solutions.IapDesktop.Extensions.LogAnalysis.Test.Logs
 {
     [TestFixture]
     [Category("IntegrationTest")]
-    public class TestListLogEntriesExtensions : FixtureBase
+    public class TestAuditLogAdapter : FixtureBase
     {
         [Test]
         public async Task WhenInstanceCreated_ThenListLogEntriesReturnsInsertEvent(
@@ -49,14 +50,10 @@ namespace Google.Solutions.IapDesktop.Extensions.LogAnalysis.Test.Logs
             await testInstance.AwaitReady();
             var instanceRef = await testInstance.GetInstanceAsync();
 
-            var loggingService = new LoggingService(new BaseClientService.Initializer
-            {
-                HttpClientInitializer = Defaults.GetCredential()
-            });
-
             var startDate = DateTime.UtcNow.AddDays(-30);
             var endDate = DateTime.UtcNow;
 
+            var adapter = new AuditLogAdapter(Defaults.GetCredential());
             var request = new ListLogEntriesRequest()
             {
                 ResourceNames = new[]
@@ -76,7 +73,7 @@ namespace Google.Solutions.IapDesktop.Extensions.LogAnalysis.Test.Logs
             // Creating the VM might be quicker than the logs become available.
             for (int retry = 0; retry < 4 && !events.Any(); retry++)
             {
-                await loggingService.Entries.ListEventsAsync(
+                await adapter.ListEventsAsync(
                     request,
                     events.Add,
                     new Apis.Util.ExponentialBackOff(),
@@ -100,11 +97,6 @@ namespace Google.Solutions.IapDesktop.Extensions.LogAnalysis.Test.Logs
             await testInstance.AwaitReady();
             var instanceRef = await testInstance.GetInstanceAsync();
 
-            var loggingService = new LoggingService(new BaseClientService.Initializer
-            {
-                HttpClientInitializer = Defaults.GetCredential()
-            });
-
             var computeService = new ComputeService(new BaseClientService.Initializer
             {
                 HttpClientInitializer = Defaults.GetCredential()
@@ -117,9 +109,12 @@ namespace Google.Solutions.IapDesktop.Extensions.LogAnalysis.Test.Logs
                 computeService.Instances,
                 computeService.Disks,
                 Defaults.ProjectId,
-                CancellationToken.None);
+                CancellationToken.None);            
+            
+            
+            var adapter = new AuditLogAdapter(Defaults.GetCredential());
 
-            await loggingService.Entries.ListInstanceEventsAsync(
+            await adapter.ListInstanceEventsAsync(
                 new[] { Defaults.ProjectId },
                 instanceBuilder.StartDate,
                 instanceBuilder,
@@ -135,11 +130,6 @@ namespace Google.Solutions.IapDesktop.Extensions.LogAnalysis.Test.Logs
         [Test]
         public void WhenUsingInvalidProjectId_ThenListEventsAsyncThrowsException()
         {
-            var loggingService = new LoggingService(new BaseClientService.Initializer
-            {
-                HttpClientInitializer = Defaults.GetCredential()
-            });
-
             var startDate = DateTime.UtcNow.AddDays(-30);
             var request = new ListLogEntriesRequest()
             {
@@ -154,8 +144,9 @@ namespace Google.Solutions.IapDesktop.Extensions.LogAnalysis.Test.Logs
                 OrderBy = "timestamp desc"
             };
 
+            var adapter = new AuditLogAdapter(Defaults.GetCredential());
             AssertEx.ThrowsAggregateException<GoogleApiException>(
-                () => loggingService.Entries.ListEventsAsync(
+                () => adapter.ListEventsAsync(
                     request,
                     _ => { },
                     new Apis.Util.ExponentialBackOff(),

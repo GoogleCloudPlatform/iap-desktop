@@ -56,8 +56,9 @@ namespace Google.Solutions.IapDesktop.Extensions.LogAnalysis.Services
 
             var projectIds = dialog.SelectedProjectIds;
 
-            var builder = new AuditLogDownloader(
+            var builder = new AuditLogReportBuilder(
                 this.serviceProvider.GetService<IAuthorizationAdapter>(),
+                this.serviceProvider.GetService<AuditLogAdapter>(),
                 projectIds,
                 dialog.SelectedStartDate);
 

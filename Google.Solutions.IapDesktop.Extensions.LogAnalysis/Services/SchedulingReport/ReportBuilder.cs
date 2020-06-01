@@ -40,7 +40,7 @@ namespace Google.Solutions.IapDesktop.Extensions.LogAnalysis.Services.Scheduling
         Task<ReportArchive> BuildAsync(CancellationToken token);
     }
 
-    class AuditLogDownloader : IReportBuilder, IEventProcessor
+    class AuditLogReportBuilder : IReportBuilder, IEventProcessor
     {
         private readonly ushort MaxPeriod = 400;
 
@@ -48,10 +48,11 @@ namespace Google.Solutions.IapDesktop.Extensions.LogAnalysis.Services.Scheduling
         private readonly InstanceSetHistoryBuilder builder;
 
         private readonly ComputeService computeService;
-        private readonly LoggingService loggingService;
+        private readonly AuditLogAdapter auditLogAdapter;
 
-        public AuditLogDownloader(
+        public AuditLogReportBuilder(
             IAuthorizationAdapter authService, 
+            AuditLogAdapter auditLogAdapter,
             IEnumerable<string> projectIds,
             DateTime startDate)
         {
@@ -66,19 +67,14 @@ namespace Google.Solutions.IapDesktop.Extensions.LogAnalysis.Services.Scheduling
             }
 
             this.projectIds = projectIds;
+            this.auditLogAdapter = auditLogAdapter;
 
             this.builder = new InstanceSetHistoryBuilder(startDate, now);
 
             // TODO: move to IAuthzServuce
-            var assemblyName = typeof(AuditLogDownloader).Assembly.GetName();
+            var assemblyName = typeof(AuditLogReportBuilder).Assembly.GetName();
 
             this.computeService = new ComputeService(new BaseClientService.Initializer
-            {
-                HttpClientInitializer = authService.Authorization.Credential,
-                ApplicationName = $"{assemblyName.Name}/{assemblyName.Version}"
-            });
-
-            this.loggingService = new LoggingService(new BaseClientService.Initializer
             {
                 HttpClientInitializer = authService.Authorization.Credential,
                 ApplicationName = $"{assemblyName.Name}/{assemblyName.Version}"
@@ -106,7 +102,7 @@ namespace Google.Solutions.IapDesktop.Extensions.LogAnalysis.Services.Scheduling
             this.PercentageDone = 10;
             this.BuildStatus = $"Analyzing changes made since {this.builder.StartDate:d}...";
 
-            await loggingService.Entries.ListInstanceEventsAsync(
+            await this.auditLogAdapter.ListInstanceEventsAsync(
                 this.projectIds,
                 this.builder.StartDate,
                 this,

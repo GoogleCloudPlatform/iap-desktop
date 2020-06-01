@@ -19,13 +19,18 @@
 // under the License.
 //
 
+using Google.Apis.Auth.OAuth2;
 using Google.Apis.Logging.v2;
 using Google.Apis.Logging.v2.Data;
+using Google.Apis.Services;
 using Google.Apis.Util;
 using Google.Solutions.Common.ApiExtensions.Request;
 using Google.Solutions.Common.Diagnostics;
+using Google.Solutions.IapDesktop.Application.ObjectModel;
+using Google.Solutions.IapDesktop.Application.Services.Adapters;
 using Google.Solutions.IapDesktop.Extensions.LogAnalysis.Events;
 using Google.Solutions.IapDesktop.Extensions.LogAnalysis.History;
+using Google.Solutions.IapDesktop.Extensions.LogAnalysis.Logs;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -35,16 +40,33 @@ using System.Runtime.Serialization;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Google.Solutions.IapDesktop.Extensions.LogAnalysis.Logs
+namespace Google.Solutions.IapDesktop.Extensions.LogAnalysis.Services
 {
-    public static class ListLogEntriesExtensions
+    [Service(ServiceLifetime.Transient)]
+    public class AuditLogAdapter
     {
         private const int MaxPageSize = 1000;
         private const int MaxRetries = 10;
         private static readonly TimeSpan initialBackOff = TimeSpan.FromMilliseconds(100);
 
-        public static async Task ListEventsAsync(
-            this EntriesResource entriesResource,
+        private readonly LoggingService service;
+
+        public AuditLogAdapter(ICredential credential)
+        {
+            var assemblyName = typeof(AuditLogAdapter).Assembly.GetName();
+            this.service = new LoggingService(new BaseClientService.Initializer
+            {
+                HttpClientInitializer = credential,
+                ApplicationName = $"{assemblyName.Name}/{assemblyName.Version}"
+            });
+        }
+
+        public AuditLogAdapter(IServiceProvider serviceProvider)
+            : this(serviceProvider.GetService<IAuthorizationAdapter>().Authorization.Credential)
+        {
+        }
+
+        internal async Task ListEventsAsync(
             ListLogEntriesRequest request,
             Action<EventBase> callback,
             ExponentialBackOff backOff,
@@ -59,7 +81,7 @@ namespace Google.Solutions.IapDesktop.Extensions.LogAnalysis.Logs
                     {
                         request.PageToken = nextPageToken;
 
-                        using (var stream = await entriesResource
+                        using (var stream = await this.service.Entries
                             .List(request)
                             .ExecuteAsStreamWithRetryAsync(backOff, cancellationToken))
                         using (var reader = new JsonTextReader(new StreamReader(stream)))
@@ -77,8 +99,7 @@ namespace Google.Solutions.IapDesktop.Extensions.LogAnalysis.Logs
             }
         }
 
-        public static async Task ListInstanceEventsAsync(
-            this EntriesResource entriesResource,
+        public async Task ListInstanceEventsAsync(
             IEnumerable<string> projectIds,
             DateTime startTime,
             IEventProcessor processor,
@@ -100,7 +121,6 @@ namespace Google.Solutions.IapDesktop.Extensions.LogAnalysis.Logs
                 };
 
                 await ListEventsAsync(
-                    entriesResource,
                     request,
                     processor.Process,
                     new ExponentialBackOff(initialBackOff, MaxRetries),
