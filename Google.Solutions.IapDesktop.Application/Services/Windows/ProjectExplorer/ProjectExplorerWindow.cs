@@ -589,7 +589,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.Windows.ProjectExplor
                             try
                             {
                                 accumulator[project.Name] =
-                                    await computeEngineAdapter.QueryInstancesAsync(project.Name, token);
+                                    await computeEngineAdapter.ListInstancesAsync(project.Name, token);
                             }
                             catch (Exception e) when (e.IsReauthError())
                             {
@@ -634,7 +634,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.Windows.ProjectExplor
             {
                 var instances = await this.jobService.RunInBackground(
                     new JobDescription("Loading project inventory..."),
-                    token => computeEngineAdapter.QueryInstancesAsync(projectId, CancellationToken.None));
+                    token => computeEngineAdapter.ListInstancesAsync(projectId, CancellationToken.None));
 
                 PopulateProjectNode(projectId, instances);
             }

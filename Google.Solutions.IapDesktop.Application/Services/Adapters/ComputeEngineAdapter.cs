@@ -23,7 +23,6 @@ using Google.Apis.Auth.OAuth2;
 using Google.Apis.Compute.v1;
 using Google.Apis.Compute.v1.Data;
 using Google.Apis.Services;
-using Google.Solutions.Common;
 using Google.Solutions.Common.ApiExtensions;
 using Google.Solutions.Common.ApiExtensions.Instance;
 using Google.Solutions.Common.Diagnostics;
@@ -34,7 +33,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
-using System.Runtime.Serialization;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -42,7 +40,11 @@ namespace Google.Solutions.IapDesktop.Application.Services.Adapters
 {
     public interface IComputeEngineAdapter : IDisposable
     {
-        Task<IEnumerable<Instance>> QueryInstancesAsync(
+        Task<IEnumerable<Instance>> ListInstancesAsync(
+            string projectId,
+            CancellationToken cancellationToken);
+
+        Task<IEnumerable<Disk>> ListDisksAsync(
             string projectId,
             CancellationToken cancellationToken);
 
@@ -93,7 +95,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.Adapters
         {
         }
 
-        public async Task<IEnumerable<Instance>> QueryInstancesAsync(
+        public async Task<IEnumerable<Instance>> ListInstancesAsync(
             string projectId,
             CancellationToken cancellationToken)
         {
@@ -101,7 +103,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.Adapters
             {
                 try
                 {
-                    var zones = await PageHelper.JoinPagesAsync<
+                    var instancesByZone = await PageHelper.JoinPagesAsync<
                                 InstancesResource.AggregatedListRequest,
                                 InstanceAggregatedList,
                                 InstancesScopedList>(
@@ -111,7 +113,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.Adapters
                         (request, token) => { request.PageToken = token; },
                         cancellationToken);
 
-                    var result = zones
+                    var result = instancesByZone
                         .Where(z => z.Instances != null)    // API returns null for empty zones.
                         .SelectMany(zone => zone.Instances);
 
@@ -123,6 +125,40 @@ namespace Google.Solutions.IapDesktop.Application.Services.Adapters
                 {
                     throw new ResourceAccessDeniedException(
                         $"Access to VM instances in project {projectId} has been denied", e);
+                }
+            }
+        }
+
+        public async Task<IEnumerable<Disk>> ListDisksAsync(
+            string projectId,
+            CancellationToken cancellationToken)
+        {
+            using (TraceSources.IapDesktop.TraceMethod().WithParameters(projectId))
+            {
+                try
+                {
+                    var disksByZone = await PageHelper.JoinPagesAsync<
+                                DisksResource.AggregatedListRequest,
+                                DiskAggregatedList,
+                                DisksScopedList>(
+                        this.service.Disks.AggregatedList(projectId),
+                        i => i.Items.Values.Where(v => v != null),
+                        response => response.NextPageToken,
+                        (request, token) => { request.PageToken = token; },
+                        cancellationToken);
+
+                    var result = disksByZone
+                        .Where(z => z.Disks != null)    // API returns null for empty zones.
+                        .SelectMany(zone => zone.Disks);
+
+                    TraceSources.IapDesktop.TraceVerbose("Found {0} disks", result.Count());
+
+                    return result;
+                }
+                catch (GoogleApiException e) when (e.Error != null && e.Error.Code == 403)
+                {
+                    throw new ResourceAccessDeniedException(
+                        $"Access to disks in project {projectId} has been denied", e);
                 }
             }
         }
@@ -160,7 +196,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.Adapters
             }
         }
 
-        public async Task<Instance> QueryInstanceAsync(string projectId, string zone, string instanceName)
+        public async Task<Instance> GetInstanceAsync(string projectId, string zone, string instanceName)
         {
             using (TraceSources.IapDesktop.TraceMethod().WithParameters(projectId, zone, instanceName))
             {
@@ -168,11 +204,11 @@ namespace Google.Solutions.IapDesktop.Application.Services.Adapters
             }
         }
 
-        public async Task<Instance> QueryInstanceAsync(InstanceLocator instanceRef)
+        public async Task<Instance> GetInstanceAsync(InstanceLocator instanceRef)
         {
             using (TraceSources.IapDesktop.TraceMethod().WithParameters(instanceRef))
             {
-                return await QueryInstanceAsync(instanceRef.ProjectId, instanceRef.Zone, instanceRef.Name);
+                return await GetInstanceAsync(instanceRef.ProjectId, instanceRef.Zone, instanceRef.Name);
             }
         }
 

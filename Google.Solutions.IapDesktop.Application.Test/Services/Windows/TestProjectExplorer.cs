@@ -94,7 +94,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Windows
             var computeEngineAdapter = new Mock<IComputeEngineAdapter>();
             this.serviceRegistry.AddSingleton<IComputeEngineAdapter>(computeEngineAdapter.Object);
             computeEngineAdapter
-                .Setup(o => o.QueryInstancesAsync("project-1", It.IsAny<CancellationToken>()))
+                .Setup(o => o.ListInstancesAsync("project-1", It.IsAny<CancellationToken>()))
                 .Returns(Task.FromResult<IEnumerable<Instance>>(instances));
 
             var window = new ProjectExplorerWindow(this.serviceProvider);
@@ -145,7 +145,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Windows
             var computeEngineAdapter = new Mock<IComputeEngineAdapter>();
             this.serviceRegistry.AddSingleton<IComputeEngineAdapter>(computeEngineAdapter.Object);
             computeEngineAdapter
-                .Setup(o => o.QueryInstancesAsync("project-1", It.IsAny<CancellationToken>()))
+                .Setup(o => o.ListInstancesAsync("project-1", It.IsAny<CancellationToken>()))
                 .Returns(Task.FromResult<IEnumerable<Instance>>(instances));
 
             var window = new ProjectExplorerWindow(this.serviceProvider);
@@ -190,10 +190,10 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Windows
             this.serviceRegistry.AddSingleton<IComputeEngineAdapter>(computeEngineAdapter.Object);
 
             computeEngineAdapter
-                .Setup(o => o.QueryInstancesAsync("valid-project", It.IsAny<CancellationToken>()))
+                .Setup(o => o.ListInstancesAsync("valid-project", It.IsAny<CancellationToken>()))
                 .Returns(Task.FromResult<IEnumerable<Instance>>(instances));
             computeEngineAdapter
-                .Setup(o => o.QueryInstancesAsync("forbidden-project", It.IsAny<CancellationToken>()))
+                .Setup(o => o.ListInstancesAsync("forbidden-project", It.IsAny<CancellationToken>()))
                 .Throws(new AdapterException("Access denied or something", null));
 
             var window = new ProjectExplorerWindow(this.serviceProvider);

@@ -24,6 +24,7 @@ using Google.Apis.Logging.v2.Data;
 using Google.Apis.Services;
 using Google.Solutions.Common.Test;
 using Google.Solutions.Common.Test.Testbed;
+using Google.Solutions.IapDesktop.Application.Services.Adapters;
 using Google.Solutions.IapDesktop.Extensions.LogAnalysis.Events;
 using Google.Solutions.IapDesktop.Extensions.LogAnalysis.Events.Lifecycle;
 using Google.Solutions.IapDesktop.Extensions.LogAnalysis.History;
@@ -95,20 +96,15 @@ namespace Google.Solutions.IapDesktop.Extensions.LogAnalysis.Test.Services.Adapt
             await testInstance.AwaitReady();
             var instanceRef = await testInstance.GetInstanceAsync();
 
-            var computeService = new ComputeService(new BaseClientService.Initializer
-            {
-                HttpClientInitializer = Defaults.GetCredential()
-            });
-
             var instanceBuilder = new InstanceSetHistoryBuilder(
                 DateTime.UtcNow.AddDays(-7),
                 DateTime.UtcNow);
-            await instanceBuilder.AddExistingInstances(
-                computeService.Instances,
-                computeService.Disks,
-                Defaults.ProjectId,
-                CancellationToken.None);            
-            
+
+            var computeAdapter = new ComputeEngineAdapter(Defaults.GetCredential());
+            instanceBuilder.AddExistingInstances(
+                await computeAdapter.ListInstancesAsync(Defaults.ProjectId, CancellationToken.None),
+                await computeAdapter.ListDisksAsync(Defaults.ProjectId, CancellationToken.None),
+                Defaults.ProjectId);            
             
             var adapter = new AuditLogAdapter(Defaults.GetCredential());
 

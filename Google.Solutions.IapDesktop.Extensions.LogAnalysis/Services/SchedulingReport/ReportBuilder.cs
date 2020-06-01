@@ -46,7 +46,6 @@ namespace Google.Solutions.IapDesktop.Extensions.LogAnalysis.Services.Scheduling
         private readonly IEnumerable<string> projectIds;
         private readonly InstanceSetHistoryBuilder builder;
 
-        private readonly ComputeService computeService;
         private readonly AuditLogAdapter auditLogAdapter;
         private readonly IComputeEngineAdapter computeEngineAdapter;
 
@@ -72,16 +71,6 @@ namespace Google.Solutions.IapDesktop.Extensions.LogAnalysis.Services.Scheduling
             this.computeEngineAdapter = computeEngineAdapter;
 
             this.builder = new InstanceSetHistoryBuilder(startDate, now);
-
-            // TODO: move to IAuthzServuce
-            var assemblyName = typeof(AuditLogReportBuilder).Assembly.GetName();
-
-            // TODO: Use ComputeEngineAdapter instead.
-            this.computeService = new ComputeService(new BaseClientService.Initializer
-            {
-                HttpClientInitializer = authService.Authorization.Credential,
-                ApplicationName = $"{assemblyName.Name}/{assemblyName.Version}"
-            });
         }
 
         public ushort PercentageDone { get; private set; } = 0;
@@ -95,11 +84,28 @@ namespace Google.Solutions.IapDesktop.Extensions.LogAnalysis.Services.Scheduling
 
             foreach (var projectId in this.projectIds)
             {
-                await this.builder.AddExistingInstances(
-                    computeService.Instances,
-                    computeService.Disks,
+                //
+                // Load disks.
+                //
+                // NB. Instances.list returns the disks associated with each
+                // instance, but lacks the information about the source image.
+                // Therefore, we load disks first and then join the data.
+                //
+                var disks = await this.computeEngineAdapter.ListDisksAsync(
+                    projectId, 
+                    cancellationToken);
+
+                //
+                // Load instances.
+                //
+                var instances = await this.computeEngineAdapter.ListInstancesAsync(
                     projectId,
                     cancellationToken);
+
+                this.builder.AddExistingInstances(
+                    instances,
+                    disks,
+                    projectId);
             }
 
             this.PercentageDone = 10;
