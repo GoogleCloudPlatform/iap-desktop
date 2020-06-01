@@ -31,13 +31,13 @@ namespace Google.Solutions.Common.Util
         }
 
         public static bool IsSingleFlag<TEnum>(this TEnum enumValue) 
-            where TEnum : Enum
+            where TEnum : struct
         {
             return IsPowerOfTwo((int)(object)enumValue);
         }
 
         public static bool IsFlagCombination<TEnum>(this TEnum enumValue)
-            where TEnum : Enum
+            where TEnum : struct
         {
             var v = (int)(object)enumValue;
             return v != 0 && !IsPowerOfTwo(v);
