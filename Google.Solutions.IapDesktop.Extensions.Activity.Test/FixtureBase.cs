@@ -19,19 +19,33 @@
 // under the License.
 //
 
-using Google.Solutions.Common.Diagnostics;
+using NUnit.Framework;
 using System.Diagnostics;
 
-namespace Google.Solutions.Common
+namespace Google.Solutions.IapDesktop.Extensions.Activity.Test
 {
-    public static class TraceSources
+    public abstract class FixtureBase
     {
-        public static readonly TraceSource Common = new TraceSource(typeof(TraceSources).Namespace);
-        public static readonly TraceSource Google = new TraceSource(typeof(ApplicationContext).Namespace);
+        private static ConsoleTraceListener listener = new ConsoleTraceListener();
 
-        static TraceSources()
+        private static TraceSource[] Traces = new[]
         {
-            ApplicationContext.RegisterLogger(new TraceSourceLogger(Google));
+            Google.Solutions.Common.TraceSources.Common,
+            Google.Solutions.IapDesktop.Application.TraceSources.IapDesktop,
+        };
+
+        [SetUp]
+        public void SetUpTracing()
+        {
+            foreach (var trace in Traces)
+            {
+                if (!trace.Listeners.Contains(listener))
+                {
+                    listener.TraceOutputOptions = TraceOptions.DateTime;
+                    trace.Listeners.Add(listener);
+                    trace.Switch.Level = System.Diagnostics.SourceLevels.Verbose;
+                }
+            }
         }
     }
 }

@@ -19,19 +19,23 @@
 // under the License.
 //
 
-using Google.Solutions.Common.Diagnostics;
-using System.Diagnostics;
+using Google.Solutions.IapDesktop.Extensions.Activity.Events;
+using System.Collections.Generic;
 
-namespace Google.Solutions.Common
+namespace Google.Solutions.IapDesktop.Extensions.Activity.History
 {
-    public static class TraceSources
+    public interface IEventProcessor
     {
-        public static readonly TraceSource Common = new TraceSource(typeof(TraceSources).Namespace);
-        public static readonly TraceSource Google = new TraceSource(typeof(ApplicationContext).Namespace);
+        EventOrder ExpectedOrder { get; }
+        IEnumerable<string> SupportedSeverities { get; }
+        IEnumerable<string> SupportedMethods { get; }
 
-        static TraceSources()
-        {
-            ApplicationContext.RegisterLogger(new TraceSourceLogger(Google));
-        }
+        void Process(EventBase e);
+    }
+
+    public enum EventOrder
+    {
+        NewestFirst,
+        OldestFirst
     }
 }

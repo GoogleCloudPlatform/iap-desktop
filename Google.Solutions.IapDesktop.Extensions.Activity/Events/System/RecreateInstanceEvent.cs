@@ -19,19 +19,27 @@
 // under the License.
 //
 
-using Google.Solutions.Common.Diagnostics;
+using Google.Solutions.IapDesktop.Extensions.Activity.Logs;
 using System.Diagnostics;
 
-namespace Google.Solutions.Common
+namespace Google.Solutions.IapDesktop.Extensions.Activity.Events.System
 {
-    public static class TraceSources
+    public class RecreateInstanceEvent : SystemEventBase
     {
-        public static readonly TraceSource Common = new TraceSource(typeof(TraceSources).Namespace);
-        public static readonly TraceSource Google = new TraceSource(typeof(ApplicationContext).Namespace);
+        public const string Method = "compute.instances.repair.recreateInstance";
 
-        static TraceSources()
+        public override string Message => "Instance recreated to repair";
+
+        internal RecreateInstanceEvent(LogRecord logRecord) : base(logRecord)
         {
-            ApplicationContext.RegisterLogger(new TraceSourceLogger(Google));
+            Debug.Assert(IsRecreateInstanceEvent(logRecord));
+        }
+
+
+        public static bool IsRecreateInstanceEvent(LogRecord record)
+        {
+            return record.IsSystemEvent &&
+                record.ProtoPayload.MethodName == Method;
         }
     }
 }

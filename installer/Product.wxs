@@ -205,10 +205,10 @@
         
         <!--
         <File
-          Id="FileGoogleSolutionsLogAnalysisDll"
-          Name="Google.Solutions.IapDesktop.Extensions.LogAnalysis.dll"
+          Id="FileGoogleSolutionsActivityDll"
+          Name="Google.Solutions.IapDesktop.Extensions.Activity.dll"
           DiskId="1"
-          Source="Google.Solutions.IapDesktop\bin\$(var.CONFIGURATION)\Google.Solutions.IapDesktop.Extensions.LogAnalysis.dll"
+          Source="Google.Solutions.IapDesktop\bin\$(var.CONFIGURATION)\Google.Solutions.IapDesktop.Extensions.Activity.dll"
           Vital="yes"/>
         -->
         

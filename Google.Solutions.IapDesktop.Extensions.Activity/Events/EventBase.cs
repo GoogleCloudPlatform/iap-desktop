@@ -19,19 +19,35 @@
 // under the License.
 //
 
-using Google.Solutions.Common.Diagnostics;
-using System.Diagnostics;
+using Google.Solutions.IapDesktop.Extensions.Activity.Logs;
+using System;
 
-namespace Google.Solutions.Common
+namespace Google.Solutions.IapDesktop.Extensions.Activity.Events
 {
-    public static class TraceSources
+    public abstract class EventBase
     {
-        public static readonly TraceSource Common = new TraceSource(typeof(TraceSources).Namespace);
-        public static readonly TraceSource Google = new TraceSource(typeof(ApplicationContext).Namespace);
+        public LogRecord LogRecord { get; }
 
-        static TraceSources()
+        public DateTime Timestamp => this.LogRecord.Timestamp;
+
+        public string Severity => this.LogRecord.Severity;
+
+        public string PrincipalEmail => this.LogRecord.ProtoPayload?.AuthenticationInfo?.PrincipalEmail;
+
+        public StatusInfo Status => this.LogRecord.ProtoPayload?.Status?.Message != null
+            ? this.LogRecord.ProtoPayload?.Status
+            : null;
+
+        public abstract string Message { get; }
+
+        protected EventBase(LogRecord logRecord)
         {
-            ApplicationContext.RegisterLogger(new TraceSourceLogger(Google));
+            this.LogRecord = logRecord;
+        }
+
+        public override string ToString()
+        {
+            return $"{this.Timestamp} {this.Severity} {this.Message}";
         }
     }
 }

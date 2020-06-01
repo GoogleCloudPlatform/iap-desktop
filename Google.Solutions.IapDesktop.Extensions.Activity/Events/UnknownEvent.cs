@@ -19,19 +19,18 @@
 // under the License.
 //
 
-using Google.Solutions.Common.Diagnostics;
-using System.Diagnostics;
+using Google.Solutions.IapDesktop.Extensions.Activity.Logs;
 
-namespace Google.Solutions.Common
+namespace Google.Solutions.IapDesktop.Extensions.Activity.Events
 {
-    public static class TraceSources
+    public class UnknownEvent : EventBase
     {
-        public static readonly TraceSource Common = new TraceSource(typeof(TraceSources).Namespace);
-        public static readonly TraceSource Google = new TraceSource(typeof(ApplicationContext).Namespace);
+        public override string Message => this.LogRecord.ProtoPayload != null
+            ? $"Event {this.LogRecord.ProtoPayload.MethodName} occured"
+            : $"Unknown event occured";
 
-        static TraceSources()
+        public UnknownEvent(LogRecord logRecord) : base(logRecord)
         {
-            ApplicationContext.RegisterLogger(new TraceSourceLogger(Google));
         }
     }
 }

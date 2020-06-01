@@ -131,7 +131,7 @@ $Nunit = (Resolve-Path -Path "packages\NUnit.ConsoleRunner.*\tools\nunit3-consol
 $NunitArguments = `
     "Google.Solutions.Common.Test\bin\release\Google.Solutions.Common.Test.dll " + `
     "Google.Solutions.IapTunneling.Test\bin\release\Google.Solutions.IapTunneling.Test.dll " + `
-    "Google.Solutions.IapDesktop.Extensions.LogAnalysis.Test\bin\release\Google.Solutions.IapDesktop.Extensions.LogAnalysis.Test.dll " + `
+    "Google.Solutions.IapDesktop.Extensions.Activity.Test\bin\release\Google.Solutions.IapDesktop.Extensions.Activity.Test.dll " + `
     "Google.Solutions.IapDesktop.Application.Test\bin\release\Google.Solutions.IapDesktop.Application.Test.dll " + `
     "--result=sponge_log.xml;transform=kokoro\nunit-to-sponge.xsl "
 #    "--where \""cat != IntegrationTest\"""
@@ -141,7 +141,7 @@ $NunitArguments = `
     -returntargetcode `
     -target:$Nunit `
     "-targetargs:$NunitArguments" `
-    -filter:"+[Google.Solutions.Common]* +[Google.Solutions.IapTunneling]* +[Google.Solutions.IapDesktop.Extensions.LogAnalysis]* +[Google.Solutions.IapDesktop.Application]*" `
+    -filter:"+[Google.Solutions.Common]* +[Google.Solutions.IapTunneling]* +[Google.Solutions.IapDesktop.Extensions.Activity]* +[Google.Solutions.IapDesktop.Application]*" `
     -output:opencovertests.xml | Out-Default
 
 if ($LastExitCode -ne 0)

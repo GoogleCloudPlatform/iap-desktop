@@ -19,19 +19,33 @@
 // under the License.
 //
 
-using Google.Solutions.Common.Diagnostics;
-using System.Diagnostics;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Serialization;
+using System;
+using System.Collections.Generic;
 
-namespace Google.Solutions.Common
+namespace Google.Solutions.IapDesktop.Extensions.Activity.History
 {
-    public static class TraceSources
+    public class InstanceSetHistory
     {
-        public static readonly TraceSource Common = new TraceSource(typeof(TraceSources).Namespace);
-        public static readonly TraceSource Google = new TraceSource(typeof(ApplicationContext).Namespace);
+        [JsonProperty("start")]
+        public DateTime StartDate { get; }
 
-        static TraceSources()
+        [JsonProperty("end")]
+        public DateTime EndDate { get; }
+
+        [JsonProperty("instances")]
+        public IEnumerable<InstanceHistory> Instances { get; }
+
+        [JsonConstructor]
+        internal InstanceSetHistory(
+            [JsonProperty("start")] DateTime startDate,
+            [JsonProperty("end")] DateTime endDate,
+            [JsonProperty("instances")] IEnumerable<InstanceHistory> instances)
         {
-            ApplicationContext.RegisterLogger(new TraceSourceLogger(Google));
+            this.StartDate = startDate;
+            this.EndDate = endDate;
+            this.Instances = instances;
         }
     }
 }

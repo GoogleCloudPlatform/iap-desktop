@@ -19,19 +19,18 @@
 // under the License.
 //
 
-using Google.Solutions.Common.Diagnostics;
-using System.Diagnostics;
-
-namespace Google.Solutions.Common
+namespace Google.Solutions.IapDesktop.Extensions.Activity.Events
 {
-    public static class TraceSources
+    public interface IInstanceStateChangeEvent
     {
-        public static readonly TraceSource Common = new TraceSource(typeof(TraceSources).Namespace);
-        public static readonly TraceSource Google = new TraceSource(typeof(ApplicationContext).Namespace);
+        bool IsStartingInstance { get; }
+        bool IsTerminatingInstance { get; }
+    }
 
-        static TraceSources()
-        {
-            ApplicationContext.RegisterLogger(new TraceSourceLogger(Google));
-        }
+    public enum InstanceState
+    {
+        Running,
+        Terminated,
+        Deleted
     }
 }
