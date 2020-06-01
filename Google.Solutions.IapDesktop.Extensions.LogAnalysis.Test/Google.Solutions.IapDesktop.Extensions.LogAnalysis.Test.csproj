@@ -103,7 +103,7 @@
     <Compile Include="Events\System\TestTerminateOnHostMaintenanceEvent.cs" />
     <Compile Include="Events\TestEventFactory.cs" />
     <Compile Include="Events\TestUnknownEvent.cs" />
-    <Compile Include="Services\TestAuditLogAdapter.cs" />
+    <Compile Include="Services\Adapters\TestAuditLogAdapter.cs" />
     <Compile Include="Logs\TestListLogEntriesParser.cs" />
     <Compile Include="FixtureBase.cs" />
     <Compile Include="History\TestDataPoint.cs" />

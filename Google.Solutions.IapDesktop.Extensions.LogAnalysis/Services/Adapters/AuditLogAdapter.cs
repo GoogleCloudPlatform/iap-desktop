@@ -40,7 +40,7 @@ using System.Runtime.Serialization;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Google.Solutions.IapDesktop.Extensions.LogAnalysis.Services
+namespace Google.Solutions.IapDesktop.Extensions.LogAnalysis.Services.Adapters
 {
     [Service(ServiceLifetime.Transient)]
     public class AuditLogAdapter

@@ -20,16 +20,15 @@
 //
 
 using Google.Apis.Compute.v1;
-using Google.Apis.Logging.v2;
 using Google.Apis.Services;
 using Google.Solutions.IapDesktop.Application.Services.Adapters;
 using Google.Solutions.IapDesktop.Extensions.LogAnalysis.History;
-using Google.Solutions.IapDesktop.Extensions.LogAnalysis.Logs;
 using System;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using Google.Solutions.IapDesktop.Extensions.LogAnalysis.Events;
+using Google.Solutions.IapDesktop.Extensions.LogAnalysis.Services.Adapters;
 
 namespace Google.Solutions.IapDesktop.Extensions.LogAnalysis.Services.SchedulingReport
 {

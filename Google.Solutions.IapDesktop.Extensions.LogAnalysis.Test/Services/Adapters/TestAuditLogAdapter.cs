@@ -28,8 +28,7 @@ using Google.Solutions.Common.Test.Testbed;
 using Google.Solutions.IapDesktop.Extensions.LogAnalysis.Events;
 using Google.Solutions.IapDesktop.Extensions.LogAnalysis.Events.Lifecycle;
 using Google.Solutions.IapDesktop.Extensions.LogAnalysis.History;
-using Google.Solutions.IapDesktop.Extensions.LogAnalysis.Logs;
-using Google.Solutions.IapDesktop.Extensions.LogAnalysis.Services;
+using Google.Solutions.IapDesktop.Extensions.LogAnalysis.Services.Adapters;
 using NUnit.Framework;
 using System;
 using System.Collections.Generic;
@@ -37,7 +36,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Google.Solutions.IapDesktop.Extensions.LogAnalysis.Test.Logs
+namespace Google.Solutions.IapDesktop.Extensions.LogAnalysis.Test.Services.Adapters
 {
     [TestFixture]
     [Category("IntegrationTest")]

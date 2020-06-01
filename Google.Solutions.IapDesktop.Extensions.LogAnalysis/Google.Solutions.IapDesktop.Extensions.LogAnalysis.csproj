@@ -108,7 +108,7 @@
     <Compile Include="Events\System\TerminateOnHostMaintenanceEvent.cs" />
     <Compile Include="Events\UnknownEvent.cs" />
     <Compile Include="Events\VmInstanceEventBase.cs" />
-    <Compile Include="Services\AuditLogAdapter.cs" />
+    <Compile Include="Services\Adapters\AuditLogAdapter.cs" />
     <Compile Include="Logs\ListLogEntriesParser.cs" />
     <Compile Include="History\DataPoint.cs" />
     <Compile Include="Properties\Resources.Designer.cs">

@@ -24,6 +24,7 @@ using Google.Solutions.IapDesktop.Application.Services.Adapters;
 using Google.Solutions.IapDesktop.Application.Services.Windows;
 using Google.Solutions.IapDesktop.Application.Services.Windows.ProjectExplorer;
 using Google.Solutions.IapDesktop.Extensions.LogAnalysis.Properties;
+using Google.Solutions.IapDesktop.Extensions.LogAnalysis.Services.Adapters;
 using Google.Solutions.IapDesktop.Extensions.LogAnalysis.Services.SchedulingReport;
 using System;
 using System.Linq;
