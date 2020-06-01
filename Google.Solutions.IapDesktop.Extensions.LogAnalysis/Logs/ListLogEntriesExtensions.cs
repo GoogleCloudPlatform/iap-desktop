@@ -31,6 +31,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Runtime.Serialization;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -51,20 +52,28 @@ namespace Google.Solutions.IapDesktop.Extensions.LogAnalysis.Logs
         {
             using (TraceSources.LogAnalysis.TraceMethod().WithParameters(request.Filter))
             {
-                string nextPageToken = null;
-                do
+                try
                 {
-                    request.PageToken = nextPageToken;
-
-                    using (var stream = await entriesResource
-                        .List(request)
-                        .ExecuteAsStreamWithRetryAsync(backOff, cancellationToken))
-                    using (var reader = new JsonTextReader(new StreamReader(stream)))
+                    string nextPageToken = null;
+                    do
                     {
-                        nextPageToken = ListLogEntriesParser.Read(reader, callback);
+                        request.PageToken = nextPageToken;
+
+                        using (var stream = await entriesResource
+                            .List(request)
+                            .ExecuteAsStreamWithRetryAsync(backOff, cancellationToken))
+                        using (var reader = new JsonTextReader(new StreamReader(stream)))
+                        {
+                            nextPageToken = ListLogEntriesParser.Read(reader, callback);
+                        }
                     }
+                    while (nextPageToken != null);
                 }
-                while (nextPageToken != null);
+                catch (GoogleApiException e) when (e.Error != null && e.Error.Code == 403)
+                {
+                    throw new AuditLogException(
+                        $"Access to audit logs has been denied", e);
+                }
             }
         }
 
@@ -97,6 +106,20 @@ namespace Google.Solutions.IapDesktop.Extensions.LogAnalysis.Logs
                     new ExponentialBackOff(initialBackOff, MaxRetries),
                     cancellationToken);
             }
+        }
+    }
+
+    [Serializable]
+    public class AuditLogException : Exception
+    {
+        protected AuditLogException(SerializationInfo info, StreamingContext context)
+            : base(info, context)
+        {
+        }
+
+        public AuditLogException(string message, Exception inner)
+            : base(message, inner)
+        {
         }
     }
 }
