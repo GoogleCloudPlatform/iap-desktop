@@ -78,9 +78,8 @@ namespace Google.Solutions.IapDesktop.Extensions.LogAnalysis.Services.Scheduling
 
             InitializeComponent();
 
-            // NB. If the tab control is not shown at the correct size, then odds
-            // are the designer added a `.ClientSize = xx` call to 
-            // InitializeComponent. This must be removed.
+            // NB. If the tab control is not shown at the correct size, remove
+            // the `.ClientSize = xx` statement in InitializeComponent. 
 
             // Remove space between bars.
             this.instancesChart.Series[0]["PointWidth"] = "1";
@@ -226,6 +225,8 @@ namespace Google.Solutions.IapDesktop.Extensions.LogAnalysis.Services.Scheduling
                 {
                     Plot(dataPoints, this.licenseChart.Series[0]);
                     this.noLicenseDataLabel.Visible = !dataPoints.Any();
+                    this.infoIcon.Visible =
+                        this.nodeTypeInfoLabel.Visible = dataPoints.Any();
                 }));
 
             this.viewModel.Repopulate();
@@ -281,22 +282,5 @@ namespace Google.Solutions.IapDesktop.Extensions.LogAnalysis.Services.Scheduling
                     break;
             }
         }
-
-
-        //public override void ShowOrActivate(DockPanel dockPanel, DockState defaultState)
-        //{
-        //    base.ShowOrActivate(dockPanel, defaultState);
-        //    this.tabs.Size = this.Size;
-        //}
-
-        //private void ReportView_ClientSizeChanged(object sender, EventArgs e)
-        //{
-        //    this.tabs.Size = this.Size;
-        //}
-
-        //private void ReportView_SizeChanged(object sender, EventArgs e)
-        //{
-        //    this.tabs.Size = this.Size;
-        //}
     }
 }
