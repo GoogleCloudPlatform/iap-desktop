@@ -56,7 +56,7 @@ namespace Google.Solutions.IapDesktop.Extensions.LogAnalysis.Services.Scheduling
         {
             this.reportBuilder = reportBuilder;
 
-            BeginLoad();
+            BeginLoad(LoadAsync, InitializeForm);
         }
 
         //---------------------------------------------------------------------
@@ -66,13 +66,13 @@ namespace Google.Solutions.IapDesktop.Extensions.LogAnalysis.Services.Scheduling
         protected override string LoadingStatusText => this.reportBuilder.BuildStatus;
         protected override ushort LoadingPercentage => this.reportBuilder.PercentageDone;
 
-        protected override async Task LoadAsync(CancellationToken token)
+        private async Task LoadAsync(CancellationToken token)
         {
             var model = await this.reportBuilder.BuildAsync(token);
             this.viewModel = new ReportViewModel(model);
         }
 
-        protected override void OnLoadCompleted()
+        private void InitializeForm()
         {
             this.components = new System.ComponentModel.Container();
 

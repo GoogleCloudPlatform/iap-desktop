@@ -59,13 +59,15 @@ namespace Google.Solutions.IapDesktop.Application.Services.Windows
             this.DockAreas = WeifenLuo.WinFormsUI.Docking.DockAreas.Document;
         }
 
-        protected void BeginLoad()
+        protected void BeginLoad(
+            Func<CancellationToken, Task> loadingFunc,
+            Action initializeFormAction)
         { 
             // Show status and keep updating while loading.
             UpdateLoadingStatus();
             this.timer.Start();
 
-            LoadAsync(this.loadCancellationTokenSource.Token)
+            loadingFunc(this.loadCancellationTokenSource.Token)
                 .ContinueWith(t =>
                 {
                     try
@@ -75,7 +77,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.Windows
                         // Loading succeeded. Hide the loading anomation
                         // and reveal the real form.
                         this.loadingPanel.Visible = false;
-                        OnLoadCompleted();
+                        initializeFormAction();
                     }
                     catch (Exception e)
                     {
@@ -109,11 +111,6 @@ namespace Google.Solutions.IapDesktop.Application.Services.Windows
 
         protected virtual string LoadingStatusText => string.Empty;
         protected virtual ushort LoadingPercentage => 0;
-
-        protected virtual Task LoadAsync(CancellationToken token) => Task.CompletedTask;
-
-        protected virtual void OnLoadCompleted()
-        { }
 
         //---------------------------------------------------------------------
         // Window event handlers.
