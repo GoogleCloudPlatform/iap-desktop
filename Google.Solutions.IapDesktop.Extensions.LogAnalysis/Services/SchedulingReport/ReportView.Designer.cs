@@ -131,7 +131,7 @@ namespace Google.Solutions.IapDesktop.Extensions.LogAnalysis.Services.Scheduling
             this.includeLicenseMenuItem});
             this.toolStrip.Location = new System.Drawing.Point(0, 0);
             this.toolStrip.Name = "toolStrip";
-            this.toolStrip.Size = new System.Drawing.Size(896, 25);
+            this.toolStrip.Size = new System.Drawing.Size(800, 25);
             this.toolStrip.TabIndex = 0;
             this.toolStrip.Text = "toolStrip";
             // 
@@ -238,7 +238,7 @@ namespace Google.Solutions.IapDesktop.Extensions.LogAnalysis.Services.Scheduling
             this.tabs.Multiline = true;
             this.tabs.Name = "tabs";
             this.tabs.SelectedIndex = 0;
-            this.tabs.Size = new System.Drawing.Size(896, 781);
+            this.tabs.Size = new System.Drawing.Size(800, 775);
             this.tabs.SizeMode = System.Windows.Forms.TabSizeMode.Fixed;
             this.tabs.TabIndex = 1;
             // 
@@ -251,7 +251,7 @@ namespace Google.Solutions.IapDesktop.Extensions.LogAnalysis.Services.Scheduling
             this.instancesTab.Location = new System.Drawing.Point(140, 4);
             this.instancesTab.Name = "instancesTab";
             this.instancesTab.Padding = new System.Windows.Forms.Padding(3);
-            this.instancesTab.Size = new System.Drawing.Size(752, 773);
+            this.instancesTab.Size = new System.Drawing.Size(656, 767);
             this.instancesTab.TabIndex = 0;
             this.instancesTab.Text = "Instances";
             this.instancesTab.UseVisualStyleBackColor = true;
@@ -263,7 +263,7 @@ namespace Google.Solutions.IapDesktop.Extensions.LogAnalysis.Services.Scheduling
             this.noInstancesDataLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Italic, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.noInstancesDataLabel.Location = new System.Drawing.Point(330, 160);
             this.noInstancesDataLabel.Name = "noInstancesDataLabel";
-            this.noInstancesDataLabel.Size = new System.Drawing.Size(92, 13);
+            this.noInstancesDataLabel.Size = new System.Drawing.Size(0, 13);
             this.noInstancesDataLabel.TabIndex = 5;
             this.noInstancesDataLabel.Text = "No data to display";
             this.noInstancesDataLabel.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
@@ -287,7 +287,7 @@ namespace Google.Solutions.IapDesktop.Extensions.LogAnalysis.Services.Scheduling
             this.instancesList.Name = "instancesList";
             this.instancesList.OwnerDraw = true;
             this.instancesList.SelectedModelItem = null;
-            this.instancesList.Size = new System.Drawing.Size(738, 434);
+            this.instancesList.Size = new System.Drawing.Size(642, 428);
             this.instancesList.TabIndex = 2;
             this.instancesList.UseCompatibleStateImageBehavior = false;
             this.instancesList.View = System.Windows.Forms.View.Details;
@@ -320,7 +320,7 @@ namespace Google.Solutions.IapDesktop.Extensions.LogAnalysis.Services.Scheduling
             // placedUntilColumnHeader
             // 
             this.placedUntilColumnHeader.Text = "To (UTC)";
-            this.placedUntilColumnHeader.Width = 150;
+            this.placedUntilColumnHeader.Width = 54;
             // 
             // instancesHeader
             // 
@@ -358,7 +358,7 @@ namespace Google.Solutions.IapDesktop.Extensions.LogAnalysis.Services.Scheduling
             series1.ChartArea = "mainArea";
             series1.Name = "Series1";
             this.instancesChart.Series.Add(series1);
-            this.instancesChart.Size = new System.Drawing.Size(738, 300);
+            this.instancesChart.Size = new System.Drawing.Size(642, 300);
             this.instancesChart.TabIndex = 0;
             this.instancesChart.GetToolTipText += new System.EventHandler<System.Windows.Forms.DataVisualization.Charting.ToolTipEventArgs>(this.chart_GetToolTipText);
             this.instancesChart.SelectionRangeChanged += new System.EventHandler<System.Windows.Forms.DataVisualization.Charting.CursorEventArgs>(this.instancesChart_SelectionRangeChanged);
@@ -372,7 +372,7 @@ namespace Google.Solutions.IapDesktop.Extensions.LogAnalysis.Services.Scheduling
             this.nodesTab.Location = new System.Drawing.Point(140, 4);
             this.nodesTab.Name = "nodesTab";
             this.nodesTab.Padding = new System.Windows.Forms.Padding(3);
-            this.nodesTab.Size = new System.Drawing.Size(752, 773);
+            this.nodesTab.Size = new System.Drawing.Size(879, 941);
             this.nodesTab.TabIndex = 1;
             this.nodesTab.Text = "Sole-tenant nodes";
             this.nodesTab.UseVisualStyleBackColor = true;
@@ -384,9 +384,9 @@ namespace Google.Solutions.IapDesktop.Extensions.LogAnalysis.Services.Scheduling
             this.noNodesDataLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Italic, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.noNodesDataLabel.Location = new System.Drawing.Point(330, 160);
             this.noNodesDataLabel.Name = "noNodesDataLabel";
-            this.noNodesDataLabel.Size = new System.Drawing.Size(92, 13);
+            this.noNodesDataLabel.Size = new System.Drawing.Size(219, 13);
             this.noNodesDataLabel.TabIndex = 4;
-            this.noNodesDataLabel.Text = "No data to display";
+            this.noNodesDataLabel.Text = "No sole-tenant nodes used";
             this.noNodesDataLabel.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
             // nodesSplitContainer
@@ -406,8 +406,8 @@ namespace Google.Solutions.IapDesktop.Extensions.LogAnalysis.Services.Scheduling
             // 
             this.nodesSplitContainer.Panel2.Controls.Add(this.nodePlacementsHeadline);
             this.nodesSplitContainer.Panel2.Controls.Add(this.nodePlacementsList);
-            this.nodesSplitContainer.Size = new System.Drawing.Size(734, 434);
-            this.nodesSplitContainer.SplitterDistance = 217;
+            this.nodesSplitContainer.Size = new System.Drawing.Size(861, 602);
+            this.nodesSplitContainer.SplitterDistance = 301;
             this.nodesSplitContainer.TabIndex = 3;
             // 
             // nodesList
@@ -428,7 +428,7 @@ namespace Google.Solutions.IapDesktop.Extensions.LogAnalysis.Services.Scheduling
             this.nodesList.Name = "nodesList";
             this.nodesList.OwnerDraw = true;
             this.nodesList.SelectedModelItem = null;
-            this.nodesList.Size = new System.Drawing.Size(734, 217);
+            this.nodesList.Size = new System.Drawing.Size(861, 301);
             this.nodesList.TabIndex = 0;
             this.nodesList.UseCompatibleStateImageBehavior = false;
             this.nodesList.View = System.Windows.Forms.View.Details;
@@ -466,7 +466,7 @@ namespace Google.Solutions.IapDesktop.Extensions.LogAnalysis.Services.Scheduling
             // peakInstancesColumnHeader
             // 
             this.peakInstancesColumnHeader.Text = "Peak VMs";
-            this.peakInstancesColumnHeader.Width = 46;
+            this.peakInstancesColumnHeader.Width = 173;
             // 
             // nodePlacementsHeadline
             // 
@@ -498,7 +498,7 @@ namespace Google.Solutions.IapDesktop.Extensions.LogAnalysis.Services.Scheduling
             this.nodePlacementsList.Name = "nodePlacementsList";
             this.nodePlacementsList.OwnerDraw = true;
             this.nodePlacementsList.SelectedModelItem = null;
-            this.nodePlacementsList.Size = new System.Drawing.Size(734, 184);
+            this.nodePlacementsList.Size = new System.Drawing.Size(861, 268);
             this.nodePlacementsList.TabIndex = 1;
             this.nodePlacementsList.UseCompatibleStateImageBehavior = false;
             this.nodePlacementsList.View = System.Windows.Forms.View.Details;
@@ -531,7 +531,7 @@ namespace Google.Solutions.IapDesktop.Extensions.LogAnalysis.Services.Scheduling
             // nodePlacementToColumnHeader
             // 
             this.nodePlacementToColumnHeader.Text = "To (UTC)";
-            this.nodePlacementToColumnHeader.Width = 156;
+            this.nodePlacementToColumnHeader.Width = 283;
             // 
             // nodesHeadline
             // 
@@ -569,7 +569,7 @@ namespace Google.Solutions.IapDesktop.Extensions.LogAnalysis.Services.Scheduling
             series2.ChartArea = "mainArea";
             series2.Name = "Series1";
             this.nodesChart.Series.Add(series2);
-            this.nodesChart.Size = new System.Drawing.Size(738, 300);
+            this.nodesChart.Size = new System.Drawing.Size(865, 300);
             this.nodesChart.TabIndex = 1;
             this.nodesChart.GetToolTipText += new System.EventHandler<System.Windows.Forms.DataVisualization.Charting.ToolTipEventArgs>(this.chart_GetToolTipText);
             this.nodesChart.SelectionRangeChanged += new System.EventHandler<System.Windows.Forms.DataVisualization.Charting.CursorEventArgs>(this.nodesChart_SelectionRangeChanged);
@@ -583,7 +583,7 @@ namespace Google.Solutions.IapDesktop.Extensions.LogAnalysis.Services.Scheduling
             this.licensesTab.Controls.Add(this.byolHeadline);
             this.licensesTab.Location = new System.Drawing.Point(140, 4);
             this.licensesTab.Name = "licensesTab";
-            this.licensesTab.Size = new System.Drawing.Size(752, 773);
+            this.licensesTab.Size = new System.Drawing.Size(656, 767);
             this.licensesTab.TabIndex = 2;
             this.licensesTab.Text = "Licenses";
             this.licensesTab.UseVisualStyleBackColor = true;
@@ -613,9 +613,9 @@ namespace Google.Solutions.IapDesktop.Extensions.LogAnalysis.Services.Scheduling
             this.noLicenseDataLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Italic, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.noLicenseDataLabel.Location = new System.Drawing.Point(330, 160);
             this.noLicenseDataLabel.Name = "noLicenseDataLabel";
-            this.noLicenseDataLabel.Size = new System.Drawing.Size(92, 13);
+            this.noLicenseDataLabel.Size = new System.Drawing.Size(0, 13);
             this.noLicenseDataLabel.TabIndex = 7;
-            this.noLicenseDataLabel.Text = "No data to display";
+            this.noLicenseDataLabel.Text = "No Windows BYOL instances used";
             this.noLicenseDataLabel.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
             // licenseChart
@@ -643,7 +643,7 @@ namespace Google.Solutions.IapDesktop.Extensions.LogAnalysis.Services.Scheduling
             series3.ChartArea = "mainArea";
             series3.Name = "Series1";
             this.licenseChart.Series.Add(series3);
-            this.licenseChart.Size = new System.Drawing.Size(738, 300);
+            this.licenseChart.Size = new System.Drawing.Size(642, 300);
             this.licenseChart.TabIndex = 6;
             this.licenseChart.GetToolTipText += new System.EventHandler<System.Windows.Forms.DataVisualization.Charting.ToolTipEventArgs>(this.chart_GetToolTipText);
             // 
@@ -664,6 +664,7 @@ namespace Google.Solutions.IapDesktop.Extensions.LogAnalysis.Services.Scheduling
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.AutoScroll = true;
             this.AutoScrollMinSize = new System.Drawing.Size(800, 800);
+            this.ClientSize = new System.Drawing.Size(309, 283);
             this.Controls.Add(this.tabs);
             this.Controls.Add(this.toolStrip);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
