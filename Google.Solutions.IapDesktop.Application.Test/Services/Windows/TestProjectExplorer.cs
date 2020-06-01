@@ -194,7 +194,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Windows
                 .Returns(Task.FromResult<IEnumerable<Instance>>(instances));
             computeEngineAdapter
                 .Setup(o => o.QueryInstancesAsync("forbidden-project", It.IsAny<CancellationToken>()))
-                .Throws(new ComputeEngineException("Access denied or something", null));
+                .Throws(new AdapterException("Access denied or something", null));
 
             var window = new ProjectExplorerWindow(this.serviceProvider);
             window.ShowWindow();

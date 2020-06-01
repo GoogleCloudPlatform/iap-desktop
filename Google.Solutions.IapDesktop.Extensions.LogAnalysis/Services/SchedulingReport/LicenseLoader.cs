@@ -23,6 +23,7 @@ using Google.Apis.Compute.v1;
 using Google.Apis.Compute.v1.Data;
 using Google.Solutions.Common.Locator;
 using Google.Solutions.Common.Util;
+using Google.Solutions.IapDesktop.Application.Services.Adapters;
 using System;
 using System.Linq;
 using System.Threading;
@@ -57,7 +58,7 @@ namespace Google.Solutions.IapDesktop.Extensions.LogAnalysis.Services.Scheduling
 
         public static async Task LoadLicenseAnnotationsAsync(
             ReportArchive annotatedSet,
-            ImagesResource imagesResource,
+            IComputeEngineAdapter computeEngineAdapter,
             CancellationToken cancellationToken)
         {
             foreach (var image in annotatedSet.History.Instances
@@ -67,19 +68,7 @@ namespace Google.Solutions.IapDesktop.Extensions.LogAnalysis.Services.Scheduling
             {
                 try
                 {
-                    Image imageInfo;
-                    if (image.Name.StartsWith("family/"))
-                    {
-                        imageInfo = await imagesResource
-                            .GetFromFamily(image.ProjectId, image.Name.Substring(7))
-                            .ExecuteAsync(cancellationToken);
-                    }
-                    else
-                    {
-                        imageInfo = await imagesResource
-                            .Get(image.ProjectId, image.Name)
-                            .ExecuteAsync(cancellationToken);
-                    }
+                    Image imageInfo = await computeEngineAdapter.GetImage(image, cancellationToken);
 
                     // Images can contain more than one license, and liceses like 
                     // "/compute/v1/projects/compute-image-tools/global/licenses/virtual-disk-import"
@@ -89,11 +78,7 @@ namespace Google.Solutions.IapDesktop.Extensions.LogAnalysis.Services.Scheduling
                         image,
                         TryGetRelevantLicenseFromImage(imageInfo));
                 }
-                catch (Exception e) when (
-                    e.Unwrap() is GoogleApiException apiEx &&
-                    apiEx.Error != null &&
-                    apiEx.Error.Code == 404 &&
-                    image.ProjectId == "windows-cloud")
+                catch (ResourceNotFoundException) when (image.ProjectId == "windows-cloud")
                 {
                     // That image might not exist anymore, but we know it's
                     // a Windows SPLA image.
@@ -102,10 +87,11 @@ namespace Google.Solutions.IapDesktop.Extensions.LogAnalysis.Services.Scheduling
                         OperatingSystemTypes.Windows,
                         LicenseTypes.Spla);
                 }
-                catch (Exception e) when (
-                    e.Unwrap() is GoogleApiException apiEx &&
-                    apiEx.Error != null &&
-                    (apiEx.Error.Code == 404 || apiEx.Error.Code == 403))
+                catch (ResourceNotFoundException) 
+                {
+                    // Unknown or inaccessible image, skip.
+                }
+                catch (ResourceAccessDeniedException)
                 {
                     // Unknown or inaccessible image, skip.
                 }

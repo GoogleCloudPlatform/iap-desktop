@@ -48,10 +48,12 @@ namespace Google.Solutions.IapDesktop.Extensions.LogAnalysis.Services.Scheduling
 
         private readonly ComputeService computeService;
         private readonly AuditLogAdapter auditLogAdapter;
+        private readonly IComputeEngineAdapter computeEngineAdapter;
 
         public AuditLogReportBuilder(
             IAuthorizationAdapter authService, 
-            AuditLogAdapter auditLogAdapter,
+            AuditLogAdapter auditLogAdapter, 
+            IComputeEngineAdapter computeEngineAdapter,
             IEnumerable<string> projectIds,
             DateTime startDate)
         {
@@ -67,12 +69,14 @@ namespace Google.Solutions.IapDesktop.Extensions.LogAnalysis.Services.Scheduling
 
             this.projectIds = projectIds;
             this.auditLogAdapter = auditLogAdapter;
+            this.computeEngineAdapter = computeEngineAdapter;
 
             this.builder = new InstanceSetHistoryBuilder(startDate, now);
 
             // TODO: move to IAuthzServuce
             var assemblyName = typeof(AuditLogReportBuilder).Assembly.GetName();
 
+            // TODO: Use ComputeEngineAdapter instead.
             this.computeService = new ComputeService(new BaseClientService.Initializer
             {
                 HttpClientInitializer = authService.Authorization.Credential,
@@ -113,7 +117,7 @@ namespace Google.Solutions.IapDesktop.Extensions.LogAnalysis.Services.Scheduling
             var archive = ReportArchive.FromInstanceSetHistory(this.builder.Build());
 
             await archive.LoadLicenseAnnotationsAsync(
-                computeService.Images,
+                this.computeEngineAdapter,
                 cancellationToken);
 
             return archive;

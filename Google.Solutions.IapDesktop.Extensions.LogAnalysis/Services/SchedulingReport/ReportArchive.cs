@@ -21,6 +21,7 @@
 
 using Google.Apis.Compute.v1;
 using Google.Solutions.Common.Locator;
+using Google.Solutions.IapDesktop.Application.Services.Adapters;
 using Google.Solutions.IapDesktop.Extensions.LogAnalysis.History;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
@@ -110,12 +111,12 @@ namespace Google.Solutions.IapDesktop.Extensions.LogAnalysis.Services.Scheduling
         }
 
         public async Task LoadLicenseAnnotationsAsync(
-            ImagesResource imagesResource,
+            IComputeEngineAdapter computeEngineAdapter,
             CancellationToken cancellationToken)
         {
             await LicenseLoader.LoadLicenseAnnotationsAsync(
-                this, 
-                imagesResource, 
+                this,
+                computeEngineAdapter, 
                 cancellationToken);
         }
 

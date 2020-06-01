@@ -19,6 +19,7 @@
 // under the License.
 //
 
+using Google.Apis.Auth.OAuth2;
 using Google.Apis.Compute.v1;
 using Google.Apis.Compute.v1.Data;
 using Google.Apis.Services;
@@ -56,6 +57,10 @@ namespace Google.Solutions.IapDesktop.Application.Services.Adapters
             CancellationToken token,
             TimeSpan timeout);
 
+        Task<Image> GetImage(
+            ImageLocator image, 
+            CancellationToken cancellationToken);
+
         SerialPortStream GetSerialPortOutput(InstanceLocator instanceRef);
     }
 
@@ -68,14 +73,19 @@ namespace Google.Solutions.IapDesktop.Application.Services.Adapters
 
         private readonly ComputeService service;
 
-        public ComputeEngineAdapter(IAuthorizationAdapter authService)
+        public ComputeEngineAdapter(ICredential credential)
         {
             var assemblyName = typeof(IComputeEngineAdapter).Assembly.GetName();
             this.service = new ComputeService(new BaseClientService.Initializer
             {
-                HttpClientInitializer = authService.Authorization.Credential,
+                HttpClientInitializer = credential,
                 ApplicationName = $"{assemblyName.Name}/{assemblyName.Version}"
             });
+        }
+
+        public ComputeEngineAdapter(IAuthorizationAdapter authService)
+            : this(authService.Authorization.Credential)
+        {
         }
 
         public ComputeEngineAdapter(IServiceProvider serviceProvider)
@@ -111,9 +121,42 @@ namespace Google.Solutions.IapDesktop.Application.Services.Adapters
                 }
                 catch (GoogleApiException e) when (e.Error != null && e.Error.Code == 403)
                 {
-                    throw new ComputeEngineException(
+                    throw new ResourceAccessDeniedException(
                         $"Access to VM instances in project {projectId} has been denied", e);
                 }
+            }
+        }
+
+        public async Task<Image> GetImage(ImageLocator image, CancellationToken cancellationToken)
+        {
+            try
+            {
+                if (image.Name.StartsWith("family/"))
+                {
+                    return await this.service.Images
+                        .GetFromFamily(image.ProjectId, image.Name.Substring(7))
+                        .ExecuteAsync(cancellationToken);
+                }
+                else
+                {
+                    return await this.service.Images
+                        .Get(image.ProjectId, image.Name)
+                        .ExecuteAsync(cancellationToken);
+                }
+            }
+            catch (Exception e) when (
+                e.Unwrap() is GoogleApiException apiEx &&
+                apiEx.Error != null &&
+                apiEx.Error.Code == 404)
+            {
+                throw new ResourceNotFoundException($"Image {image} not found", e);
+            }
+            catch (Exception e) when (
+                e.Unwrap() is GoogleApiException apiEx &&
+                apiEx.Error != null &&
+                (apiEx.Error.Code == 403))
+            {
+                throw new ResourceAccessDeniedException($"Access to {image} denied", e);
             }
         }
 
@@ -209,20 +252,6 @@ namespace Google.Solutions.IapDesktop.Application.Services.Adapters
             {
                 this.service.Dispose();
             }
-        }
-    }
-
-    [Serializable]
-    public class ComputeEngineException : Exception
-    {
-        protected ComputeEngineException(SerializationInfo info, StreamingContext context)
-            : base(info, context)
-        {
-        }
-
-        public ComputeEngineException(string message, Exception inner)
-            : base(message, inner)
-        {
         }
     }
 }

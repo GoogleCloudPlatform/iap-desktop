@@ -23,6 +23,7 @@ using Google.Apis.Compute.v1;
 using Google.Apis.Services;
 using Google.Solutions.Common.Locator;
 using Google.Solutions.Common.Test.Testbed;
+using Google.Solutions.IapDesktop.Application.Services.Adapters;
 using Google.Solutions.IapDesktop.Extensions.LogAnalysis.History;
 using Google.Solutions.IapDesktop.Extensions.LogAnalysis.Services.SchedulingReport;
 using NUnit.Framework;
@@ -63,14 +64,10 @@ namespace Google.Solutions.IapDesktop.Extensions.LogAnalysis.Test.Services.Sched
 
             Assert.AreEqual(0, annotatedSet.LicenseAnnotations.Count());
 
-            var computeService = new ComputeService(new BaseClientService.Initializer
-            {
-                HttpClientInitializer = Defaults.GetCredential()
-            });
-
+            var computeEngineAdapter = new ComputeEngineAdapter(Defaults.GetCredential());
             await LicenseLoader.LoadLicenseAnnotationsAsync(
                 annotatedSet,
-                computeService.Images,
+                computeEngineAdapter,
                 CancellationToken.None);
 
             Assert.AreEqual(1, annotatedSet.LicenseAnnotations.Count());
@@ -88,14 +85,10 @@ namespace Google.Solutions.IapDesktop.Extensions.LogAnalysis.Test.Services.Sched
 
             Assert.AreEqual(0, annotatedSet.LicenseAnnotations.Count());
 
-            var computeService = new ComputeService(new BaseClientService.Initializer
-            {
-                HttpClientInitializer = Defaults.GetCredential()
-            });
-
+            var computeEngineAdapter = new ComputeEngineAdapter(Defaults.GetCredential());
             await LicenseLoader.LoadLicenseAnnotationsAsync(
                 annotatedSet,
-                computeService.Images,
+                computeEngineAdapter,
                 CancellationToken.None);
 
             Assert.AreEqual(1, annotatedSet.LicenseAnnotations.Count());
@@ -113,14 +106,10 @@ namespace Google.Solutions.IapDesktop.Extensions.LogAnalysis.Test.Services.Sched
 
             Assert.AreEqual(0, annotatedSet.LicenseAnnotations.Count());
 
-            var computeService = new ComputeService(new BaseClientService.Initializer
-            {
-                HttpClientInitializer = Defaults.GetCredential()
-            });
-
+            var computeEngineAdapter = new ComputeEngineAdapter(Defaults.GetCredential());
             await LicenseLoader.LoadLicenseAnnotationsAsync(
                 annotatedSet,
-                computeService.Images,
+                computeEngineAdapter,
                 CancellationToken.None);
 
             Assert.AreEqual(0, annotatedSet.LicenseAnnotations.Count());

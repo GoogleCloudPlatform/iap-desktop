@@ -36,7 +36,6 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Runtime.Serialization;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -93,7 +92,7 @@ namespace Google.Solutions.IapDesktop.Extensions.LogAnalysis.Services.Adapters
                 }
                 catch (GoogleApiException e) when (e.Error != null && e.Error.Code == 403)
                 {
-                    throw new AuditLogException(
+                    throw new ResourceAccessDeniedException(
                         $"Access to audit logs has been denied", e);
                 }
             }
@@ -126,20 +125,6 @@ namespace Google.Solutions.IapDesktop.Extensions.LogAnalysis.Services.Adapters
                     new ExponentialBackOff(initialBackOff, MaxRetries),
                     cancellationToken);
             }
-        }
-    }
-
-    [Serializable]
-    public class AuditLogException : Exception
-    {
-        protected AuditLogException(SerializationInfo info, StreamingContext context)
-            : base(info, context)
-        {
-        }
-
-        public AuditLogException(string message, Exception inner)
-            : base(message, inner)
-        {
         }
     }
 }
