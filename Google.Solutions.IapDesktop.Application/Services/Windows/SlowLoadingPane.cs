@@ -128,7 +128,6 @@ namespace Google.Solutions.IapDesktop.Application.Services.Windows
 
         private void SlowLoadingPane_SizeChanged(object sender, EventArgs e)
         {
-
             this.loadingPanel.Location = new Point(
                 (this.Width - this.loadingPanel.Width) / 2,
                 this.loadingPanel.Location.Y);
