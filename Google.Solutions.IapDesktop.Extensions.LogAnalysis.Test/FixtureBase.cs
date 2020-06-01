@@ -31,7 +31,7 @@ namespace Google.Solutions.IapDesktop.Extensions.LogAnalysis.Test
         private static TraceSource[] Traces = new[]
         {
             Google.Solutions.Common.TraceSources.Common,
-            Google.Solutions.IapDesktop.Extensions.LogAnalysis.TraceSources.LogAnalysis,
+            Google.Solutions.IapDesktop.Application.TraceSources.IapDesktop,
         };
 
         [SetUp]

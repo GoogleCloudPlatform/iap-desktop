@@ -19,12 +19,28 @@
 // under the License.
 //
 
-using System.Diagnostics;
+using Newtonsoft.Json;
 
-namespace Google.Solutions.IapDesktop.Extensions.LogAnalysis
+namespace Google.Solutions.IapDesktop.Extensions.LogAnalysis.Services.SchedulingReport
 {
-    public static class TraceSources
+    public class NodeAnnotation
     {
-        public static readonly TraceSource LogAnalysis = new TraceSource(typeof(TraceSources).Namespace);
+        internal static readonly NodeAnnotation Default =
+            new NodeAnnotation("n1-node-96-624", 56);
+
+        [JsonProperty("physicalCores")]
+        public int PhysicalCores { get; }
+
+        [JsonProperty("nodeType")]
+        public string NodeType { get; }
+
+        [JsonConstructor]
+        internal NodeAnnotation(
+            [JsonProperty("nodeType")] string nodeType,
+            [JsonProperty("physicalCores")] int physicalCores)
+        {
+            this.NodeType = nodeType;
+            this.PhysicalCores = physicalCores;
+        }
     }
 }

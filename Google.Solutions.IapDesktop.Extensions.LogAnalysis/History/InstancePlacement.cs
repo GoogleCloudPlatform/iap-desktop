@@ -19,6 +19,7 @@
 // under the License.
 //
 
+using Google.Solutions.Common.Util;
 using Newtonsoft.Json;
 using System;
 using System.Diagnostics;
@@ -33,7 +34,7 @@ namespace Google.Solutions.IapDesktop.Extensions.LogAnalysis.History
     public class InstancePlacement
     {
         [JsonProperty("tenancy")]
-        public Tenancy Tenancy { get; }
+        public Tenancies Tenancy { get; }
 
         [JsonProperty("server")]
         public string ServerId { get; }
@@ -44,32 +45,36 @@ namespace Google.Solutions.IapDesktop.Extensions.LogAnalysis.History
         [JsonProperty("to")]
         public DateTime To { get; }
 
-        private static Tenancy MergeTenancy(Tenancy lhs, Tenancy rhs)
+        private static Tenancies MergeTenancy(Tenancies lhs, Tenancies rhs)
         {
-            if (lhs == Tenancy.SoleTenant || rhs == Tenancy.SoleTenant)
+            Debug.Assert(lhs.IsSingleFlag());
+            Debug.Assert(rhs.IsSingleFlag());
+
+            if (lhs == Tenancies.SoleTenant || rhs == Tenancies.SoleTenant)
             {
                 // If one of them is sole tenant, both of them must be.
                 // that is because in case of SoleTenant, we have strong
                 // evidence that this is a SoleTenant VM whereas in the
                 // case of Fleet, there is simply an absence of evidence
                 // that it might be SoleTenant.
-                return Tenancy.SoleTenant;
+                return Tenancies.SoleTenant;
             }
             else
             {
-                return Tenancy.Fleet;
+                return Tenancies.Fleet;
             }
         }
 
         [JsonConstructor]
         internal InstancePlacement(
-            [JsonProperty("tenancy")] Tenancy tenancy,
+            [JsonProperty("tenancy")] Tenancies tenancy,
             [JsonProperty("server")] string serverId,
             [JsonProperty("from")] DateTime from,
             [JsonProperty("to")] DateTime to)
         {
             Debug.Assert(from <= to);
-            Debug.Assert(tenancy != Tenancy.Unknown);
+            Debug.Assert(tenancy != Tenancies.Unknown);
+            Debug.Assert(!tenancy.IsFlagCombination());
 
             this.Tenancy = tenancy;
             this.ServerId = serverId;
@@ -78,12 +83,12 @@ namespace Google.Solutions.IapDesktop.Extensions.LogAnalysis.History
         }
 
         public InstancePlacement(DateTime from, DateTime to)
-            : this(Tenancy.Fleet, null, from, to)
+            : this(Tenancies.Fleet, null, from, to)
         {
         }
 
         public InstancePlacement(string serverId, DateTime from, DateTime to)
-            : this(Tenancy.SoleTenant, serverId, from, to)
+            : this(Tenancies.SoleTenant, serverId, from, to)
         {
         }
 
@@ -124,14 +129,15 @@ namespace Google.Solutions.IapDesktop.Extensions.LogAnalysis.History
 
         public override string ToString()
         {
-            var where = this.Tenancy == Tenancy.SoleTenant
+            var where = this.Tenancy == Tenancies.SoleTenant
                 ? this.ServerId
                 : "fleet";
             return $"{this.From} - {this.To} on {where}";
         }
     }
 
-    public enum Tenancy
+    [Flags]
+    public enum Tenancies
     {
         Unknown = 0,
         Fleet = 1,

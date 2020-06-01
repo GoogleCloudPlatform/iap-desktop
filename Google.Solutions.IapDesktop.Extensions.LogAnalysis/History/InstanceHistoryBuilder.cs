@@ -19,9 +19,10 @@
 // under the License.
 //
 
-using Google.Solutions.Common;
 using Google.Solutions.Common.Diagnostics;
 using Google.Solutions.Common.Locator;
+using Google.Solutions.Common.Util;
+using Google.Solutions.IapDesktop.Application;
 using Google.Solutions.IapDesktop.Extensions.LogAnalysis.Events;
 using Google.Solutions.IapDesktop.Extensions.LogAnalysis.Events.Lifecycle;
 using Google.Solutions.IapDesktop.Extensions.LogAnalysis.Events.System;
@@ -51,9 +52,9 @@ namespace Google.Solutions.IapDesktop.Extensions.LogAnalysis.History
 
         public ulong InstanceId { get; }
 
-        public Tenancy Tenancy => this.placements.Any()
+        public Tenancies Tenancy => this.placements.Any()
             ? this.placements.First().Tenancy
-            : Tenancy.Unknown;
+            : Tenancies.Unknown;
 
         private bool missingStopEvent = false;
 
@@ -84,8 +85,9 @@ namespace Google.Solutions.IapDesktop.Extensions.LogAnalysis.History
             this.placements.AddFirst(placement);
         }
 
-        public void AddPlacement(Tenancy tenancy, string serverId, DateTime date)
+        public void AddPlacement(Tenancies tenancy, string serverId, DateTime date)
         {
+            Debug.Assert(!tenancy.IsFlagCombination());
             Debug.Assert(date <= this.lastEventDate);
             this.lastEventDate = date;
 
@@ -101,7 +103,7 @@ namespace Google.Solutions.IapDesktop.Extensions.LogAnalysis.History
                 }
                 else
                 {
-                    TraceSources.LogAnalysis.TraceWarning(
+                    TraceSources.IapDesktop.TraceWarning(
                         "Instance {0} was placed, but never stopped, " +
                         "and yet is not running anymore. Flagging as defunct.",
                         this.InstanceId);
@@ -127,7 +129,7 @@ namespace Google.Solutions.IapDesktop.Extensions.LogAnalysis.History
                 }
             }
 
-            if (tenancy == Tenancy.SoleTenant)
+            if (tenancy == Tenancies.SoleTenant)
             {
                 AddPlacement(new InstancePlacement(serverId, date, placedUntil));
             }
@@ -147,8 +149,9 @@ namespace Google.Solutions.IapDesktop.Extensions.LogAnalysis.History
             ImageLocator image,
             InstanceState state,
             DateTime? lastSeen,
-            Tenancy tenancy)
+            Tenancies tenancy)
         {
+            Debug.Assert(!tenancy.IsFlagCombination());
             if (instanceId == 0)
             {
                 throw new ArgumentException("Instance ID cannot be 0");
@@ -161,7 +164,7 @@ namespace Google.Solutions.IapDesktop.Extensions.LogAnalysis.History
 
             if (state == InstanceState.Running)
             {
-                Debug.Assert(tenancy != Tenancy.Unknown);
+                Debug.Assert(tenancy != Tenancies.Unknown);
                 Debug.Assert(lastSeen != null);
 
                 // Add a synthetic placement.
@@ -175,8 +178,9 @@ namespace Google.Solutions.IapDesktop.Extensions.LogAnalysis.History
             ImageLocator image,
             InstanceState state,
             DateTime lastSeen,
-            Tenancy tenancy)
+            Tenancies tenancy)
         {
+            Debug.Assert(!tenancy.IsFlagCombination());
             Debug.Assert(state != InstanceState.Deleted);
 
             return new InstanceHistoryBuilder(
@@ -196,7 +200,7 @@ namespace Google.Solutions.IapDesktop.Extensions.LogAnalysis.History
                 null,
                 InstanceState.Deleted,
                 (DateTime?)null,    // Not clear yet when it was stopped
-                Tenancy.Unknown);
+                Tenancies.Unknown);
         }
 
         public InstanceHistory Build()
@@ -217,7 +221,7 @@ namespace Google.Solutions.IapDesktop.Extensions.LogAnalysis.History
                 {
                     return InstanceHistoryState.MissingStopEvent;
                 }
-                else if (this.Tenancy == Tenancy.Unknown)
+                else if (this.Tenancy == Tenancies.Unknown)
                 {
                     return InstanceHistoryState.MissingTenancy;
                 }
@@ -225,7 +229,7 @@ namespace Google.Solutions.IapDesktop.Extensions.LogAnalysis.History
                 {
                     return InstanceHistoryState.MissingName;
                 }
-                else if (this.Tenancy == Tenancy.SoleTenant && this.image == null)
+                else if (this.Tenancy == Tenancies.SoleTenant && this.image == null)
                 {
                     return InstanceHistoryState.MissingImage;
                 }
@@ -260,7 +264,7 @@ namespace Google.Solutions.IapDesktop.Extensions.LogAnalysis.History
 
             // Register Fleet placement - this might be merged with an existing
             // SoleTenant placement if there has been one registerd before.
-            AddPlacement(Tenancy.Fleet, null, date);
+            AddPlacement(Tenancies.Fleet, null, date);
         }
 
         public void OnStart(DateTime date, InstanceLocator reference)
@@ -275,7 +279,7 @@ namespace Google.Solutions.IapDesktop.Extensions.LogAnalysis.History
 
             // Register Fleet placement - this might be merged with an existing
             // SoleTenant placement if there has been one registerd before.
-            AddPlacement(Tenancy.Fleet, null, date);
+            AddPlacement(Tenancies.Fleet, null, date);
         }
 
         public void OnStop(DateTime date, InstanceLocator reference)
@@ -296,7 +300,7 @@ namespace Google.Solutions.IapDesktop.Extensions.LogAnalysis.History
             Debug.Assert(date <= this.lastEventDate);
             this.lastEventDate = date;
 
-            AddPlacement(Tenancy.SoleTenant, serverId, date);
+            AddPlacement(Tenancies.SoleTenant, serverId, date);
         }
 
         //---------------------------------------------------------------------
@@ -311,7 +315,7 @@ namespace Google.Solutions.IapDesktop.Extensions.LogAnalysis.History
 
         public void Process(EventBase e)
         {
-            using (TraceSources.LogAnalysis.TraceMethod().WithParameters(e))
+            using (TraceSources.IapDesktop.TraceMethod().WithParameters(e))
             {
                 if (e is NotifyInstanceLocationEvent notifyLocation)
                 {

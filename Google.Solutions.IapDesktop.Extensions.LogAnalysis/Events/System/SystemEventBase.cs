@@ -31,7 +31,6 @@ namespace Google.Solutions.IapDesktop.Extensions.LogAnalysis.Events.System
             // System events are always INFO-level.
 
             Debug.Assert(this.Severity == "INFO");
-            Debug.Assert(this.Status == null);
         }
     }
 }

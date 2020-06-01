@@ -90,6 +90,7 @@
     <Compile Include="ObjectModel\BindingExtensions.cs" />
     <Compile Include="ObjectModel\ServiceAttribute.cs" />
     <Compile Include="ObjectModel\ViewModelBase.cs" />
+    <Compile Include="Services\Adapters\AdapterException.cs" />
     <Compile Include="Services\Adapters\ComputeEngineAdapter.cs" />
     <Compile Include="Services\Adapters\GithubAdapter.cs" />
     <Compile Include="Services\Adapters\ResourceManagerAdapter.cs" />
@@ -118,6 +119,16 @@
     </Compile>
     <Compile Include="Services\Windows\ConfirmationDialog.cs" />
     <Compile Include="Services\Windows\HtmlPageGenerator.cs" />
+    <Compile Include="Services\Windows\FlatVerticalTabControl.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Services\Windows\ProjectExplorer\ProjectExplorerCommand.cs" />
+    <Compile Include="Services\Windows\SlowLoadingPane.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Services\Windows\SlowLoadingPane.Designer.cs">
+      <DependentUpon>SlowLoadingPane.cs</DependentUpon>
+    </Compile>
     <Compile Include="Services\Windows\TaskDialog.cs" />
     <Compile Include="Services\Windows\TunnelsViewer\TunnelsViewModel.cs" />
     <Compile Include="Services\Workflows\ICredentialsService.cs" />
@@ -269,6 +280,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Services\Windows\DebugWindow.resx">
       <DependentUpon>DebugWindow.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Services\Windows\SlowLoadingPane.resx">
+      <DependentUpon>SlowLoadingPane.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Services\Workflows\GenerateCredentialsDialog.resx">
       <DependentUpon>GenerateCredentialsDialog.cs</DependentUpon>

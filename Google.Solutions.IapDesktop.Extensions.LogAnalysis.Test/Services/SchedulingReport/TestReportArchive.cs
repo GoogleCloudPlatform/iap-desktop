@@ -21,15 +21,16 @@
 
 using Google.Solutions.Common.Locator;
 using Google.Solutions.IapDesktop.Extensions.LogAnalysis.History;
+using Google.Solutions.IapDesktop.Extensions.LogAnalysis.Services.SchedulingReport;
 using NUnit.Framework;
 using System;
 using System.IO;
 using System.Linq;
 
-namespace Google.Solutions.IapDesktop.Extensions.LogAnalysis.Test.History
+namespace Google.Solutions.IapDesktop.Extensions.LogAnalysis.Test.Services.SchedulingReport
 {
     [TestFixture]
-    public class TestAnnotatedInstanceSetHistory : FixtureBase
+    public class TestReportArchive : FixtureBase
     {
         [Test]
         public void WhenSerializedAndDeserialized_ThenObjectsAreEquivalent()
@@ -67,7 +68,7 @@ namespace Google.Solutions.IapDesktop.Extensions.LogAnalysis.Test.History
                         })
                 });
 
-            var annotatedHistory = AnnotatedInstanceSetHistory.FromInstanceSetHistory(history);
+            var annotatedHistory = ReportArchive.FromInstanceSetHistory(history);
             annotatedHistory.AddLicenseAnnotation(
                 new ImageLocator("project-1", "windows"),
                 OperatingSystemTypes.Windows,
@@ -84,7 +85,7 @@ namespace Google.Solutions.IapDesktop.Extensions.LogAnalysis.Test.History
 
                 memoryStream.Position = 0;
 
-                var restoredAnnotatedHistory = AnnotatedInstanceSetHistory
+                var restoredAnnotatedHistory = ReportArchive
                     .Deserialize(new StreamReader(memoryStream));
                 var restoredHistory = restoredAnnotatedHistory.History;
 
@@ -132,7 +133,7 @@ namespace Google.Solutions.IapDesktop.Extensions.LogAnalysis.Test.History
 
             using (var reader = new StringReader(json))
             {
-                Assert.Throws<FormatException>(() => AnnotatedInstanceSetHistory.Deserialize(reader));
+                Assert.Throws<FormatException>(() => ReportArchive.Deserialize(reader));
             }
         }
 
@@ -148,7 +149,7 @@ namespace Google.Solutions.IapDesktop.Extensions.LogAnalysis.Test.History
 
             using (var reader = new StringReader(json))
             {
-                Assert.Throws<FormatException>(() => AnnotatedInstanceSetHistory.Deserialize(reader));
+                Assert.Throws<FormatException>(() => ReportArchive.Deserialize(reader));
             }
         }
 
@@ -215,7 +216,7 @@ namespace Google.Solutions.IapDesktop.Extensions.LogAnalysis.Test.History
 
             using (var reader = new StringReader(json))
             {
-                var restoredAnnotatedHistory = AnnotatedInstanceSetHistory.Deserialize(reader);
+                var restoredAnnotatedHistory = ReportArchive.Deserialize(reader);
                 var restoredHistory = restoredAnnotatedHistory.History;
 
                 Assert.AreEqual(new DateTime(2019, 12, 1, 0, 0, 0, DateTimeKind.Utc), restoredHistory.StartDate);
@@ -233,12 +234,12 @@ namespace Google.Solutions.IapDesktop.Extensions.LogAnalysis.Test.History
                 Assert.AreEqual(new DateTime(2019, 12, 1, 0, 0, 0, DateTimeKind.Utc), completeInstance.Placements.First().From);
                 Assert.AreEqual(new DateTime(2019, 12, 2, 0, 0, 0, DateTimeKind.Utc), completeInstance.Placements.First().To);
                 Assert.IsNull(completeInstance.Placements.First().ServerId);
-                Assert.AreEqual(Tenancy.Fleet, completeInstance.Placements.First().Tenancy);
+                Assert.AreEqual(Tenancies.Fleet, completeInstance.Placements.First().Tenancy);
 
                 Assert.AreEqual(new DateTime(2019, 12, 2, 0, 0, 0, DateTimeKind.Utc), completeInstance.Placements.Last().From);
                 Assert.AreEqual(new DateTime(2019, 12, 3, 0, 0, 0, DateTimeKind.Utc), completeInstance.Placements.Last().To);
                 Assert.IsNull(completeInstance.Placements.Last().ServerId);
-                Assert.AreEqual(Tenancy.Fleet, completeInstance.Placements.Last().Tenancy);
+                Assert.AreEqual(Tenancies.Fleet, completeInstance.Placements.Last().Tenancy);
 
 
                 var annotation = restoredAnnotatedHistory.LicenseAnnotations["projects/project-1/global/images/windows"];
@@ -255,7 +256,7 @@ namespace Google.Solutions.IapDesktop.Extensions.LogAnalysis.Test.History
                 Assert.AreEqual(new DateTime(2019, 12, 1, 0, 0, 0, DateTimeKind.Utc), incompleteInstance.Placements.First().From);
                 Assert.AreEqual(new DateTime(2019, 12, 2, 0, 0, 0, DateTimeKind.Utc), incompleteInstance.Placements.First().To);
                 Assert.AreEqual("server-1", incompleteInstance.Placements.First().ServerId);
-                Assert.AreEqual(Tenancy.SoleTenant, incompleteInstance.Placements.First().Tenancy);
+                Assert.AreEqual(Tenancies.SoleTenant, incompleteInstance.Placements.First().Tenancy);
             }
         }
 
@@ -283,7 +284,7 @@ namespace Google.Solutions.IapDesktop.Extensions.LogAnalysis.Test.History
                         })
                 });
 
-            var annotatedHistory = AnnotatedInstanceSetHistory.FromInstanceSetHistory(history);
+            var annotatedHistory = ReportArchive.FromInstanceSetHistory(history);
             Assert.IsTrue(annotatedHistory.GetInstances(
                     OperatingSystemTypes.Unknown, 
                     LicenseTypes.Unknown).Any());
@@ -321,7 +322,7 @@ namespace Google.Solutions.IapDesktop.Extensions.LogAnalysis.Test.History
                         })
                 });
 
-            var annotatedHistory = AnnotatedInstanceSetHistory.FromInstanceSetHistory(history);
+            var annotatedHistory = ReportArchive.FromInstanceSetHistory(history);
             annotatedHistory.AddLicenseAnnotation(
                 new ImageLocator("project-1", "image"),
                 OperatingSystemTypes.Windows,

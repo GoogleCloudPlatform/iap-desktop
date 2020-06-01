@@ -21,17 +21,25 @@
 
 using Google.Apis.Compute.v1;
 using Google.Solutions.Common.Locator;
+using Google.Solutions.IapDesktop.Application.Services.Adapters;
+using Google.Solutions.IapDesktop.Extensions.LogAnalysis.History;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 
-namespace Google.Solutions.IapDesktop.Extensions.LogAnalysis.History
+namespace Google.Solutions.IapDesktop.Extensions.LogAnalysis.Services.SchedulingReport
 {
-    public class AnnotatedInstanceSetHistory
+    /// <summary>
+    /// Model for the report. A Report archive can be saved and loaded from disk
+    /// so that it can be analyzed again later.
+    /// </summary>
+    public class ReportArchive
     {
         [JsonProperty("history")]
         public InstanceSetHistory History { get; }
@@ -40,7 +48,7 @@ namespace Google.Solutions.IapDesktop.Extensions.LogAnalysis.History
         internal IDictionary<string, ImageAnnotation> LicenseAnnotations { get; }
 
         [JsonConstructor]
-        internal AnnotatedInstanceSetHistory(
+        internal ReportArchive(
             [JsonProperty("history")] InstanceSetHistory instanceSet,
             [JsonProperty("licenseAnnotations")] IDictionary<string, ImageAnnotation> annotations)
         {
@@ -48,38 +56,41 @@ namespace Google.Solutions.IapDesktop.Extensions.LogAnalysis.History
             this.LicenseAnnotations = annotations;
         }
 
-        internal AnnotatedInstanceSetHistory(InstanceSetHistory instanceSet)
+        internal ReportArchive(InstanceSetHistory instanceSet)
             :this(instanceSet, new Dictionary<string, ImageAnnotation>())
         {
         }
 
-        public IEnumerable<InstanceHistory> GetInstances(
+        internal bool IsInstanceAnnotatedAs(
+            InstanceHistory instance,
             OperatingSystemTypes osTypes,
             LicenseTypes licenseTypes)
         {
-            foreach (var instance in this.History.Instances)
+            ImageAnnotation annotation;
+            if (instance.Image == null ||
+                !this.LicenseAnnotations.TryGetValue(instance.Image.ToString(), out annotation))
             {
-                ImageAnnotation annotation;
-                if (instance.Image == null ||
-                    !this.LicenseAnnotations.TryGetValue(instance.Image.ToString(), out annotation))
-                {
-                    annotation = ImageAnnotation.Default;
-                }
-
-                Debug.Assert(annotation != null);
-
-                if (osTypes.HasFlag(annotation.OperatingSystem) &&
-                    licenseTypes.HasFlag(annotation.LicenseType))
-                {
-                    yield return instance;
-                }
+                annotation = ImageAnnotation.Default;
             }
+
+            Debug.Assert(annotation != null);
+
+            return (osTypes.HasFlag(annotation.OperatingSystem) &&
+                licenseTypes.HasFlag(annotation.LicenseType));
         }
 
-        public static AnnotatedInstanceSetHistory FromInstanceSetHistory(
+        public virtual IEnumerable<InstanceHistory> GetInstances(
+            OperatingSystemTypes osTypes,
+            LicenseTypes licenseTypes)
+        {
+            return this.History.Instances
+                .Where(i => IsInstanceAnnotatedAs(i, osTypes, licenseTypes));
+        }
+
+        public static ReportArchive FromInstanceSetHistory(
             InstanceSetHistory instanceSet)
         {
-            return new AnnotatedInstanceSetHistory(
+            return new ReportArchive(
                 instanceSet,
                 new Dictionary<string, ImageAnnotation>());
         }
@@ -99,9 +110,14 @@ namespace Google.Solutions.IapDesktop.Extensions.LogAnalysis.History
             this.LicenseAnnotations[image.ToString()] = new ImageAnnotation(osType, licenseType);
         }
 
-        public async Task LoadLicenseAnnotationsAsync(ImagesResource imagesResource)
+        public async Task LoadLicenseAnnotationsAsync(
+            IComputeEngineAdapter computeEngineAdapter,
+            CancellationToken cancellationToken)
         {
-            await LicenseLoader.LoadLicenseAnnotationsAsync(this, imagesResource);
+            await LicenseLoader.LoadLicenseAnnotationsAsync(
+                this,
+                computeEngineAdapter, 
+                cancellationToken);
         }
 
         //---------------------------------------------------------------------
@@ -116,10 +132,10 @@ namespace Google.Solutions.IapDesktop.Extensions.LogAnalysis.History
             internal string Type => TypeAnnotation;
 
             [JsonProperty("annotatedInstanceSetHistory")]
-            internal AnnotatedInstanceSetHistory InstanceSetHistory { get; }
+            internal ReportArchive InstanceSetHistory { get; }
 
             public Envelope(
-                AnnotatedInstanceSetHistory instanceSetHistory)
+                ReportArchive instanceSetHistory)
             {
                 this.InstanceSetHistory = instanceSetHistory;
             }
@@ -127,7 +143,7 @@ namespace Google.Solutions.IapDesktop.Extensions.LogAnalysis.History
             [JsonConstructor]
             public Envelope(
                 [JsonProperty("@type")] string typeAnnotation,
-                [JsonProperty("instanceSetHistory")] AnnotatedInstanceSetHistory instanceSetHistory)
+                [JsonProperty("instanceSetHistory")] ReportArchive instanceSetHistory)
                 : this(instanceSetHistory)
             {
                 if (typeAnnotation != TypeAnnotation)
@@ -155,9 +171,9 @@ namespace Google.Solutions.IapDesktop.Extensions.LogAnalysis.History
             CreateSerializer().Serialize(writer, new Envelope(this));
         }
 
-        public static AnnotatedInstanceSetHistory Deserialize(TextReader reader)
+        public static ReportArchive Deserialize(TextReader reader)
         {
-            return CreateSerializer().Deserialize<AnnotatedInstanceSetHistory.Envelope>(
+            return CreateSerializer().Deserialize<ReportArchive.Envelope>(
                 new JsonTextReader(reader)).InstanceSetHistory;
         }
     }

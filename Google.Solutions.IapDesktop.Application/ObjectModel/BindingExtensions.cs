@@ -32,7 +32,7 @@ namespace Google.Solutions.IapDesktop.Application.ObjectModel
     /// Extension methods to implement simple two-way data bindings
     /// between WinForms controls and model classes.
     /// </summary>
-    internal static class BindingExtensions
+    public static class BindingExtensions
     {
         public static Binding OnPropertyChange<TObject, TProperty>(
             this TObject observed,

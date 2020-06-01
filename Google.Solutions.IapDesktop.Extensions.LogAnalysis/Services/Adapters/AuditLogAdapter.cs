@@ -19,13 +19,19 @@
 // under the License.
 //
 
+using Google.Apis.Auth.OAuth2;
 using Google.Apis.Logging.v2;
 using Google.Apis.Logging.v2.Data;
+using Google.Apis.Services;
 using Google.Apis.Util;
 using Google.Solutions.Common.ApiExtensions.Request;
 using Google.Solutions.Common.Diagnostics;
+using Google.Solutions.IapDesktop.Application;
+using Google.Solutions.IapDesktop.Application.ObjectModel;
+using Google.Solutions.IapDesktop.Application.Services.Adapters;
 using Google.Solutions.IapDesktop.Extensions.LogAnalysis.Events;
 using Google.Solutions.IapDesktop.Extensions.LogAnalysis.History;
+using Google.Solutions.IapDesktop.Extensions.LogAnalysis.Logs;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -34,48 +40,72 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Google.Solutions.IapDesktop.Extensions.LogAnalysis.Extensions
+namespace Google.Solutions.IapDesktop.Extensions.LogAnalysis.Services.Adapters
 {
-    public static class ListLogEntriesExtensions
+    [Service(ServiceLifetime.Transient)]
+    public class AuditLogAdapter
     {
         private const int MaxPageSize = 1000;
         private const int MaxRetries = 10;
         private static readonly TimeSpan initialBackOff = TimeSpan.FromMilliseconds(100);
 
-        public static async Task ListEventsAsync(
-            this EntriesResource entriesResource,
+        private readonly LoggingService service;
+
+        public AuditLogAdapter(ICredential credential)
+        {
+            var assemblyName = typeof(AuditLogAdapter).Assembly.GetName();
+            this.service = new LoggingService(new BaseClientService.Initializer
+            {
+                HttpClientInitializer = credential,
+                ApplicationName = $"{assemblyName.Name}/{assemblyName.Version}"
+            });
+        }
+
+        public AuditLogAdapter(IServiceProvider serviceProvider)
+            : this(serviceProvider.GetService<IAuthorizationAdapter>().Authorization.Credential)
+        {
+        }
+
+        internal async Task ListEventsAsync(
             ListLogEntriesRequest request,
             Action<EventBase> callback,
             ExponentialBackOff backOff,
             CancellationToken cancellationToken)
         {
-            using (TraceSources.LogAnalysis.TraceMethod().WithParameters(request.Filter))
+            using (TraceSources.IapDesktop.TraceMethod().WithParameters(request.Filter))
             {
-                string nextPageToken = null;
-                do
+                try
                 {
-                    request.PageToken = nextPageToken;
-
-                    using (var stream = await entriesResource
-                        .List(request)
-                        .ExecuteAsStreamWithRetryAsync(backOff, cancellationToken))
-                    using (var reader = new JsonTextReader(new StreamReader(stream)))
+                    string nextPageToken = null;
+                    do
                     {
-                        nextPageToken = ListLogEntriesParser.Read(reader, callback);
+                        request.PageToken = nextPageToken;
+
+                        using (var stream = await this.service.Entries
+                            .List(request)
+                            .ExecuteAsStreamWithRetryAsync(backOff, cancellationToken))
+                        using (var reader = new JsonTextReader(new StreamReader(stream)))
+                        {
+                            nextPageToken = ListLogEntriesParser.Read(reader, callback);
+                        }
                     }
+                    while (nextPageToken != null);
                 }
-                while (nextPageToken != null);
+                catch (GoogleApiException e) when (e.Error != null && e.Error.Code == 403)
+                {
+                    throw new ResourceAccessDeniedException(
+                        $"Access to audit logs has been denied", e);
+                }
             }
         }
 
-        public static async Task ListInstanceEventsAsync(
-            this EntriesResource entriesResource,
+        public async Task ListInstanceEventsAsync(
             IEnumerable<string> projectIds,
             DateTime startTime,
             IEventProcessor processor,
             CancellationToken cancellationToken)
         {
-            using (TraceSources.LogAnalysis.TraceMethod().WithParameters(
+            using (TraceSources.IapDesktop.TraceMethod().WithParameters(
                 string.Join(", ", projectIds), 
                 startTime))
             {
@@ -91,7 +121,6 @@ namespace Google.Solutions.IapDesktop.Extensions.LogAnalysis.Extensions
                 };
 
                 await ListEventsAsync(
-                    entriesResource,
                     request,
                     processor.Process,
                     new ExponentialBackOff(initialBackOff, MaxRetries),

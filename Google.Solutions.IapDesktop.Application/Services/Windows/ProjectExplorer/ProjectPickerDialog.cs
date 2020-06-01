@@ -24,6 +24,7 @@ using Google.Solutions.IapDesktop.Application.Services.Adapters;
 using System;
 using System.Linq;
 using System.Text.RegularExpressions;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
@@ -85,7 +86,9 @@ namespace Google.Solutions.IapDesktop.Application.Services.Windows.ProjectExplor
                 // Current list items do not match the prefix - clear suggestions and reload.
                 var suggestions = new AutoCompleteStringCollection();
 
-                foreach (var project in await this.resourceManager.QueryProjectsByPrefix(prefix))
+                foreach (var project in await this.resourceManager.QueryProjectsByPrefix(
+                    prefix,
+                    CancellationToken.None))
                 {
                     suggestions.Add($"{project.Name} ({project.ProjectId})");
                 }
@@ -117,7 +120,9 @@ namespace Google.Solutions.IapDesktop.Application.Services.Windows.ProjectExplor
         {
             // NB. The DialogResult property of the button is not set so that this
             // event handler is run to completion *before* ShowDialog returns.
-            var project = await this.resourceManager.QueryProjectsById(this.SelectedProjectId);
+            var project = await this.resourceManager.QueryProjectsById(
+                this.SelectedProjectId,
+                CancellationToken.None);
             if (project.Any())
             {
                 this.DialogResult = DialogResult.OK;

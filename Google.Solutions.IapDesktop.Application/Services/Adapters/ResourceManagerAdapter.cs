@@ -28,17 +28,24 @@ using Google.Solutions.IapDesktop.Application.ObjectModel;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Google.Solutions.IapDesktop.Application.Services.Adapters
 {
     public interface IResourceManagerAdapter : IDisposable
     {
-        Task<IEnumerable<Project>> QueryProjects(string filter);
+        Task<IEnumerable<Project>> QueryProjects(
+            string filter,
+            CancellationToken cancellationToken);
 
-        Task<IEnumerable<Project>> QueryProjectsByPrefix(string idOrNamePrefix);
+        Task<IEnumerable<Project>> QueryProjectsByPrefix(
+            string idOrNamePrefix,
+            CancellationToken cancellationToken);
 
-        Task<IEnumerable<Project>> QueryProjectsById(string projectId);
+        Task<IEnumerable<Project>> QueryProjectsById(
+            string projectId,
+            CancellationToken cancellationToken);
     }
 
     public class ResourceManagerAdapter : IResourceManagerAdapter
@@ -62,18 +69,24 @@ namespace Google.Solutions.IapDesktop.Application.Services.Adapters
         {
         }
 
-        public async Task<IEnumerable<Project>> QueryProjects(string filter)
+        public async Task<IEnumerable<Project>> QueryProjects(
+            string filter,
+            CancellationToken cancellationToken)
         {
             using (TraceSources.IapDesktop.TraceMethod().WithParameters(filter))
             {
-                var projects = await PageHelper.JoinPagesAsync<ProjectsResource.ListRequest, ListProjectsResponse, Project>(
+                var projects = await PageHelper.JoinPagesAsync<
+                            ProjectsResource.ListRequest, 
+                            ListProjectsResponse, 
+                            Project>(
                     new ProjectsResource.ListRequest(this.service)
                     {
                         Filter = filter
                     },
                     page => page.Projects,
                     response => response.NextPageToken,
-                    (request, token) => { request.PageToken = token; });
+                    (request, token) => { request.PageToken = token; },
+                    cancellationToken);
 
                 // Filter projects in deleted/pending delete state.
                 var result = projects.Where(p => p.LifecycleState == "ACTIVE");
@@ -84,14 +97,20 @@ namespace Google.Solutions.IapDesktop.Application.Services.Adapters
             }
         }
 
-        public Task<IEnumerable<Project>> QueryProjectsByPrefix(string idOrNamePrefix)
+        public Task<IEnumerable<Project>> QueryProjectsByPrefix(
+            string idOrNamePrefix,
+            CancellationToken cancellationToken)
         {
-            return QueryProjects($"name:\"{idOrNamePrefix}*\" OR id:\"{idOrNamePrefix}*\"");
+            return QueryProjects(
+                $"name:\"{idOrNamePrefix}*\" OR id:\"{idOrNamePrefix}*\"",
+                cancellationToken);
         }
 
-        public Task<IEnumerable<Project>> QueryProjectsById(string projectId)
+        public Task<IEnumerable<Project>> QueryProjectsById(
+            string projectId,
+            CancellationToken cancellationToken)
         {
-            return QueryProjects($"id:\"{projectId}\"");
+            return QueryProjects($"id:\"{projectId}\"", cancellationToken);
         }
 
         public void Dispose()

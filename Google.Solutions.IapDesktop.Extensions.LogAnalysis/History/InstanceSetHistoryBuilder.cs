@@ -18,18 +18,17 @@
 // specific language governing permissions and limitations
 // under the License.
 //
-using Google.Apis.Compute.v1;
+
 using Google.Apis.Compute.v1.Data;
-using Google.Solutions.Common;
-using Google.Solutions.Common.ApiExtensions;
 using Google.Solutions.Common.Diagnostics;
 using Google.Solutions.Common.Locator;
 using Google.Solutions.Common.Util;
+using Google.Solutions.IapDesktop.Application;
 using Google.Solutions.IapDesktop.Extensions.LogAnalysis.Events;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
-using System.Threading.Tasks;
 
 namespace Google.Solutions.IapDesktop.Extensions.LogAnalysis.History
 {
@@ -43,7 +42,7 @@ namespace Google.Solutions.IapDesktop.Extensions.LogAnalysis.History
 
         private static string ShortZoneIdFromUrl(string url) => url.Substring(url.LastIndexOf("/") + 1);
 
-        private InstanceHistoryBuilder GetInstanceHistoryBuilder(ulong instanceId)
+        internal InstanceHistoryBuilder GetInstanceHistoryBuilder(ulong instanceId)
         {
             if (this.instanceBuilders.TryGetValue(instanceId, out InstanceHistoryBuilder builder))
             {
@@ -82,8 +81,9 @@ namespace Google.Solutions.IapDesktop.Extensions.LogAnalysis.History
             ImageLocator image,
             InstanceState state,
             DateTime lastSeen,
-            Tenancy tenancy)
+            Tenancies tenancy)
         {
+            Debug.Assert(!tenancy.IsFlagCombination());
             this.instanceBuilders[instanceId] = InstanceHistoryBuilder.ForExistingInstance(
                 instanceId,
                 reference,
@@ -93,58 +93,28 @@ namespace Google.Solutions.IapDesktop.Extensions.LogAnalysis.History
                 tenancy);
         }
 
-        public async Task AddExistingInstances(
-            InstancesResource instancesResource,
-            DisksResource disksResource,
+        public void AddExistingInstances(
+            IEnumerable<Instance> instances,
+            IEnumerable<Disk> disks,
             string projectId)
         {
-            using (TraceSources.LogAnalysis.TraceMethod().WithParameters(projectId))
+            using (TraceSources.IapDesktop.TraceMethod().WithParameters(projectId))
             {
-                //
-                // Load disks.
                 //
                 // NB. Instances.list returns the disks associated with each
                 // instance, but lacks the information about the source image.
                 // Therefore, we load disks first and then join the data.
                 //
-                var disksByZone = await PageHelper.JoinPagesAsync<
-                            DisksResource.AggregatedListRequest,
-                            DiskAggregatedList,
-                            DisksScopedList>(
-                    disksResource.AggregatedList(projectId),
-                    i => i.Items.Values.Where(v => v != null),
-                    response => response.NextPageToken,
-                    (request, token) => { request.PageToken = token; });
-
-                var sourceImagesByDisk = disksByZone
-                    .Where(z => z.Disks != null)    // API returns null for empty zones.
-                    .SelectMany(zone => zone.Disks)
+                var sourceImagesByDisk = disks
                     .EnsureNotNull()
                     .ToDictionary(d => d.SelfLink, d => d.SourceImage);
 
-                TraceSources.LogAnalysis.TraceVerbose("Found {0} existing disks", sourceImagesByDisk.Count());
-
-                //
-                // Load instances.
-                //
-                var instancesByZone = await PageHelper.JoinPagesAsync<
-                            InstancesResource.AggregatedListRequest,
-                            InstanceAggregatedList,
-                            InstancesScopedList>(
-                    instancesResource.AggregatedList(projectId),
-                    i => i.Items.Values.Where(v => v != null),
-                    response => response.NextPageToken,
-                    (request, token) => { request.PageToken = token; });
-
-                var instances = instancesByZone
-                    .Where(z => z.Instances != null)    // API returns null for empty zones.
-                    .SelectMany(zone => zone.Instances);
-
-                TraceSources.LogAnalysis.TraceVerbose("Found {0} existing instances", instances.Count());
+                TraceSources.IapDesktop.TraceVerbose("Found {0} existing disks", sourceImagesByDisk.Count());
+                TraceSources.IapDesktop.TraceVerbose("Found {0} existing instances", instances.Count());
 
                 foreach (var instance in instances)
                 {
-                    TraceSources.LogAnalysis.TraceVerbose("Adding {0}", instance.Id);
+                    TraceSources.IapDesktop.TraceVerbose("Adding {0}", instance.Id);
 
                     var bootDiskUrl = instance.Disks
                         .EnsureNotNull()
@@ -173,8 +143,8 @@ namespace Google.Solutions.IapDesktop.Extensions.LogAnalysis.History
                             : InstanceState.Terminated,
                         DateTime.Now,
                         instance.Scheduling.NodeAffinities != null && instance.Scheduling.NodeAffinities.Any()
-                            ? Tenancy.SoleTenant
-                            : Tenancy.Fleet);
+                            ? Tenancies.SoleTenant
+                            : Tenancies.Fleet);
                 }
             }
         }

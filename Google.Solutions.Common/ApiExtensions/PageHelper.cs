@@ -22,6 +22,7 @@
 using Google.Apis.Requests;
 using System;
 using System.Collections.Generic;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Google.Solutions.Common.ApiExtensions
@@ -32,14 +33,15 @@ namespace Google.Solutions.Common.ApiExtensions
             TRequest request,
             Func<TResponse, IEnumerable<TValue>> mapFunc,
             Func<TResponse, string> getNextPageTokenFunc,
-            Action<TRequest, string> setPageTokenFunc)
+            Action<TRequest, string> setPageTokenFunc,
+            CancellationToken cancellationToken)
             where TRequest : IClientServiceRequest<TResponse>
         {
             TResponse response;
             var allValues = new List<TValue>();
             do
             {
-                response = await request.ExecuteAsync();
+                response = await request.ExecuteAsync(cancellationToken);
 
                 IEnumerable<TValue> pageValues = mapFunc(response);
                 if (pageValues != null)

@@ -20,29 +20,27 @@
 //
 
 using Google.Apis.Compute.v1;
-using Google.Apis.Logging.v2;
 using Google.Apis.Logging.v2.Data;
-using Google.Apis.Requests;
 using Google.Apis.Services;
 using Google.Solutions.Common.Test;
 using Google.Solutions.Common.Test.Testbed;
+using Google.Solutions.IapDesktop.Application.Services.Adapters;
 using Google.Solutions.IapDesktop.Extensions.LogAnalysis.Events;
 using Google.Solutions.IapDesktop.Extensions.LogAnalysis.Events.Lifecycle;
-using Google.Solutions.IapDesktop.Extensions.LogAnalysis.Extensions;
 using Google.Solutions.IapDesktop.Extensions.LogAnalysis.History;
+using Google.Solutions.IapDesktop.Extensions.LogAnalysis.Services.Adapters;
 using NUnit.Framework;
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Google.Solutions.IapDesktop.Extensions.LogAnalysis.Test.Extensions
+namespace Google.Solutions.IapDesktop.Extensions.LogAnalysis.Test.Services.Adapters
 {
     [TestFixture]
     [Category("IntegrationTest")]
-    public class TestListLogEntriesExtensions : FixtureBase
+    public class TestAuditLogAdapter : FixtureBase
     {
         [Test]
         public async Task WhenInstanceCreated_ThenListLogEntriesReturnsInsertEvent(
@@ -51,14 +49,10 @@ namespace Google.Solutions.IapDesktop.Extensions.LogAnalysis.Test.Extensions
             await testInstance.AwaitReady();
             var instanceRef = await testInstance.GetInstanceAsync();
 
-            var loggingService = new LoggingService(new BaseClientService.Initializer
-            {
-                HttpClientInitializer = Defaults.GetCredential()
-            });
-
             var startDate = DateTime.UtcNow.AddDays(-30);
             var endDate = DateTime.UtcNow;
 
+            var adapter = new AuditLogAdapter(Defaults.GetCredential());
             var request = new ListLogEntriesRequest()
             {
                 ResourceNames = new[]
@@ -78,7 +72,7 @@ namespace Google.Solutions.IapDesktop.Extensions.LogAnalysis.Test.Extensions
             // Creating the VM might be quicker than the logs become available.
             for (int retry = 0; retry < 4 && !events.Any(); retry++)
             {
-                await loggingService.Entries.ListEventsAsync(
+                await adapter.ListEventsAsync(
                     request,
                     events.Add,
                     new Apis.Util.ExponentialBackOff(),
@@ -102,25 +96,19 @@ namespace Google.Solutions.IapDesktop.Extensions.LogAnalysis.Test.Extensions
             await testInstance.AwaitReady();
             var instanceRef = await testInstance.GetInstanceAsync();
 
-            var loggingService = new LoggingService(new BaseClientService.Initializer
-            {
-                HttpClientInitializer = Defaults.GetCredential()
-            });
-
-            var computeService = new ComputeService(new BaseClientService.Initializer
-            {
-                HttpClientInitializer = Defaults.GetCredential()
-            });
-
             var instanceBuilder = new InstanceSetHistoryBuilder(
                 DateTime.UtcNow.AddDays(-7),
                 DateTime.UtcNow);
-            await instanceBuilder.AddExistingInstances(
-                computeService.Instances,
-                computeService.Disks,
-                Defaults.ProjectId);
 
-            await loggingService.Entries.ListInstanceEventsAsync(
+            var computeAdapter = new ComputeEngineAdapter(Defaults.GetCredential());
+            instanceBuilder.AddExistingInstances(
+                await computeAdapter.ListInstancesAsync(Defaults.ProjectId, CancellationToken.None),
+                await computeAdapter.ListDisksAsync(Defaults.ProjectId, CancellationToken.None),
+                Defaults.ProjectId);            
+            
+            var adapter = new AuditLogAdapter(Defaults.GetCredential());
+
+            await adapter.ListInstanceEventsAsync(
                 new[] { Defaults.ProjectId },
                 instanceBuilder.StartDate,
                 instanceBuilder,
@@ -136,11 +124,6 @@ namespace Google.Solutions.IapDesktop.Extensions.LogAnalysis.Test.Extensions
         [Test]
         public void WhenUsingInvalidProjectId_ThenListEventsAsyncThrowsException()
         {
-            var loggingService = new LoggingService(new BaseClientService.Initializer
-            {
-                HttpClientInitializer = Defaults.GetCredential()
-            });
-
             var startDate = DateTime.UtcNow.AddDays(-30);
             var request = new ListLogEntriesRequest()
             {
@@ -155,8 +138,9 @@ namespace Google.Solutions.IapDesktop.Extensions.LogAnalysis.Test.Extensions
                 OrderBy = "timestamp desc"
             };
 
+            var adapter = new AuditLogAdapter(Defaults.GetCredential());
             AssertEx.ThrowsAggregateException<GoogleApiException>(
-                () => loggingService.Entries.ListEventsAsync(
+                () => adapter.ListEventsAsync(
                     request,
                     _ => { },
                     new Apis.Util.ExponentialBackOff(),

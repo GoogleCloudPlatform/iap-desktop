@@ -19,6 +19,7 @@
 // under the License.
 //
 
+using Google.Solutions.Common.Util;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -35,15 +36,8 @@ namespace Google.Solutions.IapDesktop.Extensions.LogAnalysis.History
 
         private static IEnumerable<NodeHistory> NodesFromInstanceSetHistory(
             IEnumerable<InstanceHistory> instanceHistories,
-            bool includeNodeForFleet)
+            Tenancies tenancies)
         {
-            if (!includeNodeForFleet)
-            {
-                instanceHistories = instanceHistories
-                    .Where(i => i.Placements != null &&
-                                i.Placements.Any(p => p.Tenancy == Tenancy.SoleTenant));
-            }
-
             var placementsByServer = instanceHistories
                 .Where(i => i.Placements != null)
                 .SelectMany(i => i.Placements.Select(p => new
@@ -51,8 +45,10 @@ namespace Google.Solutions.IapDesktop.Extensions.LogAnalysis.History
                     Instance = i,
                     p.ServerId,
                     p.From,
-                    p.To
+                    p.To,
+                    p.Tenancy
                 }))
+                .Where(p => tenancies.HasFlag(p.Tenancy))
                 .GroupBy(p => p.ServerId);
 
             foreach (var server in placementsByServer)
@@ -81,12 +77,26 @@ namespace Google.Solutions.IapDesktop.Extensions.LogAnalysis.History
                     this.Nodes.Select(p => p.FirstUse),
                     this.Nodes.Select(p => p.LastUse));
 
+
+        /// <summary>
+        /// Create time series indicating the maximum number of parallel 
+        /// placements for each day of this node's existence.
+        /// </summary>
+        public IEnumerable<DataPoint> MaxInstancePlacementsByDay =>
+            this.Nodes == null
+                ? Enumerable.Empty<DataPoint>()
+                : TimeseriesUtil.DailyHistogram(
+                    this.Nodes.SelectMany(n => n.Placements).Select(p => p.From),
+                    this.Nodes.SelectMany(n => n.Placements).Select(p => p.To));
+
         public static NodeSetHistory FromInstancyHistory(
             IEnumerable<InstanceHistory> instanceHistories,
-            bool includeNodeForFleet)
+            Tenancies tenancies)
         {
             return new NodeSetHistory(
-                NodesFromInstanceSetHistory(instanceHistories, includeNodeForFleet));
+                NodesFromInstanceSetHistory(
+                    instanceHistories,
+                    tenancies));
         }
     }
 }

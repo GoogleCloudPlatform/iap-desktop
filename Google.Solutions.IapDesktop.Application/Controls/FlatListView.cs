@@ -44,7 +44,7 @@ namespace Google.Solutions.IapDesktop.Application.Controls
             }
 
             this.Columns[this.Columns.Count - 1].Width =
-                this.Width - widthsOfAllButLastColumns - 4;
+                this.ClientSize.Width - widthsOfAllButLastColumns - 4;
         }
 
         //---------------------------------------------------------------------

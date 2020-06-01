@@ -19,10 +19,10 @@
 // under the License.
 //
 
+using Google.Apis.Auth.OAuth2;
 using Google.Apis.Compute.v1;
 using Google.Apis.Compute.v1.Data;
 using Google.Apis.Services;
-using Google.Solutions.Common;
 using Google.Solutions.Common.ApiExtensions;
 using Google.Solutions.Common.ApiExtensions.Instance;
 using Google.Solutions.Common.Diagnostics;
@@ -33,7 +33,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
-using System.Runtime.Serialization;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -41,7 +40,13 @@ namespace Google.Solutions.IapDesktop.Application.Services.Adapters
 {
     public interface IComputeEngineAdapter : IDisposable
     {
-        Task<IEnumerable<Instance>> QueryInstancesAsync(string projectId);
+        Task<IEnumerable<Instance>> ListInstancesAsync(
+            string projectId,
+            CancellationToken cancellationToken);
+
+        Task<IEnumerable<Disk>> ListDisksAsync(
+            string projectId,
+            CancellationToken cancellationToken);
 
         Task<NetworkCredential> ResetWindowsUserAsync(
             InstanceLocator instanceRef,
@@ -53,6 +58,10 @@ namespace Google.Solutions.IapDesktop.Application.Services.Adapters
             string username,
             CancellationToken token,
             TimeSpan timeout);
+
+        Task<Image> GetImage(
+            ImageLocator image, 
+            CancellationToken cancellationToken);
 
         SerialPortStream GetSerialPortOutput(InstanceLocator instanceRef);
     }
@@ -66,14 +75,19 @@ namespace Google.Solutions.IapDesktop.Application.Services.Adapters
 
         private readonly ComputeService service;
 
-        public ComputeEngineAdapter(IAuthorizationAdapter authService)
+        public ComputeEngineAdapter(ICredential credential)
         {
             var assemblyName = typeof(IComputeEngineAdapter).Assembly.GetName();
             this.service = new ComputeService(new BaseClientService.Initializer
             {
-                HttpClientInitializer = authService.Authorization.Credential,
+                HttpClientInitializer = credential,
                 ApplicationName = $"{assemblyName.Name}/{assemblyName.Version}"
             });
+        }
+
+        public ComputeEngineAdapter(IAuthorizationAdapter authService)
+            : this(authService.Authorization.Credential)
+        {
         }
 
         public ComputeEngineAdapter(IServiceProvider serviceProvider)
@@ -81,22 +95,25 @@ namespace Google.Solutions.IapDesktop.Application.Services.Adapters
         {
         }
 
-        public async Task<IEnumerable<Instance>> QueryInstancesAsync(string projectId)
+        public async Task<IEnumerable<Instance>> ListInstancesAsync(
+            string projectId,
+            CancellationToken cancellationToken)
         {
             using (TraceSources.IapDesktop.TraceMethod().WithParameters(projectId))
             {
                 try
                 {
-                    var zones = await PageHelper.JoinPagesAsync<
+                    var instancesByZone = await PageHelper.JoinPagesAsync<
                                 InstancesResource.AggregatedListRequest,
                                 InstanceAggregatedList,
                                 InstancesScopedList>(
                         this.service.Instances.AggregatedList(projectId),
                         instances => instances.Items.Values.Where(v => v != null),
                         response => response.NextPageToken,
-                        (request, token) => { request.PageToken = token; });
+                        (request, token) => { request.PageToken = token; },
+                        cancellationToken);
 
-                    var result = zones
+                    var result = instancesByZone
                         .Where(z => z.Instances != null)    // API returns null for empty zones.
                         .SelectMany(zone => zone.Instances);
 
@@ -106,13 +123,80 @@ namespace Google.Solutions.IapDesktop.Application.Services.Adapters
                 }
                 catch (GoogleApiException e) when (e.Error != null && e.Error.Code == 403)
                 {
-                    throw new ComputeEngineException(
+                    throw new ResourceAccessDeniedException(
                         $"Access to VM instances in project {projectId} has been denied", e);
                 }
             }
         }
 
-        public async Task<Instance> QueryInstanceAsync(string projectId, string zone, string instanceName)
+        public async Task<IEnumerable<Disk>> ListDisksAsync(
+            string projectId,
+            CancellationToken cancellationToken)
+        {
+            using (TraceSources.IapDesktop.TraceMethod().WithParameters(projectId))
+            {
+                try
+                {
+                    var disksByZone = await PageHelper.JoinPagesAsync<
+                                DisksResource.AggregatedListRequest,
+                                DiskAggregatedList,
+                                DisksScopedList>(
+                        this.service.Disks.AggregatedList(projectId),
+                        i => i.Items.Values.Where(v => v != null),
+                        response => response.NextPageToken,
+                        (request, token) => { request.PageToken = token; },
+                        cancellationToken);
+
+                    var result = disksByZone
+                        .Where(z => z.Disks != null)    // API returns null for empty zones.
+                        .SelectMany(zone => zone.Disks);
+
+                    TraceSources.IapDesktop.TraceVerbose("Found {0} disks", result.Count());
+
+                    return result;
+                }
+                catch (GoogleApiException e) when (e.Error != null && e.Error.Code == 403)
+                {
+                    throw new ResourceAccessDeniedException(
+                        $"Access to disks in project {projectId} has been denied", e);
+                }
+            }
+        }
+
+        public async Task<Image> GetImage(ImageLocator image, CancellationToken cancellationToken)
+        {
+            try
+            {
+                if (image.Name.StartsWith("family/"))
+                {
+                    return await this.service.Images
+                        .GetFromFamily(image.ProjectId, image.Name.Substring(7))
+                        .ExecuteAsync(cancellationToken);
+                }
+                else
+                {
+                    return await this.service.Images
+                        .Get(image.ProjectId, image.Name)
+                        .ExecuteAsync(cancellationToken);
+                }
+            }
+            catch (Exception e) when (
+                e.Unwrap() is GoogleApiException apiEx &&
+                apiEx.Error != null &&
+                apiEx.Error.Code == 404)
+            {
+                throw new ResourceNotFoundException($"Image {image} not found", e);
+            }
+            catch (Exception e) when (
+                e.Unwrap() is GoogleApiException apiEx &&
+                apiEx.Error != null &&
+                (apiEx.Error.Code == 403))
+            {
+                throw new ResourceAccessDeniedException($"Access to {image} denied", e);
+            }
+        }
+
+        public async Task<Instance> GetInstanceAsync(string projectId, string zone, string instanceName)
         {
             using (TraceSources.IapDesktop.TraceMethod().WithParameters(projectId, zone, instanceName))
             {
@@ -120,11 +204,11 @@ namespace Google.Solutions.IapDesktop.Application.Services.Adapters
             }
         }
 
-        public async Task<Instance> QueryInstanceAsync(InstanceLocator instanceRef)
+        public async Task<Instance> GetInstanceAsync(InstanceLocator instanceRef)
         {
             using (TraceSources.IapDesktop.TraceMethod().WithParameters(instanceRef))
             {
-                return await QueryInstanceAsync(instanceRef.ProjectId, instanceRef.Zone, instanceRef.Name);
+                return await GetInstanceAsync(instanceRef.ProjectId, instanceRef.Zone, instanceRef.Name);
             }
         }
 
@@ -204,20 +288,6 @@ namespace Google.Solutions.IapDesktop.Application.Services.Adapters
             {
                 this.service.Dispose();
             }
-        }
-    }
-
-    [Serializable]
-    public class ComputeEngineException : Exception
-    {
-        protected ComputeEngineException(SerializationInfo info, StreamingContext context)
-            : base(info, context)
-        {
-        }
-
-        public ComputeEngineException(string message, Exception inner)
-            : base(message, inner)
-        {
         }
     }
 }

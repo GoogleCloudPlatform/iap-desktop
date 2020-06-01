@@ -24,7 +24,7 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 using System;
 
-namespace Google.Solutions.IapDesktop.Extensions.LogAnalysis.History
+namespace Google.Solutions.IapDesktop.Extensions.LogAnalysis.Services.SchedulingReport
 {
     [Flags]
     public enum LicenseTypes

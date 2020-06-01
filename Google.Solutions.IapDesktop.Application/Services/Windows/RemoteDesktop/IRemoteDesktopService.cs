@@ -80,7 +80,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.Windows.RemoteDesktop
                 .FirstOrDefault();
 
         public IRemoteDesktopSession ActiveSession
-            => (IRemoteDesktopSession)this.dockPanel.ActiveDocument;
+            => this.dockPanel.ActiveDocument as IRemoteDesktopSession;
 
         public bool IsConnected(InstanceLocator vmInstance)
             => TryGetExistingPane(vmInstance) != null;
