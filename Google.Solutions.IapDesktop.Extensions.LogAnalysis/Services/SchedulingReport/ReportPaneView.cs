@@ -35,7 +35,7 @@ using DataPoint = Google.Solutions.IapDesktop.Extensions.LogAnalysis.History.Dat
 
 namespace Google.Solutions.IapDesktop.Extensions.LogAnalysis.Services.SchedulingReport
 {
-    public partial class ReportView : SlowLoadingPane
+    public partial class ReportPaneView : SlowLoadingPane
     {
         private ReportViewModel viewModel;
         private readonly IReportBuilder reportBuilder;
@@ -48,7 +48,7 @@ namespace Google.Solutions.IapDesktop.Extensions.LogAnalysis.Services.Scheduling
         public class NodesPlacementsListView : BindableListView<NodePlacement>
         { }
 
-        internal ReportView(
+        internal ReportPaneView(
             string title,
             IReportBuilder reportBuilder,
             IServiceProvider serviceProvider) 

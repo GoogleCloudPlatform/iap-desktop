@@ -144,11 +144,11 @@
     <Compile Include="Services\SchedulingReport\ReportInstancesTabViewModel.cs" />
     <Compile Include="Services\SchedulingReport\ReportNodesTabViewModel.cs" />
     <Compile Include="Services\SchedulingReport\ReportItemsViewModelBase.cs" />
-    <Compile Include="Services\SchedulingReport\ReportView.cs">
+    <Compile Include="Services\SchedulingReport\ReportPaneView.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Services\SchedulingReport\ReportView.Designer.cs">
-      <DependentUpon>ReportView.cs</DependentUpon>
+    <Compile Include="Services\SchedulingReport\ReportPaneView.Designer.cs">
+      <DependentUpon>ReportPaneView.cs</DependentUpon>
     </Compile>
     <Compile Include="Services\SchedulingReport\ReportViewModel.cs" />
     <Compile Include="TraceSources.cs" />
@@ -176,8 +176,8 @@
     <EmbeddedResource Include="Services\SchedulingReport\CreateReportDialog.resx">
       <DependentUpon>CreateReportDialog.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Services\SchedulingReport\ReportView.resx">
-      <DependentUpon>ReportView.cs</DependentUpon>
+    <EmbeddedResource Include="Services\SchedulingReport\ReportPaneView.resx">
+      <DependentUpon>ReportPaneView.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup />

@@ -64,7 +64,7 @@ namespace Google.Solutions.IapDesktop.Extensions.LogAnalysis.Services
                 projectIds,
                 dialog.SelectedStartDate);
 
-            var view = new ReportView(
+            var view = new ReportPaneView(
                 ReportViewModel.CreateReportName(projectIds),
                 builder,
                 serviceProvider);

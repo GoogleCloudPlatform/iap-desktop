@@ -21,7 +21,7 @@
 
 namespace Google.Solutions.IapDesktop.Extensions.LogAnalysis.Services.SchedulingReport
 {
-    partial class ReportView
+    partial class ReportPaneView
     {
         /// <summary>
         /// Required designer variable.
@@ -49,7 +49,7 @@ namespace Google.Solutions.IapDesktop.Extensions.LogAnalysis.Services.Scheduling
         /// </summary>
         private void InitializeComponent()
         {
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(ReportView));
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(ReportPaneView));
             System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea1 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
             System.Windows.Forms.DataVisualization.Charting.Series series1 = new System.Windows.Forms.DataVisualization.Charting.Series();
             System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea2 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
@@ -72,7 +72,7 @@ namespace Google.Solutions.IapDesktop.Extensions.LogAnalysis.Services.Scheduling
             this.tabs = new Google.Solutions.IapDesktop.Application.Services.Windows.FlatVerticalTabControl();
             this.instancesTab = new System.Windows.Forms.TabPage();
             this.noInstancesDataLabel = new System.Windows.Forms.Label();
-            this.instancesList = new Google.Solutions.IapDesktop.Extensions.LogAnalysis.Services.SchedulingReport.ReportView.InstancesListView();
+            this.instancesList = new Google.Solutions.IapDesktop.Extensions.LogAnalysis.Services.SchedulingReport.ReportPaneView.InstancesListView();
             this.instanceIdColumnHeader = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.instanceNameColumnHeader = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.instanceZoneColumnHeader = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
@@ -84,7 +84,7 @@ namespace Google.Solutions.IapDesktop.Extensions.LogAnalysis.Services.Scheduling
             this.nodesTab = new System.Windows.Forms.TabPage();
             this.noNodesDataLabel = new System.Windows.Forms.Label();
             this.nodesSplitContainer = new System.Windows.Forms.SplitContainer();
-            this.nodesList = new Google.Solutions.IapDesktop.Extensions.LogAnalysis.Services.SchedulingReport.ReportView.NodesListView();
+            this.nodesList = new Google.Solutions.IapDesktop.Extensions.LogAnalysis.Services.SchedulingReport.ReportPaneView.NodesListView();
             this.serverIdColumnHeader = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.nodeZoneColumnHeader = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.nodeProjectIdColumnHeader = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
@@ -93,7 +93,7 @@ namespace Google.Solutions.IapDesktop.Extensions.LogAnalysis.Services.Scheduling
             this.daysUsedColumnHeader = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.peakInstancesColumnHeader = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.nodePlacementsHeadline = new System.Windows.Forms.Label();
-            this.nodePlacementsList = new Google.Solutions.IapDesktop.Extensions.LogAnalysis.Services.SchedulingReport.ReportView.NodesPlacementsListView();
+            this.nodePlacementsList = new Google.Solutions.IapDesktop.Extensions.LogAnalysis.Services.SchedulingReport.ReportPaneView.NodesPlacementsListView();
             this.nodePlacementInstanceIdColumnHeader = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.nodePlacementInstanceNameColumnHeader = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.nodePlacementZoneColumnHeader = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
