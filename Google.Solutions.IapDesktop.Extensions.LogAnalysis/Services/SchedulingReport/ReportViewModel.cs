@@ -22,6 +22,7 @@
 using Google.Solutions.IapDesktop.Application.ObjectModel;
 using Google.Solutions.IapDesktop.Extensions.LogAnalysis.History;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Runtime.CompilerServices;
 
@@ -92,6 +93,20 @@ namespace Google.Solutions.IapDesktop.Extensions.LogAnalysis.Services.Scheduling
             this.NodeReportPane = new ReportNodesTabViewModel(this);
             this.InstanceReportPane = new ReportInstancesTabViewModel(this);
             this.LicensesReportPane = new ReportLicensesTabViewModel(this);
+        }
+
+        internal static string CreateReportName(IEnumerable<string> projectIds)
+        {
+            Debug.Assert(projectIds.Any());
+            var projectCount = projectIds.Count();
+            if (projectCount == 1)
+            {
+                return $"{projectIds.First()} usage report";
+            }
+            else
+            {
+                return $"{projectIds.First()} (+{projectCount - 1} more) usage report";
+            }
         }
 
         //---------------------------------------------------------------------

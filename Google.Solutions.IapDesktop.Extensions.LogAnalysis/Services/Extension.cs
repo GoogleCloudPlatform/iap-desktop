@@ -37,7 +37,6 @@ namespace Google.Solutions.IapDesktop.Extensions.LogAnalysis.Services
     [Service(ServiceLifetime.Singleton)]
     public class Extension
     {
-        private readonly string Title = "Instances/nodes usage report";
         private readonly IServiceProvider serviceProvider;
 
         private void CreateReport(IProjectExplorerNode contextNode)
@@ -55,13 +54,15 @@ namespace Google.Solutions.IapDesktop.Extensions.LogAnalysis.Services
                 return;
             }
 
+            var projectIds = dialog.SelectedProjectIds;
+
             var builder = new AuditLogDownloader(
                 this.serviceProvider.GetService<IAuthorizationAdapter>(),
-                dialog.SelectedProjectIds,
+                projectIds,
                 dialog.SelectedStartDate);
 
             var view = new ReportView(
-                Title,  // TODO: use better title
+                ReportViewModel.CreateReportName(projectIds),
                 builder,
                 serviceProvider);
             view.ShowOrActivate(
@@ -76,7 +77,7 @@ namespace Google.Solutions.IapDesktop.Extensions.LogAnalysis.Services
             // Add command to project explorer.
             serviceProvider.GetService<IProjectExplorer>()
                 .AddCommand(
-                    Title + "...",
+                    "Analyze instance and node usage...",
                     Resources.Report_16,
                     new ProjectExplorerCommand(
                         context => context is IProjectExplorerProjectNode 
