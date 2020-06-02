@@ -72,7 +72,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.Adapters
                 var assemblyName = typeof(ComputeEngineAdapter).Assembly.GetName();
                 var client = new RestClient()
                 {
-                    UserAgent = $"{assemblyName.Name}/{assemblyName.Version}"
+                    UserAgent = Globals.UserAgent
                 };
 
                 var latestRelease = await client.GetAsync<Release>(

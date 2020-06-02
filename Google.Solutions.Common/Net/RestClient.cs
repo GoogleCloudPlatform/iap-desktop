@@ -32,7 +32,7 @@ namespace Google.Solutions.Common.Net
 {
     public class RestClient
     {
-        public string UserAgent { get; set; }
+        public UserAgent UserAgent { get; set; }
         public ICredential Credential { get; }
 
         public RestClient() : this(null)
@@ -54,7 +54,7 @@ namespace Google.Solutions.Common.Net
             {
                 if (this.UserAgent != null)
                 {
-                    request.Headers.UserAgent.ParseAdd(this.UserAgent);
+                    request.Headers.UserAgent.ParseAdd(this.UserAgent.ToHeaderValue());
                 }
 
                 if (this.Credential != null)
