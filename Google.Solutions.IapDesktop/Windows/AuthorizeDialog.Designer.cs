@@ -49,9 +49,9 @@ namespace Google.Solutions.IapDesktop.Windows
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(AuthorizeDialog));
             this.signInButton = new System.Windows.Forms.Button();
             this.spinner = new System.Windows.Forms.PictureBox();
-            this.aboutLabel = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.spinner)).BeginInit();
             this.SuspendLayout();
             // 
@@ -75,25 +75,12 @@ namespace Google.Solutions.IapDesktop.Windows
             this.spinner.TabIndex = 2;
             this.spinner.TabStop = false;
             // 
-            // aboutLabel
-            // 
-            this.aboutLabel.AutoSize = true;
-            this.aboutLabel.BackColor = System.Drawing.Color.White;
-            this.aboutLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Italic, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.aboutLabel.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
-            this.aboutLabel.Location = new System.Drawing.Point(25, 40);
-            this.aboutLabel.Name = "aboutLabel";
-            this.aboutLabel.Size = new System.Drawing.Size(189, 34);
-            this.aboutLabel.TabIndex = 3;
-            this.aboutLabel.Text = "Securely connect to your \r\nVM instances from anywhere";
-            // 
             // AuthorizeDialog
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.BackgroundImage = global::Google.Solutions.IapDesktop.Properties.Resources.Splash;
+            this.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("$this.BackgroundImage")));
             this.ClientSize = new System.Drawing.Size(634, 290);
-            this.Controls.Add(this.aboutLabel);
             this.Controls.Add(this.spinner);
             this.Controls.Add(this.signInButton);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
@@ -105,7 +92,6 @@ namespace Google.Solutions.IapDesktop.Windows
             this.Text = "Sign in";
             ((System.ComponentModel.ISupportInitialize)(this.spinner)).EndInit();
             this.ResumeLayout(false);
-            this.PerformLayout();
 
         }
 
@@ -113,6 +99,5 @@ namespace Google.Solutions.IapDesktop.Windows
 
         private System.Windows.Forms.Button signInButton;
         private System.Windows.Forms.PictureBox spinner;
-        private System.Windows.Forms.Label aboutLabel;
     }
 }
