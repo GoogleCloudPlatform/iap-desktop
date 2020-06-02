@@ -90,9 +90,20 @@ namespace Google.Solutions.Common.Auth
 
         public async Task<ICredential> AuthorizeUsingBrowserAsync(CancellationToken token)
         {
-            return await this.installedApp.AuthorizeAsync(
-                StoreUserId,
-                token).ConfigureAwait(false);
+            try
+            {
+                return await this.installedApp.AuthorizeAsync(
+                    StoreUserId,
+                    token);
+            }
+            catch (PlatformNotSupportedException)
+            {
+                // Convert this into an exception with more actionable information.
+                throw new SystemException(
+                    "Authorization failed because the HTTP Server API is not enabled " +
+                    "on your computer. This API is required to complete the OAuth authorization flow.\n\n" +
+                    "To enable the API, open an elevated command prompt and run 'sc config http start= auto'.");
+            }
         }
 
         public bool IsRefreshTokenValid(TokenResponse tokenResponse)
