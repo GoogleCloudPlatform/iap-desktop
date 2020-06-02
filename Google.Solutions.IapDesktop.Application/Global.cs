@@ -26,7 +26,7 @@ using System.Runtime.CompilerServices;
 
 [assembly: InternalsVisibleTo("Google.Solutions.IapDesktop.Application.Test")]
 
-internal static class Globals
+public static class Globals
 {
     public static UserAgent UserAgent { get; }
 

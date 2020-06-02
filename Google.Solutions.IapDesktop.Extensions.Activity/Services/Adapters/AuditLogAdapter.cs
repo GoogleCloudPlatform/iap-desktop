@@ -53,11 +53,10 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services.Adapters
 
         public AuditLogAdapter(ICredential credential)
         {
-            var assemblyName = typeof(AuditLogAdapter).Assembly.GetName();
             this.service = new LoggingService(new BaseClientService.Initializer
             {
                 HttpClientInitializer = credential,
-                ApplicationName = $"{assemblyName.Name}/{assemblyName.Version}"
+                ApplicationName = Globals.UserAgent.ToApplicationName()
             });
         }
 

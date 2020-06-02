@@ -42,6 +42,13 @@ namespace Google.Solutions.Common.Net
         }
 
         /// <summary>
+        /// Create a value that can be used as "application name" for 
+        /// Google API requests.
+        /// </summary>
+        public string ToApplicationName()
+            => $"{this.Product}/{this.Version}";
+
+        /// <summary>
         /// Create header value that complies with Browser conventions, see
         /// https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/User-Agent
         /// </summary>
