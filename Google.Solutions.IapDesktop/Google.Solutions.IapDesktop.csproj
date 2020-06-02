@@ -188,6 +188,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="logo.ico" />
+    <None Include="Resources\Splash.png" />
     <None Include="Resources\IapBackground.png" />
     <None Include="Resources\About.bmp" />
   </ItemGroup>
