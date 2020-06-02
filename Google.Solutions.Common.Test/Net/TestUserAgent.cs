@@ -1,5 +1,5 @@
 ﻿//
-// Copyright 2020 Google LLC
+// Copyright 2019 Google LLC
 //
 // Licensed to the Apache Software Foundation (ASF) under one
 // or more contributor license agreements.  See the NOTICE file
@@ -20,21 +20,21 @@
 //
 
 using Google.Solutions.Common.Net;
+using NUnit.Framework;
 using System;
-using System.Reflection;
-using System.Runtime.CompilerServices;
 
-[assembly: InternalsVisibleTo("Google.Solutions.IapDesktop.Application.Test")]
-
-internal static class Globals
+namespace Google.Solutions.Common.Test.Net
 {
-    public static UserAgent UserAgent { get; }
-
-    public static Version Version { get; }
-
-    static Globals()
+    [TestFixture]
+    public class TestUserAgent : FixtureBase
     {
-        Version = Assembly.GetExecutingAssembly().GetName().Version;
-        UserAgent = new UserAgent("IAP-Desktop", Version);
+        [Test]
+        public void ToHeaderValueReturnsProperString()
+        {
+            var ua = new UserAgent("WidgetTool", new Version(1, 0), "Windows 95");
+
+            Assert.AreEqual("WidgetTool/1.0 (Windows 95)", ua.ToHeaderValue());
+            Assert.AreEqual(ua.ToHeaderValue(), ua.ToString());
+        }
     }
 }

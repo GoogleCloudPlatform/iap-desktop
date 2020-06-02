@@ -19,29 +19,33 @@
 // under the License.
 //
 
-using Google.Solutions.Common;
-using Google.Solutions.Common.Locator;
-using Google.Solutions.Common.Test.Testbed;
-using Google.Solutions.IapTunneling.Iap;
 using Google.Solutions.IapTunneling.Net;
 using NUnit.Framework;
+using System;
+using System.Net.WebSockets;
 
-namespace Google.Solutions.IapTunneling.Test.Iap
+namespace Google.Solutions.IapTunneling.Test.Net
 {
     [TestFixture]
-    [Category("IntegrationTest")]
-    [Category("IAP")]
-    public class TestEchoOverIapDirectTunnel : TestEchoOverIapBase
+    public class TestRestrictedHeaderConfigPatch : FixtureBase
     {
-        protected override INetworkStream ConnectToEchoServer(InstanceLocator vmRef)
+        [Test]
+        public void WhenPatchNotApplied_ThenSetUserAgentHeaderFails()
         {
-            return new FragmentingStream(new SshRelayStream(
-                new IapTunnelingEndpoint(
-                    Defaults.GetCredential(),
-                    vmRef,
-                    7,
-                    IapTunnelingEndpoint.DefaultNetworkInterface,
-                    Defaults.UserAgent)));
+            var websocket = new ClientWebSocket();
+            Assert.Throws<ArgumentException>(
+                () => websocket.Options.SetRequestHeader("User-Agent", "test"));
+        }
+
+        [Test]
+        public void WhenPatchApplied_ThenSetUserAgentHeaderSuceeds()
+        {
+            RestrictedHeaderConfigPatch.SetHeaderRestriction("User-Agent", false);
+
+            var websocket = new ClientWebSocket();
+            websocket.Options.SetRequestHeader("User-Agent", "test");
+
+            RestrictedHeaderConfigPatch.SetHeaderRestriction("User-Agent", true);
         }
     }
 }

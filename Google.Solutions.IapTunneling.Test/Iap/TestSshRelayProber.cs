@@ -47,7 +47,8 @@ namespace Google.Solutions.IapTunneling.Test.Iap
                         Defaults.Zone,
                         "invalid"),
                     80,
-                    IapTunnelingEndpoint.DefaultNetworkInterface)))
+                    IapTunnelingEndpoint.DefaultNetworkInterface,
+                    Defaults.UserAgent)))
             {
                 AssertEx.ThrowsAggregateException<UnauthorizedException>(() =>
                     stream.TestConnectionAsync(TimeSpan.FromSeconds(10)).Wait());
@@ -65,7 +66,8 @@ namespace Google.Solutions.IapTunneling.Test.Iap
                         "invalid",
                         "invalid"),
                     80,
-                    IapTunnelingEndpoint.DefaultNetworkInterface)))
+                    IapTunnelingEndpoint.DefaultNetworkInterface,
+                    Defaults.UserAgent)))
             {
                 AssertEx.ThrowsAggregateException<UnauthorizedException>(() =>
                     stream.TestConnectionAsync(TimeSpan.FromSeconds(10)).Wait());
@@ -83,7 +85,8 @@ namespace Google.Solutions.IapTunneling.Test.Iap
                         Defaults.Zone,
                         "invalid"),
                     80,
-                    IapTunnelingEndpoint.DefaultNetworkInterface)))
+                    IapTunnelingEndpoint.DefaultNetworkInterface,
+                    Defaults.UserAgent)))
             {
                 AssertEx.ThrowsAggregateException<UnauthorizedException>(() =>
                     stream.TestConnectionAsync(TimeSpan.FromSeconds(10)).Wait());
@@ -101,7 +104,8 @@ namespace Google.Solutions.IapTunneling.Test.Iap
                     Defaults.GetCredential(),
                     testInstance.InstanceReference,
                     3389,
-                    IapTunnelingEndpoint.DefaultNetworkInterface)))
+                    IapTunnelingEndpoint.DefaultNetworkInterface,
+                    Defaults.UserAgent)))
             {
                 await stream.TestConnectionAsync(TimeSpan.FromSeconds(10));
             }
@@ -118,7 +122,8 @@ namespace Google.Solutions.IapTunneling.Test.Iap
                     Defaults.GetCredential(),
                     testInstance.InstanceReference,
                     22,
-                    IapTunnelingEndpoint.DefaultNetworkInterface)))
+                    IapTunnelingEndpoint.DefaultNetworkInterface,
+                    Defaults.UserAgent)))
             {
                 AssertEx.ThrowsAggregateException<NetworkStreamClosedException>(() =>
                     stream.TestConnectionAsync(TimeSpan.FromSeconds(5)).Wait());

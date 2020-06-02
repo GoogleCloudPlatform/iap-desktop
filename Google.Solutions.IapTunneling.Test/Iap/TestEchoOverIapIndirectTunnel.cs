@@ -43,7 +43,8 @@ namespace Google.Solutions.IapTunneling.Test.Iap
                     Defaults.GetCredential(),
                     vmRef,
                     7,
-                    IapTunnelingEndpoint.DefaultNetworkInterface));
+                    IapTunnelingEndpoint.DefaultNetworkInterface,
+                    Defaults.UserAgent));
             listener.ClientAcceptLimit = 1; // Terminate after first connection.
             listener.ListenAsync(CancellationToken.None);
 

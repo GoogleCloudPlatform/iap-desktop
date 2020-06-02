@@ -89,6 +89,7 @@
       <DependentUpon>ZonalResourceLocator.tt</DependentUpon>
     </Compile>
     <Compile Include="Net\RestClient.cs" />
+    <Compile Include="Net\UserAgent.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Locator\ResourceLocator.cs" />
     <Compile Include="TraceSources.cs" />

@@ -21,7 +21,9 @@
 
 using Google.Apis.Auth.OAuth2;
 using Google.Solutions.Common;
+using Google.Solutions.Common.Diagnostics;
 using Google.Solutions.Common.Locator;
+using Google.Solutions.Common.Net;
 using Google.Solutions.IapTunneling.Net;
 using System;
 using System.Collections.Generic;
@@ -52,14 +54,22 @@ namespace Google.Solutions.IapTunneling.Iap
 
         public string Interface { get; }
 
+        public UserAgent UserAgent { get; }
+
         private readonly ICredential credential;
 
-        public IapTunnelingEndpoint(ICredential credential, InstanceLocator vmInstance, ushort port, string nic)
+        public IapTunnelingEndpoint(
+            ICredential credential, 
+            InstanceLocator vmInstance, 
+            ushort port, 
+            string nic,
+            UserAgent userAgent)
         {
             this.credential = credential;
             this.VmInstance = vmInstance;
             this.Port = port;
             this.Interface = nic;
+            this.UserAgent = userAgent;
         }
 
         public Task<INetworkStream> ConnectAsync(CancellationToken token)
@@ -107,6 +117,17 @@ namespace Google.Solutions.IapTunneling.Iap
             websocket.Options.SetRequestHeader("Authorization", "Bearer " + accessToken);
             websocket.Options.SetRequestHeader("Origin", Origin);
             websocket.Options.KeepAliveInterval = TimeSpan.FromMinutes(1);
+
+            try
+            {
+                // NB. User-Agent is a restricted header, so this call will fail
+                // unless un-restricted using RestrictedHeaderConfigPatch.
+                websocket.Options.SetRequestHeader("User-Agent", this.UserAgent.ToHeaderValue());
+            }
+            catch (ArgumentException)
+            {
+                TraceSources.Compute.TraceWarning("Failed to set User-Agent header");
+            }
 
             await websocket.ConnectAsync(uri, token).ConfigureAwait(false);
 
