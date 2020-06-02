@@ -111,7 +111,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.Adapters
                         instances => instances.Items.Values.Where(v => v != null),
                         response => response.NextPageToken,
                         (request, token) => { request.PageToken = token; },
-                        cancellationToken);
+                        cancellationToken).ConfigureAwait(false);
 
                     var result = instancesByZone
                         .Where(z => z.Instances != null)    // API returns null for empty zones.
@@ -145,7 +145,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.Adapters
                         i => i.Items.Values.Where(v => v != null),
                         response => response.NextPageToken,
                         (request, token) => { request.PageToken = token; },
-                        cancellationToken);
+                        cancellationToken).ConfigureAwait(false);
 
                     var result = disksByZone
                         .Where(z => z.Disks != null)    // API returns null for empty zones.
@@ -171,13 +171,13 @@ namespace Google.Solutions.IapDesktop.Application.Services.Adapters
                 {
                     return await this.service.Images
                         .GetFromFamily(image.ProjectId, image.Name.Substring(7))
-                        .ExecuteAsync(cancellationToken);
+                        .ExecuteAsync(cancellationToken).ConfigureAwait(false);
                 }
                 else
                 {
                     return await this.service.Images
                         .Get(image.ProjectId, image.Name)
-                        .ExecuteAsync(cancellationToken);
+                        .ExecuteAsync(cancellationToken).ConfigureAwait(false);
                 }
             }
             catch (Exception e) when (
@@ -200,17 +200,14 @@ namespace Google.Solutions.IapDesktop.Application.Services.Adapters
         {
             using (TraceSources.IapDesktop.TraceMethod().WithParameters(projectId, zone, instanceName))
             {
-                return await this.service.Instances.Get(projectId, zone, instanceName).ExecuteAsync();
+                return await this.service.Instances.Get(projectId, zone, instanceName)
+                    .ExecuteAsync()
+                    .ConfigureAwait(false);
             }
         }
 
-        public async Task<Instance> GetInstanceAsync(InstanceLocator instanceRef)
-        {
-            using (TraceSources.IapDesktop.TraceMethod().WithParameters(instanceRef))
-            {
-                return await GetInstanceAsync(instanceRef.ProjectId, instanceRef.Zone, instanceRef.Name);
-            }
-        }
+        public Task<Instance> GetInstanceAsync(InstanceLocator instanceRef)
+            => GetInstanceAsync(instanceRef.ProjectId, instanceRef.Zone, instanceRef.Name);
 
         public SerialPortStream GetSerialPortOutput(InstanceLocator instanceRef)
         {
@@ -240,7 +237,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.Adapters
                     instanceRef,
                     username,
                     token,
-                    timeout);
+                    timeout).ConfigureAwait(false);
             }
         }
 

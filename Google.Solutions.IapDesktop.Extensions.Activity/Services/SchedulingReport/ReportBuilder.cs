@@ -97,14 +97,14 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services.SchedulingRep
                     //
                     var disks = await this.computeEngineAdapter.ListDisksAsync(
                         projectId,
-                        cancellationToken);
+                        cancellationToken).ConfigureAwait(false);
 
                     //
                     // Load instances.
                     //
                     var instances = await this.computeEngineAdapter.ListInstancesAsync(
                         projectId,
-                        cancellationToken);
+                        cancellationToken).ConfigureAwait(false);
 
                     this.builder.AddExistingInstances(
                         instances,
@@ -119,7 +119,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services.SchedulingRep
                     this.projectIds,
                     this.builder.StartDate,
                     this,
-                    cancellationToken);
+                    cancellationToken).ConfigureAwait(false);
 
                 this.PercentageDone = 90;
                 this.BuildStatus = "Finalizing report...";
@@ -128,7 +128,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services.SchedulingRep
 
                 await archive.LoadLicenseAnnotationsAsync(
                     this.computeEngineAdapter,
-                    cancellationToken);
+                    cancellationToken).ConfigureAwait(false);
 
                 return archive;
             }

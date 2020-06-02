@@ -40,8 +40,8 @@ namespace Google.Solutions.IapDesktop.Application.Controls
 
         protected override void OnPaint(PaintEventArgs e)
         {
-            using (Bitmap b = new Bitmap(Width, Height))
-            using (Graphics g = Graphics.FromImage(b))
+            using (var b = new Bitmap(Width, Height))
+            using (var g = Graphics.FromImage(b))
             {
                 if (!DesignMode)
                 {

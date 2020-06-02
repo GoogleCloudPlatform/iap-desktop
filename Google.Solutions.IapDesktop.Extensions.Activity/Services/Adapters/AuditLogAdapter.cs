@@ -83,7 +83,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services.Adapters
 
                         using (var stream = await this.service.Entries
                             .List(request)
-                            .ExecuteAsStreamWithRetryAsync(backOff, cancellationToken))
+                            .ExecuteAsStreamWithRetryAsync(backOff, cancellationToken)
+                            .ConfigureAwait(false))
                         using (var reader = new JsonTextReader(new StreamReader(stream)))
                         {
                             nextPageToken = ListLogEntriesParser.Read(reader, callback);

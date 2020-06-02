@@ -69,7 +69,9 @@ namespace Google.Solutions.Common.Auth
             IAuthAdapter oauthAdapter,
             CancellationToken token)
         {
-            var existingTokenResponse = await oauthAdapter.GetStoredRefreshTokenAsync(token);
+            var existingTokenResponse = await oauthAdapter
+                .GetStoredRefreshTokenAsync(token)
+                .ConfigureAwait(false);
 
             if (oauthAdapter.IsRefreshTokenValid(existingTokenResponse))
             {
@@ -83,7 +85,7 @@ namespace Google.Solutions.Common.Auth
 
                     // The existing auth might be fine, but it lacks a scope.
                     // Delete it so that it does not cause harm later.
-                    await oauthAdapter.DeleteStoredRefreshToken();
+                    await oauthAdapter.DeleteStoredRefreshToken().ConfigureAwait(false);
                     return null;
                 }
                 else
@@ -92,7 +94,7 @@ namespace Google.Solutions.Common.Auth
 
                     var userInfo = await oauthAdapter.QueryUserInfoAsync(
                         credential,
-                        token);
+                        token).ConfigureAwait(false);
 
                     return new OAuthAuthorization(
                         oauthAdapter,
@@ -113,11 +115,13 @@ namespace Google.Solutions.Common.Auth
             TraceSources.Common.TraceVerbose("Authorizing");
 
             // Pop up browser window.
-            var credential = await oauthAdapter.AuthorizeUsingBrowserAsync(token);
+            var credential = await oauthAdapter
+                .AuthorizeUsingBrowserAsync(token)
+                .ConfigureAwait(false);
 
             var userInfo = await oauthAdapter.QueryUserInfoAsync(
                 credential,
-                token);
+                token).ConfigureAwait(false);
 
             return new OAuthAuthorization(
                 oauthAdapter,
@@ -129,13 +133,15 @@ namespace Google.Solutions.Common.Auth
         {
             // As this is a 3p OAuth app, we do not support Gnubby/Password-based
             // reauth. Instead, we simply trigger a new authorization (code flow).
-            var newCredential = await this.adapter.AuthorizeUsingBrowserAsync(token);
+            var newCredential = await this.adapter
+                .AuthorizeUsingBrowserAsync(token)
+                .ConfigureAwait(false);
 
             // The user might have changed to a different user account,
             // so we have to re-fetch user information.
             var newUserInfo = await this.adapter.QueryUserInfoAsync(
                 newCredential,
-                token);
+                token).ConfigureAwait(false);
 
             this.credential.SwapCredential(newCredential, newUserInfo);
         }

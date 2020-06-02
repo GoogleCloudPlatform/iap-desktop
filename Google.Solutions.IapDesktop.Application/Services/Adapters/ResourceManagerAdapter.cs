@@ -86,7 +86,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.Adapters
                     page => page.Projects,
                     response => response.NextPageToken,
                     (request, token) => { request.PageToken = token; },
-                    cancellationToken);
+                    cancellationToken).ConfigureAwait(false);
 
                 // Filter projects in deleted/pending delete state.
                 var result = projects.Where(p => p.LifecycleState == "ACTIVE");
