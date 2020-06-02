@@ -68,7 +68,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services.SchedulingRep
             {
                 try
                 {
-                    Image imageInfo = await computeEngineAdapter.GetImage(image, cancellationToken);
+                    Image imageInfo = await computeEngineAdapter
+                        .GetImage(image, cancellationToken)
+                        .ConfigureAwait(false);
 
                     // Images can contain more than one license, and liceses like 
                     // "/compute/v1/projects/compute-image-tools/global/licenses/virtual-disk-import"

@@ -85,7 +85,7 @@ namespace Google.Solutions.Common.ApiExtensions.Request
                     }
                 }
 
-                await Task.Delay(200);
+                await Task.Delay(200).ConfigureAwait(false);
 
                 var pollRequest = new ZoneOperationsResource(request.Service).Get(
                     projectId,

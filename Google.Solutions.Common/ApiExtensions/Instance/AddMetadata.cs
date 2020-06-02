@@ -131,7 +131,7 @@ namespace Google.Solutions.Common.ApiExtensions.Instance
                             metadata,
                             instanceRef.ProjectId,
                             instanceRef.Zone,
-                            instanceRef.Name).ExecuteAndAwaitOperationAsync(instanceRef.ProjectId, token);
+                            instanceRef.Name).ExecuteAndAwaitOperationAsync(instanceRef.ProjectId, token).ConfigureAwait(false);
                         break;
                     }
                     catch (GoogleApiException e)
@@ -146,7 +146,8 @@ namespace Google.Solutions.Common.ApiExtensions.Instance
                                 "SetMetadata failed with {0} - retrying after {1}ms", e.Message,
                                 e.Error?.Code,
                                 backoff);
-                            await Task.Delay(backoff);
+
+                            await Task.Delay(backoff).ConfigureAwait(false);
                         }
                         else
                         {

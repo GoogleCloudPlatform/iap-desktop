@@ -41,7 +41,9 @@ namespace Google.Solutions.Common.ApiExtensions
             var allValues = new List<TValue>();
             do
             {
-                response = await request.ExecuteAsync(cancellationToken);
+                response = await request
+                    .ExecuteAsync(cancellationToken)
+                    .ConfigureAwait(false);
 
                 IEnumerable<TValue> pageValues = mapFunc(response);
                 if (pageValues != null)

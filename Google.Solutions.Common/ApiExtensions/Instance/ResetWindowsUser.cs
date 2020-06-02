@@ -192,7 +192,7 @@ namespace Google.Solutions.Common.ApiExtensions.Instance
                             resource,
                             instanceRef,
                             username,
-                            combinedCts.Token);
+                            combinedCts.Token).ConfigureAwait(false);
                     }
                     catch (Exception e) when (e.IsCancellation() && timeoutCts.IsCancellationRequested)
                     {

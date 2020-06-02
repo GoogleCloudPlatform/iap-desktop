@@ -83,7 +83,9 @@ namespace Google.Solutions.Common.ApiExtensions.Request
                             "Too many requests - backing of and retrying...", retries);
 
                         retries++;
-                        await Task.Delay(backOff.GetNextBackOff(retries));
+                        await Task
+                            .Delay(backOff.GetNextBackOff(retries))
+                            .ConfigureAwait(false);
                     }
                     else
                     {

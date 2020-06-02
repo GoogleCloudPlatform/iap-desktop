@@ -61,7 +61,7 @@ namespace Google.Solutions.Common.Net
                 {
                     var accessToken = await this.Credential.GetAccessTokenForRequestAsync(
                         null,
-                        cancellationToken);
+                        cancellationToken).ConfigureAwait(false);
                     request.Headers.Authorization = new AuthenticationHeaderValue(
                         "Bearer",
                         accessToken);

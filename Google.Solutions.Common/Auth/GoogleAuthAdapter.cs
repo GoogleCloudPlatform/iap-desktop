@@ -92,7 +92,7 @@ namespace Google.Solutions.Common.Auth
         {
             return await this.installedApp.AuthorizeAsync(
                 StoreUserId,
-                token);
+                token).ConfigureAwait(false);
         }
 
         public bool IsRefreshTokenValid(TokenResponse tokenResponse)
@@ -127,7 +127,7 @@ namespace Google.Solutions.Common.Auth
             ICredential credential,
             CancellationToken token)
         {
-            var configuration = await QueryOpenIdConfigurationAsync(token);
+            var configuration = await QueryOpenIdConfigurationAsync(token).ConfigureAwait(false);
 
             var client = new RestClient(credential);
 
