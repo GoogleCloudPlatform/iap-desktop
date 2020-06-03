@@ -76,6 +76,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="BigEndian.cs" />
+    <Compile Include="Net\RestrictedHeaderConfigPatch.cs" />
     <Compile Include="TraceSources.cs" />
     <Compile Include="Iap\IapTunnelingEndpoint.cs" />
     <Compile Include="Net\FragmentingStream.cs" />

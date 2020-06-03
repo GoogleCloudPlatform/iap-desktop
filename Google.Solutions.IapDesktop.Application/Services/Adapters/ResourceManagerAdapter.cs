@@ -54,13 +54,11 @@ namespace Google.Solutions.IapDesktop.Application.Services.Adapters
 
         public ResourceManagerAdapter(IAuthorizationAdapter authService)
         {
-            var assemblyName = typeof(IResourceManagerAdapter).Assembly.GetName();
-
             this.service = new CloudResourceManagerService(
                 new BaseClientService.Initializer
                 {
                     HttpClientInitializer = authService.Authorization.Credential,
-                    ApplicationName = $"{assemblyName.Name}/{assemblyName.Version}"
+                    ApplicationName = Globals.UserAgent.ToApplicationName()
                 });
         }
 

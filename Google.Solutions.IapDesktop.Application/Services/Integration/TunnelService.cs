@@ -51,7 +51,8 @@ namespace Google.Solutions.IapDesktop.Application.Services.Integration
                     this.authorizationService.Authorization.Credential,
                     tunnelEndpoint.Instance,
                     tunnelEndpoint.RemotePort,
-                    IapTunnelingEndpoint.DefaultNetworkInterface);
+                    IapTunnelingEndpoint.DefaultNetworkInterface,
+                    Globals.UserAgent);
 
 
                 // Start listener to enable clients to connect. Do not await

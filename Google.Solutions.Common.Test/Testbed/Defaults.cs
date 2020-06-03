@@ -20,7 +20,9 @@
 //
 
 using Google.Apis.Auth.OAuth2;
+using Google.Solutions.Common.Net;
 using System;
+using System.Reflection;
 
 namespace Google.Solutions.Common.Test.Testbed
 {
@@ -30,6 +32,15 @@ namespace Google.Solutions.Common.Test.Testbed
 
         public static readonly string ProjectId = Environment.GetEnvironmentVariable("GOOGLE_CLOUD_PROJECT");
         public static readonly string Zone = "us-central1-a";
+
+        public static UserAgent UserAgent { get; }
+
+        static Defaults()
+        { 
+            UserAgent = new UserAgent(
+                "IAP-Desktop-TestSuite",
+                Assembly.GetExecutingAssembly().GetName().Version);
+        }
 
         public static GoogleCredential GetCredential()
         {

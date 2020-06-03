@@ -34,6 +34,7 @@ using Google.Solutions.IapDesktop.Application.Services.Windows.TunnelsViewer;
 using Google.Solutions.IapDesktop.Application.Services.Workflows;
 using Google.Solutions.IapDesktop.Application.Util;
 using Google.Solutions.IapDesktop.Windows;
+using Google.Solutions.IapTunneling.Net;
 using Microsoft.Win32;
 using System;
 using System.Collections.Generic;
@@ -183,6 +184,17 @@ namespace Google.Solutions.IapDesktop
             System.Net.ServicePointManager.SecurityProtocol =
                 SecurityProtocolType.Tls12 |
                 SecurityProtocolType.Tls11;
+
+            // Allow custom User-Agent headers.
+            try
+            {
+                RestrictedHeaderConfigPatch.SetHeaderRestriction("User-Agent", false);
+            }
+            catch (InvalidOperationException)
+            {
+                Google.Solutions.IapDesktop.Application.TraceSources.IapDesktop.TraceWarning(
+                    "Failed to un-restrict User-Agent headers");
+            }
 
             System.Windows.Forms.Application.EnableVisualStyles();
             System.Windows.Forms.Application.SetCompatibleTextRenderingDefault(false);

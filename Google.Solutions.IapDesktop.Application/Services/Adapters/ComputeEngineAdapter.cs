@@ -77,11 +77,10 @@ namespace Google.Solutions.IapDesktop.Application.Services.Adapters
 
         public ComputeEngineAdapter(ICredential credential)
         {
-            var assemblyName = typeof(IComputeEngineAdapter).Assembly.GetName();
             this.service = new ComputeService(new BaseClientService.Initializer
             {
                 HttpClientInitializer = credential,
-                ApplicationName = $"{assemblyName.Name}/{assemblyName.Version}"
+                ApplicationName = Globals.UserAgent.ToApplicationName()
             });
         }
 

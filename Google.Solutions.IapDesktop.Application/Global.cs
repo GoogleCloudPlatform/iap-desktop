@@ -19,6 +19,22 @@
 // under the License.
 //
 
+using Google.Solutions.Common.Net;
+using System;
+using System.Reflection;
 using System.Runtime.CompilerServices;
 
 [assembly: InternalsVisibleTo("Google.Solutions.IapDesktop.Application.Test")]
+
+public static class Globals
+{
+    public static UserAgent UserAgent { get; }
+
+    public static Version Version { get; }
+
+    static Globals()
+    {
+        Version = Assembly.GetExecutingAssembly().GetName().Version;
+        UserAgent = new UserAgent("IAP-Desktop", Version);
+    }
+}

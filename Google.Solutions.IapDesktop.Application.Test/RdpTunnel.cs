@@ -53,7 +53,8 @@ namespace Google.Solutions.IapDesktop.Application.Test
                     Defaults.GetCredential(),
                     vmRef,
                     3389,
-                    IapTunnelingEndpoint.DefaultNetworkInterface));
+                    IapTunnelingEndpoint.DefaultNetworkInterface,
+                    Defaults.UserAgent));
 
             var tokenSource = new CancellationTokenSource();
             listener.ListenAsync(tokenSource.Token);

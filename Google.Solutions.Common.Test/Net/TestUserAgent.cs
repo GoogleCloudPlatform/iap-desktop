@@ -19,29 +19,22 @@
 // under the License.
 //
 
-using Google.Solutions.Common;
-using Google.Solutions.Common.Locator;
-using Google.Solutions.Common.Test.Testbed;
-using Google.Solutions.IapTunneling.Iap;
-using Google.Solutions.IapTunneling.Net;
+using Google.Solutions.Common.Net;
 using NUnit.Framework;
+using System;
 
-namespace Google.Solutions.IapTunneling.Test.Iap
+namespace Google.Solutions.Common.Test.Net
 {
     [TestFixture]
-    [Category("IntegrationTest")]
-    [Category("IAP")]
-    public class TestEchoOverIapDirectTunnel : TestEchoOverIapBase
+    public class TestUserAgent : FixtureBase
     {
-        protected override INetworkStream ConnectToEchoServer(InstanceLocator vmRef)
+        [Test]
+        public void ToHeaderValueReturnsProperString()
         {
-            return new FragmentingStream(new SshRelayStream(
-                new IapTunnelingEndpoint(
-                    Defaults.GetCredential(),
-                    vmRef,
-                    7,
-                    IapTunnelingEndpoint.DefaultNetworkInterface,
-                    Defaults.UserAgent)));
+            var ua = new UserAgent("WidgetTool", new Version(1, 0), "Windows 95");
+
+            Assert.AreEqual("WidgetTool/1.0 (Windows 95)", ua.ToHeaderValue());
+            Assert.AreEqual(ua.ToHeaderValue(), ua.ToString());
         }
     }
 }

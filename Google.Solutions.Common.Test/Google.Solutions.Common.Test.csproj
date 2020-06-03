@@ -93,6 +93,7 @@
     <Compile Include="Locator\TestLicenseLocator.cs" />
     <Compile Include="Locator\TestInstanceLocator.cs" />
     <Compile Include="Net\TestRestClient.cs" />
+    <Compile Include="Net\TestUserAgent.cs" />
     <Compile Include="Testbed\ComputeEngine.cs" />
     <Compile Include="Testbed\Defaults.cs" />
     <Compile Include="Testbed\InstanceAttribute.cs" />

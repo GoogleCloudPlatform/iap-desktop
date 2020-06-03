@@ -46,7 +46,8 @@ namespace Google.Solutions.IapTunneling.Test.Iap
                     Defaults.GetCredential(),
                     vmRef,
                     80,
-                    IapTunnelingEndpoint.DefaultNetworkInterface));
+                    IapTunnelingEndpoint.DefaultNetworkInterface,
+                    Defaults.UserAgent));
         }
 
         [Test]
@@ -84,7 +85,8 @@ namespace Google.Solutions.IapTunneling.Test.Iap
                     GoogleCredential.FromAccessToken("invalid"),
                     vm.InstanceReference,
                     80,
-                    IapTunnelingEndpoint.DefaultNetworkInterface));
+                    IapTunnelingEndpoint.DefaultNetworkInterface,
+                    Defaults.UserAgent));
 
             await stream.WriteAsync(request, 0, request.Length, CancellationToken.None);
 
