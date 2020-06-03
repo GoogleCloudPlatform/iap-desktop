@@ -19,6 +19,7 @@
 // under the License.
 //
 
+using Google.Solutions.Common.Diagnostics;
 using Google.Solutions.IapDesktop.Application.Controls;
 using Google.Solutions.IapDesktop.Application.ObjectModel;
 using Google.Solutions.IapDesktop.Application.Services.Windows;
@@ -34,6 +35,7 @@ using DataPoint = Google.Solutions.IapDesktop.Extensions.Activity.History.DataPo
 
 namespace Google.Solutions.IapDesktop.Extensions.Activity.Services.SchedulingReport
 {
+    [SkipCodeCoverage("All logic in view model")]
     public partial class ReportPaneView : SlowLoadingPane
     {
         private ReportViewModel viewModel;
