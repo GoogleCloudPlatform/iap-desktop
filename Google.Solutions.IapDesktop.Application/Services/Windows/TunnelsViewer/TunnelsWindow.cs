@@ -19,6 +19,7 @@
 // under the License.
 //
 
+using Google.Solutions.Common.Diagnostics;
 using Google.Solutions.IapDesktop.Application.Controls;
 using Google.Solutions.IapDesktop.Application.ObjectModel;
 using Google.Solutions.IapDesktop.Application.Services.Integration;
@@ -31,6 +32,7 @@ using WeifenLuo.WinFormsUI.Docking;
 namespace Google.Solutions.IapDesktop.Application.Services.Windows.TunnelsViewer
 {
     [ComVisible(false)]
+    [SkipCodeCoverage("All logic in view model")]
     public partial class TunnelsWindow : ToolWindow, ITunnelsViewer
     {
         private readonly DockPanel dockPanel;

@@ -76,6 +76,7 @@
     <Compile Include="Auth\Authorization.cs" />
     <Compile Include="Auth\GoogleAuthAdapter.cs" />
     <Compile Include="Auth\IAuthAdapter.cs" />
+    <Compile Include="Diagnostics\SkipCodeCoverageAttribute.cs" />
     <Compile Include="Diagnostics\TraceCallScope.cs" />
     <Compile Include="Diagnostics\TraceSourceExtensions.cs" />
     <Compile Include="Diagnostics\TraceSourceLogger.cs" />
