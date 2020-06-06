@@ -202,15 +202,12 @@
           DiskId="1"
           Source="Google.Solutions.IapDesktop\bin\$(var.CONFIGURATION)\Google.Solutions.Common.dll"
           Vital="yes"/>
-        
-        <!--
         <File
           Id="FileGoogleSolutionsActivityDll"
           Name="Google.Solutions.IapDesktop.Extensions.Activity.dll"
           DiskId="1"
           Source="Google.Solutions.IapDesktop\bin\$(var.CONFIGURATION)\Google.Solutions.IapDesktop.Extensions.Activity.dll"
           Vital="yes"/>
-        -->
         
         <!-- SDK and dependencies -->
         <File
@@ -260,6 +257,12 @@
           Name="Google.Apis.CloudResourceManager.v1.dll"
           DiskId="1"
           Source="Google.Solutions.IapDesktop\bin\$(var.CONFIGURATION)\Google.Apis.CloudResourceManager.v1.dll"
+          Vital="yes"/>
+        <File
+          Id="FileGoogleApisLoggingV2Dll"
+          Name="Google.Apis.Logging.v2.dll"
+          DiskId="1"
+          Source="Google.Solutions.IapDesktop\bin\$(var.CONFIGURATION)\Google.Apis.Logging.v2.dll"
           Vital="yes"/>
         <File
           Id="FileGoogleApisCoreDll"
