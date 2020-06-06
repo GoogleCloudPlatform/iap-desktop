@@ -108,6 +108,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services.SchedulingRep
             // 
             // projectsList
             // 
+            this.projectsList.CheckOnClick = true;
             this.projectsList.FormattingEnabled = true;
             this.projectsList.Location = new System.Drawing.Point(64, 30);
             this.projectsList.Name = "projectsList";
