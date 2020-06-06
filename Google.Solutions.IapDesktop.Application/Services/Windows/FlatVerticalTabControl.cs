@@ -40,81 +40,57 @@ namespace Google.Solutions.IapDesktop.Application.Services.Windows
 
         protected override void OnPaint(PaintEventArgs e)
         {
-            using (Bitmap b = new Bitmap(Width, Height))
-            using (Graphics g = Graphics.FromImage(b))
+            var g = e.Graphics;
+
+            if (!DesignMode && SelectedTab != null)
             {
-                if (!DesignMode && SelectedTab != null)
+                SelectedTab.BackColor = SystemColors.Control;
+            }
+
+            g.Clear(SystemColors.Control);
+
+            // Draw rectangle containing the tabs,
+            g.FillRectangle(
+                new SolidBrush(Color.WhiteSmoke),
+                new Rectangle(0, 0, ItemSize.Height + 4, Height));
+
+
+            var margin = 5;
+            for (int i = 0; i <= TabCount - 1; i++)
+            {
+                if (i == SelectedIndex)
                 {
-                    SelectedTab.BackColor = SystemColors.Control;
-                }
+                    var tabRect = new Rectangle(
+                        new Point(GetTabRect(i).Location.X - 2 + margin, GetTabRect(i).Location.Y - 2 + margin),
+                        new Size(GetTabRect(i).Width + 3 - 2 * margin, GetTabRect(i).Height - 1 - 2 * margin));
 
-                g.Clear(SystemColors.Control);
-
-                // Draw rectangle containing the tabs,
-                g.FillRectangle(
-                    new SolidBrush(Color.WhiteSmoke),
-                    new Rectangle(0, 0, ItemSize.Height + 4, Height));
-
-
-                var margin = 5;
-                for (int i = 0; i <= TabCount - 1; i++)
-                {
-                    if (i == SelectedIndex)
+                    using (var highlightBrush = new SolidBrush(SystemColors.Highlight))
                     {
-                        var tabRect = new Rectangle(
-                            new Point(GetTabRect(i).Location.X - 2 + margin, GetTabRect(i).Location.Y - 2 + margin),
-                            new Size(GetTabRect(i).Width + 3 - 2 * margin, GetTabRect(i).Height - 1 - 2 * margin));
-
-                        using (var highlightBrush = new SolidBrush(SystemColors.Highlight))
-                        {
-                            // Draw tab.
-                            g.FillRectangle(highlightBrush, tabRect);
-                            g.DrawRectangle(new Pen(Color.WhiteSmoke), tabRect);
-
-                            // Draw the little arrow.
-                            g.SmoothingMode = SmoothingMode.HighQuality;
-                            Point[] arrowPoints =
-                            {
-                                new Point(ItemSize.Height + 3, GetTabRect(i).Location.Y + 20),
-                                new Point(ItemSize.Height - 4, GetTabRect(i).Location.Y + 14),
-                                new Point(ItemSize.Height - 4, GetTabRect(i).Location.Y + 27)
-                            };
-
-                            g.FillPolygon(highlightBrush, arrowPoints);
-                            g.DrawPolygon(new Pen(SystemColors.Highlight), arrowPoints);
-
-                            // Draw label.
-                            g.DrawString(
-                                TabPages[i].Text,
-                                new Font(Font.FontFamily, Font.Size, FontStyle.Regular),
-                                Brushes.White,
-                                new Rectangle(
-                                    tabRect.X + margin * 2,
-                                    tabRect.Y,
-                                    tabRect.Width - margin * 2,
-                                    tabRect.Height),
-                                new StringFormat
-                                {
-                                    LineAlignment = StringAlignment.Center,
-                                    Alignment = StringAlignment.Near
-                                });
-                        }
-                    }
-                    else
-                    {
-                        var tabRect = new Rectangle(
-                            new Point(GetTabRect(i).Location.X - 2, GetTabRect(i).Location.Y - 2),
-                            new Size(GetTabRect(i).Width + 3, GetTabRect(i).Height - 1));
-
                         // Draw tab.
+                        g.FillRectangle(highlightBrush, tabRect);
+                        g.DrawRectangle(new Pen(Color.WhiteSmoke), tabRect);
+
+                        // Draw the little arrow.
+                        g.SmoothingMode = SmoothingMode.HighQuality;
+                        Point[] arrowPoints =
+                        {
+                            new Point(ItemSize.Height + 3, GetTabRect(i).Location.Y + 20),
+                            new Point(ItemSize.Height - 4, GetTabRect(i).Location.Y + 14),
+                            new Point(ItemSize.Height - 4, GetTabRect(i).Location.Y + 27)
+                        };
+
+                        g.FillPolygon(highlightBrush, arrowPoints);
+                        g.DrawPolygon(new Pen(SystemColors.Highlight), arrowPoints);
+
+                        // Draw label.
                         g.DrawString(
                             TabPages[i].Text,
-                            Font,
-                            Brushes.DimGray,
+                            new Font(Font.FontFamily, Font.Size, FontStyle.Regular),
+                            Brushes.White,
                             new Rectangle(
-                                tabRect.X + margin * 3,
+                                tabRect.X + margin * 2,
                                 tabRect.Y,
-                                tabRect.Width - margin * 3,
+                                tabRect.Width - margin * 2,
                                 tabRect.Height),
                             new StringFormat
                             {
@@ -123,8 +99,28 @@ namespace Google.Solutions.IapDesktop.Application.Services.Windows
                             });
                     }
                 }
+                else
+                {
+                    var tabRect = new Rectangle(
+                        new Point(GetTabRect(i).Location.X - 2, GetTabRect(i).Location.Y - 2),
+                        new Size(GetTabRect(i).Width + 3, GetTabRect(i).Height - 1));
 
-                e.Graphics.DrawImage(b, new Point(0, 0));
+                    // Draw tab.
+                    g.DrawString(
+                        TabPages[i].Text,
+                        Font,
+                        Brushes.DimGray,
+                        new Rectangle(
+                            tabRect.X + margin * 3,
+                            tabRect.Y,
+                            tabRect.Width - margin * 3,
+                            tabRect.Height),
+                        new StringFormat
+                        {
+                            LineAlignment = StringAlignment.Center,
+                            Alignment = StringAlignment.Near
+                        });
+                }
             }
         }
     }
