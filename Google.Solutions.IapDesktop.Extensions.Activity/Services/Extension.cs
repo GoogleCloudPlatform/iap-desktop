@@ -21,6 +21,7 @@
 
 using Google.Solutions.IapDesktop.Application.ObjectModel;
 using Google.Solutions.IapDesktop.Application.Services.Adapters;
+using Google.Solutions.IapDesktop.Application.Services.Persistence;
 using Google.Solutions.IapDesktop.Application.Services.Windows;
 using Google.Solutions.IapDesktop.Application.Services.Windows.ProjectExplorer;
 using Google.Solutions.IapDesktop.Extensions.Activity.Properties;
@@ -76,6 +77,17 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services
         public Extension(IServiceProvider serviceProvider)
         {
             this.serviceProvider = serviceProvider;
+
+            var previewFeaturesEnabled = 
+                this.serviceProvider.GetService<ApplicationSettingsRepository>()
+                    .GetSettings()
+                    .IsPreviewFeatureSetEnabled;
+            if (!previewFeaturesEnabled)
+            {
+                // Do not register commands, making this extension
+                // invisible.
+                return;
+            }
 
             // Add command to project explorer.
             serviceProvider.GetService<IProjectExplorer>()

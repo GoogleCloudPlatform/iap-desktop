@@ -54,5 +54,8 @@ namespace Google.Solutions.IapDesktop.Application.Services.Persistence
 
         [QwordRegistryValue("LastUpdateCheck")]
         public long LastUpdateCheck { get; set; }
+
+        [BoolRegistryValue("IsPreviewFeatureSetEnabled")]
+        public bool IsPreviewFeatureSetEnabled { get; set; }
     }
 }
