@@ -142,7 +142,7 @@ $NunitArguments = `
     -target:$Nunit `
     "-targetargs:$NunitArguments" `
     -filter:"+[Google.Solutions.Common]* +[Google.Solutions.IapTunneling]* +[Google.Solutions.IapDesktop.Extensions.Activity]* +[Google.Solutions.IapDesktop.Application]*" `
-    -excludebyattribute:*.SkipCodeCoverage* `
+    -excludebyattribute:*.SkipCodeCoverage*;*CompilerGenerated* `
     -output:opencovertests.xml | Out-Default
 
 if ($LastExitCode -ne 0)
