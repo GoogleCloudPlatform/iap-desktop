@@ -26,6 +26,7 @@ using Google.Solutions.IapDesktop.Application.Services.Windows;
 using Google.Solutions.IapDesktop.Extensions.Activity.History;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -57,6 +58,10 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services.SchedulingRep
         {
             this.reportBuilder = reportBuilder;
 
+            // Set the icon because that is visible while the form is still loading.
+            this.Icon = (System.Drawing.Icon)new ComponentResourceManager(typeof(ReportPaneView))
+                .GetObject("$this.Icon");
+
             BeginLoad(LoadAsync, InitializeForm);
         }
 
@@ -69,7 +74,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services.SchedulingRep
 
         private async Task LoadAsync(CancellationToken token)
         {
-            var model = await this.reportBuilder.BuildAsync(token);
+            var model = await this.reportBuilder.BuildAsync(token)
+                .ConfigureAwait(true);
             this.viewModel = new ReportViewModel(model);
         }
 
