@@ -24,10 +24,10 @@ using System.Runtime.CompilerServices;
 
 [assembly: AssemblyTitle("Activity extension library")]
 [assembly: AssemblyDescription("Activity extension library")]
-[assembly: AssemblyCompany("Google")]
+[assembly: AssemblyCompany("Google LLC")]
 [assembly: AssemblyProduct("IAP Desktop")]
 [assembly: AssemblyCopyright("Copyright ©  2020")]
-[assembly: AssemblyTrademark("Google")]
+[assembly: AssemblyTrademark("Google LLC")]
 
 [assembly: AssemblyVersion("1.0.1.0")]
 [assembly: AssemblyFileVersion("1.0.1.0")]
