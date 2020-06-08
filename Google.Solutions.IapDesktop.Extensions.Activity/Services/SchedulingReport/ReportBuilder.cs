@@ -19,8 +19,6 @@
 // under the License.
 //
 
-using Google.Apis.Compute.v1;
-using Google.Apis.Services;
 using Google.Solutions.IapDesktop.Application.Services.Adapters;
 using Google.Solutions.IapDesktop.Extensions.Activity.History;
 using System;
@@ -41,7 +39,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services.SchedulingRep
         Task<ReportArchive> BuildAsync(CancellationToken token);
     }
 
-    class AuditLogReportBuilder : IReportBuilder, IEventProcessor
+    internal class AuditLogReportBuilder : IReportBuilder, IEventProcessor
     {
         private readonly ushort MaxPeriod = 400;
 
@@ -52,7 +50,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services.SchedulingRep
         private readonly IComputeEngineAdapter computeEngineAdapter;
 
         public AuditLogReportBuilder(
-            IAuthorizationAdapter authService, 
             AuditLogAdapter auditLogAdapter, 
             IComputeEngineAdapter computeEngineAdapter,
             IEnumerable<string> projectIds,
