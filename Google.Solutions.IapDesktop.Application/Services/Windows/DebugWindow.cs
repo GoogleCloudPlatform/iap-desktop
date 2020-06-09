@@ -20,6 +20,7 @@
 //
 
 using Google.Apis.Auth.OAuth2.Responses;
+using Google.Solutions.Common.Diagnostics;
 using Google.Solutions.IapDesktop.Application.ObjectModel;
 using Google.Solutions.IapDesktop.Application.Services.Integration;
 using Google.Solutions.IapDesktop.Application.Services.Persistence;
@@ -36,6 +37,7 @@ using WeifenLuo.WinFormsUI.Docking;
 namespace Google.Solutions.IapDesktop.Application.Services.Windows
 {
     [ComVisible(false)]
+    [SkipCodeCoverage("For debug purposes only")]
     public partial class DebugWindow : ToolWindow
     {
         private readonly IJobService jobService;
