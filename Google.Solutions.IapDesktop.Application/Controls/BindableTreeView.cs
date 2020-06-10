@@ -18,6 +18,7 @@ namespace Google.Solutions.IapDesktop.Application.Controls
     public class BindableTreeView<TModelNode> : TreeView
         where TModelNode : INotifyPropertyChanged
     {
+        private Expression<Func<TModelNode, bool>> IsExpandedExpression = null;
         private Expression<Func<TModelNode, int>> ImageIndexExpression = null;
         private Expression<Func<TModelNode, int>> SelectedImageIndexExpression = null;
         private Expression<Func<TModelNode, string>> TextExpression = null;
@@ -30,8 +31,8 @@ namespace Google.Solutions.IapDesktop.Application.Controls
 
         public BindableTreeView()
         {
-            this.BeforeExpand += (sender, args) 
-                => ((Node)args.Node).LoadAndBindChildren(false);
+            this.BeforeExpand += (sender, args) => ((Node)args.Node).OnExpand();
+            this.BeforeCollapse += (sender, args) => ((Node)args.Node).OnCollapse();
         }
 
 
@@ -70,6 +71,7 @@ namespace Google.Solutions.IapDesktop.Application.Controls
             if (propertyExpression.Body is MemberExpression memberExpression &&
                 memberExpression.Member is PropertyInfo propertyInfo)
             {
+                this.IsExpandedExpression = propertyExpression;
                 this.IsExpanded = propertyExpression.Compile();
                 this.SetExpanded = (node, value) => propertyInfo.SetValue(node, value);
             }
@@ -127,6 +129,23 @@ namespace Google.Solutions.IapDesktop.Application.Controls
                         iconIndex => this.SelectedImageIndex = iconIndex);
                 }
 
+                if (this.treeView.IsExpandedExpression != null)
+                {
+                    this.modelNode.OnPropertyChange(
+                        this.treeView.IsExpandedExpression,
+                        expanded =>
+                        {
+                            if (expanded)
+                            {
+                                this.Expand();
+                            }
+                            else
+                            {
+                                this.Collapse();
+                            }
+                        });
+                }
+
                 if (this.treeView.IsLeaf(this.modelNode))
                 {
                     // This node does not have children.
@@ -140,7 +159,8 @@ namespace Google.Solutions.IapDesktop.Application.Controls
                     if (this.treeView.IsExpanded(this.modelNode))
                     {
                         // Eagerly load children.
-                        LoadAndBindChildren(true);
+                        this.Expand();
+                        LazyLoadChildren();
                     }
                     else
                     {
@@ -165,58 +185,46 @@ namespace Google.Solutions.IapDesktop.Application.Controls
                 }
             }
 
-            public void LoadAndBindChildren(bool expand)
+            internal void OnExpand()
             {
-                if (this.IsLoaded)
+                if (!this.treeView.IsExpanded(this.modelNode))
                 {
-                    // All done already.
-                    return;
-                }
-
-                var task = this.treeView.GetChildrenAsync(this.modelNode);
-                if (task.IsCompleted)
-                {
-                    // Data is already there, so populate right away.
-                    BindChildren(task.Result);
-
-                    if (expand)
-                    {
-                        this.Expand();
-                    }
-                        
                     this.treeView.SetExpanded(this.modelNode, true);
                 }
-                else
+
+                if (!this.IsLoaded)
                 {
+                    LazyLoadChildren();
+                }
+            }
 
-                    if (expand)
-                    {
-                        this.Expand();
-                    }
-                        
-                    this.treeView.SetExpanded(this.modelNode, true);
+            internal void OnCollapse()
+            {
+                if (this.treeView.IsExpanded(this.modelNode))
+                {
+                    this.treeView.SetExpanded(this.modelNode, false);
+                }
+            }
 
-                    // Reveal real children later.
-                    task.ContinueWith(t =>
+            public void LazyLoadChildren()
+            {
+                this.treeView.GetChildrenAsync(this.modelNode)
+                    .ContinueWith(t =>
                     {
-                        BindChildren(t.Result);
+                        var children = t.Result;
+
+                        // Clear any dummy node if present.
+                        this.Nodes.Clear();
+
+                        // Add nodes.
+                        AddTreeNodesForModelNodes(children);
+
+                        // Observe for changes.
+                        children.CollectionChanged += ModelChildrenChanged;
                     },
                     CancellationToken.None,
                     TaskContinuationOptions.None,
                     TaskScheduler.FromCurrentSynchronizationContext()); // Continue on UI thread.
-                }
-            }
-
-            private void BindChildren(ObservableCollection<TModelNode> children)
-            {
-                // Clear any dummy node if present.
-                this.Nodes.Clear();
-
-                // Add nodes.
-                AddTreeNodesForModelNodes(children);
-
-                // Observe for changes.
-                children.CollectionChanged += ModelChildrenChanged;
             }
 
             private void AddTreeNodesForModelNodes(IEnumerable<TModelNode> children)
