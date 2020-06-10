@@ -35,12 +35,26 @@ namespace QuickTest
             this.treeView.BindIsExpanded(m => m.IsExpanded);
             this.treeView.BindChildren(m => m.GetChildren());
             this.treeView.Bind(this.root);
+
+            this.treeView.OnControlPropertyChange(
+                t => t.SelectedModelNode,
+                (SampleNodeViewModel n) => this.label1.Text = n?.Name);
         }
 
         private void button1_Click(object sender, EventArgs e)
         {
             this.root.Name += "1";
             this.root.ImageIndex = 1;
+        }
+
+        private void button2_Click(object sender, EventArgs e)
+        {
+            this.treeView.SelectedModelNode.AddMore();
+        }
+
+        private void button3_Click(object sender, EventArgs e)
+        {
+            this.treeView.SelectedModelNode.RemoveFirst();
         }
     }
 
@@ -50,6 +64,10 @@ namespace QuickTest
         private int imageIndex;
         private string name;
         private bool expanded = false;
+
+
+        private readonly ObservableCollection<SampleNodeViewModel> coll 
+            = new ObservableCollection<SampleNodeViewModel>();
 
         public bool IsLeaf => false;
 
@@ -87,12 +105,29 @@ namespace QuickTest
         public async Task<ObservableCollection<SampleNodeViewModel>> GetChildren()
         {
             await Task.Delay(1000);
-            var coll = new ObservableCollection<SampleNodeViewModel>();
             coll.Add(new SampleNodeViewModel()
             {
-                Name = "sub"
+                Name = "sub " + Guid.NewGuid().ToString().Substring(0, 4)
+            });
+            coll.Add(new SampleNodeViewModel()
+            {
+                Name = "sub " + Guid.NewGuid().ToString().Substring(0, 4)
             });
             return coll;
+        }
+
+        public void AddMore()
+        {
+
+            coll.Add(new SampleNodeViewModel()
+            {
+                Name = "sub " + Guid.NewGuid().ToString().Substring(0, 5)
+            });
+        }
+
+        public void RemoveFirst()
+        {
+            this.coll.Remove(this.coll.First());
         }
     }
 

@@ -16,7 +16,7 @@ using System.Windows.Forms;
 namespace Google.Solutions.IapDesktop.Application.Controls
 {
     public class BindableTreeView<TModelNode> : TreeView
-        where TModelNode : INotifyPropertyChanged
+        where TModelNode : class, INotifyPropertyChanged
     {
         private Expression<Func<TModelNode, bool>> IsExpandedExpression = null;
         private Expression<Func<TModelNode, int>> ImageIndexExpression = null;
@@ -29,12 +29,41 @@ namespace Google.Solutions.IapDesktop.Application.Controls
         private Func<TModelNode, Task<ObservableCollection<TModelNode>>> GetChildrenAsync
             = _ => Task.FromResult(new ObservableCollection<TModelNode>());
 
+        public event EventHandler SelectedModelNodeChanged;
+
         public BindableTreeView()
         {
             this.BeforeExpand += (sender, args) => ((Node)args.Node).OnExpand();
             this.BeforeCollapse += (sender, args) => ((Node)args.Node).OnCollapse();
+
+            // Consider right-click as a selection.
+            this.NodeMouseClick += (sender, args) =>
+            {
+                if (args.Button == MouseButtons.Right)
+                {
+                    this.SelectedNode = args.Node;
+                }
+            };
+            this.AfterSelect += (sender, args) =>
+            {
+                this.SelectedModelNodeChanged?.Invoke(this, EventArgs.Empty);
+            };
         }
 
+        public TModelNode SelectedModelNode
+        {
+            get
+            {
+                if (this.SelectedNode is Node node)
+                {
+                    return node.Model;
+                }
+                else
+                {
+                    return null;
+                }
+            }
+        }
 
         //---------------------------------------------------------------------
         // Data Binding.
@@ -94,12 +123,13 @@ namespace Google.Solutions.IapDesktop.Application.Controls
         private class Node : TreeNode 
         {
             private readonly BindableTreeView<TModelNode> treeView;
-            private readonly TModelNode modelNode;
+            public TModelNode Model { get; }
+            private bool lazyLoadTriggered = false;
 
             public Node(BindableTreeView<TModelNode> treeView, TModelNode modelNode)
             {
                 this.treeView = treeView;
-                this.modelNode = modelNode;
+                this.Model = modelNode;
 
 
                 // Bind properties to keep TreeNode in sync with view model.
@@ -107,31 +137,31 @@ namespace Google.Solutions.IapDesktop.Application.Controls
                 // are not proper controls and do not provide the necessary events.
                 if (this.treeView.TextExpression != null)
                 {
-                    this.Name = this.Text = this.treeView.TextExpression.Compile()(this.modelNode);
-                    this.modelNode.OnPropertyChange(
+                    this.Name = this.Text = this.treeView.TextExpression.Compile()(this.Model);
+                    this.Model.OnPropertyChange(
                         this.treeView.TextExpression,
                         text => this.Text = text);
                 }
 
                 if (this.treeView.ImageIndexExpression != null)
                 {
-                    this.ImageIndex = this.treeView.ImageIndexExpression.Compile()(this.modelNode);
-                    this.modelNode.OnPropertyChange(
+                    this.ImageIndex = this.treeView.ImageIndexExpression.Compile()(this.Model);
+                    this.Model.OnPropertyChange(
                         this.treeView.ImageIndexExpression,
                         iconIndex => this.ImageIndex = iconIndex);
                 }
 
                 if (this.treeView.SelectedImageIndexExpression != null)
                 {
-                    this.SelectedImageIndex = this.treeView.SelectedImageIndexExpression.Compile()(this.modelNode);
-                    this.modelNode.OnPropertyChange(
+                    this.SelectedImageIndex = this.treeView.SelectedImageIndexExpression.Compile()(this.Model);
+                    this.Model.OnPropertyChange(
                         this.treeView.SelectedImageIndexExpression,
                         iconIndex => this.SelectedImageIndex = iconIndex);
                 }
 
                 if (this.treeView.IsExpandedExpression != null)
                 {
-                    this.modelNode.OnPropertyChange(
+                    this.Model.OnPropertyChange(
                         this.treeView.IsExpandedExpression,
                         expanded =>
                         {
@@ -146,7 +176,7 @@ namespace Google.Solutions.IapDesktop.Application.Controls
                         });
                 }
 
-                if (this.treeView.IsLeaf(this.modelNode))
+                if (this.treeView.IsLeaf(this.Model))
                 {
                     // This node does not have children.
                 }
@@ -156,7 +186,7 @@ namespace Google.Solutions.IapDesktop.Application.Controls
                     // to ensure that the '+' control is being displayed.
                     this.Nodes.Add(new LoadingTreeNode());
 
-                    if (this.treeView.IsExpanded(this.modelNode))
+                    if (this.treeView.IsExpanded(this.Model))
                     {
                         // Eagerly load children.
                         this.Expand();
@@ -169,46 +199,49 @@ namespace Google.Solutions.IapDesktop.Application.Controls
                 }
             }
 
-            private bool IsLoaded
-            {
-                get
-                {
-                    if (this.treeView.IsLeaf(this.modelNode))
-                    {
-                        // This node does not have children.
-                        return true;
-                    }
-                    else
-                    {
-                        return !(this.Nodes.OfType<LoadingTreeNode>().Any());
-                    }
-                }
-            }
+            //private bool IsLoaded
+            //{
+            //    get
+            //    {
+            //        if (this.treeView.IsLeaf(this.Model))
+            //        {
+            //            // This node does not have children.
+            //            return true;
+            //        }
+            //        else
+            //        {
+            //            return !(this.Nodes.OfType<LoadingTreeNode>().Any());
+            //        }
+            //    }
+            //}
 
             internal void OnExpand()
             {
-                if (!this.treeView.IsExpanded(this.modelNode))
+                if (!this.treeView.IsExpanded(this.Model))
                 {
-                    this.treeView.SetExpanded(this.modelNode, true);
+                    this.treeView.SetExpanded(this.Model, true);
                 }
 
-                if (!this.IsLoaded)
-                {
-                    LazyLoadChildren();
-                }
+                LazyLoadChildren();
             }
 
             internal void OnCollapse()
             {
-                if (this.treeView.IsExpanded(this.modelNode))
+                if (this.treeView.IsExpanded(this.Model))
                 {
-                    this.treeView.SetExpanded(this.modelNode, false);
+                    this.treeView.SetExpanded(this.Model, false);
                 }
             }
 
             public void LazyLoadChildren()
             {
-                this.treeView.GetChildrenAsync(this.modelNode)
+                if (this.lazyLoadTriggered)
+                {
+                    return;
+                }
+
+                this.lazyLoadTriggered = true;
+                this.treeView.GetChildrenAsync(this.Model)
                     .ContinueWith(t =>
                     {
                         var children = t.Result;
@@ -239,7 +272,7 @@ namespace Google.Solutions.IapDesktop.Application.Controls
             {
                 return this.Nodes
                     .OfType<Node>()
-                    .FirstOrDefault(n => n.modelNode.Equals(modelNode));
+                    .FirstOrDefault(n => n.Model.Equals(modelNode));
             }
 
             private void ModelChildrenChanged(object sender, NotifyCollectionChangedEventArgs e)
