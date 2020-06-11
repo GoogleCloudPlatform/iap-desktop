@@ -21,6 +21,7 @@
 
 using Google.Apis.CloudResourceManager.v1;
 using Google.Apis.CloudResourceManager.v1.Data;
+using Google.Apis.Requests;
 using Google.Apis.Services;
 using Google.Solutions.Common.ApiExtensions;
 using Google.Solutions.Common.Diagnostics;
@@ -73,18 +74,21 @@ namespace Google.Solutions.IapDesktop.Application.Services.Adapters
         {
             using (TraceSources.IapDesktop.TraceMethod().WithParameters(filter))
             {
-                var projects = await PageHelper.JoinPagesAsync<
-                            ProjectsResource.ListRequest, 
-                            ListProjectsResponse, 
-                            Project>(
-                    new ProjectsResource.ListRequest(this.service)
-                    {
-                        Filter = filter
-                    },
-                    page => page.Projects,
-                    response => response.NextPageToken,
-                    (request, token) => { request.PageToken = token; },
-                    cancellationToken).ConfigureAwait(false);
+                var request = new ProjectsResource.ListRequest(this.service)
+                {
+                    Filter = filter
+                };
+
+                var projects = await new PageStreamer<
+                    Project,
+                    ProjectsResource.ListRequest,
+                    ListProjectsResponse,
+                    string>(
+                        (req, token) => req.PageToken = token,
+                        response => response.NextPageToken,
+                        response => response.Projects)
+                    .FetchAllAsync(request, cancellationToken)
+                    .ConfigureAwait(false);
 
                 // Filter projects in deleted/pending delete state.
                 var result = projects.Where(p => p.LifecycleState == "ACTIVE");
