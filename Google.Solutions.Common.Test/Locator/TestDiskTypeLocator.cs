@@ -65,6 +65,17 @@ namespace Google.Solutions.Common.Test.Locator
         }
 
         [Test]
+        public void WhenUsingBetaApi_FromStringReturnsObject()
+        {
+            var ref1 = DiskTypeLocator.FromString(
+                 "https://compute.googleapis.com/compute/beta/projects/project-1/zones/us-central1-a/diskTypes/pd-standard");
+            Assert.AreEqual("diskTypes", ref1.ResourceType);
+            Assert.AreEqual("pd-standard", ref1.Name);
+            Assert.AreEqual("us-central1-a", ref1.Zone);
+            Assert.AreEqual("project-1", ref1.ProjectId);
+        }
+
+        [Test]
         public void WhenPathLacksProject_FromStringThrowsArgumentException()
         {
             Assert.Throws<ArgumentException>(() => DiskTypeLocator.FromString(

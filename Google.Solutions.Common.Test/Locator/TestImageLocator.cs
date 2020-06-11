@@ -73,6 +73,17 @@ namespace Google.Solutions.Common.Test.Locator
         }
 
         [Test]
+        public void WhenUsingBetaApi_FromStringReturnsObject()
+        {
+            var ref1 = ImageLocator.FromString(
+                "https://compute.googleapis.com/compute/beta/projects/eip-images/global/images/debian-9-drawfork-v20191004");
+
+            Assert.AreEqual("images", ref1.ResourceType);
+            Assert.AreEqual("debian-9-drawfork-v20191004", ref1.Name);
+            Assert.AreEqual("eip-images", ref1.ProjectId);
+        }
+
+        [Test]
         public void WhenPathLacksProject_FromStringThrowsArgumentException()
         {
             Assert.Throws<ArgumentException>(() => ImageLocator.FromString(

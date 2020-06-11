@@ -109,6 +109,7 @@
     <Compile Include="History\TestDataPoint.cs" />
     <Compile Include="History\TestInstanceHistoryBuilder.cs" />
     <Compile Include="Services\SchedulingReport\TestAuditLogReportBuilder.cs" />
+    <Compile Include="Services\SchedulingReport\TestImageAnnotation.cs" />
     <Compile Include="Services\SchedulingReport\TestReportArchive.cs" />
     <Compile Include="History\TestInstanceSetHistoryBuilder.cs" />
     <Compile Include="History\TestInstancePlacement.cs" />

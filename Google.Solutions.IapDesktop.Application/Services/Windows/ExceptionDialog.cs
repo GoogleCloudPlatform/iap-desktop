@@ -86,6 +86,12 @@ namespace Google.Solutions.IapDesktop.Application.Services.Windows
                         details.Append("\n");
                     }
 
+                    TraceSources.IapDesktop.TraceError(
+                        "Exception {0} ({1}): {2}",
+                        e.GetType().Name,
+                        caption,
+                        details);
+
                     ShowErrorDialog(
                         parent,
                         caption,
@@ -105,6 +111,12 @@ namespace Google.Solutions.IapDesktop.Application.Services.Windows
                         details.Append(innerException.Message);
                         details.Append("\n");
                     }
+
+                    TraceSources.IapDesktop.TraceError(
+                        "Exception {0} ({1}): {2}",
+                        e.GetType().Name,
+                        caption,
+                        details);
 
                     ShowErrorDialog(
                         parent,

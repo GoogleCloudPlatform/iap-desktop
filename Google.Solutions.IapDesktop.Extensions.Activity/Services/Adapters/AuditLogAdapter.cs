@@ -124,7 +124,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services.Adapters
                     request,
                     processor.Process,
                     new ExponentialBackOff(initialBackOff, MaxRetries),
-                    cancellationToken);
+                    cancellationToken).ConfigureAwait(false);
             }
         }
     }
