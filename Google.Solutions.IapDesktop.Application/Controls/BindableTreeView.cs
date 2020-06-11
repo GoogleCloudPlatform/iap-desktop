@@ -39,21 +39,21 @@ namespace Google.Solutions.IapDesktop.Application.Controls
     public class BindableTreeView<TModelNode> : TreeView
         where TModelNode : class, INotifyPropertyChanged
     {
-        private Expression<Func<TModelNode, bool>> IsExpandedExpression = null;
-        private Expression<Func<TModelNode, int>> ImageIndexExpression = null;
-        private Expression<Func<TModelNode, int>> SelectedImageIndexExpression = null;
-        private Expression<Func<TModelNode, string>> TextExpression = null;
+        private Expression<Func<TModelNode, bool>> isExpandedExpression = null;
+        private Expression<Func<TModelNode, int>> imageIndexExpression = null;
+        private Expression<Func<TModelNode, int>> selectedImageIndexExpression = null;
+        private Expression<Func<TModelNode, string>> textExpression = null;
         
-        private Func<TModelNode, bool> IsLeaf = _ => false;
-        private Action<TModelNode, bool> SetExpanded = (n, state) => {};
-        private Func<TModelNode, bool> IsExpanded = _ => false;
-        private Func<TModelNode, Task<ObservableCollection<TModelNode>>> GetChildrenAsync
+        private Func<TModelNode, bool> isLeafFunc = _ => false;
+        private Action<TModelNode, bool> setExpandedFunc = (n, state) => {};
+        private Func<TModelNode, bool> isExpandedFunc = _ => false;
+        private Func<TModelNode, Task<ObservableCollection<TModelNode>>> getChildrenAsyncFunc
             = _ => Task.FromResult(new ObservableCollection<TModelNode>());
+
+        private readonly TaskScheduler taskScheduler;
 
         public event EventHandler SelectedModelNodeChanged;
         public event EventHandler<ExceptionEventArgs> LoadingChildrenFailed;
-
-        private readonly TaskScheduler taskScheduler;
 
         public BindableTreeView()
         {
@@ -103,22 +103,22 @@ namespace Google.Solutions.IapDesktop.Application.Controls
 
         public void BindImageIndex(Expression<Func<TModelNode, int>> imageIndexExpression)
         {
-            this.ImageIndexExpression = imageIndexExpression;
+            this.imageIndexExpression = imageIndexExpression;
         }
 
         public void BindIsLeaf(Func<TModelNode, bool> isLeafFunc)
         {
-            this.IsLeaf = isLeafFunc;
+            this.isLeafFunc = isLeafFunc;
         }
 
         public void BindSelectedImageIndex(Expression<Func<TModelNode, int>> selectedImageIndexExpression)
         {
-            this.SelectedImageIndexExpression = selectedImageIndexExpression;
+            this.selectedImageIndexExpression = selectedImageIndexExpression;
         }
 
         public void BindText(Expression<Func<TModelNode, string>> nameExpression)
         {
-            this.TextExpression = nameExpression;
+            this.textExpression = nameExpression;
         }
 
         public void BindIsExpanded(Expression<Func<TModelNode, bool>> propertyExpression)
@@ -126,9 +126,9 @@ namespace Google.Solutions.IapDesktop.Application.Controls
             if (propertyExpression.Body is MemberExpression memberExpression &&
                 memberExpression.Member is PropertyInfo propertyInfo)
             {
-                this.IsExpandedExpression = propertyExpression;
-                this.IsExpanded = propertyExpression.Compile();
-                this.SetExpanded = (node, value) => propertyInfo.SetValue(node, value);
+                this.isExpandedExpression = propertyExpression;
+                this.isExpandedFunc = propertyExpression.Compile();
+                this.setExpandedFunc = (node, value) => propertyInfo.SetValue(node, value);
             }
             else
             {
@@ -139,7 +139,7 @@ namespace Google.Solutions.IapDesktop.Application.Controls
         public void BindChildren(
             Func<TModelNode, Task<ObservableCollection<TModelNode>>> getChildrenAsyncFunc)
         {
-            this.GetChildrenAsync = getChildrenAsyncFunc;
+            this.getChildrenAsyncFunc = getChildrenAsyncFunc;
         }
 
         //---------------------------------------------------------------------
@@ -161,34 +161,34 @@ namespace Google.Solutions.IapDesktop.Application.Controls
                 // Bind properties to keep TreeNode in sync with view model.
                 // Note that binding is one-way (view model -> view) as TreeNodes
                 // are not proper controls and do not provide the necessary events.
-                if (this.treeView.TextExpression != null)
+                if (this.treeView.textExpression != null)
                 {
-                    this.Name = this.Text = this.treeView.TextExpression.Compile()(this.Model);
+                    this.Name = this.Text = this.treeView.textExpression.Compile()(this.Model);
                     this.Model.OnPropertyChange(
-                        this.treeView.TextExpression,
+                        this.treeView.textExpression,
                         text => this.Text = text);
                 }
 
-                if (this.treeView.ImageIndexExpression != null)
+                if (this.treeView.imageIndexExpression != null)
                 {
-                    this.ImageIndex = this.treeView.ImageIndexExpression.Compile()(this.Model);
+                    this.ImageIndex = this.treeView.imageIndexExpression.Compile()(this.Model);
                     this.Model.OnPropertyChange(
-                        this.treeView.ImageIndexExpression,
+                        this.treeView.imageIndexExpression,
                         iconIndex => this.ImageIndex = iconIndex);
                 }
 
-                if (this.treeView.SelectedImageIndexExpression != null)
+                if (this.treeView.selectedImageIndexExpression != null)
                 {
-                    this.SelectedImageIndex = this.treeView.SelectedImageIndexExpression.Compile()(this.Model);
+                    this.SelectedImageIndex = this.treeView.selectedImageIndexExpression.Compile()(this.Model);
                     this.Model.OnPropertyChange(
-                        this.treeView.SelectedImageIndexExpression,
+                        this.treeView.selectedImageIndexExpression,
                         iconIndex => this.SelectedImageIndex = iconIndex);
                 }
 
-                if (this.treeView.IsExpandedExpression != null)
+                if (this.treeView.isExpandedExpression != null)
                 {
                     this.Model.OnPropertyChange(
-                        this.treeView.IsExpandedExpression,
+                        this.treeView.isExpandedExpression,
                         expanded =>
                         {
                             if (expanded)
@@ -202,7 +202,7 @@ namespace Google.Solutions.IapDesktop.Application.Controls
                         });
                 }
 
-                if (this.treeView.IsLeaf(this.Model))
+                if (this.treeView.isLeafFunc(this.Model))
                 {
                     // This node does not have children.
                 }
@@ -212,7 +212,7 @@ namespace Google.Solutions.IapDesktop.Application.Controls
                     // to ensure that the '+' control is being displayed.
                     this.Nodes.Add(new LoadingTreeNode());
 
-                    if (this.treeView.IsExpanded(this.Model))
+                    if (this.treeView.isExpandedFunc(this.Model))
                     {
                         // Eagerly load children.
                         this.Expand();
@@ -227,9 +227,9 @@ namespace Google.Solutions.IapDesktop.Application.Controls
 
             internal void OnExpand()
             {
-                if (!this.treeView.IsExpanded(this.Model))
+                if (!this.treeView.isExpandedFunc(this.Model))
                 {
-                    this.treeView.SetExpanded(this.Model, true);
+                    this.treeView.setExpandedFunc(this.Model, true);
                 }
 
                 LazyLoadChildren();
@@ -237,9 +237,9 @@ namespace Google.Solutions.IapDesktop.Application.Controls
 
             internal void OnCollapse()
             {
-                if (this.treeView.IsExpanded(this.Model))
+                if (this.treeView.isExpandedFunc(this.Model))
                 {
-                    this.treeView.SetExpanded(this.Model, false);
+                    this.treeView.setExpandedFunc(this.Model, false);
                 }
             }
 
@@ -251,7 +251,7 @@ namespace Google.Solutions.IapDesktop.Application.Controls
                 }
 
                 this.lazyLoadTriggered = true;
-                this.treeView.GetChildrenAsync(this.Model)
+                this.treeView.getChildrenAsyncFunc(this.Model)
                     .ContinueWith(t =>
                     {
                         try
@@ -271,7 +271,7 @@ namespace Google.Solutions.IapDesktop.Application.Controls
                         {
                             // Reset state so that the action can be retried.
                             this.Collapse();
-                            this.treeView.SetExpanded(this.Model, false);
+                            this.treeView.setExpandedFunc(this.Model, false);
                             this.lazyLoadTriggered = false;
 
                             // Report error.
