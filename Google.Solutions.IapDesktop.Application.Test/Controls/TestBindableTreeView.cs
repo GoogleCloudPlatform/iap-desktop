@@ -19,16 +19,16 @@
 // under the License.
 //
 
+using Google.Solutions.Common.Util;
 using Google.Solutions.IapDesktop.Application.Controls;
 using Google.Solutions.IapDesktop.Application.ObjectModel;
 using NUnit.Framework;
 using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Windows.Forms;
 
 namespace Google.Solutions.IapDesktop.Application.Test.Controls
 {
@@ -80,6 +80,12 @@ namespace Google.Solutions.IapDesktop.Application.Test.Controls
             {
                 return Task.FromResult(this.Children);
             }
+
+            public Task<ObservableCollection<ModelNode>> Throw()
+            {
+                return Task.FromException<ObservableCollection<ModelNode>>(
+                    new ArgumentException());
+            }
         }
 
         private class ModelTreeView : BindableTreeView<ModelNode>
@@ -87,18 +93,23 @@ namespace Google.Solutions.IapDesktop.Application.Test.Controls
         }
 
         private ModelTreeView tree;
+        private Form form;
 
         [SetUp]
         public void SetUp()
         {
             this.tree = new ModelTreeView();
-            this.tree.Show();
+
+            this.form = new Form();
+            this.form.Controls.Add(this.tree);
+
+            this.form.Show();
         }
 
         [TearDown]
         public void TearDown()
         {
-            this.tree.Dispose();
+            this.form.Close();
         }
 
         private void RunPendingAsyncTasks() => System.Windows.Forms.Application.DoEvents();
@@ -144,7 +155,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Controls
         }
 
         [Test]
-        public void WhenIsExpandedIsFalseInModel_ThenTreeXXXX()
+        public void WhenIsExpandedIsFalseInModel_ThenTreeHasHiddenLoadingNode()
         {
             var root = new ModelNode()
             {
@@ -169,6 +180,48 @@ namespace Google.Solutions.IapDesktop.Application.Test.Controls
             var rootTreeNode = this.tree.Nodes.OfType<ModelTreeView.Node>().First();
             Assert.AreEqual(1, rootTreeNode.Nodes.Count);   // Loading node, hidden
             Assert.IsFalse(rootTreeNode.IsExpanded);
+        }
+
+        [Test]
+        public void WhenLoadingChildrenFails_ThenEventIsFiredAndExpandCanBeRetried()
+        {
+            var root = new ModelNode()
+            {
+                Name = "root",
+                IsExpanded = true
+            };
+
+            int eventCount = 0;
+            tree.LoadingChildrenFailed += (sender, args) =>
+            {
+                eventCount++;
+                Assert.IsInstanceOf<ModelNode>(sender);
+                Assert.IsInstanceOf<ArgumentException>(args.Exception.Unwrap());
+            };
+
+            tree.BindChildren(m => m.Throw());
+            tree.BindIsExpanded(m => m.IsExpanded);
+            tree.Bind(root);
+            RunPendingAsyncTasks();
+
+            Assert.AreEqual(1, eventCount);
+
+            var rootTreeNode = this.tree.Nodes.OfType<ModelTreeView.Node>().First();
+            Assert.IsFalse(rootTreeNode.IsExpanded);
+            Assert.IsFalse(root.IsExpanded);
+
+            // Try again.
+            rootTreeNode.Expand();
+            RunPendingAsyncTasks();
+            Assert.AreEqual(2, eventCount);
+
+            // Try again.
+            tree.BindChildren(m => m.GetChildren());
+            rootTreeNode.Expand();
+            RunPendingAsyncTasks();
+            Assert.AreEqual(2, eventCount);
+            Assert.IsTrue(rootTreeNode.IsExpanded);
+            Assert.IsTrue(root.IsExpanded);
         }
 
         //---------------------------------------------------------------------

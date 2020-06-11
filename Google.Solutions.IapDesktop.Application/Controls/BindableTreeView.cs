@@ -51,9 +51,14 @@ namespace Google.Solutions.IapDesktop.Application.Controls
             = _ => Task.FromResult(new ObservableCollection<TModelNode>());
 
         public event EventHandler SelectedModelNodeChanged;
+        public event EventHandler<ExceptionEventArgs> LoadingChildrenFailed;
+
+        private readonly TaskScheduler taskScheduler;
 
         public BindableTreeView()
         {
+            this.taskScheduler = TaskScheduler.FromCurrentSynchronizationContext();
+
             this.BeforeExpand += (sender, args) => ((Node)args.Node).OnExpand();
             this.BeforeCollapse += (sender, args) => ((Node)args.Node).OnCollapse();
 
@@ -249,20 +254,41 @@ namespace Google.Solutions.IapDesktop.Application.Controls
                 this.treeView.GetChildrenAsync(this.Model)
                     .ContinueWith(t =>
                     {
-                        var children = t.Result;
+                        try
+                        {
+                            var children = t.Result;
 
-                        // Clear any dummy node if present.
-                        this.Nodes.Clear();
+                            // Clear any dummy node if present.
+                            this.Nodes.Clear();
 
-                        // Add nodes.
-                        AddTreeNodesForModelNodes(children);
+                            // Add nodes.
+                            AddTreeNodesForModelNodes(children);
 
-                        // Observe for changes.
-                        children.CollectionChanged += ModelChildrenChanged;
+                            // Observe for changes.
+                            children.CollectionChanged += ModelChildrenChanged;
+                        }
+                        catch (Exception e)
+                        {
+                            // Reset state so that the action can be retried.
+                            this.Collapse();
+                            this.treeView.SetExpanded(this.Model, false);
+                            this.lazyLoadTriggered = false;
+
+                            // Report error.
+                            this.treeView.LoadingChildrenFailed?.Invoke(
+                                this.Model,
+                                new ExceptionEventArgs(e));
+                        }
                     },
                     CancellationToken.None,
                     TaskContinuationOptions.None,
-                    TaskScheduler.FromCurrentSynchronizationContext()); // Continue on UI thread.
+
+                    // Continue on UI thread. 
+                    // Note that there's a bug in the CLR that can cause
+                    // TaskScheduler.FromCurrentSynchronizationContext() to become null.
+                    // Therefore, use a task scheduler object captured previously.
+                    // Cf. https://stackoverflow.com/questions/4659257/
+                    this.treeView.taskScheduler);
             }
 
             private void AddTreeNodesForModelNodes(IEnumerable<TModelNode> children)
