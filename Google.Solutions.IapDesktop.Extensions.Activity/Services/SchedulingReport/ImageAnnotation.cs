@@ -64,13 +64,13 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services.SchedulingRep
 
         internal static ImageAnnotation FromLicense(LicenseLocator license)
         {
-            if (license.IsWindowsByolLicense())
+            if (license != null && license.IsWindowsByolLicense())
             {
                 return new ImageAnnotation(
                     OperatingSystemTypes.Windows,
                     LicenseTypes.Byol);
             }
-            else if (license.IsWindowsLicense())
+            else if (license != null && license.IsWindowsLicense())
             {
                 return new ImageAnnotation(
                     OperatingSystemTypes.Windows,

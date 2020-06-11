@@ -19,8 +19,6 @@
 // under the License.
 //
 
-using Google.Apis.Compute.v1;
-using Google.Apis.Services;
 using Google.Solutions.Common.Locator;
 using Google.Solutions.Common.Test.Testbed;
 using Google.Solutions.IapDesktop.Application.Services.Adapters;
