@@ -21,6 +21,7 @@
 
 using System;
 using System.Linq;
+using System.Text.RegularExpressions;
 
 namespace Google.Solutions.Common.Locator
 {
@@ -41,22 +42,19 @@ namespace Google.Solutions.Common.Locator
             {
                 resourceReference = StripUrlPrefix(resourceReference);
 
-                // The resource name format is 
-                // projects/[project-id]/zones/[zone]/[type]/[name]
-                var parts = resourceReference.Split('/');
-                if (parts.Length != 6 ||
-                    string.IsNullOrEmpty(parts[1]) ||
-                    string.IsNullOrEmpty(parts[3]) ||
-                    string.IsNullOrEmpty(parts[4]) ||
-                    string.IsNullOrEmpty(parts[5]) ||
-                    parts[0] != "projects" ||
-                    parts[2] != "zones" ||
-                    parts[4] != "diskTypes")
+                var match = new Regex("(?:/compute/beta/)?projects/(.*)/zones/(.*)/diskTypes/(.*)")
+                    .Match(resourceReference);
+                if (match.Success)
+                {
+                    return new DiskTypeLocator(
+                        match.Groups[1].Value,
+                        match.Groups[2].Value,
+                        match.Groups[3].Value);
+                }
+                else
                 {
                     throw new ArgumentException($"'{resourceReference}' is not a valid zonal resource reference");
                 }
-
-                return new DiskTypeLocator(parts[1], parts[3], parts[5]);
             }
 
             public override int GetHashCode()
@@ -117,22 +115,19 @@ namespace Google.Solutions.Common.Locator
             {
                 resourceReference = StripUrlPrefix(resourceReference);
 
-                // The resource name format is 
-                // projects/[project-id]/zones/[zone]/[type]/[name]
-                var parts = resourceReference.Split('/');
-                if (parts.Length != 6 ||
-                    string.IsNullOrEmpty(parts[1]) ||
-                    string.IsNullOrEmpty(parts[3]) ||
-                    string.IsNullOrEmpty(parts[4]) ||
-                    string.IsNullOrEmpty(parts[5]) ||
-                    parts[0] != "projects" ||
-                    parts[2] != "zones" ||
-                    parts[4] != "instances")
+                var match = new Regex("(?:/compute/beta/)?projects/(.*)/zones/(.*)/instances/(.*)")
+                    .Match(resourceReference);
+                if (match.Success)
+                {
+                    return new InstanceLocator(
+                        match.Groups[1].Value,
+                        match.Groups[2].Value,
+                        match.Groups[3].Value);
+                }
+                else
                 {
                     throw new ArgumentException($"'{resourceReference}' is not a valid zonal resource reference");
                 }
-
-                return new InstanceLocator(parts[1], parts[3], parts[5]);
             }
 
             public override int GetHashCode()

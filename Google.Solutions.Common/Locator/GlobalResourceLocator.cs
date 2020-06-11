@@ -21,6 +21,7 @@
 
 using System;
 using System.Linq;
+using System.Text.RegularExpressions;
 
 namespace Google.Solutions.Common.Locator
 {
@@ -39,24 +40,18 @@ namespace Google.Solutions.Common.Locator
             {
                 resourceReference = StripUrlPrefix(resourceReference);
 
-                // The resource name format is 
-                // projects/[project-id]/global/[type]/[name], but
-                // [name] might contain slashes.
-                var parts = resourceReference.Split('/');
-                if (parts.Length < 5 ||
-                    string.IsNullOrEmpty(parts[1]) ||
-                    string.IsNullOrEmpty(parts[3]) ||
-                    string.IsNullOrEmpty(parts[4]) ||
-                    parts[0] != "projects" ||
-                    parts[2] != "global" ||
-                    parts[3] != "images")
+                var match = new Regex("(?:/compute/beta/)?projects/(.*)/global/images/(.*)")
+                    .Match(resourceReference);
+                if (match.Success)
+                {
+                    return new ImageLocator(
+                        match.Groups[1].Value,
+                        match.Groups[2].Value);
+                }
+                else
                 {
                     throw new ArgumentException($"'{resourceReference}' is not a valid global resource reference");
                 }
-
-                return new ImageLocator(
-                    parts[1],
-                    string.Join("/", parts.Skip(4)));
             }
 
             public override int GetHashCode()
@@ -114,24 +109,18 @@ namespace Google.Solutions.Common.Locator
             {
                 resourceReference = StripUrlPrefix(resourceReference);
 
-                // The resource name format is 
-                // projects/[project-id]/global/[type]/[name], but
-                // [name] might contain slashes.
-                var parts = resourceReference.Split('/');
-                if (parts.Length < 5 ||
-                    string.IsNullOrEmpty(parts[1]) ||
-                    string.IsNullOrEmpty(parts[3]) ||
-                    string.IsNullOrEmpty(parts[4]) ||
-                    parts[0] != "projects" ||
-                    parts[2] != "global" ||
-                    parts[3] != "licenses")
+                var match = new Regex("(?:/compute/beta/)?projects/(.*)/global/licenses/(.*)")
+                    .Match(resourceReference);
+                if (match.Success)
+                {
+                    return new LicenseLocator(
+                        match.Groups[1].Value,
+                        match.Groups[2].Value);
+                }
+                else
                 {
                     throw new ArgumentException($"'{resourceReference}' is not a valid global resource reference");
                 }
-
-                return new LicenseLocator(
-                    parts[1],
-                    string.Join("/", parts.Skip(4)));
             }
 
             public override int GetHashCode()
