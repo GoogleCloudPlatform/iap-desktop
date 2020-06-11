@@ -85,6 +85,10 @@
     <Compile Include="Controls\BindableListView.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="Controls\BindableTreeView.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Controls\ExceptionEventArgs.cs" />
     <Compile Include="ObjectModel\BindingExtensions.cs" />
     <Compile Include="ObjectModel\ServiceAttribute.cs" />
     <Compile Include="ObjectModel\ViewModelBase.cs" />
