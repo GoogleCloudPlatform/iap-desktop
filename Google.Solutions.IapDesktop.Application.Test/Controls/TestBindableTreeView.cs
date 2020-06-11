@@ -215,7 +215,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Controls
             RunPendingAsyncTasks();
             Assert.AreEqual(2, eventCount);
 
-            // Try again.
+            // Try again, but this time let loading succeed.
             tree.BindChildren(m => m.GetChildren());
             rootTreeNode.Expand();
             RunPendingAsyncTasks();
