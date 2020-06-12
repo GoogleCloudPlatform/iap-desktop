@@ -92,6 +92,8 @@ namespace Google.Solutions.IapDesktop.Application.Test.Controls
         {
         }
 
+        //---------------------------------------------------------------------
+
         private ModelTreeView tree;
         private Form form;
 

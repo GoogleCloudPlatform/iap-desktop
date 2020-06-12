@@ -140,9 +140,11 @@ namespace Google.Solutions.IapDesktop.Application.Controls
         public void BindCollection(ObservableCollection<TModelItem> model)
         {
             // Reset.
-            if (model != null)
+            if (this.model != null)
             {
-                model.CollectionChanged -= Model_CollectionChanged;
+                UnobserveItems(this.model);
+
+                this.model.CollectionChanged -= Model_CollectionChanged;
             }
 
             this.Items.Clear();
@@ -171,6 +173,14 @@ namespace Google.Solutions.IapDesktop.Application.Controls
             if (item is INotifyPropertyChanged observableItem)
             {
                 observableItem.PropertyChanged += ModelItem_PropertyChanged;
+            }
+        }
+
+        private void UnobserveItems(IEnumerable<TModelItem> items)
+        {
+            foreach (var item in items)
+            {
+                UnobserveItem(item);
             }
         }
 
@@ -243,6 +253,10 @@ namespace Google.Solutions.IapDesktop.Application.Controls
 
                 case NotifyCollectionChangedAction.Reset:
                     // Reload everything.
+                    UnobserveItems(this.Items.Cast<ListViewItem>()
+                        .Select(i => i.Tag)
+                        .OfType<TModelItem>());
+
                     this.Items.Clear();
                     AddViewItems(this.model);
 
