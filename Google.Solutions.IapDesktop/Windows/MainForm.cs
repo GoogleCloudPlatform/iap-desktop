@@ -46,13 +46,11 @@ using WeifenLuo.WinFormsUI.Docking;
 
 namespace Google.Solutions.IapDesktop.Windows
 {
-
     public partial class MainForm : Form, IJobHost, IMainForm, IAuthorizationAdapter
     {
         private readonly MainFormViewModel viewModel;
 
         private readonly ApplicationSettingsRepository applicationSettings;
-        private readonly AuthSettingsRepository authSettings;
         private readonly IServiceProvider serviceProvider;
         private readonly AppProtocolRegistry protocolRegistry;
 
@@ -63,7 +61,6 @@ namespace Google.Solutions.IapDesktop.Windows
             this.serviceProvider = serviceProvider;
 
             this.applicationSettings = bootstrappingServiceProvider.GetService<ApplicationSettingsRepository>();
-            this.authSettings = bootstrappingServiceProvider.GetService<AuthSettingsRepository>();
             this.protocolRegistry = bootstrappingServiceProvider.GetService<AppProtocolRegistry>();
 
             // 
@@ -101,7 +98,10 @@ namespace Google.Solutions.IapDesktop.Windows
             //
             // Bind controls.
             //
-            this.viewModel = new MainFormViewModel();
+            this.viewModel = new MainFormViewModel(
+                this,
+                bootstrappingServiceProvider.GetService<AuthSettingsRepository>());
+
             this.backgroundJobLabel.BindProperty(
                 c => c.Visible,
                 this.viewModel,
@@ -116,6 +116,12 @@ namespace Google.Solutions.IapDesktop.Windows
                 c => c.Text,
                 this.viewModel,
                 m => m.BackgroundJobStatus,
+                this.components);
+
+            this.toolStripEmail.BindProperty(
+                c => c.Text,
+                this.viewModel,
+                m => m.UserEmail,
                 this.components);
         }
 
@@ -163,11 +169,7 @@ namespace Google.Solutions.IapDesktop.Windows
             //
             try
             {
-                this.Authorization = AuthorizeDialog.Authorize(
-                    this,
-                    OAuthClient.Secrets,
-                    new[] { IapTunnelingEndpoint.RequiredScope },
-                    this.authSettings);
+                this.viewModel.Authorize();
             }
             catch (Exception e)
             {
@@ -176,7 +178,7 @@ namespace Google.Solutions.IapDesktop.Windows
                     .Show(this, "Authorization failed", e);
             }
 
-            if (this.Authorization == null)
+            if (this.viewModel.Authorization == null)
             {
                 // Not authorized -> close.
                 Close();
@@ -197,9 +199,6 @@ namespace Google.Solutions.IapDesktop.Windows
                 this.statusStrip,
                 VisualStudioToolStripExtender.VsVersion.Vs2015,
                 this.vs2015LightTheme);
-
-            // Show who is signed in.
-            this.toolStripEmail.Text = this.Authorization.Email;
 
             ResumeLayout();
 
@@ -325,7 +324,9 @@ namespace Google.Solutions.IapDesktop.Windows
         {
             try
             {
-                await this.serviceProvider.GetService<IProjectExplorer>().ShowAddProjectDialogAsync();
+                await this.serviceProvider.GetService<IProjectExplorer>()
+                    .ShowAddProjectDialogAsync()
+                    .ConfigureAwait(true);
             }
             catch (TaskCanceledException)
             {
@@ -438,23 +439,8 @@ namespace Google.Solutions.IapDesktop.Windows
         }
 
         //---------------------------------------------------------------------
-        // IAuthorizationService.
-        //---------------------------------------------------------------------
-
-        public IAuthorization Authorization { get; private set; }
-
-        public async Task ReauthorizeAsync(CancellationToken token)
-        {
-            await this.Authorization.ReauthorizeAsync(token);
-
-            // Update status bar in case the user switched identities.
-            this.toolStripEmail.Text = this.Authorization.Email;
-        }
-
-        //---------------------------------------------------------------------
         // IJobHost.
         //---------------------------------------------------------------------
-
 
         public ISynchronizeInvoke Invoker => this;
 
@@ -488,5 +474,14 @@ namespace Google.Solutions.IapDesktop.Windows
 
         private void cancelBackgroundJobsButton_Click(object sender, EventArgs e)
             => this.viewModel.CancelBackgroundJobs();
+
+        //---------------------------------------------------------------------
+        // IAuthorizationAdapter.
+        //---------------------------------------------------------------------
+
+        public IAuthorization Authorization => this.viewModel.Authorization;
+
+        public Task ReauthorizeAsync(CancellationToken token)
+            => this.viewModel.ReauthorizeAsync(token);
     }
 }

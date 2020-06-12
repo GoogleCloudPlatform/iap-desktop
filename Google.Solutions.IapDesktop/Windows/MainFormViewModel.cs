@@ -19,21 +19,39 @@
 // under the License.
 //
 
+using Google.Solutions.CloudIap;
+using Google.Solutions.Common.Auth;
 using Google.Solutions.IapDesktop.Application.ObjectModel;
+using Google.Solutions.IapDesktop.Application.Services.Adapters;
 using Google.Solutions.IapDesktop.Application.Services.Integration;
+using Google.Solutions.IapDesktop.Application.Services.Persistence;
+using Google.Solutions.IapTunneling.Iap;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
+using System.Threading.Tasks;
+using System.Windows.Forms;
 
 namespace Google.Solutions.IapDesktop.Windows
 {
     internal class MainFormViewModel : ViewModelBase
     {
+        private readonly AuthSettingsRepository authSettings;
+
         // NB. This list is only access from the UI thread, so no locking required.
         private readonly LinkedList<BackgroundJob> backgroundJobs
             = new LinkedList<BackgroundJob>();
 
         private bool isBackgroundJobStatusVisible = false;
+        private string userEmail = null;
+
+        public MainFormViewModel(
+            Control view,
+            AuthSettingsRepository authSettings)
+        {
+            this.View = view;
+            this.authSettings = authSettings;
+        }
 
         //---------------------------------------------------------------------
         // Observable properties.
@@ -71,8 +89,18 @@ namespace Google.Solutions.IapDesktop.Windows
             }
         }
 
+        public string UserEmail
+        {
+            get => this.userEmail;
+            set
+            {
+                this.userEmail = value;
+                RaisePropertyChange();
+            }
+        }
+
         //---------------------------------------------------------------------
-        // Actions.
+        // Background job actions.
         //---------------------------------------------------------------------
 
         public IJobUserFeedback CreateBackgroundJob(
@@ -90,6 +118,32 @@ namespace Google.Solutions.IapDesktop.Windows
             {
                 job.Cancel();
             }
+        }
+
+
+        //---------------------------------------------------------------------
+        // Authorization actions.
+        //---------------------------------------------------------------------
+
+        public IAuthorization Authorization { get; private set; }
+
+        public void Authorize()
+        {
+            this.Authorization = AuthorizeDialog.Authorize(
+                (Control)this.View,
+                OAuthClient.Secrets,
+                new[] { IapTunnelingEndpoint.RequiredScope },
+                this.authSettings);
+
+            this.UserEmail = this.Authorization.Email;
+        }
+
+        public async Task ReauthorizeAsync(CancellationToken token)
+        {
+            await this.Authorization.ReauthorizeAsync(token)
+                .ConfigureAwait(true);
+
+            this.UserEmail = this.Authorization.Email;
         }
 
         //---------------------------------------------------------------------
