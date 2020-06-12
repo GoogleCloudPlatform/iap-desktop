@@ -58,11 +58,22 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Integration
             }
         }
 
+        private class UserFeedback : IJobUserFeedback
+        {
+            public bool IsShowing => true;
+
+            public void Finish()
+            {
+            }
+
+            public void Start()
+            {
+            }
+        }
+
         private Mock<IAuthorizationAdapter> authService = null;
         private Mock<IJobHost> jobHost = null;
         private JobService jobService = null;
-
-        public JobService JobService { get => jobService; set => jobService = value; }
 
         [SetUp]
         public void SetUp()
@@ -78,11 +89,11 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Integration
 
             this.jobHost = new Mock<IJobHost>();
             this.jobHost.SetupGet(h => h.Invoker).Returns(invoker);
-            this.jobHost.SetupGet(h => h.IsWaitDialogShowing).Returns(true);
-            this.jobHost.Setup(h => h.ShowWaitDialog(It.IsNotNull<JobDescription>(), It.IsNotNull<CancellationTokenSource>()));
-            this.jobHost.Setup(h => h.CloseWaitDialog());
+            this.jobHost.Setup(h => h.ShowFeedback(
+                It.IsNotNull<JobDescription>(), 
+                It.IsNotNull<CancellationTokenSource>())).Returns(new UserFeedback());
 
-            this.JobService = new JobService(authService.Object, this.jobHost.Object);
+            this.jobService = new JobService(authService.Object, this.jobHost.Object);
         }
 
         [Test]
@@ -91,7 +102,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Integration
             this.jobHost.Setup(h => h.ConfirmReauthorization()).Returns(true);
 
             int funcCall = 0;
-            var result = await JobService.RunInBackground<string>(
+            var result = await this.jobService.RunInBackground<string>(
                 new JobDescription("test"),
                 token =>
                 {
@@ -120,7 +131,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Integration
             this.jobHost.Setup(h => h.ConfirmReauthorization()).Returns(true);
 
             int funcCall = 0;
-            var result = await JobService.RunInBackground<string>(
+            var result = await this.jobService.RunInBackground<string>(
                 new JobDescription("test"),
                 token =>
                 {
@@ -149,7 +160,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Integration
 
             AssertEx.ThrowsAggregateException<TaskCanceledException>(() =>
             {
-                JobService.RunInBackground<string>(
+                this.jobService.RunInBackground<string>(
                     new JobDescription("test"),
                     token =>
                     {
@@ -173,7 +184,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Integration
 
             AssertEx.ThrowsAggregateException<ApplicationException>(() =>
             {
-                JobService.RunInBackground<string>(
+                this.jobService.RunInBackground<string>(
                     new JobDescription("test"),
                     token =>
                     {
@@ -196,7 +207,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Integration
             this.jobHost.Setup(h => h.ConfirmReauthorization()).Returns(true);
 
             int funcCall = 0;
-            var result = await JobService.RunInBackground<string>(
+            var result = await this.jobService.RunInBackground<string>(
                 new JobDescription("test"),
                 token =>
                 {
@@ -226,7 +237,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Integration
             this.jobHost.Setup(h => h.ConfirmReauthorization()).Returns(true);
 
             int funcCall = 0;
-            var result = await JobService.RunInBackground<string>(
+            var result = await this.jobService.RunInBackground<string>(
                 new JobDescription("test"),
                 token =>
                 {
@@ -256,7 +267,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Integration
 
             AssertEx.ThrowsAggregateException<TaskCanceledException>(() =>
             {
-                JobService.RunInBackground<string>(
+                this.jobService.RunInBackground<string>(
                     new JobDescription("test"),
                     token =>
                     {
@@ -281,7 +292,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Integration
 
             AssertEx.ThrowsAggregateException<ApplicationException>(() =>
             {
-                JobService.RunInBackground<string>(
+                this.jobService.RunInBackground<string>(
                     new JobDescription("test"),
                     token =>
                     {

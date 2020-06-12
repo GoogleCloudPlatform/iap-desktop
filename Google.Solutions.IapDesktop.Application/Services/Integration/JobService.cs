@@ -84,7 +84,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.Integration
         {
         }
 
-        public Task<T> RunInBackgroundWithoutReauth<T>(
+        private Task<T> RunInBackgroundWithUserFeedback<T>(
             JobDescription jobDescription,
             Func<CancellationToken, Task<T>> jobFunc)
         {
@@ -92,6 +92,8 @@ namespace Google.Solutions.IapDesktop.Application.Services.Integration
             var cts = new CancellationTokenSource();
 
             Exception exception = null;
+
+            var feedback = this.host.ShowFeedback(jobDescription, cts);
 
             Task.Run(async () =>
             {
@@ -103,7 +105,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.Integration
                         // allow the continuation to happen on any thread.
                         var result = await jobFunc(cts.Token).ConfigureAwait(continueOnCapturedContext: false);
 
-                        while (!host.IsWaitDialogShowing)
+                        while (!feedback.IsShowing)
                         {
                             // If the function finished fast, it is possible that the dialog
                             // has not even been shown yet - that would cause BeginInvoke
@@ -122,7 +124,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.Integration
                             // Close the dialog immediately...
                             this.host.Invoker.Invoke((Action)(() =>
                             {
-                                host.CloseWaitDialog();
+                                feedback.Finish();
                             }), null);
 
                             // ...then run the GUI function. If this function opens
@@ -143,7 +145,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.Integration
                             // if the user clicked that button.
                             if (!cts.IsCancellationRequested)
                             {
-                                host.CloseWaitDialog();
+                                feedback.Finish();
                             }
                         }), null);
 
@@ -153,8 +155,8 @@ namespace Google.Solutions.IapDesktop.Application.Services.Integration
                 }
             });
 
-
-            this.host.ShowWaitDialog(jobDescription, cts);
+            // This call blocks if it's foreground feedback.
+            feedback.Start();
 
             if (exception != null)
             {
@@ -174,7 +176,9 @@ namespace Google.Solutions.IapDesktop.Application.Services.Integration
             {
                 try
                 {
-                    return await RunInBackgroundWithoutReauth(jobDescription, jobFunc);
+                    return await RunInBackgroundWithUserFeedback(
+                        jobDescription, 
+                        jobFunc).ConfigureAwait(false);
                 }
                 catch (Exception e) when (e.IsReauthError())
                 {
@@ -188,13 +192,15 @@ namespace Google.Solutions.IapDesktop.Application.Services.Integration
                     {
                         // Reauthorize. This might take a while since the user has to use 
                         // a browser - show the WaitDialog in the meantime.
-                        await RunInBackgroundWithoutReauth(
+                        await RunInBackgroundWithUserFeedback(
                             new JobDescription("Authorizing"),
                             async _ =>
                             {
-                                await this.authService.ReauthorizeAsync(CancellationToken.None);
+                                await this.authService
+                                    .ReauthorizeAsync(CancellationToken.None)
+                                    .ConfigureAwait(false);
                                 return default(T);
-                            });
+                            }).ConfigureAwait(false);
                     }
                     else
                     {
@@ -203,44 +209,55 @@ namespace Google.Solutions.IapDesktop.Application.Services.Integration
                 }
             }
         }
-
-
-    }
-
-    public static class ExceptionExtensions
-    {
-        public static bool IsReauthError(this Exception e)
-        {
-            // The TokenResponseException might be hiding in an AggregateException
-            e = e.Unwrap();
-
-            if (e is TokenResponseException tokenException)
-            {
-                return tokenException.Error.Error == "invalid_grant";
-            }
-            else
-            {
-                return false;
-            }
-        }
     }
 
     public class JobDescription
     {
         public string StatusMessage { get; }
 
+        public JobUserFeedbackType Feedback { get; }
+
         public JobDescription(string statusMessage)
+            : this(statusMessage, JobUserFeedbackType.ForegroundFeedback)
+        { 
+        }
+
+        public JobDescription(string statusMessage, JobUserFeedbackType feedbackType)
         {
             this.StatusMessage = statusMessage;
+            this.Feedback = feedbackType;
         }
+    }
+
+    public enum JobUserFeedbackType
+    {
+        /// <summary>
+        /// Show job feedback in background, permitting other UI interaction.
+        /// </summary>
+        BackgroundFeedback,
+
+        /// <summary>
+        /// Show job feedback in foreground, blocking all other UI interaction 
+        /// (without blocking the UI thread).
+        /// </summary>
+        ForegroundFeedback,
     }
 
     public interface IJobHost
     {
         ISynchronizeInvoke Invoker { get; }
-        void ShowWaitDialog(JobDescription jobDescription, CancellationTokenSource cts);
-        bool IsWaitDialogShowing { get; }
-        void CloseWaitDialog();
+
         bool ConfirmReauthorization();
+
+        IJobUserFeedback ShowFeedback(
+            JobDescription jobDescription,
+            CancellationTokenSource cts);
+    }
+
+    public interface IJobUserFeedback
+    {
+        void Start();
+        bool IsShowing { get; }
+        void Finish();
     }
 }

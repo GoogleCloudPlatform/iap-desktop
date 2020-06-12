@@ -79,6 +79,8 @@ namespace Google.Solutions.IapDesktop.Windows
             this.aboutToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.vsToolStripExtender = new WeifenLuo.WinFormsUI.Docking.VisualStudioToolStripExtender(this.components);
             this.statusStrip = new System.Windows.Forms.StatusStrip();
+            this.backgroundJobLabel = new System.Windows.Forms.ToolStripStatusLabel();
+            this.cancelBackgroundJobsButton = new System.Windows.Forms.ToolStripDropDownButton();
             this.toolStripStatus = new System.Windows.Forms.ToolStripStatusLabel();
             this.toolStripEmail = new System.Windows.Forms.ToolStripStatusLabel();
             this.dockPanel = new WeifenLuo.WinFormsUI.Docking.DockPanel();
@@ -301,6 +303,8 @@ namespace Google.Solutions.IapDesktop.Windows
             // statusStrip
             // 
             this.statusStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.backgroundJobLabel,
+            this.cancelBackgroundJobsButton,
             this.toolStripStatus,
             this.toolStripEmail});
             this.statusStrip.Location = new System.Drawing.Point(0, 639);
@@ -309,10 +313,27 @@ namespace Google.Solutions.IapDesktop.Windows
             this.statusStrip.TabIndex = 5;
             this.statusStrip.Text = "statusStrip";
             // 
+            // backgroundJobLabel
+            // 
+            this.backgroundJobLabel.Name = "backgroundJobLabel";
+            this.backgroundJobLabel.Size = new System.Drawing.Size(16, 17);
+            this.backgroundJobLabel.Text = "...";
+            // 
+            // cancelBackgroundJobsButton
+            // 
+            this.cancelBackgroundJobsButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.cancelBackgroundJobsButton.Image = ((System.Drawing.Image)(resources.GetObject("cancelBackgroundJobsButton.Image")));
+            this.cancelBackgroundJobsButton.ImageTransparentColor = System.Drawing.Color.Blue;
+            this.cancelBackgroundJobsButton.Name = "cancelBackgroundJobsButton";
+            this.cancelBackgroundJobsButton.ShowDropDownArrow = false;
+            this.cancelBackgroundJobsButton.Size = new System.Drawing.Size(20, 20);
+            this.cancelBackgroundJobsButton.Text = "toolStripDropDownButton1";
+            this.cancelBackgroundJobsButton.Click += new System.EventHandler(this.cancelBackgroundJobsButton_Click);
+            // 
             // toolStripStatus
             // 
             this.toolStripStatus.Name = "toolStripStatus";
-            this.toolStripStatus.Size = new System.Drawing.Size(885, 17);
+            this.toolStripStatus.Size = new System.Drawing.Size(824, 17);
             this.toolStripStatus.Spring = true;
             this.toolStripStatus.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
@@ -390,5 +411,7 @@ namespace Google.Solutions.IapDesktop.Windows
         private System.Windows.Forms.ToolStripMenuItem showSecurityScreenToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem showtaskManagerToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem enableAppProtocolToolStripMenuItem;
+        private System.Windows.Forms.ToolStripDropDownButton cancelBackgroundJobsButton;
+        private System.Windows.Forms.ToolStripStatusLabel backgroundJobLabel;
     }
 }

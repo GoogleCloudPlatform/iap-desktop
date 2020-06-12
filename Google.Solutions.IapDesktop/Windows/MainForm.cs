@@ -49,18 +49,19 @@ namespace Google.Solutions.IapDesktop.Windows
 
     public partial class MainForm : Form, IJobHost, IMainForm, IAuthorizationAdapter
     {
+        private readonly MainFormViewModel viewModel;
+
         private readonly ApplicationSettingsRepository applicationSettings;
         private readonly AuthSettingsRepository authSettings;
         private readonly IServiceProvider serviceProvider;
         private readonly AppProtocolRegistry protocolRegistry;
-
-        private WaitDialog waitDialog = null;
 
         public IapRdpUrl StartupUrl { get; set; }
 
         public MainForm(IServiceProvider bootstrappingServiceProvider, IServiceProvider serviceProvider)
         {
             this.serviceProvider = serviceProvider;
+
             this.applicationSettings = bootstrappingServiceProvider.GetService<ApplicationSettingsRepository>();
             this.authSettings = bootstrappingServiceProvider.GetService<AuthSettingsRepository>();
             this.protocolRegistry = bootstrappingServiceProvider.GetService<AppProtocolRegistry>();
@@ -95,6 +96,27 @@ namespace Google.Solutions.IapDesktop.Windows
                 this.applicationSettings.GetSettings().IsUpdateCheckEnabled;
             this.enableAppProtocolToolStripMenuItem.Checked =
                 this.protocolRegistry.IsRegistered(IapRdpUrl.Scheme, GetType().Assembly.Location);
+
+
+            //
+            // Bind controls.
+            //
+            this.viewModel = new MainFormViewModel();
+            this.backgroundJobLabel.BindProperty(
+                c => c.Visible,
+                this.viewModel,
+                m => m.IsBackgroundJobStatusVisible,
+                this.components);
+            this.cancelBackgroundJobsButton.BindProperty(
+                c => c.Visible,
+                this.viewModel,
+                m => m.IsBackgroundJobStatusVisible,
+                this.components);
+            this.backgroundJobLabel.BindProperty(
+                c => c.Text,
+                this.viewModel,
+                m => m.BackgroundJobStatus,
+                this.components);
         }
 
         private void MainForm_FormClosing(object sender, FormClosingEventArgs e)
@@ -430,35 +452,27 @@ namespace Google.Solutions.IapDesktop.Windows
         }
 
         //---------------------------------------------------------------------
-        // IEventRoutingHost.
+        // IJobHost.
         //---------------------------------------------------------------------
+
 
         public ISynchronizeInvoke Invoker => this;
 
-        public bool IsWaitDialogShowing
+        public IJobUserFeedback ShowFeedback(
+            JobDescription jobDescription,
+            CancellationTokenSource cancellationSource)
         {
-            get
+            Debug.Assert(!this.Invoker.InvokeRequired, "ShowForegroundFeedback must be called on UI thread");
+
+            switch (jobDescription.Feedback)
             {
-                // Capture variable in local context first to avoid a race condition.
-                var dialog = this.waitDialog;
-                return dialog != null && dialog.IsShowing;
+                case JobUserFeedbackType.ForegroundFeedback:
+                    // Show WaitDialog, blocking all user intraction.
+                    return new WaitDialog(this, jobDescription.StatusMessage, cancellationSource);
+
+                default:
+                    return this.viewModel.CreateBackgroundJob(jobDescription, cancellationSource);
             }
-        }
-
-        public void ShowWaitDialog(JobDescription jobDescription, CancellationTokenSource cts)
-        {
-            Debug.Assert(!this.Invoker.InvokeRequired, "ShowWaitDialog must be called on UI thread");
-
-            this.waitDialog = new WaitDialog(jobDescription.StatusMessage, cts);
-            this.waitDialog.ShowDialog(this);
-        }
-
-        public void CloseWaitDialog()
-        {
-            Debug.Assert(!this.Invoker.InvokeRequired, "CloseWaitDialog must be called on UI thread");
-            Debug.Assert(this.waitDialog != null);
-
-            this.waitDialog.Close();
         }
 
         public bool ConfirmReauthorization()
@@ -471,15 +485,8 @@ namespace Google.Solutions.IapDesktop.Windows
                 MessageBoxButtons.YesNoCancel,
                 MessageBoxIcon.Warning) == DialogResult.Yes;
         }
-    }
 
-    internal abstract class AsyncEvent
-    {
-        public string WaitMessage { get; }
-
-        protected AsyncEvent(string message)
-        {
-            this.WaitMessage = message;
-        }
+        private void cancelBackgroundJobsButton_Click(object sender, EventArgs e)
+            => this.viewModel.CancelBackgroundJobs();
     }
 }
