@@ -88,13 +88,22 @@ namespace Google.Solutions.IapDesktop.Application.Services.Windows
             }
         }
 
+        private JobDescription CreateJobDescription(string text)
+        {
+            return new JobDescription(
+                text,
+                this.runInBackgroundCheckBox.Checked
+                    ? JobUserFeedbackType.BackgroundFeedback
+                    : JobUserFeedbackType.ForegroundFeedback);
+        }
+
         private async void slowOpButton_Click(object sender, EventArgs e)
         {
             this.spinner.Visible = true;
             try
             {
                 await this.jobService.RunInBackground<object>(
-                    new JobDescription("This takes a while, but can be cancelled..."),
+                    CreateJobDescription("This takes a while, but can be cancelled..."),
                     async token =>
                     {
                         Debug.WriteLine("Starting delay...");
@@ -106,7 +115,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.Windows
                         await this.eventService.FireAsync(new StatusUpdatedEvent("Done"));
 
                         return null;
-                    });
+                    }).ConfigureAwait(true);
             }
             catch (TaskCanceledException)
             {
@@ -125,7 +134,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.Windows
             try
             {
                 await this.jobService.RunInBackground<object>(
-                    new JobDescription("This takes a while, and cannot be cancelled..."),
+                    CreateJobDescription("This takes a while, and cannot be cancelled..."),
                     async token =>
                     {
                         Debug.WriteLine("Starting delay...");
@@ -137,7 +146,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.Windows
                         await this.eventService.FireAsync(new StatusUpdatedEvent("Done"));
 
                         return null;
-                    });
+                    }).ConfigureAwait(true);
             }
             catch (TaskCanceledException)
             {
@@ -156,11 +165,11 @@ namespace Google.Solutions.IapDesktop.Application.Services.Windows
             try
             {
                 await this.jobService.RunInBackground<object>(
-                    new JobDescription("This takes a while, and cannot be cancelled..."),
+                    CreateJobDescription("This takes a while, and cannot be cancelled..."),
                     token =>
                     {
                         throw new ApplicationException("bang!");
-                    });
+                    }).ConfigureAwait(true);
             }
             catch (TaskCanceledException)
             {
@@ -180,14 +189,14 @@ namespace Google.Solutions.IapDesktop.Application.Services.Windows
             try
             {
                 await this.jobService.RunInBackground<object>(
-                    new JobDescription("This takes a while, and cannot be cancelled..."),
+                    CreateJobDescription("This takes a while, and cannot be cancelled..."),
                     token =>
                     {
                         throw new TokenResponseException(new TokenErrorResponse()
                         {
                             Error = "invalid_grant"
                         });
-                    });
+                    }).ConfigureAwait(true);
             }
             catch (TaskCanceledException)
             {

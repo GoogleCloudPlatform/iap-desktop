@@ -218,9 +218,14 @@ namespace Google.Solutions.IapDesktop.Application.Services.Integration
         public JobUserFeedbackType Feedback { get; }
 
         public JobDescription(string statusMessage)
+            : this(statusMessage, JobUserFeedbackType.ForegroundFeedback)
+        { 
+        }
+
+        public JobDescription(string statusMessage, JobUserFeedbackType feedbackType)
         {
             this.StatusMessage = statusMessage;
-            this.Feedback = JobUserFeedbackType.ForegroundFeedback;
+            this.Feedback = feedbackType;
         }
     }
 

@@ -49,6 +49,8 @@ namespace Google.Solutions.IapDesktop.Windows
 
     public partial class MainForm : Form, IJobHost, IMainForm, IAuthorizationAdapter
     {
+        private readonly MainFormViewModel viewModel;
+
         private readonly ApplicationSettingsRepository applicationSettings;
         private readonly AuthSettingsRepository authSettings;
         private readonly IServiceProvider serviceProvider;
@@ -59,6 +61,7 @@ namespace Google.Solutions.IapDesktop.Windows
         public MainForm(IServiceProvider bootstrappingServiceProvider, IServiceProvider serviceProvider)
         {
             this.serviceProvider = serviceProvider;
+
             this.applicationSettings = bootstrappingServiceProvider.GetService<ApplicationSettingsRepository>();
             this.authSettings = bootstrappingServiceProvider.GetService<AuthSettingsRepository>();
             this.protocolRegistry = bootstrappingServiceProvider.GetService<AppProtocolRegistry>();
@@ -93,6 +96,27 @@ namespace Google.Solutions.IapDesktop.Windows
                 this.applicationSettings.GetSettings().IsUpdateCheckEnabled;
             this.enableAppProtocolToolStripMenuItem.Checked =
                 this.protocolRegistry.IsRegistered(IapRdpUrl.Scheme, GetType().Assembly.Location);
+
+
+            //
+            // Bind controls.
+            //
+            this.viewModel = new MainFormViewModel();
+            this.backgroundJobLabel.BindProperty(
+                c => c.Visible,
+                this.viewModel,
+                m => m.IsBackgroundJobStatusVisible,
+                this.components);
+            this.cancelBackgroundJobsButton.BindProperty(
+                c => c.Visible,
+                this.viewModel,
+                m => m.IsBackgroundJobStatusVisible,
+                this.components);
+            this.backgroundJobLabel.BindProperty(
+                c => c.Text,
+                this.viewModel,
+                m => m.BackgroundJobStatus,
+                this.components);
         }
 
         private void MainForm_FormClosing(object sender, FormClosingEventArgs e)
@@ -431,6 +455,7 @@ namespace Google.Solutions.IapDesktop.Windows
         // IJobHost.
         //---------------------------------------------------------------------
 
+
         public ISynchronizeInvoke Invoker => this;
 
         public IJobUserFeedback ShowFeedback(
@@ -446,7 +471,7 @@ namespace Google.Solutions.IapDesktop.Windows
                     return new WaitDialog(this, jobDescription.StatusMessage, cancellationSource);
 
                 default:
-                    throw new NotImplementedException();
+                    return this.viewModel.CreateBackgroundJob(jobDescription, cancellationSource);
             }
         }
 
@@ -460,5 +485,8 @@ namespace Google.Solutions.IapDesktop.Windows
                 MessageBoxButtons.YesNoCancel,
                 MessageBoxIcon.Warning) == DialogResult.Yes;
         }
+
+        private void cancelBackgroundJobsButton_Click(object sender, EventArgs e)
+            => this.viewModel.CancelBackgroundJobs();
     }
 }

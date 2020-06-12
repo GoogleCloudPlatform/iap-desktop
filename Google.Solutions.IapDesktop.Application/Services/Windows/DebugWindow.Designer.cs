@@ -59,6 +59,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.Windows
             this.serverLabel = new System.Windows.Forms.Label();
             this.serverTextBox = new System.Windows.Forms.TextBox();
             this.connectButton = new System.Windows.Forms.Button();
+            this.runInBackgroundCheckBox = new System.Windows.Forms.CheckBox();
             ((System.ComponentModel.ISupportInitialize)(this.spinner)).BeginInit();
             this.rdpGroup.SuspendLayout();
             this.SuspendLayout();
@@ -162,11 +163,22 @@ namespace Google.Solutions.IapDesktop.Application.Services.Windows
             this.connectButton.UseVisualStyleBackColor = true;
             this.connectButton.Click += new System.EventHandler(this.connectButton_Click);
             // 
+            // runInBackgroundCheckBox
+            // 
+            this.runInBackgroundCheckBox.AutoSize = true;
+            this.runInBackgroundCheckBox.Location = new System.Drawing.Point(22, 141);
+            this.runInBackgroundCheckBox.Name = "runInBackgroundCheckBox";
+            this.runInBackgroundCheckBox.Size = new System.Drawing.Size(117, 17);
+            this.runInBackgroundCheckBox.TabIndex = 6;
+            this.runInBackgroundCheckBox.Text = "Run in background";
+            this.runInBackgroundCheckBox.UseVisualStyleBackColor = true;
+            // 
             // DebugWindow
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(541, 451);
+            this.Controls.Add(this.runInBackgroundCheckBox);
             this.Controls.Add(this.rdpGroup);
             this.Controls.Add(this.label);
             this.Controls.Add(this.spinner);
@@ -196,5 +208,6 @@ namespace Google.Solutions.IapDesktop.Application.Services.Windows
         private System.Windows.Forms.Label serverLabel;
         private System.Windows.Forms.TextBox serverTextBox;
         private System.Windows.Forms.Button connectButton;
+        private System.Windows.Forms.CheckBox runInBackgroundCheckBox;
     }
 }
