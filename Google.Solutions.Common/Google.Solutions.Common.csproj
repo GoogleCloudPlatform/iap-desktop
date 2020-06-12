@@ -70,7 +70,6 @@
     <Compile Include="ApiExtensions\Instance\AddMetadata.cs" />
     <Compile Include="ApiExtensions\Instance\GetSerialPortOutputStream.cs" />
     <Compile Include="ApiExtensions\Instance\ResetWindowsUser.cs" />
-    <Compile Include="ApiExtensions\PageHelper.cs" />
     <Compile Include="ApiExtensions\Request\AwaitOperation.cs" />
     <Compile Include="ApiExtensions\Request\ExecuteAsStreamExtensions.cs" />
     <Compile Include="Auth\Authorization.cs" />

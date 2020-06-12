@@ -22,6 +22,7 @@
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Compute.v1;
 using Google.Apis.Compute.v1.Data;
+using Google.Apis.Requests;
 using Google.Apis.Services;
 using Google.Solutions.Common.ApiExtensions;
 using Google.Solutions.Common.ApiExtensions.Instance;
@@ -102,15 +103,18 @@ namespace Google.Solutions.IapDesktop.Application.Services.Adapters
             {
                 try
                 {
-                    var instancesByZone = await PageHelper.JoinPagesAsync<
-                                InstancesResource.AggregatedListRequest,
-                                InstanceAggregatedList,
-                                InstancesScopedList>(
-                        this.service.Instances.AggregatedList(projectId),
-                        instances => instances.Items.Values.Where(v => v != null),
-                        response => response.NextPageToken,
-                        (request, token) => { request.PageToken = token; },
-                        cancellationToken).ConfigureAwait(false);
+                    var instancesByZone = await new PageStreamer<
+                        InstancesScopedList,
+                        InstancesResource.AggregatedListRequest,
+                        InstanceAggregatedList,
+                        string>(
+                            (req, token) => req.PageToken = token,
+                            response => response.NextPageToken,
+                            response => response.Items.Values.Where(v => v != null))
+                        .FetchAllAsync(
+                            this.service.Instances.AggregatedList(projectId), 
+                            cancellationToken)
+                        .ConfigureAwait(false);
 
                     var result = instancesByZone
                         .Where(z => z.Instances != null)    // API returns null for empty zones.
@@ -136,15 +140,18 @@ namespace Google.Solutions.IapDesktop.Application.Services.Adapters
             {
                 try
                 {
-                    var disksByZone = await PageHelper.JoinPagesAsync<
-                                DisksResource.AggregatedListRequest,
-                                DiskAggregatedList,
-                                DisksScopedList>(
-                        this.service.Disks.AggregatedList(projectId),
-                        i => i.Items.Values.Where(v => v != null),
-                        response => response.NextPageToken,
-                        (request, token) => { request.PageToken = token; },
-                        cancellationToken).ConfigureAwait(false);
+                    var disksByZone = await new PageStreamer<
+                        DisksScopedList,
+                        DisksResource.AggregatedListRequest,
+                        DiskAggregatedList,
+                        string>(
+                            (req, token) => req.PageToken = token,
+                            response => response.NextPageToken,
+                            response => response.Items.Values.Where(v => v != null))
+                        .FetchAllAsync(
+                            this.service.Disks.AggregatedList(projectId),
+                            cancellationToken)
+                        .ConfigureAwait(false);
 
                     var result = disksByZone
                         .Where(z => z.Disks != null)    // API returns null for empty zones.
