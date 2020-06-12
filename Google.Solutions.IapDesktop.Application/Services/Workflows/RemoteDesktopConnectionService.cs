@@ -66,7 +66,9 @@ namespace Google.Solutions.IapDesktop.Application.Services.Workflows
             VmInstanceConnectionSettings settings)
         {
             var tunnel = await this.jobService.RunInBackground(
-                new JobDescription("Opening Cloud IAP tunnel..."),
+                new JobDescription(
+                    $"Opening Cloud IAP tunnel to {instanceRef.Name}...",
+                    JobUserFeedbackType.BackgroundFeedback),
                 async token =>
                 {
                     try
@@ -77,7 +79,8 @@ namespace Google.Solutions.IapDesktop.Application.Services.Workflows
                         // Note that the timeouts are not additive.
                         var timeout = TimeSpan.FromSeconds(settings.ConnectionTimeout);
 
-                        return await this.tunnelBrokerService.ConnectAsync(destination, timeout);
+                        return await this.tunnelBrokerService.ConnectAsync(destination, timeout)
+                            .ConfigureAwait(false);
                     }
                     catch (NetworkStreamClosedException e)
                     {
@@ -94,7 +97,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.Workflows
                             $"Verify that the Cloud IAP API is enabled in the project {instanceRef.ProjectId} " +
                             "and that your user has the 'IAP-secured Tunnel User' role.");
                     }
-                });
+                }).ConfigureAwait(true);
 
             this.remoteDesktopService.Connect(
                 instanceRef,
