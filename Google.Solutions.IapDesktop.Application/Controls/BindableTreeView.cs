@@ -25,6 +25,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
@@ -95,9 +96,20 @@ namespace Google.Solutions.IapDesktop.Application.Controls
         // Data Binding.
         //---------------------------------------------------------------------
 
+        private static void DisposeAndClear(TreeNodeCollection nodes)
+        {
+            var disposables = nodes.OfType<Node>().ToList();
+            nodes.Clear();
+
+            foreach (var node in disposables)
+            {
+                node.Dispose();
+            }
+        }
+
         public void Bind(TModelNode rootNode)
         {
-            this.Nodes.Clear();
+            DisposeAndClear(this.Nodes);
             this.Nodes.Add(new Node(this, rootNode));
         }
 
@@ -146,17 +158,18 @@ namespace Google.Solutions.IapDesktop.Application.Controls
         // BindableTreeNode
         //---------------------------------------------------------------------
 
-        internal class Node : TreeNode 
+        internal sealed class Node : TreeNode, IDisposable
         {
             private readonly BindableTreeView<TModelNode> treeView;
             public TModelNode Model { get; }
             private bool lazyLoadTriggered = false;
 
+            private readonly IContainer bindings = new Container();
+
             public Node(BindableTreeView<TModelNode> treeView, TModelNode modelNode)
             {
                 this.treeView = treeView;
                 this.Model = modelNode;
-
 
                 // Bind properties to keep TreeNode in sync with view model.
                 // Note that binding is one-way (view model -> view) as TreeNodes
@@ -164,30 +177,30 @@ namespace Google.Solutions.IapDesktop.Application.Controls
                 if (this.treeView.textExpression != null)
                 {
                     this.Name = this.Text = this.treeView.textExpression.Compile()(this.Model);
-                    this.Model.OnPropertyChange(
+                    this.bindings.Add(this.Model.OnPropertyChange(
                         this.treeView.textExpression,
-                        text => this.Text = text);
+                        text => this.Text = text));
                 }
 
                 if (this.treeView.imageIndexExpression != null)
                 {
                     this.ImageIndex = this.treeView.imageIndexExpression.Compile()(this.Model);
-                    this.Model.OnPropertyChange(
+                    this.bindings.Add(this.Model.OnPropertyChange(
                         this.treeView.imageIndexExpression,
-                        iconIndex => this.ImageIndex = iconIndex);
+                        iconIndex => this.ImageIndex = iconIndex));
                 }
 
                 if (this.treeView.selectedImageIndexExpression != null)
                 {
                     this.SelectedImageIndex = this.treeView.selectedImageIndexExpression.Compile()(this.Model);
-                    this.Model.OnPropertyChange(
+                    this.bindings.Add(this.Model.OnPropertyChange(
                         this.treeView.selectedImageIndexExpression,
-                        iconIndex => this.SelectedImageIndex = iconIndex);
+                        iconIndex => this.SelectedImageIndex = iconIndex));
                 }
 
                 if (this.treeView.isExpandedExpression != null)
                 {
-                    this.Model.OnPropertyChange(
+                    this.bindings.Add(this.Model.OnPropertyChange(
                         this.treeView.isExpandedExpression,
                         expanded =>
                         {
@@ -199,7 +212,7 @@ namespace Google.Solutions.IapDesktop.Application.Controls
                             {
                                 this.Collapse();
                             }
-                        });
+                        }));
                 }
 
                 if (this.treeView.isLeafFunc(this.Model))
@@ -259,7 +272,8 @@ namespace Google.Solutions.IapDesktop.Application.Controls
                             var children = t.Result;
 
                             // Clear any dummy node if present.
-                            this.Nodes.Clear();
+                            Debug.Assert(!this.Nodes.OfType<Node>().Any());
+                            DisposeAndClear(this.Nodes);
 
                             // Add nodes.
                             AddTreeNodesForModelNodes(children);
@@ -321,6 +335,7 @@ namespace Google.Solutions.IapDesktop.Application.Controls
                             if (oldTreeNode != null)
                             {
                                 this.Nodes.Remove(oldTreeNode);
+                                oldTreeNode.Dispose();
                             }
                         }
                         break;
@@ -338,6 +353,8 @@ namespace Google.Solutions.IapDesktop.Application.Controls
                                 if (treeNode != null)
                                 {
                                     this.Nodes.Remove(treeNode);
+                                    treeNode.Dispose();
+
                                     this.Nodes.Insert(
                                         e.NewStartingIndex, 
                                         new Node(this.treeView, newModelItem));
@@ -352,13 +369,19 @@ namespace Google.Solutions.IapDesktop.Application.Controls
 
                     case NotifyCollectionChangedAction.Reset:
                         // Reload everything.
-                        this.Nodes.Clear();
+                        DisposeAndClear(this.Nodes);
+                        
                         AddTreeNodesForModelNodes((ObservableCollection<TModelNode>)sender);
                         break;
 
                     default:
                         break;
                 }
+            }
+
+            public void Dispose()
+            {
+                this.bindings.Dispose();
             }
         }
 

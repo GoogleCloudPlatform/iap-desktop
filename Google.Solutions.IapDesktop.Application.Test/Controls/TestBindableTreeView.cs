@@ -92,6 +92,8 @@ namespace Google.Solutions.IapDesktop.Application.Test.Controls
         {
         }
 
+        //---------------------------------------------------------------------
+
         private ModelTreeView tree;
         private Form form;
 
@@ -366,6 +368,59 @@ namespace Google.Solutions.IapDesktop.Application.Test.Controls
 
             Assert.AreEqual(2, rootTreeNode.Nodes.Count);
             Assert.AreEqual("new", rootTreeNode.Nodes.OfType<ModelTreeView.Node>().First().Model.Name);
+        }
+
+        [Test]
+        public void WhenModelRemovesChild_ThenEventListenersAreRemoved()
+        {
+            var root = new ModelNode()
+            {
+                Name = "root",
+                IsExpanded = true
+            };
+
+            var child = new ModelNode()
+            {
+                Name = "child-1"
+            };
+            Assert.IsFalse(child.HasPropertyChangeListeners);
+
+            root.Children.Add(child);
+
+            tree.BindChildren(m => m.GetChildren());
+            tree.BindIsExpanded(m => m.IsExpanded);
+            tree.Bind(root);
+            RunPendingAsyncTasks();
+
+            Assert.IsTrue(child.HasPropertyChangeListeners);
+            root.Children.RemoveAt(0);
+            Assert.IsFalse(child.HasPropertyChangeListeners);
+        }
+
+        [Test]
+        public void WhenModelIsRebound_ThenEventListenersAreRemoved()
+        {
+            var root = new ModelNode()
+            {
+                Name = "root"
+            };
+
+            tree.BindChildren(m => m.GetChildren());
+            tree.BindIsExpanded(m => m.IsExpanded);
+            tree.Bind(root);
+            RunPendingAsyncTasks();
+
+            Assert.IsTrue(root.HasPropertyChangeListeners);
+
+            var newRoot = new ModelNode()
+            {
+                Name = "root2"
+            };
+
+            tree.Bind(newRoot);
+
+            Assert.IsFalse(root.HasPropertyChangeListeners);
+            Assert.IsTrue(newRoot.HasPropertyChangeListeners);
         }
     }
 }

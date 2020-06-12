@@ -89,6 +89,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Controls\TestBindableListView.cs" />
     <Compile Include="Controls\TestBindableTreeView.cs" />
     <Compile Include="ObjectModel\TestBindingExtensions.cs" />
     <Compile Include="ObjectModel\TestServiceAttribute.cs" />

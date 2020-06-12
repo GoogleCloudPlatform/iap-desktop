@@ -42,5 +42,7 @@ namespace Google.Solutions.IapDesktop.Application.ObjectModel
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyname));
         }
+
+        public bool HasPropertyChangeListeners => this.PropertyChanged != null;
     }
 }
