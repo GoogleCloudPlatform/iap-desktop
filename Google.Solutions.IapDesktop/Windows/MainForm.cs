@@ -54,8 +54,6 @@ namespace Google.Solutions.IapDesktop.Windows
         private readonly IServiceProvider serviceProvider;
         private readonly AppProtocolRegistry protocolRegistry;
 
-        private WaitDialog waitDialog = null;
-
         public IapRdpUrl StartupUrl { get; set; }
 
         public MainForm(IServiceProvider bootstrappingServiceProvider, IServiceProvider serviceProvider)
@@ -430,35 +428,18 @@ namespace Google.Solutions.IapDesktop.Windows
         }
 
         //---------------------------------------------------------------------
-        // IEventRoutingHost.
+        // IJobHost.
         //---------------------------------------------------------------------
 
         public ISynchronizeInvoke Invoker => this;
 
-        public bool IsWaitDialogShowing
+        public IJobUserFeedback ShowForegroundFeedback(
+            JobDescription jobDescription,
+            CancellationTokenSource cancellationSource)
         {
-            get
-            {
-                // Capture variable in local context first to avoid a race condition.
-                var dialog = this.waitDialog;
-                return dialog != null && dialog.IsShowing;
-            }
-        }
+            Debug.Assert(!this.Invoker.InvokeRequired, "ShowForegroundFeedback must be called on UI thread");
 
-        public void ShowWaitDialog(JobDescription jobDescription, CancellationTokenSource cts)
-        {
-            Debug.Assert(!this.Invoker.InvokeRequired, "ShowWaitDialog must be called on UI thread");
-
-            this.waitDialog = new WaitDialog(jobDescription.StatusMessage, cts);
-            this.waitDialog.ShowDialog(this);
-        }
-
-        public void CloseWaitDialog()
-        {
-            Debug.Assert(!this.Invoker.InvokeRequired, "CloseWaitDialog must be called on UI thread");
-            Debug.Assert(this.waitDialog != null);
-
-            this.waitDialog.Close();
+            return new WaitDialog(this, jobDescription.StatusMessage, cancellationSource);
         }
 
         public bool ConfirmReauthorization()
@@ -470,16 +451,6 @@ namespace Google.Solutions.IapDesktop.Windows
                 "Authorization required",
                 MessageBoxButtons.YesNoCancel,
                 MessageBoxIcon.Warning) == DialogResult.Yes;
-        }
-    }
-
-    internal abstract class AsyncEvent
-    {
-        public string WaitMessage { get; }
-
-        protected AsyncEvent(string message)
-        {
-            this.WaitMessage = message;
         }
     }
 }

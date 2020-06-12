@@ -19,29 +19,30 @@
 // under the License.
 //
 
+using Google.Solutions.IapDesktop.Application.Services.Integration;
 using System;
+using System.Diagnostics;
 using System.Threading;
 using System.Windows.Forms;
 
 namespace Google.Solutions.IapDesktop.Application.Services.Windows
 {
-    public partial class WaitDialog : Form
+    public partial class WaitDialog : Form, IJobUserFeedback
     {
         private volatile bool formShown = false;
+        private bool disposed = false;
 
         private readonly CancellationTokenSource cancellationSource;
+        private readonly IWin32Window parent;
 
-        public bool IsShowing => this.formShown;
-
-        public WaitDialog() : this(null, null)
-        {
-            // For Designer only.
-        }
-
-        public WaitDialog(string message, CancellationTokenSource cancellationSource)
+        public WaitDialog(
+            IWin32Window parent,
+            string message,
+            CancellationTokenSource cancellationSource)
         {
             InitializeComponent();
 
+            this.parent = parent;
             this.messageLabel.Text = message;
             this.cancellationSource = cancellationSource;
         }
@@ -55,6 +56,27 @@ namespace Google.Solutions.IapDesktop.Application.Services.Windows
         private void WaitDialog_Shown(object sender, EventArgs e)
         {
             this.formShown = true;
+        }
+
+        //---------------------------------------------------------------------
+        // IJobUserFeedback.
+        //---------------------------------------------------------------------
+
+        public bool IsShowing => this.formShown;
+
+        public void Start()
+        {
+            Debug.Assert(!this.InvokeRequired, "Start must be called on UI thread");
+            Debug.Assert(!this.disposed);
+
+            ShowDialog(this.parent);
+        }
+
+        public void Finish()
+        {
+            Debug.Assert(!this.InvokeRequired, "Finish must be called on UI thread");
+            this.disposed = true;
+            Close();
         }
     }
 }
