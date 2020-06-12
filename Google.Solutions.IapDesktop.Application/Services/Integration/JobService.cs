@@ -93,7 +93,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.Integration
 
             Exception exception = null;
 
-            var feedback = this.host.ShowForegroundFeedback(jobDescription, cts);
+            var feedback = this.host.ShowFeedback(jobDescription, cts);
 
             Task.Run(async () =>
             {
@@ -215,10 +215,27 @@ namespace Google.Solutions.IapDesktop.Application.Services.Integration
     {
         public string StatusMessage { get; }
 
+        public JobUserFeedbackType Feedback { get; }
+
         public JobDescription(string statusMessage)
         {
             this.StatusMessage = statusMessage;
+            this.Feedback = JobUserFeedbackType.ForegroundFeedback;
         }
+    }
+
+    public enum JobUserFeedbackType
+    {
+        /// <summary>
+        /// Show job feedback in background, permitting other UI interaction.
+        /// </summary>
+        BackgroundFeedback,
+
+        /// <summary>
+        /// Show job feedback in foreground, blocking all other UI interaction 
+        /// (without blocking the UI thread).
+        /// </summary>
+        ForegroundFeedback,
     }
 
     public interface IJobHost
@@ -227,7 +244,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.Integration
 
         bool ConfirmReauthorization();
 
-        IJobUserFeedback ShowForegroundFeedback(
+        IJobUserFeedback ShowFeedback(
             JobDescription jobDescription,
             CancellationTokenSource cts);
     }

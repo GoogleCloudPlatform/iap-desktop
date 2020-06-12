@@ -89,7 +89,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Integration
 
             this.jobHost = new Mock<IJobHost>();
             this.jobHost.SetupGet(h => h.Invoker).Returns(invoker);
-            this.jobHost.Setup(h => h.ShowForegroundFeedback(
+            this.jobHost.Setup(h => h.ShowFeedback(
                 It.IsNotNull<JobDescription>(), 
                 It.IsNotNull<CancellationTokenSource>())).Returns(new UserFeedback());
 

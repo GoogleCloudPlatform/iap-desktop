@@ -433,13 +433,21 @@ namespace Google.Solutions.IapDesktop.Windows
 
         public ISynchronizeInvoke Invoker => this;
 
-        public IJobUserFeedback ShowForegroundFeedback(
+        public IJobUserFeedback ShowFeedback(
             JobDescription jobDescription,
             CancellationTokenSource cancellationSource)
         {
             Debug.Assert(!this.Invoker.InvokeRequired, "ShowForegroundFeedback must be called on UI thread");
 
-            return new WaitDialog(this, jobDescription.StatusMessage, cancellationSource);
+            switch (jobDescription.Feedback)
+            {
+                case JobUserFeedbackType.ForegroundFeedback:
+                    // Show WaitDialog, blocking all user intraction.
+                    return new WaitDialog(this, jobDescription.StatusMessage, cancellationSource);
+
+                default:
+                    throw new NotImplementedException();
+            }
         }
 
         public bool ConfirmReauthorization()
