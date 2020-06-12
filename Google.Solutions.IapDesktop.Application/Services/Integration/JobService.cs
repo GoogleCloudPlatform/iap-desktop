@@ -174,7 +174,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.Integration
             {
                 try
                 {
-                    return await RunInBackgroundWithoutReauth(jobDescription, jobFunc);
+                    return await RunInBackgroundWithoutReauth(jobDescription, jobFunc).ConfigureAwait(false);
                 }
                 catch (Exception e) when (e.IsReauthError())
                 {
@@ -192,35 +192,17 @@ namespace Google.Solutions.IapDesktop.Application.Services.Integration
                             new JobDescription("Authorizing"),
                             async _ =>
                             {
-                                await this.authService.ReauthorizeAsync(CancellationToken.None);
+                                await this.authService
+                                    .ReauthorizeAsync(CancellationToken.None)
+                                    .ConfigureAwait(false);
                                 return default(T);
-                            });
+                            }).ConfigureAwait(false);
                     }
                     else
                     {
                         throw new TaskCanceledException("Reauthorization aborted");
                     }
                 }
-            }
-        }
-
-
-    }
-
-    public static class ExceptionExtensions
-    {
-        public static bool IsReauthError(this Exception e)
-        {
-            // The TokenResponseException might be hiding in an AggregateException
-            e = e.Unwrap();
-
-            if (e is TokenResponseException tokenException)
-            {
-                return tokenException.Error.Error == "invalid_grant";
-            }
-            else
-            {
-                return false;
             }
         }
     }

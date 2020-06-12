@@ -19,6 +19,7 @@
 // under the License.
 //
 
+using Google.Apis.Auth.OAuth2.Responses;
 using System;
 using System.Reflection;
 using System.Threading.Tasks;
@@ -50,6 +51,21 @@ namespace Google.Solutions.Common.Util
         public static bool IsCancellation(this Exception e)
         {
             return e.Is<TaskCanceledException>() || e.Is<OperationCanceledException>();
+        }
+
+        public static bool IsReauthError(this Exception e)
+        {
+            // The TokenResponseException might be hiding in an AggregateException
+            e = e.Unwrap();
+
+            if (e is TokenResponseException tokenException)
+            {
+                return tokenException.Error.Error == "invalid_grant";
+            }
+            else
+            {
+                return false;
+            }
         }
     }
 }
