@@ -49,7 +49,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.Windows.TunnelsViewer
                 this.selectedTunnel = value;
 
                 RaisePropertyChange();
-                RaisePropertyChange("IsDisconnectButtonEnabled");
+                RaisePropertyChange((TunnelsViewModel m) => m.IsDisconnectButtonEnabled);
             }
         }
 

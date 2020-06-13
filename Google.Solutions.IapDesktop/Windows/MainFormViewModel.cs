@@ -108,7 +108,7 @@ namespace Google.Solutions.IapDesktop.Windows
             {
                 this.isBackgroundJobStatusVisible = value;
                 RaisePropertyChange();
-                RaisePropertyChange("BackgroundJobStatus");
+                RaisePropertyChange((MainFormViewModel m) => m.BackgroundJobStatus);
             }
         }
 
