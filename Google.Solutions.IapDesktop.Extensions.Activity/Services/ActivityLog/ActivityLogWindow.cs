@@ -43,6 +43,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services.ActivityLog
                   )
         {
             InitializeComponent();
+
+            this.theme.ApplyTo(this.toolStrip);
         }
 
         //---------------------------------------------------------------------
@@ -66,11 +68,11 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services.ActivityLog
             ActivityLogViewModel model, 
             IContainer bindingContainer)
         {
-            this.label1.BindProperty(
-                c => c.Text,
-                model,
-                m => m.InstanceName,
-                bindingContainer);
+            //this.label1.BindProperty(
+            //    c => c.Text,
+            //    model,
+            //    m => m.InstanceName,
+            //    bindingContainer);
         }
     }
 }

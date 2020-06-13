@@ -46,6 +46,8 @@ namespace Google.Solutions.IapDesktop.Application.Services.Windows.TunnelsViewer
             this.dockPanel = serviceProvider.GetService<IMainForm>().MainPanel;
             this.TabText = this.Text;
 
+            this.theme.ApplyTo(this.toolStrip);
+
             this.exceptionDialog = serviceProvider.GetService<IExceptionDialog>();
 
             //

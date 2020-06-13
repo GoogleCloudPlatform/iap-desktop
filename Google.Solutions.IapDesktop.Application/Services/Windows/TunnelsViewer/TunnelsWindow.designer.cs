@@ -62,6 +62,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.Windows.TunnelsViewer
             this.localPortHeader = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.contextMenuStrip = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.disconnectTunnelToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.theme = new WeifenLuo.WinFormsUI.Docking.VS2015LightTheme();
             this.toolStrip.SuspendLayout();
             this.contextMenuStrip.SuspendLayout();
             this.SuspendLayout();
@@ -107,6 +108,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.Windows.TunnelsViewer
             this.tunnelsList.MultiSelect = false;
             this.tunnelsList.Name = "tunnelsList";
             this.tunnelsList.OwnerDraw = true;
+            this.tunnelsList.SelectedModelItem = null;
             this.tunnelsList.Size = new System.Drawing.Size(455, 339);
             this.tunnelsList.TabIndex = 6;
             this.tunnelsList.UseCompatibleStateImageBehavior = false;
@@ -130,7 +132,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.Windows.TunnelsViewer
             // localPortHeader
             // 
             this.localPortHeader.Text = "Local Port";
-            this.localPortHeader.Width = 61;
+            this.localPortHeader.Width = 59;
             // 
             // contextMenuStrip
             // 
@@ -176,5 +178,6 @@ namespace Google.Solutions.IapDesktop.Application.Services.Windows.TunnelsViewer
         private System.Windows.Forms.ColumnHeader localPortHeader;
         private System.Windows.Forms.ContextMenuStrip contextMenuStrip;
         private System.Windows.Forms.ToolStripMenuItem disconnectTunnelToolStripMenuItem;
+        private WeifenLuo.WinFormsUI.Docking.VS2015LightTheme theme;
     }
 }
