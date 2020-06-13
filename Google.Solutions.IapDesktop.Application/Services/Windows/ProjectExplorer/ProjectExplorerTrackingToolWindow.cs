@@ -20,17 +20,13 @@
 //
 
 using Google.Solutions.Common.Diagnostics;
-using Google.Solutions.IapDesktop.Application;
 using Google.Solutions.IapDesktop.Application.Services.Integration;
-using Google.Solutions.IapDesktop.Application.Services.Windows;
-using Google.Solutions.IapDesktop.Application.Services.Windows.ProjectExplorer;
 using Google.Solutions.IapDesktop.Application.Util;
 using System;
 using System.ComponentModel;
-using System.Diagnostics;
 using WeifenLuo.WinFormsUI.Docking;
 
-namespace Google.Solutions.IapDesktop.Extensions.Activity.Services.ActivityLog
+namespace Google.Solutions.IapDesktop.Application.Services.Windows.ProjectExplorer
 {
     public class ProjectExplorerTrackingToolWindow<TViewModel> : ToolWindow
     {
@@ -41,12 +37,15 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services.ActivityLog
         private IContainer currentBindingContainer = null;
         private IProjectExplorerNode ignoredNode = null;
 
+        private DockPanel dockPanel;
+
         protected ProjectExplorerTrackingToolWindow()
         {
             // Designer only.
         }
 
         public ProjectExplorerTrackingToolWindow(
+            DockPanel dockPanel,
             IProjectExplorer projectExplorer,
             IEventService eventService,
             int cacheCapacity)
@@ -56,6 +55,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services.ActivityLog
             // just hidden.
             //
             this.HideOnClose = true;
+            this.dockPanel = dockPanel;
 
             this.modelCache = new LeastRecentlyUsedCache<IProjectExplorerNode, TViewModel>(
                 cacheCapacity);
@@ -68,10 +68,11 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services.ActivityLog
                 e => OnProjectExplorerNodeSelected(e.SelectedNode));
         }
 
-        public void ShowWindow(DockPanel dockPanel)
+        public void ShowWindow()
         {
+            this.TabText = this.Text;
             this.ShowOrActivate(
-                dockPanel, 
+                this.dockPanel, 
                 WeifenLuo.WinFormsUI.Docking.DockState.DockBottomAutoHide);
         }
 

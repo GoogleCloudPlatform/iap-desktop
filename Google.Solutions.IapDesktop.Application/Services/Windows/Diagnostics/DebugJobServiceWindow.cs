@@ -34,11 +34,11 @@ using WeifenLuo.WinFormsUI.Docking;
 
 #pragma warning disable IDE1006 // Naming Styles
 
-namespace Google.Solutions.IapDesktop.Application.Services.Windows
+namespace Google.Solutions.IapDesktop.Application.Services.Windows.Diagnostics
 {
     [ComVisible(false)]
     [SkipCodeCoverage("For debug purposes only")]
-    public partial class DebugWindow : ToolWindow
+    public partial class DebugJobServiceWindow : ToolWindow
     {
         private readonly IJobService jobService;
         private readonly IEventService eventService;
@@ -46,7 +46,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.Windows
         private readonly DockPanel dockPanel;
         private readonly IServiceProvider serviceProvider;
 
-        public DebugWindow(IServiceProvider serviceProvider)
+        public DebugJobServiceWindow(IServiceProvider serviceProvider)
         {
             InitializeComponent();
 

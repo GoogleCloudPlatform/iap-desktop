@@ -25,6 +25,7 @@ using Google.Solutions.IapDesktop.Application.Services.Adapters;
 using Google.Solutions.IapDesktop.Application.Services.Integration;
 using Google.Solutions.IapDesktop.Application.Services.Persistence;
 using Google.Solutions.IapDesktop.Application.Services.Windows;
+using Google.Solutions.IapDesktop.Application.Services.Windows.Diagnostics;
 using Google.Solutions.IapDesktop.Application.Services.Windows.ProjectExplorer;
 using Google.Solutions.IapDesktop.Application.Services.Windows.RemoteDesktop;
 using Google.Solutions.IapDesktop.Application.Services.Windows.TunnelsViewer;
@@ -220,7 +221,8 @@ namespace Google.Solutions.IapDesktop.Windows
             }
 
 #if DEBUG
-            this.serviceProvider.GetService<DebugWindow>().ShowWindow();
+            this.serviceProvider.GetService<DebugJobServiceWindow>().ShowWindow();
+            this.serviceProvider.GetService<DebugProjectExplorerTrackingWindow>().ShowWindow();
 #endif
         }
 

@@ -76,8 +76,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services
 
         private void ShowActivityLogs(IProjectExplorerNode contextNode)
         {
-            this.serviceProvider.GetService<ActivityLogWindow>().ShowWindow(
-                serviceProvider.GetService<IMainForm>().MainPanel);
+            this.serviceProvider.GetService<ActivityLogWindow>().ShowWindow();
         }
 
         public Extension(IServiceProvider serviceProvider)

@@ -114,9 +114,6 @@
     <Compile Include="Services\ActivityLog\ActivityLogWindow.Designer.cs">
       <DependentUpon>ActivityLogWindow.cs</DependentUpon>
     </Compile>
-    <Compile Include="Services\ActivityLog\ProjectExplorerTrackingToolWindow.cs">
-      <SubType>Form</SubType>
-    </Compile>
     <Compile Include="Services\Adapters\AuditLogAdapter.cs" />
     <Compile Include="Logs\ListLogEntriesParser.cs" />
     <Compile Include="History\DataPoint.cs" />

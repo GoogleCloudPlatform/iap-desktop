@@ -120,11 +120,21 @@
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="Services\Windows\ConfirmationDialog.cs" />
+    <Compile Include="Services\Windows\Diagnostics\DebugProjectExplorerTrackingViewModel.cs" />
+    <Compile Include="Services\Windows\Diagnostics\DebugProjectExplorerTrackingWindow.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Services\Windows\Diagnostics\DebugProjectExplorerTrackingWindow.Designer.cs">
+      <DependentUpon>DebugProjectExplorerTrackingWindow.cs</DependentUpon>
+    </Compile>
     <Compile Include="Services\Windows\HtmlPageGenerator.cs" />
     <Compile Include="Services\Windows\FlatVerticalTabControl.cs">
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="Services\Windows\ProjectExplorer\ProjectExplorerCommand.cs" />
+    <Compile Include="Services\Windows\ProjectExplorer\ProjectExplorerTrackingToolWindow.cs">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="Services\Windows\SlowLoadingPane.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -156,11 +166,11 @@
     <Compile Include="Services\Windows\AboutWindow.Designer.cs">
       <DependentUpon>AboutWindow.cs</DependentUpon>
     </Compile>
-    <Compile Include="Services\Windows\DebugWindow.cs">
+    <Compile Include="Services\Windows\Diagnostics\DebugJobServiceWindow.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Services\Windows\DebugWindow.Designer.cs">
-      <DependentUpon>DebugWindow.cs</DependentUpon>
+    <Compile Include="Services\Windows\Diagnostics\DebugJobServiceWindow.Designer.cs">
+      <DependentUpon>DebugJobServiceWindow.cs</DependentUpon>
     </Compile>
     <Compile Include="Services\Windows\ExceptionDialog.cs" />
     <Compile Include="Services\Windows\IMainForm.cs" />
@@ -281,8 +291,11 @@
     <EmbeddedResource Include="Services\Windows\AboutWindow.resx">
       <DependentUpon>AboutWindow.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Services\Windows\DebugWindow.resx">
-      <DependentUpon>DebugWindow.cs</DependentUpon>
+    <EmbeddedResource Include="Services\Windows\Diagnostics\DebugProjectExplorerTrackingWindow.resx">
+      <DependentUpon>DebugProjectExplorerTrackingWindow.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Services\Windows\Diagnostics\DebugJobServiceWindow.resx">
+      <DependentUpon>DebugJobServiceWindow.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Services\Windows\SlowLoadingPane.resx">
       <DependentUpon>SlowLoadingPane.cs</DependentUpon>

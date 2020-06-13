@@ -19,22 +19,24 @@
 // under the License.
 //
 
+using Google.Solutions.Common.Diagnostics;
 using Google.Solutions.IapDesktop.Application.ObjectModel;
 using Google.Solutions.IapDesktop.Application.Services.Integration;
-using Google.Solutions.IapDesktop.Application.Services.Windows;
 using Google.Solutions.IapDesktop.Application.Services.Windows.ProjectExplorer;
 using System;
 using System.ComponentModel;
+using System.Runtime.InteropServices;
 
-namespace Google.Solutions.IapDesktop.Extensions.Activity.Services.ActivityLog
+namespace Google.Solutions.IapDesktop.Application.Services.Windows.Diagnostics
 {
-    [Service(ServiceLifetime.Singleton)]
-    internal partial class ActivityLogWindow 
-        : ProjectExplorerTrackingToolWindow<ActivityLogViewModel>
+    [ComVisible(false)]
+    [SkipCodeCoverage("For debug purposes only")]
+    public partial class DebugProjectExplorerTrackingWindow
+        : ProjectExplorerTrackingToolWindow<DebugProjectExplorerTrackingViewModel>
     {
         private const int CacheCapacity = 5;
 
-        public ActivityLogWindow(IServiceProvider serviceProvider)
+        public DebugProjectExplorerTrackingWindow(IServiceProvider serviceProvider)
             : base(
                   serviceProvider.GetService<IMainForm>().MainPanel,
                   serviceProvider.GetService<IProjectExplorer>(),
@@ -49,11 +51,11 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services.ActivityLog
         // ProjectExplorerTrackingToolWindow.
         //---------------------------------------------------------------------
 
-        protected override ActivityLogViewModel LoadViewModel(IProjectExplorerNode node)
+        protected override DebugProjectExplorerTrackingViewModel LoadViewModel(IProjectExplorerNode node)
         {
             if (node is IProjectExplorerVmInstanceNode vmNode)
             {
-                return new ActivityLogViewModel(vmNode);
+                return new DebugProjectExplorerTrackingViewModel(vmNode);
             }
             else
             {
@@ -63,10 +65,10 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services.ActivityLog
         }
 
         protected override void BindViewModel(
-            ActivityLogViewModel model, 
+            DebugProjectExplorerTrackingViewModel model, 
             IContainer bindingContainer)
         {
-            this.label1.BindProperty(
+            this.instanceNameLabel.BindProperty(
                 c => c.Text,
                 model,
                 m => m.InstanceName,

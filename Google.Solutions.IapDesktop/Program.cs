@@ -26,6 +26,7 @@ using Google.Solutions.IapDesktop.Application.Services.Adapters;
 using Google.Solutions.IapDesktop.Application.Services.Integration;
 using Google.Solutions.IapDesktop.Application.Services.Persistence;
 using Google.Solutions.IapDesktop.Application.Services.Windows;
+using Google.Solutions.IapDesktop.Application.Services.Windows.Diagnostics;
 using Google.Solutions.IapDesktop.Application.Services.Windows.ProjectExplorer;
 using Google.Solutions.IapDesktop.Application.Services.Windows.RemoteDesktop;
 using Google.Solutions.IapDesktop.Application.Services.Windows.SerialLog;
@@ -266,7 +267,8 @@ namespace Google.Solutions.IapDesktop
             windowAndWorkflowLayer.AddTransient<RemoteDesktopConnectionService>();
 
 #if DEBUG
-            windowAndWorkflowLayer.AddSingleton<DebugWindow>();
+            windowAndWorkflowLayer.AddSingleton<DebugJobServiceWindow>();
+            windowAndWorkflowLayer.AddSingleton<DebugProjectExplorerTrackingWindow>();
             windowAndWorkflowLayer.AddSingleton<HtmlPageGenerator>();
 #endif
             //
