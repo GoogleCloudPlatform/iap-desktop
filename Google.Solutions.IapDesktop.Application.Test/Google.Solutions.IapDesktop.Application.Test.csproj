@@ -102,6 +102,7 @@
     <Compile Include="Services\Workflows\SynchronousJobService.cs" />
     <Compile Include="Services\Workflows\TestRemoteDesktopConnectionService.cs" />
     <Compile Include="Services\Workflows\TunnelEndpoint.cs" />
+    <Compile Include="Util\TestLeastRecentlyUsedCache.cs" />
     <Compile Include="Util\TestRangeObservableCollection.cs" />
     <Compile Include="Util\TestRegistryKeyMapper.cs" />
     <Compile Include="ObjectModel\MockEventService.cs" />

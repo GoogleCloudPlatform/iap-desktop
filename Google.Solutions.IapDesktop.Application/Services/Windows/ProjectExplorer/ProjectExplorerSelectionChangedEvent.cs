@@ -21,11 +21,11 @@
 
 namespace Google.Solutions.IapDesktop.Application.Services.Windows.ProjectExplorer
 {
-    internal class ProjectExplorerNodeSelectedEvent
+    public class ProjectExplorerNodeSelectedEvent
     {
         public IProjectExplorerNode SelectedNode { get; }
 
-        public ProjectExplorerNodeSelectedEvent(IProjectExplorerNode selectedNode)
+        internal ProjectExplorerNodeSelectedEvent(IProjectExplorerNode selectedNode)
         {
             this.SelectedNode = selectedNode;
         }
