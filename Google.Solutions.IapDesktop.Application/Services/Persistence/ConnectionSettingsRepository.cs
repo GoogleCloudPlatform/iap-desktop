@@ -148,8 +148,14 @@ namespace Google.Solutions.IapDesktop.Application.Services.Persistence
 
     public enum RdpAuthenticationLevel
     {
+        // Likely to fail when using IAP unless the cert has been issued
+        // for "localhost".
         AttemptServerAuthentication = 0,
+
+        // Almsot guaranteed to fail, so do not even display it.
+        [Browsable(false)]
         RequireServerAuthentication = 1,
+
         NoServerAuthentication = 3,
 
         [Browsable(false)]
