@@ -26,15 +26,15 @@ using Google.Solutions.IapDesktop.Application.Services.Windows.ProjectExplorer;
 using System;
 using System.ComponentModel;
 
-namespace Google.Solutions.IapDesktop.Extensions.Activity.Services.ActivityLog
+namespace Google.Solutions.IapDesktop.Extensions.Activity.Services.EventLog
 {
     [Service(ServiceLifetime.Singleton)]
-    internal partial class ActivityLogWindow 
+    internal partial class EventLogWindow 
         : ProjectExplorerTrackingToolWindow<ActivityLogViewModel>
     {
         private const int CacheCapacity = 5;
 
-        public ActivityLogWindow(IServiceProvider serviceProvider)
+        public EventLogWindow(IServiceProvider serviceProvider)
             : base(
                   serviceProvider.GetService<IMainForm>().MainPanel,
                   serviceProvider.GetService<IProjectExplorer>(),

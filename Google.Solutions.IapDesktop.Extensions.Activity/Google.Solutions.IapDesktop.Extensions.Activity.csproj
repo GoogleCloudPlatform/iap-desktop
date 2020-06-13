@@ -107,12 +107,12 @@
     <Compile Include="Events\System\TerminateOnHostMaintenanceEvent.cs" />
     <Compile Include="Events\UnknownEvent.cs" />
     <Compile Include="Events\VmInstanceEventBase.cs" />
-    <Compile Include="Services\ActivityLog\ActivityLogViewModel.cs" />
-    <Compile Include="Services\ActivityLog\ActivityLogWindow.cs">
+    <Compile Include="Services\EventLog\EventLogViewModel.cs" />
+    <Compile Include="Services\EventLog\EventLogWindow.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Services\ActivityLog\ActivityLogWindow.Designer.cs">
-      <DependentUpon>ActivityLogWindow.cs</DependentUpon>
+    <Compile Include="Services\EventLog\EventLogWindow.Designer.cs">
+      <DependentUpon>EventLogWindow.cs</DependentUpon>
     </Compile>
     <Compile Include="Services\Adapters\AuditLogAdapter.cs" />
     <Compile Include="Logs\ListLogEntriesParser.cs" />
@@ -178,8 +178,8 @@
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
       <SubType>Designer</SubType>
     </EmbeddedResource>
-    <EmbeddedResource Include="Services\ActivityLog\ActivityLogWindow.resx">
-      <DependentUpon>ActivityLogWindow.cs</DependentUpon>
+    <EmbeddedResource Include="Services\EventLog\EventLogWindow.resx">
+      <DependentUpon>EventLogWindow.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Services\SchedulingReport\CreateReportDialog.resx">
       <DependentUpon>CreateReportDialog.cs</DependentUpon>
@@ -188,12 +188,14 @@
       <DependentUpon>ReportPaneView.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
-  <ItemGroup />
   <ItemGroup>
     <None Include="Resources\Report_32.png" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\Report_16.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\EventLog_16.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

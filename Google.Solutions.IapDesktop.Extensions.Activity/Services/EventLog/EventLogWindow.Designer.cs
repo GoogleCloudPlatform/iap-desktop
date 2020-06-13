@@ -19,9 +19,9 @@
 // under the License.
 //
 
-namespace Google.Solutions.IapDesktop.Extensions.Activity.Services.ActivityLog
+namespace Google.Solutions.IapDesktop.Extensions.Activity.Services.EventLog
 {
-    partial class ActivityLogWindow
+    partial class EventLogWindow
     {
         /// <summary>
         /// Required designer variable.
@@ -49,7 +49,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services.ActivityLog
         /// </summary>
         private void InitializeComponent()
         {
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(ActivityLogWindow));
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(EventLogWindow));
             this.toolStrip = new System.Windows.Forms.ToolStrip();
             this.theme = new WeifenLuo.WinFormsUI.Docking.VS2015LightTheme();
             this.refreshButton = new System.Windows.Forms.ToolStripButton();
@@ -117,9 +117,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services.ActivityLog
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(800, 450);
             this.Controls.Add(this.toolStrip);
-            this.Name = "ActivityLogWindow";
+            this.Name = "EventLogWindow";
             this.ShowIcon = false;
-            this.Text = "Activity Log";
+            this.Text = "Event Log";
             this.toolStrip.ResumeLayout(false);
             this.toolStrip.PerformLayout();
             this.ResumeLayout(false);

@@ -25,7 +25,7 @@ using Google.Solutions.IapDesktop.Application.Services.Persistence;
 using Google.Solutions.IapDesktop.Application.Services.Windows;
 using Google.Solutions.IapDesktop.Application.Services.Windows.ProjectExplorer;
 using Google.Solutions.IapDesktop.Extensions.Activity.Properties;
-using Google.Solutions.IapDesktop.Extensions.Activity.Services.ActivityLog;
+using Google.Solutions.IapDesktop.Extensions.Activity.Services.EventLog;
 using Google.Solutions.IapDesktop.Extensions.Activity.Services.Adapters;
 using Google.Solutions.IapDesktop.Extensions.Activity.Services.SchedulingReport;
 using System;
@@ -76,7 +76,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services
 
         private void ShowActivityLogs(IProjectExplorerNode contextNode)
         {
-            this.serviceProvider.GetService<ActivityLogWindow>().ShowWindow();
+            this.serviceProvider.GetService<EventLogWindow>().ShowWindow();
         }
 
         public Extension(IServiceProvider serviceProvider)
@@ -100,6 +100,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services
             projectExplorer.AddCommand(
                 "Analyze instance and node usage...",
                 Resources.Report_16,
+                null,
                 new ProjectExplorerCommand(
                     context => context is IProjectExplorerProjectNode 
                             || context is IProjectExplorerCloudNode
@@ -108,8 +109,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services
                     context => CreateReport(context)));
 
             projectExplorer.AddCommand(
-                "Activity logs",
-                null,
+                "Show event log",
+                Resources.EventLog_16,
+                5,
                 new ProjectExplorerCommand(
                     context => context is IProjectExplorerVmInstanceNode
                         ? CommandState.Enabled

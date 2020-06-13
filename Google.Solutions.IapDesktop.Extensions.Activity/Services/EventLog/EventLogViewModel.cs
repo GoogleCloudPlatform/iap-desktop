@@ -22,7 +22,7 @@
 using Google.Solutions.IapDesktop.Application.ObjectModel;
 using Google.Solutions.IapDesktop.Application.Services.Windows.ProjectExplorer;
 
-namespace Google.Solutions.IapDesktop.Extensions.Activity.Services.ActivityLog
+namespace Google.Solutions.IapDesktop.Extensions.Activity.Services.EventLog
 {
     internal class ActivityLogViewModel : ViewModelBase
     {
