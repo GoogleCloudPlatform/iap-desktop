@@ -19,25 +19,87 @@
 // under the License.
 //
 
+using Google.Solutions.CloudIap;
+using Google.Solutions.Common.Auth;
 using Google.Solutions.IapDesktop.Application.ObjectModel;
 using Google.Solutions.IapDesktop.Application.Services.Integration;
+using Google.Solutions.IapDesktop.Application.Services.Persistence;
+using Google.Solutions.IapDesktop.Application.Util;
+using Google.Solutions.IapTunneling.Iap;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
+using System.Threading.Tasks;
+using System.Windows.Forms;
 
 namespace Google.Solutions.IapDesktop.Windows
 {
     internal class MainFormViewModel : ViewModelBase
     {
+        internal const string FriendlyName = "IAP Desktop - Identity-Aware Proxy for Remote Desktop";
+
+        private readonly ApplicationSettingsRepository applicationSettings;
+        private readonly AuthSettingsRepository authSettings;
+        private readonly AppProtocolRegistry protocolRegistry;
+
         // NB. This list is only access from the UI thread, so no locking required.
         private readonly LinkedList<BackgroundJob> backgroundJobs
             = new LinkedList<BackgroundJob>();
 
         private bool isBackgroundJobStatusVisible = false;
+        private string userEmail = null;
+
+        public MainFormViewModel(
+            Control view,
+            ApplicationSettingsRepository applicationSettings,
+            AuthSettingsRepository authSettings,
+            AppProtocolRegistry protocolRegistry)
+        {
+            this.View = view;
+            this.applicationSettings = applicationSettings;
+            this.authSettings = authSettings;
+            this.protocolRegistry = protocolRegistry;
+        }
 
         //---------------------------------------------------------------------
         // Observable properties.
         //---------------------------------------------------------------------
+
+        public bool IsUpdateCheckEnabled
+        {
+            get => this.applicationSettings.GetSettings().IsUpdateCheckEnabled;
+            set
+            {
+                var settings = this.applicationSettings.GetSettings();
+                settings.IsUpdateCheckEnabled = value;
+                this.applicationSettings.SetSettings(settings);
+
+                RaisePropertyChange();
+            }
+        }
+
+        public bool IsProtocolRegistred
+        {
+            get => this.protocolRegistry.IsRegistered(
+                IapRdpUrl.Scheme, 
+                GetType().Assembly.Location);
+            set
+            {
+                if (value)
+                {
+                    this.protocolRegistry.Register(
+                        IapRdpUrl.Scheme,
+                        FriendlyName,
+                        GetType().Assembly.Location);
+                }
+                else
+                {
+                    this.protocolRegistry.Unregister(IapRdpUrl.Scheme);
+                }
+
+                RaisePropertyChange();
+            }
+        }
 
         public bool IsBackgroundJobStatusVisible
         {
@@ -46,7 +108,7 @@ namespace Google.Solutions.IapDesktop.Windows
             {
                 this.isBackgroundJobStatusVisible = value;
                 RaisePropertyChange();
-                RaisePropertyChange("BackgroundJobStatus");
+                RaisePropertyChange((MainFormViewModel m) => m.BackgroundJobStatus);
             }
         }
 
@@ -71,8 +133,18 @@ namespace Google.Solutions.IapDesktop.Windows
             }
         }
 
+        public string UserEmail
+        {
+            get => this.userEmail;
+            set
+            {
+                this.userEmail = value;
+                RaisePropertyChange();
+            }
+        }
+
         //---------------------------------------------------------------------
-        // Actions.
+        // Background job actions.
         //---------------------------------------------------------------------
 
         public IJobUserFeedback CreateBackgroundJob(
@@ -90,6 +162,37 @@ namespace Google.Solutions.IapDesktop.Windows
             {
                 job.Cancel();
             }
+        }
+
+
+        //---------------------------------------------------------------------
+        // Authorization actions.
+        //---------------------------------------------------------------------
+
+        public IAuthorization Authorization { get; private set; }
+
+        public void Authorize()
+        {
+            this.Authorization = AuthorizeDialog.Authorize(
+                (Control)this.View,
+                OAuthClient.Secrets,
+                new[] { IapTunnelingEndpoint.RequiredScope },
+                this.authSettings);
+
+            this.UserEmail = this.Authorization.Email;
+        }
+
+        public async Task ReauthorizeAsync(CancellationToken token)
+        {
+            await this.Authorization.ReauthorizeAsync(token)
+                .ConfigureAwait(true);
+
+            this.UserEmail = this.Authorization.Email;
+        }
+
+        public Task RevokeAuthorizationAsync()
+        {
+            return this.Authorization.RevokeAsync();
         }
 
         //---------------------------------------------------------------------

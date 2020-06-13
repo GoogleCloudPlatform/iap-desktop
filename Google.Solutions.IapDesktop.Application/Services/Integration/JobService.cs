@@ -178,7 +178,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.Integration
                 {
                     return await RunInBackgroundWithUserFeedback(
                         jobDescription, 
-                        jobFunc).ConfigureAwait(false);
+                        jobFunc).ConfigureAwait(true);  // Continue on UI thread.
                 }
                 catch (Exception e) when (e.IsReauthError())
                 {
@@ -198,9 +198,9 @@ namespace Google.Solutions.IapDesktop.Application.Services.Integration
                             {
                                 await this.authService
                                     .ReauthorizeAsync(CancellationToken.None)
-                                    .ConfigureAwait(false);
+                                    .ConfigureAwait(true);  // Continue on UI thread.
                                 return default(T);
-                            }).ConfigureAwait(false);
+                            }).ConfigureAwait(true);        // Continue on UI thread.
                     }
                     else
                     {

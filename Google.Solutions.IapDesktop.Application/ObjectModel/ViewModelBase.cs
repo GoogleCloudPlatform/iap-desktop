@@ -19,7 +19,11 @@
 // under the License.
 //
 
+using System;
 using System.ComponentModel;
+using System.Diagnostics;
+using System.Linq.Expressions;
+using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Windows.Forms;
 
@@ -41,6 +45,29 @@ namespace Google.Solutions.IapDesktop.Application.ObjectModel
         public void RaisePropertyChange([CallerMemberName] string propertyname = null)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyname));
+        }
+
+        /// <summary>
+        /// Notify observers about a property change. Using this
+        /// overload avoids having to use a (brittle) string to
+        /// identify a property.
+        /// 
+        /// Example:
+        /// RaisePropertyChange((MyViewModel m) => m.MyProperty);
+        /// </summary>
+        public void RaisePropertyChange<TModel, TProperty>(
+            Expression<Func<TModel, TProperty>> modelProperty)
+        {
+            Debug.Assert(modelProperty.NodeType == ExpressionType.Lambda);
+            if (modelProperty.Body is MemberExpression memberExpression &&
+                memberExpression.Member is PropertyInfo propertyInfo)
+            {
+                RaisePropertyChange(propertyInfo.Name);
+            }
+            else
+            {
+                throw new ArgumentException("Expression does not resolve to a property");
+            }
         }
 
         public bool HasPropertyChangeListeners => this.PropertyChanged != null;
