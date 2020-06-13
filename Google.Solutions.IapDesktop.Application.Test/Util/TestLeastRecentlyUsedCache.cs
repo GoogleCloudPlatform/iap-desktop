@@ -78,5 +78,17 @@ namespace Google.Solutions.IapDesktop.Application.Test.Util
             Assert.AreEqual("ONE", cache.Lookup("one"));
             Assert.AreEqual("THREE", cache.Lookup("three"));
         }
+
+        [Test]
+        public void WhenItemAddedTwice_ThenSecondCallIsIgnored()
+        {
+            var cache = new LeastRecentlyUsedCache<string, string>(2);
+            cache.Add("one", "ONE");
+            cache.Add("one", "ONE");
+            cache.Add("two", "TWO");
+
+            Assert.AreEqual("ONE", cache.Lookup("one"));
+            Assert.AreEqual("TWO", cache.Lookup("two"));
+        }
     }
 }

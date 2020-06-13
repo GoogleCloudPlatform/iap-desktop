@@ -107,6 +107,16 @@
     <Compile Include="Events\System\TerminateOnHostMaintenanceEvent.cs" />
     <Compile Include="Events\UnknownEvent.cs" />
     <Compile Include="Events\VmInstanceEventBase.cs" />
+    <Compile Include="Services\ActivityLog\ActivityLogViewModel.cs" />
+    <Compile Include="Services\ActivityLog\ActivityLogWindow.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Services\ActivityLog\ActivityLogWindow.Designer.cs">
+      <DependentUpon>ActivityLogWindow.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Services\ActivityLog\ProjectExplorerTrackingToolWindow.cs">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="Services\Adapters\AuditLogAdapter.cs" />
     <Compile Include="Logs\ListLogEntriesParser.cs" />
     <Compile Include="History\DataPoint.cs" />
@@ -170,6 +180,9 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
       <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Services\ActivityLog\ActivityLogWindow.resx">
+      <DependentUpon>ActivityLogWindow.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Services\SchedulingReport\CreateReportDialog.resx">
       <DependentUpon>CreateReportDialog.cs</DependentUpon>

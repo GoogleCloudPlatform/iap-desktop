@@ -71,7 +71,7 @@ namespace Google.Solutions.IapDesktop.Application.Util
 
             // Track this as most recently accessed.
             lruList.AddLast(node);
-            cacheMap.Add(key, node);
+            cacheMap[key] = node;
         }
 
         private void PurgeLeastRecentlyUsed()
