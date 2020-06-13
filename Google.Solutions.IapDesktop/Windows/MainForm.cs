@@ -19,7 +19,6 @@
 // under the License.
 //
 
-using Google.Solutions.CloudIap;
 using Google.Solutions.Common.Auth;
 using Google.Solutions.IapDesktop.Application.ObjectModel;
 using Google.Solutions.IapDesktop.Application.Services.Adapters;
@@ -31,7 +30,6 @@ using Google.Solutions.IapDesktop.Application.Services.Windows.RemoteDesktop;
 using Google.Solutions.IapDesktop.Application.Services.Windows.TunnelsViewer;
 using Google.Solutions.IapDesktop.Application.Services.Workflows;
 using Google.Solutions.IapDesktop.Application.Util;
-using Google.Solutions.IapTunneling.Iap;
 using System;
 using System.ComponentModel;
 using System.Diagnostics;
@@ -52,7 +50,6 @@ namespace Google.Solutions.IapDesktop.Windows
 
         private readonly ApplicationSettingsRepository applicationSettings;
         private readonly IServiceProvider serviceProvider;
-        private readonly AppProtocolRegistry protocolRegistry;
 
         public IapRdpUrl StartupUrl { get; set; }
 
@@ -61,7 +58,6 @@ namespace Google.Solutions.IapDesktop.Windows
             this.serviceProvider = serviceProvider;
 
             this.applicationSettings = bootstrappingServiceProvider.GetService<ApplicationSettingsRepository>();
-            this.protocolRegistry = bootstrappingServiceProvider.GetService<AppProtocolRegistry>();
 
             // 
             // Restore window settings.
@@ -91,17 +87,18 @@ namespace Google.Solutions.IapDesktop.Windows
 
             this.checkForUpdatesOnExitToolStripMenuItem.Checked =
                 this.applicationSettings.GetSettings().IsUpdateCheckEnabled;
-            this.enableAppProtocolToolStripMenuItem.Checked =
-                this.protocolRegistry.IsRegistered(IapRdpUrl.Scheme, GetType().Assembly.Location);
-
 
             //
             // Bind controls.
             //
+            this.Text = MainFormViewModel.FriendlyName;
+
             this.viewModel = new MainFormViewModel(
                 this,
-                bootstrappingServiceProvider.GetService<AuthSettingsRepository>());
+                bootstrappingServiceProvider.GetService<AuthSettingsRepository>(),
+                bootstrappingServiceProvider.GetService<AppProtocolRegistry>());
 
+            // Status bar.
             this.backgroundJobLabel.BindProperty(
                 c => c.Visible,
                 this.viewModel,
@@ -117,11 +114,17 @@ namespace Google.Solutions.IapDesktop.Windows
                 this.viewModel,
                 m => m.BackgroundJobStatus,
                 this.components);
-
             this.toolStripEmail.BindProperty(
                 c => c.Text,
                 this.viewModel,
                 m => m.UserEmail,
+                this.components);
+
+            // Menus.
+            this.enableAppProtocolToolStripMenuItem.BindProperty(
+                c => c.Checked,
+                this.viewModel,
+                m => m.IsProtocolRegistred,
                 this.components);
         }
 
@@ -278,7 +281,7 @@ namespace Google.Solutions.IapDesktop.Windows
         {
             try
             {
-                await this.Authorization.RevokeAsync();
+                await this.viewModel.RevokeAuthorizationAsync().ConfigureAwait(true);
                 MessageBox.Show(
                     this,
                     "The authorization for this application has been revoked.\n\n" +
@@ -370,20 +373,10 @@ namespace Google.Solutions.IapDesktop.Windows
             }
         }
 
-        private void enableAppProtocolToolStripMenuItem_Click(object sender, EventArgs e)
+        private void enableAppProtocolToolStripMenuItem_Click(object sender, EventArgs e) 
         {
-            var registerProtocol =
-                this.enableAppProtocolToolStripMenuItem.Checked =
+            this.enableAppProtocolToolStripMenuItem.Checked =
                 !this.enableAppProtocolToolStripMenuItem.Checked;
-
-            if (registerProtocol)
-            {
-                this.protocolRegistry.Register(IapRdpUrl.Scheme, this.Text, GetType().Assembly.Location);
-            }
-            else
-            {
-                this.protocolRegistry.Unregister(IapRdpUrl.Scheme);
-            }
         }
 
         private void checkForUpdatesOnExitToolStripMenuItem_Click(object sender, EventArgs e)

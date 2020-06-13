@@ -366,7 +366,6 @@ namespace Google.Solutions.IapDesktop.Windows
             this.MainMenuStrip = this.mainMenu;
             this.MinimumSize = new System.Drawing.Size(1000, 700);
             this.Name = "MainForm";
-            this.Text = "IAP Desktop - Identity-Aware Proxy for Remote Desktop";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.MainForm_FormClosing);
             this.Load += new System.EventHandler(this.MainForm_Load);
             this.Shown += new System.EventHandler(this.MainForm_Shown);

@@ -22,9 +22,9 @@
 using Google.Solutions.CloudIap;
 using Google.Solutions.Common.Auth;
 using Google.Solutions.IapDesktop.Application.ObjectModel;
-using Google.Solutions.IapDesktop.Application.Services.Adapters;
 using Google.Solutions.IapDesktop.Application.Services.Integration;
 using Google.Solutions.IapDesktop.Application.Services.Persistence;
+using Google.Solutions.IapDesktop.Application.Util;
 using Google.Solutions.IapTunneling.Iap;
 using System.Collections.Generic;
 using System.Linq;
@@ -36,7 +36,10 @@ namespace Google.Solutions.IapDesktop.Windows
 {
     internal class MainFormViewModel : ViewModelBase
     {
+        internal const string FriendlyName = "IAP Desktop - Identity-Aware Proxy for Remote Desktop";
+
         private readonly AuthSettingsRepository authSettings;
+        private readonly AppProtocolRegistry protocolRegistry;
 
         // NB. This list is only access from the UI thread, so no locking required.
         private readonly LinkedList<BackgroundJob> backgroundJobs
@@ -47,15 +50,40 @@ namespace Google.Solutions.IapDesktop.Windows
 
         public MainFormViewModel(
             Control view,
-            AuthSettingsRepository authSettings)
+            AuthSettingsRepository authSettings,
+            AppProtocolRegistry protocolRegistry)
         {
             this.View = view;
             this.authSettings = authSettings;
+            this.protocolRegistry = protocolRegistry;
         }
 
         //---------------------------------------------------------------------
         // Observable properties.
         //---------------------------------------------------------------------
+
+        public bool IsProtocolRegistred
+        {
+            get => this.protocolRegistry.IsRegistered(
+                IapRdpUrl.Scheme, 
+                GetType().Assembly.Location);
+            set
+            {
+                if (value)
+                {
+                    this.protocolRegistry.Register(
+                        IapRdpUrl.Scheme,
+                        FriendlyName,
+                        GetType().Assembly.Location);
+                }
+                else
+                {
+                    this.protocolRegistry.Unregister(IapRdpUrl.Scheme);
+                }
+
+                RaisePropertyChange();
+            }
+        }
 
         public bool IsBackgroundJobStatusVisible
         {
@@ -144,6 +172,11 @@ namespace Google.Solutions.IapDesktop.Windows
                 .ConfigureAwait(true);
 
             this.UserEmail = this.Authorization.Email;
+        }
+
+        public Task RevokeAuthorizationAsync()
+        {
+            return this.Authorization.RevokeAsync();
         }
 
         //---------------------------------------------------------------------
