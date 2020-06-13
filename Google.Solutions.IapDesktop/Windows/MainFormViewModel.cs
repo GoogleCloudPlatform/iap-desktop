@@ -38,6 +38,7 @@ namespace Google.Solutions.IapDesktop.Windows
     {
         internal const string FriendlyName = "IAP Desktop - Identity-Aware Proxy for Remote Desktop";
 
+        private readonly ApplicationSettingsRepository applicationSettings;
         private readonly AuthSettingsRepository authSettings;
         private readonly AppProtocolRegistry protocolRegistry;
 
@@ -50,10 +51,12 @@ namespace Google.Solutions.IapDesktop.Windows
 
         public MainFormViewModel(
             Control view,
+            ApplicationSettingsRepository applicationSettings,
             AuthSettingsRepository authSettings,
             AppProtocolRegistry protocolRegistry)
         {
             this.View = view;
+            this.applicationSettings = applicationSettings;
             this.authSettings = authSettings;
             this.protocolRegistry = protocolRegistry;
         }
@@ -61,6 +64,19 @@ namespace Google.Solutions.IapDesktop.Windows
         //---------------------------------------------------------------------
         // Observable properties.
         //---------------------------------------------------------------------
+
+        public bool IsUpdateCheckEnabled
+        {
+            get => this.applicationSettings.GetSettings().IsUpdateCheckEnabled;
+            set
+            {
+                var settings = this.applicationSettings.GetSettings();
+                settings.IsUpdateCheckEnabled = value;
+                this.applicationSettings.SetSettings(settings);
+
+                RaisePropertyChange();
+            }
+        }
 
         public bool IsProtocolRegistred
         {

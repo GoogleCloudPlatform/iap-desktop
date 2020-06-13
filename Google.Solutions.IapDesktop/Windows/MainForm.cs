@@ -85,9 +85,6 @@ namespace Google.Solutions.IapDesktop.Windows
             this.dockPanel.DockLeftPortion =
                 this.dockPanel.DockRightPortion = (300.0f / this.Width);
 
-            this.checkForUpdatesOnExitToolStripMenuItem.Checked =
-                this.applicationSettings.GetSettings().IsUpdateCheckEnabled;
-
             //
             // Bind controls.
             //
@@ -95,6 +92,7 @@ namespace Google.Solutions.IapDesktop.Windows
 
             this.viewModel = new MainFormViewModel(
                 this,
+                this.applicationSettings,
                 bootstrappingServiceProvider.GetService<AuthSettingsRepository>(),
                 bootstrappingServiceProvider.GetService<AppProtocolRegistry>());
 
@@ -121,6 +119,11 @@ namespace Google.Solutions.IapDesktop.Windows
                 this.components);
 
             // Menus.
+            this.checkForUpdatesOnExitToolStripMenuItem.BindProperty(
+                c => c.Checked,
+                this.viewModel,
+                m => m.IsUpdateCheckEnabled,
+                this.components);
             this.enableAppProtocolToolStripMenuItem.BindProperty(
                 c => c.Checked,
                 this.viewModel,
@@ -381,13 +384,6 @@ namespace Google.Solutions.IapDesktop.Windows
 
         private void checkForUpdatesOnExitToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            var updateEnabled = !checkForUpdatesOnExitToolStripMenuItem.Checked;
-
-            var settings = this.applicationSettings.GetSettings();
-            settings.IsUpdateCheckEnabled = updateEnabled;
-            this.applicationSettings.SetSettings(settings);
-
-            // Toggle menu.
             checkForUpdatesOnExitToolStripMenuItem.Checked =
                 !checkForUpdatesOnExitToolStripMenuItem.Checked;
         }
