@@ -27,6 +27,7 @@ using Google.Solutions.IapDesktop.Application.Services.Windows.ProjectExplorer;
 using Google.Solutions.IapDesktop.Application.Util;
 using System;
 using System.ComponentModel;
+using System.Diagnostics;
 using WeifenLuo.WinFormsUI.Docking;
 
 namespace Google.Solutions.IapDesktop.Extensions.Activity.Services.ActivityLog
@@ -38,6 +39,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services.ActivityLog
         private readonly LeastRecentlyUsedCache<IProjectExplorerNode, TViewModel> modelCache;
 
         private IContainer currentBindingContainer = null;
+        private IProjectExplorerNode ignoredNode = null;
 
         protected ProjectExplorerTrackingToolWindow()
         {
@@ -49,6 +51,12 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services.ActivityLog
             IEventService eventService,
             int cacheCapacity)
         {
+            //
+            // This window is a singleton, so we never want it to be closed,
+            // just hidden.
+            //
+            this.HideOnClose = true;
+
             this.modelCache = new LeastRecentlyUsedCache<IProjectExplorerNode, TViewModel>(
                 cacheCapacity);
 
@@ -67,48 +75,78 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services.ActivityLog
                 WeifenLuo.WinFormsUI.Docking.DockState.DockBottomAutoHide);
         }
 
+        protected void OnProjectExplorerNodeSelected(IProjectExplorerNode node)
+        {
+            using (TraceSources.IapDesktop.TraceMethod().WithParameters(this.IsUserVisible))
+            {
+                if (!this.IsUserVisible)
+                {
+                    // The window is currently not visible to the user, so
+                    // do not bother updating it immediately. 
+                    this.ignoredNode = node;
+                    return;
+                }
+                else
+                {
+                    this.ignoredNode = null;
+                }
+
+                TViewModel model = this.modelCache.Lookup(node);
+                if (model == null)
+                {
+                    TraceSources.IapDesktop.TraceVerbose(
+                        "Loading view model ({0})", typeof(TViewModel).Name);
+
+                    model = LoadViewModel(node);
+                }
+
+                if (model != null)
+                {
+                    this.modelCache.Add(node, model);
+
+                    TraceSources.IapDesktop.TraceVerbose(
+                        "Binding view model ({0})", typeof(TViewModel).Name);
+
+                    var bindingContainer = new Container();
+                    BindViewModel(model, bindingContainer);
+
+                    if (this.currentBindingContainer != null)
+                    {
+                        // Dispose all old bindings.
+                        this.currentBindingContainer.Dispose();
+                    }
+
+                    this.currentBindingContainer = bindingContainer;
+                }
+            }
+        }
+
+        protected override void OnUserVisibilityChanged(bool visible)
+        {
+            if (visible && this.ignoredNode != null)
+            {
+                // There was a selection change while the window was hidden
+                // and we were ignoring updates. 
+                TraceSources.IapDesktop.TraceVerbose("Reapplying ignored selection change");
+                OnProjectExplorerNodeSelected(this.ignoredNode);
+            }
+        }
+
+        //---------------------------------------------------------------------
+        // Overridables.
+        //
+        // NB. These methods should be abstract, but the forms designer does not like
+        // abstract base classes for forms.
+        //---------------------------------------------------------------------
+
         protected virtual TViewModel LoadViewModel(IProjectExplorerNode node)
         {
-            // This method should be abstract, but the forms designer does not like
-            // abstract base classes for forms.
             throw new InvalidOperationException();
         }
 
         protected virtual void BindViewModel(
-            TViewModel model, 
+            TViewModel model,
             IContainer bindingContainer)
-        {
-        }
-
-        protected void OnProjectExplorerNodeSelected(IProjectExplorerNode node)
-        {
-            TViewModel model = this.modelCache.Lookup(node);
-            if (model == null)
-            {
-                TraceSources.IapDesktop.TraceVerbose(
-                    "Loading view model ({0})", typeof(TViewModel).Name);
-
-                model = LoadViewModel(node);
-            }
-
-            if (model != null)
-            { 
-                this.modelCache.Add(node, model);
-
-                TraceSources.IapDesktop.TraceVerbose(
-                    "Binding view model ({0})", typeof(TViewModel).Name);
-
-                var bindingContainer = new Container();
-                BindViewModel(model, bindingContainer);
-
-                if (this.currentBindingContainer != null)
-                {
-                    // Dispose all old bindings.
-                    this.currentBindingContainer.Dispose();
-                }
-
-                this.currentBindingContainer = bindingContainer;                
-            }
-        }
+        {}
     }
 }
