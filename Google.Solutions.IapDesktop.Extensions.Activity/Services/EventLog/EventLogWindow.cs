@@ -29,6 +29,7 @@ using System;
 using System.ComponentModel;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Linq;
 
 namespace Google.Solutions.IapDesktop.Extensions.Activity.Services.EventLog
 {
@@ -49,6 +50,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services.EventLog
             InitializeComponent();
 
             this.theme.ApplyTo(this.toolStrip);
+            this.timeFrameComboBox.Items.AddRange(ActivityLogViewModel.AnalysisTimeframes.ToArray());
+            this.timeFrameComboBox.SelectedIndex = 0;
         }
 
         //---------------------------------------------------------------------
@@ -75,11 +78,29 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services.EventLog
             ActivityLogViewModel model, 
             IContainer bindingContainer)
         {
-            //this.label1.BindProperty(
-            //    c => c.Text,
-            //    model,
-            //    m => m.InstanceName,
-            //    bindingContainer);
+            // The timeframe selector should not change when we swap view models.
+            model.SelectedTimeframe = (ActivityLogViewModel.Timeframe)this.timeFrameComboBox.SelectedItem;
+            this.timeFrameComboBox.OnControlPropertyChange(
+                c => c.SelectedIndex,
+                index => model.SelectedTimeframe = ActivityLogViewModel.AnalysisTimeframes[index]);
+
+            // Bind toolbar.
+            this.refreshButton.BindProperty(
+                c => c.Enabled,
+                model,
+                m => m.IsRefreshButtonEnabled);
+            this.lifecycleEventsDropDown.BindProperty(
+                c => c.Enabled,
+                model,
+                m => m.IsLifecycleEventDropDownEnabled);
+
+            // Bind list.
+            this.list.BindColumn(0, e => e.Timestamp.ToString());
+            this.list.BindColumn(1, e => e.Severity);
+            this.list.BindColumn(2, e => e.Message);
+            this.list.BindColumn(3, e => e.Status.Message);
+            this.list.BindColumn(4, e => e.PrincipalEmail);
+            this.list.BindCollection(model.Events);
         }
     }
 

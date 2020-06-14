@@ -56,13 +56,14 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services.EventLog
             this.lifecycleEventsDropDown = new System.Windows.Forms.ToolStripDropDownButton();
             this.includeUserEventsButton = new System.Windows.Forms.ToolStripMenuItem();
             this.includeSystemEventsButton = new System.Windows.Forms.ToolStripMenuItem();
+            this.timeFrameComboBox = new System.Windows.Forms.ToolStripComboBox();
             this.theme = new WeifenLuo.WinFormsUI.Docking.VS2015LightTheme();
-            this.list = new EventsListView();
+            this.list = new Google.Solutions.IapDesktop.Extensions.Activity.Services.EventLog.EventsListView();
             this.timestampColumn = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.severityColumn = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.descriptionColumn = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-            this.principalColumn = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.statusColumn = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.principalColumn = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.toolStrip.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -71,7 +72,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services.EventLog
             this.toolStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.refreshButton,
             this.toolStripSeparator1,
-            this.lifecycleEventsDropDown});
+            this.lifecycleEventsDropDown,
+            this.timeFrameComboBox});
             this.toolStrip.Location = new System.Drawing.Point(0, 0);
             this.toolStrip.Name = "toolStrip";
             this.toolStrip.Size = new System.Drawing.Size(800, 25);
@@ -81,6 +83,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services.EventLog
             // refreshButton
             // 
             this.refreshButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.refreshButton.Enabled = false;
             this.refreshButton.Image = ((System.Drawing.Image)(resources.GetObject("refreshButton.Image")));
             this.refreshButton.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.refreshButton.Name = "refreshButton";
@@ -97,6 +100,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services.EventLog
             this.lifecycleEventsDropDown.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.includeUserEventsButton,
             this.includeSystemEventsButton});
+            this.lifecycleEventsDropDown.Enabled = false;
             this.lifecycleEventsDropDown.Image = ((System.Drawing.Image)(resources.GetObject("lifecycleEventsDropDown.Image")));
             this.lifecycleEventsDropDown.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.lifecycleEventsDropDown.Name = "lifecycleEventsDropDown";
@@ -107,18 +111,25 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services.EventLog
             // 
             this.includeUserEventsButton.CheckOnClick = true;
             this.includeUserEventsButton.Name = "includeUserEventsButton";
-            this.includeUserEventsButton.Size = new System.Drawing.Size(149, 22);
+            this.includeUserEventsButton.Size = new System.Drawing.Size(180, 22);
             this.includeUserEventsButton.Text = "User events";
             // 
             // includeSystemEventsButton
             // 
             this.includeSystemEventsButton.CheckOnClick = true;
             this.includeSystemEventsButton.Name = "includeSystemEventsButton";
-            this.includeSystemEventsButton.Size = new System.Drawing.Size(149, 22);
+            this.includeSystemEventsButton.Size = new System.Drawing.Size(180, 22);
             this.includeSystemEventsButton.Text = "System events";
+            // 
+            // timeFrameComboBox
+            // 
+            this.timeFrameComboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.timeFrameComboBox.Name = "timeFrameComboBox";
+            this.timeFrameComboBox.Size = new System.Drawing.Size(121, 25);
             // 
             // list
             // 
+            this.list.AutoResizeColumnsOnUpdate = false;
             this.list.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
             this.timestampColumn,
             this.severityColumn,
@@ -132,6 +143,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services.EventLog
             this.list.Location = new System.Drawing.Point(0, 25);
             this.list.Name = "list";
             this.list.OwnerDraw = true;
+            this.list.SelectedModelItem = null;
             this.list.Size = new System.Drawing.Size(800, 425);
             this.list.TabIndex = 1;
             this.list.UseCompatibleStateImageBehavior = false;
@@ -151,15 +163,15 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services.EventLog
             this.descriptionColumn.Text = "Description";
             this.descriptionColumn.Width = 300;
             // 
-            // principalColumn
-            // 
-            this.principalColumn.Text = "User";
-            this.principalColumn.Width = 120;
-            // 
             // statusColumn
             // 
             this.statusColumn.Text = "Status";
             this.statusColumn.Width = 192;
+            // 
+            // principalColumn
+            // 
+            this.principalColumn.Text = "User";
+            this.principalColumn.Width = 120;
             // 
             // EventLogWindow
             // 
@@ -192,5 +204,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services.EventLog
         private System.Windows.Forms.ColumnHeader descriptionColumn;
         private System.Windows.Forms.ColumnHeader principalColumn;
         private System.Windows.Forms.ColumnHeader statusColumn;
+        private System.Windows.Forms.ToolStripComboBox timeFrameComboBox;
     }
 }
