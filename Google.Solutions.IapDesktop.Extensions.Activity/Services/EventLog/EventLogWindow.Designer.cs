@@ -51,12 +51,18 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services.EventLog
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(EventLogWindow));
             this.toolStrip = new System.Windows.Forms.ToolStrip();
-            this.theme = new WeifenLuo.WinFormsUI.Docking.VS2015LightTheme();
             this.refreshButton = new System.Windows.Forms.ToolStripButton();
             this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
             this.lifecycleEventsDropDown = new System.Windows.Forms.ToolStripDropDownButton();
             this.includeUserEventsButton = new System.Windows.Forms.ToolStripMenuItem();
             this.includeSystemEventsButton = new System.Windows.Forms.ToolStripMenuItem();
+            this.theme = new WeifenLuo.WinFormsUI.Docking.VS2015LightTheme();
+            this.list = new EventsListView();
+            this.timestampColumn = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.severityColumn = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.descriptionColumn = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.principalColumn = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.statusColumn = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.toolStrip.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -101,21 +107,66 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services.EventLog
             // 
             this.includeUserEventsButton.CheckOnClick = true;
             this.includeUserEventsButton.Name = "includeUserEventsButton";
-            this.includeUserEventsButton.Size = new System.Drawing.Size(180, 22);
+            this.includeUserEventsButton.Size = new System.Drawing.Size(149, 22);
             this.includeUserEventsButton.Text = "User events";
             // 
             // includeSystemEventsButton
             // 
             this.includeSystemEventsButton.CheckOnClick = true;
             this.includeSystemEventsButton.Name = "includeSystemEventsButton";
-            this.includeSystemEventsButton.Size = new System.Drawing.Size(180, 22);
+            this.includeSystemEventsButton.Size = new System.Drawing.Size(149, 22);
             this.includeSystemEventsButton.Text = "System events";
             // 
-            // ActivityLogWindow
+            // list
+            // 
+            this.list.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
+            this.timestampColumn,
+            this.severityColumn,
+            this.descriptionColumn,
+            this.statusColumn,
+            this.principalColumn});
+            this.list.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.list.FullRowSelect = true;
+            this.list.GridLines = true;
+            this.list.HideSelection = false;
+            this.list.Location = new System.Drawing.Point(0, 25);
+            this.list.Name = "list";
+            this.list.OwnerDraw = true;
+            this.list.Size = new System.Drawing.Size(800, 425);
+            this.list.TabIndex = 1;
+            this.list.UseCompatibleStateImageBehavior = false;
+            this.list.View = System.Windows.Forms.View.Details;
+            // 
+            // timestampColumn
+            // 
+            this.timestampColumn.Text = "Timestamp (UTC)";
+            this.timestampColumn.Width = 120;
+            // 
+            // severityColumn
+            // 
+            this.severityColumn.Text = "Severity";
+            // 
+            // descriptionColumn
+            // 
+            this.descriptionColumn.Text = "Description";
+            this.descriptionColumn.Width = 300;
+            // 
+            // principalColumn
+            // 
+            this.principalColumn.Text = "User";
+            this.principalColumn.Width = 120;
+            // 
+            // statusColumn
+            // 
+            this.statusColumn.Text = "Status";
+            this.statusColumn.Width = 192;
+            // 
+            // EventLogWindow
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(800, 450);
+            this.Controls.Add(this.list);
             this.Controls.Add(this.toolStrip);
             this.Name = "EventLogWindow";
             this.ShowIcon = false;
@@ -135,5 +186,11 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services.EventLog
         private System.Windows.Forms.ToolStripDropDownButton lifecycleEventsDropDown;
         private System.Windows.Forms.ToolStripMenuItem includeUserEventsButton;
         private System.Windows.Forms.ToolStripMenuItem includeSystemEventsButton;
+        private EventsListView list;
+        private System.Windows.Forms.ColumnHeader timestampColumn;
+        private System.Windows.Forms.ColumnHeader severityColumn;
+        private System.Windows.Forms.ColumnHeader descriptionColumn;
+        private System.Windows.Forms.ColumnHeader principalColumn;
+        private System.Windows.Forms.ColumnHeader statusColumn;
     }
 }

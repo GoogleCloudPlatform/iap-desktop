@@ -19,10 +19,12 @@
 // under the License.
 //
 
+using Google.Solutions.IapDesktop.Application.Controls;
 using Google.Solutions.IapDesktop.Application.ObjectModel;
 using Google.Solutions.IapDesktop.Application.Services.Integration;
 using Google.Solutions.IapDesktop.Application.Services.Windows;
 using Google.Solutions.IapDesktop.Application.Services.Windows.ProjectExplorer;
+using Google.Solutions.IapDesktop.Extensions.Activity.Events;
 using System;
 using System.ComponentModel;
 
@@ -75,4 +77,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services.EventLog
             //    bindingContainer);
         }
     }
+
+    public class EventsListView : BindableListView<EventBase>
+    { }
 }
