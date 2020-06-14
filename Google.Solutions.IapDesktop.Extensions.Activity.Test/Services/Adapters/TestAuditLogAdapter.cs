@@ -110,6 +110,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.Services.Adapters
 
             await adapter.ListInstanceEventsAsync(
                 new[] { Defaults.ProjectId },
+                null,
                 instanceBuilder.StartDate,
                 instanceBuilder,
                 CancellationToken.None);
@@ -120,6 +121,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.Services.Adapters
             Assert.IsNotNull(testInstanceHistory, "Instance found in history");
         }
 
+        //---------------------------------------------------------------------
+        // Filter string.
+        //---------------------------------------------------------------------
 
         [Test]
         public void WhenUsingInvalidProjectId_ThenListEventsAsyncThrowsException()
@@ -145,6 +149,68 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.Services.Adapters
                     _ => { },
                     new Apis.Util.ExponentialBackOff(),
                     CancellationToken.None).Wait());
+        }
+
+        [Test]
+        public void WhenMethodAndSeveritiesSpecified_ThenCreateFilterStringAddsCriteria()
+        {
+            var filter = AuditLogAdapter.CreateFilterString(
+                null,
+                new[] { "method-1", "method-2" },
+                new[] { "INFO", "ERROR" },
+                new DateTime(2020, 1, 2, 3, 4, 5, 6, DateTimeKind.Utc));
+
+            Assert.AreEqual(
+                "protoPayload.methodName=(\"method-1\" OR \"method-2\") "+
+                    "AND severity=(\"INFO\" OR \"ERROR\") AND resource.type=\"gce_instance\" "+
+                    "AND timestamp > \"2020-01-02T03:04:05.0060000Z\"",
+                filter);
+        }
+
+        [Test]
+        public void WhenMethodAndSeveritiesNotSpecified_ThenCreateFilterStringSkipsCriteria()
+        {
+            var filter = AuditLogAdapter.CreateFilterString(
+                Enumerable.Empty<ulong>(),
+                null,
+                null,
+                new DateTime(2020, 1, 2, 3, 4, 5, 6, DateTimeKind.Utc));
+
+            Assert.AreEqual(
+                "resource.type=\"gce_instance\" "+
+                "AND timestamp > \"2020-01-02T03:04:05.0060000Z\"",
+                filter);
+        }
+
+        [Test]
+        public void WhenMethodAndSeveritiesEmpty_ThenCreateFilterStringSkipsCriteria()
+        {
+            var filter = AuditLogAdapter.CreateFilterString(
+                Enumerable.Empty<ulong>(),
+                Enumerable.Empty<string>(),
+                Enumerable.Empty<string>(),
+                new DateTime(2020, 1, 2, 3, 4, 5, 6, DateTimeKind.Utc));
+
+            Assert.AreEqual(
+                "resource.type=\"gce_instance\" " +
+                "AND timestamp > \"2020-01-02T03:04:05.0060000Z\"",
+                filter);
+        }
+
+        [Test]
+        public void WhenInstanceIdSpecified_ThenCreateFilterStringAddsCriteria()
+        {
+            var filter = AuditLogAdapter.CreateFilterString(
+                new[] { 123454321234ul },
+                Enumerable.Empty<string>(),
+                Enumerable.Empty<string>(),
+                new DateTime(2020, 1, 2, 3, 4, 5, 6, DateTimeKind.Utc));
+
+            Assert.AreEqual(
+                "resource.labels.instance_id=(\"123454321234\") " +
+                "AND resource.type=\"gce_instance\" " +
+                "AND timestamp > \"2020-01-02T03:04:05.0060000Z\"",
+                filter);
         }
     }
 }

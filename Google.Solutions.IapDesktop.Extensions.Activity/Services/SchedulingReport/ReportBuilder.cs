@@ -114,6 +114,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services.SchedulingRep
 
                 await this.auditLogAdapter.ListInstanceEventsAsync(
                     this.projectIds,
+                    null,  // all instances.
                     this.builder.StartDate,
                     this,
                     cancellationToken).ConfigureAwait(false);

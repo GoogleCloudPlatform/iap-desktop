@@ -35,6 +35,7 @@ using Google.Solutions.IapDesktop.Extensions.Activity.Logs;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Threading;
@@ -99,12 +100,46 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services.Adapters
             }
         }
 
+        internal static string CreateFilterString(
+            IEnumerable<ulong> instanceIds,
+            IEnumerable<string> methods,
+            IEnumerable<string> severities,
+            DateTime startTime)
+        {
+            Debug.Assert(startTime.Kind == DateTimeKind.Utc);
+
+            var criteria = new LinkedList<string>();
+
+            if (instanceIds != null && instanceIds.Any())
+            {
+                criteria.AddLast($"resource.labels.instance_id=(\"{string.Join("\" OR \"", instanceIds)}\")");
+            }
+
+            if (methods != null && methods.Any())
+            {
+                criteria.AddLast($"protoPayload.methodName=(\"{string.Join("\" OR \"", methods)}\")");
+            }
+
+            if (severities != null && severities.Any())
+            {
+                criteria.AddLast($"severity=(\"{string.Join("\" OR \"", severities)}\")");
+            }
+
+            criteria.AddLast($"resource.type=\"gce_instance\"");
+            criteria.AddLast($"timestamp > \"{startTime.ToString("o")}\"");
+
+            return string.Join(" AND ", criteria);
+        }
+
         public async Task ListInstanceEventsAsync(
             IEnumerable<string> projectIds,
+            IEnumerable<ulong> instanceIds,
             DateTime startTime,
             IEventProcessor processor,
             CancellationToken cancellationToken)
         {
+            Utilities.ThrowIfNull(projectIds, nameof(projectIds));
+
             using (TraceSources.IapDesktop.TraceMethod().WithParameters(
                 string.Join(", ", projectIds), 
                 startTime))
@@ -112,10 +147,11 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services.Adapters
                 var request = new ListLogEntriesRequest()
                 {
                     ResourceNames = projectIds.Select(p => "projects/" + p).ToList(),
-                    Filter = $"protoPayload.methodName=(\"{string.Join("\" OR \"", processor.SupportedMethods)}\") " +
-                        $"AND severity=(\"{string.Join("\" OR \"", processor.SupportedSeverities)}\") " +
-                        $"AND resource.type=\"gce_instance\" " +
-                        $"AND timestamp > {startTime:yyyy-MM-dd} ",
+                    Filter = CreateFilterString(
+                        instanceIds,
+                        processor.SupportedMethods,
+                        processor.SupportedSeverities,
+                        startTime),
                     PageSize = MaxPageSize,
                     OrderBy = "timestamp desc"
                 };
