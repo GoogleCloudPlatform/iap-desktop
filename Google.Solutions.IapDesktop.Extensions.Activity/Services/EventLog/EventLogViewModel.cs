@@ -22,13 +22,18 @@
 using Google.Solutions.IapDesktop.Application.ObjectModel;
 using Google.Solutions.IapDesktop.Application.Services.Windows.ProjectExplorer;
 using Google.Solutions.IapDesktop.Extensions.Activity.Events;
+using Google.Solutions.IapDesktop.Extensions.Activity.History;
+using Google.Solutions.IapDesktop.Extensions.Activity.Services.Adapters;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace Google.Solutions.IapDesktop.Extensions.Activity.Services.EventLog
 {
-    internal class ActivityLogViewModel : ViewModelBase
+    internal class EventLogViewModel : ViewModelBase, IEventProcessor
     {
         public static readonly ReadOnlyCollection<Timeframe> AnalysisTimeframes 
             = new ReadOnlyCollection<Timeframe>(new List<Timeframe>()
@@ -41,8 +46,10 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services.EventLog
         private readonly IProjectExplorerVmInstanceNode node;
 
         private Timeframe selectedTimeframe = null;
+        private bool includeSystemEvents = true;
+        private bool includeLifecycleEvents = true;
 
-        public ActivityLogViewModel(IProjectExplorerVmInstanceNode node)
+        public EventLogViewModel(IProjectExplorerVmInstanceNode node)
         {
             this.node = node;
             this.Events = new ObservableCollection<EventBase>();
@@ -57,16 +64,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services.EventLog
 
         public ObservableCollection<EventBase> Events { get; }
 
-        //public int SelectedTimeframeIndex
-        //{
-        //    get => this.timeframeIndex;
-        //    set
-        //    {
-        //        this.timeframeIndex = value;
-        //        RaisePropertyChange();
-        //    }
-        //}
-
         public Timeframe SelectedTimeframe
         {
             get => this.selectedTimeframe;
@@ -77,10 +74,84 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services.EventLog
             }
         }
 
+        public bool IsIncludeSystemEventsButtonEnabled
+        {
+            get => this.includeSystemEvents;
+            set
+            {
+                this.includeSystemEvents = value;
+                RaisePropertyChange();
+            }
+        }
+
+        public bool IsIncludeLifecycleEventsButtonEnabled
+        {
+            get => this.includeLifecycleEvents;
+            set
+            {
+                this.includeLifecycleEvents = value;
+                RaisePropertyChange();
+            }
+        }
+
+        //---------------------------------------------------------------------
+        // IEventProcessor.
+        //---------------------------------------------------------------------
+
+        public EventOrder ExpectedOrder => EventOrder.NewestFirst;
+
+        public IEnumerable<string> SupportedSeverities => null; // All.
+
+        public IEnumerable<string> SupportedMethods
+        {
+            get
+            {
+                var methods = new List<string>();
+
+                if (this.includeLifecycleEvents)
+                {
+                    methods.AddRange(EventFactory.LifecycleEventMethods);
+                }
+                
+                if (this.includeLifecycleEvents)
+                {
+                    methods.AddRange(EventFactory.SystemEventMethods);
+                }
+
+                return methods;
+            }
+        }
+
+        public void Process(EventBase e)
+        {
+            this.Events.Add(e);
+        }
+
         //---------------------------------------------------------------------
         // Actions.
         //---------------------------------------------------------------------
 
+        public static async Task<EventLogViewModel> LoadAsync(
+            AuditLogAdapter auditLogAdapter,
+            IProjectExplorerNode node,
+            CancellationToken token)
+        {
+            if (node is IProjectExplorerVmInstanceNode vmNode)
+            {
+                await Task.Delay(2000, token).ConfigureAwait(false);
+                return new EventLogViewModel(vmNode);
+            }
+            else
+            {
+                // We do not care about any other nodes.
+                return null;
+            }
+        }
+
+        public Task RefreshAsync()
+        {
+            throw new NotImplementedException();
+        }
 
         //---------------------------------------------------------------------
 

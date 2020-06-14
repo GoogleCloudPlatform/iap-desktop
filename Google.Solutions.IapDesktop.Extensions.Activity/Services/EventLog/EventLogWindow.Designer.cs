@@ -54,7 +54,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services.EventLog
             this.refreshButton = new System.Windows.Forms.ToolStripButton();
             this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
             this.lifecycleEventsDropDown = new System.Windows.Forms.ToolStripDropDownButton();
-            this.includeUserEventsButton = new System.Windows.Forms.ToolStripMenuItem();
+            this.includeLifecycleEventsButton = new System.Windows.Forms.ToolStripMenuItem();
             this.includeSystemEventsButton = new System.Windows.Forms.ToolStripMenuItem();
             this.timeFrameComboBox = new System.Windows.Forms.ToolStripComboBox();
             this.theme = new WeifenLuo.WinFormsUI.Docking.VS2015LightTheme();
@@ -98,7 +98,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services.EventLog
             // lifecycleEventsDropDown
             // 
             this.lifecycleEventsDropDown.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.includeUserEventsButton,
+            this.includeLifecycleEventsButton,
             this.includeSystemEventsButton});
             this.lifecycleEventsDropDown.Enabled = false;
             this.lifecycleEventsDropDown.Image = ((System.Drawing.Image)(resources.GetObject("lifecycleEventsDropDown.Image")));
@@ -109,10 +109,10 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services.EventLog
             // 
             // includeUserEventsButton
             // 
-            this.includeUserEventsButton.CheckOnClick = true;
-            this.includeUserEventsButton.Name = "includeUserEventsButton";
-            this.includeUserEventsButton.Size = new System.Drawing.Size(180, 22);
-            this.includeUserEventsButton.Text = "User events";
+            this.includeLifecycleEventsButton.CheckOnClick = true;
+            this.includeLifecycleEventsButton.Name = "includeUserEventsButton";
+            this.includeLifecycleEventsButton.Size = new System.Drawing.Size(180, 22);
+            this.includeLifecycleEventsButton.Text = "User events";
             // 
             // includeSystemEventsButton
             // 
@@ -196,7 +196,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services.EventLog
         private System.Windows.Forms.ToolStripButton refreshButton;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
         private System.Windows.Forms.ToolStripDropDownButton lifecycleEventsDropDown;
-        private System.Windows.Forms.ToolStripMenuItem includeUserEventsButton;
+        private System.Windows.Forms.ToolStripMenuItem includeLifecycleEventsButton;
         private System.Windows.Forms.ToolStripMenuItem includeSystemEventsButton;
         private EventsListView list;
         private System.Windows.Forms.ColumnHeader timestampColumn;

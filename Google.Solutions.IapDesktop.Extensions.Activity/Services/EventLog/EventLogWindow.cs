@@ -30,14 +30,19 @@ using System.ComponentModel;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Linq;
+using Google.Solutions.Common.Diagnostics;
+using Google.Solutions.IapDesktop.Extensions.Activity.Services.Adapters;
 
 namespace Google.Solutions.IapDesktop.Extensions.Activity.Services.EventLog
 {
     [Service(ServiceLifetime.Singleton)]
+    [SkipCodeCoverage("All logic in view model")]
     internal partial class EventLogWindow 
-        : ProjectExplorerTrackingToolWindow<ActivityLogViewModel>
+        : ProjectExplorerTrackingToolWindow<EventLogViewModel>
     {
         private const int CacheCapacity = 5;
+
+        private readonly IServiceProvider serviceProvider;
 
         public EventLogWindow(IServiceProvider serviceProvider)
             : base(
@@ -47,10 +52,12 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services.EventLog
                   CacheCapacity
                   )
         {
+            this.serviceProvider = serviceProvider;
+
             InitializeComponent();
 
             this.theme.ApplyTo(this.toolStrip);
-            this.timeFrameComboBox.Items.AddRange(ActivityLogViewModel.AnalysisTimeframes.ToArray());
+            this.timeFrameComboBox.Items.AddRange(EventLogViewModel.AnalysisTimeframes.ToArray());
             this.timeFrameComboBox.SelectedIndex = 0;
         }
 
@@ -58,41 +65,46 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services.EventLog
         // ProjectExplorerTrackingToolWindow.
         //---------------------------------------------------------------------
 
-        protected override async Task<ActivityLogViewModel> LoadViewModelAsync(
-            IProjectExplorerNode node,
-            CancellationToken token)
-        {
-            if (node is IProjectExplorerVmInstanceNode vmNode)
-            {
-                await Task.Delay(2000, token).ConfigureAwait(false);
-                return new ActivityLogViewModel(vmNode);
-            }
-            else
-            {
-                // We do not care about any other nodes.
-                return null;
-            }
-        }
+        protected override Task<EventLogViewModel> LoadViewModelAsync(
+                IProjectExplorerNode node,
+                CancellationToken token) 
+            => EventLogViewModel.LoadAsync(
+                this.serviceProvider.GetService<AuditLogAdapter>(), 
+                node, 
+                token);
 
         protected override void BindViewModel(
-            ActivityLogViewModel model, 
+            EventLogViewModel model, 
             IContainer bindingContainer)
         {
             // The timeframe selector should not change when we swap view models.
-            model.SelectedTimeframe = (ActivityLogViewModel.Timeframe)this.timeFrameComboBox.SelectedItem;
+            model.SelectedTimeframe = (EventLogViewModel.Timeframe)this.timeFrameComboBox.SelectedItem;
             this.timeFrameComboBox.OnControlPropertyChange(
                 c => c.SelectedIndex,
-                index => model.SelectedTimeframe = ActivityLogViewModel.AnalysisTimeframes[index]);
+                index => model.SelectedTimeframe = EventLogViewModel.AnalysisTimeframes[index]);
 
-            // Bind toolbar.
+            // Bind toolbar buttons.
             this.refreshButton.BindProperty(
                 c => c.Enabled,
                 model,
-                m => m.IsRefreshButtonEnabled);
+                m => m.IsRefreshButtonEnabled,
+                bindingContainer);
             this.lifecycleEventsDropDown.BindProperty(
                 c => c.Enabled,
                 model,
-                m => m.IsLifecycleEventDropDownEnabled);
+                m => m.IsLifecycleEventDropDownEnabled,
+                bindingContainer);
+
+            this.includeLifecycleEventsButton.BindProperty(
+                c => c.Checked,
+                model,
+                m => m.IsIncludeLifecycleEventsButtonEnabled,
+                bindingContainer);
+            this.includeSystemEventsButton.BindProperty(
+                c => c.Checked,
+                model,
+                m => m.IsIncludeSystemEventsButtonEnabled,
+                bindingContainer);
 
             // Bind list.
             this.list.BindColumn(0, e => e.Timestamp.ToString());
