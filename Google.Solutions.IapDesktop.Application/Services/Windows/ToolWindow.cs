@@ -19,6 +19,7 @@
 // under the License.
 //
 
+using Google.Solutions.Common.Diagnostics;
 using System;
 using System.Runtime.InteropServices;
 using System.Windows.Forms;
@@ -28,6 +29,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.Windows
 
 {
     [ComVisible(false)]
+    [SkipCodeCoverage("GUI plumbing")]
     public partial class ToolWindow : DockContent
     {
         public ContextMenuStrip TabContextStrip => this.contextMenuStrip;

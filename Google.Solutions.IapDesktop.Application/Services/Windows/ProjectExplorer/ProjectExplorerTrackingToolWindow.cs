@@ -20,24 +20,34 @@
 //
 
 using Google.Solutions.Common.Diagnostics;
+using Google.Solutions.Common.Util;
 using Google.Solutions.IapDesktop.Application.Services.Integration;
 using Google.Solutions.IapDesktop.Application.Util;
 using System;
 using System.ComponentModel;
+using System.Runtime.InteropServices;
+using System.Threading;
+using System.Threading.Tasks;
 using WeifenLuo.WinFormsUI.Docking;
 
 namespace Google.Solutions.IapDesktop.Application.Services.Windows.ProjectExplorer
 {
+    [ComVisible(false)]
+    [SkipCodeCoverage("GUI plumbing")]
     public class ProjectExplorerTrackingToolWindow<TViewModel> : ToolWindow
     {
         // Keep a cache of view models for the last N project explorer nodes
         // visited so that switching back and forth between nodes is faster.
         private readonly LeastRecentlyUsedCache<IProjectExplorerNode, TViewModel> modelCache;
 
+        private readonly TaskScheduler taskScheduler;
+
         private IContainer currentBindingContainer = null;
         private IProjectExplorerNode ignoredNode = null;
 
         private DockPanel dockPanel;
+
+        private CancellationTokenSource tokenSourceForCurrentTask = null;
 
         protected ProjectExplorerTrackingToolWindow()
         {
@@ -50,6 +60,9 @@ namespace Google.Solutions.IapDesktop.Application.Services.Windows.ProjectExplor
             IEventService eventService,
             int cacheCapacity)
         {
+            // Capture the GUI thread scheduler.
+            this.taskScheduler = TaskScheduler.FromCurrentSynchronizationContext();
+
             //
             // This window is a singleton, so we never want it to be closed,
             // just hidden.
@@ -75,6 +88,16 @@ namespace Google.Solutions.IapDesktop.Application.Services.Windows.ProjectExplor
                 this.dockPanel, 
                 WeifenLuo.WinFormsUI.Docking.DockState.DockBottomAutoHide);
         }
+        protected override void OnUserVisibilityChanged(bool visible)
+        {
+            if (visible && this.ignoredNode != null)
+            {
+                // There was a selection change while the window was hidden
+                // and we were ignoring updates. 
+                TraceSources.IapDesktop.TraceVerbose("Reapplying ignored selection change");
+                OnProjectExplorerNodeSelected(this.ignoredNode);
+            }
+        }
 
         protected void OnProjectExplorerNodeSelected(IProjectExplorerNode node)
         {
@@ -93,43 +116,69 @@ namespace Google.Solutions.IapDesktop.Application.Services.Windows.ProjectExplor
                 }
 
                 TViewModel model = this.modelCache.Lookup(node);
-                if (model == null)
-                {
-                    TraceSources.IapDesktop.TraceVerbose(
-                        "Loading view model ({0})", typeof(TViewModel).Name);
-
-                    model = LoadViewModel(node);
-                }
-
                 if (model != null)
                 {
+                    // Apply model synchronously.
                     this.modelCache.Add(node, model);
-
-                    TraceSources.IapDesktop.TraceVerbose(
-                        "Binding view model ({0})", typeof(TViewModel).Name);
-
-                    var bindingContainer = new Container();
-                    BindViewModel(model, bindingContainer);
-
-                    if (this.currentBindingContainer != null)
+                    ApplyViewModel(model);
+                }
+                else
+                {
+                    if (this.tokenSourceForCurrentTask != null)
                     {
-                        // Dispose all old bindings.
-                        this.currentBindingContainer.Dispose();
+                        // Another asynchnous load/bind operation is ongoing.
+                        // Cancel that one because we won't need its result.
+
+                        TraceSources.IapDesktop.TraceVerbose("Cancelling previous model load task");
+                        this.tokenSourceForCurrentTask.Cancel();
+                        this.tokenSourceForCurrentTask = null;
                     }
 
-                    this.currentBindingContainer = bindingContainer;
+                    // Load model.
+                    this.tokenSourceForCurrentTask = new CancellationTokenSource();
+                    LoadViewModelAsync(node, this.tokenSourceForCurrentTask.Token)
+                        .ContinueWith(t =>
+                        {
+                            try
+                            {
+                                if (t.Result != null)
+                                {
+                                    this.modelCache.Add(node, t.Result);
+                                    ApplyViewModel(t.Result);
+                                }
+                            }
+                            catch (Exception e) when (e.IsCancellation())
+                            {
+                                TraceSources.IapDesktop.TraceVerbose("Model load cancelled");
+                            }
+                        },
+                        this.tokenSourceForCurrentTask.Token,
+                        TaskContinuationOptions.None,
+
+                        // Continue on UI thread. 
+                        // Note that there's a bug in the CLR that can cause
+                        // TaskScheduler.FromCurrentSynchronizationContext() to become null.
+                        // Therefore, use a task scheduler object captured previously.
+                        // Cf. https://stackoverflow.com/questions/4659257/
+                        this.taskScheduler);
                 }
             }
         }
 
-        protected override void OnUserVisibilityChanged(bool visible)
+        private void ApplyViewModel(TViewModel model)
         {
-            if (visible && this.ignoredNode != null)
+            using (TraceSources.IapDesktop.TraceMethod().WithParameters(typeof(TViewModel).Name))
             {
-                // There was a selection change while the window was hidden
-                // and we were ignoring updates. 
-                TraceSources.IapDesktop.TraceVerbose("Reapplying ignored selection change");
-                OnProjectExplorerNodeSelected(this.ignoredNode);
+                var bindingContainer = new Container();
+                BindViewModel(model, bindingContainer);
+
+                if (this.currentBindingContainer != null)
+                {
+                    // Dispose all old bindings.
+                    this.currentBindingContainer.Dispose();
+                }
+
+                this.currentBindingContainer = bindingContainer;
             }
         }
 
@@ -140,7 +189,9 @@ namespace Google.Solutions.IapDesktop.Application.Services.Windows.ProjectExplor
         // abstract base classes for forms.
         //---------------------------------------------------------------------
 
-        protected virtual TViewModel LoadViewModel(IProjectExplorerNode node)
+        protected virtual Task<TViewModel> LoadViewModelAsync(
+            IProjectExplorerNode node,
+            CancellationToken token)
         {
             throw new InvalidOperationException();
         }

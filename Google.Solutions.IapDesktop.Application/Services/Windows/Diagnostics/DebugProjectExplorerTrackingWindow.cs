@@ -26,6 +26,8 @@ using Google.Solutions.IapDesktop.Application.Services.Windows.ProjectExplorer;
 using System;
 using System.ComponentModel;
 using System.Runtime.InteropServices;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace Google.Solutions.IapDesktop.Application.Services.Windows.Diagnostics
 {
@@ -51,10 +53,13 @@ namespace Google.Solutions.IapDesktop.Application.Services.Windows.Diagnostics
         // ProjectExplorerTrackingToolWindow.
         //---------------------------------------------------------------------
 
-        protected override DebugProjectExplorerTrackingViewModel LoadViewModel(IProjectExplorerNode node)
+        protected override async Task<DebugProjectExplorerTrackingViewModel> LoadViewModelAsync(
+            IProjectExplorerNode node,
+            CancellationToken token)
         {
             if (node is IProjectExplorerVmInstanceNode vmNode)
             {
+                await Task.Delay(2000, token).ConfigureAwait(false);
                 return new DebugProjectExplorerTrackingViewModel(vmNode);
             }
             else

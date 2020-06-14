@@ -27,6 +27,8 @@ using Google.Solutions.IapDesktop.Application.Services.Windows.ProjectExplorer;
 using Google.Solutions.IapDesktop.Extensions.Activity.Events;
 using System;
 using System.ComponentModel;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace Google.Solutions.IapDesktop.Extensions.Activity.Services.EventLog
 {
@@ -53,10 +55,13 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services.EventLog
         // ProjectExplorerTrackingToolWindow.
         //---------------------------------------------------------------------
 
-        protected override ActivityLogViewModel LoadViewModel(IProjectExplorerNode node)
+        protected override async Task<ActivityLogViewModel> LoadViewModelAsync(
+            IProjectExplorerNode node,
+            CancellationToken token)
         {
             if (node is IProjectExplorerVmInstanceNode vmNode)
             {
+                await Task.Delay(2000, token).ConfigureAwait(false);
                 return new ActivityLogViewModel(vmNode);
             }
             else
