@@ -134,6 +134,9 @@ namespace Google.Solutions.IapDesktop.Application.Services.Windows.ProjectExplor
                         this.tokenSourceForCurrentTask = null;
                     }
 
+                    // TODO: post job
+                    // TODO: allow job to be canelled
+
                     // Load model.
                     this.tokenSourceForCurrentTask = new CancellationTokenSource();
                     LoadViewModelAsync(node, this.tokenSourceForCurrentTask.Token)

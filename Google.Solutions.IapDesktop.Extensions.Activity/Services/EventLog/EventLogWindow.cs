@@ -65,20 +65,29 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services.EventLog
         // ProjectExplorerTrackingToolWindow.
         //---------------------------------------------------------------------
 
-        protected override Task<EventLogViewModel> LoadViewModelAsync(
+        protected override async Task<EventLogViewModel> LoadViewModelAsync(
                 IProjectExplorerNode node,
-                CancellationToken token) 
-            => EventLogViewModel.LoadAsync(
-                this.serviceProvider.GetService<AuditLogAdapter>(), 
-                node, 
-                token);
+                CancellationToken token)
+        {
+            this.list.Enabled = this.toolStrip.Enabled = false;
+             
+            var model = await EventLogViewModel.LoadAsync(
+                this.serviceProvider.GetService<AuditLogAdapter>(),
+                node,
+                (EventLogViewModel.Timeframe)this.timeFrameComboBox.SelectedItem,
+                token).ConfigureAwait(true);
+
+            this.list.Enabled = this.toolStrip.Enabled = true;
+
+            return model;
+        }
 
         protected override void BindViewModel(
             EventLogViewModel model, 
             IContainer bindingContainer)
         {
-            // The timeframe selector should not change when we swap view models.
-            model.SelectedTimeframe = (EventLogViewModel.Timeframe)this.timeFrameComboBox.SelectedItem;
+            // The timeframe selector should not change when we swap view models, so 
+            // use a one-way binding.
             this.timeFrameComboBox.OnControlPropertyChange(
                 c => c.SelectedIndex,
                 index => model.SelectedTimeframe = EventLogViewModel.AnalysisTimeframes[index]);
@@ -110,7 +119,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services.EventLog
             this.list.BindColumn(0, e => e.Timestamp.ToString());
             this.list.BindColumn(1, e => e.Severity);
             this.list.BindColumn(2, e => e.Message);
-            this.list.BindColumn(3, e => e.Status.Message);
+            this.list.BindColumn(3, e => e.Status?.Message);
             this.list.BindColumn(4, e => e.PrincipalEmail);
             this.list.BindCollection(model.Events);
         }

@@ -28,6 +28,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -49,14 +50,28 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services.EventLog
         private bool includeSystemEvents = true;
         private bool includeLifecycleEvents = true;
 
-        public EventLogViewModel(IProjectExplorerVmInstanceNode node)
+        public EventLogViewModel(
+            IProjectExplorerVmInstanceNode node,
+            Timeframe initialTimeframe)
         {
             this.node = node;
+            this.selectedTimeframe = initialTimeframe;
+
             this.Events = new ObservableCollection<EventBase>();
         }
 
-        public bool IsRefreshButtonEnabled => true;
-        public bool IsLifecycleEventDropDownEnabled => true;
+        public bool IsRefreshButtonEnabled
+        {
+            get => true;
+            set { }
+        }
+
+        public bool IsLifecycleEventDropDownEnabled
+        {
+            get => true;
+            set { }
+        }
+
 
         //---------------------------------------------------------------------
         // Observable properties.
@@ -134,12 +149,21 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services.EventLog
         public static async Task<EventLogViewModel> LoadAsync(
             AuditLogAdapter auditLogAdapter,
             IProjectExplorerNode node,
+            Timeframe initialTimeframe,
             CancellationToken token)
         {
             if (node is IProjectExplorerVmInstanceNode vmNode)
             {
-                await Task.Delay(2000, token).ConfigureAwait(false);
-                return new EventLogViewModel(vmNode);
+                var model = new EventLogViewModel(vmNode, initialTimeframe);
+
+                await auditLogAdapter.ListInstanceEventsAsync(
+                    new[] { vmNode.ProjectId },
+                    new[] { vmNode.InstanceId },
+                    DateTime.UtcNow.Subtract(initialTimeframe.Duration),
+                    model,
+                    token).ConfigureAwait(false);
+
+                return model;
             }
             else
             {
