@@ -29,6 +29,8 @@ using System;
 using System.Linq;
 using Google.Solutions.Common.Diagnostics;
 using System.Diagnostics;
+using System.Threading.Tasks;
+using System.Threading;
 
 namespace Google.Solutions.IapDesktop.Extensions.Activity.Services.EventLog
 {
@@ -43,13 +45,14 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services.EventLog
             : base(
                   serviceProvider.GetService<IMainForm>().MainPanel,
                   serviceProvider.GetService<IProjectExplorer>(),
-                  serviceProvider.GetService<IEventService>())
+                  serviceProvider.GetService<IEventService>(),
+                  serviceProvider.GetService<IExceptionDialog>())
         {
             InitializeComponent();
 
             this.theme.ApplyTo(this.toolStrip);
 
-            this.viewModel = new EventLogViewModel(serviceProvider);
+            this.viewModel = new EventLogViewModel(this, serviceProvider);
 
             this.timeFrameComboBox.Items.AddRange(EventLogViewModel.AvailableTimeframes.ToArray());
             this.timeFrameComboBox.SelectedIndex = 0;
@@ -113,13 +116,13 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services.EventLog
         // ProjectExplorerTrackingToolWindow.
         //---------------------------------------------------------------------
 
-        protected override void SwitchToNode(
-            IProjectExplorerNode node)
+        protected override async Task SwitchToNodeAsync(IProjectExplorerNode node)
         {
             Debug.Assert(!InvokeRequired, "running on UI thread");
             if (node is IProjectExplorerVmInstanceNode vmNode)
             {
-                this.viewModel.BeginSwitchToModel(vmNode);
+                await this.viewModel.SwitchToModelAsync(vmNode)
+                    .ConfigureAwait(true);
             }
             else
             {

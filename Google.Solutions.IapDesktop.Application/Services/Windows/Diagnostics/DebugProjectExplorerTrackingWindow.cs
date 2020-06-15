@@ -24,9 +24,7 @@ using Google.Solutions.IapDesktop.Application.ObjectModel;
 using Google.Solutions.IapDesktop.Application.Services.Integration;
 using Google.Solutions.IapDesktop.Application.Services.Windows.ProjectExplorer;
 using System;
-using System.ComponentModel;
 using System.Runtime.InteropServices;
-using System.Threading;
 using System.Threading.Tasks;
 
 namespace Google.Solutions.IapDesktop.Application.Services.Windows.Diagnostics
@@ -40,7 +38,8 @@ namespace Google.Solutions.IapDesktop.Application.Services.Windows.Diagnostics
             : base(
                   serviceProvider.GetService<IMainForm>().MainPanel,
                   serviceProvider.GetService<IProjectExplorer>(),
-                  serviceProvider.GetService<IEventService>())
+                  serviceProvider.GetService<IEventService>(),
+                  serviceProvider.GetService<IExceptionDialog>())
         {
             InitializeComponent();
         }
@@ -49,8 +48,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.Windows.Diagnostics
         // ProjectExplorerTrackingToolWindow.
         //---------------------------------------------------------------------
 
-        protected override void SwitchToNode(
-            IProjectExplorerNode node)
+        protected override Task SwitchToNodeAsync(IProjectExplorerNode node)
         {
             if (node is IProjectExplorerVmInstanceNode vmNode)
             {
@@ -60,6 +58,8 @@ namespace Google.Solutions.IapDesktop.Application.Services.Windows.Diagnostics
             {
                 // We cannot handle other types or node, so ignore.
             }
+
+            return Task.CompletedTask;
         }
     }
 }

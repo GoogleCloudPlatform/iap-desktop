@@ -20,11 +20,9 @@
 //
 
 using Google.Solutions.Common.Diagnostics;
-using Google.Solutions.Common.Util;
+using Google.Solutions.IapDesktop.Application.ObjectModel;
 using Google.Solutions.IapDesktop.Application.Services.Integration;
-using Google.Solutions.IapDesktop.Application.Util;
 using System;
-using System.ComponentModel;
 using System.Runtime.InteropServices;
 using System.Threading;
 using System.Threading.Tasks;
@@ -36,13 +34,12 @@ namespace Google.Solutions.IapDesktop.Application.Services.Windows.ProjectExplor
     [SkipCodeCoverage("GUI plumbing")]
     public class ProjectExplorerTrackingToolWindow<TViewModel> : ToolWindow
     {
+        private readonly IExceptionDialog exceptionDialog;
+        private readonly TaskScheduler taskScheduler;
 
-        private IContainer currentBindingContainer = null;
         private IProjectExplorerNode ignoredNode = null;
 
         private DockPanel dockPanel;
-
-        private CancellationTokenSource tokenSourceForCurrentTask = null;
 
         protected ProjectExplorerTrackingToolWindow()
         {
@@ -52,8 +49,14 @@ namespace Google.Solutions.IapDesktop.Application.Services.Windows.ProjectExplor
         public ProjectExplorerTrackingToolWindow(
             DockPanel dockPanel,
             IProjectExplorer projectExplorer,
-            IEventService eventService)
+            IEventService eventService,
+            IExceptionDialog exceptionDialog)
         {
+            this.exceptionDialog = exceptionDialog;
+
+            // Capture the GUI thread scheduler.
+            this.taskScheduler = TaskScheduler.FromCurrentSynchronizationContext();
+
             //
             // This window is a singleton, so we never want it to be closed,
             // just hidden.
@@ -105,7 +108,27 @@ namespace Google.Solutions.IapDesktop.Application.Services.Windows.ProjectExplor
                     this.ignoredNode = null;
                 }
 
-                SwitchToNode(node);
+                SwitchToNodeAsync(node)
+                    .ContinueWith(t =>
+                    {
+                        try
+                        {
+                            t.Wait();
+                        }
+                        catch (Exception e)
+                        {
+                            this.exceptionDialog.Show(this, "Loading logs failed", e);
+                        }
+                    },
+                    CancellationToken.None,
+                    TaskContinuationOptions.None,
+
+                    // Continue on UI thread. 
+                    // Note that there's a bug in the CLR that can cause
+                    // TaskScheduler.FromCurrentSynchronizationContext() to become null.
+                    // Therefore, use a task scheduler object captured previously.
+                    // Cf. https://stackoverflow.com/questions/4659257/
+                    this.taskScheduler);
             }
         }
 
@@ -116,9 +139,9 @@ namespace Google.Solutions.IapDesktop.Application.Services.Windows.ProjectExplor
         // abstract base classes for forms.
         //---------------------------------------------------------------------
 
-        protected virtual void SwitchToNode(
-            IProjectExplorerNode node)
+        protected virtual Task SwitchToNodeAsync(IProjectExplorerNode node)
         {
+            throw new NotImplementedException();
         }
     }
 }

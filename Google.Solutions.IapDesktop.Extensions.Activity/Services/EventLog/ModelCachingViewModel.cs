@@ -37,7 +37,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services.EventLog
     {
         private readonly LeastRecentlyUsedCache<TModelKey, TModel> modelCache;
 
-        private readonly TaskScheduler taskScheduler;
         private CancellationTokenSource tokenSourceForCurrentTask = null;
 
         protected TModel Model { get; private set; }
@@ -45,14 +44,11 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services.EventLog
 
         public ModelCachingViewModelBase(int cacheCapacity)
         {
-            // Capture the GUI thread scheduler.
-            this.taskScheduler = TaskScheduler.FromCurrentSynchronizationContext();
-
             this.modelCache = new LeastRecentlyUsedCache<TModelKey, TModel>(
                 cacheCapacity);
         }
 
-        public void BeginSwitchToModel(TModelKey key)
+        public async Task SwitchToModelAsync(TModelKey key)
         {
             this.ModelKey = key;
             var model = this.modelCache.Lookup(key);
@@ -78,44 +74,26 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services.EventLog
 
                 // Load model.
                 this.tokenSourceForCurrentTask = new CancellationTokenSource();
-                LoadModelAsync(key, this.tokenSourceForCurrentTask.Token)
-                    .ContinueWith(t =>
-                    {
-                        try
-                        {
-                            if (t.Result != null)
-                            {
-                                this.modelCache.Add(key, t.Result);
+                try
+                {
+                    this.Model = await LoadModelAsync(key, this.tokenSourceForCurrentTask.Token)
+                        .ConfigureAwait(true);  // Back to original (UI) thread.
 
-                                this.Model = t.Result;
-                                ApplyModel(false);
-                            }
-                        }
-                        catch (Exception e) when (e.IsCancellation())
-                        {
-                            TraceSources.IapDesktop.TraceVerbose("Model load cancelled");
-                        }
-                        catch (Exception e)
-                        {
-                            TraceSources.IapDesktop.TraceError(e);
-                        }
-                    },
-                    this.tokenSourceForCurrentTask.Token,
-                    TaskContinuationOptions.None,
+                    this.modelCache.Add(key, this.Model);
 
-                    // Continue on UI thread. 
-                    // Note that there's a bug in the CLR that can cause
-                    // TaskScheduler.FromCurrentSynchronizationContext() to become null.
-                    // Therefore, use a task scheduler object captured previously.
-                    // Cf. https://stackoverflow.com/questions/4659257/
-                    this.taskScheduler);
+                    ApplyModel(false);
+                }
+                catch (Exception e) when (e.IsCancellation())
+                {
+                    TraceSources.IapDesktop.TraceVerbose("Model load cancelled");
+                }
             }
         }
 
         protected void Invalidate()
         {
             this.modelCache.Remove(this.ModelKey);
-            BeginSwitchToModel(this.ModelKey);
+            SwitchToModelAsync(this.ModelKey).ConfigureAwait(false);
         }
 
         protected abstract Task<TModel> LoadModelAsync(
