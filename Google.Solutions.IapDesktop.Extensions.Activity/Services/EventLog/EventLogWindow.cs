@@ -60,6 +60,11 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services.EventLog
                 this.viewModel,
                 m => m.SelectedTimeframeIndex,
                 this.components);
+            this.timeFrameComboBox.BindProperty(
+                c => c.Enabled,
+                this.viewModel,
+                m => m.IsTimeframeComboBoxEnabled,
+                this.components);
 
             this.refreshButton.BindProperty(
                 c => c.Enabled,

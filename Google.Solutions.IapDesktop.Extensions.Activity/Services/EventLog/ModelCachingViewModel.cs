@@ -95,6 +95,10 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services.EventLog
                         {
                             TraceSources.IapDesktop.TraceVerbose("Model load cancelled");
                         }
+                        catch (Exception e)
+                        {
+                            TraceSources.IapDesktop.TraceError(e);
+                        }
                     },
                     this.tokenSourceForCurrentTask.Token,
                     TaskContinuationOptions.None,

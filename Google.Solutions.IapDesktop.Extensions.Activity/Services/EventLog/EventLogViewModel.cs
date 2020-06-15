@@ -23,6 +23,7 @@ using Google.Solutions.Common.Diagnostics;
 using Google.Solutions.IapDesktop.Application;
 using Google.Solutions.IapDesktop.Application.ObjectModel;
 using Google.Solutions.IapDesktop.Application.Services.Integration;
+using Google.Solutions.IapDesktop.Application.Services.Windows;
 using Google.Solutions.IapDesktop.Application.Services.Windows.ProjectExplorer;
 using Google.Solutions.IapDesktop.Application.Util;
 using Google.Solutions.IapDesktop.Extensions.Activity.Events;
@@ -34,6 +35,7 @@ using System.ComponentModel;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Windows.Forms;
 
 namespace Google.Solutions.IapDesktop.Extensions.Activity.Services.EventLog
 {
@@ -53,14 +55,18 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services.EventLog
 
         private int selectedTimeframeIndex = 0;
         private bool isRefreshButtonEnabled = false;
+        private bool isTimeframeComboBoxEnabled = false;
         private bool includeSystemEvents = true;
         private bool includeLifecycleEvents = true;
 
         private Timeframe SelectedTimeframe => AvailableTimeframes[this.selectedTimeframeIndex];
 
-        public EventLogViewModel(IServiceProvider serviceProvider)
+        public EventLogViewModel(
+            IWin32Window view,
+            IServiceProvider serviceProvider)
             : base(ModelCacheCapacity)
         {
+            this.View = view;
             this.serviceProvider = serviceProvider;
 
             this.Events = new RangeObservableCollection<EventBase>();
@@ -76,6 +82,16 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services.EventLog
             set 
             {
                 this.isRefreshButtonEnabled = value;
+                RaisePropertyChange();
+            }
+        }
+
+        public bool IsTimeframeComboBoxEnabled
+        {
+            get => this.isTimeframeComboBoxEnabled;
+            set
+            {
+                this.isTimeframeComboBoxEnabled = value;
                 RaisePropertyChange();
             }
         }
@@ -142,7 +158,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services.EventLog
         {
             using (TraceSources.IapDesktop.TraceMethod().WithParameters(node.InstanceName))
             {
-                this.IsRefreshButtonEnabled = false;
+                this.IsRefreshButtonEnabled = 
+                    this.IsTimeframeComboBoxEnabled = false;
                 try
                 {
                     // If the user is holding down the arrow key in the project explorer,
@@ -175,7 +192,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services.EventLog
                 }
                 finally
                 {
-                    this.IsRefreshButtonEnabled = true;
+                    this.IsRefreshButtonEnabled = 
+                        this.IsTimeframeComboBoxEnabled = true;
                 }
             }
         }
