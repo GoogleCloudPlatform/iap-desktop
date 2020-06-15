@@ -21,6 +21,8 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
+using System.Web.Caching;
 
 namespace Google.Solutions.IapDesktop.Application.Util
 {
@@ -66,12 +68,27 @@ namespace Google.Solutions.IapDesktop.Application.Util
                 PurgeLeastRecentlyUsed();
             }
 
+            Remove(key);
+
             var node = new LinkedListNode<KeyValuePair<K, V>>(
                 new KeyValuePair<K, V>(key, val));
 
             // Track this as most recently accessed.
             lruList.AddLast(node);
             cacheMap[key] = node;
+
+            Debug.Assert(this.cacheMap.Count == this.lruList.Count);
+        }
+
+        public void Remove(K key)
+        {
+            if (cacheMap.TryGetValue(key, out LinkedListNode<KeyValuePair<K, V>> node))
+            {
+                this.cacheMap.Remove(key);
+                this.lruList.Remove(node);
+            }
+
+            Debug.Assert(this.cacheMap.Count == this.lruList.Count);
         }
 
         private void PurgeLeastRecentlyUsed()

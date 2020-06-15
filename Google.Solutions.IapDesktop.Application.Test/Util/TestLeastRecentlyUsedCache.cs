@@ -90,5 +90,16 @@ namespace Google.Solutions.IapDesktop.Application.Test.Util
             Assert.AreEqual("ONE", cache.Lookup("one"));
             Assert.AreEqual("TWO", cache.Lookup("two"));
         }
+
+        [Test]
+        public void WhenItemExists_ThenRemoveSucceeds()
+        {
+            var cache = new LeastRecentlyUsedCache<string, string>(2);
+            cache.Add("one", "ONE");
+            cache.Remove("one");
+            cache.Remove("doesnotexist");
+
+            Assert.IsNull(cache.Lookup("one"));
+        }
     }
 }

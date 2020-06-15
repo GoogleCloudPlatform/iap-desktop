@@ -41,6 +41,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services.EventLog
         private CancellationTokenSource tokenSourceForCurrentTask = null;
 
         protected TModel Model { get; private set; }
+        protected TModelKey ModelKey { get; private set; }
 
         public ModelCachingViewModelBase(int cacheCapacity)
         {
@@ -53,6 +54,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services.EventLog
 
         public void BeginSwitchToModel(TModelKey key)
         {
+            this.ModelKey = key;
             var model = this.modelCache.Lookup(key);
             if (model != null)
             {
@@ -104,6 +106,12 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services.EventLog
                     // Cf. https://stackoverflow.com/questions/4659257/
                     this.taskScheduler);
             }
+        }
+
+        protected void Invalidate()
+        {
+            this.modelCache.Remove(this.ModelKey);
+            BeginSwitchToModel(this.ModelKey);
         }
 
         protected abstract Task<TModel> LoadModelAsync(

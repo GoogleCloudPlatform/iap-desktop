@@ -62,8 +62,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services.EventLog
             this.timestampColumn = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.severityColumn = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.descriptionColumn = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-            this.statusColumn = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.principalColumn = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.instanceNameColumn = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.toolStrip.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -89,6 +89,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services.EventLog
             this.refreshButton.Name = "refreshButton";
             this.refreshButton.Size = new System.Drawing.Size(23, 22);
             this.refreshButton.Text = "Refresh";
+            this.refreshButton.Click += new System.EventHandler(this.refreshButton_Click);
             // 
             // toolStripSeparator1
             // 
@@ -107,18 +108,18 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services.EventLog
             this.lifecycleEventsDropDown.Size = new System.Drawing.Size(119, 22);
             this.lifecycleEventsDropDown.Text = "Lifecycle events";
             // 
-            // includeUserEventsButton
+            // includeLifecycleEventsButton
             // 
             this.includeLifecycleEventsButton.CheckOnClick = true;
-            this.includeLifecycleEventsButton.Name = "includeUserEventsButton";
-            this.includeLifecycleEventsButton.Size = new System.Drawing.Size(180, 22);
+            this.includeLifecycleEventsButton.Name = "includeLifecycleEventsButton";
+            this.includeLifecycleEventsButton.Size = new System.Drawing.Size(149, 22);
             this.includeLifecycleEventsButton.Text = "User events";
             // 
             // includeSystemEventsButton
             // 
             this.includeSystemEventsButton.CheckOnClick = true;
             this.includeSystemEventsButton.Name = "includeSystemEventsButton";
-            this.includeSystemEventsButton.Size = new System.Drawing.Size(180, 22);
+            this.includeSystemEventsButton.Size = new System.Drawing.Size(149, 22);
             this.includeSystemEventsButton.Text = "System events";
             // 
             // timeFrameComboBox
@@ -132,9 +133,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services.EventLog
             this.list.AutoResizeColumnsOnUpdate = false;
             this.list.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
             this.timestampColumn,
+            this.instanceNameColumn,
             this.severityColumn,
             this.descriptionColumn,
-            this.statusColumn,
             this.principalColumn});
             this.list.Dock = System.Windows.Forms.DockStyle.Fill;
             this.list.FullRowSelect = true;
@@ -152,7 +153,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services.EventLog
             // timestampColumn
             // 
             this.timestampColumn.Text = "Timestamp (UTC)";
-            this.timestampColumn.Width = 120;
+            this.timestampColumn.Width = 130;
             // 
             // severityColumn
             // 
@@ -163,15 +164,15 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services.EventLog
             this.descriptionColumn.Text = "Description";
             this.descriptionColumn.Width = 300;
             // 
-            // statusColumn
-            // 
-            this.statusColumn.Text = "Status";
-            this.statusColumn.Width = 192;
-            // 
             // principalColumn
             // 
             this.principalColumn.Text = "User";
-            this.principalColumn.Width = 120;
+            this.principalColumn.Width = 110;
+            // 
+            // instanceNameColumn
+            // 
+            this.instanceNameColumn.Text = "Instance name";
+            this.instanceNameColumn.Width = 130;
             // 
             // EventLogWindow
             // 
@@ -203,7 +204,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services.EventLog
         private System.Windows.Forms.ColumnHeader severityColumn;
         private System.Windows.Forms.ColumnHeader descriptionColumn;
         private System.Windows.Forms.ColumnHeader principalColumn;
-        private System.Windows.Forms.ColumnHeader statusColumn;
         private System.Windows.Forms.ToolStripComboBox timeFrameComboBox;
+        private System.Windows.Forms.ColumnHeader instanceNameColumn;
     }
 }

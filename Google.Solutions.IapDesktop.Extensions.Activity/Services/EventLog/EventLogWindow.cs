@@ -51,15 +51,16 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services.EventLog
 
             this.viewModel = new EventLogViewModel(serviceProvider);
 
-            this.timeFrameComboBox.Items.AddRange(EventLogViewModel.AnalysisTimeframes.ToArray());
+            this.timeFrameComboBox.Items.AddRange(EventLogViewModel.AvailableTimeframes.ToArray());
             this.timeFrameComboBox.SelectedIndex = 0;
 
-            // TODO: use proper binding.
-            //this.timeFrameComboBox.OnControlPropertyChange(
-            //    c => c.SelectedIndex,
-            //    index => model.SelectedTimeframe = EventLogViewModel.AnalysisTimeframes[index]);
-
             // Bind toolbar buttons.
+            this.timeFrameComboBox.BindProperty(
+                c => c.SelectedIndex,
+                this.viewModel,
+                m => m.SelectedTimeframeIndex,
+                this.components);
+
             this.refreshButton.BindProperty(
                 c => c.Enabled,
                 this.viewModel,
@@ -84,11 +85,23 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services.EventLog
 
             // Bind list.
             this.list.BindColumn(0, e => e.Timestamp.ToString());
-            this.list.BindColumn(1, e => e.Severity);
-            this.list.BindColumn(2, e => e.Message);
-            this.list.BindColumn(3, e => e.Status?.Message);
+            this.list.BindColumn(1, e => GetInstanceName(e));
+            this.list.BindColumn(2, e => e.Severity);
+            this.list.BindColumn(3, e => e.Message);
             this.list.BindColumn(4, e => e.PrincipalEmail);
             this.list.BindCollection(this.viewModel.Events);
+        }
+
+        private static string GetInstanceName(EventBase e)
+        {
+            if (e is VmInstanceEventBase vmEvent)
+            {
+                return vmEvent.InstanceReference.Name;
+            }
+            else
+            {
+                return string.Empty;
+            }
         }
 
         //---------------------------------------------------------------------
@@ -107,6 +120,11 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services.EventLog
             {
                 // We cannot handle other types or node, so ignore.
             }
+        }
+
+        private void refreshButton_Click(object sender, EventArgs e)
+        {
+            this.viewModel.Refresh();
         }
     }
 

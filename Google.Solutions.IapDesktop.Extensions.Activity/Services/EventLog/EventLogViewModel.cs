@@ -19,6 +19,8 @@
 // under the License.
 //
 
+using Google.Solutions.Common.Diagnostics;
+using Google.Solutions.IapDesktop.Application;
 using Google.Solutions.IapDesktop.Application.ObjectModel;
 using Google.Solutions.IapDesktop.Application.Services.Integration;
 using Google.Solutions.IapDesktop.Application.Services.Windows.ProjectExplorer;
@@ -39,7 +41,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services.EventLog
         : ModelCachingViewModelBase<IProjectExplorerVmInstanceNode, EventLogModel>
     {
         private const int ModelCacheCapacity = 5;
-        public static readonly ReadOnlyCollection<Timeframe> AnalysisTimeframes 
+        public static readonly ReadOnlyCollection<Timeframe> AvailableTimeframes 
             = new ReadOnlyCollection<Timeframe>(new List<Timeframe>()
         {
             new Timeframe(TimeSpan.FromDays(7), "Last 7 days"),
@@ -49,9 +51,12 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services.EventLog
 
         private readonly IServiceProvider serviceProvider;
 
-        private Timeframe selectedTimeframe = AnalysisTimeframes[0];
+        private int selectedTimeframeIndex = 0;
+        private bool isRefreshButtonEnabled = false;
         private bool includeSystemEvents = true;
         private bool includeLifecycleEvents = true;
+
+        private Timeframe SelectedTimeframe => AvailableTimeframes[this.selectedTimeframeIndex];
 
         public EventLogViewModel(IServiceProvider serviceProvider)
             : base(ModelCacheCapacity)
@@ -67,8 +72,12 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services.EventLog
 
         public bool IsRefreshButtonEnabled
         {
-            get => true;
-            set { }
+            get => this.isRefreshButtonEnabled;
+            set 
+            {
+                this.isRefreshButtonEnabled = value;
+                RaisePropertyChange();
+            }
         }
 
         public bool IsLifecycleEventDropDownEnabled
@@ -78,16 +87,16 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services.EventLog
         }
         public RangeObservableCollection<EventBase> Events { get; }
 
-        public Timeframe SelectedTimeframe
+        public int SelectedTimeframeIndex
         {
-            get => this.selectedTimeframe;
+            get => this.selectedTimeframeIndex;
             set
             {
-                this.selectedTimeframe = value;
+                this.selectedTimeframeIndex = value;
                 RaisePropertyChange();
 
                 // Reload from backend.
-                // TODO: Invalidate cache
+                Invalidate();
             }
         }
 
@@ -121,10 +130,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services.EventLog
         // Actions.
         //---------------------------------------------------------------------
 
-        //public async Task RefreshAsync()
-        //{
-
-        //}
+        public void Refresh() => Invalidate();
 
         //---------------------------------------------------------------------
         // ModelCachingViewModelBase.
@@ -134,43 +140,44 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services.EventLog
             IProjectExplorerVmInstanceNode node,
             CancellationToken token)
         {
-            // If the user is holding down the arrow key in the project explorer,
-            // we might get a flurry of requests. To catch that, introduce a short,
-            // cancellable-delay.
-            await Task.Delay(300, token).ConfigureAwait(true);
-
-            var methods = new List<string>();
-            if (this.includeLifecycleEvents)
+            using (TraceSources.IapDesktop.TraceMethod().WithParameters(node.InstanceName))
             {
-                methods.AddRange(EventFactory.LifecycleEventMethods);
-            }
-
-            if (this.includeLifecycleEvents)
-            {
-                methods.AddRange(EventFactory.SystemEventMethods);
-            }
-
-            var jobService = this.serviceProvider.GetService<IJobService>();
-            var auditLogAdapter = this.serviceProvider.GetService<AuditLogAdapter>();
-
-            // Load data using a job so that the task is retried in case
-            // of authentication issues.
-            var model = new EventLogModel();
-            await jobService.RunInBackground<object>(
-                new JobDescription(
-                    $"Loading logs for {node.InstanceName}",
-                    JobUserFeedbackType.BackgroundFeedback),
-                async jobToken =>
+                this.IsRefreshButtonEnabled = false;
+                try
                 {
-                    await auditLogAdapter.ListInstanceEventsAsync(
-                        new[] { node.ProjectId },
-                        new[] { node.InstanceId },
-                        DateTime.UtcNow.Subtract(this.SelectedTimeframe.Duration),
-                        model,
-                        token).ConfigureAwait(false);
-                    return null;
-                }).ConfigureAwait(true);  // Back to original (UI) thread.
-            return model;
+                    // If the user is holding down the arrow key in the project explorer,
+                    // we might get a flurry of requests. To catch that, introduce a short,
+                    // cancellable-delay.
+                    await Task.Delay(300, token).ConfigureAwait(true);
+
+
+                    var jobService = this.serviceProvider.GetService<IJobService>();
+                    var auditLogAdapter = this.serviceProvider.GetService<AuditLogAdapter>();
+
+                    // Load data using a job so that the task is retried in case
+                    // of authentication issues.
+                    var model = new EventLogModel();
+                    await jobService.RunInBackground<object>(
+                        new JobDescription(
+                            $"Loading logs for {node.InstanceName}",
+                            JobUserFeedbackType.BackgroundFeedback),
+                        async jobToken =>
+                        {
+                            await auditLogAdapter.ListInstanceEventsAsync(
+                                new[] { node.ProjectId },
+                                new[] { node.InstanceId },
+                                DateTime.UtcNow.Subtract(this.SelectedTimeframe.Duration),
+                                model,
+                                token).ConfigureAwait(false);
+                            return null;
+                        }).ConfigureAwait(true);  // Back to original (UI) thread.
+                    return model;
+                }
+                finally
+                {
+                    this.IsRefreshButtonEnabled = true;
+                }
+            }
         }
 
         protected override void ApplyModel(bool cached)
