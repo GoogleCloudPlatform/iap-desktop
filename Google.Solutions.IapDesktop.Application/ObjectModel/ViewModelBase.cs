@@ -42,9 +42,14 @@ namespace Google.Solutions.IapDesktop.Application.ObjectModel
         /// <summary>
         /// Notify observers about a property change.
         /// </summary>
-        public void RaisePropertyChange([CallerMemberName] string propertyname = null)
+        public void RaisePropertyChange([CallerMemberName] string propertyName = null)
         {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyname));
+            OnPropertyChanged(new PropertyChangedEventArgs(propertyName));
+        }
+
+        protected virtual void OnPropertyChanged(PropertyChangedEventArgs args)
+        {
+            PropertyChanged?.Invoke(this, args);
         }
 
         /// <summary>

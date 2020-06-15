@@ -40,6 +40,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services.EventLog
         private readonly TaskScheduler taskScheduler;
         private CancellationTokenSource tokenSourceForCurrentTask = null;
 
+        protected TModel Model { get; private set; }
+
         public ModelCachingViewModelBase(int cacheCapacity)
         {
             // Capture the GUI thread scheduler.
@@ -56,7 +58,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services.EventLog
             {
                 // Apply model synchronously.
                 this.modelCache.Add(key, model);
-                ApplyModel(model, true);
+
+                this.Model = model;
+                ApplyModel(true);
             }
             else
             {
@@ -80,7 +84,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services.EventLog
                             if (t.Result != null)
                             {
                                 this.modelCache.Add(key, t.Result);
-                                ApplyModel(t.Result, false);
+
+                                this.Model = t.Result;
+                                ApplyModel(false);
                             }
                         }
                         catch (Exception e) when (e.IsCancellation())
@@ -104,8 +110,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services.EventLog
             TModelKey key,
             CancellationToken token);
 
-        protected abstract void ApplyModel(
-            TModel model,
-            bool cached);
+        protected abstract void ApplyModel(bool cached);
     }
 }

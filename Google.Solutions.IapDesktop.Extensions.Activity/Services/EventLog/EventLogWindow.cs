@@ -26,12 +26,8 @@ using Google.Solutions.IapDesktop.Application.Services.Windows;
 using Google.Solutions.IapDesktop.Application.Services.Windows.ProjectExplorer;
 using Google.Solutions.IapDesktop.Extensions.Activity.Events;
 using System;
-using System.ComponentModel;
-using System.Threading;
-using System.Threading.Tasks;
 using System.Linq;
 using Google.Solutions.Common.Diagnostics;
-using Google.Solutions.IapDesktop.Extensions.Activity.Services.Adapters;
 using System.Diagnostics;
 
 namespace Google.Solutions.IapDesktop.Extensions.Activity.Services.EventLog

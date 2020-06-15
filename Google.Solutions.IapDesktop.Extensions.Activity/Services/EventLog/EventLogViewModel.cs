@@ -24,11 +24,12 @@ using Google.Solutions.IapDesktop.Application.Services.Integration;
 using Google.Solutions.IapDesktop.Application.Services.Windows.ProjectExplorer;
 using Google.Solutions.IapDesktop.Application.Util;
 using Google.Solutions.IapDesktop.Extensions.Activity.Events;
-using Google.Solutions.IapDesktop.Extensions.Activity.History;
 using Google.Solutions.IapDesktop.Extensions.Activity.Services.Adapters;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -60,6 +61,10 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services.EventLog
             this.Events = new RangeObservableCollection<EventBase>();
         }
 
+        //---------------------------------------------------------------------
+        // Observable properties.
+        //---------------------------------------------------------------------
+
         public bool IsRefreshButtonEnabled
         {
             get => true;
@@ -71,11 +76,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services.EventLog
             get => true;
             set { }
         }
-
-        //---------------------------------------------------------------------
-        // Observable properties.
-        //---------------------------------------------------------------------
-
         public RangeObservableCollection<EventBase> Events { get; }
 
         public Timeframe SelectedTimeframe
@@ -85,6 +85,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services.EventLog
             {
                 this.selectedTimeframe = value;
                 RaisePropertyChange();
+
+                // Reload from backend.
+                // TODO: Invalidate cache
             }
         }
 
@@ -95,6 +98,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services.EventLog
             {
                 this.includeSystemEvents = value;
                 RaisePropertyChange();
+
+                // Reapply filters.
+                ApplyModel(true);
             }
         }
 
@@ -105,6 +111,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services.EventLog
             {
                 this.includeLifecycleEvents = value;
                 RaisePropertyChange();
+
+                // Reapply filters.
+                ApplyModel(true);
             }
         }
 
@@ -114,7 +123,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services.EventLog
 
         //public async Task RefreshAsync()
         //{
-            
+
         //}
 
         //---------------------------------------------------------------------
@@ -141,15 +150,12 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services.EventLog
                 methods.AddRange(EventFactory.SystemEventMethods);
             }
 
-            var model = new EventLogModel(
-                null, // All,
-                methods);
-
             var jobService = this.serviceProvider.GetService<IJobService>();
             var auditLogAdapter = this.serviceProvider.GetService<AuditLogAdapter>();
 
             // Load data using a job so that the task is retried in case
             // of authentication issues.
+            var model = new EventLogModel();
             await jobService.RunInBackground<object>(
                 new JobDescription(
                     $"Loading logs for {node.InstanceName}",
@@ -167,12 +173,12 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services.EventLog
             return model;
         }
 
-        protected override void ApplyModel(
-            EventLogModel model,
-            bool cached)
+        protected override void ApplyModel(bool cached)
         {
             this.Events.Clear();
-            this.Events.AddRange(model.Events);
+            this.Events.AddRange(this.Model.Events
+                .Where(e => !e.LogRecord.IsActivityEvent || this.includeLifecycleEvents)
+                .Where(e => !e.LogRecord.IsSystemEvent || this.includeSystemEvents));
         }
 
         //---------------------------------------------------------------------
