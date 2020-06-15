@@ -170,22 +170,21 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services.EventLog
 
                     // Load data using a job so that the task is retried in case
                     // of authentication issues.
-                    var model = new EventLogModel();
-                    await jobService.RunInBackground<object>(
+                    return await jobService.RunInBackground(
                         new JobDescription(
                             $"Loading logs for {node.InstanceName}",
                             JobUserFeedbackType.BackgroundFeedback),
                         async jobToken =>
                         {
+                            var model = new EventLogModel();
                             await auditLogAdapter.ListInstanceEventsAsync(
                                 new[] { node.ProjectId },
                                 new[] { node.InstanceId },
                                 DateTime.UtcNow.Subtract(this.SelectedTimeframe.Duration),
                                 model,
                                 token).ConfigureAwait(false);
-                            return null;
+                            return model;
                         }).ConfigureAwait(true);  // Back to original (UI) thread.
-                    return model;
                 }
                 finally
                 {
