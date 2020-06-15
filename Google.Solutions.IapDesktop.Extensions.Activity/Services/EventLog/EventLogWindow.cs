@@ -30,7 +30,6 @@ using System.Linq;
 using Google.Solutions.Common.Diagnostics;
 using System.Diagnostics;
 using System.Threading.Tasks;
-using System.Threading;
 
 namespace Google.Solutions.IapDesktop.Extensions.Activity.Services.EventLog
 {

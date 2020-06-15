@@ -23,7 +23,6 @@ using Google.Solutions.Common.Diagnostics;
 using Google.Solutions.IapDesktop.Application;
 using Google.Solutions.IapDesktop.Application.ObjectModel;
 using Google.Solutions.IapDesktop.Application.Services.Integration;
-using Google.Solutions.IapDesktop.Application.Services.Windows;
 using Google.Solutions.IapDesktop.Application.Services.Windows.ProjectExplorer;
 using Google.Solutions.IapDesktop.Application.Util;
 using Google.Solutions.IapDesktop.Extensions.Activity.Events;
@@ -31,7 +30,6 @@ using Google.Solutions.IapDesktop.Extensions.Activity.Services.Adapters;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.ComponentModel;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -166,7 +164,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services.EventLog
                     // we might get a flurry of requests. To catch that, introduce a short,
                     // cancellable-delay.
                     await Task.Delay(300, token).ConfigureAwait(true);
-
 
                     var jobService = this.serviceProvider.GetService<IJobService>();
                     var auditLogAdapter = this.serviceProvider.GetService<AuditLogAdapter>();
