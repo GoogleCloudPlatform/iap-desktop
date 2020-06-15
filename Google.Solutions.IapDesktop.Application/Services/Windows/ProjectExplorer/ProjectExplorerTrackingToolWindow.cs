@@ -120,7 +120,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.Windows.ProjectExplor
                 {
                     // Apply model synchronously.
                     this.modelCache.Add(node, model);
-                    ApplyViewModel(model);
+                    ApplyViewModel(model, true);
                 }
                 else
                 {
@@ -134,9 +134,6 @@ namespace Google.Solutions.IapDesktop.Application.Services.Windows.ProjectExplor
                         this.tokenSourceForCurrentTask = null;
                     }
 
-                    // TODO: post job
-                    // TODO: allow job to be canelled
-
                     // Load model.
                     this.tokenSourceForCurrentTask = new CancellationTokenSource();
                     LoadViewModelAsync(node, this.tokenSourceForCurrentTask.Token)
@@ -147,7 +144,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.Windows.ProjectExplor
                                 if (t.Result != null)
                                 {
                                     this.modelCache.Add(node, t.Result);
-                                    ApplyViewModel(t.Result);
+                                    ApplyViewModel(t.Result, false);
                                 }
                             }
                             catch (Exception e) when (e.IsCancellation())
@@ -168,12 +165,13 @@ namespace Google.Solutions.IapDesktop.Application.Services.Windows.ProjectExplor
             }
         }
 
-        private void ApplyViewModel(TViewModel model)
+        private void ApplyViewModel(TViewModel model, bool cached)
         {
-            using (TraceSources.IapDesktop.TraceMethod().WithParameters(typeof(TViewModel).Name))
+            using (TraceSources.IapDesktop.TraceMethod().WithParameters(
+                typeof(TViewModel).Name, cached))
             {
                 var bindingContainer = new Container();
-                BindViewModel(model, bindingContainer);
+                BindViewModel(model, cached, bindingContainer);
 
                 if (this.currentBindingContainer != null)
                 {
@@ -201,6 +199,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.Windows.ProjectExplor
 
         protected virtual void BindViewModel(
             TViewModel model,
+            bool cached,
             IContainer bindingContainer)
         {}
     }

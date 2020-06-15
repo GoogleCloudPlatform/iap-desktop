@@ -20,30 +20,31 @@
 //
 
 using Google.Solutions.IapDesktop.Application.ObjectModel;
+using Google.Solutions.IapDesktop.Application.Services.Integration;
 using Google.Solutions.IapDesktop.Application.Services.Windows.ProjectExplorer;
+using Google.Solutions.IapDesktop.Application.Util;
 using Google.Solutions.IapDesktop.Extensions.Activity.Events;
 using Google.Solutions.IapDesktop.Extensions.Activity.History;
 using Google.Solutions.IapDesktop.Extensions.Activity.Services.Adapters;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Linq;
-using System.Runtime.CompilerServices;
-using System.Threading;
 using System.Threading.Tasks;
 
 namespace Google.Solutions.IapDesktop.Extensions.Activity.Services.EventLog
 {
-    internal class EventLogViewModel : ViewModelBase, IEventProcessor
+    internal class EventLogViewModel : ViewModelBase
     {
         public static readonly ReadOnlyCollection<Timeframe> AnalysisTimeframes 
             = new ReadOnlyCollection<Timeframe>(new List<Timeframe>()
         {
             new Timeframe(TimeSpan.FromDays(7), "Last 7 days"),
-            new Timeframe(TimeSpan.FromDays(30), "Last 30 days"),
-            new Timeframe(TimeSpan.FromDays(90), "Last 90 days")
+            new Timeframe(TimeSpan.FromDays(14), "Last 14 days"),
+            new Timeframe(TimeSpan.FromDays(30), "Last 30 days")
         });
 
+        private readonly IJobService jobService;
+        private readonly AuditLogAdapter auditLogAdapter;
         private readonly IProjectExplorerVmInstanceNode node;
 
         private Timeframe selectedTimeframe = null;
@@ -51,13 +52,18 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services.EventLog
         private bool includeLifecycleEvents = true;
 
         public EventLogViewModel(
+            IJobService jobService,
+            AuditLogAdapter auditLogAdapter,
             IProjectExplorerVmInstanceNode node,
             Timeframe initialTimeframe)
         {
+            this.jobService = jobService;
+            this.auditLogAdapter = auditLogAdapter;
             this.node = node;
+
             this.selectedTimeframe = initialTimeframe;
 
-            this.Events = new ObservableCollection<EventBase>();
+            this.Events = new RangeObservableCollection<EventBase>();
         }
 
         public bool IsRefreshButtonEnabled
@@ -77,7 +83,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services.EventLog
         // Observable properties.
         //---------------------------------------------------------------------
 
-        public ObservableCollection<EventBase> Events { get; }
+        public RangeObservableCollection<EventBase> Events { get; }
 
         public Timeframe SelectedTimeframe
         {
@@ -113,71 +119,78 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services.EventLog
         // IEventProcessor.
         //---------------------------------------------------------------------
 
-        public EventOrder ExpectedOrder => EventOrder.NewestFirst;
-
-        public IEnumerable<string> SupportedSeverities => null; // All.
-
-        public IEnumerable<string> SupportedMethods
-        {
-            get
-            {
-                var methods = new List<string>();
-
-                if (this.includeLifecycleEvents)
-                {
-                    methods.AddRange(EventFactory.LifecycleEventMethods);
-                }
-                
-                if (this.includeLifecycleEvents)
-                {
-                    methods.AddRange(EventFactory.SystemEventMethods);
-                }
-
-                return methods;
-            }
-        }
-
-        public void Process(EventBase e)
-        {
-            this.Events.Add(e);
-        }
 
         //---------------------------------------------------------------------
         // Actions.
         //---------------------------------------------------------------------
 
-        public static async Task<EventLogViewModel> LoadAsync(
-            AuditLogAdapter auditLogAdapter,
-            IProjectExplorerNode node,
-            Timeframe initialTimeframe,
-            CancellationToken token)
+        public async Task RefreshAsync()
         {
-            if (node is IProjectExplorerVmInstanceNode vmNode)
+            var methods = new List<string>();
+            if (this.includeLifecycleEvents)
             {
-                var model = new EventLogViewModel(vmNode, initialTimeframe);
-
-                await auditLogAdapter.ListInstanceEventsAsync(
-                    new[] { vmNode.ProjectId },
-                    new[] { vmNode.InstanceId },
-                    DateTime.UtcNow.Subtract(initialTimeframe.Duration),
-                    model,
-                    token).ConfigureAwait(false);
-
-                return model;
+                methods.AddRange(EventFactory.LifecycleEventMethods);
             }
-            else
+
+            if (this.includeLifecycleEvents)
             {
-                // We do not care about any other nodes.
-                return null;
+                methods.AddRange(EventFactory.SystemEventMethods);
             }
-        }
 
-        public Task RefreshAsync()
-        {
-            throw new NotImplementedException();
+            // Instead of adding the events straight to this.Events, accumulate
+            // them first. That way, we :
+            // - avoid having the collection be accessed
+            //   from a different thread (which in turn would cause events being
+            //   fired on that thread)
+            // - can update the collection in one batch, minimizing the number
+            //   of events.
+            var accumulator = new EventAccumulator(
+                null, // All,
+                methods);
+
+            // Load data using a job so that the task is retried in case
+            // of authentication issues.
+            await this.jobService.RunInBackground<object>(
+                new JobDescription(
+                    $"Loading logs for {this.node.InstanceName}",
+                    JobUserFeedbackType.BackgroundFeedback),
+                async token =>
+                {
+                    await this.auditLogAdapter.ListInstanceEventsAsync(
+                        new[] { this.node.ProjectId },
+                        new[] { this.node.InstanceId },
+                        DateTime.UtcNow.Subtract(this.SelectedTimeframe.Duration),
+                        accumulator,
+                        token).ConfigureAwait(false);
+                    return null;
+            }).ConfigureAwait(true);  // Back to original (UI) thread.
+
+            this.Events.AddRange(accumulator.Events);
         }
 
         //---------------------------------------------------------------------
+
+        private class EventAccumulator : IEventProcessor
+        {
+            private readonly List<EventBase> events = new List<EventBase>();
+            public IEnumerable<EventBase> Events => this.events;
+            public EventOrder ExpectedOrder => EventOrder.NewestFirst;
+            public IEnumerable<string> SupportedSeverities { get; }
+            public IEnumerable<string> SupportedMethods { get; }
+
+            public EventAccumulator(
+                IEnumerable<string> severities,
+                IEnumerable<string> methods)
+            {
+                this.SupportedSeverities = severities;
+                this.SupportedMethods = methods;
+            }
+
+            public void Process(EventBase e)
+            {
+                this.events.Add(e);
+            }
+        }
 
         public class Timeframe
         {

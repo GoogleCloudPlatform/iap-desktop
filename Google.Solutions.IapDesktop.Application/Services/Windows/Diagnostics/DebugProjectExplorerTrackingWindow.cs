@@ -71,6 +71,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.Windows.Diagnostics
 
         protected override void BindViewModel(
             DebugProjectExplorerTrackingViewModel model, 
+            bool cached,
             IContainer bindingContainer)
         {
             this.instanceNameLabel.BindProperty(

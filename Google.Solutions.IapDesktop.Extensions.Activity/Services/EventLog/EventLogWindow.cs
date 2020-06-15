@@ -32,6 +32,7 @@ using System.Threading.Tasks;
 using System.Linq;
 using Google.Solutions.Common.Diagnostics;
 using Google.Solutions.IapDesktop.Extensions.Activity.Services.Adapters;
+using System.Diagnostics;
 
 namespace Google.Solutions.IapDesktop.Extensions.Activity.Services.EventLog
 {
@@ -69,23 +70,34 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services.EventLog
                 IProjectExplorerNode node,
                 CancellationToken token)
         {
-            this.list.Enabled = this.toolStrip.Enabled = false;
-             
-            var model = await EventLogViewModel.LoadAsync(
-                this.serviceProvider.GetService<AuditLogAdapter>(),
-                node,
-                (EventLogViewModel.Timeframe)this.timeFrameComboBox.SelectedItem,
-                token).ConfigureAwait(true);
+            Debug.Assert(!InvokeRequired, "running on UI thread");
+            if (node is IProjectExplorerVmInstanceNode vmNode)
+            {
+                // If the user is holding down the arrow key in the project explorer,
+                // we might get a flurry of requests. To catch that, introduce a short,
+                // cancellable-delay.
+                await Task.Delay(300, token).ConfigureAwait(true);
 
-            this.list.Enabled = this.toolStrip.Enabled = true;
-
-            return model;
+                return new EventLogViewModel(
+                    this.serviceProvider.GetService<IJobService>(),
+                    this.serviceProvider.GetService<AuditLogAdapter>(),
+                    vmNode,
+                    (EventLogViewModel.Timeframe)this.timeFrameComboBox.SelectedItem);
+            }
+            else
+            {
+                // We cannot handle other types or node, so ignore.
+                return null;
+            }
         }
 
         protected override void BindViewModel(
-            EventLogViewModel model, 
+            EventLogViewModel model,
+            bool cached,
             IContainer bindingContainer)
         {
+            Debug.Assert(!InvokeRequired, "running on UI thread");
+
             // The timeframe selector should not change when we swap view models, so 
             // use a one-way binding.
             this.timeFrameComboBox.OnControlPropertyChange(
@@ -122,6 +134,14 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services.EventLog
             this.list.BindColumn(3, e => e.Status?.Message);
             this.list.BindColumn(4, e => e.PrincipalEmail);
             this.list.BindCollection(model.Events);
+
+            if (!cached)
+            {
+                // TODO: must refresh if filter/timeframe changed!
+
+                // Refresh to pull in the new data.
+                model.RefreshAsync().ConfigureAwait(true);
+            }
         }
     }
 
