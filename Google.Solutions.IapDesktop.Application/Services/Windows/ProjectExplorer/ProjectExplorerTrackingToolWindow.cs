@@ -36,11 +36,6 @@ namespace Google.Solutions.IapDesktop.Application.Services.Windows.ProjectExplor
     [SkipCodeCoverage("GUI plumbing")]
     public class ProjectExplorerTrackingToolWindow<TViewModel> : ToolWindow
     {
-        // Keep a cache of view models for the last N project explorer nodes
-        // visited so that switching back and forth between nodes is faster.
-        private readonly LeastRecentlyUsedCache<IProjectExplorerNode, TViewModel> modelCache;
-
-        private readonly TaskScheduler taskScheduler;
 
         private IContainer currentBindingContainer = null;
         private IProjectExplorerNode ignoredNode = null;
@@ -57,12 +52,8 @@ namespace Google.Solutions.IapDesktop.Application.Services.Windows.ProjectExplor
         public ProjectExplorerTrackingToolWindow(
             DockPanel dockPanel,
             IProjectExplorer projectExplorer,
-            IEventService eventService,
-            int cacheCapacity)
+            IEventService eventService)
         {
-            // Capture the GUI thread scheduler.
-            this.taskScheduler = TaskScheduler.FromCurrentSynchronizationContext();
-
             //
             // This window is a singleton, so we never want it to be closed,
             // just hidden.
@@ -70,8 +61,6 @@ namespace Google.Solutions.IapDesktop.Application.Services.Windows.ProjectExplor
             this.HideOnClose = true;
             this.dockPanel = dockPanel;
 
-            this.modelCache = new LeastRecentlyUsedCache<IProjectExplorerNode, TViewModel>(
-                cacheCapacity);
 
             // Use currently selected node.
             OnProjectExplorerNodeSelected(projectExplorer.SelectedNode);
@@ -88,6 +77,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.Windows.ProjectExplor
                 this.dockPanel, 
                 WeifenLuo.WinFormsUI.Docking.DockState.DockBottomAutoHide);
         }
+
         protected override void OnUserVisibilityChanged(bool visible)
         {
             if (visible && this.ignoredNode != null)
@@ -115,71 +105,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.Windows.ProjectExplor
                     this.ignoredNode = null;
                 }
 
-                TViewModel model = this.modelCache.Lookup(node);
-                if (model != null)
-                {
-                    // Apply model synchronously.
-                    this.modelCache.Add(node, model);
-                    ApplyViewModel(model, true);
-                }
-                else
-                {
-                    if (this.tokenSourceForCurrentTask != null)
-                    {
-                        // Another asynchnous load/bind operation is ongoing.
-                        // Cancel that one because we won't need its result.
-
-                        TraceSources.IapDesktop.TraceVerbose("Cancelling previous model load task");
-                        this.tokenSourceForCurrentTask.Cancel();
-                        this.tokenSourceForCurrentTask = null;
-                    }
-
-                    // Load model.
-                    this.tokenSourceForCurrentTask = new CancellationTokenSource();
-                    LoadViewModelAsync(node, this.tokenSourceForCurrentTask.Token)
-                        .ContinueWith(t =>
-                        {
-                            try
-                            {
-                                if (t.Result != null)
-                                {
-                                    this.modelCache.Add(node, t.Result);
-                                    ApplyViewModel(t.Result, false);
-                                }
-                            }
-                            catch (Exception e) when (e.IsCancellation())
-                            {
-                                TraceSources.IapDesktop.TraceVerbose("Model load cancelled");
-                            }
-                        },
-                        this.tokenSourceForCurrentTask.Token,
-                        TaskContinuationOptions.None,
-
-                        // Continue on UI thread. 
-                        // Note that there's a bug in the CLR that can cause
-                        // TaskScheduler.FromCurrentSynchronizationContext() to become null.
-                        // Therefore, use a task scheduler object captured previously.
-                        // Cf. https://stackoverflow.com/questions/4659257/
-                        this.taskScheduler);
-                }
-            }
-        }
-
-        private void ApplyViewModel(TViewModel model, bool cached)
-        {
-            using (TraceSources.IapDesktop.TraceMethod().WithParameters(
-                typeof(TViewModel).Name, cached))
-            {
-                var bindingContainer = new Container();
-                BindViewModel(model, cached, bindingContainer);
-
-                if (this.currentBindingContainer != null)
-                {
-                    // Dispose all old bindings.
-                    this.currentBindingContainer.Dispose();
-                }
-
-                this.currentBindingContainer = bindingContainer;
+                SwitchToNode(node);
             }
         }
 
@@ -190,17 +116,9 @@ namespace Google.Solutions.IapDesktop.Application.Services.Windows.ProjectExplor
         // abstract base classes for forms.
         //---------------------------------------------------------------------
 
-        protected virtual Task<TViewModel> LoadViewModelAsync(
-            IProjectExplorerNode node,
-            CancellationToken token)
+        protected virtual void SwitchToNode(
+            IProjectExplorerNode node)
         {
-            throw new InvalidOperationException();
         }
-
-        protected virtual void BindViewModel(
-            TViewModel model,
-            bool cached,
-            IContainer bindingContainer)
-        {}
     }
 }

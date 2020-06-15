@@ -107,6 +107,7 @@
     <Compile Include="Events\System\TerminateOnHostMaintenanceEvent.cs" />
     <Compile Include="Events\UnknownEvent.cs" />
     <Compile Include="Events\VmInstanceEventBase.cs" />
+    <Compile Include="Services\EventLog\EventLogModel.cs" />
     <Compile Include="Services\EventLog\EventLogViewModel.cs" />
     <Compile Include="Services\EventLog\EventLogWindow.cs">
       <SubType>Form</SubType>
@@ -122,6 +123,7 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
+    <Compile Include="Services\EventLog\ModelCachingViewModel.cs" />
     <Compile Include="Services\Extension.cs" />
     <Compile Include="Services\SchedulingReport\ImageAnnotation.cs" />
     <Compile Include="History\InstanceHistory.cs" />

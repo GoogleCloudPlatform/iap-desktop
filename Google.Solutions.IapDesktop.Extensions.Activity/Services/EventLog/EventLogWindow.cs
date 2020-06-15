@@ -41,91 +41,50 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services.EventLog
     internal partial class EventLogWindow 
         : ProjectExplorerTrackingToolWindow<EventLogViewModel>
     {
-        private const int CacheCapacity = 5;
-
-        private readonly IServiceProvider serviceProvider;
+        private readonly EventLogViewModel viewModel;
 
         public EventLogWindow(IServiceProvider serviceProvider)
             : base(
                   serviceProvider.GetService<IMainForm>().MainPanel,
                   serviceProvider.GetService<IProjectExplorer>(),
-                  serviceProvider.GetService<IEventService>(),
-                  CacheCapacity
-                  )
+                  serviceProvider.GetService<IEventService>())
         {
-            this.serviceProvider = serviceProvider;
-
             InitializeComponent();
 
             this.theme.ApplyTo(this.toolStrip);
+
+            this.viewModel = new EventLogViewModel(serviceProvider);
+
             this.timeFrameComboBox.Items.AddRange(EventLogViewModel.AnalysisTimeframes.ToArray());
             this.timeFrameComboBox.SelectedIndex = 0;
-        }
 
-        //---------------------------------------------------------------------
-        // ProjectExplorerTrackingToolWindow.
-        //---------------------------------------------------------------------
-
-        protected override async Task<EventLogViewModel> LoadViewModelAsync(
-                IProjectExplorerNode node,
-                CancellationToken token)
-        {
-            Debug.Assert(!InvokeRequired, "running on UI thread");
-            if (node is IProjectExplorerVmInstanceNode vmNode)
-            {
-                // If the user is holding down the arrow key in the project explorer,
-                // we might get a flurry of requests. To catch that, introduce a short,
-                // cancellable-delay.
-                await Task.Delay(300, token).ConfigureAwait(true);
-
-                return new EventLogViewModel(
-                    this.serviceProvider.GetService<IJobService>(),
-                    this.serviceProvider.GetService<AuditLogAdapter>(),
-                    vmNode,
-                    (EventLogViewModel.Timeframe)this.timeFrameComboBox.SelectedItem);
-            }
-            else
-            {
-                // We cannot handle other types or node, so ignore.
-                return null;
-            }
-        }
-
-        protected override void BindViewModel(
-            EventLogViewModel model,
-            bool cached,
-            IContainer bindingContainer)
-        {
-            Debug.Assert(!InvokeRequired, "running on UI thread");
-
-            // The timeframe selector should not change when we swap view models, so 
-            // use a one-way binding.
-            this.timeFrameComboBox.OnControlPropertyChange(
-                c => c.SelectedIndex,
-                index => model.SelectedTimeframe = EventLogViewModel.AnalysisTimeframes[index]);
+            // TODO: use proper binding.
+            //this.timeFrameComboBox.OnControlPropertyChange(
+            //    c => c.SelectedIndex,
+            //    index => model.SelectedTimeframe = EventLogViewModel.AnalysisTimeframes[index]);
 
             // Bind toolbar buttons.
             this.refreshButton.BindProperty(
                 c => c.Enabled,
-                model,
+                this.viewModel,
                 m => m.IsRefreshButtonEnabled,
-                bindingContainer);
+                this.components);
             this.lifecycleEventsDropDown.BindProperty(
                 c => c.Enabled,
-                model,
+                this.viewModel,
                 m => m.IsLifecycleEventDropDownEnabled,
-                bindingContainer);
+                this.components);
 
             this.includeLifecycleEventsButton.BindProperty(
                 c => c.Checked,
-                model,
+                this.viewModel,
                 m => m.IsIncludeLifecycleEventsButtonEnabled,
-                bindingContainer);
+                this.components);
             this.includeSystemEventsButton.BindProperty(
                 c => c.Checked,
-                model,
+                this.viewModel,
                 m => m.IsIncludeSystemEventsButtonEnabled,
-                bindingContainer);
+                this.components);
 
             // Bind list.
             this.list.BindColumn(0, e => e.Timestamp.ToString());
@@ -133,14 +92,24 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services.EventLog
             this.list.BindColumn(2, e => e.Message);
             this.list.BindColumn(3, e => e.Status?.Message);
             this.list.BindColumn(4, e => e.PrincipalEmail);
-            this.list.BindCollection(model.Events);
+            this.list.BindCollection(this.viewModel.Events);
+        }
 
-            if (!cached)
+        //---------------------------------------------------------------------
+        // ProjectExplorerTrackingToolWindow.
+        //---------------------------------------------------------------------
+
+        protected override void SwitchToNode(
+            IProjectExplorerNode node)
+        {
+            Debug.Assert(!InvokeRequired, "running on UI thread");
+            if (node is IProjectExplorerVmInstanceNode vmNode)
             {
-                // TODO: must refresh if filter/timeframe changed!
-
-                // Refresh to pull in the new data.
-                model.RefreshAsync().ConfigureAwait(true);
+                this.viewModel.BeginSwitchToModel(vmNode);
+            }
+            else
+            {
+                // We cannot handle other types or node, so ignore.
             }
         }
     }

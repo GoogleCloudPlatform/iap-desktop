@@ -29,12 +29,15 @@ using Google.Solutions.IapDesktop.Extensions.Activity.Services.Adapters;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Google.Solutions.IapDesktop.Extensions.Activity.Services.EventLog
 {
-    internal class EventLogViewModel : ViewModelBase
+    internal class EventLogViewModel 
+        : ModelCachingViewModelBase<IProjectExplorerVmInstanceNode, EventLogModel>
     {
+        private const int ModelCacheCapacity = 5;
         public static readonly ReadOnlyCollection<Timeframe> AnalysisTimeframes 
             = new ReadOnlyCollection<Timeframe>(new List<Timeframe>()
         {
@@ -43,25 +46,16 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services.EventLog
             new Timeframe(TimeSpan.FromDays(30), "Last 30 days")
         });
 
-        private readonly IJobService jobService;
-        private readonly AuditLogAdapter auditLogAdapter;
-        private readonly IProjectExplorerVmInstanceNode node;
+        private readonly IServiceProvider serviceProvider;
 
-        private Timeframe selectedTimeframe = null;
+        private Timeframe selectedTimeframe = AnalysisTimeframes[0];
         private bool includeSystemEvents = true;
         private bool includeLifecycleEvents = true;
 
-        public EventLogViewModel(
-            IJobService jobService,
-            AuditLogAdapter auditLogAdapter,
-            IProjectExplorerVmInstanceNode node,
-            Timeframe initialTimeframe)
+        public EventLogViewModel(IServiceProvider serviceProvider)
+            : base(ModelCacheCapacity)
         {
-            this.jobService = jobService;
-            this.auditLogAdapter = auditLogAdapter;
-            this.node = node;
-
-            this.selectedTimeframe = initialTimeframe;
+            this.serviceProvider = serviceProvider;
 
             this.Events = new RangeObservableCollection<EventBase>();
         }
@@ -77,7 +71,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services.EventLog
             get => true;
             set { }
         }
-
 
         //---------------------------------------------------------------------
         // Observable properties.
@@ -116,16 +109,27 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services.EventLog
         }
 
         //---------------------------------------------------------------------
-        // IEventProcessor.
-        //---------------------------------------------------------------------
-
-
-        //---------------------------------------------------------------------
         // Actions.
         //---------------------------------------------------------------------
 
-        public async Task RefreshAsync()
+        //public async Task RefreshAsync()
+        //{
+            
+        //}
+
+        //---------------------------------------------------------------------
+        // ModelCachingViewModelBase.
+        //---------------------------------------------------------------------
+
+        protected override async Task<EventLogModel> LoadModelAsync(
+            IProjectExplorerVmInstanceNode node,
+            CancellationToken token)
         {
+            // If the user is holding down the arrow key in the project explorer,
+            // we might get a flurry of requests. To catch that, introduce a short,
+            // cancellable-delay.
+            await Task.Delay(300, token).ConfigureAwait(true);
+
             var methods = new List<string>();
             if (this.includeLifecycleEvents)
             {
@@ -137,60 +141,41 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services.EventLog
                 methods.AddRange(EventFactory.SystemEventMethods);
             }
 
-            // Instead of adding the events straight to this.Events, accumulate
-            // them first. That way, we :
-            // - avoid having the collection be accessed
-            //   from a different thread (which in turn would cause events being
-            //   fired on that thread)
-            // - can update the collection in one batch, minimizing the number
-            //   of events.
-            var accumulator = new EventAccumulator(
+            var model = new EventLogModel(
                 null, // All,
                 methods);
 
+            var jobService = this.serviceProvider.GetService<IJobService>();
+            var auditLogAdapter = this.serviceProvider.GetService<AuditLogAdapter>();
+
             // Load data using a job so that the task is retried in case
             // of authentication issues.
-            await this.jobService.RunInBackground<object>(
+            await jobService.RunInBackground<object>(
                 new JobDescription(
-                    $"Loading logs for {this.node.InstanceName}",
+                    $"Loading logs for {node.InstanceName}",
                     JobUserFeedbackType.BackgroundFeedback),
-                async token =>
+                async jobToken =>
                 {
-                    await this.auditLogAdapter.ListInstanceEventsAsync(
-                        new[] { this.node.ProjectId },
-                        new[] { this.node.InstanceId },
+                    await auditLogAdapter.ListInstanceEventsAsync(
+                        new[] { node.ProjectId },
+                        new[] { node.InstanceId },
                         DateTime.UtcNow.Subtract(this.SelectedTimeframe.Duration),
-                        accumulator,
+                        model,
                         token).ConfigureAwait(false);
                     return null;
-            }).ConfigureAwait(true);  // Back to original (UI) thread.
+                }).ConfigureAwait(true);  // Back to original (UI) thread.
+            return model;
+        }
 
-            this.Events.AddRange(accumulator.Events);
+        protected override void ApplyModel(
+            EventLogModel model,
+            bool cached)
+        {
+            this.Events.Clear();
+            this.Events.AddRange(model.Events);
         }
 
         //---------------------------------------------------------------------
-
-        private class EventAccumulator : IEventProcessor
-        {
-            private readonly List<EventBase> events = new List<EventBase>();
-            public IEnumerable<EventBase> Events => this.events;
-            public EventOrder ExpectedOrder => EventOrder.NewestFirst;
-            public IEnumerable<string> SupportedSeverities { get; }
-            public IEnumerable<string> SupportedMethods { get; }
-
-            public EventAccumulator(
-                IEnumerable<string> severities,
-                IEnumerable<string> methods)
-            {
-                this.SupportedSeverities = severities;
-                this.SupportedMethods = methods;
-            }
-
-            public void Process(EventBase e)
-            {
-                this.events.Add(e);
-            }
-        }
 
         public class Timeframe
         {

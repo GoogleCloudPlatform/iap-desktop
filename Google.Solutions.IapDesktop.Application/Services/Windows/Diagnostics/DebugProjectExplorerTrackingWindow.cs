@@ -36,15 +36,11 @@ namespace Google.Solutions.IapDesktop.Application.Services.Windows.Diagnostics
     public partial class DebugProjectExplorerTrackingWindow
         : ProjectExplorerTrackingToolWindow<DebugProjectExplorerTrackingViewModel>
     {
-        private const int CacheCapacity = 5;
-
         public DebugProjectExplorerTrackingWindow(IServiceProvider serviceProvider)
             : base(
                   serviceProvider.GetService<IMainForm>().MainPanel,
                   serviceProvider.GetService<IProjectExplorer>(),
-                  serviceProvider.GetService<IEventService>(),
-                  CacheCapacity
-                  )
+                  serviceProvider.GetService<IEventService>())
         {
             InitializeComponent();
         }
@@ -53,32 +49,17 @@ namespace Google.Solutions.IapDesktop.Application.Services.Windows.Diagnostics
         // ProjectExplorerTrackingToolWindow.
         //---------------------------------------------------------------------
 
-        protected override async Task<DebugProjectExplorerTrackingViewModel> LoadViewModelAsync(
-            IProjectExplorerNode node,
-            CancellationToken token)
+        protected override void SwitchToNode(
+            IProjectExplorerNode node)
         {
             if (node is IProjectExplorerVmInstanceNode vmNode)
             {
-                await Task.Delay(2000, token).ConfigureAwait(false);
-                return new DebugProjectExplorerTrackingViewModel(vmNode);
+                this.instanceNameLabel.Text = vmNode.InstanceName;
             }
             else
             {
-                // We do not care about any other nodes.
-                return null;
+                // We cannot handle other types or node, so ignore.
             }
-        }
-
-        protected override void BindViewModel(
-            DebugProjectExplorerTrackingViewModel model, 
-            bool cached,
-            IContainer bindingContainer)
-        {
-            this.instanceNameLabel.BindProperty(
-                c => c.Text,
-                model,
-                m => m.InstanceName,
-                bindingContainer);
         }
     }
 }
