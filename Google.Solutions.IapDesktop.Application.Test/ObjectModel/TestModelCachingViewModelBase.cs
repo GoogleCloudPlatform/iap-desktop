@@ -32,12 +32,12 @@ namespace Google.Solutions.IapDesktop.Application.Test.ObjectModel
     [TestFixture]
     public class TestModelCachingViewModelBase : FixtureBase
     {
-        private class ViewModelMock : ModelCachingViewModelBase<string, string>
+        private class SampleViewModel : ModelCachingViewModelBase<string, string>
         {
             public int ApplyCalls = 0;
             public int LoadModelCalls = 0;
 
-            public ViewModelMock() : base(2)
+            public SampleViewModel() : base(2)
             {
             }
 
@@ -55,10 +55,43 @@ namespace Google.Solutions.IapDesktop.Application.Test.ObjectModel
             public Task Reload() => base.InvalidateAsync();
         }
 
+        private class SlowViewModel : SampleViewModel
+        {
+            public int CancelCount = 0;
+            protected override async Task<string> LoadModelAsync(string key, CancellationToken token)
+            {
+                try
+                {
+                    await Task.Delay(100, token);
+                }
+                catch (TaskCanceledException)
+                {
+                    this.CancelCount++;
+                    throw;
+                }
+
+                return await base.LoadModelAsync(key, token);
+            }
+        }
+
+        [Test]
+        public async Task WhenSwitchToModelFirstTime_ThenPreviousSwitchIsCanceled()
+        {
+            var viewModel = new SlowViewModel();
+            var t = viewModel.SwitchToModelAsync("one");
+            await viewModel.SwitchToModelAsync("two");
+
+            Assert.AreEqual(1, viewModel.LoadModelCalls);
+            Assert.AreEqual(1, viewModel.ApplyCalls);
+            Assert.AreEqual(1, viewModel.CancelCount);
+
+            await t;
+        }
+
         [Test]
         public async Task WhenSwitchToModelFirstTime_ThenLoadModelAsyncAndApplyModelCalled()
         {
-            var viewModel = new ViewModelMock();
+            var viewModel = new SampleViewModel();
             await viewModel.SwitchToModelAsync("one");
 
             Assert.AreEqual(1, viewModel.LoadModelCalls);
@@ -68,7 +101,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.ObjectModel
         [Test]
         public async Task WhenSwitchToModelSecondTime_ThenOnlyApplyModelCalled()
         {
-            var viewModel = new ViewModelMock();
+            var viewModel = new SampleViewModel();
             await viewModel.SwitchToModelAsync("one");
 
             Assert.AreEqual(1, viewModel.LoadModelCalls);
@@ -83,7 +116,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.ObjectModel
         [Test]
         public async Task WhenInvalidated_ThenLoadModelAsyncAndApplyModelCalled()
         {
-            var viewModel = new ViewModelMock();
+            var viewModel = new SampleViewModel();
             await viewModel.SwitchToModelAsync("one");
 
             Assert.AreEqual(1, viewModel.LoadModelCalls);
