@@ -125,7 +125,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services.EventLog
             }
         }
 
-        public bool IsIncludeSystemEventsButtonEnabled
+        public bool IsIncludeSystemEventsButtonChecked
         {
             get => this.includeSystemEvents;
             set
@@ -138,7 +138,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services.EventLog
             }
         }
 
-        public bool IsIncludeLifecycleEventsButtonEnabled
+        public bool IsIncludeLifecycleEventsButtonChecked
         {
             get => this.includeLifecycleEvents;
             set

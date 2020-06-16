@@ -42,6 +42,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.Services.EventLog
     [TestFixture]
     public class TestEventLogViewModel : FixtureBase
     {
+        private AuditLogAdapterMock auditLogAdapter;
         private EventLogViewModel viewModel;
 
         private class MockJobService : IJobService
@@ -56,6 +57,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.Services.EventLog
 
         private class AuditLogAdapterMock : IAuditLogAdapter
         {
+            public int CallCount = 0;
             public Task ListInstanceEventsAsync(
                 IEnumerable<string> projectIds, 
                 IEnumerable<string> zones, 
@@ -64,7 +66,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.Services.EventLog
                 IEventProcessor processor, 
                 CancellationToken cancellationToken)
             {
-                var json = @"
+                this.CallCount++;
+
+                var systemEventJson = @"
                  {
                    'protoPayload': {
                      '@type': 'type.googleapis.com/google.cloud.audit.AuditLog',
@@ -96,7 +100,45 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.Services.EventLog
                    'receiveTimestamp': '2020-05-04T01:50:17.020301892Z'
                  } ";
 
-                processor.Process(new NotifyInstanceLocationEvent(LogRecord.Deserialize(json)));
+                var lifecycleEventJson = @"
+                {
+                   'protoPayload': {
+                     '@type': 'type.googleapis.com/google.cloud.audit.AuditLog',
+                     'authenticationInfo': {
+                     },
+                     'requestMetadata': {
+                       'callerIp': '1.2.3.4',
+                       'callerSuppliedUserAgent': 'Mozilla'
+                     },
+                     'serviceName': 'compute.googleapis.com',
+                     'methodName': 'v1.compute.instances.reset',
+                     'resourceName': 'projects/project-1/zones/us-central1-a/instances/instance-1',
+                     'request': {
+                       '@type': 'type.googleapis.com/compute.instances.reset'
+                     }
+                   },
+                   'insertId': 'yz07i2c',
+                   'resource': {
+                     'type': 'gce_instance',
+                     'labels': {
+                       'instance_id': '4894051111144103',
+                       'project_id': 'project-1',
+                       'zone': 'us-central1-a'
+                     }
+                   },
+                   'timestamp': '2020-05-11T14:41:30.863Z',
+                   'severity': 'NOTICE',
+                   'logName': 'projects/project-1/logs/cloudaudit.googleapis.com%2Factivity',
+                   'operation': {
+                     'id': 'operation-1589208088486-5a5605796a1ac-2d2b0706-bf57b173',
+                     'producer': 'compute.googleapis.com',
+                     'last': true
+                   },
+                   'receiveTimestamp': '2020-05-11T14:41:31.096086630Z'
+                 }";
+
+                processor.Process(new NotifyInstanceLocationEvent(LogRecord.Deserialize(systemEventJson)));
+                processor.Process(new ResetInstanceEvent(LogRecord.Deserialize(lifecycleEventJson)));
                 return Task.CompletedTask;
             }
         }
@@ -106,7 +148,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.Services.EventLog
         {
             var registry = new ServiceRegistry();
             registry.AddSingleton<IJobService>(new MockJobService());
-            registry.AddSingleton<IAuditLogAdapter>(new AuditLogAdapterMock());
+
+            this.auditLogAdapter = new AuditLogAdapterMock();
+            registry.AddSingleton<IAuditLogAdapter>(this.auditLogAdapter);
 
             viewModel = new EventLogViewModel(
                 null,
@@ -135,7 +179,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.Services.EventLog
             await this.viewModel.SwitchToModelAsync(node.Object);
 
             Assert.IsTrue(this.viewModel.IsEventListEnabled);
-            Assert.AreEqual(1, this.viewModel.Events.Count);
+            Assert.AreEqual(2, this.viewModel.Events.Count);
         }
 
         [Test]
@@ -151,7 +195,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.Services.EventLog
             await this.viewModel.SwitchToModelAsync(node.Object);
 
             Assert.IsTrue(this.viewModel.IsEventListEnabled);
-            Assert.AreEqual(1, this.viewModel.Events.Count);
+            Assert.AreEqual(2, this.viewModel.Events.Count);
         }
 
         [Test]
@@ -168,7 +212,41 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.Services.EventLog
             await this.viewModel.SwitchToModelAsync(node.Object);
 
             Assert.IsTrue(this.viewModel.IsEventListEnabled);
+            Assert.AreEqual(2, this.viewModel.Events.Count);
+        }
+
+        [Test]
+        public async Task WhenChangingIsIncludeSystemEventsButtonChecked_ThenEventListIsUpdated()
+        {
+            var node = new Mock<IProjectExplorerVmInstanceNode>();
+            node.SetupGet(n => n.ProjectId).Returns("project-1");
+            node.SetupGet(n => n.ZoneId).Returns("zone-1");
+            node.SetupGet(n => n.InstanceName).Returns("instance-1");
+
+            await this.viewModel.SwitchToModelAsync(node.Object);
+
+            Assert.AreEqual(2, this.viewModel.Events.Count);
+
+            this.viewModel.IsIncludeSystemEventsButtonChecked = false;
             Assert.AreEqual(1, this.viewModel.Events.Count);
+            Assert.IsTrue(this.viewModel.Events.All(e => e.LogRecord.IsActivityEvent));
+        }
+
+        [Test]
+        public async Task WhenChangingIsIncludeLifecycleEventsButtonChecked_ThenEventListIsUpdated()
+        {
+            var node = new Mock<IProjectExplorerVmInstanceNode>();
+            node.SetupGet(n => n.ProjectId).Returns("project-1");
+            node.SetupGet(n => n.ZoneId).Returns("zone-1");
+            node.SetupGet(n => n.InstanceName).Returns("instance-1");
+
+            await this.viewModel.SwitchToModelAsync(node.Object);
+
+            Assert.AreEqual(2, this.viewModel.Events.Count);
+
+            this.viewModel.IsIncludeLifecycleEventsButtonChecked = false;
+            Assert.AreEqual(1, this.viewModel.Events.Count);
+            Assert.IsTrue(this.viewModel.Events.All(e => e.LogRecord.IsSystemEvent));
         }
     }
 }

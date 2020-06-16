@@ -82,12 +82,12 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services.EventLog
             this.includeLifecycleEventsButton.BindProperty(
                 c => c.Checked,
                 this.viewModel,
-                m => m.IsIncludeLifecycleEventsButtonEnabled,
+                m => m.IsIncludeLifecycleEventsButtonChecked,
                 this.components);
             this.includeSystemEventsButton.BindProperty(
                 c => c.Checked,
                 this.viewModel,
-                m => m.IsIncludeSystemEventsButtonEnabled,
+                m => m.IsIncludeSystemEventsButtonChecked,
                 this.components);
 
             // Bind list.
