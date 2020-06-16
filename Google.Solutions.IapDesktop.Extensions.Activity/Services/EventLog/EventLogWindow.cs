@@ -103,11 +103,11 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services.EventLog
         {
             if (e is VmInstanceEventBase vmEvent)
             {
-                return vmEvent.InstanceReference.Name;
+                return vmEvent.InstanceReference?.Name;
             }
             else
             {
-                return string.Empty;
+                return null;
             }
         }
 
