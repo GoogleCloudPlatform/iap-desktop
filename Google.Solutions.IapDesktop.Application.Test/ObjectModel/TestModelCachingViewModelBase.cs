@@ -19,13 +19,10 @@
 // under the License.
 //
 
-using Google.Apis.Util;
 using Google.Solutions.IapDesktop.Application.ObjectModel;
 using NUnit.Framework;
-using System;
 using System.Threading;
 using System.Threading.Tasks;
-using System.Windows.Forms;
 
 namespace Google.Solutions.IapDesktop.Application.Test.ObjectModel
 {
@@ -74,6 +71,10 @@ namespace Google.Solutions.IapDesktop.Application.Test.ObjectModel
             }
         }
 
+        //---------------------------------------------------------------------
+        // Model switching.
+        //---------------------------------------------------------------------
+
         [Test]
         public async Task WhenSwitchToModelFirstTime_ThenPreviousSwitchIsCanceled()
         {
@@ -112,6 +113,10 @@ namespace Google.Solutions.IapDesktop.Application.Test.ObjectModel
             Assert.AreEqual(1, viewModel.LoadModelCalls);
             Assert.AreEqual(2, viewModel.ApplyCalls);
         }
+
+        //---------------------------------------------------------------------
+        // Invalidating.
+        //---------------------------------------------------------------------
 
         [Test]
         public async Task WhenInvalidated_ThenLoadModelAsyncAndApplyModelCalled()

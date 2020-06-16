@@ -38,8 +38,10 @@ namespace Google.Solutions.IapDesktop.Application.Controls
     public class BindableListView<TModelItem> : FlatListView
     {
         private ObservableCollection<TModelItem> model;
+
         private readonly IDictionary<int, Func<TModelItem, string>> columnAccessors =
             new Dictionary<int, Func<TModelItem, string>>();
+        private Func<TModelItem, int> imageIndexAccessor = null;
 
         [Browsable(true)]
         public bool AutoResizeColumnsOnUpdate { get; set; } = false;
@@ -55,6 +57,14 @@ namespace Google.Solutions.IapDesktop.Application.Controls
                 return null;
             }
         }
+
+        private int ExtractImageIndex(TModelItem modelItem)
+        {
+            return this.imageIndexAccessor == null
+                ? 0 :
+                this.imageIndexAccessor(modelItem);
+        }
+
 
         private ListViewItem FindViewItem(TModelItem modelItem)
         {
@@ -74,7 +84,8 @@ namespace Google.Solutions.IapDesktop.Application.Controls
                 .Select(item => new ListViewItem(
                     Columns.OfType<ColumnHeader>().Select(c => ExtractColumnValue(c.Index, item)).ToArray())
                 {
-                    Tag = item
+                    Tag = item,
+                    ImageIndex = ExtractImageIndex(item)
                 }).ToArray());
         }
 
@@ -162,6 +173,11 @@ namespace Google.Solutions.IapDesktop.Application.Controls
         public void BindColumn(int columnIndex, Func<TModelItem, string> accessorFunc)
         {
             this.columnAccessors[columnIndex] = accessorFunc;
+        }
+
+        public void BindImageIndex(Func<TModelItem, int> accessorFunc)
+        {
+            this.imageIndexAccessor = accessorFunc;
         }
 
         //---------------------------------------------------------------------
@@ -275,10 +291,14 @@ namespace Google.Solutions.IapDesktop.Application.Controls
 
         private void ModelItem_PropertyChanged(object sender, PropertyChangedEventArgs e)
         {
+            // Rehydrate the entire list item.
+
             var modelItem = (TModelItem)sender;
             var viewItem = FindViewItem(modelItem);
             if (viewItem != null)
             {
+                viewItem.ImageIndex = ExtractImageIndex(modelItem);
+
                 foreach (var column in this.Columns.OfType<ColumnHeader>())
                 {
                     viewItem.SubItems[column.Index].Text = ExtractColumnValue(column.Index, modelItem);
