@@ -21,14 +21,12 @@
 
 using Google.Solutions.Common.Diagnostics;
 using Google.Solutions.Common.Util;
-using Google.Solutions.IapDesktop.Application;
-using Google.Solutions.IapDesktop.Application.ObjectModel;
 using Google.Solutions.IapDesktop.Application.Util;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Google.Solutions.IapDesktop.Extensions.Activity.Services.EventLog
+namespace Google.Solutions.IapDesktop.Application.ObjectModel
 {
     /// <summary>
     /// View model that maintains an LRU cache of models.
@@ -90,10 +88,10 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services.EventLog
             }
         }
 
-        protected void Invalidate()
+        protected Task InvalidateAsync()
         {
             this.modelCache.Remove(this.ModelKey);
-            SwitchToModelAsync(this.ModelKey).ConfigureAwait(false);
+            return SwitchToModelAsync(this.ModelKey);
         }
 
         protected abstract Task<TModel> LoadModelAsync(

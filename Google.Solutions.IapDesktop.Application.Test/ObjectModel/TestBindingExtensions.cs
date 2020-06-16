@@ -27,7 +27,7 @@ using System.Windows.Forms;
 namespace Google.Solutions.IapDesktop.Application.Test.ObjectModel
 {
     [TestFixture]
-    public class TestBindingExtensions
+    public class TestBindingExtensions : FixtureBase
     {
         //---------------------------------------------------------------------
         // OnPropertyChange tests.

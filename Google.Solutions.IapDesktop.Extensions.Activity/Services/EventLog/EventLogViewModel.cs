@@ -121,7 +121,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services.EventLog
                 RaisePropertyChange();
 
                 // Reload from backend.
-                Invalidate();
+                InvalidateAsync().ConfigureAwait(true);
             }
         }
 
@@ -155,7 +155,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services.EventLog
         // Actions.
         //---------------------------------------------------------------------
 
-        public void Refresh() => Invalidate();
+        public void Refresh() => InvalidateAsync().ConfigureAwait(true);
 
         //---------------------------------------------------------------------
         // ModelCachingViewModelBase.
