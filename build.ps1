@@ -30,6 +30,9 @@ $VsixInstaller = (Resolve-Path ([IO.Path]::Combine(${Env:ProgramFiles(x86)}, 'Mi
 $NugetDownloadUrl = "https://dist.nuget.org/win-x86-commandline/latest/nuget.exe"
 $RdcManDownloadUrl = "https://download.microsoft.com/download/A/F/0/AF0071F3-B198-4A35-AA90-C68D103BDCCF/rdcman.msi"
 
+# Use TLS 1.2 for all downloads.
+[Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
+
 Write-Host "========================================================"
 Write-Host "=== Preparing build                                 ==="
 Write-Host "========================================================"
