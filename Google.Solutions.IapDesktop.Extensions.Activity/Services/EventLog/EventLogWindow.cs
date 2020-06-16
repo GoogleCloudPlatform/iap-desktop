@@ -91,6 +91,11 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services.EventLog
                 this.components);
 
             // Bind list.
+            this.list.BindProperty(
+                c => c.Enabled,
+                this.viewModel,
+                m => m.IsEventListEnabled,
+                this.components);
             this.list.BindColumn(0, e => e.Timestamp.ToString());
             this.list.BindColumn(1, e => GetInstanceName(e));
             this.list.BindColumn(2, e => e.Severity);
@@ -118,15 +123,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services.EventLog
         protected override async Task SwitchToNodeAsync(IProjectExplorerNode node)
         {
             Debug.Assert(!InvokeRequired, "running on UI thread");
-            if (node is IProjectExplorerVmInstanceNode vmNode)
-            {
-                await this.viewModel.SwitchToModelAsync(vmNode)
-                    .ConfigureAwait(true);
-            }
-            else
-            {
-                // We cannot handle other types or node, so ignore.
-            }
+            await this.viewModel.SwitchToModelAsync(node)
+                .ConfigureAwait(true);
         }
 
         private void refreshButton_Click(object sender, EventArgs e)

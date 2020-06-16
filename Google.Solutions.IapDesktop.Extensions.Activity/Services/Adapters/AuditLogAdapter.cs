@@ -101,6 +101,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services.Adapters
         }
 
         internal static string CreateFilterString(
+            IEnumerable<string> zones,
             IEnumerable<ulong> instanceIds,
             IEnumerable<string> methods,
             IEnumerable<string> severities,
@@ -109,6 +110,11 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services.Adapters
             Debug.Assert(startTime.Kind == DateTimeKind.Utc);
 
             var criteria = new LinkedList<string>();
+
+            if (zones != null && zones.Any())
+            {
+                criteria.AddLast($"resource.labels.zone=(\"{string.Join("\" OR \"", zones)}\")");
+            }
 
             if (instanceIds != null && instanceIds.Any())
             {
@@ -133,6 +139,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services.Adapters
 
         public async Task ListInstanceEventsAsync(
             IEnumerable<string> projectIds,
+            IEnumerable<string> zones,
             IEnumerable<ulong> instanceIds,
             DateTime startTime,
             IEventProcessor processor,
@@ -148,6 +155,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services.Adapters
                 {
                     ResourceNames = projectIds.Select(p => "projects/" + p).ToList(),
                     Filter = CreateFilterString(
+                        zones,
                         instanceIds,
                         processor.SupportedMethods,
                         processor.SupportedSeverities,

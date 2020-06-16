@@ -38,7 +38,7 @@ using System.Windows.Forms;
 namespace Google.Solutions.IapDesktop.Extensions.Activity.Services.EventLog
 {
     internal class EventLogViewModel 
-        : ModelCachingViewModelBase<IProjectExplorerVmInstanceNode, EventLogModel>
+        : ModelCachingViewModelBase<IProjectExplorerNode, EventLogModel>
     {
         private const int ModelCacheCapacity = 5;
         public static readonly ReadOnlyCollection<Timeframe> AvailableTimeframes 
@@ -52,6 +52,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services.EventLog
         private readonly IServiceProvider serviceProvider;
 
         private int selectedTimeframeIndex = 0;
+        private bool isEventListEnabled = false;
         private bool isRefreshButtonEnabled = false;
         private bool isTimeframeComboBoxEnabled = false;
         private bool includeSystemEvents = true;
@@ -73,6 +74,16 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services.EventLog
         //---------------------------------------------------------------------
         // Observable properties.
         //---------------------------------------------------------------------
+
+        public bool IsEventListEnabled
+        {
+            get => this.isEventListEnabled;
+            set
+            {
+                this.isEventListEnabled = value;
+                RaisePropertyChange();
+            }
+        }
 
         public bool IsRefreshButtonEnabled
         {
@@ -150,12 +161,51 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services.EventLog
         // ModelCachingViewModelBase.
         //---------------------------------------------------------------------
 
+        public static bool IsNodeSupported(IProjectExplorerNode node)
+        {
+            return node is IProjectExplorerProjectNode
+                || node is IProjectExplorerZoneNode
+                || node is IProjectExplorerVmInstanceNode;
+        }
+
         protected override async Task<EventLogModel> LoadModelAsync(
-            IProjectExplorerVmInstanceNode node,
+            IProjectExplorerNode node,
             CancellationToken token)
         {
-            using (TraceSources.IapDesktop.TraceMethod().WithParameters(node.InstanceName))
+            using (TraceSources.IapDesktop.TraceMethod().WithParameters(node))
             {
+                IEnumerable<ulong> instanceIdFilter;
+                IEnumerable<string> zonesFilter;
+                string projectIdFilter;
+                string friendlyName;
+
+                if (node is IProjectExplorerVmInstanceNode vmNode)
+                {
+                    friendlyName = vmNode.InstanceName;
+                    instanceIdFilter = new[] { vmNode.InstanceId };
+                    zonesFilter = null;
+                    projectIdFilter = vmNode.ProjectId;
+                }
+                else if (node is IProjectExplorerZoneNode zoneNode)
+                {
+                    friendlyName = zoneNode.ZoneId;
+                    instanceIdFilter = null;
+                    zonesFilter = new[] { zoneNode.ZoneId };
+                    projectIdFilter = zoneNode.ProjectId;
+                }
+                else if (node is IProjectExplorerProjectNode projectNode)
+                {
+                    friendlyName = projectNode.ProjectId;
+                    instanceIdFilter = null;
+                    zonesFilter = null;
+                    projectIdFilter = projectNode.ProjectId;
+                }
+                else
+                {
+                    // Unknown/unsupported node.
+                    return null;
+                }
+
                 this.IsRefreshButtonEnabled = 
                     this.IsTimeframeComboBoxEnabled = false;
                 try
@@ -172,14 +222,15 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services.EventLog
                     // of authentication issues.
                     return await jobService.RunInBackground(
                         new JobDescription(
-                            $"Loading logs for {node.InstanceName}",
+                            $"Loading logs for {friendlyName}",
                             JobUserFeedbackType.BackgroundFeedback),
                         async jobToken =>
                         {
                             var model = new EventLogModel();
                             await auditLogAdapter.ListInstanceEventsAsync(
-                                new[] { node.ProjectId },
-                                new[] { node.InstanceId },
+                                new[] { projectIdFilter },
+                                zonesFilter,
+                                instanceIdFilter,
                                 DateTime.UtcNow.Subtract(this.SelectedTimeframe.Duration),
                                 model,
                                 token).ConfigureAwait(false);
@@ -197,9 +248,19 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services.EventLog
         protected override void ApplyModel(bool cached)
         {
             this.Events.Clear();
-            this.Events.AddRange(this.Model.Events
-                .Where(e => !e.LogRecord.IsActivityEvent || this.includeLifecycleEvents)
-                .Where(e => !e.LogRecord.IsSystemEvent || this.includeSystemEvents));
+
+            if (this.Model == null)
+            {
+                // Unsupported node.
+                this.IsEventListEnabled = false;
+            }
+            else
+            {
+                this.IsEventListEnabled = true;
+                this.Events.AddRange(this.Model.Events
+                    .Where(e => !e.LogRecord.IsActivityEvent || this.includeLifecycleEvents)
+                    .Where(e => !e.LogRecord.IsSystemEvent || this.includeSystemEvents));
+            }
         }
 
         //---------------------------------------------------------------------

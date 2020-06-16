@@ -113,7 +113,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services
                 Resources.EventLog_16,
                 5,
                 new ProjectExplorerCommand(
-                    context => context is IProjectExplorerVmInstanceNode
+                    context => EventLogViewModel.IsNodeSupported(context)
                         ? CommandState.Enabled
                         : CommandState.Unavailable,
                     context => ShowActivityLogs(context)));

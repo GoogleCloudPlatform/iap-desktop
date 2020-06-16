@@ -110,7 +110,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.Services.Adapters
 
             await adapter.ListInstanceEventsAsync(
                 new[] { Defaults.ProjectId },
-                null,
+                null,  // all zones.
+                null,  // all instances.
                 instanceBuilder.StartDate,
                 instanceBuilder,
                 CancellationToken.None);
@@ -156,6 +157,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.Services.Adapters
         {
             var filter = AuditLogAdapter.CreateFilterString(
                 null,
+                null,
                 new[] { "method-1", "method-2" },
                 new[] { "INFO", "ERROR" },
                 new DateTime(2020, 1, 2, 3, 4, 5, 6, DateTimeKind.Utc));
@@ -171,6 +173,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.Services.Adapters
         public void WhenMethodAndSeveritiesNotSpecified_ThenCreateFilterStringSkipsCriteria()
         {
             var filter = AuditLogAdapter.CreateFilterString(
+                null,
                 Enumerable.Empty<ulong>(),
                 null,
                 null,
@@ -186,6 +189,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.Services.Adapters
         public void WhenMethodAndSeveritiesEmpty_ThenCreateFilterStringSkipsCriteria()
         {
             var filter = AuditLogAdapter.CreateFilterString(
+                null,
                 Enumerable.Empty<ulong>(),
                 Enumerable.Empty<string>(),
                 Enumerable.Empty<string>(),
@@ -201,6 +205,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.Services.Adapters
         public void WhenInstanceIdSpecified_ThenCreateFilterStringAddsCriteria()
         {
             var filter = AuditLogAdapter.CreateFilterString(
+                null,
                 new[] { 123454321234ul },
                 Enumerable.Empty<string>(),
                 Enumerable.Empty<string>(),
@@ -208,6 +213,23 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.Services.Adapters
 
             Assert.AreEqual(
                 "resource.labels.instance_id=(\"123454321234\") " +
+                "AND resource.type=\"gce_instance\" " +
+                "AND timestamp > \"2020-01-02T03:04:05.0060000Z\"",
+                filter);
+        }
+
+        [Test]
+        public void WhenZonesSpecified_ThenCreateFilterStringAddsCriteria()
+        {
+            var filter = AuditLogAdapter.CreateFilterString(
+                new[] { "us-central1-a" },
+                null,
+                Enumerable.Empty<string>(),
+                Enumerable.Empty<string>(),
+                new DateTime(2020, 1, 2, 3, 4, 5, 6, DateTimeKind.Utc));
+
+            Assert.AreEqual(
+                "resource.labels.zone=(\"us-central1-a\") " +
                 "AND resource.type=\"gce_instance\" " +
                 "AND timestamp > \"2020-01-02T03:04:05.0060000Z\"",
                 filter);
