@@ -101,7 +101,23 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services.EventLog
             this.list.BindColumn(2, e => e.Severity);
             this.list.BindColumn(3, e => e.Message);
             this.list.BindColumn(4, e => e.PrincipalEmail);
+            this.list.BindImageIndex(e => GetImageIndex(e));
             this.list.BindCollection(this.viewModel.Events);
+        }
+
+        private static int GetImageIndex(EventBase e)
+        {
+            switch (e.Severity)
+            {
+                case "ERROR":
+                    return 2;
+
+                case "WARNING":
+                    return 1;
+
+                default:
+                    return 0;
+            }
         }
 
         private static string GetInstanceName(EventBase e)

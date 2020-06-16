@@ -49,6 +49,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services.EventLog
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(EventLogWindow));
             this.toolStrip = new System.Windows.Forms.ToolStrip();
             this.refreshButton = new System.Windows.Forms.ToolStripButton();
@@ -64,6 +65,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services.EventLog
             this.severityColumn = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.descriptionColumn = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.principalColumn = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.imageList = new System.Windows.Forms.ImageList(this.components);
             this.toolStrip.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -112,14 +114,14 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services.EventLog
             // 
             this.includeLifecycleEventsButton.CheckOnClick = true;
             this.includeLifecycleEventsButton.Name = "includeLifecycleEventsButton";
-            this.includeLifecycleEventsButton.Size = new System.Drawing.Size(180, 22);
+            this.includeLifecycleEventsButton.Size = new System.Drawing.Size(149, 22);
             this.includeLifecycleEventsButton.Text = "User events";
             // 
             // includeSystemEventsButton
             // 
             this.includeSystemEventsButton.CheckOnClick = true;
             this.includeSystemEventsButton.Name = "includeSystemEventsButton";
-            this.includeSystemEventsButton.Size = new System.Drawing.Size(180, 22);
+            this.includeSystemEventsButton.Size = new System.Drawing.Size(149, 22);
             this.includeSystemEventsButton.Text = "System events";
             // 
             // timeFrameComboBox
@@ -146,6 +148,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services.EventLog
             this.list.OwnerDraw = true;
             this.list.SelectedModelItem = null;
             this.list.Size = new System.Drawing.Size(800, 425);
+            this.list.SmallImageList = this.imageList;
             this.list.TabIndex = 1;
             this.list.UseCompatibleStateImageBehavior = false;
             this.list.View = System.Windows.Forms.View.Details;
@@ -153,7 +156,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services.EventLog
             // timestampColumn
             // 
             this.timestampColumn.Text = "Timestamp (UTC)";
-            this.timestampColumn.Width = 130;
+            this.timestampColumn.Width = 150;
             // 
             // instanceNameColumn
             // 
@@ -172,7 +175,15 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services.EventLog
             // principalColumn
             // 
             this.principalColumn.Text = "User";
-            this.principalColumn.Width = 172;
+            this.principalColumn.Width = 152;
+            // 
+            // imageList
+            // 
+            this.imageList.ImageStream = ((System.Windows.Forms.ImageListStreamer)(resources.GetObject("imageList.ImageStream")));
+            this.imageList.TransparentColor = System.Drawing.Color.Transparent;
+            this.imageList.Images.SetKeyName(0, "Success_gray_16.png");
+            this.imageList.Images.SetKeyName(1, "Warning_gray_16.png");
+            this.imageList.Images.SetKeyName(2, "Error_gray_16.png");
             // 
             // EventLogWindow
             // 
@@ -206,5 +217,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services.EventLog
         private System.Windows.Forms.ColumnHeader principalColumn;
         private System.Windows.Forms.ToolStripComboBox timeFrameComboBox;
         private System.Windows.Forms.ColumnHeader instanceNameColumn;
+        private System.Windows.Forms.ImageList imageList;
     }
 }

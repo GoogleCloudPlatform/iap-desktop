@@ -157,6 +157,10 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.Services.EventLog
                 registry);
         }
 
+        //---------------------------------------------------------------------
+        // Model switching.
+        //---------------------------------------------------------------------
+
         [Test]
         public async Task WhenSwitchingToCloudNode_ThenListIsDisabled()
         {
@@ -214,6 +218,10 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.Services.EventLog
             Assert.IsTrue(this.viewModel.IsEventListEnabled);
             Assert.AreEqual(2, this.viewModel.Events.Count);
         }
+
+        //---------------------------------------------------------------------
+        // Filtering.
+        //---------------------------------------------------------------------
 
         [Test]
         public async Task WhenChangingIsIncludeSystemEventsButtonChecked_ThenEventListIsUpdated()
