@@ -216,7 +216,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services.EventLog
                     await Task.Delay(300, token).ConfigureAwait(true);
 
                     var jobService = this.serviceProvider.GetService<IJobService>();
-                    var auditLogAdapter = this.serviceProvider.GetService<AuditLogAdapter>();
+                    var auditLogAdapter = this.serviceProvider.GetService<IAuditLogAdapter>();
 
                     // Load data using a job so that the task is retried in case
                     // of authentication issues.

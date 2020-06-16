@@ -43,8 +43,19 @@ using System.Threading.Tasks;
 
 namespace Google.Solutions.IapDesktop.Extensions.Activity.Services.Adapters
 {
-    [Service(ServiceLifetime.Transient)]
-    public class AuditLogAdapter
+    public interface IAuditLogAdapter
+    {
+        Task ListInstanceEventsAsync(
+            IEnumerable<string> projectIds,
+            IEnumerable<string> zones,
+            IEnumerable<ulong> instanceIds,
+            DateTime startTime,
+            IEventProcessor processor,
+            CancellationToken cancellationToken);
+    }
+
+    [Service(typeof(IAuditLogAdapter), ServiceLifetime.Transient)]
+    public class AuditLogAdapter : IAuditLogAdapter
     {
         private const int MaxPageSize = 1000;
         private const int MaxRetries = 10;
