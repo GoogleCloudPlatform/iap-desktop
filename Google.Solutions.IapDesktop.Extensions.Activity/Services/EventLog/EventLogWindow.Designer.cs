@@ -60,10 +60,10 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services.EventLog
             this.theme = new WeifenLuo.WinFormsUI.Docking.VS2015LightTheme();
             this.list = new Google.Solutions.IapDesktop.Extensions.Activity.Services.EventLog.EventsListView();
             this.timestampColumn = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.instanceNameColumn = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.severityColumn = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.descriptionColumn = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.principalColumn = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-            this.instanceNameColumn = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.toolStrip.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -105,21 +105,21 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services.EventLog
             this.lifecycleEventsDropDown.Image = ((System.Drawing.Image)(resources.GetObject("lifecycleEventsDropDown.Image")));
             this.lifecycleEventsDropDown.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.lifecycleEventsDropDown.Name = "lifecycleEventsDropDown";
-            this.lifecycleEventsDropDown.Size = new System.Drawing.Size(119, 22);
-            this.lifecycleEventsDropDown.Text = "Lifecycle events";
+            this.lifecycleEventsDropDown.Size = new System.Drawing.Size(147, 22);
+            this.lifecycleEventsDropDown.Text = "VM instance lifecycle";
             // 
             // includeLifecycleEventsButton
             // 
             this.includeLifecycleEventsButton.CheckOnClick = true;
             this.includeLifecycleEventsButton.Name = "includeLifecycleEventsButton";
-            this.includeLifecycleEventsButton.Size = new System.Drawing.Size(149, 22);
+            this.includeLifecycleEventsButton.Size = new System.Drawing.Size(180, 22);
             this.includeLifecycleEventsButton.Text = "User events";
             // 
             // includeSystemEventsButton
             // 
             this.includeSystemEventsButton.CheckOnClick = true;
             this.includeSystemEventsButton.Name = "includeSystemEventsButton";
-            this.includeSystemEventsButton.Size = new System.Drawing.Size(149, 22);
+            this.includeSystemEventsButton.Size = new System.Drawing.Size(180, 22);
             this.includeSystemEventsButton.Text = "System events";
             // 
             // timeFrameComboBox
@@ -155,6 +155,11 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services.EventLog
             this.timestampColumn.Text = "Timestamp (UTC)";
             this.timestampColumn.Width = 130;
             // 
+            // instanceNameColumn
+            // 
+            this.instanceNameColumn.Text = "Instance name";
+            this.instanceNameColumn.Width = 130;
+            // 
             // severityColumn
             // 
             this.severityColumn.Text = "Severity";
@@ -167,12 +172,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services.EventLog
             // principalColumn
             // 
             this.principalColumn.Text = "User";
-            this.principalColumn.Width = 110;
-            // 
-            // instanceNameColumn
-            // 
-            this.instanceNameColumn.Text = "Instance name";
-            this.instanceNameColumn.Width = 130;
+            this.principalColumn.Width = 172;
             // 
             // EventLogWindow
             // 
