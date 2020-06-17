@@ -105,11 +105,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services.EventLog
             }
         }
 
-        public bool IsLifecycleEventDropDownEnabled
-        {
-            get => true;
-            set { }
-        }
         public RangeObservableCollection<EventBase> Events { get; }
 
         public int SelectedTimeframeIndex

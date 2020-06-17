@@ -157,6 +157,13 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.Services.EventLog
                 registry);
         }
 
+        [Test]
+        public void WhenNodeIsCloudNode_ThenIsNodeSupportedReturnsFalse()
+        {
+            var node = new Mock<IProjectExplorerCloudNode>().Object;
+            Assert.IsFalse(EventLogViewModel.IsNodeSupported(node)); ;
+        }
+
         //---------------------------------------------------------------------
         // Model switching.
         //---------------------------------------------------------------------
@@ -255,6 +262,25 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.Services.EventLog
             this.viewModel.IsIncludeLifecycleEventsButtonChecked = false;
             Assert.AreEqual(1, this.viewModel.Events.Count);
             Assert.IsTrue(this.viewModel.Events.All(e => e.LogRecord.IsSystemEvent));
+        }
+
+        [Test]
+        public async Task WhenChangingTimeframe_ThenReloadIsTriggered()
+        {
+            var node = new Mock<IProjectExplorerVmInstanceNode>();
+            node.SetupGet(n => n.ProjectId).Returns("project-1");
+            node.SetupGet(n => n.ZoneId).Returns("zone-1");
+            node.SetupGet(n => n.InstanceName).Returns("instance-1");
+
+            await this.viewModel.SwitchToModelAsync(node.Object);
+
+            Assert.IsTrue(this.viewModel.IsRefreshButtonEnabled);
+            Assert.IsTrue(this.viewModel.IsTimeframeComboBoxEnabled);
+
+            this.viewModel.SelectedTimeframeIndex = 2;
+
+            Assert.IsFalse(this.viewModel.IsRefreshButtonEnabled);
+            Assert.IsFalse(this.viewModel.IsTimeframeComboBoxEnabled);
         }
     }
 }

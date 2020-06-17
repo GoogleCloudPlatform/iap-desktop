@@ -73,11 +73,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services.EventLog
                 this.viewModel,
                 m => m.IsRefreshButtonEnabled,
                 this.components);
-            this.lifecycleEventsDropDown.BindProperty(
-                c => c.Enabled,
-                this.viewModel,
-                m => m.IsLifecycleEventDropDownEnabled,
-                this.components);
 
             this.includeLifecycleEventsButton.BindProperty(
                 c => c.Checked,

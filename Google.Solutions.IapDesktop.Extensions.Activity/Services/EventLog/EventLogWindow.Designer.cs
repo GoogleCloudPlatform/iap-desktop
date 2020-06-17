@@ -103,7 +103,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services.EventLog
             this.lifecycleEventsDropDown.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.includeLifecycleEventsButton,
             this.includeSystemEventsButton});
-            this.lifecycleEventsDropDown.Enabled = false;
             this.lifecycleEventsDropDown.Image = ((System.Drawing.Image)(resources.GetObject("lifecycleEventsDropDown.Image")));
             this.lifecycleEventsDropDown.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.lifecycleEventsDropDown.Name = "lifecycleEventsDropDown";
@@ -114,14 +113,14 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services.EventLog
             // 
             this.includeLifecycleEventsButton.CheckOnClick = true;
             this.includeLifecycleEventsButton.Name = "includeLifecycleEventsButton";
-            this.includeLifecycleEventsButton.Size = new System.Drawing.Size(149, 22);
+            this.includeLifecycleEventsButton.Size = new System.Drawing.Size(180, 22);
             this.includeLifecycleEventsButton.Text = "User events";
             // 
             // includeSystemEventsButton
             // 
             this.includeSystemEventsButton.CheckOnClick = true;
             this.includeSystemEventsButton.Name = "includeSystemEventsButton";
-            this.includeSystemEventsButton.Size = new System.Drawing.Size(149, 22);
+            this.includeSystemEventsButton.Size = new System.Drawing.Size(180, 22);
             this.includeSystemEventsButton.Text = "System events";
             // 
             // timeFrameComboBox
