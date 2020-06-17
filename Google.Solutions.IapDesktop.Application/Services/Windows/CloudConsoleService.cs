@@ -19,9 +19,10 @@
 // under the License.
 //
 
-using Google.Solutions.Common;
 using Google.Solutions.Common.Locator;
+using System;
 using System.Diagnostics;
+using System.Net;
 
 namespace Google.Solutions.IapDesktop.Application.Services.Windows
 {
@@ -45,8 +46,20 @@ namespace Google.Solutions.IapDesktop.Application.Services.Windows
 
         public void OpenVmInstanceLogs(InstanceLocator instance, ulong instanceId)
         {
+            // TODO: use new UI
             OpenUrl("https://console.cloud.google.com/logs/viewer?" +
                    $"resource=gce_instance%2Finstance_id%2F{instanceId}&project={instance.ProjectId}");
+        }
+
+        public void OpenVmInstanceLogs(string projectId, string insertId, DateTime timestamp)
+        {
+            var query = WebUtility.UrlEncode(
+                "resource.type=\"gce_instance\"\n" + 
+                $"insertId=\"{insertId}\"\n" +
+                $"timestamp<=\"{timestamp.ToString("o")}\"");
+
+            OpenUrl("https://console.cloud.google.com/logs/query;" +
+                $"query={query};timeRange=PT1H;summaryFields=:true:32:beginning?project={projectId}");
         }
 
         public void OpenIapOverviewDocs()

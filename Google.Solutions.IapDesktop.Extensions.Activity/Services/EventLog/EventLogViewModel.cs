@@ -24,6 +24,7 @@ using Google.Solutions.Common.Util;
 using Google.Solutions.IapDesktop.Application;
 using Google.Solutions.IapDesktop.Application.ObjectModel;
 using Google.Solutions.IapDesktop.Application.Services.Integration;
+using Google.Solutions.IapDesktop.Application.Services.Windows;
 using Google.Solutions.IapDesktop.Application.Services.Windows.ProjectExplorer;
 using Google.Solutions.IapDesktop.Application.Util;
 using Google.Solutions.IapDesktop.Extensions.Activity.Events;
@@ -53,6 +54,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services.EventLog
 
         private readonly IServiceProvider serviceProvider;
 
+        private EventBase selectedEvent;
         private int selectedTimeframeIndex = 0;
         private bool isEventListEnabled = false;
         private bool isRefreshButtonEnabled = false;
@@ -76,6 +78,25 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services.EventLog
         //---------------------------------------------------------------------
         // Observable properties.
         //---------------------------------------------------------------------
+
+        public EventBase SelectedEvent
+        {
+            get => this.selectedEvent;
+            set
+            {
+                this.selectedEvent = value;
+
+                RaisePropertyChange();
+
+                // TODO: use expression
+                RaisePropertyChange("IsOpenInCloudConsoleButtonEnabled");
+            }
+        }
+
+        public bool IsOpenInCloudConsoleButtonEnabled
+        {
+            get => this.selectedEvent != null;
+        }
 
         public bool IsEventListEnabled
         {
@@ -153,6 +174,17 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services.EventLog
         //---------------------------------------------------------------------
 
         public void Refresh() => InvalidateAsync().ConfigureAwait(true);
+
+        public void OpenDetailsInCloudConsole()
+        {
+            if (this.SelectedEvent != null)
+            {
+                this.serviceProvider.GetService<CloudConsoleService>().OpenVmInstanceLogs(
+                    this.SelectedEvent.LogRecord.ProjectId,
+                    this.SelectedEvent.LogRecord.InsertId,
+                    this.SelectedEvent.Timestamp);
+            }
+        }
 
         //---------------------------------------------------------------------
         // ModelCachingViewModelBase.

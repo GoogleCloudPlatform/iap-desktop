@@ -65,8 +65,11 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services.EventLog
             this.severityColumn = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.descriptionColumn = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.principalColumn = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.contextMenuStrip = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.openInCloudConsoleToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.imageList = new System.Windows.Forms.ImageList(this.components);
             this.toolStrip.SuspendLayout();
+            this.contextMenuStrip.SuspendLayout();
             this.SuspendLayout();
             // 
             // toolStrip
@@ -138,6 +141,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services.EventLog
             this.severityColumn,
             this.descriptionColumn,
             this.principalColumn});
+            this.list.ContextMenuStrip = this.contextMenuStrip;
             this.list.Dock = System.Windows.Forms.DockStyle.Fill;
             this.list.FullRowSelect = true;
             this.list.GridLines = true;
@@ -151,6 +155,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services.EventLog
             this.list.TabIndex = 1;
             this.list.UseCompatibleStateImageBehavior = false;
             this.list.View = System.Windows.Forms.View.Details;
+            this.list.DoubleClick += new System.EventHandler(this.list_DoubleClick);
             // 
             // timestampColumn
             // 
@@ -176,6 +181,20 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services.EventLog
             this.principalColumn.Text = "User";
             this.principalColumn.Width = 152;
             // 
+            // contextMenuStrip
+            // 
+            this.contextMenuStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.openInCloudConsoleToolStripMenuItem});
+            this.contextMenuStrip.Name = "contextMenuStrip";
+            this.contextMenuStrip.Size = new System.Drawing.Size(235, 26);
+            // 
+            // openInCloudConsoleToolStripMenuItem
+            // 
+            this.openInCloudConsoleToolStripMenuItem.Name = "openInCloudConsoleToolStripMenuItem";
+            this.openInCloudConsoleToolStripMenuItem.Size = new System.Drawing.Size(234, 22);
+            this.openInCloudConsoleToolStripMenuItem.Text = "Show details in Cloud Console";
+            this.openInCloudConsoleToolStripMenuItem.Click += new System.EventHandler(this.openInCloudConsoleToolStripMenuItem_Click);
+            // 
             // imageList
             // 
             this.imageList.ImageStream = ((System.Windows.Forms.ImageListStreamer)(resources.GetObject("imageList.ImageStream")));
@@ -196,6 +215,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services.EventLog
             this.Text = "Event Log";
             this.toolStrip.ResumeLayout(false);
             this.toolStrip.PerformLayout();
+            this.contextMenuStrip.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -217,5 +237,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services.EventLog
         private System.Windows.Forms.ToolStripComboBox timeFrameComboBox;
         private System.Windows.Forms.ColumnHeader instanceNameColumn;
         private System.Windows.Forms.ImageList imageList;
+        private System.Windows.Forms.ContextMenuStrip contextMenuStrip;
+        private System.Windows.Forms.ToolStripMenuItem openInCloudConsoleToolStripMenuItem;
     }
 }
