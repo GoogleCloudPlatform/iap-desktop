@@ -34,7 +34,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Events.System
 
         public DateTime SchedulingTimestamp => base.LogRecord.ProtoPayload.Metadata["timestamp"].Value<DateTime>();
 
-        public override string Message => "Instance scheduled to run on sole tenant node";
+        public override string Message => "Instance scheduled to run on sole tenant node " + this.ServerId;
 
         internal NotifyInstanceLocationEvent(LogRecord logRecord) : base(logRecord)
         {

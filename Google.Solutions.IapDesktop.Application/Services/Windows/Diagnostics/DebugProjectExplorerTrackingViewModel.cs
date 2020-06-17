@@ -19,15 +19,24 @@
 // under the License.
 //
 
-namespace Google.Solutions.IapDesktop.Application.Services.Windows.ProjectExplorer
-{
-    public class ProjectExplorerNodeSelectedEvent
-    {
-        public IProjectExplorerNode SelectedNode { get; }
+using Google.Solutions.IapDesktop.Application.ObjectModel;
+using Google.Solutions.IapDesktop.Application.Services.Windows.ProjectExplorer;
 
-        internal ProjectExplorerNodeSelectedEvent(IProjectExplorerNode selectedNode)
+namespace Google.Solutions.IapDesktop.Application.Services.Windows.Diagnostics
+{
+    public class DebugProjectExplorerTrackingViewModel : ViewModelBase
+    {
+        private readonly IProjectExplorerVmInstanceNode node;
+
+        public DebugProjectExplorerTrackingViewModel(IProjectExplorerVmInstanceNode node)
         {
-            this.SelectedNode = selectedNode;
+            this.node = node;
+        }
+
+        public string InstanceName
+        {
+            get => this.node.InstanceName;
+            set { }
         }
     }
 }

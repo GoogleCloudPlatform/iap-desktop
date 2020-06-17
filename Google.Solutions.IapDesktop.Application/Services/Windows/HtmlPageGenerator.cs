@@ -39,6 +39,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.Windows
             projectExplorer.AddCommand(
                 "Generate HTML page",
                 null,
+                null,
                 new GenerateHtmlPageCommand());
         }
 

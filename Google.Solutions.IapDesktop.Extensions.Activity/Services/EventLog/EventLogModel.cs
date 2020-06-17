@@ -19,15 +19,26 @@
 // under the License.
 //
 
-namespace Google.Solutions.IapDesktop.Application.Services.Windows.ProjectExplorer
-{
-    public class ProjectExplorerNodeSelectedEvent
-    {
-        public IProjectExplorerNode SelectedNode { get; }
+using Google.Solutions.IapDesktop.Extensions.Activity.Events;
+using Google.Solutions.IapDesktop.Extensions.Activity.History;
+using System.Collections.Generic;
+using System.Linq;
 
-        internal ProjectExplorerNodeSelectedEvent(IProjectExplorerNode selectedNode)
+namespace Google.Solutions.IapDesktop.Extensions.Activity.Services.EventLog
+{
+    internal class EventLogModel : IEventProcessor
+    {
+        private readonly List<EventBase> events = new List<EventBase>();
+        public IEnumerable<EventBase> Events => this.events;
+        public EventOrder ExpectedOrder => EventOrder.NewestFirst;
+
+        public IEnumerable<string> SupportedSeverities => null; // All
+        public IEnumerable<string> SupportedMethods =>
+            EventFactory.LifecycleEventMethods.Concat(EventFactory.SystemEventMethods);
+
+        public void Process(EventBase e)
         {
-            this.SelectedNode = selectedNode;
+            this.events.Add(e);
         }
     }
 }

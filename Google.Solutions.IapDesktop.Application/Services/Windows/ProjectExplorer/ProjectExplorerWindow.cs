@@ -20,7 +20,6 @@
 //
 
 using Google.Apis.Compute.v1.Data;
-using Google.Solutions.Common;
 using Google.Solutions.Common.Locator;
 using Google.Solutions.Common.Util;
 using Google.Solutions.IapDesktop.Application.ObjectModel;
@@ -31,18 +30,14 @@ using Google.Solutions.IapDesktop.Application.Services.Windows.RemoteDesktop;
 using Google.Solutions.IapDesktop.Application.Services.Windows.SerialLog;
 using Google.Solutions.IapDesktop.Application.Services.Windows.SettingsEditor;
 using Google.Solutions.IapDesktop.Application.Services.Workflows;
-using Google.Solutions.IapDesktop.Application.Util;
 using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Diagnostics;
-using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using System.Web;
 using System.Windows.Forms;
 using WeifenLuo.WinFormsUI.Docking;
 
@@ -476,7 +471,9 @@ namespace Google.Solutions.IapDesktop.Application.Services.Windows.ProjectExplor
                 //
                 // Fire event.
                 //
-                await this.eventService.FireAsync(new ProjectExplorerNodeSelectedEvent(selectedNode));
+                await this.eventService
+                    .FireAsync(new ProjectExplorerNodeSelectedEvent(selectedNode))
+                    .ConfigureAwait(true);
             }
             catch (Exception e) when (e.IsCancellation())
             {
@@ -584,12 +581,15 @@ namespace Google.Solutions.IapDesktop.Application.Services.Windows.ProjectExplor
                     {
                         var accumulator = new Dictionary<string, IEnumerable<Instance>>();
 
-                        foreach (var project in await this.projectInventoryService.ListProjectsAsync())
+                        foreach (var project in await this.projectInventoryService
+                            .ListProjectsAsync()
+                            .ConfigureAwait(false))
                         {
                             try
                             {
-                                accumulator[project.Name] =
-                                    await computeEngineAdapter.ListInstancesAsync(project.Name, token);
+                                accumulator[project.Name] = await computeEngineAdapter
+                                    .ListInstancesAsync(project.Name, token)
+                                    .ConfigureAwait(false);
                             }
                             catch (Exception e) when (e.IsReauthError())
                             {
@@ -605,7 +605,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.Windows.ProjectExplor
 
                         return accumulator;
                     }
-                });
+                }).ConfigureAwait(true);
 
             foreach (var entry in projectsAndInstances)
             {
@@ -633,8 +633,9 @@ namespace Google.Solutions.IapDesktop.Application.Services.Windows.ProjectExplor
             using (var computeEngineAdapter = this.serviceProvider.GetService<IComputeEngineAdapter>())
             {
                 var instances = await this.jobService.RunInBackground(
-                    new JobDescription("Loading project inventory..."),
-                    token => computeEngineAdapter.ListInstancesAsync(projectId, CancellationToken.None));
+                        new JobDescription("Loading project inventory..."),
+                        token => computeEngineAdapter.ListInstancesAsync(projectId, CancellationToken.None))
+                    .ConfigureAwait(true);
 
                 PopulateProjectNode(projectId, instances);
             }
@@ -644,7 +645,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.Windows.ProjectExplor
         {
             // NB. The project explorer might be hidden and no project
             // might have been loaded yet.
-            if (await AddProjectAsync())
+            if (await AddProjectAsync().ConfigureAwait(true))
             {
                 // Show the window. That might kick of an asynchronous
                 // Refresh if the window previously was not visible.
@@ -666,6 +667,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.Windows.ProjectExplor
         public void AddCommand(
             string text,
             System.Drawing.Image image,
+            int? index,
             IProjectExplorerCommand command)
         {
             var menuItem = new ToolStripMenuItem(
@@ -695,7 +697,19 @@ namespace Google.Solutions.IapDesktop.Application.Services.Windows.ProjectExplor
                 Tag = command
             };
 
-            this.contextMenu.Items.Add(menuItem);
+            if (index.HasValue)
+            {
+                this.contextMenu.Items.Insert(index.Value, menuItem);
+            }
+            else
+            {
+                this.contextMenu.Items.Add(menuItem);
+            }
+        }
+
+        public IProjectExplorerNode SelectedNode 
+        { 
+            get => (this.treeView.SelectedNode as IProjectExplorerNode) ?? this.rootNode;
         }
     }
 }

@@ -19,15 +19,11 @@
 // under the License.
 //
 
-using Google.Solutions.Common.Util;
 using Google.Solutions.IapDesktop.Application.Controls;
 using Google.Solutions.IapDesktop.Application.ObjectModel;
 using NUnit.Framework;
-using System;
 using System.Collections.ObjectModel;
-using System.Linq;
 using System.Threading;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace Google.Solutions.IapDesktop.Application.Test.Controls
@@ -39,12 +35,24 @@ namespace Google.Solutions.IapDesktop.Application.Test.Controls
         private class ModelItem : ViewModelBase
         {
             private string name;
+            private int imageIndex;
+
             public string Name
             {
                 get => this.name;
                 set
                 {
                     this.name = value;
+                    RaisePropertyChange();
+                }
+            }
+
+            public int ImageIndex
+            {
+                get => this.imageIndex;
+                set
+                {
+                    this.imageIndex = value;
                     RaisePropertyChange();
                 }
             }
@@ -255,6 +263,36 @@ namespace Google.Solutions.IapDesktop.Application.Test.Controls
             this.listView.BindCollection(new ObservableCollection<ModelItem>());
 
             Assert.IsFalse(item.HasPropertyChangeListeners);
+        }
+
+        [Test]
+        public void WhenModelChangesImageIndex_ThenControlIsUpdated()
+        {
+            var item1 = new ModelItem()
+            {
+                Name = "one",
+                ImageIndex = 1
+            };
+            var item2 = new ModelItem()
+            {
+                Name = "two",
+                ImageIndex = 2
+            };
+
+            var items = new ObservableCollection<ModelItem>();
+            items.Add(item1);
+            items.Add(item2);
+
+            this.listView.BindColumn(0, m => m.Name);
+            this.listView.BindImageIndex(m => m.ImageIndex);
+            this.listView.BindCollection(items);
+
+            Assert.AreEqual(1, this.listView.Items[0].ImageIndex);
+            Assert.AreEqual(2, this.listView.Items[1].ImageIndex);
+
+            item1.ImageIndex = 0;
+            Assert.AreEqual(0, this.listView.Items[0].ImageIndex);
+            Assert.AreEqual(2, this.listView.Items[1].ImageIndex);
         }
     }
 }

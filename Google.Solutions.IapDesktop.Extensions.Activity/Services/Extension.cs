@@ -25,6 +25,7 @@ using Google.Solutions.IapDesktop.Application.Services.Persistence;
 using Google.Solutions.IapDesktop.Application.Services.Windows;
 using Google.Solutions.IapDesktop.Application.Services.Windows.ProjectExplorer;
 using Google.Solutions.IapDesktop.Extensions.Activity.Properties;
+using Google.Solutions.IapDesktop.Extensions.Activity.Services.EventLog;
 using Google.Solutions.IapDesktop.Extensions.Activity.Services.Adapters;
 using Google.Solutions.IapDesktop.Extensions.Activity.Services.SchedulingReport;
 using System;
@@ -73,6 +74,11 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services
                 WeifenLuo.WinFormsUI.Docking.DockState.Document);
         }
 
+        private void ShowActivityLogs(IProjectExplorerNode contextNode)
+        {
+            this.serviceProvider.GetService<EventLogWindow>().ShowWindow();
+        }
+
         public Extension(IServiceProvider serviceProvider)
         {
             this.serviceProvider = serviceProvider;
@@ -89,17 +95,28 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services
             }
 
             // Add command to project explorer.
-            serviceProvider.GetService<IProjectExplorer>()
-                .AddCommand(
-                    "Analyze instance and node usage...",
-                    Resources.Report_16,
-                    new ProjectExplorerCommand(
-                        context => context is IProjectExplorerProjectNode 
-                                || context is IProjectExplorerCloudNode
-                            ? CommandState.Enabled
-                            : CommandState.Unavailable,
-                        context => CreateReport(context)));
+            var projectExplorer = serviceProvider.GetService<IProjectExplorer>();
+            
+            projectExplorer.AddCommand(
+                "Analyze instance and node usage...",
+                Resources.Report_16,
+                null,
+                new ProjectExplorerCommand(
+                    context => context is IProjectExplorerProjectNode 
+                            || context is IProjectExplorerCloudNode
+                        ? CommandState.Enabled
+                        : CommandState.Unavailable,
+                    context => CreateReport(context)));
+
+            projectExplorer.AddCommand(
+                "Show event log",
+                Resources.EventLog_16,
+                5,
+                new ProjectExplorerCommand(
+                    context => EventLogViewModel.IsNodeSupported(context)
+                        ? CommandState.Enabled
+                        : CommandState.Unavailable,
+                    context => ShowActivityLogs(context)));
         }
     }
-
 }

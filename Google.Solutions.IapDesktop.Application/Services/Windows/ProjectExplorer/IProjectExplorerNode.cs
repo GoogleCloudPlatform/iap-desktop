@@ -47,6 +47,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.Windows.ProjectExplor
 
     public interface IProjectExplorerVmInstanceNode : IProjectExplorerNode
     {
+        ulong InstanceId { get; }
         string ProjectId { get; }
         string ZoneId { get; }
         string InstanceName { get; }

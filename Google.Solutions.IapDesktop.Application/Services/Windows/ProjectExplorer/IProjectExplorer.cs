@@ -36,7 +36,10 @@ namespace Google.Solutions.IapDesktop.Application.Services.Windows.ProjectExplor
         void AddCommand(
             string text,
             System.Drawing.Image image,
+            int? index,
             IProjectExplorerCommand command);
+
+        IProjectExplorerNode SelectedNode { get; }
     }
 
     public interface IProjectExplorerCommand

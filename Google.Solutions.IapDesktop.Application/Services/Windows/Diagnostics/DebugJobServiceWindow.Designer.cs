@@ -19,9 +19,9 @@
 // under the License.
 //
 
-namespace Google.Solutions.IapDesktop.Application.Services.Windows
+namespace Google.Solutions.IapDesktop.Application.Services.Windows.Diagnostics
 {
-    partial class DebugWindow
+    partial class DebugJobServiceWindow
     {
         /// <summary>
         /// Required designer variable.
@@ -173,7 +173,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.Windows
             this.runInBackgroundCheckBox.Text = "Run in background";
             this.runInBackgroundCheckBox.UseVisualStyleBackColor = true;
             // 
-            // DebugWindow
+            // DebugJobServiceWindow
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
@@ -186,8 +186,8 @@ namespace Google.Solutions.IapDesktop.Application.Services.Windows
             this.Controls.Add(this.throwExceptionButton);
             this.Controls.Add(this.slowNonCanelOpButton);
             this.Controls.Add(this.slowOpButton);
-            this.Name = "DebugWindow";
-            this.Text = "Debug";
+            this.Name = "DebugJobServiceWindow";
+            this.Text = "Debug JobService";
             ((System.ComponentModel.ISupportInitialize)(this.spinner)).EndInit();
             this.rdpGroup.ResumeLayout(false);
             this.rdpGroup.PerformLayout();

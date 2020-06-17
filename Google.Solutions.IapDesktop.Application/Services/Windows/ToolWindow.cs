@@ -19,6 +19,8 @@
 // under the License.
 //
 
+using Google.Solutions.Common.Diagnostics;
+using System;
 using System.Runtime.InteropServices;
 using System.Windows.Forms;
 using WeifenLuo.WinFormsUI.Docking;
@@ -27,6 +29,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.Windows
 
 {
     [ComVisible(false)]
+    [SkipCodeCoverage("GUI plumbing")]
     public partial class ToolWindow : DockContent
     {
         public ContextMenuStrip TabContextStrip => this.contextMenuStrip;
@@ -87,6 +90,59 @@ namespace Google.Solutions.IapDesktop.Application.Services.Windows
 
             // Move focus to window.
             Activate();
+        }
+
+
+        //---------------------------------------------------------------------
+        // Track visibility.
+        //
+        // NB. The DockPanel library does not provide very good events for 
+        // tracking whether a tool window is *really* visible or not, so these
+        // methods provide a non-perfect approximation.
+        //---------------------------------------------------------------------
+
+        protected bool IsUserVisible = false;
+
+        protected override void OnEnter(EventArgs e)
+        {
+            if (!this.IsUserVisible)
+            {
+                this.IsUserVisible = true;
+                OnUserVisibilityChanged(this.IsUserVisible);
+            }
+        }
+
+        protected override void OnLeave(EventArgs e)
+        {
+            base.OnLeave(e);
+
+            switch (this.VisibleState)
+            {
+                case DockState.DockTopAutoHide:
+                case DockState.DockBottomAutoHide:
+                case DockState.DockLeftAutoHide:
+                case DockState.DockRightAutoHide:
+                    if (this.IsUserVisible)
+                    {
+                        this.IsUserVisible = false;
+                        OnUserVisibilityChanged(this.IsUserVisible);
+                    }
+
+                    break;
+            }
+        }
+
+        protected override void OnVisibleChanged(EventArgs e)
+        {
+            if (this.IsUserVisible)
+            {
+                this.IsUserVisible = false;
+                OnUserVisibilityChanged(this.IsUserVisible);
+            }
+        }
+
+        protected virtual void OnUserVisibilityChanged(bool visible)
+        {
         }
     }
 }

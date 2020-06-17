@@ -92,6 +92,7 @@
     <Compile Include="Controls\TestBindableListView.cs" />
     <Compile Include="Controls\TestBindableTreeView.cs" />
     <Compile Include="ObjectModel\TestBindingExtensions.cs" />
+    <Compile Include="ObjectModel\TestModelCachingViewModelBase.cs" />
     <Compile Include="ObjectModel\TestServiceAttribute.cs" />
     <Compile Include="Services\Adapters\TestGithubAdapter.cs" />
     <Compile Include="FixtureBase.cs" />
@@ -102,6 +103,7 @@
     <Compile Include="Services\Workflows\SynchronousJobService.cs" />
     <Compile Include="Services\Workflows\TestRemoteDesktopConnectionService.cs" />
     <Compile Include="Services\Workflows\TunnelEndpoint.cs" />
+    <Compile Include="Util\TestLeastRecentlyUsedCache.cs" />
     <Compile Include="Util\TestRangeObservableCollection.cs" />
     <Compile Include="Util\TestRegistryKeyMapper.cs" />
     <Compile Include="ObjectModel\MockEventService.cs" />
