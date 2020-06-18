@@ -46,11 +46,11 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services.SchedulingRep
         private readonly IEnumerable<string> projectIds;
         private readonly InstanceSetHistoryBuilder builder;
 
-        private readonly AuditLogAdapter auditLogAdapter;
+        private readonly IAuditLogAdapter auditLogAdapter;
         private readonly IComputeEngineAdapter computeEngineAdapter;
 
         public AuditLogReportBuilder(
-            AuditLogAdapter auditLogAdapter, 
+            IAuditLogAdapter auditLogAdapter, 
             IComputeEngineAdapter computeEngineAdapter,
             IEnumerable<string> projectIds,
             DateTime startDate)

@@ -60,7 +60,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services
             var projectIds = dialog.SelectedProjectIds;
 
             var builder = new AuditLogReportBuilder(
-                this.serviceProvider.GetService<AuditLogAdapter>(),
+                this.serviceProvider.GetService<IAuditLogAdapter>(),
                 this.serviceProvider.GetService<IComputeEngineAdapter>(),
                 projectIds,
                 dialog.SelectedStartDate);
