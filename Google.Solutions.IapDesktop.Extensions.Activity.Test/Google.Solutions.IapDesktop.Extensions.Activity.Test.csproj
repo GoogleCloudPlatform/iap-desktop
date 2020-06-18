@@ -86,6 +86,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Events\Lifecycle\TestResumeInstanceEvent.cs" />
+    <Compile Include="Events\Lifecycle\TestSuspendInstanceEvent.cs" />
     <Compile Include="Events\Lifecycle\TestResetInstanceEvent.cs" />
     <Compile Include="Events\Lifecycle\TestStartWithEncryptionKeyEvent.cs" />
     <Compile Include="Events\System\TestGenericSystemEvent.cs" />

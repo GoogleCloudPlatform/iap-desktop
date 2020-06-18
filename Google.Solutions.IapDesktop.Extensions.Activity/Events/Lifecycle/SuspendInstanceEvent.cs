@@ -24,24 +24,26 @@ using System.Diagnostics;
 
 namespace Google.Solutions.IapDesktop.Extensions.Activity.Events.Lifecycle
 {
-    public class StartWithEncryptionKeyEvent : LifecycleEventBase, IInstanceStateChangeEvent
+    public class SuspendInstanceEvent : LifecycleEventBase, IInstanceStateChangeEvent
     {
-        public const string Method = "v1.compute.instances.startWithEncryptionKey";
-        public const string BetaMethod = "beta.compute.instances.startWithEncryptionKey";
+        public const string Method = "v1.compute.instances.suspend"; 
+        public const string BetaMethod = "beta.compute.instances.suspend";
+        public const string AlphaMethod = "alpha.compute.instances.suspend";
 
-        protected override string SuccessMessage => "Instance started with encryption key";
-        protected override string ErrorMessage => "Starting instance with encryption key failed";
+        protected override string SuccessMessage => "Instance suspended";
+        protected override string ErrorMessage => "Suspending instance failed";
 
-        internal StartWithEncryptionKeyEvent(LogRecord logRecord) : base(logRecord)
+        internal SuspendInstanceEvent(LogRecord logRecord) : base(logRecord)
         {
-            Debug.Assert(IsStartWithEncryptionKeyEvent(logRecord));
+            Debug.Assert(IsSuspendInstanceEvent(logRecord));
         }
 
-        public static bool IsStartWithEncryptionKeyEvent(LogRecord record)
+        public static bool IsSuspendInstanceEvent(LogRecord record)
         {
             return record.IsActivityEvent &&
                 (record.ProtoPayload.MethodName == Method ||
-                 record.ProtoPayload.MethodName == BetaMethod);
+                 record.ProtoPayload.MethodName == BetaMethod ||
+                 record.ProtoPayload.MethodName == AlphaMethod);
         }
 
         //---------------------------------------------------------------------
@@ -51,5 +53,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Events.Lifecycle
         public bool IsStartingInstance => !IsError;
 
         public bool IsTerminatingInstance => false;
+
     }
 }

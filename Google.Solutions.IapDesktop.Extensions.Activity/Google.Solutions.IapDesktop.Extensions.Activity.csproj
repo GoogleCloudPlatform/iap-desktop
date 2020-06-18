@@ -85,6 +85,8 @@
     <Compile Include="Events\IEventProcessor.cs" />
     <Compile Include="Events\IInstanceStateChangeEvent.cs" />
     <Compile Include="Events\Lifecycle\LifecycleEventBase.cs" />
+    <Compile Include="Events\Lifecycle\ResumeInstanceEvent.cs" />
+    <Compile Include="Events\Lifecycle\SuspendInstanceEvent.cs" />
     <Compile Include="Events\Lifecycle\ResetInstanceEvent.cs" />
     <Compile Include="Events\Lifecycle\StartWithEncryptionKeyEvent.cs" />
     <Compile Include="Events\System\GenericSystemEvent.cs" />
