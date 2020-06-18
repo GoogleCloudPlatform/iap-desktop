@@ -24,32 +24,35 @@ using System.Diagnostics;
 
 namespace Google.Solutions.IapDesktop.Extensions.Activity.Events.Lifecycle
 {
-    public class StartWithEncryptionKeyEvent : LifecycleEventBase, IInstanceStateChangeEvent
+    public class ResumeInstanceEvent : LifecycleEventBase, IInstanceStateChangeEvent
     {
-        public const string Method = "v1.compute.instances.startWithEncryptionKey";
-        public const string BetaMethod = "beta.compute.instances.startWithEncryptionKey";
+        public const string Method = "v1.compute.instances.resume";
+        public const string BetaMethod = "beta.compute.instances.resume";
+        public const string AlphaMethod = "alpha.compute.instances.resume";
 
-        protected override string SuccessMessage => "Instance started with encryption key";
-        protected override string ErrorMessage => "Starting instance with encryption key failed";
+        protected override string SuccessMessage => "Instance resumed";
+        protected override string ErrorMessage => "Resuming instance failed";
 
-        internal StartWithEncryptionKeyEvent(LogRecord logRecord) : base(logRecord)
+        internal ResumeInstanceEvent(LogRecord logRecord) : base(logRecord)
         {
-            Debug.Assert(IsStartWithEncryptionKeyEvent(logRecord));
+            Debug.Assert(IsResumeInstanceEvent(logRecord));
         }
 
-        public static bool IsStartWithEncryptionKeyEvent(LogRecord record)
+        public static bool IsResumeInstanceEvent(LogRecord record)
         {
             return record.IsActivityEvent &&
                 (record.ProtoPayload.MethodName == Method ||
-                 record.ProtoPayload.MethodName == BetaMethod);
+                 record.ProtoPayload.MethodName == BetaMethod ||
+                 record.ProtoPayload.MethodName == AlphaMethod);
         }
 
         //---------------------------------------------------------------------
         // IInstanceStateChangeEvent.
         //---------------------------------------------------------------------
 
-        public bool IsStartingInstance => !IsError;
+        public bool IsStartingInstance => false;
 
-        public bool IsTerminatingInstance => false;
+        public bool IsTerminatingInstance => !IsError;
+
     }
 }

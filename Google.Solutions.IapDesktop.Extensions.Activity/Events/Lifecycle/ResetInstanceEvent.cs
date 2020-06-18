@@ -39,8 +39,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Events.Lifecycle
         public static bool IsResetInstanceEvent(LogRecord record)
         {
             return record.IsActivityEvent &&
-                (record.ProtoPayload.MethodName == Method ||
-                 record.ProtoPayload.MethodName == Method);
+                (record.ProtoPayload.MethodName == Method);
         }
 
         //---------------------------------------------------------------------

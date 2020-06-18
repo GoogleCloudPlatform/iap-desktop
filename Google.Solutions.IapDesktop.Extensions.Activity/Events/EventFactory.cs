@@ -36,10 +36,17 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Events
                 { InsertInstanceEvent.Method, rec => new InsertInstanceEvent(rec) },
                 { InsertInstanceEvent.BetaMethod, rec => new InsertInstanceEvent(rec) },
                 { StartInstanceEvent.Method, rec => new StartInstanceEvent(rec) },
+                { StartWithEncryptionKeyEvent.Method, rec => new StartWithEncryptionKeyEvent(rec) },
                 { StartWithEncryptionKeyEvent.BetaMethod, rec => new StartWithEncryptionKeyEvent(rec) },
                 { StopInstanceEvent.Method, rec => new StopInstanceEvent(rec) },
                 { StopInstanceEvent.BetaMethod, rec => new StopInstanceEvent(rec) },
                 { ResetInstanceEvent.Method, rec => new ResetInstanceEvent(rec) },
+                { SuspendInstanceEvent.Method, rec => new SuspendInstanceEvent(rec) },
+                { SuspendInstanceEvent.BetaMethod, rec => new SuspendInstanceEvent(rec) },
+                { SuspendInstanceEvent.AlphaMethod, rec => new SuspendInstanceEvent(rec) },
+                { ResumeInstanceEvent.Method, rec => new ResumeInstanceEvent(rec) },
+                { ResumeInstanceEvent.BetaMethod, rec => new ResumeInstanceEvent(rec) },
+                { ResumeInstanceEvent.AlphaMethod, rec => new ResumeInstanceEvent(rec) },
 
                 // Some beta events omitted (based on audit_log_services.ts)
             };
