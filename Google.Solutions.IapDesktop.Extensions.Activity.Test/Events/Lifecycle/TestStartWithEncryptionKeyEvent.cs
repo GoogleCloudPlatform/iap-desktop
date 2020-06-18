@@ -43,6 +43,78 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.Events.Lifecycle
                  'requestMetadata': {
                  },
                  'serviceName': 'compute.googleapis.com',
+                 'methodName': 'v1.compute.instances.startWithEncryptionKey',
+                 'authorizationInfo': [
+                 ],
+                 'resourceName': 'projects/project-1/zones/us-central1-a/instances/instance-1',
+                 'request': {
+                   '@type': 'type.googleapis.com/compute.instances.startWithEncryptionKey',
+                   'disks': [
+                     {
+                       'diskEncryptionKey': {
+                         'rawKey': 'REDACTED'
+                       },
+                       'source': 'projects/project-1/zones/us-central1-a/disks/instance-1'
+                     }
+                   ]
+                 },
+                 'response': {
+                 },
+                 'resourceLocation': {
+                   'currentLocations': [
+                     'us-central1-a'
+                   ]
+                 }
+               },
+               'insertId': '-1xwojrd7zqm',
+               'resource': {
+                 'type': 'gce_instance',
+                 'labels': {
+                   'zone': 'us-central1-a',
+                   'instance_id': '4894051111144103',
+                   'project_id': 'project-1'
+                 }
+               },
+               'timestamp': '2020-05-13T08:51:21.082Z',
+               'severity': 'NOTICE',
+               'logName': 'projects/project-1/logs/cloudaudit.googleapis.com%2Factivity',
+               'operation': {
+                 'id': 'operation-1589359880972-5a583af202822-0e230dcd-0bb00231',
+                 'producer': 'compute.googleapis.com',
+                 'first': true
+               },
+               'receiveTimestamp': '2020-05-13T08:51:22.568391463Z'
+             }";
+
+            var r = LogRecord.Deserialize(json);
+            Assert.IsTrue(StartWithEncryptionKeyEvent.IsStartWithEncryptionKeyEvent(r));
+
+            var e = (StartWithEncryptionKeyEvent)r.ToEvent();
+
+            Assert.AreEqual(4894051111144103, e.InstanceId);
+            Assert.AreEqual("instance-1", e.InstanceReference.Name);
+            Assert.AreEqual("us-central1-a", e.InstanceReference.Zone);
+            Assert.AreEqual("project-1", e.InstanceReference.ProjectId);
+            Assert.AreEqual("NOTICE", e.Severity);
+            Assert.IsNull(e.Status);
+            Assert.AreEqual(
+                new InstanceLocator("project-1", "us-central1-a", "instance-1"),
+                e.InstanceReference);
+        }
+
+
+        [Test]
+        public void WhenSeverityIsNoticeAndVersionIsBeta_ThenFieldsAreExtracted()
+        {
+            var json = @"
+              {
+               'protoPayload': {
+                 '@type': 'type.googleapis.com/google.cloud.audit.AuditLog',
+                 'authenticationInfo': {
+                 },
+                 'requestMetadata': {
+                 },
+                 'serviceName': 'compute.googleapis.com',
                  'methodName': 'beta.compute.instances.startWithEncryptionKey',
                  'authorizationInfo': [
                  ],

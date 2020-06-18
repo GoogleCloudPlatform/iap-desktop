@@ -43,6 +43,67 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.Events.Lifecycle
                   'requestMetadata': {
                   },
                   'serviceName': 'compute.googleapis.com',
+                  'methodName': 'v1.compute.instances.stop',
+                  'authorizationInfo': [
+                  ],
+                  'resourceName': 'projects/project-1/zones/us-central1-a/instances/instance-1',
+                  'request': {
+                    '@type': 'type.googleapis.com/compute.instances.stop'
+                  },
+                  'response': {
+                  },
+                  'resourceLocation': {
+                    'currentLocations': [
+                      'us-central1-a'
+                    ]
+                  }
+                },
+                'insertId': '-gwwofzdc39e',
+                'resource': {
+                  'type': 'gce_instance',
+                  'labels': {
+                    'instance_id': '2162224123123123213',
+                    'project_id': 'project-1',
+                    'zone': 'us-central1-a'
+                  }
+                },
+                'timestamp': '2020-05-04T08:49:27.470Z',
+                'severity': 'NOTICE',
+                'logName': 'projects/project-1/logs/cloudaudit.googleapis.com%2Factivity',
+                'operation': {
+                  'id': 'operation-1588582167320-5a4ce9bc79851-98bb5945-b9e2b31d',
+                  'producer': 'compute.googleapis.com',
+                  'first': true
+                },
+                'receiveTimestamp': '2020-05-04T08:49:28.949573763Z'
+              }";
+
+            var r = LogRecord.Deserialize(json);
+            Assert.IsTrue(StopInstanceEvent.IsStopInstanceEvent(r));
+
+            var e = (StopInstanceEvent)r.ToEvent();
+
+            Assert.AreEqual(2162224123123123213, e.InstanceId);
+            Assert.AreEqual("instance-1", e.InstanceReference.Name);
+            Assert.AreEqual("us-central1-a", e.InstanceReference.Zone);
+            Assert.AreEqual("project-1", e.InstanceReference.ProjectId);
+            Assert.AreEqual(
+                new InstanceLocator("project-1", "us-central1-a", "instance-1"),
+                e.InstanceReference);
+        }
+
+        [Test]
+        public void WhenSeverityIsNoticeAndVersionIsBeta_ThenFieldsAreExtracted()
+        {
+            var json = @"
+            {
+                'protoPayload': {
+                  '@type': 'type.googleapis.com/google.cloud.audit.AuditLog',
+                  'authenticationInfo': {
+                  },
+                  'requestMetadata': {
+                  },
+                  'serviceName': 'compute.googleapis.com',
                   'methodName': 'beta.compute.instances.stop',
                   'authorizationInfo': [
                   ],
