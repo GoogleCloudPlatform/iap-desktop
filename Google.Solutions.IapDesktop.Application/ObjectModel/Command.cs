@@ -21,31 +21,43 @@
 
 using System;
 
-namespace Google.Solutions.IapDesktop.Application.Services.Windows.ProjectExplorer
+namespace Google.Solutions.IapDesktop.Application.ObjectModel
 {
+    public interface ICommand<TContext>
+    {
+        CommandState QueryState(TContext context);
+        void Execute(TContext context);
+    }
+
+    public enum CommandState
+    {
+        Enabled,
+        Disabled,
+        Unavailable
+    }
 
     /// <summary>
-    /// Helper class for creating dynamic command.
+    /// Helper class for creating simple commands.
     /// </summary>
-    public class ProjectExplorerCommand : IProjectExplorerCommand
+    public class Command<TContext> : ICommand<TContext>
     {
-        private Action<IProjectExplorerNode> executeFunc;
-        private Func<IProjectExplorerNode, CommandState> queryStateFunc;
+        private Action<TContext> executeFunc;
+        private Func<TContext, CommandState> queryStateFunc;
 
-        public ProjectExplorerCommand(
-            Func<IProjectExplorerNode, CommandState> queryStateFunc,
-            Action<IProjectExplorerNode> executeFunc)
+        public Command(
+            Func<TContext, CommandState> queryStateFunc,
+            Action<TContext> executeFunc)
         {
             this.queryStateFunc = queryStateFunc;
             this.executeFunc = executeFunc;
         }
 
-        public void Execute(IProjectExplorerNode context)
+        public void Execute(TContext context)
         {
             this.executeFunc(context);
         }
 
-        public CommandState QueryState(IProjectExplorerNode context)
+        public CommandState QueryState(TContext context)
         {
             return this.queryStateFunc(context);
         }

@@ -90,6 +90,8 @@
     </Compile>
     <Compile Include="Controls\ExceptionEventArgs.cs" />
     <Compile Include="ObjectModel\BindingExtensions.cs" />
+    <Compile Include="ObjectModel\Command.cs" />
+    <Compile Include="ObjectModel\CommandContainer.cs" />
     <Compile Include="ObjectModel\ModelCachingViewModel.cs" />
     <Compile Include="ObjectModel\ServiceAttribute.cs" />
     <Compile Include="ObjectModel\ViewModelBase.cs" />
@@ -132,7 +134,6 @@
     <Compile Include="Services\Windows\FlatVerticalTabControl.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="Services\Windows\ProjectExplorer\ProjectExplorerCommand.cs" />
     <Compile Include="Services\Windows\ProjectExplorer\ProjectExplorerTrackingToolWindow.cs">
       <SubType>Form</SubType>
     </Compile>

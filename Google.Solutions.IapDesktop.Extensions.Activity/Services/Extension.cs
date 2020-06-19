@@ -40,10 +40,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services
     [Service(ServiceLifetime.Singleton)]
     public class Extension
     {
-        private const string ReportCommand = "report";
-        private const string ReportUsageCommand = "report.usage";
-        private const string ShowEventLogCommand = "eventlog.show";
-
         private readonly IServiceProvider serviceProvider;
 
         private void CreateReport(IProjectExplorerNode contextNode)
@@ -101,36 +97,30 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services
             // Add command to project explorer.
             var projectExplorer = serviceProvider.GetService<IProjectExplorer>();
 
-            projectExplorer.AddCommand(
-                null,
-                ReportCommand,
+            var reportCommand = projectExplorer.ContextMenu.AddCommand(
                 "Report",
                 null,
                 null,
-                new ProjectExplorerCommand(
+                new Command<IProjectExplorerNode>(
                     context => context is IProjectExplorerProjectNode
                             || context is IProjectExplorerCloudNode
                         ? CommandState.Enabled
                         : CommandState.Unavailable,
                     context => { }));
 
-            projectExplorer.AddCommand(
-                ReportCommand,
-                ReportUsageCommand,
+            reportCommand.AddCommand(
                 "Instance and node usage...",
                 Resources.Report_16,
                 null,
-                new ProjectExplorerCommand(
+                new Command<IProjectExplorerNode>(
                     context => CommandState.Enabled,
                     context => CreateReport(context)));
 
-            projectExplorer.AddCommand(
-                null,
-                ShowEventLogCommand,
+            projectExplorer.ContextMenu.AddCommand(
                 "Show event log",
                 Resources.EventLog_16,
                 5,
-                new ProjectExplorerCommand(
+                new Command<IProjectExplorerNode>(
                     context => EventLogViewModel.IsNodeSupported(context)
                         ? CommandState.Enabled
                         : CommandState.Unavailable,

@@ -60,6 +60,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.Windows.ProjectExplor
 
         private readonly CloudNode rootNode = new CloudNode();
 
+        public CommandContainer<IProjectExplorerNode> ContextMenu { get; }
 
         public ProjectExplorerWindow(IServiceProvider serviceProvider)
         {
@@ -95,6 +96,12 @@ namespace Google.Solutions.IapDesktop.Application.Services.Windows.ProjectExplor
             this.eventService.BindHandler<ProjectInventoryService.ProjectDeletedEvent>(OnProjectDeleted);
             this.eventService.BindHandler<RemoteDesktopConnectionSuceededEvent>(OnRdpConnectionSucceeded);
             this.eventService.BindHandler<RemoteDesktopWindowClosedEvent>(OnRdpConnectionClosed);
+
+            this.ContextMenu = new CommandContainer<IProjectExplorerNode>(
+                this,
+                this.contextMenu.Items,
+                () => this.treeView.SelectedNode as IProjectExplorerNode,
+                serviceProvider.GetService<IExceptionDialog>());
         }
 
         private void PopulateProjectNode(string projectId, IEnumerable<Instance> instances)
@@ -449,9 +456,9 @@ namespace Google.Solutions.IapDesktop.Application.Services.Windows.ProjectExplor
                 //
                 foreach (var menuItem in this.contextMenu.Items
                     .OfType<ToolStripMenuItem>()
-                    .Where(m => m.Tag is IProjectExplorerCommand))
+                    .Where(m => m.Tag is ICommand<IProjectExplorerNode>))
                 {
-                    switch (((IProjectExplorerCommand)menuItem.Tag).QueryState(selectedNode))
+                    switch (((ICommand<IProjectExplorerNode>)menuItem.Tag).QueryState(selectedNode))
                     {
                         case CommandState.Disabled:
                             menuItem.Visible = true;
@@ -662,83 +669,6 @@ namespace Google.Solutions.IapDesktop.Application.Services.Windows.ProjectExplor
                 .Where(z => z.ZoneId == reference.Zone)
                 .SelectMany(z => z.Nodes.Cast<VmInstanceNode>())
                 .FirstOrDefault(vm => vm.InstanceName == reference.Name); ;
-        }
-
-        public void AddCommand(
-            string parentCommandName,
-            string commandName,
-            string caption,
-            System.Drawing.Image image,
-            int? index,
-            IProjectExplorerCommand command)
-        {
-            ToolStripItemCollection parent;
-            if (parentCommandName != null)
-            {
-                // This is a sub-menu: [parentText] > [text]
-                var parentMenuItem = this.contextMenu.Items
-                    .OfType<ToolStripMenuItem>()
-                    .First(i => i.Name == parentCommandName);
-                if (parentMenuItem == null)
-                {
-                    throw new ArgumentException(
-                        $"No command with name {parentCommandName} registered");
-                }
-
-                parent = parentMenuItem.DropDownItems;
-            }
-            else
-            {
-                parent = this.contextMenu.Items;
-            }
-
-            AddCommand(parent, commandName, caption, image, index, command);
-        }
-
-        private void AddCommand(
-            ToolStripItemCollection parent,
-            string commandName,
-            string caption,
-            System.Drawing.Image image,
-            int? index,
-            IProjectExplorerCommand command)
-        {
-            var menuItem = new ToolStripMenuItem(
-                caption,
-                image,
-                (sender, args) =>
-                {
-                    if (this.treeView.SelectedNode is IProjectExplorerNode node)
-                    {
-                        try
-                        { 
-                            command.Execute(node);
-                        }
-                        catch (Exception e) when (e.IsCancellation())
-                        {
-                            // Ignore.
-                        }
-                        catch (Exception e)
-                        {
-                            this.serviceProvider
-                                .GetService<IExceptionDialog>()
-                                .Show(this, "Command failed", e);
-                        }
-                    }
-                })
-            {
-                Tag = command,
-                Name = commandName
-            };
-
-            if (index.HasValue)
-            {
-                parent.Insert(index.Value, menuItem);
-            }
-            else
-            {
-                parent.Add(menuItem);
-            }
         }
 
         public IProjectExplorerNode SelectedNode 

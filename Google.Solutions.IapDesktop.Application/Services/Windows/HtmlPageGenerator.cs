@@ -36,16 +36,14 @@ namespace Google.Solutions.IapDesktop.Application.Services.Windows
         public HtmlPageGenerator(IServiceProvider serviceProvider)
         {
             var projectExplorer = serviceProvider.GetService<IProjectExplorer>();
-            projectExplorer.AddCommand(
-                null,
-                "debug.generateHtml",
+            projectExplorer.ContextMenu.AddCommand(
                 "Generate HTML page",
                 null,
                 null,
                 new GenerateHtmlPageCommand());
         }
 
-        private class GenerateHtmlPageCommand : IProjectExplorerCommand
+        private class GenerateHtmlPageCommand : ICommand<IProjectExplorerNode>
         {
             public void Execute(IProjectExplorerNode context)
             {
