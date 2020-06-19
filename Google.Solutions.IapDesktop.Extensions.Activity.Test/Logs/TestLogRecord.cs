@@ -85,7 +85,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.Logs
         }
 
         [Test]
-        public void WhenActivityEventJsonValid_ThenFieldsAreDeserialized()
+        public void WhenFirstActivityEventJsonValid_ThenFieldsAreDeserialized()
         {
             var json = @"
                  {
@@ -161,6 +161,66 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.Logs
             Assert.AreEqual("us-central1-b", record.Resource.Labels["zone"]);
 
             Assert.AreEqual("operation-1589160396842-5a5553cf1e7c8-796d6bb5-473f0464", record.Operation.Id);
+            Assert.IsTrue(record.Operation.IsFirst);
+            Assert.IsFalse(record.Operation.IsLast);
+
+            Assert.AreEqual("project-1", record.ProjectId);
+            Assert.IsFalse(record.IsSystemEvent);
+            Assert.IsTrue(record.IsActivityEvent);
+        }
+
+        [Test]
+        public void WhenLastActivityEventJsonValid_ThenFieldsAreDeserialized()
+        {
+            var json = @"
+            {
+                'protoPayload': {
+                    '@type': 'type.googleapis.com/google.cloud.audit.AuditLog',
+                    'status': {
+                    'code': 3,
+                    'message': 'INVALID_ARGUMENT'
+                    },
+                    'authenticationInfo': {
+                    },
+                    'requestMetadata': {
+                    'callerIp': '1.2.3.4',
+                    'callerSuppliedUserAgent': 'google-cloud)',
+                    'requestAttributes': {},
+                    'destinationAttributes': {}
+                    },
+                    'serviceName': 'compute.googleapis.com',
+                    'methodName': 'v1.compute.instances.insert',
+                    'resourceName': 'projects/project-1/zones/us-central1-a/instances/instance-1',
+                    'request': {
+                    '@type': 'type.googleapis.com/compute.instances.insert'
+                    }
+                },
+                'insertId': '-vwncp9d6006',
+                'resource': {
+                    'type': 'gce_instance',
+                    'labels': {
+                    'instance_id': '1123123123',
+                    'project_id': 'project-1',
+                    'zone': 'us-central1-a'
+                    }
+                },
+                'timestamp': '2020-04-24T08:13:39.103Z',
+                'severity': 'ERROR',
+                'logName': 'projects/project-1/logs/cloudaudit.googleapis.com%2Factivity',
+                'operation': {
+                    'id': 'operation-1587715943067-5a404ecca6fa4-dc7e343f-dbc3ca83',
+                    'producer': 'compute.googleapis.com',
+                    'last': true
+                },
+                'receiveTimestamp': '2020-04-24T08:13:40.134230447Z'
+                }
+            ";
+
+            var record = LogRecord.Deserialize(json);
+
+            Assert.AreEqual("-vwncp9d6006", record.InsertId);
+
+            Assert.IsFalse(record.Operation.IsFirst);
             Assert.IsTrue(record.Operation.IsLast);
 
             Assert.AreEqual("project-1", record.ProjectId);

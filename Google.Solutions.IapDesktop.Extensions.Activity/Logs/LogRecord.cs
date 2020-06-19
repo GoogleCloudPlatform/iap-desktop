@@ -120,5 +120,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Logs
 
         [JsonProperty("last")]
         public bool IsLast { get; set; }
+
+        [JsonProperty("first")]
+        public bool IsFirst { get; set; }
     }
 }
