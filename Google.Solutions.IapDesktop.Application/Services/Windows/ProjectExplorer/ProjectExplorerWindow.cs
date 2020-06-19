@@ -60,7 +60,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.Windows.ProjectExplor
 
         private readonly CloudNode rootNode = new CloudNode();
 
-        public CommandContainer<IProjectExplorerNode> ContextMenu { get; }
+        public CommandContainer<IProjectExplorerNode> Commands { get; }
 
         public ProjectExplorerWindow(IServiceProvider serviceProvider)
         {
@@ -97,10 +97,9 @@ namespace Google.Solutions.IapDesktop.Application.Services.Windows.ProjectExplor
             this.eventService.BindHandler<RemoteDesktopConnectionSuceededEvent>(OnRdpConnectionSucceeded);
             this.eventService.BindHandler<RemoteDesktopWindowClosedEvent>(OnRdpConnectionClosed);
 
-            this.ContextMenu = new CommandContainer<IProjectExplorerNode>(
+            this.Commands = new CommandContainer<IProjectExplorerNode>(
                 this,
                 this.contextMenu.Items,
-                () => this.treeView.SelectedNode as IProjectExplorerNode,
                 serviceProvider.GetService<IExceptionDialog>());
         }
 
@@ -454,26 +453,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.Windows.ProjectExplor
                 // 
                 // Handle dynamic menu items.
                 //
-                foreach (var menuItem in this.contextMenu.Items
-                    .OfType<ToolStripMenuItem>()
-                    .Where(m => m.Tag is ICommand<IProjectExplorerNode>))
-                {
-                    switch (((ICommand<IProjectExplorerNode>)menuItem.Tag).QueryState(selectedNode))
-                    {
-                        case CommandState.Disabled:
-                            menuItem.Visible = true;
-                            menuItem.Enabled = false;
-                            break;
-
-                        case CommandState.Enabled:
-                            menuItem.Enabled = menuItem.Visible = true;
-                            break;
-
-                        case CommandState.Unavailable:
-                            menuItem.Visible = false;
-                            break;
-                    }
-                }
+                this.Commands.Context = selectedNode;
 
                 //
                 // Fire event.

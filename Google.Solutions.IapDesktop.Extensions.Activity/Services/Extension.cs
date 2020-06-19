@@ -97,7 +97,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services
             // Add command to project explorer.
             var projectExplorer = serviceProvider.GetService<IProjectExplorer>();
 
-            var reportCommand = projectExplorer.ContextMenu.AddCommand(
+            var reportCommand = projectExplorer.Commands.AddCommand(
                 "Report",
                 null,
                 null,
@@ -116,7 +116,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services
                     context => CommandState.Enabled,
                     context => CreateReport(context)));
 
-            projectExplorer.ContextMenu.AddCommand(
+            projectExplorer.Commands.AddCommand(
                 "Show event log",
                 Resources.EventLog_16,
                 5,

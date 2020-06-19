@@ -22,29 +22,81 @@
 using Google.Solutions.Common.Util;
 using Google.Solutions.IapDesktop.Application.Services.Windows;
 using System;
+using System.Linq;
 using System.Windows.Forms;
 
 namespace Google.Solutions.IapDesktop.Application.ObjectModel
 {
-   
-
     public class CommandContainer<TContext>
     {
-        private readonly IWin32Window parent;
+        private TContext context;
+        private readonly IWin32Window window;
         private readonly ToolStripItemCollection menuItems;
-        private readonly Func<TContext> captureContextFunc;
+        private readonly CommandContainer<TContext> parent;
         private readonly IExceptionDialog exceptionDialog;
 
         internal CommandContainer(
             IWin32Window parent,
             ToolStripItemCollection menuItems,
-            Func<TContext> captureContextFunc,
             IExceptionDialog exceptionDialog)
+            : this(parent, menuItems, exceptionDialog, null)
         {
-            this.parent = parent;
+        }
+
+        internal CommandContainer(
+            IWin32Window window,
+            ToolStripItemCollection menuItems,
+            IExceptionDialog exceptionDialog,
+            CommandContainer<TContext> parent)
+        {
+            this.window = window;
             this.menuItems = menuItems;
-            this.captureContextFunc = captureContextFunc;
             this.exceptionDialog = exceptionDialog;
+            this.parent = parent;
+        }
+
+        public TContext Context 
+        {
+            get => this.context != null
+                ? this.context
+                : this.parent.Context;
+            set
+            {
+                this.context = value;
+
+                UpdateMenuItemState(this.menuItems, value);
+            }
+        }
+
+        private static void UpdateMenuItemState(
+            ToolStripItemCollection menuItems,
+            TContext context)
+        {
+            // Update state of each menu item.
+            foreach (var menuItem in menuItems
+                .OfType<ToolStripMenuItem>()
+                .Where(m => m.Tag is ICommand<TContext>))
+            {
+                switch (((ICommand<TContext>)menuItem.Tag).QueryState(context))
+                {
+                    case CommandState.Disabled:
+                        menuItem.Visible = true;
+                        menuItem.Enabled = false;
+                        break;
+
+                    case CommandState.Enabled:
+                        menuItem.Enabled = menuItem.Visible = true;
+                        break;
+
+                    case CommandState.Unavailable:
+                        menuItem.Visible = false;
+                        break;
+                }
+
+                // NB. Only the top-most container has its context set.
+                // Therefore, recursively update child menus as well.
+                UpdateMenuItemState(menuItem.DropDownItems, context);
+            }
         }
 
         public CommandContainer<TContext> AddCommand(
@@ -58,7 +110,7 @@ namespace Google.Solutions.IapDesktop.Application.ObjectModel
                 image,
                 (sender, args) =>
                 {
-                    if (this.captureContextFunc() is TContext context)
+                    if (this.Context is TContext context)
                     {
                         try
                         {
@@ -70,7 +122,7 @@ namespace Google.Solutions.IapDesktop.Application.ObjectModel
                         }
                         catch (Exception e)
                         {
-                            this.exceptionDialog.Show(this.parent, "Command failed", e);
+                            this.exceptionDialog.Show(this.window, "Command failed", e);
                         }
                     }
                 })
@@ -89,10 +141,10 @@ namespace Google.Solutions.IapDesktop.Application.ObjectModel
 
             // Return a new contains that enables registering sub-commands.
             return new CommandContainer<TContext>(
-                this.parent,
+                this.window,
                 menuItem.DropDownItems,
-                this.captureContextFunc,
-                this.exceptionDialog);
+                this.exceptionDialog,
+                this);
         }
     }
 }
