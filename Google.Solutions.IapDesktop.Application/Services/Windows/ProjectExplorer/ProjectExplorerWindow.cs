@@ -100,7 +100,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.Windows.ProjectExplor
             this.Commands = new CommandContainer<IProjectExplorerNode>(
                 this,
                 this.contextMenu.Items,
-                serviceProvider.GetService<IExceptionDialog>());
+                this.serviceProvider);
         }
 
         private void PopulateProjectNode(string projectId, IEnumerable<Instance> instances)

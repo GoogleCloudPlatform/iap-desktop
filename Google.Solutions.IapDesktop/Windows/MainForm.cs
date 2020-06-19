@@ -53,6 +53,7 @@ namespace Google.Solutions.IapDesktop.Windows
         private readonly IServiceProvider serviceProvider;
 
         public IapRdpUrl StartupUrl { get; set; }
+        public CommandContainer<IMainForm> ViewCommands { get; }
 
         public MainForm(IServiceProvider bootstrappingServiceProvider, IServiceProvider serviceProvider)
         {
@@ -90,6 +91,11 @@ namespace Google.Solutions.IapDesktop.Windows
             // Bind controls.
             //
             this.Text = MainFormViewModel.FriendlyName;
+            this.ViewCommands = new CommandContainer<IMainForm>(
+                this,
+                this.viewToolStripMenuItem.DropDownItems,
+                this.serviceProvider);
+            this.ViewCommands.Context = this; // There is no real context for this.
 
             this.viewModel = new MainFormViewModel(
                 this,

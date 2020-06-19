@@ -33,25 +33,37 @@ namespace Google.Solutions.IapDesktop.Application.ObjectModel
         private readonly IWin32Window window;
         private readonly ToolStripItemCollection menuItems;
         private readonly CommandContainer<TContext> parent;
-        private readonly IExceptionDialog exceptionDialog;
+        private readonly Func<IExceptionDialog> getExceptionDialogFunc;
 
-        internal CommandContainer(
+        public CommandContainer(
             IWin32Window parent,
             ToolStripItemCollection menuItems,
-            IExceptionDialog exceptionDialog)
-            : this(parent, menuItems, exceptionDialog, null)
+            IServiceProvider serviceProvider)
+            : this(
+                  parent, 
+                  menuItems,
+                  serviceProvider.GetService<IExceptionDialog>, 
+                  null)
         {
         }
 
-        internal CommandContainer(
+        public CommandContainer(
+            IWin32Window parent,
+            ToolStripItemCollection menuItems,
+            Func<IExceptionDialog> getExceptionDialogFunc)
+            : this(parent, menuItems, getExceptionDialogFunc, null)
+        {
+        }
+
+        private CommandContainer(
             IWin32Window window,
             ToolStripItemCollection menuItems,
-            IExceptionDialog exceptionDialog,
+            Func<IExceptionDialog> getExceptionDialogFunc,
             CommandContainer<TContext> parent)
         {
             this.window = window;
             this.menuItems = menuItems;
-            this.exceptionDialog = exceptionDialog;
+            this.getExceptionDialogFunc = getExceptionDialogFunc;
             this.parent = parent;
         }
 
@@ -122,7 +134,7 @@ namespace Google.Solutions.IapDesktop.Application.ObjectModel
                         }
                         catch (Exception e)
                         {
-                            this.exceptionDialog.Show(this.window, "Command failed", e);
+                            this.getExceptionDialogFunc().Show(this.window, "Command failed", e);
                         }
                     }
                 })
@@ -143,7 +155,7 @@ namespace Google.Solutions.IapDesktop.Application.ObjectModel
             return new CommandContainer<TContext>(
                 this.window,
                 menuItem.DropDownItems,
-                this.exceptionDialog,
+                this.getExceptionDialogFunc,
                 this);
         }
     }

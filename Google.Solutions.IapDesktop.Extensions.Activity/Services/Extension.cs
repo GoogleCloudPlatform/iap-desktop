@@ -74,7 +74,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services
                 WeifenLuo.WinFormsUI.Docking.DockState.Document);
         }
 
-        private void ShowActivityLogs(IProjectExplorerNode contextNode)
+        private void ShowActivityLogs()
         {
             this.serviceProvider.GetService<EventLogWindow>().ShowWindow();
         }
@@ -94,7 +94,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services
                 return;
             }
 
+            //
             // Add command to project explorer.
+            //
             var projectExplorer = serviceProvider.GetService<IProjectExplorer>();
 
             var reportCommand = projectExplorer.Commands.AddCommand(
@@ -124,7 +126,19 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services
                     context => EventLogViewModel.IsNodeSupported(context)
                         ? CommandState.Enabled
                         : CommandState.Unavailable,
-                    context => ShowActivityLogs(context)));
+                    context => ShowActivityLogs()));
+
+            //
+            // Add commands to main menu.
+            //
+            var mainForm = serviceProvider.GetService<IMainForm>();
+            mainForm.ViewCommands.AddCommand(
+                "Event log window",
+                Resources.EventLog_16,
+                null,
+                new Command<IMainForm>(
+                    pseudoContext => CommandState.Enabled,
+                    pseudoContext => ShowActivityLogs()));
         }
     }
 }

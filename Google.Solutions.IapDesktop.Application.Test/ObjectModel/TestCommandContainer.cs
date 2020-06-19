@@ -20,7 +20,6 @@
 //
 
 using Google.Solutions.IapDesktop.Application.ObjectModel;
-using Google.Solutions.IapDesktop.Application.Services.Windows;
 using Moq;
 using NUnit.Framework;
 using System;
@@ -50,7 +49,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.ObjectModel
             this.commandContainer = new CommandContainer<string>(
                 this.form,
                 this.contextMenu.Items,
-                new Mock<IExceptionDialog>().Object);
+                new Mock<IServiceProvider>().Object);
         }
 
         [TearDown]
