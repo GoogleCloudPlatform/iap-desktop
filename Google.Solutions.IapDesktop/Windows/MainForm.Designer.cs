@@ -202,6 +202,7 @@ namespace Google.Solutions.IapDesktop.Windows
             // 
             // projectExplorerToolStripMenuItem
             // 
+            this.projectExplorerToolStripMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("projectExplorerToolStripMenuItem.Image")));
             this.projectExplorerToolStripMenuItem.Name = "projectExplorerToolStripMenuItem";
             this.projectExplorerToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)(((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Alt) 
             | System.Windows.Forms.Keys.L)));
@@ -211,6 +212,7 @@ namespace Google.Solutions.IapDesktop.Windows
             // 
             // activeTunnelsToolStripMenuItem
             // 
+            this.activeTunnelsToolStripMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("activeTunnelsToolStripMenuItem.Image")));
             this.activeTunnelsToolStripMenuItem.Name = "activeTunnelsToolStripMenuItem";
             this.activeTunnelsToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)(((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Alt) 
             | System.Windows.Forms.Keys.T)));
@@ -333,7 +335,7 @@ namespace Google.Solutions.IapDesktop.Windows
             // toolStripStatus
             // 
             this.toolStripStatus.Name = "toolStripStatus";
-            this.toolStripStatus.Size = new System.Drawing.Size(824, 17);
+            this.toolStripStatus.Size = new System.Drawing.Size(849, 17);
             this.toolStripStatus.Spring = true;
             this.toolStripStatus.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
