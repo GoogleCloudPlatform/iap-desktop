@@ -161,7 +161,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.Services.EventLog
         public void WhenNodeIsCloudNode_ThenCommandStateIsUnavailable()
         {
             var node = new Mock<IProjectExplorerCloudNode>().Object;
-            Assert.AreEqual(CommandState.Unavailable, EventLogViewModel.GetCommandState(node)); ;
+            Assert.AreEqual(CommandState.Unavailable, EventLogViewModel.GetCommandState(node));
         }
 
         //---------------------------------------------------------------------

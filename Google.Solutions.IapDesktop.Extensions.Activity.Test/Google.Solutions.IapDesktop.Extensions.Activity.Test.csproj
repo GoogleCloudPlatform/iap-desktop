@@ -127,6 +127,7 @@
     <Compile Include="Services\SchedulingReport\TestReportInstancesTabViewModel.cs" />
     <Compile Include="Services\SchedulingReport\TestReportNodesTabViewModel.cs" />
     <Compile Include="Services\SchedulingReport\TestReportViewModel.cs" />
+    <Compile Include="Services\SerialOutput\TestSerialOutputViewModel.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Google.Solutions.Common.Test\Google.Solutions.Common.Test.csproj">
@@ -156,9 +157,7 @@
     <EmbeddedResource Include="History\instance-4.json" />
     <None Include="packages.config" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Services\SerialOutput\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>
