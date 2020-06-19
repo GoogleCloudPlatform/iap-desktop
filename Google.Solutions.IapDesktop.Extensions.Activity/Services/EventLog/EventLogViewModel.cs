@@ -41,6 +41,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services.EventLog
         : ModelCachingViewModelBase<IProjectExplorerNode, EventLogModel>
     {
         private const int ModelCacheCapacity = 5;
+
         public static readonly ReadOnlyCollection<Timeframe> AvailableTimeframes 
             = new ReadOnlyCollection<Timeframe>(new List<Timeframe>()
         {

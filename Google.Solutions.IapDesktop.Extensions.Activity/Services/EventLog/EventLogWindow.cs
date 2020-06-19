@@ -54,7 +54,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services.EventLog
             this.viewModel = new EventLogViewModel(this, serviceProvider);
 
             this.timeFrameComboBox.Items.AddRange(EventLogViewModel.AvailableTimeframes.ToArray());
-            this.timeFrameComboBox.SelectedIndex = 0;
 
             // Bind toolbar buttons.
             this.timeFrameComboBox.BindProperty(
@@ -137,6 +136,10 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services.EventLog
             await this.viewModel.SwitchToModelAsync(node)
                 .ConfigureAwait(true);
         }
+
+        //---------------------------------------------------------------------
+        // Window events.
+        //---------------------------------------------------------------------
 
         private void refreshButton_Click(object sender, EventArgs e)
         {

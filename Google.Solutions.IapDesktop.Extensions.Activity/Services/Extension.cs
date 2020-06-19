@@ -31,6 +31,7 @@ using Google.Solutions.IapDesktop.Extensions.Activity.Services.SchedulingReport;
 using System;
 using System.Linq;
 using System.Windows.Forms;
+using Google.Solutions.IapDesktop.Extensions.Activity.Services.SerialOutput;
 
 namespace Google.Solutions.IapDesktop.Extensions.Activity.Services
 {
@@ -74,60 +75,63 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services
                 WeifenLuo.WinFormsUI.Docking.DockState.Document);
         }
 
-        private void ShowActivityLogs()
-        {
-            this.serviceProvider.GetService<EventLogWindow>().ShowWindow();
-        }
-
         public Extension(IServiceProvider serviceProvider)
         {
             this.serviceProvider = serviceProvider;
+            var projectExplorer = serviceProvider.GetService<IProjectExplorer>();
+
+            //
+            // Add commands to project explorer.
+            //
 
             var previewFeaturesEnabled = 
                 this.serviceProvider.GetService<ApplicationSettingsRepository>()
                     .GetSettings()
                     .IsPreviewFeatureSetEnabled;
-            if (!previewFeaturesEnabled)
+            if (previewFeaturesEnabled)
             {
-                // Do not register commands, making this extension
-                // invisible.
-                return;
+                var reportCommand = projectExplorer.Commands.AddCommand(
+                    new Command<IProjectExplorerNode>(
+                        "Report",
+                        context => context is IProjectExplorerProjectNode
+                                || context is IProjectExplorerCloudNode
+                            ? CommandState.Enabled
+                            : CommandState.Unavailable,
+                        context => { }));
+
+                reportCommand.AddCommand(
+                    new Command<IProjectExplorerNode>(
+                        "Instance and node usage...",
+                        context => CommandState.Enabled,
+                        context => CreateReport(context))
+                    {
+                        Image = Resources.Report_16
+                    });
             }
-
-            //
-            // Add command to project explorer.
-            //
-            var projectExplorer = serviceProvider.GetService<IProjectExplorer>();
-
-            var reportCommand = projectExplorer.Commands.AddCommand(
-                new Command<IProjectExplorerNode>(
-                    "Report",
-                    context => context is IProjectExplorerProjectNode
-                            || context is IProjectExplorerCloudNode
-                        ? CommandState.Enabled
-                        : CommandState.Unavailable,
-                    context => { }));
-
-            reportCommand.AddCommand(
-                new Command<IProjectExplorerNode>(
-                    "Instance and node usage...",
-                    context => CommandState.Enabled,
-                    context => CreateReport(context))
-                {
-                    Image = Resources.Report_16
-                });
 
             projectExplorer.Commands.AddCommand(
                 new Command<IProjectExplorerNode>(
-                    "Show event log",
+                    "Show serial port &output",
                     context => EventLogViewModel.IsNodeSupported(context)
                         ? CommandState.Enabled
                         : CommandState.Unavailable,
-                    context => ShowActivityLogs())
+                    context => this.serviceProvider.GetService<SerialOutputWindow>().ShowWindow())
+                {
+                    Image = Resources.Log_16
+                },
+                5);
+            projectExplorer.Commands.AddCommand(
+                new Command<IProjectExplorerNode>(
+                    "Show &event log",
+                    context => EventLogViewModel.IsNodeSupported(context)
+                        ? CommandState.Enabled
+                        : CommandState.Unavailable,
+                    context => this.serviceProvider.GetService<EventLogWindow>().ShowWindow())
                 {
                     Image = Resources.EventLog_16
                 },
-                5);
+                6);
+
 
             //
             // Add commands to main menu.
@@ -135,9 +139,18 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services
             var mainForm = serviceProvider.GetService<IMainForm>();
             mainForm.ViewCommands.AddCommand(
                 new Command<IMainForm>(
-                    "Event log window",
+                    "Serial port &output",
                     pseudoContext => CommandState.Enabled,
-                    pseudoContext => ShowActivityLogs())
+                    pseudoContext => this.serviceProvider.GetService<SerialOutputWindow>().ShowWindow())
+                {
+                    Image = Resources.Log_16,
+                    ShortcutKeys = Keys.Control | Keys.Alt | Keys.O
+                });
+            mainForm.ViewCommands.AddCommand(
+                new Command<IMainForm>(
+                    "&Event log window",
+                    pseudoContext => CommandState.Enabled,
+                    pseudoContext => this.serviceProvider.GetService<EventLogWindow>().ShowWindow())
                 {
                     Image = Resources.EventLog_16,
                     ShortcutKeys = Keys.Control | Keys.Alt | Keys.E

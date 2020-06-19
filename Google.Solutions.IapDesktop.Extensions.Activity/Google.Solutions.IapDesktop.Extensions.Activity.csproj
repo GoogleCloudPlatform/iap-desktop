@@ -160,6 +160,14 @@
       <DependentUpon>ReportPaneView.cs</DependentUpon>
     </Compile>
     <Compile Include="Services\SchedulingReport\ReportViewModel.cs" />
+    <Compile Include="Services\SerialOutput\SerialOutputModel.cs" />
+    <Compile Include="Services\SerialOutput\SerialOutputViewModel.cs" />
+    <Compile Include="Services\SerialOutput\SerialOutputWindow.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Services\SerialOutput\SerialOutputWindow.Designer.cs">
+      <DependentUpon>SerialOutputWindow.cs</DependentUpon>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Google.Solutions.Common\Google.Solutions.Common.csproj">
@@ -190,6 +198,9 @@
     <EmbeddedResource Include="Services\SchedulingReport\ReportPaneView.resx">
       <DependentUpon>ReportPaneView.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Services\SerialOutput\SerialOutputWindow.resx">
+      <DependentUpon>SerialOutputWindow.cs</DependentUpon>
+    </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\Report_32.png" />
@@ -199,6 +210,9 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\EventLog_16.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Log_16.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
