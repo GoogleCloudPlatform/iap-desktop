@@ -141,7 +141,8 @@ namespace Google.Solutions.IapDesktop.Application.ObjectModel
                     }
                 })
             {
-                Tag = command
+                Tag = command,
+                ShortcutKeys = command.ShortcutKeys
             };
 
             if (index.HasValue)

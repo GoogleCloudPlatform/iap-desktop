@@ -139,7 +139,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services
                     pseudoContext => CommandState.Enabled,
                     pseudoContext => ShowActivityLogs())
                 {
-                    Image = Resources.EventLog_16
+                    Image = Resources.EventLog_16,
+                    ShortcutKeys = Keys.Control | Keys.Alt | Keys.E
                 });
         }
     }

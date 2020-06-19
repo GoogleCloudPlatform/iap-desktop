@@ -21,6 +21,7 @@
 
 using System;
 using System.Drawing;
+using System.Windows.Forms;
 
 namespace Google.Solutions.IapDesktop.Application.ObjectModel
 {
@@ -28,6 +29,7 @@ namespace Google.Solutions.IapDesktop.Application.ObjectModel
     {
         string Text { get; }
         System.Drawing.Image Image { get; }
+        Keys ShortcutKeys { get; }
 
         CommandState QueryState(TContext context);
         void Execute(TContext context);
@@ -59,8 +61,8 @@ namespace Google.Solutions.IapDesktop.Application.ObjectModel
         }
 
         public string Text { get; }
-
         public Image Image { get; set; }
+        public Keys ShortcutKeys { get; set; }
 
         public void Execute(TContext context)
         {

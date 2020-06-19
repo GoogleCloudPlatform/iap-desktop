@@ -29,6 +29,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Web;
+using System.Windows.Forms;
 
 namespace Google.Solutions.IapDesktop.Application.Services.Windows
 {
@@ -45,6 +46,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.Windows
         {
             public string Text => "Generate HTML page";
             public Image Image => null;
+            public Keys ShortcutKeys => Keys.None;
 
             public void Execute(IProjectExplorerNode context)
             {
