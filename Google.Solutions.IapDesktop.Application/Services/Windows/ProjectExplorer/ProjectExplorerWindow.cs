@@ -665,13 +665,46 @@ namespace Google.Solutions.IapDesktop.Application.Services.Windows.ProjectExplor
         }
 
         public void AddCommand(
-            string text,
+            string parentCommandName,
+            string commandName,
+            string caption,
+            System.Drawing.Image image,
+            int? index,
+            IProjectExplorerCommand command)
+        {
+            ToolStripItemCollection parent;
+            if (parentCommandName != null)
+            {
+                // This is a sub-menu: [parentText] > [text]
+                var parentMenuItem = this.contextMenu.Items
+                    .OfType<ToolStripMenuItem>()
+                    .First(i => i.Name == parentCommandName);
+                if (parentMenuItem == null)
+                {
+                    throw new ArgumentException(
+                        $"No command with name {parentCommandName} registered");
+                }
+
+                parent = parentMenuItem.DropDownItems;
+            }
+            else
+            {
+                parent = this.contextMenu.Items;
+            }
+
+            AddCommand(parent, commandName, caption, image, index, command);
+        }
+
+        private void AddCommand(
+            ToolStripItemCollection parent,
+            string commandName,
+            string caption,
             System.Drawing.Image image,
             int? index,
             IProjectExplorerCommand command)
         {
             var menuItem = new ToolStripMenuItem(
-                text,
+                caption,
                 image,
                 (sender, args) =>
                 {
@@ -694,16 +727,17 @@ namespace Google.Solutions.IapDesktop.Application.Services.Windows.ProjectExplor
                     }
                 })
             {
-                Tag = command
+                Tag = command,
+                Name = commandName
             };
 
             if (index.HasValue)
             {
-                this.contextMenu.Items.Insert(index.Value, menuItem);
+                parent.Insert(index.Value, menuItem);
             }
             else
             {
-                this.contextMenu.Items.Add(menuItem);
+                parent.Add(menuItem);
             }
         }
 

@@ -34,7 +34,9 @@ namespace Google.Solutions.IapDesktop.Application.Services.Windows.ProjectExplor
         VmInstanceNode TryFindNode(InstanceLocator reference);
 
         void AddCommand(
-            string text,
+            string parentCommandName,
+            string commandName,
+            string caption,
             System.Drawing.Image image,
             int? index,
             IProjectExplorerCommand command);

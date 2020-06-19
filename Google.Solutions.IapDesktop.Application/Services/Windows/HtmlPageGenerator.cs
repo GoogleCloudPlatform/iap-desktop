@@ -37,6 +37,8 @@ namespace Google.Solutions.IapDesktop.Application.Services.Windows
         {
             var projectExplorer = serviceProvider.GetService<IProjectExplorer>();
             projectExplorer.AddCommand(
+                null,
+                "debug.generateHtml",
                 "Generate HTML page",
                 null,
                 null,

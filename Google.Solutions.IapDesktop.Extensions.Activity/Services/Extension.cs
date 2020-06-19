@@ -40,6 +40,10 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services
     [Service(ServiceLifetime.Singleton)]
     public class Extension
     {
+        private const string ReportCommand = "report";
+        private const string ReportUsageCommand = "report.usage";
+        private const string ShowEventLogCommand = "eventlog.show";
+
         private readonly IServiceProvider serviceProvider;
 
         private void CreateReport(IProjectExplorerNode contextNode)
@@ -96,19 +100,33 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services
 
             // Add command to project explorer.
             var projectExplorer = serviceProvider.GetService<IProjectExplorer>();
-            
+
             projectExplorer.AddCommand(
-                "Analyze instance and node usage...",
-                Resources.Report_16,
+                null,
+                ReportCommand,
+                "Report",
+                null,
                 null,
                 new ProjectExplorerCommand(
-                    context => context is IProjectExplorerProjectNode 
+                    context => context is IProjectExplorerProjectNode
                             || context is IProjectExplorerCloudNode
                         ? CommandState.Enabled
                         : CommandState.Unavailable,
+                    context => { }));
+
+            projectExplorer.AddCommand(
+                ReportCommand,
+                ReportUsageCommand,
+                "Instance and node usage...",
+                Resources.Report_16,
+                null,
+                new ProjectExplorerCommand(
+                    context => CommandState.Enabled,
                     context => CreateReport(context)));
 
             projectExplorer.AddCommand(
+                null,
+                ShowEventLogCommand,
                 "Show event log",
                 Resources.EventLog_16,
                 5,
