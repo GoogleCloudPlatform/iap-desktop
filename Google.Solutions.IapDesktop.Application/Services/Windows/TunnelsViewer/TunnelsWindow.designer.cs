@@ -91,7 +91,6 @@ namespace Google.Solutions.IapDesktop.Application.Services.Windows.TunnelsViewer
             // tunnelsList
             // 
             this.tunnelsList.AutoResizeColumnsOnUpdate = false;
-            this.tunnelsList.BackColor = System.Drawing.SystemColors.Control;
             this.tunnelsList.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.tunnelsList.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
             this.instanceHeader,
