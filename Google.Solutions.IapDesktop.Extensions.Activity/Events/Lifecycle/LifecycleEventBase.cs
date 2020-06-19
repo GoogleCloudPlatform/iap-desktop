@@ -37,7 +37,11 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Events.Lifecycle
         {
             get
             {
-                if (this.LogRecord.Operation.IsLast)
+                if (this.LogRecord.Operation == null)
+                {
+                    return string.Empty;
+                }
+                else if (this.LogRecord.Operation.IsLast)
                 {
                     return " (operation completed)";
                 }
