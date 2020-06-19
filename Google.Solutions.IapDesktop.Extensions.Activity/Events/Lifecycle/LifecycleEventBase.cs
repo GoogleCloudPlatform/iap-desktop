@@ -30,8 +30,27 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Events.Lifecycle
         protected abstract string ErrorMessage { get; }
 
         public override string Message => IsError
-            ? $"{ErrorMessage} ({this.Status.Message})"
-            : SuccessMessage;
+            ? $"{ErrorMessage} [{this.Status.Message}]" + this.OperationSuffix
+            : SuccessMessage + this.OperationSuffix;
+
+        protected string OperationSuffix
+        {
+            get
+            {
+                if (this.LogRecord.Operation == null)
+                {
+                    return string.Empty;
+                }
+                else if (this.LogRecord.Operation.IsLast)
+                {
+                    return " (operation completed)";
+                }
+                else
+                {
+                    return " (operation started)";
+                }
+            }
+        }
 
         public bool IsError => this.Severity == "ERROR";
 

@@ -77,6 +77,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.Logs
             Assert.AreEqual("22470777052", record.Resource.Labels["instance_id"]);
             Assert.AreEqual("asia-east1-c", record.Resource.Labels["zone"]);
 
+            Assert.IsNull(record.Operation);
+
             Assert.AreEqual("project-1", record.ProjectId);
             Assert.IsTrue(record.IsSystemEvent);
             Assert.IsFalse(record.IsActivityEvent);
@@ -157,6 +159,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.Logs
             Assert.AreEqual("project-1", record.Resource.Labels["project_id"]);
             Assert.AreEqual("16752163", record.Resource.Labels["instance_id"]);
             Assert.AreEqual("us-central1-b", record.Resource.Labels["zone"]);
+
+            Assert.AreEqual("operation-1589160396842-5a5553cf1e7c8-796d6bb5-473f0464", record.Operation.Id);
+            Assert.IsTrue(record.Operation.IsLast);
 
             Assert.AreEqual("project-1", record.ProjectId);
             Assert.IsFalse(record.IsSystemEvent);
