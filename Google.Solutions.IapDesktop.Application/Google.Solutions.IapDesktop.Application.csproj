@@ -119,9 +119,6 @@
     <Compile Include="Controls\FlatListView.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="Controls\FlatVerticalTabControl.cs">
-      <SubType>Component</SubType>
-    </Compile>
     <Compile Include="Services\Windows\ConfirmationDialog.cs" />
     <Compile Include="Services\Windows\Diagnostics\DebugProjectExplorerTrackingViewModel.cs" />
     <Compile Include="Services\Windows\Diagnostics\DebugProjectExplorerTrackingWindow.cs">
@@ -131,7 +128,7 @@
       <DependentUpon>DebugProjectExplorerTrackingWindow.cs</DependentUpon>
     </Compile>
     <Compile Include="Services\Windows\HtmlPageGenerator.cs" />
-    <Compile Include="Services\Windows\FlatVerticalTabControl.cs">
+    <Compile Include="Controls\FlatVerticalTabControl.cs">
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="Services\Windows\ProjectExplorer\ProjectExplorerTrackingToolWindow.cs">

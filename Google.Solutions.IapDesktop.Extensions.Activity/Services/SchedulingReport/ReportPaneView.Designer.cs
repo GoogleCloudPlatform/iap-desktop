@@ -69,7 +69,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services.SchedulingRep
             this.includeSplaMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.includeUnknownLicenseMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.theme = new WeifenLuo.WinFormsUI.Docking.VS2015LightTheme();
-            this.tabs = new Google.Solutions.IapDesktop.Application.Services.Windows.FlatVerticalTabControl();
+            this.tabs = new Google.Solutions.IapDesktop.Application.Controls.FlatVerticalTabControl();
             this.instancesTab = new System.Windows.Forms.TabPage();
             this.noInstancesDataLabel = new System.Windows.Forms.Label();
             this.instancesList = new Google.Solutions.IapDesktop.Extensions.Activity.Services.SchedulingReport.ReportPaneView.InstancesListView();
@@ -706,7 +706,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services.SchedulingRep
         private System.Windows.Forms.ToolStripDropDownButton includeLicenseMenuItem;
         private System.Windows.Forms.ToolStripMenuItem includeByolMenuItem;
         private System.Windows.Forms.ToolStripMenuItem includeSplaMenuItem;
-        private Application.Services.Windows.FlatVerticalTabControl tabs;
+        private Application.Controls.FlatVerticalTabControl tabs;
         private System.Windows.Forms.TabPage instancesTab;
         private System.Windows.Forms.TabPage nodesTab;
         private System.Windows.Forms.TabPage licensesTab;
