@@ -157,11 +157,18 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services.EventLog
         // ModelCachingViewModelBase.
         //---------------------------------------------------------------------
 
-        public static bool IsNodeSupported(IProjectExplorerNode node)
+        public static CommandState GetCommandState(IProjectExplorerNode node)
         {
-            return node is IProjectExplorerProjectNode
+            if (node is IProjectExplorerProjectNode
                 || node is IProjectExplorerZoneNode
-                || node is IProjectExplorerVmInstanceNode;
+                || node is IProjectExplorerVmInstanceNode)
+            {
+                return CommandState.Enabled;
+            }
+            else
+            {
+                return CommandState.Unavailable;
+            }
         }
 
         protected override async Task<EventLogModel> LoadModelAsync(

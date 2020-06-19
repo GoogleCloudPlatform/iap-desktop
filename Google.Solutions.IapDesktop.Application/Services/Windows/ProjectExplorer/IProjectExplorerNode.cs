@@ -51,5 +51,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.Windows.ProjectExplor
         string ProjectId { get; }
         string ZoneId { get; }
         string InstanceName { get; }
+
+        bool IsRunning { get; }
     }
 }

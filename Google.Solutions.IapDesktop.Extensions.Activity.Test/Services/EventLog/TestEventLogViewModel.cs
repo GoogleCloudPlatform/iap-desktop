@@ -158,10 +158,10 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.Services.EventLog
         }
 
         [Test]
-        public void WhenNodeIsCloudNode_ThenIsNodeSupportedReturnsFalse()
+        public void WhenNodeIsCloudNode_ThenCommandStateIsUnavailable()
         {
             var node = new Mock<IProjectExplorerCloudNode>().Object;
-            Assert.IsFalse(EventLogViewModel.IsNodeSupported(node)); ;
+            Assert.AreEqual(CommandState.Unavailable, EventLogViewModel.GetCommandState(node)); ;
         }
 
         //---------------------------------------------------------------------

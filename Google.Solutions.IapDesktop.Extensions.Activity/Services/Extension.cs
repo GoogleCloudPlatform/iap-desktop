@@ -112,9 +112,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services
             projectExplorer.Commands.AddCommand(
                 new Command<IProjectExplorerNode>(
                     "Show serial port &output",
-                    context => EventLogViewModel.IsNodeSupported(context)
-                        ? CommandState.Enabled
-                        : CommandState.Unavailable,
+                    SerialOutputViewModel.GetCommandState,
                     context => this.serviceProvider.GetService<SerialOutputWindow>().ShowWindow())
                 {
                     Image = Resources.Log_16
@@ -123,9 +121,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services
             projectExplorer.Commands.AddCommand(
                 new Command<IProjectExplorerNode>(
                     "Show &event log",
-                    context => EventLogViewModel.IsNodeSupported(context)
-                        ? CommandState.Enabled
-                        : CommandState.Unavailable,
+                    EventLogViewModel.GetCommandState,
                     context => this.serviceProvider.GetService<EventLogWindow>().ShowWindow())
                 {
                     Image = Resources.EventLog_16

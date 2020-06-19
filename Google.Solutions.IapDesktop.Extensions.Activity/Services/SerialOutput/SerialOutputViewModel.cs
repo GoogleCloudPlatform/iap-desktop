@@ -20,6 +20,8 @@
 //
 
 
+using Google.Solutions.Common.Diagnostics;
+using Google.Solutions.IapDesktop.Application;
 using Google.Solutions.IapDesktop.Application.ObjectModel;
 using Google.Solutions.IapDesktop.Application.Services.Windows.ProjectExplorer;
 using System;
@@ -89,16 +91,48 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services.SerialOutput
         // ModelCachingViewModelBase.
         //---------------------------------------------------------------------
 
-        protected override void ApplyModel(bool cached)
+        public static CommandState GetCommandState(IProjectExplorerNode node)
         {
-            throw new NotImplementedException();
+            if (node is IProjectExplorerVmInstanceNode vmNode)
+            {
+                return vmNode.IsRunning ? CommandState.Enabled : CommandState.Disabled;
+            }
+            else
+            {
+                return CommandState.Unavailable;
+            }
         }
 
-        protected override Task<SerialOutputModel> LoadModelAsync(
-            IProjectExplorerNode key, 
+        protected async override Task<SerialOutputModel> LoadModelAsync(
+            IProjectExplorerNode node, 
             CancellationToken token)
         {
-            throw new NotImplementedException();
+            using (TraceSources.IapDesktop.TraceMethod().WithParameters(node))
+            {
+                if (node is IProjectExplorerVmInstanceNode vmNode)
+                {
+                    // TODO
+                    return null;
+                }
+                else
+                {
+                    // Unknown/unsupported node.
+                    return null;
+                }
+            }
+        }
+
+        protected override void ApplyModel(bool cached)
+        {
+            if (this.Model == null)
+            {
+                // Unsupported node.
+                this.IsPortComboBoxEnabled = false;
+            }
+            else
+            {
+
+            }
         }
 
         //---------------------------------------------------------------------
