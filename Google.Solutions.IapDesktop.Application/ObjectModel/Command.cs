@@ -20,11 +20,15 @@
 //
 
 using System;
+using System.Drawing;
 
 namespace Google.Solutions.IapDesktop.Application.ObjectModel
 {
     public interface ICommand<TContext>
     {
+        string Text { get; }
+        System.Drawing.Image Image { get; }
+
         CommandState QueryState(TContext context);
         void Execute(TContext context);
     }
@@ -45,12 +49,18 @@ namespace Google.Solutions.IapDesktop.Application.ObjectModel
         private Func<TContext, CommandState> queryStateFunc;
 
         public Command(
+            string text,
             Func<TContext, CommandState> queryStateFunc,
             Action<TContext> executeFunc)
         {
+            this.Text = text;
             this.queryStateFunc = queryStateFunc;
             this.executeFunc = executeFunc;
         }
+
+        public string Text { get; }
+
+        public Image Image { get; set; }
 
         public void Execute(TContext context)
         {

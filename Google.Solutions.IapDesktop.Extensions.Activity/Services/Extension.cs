@@ -100,10 +100,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services
             var projectExplorer = serviceProvider.GetService<IProjectExplorer>();
 
             var reportCommand = projectExplorer.Commands.AddCommand(
-                "Report",
-                null,
-                null,
                 new Command<IProjectExplorerNode>(
+                    "Report",
                     context => context is IProjectExplorerProjectNode
                             || context is IProjectExplorerCloudNode
                         ? CommandState.Enabled
@@ -111,34 +109,38 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services
                     context => { }));
 
             reportCommand.AddCommand(
-                "Instance and node usage...",
-                Resources.Report_16,
-                null,
                 new Command<IProjectExplorerNode>(
+                    "Instance and node usage...",
                     context => CommandState.Enabled,
-                    context => CreateReport(context)));
+                    context => CreateReport(context))
+                {
+                    Image = Resources.Report_16
+                });
 
             projectExplorer.Commands.AddCommand(
-                "Show event log",
-                Resources.EventLog_16,
-                5,
                 new Command<IProjectExplorerNode>(
+                    "Show event log",
                     context => EventLogViewModel.IsNodeSupported(context)
                         ? CommandState.Enabled
                         : CommandState.Unavailable,
-                    context => ShowActivityLogs()));
+                    context => ShowActivityLogs())
+                {
+                    Image = Resources.EventLog_16
+                },
+                5);
 
             //
             // Add commands to main menu.
             //
             var mainForm = serviceProvider.GetService<IMainForm>();
             mainForm.ViewCommands.AddCommand(
-                "Event log window",
-                Resources.EventLog_16,
-                null,
                 new Command<IMainForm>(
+                    "Event log window",
                     pseudoContext => CommandState.Enabled,
-                    pseudoContext => ShowActivityLogs()));
+                    pseudoContext => ShowActivityLogs())
+                {
+                    Image = Resources.EventLog_16
+                });
         }
     }
 }

@@ -24,6 +24,7 @@ using Google.Solutions.IapDesktop.Application.Services.Windows;
 using System;
 using System.Linq;
 using System.Windows.Forms;
+using WeifenLuo.WinFormsUI.Docking;
 
 namespace Google.Solutions.IapDesktop.Application.ObjectModel
 {
@@ -112,14 +113,15 @@ namespace Google.Solutions.IapDesktop.Application.ObjectModel
         }
 
         public CommandContainer<TContext> AddCommand(
-            string caption,
-            System.Drawing.Image image,
-            int? index,
-            ICommand<TContext> command)
+            ICommand<TContext> command) => AddCommand(command, null);
+
+        public CommandContainer<TContext> AddCommand(
+            ICommand<TContext> command,
+            int? index)
         {
             var menuItem = new ToolStripMenuItem(
-                caption,
-                image,
+                command.Text,
+                command.Image,
                 (sender, args) =>
                 {
                     if (this.Context is TContext context)

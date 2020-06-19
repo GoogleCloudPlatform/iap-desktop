@@ -66,10 +66,8 @@ namespace Google.Solutions.IapDesktop.Application.Test.ObjectModel
         public void WhenQueryStateReturnsUnavailable_ThenMenuItemIsHidden()
         {
             this.commandContainer.AddCommand(
-                "test",
-                null,
-                null,
                 new Command<string>(
+                    "test",
                     ctx => CommandState.Unavailable,
                     ctx => new InvalidOperationException()));
 
@@ -86,10 +84,8 @@ namespace Google.Solutions.IapDesktop.Application.Test.ObjectModel
         public void WhenQueryStateReturnsDisabled_ThenMenuItemIsDisabled()
         {
             this.commandContainer.AddCommand(
-                "test",
-                null,
-                null,
                 new Command<string>(
+                    "test",
                     ctx => CommandState.Disabled,
                     ctx => new InvalidOperationException()));
 
@@ -107,10 +103,8 @@ namespace Google.Solutions.IapDesktop.Application.Test.ObjectModel
         public void WhenQueryStateReturnsEnabled_ThenMenuItemIsEnabled()
         {
             this.commandContainer.AddCommand(
-                "test",
-                null,
-                null,
                 new Command<string>(
+                    "test",
                     ctx => CommandState.Enabled,
                     ctx => new InvalidOperationException()));
 
@@ -132,17 +126,13 @@ namespace Google.Solutions.IapDesktop.Application.Test.ObjectModel
         public void WhenSubMenuAdded_ThenContextIsShared()
         {
             var parentMenu = this.commandContainer.AddCommand(
-                "parent",
-                null,
-                null,
                 new Command<string>(
+                    "parent",
                     ctx => CommandState.Enabled,
                     ctx => new InvalidOperationException()));
             var subMenu = parentMenu.AddCommand(
-                    "test",
-                    null,
-                    null,
                     new Command<string>(
+                        "test",
                         ctx => CommandState.Disabled,
                         ctx => new InvalidOperationException()));
 
