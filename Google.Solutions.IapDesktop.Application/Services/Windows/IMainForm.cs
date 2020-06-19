@@ -19,6 +19,7 @@
 // under the License.
 //
 
+using Google.Solutions.IapDesktop.Application.ObjectModel;
 using System.Windows.Forms;
 using WeifenLuo.WinFormsUI.Docking;
 
@@ -29,6 +30,8 @@ namespace Google.Solutions.IapDesktop.Application.Services.Windows
         IWin32Window Window { get; }
         DockPanel MainPanel { get; }
         void Close();
+
+        CommandContainer<IMainForm> ViewCommands { get; }
     }
 
 }

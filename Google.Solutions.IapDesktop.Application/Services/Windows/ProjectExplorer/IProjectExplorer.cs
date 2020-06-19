@@ -20,6 +20,7 @@
 //
 
 using Google.Solutions.Common.Locator;
+using Google.Solutions.IapDesktop.Application.ObjectModel;
 using System.Threading.Tasks;
 
 namespace Google.Solutions.IapDesktop.Application.Services.Windows.ProjectExplorer
@@ -33,25 +34,8 @@ namespace Google.Solutions.IapDesktop.Application.Services.Windows.ProjectExplor
 
         VmInstanceNode TryFindNode(InstanceLocator reference);
 
-        void AddCommand(
-            string text,
-            System.Drawing.Image image,
-            int? index,
-            IProjectExplorerCommand command);
-
         IProjectExplorerNode SelectedNode { get; }
-    }
 
-    public interface IProjectExplorerCommand
-    {
-        CommandState QueryState(IProjectExplorerNode context);
-        void Execute(IProjectExplorerNode context);
-    }
-
-    public enum CommandState
-    {
-        Enabled,
-        Disabled,
-        Unavailable
+        CommandContainer<IProjectExplorerNode> Commands { get; }
     }
 }

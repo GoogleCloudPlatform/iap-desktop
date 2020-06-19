@@ -22,6 +22,7 @@
 using Google.Apis.Auth.OAuth2;
 using Google.Solutions.Common.Auth;
 using Google.Solutions.Common.Test.Testbed;
+using Google.Solutions.IapDesktop.Application.ObjectModel;
 using Google.Solutions.IapDesktop.Application.Services.Adapters;
 using Google.Solutions.IapDesktop.Application.Services.Integration;
 using Google.Solutions.IapDesktop.Application.Services.Windows;
@@ -46,6 +47,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Windows
 
         public IWin32Window Window => this;
         public DockPanel MainPanel => this.dockPanel;
+        public CommandContainer<IMainForm> ViewCommands => null;
 
         //---------------------------------------------------------------------
         // IJobService.

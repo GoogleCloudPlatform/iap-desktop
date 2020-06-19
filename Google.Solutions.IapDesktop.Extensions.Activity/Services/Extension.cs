@@ -74,7 +74,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services
                 WeifenLuo.WinFormsUI.Docking.DockState.Document);
         }
 
-        private void ShowActivityLogs(IProjectExplorerNode contextNode)
+        private void ShowActivityLogs()
         {
             this.serviceProvider.GetService<EventLogWindow>().ShowWindow();
         }
@@ -94,29 +94,54 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services
                 return;
             }
 
+            //
             // Add command to project explorer.
+            //
             var projectExplorer = serviceProvider.GetService<IProjectExplorer>();
-            
-            projectExplorer.AddCommand(
-                "Analyze instance and node usage...",
-                Resources.Report_16,
-                null,
-                new ProjectExplorerCommand(
-                    context => context is IProjectExplorerProjectNode 
+
+            var reportCommand = projectExplorer.Commands.AddCommand(
+                new Command<IProjectExplorerNode>(
+                    "Report",
+                    context => context is IProjectExplorerProjectNode
                             || context is IProjectExplorerCloudNode
                         ? CommandState.Enabled
                         : CommandState.Unavailable,
-                    context => CreateReport(context)));
+                    context => { }));
 
-            projectExplorer.AddCommand(
-                "Show event log",
-                Resources.EventLog_16,
-                5,
-                new ProjectExplorerCommand(
+            reportCommand.AddCommand(
+                new Command<IProjectExplorerNode>(
+                    "Instance and node usage...",
+                    context => CommandState.Enabled,
+                    context => CreateReport(context))
+                {
+                    Image = Resources.Report_16
+                });
+
+            projectExplorer.Commands.AddCommand(
+                new Command<IProjectExplorerNode>(
+                    "Show event log",
                     context => EventLogViewModel.IsNodeSupported(context)
                         ? CommandState.Enabled
                         : CommandState.Unavailable,
-                    context => ShowActivityLogs(context)));
+                    context => ShowActivityLogs())
+                {
+                    Image = Resources.EventLog_16
+                },
+                5);
+
+            //
+            // Add commands to main menu.
+            //
+            var mainForm = serviceProvider.GetService<IMainForm>();
+            mainForm.ViewCommands.AddCommand(
+                new Command<IMainForm>(
+                    "Event log window",
+                    pseudoContext => CommandState.Enabled,
+                    pseudoContext => ShowActivityLogs())
+                {
+                    Image = Resources.EventLog_16,
+                    ShortcutKeys = Keys.Control | Keys.Alt | Keys.E
+                });
         }
     }
 }

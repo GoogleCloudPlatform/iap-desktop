@@ -24,10 +24,12 @@ using Google.Solutions.IapDesktop.Application.Services.Windows.ProjectExplorer;
 using Google.Solutions.IapDesktop.Application.Util;
 using System;
 using System.Diagnostics;
+using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Text;
 using System.Web;
+using System.Windows.Forms;
 
 namespace Google.Solutions.IapDesktop.Application.Services.Windows
 {
@@ -36,15 +38,16 @@ namespace Google.Solutions.IapDesktop.Application.Services.Windows
         public HtmlPageGenerator(IServiceProvider serviceProvider)
         {
             var projectExplorer = serviceProvider.GetService<IProjectExplorer>();
-            projectExplorer.AddCommand(
-                "Generate HTML page",
-                null,
-                null,
+            projectExplorer.Commands.AddCommand(
                 new GenerateHtmlPageCommand());
         }
 
-        private class GenerateHtmlPageCommand : IProjectExplorerCommand
+        private class GenerateHtmlPageCommand : ICommand<IProjectExplorerNode>
         {
+            public string Text => "Generate HTML page";
+            public Image Image => null;
+            public Keys ShortcutKeys => Keys.None;
+
             public void Execute(IProjectExplorerNode context)
             {
                 Debug.Assert(context is IProjectExplorerProjectNode);

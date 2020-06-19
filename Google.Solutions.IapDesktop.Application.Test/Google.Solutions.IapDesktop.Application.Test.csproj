@@ -92,6 +92,7 @@
     <Compile Include="Controls\TestBindableListView.cs" />
     <Compile Include="Controls\TestBindableTreeView.cs" />
     <Compile Include="ObjectModel\TestBindingExtensions.cs" />
+    <Compile Include="ObjectModel\TestCommandContainer.cs" />
     <Compile Include="ObjectModel\TestModelCachingViewModelBase.cs" />
     <Compile Include="ObjectModel\TestServiceAttribute.cs" />
     <Compile Include="Services\Adapters\TestGithubAdapter.cs" />

@@ -60,6 +60,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.Windows.ProjectExplor
 
         private readonly CloudNode rootNode = new CloudNode();
 
+        public CommandContainer<IProjectExplorerNode> Commands { get; }
 
         public ProjectExplorerWindow(IServiceProvider serviceProvider)
         {
@@ -95,6 +96,11 @@ namespace Google.Solutions.IapDesktop.Application.Services.Windows.ProjectExplor
             this.eventService.BindHandler<ProjectInventoryService.ProjectDeletedEvent>(OnProjectDeleted);
             this.eventService.BindHandler<RemoteDesktopConnectionSuceededEvent>(OnRdpConnectionSucceeded);
             this.eventService.BindHandler<RemoteDesktopWindowClosedEvent>(OnRdpConnectionClosed);
+
+            this.Commands = new CommandContainer<IProjectExplorerNode>(
+                this,
+                this.contextMenu.Items,
+                this.serviceProvider);
         }
 
         private void PopulateProjectNode(string projectId, IEnumerable<Instance> instances)
@@ -447,26 +453,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.Windows.ProjectExplor
                 // 
                 // Handle dynamic menu items.
                 //
-                foreach (var menuItem in this.contextMenu.Items
-                    .OfType<ToolStripMenuItem>()
-                    .Where(m => m.Tag is IProjectExplorerCommand))
-                {
-                    switch (((IProjectExplorerCommand)menuItem.Tag).QueryState(selectedNode))
-                    {
-                        case CommandState.Disabled:
-                            menuItem.Visible = true;
-                            menuItem.Enabled = false;
-                            break;
-
-                        case CommandState.Enabled:
-                            menuItem.Enabled = menuItem.Visible = true;
-                            break;
-
-                        case CommandState.Unavailable:
-                            menuItem.Visible = false;
-                            break;
-                    }
-                }
+                this.Commands.Context = selectedNode;
 
                 //
                 // Fire event.
@@ -662,49 +649,6 @@ namespace Google.Solutions.IapDesktop.Application.Services.Windows.ProjectExplor
                 .Where(z => z.ZoneId == reference.Zone)
                 .SelectMany(z => z.Nodes.Cast<VmInstanceNode>())
                 .FirstOrDefault(vm => vm.InstanceName == reference.Name); ;
-        }
-
-        public void AddCommand(
-            string text,
-            System.Drawing.Image image,
-            int? index,
-            IProjectExplorerCommand command)
-        {
-            var menuItem = new ToolStripMenuItem(
-                text,
-                image,
-                (sender, args) =>
-                {
-                    if (this.treeView.SelectedNode is IProjectExplorerNode node)
-                    {
-                        try
-                        { 
-                            command.Execute(node);
-                        }
-                        catch (Exception e) when (e.IsCancellation())
-                        {
-                            // Ignore.
-                        }
-                        catch (Exception e)
-                        {
-                            this.serviceProvider
-                                .GetService<IExceptionDialog>()
-                                .Show(this, "Command failed", e);
-                        }
-                    }
-                })
-            {
-                Tag = command
-            };
-
-            if (index.HasValue)
-            {
-                this.contextMenu.Items.Insert(index.Value, menuItem);
-            }
-            else
-            {
-                this.contextMenu.Items.Add(menuItem);
-            }
         }
 
         public IProjectExplorerNode SelectedNode 
