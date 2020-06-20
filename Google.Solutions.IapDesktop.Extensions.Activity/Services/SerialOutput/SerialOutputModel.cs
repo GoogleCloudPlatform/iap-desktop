@@ -22,8 +22,10 @@
 
 using Google.Apis.Auth.OAuth2.Responses;
 using Google.Solutions.Common.ApiExtensions.Instance;
+using Google.Solutions.Common.Diagnostics;
 using Google.Solutions.Common.Locator;
 using Google.Solutions.Common.Util;
+using Google.Solutions.IapDesktop.Application;
 using Google.Solutions.IapDesktop.Application.Services.Adapters;
 using System;
 using System.Text;
@@ -76,18 +78,22 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services.SerialOutput
         {
             return Task.Run(async () =>
             {
+                TraceSources.IapDesktop.TraceVerbose("Start polling serial output");
+
                 bool exceptionCaught = false;
                 while (!exceptionCaught)
                 {
                     // Check if we can continue to tail.
                     if (token.IsCancellationRequested)
                     {
+                        TraceSources.IapDesktop.TraceVerbose("Stop polling serial output");
                         break;
                     }
 
                     string newOutput;
                     try
                     {
+                        TraceSources.IapDesktop.TraceVerbose("Polling serial output...");
                         newOutput = await ReadAndBufferAsync().ConfigureAwait(false);
                     }
                     catch (TokenResponseException e)

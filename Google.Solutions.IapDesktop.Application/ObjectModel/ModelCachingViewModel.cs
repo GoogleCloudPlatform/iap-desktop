@@ -48,6 +48,13 @@ namespace Google.Solutions.IapDesktop.Application.ObjectModel
 
         public async Task SwitchToModelAsync(TModelKey key)
         {
+            if (this.Model != null)
+            {
+                // Reset.
+                this.Model = default(TModel);
+                ApplyModel(false);
+            }
+
             this.ModelKey = key;
             var model = this.modelCache.Lookup(key);
             if (model != null)

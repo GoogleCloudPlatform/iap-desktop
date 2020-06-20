@@ -42,10 +42,10 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services.SerialOutput
         public static readonly ReadOnlyCollection<SerialPort> AvailablePorts
             = new ReadOnlyCollection<SerialPort>(new List<SerialPort>()
         {
-            new SerialPort(1, "COM0 - Log"),
-            new SerialPort(2, "COM1 - SAC"),
-            new SerialPort(3, "COM2"),
-            new SerialPort(4, "COM3")
+            new SerialPort(1, "COM1 - Log"),
+            new SerialPort(2, "COM2 - SAC"),
+            new SerialPort(3, "COM3"),
+            new SerialPort(4, "COM4")
         });
 
         private IServiceProvider serviceProvider;
