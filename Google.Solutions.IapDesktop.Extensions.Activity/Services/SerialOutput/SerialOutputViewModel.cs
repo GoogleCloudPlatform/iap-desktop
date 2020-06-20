@@ -55,7 +55,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services.SerialOutput
         private bool isPortComboBoxEnabled = false;
         private bool isOutputBoxEnabled = false;
 
-        private CancellationTokenSource tailCancellationTokenSource = null;
+        internal CancellationTokenSource TailCancellationTokenSource = null;
+
         private bool isTailEnabled = true;
         private bool isTailBlocked = true;
 
@@ -86,22 +87,22 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services.SerialOutput
                 return;
             }
 
-            Debug.Assert(this.tailCancellationTokenSource == null);
+            Debug.Assert(this.TailCancellationTokenSource == null);
             TraceSources.IapDesktop.TraceVerbose("Start tailing");
             
-            this.tailCancellationTokenSource = new CancellationTokenSource();
+            this.TailCancellationTokenSource = new CancellationTokenSource();
             this.Model.TailAsync(
                 output => this.NewOutputAvailable?.Invoke(this, output),
-                this.tailCancellationTokenSource.Token);
+                this.TailCancellationTokenSource.Token);
         }
 
         private void StopTailing()
         {
-            if (this.tailCancellationTokenSource != null)
+            if (this.TailCancellationTokenSource != null)
             {
                 TraceSources.IapDesktop.TraceVerbose("Stop tailing");
-                this.tailCancellationTokenSource.Cancel();
-                this.tailCancellationTokenSource = null;
+                this.TailCancellationTokenSource.Cancel();
+                this.TailCancellationTokenSource = null;
             }
         }
 
