@@ -50,6 +50,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Logs
         [JsonProperty("protoPayload")]
         public AuditLogRecord ProtoPayload { get; set; }
 
+        [JsonProperty("operation")]
+        public OperationRecord Operation { get; set; }
+
         //---------------------------------------------------------------------
         // Derived part.
         //---------------------------------------------------------------------
@@ -108,5 +111,17 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Logs
 
         [JsonProperty("labels")]
         public IDictionary<string, string> Labels { get; set; }
+    }
+
+    public class OperationRecord
+    {
+        [JsonProperty("id")]
+        public string Id { get; set; }
+
+        [JsonProperty("last")]
+        public bool IsLast { get; set; }
+
+        [JsonProperty("first")]
+        public bool IsFirst { get; set; }
     }
 }
