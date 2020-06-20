@@ -179,7 +179,7 @@ namespace Google.Solutions.IapDesktop.Windows
                 new[] { IapTunnelingEndpoint.RequiredScope },
                 this.authSettings);
 
-            this.UserEmail = this.Authorization.Email;
+            this.UserEmail = this.Authorization?.Email;
         }
 
         public async Task ReauthorizeAsync(CancellationToken token)

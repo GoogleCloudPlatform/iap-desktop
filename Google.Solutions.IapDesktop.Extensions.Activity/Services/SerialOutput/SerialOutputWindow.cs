@@ -65,11 +65,23 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services.SerialOutput
                 m => m.IsPortComboBoxEnabled,
                 this.components);
 
-            this.output.BindProperty(
-                c => c.Text,
-                this.viewModel,
+            this.viewModel.OnPropertyChange(
                 m => m.Output,
-                this.components);
+                text =>
+                {
+                    this.output.Clear();
+                    if (!string.IsNullOrEmpty(text))
+                    {
+                        // Use AppendText so that the control auto-scrolls to
+                        // the bottom.
+                        this.output.AppendText(text);
+                    }
+                });
+
+            this.viewModel.NewOutputAvailable += (sender, output) =>
+            {
+                this.BeginInvoke((Action)(() => this.output.AppendText(output)));
+            };
         }
 
 

@@ -213,11 +213,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services.EventLog
                     this.IsTimeframeComboBoxEnabled = false;
                 try
                 {
-                    // If the user is holding down the arrow key in the project explorer,
-                    // we might get a flurry of requests. To catch that, introduce a short,
-                    // cancellable-delay.
-                    await Task.Delay(300, token).ConfigureAwait(true);
-
                     var jobService = this.serviceProvider.GetService<IJobService>();
                     var auditLogAdapter = this.serviceProvider.GetService<IAuditLogAdapter>();
 

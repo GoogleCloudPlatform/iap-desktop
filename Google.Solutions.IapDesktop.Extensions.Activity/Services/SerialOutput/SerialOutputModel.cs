@@ -47,7 +47,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services.SerialOutput
         private async Task<string> ReadAndBufferAsync()
         {
             var newOutput = await this.stream.ReadAsync().ConfigureAwait(false);
-            newOutput.Replace("\n", "\r\n");
+            newOutput = newOutput.Replace("\n", "\r\n");
 
             // Add to buffer so that we do not lose the data when model
             // switching occurs.
@@ -104,7 +104,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services.SerialOutput
 
                     // By the time we read the data, the form might have begun closing. In this
                     // case, updating the UI would cause an exception.
-                    if (!token.IsCancellationRequested)
+                    if (!token.IsCancellationRequested && !string.IsNullOrEmpty(newOutput))
                     {
                         newOutputFunc(newOutput);
                     }

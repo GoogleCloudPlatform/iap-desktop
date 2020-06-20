@@ -19,8 +19,6 @@
 // under the License.
 //
 
-
-using Google.Apis.Auth.OAuth2.Responses;
 using Google.Solutions.Common.Diagnostics;
 using Google.Solutions.Common.Locator;
 using Google.Solutions.IapDesktop.Application;
@@ -31,7 +29,6 @@ using Google.Solutions.IapDesktop.Application.Services.Windows.ProjectExplorer;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Diagnostics;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -40,7 +37,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services.SerialOutput
     internal class SerialOutputViewModel
         : ModelCachingViewModelBase<IProjectExplorerNode, SerialOutputModel>
     {
-        private const int ModelCacheCapacity = 5;
+        private const int ModelCacheCapacity = 10;
 
         public static readonly ReadOnlyCollection<SerialPort> AvailablePorts
             = new ReadOnlyCollection<SerialPort>(new List<SerialPort>()
@@ -60,6 +57,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services.SerialOutput
         private CancellationTokenSource tailCancellationTokenSource = null;
         private bool isTailEnabled = true;
         private bool isTailBlocked = true;
+
+        public event EventHandler<string> NewOutputAvailable;
 
         public SerialOutputViewModel(IServiceProvider serviceProvider) 
             : base(ModelCacheCapacity)
@@ -90,7 +89,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services.SerialOutput
             
             this.tailCancellationTokenSource = new CancellationTokenSource();
             this.Model.TailAsync(
-                s => Debug.WriteLine(s),    // TODO
+                output => this.NewOutputAvailable?.Invoke(this, output),
                 this.tailCancellationTokenSource.Token);
         }
 
