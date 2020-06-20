@@ -24,7 +24,6 @@ using Google.Apis.Compute.v1;
 using Google.Apis.Compute.v1.Data;
 using Google.Apis.Requests;
 using Google.Apis.Services;
-using Google.Solutions.Common.ApiExtensions;
 using Google.Solutions.Common.ApiExtensions.Instance;
 using Google.Solutions.Common.Diagnostics;
 using Google.Solutions.Common.Locator;
@@ -64,7 +63,9 @@ namespace Google.Solutions.IapDesktop.Application.Services.Adapters
             ImageLocator image, 
             CancellationToken cancellationToken);
 
-        SerialPortStream GetSerialPortOutput(InstanceLocator instanceRef);
+        SerialPortStream GetSerialPortOutput(
+            InstanceLocator instanceRef,
+            ushort portNumber);
     }
 
     /// <summary>
@@ -215,11 +216,11 @@ namespace Google.Solutions.IapDesktop.Application.Services.Adapters
         public Task<Instance> GetInstanceAsync(InstanceLocator instanceRef)
             => GetInstanceAsync(instanceRef.ProjectId, instanceRef.Zone, instanceRef.Name);
 
-        public SerialPortStream GetSerialPortOutput(InstanceLocator instanceRef)
+        public SerialPortStream GetSerialPortOutput(InstanceLocator instanceRef, ushort portNumber)
         {
             using (TraceSources.IapDesktop.TraceMethod().WithParameters(instanceRef))
             {
-                return this.service.Instances.GetSerialPortOutputStream(instanceRef, 1);
+                return this.service.Instances.GetSerialPortOutputStream(instanceRef, portNumber);
             }
         }
 

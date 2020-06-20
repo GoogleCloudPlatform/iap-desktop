@@ -52,6 +52,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services.SerialOutput
             this.theme = new WeifenLuo.WinFormsUI.Docking.VS2015LightTheme();
             this.toolStrip = new System.Windows.Forms.ToolStrip();
             this.portComboBox = new System.Windows.Forms.ToolStripComboBox();
+            this.output = new System.Windows.Forms.TextBox();
             this.toolStrip.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -71,15 +72,30 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services.SerialOutput
             this.portComboBox.Name = "portComboBox";
             this.portComboBox.Size = new System.Drawing.Size(121, 25);
             // 
+            // output
+            // 
+            this.output.AcceptsReturn = true;
+            this.output.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.output.Font = new System.Drawing.Font("Consolas", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.output.Location = new System.Drawing.Point(0, 25);
+            this.output.Multiline = true;
+            this.output.Name = "output";
+            this.output.ReadOnly = true;
+            this.output.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
+            this.output.Size = new System.Drawing.Size(800, 425);
+            this.output.TabIndex = 1;
+            // 
             // SerialOutputWindow
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(800, 450);
+            this.Controls.Add(this.output);
             this.Controls.Add(this.toolStrip);
             this.Name = "SerialOutputWindow";
             this.ShowIcon = false;
             this.Text = "Serial Port Output";
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.SerialOutputWindow_FormClosing);
             this.toolStrip.ResumeLayout(false);
             this.toolStrip.PerformLayout();
             this.ResumeLayout(false);
@@ -92,5 +108,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services.SerialOutput
         private WeifenLuo.WinFormsUI.Docking.VS2015LightTheme theme;
         private System.Windows.Forms.ToolStrip toolStrip;
         private System.Windows.Forms.ToolStripComboBox portComboBox;
+        private System.Windows.Forms.TextBox output;
     }
 }

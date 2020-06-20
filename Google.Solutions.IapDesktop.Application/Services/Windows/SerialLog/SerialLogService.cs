@@ -58,7 +58,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.Windows.SerialLog
                 var gceAdapter = this.serviceProvider.GetService<IComputeEngineAdapter>();
 
                 window = new SerialLogWindow(vmInstance);
-                window.TailSerialPortStream(gceAdapter.GetSerialPortOutput(vmInstance));
+                window.TailSerialPortStream(gceAdapter.GetSerialPortOutput(vmInstance, 1));
             }
 
             window.ShowOrActivate(this.dockPanel, DockState.DockBottomAutoHide);

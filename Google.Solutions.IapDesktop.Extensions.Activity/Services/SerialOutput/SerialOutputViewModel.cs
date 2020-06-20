@@ -20,12 +20,18 @@
 //
 
 
+using Google.Apis.Auth.OAuth2.Responses;
 using Google.Solutions.Common.Diagnostics;
+using Google.Solutions.Common.Locator;
 using Google.Solutions.IapDesktop.Application;
 using Google.Solutions.IapDesktop.Application.ObjectModel;
+using Google.Solutions.IapDesktop.Application.Services.Adapters;
+using Google.Solutions.IapDesktop.Application.Services.Integration;
 using Google.Solutions.IapDesktop.Application.Services.Windows.ProjectExplorer;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -45,19 +51,69 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services.SerialOutput
             new SerialPort(4, "COM3")
         });
 
+        private IServiceProvider serviceProvider;
 
         private int selectedPortIndex = 0;
         private bool isPortComboBoxEnabled = false;
+        private bool isOutputBoxEnabled = false;
 
-        public SerialOutputViewModel() 
+        private CancellationTokenSource tailCancellationTokenSource = null;
+        private bool isTailEnabled = true;
+        private bool isTailBlocked = true;
+
+        public SerialOutputViewModel(IServiceProvider serviceProvider) 
             : base(ModelCacheCapacity)
         {
+            this.serviceProvider = serviceProvider;
+        }
+
+        //---------------------------------------------------------------------
+        // Tailing.
+        //
+        // There are two separate flags that determine whether tailing should
+        // take place or not:
+        //
+        // (1) IsTailEnabled - set by the user, indicates whether he wants 
+        //                     tailing or not.
+        // (2) IsTailBlocked - determined by window state, indicates whether 
+        //                     tailing is safe to do.
+        //---------------------------------------------------------------------
+
+        private void StartTailing()
+        {
+            if (this.Model == null)
+            {
+                return;
+            }
+ 
+            TraceSources.IapDesktop.TraceVerbose("Start tailing");
+            
+            this.tailCancellationTokenSource = new CancellationTokenSource();
+            this.Model.TailAsync(
+                s => Debug.WriteLine(s),    // TODO
+                this.tailCancellationTokenSource.Token);
+        }
+
+        private void StopTailing()
+        {
+            if (this.Model == null)
+            {
+                return;
+            }
+
+            if (this.tailCancellationTokenSource != null)
+            {
+                TraceSources.IapDesktop.TraceVerbose("Stop tailing");
+                this.tailCancellationTokenSource.Cancel();
+            }
         }
 
         //---------------------------------------------------------------------
         // Observable properties.
         //---------------------------------------------------------------------
-        
+
+        public string Output => this.Model?.Output;
+
         public int SelectedPortIndex
         {
             get => this.selectedPortIndex;
@@ -66,7 +122,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services.SerialOutput
                 this.selectedPortIndex = value;
                 RaisePropertyChange();
 
-                // TODO: Reload from backend.
+                // TODO: switch model
+                //SwitchToModelAsync()
             }
         }
 
@@ -76,6 +133,62 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services.SerialOutput
             set
             {
                 this.isPortComboBoxEnabled = value;
+                RaisePropertyChange();
+            }
+        }
+
+        public bool IsOutputBoxEnabled
+        {
+            get => this.isOutputBoxEnabled;
+            set
+            {
+                this.isOutputBoxEnabled = value;
+                RaisePropertyChange();
+            }
+        }
+
+        public bool IsTailEnabled
+        {
+            get => this.isTailEnabled;
+            set
+            {
+                if (value && !this.isTailEnabled && !this.IsTailBlocked)
+                {
+                    // Only start tailing if this is a true status
+                    // transition (disabled -> enabled) to avoid running
+                    // multiple tail operations concurrently.
+                    StartTailing();
+                }
+                else if (!value)
+                {
+                    // NB. Stopping multiple times is safe.
+                    StopTailing();
+                }
+
+                this.isTailEnabled = value;
+                RaisePropertyChange();
+            }
+        }
+
+        public bool IsTailBlocked
+        {
+            get => this.isTailBlocked;
+            set
+            {
+                if (!value && this.isTailBlocked && this.IsTailEnabled)
+                {
+                    // Only start tailing if this is a true status
+                    // transition (blocked -> unblocked) to avoid running
+                    // multiple tail operations concurrently.
+                    StartTailing();
+                }
+                else if (value)
+                {
+                    // NB. Stopping multiple times is safe.
+                    StopTailing();
+                }
+
+                this.isTailBlocked = value;
                 RaisePropertyChange();
             }
         }
@@ -106,10 +219,28 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services.SerialOutput
         {
             using (TraceSources.IapDesktop.TraceMethod().WithParameters(node))
             {
-                if (node is IProjectExplorerVmInstanceNode vmNode)
+                if (node is IProjectExplorerVmInstanceNode vmNode && vmNode.IsRunning)
                 {
-                    // TODO
-                    return null;
+                    var instanceLocator = new InstanceLocator(
+                        vmNode.ProjectId,
+                        vmNode.ZoneId,
+                        vmNode.InstanceName);
+
+                    // Load data using a job so that the task is retried in case
+                    // of authentication issues.
+                    var jobService = this.serviceProvider.GetService<IJobService>();
+                    return await jobService.RunInBackground(
+                        new JobDescription(
+                            $"Reading serial port output for {vmNode.InstanceName}",
+                            JobUserFeedbackType.BackgroundFeedback),
+                        async jobToken =>
+                        {
+                            return await SerialOutputModel.LoadAsync(
+                                this.serviceProvider.GetService<IComputeEngineAdapter>(),
+                                instanceLocator,
+                                AvailablePorts[this.SelectedPortIndex].Number)
+                            .ConfigureAwait(false);
+                        }).ConfigureAwait(true);  // Back to original (UI) thread.
                 }
                 else
                 {
@@ -121,26 +252,37 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services.SerialOutput
 
         protected override void ApplyModel(bool cached)
         {
+            // Stop tailing the old model.
+            this.IsTailBlocked = true;
+
             if (this.Model == null)
             {
                 // Unsupported node.
                 this.IsPortComboBoxEnabled = false;
+                this.IsOutputBoxEnabled = false;
             }
             else
             {
-
+                this.IsPortComboBoxEnabled = true;
+                this.IsOutputBoxEnabled = true;
             }
+
+            // Clear.
+            RaisePropertyChange((SerialOutputViewModel m) => m.Output);
+
+            // Begin tailing again (if it'e enabled).
+            this.IsTailBlocked = false;
         }
 
         //---------------------------------------------------------------------
 
         public class SerialPort
         {
-            public int Number { get; }
+            public ushort Number { get; }
 
             public string Description { get; }
 
-            public SerialPort(int number, string description)
+            public SerialPort(ushort number, string description)
             {
                 this.Number = number;
                 this.Description = description;

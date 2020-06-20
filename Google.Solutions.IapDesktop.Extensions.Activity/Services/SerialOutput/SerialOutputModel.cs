@@ -20,9 +20,98 @@
 //
 
 
+using Google.Apis.Auth.OAuth2.Responses;
+using Google.Solutions.Common.ApiExtensions.Instance;
+using Google.Solutions.Common.Locator;
+using Google.Solutions.Common.Util;
+using Google.Solutions.IapDesktop.Application.Services.Adapters;
+using System;
+using System.Text;
+using System.Threading;
+using System.Threading.Tasks;
+
 namespace Google.Solutions.IapDesktop.Extensions.Activity.Services.SerialOutput
 {
     internal class SerialOutputModel
     {
+        private readonly StringBuilder buffer = new StringBuilder();
+        private readonly SerialPortStream stream;
+
+        public string Output => this.buffer.ToString();
+
+        private SerialOutputModel(SerialPortStream stream)
+        {
+            this.stream = stream;
+        }
+
+        private async Task<string> ReadAndBufferAsync()
+        {
+            var newOutput = await this.stream.ReadAsync().ConfigureAwait(false);
+            newOutput.Replace("\n", "\r\n");
+
+            // Add to buffer so that we do not lose the data when model
+            // switching occurs.
+            this.buffer.Append(newOutput);
+
+            return newOutput;
+        }
+
+        public async static Task<SerialOutputModel> LoadAsync(
+            IComputeEngineAdapter adapter,
+            InstanceLocator instanceLocator,
+            ushort portNumber)
+        {
+            var stream = adapter.GetSerialPortOutput(instanceLocator, portNumber);
+            var model = new SerialOutputModel(stream);
+
+            // Read all existing output.
+            while (await model.ReadAndBufferAsync().ConfigureAwait(false) != string.Empty)
+            {
+            }
+
+            return model;
+        }
+
+        public Task TailAsync(Action<string> newOutputFunc, CancellationToken token)
+        {
+            return Task.Run(async () =>
+            {
+                bool exceptionCaught = false;
+                while (!exceptionCaught)
+                {
+                    // Check if we can continue to tail.
+                    if (token.IsCancellationRequested)
+                    {
+                        break;
+                    }
+
+                    string newOutput;
+                    try
+                    {
+                        newOutput = await ReadAndBufferAsync().ConfigureAwait(false);
+                    }
+                    catch (TokenResponseException e)
+                    {
+                        newOutput = "Reading from serial port failed - session timed out " +
+                            $"({e.Error.ErrorDescription})";
+                        exceptionCaught = true;
+                    }
+                    catch (Exception e)
+                    {
+                        newOutput = $"Reading from serial port failed: {e.Unwrap().Message}";
+                        exceptionCaught = true;
+                    }
+
+                    // By the time we read the data, the form might have begun closing. In this
+                    // case, updating the UI would cause an exception.
+                    if (!token.IsCancellationRequested)
+                    {
+                        newOutputFunc(newOutput);
+                    }
+
+                    Thread.Sleep(TimeSpan.FromSeconds(1));
+                }
+            });
+        }
     }
 }

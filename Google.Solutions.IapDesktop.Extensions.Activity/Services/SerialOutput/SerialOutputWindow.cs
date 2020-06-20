@@ -28,6 +28,7 @@ using System.Threading.Tasks;
 using System;
 using Google.Solutions.IapDesktop.Application.Services.Windows;
 using Google.Solutions.IapDesktop.Application.Services.Integration;
+using System.Windows.Forms;
 
 namespace Google.Solutions.IapDesktop.Extensions.Activity.Services.SerialOutput
 {
@@ -48,7 +49,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services.SerialOutput
             InitializeComponent();
             this.theme.ApplyTo(this.toolStrip);
 
-            this.viewModel = new SerialOutputViewModel();
+            this.viewModel = new SerialOutputViewModel(serviceProvider);
 
             this.portComboBox.Items.AddRange(SerialOutputViewModel.AvailablePorts.ToArray());
 
@@ -63,6 +64,12 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services.SerialOutput
                 this.viewModel,
                 m => m.IsPortComboBoxEnabled,
                 this.components);
+
+            this.output.BindProperty(
+                c => c.Text,
+                this.viewModel,
+                m => m.Output,
+                this.components);
         }
 
 
@@ -70,16 +77,33 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services.SerialOutput
         // ProjectExplorerTrackingToolWindow.
         //---------------------------------------------------------------------
 
+        protected override void OnUserVisibilityChanged(bool visible)
+        {
+            base.OnUserVisibilityChanged(visible);
+
+            // Start/stop tailing depending on whether the window is actually
+            // visible to the user. That avoids keeping the tail thread running
+            // when nobody is watching.
+
+            this.viewModel.IsTailBlocked = !visible;
+        }
+
         protected override async Task SwitchToNodeAsync(IProjectExplorerNode node)
         {
             Debug.Assert(!InvokeRequired, "running on UI thread");
             await this.viewModel.SwitchToModelAsync(node)
                 .ConfigureAwait(true);
         }
-
+        
         //---------------------------------------------------------------------
         // Window events.
         //---------------------------------------------------------------------
 
+        private void SerialOutputWindow_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            // Disable background activity to avoid having it touch any controls
+            // while the window is being destroyed.
+            this.viewModel.IsTailBlocked = true;
+        }
     }
 }
