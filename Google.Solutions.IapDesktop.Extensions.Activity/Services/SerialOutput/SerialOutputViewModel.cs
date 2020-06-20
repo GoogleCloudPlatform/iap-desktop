@@ -119,8 +119,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services.SerialOutput
                 this.selectedPortIndex = value;
                 RaisePropertyChange();
 
-                // TODO: switch model
-                //SwitchToModelAsync()
+                // TODO: interferes with cache
+                // SwitchToModelAsync(this.ModelKey).ConfigureAwait(true);
             }
         }
 
@@ -235,7 +235,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services.SerialOutput
                             return await SerialOutputModel.LoadAsync(
                                 this.serviceProvider.GetService<IComputeEngineAdapter>(),
                                 instanceLocator,
-                                AvailablePorts[this.SelectedPortIndex].Number)
+                                AvailablePorts[this.SelectedPortIndex].Number,
+                                token)  // TODO: combine tokens
                             .ConfigureAwait(false);
                         }).ConfigureAwait(true);  // Back to original (UI) thread.
                 }

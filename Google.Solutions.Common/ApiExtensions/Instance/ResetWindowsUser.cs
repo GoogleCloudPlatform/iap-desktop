@@ -136,7 +136,7 @@ namespace Google.Solutions.Common.ApiExtensions.Instance
 
                     token.ThrowIfCancellationRequested();
 
-                    string logDelta = await serialPortStream.ReadAsync().ConfigureAwait(false);
+                    string logDelta = await serialPortStream.ReadAsync(token).ConfigureAwait(false);
                     if (string.IsNullOrEmpty(logDelta))
                     {
                         // Reached end of stream, wait and try again.

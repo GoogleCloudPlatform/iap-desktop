@@ -48,7 +48,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.Windows.SerialLog
             this.Instance = vmInstance;
         }
 
-        internal void TailSerialPortStream(SerialPortStream stream)
+        internal void TailSerialPortStream(ISerialPortStream stream)
         {
             Task.Run(async () =>
             {
@@ -61,7 +61,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.Windows.SerialLog
                     string newOutput;
                     try
                     {
-                        newOutput = await stream.ReadAsync();
+                        newOutput = await stream.ReadAsync(CancellationToken.None);
                         newOutput = newOutput.Replace("\n", "\r\n");
                     }
                     catch (TokenResponseException e)

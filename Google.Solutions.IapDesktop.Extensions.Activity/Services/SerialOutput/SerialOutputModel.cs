@@ -37,18 +37,20 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services.SerialOutput
     internal class SerialOutputModel
     {
         private readonly StringBuilder buffer = new StringBuilder();
-        private readonly SerialPortStream stream;
+        private readonly ISerialPortStream stream;
 
         public string Output => this.buffer.ToString();
 
-        private SerialOutputModel(SerialPortStream stream)
+        private SerialOutputModel(ISerialPortStream stream)
         {
             this.stream = stream;
         }
 
-        private async Task<string> ReadAndBufferAsync()
+        private async Task<string> ReadAndBufferAsync(CancellationToken token)
         {
-            var newOutput = await this.stream.ReadAsync().ConfigureAwait(false);
+            var newOutput = await this.stream
+                .ReadAsync(token)
+                .ConfigureAwait(false);
             newOutput = newOutput.Replace("\n", "\r\n");
 
             // Add to buffer so that we do not lose the data when model
@@ -61,13 +63,14 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services.SerialOutput
         public async static Task<SerialOutputModel> LoadAsync(
             IComputeEngineAdapter adapter,
             InstanceLocator instanceLocator,
-            ushort portNumber)
+            ushort portNumber,
+            CancellationToken token)
         {
             var stream = adapter.GetSerialPortOutput(instanceLocator, portNumber);
             var model = new SerialOutputModel(stream);
 
             // Read all existing output.
-            while (await model.ReadAndBufferAsync().ConfigureAwait(false) != string.Empty)
+            while (await model.ReadAndBufferAsync(token).ConfigureAwait(false) != string.Empty)
             {
             }
 
@@ -94,13 +97,18 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services.SerialOutput
                     try
                     {
                         TraceSources.IapDesktop.TraceVerbose("Polling serial output...");
-                        newOutput = await ReadAndBufferAsync().ConfigureAwait(false);
+                        newOutput = await ReadAndBufferAsync(token).ConfigureAwait(false);
                     }
                     catch (TokenResponseException e)
                     {
                         newOutput = "Reading from serial port failed - session timed out " +
                             $"({e.Error.ErrorDescription})";
                         exceptionCaught = true;
+                    }
+                    catch (Exception e) when (e.IsCancellation())
+                    {
+                        // This is deliberate, so do not emit anything to output.
+                        newOutput = null;
                     }
                     catch (Exception e)
                     {
@@ -115,7 +123,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services.SerialOutput
                         newOutputFunc(newOutput);
                     }
 
-                    Thread.Sleep(TimeSpan.FromSeconds(1));
+                    await Task.Delay(TimeSpan.FromSeconds(1), token).ConfigureAwait(false);
                 }
             });
         }

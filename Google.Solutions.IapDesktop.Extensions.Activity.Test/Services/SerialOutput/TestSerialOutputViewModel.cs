@@ -20,22 +20,10 @@
 //
 
 using Google.Solutions.IapDesktop.Application.ObjectModel;
-using Google.Solutions.IapDesktop.Application.Services.Integration;
 using Google.Solutions.IapDesktop.Application.Services.Windows.ProjectExplorer;
-using Google.Solutions.IapDesktop.Extensions.Activity.Events.Lifecycle;
-using Google.Solutions.IapDesktop.Extensions.Activity.Events.System;
-using Google.Solutions.IapDesktop.Extensions.Activity.History;
-using Google.Solutions.IapDesktop.Extensions.Activity.Logs;
-using Google.Solutions.IapDesktop.Extensions.Activity.Services.Adapters;
-using Google.Solutions.IapDesktop.Extensions.Activity.Services.EventLog;
 using Google.Solutions.IapDesktop.Extensions.Activity.Services.SerialOutput;
 using Moq;
 using NUnit.Framework;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading;
 using System.Threading.Tasks;
 
 namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.Services.EventLog
@@ -45,6 +33,21 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.Services.EventLog
     {
         private SerialOutputViewModel viewModel;
 
+
+        //---------------------------------------------------------------------
+        // Tailing.
+        //---------------------------------------------------------------------
+
+        [Test]
+        public void WhenEnabledAndNotBlocked_ThenTailingStarts()
+        {
+            Assert.Inconclusive();
+        }
+
+
+        //---------------------------------------------------------------------
+        // Command state.
+        //---------------------------------------------------------------------
 
         [Test]
         public void WhenNodeIsCloudNode_ThenCommandStateIsUnavailable()
