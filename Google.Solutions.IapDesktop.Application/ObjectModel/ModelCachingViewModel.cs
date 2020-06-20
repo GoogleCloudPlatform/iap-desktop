@@ -81,11 +81,6 @@ namespace Google.Solutions.IapDesktop.Application.ObjectModel
                 this.tokenSourceForCurrentTask = new CancellationTokenSource();
                 try
                 {
-                    // If the user is holding down the arrow key in the project explorer,
-                    // we might get a flurry of requests. To catch that, introduce a short,
-                    // cancellable-delay.
-                    await Task.Delay(300, this.tokenSourceForCurrentTask.Token).ConfigureAwait(true);
-
                     this.Model = await LoadModelAsync(key, this.tokenSourceForCurrentTask.Token)
                         .ConfigureAwait(true);  // Back to original (UI) thread.
 
