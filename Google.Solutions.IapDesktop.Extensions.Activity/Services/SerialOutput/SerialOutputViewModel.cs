@@ -29,6 +29,7 @@ using Google.Solutions.IapDesktop.Application.Services.Windows.ProjectExplorer;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -84,7 +85,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services.SerialOutput
             {
                 return;
             }
- 
+
+            Debug.Assert(this.tailCancellationTokenSource == null);
             TraceSources.IapDesktop.TraceVerbose("Start tailing");
             
             this.tailCancellationTokenSource = new CancellationTokenSource();
@@ -95,15 +97,11 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services.SerialOutput
 
         private void StopTailing()
         {
-            if (this.Model == null)
-            {
-                return;
-            }
-
             if (this.tailCancellationTokenSource != null)
             {
                 TraceSources.IapDesktop.TraceVerbose("Stop tailing");
                 this.tailCancellationTokenSource.Cancel();
+                this.tailCancellationTokenSource = null;
             }
         }
 
@@ -251,26 +249,29 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services.SerialOutput
 
         protected override void ApplyModel(bool cached)
         {
-            // Stop tailing the old model.
-            this.IsTailBlocked = true;
-
-            if (this.Model == null)
+            using (TraceSources.IapDesktop.TraceMethod().WithParameters(this.Model, cached))
             {
-                // Unsupported node.
-                this.IsPortComboBoxEnabled = false;
-                this.IsOutputBoxEnabled = false;
-            }
-            else
-            {
-                this.IsPortComboBoxEnabled = true;
-                this.IsOutputBoxEnabled = true;
-            }
+                // Stop tailing the old model.
+                this.IsTailBlocked = true;
 
-            // Clear.
-            RaisePropertyChange((SerialOutputViewModel m) => m.Output);
+                if (this.Model == null)
+                {
+                    // Unsupported node.
+                    this.IsPortComboBoxEnabled = false;
+                    this.IsOutputBoxEnabled = false;
+                }
+                else
+                {
+                    this.IsPortComboBoxEnabled = true;
+                    this.IsOutputBoxEnabled = true;
+                }
 
-            // Begin tailing again (if it'e enabled).
-            this.IsTailBlocked = false;
+                // Clear.
+                RaisePropertyChange((SerialOutputViewModel m) => m.Output);
+
+                // Begin tailing again (if it's enabled).
+                this.IsTailBlocked = false;
+            }
         }
 
         //---------------------------------------------------------------------

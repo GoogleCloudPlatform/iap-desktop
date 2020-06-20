@@ -94,7 +94,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.Windows.ProjectExplor
 
         protected void OnProjectExplorerNodeSelected(IProjectExplorerNode node)
         {
-            using (TraceSources.IapDesktop.TraceMethod().WithParameters(this.IsUserVisible))
+            using (TraceSources.IapDesktop.TraceMethod().WithParameters(node, this.IsUserVisible))
             {
                 if (!this.IsUserVisible)
                 {

@@ -177,7 +177,6 @@ namespace Google.Solutions.IapDesktop
             IsLoggingEnabled = false;
 
 #if DEBUG
-            Google.Solutions.IapDesktop.Application.TraceSources.IapDesktop.Listeners.Add(new DefaultTraceListener());
             Google.Solutions.IapDesktop.Application.TraceSources.IapDesktop.Switch.Level = SourceLevels.Verbose;
 #endif
 
