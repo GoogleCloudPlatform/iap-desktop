@@ -42,15 +42,19 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.Services.EventLog
     [TestFixture]
     public class TestEventLogViewModel : FixtureBase
     {
+        private JobServiceMock jobServiceMock;
         private AuditLogAdapterMock auditLogAdapter;
         private EventLogViewModel viewModel;
 
-        private class MockJobService : IJobService
+        private class JobServiceMock : IJobService
         {
+            public int Calls = 0;
+
             public Task<T> RunInBackground<T>(
                 JobDescription jobDescription, 
                 Func<CancellationToken, Task<T>> jobFunc)
             {
+                Calls++;
                 return jobFunc(CancellationToken.None);
             }
         }
@@ -147,7 +151,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.Services.EventLog
         public void SetUp()
         {
             var registry = new ServiceRegistry();
-            registry.AddSingleton<IJobService>(new MockJobService());
+            this.jobServiceMock = new JobServiceMock();
+            registry.AddSingleton<IJobService>(this.jobServiceMock);
 
             this.auditLogAdapter = new AuditLogAdapterMock();
             registry.AddSingleton<IAuditLogAdapter>(this.auditLogAdapter);
@@ -274,13 +279,11 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.Services.EventLog
 
             await this.viewModel.SwitchToModelAsync(node.Object);
 
-            Assert.IsTrue(this.viewModel.IsRefreshButtonEnabled);
-            Assert.IsTrue(this.viewModel.IsTimeframeComboBoxEnabled);
+            Assert.AreEqual(1, this.jobServiceMock.Calls);
 
             this.viewModel.SelectedTimeframeIndex = 2;
 
-            Assert.IsFalse(this.viewModel.IsRefreshButtonEnabled);
-            Assert.IsFalse(this.viewModel.IsTimeframeComboBoxEnabled);
+            Assert.AreEqual(2, this.jobServiceMock.Calls);
         }
     }
 }
