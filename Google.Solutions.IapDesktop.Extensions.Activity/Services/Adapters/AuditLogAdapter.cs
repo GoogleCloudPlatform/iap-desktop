@@ -106,7 +106,10 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services.Adapters
                 catch (GoogleApiException e) when (e.Error != null && e.Error.Code == 403)
                 {
                     throw new ResourceAccessDeniedException(
-                        $"Access to audit logs has been denied", e);
+                        "You do not have sufficient permissions to view logs. " +
+                        "You need the 'Logs Viewer' (or equivalent custom roles) " +
+                        "to perform this action.", 
+                        e);
                 }
             }
         }
