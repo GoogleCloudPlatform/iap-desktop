@@ -123,7 +123,15 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services.SerialOutput
                         newOutputFunc(newOutput);
                     }
 
-                    await Task.Delay(TimeSpan.FromSeconds(1), token).ConfigureAwait(false);
+                    try
+                    {
+                        await Task.Delay(TimeSpan.FromSeconds(1), token).ConfigureAwait(false);
+                    }
+                    catch (TaskCanceledException)
+                    {
+                        // Do not let the exception escape, instead handle the cancellation
+                        // in the next iteration.
+                    }
                 }
             });
         }
