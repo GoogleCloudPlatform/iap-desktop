@@ -135,7 +135,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services
             var mainForm = serviceProvider.GetService<IMainForm>();
             mainForm.ViewCommands.AddCommand(
                 new Command<IMainForm>(
-                    "&Event log window",
+                    "&Event log",
                     pseudoContext => CommandState.Enabled,
                     pseudoContext => this.serviceProvider.GetService<EventLogWindow>().ShowWindow())
                 {
