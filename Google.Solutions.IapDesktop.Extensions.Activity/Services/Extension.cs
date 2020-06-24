@@ -162,7 +162,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services
                 });
             serialPortMenu.AddCommand(
                 new Command<IMainForm>(
-                    "COM&3",
+                    "COM&3 (setup log)",
                     pseudoContext => CommandState.Enabled,
                     pseudoContext => this.serviceProvider.GetService<SerialOutputWindowCom3>().ShowWindow())
                 {
@@ -170,7 +170,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services
                 });
             serialPortMenu.AddCommand(
                 new Command<IMainForm>(
-                    "COM&4",
+                    "COM&4 (agent)",
                     pseudoContext => CommandState.Enabled,
                     pseudoContext => this.serviceProvider.GetService<SerialOutputWindowCom4>().ShowWindow())
                 {

@@ -58,14 +58,12 @@ namespace Google.Solutions.IapDesktop.Application.Services.Windows.ProjectExplor
             this.connectToolStripButton = new System.Windows.Forms.ToolStripButton();
             this.openSettingsButton = new System.Windows.Forms.ToolStripButton();
             this.generateCredentialsToolStripButton = new System.Windows.Forms.ToolStripButton();
-            this.showSerialLogToolStripButton = new System.Windows.Forms.ToolStripButton();
             this.vsToolStripExtender = new WeifenLuo.WinFormsUI.Docking.VisualStudioToolStripExtender(this.components);
             this.vs2015LightTheme = new WeifenLuo.WinFormsUI.Docking.VS2015LightTheme();
             this.treeView = new System.Windows.Forms.TreeView();
             this.contextMenu = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.connectToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.generateCredentialsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.showSerialLogToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.refreshToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.refreshAllProjectsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.unloadProjectToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -88,8 +86,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.Windows.ProjectExplor
             this.vmToolStripSeparator,
             this.connectToolStripButton,
             this.openSettingsButton,
-            this.generateCredentialsToolStripButton,
-            this.showSerialLogToolStripButton});
+            this.generateCredentialsToolStripButton});
             this.toolStrip.Location = new System.Drawing.Point(0, 0);
             this.toolStrip.Name = "toolStrip";
             this.toolStrip.Size = new System.Drawing.Size(800, 25);
@@ -151,16 +148,6 @@ namespace Google.Solutions.IapDesktop.Application.Services.Windows.ProjectExplor
             this.generateCredentialsToolStripButton.Text = "Generate Windows logon credentials";
             this.generateCredentialsToolStripButton.Click += new System.EventHandler(this.generateCredentialsToolStripButton_Click);
             // 
-            // showSerialLogToolStripButton
-            // 
-            this.showSerialLogToolStripButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.showSerialLogToolStripButton.Image = ((System.Drawing.Image)(resources.GetObject("showSerialLogToolStripButton.Image")));
-            this.showSerialLogToolStripButton.ImageTransparentColor = System.Drawing.Color.White;
-            this.showSerialLogToolStripButton.Name = "showSerialLogToolStripButton";
-            this.showSerialLogToolStripButton.Size = new System.Drawing.Size(23, 22);
-            this.showSerialLogToolStripButton.Text = "Show serial &log";
-            this.showSerialLogToolStripButton.Click += new System.EventHandler(this.showSerialLogToolStripButton_Click);
-            // 
             // vsToolStripExtender
             // 
             this.vsToolStripExtender.DefaultRenderer = null;
@@ -186,7 +173,6 @@ namespace Google.Solutions.IapDesktop.Application.Services.Windows.ProjectExplor
             this.contextMenu.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.connectToolStripMenuItem,
             this.generateCredentialsToolStripMenuItem,
-            this.showSerialLogToolStripMenuItem,
             this.refreshToolStripMenuItem,
             this.refreshAllProjectsToolStripMenuItem,
             this.unloadProjectToolStripMenuItem,
@@ -197,7 +183,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.Windows.ProjectExplor
             this.openInCloudConsoleToolStripMenuItem,
             this.openlogsToolStripMenuItem});
             this.contextMenu.Name = "contextMenu";
-            this.contextMenu.Size = new System.Drawing.Size(277, 258);
+            this.contextMenu.Size = new System.Drawing.Size(277, 236);
             // 
             // connectToolStripMenuItem
             // 
@@ -214,14 +200,6 @@ namespace Google.Solutions.IapDesktop.Application.Services.Windows.ProjectExplor
             this.generateCredentialsToolStripMenuItem.Size = new System.Drawing.Size(276, 22);
             this.generateCredentialsToolStripMenuItem.Text = "Generate &Windows logon credentials...";
             this.generateCredentialsToolStripMenuItem.Click += new System.EventHandler(this.generateCredentialsToolStripMenuItem_Click);
-            // 
-            // showSerialLogToolStripMenuItem
-            // 
-            this.showSerialLogToolStripMenuItem.Image = global::Google.Solutions.IapDesktop.Application.Properties.Resources.Log_16;
-            this.showSerialLogToolStripMenuItem.Name = "showSerialLogToolStripMenuItem";
-            this.showSerialLogToolStripMenuItem.Size = new System.Drawing.Size(276, 22);
-            this.showSerialLogToolStripMenuItem.Text = "Show serial &log";
-            this.showSerialLogToolStripMenuItem.Click += new System.EventHandler(this.showSerialLogToolStripMenuItem_Click);
             // 
             // refreshToolStripMenuItem
             // 
@@ -341,7 +319,5 @@ namespace Google.Solutions.IapDesktop.Application.Services.Windows.ProjectExplor
         private System.Windows.Forms.ToolStripButton generateCredentialsToolStripButton;
         private System.Windows.Forms.ToolStripMenuItem connectToolStripMenuItem;
         private System.Windows.Forms.ToolStripButton connectToolStripButton;
-        private System.Windows.Forms.ToolStripMenuItem showSerialLogToolStripMenuItem;
-        private System.Windows.Forms.ToolStripButton showSerialLogToolStripButton;
     }
 }
