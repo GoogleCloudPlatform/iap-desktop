@@ -3,6 +3,8 @@
 IAP Desktop is a Windows application that allows you to manage multiple Remote Desktop connections 
 to Windows VM instances that run on Google Cloud. 
 
+[<img src="doc/images/download.png">](https://github.com/GoogleCloudPlatform/iap-desktop/releases/latest/download/IapDesktop.msi)
+
 To increase security and flexibility, IAP Desktop uses 
 [Identity-Aware-Proxy TCP tunneling](https://cloud.google.com/iap/docs/tcp-forwarding-overview) to 
 connect to VM instance, combining the convenience of a Remote
@@ -12,7 +14,7 @@ Desktop connection manager with the advantages of Identity-Aware-Proxy:
 * You can connect to VM instances that not expose RDP publicly or do not have a public IP address
 * You can exert fine-grained control which users and which devices should be allowed to access which VM instances
 
-[Download IAP Desktop](https://github.com/GoogleCloudPlatform/iap-desktop/releases/latest) and learn
+[Download IAP Desktop](https://github.com/GoogleCloudPlatform/iap-desktop/releases/latest/download/IapDesktop.msi) and learn
 more about how to install and use the application [in the Wiki](https://github.com/GoogleCloudPlatform/iap-desktop/wiki)
 
 ![Screenshot of IAP Desktop](doc/images/iapdesktop-animated-800.gif)
