@@ -87,7 +87,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services.EventLog
             this.openInCloudConsoleToolStripMenuItem.BindProperty(
                 b => b.Enabled,
                 this.viewModel,
-                m => m.IsOpenInCloudConsoleButtonEnabled,
+                m => m.IsOpenSelectedEventInCloudConsoleButtonEnabled,
                 this.components);
 
             // Bind list.
@@ -159,10 +159,13 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services.EventLog
         }
 
         private void openInCloudConsoleToolStripMenuItem_Click(object sender, EventArgs e)
-            => this.viewModel.OpenDetailsInCloudConsole();
+            => this.viewModel.OpenSelectedEventInCloudConsole();
 
         private void list_DoubleClick(object sender, EventArgs e)
-            => this.viewModel.OpenDetailsInCloudConsole();
+            => this.viewModel.OpenSelectedEventInCloudConsole();
+
+        private void openLogsButton_Click(object sender, EventArgs e)
+            => this.viewModel.OpenInCloudConsole();
     }
 
     public class EventsListView : BindableListView<EventBase>

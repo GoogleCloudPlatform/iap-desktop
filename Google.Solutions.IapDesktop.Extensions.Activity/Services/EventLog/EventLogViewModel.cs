@@ -32,6 +32,7 @@ using Google.Solutions.IapDesktop.Extensions.Activity.Services.Adapters;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -87,13 +88,11 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services.EventLog
                 this.selectedEvent = value;
 
                 RaisePropertyChange();
-
-                // TODO: use expression
-                RaisePropertyChange("IsOpenInCloudConsoleButtonEnabled");
+                RaisePropertyChange((EventLogViewModel m) => m.IsOpenSelectedEventInCloudConsoleButtonEnabled);
             }
         }
 
-        public bool IsOpenInCloudConsoleButtonEnabled
+        public bool IsOpenSelectedEventInCloudConsoleButtonEnabled
         {
             get => this.selectedEvent != null;
         }
@@ -175,15 +174,21 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services.EventLog
 
         public void Refresh() => InvalidateAsync().ConfigureAwait(true);
 
-        public void OpenDetailsInCloudConsole()
+        public void OpenSelectedEventInCloudConsole()
         {
             if (this.SelectedEvent != null)
             {
-                this.serviceProvider.GetService<CloudConsoleService>().OpenVmInstanceLogs(
+                this.serviceProvider.GetService<CloudConsoleService>().OpenVmInstanceLogDetails(
                     this.SelectedEvent.LogRecord.ProjectId,
                     this.SelectedEvent.LogRecord.InsertId,
                     this.SelectedEvent.Timestamp);
             }
+        }
+
+        public void OpenInCloudConsole()
+        {
+            Debug.Assert(!(this.ModelKey is IProjectExplorerCloudNode));
+            this.serviceProvider.GetService<CloudConsoleService>().OpenLogs(this.ModelKey);
         }
 
         //---------------------------------------------------------------------

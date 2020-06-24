@@ -219,16 +219,6 @@ namespace Google.Solutions.IapDesktop.Application.Services.Windows.ProjectExplor
             }
         }
 
-        private void openlogsToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            if (this.treeView.SelectedNode is VmInstanceNode vmInstanceNode)
-            {
-                this.serviceProvider
-                    .GetService<CloudConsoleService>()
-                    .OpenVmInstanceLogs(vmInstanceNode.Reference, vmInstanceNode.InstanceId);
-            }
-        }
-
         private void configureIapAccessToolStripMenuItem_Click(object sender, EventArgs e)
         {
             if (this.treeView.SelectedNode is ProjectNode projectNode)
@@ -408,8 +398,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.Windows.ProjectExplor
                 this.propertiesToolStripMenuItem.Visible = (selectedNode is InventoryNode);
 
                 this.cloudConsoleSeparatorToolStripMenuItem.Visible =
-                    this.openInCloudConsoleToolStripMenuItem.Visible =
-                    this.openlogsToolStripMenuItem.Visible = (selectedNode is VmInstanceNode);
+                    this.openInCloudConsoleToolStripMenuItem.Visible = (selectedNode is VmInstanceNode);
 
                 this.iapSeparatorToolStripMenuItem.Visible =
                     this.configureIapAccessToolStripMenuItem.Visible =

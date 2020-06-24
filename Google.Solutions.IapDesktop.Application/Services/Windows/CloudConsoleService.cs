@@ -20,6 +20,7 @@
 //
 
 using Google.Solutions.Common.Locator;
+using Google.Solutions.IapDesktop.Application.Services.Windows.ProjectExplorer;
 using System;
 using System.Diagnostics;
 using System.Net;
@@ -44,22 +45,44 @@ namespace Google.Solutions.IapDesktop.Application.Services.Windows
                     $"{instance.Zone}/instances/{instance.Name}?project={instance.ProjectId}");
         }
 
-        public void OpenVmInstanceLogs(InstanceLocator instance, ulong instanceId)
+        private void OpenLogs(string projectId, string query)
         {
-            // TODO: use new UI
-            OpenUrl("https://console.cloud.google.com/logs/viewer?" +
-                   $"resource=gce_instance%2Finstance_id%2F{instanceId}&project={instance.ProjectId}");
+            OpenUrl("https://console.cloud.google.com/logs/query;" +
+                $"query={WebUtility.UrlEncode(query)};timeRange=PT1H;summaryFields=:true:32:beginning?" +
+                $"project={projectId}");
         }
 
-        public void OpenVmInstanceLogs(string projectId, string insertId, DateTime timestamp)
+        public void OpenLogs(IProjectExplorerNode node)
         {
-            var query = WebUtility.UrlEncode(
-                "resource.type=\"gce_instance\"\n" + 
-                $"insertId=\"{insertId}\"\n" +
-                $"timestamp<=\"{timestamp.ToString("o")}\"");
+            if (node is IProjectExplorerVmInstanceNode vmNode)
+            {
+                OpenLogs(
+                    vmNode.ProjectId,
+                    "resource.type=\"gce_instance\"\n" +
+                        $"resource.labels.instance_id=\"{vmNode.InstanceId}\"");
+            }
+            else if (node is IProjectExplorerZoneNode zoneNode)
+            {
+                OpenLogs(
+                    zoneNode.ProjectId,
+                    "resource.type=\"gce_instance\"\n" + 
+                        $"resource.labels.zone=\"{zoneNode.ZoneId}\"");
+            }
+            else if (node is IProjectExplorerProjectNode projectNode)
+            {
+                OpenLogs(
+                    projectNode.ProjectId,
+                    "resource.type=\"gce_instance\"");
+            }
+        }
 
-            OpenUrl("https://console.cloud.google.com/logs/query;" +
-                $"query={query};timeRange=PT1H;summaryFields=:true:32:beginning?project={projectId}");
+        public void OpenVmInstanceLogDetails(string projectId, string insertId, DateTime timestamp)
+        {
+            OpenLogs(
+                projectId,
+                "resource.type=\"gce_instance\"\n" + 
+                    $"insertId=\"{insertId}\"\n" +
+                    $"timestamp<=\"{timestamp.ToString("o")}\"");
         }
 
         public void OpenIapOverviewDocs()
@@ -71,6 +94,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.Windows
         {
             OpenUrl("https://cloud.google.com/iap/docs/using-tcp-forwarding");
         }
+
         public void ConfigureIapAccess(string projectId)
         {
             OpenUrl($"https://console.cloud.google.com/security/iap?project={projectId}");

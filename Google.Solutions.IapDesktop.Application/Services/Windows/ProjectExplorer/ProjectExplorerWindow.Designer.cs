@@ -72,7 +72,6 @@ namespace Google.Solutions.IapDesktop.Application.Services.Windows.ProjectExplor
             this.configureIapAccessToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.cloudConsoleSeparatorToolStripMenuItem = new System.Windows.Forms.ToolStripSeparator();
             this.openInCloudConsoleToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.openlogsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.imageList = new System.Windows.Forms.ImageList(this.components);
             this.toolStrip.SuspendLayout();
             this.contextMenu.SuspendLayout();
@@ -180,10 +179,9 @@ namespace Google.Solutions.IapDesktop.Application.Services.Windows.ProjectExplor
             this.iapSeparatorToolStripMenuItem,
             this.configureIapAccessToolStripMenuItem,
             this.cloudConsoleSeparatorToolStripMenuItem,
-            this.openInCloudConsoleToolStripMenuItem,
-            this.openlogsToolStripMenuItem});
+            this.openInCloudConsoleToolStripMenuItem});
             this.contextMenu.Name = "contextMenu";
-            this.contextMenu.Size = new System.Drawing.Size(277, 236);
+            this.contextMenu.Size = new System.Drawing.Size(277, 214);
             // 
             // connectToolStripMenuItem
             // 
@@ -256,13 +254,6 @@ namespace Google.Solutions.IapDesktop.Application.Services.Windows.ProjectExplor
             this.openInCloudConsoleToolStripMenuItem.Text = "Open in Cloud Consol&e...";
             this.openInCloudConsoleToolStripMenuItem.Click += new System.EventHandler(this.openInCloudConsoleToolStripMenuItem_Click);
             // 
-            // openlogsToolStripMenuItem
-            // 
-            this.openlogsToolStripMenuItem.Name = "openlogsToolStripMenuItem";
-            this.openlogsToolStripMenuItem.Size = new System.Drawing.Size(276, 22);
-            this.openlogsToolStripMenuItem.Text = "Open &logs...";
-            this.openlogsToolStripMenuItem.Click += new System.EventHandler(this.openlogsToolStripMenuItem_Click);
-            // 
             // imageList
             // 
             this.imageList.ImageStream = ((System.Windows.Forms.ImageListStreamer)(resources.GetObject("imageList.ImageStream")));
@@ -310,7 +301,6 @@ namespace Google.Solutions.IapDesktop.Application.Services.Windows.ProjectExplor
         private System.Windows.Forms.ToolStripMenuItem propertiesToolStripMenuItem;
         private System.Windows.Forms.ToolStripButton openSettingsButton;
         private System.Windows.Forms.ToolStripMenuItem openInCloudConsoleToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem openlogsToolStripMenuItem;
         private System.Windows.Forms.ToolStripSeparator cloudConsoleSeparatorToolStripMenuItem;
         private System.Windows.Forms.ToolStripSeparator iapSeparatorToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem configureIapAccessToolStripMenuItem;
