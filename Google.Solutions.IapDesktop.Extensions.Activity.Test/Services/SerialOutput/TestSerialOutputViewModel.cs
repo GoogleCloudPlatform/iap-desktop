@@ -31,7 +31,7 @@ using System;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.Services.EventLog
+namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.Services.SerialOutput
 {
     [TestFixture]
     [Category("IntegrationTest")]
@@ -73,7 +73,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.Services.EventLog
             serviceProvider.AddSingleton<IComputeEngineAdapter>(
                 new ComputeEngineAdapter(Defaults.GetCredential()));
 
-            this.viewModel = new SerialOutputViewModel(serviceProvider)
+            this.viewModel = new SerialOutputViewModel(serviceProvider, 1)
             {
                 IsTailEnabled = false
             };
@@ -191,7 +191,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.Services.EventLog
             var node = new Mock<IProjectExplorerCloudNode>();
             await this.viewModel.SwitchToModelAsync(node.Object);
 
-            Assert.IsFalse(this.viewModel.IsPortComboBoxEnabled);
+            Assert.IsFalse(this.viewModel.IsEnableTailingButtonEnabled);
             Assert.IsFalse(this.viewModel.IsOutputBoxEnabled);
         }
         [Test]
@@ -201,7 +201,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.Services.EventLog
             var node = await CreateNode(testInstance, false);
             await this.viewModel.SwitchToModelAsync(node);
 
-            Assert.IsFalse(this.viewModel.IsPortComboBoxEnabled);
+            Assert.IsFalse(this.viewModel.IsEnableTailingButtonEnabled);
             Assert.IsFalse(this.viewModel.IsOutputBoxEnabled);
         }
 
@@ -212,7 +212,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.Services.EventLog
             var node = await CreateNode(testInstance, true);
             await this.viewModel.SwitchToModelAsync(node);
 
-            Assert.IsTrue(this.viewModel.IsPortComboBoxEnabled);
+            Assert.IsTrue(this.viewModel.IsEnableTailingButtonEnabled);
             Assert.IsTrue(this.viewModel.IsOutputBoxEnabled);
             StringAssert.Contains("Instance setup finished", this.viewModel.Output);
         }

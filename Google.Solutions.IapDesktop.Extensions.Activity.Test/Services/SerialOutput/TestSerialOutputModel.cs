@@ -31,7 +31,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.Services.EventLog
+namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.Services.SerialOutput
 {
     [TestFixture]
     [Category("IntegrationTest")]

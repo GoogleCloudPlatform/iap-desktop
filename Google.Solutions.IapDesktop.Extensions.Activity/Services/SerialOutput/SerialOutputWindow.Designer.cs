@@ -49,9 +49,10 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services.SerialOutput
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(SerialOutputWindow));
             this.theme = new WeifenLuo.WinFormsUI.Docking.VS2015LightTheme();
             this.toolStrip = new System.Windows.Forms.ToolStrip();
-            this.portComboBox = new System.Windows.Forms.ToolStripComboBox();
+            this.enableTailButton = new System.Windows.Forms.ToolStripButton();
             this.output = new System.Windows.Forms.TextBox();
             this.toolStrip.SuspendLayout();
             this.SuspendLayout();
@@ -59,18 +60,21 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services.SerialOutput
             // toolStrip
             // 
             this.toolStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.portComboBox});
+            this.enableTailButton});
             this.toolStrip.Location = new System.Drawing.Point(0, 0);
             this.toolStrip.Name = "toolStrip";
             this.toolStrip.Size = new System.Drawing.Size(800, 25);
             this.toolStrip.TabIndex = 0;
             this.toolStrip.Text = "toolStrip1";
             // 
-            // portComboBox
+            // enableTailButton
             // 
-            this.portComboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.portComboBox.Name = "portComboBox";
-            this.portComboBox.Size = new System.Drawing.Size(121, 25);
+            this.enableTailButton.CheckOnClick = true;
+            this.enableTailButton.Image = ((System.Drawing.Image)(resources.GetObject("enableTailButton.Image")));
+            this.enableTailButton.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.enableTailButton.Name = "enableTailButton";
+            this.enableTailButton.Size = new System.Drawing.Size(64, 22);
+            this.enableTailButton.Text = "Stream";
             // 
             // output
             // 
@@ -107,7 +111,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services.SerialOutput
 
         private WeifenLuo.WinFormsUI.Docking.VS2015LightTheme theme;
         private System.Windows.Forms.ToolStrip toolStrip;
-        private System.Windows.Forms.ToolStripComboBox portComboBox;
         private System.Windows.Forms.TextBox output;
+        private System.Windows.Forms.ToolStripButton enableTailButton;
     }
 }

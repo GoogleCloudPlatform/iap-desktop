@@ -49,22 +49,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services.SerialOutput
             InitializeComponent();
             this.theme.ApplyTo(this.toolStrip);
 
-            this.viewModel = new SerialOutputViewModel(serviceProvider);
-
-            this.portComboBox.Items.AddRange(SerialOutputViewModel.AvailablePorts.ToArray());
-
-            // Bind toolbar buttons.
-            this.portComboBox.BindProperty(
-                c => c.SelectedIndex,
-                this.viewModel,
-                m => m.SelectedPortIndex,
-                this.components);
-            this.portComboBox.BindProperty(
-                c => c.Enabled,
-                this.viewModel,
-                m => m.IsPortComboBoxEnabled,
-                this.components);
-
+            this.viewModel = new SerialOutputViewModel(serviceProvider, 1);
             this.viewModel.OnPropertyChange(
                 m => m.Output,
                 text =>
@@ -77,6 +62,17 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services.SerialOutput
                         this.output.AppendText(text);
                     }
                 });
+
+            this.enableTailButton.BindProperty(
+                c => c.Checked,
+                this.viewModel,
+                m => m.IsTailEnabled,
+                this.components);
+            this.enableTailButton.BindProperty(
+                c => c.Enabled,
+                this.viewModel,
+                m => m.IsEnableTailingButtonEnabled,
+                this.components);
 
             this.viewModel.NewOutputAvailable += (sender, output) =>
             {

@@ -28,8 +28,6 @@ using Google.Solutions.IapDesktop.Application.Services.Adapters;
 using Google.Solutions.IapDesktop.Application.Services.Integration;
 using Google.Solutions.IapDesktop.Application.Services.Windows.ProjectExplorer;
 using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Threading;
 using System.Threading.Tasks;
@@ -41,20 +39,11 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services.SerialOutput
     {
         private const int ModelCacheCapacity = 10;
 
-        public static readonly ReadOnlyCollection<SerialPort> AvailablePorts
-            = new ReadOnlyCollection<SerialPort>(new List<SerialPort>()
-        {
-            new SerialPort(1, "COM1 - Log"),
-            new SerialPort(2, "COM2 - SAC"),
-            new SerialPort(3, "COM3"),
-            new SerialPort(4, "COM4")
-        });
+        private readonly IServiceProvider serviceProvider;
+        private readonly ushort serialPortNumber;
 
-        private IServiceProvider serviceProvider;
-
-        private int selectedPortIndex = 0;
-        private bool isPortComboBoxEnabled = false;
         private bool isOutputBoxEnabled = false;
+        private bool isEnableTailingButtonEnabled = false;
 
         internal CancellationTokenSource TailCancellationTokenSource = null;
 
@@ -63,10 +52,13 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services.SerialOutput
 
         public event EventHandler<string> NewOutputAvailable;
 
-        public SerialOutputViewModel(IServiceProvider serviceProvider) 
+        public SerialOutputViewModel(
+            IServiceProvider serviceProvider,
+            ushort serialPortNumber) 
             : base(ModelCacheCapacity)
         {
             this.serviceProvider = serviceProvider;
+            this.serialPortNumber = serialPortNumber;
         }
 
         //---------------------------------------------------------------------
@@ -113,25 +105,12 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services.SerialOutput
 
         public string Output => this.Model?.Output;
 
-        public int SelectedPortIndex
+        public bool IsEnableTailingButtonEnabled
         {
-            get => this.selectedPortIndex;
+            get => this.isEnableTailingButtonEnabled;
             set
             {
-                this.selectedPortIndex = value;
-                RaisePropertyChange();
-
-                // TODO: interferes with cache
-                // SwitchToModelAsync(this.ModelKey).ConfigureAwait(true);
-            }
-        }
-
-        public bool IsPortComboBoxEnabled
-        {
-            get => this.isPortComboBoxEnabled;
-            set
-            {
-                this.isPortComboBoxEnabled = value;
+                this.isEnableTailingButtonEnabled = value;
                 RaisePropertyChange();
             }
         }
@@ -239,7 +218,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services.SerialOutput
                                 return await SerialOutputModel.LoadAsync(
                                     this.serviceProvider.GetService<IComputeEngineAdapter>(),
                                     instanceLocator,
-                                    AvailablePorts[this.SelectedPortIndex].Number,
+                                    this.serialPortNumber,
                                     combinedTokenSource.Token)
                                 .ConfigureAwait(false);
                             }
@@ -263,13 +242,13 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services.SerialOutput
                 if (this.Model == null)
                 {
                     // Unsupported node.
-                    this.IsPortComboBoxEnabled = false;
-                    this.IsOutputBoxEnabled = false;
+                    this.IsEnableTailingButtonEnabled = 
+                        this.IsOutputBoxEnabled = false;
                 }
                 else
                 {
-                    this.IsPortComboBoxEnabled = true;
-                    this.IsOutputBoxEnabled = true;
+                    this.IsEnableTailingButtonEnabled =
+                        this.IsOutputBoxEnabled = true;
                 }
 
                 // Clear.
