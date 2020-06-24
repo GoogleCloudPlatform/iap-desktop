@@ -258,25 +258,5 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services.SerialOutput
                 this.IsTailBlocked = false;
             }
         }
-
-        //---------------------------------------------------------------------
-
-        public class SerialPort
-        {
-            public ushort Number { get; }
-
-            public string Description { get; }
-
-            public SerialPort(ushort number, string description)
-            {
-                this.Number = number;
-                this.Description = description;
-            }
-
-            public override string ToString()
-            {
-                return this.Description;
-            }
-        }
     }
 }

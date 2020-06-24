@@ -22,6 +22,7 @@
 using Google.Apis.Auth.OAuth2.Responses;
 using Google.Solutions.Common.ApiExtensions.Instance;
 using Google.Solutions.Common.Locator;
+using Google.Solutions.Common.Text;
 using Google.Solutions.Common.Test.Testbed;
 using Google.Solutions.IapDesktop.Application.Services.Adapters;
 using Google.Solutions.IapDesktop.Extensions.Activity.Services.SerialOutput;
@@ -56,7 +57,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.Services.SerialOu
         [Test]
         public async Task WhenTailing_ThenCancelStopsTask()
         {
-            var stream = new Mock<ISerialPortStream>();
+            var stream = new Mock<IAsyncReader<string>>();
             stream.Setup(s => s.ReadAsync(
                 It.IsAny<CancellationToken>()))
                 .ReturnsAsync("");
@@ -89,7 +90,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.Services.SerialOu
         [Test]
         public async Task WhenApiThrowsException_ThenMessageIsTailedToOutput()
         {
-            var stream = new Mock<ISerialPortStream>();
+            var stream = new Mock<IAsyncReader<string>>();
             stream.Setup(s => s.ReadAsync(
                 It.IsAny<CancellationToken>()))
                 .ReturnsAsync("");

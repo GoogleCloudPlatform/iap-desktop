@@ -19,11 +19,10 @@
 // under the License.
 //
 
-
 using Google.Apis.Auth.OAuth2.Responses;
-using Google.Solutions.Common.ApiExtensions.Instance;
 using Google.Solutions.Common.Diagnostics;
 using Google.Solutions.Common.Locator;
+using Google.Solutions.Common.Text;
 using Google.Solutions.Common.Util;
 using Google.Solutions.IapDesktop.Application;
 using Google.Solutions.IapDesktop.Application.Services.Adapters;
@@ -37,11 +36,11 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services.SerialOutput
     internal class SerialOutputModel
     {
         private readonly StringBuilder buffer = new StringBuilder();
-        private readonly ISerialPortStream stream;
+        private readonly IAsyncReader<string> stream;
 
         public string Output => this.buffer.ToString();
 
-        private SerialOutputModel(ISerialPortStream stream)
+        private SerialOutputModel(IAsyncReader<string> stream)
         {
             this.stream = stream;
         }
@@ -66,7 +65,13 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services.SerialOutput
             ushort portNumber,
             CancellationToken token)
         {
-            var stream = adapter.GetSerialPortOutput(instanceLocator, portNumber);
+            // The serial port log can contain VT100 control sequences, but
+            // they are limited to trivial command such as "clear screen". 
+            // As there is not much value in preserving these, use an
+            // AnsiTextReader to filter out all escape sequences.
+
+            var stream = new AnsiTextReader(
+                adapter.GetSerialPortOutput(instanceLocator, portNumber));
             var model = new SerialOutputModel(stream);
 
             // Read all existing output.
