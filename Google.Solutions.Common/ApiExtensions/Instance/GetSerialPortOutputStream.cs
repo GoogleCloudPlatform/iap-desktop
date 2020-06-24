@@ -22,6 +22,7 @@
 using Google.Apis.Compute.v1;
 using Google.Solutions.Common.Diagnostics;
 using Google.Solutions.Common.Locator;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Google.Solutions.Common.ApiExtensions.Instance
@@ -34,7 +35,7 @@ namespace Google.Solutions.Common.ApiExtensions.Instance
         /// <summary>
         /// Read serial port output as a continuous stream.
         /// </summary>
-        public static SerialPortStream GetSerialPortOutputStream(
+        public static ISerialPortStream GetSerialPortOutputStream(
             this InstancesResource resource,
             InstanceLocator instanceRef,
             ushort port)
@@ -43,8 +44,15 @@ namespace Google.Solutions.Common.ApiExtensions.Instance
         }
     }
 
-    public class SerialPortStream
+    public interface ISerialPortStream
     {
+        Task<string> ReadAsync(CancellationToken token);
+    }
+
+    public class SerialPortStream : ISerialPortStream
+    {
+        public const ushort ConsolePort = 1;
+
         private readonly InstancesResource instancesResource;
         private readonly InstanceLocator instance;
         private readonly ushort port;
@@ -62,7 +70,7 @@ namespace Google.Solutions.Common.ApiExtensions.Instance
             this.instance = instanceRef;
         }
 
-        public async Task<string> ReadAsync()
+        public async Task<string> ReadAsync(CancellationToken token)
         {
             using (TraceSources.Common.TraceMethod().WithParameters(this.nextOffset))
             {
@@ -72,7 +80,7 @@ namespace Google.Solutions.Common.ApiExtensions.Instance
                     this.instance.Name);
                 request.Port = this.port;
                 request.Start = this.nextOffset;
-                var output = await request.ExecuteAsync().ConfigureAwait(false);
+                var output = await request.ExecuteAsync(token).ConfigureAwait(false);
 
                 TraceSources.Common.TraceVerbose(
                     "Read {0} chars from serial port [start={1}, next={2}]",

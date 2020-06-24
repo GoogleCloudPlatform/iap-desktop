@@ -24,6 +24,7 @@ using Google.Solutions.Common.ApiExtensions.Instance;
 using Google.Solutions.Common.Test.Testbed;
 using NUnit.Framework;
 using System;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Google.Solutions.Common.Test.Extensions
@@ -55,7 +56,7 @@ namespace Google.Solutions.Common.Test.Extensions
 
             while (DateTime.Now < startTime.AddMinutes(3))
             {
-                var log = await stream.ReadAsync();
+                var log = await stream.ReadAsync(CancellationToken.None);
                 if (log.Contains("Instance setup finished"))
                 {
                     return;

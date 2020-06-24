@@ -523,7 +523,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.Windows.ProjectExplor
         [DisplayName("IP address (external)")]
         public string ExternalIp { get; }
 
-        internal bool IsRunning => this.Status == "RUNNING";
+        public bool IsRunning => this.Status == "RUNNING";
 
         internal bool IsConnected
         {

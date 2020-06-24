@@ -19,39 +19,35 @@
 // under the License.
 //
 
-using System.Collections.Generic;
+using Google.Solutions.IapDesktop.Application.ObjectModel;
+using System;
 
-namespace Google.Solutions.IapDesktop.Application.Services.Windows.ProjectExplorer
+namespace Google.Solutions.IapDesktop.Extensions.Activity.Services.SerialOutput
 {
-    public interface IProjectExplorerNode
+    [Service(ServiceLifetime.Singleton)]
+    internal class SerialOutputWindowCom1 : SerialOutputWindow
     {
+        public SerialOutputWindowCom1(IServiceProvider serviceProvider)
+            : base(serviceProvider, 1)
+        {
+        }
     }
 
-    public interface IProjectExplorerCloudNode : IProjectExplorerNode
+    [Service(ServiceLifetime.Singleton)]
+    internal class SerialOutputWindowCom3 : SerialOutputWindow
     {
+        public SerialOutputWindowCom3(IServiceProvider serviceProvider)
+            : base(serviceProvider, 3)
+        {
+        }
     }
 
-    public interface IProjectExplorerProjectNode : IProjectExplorerNode
+    [Service(ServiceLifetime.Singleton)]
+    internal class SerialOutputWindowCom4 : SerialOutputWindow
     {
-        string ProjectId { get; }
-
-        IEnumerable<IProjectExplorerZoneNode> Zones { get; }
-    }
-
-    public interface IProjectExplorerZoneNode : IProjectExplorerNode
-    {
-        string ProjectId { get; }
-        string ZoneId { get; }
-        IEnumerable<IProjectExplorerVmInstanceNode> Instances { get; }
-    }
-
-    public interface IProjectExplorerVmInstanceNode : IProjectExplorerNode
-    {
-        ulong InstanceId { get; }
-        string ProjectId { get; }
-        string ZoneId { get; }
-        string InstanceName { get; }
-
-        bool IsRunning { get; }
+        public SerialOutputWindowCom4(IServiceProvider serviceProvider)
+            : base(serviceProvider, 4)
+        {
+        }
     }
 }

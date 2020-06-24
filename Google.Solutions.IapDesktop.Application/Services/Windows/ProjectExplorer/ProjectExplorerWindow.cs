@@ -27,7 +27,6 @@ using Google.Solutions.IapDesktop.Application.Services.Adapters;
 using Google.Solutions.IapDesktop.Application.Services.Integration;
 using Google.Solutions.IapDesktop.Application.Services.Persistence;
 using Google.Solutions.IapDesktop.Application.Services.Windows.RemoteDesktop;
-using Google.Solutions.IapDesktop.Application.Services.Windows.SerialLog;
 using Google.Solutions.IapDesktop.Application.Services.Windows.SettingsEditor;
 using Google.Solutions.IapDesktop.Application.Services.Workflows;
 using System;
@@ -255,9 +254,6 @@ namespace Google.Solutions.IapDesktop.Application.Services.Windows.ProjectExplor
         private void treeView_NodeMouseDoubleClick(object sender, TreeNodeMouseClickEventArgs e)
             => connectToolStripButton_Click(sender, e);
 
-        private void showSerialLogToolStripMenuItem_Click(object sender, EventArgs e)
-            => showSerialLogToolStripButton_Click(sender, e);
-
         //---------------------------------------------------------------------
         // Tool bar event handlers.
         //---------------------------------------------------------------------
@@ -354,28 +350,6 @@ namespace Google.Solutions.IapDesktop.Application.Services.Windows.ProjectExplor
             }
         }
 
-        private void showSerialLogToolStripButton_Click(object sender, EventArgs _)
-        {
-            try
-            {
-                if (this.treeView.SelectedNode is VmInstanceNode vmNode)
-                {
-                    this.serviceProvider.GetService<SerialLogService>()
-                        .ShowSerialLog(vmNode.Reference);
-                }
-            }
-            catch (Exception e) when (e.IsCancellation())
-            {
-                // Ignore.
-            }
-            catch (Exception e)
-            {
-                this.serviceProvider
-                    .GetService<IExceptionDialog>()
-                    .Show(this, "Opening serial log failed", e);
-            }
-        }
-
         //---------------------------------------------------------------------
         // Other Windows event handlers.
         //---------------------------------------------------------------------
@@ -423,7 +397,6 @@ namespace Google.Solutions.IapDesktop.Application.Services.Windows.ProjectExplor
                 this.openSettingsButton.Enabled = (args.Node is InventoryNode);
                 this.connectToolStripButton.Enabled =
                     this.generateCredentialsToolStripButton.Enabled =
-                    this.showSerialLogToolStripButton.Enabled =
                         (selectedNode is VmInstanceNode) && ((VmInstanceNode)selectedNode).IsRunning;
 
                 //
@@ -443,11 +416,9 @@ namespace Google.Solutions.IapDesktop.Application.Services.Windows.ProjectExplor
                          (selectedNode is VmInstanceNode || selectedNode is ProjectNode);
 
                 this.connectToolStripMenuItem.Visible =
-                    this.generateCredentialsToolStripMenuItem.Visible =
-                    this.showSerialLogToolStripMenuItem.Visible = (selectedNode is VmInstanceNode);
+                    this.generateCredentialsToolStripMenuItem.Visible = (selectedNode is VmInstanceNode);
                 this.connectToolStripMenuItem.Enabled =
                     this.generateCredentialsToolStripMenuItem.Enabled =
-                    this.showSerialLogToolStripMenuItem.Enabled =
                         (selectedNode is VmInstanceNode) && ((VmInstanceNode)selectedNode).IsRunning;
 
                 // 

@@ -111,7 +111,9 @@ namespace Google.Solutions.IapDesktop.Application.Test.ObjectModel
             await viewModel.SwitchToModelAsync("one");
 
             Assert.AreEqual(1, viewModel.LoadModelCalls);
-            Assert.AreEqual(2, viewModel.ApplyCalls);
+
+            // ApplyModel is called twice.
+            Assert.AreEqual(3, viewModel.ApplyCalls);
         }
 
         //---------------------------------------------------------------------
@@ -130,7 +132,9 @@ namespace Google.Solutions.IapDesktop.Application.Test.ObjectModel
             await viewModel.Reload();
 
             Assert.AreEqual(2, viewModel.LoadModelCalls);
-            Assert.AreEqual(2, viewModel.ApplyCalls);
+
+            // ApplyModel is called twice.
+            Assert.AreEqual(3, viewModel.ApplyCalls);
         }
     }
 }

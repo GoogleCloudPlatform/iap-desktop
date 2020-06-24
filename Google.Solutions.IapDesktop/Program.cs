@@ -29,7 +29,6 @@ using Google.Solutions.IapDesktop.Application.Services.Windows;
 using Google.Solutions.IapDesktop.Application.Services.Windows.Diagnostics;
 using Google.Solutions.IapDesktop.Application.Services.Windows.ProjectExplorer;
 using Google.Solutions.IapDesktop.Application.Services.Windows.RemoteDesktop;
-using Google.Solutions.IapDesktop.Application.Services.Windows.SerialLog;
 using Google.Solutions.IapDesktop.Application.Services.Windows.SettingsEditor;
 using Google.Solutions.IapDesktop.Application.Services.Windows.TunnelsViewer;
 using Google.Solutions.IapDesktop.Application.Services.Workflows;
@@ -177,7 +176,6 @@ namespace Google.Solutions.IapDesktop
             IsLoggingEnabled = false;
 
 #if DEBUG
-            Google.Solutions.IapDesktop.Application.TraceSources.IapDesktop.Listeners.Add(new DefaultTraceListener());
             Google.Solutions.IapDesktop.Application.TraceSources.IapDesktop.Switch.Level = SourceLevels.Verbose;
 #endif
 
@@ -259,7 +257,6 @@ namespace Google.Solutions.IapDesktop
             windowAndWorkflowLayer.AddTransient<ITaskDialog, TaskDialog>();
             windowAndWorkflowLayer.AddTransient<IUpdateService, UpdateService>();
             windowAndWorkflowLayer.AddSingleton<IRemoteDesktopService, RemoteDesktopService>();
-            windowAndWorkflowLayer.AddSingleton<SerialLogService>();
             windowAndWorkflowLayer.AddSingleton<ISettingsEditor, SettingsEditorWindow>();
             windowAndWorkflowLayer.AddSingleton<IProjectExplorer, ProjectExplorerWindow>();
             windowAndWorkflowLayer.AddSingleton<ITunnelsViewer, TunnelsWindow>();

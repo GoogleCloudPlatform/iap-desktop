@@ -213,13 +213,6 @@
       <DependentUpon>RemoteDesktopPane.cs</DependentUpon>
     </Compile>
     <Compile Include="Services\Windows\RemoteDesktop\IRemoteDesktopService.cs" />
-    <Compile Include="Services\Windows\SerialLog\SerialLogService.cs" />
-    <Compile Include="Services\Windows\SerialLog\SerialLogWindow.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Services\Windows\SerialLog\SerialLogWindow.designer.cs">
-      <DependentUpon>SerialLogWindow.cs</DependentUpon>
-    </Compile>
     <Compile Include="Services\Windows\SettingsEditor\ISettingsEditor.cs" />
     <Compile Include="Services\Windows\SettingsEditor\SettingsEditorWindow.cs">
       <SubType>Form</SubType>
@@ -316,9 +309,6 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Services\Windows\RemoteDesktop\RemoteDesktopPane.resx">
       <DependentUpon>RemoteDesktopPane.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Services\Windows\SerialLog\SerialLogWindow.resx">
-      <DependentUpon>SerialLogWindow.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Services\Windows\SettingsEditor\SettingsEditorWindow.resx">
       <DependentUpon>SettingsEditorWindow.cs</DependentUpon>

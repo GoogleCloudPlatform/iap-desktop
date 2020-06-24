@@ -60,7 +60,7 @@ namespace Google.Solutions.IapDesktop.Application.ObjectModel
         /// Example:
         /// RaisePropertyChange((MyViewModel m) => m.MyProperty);
         /// </summary>
-        public void RaisePropertyChange<TModel, TProperty>(
+        protected void RaisePropertyChange<TModel, TProperty>(
             Expression<Func<TModel, TProperty>> modelProperty)
         {
             Debug.Assert(modelProperty.NodeType == ExpressionType.Lambda);

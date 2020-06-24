@@ -127,6 +127,8 @@
     <Compile Include="Services\SchedulingReport\TestReportInstancesTabViewModel.cs" />
     <Compile Include="Services\SchedulingReport\TestReportNodesTabViewModel.cs" />
     <Compile Include="Services\SchedulingReport\TestReportViewModel.cs" />
+    <Compile Include="Services\SerialOutput\TestSerialOutputModel.cs" />
+    <Compile Include="Services\SerialOutput\TestSerialOutputViewModel.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Google.Solutions.Common.Test\Google.Solutions.Common.Test.csproj">

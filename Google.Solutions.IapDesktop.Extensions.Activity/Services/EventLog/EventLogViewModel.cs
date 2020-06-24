@@ -20,6 +20,7 @@
 //
 
 using Google.Solutions.Common.Diagnostics;
+using Google.Solutions.Common.Util;
 using Google.Solutions.IapDesktop.Application;
 using Google.Solutions.IapDesktop.Application.ObjectModel;
 using Google.Solutions.IapDesktop.Application.Services.Integration;
@@ -41,6 +42,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services.EventLog
         : ModelCachingViewModelBase<IProjectExplorerNode, EventLogModel>
     {
         private const int ModelCacheCapacity = 5;
+
         public static readonly ReadOnlyCollection<Timeframe> AvailableTimeframes 
             = new ReadOnlyCollection<Timeframe>(new List<Timeframe>()
         {
@@ -156,11 +158,18 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services.EventLog
         // ModelCachingViewModelBase.
         //---------------------------------------------------------------------
 
-        public static bool IsNodeSupported(IProjectExplorerNode node)
+        public static CommandState GetCommandState(IProjectExplorerNode node)
         {
-            return node is IProjectExplorerProjectNode
+            if (node is IProjectExplorerProjectNode
                 || node is IProjectExplorerZoneNode
-                || node is IProjectExplorerVmInstanceNode;
+                || node is IProjectExplorerVmInstanceNode)
+            {
+                return CommandState.Enabled;
+            }
+            else
+            {
+                return CommandState.Unavailable;
+            }
         }
 
         protected override async Task<EventLogModel> LoadModelAsync(
@@ -205,11 +214,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services.EventLog
                     this.IsTimeframeComboBoxEnabled = false;
                 try
                 {
-                    // If the user is holding down the arrow key in the project explorer,
-                    // we might get a flurry of requests. To catch that, introduce a short,
-                    // cancellable-delay.
-                    await Task.Delay(300, token).ConfigureAwait(true);
-
                     var jobService = this.serviceProvider.GetService<IJobService>();
                     var auditLogAdapter = this.serviceProvider.GetService<IAuditLogAdapter>();
 
@@ -221,15 +225,18 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services.EventLog
                             JobUserFeedbackType.BackgroundFeedback),
                         async jobToken =>
                         {
-                            var model = new EventLogModel();
-                            await auditLogAdapter.ListInstanceEventsAsync(
-                                new[] { projectIdFilter },
-                                zonesFilter,
-                                instanceIdFilter,
-                                DateTime.UtcNow.Subtract(this.SelectedTimeframe.Duration),
-                                model,
-                                token).ConfigureAwait(false);
-                            return model;
+                            using (var combinedTokenSource = jobToken.Combine(token))
+                            {
+                                var model = new EventLogModel();
+                                await auditLogAdapter.ListInstanceEventsAsync(
+                                    new[] { projectIdFilter },
+                                    zonesFilter,
+                                    instanceIdFilter,
+                                    DateTime.UtcNow.Subtract(this.SelectedTimeframe.Duration),
+                                    model,
+                                    combinedTokenSource.Token).ConfigureAwait(false);
+                                return model;
+                            }
                         }).ConfigureAwait(true);  // Back to original (UI) thread.
                 }
                 finally
