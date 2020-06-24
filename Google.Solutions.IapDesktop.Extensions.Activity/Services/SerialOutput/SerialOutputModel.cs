@@ -21,9 +21,9 @@
 
 
 using Google.Apis.Auth.OAuth2.Responses;
-using Google.Solutions.Common.ApiExtensions.Instance;
 using Google.Solutions.Common.Diagnostics;
 using Google.Solutions.Common.Locator;
+using Google.Solutions.Common.Text;
 using Google.Solutions.Common.Util;
 using Google.Solutions.IapDesktop.Application;
 using Google.Solutions.IapDesktop.Application.Services.Adapters;
@@ -37,11 +37,11 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services.SerialOutput
     internal class SerialOutputModel
     {
         private readonly StringBuilder buffer = new StringBuilder();
-        private readonly ISerialPortStream stream;
+        private readonly IAsyncReader<string> stream;
 
         public string Output => this.buffer.ToString();
 
-        private SerialOutputModel(ISerialPortStream stream)
+        private SerialOutputModel(IAsyncReader<string> stream)
         {
             this.stream = stream;
         }

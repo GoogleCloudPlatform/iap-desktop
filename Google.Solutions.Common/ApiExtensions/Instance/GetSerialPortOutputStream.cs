@@ -22,6 +22,7 @@
 using Google.Apis.Compute.v1;
 using Google.Solutions.Common.Diagnostics;
 using Google.Solutions.Common.Locator;
+using Google.Solutions.Common.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -35,7 +36,7 @@ namespace Google.Solutions.Common.ApiExtensions.Instance
         /// <summary>
         /// Read serial port output as a continuous stream.
         /// </summary>
-        public static ISerialPortStream GetSerialPortOutputStream(
+        public static IAsyncReader<string> GetSerialPortOutputStream(
             this InstancesResource resource,
             InstanceLocator instanceRef,
             ushort port)
@@ -44,12 +45,7 @@ namespace Google.Solutions.Common.ApiExtensions.Instance
         }
     }
 
-    public interface ISerialPortStream
-    {
-        Task<string> ReadAsync(CancellationToken token);
-    }
-
-    public class SerialPortStream : ISerialPortStream
+    public sealed class SerialPortStream : IAsyncReader<string>
     {
         public const ushort ConsolePort = 1;
 
@@ -68,6 +64,10 @@ namespace Google.Solutions.Common.ApiExtensions.Instance
             this.instancesResource = instancesResource;
             this.port = port;
             this.instance = instanceRef;
+        }
+
+        public void Dispose()
+        {
         }
 
         public async Task<string> ReadAsync(CancellationToken token)
@@ -89,7 +89,8 @@ namespace Google.Solutions.Common.ApiExtensions.Instance
                     output.Next.Value);
 
                 // If there is no new data, then output.Next == this.nextOffset
-                // and output.Contents is an empty string.
+                // and output.Contents is an empty string. We never return null
+                // because this is an end-less stream.
                 this.nextOffset = output.Next.Value;
                 return output.Contents;
             }
