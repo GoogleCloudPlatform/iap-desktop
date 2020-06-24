@@ -128,6 +128,7 @@
     <Compile Include="Services\SchedulingReport\TestReportNodesTabViewModel.cs" />
     <Compile Include="Services\SchedulingReport\TestReportViewModel.cs" />
     <Compile Include="Services\SerialOutput\TestAnsiTextReader.cs" />
+    <Compile Include="Services\SerialOutput\TestAnsiTokenReader.cs" />
     <Compile Include="Services\SerialOutput\TestSerialOutputModel.cs" />
     <Compile Include="Services\SerialOutput\TestSerialOutputViewModel.cs" />
   </ItemGroup>

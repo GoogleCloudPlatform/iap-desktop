@@ -21,234 +21,34 @@
 
 using Google.Solutions.Common.Text;
 using System;
-using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
 namespace Google.Solutions.IapDesktop.Extensions.Activity.Services.SerialOutput
 {
-    public struct AnsiTextToken
-    {
-        public enum TokenType
-        {
-            Text,
-            Command
-        }
-
-        public TokenType Type;
-        public string Value;
-    }
-
     /// <summary>
-    /// Simple implementation of an ANSI escale sequence parser.
+    /// Reader that extracts pure text out of a string containing
+    /// ANSI escape sequences.
     /// </summary>
-    public class AnsiTextReader : IAsyncReader<IEnumerable<AnsiTextToken>>
+    public class AnsiTextReader : IAsyncReader<string>
     {
-        public const char Escape = (char)0x1B;
-        public const char ControlSequenceIntroducer = '[';
-
-        private readonly IAsyncReader<string> reader;
-
-        private string leftover = string.Empty;
-        private bool lastInputRead = false;
-
-        private enum ScannerState
-        {
-            InText,
-            InEscapeSequence,
-            InCsiSequence
-        }
+        private readonly AnsiTokenReader reader;
 
         public AnsiTextReader(IAsyncReader<string> reader)
         {
-            this.reader = reader;
+            this.reader = new AnsiTokenReader(reader);
         }
 
-        private IEnumerable<AnsiTextToken> Tokenize(string text)
+        public async Task<string> ReadAsync(CancellationToken token)
         {
-            if (text == null)
-            {
-                Debug.Assert(this.leftover.Length > 0);
+            var tokens = await this.reader.ReadAsync(token).ConfigureAwait(false);
 
-                // Return any leftover as text.
-                yield return new AnsiTextToken()
-                {
-                    Type = AnsiTextToken.TokenType.Text,
-                    Value = this.leftover
-                };
-
-                yield break;
-            }
-
-            // Restart scanning including the leftover.
-            text = leftover + text;
-
-            var buffer = new StringBuilder();
-            var state = ScannerState.InText;
-
-            foreach (char c in text)
-            {
-                switch (state)
-                {
-                    case ScannerState.InText:
-                        {
-                            if (c == Escape)
-                            {
-                                if (buffer.Length > 0)
-                                {
-                                    // Flush buffer.
-
-                                    yield return new AnsiTextToken()
-                                    {
-                                        Type = AnsiTextToken.TokenType.Text,
-                                        Value = buffer.ToString()
-                                    };
-
-                                    this.leftover = string.Empty;
-                                    var value = buffer.ToString();
-                                    buffer.Clear();
-                                }
-
-                                state = ScannerState.InEscapeSequence;
-                                buffer.Append(c);
-                            }
-                            else
-                            {
-                                buffer.Append(c);
-                            }
-
-                            break;
-                        }
-
-                    case ScannerState.InEscapeSequence:
-                        {
-                            if (c == ControlSequenceIntroducer)
-                            {
-                                state = ScannerState.InCsiSequence;
-                                buffer.Append(c);
-                            }
-                            else if ((c >= 'A' && c <= '_'))
-                            {
-                                buffer.Append(c);
-
-                                // Second (and last) character of sequence. Flush.
-                                yield return new AnsiTextToken()
-                                {
-                                    Type = AnsiTextToken.TokenType.Command,
-                                    Value = buffer.Remove(0, 1).ToString()
-                                };
-
-                                this.leftover = string.Empty;
-                                buffer.Clear();
-                                state = ScannerState.InText;
-                            }
-                            else
-                            {
-                                throw new AnsiFormatException($"Unrecognized escape sequence {buffer}{c}");
-                            }
-
-                            break;
-                        }
-
-                    case ScannerState.InCsiSequence:
-                        {
-                            Debug.Assert(buffer.Length >= 2);
-                            Debug.Assert(buffer[0] == Escape);
-                            Debug.Assert(buffer[1] == ControlSequenceIntroducer);
-
-                            if (c >= '0' && c < '?')
-                            {
-                                // Parameter byte.
-                                buffer.Append(c);
-                            }
-                            else if (c >= ' ' && c <= '/')
-                            {
-                                // Intermediate byte.
-                                buffer.Append(c);
-                            }
-                            else if (c >= 'A' && c <= '~')
-                            {
-                                // Final byte.
-                                buffer.Append(c);
-
-                                // Flush.
-                                yield return new AnsiTextToken()
-                                {
-                                    Type = AnsiTextToken.TokenType.Command,
-                                    Value = buffer.Remove(0, 1).ToString()
-                                };
-
-                                this.leftover = string.Empty;
-                                buffer.Clear();
-                                state = ScannerState.InText;
-                            }
-                            else
-                            {
-                                throw new AnsiFormatException($"Unrecognized escape sequence {buffer}{c}");
-                            }
-
-                            break;
-                        }
-                }
-            }
-
-            // No more characters left to parse.
-            switch (state)
-            {
-                case ScannerState.InText:
-                    {
-                        this.leftover = string.Empty;
-                        if (buffer.Length > 0)
-                        {
-                            yield return new AnsiTextToken()
-                            {
-                                Type = AnsiTextToken.TokenType.Text,
-                                Value = buffer.ToString()
-                            };
-                        }
-
-                        break;
-                    }
-
-                case ScannerState.InEscapeSequence:
-                case ScannerState.InCsiSequence:
-                    {
-                        // We are in the middle of a sequence here.
-                        this.leftover = buffer.ToString();
-                        break;
-                    }
-            }
-        }
-
-        public async Task<IEnumerable<AnsiTextToken>> ReadAsync(
-            CancellationToken token)
-        {
-            if (this.lastInputRead)
-            {
-                return null;
-            }
-
-            var input = await this.reader
-                .ReadAsync(token)
-                .ConfigureAwait(false);
-            if (input == null)
-            {
-                // End of stream. 
-                this.lastInputRead = true;
-
-                if (this.leftover.Length == 0)
-                {
-                    return null;
-                }
-            }
-
-            // NB. Because Tokenize() maintains the 'leftover' state, re-evaluating
-            // the Enumerable changes the state. Therefore, snapshot the resulting
-            // Enumerable by turning it into a list.
-            return Tokenize(input).ToList();
+            return string.Join(
+                string.Empty,
+                tokens
+                    .Where(t => t.Type == AnsiTextToken.TokenType.Text)
+                    .Select(t => t.Value));
         }
 
         public void Dispose()
@@ -263,14 +63,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services.SerialOutput
             {
                 this.reader.Dispose();
             }
-        }
-    }
-
-    public class AnsiFormatException : Exception
-    {
-        public AnsiFormatException(string message) : base(message)
-        {
-
         }
     }
 }

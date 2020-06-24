@@ -161,6 +161,7 @@
     </Compile>
     <Compile Include="Services\SchedulingReport\ReportViewModel.cs" />
     <Compile Include="Services\SerialOutput\AnsiTextReader.cs" />
+    <Compile Include="Services\SerialOutput\AnsiTokenReader.cs" />
     <Compile Include="Services\SerialOutput\SerialOutputModel.cs" />
     <Compile Include="Services\SerialOutput\SerialOutputViewModel.cs" />
     <Compile Include="Services\SerialOutput\SerialOutputWindow.cs">

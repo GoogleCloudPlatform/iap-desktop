@@ -65,7 +65,13 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services.SerialOutput
             ushort portNumber,
             CancellationToken token)
         {
-            var stream = adapter.GetSerialPortOutput(instanceLocator, portNumber);
+            // The serial port log can contain VT100 control sequences, but
+            // they are limited to trivial command such as "clear screen". 
+            // As there is not much value in preserving these, use an
+            // AnsiTextReader to filter out all escape sequences.
+
+            var stream = new AnsiTextReader(
+                adapter.GetSerialPortOutput(instanceLocator, portNumber));
             var model = new SerialOutputModel(stream);
 
             // Read all existing output.
