@@ -21,7 +21,6 @@
 
 using Google.Solutions.IapDesktop.Application.ObjectModel;
 using Google.Solutions.IapDesktop.Application.Services.Windows.ProjectExplorer;
-using System.Linq;
 using Google.Solutions.Common.Diagnostics;
 using System.Diagnostics;
 using System.Threading.Tasks;
@@ -32,14 +31,15 @@ using System.Windows.Forms;
 
 namespace Google.Solutions.IapDesktop.Extensions.Activity.Services.SerialOutput
 {
-    [Service(ServiceLifetime.Singleton)]
     [SkipCodeCoverage("All logic in view model")]
     internal partial class SerialOutputWindow
         : ProjectExplorerTrackingToolWindow<SerialOutputViewModel>
     {
         private readonly SerialOutputViewModel viewModel;
 
-        public SerialOutputWindow(IServiceProvider serviceProvider)
+        public SerialOutputWindow(
+            IServiceProvider serviceProvider, 
+            ushort serialPortNumber)
             : base(
                   serviceProvider.GetService<IMainForm>().MainPanel,
                   serviceProvider.GetService<IProjectExplorer>(),
@@ -49,7 +49,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services.SerialOutput
             InitializeComponent();
             this.theme.ApplyTo(this.toolStrip);
 
-            this.viewModel = new SerialOutputViewModel(serviceProvider, 1);
+            this.Text += $" (COM{serialPortNumber})";
+
+            this.viewModel = new SerialOutputViewModel(serviceProvider, serialPortNumber);
             this.viewModel.OnPropertyChange(
                 m => m.Output,
                 text =>

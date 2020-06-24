@@ -168,6 +168,9 @@
     <Compile Include="Services\SerialOutput\SerialOutputWindow.Designer.cs">
       <DependentUpon>SerialOutputWindow.cs</DependentUpon>
     </Compile>
+    <Compile Include="Services\SerialOutput\SerialOutputWindowComX.cs">
+      <SubType>Form</SubType>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Google.Solutions.Common\Google.Solutions.Common.csproj">

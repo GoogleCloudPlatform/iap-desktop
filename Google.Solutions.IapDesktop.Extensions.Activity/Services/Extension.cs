@@ -111,9 +111,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services
 
             projectExplorer.Commands.AddCommand(
                 new Command<IProjectExplorerNode>(
-                    "Show serial port &output",
+                    "Show serial port &output (COM1)",
                     SerialOutputViewModel.GetCommandState,
-                    context => this.serviceProvider.GetService<SerialOutputWindow>().ShowWindow())
+                    context => this.serviceProvider.GetService<SerialOutputWindowCom1>().ShowWindow())
                 {
                     Image = Resources.Log_16
                 },
@@ -135,21 +135,46 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services
             var mainForm = serviceProvider.GetService<IMainForm>();
             mainForm.ViewCommands.AddCommand(
                 new Command<IMainForm>(
-                    "Serial port &output",
-                    pseudoContext => CommandState.Enabled,
-                    pseudoContext => this.serviceProvider.GetService<SerialOutputWindow>().ShowWindow())
-                {
-                    Image = Resources.Log_16,
-                    ShortcutKeys = Keys.Control | Keys.Alt | Keys.O
-                });
-            mainForm.ViewCommands.AddCommand(
-                new Command<IMainForm>(
                     "&Event log window",
                     pseudoContext => CommandState.Enabled,
                     pseudoContext => this.serviceProvider.GetService<EventLogWindow>().ShowWindow())
                 {
                     Image = Resources.EventLog_16,
                     ShortcutKeys = Keys.Control | Keys.Alt | Keys.E
+                });
+
+            var serialPortMenu = mainForm.ViewCommands.AddCommand(
+                new Command<IMainForm>(
+                    "Serial port &output",
+                    pseudoContext => CommandState.Enabled,
+                    pseudoContext => { })
+                {
+                    Image = Resources.Log_16,
+                });
+            serialPortMenu.AddCommand(
+                new Command<IMainForm>(
+                    "COM&1 (log)",
+                    pseudoContext => CommandState.Enabled,
+                    pseudoContext => this.serviceProvider.GetService<SerialOutputWindowCom1>().ShowWindow())
+                {
+                    Image = Resources.Log_16,
+                    ShortcutKeys = Keys.Control | Keys.Alt | Keys.O
+                });
+            serialPortMenu.AddCommand(
+                new Command<IMainForm>(
+                    "COM&3",
+                    pseudoContext => CommandState.Enabled,
+                    pseudoContext => this.serviceProvider.GetService<SerialOutputWindowCom3>().ShowWindow())
+                {
+                    Image = Resources.Log_16,
+                });
+            serialPortMenu.AddCommand(
+                new Command<IMainForm>(
+                    "COM&4",
+                    pseudoContext => CommandState.Enabled,
+                    pseudoContext => this.serviceProvider.GetService<SerialOutputWindowCom4>().ShowWindow())
+                {
+                    Image = Resources.Log_16,
                 });
         }
     }
