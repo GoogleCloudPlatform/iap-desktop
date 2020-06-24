@@ -19,7 +19,6 @@
 // under the License.
 //
 
-
 using Google.Apis.Auth.OAuth2.Responses;
 using Google.Solutions.Common.Diagnostics;
 using Google.Solutions.Common.Locator;
