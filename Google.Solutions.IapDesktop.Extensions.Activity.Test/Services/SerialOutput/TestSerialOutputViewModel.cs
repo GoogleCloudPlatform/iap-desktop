@@ -217,7 +217,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.Services.EventLog
             StringAssert.Contains("Instance setup finished", this.viewModel.Output);
         }
 
-            [Test]
+        [Test]
         public void WhenSwitchingPort_ThenOutputIsPopulated()
         {
             Assert.Inconclusive();

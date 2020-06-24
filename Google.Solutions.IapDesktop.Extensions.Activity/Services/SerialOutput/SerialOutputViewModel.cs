@@ -21,6 +21,7 @@
 
 using Google.Solutions.Common.Diagnostics;
 using Google.Solutions.Common.Locator;
+using Google.Solutions.Common.Util;
 using Google.Solutions.IapDesktop.Application;
 using Google.Solutions.IapDesktop.Application.ObjectModel;
 using Google.Solutions.IapDesktop.Application.Services.Adapters;
@@ -233,12 +234,15 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services.SerialOutput
                             JobUserFeedbackType.BackgroundFeedback),
                         async jobToken =>
                         {
-                            return await SerialOutputModel.LoadAsync(
-                                this.serviceProvider.GetService<IComputeEngineAdapter>(),
-                                instanceLocator,
-                                AvailablePorts[this.SelectedPortIndex].Number,
-                                token)  // TODO: combine tokens
-                            .ConfigureAwait(false);
+                            using (var combinedTokenSource = jobToken.Combine(token))
+                            {
+                                return await SerialOutputModel.LoadAsync(
+                                    this.serviceProvider.GetService<IComputeEngineAdapter>(),
+                                    instanceLocator,
+                                    AvailablePorts[this.SelectedPortIndex].Number,
+                                    combinedTokenSource.Token)
+                                .ConfigureAwait(false);
+                            }
                         }).ConfigureAwait(true);  // Back to original (UI) thread.
                 }
                 else

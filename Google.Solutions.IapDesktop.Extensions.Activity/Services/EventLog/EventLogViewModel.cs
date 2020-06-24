@@ -20,6 +20,7 @@
 //
 
 using Google.Solutions.Common.Diagnostics;
+using Google.Solutions.Common.Util;
 using Google.Solutions.IapDesktop.Application;
 using Google.Solutions.IapDesktop.Application.ObjectModel;
 using Google.Solutions.IapDesktop.Application.Services.Integration;
@@ -224,15 +225,18 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services.EventLog
                             JobUserFeedbackType.BackgroundFeedback),
                         async jobToken =>
                         {
-                            var model = new EventLogModel();
-                            await auditLogAdapter.ListInstanceEventsAsync(
-                                new[] { projectIdFilter },
-                                zonesFilter,
-                                instanceIdFilter,
-                                DateTime.UtcNow.Subtract(this.SelectedTimeframe.Duration),
-                                model,
-                                token).ConfigureAwait(false);
-                            return model;
+                            using (var combinedTokenSource = jobToken.Combine(token))
+                            {
+                                var model = new EventLogModel();
+                                await auditLogAdapter.ListInstanceEventsAsync(
+                                    new[] { projectIdFilter },
+                                    zonesFilter,
+                                    instanceIdFilter,
+                                    DateTime.UtcNow.Subtract(this.SelectedTimeframe.Duration),
+                                    model,
+                                    combinedTokenSource.Token).ConfigureAwait(false);
+                                return model;
+                            }
                         }).ConfigureAwait(true);  // Back to original (UI) thread.
                 }
                 finally
