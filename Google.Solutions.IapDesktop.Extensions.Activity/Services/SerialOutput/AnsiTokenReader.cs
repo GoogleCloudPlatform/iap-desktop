@@ -185,6 +185,13 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services.SerialOutput
                                 buffer.Clear();
                                 state = ScannerState.InText;
                             }
+                            else if (c == Escape)
+                            {
+                                // This is non-properly terminated CSI sequence. Drop it.
+                                buffer.Clear();
+                                state = ScannerState.InEscapeSequence;
+                                buffer.Append(c);
+                            }
                             else
                             {
                                 throw new AnsiFormatException($"Unrecognized escape sequence {buffer}{c}");

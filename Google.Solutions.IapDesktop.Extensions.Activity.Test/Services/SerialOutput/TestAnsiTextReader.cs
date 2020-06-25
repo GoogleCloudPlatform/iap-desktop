@@ -65,6 +65,38 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.Services.SerialOu
             Assert.AreEqual(" and more text", await reader.ReadAsync(CancellationToken.None));
         }
 
+        [Test]
+        public async Task WhenStreamContainsImproperlyTerminatedTokens_ThenTokensAreFilteredOut()
+        {
+            var input = new[]
+            {
+                "\u001B[2Jsome text\u001B",
+                "[2J\u001B[2J",
+                "\u001b[01;01\u001b",
+                "[01;01H and more text\u001B[2J"
+            };
+
+            var reader = new AnsiTextReader(new EnumerationReader<string>(input));
+
+            Assert.AreEqual("some text", await reader.ReadAsync(CancellationToken.None));
+            Assert.AreEqual("", await reader.ReadAsync(CancellationToken.None));
+            Assert.AreEqual("", await reader.ReadAsync(CancellationToken.None));
+            Assert.AreEqual(" and more text", await reader.ReadAsync(CancellationToken.None));
+        }
+
+        [Test]
+        public async Task WhenStreamContainsTruncatedTokens_ThenTokensAreFilteredOut()
+        {
+            var input = new[]
+            {
+                "[2Jsome text\u001B"
+            };
+
+            var reader = new AnsiTextReader(new EnumerationReader<string>(input));
+
+            Assert.AreEqual("[2Jsome text", await reader.ReadAsync(CancellationToken.None));
+        }
+
         private class EnumerationReader<T> : IAsyncReader<T> where T : class
         {
             private readonly IEnumerator<T> enumerator;
