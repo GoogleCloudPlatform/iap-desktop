@@ -188,6 +188,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services.EventLog
             this.list.GridLines = true;
             this.list.HideSelection = false;
             this.list.Location = new System.Drawing.Point(0, 25);
+            this.list.MultiSelect = false;
             this.list.Name = "list";
             this.list.OwnerDraw = true;
             this.list.SelectedModelItem = null;
