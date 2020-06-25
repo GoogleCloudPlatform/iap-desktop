@@ -83,9 +83,9 @@ namespace Google.Solutions.IapDesktop.Windows
                 InitializeComponent();
             }
 
-            // Set fixed size for the left/right panels.
+            // Set fixed size for the left/right panels (in pixels).
             this.dockPanel.DockLeftPortion =
-                this.dockPanel.DockRightPortion = (300.0f / this.Width);
+                this.dockPanel.DockRightPortion = 300.0f;
 
             //
             // Bind controls.
