@@ -140,7 +140,6 @@ namespace Google.Solutions.IapDesktop.Application.ObjectModel
                     }
                     else
                     {
-
                         this.transients[attribute.ServiceInterface ?? type] = 
                             () => CreateInstance(type);
                     }

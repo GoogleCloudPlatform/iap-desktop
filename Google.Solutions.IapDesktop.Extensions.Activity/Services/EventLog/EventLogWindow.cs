@@ -84,12 +84,24 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services.EventLog
                 m => m.IsIncludeSystemEventsButtonChecked,
                 this.components);
 
+            this.openInCloudConsoleToolStripMenuItem.BindProperty(
+                b => b.Enabled,
+                this.viewModel,
+                m => m.IsOpenSelectedEventInCloudConsoleButtonEnabled,
+                this.components);
+
             // Bind list.
             this.list.BindProperty(
                 c => c.Enabled,
                 this.viewModel,
                 m => m.IsEventListEnabled,
                 this.components);
+            this.list.BindProperty(
+                c => c.SelectedModelItem,
+                this.viewModel,
+                m => m.SelectedEvent,
+                this.components);
+
             this.list.BindColumn(0, e => e.Timestamp.ToString());
             this.list.BindColumn(1, e => GetInstanceName(e));
             this.list.BindColumn(2, e => e.Severity);
@@ -145,6 +157,15 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services.EventLog
         {
             this.viewModel.Refresh();
         }
+
+        private void openInCloudConsoleToolStripMenuItem_Click(object sender, EventArgs e)
+            => this.viewModel.OpenSelectedEventInCloudConsole();
+
+        private void list_DoubleClick(object sender, EventArgs e)
+            => this.viewModel.OpenSelectedEventInCloudConsole();
+
+        private void openLogsButton_Click(object sender, EventArgs e)
+            => this.viewModel.OpenInCloudConsole();
     }
 
     public class EventsListView : BindableListView<EventBase>

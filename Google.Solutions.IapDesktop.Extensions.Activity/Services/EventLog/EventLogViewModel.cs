@@ -24,6 +24,7 @@ using Google.Solutions.Common.Util;
 using Google.Solutions.IapDesktop.Application;
 using Google.Solutions.IapDesktop.Application.ObjectModel;
 using Google.Solutions.IapDesktop.Application.Services.Integration;
+using Google.Solutions.IapDesktop.Application.Services.Windows;
 using Google.Solutions.IapDesktop.Application.Services.Windows.ProjectExplorer;
 using Google.Solutions.IapDesktop.Application.Util;
 using Google.Solutions.IapDesktop.Extensions.Activity.Events;
@@ -31,6 +32,7 @@ using Google.Solutions.IapDesktop.Extensions.Activity.Services.Adapters;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -53,6 +55,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services.EventLog
 
         private readonly IServiceProvider serviceProvider;
 
+        private EventBase selectedEvent;
         private int selectedTimeframeIndex = 0;
         private bool isEventListEnabled = false;
         private bool isRefreshButtonEnabled = false;
@@ -76,6 +79,23 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services.EventLog
         //---------------------------------------------------------------------
         // Observable properties.
         //---------------------------------------------------------------------
+
+        public EventBase SelectedEvent
+        {
+            get => this.selectedEvent;
+            set
+            {
+                this.selectedEvent = value;
+
+                RaisePropertyChange();
+                RaisePropertyChange((EventLogViewModel m) => m.IsOpenSelectedEventInCloudConsoleButtonEnabled);
+            }
+        }
+
+        public bool IsOpenSelectedEventInCloudConsoleButtonEnabled
+        {
+            get => this.selectedEvent != null;
+        }
 
         public bool IsEventListEnabled
         {
@@ -153,6 +173,23 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services.EventLog
         //---------------------------------------------------------------------
 
         public void Refresh() => InvalidateAsync().ConfigureAwait(true);
+
+        public void OpenSelectedEventInCloudConsole()
+        {
+            if (this.SelectedEvent != null)
+            {
+                this.serviceProvider.GetService<CloudConsoleService>().OpenVmInstanceLogDetails(
+                    this.SelectedEvent.LogRecord.ProjectId,
+                    this.SelectedEvent.LogRecord.InsertId,
+                    this.SelectedEvent.Timestamp);
+            }
+        }
+
+        public void OpenInCloudConsole()
+        {
+            Debug.Assert(!(this.ModelKey is IProjectExplorerCloudNode));
+            this.serviceProvider.GetService<CloudConsoleService>().OpenLogs(this.ModelKey);
+        }
 
         //---------------------------------------------------------------------
         // ModelCachingViewModelBase.
