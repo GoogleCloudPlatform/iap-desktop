@@ -77,11 +77,13 @@ namespace Google.Solutions.IapDesktop.Application.Services.Windows.RemoteDesktop
             using (TraceSources.IapDesktop.TraceMethod().WithParameters(e.Message))
             {
                 await this.eventService.FireAsync(
-                    new RemoteDesktopConnectionFailedEvent(this.Instance, e));
+                    new RemoteDesktopConnectionFailedEvent(this.Instance, e))
+                    .ConfigureAwait(true);
                 this.exceptionDialog.Show(this, caption, e);
                 Close();
             }
         }
+
         //---------------------------------------------------------------------
         // Publics.
         //---------------------------------------------------------------------
@@ -97,6 +99,10 @@ namespace Google.Solutions.IapDesktop.Application.Services.Windows.RemoteDesktop
 
             this.TabText = vmInstance.Name;
             this.DockAreas = DockAreas.Document;
+
+            // The ActiveX fails when trying to drag/dock a window, so disable
+            // that feature.
+            this.AllowEndUserDocking = false;
 
             var fullScreenMenuItem = new ToolStripMenuItem("&Full screen");
             fullScreenMenuItem.Click += fullScreenMenuItem_Click;
