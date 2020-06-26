@@ -136,7 +136,7 @@ $NunitArguments = `
     "Google.Solutions.IapTunneling.Test\bin\release\Google.Solutions.IapTunneling.Test.dll " + `
     "Google.Solutions.IapDesktop.Extensions.Activity.Test\bin\release\Google.Solutions.IapDesktop.Extensions.Activity.Test.dll " + `
     "Google.Solutions.IapDesktop.Application.Test\bin\release\Google.Solutions.IapDesktop.Application.Test.dll " + `
-    "--result=sponge_log.xml;transform=kokoro\nunit-to-sponge.xsl "
+    "--result=sponge_log.xml;transform=..\kokoro\nunit-to-sponge.xsl "
 #    "--where \""cat != IntegrationTest\"""
 
 & $OpenCover `

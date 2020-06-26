@@ -260,14 +260,14 @@ paket-files/
 __pycache__/
 *.pyc
 
-Google.Solutions.CloudIap.IapClient/OAuthClient.cs
-Google.Solutions.CloudIap.Plugin/OAuthClient.cs
-Google.Solutions.IapDesktop/OAuthClient.cs
+sources/Google.Solutions.CloudIap.IapClient/OAuthClient.cs
+sources/Google.Solutions.CloudIap.Plugin/OAuthClient.cs
+sources/Google.Solutions.IapDesktop/OAuthClient.cs
 
 .terraform/
 *.tfstate
 *.tfstate.backup
 
-coveragereport/
-opencovertests.xml
-sponge_log.xml
+source/coveragereport/
+source/opencovertests.xml
+source/sponge_log.xml

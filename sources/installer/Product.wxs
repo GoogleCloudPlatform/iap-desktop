@@ -170,7 +170,7 @@
           Id="FileReadme"
           Name="README.md"
           DiskId="1"
-          Source="README.md"
+          Source="..\README.md"
           Vital="yes"/>
         <File
           Id="FileIapDesktopExe"
