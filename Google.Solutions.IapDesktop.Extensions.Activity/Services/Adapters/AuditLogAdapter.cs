@@ -107,7 +107,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services.Adapters
                 {
                     throw new ResourceAccessDeniedException(
                         "You do not have sufficient permissions to view logs. " +
-                        "You need the 'Logs Viewer' (or equivalent custom roles) " +
+                        "You need the 'Logs Viewer' role (or an equivalent custom role) " +
                         "to perform this action.", 
                         e);
                 }
