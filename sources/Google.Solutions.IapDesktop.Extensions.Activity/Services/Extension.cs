@@ -101,7 +101,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services
 
                 reportCommand.AddCommand(
                     new Command<IProjectExplorerNode>(
-                        "Instance and node usage...",
+                        "New instance/node usage report...",
                         context => CommandState.Enabled,
                         context => CreateReport(context))
                     {
