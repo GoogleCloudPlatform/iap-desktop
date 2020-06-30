@@ -36,6 +36,13 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services.EventLog
         public IEnumerable<string> SupportedMethods =>
             EventFactory.LifecycleEventMethods.Concat(EventFactory.SystemEventMethods);
 
+        public string DisplayName { get; }
+
+        public EventLogModel(string displayName)
+        {
+            this.DisplayName = displayName;
+        }
+
         public void Process(EventBase e)
         {
             this.events.Add(e);

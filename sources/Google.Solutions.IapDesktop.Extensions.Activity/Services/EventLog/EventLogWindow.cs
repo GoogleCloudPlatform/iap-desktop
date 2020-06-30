@@ -55,6 +55,10 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services.EventLog
 
             this.timeFrameComboBox.Items.AddRange(EventLogViewModel.AvailableTimeframes.ToArray());
 
+            this.components.Add(this.viewModel.OnPropertyChange(
+                m => m.WindowTitle,
+                title => this.TabText = title));
+
             // Bind toolbar buttons.
             this.timeFrameComboBox.BindProperty(
                 c => c.SelectedIndex,
