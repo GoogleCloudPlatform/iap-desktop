@@ -39,9 +39,11 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services.SerialOutput
         private readonly IAsyncReader<string> stream;
 
         public string Output => this.buffer.ToString();
+        public string DisplayName { get; }
 
-        private SerialOutputModel(IAsyncReader<string> stream)
+        private SerialOutputModel(string displayName, IAsyncReader<string> stream)
         {
+            this.DisplayName = displayName;
             this.stream = stream;
         }
 
@@ -60,6 +62,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services.SerialOutput
         }
 
         public async static Task<SerialOutputModel> LoadAsync(
+            string displayName,
             IComputeEngineAdapter adapter,
             InstanceLocator instanceLocator,
             ushort portNumber,
@@ -72,7 +75,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services.SerialOutput
 
             var stream = new AnsiTextReader(
                 adapter.GetSerialPortOutput(instanceLocator, portNumber));
-            var model = new SerialOutputModel(stream);
+            var model = new SerialOutputModel(displayName, stream);
 
             // Read all existing output.
             while (await model.ReadAndBufferAsync(token).ConfigureAwait(false) != string.Empty)

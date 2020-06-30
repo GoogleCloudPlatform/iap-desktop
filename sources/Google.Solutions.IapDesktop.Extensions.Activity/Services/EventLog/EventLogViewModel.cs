@@ -44,6 +44,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services.EventLog
         : ModelCachingViewModelBase<IProjectExplorerNode, EventLogModel>
     {
         private const int ModelCacheCapacity = 5;
+        internal const string DefaultWindowTitle = "Event log";
 
         public static readonly ReadOnlyCollection<Timeframe> AvailableTimeframes 
             = new ReadOnlyCollection<Timeframe>(new List<Timeframe>()
@@ -62,6 +63,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services.EventLog
         private bool isTimeframeComboBoxEnabled = false;
         private bool includeSystemEvents = true;
         private bool includeLifecycleEvents = true;
+        private string windowTitle = DefaultWindowTitle;
 
         private Timeframe SelectedTimeframe => AvailableTimeframes[this.selectedTimeframeIndex];
 
@@ -168,6 +170,16 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services.EventLog
             }
         }
 
+        public string WindowTitle
+        {
+            get => this.windowTitle;
+            set
+            {
+                this.windowTitle = value;
+                RaisePropertyChange();
+            }
+        }
+
         //---------------------------------------------------------------------
         // Actions.
         //---------------------------------------------------------------------
@@ -218,25 +230,25 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services.EventLog
                 IEnumerable<ulong> instanceIdFilter;
                 IEnumerable<string> zonesFilter;
                 string projectIdFilter;
-                string friendlyName;
+                string displayName;
 
                 if (node is IProjectExplorerVmInstanceNode vmNode)
                 {
-                    friendlyName = vmNode.InstanceName;
+                    displayName = vmNode.InstanceName;
                     instanceIdFilter = new[] { vmNode.InstanceId };
                     zonesFilter = null;
                     projectIdFilter = vmNode.ProjectId;
                 }
                 else if (node is IProjectExplorerZoneNode zoneNode)
                 {
-                    friendlyName = zoneNode.ZoneId;
+                    displayName = zoneNode.ZoneId;
                     instanceIdFilter = null;
                     zonesFilter = new[] { zoneNode.ZoneId };
                     projectIdFilter = zoneNode.ProjectId;
                 }
                 else if (node is IProjectExplorerProjectNode projectNode)
                 {
-                    friendlyName = projectNode.ProjectId;
+                    displayName = projectNode.ProjectId;
                     instanceIdFilter = null;
                     zonesFilter = null;
                     projectIdFilter = projectNode.ProjectId;
@@ -258,13 +270,13 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services.EventLog
                     // of authentication issues.
                     return await jobService.RunInBackground(
                         new JobDescription(
-                            $"Loading logs for {friendlyName}",
+                            $"Loading logs for {displayName}",
                             JobUserFeedbackType.BackgroundFeedback),
                         async jobToken =>
                         {
                             using (var combinedTokenSource = jobToken.Combine(token))
                             {
-                                var model = new EventLogModel();
+                                var model = new EventLogModel(displayName);
                                 await auditLogAdapter.ListInstanceEventsAsync(
                                     new[] { projectIdFilter },
                                     zonesFilter,
@@ -292,10 +304,13 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services.EventLog
             {
                 // Unsupported node.
                 this.IsEventListEnabled = false;
+                this.WindowTitle = DefaultWindowTitle;
             }
             else
             {
                 this.IsEventListEnabled = true;
+                this.WindowTitle = DefaultWindowTitle + $": {this.Model.DisplayName}";
+
                 this.Events.AddRange(this.Model.Events
                     .Where(e => !e.LogRecord.IsActivityEvent || this.includeLifecycleEvents)
                     .Where(e => !e.LogRecord.IsSystemEvent || this.includeSystemEvents));

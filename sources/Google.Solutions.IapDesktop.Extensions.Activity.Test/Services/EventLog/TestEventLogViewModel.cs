@@ -180,6 +180,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.Services.EventLog
             await this.viewModel.SwitchToModelAsync(node.Object);
 
             Assert.IsFalse(this.viewModel.IsEventListEnabled);
+            Assert.AreEqual(EventLogViewModel.DefaultWindowTitle, this.viewModel.WindowTitle);
+
             Assert.IsFalse(this.viewModel.Events.Any());
         }
 
@@ -195,6 +197,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.Services.EventLog
             await this.viewModel.SwitchToModelAsync(node.Object);
 
             Assert.IsTrue(this.viewModel.IsEventListEnabled);
+            StringAssert.Contains(EventLogViewModel.DefaultWindowTitle, this.viewModel.WindowTitle);
+            StringAssert.Contains("project-1", this.viewModel.WindowTitle);
+
             Assert.AreEqual(2, this.viewModel.Events.Count);
         }
 
@@ -211,6 +216,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.Services.EventLog
             await this.viewModel.SwitchToModelAsync(node.Object);
 
             Assert.IsTrue(this.viewModel.IsEventListEnabled);
+            StringAssert.Contains(EventLogViewModel.DefaultWindowTitle, this.viewModel.WindowTitle);
+            StringAssert.Contains("zone-1", this.viewModel.WindowTitle);
+
             Assert.AreEqual(2, this.viewModel.Events.Count);
         }
 
@@ -228,6 +236,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.Services.EventLog
             await this.viewModel.SwitchToModelAsync(node.Object);
 
             Assert.IsTrue(this.viewModel.IsEventListEnabled);
+            StringAssert.Contains(EventLogViewModel.DefaultWindowTitle, this.viewModel.WindowTitle);
+            StringAssert.Contains("instance-1", this.viewModel.WindowTitle);
+
             Assert.AreEqual(2, this.viewModel.Events.Count);
         }
 
