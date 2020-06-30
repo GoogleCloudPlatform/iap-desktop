@@ -38,17 +38,18 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services.SerialOutput
         : ModelCachingViewModelBase<IProjectExplorerNode, SerialOutputModel>
     {
         private const int ModelCacheCapacity = 10;
+        internal const string DefaultWindowTitle = "Serial log";
+
+        internal CancellationTokenSource TailCancellationTokenSource = null;
 
         private readonly IServiceProvider serviceProvider;
         private readonly ushort serialPortNumber;
 
         private bool isOutputBoxEnabled = false;
         private bool isEnableTailingButtonEnabled = false;
-
-        internal CancellationTokenSource TailCancellationTokenSource = null;
-
         private bool isTailEnabled = true;
         private bool isTailBlocked = true;
+        private string windowTitle = DefaultWindowTitle;
 
         public event EventHandler<string> NewOutputAvailable;
 
@@ -171,6 +172,16 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services.SerialOutput
             }
         }
 
+        public string WindowTitle
+        {
+            get => this.windowTitle;
+            set
+            {
+                this.windowTitle = value;
+                RaisePropertyChange();
+            }
+        }
+
         //---------------------------------------------------------------------
         // Actions.
         //---------------------------------------------------------------------
@@ -216,6 +227,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services.SerialOutput
                             using (var combinedTokenSource = jobToken.Combine(token))
                             {
                                 return await SerialOutputModel.LoadAsync(
+                                    vmNode.InstanceName,
                                     this.serviceProvider.GetService<IComputeEngineAdapter>(),
                                     instanceLocator,
                                     this.serialPortNumber,
@@ -242,11 +254,14 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services.SerialOutput
                 if (this.Model == null)
                 {
                     // Unsupported node.
+                    this.WindowTitle = DefaultWindowTitle + $" (COM{this.serialPortNumber})"; 
                     this.IsEnableTailingButtonEnabled = 
                         this.IsOutputBoxEnabled = false;
                 }
                 else
                 {
+                    this.WindowTitle = DefaultWindowTitle + 
+                        $": {this.Model.DisplayName} (COM{this.serialPortNumber})";
                     this.IsEnableTailingButtonEnabled =
                         this.IsOutputBoxEnabled = true;
                 }

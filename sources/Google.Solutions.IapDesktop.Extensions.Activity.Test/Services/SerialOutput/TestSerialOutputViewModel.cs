@@ -193,6 +193,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.Services.SerialOu
 
             Assert.IsFalse(this.viewModel.IsEnableTailingButtonEnabled);
             Assert.IsFalse(this.viewModel.IsOutputBoxEnabled);
+            StringAssert.Contains(SerialOutputViewModel.DefaultWindowTitle, this.viewModel.WindowTitle);
         }
         [Test]
         public async Task WhenSwitchingToStoppedInstanceNode_ThenControlsAreDisabled(
@@ -203,6 +204,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.Services.SerialOu
 
             Assert.IsFalse(this.viewModel.IsEnableTailingButtonEnabled);
             Assert.IsFalse(this.viewModel.IsOutputBoxEnabled);
+            StringAssert.Contains(SerialOutputViewModel.DefaultWindowTitle, this.viewModel.WindowTitle);
         }
 
         [Test]
@@ -215,6 +217,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.Services.SerialOu
             Assert.IsTrue(this.viewModel.IsEnableTailingButtonEnabled);
             Assert.IsTrue(this.viewModel.IsOutputBoxEnabled);
             StringAssert.Contains("Instance setup finished", this.viewModel.Output);
+
+            StringAssert.Contains(SerialOutputViewModel.DefaultWindowTitle, this.viewModel.WindowTitle);
+            StringAssert.Contains(testInstance.InstanceReference.Name, this.viewModel.WindowTitle);
         }
 
         [Test]

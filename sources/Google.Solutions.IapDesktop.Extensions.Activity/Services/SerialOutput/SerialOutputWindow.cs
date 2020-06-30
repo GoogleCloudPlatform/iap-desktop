@@ -46,13 +46,17 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services.SerialOutput
                   serviceProvider.GetService<IEventService>(),
                   serviceProvider.GetService<IExceptionDialog>())
         {
+            this.components = new System.ComponentModel.Container();
+
             InitializeComponent();
             this.theme.ApplyTo(this.toolStrip);
 
-            this.Text += $" (COM{serialPortNumber})";
-
             this.viewModel = new SerialOutputViewModel(serviceProvider, serialPortNumber);
-            this.viewModel.OnPropertyChange(
+
+            this.components.Add(this.viewModel.OnPropertyChange(
+                m => m.WindowTitle,
+                title => this.TabText = title));
+            this.components.Add(this.viewModel.OnPropertyChange(
                 m => m.Output,
                 text =>
                 {
@@ -63,7 +67,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services.SerialOutput
                         // the bottom.
                         this.output.AppendText(text);
                     }
-                });
+                }));
 
             this.enableTailButton.BindProperty(
                 c => c.Checked,

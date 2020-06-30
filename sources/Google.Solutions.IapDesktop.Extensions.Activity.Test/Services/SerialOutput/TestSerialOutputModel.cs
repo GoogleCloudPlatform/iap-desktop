@@ -45,12 +45,14 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.Services.SerialOu
             await testInstance.AwaitReady();
             
             var model = await SerialOutputModel.LoadAsync(
+                "display-name",
                 new ComputeEngineAdapter(Defaults.GetCredential()),
                 await testInstance.GetInstanceAsync(),
                 SerialPortStream.ConsolePort,
                 CancellationToken.None);
 
             Assert.IsFalse(string.IsNullOrWhiteSpace(model.Output));
+            Assert.AreEqual("display-name", model.DisplayName);
             StringAssert.Contains("Instance setup finished", model.Output);
         }
 
@@ -69,6 +71,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.Services.SerialOu
 
             // Let it load successfully...
             var model = await SerialOutputModel.LoadAsync(
+                "display-name",
                 adapter.Object,
                 new InstanceLocator("project-1", "zone-1", "instance-1"),
                 SerialPortStream.ConsolePort,
@@ -102,6 +105,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.Services.SerialOu
 
             // Let it load successfully...
             var model = await SerialOutputModel.LoadAsync(
+                "display-name",
                 adapter.Object,
                 new InstanceLocator("project-1", "zone-1", "instance-1"),
                 SerialPortStream.ConsolePort,
