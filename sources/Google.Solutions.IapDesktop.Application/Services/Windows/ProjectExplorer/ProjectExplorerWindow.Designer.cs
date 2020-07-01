@@ -134,7 +134,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.Windows.ProjectExplor
             this.openSettingsButton.ImageTransparentColor = System.Drawing.Color.White;
             this.openSettingsButton.Name = "openSettingsButton";
             this.openSettingsButton.Size = new System.Drawing.Size(23, 22);
-            this.openSettingsButton.Text = "Settings";
+            this.openSettingsButton.Text = "Connection settings";
             this.openSettingsButton.Click += new System.EventHandler(this.openSettingsButton_Click);
             // 
             // generateCredentialsToolStripButton
@@ -181,7 +181,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.Windows.ProjectExplor
             this.cloudConsoleSeparatorToolStripMenuItem,
             this.openInCloudConsoleToolStripMenuItem});
             this.contextMenu.Name = "contextMenu";
-            this.contextMenu.Size = new System.Drawing.Size(277, 214);
+            this.contextMenu.Size = new System.Drawing.Size(277, 192);
             // 
             // connectToolStripMenuItem
             // 
@@ -227,7 +227,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.Windows.ProjectExplor
             this.propertiesToolStripMenuItem.Image = global::Google.Solutions.IapDesktop.Application.Properties.Resources.Settings_16;
             this.propertiesToolStripMenuItem.Name = "propertiesToolStripMenuItem";
             this.propertiesToolStripMenuItem.Size = new System.Drawing.Size(276, 22);
-            this.propertiesToolStripMenuItem.Text = "&Settings";
+            this.propertiesToolStripMenuItem.Text = "Connection &settings";
             this.propertiesToolStripMenuItem.Click += new System.EventHandler(this.propertiesToolStripMenuItem_Click);
             // 
             // iapSeparatorToolStripMenuItem
