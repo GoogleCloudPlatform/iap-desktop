@@ -199,7 +199,7 @@ namespace Google.Solutions.Common.ApiExtensions.Instance
                         // This task was cancelled because of a timeout, not because
                         // the enclosing job was cancelled.
                         throw new PasswordResetException(
-                            "Timeout waiting for Compute Engine agent to reset password. " +
+                            $"Timeout waiting for Compute Engine agent to reset password for user {username}. " +
                             "Verify that the agent is running.");
                     }
                 }
