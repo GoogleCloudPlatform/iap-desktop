@@ -74,7 +74,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.Adapters
     /// </summary>
     public class ComputeEngineAdapter : IComputeEngineAdapter
     {
-        private static readonly TimeSpan DefaultPasswordResetTimeout = TimeSpan.FromSeconds(15);
+        private static readonly TimeSpan DefaultPasswordResetTimeout = TimeSpan.FromSeconds(20);
 
         private readonly ComputeService service;
 
