@@ -232,7 +232,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services.EventLog
             this.Controls.Add(this.toolStrip);
             this.Name = "EventLogWindow";
             this.ShowIcon = false;
-            this.Text = "Event Log";
+            this.Text = "Event log";
             this.contextMenuStrip.ResumeLayout(false);
             this.toolStrip.ResumeLayout(false);
             this.toolStrip.PerformLayout();

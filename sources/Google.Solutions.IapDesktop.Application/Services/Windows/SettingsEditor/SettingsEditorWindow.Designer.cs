@@ -128,7 +128,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.Windows.SettingsEdito
             this.Controls.Add(this.propertyGrid);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "SettingsEditorWindow";
-            this.Text = "Settings";
+            this.Text = "Connection settings";
             this.contextMenuStrip.ResumeLayout(false);
             this.goldBar.ResumeLayout(false);
             this.goldBar.PerformLayout();
