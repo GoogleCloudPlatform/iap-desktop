@@ -196,6 +196,7 @@ namespace Google.Solutions.Common.ApiExtensions.Instance
                     }
                     catch (Exception e) when (e.IsCancellation() && timeoutCts.IsCancellationRequested)
                     {
+                        TraceSources.Common.TraceError(e);
                         // This task was cancelled because of a timeout, not because
                         // the enclosing job was cancelled.
                         throw new PasswordResetException(
