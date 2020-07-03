@@ -31,14 +31,14 @@ using System.Threading.Tasks;
 
 namespace Google.Solutions.IapDesktop.Extensions.Os.Services.InstanceProperties
 {
-    internal class InstancePropertiesModel
+    internal class InstanceDetailsModel
     {
         private const string InstanceCategory = "Instance details";
         private const string NetworkCategory = "Instance network";
 
         private readonly Instance instanceDetails;
 
-        public InstancePropertiesModel(Instance instanceDetails)
+        public InstanceDetailsModel(Instance instanceDetails)
         {
             Debug.Assert(instanceDetails != null);
             this.instanceDetails = instanceDetails;
@@ -111,7 +111,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Os.Services.InstanceProperties
         // Loading.
         //---------------------------------------------------------------------
 
-        public async static Task<InstancePropertiesModel> LoadAsync(
+        public async static Task<InstanceDetailsModel> LoadAsync(
             InstanceLocator instanceLocator,
             IComputeEngineAdapter adapter,
             CancellationToken token)
@@ -120,7 +120,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Os.Services.InstanceProperties
                 .GetInstanceAsync(instanceLocator, token)
                 .ConfigureAwait(false);
 
-            return new InstancePropertiesModel(instance);
+            return new InstanceDetailsModel(instance);
         }
     }
 }

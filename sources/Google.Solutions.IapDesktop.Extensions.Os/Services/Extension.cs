@@ -43,12 +43,12 @@ namespace Google.Solutions.IapDesktop.Extensions.Os.Services
 
             projectExplorer.Commands.AddCommand(
                 new Command<IProjectExplorerNode>(
-                    "&Properties",
-                    InstancePropertiesViewModel.GetCommandState,
-                    context => serviceProvider.GetService<InstancePropertiesWindow>().ShowWindow())
+                    "Show VM instance &details",
+                    InstanceDetailsViewModel.GetCommandState,
+                    context => serviceProvider.GetService<InstanceDetailsWindow>().ShowWindow())
                 {
                 },
-                5);
+                7);
         }
     }
 }

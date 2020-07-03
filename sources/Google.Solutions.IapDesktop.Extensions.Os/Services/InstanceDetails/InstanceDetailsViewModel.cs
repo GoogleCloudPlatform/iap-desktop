@@ -35,11 +35,11 @@ using System.Threading.Tasks;
 
 namespace Google.Solutions.IapDesktop.Extensions.Os.Services.InstanceProperties
 {
-    internal class InstancePropertiesViewModel
-        : ModelCachingViewModelBase<IProjectExplorerNode, InstancePropertiesModel>, IPropertiesViewModel
+    internal class InstanceDetailsViewModel
+        : ModelCachingViewModelBase<IProjectExplorerNode, InstanceDetailsModel>, IPropertiesViewModel
     {
         private const int ModelCacheCapacity = 5;
-        internal const string DefaultWindowTitle = "Properties";
+        internal const string DefaultWindowTitle = "VM instance details";
 
         private readonly IServiceProvider serviceProvider;
 
@@ -49,7 +49,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Os.Services.InstanceProperties
 
         public string InformationText => "OS Inventory information not available";
 
-        public InstancePropertiesViewModel(IServiceProvider serviceProvider)
+        public InstanceDetailsViewModel(IServiceProvider serviceProvider)
             : base(ModelCacheCapacity)
         {
             this.serviceProvider = serviceProvider;
@@ -111,7 +111,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Os.Services.InstanceProperties
                 : CommandState.Unavailable;
         }
 
-        protected async override Task<InstancePropertiesModel> LoadModelAsync(
+        protected async override Task<InstanceDetailsModel> LoadModelAsync(
             IProjectExplorerNode node,
             CancellationToken token)
         {
@@ -130,7 +130,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Os.Services.InstanceProperties
                         {
                             using (var combinedTokenSource = jobToken.Combine(token))
                             {
-                                return await InstancePropertiesModel.LoadAsync(
+                                return await InstanceDetailsModel.LoadAsync(
                                     new InstanceLocator(
                                         vmNode.ProjectId,
                                         vmNode.ZoneId,
