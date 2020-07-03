@@ -101,6 +101,7 @@
     <Compile Include="RdpTunnel.cs" />
     <Compile Include="Services\Persistence\TestApplicationSettingsRepository.cs" />
     <Compile Include="Services\Persistence\TestAppProtocolRegistry.cs" />
+    <Compile Include="Services\Windows\ConnectionSettings\TestConnectionSettingsViewModel.cs" />
     <Compile Include="Services\Workflows\SynchronousJobService.cs" />
     <Compile Include="Services\Workflows\TestRemoteDesktopConnectionService.cs" />
     <Compile Include="Services\Workflows\TunnelEndpoint.cs" />
@@ -124,12 +125,11 @@
       <DependentUpon>TestMainForm.cs</DependentUpon>
     </Compile>
     <Compile Include="Services\Windows\TestProjectExplorer.cs" />
-    <Compile Include="Services\Windows\TestProjectExplorerNode.cs" />
+    <Compile Include="Services\Windows\ConnectionSettings\TestConnectionSettingsEditor.cs" />
     <Compile Include="Services\Windows\TestRemoteDesktopGroupPolicies.cs" />
     <Compile Include="Services\Windows\TestRemoteDesktop.cs" />
     <Compile Include="Services\Windows\TestRemoteDesktopOverIap.cs" />
     <Compile Include="Services\Windows\WindowTestFixtureBase.cs" />
-    <Compile Include="Services\Windows\TestSettingsEditor.cs" />
     <Compile Include="Util\TestSingletonApplicationBase.cs" />
     <Compile Include="Services\Windows\TestTunnelsViewModel.cs" />
   </ItemGroup>

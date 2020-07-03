@@ -26,8 +26,8 @@ using Google.Solutions.IapDesktop.Application.ObjectModel;
 using Google.Solutions.IapDesktop.Application.Services.Adapters;
 using Google.Solutions.IapDesktop.Application.Services.Integration;
 using Google.Solutions.IapDesktop.Application.Services.Persistence;
+using Google.Solutions.IapDesktop.Application.Services.Windows.ConnectionSettings;
 using Google.Solutions.IapDesktop.Application.Services.Windows.RemoteDesktop;
-using Google.Solutions.IapDesktop.Application.Services.Windows.SettingsEditor;
 using Google.Solutions.IapDesktop.Application.Services.Workflows;
 using System;
 using System.Collections.Generic;
@@ -289,8 +289,8 @@ namespace Google.Solutions.IapDesktop.Application.Services.Windows.ProjectExplor
             if (this.treeView.SelectedNode is InventoryNode inventoryNode)
             {
                 this.serviceProvider
-                    .GetService<ISettingsEditor>()
-                    .ShowWindow(inventoryNode);
+                    .GetService<IConnectionSettingsWindow>()
+                    .ShowWindow();
             }
         }
 

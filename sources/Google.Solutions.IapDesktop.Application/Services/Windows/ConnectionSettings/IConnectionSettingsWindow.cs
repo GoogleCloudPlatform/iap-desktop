@@ -19,23 +19,11 @@
 // under the License.
 //
 
-using System;
 
-namespace Google.Solutions.IapDesktop.Application.Services.Windows.SettingsEditor
+namespace Google.Solutions.IapDesktop.Application.Services.Windows.ConnectionSettings
 {
-    public interface ISettingsEditor
+    public interface IConnectionSettingsWindow
     {
-        void ShowWindow(ISettingsObject settingsObject);
-    }
-
-    public class BrowsableSettingAttribute : Attribute
-    {
-    }
-
-    public interface ISettingsObject
-    {
-        void SaveChanges();
-
-        string InformationText { get; }
+        void ShowWindow();
     }
 }

@@ -25,8 +25,8 @@ using Google.Solutions.IapDesktop.Application.ObjectModel;
 using Google.Solutions.IapDesktop.Application.Services.Integration;
 using Google.Solutions.IapDesktop.Application.Services.Persistence;
 using Google.Solutions.IapDesktop.Application.Services.Windows;
+using Google.Solutions.IapDesktop.Application.Services.Windows.ConnectionSettings;
 using Google.Solutions.IapDesktop.Application.Services.Windows.RemoteDesktop;
-using Google.Solutions.IapDesktop.Application.Services.Windows.SettingsEditor;
 using Google.Solutions.IapDesktop.Application.Services.Workflows;
 using Google.Solutions.IapDesktop.Application.Util;
 using Moq;
@@ -58,8 +58,8 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Workflows
                 It.IsAny<TimeSpan>())).Returns(Task.FromResult(tunnel.Object));
             this.serviceRegistry.AddSingleton<ITunnelBrokerService>(tunnelBrokerService.Object);
 
-            var settingsEditor = new Mock<ISettingsEditor>();
-            this.serviceRegistry.AddSingleton<ISettingsEditor>(settingsEditor.Object);
+            var settingsEditor = new Mock<IConnectionSettingsWindow>();
+            this.serviceRegistry.AddSingleton<IConnectionSettingsWindow>(settingsEditor.Object);
 
             var credentialsService = new Mock<ICredentialsService>();
             this.serviceRegistry.AddSingleton<ICredentialsService>(credentialsService.Object);

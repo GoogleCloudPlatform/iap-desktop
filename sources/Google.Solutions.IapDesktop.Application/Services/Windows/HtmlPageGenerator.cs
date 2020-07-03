@@ -67,7 +67,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.Windows
                     foreach (var vmNode in zoneNode.Instances.Cast<VmInstanceNode>())
                     {
                         buffer.Append($"<li>");
-                        buffer.Append($"<a href='{new IapRdpUrl(vmNode.Reference, vmNode.EffectiveSettingsWithInheritanceApplied)}'>");
+                        buffer.Append($"<a href='{new IapRdpUrl(vmNode.Reference, vmNode.CreateConnectionSettings())}'>");
                         buffer.Append($"{HttpUtility.HtmlEncode(vmNode.InstanceName)}</a>");
                         buffer.Append($"</li>");
                     }
