@@ -52,7 +52,6 @@ namespace Google.Solutions.IapDesktop.Application.Services.Windows.ConnectionSet
         {
             this.saveSettings(this.settings);
         }
-
         public virtual string InformationText { get; set; }
 
 
