@@ -70,7 +70,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.Windows.Properties
                 m => m.InspectedObject,
                 obj =>
                 {
-                    this.propertyGrid.Enabled = (obj == null);
+                    this.propertyGrid.Enabled = (obj != null);
                     this.propertyGrid.SelectedObject = obj;
                 }));
         }
