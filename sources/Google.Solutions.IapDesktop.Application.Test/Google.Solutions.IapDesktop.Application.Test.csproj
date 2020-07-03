@@ -129,7 +129,6 @@
     <Compile Include="Services\Windows\TestRemoteDesktop.cs" />
     <Compile Include="Services\Windows\TestRemoteDesktopOverIap.cs" />
     <Compile Include="Services\Windows\WindowTestFixtureBase.cs" />
-    <Compile Include="Services\Windows\TestSettingsEditor.cs" />
     <Compile Include="Util\TestSingletonApplicationBase.cs" />
     <Compile Include="Services\Windows\TestTunnelsViewModel.cs" />
   </ItemGroup>

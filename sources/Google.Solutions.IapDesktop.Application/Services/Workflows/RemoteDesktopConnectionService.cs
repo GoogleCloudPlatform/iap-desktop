@@ -25,9 +25,9 @@ using Google.Solutions.IapDesktop.Application.ObjectModel;
 using Google.Solutions.IapDesktop.Application.Services.Integration;
 using Google.Solutions.IapDesktop.Application.Services.Persistence;
 using Google.Solutions.IapDesktop.Application.Services.Windows;
+using Google.Solutions.IapDesktop.Application.Services.Windows.ConnectionSettings;
 using Google.Solutions.IapDesktop.Application.Services.Windows.ProjectExplorer;
 using Google.Solutions.IapDesktop.Application.Services.Windows.RemoteDesktop;
-using Google.Solutions.IapDesktop.Application.Services.Windows.SettingsEditor;
 using Google.Solutions.IapDesktop.Application.Util;
 using Google.Solutions.IapTunneling.Iap;
 using Google.Solutions.IapTunneling.Net;
@@ -44,7 +44,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.Workflows
         private readonly IJobService jobService;
         private readonly IRemoteDesktopService remoteDesktopService;
         private readonly ITunnelBrokerService tunnelBrokerService;
-        private readonly ISettingsEditor settingsEditor;
+        private readonly IConnectionSettingsWindow settingsEditor;
         private readonly ICredentialsService credentialsService;
         private readonly ITaskDialog taskDialog;
 
@@ -56,7 +56,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.Workflows
             this.jobService = serviceProvider.GetService<IJobService>();
             this.remoteDesktopService = serviceProvider.GetService<IRemoteDesktopService>();
             this.tunnelBrokerService = serviceProvider.GetService<ITunnelBrokerService>();
-            this.settingsEditor = serviceProvider.GetService<ISettingsEditor>();
+            this.settingsEditor = serviceProvider.GetService<IConnectionSettingsWindow>();
             this.credentialsService = serviceProvider.GetService<ICredentialsService>();
             this.taskDialog = serviceProvider.GetService<ITaskDialog>();
         }
@@ -116,6 +116,9 @@ namespace Google.Solutions.IapDesktop.Application.Services.Workflows
                 return;
             }
 
+            // Select node so that tracking windows are updated.
+            vmNode.Select();
+
             var settings = vmNode.SettingsEditor;
             if (string.IsNullOrEmpty(settings.Username) || settings.Password == null || settings.Password.Length == 0)
             {
@@ -138,7 +141,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.Workflows
                 if (selectedOption == 0)
                 {
                     // Configure credentials -> jump to settings.
-                    this.settingsEditor.ShowWindow(settings);
+                    this.settingsEditor.ShowWindow();
 
                     return;
                 }

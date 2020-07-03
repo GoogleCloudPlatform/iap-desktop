@@ -26,7 +26,7 @@ using System;
 namespace Google.Solutions.IapDesktop.Application.Services.Windows.ConnectionSettings
 {
     [SkipCodeCoverage("All logic in view model")]
-    internal class ConnectionSettingsWindow : PropertiesWindow
+    public class ConnectionSettingsWindow : PropertiesWindow, IConnectionSettingsWindow
     {
         public ConnectionSettingsWindow(IServiceProvider serviceProvider)
             : base(

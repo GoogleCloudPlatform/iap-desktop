@@ -186,10 +186,6 @@ namespace Google.Solutions.IapDesktop.Application.Services.Windows.ProjectExplor
         {
             this.InstanceId = instance.Id.Value;
             this.IsRunning = instance.Status == "RUNNING";
-
-            this.SettingsEditor.InformationText = this.IsConnected
-                ? "Changes only take effect after reconnecting"
-                : null;
         }
 
         public VmInstanceConnectionSettings CreateConnectionSettings()
@@ -221,6 +217,11 @@ namespace Google.Solutions.IapDesktop.Application.Services.Windows.ProjectExplor
                     this.ImageIndex = this.SelectedImageIndex = DisconnectedIconIndex;
                 }
             }
+        }
+
+        public void Select()
+        {
+            this.TreeView.SelectedNode = this;
         }
     }
 }

@@ -90,7 +90,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.Windows.ConnectionSet
                     ((VmInstanceNode)inventoryNode).IsConnected;
 
                 this.InspectedObject = inventoryNode.SettingsEditor;
-                this.WindowTitle = DefaultWindowTitle + $": {inventoryNode.Name}";
+                this.WindowTitle = DefaultWindowTitle + $": {inventoryNode.Text}";
             }
             else
             {

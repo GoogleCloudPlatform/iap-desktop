@@ -20,7 +20,6 @@
 //
 
 using Google.Solutions.IapDesktop.Application.Services.Persistence;
-using Google.Solutions.IapDesktop.Application.Services.Windows.SettingsEditor;
 using Google.Solutions.IapDesktop.Application.Util;
 using System;
 using System.ComponentModel;
@@ -28,7 +27,7 @@ using System.Security;
 
 namespace Google.Solutions.IapDesktop.Application.Services.Windows.ConnectionSettings
 {
-    public class ConnectionSettingsEditor : ISettingsObject
+    public class ConnectionSettingsEditor
     {
         private readonly ConnectionSettingsEditor parent;
         private readonly ConnectionSettingsBase settings;
@@ -52,8 +51,6 @@ namespace Google.Solutions.IapDesktop.Application.Services.Windows.ConnectionSet
         {
             this.saveSettings(this.settings);
         }
-        public virtual string InformationText { get; set; }
-
 
         //---------------------------------------------------------------------
         // 
@@ -88,7 +85,6 @@ namespace Google.Solutions.IapDesktop.Application.Services.Windows.ConnectionSet
         //---------------------------------------------------------------------
 
         [Browsable(true)]
-        [BrowsableSetting]
         [Category("Credentials")]
         [DisplayName("Username")]
         [Description("Windows logon username")]
@@ -107,7 +103,6 @@ namespace Google.Solutions.IapDesktop.Application.Services.Windows.ConnectionSet
         //---------------------------------------------------------------------
 
         [Browsable(true)]
-        [BrowsableSetting]
         [Category("Credentials")]
         [DisplayName("Password")]
         [Description("Windows logon password")]
@@ -122,6 +117,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.Windows.ConnectionSet
                 : SecureStringExtensions.FromClearText(value);
         }
 
+        [Browsable(false)]
         public SecureString Password
         {
             get => IsPasswordSet
@@ -137,7 +133,6 @@ namespace Google.Solutions.IapDesktop.Application.Services.Windows.ConnectionSet
         //---------------------------------------------------------------------
 
         [Browsable(true)]
-        [BrowsableSetting]
         [Category("Credentials")]
         [DisplayName("Domain")]
         [Description("Windows logon domain")]
@@ -156,7 +151,6 @@ namespace Google.Solutions.IapDesktop.Application.Services.Windows.ConnectionSet
         //---------------------------------------------------------------------
 
         [Browsable(true)]
-        [BrowsableSetting]
         [Category("Display")]
         [DisplayName("Show connection bar")]
         [Description("Show connection bar in full-screen mode")]
@@ -176,7 +170,6 @@ namespace Google.Solutions.IapDesktop.Application.Services.Windows.ConnectionSet
         //---------------------------------------------------------------------
 
         [Browsable(true)]
-        [BrowsableSetting]
         [Category("Display")]
         [DisplayName("Desktop size")]
         [Description("Size of remote desktop")]
@@ -196,7 +189,6 @@ namespace Google.Solutions.IapDesktop.Application.Services.Windows.ConnectionSet
         //---------------------------------------------------------------------
 
         [Browsable(true)]
-        [BrowsableSetting]
         [Category("Display")]
         [DisplayName("Color depth")]
         [Description("Color depth of remote desktop")]
@@ -216,7 +208,6 @@ namespace Google.Solutions.IapDesktop.Application.Services.Windows.ConnectionSet
         //---------------------------------------------------------------------
 
         [Browsable(true)]
-        [BrowsableSetting]
         [Category("Connection")]
         [DisplayName("Server authentication")]
         [Description("Require server authentication when connecting")]
@@ -236,7 +227,6 @@ namespace Google.Solutions.IapDesktop.Application.Services.Windows.ConnectionSet
         //---------------------------------------------------------------------
 
         [Browsable(true)]
-        [BrowsableSetting]
         [Category("Local resources")]
         [DisplayName("Redirect clipboard")]
         [Description("Allow clipboard contents to be shared with remote desktop")]
@@ -256,7 +246,6 @@ namespace Google.Solutions.IapDesktop.Application.Services.Windows.ConnectionSet
         //---------------------------------------------------------------------
 
         [Browsable(true)]
-        [BrowsableSetting]
         [Category("Local resources")]
         [DisplayName("Audio mode")]
         [Description("Redirect audio when playing on server")]
@@ -276,7 +265,6 @@ namespace Google.Solutions.IapDesktop.Application.Services.Windows.ConnectionSet
         //---------------------------------------------------------------------
 
         [Browsable(true)]
-        [BrowsableSetting]
         [Category("Performance")]
         [DisplayName("Bitmap caching")]
         [Description("Use persistent bitmap cache")]

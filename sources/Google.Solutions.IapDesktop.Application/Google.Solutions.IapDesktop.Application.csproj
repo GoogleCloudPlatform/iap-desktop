@@ -125,6 +125,7 @@
     <Compile Include="Services\Windows\ConnectionSettings\ConnectionSettingsWindow.cs">
       <SubType>Form</SubType>
     </Compile>
+    <Compile Include="Services\Windows\ConnectionSettings\IConnectionSettingsWindow.cs" />
     <Compile Include="Services\Windows\Diagnostics\DebugProjectExplorerTrackingViewModel.cs" />
     <Compile Include="Services\Windows\Diagnostics\DebugProjectExplorerTrackingWindow.cs">
       <SubType>Form</SubType>
@@ -222,13 +223,6 @@
       <DependentUpon>RemoteDesktopPane.cs</DependentUpon>
     </Compile>
     <Compile Include="Services\Windows\RemoteDesktop\IRemoteDesktopService.cs" />
-    <Compile Include="Services\Windows\SettingsEditor\ISettingsEditor.cs" />
-    <Compile Include="Services\Windows\SettingsEditor\SettingsEditorWindow.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Services\Windows\SettingsEditor\SettingsEditorWindow.Designer.cs">
-      <DependentUpon>SettingsEditorWindow.cs</DependentUpon>
-    </Compile>
     <Compile Include="Services\Windows\ToolWindow.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -321,9 +315,6 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Services\Windows\RemoteDesktop\RemoteDesktopPane.resx">
       <DependentUpon>RemoteDesktopPane.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Services\Windows\SettingsEditor\SettingsEditorWindow.resx">
-      <DependentUpon>SettingsEditorWindow.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Services\Windows\ToolWindow.resx">
       <DependentUpon>ToolWindow.cs</DependentUpon>
