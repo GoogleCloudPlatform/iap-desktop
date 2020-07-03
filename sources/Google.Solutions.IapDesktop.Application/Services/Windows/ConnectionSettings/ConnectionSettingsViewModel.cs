@@ -83,14 +83,14 @@ namespace Google.Solutions.IapDesktop.Application.Services.Windows.ConnectionSet
 
         public Task SwitchToModelAsync(IProjectExplorerNode node)
         {
-            if (node is InventoryNode inventoryNode)
+            if (node is IProjectExplorerNodeWithSettings settingsNode)
             {
                 this.IsInformationBarVisible =
-                    inventoryNode is VmInstanceNode &&
-                    ((VmInstanceNode)inventoryNode).IsConnected;
+                    settingsNode is IProjectExplorerVmInstanceNode &&
+                    ((IProjectExplorerVmInstanceNode)settingsNode).IsConnected;
 
-                this.InspectedObject = inventoryNode.SettingsEditor;
-                this.WindowTitle = DefaultWindowTitle + $": {inventoryNode.Text}";
+                this.InspectedObject = settingsNode.SettingsEditor;
+                this.WindowTitle = DefaultWindowTitle + $": {settingsNode.DisplayName}";
             }
             else
             {

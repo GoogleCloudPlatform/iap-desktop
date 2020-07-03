@@ -43,6 +43,8 @@ namespace Google.Solutions.IapDesktop.Application.Services.Windows.ProjectExplor
             : base("Google Cloud", IconIndex, IconIndex)
         {
         }
+
+        public string DisplayName => this.Text;
     }
 
     [ComVisible(false)]
@@ -58,6 +60,8 @@ namespace Google.Solutions.IapDesktop.Application.Services.Windows.ProjectExplor
         {
             this.SettingsEditor = settingsEditor;
         }
+
+        public string DisplayName => this.Text;
 
         internal static string ShortIdFromUrl(string url) => url.Substring(url.LastIndexOf("/") + 1);
     }
@@ -199,7 +203,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.Windows.ProjectExplor
 
         public bool IsRunning { get; }
 
-        internal bool IsConnected
+        public bool IsConnected
         {
             get => this.ImageIndex == ConnectedIconIndex;
             set
