@@ -92,6 +92,7 @@
     <Compile Include="FixtureBase.cs" />
     <Compile Include="Locator\TestLicenseLocator.cs" />
     <Compile Include="Locator\TestInstanceLocator.cs" />
+    <Compile Include="Locator\TestMachineTypeLocator.cs" />
     <Compile Include="Net\TestRestClient.cs" />
     <Compile Include="Net\TestUserAgent.cs" />
     <Compile Include="Testbed\ComputeEngine.cs" />
