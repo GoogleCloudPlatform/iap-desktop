@@ -71,7 +71,10 @@ namespace Google.Solutions.IapDesktop.Extensions.Os.Services.InstanceDetails
         [Browsable(true)]
         [Category(InstanceCategory)]
         [DisplayName("Machine type")]
-        public string MachineType => null; // TODO: MachineTypeLocator!
+        public string MachineType 
+            => MachineTypeLocator
+                .FromString(this.instanceDetails.MachineType)
+                .Name;
 
         [Browsable(true)]
         [Category(InstanceCategory)]
