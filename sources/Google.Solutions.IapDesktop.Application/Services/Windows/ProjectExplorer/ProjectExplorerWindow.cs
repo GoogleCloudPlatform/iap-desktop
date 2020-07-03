@@ -290,7 +290,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.Windows.ProjectExplor
             {
                 this.serviceProvider
                     .GetService<ISettingsEditor>()
-                    .ShowWindow(inventoryNode);
+                    .ShowWindow(inventoryNode.SettingsEditor);
             }
         }
 

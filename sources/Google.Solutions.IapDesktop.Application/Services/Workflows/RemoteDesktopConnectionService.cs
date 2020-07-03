@@ -116,7 +116,8 @@ namespace Google.Solutions.IapDesktop.Application.Services.Workflows
                 return;
             }
 
-            if (string.IsNullOrEmpty(vmNode.Username) || vmNode.Password == null || vmNode.Password.Length == 0)
+            var settings = vmNode.SettingsEditor;
+            if (string.IsNullOrEmpty(settings.Username) || settings.Password == null || settings.Password.Length == 0)
             {
                 int selectedOption = this.taskDialog.ShowOptionsTaskDialog(
                     owner,
@@ -137,7 +138,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.Workflows
                 if (selectedOption == 0)
                 {
                     // Configure credentials -> jump to settings.
-                    this.settingsEditor.ShowWindow(vmNode);
+                    this.settingsEditor.ShowWindow(settings);
 
                     return;
                 }
@@ -158,7 +159,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.Workflows
 
             await ConnectInstanceAsync(
                 vmNode.Reference,
-                vmNode.EffectiveSettingsWithInheritanceApplied);
+                vmNode.CreateConnectionSettings());
         }
 
         public async Task ActivateOrConnectInstanceWithCredentialPromptAsync(

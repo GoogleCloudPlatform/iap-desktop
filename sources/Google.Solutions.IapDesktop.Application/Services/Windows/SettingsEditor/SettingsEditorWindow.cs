@@ -171,9 +171,9 @@ namespace Google.Solutions.IapDesktop.Application.Services.Windows.SettingsEdito
             // If the window is visible, switch to a different editor. Otherwise,
             // ignore the event.
             //
-            if (this.Visible && e.SelectedNode is ISettingsObject settingsObject)
+            if (this.Visible && e.SelectedNode is InventoryNode node)
             {
-                this.EditorObject = settingsObject;
+                this.EditorObject = node.SettingsEditor;
             }
             else
             {

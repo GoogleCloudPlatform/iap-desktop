@@ -120,6 +120,7 @@
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="Services\Windows\ConfirmationDialog.cs" />
+    <Compile Include="Services\Windows\ConnectionSettings\ConnectionSettingsEditor.cs" />
     <Compile Include="Services\Windows\Diagnostics\DebugProjectExplorerTrackingViewModel.cs" />
     <Compile Include="Services\Windows\Diagnostics\DebugProjectExplorerTrackingWindow.cs">
       <SubType>Form</SubType>

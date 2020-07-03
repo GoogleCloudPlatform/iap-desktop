@@ -57,26 +57,26 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Windows
             [Values("user", null)]
             string username)
         {
-            this.projectNode.Username = username;
+            this.projectNode.SettingsEditor.Username = username;
 
             var zoneA = (ZoneNode)this.projectNode.FirstNode;
             var zoneB = (ZoneNode)this.projectNode.FirstNode.NextNode;
             var instanceA = (VmInstanceNode)zoneA.FirstNode;
             var instanceB = (VmInstanceNode)zoneB.FirstNode;
 
-            instanceA.Username = null;
-            instanceB.Username = "";
+            instanceA.SettingsEditor.Username = null;
+            instanceB.SettingsEditor.Username = "";
 
             // Inherited value is shown...
-            Assert.AreEqual(username, instanceA.Username);
-            Assert.AreEqual(username, instanceB.Username);
+            Assert.AreEqual(username, instanceA.SettingsEditor.Username);
+            Assert.AreEqual(username, instanceB.SettingsEditor.Username);
 
             // ...and takes effect.
-            Assert.AreEqual(username, instanceA.EffectiveSettingsWithInheritanceApplied.Username);
-            Assert.AreEqual(username, instanceB.EffectiveSettingsWithInheritanceApplied.Username);
+            Assert.AreEqual(username, instanceA.CreateConnectionSettings().Username);
+            Assert.AreEqual(username, instanceB.CreateConnectionSettings().Username);
 
-            Assert.IsFalse(instanceA.ShouldSerializeUsername());
-            Assert.IsFalse(instanceB.ShouldSerializeUsername());
+            Assert.IsFalse(instanceA.SettingsEditor.ShouldSerializeUsername());
+            Assert.IsFalse(instanceB.SettingsEditor.ShouldSerializeUsername());
         }
 
         [Test]
@@ -84,71 +84,71 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Windows
             [Values("domain", null)]
             string domain)
         {
-            this.projectNode.Domain = domain;
+            this.projectNode.SettingsEditor.Domain = domain;
 
             var zoneA = (ZoneNode)this.projectNode.FirstNode;
             var zoneB = (ZoneNode)this.projectNode.FirstNode.NextNode;
             var instanceA = (VmInstanceNode)zoneA.FirstNode;
             var instanceB = (VmInstanceNode)zoneB.FirstNode;
 
-            instanceA.Domain = null;
-            instanceB.Domain = "";
+            instanceA.SettingsEditor.Domain = null;
+            instanceB.SettingsEditor.Domain = "";
 
             // Inherited value is shown...
-            Assert.AreEqual(domain, instanceA.Domain);
-            Assert.AreEqual(domain, instanceB.Domain);
+            Assert.AreEqual(domain, instanceA.SettingsEditor.Domain);
+            Assert.AreEqual(domain, instanceB.SettingsEditor.Domain);
 
             // ...and takes effect
-            Assert.AreEqual(domain, instanceA.EffectiveSettingsWithInheritanceApplied.Domain);
-            Assert.AreEqual(domain, instanceB.EffectiveSettingsWithInheritanceApplied.Domain);
+            Assert.AreEqual(domain, instanceA.CreateConnectionSettings().Domain);
+            Assert.AreEqual(domain, instanceB.CreateConnectionSettings().Domain);
 
-            Assert.IsFalse(instanceA.ShouldSerializeDomain());
-            Assert.IsFalse(instanceB.ShouldSerializeDomain());
+            Assert.IsFalse(instanceA.SettingsEditor.ShouldSerializeDomain());
+            Assert.IsFalse(instanceB.SettingsEditor.ShouldSerializeDomain());
         }
 
         [Test]
         public void WhenPasswordSetInProject_ProjectValueIsInheritedDownToVm()
         {
             var password = "secret";
-            this.projectNode.CleartextPassword = password;
-            Assert.IsTrue(this.projectNode.ShouldSerializeCleartextPassword());
+            this.projectNode.SettingsEditor.CleartextPassword = password;
+            Assert.IsTrue(this.projectNode.SettingsEditor.ShouldSerializeCleartextPassword());
 
             var zoneA = (ZoneNode)this.projectNode.FirstNode;
             var zoneB = (ZoneNode)this.projectNode.FirstNode.NextNode;
             var instanceA = (VmInstanceNode)zoneA.FirstNode;
             var instanceB = (VmInstanceNode)zoneB.FirstNode;
 
-            instanceA.CleartextPassword = null;
-            instanceB.CleartextPassword = "";
+            instanceA.SettingsEditor.CleartextPassword = null;
+            instanceB.SettingsEditor.CleartextPassword = "";
 
             // Inherited value is not shown...
-            Assert.AreEqual("********", instanceA.CleartextPassword);
-            Assert.AreEqual("********", instanceB.CleartextPassword);
+            Assert.AreEqual("********", instanceA.SettingsEditor.CleartextPassword);
+            Assert.AreEqual("********", instanceB.SettingsEditor.CleartextPassword);
 
             // ...but takes effect
-            Assert.AreEqual(password, instanceA.EffectiveSettingsWithInheritanceApplied.Password.AsClearText());
-            Assert.AreEqual(password, instanceB.EffectiveSettingsWithInheritanceApplied.Password.AsClearText());
+            Assert.AreEqual(password, instanceA.CreateConnectionSettings().Password.AsClearText());
+            Assert.AreEqual(password, instanceB.CreateConnectionSettings().Password.AsClearText());
 
-            Assert.IsFalse(instanceA.ShouldSerializeCleartextPassword());
-            Assert.IsFalse(instanceB.ShouldSerializeCleartextPassword());
+            Assert.IsFalse(instanceA.SettingsEditor.ShouldSerializeCleartextPassword());
+            Assert.IsFalse(instanceB.SettingsEditor.ShouldSerializeCleartextPassword());
         }
 
         [Test]
         public void WhenSettingPassword_CleartextPasswordIsMasked()
         {
-            this.projectNode.CleartextPassword = "actual password";
+            this.projectNode.SettingsEditor.CleartextPassword = "actual password";
 
-            Assert.AreEqual("********", this.projectNode.CleartextPassword);
+            Assert.AreEqual("********", this.projectNode.SettingsEditor.CleartextPassword);
         }
 
         [Test]
         public void WhenSettingPassword_EffectiveSettingsContainRealPassword()
         {
-            this.projectNode.CleartextPassword = "actual password";
+            this.projectNode.SettingsEditor.CleartextPassword = "actual password";
 
             var zoneA = (ZoneNode)this.projectNode.FirstNode;
             var instanceA = (VmInstanceNode)zoneA.FirstNode;
-            var effective = instanceA.EffectiveSettingsWithInheritanceApplied;
+            var effective = instanceA.CreateConnectionSettings();
 
             Assert.AreEqual("actual password", effective.Password.AsClearText());
         }
@@ -156,29 +156,29 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Windows
         [Test]
         public void WhenUsernameSetInProjectAndZone_ZoneValueIsInheritedDownToVm()
         {
-            this.projectNode.Username = "root-value";
+            this.projectNode.SettingsEditor.Username = "root-value";
 
             var zoneA = (ZoneNode)this.projectNode.FirstNode;
             var zoneB = (ZoneNode)this.projectNode.FirstNode.NextNode;
 
-            zoneA.Username = "overriden-value";
-            zoneB.Username = null;
-            Assert.AreEqual("overriden-value", zoneA.Username);
-            Assert.AreEqual("root-value", zoneB.Username);
-            Assert.IsTrue(zoneA.ShouldSerializeUsername());
-            Assert.IsFalse(zoneB.ShouldSerializeUsername());
+            zoneA.SettingsEditor.Username = "overriden-value";
+            zoneB.SettingsEditor.Username = null;
+            Assert.AreEqual("overriden-value", zoneA.SettingsEditor.Username);
+            Assert.AreEqual("root-value", zoneB.SettingsEditor.Username);
+            Assert.IsTrue(zoneA.SettingsEditor.ShouldSerializeUsername());
+            Assert.IsFalse(zoneB.SettingsEditor.ShouldSerializeUsername());
 
             var instanceA = (VmInstanceNode)zoneA.FirstNode;
             var instanceB = (VmInstanceNode)zoneB.FirstNode;
 
-            Assert.AreEqual("overriden-value", instanceA.Username);
-            Assert.AreEqual("root-value", instanceB.Username);
+            Assert.AreEqual("overriden-value", instanceA.SettingsEditor.Username);
+            Assert.AreEqual("root-value", instanceB.SettingsEditor.Username);
 
-            Assert.AreEqual("overriden-value", instanceA.EffectiveSettingsWithInheritanceApplied.Username);
-            Assert.AreEqual("root-value", instanceB.EffectiveSettingsWithInheritanceApplied.Username);
+            Assert.AreEqual("overriden-value", instanceA.CreateConnectionSettings().Username);
+            Assert.AreEqual("root-value", instanceB.CreateConnectionSettings().Username);
 
-            Assert.IsFalse(instanceA.ShouldSerializeUsername());
-            Assert.IsFalse(instanceB.ShouldSerializeUsername());
+            Assert.IsFalse(instanceA.SettingsEditor.ShouldSerializeUsername());
+            Assert.IsFalse(instanceB.SettingsEditor.ShouldSerializeUsername());
         }
 
         [Test]
@@ -187,223 +187,223 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Windows
             RdpDesktopSize size
             )
         {
-            this.projectNode.DesktopSize = size;
+            this.projectNode.SettingsEditor.DesktopSize = size;
 
             var zoneA = (ZoneNode)this.projectNode.FirstNode;
             var zoneB = (ZoneNode)this.projectNode.FirstNode.NextNode;
 
-            Assert.AreEqual(size, zoneA.DesktopSize);
-            Assert.AreEqual(size, zoneB.DesktopSize);
+            Assert.AreEqual(size, zoneA.SettingsEditor.DesktopSize);
+            Assert.AreEqual(size, zoneB.SettingsEditor.DesktopSize);
 
             var instanceA = (VmInstanceNode)zoneA.FirstNode;
             var instanceB = (VmInstanceNode)zoneB.FirstNode;
 
-            Assert.AreEqual(size, instanceA.DesktopSize);
-            Assert.AreEqual(size, instanceB.DesktopSize);
+            Assert.AreEqual(size, instanceA.SettingsEditor.DesktopSize);
+            Assert.AreEqual(size, instanceB.SettingsEditor.DesktopSize);
 
-            Assert.AreEqual(size, instanceA.EffectiveSettingsWithInheritanceApplied.DesktopSize);
-            Assert.AreEqual(size, instanceB.EffectiveSettingsWithInheritanceApplied.DesktopSize);
+            Assert.AreEqual(size, instanceA.CreateConnectionSettings().DesktopSize);
+            Assert.AreEqual(size, instanceB.CreateConnectionSettings().DesktopSize);
 
-            Assert.IsFalse(instanceA.ShouldSerializeDesktopSize());
-            Assert.IsFalse(instanceB.ShouldSerializeDesktopSize());
+            Assert.IsFalse(instanceA.SettingsEditor.ShouldSerializeDesktopSize());
+            Assert.IsFalse(instanceB.SettingsEditor.ShouldSerializeDesktopSize());
         }
 
         [Test]
         public void WhenDesktopSizeSetInProjectAndZone_ZoneValueIsInheritedDownToVm()
         {
-            this.projectNode.DesktopSize = RdpDesktopSize.ClientSize;
-            Assert.AreNotEqual(RdpDesktopSize._Default, this.projectNode.DesktopSize);
+            this.projectNode.SettingsEditor.DesktopSize = RdpDesktopSize.ClientSize;
+            Assert.AreNotEqual(RdpDesktopSize._Default, this.projectNode.SettingsEditor.DesktopSize);
 
             var zoneA = (ZoneNode)this.projectNode.FirstNode;
             var zoneB = (ZoneNode)this.projectNode.FirstNode.NextNode;
 
-            zoneA.DesktopSize = RdpDesktopSize.ScreenSize;
-            zoneB.DesktopSize = RdpDesktopSize._Default;
-            Assert.AreEqual(RdpDesktopSize.ScreenSize, zoneA.DesktopSize);
-            Assert.AreEqual(RdpDesktopSize.ClientSize, zoneB.DesktopSize);
-            Assert.IsTrue(zoneA.ShouldSerializeDesktopSize());
-            Assert.IsFalse(zoneB.ShouldSerializeDesktopSize());
+            zoneA.SettingsEditor.DesktopSize = RdpDesktopSize.ScreenSize;
+            zoneB.SettingsEditor.DesktopSize = RdpDesktopSize._Default;
+            Assert.AreEqual(RdpDesktopSize.ScreenSize, zoneA.SettingsEditor.DesktopSize);
+            Assert.AreEqual(RdpDesktopSize.ClientSize, zoneB.SettingsEditor.DesktopSize);
+            Assert.IsTrue(zoneA.SettingsEditor.ShouldSerializeDesktopSize());
+            Assert.IsFalse(zoneB.SettingsEditor.ShouldSerializeDesktopSize());
 
             var instanceA = (VmInstanceNode)zoneA.FirstNode;
             var instanceB = (VmInstanceNode)zoneB.FirstNode;
 
-            Assert.AreEqual(RdpDesktopSize.ScreenSize, instanceA.DesktopSize);
-            Assert.AreEqual(RdpDesktopSize.ClientSize, instanceB.DesktopSize);
+            Assert.AreEqual(RdpDesktopSize.ScreenSize, instanceA.SettingsEditor.DesktopSize);
+            Assert.AreEqual(RdpDesktopSize.ClientSize, instanceB.SettingsEditor.DesktopSize);
 
-            Assert.AreEqual(RdpDesktopSize.ScreenSize, instanceA.EffectiveSettingsWithInheritanceApplied.DesktopSize);
-            Assert.AreEqual(RdpDesktopSize.ClientSize, instanceB.EffectiveSettingsWithInheritanceApplied.DesktopSize);
+            Assert.AreEqual(RdpDesktopSize.ScreenSize, instanceA.CreateConnectionSettings().DesktopSize);
+            Assert.AreEqual(RdpDesktopSize.ClientSize, instanceB.CreateConnectionSettings().DesktopSize);
 
-            Assert.IsFalse(instanceA.ShouldSerializeDesktopSize());
-            Assert.IsFalse(instanceB.ShouldSerializeDesktopSize());
+            Assert.IsFalse(instanceA.SettingsEditor.ShouldSerializeDesktopSize());
+            Assert.IsFalse(instanceB.SettingsEditor.ShouldSerializeDesktopSize());
         }
 
         [Test]
         public void WhenDesktopSizeSetInProjectAndResetToDefaultInVm_InheritedValueStillApplies()
         {
-            this.projectNode.DesktopSize = RdpDesktopSize.ScreenSize;
-            Assert.AreNotEqual(RdpDesktopSize._Default, this.projectNode.DesktopSize);
+            this.projectNode.SettingsEditor.DesktopSize = RdpDesktopSize.ScreenSize;
+            Assert.AreNotEqual(RdpDesktopSize._Default, this.projectNode.SettingsEditor.DesktopSize);
 
             var instanceA = (VmInstanceNode)this.projectNode.FirstNode.FirstNode;
-            instanceA.DesktopSize = RdpDesktopSize._Default;
+            instanceA.SettingsEditor.DesktopSize = RdpDesktopSize._Default;
 
-            Assert.AreEqual(this.projectNode.DesktopSize, instanceA.DesktopSize);
-            Assert.AreEqual(this.projectNode.DesktopSize, instanceA.EffectiveSettingsWithInheritanceApplied.DesktopSize);
-            Assert.IsFalse(instanceA.ShouldSerializeDesktopSize());
+            Assert.AreEqual(this.projectNode.SettingsEditor.DesktopSize, instanceA.SettingsEditor.DesktopSize);
+            Assert.AreEqual(this.projectNode.SettingsEditor.DesktopSize, instanceA.CreateConnectionSettings().DesktopSize);
+            Assert.IsFalse(instanceA.SettingsEditor.ShouldSerializeDesktopSize());
         }
 
         [Test]
         public void WhenAuthenticationLevelSetInProjectAndZone_ZoneValueIsInheritedDownToVm()
         {
-            this.projectNode.AuthenticationLevel = RdpAuthenticationLevel.RequireServerAuthentication;
+            this.projectNode.SettingsEditor.AuthenticationLevel = RdpAuthenticationLevel.RequireServerAuthentication;
 
             var zoneA = (ZoneNode)this.projectNode.FirstNode;
 
-            zoneA.AuthenticationLevel = RdpAuthenticationLevel.AttemptServerAuthentication;
-            Assert.AreEqual(RdpAuthenticationLevel.AttemptServerAuthentication, zoneA.AuthenticationLevel);
-            Assert.IsTrue(zoneA.ShouldSerializeAuthenticationLevel());
+            zoneA.SettingsEditor.AuthenticationLevel = RdpAuthenticationLevel.AttemptServerAuthentication;
+            Assert.AreEqual(RdpAuthenticationLevel.AttemptServerAuthentication, zoneA.SettingsEditor.AuthenticationLevel);
+            Assert.IsTrue(zoneA.SettingsEditor.ShouldSerializeAuthenticationLevel());
 
             var instanceA = (VmInstanceNode)zoneA.FirstNode;
-            Assert.AreEqual(RdpAuthenticationLevel.AttemptServerAuthentication, instanceA.AuthenticationLevel);
-            Assert.AreEqual(RdpAuthenticationLevel.AttemptServerAuthentication, instanceA.EffectiveSettingsWithInheritanceApplied.AuthenticationLevel);
-            Assert.IsFalse(instanceA.ShouldSerializeAuthenticationLevel());
+            Assert.AreEqual(RdpAuthenticationLevel.AttemptServerAuthentication, instanceA.SettingsEditor.AuthenticationLevel);
+            Assert.AreEqual(RdpAuthenticationLevel.AttemptServerAuthentication, instanceA.CreateConnectionSettings().AuthenticationLevel);
+            Assert.IsFalse(instanceA.SettingsEditor.ShouldSerializeAuthenticationLevel());
         }
-
+            
         [Test]
         public void WhenAuthenticationLevelSetInProjectAndResetToDefaultInVm_InheritedValueStillApplies()
         {
-            this.projectNode.AuthenticationLevel = RdpAuthenticationLevel.RequireServerAuthentication;
-            Assert.AreNotEqual(RdpAuthenticationLevel._Default, this.projectNode.AuthenticationLevel);
+            this.projectNode.SettingsEditor.AuthenticationLevel = RdpAuthenticationLevel.RequireServerAuthentication;
+            Assert.AreNotEqual(RdpAuthenticationLevel._Default, this.projectNode.SettingsEditor.AuthenticationLevel);
 
             var instanceA = (VmInstanceNode)this.projectNode.FirstNode.FirstNode;
-            instanceA.AuthenticationLevel = RdpAuthenticationLevel._Default;
+            instanceA.SettingsEditor.AuthenticationLevel = RdpAuthenticationLevel._Default;
 
-            Assert.AreEqual(this.projectNode.AuthenticationLevel, instanceA.AuthenticationLevel);
-            Assert.AreEqual(this.projectNode.AuthenticationLevel, instanceA.EffectiveSettingsWithInheritanceApplied.AuthenticationLevel);
-            Assert.IsFalse(instanceA.ShouldSerializeAuthenticationLevel());
+            Assert.AreEqual(this.projectNode.SettingsEditor.AuthenticationLevel, instanceA.SettingsEditor.AuthenticationLevel);
+            Assert.AreEqual(this.projectNode.SettingsEditor.AuthenticationLevel, instanceA.CreateConnectionSettings().AuthenticationLevel);
+            Assert.IsFalse(instanceA.SettingsEditor.ShouldSerializeAuthenticationLevel());
         }
 
         [Test]
         public void WhenBitmapPersistenceSetInProjectAndZone_ZoneValueIsInheritedDownToVm()
         {
-            this.projectNode.BitmapPersistence = RdpBitmapPersistence.Disabled;
+            this.projectNode.SettingsEditor.BitmapPersistence = RdpBitmapPersistence.Disabled;
 
             var zoneA = (ZoneNode)this.projectNode.FirstNode;
 
-            zoneA.BitmapPersistence = RdpBitmapPersistence.Enabled;
-            Assert.AreEqual(RdpBitmapPersistence.Enabled, zoneA.BitmapPersistence);
-            Assert.IsTrue(zoneA.ShouldSerializeBitmapPersistence());
+            zoneA.SettingsEditor.BitmapPersistence = RdpBitmapPersistence.Enabled;
+            Assert.AreEqual(RdpBitmapPersistence.Enabled, zoneA.SettingsEditor.BitmapPersistence);
+            Assert.IsTrue(zoneA.SettingsEditor.ShouldSerializeBitmapPersistence());
 
             var instanceA = (VmInstanceNode)zoneA.FirstNode;
-            Assert.AreEqual(RdpBitmapPersistence.Enabled, instanceA.BitmapPersistence);
-            Assert.AreEqual(RdpBitmapPersistence.Enabled, instanceA.EffectiveSettingsWithInheritanceApplied.BitmapPersistence);
-            Assert.IsFalse(instanceA.ShouldSerializeBitmapPersistence());
+            Assert.AreEqual(RdpBitmapPersistence.Enabled, instanceA.SettingsEditor.BitmapPersistence);
+            Assert.AreEqual(RdpBitmapPersistence.Enabled, instanceA.CreateConnectionSettings().BitmapPersistence);
+            Assert.IsFalse(instanceA.SettingsEditor.ShouldSerializeBitmapPersistence());
         }
 
         [Test]
         public void WhenBitmapPersistenceSetInProjectAndResetToDefaultInVm_InheritedValueStillApplies()
         {
-            this.projectNode.BitmapPersistence = RdpBitmapPersistence.Enabled;
-            Assert.AreNotEqual(RdpBitmapPersistence._Default, this.projectNode.BitmapPersistence);
+            this.projectNode.SettingsEditor.BitmapPersistence = RdpBitmapPersistence.Enabled;
+            Assert.AreNotEqual(RdpBitmapPersistence._Default, this.projectNode.SettingsEditor.BitmapPersistence);
 
             var instanceA = (VmInstanceNode)this.projectNode.FirstNode.FirstNode;
-            instanceA.BitmapPersistence = RdpBitmapPersistence._Default;
+            instanceA.SettingsEditor.BitmapPersistence = RdpBitmapPersistence._Default;
 
-            Assert.AreEqual(this.projectNode.BitmapPersistence, instanceA.BitmapPersistence);
-            Assert.AreEqual(this.projectNode.BitmapPersistence, instanceA.EffectiveSettingsWithInheritanceApplied.BitmapPersistence);
-            Assert.IsFalse(instanceA.ShouldSerializeBitmapPersistence());
+            Assert.AreEqual(this.projectNode.SettingsEditor.BitmapPersistence, instanceA.SettingsEditor.BitmapPersistence);
+            Assert.AreEqual(this.projectNode.SettingsEditor.BitmapPersistence, instanceA.CreateConnectionSettings().BitmapPersistence);
+            Assert.IsFalse(instanceA.SettingsEditor.ShouldSerializeBitmapPersistence());
         }
 
         [Test]
         public void WhenAudioModeSetInProjectAndZone_ZoneValueIsInheritedDownToVm()
         {
-            this.projectNode.AudioMode = RdpAudioMode.DoNotPlay;
+            this.projectNode.SettingsEditor.AudioMode = RdpAudioMode.DoNotPlay;
 
             var zoneA = (ZoneNode)this.projectNode.FirstNode;
 
-            zoneA.AudioMode = RdpAudioMode.PlayOnServer;
-            Assert.AreEqual(RdpAudioMode.PlayOnServer, zoneA.AudioMode);
-            Assert.IsTrue(zoneA.ShouldSerializeAudioMode());
+            zoneA.SettingsEditor.AudioMode = RdpAudioMode.PlayOnServer;
+            Assert.AreEqual(RdpAudioMode.PlayOnServer, zoneA.SettingsEditor.AudioMode);
+            Assert.IsTrue(zoneA.SettingsEditor.ShouldSerializeAudioMode());
 
             var instanceA = (VmInstanceNode)zoneA.FirstNode;
-            Assert.AreEqual(RdpAudioMode.PlayOnServer, instanceA.AudioMode);
-            Assert.AreEqual(RdpAudioMode.PlayOnServer, instanceA.EffectiveSettingsWithInheritanceApplied.AudioMode);
-            Assert.IsFalse(instanceA.ShouldSerializeAudioMode());
+            Assert.AreEqual(RdpAudioMode.PlayOnServer, instanceA.SettingsEditor.AudioMode);
+            Assert.AreEqual(RdpAudioMode.PlayOnServer, instanceA.CreateConnectionSettings().AudioMode);
+            Assert.IsFalse(instanceA.SettingsEditor.ShouldSerializeAudioMode());
         }
 
         [Test]
         public void WhenAudioModeSetInProjectAndResetToDefaultInVm_InheritedValueStillApplies()
         {
-            this.projectNode.AudioMode = RdpAudioMode.PlayOnServer;
-            Assert.AreNotEqual(RdpAudioMode._Default, this.projectNode.AudioMode);
+            this.projectNode.SettingsEditor.AudioMode = RdpAudioMode.PlayOnServer;
+            Assert.AreNotEqual(RdpAudioMode._Default, this.projectNode.SettingsEditor.AudioMode);
 
             var instanceA = (VmInstanceNode)this.projectNode.FirstNode.FirstNode;
-            instanceA.AudioMode = RdpAudioMode._Default;
+            instanceA.SettingsEditor.AudioMode = RdpAudioMode._Default;
 
-            Assert.AreEqual(this.projectNode.AudioMode, instanceA.AudioMode);
-            Assert.AreEqual(this.projectNode.AudioMode, instanceA.EffectiveSettingsWithInheritanceApplied.AudioMode);
-            Assert.IsFalse(instanceA.ShouldSerializeAudioMode());
+            Assert.AreEqual(this.projectNode.SettingsEditor.AudioMode, instanceA.SettingsEditor.AudioMode);
+            Assert.AreEqual(this.projectNode.SettingsEditor.AudioMode, instanceA.CreateConnectionSettings().AudioMode);
+            Assert.IsFalse(instanceA.SettingsEditor.ShouldSerializeAudioMode());
         }
 
         [Test]
         public void WhenColorDepthSetInProjectAndZone_ZoneValueIsInheritedDownToVm()
         {
-            this.projectNode.ColorDepth = RdpColorDepth.HighColor;
+            this.projectNode.SettingsEditor.ColorDepth = RdpColorDepth.HighColor;
 
             var zoneA = (ZoneNode)this.projectNode.FirstNode;
 
-            zoneA.ColorDepth = RdpColorDepth.DeepColor;
-            Assert.AreEqual(RdpColorDepth.DeepColor, zoneA.ColorDepth);
-            Assert.IsTrue(zoneA.ShouldSerializeColorDepth());
+            zoneA.SettingsEditor.ColorDepth = RdpColorDepth.DeepColor;
+            Assert.AreEqual(RdpColorDepth.DeepColor, zoneA.SettingsEditor.ColorDepth);
+            Assert.IsTrue(zoneA.SettingsEditor.ShouldSerializeColorDepth());
 
             var instanceA = (VmInstanceNode)zoneA.FirstNode;
-            Assert.AreEqual(RdpColorDepth.DeepColor, instanceA.ColorDepth);
-            Assert.AreEqual(RdpColorDepth.DeepColor, instanceA.EffectiveSettingsWithInheritanceApplied.ColorDepth);
-            Assert.IsFalse(instanceA.ShouldSerializeColorDepth());
+            Assert.AreEqual(RdpColorDepth.DeepColor, instanceA.SettingsEditor.ColorDepth);
+            Assert.AreEqual(RdpColorDepth.DeepColor, instanceA.CreateConnectionSettings().ColorDepth);
+            Assert.IsFalse(instanceA.SettingsEditor.ShouldSerializeColorDepth());
         }
 
         [Test]
         public void WhenColorDepthSetInProjectAndResetToDefaultInVm_InheritedValueStillApplies()
         {
-            this.projectNode.ColorDepth = RdpColorDepth.DeepColor;
-            Assert.AreNotEqual(RdpColorDepth._Default, this.projectNode.ColorDepth);
+            this.projectNode.SettingsEditor.ColorDepth = RdpColorDepth.DeepColor;
+            Assert.AreNotEqual(RdpColorDepth._Default, this.projectNode.SettingsEditor.ColorDepth);
 
             var instanceA = (VmInstanceNode)this.projectNode.FirstNode.FirstNode;
-            instanceA.ColorDepth = RdpColorDepth._Default;
+            instanceA.SettingsEditor.ColorDepth = RdpColorDepth._Default;
 
-            Assert.AreEqual(this.projectNode.ColorDepth, instanceA.ColorDepth);
-            Assert.AreEqual(this.projectNode.ColorDepth, instanceA.EffectiveSettingsWithInheritanceApplied.ColorDepth);
-            Assert.IsFalse(instanceA.ShouldSerializeColorDepth());
+            Assert.AreEqual(this.projectNode.SettingsEditor.ColorDepth, instanceA.SettingsEditor.ColorDepth);
+            Assert.AreEqual(this.projectNode.SettingsEditor.ColorDepth, instanceA.CreateConnectionSettings().ColorDepth);
+            Assert.IsFalse(instanceA.SettingsEditor.ShouldSerializeColorDepth());
         }
 
         [Test]
         public void WhenConnectionBarSetInProjectAndZone_ZoneValueIsInheritedDownToVm()
         {
-            this.projectNode.ConnectionBar = RdpConnectionBarState.Off;
+            this.projectNode.SettingsEditor.ConnectionBar = RdpConnectionBarState.Off;
 
             var zoneA = (ZoneNode)this.projectNode.FirstNode;
 
-            zoneA.ConnectionBar = RdpConnectionBarState.Pinned;
-            Assert.AreEqual(RdpConnectionBarState.Pinned, zoneA.ConnectionBar);
-            Assert.IsTrue(zoneA.ShouldSerializeConnectionBar());
+            zoneA.SettingsEditor.ConnectionBar = RdpConnectionBarState.Pinned;
+            Assert.AreEqual(RdpConnectionBarState.Pinned, zoneA.SettingsEditor.ConnectionBar);
+            Assert.IsTrue(zoneA.SettingsEditor.ShouldSerializeConnectionBar());
 
             var instanceA = (VmInstanceNode)zoneA.FirstNode;
-            Assert.AreEqual(RdpConnectionBarState.Pinned, instanceA.ConnectionBar);
-            Assert.AreEqual(RdpConnectionBarState.Pinned, instanceA.EffectiveSettingsWithInheritanceApplied.ConnectionBar);
-            Assert.IsFalse(instanceA.ShouldSerializeConnectionBar());
+            Assert.AreEqual(RdpConnectionBarState.Pinned, instanceA.SettingsEditor.ConnectionBar);
+            Assert.AreEqual(RdpConnectionBarState.Pinned, instanceA.CreateConnectionSettings().ConnectionBar);
+            Assert.IsFalse(instanceA.SettingsEditor.ShouldSerializeConnectionBar());
         }
 
         [Test]
         public void WhenConnectionBarSetInProjectAndResetToDefaultInVm_InheritedValueStillApplies()
         {
-            this.projectNode.ConnectionBar = RdpConnectionBarState.Off;
-            Assert.AreNotEqual(RdpConnectionBarState._Default, this.projectNode.ConnectionBar);
+            this.projectNode.SettingsEditor.ConnectionBar = RdpConnectionBarState.Off;
+            Assert.AreNotEqual(RdpConnectionBarState._Default, this.projectNode.SettingsEditor.ConnectionBar);
 
             var instanceA = (VmInstanceNode)this.projectNode.FirstNode.FirstNode;
-            instanceA.ConnectionBar = RdpConnectionBarState._Default;
+            instanceA.SettingsEditor.ConnectionBar = RdpConnectionBarState._Default;
 
-            Assert.AreEqual(this.projectNode.ConnectionBar, instanceA.ConnectionBar);
-            Assert.AreEqual(this.projectNode.ConnectionBar, instanceA.EffectiveSettingsWithInheritanceApplied.ConnectionBar);
-            Assert.IsFalse(instanceA.ShouldSerializeConnectionBar());
+            Assert.AreEqual(this.projectNode.SettingsEditor.ConnectionBar, instanceA.SettingsEditor.ConnectionBar);
+            Assert.AreEqual(this.projectNode.SettingsEditor.ConnectionBar, instanceA.CreateConnectionSettings().ConnectionBar);
+            Assert.IsFalse(instanceA.SettingsEditor.ShouldSerializeConnectionBar());
         }
     }
 }

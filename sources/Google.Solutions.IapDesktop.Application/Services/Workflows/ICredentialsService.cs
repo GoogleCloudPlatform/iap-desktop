@@ -80,7 +80,8 @@ namespace Google.Solutions.IapDesktop.Application.Services.Workflows
                 token => this.computeEngineAdapter.ResetWindowsUserAsync(
                     instanceRef,
                     username,
-                    token));
+                    token))
+                .ConfigureAwait(true);
 
             new ShowCredentialsDialog().ShowDialog(
                 owner,
@@ -98,7 +99,8 @@ namespace Google.Solutions.IapDesktop.Application.Services.Workflows
             var credentials = await GenerateCredentialsAsync(
                 owner,
                 vmNode.Reference,
-                suggestedUsername ?? this.authService.Authorization.SuggestWindowsUsername());
+                suggestedUsername ?? this.authService.Authorization.SuggestWindowsUsername())
+                .ConfigureAwait(true);
             if (credentials == null)
             {
                 // Aborted.
@@ -106,13 +108,16 @@ namespace Google.Solutions.IapDesktop.Application.Services.Workflows
             }
 
             // Update node to persist settings.
-            vmNode.Username = credentials.UserName;
-            vmNode.CleartextPassword = credentials.Password;
-            vmNode.Domain = null;
-            vmNode.SaveChanges();
+            var settings = vmNode.SettingsEditor;
+            settings.Username = credentials.UserName;
+            settings.CleartextPassword = credentials.Password;
+            settings.Domain = null;
+            settings.SaveChanges();
 
             // Fire an event to update anybody using the node.
-            await this.eventService.FireAsync(new ProjectExplorerNodeSelectedEvent(vmNode));
+            await this.eventService
+                .FireAsync(new ProjectExplorerNodeSelectedEvent(vmNode))
+                .ConfigureAwait(true);
 
             return credentials;
         }
