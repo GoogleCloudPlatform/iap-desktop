@@ -21,6 +21,7 @@
 
 using Google.Solutions.IapDesktop.Application.ObjectModel;
 using Google.Solutions.IapDesktop.Application.Services.Windows.ProjectExplorer;
+using Google.Solutions.IapDesktop.Extensions.Os.Properties;
 using Google.Solutions.IapDesktop.Extensions.Os.Services.InstanceDetails;
 using System;
 using System.Windows.Forms;
@@ -47,6 +48,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Os.Services
                     InstanceDetailsViewModel.GetCommandState,
                     context => serviceProvider.GetService<InstanceDetailsWindow>().ShowWindow())
                 {
+                    Image = Resources.ComputerDetails_16
                 },
                 7);
         }

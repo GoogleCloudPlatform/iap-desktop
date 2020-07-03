@@ -63,7 +63,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.Windows.Properties
                 this.components);
             this.components.Add(this.viewModel.OnPropertyChange(
                 m => m.WindowTitle,
-                title => this.TabText = title));
+                title => this.TabText = this.Text = title));
             this.components.Add(this.viewModel.OnPropertyChange(
                 m => m.InspectedObject,
                 obj =>
