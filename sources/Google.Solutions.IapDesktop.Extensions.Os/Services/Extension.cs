@@ -43,7 +43,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Os.Services
 
             projectExplorer.Commands.AddCommand(
                 new Command<IProjectExplorerNode>(
-                    "Show VM instance &details",
+                    "Show &details",
                     InstanceDetailsViewModel.GetCommandState,
                     context => serviceProvider.GetService<InstanceDetailsWindow>().ShowWindow())
                 {
