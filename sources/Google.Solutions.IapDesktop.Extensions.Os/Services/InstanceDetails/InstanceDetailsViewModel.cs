@@ -33,13 +33,13 @@ using System.Diagnostics;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Google.Solutions.IapDesktop.Extensions.Os.Services.InstanceProperties
+namespace Google.Solutions.IapDesktop.Extensions.Os.Services.InstanceDetails
 {
     internal class InstanceDetailsViewModel
         : ModelCachingViewModelBase<IProjectExplorerNode, InstanceDetailsModel>, IPropertiesViewModel
     {
         private const int ModelCacheCapacity = 5;
-        internal const string DefaultWindowTitle = "VM instance details";
+        internal const string DefaultWindowTitle = "VM instance";
 
         private readonly IServiceProvider serviceProvider;
 

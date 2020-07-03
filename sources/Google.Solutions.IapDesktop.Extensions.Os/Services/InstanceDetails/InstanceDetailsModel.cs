@@ -29,7 +29,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Google.Solutions.IapDesktop.Extensions.Os.Services.InstanceProperties
+namespace Google.Solutions.IapDesktop.Extensions.Os.Services.InstanceDetails
 {
     internal class InstanceDetailsModel
     {
