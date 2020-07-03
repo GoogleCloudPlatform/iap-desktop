@@ -35,6 +35,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Os.Services.InstanceDetails
     {
         private const string InstanceCategory = "Instance details";
         private const string NetworkCategory = "Instance network";
+        private const string SchedulingCategory = "Scheduling";
 
         private readonly Instance instanceDetails;
 
@@ -78,6 +79,18 @@ namespace Google.Solutions.IapDesktop.Extensions.Os.Services.InstanceDetails
 
         [Browsable(true)]
         [Category(InstanceCategory)]
+        [DisplayName("Licenses")]
+        public string Licenses
+             => this.instanceDetails.Disks != null 
+                ? string.Join(", ", this.instanceDetails.Disks
+                    .EnsureNotNull()
+                    .Where(d => d.Licenses != null && d.Licenses.Any())
+                    .SelectMany(d => d.Licenses)
+                    .Select(l => LicenseLocator.FromString(l).Name))
+                : null;
+
+        [Browsable(true)]
+        [Category(NetworkCategory)]
         [DisplayName("Network tags")]
         public string Tags
              => this.instanceDetails.Tags != null && this.instanceDetails.Tags.Items != null
@@ -107,6 +120,15 @@ namespace Google.Solutions.IapDesktop.Extensions.Os.Services.InstanceDetails
                 .Where(accessConfig => accessConfig.Type == "ONE_TO_ONE_NAT")
                 .Select(accessConfig => accessConfig.NatIP)
                 .FirstOrDefault();
+
+
+
+        [Browsable(true)]
+        [Category(SchedulingCategory)]
+        [DisplayName("Sole tenant VM")]
+        public bool IsSoleTenant
+            => this.instanceDetails.Scheduling?.NodeAffinities != null &&
+               this.instanceDetails.Scheduling.NodeAffinities.Any();
 
         public bool IsOsInventoryInformationPopulated = false;  // TODO
 

@@ -49,6 +49,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Os.Test.Services.InstanceDetail
             Assert.AreEqual("RUNNING", model.Status);
             Assert.IsNotNull(model.InternalIp);
             Assert.IsNotNull(model.ExternalIp);
+            Assert.IsNotNull(model.Licenses);
+            Assert.IsFalse(model.IsSoleTenant);
         }
     }
 }
