@@ -6,17 +6,16 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{BD834B99-2AEE-4160-BC38-1821695D4174}</ProjectGuid>
+    <ProjectGuid>{2A1A5D4D-AE63-439E-A914-6F5FE5EB9435}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Google.Solutions.IapDesktop.Application.Test</RootNamespace>
-    <AssemblyName>Google.Solutions.IapDesktop.Application.Test</AssemblyName>
+    <RootNamespace>Google.Solutions.IapDesktop.Extensions.Os.Test</RootNamespace>
+    <AssemblyName>Google.Solutions.IapDesktop.Extensions.Os.Test</AssemblyName>
     <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <Deterministic>true</Deterministic>
     <NuGetPackageImportStamp>
     </NuGetPackageImportStamp>
-    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -69,100 +68,25 @@
     <Reference Include="System" />
     <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
-    <Reference Include="System.Drawing" />
     <Reference Include="System.Runtime.CompilerServices.Unsafe, Version=4.0.6.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <HintPath>..\packages\System.Runtime.CompilerServices.Unsafe.4.7.1\lib\net461\System.Runtime.CompilerServices.Unsafe.dll</HintPath>
     </Reference>
-    <Reference Include="System.Security" />
     <Reference Include="System.Threading.Tasks.Extensions, Version=4.2.0.1, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
       <HintPath>..\packages\System.Threading.Tasks.Extensions.4.5.4\lib\net461\System.Threading.Tasks.Extensions.dll</HintPath>
     </Reference>
-    <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Data" />
     <Reference Include="System.Net.Http" />
     <Reference Include="System.Xml" />
-    <Reference Include="WeifenLuo.WinFormsUI.Docking, Version=3.0.6.0, Culture=neutral, PublicKeyToken=5cded1a1a0a7b481, processorArchitecture=MSIL">
-      <HintPath>..\packages\DockPanelSuite.3.0.6\lib\net40\WeifenLuo.WinFormsUI.Docking.dll</HintPath>
-    </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Controls\TestBindableListView.cs" />
-    <Compile Include="Controls\TestBindableTreeView.cs" />
-    <Compile Include="ObjectModel\TestBindingExtensions.cs" />
-    <Compile Include="ObjectModel\TestCommandContainer.cs" />
-    <Compile Include="ObjectModel\TestModelCachingViewModelBase.cs" />
-    <Compile Include="ObjectModel\TestServiceAttribute.cs" />
-    <Compile Include="Services\Adapters\TestGithubAdapter.cs" />
-    <Compile Include="FixtureBase.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="RdpTunnel.cs" />
-    <Compile Include="Services\Persistence\TestApplicationSettingsRepository.cs" />
-    <Compile Include="Services\Persistence\TestAppProtocolRegistry.cs" />
-    <Compile Include="Services\Workflows\SynchronousJobService.cs" />
-    <Compile Include="Services\Workflows\TestRemoteDesktopConnectionService.cs" />
-    <Compile Include="Services\Workflows\TunnelEndpoint.cs" />
-    <Compile Include="Util\TestLeastRecentlyUsedCache.cs" />
-    <Compile Include="Util\TestRangeObservableCollection.cs" />
-    <Compile Include="Util\TestRegistryKeyMapper.cs" />
-    <Compile Include="ObjectModel\MockEventService.cs" />
-    <Compile Include="Services\Integration\TestJobService.cs" />
-    <Compile Include="Services\Integration\TestProjectInventoryService.cs" />
-    <Compile Include="Services\Integration\TestTunnelBrokerService.cs" />
-    <Compile Include="Services\Persistence\TestAuthSettingsRepository.cs" />
-    <Compile Include="Services\Persistence\TestConnectionSettingsRepository.cs" />
-    <Compile Include="ObjectModel\TestServiceRegistry.cs" />
-    <Compile Include="Util\TestAuthorizationExtensions.cs" />
-    <Compile Include="Util\TestIapRdpUrl.cs" />
-    <Compile Include="Util\TestPropertyMapper.cs" />
-    <Compile Include="Services\Windows\TestMainForm.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Services\Windows\TestMainForm.Designer.cs">
-      <DependentUpon>TestMainForm.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Services\Windows\TestProjectExplorer.cs" />
-    <Compile Include="Services\Windows\TestProjectExplorerNode.cs" />
-    <Compile Include="Services\Windows\TestRemoteDesktopGroupPolicies.cs" />
-    <Compile Include="Services\Windows\TestRemoteDesktop.cs" />
-    <Compile Include="Services\Windows\TestRemoteDesktopOverIap.cs" />
-    <Compile Include="Services\Windows\WindowTestFixtureBase.cs" />
-    <Compile Include="Services\Windows\TestSettingsEditor.cs" />
-    <Compile Include="Util\TestSingletonApplicationBase.cs" />
-    <Compile Include="Services\Windows\TestTunnelsViewModel.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\Google.Solutions.Common.Test\Google.Solutions.Common.Test.csproj">
-      <Project>{aa8cd2fb-d463-42bd-a880-9247c93f9395}</Project>
-      <Name>Google.Solutions.Common.Test</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Google.Solutions.Common\Google.Solutions.Common.csproj">
-      <Project>{fb4c6f4d-32b1-4b0b-ba79-fd47fc4d7912}</Project>
-      <Name>Google.Solutions.Common</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Google.Solutions.IapTunneling.Test\Google.Solutions.IapTunneling.Test.csproj">
-      <Project>{9c1aa910-798a-4571-9266-7280a677fe9f}</Project>
-      <Name>Google.Solutions.IapTunneling.Test</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Google.Solutions.IapDesktop.Application\Google.Solutions.IapDesktop.Application.csproj">
-      <Project>{842b003e-6eeb-429d-a3a1-53b4e642e83b}</Project>
-      <Name>Google.Solutions.IapDesktop.Application</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Google.Solutions.IapTunneling\Google.Solutions.IapTunneling.csproj">
-      <Project>{d9493479-1751-402b-880f-60ed33ebb885}</Project>
-      <Name>Google.Solutions.IapTunneling</Name>
-    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
     <None Include="packages.config" />
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="Services\Windows\TestMainForm.resx">
-      <DependentUpon>TestMainForm.cs</DependentUpon>
-    </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">

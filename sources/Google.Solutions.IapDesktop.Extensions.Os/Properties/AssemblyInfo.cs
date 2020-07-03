@@ -20,9 +20,10 @@
 //
 
 using System.Reflection;
+using System.Runtime.CompilerServices;
 
-[assembly: AssemblyTitle("IAP Desktop")]
-[assembly: AssemblyDescription("IAP Desktop")]
+[assembly: AssemblyTitle("OS extension library")]
+[assembly: AssemblyDescription("OS extension library")]
 [assembly: AssemblyCompany("Google LLC")]
 [assembly: AssemblyProduct("IAP Desktop")]
 [assembly: AssemblyCopyright("Copyright ©  2020")]
@@ -30,3 +31,5 @@ using System.Reflection;
 
 [assembly: AssemblyVersion("1.0.1.0")]
 [assembly: AssemblyFileVersion("1.0.1.0")]
+
+[assembly: InternalsVisibleTo("Google.Solutions.IapDesktop.Extensions.Os.Test")]
