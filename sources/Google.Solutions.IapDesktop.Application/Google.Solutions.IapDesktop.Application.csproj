@@ -134,6 +134,13 @@
     <Compile Include="Services\Windows\ProjectExplorer\ProjectExplorerTrackingToolWindow.cs">
       <SubType>Form</SubType>
     </Compile>
+    <Compile Include="Services\Windows\Properties\IPropertiesViewModel.cs" />
+    <Compile Include="Services\Windows\Properties\PropertiesWindow.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Services\Windows\Properties\PropertiesWindow.Designer.cs">
+      <DependentUpon>PropertiesWindow.cs</DependentUpon>
+    </Compile>
     <Compile Include="Services\Windows\SlowLoadingPane.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -288,6 +295,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Services\Windows\Diagnostics\DebugJobServiceWindow.resx">
       <DependentUpon>DebugJobServiceWindow.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Services\Windows\Properties\PropertiesWindow.resx">
+      <DependentUpon>PropertiesWindow.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Services\Windows\SlowLoadingPane.resx">
       <DependentUpon>SlowLoadingPane.cs</DependentUpon>

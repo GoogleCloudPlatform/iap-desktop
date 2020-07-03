@@ -1,5 +1,5 @@
 ﻿//
-// Copyright 2019 Google LLC
+// Copyright 2020 Google LLC
 //
 // Licensed to the Apache Software Foundation (ASF) under one
 // or more contributor license agreements.  See the NOTICE file
@@ -19,14 +19,19 @@
 // under the License.
 //
 
-using System.Reflection;
+using Google.Solutions.IapDesktop.Application.Services.Windows.ProjectExplorer;
+using System.ComponentModel;
+using System.Threading.Tasks;
 
-[assembly: AssemblyTitle("IAP Desktop")]
-[assembly: AssemblyDescription("IAP Desktop")]
-[assembly: AssemblyCompany("Google LLC")]
-[assembly: AssemblyProduct("IAP Desktop")]
-[assembly: AssemblyCopyright("Copyright ©  2020")]
-[assembly: AssemblyTrademark("Google LLC")]
+namespace Google.Solutions.IapDesktop.Application.Services.Windows.Properties
+{
+    public interface IPropertiesViewModel : INotifyPropertyChanged
+    {
+        bool IsInformationBarVisible { get; }
+        string InformationText { get; }
+        object InspectedObject { get; }
 
-[assembly: AssemblyVersion("1.0.1.0")]
-[assembly: AssemblyFileVersion("1.0.1.0")]
+        Task SwitchToModelAsync(IProjectExplorerNode node);
+        void SaveChanges();
+    }
+}
