@@ -1,5 +1,5 @@
 ﻿//
-// Copyright 2019 Google LLC
+// Copyright 2020 Google LLC
 //
 // Licensed to the Apache Software Foundation (ASF) under one
 // or more contributor license agreements.  See the NOTICE file
@@ -19,17 +19,19 @@
 // under the License.
 //
 
-using System.Reflection;
-using System.Runtime.CompilerServices;
+using Google.Solutions.Common.Diagnostics;
+using Google.Solutions.IapDesktop.Application.ObjectModel;
+using Google.Solutions.IapDesktop.Application.Services.Windows.Properties;
 
-[assembly: AssemblyTitle("OS extension library")]
-[assembly: AssemblyDescription("OS extension library")]
-[assembly: AssemblyCompany("Google LLC")]
-[assembly: AssemblyProduct("IAP Desktop")]
-[assembly: AssemblyCopyright("Copyright ©  2020")]
-[assembly: AssemblyTrademark("Google LLC")]
-
-[assembly: AssemblyVersion("1.0.1.0")]
-[assembly: AssemblyFileVersion("1.0.1.0")]
-
-[assembly: InternalsVisibleTo("Google.Solutions.IapDesktop.Extensions.Os.Test")]
+namespace Google.Solutions.IapDesktop.Extensions.Os.Services.InstanceProperties
+{
+    [Service(ServiceLifetime.Singleton)]
+    [SkipCodeCoverage("All logic in view model")]
+    internal class InstancePropertiesWindow : PropertiesWindow
+    {
+        public InstancePropertiesWindow()
+            : base(new InstancePropertiesViewModel())
+        {
+        }
+    }
+}

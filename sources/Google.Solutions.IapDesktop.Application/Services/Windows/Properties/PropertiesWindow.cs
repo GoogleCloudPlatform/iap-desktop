@@ -19,6 +19,7 @@
 // under the License.
 //
 
+using Google.Solutions.Common.Diagnostics;
 using Google.Solutions.IapDesktop.Application.ObjectModel;
 using Google.Solutions.IapDesktop.Application.Services.Windows.ProjectExplorer;
 using System;
@@ -28,6 +29,7 @@ using System.Windows.Forms;
 
 namespace Google.Solutions.IapDesktop.Application.Services.Windows.Properties
 {
+    [SkipCodeCoverage("All logic in view model")]
     public partial class PropertiesWindow 
         : ProjectExplorerTrackingToolWindow<IPropertiesViewModel>
     {
@@ -52,7 +54,11 @@ namespace Google.Solutions.IapDesktop.Application.Services.Windows.Properties
                 this.components);
             this.components.Add(this.viewModel.OnPropertyChange(
                 m => m.InspectedObject,
-                obj => this.propertyGrid.SelectedObject = obj));
+                obj =>
+                {
+                    this.propertyGrid.Enabled = (obj == null);
+                    this.propertyGrid.SelectedObject = obj;
+                }));
         }
 
         //---------------------------------------------------------------------
