@@ -125,7 +125,7 @@
       <DependentUpon>TestMainForm.cs</DependentUpon>
     </Compile>
     <Compile Include="Services\Windows\TestProjectExplorer.cs" />
-    <Compile Include="Services\Windows\TestProjectExplorerNode.cs" />
+    <Compile Include="Services\Windows\ConnectionSettings\TestConnectionSettingsEditor.cs" />
     <Compile Include="Services\Windows\TestRemoteDesktopGroupPolicies.cs" />
     <Compile Include="Services\Windows\TestRemoteDesktop.cs" />
     <Compile Include="Services\Windows\TestRemoteDesktopOverIap.cs" />
