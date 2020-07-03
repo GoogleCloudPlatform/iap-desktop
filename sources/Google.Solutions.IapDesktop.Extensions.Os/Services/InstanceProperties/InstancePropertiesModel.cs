@@ -1,0 +1,126 @@
+﻿//
+// Copyright 2020 Google LLC
+//
+// Licensed to the Apache Software Foundation (ASF) under one
+// or more contributor license agreements.  See the NOTICE file
+// distributed with this work for additional information
+// regarding copyright ownership.  The ASF licenses this file
+// to you under the Apache License, Version 2.0 (the
+// "License"); you may not use this file except in compliance
+// with the License.  You may obtain a copy of the License at
+// 
+//   http://www.apache.org/licenses/LICENSE-2.0
+// 
+// Unless required by applicable law or agreed to in writing,
+// software distributed under the License is distributed on an
+// "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+// KIND, either express or implied.  See the License for the
+// specific language governing permissions and limitations
+// under the License.
+//
+
+using Google.Apis.Compute.v1.Data;
+using Google.Solutions.Common.Locator;
+using Google.Solutions.Common.Util;
+using Google.Solutions.IapDesktop.Application.Services.Adapters;
+using System.ComponentModel;
+using System.Diagnostics;
+using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
+
+namespace Google.Solutions.IapDesktop.Extensions.Os.Services.InstanceProperties
+{
+    internal class InstancePropertiesModel
+    {
+        private const string InstanceCategory = "Instance details";
+        private const string NetworkCategory = "Instance network";
+
+        private readonly Instance instanceDetails;
+
+        public InstancePropertiesModel(Instance instanceDetails)
+        {
+            Debug.Assert(instanceDetails != null);
+            this.instanceDetails = instanceDetails;
+        }
+
+        //---------------------------------------------------------------------
+        // Browsable properties.
+        //---------------------------------------------------------------------
+
+        [Browsable(true)]
+        [Category(InstanceCategory)]
+        [DisplayName("Name")]
+        public string InstanceName => this.instanceDetails.Name;
+
+        [Browsable(true)]
+        [Category(InstanceCategory)]
+        [DisplayName("ID")]
+        public ulong InstanceId => this.instanceDetails.Id.Value;
+
+        [Browsable(true)]
+        [Category(InstanceCategory)]
+        [DisplayName("Status")]
+        public string Status => this.instanceDetails.Status;
+
+        [Browsable(true)]
+        [Category(InstanceCategory)]
+        [DisplayName("Hostname")]
+        public string Hostname => this.instanceDetails.Hostname;
+
+        [Browsable(true)]
+        [Category(InstanceCategory)]
+        [DisplayName("Machine type")]
+        public string MachineType => null; // TODO: MachineTypeLocator!
+
+        [Browsable(true)]
+        [Category(InstanceCategory)]
+        [DisplayName("Network tags")]
+        public string Tags
+             => this.instanceDetails.Tags != null && this.instanceDetails.Tags.Items != null
+                ? string.Join(", ", this.instanceDetails.Tags.Items) 
+                : null;
+
+        [Browsable(true)]
+        [Category(NetworkCategory)]
+        [DisplayName("IP address (internal)")]
+        public string InternalIp 
+            => this.instanceDetails
+                .NetworkInterfaces
+                .EnsureNotNull()
+                .Select(nic => nic.NetworkIP)
+                .FirstOrDefault();
+
+        [Browsable(true)]
+        [Category(NetworkCategory)]
+        [DisplayName("IP address (external)")]
+        public string ExternalIp
+            => this.instanceDetails
+                .NetworkInterfaces
+                .EnsureNotNull()
+                .Where(nic => nic.AccessConfigs != null)
+                .SelectMany(nic => nic.AccessConfigs)
+                .EnsureNotNull()
+                .Where(accessConfig => accessConfig.Type == "ONE_TO_ONE_NAT")
+                .Select(accessConfig => accessConfig.NatIP)
+                .FirstOrDefault();
+
+        public bool IsOsInventoryInformationPopulated = false;  // TODO
+
+        //---------------------------------------------------------------------
+        // Loading.
+        //---------------------------------------------------------------------
+
+        public async static Task<InstancePropertiesModel> LoadAsync(
+            InstanceLocator instanceLocator,
+            IComputeEngineAdapter adapter,
+            CancellationToken token)
+        {
+            var instance = await adapter
+                .GetInstanceAsync(instanceLocator, token)
+                .ConfigureAwait(false);
+
+            return new InstancePropertiesModel(instance);
+        }
+    }
+}

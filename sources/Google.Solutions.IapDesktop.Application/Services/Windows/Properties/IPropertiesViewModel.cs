@@ -30,6 +30,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.Windows.Properties
         bool IsInformationBarVisible { get; }
         string InformationText { get; }
         object InspectedObject { get; }
+        string WindowTitle { get; }
 
         Task SwitchToModelAsync(IProjectExplorerNode node);
         void SaveChanges();

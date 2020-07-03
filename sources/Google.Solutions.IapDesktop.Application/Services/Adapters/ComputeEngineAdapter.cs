@@ -41,6 +41,10 @@ namespace Google.Solutions.IapDesktop.Application.Services.Adapters
 {
     public interface IComputeEngineAdapter : IDisposable
     {
+        Task<Instance> GetInstanceAsync(
+            InstanceLocator instanceLocator,
+            CancellationToken cancellationToken);
+
         Task<IEnumerable<Instance>> ListInstancesAsync(
             string projectId,
             CancellationToken cancellationToken);
@@ -130,6 +134,28 @@ namespace Google.Solutions.IapDesktop.Application.Services.Adapters
                 {
                     throw new ResourceAccessDeniedException(
                         $"Access to VM instances in project {projectId} has been denied", e);
+                }
+            }
+        }
+
+        public async Task<Instance> GetInstanceAsync(
+            InstanceLocator instanceLocator,
+            CancellationToken cancellationToken)
+        {
+            using (TraceSources.IapDesktop.TraceMethod().WithParameters(instanceLocator))
+            {
+                try
+                {
+                    return await this.service.Instances.Get(
+                        instanceLocator.ProjectId,
+                        instanceLocator.Zone,
+                        instanceLocator.Name).ExecuteAsync(cancellationToken)
+                        .ConfigureAwait(false);
+                }
+                catch (GoogleApiException e) when (e.Error != null && e.Error.Code == 403)
+                {
+                    throw new ResourceAccessDeniedException(
+                        $"Access to VM instance {instanceLocator.Name} has been denied", e);
                 }
             }
         }

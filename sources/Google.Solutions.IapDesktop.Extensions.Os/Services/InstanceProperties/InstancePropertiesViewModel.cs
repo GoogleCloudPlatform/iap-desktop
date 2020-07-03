@@ -19,20 +19,79 @@
 // under the License.
 //
 
+using Google.Solutions.Common.Diagnostics;
+using Google.Solutions.Common.Locator;
+using Google.Solutions.Common.Util;
+using Google.Solutions.IapDesktop.Application;
 using Google.Solutions.IapDesktop.Application.ObjectModel;
+using Google.Solutions.IapDesktop.Application.Services.Adapters;
+using Google.Solutions.IapDesktop.Application.Services.Integration;
 using Google.Solutions.IapDesktop.Application.Services.Windows.ProjectExplorer;
 using Google.Solutions.IapDesktop.Application.Services.Windows.Properties;
 using System;
 using System.Diagnostics;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Google.Solutions.IapDesktop.Extensions.Os.Services.InstanceProperties
 {
-    public class InstancePropertiesViewModel : ViewModelBase, IPropertiesViewModel
+    internal class InstancePropertiesViewModel
+        : ModelCachingViewModelBase<IProjectExplorerNode, InstancePropertiesModel>, IPropertiesViewModel
     {
-        public bool IsInformationBarVisible { get; private set; }
-        public string InformationText { get; private set; }
-        public object InspectedObject { get; private set; }
+        private const int ModelCacheCapacity = 5;
+        internal const string DefaultWindowTitle = "Properties";
+
+        private readonly IServiceProvider serviceProvider;
+
+        private bool isInformationBarVisible = false;
+        private object inspectedObject = null;
+        private string windowTitle = DefaultWindowTitle;
+
+        public string InformationText => "OS Inventory information not available";
+
+        public InstancePropertiesViewModel(IServiceProvider serviceProvider)
+            : base(ModelCacheCapacity)
+        {
+            this.serviceProvider = serviceProvider;
+        }
+
+        //---------------------------------------------------------------------
+        // Observable properties.
+        //---------------------------------------------------------------------
+
+        public bool IsInformationBarVisible
+        {
+            get => isInformationBarVisible;
+            private set
+            {
+                this.isInformationBarVisible = value;
+                RaisePropertyChange();
+            }
+        }
+
+        public object InspectedObject
+        {
+            get => this.inspectedObject;
+            private set
+            {
+                this.inspectedObject = value;
+                RaisePropertyChange();
+            }
+        }
+
+        public string WindowTitle
+        {
+            get => this.windowTitle;
+            set
+            {
+                this.windowTitle = value;
+                RaisePropertyChange();
+            }
+        }
+
+        //---------------------------------------------------------------------
+        // Actions.
+        //---------------------------------------------------------------------
 
         public void SaveChanges()
         {
@@ -41,9 +100,73 @@ namespace Google.Solutions.IapDesktop.Extensions.Os.Services.InstanceProperties
                 "All properties are read-only, so this should never be called");
         }
 
-        public Task SwitchToModelAsync(IProjectExplorerNode node)
+        //---------------------------------------------------------------------
+        // ModelCachingViewModelBase.
+        //---------------------------------------------------------------------
+
+        public static CommandState GetCommandState(IProjectExplorerNode node)
         {
-            throw new NotImplementedException();
+            return node is IProjectExplorerVmInstanceNode vmNode
+                ? CommandState.Enabled 
+                : CommandState.Unavailable;
+        }
+
+        protected async override Task<InstancePropertiesModel> LoadModelAsync(
+            IProjectExplorerNode node,
+            CancellationToken token)
+        {
+            using (TraceSources.IapDesktop.TraceMethod().WithParameters(node))
+            {
+                if (node is IProjectExplorerVmInstanceNode vmNode)
+                {
+                    // Load data using a job so that the task is retried in case
+                    // of authentication issues.
+                    var jobService = this.serviceProvider.GetService<IJobService>();
+                    return await jobService.RunInBackground(
+                        new JobDescription(
+                            $"Loading information about {vmNode.InstanceName}",
+                            JobUserFeedbackType.BackgroundFeedback),
+                        async jobToken =>
+                        {
+                            using (var combinedTokenSource = jobToken.Combine(token))
+                            {
+                                return await InstancePropertiesModel.LoadAsync(
+                                    new InstanceLocator(
+                                        vmNode.ProjectId,
+                                        vmNode.ZoneId,
+                                        vmNode.InstanceName),
+                                    this.serviceProvider.GetService<IComputeEngineAdapter>(),
+                                    combinedTokenSource.Token)
+                                    .ConfigureAwait(false);
+                            }
+                        }).ConfigureAwait(true);  // Back to original (UI) thread.
+                }
+                else
+                {
+                    // Unknown/unsupported node.
+                    return null;
+                }
+            }
+        }
+
+        protected override void ApplyModel(bool cached)
+        {
+            using (TraceSources.IapDesktop.TraceMethod().WithParameters(this.Model, cached))
+            {
+                if (this.Model == null)
+                {
+                    // Unsupported node.
+                    this.IsInformationBarVisible = false;
+                    this.InspectedObject = null;
+                    this.WindowTitle = DefaultWindowTitle;
+                }
+                else
+                {
+                    this.IsInformationBarVisible = !this.Model.IsOsInventoryInformationPopulated;
+                    this.InspectedObject = this.Model;
+                    this.WindowTitle = DefaultWindowTitle + $": {this.Model.InstanceName}";
+                }
+            }
         }
     }
 }

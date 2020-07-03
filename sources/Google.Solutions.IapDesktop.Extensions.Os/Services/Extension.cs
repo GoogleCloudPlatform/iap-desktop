@@ -19,22 +19,36 @@
 // under the License.
 //
 
-using Google.Solutions.Common.Diagnostics;
 using Google.Solutions.IapDesktop.Application.ObjectModel;
-using Google.Solutions.IapDesktop.Application.Services.Windows.Properties;
+using Google.Solutions.IapDesktop.Application.Services.Windows.ProjectExplorer;
+using Google.Solutions.IapDesktop.Extensions.Os.Services.InstanceProperties;
 using System;
+using System.Windows.Forms;
 
-namespace Google.Solutions.IapDesktop.Extensions.Os.Services.InstanceProperties
+namespace Google.Solutions.IapDesktop.Extensions.Os.Services
 {
+    /// <summary>
+    /// Main class of the extension, instantiated on load.
+    /// </summary>
     [Service(ServiceLifetime.Singleton)]
-    [SkipCodeCoverage("All logic in view model")]
-    internal class InstancePropertiesWindow : PropertiesWindow
+    public class Extension
     {
-        public InstancePropertiesWindow(IServiceProvider serviceProvider)
-            : base(
-                  serviceProvider,
-                  new InstancePropertiesViewModel(serviceProvider))
+        public Extension(IServiceProvider serviceProvider)
         {
+            var projectExplorer = serviceProvider.GetService<IProjectExplorer>();
+
+            //
+            // Add commands to project explorer.
+            //
+
+            projectExplorer.Commands.AddCommand(
+                new Command<IProjectExplorerNode>(
+                    "&Properties",
+                    InstancePropertiesViewModel.GetCommandState,
+                    context => serviceProvider.GetService<InstancePropertiesWindow>().ShowWindow())
+                {
+                },
+                5);
         }
     }
 }

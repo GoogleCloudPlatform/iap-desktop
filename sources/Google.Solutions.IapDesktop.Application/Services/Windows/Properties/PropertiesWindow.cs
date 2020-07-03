@@ -21,11 +21,13 @@
 
 using Google.Solutions.Common.Diagnostics;
 using Google.Solutions.IapDesktop.Application.ObjectModel;
+using Google.Solutions.IapDesktop.Application.Services.Integration;
 using Google.Solutions.IapDesktop.Application.Services.Windows.ProjectExplorer;
 using System;
 using System.Diagnostics;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using WeifenLuo.WinFormsUI.Docking;
 
 namespace Google.Solutions.IapDesktop.Application.Services.Windows.Properties
 {
@@ -35,7 +37,14 @@ namespace Google.Solutions.IapDesktop.Application.Services.Windows.Properties
     {
         private readonly IPropertiesViewModel viewModel;
 
-        public PropertiesWindow(IPropertiesViewModel viewModel)
+        public PropertiesWindow(
+            IServiceProvider serviceProvider,
+            IPropertiesViewModel viewModel)
+            : base(
+                  serviceProvider.GetService<IMainForm>().MainPanel,
+                  serviceProvider.GetService<IProjectExplorer>(),
+                  serviceProvider.GetService<IEventService>(),
+                  serviceProvider.GetService<IExceptionDialog>())
         {
             this.components = new System.ComponentModel.Container();
             this.viewModel = viewModel;
@@ -53,6 +62,9 @@ namespace Google.Solutions.IapDesktop.Application.Services.Windows.Properties
                 m => m.InformationText,
                 this.components);
             this.components.Add(this.viewModel.OnPropertyChange(
+                m => m.WindowTitle,
+                title => this.TabText = title));
+            this.components.Add(this.viewModel.OnPropertyChange(
                 m => m.InspectedObject,
                 obj =>
                 {
@@ -60,6 +72,9 @@ namespace Google.Solutions.IapDesktop.Application.Services.Windows.Properties
                     this.propertyGrid.SelectedObject = obj;
                 }));
         }
+
+        protected override DockState DefaultState
+            => WeifenLuo.WinFormsUI.Docking.DockState.DockRightAutoHide;
 
         //---------------------------------------------------------------------
         // ProjectExplorerTrackingToolWindow.
@@ -104,6 +119,11 @@ namespace Google.Solutions.IapDesktop.Application.Services.Windows.Properties
             // We only allow resetting strings.
             this.resetToolStripMenuItem.Enabled =
                 property != null && property.PropertyType == typeof(string);
+        }
+
+        private void PropertiesWindow_SizeChanged(object sender, EventArgs e)
+        {
+            this.splitContainer.SplitterDistance = this.splitContainer.Panel1MinSize;
         }
     }
 }

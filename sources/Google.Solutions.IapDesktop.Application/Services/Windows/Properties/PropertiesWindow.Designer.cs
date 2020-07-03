@@ -100,13 +100,13 @@
             this.contextMenu.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.resetToolStripMenuItem});
             this.contextMenu.Name = "contextMenu";
-            this.contextMenu.Size = new System.Drawing.Size(181, 48);
+            this.contextMenu.Size = new System.Drawing.Size(103, 26);
             this.contextMenu.Opening += new System.ComponentModel.CancelEventHandler(this.contextMenu_Opening);
             // 
             // resetToolStripMenuItem
             // 
             this.resetToolStripMenuItem.Name = "resetToolStripMenuItem";
-            this.resetToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.resetToolStripMenuItem.Size = new System.Drawing.Size(102, 22);
             this.resetToolStripMenuItem.Text = "&Reset";
             this.resetToolStripMenuItem.Click += new System.EventHandler(this.resetToolStripMenuItem_Click);
             // 
@@ -117,7 +117,8 @@
             this.ClientSize = new System.Drawing.Size(800, 450);
             this.Controls.Add(this.splitContainer);
             this.Name = "PropertiesWindow";
-            this.Text = "PropertiesWindow";
+            this.Text = "Properties";
+            this.SizeChanged += new System.EventHandler(this.PropertiesWindow_SizeChanged);
             this.splitContainer.Panel1.ResumeLayout(false);
             this.splitContainer.Panel1.PerformLayout();
             this.splitContainer.Panel2.ResumeLayout(false);
