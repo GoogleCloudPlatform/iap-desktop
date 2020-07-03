@@ -94,7 +94,7 @@ namespace Google.Solutions.Common.ApiExtensions.Instance
         {
             using (TraceSources.Common.TraceMethod().WithParameters(instanceRef, key))
             {
-                for (int attempt = 0; attempt < 3; attempt++)
+                for (int attempt = 0; attempt < 6; attempt++)
                 {
                     var instance = await resource.Get(
                         instanceRef.ProjectId,
