@@ -130,7 +130,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Os.Services.InstanceDetails
             => this.instanceDetails.Scheduling?.NodeAffinities != null &&
                this.instanceDetails.Scheduling.NodeAffinities.Any();
 
-        public bool IsOsInventoryInformationPopulated = false;  // TODO
+        public bool IsOsInventoryInformationPopulated = true;   // Not implemented yet
 
         //---------------------------------------------------------------------
         // Loading.

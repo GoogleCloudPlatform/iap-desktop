@@ -57,6 +57,7 @@
             this.splitContainer.Panel1.BackColor = System.Drawing.SystemColors.Info;
             this.splitContainer.Panel1.Controls.Add(this.infoLabel);
             this.splitContainer.Panel1.Controls.Add(this.infoIcon);
+            this.splitContainer.Panel1Collapsed = true;
             this.splitContainer.Panel1MinSize = 22;
             // 
             // splitContainer.Panel2
@@ -91,7 +92,7 @@
             this.propertyGrid.Dock = System.Windows.Forms.DockStyle.Fill;
             this.propertyGrid.Location = new System.Drawing.Point(0, 0);
             this.propertyGrid.Name = "propertyGrid";
-            this.propertyGrid.Size = new System.Drawing.Size(800, 424);
+            this.propertyGrid.Size = new System.Drawing.Size(800, 450);
             this.propertyGrid.TabIndex = 0;
             this.propertyGrid.PropertyValueChanged += new System.Windows.Forms.PropertyValueChangedEventHandler(this.propertyGrid_PropertyValueChanged);
             // 

@@ -51,16 +51,18 @@ namespace Google.Solutions.IapDesktop.Application.Services.Windows.Properties
 
             InitializeComponent();
 
-            this.splitContainer.Panel1.BindProperty(
-                c => c.Visible,
-                this.viewModel,
-                m => m.IsInformationBarVisible,
-                this.components);
             this.infoLabel.BindProperty(
                 c => c.Text,
                 this.viewModel,
                 m => m.InformationText,
                 this.components);
+            this.components.Add(this.viewModel.OnPropertyChange(
+                m => m.IsInformationBarVisible,
+                visible =>
+                {
+                    this.splitContainer.Panel1Collapsed = !visible;
+                    this.splitContainer.SplitterDistance = this.splitContainer.Panel1MinSize;
+                }));
             this.components.Add(this.viewModel.OnPropertyChange(
                 m => m.WindowTitle,
                 title => this.TabText = this.Text = title));
