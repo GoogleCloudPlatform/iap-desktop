@@ -55,7 +55,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services.SerialOutput
 
             this.components.Add(this.viewModel.OnPropertyChange(
                 m => m.WindowTitle,
-                title => this.TabText = title));
+                title => this.TabText = this.Text = title));
             this.components.Add(this.viewModel.OnPropertyChange(
                 m => m.Output,
                 text =>
