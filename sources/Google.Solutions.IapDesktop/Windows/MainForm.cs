@@ -241,29 +241,36 @@ namespace Google.Solutions.IapDesktop.Windows
                 .GetService<IProjectExplorer>()
                 .TryFindNode(url.Instance);
 
-            if (vmNode != null)
+            try
             {
-                // We have a full set of settings for this VM, so use that.
-                rdcService
-                    .ActivateOrConnectInstanceWithCredentialPromptAsync(this, vmNode)
-                    .ContinueWith(t => this.serviceProvider
-                            .GetService<IExceptionDialog>()
-                            .Show(this, "Failed to connect to VM instance", t.Exception),
-                        CancellationToken.None,
-                        TaskContinuationOptions.OnlyOnFaulted,
-                        TaskScheduler.FromCurrentSynchronizationContext());
+                if (vmNode != null)
+                {
+                    // We have a full set of settings for this VM, so use that.
+                    rdcService
+                        .ActivateOrConnectInstanceWithCredentialPromptAsync(this, vmNode)
+                        .ContinueWith(t => this.serviceProvider
+                                .GetService<IExceptionDialog>()
+                                .Show(this, "Failed to connect to VM instance", t.Exception),
+                            CancellationToken.None,
+                            TaskContinuationOptions.OnlyOnFaulted,
+                            TaskScheduler.FromCurrentSynchronizationContext());
+                }
+                else
+                {
+                    // We do not know anything other than what's in the URL.
+                    rdcService
+                        .ActivateOrConnectInstanceWithCredentialPromptAsync(this, url)
+                        .ContinueWith(t => this.serviceProvider
+                                .GetService<IExceptionDialog>()
+                                .Show(this, "Failed to connect to VM instance", t.Exception),
+                            CancellationToken.None,
+                            TaskContinuationOptions.OnlyOnFaulted,
+                            TaskScheduler.FromCurrentSynchronizationContext());
+                }
             }
-            else
+            catch (OperationCanceledException)
             {
-                // We do not know anything other than what's in the URL.
-                rdcService
-                    .ActivateOrConnectInstanceWithCredentialPromptAsync(this, url)
-                    .ContinueWith(t => this.serviceProvider
-                            .GetService<IExceptionDialog>()
-                            .Show(this, "Failed to connect to VM instance", t.Exception),
-                        CancellationToken.None,
-                        TaskContinuationOptions.OnlyOnFaulted,
-                        TaskScheduler.FromCurrentSynchronizationContext());
+                // The user cancelled, nervemind.
             }
         }
 

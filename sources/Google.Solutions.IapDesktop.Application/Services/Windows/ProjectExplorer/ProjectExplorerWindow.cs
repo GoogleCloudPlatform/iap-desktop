@@ -301,7 +301,11 @@ namespace Google.Solutions.IapDesktop.Application.Services.Windows.ProjectExplor
                 if (this.treeView.SelectedNode is VmInstanceNode vmNode)
                 {
                     var credentialService = this.serviceProvider.GetService<ICredentialsService>();
-                    await credentialService.GenerateAndSaveCredentialsAsync(this, vmNode);
+                    await credentialService.GenerateCredentialsAsync(
+                            this,
+                            vmNode.Reference,
+                            vmNode.SettingsEditor)
+                        .ConfigureAwait(true);
                 }
             }
             catch (Exception e) when (e.IsCancellation())

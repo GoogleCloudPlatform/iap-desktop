@@ -148,11 +148,11 @@ namespace Google.Solutions.IapDesktop.Application.Services.Workflows
                 else if (selectedOption == 1)
                 {
                     // Generate new credentials.
-                    if ((await this.credentialsService.GenerateAndSaveCredentialsAsync(owner, vmNode)) == null)
-                    {
-                        // Aborted.
-                        return;
-                    }
+                    await this.credentialsService.GenerateCredentialsAsync(
+                            owner,
+                            vmNode.Reference,
+                            vmNode.SettingsEditor)
+                        .ConfigureAwait(true);
                 }
                 else if (selectedOption == 2)
                 {
@@ -161,8 +161,9 @@ namespace Google.Solutions.IapDesktop.Application.Services.Workflows
             }
 
             await ConnectInstanceAsync(
-                vmNode.Reference,
-                vmNode.CreateConnectionSettings());
+                    vmNode.Reference,
+                    vmNode.CreateConnectionSettings())
+                .ConfigureAwait(true);
         }
 
         public async Task ActivateOrConnectInstanceWithCredentialPromptAsync(
@@ -174,6 +175,13 @@ namespace Google.Solutions.IapDesktop.Application.Services.Workflows
                 // RDP session was active, nothing left to do.
                 return;
             }
+
+            // Create an ephemeral settings editor. We do not persist
+            // any changes.
+            var settingsEditor = new ConnectionSettingsEditor(
+                url.Settings,
+                _ => { },
+                null);
 
             int selectedOption = this.taskDialog.ShowOptionsTaskDialog(
                 owner,
@@ -192,30 +200,23 @@ namespace Google.Solutions.IapDesktop.Application.Services.Workflows
 
             if (selectedOption == 0)
             {
-                // Generate new credentials.
-                var credentials = await this.credentialsService.GenerateCredentialsAsync(
-                    owner,
-                    url.Instance,
-                    MakeNullIfEmpty(url.Settings.Username));
-                if (credentials != null)
-                {
-                    // Amend settings.
-                    url.Settings.Domain = credentials.Domain;
-                    url.Settings.Username = credentials.UserName;
-                    url.Settings.Password = credentials.SecurePassword;
-                }
-                else
-                {
-                    // Aborted.
-                    return;
-                }
+                // Generate new credentials using the ephemeral settings editor.
+                await this.credentialsService.GenerateCredentialsAsync(
+                        owner,
+                        url.Instance,
+                        settingsEditor,
+                        MakeNullIfEmpty(url.Settings.Username))
+                    .ConfigureAwait(true);
             }
             else if (selectedOption == 1)
             {
                 // Cancel - just continue connecting.
             }
 
-            await ConnectInstanceAsync(url.Instance, url.Settings);
+            await ConnectInstanceAsync(
+                    url.Instance,
+                    settingsEditor.CreateConnectionSettings(url.Instance.Name))
+                .ConfigureAwait(true);
         }
     }
 }

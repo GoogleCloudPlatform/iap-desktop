@@ -24,6 +24,7 @@ using Google.Solutions.IapDesktop.Application.ObjectModel;
 using Google.Solutions.IapDesktop.Application.Services.Integration;
 using Google.Solutions.IapDesktop.Application.Services.Windows.ProjectExplorer;
 using System;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -70,8 +71,29 @@ namespace Google.Solutions.IapDesktop.Application.Services.Windows.Properties
                 m => m.InspectedObject,
                 obj =>
                 {
+                    // NB. The PropertyGrid displays a snapshot, if any of the
+                    // properties of the object changes, the grid does not
+                    // update automatically. 
+
+                    if (this.propertyGrid.SelectedObject is INotifyPropertyChanged oldObj)
+                    {
+                        oldObj.PropertyChanged -= RefreshOnPropertyChange;
+                    }
+
                     this.propertyGrid.SelectedObject = obj;
+
+                    if (obj is INotifyPropertyChanged newObj)
+                    {
+                        newObj.PropertyChanged += RefreshOnPropertyChange;
+                    }
                 }));
+        }
+
+        private void RefreshOnPropertyChange(
+            object sender, 
+            PropertyChangedEventArgs args)
+        {
+            this.propertyGrid.Refresh();
         }
 
         protected override DockState DefaultState
