@@ -19,15 +19,14 @@
 // under the License.
 //
 
-using Google.Solutions.Common;
 using Google.Solutions.Common.Locator;
 using Google.Solutions.IapDesktop.Application.ObjectModel;
 using Google.Solutions.IapDesktop.Application.Services.Adapters;
 using Google.Solutions.IapDesktop.Application.Services.Integration;
+using Google.Solutions.IapDesktop.Application.Services.Windows.ConnectionSettings;
 using Google.Solutions.IapDesktop.Application.Services.Windows.ProjectExplorer;
 using Google.Solutions.IapDesktop.Application.Util;
 using System;
-using System.Net;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
@@ -35,14 +34,10 @@ namespace Google.Solutions.IapDesktop.Application.Services.Workflows
 {
     public interface ICredentialsService
     {
-        Task<NetworkCredential> GenerateCredentialsAsync(
+        Task GenerateCredentialsAsync(
             IWin32Window owner,
             InstanceLocator instanceRef,
-            string suggestedUsername = null);
-
-        Task<NetworkCredential> GenerateAndSaveCredentialsAsync(
-            IWin32Window owner,
-            VmInstanceNode vmNode,
+            ConnectionSettingsEditor settings,
             string suggestedUsername = null);
     }
 
@@ -61,9 +56,10 @@ namespace Google.Solutions.IapDesktop.Application.Services.Workflows
             this.computeEngineAdapter = serviceProvider.GetService<IComputeEngineAdapter>();
         }
 
-        public async Task<NetworkCredential> GenerateCredentialsAsync(
+        public async Task GenerateCredentialsAsync(
             IWin32Window owner,
-            InstanceLocator instanceRef,
+            InstanceLocator instanceLocator,
+            ConnectionSettingsEditor settings,
             string suggestedUsername = null)
         {
             // Prompt for username to use.
@@ -72,13 +68,14 @@ namespace Google.Solutions.IapDesktop.Application.Services.Workflows
                 suggestedUsername ?? this.authService.Authorization.SuggestWindowsUsername());
             if (username == null)
             {
-                return null;
+                // Aborted.
+                throw new OperationCanceledException();
             }
 
             var credentials = await this.jobService.RunInBackground(
                 new JobDescription("Generating Windows logon credentials..."),
                 token => this.computeEngineAdapter.ResetWindowsUserAsync(
-                    instanceRef,
+                    instanceLocator,
                     username,
                     token))
                 .ConfigureAwait(true);
@@ -88,33 +85,11 @@ namespace Google.Solutions.IapDesktop.Application.Services.Workflows
                 credentials.UserName,
                 credentials.Password);
 
-            return credentials;
-        }
-
-        public async Task<NetworkCredential> GenerateAndSaveCredentialsAsync(
-            IWin32Window owner,
-            VmInstanceNode vmNode,
-            string suggestedUsername = null)
-        {
-            var credentials = await GenerateCredentialsAsync(
-                owner,
-                vmNode.Reference,
-                suggestedUsername ?? this.authService.Authorization.SuggestWindowsUsername())
-                .ConfigureAwait(true);
-            if (credentials == null)
-            {
-                // Aborted.
-                return null;
-            }
-
-            // Update node to persist settings.
-            var settings = vmNode.SettingsEditor;
+            // Save credentials.
             settings.Username = credentials.UserName;
             settings.CleartextPassword = credentials.Password;
             settings.Domain = null;
             settings.SaveChanges();
-
-            return credentials;
         }
     }
 }

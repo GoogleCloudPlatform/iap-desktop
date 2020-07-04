@@ -139,7 +139,6 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Workflows
                 It.Is<VmInstanceConnectionSettings>(i => i.Username == "john doe")), Times.Once);
         }
 
-
         [Test]
         public async Task WhenConnectingByUrlWithoutUsername_ThenSuggestedUsernameForCredentialGenerationIsDerivedFromSigninName()
         {
@@ -160,6 +159,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Workflows
             credentialsService.Setup(s => s.GenerateCredentialsAsync(
                 It.IsAny<IWin32Window>(),
                 It.IsAny<InstanceLocator>(),
+                It.IsAny<ConnectionSettingsEditor>(),
                 It.IsAny<string>())).Returns(Task.FromResult(new NetworkCredential("user", "password")));
             this.serviceRegistry.AddSingleton<ICredentialsService>(credentialsService.Object);
 
@@ -171,6 +171,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Workflows
             credentialsService.Verify(s => s.GenerateCredentialsAsync(
                 It.IsAny<IWin32Window>(),
                 It.IsAny<InstanceLocator>(),
+                It.IsAny<ConnectionSettingsEditor>(),
                 It.Is<string>(user => user == null)), Times.Once);
         }
 
@@ -194,6 +195,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Workflows
             credentialsService.Setup(s => s.GenerateCredentialsAsync(
                 It.IsAny<IWin32Window>(),
                 It.IsAny<InstanceLocator>(),
+                It.IsAny<ConnectionSettingsEditor>(),
                 It.IsAny<string>())).Returns(Task.FromResult(new NetworkCredential("user", "password")));
             this.serviceRegistry.AddSingleton<ICredentialsService>(credentialsService.Object);
 
@@ -205,6 +207,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Workflows
             credentialsService.Verify(s => s.GenerateCredentialsAsync(
                 It.IsAny<IWin32Window>(),
                 It.IsAny<InstanceLocator>(),
+                It.IsAny<ConnectionSettingsEditor>(),
                 It.Is<string>(user => user == "john doe")), Times.Once);
         }
     }
