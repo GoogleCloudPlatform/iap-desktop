@@ -20,6 +20,7 @@
 //
 
 using Google.Solutions.IapDesktop.Application.ObjectModel;
+using Google.Solutions.IapDesktop.Application.Services.Windows;
 using Google.Solutions.IapDesktop.Application.Services.Windows.ProjectExplorer;
 using Google.Solutions.IapDesktop.Extensions.Os.Properties;
 using Google.Solutions.IapDesktop.Extensions.Os.Services.InstanceDetails;
@@ -51,6 +52,21 @@ namespace Google.Solutions.IapDesktop.Extensions.Os.Services
                     Image = Resources.ComputerDetails_16
                 },
                 7);
+
+            //
+            // Add commands to main menu.
+            //
+            var mainForm = serviceProvider.GetService<IMainForm>();
+            mainForm.ViewCommands.AddCommand(
+                new Command<IMainForm>(
+                    "&Instance details",
+                    pseudoContext => CommandState.Enabled,
+                    pseudoContext => serviceProvider.GetService<InstanceDetailsWindow>().ShowWindow())
+                {
+                    Image = Resources.ComputerDetails_16,
+                    ShortcutKeys = Keys.Control | Keys.Alt | Keys.I
+                },
+                3);
         }
     }
 }
