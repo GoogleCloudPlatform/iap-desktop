@@ -134,6 +134,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Os.Services.InstanceDetails
             => this.instanceDetails.Scheduling?.NodeAffinities != null &&
                this.instanceDetails.Scheduling.NodeAffinities.Any();
 
+        [Browsable(false)]
         public bool IsOsInventoryInformationPopulated => this.guestOsInfo != null;
 
         [Browsable(true)]
