@@ -114,11 +114,6 @@ namespace Google.Solutions.IapDesktop.Application.Services.Workflows
             settings.Domain = null;
             settings.SaveChanges();
 
-            // Fire an event to update anybody using the node.
-            await this.eventService
-                .FireAsync(new ProjectExplorerNodeSelectedEvent(vmNode))
-                .ConfigureAwait(true);
-
             return credentials;
         }
     }

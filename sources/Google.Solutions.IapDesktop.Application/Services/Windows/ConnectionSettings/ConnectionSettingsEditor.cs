@@ -27,11 +27,13 @@ using System.Security;
 
 namespace Google.Solutions.IapDesktop.Application.Services.Windows.ConnectionSettings
 {
-    public class ConnectionSettingsEditor
+    public class ConnectionSettingsEditor : INotifyPropertyChanged
     {
         private readonly ConnectionSettingsEditor parent;
         private readonly ConnectionSettingsBase settings;
         private readonly Action<ConnectionSettingsBase> saveSettings;
+
+        public event PropertyChangedEventHandler PropertyChanged;
 
         public ConnectionSettingsEditor(
             ConnectionSettingsBase settings,
@@ -50,6 +52,12 @@ namespace Google.Solutions.IapDesktop.Application.Services.Windows.ConnectionSet
         public void SaveChanges()
         {
             this.saveSettings(this.settings);
+
+            // Notify that all properties have changed.
+            // NB. null/empty is a valid value.
+            this.PropertyChanged?.Invoke(
+                this,
+                new PropertyChangedEventArgs(null));
         }
 
         //---------------------------------------------------------------------
