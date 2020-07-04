@@ -45,6 +45,11 @@ namespace Google.Solutions.IapDesktop.Application.Services.Adapters
             InstanceLocator instanceLocator,
             CancellationToken cancellationToken);
 
+        Task<GuestAttributes> GetGuestAttributesAsync(
+            InstanceLocator instanceLocator,
+            string queryPath,
+            CancellationToken cancellationToken);
+
         Task<IEnumerable<Instance>> ListInstancesAsync(
             string projectId,
             CancellationToken cancellationToken);
@@ -151,6 +156,37 @@ namespace Google.Solutions.IapDesktop.Application.Services.Adapters
                         instanceLocator.Zone,
                         instanceLocator.Name).ExecuteAsync(cancellationToken)
                         .ConfigureAwait(false);
+                }
+                catch (GoogleApiException e) when (e.Error != null && e.Error.Code == 403)
+                {
+                    throw new ResourceAccessDeniedException(
+                        $"Access to VM instance {instanceLocator.Name} has been denied", e);
+                }
+            }
+        }
+
+        public async Task<GuestAttributes> GetGuestAttributesAsync(
+            InstanceLocator instanceLocator,
+            string queryPath,
+            CancellationToken cancellationToken)
+        {
+            using (TraceSources.IapDesktop.TraceMethod().WithParameters(instanceLocator))
+            {
+                try
+                {
+                    var request = this.service.Instances.GetGuestAttributes(
+                        instanceLocator.ProjectId,
+                        instanceLocator.Zone,
+                        instanceLocator.Name);
+                    request.QueryPath = queryPath;
+                    return await request                        
+                        .ExecuteAsync(cancellationToken)
+                        .ConfigureAwait(false);
+                }
+                catch (GoogleApiException e) when (e.Error != null && e.Error.Code == 404)
+                {
+                    // No guest attributes present.
+                    return null;
                 }
                 catch (GoogleApiException e) when (e.Error != null && e.Error.Code == 403)
                 {

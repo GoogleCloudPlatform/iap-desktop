@@ -82,6 +82,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Inventory\TestGuestOsInfo.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Services\InstanceDetails\TestInstanceDetailsModel.cs" />
     <Compile Include="Services\InstanceDetails\TestInstanceDetailsViewModel.cs" />
