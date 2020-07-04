@@ -172,4 +172,77 @@ namespace Google.Solutions.Common.Locator
 
 		}
 
+	
+		public class MachineTypeLocator : ResourceLocator, IEquatable<MachineTypeLocator>
+		{
+            public string Zone { get; }
+            public override string ResourceType => "machineTypes";
+
+		    public MachineTypeLocator(string projectId, string zone, string name)
+                : base(projectId, name)
+            {
+                this.Zone = zone;
+            }
+
+            public static MachineTypeLocator FromString(string resourceReference)
+            {
+                resourceReference = StripUrlPrefix(resourceReference);
+
+                var match = new Regex("(?:/compute/beta/)?projects/(.*)/zones/(.*)/machineTypes/(.*)")
+                    .Match(resourceReference);
+                if (match.Success)
+                {
+                    return new MachineTypeLocator(
+                        match.Groups[1].Value,
+                        match.Groups[2].Value,
+                        match.Groups[3].Value);
+                }
+                else
+                {
+                    throw new ArgumentException($"'{resourceReference}' is not a valid zonal resource reference");
+                }
+            }
+
+            public override int GetHashCode()
+            {
+                return
+                    this.ProjectId.GetHashCode() ^
+                    this.Name.GetHashCode();
+            }
+
+            public override string ToString()
+            {
+                return $"projects/{this.ProjectId}/zones/{this.Zone}/{this.ResourceType}/{this.Name}";
+            }
+
+            public bool Equals(MachineTypeLocator other)
+            {
+                return other is object &&
+                    this.Name == other.Name &&
+                    this.Zone == other.Zone &&
+                    this.ProjectId == other.ProjectId;
+            }
+
+            public override bool Equals(object obj)
+            {
+                return obj is MachineTypeLocator locator && Equals(locator);
+            }
+
+            public static bool operator ==(MachineTypeLocator obj1, MachineTypeLocator obj2)
+            {
+                if (obj1 is null)
+                {
+                    return obj2 is null;
+                }
+
+                return obj1.Equals(obj2);
+            }
+
+            public static bool operator !=(MachineTypeLocator obj1, MachineTypeLocator obj2)
+            {
+                return !(obj1 == obj2);
+            }
+
+		}
+
 	}

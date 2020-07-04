@@ -208,6 +208,12 @@
           DiskId="1"
           Source="Google.Solutions.IapDesktop\bin\$(var.CONFIGURATION)\Google.Solutions.IapDesktop.Extensions.Activity.dll"
           Vital="yes"/>
+        <File
+          Id="FileGoogleSolutionsOsDll"
+          Name="Google.Solutions.IapDesktop.Extensions.Os.dll"
+          DiskId="1"
+          Source="Google.Solutions.IapDesktop\bin\$(var.CONFIGURATION)\Google.Solutions.IapDesktop.Extensions.Os.dll"
+          Vital="yes"/>
         
         <!-- SDK and dependencies -->
         <File

@@ -418,37 +418,6 @@ namespace Google.Solutions.IapDesktop.Application.Services.Windows.ProjectExplor
                 BitmapPersistence = this.BitmapPersistence
             };
 
-        private static string InternalIpFromInstance(Instance instance)
-        {
-            if (instance == null)
-            {
-                return null;
-            }
-
-            return instance
-                .NetworkInterfaces
-                .EnsureNotNull()
-                .Select(nic => nic.NetworkIP)
-                .FirstOrDefault();
-        }
-        private static string ExternalIpFromInstance(Instance instance)
-        {
-            if (instance == null)
-            {
-                return null;
-            }
-
-            return instance
-                .NetworkInterfaces
-                .EnsureNotNull()
-                .Where(nic => nic.AccessConfigs != null)
-                .SelectMany(nic => nic.AccessConfigs)
-                .EnsureNotNull()
-                .Where(accessConfig => accessConfig.Type == "ONE_TO_ONE_NAT")
-                .Select(accessConfig => accessConfig.NatIP)
-                .FirstOrDefault();
-        }
-
         internal VmInstanceNode(
             Instance instance,
             VmInstanceConnectionSettings settings,
@@ -462,13 +431,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.Windows.ProjectExplor
                   parent)
         {
             this.InstanceId = instance.Id.Value;
-            this.Status = instance.Status;
-            this.Hostname = instance.Hostname;
-            this.MachineType = InventoryNode.ShortIdFromUrl(instance.MachineType);
-            this.Tags = instance.Tags != null && instance.Tags.Items != null
-                ? string.Join(", ", instance.Tags.Items) : null;
-            this.InternalIp = InternalIpFromInstance(instance);
-            this.ExternalIp = ExternalIpFromInstance(instance);
+            this.IsRunning = instance.Status == "RUNNING";
         }
 
         public override string InformationText => this.IsConnected
@@ -477,53 +440,13 @@ namespace Google.Solutions.IapDesktop.Application.Services.Windows.ProjectExplor
 
         [Browsable(true)]
         [BrowsableSetting]
-        [Category("VM Instance")]
-        [DisplayName("Name")]
+        [Category("Connection")]
+        [DisplayName("Instance name")]
         public string InstanceName => this.Text;
 
-        [Browsable(true)]
-        [BrowsableSetting]
-        [Category("VM Instance")]
-        [DisplayName("ID")]
         public ulong InstanceId { get; }
 
-        [Browsable(true)]
-        [BrowsableSetting]
-        [Category("VM Instance")]
-        [DisplayName("Status")]
-        public string Status { get; }
-
-        [Browsable(true)]
-        [BrowsableSetting]
-        [Category("VM Instance")]
-        [DisplayName("Hostname")]
-        public string Hostname { get; }
-
-        [Browsable(true)]
-        [BrowsableSetting]
-        [Category("VM Instance")]
-        [DisplayName("Machine type")]
-        public string MachineType { get; }
-
-        [Browsable(true)]
-        [BrowsableSetting]
-        [Category("VM Instance")]
-        [DisplayName("Network tags")]
-        public string Tags { get; }
-
-        [Browsable(true)]
-        [BrowsableSetting]
-        [Category("VM Instance")]
-        [DisplayName("IP address (internal)")]
-        public string InternalIp { get; }
-
-        [Browsable(true)]
-        [BrowsableSetting]
-        [Category("VM Instance")]
-        [DisplayName("IP address (external)")]
-        public string ExternalIp { get; }
-
-        public bool IsRunning => this.Status == "RUNNING";
+        public bool IsRunning { get; }
 
         internal bool IsConnected
         {

@@ -57,7 +57,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services.EventLog
 
             this.components.Add(this.viewModel.OnPropertyChange(
                 m => m.WindowTitle,
-                title => this.TabText = title));
+                title => this.TabText = this.Text = title));
 
             // Bind toolbar buttons.
             this.timeFrameComboBox.BindProperty(

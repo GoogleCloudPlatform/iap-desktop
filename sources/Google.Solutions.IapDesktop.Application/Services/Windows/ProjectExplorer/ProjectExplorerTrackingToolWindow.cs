@@ -76,10 +76,11 @@ namespace Google.Solutions.IapDesktop.Application.Services.Windows.ProjectExplor
         public void ShowWindow()
         {
             this.TabText = this.Text;
-            this.ShowOrActivate(
-                this.dockPanel, 
-                WeifenLuo.WinFormsUI.Docking.DockState.DockBottomAutoHide);
+            this.ShowOrActivate(this.dockPanel, this.DefaultState);
         }
+
+        protected virtual WeifenLuo.WinFormsUI.Docking.DockState DefaultState
+            => WeifenLuo.WinFormsUI.Docking.DockState.DockBottomAutoHide;
 
         protected override void OnUserVisibilityChanged(bool visible)
         {
