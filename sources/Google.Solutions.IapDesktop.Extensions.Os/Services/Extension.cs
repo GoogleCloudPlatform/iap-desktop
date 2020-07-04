@@ -43,15 +43,24 @@ namespace Google.Solutions.IapDesktop.Extensions.Os.Services
             // Add commands to project explorer.
             //
 
-            projectExplorer.Commands.AddCommand(
+            projectExplorer.ContextMenuCommands.AddCommand(
                 new Command<IProjectExplorerNode>(
                     "Show &details",
-                    InstanceDetailsViewModel.GetCommandState,
+                    InstanceDetailsViewModel.GetContextMenuCommandState,
                     context => serviceProvider.GetService<InstanceDetailsWindow>().ShowWindow())
                 {
                     Image = Resources.ComputerDetails_16
                 },
                 7);
+
+            projectExplorer.ToolbarCommands.AddCommand(
+                new Command<IProjectExplorerNode>(
+                    "Show &details",
+                    InstanceDetailsViewModel.GetToolbarCommandState,
+                    context => serviceProvider.GetService<InstanceDetailsWindow>().ShowWindow())
+                {
+                    Image = Resources.ComputerDetails_16
+                });
 
             //
             // Add commands to main menu.

@@ -38,7 +38,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.Windows
         public HtmlPageGenerator(IServiceProvider serviceProvider)
         {
             var projectExplorer = serviceProvider.GetService<IProjectExplorer>();
-            projectExplorer.Commands.AddCommand(
+            projectExplorer.ContextMenuCommands.AddCommand(
                 new GenerateHtmlPageCommand());
         }
 

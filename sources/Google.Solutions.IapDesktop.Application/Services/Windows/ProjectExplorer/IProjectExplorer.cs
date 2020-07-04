@@ -36,6 +36,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.Windows.ProjectExplor
 
         IProjectExplorerNode SelectedNode { get; }
 
-        CommandContainer<IProjectExplorerNode> Commands { get; }
+        CommandContainer<IProjectExplorerNode> ContextMenuCommands { get; }
+        CommandContainer<IProjectExplorerNode> ToolbarCommands { get; }
     }
 }

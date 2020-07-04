@@ -35,14 +35,17 @@ namespace Google.Solutions.IapDesktop.Application.ObjectModel
         private readonly ToolStripItemCollection menuItems;
         private readonly CommandContainer<TContext> parent;
         private readonly Func<IExceptionDialog> getExceptionDialogFunc;
+        private readonly ToolStripItemDisplayStyle displayStyle;
 
         public CommandContainer(
             IWin32Window parent,
             ToolStripItemCollection menuItems,
+            ToolStripItemDisplayStyle displayStyle,
             IServiceProvider serviceProvider)
             : this(
                   parent, 
                   menuItems,
+                  displayStyle,
                   serviceProvider.GetService<IExceptionDialog>, 
                   null)
         {
@@ -51,19 +54,27 @@ namespace Google.Solutions.IapDesktop.Application.ObjectModel
         public CommandContainer(
             IWin32Window parent,
             ToolStripItemCollection menuItems,
+            ToolStripItemDisplayStyle displayStyle,
             Func<IExceptionDialog> getExceptionDialogFunc)
-            : this(parent, menuItems, getExceptionDialogFunc, null)
+            : this(
+                  parent, 
+                  menuItems,
+                  displayStyle,
+                  getExceptionDialogFunc, 
+                  null)
         {
         }
 
         private CommandContainer(
             IWin32Window window,
             ToolStripItemCollection menuItems,
+            ToolStripItemDisplayStyle displayStyle,
             Func<IExceptionDialog> getExceptionDialogFunc,
             CommandContainer<TContext> parent)
         {
             this.window = window;
             this.menuItems = menuItems;
+            this.displayStyle = displayStyle;
             this.getExceptionDialogFunc = getExceptionDialogFunc;
             this.parent = parent;
         }
@@ -142,7 +153,14 @@ namespace Google.Solutions.IapDesktop.Application.ObjectModel
                 })
             {
                 Tag = command,
-                ShortcutKeys = command.ShortcutKeys
+                ShortcutKeys = command.ShortcutKeys,
+
+                // If only an image is displayed (typically in a toolbar),
+                // display the text as tool tip - but without the mnemonics.
+                DisplayStyle = this.displayStyle,
+                ToolTipText = this.displayStyle == ToolStripItemDisplayStyle.Image
+                    ? command.Text.Replace("&", "")
+                    : null
             };
 
             if (index.HasValue)
@@ -158,6 +176,7 @@ namespace Google.Solutions.IapDesktop.Application.ObjectModel
             return new CommandContainer<TContext>(
                 this.window,
                 menuItem.DropDownItems,
+                this.displayStyle,
                 this.getExceptionDialogFunc,
                 this);
         }

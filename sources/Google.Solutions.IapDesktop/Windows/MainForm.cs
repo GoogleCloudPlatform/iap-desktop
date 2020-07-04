@@ -94,6 +94,7 @@ namespace Google.Solutions.IapDesktop.Windows
             this.ViewCommands = new CommandContainer<IMainForm>(
                 this,
                 this.viewToolStripMenuItem.DropDownItems,
+                ToolStripItemDisplayStyle.ImageAndText,
                 this.serviceProvider);
             this.ViewCommands.Context = this; // There is no real context for this.
 

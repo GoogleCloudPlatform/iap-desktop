@@ -31,24 +31,24 @@ namespace Google.Solutions.IapDesktop.Application.Test.ObjectModel
 {
     [TestFixture]
     [Apartment(ApartmentState.STA)]
-    public class TestCommandContainer : FixtureBase
+    public class TestCommandContainerForToolbar : FixtureBase
     {
         private Form form;
-        private ContextMenuStrip contextMenu;
+        private ToolStrip toolStrip;
         private CommandContainer<string> commandContainer;
 
         [SetUp]
         public void SetUp()
         {
-            this.contextMenu = new ContextMenuStrip();
+            this.toolStrip = new ToolStrip();
 
             this.form = new Form();
-            this.form.ContextMenuStrip = this.contextMenu;
             this.form.Show();
 
             this.commandContainer = new CommandContainer<string>(
                 this.form,
-                this.contextMenu.Items,
+                this.toolStrip.Items,
+                ToolStripItemDisplayStyle.Image,
                 new Mock<IServiceProvider>().Object);
         }
 
@@ -63,24 +63,6 @@ namespace Google.Solutions.IapDesktop.Application.Test.ObjectModel
         //---------------------------------------------------------------------
 
         [Test]
-        public void WhenQueryStateReturnsUnavailable_ThenMenuItemIsHidden()
-        {
-            this.commandContainer.AddCommand(
-                new Command<string>(
-                    "test",
-                    ctx => CommandState.Unavailable,
-                    ctx => new InvalidOperationException()));
-
-            var menuItem = this.contextMenu.Items
-                .OfType<ToolStripMenuItem>()
-                .First(i => i.Text == "test");
-            this.commandContainer.Context = "ctx";
-            this.contextMenu.Show();
-
-            Assert.IsFalse(menuItem.Visible);
-        }
-
-        [Test]
         public void WhenQueryStateReturnsDisabled_ThenMenuItemIsDisabled()
         {
             this.commandContainer.AddCommand(
@@ -89,56 +71,33 @@ namespace Google.Solutions.IapDesktop.Application.Test.ObjectModel
                     ctx => CommandState.Disabled,
                     ctx => new InvalidOperationException()));
 
-            var menuItem = this.contextMenu.Items
+            var menuItem = this.toolStrip.Items
                 .OfType<ToolStripMenuItem>()
                 .First(i => i.Text == "test");
             this.commandContainer.Context = "ctx";
-            this.contextMenu.Show();
+            this.toolStrip.Show();
 
-            Assert.IsTrue(menuItem.Visible);
             Assert.IsFalse(menuItem.Enabled);
         }
         
         [Test]
-        public void WhenQueryStateReturnsEnabled_ThenMenuItemIsEnabled()
+        public void WhenQueryStateReturnsEnabled_ThenMenuItemIsEnabledAndHasToolTip()
         {
             this.commandContainer.AddCommand(
                 new Command<string>(
-                    "test",
+                    "&test",
                     ctx => CommandState.Enabled,
                     ctx => new InvalidOperationException()));
 
-            var menuItem = this.contextMenu.Items
+            var menuItem = this.toolStrip.Items
                 .OfType<ToolStripMenuItem>()
-                .First(i => i.Text == "test");
+                .First(i => i.Text == "&test");
             this.commandContainer.Context = "ctx";
-            this.contextMenu.Show();
+            this.toolStrip.Show();
 
-            Assert.IsTrue(menuItem.Visible);
             Assert.IsTrue(menuItem.Enabled);
-        }
-
-        //---------------------------------------------------------------------
-        // Second-level commands.
-        //---------------------------------------------------------------------
-
-        [Test]
-        public void WhenSubMenuAdded_ThenContextIsShared()
-        {
-            var parentMenu = this.commandContainer.AddCommand(
-                new Command<string>(
-                    "parent",
-                    ctx => CommandState.Enabled,
-                    ctx => new InvalidOperationException()));
-            var subMenu = parentMenu.AddCommand(
-                    new Command<string>(
-                        "test",
-                        ctx => CommandState.Disabled,
-                        ctx => new InvalidOperationException()));
-
-            parentMenu.Context = "ctx";
-            Assert.AreEqual("ctx", parentMenu.Context);
-            Assert.AreEqual("ctx", subMenu.Context);
+            Assert.AreEqual(ToolStripItemDisplayStyle.Image, menuItem.DisplayStyle);
+            Assert.AreEqual("test", menuItem.ToolTipText);
         }
     }
 }
