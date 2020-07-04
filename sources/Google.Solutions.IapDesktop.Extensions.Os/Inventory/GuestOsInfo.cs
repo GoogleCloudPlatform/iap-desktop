@@ -32,6 +32,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Os.Inventory
 {
     public class GuestOsInfo
     {
+        public const string GuestAttributePath = "guestInventory/";
+
         public string Architecture { get; }
         public string KernelRelease { get; }
         public string KernelVersion { get; }
@@ -81,7 +83,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Os.Inventory
         }
 
         public static GuestOsInfo FromGuestAttributes(
-            List<GuestAttributesEntry> guestAttributes)
+            IList<GuestAttributesEntry> guestAttributes)
         {
             Utilities.ThrowIfNull(guestAttributes, nameof(guestAttributes));
 

@@ -23,6 +23,7 @@ using Google.Apis.Compute.v1.Data;
 using Google.Solutions.Common.Locator;
 using Google.Solutions.Common.Util;
 using Google.Solutions.IapDesktop.Application.Services.Adapters;
+using Google.Solutions.IapDesktop.Extensions.Os.Inventory;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
@@ -36,13 +37,18 @@ namespace Google.Solutions.IapDesktop.Extensions.Os.Services.InstanceDetails
         private const string InstanceCategory = "Instance details";
         private const string NetworkCategory = "Instance network";
         private const string SchedulingCategory = "Scheduling";
+        private const string OsCategory = "Operating system";
 
         private readonly Instance instanceDetails;
+        private readonly GuestOsInfo guestOsInfo;
 
-        public InstanceDetailsModel(Instance instanceDetails)
+        public InstanceDetailsModel(
+            Instance instanceDetails,
+            GuestOsInfo guestOsInfo)
         {
             Debug.Assert(instanceDetails != null);
             this.instanceDetails = instanceDetails;
+            this.guestOsInfo = guestOsInfo;
         }
 
         //---------------------------------------------------------------------
@@ -121,8 +127,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Os.Services.InstanceDetails
                 .Select(accessConfig => accessConfig.NatIP)
                 .FirstOrDefault();
 
-
-
         [Browsable(true)]
         [Category(SchedulingCategory)]
         [DisplayName("Sole tenant VM")]
@@ -130,7 +134,27 @@ namespace Google.Solutions.IapDesktop.Extensions.Os.Services.InstanceDetails
             => this.instanceDetails.Scheduling?.NodeAffinities != null &&
                this.instanceDetails.Scheduling.NodeAffinities.Any();
 
-        public bool IsOsInventoryInformationPopulated = true;   // Not implemented yet
+        public bool IsOsInventoryInformationPopulated => this.guestOsInfo != null;
+
+        [Browsable(true)]
+        [Category(OsCategory)]
+        [DisplayName("Architecture")]
+        public string Architecture => this.guestOsInfo?.Architecture;
+
+        [Browsable(true)]
+        [Category(OsCategory)]
+        [DisplayName("Kernel")]
+        public string KernelVersion => this.guestOsInfo?.KernelVersion;
+
+        [Browsable(true)]
+        [Category(OsCategory)]
+        [DisplayName("Name")]
+        public string OperatingSystemFullName => this.guestOsInfo?.OperatingSystemFullName;
+
+        [Browsable(true)]
+        [Category(OsCategory)]
+        [DisplayName("Version")]
+        public string OperatingSystemVersion => this.guestOsInfo?.OperatingSystemVersion.ToString();
 
         //---------------------------------------------------------------------
         // Loading.
@@ -142,10 +166,24 @@ namespace Google.Solutions.IapDesktop.Extensions.Os.Services.InstanceDetails
             CancellationToken token)
         {
             var instance = await adapter
-                .GetInstanceAsync(instanceLocator, token)
+                .GetInstanceAsync(
+                    instanceLocator, 
+                    token)
                 .ConfigureAwait(false);
 
-            return new InstanceDetailsModel(instance);
+            var guestAttributes = await adapter
+                .GetGuestAttributesAsync(
+                    instanceLocator, 
+                    GuestOsInfo.GuestAttributePath, 
+                    token)
+                .ConfigureAwait(false);
+            var guestAttributesList = guestAttributes?.QueryValue?.Items;
+            
+            return new InstanceDetailsModel(
+                instance,
+                guestAttributesList != null
+                    ? GuestOsInfo.FromGuestAttributes(guestAttributesList)
+                    : null);
         }
     }
 }

@@ -183,6 +183,11 @@ namespace Google.Solutions.IapDesktop.Application.Services.Adapters
                         .ExecuteAsync(cancellationToken)
                         .ConfigureAwait(false);
                 }
+                catch (GoogleApiException e) when (e.Error != null && e.Error.Code == 404)
+                {
+                    // No guest attributes present.
+                    return null;
+                }
                 catch (GoogleApiException e) when (e.Error != null && e.Error.Code == 403)
                 {
                     throw new ResourceAccessDeniedException(

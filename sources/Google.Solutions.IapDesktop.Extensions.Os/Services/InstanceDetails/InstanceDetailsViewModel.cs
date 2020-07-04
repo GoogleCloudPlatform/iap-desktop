@@ -47,7 +47,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Os.Services.InstanceDetails
         private object inspectedObject = null;
         private string windowTitle = DefaultWindowTitle;
 
-        public string InformationText => "OS Inventory information not available";
+        public string InformationText => "OS inventory data not available";
 
         public InstanceDetailsViewModel(IServiceProvider serviceProvider)
             : base(ModelCacheCapacity)
