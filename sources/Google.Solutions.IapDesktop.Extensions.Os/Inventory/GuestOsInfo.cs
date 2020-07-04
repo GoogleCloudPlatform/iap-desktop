@@ -21,13 +21,16 @@
 
 using Google.Apis.Compute.v1.Data;
 using Google.Apis.Util;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.IO;
+using System.IO.Compression;
 using System.Linq;
 
 namespace Google.Solutions.IapDesktop.Extensions.Os.Inventory
 {
-    public class InventoryGuestAttributes
+    public class GuestOsInfo
     {
         public string Architecture { get; }
         public string KernelRelease { get; }
@@ -38,7 +41,10 @@ namespace Google.Solutions.IapDesktop.Extensions.Os.Inventory
         public Version OperatingSystemVersion { get; }
         public string AgentVersion { get; }
 
-        private InventoryGuestAttributes(
+        public GuestPackages InstalledPackages { get; }
+        public GuestPackages AvailablePackages { get; }
+
+        private GuestOsInfo(
             string architecture,
             string kernelRelease,
             string kernelVersion,
@@ -46,7 +52,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Os.Inventory
             string operatingSystemFullName,
             Version operatingSystemVersion,
             string agentVersion,
-            DateTime? lastUpdated)
+            DateTime? lastUpdated,
+            GuestPackages installedPackages,
+            GuestPackages availablePackages)
         {
             this.Architecture = architecture;
             this.KernelRelease = kernelRelease;
@@ -56,25 +64,56 @@ namespace Google.Solutions.IapDesktop.Extensions.Os.Inventory
             this.OperatingSystemVersion = operatingSystemVersion;
             this.AgentVersion = agentVersion;
             this.LastUpdated = lastUpdated;
+            this.InstalledPackages = installedPackages;
+            this.AvailablePackages = availablePackages;
         }
 
-        public static InventoryGuestAttributes FromGuestAttributes(
+        private static T DecodeAndParseBase64Gzip<T>(string base64gzipped)
+        {
+            using (var reader = new JsonTextReader(
+                new StreamReader(
+                    new GZipStream(
+                        new MemoryStream(Convert.FromBase64String(base64gzipped)),
+                        CompressionMode.Decompress))))
+            {
+                return new JsonSerializer().Deserialize<T>(reader);
+            }
+        }
+
+        public static GuestOsInfo FromGuestAttributes(
             List<GuestAttributesEntry> guestAttributes)
         {
             Utilities.ThrowIfNull(guestAttributes, nameof(guestAttributes));
 
             var version = guestAttributes.FirstOrDefault(a => a.Key == "Version")?.Value;
             var lastUpdated = guestAttributes.FirstOrDefault(a => a.Key == "LastUpdated")?.Value;
+            var installedPackages = guestAttributes.FirstOrDefault(a => a.Key == "InstalledPackages")?.Value;
+            var availablePackages = guestAttributes.FirstOrDefault(a => a.Key == "PackageUpdates")?.Value;
 
-            return new InventoryGuestAttributes(
+            return new GuestOsInfo(
                 guestAttributes.FirstOrDefault(a => a.Key == "Architecture")?.Value,
                 guestAttributes.FirstOrDefault(a => a.Key == "KernelRelease")?.Value,
                 guestAttributes.FirstOrDefault(a => a.Key == "KernelVersion")?.Value,
                 guestAttributes.FirstOrDefault(a => a.Key == "ShortName")?.Value,
                 guestAttributes.FirstOrDefault(a => a.Key == "LongName")?.Value,
-                version != null ? Version.Parse(version) : null,
+                version != null 
+                    ? Version.Parse(version) 
+                    : null,
                 guestAttributes.FirstOrDefault(a => a.Key == "OSConfigAgentVersion")?.Value,
-                lastUpdated != null ? (DateTime?)DateTime.Parse(lastUpdated) : null);
+                lastUpdated != null 
+                    ? (DateTime?)DateTime.Parse(lastUpdated) 
+                    : null,
+                installedPackages != null
+                    ? DecodeAndParseBase64Gzip<GuestPackages>(installedPackages)
+                    : null,
+                availablePackages != null
+                    ? DecodeAndParseBase64Gzip<GuestPackages>(availablePackages)
+                    : null);
         }
+
+        //---------------------------------------------------------------------
+        // Inner classes.
+        //---------------------------------------------------------------------
+
     }
 }
