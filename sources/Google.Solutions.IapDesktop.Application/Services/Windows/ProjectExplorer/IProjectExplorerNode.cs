@@ -19,33 +19,40 @@
 // under the License.
 //
 
+using Google.Solutions.IapDesktop.Application.Services.Windows.ConnectionSettings;
 using System.Collections.Generic;
 
 namespace Google.Solutions.IapDesktop.Application.Services.Windows.ProjectExplorer
 {
     public interface IProjectExplorerNode
     {
+        string DisplayName { get; }
     }
 
     public interface IProjectExplorerCloudNode : IProjectExplorerNode
     {
     }
 
-    public interface IProjectExplorerProjectNode : IProjectExplorerNode
+    public interface IProjectExplorerNodeWithSettings : IProjectExplorerCloudNode
+    {
+        ConnectionSettingsEditor SettingsEditor { get; }
+    }
+
+    public interface IProjectExplorerProjectNode : IProjectExplorerNode, IProjectExplorerNodeWithSettings
     {
         string ProjectId { get; }
 
         IEnumerable<IProjectExplorerZoneNode> Zones { get; }
     }
 
-    public interface IProjectExplorerZoneNode : IProjectExplorerNode
+    public interface IProjectExplorerZoneNode : IProjectExplorerNode, IProjectExplorerNodeWithSettings
     {
         string ProjectId { get; }
         string ZoneId { get; }
         IEnumerable<IProjectExplorerVmInstanceNode> Instances { get; }
     }
 
-    public interface IProjectExplorerVmInstanceNode : IProjectExplorerNode
+    public interface IProjectExplorerVmInstanceNode : IProjectExplorerNode, IProjectExplorerNodeWithSettings
     {
         ulong InstanceId { get; }
         string ProjectId { get; }
@@ -53,5 +60,6 @@ namespace Google.Solutions.IapDesktop.Application.Services.Windows.ProjectExplor
         string InstanceName { get; }
 
         bool IsRunning { get; }
+        bool IsConnected { get; }
     }
 }

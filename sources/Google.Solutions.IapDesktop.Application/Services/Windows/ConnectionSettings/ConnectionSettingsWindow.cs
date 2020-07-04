@@ -1,5 +1,5 @@
-//
-// Copyright 2019 Google LLC
+﻿//
+// Copyright 2020 Google LLC
 //
 // Licensed to the Apache Software Foundation (ASF) under one
 // or more contributor license agreements.  See the NOTICE file
@@ -19,17 +19,20 @@
 // under the License.
 //
 
-using System.Reflection;
-using System.Runtime.CompilerServices;
+using Google.Solutions.Common.Diagnostics;
+using Google.Solutions.IapDesktop.Application.Services.Windows.Properties;
+using System;
 
-[assembly: AssemblyTitle("Activity extension library")]
-[assembly: AssemblyDescription("Activity extension library")]
-[assembly: AssemblyCompany("Google LLC")]
-[assembly: AssemblyProduct("IAP Desktop")]
-[assembly: AssemblyCopyright("Copyright ©  2020")]
-[assembly: AssemblyTrademark("Google LLC")]
-
-[assembly: AssemblyVersion("1.0.1.0")]
-[assembly: AssemblyFileVersion("1.0.1.0")]
-
-[assembly: InternalsVisibleTo("Google.Solutions.IapDesktop.Extensions.Activity.Test")]
+namespace Google.Solutions.IapDesktop.Application.Services.Windows.ConnectionSettings
+{
+    [SkipCodeCoverage("All logic in view model")]
+    public class ConnectionSettingsWindow : PropertiesWindow, IConnectionSettingsWindow
+    {
+        public ConnectionSettingsWindow(IServiceProvider serviceProvider)
+            : base(
+                  serviceProvider,
+                  new ConnectionSettingsViewModel())
+        {
+        }
+    }
+}
