@@ -59,7 +59,8 @@ namespace Google.Solutions.IapDesktop.Application.Services.Windows.ProjectExplor
 
         private readonly CloudNode rootNode = new CloudNode();
 
-        public CommandContainer<IProjectExplorerNode> Commands { get; }
+        public CommandContainer<IProjectExplorerNode> ContextMenuCommands { get; }
+        public CommandContainer<IProjectExplorerNode> ToolbarCommands { get; }
 
         public ProjectExplorerWindow(IServiceProvider serviceProvider)
         {
@@ -96,9 +97,15 @@ namespace Google.Solutions.IapDesktop.Application.Services.Windows.ProjectExplor
             this.eventService.BindHandler<RemoteDesktopConnectionSuceededEvent>(OnRdpConnectionSucceeded);
             this.eventService.BindHandler<RemoteDesktopWindowClosedEvent>(OnRdpConnectionClosed);
 
-            this.Commands = new CommandContainer<IProjectExplorerNode>(
+            this.ContextMenuCommands = new CommandContainer<IProjectExplorerNode>(
                 this,
                 this.contextMenu.Items,
+                ToolStripItemDisplayStyle.ImageAndText,
+                this.serviceProvider);
+            this.ToolbarCommands = new CommandContainer<IProjectExplorerNode>(
+                this,
+                this.toolStrip.Items,
+                ToolStripItemDisplayStyle.Image,
                 this.serviceProvider);
         }
 
@@ -417,7 +424,8 @@ namespace Google.Solutions.IapDesktop.Application.Services.Windows.ProjectExplor
                 // 
                 // Handle dynamic menu items.
                 //
-                this.Commands.Context = selectedNode;
+                this.ContextMenuCommands.Context = selectedNode;
+                this.ToolbarCommands.Context = selectedNode;
 
                 //
                 // Fire event.

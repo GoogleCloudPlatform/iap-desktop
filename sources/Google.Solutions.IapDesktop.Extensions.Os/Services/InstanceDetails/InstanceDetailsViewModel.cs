@@ -104,11 +104,18 @@ namespace Google.Solutions.IapDesktop.Extensions.Os.Services.InstanceDetails
         // ModelCachingViewModelBase.
         //---------------------------------------------------------------------
 
-        public static CommandState GetCommandState(IProjectExplorerNode node)
+        public static CommandState GetContextMenuCommandState(IProjectExplorerNode node)
         {
             return node is IProjectExplorerVmInstanceNode vmNode
                 ? CommandState.Enabled 
                 : CommandState.Unavailable;
+        }
+
+        public static CommandState GetToolbarCommandState(IProjectExplorerNode node)
+        {
+            return node is IProjectExplorerVmInstanceNode vmNode
+                ? CommandState.Enabled
+                : CommandState.Disabled;
         }
 
         protected async override Task<InstanceDetailsModel> LoadModelAsync(

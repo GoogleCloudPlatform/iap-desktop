@@ -90,7 +90,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services
                     .IsPreviewFeatureSetEnabled;
             if (previewFeaturesEnabled)
             {
-                var reportCommand = projectExplorer.Commands.AddCommand(
+                var reportCommand = projectExplorer.ContextMenuCommands.AddCommand(
                     new Command<IProjectExplorerNode>(
                         "Report",
                         context => context is IProjectExplorerProjectNode
@@ -109,7 +109,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services
                     });
             }
 
-            projectExplorer.Commands.AddCommand(
+            projectExplorer.ContextMenuCommands.AddCommand(
                 new Command<IProjectExplorerNode>(
                     "Show serial port &output (COM1)",
                     SerialOutputViewModel.GetCommandState,
@@ -118,7 +118,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services
                     Image = Resources.Log_16
                 },
                 5);
-            projectExplorer.Commands.AddCommand(
+            projectExplorer.ContextMenuCommands.AddCommand(
                 new Command<IProjectExplorerNode>(
                     "Show &event log",
                     EventLogViewModel.GetCommandState,
