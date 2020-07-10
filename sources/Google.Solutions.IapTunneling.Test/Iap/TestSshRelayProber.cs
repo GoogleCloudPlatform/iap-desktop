@@ -102,7 +102,7 @@ namespace Google.Solutions.IapTunneling.Test.Iap
             using (var stream = new SshRelayStream(
                 new IapTunnelingEndpoint(
                     Defaults.GetCredential(),
-                    testInstance.InstanceReference,
+                    testInstance.Locator,
                     3389,
                     IapTunnelingEndpoint.DefaultNetworkInterface,
                     Defaults.UserAgent)))
@@ -120,7 +120,7 @@ namespace Google.Solutions.IapTunneling.Test.Iap
             using (var stream = new SshRelayStream(
                 new IapTunnelingEndpoint(
                     Defaults.GetCredential(),
-                    testInstance.InstanceReference,
+                    testInstance.Locator,
                     22,
                     IapTunnelingEndpoint.DefaultNetworkInterface,
                     Defaults.UserAgent)))

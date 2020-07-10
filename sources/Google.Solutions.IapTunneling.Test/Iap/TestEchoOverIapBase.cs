@@ -78,7 +78,7 @@ namespace Google.Solutions.IapTunneling.Test.Iap
             FillArray(message);
 
             await vm.AwaitReady();
-            var stream = ConnectToEchoServer(vm.InstanceReference);
+            var stream = ConnectToEchoServer(vm.Locator);
 
             for (int i = 0; i < count; i++)
             {

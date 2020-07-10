@@ -49,7 +49,7 @@ namespace Google.Solutions.Common.Test.Extensions
             await testInstance.AwaitReady();
 
             var stream = this.instancesResource.GetSerialPortOutputStream(
-                testInstance.InstanceReference,
+                testInstance.Locator,
                 1);
 
             var startTime = DateTime.Now;

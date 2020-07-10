@@ -26,39 +26,12 @@ using NUnit.Framework.Interfaces;
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace Google.Solutions.Common.Test.Testbed
 {
-    public class InstanceRequest
-    {
-        public Func<Task<InstanceLocator>> GetInstanceAsync { get; }
-        public InstanceLocator InstanceReference { get; }
-
-        public InstanceRequest(InstanceLocator instance, Func<Task<InstanceLocator>> getnstance)
-        {
-            this.InstanceReference = instance;
-            this.GetInstanceAsync = getnstance;
-        }
-
-        public override string ToString()
-        {
-            return this.InstanceReference.ToString();
-        }
-
-        public async Task AwaitReady()
-        {
-            await GetInstanceAsync();
-        }
-    }
-
     public abstract class InstanceAttribute : NUnitAttribute, IParameterDataSource
     {
-        protected const string GuestAttributeNamespace = "boot";
-        protected const string GuestAttributeKey = "completed";
-
         public string ProjectId { get; set; } = Defaults.ProjectId;
         public string Zone { get; set; } = Defaults.Zone;
         public string MachineType { get; set; } = "n1-standard-1";
@@ -110,134 +83,16 @@ namespace Google.Solutions.Common.Test.Testbed
                     this.ProjectId,
                     this.Zone,
                     this.UniqueId);
-                yield return new InstanceRequest(vmRef, () => GetInstanceAsync(vmRef));
+                yield return new InstanceRequest(
+                    vmRef, 
+                    this.MachineType,
+                    this.ImageFamily,
+                    this.Metadata);
             }
             else
             {
                 throw new ArgumentException($"Parameter must be of type {typeof(InstanceLocator).Name}");
             }
-        }
-
-        private async Task<InstanceLocator> GetInstanceAsync(InstanceLocator vmRef)
-        {
-            var computeEngine = ComputeEngine.Connect();
-
-            try
-            {
-                var instance = await computeEngine.Service.Instances
-                    .Get(vmRef.ProjectId, vmRef.Zone, vmRef.Name)
-                    .ExecuteAsync();
-
-                if (instance.Status == "STOPPED")
-                {
-                    await computeEngine.Service.Instances.Start(
-                        vmRef.ProjectId, vmRef.Zone, vmRef.Name)
-                        .ExecuteAsync();
-                }
-
-                await AwaitReady(computeEngine, vmRef);
-            }
-            catch (Exception)
-            {
-                var metadata = new List<Metadata.ItemsData>(this.Metadata.ToList());
-
-                // Add metdata that marks this instance as temporary.
-                metadata.Add(new Metadata.ItemsData()
-                {
-                    Key = "type",
-                    Value = "auto-cleanup"
-                });
-                metadata.Add(new Metadata.ItemsData()
-                {
-                    Key = "ttl",
-                    Value = "120" // minutes
-                });
-
-                await computeEngine.Service.Instances.Insert(
-                    new Apis.Compute.v1.Data.Instance()
-                    {
-                        Name = vmRef.Name,
-                        MachineType = $"zones/{this.Zone}/machineTypes/{this.MachineType}",
-                        Disks = new[]
-                        {
-                            new AttachedDisk()
-                            {
-                                AutoDelete = true,
-                                Boot = true,
-                                InitializeParams = new AttachedDiskInitializeParams()
-                                {
-                                    SourceImage = this.ImageFamily
-                                }
-                            }
-                        },
-                        Metadata = new Metadata()
-                        {
-                            Items = metadata
-                        },
-                        NetworkInterfaces = new[]
-                        {
-                            new NetworkInterface()
-                            {
-                                AccessConfigs = new []
-                                {
-                                    new AccessConfig()
-                                }
-                            }
-                        }
-                    },
-                    vmRef.ProjectId,
-                    vmRef.Zone).ExecuteAsync();
-
-                await AwaitReady(computeEngine, vmRef);
-            }
-
-            return vmRef;
-        }
-
-        private Task AwaitReady(ComputeEngine engine, InstanceLocator instanceRef)
-        {
-            return Task.Run(async () =>
-            {
-                for (int i = 0; i < 60; i++)
-                {
-                    try
-                    {
-                        var instance = await engine.Service.Instances.Get(
-                                instanceRef.ProjectId, instanceRef.Zone, instanceRef.Name)
-                            .ExecuteAsync();
-
-                        if (await IsReadyAsync(engine, instanceRef, instance))
-                        {
-                            return;
-                        }
-                    }
-                    catch (Exception)
-                    { }
-
-                    await Task.Delay(5 * 1000);
-                }
-
-                throw new TimeoutException($"Timeout waiting for {instanceRef} to become ready");
-            });
-        }
-
-        protected virtual async Task<bool> IsReadyAsync(
-            ComputeEngine engine,
-            InstanceLocator instanceRef,
-            Instance instance)
-        {
-            var request = engine.Service.Instances.GetGuestAttributes(
-                    instanceRef.ProjectId,
-                    instanceRef.Zone,
-                    instanceRef.Name);
-            request.QueryPath = GuestAttributeNamespace + "/";
-            var guestAttributes = await request.ExecuteAsync();
-
-            return guestAttributes
-                .QueryValue
-                .Items
-                .Where(i => i.Namespace__ == GuestAttributeNamespace && i.Key == GuestAttributeKey)
-                .Any();
         }
     }
 
@@ -278,7 +133,7 @@ namespace Google.Solutions.Common.Test.Testbed
                         "-Headers @{\"Metadata-Flavor\"=\"Google\"} " +
                         "-Method PUT " +
                         "-Uri http://metadata.google.internal/computeMetadata/v1/instance/" +
-                        $"guest-attributes/{GuestAttributeNamespace}/{GuestAttributeKey} " +
+                        $"guest-attributes/{InstanceRequest.GuestAttributeNamespace}/{InstanceRequest.GuestAttributeKey} " +
                         "-Body TRUE"
                 };
             }
@@ -318,7 +173,7 @@ namespace Google.Solutions.Common.Test.Testbed
                     Value = script +
                         "curl -X PUT --data \"TRUE\" " +
                         "http://metadata.google.internal/computeMetadata/v1/instance/" +
-                        $"guest-attributes/{GuestAttributeNamespace}/{GuestAttributeKey} " +
+                        $"guest-attributes/{InstanceRequest.GuestAttributeNamespace}/{InstanceRequest.GuestAttributeKey} " +
                         "-H \"Metadata-Flavor: Google\""
                 };
             }

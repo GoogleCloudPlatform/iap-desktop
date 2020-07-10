@@ -55,7 +55,7 @@ namespace Google.Solutions.IapTunneling.Test.Iap
             [LinuxInstance(InitializeScript = InstallApache)] InstanceRequest vm)
         {
             await vm.AwaitReady();
-            var stream = ConnectToWebServer(vm.InstanceReference);
+            var stream = ConnectToWebServer(vm.Locator);
 
             byte[] request = new ASCIIEncoding().GetBytes(
                 "GET / HTTP/1.0\r\n\r\n");
@@ -83,7 +83,7 @@ namespace Google.Solutions.IapTunneling.Test.Iap
             var stream = new SshRelayStream(
                 new IapTunnelingEndpoint(
                     GoogleCredential.FromAccessToken("invalid"),
-                    vm.InstanceReference,
+                    vm.Locator,
                     80,
                     IapTunnelingEndpoint.DefaultNetworkInterface,
                     Defaults.UserAgent));
@@ -104,7 +104,7 @@ namespace Google.Solutions.IapTunneling.Test.Iap
             [LinuxInstance(InitializeScript = InstallApache)] InstanceRequest vm)
         {
             await vm.AwaitReady();
-            var stream = (SshRelayStream)ConnectToWebServer(vm.InstanceReference);
+            var stream = (SshRelayStream)ConnectToWebServer(vm.Locator);
 
             byte[] request = new ASCIIEncoding().GetBytes(
                     $"GET / HTTP/1.1\r\nHost:www\r\nConnection: keep-alive\r\n\r\n");
@@ -128,7 +128,7 @@ namespace Google.Solutions.IapTunneling.Test.Iap
             [LinuxInstance] InstanceRequest vm)
         {
             await vm.AwaitReady();
-            var stream = ConnectToWebServer(vm.InstanceReference);
+            var stream = ConnectToWebServer(vm.Locator);
 
             byte[] request = new ASCIIEncoding().GetBytes(
                     $"GET / HTTP/1.1\r\nHost:www\r\nConnection: keep-alive\r\n\r\n");

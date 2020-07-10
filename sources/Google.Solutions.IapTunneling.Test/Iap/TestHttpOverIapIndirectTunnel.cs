@@ -62,7 +62,7 @@ namespace Google.Solutions.IapTunneling.Test.Iap
             [LinuxInstance] InstanceRequest vm)
         {
             await vm.AwaitReady();
-            var stream = ConnectToWebServer(vm.InstanceReference);
+            var stream = ConnectToWebServer(vm.Locator);
 
             byte[] request = new ASCIIEncoding().GetBytes(
                     $"GET / HTTP/1.1\r\nHost:www\r\nConnection: keep-alive\r\n\r\n");

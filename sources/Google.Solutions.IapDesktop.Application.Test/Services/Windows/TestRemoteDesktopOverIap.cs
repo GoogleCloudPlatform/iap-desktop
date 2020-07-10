@@ -44,11 +44,11 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Windows
         {
             await testInstance.AwaitReady();
 
-            using (var tunnel = RdpTunnel.Create(testInstance.InstanceReference))
+            using (var tunnel = RdpTunnel.Create(testInstance.Locator))
             {
                 var rdpService = new RemoteDesktopService(this.serviceProvider);
                 var session = rdpService.Connect(
-                    testInstance.InstanceReference,
+                    testInstance.Locator,
                     "localhost",
                     (ushort)tunnel.LocalPort,
                     new VmInstanceConnectionSettings()
@@ -102,17 +102,17 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Windows
         {
             await testInstance.AwaitReady();
 
-            using (var tunnel = RdpTunnel.Create(testInstance.InstanceReference))
+            using (var tunnel = RdpTunnel.Create(testInstance.Locator))
             using (var gceAdapter = new ComputeEngineAdapter(this.serviceProvider.GetService<IAuthorizationAdapter>()))
             {
                 var credentials = await gceAdapter.ResetWindowsUserAsync(
-                    testInstance.InstanceReference,
+                    testInstance.Locator,
                     CreateRandomUsername(),
                     CancellationToken.None);
 
                 var rdpService = new RemoteDesktopService(this.serviceProvider);
                 var session = rdpService.Connect(
-                    testInstance.InstanceReference,
+                    testInstance.Locator,
                     "localhost",
                     (ushort)tunnel.LocalPort,
                     new VmInstanceConnectionSettings()
@@ -151,17 +151,17 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Windows
         {
             await testInstance.AwaitReady();
 
-            using (var tunnel = RdpTunnel.Create(testInstance.InstanceReference))
+            using (var tunnel = RdpTunnel.Create(testInstance.Locator))
             using (var gceAdapter = new ComputeEngineAdapter(this.serviceProvider.GetService<IAuthorizationAdapter>()))
             {
                 var credentials = await gceAdapter.ResetWindowsUserAsync(
-                       testInstance.InstanceReference,
+                       testInstance.Locator,
                        CreateRandomUsername(),
                        CancellationToken.None);
 
                 var rdpService = new RemoteDesktopService(this.serviceProvider);
                 var session = (RemoteDesktopPane)rdpService.Connect(
-                    testInstance.InstanceReference,
+                    testInstance.Locator,
                     "localhost",
                     (ushort)tunnel.LocalPort,
                     new VmInstanceConnectionSettings()

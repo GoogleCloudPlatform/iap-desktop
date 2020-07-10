@@ -219,7 +219,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.Services.SerialOu
             StringAssert.Contains("Instance setup finished", this.viewModel.Output);
 
             StringAssert.Contains(SerialOutputViewModel.DefaultWindowTitle, this.viewModel.WindowTitle);
-            StringAssert.Contains(testInstance.InstanceReference.Name, this.viewModel.WindowTitle);
+            StringAssert.Contains(testInstance.Locator.Name, this.viewModel.WindowTitle);
         }
 
         [Test]

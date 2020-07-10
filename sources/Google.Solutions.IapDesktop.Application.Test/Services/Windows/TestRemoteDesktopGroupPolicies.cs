@@ -75,9 +75,9 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Windows
         {
             await testInstance.AwaitReady();
 
-            using (var tunnel = RdpTunnel.Create(testInstance.InstanceReference))
+            using (var tunnel = RdpTunnel.Create(testInstance.Locator))
             {
-                var session = await Connect(tunnel, testInstance.InstanceReference);
+                var session = await Connect(tunnel, testInstance.Locator);
 
                 AwaitEvent<RemoteDesktopConnectionFailedEvent>();
                 Assert.IsNotNull(this.ExceptionShown);
@@ -94,9 +94,9 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Windows
         {
             await testInstance.AwaitReady();
 
-            using (var tunnel = RdpTunnel.Create(testInstance.InstanceReference))
+            using (var tunnel = RdpTunnel.Create(testInstance.Locator))
             {
-                var session = await Connect(tunnel, testInstance.InstanceReference);
+                var session = await Connect(tunnel, testInstance.Locator);
 
                 AwaitEvent<RemoteDesktopConnectionSuceededEvent>();
                 Assert.IsNull(this.ExceptionShown);
@@ -124,9 +124,9 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Windows
         {
             await testInstance.AwaitReady();
 
-            using (var tunnel = RdpTunnel.Create(testInstance.InstanceReference))
+            using (var tunnel = RdpTunnel.Create(testInstance.Locator))
             {
-                var session = await Connect(tunnel, testInstance.InstanceReference);
+                var session = await Connect(tunnel, testInstance.Locator);
 
                 AwaitEvent<RemoteDesktopConnectionSuceededEvent>();
                 Assert.IsNull(this.ExceptionShown);
@@ -154,9 +154,9 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Windows
         {
             await testInstance.AwaitReady();
 
-            using (var tunnel = RdpTunnel.Create(testInstance.InstanceReference))
+            using (var tunnel = RdpTunnel.Create(testInstance.Locator))
             {
-                var session = await Connect(tunnel, testInstance.InstanceReference);
+                var session = await Connect(tunnel, testInstance.Locator);
 
                 AwaitEvent<RemoteDesktopConnectionSuceededEvent>();
                 Assert.IsNull(this.ExceptionShown);
@@ -184,9 +184,9 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Windows
         {
             await testInstance.AwaitReady();
 
-            using (var tunnel = RdpTunnel.Create(testInstance.InstanceReference))
+            using (var tunnel = RdpTunnel.Create(testInstance.Locator))
             {
-                var session = await Connect(tunnel, testInstance.InstanceReference);
+                var session = await Connect(tunnel, testInstance.Locator);
 
                 AwaitEvent<RemoteDesktopConnectionSuceededEvent>();
                 Assert.IsNull(this.ExceptionShown);
@@ -214,9 +214,9 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Windows
         {
             await testInstance.AwaitReady();
 
-            using (var tunnel = RdpTunnel.Create(testInstance.InstanceReference))
+            using (var tunnel = RdpTunnel.Create(testInstance.Locator))
             {
-                var session = await Connect(tunnel, testInstance.InstanceReference);
+                var session = await Connect(tunnel, testInstance.Locator);
 
                 AwaitEvent<RemoteDesktopConnectionSuceededEvent>();
                 Assert.IsNull(this.ExceptionShown);
@@ -244,9 +244,9 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Windows
         {
             await testInstance.AwaitReady();
 
-            using (var tunnel = RdpTunnel.Create(testInstance.InstanceReference))
+            using (var tunnel = RdpTunnel.Create(testInstance.Locator))
             {
-                var session = await Connect(tunnel, testInstance.InstanceReference);
+                var session = await Connect(tunnel, testInstance.Locator);
 
                 AwaitEvent<RemoteDesktopConnectionSuceededEvent>();
                 Assert.IsNull(this.ExceptionShown);
@@ -274,9 +274,9 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Windows
         {
             await testInstance.AwaitReady();
 
-            using (var tunnel = RdpTunnel.Create(testInstance.InstanceReference))
+            using (var tunnel = RdpTunnel.Create(testInstance.Locator))
             {
-                var session = await Connect(tunnel, testInstance.InstanceReference);
+                var session = await Connect(tunnel, testInstance.Locator);
 
                 AwaitEvent<RemoteDesktopConnectionSuceededEvent>();
                 Assert.IsNull(this.ExceptionShown);

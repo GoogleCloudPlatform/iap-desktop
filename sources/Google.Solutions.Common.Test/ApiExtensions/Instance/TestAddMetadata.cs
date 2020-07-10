@@ -53,15 +53,15 @@ namespace Google.Solutions.Common.Test.Extensions
             var value = "metadata value";
 
             await this.instancesResource.AddMetadataAsync(
-                testInstance.InstanceReference,
+                testInstance.Locator,
                 key,
                 value,
                 CancellationToken.None);
 
             var instance = await this.instancesResource.Get(
-                testInstance.InstanceReference.ProjectId,
-                testInstance.InstanceReference.Zone,
-                testInstance.InstanceReference.Name)
+                testInstance.Locator.ProjectId,
+                testInstance.Locator.Zone,
+                testInstance.Locator.Name)
                     .ExecuteAsync(CancellationToken.None)
                     .ConfigureAwait(false);
 
@@ -79,22 +79,22 @@ namespace Google.Solutions.Common.Test.Extensions
             var key = Guid.NewGuid().ToString();
 
             await this.instancesResource.AddMetadataAsync(
-                testInstance.InstanceReference,
+                testInstance.Locator,
                 key,
                 "value to be overridden",
                 CancellationToken.None);
 
             var value = "metadata value";
             await this.instancesResource.AddMetadataAsync(
-                testInstance.InstanceReference,
+                testInstance.Locator,
                 key,
                 value,
                 CancellationToken.None);
 
             var instance = await this.instancesResource.Get(
-                testInstance.InstanceReference.ProjectId,
-                testInstance.InstanceReference.Zone,
-                testInstance.InstanceReference.Name)
+                testInstance.Locator.ProjectId,
+                testInstance.Locator.Zone,
+                testInstance.Locator.Name)
                     .ExecuteAsync(CancellationToken.None)
                     .ConfigureAwait(false);
 

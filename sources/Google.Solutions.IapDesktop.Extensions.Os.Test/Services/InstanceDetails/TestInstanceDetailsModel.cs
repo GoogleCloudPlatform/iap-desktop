@@ -44,7 +44,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Os.Test.Services.InstanceDetail
                 new ComputeEngineAdapter(Defaults.GetCredential()),
                 CancellationToken.None);
 
-            Assert.AreEqual(testInstance.InstanceReference.Name, model.InstanceName);
+            Assert.AreEqual(testInstance.Locator.Name, model.InstanceName);
             Assert.IsNull(model.Hostname);
             Assert.AreEqual("RUNNING", model.Status);
             Assert.IsNotNull(model.InternalIp);
