@@ -19,6 +19,7 @@
 // under the License.
 //
 
+using Google.Apis.Auth.OAuth2;
 using Google.Solutions.Common.Test;
 using Google.Solutions.Common.Test.Testbed;
 using Google.Solutions.IapDesktop.Application.Services.Adapters;
@@ -35,13 +36,14 @@ namespace Google.Solutions.IapDesktop.Extensions.Os.Test.Services.InstanceDetail
     {
         [Test]
         public async Task WhenLoadAsyncCompletes_ThenPropertiesArePopulated(
-            [WindowsInstance] InstanceRequest testInstance)
+            [WindowsInstance] InstanceRequest testInstance,
+            [Credential] ICredential credential)
         {
             await testInstance.AwaitReady();
 
             var model = await InstanceDetailsModel.LoadAsync(
                 await testInstance.GetInstanceAsync(),
-                new ComputeEngineAdapter(Defaults.GetCredential()),
+                new ComputeEngineAdapter(credential),
                 CancellationToken.None);
 
             Assert.AreEqual(testInstance.Locator.Name, model.InstanceName);

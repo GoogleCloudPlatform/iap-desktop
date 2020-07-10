@@ -86,7 +86,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Windows
             }
         }
 
-        public IAuthorization Authorization => new SimpleAuthorization(Defaults.GetCredential());
+        public IAuthorization Authorization => new SimpleAuthorization(Defaults.GetAdminCredential());
 
         public Task ReauthorizeAsync(CancellationToken token)
             => this.Authorization.ReauthorizeAsync(token);

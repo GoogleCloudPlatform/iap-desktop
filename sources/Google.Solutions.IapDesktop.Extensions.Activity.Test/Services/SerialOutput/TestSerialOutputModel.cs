@@ -31,6 +31,7 @@ using NUnit.Framework;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using Google.Apis.Auth.OAuth2;
 
 namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.Services.SerialOutput
 {
@@ -40,13 +41,14 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.Services.SerialOu
     {
         [Test]
         public async Task WhenLoadAsyncCompletes_ThenOutputContainsExistingData(
-            [WindowsInstance] InstanceRequest testInstance)
+            [WindowsInstance] InstanceRequest testInstance,
+            [Credential] ICredential credential)
         {
             await testInstance.AwaitReady();
             
             var model = await SerialOutputModel.LoadAsync(
                 "display-name",
-                new ComputeEngineAdapter(Defaults.GetCredential()),
+                new ComputeEngineAdapter(credential),
                 await testInstance.GetInstanceAsync(),
                 SerialPortStream.ConsolePort,
                 CancellationToken.None);

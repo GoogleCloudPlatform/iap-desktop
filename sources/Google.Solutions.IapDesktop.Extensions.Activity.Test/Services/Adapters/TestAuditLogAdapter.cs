@@ -19,6 +19,7 @@
 // under the License.
 //
 
+using Google.Apis.Auth.OAuth2;
 using Google.Apis.Compute.v1;
 using Google.Apis.Logging.v2.Data;
 using Google.Apis.Services;
@@ -44,7 +45,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.Services.Adapters
     {
         [Test]
         public async Task WhenInstanceCreated_ThenListLogEntriesReturnsInsertEvent(
-            [LinuxInstance] InstanceRequest testInstance)
+            [LinuxInstance] InstanceRequest testInstance,
+            [Credential] ICredential credential)
         {
             await testInstance.AwaitReady();
             var instanceRef = await testInstance.GetInstanceAsync();
@@ -52,7 +54,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.Services.Adapters
             var startDate = DateTime.UtcNow.AddDays(-30);
             var endDate = DateTime.UtcNow;
 
-            var adapter = new AuditLogAdapter(Defaults.GetCredential());
+            var adapter = new AuditLogAdapter(credential);
             var request = new ListLogEntriesRequest()
             {
                 ResourceNames = new[]
@@ -91,7 +93,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.Services.Adapters
 
         [Test]
         public async Task WhenInstanceCreated_ThenListInstanceEventsAsyncCanFeedHistorySetBuilder(
-            [LinuxInstance] InstanceRequest testInstance)
+            [LinuxInstance] InstanceRequest testInstance,
+            [Credential] ICredential credential)
         {
             await testInstance.AwaitReady();
             var instanceRef = await testInstance.GetInstanceAsync();
@@ -100,13 +103,13 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.Services.Adapters
                 DateTime.UtcNow.AddDays(-7),
                 DateTime.UtcNow);
 
-            var computeAdapter = new ComputeEngineAdapter(Defaults.GetCredential());
+            var computeAdapter = new ComputeEngineAdapter(credential);
             instanceBuilder.AddExistingInstances(
                 await computeAdapter.ListInstancesAsync(Defaults.ProjectId, CancellationToken.None),
                 await computeAdapter.ListDisksAsync(Defaults.ProjectId, CancellationToken.None),
                 Defaults.ProjectId);            
             
-            var adapter = new AuditLogAdapter(Defaults.GetCredential());
+            var adapter = new AuditLogAdapter(credential);
 
             await adapter.ListInstanceEventsAsync(
                 new[] { Defaults.ProjectId },
@@ -127,7 +130,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.Services.Adapters
         //---------------------------------------------------------------------
 
         [Test]
-        public void WhenUsingInvalidProjectId_ThenListEventsAsyncThrowsException()
+        public void WhenUsingInvalidProjectId_ThenListEventsAsyncThrowsException(
+            [Credential] ICredential credential)
         {
             var startDate = DateTime.UtcNow.AddDays(-30);
             var request = new ListLogEntriesRequest()
@@ -143,7 +147,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.Services.Adapters
                 OrderBy = "timestamp desc"
             };
 
-            var adapter = new AuditLogAdapter(Defaults.GetCredential());
+            var adapter = new AuditLogAdapter(credential);
             AssertEx.ThrowsAggregateException<GoogleApiException>(
                 () => adapter.ListEventsAsync(
                     request,

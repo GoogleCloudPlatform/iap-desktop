@@ -19,6 +19,7 @@
 // under the License.
 //
 
+using Google.Apis.Auth.OAuth2;
 using Google.Solutions.Common;
 using Google.Solutions.Common.Locator;
 using Google.Solutions.Common.Test.Testbed;
@@ -46,11 +47,11 @@ namespace Google.Solutions.IapDesktop.Application.Test
             this.tokenSource = tokenSource;
         }
 
-        public static RdpTunnel Create(InstanceLocator vmRef)
+        public static RdpTunnel Create(InstanceLocator vmRef, ICredential credential)
         {
             var listener = SshRelayListener.CreateLocalListener(
                 new IapTunnelingEndpoint(
-                    Defaults.GetCredential(),
+                    credential,
                     vmRef,
                     3389,
                     IapTunnelingEndpoint.DefaultNetworkInterface,

@@ -21,14 +21,12 @@
 
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.CloudResourceManager.v1.Data;
-using Google.Apis.Iam.v1;
 using Google.Apis.Iam.v1.Data;
-using Google.Apis.IAMCredentials.v1;
 using NUnit.Framework;
 using NUnit.Framework.Interfaces;
 using System;
 using System.Collections;
-using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -36,7 +34,7 @@ namespace Google.Solutions.Common.Test.Testbed
 {
     public class CredentialAttribute : NUnitAttribute, IParameterDataSource
     {
-        public string[] Roles { get; set; } = Array.Empty<string>();
+        public string[] Roles { get; set; }
 
         private string CreateSpecificationFingerprint()
         {
@@ -144,7 +142,18 @@ namespace Google.Solutions.Common.Test.Testbed
         {
             if (parameter.ParameterType == typeof(ICredential))
             {
-                return new ICredential[] { CreateAccessToken().Result };
+                if (this.Roles == null || !this.Roles.Any())
+                {
+                    // Return the credentials of the (admin) account the
+                    // tests are run as.
+                    return new ICredential[] { Defaults.GetAdminCredential() };
+                }
+                else
+                {
+                    // Create a service account with exactly these
+                    // roles and return temporary credentials.
+                    return new ICredential[] { CreateAccessToken().Result };
+                }
             }
             else
             {

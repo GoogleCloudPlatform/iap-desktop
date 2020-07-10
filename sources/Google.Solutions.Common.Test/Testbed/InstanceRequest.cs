@@ -34,14 +34,14 @@ namespace Google.Solutions.Common.Test.Testbed
         internal const string GuestAttributeNamespace = "boot";
         internal const string GuestAttributeKey = "completed";
 
+        private readonly ComputeService computeService;
         private readonly IEnumerable<Metadata.ItemsData> metadata;
         private readonly string machineType;
         private readonly string imageFamily;
 
-        public Func<Task<InstanceLocator>> GetInstanceAsync { get; }
         public InstanceLocator Locator { get; }
 
-        private Task AwaitReady(ComputeService engine, InstanceLocator instanceRef)
+        public Task AwaitReady()
         {
             return Task.Run(async () =>
             {
@@ -49,11 +49,13 @@ namespace Google.Solutions.Common.Test.Testbed
                 {
                     try
                     {
-                        var instance = await engine.Instances.Get(
-                                instanceRef.ProjectId, instanceRef.Zone, instanceRef.Name)
+                        var instance = await this.computeService.Instances.Get(
+                                this.Locator.ProjectId,
+                                this.Locator.Zone,
+                                this.Locator.Name)
                             .ExecuteAsync();
 
-                        if (await IsReadyAsync(engine, instanceRef, instance))
+                        if (await IsReadyAsync(instance))
                         {
                             return;
                         }
@@ -64,19 +66,17 @@ namespace Google.Solutions.Common.Test.Testbed
                     await Task.Delay(5 * 1000);
                 }
 
-                throw new TimeoutException($"Timeout waiting for {instanceRef} to become ready");
+                throw new TimeoutException($"Timeout waiting for {this.Locator} to become ready");
             });
         }
 
         private async Task<bool> IsReadyAsync(
-            ComputeService engine,
-            InstanceLocator instanceRef,
             Instance instance)
         {
-            var request = engine.Instances.GetGuestAttributes(
-                    instanceRef.ProjectId,
-                    instanceRef.Zone,
-                    instanceRef.Name);
+            var request = this.computeService.Instances.GetGuestAttributes(
+                    this.Locator.ProjectId,
+                    this.Locator.Zone,
+                    this.Locator.Name);
             request.QueryPath = GuestAttributeNamespace + "/";
             var guestAttributes = await request.ExecuteAsync();
 
@@ -104,7 +104,7 @@ namespace Google.Solutions.Common.Test.Testbed
                         .ExecuteAsync();
                 }
 
-                await AwaitReady(computeEngine, vmRef);
+                await AwaitReady();
             }
             catch (Exception)
             {
@@ -157,7 +157,7 @@ namespace Google.Solutions.Common.Test.Testbed
                     vmRef.ProjectId,
                     vmRef.Zone).ExecuteAsync();
 
-                await AwaitReady(computeEngine, vmRef);
+                await AwaitReady();
             }
 
             return vmRef;
@@ -169,20 +169,19 @@ namespace Google.Solutions.Common.Test.Testbed
             string imageFamily,
             IEnumerable<Metadata.ItemsData> metadata)
         {
+            this.computeService = Defaults.CreateComputeService();
             this.Locator = instance;
             this.machineType = machineType;
             this.imageFamily = imageFamily;
             this.metadata = metadata;
         }
 
+        public Task<InstanceLocator> GetInstanceAsync()
+            => CreateOrStartInstanceAsync(this.Locator);
+
         public override string ToString()
         {
             return this.Locator.ToString();
-        }
-
-        public async Task AwaitReady()
-        {
-            await GetInstanceAsync();
         }
     }
 }

@@ -19,6 +19,7 @@
 // under the License.
 //
 
+using Google.Apis.Auth.OAuth2;
 using Google.Solutions.Common;
 using Google.Solutions.Common.Locator;
 using Google.Solutions.Common.Test.Testbed;
@@ -52,7 +53,9 @@ namespace Google.Solutions.IapTunneling.Test.Iap
         private const int RepeatCount = 10;
         private CancellationTokenSource tokenSource = new CancellationTokenSource();
 
-        protected abstract INetworkStream ConnectToEchoServer(InstanceLocator vmRef);
+        protected abstract INetworkStream ConnectToEchoServer(
+            InstanceLocator vmRef,
+            ICredential credential);
 
         private static void FillArray(byte[] array)
         {
@@ -65,6 +68,7 @@ namespace Google.Solutions.IapTunneling.Test.Iap
         [Test]
         public async Task WhenSendingMessagesToEchoServer_MessagesAreReceivedVerbatim(
             [LinuxInstance(InitializeScript = InstallEchoServer)] InstanceRequest vm,
+            [Credential] ICredential credential,
             [Values(
                 1,
                 (int)DataMessage.MaxDataLength - 1,
@@ -78,7 +82,7 @@ namespace Google.Solutions.IapTunneling.Test.Iap
             FillArray(message);
 
             await vm.AwaitReady();
-            var stream = ConnectToEchoServer(vm.Locator);
+            var stream = ConnectToEchoServer(vm.Locator, credential);
 
             for (int i = 0; i < count; i++)
             {

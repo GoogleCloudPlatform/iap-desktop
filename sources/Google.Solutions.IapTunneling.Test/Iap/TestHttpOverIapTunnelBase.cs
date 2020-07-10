@@ -19,6 +19,7 @@
 // under the License.
 //
 
+using Google.Apis.Auth.OAuth2;
 using Google.Solutions.Common;
 using Google.Solutions.Common.Diagnostics;
 using Google.Solutions.Common.Locator;
@@ -39,7 +40,9 @@ namespace Google.Solutions.IapTunneling.Test.Iap
         private const int RepeatCount = 5;
         private CancellationTokenSource tokenSource = new CancellationTokenSource();
 
-        protected abstract INetworkStream ConnectToWebServer(InstanceLocator vmRef);
+        protected abstract INetworkStream ConnectToWebServer(
+            InstanceLocator vmRef,
+            ICredential credential);
 
         private class HttpResponseAccumulator
         {
@@ -74,10 +77,11 @@ namespace Google.Solutions.IapTunneling.Test.Iap
 
         [Test, Repeat(RepeatCount)]
         public async Task WhenServerClosesConnectionAfterSingleHttpRequest_ThenRelayEnds(
-            [LinuxInstance(InitializeScript = InstallApache)] InstanceRequest vm)
+            [LinuxInstance(InitializeScript = InstallApache)] InstanceRequest vm,
+            [Credential] ICredential credential)
         {
             await vm.AwaitReady();
-            var stream = ConnectToWebServer(vm.Locator);
+            var stream = ConnectToWebServer(vm.Locator, credential);
 
             byte[] request = new ASCIIEncoding().GetBytes(
                 "GET / HTTP/1.0\r\n\r\n");
@@ -99,10 +103,11 @@ namespace Google.Solutions.IapTunneling.Test.Iap
 
         [Test, Repeat(RepeatCount)]
         public async Task WhenServerClosesConnectionMultipleHttpRequests_ThenRelayEnds(
-            [LinuxInstance(InitializeScript = InstallApache)] InstanceRequest vm)
+            [LinuxInstance(InitializeScript = InstallApache)] InstanceRequest vm,
+            [Credential] ICredential credential)
         {
             await vm.AwaitReady();
-            var stream = ConnectToWebServer(vm.Locator);
+            var stream = ConnectToWebServer(vm.Locator, credential);
 
             for (int i = 0; i < 3; i++)
             {
@@ -133,10 +138,11 @@ namespace Google.Solutions.IapTunneling.Test.Iap
 
         [Test, Repeat(RepeatCount)]
         public async Task WhenClientClosesConnectionAfterSingleHttpRequest_ThenRelayEnds(
-            [LinuxInstance(InitializeScript = InstallApache)] InstanceRequest vm)
+            [LinuxInstance(InitializeScript = InstallApache)] InstanceRequest vm,
+            [Credential] ICredential credential)
         {
             await vm.AwaitReady();
-            var stream = ConnectToWebServer(vm.Locator);
+            var stream = ConnectToWebServer(vm.Locator, credential);
 
             byte[] request = new ASCIIEncoding().GetBytes(
                     $"GET / HTTP/1.1\r\nHost:www\r\nConnection: keep-alive\r\n\r\n");

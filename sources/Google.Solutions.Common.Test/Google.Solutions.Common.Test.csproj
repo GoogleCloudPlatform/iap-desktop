@@ -111,7 +111,6 @@
     <Compile Include="Locator\TestDiskTypeLocator.cs" />
     <Compile Include="Testbed\InstanceRequest.cs" />
     <Compile Include="Testbed\CredentialAttribute.cs" />
-    <Compile Include="Testbed\XX__Test.cs" />
     <Compile Include="Util\TestCancellationTokenExtensions.cs" />
     <Compile Include="Util\TestEnumExtensions.cs" />
     <Compile Include="Util\TestExceptionExtensions.cs" />

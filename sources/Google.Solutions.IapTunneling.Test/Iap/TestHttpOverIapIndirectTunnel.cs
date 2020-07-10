@@ -19,6 +19,7 @@
 // under the License.
 //
 
+using Google.Apis.Auth.OAuth2;
 using Google.Solutions.Common;
 using Google.Solutions.Common.Locator;
 using Google.Solutions.Common.Test.Testbed;
@@ -38,11 +39,13 @@ namespace Google.Solutions.IapTunneling.Test.Iap
     [Category("IAP")]
     public class TestHttpOverIapIndirectTunnel : TestHttpOverIapTunnelBase
     {
-        protected override INetworkStream ConnectToWebServer(InstanceLocator vmRef)
+        protected override INetworkStream ConnectToWebServer(
+            InstanceLocator vmRef,
+            ICredential credential)
         {
             var listener = SshRelayListener.CreateLocalListener(
                 new IapTunnelingEndpoint(
-                    Defaults.GetCredential(),
+                    credential,
                     vmRef,
                     80,
                     IapTunnelingEndpoint.DefaultNetworkInterface,
@@ -59,10 +62,11 @@ namespace Google.Solutions.IapTunneling.Test.Iap
 
         [Test]
         public async Task WhenServerNotListening_ThenReadReturnsZero(
-            [LinuxInstance] InstanceRequest vm)
+            [LinuxInstance] InstanceRequest vm,
+            [Credential] ICredential credential)
         {
             await vm.AwaitReady();
-            var stream = ConnectToWebServer(vm.Locator);
+            var stream = ConnectToWebServer(vm.Locator, credential);
 
             byte[] request = new ASCIIEncoding().GetBytes(
                     $"GET / HTTP/1.1\r\nHost:www\r\nConnection: keep-alive\r\n\r\n");

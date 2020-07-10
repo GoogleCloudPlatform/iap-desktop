@@ -19,6 +19,7 @@
 // under the License.
 //
 
+using Google.Apis.Auth.OAuth2;
 using Google.Solutions.Common.Test.Testbed;
 using Google.Solutions.IapDesktop.Application.ObjectModel;
 using Google.Solutions.IapDesktop.Application.Services.Adapters;
@@ -37,8 +38,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.Services.SerialOu
     [Category("IntegrationTest")]
     public class TestSerialOutputViewModel : FixtureBase
     {
-        private SerialOutputViewModel viewModel;
-
         private class MockJobService : IJobService
         {
             public Task<T> RunInBackground<T>(
@@ -65,15 +64,15 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.Services.SerialOu
             return node.Object;
         }
 
-        [SetUp]
-        public void SetUp()
+        private SerialOutputViewModel CreateViewModel(ICredential credential)
+
         {
             var serviceProvider = new ServiceRegistry();
             serviceProvider.AddSingleton<IJobService, MockJobService>();
             serviceProvider.AddSingleton<IComputeEngineAdapter>(
-                new ComputeEngineAdapter(Defaults.GetCredential()));
+                new ComputeEngineAdapter(credential));
 
-            this.viewModel = new SerialOutputViewModel(serviceProvider, 1)
+            return new SerialOutputViewModel(serviceProvider, 1)
             {
                 IsTailEnabled = false
             };
@@ -85,59 +84,65 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.Services.SerialOu
 
         [Test]
         public async Task WhenNotBlocked_ThenEnableControlsTailing(
-            [WindowsInstance] InstanceRequest testInstance)
+            [WindowsInstance] InstanceRequest testInstance,
+            [Credential] ICredential credential)
         {
+            var viewModel = CreateViewModel(credential);
             var node = await CreateNode(testInstance, true);
-            await this.viewModel.SwitchToModelAsync(node);
+            await viewModel.SwitchToModelAsync(node);
 
-            Assert.IsNull(this.viewModel.TailCancellationTokenSource, "not tailing yet");
+            Assert.IsNull(viewModel.TailCancellationTokenSource, "not tailing yet");
 
-            this.viewModel.IsTailBlocked = false;
-            this.viewModel.IsTailEnabled = true;
+            viewModel.IsTailBlocked = false;
+            viewModel.IsTailEnabled = true;
 
-            var tailCts = this.viewModel.TailCancellationTokenSource;
+            var tailCts = viewModel.TailCancellationTokenSource;
             Assert.IsNotNull(tailCts, "tailing");
 
-            this.viewModel.IsTailEnabled = false;
+            viewModel.IsTailEnabled = false;
 
             // CTS cancelled => not tailing.
             Assert.IsTrue(tailCts.IsCancellationRequested, "tailing stopped");
-            Assert.IsNull(this.viewModel.TailCancellationTokenSource);
+            Assert.IsNull(viewModel.TailCancellationTokenSource);
         }
 
         [Test]
         public async Task WhenBlocked_ThenEnableHasNoImpactOnTailing(
-            [WindowsInstance] InstanceRequest testInstance)
+            [WindowsInstance] InstanceRequest testInstance,
+            [Credential] ICredential credential)
         {
+            var viewModel = CreateViewModel(credential);
             var node = await CreateNode(testInstance, true);
-            await this.viewModel.SwitchToModelAsync(node);
+            await viewModel.SwitchToModelAsync(node);
 
-            this.viewModel.IsTailBlocked = true;
-            this.viewModel.IsTailEnabled = true;
+            viewModel.IsTailBlocked = true;
+            viewModel.IsTailEnabled = true;
 
-            Assert.IsNull(this.viewModel.TailCancellationTokenSource, "not tailing yet");
+            Assert.IsNull(viewModel.TailCancellationTokenSource, "not tailing yet");
         }
 
         [Test]
         public async Task WhenEnabled_ThenBlockControlsTailing(
-            [WindowsInstance] InstanceRequest testInstance)
+            [WindowsInstance] InstanceRequest testInstance,
+            [Credential] ICredential credential)
         {
+            var viewModel = CreateViewModel(credential);
             var node = await CreateNode(testInstance, true);
-            await this.viewModel.SwitchToModelAsync(node);
+            await viewModel.SwitchToModelAsync(node);
 
-            Assert.IsNull(this.viewModel.TailCancellationTokenSource, "not tailing yet");
+            Assert.IsNull(viewModel.TailCancellationTokenSource, "not tailing yet");
 
-            this.viewModel.IsTailEnabled = true;
-            this.viewModel.IsTailBlocked = false;
+            viewModel.IsTailEnabled = true;
+            viewModel.IsTailBlocked = false;
 
-            var tailCts = this.viewModel.TailCancellationTokenSource;
+            var tailCts = viewModel.TailCancellationTokenSource;
             Assert.IsNotNull(tailCts, "tailing");
 
-            this.viewModel.IsTailBlocked = true;
+            viewModel.IsTailBlocked = true;
 
             // CTS cancelled => not tailing.
             Assert.IsTrue(tailCts.IsCancellationRequested, "tailing stopped");
-            Assert.IsNull(this.viewModel.TailCancellationTokenSource);
+            Assert.IsNull(viewModel.TailCancellationTokenSource);
         }
 
         //---------------------------------------------------------------------
@@ -186,40 +191,46 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.Services.SerialOu
         //---------------------------------------------------------------------
 
         [Test]
-        public async Task WhenSwitchingToCloudNode_ThenControlsAreDisabled()
+        public async Task WhenSwitchingToCloudNode_ThenControlsAreDisabled(
+            [Credential] ICredential credential)
         {
+            var viewModel = CreateViewModel(credential);
             var node = new Mock<IProjectExplorerCloudNode>();
-            await this.viewModel.SwitchToModelAsync(node.Object);
+            await viewModel.SwitchToModelAsync(node.Object);
 
-            Assert.IsFalse(this.viewModel.IsEnableTailingButtonEnabled);
-            Assert.IsFalse(this.viewModel.IsOutputBoxEnabled);
-            StringAssert.Contains(SerialOutputViewModel.DefaultWindowTitle, this.viewModel.WindowTitle);
+            Assert.IsFalse(viewModel.IsEnableTailingButtonEnabled);
+            Assert.IsFalse(viewModel.IsOutputBoxEnabled);
+            StringAssert.Contains(SerialOutputViewModel.DefaultWindowTitle, viewModel.WindowTitle);
         }
         [Test]
         public async Task WhenSwitchingToStoppedInstanceNode_ThenControlsAreDisabled(
-            [WindowsInstance] InstanceRequest testInstance)
+            [WindowsInstance] InstanceRequest testInstance,
+            [Credential] ICredential credential)
         {
+            var viewModel = CreateViewModel(credential);
             var node = await CreateNode(testInstance, false);
-            await this.viewModel.SwitchToModelAsync(node);
+            await viewModel.SwitchToModelAsync(node);
 
-            Assert.IsFalse(this.viewModel.IsEnableTailingButtonEnabled);
-            Assert.IsFalse(this.viewModel.IsOutputBoxEnabled);
-            StringAssert.Contains(SerialOutputViewModel.DefaultWindowTitle, this.viewModel.WindowTitle);
+            Assert.IsFalse(viewModel.IsEnableTailingButtonEnabled);
+            Assert.IsFalse(viewModel.IsOutputBoxEnabled);
+            StringAssert.Contains(SerialOutputViewModel.DefaultWindowTitle, viewModel.WindowTitle);
         }
 
         [Test]
         public async Task WhenSwitchingToRunningInstanceNode_ThenOutputIsPopulated(
-            [WindowsInstance] InstanceRequest testInstance)
+            [WindowsInstance] InstanceRequest testInstance,
+            [Credential] ICredential credential)
         {
+            var viewModel = CreateViewModel(credential);
             var node = await CreateNode(testInstance, true);
-            await this.viewModel.SwitchToModelAsync(node);
+            await viewModel.SwitchToModelAsync(node);
 
-            Assert.IsTrue(this.viewModel.IsEnableTailingButtonEnabled);
-            Assert.IsTrue(this.viewModel.IsOutputBoxEnabled);
-            StringAssert.Contains("Instance setup finished", this.viewModel.Output);
+            Assert.IsTrue(viewModel.IsEnableTailingButtonEnabled);
+            Assert.IsTrue(viewModel.IsOutputBoxEnabled);
+            StringAssert.Contains("Instance setup finished", viewModel.Output);
 
-            StringAssert.Contains(SerialOutputViewModel.DefaultWindowTitle, this.viewModel.WindowTitle);
-            StringAssert.Contains(testInstance.Locator.Name, this.viewModel.WindowTitle);
+            StringAssert.Contains(SerialOutputViewModel.DefaultWindowTitle, viewModel.WindowTitle);
+            StringAssert.Contains(testInstance.Locator.Name, viewModel.WindowTitle);
         }
 
         [Test]

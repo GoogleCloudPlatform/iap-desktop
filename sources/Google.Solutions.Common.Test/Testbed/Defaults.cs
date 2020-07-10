@@ -47,7 +47,7 @@ namespace Google.Solutions.Common.Test.Testbed
                 Assembly.GetExecutingAssembly().GetName().Version);
         }
 
-        public static GoogleCredential GetCredential()
+        public static GoogleCredential GetAdminCredential()
         {
             var credential = GoogleCredential.GetApplicationDefault();
             return credential.IsCreateScopedRequired
@@ -59,7 +59,7 @@ namespace Google.Solutions.Common.Test.Testbed
         {
             return new ComputeService(new BaseClientService.Initializer
             {
-                HttpClientInitializer = Defaults.GetCredential()
+                HttpClientInitializer = Defaults.GetAdminCredential()
             });
         }
 
@@ -67,7 +67,7 @@ namespace Google.Solutions.Common.Test.Testbed
         {
             return new IamService(new BaseClientService.Initializer
             {
-                HttpClientInitializer = Defaults.GetCredential()
+                HttpClientInitializer = Defaults.GetAdminCredential()
             });
         }
 
@@ -75,7 +75,7 @@ namespace Google.Solutions.Common.Test.Testbed
         {
             return new IAMCredentialsService(new BaseClientService.Initializer
             {
-                HttpClientInitializer = Defaults.GetCredential()
+                HttpClientInitializer = Defaults.GetAdminCredential()
             });
         }
 
@@ -83,7 +83,7 @@ namespace Google.Solutions.Common.Test.Testbed
         {
             return new CloudResourceManagerService(new BaseClientService.Initializer
             {
-                HttpClientInitializer = Defaults.GetCredential()
+                HttpClientInitializer = Defaults.GetAdminCredential()
             });
         }
     }
