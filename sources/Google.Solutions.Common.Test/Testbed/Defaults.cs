@@ -20,6 +20,11 @@
 //
 
 using Google.Apis.Auth.OAuth2;
+using Google.Apis.CloudResourceManager.v1;
+using Google.Apis.Compute.v1;
+using Google.Apis.Iam.v1;
+using Google.Apis.IAMCredentials.v1;
+using Google.Apis.Services;
 using Google.Solutions.Common.Net;
 using System;
 using System.Reflection;
@@ -28,7 +33,7 @@ namespace Google.Solutions.Common.Test.Testbed
 {
     public static class Defaults
     {
-        private const string CloudPlatformScope = "https://www.googleapis.com/auth/cloud-platform";
+        internal const string CloudPlatformScope = "https://www.googleapis.com/auth/cloud-platform";
 
         public static readonly string ProjectId = Environment.GetEnvironmentVariable("GOOGLE_CLOUD_PROJECT");
         public static readonly string Zone = "us-central1-a";
@@ -48,6 +53,38 @@ namespace Google.Solutions.Common.Test.Testbed
             return credential.IsCreateScopedRequired
                 ? credential.CreateScoped(CloudPlatformScope)
                 : credential;
+        }
+
+        public static ComputeService CreateComputeService()
+        {
+            return new ComputeService(new BaseClientService.Initializer
+            {
+                HttpClientInitializer = Defaults.GetCredential()
+            });
+        }
+
+        public static IamService CreateIamService()
+        {
+            return new IamService(new BaseClientService.Initializer
+            {
+                HttpClientInitializer = Defaults.GetCredential()
+            });
+        }
+
+        public static IAMCredentialsService CreateIamCredentialsService()
+        {
+            return new IAMCredentialsService(new BaseClientService.Initializer
+            {
+                HttpClientInitializer = Defaults.GetCredential()
+            });
+        }
+
+        public static CloudResourceManagerService CreateCloudResourceManagerService()
+        {
+            return new CloudResourceManagerService(new BaseClientService.Initializer
+            {
+                HttpClientInitializer = Defaults.GetCredential()
+            });
         }
     }
 }

@@ -19,6 +19,7 @@
 // under the License.
 //
 
+using Google.Apis.Compute.v1;
 using Google.Apis.Compute.v1.Data;
 using Google.Solutions.Common.Locator;
 using System;
@@ -40,7 +41,7 @@ namespace Google.Solutions.Common.Test.Testbed
         public Func<Task<InstanceLocator>> GetInstanceAsync { get; }
         public InstanceLocator Locator { get; }
 
-        private Task AwaitReady(ComputeEngine engine, InstanceLocator instanceRef)
+        private Task AwaitReady(ComputeService engine, InstanceLocator instanceRef)
         {
             return Task.Run(async () =>
             {
@@ -48,7 +49,7 @@ namespace Google.Solutions.Common.Test.Testbed
                 {
                     try
                     {
-                        var instance = await engine.Service.Instances.Get(
+                        var instance = await engine.Instances.Get(
                                 instanceRef.ProjectId, instanceRef.Zone, instanceRef.Name)
                             .ExecuteAsync();
 
@@ -68,11 +69,11 @@ namespace Google.Solutions.Common.Test.Testbed
         }
 
         private async Task<bool> IsReadyAsync(
-            ComputeEngine engine,
+            ComputeService engine,
             InstanceLocator instanceRef,
             Instance instance)
         {
-            var request = engine.Service.Instances.GetGuestAttributes(
+            var request = engine.Instances.GetGuestAttributes(
                     instanceRef.ProjectId,
                     instanceRef.Zone,
                     instanceRef.Name);
@@ -88,17 +89,17 @@ namespace Google.Solutions.Common.Test.Testbed
 
         private async Task<InstanceLocator> CreateOrStartInstanceAsync(InstanceLocator vmRef)
         {
-            var computeEngine = ComputeEngine.Connect();
+            var computeEngine = Defaults.CreateComputeService();
 
             try
             {
-                var instance = await computeEngine.Service.Instances
+                var instance = await computeEngine.Instances
                     .Get(vmRef.ProjectId, vmRef.Zone, vmRef.Name)
                     .ExecuteAsync();
 
                 if (instance.Status == "STOPPED")
                 {
-                    await computeEngine.Service.Instances.Start(
+                    await computeEngine.Instances.Start(
                         vmRef.ProjectId, vmRef.Zone, vmRef.Name)
                         .ExecuteAsync();
                 }
@@ -121,7 +122,7 @@ namespace Google.Solutions.Common.Test.Testbed
                     Value = "120" // minutes
                 });
 
-                await computeEngine.Service.Instances.Insert(
+                await computeEngine.Instances.Insert(
                     new Apis.Compute.v1.Data.Instance()
                     {
                         Name = vmRef.Name,

@@ -41,38 +41,35 @@ namespace Google.Solutions.Common.Test.Testbed
         protected abstract string InstanceNamePrefix { get; }
         protected abstract IEnumerable<Metadata.ItemsData> Metadata { get; }
 
-        public string UniqueId
+        private string CreateSpecificationFingerprint()
         {
-            get
+            // Create a hash of the image specification.
+            var imageSpecification = new StringBuilder();
+            imageSpecification.Append(this.MachineType);
+            imageSpecification.Append(this.ImageFamily);
+            imageSpecification.Append(this.InitializeScript);
+
+            var kokoroJobType = Environment.GetEnvironmentVariable("KOKORO_JOB_TYPE");
+            if (!string.IsNullOrEmpty(kokoroJobType))
             {
-                // Create a hash of the image specification.
-                var imageSpecification = new StringBuilder();
-                imageSpecification.Append(this.MachineType);
-                imageSpecification.Append(this.ImageFamily);
-                imageSpecification.Append(this.InitializeScript);
+                // Prevent different job types sharing the same VMs.
+                imageSpecification.Append(kokoroJobType);
+            }
 
-                var kokoroJobType = Environment.GetEnvironmentVariable("KOKORO_JOB_TYPE");
-                if (!string.IsNullOrEmpty(kokoroJobType))
-                {
-                    // Prevent different job types sharing the same VMs.
-                    imageSpecification.Append(kokoroJobType);
-                }
-
-                using (var sha = new System.Security.Cryptography.SHA256Managed())
-                {
-                    var imageSpecificationRaw = Encoding.UTF8.GetBytes(imageSpecification.ToString());
-                    return this.InstanceNamePrefix + BitConverter
-                        .ToString(sha.ComputeHash(imageSpecificationRaw))
-                        .Replace("-", String.Empty)
-                        .Substring(0, 14)
-                        .ToLower();
-                }
+            using (var sha = new System.Security.Cryptography.SHA256Managed())
+            {
+                var imageSpecificationRaw = Encoding.UTF8.GetBytes(imageSpecification.ToString());
+                return this.InstanceNamePrefix + BitConverter
+                    .ToString(sha.ComputeHash(imageSpecificationRaw))
+                    .Replace("-", String.Empty)
+                    .Substring(0, 14)
+                    .ToLower();
             }
         }
 
         public override string ToString()
         {
-            return this.UniqueId;
+            return this.CreateSpecificationFingerprint();
         }
 
         public IEnumerable GetData(IParameterInfo parameter)
@@ -82,7 +79,7 @@ namespace Google.Solutions.Common.Test.Testbed
                 var vmRef = new InstanceLocator(
                     this.ProjectId,
                     this.Zone,
-                    this.UniqueId);
+                    this.CreateSpecificationFingerprint());
                 yield return new InstanceRequest(
                     vmRef, 
                     this.MachineType,
@@ -91,7 +88,8 @@ namespace Google.Solutions.Common.Test.Testbed
             }
             else
             {
-                throw new ArgumentException($"Parameter must be of type {typeof(InstanceLocator).Name}");
+                throw new ArgumentException(
+                    $"Parameter must be of type {typeof(InstanceLocator).Name}");
             }
         }
     }

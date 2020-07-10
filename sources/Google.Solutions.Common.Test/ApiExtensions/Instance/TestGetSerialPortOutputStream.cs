@@ -39,7 +39,7 @@ namespace Google.Solutions.Common.Test.Extensions
         [SetUp]
         public void SetUp()
         {
-            this.instancesResource = ComputeEngine.Connect().Service.Instances;
+            this.instancesResource = Defaults.CreateComputeService().Instances;
         }
 
         [Test]
