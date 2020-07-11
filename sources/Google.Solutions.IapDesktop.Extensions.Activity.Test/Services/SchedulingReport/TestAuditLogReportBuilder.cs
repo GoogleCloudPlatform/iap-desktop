@@ -19,7 +19,8 @@
 // under the License.
 //
 
-using Google.Solutions.Common.Test.Testbed;
+using Google.Apis.Auth.OAuth2;
+using Google.Solutions.Common.Test.Integration;
 using Google.Solutions.IapDesktop.Application.Services.Adapters;
 using Google.Solutions.IapDesktop.Extensions.Activity.Services.Adapters;
 using Google.Solutions.IapDesktop.Extensions.Activity.Services.SchedulingReport;
@@ -37,16 +38,17 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.Services.Scheduli
     {
         [Test]
         public async Task WhenWindowsInstanceCreated_ThenReportContainsInstanceAndLicenseInfoFromItsDisk(
-            [WindowsInstance] InstanceRequest testInstance)
+            [WindowsInstance] InstanceRequest testInstance,
+            [Credential] CredentialRequest credential)
         {
             await testInstance.AwaitReady();
             var instanceRef = await testInstance.GetInstanceAsync();
 
             var startDate = DateTime.UtcNow.AddDays(-1);
             var builder = new AuditLogReportBuilder(
-                new AuditLogAdapter(Defaults.GetCredential()),
-                new ComputeEngineAdapter(Defaults.GetCredential()),
-                new[] { Defaults.ProjectId },
+                new AuditLogAdapter(await credential.GetCredentialAsync()),
+                new ComputeEngineAdapter(await credential.GetCredentialAsync()),
+                new[] { TestProject.ProjectId },
                 startDate);
             var report = await builder.BuildAsync(CancellationToken.None);
 
@@ -59,16 +61,17 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.Services.Scheduli
 
         [Test]
         public async Task WhenLinuxInstanceCreated_ThenReportContainsInstanceAndLicenseInfoFromItsDisk(
-            [LinuxInstance] InstanceRequest testInstance)
+            [LinuxInstance] InstanceRequest testInstance,
+            [Credential] CredentialRequest credential)
         {
             await testInstance.AwaitReady();
             var instanceRef = await testInstance.GetInstanceAsync();
 
             var startDate = DateTime.UtcNow.AddDays(-1);
             var builder = new AuditLogReportBuilder(
-                new AuditLogAdapter(Defaults.GetCredential()),
-                new ComputeEngineAdapter(Defaults.GetCredential()),
-                new[] { Defaults.ProjectId },
+                new AuditLogAdapter(await credential.GetCredentialAsync()),
+                new ComputeEngineAdapter(await credential.GetCredentialAsync()),
+                new[] { TestProject.ProjectId },
                 startDate);
             var report = await builder.BuildAsync(CancellationToken.None);
 

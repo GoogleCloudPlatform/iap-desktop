@@ -19,9 +19,10 @@
 // under the License.
 //
 
+using Google.Apis.Auth.OAuth2;
 using Google.Solutions.Common;
 using Google.Solutions.Common.Locator;
-using Google.Solutions.Common.Test.Testbed;
+using Google.Solutions.Common.Test.Integration;
 using Google.Solutions.IapTunneling.Iap;
 using Google.Solutions.IapTunneling.Net;
 using NUnit.Framework;
@@ -38,15 +39,17 @@ namespace Google.Solutions.IapTunneling.Test.Iap
     [Category("IAP")]
     public class TestHttpOverIapIndirectTunnel : TestHttpOverIapTunnelBase
     {
-        protected override INetworkStream ConnectToWebServer(InstanceLocator vmRef)
+        protected override INetworkStream ConnectToWebServer(
+            InstanceLocator vmRef,
+            ICredential credential)
         {
             var listener = SshRelayListener.CreateLocalListener(
                 new IapTunnelingEndpoint(
-                    Defaults.GetCredential(),
+                    credential,
                     vmRef,
                     80,
                     IapTunnelingEndpoint.DefaultNetworkInterface,
-                    Defaults.UserAgent));
+                    TestProject.UserAgent));
             listener.ClientAcceptLimit = 1; // Terminate after first connection.
             listener.ListenAsync(CancellationToken.None);
 
@@ -59,10 +62,13 @@ namespace Google.Solutions.IapTunneling.Test.Iap
 
         [Test]
         public async Task WhenServerNotListening_ThenReadReturnsZero(
-            [LinuxInstance] InstanceRequest vm)
+            [LinuxInstance] InstanceRequest vm,
+            [Credential] CredentialRequest credential)
         {
             await vm.AwaitReady();
-            var stream = ConnectToWebServer(vm.InstanceReference);
+            var stream = ConnectToWebServer(
+                vm.Locator,
+                await credential.GetCredentialAsync());
 
             byte[] request = new ASCIIEncoding().GetBytes(
                     $"GET / HTTP/1.1\r\nHost:www\r\nConnection: keep-alive\r\n\r\n");

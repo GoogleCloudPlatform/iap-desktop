@@ -19,9 +19,10 @@
 // under the License.
 //
 
+using Google.Apis.Auth.OAuth2;
 using Google.Solutions.Common;
 using Google.Solutions.Common.Locator;
-using Google.Solutions.Common.Test.Testbed;
+using Google.Solutions.Common.Test.Integration;
 using Google.Solutions.IapTunneling.Iap;
 using System;
 using System.Threading;
@@ -46,15 +47,15 @@ namespace Google.Solutions.IapDesktop.Application.Test
             this.tokenSource = tokenSource;
         }
 
-        public static RdpTunnel Create(InstanceLocator vmRef)
+        public static RdpTunnel Create(InstanceLocator vmRef, ICredential credential)
         {
             var listener = SshRelayListener.CreateLocalListener(
                 new IapTunnelingEndpoint(
-                    Defaults.GetCredential(),
+                    credential,
                     vmRef,
                     3389,
                     IapTunnelingEndpoint.DefaultNetworkInterface,
-                    Defaults.UserAgent));
+                    TestProject.UserAgent));
 
             var tokenSource = new CancellationTokenSource();
             listener.ListenAsync(tokenSource.Token);

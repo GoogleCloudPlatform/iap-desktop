@@ -96,6 +96,7 @@
     <Compile Include="ObjectModel\TestCommandContainerForContextMenu.cs" />
     <Compile Include="ObjectModel\TestModelCachingViewModelBase.cs" />
     <Compile Include="ObjectModel\TestServiceAttribute.cs" />
+    <Compile Include="Services\Adapters\TestComputeEngineAdapter.cs" />
     <Compile Include="Services\Adapters\TestGithubAdapter.cs" />
     <Compile Include="FixtureBase.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

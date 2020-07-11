@@ -19,11 +19,10 @@
 // under the License.
 //
 
-using Google.Apis.Compute.v1;
+using Google.Apis.Auth.OAuth2;
 using Google.Apis.Logging.v2.Data;
-using Google.Apis.Services;
 using Google.Solutions.Common.Test;
-using Google.Solutions.Common.Test.Testbed;
+using Google.Solutions.Common.Test.Integration;
 using Google.Solutions.IapDesktop.Application.Services.Adapters;
 using Google.Solutions.IapDesktop.Extensions.Activity.Events;
 using Google.Solutions.IapDesktop.Extensions.Activity.Events.Lifecycle;
@@ -44,7 +43,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.Services.Adapters
     {
         [Test]
         public async Task WhenInstanceCreated_ThenListLogEntriesReturnsInsertEvent(
-            [LinuxInstance] InstanceRequest testInstance)
+            [LinuxInstance] InstanceRequest testInstance,
+            [Credential] CredentialRequest credential)
         {
             await testInstance.AwaitReady();
             var instanceRef = await testInstance.GetInstanceAsync();
@@ -52,12 +52,12 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.Services.Adapters
             var startDate = DateTime.UtcNow.AddDays(-30);
             var endDate = DateTime.UtcNow;
 
-            var adapter = new AuditLogAdapter(Defaults.GetCredential());
+            var adapter = new AuditLogAdapter(await credential.GetCredentialAsync());
             var request = new ListLogEntriesRequest()
             {
                 ResourceNames = new[]
                 {
-                    "projects/" + Defaults.ProjectId
+                    "projects/" + TestProject.ProjectId
                 },
                 Filter = $"resource.type=\"gce_instance\" " +
                     $"AND protoPayload.methodName:{InsertInstanceEvent.Method} " +
@@ -91,7 +91,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.Services.Adapters
 
         [Test]
         public async Task WhenInstanceCreated_ThenListInstanceEventsAsyncCanFeedHistorySetBuilder(
-            [LinuxInstance] InstanceRequest testInstance)
+            [LinuxInstance] InstanceRequest testInstance,
+            [Credential] CredentialRequest credential)
         {
             await testInstance.AwaitReady();
             var instanceRef = await testInstance.GetInstanceAsync();
@@ -100,16 +101,16 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.Services.Adapters
                 DateTime.UtcNow.AddDays(-7),
                 DateTime.UtcNow);
 
-            var computeAdapter = new ComputeEngineAdapter(Defaults.GetCredential());
+            var computeAdapter = new ComputeEngineAdapter(await credential.GetCredentialAsync());
             instanceBuilder.AddExistingInstances(
-                await computeAdapter.ListInstancesAsync(Defaults.ProjectId, CancellationToken.None),
-                await computeAdapter.ListDisksAsync(Defaults.ProjectId, CancellationToken.None),
-                Defaults.ProjectId);            
+                await computeAdapter.ListInstancesAsync(TestProject.ProjectId, CancellationToken.None),
+                await computeAdapter.ListDisksAsync(TestProject.ProjectId, CancellationToken.None),
+                TestProject.ProjectId);            
             
-            var adapter = new AuditLogAdapter(Defaults.GetCredential());
+            var adapter = new AuditLogAdapter(await credential.GetCredentialAsync());
 
             await adapter.ListInstanceEventsAsync(
-                new[] { Defaults.ProjectId },
+                new[] { TestProject.ProjectId },
                 null,  // all zones.
                 null,  // all instances.
                 instanceBuilder.StartDate,
@@ -122,12 +123,37 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.Services.Adapters
             Assert.IsNotNull(testInstanceHistory, "Instance found in history");
         }
 
+        [Test]
+        public async Task WhenUserNotInRole_ThenListInstanceEventsAsyncThrowsResourceAccessDeniedException(
+            [LinuxInstance] InstanceRequest testInstance,
+            [Credential(Role = PredefinedRole.ComputeViewer)] CredentialRequest credential)
+        {
+            await testInstance.AwaitReady();
+            var instanceRef = await testInstance.GetInstanceAsync();
+
+            var instanceBuilder = new InstanceSetHistoryBuilder(
+                DateTime.UtcNow.AddDays(-7),
+                DateTime.UtcNow);
+
+            var adapter = new AuditLogAdapter(await credential.GetCredentialAsync());
+
+            AssertEx.ThrowsAggregateException<ResourceAccessDeniedException>(
+                () => adapter.ListInstanceEventsAsync(
+                    new[] { TestProject.ProjectId },
+                    null,  // all zones.
+                    null,  // all instances.
+                    instanceBuilder.StartDate,
+                    instanceBuilder,
+                    CancellationToken.None).Wait());
+        }
+
         //---------------------------------------------------------------------
         // Filter string.
         //---------------------------------------------------------------------
 
         [Test]
-        public void WhenUsingInvalidProjectId_ThenListEventsAsyncThrowsException()
+        public async Task WhenUsingInvalidProjectId_ThenListEventsAsyncThrowsException(
+            [Credential] CredentialRequest credential)
         {
             var startDate = DateTime.UtcNow.AddDays(-30);
             var request = new ListLogEntriesRequest()
@@ -143,7 +169,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.Services.Adapters
                 OrderBy = "timestamp desc"
             };
 
-            var adapter = new AuditLogAdapter(Defaults.GetCredential());
+            var adapter = new AuditLogAdapter(await credential.GetCredentialAsync());
             AssertEx.ThrowsAggregateException<GoogleApiException>(
                 () => adapter.ListEventsAsync(
                     request,

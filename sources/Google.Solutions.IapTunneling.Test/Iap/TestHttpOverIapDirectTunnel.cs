@@ -23,7 +23,7 @@ using Google.Apis.Auth.OAuth2;
 using Google.Solutions.Common;
 using Google.Solutions.Common.Locator;
 using Google.Solutions.Common.Test;
-using Google.Solutions.Common.Test.Testbed;
+using Google.Solutions.Common.Test.Integration;
 using Google.Solutions.IapTunneling.Iap;
 using Google.Solutions.IapTunneling.Net;
 using NUnit.Framework;
@@ -39,23 +39,26 @@ namespace Google.Solutions.IapTunneling.Test.Iap
     [Category("IAP")]
     public class TestHttpOverIapDirectTunnel : TestHttpOverIapTunnelBase
     {
-        protected override INetworkStream ConnectToWebServer(InstanceLocator vmRef)
+        protected override INetworkStream ConnectToWebServer(
+            InstanceLocator vmRef,
+            ICredential credential)
         {
             return new SshRelayStream(
                 new IapTunnelingEndpoint(
-                    Defaults.GetCredential(),
+                    credential,
                     vmRef,
                     80,
                     IapTunnelingEndpoint.DefaultNetworkInterface,
-                    Defaults.UserAgent));
+                    TestProject.UserAgent));
         }
 
         [Test]
         public async Task WhenBufferIsTiny_ThenReadingFailsWithIndexOutOfRangeException(
-            [LinuxInstance(InitializeScript = InstallApache)] InstanceRequest vm)
+            [LinuxInstance(InitializeScript = InstallApache)] InstanceRequest vm,
+            [Credential] CredentialRequest credential)
         {
             await vm.AwaitReady();
-            var stream = ConnectToWebServer(vm.InstanceReference);
+            var stream = ConnectToWebServer(vm.Locator, await credential.GetCredentialAsync());
 
             byte[] request = new ASCIIEncoding().GetBytes(
                 "GET / HTTP/1.0\r\n\r\n");
@@ -83,10 +86,10 @@ namespace Google.Solutions.IapTunneling.Test.Iap
             var stream = new SshRelayStream(
                 new IapTunnelingEndpoint(
                     GoogleCredential.FromAccessToken("invalid"),
-                    vm.InstanceReference,
+                    vm.Locator,
                     80,
                     IapTunnelingEndpoint.DefaultNetworkInterface,
-                    Defaults.UserAgent));
+                    TestProject.UserAgent));
 
             await stream.WriteAsync(request, 0, request.Length, CancellationToken.None);
 
@@ -101,10 +104,13 @@ namespace Google.Solutions.IapTunneling.Test.Iap
 
         [Test]
         public async Task WhenFirstReadCompleted_ThenSidIsAvailable(
-            [LinuxInstance(InitializeScript = InstallApache)] InstanceRequest vm)
+            [LinuxInstance(InitializeScript = InstallApache)] InstanceRequest vm,
+            [Credential] CredentialRequest credential)
         {
             await vm.AwaitReady();
-            var stream = (SshRelayStream)ConnectToWebServer(vm.InstanceReference);
+            var stream = (SshRelayStream)ConnectToWebServer(
+                vm.Locator, 
+                await credential.GetCredentialAsync());
 
             byte[] request = new ASCIIEncoding().GetBytes(
                     $"GET / HTTP/1.1\r\nHost:www\r\nConnection: keep-alive\r\n\r\n");
@@ -125,10 +131,13 @@ namespace Google.Solutions.IapTunneling.Test.Iap
         [Test]
         [Ignore("Can also throw an UnauthorizedException")]
         public async Task WhenServerNotListening_ThenReadFails(
-            [LinuxInstance] InstanceRequest vm)
+            [LinuxInstance] InstanceRequest vm,
+            [Credential] CredentialRequest credential)
         {
             await vm.AwaitReady();
-            var stream = ConnectToWebServer(vm.InstanceReference);
+            var stream = ConnectToWebServer(
+                vm.Locator,
+                await credential.GetCredentialAsync());
 
             byte[] request = new ASCIIEncoding().GetBytes(
                     $"GET / HTTP/1.1\r\nHost:www\r\nConnection: keep-alive\r\n\r\n");

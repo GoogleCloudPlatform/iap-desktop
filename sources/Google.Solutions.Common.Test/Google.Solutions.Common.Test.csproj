@@ -47,11 +47,20 @@
     <Reference Include="Google.Apis.Auth.PlatformServices, Version=1.45.0.0, Culture=neutral, PublicKeyToken=4b01fa6e34db77ab, processorArchitecture=MSIL">
       <HintPath>..\packages\Google.Apis.Auth.1.45.0\lib\net45\Google.Apis.Auth.PlatformServices.dll</HintPath>
     </Reference>
+    <Reference Include="Google.Apis.CloudResourceManager.v1, Version=1.45.0.1973, Culture=neutral, PublicKeyToken=4b01fa6e34db77ab, processorArchitecture=MSIL">
+      <HintPath>..\packages\Google.Apis.CloudResourceManager.v1.1.45.0.1973\lib\net45\Google.Apis.CloudResourceManager.v1.dll</HintPath>
+    </Reference>
     <Reference Include="Google.Apis.Compute.v1, Version=1.45.0.1947, Culture=neutral, PublicKeyToken=4b01fa6e34db77ab, processorArchitecture=MSIL">
       <HintPath>..\packages\Google.Apis.Compute.v1.1.45.0.1947\lib\net45\Google.Apis.Compute.v1.dll</HintPath>
     </Reference>
     <Reference Include="Google.Apis.Core, Version=1.45.0.0, Culture=neutral, PublicKeyToken=4b01fa6e34db77ab, processorArchitecture=MSIL">
       <HintPath>..\packages\Google.Apis.Core.1.45.0\lib\net45\Google.Apis.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="Google.Apis.Iam.v1, Version=1.45.0.1961, Culture=neutral, PublicKeyToken=4b01fa6e34db77ab, processorArchitecture=MSIL">
+      <HintPath>..\packages\Google.Apis.Iam.v1.1.45.0.1961\lib\net45\Google.Apis.Iam.v1.dll</HintPath>
+    </Reference>
+    <Reference Include="Google.Apis.IAMCredentials.v1, Version=1.45.0.1961, Culture=neutral, PublicKeyToken=4b01fa6e34db77ab, processorArchitecture=MSIL">
+      <HintPath>..\packages\Google.Apis.IAMCredentials.v1.1.45.0.1961\lib\net45\Google.Apis.IAMCredentials.v1.dll</HintPath>
     </Reference>
     <Reference Include="Google.Apis.PlatformServices, Version=1.45.0.0, Culture=neutral, PublicKeyToken=4b01fa6e34db77ab, processorArchitecture=MSIL">
       <HintPath>..\packages\Google.Apis.1.45.0\lib\net45\Google.Apis.PlatformServices.dll</HintPath>
@@ -90,17 +99,20 @@
     <Compile Include="Auth\TestAuthorization.cs" />
     <Compile Include="Auth\TestGoogleAuthAdapter.cs" />
     <Compile Include="FixtureBase.cs" />
+    <Compile Include="Integration\CredentialRequest.cs" />
+    <Compile Include="Integration\PredefinedRole.cs" />
     <Compile Include="Locator\TestLicenseLocator.cs" />
     <Compile Include="Locator\TestInstanceLocator.cs" />
     <Compile Include="Locator\TestMachineTypeLocator.cs" />
     <Compile Include="Net\TestRestClient.cs" />
     <Compile Include="Net\TestUserAgent.cs" />
-    <Compile Include="Testbed\ComputeEngine.cs" />
-    <Compile Include="Testbed\Defaults.cs" />
-    <Compile Include="Testbed\InstanceAttribute.cs" />
+    <Compile Include="Integration\TestProject.cs" />
+    <Compile Include="Integration\InstanceAttribute.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Locator\TestImageLocator.cs" />
     <Compile Include="Locator\TestDiskTypeLocator.cs" />
+    <Compile Include="Integration\InstanceRequest.cs" />
+    <Compile Include="Integration\CredentialAttribute.cs" />
     <Compile Include="Util\TestCancellationTokenExtensions.cs" />
     <Compile Include="Util\TestEnumExtensions.cs" />
     <Compile Include="Util\TestExceptionExtensions.cs" />

@@ -19,32 +19,11 @@
 // under the License.
 //
 
-using Google.Apis.Auth.OAuth2;
-using Google.Apis.Compute.v1;
-using Google.Apis.Services;
-
-namespace Google.Solutions.Common.Test.Testbed
+namespace Google.Solutions.Common.Test.Integration
 {
-    public class ComputeEngine
+    public static class PredefinedRole
     {
-        public ComputeService Service { get; }
-
-        private ComputeEngine(ComputeService service)
-        {
-            this.Service = service;
-        }
-
-        public static ComputeEngine Connect(GoogleCredential credential)
-        {
-            return new ComputeEngine(new ComputeService(new BaseClientService.Initializer
-            {
-                HttpClientInitializer = credential
-            }));
-        }
-
-        public static ComputeEngine Connect()
-        {
-            return Connect(Defaults.GetCredential());
-        }
+        public const string ComputeViewer = "roles/compute.viewer";
+        public const string IapTunnelUser = "roles/iap.tunnelResourceAccessor";
     }
 }

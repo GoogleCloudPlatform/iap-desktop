@@ -19,10 +19,9 @@
 // under the License.
 //
 
-using Google.Solutions.Common;
 using Google.Solutions.Common.Locator;
 using Google.Solutions.Common.Test;
-using Google.Solutions.Common.Test.Testbed;
+using Google.Solutions.Common.Test.Integration;
 using Google.Solutions.IapTunneling.Iap;
 using Google.Solutions.IapTunneling.Net;
 using NUnit.Framework;
@@ -37,18 +36,19 @@ namespace Google.Solutions.IapTunneling.Test.Iap
     public class TestSshRelayProber : FixtureBase
     {
         [Test]
-        public void WhenProjectDoesntExist_ThenProbeFailsWithUnauthorizedException()
+        public async Task WhenProjectDoesntExist_ThenProbeFailsWithUnauthorizedException(
+            [Credential] CredentialRequest credential)
         {
             using (var stream = new SshRelayStream(
                 new IapTunnelingEndpoint(
-                    Defaults.GetCredential(),
+                    await credential.GetCredentialAsync(),
                     new InstanceLocator(
                         "invalid",
-                        Defaults.Zone,
+                        TestProject.Zone,
                         "invalid"),
                     80,
                     IapTunnelingEndpoint.DefaultNetworkInterface,
-                    Defaults.UserAgent)))
+                    TestProject.UserAgent)))
             {
                 AssertEx.ThrowsAggregateException<UnauthorizedException>(() =>
                     stream.TestConnectionAsync(TimeSpan.FromSeconds(10)).Wait());
@@ -56,18 +56,19 @@ namespace Google.Solutions.IapTunneling.Test.Iap
         }
 
         [Test]
-        public void WhenZoneDoesntExist_ThenProbeFailsWithUnauthorizedException()
+        public async Task WhenZoneDoesntExist_ThenProbeFailsWithUnauthorizedException(
+            [Credential] CredentialRequest credential)
         {
             using (var stream = new SshRelayStream(
                new IapTunnelingEndpoint(
-                    Defaults.GetCredential(),
+                    await credential.GetCredentialAsync(),
                     new InstanceLocator(
-                        Defaults.ProjectId,
+                        TestProject.ProjectId,
                         "invalid",
                         "invalid"),
                     80,
                     IapTunnelingEndpoint.DefaultNetworkInterface,
-                    Defaults.UserAgent)))
+                    TestProject.UserAgent)))
             {
                 AssertEx.ThrowsAggregateException<UnauthorizedException>(() =>
                     stream.TestConnectionAsync(TimeSpan.FromSeconds(10)).Wait());
@@ -75,18 +76,19 @@ namespace Google.Solutions.IapTunneling.Test.Iap
         }
 
         [Test]
-        public void WhenInstanceDoesntExist_ThenProbeFailsWithUnauthorizedException()
+        public async Task WhenInstanceDoesntExist_ThenProbeFailsWithUnauthorizedException(
+            [Credential] CredentialRequest credential)
         {
             using (var stream = new SshRelayStream(
                 new IapTunnelingEndpoint(
-                    Defaults.GetCredential(),
+                    await credential.GetCredentialAsync(),
                     new InstanceLocator(
-                        Defaults.ProjectId,
-                        Defaults.Zone,
+                        TestProject.ProjectId,
+                        TestProject.Zone,
                         "invalid"),
                     80,
                     IapTunnelingEndpoint.DefaultNetworkInterface,
-                    Defaults.UserAgent)))
+                    TestProject.UserAgent)))
             {
                 AssertEx.ThrowsAggregateException<UnauthorizedException>(() =>
                     stream.TestConnectionAsync(TimeSpan.FromSeconds(10)).Wait());
@@ -95,17 +97,18 @@ namespace Google.Solutions.IapTunneling.Test.Iap
 
         [Test]
         public async Task WhenInstanceExistsAndIsListening_ThenProbeSucceeds(
-             [WindowsInstance] InstanceRequest testInstance)
+             [WindowsInstance] InstanceRequest testInstance,
+             [Credential] CredentialRequest credential)
         {
             await testInstance.AwaitReady();
 
             using (var stream = new SshRelayStream(
                 new IapTunnelingEndpoint(
-                    Defaults.GetCredential(),
-                    testInstance.InstanceReference,
+                    await credential.GetCredentialAsync(),
+                    testInstance.Locator,
                     3389,
                     IapTunnelingEndpoint.DefaultNetworkInterface,
-                    Defaults.UserAgent)))
+                    TestProject.UserAgent)))
             {
                 await stream.TestConnectionAsync(TimeSpan.FromSeconds(10));
             }
@@ -113,17 +116,18 @@ namespace Google.Solutions.IapTunneling.Test.Iap
 
         [Test]
         public async Task WhenInstanceExistsButNotListening_ThenProbeFailsWithNetworkStreamClosedException(
-             [WindowsInstance] InstanceRequest testInstance)
+             [WindowsInstance] InstanceRequest testInstance,
+             [Credential] CredentialRequest credential)
         {
             await testInstance.AwaitReady();
 
             using (var stream = new SshRelayStream(
                 new IapTunnelingEndpoint(
-                    Defaults.GetCredential(),
-                    testInstance.InstanceReference,
+                    await credential.GetCredentialAsync(),
+                    testInstance.Locator,
                     22,
                     IapTunnelingEndpoint.DefaultNetworkInterface,
-                    Defaults.UserAgent)))
+                    TestProject.UserAgent)))
             {
                 AssertEx.ThrowsAggregateException<NetworkStreamClosedException>(() =>
                     stream.TestConnectionAsync(TimeSpan.FromSeconds(5)).Wait());

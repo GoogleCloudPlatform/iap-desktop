@@ -19,8 +19,9 @@
 // under the License.
 //
 
+using Google.Apis.Auth.OAuth2;
 using Google.Solutions.Common.Test;
-using Google.Solutions.Common.Test.Testbed;
+using Google.Solutions.Common.Test.Integration;
 using Google.Solutions.IapDesktop.Application.Services.Adapters;
 using Google.Solutions.IapDesktop.Extensions.Os.Services.InstanceDetails;
 using NUnit.Framework;
@@ -35,16 +36,17 @@ namespace Google.Solutions.IapDesktop.Extensions.Os.Test.Services.InstanceDetail
     {
         [Test]
         public async Task WhenLoadAsyncCompletes_ThenPropertiesArePopulated(
-            [WindowsInstance] InstanceRequest testInstance)
+            [WindowsInstance] InstanceRequest testInstance,
+            [Credential] CredentialRequest credential)
         {
             await testInstance.AwaitReady();
 
             var model = await InstanceDetailsModel.LoadAsync(
                 await testInstance.GetInstanceAsync(),
-                new ComputeEngineAdapter(Defaults.GetCredential()),
+                new ComputeEngineAdapter(await credential.GetCredentialAsync()),
                 CancellationToken.None);
 
-            Assert.AreEqual(testInstance.InstanceReference.Name, model.InstanceName);
+            Assert.AreEqual(testInstance.Locator.Name, model.InstanceName);
             Assert.IsNull(model.Hostname);
             Assert.AreEqual("RUNNING", model.Status);
             Assert.IsNotNull(model.InternalIp);

@@ -22,7 +22,7 @@
 using Google.Apis.Compute.v1;
 using Google.Solutions.Common.ApiExtensions.Instance;
 using Google.Solutions.Common.Locator;
-using Google.Solutions.Common.Test.Testbed;
+using Google.Solutions.Common.Test.Integration;
 using NUnit.Framework;
 using System;
 using System.Threading;
@@ -40,7 +40,7 @@ namespace Google.Solutions.Common.Test.Extensions
         [SetUp]
         public void SetUp()
         {
-            this.instancesResource = ComputeEngine.Connect().Service.Instances;
+            this.instancesResource = TestProject.CreateComputeService().Instances;
         }
 
         [Test]
@@ -53,7 +53,7 @@ namespace Google.Solutions.Common.Test.Extensions
             try
             {
                 await this.instancesResource.ResetWindowsUserAsync(
-                    testInstance.InstanceReference,
+                    testInstance.Locator,
                     username,
                     CancellationToken.None);
                 Assert.Fail();
@@ -74,9 +74,9 @@ namespace Google.Solutions.Common.Test.Extensions
 
             // Use correct project, but wrong VM.
             var instanceRef = new InstanceLocator(
-                testInstance.InstanceReference.ProjectId,
-                testInstance.InstanceReference.Zone,
-                testInstance.InstanceReference.Name + "-x");
+                testInstance.Locator.ProjectId,
+                testInstance.Locator.Zone,
+                testInstance.Locator.Name + "-x");
             try
             {
                 await this.instancesResource.ResetWindowsUserAsync(
@@ -99,7 +99,7 @@ namespace Google.Solutions.Common.Test.Extensions
 
             var username = "test" + Guid.NewGuid().ToString().Substring(20);
             var credentials = await this.instancesResource.ResetWindowsUserAsync(
-                testInstance.InstanceReference,
+                testInstance.Locator,
                 username,
                 CancellationToken.None);
 
@@ -116,11 +116,11 @@ namespace Google.Solutions.Common.Test.Extensions
 
             var username = "existinguser";
             await this.instancesResource.ResetWindowsUserAsync(
-                testInstance.InstanceReference,
+                testInstance.Locator,
                 username,
                 CancellationToken.None);
             var credentials = await this.instancesResource.ResetWindowsUserAsync(
-                testInstance.InstanceReference,
+                testInstance.Locator,
                 username,
                 CancellationToken.None);
 

@@ -69,7 +69,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services.SchedulingRep
                 try
                 {
                     Image imageInfo = await computeEngineAdapter
-                        .GetImage(image, cancellationToken)
+                        .GetImageAsync(image, cancellationToken)
                         .ConfigureAwait(false);
 
                     // Images can contain more than one license, and liceses like 

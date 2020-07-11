@@ -19,9 +19,10 @@
 // under the License.
 //
 
+using Google.Apis.Auth.OAuth2;
 using Google.Solutions.Common;
 using Google.Solutions.Common.Locator;
-using Google.Solutions.Common.Test.Testbed;
+using Google.Solutions.Common.Test.Integration;
 using Google.Solutions.IapTunneling.Iap;
 using Google.Solutions.IapTunneling.Net;
 using NUnit.Framework;
@@ -33,15 +34,17 @@ namespace Google.Solutions.IapTunneling.Test.Iap
     [Category("IAP")]
     public class TestEchoOverIapDirectTunnel : TestEchoOverIapBase
     {
-        protected override INetworkStream ConnectToEchoServer(InstanceLocator vmRef)
+        protected override INetworkStream ConnectToEchoServer(
+            InstanceLocator vmRef,
+            ICredential credential)
         {
             return new FragmentingStream(new SshRelayStream(
                 new IapTunnelingEndpoint(
-                    Defaults.GetCredential(),
+                    credential,
                     vmRef,
                     7,
                     IapTunnelingEndpoint.DefaultNetworkInterface,
-                    Defaults.UserAgent)));
+                    TestProject.UserAgent)));
         }
     }
 }
