@@ -36,6 +36,12 @@ namespace Google.Solutions.Common.Test.Integration
     {
         public string[] Roles { get; set; }
 
+        public string Role
+        {
+            set => this.Roles = new[] { value };
+            get => this.Roles.First();
+        }
+
         private string CreateSpecificationFingerprint()
         {
             using (var sha = new System.Security.Cryptography.SHA256Managed())

@@ -20,9 +20,7 @@
 //
 
 using Google.Apis.Auth.OAuth2;
-using Google.Apis.Compute.v1;
 using Google.Apis.Logging.v2.Data;
-using Google.Apis.Services;
 using Google.Solutions.Common.Test;
 using Google.Solutions.Common.Test.Integration;
 using Google.Solutions.IapDesktop.Application.Services.Adapters;
@@ -123,6 +121,30 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.Services.Adapters
             var testInstanceHistory = set.Instances.FirstOrDefault(i => i.Reference == instanceRef);
 
             Assert.IsNotNull(testInstanceHistory, "Instance found in history");
+        }
+
+        [Test]
+        public async Task WhenUserNotInRole_ThenListInstanceEventsAsyncThrowsResourceAccessDeniedException(
+            [LinuxInstance] InstanceRequest testInstance,
+            [Credential(Role = PredefinedRole.ComputeViewer)] ICredential credential)
+        {
+            await testInstance.AwaitReady();
+            var instanceRef = await testInstance.GetInstanceAsync();
+
+            var instanceBuilder = new InstanceSetHistoryBuilder(
+                DateTime.UtcNow.AddDays(-7),
+                DateTime.UtcNow);
+
+            var adapter = new AuditLogAdapter(credential);
+
+            AssertEx.ThrowsAggregateException<ResourceAccessDeniedException>(
+                () => adapter.ListInstanceEventsAsync(
+                    new[] { TestProject.ProjectId },
+                    null,  // all zones.
+                    null,  // all instances.
+                    instanceBuilder.StartDate,
+                    instanceBuilder,
+                    CancellationToken.None).Wait());
         }
 
         //---------------------------------------------------------------------

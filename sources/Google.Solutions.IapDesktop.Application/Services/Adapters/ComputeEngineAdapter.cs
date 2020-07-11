@@ -69,7 +69,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.Adapters
             CancellationToken token,
             TimeSpan timeout);
 
-        Task<Image> GetImage(
+        Task<Image> GetImageAsync(
             ImageLocator image, 
             CancellationToken cancellationToken);
 
@@ -233,7 +233,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.Adapters
             }
         }
 
-        public async Task<Image> GetImage(ImageLocator image, CancellationToken cancellationToken)
+        public async Task<Image> GetImageAsync(ImageLocator image, CancellationToken cancellationToken)
         {
             try
             {
