@@ -42,7 +42,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.Services.SerialOu
         [Test]
         public async Task WhenLoadAsyncCompletes_ThenOutputContainsExistingData(
             [WindowsInstance] InstanceRequest testInstance,
-            [Credential] CredentialRequest credential)
+            [Credential(Role = PredefinedRole.ComputeViewer)] CredentialRequest credential)
         {
             await testInstance.AwaitReady();
             
