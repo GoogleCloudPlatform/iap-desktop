@@ -26,5 +26,6 @@ namespace Google.Solutions.Common.Test.Integration
         public const string ComputeViewer = "roles/compute.viewer";
         public const string IapTunnelUser = "roles/iap.tunnelResourceAccessor";
         public const string LogsViewer = "roles/logging.viewer";
+        public const string ServiceAccountUser = "roles/iam.serviceAccountUser";
     }
 }

@@ -55,7 +55,6 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Adapters
             Assert.IsNotNull(instances.FirstOrDefault(i => i.Name == instanceRef.Name));
         }
 
-
         [Test]
         public async Task WhenUserNotInRole_ThenListInstancesAsyncThrowsResourceAccessDeniedException(
             [Credential(Role = PredefinedRole.IapTunnelUser)] CredentialRequest credential)
@@ -99,7 +98,6 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Adapters
         {
             await testInstance.AwaitReady();
             var instanceRef = await testInstance.GetInstanceAsync();
-
             var adapter = new ComputeEngineAdapter(await credential.GetCredentialAsync());
 
             AssertEx.ThrowsAggregateException<ResourceAccessDeniedException>(
@@ -115,7 +113,6 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Adapters
         {
             await testInstance.AwaitReady();
             var instanceRef = await testInstance.GetInstanceAsync();
-
             var adapter = new ComputeEngineAdapter(await credential.GetCredentialAsync());
 
             AssertEx.ThrowsAggregateException<ResourceAccessDeniedException>(
@@ -123,6 +120,38 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Adapters
                     testInstance.Locator,
                     "somepath/",
                     CancellationToken.None).Wait());
+        }
+
+        [Test]
+        public async Task WhenUserInRole_ThenIsGrantedPermissionReturnsTrue(
+            [LinuxInstance] InstanceRequest testInstance,
+            [Credential(Role = PredefinedRole.ServiceAccountUser)] CredentialRequest credential)
+        {
+            await testInstance.AwaitReady();
+            var instanceRef = await testInstance.GetInstanceAsync();
+            var adapter = new ResourceManagerAdapter(await credential.GetCredentialAsync());
+
+            var result = await adapter.IsGrantedPermission(
+                TestProject.ProjectId,
+                "iam.serviceAccounts.actAs");
+
+            Assert.IsTrue(result);
+        }
+
+        [Test]
+        public async Task WhenUserNotInRole_ThenIsGrantedPermissionReturnsFalse(
+            [LinuxInstance] InstanceRequest testInstance,
+            [Credential(Role = PredefinedRole.ComputeViewer)] CredentialRequest credential)
+        {
+            await testInstance.AwaitReady();
+            var instanceRef = await testInstance.GetInstanceAsync();
+            var adapter = new ResourceManagerAdapter(await credential.GetCredentialAsync());
+
+            var result = await adapter.IsGrantedPermission(
+                TestProject.ProjectId,
+                "iam.serviceAccounts.actAs");
+
+            Assert.IsFalse(result);
         }
     }
 }
