@@ -36,7 +36,7 @@ namespace Google.Solutions.Common.Test.Extensions
     {
         [Test]
         public async Task WhenApiReturns404_ThenExecuteAsStreamOrThrowAsyncThrowsException(
-            [Credential] CredentialRequest credential
+            [Credential(Role = PredefinedRole.ComputeViewer)] CredentialRequest credential
             )
         {
             var computeService = new ComputeService(new BaseClientService.Initializer
