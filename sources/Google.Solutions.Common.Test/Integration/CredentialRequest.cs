@@ -65,31 +65,44 @@ namespace Google.Solutions.Common.Test.Integration
         {
             var service = TestProject.CreateCloudResourceManagerService();
 
-            var policy = await service.Projects
-                .GetIamPolicy(
-                    new GetIamPolicyRequest(),
-                    TestProject.ProjectId)
-                .ExecuteAsync()
-                .ConfigureAwait(false);
-
-            foreach (var role in this.roles)
+            for (int attempt = 0; attempt < 6; attempt++)
             {
-                policy.Bindings.Add(
-                    new Apis.CloudResourceManager.v1.Data.Binding()
-                    {
-                        Role = role,
-                        Members = new string[] { $"serviceAccount:{member.Email}" }
-                    });
-            }
+                var policy = await service.Projects
+                    .GetIamPolicy(
+                        new GetIamPolicyRequest(),
+                        TestProject.ProjectId)
+                    .ExecuteAsync()
+                    .ConfigureAwait(false);
 
-            await service.Projects.SetIamPolicy(
-                    new Apis.CloudResourceManager.v1.Data.SetIamPolicyRequest()
-                    {
-                        Policy = policy
-                    },
-                    TestProject.ProjectId)
-                .ExecuteAsync()
-                .ConfigureAwait(false);
+                foreach (var role in this.roles)
+                {
+                    policy.Bindings.Add(
+                        new Apis.CloudResourceManager.v1.Data.Binding()
+                        {
+                            Role = role,
+                            Members = new string[] { $"serviceAccount:{member.Email}" }
+                        });
+                }
+
+                try
+                {
+                    await service.Projects.SetIamPolicy(
+                            new Apis.CloudResourceManager.v1.Data.SetIamPolicyRequest()
+                            {
+                                Policy = policy
+                            },
+                            TestProject.ProjectId)
+                        .ExecuteAsync()
+                        .ConfigureAwait(false);
+
+                    break;
+                }
+                catch (GoogleApiException e) when (e.Error != null && e.Error.Code == 409)
+                {
+                    // Concurrent modification - back off and retry. 
+                    await Task.Delay(200).ConfigureAwait(false);
+                }
+            }
         }
 
         private async Task<ICredential> CreateTemporaryCredentialsAsync(
