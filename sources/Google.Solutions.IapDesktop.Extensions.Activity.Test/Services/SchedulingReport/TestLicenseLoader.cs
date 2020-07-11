@@ -57,7 +57,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.Services.Scheduli
 
         [Test]
         public async Task WhenImageFound_ThenAnnotationIsAdded(
-            [Credential] CredentialRequest credential)
+            [Credential(Role = PredefinedRole.ComputeViewer)] CredentialRequest credential)
         {
             var annotatedSet = CreateSet(
                 new ImageLocator("windows-cloud", "family/windows-2019"));
@@ -80,7 +80,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.Services.Scheduli
 
         [Test]
         public async Task WhenImageNotFoundButFromWindowsProject_ThenAnnotationIsAdded(
-            [Credential] CredentialRequest credential)
+            [Credential(Role = PredefinedRole.ComputeViewer)] CredentialRequest credential)
         {
             var annotatedSet = CreateSet(
                 new ImageLocator("windows-cloud", "windows-95"));
@@ -103,7 +103,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.Services.Scheduli
 
         [Test]
         public async Task WhenImageNotFound_ThenAnnotationNotAdded(
-            [Credential] CredentialRequest credential)
+            [Credential(Role = PredefinedRole.ComputeViewer)] CredentialRequest credential)
         {
             var annotatedSet = CreateSet(
                 new ImageLocator("unknown", "beos"));

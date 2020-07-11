@@ -37,7 +37,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Os.Test.Services.InstanceDetail
         [Test]
         public async Task WhenLoadAsyncCompletes_ThenPropertiesArePopulated(
             [WindowsInstance] InstanceRequest testInstance,
-            [Credential] CredentialRequest credential)
+            [Credential(Role = PredefinedRole.ComputeViewer)] CredentialRequest credential)
         {
             await testInstance.AwaitReady();
 

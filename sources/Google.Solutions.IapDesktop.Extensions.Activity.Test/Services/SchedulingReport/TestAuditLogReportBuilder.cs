@@ -39,7 +39,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.Services.Scheduli
         [Test]
         public async Task WhenWindowsInstanceCreated_ThenReportContainsInstanceAndLicenseInfoFromItsDisk(
             [WindowsInstance] InstanceRequest testInstance,
-            [Credential] CredentialRequest credential)
+            [Credential(Roles = new[] {
+                PredefinedRole.ComputeViewer,
+                PredefinedRole.LogsViewer })] CredentialRequest credential)
         {
             await testInstance.AwaitReady();
             var instanceRef = await testInstance.GetInstanceAsync();
@@ -62,7 +64,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.Services.Scheduli
         [Test]
         public async Task WhenLinuxInstanceCreated_ThenReportContainsInstanceAndLicenseInfoFromItsDisk(
             [LinuxInstance] InstanceRequest testInstance,
-            [Credential] CredentialRequest credential)
+            [Credential(Roles = new[] {
+                PredefinedRole.ComputeViewer,
+                PredefinedRole.LogsViewer })] CredentialRequest credential)
         {
             await testInstance.AwaitReady();
             var instanceRef = await testInstance.GetInstanceAsync();

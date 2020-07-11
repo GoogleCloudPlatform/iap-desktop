@@ -44,7 +44,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.Services.Adapters
         [Test]
         public async Task WhenInstanceCreated_ThenListLogEntriesReturnsInsertEvent(
             [LinuxInstance] InstanceRequest testInstance,
-            [Credential] CredentialRequest credential)
+            [Credential(Role = PredefinedRole.LogsViewer)] CredentialRequest credential)
         {
             await testInstance.AwaitReady();
             var instanceRef = await testInstance.GetInstanceAsync();
@@ -92,7 +92,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.Services.Adapters
         [Test]
         public async Task WhenInstanceCreated_ThenListInstanceEventsAsyncCanFeedHistorySetBuilder(
             [LinuxInstance] InstanceRequest testInstance,
-            [Credential] CredentialRequest credential)
+            [Credential(Roles = new[] {
+                PredefinedRole.ComputeViewer, 
+                PredefinedRole.LogsViewer })] CredentialRequest credential)
         {
             await testInstance.AwaitReady();
             var instanceRef = await testInstance.GetInstanceAsync();
@@ -153,7 +155,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.Services.Adapters
 
         [Test]
         public async Task WhenUsingInvalidProjectId_ThenListEventsAsyncThrowsException(
-            [Credential] CredentialRequest credential)
+            [Credential(Role = PredefinedRole.LogsViewer)] CredentialRequest credential)
         {
             var startDate = DateTime.UtcNow.AddDays(-30);
             var request = new ListLogEntriesRequest()
