@@ -68,7 +68,7 @@ namespace Google.Solutions.IapTunneling.Test.Iap
         [Test]
         public async Task WhenSendingMessagesToEchoServer_MessagesAreReceivedVerbatim(
             [LinuxInstance(InitializeScript = InstallEchoServer)] InstanceRequest vm,
-            [Credential] ICredential credential,
+            [Credential] CredentialRequest credential,
             [Values(
                 1,
                 (int)DataMessage.MaxDataLength - 1,
@@ -82,7 +82,9 @@ namespace Google.Solutions.IapTunneling.Test.Iap
             FillArray(message);
 
             await vm.AwaitReady();
-            var stream = ConnectToEchoServer(vm.Locator, credential);
+            var stream = ConnectToEchoServer(
+                vm.Locator, 
+                await credential.GetCredentialAsync());
 
             for (int i = 0; i < count; i++)
             {

@@ -37,13 +37,13 @@ namespace Google.Solutions.IapDesktop.Extensions.Os.Test.Services.InstanceDetail
         [Test]
         public async Task WhenLoadAsyncCompletes_ThenPropertiesArePopulated(
             [WindowsInstance] InstanceRequest testInstance,
-            [Credential] ICredential credential)
+            [Credential] CredentialRequest credential)
         {
             await testInstance.AwaitReady();
 
             var model = await InstanceDetailsModel.LoadAsync(
                 await testInstance.GetInstanceAsync(),
-                new ComputeEngineAdapter(credential),
+                new ComputeEngineAdapter(await credential.GetCredentialAsync()),
                 CancellationToken.None);
 
             Assert.AreEqual(testInstance.Locator.Name, model.InstanceName);

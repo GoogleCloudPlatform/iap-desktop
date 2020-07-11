@@ -78,10 +78,12 @@ namespace Google.Solutions.IapTunneling.Test.Iap
         [Test, Repeat(RepeatCount)]
         public async Task WhenServerClosesConnectionAfterSingleHttpRequest_ThenRelayEnds(
             [LinuxInstance(InitializeScript = InstallApache)] InstanceRequest vm,
-            [Credential] ICredential credential)
+            [Credential] CredentialRequest credential)
         {
             await vm.AwaitReady();
-            var stream = ConnectToWebServer(vm.Locator, credential);
+            var stream = ConnectToWebServer(
+                vm.Locator,
+                await credential.GetCredentialAsync());
 
             byte[] request = new ASCIIEncoding().GetBytes(
                 "GET / HTTP/1.0\r\n\r\n");
@@ -104,10 +106,12 @@ namespace Google.Solutions.IapTunneling.Test.Iap
         [Test, Repeat(RepeatCount)]
         public async Task WhenServerClosesConnectionMultipleHttpRequests_ThenRelayEnds(
             [LinuxInstance(InitializeScript = InstallApache)] InstanceRequest vm,
-            [Credential] ICredential credential)
+            [Credential] CredentialRequest credential)
         {
             await vm.AwaitReady();
-            var stream = ConnectToWebServer(vm.Locator, credential);
+            var stream = ConnectToWebServer(
+                vm.Locator,
+                await credential.GetCredentialAsync());
 
             for (int i = 0; i < 3; i++)
             {
@@ -139,10 +143,12 @@ namespace Google.Solutions.IapTunneling.Test.Iap
         [Test, Repeat(RepeatCount)]
         public async Task WhenClientClosesConnectionAfterSingleHttpRequest_ThenRelayEnds(
             [LinuxInstance(InitializeScript = InstallApache)] InstanceRequest vm,
-            [Credential] ICredential credential)
+            [Credential] CredentialRequest credential)
         {
             await vm.AwaitReady();
-            var stream = ConnectToWebServer(vm.Locator, credential);
+            var stream = ConnectToWebServer(
+                vm.Locator,
+                await credential.GetCredentialAsync());
 
             byte[] request = new ASCIIEncoding().GetBytes(
                     $"GET / HTTP/1.1\r\nHost:www\r\nConnection: keep-alive\r\n\r\n");

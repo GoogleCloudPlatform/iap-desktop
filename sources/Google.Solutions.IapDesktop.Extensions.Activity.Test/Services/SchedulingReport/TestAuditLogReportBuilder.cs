@@ -39,15 +39,15 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.Services.Scheduli
         [Test]
         public async Task WhenWindowsInstanceCreated_ThenReportContainsInstanceAndLicenseInfoFromItsDisk(
             [WindowsInstance] InstanceRequest testInstance,
-            [Credential] ICredential credential)
+            [Credential] CredentialRequest credential)
         {
             await testInstance.AwaitReady();
             var instanceRef = await testInstance.GetInstanceAsync();
 
             var startDate = DateTime.UtcNow.AddDays(-1);
             var builder = new AuditLogReportBuilder(
-                new AuditLogAdapter(credential),
-                new ComputeEngineAdapter(credential),
+                new AuditLogAdapter(await credential.GetCredentialAsync()),
+                new ComputeEngineAdapter(await credential.GetCredentialAsync()),
                 new[] { TestProject.ProjectId },
                 startDate);
             var report = await builder.BuildAsync(CancellationToken.None);
@@ -62,15 +62,15 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.Services.Scheduli
         [Test]
         public async Task WhenLinuxInstanceCreated_ThenReportContainsInstanceAndLicenseInfoFromItsDisk(
             [LinuxInstance] InstanceRequest testInstance,
-            [Credential] ICredential credential)
+            [Credential] CredentialRequest credential)
         {
             await testInstance.AwaitReady();
             var instanceRef = await testInstance.GetInstanceAsync();
 
             var startDate = DateTime.UtcNow.AddDays(-1);
             var builder = new AuditLogReportBuilder(
-                new AuditLogAdapter(credential),
-                new ComputeEngineAdapter(credential),
+                new AuditLogAdapter(await credential.GetCredentialAsync()),
+                new ComputeEngineAdapter(await credential.GetCredentialAsync()),
                 new[] { TestProject.ProjectId },
                 startDate);
             var report = await builder.BuildAsync(CancellationToken.None);

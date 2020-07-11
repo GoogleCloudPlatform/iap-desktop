@@ -42,13 +42,13 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.Services.SerialOu
         [Test]
         public async Task WhenLoadAsyncCompletes_ThenOutputContainsExistingData(
             [WindowsInstance] InstanceRequest testInstance,
-            [Credential] ICredential credential)
+            [Credential] CredentialRequest credential)
         {
             await testInstance.AwaitReady();
             
             var model = await SerialOutputModel.LoadAsync(
                 "display-name",
-                new ComputeEngineAdapter(credential),
+                new ComputeEngineAdapter(await credential.GetCredentialAsync()),
                 await testInstance.GetInstanceAsync(),
                 SerialPortStream.ConsolePort,
                 CancellationToken.None);

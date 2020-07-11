@@ -42,11 +42,13 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Windows
         [Test]
         public async Task WhenCredentialsInvalid_ThenErrorIsShownAndWindowIsClosed(
             [WindowsInstance] InstanceRequest testInstance,
-            [Credential] ICredential credential)
+            [Credential] CredentialRequest credential)
         {
             await testInstance.AwaitReady();
 
-            using (var tunnel = RdpTunnel.Create(testInstance.Locator, credential))
+            using (var tunnel = RdpTunnel.Create(
+                testInstance.Locator,
+                await credential.GetCredentialAsync()))
             {
                 var rdpService = new RemoteDesktopService(this.serviceProvider);
                 var session = rdpService.Connect(
@@ -101,11 +103,13 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Windows
             // Use a slightly larger machine type as all this RDP'ing consumes a fair
             // amount of memory.
             [WindowsInstance(MachineType = "n1-standard-2")] InstanceRequest testInstance,
-            [Credential] ICredential credential)
+            [Credential] CredentialRequest credential)
         {
             await testInstance.AwaitReady();
 
-            using (var tunnel = RdpTunnel.Create(testInstance.Locator, credential))
+            using (var tunnel = RdpTunnel.Create(
+                testInstance.Locator,
+                await credential.GetCredentialAsync()))
             using (var gceAdapter = new ComputeEngineAdapter(this.serviceProvider.GetService<IAuthorizationAdapter>()))
             {
                 var credentials = await gceAdapter.ResetWindowsUserAsync(
@@ -151,11 +155,13 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Windows
         public async Task WhenSigningOutPerSendKeys_ThenWindowIsClosed(
             [WindowsInstance(ImageFamily = WindowsInstanceAttribute.WindowsServer2019)]
             InstanceRequest testInstance,
-            [Credential] ICredential credential)
+            [Credential] CredentialRequest credential)
         {
             await testInstance.AwaitReady();
 
-            using (var tunnel = RdpTunnel.Create(testInstance.Locator, credential))
+            using (var tunnel = RdpTunnel.Create(
+                testInstance.Locator,
+                await credential.GetCredentialAsync()))
             using (var gceAdapter = new ComputeEngineAdapter(this.serviceProvider.GetService<IAuthorizationAdapter>()))
             {
                 var credentials = await gceAdapter.ResetWindowsUserAsync(

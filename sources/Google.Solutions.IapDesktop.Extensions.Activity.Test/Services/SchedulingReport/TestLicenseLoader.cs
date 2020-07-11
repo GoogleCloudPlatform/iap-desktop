@@ -57,14 +57,15 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.Services.Scheduli
 
         [Test]
         public async Task WhenImageFound_ThenAnnotationIsAdded(
-            [Credential] ICredential credential)
+            [Credential] CredentialRequest credential)
         {
             var annotatedSet = CreateSet(
                 new ImageLocator("windows-cloud", "family/windows-2019"));
 
             Assert.AreEqual(0, annotatedSet.LicenseAnnotations.Count());
 
-            var computeEngineAdapter = new ComputeEngineAdapter(credential);
+            var computeEngineAdapter = new ComputeEngineAdapter(
+                await credential.GetCredentialAsync());
             await LicenseLoader.LoadLicenseAnnotationsAsync(
                 annotatedSet,
                 computeEngineAdapter,
@@ -79,14 +80,15 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.Services.Scheduli
 
         [Test]
         public async Task WhenImageNotFoundButFromWindowsProject_ThenAnnotationIsAdded(
-            [Credential] ICredential credential)
+            [Credential] CredentialRequest credential)
         {
             var annotatedSet = CreateSet(
                 new ImageLocator("windows-cloud", "windows-95"));
 
             Assert.AreEqual(0, annotatedSet.LicenseAnnotations.Count());
 
-            var computeEngineAdapter = new ComputeEngineAdapter(credential);
+            var computeEngineAdapter = new ComputeEngineAdapter(
+                await credential.GetCredentialAsync());
             await LicenseLoader.LoadLicenseAnnotationsAsync(
                 annotatedSet,
                 computeEngineAdapter,
@@ -101,14 +103,15 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.Services.Scheduli
 
         [Test]
         public async Task WhenImageNotFound_ThenAnnotationNotAdded(
-            [Credential] ICredential credential)
+            [Credential] CredentialRequest credential)
         {
             var annotatedSet = CreateSet(
                 new ImageLocator("unknown", "beos"));
 
             Assert.AreEqual(0, annotatedSet.LicenseAnnotations.Count());
 
-            var computeEngineAdapter = new ComputeEngineAdapter(credential);
+            var computeEngineAdapter = new ComputeEngineAdapter(
+                await credential.GetCredentialAsync());
             await LicenseLoader.LoadLicenseAnnotationsAsync(
                 annotatedSet,
                 computeEngineAdapter,

@@ -76,15 +76,16 @@ namespace Google.Solutions.Common.Test.Integration
         {
             if (parameter.ParameterType == typeof(InstanceRequest))
             {
-                var vmRef = new InstanceLocator(
-                    this.ProjectId,
-                    this.Zone,
-                    this.CreateSpecificationFingerprint());
-                yield return new InstanceRequest(
-                    vmRef, 
-                    this.MachineType,
-                    this.ImageFamily,
-                    this.Metadata);
+                return new[] {
+                    new InstanceRequest(
+                        new InstanceLocator(
+                            this.ProjectId,
+                            this.Zone,
+                            this.CreateSpecificationFingerprint()),
+                        this.MachineType,
+                        this.ImageFamily,
+                        this.Metadata)
+                };
             }
             else
             {

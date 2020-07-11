@@ -19,13 +19,13 @@
 // under the License.
 //
 
-using Google.Apis.Auth.OAuth2;
 using Google.Apis.Compute.v1;
 using Google.Apis.Services;
 using Google.Solutions.Common.ApiExtensions.Request;
 using Google.Solutions.Common.Test.Integration;
 using NUnit.Framework;
 using System.Threading;
+using System.Threading.Tasks;
 
 namespace Google.Solutions.Common.Test.Extensions
 {
@@ -35,13 +35,13 @@ namespace Google.Solutions.Common.Test.Extensions
     public class TestExecuteAsStreamExtensions : FixtureBase
     {
         [Test]
-        public void WhenApiReturns404_ThenExecuteAsStreamOrThrowAsyncThrowsException(
-            [Credential] ICredential credential
+        public async Task WhenApiReturns404_ThenExecuteAsStreamOrThrowAsyncThrowsException(
+            [Credential] CredentialRequest credential
             )
         {
             var computeService = new ComputeService(new BaseClientService.Initializer
             {
-                HttpClientInitializer = credential
+                HttpClientInitializer = await credential.GetCredentialAsync()
             });
 
             AssertEx.ThrowsAggregateException<GoogleApiException>(

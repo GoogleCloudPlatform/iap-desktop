@@ -49,6 +49,14 @@ namespace Google.Solutions.Common.Test.Integration
 
         public static GoogleCredential GetAdminCredential()
         {
+            // This account must have the following roles:
+            // - Compute Admin
+            // - Service Account Admin
+            // - IAP-secured Tunnel User
+            // - Logs Viewer
+            // - Project IAM Admin
+            // - Service Account Token Creator
+
             var credential = GoogleCredential.GetApplicationDefault();
             return credential.IsCreateScopedRequired
                 ? credential.CreateScoped(CloudPlatformScope)

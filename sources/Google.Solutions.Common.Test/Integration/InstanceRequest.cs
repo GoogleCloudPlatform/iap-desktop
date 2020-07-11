@@ -41,33 +41,30 @@ namespace Google.Solutions.Common.Test.Integration
 
         public InstanceLocator Locator { get; }
 
-        public Task AwaitReady()
+        private async Task AwaitInstanceCreatedAndReady()
         {
-            return Task.Run(async () =>
+            for (int i = 0; i < 60; i++)
             {
-                for (int i = 0; i < 60; i++)
+                try
                 {
-                    try
+                    var instance = await this.computeService.Instances.Get(
+                            this.Locator.ProjectId,
+                            this.Locator.Zone,
+                            this.Locator.Name)
+                        .ExecuteAsync();
+
+                    if (await IsReadyAsync(instance))
                     {
-                        var instance = await this.computeService.Instances.Get(
-                                this.Locator.ProjectId,
-                                this.Locator.Zone,
-                                this.Locator.Name)
-                            .ExecuteAsync();
-
-                        if (await IsReadyAsync(instance))
-                        {
-                            return;
-                        }
+                        return;
                     }
-                    catch (Exception)
-                    { }
-
-                    await Task.Delay(5 * 1000);
                 }
+                catch (Exception)
+                { }
 
-                throw new TimeoutException($"Timeout waiting for {this.Locator} to become ready");
-            });
+                await Task.Delay(5 * 1000);
+            }
+
+            throw new TimeoutException($"Timeout waiting for {this.Locator} to become ready");
         }
 
         private async Task<bool> IsReadyAsync(
@@ -87,24 +84,29 @@ namespace Google.Solutions.Common.Test.Integration
                 .Any();
         }
 
-        private async Task<InstanceLocator> CreateOrStartInstanceAsync(InstanceLocator vmRef)
+        private async Task CreateOrStartInstanceAsync()
         {
             var computeEngine = TestProject.CreateComputeService();
 
             try
             {
                 var instance = await computeEngine.Instances
-                    .Get(vmRef.ProjectId, vmRef.Zone, vmRef.Name)
+                    .Get(
+                        this.Locator.ProjectId,
+                        this.Locator.Zone,
+                        this.Locator.Name)
                     .ExecuteAsync();
 
                 if (instance.Status == "STOPPED")
                 {
                     await computeEngine.Instances.Start(
-                        vmRef.ProjectId, vmRef.Zone, vmRef.Name)
+                            this.Locator.ProjectId,
+                            this.Locator.Zone,
+                            this.Locator.Name)
                         .ExecuteAsync();
                 }
 
-                await AwaitReady();
+                await AwaitInstanceCreatedAndReady();
             }
             catch (Exception)
             {
@@ -125,7 +127,7 @@ namespace Google.Solutions.Common.Test.Integration
                 await computeEngine.Instances.Insert(
                     new Apis.Compute.v1.Data.Instance()
                     {
-                        Name = vmRef.Name,
+                        Name = this.Locator.Name,
                         MachineType = $"zones/{this.Locator.Zone}/machineTypes/{this.machineType}",
                         Disks = new[]
                         {
@@ -154,13 +156,11 @@ namespace Google.Solutions.Common.Test.Integration
                             }
                         }
                     },
-                    vmRef.ProjectId,
-                    vmRef.Zone).ExecuteAsync();
+                    this.Locator.ProjectId,
+                    this.Locator.Zone).ExecuteAsync();
 
-                await AwaitReady();
+                await AwaitInstanceCreatedAndReady();
             }
-
-            return vmRef;
         }
 
         public InstanceRequest(
@@ -176,8 +176,18 @@ namespace Google.Solutions.Common.Test.Integration
             this.metadata = metadata;
         }
 
-        public Task<InstanceLocator> GetInstanceAsync()
-            => CreateOrStartInstanceAsync(this.Locator);
+        public async Task<InstanceLocator> GetInstanceAsync()
+        {
+            await CreateOrStartInstanceAsync();
+            await AwaitInstanceCreatedAndReady();
+            return this.Locator;
+        }
+
+        public async Task AwaitReady()
+        {
+            await CreateOrStartInstanceAsync();
+            await AwaitInstanceCreatedAndReady();
+        }
 
         public override string ToString()
         {

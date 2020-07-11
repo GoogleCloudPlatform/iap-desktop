@@ -63,10 +63,12 @@ namespace Google.Solutions.IapTunneling.Test.Iap
         [Test]
         public async Task WhenServerNotListening_ThenReadReturnsZero(
             [LinuxInstance] InstanceRequest vm,
-            [Credential] ICredential credential)
+            [Credential] CredentialRequest credential)
         {
             await vm.AwaitReady();
-            var stream = ConnectToWebServer(vm.Locator, credential);
+            var stream = ConnectToWebServer(
+                vm.Locator,
+                await credential.GetCredentialAsync());
 
             byte[] request = new ASCIIEncoding().GetBytes(
                     $"GET / HTTP/1.1\r\nHost:www\r\nConnection: keep-alive\r\n\r\n");

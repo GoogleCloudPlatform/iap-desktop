@@ -20,21 +20,18 @@
 //
 
 using Google.Apis.Auth.OAuth2;
-using Google.Apis.CloudResourceManager.v1.Data;
-using Google.Apis.Iam.v1.Data;
 using NUnit.Framework;
 using NUnit.Framework.Interfaces;
 using System;
 using System.Collections;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace Google.Solutions.Common.Test.Integration
 {
     public class CredentialAttribute : NUnitAttribute, IParameterDataSource
     {
-        public string[] Roles { get; set; }
+        public string[] Roles { get; set; } = Array.Empty<string>();
 
         public string Role
         {
@@ -57,109 +54,16 @@ namespace Google.Solutions.Common.Test.Integration
             }
         }
 
-        private async Task<ServiceAccount> CreateOrGetServiceAccountAsync()
-        {
-            var service = TestProject.CreateIamService();
-            var name = CreateSpecificationFingerprint();
-            var email = $"{name}@{TestProject.ProjectId}.iam.gserviceaccount.com";
-            try
-            {
-                return await service.Projects.ServiceAccounts
-                    .Get($"projects/{TestProject.ProjectId}/serviceAccounts/{email}")
-                    .ExecuteAsync();
-            }
-            catch (Exception)
-            {
-                return await service.Projects.ServiceAccounts.Create(
-                        new CreateServiceAccountRequest()
-                        {
-                            AccountId = name,
-                            ServiceAccount = new ServiceAccount()
-                            {
-                                DisplayName = "Test account for integration testing"
-                            }
-                        },
-                    $"projects/{TestProject.ProjectId}")
-                    .ExecuteAsync()
-                    .ConfigureAwait(false);
-            }
-        }
-
-        private async Task GrantRolesToServiceAccountAsync(ServiceAccount member)
-        {
-            var service = TestProject.CreateCloudResourceManagerService();
-            
-            var policy = await service.Projects
-                .GetIamPolicy(
-                    new GetIamPolicyRequest(),
-                    TestProject.ProjectId)
-                .ExecuteAsync()
-                .ConfigureAwait(false);
-
-            foreach (var role in this.Roles)
-            {
-                policy.Bindings.Add(
-                    new Apis.CloudResourceManager.v1.Data.Binding()
-                    {
-                        Role = role,
-                        Members = new string[] { $"serviceAccount:{member.Email}"}
-                    });
-            }
-
-            await service.Projects.SetIamPolicy(
-                    new Apis.CloudResourceManager.v1.Data.SetIamPolicyRequest()
-                    {
-                        Policy = policy
-                    },
-                    TestProject.ProjectId)
-                .ExecuteAsync()
-                .ConfigureAwait(false);
-        }
-
-        private async Task<ICredential> CreateTemporaryCredentialsAsync(
-            string serviceAccountEmail)
-        {
-            var service = TestProject.CreateIamCredentialsService();
-            var response = await service.Projects.ServiceAccounts.GenerateAccessToken(
-                    new Apis.IAMCredentials.v1.Data.GenerateAccessTokenRequest()
-                    {
-                        Scope = new string[] { TestProject.CloudPlatformScope }
-                    },
-                    $"projects/-/serviceAccounts/{serviceAccountEmail}")
-                .ExecuteAsync()
-                .ConfigureAwait(false);
-
-            return GoogleCredential.FromAccessToken(response.AccessToken);
-        }
-
-        private async Task<ICredential> CreateAccessToken()
-        {
-            // Create a service account.
-            var serviceAccount = await CreateOrGetServiceAccountAsync();
-
-            // TODO: Assign roles.
-            await GrantRolesToServiceAccountAsync(serviceAccount);
-
-            // Create a token.
-            return await CreateTemporaryCredentialsAsync(serviceAccount.Email);
-        }
 
         public IEnumerable GetData(IParameterInfo parameter)
         {
-            if (parameter.ParameterType == typeof(ICredential))
+            if (parameter.ParameterType == typeof(CredentialRequest))
             {
-                if (this.Roles == null || !this.Roles.Any())
-                {
-                    // Return the credentials of the (admin) account the
-                    // tests are run as.
-                    return new ICredential[] { TestProject.GetAdminCredential() };
-                }
-                else
-                {
-                    // Create a service account with exactly these
-                    // roles and return temporary credentials.
-                    return new ICredential[] { CreateAccessToken().Result };
-                }
+                return new[] { 
+                    new CredentialRequest(
+                        CreateSpecificationFingerprint(),
+                        this.Roles)
+                };
             }
             else
             {
