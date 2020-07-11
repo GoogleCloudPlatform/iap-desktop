@@ -27,7 +27,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace Google.Solutions.Common.Test.Testbed
+namespace Google.Solutions.Common.Test.Integration
 {
     public class InstanceRequest
     {
@@ -89,7 +89,7 @@ namespace Google.Solutions.Common.Test.Testbed
 
         private async Task<InstanceLocator> CreateOrStartInstanceAsync(InstanceLocator vmRef)
         {
-            var computeEngine = Defaults.CreateComputeService();
+            var computeEngine = TestProject.CreateComputeService();
 
             try
             {
@@ -169,7 +169,7 @@ namespace Google.Solutions.Common.Test.Testbed
             string imageFamily,
             IEnumerable<Metadata.ItemsData> metadata)
         {
-            this.computeService = Defaults.CreateComputeService();
+            this.computeService = TestProject.CreateComputeService();
             this.Locator = instance;
             this.machineType = machineType;
             this.imageFamily = imageFamily;

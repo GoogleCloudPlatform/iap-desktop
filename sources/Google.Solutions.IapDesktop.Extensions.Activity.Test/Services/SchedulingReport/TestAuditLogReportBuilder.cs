@@ -20,7 +20,7 @@
 //
 
 using Google.Apis.Auth.OAuth2;
-using Google.Solutions.Common.Test.Testbed;
+using Google.Solutions.Common.Test.Integration;
 using Google.Solutions.IapDesktop.Application.Services.Adapters;
 using Google.Solutions.IapDesktop.Extensions.Activity.Services.Adapters;
 using Google.Solutions.IapDesktop.Extensions.Activity.Services.SchedulingReport;
@@ -48,7 +48,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.Services.Scheduli
             var builder = new AuditLogReportBuilder(
                 new AuditLogAdapter(credential),
                 new ComputeEngineAdapter(credential),
-                new[] { Defaults.ProjectId },
+                new[] { TestProject.ProjectId },
                 startDate);
             var report = await builder.BuildAsync(CancellationToken.None);
 
@@ -71,7 +71,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.Services.Scheduli
             var builder = new AuditLogReportBuilder(
                 new AuditLogAdapter(credential),
                 new ComputeEngineAdapter(credential),
-                new[] { Defaults.ProjectId },
+                new[] { TestProject.ProjectId },
                 startDate);
             var report = await builder.BuildAsync(CancellationToken.None);
 

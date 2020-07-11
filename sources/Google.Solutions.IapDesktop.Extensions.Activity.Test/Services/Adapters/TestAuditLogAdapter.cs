@@ -24,7 +24,7 @@ using Google.Apis.Compute.v1;
 using Google.Apis.Logging.v2.Data;
 using Google.Apis.Services;
 using Google.Solutions.Common.Test;
-using Google.Solutions.Common.Test.Testbed;
+using Google.Solutions.Common.Test.Integration;
 using Google.Solutions.IapDesktop.Application.Services.Adapters;
 using Google.Solutions.IapDesktop.Extensions.Activity.Events;
 using Google.Solutions.IapDesktop.Extensions.Activity.Events.Lifecycle;
@@ -59,7 +59,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.Services.Adapters
             {
                 ResourceNames = new[]
                 {
-                    "projects/" + Defaults.ProjectId
+                    "projects/" + TestProject.ProjectId
                 },
                 Filter = $"resource.type=\"gce_instance\" " +
                     $"AND protoPayload.methodName:{InsertInstanceEvent.Method} " +
@@ -105,14 +105,14 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.Services.Adapters
 
             var computeAdapter = new ComputeEngineAdapter(credential);
             instanceBuilder.AddExistingInstances(
-                await computeAdapter.ListInstancesAsync(Defaults.ProjectId, CancellationToken.None),
-                await computeAdapter.ListDisksAsync(Defaults.ProjectId, CancellationToken.None),
-                Defaults.ProjectId);            
+                await computeAdapter.ListInstancesAsync(TestProject.ProjectId, CancellationToken.None),
+                await computeAdapter.ListDisksAsync(TestProject.ProjectId, CancellationToken.None),
+                TestProject.ProjectId);            
             
             var adapter = new AuditLogAdapter(credential);
 
             await adapter.ListInstanceEventsAsync(
-                new[] { Defaults.ProjectId },
+                new[] { TestProject.ProjectId },
                 null,  // all zones.
                 null,  // all instances.
                 instanceBuilder.StartDate,

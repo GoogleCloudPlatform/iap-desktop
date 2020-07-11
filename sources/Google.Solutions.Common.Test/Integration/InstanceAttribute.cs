@@ -28,12 +28,12 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Text;
 
-namespace Google.Solutions.Common.Test.Testbed
+namespace Google.Solutions.Common.Test.Integration
 {
     public abstract class InstanceAttribute : NUnitAttribute, IParameterDataSource
     {
-        public string ProjectId { get; set; } = Defaults.ProjectId;
-        public string Zone { get; set; } = Defaults.Zone;
+        public string ProjectId { get; set; } = TestProject.ProjectId;
+        public string Zone { get; set; } = TestProject.Zone;
         public string MachineType { get; set; } = "n1-standard-1";
         public string ImageFamily { get; set; }
         public string InitializeScript { get; set; }

@@ -22,7 +22,7 @@
 using Google.Apis.Auth.OAuth2;
 using Google.Solutions.Common;
 using Google.Solutions.Common.Locator;
-using Google.Solutions.Common.Test.Testbed;
+using Google.Solutions.Common.Test.Integration;
 using Google.Solutions.IapTunneling.Iap;
 using Google.Solutions.IapTunneling.Net;
 using NUnit.Framework;
@@ -47,7 +47,7 @@ namespace Google.Solutions.IapTunneling.Test.Iap
                     vmRef,
                     7,
                     IapTunnelingEndpoint.DefaultNetworkInterface,
-                    Defaults.UserAgent));
+                    TestProject.UserAgent));
             listener.ClientAcceptLimit = 1; // Terminate after first connection.
             listener.ListenAsync(CancellationToken.None);
 

@@ -23,7 +23,7 @@ using Google.Apis.Auth.OAuth2;
 using Google.Solutions.Common;
 using Google.Solutions.Common.Locator;
 using Google.Solutions.Common.Test;
-using Google.Solutions.Common.Test.Testbed;
+using Google.Solutions.Common.Test.Integration;
 using Google.Solutions.IapTunneling.Iap;
 using Google.Solutions.IapTunneling.Net;
 using NUnit.Framework;
@@ -46,11 +46,11 @@ namespace Google.Solutions.IapTunneling.Test.Iap
                     credential,
                     new InstanceLocator(
                         "invalid",
-                        Defaults.Zone,
+                        TestProject.Zone,
                         "invalid"),
                     80,
                     IapTunnelingEndpoint.DefaultNetworkInterface,
-                    Defaults.UserAgent)))
+                    TestProject.UserAgent)))
             {
                 AssertEx.ThrowsAggregateException<UnauthorizedException>(() =>
                     stream.TestConnectionAsync(TimeSpan.FromSeconds(10)).Wait());
@@ -65,12 +65,12 @@ namespace Google.Solutions.IapTunneling.Test.Iap
                new IapTunnelingEndpoint(
                     credential,
                     new InstanceLocator(
-                        Defaults.ProjectId,
+                        TestProject.ProjectId,
                         "invalid",
                         "invalid"),
                     80,
                     IapTunnelingEndpoint.DefaultNetworkInterface,
-                    Defaults.UserAgent)))
+                    TestProject.UserAgent)))
             {
                 AssertEx.ThrowsAggregateException<UnauthorizedException>(() =>
                     stream.TestConnectionAsync(TimeSpan.FromSeconds(10)).Wait());
@@ -85,12 +85,12 @@ namespace Google.Solutions.IapTunneling.Test.Iap
                 new IapTunnelingEndpoint(
                     credential,
                     new InstanceLocator(
-                        Defaults.ProjectId,
-                        Defaults.Zone,
+                        TestProject.ProjectId,
+                        TestProject.Zone,
                         "invalid"),
                     80,
                     IapTunnelingEndpoint.DefaultNetworkInterface,
-                    Defaults.UserAgent)))
+                    TestProject.UserAgent)))
             {
                 AssertEx.ThrowsAggregateException<UnauthorizedException>(() =>
                     stream.TestConnectionAsync(TimeSpan.FromSeconds(10)).Wait());
@@ -110,7 +110,7 @@ namespace Google.Solutions.IapTunneling.Test.Iap
                     testInstance.Locator,
                     3389,
                     IapTunnelingEndpoint.DefaultNetworkInterface,
-                    Defaults.UserAgent)))
+                    TestProject.UserAgent)))
             {
                 await stream.TestConnectionAsync(TimeSpan.FromSeconds(10));
             }
@@ -129,7 +129,7 @@ namespace Google.Solutions.IapTunneling.Test.Iap
                     testInstance.Locator,
                     22,
                     IapTunnelingEndpoint.DefaultNetworkInterface,
-                    Defaults.UserAgent)))
+                    TestProject.UserAgent)))
             {
                 AssertEx.ThrowsAggregateException<NetworkStreamClosedException>(() =>
                     stream.TestConnectionAsync(TimeSpan.FromSeconds(5)).Wait());

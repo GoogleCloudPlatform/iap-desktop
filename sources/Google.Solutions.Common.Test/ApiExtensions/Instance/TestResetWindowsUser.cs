@@ -22,7 +22,7 @@
 using Google.Apis.Compute.v1;
 using Google.Solutions.Common.ApiExtensions.Instance;
 using Google.Solutions.Common.Locator;
-using Google.Solutions.Common.Test.Testbed;
+using Google.Solutions.Common.Test.Integration;
 using NUnit.Framework;
 using System;
 using System.Threading;
@@ -40,7 +40,7 @@ namespace Google.Solutions.Common.Test.Extensions
         [SetUp]
         public void SetUp()
         {
-            this.instancesResource = Defaults.CreateComputeService().Instances;
+            this.instancesResource = TestProject.CreateComputeService().Instances;
         }
 
         [Test]

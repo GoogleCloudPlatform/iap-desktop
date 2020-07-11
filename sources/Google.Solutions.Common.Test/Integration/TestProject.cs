@@ -29,9 +29,9 @@ using Google.Solutions.Common.Net;
 using System;
 using System.Reflection;
 
-namespace Google.Solutions.Common.Test.Testbed
+namespace Google.Solutions.Common.Test.Integration
 {
-    public static class Defaults
+    public static class TestProject
     {
         internal const string CloudPlatformScope = "https://www.googleapis.com/auth/cloud-platform";
 
@@ -40,7 +40,7 @@ namespace Google.Solutions.Common.Test.Testbed
 
         public static UserAgent UserAgent { get; }
 
-        static Defaults()
+        static TestProject()
         { 
             UserAgent = new UserAgent(
                 "IAP-Desktop-TestSuite",
@@ -59,7 +59,7 @@ namespace Google.Solutions.Common.Test.Testbed
         {
             return new ComputeService(new BaseClientService.Initializer
             {
-                HttpClientInitializer = Defaults.GetAdminCredential()
+                HttpClientInitializer = TestProject.GetAdminCredential()
             });
         }
 
@@ -67,7 +67,7 @@ namespace Google.Solutions.Common.Test.Testbed
         {
             return new IamService(new BaseClientService.Initializer
             {
-                HttpClientInitializer = Defaults.GetAdminCredential()
+                HttpClientInitializer = TestProject.GetAdminCredential()
             });
         }
 
@@ -75,7 +75,7 @@ namespace Google.Solutions.Common.Test.Testbed
         {
             return new IAMCredentialsService(new BaseClientService.Initializer
             {
-                HttpClientInitializer = Defaults.GetAdminCredential()
+                HttpClientInitializer = TestProject.GetAdminCredential()
             });
         }
 
@@ -83,7 +83,7 @@ namespace Google.Solutions.Common.Test.Testbed
         {
             return new CloudResourceManagerService(new BaseClientService.Initializer
             {
-                HttpClientInitializer = Defaults.GetAdminCredential()
+                HttpClientInitializer = TestProject.GetAdminCredential()
             });
         }
     }

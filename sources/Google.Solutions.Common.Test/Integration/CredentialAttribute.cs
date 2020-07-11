@@ -30,7 +30,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Google.Solutions.Common.Test.Testbed
+namespace Google.Solutions.Common.Test.Integration
 {
     public class CredentialAttribute : NUnitAttribute, IParameterDataSource
     {
@@ -53,13 +53,13 @@ namespace Google.Solutions.Common.Test.Testbed
 
         private async Task<ServiceAccount> CreateOrGetServiceAccountAsync()
         {
-            var service = Defaults.CreateIamService();
+            var service = TestProject.CreateIamService();
             var name = CreateSpecificationFingerprint();
-            var email = $"{name}@{Defaults.ProjectId}.iam.gserviceaccount.com";
+            var email = $"{name}@{TestProject.ProjectId}.iam.gserviceaccount.com";
             try
             {
                 return await service.Projects.ServiceAccounts
-                    .Get($"projects/{Defaults.ProjectId}/serviceAccounts/{email}")
+                    .Get($"projects/{TestProject.ProjectId}/serviceAccounts/{email}")
                     .ExecuteAsync();
             }
             catch (Exception)
@@ -73,7 +73,7 @@ namespace Google.Solutions.Common.Test.Testbed
                                 DisplayName = "Test account for integration testing"
                             }
                         },
-                    $"projects/{Defaults.ProjectId}")
+                    $"projects/{TestProject.ProjectId}")
                     .ExecuteAsync()
                     .ConfigureAwait(false);
             }
@@ -81,12 +81,12 @@ namespace Google.Solutions.Common.Test.Testbed
 
         private async Task GrantRolesToServiceAccountAsync(ServiceAccount member)
         {
-            var service = Defaults.CreateCloudResourceManagerService();
+            var service = TestProject.CreateCloudResourceManagerService();
             
             var policy = await service.Projects
                 .GetIamPolicy(
                     new GetIamPolicyRequest(),
-                    Defaults.ProjectId)
+                    TestProject.ProjectId)
                 .ExecuteAsync()
                 .ConfigureAwait(false);
 
@@ -105,7 +105,7 @@ namespace Google.Solutions.Common.Test.Testbed
                     {
                         Policy = policy
                     },
-                    Defaults.ProjectId)
+                    TestProject.ProjectId)
                 .ExecuteAsync()
                 .ConfigureAwait(false);
         }
@@ -113,11 +113,11 @@ namespace Google.Solutions.Common.Test.Testbed
         private async Task<ICredential> CreateTemporaryCredentialsAsync(
             string serviceAccountEmail)
         {
-            var service = Defaults.CreateIamCredentialsService();
+            var service = TestProject.CreateIamCredentialsService();
             var response = await service.Projects.ServiceAccounts.GenerateAccessToken(
                     new Apis.IAMCredentials.v1.Data.GenerateAccessTokenRequest()
                     {
-                        Scope = new string[] { Defaults.CloudPlatformScope }
+                        Scope = new string[] { TestProject.CloudPlatformScope }
                     },
                     $"projects/-/serviceAccounts/{serviceAccountEmail}")
                 .ExecuteAsync()
@@ -146,7 +146,7 @@ namespace Google.Solutions.Common.Test.Testbed
                 {
                     // Return the credentials of the (admin) account the
                     // tests are run as.
-                    return new ICredential[] { Defaults.GetAdminCredential() };
+                    return new ICredential[] { TestProject.GetAdminCredential() };
                 }
                 else
                 {

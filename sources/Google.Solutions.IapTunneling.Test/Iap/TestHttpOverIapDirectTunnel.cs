@@ -23,7 +23,7 @@ using Google.Apis.Auth.OAuth2;
 using Google.Solutions.Common;
 using Google.Solutions.Common.Locator;
 using Google.Solutions.Common.Test;
-using Google.Solutions.Common.Test.Testbed;
+using Google.Solutions.Common.Test.Integration;
 using Google.Solutions.IapTunneling.Iap;
 using Google.Solutions.IapTunneling.Net;
 using NUnit.Framework;
@@ -49,7 +49,7 @@ namespace Google.Solutions.IapTunneling.Test.Iap
                     vmRef,
                     80,
                     IapTunnelingEndpoint.DefaultNetworkInterface,
-                    Defaults.UserAgent));
+                    TestProject.UserAgent));
         }
 
         [Test]
@@ -89,7 +89,7 @@ namespace Google.Solutions.IapTunneling.Test.Iap
                     vm.Locator,
                     80,
                     IapTunnelingEndpoint.DefaultNetworkInterface,
-                    Defaults.UserAgent));
+                    TestProject.UserAgent));
 
             await stream.WriteAsync(request, 0, request.Length, CancellationToken.None);
 
