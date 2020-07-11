@@ -76,6 +76,10 @@ namespace Google.Solutions.IapDesktop.Application.Services.Adapters
         IAsyncReader<string> GetSerialPortOutput(
             InstanceLocator instanceRef,
             ushort portNumber);
+
+        Task<bool> IsGrantedPermission(
+            InstanceLocator instanceRef,
+            string permission);
     }
 
     /// <summary>
@@ -284,6 +288,28 @@ namespace Google.Solutions.IapDesktop.Application.Services.Adapters
             using (TraceSources.IapDesktop.TraceMethod().WithParameters(instanceRef))
             {
                 return this.service.Instances.GetSerialPortOutputStream(instanceRef, portNumber);
+            }
+        }
+
+        public async Task<bool> IsGrantedPermission(
+            InstanceLocator instanceLocator,
+            string permission)
+        {
+            using (TraceSources.IapDesktop.TraceMethod().WithParameters(permission))
+            {
+                var response = await this.service.Instances.TestIamPermissions(
+                        new TestPermissionsRequest
+                        {
+                            Permissions = new[] { permission }
+                        },
+                        instanceLocator.ProjectId,
+                        instanceLocator.Zone,
+                        instanceLocator.Name)
+                    .ExecuteAsync()
+                    .ConfigureAwait(false);
+                return response != null &&
+                    response.Permissions != null &&
+                    response.Permissions.Any(p => p == permission);
             }
         }
 

@@ -19,12 +19,13 @@
 // under the License.
 //
 
+using Google.Apis.Auth.OAuth2;
 using Google.Apis.CloudResourceManager.v1;
 using Google.Apis.CloudResourceManager.v1.Data;
 using Google.Apis.Requests;
 using Google.Apis.Services;
-using Google.Solutions.Common.ApiExtensions;
 using Google.Solutions.Common.Diagnostics;
+using Google.Solutions.Common.Locator;
 using Google.Solutions.IapDesktop.Application.ObjectModel;
 using System;
 using System.Collections.Generic;
@@ -47,20 +48,29 @@ namespace Google.Solutions.IapDesktop.Application.Services.Adapters
         Task<IEnumerable<Project>> QueryProjectsById(
             string projectId,
             CancellationToken cancellationToken);
+
+        Task<bool> IsGrantedPermission(
+            string projectId,
+            string permission);
     }
 
     public class ResourceManagerAdapter : IResourceManagerAdapter
     {
         private readonly CloudResourceManagerService service;
 
-        public ResourceManagerAdapter(IAuthorizationAdapter authService)
+        public ResourceManagerAdapter(ICredential credential)
         {
             this.service = new CloudResourceManagerService(
                 new BaseClientService.Initializer
                 {
-                    HttpClientInitializer = authService.Authorization.Credential,
+                    HttpClientInitializer = credential,
                     ApplicationName = Globals.UserAgent.ToApplicationName()
                 });
+        }
+
+        public ResourceManagerAdapter(IAuthorizationAdapter authService)
+            : this(authService.Authorization.Credential)
+        { 
         }
 
         public ResourceManagerAdapter(IServiceProvider serviceProvider)
@@ -113,6 +123,26 @@ namespace Google.Solutions.IapDesktop.Application.Services.Adapters
             CancellationToken cancellationToken)
         {
             return QueryProjects($"id:\"{projectId}\"", cancellationToken);
+        }
+
+        public async Task<bool> IsGrantedPermission(
+            string projectId,
+            string permission)
+        {
+            using (TraceSources.IapDesktop.TraceMethod().WithParameters(permission))
+            {
+                var response = await this.service.Projects.TestIamPermissions(
+                        new TestIamPermissionsRequest()
+                        {
+                            Permissions = new[] { permission }
+                        },
+                        projectId)
+                    .ExecuteAsync()
+                    .ConfigureAwait(false);
+                return response != null &&
+                    response.Permissions != null &&
+                    response.Permissions.Any(p => p == permission);
+            }
         }
 
         public void Dispose()
