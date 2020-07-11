@@ -20,21 +20,42 @@
 //
 
 using Google.Apis.Auth.OAuth2;
+using Google.Apis.Compute.v1.Data;
 using Google.Solutions.Common.Locator;
 using Google.Solutions.Common.Test;
 using Google.Solutions.Common.Test.Integration;
 using Google.Solutions.IapDesktop.Application.Services.Adapters;
 using NUnit.Framework;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
 namespace Google.Solutions.IapDesktop.Application.Test.Services.Adapters
 {
-
     [TestFixture]
     [Category("IntegrationTest")]
     public class TestComputeEngineAdapter : FixtureBase
     {
+        [Test]
+        public async Task WhenUserInViewerRole_ThenListInstancesAsyncReturnsInstances(
+            [LinuxInstance] InstanceRequest testInstance,
+            [Credential(Role = PredefinedRole.ComputeViewer)] ICredential credential)
+        {
+            // Make sure there is at least one instance.
+            await testInstance.AwaitReady();
+            var instanceRef = await testInstance.GetInstanceAsync();
+
+            var adapter = new ComputeEngineAdapter(credential);
+
+            var instances = await adapter.ListInstancesAsync(
+                    TestProject.ProjectId,
+                    CancellationToken.None);
+
+            Assert.Greater(instances.Count(), 1);
+            Assert.IsNotNull(instances.FirstOrDefault(i => i.Name == instanceRef.Name));
+        }
+
+
         [Test]
         public void WhenUserNotInRole_ThenListInstancesAsyncThrowsResourceAccessDeniedException(
             [Credential(Role = PredefinedRole.IapTunnelUser)] ICredential credential)
