@@ -35,7 +35,7 @@ using System.Windows.Forms;
 
 namespace Google.Solutions.IapDesktop.Application.Services.Workflows
 {
-    public class RemoteDesktopConnectionService
+    public class IapRdpConnectionService
     {
         private const int RemoteDesktopPort = 3389;
 
@@ -44,7 +44,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.Workflows
         private readonly ITunnelBrokerService tunnelBrokerService;
         private readonly ICredentialPrompt credentialPrompt;
 
-        public RemoteDesktopConnectionService(IServiceProvider serviceProvider)
+        public IapRdpConnectionService(IServiceProvider serviceProvider)
         {
             this.jobService = serviceProvider.GetService<IJobService>();
             this.remoteDesktopService = serviceProvider.GetService<IRemoteDesktopService>();

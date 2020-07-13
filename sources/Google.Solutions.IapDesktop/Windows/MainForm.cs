@@ -236,7 +236,7 @@ namespace Google.Solutions.IapDesktop.Windows
         internal void ConnectToUrl(IapRdpUrl url)
         {
             var rdcService = this.serviceProvider
-                .GetService<RemoteDesktopConnectionService>();
+                .GetService<IapRdpConnectionService>();
 
             var vmNode = this.serviceProvider
                 .GetService<IProjectExplorer>()

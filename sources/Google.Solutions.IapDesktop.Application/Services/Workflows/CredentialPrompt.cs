@@ -114,11 +114,6 @@ namespace Google.Solutions.IapDesktop.Application.Services.Workflows
             CredentialOption selectedOption;
             if (options.Count > 1)
             {
-                // NB. The sequence of options determines the behavior of 
-                // Enter/ESC and OK/Cancel:
-                //
-                //  Enter/OK   -> first option.
-                //  ESC/Cancel -> last option.
                 var optionIndex = this.serviceProvider.GetService<ITaskDialog>().ShowOptionsTaskDialog(
                     owner,
                     UnsafeNativeMethods.TD_INFORMATION_ICON,

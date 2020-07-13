@@ -36,7 +36,7 @@ using System.Windows.Forms;
 namespace Google.Solutions.IapDesktop.Application.Test.Services.Workflows
 {
     [TestFixture]
-    public class TestRemoteDesktopConnectionService : FixtureBase
+    public class TestIapRdpConnectionService : FixtureBase
     {
         private readonly ServiceRegistry serviceRegistry = new ServiceRegistry();
 
@@ -77,7 +77,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Workflows
 
             this.serviceRegistry.AddSingleton<IRemoteDesktopService>(remoteDesktopService.Object);
 
-            var service = new RemoteDesktopConnectionService(this.serviceRegistry);
+            var service = new IapRdpConnectionService(this.serviceRegistry);
             await service.ActivateOrConnectInstanceWithCredentialPromptAsync(
                 null,
                 IapRdpUrl.FromString("iap-rdp:///project/us-central-1/instance"));
@@ -108,7 +108,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Workflows
 
             this.serviceRegistry.AddSingleton<IRemoteDesktopService>(remoteDesktopService.Object);
 
-            var service = new RemoteDesktopConnectionService(this.serviceRegistry);
+            var service = new IapRdpConnectionService(this.serviceRegistry);
             await service.ActivateOrConnectInstanceWithCredentialPromptAsync(
                 null,
                 IapRdpUrl.FromString("iap-rdp:///project/us-central-1/instance?username=john%20doe"));

@@ -109,7 +109,7 @@
     <Compile Include="Services\Workflows\SynchronousJobService.cs" />
     <Compile Include="Services\Workflows\TestCredentialPrompt.cs" />
     <Compile Include="Services\Workflows\TestCredentialsService.cs" />
-    <Compile Include="Services\Workflows\TestRemoteDesktopConnectionService.cs" />
+    <Compile Include="Services\Workflows\TestIapRdpConnectionService.cs" />
     <Compile Include="Services\Workflows\TunnelEndpoint.cs" />
     <Compile Include="Util\TestLeastRecentlyUsedCache.cs" />
     <Compile Include="Util\TestRangeObservableCollection.cs" />
