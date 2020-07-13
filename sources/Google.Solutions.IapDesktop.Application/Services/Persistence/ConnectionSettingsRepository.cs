@@ -209,6 +209,16 @@ namespace Google.Solutions.IapDesktop.Application.Services.Persistence
         _Default = Disabled
     }
 
+    public enum RdpCredentialGenerationBehavior
+    {
+        Always,
+        Prompt,
+        Disable,
+
+        [Browsable(false)]
+        _Default = Prompt
+    }
+
     public abstract class ConnectionSettingsBase
     {
         //---------------------------------------------------------------------
@@ -313,6 +323,18 @@ namespace Google.Solutions.IapDesktop.Application.Services.Persistence
 
         [DwordRegistryValueAttribute("ConnectionTimeout")]
         public int ConnectionTimeout { get; set; } = 30;
+
+        public RdpCredentialGenerationBehavior CredentialGenerationBehavior { get; set; }
+            = RdpCredentialGenerationBehavior._Default;
+
+        [DwordRegistryValueAttribute("CredentialGenerationBehavior")]
+        protected int? _CredentialGenerationBehavior
+        {
+            get => (int)this.CredentialGenerationBehavior;
+            set => this.CredentialGenerationBehavior = value != null
+                ? (RdpCredentialGenerationBehavior)value
+                : RdpCredentialGenerationBehavior._Default;
+        }
     }
 
     public class VmInstanceConnectionSettings : ConnectionSettingsBase

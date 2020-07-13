@@ -32,7 +32,6 @@ using Google.Solutions.IapTunneling.Iap;
 using Google.Solutions.IapTunneling.Net;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -50,9 +49,6 @@ namespace Google.Solutions.IapDesktop.Application.Services.Workflows
         private readonly ICredentialsService credentialsService;
         private readonly ITaskDialog taskDialog;
 
-        private static string MakeNullIfEmpty(string s)
-            => string.IsNullOrEmpty(s) ? null : s;
-
         public RemoteDesktopConnectionService(IServiceProvider serviceProvider)
         {
             this.jobService = serviceProvider.GetService<IJobService>();
@@ -61,44 +57,6 @@ namespace Google.Solutions.IapDesktop.Application.Services.Workflows
             this.settingsEditor = serviceProvider.GetService<IConnectionSettingsWindow>();
             this.credentialsService = serviceProvider.GetService<ICredentialsService>();
             this.taskDialog = serviceProvider.GetService<ITaskDialog>();
-        }
-
-        private struct CredentialOption
-        {
-            public string Title;
-            public Func<Task> Apply;
-        }
-
-        private CredentialOption ShowCredentialOptionsTaskDialog(
-            IWin32Window owner,
-            string prompt,
-            string details,
-            IList<CredentialOption> options)
-        {
-            Debug.Assert(options.Count > 0);
-            if (options.Count == 1)
-            {
-                // If there is only one option, do not prompt at all.
-                return options[0];
-            }
-
-            // NB. The sequence of options determines the behavior of 
-            // Enter/ESC and OK/Cancel:
-            //
-            //  Enter/OK   -> first option.
-            //  ESC/Cancel -> last option.
-
-            int selectedOption = this.taskDialog.ShowOptionsTaskDialog(
-                owner,
-                UnsafeNativeMethods.TD_INFORMATION_ICON,
-                "Credentials",
-                prompt,
-                details,
-                null,
-                options.Select(o => o.Title).ToList(),
-                null,   //"Do not show this prompt again",
-                out bool donotAskAgain);
-            return options[selectedOption];
         }
 
         private async Task ConnectInstanceAsync(
@@ -146,6 +104,102 @@ namespace Google.Solutions.IapDesktop.Application.Services.Workflows
                 settings);
         }
 
+        private struct CredentialOption
+        {
+            public string Title;
+            public Func<Task> Apply;
+        }
+
+        private async Task ShowCredentialsPromptAsync(
+            IWin32Window owner,
+            InstanceLocator instanceLocator,
+            ConnectionSettingsEditor settings,
+            bool allowJumpToSettings)
+        {
+            //
+            // Determine which options to show in prompt.
+            //
+            var credentialsExist =
+                !string.IsNullOrEmpty(settings.Username) &&
+                settings.Password != null &&
+                settings.Password.Length != 0;
+
+            var options = new List<CredentialOption>();
+            if ((!credentialsExist && settings.CredentialGenerationBehavior == RdpCredentialGenerationBehavior.Prompt) ||
+                settings.CredentialGenerationBehavior == RdpCredentialGenerationBehavior.Always)
+            {
+                // TODO: check for permission
+
+                options.Add(
+                    new CredentialOption()
+                    {
+                        Title = "Generate new credentials",
+                        Apply = () => this.credentialsService.GenerateCredentialsAsync(
+                            owner,
+                            instanceLocator,
+                            settings)
+                    });
+            }
+
+            if (!credentialsExist && allowJumpToSettings)
+            {
+                options.Add(
+                    new CredentialOption()
+                    {
+                        Title = "Configure credentials",
+                        Apply = () =>
+                        {
+                            // Configure credentials -> jump to settings.
+                            this.settingsEditor.ShowWindow();
+                            return Task.CompletedTask;
+                        }
+                    });
+            }
+
+            options.Add(
+                new CredentialOption()
+                {
+                    Title = "Connect anyway",
+                    Apply = () => Task.CompletedTask
+                });
+
+            //
+            // Prompt.
+            //
+            CredentialOption selectedOption;
+            if (options.Count > 1)
+            {
+                // NB. The sequence of options determines the behavior of 
+                // Enter/ESC and OK/Cancel:
+                //
+                //  Enter/OK   -> first option.
+                //  ESC/Cancel -> last option.
+                var optionIndex = this.taskDialog.ShowOptionsTaskDialog(
+                    owner,
+                    UnsafeNativeMethods.TD_INFORMATION_ICON,
+                    "Credentials",
+                    $"You do not have any saved credentials for {instanceLocator.Name}",
+                    null,
+                    null,
+                    options.Select(o => o.Title).ToList(),
+                    null,   //"Do not show this prompt again",
+                    out bool donotAskAgain);
+                selectedOption = options[optionIndex];
+            }
+            else
+            {
+                // Do not prompt if there is only one option.
+                selectedOption = options[0];
+            }
+
+            // 
+            // Apply.
+            //
+            await selectedOption
+                .Apply()
+                .ConfigureAwait(true);
+        }
+
         public async Task ActivateOrConnectInstanceWithCredentialPromptAsync(
             IWin32Window owner,
             VmInstanceNode vmNode)
@@ -159,44 +213,12 @@ namespace Google.Solutions.IapDesktop.Application.Services.Workflows
             // Select node so that tracking windows are updated.
             vmNode.Select();
 
-            var settings = vmNode.SettingsEditor;
-            if (string.IsNullOrEmpty(settings.Username) || settings.Password == null || settings.Password.Length == 0)
-            {
-                var options = new List<CredentialOption>()
-                {
-                    new CredentialOption()
-                    {
-                        Title = "Configure credentials",
-                        Apply = () =>
-                        {
-                            // Configure credentials -> jump to settings.
-                            this.settingsEditor.ShowWindow();
-                            return Task.CompletedTask;
-                        }
-                    },
-                    new CredentialOption()
-                    {
-                        Title = "Generate new credentials",
-                        Apply = () => this.credentialsService.GenerateCredentialsAsync(
-                            owner,
-                            vmNode.Reference,
-                            vmNode.SettingsEditor)
-                    },
-                    new CredentialOption()
-                    {
-                        Title = "Connect anyway",
-                        Apply = () => Task.CompletedTask
-                    }
-                };
-
-                await ShowCredentialOptionsTaskDialog(
-                        owner,
-                        $"You have not configured any credentials for {vmNode.InstanceName}",
-                        "Would you like to configure or generate credentials now?",
-                        options)
-                    .Apply()
-                    .ConfigureAwait(true);
-            }
+            await ShowCredentialsPromptAsync(
+                    owner,
+                    vmNode.Reference,
+                    vmNode.SettingsEditor,
+                    true)
+                .ConfigureAwait(true);
 
             await ConnectInstanceAsync(
                     vmNode.Reference,
@@ -221,30 +243,11 @@ namespace Google.Solutions.IapDesktop.Application.Services.Workflows
                 _ => { },
                 null);
 
-            var options = new List<CredentialOption>()
-                {
-                    new CredentialOption()
-                    {
-                        Title = "Yes, generate new credentials",
-                        Apply = () => this.credentialsService.GenerateCredentialsAsync(
-                            owner,
-                            url.Instance,
-                            settingsEditor,
-                            MakeNullIfEmpty(url.Settings.Username))
-                    },
-                    new CredentialOption()
-                    {
-                        Title = "Enter existing credentials",
-                        Apply = () => Task.CompletedTask
-                    }
-                };
-
-            await ShowCredentialOptionsTaskDialog(
+            await ShowCredentialsPromptAsync(
                     owner,
-                    $"Would you like to generate credentials for {url.Instance.Name} first?",
-                    null,
-                    options)
-                .Apply()
+                    url.Instance,
+                    settingsEditor,
+                    false)
                 .ConfigureAwait(true);
 
             await ConnectInstanceAsync(

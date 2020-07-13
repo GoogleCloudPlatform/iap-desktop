@@ -80,7 +80,8 @@ namespace Google.Solutions.IapDesktop.Application.Services.Windows.ConnectionSet
                 Username = this.Username,
                 Password = this.Password,
                 Domain = this.Domain,
-                BitmapPersistence = this.BitmapPersistence
+                BitmapPersistence = this.BitmapPersistence,
+                CredentialGenerationBehavior = this.CredentialGenerationBehavior
             };
         }
 
@@ -288,5 +289,21 @@ namespace Google.Solutions.IapDesktop.Application.Services.Windows.ConnectionSet
             => this.settings.BitmapPersistence != RdpBitmapPersistence._Default;
 
         public bool ShouldSerializeBitmapPersistence() => IsBitmapPersistenceSet;
+
+        //---------------------------------------------------------------------
+
+        [Browsable(false)]
+        public RdpCredentialGenerationBehavior CredentialGenerationBehavior
+        {
+            get => IsCredentialGenerationBehaviorSet
+                ? this.settings.CredentialGenerationBehavior
+                : (this.parent != null ? this.parent.CredentialGenerationBehavior : RdpCredentialGenerationBehavior._Default);
+            set => this.settings.CredentialGenerationBehavior = value;
+        }
+
+        protected bool IsCredentialGenerationBehaviorSet
+            => this.settings.CredentialGenerationBehavior != RdpCredentialGenerationBehavior._Default;
+
+        public bool ShouldSerializeCredentialGenerationBehavior() => IsCredentialGenerationBehaviorSet;
     }
 }
