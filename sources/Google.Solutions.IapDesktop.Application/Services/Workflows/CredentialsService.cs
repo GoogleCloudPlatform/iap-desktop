@@ -23,10 +23,14 @@ using Google.Solutions.Common.Locator;
 using Google.Solutions.IapDesktop.Application.ObjectModel;
 using Google.Solutions.IapDesktop.Application.Services.Adapters;
 using Google.Solutions.IapDesktop.Application.Services.Integration;
+using Google.Solutions.IapDesktop.Application.Services.Persistence;
+using Google.Solutions.IapDesktop.Application.Services.Windows;
 using Google.Solutions.IapDesktop.Application.Services.Windows.ConnectionSettings;
 using Google.Solutions.IapDesktop.Application.Services.Windows.ProjectExplorer;
 using Google.Solutions.IapDesktop.Application.Util;
 using System;
+using System.Linq;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
@@ -39,21 +43,21 @@ namespace Google.Solutions.IapDesktop.Application.Services.Workflows
             InstanceLocator instanceRef,
             ConnectionSettingsEditor settings,
             string suggestedUsername = null);
+
+        Task ShowCredentialsPromptAsync(
+           IWin32Window owner,
+           InstanceLocator instanceLocator,
+           ConnectionSettingsEditor settings,
+           bool allowJumpToSettings);
     }
 
     public class CredentialsService : ICredentialsService
     {
-        private readonly IJobService jobService;
-        private readonly IEventService eventService;
-        private readonly IAuthorizationAdapter authService;
-        private readonly IComputeEngineAdapter computeEngineAdapter;
+        private readonly IServiceProvider serviceProvider;
 
         public CredentialsService(IServiceProvider serviceProvider)
         {
-            this.jobService = serviceProvider.GetService<IJobService>();
-            this.eventService = serviceProvider.GetService<IEventService>();
-            this.authService = serviceProvider.GetService<IAuthorizationAdapter>();
-            this.computeEngineAdapter = serviceProvider.GetService<IComputeEngineAdapter>();
+            this.serviceProvider = serviceProvider;
         }
 
         public async Task GenerateCredentialsAsync(
@@ -63,24 +67,31 @@ namespace Google.Solutions.IapDesktop.Application.Services.Workflows
             string suggestedUsername = null)
         {
             // Prompt for username to use.
-            var username = new GenerateCredentialsDialog().PromptForUsername(
-                owner,
-                suggestedUsername ?? this.authService.Authorization.SuggestWindowsUsername());
+            var username = this.serviceProvider
+                .GetService<IGenerateCredentialsDialog>()
+                .PromptForUsername(
+                    owner,
+                    suggestedUsername ?? this.serviceProvider
+                        .GetService<IAuthorizationAdapter>()
+                        .Authorization
+                        .SuggestWindowsUsername());
             if (username == null)
             {
                 // Aborted.
                 throw new OperationCanceledException();
             }
 
-            var credentials = await this.jobService.RunInBackground(
+            var credentials = await this.serviceProvider.GetService<IJobService>().RunInBackground(
                 new JobDescription("Generating Windows logon credentials..."),
-                token => this.computeEngineAdapter.ResetWindowsUserAsync(
-                    instanceLocator,
-                    username,
-                    token))
+                token => this.serviceProvider
+                    .GetService<IComputeEngineAdapter>()
+                    .ResetWindowsUserAsync(
+                        instanceLocator,
+                        username,
+                        token))
                 .ConfigureAwait(true);
 
-            new ShowCredentialsDialog().ShowDialog(
+            this.serviceProvider.GetService<IShowCredentialsDialog>().ShowDialog(
                 owner,
                 credentials.UserName,
                 credentials.Password);
@@ -90,6 +101,103 @@ namespace Google.Solutions.IapDesktop.Application.Services.Workflows
             settings.CleartextPassword = credentials.Password;
             settings.Domain = null;
             settings.SaveChanges();
+        }
+
+        public async Task ShowCredentialsPromptAsync(
+            IWin32Window owner,
+            InstanceLocator instanceLocator,
+            ConnectionSettingsEditor settings,
+            bool allowJumpToSettings)
+        {
+            //
+            // Determine which options to show in prompt.
+            //
+            var credentialsExist =
+                !string.IsNullOrEmpty(settings.Username) &&
+                settings.Password != null &&
+                settings.Password.Length != 0;
+
+            var options = new List<CredentialOption>();
+            if ((!credentialsExist && settings.CredentialGenerationBehavior == RdpCredentialGenerationBehavior.Prompt) ||
+                settings.CredentialGenerationBehavior == RdpCredentialGenerationBehavior.Always)
+            {
+                // TODO: check for permission
+
+                options.Add(
+                    new CredentialOption()
+                    {
+                        Title = "Generate new credentials",
+                        Apply = () => GenerateCredentialsAsync(
+                            owner,
+                            instanceLocator,
+                            settings)
+                    });
+            }
+
+            if (!credentialsExist && allowJumpToSettings)
+            {
+                options.Add(
+                    new CredentialOption()
+                    {
+                        Title = "Configure credentials",
+                        Apply = () =>
+                        {
+                            // Configure credentials -> jump to settings.
+                            this.serviceProvider.GetService<IConnectionSettingsWindow>().ShowWindow();
+                            return Task.FromException(new OperationCanceledException());
+                        }
+                    });
+            }
+
+            options.Add(
+                new CredentialOption()
+                {
+                    Title = "Connect without configuring credentials",
+                    Apply = () => Task.CompletedTask
+                });
+
+            //
+            // Prompt.
+            //
+            CredentialOption selectedOption;
+            if (options.Count > 1)
+            {
+                // NB. The sequence of options determines the behavior of 
+                // Enter/ESC and OK/Cancel:
+                //
+                //  Enter/OK   -> first option.
+                //  ESC/Cancel -> last option.
+                var optionIndex = this.serviceProvider.GetService<ITaskDialog>().ShowOptionsTaskDialog(
+                    owner,
+                    UnsafeNativeMethods.TD_INFORMATION_ICON,
+                    "Credentials",
+                    $"You do not have any saved credentials for {instanceLocator.Name}",
+                    "How do you want to proceed?",
+                    null,
+                    options.Select(o => o.Title).ToList(),
+                    null,   //"Do not show this prompt again",
+                    out bool donotAskAgain);
+                selectedOption = options[optionIndex];
+            }
+            else
+            {
+                // Do not prompt if there is only one option.
+                selectedOption = options[0];
+            }
+
+            // 
+            // Apply.
+            //
+            await selectedOption
+                .Apply()
+                .ConfigureAwait(true);
+        }
+
+
+        private struct CredentialOption
+        {
+            public string Title;
+            public Func<Task> Apply;
         }
     }
 }

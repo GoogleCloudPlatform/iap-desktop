@@ -23,7 +23,14 @@ using System.Windows.Forms;
 
 namespace Google.Solutions.IapDesktop.Application.Services.Workflows
 {
-    public partial class GenerateCredentialsDialog : Form
+    public interface IGenerateCredentialsDialog
+    {
+        string PromptForUsername(
+            IWin32Window owner,
+            string suggestedUsername);
+    }
+
+    public partial class GenerateCredentialsDialog : Form, IGenerateCredentialsDialog
     {
         // SAM usernames do not permit these characters, see
         // https://docs.microsoft.com/en-us/windows/desktop/adschema/a-samaccountname
@@ -41,7 +48,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.Workflows
             e.Handled = DisallowsCharactersInUsername.IndexOf(e.KeyChar) >= 0;
         }
 
-        internal string PromptForUsername(
+        public string PromptForUsername(
             IWin32Window owner,
             string suggestedUsername)
         {

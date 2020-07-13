@@ -23,7 +23,6 @@ using Google.Solutions.Common.Locator;
 using Google.Solutions.IapDesktop.Application.ObjectModel;
 using Google.Solutions.IapDesktop.Application.Services.Integration;
 using Google.Solutions.IapDesktop.Application.Services.Persistence;
-using Google.Solutions.IapDesktop.Application.Services.Windows;
 using Google.Solutions.IapDesktop.Application.Services.Windows.ConnectionSettings;
 using Google.Solutions.IapDesktop.Application.Services.Windows.ProjectExplorer;
 using Google.Solutions.IapDesktop.Application.Services.Windows.RemoteDesktop;
@@ -31,8 +30,6 @@ using Google.Solutions.IapDesktop.Application.Util;
 using Google.Solutions.IapTunneling.Iap;
 using Google.Solutions.IapTunneling.Net;
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
@@ -45,18 +42,14 @@ namespace Google.Solutions.IapDesktop.Application.Services.Workflows
         private readonly IJobService jobService;
         private readonly IRemoteDesktopService remoteDesktopService;
         private readonly ITunnelBrokerService tunnelBrokerService;
-        private readonly IConnectionSettingsWindow settingsEditor;
         private readonly ICredentialsService credentialsService;
-        private readonly ITaskDialog taskDialog;
 
         public RemoteDesktopConnectionService(IServiceProvider serviceProvider)
         {
             this.jobService = serviceProvider.GetService<IJobService>();
             this.remoteDesktopService = serviceProvider.GetService<IRemoteDesktopService>();
             this.tunnelBrokerService = serviceProvider.GetService<ITunnelBrokerService>();
-            this.settingsEditor = serviceProvider.GetService<IConnectionSettingsWindow>();
             this.credentialsService = serviceProvider.GetService<ICredentialsService>();
-            this.taskDialog = serviceProvider.GetService<ITaskDialog>();
         }
 
         private async Task ConnectInstanceAsync(
@@ -104,102 +97,6 @@ namespace Google.Solutions.IapDesktop.Application.Services.Workflows
                 settings);
         }
 
-        private struct CredentialOption
-        {
-            public string Title;
-            public Func<Task> Apply;
-        }
-
-        private async Task ShowCredentialsPromptAsync(
-            IWin32Window owner,
-            InstanceLocator instanceLocator,
-            ConnectionSettingsEditor settings,
-            bool allowJumpToSettings)
-        {
-            //
-            // Determine which options to show in prompt.
-            //
-            var credentialsExist =
-                !string.IsNullOrEmpty(settings.Username) &&
-                settings.Password != null &&
-                settings.Password.Length != 0;
-
-            var options = new List<CredentialOption>();
-            if ((!credentialsExist && settings.CredentialGenerationBehavior == RdpCredentialGenerationBehavior.Prompt) ||
-                settings.CredentialGenerationBehavior == RdpCredentialGenerationBehavior.Always)
-            {
-                // TODO: check for permission
-
-                options.Add(
-                    new CredentialOption()
-                    {
-                        Title = "Generate new credentials",
-                        Apply = () => this.credentialsService.GenerateCredentialsAsync(
-                            owner,
-                            instanceLocator,
-                            settings)
-                    });
-            }
-
-            if (!credentialsExist && allowJumpToSettings)
-            {
-                options.Add(
-                    new CredentialOption()
-                    {
-                        Title = "Configure credentials",
-                        Apply = () =>
-                        {
-                            // Configure credentials -> jump to settings.
-                            this.settingsEditor.ShowWindow();
-                            return Task.CompletedTask;
-                        }
-                    });
-            }
-
-            options.Add(
-                new CredentialOption()
-                {
-                    Title = "Connect anyway",
-                    Apply = () => Task.CompletedTask
-                });
-
-            //
-            // Prompt.
-            //
-            CredentialOption selectedOption;
-            if (options.Count > 1)
-            {
-                // NB. The sequence of options determines the behavior of 
-                // Enter/ESC and OK/Cancel:
-                //
-                //  Enter/OK   -> first option.
-                //  ESC/Cancel -> last option.
-                var optionIndex = this.taskDialog.ShowOptionsTaskDialog(
-                    owner,
-                    UnsafeNativeMethods.TD_INFORMATION_ICON,
-                    "Credentials",
-                    $"You do not have any saved credentials for {instanceLocator.Name}",
-                    null,
-                    null,
-                    options.Select(o => o.Title).ToList(),
-                    null,   //"Do not show this prompt again",
-                    out bool donotAskAgain);
-                selectedOption = options[optionIndex];
-            }
-            else
-            {
-                // Do not prompt if there is only one option.
-                selectedOption = options[0];
-            }
-
-            // 
-            // Apply.
-            //
-            await selectedOption
-                .Apply()
-                .ConfigureAwait(true);
-        }
-
         public async Task ActivateOrConnectInstanceWithCredentialPromptAsync(
             IWin32Window owner,
             VmInstanceNode vmNode)
@@ -213,7 +110,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.Workflows
             // Select node so that tracking windows are updated.
             vmNode.Select();
 
-            await ShowCredentialsPromptAsync(
+            await this.credentialsService.ShowCredentialsPromptAsync(
                     owner,
                     vmNode.Reference,
                     vmNode.SettingsEditor,
@@ -243,7 +140,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.Workflows
                 _ => { },
                 null);
 
-            await ShowCredentialsPromptAsync(
+            await this.credentialsService.ShowCredentialsPromptAsync(
                     owner,
                     url.Instance,
                     settingsEditor,

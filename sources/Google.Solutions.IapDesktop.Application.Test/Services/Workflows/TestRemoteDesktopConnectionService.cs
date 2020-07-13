@@ -39,7 +39,7 @@ using System.Windows.Forms;
 namespace Google.Solutions.IapDesktop.Application.Test.Services.Workflows
 {
     [TestFixture]
-    public class TestRemoteDesktopConnectionService
+    public class TestRemoteDesktopConnectionService : FixtureBase
     {
         private readonly ServiceRegistry serviceRegistry = new ServiceRegistry();
 

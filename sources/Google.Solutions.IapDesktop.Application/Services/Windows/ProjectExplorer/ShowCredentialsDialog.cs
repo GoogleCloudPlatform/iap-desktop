@@ -26,7 +26,15 @@ using System.Windows.Forms;
 
 namespace Google.Solutions.IapDesktop.Application.Services.Windows.ProjectExplorer
 {
-    public partial class ShowCredentialsDialog : Form
+    public interface IShowCredentialsDialog
+    {
+        void ShowDialog(
+            IWin32Window owner,
+            string username,
+            string password);
+    }
+
+    public partial class ShowCredentialsDialog : Form, IShowCredentialsDialog
     {
         public ShowCredentialsDialog()
         {
@@ -51,7 +59,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.Windows.ProjectExplor
                 (IntPtr)(copyPasswordButton.Width << 16));
         }
 
-        internal void ShowDialog(
+        public void ShowDialog(
             IWin32Window owner,
             string username,
             string password)

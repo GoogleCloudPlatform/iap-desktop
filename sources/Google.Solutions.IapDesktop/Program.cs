@@ -251,6 +251,8 @@ namespace Google.Solutions.IapDesktop
             windowAndWorkflowLayer.AddSingleton<IMainForm>(mainForm);
             windowAndWorkflowLayer.AddTransient<CloudConsoleService>();
             windowAndWorkflowLayer.AddTransient<IProjectPickerDialog, ProjectPickerDialog>();
+            windowAndWorkflowLayer.AddTransient<IShowCredentialsDialog, ShowCredentialsDialog>();
+            windowAndWorkflowLayer.AddTransient<IGenerateCredentialsDialog, GenerateCredentialsDialog>();
             windowAndWorkflowLayer.AddTransient<AboutWindow>();
             windowAndWorkflowLayer.AddTransient<IExceptionDialog, ExceptionDialog>();
             windowAndWorkflowLayer.AddTransient<IConfirmationDialog, ConfirmationDialog>();
