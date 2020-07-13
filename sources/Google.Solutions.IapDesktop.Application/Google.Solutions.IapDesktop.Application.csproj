@@ -155,6 +155,7 @@
     </Compile>
     <Compile Include="Services\Windows\TaskDialog.cs" />
     <Compile Include="Services\Windows\TunnelsViewer\TunnelsViewModel.cs" />
+    <Compile Include="Services\Workflows\CredentialPrompt.cs" />
     <Compile Include="Services\Workflows\CredentialsService.cs" />
     <Compile Include="Services\Workflows\RemoteDesktopConnectionService.cs" />
     <Compile Include="Services\Workflows\UpdateService.cs" />

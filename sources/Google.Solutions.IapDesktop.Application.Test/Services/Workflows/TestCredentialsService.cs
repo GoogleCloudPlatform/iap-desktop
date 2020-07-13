@@ -49,365 +49,69 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Workflows
         private static readonly InstanceLocator SampleInstance
             = new InstanceLocator("project-1", "zone-1", "instance-1");
 
-        private ICredentialsService CreateCredentialsService(Mock<ITaskDialog> taskDialogMock)
+
+        [Test]
+        public void WhenSuggestedUserNameProvided_ThenSuggestionIsUsed()
         {
-            this.serviceRegistry.AddTransient<IJobService, SynchronousJobService>();
-            this.serviceRegistry.AddMock<IConnectionSettingsWindow>();
-            this.serviceRegistry.AddMock<IShowCredentialsDialog>();
-
-            this.serviceRegistry.AddMock<IComputeEngineAdapter>()
-                .Setup(a => a.ResetWindowsUserAsync(
-                    It.IsAny<InstanceLocator>(),
-                    It.IsAny<string>(),
-                    It.IsAny<CancellationToken>()))
-                .ReturnsAsync(new System.Net.NetworkCredential("bob", "secret"));
-
-            this.serviceRegistry.AddMock<IGenerateCredentialsDialog>()
+            var serviceRegistry = new ServiceRegistry();
+            var credDialog = serviceRegistry.AddMock<IGenerateCredentialsDialog>();
+            credDialog
                 .Setup(d => d.PromptForUsername(
                     It.IsAny<IWin32Window>(),
                     It.IsAny<string>()))
-                .Returns("bob");
+                .Returns<string>(null); // Cancel dialog
 
-            var auth = new Mock<IAuthorization>();
-            auth.SetupGet(a => a.Email).Returns("bob@gmail.com");
-            
-            var authAdapter = serviceRegistry.AddMock<IAuthorizationAdapter>();
-            authAdapter.SetupGet(a => a.Authorization).Returns(auth.Object);
-
-            this.serviceRegistry.AddSingleton<ITaskDialog>(taskDialogMock.Object);
-            return new CredentialsService(serviceRegistry);
-        }
-
-        //---------------------------------------------------------------------
-        // Behavior = Always.
-        //---------------------------------------------------------------------
-
-        [Test]
-        public async Task WhenNoCredentialsExistAndBehaviorSetToAlways_ThenGenerateOptionIsShown()
-        {
-            var taskDialog = new Mock<ITaskDialog>();
-            taskDialog.Setup(t => t.ShowOptionsTaskDialog(
-                It.IsAny<IWin32Window>(),
-                It.IsAny<IntPtr>(),
-                It.IsAny<string>(),
-                It.IsAny<string>(),
-                It.IsAny<string>(),
-                It.IsAny<string>(),
-                It.IsAny<IList<string>>(),
-                It.IsAny<string>(),
-                out It.Ref<bool>.IsAny)).Returns(0);
-
-            var credentialService = CreateCredentialsService(taskDialog);
             var settings = new ConnectionSettingsEditor(
                 new VmInstanceConnectionSettings(),
                 _ => { },
                 null);
-
-            settings.CredentialGenerationBehavior = RdpCredentialGenerationBehavior.Always;
-
-            await credentialService.ShowCredentialsPromptAsync(
-                null,
-                SampleInstance,
-                settings,
-                true);
-
-            Assert.AreEqual("bob", settings.Username);
-            Assert.AreEqual("secret", settings.Password.AsClearText());
-            Assert.IsNull(settings.Domain);
-
-            taskDialog.Verify(t => t.ShowOptionsTaskDialog(
-                It.IsAny<IWin32Window>(),
-                It.IsAny<IntPtr>(),
-                It.IsAny<string>(),
-                It.IsAny<string>(),
-                It.IsAny<string>(),
-                It.IsAny<string>(),
-                It.Is<IList<string>>(options => options.Count == 3),
-                It.IsAny<string>(),
-                out It.Ref<bool>.IsAny), Times.Once);
-        }
-
-        [Test]
-        public async Task WhenCredentialsExistAndBehaviorSetToAlways_ThenGenerateOptionIsShown()
-        {
-            var taskDialog = new Mock<ITaskDialog>();
-            taskDialog.Setup(t => t.ShowOptionsTaskDialog(
-                It.IsAny<IWin32Window>(),
-                It.IsAny<IntPtr>(),
-                It.IsAny<string>(),
-                It.IsAny<string>(),
-                It.IsAny<string>(),
-                It.IsAny<string>(),
-                It.IsAny<IList<string>>(),
-                It.IsAny<string>(),
-                out It.Ref<bool>.IsAny)).Returns(0);
-
-            var credentialService = CreateCredentialsService(taskDialog);
-            var settings = new ConnectionSettingsEditor(
-                new VmInstanceConnectionSettings(),
-                _ => { },
-                null);
-
-            settings.CredentialGenerationBehavior = RdpCredentialGenerationBehavior.Always;
             settings.Username = "alice";
-            settings.CleartextPassword = "alicespassword";
 
-            await credentialService.ShowCredentialsPromptAsync(
-                null,
-                SampleInstance,
-                settings,
-                true);
-
-            Assert.AreEqual("bob", settings.Username);
-            Assert.AreEqual("secret", settings.Password.AsClearText());
-            Assert.IsNull(settings.Domain);
-
-            taskDialog.Verify(t => t.ShowOptionsTaskDialog(
-                It.IsAny<IWin32Window>(),
-                It.IsAny<IntPtr>(),
-                It.IsAny<string>(),
-                It.IsAny<string>(),
-                It.IsAny<string>(),
-                It.IsAny<string>(),
-                It.Is<IList<string>>(options => options.Count == 2),
-                It.IsAny<string>(),
-                out It.Ref<bool>.IsAny), Times.Once);
-        }
-
-        //---------------------------------------------------------------------
-        // Behavior = Prompt.
-        //---------------------------------------------------------------------
-
-        [Test]
-        public async Task WhenNoCredentialsExistAndBehaviorSetToPrompt_ThenGenerateOptionIsShown()
-        {
-            var taskDialog = new Mock<ITaskDialog>();
-            taskDialog.Setup(t => t.ShowOptionsTaskDialog(
-                It.IsAny<IWin32Window>(),
-                It.IsAny<IntPtr>(),
-                It.IsAny<string>(),
-                It.IsAny<string>(),
-                It.IsAny<string>(),
-                It.IsAny<string>(),
-                It.IsAny<IList<string>>(),
-                It.IsAny<string>(),
-                out It.Ref<bool>.IsAny)).Returns(0);
-
-            var credentialService = CreateCredentialsService(taskDialog);
-            var settings = new ConnectionSettingsEditor(
-                new VmInstanceConnectionSettings(),
-                _ => { },
-                null);
-
-            settings.CredentialGenerationBehavior = RdpCredentialGenerationBehavior.Prompt;
-
-            await credentialService.ShowCredentialsPromptAsync(
-                null,
-                SampleInstance,
-                settings,
-                true);
-
-            Assert.AreEqual("bob", settings.Username);
-            Assert.AreEqual("secret", settings.Password.AsClearText());
-            Assert.IsNull(settings.Domain);
-
-            taskDialog.Verify(t => t.ShowOptionsTaskDialog(
-                It.IsAny<IWin32Window>(),
-                It.IsAny<IntPtr>(),
-                It.IsAny<string>(),
-                It.IsAny<string>(),
-                It.IsAny<string>(),
-                It.IsAny<string>(),
-                It.Is<IList<string>>(options => options.Count == 3),
-                It.IsAny<string>(),
-                out It.Ref<bool>.IsAny), Times.Once);
-        }
-
-        [Test]
-        public async Task WhenCredentialsExistAndBehaviorSetToPrompt_ThenDialogIsSkipped()
-        {
-            var taskDialog = new Mock<ITaskDialog>();
-            taskDialog.Setup(t => t.ShowOptionsTaskDialog(
-                It.IsAny<IWin32Window>(),
-                It.IsAny<IntPtr>(),
-                It.IsAny<string>(),
-                It.IsAny<string>(),
-                It.IsAny<string>(),
-                It.IsAny<string>(),
-                It.IsAny<IList<string>>(),
-                It.IsAny<string>(),
-                out It.Ref<bool>.IsAny)).Returns(0);
-
-            var credentialService = CreateCredentialsService(taskDialog);
-            var settings = new ConnectionSettingsEditor(
-                new VmInstanceConnectionSettings(),
-                _ => { },
-                null);
-
-            settings.CredentialGenerationBehavior = RdpCredentialGenerationBehavior.Prompt;
-            settings.Username = "alice";
-            settings.CleartextPassword = "alicespassword";
-
-            await credentialService.ShowCredentialsPromptAsync(
-                null,
-                SampleInstance,
-                settings,
-                true);
-
-            Assert.AreEqual("alice", settings.Username);
-            Assert.AreEqual("alicespassword", settings.Password.AsClearText());
-            Assert.IsNull(settings.Domain);
-
-            taskDialog.Verify(t => t.ShowOptionsTaskDialog(
-                It.IsAny<IWin32Window>(),
-                It.IsAny<IntPtr>(),
-                It.IsAny<string>(),
-                It.IsAny<string>(),
-                It.IsAny<string>(),
-                It.IsAny<string>(),
-                It.IsAny<IList<string>>(),
-                It.IsAny<string>(),
-                out It.Ref<bool>.IsAny), Times.Never);
-        }
-
-        //---------------------------------------------------------------------
-        // Behavior = Disabled.
-        //---------------------------------------------------------------------
-
-        [Test]
-        public void WhenNoCredentialsExistAndBehaviorSetToDisabledAndJumpToSettingsAllowed_ThenJumpToSettingsOptionIsShown()
-        {
-            var taskDialog = new Mock<ITaskDialog>();
-            taskDialog.Setup(t => t.ShowOptionsTaskDialog(
-                It.IsAny<IWin32Window>(),
-                It.IsAny<IntPtr>(),
-                It.IsAny<string>(),
-                It.IsAny<string>(),
-                It.IsAny<string>(),
-                It.IsAny<string>(),
-                It.IsAny<IList<string>>(),
-                It.IsAny<string>(),
-                out It.Ref<bool>.IsAny)).Returns(0);
-
-            var credentialService = CreateCredentialsService(taskDialog);
-            var window = this.serviceRegistry.AddMock<IConnectionSettingsWindow>();
-            var settings = new ConnectionSettingsEditor(
-                new VmInstanceConnectionSettings(),
-                _ => { },
-                null);
-
-            settings.CredentialGenerationBehavior = RdpCredentialGenerationBehavior.Disable;
-
+            var credentialsService = new CredentialsService(serviceRegistry);
             AssertEx.ThrowsAggregateException<TaskCanceledException>(
-                () => credentialService.ShowCredentialsPromptAsync(
-                null,
-                SampleInstance,
-                settings,
-                true).Wait());
+                () => credentialsService.GenerateCredentialsAsync(
+                    null,
+                    SampleInstance,
+                    settings).Wait());
 
-            window.Verify(w => w.ShowWindow(), Times.Once);
-            taskDialog.Verify(t => t.ShowOptionsTaskDialog(
+            credDialog.Verify(d => d.PromptForUsername(
                 It.IsAny<IWin32Window>(),
-                It.IsAny<IntPtr>(),
-                It.IsAny<string>(),
-                It.IsAny<string>(),
-                It.IsAny<string>(),
-                It.IsAny<string>(),
-                It.Is<IList<string>>(options => options.Count == 2),
-                It.IsAny<string>(),
-                out It.Ref<bool>.IsAny), Times.Once);
+                It.Is<string>(u => u == "alice")), Times.Once);
         }
 
         [Test]
-        public async Task WhenNoCredentialsExistAndBehaviorSetToDisabledAndJumpToSettingsNotAllowed_ThenDialogIsSkipped()
+        public void WhenNoSuggestedUserNameProvided_ThenSuggestionIsDerivedFromSigninName()
         {
-            var taskDialog = new Mock<ITaskDialog>();
-            taskDialog.Setup(t => t.ShowOptionsTaskDialog(
-                It.IsAny<IWin32Window>(),
-                It.IsAny<IntPtr>(),
-                It.IsAny<string>(),
-                It.IsAny<string>(),
-                It.IsAny<string>(),
-                It.IsAny<string>(),
-                It.IsAny<IList<string>>(),
-                It.IsAny<string>(),
-                out It.Ref<bool>.IsAny)).Returns(1);
+            var serviceRegistry = new ServiceRegistry();
+            
+            var auth = new Mock<IAuthorization>();
+            auth.SetupGet(a => a.Email).Returns("bobsemail@gmail.com");
 
-            var credentialService = CreateCredentialsService(taskDialog);
+            serviceRegistry.AddMock<IAuthorizationAdapter>()
+                .SetupGet(a => a.Authorization).Returns(auth.Object);
+
+            var credDialog = serviceRegistry.AddMock<IGenerateCredentialsDialog>();
+            credDialog
+                .Setup(d => d.PromptForUsername(
+                    It.IsAny<IWin32Window>(),
+                    It.IsAny<string>()))
+                .Returns<string>(null); // Cancel dialog
+
             var settings = new ConnectionSettingsEditor(
                 new VmInstanceConnectionSettings(),
                 _ => { },
                 null);
 
-            settings.CredentialGenerationBehavior = RdpCredentialGenerationBehavior.Disable;
+            var credentialsService = new CredentialsService(serviceRegistry);
+            AssertEx.ThrowsAggregateException<TaskCanceledException>(
+                () => credentialsService.GenerateCredentialsAsync(
+                    null,
+                    SampleInstance,
+                    settings).Wait());
 
-            await credentialService.ShowCredentialsPromptAsync(
-                null,
-                SampleInstance,
-                settings,
-                false);
-
-            Assert.IsNull(settings.Username);
-            Assert.IsNull(settings.Password);
-            Assert.IsNull(settings.Domain);
-
-            taskDialog.Verify(t => t.ShowOptionsTaskDialog(
+            credDialog.Verify(d => d.PromptForUsername(
                 It.IsAny<IWin32Window>(),
-                It.IsAny<IntPtr>(),
-                It.IsAny<string>(),
-                It.IsAny<string>(),
-                It.IsAny<string>(),
-                It.IsAny<string>(),
-                It.IsAny<IList<string>>(),
-                It.IsAny<string>(),
-                out It.Ref<bool>.IsAny), Times.Never);
-        }
-
-        [Test]
-        public async Task WhenCredentialsExistAndBehaviorSetToDisabled_ThenDialogIsSkipped()
-        {
-            var taskDialog = new Mock<ITaskDialog>();
-            taskDialog.Setup(t => t.ShowOptionsTaskDialog(
-                It.IsAny<IWin32Window>(),
-                It.IsAny<IntPtr>(),
-                It.IsAny<string>(),
-                It.IsAny<string>(),
-                It.IsAny<string>(),
-                It.IsAny<string>(),
-                It.IsAny<IList<string>>(),
-                It.IsAny<string>(),
-                out It.Ref<bool>.IsAny)).Returns(0);
-
-            var credentialService = CreateCredentialsService(taskDialog);
-            var settings = new ConnectionSettingsEditor(
-                new VmInstanceConnectionSettings(),
-                _ => { },
-                null);
-
-            settings.CredentialGenerationBehavior = RdpCredentialGenerationBehavior.Prompt;
-            settings.Username = "alice";
-            settings.CleartextPassword = "alicespassword";
-
-            await credentialService.ShowCredentialsPromptAsync(
-                null,
-                SampleInstance,
-                settings,
-                true);
-
-            Assert.AreEqual("alice", settings.Username);
-            Assert.AreEqual("alicespassword", settings.Password.AsClearText());
-            Assert.IsNull(settings.Domain);
-
-            taskDialog.Verify(t => t.ShowOptionsTaskDialog(
-                It.IsAny<IWin32Window>(),
-                It.IsAny<IntPtr>(),
-                It.IsAny<string>(),
-                It.IsAny<string>(),
-                It.IsAny<string>(),
-                It.IsAny<string>(),
-                It.IsAny<IList<string>>(),
-                It.IsAny<string>(),
-                out It.Ref<bool>.IsAny), Times.Never);
+                It.Is<string>(u => u == "bobsemail")), Times.Once);
         }
     }
 }

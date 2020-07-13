@@ -107,6 +107,7 @@
     <Compile Include="Services\Persistence\TestAppProtocolRegistry.cs" />
     <Compile Include="Services\Windows\ConnectionSettings\TestConnectionSettingsViewModel.cs" />
     <Compile Include="Services\Workflows\SynchronousJobService.cs" />
+    <Compile Include="Services\Workflows\TestCredentialPrompt.cs" />
     <Compile Include="Services\Workflows\TestCredentialsService.cs" />
     <Compile Include="Services\Workflows\TestRemoteDesktopConnectionService.cs" />
     <Compile Include="Services\Workflows\TunnelEndpoint.cs" />

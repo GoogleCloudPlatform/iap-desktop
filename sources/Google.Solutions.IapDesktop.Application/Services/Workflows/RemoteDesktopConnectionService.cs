@@ -42,14 +42,14 @@ namespace Google.Solutions.IapDesktop.Application.Services.Workflows
         private readonly IJobService jobService;
         private readonly IRemoteDesktopService remoteDesktopService;
         private readonly ITunnelBrokerService tunnelBrokerService;
-        private readonly ICredentialsService credentialsService;
+        private readonly ICredentialPrompt credentialPrompt;
 
         public RemoteDesktopConnectionService(IServiceProvider serviceProvider)
         {
             this.jobService = serviceProvider.GetService<IJobService>();
             this.remoteDesktopService = serviceProvider.GetService<IRemoteDesktopService>();
             this.tunnelBrokerService = serviceProvider.GetService<ITunnelBrokerService>();
-            this.credentialsService = serviceProvider.GetService<ICredentialsService>();
+            this.credentialPrompt = serviceProvider.GetService<ICredentialPrompt>();
         }
 
         private async Task ConnectInstanceAsync(
@@ -110,7 +110,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.Workflows
             // Select node so that tracking windows are updated.
             vmNode.Select();
 
-            await this.credentialsService.ShowCredentialsPromptAsync(
+            await this.credentialPrompt.ShowCredentialsPromptAsync(
                     owner,
                     vmNode.Reference,
                     vmNode.SettingsEditor,
@@ -140,7 +140,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.Workflows
                 _ => { },
                 null);
 
-            await this.credentialsService.ShowCredentialsPromptAsync(
+            await this.credentialPrompt.ShowCredentialsPromptAsync(
                     owner,
                     url.Instance,
                     settingsEditor,
