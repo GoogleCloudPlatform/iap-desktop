@@ -37,50 +37,49 @@ namespace Google.Solutions.IapDesktop.Application.Services.Workflows
         Task GenerateCredentialsAsync(
             IWin32Window owner,
             InstanceLocator instanceRef,
-            ConnectionSettingsEditor settings,
-            string suggestedUsername = null);
+            ConnectionSettingsEditor settings);
     }
 
     public class CredentialsService : ICredentialsService
     {
-        private readonly IJobService jobService;
-        private readonly IEventService eventService;
-        private readonly IAuthorizationAdapter authService;
-        private readonly IComputeEngineAdapter computeEngineAdapter;
+        private readonly IServiceProvider serviceProvider;
 
         public CredentialsService(IServiceProvider serviceProvider)
         {
-            this.jobService = serviceProvider.GetService<IJobService>();
-            this.eventService = serviceProvider.GetService<IEventService>();
-            this.authService = serviceProvider.GetService<IAuthorizationAdapter>();
-            this.computeEngineAdapter = serviceProvider.GetService<IComputeEngineAdapter>();
+            this.serviceProvider = serviceProvider;
         }
 
         public async Task GenerateCredentialsAsync(
             IWin32Window owner,
             InstanceLocator instanceLocator,
-            ConnectionSettingsEditor settings,
-            string suggestedUsername = null)
+            ConnectionSettingsEditor settings)
         {
             // Prompt for username to use.
-            var username = new GenerateCredentialsDialog().PromptForUsername(
-                owner,
-                suggestedUsername ?? this.authService.Authorization.SuggestWindowsUsername());
+            var username = this.serviceProvider
+                .GetService<IGenerateCredentialsDialog>()
+                .PromptForUsername(
+                    owner,
+                    settings.Username ?? this.serviceProvider
+                        .GetService<IAuthorizationAdapter>()
+                        .Authorization
+                        .SuggestWindowsUsername());
             if (username == null)
             {
                 // Aborted.
                 throw new OperationCanceledException();
             }
 
-            var credentials = await this.jobService.RunInBackground(
+            var credentials = await this.serviceProvider.GetService<IJobService>().RunInBackground(
                 new JobDescription("Generating Windows logon credentials..."),
-                token => this.computeEngineAdapter.ResetWindowsUserAsync(
-                    instanceLocator,
-                    username,
-                    token))
+                token => this.serviceProvider
+                    .GetService<IComputeEngineAdapter>()
+                    .ResetWindowsUserAsync(
+                        instanceLocator,
+                        username,
+                        token))
                 .ConfigureAwait(true);
 
-            new ShowCredentialsDialog().ShowDialog(
+            this.serviceProvider.GetService<IShowCredentialsDialog>().ShowDialog(
                 owner,
                 credentials.UserName,
                 credentials.Password);

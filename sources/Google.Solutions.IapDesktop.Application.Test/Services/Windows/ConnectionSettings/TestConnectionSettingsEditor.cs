@@ -369,5 +369,32 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Windows.Connecti
             Assert.AreEqual(this.project.ConnectionBar, instanceA.CreateConnectionSettings("instance").ConnectionBar);
             Assert.IsFalse(instanceA.ShouldSerializeConnectionBar());
         }
+
+        [Test]
+        public void WhenCredentialGenerationBehaviorSetInProjectAndZone_ZoneValueIsInheritedDownToVm()
+        {
+            this.project.CredentialGenerationBehavior = RdpCredentialGenerationBehavior.Disable;
+
+            zoneA.CredentialGenerationBehavior = RdpCredentialGenerationBehavior.Always;
+            Assert.AreEqual(RdpCredentialGenerationBehavior.Always, zoneA.CredentialGenerationBehavior);
+            Assert.IsTrue(zoneA.ShouldSerializeCredentialGenerationBehavior());
+
+            Assert.AreEqual(RdpCredentialGenerationBehavior.Always, instanceA.CredentialGenerationBehavior);
+            Assert.AreEqual(RdpCredentialGenerationBehavior.Always, instanceA.CreateConnectionSettings("instance").CredentialGenerationBehavior);
+            Assert.IsFalse(instanceA.ShouldSerializeCredentialGenerationBehavior());
+        }
+
+        [Test]
+        public void WhenCredentialGenerationBehaviorSetInProjectAndResetToDefaultInVm_InheritedValueStillApplies()
+        {
+            this.project.CredentialGenerationBehavior = RdpCredentialGenerationBehavior.Always;
+            Assert.AreNotEqual(RdpCredentialGenerationBehavior._Default, this.project.CredentialGenerationBehavior);
+
+            instanceA.CredentialGenerationBehavior = RdpCredentialGenerationBehavior._Default;
+
+            Assert.AreEqual(this.project.CredentialGenerationBehavior, instanceA.CredentialGenerationBehavior);
+            Assert.AreEqual(this.project.CredentialGenerationBehavior, instanceA.CreateConnectionSettings("instance").CredentialGenerationBehavior);
+            Assert.IsFalse(instanceA.ShouldSerializeCredentialGenerationBehavior());
+        }
     }
 }

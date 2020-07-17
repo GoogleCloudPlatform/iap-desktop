@@ -64,6 +64,9 @@ namespace Google.Solutions.IapDesktop.Application.Services.Windows
         public static readonly IntPtr TD_SHIELD_ICON_INFO_BACKGROUND = new IntPtr(65531);
         public static readonly IntPtr TD_SHIELD_ICON_WARNING_BACKGROUND = new IntPtr(65530);
 
+        public const int IDOK = 1;
+        public const int IDCANCEL = 2;
+
         [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Unicode, Pack = 1)]
         internal struct TASKDIALOGCONFIG
         {

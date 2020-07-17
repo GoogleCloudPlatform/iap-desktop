@@ -19,6 +19,7 @@
 // under the License.
 //
 
+using AxMSTSCLib;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -43,6 +44,8 @@ namespace Google.Solutions.IapDesktop.Application.Services.Windows
 
     public class TaskDialog : ITaskDialog
     {
+        private readonly int ButtonIdOffset = 1000;
+
         public int ShowOptionsTaskDialog(
             IWin32Window parent,
             IntPtr mainIcon,
@@ -70,7 +73,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.Windows
                 Marshal.StructureToPtr<UnsafeNativeMethods.TASKDIALOG_BUTTON_RAW>(
                     new UnsafeNativeMethods.TASKDIALOG_BUTTON_RAW()
                     {
-                        nButtonID = i,
+                        nButtonID = ButtonIdOffset + i, // Add offset to avoid conflict with IDOK/IDCANCEL.
                         pszButtonText = options[i]
                     },
                     currentButton,
@@ -103,7 +106,20 @@ namespace Google.Solutions.IapDesktop.Application.Services.Windows
                     out int radioButtonPressed,
                     out verificationFlagPressed);
 
-                return buttonPressed;
+                if (buttonPressed == UnsafeNativeMethods.IDOK)
+                {
+                    // Pick first option.
+                    return 0;
+                }
+                else if (buttonPressed >= ButtonIdOffset)
+                {
+                    // Option selected.
+                    return buttonPressed - ButtonIdOffset;
+                }
+                else
+                {
+                    throw new OperationCanceledException("Task dialog was cancelled");
+                }
             }
             finally
             {

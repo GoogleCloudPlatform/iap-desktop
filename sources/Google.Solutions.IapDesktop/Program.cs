@@ -251,6 +251,8 @@ namespace Google.Solutions.IapDesktop
             windowAndWorkflowLayer.AddSingleton<IMainForm>(mainForm);
             windowAndWorkflowLayer.AddTransient<CloudConsoleService>();
             windowAndWorkflowLayer.AddTransient<IProjectPickerDialog, ProjectPickerDialog>();
+            windowAndWorkflowLayer.AddTransient<IShowCredentialsDialog, ShowCredentialsDialog>();
+            windowAndWorkflowLayer.AddTransient<IGenerateCredentialsDialog, GenerateCredentialsDialog>();
             windowAndWorkflowLayer.AddTransient<AboutWindow>();
             windowAndWorkflowLayer.AddTransient<IExceptionDialog, ExceptionDialog>();
             windowAndWorkflowLayer.AddTransient<IConfirmationDialog, ConfirmationDialog>();
@@ -261,7 +263,8 @@ namespace Google.Solutions.IapDesktop
             windowAndWorkflowLayer.AddSingleton<IConnectionSettingsWindow, ConnectionSettingsWindow>();
             windowAndWorkflowLayer.AddSingleton<ITunnelsViewer, TunnelsWindow>();
             windowAndWorkflowLayer.AddTransient<ICredentialsService, CredentialsService>();
-            windowAndWorkflowLayer.AddTransient<RemoteDesktopConnectionService>();
+            windowAndWorkflowLayer.AddTransient<ICredentialPrompt, CredentialPrompt>();
+            windowAndWorkflowLayer.AddTransient<IapRdpConnectionService>();
 
 #if DEBUG
             windowAndWorkflowLayer.AddSingleton<DebugJobServiceWindow>();

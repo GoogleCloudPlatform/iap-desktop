@@ -19,12 +19,10 @@
 // under the License.
 //
 
-using Google.Solutions.Common;
 using Google.Solutions.Common.Locator;
 using Google.Solutions.IapDesktop.Application.ObjectModel;
 using Google.Solutions.IapDesktop.Application.Services.Integration;
 using Google.Solutions.IapDesktop.Application.Services.Persistence;
-using Google.Solutions.IapDesktop.Application.Services.Windows;
 using Google.Solutions.IapDesktop.Application.Services.Windows.ConnectionSettings;
 using Google.Solutions.IapDesktop.Application.Services.Windows.ProjectExplorer;
 using Google.Solutions.IapDesktop.Application.Services.Windows.RemoteDesktop;
@@ -37,28 +35,21 @@ using System.Windows.Forms;
 
 namespace Google.Solutions.IapDesktop.Application.Services.Workflows
 {
-    public class RemoteDesktopConnectionService
+    public class IapRdpConnectionService
     {
         private const int RemoteDesktopPort = 3389;
 
         private readonly IJobService jobService;
         private readonly IRemoteDesktopService remoteDesktopService;
         private readonly ITunnelBrokerService tunnelBrokerService;
-        private readonly IConnectionSettingsWindow settingsEditor;
-        private readonly ICredentialsService credentialsService;
-        private readonly ITaskDialog taskDialog;
+        private readonly ICredentialPrompt credentialPrompt;
 
-        private static string MakeNullIfEmpty(string s)
-            => string.IsNullOrEmpty(s) ? null : s;
-
-        public RemoteDesktopConnectionService(IServiceProvider serviceProvider)
+        public IapRdpConnectionService(IServiceProvider serviceProvider)
         {
             this.jobService = serviceProvider.GetService<IJobService>();
             this.remoteDesktopService = serviceProvider.GetService<IRemoteDesktopService>();
             this.tunnelBrokerService = serviceProvider.GetService<ITunnelBrokerService>();
-            this.settingsEditor = serviceProvider.GetService<IConnectionSettingsWindow>();
-            this.credentialsService = serviceProvider.GetService<ICredentialsService>();
-            this.taskDialog = serviceProvider.GetService<ITaskDialog>();
+            this.credentialPrompt = serviceProvider.GetService<ICredentialPrompt>();
         }
 
         private async Task ConnectInstanceAsync(
@@ -119,46 +110,12 @@ namespace Google.Solutions.IapDesktop.Application.Services.Workflows
             // Select node so that tracking windows are updated.
             vmNode.Select();
 
-            var settings = vmNode.SettingsEditor;
-            if (string.IsNullOrEmpty(settings.Username) || settings.Password == null || settings.Password.Length == 0)
-            {
-                int selectedOption = this.taskDialog.ShowOptionsTaskDialog(
+            await this.credentialPrompt.ShowCredentialsPromptAsync(
                     owner,
-                    UnsafeNativeMethods.TD_INFORMATION_ICON,
-                    "Credentials",
-                    $"You have not configured any credentials for {vmNode.InstanceName}",
-                    "Would you like to configure or generate credentials now?",
-                    null,
-                    new[]
-                    {
-                        "Configure credentials",
-                        "Generate new credentials",     // Same as pressing 'OK'
-                        "Connect anyway"                // Same as pressing 'Cancel'
-                    },
-                    null,//"Do not show this prompt again",
-                    out bool donotAskAgain);
-
-                if (selectedOption == 0)
-                {
-                    // Configure credentials -> jump to settings.
-                    this.settingsEditor.ShowWindow();
-
-                    return;
-                }
-                else if (selectedOption == 1)
-                {
-                    // Generate new credentials.
-                    await this.credentialsService.GenerateCredentialsAsync(
-                            owner,
-                            vmNode.Reference,
-                            vmNode.SettingsEditor)
-                        .ConfigureAwait(true);
-                }
-                else if (selectedOption == 2)
-                {
-                    // Cancel - just continue connecting.
-                }
-            }
+                    vmNode.Reference,
+                    vmNode.SettingsEditor,
+                    true)
+                .ConfigureAwait(true);
 
             await ConnectInstanceAsync(
                     vmNode.Reference,
@@ -183,35 +140,12 @@ namespace Google.Solutions.IapDesktop.Application.Services.Workflows
                 _ => { },
                 null);
 
-            int selectedOption = this.taskDialog.ShowOptionsTaskDialog(
-                owner,
-                UnsafeNativeMethods.TD_INFORMATION_ICON,
-                "Credentials",
-                $"Would you like to generate credentials for {url.Instance.Name} first?",
-                null,
-                null,
-                new[]
-                {
-                    "Yes, generate new credentials",     // Same as pressing 'OK'
-                    "Enter existing credentials"         // Same as pressing 'Cancel'
-                },
-                null,
-                out bool donotAskAgain);
-
-            if (selectedOption == 0)
-            {
-                // Generate new credentials using the ephemeral settings editor.
-                await this.credentialsService.GenerateCredentialsAsync(
-                        owner,
-                        url.Instance,
-                        settingsEditor,
-                        MakeNullIfEmpty(url.Settings.Username))
-                    .ConfigureAwait(true);
-            }
-            else if (selectedOption == 1)
-            {
-                // Cancel - just continue connecting.
-            }
+            await this.credentialPrompt.ShowCredentialsPromptAsync(
+                    owner,
+                    url.Instance,
+                    settingsEditor,
+                    false)
+                .ConfigureAwait(true);
 
             await ConnectInstanceAsync(
                     url.Instance,

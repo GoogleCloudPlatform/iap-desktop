@@ -335,7 +335,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.Windows.ProjectExplor
                     vmNode.IsRunning)
                 {
                     await this.serviceProvider
-                        .GetService<RemoteDesktopConnectionService>()
+                        .GetService<IapRdpConnectionService>()
                         .ActivateOrConnectInstanceWithCredentialPromptAsync(this, vmNode);
                 }
             }

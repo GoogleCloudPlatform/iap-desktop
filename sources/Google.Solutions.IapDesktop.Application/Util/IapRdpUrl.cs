@@ -132,7 +132,8 @@ namespace Google.Solutions.IapDesktop.Application.Util
                 AuthenticationLevel = GetEnumFromQuery(query, "AuthenticationLevel", RdpAuthenticationLevel._Default),
                 ColorDepth = GetEnumFromQuery(query, "ColorDepth", RdpColorDepth._Default),
                 AudioMode = GetEnumFromQuery(query, "AudioMode", RdpAudioMode._Default),
-                RedirectClipboard = GetEnumFromQuery(query, "RedirectClipboard", RdpRedirectClipboard._Default)
+                RedirectClipboard = GetEnumFromQuery(query, "RedirectClipboard", RdpRedirectClipboard._Default),
+                CredentialGenerationBehavior = GetEnumFromQuery(query, "CredentialGenerationBehavior", RdpCredentialGenerationBehavior._Default),
             };
         }
 
@@ -176,6 +177,7 @@ namespace Google.Solutions.IapDesktop.Application.Util
                     { "ColorDepth", ((int)this.Settings.ColorDepth).ToString() },
                     { "AudioMode", ((int)this.Settings.AudioMode).ToString() },
                     { "RedirectClipboard", ((int)this.Settings.RedirectClipboard).ToString() },
+                    { "CredentialGenerationBehavior", ((int)this.Settings.CredentialGenerationBehavior).ToString() },
                 };
 
                 var formattedParameters = parameters.Select(p => p.Key + "=" + HttpUtility.UrlEncode(p.Value));
