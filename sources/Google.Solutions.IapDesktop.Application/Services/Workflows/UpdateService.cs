@@ -26,6 +26,7 @@ using System;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace Google.Solutions.IapDesktop.Application.Services.Workflows
@@ -64,12 +65,6 @@ namespace Google.Solutions.IapDesktop.Application.Services.Workflows
                 cts.CancelAfter(timeout);
 
                 var latestRelease = this.githubAdapter.FindLatestReleaseAsync(cts.Token).Result;
-                if (latestRelease == null)
-                {
-                    // No releases available, nevermind.
-                    return;
-                }
-
                 if (latestRelease == null ||
                     latestRelease.TagVersion.CompareTo(this.InstalledVersion) <= 0)
                 {
@@ -77,42 +72,49 @@ namespace Google.Solutions.IapDesktop.Application.Services.Workflows
                     return;
                 }
 
-                // Prompt for upgrade.
-                int selectedOption = this.taskDialog.ShowOptionsTaskDialog(
-                    parent,
-                    UnsafeNativeMethods.TD_SHIELD_ICON_INFO_BACKGROUND,
-                    "Update available",
-                    "An update is available for IAP Desktop",
-                    "Would you like to download the update now?",
-                    $"Installed version: {this.InstalledVersion}\nAvailable version: {latestRelease.TagVersion}",
-                    new[]
-                    {
-                        "Yes, download now",
-                        "More information",     // Same as pressing 'OK'
-                        "No, download later"    // Same as pressing 'Cancel'
-                    },
-                    "Do not check for updates again",
-                    out donotCheckForUpdatesAgain);
-
-                if (selectedOption == 2)
+                try
                 {
-                    // Cancel.
-                    return;
+                    // Prompt for upgrade.
+                    int selectedOption = this.taskDialog.ShowOptionsTaskDialog(
+                        parent,
+                        UnsafeNativeMethods.TD_SHIELD_ICON_INFO_BACKGROUND,
+                        "Update available",
+                        "An update is available for IAP Desktop",
+                        "Would you like to download the update now?",
+                        $"Installed version: {this.InstalledVersion}\nAvailable version: {latestRelease.TagVersion}",
+                        new[]
+                        {
+                            "Yes, download now",     // Same as pressing 'OK'
+                            "More information",
+                            "No, download later"
+                        },
+                        "Do not check for updates again",
+                        out donotCheckForUpdatesAgain);
+
+                    if (selectedOption == 2)
+                    {
+                        // Cancel.
+                        return;
+                    }
+
+                    using (var launchBrowser = new Process())
+                    {
+                        if (selectedOption == 0 && latestRelease.Assets.Any())
+                        {
+                            launchBrowser.StartInfo.FileName = latestRelease.Assets.First().DownloadUrl;
+                        }
+                        else
+                        {
+                            launchBrowser.StartInfo.FileName = latestRelease.HtmlUrl;
+                        }
+
+                        launchBrowser.StartInfo.UseShellExecute = true;
+                        launchBrowser.Start();
+                    }
                 }
-
-                using (var launchBrowser = new Process())
+                catch (OperationCanceledException)
                 {
-                    if (selectedOption == 0 && latestRelease.Assets.Any())
-                    {
-                        launchBrowser.StartInfo.FileName = latestRelease.Assets.First().DownloadUrl;
-                    }
-                    else
-                    {
-                        launchBrowser.StartInfo.FileName = latestRelease.HtmlUrl;
-                    }
-
-                    launchBrowser.StartInfo.UseShellExecute = true;
-                    launchBrowser.Start();
+                    // User cancelled
                 }
             }
         }
