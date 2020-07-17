@@ -151,6 +151,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Util
             Assert.AreEqual(RdpColorDepth._Default, settings.ColorDepth);
             Assert.AreEqual(RdpAudioMode._Default, settings.AudioMode);
             Assert.AreEqual(RdpRedirectClipboard._Default, settings.RedirectClipboard);
+            Assert.AreEqual(RdpCredentialGenerationBehavior._Default, settings.CredentialGenerationBehavior);
         }
 
         [Test]
@@ -168,6 +169,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Util
             Assert.AreEqual(RdpColorDepth._Default, settings.ColorDepth);
             Assert.AreEqual(RdpAudioMode._Default, settings.AudioMode);
             Assert.AreEqual(RdpRedirectClipboard._Default, settings.RedirectClipboard);
+            Assert.AreEqual(RdpCredentialGenerationBehavior._Default, settings.CredentialGenerationBehavior);
         }
 
         [Test]
@@ -175,7 +177,8 @@ namespace Google.Solutions.IapDesktop.Application.Test.Util
         {
             var url = IapRdpUrl.FromString("iap-rdp:///my-project/us-central1-a/my-instance?" +
                 "ConnectionBar=-1&DesktopSize=a&AuthenticationLevel=null&ColorDepth=&" +
-                "AudioMode=9999&RedirectClipboard=b&RedirectClipboard=c");
+                "AudioMode=9999&RedirectClipboard=b&RedirectClipboard=c&" +
+                "CredentialGenerationBehavior=-11");
             var settings = url.Settings;
 
             Assert.IsNull(settings.Username);
@@ -187,6 +190,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Util
             Assert.AreEqual(RdpColorDepth._Default, settings.ColorDepth);
             Assert.AreEqual(RdpAudioMode._Default, settings.AudioMode);
             Assert.AreEqual(RdpRedirectClipboard._Default, settings.RedirectClipboard);
+            Assert.AreEqual(RdpCredentialGenerationBehavior._Default, settings.CredentialGenerationBehavior);
         }
 
         [Test]
@@ -206,7 +210,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Util
         {
             var url = IapRdpUrl.FromString("iap-rdp:///my-project/us-central1-a/my-instance?" +
                 "ConnectionBar=1&DesktopSize=1&AuthenticationLevel=0&ColorDepth=2&" +
-                "AudioMode=2&RedirectClipboard=0");
+                "AudioMode=2&RedirectClipboard=0&CredentialGenerationBehavior=0");
             var settings = url.Settings;
 
             Assert.AreEqual(RdpConnectionBarState.Pinned, settings.ConnectionBar);
@@ -215,6 +219,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Util
             Assert.AreEqual(RdpColorDepth.DeepColor, settings.ColorDepth);
             Assert.AreEqual(RdpAudioMode.DoNotPlay, settings.AudioMode);
             Assert.AreEqual(RdpRedirectClipboard.Disabled, settings.RedirectClipboard);
+            Assert.AreEqual(RdpCredentialGenerationBehavior.Always, settings.CredentialGenerationBehavior);
         }
 
         [Test]
@@ -231,7 +236,8 @@ namespace Google.Solutions.IapDesktop.Application.Test.Util
             Assert.AreEqual(
                 "iap-rdp:///project-1/us-central1-a/instance-1?" +
                     "Username=Tom+%26+Jerry%3f&Domain=%22%3f%22&" +
-                    "ConnectionBar=0&DesktopSize=2&AuthenticationLevel=3&ColorDepth=1&AudioMode=0&RedirectClipboard=1",
+                    "ConnectionBar=0&DesktopSize=2&AuthenticationLevel=3&ColorDepth=1" +
+                    "&AudioMode=0&RedirectClipboard=1&CredentialGenerationBehavior=1",
                 url.ToString());
         }
 
@@ -249,7 +255,8 @@ namespace Google.Solutions.IapDesktop.Application.Test.Util
                     AuthenticationLevel = RdpAuthenticationLevel.RequireServerAuthentication,
                     ColorDepth = RdpColorDepth.TrueColor,
                     AudioMode = RdpAudioMode.PlayOnServer,
-                    RedirectClipboard = RdpRedirectClipboard.Disabled
+                    RedirectClipboard = RdpRedirectClipboard.Disabled,
+                    CredentialGenerationBehavior = RdpCredentialGenerationBehavior.Disable
                 });
 
             var copy = IapRdpUrl.FromString(url.ToString());
@@ -266,6 +273,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Util
             Assert.AreEqual(RdpColorDepth.TrueColor, copy.Settings.ColorDepth);
             Assert.AreEqual(RdpAudioMode.PlayOnServer, copy.Settings.AudioMode);
             Assert.AreEqual(RdpRedirectClipboard.Disabled, copy.Settings.RedirectClipboard);
+            Assert.AreEqual(RdpCredentialGenerationBehavior.Disable, copy.Settings.CredentialGenerationBehavior);
         }
     }
 }

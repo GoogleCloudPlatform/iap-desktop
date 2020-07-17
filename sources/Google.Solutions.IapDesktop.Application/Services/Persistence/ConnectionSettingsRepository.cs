@@ -211,9 +211,9 @@ namespace Google.Solutions.IapDesktop.Application.Services.Persistence
 
     public enum RdpCredentialGenerationBehavior
     {
-        Always,
-        Prompt,
-        Disable,
+        Always = 0,
+        Prompt = 1,
+        Disable = 2,
 
         [Browsable(false)]
         _Default = Prompt
