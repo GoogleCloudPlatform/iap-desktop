@@ -39,6 +39,12 @@ namespace Google.Solutions.IapDesktop.Application.ObjectModel
         private readonly IDictionary<Type, object> singletons = new Dictionary<Type, object>();
         private readonly IDictionary<Type, Func<object>> transients = new Dictionary<Type, Func<object>>();
 
+        private bool IsServiceAvailable(Type serviceType)
+        {
+            return this.singletons.ContainsKey(serviceType) ||
+                   this.transients.ContainsKey(serviceType);
+        }
+
         public ServiceRegistry()
         {
             this.parent = null;
@@ -51,6 +57,10 @@ namespace Google.Solutions.IapDesktop.Application.ObjectModel
 
         private object CreateInstance(Type serviceType)
         {
+            //
+            // First see if there is a constructor that that takes
+            // a single parameter of type IServiceProvider.
+            //
             var constructorWithServiceProvider = serviceType.GetConstructor(
                 BindingFlags.Public | BindingFlags.Instance,
                 null,
@@ -61,14 +71,35 @@ namespace Google.Solutions.IapDesktop.Application.ObjectModel
                 return Activator.CreateInstance(serviceType, (IServiceProvider)this);
             }
 
-            var defaultConstructor = serviceType.GetConstructor(
-                BindingFlags.Public | BindingFlags.Instance,
-                null,
-                Array.Empty<Type>(),
-                null);
-            if (defaultConstructor != null)
+            //
+            // Next, get all constructors and see if there is one for which all
+            // parameters can be bound to a service. Analyze the one with the most
+            // parameters first.
+            //
+            foreach (var constructor in serviceType.GetConstructors()
+                .OrderByDescending(c => c.GetParameters().Length))
             {
-                return Activator.CreateInstance(serviceType);
+                if (constructor
+                    .GetParameters()
+                    .Select(p => p.ParameterType)
+                    .Where(t => t != serviceType)       // Prevent recursion
+                    .All(t => IsServiceAvailable(t)))   
+                {
+                    // We have services for all parameters.
+                    var parameterValues = constructor
+                        .GetParameters()
+                        .Select(p => GetService(p.ParameterType))
+                        .ToArray();
+
+                    return Activator.CreateInstance(
+                        serviceType, 
+                        parameterValues);
+                }
+                else
+                {
+                    // There is at least one parameter that we do not
+                    // have a suitable service for.
+                }
             }
 
             throw new UnknownServiceException(

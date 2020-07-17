@@ -108,11 +108,6 @@ namespace Google.Solutions.IapDesktop.Application.Services.Adapters
         {
         }
 
-        public ComputeEngineAdapter(IServiceProvider serviceProvider)
-            : this(serviceProvider.GetService<IAuthorizationAdapter>())
-        {
-        }
-
         public async Task<IEnumerable<Instance>> ListInstancesAsync(
             string projectId,
             CancellationToken cancellationToken)

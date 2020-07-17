@@ -72,11 +72,6 @@ namespace Google.Solutions.IapDesktop.Application.Services.Adapters
         {
         }
 
-        public ResourceManagerAdapter(IServiceProvider serviceProvider)
-            : this(serviceProvider.GetService<IAuthorizationAdapter>())
-        {
-        }
-
         public async Task<IEnumerable<Project>> QueryProjects(
             string filter,
             CancellationToken cancellationToken)
