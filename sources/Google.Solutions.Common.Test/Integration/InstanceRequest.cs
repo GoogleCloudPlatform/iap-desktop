@@ -22,6 +22,7 @@
 using Google.Apis.Compute.v1;
 using Google.Apis.Compute.v1.Data;
 using Google.Solutions.Common.Locator;
+using Google.Solutions.Common.Util;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -90,26 +91,6 @@ namespace Google.Solutions.Common.Test.Integration
 
             try
             {
-                var instance = await computeEngine.Instances
-                    .Get(
-                        this.Locator.ProjectId,
-                        this.Locator.Zone,
-                        this.Locator.Name)
-                    .ExecuteAsync();
-
-                if (instance.Status == "STOPPED")
-                {
-                    await computeEngine.Instances.Start(
-                            this.Locator.ProjectId,
-                            this.Locator.Zone,
-                            this.Locator.Name)
-                        .ExecuteAsync();
-                }
-
-                await AwaitInstanceCreatedAndReady();
-            }
-            catch (Exception)
-            {
                 var metadata = new List<Metadata.ItemsData>(this.metadata.ToList());
 
                 // Add metdata that marks this instance as temporary.
@@ -158,6 +139,27 @@ namespace Google.Solutions.Common.Test.Integration
                     },
                     this.Locator.ProjectId,
                     this.Locator.Zone).ExecuteAsync();
+
+                await AwaitInstanceCreatedAndReady();
+            }
+            catch (GoogleApiException e) when (e.Error != null && e.Error.Code == 409)
+            {
+                // Instance already exists - make sure it's running then.
+                var instance = await computeEngine.Instances
+                    .Get(
+                        this.Locator.ProjectId,
+                        this.Locator.Zone,
+                        this.Locator.Name)
+                    .ExecuteAsync();
+
+                if (instance.Status == "STOPPED")
+                {
+                    await computeEngine.Instances.Start(
+                            this.Locator.ProjectId,
+                            this.Locator.Zone,
+                            this.Locator.Name)
+                        .ExecuteAsync();
+                }
 
                 await AwaitInstanceCreatedAndReady();
             }
