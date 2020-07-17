@@ -31,6 +31,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Installer", "Installer", "{
 	ProjectSection(SolutionItems) = preProject
 		build-installer.ps1 = build-installer.ps1
 		build.ps1 = build.ps1
+		clean.ps1 = clean.ps1
 		installer\Product.wxs = installer\Product.wxs
 	EndProjectSection
 EndProject
