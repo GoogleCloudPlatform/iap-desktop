@@ -137,7 +137,7 @@ $NunitArguments = `
     "Google.Solutions.IapDesktop.Extensions.Activity.Test\bin\release\Google.Solutions.IapDesktop.Extensions.Activity.Test.dll " + `
     "Google.Solutions.IapDesktop.Extensions.Os.Test\bin\release\Google.Solutions.IapDesktop.Extensions.Os.Test.dll " + `
     "Google.Solutions.IapDesktop.Application.Test\bin\release\Google.Solutions.IapDesktop.Application.Test.dll " + `
-    "--result=sponge_log.xml;transform=..\kokoro\nunit-to-sponge.xsl "
+    "--labels=On --result=sponge_log.xml;transform=..\kokoro\nunit-to-sponge.xsl "
 #    "--where \""cat != IntegrationTest\"""
 
 & $OpenCover `
