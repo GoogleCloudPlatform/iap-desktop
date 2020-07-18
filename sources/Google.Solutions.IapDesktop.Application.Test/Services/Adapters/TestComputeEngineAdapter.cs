@@ -19,8 +19,6 @@
 // under the License.
 //
 
-using Google.Apis.Auth.OAuth2;
-using Google.Apis.Compute.v1.Data;
 using Google.Solutions.Common.Locator;
 using Google.Solutions.Common.Test;
 using Google.Solutions.Common.Test.Integration;
@@ -97,7 +95,6 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Adapters
             [Credential(Role = PredefinedRole.IapTunnelUser)] CredentialRequest credential)
         {
             await testInstance.AwaitReady();
-            var instanceRef = await testInstance.GetInstanceAsync();
             var adapter = new ComputeEngineAdapter(await credential.GetCredentialAsync());
 
             AssertEx.ThrowsAggregateException<ResourceAccessDeniedException>(
@@ -112,7 +109,6 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Adapters
             [Credential(Role = PredefinedRole.IapTunnelUser)] CredentialRequest credential)
         {
             await testInstance.AwaitReady();
-            var instanceRef = await testInstance.GetInstanceAsync();
             var adapter = new ComputeEngineAdapter(await credential.GetCredentialAsync());
 
             AssertEx.ThrowsAggregateException<ResourceAccessDeniedException>(
@@ -125,15 +121,14 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Adapters
         [Test]
         public async Task WhenUserInRole_ThenIsGrantedPermissionReturnsTrue(
             [LinuxInstance] InstanceRequest testInstance,
-            [Credential(Role = PredefinedRole.ServiceAccountUser)] CredentialRequest credential)
+            [Credential(Role = PredefinedRole.ComputeViewer)] CredentialRequest credential)
         {
             await testInstance.AwaitReady();
-            var instanceRef = await testInstance.GetInstanceAsync();
-            var adapter = new ResourceManagerAdapter(await credential.GetCredentialAsync());
+            var adapter = new ComputeEngineAdapter(await credential.GetCredentialAsync());
 
             var result = await adapter.IsGrantedPermission(
-                TestProject.ProjectId,
-                "iam.serviceAccounts.actAs");
+                testInstance.Locator,
+                Permissions.ComputeInstancesGet);
 
             Assert.IsTrue(result);
         }
@@ -144,12 +139,39 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Adapters
             [Credential(Role = PredefinedRole.ComputeViewer)] CredentialRequest credential)
         {
             await testInstance.AwaitReady();
-            var instanceRef = await testInstance.GetInstanceAsync();
-            var adapter = new ResourceManagerAdapter(await credential.GetCredentialAsync());
+            var adapter = new ComputeEngineAdapter(await credential.GetCredentialAsync());
 
             var result = await adapter.IsGrantedPermission(
-                TestProject.ProjectId,
-                "iam.serviceAccounts.actAs");
+                testInstance.Locator,
+                Permissions.ComputeInstancesSetMetadata);
+
+            Assert.IsFalse(result);
+        }
+
+        [Test]
+        public async Task WhenUserInRole_ThenIsGrantedPermissionToResetWindowsUserReturnsTrue(
+            [LinuxInstance] InstanceRequest testInstance,
+            [Credential(Role = PredefinedRole.ComputeInstanceAdminV1)] CredentialRequest credential)
+        {
+            await testInstance.AwaitReady();
+            var adapter = new ComputeEngineAdapter(await credential.GetCredentialAsync());
+
+            var result = await adapter.IsGrantedPermissionToResetWindowsUser(
+                testInstance.Locator);
+
+            Assert.IsTrue(result);
+        }
+
+        [Test]
+        public async Task WhenUserNotInRole_ThenIsGrantedPermissionToResetWindowsUserReturnsFalse(
+            [LinuxInstance] InstanceRequest testInstance,
+            [Credential(Role = PredefinedRole.ComputeViewer)] CredentialRequest credential)
+        {
+            await testInstance.AwaitReady();
+            var adapter = new ComputeEngineAdapter(await credential.GetCredentialAsync());
+
+            var result = await adapter.IsGrantedPermissionToResetWindowsUser(
+                testInstance.Locator);
 
             Assert.IsFalse(result);
         }

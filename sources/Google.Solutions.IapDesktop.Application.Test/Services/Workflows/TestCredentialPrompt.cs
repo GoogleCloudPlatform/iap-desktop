@@ -45,13 +45,16 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Workflows
         private static readonly InstanceLocator SampleInstance
             = new InstanceLocator("project-1", "zone-1", "instance-1");
 
-        private ICredentialPrompt CreateCredentialsPrompt(Mock<ITaskDialog> taskDialogMock)
+        private ICredentialPrompt CreateCredentialsPrompt(
+            bool isGrantedPermissionToGenerateCredentials,
+            Mock<ITaskDialog> taskDialogMock)
         {
             this.serviceRegistry.AddSingleton<ITaskDialog>(taskDialogMock.Object);
             this.serviceRegistry.AddMock<IConnectionSettingsWindow>();
             this.serviceRegistry.AddMock<IShowCredentialsDialog>();
-            this.serviceRegistry.AddMock<ICredentialsService>()
-                .Setup(s => s.GenerateCredentialsAsync(
+
+            var credentialsServoce = this.serviceRegistry.AddMock<ICredentialsService>();
+            credentialsServoce.Setup(s => s.GenerateCredentialsAsync(
                     It.IsAny<IWin32Window>(),
                     It.IsAny<InstanceLocator>(),
                     It.IsAny<ConnectionSettingsEditor>()))
@@ -63,6 +66,9 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Workflows
                         settings.Username = "bob";
                         settings.CleartextPassword = "secret";
                     });
+            credentialsServoce.Setup(s => s.IsGrantedPermissionToGenerateCredentials(
+                    It.IsAny<InstanceLocator>()))
+                .ReturnsAsync(isGrantedPermissionToGenerateCredentials);
 
             return new CredentialPrompt(serviceRegistry);
         }
@@ -72,7 +78,8 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Workflows
         //---------------------------------------------------------------------
 
         [Test]
-        public async Task WhenNoCredentialsExistAndBehaviorSetToAlways_ThenGenerateOptionIsShown()
+        public async Task WhenNoCredentialsExistAndBehaviorSetToAlways_ThenGenerateOptionIsShown(
+            [Values(true, false)] bool isGrantedPermissionToGenerateCredentials)
         {
             var taskDialog = new Mock<ITaskDialog>();
             taskDialog.Setup(t => t.ShowOptionsTaskDialog(
@@ -86,7 +93,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Workflows
                 It.IsAny<string>(),
                 out It.Ref<bool>.IsAny)).Returns(0);
 
-            var credentialPrompt = CreateCredentialsPrompt(taskDialog);
+            var credentialPrompt = CreateCredentialsPrompt(isGrantedPermissionToGenerateCredentials, taskDialog);
             var settings = new ConnectionSettingsEditor(
                 new VmInstanceConnectionSettings(),
                 _ => { },
@@ -117,7 +124,8 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Workflows
         }
 
         [Test]
-        public async Task WhenCredentialsExistAndBehaviorSetToAlways_ThenGenerateOptionIsShown()
+        public async Task WhenCredentialsExistAndBehaviorSetToAlways_ThenGenerateOptionIsShown(
+            [Values(true, false)] bool isGrantedPermissionToGenerateCredentials)
         {
             var taskDialog = new Mock<ITaskDialog>();
             taskDialog.Setup(t => t.ShowOptionsTaskDialog(
@@ -131,7 +139,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Workflows
                 It.IsAny<string>(),
                 out It.Ref<bool>.IsAny)).Returns(0);
 
-            var credentialPrompt = CreateCredentialsPrompt(taskDialog);
+            var credentialPrompt = CreateCredentialsPrompt(isGrantedPermissionToGenerateCredentials, taskDialog);
             var settings = new ConnectionSettingsEditor(
                 new VmInstanceConnectionSettings(),
                 _ => { },
@@ -168,7 +176,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Workflows
         //---------------------------------------------------------------------
 
         [Test]
-        public async Task WhenNoCredentialsExistAndBehaviorSetToPrompt_ThenGenerateOptionIsShown()
+        public async Task WhenNoCredentialsExistAndPermissionGrantedAndBehaviorSetToPrompt_ThenGenerateOptionIsShown()
         {
             var taskDialog = new Mock<ITaskDialog>();
             taskDialog.Setup(t => t.ShowOptionsTaskDialog(
@@ -182,7 +190,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Workflows
                 It.IsAny<string>(),
                 out It.Ref<bool>.IsAny)).Returns(0);
 
-            var credentialPrompt = CreateCredentialsPrompt(taskDialog);
+            var credentialPrompt = CreateCredentialsPrompt(true, taskDialog);
             var settings = new ConnectionSettingsEditor(
                 new VmInstanceConnectionSettings(),
                 _ => { },
@@ -213,7 +221,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Workflows
         }
 
         [Test]
-        public async Task WhenCredentialsExistAndBehaviorSetToPrompt_ThenDialogIsSkipped()
+        public void WhenNoCredentialsExistAndPermissionNotGrantedAndBehaviorSetToPrompt_ThenJumpToSettingsOptionIsShown()
         {
             var taskDialog = new Mock<ITaskDialog>();
             taskDialog.Setup(t => t.ShowOptionsTaskDialog(
@@ -227,7 +235,52 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Workflows
                 It.IsAny<string>(),
                 out It.Ref<bool>.IsAny)).Returns(0);
 
-            var credentialPrompt = CreateCredentialsPrompt(taskDialog);
+            var credentialPrompt = CreateCredentialsPrompt(false, taskDialog);
+            var window = this.serviceRegistry.AddMock<IConnectionSettingsWindow>();
+            var settings = new ConnectionSettingsEditor(
+                new VmInstanceConnectionSettings(),
+                _ => { },
+                null);
+
+            settings.CredentialGenerationBehavior = RdpCredentialGenerationBehavior.Prompt;
+
+            AssertEx.ThrowsAggregateException<TaskCanceledException>(
+                () => credentialPrompt.ShowCredentialsPromptAsync(
+                null,
+                SampleInstance,
+                settings,
+                true).Wait());
+
+            window.Verify(w => w.ShowWindow(), Times.Once);
+            taskDialog.Verify(t => t.ShowOptionsTaskDialog(
+                It.IsAny<IWin32Window>(),
+                It.IsAny<IntPtr>(),
+                It.IsAny<string>(),
+                It.IsAny<string>(),
+                It.IsAny<string>(),
+                It.IsAny<string>(),
+                It.Is<IList<string>>(options => options.Count == 2),
+                It.IsAny<string>(),
+                out It.Ref<bool>.IsAny), Times.Once);
+        }
+
+        [Test]
+        public async Task WhenCredentialsExistAndBehaviorSetToPrompt_ThenDialogIsSkipped(
+            [Values(true, false)] bool isGrantedPermissionToGenerateCredentials)
+        {
+            var taskDialog = new Mock<ITaskDialog>();
+            taskDialog.Setup(t => t.ShowOptionsTaskDialog(
+                It.IsAny<IWin32Window>(),
+                It.IsAny<IntPtr>(),
+                It.IsAny<string>(),
+                It.IsAny<string>(),
+                It.IsAny<string>(),
+                It.IsAny<string>(),
+                It.IsAny<IList<string>>(),
+                It.IsAny<string>(),
+                out It.Ref<bool>.IsAny)).Returns(0);
+
+            var credentialPrompt = CreateCredentialsPrompt(isGrantedPermissionToGenerateCredentials, taskDialog);
             var settings = new ConnectionSettingsEditor(
                 new VmInstanceConnectionSettings(),
                 _ => { },
@@ -278,7 +331,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Workflows
                 It.IsAny<string>(),
                 out It.Ref<bool>.IsAny)).Returns(0);
 
-            var credentialPrompt = CreateCredentialsPrompt(taskDialog);
+            var credentialPrompt = CreateCredentialsPrompt(true, taskDialog);
             var window = this.serviceRegistry.AddMock<IConnectionSettingsWindow>();
             var settings = new ConnectionSettingsEditor(
                 new VmInstanceConnectionSettings(),
@@ -322,7 +375,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Workflows
                 It.IsAny<string>(),
                 out It.Ref<bool>.IsAny)).Returns(1);
 
-            var credentialPrompt = CreateCredentialsPrompt(taskDialog);
+            var credentialPrompt = CreateCredentialsPrompt(true, taskDialog);
             var settings = new ConnectionSettingsEditor(
                 new VmInstanceConnectionSettings(),
                 _ => { },
@@ -367,7 +420,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Workflows
                 It.IsAny<string>(),
                 out It.Ref<bool>.IsAny)).Returns(0);
 
-            var credentialPrompt = CreateCredentialsPrompt(taskDialog);
+            var credentialPrompt = CreateCredentialsPrompt(true, taskDialog);
             var settings = new ConnectionSettingsEditor(
                 new VmInstanceConnectionSettings(),
                 _ => { },

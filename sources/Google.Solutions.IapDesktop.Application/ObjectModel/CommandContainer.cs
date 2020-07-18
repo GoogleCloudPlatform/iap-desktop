@@ -171,7 +171,7 @@ namespace Google.Solutions.IapDesktop.Application.ObjectModel
         {
             // Only search top-level menu.
             var menuItem = this.menuItems
-                .Cast<ToolStripMenuItem>()
+                .OfType<ToolStripMenuItem>()
                 .FirstOrDefault(m => m.ShortcutKeys == keys);
             if (menuItem?.Tag is Command<TContext> command)
             {

@@ -56,6 +56,8 @@ namespace Google.Solutions.IapDesktop.Application.Services.Workflows
             ConnectionSettingsEditor settings,
             bool allowJumpToSettings)
         {
+            var credentialsService = this.serviceProvider.GetService<ICredentialsService>();
+
             //
             // Determine which options to show in prompt.
             //
@@ -65,8 +67,12 @@ namespace Google.Solutions.IapDesktop.Application.Services.Workflows
                 settings.Password.Length != 0;
 
             var options = new List<CredentialOption>();
-            if ((!credentialsExist && settings.CredentialGenerationBehavior == RdpCredentialGenerationBehavior.Prompt) ||
-                settings.CredentialGenerationBehavior == RdpCredentialGenerationBehavior.Always)
+            if ((!credentialsExist
+                    && settings.CredentialGenerationBehavior == RdpCredentialGenerationBehavior.Prompt
+                    && await credentialsService
+                        .IsGrantedPermissionToGenerateCredentials(instanceLocator)
+                        .ConfigureAwait(true))
+                || settings.CredentialGenerationBehavior == RdpCredentialGenerationBehavior.Always)
             {
                 // TODO: check for permission
 
@@ -74,8 +80,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.Workflows
                     new CredentialOption()
                     {
                         Title = "Generate new credentials",
-                        Apply = () => this.serviceProvider
-                            .GetService<ICredentialsService>()
+                        Apply = () => credentialsService
                             .GenerateCredentialsAsync(
                                 owner,
                                 instanceLocator,
