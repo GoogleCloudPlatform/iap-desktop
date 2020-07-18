@@ -1,5 +1,5 @@
 ﻿//
-// Copyright 2019 Google LLC
+// Copyright 2020 Google LLC
 //
 // Licensed to the Apache Software Foundation (ASF) under one
 // or more contributor license agreements.  See the NOTICE file
@@ -19,14 +19,11 @@
 // under the License.
 //
 
-namespace Google.Solutions.Common.Test.Integration
+namespace Google.Solutions.IapDesktop.Application.Services.Adapters
 {
-    public static class PredefinedRole
+    internal static class Permissions
     {
-        public const string ComputeViewer = "roles/compute.viewer";
-        public const string ComputeInstanceAdminV1 = "roles/compute.instanceAdmin.v1";
-        public const string IapTunnelUser = "roles/iap.tunnelResourceAccessor";
-        public const string LogsViewer = "roles/logging.viewer";
-        public const string ServiceAccountUser = "roles/iam.serviceAccountUser";
+        public const string ComputeInstancesSetMetadata = "compute.instances.setMetadata";
+        public const string ComputeInstancesGet = "compute.instances.get";
     }
 }

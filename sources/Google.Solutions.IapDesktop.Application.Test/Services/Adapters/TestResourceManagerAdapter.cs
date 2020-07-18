@@ -38,7 +38,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Adapters
 
             var result = await adapter.IsGrantedPermission(
                 TestProject.ProjectId,
-                "compute.instances.get");
+                Permissions.ComputeInstancesGet);
 
             Assert.IsTrue(result);
         }

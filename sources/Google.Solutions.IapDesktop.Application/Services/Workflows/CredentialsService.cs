@@ -27,6 +27,7 @@ using Google.Solutions.IapDesktop.Application.Services.Windows.ConnectionSetting
 using Google.Solutions.IapDesktop.Application.Services.Windows.ProjectExplorer;
 using Google.Solutions.IapDesktop.Application.Util;
 using System;
+using System.Security;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
@@ -38,6 +39,9 @@ namespace Google.Solutions.IapDesktop.Application.Services.Workflows
             IWin32Window owner,
             InstanceLocator instanceRef,
             ConnectionSettingsEditor settings);
+
+        Task<bool> IsGrantedPermissionToGenerateCredentials(
+            InstanceLocator instanceRef);
     }
 
     public class CredentialsService : ICredentialsService
@@ -90,5 +94,10 @@ namespace Google.Solutions.IapDesktop.Application.Services.Workflows
             settings.Domain = null;
             settings.SaveChanges();
         }
+
+        public Task<bool> IsGrantedPermissionToGenerateCredentials(InstanceLocator instance)
+            => this.serviceProvider
+                .GetService<IComputeEngineAdapter>()
+                .IsGrantedPermissionToResetWindowsUser(instance);
     }
 }

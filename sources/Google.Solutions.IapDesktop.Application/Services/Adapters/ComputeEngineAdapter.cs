@@ -80,6 +80,9 @@ namespace Google.Solutions.IapDesktop.Application.Services.Adapters
         Task<bool> IsGrantedPermission(
             InstanceLocator instanceRef,
             string permission);
+
+        Task<bool> IsGrantedPermissionToResetWindowsUser(
+            InstanceLocator instanceRef);
     }
 
     /// <summary>
@@ -311,6 +314,18 @@ namespace Google.Solutions.IapDesktop.Application.Services.Adapters
                     response.Permissions != null &&
                     response.Permissions.Any(p => p == permission);
             }
+        }
+
+        public Task<bool> IsGrantedPermissionToResetWindowsUser(InstanceLocator instanceRef)
+        {
+            //
+            // Resetting a user requires
+            //  (1) compute.instances.setMetadata
+            //  (2) iam.serviceAccounts.actAs (if the instance runs as service account)
+            //
+            // For performance reasons, only check (1).
+            //
+            return IsGrantedPermission(instanceRef, Permissions.ComputeInstancesSetMetadata);
         }
 
         public Task<NetworkCredential> ResetWindowsUserAsync(
