@@ -23,6 +23,7 @@ using Google.Solutions.Common.Locator;
 using Google.Solutions.IapDesktop.Application.ObjectModel;
 using Google.Solutions.IapDesktop.Application.Services.Integration;
 using Google.Solutions.IapDesktop.Application.Services.Persistence;
+using Google.Solutions.IapDesktop.Application.Services.Windows;
 using Google.Solutions.IapDesktop.Application.Services.Windows.ConnectionSettings;
 using Google.Solutions.IapDesktop.Application.Services.Windows.ProjectExplorer;
 using Google.Solutions.IapDesktop.Application.Services.Windows.RemoteDesktop;
@@ -39,6 +40,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.Workflows
     {
         private const int RemoteDesktopPort = 3389;
 
+        private readonly IWin32Window window;
         private readonly IJobService jobService;
         private readonly IRemoteDesktopService remoteDesktopService;
         private readonly ITunnelBrokerService tunnelBrokerService;
@@ -50,6 +52,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.Workflows
             this.remoteDesktopService = serviceProvider.GetService<IRemoteDesktopService>();
             this.tunnelBrokerService = serviceProvider.GetService<ITunnelBrokerService>();
             this.credentialPrompt = serviceProvider.GetService<ICredentialPrompt>();
+            this.window = serviceProvider.GetService<IMainForm>().Window;
         }
 
         private async Task ConnectInstanceAsync(
@@ -98,7 +101,6 @@ namespace Google.Solutions.IapDesktop.Application.Services.Workflows
         }
 
         public async Task ActivateOrConnectInstanceWithCredentialPromptAsync(
-            IWin32Window owner,
             VmInstanceNode vmNode)
         {
             if (this.remoteDesktopService.TryActivate(vmNode.Reference))
@@ -111,7 +113,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.Workflows
             vmNode.Select();
 
             await this.credentialPrompt.ShowCredentialsPromptAsync(
-                    owner,
+                    this.window,
                     vmNode.Reference,
                     vmNode.SettingsEditor,
                     true)
@@ -124,7 +126,6 @@ namespace Google.Solutions.IapDesktop.Application.Services.Workflows
         }
 
         public async Task ActivateOrConnectInstanceWithCredentialPromptAsync(
-            IWin32Window owner,
             IapRdpUrl url)
         {
             if (this.remoteDesktopService.TryActivate(url.Instance))
@@ -141,7 +142,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.Workflows
                 null);
 
             await this.credentialPrompt.ShowCredentialsPromptAsync(
-                    owner,
+                    this.window,
                     url.Instance,
                     settingsEditor,
                     false)

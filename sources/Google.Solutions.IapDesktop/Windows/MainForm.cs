@@ -248,7 +248,7 @@ namespace Google.Solutions.IapDesktop.Windows
                 {
                     // We have a full set of settings for this VM, so use that.
                     rdcService
-                        .ActivateOrConnectInstanceWithCredentialPromptAsync(this, vmNode)
+                        .ActivateOrConnectInstanceWithCredentialPromptAsync(vmNode)
                         .ContinueWith(t => this.serviceProvider
                                 .GetService<IExceptionDialog>()
                                 .Show(this, "Failed to connect to VM instance", t.Exception),
@@ -260,7 +260,7 @@ namespace Google.Solutions.IapDesktop.Windows
                 {
                     // We do not know anything other than what's in the URL.
                     rdcService
-                        .ActivateOrConnectInstanceWithCredentialPromptAsync(this, url)
+                        .ActivateOrConnectInstanceWithCredentialPromptAsync(url)
                         .ContinueWith(t => this.serviceProvider
                                 .GetService<IExceptionDialog>()
                                 .Show(this, "Failed to connect to VM instance", t.Exception),

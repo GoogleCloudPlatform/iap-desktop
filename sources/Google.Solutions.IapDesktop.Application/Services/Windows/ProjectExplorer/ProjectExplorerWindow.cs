@@ -336,7 +336,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.Windows.ProjectExplor
                 {
                     await this.serviceProvider
                         .GetService<IapRdpConnectionService>()
-                        .ActivateOrConnectInstanceWithCredentialPromptAsync(this, vmNode);
+                        .ActivateOrConnectInstanceWithCredentialPromptAsync(vmNode);
                 }
             }
             catch (Exception e) when (e.IsCancellation())

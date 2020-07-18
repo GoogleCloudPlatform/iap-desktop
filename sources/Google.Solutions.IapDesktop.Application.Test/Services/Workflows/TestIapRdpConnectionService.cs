@@ -79,7 +79,6 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Workflows
 
             var service = new IapRdpConnectionService(this.serviceRegistry);
             await service.ActivateOrConnectInstanceWithCredentialPromptAsync(
-                null,
                 IapRdpUrl.FromString("iap-rdp:///project/us-central-1/instance"));
 
             remoteDesktopService.Verify(s => s.Connect(
@@ -110,7 +109,6 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Workflows
 
             var service = new IapRdpConnectionService(this.serviceRegistry);
             await service.ActivateOrConnectInstanceWithCredentialPromptAsync(
-                null,
                 IapRdpUrl.FromString("iap-rdp:///project/us-central-1/instance?username=john%20doe"));
 
             remoteDesktopService.Verify(s => s.Connect(
