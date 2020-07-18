@@ -19,24 +19,12 @@
 // under the License.
 //
 
-using Google.Solutions.Common.Locator;
-using Google.Solutions.IapDesktop.Application.ObjectModel;
 using System.Threading.Tasks;
 
-namespace Google.Solutions.IapDesktop.Application.Services.Windows.ProjectExplorer
+namespace Google.Solutions.IapDesktop.Application.Util
 {
-    public interface IProjectExplorer
+    public interface IIapUrlHandler
     {
-        void ShowWindow();
-        Task RefreshProject(string projectId);
-        Task RefreshAllProjects();
-        Task ShowAddProjectDialogAsync();
-
-        IProjectExplorerVmInstanceNode TryFindNode(InstanceLocator reference);
-
-        IProjectExplorerNode SelectedNode { get; }
-
-        CommandContainer<IProjectExplorerNode> ContextMenuCommands { get; }
-        CommandContainer<IProjectExplorerNode> ToolbarCommands { get; }
+        Task ActivateOrConnectInstanceAsync(IapRdpUrl url);
     }
 }

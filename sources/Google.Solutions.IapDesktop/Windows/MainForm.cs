@@ -20,6 +20,7 @@
 //
 
 using Google.Solutions.Common.Auth;
+using Google.Solutions.Common.Util;
 using Google.Solutions.IapDesktop.Application.ObjectModel;
 using Google.Solutions.IapDesktop.Application.Services.Adapters;
 using Google.Solutions.IapDesktop.Application.Services.Integration;
@@ -235,41 +236,25 @@ namespace Google.Solutions.IapDesktop.Windows
 
         internal void ConnectToUrl(IapRdpUrl url)
         {
-            var rdcService = this.serviceProvider
-                .GetService<IapRdpConnectionService>();
-
-            var vmNode = this.serviceProvider
-                .GetService<IProjectExplorer>()
-                .TryFindNode(url.Instance);
-
             try
             {
-                if (vmNode != null)
-                {
-                    // We have a full set of settings for this VM, so use that.
-                    rdcService
-                        .ActivateOrConnectInstanceWithCredentialPromptAsync(vmNode)
-                        .ContinueWith(t => this.serviceProvider
-                                .GetService<IExceptionDialog>()
-                                .Show(this, "Failed to connect to VM instance", t.Exception),
-                            CancellationToken.None,
-                            TaskContinuationOptions.OnlyOnFaulted,
-                            TaskScheduler.FromCurrentSynchronizationContext());
-                }
-                else
-                {
-                    // We do not know anything other than what's in the URL.
-                    rdcService
-                        .ActivateOrConnectInstanceWithCredentialPromptAsync(url)
-                        .ContinueWith(t => this.serviceProvider
-                                .GetService<IExceptionDialog>()
-                                .Show(this, "Failed to connect to VM instance", t.Exception),
-                            CancellationToken.None,
-                            TaskContinuationOptions.OnlyOnFaulted,
-                            TaskScheduler.FromCurrentSynchronizationContext());
-                }
+                this.serviceProvider
+                    .GetService<IIapUrlHandler>()
+                    .ActivateOrConnectInstanceAsync(url)
+                    .ContinueWith(t => this.serviceProvider
+                            .GetService<IExceptionDialog>()
+                            .Show(this, "Failed to connect to VM instance", t.Exception),
+                        CancellationToken.None,
+                        TaskContinuationOptions.OnlyOnFaulted,
+                        TaskScheduler.FromCurrentSynchronizationContext());
             }
-            catch (OperationCanceledException)
+            catch (UnknownServiceException e)
+            {
+                this.serviceProvider
+                    .GetService<IExceptionDialog>()
+                    .Show(this, "Handler not found for URL", e);
+            }
+            catch (Exception e) when (e.IsCancellation())
             {
                 // The user cancelled, nervemind.
             }

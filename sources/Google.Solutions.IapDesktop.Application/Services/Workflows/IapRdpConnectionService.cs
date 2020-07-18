@@ -36,7 +36,7 @@ using System.Windows.Forms;
 
 namespace Google.Solutions.IapDesktop.Application.Services.Workflows
 {
-    public class IapRdpConnectionService
+    public class IapRdpConnectionService : IIapUrlHandler
     {
         private const int RemoteDesktopPort = 3389;
 
@@ -45,6 +45,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.Workflows
         private readonly IRemoteDesktopService remoteDesktopService;
         private readonly ITunnelBrokerService tunnelBrokerService;
         private readonly ICredentialPrompt credentialPrompt;
+        private readonly IProjectExplorer projectExplorer;
 
         public IapRdpConnectionService(IServiceProvider serviceProvider)
         {
@@ -52,6 +53,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.Workflows
             this.remoteDesktopService = serviceProvider.GetService<IRemoteDesktopService>();
             this.tunnelBrokerService = serviceProvider.GetService<ITunnelBrokerService>();
             this.credentialPrompt = serviceProvider.GetService<ICredentialPrompt>();
+            this.projectExplorer = serviceProvider.GetService<IProjectExplorer>();
             this.window = serviceProvider.GetService<IMainForm>().Window;
         }
 
@@ -100,8 +102,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.Workflows
                 settings);
         }
 
-        public async Task ActivateOrConnectInstanceWithCredentialPromptAsync(
-            VmInstanceNode vmNode)
+        public async Task ActivateOrConnectInstanceAsync(IProjectExplorerVmInstanceNode vmNode)
         {
             if (this.remoteDesktopService.TryActivate(vmNode.Reference))
             {
@@ -121,18 +122,27 @@ namespace Google.Solutions.IapDesktop.Application.Services.Workflows
 
             await ConnectInstanceAsync(
                     vmNode.Reference,
-                    vmNode.CreateConnectionSettings())
+                    vmNode.SettingsEditor.CreateConnectionSettings(vmNode.Reference.Name))
                 .ConfigureAwait(true);
         }
 
-        public async Task ActivateOrConnectInstanceWithCredentialPromptAsync(
-            IapRdpUrl url)
+        public async Task ActivateOrConnectInstanceAsync(IapRdpUrl url)
         {
             if (this.remoteDesktopService.TryActivate(url.Instance))
             {
                 // RDP session was active, nothing left to do.
                 return;
             }
+
+            if (this.projectExplorer.TryFindNode(url.Instance) 
+                is IProjectExplorerVmInstanceNode vmNode)
+            {
+                // We have a full set of settings for this VM, so use that.
+                await ActivateOrConnectInstanceAsync(vmNode).ConfigureAwait(true);
+                return;
+            }
+
+            // We do not know anything other than what's in the URL.
 
             // Create an ephemeral settings editor. We do not persist
             // any changes.

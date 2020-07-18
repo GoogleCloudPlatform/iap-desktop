@@ -336,7 +336,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.Windows.ProjectExplor
                 {
                     await this.serviceProvider
                         .GetService<IapRdpConnectionService>()
-                        .ActivateOrConnectInstanceWithCredentialPromptAsync(vmNode);
+                        .ActivateOrConnectInstanceAsync(vmNode);
                 }
             }
             catch (Exception e) when (e.IsCancellation())
@@ -498,7 +498,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.Windows.ProjectExplor
 
         private void OnRdpConnectionSucceeded(RemoteDesktopConnectionSuceededEvent e)
         {
-            var node = TryFindNode(e.Instance);
+            var node = (VmInstanceNode)TryFindNode(e.Instance);
             if (node != null)
             {
                 node.IsConnected = true;
@@ -508,7 +508,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.Windows.ProjectExplor
 
         private void OnRdpConnectionClosed(RemoteDesktopWindowClosedEvent e)
         {
-            var node = TryFindNode(e.Instance);
+            var node = (VmInstanceNode)TryFindNode(e.Instance);
             if (node != null)
             {
                 node.IsConnected = false;
@@ -616,7 +616,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.Windows.ProjectExplor
             }
         }
 
-        public VmInstanceNode TryFindNode(InstanceLocator reference)
+        public IProjectExplorerVmInstanceNode TryFindNode(InstanceLocator reference)
         {
             return this.rootNode.Nodes
                 .OfType<ProjectNode>()
