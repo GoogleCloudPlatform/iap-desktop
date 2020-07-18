@@ -1,4 +1,4 @@
-//
+﻿//
 // Copyright 2019 Google LLC
 //
 // Licensed to the Apache Software Foundation (ASF) under one
@@ -19,17 +19,15 @@
 // under the License.
 //
 
-using System.Reflection;
-using System.Runtime.CompilerServices;
+using System;
 
-[assembly: AssemblyTitle("RDP extension library")]
-[assembly: AssemblyDescription("RDP extension library")]
-[assembly: AssemblyCompany("Google LLC")]
-[assembly: AssemblyProduct("IAP Desktop")]
-[assembly: AssemblyCopyright("Copyright ©  2020")]
-[assembly: AssemblyTrademark("Google LLC")]
+namespace Google.Solutions.IapDesktop.Extensions.Rdp
+{
+    internal static class UnsafeNativeMethods
+    {
 
-[assembly: AssemblyVersion("1.0.1.0")]
-[assembly: AssemblyFileVersion("1.0.1.0")]
-
-[assembly: InternalsVisibleTo("Google.Solutions.IapDesktop.Extensions.Rdp.Test")]
+        internal const int EM_SETMARGINS = 0xd3;
+        [System.Runtime.InteropServices.DllImport("user32.dll")]
+        internal static extern IntPtr SendMessage(IntPtr hWnd, int msg, IntPtr wp, IntPtr lp);
+    }
+}

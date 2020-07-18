@@ -28,14 +28,16 @@ using Google.Solutions.IapDesktop.Application.Services.Windows.ConnectionSetting
 using Google.Solutions.IapDesktop.Application.Services.Windows.ProjectExplorer;
 using Google.Solutions.IapDesktop.Application.Services.Windows.RemoteDesktop;
 using Google.Solutions.IapDesktop.Application.Util;
+using Google.Solutions.IapDesktop.Extensions.Rdp.Services.Credentials;
 using Google.Solutions.IapTunneling.Iap;
 using Google.Solutions.IapTunneling.Net;
 using System;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-namespace Google.Solutions.IapDesktop.Application.Services.Workflows
+namespace Google.Solutions.IapDesktop.Extensions.Rdp.Services.Connection
 {
+    [Service(typeof(IIapUrlHandler))]
     public class IapRdpConnectionService : IIapUrlHandler
     {
         private const int RemoteDesktopPort = 3389;

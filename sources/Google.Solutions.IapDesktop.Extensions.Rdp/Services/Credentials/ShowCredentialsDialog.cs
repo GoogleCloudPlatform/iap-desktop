@@ -19,12 +19,13 @@
 // under the License.
 //
 
-using Google.Solutions.IapDesktop.Application.Properties;
+using Google.Solutions.IapDesktop.Application.ObjectModel;
+using Google.Solutions.IapDesktop.Extensions.Rdp.Properties;
 using System;
 using System.Drawing;
 using System.Windows.Forms;
 
-namespace Google.Solutions.IapDesktop.Application.Services.Windows.ProjectExplorer
+namespace Google.Solutions.IapDesktop.Extensions.Rdp.Services.Credentials
 {
     public interface IShowCredentialsDialog
     {
@@ -34,6 +35,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.Windows.ProjectExplor
             string password);
     }
 
+    [Service(typeof(IShowCredentialsDialog))]
     public partial class ShowCredentialsDialog : Form, IShowCredentialsDialog
     {
         public ShowCredentialsDialog()

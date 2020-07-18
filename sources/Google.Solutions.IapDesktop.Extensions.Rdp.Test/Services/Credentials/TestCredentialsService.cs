@@ -27,12 +27,13 @@ using Google.Solutions.IapDesktop.Application.Services.Adapters;
 using Google.Solutions.IapDesktop.Application.Services.Persistence;
 using Google.Solutions.IapDesktop.Application.Services.Windows.ConnectionSettings;
 using Google.Solutions.IapDesktop.Application.Services.Workflows;
+using Google.Solutions.IapDesktop.Extensions.Rdp.Services.Credentials;
 using Moq;
 using NUnit.Framework;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-namespace Google.Solutions.IapDesktop.Application.Test.Services.Workflows
+namespace Google.Solutions.IapDesktop.Extensions.Rdp.Test.Services.Credentials
 {
     [TestFixture]
     public class TestCredentialsService : FixtureBase

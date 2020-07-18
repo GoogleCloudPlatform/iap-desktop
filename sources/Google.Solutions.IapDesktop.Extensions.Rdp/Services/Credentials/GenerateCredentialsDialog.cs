@@ -18,10 +18,11 @@
 // specific language governing permissions and limitations
 // under the License.
 //
+using Google.Solutions.IapDesktop.Application.ObjectModel;
 using System;
 using System.Windows.Forms;
 
-namespace Google.Solutions.IapDesktop.Application.Services.Workflows
+namespace Google.Solutions.IapDesktop.Extensions.Rdp.Services.Credentials
 {
     public interface IGenerateCredentialsDialog
     {
@@ -30,6 +31,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.Workflows
             string suggestedUsername);
     }
 
+    [Service(typeof(IGenerateCredentialsDialog))]
     public partial class GenerateCredentialsDialog : Form, IGenerateCredentialsDialog
     {
         // SAM usernames do not permit these characters, see

@@ -30,7 +30,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-namespace Google.Solutions.IapDesktop.Application.Services.Workflows
+namespace Google.Solutions.IapDesktop.Extensions.Rdp.Services.Credentials
 {
     public interface ICredentialPrompt
     {
@@ -41,6 +41,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.Workflows
            bool allowJumpToSettings);
     }
 
+    [Service(typeof(ICredentialPrompt))]
     public class CredentialPrompt : ICredentialPrompt
     {
         private readonly IServiceProvider serviceProvider;
@@ -121,7 +122,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.Workflows
             {
                 var optionIndex = this.serviceProvider.GetService<ITaskDialog>().ShowOptionsTaskDialog(
                     owner,
-                    UnsafeNativeMethods.TD_INFORMATION_ICON,
+                    TaskDialogIcons.TD_INFORMATION_ICON,
                     "Credentials",
                     $"You do not have any saved credentials for {instanceLocator.Name}",
                     "How do you want to proceed?",

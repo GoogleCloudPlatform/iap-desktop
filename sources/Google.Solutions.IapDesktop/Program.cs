@@ -251,8 +251,6 @@ namespace Google.Solutions.IapDesktop
             windowAndWorkflowLayer.AddSingleton<IMainForm>(mainForm);
             windowAndWorkflowLayer.AddTransient<CloudConsoleService>();
             windowAndWorkflowLayer.AddTransient<IProjectPickerDialog, ProjectPickerDialog>();
-            windowAndWorkflowLayer.AddTransient<IShowCredentialsDialog, ShowCredentialsDialog>();
-            windowAndWorkflowLayer.AddTransient<IGenerateCredentialsDialog, GenerateCredentialsDialog>();
             windowAndWorkflowLayer.AddTransient<AboutWindow>();
             windowAndWorkflowLayer.AddTransient<IExceptionDialog, ExceptionDialog>();
             windowAndWorkflowLayer.AddTransient<IConfirmationDialog, ConfirmationDialog>();
@@ -262,10 +260,6 @@ namespace Google.Solutions.IapDesktop
             windowAndWorkflowLayer.AddSingleton<IProjectExplorer, ProjectExplorerWindow>();
             windowAndWorkflowLayer.AddSingleton<IConnectionSettingsWindow, ConnectionSettingsWindow>();
             windowAndWorkflowLayer.AddSingleton<ITunnelsViewer, TunnelsWindow>();
-            windowAndWorkflowLayer.AddTransient<ICredentialsService, CredentialsService>();
-            windowAndWorkflowLayer.AddTransient<ICredentialPrompt, CredentialPrompt>();
-            windowAndWorkflowLayer.AddTransient<IIapUrlHandler, IapRdpConnectionService>();
-            windowAndWorkflowLayer.AddTransient<IapRdpConnectionService>();
 
 #if DEBUG
             windowAndWorkflowLayer.AddSingleton<DebugJobServiceWindow>();
@@ -297,7 +291,7 @@ namespace Google.Solutions.IapDesktop
         {
             var url = ParseCommandLine(args);
 
-            // Make sure the main form is ready.
+            // Make sure the main form is ready.e
             this.mainFormInitialized.WaitOne();
             Debug.Assert(this.initializedMainForm != null);
 

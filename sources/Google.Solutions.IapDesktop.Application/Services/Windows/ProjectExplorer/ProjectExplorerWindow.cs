@@ -242,9 +242,6 @@ namespace Google.Solutions.IapDesktop.Application.Services.Windows.ProjectExplor
             }
         }
 
-        private void generateCredentialsToolStripMenuItem_Click(object sender, EventArgs e)
-            => generateCredentialsToolStripButton_Click(sender, e);
-
         private void connectToolStripMenuItem_Click(object sender, EventArgs e)
             => connectToolStripButton_Click(sender, e);
 
@@ -301,32 +298,6 @@ namespace Google.Solutions.IapDesktop.Application.Services.Windows.ProjectExplor
             }
         }
 
-        private async void generateCredentialsToolStripButton_Click(object sender, EventArgs _)
-        {
-            try
-            {
-                if (this.treeView.SelectedNode is VmInstanceNode vmNode)
-                {
-                    var credentialService = this.serviceProvider.GetService<ICredentialsService>();
-                    await credentialService.GenerateCredentialsAsync(
-                            this,
-                            vmNode.Reference,
-                            vmNode.SettingsEditor)
-                        .ConfigureAwait(true);
-                }
-            }
-            catch (Exception e) when (e.IsCancellation())
-            {
-                // Ignore.
-            }
-            catch (Exception e)
-            {
-                this.serviceProvider
-                    .GetService<IExceptionDialog>()
-                    .Show(this, "Generating credentials failed", e);
-            }
-        }
-
         private async void connectToolStripButton_Click(object sender, EventArgs _)
         {
             try
@@ -334,9 +305,11 @@ namespace Google.Solutions.IapDesktop.Application.Services.Windows.ProjectExplor
                 if (this.treeView.SelectedNode is VmInstanceNode vmNode &&
                     vmNode.IsRunning)
                 {
-                    await this.serviceProvider
-                        .GetService<IapRdpConnectionService>()
-                        .ActivateOrConnectInstanceAsync(vmNode);
+                    Debug.Assert(false, "FIXME");
+                    // TODO: Fix
+                    //await this.serviceProvider
+                    //    .GetService<IapRdpConnectionService>()
+                    //    .ActivateOrConnectInstanceAsync(vmNode);
                 }
             }
             catch (Exception e) when (e.IsCancellation())
@@ -397,7 +370,6 @@ namespace Google.Solutions.IapDesktop.Application.Services.Windows.ProjectExplor
                 //
                 this.openSettingsButton.Enabled = (args.Node is InventoryNode);
                 this.connectToolStripButton.Enabled =
-                    this.generateCredentialsToolStripButton.Enabled =
                         (selectedNode is VmInstanceNode) && ((VmInstanceNode)selectedNode).IsRunning;
 
                 //
@@ -415,10 +387,8 @@ namespace Google.Solutions.IapDesktop.Application.Services.Windows.ProjectExplor
                     this.configureIapAccessToolStripMenuItem.Visible =
                          (selectedNode is VmInstanceNode || selectedNode is ProjectNode);
 
-                this.connectToolStripMenuItem.Visible =
-                    this.generateCredentialsToolStripMenuItem.Visible = (selectedNode is VmInstanceNode);
+                this.connectToolStripMenuItem.Visible = (selectedNode is VmInstanceNode);
                 this.connectToolStripMenuItem.Enabled =
-                    this.generateCredentialsToolStripMenuItem.Enabled =
                         (selectedNode is VmInstanceNode) && ((VmInstanceNode)selectedNode).IsRunning;
 
                 // 

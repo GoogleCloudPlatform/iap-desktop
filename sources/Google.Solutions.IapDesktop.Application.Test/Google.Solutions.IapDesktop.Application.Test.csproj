@@ -91,7 +91,6 @@
   <ItemGroup>
     <Compile Include="Controls\TestBindableListView.cs" />
     <Compile Include="Controls\TestBindableTreeView.cs" />
-    <Compile Include="MoqExtensions.cs" />
     <Compile Include="ObjectModel\TestBindingExtensions.cs" />
     <Compile Include="ObjectModel\TestCommandContainerForToolbar.cs" />
     <Compile Include="ObjectModel\TestCommandContainerForContextMenu.cs" />
@@ -106,10 +105,6 @@
     <Compile Include="Services\Persistence\TestApplicationSettingsRepository.cs" />
     <Compile Include="Services\Persistence\TestAppProtocolRegistry.cs" />
     <Compile Include="Services\Windows\ConnectionSettings\TestConnectionSettingsViewModel.cs" />
-    <Compile Include="Services\Workflows\SynchronousJobService.cs" />
-    <Compile Include="Services\Workflows\TestCredentialPrompt.cs" />
-    <Compile Include="Services\Workflows\TestCredentialsService.cs" />
-    <Compile Include="Services\Workflows\TestIapRdpConnectionService.cs" />
     <Compile Include="Services\Workflows\TunnelEndpoint.cs" />
     <Compile Include="Util\TestLeastRecentlyUsedCache.cs" />
     <Compile Include="Util\TestRangeObservableCollection.cs" />
@@ -121,7 +116,6 @@
     <Compile Include="Services\Persistence\TestAuthSettingsRepository.cs" />
     <Compile Include="Services\Persistence\TestConnectionSettingsRepository.cs" />
     <Compile Include="ObjectModel\TestServiceRegistry.cs" />
-    <Compile Include="Util\TestAuthorizationExtensions.cs" />
     <Compile Include="Util\TestIapRdpUrl.cs" />
     <Compile Include="Util\TestPropertyMapper.cs" />
     <Compile Include="Services\Windows\TestMainForm.cs">

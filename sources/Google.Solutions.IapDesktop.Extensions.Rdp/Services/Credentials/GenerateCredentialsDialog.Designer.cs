@@ -19,7 +19,7 @@
 // under the License.
 //
 
-namespace Google.Solutions.IapDesktop.Application.Services.Workflows
+namespace Google.Solutions.IapDesktop.Extensions.Rdp.Services.Credentials
 {
     partial class GenerateCredentialsDialog
     {

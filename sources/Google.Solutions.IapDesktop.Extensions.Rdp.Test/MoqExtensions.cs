@@ -18,19 +18,19 @@
 // specific language governing permissions and limitations
 // under the License.
 //
+using Google.Solutions.IapDesktop.Application.ObjectModel;
+using Moq;
 
-using Google.Solutions.IapDesktop.Application.Services.Integration;
-using System;
-using System.Threading;
-using System.Threading.Tasks;
-
-namespace Google.Solutions.IapDesktop.Application.Test.Services.Workflows
+namespace Google.Solutions.IapDesktop.Extensions.Rdp.Test
 {
-    internal class SynchronousJobService : IJobService
+    internal static class MoqExtensions
     {
-        public Task<T> RunInBackground<T>(JobDescription jobDescription, Func<CancellationToken, Task<T>> jobFunc)
+        public static Mock<T> AddMock<T>(this ServiceRegistry registry)
+            where T : class
         {
-            return jobFunc(CancellationToken.None);
+            var mock = new Mock<T>();
+            registry.AddSingleton<T>(mock.Object);
+            return mock;
         }
     }
 }

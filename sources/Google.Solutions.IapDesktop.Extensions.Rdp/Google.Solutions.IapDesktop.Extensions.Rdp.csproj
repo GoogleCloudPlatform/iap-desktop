@@ -58,6 +58,7 @@
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Drawing" />
     <Reference Include="System.Net.Http, Version=4.1.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <HintPath>..\packages\System.Net.Http.4.3.1\lib\net46\System.Net.Http.dll</HintPath>
     </Reference>
@@ -88,11 +89,67 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+    <Compile Include="Services\Connection\IapRdpConnectionService.cs" />
+    <Compile Include="Services\Credentials\AuthorizationExtensions.cs" />
+    <Compile Include="Services\Credentials\CredentialPrompt.cs" />
+    <Compile Include="Services\Credentials\CredentialsService.cs" />
+    <Compile Include="Services\Credentials\GenerateCredentialsDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Services\Credentials\GenerateCredentialsDialog.Designer.cs">
+      <DependentUpon>GenerateCredentialsDialog.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Services\Credentials\ShowCredentialsDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Services\Credentials\ShowCredentialsDialog.Designer.cs">
+      <DependentUpon>ShowCredentialsDialog.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Services\Extension.cs" />
+    <Compile Include="UnsafeNativeMethods.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
     <None Include="packages.config" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Google.Solutions.Common\Google.Solutions.Common.csproj">
+      <Project>{fb4c6f4d-32b1-4b0b-ba79-fd47fc4d7912}</Project>
+      <Name>Google.Solutions.Common</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Google.Solutions.IapDesktop.Application\Google.Solutions.IapDesktop.Application.csproj">
+      <Project>{842b003e-6eeb-429d-a3a1-53b4e642e83b}</Project>
+      <Name>Google.Solutions.IapDesktop.Application</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Google.Solutions.IapTunneling\Google.Solutions.IapTunneling.csproj">
+      <Project>{d9493479-1751-402b-880f-60ed33ebb885}</Project>
+      <Name>Google.Solutions.IapTunneling</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Services\Credentials\GenerateCredentialsDialog.resx">
+      <DependentUpon>GenerateCredentialsDialog.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Services\Credentials\ShowCredentialsDialog.resx">
+      <DependentUpon>ShowCredentialsDialog.cs</DependentUpon>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Copy_16x.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Password_16.png" />
+  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>copy /Y $(TargetDir)\$(TargetName).* $(SolutionDir)\Google.Solutions.IapDesktop\$(OutDir)</PostBuildEvent>

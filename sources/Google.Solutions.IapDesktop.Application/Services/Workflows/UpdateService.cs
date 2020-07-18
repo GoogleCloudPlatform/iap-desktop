@@ -77,7 +77,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.Workflows
                     // Prompt for upgrade.
                     int selectedOption = this.taskDialog.ShowOptionsTaskDialog(
                         parent,
-                        UnsafeNativeMethods.TD_SHIELD_ICON_INFO_BACKGROUND,
+                        TaskDialogIcons.TD_SHIELD_ICON_INFO_BACKGROUND,
                         "Update available",
                         "An update is available for IAP Desktop",
                         "Would you like to download the update now?",

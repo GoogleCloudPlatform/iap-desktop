@@ -25,13 +25,12 @@ using Google.Solutions.IapDesktop.Application.Services.Adapters;
 using Google.Solutions.IapDesktop.Application.Services.Integration;
 using Google.Solutions.IapDesktop.Application.Services.Windows.ConnectionSettings;
 using Google.Solutions.IapDesktop.Application.Services.Windows.ProjectExplorer;
-using Google.Solutions.IapDesktop.Application.Util;
 using System;
 using System.Security;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-namespace Google.Solutions.IapDesktop.Application.Services.Workflows
+namespace Google.Solutions.IapDesktop.Extensions.Rdp.Services.Credentials
 {
     public interface ICredentialsService
     {
@@ -44,6 +43,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.Workflows
             InstanceLocator instanceRef);
     }
 
+    [Service(typeof(ICredentialsService))]
     public class CredentialsService : ICredentialsService
     {
         private readonly IServiceProvider serviceProvider;
