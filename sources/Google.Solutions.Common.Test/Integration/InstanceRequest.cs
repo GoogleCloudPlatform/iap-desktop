@@ -135,6 +135,10 @@ namespace Google.Solutions.Common.Test.Integration
                                     new AccessConfig()
                                 }
                             }
+                        },
+                        Scheduling = new Scheduling()
+                        {
+                            Preemptible = true
                         }
                     },
                     this.Locator.ProjectId,
