@@ -265,6 +265,7 @@ namespace Google.Solutions.IapDesktop
             windowAndWorkflowLayer.AddTransient<ICredentialsService, CredentialsService>();
             windowAndWorkflowLayer.AddTransient<ICredentialPrompt, CredentialPrompt>();
             windowAndWorkflowLayer.AddTransient<IIapUrlHandler, IapRdpConnectionService>();
+            windowAndWorkflowLayer.AddTransient<IapRdpConnectionService>();
 
 #if DEBUG
             windowAndWorkflowLayer.AddSingleton<DebugJobServiceWindow>();
