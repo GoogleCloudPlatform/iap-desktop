@@ -19,6 +19,7 @@
 // under the License.
 //
 
+using Google.Solutions.Common.Locator;
 using Google.Solutions.IapDesktop.Application.Services.Windows.ConnectionSettings;
 using System.Collections.Generic;
 
@@ -59,7 +60,11 @@ namespace Google.Solutions.IapDesktop.Application.Services.Windows.ProjectExplor
         string ZoneId { get; }
         string InstanceName { get; }
 
+        InstanceLocator Reference { get; }
+
         bool IsRunning { get; }
         bool IsConnected { get; }
+
+        void Select();
     }
 }

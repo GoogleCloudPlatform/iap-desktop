@@ -138,6 +138,7 @@
     <Compile Include="Controls\FlatVerticalTabControl.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="Util\IIapUrlHandler.cs" />
     <Compile Include="Services\Windows\ProjectExplorer\ProjectExplorerTrackingToolWindow.cs">
       <SubType>Form</SubType>
     </Compile>
