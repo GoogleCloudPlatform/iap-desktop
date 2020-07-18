@@ -19,8 +19,6 @@
 // under the License.
 //
 
-using Google.Apis.Auth.OAuth2;
-using Google.Apis.Compute.v1.Data;
 using Google.Solutions.Common.Locator;
 using Google.Solutions.Common.Test;
 using Google.Solutions.Common.Test.Integration;
