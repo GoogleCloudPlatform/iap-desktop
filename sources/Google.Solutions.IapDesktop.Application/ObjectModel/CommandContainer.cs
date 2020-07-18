@@ -23,8 +23,8 @@ using Google.Solutions.Common.Util;
 using Google.Solutions.IapDesktop.Application.Services.Windows;
 using System;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Windows.Forms;
-using WeifenLuo.WinFormsUI.Docking;
 
 namespace Google.Solutions.IapDesktop.Application.ObjectModel
 {
@@ -47,20 +47,6 @@ namespace Google.Solutions.IapDesktop.Application.ObjectModel
                   menuItems,
                   displayStyle,
                   serviceProvider.GetService<IExceptionDialog>, 
-                  null)
-        {
-        }
-
-        public CommandContainer(
-            IWin32Window parent,
-            ToolStripItemCollection menuItems,
-            ToolStripItemDisplayStyle displayStyle,
-            Func<IExceptionDialog> getExceptionDialogFunc)
-            : this(
-                  parent, 
-                  menuItems,
-                  displayStyle,
-                  getExceptionDialogFunc, 
                   null)
         {
         }
@@ -179,6 +165,21 @@ namespace Google.Solutions.IapDesktop.Application.ObjectModel
                 this.displayStyle,
                 this.getExceptionDialogFunc,
                 this);
+        }
+
+        public void ExecuteCommandByKey(Keys keys)
+        {
+            // Only search top-level menu.
+            var menuItem = this.menuItems
+                .Cast<ToolStripMenuItem>()
+                .FirstOrDefault(m => m.ShortcutKeys == keys);
+            if (menuItem?.Tag is Command<TContext> command)
+            {
+                if (command.QueryState(this.context) == CommandState.Enabled)
+                {
+                    command.Execute(this.context);
+                }
+            }
         }
     }
 }

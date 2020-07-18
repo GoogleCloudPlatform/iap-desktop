@@ -464,6 +464,10 @@ namespace Google.Solutions.IapDesktop.Application.Services.Windows.ProjectExplor
             {
                 connectToolStripButton_Click(sender, EventArgs.Empty);
             }
+            else
+            {
+                this.ContextMenuCommands.ExecuteCommandByKey(e.KeyCode);
+            }
         }
 
         //---------------------------------------------------------------------

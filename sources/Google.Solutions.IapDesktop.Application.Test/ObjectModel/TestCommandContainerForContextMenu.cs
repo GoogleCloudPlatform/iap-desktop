@@ -120,6 +120,55 @@ namespace Google.Solutions.IapDesktop.Application.Test.ObjectModel
             Assert.IsNull(menuItem.ToolTipText);
         }
 
+        [Test]
+        public void WhenKeyIsUnknown_ThenExecuteCommandByKeyDoesNothing()
+        {
+            this.commandContainer.ExecuteCommandByKey(Keys.A);
+        }
+
+        [Test]
+        public void WhenKeyIsMappedAndCommandIsEnabled_ThenExecuteCommandInvokesHandler()
+        {
+            string contextOfCallback = null;
+            this.commandContainer.AddCommand(
+                new Command<string>(
+                    "test",
+                    ctx => CommandState.Enabled,
+                    ctx =>
+                    {
+                        contextOfCallback = ctx;
+                    })
+                {
+                    ShortcutKeys = Keys.F4
+                });
+
+            this.commandContainer.Context = "foo";
+
+            this.commandContainer.ExecuteCommandByKey(Keys.F4);
+
+            Assert.AreEqual("foo", contextOfCallback);
+        }
+
+        [Test]
+        public void WhenKeyIsMappedAndCommandIsDisabled_ThenExecuteCommandByKeyDoesNothing()
+        {
+            this.commandContainer.AddCommand(
+                new Command<string>(
+                    "test",
+                    ctx => CommandState.Disabled,
+                    ctx =>
+                    {
+                        Assert.Fail();
+                    })
+                {
+                    ShortcutKeys = Keys.F4
+                });
+
+            this.commandContainer.Context = "foo";
+
+            this.commandContainer.ExecuteCommandByKey(Keys.F4);
+        }
+
         //---------------------------------------------------------------------
         // Second-level commands.
         //---------------------------------------------------------------------
