@@ -24,6 +24,7 @@ using Google.Solutions.Common.Test;
 using Google.Solutions.IapDesktop.Application.Services.Integration;
 using Google.Solutions.IapDesktop.Application.Services.Windows;
 using Google.Solutions.IapDesktop.Extensions.Rdp.Services.Credentials.TunnelsViewer;
+using Google.Solutions.IapDesktop.Extensions.Rdp.Services.Tunnel;
 using Moq;
 using NUnit.Framework;
 using System;

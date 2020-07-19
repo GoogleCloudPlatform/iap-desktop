@@ -26,7 +26,7 @@ using System;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Google.Solutions.IapDesktop.Application.Services.Integration
+namespace Google.Solutions.IapDesktop.Extensions.Rdp.Services.Tunnel
 {
     public interface ITunnel
     {

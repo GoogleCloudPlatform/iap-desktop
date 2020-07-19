@@ -113,10 +113,7 @@
     <Compile Include="Services\Persistence\AppProtocolRegistry.cs" />
     <Compile Include="Services\Windows\CloudConsoleService.cs" />
     <Compile Include="Services\Adapters\IAuthorizationAdapter.cs" />
-    <Compile Include="Services\Integration\Tunnel.cs" />
     <Compile Include="Services\Integration\ProjectInventoryService.cs" />
-    <Compile Include="Services\Integration\TunnelBrokerService.cs" />
-    <Compile Include="Services\Integration\TunnelService.cs" />
     <Compile Include="Controls\FlatListView.cs">
       <SubType>Component</SubType>
     </Compile>

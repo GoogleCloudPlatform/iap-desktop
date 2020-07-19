@@ -119,6 +119,9 @@
     <Compile Include="Services\TunnelsViewer\TunnelsWindow.designer.cs">
       <DependentUpon>TunnelsWindow.cs</DependentUpon>
     </Compile>
+    <Compile Include="Services\Tunnel\Tunnel.cs" />
+    <Compile Include="Services\Tunnel\TunnelBrokerService.cs" />
+    <Compile Include="Services\Tunnel\TunnelService.cs" />
     <Compile Include="UnsafeNativeMethods.cs" />
   </ItemGroup>
   <ItemGroup>

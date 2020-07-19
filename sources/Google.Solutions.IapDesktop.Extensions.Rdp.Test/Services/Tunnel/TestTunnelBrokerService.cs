@@ -23,13 +23,14 @@ using Google.Solutions.Common;
 using Google.Solutions.Common.Locator;
 using Google.Solutions.Common.Test;
 using Google.Solutions.IapDesktop.Application.Services.Integration;
+using Google.Solutions.IapDesktop.Extensions.Rdp.Services.Tunnel;
 using Moq;
 using NUnit.Framework;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace Google.Solutions.IapDesktop.Application.Test.Services.Integration
+namespace Google.Solutions.IapDesktop.Extensions.Rdp.Test.Services.Tunnel
 {
     [TestFixture]
     public class TestTunnelBrokerService : FixtureBase

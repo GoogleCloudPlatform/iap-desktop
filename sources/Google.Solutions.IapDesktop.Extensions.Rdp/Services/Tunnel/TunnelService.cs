@@ -20,6 +20,7 @@
 //
 
 using Google.Solutions.Common.Diagnostics;
+using Google.Solutions.IapDesktop.Application;
 using Google.Solutions.IapDesktop.Application.ObjectModel;
 using Google.Solutions.IapDesktop.Application.Services.Adapters;
 using Google.Solutions.IapTunneling.Iap;
@@ -27,13 +28,14 @@ using System;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Google.Solutions.IapDesktop.Application.Services.Integration
+namespace Google.Solutions.IapDesktop.Extensions.Rdp.Services.Tunnel
 {
     public interface ITunnelService
     {
         Task<ITunnel> CreateTunnelAsync(TunnelDestination tunnelEndpoint);
     }
 
+    [Service(typeof(ITunnelService))]
     public class TunnelService : ITunnelService
     {
         private readonly IAuthorizationAdapter authorizationService;

@@ -240,8 +240,6 @@ namespace Google.Solutions.IapDesktop
             integrationLayer.AddSingleton<IJobService, JobService>();
             integrationLayer.AddSingleton<IEventService>(new EventService(mainForm));
             integrationLayer.AddTransient<ProjectInventoryService>();
-            integrationLayer.AddTransient<ITunnelService, TunnelService>();
-            integrationLayer.AddSingleton<ITunnelBrokerService, TunnelBrokerService>();
 
 
             //

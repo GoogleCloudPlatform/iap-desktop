@@ -20,13 +20,15 @@
 //
 
 using Google.Solutions.Common.Diagnostics;
+using Google.Solutions.IapDesktop.Application;
 using Google.Solutions.IapDesktop.Application.ObjectModel;
+using Google.Solutions.IapDesktop.Application.Services.Integration;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace Google.Solutions.IapDesktop.Application.Services.Integration
+namespace Google.Solutions.IapDesktop.Extensions.Rdp.Services.Tunnel
 {
     public interface ITunnelBrokerService
     {
@@ -41,6 +43,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.Integration
         Task DisconnectAllAsync();
     }
 
+    [Service(typeof(ITunnelBrokerService), ServiceLifetime.Singleton)]
     public class TunnelBrokerService : ITunnelBrokerService
     {
         private readonly ITunnelService tunnelService;
