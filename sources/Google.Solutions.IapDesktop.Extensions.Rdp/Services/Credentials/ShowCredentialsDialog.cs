@@ -19,6 +19,7 @@
 // under the License.
 //
 
+using Google.Solutions.Common.Diagnostics;
 using Google.Solutions.IapDesktop.Application.ObjectModel;
 using Google.Solutions.IapDesktop.Extensions.Rdp.Properties;
 using System;
@@ -36,6 +37,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Services.Credentials
     }
 
     [Service(typeof(IShowCredentialsDialog))]
+    [SkipCodeCoverage("View code")]
     public partial class ShowCredentialsDialog : Form, IShowCredentialsDialog
     {
         public ShowCredentialsDialog()
