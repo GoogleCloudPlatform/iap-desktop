@@ -149,7 +149,9 @@
   <ItemGroup>
     <None Include="Resources\Password_16.png" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <None Include="Resources\Connect_16.png" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>copy /Y $(TargetDir)\$(TargetName).* $(SolutionDir)\Google.Solutions.IapDesktop\$(OutDir)</PostBuildEvent>

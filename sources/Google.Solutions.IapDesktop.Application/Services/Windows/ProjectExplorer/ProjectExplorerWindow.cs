@@ -242,11 +242,10 @@ namespace Google.Solutions.IapDesktop.Application.Services.Windows.ProjectExplor
             }
         }
 
-        private void connectToolStripMenuItem_Click(object sender, EventArgs e)
-            => connectToolStripButton_Click(sender, e);
-
         private void treeView_NodeMouseDoubleClick(object sender, TreeNodeMouseClickEventArgs e)
-            => connectToolStripButton_Click(sender, e);
+        {
+            this.ContextMenuCommands.ExecuteDefaultCommand();
+        }
 
         //---------------------------------------------------------------------
         // Tool bar event handlers.
@@ -298,32 +297,6 @@ namespace Google.Solutions.IapDesktop.Application.Services.Windows.ProjectExplor
             }
         }
 
-        private async void connectToolStripButton_Click(object sender, EventArgs _)
-        {
-            try
-            {
-                if (this.treeView.SelectedNode is VmInstanceNode vmNode &&
-                    vmNode.IsRunning)
-                {
-                    Debug.Assert(false, "FIXME");
-                    // TODO: Fix
-                    //await this.serviceProvider
-                    //    .GetService<IapRdpConnectionService>()
-                    //    .ActivateOrConnectInstanceAsync(vmNode);
-                }
-            }
-            catch (Exception e) when (e.IsCancellation())
-            {
-                // Ignore.
-            }
-            catch (Exception e)
-            {
-                this.serviceProvider
-                    .GetService<IExceptionDialog>()
-                    .Show(this, "Connecting to VM instance failed", e);
-            }
-        }
-
         //---------------------------------------------------------------------
         // Other Windows event handlers.
         //---------------------------------------------------------------------
@@ -369,8 +342,6 @@ namespace Google.Solutions.IapDesktop.Application.Services.Windows.ProjectExplor
                 // Update toolbar state.
                 //
                 this.openSettingsButton.Enabled = (args.Node is InventoryNode);
-                this.connectToolStripButton.Enabled =
-                        (selectedNode is VmInstanceNode) && ((VmInstanceNode)selectedNode).IsRunning;
 
                 //
                 // Update context menu state.
@@ -386,10 +357,6 @@ namespace Google.Solutions.IapDesktop.Application.Services.Windows.ProjectExplor
                 this.iapSeparatorToolStripMenuItem.Visible =
                     this.configureIapAccessToolStripMenuItem.Visible =
                          (selectedNode is VmInstanceNode || selectedNode is ProjectNode);
-
-                this.connectToolStripMenuItem.Visible = (selectedNode is VmInstanceNode);
-                this.connectToolStripMenuItem.Enabled =
-                        (selectedNode is VmInstanceNode) && ((VmInstanceNode)selectedNode).IsRunning;
 
                 // 
                 // Handle dynamic menu items.
@@ -432,7 +399,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.Windows.ProjectExplor
             }
             else if (e.KeyCode == Keys.Enter)
             {
-                connectToolStripButton_Click(sender, EventArgs.Empty);
+                this.ContextMenuCommands.ExecuteDefaultCommand();
             }
             else
             {

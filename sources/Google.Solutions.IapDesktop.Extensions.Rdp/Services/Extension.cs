@@ -42,14 +42,14 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Services
         private readonly IServiceProvider serviceProvider;
         private readonly IWin32Window window;
 
-        private static CommandState GetGenerateCredentialToolbarCommandState(IProjectExplorerNode node)
+        private static CommandState GetToolbarCommandStateWhenRunningInstanceRequired(IProjectExplorerNode node)
         {
             return node is IProjectExplorerVmInstanceNode vmNode && vmNode.IsRunning
                 ? CommandState.Enabled
                 : CommandState.Disabled;
         }
 
-        private static CommandState GetGenerateCredentialContextMenuCommandState(IProjectExplorerNode node)
+        private static CommandState GetContextMenuCommandStateWhenRunningInstanceRequired(IProjectExplorerNode node)
         {
             if (node is IProjectExplorerVmInstanceNode vmNode)
             {
@@ -63,14 +63,18 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Services
             }
         }
 
+        //---------------------------------------------------------------------
+        // Commands.
+        //---------------------------------------------------------------------
+
         private async void GenerateCredentials(IProjectExplorerNode node)
         {
             try
             {
                 if (node is IProjectExplorerVmInstanceNode vmNode)
                 {
-                    var credentialService = this.serviceProvider.GetService<ICredentialsService>();
-                    await credentialService.GenerateCredentialsAsync(
+                    await this.serviceProvider.GetService<ICredentialsService>()
+                        .GenerateCredentialsAsync(
                             this.window,
                             vmNode.Reference,
                             vmNode.SettingsEditor)
@@ -89,6 +93,32 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Services
             }
         }
 
+        private async void Connect(IProjectExplorerNode node)
+        {
+            try
+            {
+                if (node is IProjectExplorerVmInstanceNode vmNode)
+                {
+                    await this.serviceProvider
+                        .GetService<IapRdpConnectionService>()
+                        .ActivateOrConnectInstanceAsync(vmNode)
+                        .ConfigureAwait(true);
+                }
+            }
+            catch (Exception e) when (e.IsCancellation())
+            {
+                // Ignore.
+            }
+            catch (Exception e)
+            {
+                this.serviceProvider
+                    .GetService<IExceptionDialog>()
+                    .Show(this.window, "Connecting to VM instance failed", e);
+            }
+        }
+
+        //---------------------------------------------------------------------
+        // Setup
         //---------------------------------------------------------------------
 
         private class UrlHandler : IIapUrlHandler
@@ -124,14 +154,37 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Services
             this.window = mainForm.Window;
 
             //
-            // Add commands to project explorer.
+            // Connect.
             //
             var projectExplorer = serviceProvider.GetService<IProjectExplorer>();
 
             projectExplorer.ContextMenuCommands.AddCommand(
                 new Command<IProjectExplorerNode>(
+                    "&Connect",
+                    GetContextMenuCommandStateWhenRunningInstanceRequired,
+                    Connect)
+                {
+                    Image = Resources.Connect_16
+                },
+                0);
+
+            projectExplorer.ToolbarCommands.AddCommand(
+                new Command<IProjectExplorerNode>(
+                    "Connect to remote desktop",
+                    GetToolbarCommandStateWhenRunningInstanceRequired,
+                    Connect)
+                {
+                    Image = Resources.Connect_16
+                });
+
+
+            //
+            // Generate credentials.
+            //
+            projectExplorer.ContextMenuCommands.AddCommand(
+                new Command<IProjectExplorerNode>(
                     "&Generate Windows logon credentials...",
-                    GetGenerateCredentialContextMenuCommandState,
+                    GetContextMenuCommandStateWhenRunningInstanceRequired,
                     GenerateCredentials)
                 {
                     Image = Resources.Password_16
@@ -141,7 +194,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Services
             projectExplorer.ToolbarCommands.AddCommand(
                 new Command<IProjectExplorerNode>(
                     "Generate Windows logon credentials",
-                    GetGenerateCredentialToolbarCommandState,
+                    GetToolbarCommandStateWhenRunningInstanceRequired,
                     GenerateCredentials)
                 {
                     Image = Resources.Password_16
