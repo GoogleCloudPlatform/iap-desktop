@@ -30,7 +30,6 @@ using Google.Solutions.IapDesktop.Application.Services.Windows;
 using Google.Solutions.IapDesktop.Application.Services.Windows.Diagnostics;
 using Google.Solutions.IapDesktop.Application.Services.Windows.ProjectExplorer;
 using Google.Solutions.IapDesktop.Application.Services.Windows.RemoteDesktop;
-using Google.Solutions.IapDesktop.Application.Services.Windows.TunnelsViewer;
 using Google.Solutions.IapDesktop.Application.Services.Workflows;
 using Google.Solutions.IapDesktop.Application.Util;
 using System;
@@ -319,11 +318,6 @@ namespace Google.Solutions.IapDesktop.Windows
         private void openIapAccessDocsToolStripMenuItem_Click(object sender, EventArgs _)
         {
             this.serviceProvider.GetService<CloudConsoleService>().OpenIapAccessDocs();
-        }
-
-        private void activeTunnelsToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            this.serviceProvider.GetService<ITunnelsViewer>().ShowWindow();
         }
 
         private void reportIssueToolStripMenuItem_Click(object sender, EventArgs e)

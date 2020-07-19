@@ -131,7 +131,6 @@
     <Compile Include="Services\Windows\TestRemoteDesktopOverIap.cs" />
     <Compile Include="Services\Windows\WindowTestFixtureBase.cs" />
     <Compile Include="Util\TestSingletonApplicationBase.cs" />
-    <Compile Include="Services\Windows\TestTunnelsViewModel.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Google.Solutions.Common.Test\Google.Solutions.Common.Test.csproj">

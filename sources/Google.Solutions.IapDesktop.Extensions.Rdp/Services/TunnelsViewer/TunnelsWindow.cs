@@ -23,15 +23,17 @@ using Google.Solutions.Common.Diagnostics;
 using Google.Solutions.IapDesktop.Application.Controls;
 using Google.Solutions.IapDesktop.Application.ObjectModel;
 using Google.Solutions.IapDesktop.Application.Services.Integration;
+using Google.Solutions.IapDesktop.Application.Services.Windows;
 using System;
 using System.Runtime.InteropServices;
 using WeifenLuo.WinFormsUI.Docking;
 
 #pragma warning disable IDE1006 // Naming Styles
 
-namespace Google.Solutions.IapDesktop.Application.Services.Windows.TunnelsViewer
+namespace Google.Solutions.IapDesktop.Extensions.Rdp.Services.Credentials.TunnelsViewer
 {
     [ComVisible(false)]
+    [Service(typeof(ITunnelsViewer), ServiceLifetime.Singleton)]
     [SkipCodeCoverage("All logic in view model")]
     public partial class TunnelsWindow : ToolWindow, ITunnelsViewer
     {

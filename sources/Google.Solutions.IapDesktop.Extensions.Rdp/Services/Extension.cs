@@ -27,6 +27,7 @@ using Google.Solutions.IapDesktop.Application.Util;
 using Google.Solutions.IapDesktop.Extensions.Rdp.Properties;
 using Google.Solutions.IapDesktop.Extensions.Rdp.Services.Connection;
 using Google.Solutions.IapDesktop.Extensions.Rdp.Services.Credentials;
+using Google.Solutions.IapDesktop.Extensions.Rdp.Services.Credentials.TunnelsViewer;
 using System;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -199,6 +200,20 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Services
                 {
                     Image = Resources.Password_16
                 });
+
+            //
+            // TunnelsViewer
+            //
+            mainForm.ViewCommands.AddCommand(
+                new Command<IMainForm>(
+                    "Active IAP &tunnels",
+                    pseudoContext => CommandState.Enabled,
+                    pseudoContext => serviceProvider.GetService<ITunnelsViewer>().ShowWindow())
+                {
+                    Image = Resources.Tunnel_16,
+                    ShortcutKeys = Keys.Control | Keys.Alt | Keys.T
+                },
+                1);
         }
     }
 }

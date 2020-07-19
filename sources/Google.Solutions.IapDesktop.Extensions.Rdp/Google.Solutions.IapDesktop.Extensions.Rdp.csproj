@@ -111,6 +111,14 @@
       <DependentUpon>ShowCredentialsDialog.cs</DependentUpon>
     </Compile>
     <Compile Include="Services\Extension.cs" />
+    <Compile Include="Services\TunnelsViewer\ITunnelsViewer.cs" />
+    <Compile Include="Services\TunnelsViewer\TunnelsViewModel.cs" />
+    <Compile Include="Services\TunnelsViewer\TunnelsWindow.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Services\TunnelsViewer\TunnelsWindow.designer.cs">
+      <DependentUpon>TunnelsWindow.cs</DependentUpon>
+    </Compile>
     <Compile Include="UnsafeNativeMethods.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -142,6 +150,9 @@
     <EmbeddedResource Include="Services\Credentials\ShowCredentialsDialog.resx">
       <DependentUpon>ShowCredentialsDialog.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Services\TunnelsViewer\TunnelsWindow.resx">
+      <DependentUpon>TunnelsWindow.cs</DependentUpon>
+    </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\Copy_16x.png" />
@@ -151,6 +162,9 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\Connect_16.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Tunnel_16.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

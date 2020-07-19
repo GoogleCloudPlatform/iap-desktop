@@ -30,7 +30,6 @@ using Google.Solutions.IapDesktop.Application.Services.Windows.ConnectionSetting
 using Google.Solutions.IapDesktop.Application.Services.Windows.Diagnostics;
 using Google.Solutions.IapDesktop.Application.Services.Windows.ProjectExplorer;
 using Google.Solutions.IapDesktop.Application.Services.Windows.RemoteDesktop;
-using Google.Solutions.IapDesktop.Application.Services.Windows.TunnelsViewer;
 using Google.Solutions.IapDesktop.Application.Services.Workflows;
 using Google.Solutions.IapDesktop.Application.Util;
 using Google.Solutions.IapDesktop.Windows;
@@ -259,7 +258,6 @@ namespace Google.Solutions.IapDesktop
             windowAndWorkflowLayer.AddSingleton<IRemoteDesktopService, RemoteDesktopService>();
             windowAndWorkflowLayer.AddSingleton<IProjectExplorer, ProjectExplorerWindow>();
             windowAndWorkflowLayer.AddSingleton<IConnectionSettingsWindow, ConnectionSettingsWindow>();
-            windowAndWorkflowLayer.AddSingleton<ITunnelsViewer, TunnelsWindow>();
 
 #if DEBUG
             windowAndWorkflowLayer.AddSingleton<DebugJobServiceWindow>();

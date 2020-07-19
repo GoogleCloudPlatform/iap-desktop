@@ -25,8 +25,9 @@ using System.Threading.Tasks;
 using Google.Solutions.IapDesktop.Application.ObjectModel;
 using System;
 using System.Windows.Forms;
+using Google.Solutions.IapDesktop.Application.Services.Windows;
 
-namespace Google.Solutions.IapDesktop.Application.Services.Windows.TunnelsViewer
+namespace Google.Solutions.IapDesktop.Extensions.Rdp.Services.Credentials.TunnelsViewer
 {
     internal class TunnelsViewModel : ViewModelBase
     {

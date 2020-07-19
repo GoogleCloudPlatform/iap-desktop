@@ -19,19 +19,19 @@
 // under the License.
 //
 
-using Google.Solutions.Common;
 using Google.Solutions.Common.Locator;
+using Google.Solutions.Common.Test;
 using Google.Solutions.IapDesktop.Application.Services.Integration;
 using Google.Solutions.IapDesktop.Application.Services.Windows;
-using Google.Solutions.IapDesktop.Application.Services.Windows.TunnelsViewer;
-using Google.Solutions.IapDesktop.Application.Test.ObjectModel;
+using Google.Solutions.IapDesktop.Extensions.Rdp.Services.Credentials.TunnelsViewer;
 using Moq;
 using NUnit.Framework;
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-namespace Google.Solutions.IapDesktop.Application.Test.Services.Windows
+namespace Google.Solutions.IapDesktop.Extensions.Rdp.Test.Services.TunnelsViewer
 {
     [TestFixture]
     public class TestTunnelsViewModel : FixtureBase
@@ -70,6 +70,21 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Windows
             return broker;
         }
 
+        class MockEventService : IEventService
+        {
+            public virtual void BindHandler<TEvent>(Action<TEvent> handler)
+            {
+            }
+
+            public virtual void BindAsyncHandler<TEvent>(Func<TEvent, Task> handler)
+            {
+            }
+
+            public Task FireAsync<TEvent>(TEvent eventObject)
+            {
+                return Task.FromResult(0);
+            }
+        }
 
 
         [Test]
