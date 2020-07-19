@@ -37,8 +37,8 @@ using System.Windows.Forms;
 
 namespace Google.Solutions.IapDesktop.Extensions.Rdp.Services.Connection
 {
-    [Service(typeof(IIapUrlHandler))]
-    public class IapRdpConnectionService : IIapUrlHandler
+    [Service]
+    public class IapRdpConnectionService
     {
         private const int RemoteDesktopPort = 3389;
 

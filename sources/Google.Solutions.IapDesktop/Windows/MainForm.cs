@@ -19,6 +19,7 @@
 // under the License.
 //
 
+using Google.Apis.Util;
 using Google.Solutions.Common.Auth;
 using Google.Solutions.Common.Util;
 using Google.Solutions.IapDesktop.Application.ObjectModel;
@@ -52,6 +53,7 @@ namespace Google.Solutions.IapDesktop.Windows
 
         private readonly ApplicationSettingsRepository applicationSettings;
         private readonly IServiceProvider serviceProvider;
+        private IIapUrlHandler urlHandler;
 
         public IapRdpUrl StartupUrl { get; set; }
         public CommandContainer<IMainForm> ViewCommands { get; }
@@ -236,27 +238,23 @@ namespace Google.Solutions.IapDesktop.Windows
 
         internal void ConnectToUrl(IapRdpUrl url)
         {
-            try
+            if (this.urlHandler != null)
             {
-                this.serviceProvider
-                    .GetService<IIapUrlHandler>()
-                    .ActivateOrConnectInstanceAsync(url)
-                    .ContinueWith(t => this.serviceProvider
-                            .GetService<IExceptionDialog>()
-                            .Show(this, "Failed to connect to VM instance", t.Exception),
-                        CancellationToken.None,
-                        TaskContinuationOptions.OnlyOnFaulted,
-                        TaskScheduler.FromCurrentSynchronizationContext());
-            }
-            catch (UnknownServiceException e)
-            {
-                this.serviceProvider
-                    .GetService<IExceptionDialog>()
-                    .Show(this, "Handler not found for URL", e);
-            }
-            catch (Exception e) when (e.IsCancellation())
-            {
-                // The user cancelled, nervemind.
+                try
+                {
+                    this.urlHandler
+                        .ActivateOrConnectInstanceAsync(url)
+                        .ContinueWith(t => this.serviceProvider
+                                .GetService<IExceptionDialog>()
+                                .Show(this, "Failed to connect to VM instance", t.Exception),
+                            CancellationToken.None,
+                            TaskContinuationOptions.OnlyOnFaulted,
+                            TaskScheduler.FromCurrentSynchronizationContext());
+                }
+                catch (Exception e) when (e.IsCancellation())
+                {
+                    // The user cancelled, nervemind.
+                }
             }
         }
 
@@ -266,6 +264,12 @@ namespace Google.Solutions.IapDesktop.Windows
 
         public IWin32Window Window => this;
         public DockPanel MainPanel => this.dockPanel;
+
+        public void SetUrlHandler(IIapUrlHandler handler)
+        {
+            Utilities.ThrowIfNull(handler, nameof(handler));
+            this.urlHandler = handler;
+        }
 
         //---------------------------------------------------------------------
         // Main menu events.

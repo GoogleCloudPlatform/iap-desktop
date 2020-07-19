@@ -20,6 +20,7 @@
 //
 
 using Google.Solutions.IapDesktop.Application.ObjectModel;
+using Google.Solutions.IapDesktop.Application.Util;
 using System.Windows.Forms;
 using WeifenLuo.WinFormsUI.Docking;
 
@@ -32,6 +33,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.Windows
         void Close();
 
         CommandContainer<IMainForm> ViewCommands { get; }
-    }
 
+        void SetUrlHandler(IIapUrlHandler handler);
+    }
 }

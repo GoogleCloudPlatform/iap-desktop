@@ -26,6 +26,7 @@ using Google.Solutions.IapDesktop.Application.ObjectModel;
 using Google.Solutions.IapDesktop.Application.Services.Adapters;
 using Google.Solutions.IapDesktop.Application.Services.Integration;
 using Google.Solutions.IapDesktop.Application.Services.Windows;
+using Google.Solutions.IapDesktop.Application.Util;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
@@ -48,6 +49,11 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Windows
         public IWin32Window Window => this;
         public DockPanel MainPanel => this.dockPanel;
         public CommandContainer<IMainForm> ViewCommands => null;
+
+        public void SetUrlHandler(IIapUrlHandler handler)
+        {
+            throw new NotImplementedException();
+        }
 
         //---------------------------------------------------------------------
         // IJobService.

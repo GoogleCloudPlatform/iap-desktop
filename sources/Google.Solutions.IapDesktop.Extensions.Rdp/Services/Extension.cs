@@ -23,9 +23,12 @@ using Google.Solutions.Common.Util;
 using Google.Solutions.IapDesktop.Application.ObjectModel;
 using Google.Solutions.IapDesktop.Application.Services.Windows;
 using Google.Solutions.IapDesktop.Application.Services.Windows.ProjectExplorer;
+using Google.Solutions.IapDesktop.Application.Util;
 using Google.Solutions.IapDesktop.Extensions.Rdp.Properties;
+using Google.Solutions.IapDesktop.Extensions.Rdp.Services.Connection;
 using Google.Solutions.IapDesktop.Extensions.Rdp.Services.Credentials;
 using System;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace Google.Solutions.IapDesktop.Extensions.Rdp.Services
@@ -88,10 +91,37 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Services
 
         //---------------------------------------------------------------------
 
+        private class UrlHandler : IIapUrlHandler
+        {
+            private readonly IServiceProvider serviceProvider;
+
+            public UrlHandler(IServiceProvider serviceProvider)
+            {
+                this.serviceProvider = serviceProvider;
+            }
+
+            public Task ActivateOrConnectInstanceAsync(IapRdpUrl url)
+                => this.serviceProvider
+                    .GetService<IapRdpConnectionService>()
+                    .ActivateOrConnectInstanceAsync(url);
+        }
+
         public Extension(IServiceProvider serviceProvider)
         {
             this.serviceProvider = serviceProvider;
-            this.window = serviceProvider.GetService<IMainForm>().Window;
+
+            var mainForm = serviceProvider.GetService<IMainForm>();
+
+            //
+            // Let this extension handle all URL activations.
+            //
+            // NB. We cannot instantiate the service here because we 
+            // are in a constructor. So pass a delegate object that
+            // instantiates the object lazily.
+            //
+            mainForm.SetUrlHandler(new UrlHandler(serviceProvider));
+
+            this.window = mainForm.Window;
 
             //
             // Add commands to project explorer.
