@@ -23,6 +23,7 @@ using Google.Solutions.Common;
 using Google.Solutions.Common.Locator;
 using Google.Solutions.Common.Test;
 using Google.Solutions.IapDesktop.Application.Services.Integration;
+using Google.Solutions.IapDesktop.Application.Services.Persistence;
 using Google.Solutions.IapDesktop.Extensions.Rdp.Services.Tunnel;
 using Moq;
 using NUnit.Framework;
@@ -58,6 +59,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Test.Services.Tunnel
 
             Assert.IsNotNull(tunnel);
             Assert.AreEqual(1, broker.OpenTunnels.Count());
+            Assert.IsTrue(broker.IsConnected(destination));
 
             Assert.AreSame(tunnel, broker.OpenTunnels.First());
         }
