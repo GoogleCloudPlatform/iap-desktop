@@ -40,9 +40,14 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Services.Tunnel
     {
         private readonly IAuthorizationAdapter authorizationService;
 
-        public TunnelService(IServiceProvider serviceProvider)
+        public TunnelService(IAuthorizationAdapter authorizationService)
         {
-            this.authorizationService = serviceProvider.GetService<IAuthorizationAdapter>();
+            this.authorizationService = authorizationService;
+        }
+
+        public TunnelService(IServiceProvider serviceProvider)
+            : this(serviceProvider.GetService<IAuthorizationAdapter>())
+        { 
         }
 
         public Task<ITunnel> CreateTunnelAsync(TunnelDestination tunnelEndpoint)

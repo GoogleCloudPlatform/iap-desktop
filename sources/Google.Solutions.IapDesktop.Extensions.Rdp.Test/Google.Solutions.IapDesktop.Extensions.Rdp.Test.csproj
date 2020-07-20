@@ -106,6 +106,7 @@
     <Compile Include="Services\Credentials\TestCredentialsService.cs" />
     <Compile Include="Services\TunnelsViewer\TestTunnelsViewModel.cs" />
     <Compile Include="Services\Tunnel\TestTunnelBrokerService.cs" />
+    <Compile Include="Services\Tunnel\TestTunnelService.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />

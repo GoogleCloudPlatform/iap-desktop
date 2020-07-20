@@ -40,21 +40,20 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Services.Tunnel
     {
         private readonly CancellationTokenSource cancellationTokenSource;
         private readonly SshRelayListener listener;
-        private readonly IapTunnelingEndpoint endpoint;
 
         public TunnelDestination Destination => new TunnelDestination(
             this.Endpoint.VmInstance, this.Endpoint.Port);
 
         public virtual int LocalPort => listener.LocalPort;
 
-        public IapTunnelingEndpoint Endpoint => endpoint;
+        public IapTunnelingEndpoint Endpoint { get; }
 
         public Tunnel(
             IapTunnelingEndpoint endpoint,
             SshRelayListener listener,
             CancellationTokenSource cancellationTokenSource)
         {
-            this.endpoint = endpoint;
+            this.Endpoint = endpoint;
             this.listener = listener;
             this.cancellationTokenSource = cancellationTokenSource;
         }
