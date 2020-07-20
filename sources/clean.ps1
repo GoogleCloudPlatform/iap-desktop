@@ -22,9 +22,9 @@
 $ErrorActionPreference = "stop"
 
 # Delete bin directories
-Resolve-Path -Path "Google.Solutions.*\bin" | 
+Resolve-Path -Path "${PSScriptRoot}\Google.Solutions.*\bin" | 
 	% { Remove-Item -Recurse -Force $_ }
 
 # Delete obj directories
-Resolve-Path -Path "Google.Solutions.*\obj" | 
+Resolve-Path -Path "${PSScriptRoot}\Google.Solutions.*\obj" | 
 	% { Remove-Item -Recurse -Force $_ }
