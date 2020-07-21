@@ -128,21 +128,31 @@ namespace Google.Solutions.IapDesktop.Application.ObjectModel
 
         public void AddExtensionAssembly(Assembly assembly)
         {
+            //
+            // First, register all transients. 
+            //
             foreach (var type in assembly.GetTypes())
             {
-                if (type.GetCustomAttribute<ServiceAttribute>() is ServiceAttribute attribute)
-                {
-                    if (attribute.Lifetime == ServiceLifetime.Singleton)
-                    {
-                        var instance = CreateInstance(type);
+                if (type.GetCustomAttribute<ServiceAttribute>() is ServiceAttribute attribute &&
+                    attribute.Lifetime == ServiceLifetime.Transient)
+                { 
+                    this.transients[attribute.ServiceInterface ?? type] =
+                        () => CreateInstance(type);
+                }
+            }
 
-                        this.singletons[attribute.ServiceInterface ?? type] = instance;
-                    }
-                    else
-                    {
-                        this.transients[attribute.ServiceInterface ?? type] = 
-                            () => CreateInstance(type);
-                    }
+            //
+            // Register singletons. Because transients are already registered,
+            // it is ok if singletons instantiate transients in their constructor.
+            //
+            foreach (var type in assembly.GetTypes())
+            {
+                if (type.GetCustomAttribute<ServiceAttribute>() is ServiceAttribute attribute &&
+                    attribute.Lifetime == ServiceLifetime.Singleton)
+                {
+                    var instance = CreateInstance(type);
+
+                    this.singletons[attribute.ServiceInterface ?? type] = instance;
                 }
             }
         }

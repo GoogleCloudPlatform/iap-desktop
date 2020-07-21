@@ -55,15 +55,11 @@ namespace Google.Solutions.IapDesktop.Application.Services.Windows.ProjectExplor
             this.refreshButton = new System.Windows.Forms.ToolStripButton();
             this.addButton = new System.Windows.Forms.ToolStripButton();
             this.vmToolStripSeparator = new System.Windows.Forms.ToolStripSeparator();
-            this.connectToolStripButton = new System.Windows.Forms.ToolStripButton();
             this.openSettingsButton = new System.Windows.Forms.ToolStripButton();
-            this.generateCredentialsToolStripButton = new System.Windows.Forms.ToolStripButton();
             this.vsToolStripExtender = new WeifenLuo.WinFormsUI.Docking.VisualStudioToolStripExtender(this.components);
             this.vs2015LightTheme = new WeifenLuo.WinFormsUI.Docking.VS2015LightTheme();
             this.treeView = new System.Windows.Forms.TreeView();
             this.contextMenu = new System.Windows.Forms.ContextMenuStrip(this.components);
-            this.connectToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.generateCredentialsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.refreshToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.refreshAllProjectsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.unloadProjectToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -83,9 +79,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.Windows.ProjectExplor
             this.refreshButton,
             this.addButton,
             this.vmToolStripSeparator,
-            this.connectToolStripButton,
-            this.openSettingsButton,
-            this.generateCredentialsToolStripButton});
+            this.openSettingsButton});
             this.toolStrip.Location = new System.Drawing.Point(0, 0);
             this.toolStrip.Name = "toolStrip";
             this.toolStrip.Size = new System.Drawing.Size(800, 25);
@@ -117,16 +111,6 @@ namespace Google.Solutions.IapDesktop.Application.Services.Windows.ProjectExplor
             this.vmToolStripSeparator.Name = "vmToolStripSeparator";
             this.vmToolStripSeparator.Size = new System.Drawing.Size(6, 25);
             // 
-            // connectToolStripButton
-            // 
-            this.connectToolStripButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.connectToolStripButton.Image = ((System.Drawing.Image)(resources.GetObject("connectToolStripButton.Image")));
-            this.connectToolStripButton.ImageTransparentColor = System.Drawing.Color.White;
-            this.connectToolStripButton.Name = "connectToolStripButton";
-            this.connectToolStripButton.Size = new System.Drawing.Size(23, 22);
-            this.connectToolStripButton.Text = "Connect to remote desktop";
-            this.connectToolStripButton.Click += new System.EventHandler(this.connectToolStripButton_Click);
-            // 
             // openSettingsButton
             // 
             this.openSettingsButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
@@ -136,16 +120,6 @@ namespace Google.Solutions.IapDesktop.Application.Services.Windows.ProjectExplor
             this.openSettingsButton.Size = new System.Drawing.Size(23, 22);
             this.openSettingsButton.Text = "Connection settings";
             this.openSettingsButton.Click += new System.EventHandler(this.openSettingsButton_Click);
-            // 
-            // generateCredentialsToolStripButton
-            // 
-            this.generateCredentialsToolStripButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.generateCredentialsToolStripButton.Image = ((System.Drawing.Image)(resources.GetObject("generateCredentialsToolStripButton.Image")));
-            this.generateCredentialsToolStripButton.ImageTransparentColor = System.Drawing.Color.White;
-            this.generateCredentialsToolStripButton.Name = "generateCredentialsToolStripButton";
-            this.generateCredentialsToolStripButton.Size = new System.Drawing.Size(23, 22);
-            this.generateCredentialsToolStripButton.Text = "Generate Windows logon credentials";
-            this.generateCredentialsToolStripButton.Click += new System.EventHandler(this.generateCredentialsToolStripButton_Click);
             // 
             // vsToolStripExtender
             // 
@@ -170,8 +144,6 @@ namespace Google.Solutions.IapDesktop.Application.Services.Windows.ProjectExplor
             // contextMenu
             // 
             this.contextMenu.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.connectToolStripMenuItem,
-            this.generateCredentialsToolStripMenuItem,
             this.refreshToolStripMenuItem,
             this.refreshAllProjectsToolStripMenuItem,
             this.unloadProjectToolStripMenuItem,
@@ -181,29 +153,13 @@ namespace Google.Solutions.IapDesktop.Application.Services.Windows.ProjectExplor
             this.cloudConsoleSeparatorToolStripMenuItem,
             this.openInCloudConsoleToolStripMenuItem});
             this.contextMenu.Name = "contextMenu";
-            this.contextMenu.Size = new System.Drawing.Size(277, 192);
-            // 
-            // connectToolStripMenuItem
-            // 
-            this.connectToolStripMenuItem.Image = global::Google.Solutions.IapDesktop.Application.Properties.Resources.Connect_16;
-            this.connectToolStripMenuItem.Name = "connectToolStripMenuItem";
-            this.connectToolStripMenuItem.Size = new System.Drawing.Size(276, 22);
-            this.connectToolStripMenuItem.Text = "&Connect";
-            this.connectToolStripMenuItem.Click += new System.EventHandler(this.connectToolStripMenuItem_Click);
-            // 
-            // generateCredentialsToolStripMenuItem
-            // 
-            this.generateCredentialsToolStripMenuItem.Image = global::Google.Solutions.IapDesktop.Application.Properties.Resources.Password_16;
-            this.generateCredentialsToolStripMenuItem.Name = "generateCredentialsToolStripMenuItem";
-            this.generateCredentialsToolStripMenuItem.Size = new System.Drawing.Size(276, 22);
-            this.generateCredentialsToolStripMenuItem.Text = "Generate &Windows logon credentials...";
-            this.generateCredentialsToolStripMenuItem.Click += new System.EventHandler(this.generateCredentialsToolStripMenuItem_Click);
+            this.contextMenu.Size = new System.Drawing.Size(207, 170);
             // 
             // refreshToolStripMenuItem
             // 
             this.refreshToolStripMenuItem.Image = global::Google.Solutions.IapDesktop.Application.Properties.Resources.Refresh_16;
             this.refreshToolStripMenuItem.Name = "refreshToolStripMenuItem";
-            this.refreshToolStripMenuItem.Size = new System.Drawing.Size(276, 22);
+            this.refreshToolStripMenuItem.Size = new System.Drawing.Size(206, 22);
             this.refreshToolStripMenuItem.Text = "&Refresh project";
             this.refreshToolStripMenuItem.Click += new System.EventHandler(this.refreshToolStripMenuItem_Click);
             // 
@@ -211,14 +167,14 @@ namespace Google.Solutions.IapDesktop.Application.Services.Windows.ProjectExplor
             // 
             this.refreshAllProjectsToolStripMenuItem.Image = global::Google.Solutions.IapDesktop.Application.Properties.Resources.Refresh_161;
             this.refreshAllProjectsToolStripMenuItem.Name = "refreshAllProjectsToolStripMenuItem";
-            this.refreshAllProjectsToolStripMenuItem.Size = new System.Drawing.Size(276, 22);
+            this.refreshAllProjectsToolStripMenuItem.Size = new System.Drawing.Size(206, 22);
             this.refreshAllProjectsToolStripMenuItem.Text = "Refresh &all projects";
             this.refreshAllProjectsToolStripMenuItem.Click += new System.EventHandler(this.refreshAllProjectsToolStripMenuItem_Click);
             // 
             // unloadProjectToolStripMenuItem
             // 
             this.unloadProjectToolStripMenuItem.Name = "unloadProjectToolStripMenuItem";
-            this.unloadProjectToolStripMenuItem.Size = new System.Drawing.Size(276, 22);
+            this.unloadProjectToolStripMenuItem.Size = new System.Drawing.Size(206, 22);
             this.unloadProjectToolStripMenuItem.Text = "&Unload project";
             this.unloadProjectToolStripMenuItem.Click += new System.EventHandler(this.unloadProjectToolStripMenuItem_Click);
             // 
@@ -226,31 +182,31 @@ namespace Google.Solutions.IapDesktop.Application.Services.Windows.ProjectExplor
             // 
             this.propertiesToolStripMenuItem.Image = global::Google.Solutions.IapDesktop.Application.Properties.Resources.Settings_16;
             this.propertiesToolStripMenuItem.Name = "propertiesToolStripMenuItem";
-            this.propertiesToolStripMenuItem.Size = new System.Drawing.Size(276, 22);
+            this.propertiesToolStripMenuItem.Size = new System.Drawing.Size(206, 22);
             this.propertiesToolStripMenuItem.Text = "Connection &settings";
             this.propertiesToolStripMenuItem.Click += new System.EventHandler(this.propertiesToolStripMenuItem_Click);
             // 
             // iapSeparatorToolStripMenuItem
             // 
             this.iapSeparatorToolStripMenuItem.Name = "iapSeparatorToolStripMenuItem";
-            this.iapSeparatorToolStripMenuItem.Size = new System.Drawing.Size(273, 6);
+            this.iapSeparatorToolStripMenuItem.Size = new System.Drawing.Size(203, 6);
             // 
             // configureIapAccessToolStripMenuItem
             // 
             this.configureIapAccessToolStripMenuItem.Name = "configureIapAccessToolStripMenuItem";
-            this.configureIapAccessToolStripMenuItem.Size = new System.Drawing.Size(276, 22);
+            this.configureIapAccessToolStripMenuItem.Size = new System.Drawing.Size(206, 22);
             this.configureIapAccessToolStripMenuItem.Text = "Configure IAP a&ccess...";
             this.configureIapAccessToolStripMenuItem.Click += new System.EventHandler(this.configureIapAccessToolStripMenuItem_Click);
             // 
             // cloudConsoleSeparatorToolStripMenuItem
             // 
             this.cloudConsoleSeparatorToolStripMenuItem.Name = "cloudConsoleSeparatorToolStripMenuItem";
-            this.cloudConsoleSeparatorToolStripMenuItem.Size = new System.Drawing.Size(273, 6);
+            this.cloudConsoleSeparatorToolStripMenuItem.Size = new System.Drawing.Size(203, 6);
             // 
             // openInCloudConsoleToolStripMenuItem
             // 
             this.openInCloudConsoleToolStripMenuItem.Name = "openInCloudConsoleToolStripMenuItem";
-            this.openInCloudConsoleToolStripMenuItem.Size = new System.Drawing.Size(276, 22);
+            this.openInCloudConsoleToolStripMenuItem.Size = new System.Drawing.Size(206, 22);
             this.openInCloudConsoleToolStripMenuItem.Text = "Open in Cloud Consol&e...";
             this.openInCloudConsoleToolStripMenuItem.Click += new System.EventHandler(this.openInCloudConsoleToolStripMenuItem_Click);
             // 
@@ -304,10 +260,6 @@ namespace Google.Solutions.IapDesktop.Application.Services.Windows.ProjectExplor
         private System.Windows.Forms.ToolStripSeparator cloudConsoleSeparatorToolStripMenuItem;
         private System.Windows.Forms.ToolStripSeparator iapSeparatorToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem configureIapAccessToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem generateCredentialsToolStripMenuItem;
         private System.Windows.Forms.ToolStripSeparator vmToolStripSeparator;
-        private System.Windows.Forms.ToolStripButton generateCredentialsToolStripButton;
-        private System.Windows.Forms.ToolStripMenuItem connectToolStripMenuItem;
-        private System.Windows.Forms.ToolStripButton connectToolStripButton;
     }
 }

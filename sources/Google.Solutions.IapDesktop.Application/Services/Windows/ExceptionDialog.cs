@@ -50,7 +50,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.Windows
                     dwFlags = 0,
                     dwCommonButtons = UnsafeNativeMethods.TASKDIALOG_COMMON_BUTTON_FLAGS.TDCBF_OK_BUTTON,
                     pszWindowTitle = "An error occured",
-                    MainIcon = UnsafeNativeMethods.TD_ERROR_ICON,
+                    MainIcon = TaskDialogIcons.TD_ERROR_ICON,
                     pszMainInstruction = caption,
                     pszContent = message,
                     pszExpandedInformation = details.ToString()

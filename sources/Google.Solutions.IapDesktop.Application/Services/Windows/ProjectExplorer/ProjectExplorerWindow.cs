@@ -242,14 +242,10 @@ namespace Google.Solutions.IapDesktop.Application.Services.Windows.ProjectExplor
             }
         }
 
-        private void generateCredentialsToolStripMenuItem_Click(object sender, EventArgs e)
-            => generateCredentialsToolStripButton_Click(sender, e);
-
-        private void connectToolStripMenuItem_Click(object sender, EventArgs e)
-            => connectToolStripButton_Click(sender, e);
-
         private void treeView_NodeMouseDoubleClick(object sender, TreeNodeMouseClickEventArgs e)
-            => connectToolStripButton_Click(sender, e);
+        {
+            this.ContextMenuCommands.ExecuteDefaultCommand();
+        }
 
         //---------------------------------------------------------------------
         // Tool bar event handlers.
@@ -301,56 +297,6 @@ namespace Google.Solutions.IapDesktop.Application.Services.Windows.ProjectExplor
             }
         }
 
-        private async void generateCredentialsToolStripButton_Click(object sender, EventArgs _)
-        {
-            try
-            {
-                if (this.treeView.SelectedNode is VmInstanceNode vmNode)
-                {
-                    var credentialService = this.serviceProvider.GetService<ICredentialsService>();
-                    await credentialService.GenerateCredentialsAsync(
-                            this,
-                            vmNode.Reference,
-                            vmNode.SettingsEditor)
-                        .ConfigureAwait(true);
-                }
-            }
-            catch (Exception e) when (e.IsCancellation())
-            {
-                // Ignore.
-            }
-            catch (Exception e)
-            {
-                this.serviceProvider
-                    .GetService<IExceptionDialog>()
-                    .Show(this, "Generating credentials failed", e);
-            }
-        }
-
-        private async void connectToolStripButton_Click(object sender, EventArgs _)
-        {
-            try
-            {
-                if (this.treeView.SelectedNode is VmInstanceNode vmNode &&
-                    vmNode.IsRunning)
-                {
-                    await this.serviceProvider
-                        .GetService<IapRdpConnectionService>()
-                        .ActivateOrConnectInstanceAsync(vmNode);
-                }
-            }
-            catch (Exception e) when (e.IsCancellation())
-            {
-                // Ignore.
-            }
-            catch (Exception e)
-            {
-                this.serviceProvider
-                    .GetService<IExceptionDialog>()
-                    .Show(this, "Connecting to VM instance failed", e);
-            }
-        }
-
         //---------------------------------------------------------------------
         // Other Windows event handlers.
         //---------------------------------------------------------------------
@@ -396,9 +342,6 @@ namespace Google.Solutions.IapDesktop.Application.Services.Windows.ProjectExplor
                 // Update toolbar state.
                 //
                 this.openSettingsButton.Enabled = (args.Node is InventoryNode);
-                this.connectToolStripButton.Enabled =
-                    this.generateCredentialsToolStripButton.Enabled =
-                        (selectedNode is VmInstanceNode) && ((VmInstanceNode)selectedNode).IsRunning;
 
                 //
                 // Update context menu state.
@@ -414,12 +357,6 @@ namespace Google.Solutions.IapDesktop.Application.Services.Windows.ProjectExplor
                 this.iapSeparatorToolStripMenuItem.Visible =
                     this.configureIapAccessToolStripMenuItem.Visible =
                          (selectedNode is VmInstanceNode || selectedNode is ProjectNode);
-
-                this.connectToolStripMenuItem.Visible =
-                    this.generateCredentialsToolStripMenuItem.Visible = (selectedNode is VmInstanceNode);
-                this.connectToolStripMenuItem.Enabled =
-                    this.generateCredentialsToolStripMenuItem.Enabled =
-                        (selectedNode is VmInstanceNode) && ((VmInstanceNode)selectedNode).IsRunning;
 
                 // 
                 // Handle dynamic menu items.
@@ -462,7 +399,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.Windows.ProjectExplor
             }
             else if (e.KeyCode == Keys.Enter)
             {
-                connectToolStripButton_Click(sender, EventArgs.Empty);
+                this.ContextMenuCommands.ExecuteDefaultCommand();
             }
             else
             {

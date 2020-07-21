@@ -30,7 +30,6 @@ using Google.Solutions.IapDesktop.Application.Services.Windows.ConnectionSetting
 using Google.Solutions.IapDesktop.Application.Services.Windows.Diagnostics;
 using Google.Solutions.IapDesktop.Application.Services.Windows.ProjectExplorer;
 using Google.Solutions.IapDesktop.Application.Services.Windows.RemoteDesktop;
-using Google.Solutions.IapDesktop.Application.Services.Windows.TunnelsViewer;
 using Google.Solutions.IapDesktop.Application.Services.Workflows;
 using Google.Solutions.IapDesktop.Application.Util;
 using Google.Solutions.IapDesktop.Windows;
@@ -241,8 +240,6 @@ namespace Google.Solutions.IapDesktop
             integrationLayer.AddSingleton<IJobService, JobService>();
             integrationLayer.AddSingleton<IEventService>(new EventService(mainForm));
             integrationLayer.AddTransient<ProjectInventoryService>();
-            integrationLayer.AddTransient<ITunnelService, TunnelService>();
-            integrationLayer.AddSingleton<ITunnelBrokerService, TunnelBrokerService>();
 
 
             //
@@ -251,8 +248,6 @@ namespace Google.Solutions.IapDesktop
             windowAndWorkflowLayer.AddSingleton<IMainForm>(mainForm);
             windowAndWorkflowLayer.AddTransient<CloudConsoleService>();
             windowAndWorkflowLayer.AddTransient<IProjectPickerDialog, ProjectPickerDialog>();
-            windowAndWorkflowLayer.AddTransient<IShowCredentialsDialog, ShowCredentialsDialog>();
-            windowAndWorkflowLayer.AddTransient<IGenerateCredentialsDialog, GenerateCredentialsDialog>();
             windowAndWorkflowLayer.AddTransient<AboutWindow>();
             windowAndWorkflowLayer.AddTransient<IExceptionDialog, ExceptionDialog>();
             windowAndWorkflowLayer.AddTransient<IConfirmationDialog, ConfirmationDialog>();
@@ -261,11 +256,6 @@ namespace Google.Solutions.IapDesktop
             windowAndWorkflowLayer.AddSingleton<IRemoteDesktopService, RemoteDesktopService>();
             windowAndWorkflowLayer.AddSingleton<IProjectExplorer, ProjectExplorerWindow>();
             windowAndWorkflowLayer.AddSingleton<IConnectionSettingsWindow, ConnectionSettingsWindow>();
-            windowAndWorkflowLayer.AddSingleton<ITunnelsViewer, TunnelsWindow>();
-            windowAndWorkflowLayer.AddTransient<ICredentialsService, CredentialsService>();
-            windowAndWorkflowLayer.AddTransient<ICredentialPrompt, CredentialPrompt>();
-            windowAndWorkflowLayer.AddTransient<IIapUrlHandler, IapRdpConnectionService>();
-            windowAndWorkflowLayer.AddTransient<IapRdpConnectionService>();
 
 #if DEBUG
             windowAndWorkflowLayer.AddSingleton<DebugJobServiceWindow>();
@@ -297,7 +287,7 @@ namespace Google.Solutions.IapDesktop
         {
             var url = ParseCommandLine(args);
 
-            // Make sure the main form is ready.
+            // Make sure the main form is ready.e
             this.mainFormInitialized.WaitOne();
             Debug.Assert(this.initializedMainForm != null);
 

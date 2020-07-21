@@ -70,9 +70,7 @@
     <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
     <Reference Include="System.Drawing" />
-    <Reference Include="System.Runtime.CompilerServices.Unsafe, Version=4.0.6.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
-      <HintPath>..\packages\System.Runtime.CompilerServices.Unsafe.4.7.1\lib\net461\System.Runtime.CompilerServices.Unsafe.dll</HintPath>
-    </Reference>
+    <Reference Include="System.Runtime.CompilerServices.Unsafe"/>
     <Reference Include="System.Security" />
     <Reference Include="System.Threading.Tasks.Extensions, Version=4.2.0.1, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
       <HintPath>..\packages\System.Threading.Tasks.Extensions.4.5.4\lib\net461\System.Threading.Tasks.Extensions.dll</HintPath>
@@ -91,7 +89,6 @@
   <ItemGroup>
     <Compile Include="Controls\TestBindableListView.cs" />
     <Compile Include="Controls\TestBindableTreeView.cs" />
-    <Compile Include="MoqExtensions.cs" />
     <Compile Include="ObjectModel\TestBindingExtensions.cs" />
     <Compile Include="ObjectModel\TestCommandContainerForToolbar.cs" />
     <Compile Include="ObjectModel\TestCommandContainerForContextMenu.cs" />
@@ -106,22 +103,15 @@
     <Compile Include="Services\Persistence\TestApplicationSettingsRepository.cs" />
     <Compile Include="Services\Persistence\TestAppProtocolRegistry.cs" />
     <Compile Include="Services\Windows\ConnectionSettings\TestConnectionSettingsViewModel.cs" />
-    <Compile Include="Services\Workflows\SynchronousJobService.cs" />
-    <Compile Include="Services\Workflows\TestCredentialPrompt.cs" />
-    <Compile Include="Services\Workflows\TestCredentialsService.cs" />
-    <Compile Include="Services\Workflows\TestIapRdpConnectionService.cs" />
-    <Compile Include="Services\Workflows\TunnelEndpoint.cs" />
     <Compile Include="Util\TestLeastRecentlyUsedCache.cs" />
     <Compile Include="Util\TestRangeObservableCollection.cs" />
     <Compile Include="Util\TestRegistryKeyMapper.cs" />
     <Compile Include="ObjectModel\MockEventService.cs" />
     <Compile Include="Services\Integration\TestJobService.cs" />
     <Compile Include="Services\Integration\TestProjectInventoryService.cs" />
-    <Compile Include="Services\Integration\TestTunnelBrokerService.cs" />
     <Compile Include="Services\Persistence\TestAuthSettingsRepository.cs" />
     <Compile Include="Services\Persistence\TestConnectionSettingsRepository.cs" />
     <Compile Include="ObjectModel\TestServiceRegistry.cs" />
-    <Compile Include="Util\TestAuthorizationExtensions.cs" />
     <Compile Include="Util\TestIapRdpUrl.cs" />
     <Compile Include="Util\TestPropertyMapper.cs" />
     <Compile Include="Services\Windows\TestMainForm.cs">
@@ -137,7 +127,6 @@
     <Compile Include="Services\Windows\TestRemoteDesktopOverIap.cs" />
     <Compile Include="Services\Windows\WindowTestFixtureBase.cs" />
     <Compile Include="Util\TestSingletonApplicationBase.cs" />
-    <Compile Include="Services\Windows\TestTunnelsViewModel.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Google.Solutions.Common.Test\Google.Solutions.Common.Test.csproj">

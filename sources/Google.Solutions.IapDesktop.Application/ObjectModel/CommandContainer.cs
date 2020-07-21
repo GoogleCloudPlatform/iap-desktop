@@ -181,5 +181,20 @@ namespace Google.Solutions.IapDesktop.Application.ObjectModel
                 }
             }
         }
+
+        public void ExecuteDefaultCommand()
+        {
+            // Only search top-level menu.
+            var menuItem = this.menuItems
+                .OfType<ToolStripMenuItem>()
+                .FirstOrDefault();
+            if (menuItem?.Tag is Command<TContext> command)
+            {
+                if (command.QueryState(this.context) == CommandState.Enabled)
+                {
+                    command.Execute(this.context);
+                }
+            }
+        }
     }
 }

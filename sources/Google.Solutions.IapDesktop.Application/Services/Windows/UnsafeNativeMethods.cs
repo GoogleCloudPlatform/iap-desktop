@@ -58,12 +58,6 @@ namespace Google.Solutions.IapDesktop.Application.Services.Windows
             TDCBF_CLOSE_BUTTON = 0x0020,
         }
 
-        public static readonly IntPtr TD_ERROR_ICON = new IntPtr(65534);
-        public static readonly IntPtr TD_INFORMATION_ICON = new IntPtr(65533);
-        public static readonly IntPtr TD_SHIELD_ICON = new IntPtr(65532);
-        public static readonly IntPtr TD_SHIELD_ICON_INFO_BACKGROUND = new IntPtr(65531);
-        public static readonly IntPtr TD_SHIELD_ICON_WARNING_BACKGROUND = new IntPtr(65530);
-
         public const int IDOK = 1;
         public const int IDCANCEL = 2;
 
@@ -138,10 +132,6 @@ namespace Google.Solutions.IapDesktop.Application.Services.Windows
 
         [DllImport("user32.dll")]
         internal static extern uint MapVirtualKey(uint uCode, uint uMapType);
-
-        internal const int EM_SETMARGINS = 0xd3;
-        [System.Runtime.InteropServices.DllImport("user32.dll")]
-        internal static extern IntPtr SendMessage(IntPtr hWnd, int msg, IntPtr wp, IntPtr lp);
 
         [DllImport("user32.dll")]
         public static extern bool SetForegroundWindow(IntPtr hWnd);

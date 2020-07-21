@@ -66,7 +66,6 @@ namespace Google.Solutions.IapDesktop.Windows
             this.showtaskManagerToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.viewToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.projectExplorerToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.activeTunnelsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.optionsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.checkForUpdatesOnExitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.enableloggingToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -194,8 +193,7 @@ namespace Google.Solutions.IapDesktop.Windows
             // viewToolStripMenuItem
             // 
             this.viewToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.projectExplorerToolStripMenuItem,
-            this.activeTunnelsToolStripMenuItem});
+            this.projectExplorerToolStripMenuItem});
             this.viewToolStripMenuItem.Name = "viewToolStripMenuItem";
             this.viewToolStripMenuItem.Size = new System.Drawing.Size(44, 20);
             this.viewToolStripMenuItem.Text = "&View";
@@ -206,19 +204,9 @@ namespace Google.Solutions.IapDesktop.Windows
             this.projectExplorerToolStripMenuItem.Name = "projectExplorerToolStripMenuItem";
             this.projectExplorerToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)(((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Alt) 
             | System.Windows.Forms.Keys.L)));
-            this.projectExplorerToolStripMenuItem.Size = new System.Drawing.Size(233, 22);
+            this.projectExplorerToolStripMenuItem.Size = new System.Drawing.Size(220, 22);
             this.projectExplorerToolStripMenuItem.Text = "&Project Explorer";
             this.projectExplorerToolStripMenuItem.Click += new System.EventHandler(this.projectExplorerToolStripMenuItem_Click);
-            // 
-            // activeTunnelsToolStripMenuItem
-            // 
-            this.activeTunnelsToolStripMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("activeTunnelsToolStripMenuItem.Image")));
-            this.activeTunnelsToolStripMenuItem.Name = "activeTunnelsToolStripMenuItem";
-            this.activeTunnelsToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)(((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Alt) 
-            | System.Windows.Forms.Keys.T)));
-            this.activeTunnelsToolStripMenuItem.Size = new System.Drawing.Size(233, 22);
-            this.activeTunnelsToolStripMenuItem.Text = "Active IAP &tunnels";
-            this.activeTunnelsToolStripMenuItem.Click += new System.EventHandler(this.activeTunnelsToolStripMenuItem_Click);
             // 
             // optionsToolStripMenuItem
             // 
@@ -398,7 +386,6 @@ namespace Google.Solutions.IapDesktop.Windows
         private System.Windows.Forms.ToolStripSeparator aboutSeparatorToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem addProjectToolStripMenuItem;
         private System.Windows.Forms.ToolStripSeparator fileSeparatorToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem activeTunnelsToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem reportIssueToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem optionsToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem enableloggingToolStripMenuItem;

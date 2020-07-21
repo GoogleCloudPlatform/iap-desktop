@@ -49,6 +49,12 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Google.Solutions.IapDesktop
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Google.Solutions.IapDesktop.Extensions.Os.Test", "Google.Solutions.IapDesktop.Extensions.Os.Test\Google.Solutions.IapDesktop.Extensions.Os.Test.csproj", "{2A1A5D4D-AE63-439E-A914-6F5FE5EB9435}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "IapDesktop.Extensions.Rdp", "IapDesktop.Extensions.Rdp", "{CEE34323-B85C-4F7C-AB73-17FE47C6B5DF}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Google.Solutions.IapDesktop.Extensions.Rdp", "Google.Solutions.IapDesktop.Extensions.Rdp\Google.Solutions.IapDesktop.Extensions.Rdp.csproj", "{B5F53A65-1B67-4CA1-9AB0-A81799C0C215}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Google.Solutions.IapDesktop.Extensions.Rdp.Test", "Google.Solutions.IapDesktop.Extensions.Rdp.Test\Google.Solutions.IapDesktop.Extensions.Rdp.Test.csproj", "{EF5D7227-BA6F-4DF7-A3B6-CD547C443AAB}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug (OAuth)|Any CPU = Debug (OAuth)|Any CPU
@@ -191,6 +197,30 @@ Global
 		{2A1A5D4D-AE63-439E-A914-6F5FE5EB9435}.Release|Any CPU.Build.0 = Release|Any CPU
 		{2A1A5D4D-AE63-439E-A914-6F5FE5EB9435}.Release|x86.ActiveCfg = Release|Any CPU
 		{2A1A5D4D-AE63-439E-A914-6F5FE5EB9435}.Release|x86.Build.0 = Release|Any CPU
+		{B5F53A65-1B67-4CA1-9AB0-A81799C0C215}.Debug (OAuth)|Any CPU.ActiveCfg = Debug|Any CPU
+		{B5F53A65-1B67-4CA1-9AB0-A81799C0C215}.Debug (OAuth)|Any CPU.Build.0 = Debug|Any CPU
+		{B5F53A65-1B67-4CA1-9AB0-A81799C0C215}.Debug (OAuth)|x86.ActiveCfg = Debug|Any CPU
+		{B5F53A65-1B67-4CA1-9AB0-A81799C0C215}.Debug (OAuth)|x86.Build.0 = Debug|Any CPU
+		{B5F53A65-1B67-4CA1-9AB0-A81799C0C215}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B5F53A65-1B67-4CA1-9AB0-A81799C0C215}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B5F53A65-1B67-4CA1-9AB0-A81799C0C215}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{B5F53A65-1B67-4CA1-9AB0-A81799C0C215}.Debug|x86.Build.0 = Debug|Any CPU
+		{B5F53A65-1B67-4CA1-9AB0-A81799C0C215}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B5F53A65-1B67-4CA1-9AB0-A81799C0C215}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B5F53A65-1B67-4CA1-9AB0-A81799C0C215}.Release|x86.ActiveCfg = Release|Any CPU
+		{B5F53A65-1B67-4CA1-9AB0-A81799C0C215}.Release|x86.Build.0 = Release|Any CPU
+		{EF5D7227-BA6F-4DF7-A3B6-CD547C443AAB}.Debug (OAuth)|Any CPU.ActiveCfg = Debug|Any CPU
+		{EF5D7227-BA6F-4DF7-A3B6-CD547C443AAB}.Debug (OAuth)|Any CPU.Build.0 = Debug|Any CPU
+		{EF5D7227-BA6F-4DF7-A3B6-CD547C443AAB}.Debug (OAuth)|x86.ActiveCfg = Debug|Any CPU
+		{EF5D7227-BA6F-4DF7-A3B6-CD547C443AAB}.Debug (OAuth)|x86.Build.0 = Debug|Any CPU
+		{EF5D7227-BA6F-4DF7-A3B6-CD547C443AAB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EF5D7227-BA6F-4DF7-A3B6-CD547C443AAB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EF5D7227-BA6F-4DF7-A3B6-CD547C443AAB}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{EF5D7227-BA6F-4DF7-A3B6-CD547C443AAB}.Debug|x86.Build.0 = Debug|Any CPU
+		{EF5D7227-BA6F-4DF7-A3B6-CD547C443AAB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EF5D7227-BA6F-4DF7-A3B6-CD547C443AAB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EF5D7227-BA6F-4DF7-A3B6-CD547C443AAB}.Release|x86.ActiveCfg = Release|Any CPU
+		{EF5D7227-BA6F-4DF7-A3B6-CD547C443AAB}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -207,6 +237,8 @@ Global
 		{D9493479-1751-402B-880F-60ED33EBB885} = {7EFB4313-FCC0-4109-80EC-4AA017CC5D11}
 		{387693FF-20D9-4F26-92C4-9B6F630767AC} = {32A110AB-A2D9-4DD3-BF10-B24168390CD0}
 		{2A1A5D4D-AE63-439E-A914-6F5FE5EB9435} = {32A110AB-A2D9-4DD3-BF10-B24168390CD0}
+		{B5F53A65-1B67-4CA1-9AB0-A81799C0C215} = {CEE34323-B85C-4F7C-AB73-17FE47C6B5DF}
+		{EF5D7227-BA6F-4DF7-A3B6-CD547C443AAB} = {CEE34323-B85C-4F7C-AB73-17FE47C6B5DF}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {75502EC2-01DB-49D6-B896-7A5DDE267F6A}

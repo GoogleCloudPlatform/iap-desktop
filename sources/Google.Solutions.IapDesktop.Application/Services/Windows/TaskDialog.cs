@@ -42,6 +42,15 @@ namespace Google.Solutions.IapDesktop.Application.Services.Windows
             out bool verificationFlagPressed);
     }
 
+    public static class TaskDialogIcons
+    {
+        public static readonly IntPtr TD_ERROR_ICON = new IntPtr(65534);
+        public static readonly IntPtr TD_INFORMATION_ICON = new IntPtr(65533);
+        public static readonly IntPtr TD_SHIELD_ICON = new IntPtr(65532);
+        public static readonly IntPtr TD_SHIELD_ICON_INFO_BACKGROUND = new IntPtr(65531);
+        public static readonly IntPtr TD_SHIELD_ICON_WARNING_BACKGROUND = new IntPtr(65530);
+    }
+
     public class TaskDialog : ITaskDialog
     {
         private readonly int ButtonIdOffset = 1000;
