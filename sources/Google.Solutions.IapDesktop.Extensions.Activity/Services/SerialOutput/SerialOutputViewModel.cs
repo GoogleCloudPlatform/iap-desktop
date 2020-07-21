@@ -55,7 +55,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services.SerialOutput
 
         public SerialOutputViewModel(
             IServiceProvider serviceProvider,
-            ushort serialPortNumber) 
+            ushort serialPortNumber)
             : base(ModelCacheCapacity)
         {
             this.serviceProvider = serviceProvider;
@@ -83,7 +83,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services.SerialOutput
 
             Debug.Assert(this.TailCancellationTokenSource == null);
             TraceSources.IapDesktop.TraceVerbose("Start tailing");
-            
+
             this.TailCancellationTokenSource = new CancellationTokenSource();
             this.Model.TailAsync(
                 output => this.NewOutputAvailable?.Invoke(this, output),
@@ -203,7 +203,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services.SerialOutput
         }
 
         protected async override Task<SerialOutputModel> LoadModelAsync(
-            IProjectExplorerNode node, 
+            IProjectExplorerNode node,
             CancellationToken token)
         {
             using (TraceSources.IapDesktop.TraceMethod().WithParameters(node))
@@ -254,13 +254,13 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services.SerialOutput
                 if (this.Model == null)
                 {
                     // Unsupported node.
-                    this.WindowTitle = DefaultWindowTitle + $" (COM{this.serialPortNumber})"; 
-                    this.IsEnableTailingButtonEnabled = 
+                    this.WindowTitle = DefaultWindowTitle + $" (COM{this.serialPortNumber})";
+                    this.IsEnableTailingButtonEnabled =
                         this.IsOutputBoxEnabled = false;
                 }
                 else
                 {
-                    this.WindowTitle = DefaultWindowTitle + 
+                    this.WindowTitle = DefaultWindowTitle +
                         $": {this.Model.DisplayName} (COM{this.serialPortNumber})";
                     this.IsEnableTailingButtonEnabled =
                         this.IsOutputBoxEnabled = true;

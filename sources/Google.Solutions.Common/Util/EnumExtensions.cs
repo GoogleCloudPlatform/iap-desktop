@@ -19,8 +19,6 @@
 // under the License.
 //
 
-using System;
-
 namespace Google.Solutions.Common.Util
 {
     public static class EnumExtensions
@@ -30,7 +28,7 @@ namespace Google.Solutions.Common.Util
             return v != 0 && (v & (v - 1)) == 0;
         }
 
-        public static bool IsSingleFlag<TEnum>(this TEnum enumValue) 
+        public static bool IsSingleFlag<TEnum>(this TEnum enumValue)
             where TEnum : struct
         {
             return IsPowerOfTwo((int)(object)enumValue);

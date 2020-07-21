@@ -33,7 +33,7 @@ using WeifenLuo.WinFormsUI.Docking;
 namespace Google.Solutions.IapDesktop.Application.Services.Windows.Properties
 {
     [SkipCodeCoverage("All logic in view model")]
-    public partial class PropertiesWindow 
+    public partial class PropertiesWindow
         : ProjectExplorerTrackingToolWindow<IPropertiesViewModel>
     {
         private readonly IPropertiesViewModel viewModel;
@@ -90,7 +90,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.Windows.Properties
         }
 
         private void RefreshOnPropertyChange(
-            object sender, 
+            object sender,
             PropertyChangedEventArgs args)
         {
             this.propertyGrid.Refresh();

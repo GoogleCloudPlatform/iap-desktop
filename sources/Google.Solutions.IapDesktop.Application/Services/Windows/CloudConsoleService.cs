@@ -65,7 +65,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.Windows
             {
                 OpenLogs(
                     zoneNode.ProjectId,
-                    "resource.type=\"gce_instance\"\n" + 
+                    "resource.type=\"gce_instance\"\n" +
                         $"resource.labels.zone=\"{zoneNode.ZoneId}\"");
             }
             else if (node is IProjectExplorerProjectNode projectNode)
@@ -80,7 +80,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.Windows
         {
             OpenLogs(
                 projectId,
-                "resource.type=\"gce_instance\"\n" + 
+                "resource.type=\"gce_instance\"\n" +
                     $"insertId=\"{insertId}\"\n" +
                     $"timestamp<=\"{timestamp.ToString("o")}\"");
         }

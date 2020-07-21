@@ -40,13 +40,13 @@ using System.Windows.Forms;
 
 namespace Google.Solutions.IapDesktop.Extensions.Activity.Services.EventLog
 {
-    internal class EventLogViewModel 
+    internal class EventLogViewModel
         : ModelCachingViewModelBase<IProjectExplorerNode, EventLogModel>
     {
         private const int ModelCacheCapacity = 5;
         internal const string DefaultWindowTitle = "Event log";
 
-        public static readonly ReadOnlyCollection<Timeframe> AvailableTimeframes 
+        public static readonly ReadOnlyCollection<Timeframe> AvailableTimeframes
             = new ReadOnlyCollection<Timeframe>(new List<Timeframe>()
         {
             new Timeframe(TimeSpan.FromDays(7), "Last 7 days"),
@@ -112,7 +112,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services.EventLog
         public bool IsRefreshButtonEnabled
         {
             get => this.isRefreshButtonEnabled;
-            set 
+            set
             {
                 this.isRefreshButtonEnabled = value;
                 RaisePropertyChange();
@@ -259,7 +259,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services.EventLog
                     return null;
                 }
 
-                this.IsRefreshButtonEnabled = 
+                this.IsRefreshButtonEnabled =
                     this.IsTimeframeComboBoxEnabled = false;
                 try
                 {
@@ -290,7 +290,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services.EventLog
                 }
                 finally
                 {
-                    this.IsRefreshButtonEnabled = 
+                    this.IsRefreshButtonEnabled =
                         this.IsTimeframeComboBoxEnabled = true;
                 }
             }
@@ -322,7 +322,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services.EventLog
         public class Timeframe
         {
             public TimeSpan Duration { get; }
-            
+
             public string Description { get; }
 
             public Timeframe(TimeSpan duration, string description)

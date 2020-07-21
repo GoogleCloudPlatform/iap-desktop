@@ -20,7 +20,6 @@
 //
 
 using AxMSTSCLib;
-using Google.Solutions.Common;
 using Google.Solutions.Common.Diagnostics;
 using Google.Solutions.Common.Locator;
 using Google.Solutions.IapDesktop.Application.Services.Integration;

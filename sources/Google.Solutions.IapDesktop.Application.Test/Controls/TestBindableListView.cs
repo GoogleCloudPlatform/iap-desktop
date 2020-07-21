@@ -115,7 +115,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Controls
             {
                 Name = "initial name"
             };
-            
+
             var items = new ObservableCollection<ModelItem>();
             items.Add(item);
 

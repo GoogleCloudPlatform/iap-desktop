@@ -78,7 +78,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Os.Services.InstanceDetails
         [Browsable(true)]
         [Category(InstanceCategory)]
         [DisplayName("Machine type")]
-        public string MachineType 
+        public string MachineType
             => MachineTypeLocator
                 .FromString(this.instanceDetails.MachineType)
                 .Name;
@@ -87,7 +87,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Os.Services.InstanceDetails
         [Category(InstanceCategory)]
         [DisplayName("Licenses")]
         public string Licenses
-             => this.instanceDetails.Disks != null 
+             => this.instanceDetails.Disks != null
                 ? string.Join(", ", this.instanceDetails.Disks
                     .EnsureNotNull()
                     .Where(d => d.Licenses != null && d.Licenses.Any())
@@ -100,13 +100,13 @@ namespace Google.Solutions.IapDesktop.Extensions.Os.Services.InstanceDetails
         [DisplayName("Network tags")]
         public string Tags
              => this.instanceDetails.Tags != null && this.instanceDetails.Tags.Items != null
-                ? string.Join(", ", this.instanceDetails.Tags.Items) 
+                ? string.Join(", ", this.instanceDetails.Tags.Items)
                 : null;
 
         [Browsable(true)]
         [Category(NetworkCategory)]
         [DisplayName("IP address (internal)")]
-        public string InternalIp 
+        public string InternalIp
             => this.instanceDetails
                 .NetworkInterfaces
                 .EnsureNotNull()
@@ -168,18 +168,18 @@ namespace Google.Solutions.IapDesktop.Extensions.Os.Services.InstanceDetails
         {
             var instance = await adapter
                 .GetInstanceAsync(
-                    instanceLocator, 
+                    instanceLocator,
                     token)
                 .ConfigureAwait(false);
 
             var guestAttributes = await adapter
                 .GetGuestAttributesAsync(
-                    instanceLocator, 
-                    GuestOsInfo.GuestAttributePath, 
+                    instanceLocator,
+                    GuestOsInfo.GuestAttributePath,
                     token)
                 .ConfigureAwait(false);
             var guestAttributesList = guestAttributes?.QueryValue?.Items;
-            
+
             return new InstanceDetailsModel(
                 instance,
                 guestAttributesList != null

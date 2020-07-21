@@ -19,8 +19,6 @@
 // under the License.
 //
 
-using Google.Apis.Auth.OAuth2;
-using Google.Solutions.Common;
 using Google.Solutions.Common.Locator;
 using Google.Solutions.Common.Test.Integration;
 using Google.Solutions.IapDesktop.Application.ObjectModel;
@@ -78,7 +76,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Windows
             await testInstance.AwaitReady();
 
             using (var tunnel = RdpTunnel.Create(
-                testInstance.Locator, 
+                testInstance.Locator,
                 await credential.GetCredentialAsync()))
             {
                 var session = await Connect(tunnel, testInstance.Locator);

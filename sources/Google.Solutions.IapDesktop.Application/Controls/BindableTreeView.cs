@@ -44,9 +44,9 @@ namespace Google.Solutions.IapDesktop.Application.Controls
         private Expression<Func<TModelNode, int>> imageIndexExpression = null;
         private Expression<Func<TModelNode, int>> selectedImageIndexExpression = null;
         private Expression<Func<TModelNode, string>> textExpression = null;
-        
+
         private Func<TModelNode, bool> isLeafFunc = _ => false;
-        private Action<TModelNode, bool> setExpandedFunc = (n, state) => {};
+        private Action<TModelNode, bool> setExpandedFunc = (n, state) => { };
         private Func<TModelNode, bool> isExpandedFunc = _ => false;
         private Func<TModelNode, Task<ObservableCollection<TModelNode>>> getChildrenAsyncFunc
             = _ => Task.FromResult(new ObservableCollection<TModelNode>());
@@ -356,7 +356,7 @@ namespace Google.Solutions.IapDesktop.Application.Controls
                                     treeNode.Dispose();
 
                                     this.Nodes.Insert(
-                                        e.NewStartingIndex, 
+                                        e.NewStartingIndex,
                                         new Node(this.treeView, newModelItem));
                                 }
                             }
@@ -370,7 +370,7 @@ namespace Google.Solutions.IapDesktop.Application.Controls
                     case NotifyCollectionChangedAction.Reset:
                         // Reload everything.
                         DisposeAndClear(this.Nodes);
-                        
+
                         AddTreeNodesForModelNodes((ObservableCollection<TModelNode>)sender);
                         break;
 

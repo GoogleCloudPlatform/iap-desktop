@@ -19,6 +19,7 @@
 // under the License.
 //
 
+using Google.Solutions.Common.Diagnostics;
 using Google.Solutions.IapDesktop.Application.Controls;
 using Google.Solutions.IapDesktop.Application.ObjectModel;
 using Google.Solutions.IapDesktop.Application.Services.Integration;
@@ -26,16 +27,15 @@ using Google.Solutions.IapDesktop.Application.Services.Windows;
 using Google.Solutions.IapDesktop.Application.Services.Windows.ProjectExplorer;
 using Google.Solutions.IapDesktop.Extensions.Activity.Events;
 using System;
-using System.Linq;
-using Google.Solutions.Common.Diagnostics;
 using System.Diagnostics;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace Google.Solutions.IapDesktop.Extensions.Activity.Services.EventLog
 {
     [Service(ServiceLifetime.Singleton)]
     [SkipCodeCoverage("All logic in view model")]
-    internal partial class EventLogWindow 
+    internal partial class EventLogWindow
         : ProjectExplorerTrackingToolWindow<EventLogViewModel>
     {
         private readonly EventLogViewModel viewModel;

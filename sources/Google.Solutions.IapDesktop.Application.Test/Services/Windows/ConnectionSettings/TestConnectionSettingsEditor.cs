@@ -248,7 +248,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Windows.Connecti
             Assert.AreEqual(RdpAuthenticationLevel.AttemptServerAuthentication, instanceA.CreateConnectionSettings("instance").AuthenticationLevel);
             Assert.IsFalse(instanceA.ShouldSerializeAuthenticationLevel());
         }
-            
+
         [Test]
         public void WhenAuthenticationLevelSetInProjectAndResetToDefaultInVm_InheritedValueStillApplies()
         {

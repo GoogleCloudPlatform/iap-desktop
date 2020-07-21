@@ -25,7 +25,6 @@ using System.Text.RegularExpressions;
 
 namespace Google.Solutions.Common.Locator
 {
-
 	
 		public class DiskTypeLocator : ResourceLocator, IEquatable<DiskTypeLocator>
 		{

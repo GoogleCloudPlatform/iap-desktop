@@ -207,7 +207,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Os.Test.Inventory
             Assert.AreEqual("Update", attributes.InstalledPackages.QfePackages[0].Description);
             Assert.AreEqual("KB4552930", attributes.InstalledPackages.QfePackages[0].HotFixID);
             Assert.AreEqual(
-                new DateTime(2020, 5, 14, 0, 0, 0, 0, DateTimeKind.Utc), 
+                new DateTime(2020, 5, 14, 0, 0, 0, 0, DateTimeKind.Utc),
                 attributes.InstalledPackages.QfePackages[0].InstalledOn.Value.ToUniversalTime());
         }
 

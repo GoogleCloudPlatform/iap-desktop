@@ -157,7 +157,7 @@ namespace Google.Solutions.Common.Test.Locator
             var path = "projects/project-1/zones/us-central1-a/diskTypes/pd-standard";
 
             Assert.AreEqual(
-                path, 
+                path,
                 DiskTypeLocator.FromString(path).ToString());
         }
 
@@ -167,7 +167,7 @@ namespace Google.Solutions.Common.Test.Locator
             var path = "projects/project-1/zones/us-central1-a/diskTypes/pd-standard";
 
             Assert.AreEqual(
-                path, 
+                path,
                 DiskTypeLocator.FromString(
                     "https://www.googleapis.com/compute/v1/" + path).ToString());
         }

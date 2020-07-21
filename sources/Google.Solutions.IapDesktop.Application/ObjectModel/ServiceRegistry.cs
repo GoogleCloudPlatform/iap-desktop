@@ -21,7 +21,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Reflection;
 using System.Runtime.Serialization;
 
@@ -135,7 +134,7 @@ namespace Google.Solutions.IapDesktop.Application.ObjectModel
             {
                 if (type.GetCustomAttribute<ServiceAttribute>() is ServiceAttribute attribute &&
                     attribute.Lifetime == ServiceLifetime.Transient)
-                { 
+                {
                     this.transients[attribute.ServiceInterface ?? type] =
                         () => CreateInstance(type);
                 }

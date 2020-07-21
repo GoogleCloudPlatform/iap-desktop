@@ -166,8 +166,8 @@ namespace Google.Solutions.IapDesktop.Application.Test.ObjectModel
                 binding.Peer = new DummyBinding()
                 {
                     IsBusy = true
-                }; 
-                
+                };
+
                 observed.TextAlign = HorizontalAlignment.Center;
                 Assert.AreEqual(0, callbacks);
             }
@@ -212,7 +212,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.ObjectModel
                 t => t.Text,
                 model,
                 m => m.One);
-            
+
             Assert.IsNull(model.One);
             control.Text = "test";
             Assert.AreEqual("test", model.One);

@@ -19,7 +19,6 @@
 // under the License.
 //
 
-using Google.Apis.Auth.OAuth2;
 using Google.Apis.Logging.v2.Data;
 using Google.Solutions.Common.Test;
 using Google.Solutions.Common.Test.Integration;
@@ -93,7 +92,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.Services.Adapters
         public async Task WhenInstanceCreated_ThenListInstanceEventsAsyncCanFeedHistorySetBuilder(
             [LinuxInstance] InstanceRequest testInstance,
             [Credential(Roles = new[] {
-                PredefinedRole.ComputeViewer, 
+                PredefinedRole.ComputeViewer,
                 PredefinedRole.LogsViewer })] CredentialRequest credential)
         {
             await testInstance.AwaitReady();
@@ -107,8 +106,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.Services.Adapters
             instanceBuilder.AddExistingInstances(
                 await computeAdapter.ListInstancesAsync(TestProject.ProjectId, CancellationToken.None),
                 await computeAdapter.ListDisksAsync(TestProject.ProjectId, CancellationToken.None),
-                TestProject.ProjectId);            
-            
+                TestProject.ProjectId);
+
             var adapter = new AuditLogAdapter(await credential.GetCredentialAsync());
 
             await adapter.ListInstanceEventsAsync(
@@ -191,8 +190,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.Services.Adapters
                 new DateTime(2020, 1, 2, 3, 4, 5, 6, DateTimeKind.Utc));
 
             Assert.AreEqual(
-                "protoPayload.methodName=(\"method-1\" OR \"method-2\") "+
-                    "AND severity=(\"INFO\" OR \"ERROR\") AND resource.type=\"gce_instance\" "+
+                "protoPayload.methodName=(\"method-1\" OR \"method-2\") " +
+                    "AND severity=(\"INFO\" OR \"ERROR\") AND resource.type=\"gce_instance\" " +
                     "AND timestamp > \"2020-01-02T03:04:05.0060000Z\"",
                 filter);
         }
@@ -208,7 +207,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.Services.Adapters
                 new DateTime(2020, 1, 2, 3, 4, 5, 6, DateTimeKind.Utc));
 
             Assert.AreEqual(
-                "resource.type=\"gce_instance\" "+
+                "resource.type=\"gce_instance\" " +
                 "AND timestamp > \"2020-01-02T03:04:05.0060000Z\"",
                 filter);
         }

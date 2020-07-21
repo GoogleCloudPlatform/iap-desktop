@@ -286,7 +286,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.Services.Scheduli
 
             var annotatedHistory = ReportArchive.FromInstanceSetHistory(history);
             Assert.IsTrue(annotatedHistory.GetInstances(
-                    OperatingSystemTypes.Unknown, 
+                    OperatingSystemTypes.Unknown,
                     LicenseTypes.Unknown).Any());
 
             Assert.IsFalse(annotatedHistory.GetInstances(

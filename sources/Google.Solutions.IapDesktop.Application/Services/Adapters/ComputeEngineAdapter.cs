@@ -70,7 +70,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.Adapters
             TimeSpan timeout);
 
         Task<Image> GetImageAsync(
-            ImageLocator image, 
+            ImageLocator image,
             CancellationToken cancellationToken);
 
         IAsyncReader<string> GetSerialPortOutput(
@@ -130,7 +130,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.Adapters
                             response => response.NextPageToken,
                             response => response.Items.Values.Where(v => v != null))
                         .FetchAllAsync(
-                            this.service.Instances.AggregatedList(projectId), 
+                            this.service.Instances.AggregatedList(projectId),
                             cancellationToken)
                         .ConfigureAwait(false);
 
@@ -186,7 +186,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.Adapters
                         instanceLocator.Zone,
                         instanceLocator.Name);
                     request.QueryPath = queryPath;
-                    return await request                        
+                    return await request
                         .ExecuteAsync(cancellationToken)
                         .ConfigureAwait(false);
                 }

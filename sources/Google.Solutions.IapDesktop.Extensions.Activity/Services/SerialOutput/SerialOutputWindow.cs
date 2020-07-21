@@ -19,14 +19,14 @@
 // under the License.
 //
 
-using Google.Solutions.IapDesktop.Application.ObjectModel;
-using Google.Solutions.IapDesktop.Application.Services.Windows.ProjectExplorer;
 using Google.Solutions.Common.Diagnostics;
+using Google.Solutions.IapDesktop.Application.ObjectModel;
+using Google.Solutions.IapDesktop.Application.Services.Integration;
+using Google.Solutions.IapDesktop.Application.Services.Windows;
+using Google.Solutions.IapDesktop.Application.Services.Windows.ProjectExplorer;
+using System;
 using System.Diagnostics;
 using System.Threading.Tasks;
-using System;
-using Google.Solutions.IapDesktop.Application.Services.Windows;
-using Google.Solutions.IapDesktop.Application.Services.Integration;
 using System.Windows.Forms;
 
 namespace Google.Solutions.IapDesktop.Extensions.Activity.Services.SerialOutput
@@ -38,7 +38,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services.SerialOutput
         private readonly SerialOutputViewModel viewModel;
 
         public SerialOutputWindow(
-            IServiceProvider serviceProvider, 
+            IServiceProvider serviceProvider,
             ushort serialPortNumber)
             : base(
                   serviceProvider.GetService<IMainForm>().MainPanel,
@@ -108,7 +108,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services.SerialOutput
             await this.viewModel.SwitchToModelAsync(node)
                 .ConfigureAwait(true);
         }
-        
+
         //---------------------------------------------------------------------
         // Window events.
         //---------------------------------------------------------------------

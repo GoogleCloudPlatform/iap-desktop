@@ -60,8 +60,8 @@ namespace Google.Solutions.IapTunneling.Net
                     try
                     {
                         TraceSources.Compute.TraceVerbose(
-                            "NetworkStream [{0} > {1}]: Reading...", 
-                            readStream, 
+                            "NetworkStream [{0} > {1}]: Reading...",
+                            readStream,
                             writeStream);
 
                         int bytesRead = await readStream.ReadAsync(

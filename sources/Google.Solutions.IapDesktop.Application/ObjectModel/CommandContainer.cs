@@ -23,7 +23,6 @@ using Google.Solutions.Common.Util;
 using Google.Solutions.IapDesktop.Application.Services.Windows;
 using System;
 using System.Linq;
-using System.Runtime.CompilerServices;
 using System.Windows.Forms;
 
 namespace Google.Solutions.IapDesktop.Application.ObjectModel
@@ -43,10 +42,10 @@ namespace Google.Solutions.IapDesktop.Application.ObjectModel
             ToolStripItemDisplayStyle displayStyle,
             IServiceProvider serviceProvider)
             : this(
-                  parent, 
+                  parent,
                   menuItems,
                   displayStyle,
-                  serviceProvider.GetService<IExceptionDialog>, 
+                  serviceProvider.GetService<IExceptionDialog>,
                   null)
         {
         }
@@ -65,7 +64,7 @@ namespace Google.Solutions.IapDesktop.Application.ObjectModel
             this.parent = parent;
         }
 
-        public TContext Context 
+        public TContext Context
         {
             get => this.context != null
                 ? this.context

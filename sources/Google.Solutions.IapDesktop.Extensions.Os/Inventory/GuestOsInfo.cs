@@ -98,12 +98,12 @@ namespace Google.Solutions.IapDesktop.Extensions.Os.Inventory
                 guestAttributes.FirstOrDefault(a => a.Key == "KernelVersion")?.Value,
                 guestAttributes.FirstOrDefault(a => a.Key == "ShortName")?.Value,
                 guestAttributes.FirstOrDefault(a => a.Key == "LongName")?.Value,
-                version != null 
-                    ? Version.Parse(version) 
+                version != null
+                    ? Version.Parse(version)
                     : null,
                 guestAttributes.FirstOrDefault(a => a.Key == "OSConfigAgentVersion")?.Value,
-                lastUpdated != null 
-                    ? (DateTime?)DateTime.Parse(lastUpdated) 
+                lastUpdated != null
+                    ? (DateTime?)DateTime.Parse(lastUpdated)
                     : null,
                 installedPackages != null
                     ? DecodeAndParseBase64Gzip<GuestPackages>(installedPackages)

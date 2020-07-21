@@ -47,7 +47,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Services.Tunnel
 
         public TunnelService(IServiceProvider serviceProvider)
             : this(serviceProvider.GetService<IAuthorizationAdapter>())
-        { 
+        {
         }
 
         public Task<ITunnel> CreateTunnelAsync(TunnelDestination tunnelEndpoint)

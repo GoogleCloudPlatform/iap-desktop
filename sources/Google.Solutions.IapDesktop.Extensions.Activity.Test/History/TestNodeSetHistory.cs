@@ -19,7 +19,6 @@
 // under the License.
 //
 
-using Google.Solutions.Common;
 using Google.Solutions.Common.Locator;
 using Google.Solutions.IapDesktop.Extensions.Activity.History;
 using NUnit.Framework;
@@ -53,7 +52,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.History
             var soleTenantOnly = NodeSetHistory.FromInstancyHistory(instances, Tenancies.SoleTenant);
             var all = NodeSetHistory.FromInstancyHistory(instances, Tenancies.Fleet | Tenancies.SoleTenant);
             var none = NodeSetHistory.FromInstancyHistory(instances, Tenancies.Unknown);
-            
+
             Assert.AreEqual(1, fleetOnly.Nodes.Count());
             Assert.AreEqual(1, all.Nodes.Count());
             Assert.IsFalse(soleTenantOnly.Nodes.Any());

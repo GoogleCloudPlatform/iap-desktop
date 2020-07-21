@@ -53,7 +53,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services.SchedulingRep
         internal ReportPaneView(
             string title,
             IReportBuilder reportBuilder,
-            IServiceProvider serviceProvider) 
+            IServiceProvider serviceProvider)
             : base(title, serviceProvider)
         {
             this.reportBuilder = reportBuilder;
@@ -212,7 +212,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services.SchedulingRep
 
             this.components.Add(this.viewModel.NodeReportPane.OnPropertyChange(
                 v => v.Histogram,
-                dataPoints => 
+                dataPoints =>
                 {
                     Plot(dataPoints, this.nodesChart.Series[0]);
                     this.noNodesDataLabel.Visible = !dataPoints.Any();

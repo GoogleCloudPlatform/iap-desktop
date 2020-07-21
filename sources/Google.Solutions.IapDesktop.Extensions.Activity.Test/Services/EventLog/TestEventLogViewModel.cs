@@ -33,7 +33,6 @@ using NUnit.Framework;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -51,7 +50,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.Services.EventLog
             public int Calls = 0;
 
             public Task<T> RunInBackground<T>(
-                JobDescription jobDescription, 
+                JobDescription jobDescription,
                 Func<CancellationToken, Task<T>> jobFunc)
             {
                 Calls++;
@@ -63,11 +62,11 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.Services.EventLog
         {
             public int CallCount = 0;
             public Task ListInstanceEventsAsync(
-                IEnumerable<string> projectIds, 
-                IEnumerable<string> zones, 
-                IEnumerable<ulong> instanceIds, 
-                DateTime startTime, 
-                IEventProcessor processor, 
+                IEnumerable<string> projectIds,
+                IEnumerable<string> zones,
+                IEnumerable<ulong> instanceIds,
+                DateTime startTime,
+                IEventProcessor processor,
                 CancellationToken cancellationToken)
             {
                 this.CallCount++;

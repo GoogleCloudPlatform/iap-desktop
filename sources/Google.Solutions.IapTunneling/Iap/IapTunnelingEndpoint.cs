@@ -20,7 +20,6 @@
 //
 
 using Google.Apis.Auth.OAuth2;
-using Google.Solutions.Common;
 using Google.Solutions.Common.Diagnostics;
 using Google.Solutions.Common.Locator;
 using Google.Solutions.Common.Net;
@@ -59,9 +58,9 @@ namespace Google.Solutions.IapTunneling.Iap
         private readonly ICredential credential;
 
         public IapTunnelingEndpoint(
-            ICredential credential, 
-            InstanceLocator vmInstance, 
-            ushort port, 
+            ICredential credential,
+            InstanceLocator vmInstance,
+            ushort port,
             string nic,
             UserAgent userAgent)
         {

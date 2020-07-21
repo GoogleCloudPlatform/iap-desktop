@@ -19,7 +19,6 @@
 // under the License.
 //
 
-using AxMSTSCLib;
 using System;
 using System.Collections.Generic;
 using System.Linq;

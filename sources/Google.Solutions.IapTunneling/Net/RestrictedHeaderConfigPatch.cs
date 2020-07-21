@@ -48,7 +48,7 @@ namespace Google.Solutions.IapTunneling.Net
             // The list of restricted headers is stored in a global 
             // HeaderInfoTable object.
             if (typeof(WebHeaderCollection).GetField(
-                "HInfo", 
+                "HInfo",
                 BindingFlags.NonPublic | BindingFlags.Static) is FieldInfo hInfoField)
             {
                 var headerInfoTable = hInfoField.GetValue(null);

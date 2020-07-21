@@ -107,7 +107,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Os.Services.InstanceDetails
         public static CommandState GetContextMenuCommandState(IProjectExplorerNode node)
         {
             return node is IProjectExplorerVmInstanceNode vmNode
-                ? CommandState.Enabled 
+                ? CommandState.Enabled
                 : CommandState.Unavailable;
         }
 
