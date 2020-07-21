@@ -155,7 +155,7 @@ namespace Google.Solutions.Common.Test.Integration
                         this.Locator.Name)
                     .ExecuteAsync();
 
-                if (instance.Status == "STOPPED")
+                if (instance.Status == "TERMINATED")
                 {
                     await computeEngine.Instances.Start(
                             this.Locator.ProjectId,
