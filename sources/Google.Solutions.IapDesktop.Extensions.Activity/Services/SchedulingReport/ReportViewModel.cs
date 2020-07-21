@@ -27,7 +27,7 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 
 namespace Google.Solutions.IapDesktop.Extensions.Activity.Services.SchedulingReport
-{ 
+{
     internal class ReportViewModel : ViewModelBase
     {
         internal ReportArchive Model { get; }
@@ -80,7 +80,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services.SchedulingRep
         }
 
         internal NodeSetHistory GetNodes()
-        { 
+        {
             // Derive the set of nodes that were used by those instances.
             return NodeSetHistory.FromInstancyHistory(
                 GetInstancesMatchingCurrentFilters(),
@@ -154,7 +154,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services.SchedulingRep
             set
             {
                 this.selectedTabIndex = value;
-                
+
                 this.IsTenancyMenuEnabled = value == 0;
                 this.IsLicenseMenuEnabled = value <= 1;
                 this.IsOsMenuEnabled = value <= 1;
@@ -169,8 +169,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services.SchedulingRep
         {
             get => this.tenancies.HasFlag(Tenancies.SoleTenant);
             set => SetAndRaisePropertyChange(
-                ref this.tenancies, 
-                Tenancies.SoleTenant, 
+                ref this.tenancies,
+                Tenancies.SoleTenant,
                 value);
         }
 

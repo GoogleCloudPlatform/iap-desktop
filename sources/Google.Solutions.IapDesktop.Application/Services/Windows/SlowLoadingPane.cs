@@ -62,7 +62,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.Windows
         protected void BeginLoad(
             Func<CancellationToken, Task> loadingFunc,
             Action initializeFormAction)
-        { 
+        {
             // Show status and keep updating while loading.
             UpdateLoadingStatus();
             this.timer.Start();

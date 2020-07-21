@@ -137,7 +137,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Services.Connection
                 return;
             }
 
-            if (this.projectExplorer.TryFindNode(url.Instance) 
+            if (this.projectExplorer.TryFindNode(url.Instance)
                 is IProjectExplorerVmInstanceNode vmNode)
             {
                 // We have a full set of settings for this VM, so use that.

@@ -79,7 +79,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.ObjectModel
 
             Assert.IsFalse(menuItem.Enabled);
         }
-        
+
         [Test]
         public void WhenQueryStateReturnsEnabled_ThenMenuItemIsEnabledAndHasToolTip()
         {

@@ -41,7 +41,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Os.Test.Services.InstanceDetail
         {
             public Task<T> RunInBackground<T>(
                 JobDescription jobDescription,
-                Func<CancellationToken, Task<T>> jobFunc) 
+                Func<CancellationToken, Task<T>> jobFunc)
                 => jobFunc(CancellationToken.None);
         }
 

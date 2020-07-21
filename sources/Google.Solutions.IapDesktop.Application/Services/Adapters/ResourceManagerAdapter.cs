@@ -25,7 +25,6 @@ using Google.Apis.CloudResourceManager.v1.Data;
 using Google.Apis.Requests;
 using Google.Apis.Services;
 using Google.Solutions.Common.Diagnostics;
-using Google.Solutions.Common.Locator;
 using Google.Solutions.IapDesktop.Application.ObjectModel;
 using System;
 using System.Collections.Generic;
@@ -70,7 +69,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.Adapters
 
         public ResourceManagerAdapter(IAuthorizationAdapter authService)
             : this(authService.Authorization.Credential)
-        { 
+        {
         }
 
         public ResourceManagerAdapter(IServiceProvider serviceProvider)

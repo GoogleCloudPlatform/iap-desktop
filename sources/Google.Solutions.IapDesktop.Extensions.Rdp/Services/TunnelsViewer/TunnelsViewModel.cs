@@ -19,14 +19,14 @@
 // under the License.
 //
 
-using Google.Solutions.IapDesktop.Application.Services.Integration;
-using System.Collections.ObjectModel;
-using System.Threading.Tasks;
 using Google.Solutions.IapDesktop.Application.ObjectModel;
-using System;
-using System.Windows.Forms;
+using Google.Solutions.IapDesktop.Application.Services.Integration;
 using Google.Solutions.IapDesktop.Application.Services.Windows;
 using Google.Solutions.IapDesktop.Extensions.Rdp.Services.Tunnel;
+using System;
+using System.Collections.ObjectModel;
+using System.Threading.Tasks;
+using System.Windows.Forms;
 
 namespace Google.Solutions.IapDesktop.Extensions.Rdp.Services.Credentials.TunnelsViewer
 {
@@ -74,7 +74,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Services.Credentials.Tunnel
         }
 
         public TunnelsViewModel(IServiceProvider serviceProvider)
-            :this(
+            : this(
                 serviceProvider.GetService<ITunnelBrokerService>(),
                 serviceProvider.GetService<IConfirmationDialog>(),
                 serviceProvider.GetService<IEventService>())

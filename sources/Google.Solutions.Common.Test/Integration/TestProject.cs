@@ -41,7 +41,7 @@ namespace Google.Solutions.Common.Test.Integration
         public static UserAgent UserAgent { get; }
 
         static TestProject()
-        { 
+        {
             UserAgent = new UserAgent(
                 "IAP-Desktop-TestSuite",
                 Assembly.GetExecutingAssembly().GetName().Version);

@@ -58,10 +58,10 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.Services.Scheduli
             Assert.IsFalse(viewModel.IncludeByolInstances);
             Assert.IsFalse(viewModel.IncludeSplaInstances);
             Assert.IsFalse(viewModel.IncludeUnknownLicensedInstances);
-            
+
             Assert.IsFalse(viewModel.IncludeFleetInstances);
             Assert.IsFalse(viewModel.IncludeSoleTenantInstances);
-            
+
             Assert.IsFalse(viewModel.IncludeLinuxInstances);
             Assert.IsFalse(viewModel.IncludeWindowsInstances);
             Assert.IsFalse(viewModel.IncludeUnknownOsInstances);

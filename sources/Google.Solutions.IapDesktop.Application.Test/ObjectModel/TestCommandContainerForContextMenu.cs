@@ -100,7 +100,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.ObjectModel
             Assert.IsTrue(menuItem.Visible);
             Assert.IsFalse(menuItem.Enabled);
         }
-        
+
         [Test]
         public void WhenQueryStateReturnsEnabled_ThenMenuItemIsEnabled()
         {

@@ -19,16 +19,16 @@
 // under the License.
 //
 
+using Google.Solutions.Common.Diagnostics;
+using Google.Solutions.IapDesktop.Application;
 using Google.Solutions.IapDesktop.Application.Services.Adapters;
+using Google.Solutions.IapDesktop.Extensions.Activity.Events;
 using Google.Solutions.IapDesktop.Extensions.Activity.History;
+using Google.Solutions.IapDesktop.Extensions.Activity.Services.Adapters;
 using System;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
-using Google.Solutions.IapDesktop.Extensions.Activity.Events;
-using Google.Solutions.IapDesktop.Extensions.Activity.Services.Adapters;
-using Google.Solutions.Common.Diagnostics;
-using Google.Solutions.IapDesktop.Application;
 
 namespace Google.Solutions.IapDesktop.Extensions.Activity.Services.SchedulingReport
 {
@@ -50,7 +50,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services.SchedulingRep
         private readonly IComputeEngineAdapter computeEngineAdapter;
 
         public AuditLogReportBuilder(
-            IAuditLogAdapter auditLogAdapter, 
+            IAuditLogAdapter auditLogAdapter,
             IComputeEngineAdapter computeEngineAdapter,
             IEnumerable<string> projectIds,
             DateTime startDate)
@@ -150,7 +150,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services.SchedulingRep
             // but it is good enough to give the user a clue.
 
             var daysProcessed = (this.builder.EndDate - e.Timestamp).TotalDays;
-            this.PercentageDone = (ushort)(10.0 + 80.0 * daysProcessed / 
+            this.PercentageDone = (ushort)(10.0 + 80.0 * daysProcessed /
                 (this.builder.EndDate - this.builder.StartDate).TotalDays);
 
             this.builder.Process(e);

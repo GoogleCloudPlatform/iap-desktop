@@ -37,7 +37,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.Services.Scheduli
 
         private void AddExistingInstance(
             InstanceSetHistoryBuilder builder,
-            int count, 
+            int count,
             Tenancies tenancy)
         {
             for (int i = 0; i < count; i++)
@@ -48,8 +48,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.Services.Scheduli
                     instanceIdSequence,
                     new InstanceLocator("project", "zone", $"instance-{instanceIdSequence}"),
                     new ImageLocator("project", $"image-{instanceIdSequence}"),
-                    InstanceState.Running, 
-                    BaselineTime.AddDays(i), 
+                    InstanceState.Running,
+                    BaselineTime.AddDays(i),
                     tenancy);
             }
         }
@@ -75,7 +75,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.Services.Scheduli
         {
             var parentViewModel = CreateParentViewModel(1, 2);
             parentViewModel.Repopulate();
-            
+
             var viewModel = parentViewModel.InstanceReportPane;
 
             Assert.AreEqual(3, viewModel.Instances.Count());

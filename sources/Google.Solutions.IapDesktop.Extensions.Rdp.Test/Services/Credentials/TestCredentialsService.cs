@@ -26,7 +26,6 @@ using Google.Solutions.IapDesktop.Application.ObjectModel;
 using Google.Solutions.IapDesktop.Application.Services.Adapters;
 using Google.Solutions.IapDesktop.Application.Services.Persistence;
 using Google.Solutions.IapDesktop.Application.Services.Windows.ConnectionSettings;
-using Google.Solutions.IapDesktop.Application.Services.Workflows;
 using Google.Solutions.IapDesktop.Extensions.Rdp.Services.Credentials;
 using Moq;
 using NUnit.Framework;
@@ -77,7 +76,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Test.Services.Credentials
         public void WhenNoSuggestedUserNameProvided_ThenSuggestionIsDerivedFromSigninName()
         {
             var serviceRegistry = new ServiceRegistry();
-            
+
             var auth = new Mock<IAuthorization>();
             auth.SetupGet(a => a.Email).Returns("bobsemail@gmail.com");
 

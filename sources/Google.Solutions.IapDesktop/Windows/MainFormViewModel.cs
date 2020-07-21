@@ -81,7 +81,7 @@ namespace Google.Solutions.IapDesktop.Windows
         public bool IsProtocolRegistred
         {
             get => this.protocolRegistry.IsRegistered(
-                IapRdpUrl.Scheme, 
+                IapRdpUrl.Scheme,
                 GetType().Assembly.Location);
             set
             {
@@ -208,7 +208,7 @@ namespace Google.Solutions.IapDesktop.Windows
             public bool IsShowing => true;
 
             public BackgroundJob(
-                MainFormViewModel viewModel, 
+                MainFormViewModel viewModel,
                 JobDescription jobDescription,
                 CancellationTokenSource cancellationSource)
             {
@@ -226,7 +226,7 @@ namespace Google.Solutions.IapDesktop.Windows
             public void Finish()
             {
                 this.viewModel.backgroundJobs.Remove(this);
-                this.viewModel.IsBackgroundJobStatusVisible 
+                this.viewModel.IsBackgroundJobStatusVisible
                     = this.viewModel.backgroundJobs.Any();
             }
 

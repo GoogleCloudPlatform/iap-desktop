@@ -375,7 +375,7 @@ namespace Google.Solutions.IapDesktop.Windows
             }
         }
 
-        private void enableAppProtocolToolStripMenuItem_Click(object sender, EventArgs e) 
+        private void enableAppProtocolToolStripMenuItem_Click(object sender, EventArgs e)
         {
             this.enableAppProtocolToolStripMenuItem.Checked =
                 !this.enableAppProtocolToolStripMenuItem.Checked;

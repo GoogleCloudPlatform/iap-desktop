@@ -108,7 +108,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services.Adapters
                     throw new ResourceAccessDeniedException(
                         "You do not have sufficient permissions to view logs. " +
                         "You need the 'Logs Viewer' role (or an equivalent custom role) " +
-                        "to perform this action.", 
+                        "to perform this action.",
                         e);
                 }
             }
@@ -162,7 +162,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services.Adapters
             Utilities.ThrowIfNull(projectIds, nameof(projectIds));
 
             using (TraceSources.IapDesktop.TraceMethod().WithParameters(
-                string.Join(", ", projectIds), 
+                string.Join(", ", projectIds),
                 startTime))
             {
                 var request = new ListLogEntriesRequest()

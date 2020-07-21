@@ -35,7 +35,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services.SchedulingRep
         {
             public DateTime StartDate { get; }
             public string Text { get; }
-            
+
             public TimeFrameItem(string text, DateTime startDate)
             {
                 this.Text = text;

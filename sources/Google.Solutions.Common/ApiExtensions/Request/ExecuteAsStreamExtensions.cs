@@ -41,7 +41,7 @@ namespace Google.Solutions.Common.ApiExtensions.Request
             using (var httpRequest = request.CreateRequest())
             {
                 var httpResponse = await request.Service.HttpClient.SendAsync(
-                    httpRequest, 
+                    httpRequest,
                     cancellationToken).ConfigureAwait(false);
 
                 // NB. ExecuteAsStream does not do this check.

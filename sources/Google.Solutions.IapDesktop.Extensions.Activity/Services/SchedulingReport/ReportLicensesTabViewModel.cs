@@ -34,7 +34,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services.SchedulingRep
             var nodeSet = NodeSetHistory.FromInstancyHistory(
                 this.parent.Model.GetInstances(OperatingSystemTypes.Windows, LicenseTypes.Byol),
                 Tenancies.SoleTenant);
-            
+
             // Create histogram, disregarding the date selection.
             this.Histogram = nodeSet.MaxNodesByDay
                 .Select(dp => new DataPoint()

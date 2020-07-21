@@ -95,7 +95,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services.SchedulingRep
                     TraceSources.IapDesktop.TraceVerbose(
                         "License for {0} could not be found, but must be Windows/SPLA", image);
                 }
-                catch (ResourceNotFoundException e) 
+                catch (ResourceNotFoundException e)
                 {
                     // Unknown or inaccessible image, skip.
                     TraceSources.IapDesktop.TraceWarning(

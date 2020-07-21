@@ -20,7 +20,6 @@
 //
 
 using Google.Apis.Auth.OAuth2;
-using Google.Solutions.Common;
 using Google.Solutions.Common.Locator;
 using Google.Solutions.Common.Test;
 using Google.Solutions.Common.Test.Integration;
@@ -109,7 +108,7 @@ namespace Google.Solutions.IapTunneling.Test.Iap
         {
             await vm.AwaitReady();
             var stream = (SshRelayStream)ConnectToWebServer(
-                vm.Locator, 
+                vm.Locator,
                 await credential.GetCredentialAsync());
 
             byte[] request = new ASCIIEncoding().GetBytes(

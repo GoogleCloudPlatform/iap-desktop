@@ -22,7 +22,6 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Web.Caching;
 
 namespace Google.Solutions.IapDesktop.Application.Util
 {
@@ -33,7 +32,7 @@ namespace Google.Solutions.IapDesktop.Application.Util
     {
         private readonly int capacity;
         private readonly LinkedList<KeyValuePair<K, V>> lruList = new LinkedList<KeyValuePair<K, V>>();
-        private readonly Dictionary<K, LinkedListNode<KeyValuePair<K, V>>> cacheMap 
+        private readonly Dictionary<K, LinkedListNode<KeyValuePair<K, V>>> cacheMap
             = new Dictionary<K, LinkedListNode<KeyValuePair<K, V>>>();
 
         public LeastRecentlyUsedCache(int capacity)

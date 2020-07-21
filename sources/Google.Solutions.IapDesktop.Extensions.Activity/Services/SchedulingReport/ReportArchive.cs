@@ -19,7 +19,6 @@
 // under the License.
 //
 
-using Google.Apis.Compute.v1;
 using Google.Solutions.Common.Locator;
 using Google.Solutions.IapDesktop.Application.Services.Adapters;
 using Google.Solutions.IapDesktop.Extensions.Activity.History;
@@ -57,7 +56,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services.SchedulingRep
         }
 
         internal ReportArchive(InstanceSetHistory instanceSet)
-            :this(instanceSet, new Dictionary<string, ImageAnnotation>())
+            : this(instanceSet, new Dictionary<string, ImageAnnotation>())
         {
         }
 
@@ -96,15 +95,15 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services.SchedulingRep
         }
 
         public void AddLicenseAnnotation(
-            ImageLocator image, 
+            ImageLocator image,
             LicenseLocator license)
         {
             this.LicenseAnnotations[image.ToString()] = ImageAnnotation.FromLicense(license);
         }
 
         public void AddLicenseAnnotation(
-            ImageLocator image, 
-            OperatingSystemTypes osType, 
+            ImageLocator image,
+            OperatingSystemTypes osType,
             LicenseTypes licenseType)
         {
             this.LicenseAnnotations[image.ToString()] = new ImageAnnotation(osType, licenseType);
@@ -116,7 +115,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services.SchedulingRep
         {
             await LicenseLoader.LoadLicenseAnnotationsAsync(
                 this,
-                computeEngineAdapter, 
+                computeEngineAdapter,
                 cancellationToken);
         }
 

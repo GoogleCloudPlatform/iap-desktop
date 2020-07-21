@@ -25,8 +25,8 @@ using Google.Solutions.IapDesktop.Application.Services.Persistence;
 using Google.Solutions.IapDesktop.Application.Services.Windows;
 using Google.Solutions.IapDesktop.Application.Services.Windows.ConnectionSettings;
 using System;
-using System.Linq;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
@@ -101,7 +101,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Services.Credentials
                             this.serviceProvider
                                 .GetService<IConnectionSettingsWindow>()
                                 .ShowWindow();
-                            
+
                             return Task.FromException(new OperationCanceledException());
                         }
                     });

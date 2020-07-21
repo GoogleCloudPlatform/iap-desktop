@@ -29,7 +29,6 @@ using System.Text.RegularExpressions;
 
 namespace Google.Solutions.Common.Locator
 {
-
 	<#
 	var classNames = new [] {"Image", "License"};
 

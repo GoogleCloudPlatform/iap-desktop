@@ -47,8 +47,8 @@ namespace Google.Solutions.IapDesktop.Application.Test.Util
         {
             int callbacks = 0;
             var collection = new RangeObservableCollection<string>();
-            collection.CollectionChanged += (sender, args) => 
-            { 
+            collection.CollectionChanged += (sender, args) =>
+            {
                 callbacks++;
 
                 Assert.AreEqual(NotifyCollectionChangedAction.Reset, args.Action);

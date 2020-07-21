@@ -59,7 +59,7 @@ namespace Google.Solutions.Common.Test.Integration
         {
             if (parameter.ParameterType == typeof(CredentialRequest))
             {
-                return new[] { 
+                return new[] {
                     new CredentialRequest(
                         CreateSpecificationFingerprint(),
                         this.Roles)

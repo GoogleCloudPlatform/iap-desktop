@@ -28,7 +28,6 @@ using Google.Solutions.IapDesktop.Application.Services.Integration;
 using Google.Solutions.IapDesktop.Application.Services.Persistence;
 using Google.Solutions.IapDesktop.Application.Services.Windows.ConnectionSettings;
 using Google.Solutions.IapDesktop.Application.Services.Windows.RemoteDesktop;
-using Google.Solutions.IapDesktop.Application.Services.Workflows;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -564,8 +563,8 @@ namespace Google.Solutions.IapDesktop.Application.Services.Windows.ProjectExplor
                 .FirstOrDefault(vm => vm.InstanceName == reference.Name); ;
         }
 
-        public IProjectExplorerNode SelectedNode 
-        { 
+        public IProjectExplorerNode SelectedNode
+        {
             get => (this.treeView.SelectedNode as IProjectExplorerNode) ?? this.rootNode;
         }
     }

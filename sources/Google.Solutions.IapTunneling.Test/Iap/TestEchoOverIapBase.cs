@@ -20,7 +20,6 @@
 //
 
 using Google.Apis.Auth.OAuth2;
-using Google.Solutions.Common;
 using Google.Solutions.Common.Locator;
 using Google.Solutions.Common.Test.Integration;
 using Google.Solutions.IapTunneling.Iap;
@@ -83,7 +82,7 @@ namespace Google.Solutions.IapTunneling.Test.Iap
 
             await vm.AwaitReady();
             var stream = ConnectToEchoServer(
-                vm.Locator, 
+                vm.Locator,
                 await credential.GetCredentialAsync());
 
             for (int i = 0; i < count; i++)

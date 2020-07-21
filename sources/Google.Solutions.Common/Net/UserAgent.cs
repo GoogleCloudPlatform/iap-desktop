@@ -38,7 +38,7 @@ namespace Google.Solutions.Common.Net
 
         public UserAgent(string product, Version version)
             : this(product, version, Environment.OSVersion.VersionString)
-        { 
+        {
         }
 
         /// <summary>

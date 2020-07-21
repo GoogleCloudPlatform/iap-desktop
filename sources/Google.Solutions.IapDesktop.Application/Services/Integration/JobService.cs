@@ -19,7 +19,6 @@
 // under the License.
 //
 
-using Google.Apis.Auth.OAuth2.Responses;
 using Google.Solutions.Common.Util;
 using Google.Solutions.IapDesktop.Application.ObjectModel;
 using Google.Solutions.IapDesktop.Application.Services.Adapters;
@@ -177,7 +176,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.Integration
                 try
                 {
                     return await RunInBackgroundWithUserFeedback(
-                        jobDescription, 
+                        jobDescription,
                         jobFunc).ConfigureAwait(true);  // Continue on UI thread.
                 }
                 catch (Exception e) when (e.IsReauthError())
@@ -219,7 +218,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.Integration
 
         public JobDescription(string statusMessage)
             : this(statusMessage, JobUserFeedbackType.ForegroundFeedback)
-        { 
+        {
         }
 
         public JobDescription(string statusMessage, JobUserFeedbackType feedbackType)

@@ -25,13 +25,13 @@ using Google.Solutions.IapDesktop.Application.Services.Persistence;
 using Google.Solutions.IapDesktop.Application.Services.Windows;
 using Google.Solutions.IapDesktop.Application.Services.Windows.ProjectExplorer;
 using Google.Solutions.IapDesktop.Extensions.Activity.Properties;
-using Google.Solutions.IapDesktop.Extensions.Activity.Services.EventLog;
 using Google.Solutions.IapDesktop.Extensions.Activity.Services.Adapters;
+using Google.Solutions.IapDesktop.Extensions.Activity.Services.EventLog;
 using Google.Solutions.IapDesktop.Extensions.Activity.Services.SchedulingReport;
+using Google.Solutions.IapDesktop.Extensions.Activity.Services.SerialOutput;
 using System;
 using System.Linq;
 using System.Windows.Forms;
-using Google.Solutions.IapDesktop.Extensions.Activity.Services.SerialOutput;
 
 namespace Google.Solutions.IapDesktop.Extensions.Activity.Services
 {
@@ -84,7 +84,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services
             // Add commands to project explorer.
             //
 
-            var previewFeaturesEnabled = 
+            var previewFeaturesEnabled =
                 this.serviceProvider.GetService<ApplicationSettingsRepository>()
                     .GetSettings()
                     .IsPreviewFeatureSetEnabled;
