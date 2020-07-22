@@ -85,50 +85,64 @@ namespace Google.Solutions.Common.ApiExtensions.Instance
         /// Adds or overwrites a metadata key/value pair to a GCE 
         /// instance. Any existing metadata is kept as is.
         /// </summary>
-        public static async Task AddMetadataAsync(
+        public static Task AddMetadataAsync(
             this InstancesResource resource,
             InstanceLocator instanceRef,
             string key,
             string value,
             CancellationToken token)
         {
-            using (TraceSources.Common.TraceMethod().WithParameters(instanceRef, key))
+            return AddMetadataAsync(
+                resource,
+                instanceRef,
+                new Metadata()
+                {
+                    Items = new List<Metadata.ItemsData>()
+                    {
+                        new Metadata.ItemsData()
+                        {
+                            Key = key,
+                            Value = value
+                        }
+                    }
+                },
+                token);
+        }
+
+        /// <summary>
+        /// Adds or overwrites a metadata key/value pair to a GCE 
+        /// instance. Any existing metadata is kept as is.
+        /// </summary>
+        public static async Task AddMetadataAsync(
+            this InstancesResource resource,
+            InstanceLocator instanceRef,
+            Metadata metadata,
+            CancellationToken token)
+        {
+            using (TraceSources.Common.TraceMethod().WithParameters(instanceRef))
             {
                 for (int attempt = 0; attempt < 6; attempt++)
                 {
+                    TraceSources.Common.TraceVerbose("Adding metadata {0} on {1}...", metadata, instanceRef.Name);
+
+                    //
+                    // NB. Metadata must be updated all-at-once. Therefore,
+                    // fetch the existing entries first before merging them
+                    // with the new entries.
+                    //
+
                     var instance = await resource.Get(
                         instanceRef.ProjectId,
                         instanceRef.Zone,
                         instanceRef.Name).ExecuteAsync(token).ConfigureAwait(false);
-                    var metadata = instance.Metadata;
 
-                    if (metadata.Items == null)
-                    {
-                        metadata.Items = new List<Metadata.ItemsData>();
-                    }
-
-                    var existingEntry = metadata.Items
-                        .Where(i => i.Key == key)
-                        .FirstOrDefault();
-                    if (existingEntry != null)
-                    {
-                        existingEntry.Value = value;
-                    }
-                    else
-                    {
-                        metadata.Items.Add(new Metadata.ItemsData()
-                        {
-                            Key = key,
-                            Value = value
-                        });
-                    }
-
-                    TraceSources.Common.TraceVerbose("Setting metdata {0} on {1}...", key, instanceRef.Name);
+                    var mergedMetadata = instance.Metadata;
+                    mergedMetadata.Add(metadata);
 
                     try
                     {
                         await resource.SetMetadata(
-                            metadata,
+                            mergedMetadata,
                             instanceRef.ProjectId,
                             instanceRef.Zone,
                             instanceRef.Name).ExecuteAndAwaitOperationAsync(instanceRef.ProjectId, token).ConfigureAwait(false);

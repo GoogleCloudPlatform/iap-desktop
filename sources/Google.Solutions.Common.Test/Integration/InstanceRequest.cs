@@ -21,10 +21,13 @@
 
 using Google.Apis.Compute.v1;
 using Google.Apis.Compute.v1.Data;
+using Google.Solutions.Common.ApiExtensions.Instance;
+using Google.Solutions.Common.ApiExtensions.Request;
 using Google.Solutions.Common.Locator;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Google.Solutions.Common.Test.Integration
@@ -32,7 +35,12 @@ namespace Google.Solutions.Common.Test.Integration
     public class InstanceRequest
     {
         internal const string GuestAttributeNamespace = "boot";
-        internal const string GuestAttributeKey = "completed";
+
+        // Use a new key per test run. This ensures that when an existing
+        // instance is started (as opposed to created), we want till the
+        // startup script has been re-run.
+        internal static readonly string GuestAttributeKey = 
+            "completed-" + Guid.NewGuid().ToString().Substring(0, 8);
 
         private readonly ComputeService computeService;
         private readonly IEnumerable<Metadata.ItemsData> metadata;
@@ -88,22 +96,17 @@ namespace Google.Solutions.Common.Test.Integration
         {
             var computeEngine = TestProject.CreateComputeService();
 
+            var metadata = new Metadata()
+            {
+                Items = new List<Metadata.ItemsData>(this.metadata.ToList())
+            };
+
+            // Add metdata that marks this instance as temporary.
+            metadata.Add("type", "auto-cleanup");
+            metadata.Add("ttl", "120"); // minutes
+
             try
             {
-                var metadata = new List<Metadata.ItemsData>(this.metadata.ToList());
-
-                // Add metdata that marks this instance as temporary.
-                metadata.Add(new Metadata.ItemsData()
-                {
-                    Key = "type",
-                    Value = "auto-cleanup"
-                });
-                metadata.Add(new Metadata.ItemsData()
-                {
-                    Key = "ttl",
-                    Value = "120" // minutes
-                });
-
                 await computeEngine.Instances.Insert(
                     new Apis.Compute.v1.Data.Instance()
                     {
@@ -121,10 +124,7 @@ namespace Google.Solutions.Common.Test.Integration
                                 }
                             }
                         },
-                        Metadata = new Metadata()
-                        {
-                            Items = metadata
-                        },
+                        Metadata = metadata,
                         NetworkInterfaces = new[]
                         {
                             new NetworkInterface()
@@ -157,6 +157,12 @@ namespace Google.Solutions.Common.Test.Integration
 
                 if (instance.Status == "TERMINATED")
                 {
+                    // Reapply metadata.
+                    await computeEngine.Instances.AddMetadataAsync(
+                            this.Locator,
+                            metadata,
+                            CancellationToken.None);
+
                     await computeEngine.Instances.Start(
                             this.Locator.ProjectId,
                             this.Locator.Zone,
