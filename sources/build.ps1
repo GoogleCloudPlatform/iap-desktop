@@ -132,7 +132,12 @@ $OpenCover = (Resolve-Path -Path "packages\OpenCover.*\tools\OpenCover.Console.e
 $Nunit = (Resolve-Path -Path "packages\NUnit.ConsoleRunner.*\tools\nunit3-console.exe").Path
 
 $NunitArguments = `
+    "Google.Solutions.Common.Test\bin\release\Google.Solutions.Common.Test.dll " + `
+    "Google.Solutions.IapTunneling.Test\bin\release\Google.Solutions.IapTunneling.Test.dll " + `
     "Google.Solutions.IapDesktop.Extensions.Activity.Test\bin\release\Google.Solutions.IapDesktop.Extensions.Activity.Test.dll " + `
+    "Google.Solutions.IapDesktop.Extensions.Os.Test\bin\release\Google.Solutions.IapDesktop.Extensions.Os.Test.dll " + `
+    "Google.Solutions.IapDesktop.Extensions.Rdp.Test\bin\release\Google.Solutions.IapDesktop.Extensions.Rdp.Test.dll " + `
+    "Google.Solutions.IapDesktop.Application.Test\bin\release\Google.Solutions.IapDesktop.Application.Test.dll " + `
     "--result=sponge_log.xml;transform=..\kokoro\nunit-to-sponge.xsl "
 #    "--where \""cat != IntegrationTest\"""
 
