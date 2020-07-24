@@ -22,7 +22,7 @@
 using Google.Apis.Compute.v1;
 using Google.Apis.Compute.v1.Data;
 using Google.Solutions.Common.ApiExtensions.Instance;
-using Google.Solutions.Common.ApiExtensions.Request;
+using Google.Solutions.Common.Diagnostics;
 using Google.Solutions.Common.Locator;
 using System;
 using System.Collections.Generic;
@@ -69,6 +69,9 @@ namespace Google.Solutions.Common.Test.Integration
                 catch (Exception)
                 { }
 
+                TraceSources.Common.TraceVerbose(
+                    "Waiting for instance {0} to become ready...", this.Locator.Name);
+
                 await Task.Delay(5 * 1000);
             }
 
@@ -107,6 +110,9 @@ namespace Google.Solutions.Common.Test.Integration
 
             try
             {
+                TraceSources.Common.TraceVerbose(
+                    "Trying to create new instance {0}...", this.Locator.Name);
+
                 await computeEngine.Instances.Insert(
                     new Apis.Compute.v1.Data.Instance()
                     {
@@ -157,6 +163,9 @@ namespace Google.Solutions.Common.Test.Integration
 
                 if (instance.Status == "TERMINATED")
                 {
+                    TraceSources.Common.TraceVerbose(
+                        "Instance {0} exists an dis TERMINATED, starting...", this.Locator.Name);
+
                     // Reapply metadata.
                     await computeEngine.Instances.AddMetadataAsync(
                             this.Locator,
@@ -168,6 +177,12 @@ namespace Google.Solutions.Common.Test.Integration
                             this.Locator.Zone,
                             this.Locator.Name)
                         .ExecuteAsync();
+                }
+                else
+                {
+                    TraceSources.Common.TraceError("Creating instance {0} failed...");
+                    TraceSources.Common.TraceError(e);
+                    throw;
                 }
 
                 await AwaitInstanceCreatedAndReady();
