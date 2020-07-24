@@ -164,9 +164,7 @@ namespace Google.Solutions.Common.Test.Integration
                 if (instance.Status == "RUNNING")
                 {
                     TraceSources.Common.TraceVerbose(
-                        "Instance {0} exists, checking that it is ready...", this.Locator.Name);
-                    
-                    await AwaitInstanceCreatedAndReady();
+                        "Instance {0} exists and is running...", this.Locator.Name);
                 }
                 else if (instance.Status == "TERMINATED")
                 {
