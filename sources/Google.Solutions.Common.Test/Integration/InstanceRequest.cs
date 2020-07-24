@@ -161,10 +161,17 @@ namespace Google.Solutions.Common.Test.Integration
                         this.Locator.Name)
                     .ExecuteAsync();
 
-                if (instance.Status == "TERMINATED")
+                if (instance.Status == "RUNNING")
                 {
                     TraceSources.Common.TraceVerbose(
-                        "Instance {0} exists an dis TERMINATED, starting...", this.Locator.Name);
+                        "Instance {0} exists, checking that it is ready...", this.Locator.Name);
+                    
+                    await AwaitInstanceCreatedAndReady();
+                }
+                else if (instance.Status == "TERMINATED")
+                {
+                    TraceSources.Common.TraceVerbose(
+                        "Instance {0} exists, but is TERMINATED, starting...", this.Locator.Name);
 
                     // Reapply metadata.
                     await computeEngine.Instances.AddMetadataAsync(
@@ -177,6 +184,8 @@ namespace Google.Solutions.Common.Test.Integration
                             this.Locator.Zone,
                             this.Locator.Name)
                         .ExecuteAsync();
+
+                    await AwaitInstanceCreatedAndReady();
                 }
                 else
                 {
@@ -184,8 +193,6 @@ namespace Google.Solutions.Common.Test.Integration
                     TraceSources.Common.TraceError(e);
                     throw;
                 }
-
-                await AwaitInstanceCreatedAndReady();
             }
         }
 
