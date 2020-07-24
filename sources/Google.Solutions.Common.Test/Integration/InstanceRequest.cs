@@ -180,7 +180,7 @@ namespace Google.Solutions.Common.Test.Integration
                 }
                 else
                 {
-                    TraceSources.Common.TraceError("Creating instance {0} failed...");
+                    TraceSources.Common.TraceError("Creating instance {0} failed...", this.Locator.Name);
                     TraceSources.Common.TraceError(e);
                     throw;
                 }
