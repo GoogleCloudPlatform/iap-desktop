@@ -41,6 +41,11 @@ namespace Google.Solutions.Common.Test.Integration
         protected abstract string InstanceNamePrefix { get; }
         protected abstract IEnumerable<Metadata.ItemsData> Metadata { get; }
 
+        protected static string CreateUniqueGuestAttributeKey()
+        {
+            return "completed-" + Guid.NewGuid().ToString().Substring(0, 8);
+        }
+
         private string CreateSpecificationFingerprint()
         {
             // Create a hash of the image specification.
@@ -115,6 +120,8 @@ namespace Google.Solutions.Common.Test.Integration
         {
             get
             {
+                var key = CreateUniqueGuestAttributeKey();
+
                 yield return new Metadata.ItemsData()
                 {
                     Key = "sysprep-specialize-script-ps1",
@@ -127,12 +134,17 @@ namespace Google.Solutions.Common.Test.Integration
                 };
                 yield return new Metadata.ItemsData()
                 {
+                    Key = InstanceRequest.GuestAttributeToAwaitKey,
+                    Value = key
+                };
+                yield return new Metadata.ItemsData()
+                {
                     Key = "windows-startup-script-ps1",
                     Value = "Invoke-RestMethod " +
                         "-Headers @{\"Metadata-Flavor\"=\"Google\"} " +
                         "-Method PUT " +
                         "-Uri http://metadata.google.internal/computeMetadata/v1/instance/" +
-                        $"guest-attributes/{InstanceRequest.GuestAttributeNamespace}/{InstanceRequest.GuestAttributeKey} " +
+                        $"guest-attributes/{InstanceRequest.GuestAttributeNamespace}/{key} " +
                         "-Body TRUE"
                 };
             }
@@ -157,6 +169,8 @@ namespace Google.Solutions.Common.Test.Integration
         {
             get
             {
+                var key = CreateUniqueGuestAttributeKey();
+
                 var script = this.InitializeScript != null
                     ? this.InitializeScript + ";"
                     : string.Empty;
@@ -168,11 +182,16 @@ namespace Google.Solutions.Common.Test.Integration
                 };
                 yield return new Metadata.ItemsData()
                 {
+                    Key = InstanceRequest.GuestAttributeToAwaitKey,
+                    Value = key
+                };
+                yield return new Metadata.ItemsData()
+                {
                     Key = "startup-script",
                     Value = script +
                         "curl -X PUT --data \"TRUE\" " +
                         "http://metadata.google.internal/computeMetadata/v1/instance/" +
-                        $"guest-attributes/{InstanceRequest.GuestAttributeNamespace}/{InstanceRequest.GuestAttributeKey} " +
+                        $"guest-attributes/{InstanceRequest.GuestAttributeNamespace}/{key} " +
                         "-H \"Metadata-Flavor: Google\""
                 };
             }

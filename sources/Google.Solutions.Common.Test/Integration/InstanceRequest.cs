@@ -21,10 +21,14 @@
 
 using Google.Apis.Compute.v1;
 using Google.Apis.Compute.v1.Data;
+using Google.Solutions.Common.ApiExtensions.Instance;
+using Google.Solutions.Common.Diagnostics;
 using Google.Solutions.Common.Locator;
+using Google.Solutions.Common.Util;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Google.Solutions.Common.Test.Integration
@@ -32,7 +36,7 @@ namespace Google.Solutions.Common.Test.Integration
     public class InstanceRequest
     {
         internal const string GuestAttributeNamespace = "boot";
-        internal const string GuestAttributeKey = "completed";
+        internal const string GuestAttributeToAwaitKey = "guest-attribute-to-await";
 
         private readonly ComputeService computeService;
         private readonly IEnumerable<Metadata.ItemsData> metadata;
@@ -40,6 +44,7 @@ namespace Google.Solutions.Common.Test.Integration
         private readonly string imageFamily;
 
         public InstanceLocator Locator { get; }
+
 
         private async Task AwaitInstanceCreatedAndReady()
         {
@@ -53,13 +58,22 @@ namespace Google.Solutions.Common.Test.Integration
                             this.Locator.Name)
                         .ExecuteAsync();
 
-                    if (await IsReadyAsync(instance))
+                    // Determine the name of the guest attribute we need to await. 
+                    var guestAttributeToAwait = instance.Metadata.Items
+                        .EnsureNotNull()
+                        .FirstOrDefault(item => item.Key == GuestAttributeToAwaitKey)
+                        .Value;
+
+                    if (await IsReadyAsync(instance, guestAttributeToAwait))
                     {
                         return;
                     }
                 }
                 catch (Exception)
                 { }
+
+                TraceSources.Common.TraceVerbose(
+                    "Waiting for instance {0} to become ready...", this.Locator.Name);
 
                 await Task.Delay(5 * 1000);
             }
@@ -68,7 +82,8 @@ namespace Google.Solutions.Common.Test.Integration
         }
 
         private async Task<bool> IsReadyAsync(
-            Instance instance)
+            Instance instance,
+            string guestAttributeToAwait)
         {
             var request = this.computeService.Instances.GetGuestAttributes(
                     this.Locator.ProjectId,
@@ -80,7 +95,7 @@ namespace Google.Solutions.Common.Test.Integration
             return guestAttributes
                 .QueryValue
                 .Items
-                .Where(i => i.Namespace__ == GuestAttributeNamespace && i.Key == GuestAttributeKey)
+                .Where(i => i.Namespace__ == GuestAttributeNamespace && i.Key == guestAttributeToAwait)
                 .Any();
         }
 
@@ -88,21 +103,19 @@ namespace Google.Solutions.Common.Test.Integration
         {
             var computeEngine = TestProject.CreateComputeService();
 
+            var metadata = new Metadata()
+            {
+                Items = new List<Metadata.ItemsData>(this.metadata.ToList())
+            };
+
+            // Add metdata that marks this instance as temporary.
+            metadata.Add("type", "auto-cleanup");
+            metadata.Add("ttl", "120"); // minutes
+
             try
             {
-                var metadata = new List<Metadata.ItemsData>(this.metadata.ToList());
-
-                // Add metdata that marks this instance as temporary.
-                metadata.Add(new Metadata.ItemsData()
-                {
-                    Key = "type",
-                    Value = "auto-cleanup"
-                });
-                metadata.Add(new Metadata.ItemsData()
-                {
-                    Key = "ttl",
-                    Value = "120" // minutes
-                });
+                TraceSources.Common.TraceVerbose(
+                    "Trying to create new instance {0}...", this.Locator.Name);
 
                 await computeEngine.Instances.Insert(
                     new Apis.Compute.v1.Data.Instance()
@@ -121,10 +134,7 @@ namespace Google.Solutions.Common.Test.Integration
                                 }
                             }
                         },
-                        Metadata = new Metadata()
-                        {
-                            Items = metadata
-                        },
+                        Metadata = metadata,
                         NetworkInterfaces = new[]
                         {
                             new NetworkInterface()
@@ -155,16 +165,43 @@ namespace Google.Solutions.Common.Test.Integration
                         this.Locator.Name)
                     .ExecuteAsync();
 
-                if (instance.Status == "TERMINATED")
+                if (instance.Status == "RUNNING" ||
+                    instance.Status == "PROVISIONING" ||
+                    instance.Status == "STAGING")
                 {
+                    TraceSources.Common.TraceVerbose(
+                        "Instance {0} exists and is running...", this.Locator.Name);
+
+                    await AwaitInstanceCreatedAndReady();
+                }
+                else if (instance.Status == "TERMINATED")
+                {
+                    TraceSources.Common.TraceVerbose(
+                        "Instance {0} exists, but is TERMINATED, starting...", this.Locator.Name);
+
+                    // Reapply metadata.
+                    await computeEngine.Instances.AddMetadataAsync(
+                            this.Locator,
+                            metadata,
+                            CancellationToken.None);
+
                     await computeEngine.Instances.Start(
                             this.Locator.ProjectId,
                             this.Locator.Zone,
                             this.Locator.Name)
                         .ExecuteAsync();
-                }
 
-                await AwaitInstanceCreatedAndReady();
+                    await AwaitInstanceCreatedAndReady();
+                }
+                else
+                {
+                    TraceSources.Common.TraceError(
+                        "Creating instance {0} failed, current status is {1}", 
+                        this.Locator.Name,
+                        instance.Status);
+                    TraceSources.Common.TraceError(e);
+                    throw;
+                }
             }
         }
 

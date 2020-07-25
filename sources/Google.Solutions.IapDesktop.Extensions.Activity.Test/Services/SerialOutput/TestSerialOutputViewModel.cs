@@ -227,7 +227,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.Services.SerialOu
 
             Assert.IsTrue(viewModel.IsEnableTailingButtonEnabled);
             Assert.IsTrue(viewModel.IsOutputBoxEnabled);
-            StringAssert.Contains("Instance setup finished", viewModel.Output);
+            StringAssert.Contains("Finished running startup scripts", viewModel.Output);
 
             StringAssert.Contains(SerialOutputViewModel.DefaultWindowTitle, viewModel.WindowTitle);
             StringAssert.Contains(testInstance.Locator.Name, viewModel.WindowTitle);

@@ -57,7 +57,7 @@ namespace Google.Solutions.Common.Test.Extensions
             while (DateTime.Now < startTime.AddMinutes(3))
             {
                 var log = await stream.ReadAsync(CancellationToken.None);
-                if (log.Contains("Instance setup finished"))
+                if (log.Contains("Finished running startup scripts"))
                 {
                     return;
                 }

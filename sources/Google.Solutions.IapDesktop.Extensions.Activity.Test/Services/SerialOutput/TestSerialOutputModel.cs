@@ -54,7 +54,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.Services.SerialOu
 
             Assert.IsFalse(string.IsNullOrWhiteSpace(model.Output));
             Assert.AreEqual("display-name", model.DisplayName);
-            StringAssert.Contains("Instance setup finished", model.Output);
+            StringAssert.Contains("Finished running startup scripts", model.Output);
         }
 
         [Test]
