@@ -155,10 +155,7 @@ namespace Google.Solutions.Common.Test.Integration
 
                 await AwaitInstanceCreatedAndReady();
             }
-            catch (Exception e) when (
-                e.Unwrap() is GoogleApiException apiEx && 
-                apiEx.Error != null && 
-                apiEx.Error.Code == 409)
+            catch (GoogleApiException e) when (e.Error != null && e.Error.Code == 409)
             {
                 // Instance already exists - make sure it's running then.
                 var instance = await computeEngine.Instances
@@ -168,7 +165,9 @@ namespace Google.Solutions.Common.Test.Integration
                         this.Locator.Name)
                     .ExecuteAsync();
 
-                if (instance.Status == "RUNNING")
+                if (instance.Status == "RUNNING" ||
+                    instance.Status == "PROVISIONING" ||
+                    instance.Status == "STAGING")
                 {
                     TraceSources.Common.TraceVerbose(
                         "Instance {0} exists and is running...", this.Locator.Name);
@@ -196,7 +195,10 @@ namespace Google.Solutions.Common.Test.Integration
                 }
                 else
                 {
-                    TraceSources.Common.TraceError("Creating instance {0} failed...", this.Locator.Name);
+                    TraceSources.Common.TraceError(
+                        "Creating instance {0} failed, current status is {1}", 
+                        this.Locator.Name,
+                        instance.Status);
                     TraceSources.Common.TraceError(e);
                     throw;
                 }
