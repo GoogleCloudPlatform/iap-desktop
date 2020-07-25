@@ -155,7 +155,10 @@ namespace Google.Solutions.Common.Test.Integration
 
                 await AwaitInstanceCreatedAndReady();
             }
-            catch (GoogleApiException e) when (e.Error != null && e.Error.Code == 409)
+            catch (Exception e) when (
+                e.Unwrap() is GoogleApiException apiEx && 
+                apiEx.Error != null && 
+                apiEx.Error.Code == 409)
             {
                 // Instance already exists - make sure it's running then.
                 var instance = await computeEngine.Instances
