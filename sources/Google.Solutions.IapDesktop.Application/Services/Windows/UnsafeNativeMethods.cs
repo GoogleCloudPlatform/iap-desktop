@@ -143,5 +143,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.Windows
         public static extern bool ShowWindow(IntPtr hWnd, int nCmdShow);
 
         public const int SW_RESTORE = 9;
+
+        public const uint E_UNEXPECTED = 0x8000ffff;
     }
 }
