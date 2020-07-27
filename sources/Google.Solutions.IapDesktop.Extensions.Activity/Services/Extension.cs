@@ -84,30 +84,23 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services
             // Add commands to project explorer.
             //
 
-            var previewFeaturesEnabled =
-                this.serviceProvider.GetService<ApplicationSettingsRepository>()
-                    .GetSettings()
-                    .IsPreviewFeatureSetEnabled;
-            if (previewFeaturesEnabled)
-            {
-                var reportCommand = projectExplorer.ContextMenuCommands.AddCommand(
-                    new Command<IProjectExplorerNode>(
-                        "Report",
-                        context => context is IProjectExplorerProjectNode
-                                || context is IProjectExplorerCloudNode
-                            ? CommandState.Enabled
-                            : CommandState.Unavailable,
-                        context => { }));
+            var reportCommand = projectExplorer.ContextMenuCommands.AddCommand(
+                new Command<IProjectExplorerNode>(
+                    "Report",
+                    context => context is IProjectExplorerProjectNode
+                            || context is IProjectExplorerCloudNode
+                        ? CommandState.Enabled
+                        : CommandState.Unavailable,
+                    context => { }));
 
-                reportCommand.AddCommand(
-                    new Command<IProjectExplorerNode>(
-                        "New instance/node usage report...",
-                        context => CommandState.Enabled,
-                        context => CreateReport(context))
-                    {
-                        Image = Resources.Report_16
-                    });
-            }
+            reportCommand.AddCommand(
+                new Command<IProjectExplorerNode>(
+                    "New instance/node usage report...",
+                    context => CommandState.Enabled,
+                    context => CreateReport(context))
+                {
+                    Image = Resources.Report_16
+                });
 
             projectExplorer.ContextMenuCommands.AddCommand(
                 new Command<IProjectExplorerNode>(
