@@ -285,31 +285,42 @@ namespace Google.Solutions.IapDesktop.Application.Services.Windows.RemoteDesktop
                 // stress on the control (especially if events come in quick succession).
                 if (size != this.connectionSize && !this.connecting)
                 {
-                    //
-                    // Try to adjust settings without reconnecting - this only works when
-                    // (1) The server is running 2012R2 or newer
-                    // (2) The logon process has completed.
-                    //
-                    try
+                    if (this.rdpClient.FullScreen)
                     {
-                        this.rdpClient.UpdateSessionDisplaySettings(
-                            (uint)this.Width,
-                            (uint)this.Height,
-                            (uint)this.Width,
-                            (uint)this.Height,
-                            0,  // Landscape
-                            1,  // No desktop scaling
-                            1); // No device scaling
-                    }
-                    catch (COMException e) when ((uint)e.HResult == UnsafeNativeMethods.E_UNEXPECTED)
-                    {
-                        TraceSources.IapDesktop.TraceWarning("Adjusting desktop size (w/o) reconnect failed.");
-
                         //
-                        // Revert to classic, reconnect-based resizing.
+                        // Full-screen requires a classic, reconnect-based resizing.
                         //
                         this.connecting = true;
                         this.rdpClient.Reconnect((uint)size.Width, (uint)size.Height);
+                    }
+                    else
+                    {
+                        //
+                        // Try to adjust settings without reconnecting - this only works when
+                        // (1) The server is running 2012R2 or newer
+                        // (2) The logon process has completed.
+                        //
+                        try
+                        {
+                            this.rdpClient.UpdateSessionDisplaySettings(
+                                (uint)this.Width,
+                                (uint)this.Height,
+                                (uint)this.Width,
+                                (uint)this.Height,
+                                0,  // Landscape
+                                1,  // No desktop scaling
+                                1); // No device scaling
+                        }
+                        catch (COMException e) when ((uint)e.HResult == UnsafeNativeMethods.E_UNEXPECTED)
+                        {
+                            TraceSources.IapDesktop.TraceWarning("Adjusting desktop size (w/o) reconnect failed.");
+
+                            //
+                            // Revert to classic, reconnect-based resizing.
+                            //
+                            this.connecting = true;
+                            this.rdpClient.Reconnect((uint)size.Width, (uint)size.Height);
+                        }
                     }
 
                     this.connectionSize = size;
