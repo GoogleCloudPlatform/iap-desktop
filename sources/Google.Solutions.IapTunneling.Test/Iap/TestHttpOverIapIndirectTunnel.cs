@@ -62,7 +62,7 @@ namespace Google.Solutions.IapTunneling.Test.Iap
         [Test]
         public async Task WhenServerNotListening_ThenReadReturnsZero(
             [LinuxInstance] InstanceRequest vm,
-            [Credential] CredentialRequest credential)
+            [Credential(Role = PredefinedRole.IapTunnelUser)] CredentialRequest credential)
         {
             await vm.AwaitReady();
             var stream = ConnectToWebServer(

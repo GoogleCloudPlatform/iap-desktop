@@ -77,7 +77,7 @@ namespace Google.Solutions.IapTunneling.Test.Iap
         [Test, Repeat(RepeatCount)]
         public async Task WhenServerClosesConnectionAfterSingleHttpRequest_ThenRelayEnds(
             [LinuxInstance(InitializeScript = InstallApache)] InstanceRequest vm,
-            [Credential] CredentialRequest credential)
+            [Credential(Role = PredefinedRole.IapTunnelUser)] CredentialRequest credential)
         {
             await vm.AwaitReady();
             var stream = ConnectToWebServer(
@@ -105,7 +105,7 @@ namespace Google.Solutions.IapTunneling.Test.Iap
         [Test, Repeat(RepeatCount)]
         public async Task WhenServerClosesConnectionMultipleHttpRequests_ThenRelayEnds(
             [LinuxInstance(InitializeScript = InstallApache)] InstanceRequest vm,
-            [Credential] CredentialRequest credential)
+            [Credential(Role = PredefinedRole.IapTunnelUser)] CredentialRequest credential)
         {
             await vm.AwaitReady();
             var stream = ConnectToWebServer(
@@ -142,7 +142,7 @@ namespace Google.Solutions.IapTunneling.Test.Iap
         [Test, Repeat(RepeatCount)]
         public async Task WhenClientClosesConnectionAfterSingleHttpRequest_ThenRelayEnds(
             [LinuxInstance(InitializeScript = InstallApache)] InstanceRequest vm,
-            [Credential] CredentialRequest credential)
+            [Credential(Role = PredefinedRole.IapTunnelUser)] CredentialRequest credential)
         {
             await vm.AwaitReady();
             var stream = ConnectToWebServer(

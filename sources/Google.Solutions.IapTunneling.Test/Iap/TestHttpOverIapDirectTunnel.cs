@@ -54,7 +54,7 @@ namespace Google.Solutions.IapTunneling.Test.Iap
         [Test]
         public async Task WhenBufferIsTiny_ThenReadingFailsWithIndexOutOfRangeException(
             [LinuxInstance(InitializeScript = InstallApache)] InstanceRequest vm,
-            [Credential] CredentialRequest credential)
+            [Credential(Role = PredefinedRole.IapTunnelUser)] CredentialRequest credential)
         {
             await vm.AwaitReady();
             var stream = ConnectToWebServer(vm.Locator, await credential.GetCredentialAsync());
@@ -104,7 +104,7 @@ namespace Google.Solutions.IapTunneling.Test.Iap
         [Test]
         public async Task WhenFirstReadCompleted_ThenSidIsAvailable(
             [LinuxInstance(InitializeScript = InstallApache)] InstanceRequest vm,
-            [Credential] CredentialRequest credential)
+            [Credential(Role = PredefinedRole.IapTunnelUser)] CredentialRequest credential)
         {
             await vm.AwaitReady();
             var stream = (SshRelayStream)ConnectToWebServer(
@@ -131,7 +131,7 @@ namespace Google.Solutions.IapTunneling.Test.Iap
         [Ignore("Can also throw an UnauthorizedException")]
         public async Task WhenServerNotListening_ThenReadFails(
             [LinuxInstance] InstanceRequest vm,
-            [Credential] CredentialRequest credential)
+            [Credential(Role = PredefinedRole.IapTunnelUser)] CredentialRequest credential)
         {
             await vm.AwaitReady();
             var stream = ConnectToWebServer(

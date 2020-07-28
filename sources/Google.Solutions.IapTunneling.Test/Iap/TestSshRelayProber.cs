@@ -37,7 +37,7 @@ namespace Google.Solutions.IapTunneling.Test.Iap
     {
         [Test]
         public async Task WhenProjectDoesntExist_ThenProbeFailsWithUnauthorizedException(
-            [Credential] CredentialRequest credential)
+            [Credential(Role = PredefinedRole.IapTunnelUser)] CredentialRequest credential)
         {
             using (var stream = new SshRelayStream(
                 new IapTunnelingEndpoint(
@@ -57,7 +57,7 @@ namespace Google.Solutions.IapTunneling.Test.Iap
 
         [Test]
         public async Task WhenZoneDoesntExist_ThenProbeFailsWithUnauthorizedException(
-            [Credential] CredentialRequest credential)
+            [Credential(Role = PredefinedRole.IapTunnelUser)] CredentialRequest credential)
         {
             using (var stream = new SshRelayStream(
                new IapTunnelingEndpoint(
@@ -77,7 +77,7 @@ namespace Google.Solutions.IapTunneling.Test.Iap
 
         [Test]
         public async Task WhenInstanceDoesntExist_ThenProbeFailsWithUnauthorizedException(
-            [Credential] CredentialRequest credential)
+            [Credential(Role = PredefinedRole.IapTunnelUser)] CredentialRequest credential)
         {
             using (var stream = new SshRelayStream(
                 new IapTunnelingEndpoint(
@@ -98,7 +98,7 @@ namespace Google.Solutions.IapTunneling.Test.Iap
         [Test]
         public async Task WhenInstanceExistsAndIsListening_ThenProbeSucceeds(
              [WindowsInstance] InstanceRequest testInstance,
-             [Credential] CredentialRequest credential)
+             [Credential(Role = PredefinedRole.IapTunnelUser)] CredentialRequest credential)
         {
             await testInstance.AwaitReady();
 
@@ -117,7 +117,7 @@ namespace Google.Solutions.IapTunneling.Test.Iap
         [Test]
         public async Task WhenInstanceExistsButNotListening_ThenProbeFailsWithNetworkStreamClosedException(
              [WindowsInstance] InstanceRequest testInstance,
-             [Credential] CredentialRequest credential)
+             [Credential(Role = PredefinedRole.IapTunnelUser)] CredentialRequest credential)
         {
             await testInstance.AwaitReady();
 

@@ -67,7 +67,7 @@ namespace Google.Solutions.IapTunneling.Test.Iap
         [Test]
         public async Task WhenSendingMessagesToEchoServer_MessagesAreReceivedVerbatim(
             [LinuxInstance(InitializeScript = InstallEchoServer)] InstanceRequest vm,
-            [Credential] CredentialRequest credential,
+            [Credential(Role = PredefinedRole.IapTunnelUser)] CredentialRequest credential,
             [Values(
                 1,
                 (int)DataMessage.MaxDataLength - 1,
