@@ -147,7 +147,7 @@ namespace Google.Solutions.Common.Test.Integration
                     // Create a service account.
                     var serviceAccount = await CreateOrGetServiceAccountAsync();
 
-                    // TODO: Assign roles.
+                    // Assign roles.
                     await GrantRolesToServiceAccountAsync(serviceAccount);
 
                     // Create a token.

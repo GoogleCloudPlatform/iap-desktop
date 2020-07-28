@@ -71,7 +71,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Windows
                 # Disable Policy
                 & reg add ""HKLM\SOFTWARE\Policies\Microsoft\Windows NT\Terminal Services"" /t REG_DWORD /v fDenyTSConnections /d 1 /f | Out-Default
             ")] InstanceRequest testInstance,
-            [Credential] CredentialRequest credential)
+            [Credential(Role = PredefinedRole.IapTunnelUser)] CredentialRequest credential)
         {
             await testInstance.AwaitReady();
 
@@ -93,7 +93,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Windows
             [WindowsInstance(InitializeScript = @"
                 & reg add ""HKLM\SOFTWARE\Policies\Microsoft\Windows NT\Terminal Services"" /t REG_DWORD /v MinEncryptionLevel /d 1 /f | Out-Default
             ")] InstanceRequest testInstance,
-            [Credential] CredentialRequest credential)
+            [Credential(Role = PredefinedRole.IapTunnelUser)] CredentialRequest credential)
         {
             await testInstance.AwaitReady();
 
@@ -126,7 +126,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Windows
             [WindowsInstance(InitializeScript = @"
                 & reg add ""HKLM\SOFTWARE\Policies\Microsoft\Windows NT\Terminal Services"" /t REG_DWORD /v MinEncryptionLevel /d 3 /f | Out-Default
             ")] InstanceRequest testInstance,
-            [Credential] CredentialRequest credential)
+            [Credential(Role = PredefinedRole.IapTunnelUser)] CredentialRequest credential)
         {
             await testInstance.AwaitReady();
 
@@ -159,7 +159,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Windows
             [WindowsInstance(InitializeScript = @"
                 & reg add ""HKLM\SOFTWARE\Policies\Microsoft\Windows NT\Terminal Services"" /t REG_DWORD /v SecurityLayer /d 0 /f | Out-Default
             ")] InstanceRequest testInstance,
-            [Credential] CredentialRequest credential)
+            [Credential(Role = PredefinedRole.IapTunnelUser)] CredentialRequest credential)
         {
             await testInstance.AwaitReady();
 
@@ -192,7 +192,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Windows
             [WindowsInstance(InitializeScript = @"
                 & reg add ""HKLM\SOFTWARE\Policies\Microsoft\Windows NT\Terminal Services"" /t REG_DWORD /v SecurityLayer /d 1 /f | Out-Default
             ")] InstanceRequest testInstance,
-            [Credential] CredentialRequest credential)
+            [Credential(Role = PredefinedRole.IapTunnelUser)] CredentialRequest credential)
         {
             await testInstance.AwaitReady();
 
@@ -225,7 +225,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Windows
             [WindowsInstance(InitializeScript = @"
                 & reg add ""HKLM\SOFTWARE\Policies\Microsoft\Windows NT\Terminal Services"" /t REG_DWORD /v SecurityLayer /d 2 /f | Out-Default
             ")] InstanceRequest testInstance,
-            [Credential] CredentialRequest credential)
+            [Credential(Role = PredefinedRole.IapTunnelUser)] CredentialRequest credential)
         {
             await testInstance.AwaitReady();
 
@@ -258,7 +258,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Windows
             [WindowsInstance(InitializeScript = @"
                 & reg add ""HKLM\SOFTWARE\Policies\Microsoft\Windows NT\Terminal Services"" /t REG_DWORD /v UserAuthentication /d 0 /f | Out-Default
             ")] InstanceRequest testInstance,
-            [Credential] CredentialRequest credential)
+            [Credential(Role = PredefinedRole.IapTunnelUser)] CredentialRequest credential)
         {
             await testInstance.AwaitReady();
 
@@ -291,7 +291,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Windows
             [WindowsInstance(InitializeScript = @"
                 & reg add ""HKLM\SOFTWARE\Policies\Microsoft\Windows NT\Terminal Services"" /t REG_DWORD /v UserAuthentication /d 1 /f | Out-Default
             ")] InstanceRequest testInstance,
-            [Credential] CredentialRequest credential)
+            [Credential(Role = PredefinedRole.IapTunnelUser)] CredentialRequest credential)
         {
             await testInstance.AwaitReady();
 

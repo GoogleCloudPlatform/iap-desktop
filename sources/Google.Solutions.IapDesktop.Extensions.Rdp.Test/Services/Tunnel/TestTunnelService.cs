@@ -52,7 +52,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Test.Services.Tunnel
         [Test]
         public async Task WhenInstanceAvailableAndUserInRole_ThenCreateTunnelAndProbeSucceeds(
             [WindowsInstance] InstanceRequest testInstance,
-            [Credential] CredentialRequest credential)
+            [Credential(Role = PredefinedRole.IapTunnelUser)] CredentialRequest credential)
         {
             await testInstance.AwaitReady();
 
