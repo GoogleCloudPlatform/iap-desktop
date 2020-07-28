@@ -150,14 +150,14 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services.SchedulingRep
             // 
             this.includeSoleTenantInstancesMenuItem.Name = "includeSoleTenantInstancesMenuItem";
             this.includeSoleTenantInstancesMenuItem.Size = new System.Drawing.Size(208, 22);
-            this.includeSoleTenantInstancesMenuItem.Text = "Sole-tenant VM instances";
+            this.includeSoleTenantInstancesMenuItem.Text = "Sole tenant";
             this.includeSoleTenantInstancesMenuItem.Click += new System.EventHandler(this.menuItemToggle_Click);
             // 
             // includeFleetInstancesMenuItem
             // 
             this.includeFleetInstancesMenuItem.Name = "includeFleetInstancesMenuItem";
             this.includeFleetInstancesMenuItem.Size = new System.Drawing.Size(208, 22);
-            this.includeFleetInstancesMenuItem.Text = "Fleet VM instances";
+            this.includeFleetInstancesMenuItem.Text = "Shared tenant";
             this.includeFleetInstancesMenuItem.Click += new System.EventHandler(this.menuItemToggle_Click);
             // 
             // includeOsMenuItem
