@@ -145,5 +145,10 @@ namespace Google.Solutions.IapDesktop.Application.Views
         public const int SW_RESTORE = 9;
 
         public const uint E_UNEXPECTED = 0x8000ffff;
+
+
+        internal const int EM_SETMARGINS = 0xd3;
+        [System.Runtime.InteropServices.DllImport("user32.dll")]
+        internal static extern IntPtr SendMessage(IntPtr hWnd, int msg, IntPtr wp, IntPtr lp);
     }
 }

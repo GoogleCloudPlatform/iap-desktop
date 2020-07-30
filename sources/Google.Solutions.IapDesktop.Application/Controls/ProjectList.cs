@@ -1,0 +1,43 @@
+﻿//
+// Copyright 2019 Google LLC
+//
+// Licensed to the Apache Software Foundation (ASF) under one
+// or more contributor license agreements.  See the NOTICE file
+// distributed with this work for additional information
+// regarding copyright ownership.  The ASF licenses this file
+// to you under the Apache License, Version 2.0 (the
+// "License"); you may not use this file except in compliance
+// with the License.  You may obtain a copy of the License at
+// 
+//   http://www.apache.org/licenses/LICENSE-2.0
+// 
+// Unless required by applicable law or agreed to in writing,
+// software distributed under the License is distributed on an
+// "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+// KIND, either express or implied.  See the License for the
+// specific language governing permissions and limitations
+// under the License.
+//
+
+using Google.Apis.CloudResourceManager.v1.Data;
+using Google.Solutions.IapDesktop.Application.Properties;
+using System.Windows.Forms;
+
+namespace Google.Solutions.IapDesktop.Application.Controls
+{
+    public class ProjectList : SearchableList<Project>
+    {
+        public ProjectList()
+        {
+            this.List.SmallImageList = new ImageList();
+            this.List.SmallImageList.Images.Add(Resources.Project);
+
+            AddColumn("Name", 100);
+            AddColumn("Project ID", 100);
+
+            this.List.BindImageIndex(_ => 0);
+            this.List.BindColumn(0, m => m.Name);
+            this.List.BindColumn(1, m => m.ProjectId);
+        }
+    }
+}
