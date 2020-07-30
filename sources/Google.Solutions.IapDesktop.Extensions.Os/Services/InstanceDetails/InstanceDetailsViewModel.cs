@@ -28,6 +28,7 @@ using Google.Solutions.IapDesktop.Application.Services.Adapters;
 using Google.Solutions.IapDesktop.Application.Services.Integration;
 using Google.Solutions.IapDesktop.Application.Services.Windows.ProjectExplorer;
 using Google.Solutions.IapDesktop.Application.Services.Windows.Properties;
+using Google.Solutions.IapDesktop.Extensions.Os.Services.Inventory;
 using System;
 using System.Diagnostics;
 using System.Threading;
@@ -143,6 +144,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Os.Services.InstanceDetails
                                         vmNode.ZoneId,
                                         vmNode.InstanceName),
                                     this.serviceProvider.GetService<IComputeEngineAdapter>(),
+                                    this.serviceProvider.GetService<IInventoryService>(),
                                     combinedTokenSource.Token)
                                     .ConfigureAwait(false);
                             }

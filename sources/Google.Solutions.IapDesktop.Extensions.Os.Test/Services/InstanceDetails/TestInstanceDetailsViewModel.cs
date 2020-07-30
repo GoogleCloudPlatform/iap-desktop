@@ -26,6 +26,7 @@ using Google.Solutions.IapDesktop.Application.Services.Adapters;
 using Google.Solutions.IapDesktop.Application.Services.Integration;
 using Google.Solutions.IapDesktop.Application.Services.Windows.ProjectExplorer;
 using Google.Solutions.IapDesktop.Extensions.Os.Services.InstanceDetails;
+using Google.Solutions.IapDesktop.Extensions.Os.Services.Inventory;
 using Moq;
 using NUnit.Framework;
 using System;
@@ -65,6 +66,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Os.Test.Services.InstanceDetail
                 });
 
             registry.AddSingleton<IComputeEngineAdapter>(gceAdapter.Object);
+            registry.AddSingleton<IInventoryService>(new InventoryService(gceAdapter.Object));
 
             return new InstanceDetailsViewModel(registry);
         }

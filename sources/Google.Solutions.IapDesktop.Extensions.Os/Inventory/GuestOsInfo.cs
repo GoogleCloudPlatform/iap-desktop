@@ -21,6 +21,7 @@
 
 using Google.Apis.Compute.v1.Data;
 using Google.Apis.Util;
+using Google.Solutions.Common.Locator;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -33,6 +34,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Os.Inventory
     public class GuestOsInfo
     {
         public const string GuestAttributePath = "guestInventory/";
+
+        public InstanceLocator Instance { get; }
 
         public string Architecture { get; }
         public string KernelRelease { get; }
@@ -47,6 +50,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Os.Inventory
         public GuestPackages AvailablePackages { get; }
 
         private GuestOsInfo(
+            InstanceLocator instance,
             string architecture,
             string kernelRelease,
             string kernelVersion,
@@ -58,6 +62,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Os.Inventory
             GuestPackages installedPackages,
             GuestPackages availablePackages)
         {
+            this.Instance = instance;
             this.Architecture = architecture;
             this.KernelRelease = kernelRelease;
             this.KernelVersion = kernelVersion;
@@ -83,16 +88,24 @@ namespace Google.Solutions.IapDesktop.Extensions.Os.Inventory
         }
 
         public static GuestOsInfo FromGuestAttributes(
+            InstanceLocator instanceLocator,
             IList<GuestAttributesEntry> guestAttributes)
         {
             Utilities.ThrowIfNull(guestAttributes, nameof(guestAttributes));
 
-            var version = guestAttributes.FirstOrDefault(a => a.Key == "Version")?.Value;
             var lastUpdated = guestAttributes.FirstOrDefault(a => a.Key == "LastUpdated")?.Value;
             var installedPackages = guestAttributes.FirstOrDefault(a => a.Key == "InstalledPackages")?.Value;
             var availablePackages = guestAttributes.FirstOrDefault(a => a.Key == "PackageUpdates")?.Value;
+            var version = guestAttributes.FirstOrDefault(a => a.Key == "Version")?.Value;
+
+            if (version != null && version.IndexOf('.') == -1)
+            {
+                // Version.Parse expects at least one dot-version.
+                version += ".0";
+            }
 
             return new GuestOsInfo(
+                instanceLocator,
                 guestAttributes.FirstOrDefault(a => a.Key == "Architecture")?.Value,
                 guestAttributes.FirstOrDefault(a => a.Key == "KernelRelease")?.Value,
                 guestAttributes.FirstOrDefault(a => a.Key == "KernelVersion")?.Value,
@@ -112,10 +125,5 @@ namespace Google.Solutions.IapDesktop.Extensions.Os.Inventory
                     ? DecodeAndParseBase64Gzip<GuestPackages>(availablePackages)
                     : null);
         }
-
-        //---------------------------------------------------------------------
-        // Inner classes.
-        //---------------------------------------------------------------------
-
     }
 }

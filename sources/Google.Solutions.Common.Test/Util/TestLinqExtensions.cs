@@ -63,5 +63,37 @@ namespace Google.Solutions.Common.Test.Util
 
             Assert.IsTrue(list.ContainsAll(lookup));
         }
+
+        [Test]
+        public void WhenListSmallerThanChunk_ThenChunkReturnsSingleList()
+        {
+            var list = new[] { "a", "b", "c" };
+            var chunks = list.Chunk(4);
+
+            Assert.AreEqual(1, chunks.Count());
+            Assert.AreEqual(3, chunks.First().Count());
+        }
+
+        [Test]
+        public void WhenListFillsTwoChunks_ThenChunkReturnsTwoLists()
+        {
+            var list = new[] { "a", "b", "c", "d" };
+            var chunks = list.Chunk(2);
+
+            Assert.AreEqual(2, chunks.Count());
+            CollectionAssert.AreEqual(new[] { "a", "b" }, chunks.First());
+            CollectionAssert.AreEqual(new[] { "c", "d" }, chunks.Skip(1).First());
+        }
+
+        [Test]
+        public void WhenListLargerThanSingleChunk_ThenChunkReturnsTwoLists()
+        {
+            var list = new[] { "a", "b", "c" };
+            var chunks = list.Chunk(2);
+
+            Assert.AreEqual(2, chunks.Count());
+            CollectionAssert.AreEqual(new[] { "a", "b" }, chunks.First());
+            CollectionAssert.AreEqual(new[] { "c" }, chunks.Skip(1).First());
+        }
     }
 }

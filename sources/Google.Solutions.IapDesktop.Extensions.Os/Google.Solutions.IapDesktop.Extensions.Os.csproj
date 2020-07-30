@@ -91,6 +91,7 @@
     <Compile Include="Services\InstanceDetails\InstanceDetailsWindow.cs">
       <SubType>Form</SubType>
     </Compile>
+    <Compile Include="Services\Inventory\InventoryService.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

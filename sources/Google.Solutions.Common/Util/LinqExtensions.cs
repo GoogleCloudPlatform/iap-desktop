@@ -42,5 +42,24 @@ namespace Google.Solutions.Common.Util
         {
             return !lookup.Except(sequence).Any();
         }
+
+        public static IEnumerable<IEnumerable<T>> Chunk<T>(this IEnumerable<T> source, int chunkSize)
+        {
+            var chunk = new List<T>(chunkSize);
+            foreach (var x in source)
+            {
+                chunk.Add(x);
+                if (chunk.Count == chunkSize)
+                {
+                    yield return chunk;
+                    chunk = new List<T>(chunkSize);
+                }
+            }
+
+            if (chunk.Any())
+            {
+                yield return chunk;
+            }
+        }
     }
 }

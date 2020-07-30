@@ -23,6 +23,7 @@ using Google.Solutions.Common.Test;
 using Google.Solutions.Common.Test.Integration;
 using Google.Solutions.IapDesktop.Application.Services.Adapters;
 using Google.Solutions.IapDesktop.Extensions.Os.Services.InstanceDetails;
+using Google.Solutions.IapDesktop.Extensions.Os.Services.Inventory;
 using NUnit.Framework;
 using System.Threading;
 using System.Threading.Tasks;
@@ -40,9 +41,11 @@ namespace Google.Solutions.IapDesktop.Extensions.Os.Test.Services.InstanceDetail
         {
             await testInstance.AwaitReady();
 
+            var gceAdapter = new ComputeEngineAdapter(await credential.GetCredentialAsync());
             var model = await InstanceDetailsModel.LoadAsync(
                 await testInstance.GetInstanceAsync(),
-                new ComputeEngineAdapter(await credential.GetCredentialAsync()),
+                gceAdapter,
+                new InventoryService(gceAdapter),
                 CancellationToken.None);
 
             Assert.AreEqual(testInstance.Locator.Name, model.InstanceName);

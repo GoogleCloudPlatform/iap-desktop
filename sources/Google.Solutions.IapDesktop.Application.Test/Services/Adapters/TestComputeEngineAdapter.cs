@@ -54,6 +54,25 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Adapters
         }
 
         [Test]
+        public async Task WhenUserInViewerRole_ThenListInstancesAsyncByZoneReturnsInstances(
+            [LinuxInstance] InstanceRequest testInstance,
+            [Credential(Role = PredefinedRole.ComputeViewer)] CredentialRequest credential)
+        {
+            // Make sure there is at least one instance.
+            await testInstance.AwaitReady();
+            var instanceRef = await testInstance.GetInstanceAsync();
+
+            var adapter = new ComputeEngineAdapter(await credential.GetCredentialAsync());
+
+            var instances = await adapter.ListInstancesAsync(
+                    new ZoneLocator(TestProject.ProjectId, instanceRef.Zone),
+                    CancellationToken.None);
+
+            Assert.Greater(instances.Count(), 1);
+            Assert.IsNotNull(instances.FirstOrDefault(i => i.Name == instanceRef.Name));
+        }
+
+        [Test]
         public async Task WhenUserNotInRole_ThenListInstancesAsyncThrowsResourceAccessDeniedException(
             [Credential(Role = PredefinedRole.IapTunnelUser)] CredentialRequest credential)
         {
@@ -62,6 +81,18 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Adapters
             AssertEx.ThrowsAggregateException<ResourceAccessDeniedException>(
                 () => adapter.ListInstancesAsync(
                     TestProject.ProjectId,
+                    CancellationToken.None).Wait());
+        }
+
+        [Test]
+        public async Task WhenUserNotInRole_ThenListInstancesAsyncByZoneThrowsResourceAccessDeniedException(
+            [Credential(Role = PredefinedRole.IapTunnelUser)] CredentialRequest credential)
+        {
+            var adapter = new ComputeEngineAdapter(await credential.GetCredentialAsync());
+
+            AssertEx.ThrowsAggregateException<ResourceAccessDeniedException>(
+                () => adapter.ListInstancesAsync(
+                    new ZoneLocator(TestProject.ProjectId, "us-central1-a"),
                     CancellationToken.None).Wait());
         }
 
