@@ -89,6 +89,7 @@
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="Controls\ExceptionEventArgs.cs" />
+    <Compile Include="Controls\ListViewExtensions.cs" />
     <Compile Include="ObjectModel\BindingExtensions.cs" />
     <Compile Include="ObjectModel\Command.cs" />
     <Compile Include="ObjectModel\CommandContainer.cs" />
@@ -135,6 +136,7 @@
     <Compile Include="Controls\FlatVerticalTabControl.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="Util\HtmlClipboardFormat.cs" />
     <Compile Include="Util\IIapUrlHandler.cs" />
     <Compile Include="Services\Windows\ProjectExplorer\ProjectExplorerTrackingToolWindow.cs">
       <SubType>Form</SubType>
