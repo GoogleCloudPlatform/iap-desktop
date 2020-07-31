@@ -3,10 +3,13 @@ using Google.Solutions.IapDesktop.Application;
 using Google.Solutions.IapDesktop.Application.ObjectModel;
 using Google.Solutions.IapDesktop.Extensions.Activity.Events;
 using Google.Solutions.IapDesktop.Extensions.Activity.History;
+using Google.Solutions.IapDesktop.Extensions.Activity.Logs;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
+using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
@@ -16,6 +19,16 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services.Adapters
 {
     public interface IAuditLogStorageSinkAdapter
     {
+        Task<IEnumerable<EventBase>> ListInstanceEventsAsync(
+            string bucket,
+            string objectName,
+            CancellationToken cancellationToken);
+
+        Task<IEnumerable<EventBase>> ListInstanceEventsAsync(
+           string bucket,
+           IEnumerable<string> objectNames,
+           CancellationToken cancellationToken);
+
         Task ProcessInstanceEventsAsync(
             string bucket,
             DateTime startTime,
@@ -65,13 +78,31 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services.Adapters
         // IAuditLogStorageSinkAdapter.
         //---------------------------------------------------------------------
 
-        public Task<IEnumerable<EventBase>> ListInstanceEventsAsync(
+        public async Task<IEnumerable<EventBase>> ListInstanceEventsAsync(
             string bucket,
             string objectName,
             CancellationToken cancellationToken)
         {
-            // TODO
-            throw new NotImplementedException();
+            var events = new List<EventBase>();
+
+            using (var stream = await this.storageAdapter.DownloadObjectToMemoryAsync(
+                    bucket,
+                    objectName,
+                    cancellationToken)
+                .ConfigureAwait(false))
+            using (var reader = new StreamReader(stream, Encoding.UTF8))
+            {
+                // The file contains a sequence of JSON structures, separated
+                // by a newline.
+
+                string line;
+                while (!string.IsNullOrEmpty(line = reader.ReadLine()))
+                {
+                    events.Add(EventFactory.FromRecord(LogRecord.Deserialize(line)));
+                }
+            }
+
+            return events;
         }
 
         public async Task<IEnumerable<EventBase>> ListInstanceEventsAsync(
@@ -79,12 +110,12 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services.Adapters
             IEnumerable<string> objectNames,
             CancellationToken cancellationToken)
         {
-            var events = new List<EventBase>();
+            var events = Enumerable.Empty<EventBase>();
 
             foreach (var objectName in objectNames)
             {
-                events.AddRange(await ListInstanceEventsAsync(
-                        bucket, 
+                events.Concat(await ListInstanceEventsAsync(
+                        bucket,
                         objectName,
                         cancellationToken)
                     .ConfigureAwait(false));
