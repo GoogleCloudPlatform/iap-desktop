@@ -58,7 +58,19 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services.SchedulingRep
             = new RangeObservableCollection<NodePlacement>();
 
         //---------------------------------------------------------------------
-        // "Input" properties.
-        //---------------------------------------------------------------------
+
+        public ImageAnnotation GetImageAnnotation(InstanceHistory instance)
+        {
+            ImageAnnotation annotation;
+            if (instance.Image != null &&
+                this.parent.Model.LicenseAnnotations.TryGetValue(instance.Image.ToString(), out annotation))
+            {
+                return annotation;
+            }
+            else
+            { 
+                return ImageAnnotation.Default;
+            }
+        }
     }
 }

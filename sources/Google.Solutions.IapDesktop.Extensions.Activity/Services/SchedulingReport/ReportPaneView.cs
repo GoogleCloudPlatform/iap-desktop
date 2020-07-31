@@ -175,6 +175,11 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services.SchedulingRep
             this.instancesList.BindColumn(3, n => n.Instance?.Reference?.ProjectId);
             this.instancesList.BindColumn(4, n => n.From.ToString());
             this.instancesList.BindColumn(5, n => n.To.ToString());
+            this.instancesList.BindColumn(6, n => this.viewModel.InstanceReportPane
+                .GetImageAnnotation(n.Instance).OperatingSystem.ToString());
+            this.instancesList.BindColumn(7, n => this.viewModel.InstanceReportPane
+                .GetImageAnnotation(n.Instance).LicenseType.ToString());
+
             this.instancesList.AddCopyCommands();
 
             this.components.Add(this.viewModel.InstanceReportPane.OnPropertyChange(

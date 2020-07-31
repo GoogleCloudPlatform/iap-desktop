@@ -23,6 +23,7 @@ using Google.Solutions.Common.Locator;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 using System;
+using System.ComponentModel;
 
 namespace Google.Solutions.IapDesktop.Extensions.Activity.Services.SchedulingReport
 {
@@ -30,7 +31,11 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services.SchedulingRep
     public enum LicenseTypes
     {
         Unknown = 1,
+
+        [Description("BYOL")]
         Byol = 2,
+
+        [Description("SPLA")]
         Spla = 4
     }
 
