@@ -38,6 +38,8 @@ namespace Google.Solutions.Common.Test.Integration
         public string ImageFamily { get; set; }
         public string InitializeScript { get; set; }
 
+        public bool EnableOsInventory { get; set; } = false;
+
         protected abstract string InstanceNamePrefix { get; }
         protected abstract IEnumerable<Metadata.ItemsData> Metadata { get; }
 
@@ -147,6 +149,15 @@ namespace Google.Solutions.Common.Test.Integration
                         $"guest-attributes/{InstanceRequest.GuestAttributeNamespace}/{key} " +
                         "-Body TRUE"
                 };
+
+                if (this.EnableOsInventory)
+                {
+                    yield return new Metadata.ItemsData()
+                    {
+                        Key = "enable-os-inventory",
+                        Value = "TRUE"
+                    };
+                }
             }
         }
     }
@@ -194,6 +205,15 @@ namespace Google.Solutions.Common.Test.Integration
                         $"guest-attributes/{InstanceRequest.GuestAttributeNamespace}/{key} " +
                         "-H \"Metadata-Flavor: Google\""
                 };
+
+                if (this.EnableOsInventory)
+                {
+                    yield return new Metadata.ItemsData()
+                    {
+                        Key = "enable-os-inventory",
+                        Value = "TRUE"
+                    };
+                }
             }
         }
     }
