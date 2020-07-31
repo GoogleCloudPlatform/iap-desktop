@@ -25,6 +25,7 @@ using Google.Apis.Compute.v1;
 using Google.Apis.Iam.v1;
 using Google.Apis.IAMCredentials.v1;
 using Google.Apis.Services;
+using Google.Apis.Storage.v1;
 using Google.Solutions.Common.Net;
 using System;
 using System.Reflection;
@@ -37,6 +38,7 @@ namespace Google.Solutions.Common.Test.Integration
 
         public static readonly string ProjectId = Environment.GetEnvironmentVariable("GOOGLE_CLOUD_PROJECT");
         public static readonly string Zone = "us-central1-a";
+        public static readonly string TestBucket = TestProject.ProjectId + "-testdata";
 
         public static UserAgent UserAgent { get; }
 
@@ -93,6 +95,30 @@ namespace Google.Solutions.Common.Test.Integration
             {
                 HttpClientInitializer = TestProject.GetAdminCredential()
             });
+        }
+
+        public static StorageService CreateStorageService()
+        {
+            var service = new StorageService(new BaseClientService.Initializer
+            {
+                HttpClientInitializer = TestProject.GetAdminCredential()
+            });
+
+            // Ensure the test bucket exists.
+            try
+            {
+                service.Buckets.Insert(new Apis.Storage.v1.Data.Bucket()
+                {
+                    Name = TestBucket
+                },
+                TestProject.ProjectId).Execute();
+            }
+            catch (GoogleApiException e) when (e.Error != null && e.Error.Code == 409)
+            {
+                // Already exists -> ok.
+            }
+
+            return service;
         }
     }
 }

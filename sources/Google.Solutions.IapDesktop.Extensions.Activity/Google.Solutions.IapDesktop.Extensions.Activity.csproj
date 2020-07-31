@@ -112,6 +112,7 @@
     <Compile Include="Events\System\TerminateOnHostMaintenanceEvent.cs" />
     <Compile Include="Events\UnknownEvent.cs" />
     <Compile Include="Events\VmInstanceEventBase.cs" />
+    <Compile Include="Services\Adapters\AuditLogStorageSinkAdapter.cs" />
     <Compile Include="Services\Adapters\StorageAdapter.cs" />
     <Compile Include="Services\EventLog\EventLogModel.cs" />
     <Compile Include="Services\EventLog\EventLogViewModel.cs" />

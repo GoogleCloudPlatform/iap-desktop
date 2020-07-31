@@ -30,6 +30,7 @@ using Google.Solutions.IapDesktop.Application.ObjectModel;
 using Google.Solutions.IapDesktop.Application.Services.Adapters;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -39,6 +40,11 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services.Adapters
 {
     public interface IStorageAdapter
     {
+        Task<Stream> DownloadObjectToMemoryAsync(
+            string bucket,
+            string objectName,
+            CancellationToken cancellationToken);
+
         Task<IEnumerable<GcsObject>> ListObjectsAsync(
             string bucket,
             CancellationToken cancellationToken);
@@ -91,7 +97,42 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services.Adapters
 
                     return objects;
                 }
-                catch (GoogleApiException e) when (e.Error != null && e.Error.Code == 404)
+                catch (GoogleApiException e) 
+                    when (e.Error != null && (e.Error.Code == 403 || e.Error.Code == 404))
+                {
+                    throw new ResourceAccessDeniedException(
+                        $"Access to storage bucket {bucket} has been denied", e);
+                }
+            }
+        }
+
+        public async Task<Stream> DownloadObjectToMemoryAsync(
+            string bucket,
+            string objectName,
+            CancellationToken cancellationToken)
+        {
+            using (TraceSources.IapDesktop.TraceMethod().WithParameters(bucket, objectName))
+            {
+                try
+                {
+                    var buffer = new MemoryStream();
+                    var result = await this.service.Objects
+                        .Get(bucket, objectName)
+                        .DownloadAsync(buffer)
+                        .ConfigureAwait(false);
+
+                    if (result.Exception != null)
+                    {
+                        throw result.Exception;
+                    }
+
+                    buffer.Seek(0, SeekOrigin.Begin);
+                    return buffer;
+                }
+                catch (GoogleApiException e) 
+                    when ((e.Error != null && (e.Error.Code == 403 || e.Error.Code == 404)) ||
+                          e.Message == "Not Found" ||
+                          e.Message.Contains("storage.objects.get access"))
                 {
                     throw new ResourceAccessDeniedException(
                         $"Access to storage bucket {bucket} has been denied", e);
