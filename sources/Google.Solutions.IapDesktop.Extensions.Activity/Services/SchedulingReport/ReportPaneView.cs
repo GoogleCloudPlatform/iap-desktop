@@ -175,6 +175,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services.SchedulingRep
             this.instancesList.BindColumn(3, n => n.Instance?.Reference?.ProjectId);
             this.instancesList.BindColumn(4, n => n.From.ToString());
             this.instancesList.BindColumn(5, n => n.To.ToString());
+            this.instancesList.AddCopyCommands();
 
             this.components.Add(this.viewModel.InstanceReportPane.OnPropertyChange(
                 v => v.Histogram,
@@ -201,6 +202,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services.SchedulingRep
                 this.viewModel.NodeReportPane,
                 v => v.SelectedNode,
                 this.components);
+            this.nodesList.AddCopyCommands();
 
             this.nodePlacementsList.BindCollection(this.viewModel.NodeReportPane.NodePlacements);
             this.nodePlacementsList.BindColumn(0, n => n.Instance?.InstanceId.ToString());
@@ -209,6 +211,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services.SchedulingRep
             this.nodePlacementsList.BindColumn(3, n => n.Instance?.Reference?.ProjectId);
             this.nodePlacementsList.BindColumn(4, n => n.From.ToString());
             this.nodePlacementsList.BindColumn(5, n => n.To.ToString());
+            this.nodePlacementsList.AddCopyCommands();
 
             this.components.Add(this.viewModel.NodeReportPane.OnPropertyChange(
                 v => v.Histogram,

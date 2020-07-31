@@ -113,6 +113,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services.EventLog
             this.list.BindColumn(4, e => e.PrincipalEmail);
             this.list.BindImageIndex(e => GetImageIndex(e));
             this.list.BindCollection(this.viewModel.Events);
+
+            this.list.AddCopyCommands();
         }
 
         private static int GetImageIndex(EventBase e)
