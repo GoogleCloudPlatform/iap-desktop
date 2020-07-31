@@ -59,6 +59,9 @@
     <Reference Include="Google.Apis.PlatformServices, Version=1.45.0.0, Culture=neutral, PublicKeyToken=4b01fa6e34db77ab, processorArchitecture=MSIL">
       <HintPath>..\packages\Google.Apis.1.45.0\lib\net45\Google.Apis.PlatformServices.dll</HintPath>
     </Reference>
+    <Reference Include="Google.Apis.Storage.v1, Version=1.45.0.1964, Culture=neutral, PublicKeyToken=4b01fa6e34db77ab, processorArchitecture=MSIL">
+      <HintPath>..\packages\Google.Apis.Storage.v1.1.45.0.1964\lib\net45\Google.Apis.Storage.v1.dll</HintPath>
+    </Reference>
     <Reference Include="Moq, Version=4.14.0.0, Culture=neutral, PublicKeyToken=69f491c39445e920, processorArchitecture=MSIL">
       <HintPath>..\packages\Moq.4.14.1\lib\net45\Moq.dll</HintPath>
     </Reference>
@@ -105,11 +108,16 @@
     <Compile Include="Events\System\TestTerminateOnHostMaintenanceEvent.cs" />
     <Compile Include="Events\TestEventFactory.cs" />
     <Compile Include="Events\TestUnknownEvent.cs" />
+    <Compile Include="Services\Adapters\GcsUtil.cs" />
     <Compile Include="Services\Adapters\TestAuditLogAdapter.cs" />
     <Compile Include="Logs\TestListLogEntriesParser.cs" />
     <Compile Include="FixtureBase.cs" />
     <Compile Include="History\TestDataPoint.cs" />
     <Compile Include="History\TestInstanceHistoryBuilder.cs" />
+    <Compile Include="Services\Adapters\TestAuditLogStorageSinkAdapter.cs" />
+    <Compile Include="Services\Adapters\TestDateRange.cs" />
+    <Compile Include="Services\Adapters\TestStorageAdapter.cs" />
+    <Compile Include="Services\Adapters\TestStorageObjectLocator.cs" />
     <Compile Include="Views\EventLog\TestEventLogViewModel.cs" />
     <Compile Include="Services\UsageReport\TestAuditLogReportBuilder.cs" />
     <Compile Include="Services\UsageReport\TestImageAnnotation.cs" />

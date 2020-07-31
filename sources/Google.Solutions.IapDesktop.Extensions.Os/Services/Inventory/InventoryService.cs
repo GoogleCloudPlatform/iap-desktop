@@ -62,7 +62,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Os.Services.Inventory
     [Service(typeof(IInventoryService))]
     public class InventoryService : IInventoryService
     {
-        private const int BatchSize = 10;
         private readonly IComputeEngineAdapter computeEngineAdapter;
 
         public InventoryService(IComputeEngineAdapter computeEngineAdapter)
@@ -81,24 +80,13 @@ namespace Google.Solutions.IapDesktop.Extensions.Os.Services.Inventory
         {
             // There is no way to query guest attributes for multiple instances at one,
             // so we have to do it in a (parallel) loop.
-            var result = new List<GuestOsInfo>();
 
-            foreach (var batch in instanceLocators.Chunk(BatchSize))
-            {
-                // Kick off a batch of tasks in parallel...
-                var tasks = batch
-                    .Select(instanceLocator => GetInstanceInventoryAsync(
+            return await instanceLocators
+                .SelectParallelAsync(
+                    instanceLocator => GetInstanceInventoryAsync(
                         instanceLocator,
-                        token));
-
-                // ... and collect the non-null results.
-                await Task.WhenAll(tasks).ConfigureAwait(false);
-                result.AddRange(tasks
-                    .Select(t => t.Result)
-                    .Where(i => i != null));
-            }
-
-            return result;
+                        token))
+                .ConfigureAwait(false);
         }
 
         //---------------------------------------------------------------------

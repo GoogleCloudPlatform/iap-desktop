@@ -59,6 +59,9 @@
     <Reference Include="Google.Apis.PlatformServices, Version=1.45.0.0, Culture=neutral, PublicKeyToken=4b01fa6e34db77ab, processorArchitecture=MSIL">
       <HintPath>..\packages\Google.Apis.1.45.0\lib\net45\Google.Apis.PlatformServices.dll</HintPath>
     </Reference>
+    <Reference Include="Google.Apis.Storage.v1, Version=1.45.0.1964, Culture=neutral, PublicKeyToken=4b01fa6e34db77ab, processorArchitecture=MSIL">
+      <HintPath>..\packages\Google.Apis.Storage.v1.1.45.0.1964\lib\net45\Google.Apis.Storage.v1.dll</HintPath>
+    </Reference>
     <Reference Include="Newtonsoft.Json, Version=12.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <HintPath>..\packages\Newtonsoft.Json.12.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
@@ -109,6 +112,10 @@
     <Compile Include="Events\System\TerminateOnHostMaintenanceEvent.cs" />
     <Compile Include="Events\UnknownEvent.cs" />
     <Compile Include="Events\VmInstanceEventBase.cs" />
+    <Compile Include="Services\Adapters\AuditLogStorageSinkAdapter.cs" />
+    <Compile Include="Services\Adapters\DateRange.cs" />
+    <Compile Include="Services\Adapters\StorageAdapter.cs" />
+    <Compile Include="Services\Adapters\StorageObjectLocator.cs" />
     <Compile Include="Views\EventLog\EventLogModel.cs" />
     <Compile Include="Views\EventLog\EventLogViewModel.cs" />
     <Compile Include="Views\EventLog\EventLogWindow.cs">
@@ -223,7 +230,8 @@
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>copy /Y $(TargetDir)\$(TargetName).* $(SolutionDir)\Google.Solutions.IapDesktop\$(OutDir)
-copy /Y $(TargetDir)\Google.Apis.Logging.* $(SolutionDir)\Google.Solutions.IapDesktop\$(OutDir)</PostBuildEvent>
+copy /Y $(TargetDir)\Google.Apis.Logging.* $(SolutionDir)\Google.Solutions.IapDesktop\$(OutDir)
+copy /Y $(TargetDir)\Google.Apis.Storage.* $(SolutionDir)\Google.Solutions.IapDesktop\$(OutDir)</PostBuildEvent>
   </PropertyGroup>
   <Import Project="..\packages\MSBuild.AssemblyVersion.1.3.0\build\MSBuild.AssemblyVersion.targets" Condition="Exists('..\packages\MSBuild.AssemblyVersion.1.3.0\build\MSBuild.AssemblyVersion.targets')" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
