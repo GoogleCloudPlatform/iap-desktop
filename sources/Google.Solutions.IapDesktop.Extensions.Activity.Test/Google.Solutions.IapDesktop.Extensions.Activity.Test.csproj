@@ -114,6 +114,7 @@
     <Compile Include="History\TestDataPoint.cs" />
     <Compile Include="History\TestInstanceHistoryBuilder.cs" />
     <Compile Include="Services\Adapters\TestStorageAdapter.cs" />
+    <Compile Include="Services\Adapters\TestStorageObjectLocator.cs" />
     <Compile Include="Services\EventLog\TestEventLogViewModel.cs" />
     <Compile Include="Services\SchedulingReport\TestAuditLogReportBuilder.cs" />
     <Compile Include="Services\SchedulingReport\TestImageAnnotation.cs" />

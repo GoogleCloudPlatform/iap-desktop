@@ -20,13 +20,11 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services.Adapters
     public interface IAuditLogStorageSinkAdapter
     {
         Task<IEnumerable<EventBase>> ListInstanceEventsAsync(
-            string bucket,
-            string objectName,
+            StorageObjectLocator locator,
             CancellationToken cancellationToken);
 
         Task<IEnumerable<EventBase>> ListInstanceEventsAsync(
-           string bucket,
-           IEnumerable<string> objectNames,
+           IEnumerable<StorageObjectLocator> locators,
            CancellationToken cancellationToken);
 
         Task ProcessInstanceEventsAsync(
@@ -79,15 +77,13 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services.Adapters
         //---------------------------------------------------------------------
 
         public async Task<IEnumerable<EventBase>> ListInstanceEventsAsync(
-            string bucket,
-            string objectName,
+            StorageObjectLocator locator,
             CancellationToken cancellationToken)
         {
             var events = new List<EventBase>();
 
             using (var stream = await this.storageAdapter.DownloadObjectToMemoryAsync(
-                    bucket,
-                    objectName,
+                    locator,
                     cancellationToken)
                 .ConfigureAwait(false))
             using (var reader = new StreamReader(stream, Encoding.UTF8))
@@ -106,22 +102,22 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services.Adapters
         }
 
         public async Task<IEnumerable<EventBase>> ListInstanceEventsAsync(
-            string bucket,
-            IEnumerable<string> objectNames,
+            IEnumerable<StorageObjectLocator> locators,
             CancellationToken cancellationToken)
         {
-            var events = Enumerable.Empty<EventBase>();
-
-            foreach (var objectName in objectNames)
+            // Download objects in parallel.
+            // TODO: Chunking
+            var tasks = new List<Task<IEnumerable<EventBase>>>();
+            foreach (var locator in locators)
             {
-                events.Concat(await ListInstanceEventsAsync(
-                        bucket,
-                        objectName,
-                        cancellationToken)
-                    .ConfigureAwait(false));
+                tasks.Add(ListInstanceEventsAsync(
+                    locators,
+                    cancellationToken));
             }
 
-            return events;
+            await Task.WhenAll(tasks.ToArray()).ConfigureAwait(false);
+
+            return tasks.SelectMany(t => t.Result);
         }
 
         public async Task ProcessInstanceEventsAsync(
@@ -187,8 +183,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services.Adapters
                             day, objectsForDay.Count());
 
                         var eventsForDay = await ListInstanceEventsAsync(
-                                bucket,
-                                objectsForDay.Select(o => o.Name),
+                                objectsForDay.Select(o => new StorageObjectLocator(bucket, o.Name)),
                                 cancellationToken)
                             .ConfigureAwait(false);
 

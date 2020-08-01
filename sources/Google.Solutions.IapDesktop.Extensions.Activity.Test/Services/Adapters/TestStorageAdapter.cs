@@ -35,7 +35,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.Services.Adapters
     [Category("IntegrationTest")]
     public class TestStorageAdapter : FixtureBase
     {
-        private static readonly string SampleObjectName = typeof(TestStorageAdapter).Name + ".dat";
+        private static readonly StorageObjectLocator SampleLocator = new StorageObjectLocator(
+            TestProject.TestBucket, 
+            typeof(TestStorageAdapter).Name + ".dat");
         private static readonly string SampleData = "test data";
 
         [SetUp]
@@ -47,9 +49,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.Services.Adapters
                 service.Objects.Insert(
                     new Apis.Storage.v1.Data.Object()
                     {
-                        Name = SampleObjectName
+                        Name = SampleLocator.ObjectName
                     },
-                    TestProject.TestBucket,
+                    SampleLocator.Bucket,
                     CreateTextStream(SampleData),
                     "application/octet-stream").Upload();
             }
@@ -98,7 +100,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.Services.Adapters
 
             var objectNames = objects.Select(o => o.Name).ToList();
 
-            CollectionAssert.Contains(objectNames, SampleObjectName);
+            CollectionAssert.Contains(objectNames, SampleLocator.ObjectName);
         }
 
         //---------------------------------------------------------------------
@@ -113,8 +115,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.Services.Adapters
 
             AssertEx.ThrowsAggregateException<ResourceAccessDeniedException>(
                 () => adapter.DownloadObjectToMemoryAsync(
-                    TestProject.TestBucket,
-                    SampleObjectName,
+                    SampleLocator,
                     CancellationToken.None).Wait());
         }
 
@@ -125,8 +126,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.Services.Adapters
             var adapter = new StorageAdapter(await credential.GetCredentialAsync());
 
             var stream = await adapter.DownloadObjectToMemoryAsync(
-                TestProject.TestBucket,
-                SampleObjectName,
+                SampleLocator,
                 CancellationToken.None);
 
             Assert.AreEqual(

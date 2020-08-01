@@ -114,6 +114,7 @@
     <Compile Include="Events\VmInstanceEventBase.cs" />
     <Compile Include="Services\Adapters\AuditLogStorageSinkAdapter.cs" />
     <Compile Include="Services\Adapters\StorageAdapter.cs" />
+    <Compile Include="Services\Adapters\StorageObjectLocator.cs" />
     <Compile Include="Services\EventLog\EventLogModel.cs" />
     <Compile Include="Services\EventLog\EventLogViewModel.cs" />
     <Compile Include="Services\EventLog\EventLogWindow.cs">

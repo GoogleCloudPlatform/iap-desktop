@@ -41,8 +41,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services.Adapters
     public interface IStorageAdapter
     {
         Task<Stream> DownloadObjectToMemoryAsync(
-            string bucket,
-            string objectName,
+            StorageObjectLocator locator,
             CancellationToken cancellationToken);
 
         Task<IEnumerable<GcsObject>> ListObjectsAsync(
@@ -107,17 +106,16 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services.Adapters
         }
 
         public async Task<Stream> DownloadObjectToMemoryAsync(
-            string bucket,
-            string objectName,
+            StorageObjectLocator locator,
             CancellationToken cancellationToken)
         {
-            using (TraceSources.IapDesktop.TraceMethod().WithParameters(bucket, objectName))
+            using (TraceSources.IapDesktop.TraceMethod().WithParameters(locator))
             {
                 try
                 {
                     var buffer = new MemoryStream();
                     var result = await this.service.Objects
-                        .Get(bucket, objectName)
+                        .Get(locator.Bucket, locator.ObjectName)
                         .DownloadAsync(buffer)
                         .ConfigureAwait(false);
 
@@ -135,7 +133,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services.Adapters
                           e.Message.Contains("storage.objects.get access"))
                 {
                     throw new ResourceAccessDeniedException(
-                        $"Access to storage bucket {bucket} has been denied", e);
+                        $"Access to storage bucket {locator.Bucket} has been denied", e);
                 }
             }
         }
