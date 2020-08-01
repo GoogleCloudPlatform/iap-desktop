@@ -113,7 +113,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Os.Test.Services.Inventory
                 TestProject.ProjectId, CancellationToken.None);
 
             Assert.IsNotNull(info);
-            Assert.Greater(info.Count(), 1);
+            Assert.GreaterOrEqual(info.Count(), 1);
         }
 
         [Test]
@@ -154,7 +154,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Os.Test.Services.Inventory
                 CancellationToken.None);
 
             Assert.IsNotNull(info);
-            Assert.Greater(info.Count(), 1);
+            Assert.GreaterOrEqual(info.Count(), 1);
         }
 
         [Test]
