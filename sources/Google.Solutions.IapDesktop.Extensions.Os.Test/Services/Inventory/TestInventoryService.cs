@@ -35,10 +35,14 @@ namespace Google.Solutions.IapDesktop.Extensions.Os.Test.Services.Inventory
     [Category("IntegrationTest")]
     public class TestInventoryService : FixtureBase
     {
-        // Force publishing of OS inventory data.
-        private const string PublishInventoryScript = @"
-            & $Env:ProgramFiles\Google\OSConfig\google_osconfig_agent.exe osinventory -debug -stdout | Out-Default
-        ";
+        // Publish dummy OS inventory data. The real data is published asynchronously,
+        // so it's difficult to rely on it in integration tests.
+        private const string PublishInventoryScript = @"Invoke-RestMethod " +
+                        "-Headers @{\"Metadata-Flavor\"=\"Google\"} " +
+                        "-Method PUT " +
+                        "-Uri http://metadata.google.internal/computeMetadata/v1/instance/" +
+                        "guest-attributes/guestInventory/Version " +
+                        "-Body 99";
 
         //---------------------------------------------------------------------
         // GetInstanceInventoryAsync
@@ -61,8 +65,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Os.Test.Services.Inventory
         [Test]
         public async Task WhenInstanceHasInventoryData_ThenGetInstanceInventoryAsyncSucceeds(
             [WindowsInstance(
-                InitializeScript = PublishInventoryScript,
-                EnableOsInventory = true)] InstanceRequest testInstance,
+                InitializeScript = PublishInventoryScript)] InstanceRequest testInstance,
             [Credential(Role = PredefinedRole.ComputeViewer)] CredentialRequest credential)
         {
             var instanceRef = await testInstance.GetInstanceAsync();
@@ -79,8 +82,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Os.Test.Services.Inventory
         [Test]
         public async Task WhenUserNotInRole_ThenGetInstanceInventoryAsyncThrowsResourceAccessDeniedException(
             [WindowsInstance(
-                InitializeScript = PublishInventoryScript,
-                EnableOsInventory = true)] InstanceRequest testInstance,
+                InitializeScript = PublishInventoryScript)] InstanceRequest testInstance,
             [Credential(Role = PredefinedRole.IapTunnelUser)] CredentialRequest credential)
         {
             var instanceRef = await testInstance.GetInstanceAsync();
@@ -100,8 +102,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Os.Test.Services.Inventory
         [Test]
         public async Task WhenAtLeastOneInstanceHasInventoryData_ThenListProjectInventoryAsyncSucceeds(
             [WindowsInstance(
-                InitializeScript = PublishInventoryScript,
-                EnableOsInventory = true)] InstanceRequest testInstance,
+                InitializeScript = PublishInventoryScript)] InstanceRequest testInstance,
             [Credential(Role = PredefinedRole.ComputeViewer)] CredentialRequest credential)
         {
             // Make sure there is at least one instance.
@@ -119,8 +120,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Os.Test.Services.Inventory
         [Test]
         public async Task WhenUserNotInRole_ThenListProjectInventoryAsyncThrowsResourceAccessDeniedException(
             [WindowsInstance(
-                InitializeScript = PublishInventoryScript,
-                EnableOsInventory = true)] InstanceRequest testInstance,
+                InitializeScript = PublishInventoryScript)] InstanceRequest testInstance,
             [Credential(Role = PredefinedRole.IapTunnelUser)] CredentialRequest credential)
         {
             var instanceRef = await testInstance.GetInstanceAsync();
@@ -140,8 +140,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Os.Test.Services.Inventory
         [Test]
         public async Task WhenAtLeastOneInstanceHasInventoryData_ThenListZoneInventoryAsyncSucceeds(
             [WindowsInstance(
-                InitializeScript = PublishInventoryScript,
-                EnableOsInventory = true)] InstanceRequest testInstance,
+                InitializeScript = PublishInventoryScript)] InstanceRequest testInstance,
             [Credential(Role = PredefinedRole.ComputeViewer)] CredentialRequest credential)
         {
             // Make sure there is at least one instance.
@@ -160,8 +159,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Os.Test.Services.Inventory
         [Test]
         public async Task WhenUserNotInRole_ThenListZoneInventoryAsyncThrowsResourceAccessDeniedException(
             [WindowsInstance(
-                InitializeScript = PublishInventoryScript,
-                EnableOsInventory = true)] InstanceRequest testInstance,
+                InitializeScript = PublishInventoryScript)] InstanceRequest testInstance,
             [Credential(Role = PredefinedRole.IapTunnelUser)] CredentialRequest credential)
         {
             var instanceRef = await testInstance.GetInstanceAsync();
