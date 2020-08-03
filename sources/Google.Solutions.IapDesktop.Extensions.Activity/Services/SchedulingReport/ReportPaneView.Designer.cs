@@ -79,6 +79,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services.SchedulingRep
             this.instanceProjectIdColumnHeader = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.placedFromColumnHeader = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.placedUntilColumnHeader = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.osColumnHeader = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.licenseColumnHeader = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.instancesHeader = new System.Windows.Forms.Label();
             this.instancesChart = new System.Windows.Forms.DataVisualization.Charting.Chart();
             this.nodesTab = new System.Windows.Forms.TabPage();
@@ -149,14 +151,14 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services.SchedulingRep
             // includeSoleTenantInstancesMenuItem
             // 
             this.includeSoleTenantInstancesMenuItem.Name = "includeSoleTenantInstancesMenuItem";
-            this.includeSoleTenantInstancesMenuItem.Size = new System.Drawing.Size(208, 22);
+            this.includeSoleTenantInstancesMenuItem.Size = new System.Drawing.Size(147, 22);
             this.includeSoleTenantInstancesMenuItem.Text = "Sole tenant";
             this.includeSoleTenantInstancesMenuItem.Click += new System.EventHandler(this.menuItemToggle_Click);
             // 
             // includeFleetInstancesMenuItem
             // 
             this.includeFleetInstancesMenuItem.Name = "includeFleetInstancesMenuItem";
-            this.includeFleetInstancesMenuItem.Size = new System.Drawing.Size(208, 22);
+            this.includeFleetInstancesMenuItem.Size = new System.Drawing.Size(147, 22);
             this.includeFleetInstancesMenuItem.Text = "Shared tenant";
             this.includeFleetInstancesMenuItem.Click += new System.EventHandler(this.menuItemToggle_Click);
             // 
@@ -208,21 +210,21 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services.SchedulingRep
             // includeByolMenuItem
             // 
             this.includeByolMenuItem.Name = "includeByolMenuItem";
-            this.includeByolMenuItem.Size = new System.Drawing.Size(199, 22);
-            this.includeByolMenuItem.Text = "Bring-your-own (BYOL)";
+            this.includeByolMenuItem.Size = new System.Drawing.Size(195, 22);
+            this.includeByolMenuItem.Text = "Bring your own (BYOL)";
             this.includeByolMenuItem.Click += new System.EventHandler(this.menuItemToggle_Click);
             // 
             // includeSplaMenuItem
             // 
             this.includeSplaMenuItem.Name = "includeSplaMenuItem";
-            this.includeSplaMenuItem.Size = new System.Drawing.Size(199, 22);
-            this.includeSplaMenuItem.Text = "Pay-as-you-go (SPLA)";
+            this.includeSplaMenuItem.Size = new System.Drawing.Size(195, 22);
+            this.includeSplaMenuItem.Text = "Pay as you go (SPLA)";
             this.includeSplaMenuItem.Click += new System.EventHandler(this.menuItemToggle_Click);
             // 
             // includeUnknownLicenseMenuItem
             // 
             this.includeUnknownLicenseMenuItem.Name = "includeUnknownLicenseMenuItem";
-            this.includeUnknownLicenseMenuItem.Size = new System.Drawing.Size(199, 22);
+            this.includeUnknownLicenseMenuItem.Size = new System.Drawing.Size(195, 22);
             this.includeUnknownLicenseMenuItem.Text = "Unknown license";
             this.includeUnknownLicenseMenuItem.Click += new System.EventHandler(this.menuItemToggle_Click);
             // 
@@ -280,7 +282,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services.SchedulingRep
             this.instanceZoneColumnHeader,
             this.instanceProjectIdColumnHeader,
             this.placedFromColumnHeader,
-            this.placedUntilColumnHeader});
+            this.placedUntilColumnHeader,
+            this.osColumnHeader,
+            this.licenseColumnHeader});
             this.instancesList.FullRowSelect = true;
             this.instancesList.HideSelection = false;
             this.instancesList.Location = new System.Drawing.Point(6, 336);
@@ -320,7 +324,16 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services.SchedulingRep
             // placedUntilColumnHeader
             // 
             this.placedUntilColumnHeader.Text = "To (UTC)";
-            this.placedUntilColumnHeader.Width = 54;
+            this.placedUntilColumnHeader.Width = 130;
+            // 
+            // osColumnHeader
+            // 
+            this.osColumnHeader.Text = "OS";
+            // 
+            // licenseColumnHeader
+            // 
+            this.licenseColumnHeader.Text = "License";
+            this.licenseColumnHeader.Width = 25;
             // 
             // instancesHeader
             // 
@@ -372,7 +385,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services.SchedulingRep
             this.nodesTab.Location = new System.Drawing.Point(140, 4);
             this.nodesTab.Name = "nodesTab";
             this.nodesTab.Padding = new System.Windows.Forms.Padding(3);
-            this.nodesTab.Size = new System.Drawing.Size(879, 941);
+            this.nodesTab.Size = new System.Drawing.Size(656, 767);
             this.nodesTab.TabIndex = 1;
             this.nodesTab.Text = "Sole-tenant nodes";
             this.nodesTab.UseVisualStyleBackColor = true;
@@ -658,17 +671,17 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services.SchedulingRep
             this.byolHeadline.TabIndex = 2;
             this.byolHeadline.Text = "Scheduled Windows BYOL cores";
             // 
-            // ReportView
+            // ReportPaneView
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.AutoScroll = true;
             this.AutoScrollMinSize = new System.Drawing.Size(800, 800);
-            this.ClientSize = new System.Drawing.Size(309, 283);
+            this.ClientSize = new System.Drawing.Size(326, 300);
             this.Controls.Add(this.tabs);
             this.Controls.Add(this.toolStrip);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
-            this.Name = "ReportView";
+            this.Name = "ReportPaneView";
             this.Text = "ReportView";
             this.toolStrip.ResumeLayout(false);
             this.toolStrip.PerformLayout();
@@ -747,5 +760,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services.SchedulingRep
         private System.Windows.Forms.DataVisualization.Charting.Chart licenseChart;
         private System.Windows.Forms.Label nodeTypeInfoLabel;
         private System.Windows.Forms.PictureBox infoIcon;
+        private System.Windows.Forms.ColumnHeader osColumnHeader;
+        private System.Windows.Forms.ColumnHeader licenseColumnHeader;
     }
 }
