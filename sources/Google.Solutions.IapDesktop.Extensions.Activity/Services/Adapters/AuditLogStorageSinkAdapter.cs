@@ -121,7 +121,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services.Adapters
         }
 
         public async Task ProcessInstanceEventsAsync(
-            string bucket,
+            string bucket,  // TODO: Multiple buckets
             DateTime startTime,
             IEventProcessor processor,
             CancellationToken cancellationToken)
@@ -136,14 +136,15 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services.Adapters
             using (TraceSources.IapDesktop.TraceMethod().WithParameters(bucket, startTime))
             {
                 //
-                // The bucket containing exported audit logs has the following structure:
+                // The object names for audit logs follow this convention:
                 // - cloudaudit.googleapis.com/activity/yyyy/mm/dd/hh:00:00_hh:MM:ss_S0.json
                 // - cloudaudit.googleapis.com/system_event/yyyy/mm/dd/hh:00:00_hh:MM:ss_S0.json
                 //
                 // Note that there might be other, unrelated objects in the same bucket.
                 // Because somebody might have copied the objects from one bucket to another,
                 // it's best not to rely on the creation timestamp to determine which day
-                // the exported events relate to.
+                // the exported events relate to and instead extract that information from
+                // the object name.
                 //  
                 var allObjects = await this.storageAdapter
                     .ListObjectsAsync(bucket, cancellationToken)
