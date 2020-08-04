@@ -76,7 +76,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Os.Test.Services.Inventory
 
             Assert.IsNotNull(info);
             Assert.AreEqual(instanceRef, info.Instance);
-            Assert.IsNotNull(info.KernelVersion);
+            Assert.IsNotNull(info.OperatingSystemVersion);
         }
 
         [Test]
