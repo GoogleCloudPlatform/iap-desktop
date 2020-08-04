@@ -1,4 +1,5 @@
-﻿using Google.Solutions.Common.Diagnostics;
+﻿using Google.Apis.Storage.v1.Data;
+using Google.Solutions.Common.Diagnostics;
 using Google.Solutions.IapDesktop.Application;
 using Google.Solutions.IapDesktop.Application.ObjectModel;
 using Google.Solutions.IapDesktop.Extensions.Activity.Events;
@@ -28,7 +29,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services.Adapters
            CancellationToken cancellationToken);
 
         Task ProcessInstanceEventsAsync(
-            string bucket,
+            IEnumerable<string> buckets,
             DateTime startTime,
             IEventProcessor processor,
             CancellationToken cancellationToken);
@@ -72,6 +73,23 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services.Adapters
             }
         }
 
+        private static async Task<IEnumerable<TOutput>> MapAndFoldAsync<TInput, TOutput>(
+            IEnumerable<TInput> inputItems,
+            Func<TInput, Task<IEnumerable<TOutput>>> mapFunc)
+        {
+            var tasks = new List<Task<IEnumerable<TOutput>>>();
+
+            // TODO: Chunking
+            foreach (var item in inputItems)
+            {
+                tasks.Add(mapFunc(item));
+            }
+
+            await Task.WhenAll(tasks.ToArray()).ConfigureAwait(false);
+
+            return tasks.SelectMany(t => t.Result);
+        }
+
         //---------------------------------------------------------------------
         // IAuditLogStorageSinkAdapter.
         //---------------------------------------------------------------------
@@ -105,23 +123,16 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services.Adapters
             IEnumerable<StorageObjectLocator> locators,
             CancellationToken cancellationToken)
         {
-            // Download objects in parallel.
-            // TODO: Chunking
-            var tasks = new List<Task<IEnumerable<EventBase>>>();
-            foreach (var locator in locators)
-            {
-                tasks.Add(ListInstanceEventsAsync(
-                    locators,
-                    cancellationToken));
-            }
-
-            await Task.WhenAll(tasks.ToArray()).ConfigureAwait(false);
-
-            return tasks.SelectMany(t => t.Result);
+            return await MapAndFoldAsync(
+                locators,
+                locator => ListInstanceEventsAsync(
+                    locator,
+                    cancellationToken))
+                .ConfigureAwait(false);
         }
 
         public async Task ProcessInstanceEventsAsync(
-            string bucket,  // TODO: Multiple buckets
+            IEnumerable<string> buckets,
             DateTime startTime,
             IEventProcessor processor,
             CancellationToken cancellationToken)
@@ -133,7 +144,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services.Adapters
                 return;
             }
 
-            using (TraceSources.IapDesktop.TraceMethod().WithParameters(bucket, startTime))
+            using (TraceSources.IapDesktop.TraceMethod().WithParameters(
+                string.Join(", ", buckets), 
+                startTime))
             {
                 //
                 // The object names for audit logs follow this convention:
@@ -146,29 +159,36 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services.Adapters
                 // the exported events relate to and instead extract that information from
                 // the object name.
                 //  
-                var allObjects = await this.storageAdapter
-                    .ListObjectsAsync(bucket, cancellationToken)
+
+                var allObjects = await MapAndFoldAsync(
+                        buckets,
+                        bucket => this.storageAdapter.ListObjectsAsync(bucket, cancellationToken))
                     .ConfigureAwait(false);
+
+                TraceSources.IapDesktop.TraceVerbose(
+                    "Found {0} objects across {1} buckets", 
+                    allObjects.Count(),
+                    buckets.Count());
 
                 var objectsByDay = allObjects
                     .Where(o => o.Name.StartsWith(ActivityPrefix) || o.Name.StartsWith(SystemEventPrefix))
                     .Select(o => new
                     {
-                        Object = o,
+                        Locator = new StorageObjectLocator(o.Bucket, o.Name),
                         Date = DateFromObjectName(o.Name)
                     })
                     .Where(rec => rec.Date != null)
                     .GroupBy(rec => rec.Date)
                     .ToDictionary(
                         group => group.Key,
-                        group => group.Select(g => g.Object));
+                        group => group.Select(g => g.Locator));
 
                 // Start today and go backwards.
                 for (var day = DateTime.UtcNow.Date;
                      day >= startTime.Date;
                      day = day.AddDays(-1))
                 {
-                    TraceSources.IapDesktop.TraceWarning("Processing {0}", day);
+                    TraceSources.IapDesktop.TraceVerbose("Processing {0}", day);
 
                     //
                     // Grab the objects for this day (typically 2, one activity and one system event).
@@ -177,14 +197,13 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services.Adapters
                     // sort it before processing each event.
                     //
 
-                    if (objectsByDay.TryGetValue(day, out IEnumerable<GcsObject> objectsForDay))
+                    if (objectsByDay.TryGetValue(day, out IEnumerable<StorageObjectLocator> objectsForDay))
                     {
                         TraceSources.IapDesktop.TraceVerbose(
-                            "Found {1} export objects for {0}", 
-                            day, objectsForDay.Count());
+                            "Processing {1} export objects for {0}", day, objectsForDay.Count());
 
                         var eventsForDay = await ListInstanceEventsAsync(
-                                objectsForDay.Select(o => new StorageObjectLocator(bucket, o.Name)),
+                                objectsForDay,
                                 cancellationToken)
                             .ConfigureAwait(false);
 
