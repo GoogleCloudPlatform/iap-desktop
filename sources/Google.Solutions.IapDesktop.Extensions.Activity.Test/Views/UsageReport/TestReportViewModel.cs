@@ -21,10 +21,11 @@
 
 using Google.Solutions.IapDesktop.Extensions.Activity.History;
 using Google.Solutions.IapDesktop.Extensions.Activity.Services.UsageReport;
+using Google.Solutions.IapDesktop.Extensions.Activity.Views.UsageReport;
 using NUnit.Framework;
 using System;
 
-namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.Services.UsageReport
+namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.Views.UsageReport
 {
     [TestFixture]
     public class TestReportViewModel : FixtureBase

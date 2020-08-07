@@ -24,6 +24,7 @@ using Google.Solutions.IapDesktop.Application.Controls;
 using Google.Solutions.IapDesktop.Application.ObjectModel;
 using Google.Solutions.IapDesktop.Application.Services.Windows;
 using Google.Solutions.IapDesktop.Extensions.Activity.History;
+using Google.Solutions.IapDesktop.Extensions.Activity.Services.UsageReport;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -34,7 +35,7 @@ using System.Windows.Forms;
 using System.Windows.Forms.DataVisualization.Charting;
 using DataPoint = Google.Solutions.IapDesktop.Extensions.Activity.History.DataPoint;
 
-namespace Google.Solutions.IapDesktop.Extensions.Activity.Services.UsageReport
+namespace Google.Solutions.IapDesktop.Extensions.Activity.Views.UsageReport
 {
     [SkipCodeCoverage("All logic in view model")]
     public partial class ReportPaneView : SlowLoadingPane

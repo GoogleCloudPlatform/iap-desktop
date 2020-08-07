@@ -19,7 +19,7 @@
 // under the License.
 //
 
-namespace Google.Solutions.IapDesktop.Extensions.Activity.Services.UsageReport
+namespace Google.Solutions.IapDesktop.Extensions.Activity.Views.UsageReport
 {
     partial class CreateReportDialog
     {

@@ -21,12 +21,13 @@
 
 using Google.Solutions.IapDesktop.Application.ObjectModel;
 using Google.Solutions.IapDesktop.Extensions.Activity.History;
+using Google.Solutions.IapDesktop.Extensions.Activity.Services.UsageReport;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Runtime.CompilerServices;
 
-namespace Google.Solutions.IapDesktop.Extensions.Activity.Services.UsageReport
+namespace Google.Solutions.IapDesktop.Extensions.Activity.Views.UsageReport
 {
     internal class ReportViewModel : ViewModelBase
     {

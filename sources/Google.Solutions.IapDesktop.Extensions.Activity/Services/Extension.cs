@@ -32,6 +32,7 @@ using Google.Solutions.IapDesktop.Extensions.Activity.Services.SerialOutput;
 using System;
 using System.Linq;
 using System.Windows.Forms;
+using Google.Solutions.IapDesktop.Extensions.Activity.Views.UsageReport;
 
 namespace Google.Solutions.IapDesktop.Extensions.Activity.Services
 {
