@@ -31,7 +31,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Google.Solutions.IapDesktop.Extensions.Os.Services.InstanceDetails
+namespace Google.Solutions.IapDesktop.Extensions.Os.Views.InstanceDetails
 {
     internal class InstanceDetailsModel
     {

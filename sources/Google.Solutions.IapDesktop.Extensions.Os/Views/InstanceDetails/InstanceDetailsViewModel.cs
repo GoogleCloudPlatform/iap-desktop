@@ -34,7 +34,7 @@ using System.Diagnostics;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Google.Solutions.IapDesktop.Extensions.Os.Services.InstanceDetails
+namespace Google.Solutions.IapDesktop.Extensions.Os.Views.InstanceDetails
 {
     internal class InstanceDetailsViewModel
         : ModelCachingViewModelBase<IProjectExplorerNode, InstanceDetailsModel>, IPropertiesViewModel

@@ -22,13 +22,13 @@
 using Google.Solutions.Common.Test;
 using Google.Solutions.Common.Test.Integration;
 using Google.Solutions.IapDesktop.Application.Services.Adapters;
-using Google.Solutions.IapDesktop.Extensions.Os.Services.InstanceDetails;
 using Google.Solutions.IapDesktop.Extensions.Os.Services.Inventory;
+using Google.Solutions.IapDesktop.Extensions.Os.Views.InstanceDetails;
 using NUnit.Framework;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Google.Solutions.IapDesktop.Extensions.Os.Test.Services.InstanceDetails
+namespace Google.Solutions.IapDesktop.Extensions.Os.Test.Views.InstanceDetails
 {
     [TestFixture]
     [Category("IntegrationTest")]

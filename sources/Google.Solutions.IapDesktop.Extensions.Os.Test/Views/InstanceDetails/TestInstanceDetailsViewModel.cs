@@ -25,15 +25,15 @@ using Google.Solutions.IapDesktop.Application.ObjectModel;
 using Google.Solutions.IapDesktop.Application.Services.Adapters;
 using Google.Solutions.IapDesktop.Application.Services.Integration;
 using Google.Solutions.IapDesktop.Application.Services.Windows.ProjectExplorer;
-using Google.Solutions.IapDesktop.Extensions.Os.Services.InstanceDetails;
 using Google.Solutions.IapDesktop.Extensions.Os.Services.Inventory;
+using Google.Solutions.IapDesktop.Extensions.Os.Views.InstanceDetails;
 using Moq;
 using NUnit.Framework;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Google.Solutions.IapDesktop.Extensions.Os.Test.Services.InstanceDetails
+namespace Google.Solutions.IapDesktop.Extensions.Os.Test.Views.InstanceDetails
 {
     [TestFixture]
     public class TestInstanceDetailsViewModel : FixtureBase

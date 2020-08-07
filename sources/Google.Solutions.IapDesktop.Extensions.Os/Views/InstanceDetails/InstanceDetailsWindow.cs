@@ -24,7 +24,7 @@ using Google.Solutions.IapDesktop.Application.ObjectModel;
 using Google.Solutions.IapDesktop.Application.Services.Windows.Properties;
 using System;
 
-namespace Google.Solutions.IapDesktop.Extensions.Os.Services.InstanceDetails
+namespace Google.Solutions.IapDesktop.Extensions.Os.Views.InstanceDetails
 {
     [Service(ServiceLifetime.Singleton)]
     [SkipCodeCoverage("All logic in view model")]
