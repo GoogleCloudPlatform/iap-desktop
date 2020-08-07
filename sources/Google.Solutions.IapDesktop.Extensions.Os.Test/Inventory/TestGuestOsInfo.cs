@@ -20,6 +20,7 @@
 //
 
 using Google.Apis.Compute.v1.Data;
+using Google.Solutions.Common.Locator;
 using Google.Solutions.Common.Test;
 using Google.Solutions.IapDesktop.Extensions.Os.Inventory;
 using NUnit.Framework;
@@ -31,6 +32,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Os.Test.Inventory
     [TestFixture]
     public class TestGuestOsInfo : FixtureBase
     {
+        private static readonly InstanceLocator SampleLocator =
+            new InstanceLocator("project-1", "zone-1", "instance-1");
+
         private static readonly List<GuestAttributesEntry> SampleAttributes =
             new List<GuestAttributesEntry>()
             {
@@ -133,6 +137,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Os.Test.Inventory
         public void WhenGuestAttributesEmpty_ThenFromGuestAttributesReturnsDefaults()
         {
             var attributes = GuestOsInfo.FromGuestAttributes(
+                SampleLocator,
                 new List<GuestAttributesEntry>());
 
             Assert.IsNotNull(attributes);
@@ -149,7 +154,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Os.Test.Inventory
         [Test]
         public void WhenGuestAttributesPopulated_ThenOsInfoAttributesAreSet()
         {
-            var attributes = GuestOsInfo.FromGuestAttributes(SampleAttributes);
+            var attributes = GuestOsInfo.FromGuestAttributes(SampleLocator, SampleAttributes);
 
             Assert.IsNotNull(attributes);
             Assert.AreEqual("x86_64", attributes.Architecture);
@@ -167,7 +172,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Os.Test.Inventory
         [Test]
         public void WhenGuestAttributesContainInstalledPackages_ThenInstalledPackagesAttributeIsSet()
         {
-            var attributes = GuestOsInfo.FromGuestAttributes(SampleAttributes);
+            var attributes = GuestOsInfo.FromGuestAttributes(SampleLocator, SampleAttributes);
 
             Assert.IsNotNull(attributes);
             Assert.IsNotNull(attributes.InstalledPackages);
@@ -214,7 +219,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Os.Test.Inventory
         [Test]
         public void WhenGuestAttributesContainInstalledPackages_ThenAvailablePackagesAttributeIsSet()
         {
-            var attributes = GuestOsInfo.FromGuestAttributes(SampleAttributes);
+            var attributes = GuestOsInfo.FromGuestAttributes(SampleLocator, SampleAttributes);
 
             Assert.IsNotNull(attributes);
             Assert.IsNotNull(attributes.AvailablePackages);

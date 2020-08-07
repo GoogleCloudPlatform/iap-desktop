@@ -24,6 +24,7 @@ using Google.Solutions.Common.Locator;
 using Google.Solutions.Common.Util;
 using Google.Solutions.IapDesktop.Application.Services.Adapters;
 using Google.Solutions.IapDesktop.Extensions.Os.Inventory;
+using Google.Solutions.IapDesktop.Extensions.Os.Services.Inventory;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
@@ -163,28 +164,25 @@ namespace Google.Solutions.IapDesktop.Extensions.Os.Services.InstanceDetails
 
         public async static Task<InstanceDetailsModel> LoadAsync(
             InstanceLocator instanceLocator,
-            IComputeEngineAdapter adapter,
+            IComputeEngineAdapter computeEngineAdapter,
+            IInventoryService inventoryService,
             CancellationToken token)
         {
-            var instance = await adapter
+            var instance = await computeEngineAdapter
                 .GetInstanceAsync(
                     instanceLocator,
                     token)
                 .ConfigureAwait(false);
 
-            var guestAttributes = await adapter
-                .GetGuestAttributesAsync(
+
+            var osInfo = await inventoryService.GetInstanceInventoryAsync(
                     instanceLocator,
-                    GuestOsInfo.GuestAttributePath,
                     token)
                 .ConfigureAwait(false);
-            var guestAttributesList = guestAttributes?.QueryValue?.Items;
 
             return new InstanceDetailsModel(
                 instance,
-                guestAttributesList != null
-                    ? GuestOsInfo.FromGuestAttributes(guestAttributesList)
-                    : null);
+                osInfo);
         }
     }
 }

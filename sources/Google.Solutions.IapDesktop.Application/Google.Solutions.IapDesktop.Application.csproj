@@ -99,6 +99,7 @@
     <Compile Include="Services\Adapters\AdapterException.cs" />
     <Compile Include="Services\Adapters\ComputeEngineAdapter.cs" />
     <Compile Include="Services\Adapters\GithubAdapter.cs" />
+    <Compile Include="Services\Adapters\InstanceExtensions.cs" />
     <Compile Include="Services\Adapters\Permissions.cs" />
     <Compile Include="Services\Adapters\ResourceManagerAdapter.cs" />
     <Compile Include="Global.cs" />

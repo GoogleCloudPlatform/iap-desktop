@@ -100,6 +100,7 @@
     <Compile Include="FixtureBase.cs" />
     <Compile Include="Integration\CredentialRequest.cs" />
     <Compile Include="Integration\PredefinedRole.cs" />
+    <Compile Include="Locator\TestZoneLocator.cs" />
     <Compile Include="Locator\TestLicenseLocator.cs" />
     <Compile Include="Locator\TestInstanceLocator.cs" />
     <Compile Include="Locator\TestMachineTypeLocator.cs" />

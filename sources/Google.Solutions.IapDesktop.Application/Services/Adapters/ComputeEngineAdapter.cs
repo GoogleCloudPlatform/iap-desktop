@@ -54,6 +54,10 @@ namespace Google.Solutions.IapDesktop.Application.Services.Adapters
             string projectId,
             CancellationToken cancellationToken);
 
+        Task<IEnumerable<Instance>> ListInstancesAsync(
+            ZoneLocator zoneLocator,
+            CancellationToken cancellationToken);
+
         Task<IEnumerable<Disk>> ListDisksAsync(
             string projectId,
             CancellationToken cancellationToken);
@@ -146,6 +150,39 @@ namespace Google.Solutions.IapDesktop.Application.Services.Adapters
                 {
                     throw new ResourceAccessDeniedException(
                         $"Access to VM instances in project {projectId} has been denied", e);
+                }
+            }
+        }
+
+        public async Task<IEnumerable<Instance>> ListInstancesAsync(
+            ZoneLocator zoneLocator,
+            CancellationToken cancellationToken)
+        {
+            using (TraceSources.IapDesktop.TraceMethod().WithParameters(zoneLocator))
+            {
+                try
+                {
+                    var result = await new PageStreamer<
+                        Instance,
+                        InstancesResource.ListRequest,
+                        InstanceList,
+                        string>(
+                            (req, token) => req.PageToken = token,
+                            response => response.NextPageToken,
+                            response => response.Items)
+                        .FetchAllAsync(
+                            this.service.Instances.List(zoneLocator.ProjectId, zoneLocator.Name),
+                            cancellationToken)
+                        .ConfigureAwait(false);
+
+                    TraceSources.IapDesktop.TraceVerbose("Found {0} instances", result.Count());
+
+                    return result;
+                }
+                catch (GoogleApiException e) when (e.Error != null && e.Error.Code == 403)
+                {
+                    throw new ResourceAccessDeniedException(
+                        $"Access to VM instances in project {zoneLocator.ProjectId} has been denied", e);
                 }
             }
         }
