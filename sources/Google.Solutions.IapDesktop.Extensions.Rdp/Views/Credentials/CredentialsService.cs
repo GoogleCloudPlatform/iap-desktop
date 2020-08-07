@@ -28,7 +28,7 @@ using System;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-namespace Google.Solutions.IapDesktop.Extensions.Rdp.Services.Credentials
+namespace Google.Solutions.IapDesktop.Extensions.Rdp.Views.Credentials
 {
     public interface ICredentialsService
     {

@@ -68,13 +68,13 @@
     <Reference Include="System" />
     <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
-    <Reference Include="System.Net.Http"/>
+    <Reference Include="System.Net.Http" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="System.Threading.Tasks.Extensions, Version=4.2.0.1, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
       <HintPath>..\packages\System.Threading.Tasks.Extensions.4.5.4\lib\net461\System.Threading.Tasks.Extensions.dll</HintPath>
-    </Reference>    
+    </Reference>
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
@@ -82,12 +82,12 @@
   <ItemGroup>
     <Compile Include="MoqExtensions.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Services\Connection\SynchronousJobService.cs" />
-    <Compile Include="Services\Connection\TestIapRdpConnectionService.cs" />
+    <Compile Include="Views\Connection\SynchronousJobService.cs" />
+    <Compile Include="Views\Connection\TestIapRdpConnectionService.cs" />
     <Compile Include="Services\Credentials\TestAuthorizationExtensions.cs" />
     <Compile Include="Services\Credentials\TestCredentialPrompt.cs" />
     <Compile Include="Services\Credentials\TestCredentialsService.cs" />
-    <Compile Include="Services\TunnelsViewer\TestTunnelsViewModel.cs" />
+    <Compile Include="Views\TunnelsViewer\TestTunnelsViewModel.cs" />
     <Compile Include="Services\Tunnel\TestTunnelBrokerService.cs" />
     <Compile Include="Services\Tunnel\TestTunnelService.cs" />
   </ItemGroup>

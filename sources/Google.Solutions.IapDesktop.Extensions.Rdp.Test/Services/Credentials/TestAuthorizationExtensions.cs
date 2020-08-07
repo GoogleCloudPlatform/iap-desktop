@@ -21,7 +21,7 @@
 
 using Google.Solutions.Common.Auth;
 using Google.Solutions.Common.Test;
-using Google.Solutions.IapDesktop.Extensions.Rdp.Services.Credentials;
+using Google.Solutions.IapDesktop.Extensions.Rdp.Views.Credentials;
 using Moq;
 using NUnit.Framework;
 using System;

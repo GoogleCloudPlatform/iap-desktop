@@ -26,7 +26,7 @@ using Google.Solutions.IapDesktop.Application.ObjectModel;
 using Google.Solutions.IapDesktop.Application.Services.Adapters;
 using Google.Solutions.IapDesktop.Application.Services.Persistence;
 using Google.Solutions.IapDesktop.Application.Services.Windows.ConnectionSettings;
-using Google.Solutions.IapDesktop.Extensions.Rdp.Services.Credentials;
+using Google.Solutions.IapDesktop.Extensions.Rdp.Views.Credentials;
 using Moq;
 using NUnit.Framework;
 using System.Threading.Tasks;

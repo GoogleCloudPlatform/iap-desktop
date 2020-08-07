@@ -30,7 +30,7 @@ using Google.Solutions.IapDesktop.Application.Services.Windows.ProjectExplorer;
 using Google.Solutions.IapDesktop.Application.Services.Windows.RemoteDesktop;
 using Google.Solutions.IapDesktop.Application.Util;
 using Google.Solutions.IapDesktop.Extensions.Rdp.Services.Connection;
-using Google.Solutions.IapDesktop.Extensions.Rdp.Services.Credentials;
+using Google.Solutions.IapDesktop.Extensions.Rdp.Views.Credentials;
 using Google.Solutions.IapDesktop.Extensions.Rdp.Services.Tunnel;
 using Moq;
 using NUnit.Framework;
@@ -38,7 +38,7 @@ using System;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-namespace Google.Solutions.IapDesktop.Extensions.Rdp.Test.Services.Connection
+namespace Google.Solutions.IapDesktop.Extensions.Rdp.Test.Views.Connection
 {
     [TestFixture]
     public class TestIapRdpConnectionService : FixtureBase

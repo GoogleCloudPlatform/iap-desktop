@@ -28,7 +28,7 @@ using Google.Solutions.IapDesktop.Application.Services.Windows.ConnectionSetting
 using Google.Solutions.IapDesktop.Application.Services.Windows.ProjectExplorer;
 using Google.Solutions.IapDesktop.Application.Services.Windows.RemoteDesktop;
 using Google.Solutions.IapDesktop.Application.Util;
-using Google.Solutions.IapDesktop.Extensions.Rdp.Services.Credentials;
+using Google.Solutions.IapDesktop.Extensions.Rdp.Views.Credentials;
 using Google.Solutions.IapDesktop.Extensions.Rdp.Services.Tunnel;
 using Google.Solutions.IapTunneling.Iap;
 using Google.Solutions.IapTunneling.Net;
