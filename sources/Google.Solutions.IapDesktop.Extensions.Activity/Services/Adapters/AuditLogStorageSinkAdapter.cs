@@ -1,5 +1,26 @@
-﻿using Google.Apis.Storage.v1.Data;
+﻿//
+// Copyright 2019 Google LLC
+//
+// Licensed to the Apache Software Foundation (ASF) under one
+// or more contributor license agreements.  See the NOTICE file
+// distributed with this work for additional information
+// regarding copyright ownership.  The ASF licenses this file
+// to you under the Apache License, Version 2.0 (the
+// "License"); you may not use this file except in compliance
+// with the License.  You may obtain a copy of the License at
+// 
+//   http://www.apache.org/licenses/LICENSE-2.0
+// 
+// Unless required by applicable law or agreed to in writing,
+// software distributed under the License is distributed on an
+// "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+// KIND, either express or implied.  See the License for the
+// specific language governing permissions and limitations
+// under the License.
+//
+
 using Google.Solutions.Common.Diagnostics;
+using Google.Solutions.Common.Util;
 using Google.Solutions.IapDesktop.Application;
 using Google.Solutions.IapDesktop.Application.ObjectModel;
 using Google.Solutions.IapDesktop.Extensions.Activity.Events;
@@ -14,7 +35,6 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
-using GcsObject = Google.Apis.Storage.v1.Data.Object;
 
 namespace Google.Solutions.IapDesktop.Extensions.Activity.Services.Adapters
 {
@@ -31,6 +51,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services.Adapters
         Task ProcessInstanceEventsAsync(
             IEnumerable<string> buckets,
             DateTime startTime,
+            DateTime endTime,
             IEventProcessor processor,
             CancellationToken cancellationToken);
     }
@@ -90,6 +111,62 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services.Adapters
             return tasks.SelectMany(t => t.Result);
         }
 
+        internal async Task<IDictionary<DateTime, IEnumerable<StorageObjectLocator>>> FindExportObjects(
+            IEnumerable<string> buckets,
+            DateTime startTime,
+            DateTime endTime,
+            CancellationToken cancellationToken)
+        {
+            Debug.Assert(startTime.Kind == DateTimeKind.Utc);
+            Debug.Assert(endTime.Kind == DateTimeKind.Utc);
+
+            if (startTime.Date > endTime.Date)
+            {
+                throw new ArgumentException(nameof(startTime));
+            }
+
+            using (TraceSources.IapDesktop.TraceMethod().WithParameters(
+                string.Join(", ", buckets),
+                startTime))
+            {
+                //
+                // The object names for audit logs follow this convention:
+                // - cloudaudit.googleapis.com/activity/yyyy/mm/dd/<from-time>_<to-time>_S0.json
+                // - cloudaudit.googleapis.com/system_event/yyyy/mm/dd/<from-time>_<to-time>_S0.json
+                // with <from-time> and <to-time> formatted as hh:MM:ss
+                // 
+                // Note that there might be other, unrelated objects in the same bucket.
+                // Because somebody might have copied the objects from one bucket to another,
+                // it's best not to rely on the creation timestamp to determine which day
+                // the exported events relate to and instead extract that information from
+                // the object name.
+                //  
+
+                var allObjects = await MapAndFoldAsync(
+                        buckets,
+                        bucket => this.storageAdapter.ListObjectsAsync(bucket, cancellationToken))
+                    .ConfigureAwait(false);
+
+                TraceSources.IapDesktop.TraceVerbose(
+                    "Found {0} objects across {1} buckets",
+                    allObjects.Count(),
+                    buckets.Count());
+
+                return allObjects
+                    .Where(o => o.Name.StartsWith(ActivityPrefix) || o.Name.StartsWith(SystemEventPrefix))
+                    .Select(o => new
+                    {
+                        Locator = new StorageObjectLocator(o.Bucket, o.Name),
+                        Date = DateFromObjectName(o.Name)
+                    })
+                    .Where(rec => rec.Date != null && rec.Date >= startTime && rec.Date <= endTime)
+                    .GroupBy(rec => rec.Date)   // Trim time portion
+                    .ToDictionary(
+                        group => group.Key.Value,
+                        group => group.Select(g => g.Locator));
+            }
+        }
+
         //---------------------------------------------------------------------
         // IAuditLogStorageSinkAdapter.
         //---------------------------------------------------------------------
@@ -110,9 +187,13 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services.Adapters
                 // by a newline.
 
                 string line;
-                while (!string.IsNullOrEmpty(line = reader.ReadLine()))
+                while ((line = reader.ReadLine()) != null)
                 {
-                    events.Add(EventFactory.FromRecord(LogRecord.Deserialize(line)));
+                    // The file might contain empty lines.
+                    if (!string.IsNullOrWhiteSpace(line))
+                    {
+                        events.Add(EventFactory.FromRecord(LogRecord.Deserialize(line)));
+                    }
                 }
             }
 
@@ -134,6 +215,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services.Adapters
         public async Task ProcessInstanceEventsAsync(
             IEnumerable<string> buckets,
             DateTime startTime,
+            DateTime endTime,
             IEventProcessor processor,
             CancellationToken cancellationToken)
         {
@@ -145,48 +227,24 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services.Adapters
             }
 
             using (TraceSources.IapDesktop.TraceMethod().WithParameters(
-                string.Join(", ", buckets), 
+                string.Join(", ", buckets),
                 startTime))
             {
-                //
-                // The object names for audit logs follow this convention:
-                // - cloudaudit.googleapis.com/activity/yyyy/mm/dd/hh:00:00_hh:MM:ss_S0.json
-                // - cloudaudit.googleapis.com/system_event/yyyy/mm/dd/hh:00:00_hh:MM:ss_S0.json
-                //
-                // Note that there might be other, unrelated objects in the same bucket.
-                // Because somebody might have copied the objects from one bucket to another,
-                // it's best not to rely on the creation timestamp to determine which day
-                // the exported events relate to and instead extract that information from
-                // the object name.
-                //  
+                var severitiesWhitelist = processor.SupportedSeverities.ToHashSet();
+                var methodsWhitelist = processor.SupportedMethods.ToHashSet();
 
-                var allObjects = await MapAndFoldAsync(
+                var objectsByDay = await FindExportObjects(
                         buckets,
-                        bucket => this.storageAdapter.ListObjectsAsync(bucket, cancellationToken))
+                        startTime,
+                        DateTime.UtcNow,
+                        cancellationToken)
                     .ConfigureAwait(false);
 
-                TraceSources.IapDesktop.TraceVerbose(
-                    "Found {0} objects across {1} buckets", 
-                    allObjects.Count(),
-                    buckets.Count());
+                var days = (processor.ExpectedOrder == EventOrder.OldestFirst)
+                    ? DateRange.DayRange(startTime, endTime.Date, 1)
+                    : DateRange.DayRange(endTime, startTime.Date, -1);
 
-                var objectsByDay = allObjects
-                    .Where(o => o.Name.StartsWith(ActivityPrefix) || o.Name.StartsWith(SystemEventPrefix))
-                    .Select(o => new
-                    {
-                        Locator = new StorageObjectLocator(o.Bucket, o.Name),
-                        Date = DateFromObjectName(o.Name)
-                    })
-                    .Where(rec => rec.Date != null)
-                    .GroupBy(rec => rec.Date)
-                    .ToDictionary(
-                        group => group.Key,
-                        group => group.Select(g => g.Locator));
-
-                // Start today and go backwards.
-                for (var day = DateTime.UtcNow.Date;
-                     day >= startTime.Date;
-                     day = day.AddDays(-1))
+                foreach (var day in days)
                 {
                     TraceSources.IapDesktop.TraceVerbose("Processing {0}", day);
 
@@ -208,11 +266,18 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services.Adapters
                             .ConfigureAwait(false);
 
                         // Merge and sort events.
-                        var eventsForDayOrdered = eventsForDay.OrderByDescending(e => e.Timestamp);
+                        var eventsForDayOrdered = (processor.ExpectedOrder == EventOrder.OldestFirst)
+                            ? eventsForDay.OrderBy(e => e.Timestamp)
+                            : eventsForDay.OrderByDescending(e => e.Timestamp);
 
                         foreach (var e in eventsForDayOrdered)
                         {
-                            processor.Process(e);
+                            if (e.LogRecord?.ProtoPayload?.MethodName != null &&
+                                methodsWhitelist.Contains(e.LogRecord.ProtoPayload.MethodName) &&
+                                severitiesWhitelist.Contains(e.Severity))
+                            {
+                                processor.Process(e);
+                            }
                         }
                     }
                     else

@@ -104,18 +104,19 @@ namespace Google.Solutions.Common.Test.Integration
                 HttpClientInitializer = TestProject.GetAdminCredential()
             });
 
+            
             // Ensure the test bucket exists.
             try
+            {
+                service.Buckets.Get(TestBucket).Execute();
+            }
+            catch (GoogleApiException e) when (e.Error != null && e.Error.Code == 404)
             {
                 service.Buckets.Insert(new Apis.Storage.v1.Data.Bucket()
                 {
                     Name = TestBucket
                 },
                 TestProject.ProjectId).Execute();
-            }
-            catch (GoogleApiException e) when (e.Error != null && e.Error.Code == 409)
-            {
-                // Already exists -> ok.
             }
 
             return service;

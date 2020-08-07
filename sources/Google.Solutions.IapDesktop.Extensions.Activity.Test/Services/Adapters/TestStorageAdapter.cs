@@ -43,33 +43,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.Services.Adapters
         [SetUp]
         public void SetUpTestBucket()
         {
-            var service = TestProject.CreateStorageService();
-            try
-            {
-                service.Objects.Insert(
-                    new Apis.Storage.v1.Data.Object()
-                    {
-                        Name = SampleLocator.ObjectName
-                    },
-                    SampleLocator.Bucket,
-                    CreateTextStream(SampleData),
-                    "application/octet-stream").Upload();
-            }
-            catch (GoogleApiException e) when (e.Error != null && e.Error.Code == 409)
-            {
-                // Already exists -> ok.
-            }
-        }
-
-        private static MemoryStream CreateTextStream(string text)
-        {
-            var stream = new MemoryStream();
-            var writer = new StreamWriter(stream);
-            writer.Write(text);
-            writer.Flush();
-
-            stream.Seek(0, SeekOrigin.Begin);
-            return stream;
+            GcsUtil.CreateObjectIfNotExist(SampleLocator, SampleData);
         }
 
         //---------------------------------------------------------------------
