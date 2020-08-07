@@ -22,9 +22,9 @@
 using Google.Solutions.Common.Locator;
 using Google.Solutions.Common.Test;
 using Google.Solutions.IapDesktop.Application.Services.Integration;
-using Google.Solutions.IapDesktop.Application.Services.Windows;
+using Google.Solutions.IapDesktop.Application.Views;
 using Google.Solutions.IapDesktop.Extensions.Rdp.Services.Tunnel;
-using Google.Solutions.IapDesktop.Extensions.Rdp.Views.Credentials.TunnelsViewer;
+using Google.Solutions.IapDesktop.Extensions.Rdp.Views.TunnelsViewer;
 using Moq;
 using NUnit.Framework;
 using System;

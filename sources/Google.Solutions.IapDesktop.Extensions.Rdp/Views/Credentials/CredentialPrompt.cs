@@ -22,8 +22,8 @@
 using Google.Solutions.Common.Locator;
 using Google.Solutions.IapDesktop.Application.ObjectModel;
 using Google.Solutions.IapDesktop.Application.Services.Persistence;
-using Google.Solutions.IapDesktop.Application.Services.Windows;
-using Google.Solutions.IapDesktop.Application.Services.Windows.ConnectionSettings;
+using Google.Solutions.IapDesktop.Application.Views;
+using Google.Solutions.IapDesktop.Application.Views.ConnectionSettings;
 using System;
 using System.Collections.Generic;
 using System.Linq;

@@ -21,7 +21,7 @@
 
 using Google.Solutions.Common.Diagnostics;
 using Google.Solutions.IapDesktop.Application.ObjectModel;
-using Google.Solutions.IapDesktop.Application.Services.Windows.Properties;
+using Google.Solutions.IapDesktop.Application.Views.Properties;
 using System;
 
 namespace Google.Solutions.IapDesktop.Extensions.Os.Views.InstanceDetails

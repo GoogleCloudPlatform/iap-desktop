@@ -26,7 +26,7 @@ using Google.Solutions.IapDesktop.Application;
 using Google.Solutions.IapDesktop.Application.ObjectModel;
 using Google.Solutions.IapDesktop.Application.Services.Adapters;
 using Google.Solutions.IapDesktop.Application.Services.Integration;
-using Google.Solutions.IapDesktop.Application.Services.Windows.ProjectExplorer;
+using Google.Solutions.IapDesktop.Application.Views.ProjectExplorer;
 using System;
 using System.Diagnostics;
 using System.Threading;

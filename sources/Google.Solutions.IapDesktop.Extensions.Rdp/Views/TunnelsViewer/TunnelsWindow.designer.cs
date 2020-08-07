@@ -21,7 +21,7 @@
 
 using Google.Solutions.IapDesktop.Application.Controls;
 
-namespace Google.Solutions.IapDesktop.Extensions.Rdp.Views.Credentials.TunnelsViewer
+namespace Google.Solutions.IapDesktop.Extensions.Rdp.Views.TunnelsViewer
 {
     partial class TunnelsWindow
     {

@@ -21,14 +21,14 @@
 
 using Google.Solutions.IapDesktop.Application.ObjectModel;
 using Google.Solutions.IapDesktop.Application.Services.Integration;
-using Google.Solutions.IapDesktop.Application.Services.Windows;
+using Google.Solutions.IapDesktop.Application.Views;
 using Google.Solutions.IapDesktop.Extensions.Rdp.Services.Tunnel;
 using System;
 using System.Collections.ObjectModel;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-namespace Google.Solutions.IapDesktop.Extensions.Rdp.Views.Credentials.TunnelsViewer
+namespace Google.Solutions.IapDesktop.Extensions.Rdp.Views.TunnelsViewer
 {
     internal class TunnelsViewModel : ViewModelBase
     {

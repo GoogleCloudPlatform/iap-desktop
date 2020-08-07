@@ -25,12 +25,11 @@ using Google.Solutions.IapDesktop.Application.ObjectModel;
 using Google.Solutions.IapDesktop.Application.Services.Adapters;
 using Google.Solutions.IapDesktop.Application.Services.Integration;
 using Google.Solutions.IapDesktop.Application.Services.Persistence;
-using Google.Solutions.IapDesktop.Application.Services.Windows;
-using Google.Solutions.IapDesktop.Application.Services.Windows.ConnectionSettings;
-using Google.Solutions.IapDesktop.Application.Services.Windows.Diagnostics;
-using Google.Solutions.IapDesktop.Application.Services.Windows.ProjectExplorer;
-using Google.Solutions.IapDesktop.Application.Services.Windows.RemoteDesktop;
-using Google.Solutions.IapDesktop.Application.Services.Workflows;
+using Google.Solutions.IapDesktop.Application.Views;
+using Google.Solutions.IapDesktop.Application.Views.ConnectionSettings;
+using Google.Solutions.IapDesktop.Application.Views.Diagnostics;
+using Google.Solutions.IapDesktop.Application.Views.ProjectExplorer;
+using Google.Solutions.IapDesktop.Application.Views.RemoteDesktop;
 using Google.Solutions.IapDesktop.Application.Util;
 using Google.Solutions.IapDesktop.Windows;
 using Google.Solutions.IapTunneling.Net;
@@ -44,6 +43,7 @@ using System.Net;
 using System.Reflection;
 using System.Threading;
 using System.Windows.Forms;
+using Google.Solutions.IapDesktop.Application.Services;
 
 namespace Google.Solutions.IapDesktop
 {

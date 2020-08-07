@@ -113,50 +113,50 @@
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
     <Compile Include="Services\Persistence\AppProtocolRegistry.cs" />
-    <Compile Include="Services\Windows\CloudConsoleService.cs" />
+    <Compile Include="Views\CloudConsoleService.cs" />
     <Compile Include="Services\Adapters\IAuthorizationAdapter.cs" />
     <Compile Include="Services\Integration\ProjectInventoryService.cs" />
     <Compile Include="Controls\FlatListView.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="Services\Windows\ConfirmationDialog.cs" />
-    <Compile Include="Services\Windows\ConnectionSettings\ConnectionSettingsEditor.cs" />
-    <Compile Include="Services\Windows\ConnectionSettings\ConnectionSettingsViewModel.cs" />
-    <Compile Include="Services\Windows\ConnectionSettings\ConnectionSettingsWindow.cs">
+    <Compile Include="Views\ConfirmationDialog.cs" />
+    <Compile Include="Views\ConnectionSettings\ConnectionSettingsEditor.cs" />
+    <Compile Include="Views\ConnectionSettings\ConnectionSettingsViewModel.cs" />
+    <Compile Include="Views\ConnectionSettings\ConnectionSettingsWindow.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Services\Windows\ConnectionSettings\IConnectionSettingsWindow.cs" />
-    <Compile Include="Services\Windows\Diagnostics\DebugProjectExplorerTrackingViewModel.cs" />
-    <Compile Include="Services\Windows\Diagnostics\DebugProjectExplorerTrackingWindow.cs">
+    <Compile Include="Views\ConnectionSettings\IConnectionSettingsWindow.cs" />
+    <Compile Include="Views\Diagnostics\DebugProjectExplorerTrackingViewModel.cs" />
+    <Compile Include="Views\Diagnostics\DebugProjectExplorerTrackingWindow.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Services\Windows\Diagnostics\DebugProjectExplorerTrackingWindow.Designer.cs">
+    <Compile Include="Views\Diagnostics\DebugProjectExplorerTrackingWindow.Designer.cs">
       <DependentUpon>DebugProjectExplorerTrackingWindow.cs</DependentUpon>
     </Compile>
-    <Compile Include="Services\Windows\HtmlPageGenerator.cs" />
+    <Compile Include="Services\HtmlPageGenerator.cs" />
     <Compile Include="Controls\FlatVerticalTabControl.cs">
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="Util\HtmlClipboardFormat.cs" />
     <Compile Include="Util\IIapUrlHandler.cs" />
-    <Compile Include="Services\Windows\ProjectExplorer\ProjectExplorerTrackingToolWindow.cs">
+    <Compile Include="Views\ProjectExplorer\ProjectExplorerTrackingToolWindow.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Services\Windows\Properties\IPropertiesViewModel.cs" />
-    <Compile Include="Services\Windows\Properties\PropertiesWindow.cs">
+    <Compile Include="Views\Properties\IPropertiesViewModel.cs" />
+    <Compile Include="Views\Properties\PropertiesWindow.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Services\Windows\Properties\PropertiesWindow.Designer.cs">
+    <Compile Include="Views\Properties\PropertiesWindow.Designer.cs">
       <DependentUpon>PropertiesWindow.cs</DependentUpon>
     </Compile>
-    <Compile Include="Services\Windows\SlowLoadingPane.cs">
+    <Compile Include="Views\SlowLoadingPane.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Services\Windows\SlowLoadingPane.Designer.cs">
+    <Compile Include="Views\SlowLoadingPane.Designer.cs">
       <DependentUpon>SlowLoadingPane.cs</DependentUpon>
     </Compile>
-    <Compile Include="Services\Windows\TaskDialog.cs" />
-    <Compile Include="Services\Workflows\UpdateService.cs" />
+    <Compile Include="Views\TaskDialog.cs" />
+    <Compile Include="Services\UpdateService.cs" />
     <Compile Include="Services\Persistence\AuthSettingsRepository.cs" />
     <Compile Include="TraceSources.cs" />
     <Compile Include="Util\LeastRecentlyUsedCache.cs" />
@@ -170,56 +170,56 @@
     <Compile Include="Util\IapRdpUrl.cs" />
     <Compile Include="Util\MappedPropertyAttribute.cs" />
     <Compile Include="Util\PropertyMapper.cs" />
-    <Compile Include="Services\Windows\AboutWindow.cs">
+    <Compile Include="Views\AboutWindow.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Services\Windows\AboutWindow.Designer.cs">
+    <Compile Include="Views\AboutWindow.Designer.cs">
       <DependentUpon>AboutWindow.cs</DependentUpon>
     </Compile>
-    <Compile Include="Services\Windows\Diagnostics\DebugJobServiceWindow.cs">
+    <Compile Include="Views\Diagnostics\DebugJobServiceWindow.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Services\Windows\Diagnostics\DebugJobServiceWindow.Designer.cs">
+    <Compile Include="Views\Diagnostics\DebugJobServiceWindow.Designer.cs">
       <DependentUpon>DebugJobServiceWindow.cs</DependentUpon>
     </Compile>
-    <Compile Include="Services\Windows\ExceptionDialog.cs" />
-    <Compile Include="Services\Windows\IMainForm.cs" />
-    <Compile Include="Services\Windows\ProjectExplorer\IProjectExplorer.cs" />
-    <Compile Include="Services\Windows\ProjectExplorer\IProjectExplorerNode.cs" />
-    <Compile Include="Services\Windows\ProjectExplorer\ProjectExplorerNode.cs" />
-    <Compile Include="Services\Windows\ProjectExplorer\ProjectExplorerSelectionChangedEvent.cs" />
-    <Compile Include="Services\Windows\ProjectExplorer\ProjectExplorerWindow.cs">
+    <Compile Include="Views\ExceptionDialog.cs" />
+    <Compile Include="Views\IMainForm.cs" />
+    <Compile Include="Views\ProjectExplorer\IProjectExplorer.cs" />
+    <Compile Include="Views\ProjectExplorer\IProjectExplorerNode.cs" />
+    <Compile Include="Views\ProjectExplorer\ProjectExplorerNode.cs" />
+    <Compile Include="Views\ProjectExplorer\ProjectExplorerSelectionChangedEvent.cs" />
+    <Compile Include="Views\ProjectExplorer\ProjectExplorerWindow.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Services\Windows\ProjectExplorer\ProjectExplorerWindow.Designer.cs">
+    <Compile Include="Views\ProjectExplorer\ProjectExplorerWindow.Designer.cs">
       <DependentUpon>ProjectExplorerWindow.cs</DependentUpon>
     </Compile>
-    <Compile Include="Services\Windows\ProjectExplorer\ProjectPickerDialog.cs">
+    <Compile Include="Views\ProjectExplorer\ProjectPickerDialog.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Services\Windows\ProjectExplorer\ProjectPickerDialog.Designer.cs">
+    <Compile Include="Views\ProjectExplorer\ProjectPickerDialog.Designer.cs">
       <DependentUpon>ProjectPickerDialog.cs</DependentUpon>
     </Compile>
-    <Compile Include="Services\Windows\RemoteDesktop\RdpClientExtensions.cs" />
-    <Compile Include="Services\Windows\RemoteDesktop\RdpExceptions.cs" />
-    <Compile Include="Services\Windows\RemoteDesktop\RemoteDesktopPane.cs">
+    <Compile Include="Views\RemoteDesktop\RdpClientExtensions.cs" />
+    <Compile Include="Views\RemoteDesktop\RdpExceptions.cs" />
+    <Compile Include="Views\RemoteDesktop\RemoteDesktopPane.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Services\Windows\RemoteDesktop\RemoteDesktopPane.Designer.cs">
+    <Compile Include="Views\RemoteDesktop\RemoteDesktopPane.Designer.cs">
       <DependentUpon>RemoteDesktopPane.cs</DependentUpon>
     </Compile>
-    <Compile Include="Services\Windows\RemoteDesktop\IRemoteDesktopService.cs" />
-    <Compile Include="Services\Windows\ToolWindow.cs">
+    <Compile Include="Views\RemoteDesktop\IRemoteDesktopService.cs" />
+    <Compile Include="Views\ToolWindow.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Services\Windows\ToolWindow.Designer.cs">
+    <Compile Include="Views\ToolWindow.Designer.cs">
       <DependentUpon>ToolWindow.cs</DependentUpon>
     </Compile>
-    <Compile Include="Services\Windows\UnsafeNativeMethods.cs" />
-    <Compile Include="Services\Windows\WaitDialog.cs">
+    <Compile Include="Views\UnsafeNativeMethods.cs" />
+    <Compile Include="Views\WaitDialog.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Services\Windows\WaitDialog.Designer.cs">
+    <Compile Include="Views\WaitDialog.Designer.cs">
       <DependentUpon>WaitDialog.cs</DependentUpon>
     </Compile>
     <Compile Include="Util\SingletonApplicationBase.cs" />
@@ -257,42 +257,41 @@
     <None Include="Services\Adapters\README.md" />
     <None Include="Services\Integration\README.md" />
     <None Include="Services\Persistence\README.md" />
-    <None Include="Services\Windows\README.md" />
-    <None Include="Services\Workflows\README.md" />
+    <None Include="Views\README.md" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
-    <EmbeddedResource Include="Services\Windows\AboutWindow.resx">
+    <EmbeddedResource Include="Views\AboutWindow.resx">
       <DependentUpon>AboutWindow.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Services\Windows\Diagnostics\DebugProjectExplorerTrackingWindow.resx">
+    <EmbeddedResource Include="Views\Diagnostics\DebugProjectExplorerTrackingWindow.resx">
       <DependentUpon>DebugProjectExplorerTrackingWindow.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Services\Windows\Diagnostics\DebugJobServiceWindow.resx">
+    <EmbeddedResource Include="Views\Diagnostics\DebugJobServiceWindow.resx">
       <DependentUpon>DebugJobServiceWindow.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Services\Windows\Properties\PropertiesWindow.resx">
+    <EmbeddedResource Include="Views\Properties\PropertiesWindow.resx">
       <DependentUpon>PropertiesWindow.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Services\Windows\SlowLoadingPane.resx">
+    <EmbeddedResource Include="Views\SlowLoadingPane.resx">
       <DependentUpon>SlowLoadingPane.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Services\Windows\ProjectExplorer\ProjectExplorerWindow.resx">
+    <EmbeddedResource Include="Views\ProjectExplorer\ProjectExplorerWindow.resx">
       <DependentUpon>ProjectExplorerWindow.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Services\Windows\ProjectExplorer\ProjectPickerDialog.resx">
+    <EmbeddedResource Include="Views\ProjectExplorer\ProjectPickerDialog.resx">
       <DependentUpon>ProjectPickerDialog.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Services\Windows\RemoteDesktop\RemoteDesktopPane.resx">
+    <EmbeddedResource Include="Views\RemoteDesktop\RemoteDesktopPane.resx">
       <DependentUpon>RemoteDesktopPane.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Services\Windows\ToolWindow.resx">
+    <EmbeddedResource Include="Views\ToolWindow.resx">
       <DependentUpon>ToolWindow.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Services\Windows\WaitDialog.resx">
+    <EmbeddedResource Include="Views\WaitDialog.resx">
       <DependentUpon>WaitDialog.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>

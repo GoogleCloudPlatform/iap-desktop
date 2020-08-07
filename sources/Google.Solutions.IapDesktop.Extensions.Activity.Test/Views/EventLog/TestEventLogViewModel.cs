@@ -21,7 +21,7 @@
 
 using Google.Solutions.IapDesktop.Application.ObjectModel;
 using Google.Solutions.IapDesktop.Application.Services.Integration;
-using Google.Solutions.IapDesktop.Application.Services.Windows.ProjectExplorer;
+using Google.Solutions.IapDesktop.Application.Views.ProjectExplorer;
 using Google.Solutions.IapDesktop.Extensions.Activity.Events.Lifecycle;
 using Google.Solutions.IapDesktop.Extensions.Activity.Events.System;
 using Google.Solutions.IapDesktop.Extensions.Activity.History;

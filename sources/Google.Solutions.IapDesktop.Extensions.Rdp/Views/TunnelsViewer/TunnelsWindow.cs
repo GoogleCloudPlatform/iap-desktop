@@ -22,7 +22,7 @@
 using Google.Solutions.Common.Diagnostics;
 using Google.Solutions.IapDesktop.Application.Controls;
 using Google.Solutions.IapDesktop.Application.ObjectModel;
-using Google.Solutions.IapDesktop.Application.Services.Windows;
+using Google.Solutions.IapDesktop.Application.Views;
 using Google.Solutions.IapDesktop.Extensions.Rdp.Services.Tunnel;
 using System;
 using System.Runtime.InteropServices;
@@ -30,7 +30,7 @@ using WeifenLuo.WinFormsUI.Docking;
 
 #pragma warning disable IDE1006 // Naming Styles
 
-namespace Google.Solutions.IapDesktop.Extensions.Rdp.Views.Credentials.TunnelsViewer
+namespace Google.Solutions.IapDesktop.Extensions.Rdp.Views.TunnelsViewer
 {
     [ComVisible(false)]
     [Service(typeof(ITunnelsViewer), ServiceLifetime.Singleton)]

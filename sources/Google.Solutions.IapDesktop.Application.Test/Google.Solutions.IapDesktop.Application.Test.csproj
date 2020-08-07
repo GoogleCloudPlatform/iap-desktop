@@ -104,7 +104,7 @@
     <Compile Include="Services\Adapters\TestResourceManagerAdapter.cs" />
     <Compile Include="Services\Persistence\TestApplicationSettingsRepository.cs" />
     <Compile Include="Services\Persistence\TestAppProtocolRegistry.cs" />
-    <Compile Include="Services\Windows\ConnectionSettings\TestConnectionSettingsViewModel.cs" />
+    <Compile Include="Views\ConnectionSettings\TestConnectionSettingsViewModel.cs" />
     <Compile Include="Util\TestHtmlClipboardFormat.cs" />
     <Compile Include="Util\TestLeastRecentlyUsedCache.cs" />
     <Compile Include="Util\TestRangeObservableCollection.cs" />
@@ -117,18 +117,18 @@
     <Compile Include="ObjectModel\TestServiceRegistry.cs" />
     <Compile Include="Util\TestIapRdpUrl.cs" />
     <Compile Include="Util\TestPropertyMapper.cs" />
-    <Compile Include="Services\Windows\TestMainForm.cs">
+    <Compile Include="Views\TestMainForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Services\Windows\TestMainForm.Designer.cs">
+    <Compile Include="Views\TestMainForm.Designer.cs">
       <DependentUpon>TestMainForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="Services\Windows\TestProjectExplorer.cs" />
-    <Compile Include="Services\Windows\ConnectionSettings\TestConnectionSettingsEditor.cs" />
-    <Compile Include="Services\Windows\TestRemoteDesktopGroupPolicies.cs" />
-    <Compile Include="Services\Windows\TestRemoteDesktop.cs" />
-    <Compile Include="Services\Windows\TestRemoteDesktopOverIap.cs" />
-    <Compile Include="Services\Windows\WindowTestFixtureBase.cs" />
+    <Compile Include="Views\TestProjectExplorer.cs" />
+    <Compile Include="Views\ConnectionSettings\TestConnectionSettingsEditor.cs" />
+    <Compile Include="Views\TestRemoteDesktopGroupPolicies.cs" />
+    <Compile Include="Views\TestRemoteDesktop.cs" />
+    <Compile Include="Views\TestRemoteDesktopOverIap.cs" />
+    <Compile Include="Views\WindowTestFixtureBase.cs" />
     <Compile Include="Util\TestSingletonApplicationBase.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -158,7 +158,7 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Services\Windows\TestMainForm.resx">
+    <EmbeddedResource Include="Views\TestMainForm.resx">
       <DependentUpon>TestMainForm.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
