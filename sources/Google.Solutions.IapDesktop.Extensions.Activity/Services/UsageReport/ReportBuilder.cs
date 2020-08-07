@@ -30,7 +30,7 @@ using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Google.Solutions.IapDesktop.Extensions.Activity.Services.SchedulingReport
+namespace Google.Solutions.IapDesktop.Extensions.Activity.Services.UsageReport
 {
     internal interface IReportBuilder
     {

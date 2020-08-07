@@ -22,15 +22,15 @@
 using Google.Solutions.Common.Locator;
 using Google.Solutions.IapDesktop.Extensions.Activity.Events;
 using Google.Solutions.IapDesktop.Extensions.Activity.History;
-using Google.Solutions.IapDesktop.Extensions.Activity.Services.SchedulingReport;
+using Google.Solutions.IapDesktop.Extensions.Activity.Services.UsageReport;
 using NUnit.Framework;
 using System;
 using System.Linq;
 
-namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.Services.SchedulingReport
+namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.Services.UsageReport
 {
     [TestFixture]
-    public class TestReportInstancesTabViewModel : FixtureBase
+    public class TestReportNodesTabViewModel
     {
         private static readonly DateTime BaselineTime = new DateTime(2020, 1, 1, 0, 0, 0, DateTimeKind.Utc);
         private ulong instanceIdSequence;
@@ -43,7 +43,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.Services.Scheduli
             for (int i = 0; i < count; i++)
             {
                 instanceIdSequence++;
-
                 builder.AddExistingInstance(
                     instanceIdSequence,
                     new InstanceLocator("project", "zone", $"instance-{instanceIdSequence}"),
@@ -51,6 +50,21 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.Services.Scheduli
                     InstanceState.Running,
                     BaselineTime.AddDays(i),
                     tenancy);
+
+                var instanceBuilder = builder.GetInstanceHistoryBuilder(instanceIdSequence);
+                if (tenancy == Tenancies.SoleTenant)
+                {
+                    // Add sole tenant placement.
+                    instanceBuilder.OnSetPlacement("server-1", BaselineTime);
+                }
+
+                // Add fleet placement.
+                instanceBuilder.OnStop(
+                    BaselineTime.AddDays(-1),
+                    new InstanceLocator("project", "zone", $"instance-{instanceIdSequence}"));
+                instanceBuilder.OnStart(
+                    BaselineTime.AddDays(-2),
+                    new InstanceLocator("project", "zone", $"instance-{instanceIdSequence}"));
             }
         }
 
@@ -71,29 +85,36 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.Services.Scheduli
         }
 
         [Test]
-        public void WhenTenancyFilterSetInParent_ThenInstancesContainsMatchingInstances()
+        public void WhenPopulated_ThenNodesDoesNotIncludePseudoNodeForFleet()
         {
             var parentViewModel = CreateParentViewModel(1, 2);
+            parentViewModel.SelectNodeTab();
             parentViewModel.Repopulate();
 
-            var viewModel = parentViewModel.InstanceReportPane;
+            var viewModel = parentViewModel.NodeReportPane;
 
-            Assert.AreEqual(3, viewModel.Instances.Count());
-
-            parentViewModel.IncludeFleetInstances = false;
-            Assert.AreEqual(2, viewModel.Instances.Count());
-
-            parentViewModel.IncludeSoleTenantInstances = false;
-            Assert.AreEqual(0, viewModel.Instances.Count());
-
-            parentViewModel.IncludeFleetInstances = true;
-            Assert.AreEqual(1, viewModel.Instances.Count());
+            Assert.AreEqual(1, viewModel.Nodes.Count());
+            Assert.AreEqual("server-1", viewModel.Nodes.First().ServerId);
         }
 
         [Test]
-        public void WhenOsFilterSetInParent_ThenInstancesContainsMatchingInstances()
+        public void WhenNodeSelected_ThenNodePlacementsShown()
         {
-            var parentViewModel = CreateParentViewModel(3, 0);
+            var parentViewModel = CreateParentViewModel(0, 3);
+            parentViewModel.SelectNodeTab();
+            parentViewModel.Repopulate();
+
+            var viewModel = parentViewModel.NodeReportPane;
+
+            Assert.IsFalse(viewModel.NodePlacements.Any());
+            viewModel.SelectedNode = viewModel.Nodes.FirstOrDefault();
+            Assert.AreEqual(3, viewModel.NodePlacements.Count());
+        }
+
+        [Test]
+        public void WhenOsFilterSetInParent_ThenNodePlacementsContainsMatchingInstances()
+        {
+            var parentViewModel = CreateParentViewModel(0, 3);
             parentViewModel.Model.AddLicenseAnnotation(
                 new ImageLocator("project", "image-1"),
                 OperatingSystemTypes.Linux,
@@ -107,35 +128,44 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.Services.Scheduli
                 OperatingSystemTypes.Unknown,
                 LicenseTypes.Unknown);
 
+            parentViewModel.SelectNodeTab();
             parentViewModel.Repopulate();
 
-            var viewModel = parentViewModel.InstanceReportPane;
+            var viewModel = parentViewModel.NodeReportPane;
 
             parentViewModel.IncludeWindowsInstances = false;
             parentViewModel.IncludeLinuxInstances = false;
             parentViewModel.IncludeUnknownOsInstances = false;
-            Assert.AreEqual(0, viewModel.Instances.Count());
+
+            viewModel.SelectedNode = viewModel.Nodes.FirstOrDefault();
+            Assert.AreEqual(0, viewModel.NodePlacements.Count());
 
             parentViewModel.IncludeWindowsInstances = true;
             parentViewModel.IncludeLinuxInstances = false;
             parentViewModel.IncludeUnknownOsInstances = false;
-            Assert.AreEqual(1, viewModel.Instances.Count());
+
+            viewModel.SelectedNode = viewModel.Nodes.FirstOrDefault();
+            Assert.AreEqual(1, viewModel.NodePlacements.Count());
 
             parentViewModel.IncludeWindowsInstances = true;
             parentViewModel.IncludeLinuxInstances = true;
             parentViewModel.IncludeUnknownOsInstances = false;
-            Assert.AreEqual(2, viewModel.Instances.Count());
+
+            viewModel.SelectedNode = viewModel.Nodes.FirstOrDefault();
+            Assert.AreEqual(2, viewModel.NodePlacements.Count());
 
             parentViewModel.IncludeWindowsInstances = true;
             parentViewModel.IncludeLinuxInstances = true;
             parentViewModel.IncludeUnknownOsInstances = true;
-            Assert.AreEqual(3, viewModel.Instances.Count());
+
+            viewModel.SelectedNode = viewModel.Nodes.FirstOrDefault();
+            Assert.AreEqual(3, viewModel.NodePlacements.Count());
         }
 
         [Test]
-        public void WhenLicenseFilterSetInParent_ThenInstancesContainsMatchingInstances()
+        public void WhenFilterChanged_ThenSelectionIsCleared()
         {
-            var parentViewModel = CreateParentViewModel(3, 0);
+            var parentViewModel = CreateParentViewModel(0, 3);
             parentViewModel.Model.AddLicenseAnnotation(
                 new ImageLocator("project", "image-1"),
                 OperatingSystemTypes.Windows,
@@ -149,71 +179,100 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.Services.Scheduli
                 OperatingSystemTypes.Windows,
                 LicenseTypes.Unknown);
 
+            parentViewModel.SelectNodeTab();
             parentViewModel.Repopulate();
 
-            var viewModel = parentViewModel.InstanceReportPane;
+            var viewModel = parentViewModel.NodeReportPane;
+
+            viewModel.SelectedNode = viewModel.Nodes.FirstOrDefault();
+            Assert.IsTrue(viewModel.NodePlacements.Any());
+
+            parentViewModel.IncludeSplaInstances = false;
+            Assert.IsNull(viewModel.SelectedNode);
+            Assert.IsFalse(viewModel.NodePlacements.Any());
+        }
+
+        [Test]
+        public void WhenLicenseFilterSetInParent_ThenInstancesContainsMatchingInstances()
+        {
+            var parentViewModel = CreateParentViewModel(0, 3);
+            parentViewModel.Model.AddLicenseAnnotation(
+                new ImageLocator("project", "image-1"),
+                OperatingSystemTypes.Windows,
+                LicenseTypes.Spla);
+            parentViewModel.Model.AddLicenseAnnotation(
+                new ImageLocator("project", "image-2"),
+                OperatingSystemTypes.Windows,
+                LicenseTypes.Byol);
+            parentViewModel.Model.AddLicenseAnnotation(
+                new ImageLocator("project", "image-3"),
+                OperatingSystemTypes.Windows,
+                LicenseTypes.Unknown);
+
+            parentViewModel.SelectNodeTab();
+            parentViewModel.Repopulate();
+
+            var viewModel = parentViewModel.NodeReportPane;
 
             parentViewModel.IncludeSplaInstances = false;
             parentViewModel.IncludeByolInstances = false;
             parentViewModel.IncludeUnknownLicensedInstances = false;
-            Assert.AreEqual(0, viewModel.Instances.Count());
+
+            viewModel.SelectedNode = viewModel.Nodes.FirstOrDefault();
+            Assert.AreEqual(0, viewModel.NodePlacements.Count());
 
             parentViewModel.IncludeSplaInstances = true;
             parentViewModel.IncludeByolInstances = false;
             parentViewModel.IncludeUnknownLicensedInstances = false;
-            Assert.AreEqual(1, viewModel.Instances.Count());
+
+            viewModel.SelectedNode = viewModel.Nodes.FirstOrDefault();
+            Assert.AreEqual(1, viewModel.NodePlacements.Count());
 
             parentViewModel.IncludeSplaInstances = true;
             parentViewModel.IncludeByolInstances = true;
             parentViewModel.IncludeUnknownLicensedInstances = false;
-            Assert.AreEqual(2, viewModel.Instances.Count());
+
+            viewModel.SelectedNode = viewModel.Nodes.FirstOrDefault();
+            Assert.AreEqual(2, viewModel.NodePlacements.Count());
 
             parentViewModel.IncludeSplaInstances = true;
             parentViewModel.IncludeByolInstances = true;
             parentViewModel.IncludeUnknownLicensedInstances = true;
-            Assert.AreEqual(3, viewModel.Instances.Count());
+
+            viewModel.SelectedNode = viewModel.Nodes.FirstOrDefault();
+            Assert.AreEqual(3, viewModel.NodePlacements.Count());
         }
 
         [Test]
-        public void WhenTenancyFilterSetInParent_ThenHistogramContainsMatchingInstances()
+        public void WhenDateRangeSelected_ThenInstancesContainsMatchingNodePlacements()
         {
-            var parentViewModel = CreateParentViewModel(1, 0);
+            var parentViewModel = CreateParentViewModel(0, 3);
+            parentViewModel.SelectNodeTab();
             parentViewModel.Repopulate();
 
-            var viewModel = parentViewModel.InstanceReportPane;
+            var viewModel = parentViewModel.NodeReportPane;
+            viewModel.SelectedNode = viewModel.Nodes.FirstOrDefault();
 
-            Assert.AreEqual(1, viewModel.Histogram.First().Value);
-
-            parentViewModel.IncludeFleetInstances = false;
-
-            Assert.IsFalse(viewModel.Histogram.Any());
-        }
-
-        [Test]
-        public void WhenDateRangeSelected_ThenInstancesContainsMatchingInstances()
-        {
-            var parentViewModel = CreateParentViewModel(3, 0);
-            parentViewModel.Repopulate();
-
-            var viewModel = parentViewModel.InstanceReportPane;
-            Assert.AreEqual(3, viewModel.Instances.Count());
+            Assert.AreEqual(3, viewModel.NodePlacements.Count());
 
             viewModel.Selection = new DateSelection()
             {
-                StartDate = BaselineTime,
-                EndDate = BaselineTime.AddDays(1)
+                StartDate = BaselineTime.AddDays(1),
+                EndDate = BaselineTime.AddDays(2)
             };
+            viewModel.SelectedNode = viewModel.Nodes.FirstOrDefault();
 
-            Assert.AreEqual(2, viewModel.Instances.Count());
+            Assert.AreEqual(2, viewModel.NodePlacements.Count());
         }
 
         [Test]
         public void WhenDateRangeSelected_ThenHistogramIsUnaffected()
         {
-            var parentViewModel = CreateParentViewModel(3, 0);
+            var parentViewModel = CreateParentViewModel(0, 3);
+            parentViewModel.SelectNodeTab();
             parentViewModel.Repopulate();
 
-            var viewModel = parentViewModel.InstanceReportPane;
+            var viewModel = parentViewModel.NodeReportPane;
 
             var histogram = viewModel.Histogram;
             Assert.AreEqual(BaselineTime, histogram.First().Timestamp);

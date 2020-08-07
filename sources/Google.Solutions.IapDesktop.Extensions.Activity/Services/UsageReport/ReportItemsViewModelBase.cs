@@ -25,7 +25,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Google.Solutions.IapDesktop.Extensions.Activity.Services.SchedulingReport
+namespace Google.Solutions.IapDesktop.Extensions.Activity.Services.UsageReport
 {
 
     internal abstract class ReportItemsViewModelBase : ViewModelBase

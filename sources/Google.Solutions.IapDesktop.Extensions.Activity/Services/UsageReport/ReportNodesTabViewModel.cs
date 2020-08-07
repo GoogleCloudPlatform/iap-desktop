@@ -24,7 +24,7 @@ using Google.Solutions.IapDesktop.Extensions.Activity.History;
 using System.Diagnostics;
 using System.Linq;
 
-namespace Google.Solutions.IapDesktop.Extensions.Activity.Services.SchedulingReport
+namespace Google.Solutions.IapDesktop.Extensions.Activity.Services.UsageReport
 {
     internal class ReportNodesTabViewModel : ReportItemsViewModelBase
     {

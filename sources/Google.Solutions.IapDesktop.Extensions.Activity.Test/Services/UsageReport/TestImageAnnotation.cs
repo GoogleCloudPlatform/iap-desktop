@@ -20,10 +20,10 @@
 //
 
 using Google.Solutions.Common.Locator;
-using Google.Solutions.IapDesktop.Extensions.Activity.Services.SchedulingReport;
+using Google.Solutions.IapDesktop.Extensions.Activity.Services.UsageReport;
 using NUnit.Framework;
 
-namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.Services.SchedulingReport
+namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.Services.UsageReport
 {
     [TestFixture]
     public class TestImageAnnotation

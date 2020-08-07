@@ -21,7 +21,7 @@
 
 using Newtonsoft.Json;
 
-namespace Google.Solutions.IapDesktop.Extensions.Activity.Services.SchedulingReport
+namespace Google.Solutions.IapDesktop.Extensions.Activity.Services.UsageReport
 {
     public class NodeAnnotation
     {

@@ -19,32 +19,35 @@
 // under the License.
 //
 
-using Google.Solutions.IapDesktop.Application.Util;
 using Google.Solutions.IapDesktop.Extensions.Activity.History;
 using System.Linq;
 
-namespace Google.Solutions.IapDesktop.Extensions.Activity.Services.SchedulingReport
+namespace Google.Solutions.IapDesktop.Extensions.Activity.Services.UsageReport
 {
-    internal class ReportInstancesTabViewModel : ReportItemsViewModelBase
+    internal class ReportLicensesTabViewModel : ReportItemsViewModelBase
     {
         private readonly ReportViewModel parent;
 
         internal override void Repopulate()
         {
-            // Get nodes, filtered by whatever filter applies.
-            var nodeSet = this.parent.GetNodes();
+            // Get nodes with Windows/BYOL placements.
+            var nodeSet = NodeSetHistory.FromInstancyHistory(
+                this.parent.Model.GetInstances(OperatingSystemTypes.Windows, LicenseTypes.Byol),
+                Tenancies.SoleTenant);
 
             // Create histogram, disregarding the date selection.
-            this.Histogram = nodeSet.MaxInstancePlacementsByDay;
+            this.Histogram = nodeSet.MaxNodesByDay
+                .Select(dp => new DataPoint()
+                {
+                    Timestamp = dp.Timestamp,
 
-            // For the list of instances, apply the date selection.
-            this.Instances.Clear();
-            this.Instances.AddRange(nodeSet.Nodes
-                .SelectMany(n => n.Placements)
-                .Where(p => p.From <= this.Selection.EndDate && p.To >= this.Selection.StartDate));
+                    // XXX: This is only accurate as long as all nodes use the
+                    // same node type.
+                    Value = dp.Value * NodeAnnotation.Default.PhysicalCores
+                });
         }
 
-        public ReportInstancesTabViewModel(ReportViewModel parent)
+        public ReportLicensesTabViewModel(ReportViewModel parent)
             : base(parent.Model)
         {
             this.parent = parent;
@@ -54,23 +57,12 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services.SchedulingRep
         // Observable "output" properties.
         //---------------------------------------------------------------------
 
-        public RangeObservableCollection<NodePlacement> Instances { get; }
-            = new RangeObservableCollection<NodePlacement>();
+        public string NodeTypeWarning =>
+            $"All nodes are assumed to use the node type {NodeAnnotation.Default.NodeType}" +
+            $" ({NodeAnnotation.Default.PhysicalCores} cores)";
 
         //---------------------------------------------------------------------
-
-        public ImageAnnotation GetImageAnnotation(InstanceHistory instance)
-        {
-            ImageAnnotation annotation;
-            if (instance.Image != null &&
-                this.parent.Model.LicenseAnnotations.TryGetValue(instance.Image.ToString(), out annotation))
-            {
-                return annotation;
-            }
-            else
-            { 
-                return ImageAnnotation.Default;
-            }
-        }
+        // "Input" properties.
+        //---------------------------------------------------------------------
     }
 }

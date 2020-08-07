@@ -19,7 +19,7 @@
 // under the License.
 //
 
-namespace Google.Solutions.IapDesktop.Extensions.Activity.Services.SchedulingReport
+namespace Google.Solutions.IapDesktop.Extensions.Activity.Services.UsageReport
 {
     partial class ReportPaneView
     {
@@ -72,7 +72,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services.SchedulingRep
             this.tabs = new Google.Solutions.IapDesktop.Application.Controls.FlatVerticalTabControl();
             this.instancesTab = new System.Windows.Forms.TabPage();
             this.noInstancesDataLabel = new System.Windows.Forms.Label();
-            this.instancesList = new Google.Solutions.IapDesktop.Extensions.Activity.Services.SchedulingReport.ReportPaneView.InstancesListView();
+            this.instancesList = new Google.Solutions.IapDesktop.Extensions.Activity.Services.UsageReport.ReportPaneView.InstancesListView();
             this.instanceIdColumnHeader = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.instanceNameColumnHeader = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.instanceZoneColumnHeader = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
@@ -86,7 +86,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services.SchedulingRep
             this.nodesTab = new System.Windows.Forms.TabPage();
             this.noNodesDataLabel = new System.Windows.Forms.Label();
             this.nodesSplitContainer = new System.Windows.Forms.SplitContainer();
-            this.nodesList = new Google.Solutions.IapDesktop.Extensions.Activity.Services.SchedulingReport.ReportPaneView.NodesListView();
+            this.nodesList = new Google.Solutions.IapDesktop.Extensions.Activity.Services.UsageReport.ReportPaneView.NodesListView();
             this.serverIdColumnHeader = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.nodeZoneColumnHeader = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.nodeProjectIdColumnHeader = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
@@ -95,7 +95,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services.SchedulingRep
             this.daysUsedColumnHeader = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.peakInstancesColumnHeader = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.nodePlacementsHeadline = new System.Windows.Forms.Label();
-            this.nodePlacementsList = new Google.Solutions.IapDesktop.Extensions.Activity.Services.SchedulingReport.ReportPaneView.NodesPlacementsListView();
+            this.nodePlacementsList = new Google.Solutions.IapDesktop.Extensions.Activity.Services.UsageReport.ReportPaneView.NodesPlacementsListView();
             this.nodePlacementInstanceIdColumnHeader = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.nodePlacementInstanceNameColumnHeader = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.nodePlacementZoneColumnHeader = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));

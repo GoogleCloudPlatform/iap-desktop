@@ -21,13 +21,13 @@
 
 using Google.Solutions.Common.Locator;
 using Google.Solutions.IapDesktop.Extensions.Activity.History;
-using Google.Solutions.IapDesktop.Extensions.Activity.Services.SchedulingReport;
+using Google.Solutions.IapDesktop.Extensions.Activity.Services.UsageReport;
 using NUnit.Framework;
 using System;
 using System.IO;
 using System.Linq;
 
-namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.Services.SchedulingReport
+namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.Services.UsageReport
 {
     [TestFixture]
     public class TestReportArchive : FixtureBase

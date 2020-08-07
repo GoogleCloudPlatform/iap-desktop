@@ -34,7 +34,7 @@ using System.Windows.Forms;
 using System.Windows.Forms.DataVisualization.Charting;
 using DataPoint = Google.Solutions.IapDesktop.Extensions.Activity.History.DataPoint;
 
-namespace Google.Solutions.IapDesktop.Extensions.Activity.Services.SchedulingReport
+namespace Google.Solutions.IapDesktop.Extensions.Activity.Services.UsageReport
 {
     [SkipCodeCoverage("All logic in view model")]
     public partial class ReportPaneView : SlowLoadingPane

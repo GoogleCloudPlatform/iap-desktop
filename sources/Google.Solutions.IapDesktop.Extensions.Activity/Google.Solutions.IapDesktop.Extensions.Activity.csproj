@@ -126,20 +126,20 @@
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
     <Compile Include="Services\Extension.cs" />
-    <Compile Include="Services\SchedulingReport\ImageAnnotation.cs" />
+    <Compile Include="Services\UsageReport\ImageAnnotation.cs" />
     <Compile Include="History\InstanceHistory.cs" />
     <Compile Include="History\InstanceHistoryBuilder.cs" />
     <Compile Include="History\InstanceSetHistory.cs" />
     <Compile Include="History\InstanceSetHistoryBuilder.cs" />
-    <Compile Include="Services\SchedulingReport\NodeAnnotation.cs" />
-    <Compile Include="Services\SchedulingReport\CreateReportDialog.cs">
+    <Compile Include="Services\UsageReport\NodeAnnotation.cs" />
+    <Compile Include="Services\UsageReport\CreateReportDialog.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Services\SchedulingReport\CreateReportDialog.Designer.cs">
+    <Compile Include="Services\UsageReport\CreateReportDialog.Designer.cs">
       <DependentUpon>CreateReportDialog.cs</DependentUpon>
     </Compile>
-    <Compile Include="Services\SchedulingReport\ReportArchive.cs" />
-    <Compile Include="Services\SchedulingReport\LicenseLoader.cs" />
+    <Compile Include="Services\UsageReport\ReportArchive.cs" />
+    <Compile Include="Services\UsageReport\LicenseLoader.cs" />
     <Compile Include="History\NodePlacement.cs" />
     <Compile Include="History\NodeSetHistory.cs" />
     <Compile Include="History\InstancePlacement.cs" />
@@ -148,18 +148,18 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Logs\AuditLogRecord.cs" />
     <Compile Include="Logs\LogRecord.cs" />
-    <Compile Include="Services\SchedulingReport\ReportBuilder.cs" />
-    <Compile Include="Services\SchedulingReport\ReportLicensesTabViewModel.cs" />
-    <Compile Include="Services\SchedulingReport\ReportInstancesTabViewModel.cs" />
-    <Compile Include="Services\SchedulingReport\ReportNodesTabViewModel.cs" />
-    <Compile Include="Services\SchedulingReport\ReportItemsViewModelBase.cs" />
-    <Compile Include="Services\SchedulingReport\ReportPaneView.cs">
+    <Compile Include="Services\UsageReport\ReportBuilder.cs" />
+    <Compile Include="Services\UsageReport\ReportLicensesTabViewModel.cs" />
+    <Compile Include="Services\UsageReport\ReportInstancesTabViewModel.cs" />
+    <Compile Include="Services\UsageReport\ReportNodesTabViewModel.cs" />
+    <Compile Include="Services\UsageReport\ReportItemsViewModelBase.cs" />
+    <Compile Include="Services\UsageReport\ReportPaneView.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Services\SchedulingReport\ReportPaneView.Designer.cs">
+    <Compile Include="Services\UsageReport\ReportPaneView.Designer.cs">
       <DependentUpon>ReportPaneView.cs</DependentUpon>
     </Compile>
-    <Compile Include="Services\SchedulingReport\ReportViewModel.cs" />
+    <Compile Include="Services\UsageReport\ReportViewModel.cs" />
     <Compile Include="Services\SerialOutput\AnsiTextReader.cs" />
     <Compile Include="Services\SerialOutput\AnsiTokenReader.cs" />
     <Compile Include="Services\SerialOutput\SerialOutputModel.cs" />
@@ -196,10 +196,10 @@
     <EmbeddedResource Include="Services\EventLog\EventLogWindow.resx">
       <DependentUpon>EventLogWindow.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Services\SchedulingReport\CreateReportDialog.resx">
+    <EmbeddedResource Include="Services\UsageReport\CreateReportDialog.resx">
       <DependentUpon>CreateReportDialog.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Services\SchedulingReport\ReportPaneView.resx">
+    <EmbeddedResource Include="Services\UsageReport\ReportPaneView.resx">
       <DependentUpon>ReportPaneView.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Services\SerialOutput\SerialOutputWindow.resx">

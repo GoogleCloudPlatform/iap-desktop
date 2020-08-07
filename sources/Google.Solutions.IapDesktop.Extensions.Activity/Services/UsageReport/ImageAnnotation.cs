@@ -25,7 +25,7 @@ using Newtonsoft.Json.Serialization;
 using System;
 using System.ComponentModel;
 
-namespace Google.Solutions.IapDesktop.Extensions.Activity.Services.SchedulingReport
+namespace Google.Solutions.IapDesktop.Extensions.Activity.Services.UsageReport
 {
     [Flags]
     public enum LicenseTypes
