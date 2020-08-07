@@ -117,7 +117,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.Windows.ProjectExplor
                         }
                         catch (Exception e)
                         {
-                            this.exceptionDialog.Show(this, "Loading logs failed", e);
+                            this.exceptionDialog.Show(this, "Loading data failed", e);
                         }
                     },
                     CancellationToken.None,
