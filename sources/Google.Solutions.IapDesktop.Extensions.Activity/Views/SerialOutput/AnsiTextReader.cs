@@ -25,7 +25,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Google.Solutions.IapDesktop.Extensions.Activity.Services.SerialOutput
+namespace Google.Solutions.IapDesktop.Extensions.Activity.Views.SerialOutput
 {
     /// <summary>
     /// Reader that extracts pure text out of a string containing

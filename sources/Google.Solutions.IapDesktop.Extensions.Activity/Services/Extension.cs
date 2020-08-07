@@ -21,18 +21,17 @@
 
 using Google.Solutions.IapDesktop.Application.ObjectModel;
 using Google.Solutions.IapDesktop.Application.Services.Adapters;
-using Google.Solutions.IapDesktop.Application.Services.Persistence;
 using Google.Solutions.IapDesktop.Application.Services.Windows;
 using Google.Solutions.IapDesktop.Application.Services.Windows.ProjectExplorer;
 using Google.Solutions.IapDesktop.Extensions.Activity.Properties;
 using Google.Solutions.IapDesktop.Extensions.Activity.Services.Adapters;
-using Google.Solutions.IapDesktop.Extensions.Activity.Services.EventLog;
 using Google.Solutions.IapDesktop.Extensions.Activity.Services.UsageReport;
-using Google.Solutions.IapDesktop.Extensions.Activity.Services.SerialOutput;
 using System;
 using System.Linq;
 using System.Windows.Forms;
 using Google.Solutions.IapDesktop.Extensions.Activity.Views.UsageReport;
+using Google.Solutions.IapDesktop.Extensions.Activity.Views.EventLog;
+using Google.Solutions.IapDesktop.Extensions.Activity.Views.SerialOutput;
 
 namespace Google.Solutions.IapDesktop.Extensions.Activity.Services
 {

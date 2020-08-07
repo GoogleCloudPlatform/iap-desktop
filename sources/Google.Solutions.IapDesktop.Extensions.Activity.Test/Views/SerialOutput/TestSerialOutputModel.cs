@@ -25,14 +25,14 @@ using Google.Solutions.Common.Locator;
 using Google.Solutions.Common.Test.Integration;
 using Google.Solutions.Common.Text;
 using Google.Solutions.IapDesktop.Application.Services.Adapters;
-using Google.Solutions.IapDesktop.Extensions.Activity.Services.SerialOutput;
+using Google.Solutions.IapDesktop.Extensions.Activity.Views.SerialOutput;
 using Moq;
 using NUnit.Framework;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.Services.SerialOutput
+namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.Views.SerialOutput
 {
     [TestFixture]
     [Category("IntegrationTest")]

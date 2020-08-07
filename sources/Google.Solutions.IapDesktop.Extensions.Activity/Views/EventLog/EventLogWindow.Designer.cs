@@ -19,7 +19,7 @@
 // under the License.
 //
 
-namespace Google.Solutions.IapDesktop.Extensions.Activity.Services.EventLog
+namespace Google.Solutions.IapDesktop.Extensions.Activity.Views.EventLog
 {
     partial class EventLogWindow
     {
@@ -64,7 +64,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services.EventLog
             this.timeFrameComboBox = new System.Windows.Forms.ToolStripComboBox();
             this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
             this.openLogsButton = new System.Windows.Forms.ToolStripButton();
-            this.list = new Google.Solutions.IapDesktop.Extensions.Activity.Services.EventLog.EventsListView();
+            this.list = new Google.Solutions.IapDesktop.Extensions.Activity.Views.EventLog.EventsListView();
             this.timestampColumn = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.instanceNameColumn = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.severityColumn = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));

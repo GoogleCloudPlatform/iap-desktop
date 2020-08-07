@@ -31,7 +31,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace Google.Solutions.IapDesktop.Extensions.Activity.Services.EventLog
+namespace Google.Solutions.IapDesktop.Extensions.Activity.Views.EventLog
 {
     [Service(ServiceLifetime.Singleton)]
     [SkipCodeCoverage("All logic in view model")]

@@ -110,7 +110,7 @@
     <Compile Include="FixtureBase.cs" />
     <Compile Include="History\TestDataPoint.cs" />
     <Compile Include="History\TestInstanceHistoryBuilder.cs" />
-    <Compile Include="Services\EventLog\TestEventLogViewModel.cs" />
+    <Compile Include="Views\EventLog\TestEventLogViewModel.cs" />
     <Compile Include="Services\UsageReport\TestAuditLogReportBuilder.cs" />
     <Compile Include="Services\UsageReport\TestImageAnnotation.cs" />
     <Compile Include="Services\UsageReport\TestReportArchive.cs" />
@@ -126,10 +126,10 @@
     <Compile Include="Views\UsageReport\TestReportInstancesTabViewModel.cs" />
     <Compile Include="Views\UsageReport\TestReportNodesTabViewModel.cs" />
     <Compile Include="Views\UsageReport\TestReportViewModel.cs" />
-    <Compile Include="Services\SerialOutput\TestAnsiTextReader.cs" />
-    <Compile Include="Services\SerialOutput\TestAnsiTokenReader.cs" />
-    <Compile Include="Services\SerialOutput\TestSerialOutputModel.cs" />
-    <Compile Include="Services\SerialOutput\TestSerialOutputViewModel.cs" />
+    <Compile Include="Views\SerialOutput\TestAnsiTextReader.cs" />
+    <Compile Include="Views\SerialOutput\TestAnsiTokenReader.cs" />
+    <Compile Include="Views\SerialOutput\TestSerialOutputModel.cs" />
+    <Compile Include="Views\SerialOutput\TestSerialOutputViewModel.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Google.Solutions.Common.Test\Google.Solutions.Common.Test.csproj">

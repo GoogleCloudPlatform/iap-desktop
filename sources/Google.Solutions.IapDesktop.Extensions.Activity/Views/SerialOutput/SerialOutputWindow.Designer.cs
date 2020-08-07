@@ -19,7 +19,7 @@
 // under the License.
 //
 
-namespace Google.Solutions.IapDesktop.Extensions.Activity.Services.SerialOutput
+namespace Google.Solutions.IapDesktop.Extensions.Activity.Views.SerialOutput
 {
     partial class SerialOutputWindow
     {

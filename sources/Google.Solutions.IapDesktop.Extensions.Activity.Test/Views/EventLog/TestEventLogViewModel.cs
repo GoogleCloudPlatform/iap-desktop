@@ -27,7 +27,7 @@ using Google.Solutions.IapDesktop.Extensions.Activity.Events.System;
 using Google.Solutions.IapDesktop.Extensions.Activity.History;
 using Google.Solutions.IapDesktop.Extensions.Activity.Logs;
 using Google.Solutions.IapDesktop.Extensions.Activity.Services.Adapters;
-using Google.Solutions.IapDesktop.Extensions.Activity.Services.EventLog;
+using Google.Solutions.IapDesktop.Extensions.Activity.Views.EventLog;
 using Moq;
 using NUnit.Framework;
 using System;
@@ -36,7 +36,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.Services.EventLog
+namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.Views.EventLog
 {
     [TestFixture]
     public class TestEventLogViewModel : FixtureBase

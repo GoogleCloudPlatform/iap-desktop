@@ -24,7 +24,7 @@ using Google.Solutions.IapDesktop.Extensions.Activity.History;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Google.Solutions.IapDesktop.Extensions.Activity.Services.EventLog
+namespace Google.Solutions.IapDesktop.Extensions.Activity.Views.EventLog
 {
     internal class EventLogModel : IEventProcessor
     {
