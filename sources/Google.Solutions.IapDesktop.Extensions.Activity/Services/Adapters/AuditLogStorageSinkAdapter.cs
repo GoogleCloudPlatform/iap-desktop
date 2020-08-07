@@ -19,6 +19,7 @@
 // under the License.
 //
 
+using Google.Apis.Compute.v1;
 using Google.Solutions.Common.Diagnostics;
 using Google.Solutions.Common.Util;
 using Google.Solutions.IapDesktop.Application;
@@ -94,23 +95,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services.Adapters
             }
         }
 
-        private static async Task<IEnumerable<TOutput>> MapAndFoldAsync<TInput, TOutput>(
-            IEnumerable<TInput> inputItems,
-            Func<TInput, Task<IEnumerable<TOutput>>> mapFunc)
-        {
-            var tasks = new List<Task<IEnumerable<TOutput>>>();
-
-            // TODO: Chunking
-            foreach (var item in inputItems)
-            {
-                tasks.Add(mapFunc(item));
-            }
-
-            await Task.WhenAll(tasks.ToArray()).ConfigureAwait(false);
-
-            return tasks.SelectMany(t => t.Result);
-        }
-
         internal async Task<IDictionary<DateTime, IEnumerable<StorageObjectLocator>>> FindExportObjects(
             IEnumerable<string> buckets,
             DateTime startTime,
@@ -142,17 +126,17 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services.Adapters
                 // the object name.
                 //  
 
-                var allObjects = await MapAndFoldAsync(
-                        buckets,
+                var objectsByBucket = await buckets
+                    .SelectParallelAsync(
                         bucket => this.storageAdapter.ListObjectsAsync(bucket, cancellationToken))
                     .ConfigureAwait(false);
 
                 TraceSources.IapDesktop.TraceVerbose(
-                    "Found {0} objects across {1} buckets",
-                    allObjects.Count(),
+                    "Found objects across {0} buckets",
                     buckets.Count());
 
-                return allObjects
+                return objectsByBucket
+                    .SelectMany(r => r) // Flatten IEnumerable<IEnumerable<T>> to IEnumerable<T>
                     .Where(o => o.Name.StartsWith(ActivityPrefix) || o.Name.StartsWith(SystemEventPrefix))
                     .Select(o => new
                     {
@@ -204,12 +188,13 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services.Adapters
             IEnumerable<StorageObjectLocator> locators,
             CancellationToken cancellationToken)
         {
-            return await MapAndFoldAsync(
-                locators,
+            var resultsByLocator = await locators.SelectParallelAsync(
                 locator => ListInstanceEventsAsync(
                     locator,
                     cancellationToken))
                 .ConfigureAwait(false);
+
+            return resultsByLocator.SelectMany(r => r);
         }
 
         public async Task ProcessInstanceEventsAsync(

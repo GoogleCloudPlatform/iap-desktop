@@ -345,7 +345,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.Services.Adapters
             Assert.AreEqual(0, eventsProcessed.Count);
         }
 
-
         [Test]
         public async Task WhenMethodDoesNotMatch_ThenEventsAreNotProcessed(
             [Credential(Role = PredefinedRole.StorageObjectViewer)] CredentialRequest credential)
