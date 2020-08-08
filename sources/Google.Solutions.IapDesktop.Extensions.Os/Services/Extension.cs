@@ -20,10 +20,10 @@
 //
 
 using Google.Solutions.IapDesktop.Application.ObjectModel;
-using Google.Solutions.IapDesktop.Application.Services.Windows;
-using Google.Solutions.IapDesktop.Application.Services.Windows.ProjectExplorer;
+using Google.Solutions.IapDesktop.Application.Views;
+using Google.Solutions.IapDesktop.Application.Views.ProjectExplorer;
 using Google.Solutions.IapDesktop.Extensions.Os.Properties;
-using Google.Solutions.IapDesktop.Extensions.Os.Services.InstanceDetails;
+using Google.Solutions.IapDesktop.Extensions.Os.Views.InstanceDetails;
 using System;
 using System.Windows.Forms;
 

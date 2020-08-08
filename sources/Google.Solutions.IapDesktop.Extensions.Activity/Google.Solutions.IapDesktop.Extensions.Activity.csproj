@@ -109,12 +109,12 @@
     <Compile Include="Events\System\TerminateOnHostMaintenanceEvent.cs" />
     <Compile Include="Events\UnknownEvent.cs" />
     <Compile Include="Events\VmInstanceEventBase.cs" />
-    <Compile Include="Services\EventLog\EventLogModel.cs" />
-    <Compile Include="Services\EventLog\EventLogViewModel.cs" />
-    <Compile Include="Services\EventLog\EventLogWindow.cs">
+    <Compile Include="Views\EventLog\EventLogModel.cs" />
+    <Compile Include="Views\EventLog\EventLogViewModel.cs" />
+    <Compile Include="Views\EventLog\EventLogWindow.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Services\EventLog\EventLogWindow.Designer.cs">
+    <Compile Include="Views\EventLog\EventLogWindow.Designer.cs">
       <DependentUpon>EventLogWindow.cs</DependentUpon>
     </Compile>
     <Compile Include="Services\Adapters\AuditLogAdapter.cs" />
@@ -126,20 +126,20 @@
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
     <Compile Include="Services\Extension.cs" />
-    <Compile Include="Services\SchedulingReport\ImageAnnotation.cs" />
+    <Compile Include="Services\UsageReport\ImageAnnotation.cs" />
     <Compile Include="History\InstanceHistory.cs" />
     <Compile Include="History\InstanceHistoryBuilder.cs" />
     <Compile Include="History\InstanceSetHistory.cs" />
     <Compile Include="History\InstanceSetHistoryBuilder.cs" />
-    <Compile Include="Services\SchedulingReport\NodeAnnotation.cs" />
-    <Compile Include="Services\SchedulingReport\CreateReportDialog.cs">
+    <Compile Include="Services\UsageReport\NodeAnnotation.cs" />
+    <Compile Include="Views\UsageReport\CreateReportDialog.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Services\SchedulingReport\CreateReportDialog.Designer.cs">
+    <Compile Include="Views\UsageReport\CreateReportDialog.Designer.cs">
       <DependentUpon>CreateReportDialog.cs</DependentUpon>
     </Compile>
-    <Compile Include="Services\SchedulingReport\ReportArchive.cs" />
-    <Compile Include="Services\SchedulingReport\LicenseLoader.cs" />
+    <Compile Include="Services\UsageReport\ReportArchive.cs" />
+    <Compile Include="Services\UsageReport\LicenseLoader.cs" />
     <Compile Include="History\NodePlacement.cs" />
     <Compile Include="History\NodeSetHistory.cs" />
     <Compile Include="History\InstancePlacement.cs" />
@@ -148,29 +148,29 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Logs\AuditLogRecord.cs" />
     <Compile Include="Logs\LogRecord.cs" />
-    <Compile Include="Services\SchedulingReport\ReportBuilder.cs" />
-    <Compile Include="Services\SchedulingReport\ReportLicensesTabViewModel.cs" />
-    <Compile Include="Services\SchedulingReport\ReportInstancesTabViewModel.cs" />
-    <Compile Include="Services\SchedulingReport\ReportNodesTabViewModel.cs" />
-    <Compile Include="Services\SchedulingReport\ReportItemsViewModelBase.cs" />
-    <Compile Include="Services\SchedulingReport\ReportPaneView.cs">
+    <Compile Include="Services\UsageReport\ReportBuilder.cs" />
+    <Compile Include="Views\UsageReport\ReportLicensesTabViewModel.cs" />
+    <Compile Include="Views\UsageReport\ReportInstancesTabViewModel.cs" />
+    <Compile Include="Views\UsageReport\ReportNodesTabViewModel.cs" />
+    <Compile Include="Views\UsageReport\ReportItemsViewModelBase.cs" />
+    <Compile Include="Views\UsageReport\ReportPaneView.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Services\SchedulingReport\ReportPaneView.Designer.cs">
+    <Compile Include="Views\UsageReport\ReportPaneView.Designer.cs">
       <DependentUpon>ReportPaneView.cs</DependentUpon>
     </Compile>
-    <Compile Include="Services\SchedulingReport\ReportViewModel.cs" />
-    <Compile Include="Services\SerialOutput\AnsiTextReader.cs" />
-    <Compile Include="Services\SerialOutput\AnsiTokenReader.cs" />
-    <Compile Include="Services\SerialOutput\SerialOutputModel.cs" />
-    <Compile Include="Services\SerialOutput\SerialOutputViewModel.cs" />
-    <Compile Include="Services\SerialOutput\SerialOutputWindow.cs">
+    <Compile Include="Views\UsageReport\ReportViewModel.cs" />
+    <Compile Include="Views\SerialOutput\AnsiTextReader.cs" />
+    <Compile Include="Views\SerialOutput\AnsiTokenReader.cs" />
+    <Compile Include="Views\SerialOutput\SerialOutputModel.cs" />
+    <Compile Include="Views\SerialOutput\SerialOutputViewModel.cs" />
+    <Compile Include="Views\SerialOutput\SerialOutputWindow.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Services\SerialOutput\SerialOutputWindow.Designer.cs">
+    <Compile Include="Views\SerialOutput\SerialOutputWindow.Designer.cs">
       <DependentUpon>SerialOutputWindow.cs</DependentUpon>
     </Compile>
-    <Compile Include="Services\SerialOutput\SerialOutputWindowComX.cs">
+    <Compile Include="Views\SerialOutput\SerialOutputWindowComX.cs">
       <SubType>Form</SubType>
     </Compile>
   </ItemGroup>
@@ -193,16 +193,16 @@
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
       <SubType>Designer</SubType>
     </EmbeddedResource>
-    <EmbeddedResource Include="Services\EventLog\EventLogWindow.resx">
+    <EmbeddedResource Include="Views\EventLog\EventLogWindow.resx">
       <DependentUpon>EventLogWindow.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Services\SchedulingReport\CreateReportDialog.resx">
+    <EmbeddedResource Include="Views\UsageReport\CreateReportDialog.resx">
       <DependentUpon>CreateReportDialog.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Services\SchedulingReport\ReportPaneView.resx">
+    <EmbeddedResource Include="Views\UsageReport\ReportPaneView.resx">
       <DependentUpon>ReportPaneView.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Services\SerialOutput\SerialOutputWindow.resx">
+    <EmbeddedResource Include="Views\SerialOutput\SerialOutputWindow.resx">
       <DependentUpon>SerialOutputWindow.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
@@ -219,6 +219,7 @@
   <ItemGroup>
     <None Include="Resources\Log_16.png" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>copy /Y $(TargetDir)\$(TargetName).* $(SolutionDir)\Google.Solutions.IapDesktop\$(OutDir)

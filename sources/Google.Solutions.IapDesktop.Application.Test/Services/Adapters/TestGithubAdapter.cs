@@ -24,7 +24,7 @@ using NUnit.Framework;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Google.Solutions.IapDesktop.Application.Test.Adapters.Services
+namespace Google.Solutions.IapDesktop.Application.Test.Adapters
 {
     [TestFixture]
     public class TestGithubAdapter : FixtureBase
