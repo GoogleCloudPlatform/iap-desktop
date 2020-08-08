@@ -20,6 +20,7 @@
 //
 
 using Google.Solutions.Common.Diagnostics;
+using Google.Solutions.Common.Util;
 using Google.Solutions.IapDesktop.Application;
 using Google.Solutions.IapDesktop.Application.Services.Adapters;
 using Google.Solutions.IapDesktop.Extensions.Activity.Events;
@@ -27,6 +28,7 @@ using Google.Solutions.IapDesktop.Extensions.Activity.History;
 using Google.Solutions.IapDesktop.Extensions.Activity.Services.Adapters;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -36,10 +38,19 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services.UsageReport
     {
         ushort PercentageDone { get; }
         string BuildStatus { get; }
-        Task<ReportArchive> BuildAsync(CancellationToken token);
+        Task<ReportArchive> BuildAsync(
+            AuditLogSources sources,
+            CancellationToken token);
     }
 
-    internal class AuditLogReportBuilder : IReportBuilder, IEventProcessor
+    [Flags]
+    internal enum AuditLogSources
+    {
+        Api,
+        StorageExport
+    }
+
+    internal class ReportBuilder : IReportBuilder, IEventProcessor
     {
         private readonly ushort MaxPeriod = 400;
 
@@ -49,7 +60,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services.UsageReport
         private readonly IAuditLogAdapter auditLogAdapter;
         private readonly IComputeEngineAdapter computeEngineAdapter;
 
-        public AuditLogReportBuilder(
+        public ReportBuilder(
             IAuditLogAdapter auditLogAdapter,
             IComputeEngineAdapter computeEngineAdapter,
             IEnumerable<string> projectIds,
@@ -76,13 +87,18 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services.UsageReport
 
         public string BuildStatus { get; private set; } = string.Empty;
 
-        public async Task<ReportArchive> BuildAsync(CancellationToken cancellationToken)
+        public async Task<ReportArchive> BuildAsync(
+            AuditLogSources sources, 
+            CancellationToken cancellationToken)
         {
-            using (TraceSources.IapDesktop.TraceMethod().WithoutParameters())
+            using (TraceSources.IapDesktop.TraceMethod().WithParameters(this.projectIds, sources))
             {
                 this.PercentageDone = 5;
                 this.BuildStatus = "Analyzing current state...";
 
+                //
+                // (1) Take inventory of what's there currently (pretty fast).
+                //
                 foreach (var projectId in this.projectIds)
                 {
                     //
@@ -109,16 +125,49 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services.UsageReport
                         projectId);
                 }
 
-                this.PercentageDone = 10;
-                this.BuildStatus = $"Analyzing changes made since {this.builder.StartDate:d}...";
+                //
+                // (2) Try to use GCS exports for as many projects as we can (reasonably fast).
+                //
 
-                await this.auditLogAdapter.ListInstanceEventsAsync(
-                    this.projectIds,
-                    null,  // all zones.
-                    null,  // all instances.
-                    this.builder.StartDate,
-                    this,
-                    cancellationToken).ConfigureAwait(false);
+                if (sources.HasFlag(AuditLogSources.StorageExport))
+                {
+                    this.PercentageDone = 10;
+                    this.BuildStatus = $"Analyzing audit logs exported to Cloud Storage...";
+
+                    // TODO: find suitable exports
+                    // TODO: only use if full date range covered
+
+                    // TODO: Use multi-line status and report
+                    // - which bucket used or skipped
+                }
+
+
+                //
+                // (3) Use API for remaining projects (very slow).
+                //
+
+                if (sources.HasFlag(AuditLogSources.Api))
+                {
+                    this.PercentageDone = 30;
+                    this.BuildStatus = $"Querying audit log API...";
+
+                    var remainingProjects = this.projectIds.Except(this.builder.ProjectIds);
+                    TraceSources.IapDesktop.TraceVerbose(
+                        "Querying audit log API for remaining projects {0}",
+                        string.Join(", ", remainingProjects));
+
+                    await this.auditLogAdapter.ListInstanceEventsAsync(
+                        remainingProjects,
+                        null,  // all zones.
+                        null,  // all instances.
+                        this.builder.StartDate,
+                        this,
+                        cancellationToken).ConfigureAwait(false);
+                }
+
+                //
+                // (4) Finish up.
+                //
 
                 this.PercentageDone = 90;
                 this.BuildStatus = "Finalizing report...";
@@ -150,7 +199,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services.UsageReport
             // but it is good enough to give the user a clue.
 
             var daysProcessed = (this.builder.EndDate - e.Timestamp).TotalDays;
-            this.PercentageDone = (ushort)(10.0 + 80.0 * daysProcessed /
+            this.PercentageDone = (ushort)(30.0 + 60.0 * daysProcessed /
                 (this.builder.EndDate - this.builder.StartDate).TotalDays);
 
             this.builder.Process(e);

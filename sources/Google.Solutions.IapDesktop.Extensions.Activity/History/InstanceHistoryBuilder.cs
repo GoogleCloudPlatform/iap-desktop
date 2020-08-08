@@ -52,6 +52,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.History
 
         public ulong InstanceId { get; }
 
+        public string ProjectId => this.reference?.ProjectId;
+
         public Tenancies Tenancy => this.placements.Any()
             ? this.placements.First().Tenancy
             : Tenancies.Unknown;

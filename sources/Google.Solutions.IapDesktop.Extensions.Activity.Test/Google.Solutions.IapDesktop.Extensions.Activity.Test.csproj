@@ -119,7 +119,7 @@
     <Compile Include="Services\Adapters\TestStorageAdapter.cs" />
     <Compile Include="Services\Adapters\TestStorageObjectLocator.cs" />
     <Compile Include="Views\EventLog\TestEventLogViewModel.cs" />
-    <Compile Include="Services\UsageReport\TestAuditLogReportBuilder.cs" />
+    <Compile Include="Services\UsageReport\TestReportBuilder.cs" />
     <Compile Include="Services\UsageReport\TestImageAnnotation.cs" />
     <Compile Include="Services\UsageReport\TestReportArchive.cs" />
     <Compile Include="History\TestInstanceSetHistoryBuilder.cs" />

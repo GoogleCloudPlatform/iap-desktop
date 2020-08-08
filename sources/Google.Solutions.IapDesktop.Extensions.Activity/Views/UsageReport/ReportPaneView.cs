@@ -75,7 +75,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Views.UsageReport
 
         private async Task LoadAsync(CancellationToken token)
         {
-            var model = await this.reportBuilder.BuildAsync(token)
+            var model = await this.reportBuilder.BuildAsync(AuditLogSources.Api, token)
                 .ConfigureAwait(true);
             this.viewModel = new ReportViewModel(model);
         }

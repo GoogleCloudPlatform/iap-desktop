@@ -61,7 +61,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.History
             DateTime endDate)
         {
             if (startDate.Kind != DateTimeKind.Utc ||
-                startDate.Kind != DateTimeKind.Utc)
+                endDate.Kind != DateTimeKind.Utc)
             {
                 throw new ArgumentException("Start/end date must be in UTC time");
             }
@@ -156,6 +156,13 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.History
                 this.EndDate,
                 this.instanceBuilders.Values.Select(b => b.Build()).ToList());
         }
+
+        public ISet<string> ProjectIds
+            => this.instanceBuilders
+                .Values
+                .Where(ib => ib.ProjectId != null)
+                .Select(ib => ib.ProjectId)
+                .ToHashSet();
 
         //---------------------------------------------------------------------
         // IEventProcessor
