@@ -26,8 +26,32 @@ namespace Google.Solutions.IapDesktop.Extensions.Os.Inventory
 {
     public class GuestPackages
     {
+        [JsonProperty("yum")]
+        public IList<Package> YumPackages { get; }
+
+        [JsonProperty("rpm")]
+        public IList<Package> RpmPackages { get; }
+
+        [JsonProperty("apt")]
+        public IList<Package> AptPackages { get; }
+
+        [JsonProperty("deb")]
+        public IList<Package> DebPackages { get; }
+
+        [JsonProperty("zypper")]
+        public IList<Package> ZypperPackages { get; }
+
+        [JsonProperty("zypperPatches")]
+        public IList<ZypperPatch> ZypperPatches { get; }
+
+        [JsonProperty("gem")]
+        public IList<Package> GemPackages { get; }
+
+        [JsonProperty("pip")]
+        public IList<Package> PipPackages { get; }
+
         [JsonProperty("googet")]
-        public IList<GoogetPackage> GoogetPackages { get; }
+        public IList<Package> GoogetPackages { get; }
 
         [JsonProperty("wua")]
         public IList<WuaPackage> WuaPackages { get; }
@@ -37,13 +61,29 @@ namespace Google.Solutions.IapDesktop.Extensions.Os.Inventory
 
         [JsonConstructor]
         public GuestPackages(
-            [JsonProperty("googet")] IList<GoogetPackage> googet,
-            [JsonProperty("wua")] IList<WuaPackage> wua,
-            [JsonProperty("qfe")] IList<QfePackage> qfe)
+            [JsonProperty("yum")] IList<Package> yumPackages,
+            [JsonProperty("rpm")] IList<Package> rpmPackages,
+            [JsonProperty("apt")] IList<Package> aptPackages,
+            [JsonProperty("deb")] IList<Package> debPackages,
+            [JsonProperty("zypper")] IList<Package> zypperPackages,
+            [JsonProperty("zypperPatches")] IList<ZypperPatch> zypperPatches,
+            [JsonProperty("gem")] IList<Package> gemPackages,
+            [JsonProperty("pip")] IList<Package> pipPackages,
+            [JsonProperty("googet")] IList<Package> googetPackages,
+            [JsonProperty("wua")] IList<WuaPackage> wuaPackages,
+            [JsonProperty("qfe")] IList<QfePackage> qfePackages)
         {
-            this.GoogetPackages = googet;
-            this.WuaPackages = wua;
-            this.QfePackages = qfe;
+            this.YumPackages = yumPackages;
+            this.RpmPackages = rpmPackages;
+            this.AptPackages = aptPackages;
+            this.DebPackages = debPackages;
+            this.ZypperPackages = zypperPackages;
+            this.ZypperPatches = zypperPatches;
+            this.GemPackages = gemPackages;
+            this.PipPackages = pipPackages;
+            this.GoogetPackages = googetPackages;
+            this.WuaPackages = wuaPackages;
+            this.QfePackages = qfePackages;
         }
     }
 }

@@ -77,6 +77,14 @@ namespace Google.Solutions.IapDesktop.Extensions.Os.Inventory
 
         private static T DecodeAndParseBase64Gzip<T>(string base64gzipped)
         {
+            using (var reader = new StreamReader(
+                    new GZipStream(
+                        new MemoryStream(Convert.FromBase64String(base64gzipped)),
+                        CompressionMode.Decompress)))
+            {
+                var json = reader.ReadToEnd();
+            }
+
             using (var reader = new JsonTextReader(
                 new StreamReader(
                     new GZipStream(

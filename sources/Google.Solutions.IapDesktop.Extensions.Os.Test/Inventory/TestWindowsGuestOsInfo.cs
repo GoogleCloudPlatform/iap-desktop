@@ -30,7 +30,7 @@ using System.Collections.Generic;
 namespace Google.Solutions.IapDesktop.Extensions.Os.Test.Inventory
 {
     [TestFixture]
-    public class TestGuestOsInfo : FixtureBase
+    public class TestWindowsGuestOsInfo : FixtureBase
     {
         private static readonly InstanceLocator SampleLocator =
             new InstanceLocator("project-1", "zone-1", "instance-1");
@@ -46,7 +46,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Os.Test.Inventory
                 new GuestAttributesEntry() {
                     Namespace__ = "guestInventory",
                     Key =  "Hostname",
-                    Value =  "msdn"
+                    Value =  "windows-1"
                 },
                 new GuestAttributesEntry() {
                     Namespace__ = "guestInventory",

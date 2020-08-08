@@ -23,26 +23,31 @@ using Newtonsoft.Json;
 
 namespace Google.Solutions.IapDesktop.Extensions.Os.Inventory
 {
-    public class GoogetPackage
+    public class ZypperPatch
     {
         [JsonProperty("Name")]
         public string Name { get; }
 
-        [JsonProperty("Arch")]
-        public string Arch { get; }
+        [JsonProperty("Category")]
+        public string Category { get; }
 
-        [JsonProperty("Version")]
-        public string Version { get; }
+        [JsonProperty("Severity")]
+        public string Severity { get; }
+
+        [JsonProperty("Summary ")]
+        public string Summary { get; }
 
         [JsonConstructor]
-        public GoogetPackage(
+        public ZypperPatch(
             [JsonProperty("Name")] string name,
-            [JsonProperty("Arch")] string arch,
-            [JsonProperty("Version")] string version)
+            [JsonProperty("Category")] string category,
+            [JsonProperty("Severity")] string severity,
+            [JsonProperty("Summary")] string summary)
         {
             this.Name = name;
-            this.Arch = arch;
-            this.Version = version;
+            this.Category = category;
+            this.Severity = severity;
+            this.Summary = summary;
         }
     }
 }
