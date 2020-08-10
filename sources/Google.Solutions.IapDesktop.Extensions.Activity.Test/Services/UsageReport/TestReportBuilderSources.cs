@@ -180,7 +180,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.Services.UsageRep
         }
 
         [Test]
-        public async Task WhenExportsAvailableAndAccessibleButDoesNotProcessAnyProjects_ThenApiIsUsed()
+        public async Task WhenExportsAvailableAndAccessible_ThenApiIsNotUsed()
         {
             var computeEngineAdapter = new Mock<IComputeEngineAdapter>();
             var auditLogAdapter = new Mock<IAuditLogAdapter>();
@@ -219,7 +219,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.Services.UsageRep
                     It.IsAny<IEnumerable<ulong>>(),
                     It.IsAny<DateTime>(),
                     It.IsAny<IEventProcessor>(),
-                    It.IsAny<CancellationToken>()), Times.Once);
+                    It.IsAny<CancellationToken>()), Times.Never);
         }
     }
 }

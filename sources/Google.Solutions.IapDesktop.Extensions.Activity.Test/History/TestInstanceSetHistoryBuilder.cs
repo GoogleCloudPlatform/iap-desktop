@@ -82,7 +82,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.History
                 InstanceState.Running,
                 DateTime.Now,
                 Tenancies.Fleet);
-            Assert.AreEqual(SampleReference.ProjectId, b.ProjectIds.First());
 
             var set = b.Build();
 

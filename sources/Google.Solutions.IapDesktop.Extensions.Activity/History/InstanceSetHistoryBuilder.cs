@@ -157,13 +157,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.History
                 this.instanceBuilders.Values.Select(b => b.Build()).ToList());
         }
 
-        public ISet<string> ProjectIds
-            => this.instanceBuilders
-                .Values
-                .Where(ib => ib.ProjectId != null)
-                .Select(ib => ib.ProjectId)
-                .ToHashSet();
-
         //---------------------------------------------------------------------
         // IEventProcessor
         //---------------------------------------------------------------------

@@ -133,6 +133,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services.UsageReport
                 // (2) Try to use GCS exports for as many projects as we can (reasonably fast).
                 //
 
+                var pendingProjectIds = new HashSet<string>(this.projectIds);
+
                 if (this.sources.HasFlag(AuditLogSources.StorageExport))
                 {
                     this.PercentageDone = 10;
@@ -172,6 +174,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services.UsageReport
                                         this,
                                         cancellationToken)
                                     .ConfigureAwait(false);
+
+                                // Check this project off.
+                                pendingProjectIds.Remove(projectId);
                             }
                             catch (ResourceAccessDeniedException)
                             {
@@ -188,18 +193,17 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services.UsageReport
                 // (3) Use API for remaining projects (very slow).
                 //
 
-                if (this.sources.HasFlag(AuditLogSources.Api))
+                if (pendingProjectIds.Any() && this.sources.HasFlag(AuditLogSources.Api))
                 {
                     this.PercentageDone = 30;
                     this.BuildStatus = $"Querying audit log API...";
 
-                    var remainingProjects = this.projectIds.Except(this.builder.ProjectIds);
                     TraceSources.IapDesktop.TraceVerbose(
                         "Querying audit log API for remaining projects {0}",
-                        string.Join(", ", remainingProjects));
+                        string.Join(", ", pendingProjectIds));
 
                     await this.auditLogAdapter.ProcessInstanceEventsAsync(
-                            remainingProjects,
+                            pendingProjectIds,
                             null,  // all zones.
                             null,  // all instances.
                             this.builder.StartDate,
