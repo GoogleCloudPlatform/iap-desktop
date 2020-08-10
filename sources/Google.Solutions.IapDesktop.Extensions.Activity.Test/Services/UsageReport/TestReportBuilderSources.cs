@@ -79,7 +79,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.Services.UsageRep
 
             auditExportAdapter.Verify(
                 a => a.ProcessInstanceEventsAsync(
-                    It.IsAny<IEnumerable<string>>(),
+                    It.IsAny<string>(),
                     It.IsAny<DateTime>(),
                     It.IsAny<DateTime>(),
                     It.IsAny<IEventProcessor>(),
@@ -121,7 +121,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.Services.UsageRep
 
             auditExportAdapter.Verify(
                 a => a.ProcessInstanceEventsAsync(
-                    It.IsAny<IEnumerable<string>>(),
+                    It.IsAny<string>(),
                     It.IsAny<DateTime>(),
                     It.IsAny<DateTime>(),
                     It.IsAny<IEventProcessor>(),
@@ -152,7 +152,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.Services.UsageRep
 
             var auditExportAdapter = new Mock<IAuditLogStorageSinkAdapter>();
             auditExportAdapter.Setup(a => a.ProcessInstanceEventsAsync(
-                    It.IsAny<IEnumerable<string>>(),
+                    It.IsAny<string>(),
                     It.IsAny<DateTime>(),
                     It.IsAny<DateTime>(),
                     It.IsAny<IEventProcessor>(),
@@ -206,7 +206,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.Services.UsageRep
 
             auditExportAdapter.Verify(
                 a => a.ProcessInstanceEventsAsync(
-                    It.Is<IEnumerable<string>>(p => p.All(id => id == "audit-bucket")),
+                    It.Is<string>(bucket => bucket == "audit-bucket"),
                     It.IsAny<DateTime>(),
                     It.IsAny<DateTime>(),
                     It.IsAny<IEventProcessor>(),

@@ -204,7 +204,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.Services.Adapters
 
             AssertEx.ThrowsAggregateException<ArgumentException>(
                 () => service.FindExportObjects(
-                    new [] { TestProject.TestBucket },
+                    TestProject.TestBucket,
                     new DateTime(2020, 1, 2, 0, 0, 0, DateTimeKind.Utc),
                     new DateTime(2020, 1, 1, 0, 0, 0, DateTimeKind.Utc),
                     CancellationToken.None).Wait());
@@ -218,7 +218,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.Services.Adapters
                 new StorageAdapter(await credential.GetCredentialAsync()));
 
             var locators = await service.FindExportObjects(
-                    new[] { TestProject.TestBucket },
+                    TestProject.TestBucket,
                     new DateTime(2020, 2, 1, 0, 0, 0, DateTimeKind.Utc),
                     new DateTime(2020, 2, 2, 0, 0, 0, DateTimeKind.Utc),
                     CancellationToken.None);
@@ -236,7 +236,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.Services.Adapters
             var jan2 = new DateTime(2020, 1, 2, 0, 0, 0, DateTimeKind.Utc);
 
             var locators = await service.FindExportObjects(
-                    new[] { TestProject.TestBucket },
+                    TestProject.TestBucket,
                     jan1,
                     jan2,
                     CancellationToken.None);
@@ -268,8 +268,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.Services.Adapters
             var jan1 = new DateTime(2020, 1, 1, 0, 0, 0, DateTimeKind.Utc);
 
             await service.ProcessInstanceEventsAsync(
-                new[] { TestProject.TestBucket },
-                jan1,
+                TestProject.TestBucket,
+                    jan1,
                 jan1.AddMonths(1),
                 processor.Object,
                 CancellationToken.None);
@@ -302,7 +302,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.Services.Adapters
             var jan1 = new DateTime(2020, 1, 1, 0, 0, 0, DateTimeKind.Utc);
 
             await service.ProcessInstanceEventsAsync(
-                new[] { TestProject.TestBucket },
+                TestProject.TestBucket,
                 jan1,
                 jan1.AddMonths(1),
                 processor.Object,
@@ -336,7 +336,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.Services.Adapters
             var jan1 = new DateTime(2020, 1, 1, 0, 0, 0, DateTimeKind.Utc);
 
             await service.ProcessInstanceEventsAsync(
-                new[] { TestProject.TestBucket },
+                TestProject.TestBucket,
                 jan1,
                 jan1.AddMonths(1),
                 processor.Object,
@@ -364,7 +364,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.Services.Adapters
             var jan1 = new DateTime(2020, 1, 1, 0, 0, 0, DateTimeKind.Utc);
 
             await service.ProcessInstanceEventsAsync(
-                new[] { TestProject.TestBucket },
+                TestProject.TestBucket,
                 jan1,
                 jan1.AddMonths(1),
                 processor.Object,

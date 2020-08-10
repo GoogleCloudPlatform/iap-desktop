@@ -168,7 +168,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services.UsageReport
                             {
                                 this.BuildStatus = $"Reading exports from {applicableSink.GetDestinationBucket()}...";
                                 await this.auditExportAdapter.ProcessInstanceEventsAsync(
-                                        new[] { applicableSink.GetDestinationBucket() }, // TODO: Simplify to scalar
+                                        applicableSink.GetDestinationBucket(),
                                         this.builder.StartDate,
                                         this.builder.EndDate,
                                         this,

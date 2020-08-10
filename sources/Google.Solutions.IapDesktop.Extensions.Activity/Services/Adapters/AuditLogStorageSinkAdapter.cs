@@ -49,7 +49,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services.Adapters
            CancellationToken cancellationToken);
 
         Task ProcessInstanceEventsAsync(
-            IEnumerable<string> buckets,
+            string bucket,
             DateTime startTime,
             DateTime endTime,
             IEventProcessor processor,
@@ -95,7 +95,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services.Adapters
         }
 
         internal async Task<IDictionary<DateTime, IEnumerable<StorageObjectLocator>>> FindExportObjects(
-            IEnumerable<string> buckets,
+            string bucket,
             DateTime startTime,
             DateTime endTime,
             CancellationToken cancellationToken)
@@ -108,9 +108,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services.Adapters
                 throw new ArgumentException(nameof(startTime));
             }
 
-            using (TraceSources.IapDesktop.TraceMethod().WithParameters(
-                string.Join(", ", buckets),
-                startTime))
+            using (TraceSources.IapDesktop.TraceMethod().WithParameters(bucket, startTime))
             {
                 //
                 // The object names for audit logs follow this convention:
@@ -125,17 +123,12 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services.Adapters
                 // the object name.
                 //  
 
-                var objectsByBucket = await buckets
-                    .SelectParallelAsync(
-                        bucket => this.storageAdapter.ListObjectsAsync(bucket, cancellationToken))
+                var objectsByBucket = await this.storageAdapter.ListObjectsAsync(
+                        bucket, 
+                        cancellationToken)
                     .ConfigureAwait(false);
 
-                TraceSources.IapDesktop.TraceVerbose(
-                    "Found objects across {0} buckets",
-                    buckets.Count());
-
                 return objectsByBucket
-                    .SelectMany(r => r) // Flatten IEnumerable<IEnumerable<T>> to IEnumerable<T>
                     .Where(o => o.Name.StartsWith(ActivityPrefix) || o.Name.StartsWith(SystemEventPrefix))
                     .Select(o => new
                     {
@@ -204,7 +197,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services.Adapters
         }
 
         public async Task ProcessInstanceEventsAsync(
-            IEnumerable<string> buckets,
+            string bucket,
             DateTime startTime,
             DateTime endTime,
             IEventProcessor processor,
@@ -217,15 +210,13 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services.Adapters
                 return;
             }
 
-            using (TraceSources.IapDesktop.TraceMethod().WithParameters(
-                string.Join(", ", buckets),
-                startTime))
+            using (TraceSources.IapDesktop.TraceMethod().WithParameters(bucket, startTime))
             {
                 var severitiesWhitelist = processor.SupportedSeverities.ToHashSet();
                 var methodsWhitelist = processor.SupportedMethods.ToHashSet();
 
                 var objectsByDay = await FindExportObjects(
-                        buckets,
+                        bucket,
                         startTime,
                         DateTime.UtcNow,
                         cancellationToken)
