@@ -46,8 +46,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services.Adapters
 {
     public interface IAuditLogAdapter
     {
-        // TODO: Rename to ProcessXxx
-        Task ListInstanceEventsAsync(
+        Task ProcessInstanceEventsAsync(
             IEnumerable<string> projectIds,
             IEnumerable<string> zones,
             IEnumerable<ulong> instanceIds,
@@ -193,7 +192,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services.Adapters
             }
         }
 
-        public async Task ListInstanceEventsAsync(
+        public async Task ProcessInstanceEventsAsync(
             IEnumerable<string> projectIds,
             IEnumerable<string> zones,
             IEnumerable<ulong> instanceIds,

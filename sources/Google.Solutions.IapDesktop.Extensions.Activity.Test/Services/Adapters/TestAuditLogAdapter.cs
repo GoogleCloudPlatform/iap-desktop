@@ -93,11 +93,11 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.Services.Adapters
         }
 
         //---------------------------------------------------------------------
-        // ListInstanceEventsAsync
+        // ProcessInstanceEventsAsync
         //---------------------------------------------------------------------
 
         [Test]
-        public async Task WhenInstanceCreated_ThenListInstanceEventsAsyncCanFeedHistorySetBuilder(
+        public async Task WhenInstanceCreated_ThenProcessInstanceEventsAsyncCanFeedHistorySetBuilder(
             [LinuxInstance] InstanceRequest testInstance,
             [Credential(Roles = new[] {
                 PredefinedRole.ComputeViewer,
@@ -118,7 +118,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.Services.Adapters
 
             var adapter = new AuditLogAdapter(await credential.GetCredentialAsync());
 
-            await adapter.ListInstanceEventsAsync(
+            await adapter.ProcessInstanceEventsAsync(
                 new[] { TestProject.ProjectId },
                 null,  // all zones.
                 null,  // all instances.
@@ -133,7 +133,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.Services.Adapters
         }
 
         [Test]
-        public async Task WhenUserNotInRole_ThenListInstanceEventsAsyncThrowsResourceAccessDeniedException(
+        public async Task WhenUserNotInRole_ThenProcessInstanceEventsAsyncThrowsResourceAccessDeniedException(
             [LinuxInstance] InstanceRequest testInstance,
             [Credential(Role = PredefinedRole.ComputeViewer)] CredentialRequest credential)
         {
@@ -147,7 +147,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.Services.Adapters
             var adapter = new AuditLogAdapter(await credential.GetCredentialAsync());
 
             AssertEx.ThrowsAggregateException<ResourceAccessDeniedException>(
-                () => adapter.ListInstanceEventsAsync(
+                () => adapter.ProcessInstanceEventsAsync(
                     new[] { TestProject.ProjectId },
                     null,  // all zones.
                     null,  // all instances.

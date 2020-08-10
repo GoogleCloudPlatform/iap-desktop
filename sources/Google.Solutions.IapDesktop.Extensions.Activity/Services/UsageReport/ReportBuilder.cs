@@ -156,7 +156,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services.UsageReport
                         "Querying audit log API for remaining projects {0}",
                         string.Join(", ", remainingProjects));
 
-                    await this.auditLogAdapter.ListInstanceEventsAsync(
+                    await this.auditLogAdapter.ProcessInstanceEventsAsync(
                         remainingProjects,
                         null,  // all zones.
                         null,  // all instances.

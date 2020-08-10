@@ -69,7 +69,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.Views.EventLog
                 throw new NotImplementedException();
             }
 
-            public Task ListInstanceEventsAsync(
+            public Task ProcessInstanceEventsAsync(
                 IEnumerable<string> projectIds,
                 IEnumerable<string> zones,
                 IEnumerable<ulong> instanceIds,
