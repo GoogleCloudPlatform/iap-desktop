@@ -25,6 +25,7 @@ using Google.Apis.Services;
 using Google.Apis.Storage.v1;
 using Google.Apis.Storage.v1.Data;
 using Google.Solutions.Common.Diagnostics;
+using Google.Solutions.Common.Util;
 using Google.Solutions.IapDesktop.Application;
 using Google.Solutions.IapDesktop.Application.ObjectModel;
 using Google.Solutions.IapDesktop.Application.Services.Adapters;
@@ -42,6 +43,10 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services.Adapters
     {
         Task<Stream> DownloadObjectToMemoryAsync(
             StorageObjectLocator locator,
+            CancellationToken cancellationToken);
+
+        Task<IEnumerable<Bucket>> ListBucketsAsync(
+            string projectId,
             CancellationToken cancellationToken);
 
         Task<IEnumerable<GcsObject>> ListObjectsAsync(
@@ -70,6 +75,28 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services.Adapters
         //---------------------------------------------------------------------
         // IStorageAdapter.
         //---------------------------------------------------------------------
+
+        public async Task<IEnumerable<Bucket>> ListBucketsAsync(
+            string projectId,
+            CancellationToken cancellationToken)
+        {
+            using (TraceSources.IapDesktop.TraceMethod().WithParameters(projectId))
+            {
+                try
+                {
+                    var buckets = await this.service.Buckets.List(projectId)
+                        .ExecuteAsync(cancellationToken)
+                        .ConfigureAwait(false);
+                    return buckets.Items.EnsureNotNull();
+                }
+                catch (GoogleApiException e)
+                    when (e.Error != null && (e.Error.Code == 403))
+                {
+                    throw new ResourceAccessDeniedException(
+                        $"Permission to list buckets in project {projectId} has been denied", e);
+                }
+            }
+        }
 
         public async Task<IEnumerable<GcsObject>> ListObjectsAsync(
             string bucket,

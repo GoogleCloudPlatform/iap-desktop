@@ -57,6 +57,13 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services.Adapters
             CancellationToken cancellationToken);
     }
 
+    public class StorageExport
+    {
+        public string Bucket { get; }
+        public DateTime StartDate { get; }
+        public DateTime EndDate { get; }
+    }
+
     [Service(typeof(IAuditLogStorageSinkAdapter))]
     public class AuditLogStorageSinkAdapter : IAuditLogStorageSinkAdapter
     {
@@ -155,46 +162,68 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services.Adapters
         // IAuditLogStorageSinkAdapter.
         //---------------------------------------------------------------------
 
+        public async Task<IEnumerable<StorageExport>> ListExports(
+            string projectId,
+            CancellationToken cancellationToken)
+        {
+            using (TraceSources.IapDesktop.TraceMethod().WithParameters(projectId))
+            {
+                var buckets = await this.storageAdapter
+                    .ListBucketsAsync(projectId, cancellationToken)
+                    .ConfigureAwait(false);
+
+
+                throw new NotImplementedException();
+            }
+        }
+
         public async Task<IEnumerable<EventBase>> ListInstanceEventsAsync(
             StorageObjectLocator locator,
             CancellationToken cancellationToken)
         {
-            var events = new List<EventBase>();
-
-            using (var stream = await this.storageAdapter.DownloadObjectToMemoryAsync(
-                    locator,
-                    cancellationToken)
-                .ConfigureAwait(false))
-            using (var reader = new StreamReader(stream, Encoding.UTF8))
+            using (TraceSources.IapDesktop.TraceMethod().WithParameters(locator))
             {
-                // The file contains a sequence of JSON structures, separated
-                // by a newline.
+                var events = new List<EventBase>();
 
-                string line;
-                while ((line = reader.ReadLine()) != null)
+                using (var stream = await this.storageAdapter.DownloadObjectToMemoryAsync(
+                        locator,
+                        cancellationToken)
+                    .ConfigureAwait(false))
+                using (var reader = new StreamReader(stream, Encoding.UTF8))
                 {
-                    // The file might contain empty lines.
-                    if (!string.IsNullOrWhiteSpace(line))
+                    // The file contains a sequence of JSON structures, separated
+                    // by a newline.
+
+                    string line;
+                    while ((line = reader.ReadLine()) != null)
                     {
-                        events.Add(EventFactory.FromRecord(LogRecord.Deserialize(line)));
+                        // The file might contain empty lines.
+                        if (!string.IsNullOrWhiteSpace(line))
+                        {
+                            events.Add(EventFactory.FromRecord(LogRecord.Deserialize(line)));
+                        }
                     }
                 }
-            }
 
-            return events;
+                return events;
+            }
         }
 
         public async Task<IEnumerable<EventBase>> ListInstanceEventsAsync(
             IEnumerable<StorageObjectLocator> locators,
             CancellationToken cancellationToken)
         {
-            var resultsByLocator = await locators.SelectParallelAsync(
-                locator => ListInstanceEventsAsync(
-                    locator,
-                    cancellationToken))
-                .ConfigureAwait(false);
+            using (TraceSources.IapDesktop.TraceMethod().WithParameters(
+                string.Join(", ", locators)))
+            {
+                var resultsByLocator = await locators.SelectParallelAsync(
+                    locator => ListInstanceEventsAsync(
+                        locator,
+                        cancellationToken))
+                    .ConfigureAwait(false);
 
-            return resultsByLocator.SelectMany(r => r);
+                return resultsByLocator.SelectMany(r => r);
+            }
         }
 
         public async Task ProcessInstanceEventsAsync(

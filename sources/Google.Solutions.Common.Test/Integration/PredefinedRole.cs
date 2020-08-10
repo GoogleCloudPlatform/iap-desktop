@@ -28,6 +28,7 @@ namespace Google.Solutions.Common.Test.Integration
         public const string LogsViewer = "roles/logging.viewer";
         public const string ServiceAccountUser = "roles/iam.serviceAccountUser";
         public const string StorageObjectViewer = "roles/storage.objectViewer";
+        public const string StorageAdmin = "roles/storage.admin";
 
         // NB. This role takes ~1 minute to take effect.
         public const string IapTunnelUser = "roles/iap.tunnelResourceAccessor";

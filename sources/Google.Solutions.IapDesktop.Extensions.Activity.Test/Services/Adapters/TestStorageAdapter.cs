@@ -47,6 +47,38 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.Services.Adapters
         }
 
         //---------------------------------------------------------------------
+        // ListBucketsAsync
+        //---------------------------------------------------------------------
+
+        [Test]
+        public async Task WhenUserNotInRole_ThenListBucketsAsyncThrowsResourceAccessDeniedException(
+            [Credential(Role = PredefinedRole.StorageObjectViewer)] CredentialRequest credential)
+        {
+            var adapter = new StorageAdapter(await credential.GetCredentialAsync());
+
+            AssertEx.ThrowsAggregateException<ResourceAccessDeniedException>(
+                () => adapter.ListBucketsAsync(
+                    TestProject.ProjectId,
+                    CancellationToken.None).Wait());
+        }
+
+        [Test]
+        public async Task WhenBucketExists_ThenListBucketsAsyncReturnsObject(
+            [Credential(Role = PredefinedRole.LogsV)] CredentialRequest credential)
+        {
+            var adapter = new StorageAdapter(await credential.GetCredentialAsync());
+
+            var buckets = await adapter.ListBucketsAsync(
+                TestProject.ProjectId,
+                CancellationToken.None);
+
+            Assert.IsNotNull(buckets);
+            CollectionAssert.Contains(
+                buckets.Select(o => o.Name).ToList(), 
+                TestProject.TestBucket);
+        }
+
+        //---------------------------------------------------------------------
         // ListObjectsAsync
         //---------------------------------------------------------------------
 
