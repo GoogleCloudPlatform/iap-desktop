@@ -61,6 +61,14 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.Views.EventLog
         private class AuditLogAdapterMock : IAuditLogAdapter
         {
             public int CallCount = 0;
+
+            public Task<IEnumerable<string>> ListCloudStorageSinkDestinationBucketsAsync(
+                string projectId, 
+                CancellationToken cancellationToken)
+            {
+                throw new NotImplementedException();
+            }
+
             public Task ListInstanceEventsAsync(
                 IEnumerable<string> projectIds,
                 IEnumerable<string> zones,

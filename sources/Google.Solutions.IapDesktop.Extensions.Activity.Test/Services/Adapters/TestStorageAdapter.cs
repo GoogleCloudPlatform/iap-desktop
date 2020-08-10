@@ -64,7 +64,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.Services.Adapters
 
         [Test]
         public async Task WhenBucketExists_ThenListBucketsAsyncReturnsObject(
-            [Credential(Role = PredefinedRole.LogsV)] CredentialRequest credential)
+            [Credential(Role = PredefinedRole.StorageAdmin)] CredentialRequest credential)
         {
             var adapter = new StorageAdapter(await credential.GetCredentialAsync());
 

@@ -26,6 +26,7 @@ using Google.Apis.Services;
 using Google.Apis.Util;
 using Google.Solutions.Common.ApiExtensions.Request;
 using Google.Solutions.Common.Diagnostics;
+using Google.Solutions.Common.Util;
 using Google.Solutions.IapDesktop.Application;
 using Google.Solutions.IapDesktop.Application.ObjectModel;
 using Google.Solutions.IapDesktop.Application.Services.Adapters;
@@ -52,6 +53,10 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services.Adapters
             IEnumerable<ulong> instanceIds,
             DateTime startTime,
             IEventProcessor processor,
+            CancellationToken cancellationToken);
+
+        Task<IEnumerable<string>> ListCloudStorageSinkDestinationBucketsAsync(
+            string projectId,
             CancellationToken cancellationToken);
     }
 
@@ -150,6 +155,42 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services.Adapters
             criteria.AddLast($"timestamp > \"{startTime.ToString("o")}\"");
 
             return string.Join(" AND ", criteria);
+        }
+
+        //---------------------------------------------------------------------
+        // IAuditLogAdapter
+        //---------------------------------------------------------------------
+
+        private const string CloudStorageDestinationPrefix = "storage.googleapis.com/";
+
+        public async Task<IEnumerable<string>> ListCloudStorageSinkDestinationBucketsAsync(
+            string projectId,
+            CancellationToken cancellationToken)
+        {
+            using(TraceSources.IapDesktop.TraceMethod().WithParameters(projectId))
+            {
+                try
+                {
+                    var sinks = await this.service.Sinks.List($"projects/{projectId}")
+                        .ExecuteAsync(cancellationToken)
+                        .ConfigureAwait(false);
+
+                    return sinks.Sinks
+                        .EnsureNotNull()
+                        .Where(s => s.Destination.StartsWith(CloudStorageDestinationPrefix))
+                        .Where(s => s.Filter.Contains("cloudaudit.googleapis.com%2Factivity") ||
+                                    s.Filter.Contains("cloudaudit.googleapis.com%2Fsystem_event"))
+                        .Select(s => s.Destination.Substring(CloudStorageDestinationPrefix.Length));
+                }
+                catch (GoogleApiException e) when (e.Error != null && e.Error.Code == 403)
+                {
+                    throw new ResourceAccessDeniedException(
+                        "You do not have sufficient permissions to list log sinks. " +
+                        "You need the 'Logs Viewer' role (or an equivalent custom role) " +
+                        "to perform this action.",
+                        e);
+                }
+            }
         }
 
         public async Task ListInstanceEventsAsync(

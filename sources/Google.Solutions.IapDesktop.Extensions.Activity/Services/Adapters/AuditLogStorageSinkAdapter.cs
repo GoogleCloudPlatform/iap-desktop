@@ -168,6 +168,22 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services.Adapters
         {
             using (TraceSources.IapDesktop.TraceMethod().WithParameters(projectId))
             {
+                //
+                // NB. The naive way to look for storage exports would be to 
+                // list the project's buckets and check whether they contain
+                // any objects matching the characteristic naming pattern.
+                // There are two problems with that approach:
+                //
+                //  (1) A project's audit logs might be exported to a bucket
+                //      located in a different project.
+                //  (2) Listing buckets is a privileged operation that few
+                //      users tend to have (Storage Admin role).
+                //  (3) The bucket might not be connected to an active sink.
+                //
+                // A better and more precise approach is therefore to analyze 
+                // the sinks.
+                //
+
                 var buckets = await this.storageAdapter
                     .ListBucketsAsync(projectId, cancellationToken)
                     .ConfigureAwait(false);

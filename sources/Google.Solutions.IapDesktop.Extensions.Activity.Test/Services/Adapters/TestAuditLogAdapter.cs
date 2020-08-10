@@ -40,6 +40,10 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.Services.Adapters
     [Category("IntegrationTest")]
     public class TestAuditLogAdapter : FixtureBase
     {
+        //---------------------------------------------------------------------
+        // ListEventsAsync
+        //---------------------------------------------------------------------
+
         [Test]
         public async Task WhenInstanceCreated_ThenListLogEntriesReturnsInsertEvent(
             [LinuxInstance] InstanceRequest testInstance,
@@ -87,6 +91,10 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.Services.Adapters
                 .First(e => e.InstanceReference == instanceRef);
             Assert.IsNotNull(insertEvent);
         }
+
+        //---------------------------------------------------------------------
+        // ListInstanceEventsAsync
+        //---------------------------------------------------------------------
 
         [Test]
         public async Task WhenInstanceCreated_ThenListInstanceEventsAsyncCanFeedHistorySetBuilder(
@@ -260,6 +268,35 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.Services.Adapters
                 "AND resource.type=\"gce_instance\" " +
                 "AND timestamp > \"2020-01-02T03:04:05.0060000Z\"",
                 filter);
+        }
+
+        //---------------------------------------------------------------------
+        // ListCloudStorageSinkDestinationBucketsAsync.
+        //---------------------------------------------------------------------
+
+        [Test]
+        public async Task WhenUserNotInRole_ThenListCloudStorageSinkDestinationBucketsAsyncThrowsResourceAccessDeniedException(
+            [Credential(Role = PredefinedRole.ComputeViewer)] CredentialRequest credential)
+        {
+            var adapter = new AuditLogAdapter(await credential.GetCredentialAsync());
+
+            AssertEx.ThrowsAggregateException<ResourceAccessDeniedException>(
+                () => adapter.ListCloudStorageSinkDestinationBucketsAsync(
+                    TestProject.ProjectId,
+                    CancellationToken.None).Wait());
+        }
+
+        [Test]
+        public async Task WhenSinkExists_ThenListBucketsAsyncReturnsList(
+            [Credential(Role = PredefinedRole.LogsViewer)] CredentialRequest credential)
+        {
+            var adapter = new AuditLogAdapter(await credential.GetCredentialAsync());
+
+            var buckets = await adapter.ListCloudStorageSinkDestinationBucketsAsync(
+                TestProject.ProjectId,
+                CancellationToken.None);
+
+            Assert.IsNotNull(buckets);
         }
     }
 }
