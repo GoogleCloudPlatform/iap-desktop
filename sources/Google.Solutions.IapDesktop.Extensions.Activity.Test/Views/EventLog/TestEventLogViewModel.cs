@@ -19,6 +19,7 @@
 // under the License.
 //
 
+using Google.Apis.Logging.v2.Data;
 using Google.Solutions.IapDesktop.Application.ObjectModel;
 using Google.Solutions.IapDesktop.Application.Services.Integration;
 using Google.Solutions.IapDesktop.Application.Views.ProjectExplorer;
@@ -62,7 +63,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.Views.EventLog
         {
             public int CallCount = 0;
 
-            public Task<IEnumerable<string>> ListCloudStorageSinkDestinationBucketsAsync(
+            public Task<IEnumerable<LogSink>> ListCloudStorageSinksAsync(
                 string projectId, 
                 CancellationToken cancellationToken)
             {

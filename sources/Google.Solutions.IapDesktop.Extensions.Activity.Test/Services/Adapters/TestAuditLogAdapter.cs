@@ -271,28 +271,28 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.Services.Adapters
         }
 
         //---------------------------------------------------------------------
-        // ListCloudStorageSinkDestinationBucketsAsync.
+        // ListCloudStorageSinksAsync.
         //---------------------------------------------------------------------
 
         [Test]
-        public async Task WhenUserNotInRole_ThenListCloudStorageSinkDestinationBucketsAsyncThrowsResourceAccessDeniedException(
+        public async Task WhenUserNotInRole_ThenListCloudStorageSinksAsyncThrowsResourceAccessDeniedException(
             [Credential(Role = PredefinedRole.ComputeViewer)] CredentialRequest credential)
         {
             var adapter = new AuditLogAdapter(await credential.GetCredentialAsync());
 
             AssertEx.ThrowsAggregateException<ResourceAccessDeniedException>(
-                () => adapter.ListCloudStorageSinkDestinationBucketsAsync(
+                () => adapter.ListCloudStorageSinksAsync(
                     TestProject.ProjectId,
                     CancellationToken.None).Wait());
         }
 
         [Test]
-        public async Task WhenSinkExists_ThenListBucketsAsyncReturnsList(
+        public async Task WhenSinkExists_ThenListCloudStorageSinksAsyncReturnsList(
             [Credential(Role = PredefinedRole.LogsViewer)] CredentialRequest credential)
         {
             var adapter = new AuditLogAdapter(await credential.GetCredentialAsync());
 
-            var buckets = await adapter.ListCloudStorageSinkDestinationBucketsAsync(
+            var buckets = await adapter.ListCloudStorageSinksAsync(
                 TestProject.ProjectId,
                 CancellationToken.None);
 

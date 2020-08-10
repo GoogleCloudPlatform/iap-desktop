@@ -54,7 +54,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services.Adapters
             IEventProcessor processor,
             CancellationToken cancellationToken);
 
-        Task<IEnumerable<string>> ListCloudStorageSinkDestinationBucketsAsync(
+        Task<IEnumerable<LogSink>> ListCloudStorageSinksAsync(
             string projectId,
             CancellationToken cancellationToken);
     }
@@ -160,9 +160,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services.Adapters
         // IAuditLogAdapter
         //---------------------------------------------------------------------
 
-        private const string CloudStorageDestinationPrefix = "storage.googleapis.com/";
-
-        public async Task<IEnumerable<string>> ListCloudStorageSinkDestinationBucketsAsync(
+        public async Task<IEnumerable<LogSink>> ListCloudStorageSinksAsync(
             string projectId,
             CancellationToken cancellationToken)
         {
@@ -176,10 +174,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services.Adapters
 
                     return sinks.Sinks
                         .EnsureNotNull()
-                        .Where(s => s.Destination.StartsWith(CloudStorageDestinationPrefix))
-                        .Where(s => s.Filter.Contains("cloudaudit.googleapis.com%2Factivity") ||
-                                    s.Filter.Contains("cloudaudit.googleapis.com%2Fsystem_event"))
-                        .Select(s => s.Destination.Substring(CloudStorageDestinationPrefix.Length));
+                        .Where(s => s.IsCloudStorageSink() && s.IsCloudStorageSink());
                 }
                 catch (GoogleApiException e) when (e.Error != null && e.Error.Code == 403)
                 {
@@ -224,6 +219,34 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services.Adapters
                     processor.Process,
                     new ExponentialBackOff(initialBackOff, MaxRetries),
                     cancellationToken).ConfigureAwait(false);
+            }
+        }
+    }
+
+    public static class LogSinkExtensions
+    {
+        private const string CloudStorageDestinationPrefix = "storage.googleapis.com/";
+
+        public static bool IsCloudStorageSink(this LogSink sink)
+        {
+            return sink.Description.StartsWith(CloudStorageDestinationPrefix);
+        }
+
+        public static bool IsAuditLogSink(this LogSink sink)
+        {
+            return sink.Filter.Contains("cloudaudit.googleapis.com%2Factivity") ||
+                   sink.Filter.Contains("cloudaudit.googleapis.com%2Fsystem_event");
+        }
+
+        public static string GetDestinationBucket(this LogSink sink)
+        {
+            if (sink.Description.StartsWith(CloudStorageDestinationPrefix))
+            {
+                return sink.Destination.Substring(CloudStorageDestinationPrefix.Length);
+            }
+            else
+            {
+                throw new ArgumentException("Not a Cloud Storage sink");
             }
         }
     }
