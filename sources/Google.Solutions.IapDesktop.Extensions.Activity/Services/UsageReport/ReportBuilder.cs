@@ -26,6 +26,7 @@ using Google.Solutions.IapDesktop.Application.Services.Adapters;
 using Google.Solutions.IapDesktop.Extensions.Activity.Events;
 using Google.Solutions.IapDesktop.Extensions.Activity.History;
 using Google.Solutions.IapDesktop.Extensions.Activity.Services.Adapters;
+using Newtonsoft.Json.Serialization;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -38,9 +39,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services.UsageReport
     {
         ushort PercentageDone { get; }
         string BuildStatus { get; }
-        Task<ReportArchive> BuildAsync(
-            AuditLogSources sources,
-            CancellationToken token);
+        Task<ReportArchive> BuildAsync(CancellationToken token);
     }
 
     [Flags]
@@ -55,14 +54,18 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services.UsageReport
         private readonly ushort MaxPeriod = 400;
 
         private readonly IEnumerable<string> projectIds;
+        private readonly AuditLogSources sources;
         private readonly InstanceSetHistoryBuilder builder;
 
         private readonly IAuditLogAdapter auditLogAdapter;
+        private readonly IAuditLogStorageSinkAdapter auditExportAdapter;
         private readonly IComputeEngineAdapter computeEngineAdapter;
 
         public ReportBuilder(
             IAuditLogAdapter auditLogAdapter,
+            IAuditLogStorageSinkAdapter auditExportAdapter,
             IComputeEngineAdapter computeEngineAdapter,
+            AuditLogSources sources,
             IEnumerable<string> projectIds,
             DateTime startDate)
         {
@@ -76,8 +79,10 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services.UsageReport
                 throw new ArgumentException("Start date is too far in the past");
             }
 
+            this.sources = sources;
             this.projectIds = projectIds;
             this.auditLogAdapter = auditLogAdapter;
+            this.auditExportAdapter = auditExportAdapter;
             this.computeEngineAdapter = computeEngineAdapter;
 
             this.builder = new InstanceSetHistoryBuilder(startDate, now);
@@ -87,8 +92,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services.UsageReport
 
         public string BuildStatus { get; private set; } = string.Empty;
 
-        public async Task<ReportArchive> BuildAsync(
-            AuditLogSources sources, 
+        public async Task<ReportArchive> BuildAsync( 
             CancellationToken cancellationToken)
         {
             using (TraceSources.IapDesktop.TraceMethod().WithParameters(this.projectIds, sources))
@@ -129,24 +133,62 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services.UsageReport
                 // (2) Try to use GCS exports for as many projects as we can (reasonably fast).
                 //
 
-                if (sources.HasFlag(AuditLogSources.StorageExport))
+                if (this.sources.HasFlag(AuditLogSources.StorageExport))
                 {
                     this.PercentageDone = 10;
                     this.BuildStatus = $"Analyzing audit logs exported to Cloud Storage...";
 
-                    // TODO: find suitable exports
-                    // TODO: only use if full date range covered
+                    foreach (var projectId in this.projectIds)
+                    {
+                        // NB. Listing sinks requires the same permissions as querying the
+                        // API, so no extra checks required.
+                        var exportSinks = await this.auditLogAdapter
+                            .ListCloudStorageSinksAsync(projectId, cancellationToken)
+                            .ConfigureAwait(false);
 
-                    // TODO: Use multi-line status and report
-                    // - which bucket used or skipped
+                        TraceSources.IapDesktop.TraceVerbose(
+                            "Found storage export buckets for {0}: {1}",
+                            projectId,
+                            string.Join(", ", exportSinks.Select(s => s.GetDestinationBucket())));
+
+                        // Ignore sinks that have been created after the start date, because
+                        // they will not have sufficient history. It's unlikely that there
+                        // are more than one sink - if so, just use the first.
+                        var applicableSink = exportSinks
+                            .Where(s => ((DateTime)s.CreateTime) >= this.builder.StartDate)
+                            .FirstOrDefault();
+
+                        if (applicableSink != null)
+                        {
+                            // Accessing the bucket requires permissions which
+                            // the user might not have for some of the projects.
+                            try
+                            {
+                                this.BuildStatus = $"Reading exports from {applicableSink.GetDestinationBucket()}...";
+                                await this.auditExportAdapter.ProcessInstanceEventsAsync(
+                                        new[] { applicableSink.GetDestinationBucket() }, // TODO: Simplify to scalar
+                                        this.builder.StartDate,
+                                        this.builder.EndDate,
+                                        this,
+                                        cancellationToken)
+                                    .ConfigureAwait(false);
+                            }
+                            catch (ResourceAccessDeniedException)
+                            {
+                                TraceSources.IapDesktop.TraceWarning(
+                                    "Found storage export bucket {0} for project {1}, but cannot access it",
+                                    applicableSink.GetDestinationBucket(),
+                                    projectId);
+                            }
+                        }
+                    }
                 }
-
 
                 //
                 // (3) Use API for remaining projects (very slow).
                 //
 
-                if (sources.HasFlag(AuditLogSources.Api))
+                if (this.sources.HasFlag(AuditLogSources.Api))
                 {
                     this.PercentageDone = 30;
                     this.BuildStatus = $"Querying audit log API...";
@@ -157,12 +199,13 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services.UsageReport
                         string.Join(", ", remainingProjects));
 
                     await this.auditLogAdapter.ProcessInstanceEventsAsync(
-                        remainingProjects,
-                        null,  // all zones.
-                        null,  // all instances.
-                        this.builder.StartDate,
-                        this,
-                        cancellationToken).ConfigureAwait(false);
+                            remainingProjects,
+                            null,  // all zones.
+                            null,  // all instances.
+                            this.builder.StartDate,
+                            this,
+                            cancellationToken)
+                        .ConfigureAwait(false);
                 }
 
                 //

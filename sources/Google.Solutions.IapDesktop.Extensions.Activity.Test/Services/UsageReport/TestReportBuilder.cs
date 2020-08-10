@@ -48,10 +48,12 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.Services.UsageRep
             var startDate = DateTime.UtcNow.AddDays(-1);
             var builder = new ReportBuilder(
                 new AuditLogAdapter(await credential.GetCredentialAsync()),
+                new AuditLogStorageSinkAdapter(new StorageAdapter(await credential.GetCredentialAsync())),
                 new ComputeEngineAdapter(await credential.GetCredentialAsync()),
+                AuditLogSources.Api, 
                 new[] { TestProject.ProjectId },
                 startDate);
-            var report = await builder.BuildAsync(AuditLogSources.Api, CancellationToken.None);
+            var report = await builder.BuildAsync(CancellationToken.None);
 
             var instance = report.History.Instances.First(i => i.Reference == instanceRef);
             Assert.IsTrue(report.IsInstanceAnnotatedAs(
@@ -73,10 +75,12 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.Services.UsageRep
             var startDate = DateTime.UtcNow.AddDays(-1);
             var builder = new ReportBuilder(
                 new AuditLogAdapter(await credential.GetCredentialAsync()),
+                new AuditLogStorageSinkAdapter(new StorageAdapter(await credential.GetCredentialAsync())),
                 new ComputeEngineAdapter(await credential.GetCredentialAsync()),
+                AuditLogSources.Api, 
                 new[] { TestProject.ProjectId },
                 startDate);
-            var report = await builder.BuildAsync(AuditLogSources.Api, CancellationToken.None);
+            var report = await builder.BuildAsync(CancellationToken.None);
 
             var instance = report.History.Instances.First(i => i.Reference == instanceRef);
             Assert.IsTrue(report.IsInstanceAnnotatedAs(

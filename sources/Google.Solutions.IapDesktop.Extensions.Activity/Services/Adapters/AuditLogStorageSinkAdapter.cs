@@ -19,7 +19,6 @@
 // under the License.
 //
 
-using Google.Apis.Compute.v1;
 using Google.Solutions.Common.Diagnostics;
 using Google.Solutions.Common.Util;
 using Google.Solutions.IapDesktop.Application;
@@ -55,13 +54,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services.Adapters
             DateTime endTime,
             IEventProcessor processor,
             CancellationToken cancellationToken);
-    }
-
-    public class StorageExport
-    {
-        public string Bucket { get; }
-        public DateTime StartDate { get; }
-        public DateTime EndDate { get; }
     }
 
     [Service(typeof(IAuditLogStorageSinkAdapter))]
@@ -161,37 +153,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services.Adapters
         //---------------------------------------------------------------------
         // IAuditLogStorageSinkAdapter.
         //---------------------------------------------------------------------
-
-        public async Task<IEnumerable<StorageExport>> ListExports(
-            string projectId,
-            CancellationToken cancellationToken)
-        {
-            using (TraceSources.IapDesktop.TraceMethod().WithParameters(projectId))
-            {
-                //
-                // NB. The naive way to look for storage exports would be to 
-                // list the project's buckets and check whether they contain
-                // any objects matching the characteristic naming pattern.
-                // There are two problems with that approach:
-                //
-                //  (1) A project's audit logs might be exported to a bucket
-                //      located in a different project.
-                //  (2) Listing buckets is a privileged operation that few
-                //      users tend to have (Storage Admin role).
-                //  (3) The bucket might not be connected to an active sink.
-                //
-                // A better and more precise approach is therefore to analyze 
-                // the sinks.
-                //
-
-                var buckets = await this.storageAdapter
-                    .ListBucketsAsync(projectId, cancellationToken)
-                    .ConfigureAwait(false);
-
-
-                throw new NotImplementedException();
-            }
-        }
 
         public async Task<IEnumerable<EventBase>> ListInstanceEventsAsync(
             StorageObjectLocator locator,
