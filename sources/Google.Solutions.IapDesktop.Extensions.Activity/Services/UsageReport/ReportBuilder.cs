@@ -155,7 +155,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services.UsageReport
                         // they will not have sufficient history. It's unlikely that there
                         // are more than one sink - if so, just use the first.
                         var applicableSink = exportSinks
-                            .Where(s => ((DateTime)s.CreateTime) >= this.builder.StartDate)
+                            .Where(s => ((DateTime)s.CreateTime) <= this.builder.StartDate)
                             .FirstOrDefault();
 
                         if (applicableSink != null)

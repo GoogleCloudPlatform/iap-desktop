@@ -33,7 +33,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.Services.UsageRep
 {
     [TestFixture]
     [Category("IntegrationTest")]
-    public class TestReportBuilder : FixtureBase
+    public class TestReportBuilderLicenseAnnotations : FixtureBase
     {
         [Test]
         public async Task WhenWindowsInstanceCreated_ThenReportContainsInstanceAndLicenseInfoFromItsDisk(

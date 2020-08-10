@@ -240,7 +240,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services.Adapters
 
         public static string GetDestinationBucket(this LogSink sink)
         {
-            if (sink.Description.StartsWith(CloudStorageDestinationPrefix))
+            if (sink.Destination.StartsWith(CloudStorageDestinationPrefix))
             {
                 return sink.Destination.Substring(CloudStorageDestinationPrefix.Length);
             }
