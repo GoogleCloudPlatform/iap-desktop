@@ -79,6 +79,13 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services.Adapters
             this.auditLogAdapter = auditLogAdapter;
         }
 
+        public AuditLogStorageSinkAdapter(IServiceProvider serviceProvider)
+            : this(
+                  serviceProvider.GetService<IStorageAdapter>(),
+                  serviceProvider.GetService<IAuditLogAdapter>())
+        {
+        }
+
         private static DateTime? DateFromObjectName(string name)
         {
             var match = new Regex(

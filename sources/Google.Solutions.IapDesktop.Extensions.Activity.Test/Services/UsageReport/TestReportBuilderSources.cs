@@ -19,7 +19,6 @@
 // under the License.
 //
 
-using Google.Apis.Logging.v2.Data;
 using Google.Solutions.IapDesktop.Application.Services.Adapters;
 using Google.Solutions.IapDesktop.Extensions.Activity.History;
 using Google.Solutions.IapDesktop.Extensions.Activity.Services.Adapters;

@@ -64,7 +64,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services
                 this.serviceProvider.GetService<IAuditLogAdapter>(),
                 this.serviceProvider.GetService<IAuditLogStorageSinkAdapter>(),
                 this.serviceProvider.GetService<IComputeEngineAdapter>(),
-                AuditLogSources.Api,
+                AuditLogSources.Api | AuditLogSources.StorageExport,
                 projectIds,
                 dialog.SelectedStartDate);
 
