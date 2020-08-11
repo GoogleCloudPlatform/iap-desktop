@@ -174,7 +174,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services.Adapters
 
                     return sinks.Sinks
                         .EnsureNotNull()
-                        .Where(s => s.IsCloudStorageSink() && s.IsCloudStorageSink());
+                        .Where(s => s.IsCloudStorageSink());
                 }
                 catch (GoogleApiException e) when (e.Error != null && e.Error.Code == 403)
                 {
@@ -229,13 +229,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services.Adapters
 
         public static bool IsCloudStorageSink(this LogSink sink)
         {
-            return sink.Description.StartsWith(CloudStorageDestinationPrefix);
-        }
-
-        public static bool IsAuditLogSink(this LogSink sink)
-        {
-            return sink.Filter.Contains("cloudaudit.googleapis.com%2Factivity") ||
-                   sink.Filter.Contains("cloudaudit.googleapis.com%2Fsystem_event");
+            return sink.Destination.StartsWith(CloudStorageDestinationPrefix);
         }
 
         public static string GetDestinationBucket(this LogSink sink)

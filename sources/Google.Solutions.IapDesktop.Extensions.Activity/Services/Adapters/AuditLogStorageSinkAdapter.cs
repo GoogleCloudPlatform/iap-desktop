@@ -23,6 +23,7 @@ using Google.Solutions.Common.Diagnostics;
 using Google.Solutions.Common.Util;
 using Google.Solutions.IapDesktop.Application;
 using Google.Solutions.IapDesktop.Application.ObjectModel;
+using Google.Solutions.IapDesktop.Application.Services.Adapters;
 using Google.Solutions.IapDesktop.Extensions.Activity.Events;
 using Google.Solutions.IapDesktop.Extensions.Activity.History;
 using Google.Solutions.IapDesktop.Extensions.Activity.Logs;
@@ -40,6 +41,11 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services.Adapters
 {
     public interface IAuditLogStorageSinkAdapter
     {
+        Task<string> FindCloudStorageExportBucketForAuditLogsAsync(
+            string projectId,
+            DateTime earliestDateRequired,
+            CancellationToken cancellationToken);
+
         Task<IEnumerable<EventBase>> ListInstanceEventsAsync(
             StorageObjectLocator locator,
             CancellationToken cancellationToken);
@@ -63,10 +69,14 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services.Adapters
         private const string SystemEventPrefix = "cloudaudit.googleapis.com/system_event/";
 
         private readonly IStorageAdapter storageAdapter;
+        private readonly IAuditLogAdapter auditLogAdapter;
 
-        public AuditLogStorageSinkAdapter(IStorageAdapter storageAdapter)
+        public AuditLogStorageSinkAdapter(
+            IStorageAdapter storageAdapter,
+            IAuditLogAdapter auditLogAdapter)
         {
             this.storageAdapter = storageAdapter;
+            this.auditLogAdapter = auditLogAdapter;
         }
 
         private static DateTime? DateFromObjectName(string name)
@@ -94,7 +104,34 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services.Adapters
             }
         }
 
-        internal async Task<IDictionary<DateTime, IEnumerable<StorageObjectLocator>>> FindExportObjects(
+        private async Task<IEnumerable<StorageObjectLocator>> FindAuditLogExportObjects(
+            string bucket,
+            CancellationToken cancellationToken)
+        {
+            using (TraceSources.IapDesktop.TraceMethod().WithParameters(bucket))
+            {
+                //
+                // The object names for audit logs follow this convention:
+                // - cloudaudit.googleapis.com/activity/yyyy/mm/dd/<from-time>_<to-time>_S0.json
+                // - cloudaudit.googleapis.com/system_event/yyyy/mm/dd/<from-time>_<to-time>_S0.json
+                // with <from-time> and <to-time> formatted as hh:MM:ss
+                // 
+                // Note that there might be other, unrelated objects in the same bucket.
+                //  
+
+                var objectsByBucket = await this.storageAdapter.ListObjectsAsync(
+                        bucket,
+                        cancellationToken)
+                    .ConfigureAwait(false);
+
+                return objectsByBucket
+                    .Where(o => o.Name.StartsWith(ActivityPrefix) || 
+                                o.Name.StartsWith(SystemEventPrefix))
+                    .Select(o => new StorageObjectLocator(o.Bucket, o.Name));
+            }
+        }
+
+        internal async Task<IDictionary<DateTime, IEnumerable<StorageObjectLocator>>> FindAuditLogExportObjectsGroupedByDay(
             string bucket,
             DateTime startTime,
             DateTime endTime,
@@ -110,30 +147,23 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services.Adapters
 
             using (TraceSources.IapDesktop.TraceMethod().WithParameters(bucket, startTime))
             {
-                //
-                // The object names for audit logs follow this convention:
-                // - cloudaudit.googleapis.com/activity/yyyy/mm/dd/<from-time>_<to-time>_S0.json
-                // - cloudaudit.googleapis.com/system_event/yyyy/mm/dd/<from-time>_<to-time>_S0.json
-                // with <from-time> and <to-time> formatted as hh:MM:ss
-                // 
-                // Note that there might be other, unrelated objects in the same bucket.
-                // Because somebody might have copied the objects from one bucket to another,
-                // it's best not to rely on the creation timestamp to determine which day
-                // the exported events relate to and instead extract that information from
-                // the object name.
-                //  
-
-                var objectsByBucket = await this.storageAdapter.ListObjectsAsync(
+                var exportObjects = await FindAuditLogExportObjects(
                         bucket, 
                         cancellationToken)
                     .ConfigureAwait(false);
 
-                return objectsByBucket
-                    .Where(o => o.Name.StartsWith(ActivityPrefix) || o.Name.StartsWith(SystemEventPrefix))
-                    .Select(o => new
+                //
+                // NB. Because somebody might have copied the objects from one bucket to another,
+                // it's best not to rely on the creation timestamp to determine which day
+                // the exported events relate to and instead extract that information from
+                // the object name.
+                //
+
+                return exportObjects
+                    .Select(locator => new
                     {
-                        Locator = new StorageObjectLocator(o.Bucket, o.Name),
-                        Date = DateFromObjectName(o.Name)
+                        Locator = locator,
+                        Date = DateFromObjectName(locator.ObjectName)
                     })
                     .Where(rec => rec.Date != null && rec.Date >= startTime && rec.Date <= endTime)
                     .GroupBy(rec => rec.Date)   // Trim time portion
@@ -146,6 +176,80 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services.Adapters
         //---------------------------------------------------------------------
         // IAuditLogStorageSinkAdapter.
         //---------------------------------------------------------------------
+
+        public async Task<string> FindCloudStorageExportBucketForAuditLogsAsync(
+            string projectId,
+            DateTime earliestDateRequired,
+            CancellationToken cancellationToken)
+        {
+            using (TraceSources.IapDesktop.TraceMethod().WithParameters(
+                projectId,
+                earliestDateRequired))
+            {
+                var allCloudStorageSinks = await this.auditLogAdapter
+                    .ListCloudStorageSinksAsync(projectId, cancellationToken)
+                    .ConfigureAwait(false);
+
+                //
+                // Given the list of export sinks, find a sink that:
+                //
+                // (1) Has been created before the cutoff date (if it's newer,
+                //     then it won't have all the data we need.
+                // (2) Contains audit logs (as opposed to other kinds of logs),
+                //     Determining if a sink handles audit logs could be done
+                //     by inspecting the filter string - but it'd difficult to
+                //     do this without having a proper parser for the filter
+                //     syntax. An easier way is to simply inspect if the 
+                //     associated bucket has any audit log exports or not.
+                //
+                //     This has the additional benefit of verifying that the
+                //     bucket is actually accessible by the user.
+                //
+
+                foreach (var sink in allCloudStorageSinks)
+                {
+                    if (DateTime.Parse((string)sink.CreateTime) > earliestDateRequired)
+                    {
+                        // Sink created after the ctoff date, so it will not
+                        // have sufficient history. 
+                        continue;
+                    }
+
+                    // Accessing the bucket requires permissions which
+                    // the user might not have for some of the projects.
+                    var exportObjects = Enumerable.Empty<StorageObjectLocator>();
+                    try
+                    {
+                        exportObjects = await FindAuditLogExportObjects(
+                                sink.GetDestinationBucket(),
+                                cancellationToken)
+                            .ConfigureAwait(false);
+                    }
+                    catch (ResourceAccessDeniedException)
+                    {
+                        TraceSources.IapDesktop.TraceWarning(
+                            "Found storage export bucket {0} for project {1}, but cannot access it",
+                            sink.GetDestinationBucket(),
+                            projectId);
+                    }
+
+                    if (!exportObjects.Any())
+                    {
+                        // Bucket does not contain any audit log export objects.
+                        continue;
+                    }
+
+                    // We have a winner.
+                    return sink.GetDestinationBucket();
+                }
+
+                // No suitable sink found.
+                TraceSources.IapDesktop.TraceVerbose(
+                    "No GCS export bucket for audit log data found for project {0}",
+                    projectId);
+                return null;
+            }
+        }
 
         public async Task<IEnumerable<EventBase>> ListInstanceEventsAsync(
             StorageObjectLocator locator,
@@ -215,7 +319,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services.Adapters
                 var severitiesWhitelist = processor.SupportedSeverities.ToHashSet();
                 var methodsWhitelist = processor.SupportedMethods.ToHashSet();
 
-                var objectsByDay = await FindExportObjects(
+                var objectsByDay = await FindAuditLogExportObjectsGroupedByDay(
                         bucket,
                         startTime,
                         DateTime.UtcNow,

@@ -142,49 +142,34 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services.UsageReport
 
                     foreach (var projectId in this.projectIds)
                     {
-                        // NB. Listing sinks requires the same permissions as querying the
-                        // API, so no extra checks required.
-                        var exportSinks = await this.auditLogAdapter
-                            .ListCloudStorageSinksAsync(projectId, cancellationToken)
+                        // NB. Listing sinks does not requir any more permissions than
+                        // querying the API.
+
+                        var auditLogExportBucket = await this.auditExportAdapter
+                            .FindCloudStorageExportBucketForAuditLogsAsync(
+                                projectId,
+                                this.builder.StartDate,
+                                cancellationToken)
                             .ConfigureAwait(false);
 
-                        TraceSources.IapDesktop.TraceVerbose(
-                            "Found storage export buckets for {0}: {1}",
-                            projectId,
-                            string.Join(", ", exportSinks.Select(s => s.GetDestinationBucket())));
+                        if (auditLogExportBucket != null)
+                        { 
+                            TraceSources.IapDesktop.TraceVerbose(
+                                "Found storage export buckets for {0}: {1}",
+                                projectId,
+                                auditLogExportBucket);
 
-                        // Ignore sinks that have been created after the start date, because
-                        // they will not have sufficient history. It's unlikely that there
-                        // are more than one sink - if so, just use the first.
-                        var applicableSink = exportSinks
-                            .Where(s => ((DateTime)s.CreateTime) <= this.builder.StartDate)
-                            .FirstOrDefault();
+                            this.BuildStatus = $"Reading exports from {auditLogExportBucket}...";
+                            await this.auditExportAdapter.ProcessInstanceEventsAsync(
+                                    auditLogExportBucket,
+                                    this.builder.StartDate,
+                                    this.builder.EndDate,
+                                    this,
+                                    cancellationToken)
+                                .ConfigureAwait(false);
 
-                        if (applicableSink != null)
-                        {
-                            // Accessing the bucket requires permissions which
-                            // the user might not have for some of the projects.
-                            try
-                            {
-                                this.BuildStatus = $"Reading exports from {applicableSink.GetDestinationBucket()}...";
-                                await this.auditExportAdapter.ProcessInstanceEventsAsync(
-                                        applicableSink.GetDestinationBucket(),
-                                        this.builder.StartDate,
-                                        this.builder.EndDate,
-                                        this,
-                                        cancellationToken)
-                                    .ConfigureAwait(false);
-
-                                // Check this project off.
-                                pendingProjectIds.Remove(projectId);
-                            }
-                            catch (ResourceAccessDeniedException)
-                            {
-                                TraceSources.IapDesktop.TraceWarning(
-                                    "Found storage export bucket {0} for project {1}, but cannot access it",
-                                    applicableSink.GetDestinationBucket(),
-                                    projectId);
-                            }
+                            // Check this project off.
+                            pendingProjectIds.Remove(projectId);
                         }
                     }
                 }

@@ -93,8 +93,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.Services.Adapters
         [Test]
         public void ToStringReturnsUrl()
         {
-            var path = "projects/project-1/global/images/object-1";
-
             Assert.AreEqual(
                 "gs://bucket-1/object-1",
                 new StorageObjectLocator("bucket-1", "object-1").ToString());

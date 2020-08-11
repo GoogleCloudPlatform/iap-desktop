@@ -19,6 +19,8 @@
 // under the License.
 //
 
+using Google.Apis.Logging.v2.Data;
+using GcsObject = Google.Apis.Storage.v1.Data.Object;
 using Google.Solutions.Common.Test;
 using Google.Solutions.Common.Test.Integration;
 using Google.Solutions.IapDesktop.Extensions.Activity.Events;
@@ -32,6 +34,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using Google.Solutions.IapDesktop.Application.Services.Adapters;
 
 namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.Services.Adapters
 {
@@ -121,6 +124,127 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.Services.Adapters
         }
 
         //---------------------------------------------------------------------
+        // FindCloudStorageExportBucketForAuditLogsAsync.
+        //---------------------------------------------------------------------
+
+        [Test]
+        public async Task WhenSinkTooYoung_ThenFindCloudStorageExportBucketForAuditLogsAsyncReturnsNull()
+        {
+            var auditLogAdapter = new Mock<IAuditLogAdapter>();
+            auditLogAdapter.Setup(
+                a => a.ListCloudStorageSinksAsync(
+                    It.IsAny<string>(),
+                    It.IsAny<CancellationToken>()))
+                .ReturnsAsync(new[]
+                {
+                    new LogSink()
+                    {
+                        Destination = "storage.googleapis.com/mybucket",
+                        CreateTime = "2020-01-01"
+                    }
+                });
+
+            var service = new AuditLogStorageSinkAdapter(
+                new Mock<IStorageAdapter>().Object,
+                auditLogAdapter.Object);
+
+            var bucket = await service.FindCloudStorageExportBucketForAuditLogsAsync(
+                TestProject.ProjectId,
+                new DateTime(2020, 1, 1, 0, 0, 0, DateTimeKind.Utc), // Before sink creation
+                CancellationToken.None);
+
+            Assert.IsNull(bucket);
+        }
+
+        [Test]
+        public async Task WhenExportBucketEmpty_ThenFindCloudStorageExportBucketForAuditLogsAsyncReturnsNull()
+        {
+            var auditLogAdapter = new Mock<IAuditLogAdapter>();
+            auditLogAdapter.Setup(
+                a => a.ListCloudStorageSinksAsync(
+                    It.IsAny<string>(),
+                    It.IsAny<CancellationToken>()))
+                .ReturnsAsync(new[]
+                {
+                    new LogSink()
+                    {
+                        Destination = "storage.googleapis.com/mybucket",
+                        CreateTime = "2019-01-01"
+                    }
+                });
+
+            var storageAdapter = new Mock<IStorageAdapter>();
+            storageAdapter.Setup(
+                a => a.ListObjectsAsync(
+                    It.Is<string>(b => b == "mybucket"),
+                    It.IsAny<CancellationToken>()))
+                .ReturnsAsync(Enumerable.Empty<GcsObject>());
+
+            var service = new AuditLogStorageSinkAdapter(
+                storageAdapter.Object,
+                auditLogAdapter.Object);
+
+            var bucket = await service.FindCloudStorageExportBucketForAuditLogsAsync(
+                TestProject.ProjectId,
+                new DateTime(2020, 1, 1, 0, 0, 0, DateTimeKind.Utc),
+                CancellationToken.None);
+
+            Assert.IsNull(bucket);
+        }
+
+        [Test]
+        public async Task WhenExportBucketAccessDenied_ThenFindCloudStorageExportBucketForAuditLogsAsyncReturnsNull()
+        {
+            var auditLogAdapter = new Mock<IAuditLogAdapter>();
+            auditLogAdapter.Setup(
+                a => a.ListCloudStorageSinksAsync(
+                    It.IsAny<string>(),
+                    It.IsAny<CancellationToken>()))
+                .ReturnsAsync(new[]
+                {
+                    new LogSink()
+                    {
+                        Destination = "storage.googleapis.com/mybucket",
+                        CreateTime = "2019-01-01"
+                    }
+                });
+
+            var storageAdapter = new Mock<IStorageAdapter>();
+            storageAdapter.Setup(
+                a => a.ListObjectsAsync(
+                    It.Is<string>(b => b == "mybucket"),
+                    It.IsAny<CancellationToken>()))
+                .ThrowsAsync(new ResourceAccessDeniedException("denied", null));
+
+            var service = new AuditLogStorageSinkAdapter(
+                storageAdapter.Object,
+                auditLogAdapter.Object);
+
+            var bucket = await service.FindCloudStorageExportBucketForAuditLogsAsync(
+                TestProject.ProjectId,
+                new DateTime(2020, 1, 1, 0, 0, 0, DateTimeKind.Utc),
+                CancellationToken.None);
+
+            Assert.IsNull(bucket);
+        }
+
+        [Test]
+        public async Task WhenUserIsInLogsViewerRoleOnly_ThenFindCloudStorageExportBucketForAuditLogsAsyncReturnsNull(
+            [Credential(Role = PredefinedRole.LogsViewer)] CredentialRequest credential)
+        {
+            var service = new AuditLogStorageSinkAdapter(
+                new StorageAdapter(await credential.GetCredentialAsync()),
+                new AuditLogAdapter(await credential.GetCredentialAsync()));
+
+            var bucket = await service.FindCloudStorageExportBucketForAuditLogsAsync(
+                TestProject.ProjectId,
+                DateTime.Now.AddDays(-1),
+                CancellationToken.None);
+
+            Assert.IsNull(bucket, "Bucket not accessible, if if it existed");
+        }
+
+        //---------------------------------------------------------------------
         // ListInstanceEventsAsync.
         //---------------------------------------------------------------------
 
@@ -129,7 +253,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.Services.Adapters
             [Credential(Role = PredefinedRole.StorageObjectViewer)] CredentialRequest credential)
         {
             var service = new AuditLogStorageSinkAdapter(
-                new StorageAdapter(await credential.GetCredentialAsync()));
+                new StorageAdapter(await credential.GetCredentialAsync()),
+                new AuditLogAdapter(await credential.GetCredentialAsync()));
 
             AssertEx.ThrowsAggregateException<JsonReaderException>(
                 () => service.ListInstanceEventsAsync(GarbageLocator, CancellationToken.None).Wait());
@@ -140,7 +265,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.Services.Adapters
             [Credential(Role = PredefinedRole.StorageObjectViewer)] CredentialRequest credential)
         {
             var service = new AuditLogStorageSinkAdapter(
-                new StorageAdapter(await credential.GetCredentialAsync()));
+                new StorageAdapter(await credential.GetCredentialAsync()),
+                new AuditLogAdapter(await credential.GetCredentialAsync()));
 
             var events = await service.ListInstanceEventsAsync(
                 EmptyLocator, 
@@ -153,7 +279,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.Services.Adapters
             [Credential(Role = PredefinedRole.StorageObjectViewer)] CredentialRequest credential)
         {
             var service = new AuditLogStorageSinkAdapter(
-                new StorageAdapter(await credential.GetCredentialAsync()));
+                new StorageAdapter(await credential.GetCredentialAsync()),
+                new AuditLogAdapter(await credential.GetCredentialAsync()));
 
             var events = await service.ListInstanceEventsAsync(
                 ValidLocator_Jan1_00, 
@@ -170,7 +297,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.Services.Adapters
             [Credential(Role = PredefinedRole.StorageObjectViewer)] CredentialRequest credential)
         {
             var service = new AuditLogStorageSinkAdapter(
-                new StorageAdapter(await credential.GetCredentialAsync()));
+                new StorageAdapter(await credential.GetCredentialAsync()),
+                new AuditLogAdapter(await credential.GetCredentialAsync()));
 
             AssertEx.ThrowsAggregateException<JsonReaderException>(
                 () => service.ListInstanceEventsAsync(
@@ -183,7 +311,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.Services.Adapters
             [Credential(Role = PredefinedRole.StorageObjectViewer)] CredentialRequest credential)
         {
             var service = new AuditLogStorageSinkAdapter(
-                new StorageAdapter(await credential.GetCredentialAsync()));
+                new StorageAdapter(await credential.GetCredentialAsync()),
+                new AuditLogAdapter(await credential.GetCredentialAsync()));
 
             var events = await service.ListInstanceEventsAsync(
                 new[] { EmptyLocator, ValidLocator_Jan1_00 },
@@ -192,7 +321,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.Services.Adapters
         }
 
         //---------------------------------------------------------------------
-        // FindExportObjects.
+        // FindAuditLogExportObjectsGroupedByDay.
         //---------------------------------------------------------------------
 
         [Test]
@@ -200,10 +329,11 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.Services.Adapters
             [Credential(Role = PredefinedRole.StorageObjectViewer)] CredentialRequest credential)
         {
             var service = new AuditLogStorageSinkAdapter(
-                new StorageAdapter(await credential.GetCredentialAsync()));
+                new StorageAdapter(await credential.GetCredentialAsync()),
+                new AuditLogAdapter(await credential.GetCredentialAsync()));
 
             AssertEx.ThrowsAggregateException<ArgumentException>(
-                () => service.FindExportObjects(
+                () => service.FindAuditLogExportObjectsGroupedByDay(
                     TestProject.TestBucket,
                     new DateTime(2020, 1, 2, 0, 0, 0, DateTimeKind.Utc),
                     new DateTime(2020, 1, 1, 0, 0, 0, DateTimeKind.Utc),
@@ -215,9 +345,10 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.Services.Adapters
             [Credential(Role = PredefinedRole.StorageObjectViewer)] CredentialRequest credential)
         {
             var service = new AuditLogStorageSinkAdapter(
-                new StorageAdapter(await credential.GetCredentialAsync()));
+                new StorageAdapter(await credential.GetCredentialAsync()),
+                new AuditLogAdapter(await credential.GetCredentialAsync()));
 
-            var locators = await service.FindExportObjects(
+            var locators = await service.FindAuditLogExportObjectsGroupedByDay(
                     TestProject.TestBucket,
                     new DateTime(2020, 2, 1, 0, 0, 0, DateTimeKind.Utc),
                     new DateTime(2020, 2, 2, 0, 0, 0, DateTimeKind.Utc),
@@ -230,12 +361,13 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.Services.Adapters
             [Credential(Role = PredefinedRole.StorageObjectViewer)] CredentialRequest credential)
         {
             var service = new AuditLogStorageSinkAdapter(
-                new StorageAdapter(await credential.GetCredentialAsync()));
+                new StorageAdapter(await credential.GetCredentialAsync()),
+                new AuditLogAdapter(await credential.GetCredentialAsync()));
 
             var jan1 = new DateTime(2020, 1, 1, 0, 0, 0, DateTimeKind.Utc);
             var jan2 = new DateTime(2020, 1, 2, 0, 0, 0, DateTimeKind.Utc);
 
-            var locators = await service.FindExportObjects(
+            var locators = await service.FindAuditLogExportObjectsGroupedByDay(
                     TestProject.TestBucket,
                     jan1,
                     jan2,
@@ -254,7 +386,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.Services.Adapters
             [Credential(Role = PredefinedRole.StorageObjectViewer)] CredentialRequest credential)
         {
             var service = new AuditLogStorageSinkAdapter(
-                new StorageAdapter(await credential.GetCredentialAsync()));
+                new StorageAdapter(await credential.GetCredentialAsync()),
+                new AuditLogAdapter(await credential.GetCredentialAsync()));
 
             var eventsProcessed = new List<EventBase>();
             var processor = new Mock<IEventProcessor>();
@@ -288,7 +421,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.Services.Adapters
             [Credential(Role = PredefinedRole.StorageObjectViewer)] CredentialRequest credential)
         {
             var service = new AuditLogStorageSinkAdapter(
-                new StorageAdapter(await credential.GetCredentialAsync()));
+                new StorageAdapter(await credential.GetCredentialAsync()),
+                new AuditLogAdapter(await credential.GetCredentialAsync()));
 
             var eventsProcessed = new List<EventBase>();
             var processor = new Mock<IEventProcessor>();
@@ -322,7 +456,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.Services.Adapters
             [Credential(Role = PredefinedRole.StorageObjectViewer)] CredentialRequest credential)
         {
             var service = new AuditLogStorageSinkAdapter(
-                 new StorageAdapter(await credential.GetCredentialAsync()));
+                new StorageAdapter(await credential.GetCredentialAsync()),
+                new AuditLogAdapter(await credential.GetCredentialAsync()));
 
             var eventsProcessed = new List<EventBase>();
             var processor = new Mock<IEventProcessor>();
@@ -350,7 +485,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.Services.Adapters
             [Credential(Role = PredefinedRole.StorageObjectViewer)] CredentialRequest credential)
         {
             var service = new AuditLogStorageSinkAdapter(
-                 new StorageAdapter(await credential.GetCredentialAsync()));
+                new StorageAdapter(await credential.GetCredentialAsync()),
+                new AuditLogAdapter(await credential.GetCredentialAsync()));
 
             var eventsProcessed = new List<EventBase>();
             var processor = new Mock<IEventProcessor>();

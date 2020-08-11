@@ -48,7 +48,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.Services.UsageRep
             var startDate = DateTime.UtcNow.AddDays(-1);
             var builder = new ReportBuilder(
                 new AuditLogAdapter(await credential.GetCredentialAsync()),
-                new AuditLogStorageSinkAdapter(new StorageAdapter(await credential.GetCredentialAsync())),
+                new AuditLogStorageSinkAdapter(
+                    new StorageAdapter(await credential.GetCredentialAsync()),
+                    new AuditLogAdapter(await credential.GetCredentialAsync())),
                 new ComputeEngineAdapter(await credential.GetCredentialAsync()),
                 AuditLogSources.Api, 
                 new[] { TestProject.ProjectId },
@@ -75,7 +77,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.Services.UsageRep
             var startDate = DateTime.UtcNow.AddDays(-1);
             var builder = new ReportBuilder(
                 new AuditLogAdapter(await credential.GetCredentialAsync()),
-                new AuditLogStorageSinkAdapter(new StorageAdapter(await credential.GetCredentialAsync())),
+                 new AuditLogStorageSinkAdapter(
+                    new StorageAdapter(await credential.GetCredentialAsync()),
+                    new AuditLogAdapter(await credential.GetCredentialAsync())),
                 new ComputeEngineAdapter(await credential.GetCredentialAsync()),
                 AuditLogSources.Api, 
                 new[] { TestProject.ProjectId },

@@ -37,35 +37,18 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.Services.UsageRep
     [TestFixture]
     public class TestReportBuilderSources
     {
-        private static readonly LogSink OldSampleStorageExportSink = new LogSink()
-        {
-            Destination = "storage.googleapis.com/audit-bucket",
-            Filter = "resource.type=\"gce_instance\"\nlogName=(\"projects/project-1" +
-                "/logs/cloudaudit.googleapis.com%2Factivity\" OR \"projects/project-1" +
-                "/logs/cloudaudit.googleapis.com%2Fsystem_event\")",
-            CreateTime = new DateTime(2019, 1, 1)
-        };
-
-        private static readonly LogSink NewSampleStorageExportSink = new LogSink()
-        {
-            Destination = "storage.googleapis.com/audit-bucket",
-            Filter = "resource.type=\"gce_instance\"\nlogName=(\"projects/project-1" +
-                "/logs/cloudaudit.googleapis.com%2Factivity\" OR \"projects/project-1" +
-                "/logs/cloudaudit.googleapis.com%2Fsystem_event\")",
-            CreateTime = DateTime.Now
-        };
-
         [Test]
-        public async Task WhenNoExportsAvailable_ThenApiIsUsed()
+        public async Task WhenNoApplicableExportSinkAvailable_ThenApiIsUsed()
         {
             var computeEngineAdapter = new Mock<IComputeEngineAdapter>();
             var auditLogAdapter = new Mock<IAuditLogAdapter>();
-            auditLogAdapter.Setup(a => a.ListCloudStorageSinksAsync(
-                    It.IsAny<string>(),
-                    It.IsAny<CancellationToken>()))
-                .ReturnsAsync(Enumerable.Empty<LogSink>());
-
             var auditExportAdapter = new Mock<IAuditLogStorageSinkAdapter>();
+            auditExportAdapter.Setup(
+                a => a.FindCloudStorageExportBucketForAuditLogsAsync(
+                    It.IsAny<string>(),
+                    It.IsAny<DateTime>(),
+                    It.IsAny<CancellationToken>()))
+                .ReturnsAsync((string)null);
 
             var reportBuilder = new ReportBuilder(
                 auditLogAdapter.Object,
@@ -84,90 +67,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.Services.UsageRep
                     It.IsAny<DateTime>(),
                     It.IsAny<IEventProcessor>(),
                     It.IsAny<CancellationToken>()), Times.Never);
-
-            auditLogAdapter.Verify(
-                a => a.ProcessInstanceEventsAsync(
-                    It.Is<IEnumerable<string>>(p => p.All(id => id == "project-1")),
-                    It.IsAny<IEnumerable<string>>(),
-                    It.IsAny<IEnumerable<ulong>>(),
-                    It.IsAny<DateTime>(),
-                    It.IsAny<IEventProcessor>(),
-                    It.IsAny<CancellationToken>()), Times.Once);
-        }
-
-        [Test]
-        public async Task WhenNoApplicableExportsAvailable_ThenApiIsUsed()
-        {
-            var computeEngineAdapter = new Mock<IComputeEngineAdapter>();
-            var auditLogAdapter = new Mock<IAuditLogAdapter>();
-            auditLogAdapter.Setup(a => a.ListCloudStorageSinksAsync(
-                    It.IsAny<string>(),
-                    It.IsAny<CancellationToken>()))
-                .ReturnsAsync(new[] {
-                    NewSampleStorageExportSink  // Not applicable
-                });
-
-            var auditExportAdapter = new Mock<IAuditLogStorageSinkAdapter>();
-
-            var reportBuilder = new ReportBuilder(
-                auditLogAdapter.Object,
-                auditExportAdapter.Object,
-                computeEngineAdapter.Object,
-                AuditLogSources.Api | AuditLogSources.StorageExport,
-                new[] { "project-1" },
-                new DateTime(2020, 1, 1, 0, 0, 0, DateTimeKind.Utc));
-
-            await reportBuilder.BuildAsync(CancellationToken.None);
-
-            auditExportAdapter.Verify(
-                a => a.ProcessInstanceEventsAsync(
-                    It.IsAny<string>(),
-                    It.IsAny<DateTime>(),
-                    It.IsAny<DateTime>(),
-                    It.IsAny<IEventProcessor>(),
-                    It.IsAny<CancellationToken>()), Times.Never);
-
-            auditLogAdapter.Verify(
-                a => a.ProcessInstanceEventsAsync(
-                    It.Is<IEnumerable<string>>(p => p.All(id => id == "project-1")),
-                    It.IsAny<IEnumerable<string>>(),
-                    It.IsAny<IEnumerable<ulong>>(),
-                    It.IsAny<DateTime>(),
-                    It.IsAny<IEventProcessor>(),
-                    It.IsAny<CancellationToken>()), Times.Once);
-        }
-
-        [Test]
-        public async Task WhenExportsAvailableButPermissionDenied_ThenApiIsUsed()
-        {
-            var computeEngineAdapter = new Mock<IComputeEngineAdapter>();
-            var auditLogAdapter = new Mock<IAuditLogAdapter>();
-            auditLogAdapter.Setup(a => a.ListCloudStorageSinksAsync(
-                    It.IsAny<string>(),
-                    It.IsAny<CancellationToken>()))
-                .ReturnsAsync(new[] {
-                    OldSampleStorageExportSink, // Applicable
-                    NewSampleStorageExportSink  // Not applicable
-                });
-
-            var auditExportAdapter = new Mock<IAuditLogStorageSinkAdapter>();
-            auditExportAdapter.Setup(a => a.ProcessInstanceEventsAsync(
-                    It.IsAny<string>(),
-                    It.IsAny<DateTime>(),
-                    It.IsAny<DateTime>(),
-                    It.IsAny<IEventProcessor>(),
-                    It.IsAny<CancellationToken>()))
-                .ThrowsAsync(new ResourceAccessDeniedException("denied", null));
-
-            var reportBuilder = new ReportBuilder(
-                auditLogAdapter.Object,
-                auditExportAdapter.Object,
-                computeEngineAdapter.Object,
-                AuditLogSources.Api | AuditLogSources.StorageExport,
-                new[] { "project-1" },
-                new DateTime(2020, 1, 1, 0, 0, 0, DateTimeKind.Utc));
-
-            await reportBuilder.BuildAsync(CancellationToken.None);
 
             auditLogAdapter.Verify(
                 a => a.ProcessInstanceEventsAsync(
@@ -184,15 +83,13 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.Services.UsageRep
         {
             var computeEngineAdapter = new Mock<IComputeEngineAdapter>();
             var auditLogAdapter = new Mock<IAuditLogAdapter>();
-            auditLogAdapter.Setup(a => a.ListCloudStorageSinksAsync(
-                    It.IsAny<string>(),
-                    It.IsAny<CancellationToken>()))
-                .ReturnsAsync(new[] {
-                    OldSampleStorageExportSink, // Applicable
-                    NewSampleStorageExportSink  // Not applicable
-                });
-
             var auditExportAdapter = new Mock<IAuditLogStorageSinkAdapter>();
+            auditExportAdapter.Setup(
+                a => a.FindCloudStorageExportBucketForAuditLogsAsync(
+                    It.IsAny<string>(),
+                    It.IsAny<DateTime>(),
+                    It.IsAny<CancellationToken>()))
+                .ReturnsAsync("audit-bucket");
 
             var reportBuilder = new ReportBuilder(
                 auditLogAdapter.Object,
