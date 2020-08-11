@@ -96,7 +96,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services.UsageReport
             using (TraceSources.IapDesktop.TraceMethod().WithParameters(this.projectIds, sources))
             {
                 this.PercentageDone = 5;
-                this.BuildStatus = "Analyzing current state...";
+                this.BuildStatus = "1. Analyzing current inventory...";
 
                 //
                 // (1) Take inventory of what's there currently (pretty fast).
@@ -136,7 +136,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services.UsageReport
                 if (this.sources.HasFlag(AuditLogSources.StorageExport))
                 {
                     this.PercentageDone = 10;
-                    this.BuildStatus = $"Analyzing audit logs exported to Cloud Storage...";
+                    this.BuildStatus += $"\n2. Loading Cloud Storage exports...";
 
                     foreach (var projectId in this.projectIds)
                     {
@@ -157,7 +157,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services.UsageReport
                                 projectId,
                                 auditLogExportBucket);
 
-                            this.BuildStatus = $"Reading exports from {auditLogExportBucket}...";
+                            this.BuildStatus += $"\n    {auditLogExportBucket}...";
                             await this.auditExportAdapter.ProcessInstanceEventsAsync(
                                     auditLogExportBucket,
                                     this.builder.StartDate,
@@ -179,7 +179,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services.UsageReport
                 if (pendingProjectIds.Any() && this.sources.HasFlag(AuditLogSources.Api))
                 {
                     this.PercentageDone = 30;
-                    this.BuildStatus = $"Querying audit log API...";
+                    this.BuildStatus += $"\n3. Querying Audit Log API...";
 
                     TraceSources.IapDesktop.TraceVerbose(
                         "Querying audit log API for remaining projects {0}",
@@ -200,7 +200,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services.UsageReport
                 //
 
                 this.PercentageDone = 90;
-                this.BuildStatus = "Finalizing report...";
+                this.BuildStatus += "\n4. Finalizing report...";
 
                 var archive = ReportArchive.FromInstanceSetHistory(this.builder.Build());
 
