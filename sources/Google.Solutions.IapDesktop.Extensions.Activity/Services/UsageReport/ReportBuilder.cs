@@ -157,7 +157,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services.UsageReport
                                 projectId,
                                 auditLogExportBucket);
 
-                            this.BuildStatus += $"\n    {auditLogExportBucket}...";
+                            this.BuildStatus += $"\n    - {auditLogExportBucket}...";
                             await this.auditExportAdapter.ProcessInstanceEventsAsync(
                                     auditLogExportBucket,
                                     this.builder.StartDate,
