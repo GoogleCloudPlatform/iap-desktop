@@ -65,8 +65,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services.Adapters
     [Service(typeof(IAuditLogStorageSinkAdapter))]
     public class AuditLogStorageSinkAdapter : IAuditLogStorageSinkAdapter
     {
-        private const string ActivityPrefix = "cloudaudit.googleapis.com/activity/";
-        private const string SystemEventPrefix = "cloudaudit.googleapis.com/system_event/";
+        internal const string AuditLogPrefix = "cloudaudit.googleapis.com";
+        internal const string ActivityLogPrefix = "cloudaudit.googleapis.com/activity/";
+        internal const string SystemEventLogPrefix = "cloudaudit.googleapis.com/system_event/";
 
         private readonly IStorageAdapter storageAdapter;
         private readonly IAuditLogAdapter auditLogAdapter;
@@ -128,12 +129,13 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services.Adapters
 
                 var objectsByBucket = await this.storageAdapter.ListObjectsAsync(
                         bucket,
+                        AuditLogPrefix, // Ignore other junk.
                         cancellationToken)
                     .ConfigureAwait(false);
 
                 return objectsByBucket
-                    .Where(o => o.Name.StartsWith(ActivityPrefix) || 
-                                o.Name.StartsWith(SystemEventPrefix))
+                    .Where(o => o.Name.StartsWith(ActivityLogPrefix) || 
+                                o.Name.StartsWith(SystemEventLogPrefix))
                     .Select(o => new StorageObjectLocator(o.Bucket, o.Name));
             }
         }

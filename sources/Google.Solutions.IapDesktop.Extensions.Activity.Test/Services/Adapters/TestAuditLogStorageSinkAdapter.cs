@@ -177,6 +177,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.Services.Adapters
             storageAdapter.Setup(
                 a => a.ListObjectsAsync(
                     It.Is<string>(b => b == "mybucket"),
+                    It.Is<string>(p => p == AuditLogStorageSinkAdapter.AuditLogPrefix),
                     It.IsAny<CancellationToken>()))
                 .ReturnsAsync(Enumerable.Empty<GcsObject>());
 
@@ -213,6 +214,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.Services.Adapters
             storageAdapter.Setup(
                 a => a.ListObjectsAsync(
                     It.Is<string>(b => b == "mybucket"),
+                    It.Is<string>(p => p == AuditLogStorageSinkAdapter.AuditLogPrefix),
                     It.IsAny<CancellationToken>()))
                 .ThrowsAsync(new ResourceAccessDeniedException("denied", null));
 

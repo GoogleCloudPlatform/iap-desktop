@@ -91,6 +91,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.Services.Adapters
             AssertEx.ThrowsAggregateException<ResourceAccessDeniedException>(
                 () => adapter.ListObjectsAsync(
                     TestProject.TestBucket,
+                    null,
                     CancellationToken.None).Wait());
         }
 
@@ -102,6 +103,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.Services.Adapters
 
             var objects = await adapter.ListObjectsAsync(
                 TestProject.TestBucket,
+                null,
                 CancellationToken.None);
 
             var objectNames = objects.Select(o => o.Name).ToList();

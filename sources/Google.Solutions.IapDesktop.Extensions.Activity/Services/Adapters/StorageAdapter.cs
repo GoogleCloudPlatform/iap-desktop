@@ -51,6 +51,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services.Adapters
 
         Task<IEnumerable<GcsObject>> ListObjectsAsync(
             string bucket,
+            string prefix,
             CancellationToken cancellationToken);
     }
 
@@ -100,12 +101,16 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services.Adapters
 
         public async Task<IEnumerable<GcsObject>> ListObjectsAsync(
             string bucket,
+            string prefix,
             CancellationToken cancellationToken)
         {
             using (TraceSources.IapDesktop.TraceMethod().WithParameters(bucket))
             {
                 try
                 {
+                    var request = this.service.Objects.List(bucket);
+                    request.Prefix = prefix;
+
                     var objects = await new PageStreamer<
                         GcsObject,
                         ObjectsResource.ListRequest,
@@ -115,7 +120,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services.Adapters
                             response => response.NextPageToken,
                             response => response.Items)
                         .FetchAllAsync(
-                            this.service.Objects.List(bucket),
+                            request,
                             cancellationToken)
                         .ConfigureAwait(false);
 
