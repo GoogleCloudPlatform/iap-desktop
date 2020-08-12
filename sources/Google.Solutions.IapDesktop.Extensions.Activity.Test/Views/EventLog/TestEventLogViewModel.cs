@@ -19,6 +19,7 @@
 // under the License.
 //
 
+using Google.Apis.Logging.v2.Data;
 using Google.Solutions.IapDesktop.Application.ObjectModel;
 using Google.Solutions.IapDesktop.Application.Services.Integration;
 using Google.Solutions.IapDesktop.Application.Views.ProjectExplorer;
@@ -61,7 +62,15 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.Views.EventLog
         private class AuditLogAdapterMock : IAuditLogAdapter
         {
             public int CallCount = 0;
-            public Task ListInstanceEventsAsync(
+
+            public Task<IEnumerable<LogSink>> ListCloudStorageSinksAsync(
+                string projectId, 
+                CancellationToken cancellationToken)
+            {
+                throw new NotImplementedException();
+            }
+
+            public Task ProcessInstanceEventsAsync(
                 IEnumerable<string> projectIds,
                 IEnumerable<string> zones,
                 IEnumerable<ulong> instanceIds,

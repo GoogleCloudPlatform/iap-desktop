@@ -43,7 +43,7 @@ namespace Google.Solutions.Common.Util
             return !lookup.Except(sequence).Any();
         }
 
-        public static IEnumerable<IEnumerable<T>> Chunk<T>(this IEnumerable<T> source, int chunkSize)
+        public static IEnumerable<IEnumerable<T>> Chunk<T>(this IEnumerable<T> source, ushort chunkSize)
         {
             var chunk = new List<T>(chunkSize);
             foreach (var x in source)

@@ -61,7 +61,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.History
             DateTime endDate)
         {
             if (startDate.Kind != DateTimeKind.Utc ||
-                startDate.Kind != DateTimeKind.Utc)
+                endDate.Kind != DateTimeKind.Utc)
             {
                 throw new ArgumentException("Start/end date must be in UTC time");
             }

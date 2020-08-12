@@ -40,6 +40,10 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.Services.Adapters
     [Category("IntegrationTest")]
     public class TestAuditLogAdapter : FixtureBase
     {
+        //---------------------------------------------------------------------
+        // ListEventsAsync
+        //---------------------------------------------------------------------
+
         [Test]
         public async Task WhenInstanceCreated_ThenListLogEntriesReturnsInsertEvent(
             [LinuxInstance] InstanceRequest testInstance,
@@ -88,8 +92,12 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.Services.Adapters
             Assert.IsNotNull(insertEvent);
         }
 
+        //---------------------------------------------------------------------
+        // ProcessInstanceEventsAsync
+        //---------------------------------------------------------------------
+
         [Test]
-        public async Task WhenInstanceCreated_ThenListInstanceEventsAsyncCanFeedHistorySetBuilder(
+        public async Task WhenInstanceCreated_ThenProcessInstanceEventsAsyncCanFeedHistorySetBuilder(
             [LinuxInstance] InstanceRequest testInstance,
             [Credential(Roles = new[] {
                 PredefinedRole.ComputeViewer,
@@ -110,7 +118,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.Services.Adapters
 
             var adapter = new AuditLogAdapter(await credential.GetCredentialAsync());
 
-            await adapter.ListInstanceEventsAsync(
+            await adapter.ProcessInstanceEventsAsync(
                 new[] { TestProject.ProjectId },
                 null,  // all zones.
                 null,  // all instances.
@@ -125,7 +133,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.Services.Adapters
         }
 
         [Test]
-        public async Task WhenUserNotInRole_ThenListInstanceEventsAsyncThrowsResourceAccessDeniedException(
+        public async Task WhenUserNotInRole_ThenProcessInstanceEventsAsyncThrowsResourceAccessDeniedException(
             [LinuxInstance] InstanceRequest testInstance,
             [Credential(Role = PredefinedRole.ComputeViewer)] CredentialRequest credential)
         {
@@ -139,7 +147,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.Services.Adapters
             var adapter = new AuditLogAdapter(await credential.GetCredentialAsync());
 
             AssertEx.ThrowsAggregateException<ResourceAccessDeniedException>(
-                () => adapter.ListInstanceEventsAsync(
+                () => adapter.ProcessInstanceEventsAsync(
                     new[] { TestProject.ProjectId },
                     null,  // all zones.
                     null,  // all instances.
@@ -260,6 +268,35 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.Services.Adapters
                 "AND resource.type=\"gce_instance\" " +
                 "AND timestamp > \"2020-01-02T03:04:05.0060000Z\"",
                 filter);
+        }
+
+        //---------------------------------------------------------------------
+        // ListCloudStorageSinksAsync.
+        //---------------------------------------------------------------------
+
+        [Test]
+        public async Task WhenUserNotInRole_ThenListCloudStorageSinksAsyncThrowsResourceAccessDeniedException(
+            [Credential(Role = PredefinedRole.ComputeViewer)] CredentialRequest credential)
+        {
+            var adapter = new AuditLogAdapter(await credential.GetCredentialAsync());
+
+            AssertEx.ThrowsAggregateException<ResourceAccessDeniedException>(
+                () => adapter.ListCloudStorageSinksAsync(
+                    TestProject.ProjectId,
+                    CancellationToken.None).Wait());
+        }
+
+        [Test]
+        public async Task WhenSinkExists_ThenListCloudStorageSinksAsyncReturnsList(
+            [Credential(Role = PredefinedRole.LogsViewer)] CredentialRequest credential)
+        {
+            var adapter = new AuditLogAdapter(await credential.GetCredentialAsync());
+
+            var buckets = await adapter.ListCloudStorageSinksAsync(
+                TestProject.ProjectId,
+                CancellationToken.None);
+
+            Assert.IsNotNull(buckets);
         }
     }
 }

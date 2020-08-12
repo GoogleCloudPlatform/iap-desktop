@@ -277,7 +277,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Views.EventLog
                             using (var combinedTokenSource = jobToken.Combine(token))
                             {
                                 var model = new EventLogModel(displayName);
-                                await auditLogAdapter.ListInstanceEventsAsync(
+                                await auditLogAdapter.ProcessInstanceEventsAsync(
                                     new[] { projectIdFilter },
                                     zonesFilter,
                                     instanceIdFilter,

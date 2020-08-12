@@ -63,7 +63,7 @@ namespace Google.Solutions.IapDesktop.Application.Views
             this.loadingPanel.Controls.Add(this.progressBar);
             this.loadingPanel.Location = new System.Drawing.Point(150, 96);
             this.loadingPanel.Name = "loadingPanel";
-            this.loadingPanel.Size = new System.Drawing.Size(300, 65);
+            this.loadingPanel.Size = new System.Drawing.Size(300, 273);
             this.loadingPanel.TabIndex = 0;
             // 
             // progressLabel

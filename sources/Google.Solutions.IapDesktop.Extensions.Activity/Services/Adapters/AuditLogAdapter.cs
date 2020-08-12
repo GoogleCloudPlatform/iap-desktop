@@ -26,6 +26,7 @@ using Google.Apis.Services;
 using Google.Apis.Util;
 using Google.Solutions.Common.ApiExtensions.Request;
 using Google.Solutions.Common.Diagnostics;
+using Google.Solutions.Common.Util;
 using Google.Solutions.IapDesktop.Application;
 using Google.Solutions.IapDesktop.Application.ObjectModel;
 using Google.Solutions.IapDesktop.Application.Services.Adapters;
@@ -45,12 +46,16 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services.Adapters
 {
     public interface IAuditLogAdapter
     {
-        Task ListInstanceEventsAsync(
+        Task ProcessInstanceEventsAsync(
             IEnumerable<string> projectIds,
             IEnumerable<string> zones,
             IEnumerable<ulong> instanceIds,
             DateTime startTime,
             IEventProcessor processor,
+            CancellationToken cancellationToken);
+
+        Task<IEnumerable<LogSink>> ListCloudStorageSinksAsync(
+            string projectId,
             CancellationToken cancellationToken);
     }
 
@@ -151,7 +156,38 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services.Adapters
             return string.Join(" AND ", criteria);
         }
 
-        public async Task ListInstanceEventsAsync(
+        //---------------------------------------------------------------------
+        // IAuditLogAdapter
+        //---------------------------------------------------------------------
+
+        public async Task<IEnumerable<LogSink>> ListCloudStorageSinksAsync(
+            string projectId,
+            CancellationToken cancellationToken)
+        {
+            using(TraceSources.IapDesktop.TraceMethod().WithParameters(projectId))
+            {
+                try
+                {
+                    var sinks = await this.service.Sinks.List($"projects/{projectId}")
+                        .ExecuteAsync(cancellationToken)
+                        .ConfigureAwait(false);
+
+                    return sinks.Sinks
+                        .EnsureNotNull()
+                        .Where(s => s.IsCloudStorageSink());
+                }
+                catch (GoogleApiException e) when (e.Error != null && e.Error.Code == 403)
+                {
+                    throw new ResourceAccessDeniedException(
+                        "You do not have sufficient permissions to list log sinks. " +
+                        "You need the 'Logs Viewer' role (or an equivalent custom role) " +
+                        "to perform this action.",
+                        e);
+                }
+            }
+        }
+
+        public async Task ProcessInstanceEventsAsync(
             IEnumerable<string> projectIds,
             IEnumerable<string> zones,
             IEnumerable<ulong> instanceIds,
@@ -183,6 +219,28 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services.Adapters
                     processor.Process,
                     new ExponentialBackOff(initialBackOff, MaxRetries),
                     cancellationToken).ConfigureAwait(false);
+            }
+        }
+    }
+
+    public static class LogSinkExtensions
+    {
+        private const string CloudStorageDestinationPrefix = "storage.googleapis.com/";
+
+        public static bool IsCloudStorageSink(this LogSink sink)
+        {
+            return sink.Destination.StartsWith(CloudStorageDestinationPrefix);
+        }
+
+        public static string GetDestinationBucket(this LogSink sink)
+        {
+            if (sink.Destination.StartsWith(CloudStorageDestinationPrefix))
+            {
+                return sink.Destination.Substring(CloudStorageDestinationPrefix.Length);
+            }
+            else
+            {
+                throw new ArgumentException("Not a Cloud Storage sink");
             }
         }
     }

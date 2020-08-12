@@ -183,6 +183,10 @@ namespace Google.Solutions.IapDesktop
                 SecurityProtocolType.Tls12 |
                 SecurityProtocolType.Tls11;
 
+            // Lift limit on concurrent HTTP connections to same endpoint,
+            // relevant for GCS downloads.
+            ServicePointManager.DefaultConnectionLimit = 16;
+
             // Allow custom User-Agent headers.
             try
             {

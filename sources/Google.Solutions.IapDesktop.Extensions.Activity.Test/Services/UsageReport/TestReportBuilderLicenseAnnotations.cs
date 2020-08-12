@@ -33,7 +33,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.Services.UsageRep
 {
     [TestFixture]
     [Category("IntegrationTest")]
-    public class TestAuditLogReportBuilder : FixtureBase
+    public class TestReportBuilderLicenseAnnotations : FixtureBase
     {
         [Test]
         public async Task WhenWindowsInstanceCreated_ThenReportContainsInstanceAndLicenseInfoFromItsDisk(
@@ -46,9 +46,13 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.Services.UsageRep
             var instanceRef = await testInstance.GetInstanceAsync();
 
             var startDate = DateTime.UtcNow.AddDays(-1);
-            var builder = new AuditLogReportBuilder(
+            var builder = new ReportBuilder(
                 new AuditLogAdapter(await credential.GetCredentialAsync()),
+                new AuditLogStorageSinkAdapter(
+                    new StorageAdapter(await credential.GetCredentialAsync()),
+                    new AuditLogAdapter(await credential.GetCredentialAsync())),
                 new ComputeEngineAdapter(await credential.GetCredentialAsync()),
+                AuditLogSources.Api, 
                 new[] { TestProject.ProjectId },
                 startDate);
             var report = await builder.BuildAsync(CancellationToken.None);
@@ -71,9 +75,13 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.Services.UsageRep
             var instanceRef = await testInstance.GetInstanceAsync();
 
             var startDate = DateTime.UtcNow.AddDays(-1);
-            var builder = new AuditLogReportBuilder(
+            var builder = new ReportBuilder(
                 new AuditLogAdapter(await credential.GetCredentialAsync()),
+                 new AuditLogStorageSinkAdapter(
+                    new StorageAdapter(await credential.GetCredentialAsync()),
+                    new AuditLogAdapter(await credential.GetCredentialAsync())),
                 new ComputeEngineAdapter(await credential.GetCredentialAsync()),
+                AuditLogSources.Api, 
                 new[] { TestProject.ProjectId },
                 startDate);
             var report = await builder.BuildAsync(CancellationToken.None);
