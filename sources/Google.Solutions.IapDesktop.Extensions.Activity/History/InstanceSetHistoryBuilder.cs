@@ -141,7 +141,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.History
                         instance.Status == "RUNNING"
                             ? InstanceState.Running
                             : InstanceState.Terminated,
-                        DateTime.Now,
+                        this.EndDate,
                         instance.Scheduling.NodeAffinities != null && instance.Scheduling.NodeAffinities.Any()
                             ? Tenancies.SoleTenant
                             : Tenancies.Fleet);
