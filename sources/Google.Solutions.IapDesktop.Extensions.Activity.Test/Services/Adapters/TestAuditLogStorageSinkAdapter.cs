@@ -43,19 +43,19 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.Services.Adapters
     public class TestAuditLogStorageSinkAdapter : FixtureBase
     {
         private static readonly StorageObjectLocator GarbageLocator = new StorageObjectLocator(
-            TestProject.TestBucket,
+            GcsTestData.Bucket,
             "cloudaudit.googleapis.com/activity/2019/12/31/10:00:00_10:59:59_S0.json");
         private static readonly StorageObjectLocator EmptyLocator = new StorageObjectLocator(
-            TestProject.TestBucket,
+            GcsTestData.Bucket,
             "cloudaudit.googleapis.com/activity/2019/12/31/11:00:00_10:59:59_S0.json");
         private static readonly StorageObjectLocator ValidLocator_Jan1_00 = new StorageObjectLocator(
-            TestProject.TestBucket,
+            GcsTestData.Bucket,
             "cloudaudit.googleapis.com/activity/2020/01/01/00:00:00_00:59:59_S0.json");
         private static readonly StorageObjectLocator ValidLocator_Jan1_01 = new StorageObjectLocator(
-            TestProject.TestBucket,
+            GcsTestData.Bucket,
             "cloudaudit.googleapis.com/activity/2020/01/01/01:00:00_01:59:59_S0.json");
         private static readonly StorageObjectLocator ValidLocator_Jan2_00 = new StorageObjectLocator(
-            TestProject.TestBucket,
+            GcsTestData.Bucket,
             "cloudaudit.googleapis.com/activity/2020/01/02/00:00:00_00:59:59_S0.json");
 
         private static string GenerateEventJson(DateTime timestamp)
@@ -104,21 +104,21 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.Services.Adapters
         [OneTimeSetUp]
         public static void SetUpTestBucket()
         {
-            GcsUtil.CreateObjectIfNotExist(
+            GcsTestData.CreateObjectIfNotExist(
                 GarbageLocator,
                 "<garbage/>");
-            GcsUtil.CreateObjectIfNotExist(
+            GcsTestData.CreateObjectIfNotExist(
                 EmptyLocator,
                 string.Empty);
-            GcsUtil.CreateObjectIfNotExist(
+            GcsTestData.CreateObjectIfNotExist(
                 ValidLocator_Jan1_00,
                 GenerateEventJson(EventTimestamp_Jan1_00_01) + "\n" +
                 GenerateEventJson(EventTimestamp_Jan1_00_02) + "\n" +
                 GenerateEventJson(EventTimestamp_Jan1_00_03) + "\n");
-            GcsUtil.CreateObjectIfNotExist(
+            GcsTestData.CreateObjectIfNotExist(
                 ValidLocator_Jan1_01,
                 GenerateEventJson(EventTimestamp_Jan1_01_01));
-            GcsUtil.CreateObjectIfNotExist(
+            GcsTestData.CreateObjectIfNotExist(
                 ValidLocator_Jan2_00,
                 GenerateEventJson(EventTimestamp_Jan2_00_01));
         }
@@ -336,7 +336,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.Services.Adapters
 
             AssertEx.ThrowsAggregateException<ArgumentException>(
                 () => service.FindAuditLogExportObjectsGroupedByDay(
-                    TestProject.TestBucket,
+                    GcsTestData.Bucket,
                     new DateTime(2020, 1, 2, 0, 0, 0, DateTimeKind.Utc),
                     new DateTime(2020, 1, 1, 0, 0, 0, DateTimeKind.Utc),
                     CancellationToken.None).Wait());
@@ -351,7 +351,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.Services.Adapters
                 new AuditLogAdapter(await credential.GetCredentialAsync()));
 
             var locators = await service.FindAuditLogExportObjectsGroupedByDay(
-                    TestProject.TestBucket,
+                    GcsTestData.Bucket,
                     new DateTime(2020, 2, 1, 0, 0, 0, DateTimeKind.Utc),
                     new DateTime(2020, 2, 2, 0, 0, 0, DateTimeKind.Utc),
                     CancellationToken.None);
@@ -370,7 +370,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.Services.Adapters
             var jan2 = new DateTime(2020, 1, 2, 0, 0, 0, DateTimeKind.Utc);
 
             var locators = await service.FindAuditLogExportObjectsGroupedByDay(
-                    TestProject.TestBucket,
+                    GcsTestData.Bucket,
                     jan1,
                     jan2,
                     CancellationToken.None);
@@ -403,7 +403,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.Services.Adapters
             var jan1 = new DateTime(2020, 1, 1, 0, 0, 0, DateTimeKind.Utc);
 
             await service.ProcessInstanceEventsAsync(
-                TestProject.TestBucket,
+                GcsTestData.Bucket,
                     jan1,
                 jan1.AddMonths(1),
                 processor.Object,
@@ -438,7 +438,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.Services.Adapters
             var jan1 = new DateTime(2020, 1, 1, 0, 0, 0, DateTimeKind.Utc);
 
             await service.ProcessInstanceEventsAsync(
-                TestProject.TestBucket,
+                GcsTestData.Bucket,
                 jan1,
                 jan1.AddMonths(1),
                 processor.Object,
@@ -473,7 +473,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.Services.Adapters
             var jan1 = new DateTime(2020, 1, 1, 0, 0, 0, DateTimeKind.Utc);
 
             await service.ProcessInstanceEventsAsync(
-                TestProject.TestBucket,
+                GcsTestData.Bucket,
                 jan1,
                 jan1.AddMonths(1),
                 processor.Object,
@@ -502,7 +502,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.Services.Adapters
             var jan1 = new DateTime(2020, 1, 1, 0, 0, 0, DateTimeKind.Utc);
 
             await service.ProcessInstanceEventsAsync(
-                TestProject.TestBucket,
+                GcsTestData.Bucket,
                 jan1,
                 jan1.AddMonths(1),
                 processor.Object,

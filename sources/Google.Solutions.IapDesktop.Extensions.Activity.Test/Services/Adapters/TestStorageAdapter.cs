@@ -36,14 +36,14 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.Services.Adapters
     public class TestStorageAdapter : FixtureBase
     {
         private static readonly StorageObjectLocator SampleLocator = new StorageObjectLocator(
-            TestProject.TestBucket, 
+            GcsTestData.Bucket, 
             typeof(TestStorageAdapter).Name + ".dat");
         private static readonly string SampleData = "test data";
 
         [SetUp]
         public void SetUpTestBucket()
         {
-            GcsUtil.CreateObjectIfNotExist(SampleLocator, SampleData);
+            GcsTestData.CreateObjectIfNotExist(SampleLocator, SampleData);
         }
 
         //---------------------------------------------------------------------
@@ -75,7 +75,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.Services.Adapters
             Assert.IsNotNull(buckets);
             CollectionAssert.Contains(
                 buckets.Select(o => o.Name).ToList(), 
-                TestProject.TestBucket);
+                GcsTestData.Bucket);
         }
 
         //---------------------------------------------------------------------
@@ -90,7 +90,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.Services.Adapters
 
             AssertEx.ThrowsAggregateException<ResourceAccessDeniedException>(
                 () => adapter.ListObjectsAsync(
-                    TestProject.TestBucket,
+                    GcsTestData.Bucket,
                     null,
                     CancellationToken.None).Wait());
         }
@@ -102,7 +102,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.Services.Adapters
             var adapter = new StorageAdapter(await credential.GetCredentialAsync());
 
             var objects = await adapter.ListObjectsAsync(
-                TestProject.TestBucket,
+                GcsTestData.Bucket,
                 null,
                 CancellationToken.None);
 

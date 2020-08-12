@@ -19,15 +19,39 @@
 // under the License.
 //
 
+using Google.Apis.Storage.v1;
 using Google.Solutions.Common.Test.Integration;
 using Google.Solutions.IapDesktop.Extensions.Activity.Services.Adapters;
 using System.IO;
 
 namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.Services.Adapters
 {
-    internal static class GcsUtil
+    internal static class GcsTestData
     {
-        private static MemoryStream CreateTextStream(string text)
+        public static readonly string Bucket = TestProject.ProjectId + "-testdata";
+
+        internal static StorageService CreateStorageService()
+        {
+            var service = TestProject.CreateService<StorageService>();
+
+            // Ensure the test bucket exists.
+            try
+            {
+                service.Buckets.Get(Bucket).Execute();
+            }
+            catch (GoogleApiException e) when (e.Error != null && e.Error.Code == 404)
+            {
+                service.Buckets.Insert(new Apis.Storage.v1.Data.Bucket()
+                {
+                    Name = Bucket
+                },
+                TestProject.ProjectId).Execute();
+            }
+
+            return service;
+        }
+
+        internal static MemoryStream CreateTextStream(string text)
         {
             var stream = new MemoryStream();
             StreamWriter writer = new StreamWriter(stream);
@@ -38,11 +62,11 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.Services.Adapters
             return stream;
         }
 
-        public static void CreateObjectIfNotExist(
+        internal static void CreateObjectIfNotExist(
             StorageObjectLocator locator,
             string content)
         {
-            var service = TestProject.CreateStorageService();
+            var service = CreateStorageService();
             try
             {
                 service.Objects.Insert(
