@@ -53,11 +53,11 @@ namespace Google.Solutions.IapTunneling.Test.Iap
 
         [Test]
         public async Task WhenBufferIsTiny_ThenReadingFailsWithIndexOutOfRangeException(
-            [LinuxInstance(InitializeScript = InstallApache)] InstanceRequest vm,
+            [LinuxInstance(InitializeScript = InstallApache)] ResourceTask<InstanceLocator> vm,
             [Credential(Role = PredefinedRole.IapTunnelUser)] ResourceTask<ICredential> credential)
         {
-            await vm.AwaitReady();
-            var stream = ConnectToWebServer(vm.Locator, await credential);
+            var locator = await vm;
+            var stream = ConnectToWebServer(locator, await credential);
 
             byte[] request = new ASCIIEncoding().GetBytes(
                 "GET / HTTP/1.0\r\n\r\n");
@@ -73,10 +73,8 @@ namespace Google.Solutions.IapTunneling.Test.Iap
 
         [Test]
         public async Task WhenConnectingWithInvalidAccessToken_ThenReadingFailsWithUnauthorizedException
-            ([LinuxInstance(InitializeScript = InstallApache)] InstanceRequest vm)
+            ([LinuxInstance(InitializeScript = InstallApache)] ResourceTask<InstanceLocator> vm)
         {
-            await vm.AwaitReady();
-
             // NB. Fiddler might cause this test to fail.
 
             byte[] request = new ASCIIEncoding().GetBytes(
@@ -85,7 +83,7 @@ namespace Google.Solutions.IapTunneling.Test.Iap
             var stream = new SshRelayStream(
                 new IapTunnelingEndpoint(
                     GoogleCredential.FromAccessToken("invalid"),
-                    vm.Locator,
+                    await vm,
                     80,
                     IapTunnelingEndpoint.DefaultNetworkInterface,
                     TestProject.UserAgent));
@@ -103,12 +101,12 @@ namespace Google.Solutions.IapTunneling.Test.Iap
 
         [Test]
         public async Task WhenFirstReadCompleted_ThenSidIsAvailable(
-            [LinuxInstance(InitializeScript = InstallApache)] InstanceRequest vm,
+            [LinuxInstance(InitializeScript = InstallApache)] ResourceTask<InstanceLocator> vm,
             [Credential(Role = PredefinedRole.IapTunnelUser)] ResourceTask<ICredential> credential)
         {
-            await vm.AwaitReady();
+            var locator = await vm;
             var stream = (SshRelayStream)ConnectToWebServer(
-                vm.Locator,
+                locator,
                 await credential);
 
             byte[] request = new ASCIIEncoding().GetBytes(
@@ -130,12 +128,11 @@ namespace Google.Solutions.IapTunneling.Test.Iap
         [Test]
         [Ignore("Can also throw an UnauthorizedException")]
         public async Task WhenServerNotListening_ThenReadFails(
-            [LinuxInstance] InstanceRequest vm,
+            [LinuxInstance] ResourceTask<InstanceLocator> vm,
             [Credential(Role = PredefinedRole.IapTunnelUser)] ResourceTask<ICredential> credential)
         {
-            await vm.AwaitReady();
             var stream = ConnectToWebServer(
-                vm.Locator,
+                await vm,
                 await credential);
 
             byte[] request = new ASCIIEncoding().GetBytes(

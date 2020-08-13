@@ -76,12 +76,11 @@ namespace Google.Solutions.IapTunneling.Test.Iap
 
         [Test, Repeat(RepeatCount)]
         public async Task WhenServerClosesConnectionAfterSingleHttpRequest_ThenRelayEnds(
-            [LinuxInstance(InitializeScript = InstallApache)] InstanceRequest vm,
+            [LinuxInstance(InitializeScript = InstallApache)] ResourceTask<InstanceLocator> vm,
             [Credential(Role = PredefinedRole.IapTunnelUser)] ResourceTask<ICredential> credential)
         {
-            await vm.AwaitReady();
             var stream = ConnectToWebServer(
-                vm.Locator,
+                await vm,
                 await credential);
 
             byte[] request = new ASCIIEncoding().GetBytes(
@@ -104,12 +103,12 @@ namespace Google.Solutions.IapTunneling.Test.Iap
 
         [Test, Repeat(RepeatCount)]
         public async Task WhenServerClosesConnectionMultipleHttpRequests_ThenRelayEnds(
-            [LinuxInstance(InitializeScript = InstallApache)] InstanceRequest vm,
+            [LinuxInstance(InitializeScript = InstallApache)] ResourceTask<InstanceLocator> vm,
             [Credential(Role = PredefinedRole.IapTunnelUser)] ResourceTask<ICredential> credential)
         {
-            await vm.AwaitReady();
+            var locator = await vm;
             var stream = ConnectToWebServer(
-                vm.Locator,
+                locator,
                 await credential);
 
             for (int i = 0; i < 3; i++)
@@ -141,12 +140,12 @@ namespace Google.Solutions.IapTunneling.Test.Iap
 
         [Test, Repeat(RepeatCount)]
         public async Task WhenClientClosesConnectionAfterSingleHttpRequest_ThenRelayEnds(
-            [LinuxInstance(InitializeScript = InstallApache)] InstanceRequest vm,
+            [LinuxInstance(InitializeScript = InstallApache)] ResourceTask<InstanceLocator> vm,
             [Credential(Role = PredefinedRole.IapTunnelUser)] ResourceTask<ICredential> credential)
         {
-            await vm.AwaitReady();
+            var locator = await vm;
             var stream = ConnectToWebServer(
-                vm.Locator,
+                locator,
                 await credential);
 
             byte[] request = new ASCIIEncoding().GetBytes(

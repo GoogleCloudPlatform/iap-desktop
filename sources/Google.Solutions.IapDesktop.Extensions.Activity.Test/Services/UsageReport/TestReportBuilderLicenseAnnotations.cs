@@ -20,6 +20,7 @@
 //
 
 using Google.Apis.Auth.OAuth2;
+using Google.Solutions.Common.Locator;
 using Google.Solutions.Common.Test.Integration;
 using Google.Solutions.IapDesktop.Application.Services.Adapters;
 using Google.Solutions.IapDesktop.Extensions.Activity.Services.Adapters;
@@ -38,13 +39,13 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.Services.UsageRep
     {
         [Test]
         public async Task WhenWindowsInstanceCreated_ThenReportContainsInstanceAndLicenseInfoFromItsDisk(
-            [WindowsInstance] InstanceRequest testInstance,
+            [WindowsInstance] ResourceTask<InstanceLocator> testInstance,
             [Credential(Roles = new[] {
                 PredefinedRole.ComputeViewer,
                 PredefinedRole.LogsViewer })] ResourceTask<ICredential> credential)
         {
-            await testInstance.AwaitReady();
-            var instanceRef = await testInstance.GetInstanceAsync();
+            await testInstance;
+            var instanceRef = await testInstance;
 
             var startDate = DateTime.UtcNow.AddDays(-1);
             var builder = new ReportBuilder(
@@ -67,13 +68,13 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.Services.UsageRep
 
         [Test]
         public async Task WhenLinuxInstanceCreated_ThenReportContainsInstanceAndLicenseInfoFromItsDisk(
-            [LinuxInstance] InstanceRequest testInstance,
+            [LinuxInstance] ResourceTask<InstanceLocator> testInstance,
             [Credential(Roles = new[] {
                 PredefinedRole.ComputeViewer,
                 PredefinedRole.LogsViewer })] ResourceTask<ICredential> credential)
         {
-            await testInstance.AwaitReady();
-            var instanceRef = await testInstance.GetInstanceAsync();
+            await testInstance;
+            var instanceRef = await testInstance;
 
             var startDate = DateTime.UtcNow.AddDays(-1);
             var builder = new ReportBuilder(

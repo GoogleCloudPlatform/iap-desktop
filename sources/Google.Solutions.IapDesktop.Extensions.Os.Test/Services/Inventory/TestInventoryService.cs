@@ -66,10 +66,10 @@ namespace Google.Solutions.IapDesktop.Extensions.Os.Test.Services.Inventory
         [Test]
         public async Task WhenInstanceHasInventoryData_ThenGetInstanceInventoryAsyncSucceeds(
             [WindowsInstance(
-                InitializeScript = PublishInventoryScript)] InstanceRequest testInstance,
+                InitializeScript = PublishInventoryScript)] ResourceTask<InstanceLocator> testInstance,
             [Credential(Role = PredefinedRole.ComputeViewer)] ResourceTask<ICredential> credential)
         {
-            var instanceRef = await testInstance.GetInstanceAsync();
+            var instanceRef = await testInstance;
             var service = new InventoryService(
                 new ComputeEngineAdapter(await credential));
 
@@ -83,10 +83,10 @@ namespace Google.Solutions.IapDesktop.Extensions.Os.Test.Services.Inventory
         [Test]
         public async Task WhenUserNotInRole_ThenGetInstanceInventoryAsyncThrowsResourceAccessDeniedException(
             [WindowsInstance(
-                InitializeScript = PublishInventoryScript)] InstanceRequest testInstance,
+                InitializeScript = PublishInventoryScript)] ResourceTask<InstanceLocator> testInstance,
             [Credential(Role = PredefinedRole.IapTunnelUser)] ResourceTask<ICredential> credential)
         {
-            var instanceRef = await testInstance.GetInstanceAsync();
+            var instanceRef = await testInstance;
             var service = new InventoryService(
                 new ComputeEngineAdapter(await credential));
 
@@ -103,11 +103,11 @@ namespace Google.Solutions.IapDesktop.Extensions.Os.Test.Services.Inventory
         [Test]
         public async Task WhenAtLeastOneInstanceHasInventoryData_ThenListProjectInventoryAsyncSucceeds(
             [WindowsInstance(
-                InitializeScript = PublishInventoryScript)] InstanceRequest testInstance,
+                InitializeScript = PublishInventoryScript)] ResourceTask<InstanceLocator> testInstance,
             [Credential(Role = PredefinedRole.ComputeViewer)] ResourceTask<ICredential> credential)
         {
             // Make sure there is at least one instance.
-            var instanceRef = await testInstance.GetInstanceAsync();
+            var instanceRef = await testInstance;
             var service = new InventoryService(
                 new ComputeEngineAdapter(await credential));
 
@@ -121,10 +121,10 @@ namespace Google.Solutions.IapDesktop.Extensions.Os.Test.Services.Inventory
         [Test]
         public async Task WhenUserNotInRole_ThenListProjectInventoryAsyncThrowsResourceAccessDeniedException(
             [WindowsInstance(
-                InitializeScript = PublishInventoryScript)] InstanceRequest testInstance,
+                InitializeScript = PublishInventoryScript)] ResourceTask<InstanceLocator> testInstance,
             [Credential(Role = PredefinedRole.IapTunnelUser)] ResourceTask<ICredential> credential)
         {
-            var instanceRef = await testInstance.GetInstanceAsync();
+            var instanceRef = await testInstance;
             var service = new InventoryService(
                 new ComputeEngineAdapter(await credential));
 
@@ -141,11 +141,11 @@ namespace Google.Solutions.IapDesktop.Extensions.Os.Test.Services.Inventory
         [Test]
         public async Task WhenAtLeastOneInstanceHasInventoryData_ThenListZoneInventoryAsyncSucceeds(
             [WindowsInstance(
-                InitializeScript = PublishInventoryScript)] InstanceRequest testInstance,
+                InitializeScript = PublishInventoryScript)] ResourceTask<InstanceLocator> testInstance,
             [Credential(Role = PredefinedRole.ComputeViewer)] ResourceTask<ICredential> credential)
         {
             // Make sure there is at least one instance.
-            var instanceRef = await testInstance.GetInstanceAsync();
+            var instanceRef = await testInstance;
             var service = new InventoryService(
                 new ComputeEngineAdapter(await credential));
 
@@ -160,10 +160,10 @@ namespace Google.Solutions.IapDesktop.Extensions.Os.Test.Services.Inventory
         [Test]
         public async Task WhenUserNotInRole_ThenListZoneInventoryAsyncThrowsResourceAccessDeniedException(
             [WindowsInstance(
-                InitializeScript = PublishInventoryScript)] InstanceRequest testInstance,
+                InitializeScript = PublishInventoryScript)] ResourceTask<InstanceLocator> testInstance,
             [Credential(Role = PredefinedRole.IapTunnelUser)] ResourceTask<ICredential> credential)
         {
-            var instanceRef = await testInstance.GetInstanceAsync();
+            var instanceRef = await testInstance;
             var service = new InventoryService(
                 new ComputeEngineAdapter(await credential));
 

@@ -20,6 +20,7 @@
 //
 
 using Google.Apis.Auth.OAuth2;
+using Google.Solutions.Common.Locator;
 using Google.Solutions.Common.Test.Integration;
 using Google.Solutions.IapDesktop.Application.Services.Adapters;
 using NUnit.Framework;
@@ -33,11 +34,11 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Adapters
     {
         [Test]
         public async Task WhenInstancePopulated_ThenGetInstanceLocatorSucceeds(
-            [LinuxInstance] InstanceRequest testInstance,
+            [LinuxInstance] ResourceTask<InstanceLocator> testInstance,
             [Credential(Role = PredefinedRole.ComputeViewer)] ResourceTask<ICredential> credential)
         {
             var adapter = new ComputeEngineAdapter(await credential);
-            var instance = await adapter.GetInstanceAsync(await testInstance.GetInstanceAsync());
+            var instance = await adapter.GetInstanceAsync(await testInstance);
 
             var zoneLocator = instance.GetZoneLocator();
             var instanceLocator = instance.GetInstanceLocator();
@@ -45,7 +46,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Adapters
             Assert.AreEqual(TestProject.Zone, zoneLocator.Name);
             Assert.AreEqual(TestProject.Zone, instanceLocator.Zone);
 
-            Assert.AreEqual(await testInstance.GetInstanceAsync(), instanceLocator);
+            Assert.AreEqual(await testInstance, instanceLocator);
         }
     }
 }

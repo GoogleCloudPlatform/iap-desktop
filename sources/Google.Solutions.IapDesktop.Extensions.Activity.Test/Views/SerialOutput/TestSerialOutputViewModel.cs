@@ -20,6 +20,7 @@
 //
 
 using Google.Apis.Auth.OAuth2;
+using Google.Solutions.Common.Locator;
 using Google.Solutions.Common.Test.Integration;
 using Google.Solutions.IapDesktop.Application.ObjectModel;
 using Google.Solutions.IapDesktop.Application.Services.Adapters;
@@ -49,11 +50,11 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.Views.SerialOutpu
         }
 
         private static async Task<IProjectExplorerVmInstanceNode> CreateNode(
-            InstanceRequest testInstance,
+            ResourceTask<InstanceLocator> testInstance,
             bool markAsRunning)
         {
-            await testInstance.AwaitReady();
-            var instanceLocator = await testInstance.GetInstanceAsync();
+            await testInstance;
+            var instanceLocator = await testInstance;
 
             var node = new Mock<IProjectExplorerVmInstanceNode>();
             node.SetupGet(n => n.IsRunning).Returns(markAsRunning);
@@ -84,7 +85,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.Views.SerialOutpu
 
         [Test]
         public async Task WhenNotBlocked_ThenEnableControlsTailing(
-            [WindowsInstance] InstanceRequest testInstance,
+            [WindowsInstance] ResourceTask<InstanceLocator> testInstance,
             [Credential(Role = PredefinedRole.ComputeViewer)] ResourceTask<ICredential> credential)
         {
             var viewModel = CreateViewModel(await credential);
@@ -108,7 +109,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.Views.SerialOutpu
 
         [Test]
         public async Task WhenBlocked_ThenEnableHasNoImpactOnTailing(
-            [WindowsInstance] InstanceRequest testInstance,
+            [WindowsInstance] ResourceTask<InstanceLocator> testInstance,
             [Credential(Role = PredefinedRole.ComputeViewer)] ResourceTask<ICredential> credential)
         {
             var viewModel = CreateViewModel(await credential);
@@ -123,7 +124,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.Views.SerialOutpu
 
         [Test]
         public async Task WhenEnabled_ThenBlockControlsTailing(
-            [WindowsInstance] InstanceRequest testInstance,
+            [WindowsInstance] ResourceTask<InstanceLocator> testInstance,
             [Credential(Role = PredefinedRole.ComputeViewer)] ResourceTask<ICredential> credential)
         {
             var viewModel = CreateViewModel(await credential);
@@ -204,7 +205,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.Views.SerialOutpu
         }
         [Test]
         public async Task WhenSwitchingToStoppedInstanceNode_ThenControlsAreDisabled(
-            [WindowsInstance] InstanceRequest testInstance,
+            [WindowsInstance] ResourceTask<InstanceLocator> testInstance,
             [Credential(Role = PredefinedRole.ComputeViewer)] ResourceTask<ICredential> credential)
         {
             var viewModel = CreateViewModel(await credential);
@@ -218,19 +219,21 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.Views.SerialOutpu
 
         [Test]
         public async Task WhenSwitchingToRunningInstanceNode_ThenOutputIsPopulated(
-            [WindowsInstance] InstanceRequest testInstance,
+            [WindowsInstance] ResourceTask<InstanceLocator> testInstance,
             [Credential(Role = PredefinedRole.ComputeViewer)] ResourceTask<ICredential> credential)
         {
             var viewModel = CreateViewModel(await credential);
             var node = await CreateNode(testInstance, true);
             await viewModel.SwitchToModelAsync(node);
 
+            var instanceLocator = await testInstance;
+
             Assert.IsTrue(viewModel.IsEnableTailingButtonEnabled);
             Assert.IsTrue(viewModel.IsOutputBoxEnabled);
             StringAssert.Contains("Finished running startup scripts", viewModel.Output);
 
             StringAssert.Contains(SerialOutputViewModel.DefaultWindowTitle, viewModel.WindowTitle);
-            StringAssert.Contains(testInstance.Locator.Name, viewModel.WindowTitle);
+            StringAssert.Contains(instanceLocator.Name, viewModel.WindowTitle);
         }
 
         [Test]

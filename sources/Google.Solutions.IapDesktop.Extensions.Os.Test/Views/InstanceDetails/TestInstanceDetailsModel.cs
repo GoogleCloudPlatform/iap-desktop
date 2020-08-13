@@ -20,6 +20,7 @@
 //
 
 using Google.Apis.Auth.OAuth2;
+using Google.Solutions.Common.Locator;
 using Google.Solutions.Common.Test;
 using Google.Solutions.Common.Test.Integration;
 using Google.Solutions.IapDesktop.Application.Services.Adapters;
@@ -37,19 +38,19 @@ namespace Google.Solutions.IapDesktop.Extensions.Os.Test.Views.InstanceDetails
     {
         [Test]
         public async Task WhenLoadAsyncCompletes_ThenPropertiesArePopulated(
-            [WindowsInstance] InstanceRequest testInstance,
+            [WindowsInstance] ResourceTask<InstanceLocator> testInstance,
             [Credential(Role = PredefinedRole.ComputeViewer)] ResourceTask<ICredential> credential)
         {
-            await testInstance.AwaitReady();
+            var locator = await testInstance;
 
             var gceAdapter = new ComputeEngineAdapter(await credential);
             var model = await InstanceDetailsModel.LoadAsync(
-                await testInstance.GetInstanceAsync(),
+                await testInstance,
                 gceAdapter,
                 new InventoryService(gceAdapter),
                 CancellationToken.None);
 
-            Assert.AreEqual(testInstance.Locator.Name, model.InstanceName);
+            Assert.AreEqual(locator.Name, model.InstanceName);
             Assert.IsNull(model.Hostname);
             Assert.AreEqual("RUNNING", model.Status);
             Assert.IsNotNull(model.InternalIp);

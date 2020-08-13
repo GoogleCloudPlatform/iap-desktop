@@ -98,15 +98,13 @@ namespace Google.Solutions.IapTunneling.Test.Iap
 
         [Test]
         public async Task WhenInstanceExistsAndIsListening_ThenProbeSucceeds(
-             [WindowsInstance] InstanceRequest testInstance,
+             [WindowsInstance] ResourceTask<InstanceLocator> testInstance,
              [Credential(Role = PredefinedRole.IapTunnelUser)] ResourceTask<ICredential> credential)
         {
-            await testInstance.AwaitReady();
-
             using (var stream = new SshRelayStream(
                 new IapTunnelingEndpoint(
                     await credential,
-                    testInstance.Locator,
+                    await testInstance,
                     3389,
                     IapTunnelingEndpoint.DefaultNetworkInterface,
                     TestProject.UserAgent)))
@@ -117,15 +115,13 @@ namespace Google.Solutions.IapTunneling.Test.Iap
 
         [Test]
         public async Task WhenInstanceExistsButNotListening_ThenProbeFailsWithNetworkStreamClosedException(
-             [WindowsInstance] InstanceRequest testInstance,
+             [WindowsInstance] ResourceTask<InstanceLocator> testInstance,
              [Credential(Role = PredefinedRole.IapTunnelUser)] ResourceTask<ICredential> credential)
         {
-            await testInstance.AwaitReady();
-
             using (var stream = new SshRelayStream(
                 new IapTunnelingEndpoint(
                     await credential,
-                    testInstance.Locator,
+                    await testInstance,
                     22,
                     IapTunnelingEndpoint.DefaultNetworkInterface,
                     TestProject.UserAgent)))

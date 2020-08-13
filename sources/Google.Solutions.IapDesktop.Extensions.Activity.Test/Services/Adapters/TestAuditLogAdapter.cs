@@ -21,6 +21,7 @@
 
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Logging.v2.Data;
+using Google.Solutions.Common.Locator;
 using Google.Solutions.Common.Test;
 using Google.Solutions.Common.Test.Integration;
 using Google.Solutions.IapDesktop.Application.Services.Adapters;
@@ -47,11 +48,11 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.Services.Adapters
 
         [Test]
         public async Task WhenInstanceCreated_ThenListLogEntriesReturnsInsertEvent(
-            [LinuxInstance] InstanceRequest testInstance,
+            [LinuxInstance] ResourceTask<InstanceLocator> testInstance,
             [Credential(Role = PredefinedRole.LogsViewer)] ResourceTask<ICredential> credential)
         {
-            await testInstance.AwaitReady();
-            var instanceRef = await testInstance.GetInstanceAsync();
+            await testInstance;
+            var instanceRef = await testInstance;
 
             var startDate = DateTime.UtcNow.AddDays(-30);
             var endDate = DateTime.UtcNow;
@@ -99,13 +100,13 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.Services.Adapters
 
         [Test]
         public async Task WhenInstanceCreated_ThenProcessInstanceEventsAsyncCanFeedHistorySetBuilder(
-            [LinuxInstance] InstanceRequest testInstance,
+            [LinuxInstance] ResourceTask<InstanceLocator> testInstance,
             [Credential(Roles = new[] {
                 PredefinedRole.ComputeViewer,
                 PredefinedRole.LogsViewer })] ResourceTask<ICredential> credential)
         {
-            await testInstance.AwaitReady();
-            var instanceRef = await testInstance.GetInstanceAsync();
+            await testInstance;
+            var instanceRef = await testInstance;
 
             var instanceBuilder = new InstanceSetHistoryBuilder(
                 DateTime.UtcNow.AddDays(-7),
@@ -135,11 +136,11 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.Services.Adapters
 
         [Test]
         public async Task WhenUserNotInRole_ThenProcessInstanceEventsAsyncThrowsResourceAccessDeniedException(
-            [LinuxInstance] InstanceRequest testInstance,
+            [LinuxInstance] ResourceTask<InstanceLocator> testInstance,
             [Credential(Role = PredefinedRole.ComputeViewer)] ResourceTask<ICredential> credential)
         {
-            await testInstance.AwaitReady();
-            var instanceRef = await testInstance.GetInstanceAsync();
+            await testInstance;
+            var instanceRef = await testInstance;
 
             var instanceBuilder = new InstanceSetHistoryBuilder(
                 DateTime.UtcNow.AddDays(-7),

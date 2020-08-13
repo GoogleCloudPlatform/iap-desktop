@@ -33,29 +33,23 @@ using System.Threading.Tasks;
 
 namespace Google.Solutions.Common.Test.Integration
 {
-    public class InstanceRequest
+    public static class InstanceFactory
     {
         internal const string GuestAttributeNamespace = "boot";
         internal const string GuestAttributeToAwaitKey = "guest-attribute-to-await";
 
-        private readonly ComputeService computeService;
-        private readonly IEnumerable<Metadata.ItemsData> metadata;
-        private readonly string machineType;
-        private readonly string imageFamily;
-
-        public InstanceLocator Locator { get; }
-
-
-        private async Task AwaitInstanceCreatedAndReady()
+        private static async Task AwaitInstanceCreatedAndReady(
+            InstancesResource resource, 
+            InstanceLocator locator)
         {
             for (int i = 0; i < 60; i++)
             {
                 try
                 {
-                    var instance = await this.computeService.Instances.Get(
-                            this.Locator.ProjectId,
-                            this.Locator.Zone,
-                            this.Locator.Name)
+                    var instance = await resource.Get(
+                            locator.ProjectId,
+                            locator.Zone,
+                            locator.Name)
                         .ExecuteAsync();
 
                     // Determine the name of the guest attribute we need to await. 
@@ -64,7 +58,19 @@ namespace Google.Solutions.Common.Test.Integration
                         .FirstOrDefault(item => item.Key == GuestAttributeToAwaitKey)
                         .Value;
 
-                    if (await IsReadyAsync(instance, guestAttributeToAwait))
+                    var request = resource.GetGuestAttributes(
+                        locator.ProjectId,
+                        locator.Zone,
+                        locator.Name);
+                        request.QueryPath = GuestAttributeNamespace + "/";
+                    var guestAttributes = await request.ExecuteAsync();
+
+                    if (guestAttributes
+                        .QueryValue
+                        .Items
+                        .Where(item => item.Namespace__ == GuestAttributeNamespace && 
+                                       item.Key == guestAttributeToAwait)
+                        .Any())
                     {
                         return;
                     }
@@ -73,55 +79,46 @@ namespace Google.Solutions.Common.Test.Integration
                 { }
 
                 TraceSources.Common.TraceVerbose(
-                    "Waiting for instance {0} to become ready...", this.Locator.Name);
+                    "Waiting for instance {0} to become ready...", locator.Name);
 
                 await Task.Delay(5 * 1000);
             }
 
-            throw new TimeoutException($"Timeout waiting for {this.Locator} to become ready");
+            throw new TimeoutException($"Timeout waiting for {locator} to become ready");
         }
 
-        private async Task<bool> IsReadyAsync(
-            Instance instance,
-            string guestAttributeToAwait)
-        {
-            var request = this.computeService.Instances.GetGuestAttributes(
-                    this.Locator.ProjectId,
-                    this.Locator.Zone,
-                    this.Locator.Name);
-            request.QueryPath = GuestAttributeNamespace + "/";
-            var guestAttributes = await request.ExecuteAsync();
-
-            return guestAttributes
-                .QueryValue
-                .Items
-                .Where(i => i.Namespace__ == GuestAttributeNamespace && i.Key == guestAttributeToAwait)
-                .Any();
-        }
-
-        private async Task CreateOrStartInstanceAsync()
+        public static async Task<InstanceLocator> CreateOrStartInstanceAsync(
+            string name,
+            string machineType,
+            string imageFamily,
+            IEnumerable<Metadata.ItemsData> metadataItems)
         {
             var computeEngine = TestProject.CreateComputeService();
 
             var metadata = new Metadata()
             {
-                Items = new List<Metadata.ItemsData>(this.metadata.ToList())
+                Items = new List<Metadata.ItemsData>(metadataItems.ToList())
             };
 
             // Add metdata that marks this instance as temporary.
             metadata.Add("type", "auto-cleanup");
             metadata.Add("ttl", "120"); // minutes
 
+            var locator = new InstanceLocator(
+                TestProject.ProjectId,
+                TestProject.Zone,
+                name);
+
             try
             {
                 TraceSources.Common.TraceVerbose(
-                    "Trying to create new instance {0}...", this.Locator.Name);
+                    "Trying to create new instance {0}...", name);
 
                 await computeEngine.Instances.Insert(
                     new Apis.Compute.v1.Data.Instance()
                     {
-                        Name = this.Locator.Name,
-                        MachineType = $"zones/{this.Locator.Zone}/machineTypes/{this.machineType}",
+                        Name = name,
+                        MachineType = $"zones/{locator.Zone}/machineTypes/{machineType}",
                         Disks = new[]
                         {
                             new AttachedDisk()
@@ -130,7 +127,7 @@ namespace Google.Solutions.Common.Test.Integration
                                 Boot = true,
                                 InitializeParams = new AttachedDiskInitializeParams()
                                 {
-                                    SourceImage = this.imageFamily
+                                    SourceImage = imageFamily
                                 }
                             }
                         },
@@ -150,19 +147,23 @@ namespace Google.Solutions.Common.Test.Integration
                             Preemptible = true
                         }
                     },
-                    this.Locator.ProjectId,
-                    this.Locator.Zone).ExecuteAsync();
+                    locator.ProjectId,
+                    locator.Zone).ExecuteAsync();
 
-                await AwaitInstanceCreatedAndReady();
+                await AwaitInstanceCreatedAndReady(
+                    computeEngine.Instances,
+                    locator);
+
+                return locator;
             }
             catch (GoogleApiException e) when (e.Error != null && e.Error.Code == 409)
             {
                 // Instance already exists - make sure it's running then.
                 var instance = await computeEngine.Instances
                     .Get(
-                        this.Locator.ProjectId,
-                        this.Locator.Zone,
-                        this.Locator.Name)
+                        locator.ProjectId,
+                        locator.Zone,
+                        locator.Name)
                     .ExecuteAsync();
 
                 if (instance.Status == "RUNNING" ||
@@ -170,70 +171,45 @@ namespace Google.Solutions.Common.Test.Integration
                     instance.Status == "STAGING")
                 {
                     TraceSources.Common.TraceVerbose(
-                        "Instance {0} exists and is running...", this.Locator.Name);
+                        "Instance {0} exists and is running...", locator.Name);
 
-                    await AwaitInstanceCreatedAndReady();
+                    await AwaitInstanceCreatedAndReady(
+                        computeEngine.Instances,
+                        locator);
+                    return locator;
                 }
                 else if (instance.Status == "TERMINATED")
                 {
                     TraceSources.Common.TraceVerbose(
-                        "Instance {0} exists, but is TERMINATED, starting...", this.Locator.Name);
+                        "Instance {0} exists, but is TERMINATED, starting...", locator.Name);
 
                     // Reapply metadata.
                     await computeEngine.Instances.AddMetadataAsync(
-                            this.Locator,
+                            locator,
                             metadata,
                             CancellationToken.None);
 
                     await computeEngine.Instances.Start(
-                            this.Locator.ProjectId,
-                            this.Locator.Zone,
-                            this.Locator.Name)
+                            locator.ProjectId,
+                            locator.Zone,
+                            locator.Name)
                         .ExecuteAsync();
 
-                    await AwaitInstanceCreatedAndReady();
+                    await AwaitInstanceCreatedAndReady(
+                        computeEngine.Instances,
+                        locator);
+                    return locator;
                 }
                 else
                 {
                     TraceSources.Common.TraceError(
                         "Creating instance {0} failed, current status is {1}", 
-                        this.Locator.Name,
+                        locator.Name,
                         instance.Status);
                     TraceSources.Common.TraceError(e);
                     throw;
                 }
             }
-        }
-
-        public InstanceRequest(
-            InstanceLocator instance,
-            string machineType,
-            string imageFamily,
-            IEnumerable<Metadata.ItemsData> metadata)
-        {
-            this.computeService = TestProject.CreateComputeService();
-            this.Locator = instance;
-            this.machineType = machineType;
-            this.imageFamily = imageFamily;
-            this.metadata = metadata;
-        }
-
-        public async Task<InstanceLocator> GetInstanceAsync()
-        {
-            await CreateOrStartInstanceAsync();
-            await AwaitInstanceCreatedAndReady();
-            return this.Locator;
-        }
-
-        public async Task AwaitReady()
-        {
-            await CreateOrStartInstanceAsync();
-            await AwaitInstanceCreatedAndReady();
-        }
-
-        public override string ToString()
-        {
-            return this.Locator.ToString();
         }
     }
 }

@@ -41,15 +41,15 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.Views.SerialOutpu
     {
         [Test]
         public async Task WhenLoadAsyncCompletes_ThenOutputContainsExistingData(
-            [WindowsInstance] InstanceRequest testInstance,
+            [WindowsInstance] ResourceTask<InstanceLocator> testInstance,
             [Credential(Role = PredefinedRole.ComputeViewer)] ResourceTask<ICredential> credential)
         {
-            await testInstance.AwaitReady();
+            await testInstance;
 
             var model = await SerialOutputModel.LoadAsync(
                 "display-name",
                 new ComputeEngineAdapter(await credential),
-                await testInstance.GetInstanceAsync(),
+                await testInstance,
                 SerialPortStream.ConsolePort,
                 CancellationToken.None);
 

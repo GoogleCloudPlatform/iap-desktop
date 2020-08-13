@@ -61,12 +61,12 @@ namespace Google.Solutions.IapTunneling.Test.Iap
 
         [Test]
         public async Task WhenServerNotListening_ThenReadReturnsZero(
-            [LinuxInstance] InstanceRequest vm,
+            [LinuxInstance] ResourceTask<InstanceLocator> vm,
             [Credential(Role = PredefinedRole.IapTunnelUser)] ResourceTask<ICredential> credential)
         {
-            await vm.AwaitReady();
+            var locator = await vm;
             var stream = ConnectToWebServer(
-                vm.Locator,
+                locator,
                 await credential);
 
             byte[] request = new ASCIIEncoding().GetBytes(

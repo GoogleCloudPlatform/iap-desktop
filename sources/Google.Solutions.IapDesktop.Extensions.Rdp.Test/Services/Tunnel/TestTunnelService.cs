@@ -51,15 +51,13 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Test.Services.Tunnel
 
         [Test]
         public async Task WhenInstanceAvailableAndUserInRole_ThenCreateTunnelAndProbeSucceeds(
-            [WindowsInstance] InstanceRequest testInstance,
+            [WindowsInstance] ResourceTask<InstanceLocator> testInstance,
             [Credential(Role = PredefinedRole.IapTunnelUser)] ResourceTask<ICredential> credential)
         {
-            await testInstance.AwaitReady();
-
             var service = new TunnelService(CreateAuthorizationAdapter(
                 await credential));
             var destination = new TunnelDestination(
-                testInstance.Locator,
+                await testInstance,
                 3389);
 
             var tunnel = await service.CreateTunnelAsync(destination);
@@ -94,15 +92,13 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Test.Services.Tunnel
 
         [Test]
         public async Task WhenInstanceAvailableButUserNotInRole_ThenProbeFails(
-            [WindowsInstance] InstanceRequest testInstance,
+            [WindowsInstance] ResourceTask<InstanceLocator> testInstance,
             [Credential(Role = PredefinedRole.ComputeViewer)] ResourceTask<ICredential> credential)
         {
-            await testInstance.AwaitReady();
-
             var service = new TunnelService(CreateAuthorizationAdapter(
                 await credential));
             var destination = new TunnelDestination(
-                testInstance.Locator,
+                await testInstance,
                 3389);
 
             var tunnel = await service.CreateTunnelAsync(destination);
