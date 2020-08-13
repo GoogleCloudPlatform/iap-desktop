@@ -30,6 +30,8 @@ using NUnit.Framework;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using Google.Apis.Auth.OAuth2;
+using Google.Solutions.Common.Locator;
 
 namespace Google.Solutions.IapDesktop.Application.Test.Views
 {
@@ -40,18 +42,18 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views
     {
         [Test]
         public async Task WhenCredentialsInvalid_ThenErrorIsShownAndWindowIsClosed(
-            [WindowsInstance] InstanceRequest testInstance,
-            [Credential(Role = PredefinedRole.IapTunnelUser)] CredentialRequest credential)
+            [WindowsInstance] ResourceTask<InstanceLocator> testInstance,
+            [Credential(Role = PredefinedRole.IapTunnelUser)] ResourceTask<ICredential> credential)
         {
-            await testInstance.AwaitReady();
+            var locator = await testInstance;
 
             using (var tunnel = RdpTunnel.Create(
-                testInstance.Locator,
-                await credential.GetCredentialAsync()))
+                locator,
+                await credential))
             {
                 var rdpService = new RemoteDesktopService(this.serviceProvider);
                 var session = rdpService.Connect(
-                    testInstance.Locator,
+                    locator,
                     "localhost",
                     (ushort)tunnel.LocalPort,
                     new VmInstanceConnectionSettings()
@@ -81,7 +83,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views
 
         //[Test]
         //public void WhenRequireServerAuthentication_ThenConnectionFails(
-        //    [WindowsInstance] InstanceRequest testInstance)
+        //    [WindowsInstance] ResourceTask<InstanceLocator> testInstance)
         //{
         //}
 
@@ -101,24 +103,24 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views
 
             // Use a slightly larger machine type as all this RDP'ing consumes a fair
             // amount of memory.
-            [WindowsInstance(MachineType = "n1-standard-2")] InstanceRequest testInstance,
-            [Credential(Role = PredefinedRole.IapTunnelUser)] CredentialRequest credential)
+            [WindowsInstance(MachineType = "n1-standard-2")] ResourceTask<InstanceLocator> testInstance,
+            [Credential(Role = PredefinedRole.IapTunnelUser)] ResourceTask<ICredential> credential)
         {
-            await testInstance.AwaitReady();
+            var locator = await testInstance;
 
             using (var tunnel = RdpTunnel.Create(
-                testInstance.Locator,
-                await credential.GetCredentialAsync()))
+                locator,
+                await credential))
             using (var gceAdapter = new ComputeEngineAdapter(this.serviceProvider.GetService<IAuthorizationAdapter>()))
             {
                 var credentials = await gceAdapter.ResetWindowsUserAsync(
-                    testInstance.Locator,
+                    locator,
                     CreateRandomUsername(),
                     CancellationToken.None);
 
                 var rdpService = new RemoteDesktopService(this.serviceProvider);
                 var session = rdpService.Connect(
-                    testInstance.Locator,
+                    locator,
                     "localhost",
                     (ushort)tunnel.LocalPort,
                     new VmInstanceConnectionSettings()
@@ -153,24 +155,24 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views
         [Test, Ignore("Unreliable in CI")]
         public async Task WhenSigningOutPerSendKeys_ThenWindowIsClosed(
             [WindowsInstance(ImageFamily = WindowsInstanceAttribute.WindowsServer2019)]
-            InstanceRequest testInstance,
-            [Credential(Role = PredefinedRole.IapTunnelUser)] CredentialRequest credential)
+            ResourceTask<InstanceLocator> testInstance,
+            [Credential(Role = PredefinedRole.IapTunnelUser)] ResourceTask<ICredential> credential)
         {
-            await testInstance.AwaitReady();
+            var locator = await testInstance;
 
             using (var tunnel = RdpTunnel.Create(
-                testInstance.Locator,
-                await credential.GetCredentialAsync()))
+                locator,
+                await credential))
             using (var gceAdapter = new ComputeEngineAdapter(this.serviceProvider.GetService<IAuthorizationAdapter>()))
             {
                 var credentials = await gceAdapter.ResetWindowsUserAsync(
-                       testInstance.Locator,
+                       locator,
                        CreateRandomUsername(),
                        CancellationToken.None);
 
                 var rdpService = new RemoteDesktopService(this.serviceProvider);
                 var session = (RemoteDesktopPane)rdpService.Connect(
-                    testInstance.Locator,
+                    locator,
                     "localhost",
                     (ushort)tunnel.LocalPort,
                     new VmInstanceConnectionSettings()

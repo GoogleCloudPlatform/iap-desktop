@@ -45,15 +45,13 @@ namespace Google.Solutions.Common.Test.Extensions
 
         [Test]
         public async Task WhenUsernameIsSuperLong_ThenPasswordResetExceptionIsThrown(
-            [WindowsInstance] InstanceRequest testInstance)
+            [WindowsInstance] ResourceTask<InstanceLocator> testInstance)
         {
-            await testInstance.AwaitReady();
-
             var username = "test" + Guid.NewGuid().ToString();
             try
             {
                 await this.instancesResource.ResetWindowsUserAsync(
-                    testInstance.Locator,
+                    await testInstance,
                     username,
                     CancellationToken.None);
                 Assert.Fail();
@@ -65,18 +63,15 @@ namespace Google.Solutions.Common.Test.Extensions
         }
 
         [Test]
-        public async Task WhenInstanceDoesntExist_ThenPasswordResetExceptionIsThrown(
-            [WindowsInstance] InstanceRequest testInstance)
+        public async Task WhenInstanceDoesntExist_ThenPasswordResetExceptionIsThrown()
         {
-            await testInstance.AwaitReady();
-
             var username = "test" + Guid.NewGuid().ToString();
 
             // Use correct project, but wrong VM.
             var instanceRef = new InstanceLocator(
-                testInstance.Locator.ProjectId,
-                testInstance.Locator.Zone,
-                testInstance.Locator.Name + "-x");
+                TestProject .ProjectId,
+                TestProject.Zone,
+                "doesnotexist");
             try
             {
                 await this.instancesResource.ResetWindowsUserAsync(
@@ -93,13 +88,11 @@ namespace Google.Solutions.Common.Test.Extensions
 
         [Test]
         public async Task WhenUserDoesntExist_ThenResetPasswordCreatesNewUser(
-            [WindowsInstance] InstanceRequest testInstance)
+            [WindowsInstance] ResourceTask<InstanceLocator> testInstance)
         {
-            await testInstance.AwaitReady();
-
             var username = "test" + Guid.NewGuid().ToString().Substring(20);
             var credentials = await this.instancesResource.ResetWindowsUserAsync(
-                testInstance.Locator,
+                await testInstance,
                 username,
                 CancellationToken.None);
 
@@ -110,17 +103,15 @@ namespace Google.Solutions.Common.Test.Extensions
 
         [Test]
         public async Task WhenUserExists_ThenResetPasswordUpdatesPassword(
-            [WindowsInstance] InstanceRequest testInstance)
+            [WindowsInstance] ResourceTask<InstanceLocator> testInstance)
         {
-            await testInstance.AwaitReady();
-
             var username = "existinguser";
             await this.instancesResource.ResetWindowsUserAsync(
-                testInstance.Locator,
+                await testInstance,
                 username,
                 CancellationToken.None);
             var credentials = await this.instancesResource.ResetWindowsUserAsync(
-                testInstance.Locator,
+                await testInstance,
                 username,
                 CancellationToken.None);
 

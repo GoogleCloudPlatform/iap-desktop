@@ -21,6 +21,7 @@
 
 using Google.Apis.Compute.v1;
 using Google.Solutions.Common.ApiExtensions.Instance;
+using Google.Solutions.Common.Locator;
 using Google.Solutions.Common.Test.Integration;
 using NUnit.Framework;
 using System;
@@ -44,12 +45,10 @@ namespace Google.Solutions.Common.Test.Extensions
 
         [Test]
         public async Task WhenLaunchingInstance_ThenInstanceSetupFinishedTextAppearsInStream(
-           [WindowsInstance] InstanceRequest testInstance)
+           [WindowsInstance] ResourceTask<InstanceLocator> testInstance)
         {
-            await testInstance.AwaitReady();
-
             var stream = this.instancesResource.GetSerialPortOutputStream(
-                testInstance.Locator,
+                await testInstance,
                 1);
 
             var startTime = DateTime.Now;

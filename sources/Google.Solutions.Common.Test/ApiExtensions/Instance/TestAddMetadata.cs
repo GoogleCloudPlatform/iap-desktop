@@ -21,6 +21,7 @@
 
 using Google.Apis.Compute.v1;
 using Google.Solutions.Common.ApiExtensions.Instance;
+using Google.Solutions.Common.Locator;
 using Google.Solutions.Common.Test.Integration;
 using NUnit.Framework;
 using System;
@@ -45,23 +46,23 @@ namespace Google.Solutions.Common.Test.Extensions
 
         [Test]
         public async Task WhenUsingNewKey_ThenAddMetadataSucceeds(
-            [WindowsInstance] InstanceRequest testInstance)
+            [WindowsInstance] ResourceTask<InstanceLocator> testInstance)
         {
-            await testInstance.AwaitReady();
+            var locator = await testInstance;
 
             var key = Guid.NewGuid().ToString();
             var value = "metadata value";
 
             await this.instancesResource.AddMetadataAsync(
-                testInstance.Locator,
+                locator,
                 key,
                 value,
                 CancellationToken.None);
 
             var instance = await this.instancesResource.Get(
-                testInstance.Locator.ProjectId,
-                testInstance.Locator.Zone,
-                testInstance.Locator.Name)
+                locator.ProjectId,
+                locator.Zone,
+                locator.Name)
                     .ExecuteAsync(CancellationToken.None)
                     .ConfigureAwait(false);
 
@@ -72,29 +73,29 @@ namespace Google.Solutions.Common.Test.Extensions
 
         [Test]
         public async Task WhenUsingExistingKey_ThenAddMetadataSucceeds(
-            [WindowsInstance] InstanceRequest testInstance)
+            [WindowsInstance] ResourceTask<InstanceLocator> testInstance)
         {
-            await testInstance.AwaitReady();
+            var locator = await testInstance;
 
             var key = Guid.NewGuid().ToString();
 
             await this.instancesResource.AddMetadataAsync(
-                testInstance.Locator,
+                locator,
                 key,
                 "value to be overridden",
                 CancellationToken.None);
 
             var value = "metadata value";
             await this.instancesResource.AddMetadataAsync(
-                testInstance.Locator,
+                locator,
                 key,
                 value,
                 CancellationToken.None);
 
             var instance = await this.instancesResource.Get(
-                testInstance.Locator.ProjectId,
-                testInstance.Locator.Zone,
-                testInstance.Locator.Name)
+                locator.ProjectId,
+                locator.Zone,
+                locator.Name)
                     .ExecuteAsync(CancellationToken.None)
                     .ConfigureAwait(false);
 

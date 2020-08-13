@@ -35,6 +35,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Google.Solutions.IapDesktop.Application.Services.Adapters;
+using Google.Apis.Auth.OAuth2;
 
 namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.Services.Adapters
 {
@@ -232,11 +233,11 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.Services.Adapters
 
         [Test]
         public async Task WhenUserIsInLogsViewerRoleOnly_ThenFindCloudStorageExportBucketForAuditLogsAsyncReturnsNull(
-            [Credential(Role = PredefinedRole.LogsViewer)] CredentialRequest credential)
+            [Credential(Role = PredefinedRole.LogsViewer)] ResourceTask<ICredential> credential)
         {
             var service = new AuditLogStorageSinkAdapter(
-                new StorageAdapter(await credential.GetCredentialAsync()),
-                new AuditLogAdapter(await credential.GetCredentialAsync()));
+                new StorageAdapter(await credential),
+                new AuditLogAdapter(await credential));
 
             var bucket = await service.FindCloudStorageExportBucketForAuditLogsAsync(
                 TestProject.ProjectId,
@@ -252,11 +253,11 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.Services.Adapters
 
         [Test]
         public async Task WhenObjectContainsGarbage_ThenListInstanceEventsAsyncThrowsException(
-            [Credential(Role = PredefinedRole.StorageObjectViewer)] CredentialRequest credential)
+            [Credential(Role = PredefinedRole.StorageObjectViewer)] ResourceTask<ICredential> credential)
         {
             var service = new AuditLogStorageSinkAdapter(
-                new StorageAdapter(await credential.GetCredentialAsync()),
-                new AuditLogAdapter(await credential.GetCredentialAsync()));
+                new StorageAdapter(await credential),
+                new AuditLogAdapter(await credential));
 
             AssertEx.ThrowsAggregateException<JsonReaderException>(
                 () => service.ListInstanceEventsAsync(GarbageLocator, CancellationToken.None).Wait());
@@ -264,11 +265,11 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.Services.Adapters
 
         [Test]
         public async Task WhenObjectIsEmpty_ThenListInstanceEventsAsyncReturnsEmptyListOfEvents(
-            [Credential(Role = PredefinedRole.StorageObjectViewer)] CredentialRequest credential)
+            [Credential(Role = PredefinedRole.StorageObjectViewer)] ResourceTask<ICredential> credential)
         {
             var service = new AuditLogStorageSinkAdapter(
-                new StorageAdapter(await credential.GetCredentialAsync()),
-                new AuditLogAdapter(await credential.GetCredentialAsync()));
+                new StorageAdapter(await credential),
+                new AuditLogAdapter(await credential));
 
             var events = await service.ListInstanceEventsAsync(
                 EmptyLocator, 
@@ -278,11 +279,11 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.Services.Adapters
 
         [Test]
         public async Task WhenObjectContainsEventExport_ThenListInstanceEventsAsyncReturnsEvents(
-            [Credential(Role = PredefinedRole.StorageObjectViewer)] CredentialRequest credential)
+            [Credential(Role = PredefinedRole.StorageObjectViewer)] ResourceTask<ICredential> credential)
         {
             var service = new AuditLogStorageSinkAdapter(
-                new StorageAdapter(await credential.GetCredentialAsync()),
-                new AuditLogAdapter(await credential.GetCredentialAsync()));
+                new StorageAdapter(await credential),
+                new AuditLogAdapter(await credential));
 
             var events = await service.ListInstanceEventsAsync(
                 ValidLocator_Jan1_00, 
@@ -296,11 +297,11 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.Services.Adapters
 
         [Test]
         public async Task WhenOneObjectContainsGarbage_ThenListInstanceEventsAsyncThrowsException(
-            [Credential(Role = PredefinedRole.StorageObjectViewer)] CredentialRequest credential)
+            [Credential(Role = PredefinedRole.StorageObjectViewer)] ResourceTask<ICredential> credential)
         {
             var service = new AuditLogStorageSinkAdapter(
-                new StorageAdapter(await credential.GetCredentialAsync()),
-                new AuditLogAdapter(await credential.GetCredentialAsync()));
+                new StorageAdapter(await credential),
+                new AuditLogAdapter(await credential));
 
             AssertEx.ThrowsAggregateException<JsonReaderException>(
                 () => service.ListInstanceEventsAsync(
@@ -310,11 +311,11 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.Services.Adapters
 
         [Test]
         public async Task WhenObjectsContainEventExports_ThenListInstanceEventsAsyncReturnsEvents(
-            [Credential(Role = PredefinedRole.StorageObjectViewer)] CredentialRequest credential)
+            [Credential(Role = PredefinedRole.StorageObjectViewer)] ResourceTask<ICredential> credential)
         {
             var service = new AuditLogStorageSinkAdapter(
-                new StorageAdapter(await credential.GetCredentialAsync()),
-                new AuditLogAdapter(await credential.GetCredentialAsync()));
+                new StorageAdapter(await credential),
+                new AuditLogAdapter(await credential));
 
             var events = await service.ListInstanceEventsAsync(
                 new[] { EmptyLocator, ValidLocator_Jan1_00 },
@@ -328,11 +329,11 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.Services.Adapters
 
         [Test]
         public async Task WhenEndTimeBeforeStartTime_ThenFindExportObjectsThrowsException(
-            [Credential(Role = PredefinedRole.StorageObjectViewer)] CredentialRequest credential)
+            [Credential(Role = PredefinedRole.StorageObjectViewer)] ResourceTask<ICredential> credential)
         {
             var service = new AuditLogStorageSinkAdapter(
-                new StorageAdapter(await credential.GetCredentialAsync()),
-                new AuditLogAdapter(await credential.GetCredentialAsync()));
+                new StorageAdapter(await credential),
+                new AuditLogAdapter(await credential));
 
             AssertEx.ThrowsAggregateException<ArgumentException>(
                 () => service.FindAuditLogExportObjectsGroupedByDay(
@@ -344,11 +345,11 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.Services.Adapters
 
         [Test]
         public async Task WhenNoObjectsInRange_ThenFindExportObjectsReturnsEmptyDictionary(
-            [Credential(Role = PredefinedRole.StorageObjectViewer)] CredentialRequest credential)
+            [Credential(Role = PredefinedRole.StorageObjectViewer)] ResourceTask<ICredential> credential)
         {
             var service = new AuditLogStorageSinkAdapter(
-                new StorageAdapter(await credential.GetCredentialAsync()),
-                new AuditLogAdapter(await credential.GetCredentialAsync()));
+                new StorageAdapter(await credential),
+                new AuditLogAdapter(await credential));
 
             var locators = await service.FindAuditLogExportObjectsGroupedByDay(
                     GcsTestData.Bucket,
@@ -360,11 +361,11 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.Services.Adapters
 
         [Test]
         public async Task WhenObjectsInRange_ThenFindExportObjectsReturnsList(
-            [Credential(Role = PredefinedRole.StorageObjectViewer)] CredentialRequest credential)
+            [Credential(Role = PredefinedRole.StorageObjectViewer)] ResourceTask<ICredential> credential)
         {
             var service = new AuditLogStorageSinkAdapter(
-                new StorageAdapter(await credential.GetCredentialAsync()),
-                new AuditLogAdapter(await credential.GetCredentialAsync()));
+                new StorageAdapter(await credential),
+                new AuditLogAdapter(await credential));
 
             var jan1 = new DateTime(2020, 1, 1, 0, 0, 0, DateTimeKind.Utc);
             var jan2 = new DateTime(2020, 1, 2, 0, 0, 0, DateTimeKind.Utc);
@@ -385,11 +386,11 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.Services.Adapters
 
         [Test]
         public async Task WhenExpectedOrderIsNewestFirst_ThenEventsAreProcessedInDescendingOrder(
-            [Credential(Role = PredefinedRole.StorageObjectViewer)] CredentialRequest credential)
+            [Credential(Role = PredefinedRole.StorageObjectViewer)] ResourceTask<ICredential> credential)
         {
             var service = new AuditLogStorageSinkAdapter(
-                new StorageAdapter(await credential.GetCredentialAsync()),
-                new AuditLogAdapter(await credential.GetCredentialAsync()));
+                new StorageAdapter(await credential),
+                new AuditLogAdapter(await credential));
 
             var eventsProcessed = new List<EventBase>();
             var processor = new Mock<IEventProcessor>();
@@ -420,11 +421,11 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.Services.Adapters
 
         [Test]
         public async Task WhenExpectedOrderIsOldestFirst_ThenEventsAreProcessedInAscendingOrder(
-            [Credential(Role = PredefinedRole.StorageObjectViewer)] CredentialRequest credential)
+            [Credential(Role = PredefinedRole.StorageObjectViewer)] ResourceTask<ICredential> credential)
         {
             var service = new AuditLogStorageSinkAdapter(
-                new StorageAdapter(await credential.GetCredentialAsync()),
-                new AuditLogAdapter(await credential.GetCredentialAsync()));
+                new StorageAdapter(await credential),
+                new AuditLogAdapter(await credential));
 
             var eventsProcessed = new List<EventBase>();
             var processor = new Mock<IEventProcessor>();
@@ -455,11 +456,11 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.Services.Adapters
 
         [Test]
         public async Task WhenSeverityDoesNotMatch_ThenEventsAreNotProcessed(
-            [Credential(Role = PredefinedRole.StorageObjectViewer)] CredentialRequest credential)
+            [Credential(Role = PredefinedRole.StorageObjectViewer)] ResourceTask<ICredential> credential)
         {
             var service = new AuditLogStorageSinkAdapter(
-                new StorageAdapter(await credential.GetCredentialAsync()),
-                new AuditLogAdapter(await credential.GetCredentialAsync()));
+                new StorageAdapter(await credential),
+                new AuditLogAdapter(await credential));
 
             var eventsProcessed = new List<EventBase>();
             var processor = new Mock<IEventProcessor>();
@@ -484,11 +485,11 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.Services.Adapters
 
         [Test]
         public async Task WhenMethodDoesNotMatch_ThenEventsAreNotProcessed(
-            [Credential(Role = PredefinedRole.StorageObjectViewer)] CredentialRequest credential)
+            [Credential(Role = PredefinedRole.StorageObjectViewer)] ResourceTask<ICredential> credential)
         {
             var service = new AuditLogStorageSinkAdapter(
-                new StorageAdapter(await credential.GetCredentialAsync()),
-                new AuditLogAdapter(await credential.GetCredentialAsync()));
+                new StorageAdapter(await credential),
+                new AuditLogAdapter(await credential));
 
             var eventsProcessed = new List<EventBase>();
             var processor = new Mock<IEventProcessor>();

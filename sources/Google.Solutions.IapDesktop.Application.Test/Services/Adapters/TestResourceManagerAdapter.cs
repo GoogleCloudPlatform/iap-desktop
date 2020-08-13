@@ -19,6 +19,7 @@
 // under the License.
 //
 
+using Google.Apis.Auth.OAuth2;
 using Google.Solutions.Common.Test.Integration;
 using Google.Solutions.IapDesktop.Application.Services.Adapters;
 using NUnit.Framework;
@@ -32,9 +33,9 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Adapters
     {
         [Test]
         public async Task WhenUserInRole_ThenIsGrantedPermissionReturnsTrue(
-            [Credential(Role = PredefinedRole.ComputeViewer)] CredentialRequest credential)
+            [Credential(Role = PredefinedRole.ComputeViewer)] ResourceTask<ICredential> credential)
         {
-            var adapter = new ResourceManagerAdapter(await credential.GetCredentialAsync());
+            var adapter = new ResourceManagerAdapter(await credential);
 
             var result = await adapter.IsGrantedPermission(
                 TestProject.ProjectId,
@@ -45,9 +46,9 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Adapters
 
         [Test]
         public async Task WhenUserNotInRole_ThenIsGrantedPermissionReturnsFalse(
-            [Credential(Role = PredefinedRole.ComputeViewer)] CredentialRequest credential)
+            [Credential(Role = PredefinedRole.ComputeViewer)] ResourceTask<ICredential> credential)
         {
-            var adapter = new ResourceManagerAdapter(await credential.GetCredentialAsync());
+            var adapter = new ResourceManagerAdapter(await credential);
 
             var result = await adapter.IsGrantedPermission(
                 TestProject.ProjectId,

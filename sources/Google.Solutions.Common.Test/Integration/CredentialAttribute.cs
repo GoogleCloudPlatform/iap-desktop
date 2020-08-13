@@ -57,12 +57,15 @@ namespace Google.Solutions.Common.Test.Integration
 
         public IEnumerable GetData(IParameterInfo parameter)
         {
-            if (parameter.ParameterType == typeof(CredentialRequest))
+            if (parameter.ParameterType == typeof(ResourceTask<ICredential>))
             {
+                var fingerprint = CreateSpecificationFingerprint();
                 return new[] {
-                    new CredentialRequest(
-                        CreateSpecificationFingerprint(),
-                        this.Roles)
+                    ResourceTask<ICredential>.ProvisionOnce(
+                        fingerprint,
+                        () => CredentialFactory.CreateServiceAccountCredentialAsync(
+                            fingerprint,
+                            this.Roles))
                 };
             }
             else

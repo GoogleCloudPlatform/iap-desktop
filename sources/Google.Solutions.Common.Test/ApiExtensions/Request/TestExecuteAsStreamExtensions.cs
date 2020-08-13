@@ -19,6 +19,7 @@
 // under the License.
 //
 
+using Google.Apis.Auth.OAuth2;
 using Google.Apis.Compute.v1;
 using Google.Apis.Services;
 using Google.Solutions.Common.ApiExtensions.Request;
@@ -36,12 +37,12 @@ namespace Google.Solutions.Common.Test.Extensions
     {
         [Test]
         public async Task WhenApiReturns404_ThenExecuteAsStreamOrThrowAsyncThrowsException(
-            [Credential(Role = PredefinedRole.ComputeViewer)] CredentialRequest credential
+            [Credential(Role = PredefinedRole.ComputeViewer)] ResourceTask<ICredential> credential
             )
         {
             var computeService = new ComputeService(new BaseClientService.Initializer
             {
-                HttpClientInitializer = await credential.GetCredentialAsync()
+                HttpClientInitializer = await credential
             });
 
             AssertEx.ThrowsAggregateException<GoogleApiException>(

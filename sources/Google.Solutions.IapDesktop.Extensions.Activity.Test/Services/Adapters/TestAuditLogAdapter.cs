@@ -19,7 +19,9 @@
 // under the License.
 //
 
+using Google.Apis.Auth.OAuth2;
 using Google.Apis.Logging.v2.Data;
+using Google.Solutions.Common.Locator;
 using Google.Solutions.Common.Test;
 using Google.Solutions.Common.Test.Integration;
 using Google.Solutions.IapDesktop.Application.Services.Adapters;
@@ -46,16 +48,16 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.Services.Adapters
 
         [Test]
         public async Task WhenInstanceCreated_ThenListLogEntriesReturnsInsertEvent(
-            [LinuxInstance] InstanceRequest testInstance,
-            [Credential(Role = PredefinedRole.LogsViewer)] CredentialRequest credential)
+            [LinuxInstance] ResourceTask<InstanceLocator> testInstance,
+            [Credential(Role = PredefinedRole.LogsViewer)] ResourceTask<ICredential> credential)
         {
-            await testInstance.AwaitReady();
-            var instanceRef = await testInstance.GetInstanceAsync();
+            await testInstance;
+            var instanceRef = await testInstance;
 
             var startDate = DateTime.UtcNow.AddDays(-30);
             var endDate = DateTime.UtcNow;
 
-            var adapter = new AuditLogAdapter(await credential.GetCredentialAsync());
+            var adapter = new AuditLogAdapter(await credential);
             var request = new ListLogEntriesRequest()
             {
                 ResourceNames = new[]
@@ -98,25 +100,25 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.Services.Adapters
 
         [Test]
         public async Task WhenInstanceCreated_ThenProcessInstanceEventsAsyncCanFeedHistorySetBuilder(
-            [LinuxInstance] InstanceRequest testInstance,
+            [LinuxInstance] ResourceTask<InstanceLocator> testInstance,
             [Credential(Roles = new[] {
                 PredefinedRole.ComputeViewer,
-                PredefinedRole.LogsViewer })] CredentialRequest credential)
+                PredefinedRole.LogsViewer })] ResourceTask<ICredential> credential)
         {
-            await testInstance.AwaitReady();
-            var instanceRef = await testInstance.GetInstanceAsync();
+            await testInstance;
+            var instanceRef = await testInstance;
 
             var instanceBuilder = new InstanceSetHistoryBuilder(
                 DateTime.UtcNow.AddDays(-7),
                 DateTime.UtcNow);
 
-            var computeAdapter = new ComputeEngineAdapter(await credential.GetCredentialAsync());
+            var computeAdapter = new ComputeEngineAdapter(await credential);
             instanceBuilder.AddExistingInstances(
                 await computeAdapter.ListInstancesAsync(TestProject.ProjectId, CancellationToken.None),
                 await computeAdapter.ListDisksAsync(TestProject.ProjectId, CancellationToken.None),
                 TestProject.ProjectId);
 
-            var adapter = new AuditLogAdapter(await credential.GetCredentialAsync());
+            var adapter = new AuditLogAdapter(await credential);
 
             await adapter.ProcessInstanceEventsAsync(
                 new[] { TestProject.ProjectId },
@@ -134,17 +136,17 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.Services.Adapters
 
         [Test]
         public async Task WhenUserNotInRole_ThenProcessInstanceEventsAsyncThrowsResourceAccessDeniedException(
-            [LinuxInstance] InstanceRequest testInstance,
-            [Credential(Role = PredefinedRole.ComputeViewer)] CredentialRequest credential)
+            [LinuxInstance] ResourceTask<InstanceLocator> testInstance,
+            [Credential(Role = PredefinedRole.ComputeViewer)] ResourceTask<ICredential> credential)
         {
-            await testInstance.AwaitReady();
-            var instanceRef = await testInstance.GetInstanceAsync();
+            await testInstance;
+            var instanceRef = await testInstance;
 
             var instanceBuilder = new InstanceSetHistoryBuilder(
                 DateTime.UtcNow.AddDays(-7),
                 DateTime.UtcNow);
 
-            var adapter = new AuditLogAdapter(await credential.GetCredentialAsync());
+            var adapter = new AuditLogAdapter(await credential);
 
             AssertEx.ThrowsAggregateException<ResourceAccessDeniedException>(
                 () => adapter.ProcessInstanceEventsAsync(
@@ -162,7 +164,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.Services.Adapters
 
         [Test]
         public async Task WhenUsingInvalidProjectId_ThenListEventsAsyncThrowsException(
-            [Credential(Role = PredefinedRole.LogsViewer)] CredentialRequest credential)
+            [Credential(Role = PredefinedRole.LogsViewer)] ResourceTask<ICredential> credential)
         {
             var startDate = DateTime.UtcNow.AddDays(-30);
             var request = new ListLogEntriesRequest()
@@ -178,7 +180,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.Services.Adapters
                 OrderBy = "timestamp desc"
             };
 
-            var adapter = new AuditLogAdapter(await credential.GetCredentialAsync());
+            var adapter = new AuditLogAdapter(await credential);
             AssertEx.ThrowsAggregateException<GoogleApiException>(
                 () => adapter.ListEventsAsync(
                     request,
@@ -276,9 +278,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.Services.Adapters
 
         [Test]
         public async Task WhenUserNotInRole_ThenListCloudStorageSinksAsyncThrowsResourceAccessDeniedException(
-            [Credential(Role = PredefinedRole.ComputeViewer)] CredentialRequest credential)
+            [Credential(Role = PredefinedRole.ComputeViewer)] ResourceTask<ICredential> credential)
         {
-            var adapter = new AuditLogAdapter(await credential.GetCredentialAsync());
+            var adapter = new AuditLogAdapter(await credential);
 
             AssertEx.ThrowsAggregateException<ResourceAccessDeniedException>(
                 () => adapter.ListCloudStorageSinksAsync(
@@ -288,9 +290,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.Services.Adapters
 
         [Test]
         public async Task WhenSinkExists_ThenListCloudStorageSinksAsyncReturnsList(
-            [Credential(Role = PredefinedRole.LogsViewer)] CredentialRequest credential)
+            [Credential(Role = PredefinedRole.LogsViewer)] ResourceTask<ICredential> credential)
         {
-            var adapter = new AuditLogAdapter(await credential.GetCredentialAsync());
+            var adapter = new AuditLogAdapter(await credential);
 
             var buckets = await adapter.ListCloudStorageSinksAsync(
                 TestProject.ProjectId,

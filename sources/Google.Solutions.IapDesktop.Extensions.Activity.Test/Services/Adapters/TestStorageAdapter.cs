@@ -19,6 +19,7 @@
 // under the License.
 //
 
+using Google.Apis.Auth.OAuth2;
 using Google.Solutions.Common.Test;
 using Google.Solutions.Common.Test.Integration;
 using Google.Solutions.IapDesktop.Application.Services.Adapters;
@@ -52,9 +53,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.Services.Adapters
 
         [Test]
         public async Task WhenUserNotInRole_ThenListBucketsAsyncThrowsResourceAccessDeniedException(
-            [Credential(Role = PredefinedRole.StorageObjectViewer)] CredentialRequest credential)
+            [Credential(Role = PredefinedRole.StorageObjectViewer)] ResourceTask<ICredential> credential)
         {
-            var adapter = new StorageAdapter(await credential.GetCredentialAsync());
+            var adapter = new StorageAdapter(await credential);
 
             AssertEx.ThrowsAggregateException<ResourceAccessDeniedException>(
                 () => adapter.ListBucketsAsync(
@@ -64,9 +65,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.Services.Adapters
 
         [Test]
         public async Task WhenBucketExists_ThenListBucketsAsyncReturnsObject(
-            [Credential(Role = PredefinedRole.StorageAdmin)] CredentialRequest credential)
+            [Credential(Role = PredefinedRole.StorageAdmin)] ResourceTask<ICredential> credential)
         {
-            var adapter = new StorageAdapter(await credential.GetCredentialAsync());
+            var adapter = new StorageAdapter(await credential);
 
             var buckets = await adapter.ListBucketsAsync(
                 TestProject.ProjectId,
@@ -84,9 +85,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.Services.Adapters
 
         [Test]
         public async Task WhenUserNotInRole_ThenListObjectsAsyncThrowsResourceAccessDeniedException(
-            [Credential(Role = PredefinedRole.ComputeViewer)] CredentialRequest credential)
+            [Credential(Role = PredefinedRole.ComputeViewer)] ResourceTask<ICredential> credential)
         {
-            var adapter = new StorageAdapter(await credential.GetCredentialAsync());
+            var adapter = new StorageAdapter(await credential);
 
             AssertEx.ThrowsAggregateException<ResourceAccessDeniedException>(
                 () => adapter.ListObjectsAsync(
@@ -97,9 +98,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.Services.Adapters
 
         [Test]
         public async Task WhenObjectExists_ThenListObjectsAsyncReturnsObject(
-            [Credential(Role = PredefinedRole.StorageObjectViewer)] CredentialRequest credential)
+            [Credential(Role = PredefinedRole.StorageObjectViewer)] ResourceTask<ICredential> credential)
         {
-            var adapter = new StorageAdapter(await credential.GetCredentialAsync());
+            var adapter = new StorageAdapter(await credential);
 
             var objects = await adapter.ListObjectsAsync(
                 GcsTestData.Bucket,
@@ -117,9 +118,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.Services.Adapters
 
         [Test]
         public async Task WhenUserNotInRole_ThenDownloadObjectToMemoryAsyncThrowsResourceAccessDeniedException(
-            [Credential(Role = PredefinedRole.ComputeViewer)] CredentialRequest credential)
+            [Credential(Role = PredefinedRole.ComputeViewer)] ResourceTask<ICredential> credential)
         {
-            var adapter = new StorageAdapter(await credential.GetCredentialAsync());
+            var adapter = new StorageAdapter(await credential);
 
             AssertEx.ThrowsAggregateException<ResourceAccessDeniedException>(
                 () => adapter.DownloadObjectToMemoryAsync(
@@ -129,9 +130,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.Services.Adapters
 
         [Test]
         public async Task WhenObjectExists_ThenDownloadObjectToMemoryAsyncReturnsObject(
-            [Credential(Role = PredefinedRole.StorageObjectViewer)] CredentialRequest credential)
+            [Credential(Role = PredefinedRole.StorageObjectViewer)] ResourceTask<ICredential> credential)
         {
-            var adapter = new StorageAdapter(await credential.GetCredentialAsync());
+            var adapter = new StorageAdapter(await credential);
 
             var stream = await adapter.DownloadObjectToMemoryAsync(
                 SampleLocator,

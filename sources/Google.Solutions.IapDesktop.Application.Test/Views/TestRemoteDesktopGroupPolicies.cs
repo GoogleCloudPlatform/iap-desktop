@@ -19,6 +19,7 @@
 // under the License.
 //
 
+using Google.Apis.Auth.OAuth2;
 using Google.Solutions.Common.Locator;
 using Google.Solutions.Common.Test.Integration;
 using Google.Solutions.IapDesktop.Application.ObjectModel;
@@ -70,16 +71,16 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views
             [WindowsInstance(InitializeScript = @"
                 # Disable Policy
                 & reg add ""HKLM\SOFTWARE\Policies\Microsoft\Windows NT\Terminal Services"" /t REG_DWORD /v fDenyTSConnections /d 1 /f | Out-Default
-            ")] InstanceRequest testInstance,
-            [Credential(Role = PredefinedRole.IapTunnelUser)] CredentialRequest credential)
+            ")] ResourceTask<InstanceLocator> testInstance,
+            [Credential(Role = PredefinedRole.IapTunnelUser)] ResourceTask<ICredential> credential)
         {
-            await testInstance.AwaitReady();
+            var locator = await testInstance;
 
             using (var tunnel = RdpTunnel.Create(
-                testInstance.Locator,
-                await credential.GetCredentialAsync()))
+                locator,
+                await credential))
             {
-                var session = await Connect(tunnel, testInstance.Locator);
+                var session = await Connect(tunnel, locator);
 
                 AwaitEvent<RemoteDesktopConnectionFailedEvent>();
                 Assert.IsNotNull(this.ExceptionShown);
@@ -92,16 +93,16 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views
         public async Task WhenSetClientConnectionEncryptionLevelSetToLow_ThenConnectionSucceeds(
             [WindowsInstance(InitializeScript = @"
                 & reg add ""HKLM\SOFTWARE\Policies\Microsoft\Windows NT\Terminal Services"" /t REG_DWORD /v MinEncryptionLevel /d 1 /f | Out-Default
-            ")] InstanceRequest testInstance,
-            [Credential(Role = PredefinedRole.IapTunnelUser)] CredentialRequest credential)
+            ")] ResourceTask<InstanceLocator> testInstance,
+            [Credential(Role = PredefinedRole.IapTunnelUser)] ResourceTask<ICredential> credential)
         {
-            await testInstance.AwaitReady();
+            var locator = await testInstance;
 
             using (var tunnel = RdpTunnel.Create(
-                testInstance.Locator,
-                await credential.GetCredentialAsync()))
+                locator,
+                await credential))
             {
-                var session = await Connect(tunnel, testInstance.Locator);
+                var session = await Connect(tunnel, locator);
 
                 AwaitEvent<RemoteDesktopConnectionSuceededEvent>();
                 Assert.IsNull(this.ExceptionShown);
@@ -125,16 +126,16 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views
         public async Task WhenSetClientConnectionEncryptionLevelSetToHigh_ThenConnectionSucceeds(
             [WindowsInstance(InitializeScript = @"
                 & reg add ""HKLM\SOFTWARE\Policies\Microsoft\Windows NT\Terminal Services"" /t REG_DWORD /v MinEncryptionLevel /d 3 /f | Out-Default
-            ")] InstanceRequest testInstance,
-            [Credential(Role = PredefinedRole.IapTunnelUser)] CredentialRequest credential)
+            ")] ResourceTask<InstanceLocator> testInstance,
+            [Credential(Role = PredefinedRole.IapTunnelUser)] ResourceTask<ICredential> credential)
         {
-            await testInstance.AwaitReady();
+            var locator = await testInstance;
 
             using (var tunnel = RdpTunnel.Create(
-                testInstance.Locator,
-                await credential.GetCredentialAsync()))
+                locator,
+                await credential))
             {
-                var session = await Connect(tunnel, testInstance.Locator);
+                var session = await Connect(tunnel, locator);
 
                 AwaitEvent<RemoteDesktopConnectionSuceededEvent>();
                 Assert.IsNull(this.ExceptionShown);
@@ -158,16 +159,16 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views
         public async Task WhenRequireUseOfSpecificSecurityLayerForRdpConnectionsSetToRdp_ThenConnectionSucceeds(
             [WindowsInstance(InitializeScript = @"
                 & reg add ""HKLM\SOFTWARE\Policies\Microsoft\Windows NT\Terminal Services"" /t REG_DWORD /v SecurityLayer /d 0 /f | Out-Default
-            ")] InstanceRequest testInstance,
-            [Credential(Role = PredefinedRole.IapTunnelUser)] CredentialRequest credential)
+            ")] ResourceTask<InstanceLocator> testInstance,
+            [Credential(Role = PredefinedRole.IapTunnelUser)] ResourceTask<ICredential> credential)
         {
-            await testInstance.AwaitReady();
+            var locator = await testInstance;
 
             using (var tunnel = RdpTunnel.Create(
-                testInstance.Locator,
-                await credential.GetCredentialAsync()))
+                locator,
+                await credential))
             {
-                var session = await Connect(tunnel, testInstance.Locator);
+                var session = await Connect(tunnel, locator);
 
                 AwaitEvent<RemoteDesktopConnectionSuceededEvent>();
                 Assert.IsNull(this.ExceptionShown);
@@ -191,16 +192,16 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views
         public async Task WhenRequireUseOfSpecificSecurityLayerForRdpConnectionsSetToNegotiate_ThenConnectionSucceeds(
             [WindowsInstance(InitializeScript = @"
                 & reg add ""HKLM\SOFTWARE\Policies\Microsoft\Windows NT\Terminal Services"" /t REG_DWORD /v SecurityLayer /d 1 /f | Out-Default
-            ")] InstanceRequest testInstance,
-            [Credential(Role = PredefinedRole.IapTunnelUser)] CredentialRequest credential)
+            ")] ResourceTask<InstanceLocator> testInstance,
+            [Credential(Role = PredefinedRole.IapTunnelUser)] ResourceTask<ICredential> credential)
         {
-            await testInstance.AwaitReady();
+            var locator = await testInstance;
 
             using (var tunnel = RdpTunnel.Create(
-                testInstance.Locator,
-                await credential.GetCredentialAsync()))
+                locator,
+                await credential))
             {
-                var session = await Connect(tunnel, testInstance.Locator);
+                var session = await Connect(tunnel, locator);
 
                 AwaitEvent<RemoteDesktopConnectionSuceededEvent>();
                 Assert.IsNull(this.ExceptionShown);
@@ -224,16 +225,16 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views
         public async Task WhenRequireUseOfSpecificSecurityLayerForRdpConnectionsSetToSsl_ThenConnectionSucceeds(
             [WindowsInstance(InitializeScript = @"
                 & reg add ""HKLM\SOFTWARE\Policies\Microsoft\Windows NT\Terminal Services"" /t REG_DWORD /v SecurityLayer /d 2 /f | Out-Default
-            ")] InstanceRequest testInstance,
-            [Credential(Role = PredefinedRole.IapTunnelUser)] CredentialRequest credential)
+            ")] ResourceTask<InstanceLocator> testInstance,
+            [Credential(Role = PredefinedRole.IapTunnelUser)] ResourceTask<ICredential> credential)
         {
-            await testInstance.AwaitReady();
+            var locator = await testInstance;
 
             using (var tunnel = RdpTunnel.Create(
-                testInstance.Locator,
-                await credential.GetCredentialAsync()))
+                locator,
+                await credential))
             {
-                var session = await Connect(tunnel, testInstance.Locator);
+                var session = await Connect(tunnel, locator);
 
                 AwaitEvent<RemoteDesktopConnectionSuceededEvent>();
                 Assert.IsNull(this.ExceptionShown);
@@ -257,16 +258,16 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views
         public async Task WhenRequireUserAuthenticationForRemoteConnectionsByNlaDisabled_ThenConnectionSucceeds(
             [WindowsInstance(InitializeScript = @"
                 & reg add ""HKLM\SOFTWARE\Policies\Microsoft\Windows NT\Terminal Services"" /t REG_DWORD /v UserAuthentication /d 0 /f | Out-Default
-            ")] InstanceRequest testInstance,
-            [Credential(Role = PredefinedRole.IapTunnelUser)] CredentialRequest credential)
+            ")] ResourceTask<InstanceLocator> testInstance,
+            [Credential(Role = PredefinedRole.IapTunnelUser)] ResourceTask<ICredential> credential)
         {
-            await testInstance.AwaitReady();
+            var locator = await testInstance;
 
             using (var tunnel = RdpTunnel.Create(
-                testInstance.Locator,
-                await credential.GetCredentialAsync()))
+                locator,
+                await credential))
             {
-                var session = await Connect(tunnel, testInstance.Locator);
+                var session = await Connect(tunnel, locator);
 
                 AwaitEvent<RemoteDesktopConnectionSuceededEvent>();
                 Assert.IsNull(this.ExceptionShown);
@@ -290,16 +291,16 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views
         public async Task WhenRequireUserAuthenticationForRemoteConnectionsByNlaEnabled_ThenConnectionSucceeds(
             [WindowsInstance(InitializeScript = @"
                 & reg add ""HKLM\SOFTWARE\Policies\Microsoft\Windows NT\Terminal Services"" /t REG_DWORD /v UserAuthentication /d 1 /f | Out-Default
-            ")] InstanceRequest testInstance,
-            [Credential(Role = PredefinedRole.IapTunnelUser)] CredentialRequest credential)
+            ")] ResourceTask<InstanceLocator> testInstance,
+            [Credential(Role = PredefinedRole.IapTunnelUser)] ResourceTask<ICredential> credential)
         {
-            await testInstance.AwaitReady();
+            var locator = await testInstance;
 
             using (var tunnel = RdpTunnel.Create(
-                testInstance.Locator,
-                await credential.GetCredentialAsync()))
+                locator,
+                await credential))
             {
-                var session = await Connect(tunnel, testInstance.Locator);
+                var session = await Connect(tunnel, locator);
 
                 AwaitEvent<RemoteDesktopConnectionSuceededEvent>();
                 Assert.IsNull(this.ExceptionShown);

@@ -82,17 +82,17 @@ namespace Google.Solutions.Common.Test.Integration
 
         public IEnumerable GetData(IParameterInfo parameter)
         {
-            if (parameter.ParameterType == typeof(InstanceRequest))
+            if (parameter.ParameterType == typeof(ResourceTask<InstanceLocator>))
             {
+                var fingerprint = CreateSpecificationFingerprint();
                 return new[] {
-                    new InstanceRequest(
-                        new InstanceLocator(
-                            this.ProjectId,
-                            this.Zone,
-                            this.CreateSpecificationFingerprint()),
-                        this.MachineType,
-                        this.ImageFamily,
-                        this.Metadata)
+                    ResourceTask<InstanceLocator>.ProvisionOnce(
+                        fingerprint,
+                        () => InstanceFactory.CreateOrStartInstanceAsync(
+                            fingerprint,
+                            this.MachineType,
+                            this.ImageFamily,
+                            this.Metadata))
                 };
             }
             else
@@ -137,7 +137,7 @@ namespace Google.Solutions.Common.Test.Integration
                 };
                 yield return new Metadata.ItemsData()
                 {
-                    Key = InstanceRequest.GuestAttributeToAwaitKey,
+                    Key = InstanceFactory.GuestAttributeToAwaitKey,
                     Value = key
                 };
                 yield return new Metadata.ItemsData()
@@ -147,7 +147,7 @@ namespace Google.Solutions.Common.Test.Integration
                         "-Headers @{\"Metadata-Flavor\"=\"Google\"} " +
                         "-Method PUT " +
                         "-Uri http://metadata.google.internal/computeMetadata/v1/instance/" +
-                        $"guest-attributes/{InstanceRequest.GuestAttributeNamespace}/{key} " +
+                        $"guest-attributes/{InstanceFactory.GuestAttributeNamespace}/{key} " +
                         "-Body TRUE"
                 };
 
@@ -194,7 +194,7 @@ namespace Google.Solutions.Common.Test.Integration
                 };
                 yield return new Metadata.ItemsData()
                 {
-                    Key = InstanceRequest.GuestAttributeToAwaitKey,
+                    Key = InstanceFactory.GuestAttributeToAwaitKey,
                     Value = key
                 };
                 yield return new Metadata.ItemsData()
@@ -203,7 +203,7 @@ namespace Google.Solutions.Common.Test.Integration
                     Value = script +
                         "curl -X PUT --data \"TRUE\" " +
                         "http://metadata.google.internal/computeMetadata/v1/instance/" +
-                        $"guest-attributes/{InstanceRequest.GuestAttributeNamespace}/{key} " +
+                        $"guest-attributes/{InstanceFactory.GuestAttributeNamespace}/{key} " +
                         "-H \"Metadata-Flavor: Google\""
                 };
 

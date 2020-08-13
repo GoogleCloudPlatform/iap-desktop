@@ -29,15 +29,13 @@ using System.Threading.Tasks;
 
 namespace Google.Solutions.Common.Test.Integration
 {
-    public class CredentialRequest
+    public static class CredentialFactory
     {
-        private string[] roles;
-        private readonly string name;
-
-        private async Task<ServiceAccount> CreateOrGetServiceAccountAsync()
+        private static async Task<ServiceAccount> CreateOrGetServiceAccountAsync(
+            string name)
         {
             var service = TestProject.CreateIamService();
-            var email = $"{this.name}@{TestProject.ProjectId}.iam.gserviceaccount.com";
+            var email = $"{name}@{TestProject.ProjectId}.iam.gserviceaccount.com";
             try
             {
                 return await service.Projects.ServiceAccounts
@@ -61,7 +59,9 @@ namespace Google.Solutions.Common.Test.Integration
             }
         }
 
-        private async Task GrantRolesToServiceAccountAsync(ServiceAccount member)
+        private static async Task GrantRolesToServiceAccountAsync(
+            ServiceAccount member,
+            string[] roles)
         {
             var service = TestProject.CreateCloudResourceManagerService();
 
@@ -74,7 +74,7 @@ namespace Google.Solutions.Common.Test.Integration
                     .ExecuteAsync()
                     .ConfigureAwait(false);
 
-                foreach (var role in this.roles)
+                foreach (var role in roles)
                 {
                     policy.Bindings.Add(
                         new Apis.CloudResourceManager.v1.Data.Binding()
@@ -105,7 +105,7 @@ namespace Google.Solutions.Common.Test.Integration
             }
         }
 
-        private async Task<ICredential> CreateTemporaryCredentialsAsync(
+        private static async Task<ICredential> CreateTemporaryCredentialsAsync(
             string serviceAccountEmail)
         {
             var service = TestProject.CreateIamCredentialsService();
@@ -121,18 +121,11 @@ namespace Google.Solutions.Common.Test.Integration
             return GoogleCredential.FromAccessToken(response.AccessToken);
         }
 
-
-        public CredentialRequest(
-            string serviceAccountName,
+        public static async Task<ICredential> CreateServiceAccountCredentialAsync(
+            string name,
             string[] roles)
         {
-            this.name = serviceAccountName;
-            this.roles = roles;
-        }
-
-        public async Task<ICredential> GetCredentialAsync()
-        {
-            if (this.roles == null || !this.roles.Any())
+            if (roles == null || !roles.Any())
             {
                 // Return the credentials of the (admin) account the
                 // tests are run as.
@@ -145,10 +138,10 @@ namespace Google.Solutions.Common.Test.Integration
                 try
                 {
                     // Create a service account.
-                    var serviceAccount = await CreateOrGetServiceAccountAsync();
+                    var serviceAccount = await CreateOrGetServiceAccountAsync(name);
 
                     // Assign roles.
-                    await GrantRolesToServiceAccountAsync(serviceAccount);
+                    await GrantRolesToServiceAccountAsync(serviceAccount, roles);
 
                     // Create a token.
                     return await CreateTemporaryCredentialsAsync(serviceAccount.Email);
@@ -160,10 +153,6 @@ namespace Google.Solutions.Common.Test.Integration
                     throw;
                 }
             }
-        }
-        public override string ToString()
-        {
-            return this.name;
         }
     }
 }

@@ -76,13 +76,12 @@ namespace Google.Solutions.IapTunneling.Test.Iap
 
         [Test, Repeat(RepeatCount)]
         public async Task WhenServerClosesConnectionAfterSingleHttpRequest_ThenRelayEnds(
-            [LinuxInstance(InitializeScript = InstallApache)] InstanceRequest vm,
-            [Credential(Role = PredefinedRole.IapTunnelUser)] CredentialRequest credential)
+            [LinuxInstance(InitializeScript = InstallApache)] ResourceTask<InstanceLocator> vm,
+            [Credential(Role = PredefinedRole.IapTunnelUser)] ResourceTask<ICredential> credential)
         {
-            await vm.AwaitReady();
             var stream = ConnectToWebServer(
-                vm.Locator,
-                await credential.GetCredentialAsync());
+                await vm,
+                await credential);
 
             byte[] request = new ASCIIEncoding().GetBytes(
                 "GET / HTTP/1.0\r\n\r\n");
@@ -104,13 +103,13 @@ namespace Google.Solutions.IapTunneling.Test.Iap
 
         [Test, Repeat(RepeatCount)]
         public async Task WhenServerClosesConnectionMultipleHttpRequests_ThenRelayEnds(
-            [LinuxInstance(InitializeScript = InstallApache)] InstanceRequest vm,
-            [Credential(Role = PredefinedRole.IapTunnelUser)] CredentialRequest credential)
+            [LinuxInstance(InitializeScript = InstallApache)] ResourceTask<InstanceLocator> vm,
+            [Credential(Role = PredefinedRole.IapTunnelUser)] ResourceTask<ICredential> credential)
         {
-            await vm.AwaitReady();
+            var locator = await vm;
             var stream = ConnectToWebServer(
-                vm.Locator,
-                await credential.GetCredentialAsync());
+                locator,
+                await credential);
 
             for (int i = 0; i < 3; i++)
             {
@@ -141,13 +140,13 @@ namespace Google.Solutions.IapTunneling.Test.Iap
 
         [Test, Repeat(RepeatCount)]
         public async Task WhenClientClosesConnectionAfterSingleHttpRequest_ThenRelayEnds(
-            [LinuxInstance(InitializeScript = InstallApache)] InstanceRequest vm,
-            [Credential(Role = PredefinedRole.IapTunnelUser)] CredentialRequest credential)
+            [LinuxInstance(InitializeScript = InstallApache)] ResourceTask<InstanceLocator> vm,
+            [Credential(Role = PredefinedRole.IapTunnelUser)] ResourceTask<ICredential> credential)
         {
-            await vm.AwaitReady();
+            var locator = await vm;
             var stream = ConnectToWebServer(
-                vm.Locator,
-                await credential.GetCredentialAsync());
+                locator,
+                await credential);
 
             byte[] request = new ASCIIEncoding().GetBytes(
                     $"GET / HTTP/1.1\r\nHost:www\r\nConnection: keep-alive\r\n\r\n");
