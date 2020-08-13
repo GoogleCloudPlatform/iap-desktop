@@ -52,12 +52,12 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Test.Services.Tunnel
         [Test]
         public async Task WhenInstanceAvailableAndUserInRole_ThenCreateTunnelAndProbeSucceeds(
             [WindowsInstance] InstanceRequest testInstance,
-            [Credential(Role = PredefinedRole.IapTunnelUser)] CredentialRequest credential)
+            [Credential(Role = PredefinedRole.IapTunnelUser)] ResourceTask<ICredential> credential)
         {
             await testInstance.AwaitReady();
 
             var service = new TunnelService(CreateAuthorizationAdapter(
-                await credential.GetCredentialAsync()));
+                await credential));
             var destination = new TunnelDestination(
                 testInstance.Locator,
                 3389);
@@ -71,10 +71,10 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Test.Services.Tunnel
 
         [Test]
         public async Task WhenInstanceNotAvailable_ThenProbeFails(
-            [Credential(Role = PredefinedRole.ComputeViewer)] CredentialRequest credential)
+            [Credential(Role = PredefinedRole.ComputeViewer)] ResourceTask<ICredential> credential)
         {
             var service = new TunnelService(CreateAuthorizationAdapter(
-                await credential.GetCredentialAsync()));
+                await credential));
             var destination = new TunnelDestination(
                 new InstanceLocator(
                     TestProject.ProjectId,
@@ -95,12 +95,12 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Test.Services.Tunnel
         [Test]
         public async Task WhenInstanceAvailableButUserNotInRole_ThenProbeFails(
             [WindowsInstance] InstanceRequest testInstance,
-            [Credential(Role = PredefinedRole.ComputeViewer)] CredentialRequest credential)
+            [Credential(Role = PredefinedRole.ComputeViewer)] ResourceTask<ICredential> credential)
         {
             await testInstance.AwaitReady();
 
             var service = new TunnelService(CreateAuthorizationAdapter(
-                await credential.GetCredentialAsync()));
+                await credential));
             var destination = new TunnelDestination(
                 testInstance.Locator,
                 3389);

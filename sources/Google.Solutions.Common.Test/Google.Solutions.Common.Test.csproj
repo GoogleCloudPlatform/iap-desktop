@@ -98,8 +98,9 @@
     <Compile Include="Auth\TestAuthorization.cs" />
     <Compile Include="Auth\TestGoogleAuthAdapter.cs" />
     <Compile Include="FixtureBase.cs" />
-    <Compile Include="Integration\CredentialRequest.cs" />
+    <Compile Include="Integration\CredentialFactory.cs" />
     <Compile Include="Integration\PredefinedRole.cs" />
+    <Compile Include="Integration\ResourceTask.cs" />
     <Compile Include="Locator\TestZoneLocator.cs" />
     <Compile Include="Locator\TestLicenseLocator.cs" />
     <Compile Include="Locator\TestInstanceLocator.cs" />

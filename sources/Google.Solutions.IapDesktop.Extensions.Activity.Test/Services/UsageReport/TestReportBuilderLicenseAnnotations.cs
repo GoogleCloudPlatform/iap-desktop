@@ -19,6 +19,7 @@
 // under the License.
 //
 
+using Google.Apis.Auth.OAuth2;
 using Google.Solutions.Common.Test.Integration;
 using Google.Solutions.IapDesktop.Application.Services.Adapters;
 using Google.Solutions.IapDesktop.Extensions.Activity.Services.Adapters;
@@ -40,18 +41,18 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.Services.UsageRep
             [WindowsInstance] InstanceRequest testInstance,
             [Credential(Roles = new[] {
                 PredefinedRole.ComputeViewer,
-                PredefinedRole.LogsViewer })] CredentialRequest credential)
+                PredefinedRole.LogsViewer })] ResourceTask<ICredential> credential)
         {
             await testInstance.AwaitReady();
             var instanceRef = await testInstance.GetInstanceAsync();
 
             var startDate = DateTime.UtcNow.AddDays(-1);
             var builder = new ReportBuilder(
-                new AuditLogAdapter(await credential.GetCredentialAsync()),
+                new AuditLogAdapter(await credential),
                 new AuditLogStorageSinkAdapter(
-                    new StorageAdapter(await credential.GetCredentialAsync()),
-                    new AuditLogAdapter(await credential.GetCredentialAsync())),
-                new ComputeEngineAdapter(await credential.GetCredentialAsync()),
+                    new StorageAdapter(await credential),
+                    new AuditLogAdapter(await credential)),
+                new ComputeEngineAdapter(await credential),
                 AuditLogSources.Api, 
                 new[] { TestProject.ProjectId },
                 startDate);
@@ -69,18 +70,18 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.Services.UsageRep
             [LinuxInstance] InstanceRequest testInstance,
             [Credential(Roles = new[] {
                 PredefinedRole.ComputeViewer,
-                PredefinedRole.LogsViewer })] CredentialRequest credential)
+                PredefinedRole.LogsViewer })] ResourceTask<ICredential> credential)
         {
             await testInstance.AwaitReady();
             var instanceRef = await testInstance.GetInstanceAsync();
 
             var startDate = DateTime.UtcNow.AddDays(-1);
             var builder = new ReportBuilder(
-                new AuditLogAdapter(await credential.GetCredentialAsync()),
+                new AuditLogAdapter(await credential),
                  new AuditLogStorageSinkAdapter(
-                    new StorageAdapter(await credential.GetCredentialAsync()),
-                    new AuditLogAdapter(await credential.GetCredentialAsync())),
-                new ComputeEngineAdapter(await credential.GetCredentialAsync()),
+                    new StorageAdapter(await credential),
+                    new AuditLogAdapter(await credential)),
+                new ComputeEngineAdapter(await credential),
                 AuditLogSources.Api, 
                 new[] { TestProject.ProjectId },
                 startDate);

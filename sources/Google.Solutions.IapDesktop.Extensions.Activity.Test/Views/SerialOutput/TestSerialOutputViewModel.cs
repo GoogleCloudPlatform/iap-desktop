@@ -85,9 +85,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.Views.SerialOutpu
         [Test]
         public async Task WhenNotBlocked_ThenEnableControlsTailing(
             [WindowsInstance] InstanceRequest testInstance,
-            [Credential(Role = PredefinedRole.ComputeViewer)] CredentialRequest credential)
+            [Credential(Role = PredefinedRole.ComputeViewer)] ResourceTask<ICredential> credential)
         {
-            var viewModel = CreateViewModel(await credential.GetCredentialAsync());
+            var viewModel = CreateViewModel(await credential);
             var node = await CreateNode(testInstance, true);
             await viewModel.SwitchToModelAsync(node);
 
@@ -109,9 +109,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.Views.SerialOutpu
         [Test]
         public async Task WhenBlocked_ThenEnableHasNoImpactOnTailing(
             [WindowsInstance] InstanceRequest testInstance,
-            [Credential(Role = PredefinedRole.ComputeViewer)] CredentialRequest credential)
+            [Credential(Role = PredefinedRole.ComputeViewer)] ResourceTask<ICredential> credential)
         {
-            var viewModel = CreateViewModel(await credential.GetCredentialAsync());
+            var viewModel = CreateViewModel(await credential);
             var node = await CreateNode(testInstance, true);
             await viewModel.SwitchToModelAsync(node);
 
@@ -124,9 +124,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.Views.SerialOutpu
         [Test]
         public async Task WhenEnabled_ThenBlockControlsTailing(
             [WindowsInstance] InstanceRequest testInstance,
-            [Credential(Role = PredefinedRole.ComputeViewer)] CredentialRequest credential)
+            [Credential(Role = PredefinedRole.ComputeViewer)] ResourceTask<ICredential> credential)
         {
-            var viewModel = CreateViewModel(await credential.GetCredentialAsync());
+            var viewModel = CreateViewModel(await credential);
             var node = await CreateNode(testInstance, true);
             await viewModel.SwitchToModelAsync(node);
 
@@ -192,9 +192,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.Views.SerialOutpu
 
         [Test]
         public async Task WhenSwitchingToCloudNode_ThenControlsAreDisabled(
-            [Credential(Role = PredefinedRole.ComputeViewer)] CredentialRequest credential)
+            [Credential(Role = PredefinedRole.ComputeViewer)] ResourceTask<ICredential> credential)
         {
-            var viewModel = CreateViewModel(await credential.GetCredentialAsync());
+            var viewModel = CreateViewModel(await credential);
             var node = new Mock<IProjectExplorerCloudNode>();
             await viewModel.SwitchToModelAsync(node.Object);
 
@@ -205,9 +205,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.Views.SerialOutpu
         [Test]
         public async Task WhenSwitchingToStoppedInstanceNode_ThenControlsAreDisabled(
             [WindowsInstance] InstanceRequest testInstance,
-            [Credential(Role = PredefinedRole.ComputeViewer)] CredentialRequest credential)
+            [Credential(Role = PredefinedRole.ComputeViewer)] ResourceTask<ICredential> credential)
         {
-            var viewModel = CreateViewModel(await credential.GetCredentialAsync());
+            var viewModel = CreateViewModel(await credential);
             var node = await CreateNode(testInstance, false);
             await viewModel.SwitchToModelAsync(node);
 
@@ -219,9 +219,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.Views.SerialOutpu
         [Test]
         public async Task WhenSwitchingToRunningInstanceNode_ThenOutputIsPopulated(
             [WindowsInstance] InstanceRequest testInstance,
-            [Credential(Role = PredefinedRole.ComputeViewer)] CredentialRequest credential)
+            [Credential(Role = PredefinedRole.ComputeViewer)] ResourceTask<ICredential> credential)
         {
-            var viewModel = CreateViewModel(await credential.GetCredentialAsync());
+            var viewModel = CreateViewModel(await credential);
             var node = await CreateNode(testInstance, true);
             await viewModel.SwitchToModelAsync(node);
 

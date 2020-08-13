@@ -19,6 +19,7 @@
 // under the License.
 //
 
+using Google.Apis.Auth.OAuth2;
 using Google.Solutions.Common.Test;
 using Google.Solutions.Common.Test.Integration;
 using Google.Solutions.IapDesktop.Application.Services.Adapters;
@@ -37,11 +38,11 @@ namespace Google.Solutions.IapDesktop.Extensions.Os.Test.Views.InstanceDetails
         [Test]
         public async Task WhenLoadAsyncCompletes_ThenPropertiesArePopulated(
             [WindowsInstance] InstanceRequest testInstance,
-            [Credential(Role = PredefinedRole.ComputeViewer)] CredentialRequest credential)
+            [Credential(Role = PredefinedRole.ComputeViewer)] ResourceTask<ICredential> credential)
         {
             await testInstance.AwaitReady();
 
-            var gceAdapter = new ComputeEngineAdapter(await credential.GetCredentialAsync());
+            var gceAdapter = new ComputeEngineAdapter(await credential);
             var model = await InstanceDetailsModel.LoadAsync(
                 await testInstance.GetInstanceAsync(),
                 gceAdapter,

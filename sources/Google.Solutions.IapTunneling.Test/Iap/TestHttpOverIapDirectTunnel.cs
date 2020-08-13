@@ -54,10 +54,10 @@ namespace Google.Solutions.IapTunneling.Test.Iap
         [Test]
         public async Task WhenBufferIsTiny_ThenReadingFailsWithIndexOutOfRangeException(
             [LinuxInstance(InitializeScript = InstallApache)] InstanceRequest vm,
-            [Credential(Role = PredefinedRole.IapTunnelUser)] CredentialRequest credential)
+            [Credential(Role = PredefinedRole.IapTunnelUser)] ResourceTask<ICredential> credential)
         {
             await vm.AwaitReady();
-            var stream = ConnectToWebServer(vm.Locator, await credential.GetCredentialAsync());
+            var stream = ConnectToWebServer(vm.Locator, await credential);
 
             byte[] request = new ASCIIEncoding().GetBytes(
                 "GET / HTTP/1.0\r\n\r\n");
@@ -104,12 +104,12 @@ namespace Google.Solutions.IapTunneling.Test.Iap
         [Test]
         public async Task WhenFirstReadCompleted_ThenSidIsAvailable(
             [LinuxInstance(InitializeScript = InstallApache)] InstanceRequest vm,
-            [Credential(Role = PredefinedRole.IapTunnelUser)] CredentialRequest credential)
+            [Credential(Role = PredefinedRole.IapTunnelUser)] ResourceTask<ICredential> credential)
         {
             await vm.AwaitReady();
             var stream = (SshRelayStream)ConnectToWebServer(
                 vm.Locator,
-                await credential.GetCredentialAsync());
+                await credential);
 
             byte[] request = new ASCIIEncoding().GetBytes(
                     $"GET / HTTP/1.1\r\nHost:www\r\nConnection: keep-alive\r\n\r\n");
@@ -131,12 +131,12 @@ namespace Google.Solutions.IapTunneling.Test.Iap
         [Ignore("Can also throw an UnauthorizedException")]
         public async Task WhenServerNotListening_ThenReadFails(
             [LinuxInstance] InstanceRequest vm,
-            [Credential(Role = PredefinedRole.IapTunnelUser)] CredentialRequest credential)
+            [Credential(Role = PredefinedRole.IapTunnelUser)] ResourceTask<ICredential> credential)
         {
             await vm.AwaitReady();
             var stream = ConnectToWebServer(
                 vm.Locator,
-                await credential.GetCredentialAsync());
+                await credential);
 
             byte[] request = new ASCIIEncoding().GetBytes(
                     $"GET / HTTP/1.1\r\nHost:www\r\nConnection: keep-alive\r\n\r\n");

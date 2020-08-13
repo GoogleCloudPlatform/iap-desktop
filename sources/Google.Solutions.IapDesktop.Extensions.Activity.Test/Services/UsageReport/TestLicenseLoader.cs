@@ -19,6 +19,7 @@
 // under the License.
 //
 
+using Google.Apis.Auth.OAuth2;
 using Google.Solutions.Common.Locator;
 using Google.Solutions.Common.Test.Integration;
 using Google.Solutions.IapDesktop.Application.Services.Adapters;
@@ -56,7 +57,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.Services.UsageRep
 
         [Test]
         public async Task WhenImageFound_ThenAnnotationIsAdded(
-            [Credential(Role = PredefinedRole.ComputeViewer)] CredentialRequest credential)
+            [Credential(Role = PredefinedRole.ComputeViewer)] ResourceTask<ICredential> credential)
         {
             var annotatedSet = CreateSet(
                 new ImageLocator("windows-cloud", "family/windows-2019"));
@@ -64,7 +65,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.Services.UsageRep
             Assert.AreEqual(0, annotatedSet.LicenseAnnotations.Count());
 
             var computeEngineAdapter = new ComputeEngineAdapter(
-                await credential.GetCredentialAsync());
+                await credential);
             await LicenseLoader.LoadLicenseAnnotationsAsync(
                 annotatedSet,
                 computeEngineAdapter,
@@ -79,7 +80,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.Services.UsageRep
 
         [Test]
         public async Task WhenImageNotFoundButFromWindowsProject_ThenAnnotationIsAdded(
-            [Credential(Role = PredefinedRole.ComputeViewer)] CredentialRequest credential)
+            [Credential(Role = PredefinedRole.ComputeViewer)] ResourceTask<ICredential> credential)
         {
             var annotatedSet = CreateSet(
                 new ImageLocator("windows-cloud", "windows-95"));
@@ -87,7 +88,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.Services.UsageRep
             Assert.AreEqual(0, annotatedSet.LicenseAnnotations.Count());
 
             var computeEngineAdapter = new ComputeEngineAdapter(
-                await credential.GetCredentialAsync());
+                await credential);
             await LicenseLoader.LoadLicenseAnnotationsAsync(
                 annotatedSet,
                 computeEngineAdapter,
@@ -102,7 +103,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.Services.UsageRep
 
         [Test]
         public async Task WhenImageNotFound_ThenAnnotationNotAdded(
-            [Credential(Role = PredefinedRole.ComputeViewer)] CredentialRequest credential)
+            [Credential(Role = PredefinedRole.ComputeViewer)] ResourceTask<ICredential> credential)
         {
             var annotatedSet = CreateSet(
                 new ImageLocator("unknown", "beos"));
@@ -110,7 +111,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.Services.UsageRep
             Assert.AreEqual(0, annotatedSet.LicenseAnnotations.Count());
 
             var computeEngineAdapter = new ComputeEngineAdapter(
-                await credential.GetCredentialAsync());
+                await credential);
             await LicenseLoader.LoadLicenseAnnotationsAsync(
                 annotatedSet,
                 computeEngineAdapter,

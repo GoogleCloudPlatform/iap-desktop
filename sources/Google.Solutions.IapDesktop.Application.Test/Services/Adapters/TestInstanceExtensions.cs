@@ -19,6 +19,7 @@
 // under the License.
 //
 
+using Google.Apis.Auth.OAuth2;
 using Google.Solutions.Common.Test.Integration;
 using Google.Solutions.IapDesktop.Application.Services.Adapters;
 using NUnit.Framework;
@@ -33,9 +34,9 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Adapters
         [Test]
         public async Task WhenInstancePopulated_ThenGetInstanceLocatorSucceeds(
             [LinuxInstance] InstanceRequest testInstance,
-            [Credential(Role = PredefinedRole.ComputeViewer)] CredentialRequest credential)
+            [Credential(Role = PredefinedRole.ComputeViewer)] ResourceTask<ICredential> credential)
         {
-            var adapter = new ComputeEngineAdapter(await credential.GetCredentialAsync());
+            var adapter = new ComputeEngineAdapter(await credential);
             var instance = await adapter.GetInstanceAsync(await testInstance.GetInstanceAsync());
 
             var zoneLocator = instance.GetZoneLocator();

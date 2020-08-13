@@ -19,6 +19,7 @@
 // under the License.
 //
 
+using Google.Apis.Auth.OAuth2;
 using Google.Apis.Auth.OAuth2.Responses;
 using Google.Solutions.Common.ApiExtensions.Instance;
 using Google.Solutions.Common.Locator;
@@ -41,13 +42,13 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.Views.SerialOutpu
         [Test]
         public async Task WhenLoadAsyncCompletes_ThenOutputContainsExistingData(
             [WindowsInstance] InstanceRequest testInstance,
-            [Credential(Role = PredefinedRole.ComputeViewer)] CredentialRequest credential)
+            [Credential(Role = PredefinedRole.ComputeViewer)] ResourceTask<ICredential> credential)
         {
             await testInstance.AwaitReady();
 
             var model = await SerialOutputModel.LoadAsync(
                 "display-name",
-                new ComputeEngineAdapter(await credential.GetCredentialAsync()),
+                new ComputeEngineAdapter(await credential),
                 await testInstance.GetInstanceAsync(),
                 SerialPortStream.ConsolePort,
                 CancellationToken.None);

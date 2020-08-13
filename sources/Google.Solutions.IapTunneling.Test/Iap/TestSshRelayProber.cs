@@ -19,6 +19,7 @@
 // under the License.
 //
 
+using Google.Apis.Auth.OAuth2;
 using Google.Solutions.Common.Locator;
 using Google.Solutions.Common.Test;
 using Google.Solutions.Common.Test.Integration;
@@ -37,11 +38,11 @@ namespace Google.Solutions.IapTunneling.Test.Iap
     {
         [Test]
         public async Task WhenProjectDoesntExist_ThenProbeFailsWithUnauthorizedException(
-            [Credential(Role = PredefinedRole.IapTunnelUser)] CredentialRequest credential)
+            [Credential(Role = PredefinedRole.IapTunnelUser)] ResourceTask<ICredential> credential)
         {
             using (var stream = new SshRelayStream(
                 new IapTunnelingEndpoint(
-                    await credential.GetCredentialAsync(),
+                    await credential,
                     new InstanceLocator(
                         "invalid",
                         TestProject.Zone,
@@ -57,11 +58,11 @@ namespace Google.Solutions.IapTunneling.Test.Iap
 
         [Test]
         public async Task WhenZoneDoesntExist_ThenProbeFailsWithUnauthorizedException(
-            [Credential(Role = PredefinedRole.IapTunnelUser)] CredentialRequest credential)
+            [Credential(Role = PredefinedRole.IapTunnelUser)] ResourceTask<ICredential> credential)
         {
             using (var stream = new SshRelayStream(
                new IapTunnelingEndpoint(
-                    await credential.GetCredentialAsync(),
+                    await credential,
                     new InstanceLocator(
                         TestProject.ProjectId,
                         "invalid",
@@ -77,11 +78,11 @@ namespace Google.Solutions.IapTunneling.Test.Iap
 
         [Test]
         public async Task WhenInstanceDoesntExist_ThenProbeFailsWithUnauthorizedException(
-            [Credential(Role = PredefinedRole.IapTunnelUser)] CredentialRequest credential)
+            [Credential(Role = PredefinedRole.IapTunnelUser)] ResourceTask<ICredential> credential)
         {
             using (var stream = new SshRelayStream(
                 new IapTunnelingEndpoint(
-                    await credential.GetCredentialAsync(),
+                    await credential,
                     new InstanceLocator(
                         TestProject.ProjectId,
                         TestProject.Zone,
@@ -98,13 +99,13 @@ namespace Google.Solutions.IapTunneling.Test.Iap
         [Test]
         public async Task WhenInstanceExistsAndIsListening_ThenProbeSucceeds(
              [WindowsInstance] InstanceRequest testInstance,
-             [Credential(Role = PredefinedRole.IapTunnelUser)] CredentialRequest credential)
+             [Credential(Role = PredefinedRole.IapTunnelUser)] ResourceTask<ICredential> credential)
         {
             await testInstance.AwaitReady();
 
             using (var stream = new SshRelayStream(
                 new IapTunnelingEndpoint(
-                    await credential.GetCredentialAsync(),
+                    await credential,
                     testInstance.Locator,
                     3389,
                     IapTunnelingEndpoint.DefaultNetworkInterface,
@@ -117,13 +118,13 @@ namespace Google.Solutions.IapTunneling.Test.Iap
         [Test]
         public async Task WhenInstanceExistsButNotListening_ThenProbeFailsWithNetworkStreamClosedException(
              [WindowsInstance] InstanceRequest testInstance,
-             [Credential(Role = PredefinedRole.IapTunnelUser)] CredentialRequest credential)
+             [Credential(Role = PredefinedRole.IapTunnelUser)] ResourceTask<ICredential> credential)
         {
             await testInstance.AwaitReady();
 
             using (var stream = new SshRelayStream(
                 new IapTunnelingEndpoint(
-                    await credential.GetCredentialAsync(),
+                    await credential,
                     testInstance.Locator,
                     22,
                     IapTunnelingEndpoint.DefaultNetworkInterface,
