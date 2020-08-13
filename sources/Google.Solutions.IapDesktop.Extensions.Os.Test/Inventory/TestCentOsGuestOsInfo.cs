@@ -26,6 +26,7 @@ using Google.Solutions.IapDesktop.Extensions.Os.Inventory;
 using NUnit.Framework;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Google.Solutions.IapDesktop.Extensions.Os.Test.Inventory
 {
@@ -196,6 +197,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Os.Test.Inventory
             Assert.AreEqual(
                 new DateTime(2020, 7, 3, 9, 10, 8, DateTimeKind.Utc),
                 attributes.LastUpdated.Value.ToUniversalTime());
+
+            Assert.AreEqual(392, attributes.InstalledPackages.AllPackages.Count());
         }
 
         [Test]
@@ -215,6 +218,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Os.Test.Inventory
             Assert.AreEqual("pm-utils", attributes.InstalledPackages.RpmPackages[391].Name);
             Assert.AreEqual("x86_64", attributes.InstalledPackages.RpmPackages[391].Arch);
             Assert.AreEqual("1.2.5-11.el6", attributes.InstalledPackages.RpmPackages[391].Version);
+
+            Assert.AreEqual(392, attributes.InstalledPackages.AllPackages.Count());
         }
 
         [Test]
@@ -238,6 +243,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Os.Test.Inventory
             Assert.AreEqual("kernel-firmware", attributes.AvailablePackages.YumPackages[2].Name);
             Assert.AreEqual("all", attributes.AvailablePackages.YumPackages[2].Arch);
             Assert.AreEqual("2.6.32-754.31.1.el6", attributes.AvailablePackages.YumPackages[2].Version);
+
+            Assert.AreEqual(392, attributes.InstalledPackages.AllPackages.Count());
         }
     }
 }

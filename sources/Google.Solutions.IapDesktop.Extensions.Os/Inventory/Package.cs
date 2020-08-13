@@ -20,10 +20,11 @@
 //
 
 using Newtonsoft.Json;
+using System;
 
 namespace Google.Solutions.IapDesktop.Extensions.Os.Inventory
 {
-    public class Package
+    public class Package : IPackage
     {
         [JsonProperty("Name")]
         public string Name { get; }
@@ -33,6 +34,26 @@ namespace Google.Solutions.IapDesktop.Extensions.Os.Inventory
 
         [JsonProperty("Version")]
         public string Version { get; }
+
+        //---------------------------------------------------------------------
+        // IPackage
+        //---------------------------------------------------------------------
+
+        string IPackage.PackageId => this.Name;
+
+        string IPackage.Description => null;
+
+        string IPackage.Architecture => this.Arch;
+
+        string IPackage.Version => null;
+
+        DateTime? IPackage.InstalledOn => null;
+
+        Uri IPackage.Weblink => null;
+
+        //---------------------------------------------------------------------
+        // Ctor
+        //---------------------------------------------------------------------
 
         [JsonConstructor]
         public Package(

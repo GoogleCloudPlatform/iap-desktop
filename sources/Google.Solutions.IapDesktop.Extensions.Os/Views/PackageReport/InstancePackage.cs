@@ -19,17 +19,20 @@
 // under the License.
 //
 
-using System;
+using Google.Solutions.Common.Locator;
+using Google.Solutions.IapDesktop.Extensions.Os.Inventory;
 
-namespace Google.Solutions.IapDesktop.Extensions.Os.Inventory
+namespace Google.Solutions.IapDesktop.Extensions.Os.Views.PackageReport
 {
-    public interface IPackage
+    internal class InstancePackage
     {
-        string PackageId { get; }
-        string Description { get; }
-        string Architecture { get; }
-        string Version { get; }
-        DateTime? InstalledOn { get; }
-        Uri Weblink { get; }
+        public InstanceLocator Instance { get; }
+        public IPackage Package { get; }
+
+        public InstancePackage(InstanceLocator instance, IPackage package)
+        {
+            this.Instance = instance;
+            this.Package = package;
+        }
     }
 }
