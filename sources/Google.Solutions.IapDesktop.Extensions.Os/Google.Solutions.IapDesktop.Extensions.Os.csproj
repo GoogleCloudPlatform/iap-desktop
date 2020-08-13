@@ -74,6 +74,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Inventory\IPackage.cs" />
     <Compile Include="Inventory\ZypperPatch.cs" />
     <Compile Include="Inventory\Package.cs" />
     <Compile Include="Inventory\GuestPackages.cs" />

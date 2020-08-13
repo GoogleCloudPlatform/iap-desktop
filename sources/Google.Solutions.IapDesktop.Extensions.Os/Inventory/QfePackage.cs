@@ -24,7 +24,7 @@ using System;
 
 namespace Google.Solutions.IapDesktop.Extensions.Os.Inventory
 {
-    public class QfePackage
+    public class QfePackage : IPackage
     {
         [JsonProperty("Caption")]
         public string Caption { get; }
@@ -37,6 +37,24 @@ namespace Google.Solutions.IapDesktop.Extensions.Os.Inventory
 
         [JsonProperty("InstalledOn")]
         public DateTime? InstalledOn { get; }
+
+        //---------------------------------------------------------------------
+        // IPackage
+        //---------------------------------------------------------------------
+
+        string IPackage.PackageId => this.HotFixID;
+
+        string IPackage.Architecture => null;
+
+        string IPackage.Version => null;
+
+        Uri IPackage.Weblink => !string.IsNullOrEmpty(this.Caption) 
+            ? new Uri(this.Caption) 
+            : null;
+
+        //---------------------------------------------------------------------
+        // Ctor
+        //---------------------------------------------------------------------
 
         [JsonConstructor]
         public QfePackage(

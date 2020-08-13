@@ -21,11 +21,12 @@
 
 using Newtonsoft.Json;
 using System;
+using System.Linq;
 using System.Collections.Generic;
 
 namespace Google.Solutions.IapDesktop.Extensions.Os.Inventory
 {
-    public class WuaPackage
+    public class WuaPackage : IPackage
     {
         [JsonProperty("Title")]
         public string Title { get; }
@@ -53,6 +54,26 @@ namespace Google.Solutions.IapDesktop.Extensions.Os.Inventory
 
         [JsonProperty("LastDeploymentChangeTime")]
         public DateTime? LastDeploymentChangeTime { get; }
+
+        //---------------------------------------------------------------------
+        // IPackage
+        //---------------------------------------------------------------------
+
+        string IPackage.PackageId => this.KBArticleIDs.FirstOrDefault();
+
+        string IPackage.Architecture => null;
+
+        string IPackage.Version => this.RevisionNumber.ToString();
+
+        Uri IPackage.Weblink => !string.IsNullOrEmpty(this.SupportURL)
+            ? new Uri(this.SupportURL)
+            : null;
+
+        DateTime? IPackage.InstalledOn => this.LastDeploymentChangeTime;
+        
+        //---------------------------------------------------------------------
+        // Ctor
+        //---------------------------------------------------------------------
 
         [JsonConstructor]
         public WuaPackage(

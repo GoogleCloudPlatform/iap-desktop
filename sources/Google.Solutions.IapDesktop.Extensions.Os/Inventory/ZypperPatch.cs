@@ -20,10 +20,11 @@
 //
 
 using Newtonsoft.Json;
+using System;
 
 namespace Google.Solutions.IapDesktop.Extensions.Os.Inventory
 {
-    public class ZypperPatch
+    public class ZypperPatch : IPackage
     {
         [JsonProperty("Name")]
         public string Name { get; }
@@ -36,6 +37,28 @@ namespace Google.Solutions.IapDesktop.Extensions.Os.Inventory
 
         [JsonProperty("Summary ")]
         public string Summary { get; }
+
+
+        //---------------------------------------------------------------------
+        // IPackage
+        //---------------------------------------------------------------------
+
+        string IPackage.PackageId => this.Name;
+
+        string IPackage.Architecture => null;
+
+        string IPackage.Version => null;
+
+        Uri IPackage.Weblink => null;
+
+        string IPackage.Description => this.Summary +
+            this.Category != null ? $" ({this.Category})" : string.Empty;
+
+        DateTime? IPackage.InstalledOn => null;
+
+        //---------------------------------------------------------------------
+        // Ctor
+        //---------------------------------------------------------------------
 
         [JsonConstructor]
         public ZypperPatch(
