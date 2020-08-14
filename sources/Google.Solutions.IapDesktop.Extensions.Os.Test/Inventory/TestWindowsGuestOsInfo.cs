@@ -181,7 +181,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Os.Test.Inventory
             // Googet
             Assert.AreEqual(16, attributes.InstalledPackages.GoogetPackages.Count);
             Assert.AreEqual("certgen", attributes.InstalledPackages.GoogetPackages[0].Name);
-            Assert.AreEqual("x86_64", attributes.InstalledPackages.GoogetPackages[0].Arch);
+            Assert.AreEqual("x86_64", attributes.InstalledPackages.GoogetPackages[0].Architecture);
             Assert.AreEqual("1.1.0@1", attributes.InstalledPackages.GoogetPackages[0].Version);
 
             // Wua
@@ -230,7 +230,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Os.Test.Inventory
             // Googet
             Assert.AreEqual(1, attributes.AvailablePackages.GoogetPackages.Count);
             Assert.AreEqual("google-osconfig-agent", attributes.AvailablePackages.GoogetPackages[0].Name);
-            Assert.AreEqual("x86_64", attributes.AvailablePackages.GoogetPackages[0].Arch);
+            Assert.AreEqual("x86_64", attributes.AvailablePackages.GoogetPackages[0].Architecture);
             Assert.AreEqual("20200619.00.0@1", attributes.AvailablePackages.GoogetPackages[0].Version);
 
             // Wua

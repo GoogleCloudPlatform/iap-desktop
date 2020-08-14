@@ -30,7 +30,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Os.Inventory
         public string Name { get; }
 
         [JsonProperty("Arch")]
-        public string Arch { get; }
+        public string Architecture { get; }
 
         [JsonProperty("Version")]
         public string Version { get; }
@@ -42,10 +42,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Os.Inventory
         string IPackage.PackageId => this.Name;
 
         string IPackage.Description => null;
-
-        string IPackage.Architecture => this.Arch;
-
-        string IPackage.Version => null;
 
         DateTime? IPackage.InstalledOn => null;
 
@@ -62,7 +58,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Os.Inventory
             [JsonProperty("Version")] string version)
         {
             this.Name = name;
-            this.Arch = arch;
+            this.Architecture = arch;
             this.Version = version;
         }
     }

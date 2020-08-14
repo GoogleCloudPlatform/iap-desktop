@@ -36,11 +36,16 @@ namespace Google.Solutions.IapDesktop.Extensions.Os.Views.PackageReport
 
         private static bool IsInstanceMatch(InstanceLocator locator, string term)
         {
-            return locator.Zone == term || locator.Name == term;
+            term = term.ToLowerInvariant();
+
+            return locator.Zone.Contains(term) || 
+                   locator.Name.Contains(term);
         }
 
         private static bool IsPackageMatch(IPackage package, string term)
         {
+            term = term.ToLowerInvariant();
+
             return
                 (package.Architecture != null && package.Architecture.Contains(term)) ||
                 (package.Description != null && package.Description.Contains(term)) ||
@@ -66,15 +71,22 @@ namespace Google.Solutions.IapDesktop.Extensions.Os.Views.PackageReport
             {
                 this.filter = value;
 
-                // Treat filter as an AND-combination of terms.
                 var candidates = this.allPackages;
-                foreach (var term in this.filter
-                    .Split(' ')
-                    .Select(t => t.Trim()))
+
+                if (!string.IsNullOrWhiteSpace(this.filter))
                 {
-                    candidates = candidates.Where(p =>
-                        IsPackageMatch(p.Package, term) ||
-                        IsInstanceMatch(p.Instance, term));
+                    // Treat filter as an AND-combination of terms.
+
+                    foreach (var term in this.filter
+                        .Split(' ')
+                        .Select(t => t.Trim())
+                        .Where(t => !string.IsNullOrWhiteSpace(t)))
+                    {
+                        candidates = candidates.Where(p =>
+                                IsPackageMatch(p.Package, term) ||
+                                IsInstanceMatch(p.Instance, term))
+                            .ToList();
+                    }
                 }
                 
                 this.FilteredPackages.Clear();
@@ -89,7 +101,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Os.Views.PackageReport
         // Ctor
         //---------------------------------------------------------------------
 
-        private ReportViewModel(IEnumerable<InstancePackage> packages)
+        internal ReportViewModel(IEnumerable<InstancePackage> packages)
         {
             this.allPackages = packages;
             this.FilteredPackages.AddRange(this.allPackages);
