@@ -87,7 +87,7 @@
     <Compile Include="Views\InstanceDetails\TestInstanceDetailsModel.cs" />
     <Compile Include="Views\InstanceDetails\TestInstanceDetailsViewModel.cs" />
     <Compile Include="Services\Inventory\TestInventoryService.cs" />
-    <Compile Include="Views\PackageReport\TestReportViewModel.cs" />
+    <Compile Include="Views\PackageInventory\TestPackageInventoryViewModel.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />

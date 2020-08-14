@@ -69,5 +69,15 @@ namespace Google.Solutions.IapDesktop.Extensions.Os.Properties {
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap Package_16 {
+            get {
+                object obj = ResourceManager.GetObject("Package_16", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
     }
 }

@@ -49,7 +49,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Os.Inventory
         public GuestPackages InstalledPackages { get; }
         public GuestPackages AvailablePackages { get; }
 
-        private GuestOsInfo(
+        internal GuestOsInfo(
             InstanceLocator instance,
             string architecture,
             string kernelRelease,

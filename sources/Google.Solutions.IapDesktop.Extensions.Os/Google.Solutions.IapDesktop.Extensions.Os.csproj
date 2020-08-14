@@ -94,8 +94,12 @@
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Services\Inventory\InventoryService.cs" />
-    <Compile Include="Views\PackageReport\InstancePackage.cs" />
-    <Compile Include="Views\PackageReport\ReportViewModel.cs" />
+    <Compile Include="Views\PackageInventory\PackageInventoryType.cs" />
+    <Compile Include="Views\PackageInventory\PackageInventoryModel.cs" />
+    <Compile Include="Views\PackageInventory\PackageList.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Views\PackageInventory\PackageInventoryViewModel.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
@@ -119,7 +123,9 @@
   <ItemGroup>
     <None Include="Resources\ComputerDetails_16.png" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <None Include="Resources\Package_16.png" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>copy /Y $(TargetDir)\$(TargetName).* $(SolutionDir)\Google.Solutions.IapDesktop\$(OutDir)</PostBuildEvent>
