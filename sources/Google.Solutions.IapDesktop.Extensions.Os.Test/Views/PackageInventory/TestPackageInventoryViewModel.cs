@@ -41,8 +41,22 @@ namespace Google.Solutions.IapDesktop.Extensions.Os.Test.Views.PackageInventory
     {
         private static GuestOsInfo CreateGuestOsInfo(
             InstanceLocator locator,
-            IList<Package> installedPackages)
+            PackageInventoryType type,
+            IList<Package> packages)
         {
+            var packageInfo = packages == null ? null : new GuestPackages(
+                packages,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null);
+
             return new GuestOsInfo(
                 locator,
                 null,
@@ -53,19 +67,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Os.Test.Views.PackageInventory
                 new Version(),
                 null,
                 null,
-                installedPackages == null ? null : new GuestPackages(
-                    installedPackages,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null),
-                null);
+                type == PackageInventoryType.InstalledPackages ? packageInfo : null,
+                type == PackageInventoryType.AvailablePackages ? packageInfo : null);
         }
 
         private class JobServiceMock : IJobService
@@ -76,7 +79,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Os.Test.Views.PackageInventory
                 => jobFunc(CancellationToken.None);
         }
 
-        private static PackageInventoryViewModel CreateViewModel()
+        private static PackageInventoryViewModel CreateViewModel(PackageInventoryType type)
         {
             var registry = new ServiceRegistry();
             registry.AddSingleton<IJobService>(new JobServiceMock());
@@ -87,6 +90,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Os.Test.Views.PackageInventory
                         It.IsAny<CancellationToken>()))
                 .ReturnsAsync(CreateGuestOsInfo(
                     new InstanceLocator("project-1", "zone-1", "instance-1"),
+                    type,
                     new Package[] {
                         new Package("package-1", "arch-1", "ver-1"),
                         new Package("package-2", "arch-1", "ver-2")
@@ -105,6 +109,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Os.Test.Views.PackageInventory
                     {
                         CreateGuestOsInfo(
                             new InstanceLocator("project-1", "zone-1", "instance-1"),
+                            type,
                             new Package[] {
                                 new Package("package-1", "arch-1", "ver-1"),
                                 new Package("package-2", "arch-1", "ver-2")
@@ -119,24 +124,27 @@ namespace Google.Solutions.IapDesktop.Extensions.Os.Test.Views.PackageInventory
                     {
                         CreateGuestOsInfo(
                             new InstanceLocator("project-1", "zone-1", "instance-1"),
+                            type,
                             new Package[] {
                                 new Package("package-1", "ARCH-1", "ver-1"),
                                 new Package("package-2", "ARCH-1", "ver-2")
                             }),
                         CreateGuestOsInfo(
                             new InstanceLocator("project-1", "zone-2", "instance-2"),
+                            type,
                             new Package[] {
                                 new Package("package-3", "ARCH-1", "ver-1"),
                                 new Package("package-4", "ARCH-2", "ver-3")
                             }),
                         CreateGuestOsInfo(
                             new InstanceLocator("project-1", "zone-2", "instance-3"),
+                            type,
                             null)
                     });
 
             registry.AddSingleton<IInventoryService>(inventoryService.Object);
 
-            return new PackageInventoryViewModel(registry, PackageInventoryType.InstalledPackages);
+            return new PackageInventoryViewModel(registry, type);
         }
 
         //---------------------------------------------------------------------
@@ -146,7 +154,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Os.Test.Views.PackageInventory
         [Test]
         public async Task WhenSwitchingToCloudNode_ThenListIsDisabled()
         {
-            var viewModel = CreateViewModel();
+            var viewModel = CreateViewModel(PackageInventoryType.InstalledPackages);
 
             var node = new Mock<IProjectExplorerCloudNode>();
             await viewModel.SwitchToModelAsync(node.Object);
@@ -159,13 +167,17 @@ namespace Google.Solutions.IapDesktop.Extensions.Os.Test.Views.PackageInventory
         }
 
         [Test]
-        public async Task WhenSwitchingToProjectNode_ThenListIsPopulated()
+        public async Task WhenSwitchingToProjectNode_ThenListIsPopulated(
+            [Values(
+                PackageInventoryType.AvailablePackages,
+                PackageInventoryType.InstalledPackages)]  PackageInventoryType type)
         {
+            
             var node = new Mock<IProjectExplorerProjectNode>();
             node.SetupGet(n => n.ProjectId).Returns("project-1");
             node.SetupGet(n => n.DisplayName).Returns("project-1");
 
-            var viewModel = CreateViewModel();
+            var viewModel = CreateViewModel(type);
             await viewModel.SwitchToModelAsync(node.Object);
 
             // Switch again.
@@ -173,7 +185,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Os.Test.Views.PackageInventory
 
             Assert.AreEqual(CommandState.Enabled, PackageInventoryViewModel.GetCommandState(node.Object));
             Assert.IsTrue(viewModel.IsPackageListEnabled);
-            StringAssert.Contains("Installed packages", viewModel.WindowTitle);
             StringAssert.Contains("project-1", viewModel.WindowTitle);
 
             Assert.AreEqual(4, viewModel.AllPackages.Count);
@@ -181,14 +192,17 @@ namespace Google.Solutions.IapDesktop.Extensions.Os.Test.Views.PackageInventory
         }
 
         [Test]
-        public async Task WhenSwitchingToZoneNode_ThenListIsPopulated()
+        public async Task WhenSwitchingToZoneNode_ThenListIsPopulated(
+            [Values(
+                PackageInventoryType.AvailablePackages,
+                PackageInventoryType.InstalledPackages)]  PackageInventoryType type)
         {
             var node = new Mock<IProjectExplorerZoneNode>();
             node.SetupGet(n => n.ProjectId).Returns("project-1");
             node.SetupGet(n => n.ZoneId).Returns("zone-1");
             node.SetupGet(n => n.DisplayName).Returns("zone-1");
 
-            var viewModel = CreateViewModel();
+            var viewModel = CreateViewModel(type);
             await viewModel.SwitchToModelAsync(node.Object);
 
             // Switch again.
@@ -196,7 +210,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Os.Test.Views.PackageInventory
 
             Assert.AreEqual(CommandState.Enabled, PackageInventoryViewModel.GetCommandState(node.Object));
             Assert.IsTrue(viewModel.IsPackageListEnabled);
-            StringAssert.Contains("Installed packages", viewModel.WindowTitle);
             StringAssert.Contains("zone-1", viewModel.WindowTitle);
 
             Assert.AreEqual(2, viewModel.AllPackages.Count);
@@ -204,7 +217,10 @@ namespace Google.Solutions.IapDesktop.Extensions.Os.Test.Views.PackageInventory
         }
 
         [Test]
-        public async Task WhenSwitchingToInstanceNodeWithInventory_ThenListIsPopulated()
+        public async Task WhenSwitchingToInstanceNodeWithInventory_ThenListIsPopulated(
+            [Values(
+                PackageInventoryType.AvailablePackages,
+                PackageInventoryType.InstalledPackages)]  PackageInventoryType type)
         {
             var node = new Mock<IProjectExplorerVmInstanceNode>();
             node.SetupGet(n => n.ProjectId).Returns("project-1");
@@ -213,7 +229,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Os.Test.Views.PackageInventory
             node.SetupGet(n => n.DisplayName).Returns("instance-1");
             node.SetupGet(n => n.Reference).Returns(new InstanceLocator("project-1", "zone-1", "instance-1"));
 
-            var viewModel = CreateViewModel();
+            var viewModel = CreateViewModel(type);
             await viewModel.SwitchToModelAsync(node.Object);
 
             // Switch again.
@@ -221,7 +237,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Os.Test.Views.PackageInventory
 
             Assert.AreEqual(CommandState.Enabled, PackageInventoryViewModel.GetCommandState(node.Object));
             Assert.IsTrue(viewModel.IsPackageListEnabled);
-            StringAssert.Contains("Installed packages", viewModel.WindowTitle);
             StringAssert.Contains("instance-1", viewModel.WindowTitle);
 
             Assert.AreEqual(2, viewModel.AllPackages.Count);
@@ -229,7 +244,10 @@ namespace Google.Solutions.IapDesktop.Extensions.Os.Test.Views.PackageInventory
         }
 
         [Test]
-        public async Task WhenSwitchingToInstanceNodeWithoutInventory_ThenListIsPopulated()
+        public async Task WhenSwitchingToInstanceNodeWithoutInventory_ThenListIsPopulated(
+            [Values(
+                PackageInventoryType.AvailablePackages,
+                PackageInventoryType.InstalledPackages)] PackageInventoryType type)
         {
             var node = new Mock<IProjectExplorerVmInstanceNode>();
             node.SetupGet(n => n.ProjectId).Returns("project-1");
@@ -238,7 +256,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Os.Test.Views.PackageInventory
             node.SetupGet(n => n.DisplayName).Returns("instance-3");
             node.SetupGet(n => n.Reference).Returns(new InstanceLocator("project-1", "zone-1", "instance-3"));
 
-            var viewModel = CreateViewModel();
+            var viewModel = CreateViewModel(type);
             await viewModel.SwitchToModelAsync(node.Object);
 
             // Switch again.
@@ -246,7 +264,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Os.Test.Views.PackageInventory
 
             Assert.AreEqual(CommandState.Enabled, PackageInventoryViewModel.GetCommandState(node.Object));
             Assert.IsTrue(viewModel.IsPackageListEnabled);
-            StringAssert.Contains("Installed packages", viewModel.WindowTitle);
             StringAssert.Contains("instance-3", viewModel.WindowTitle);
 
             Assert.AreEqual(0, viewModel.AllPackages.Count);
@@ -263,7 +280,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Os.Test.Views.PackageInventory
             var node = new Mock<IProjectExplorerProjectNode>();
             node.SetupGet(n => n.ProjectId).Returns("project-1");
 
-            var viewModel = CreateViewModel();
+            var viewModel = CreateViewModel(PackageInventoryType.InstalledPackages);
             await viewModel.SwitchToModelAsync(node.Object);
 
             Assert.AreEqual(4, viewModel.FilteredPackages.Count);
@@ -275,7 +292,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Os.Test.Views.PackageInventory
             var node = new Mock<IProjectExplorerProjectNode>();
             node.SetupGet(n => n.ProjectId).Returns("project-1");
 
-            var viewModel = CreateViewModel();
+            var viewModel = CreateViewModel(PackageInventoryType.InstalledPackages);
             await viewModel.SwitchToModelAsync(node.Object);
             
             viewModel.Filter = "PACKAGE \t Arch-2   ver-3";
@@ -289,7 +306,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Os.Test.Views.PackageInventory
             var node = new Mock<IProjectExplorerProjectNode>();
             node.SetupGet(n => n.ProjectId).Returns("project-1");
 
-            var viewModel = CreateViewModel();
+            var viewModel = CreateViewModel(PackageInventoryType.InstalledPackages);
             await viewModel.SwitchToModelAsync(node.Object);
 
             viewModel.Filter = "   PACKAGE-3   ";
