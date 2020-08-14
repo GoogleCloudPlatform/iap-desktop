@@ -244,7 +244,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Os.Views.PackageInventory
 
             var windowTitlePrefix =
                 this.inventoryType == PackageInventoryType.AvailablePackages
-                    ? "Available packages"
+                    ? "Available updates"
                     : "Installed packages";
 
             if (this.Model == null)

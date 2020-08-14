@@ -78,7 +78,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Os.Services
                 });
             inventoryCommand.AddCommand(
                 new Command<IProjectExplorerNode>(
-                    "&Available packages",
+                    "&Available updates",
                     PackageInventoryViewModel.GetCommandState,
                     context => serviceProvider.GetService<AvailablePackageInventoryWindow>().ShowWindow())
                 {

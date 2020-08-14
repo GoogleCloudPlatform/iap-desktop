@@ -59,7 +59,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Os.Inventory
         // IPackage
         //---------------------------------------------------------------------
 
-        string IPackage.PackageId => this.KBArticleIDs.FirstOrDefault();
+        string IPackage.PackageId => this.Title;
 
         string IPackage.Architecture => null;
 

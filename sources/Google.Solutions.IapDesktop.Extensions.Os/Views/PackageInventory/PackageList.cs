@@ -34,14 +34,14 @@ namespace Google.Solutions.IapDesktop.Extensions.Os.Views.PackageInventory
             this.List.SmallImageList = new ImageList();
             this.List.SmallImageList.Images.Add(Resources.Package_16);
 
-            AddColumn("Package", 200);
+            AddColumn("Package", 300);
             AddColumn("Version", 80);
             AddColumn("Architecture", 80);
-            AddColumn("Description", 250);
             AddColumn("Instance name", 130);
             AddColumn("Zone", 80);
             AddColumn("Project ID", 120);
             AddColumn("Date", 120);
+            AddColumn("Description", 250);
 
             this.List.GridLines = true;
 
@@ -49,11 +49,11 @@ namespace Google.Solutions.IapDesktop.Extensions.Os.Views.PackageInventory
             this.List.BindColumn(0, m => m.Package.PackageId);
             this.List.BindColumn(1, m => m.Package.Version);
             this.List.BindColumn(2, m => m.Package.Architecture);
-            this.List.BindColumn(3, m => m.Package.Description);
-            this.List.BindColumn(4, m => m.Instance.Name);
-            this.List.BindColumn(5, m => m.Instance.Zone);
-            this.List.BindColumn(6, m => m.Instance.ProjectId);
-            this.List.BindColumn(7, m => m.Package.InstalledOn?.ToShortDateString());
+            this.List.BindColumn(3, m => m.Instance.Name);
+            this.List.BindColumn(4, m => m.Instance.Zone);
+            this.List.BindColumn(5, m => m.Instance.ProjectId);
+            this.List.BindColumn(6, m => m.Package.InstalledOn?.ToShortDateString());
+            this.List.BindColumn(7, m => m.Package.Description);
         }
     }
 }
