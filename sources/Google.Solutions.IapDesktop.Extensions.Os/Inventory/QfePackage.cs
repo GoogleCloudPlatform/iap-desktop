@@ -48,9 +48,23 @@ namespace Google.Solutions.IapDesktop.Extensions.Os.Inventory
 
         string IPackage.Version => null;
 
-        Uri IPackage.Weblink => !string.IsNullOrEmpty(this.Caption) 
-            ? new Uri(this.Caption) 
-            : null;
+        Uri IPackage.Weblink
+        {
+            get
+            {
+                if (this.Caption != null && Uri.TryCreate(
+                    this.Caption, UriKind
+                    .Absolute, 
+                    out Uri uri))
+                {
+                    return uri;
+                }
+                else
+                {
+                    return null;
+                }
+            }
+        }
 
         PackageCriticality IPackage.Criticality => PackageCriticality.NonCritical;
 

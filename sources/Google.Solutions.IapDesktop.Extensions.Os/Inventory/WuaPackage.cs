@@ -153,8 +153,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Os.Inventory
 
         public static IEnumerable<WuaPackageType> FromCategoryIds(IEnumerable<string> ids)
         {
-            return
-                ids.Select(id => FromCategoryId(id))
+            return ids
+                .EnsureNotNull()
+                .Select(id => FromCategoryId(id))
                 .Where(type => type != null);
         }
 

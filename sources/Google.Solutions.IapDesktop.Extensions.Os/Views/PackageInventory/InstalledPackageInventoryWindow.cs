@@ -19,12 +19,14 @@
 // under the License.
 //
 
+using Google.Solutions.Common.Diagnostics;
 using Google.Solutions.IapDesktop.Application.ObjectModel;
 using System;
 
 namespace Google.Solutions.IapDesktop.Extensions.Os.Views.PackageInventory
 {
     [Service(ServiceLifetime.Singleton)]
+    [SkipCodeCoverage("All logic in view model")]
     public class InstalledPackageInventoryWindow : PackageInventoryWindow
     {
         public InstalledPackageInventoryWindow(IServiceProvider serviceProvider)

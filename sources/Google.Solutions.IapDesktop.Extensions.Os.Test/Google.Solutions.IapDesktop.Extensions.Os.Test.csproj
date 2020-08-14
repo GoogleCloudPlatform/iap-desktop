@@ -82,7 +82,11 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Inventory\TestCentOsGuestOsInfo.cs" />
+    <Compile Include="Inventory\TestPackage.cs" />
     <Compile Include="Inventory\TestWindowsGuestOsInfo.cs" />
+    <Compile Include="Inventory\TestQfePackage.cs" />
+    <Compile Include="Inventory\TestZypperPatch.cs" />
+    <Compile Include="Inventory\TestWuaPackage.cs" />
     <Compile Include="Inventory\TestWuaPackageType.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Views\InstanceDetails\TestInstanceDetailsModel.cs" />

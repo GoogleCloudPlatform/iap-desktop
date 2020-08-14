@@ -52,7 +52,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Os.Inventory
         Uri IPackage.Weblink => null;
 
         string IPackage.Description => this.Summary +
-            this.Category != null ? $" ({this.Category})" : string.Empty;
+            (this.Category != null ? $" ({this.Category})" : string.Empty);
 
         DateTime? IPackage.InstalledOn => null;
 
