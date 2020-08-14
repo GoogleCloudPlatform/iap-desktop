@@ -53,7 +53,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Os.Test.Views.PackageInventory
                 new Version(),
                 null,
                 null,
-                new GuestPackages(
+                installedPackages == null ? null : new GuestPackages(
                     installedPackages,
                     null,
                     null,
@@ -83,7 +83,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Os.Test.Views.PackageInventory
 
             var inventoryService = new Mock<IInventoryService>();
             inventoryService.Setup(s => s.GetInstanceInventoryAsync(
-                        It.IsAny<InstanceLocator>(),
+                        It.Is<InstanceLocator>(loc => loc.Name == "instance-1"),
                         It.IsAny<CancellationToken>()))
                 .ReturnsAsync(CreateGuestOsInfo(
                     new InstanceLocator("project-1", "zone-1", "instance-1"),
@@ -91,6 +91,11 @@ namespace Google.Solutions.IapDesktop.Extensions.Os.Test.Views.PackageInventory
                         new Package("package-1", "arch-1", "ver-1"),
                         new Package("package-2", "arch-1", "ver-2")
                     }));
+
+            inventoryService.Setup(s => s.GetInstanceInventoryAsync(
+                        It.Is<InstanceLocator>(loc => loc.Name == "instance-3"),
+                        It.IsAny<CancellationToken>()))
+                .ReturnsAsync((GuestOsInfo)null);
 
             inventoryService.Setup(s => s.ListZoneInventoryAsync(
                         It.IsAny<ZoneLocator>(),
@@ -123,7 +128,10 @@ namespace Google.Solutions.IapDesktop.Extensions.Os.Test.Views.PackageInventory
                             new Package[] {
                                 new Package("package-3", "arch-1", "ver-1"),
                                 new Package("package-4", "arch-2", "ver-3")
-                            })
+                            }),
+                        CreateGuestOsInfo(
+                            new InstanceLocator("project-1", "zone-2", "instance-3"),
+                            null)
                     });
 
             registry.AddSingleton<IInventoryService>(inventoryService.Object);
@@ -196,13 +204,14 @@ namespace Google.Solutions.IapDesktop.Extensions.Os.Test.Views.PackageInventory
         }
 
         [Test]
-        public async Task WhenSwitchingToInstanceNode_ThenListIsPopulated()
+        public async Task WhenSwitchingToInstanceNodeWithInventory_ThenListIsPopulated()
         {
             var node = new Mock<IProjectExplorerVmInstanceNode>();
             node.SetupGet(n => n.ProjectId).Returns("project-1");
             node.SetupGet(n => n.ZoneId).Returns("zone-1");
             node.SetupGet(n => n.InstanceName).Returns("instance-1");
             node.SetupGet(n => n.DisplayName).Returns("instance-1");
+            node.SetupGet(n => n.Reference).Returns(new InstanceLocator("project-1", "zone-1", "instance-1"));
 
             var viewModel = CreateViewModel();
             await viewModel.SwitchToModelAsync(node.Object);
@@ -217,6 +226,31 @@ namespace Google.Solutions.IapDesktop.Extensions.Os.Test.Views.PackageInventory
 
             Assert.AreEqual(2, viewModel.AllPackages.Count);
             Assert.AreEqual(2, viewModel.FilteredPackages.Count);
+        }
+
+        [Test]
+        public async Task WhenSwitchingToInstanceNodeWithoutInventory_ThenListIsPopulated()
+        {
+            var node = new Mock<IProjectExplorerVmInstanceNode>();
+            node.SetupGet(n => n.ProjectId).Returns("project-1");
+            node.SetupGet(n => n.ZoneId).Returns("zone-1");
+            node.SetupGet(n => n.InstanceName).Returns("instance-3");
+            node.SetupGet(n => n.DisplayName).Returns("instance-3");
+            node.SetupGet(n => n.Reference).Returns(new InstanceLocator("project-1", "zone-1", "instance-3"));
+
+            var viewModel = CreateViewModel();
+            await viewModel.SwitchToModelAsync(node.Object);
+
+            // Switch again.
+            await viewModel.SwitchToModelAsync(node.Object);
+
+            Assert.AreEqual(CommandState.Enabled, PackageInventoryViewModel.GetCommandState(node.Object));
+            Assert.IsTrue(viewModel.IsPackageListEnabled);
+            StringAssert.Contains(PackageInventoryViewModel.DefaultWindowTitle, viewModel.WindowTitle);
+            StringAssert.Contains("instance-3", viewModel.WindowTitle);
+
+            Assert.AreEqual(0, viewModel.AllPackages.Count);
+            Assert.AreEqual(0, viewModel.FilteredPackages.Count);
         }
 
         //---------------------------------------------------------------------

@@ -43,15 +43,17 @@ namespace Google.Solutions.IapDesktop.Extensions.Os.Views.PackageInventory
             AddColumn("Description", 200);
             AddColumn("Installed (UTC)", 120);
 
+            this.List.GridLines = true;
+
             this.List.BindImageIndex(_ => 0);
             this.List.BindColumn(0, m => m.Instance.Name);
             this.List.BindColumn(1, m => m.Instance.Zone);
             this.List.BindColumn(2, m => m.Instance.ProjectId);
-            this.List.BindColumn(2, m => m.Package.PackageId);
-            this.List.BindColumn(2, m => m.Package.Version);
-            this.List.BindColumn(2, m => m.Package.Architecture);
-            this.List.BindColumn(2, m => m.Package.Description);
-            this.List.BindColumn(2, m => m.Package.InstalledOn.ToString());
+            this.List.BindColumn(3, m => m.Package.PackageId);
+            this.List.BindColumn(4, m => m.Package.Version);
+            this.List.BindColumn(5, m => m.Package.Architecture);
+            this.List.BindColumn(6, m => m.Package.Description);
+            this.List.BindColumn(7, m => m.Package.InstalledOn.ToString());
         }
     }
 }

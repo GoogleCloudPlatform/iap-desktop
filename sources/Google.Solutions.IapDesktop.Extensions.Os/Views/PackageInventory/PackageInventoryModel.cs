@@ -27,7 +27,7 @@ using System.Linq;
 
 namespace Google.Solutions.IapDesktop.Extensions.Os.Views.PackageInventory
 {
-    internal class PackageInventoryModel
+    public class PackageInventoryModel
     {
         public string DisplayName { get; }
         public IEnumerable<PackageInventoryModel.Item> Packages { get; }
@@ -50,17 +50,21 @@ namespace Google.Solutions.IapDesktop.Extensions.Os.Views.PackageInventory
                 case PackageInventoryType.AvailablePackages:
                     return new PackageInventoryModel(
                         displayName,
-                        inventory.SelectMany(i => i.AvailablePackages
-                            .AllPackages
-                            .Select(p => new Item(i.Instance, p))));
+                        inventory
+                            .Where(i => i.AvailablePackages != null)
+                            .SelectMany(i => i.AvailablePackages
+                                .AllPackages
+                                .Select(p => new Item(i.Instance, p))));
 
 
                 case PackageInventoryType.InstalledPackages:
                     return new PackageInventoryModel(
                         displayName,
-                        inventory.SelectMany(i => i.InstalledPackages
-                            .AllPackages
-                            .Select(p => new Item(i.Instance, p))));
+                        inventory
+                            .Where(i => i.InstalledPackages != null)
+                            .SelectMany(i => i.InstalledPackages
+                                .AllPackages
+                                .Select(p => new Item(i.Instance, p))));
 
                 default:
                     throw new ArgumentException(nameof(inventoryType));

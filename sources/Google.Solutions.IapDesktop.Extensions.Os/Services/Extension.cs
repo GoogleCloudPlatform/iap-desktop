@@ -24,6 +24,7 @@ using Google.Solutions.IapDesktop.Application.Views;
 using Google.Solutions.IapDesktop.Application.Views.ProjectExplorer;
 using Google.Solutions.IapDesktop.Extensions.Os.Properties;
 using Google.Solutions.IapDesktop.Extensions.Os.Views.InstanceDetails;
+using Google.Solutions.IapDesktop.Extensions.Os.Views.PackageInventory;
 using System;
 using System.Windows.Forms;
 
@@ -60,6 +61,28 @@ namespace Google.Solutions.IapDesktop.Extensions.Os.Services
                     context => serviceProvider.GetService<InstanceDetailsWindow>().ShowWindow())
                 {
                     Image = Resources.ComputerDetails_16
+                });
+
+            var inventoryCommand = projectExplorer.ContextMenuCommands.AddCommand(
+                new Command<IProjectExplorerNode>(
+                    "&Inventory",
+                    PackageInventoryViewModel.GetCommandState,
+                    context => { }));
+            inventoryCommand.AddCommand(
+                new Command<IProjectExplorerNode>(
+                    "&Installed packages",
+                    PackageInventoryViewModel.GetCommandState,
+                    context => serviceProvider.GetService<InstalledPackageInventoryWindow>().ShowWindow())
+                {
+                    Image = Resources.Package_16
+                });
+            inventoryCommand.AddCommand(
+                new Command<IProjectExplorerNode>(
+                    "&Available packages",
+                    PackageInventoryViewModel.GetCommandState,
+                    context => serviceProvider.GetService<AvailablePackageInventoryWindow>().ShowWindow())
+                {
+                    Image = Resources.Package_16
                 });
 
             //

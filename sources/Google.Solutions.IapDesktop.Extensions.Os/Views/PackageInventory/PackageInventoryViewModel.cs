@@ -31,13 +31,12 @@ using Google.Solutions.IapDesktop.Extensions.Os.Services.Inventory;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
 namespace Google.Solutions.IapDesktop.Extensions.Os.Views.PackageInventory
 {
-    internal class PackageInventoryViewModel
+    public class PackageInventoryViewModel
         : ModelCachingViewModelBase<IProjectExplorerNode, PackageInventoryModel>
     {
         private const int ModelCacheCapacity = 5;
@@ -198,12 +197,13 @@ namespace Google.Solutions.IapDesktop.Extensions.Os.Views.PackageInventory
                             IEnumerable<GuestOsInfo> inventory;
                             if (node is IProjectExplorerVmInstanceNode vmNode)
                             {
-                                inventory = new GuestOsInfo[] {
-                                    await inventoryService.GetInstanceInventoryAsync(
-                                            vmNode.Reference,
-                                            jobToken)
-                                        .ConfigureAwait(false)
-                                };
+                                var info = await inventoryService.GetInstanceInventoryAsync(
+                                        vmNode.Reference,
+                                        jobToken)
+                                    .ConfigureAwait(false);
+                                inventory = info != null
+                                    ? new GuestOsInfo[] { info }
+                                    : Enumerable.Empty<GuestOsInfo>();
                             }
                             else if (node is IProjectExplorerZoneNode zoneNode)
                             {

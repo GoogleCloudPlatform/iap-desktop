@@ -94,8 +94,20 @@
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Services\Inventory\InventoryService.cs" />
+    <Compile Include="Views\PackageInventory\AvailablePackageInventoryWindow.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Views\PackageInventory\InstalledPackageInventoryWindow.cs">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="Views\PackageInventory\PackageInventoryType.cs" />
     <Compile Include="Views\PackageInventory\PackageInventoryModel.cs" />
+    <Compile Include="Views\PackageInventory\PackageInventoryWindow.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Views\PackageInventory\PackageInventoryWindow.Designer.cs">
+      <DependentUpon>PackageInventoryWindow.cs</DependentUpon>
+    </Compile>
     <Compile Include="Views\PackageInventory\PackageList.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -118,6 +130,9 @@
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Views\PackageInventory\PackageInventoryWindow.resx">
+      <DependentUpon>PackageInventoryWindow.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
