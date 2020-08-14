@@ -153,7 +153,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Os.Test.Views.PackageInventory
 
             Assert.AreEqual(CommandState.Unavailable, PackageInventoryViewModel.GetCommandState(node.Object));
             Assert.IsFalse(viewModel.IsPackageListEnabled);
-            Assert.AreEqual(PackageInventoryViewModel.DefaultWindowTitle, viewModel.WindowTitle);
+            Assert.AreEqual("Installed paclages", viewModel.WindowTitle);
             Assert.IsFalse(viewModel.AllPackages.Any());
             Assert.IsFalse(viewModel.FilteredPackages.Any());
         }
@@ -173,7 +173,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Os.Test.Views.PackageInventory
 
             Assert.AreEqual(CommandState.Enabled, PackageInventoryViewModel.GetCommandState(node.Object));
             Assert.IsTrue(viewModel.IsPackageListEnabled);
-            StringAssert.Contains(PackageInventoryViewModel.DefaultWindowTitle, viewModel.WindowTitle);
+            StringAssert.Contains("Installed paclages", viewModel.WindowTitle);
             StringAssert.Contains("project-1", viewModel.WindowTitle);
 
             Assert.AreEqual(4, viewModel.AllPackages.Count);
@@ -196,7 +196,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Os.Test.Views.PackageInventory
 
             Assert.AreEqual(CommandState.Enabled, PackageInventoryViewModel.GetCommandState(node.Object));
             Assert.IsTrue(viewModel.IsPackageListEnabled);
-            StringAssert.Contains(PackageInventoryViewModel.DefaultWindowTitle, viewModel.WindowTitle);
+            StringAssert.Contains("Installed paclages", viewModel.WindowTitle);
             StringAssert.Contains("zone-1", viewModel.WindowTitle);
 
             Assert.AreEqual(2, viewModel.AllPackages.Count);
@@ -221,7 +221,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Os.Test.Views.PackageInventory
 
             Assert.AreEqual(CommandState.Enabled, PackageInventoryViewModel.GetCommandState(node.Object));
             Assert.IsTrue(viewModel.IsPackageListEnabled);
-            StringAssert.Contains(PackageInventoryViewModel.DefaultWindowTitle, viewModel.WindowTitle);
+            StringAssert.Contains("Installed paclages", viewModel.WindowTitle);
             StringAssert.Contains("instance-1", viewModel.WindowTitle);
 
             Assert.AreEqual(2, viewModel.AllPackages.Count);
@@ -246,7 +246,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Os.Test.Views.PackageInventory
 
             Assert.AreEqual(CommandState.Enabled, PackageInventoryViewModel.GetCommandState(node.Object));
             Assert.IsTrue(viewModel.IsPackageListEnabled);
-            StringAssert.Contains(PackageInventoryViewModel.DefaultWindowTitle, viewModel.WindowTitle);
+            StringAssert.Contains("Installed paclages", viewModel.WindowTitle);
             StringAssert.Contains("instance-3", viewModel.WindowTitle);
 
             Assert.AreEqual(0, viewModel.AllPackages.Count);

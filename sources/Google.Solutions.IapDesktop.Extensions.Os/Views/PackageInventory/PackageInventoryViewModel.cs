@@ -40,15 +40,14 @@ namespace Google.Solutions.IapDesktop.Extensions.Os.Views.PackageInventory
         : ModelCachingViewModelBase<IProjectExplorerNode, PackageInventoryModel>
     {
         private const int ModelCacheCapacity = 5;
-        internal const string DefaultWindowTitle = "Packages";
-
+        
         private readonly PackageInventoryType inventoryType;
         private readonly IServiceProvider serviceProvider;
 
         private string filter;
         private bool isLoading;
         private bool isPackageListEnabled = false;
-        private string windowTitle = DefaultWindowTitle;
+        private string windowTitle = "";
 
         public PackageInventoryViewModel(
             IServiceProvider serviceProvider,
@@ -243,16 +242,21 @@ namespace Google.Solutions.IapDesktop.Extensions.Os.Views.PackageInventory
             this.AllPackages.Clear();
             this.FilteredPackages.Clear();
 
+            var windowTitlePrefix =
+                this.inventoryType == PackageInventoryType.AvailablePackages
+                    ? "Available packages"
+                    : "Installed packages";
+
             if (this.Model == null)
             {
                 // Unsupported node.
                 this.IsPackageListEnabled = false;
-                this.WindowTitle = DefaultWindowTitle;
+                this.WindowTitle = windowTitlePrefix;
             }
             else
             {
                 this.IsPackageListEnabled = true;
-                this.WindowTitle = DefaultWindowTitle + $": {this.Model.DisplayName}";
+                this.WindowTitle = windowTitlePrefix + $": {this.Model.DisplayName}";
                 this.AllPackages.AddRange(this.Model.Packages);
             }
 
