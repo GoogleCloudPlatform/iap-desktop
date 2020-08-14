@@ -28,6 +28,7 @@ using Google.Solutions.IapDesktop.Application.Views.ProjectExplorer;
 using System;
 using System.Diagnostics;
 using System.Threading.Tasks;
+using System.Windows.Forms;
 
 namespace Google.Solutions.IapDesktop.Extensions.Os.Views.PackageInventory
 {
@@ -78,7 +79,23 @@ namespace Google.Solutions.IapDesktop.Extensions.Os.Views.PackageInventory
                 m => m.IsLoading,
                 this.components);
 
-            // TODO: double-click to open URL
+
+            var openUrl = new ToolStripMenuItem(
+                "&Additional information...",
+                null,
+                (sender, args) => {
+                    Process.Start(new ProcessStartInfo()
+                    {
+                        UseShellExecute = true,
+                        Verb = "open",
+                        FileName = this.packageList.List.SelectedModelItem?.Package?.Weblink.ToString()
+                    });
+                });
+            this.packageList.List.ContextMenuStrip.Items.Add(openUrl);
+            this.packageList.List.ContextMenuStrip.Opening += (sender, args) =>
+            {
+                openUrl.Enabled = this.packageList.List.SelectedModelItem?.Package?.Weblink != null;
+            };
         }
 
         //---------------------------------------------------------------------

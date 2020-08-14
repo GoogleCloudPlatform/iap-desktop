@@ -34,9 +34,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Os.Views.PackageInventory
             this.List.SmallImageList = new ImageList();
             this.List.SmallImageList.Images.Add(Resources.Package_16);
 
-            AddColumn("Package", 150);
+            AddColumn("Package", 200);
             AddColumn("Version", 80);
-            AddColumn("Architecture", 50);
+            AddColumn("Architecture", 80);
             AddColumn("Description", 250);
             AddColumn("Instance name", 130);
             AddColumn("Zone", 80);
