@@ -75,10 +75,11 @@ namespace Google.Solutions.IapDesktop.Extensions.Os.Views.PackageInventory
             term = term.ToLowerInvariant();
 
             return
-                (package.Architecture != null && package.Architecture.Contains(term)) ||
-                (package.Description != null && package.Description.Contains(term)) ||
-                (package.PackageId != null && package.PackageId.Contains(term)) ||
-                (package.Version != null && package.Version.Contains(term));
+                (package.PackageType != null && package.PackageType.ToLowerInvariant().Contains(term)) ||
+                (package.Architecture != null && package.Architecture.ToLowerInvariant().Contains(term)) ||
+                (package.Description != null && package.Description.ToLowerInvariant().Contains(term)) ||
+                (package.PackageId != null && package.PackageId.ToLowerInvariant().Contains(term)) ||
+                (package.Version != null && package.Version.ToLowerInvariant().Contains(term));
         }
 
         //---------------------------------------------------------------------

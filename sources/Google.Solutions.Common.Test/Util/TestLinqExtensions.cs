@@ -95,5 +95,26 @@ namespace Google.Solutions.Common.Test.Util
             CollectionAssert.AreEqual(new[] { "a", "b" }, chunks.First());
             CollectionAssert.AreEqual(new[] { "c" }, chunks.Skip(1).First());
         }
+
+        [Test]
+        public void WhenEnumEmpty_ThenConcatItemReturnsSingleItem()
+        {
+            var e = Enumerable.Empty<string>()
+                .ConcatItem("test");
+
+            Assert.AreEqual(1, e.Count());
+            Assert.AreEqual("test", e.First());
+        }
+
+        [Test]
+        public void WhenEnumNotEmpty_ThenConcatItemAppendsItem()
+        {
+            var e = new[] {"foo", "bar"}
+                .ConcatItem("test");
+
+            Assert.AreEqual(3, e.Count());
+            Assert.AreEqual("foo", e.First());
+            Assert.AreEqual("test", e.Last());
+        }
     }
 }

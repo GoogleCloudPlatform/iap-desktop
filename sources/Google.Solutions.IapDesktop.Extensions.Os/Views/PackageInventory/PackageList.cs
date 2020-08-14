@@ -19,9 +19,7 @@
 // under the License.
 //
 
-using Google.Solutions.Common.Locator;
 using Google.Solutions.IapDesktop.Application.Controls;
-using Google.Solutions.IapDesktop.Extensions.Os.Inventory;
 using Google.Solutions.IapDesktop.Extensions.Os.Properties;
 using System.Windows.Forms;
 
@@ -32,8 +30,10 @@ namespace Google.Solutions.IapDesktop.Extensions.Os.Views.PackageInventory
         public PackageList()
         {
             this.List.SmallImageList = new ImageList();
-            this.List.SmallImageList.Images.Add(Resources.Package_16);
+            this.List.SmallImageList.Images.Add(Resources.PackageLight_16);
+            this.List.SmallImageList.Images.Add(Resources.PackageWarn_16);
 
+            AddColumn("Type", 120);
             AddColumn("Package", 300);
             AddColumn("Version", 80);
             AddColumn("Architecture", 80);
@@ -45,15 +45,16 @@ namespace Google.Solutions.IapDesktop.Extensions.Os.Views.PackageInventory
 
             this.List.GridLines = true;
 
-            this.List.BindImageIndex(_ => 0);
-            this.List.BindColumn(0, m => m.Package.PackageId);
-            this.List.BindColumn(1, m => m.Package.Version);
-            this.List.BindColumn(2, m => m.Package.Architecture);
-            this.List.BindColumn(3, m => m.Instance.Name);
-            this.List.BindColumn(4, m => m.Instance.Zone);
-            this.List.BindColumn(5, m => m.Instance.ProjectId);
-            this.List.BindColumn(6, m => m.Package.InstalledOn?.ToShortDateString());
-            this.List.BindColumn(7, m => m.Package.Description);
+            this.List.BindImageIndex(m => (int)m.Package.Criticality);
+            this.List.BindColumn(0, m => m.Package.PackageType);
+            this.List.BindColumn(1, m => m.Package.PackageId);
+            this.List.BindColumn(2, m => m.Package.Version);
+            this.List.BindColumn(3, m => m.Package.Architecture);
+            this.List.BindColumn(4, m => m.Instance.Name);
+            this.List.BindColumn(5, m => m.Instance.Zone);
+            this.List.BindColumn(6, m => m.Instance.ProjectId);
+            this.List.BindColumn(7, m => m.Package.InstalledOn?.ToShortDateString());
+            this.List.BindColumn(8, m => m.Package.Description);
         }
     }
 }

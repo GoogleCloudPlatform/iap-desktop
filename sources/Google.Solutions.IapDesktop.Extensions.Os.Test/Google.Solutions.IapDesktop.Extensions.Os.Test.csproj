@@ -83,6 +83,7 @@
   <ItemGroup>
     <Compile Include="Inventory\TestCentOsGuestOsInfo.cs" />
     <Compile Include="Inventory\TestWindowsGuestOsInfo.cs" />
+    <Compile Include="Inventory\TestWuaPackageType.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Views\InstanceDetails\TestInstanceDetailsModel.cs" />
     <Compile Include="Views\InstanceDetails\TestInstanceDetailsViewModel.cs" />

@@ -56,6 +56,10 @@ namespace Google.Solutions.IapDesktop.Extensions.Os.Inventory
 
         DateTime? IPackage.InstalledOn => null;
 
+        PackageCriticality IPackage.Criticality => PackageCriticality.NonCritical;
+
+        string IPackage.PackageType => "Patch";
+
         //---------------------------------------------------------------------
         // Ctor
         //---------------------------------------------------------------------

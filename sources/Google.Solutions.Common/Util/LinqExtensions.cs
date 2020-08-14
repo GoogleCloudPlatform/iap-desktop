@@ -19,6 +19,7 @@
 // under the License.
 //
 
+using Google.Apis.Util;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -45,6 +46,8 @@ namespace Google.Solutions.Common.Util
 
         public static IEnumerable<IEnumerable<T>> Chunk<T>(this IEnumerable<T> source, ushort chunkSize)
         {
+            Utilities.ThrowIfNull(source, nameof(source));
+
             var chunk = new List<T>(chunkSize);
             foreach (var x in source)
             {
@@ -60,6 +63,17 @@ namespace Google.Solutions.Common.Util
             {
                 yield return chunk;
             }
+        }
+
+        public static IEnumerable<T> ConcatItem<T>(this IEnumerable<T> target, T item)
+        {
+            Utilities.ThrowIfNull(target, nameof(target));
+            foreach (T t in target)
+            {
+                yield return t;
+            }
+
+            yield return item;
         }
     }
 }

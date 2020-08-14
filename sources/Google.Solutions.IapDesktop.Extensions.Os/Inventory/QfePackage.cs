@@ -52,6 +52,10 @@ namespace Google.Solutions.IapDesktop.Extensions.Os.Inventory
             ? new Uri(this.Caption) 
             : null;
 
+        PackageCriticality IPackage.Criticality => PackageCriticality.NonCritical;
+
+        string IPackage.PackageType => "Hotfix";
+
         //---------------------------------------------------------------------
         // Ctor
         //---------------------------------------------------------------------

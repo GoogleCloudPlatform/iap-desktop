@@ -141,6 +141,12 @@
   <ItemGroup>
     <None Include="Resources\Package_16.png" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\PackageLight_16.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\PackageWarn_16.png" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>copy /Y $(TargetDir)\$(TargetName).* $(SolutionDir)\Google.Solutions.IapDesktop\$(OutDir)</PostBuildEvent>

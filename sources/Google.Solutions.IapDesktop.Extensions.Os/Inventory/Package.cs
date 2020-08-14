@@ -47,6 +47,10 @@ namespace Google.Solutions.IapDesktop.Extensions.Os.Inventory
 
         Uri IPackage.Weblink => null;
 
+        PackageCriticality IPackage.Criticality => PackageCriticality.NonCritical;
+
+        string IPackage.PackageType => "Package";
+
         //---------------------------------------------------------------------
         // Ctor
         //---------------------------------------------------------------------

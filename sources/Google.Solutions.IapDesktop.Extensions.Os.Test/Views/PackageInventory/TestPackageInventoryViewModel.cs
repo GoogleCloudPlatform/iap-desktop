@@ -120,14 +120,14 @@ namespace Google.Solutions.IapDesktop.Extensions.Os.Test.Views.PackageInventory
                         CreateGuestOsInfo(
                             new InstanceLocator("project-1", "zone-1", "instance-1"),
                             new Package[] {
-                                new Package("package-1", "arch-1", "ver-1"),
-                                new Package("package-2", "arch-1", "ver-2")
+                                new Package("package-1", "ARCH-1", "ver-1"),
+                                new Package("package-2", "ARCH-1", "ver-2")
                             }),
                         CreateGuestOsInfo(
                             new InstanceLocator("project-1", "zone-2", "instance-2"),
                             new Package[] {
-                                new Package("package-3", "arch-1", "ver-1"),
-                                new Package("package-4", "arch-2", "ver-3")
+                                new Package("package-3", "ARCH-1", "ver-1"),
+                                new Package("package-4", "ARCH-2", "ver-3")
                             }),
                         CreateGuestOsInfo(
                             new InstanceLocator("project-1", "zone-2", "instance-3"),

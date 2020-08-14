@@ -25,11 +25,20 @@ namespace Google.Solutions.IapDesktop.Extensions.Os.Inventory
 {
     public interface IPackage
     {
+        PackageCriticality Criticality { get; }
+        string PackageType { get; }
+
         string PackageId { get; }
         string Description { get; }
         string Architecture { get; }
         string Version { get; }
         DateTime? InstalledOn { get; }
         Uri Weblink { get; }
+    }
+
+    public enum PackageCriticality
+    {
+        NonCritical = 0,
+        Critical = 1
     }
 }
