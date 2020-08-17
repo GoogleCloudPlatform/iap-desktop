@@ -29,14 +29,17 @@ namespace Google.Solutions.IapDesktop.Extensions.Os.Views.PackageInventory
 {
     public class PackageInventoryModel
     {
+        public bool IsInventoryDataAvailable { get; }
         public string DisplayName { get; }
         public IEnumerable<PackageInventoryModel.Item> Packages { get; }
 
         private PackageInventoryModel(
             string displayName,
+            bool isInventoryDataAvailable,
             IEnumerable<PackageInventoryModel.Item> packages)
         {
             this.DisplayName = displayName;
+            this.IsInventoryDataAvailable = isInventoryDataAvailable;
             this.Packages = packages;
         }
 
@@ -50,6 +53,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Os.Views.PackageInventory
                 case PackageInventoryType.AvailablePackages:
                     return new PackageInventoryModel(
                         displayName,
+                        inventory.Any(),
                         inventory
                             .Where(i => i.AvailablePackages != null)
                             .SelectMany(i => i.AvailablePackages
@@ -60,6 +64,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Os.Views.PackageInventory
                 case PackageInventoryType.InstalledPackages:
                     return new PackageInventoryModel(
                         displayName,
+                        inventory.Any(),
                         inventory
                             .Where(i => i.InstalledPackages != null)
                             .SelectMany(i => i.InstalledPackages

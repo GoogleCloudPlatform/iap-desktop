@@ -48,6 +48,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Os.Views.PackageInventory
         private bool isLoading;
         private bool isPackageListEnabled = false;
         private string windowTitle = "";
+        private bool isInformationBarVisible = true;
+
+        public string InformationText => "OS inventory data not available";
 
         public PackageInventoryViewModel(
             IServiceProvider serviceProvider,
@@ -118,6 +121,16 @@ namespace Google.Solutions.IapDesktop.Extensions.Os.Views.PackageInventory
             set
             {
                 this.windowTitle = value;
+                RaisePropertyChange();
+            }
+        }
+
+        public bool IsInformationBarVisible
+        {
+            get => this.isInformationBarVisible;
+            private set
+            {
+                this.isInformationBarVisible = value;
                 RaisePropertyChange();
             }
         }
@@ -252,11 +265,13 @@ namespace Google.Solutions.IapDesktop.Extensions.Os.Views.PackageInventory
             {
                 // Unsupported node.
                 this.IsPackageListEnabled = false;
+                this.IsInformationBarVisible = false;
                 this.WindowTitle = windowTitlePrefix;
             }
             else
             {
                 this.IsPackageListEnabled = true;
+                this.IsInformationBarVisible = !this.Model.IsInventoryDataAvailable;
                 this.WindowTitle = windowTitlePrefix + $": {this.Model.DisplayName}";
                 this.AllPackages.AddRange(this.Model.Packages);
             }

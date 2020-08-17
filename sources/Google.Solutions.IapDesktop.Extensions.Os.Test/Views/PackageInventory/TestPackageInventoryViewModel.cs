@@ -161,6 +161,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Os.Test.Views.PackageInventory
 
             Assert.AreEqual(CommandState.Unavailable, PackageInventoryViewModel.GetCommandState(node.Object));
             Assert.IsFalse(viewModel.IsPackageListEnabled);
+            Assert.IsFalse(viewModel.IsInformationBarVisible);
             Assert.AreEqual("Installed packages", viewModel.WindowTitle);
             Assert.IsFalse(viewModel.AllPackages.Any());
             Assert.IsFalse(viewModel.FilteredPackages.Any());
@@ -185,6 +186,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Os.Test.Views.PackageInventory
 
             Assert.AreEqual(CommandState.Enabled, PackageInventoryViewModel.GetCommandState(node.Object));
             Assert.IsTrue(viewModel.IsPackageListEnabled);
+            Assert.IsFalse(viewModel.IsInformationBarVisible);
             StringAssert.Contains("project-1", viewModel.WindowTitle);
 
             Assert.AreEqual(4, viewModel.AllPackages.Count);
@@ -210,6 +212,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Os.Test.Views.PackageInventory
 
             Assert.AreEqual(CommandState.Enabled, PackageInventoryViewModel.GetCommandState(node.Object));
             Assert.IsTrue(viewModel.IsPackageListEnabled);
+            Assert.IsFalse(viewModel.IsInformationBarVisible);
             StringAssert.Contains("zone-1", viewModel.WindowTitle);
 
             Assert.AreEqual(2, viewModel.AllPackages.Count);
@@ -237,6 +240,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Os.Test.Views.PackageInventory
 
             Assert.AreEqual(CommandState.Enabled, PackageInventoryViewModel.GetCommandState(node.Object));
             Assert.IsTrue(viewModel.IsPackageListEnabled);
+            Assert.IsFalse(viewModel.IsInformationBarVisible);
             StringAssert.Contains("instance-1", viewModel.WindowTitle);
 
             Assert.AreEqual(2, viewModel.AllPackages.Count);
@@ -264,6 +268,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Os.Test.Views.PackageInventory
 
             Assert.AreEqual(CommandState.Enabled, PackageInventoryViewModel.GetCommandState(node.Object));
             Assert.IsTrue(viewModel.IsPackageListEnabled);
+            Assert.IsTrue(viewModel.IsInformationBarVisible);
             StringAssert.Contains("instance-3", viewModel.WindowTitle);
 
             Assert.AreEqual(0, viewModel.AllPackages.Count);
