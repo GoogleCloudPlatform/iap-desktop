@@ -44,6 +44,17 @@ namespace Google.Solutions.IapDesktop.Extensions.Os.Services
             // Add commands to project explorer.
             //
 
+
+            projectExplorer.ToolbarCommands.AddCommand(
+                new Command<IProjectExplorerNode>(
+                    "Show &details",
+                    InstanceDetailsViewModel.GetToolbarCommandState,
+                    context => serviceProvider.GetService<InstanceDetailsWindow>().ShowWindow())
+                {
+                    Image = Resources.ComputerDetails_16
+                },
+                4);
+
             projectExplorer.ContextMenuCommands.AddCommand(
                 new Command<IProjectExplorerNode>(
                     "Show &details",
@@ -54,35 +65,27 @@ namespace Google.Solutions.IapDesktop.Extensions.Os.Services
                 },
                 7);
 
-            projectExplorer.ToolbarCommands.AddCommand(
+            var osCommand = projectExplorer.ContextMenuCommands.AddCommand(
                 new Command<IProjectExplorerNode>(
-                    "Show &details",
-                    InstanceDetailsViewModel.GetToolbarCommandState,
-                    context => serviceProvider.GetService<InstanceDetailsWindow>().ShowWindow())
-                {
-                    Image = Resources.ComputerDetails_16
-                });
-
-            var inventoryCommand = projectExplorer.ContextMenuCommands.AddCommand(
-                new Command<IProjectExplorerNode>(
-                    "&Inventory",
+                    "Soft&ware packages",
                     PackageInventoryViewModel.GetCommandState,
-                    context => { }));
-            inventoryCommand.AddCommand(
+                    context => { }),
+                8);
+            osCommand.AddCommand(
                 new Command<IProjectExplorerNode>(
-                    "&Installed packages",
+                    "Show &installed packages",
                     PackageInventoryViewModel.GetCommandState,
                     context => serviceProvider.GetService<InstalledPackageInventoryWindow>().ShowWindow())
                 {
                     Image = Resources.Package_16
                 });
-            inventoryCommand.AddCommand(
+            osCommand.AddCommand(
                 new Command<IProjectExplorerNode>(
-                    "&Available updates",
+                    "Show &available updates",
                     PackageInventoryViewModel.GetCommandState,
                     context => serviceProvider.GetService<AvailablePackageInventoryWindow>().ShowWindow())
                 {
-                    Image = Resources.Package_16
+                    Image = Resources.PackageUpdate_16
                 });
 
             //

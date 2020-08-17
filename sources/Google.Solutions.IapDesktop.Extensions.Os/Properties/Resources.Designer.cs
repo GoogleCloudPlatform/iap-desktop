@@ -93,6 +93,16 @@ namespace Google.Solutions.IapDesktop.Extensions.Os.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap PackageUpdate_16 {
+            get {
+                object obj = ResourceManager.GetObject("PackageUpdate_16", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap PackageWarn_16 {
             get {
                 object obj = ResourceManager.GetObject("PackageWarn_16", resourceCulture);
