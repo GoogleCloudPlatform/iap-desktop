@@ -61,10 +61,12 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Views.Credentials
                 .GetService<IGenerateCredentialsDialog>()
                 .PromptForUsername(
                     owner,
-                    settings.Username ?? this.serviceProvider
-                        .GetService<IAuthorizationAdapter>()
-                        .Authorization
-                        .SuggestWindowsUsername());
+                    string.IsNullOrEmpty(settings.Username) 
+                        ? this.serviceProvider
+                            .GetService<IAuthorizationAdapter>()
+                            .Authorization
+                            .SuggestWindowsUsername()
+                        : settings.Username);
             if (username == null)
             {
                 // Aborted.

@@ -211,12 +211,13 @@ namespace Google.Solutions.IapDesktop.Application.Services.Persistence
 
     public enum RdpCredentialGenerationBehavior
     {
-        Always = 0,
-        Prompt = 1,
-        Disable = 2,
+        Allow = 0,
+        AllowIfNoCredentialsFound = 1,
+        Disallow = 2,
+        Force = 3,
 
         [Browsable(false)]
-        _Default = Prompt
+        _Default = AllowIfNoCredentialsFound
     }
 
     public abstract class ConnectionSettingsBase
