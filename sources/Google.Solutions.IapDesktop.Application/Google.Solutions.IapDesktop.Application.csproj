@@ -126,6 +126,12 @@
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Views\ConnectionSettings\IConnectionSettingsWindow.cs" />
+    <Compile Include="Views\Diagnostics\DebugDockingWindow.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Views\Diagnostics\DebugDockingWindow.Designer.cs">
+      <DependentUpon>DebugDockingWindow.cs</DependentUpon>
+    </Compile>
     <Compile Include="Views\Diagnostics\DebugProjectExplorerTrackingViewModel.cs" />
     <Compile Include="Views\Diagnostics\DebugProjectExplorerTrackingWindow.cs">
       <SubType>Form</SubType>
@@ -266,6 +272,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Views\AboutWindow.resx">
       <DependentUpon>AboutWindow.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Views\Diagnostics\DebugDockingWindow.resx">
+      <DependentUpon>DebugDockingWindow.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Views\Diagnostics\DebugProjectExplorerTrackingWindow.resx">
       <DependentUpon>DebugProjectExplorerTrackingWindow.cs</DependentUpon>

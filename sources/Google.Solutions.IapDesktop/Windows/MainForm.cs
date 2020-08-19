@@ -231,6 +231,7 @@ namespace Google.Solutions.IapDesktop.Windows
 
 #if DEBUG
             this.serviceProvider.GetService<DebugJobServiceWindow>().ShowWindow();
+            this.serviceProvider.GetService<DebugDockingWindow>().ShowWindow();
             this.serviceProvider.GetService<DebugProjectExplorerTrackingWindow>().ShowWindow();
 #endif
         }
