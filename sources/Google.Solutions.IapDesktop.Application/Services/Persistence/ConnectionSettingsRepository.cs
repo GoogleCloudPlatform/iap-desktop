@@ -22,6 +22,7 @@
 using Google.Apis.Util;
 using Google.Solutions.IapDesktop.Application.Util;
 using Microsoft.Win32;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Runtime.InteropServices;
@@ -341,6 +342,73 @@ namespace Google.Solutions.IapDesktop.Application.Services.Persistence
     public class VmInstanceConnectionSettings : ConnectionSettingsBase
     {
         public string InstanceName { get; set; }
+
+        public VmInstanceConnectionSettings()
+        {
+        }
+
+        public VmInstanceConnectionSettings(
+            string instanceName,
+            string username,
+            SecureString password,
+            string domain,
+            RdpConnectionBarState connectionBar,
+            RdpDesktopSize desktopSize,
+            RdpAuthenticationLevel authenticationLevel,
+            RdpColorDepth colorDepth,
+            RdpAudioMode audioMode,
+            RdpRedirectClipboard redirectClipboard,
+            RdpCredentialGenerationBehavior credentialGenerationBehavior
+            )
+        {
+            this.InstanceName = instanceName;
+            this.Username = username;
+            this.Password = password;
+            this.Domain = domain;
+            this.ConnectionBar = connectionBar;
+            this.DesktopSize = desktopSize;
+            this.AuthenticationLevel = authenticationLevel;
+            this.ColorDepth = colorDepth;
+            this.AudioMode = audioMode;
+            this.RedirectClipboard = redirectClipboard;
+            this.CredentialGenerationBehavior = credentialGenerationBehavior;
+        }
+
+        public VmInstanceConnectionSettings OverlayBy(
+            VmInstanceConnectionSettings overlay)
+        {
+            if (this.InstanceName != overlay.InstanceName)
+            {
+                throw new ArgumentException("Instance name differs");
+            }
+
+            return new VmInstanceConnectionSettings(
+                this.InstanceName,
+                overlay.Username ?? this.Username,
+                this.Password,
+                overlay.Domain ?? this.Domain,
+                overlay.ConnectionBar != RdpConnectionBarState._Default
+                    ? overlay.ConnectionBar
+                    : this.ConnectionBar,
+                overlay.DesktopSize != RdpDesktopSize._Default
+                    ? overlay.DesktopSize
+                    : this.DesktopSize,
+                overlay.AuthenticationLevel != RdpAuthenticationLevel._Default
+                    ? overlay.AuthenticationLevel
+                    : this.AuthenticationLevel,
+                overlay.ColorDepth != RdpColorDepth._Default
+                    ? overlay.ColorDepth
+                    : this.ColorDepth,
+                overlay.AudioMode != RdpAudioMode._Default
+                    ? overlay.AudioMode
+                    : this.AudioMode,
+                overlay.RedirectClipboard != RdpRedirectClipboard._Default
+                    ? overlay.RedirectClipboard
+                    : this.RedirectClipboard,
+                overlay.CredentialGenerationBehavior != RdpCredentialGenerationBehavior._Default
+                    ? overlay.CredentialGenerationBehavior
+                    : this.CredentialGenerationBehavior);
+        }
     }
 
     public class ZoneConnectionSettings : ConnectionSettingsBase

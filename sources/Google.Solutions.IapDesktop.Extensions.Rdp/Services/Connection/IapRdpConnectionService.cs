@@ -137,12 +137,18 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Services.Connection
                 return;
             }
 
+            VmInstanceConnectionSettings settings;
             if (this.projectExplorer.TryFindNode(url.Instance)
                 is IProjectExplorerVmInstanceNode vmNode)
             {
-                // We have a full set of settings for this VM, so use that.
-                await ActivateOrConnectInstanceAsync(vmNode).ConfigureAwait(true);
-                return;
+                // We have a full set of settings for this VM, so use that as basis
+                settings = vmNode.SettingsEditor
+                    .CreateConnectionSettings(vmNode.Reference.Name)
+                    .OverlayBy(url.Settings);
+            }
+            else
+            {
+                settings = url.Settings;
             }
 
             // We do not know anything other than what's in the URL.
@@ -150,7 +156,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Services.Connection
             // Create an ephemeral settings editor. We do not persist
             // any changes.
             var settingsEditor = new ConnectionSettingsEditor(
-                url.Settings,
+                settings,
                 _ => { },
                 null);
 

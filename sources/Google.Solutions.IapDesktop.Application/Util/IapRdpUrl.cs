@@ -120,20 +120,18 @@ namespace Google.Solutions.IapDesktop.Application.Util
         {
             var query = HttpUtility.ParseQueryString(queryString);
 
-            return new VmInstanceConnectionSettings()
-            {
-                InstanceName = instanceRef.Name,
-
-                Username = query.Get("Username"),
-                Domain = query.Get("Domain"),
-                ConnectionBar = GetEnumFromQuery(query, "ConnectionBar", RdpConnectionBarState._Default),
-                DesktopSize = GetEnumFromQuery(query, "DesktopSize", RdpDesktopSize._Default),
-                AuthenticationLevel = GetEnumFromQuery(query, "AuthenticationLevel", RdpAuthenticationLevel._Default),
-                ColorDepth = GetEnumFromQuery(query, "ColorDepth", RdpColorDepth._Default),
-                AudioMode = GetEnumFromQuery(query, "AudioMode", RdpAudioMode._Default),
-                RedirectClipboard = GetEnumFromQuery(query, "RedirectClipboard", RdpRedirectClipboard._Default),
-                CredentialGenerationBehavior = GetEnumFromQuery(query, "CredentialGenerationBehavior", RdpCredentialGenerationBehavior._Default),
-            };
+            return new VmInstanceConnectionSettings(
+                instanceRef.Name,
+                query.Get("Username"),
+                null,
+                query.Get("Domain"),
+                GetEnumFromQuery(query, "ConnectionBar", RdpConnectionBarState._Default),
+                GetEnumFromQuery(query, "DesktopSize", RdpDesktopSize._Default),
+                GetEnumFromQuery(query, "AuthenticationLevel", RdpAuthenticationLevel._Default),
+                GetEnumFromQuery(query, "ColorDepth", RdpColorDepth._Default),
+                GetEnumFromQuery(query, "AudioMode", RdpAudioMode._Default),
+                GetEnumFromQuery(query, "RedirectClipboard", RdpRedirectClipboard._Default),
+                GetEnumFromQuery(query, "CredentialGenerationBehavior", RdpCredentialGenerationBehavior._Default));
         }
 
         public static IapRdpUrl FromString(string uri)
