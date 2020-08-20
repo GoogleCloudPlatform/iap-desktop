@@ -237,6 +237,7 @@ namespace Google.Solutions.IapDesktop
             adapterLayer.AddTransient<IResourceManagerAdapter, ResourceManagerAdapter>();
             adapterLayer.AddTransient<IComputeEngineAdapter, ComputeEngineAdapter>();
             adapterLayer.AddTransient<GithubAdapter>();
+            adapterLayer.AddTransient<EmailAdapter>();
 
             //
             // Integration layer.
