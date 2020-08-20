@@ -84,6 +84,7 @@ namespace Google.Solutions.IapDesktop.Windows
             this.toolStripEmail = new System.Windows.Forms.ToolStripStatusLabel();
             this.dockPanel = new WeifenLuo.WinFormsUI.Docking.DockPanel();
             this.shareFeedbackToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.viewHelpToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.mainMenu.SuspendLayout();
             this.statusStrip.SuspendLayout();
             this.SuspendLayout();
@@ -243,6 +244,7 @@ namespace Google.Solutions.IapDesktop.Windows
             // helpToolStripMenuItem
             // 
             this.helpToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.viewHelpToolStripMenuItem,
             this.openIapDocsToolStripMenuItem,
             this.openIapAccessDocsToolStripMenuItem,
             this.aboutSeparatorToolStripMenuItem,
@@ -352,6 +354,14 @@ namespace Google.Solutions.IapDesktop.Windows
             this.shareFeedbackToolStripMenuItem.Text = "Send feedback...";
             this.shareFeedbackToolStripMenuItem.Click += new System.EventHandler(this.shareFeedbackToolStripMenuItem_Click);
             // 
+            // viewHelpToolStripMenuItem
+            // 
+            this.viewHelpToolStripMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("viewHelpToolStripMenuItem.Image")));
+            this.viewHelpToolStripMenuItem.Name = "viewHelpToolStripMenuItem";
+            this.viewHelpToolStripMenuItem.Size = new System.Drawing.Size(286, 22);
+            this.viewHelpToolStripMenuItem.Text = "View documentation...";
+            this.viewHelpToolStripMenuItem.Click += new System.EventHandler(this.viewHelpToolStripMenuItem_Click);
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -411,5 +421,6 @@ namespace Google.Solutions.IapDesktop.Windows
         private System.Windows.Forms.ToolStripDropDownButton cancelBackgroundJobsButton;
         private System.Windows.Forms.ToolStripStatusLabel backgroundJobLabel;
         private System.Windows.Forms.ToolStripMenuItem shareFeedbackToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem viewHelpToolStripMenuItem;
     }
 }

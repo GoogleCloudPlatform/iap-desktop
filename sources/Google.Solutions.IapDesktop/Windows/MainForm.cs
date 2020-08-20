@@ -324,6 +324,11 @@ namespace Google.Solutions.IapDesktop.Windows
         {
             this.serviceProvider.GetService<GithubAdapter>().ReportIssue();
         }
+        private void viewHelpToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            this.serviceProvider.GetService<GithubAdapter>().OpenWiki();
+        }
+
         private void shareFeedbackToolStripMenuItem_Click(object sender, EventArgs e)
         {
             this.serviceProvider.GetService<EmailAdapter>().SendFeedback();
