@@ -133,7 +133,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Test.Views.Connection
         }
 
         [Test]
-        public async Task WhenConnectingByUrlWithUsernameAndCredentialsExist_ThenConnectionIsMadeWithExistingCredentials()
+        public async Task WhenConnectingByUrlWithUsernameAndCredentialsExist_ThenConnectionIsMadeWithUsernameFromUrl()
         {
             var settings = new VmInstanceConnectionSettings()
             {
@@ -172,13 +172,13 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Test.Views.Connection
 
             var service = new IapRdpConnectionService(this.serviceRegistry);
             await service.ActivateOrConnectInstanceAsync(
-                IapRdpUrl.FromString("iap-rdp:///project/us-central-1/instance?username=john%20doe"));
+                IapRdpUrl.FromString("iap-rdp:///project/us-central-1/instance-1?username=john%20doe"));
 
             remoteDesktopService.Verify(s => s.Connect(
                 It.IsAny<InstanceLocator>(),
                 "localhost",
                 It.IsAny<ushort>(),
-                It.Is<VmInstanceConnectionSettings>(i => i.Username == "existinguser")), Times.Once);
+                It.Is<VmInstanceConnectionSettings>(i => i.Username == "john doe")), Times.Once);
         }
     }
 }
