@@ -22,13 +22,13 @@ Desktop connection manager with the security and flexibility of Identity-Aware-P
 
 ## Learn more about IAP Desktop
 
-* [Setting up IAP-Desktop](Installation)
-* [Connecting to VM instances](Connecting-to-instances)
-* [Connecting to VM instances from within a web browser](Browser-Integration)
-* [Viewing instance details](Viewing-instance-details)
-* [Viewing instance activity](Viewing-instance-activity)
-* [Analyzing VM instance usage](Analyzing-usage)
-* [Troubleshooting](Troubleshooting)
+* [Setting up IAP-Desktop](https://github.com/GoogleCloudPlatform/iap-desktop/wiki/Installation)
+* [Connecting to VM instances](https://github.com/GoogleCloudPlatform/iap-desktop/wiki/Connecting-to-instances)
+* [Connecting to VM instances from within a web browser](https://github.com/GoogleCloudPlatform/iap-desktop/wiki/Browser-Integration)
+* [Viewing instance details](https://github.com/GoogleCloudPlatform/iap-desktop/wiki/Viewing-instance-details)
+* [Viewing instance activity](https://github.com/GoogleCloudPlatform/iap-desktop/wiki/Viewing-instance-activity)
+* [Analyzing VM instance usage](https://github.com/GoogleCloudPlatform/iap-desktop/wiki/Analyzing-usage)
+* [Troubleshooting](https://github.com/GoogleCloudPlatform/iap-desktop/wiki/Troubleshooting)
 
 
 
