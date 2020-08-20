@@ -98,6 +98,7 @@
     <Compile Include="ObjectModel\ViewModelBase.cs" />
     <Compile Include="Services\Adapters\AdapterException.cs" />
     <Compile Include="Services\Adapters\ComputeEngineAdapter.cs" />
+    <Compile Include="Services\Adapters\EmailAdapter.cs" />
     <Compile Include="Services\Adapters\GithubAdapter.cs" />
     <Compile Include="Services\Adapters\InstanceExtensions.cs" />
     <Compile Include="Services\Adapters\Permissions.cs" />

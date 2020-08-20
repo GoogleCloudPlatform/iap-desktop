@@ -325,6 +325,15 @@ namespace Google.Solutions.IapDesktop.Windows
         {
             this.serviceProvider.GetService<GithubAdapter>().ReportIssue();
         }
+        private void viewHelpToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            this.serviceProvider.GetService<GithubAdapter>().OpenWiki();
+        }
+
+        private void shareFeedbackToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            this.serviceProvider.GetService<EmailAdapter>().SendFeedback();
+        }
 
         private async void addProjectToolStripMenuItem_Click(object sender, EventArgs _)
         {
@@ -472,5 +481,6 @@ namespace Google.Solutions.IapDesktop.Windows
 
         public Task ReauthorizeAsync(CancellationToken token)
             => this.viewModel.ReauthorizeAsync(token);
+
     }
 }

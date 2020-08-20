@@ -83,6 +83,8 @@ namespace Google.Solutions.IapDesktop.Windows
             this.toolStripStatus = new System.Windows.Forms.ToolStripStatusLabel();
             this.toolStripEmail = new System.Windows.Forms.ToolStripStatusLabel();
             this.dockPanel = new WeifenLuo.WinFormsUI.Docking.DockPanel();
+            this.shareFeedbackToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.viewHelpToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.mainMenu.SuspendLayout();
             this.statusStrip.SuspendLayout();
             this.SuspendLayout();
@@ -242,9 +244,11 @@ namespace Google.Solutions.IapDesktop.Windows
             // helpToolStripMenuItem
             // 
             this.helpToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.viewHelpToolStripMenuItem,
             this.openIapDocsToolStripMenuItem,
             this.openIapAccessDocsToolStripMenuItem,
             this.aboutSeparatorToolStripMenuItem,
+            this.shareFeedbackToolStripMenuItem,
             this.reportIssueToolStripMenuItem,
             this.aboutToolStripMenuItem});
             this.helpToolStripMenuItem.Name = "helpToolStripMenuItem";
@@ -343,6 +347,22 @@ namespace Google.Solutions.IapDesktop.Windows
             this.dockPanel.Size = new System.Drawing.Size(984, 615);
             this.dockPanel.TabIndex = 9;
             // 
+            // shareFeedbackToolStripMenuItem
+            // 
+            this.shareFeedbackToolStripMenuItem.Name = "shareFeedbackToolStripMenuItem";
+            this.shareFeedbackToolStripMenuItem.Size = new System.Drawing.Size(286, 22);
+            this.shareFeedbackToolStripMenuItem.Text = "Send feedback...";
+            this.shareFeedbackToolStripMenuItem.Click += new System.EventHandler(this.shareFeedbackToolStripMenuItem_Click);
+            // 
+            // viewHelpToolStripMenuItem
+            // 
+            this.viewHelpToolStripMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("viewHelpToolStripMenuItem.Image")));
+            this.viewHelpToolStripMenuItem.Name = "viewHelpToolStripMenuItem";
+            this.viewHelpToolStripMenuItem.ShortcutKeys = System.Windows.Forms.Keys.F1;
+            this.viewHelpToolStripMenuItem.Size = new System.Drawing.Size(286, 22);
+            this.viewHelpToolStripMenuItem.Text = "View documentation...";
+            this.viewHelpToolStripMenuItem.Click += new System.EventHandler(this.viewHelpToolStripMenuItem_Click);
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -401,5 +421,7 @@ namespace Google.Solutions.IapDesktop.Windows
         private System.Windows.Forms.ToolStripMenuItem enableAppProtocolToolStripMenuItem;
         private System.Windows.Forms.ToolStripDropDownButton cancelBackgroundJobsButton;
         private System.Windows.Forms.ToolStripStatusLabel backgroundJobLabel;
+        private System.Windows.Forms.ToolStripMenuItem shareFeedbackToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem viewHelpToolStripMenuItem;
     }
 }
