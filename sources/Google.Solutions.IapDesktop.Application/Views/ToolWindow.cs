@@ -21,6 +21,7 @@
 
 using Google.Solutions.Common.Diagnostics;
 using System;
+using System.Diagnostics;
 using System.Runtime.InteropServices;
 using System.Windows.Forms;
 using WeifenLuo.WinFormsUI.Docking;
@@ -92,57 +93,120 @@ namespace Google.Solutions.IapDesktop.Application.Views
             Activate();
         }
 
+        protected bool IsAutoHide
+        {
+            get
+            {
+                switch (this.VisibleState)
+                {
+                    case DockState.DockTopAutoHide:
+                    case DockState.DockBottomAutoHide:
+                    case DockState.DockLeftAutoHide:
+                    case DockState.DockRightAutoHide:
+                        return true;
+
+                    default:
+                        return false;
+                }
+            }
+        }
+
+        protected bool IsDocked
+        {
+            get
+            {
+                switch (this.VisibleState)
+                {
+                    case DockState.DockTop:
+                    case DockState.DockBottom:
+                    case DockState.DockLeft:
+                    case DockState.DockRight:
+                        return true;
+
+                    default:
+                        return false;
+                }
+            }
+        }
 
         //---------------------------------------------------------------------
         // Track visibility.
         //
-        // NB. The DockPanel library does not provide very good events for 
-        // tracking whether a tool window is *really* visible or not, so these
-        // methods provide a non-perfect approximation.
-        //---------------------------------------------------------------------
+        // NB. The DockPanel library does not provide good properties or evens 
+        // that would allow you to determine whether a window is effectively
+        // visible to the user or not.
+        //
+        // This table shows the value of key properties based on the window state:
+        //
+        // 
+        // ---------------------------------------------------------------------------------------
+        //           |                     |             |         |                   | Pane.ActiveContent
+        //           | State               | IsActivated | IsFloat | Visible/DockState | == this
+        // ---------------------------------------------------------------------------------------
+        // Float     | Single pane         | (any)       | TRUE    | Float             | TRUE    
+        //           | Split pane, focus   | FALSE       | TRUE    | Float             | TRUE    
+        //           | Split pane, no focus| TRUE        | TRUE    | Float             | TRUE    
+        //           | Background          | FALSE       | TRUE    | Float             | FALSE
+        // ---------------------------------------------------------------------------------------
+        // AutoHide  | Single              | (any)       | FALSE   | DockRightAutoHide | TRUE    
+        //           | Background          | (any)       | FALSE   | DockRightAutoHide | TRUE
+        // ---------------------------------------------------------------------------------------
+        // Dock      | Single pane         | TRUE        | FALSE   | DockRight         | TRUE    
+        //           | Split pane, focus   | FALSE (!)   | FALSE   | DockRight         | TRUE    
+        //           | Split pane, no focus| TRUE  (!)   | FALSE   | DockRight         | TRUE    
+        //           | Background          | FALSE       | FALSE   | DockRight         | FALSE
+        // -----------------------------------------------------------------------------------------
+        //
+        // IsHidden is TRUE during construction, and FALSE ever after.
+        // When docked and hidden, the size is reset to (0, 0)
+        //
 
-        protected bool IsUserVisible = false;
+        protected bool IsInBackground =>
+            (this.IsFloat && this.Pane.ActiveContent != this) ||
+            (this.IsAutoHide && this.Size.Height == 0 && this.Size.Width == 0) ||
+            (this.IsDocked && this.Pane.ActiveContent != this);
+
+        protected bool IsUserVisible => !this.IsHidden && !IsInBackground;
+        private bool wasUserVisible = false;
+
+        private void RaiseUserVisibilityChanged()
+        {
+            // Only call OnUserVisibilityChanged if there really was a change.
+            if (this.IsUserVisible != this.wasUserVisible)
+            {
+                OnUserVisibilityChanged(this.IsUserVisible);
+                this.wasUserVisible = this.IsUserVisible;
+            }
+        }
+
 
         protected override void OnEnter(EventArgs e)
         {
-            if (!this.IsUserVisible)
-            {
-                this.IsUserVisible = true;
-                OnUserVisibilityChanged(this.IsUserVisible);
-            }
+            base.OnEnter(e);
+            RaiseUserVisibilityChanged();
         }
 
         protected override void OnLeave(EventArgs e)
         {
             base.OnLeave(e);
-
-            switch (this.VisibleState)
-            {
-                case DockState.DockTopAutoHide:
-                case DockState.DockBottomAutoHide:
-                case DockState.DockLeftAutoHide:
-                case DockState.DockRightAutoHide:
-                    if (this.IsUserVisible)
-                    {
-                        this.IsUserVisible = false;
-                        OnUserVisibilityChanged(this.IsUserVisible);
-                    }
-
-                    break;
-            }
+            RaiseUserVisibilityChanged();
         }
 
         protected override void OnVisibleChanged(EventArgs e)
         {
-            if (this.IsUserVisible)
-            {
-                this.IsUserVisible = false;
-                OnUserVisibilityChanged(this.IsUserVisible);
-            }
+            base.OnVisibleChanged(e);
+            RaiseUserVisibilityChanged();
+        }
+
+        protected override void OnShown(EventArgs e)
+        {
+            base.OnShown(e);
+            RaiseUserVisibilityChanged();
         }
 
         protected virtual void OnUserVisibilityChanged(bool visible)
         {
+            // Can be overriden in derived class.
         }
     }
 }

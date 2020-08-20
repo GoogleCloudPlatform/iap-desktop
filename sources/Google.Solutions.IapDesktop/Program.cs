@@ -263,6 +263,7 @@ namespace Google.Solutions.IapDesktop
 
 #if DEBUG
             windowAndWorkflowLayer.AddSingleton<DebugJobServiceWindow>();
+            windowAndWorkflowLayer.AddSingleton<DebugDockingWindow>();
             windowAndWorkflowLayer.AddSingleton<DebugProjectExplorerTrackingWindow>();
             windowAndWorkflowLayer.AddSingleton<HtmlPageGenerator>();
 #endif
