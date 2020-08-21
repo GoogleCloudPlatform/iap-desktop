@@ -34,7 +34,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
     {
     }
 
-    public interface IProjectExplorerNodeWithSettings : IProjectExplorerCloudNode
+    public interface IProjectExplorerNodeWithSettings : IProjectExplorerNode
     {
         ConnectionSettingsEditor SettingsEditor { get; }
     }
