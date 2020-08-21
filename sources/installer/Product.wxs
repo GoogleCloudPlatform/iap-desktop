@@ -167,10 +167,10 @@
         <RemoveFolder Id="DirIapDesktop" Directory="DirIapDesktop" On="uninstall"/>
 
         <File
-          Id="FileReadme"
-          Name="README.md"
+          Id="FileLicense"
+          Name="LICENSE.txt"
           DiskId="1"
-          Source="..\README.md"
+          Source="..\LICENSE.txt"
           Vital="yes"/>
         <File
           Id="FileIapDesktopExe"
