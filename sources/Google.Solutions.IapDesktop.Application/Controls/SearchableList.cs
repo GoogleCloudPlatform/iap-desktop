@@ -63,6 +63,12 @@ namespace Google.Solutions.IapDesktop.Application.Controls
             this.list.Columns.Add(text, width);
         }
 
+        public void SetFocusOnSearchBox()
+        {
+            this.searchTextBox.Focus();
+            this.searchTextBox.SelectAll();
+        }
+
         //---------------------------------------------------------------------
         // Window events.
         //---------------------------------------------------------------------

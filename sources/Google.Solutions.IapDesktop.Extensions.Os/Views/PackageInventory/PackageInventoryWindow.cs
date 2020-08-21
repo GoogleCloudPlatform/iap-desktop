@@ -122,5 +122,22 @@ namespace Google.Solutions.IapDesktop.Extensions.Os.Views.PackageInventory
             await this.viewModel.SwitchToModelAsync(node)
                 .ConfigureAwait(true);
         }
+
+        //---------------------------------------------------------------------
+        // Window events.
+        //---------------------------------------------------------------------
+
+        private void PackageInventoryWindow_KeyDown(object sender, KeyEventArgs e)
+        {
+            // NB. Hook KeyDown instead of KeyUp event to not interfere with 
+            // child dialogs. With KeyUp, we'd get an event if a child dialog
+            // is dismissed by pressing Enter.
+
+            if ((e.Control && e.KeyCode == Keys.F) || 
+                 e.KeyCode == Keys.F3)
+            {
+                this.packageList.SetFocusOnSearchBox();
+            }
+        }
     }
 }

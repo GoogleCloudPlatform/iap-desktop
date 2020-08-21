@@ -56,6 +56,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Os.Views.PackageInventory
             this.infoIcon = new System.Windows.Forms.PictureBox();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer)).BeginInit();
             this.splitContainer.Panel1.SuspendLayout();
+            this.splitContainer.Panel2.SuspendLayout();
             this.splitContainer.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.infoIcon)).BeginInit();
             this.SuspendLayout();
@@ -67,7 +68,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Os.Views.PackageInventory
             this.packageList.Location = new System.Drawing.Point(0, 0);
             this.packageList.Name = "packageList";
             this.packageList.SearchTerm = "";
-            this.packageList.Size = new System.Drawing.Size(800, 450);
+            this.packageList.Size = new System.Drawing.Size(800, 424);
             this.packageList.TabIndex = 0;
             // 
             // splitContainer
@@ -83,12 +84,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Os.Views.PackageInventory
             this.splitContainer.Panel1.BackColor = System.Drawing.SystemColors.Info;
             this.splitContainer.Panel1.Controls.Add(this.infoLabel);
             this.splitContainer.Panel1.Controls.Add(this.infoIcon);
-            this.splitContainer.Panel1MinSize = 22;
-            this.splitContainer.Size = new System.Drawing.Size(800, 450);
-            this.splitContainer.SplitterDistance = 25;
-            this.splitContainer.SplitterWidth = 1;
-            this.splitContainer.TabIndex = 1;
-
             this.splitContainer.Panel1MinSize = 22;
             // 
             // splitContainer.Panel2
@@ -125,8 +120,10 @@ namespace Google.Solutions.IapDesktop.Extensions.Os.Views.PackageInventory
             this.Controls.Add(this.splitContainer);
             this.Name = "PackageInventoryWindow";
             this.Text = "PackageInventoryWindow";
+            this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.PackageInventoryWindow_KeyDown);
             this.splitContainer.Panel1.ResumeLayout(false);
             this.splitContainer.Panel1.PerformLayout();
+            this.splitContainer.Panel2.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer)).EndInit();
             this.splitContainer.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.infoIcon)).EndInit();
