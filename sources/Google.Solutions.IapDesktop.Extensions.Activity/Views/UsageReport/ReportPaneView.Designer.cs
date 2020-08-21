@@ -677,7 +677,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Views.UsageReport
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.AutoScroll = true;
             this.AutoScrollMinSize = new System.Drawing.Size(800, 800);
-            this.ClientSize = new System.Drawing.Size(326, 300);
             this.Controls.Add(this.tabs);
             this.Controls.Add(this.toolStrip);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
