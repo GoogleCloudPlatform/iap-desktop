@@ -73,11 +73,11 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Test.Services.Credentials
         }
 
         //---------------------------------------------------------------------
-        // Behavior = Always.
+        // Behavior = Allow.
         //---------------------------------------------------------------------
 
         [Test]
-        public async Task WhenNoCredentialsExistAndBehaviorSetToAlways_ThenGenerateOptionIsShown(
+        public async Task WhenNoCredentialsFoundAndBehaviorSetToAllow_ThenGenerateOptionIsShown(
             [Values(true, false)] bool isGrantedPermissionToGenerateCredentials)
         {
             var taskDialog = new Mock<ITaskDialog>();
@@ -98,7 +98,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Test.Services.Credentials
                 _ => { },
                 null);
 
-            settings.CredentialGenerationBehavior = RdpCredentialGenerationBehavior.Always;
+            settings.CredentialGenerationBehavior = RdpCredentialGenerationBehavior.Allow;
 
             await credentialPrompt.ShowCredentialsPromptAsync(
                 null,
@@ -123,7 +123,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Test.Services.Credentials
         }
 
         [Test]
-        public async Task WhenCredentialsExistAndBehaviorSetToAlways_ThenGenerateOptionIsShown(
+        public async Task WhenCredentialsFoundAndBehaviorSetToAllow_ThenGenerateOptionIsShown(
             [Values(true, false)] bool isGrantedPermissionToGenerateCredentials)
         {
             var taskDialog = new Mock<ITaskDialog>();
@@ -144,7 +144,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Test.Services.Credentials
                 _ => { },
                 null);
 
-            settings.CredentialGenerationBehavior = RdpCredentialGenerationBehavior.Always;
+            settings.CredentialGenerationBehavior = RdpCredentialGenerationBehavior.Allow;
             settings.Username = "alice";
             settings.CleartextPassword = "alicespassword";
 
@@ -171,11 +171,11 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Test.Services.Credentials
         }
 
         //---------------------------------------------------------------------
-        // Behavior = Prompt.
+        // Behavior = AllowIfNoCredentialsFound.
         //---------------------------------------------------------------------
 
         [Test]
-        public async Task WhenNoCredentialsExistAndPermissionGrantedAndBehaviorSetToPrompt_ThenGenerateOptionIsShown()
+        public async Task WhenNoCredentialsFoundAndPermissionGrantedAndBehaviorSetToAllowIfNoCredentialsFound_ThenGenerateOptionIsShown()
         {
             var taskDialog = new Mock<ITaskDialog>();
             taskDialog.Setup(t => t.ShowOptionsTaskDialog(
@@ -195,7 +195,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Test.Services.Credentials
                 _ => { },
                 null);
 
-            settings.CredentialGenerationBehavior = RdpCredentialGenerationBehavior.Prompt;
+            settings.CredentialGenerationBehavior = RdpCredentialGenerationBehavior.AllowIfNoCredentialsFound;
 
             await credentialPrompt.ShowCredentialsPromptAsync(
                 null,
@@ -220,7 +220,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Test.Services.Credentials
         }
 
         [Test]
-        public void WhenNoCredentialsExistAndPermissionNotGrantedAndBehaviorSetToPrompt_ThenJumpToSettingsOptionIsShown()
+        public void WhenNoCredentialsFoundAndPermissionNotGrantedAndBehaviorSetToAllowIfNoCredentialsFound_ThenJumpToSettingsOptionIsShown()
         {
             var taskDialog = new Mock<ITaskDialog>();
             taskDialog.Setup(t => t.ShowOptionsTaskDialog(
@@ -241,7 +241,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Test.Services.Credentials
                 _ => { },
                 null);
 
-            settings.CredentialGenerationBehavior = RdpCredentialGenerationBehavior.Prompt;
+            settings.CredentialGenerationBehavior = RdpCredentialGenerationBehavior.AllowIfNoCredentialsFound;
 
             AssertEx.ThrowsAggregateException<TaskCanceledException>(
                 () => credentialPrompt.ShowCredentialsPromptAsync(
@@ -264,7 +264,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Test.Services.Credentials
         }
 
         [Test]
-        public async Task WhenCredentialsExistAndBehaviorSetToPrompt_ThenDialogIsSkipped(
+        public async Task WhenCredentialsFoundAndBehaviorSetToAllowIfNoCredentialsFound_ThenDialogIsSkipped(
             [Values(true, false)] bool isGrantedPermissionToGenerateCredentials)
         {
             var taskDialog = new Mock<ITaskDialog>();
@@ -285,7 +285,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Test.Services.Credentials
                 _ => { },
                 null);
 
-            settings.CredentialGenerationBehavior = RdpCredentialGenerationBehavior.Prompt;
+            settings.CredentialGenerationBehavior = RdpCredentialGenerationBehavior.AllowIfNoCredentialsFound;
             settings.Username = "alice";
             settings.CleartextPassword = "alicespassword";
 
@@ -312,11 +312,11 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Test.Services.Credentials
         }
 
         //---------------------------------------------------------------------
-        // Behavior = Disabled.
+        // Behavior = Disallow.
         //---------------------------------------------------------------------
 
         [Test]
-        public void WhenNoCredentialsExistAndBehaviorSetToDisabledAndJumpToSettingsAllowed_ThenJumpToSettingsOptionIsShown()
+        public void WhenNoCredentialsFoundAndBehaviorSetToDisallowAndJumpToSettingsAllowed_ThenJumpToSettingsOptionIsShown()
         {
             var taskDialog = new Mock<ITaskDialog>();
             taskDialog.Setup(t => t.ShowOptionsTaskDialog(
@@ -337,7 +337,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Test.Services.Credentials
                 _ => { },
                 null);
 
-            settings.CredentialGenerationBehavior = RdpCredentialGenerationBehavior.Disable;
+            settings.CredentialGenerationBehavior = RdpCredentialGenerationBehavior.Disallow;
 
             AssertEx.ThrowsAggregateException<TaskCanceledException>(
                 () => credentialPrompt.ShowCredentialsPromptAsync(
@@ -360,7 +360,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Test.Services.Credentials
         }
 
         [Test]
-        public async Task WhenNoCredentialsExistAndBehaviorSetToDisabledAndJumpToSettingsNotAllowed_ThenDialogIsSkipped()
+        public async Task WhenNoCredentialsFoundAndBehaviorSetToDisallowAndJumpToSettingsNotAllowed_ThenDialogIsSkipped()
         {
             var taskDialog = new Mock<ITaskDialog>();
             taskDialog.Setup(t => t.ShowOptionsTaskDialog(
@@ -380,7 +380,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Test.Services.Credentials
                 _ => { },
                 null);
 
-            settings.CredentialGenerationBehavior = RdpCredentialGenerationBehavior.Disable;
+            settings.CredentialGenerationBehavior = RdpCredentialGenerationBehavior.Disallow;
 
             await credentialPrompt.ShowCredentialsPromptAsync(
                 null,
@@ -405,7 +405,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Test.Services.Credentials
         }
 
         [Test]
-        public async Task WhenCredentialsExistAndBehaviorSetToDisabled_ThenDialogIsSkipped()
+        public async Task WhenCredentialsFoundAndBehaviorSetToDisallow_ThenDialogIsSkipped()
         {
             var taskDialog = new Mock<ITaskDialog>();
             taskDialog.Setup(t => t.ShowOptionsTaskDialog(
@@ -425,7 +425,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Test.Services.Credentials
                 _ => { },
                 null);
 
-            settings.CredentialGenerationBehavior = RdpCredentialGenerationBehavior.Prompt;
+            settings.CredentialGenerationBehavior = RdpCredentialGenerationBehavior.Disallow;
             settings.Username = "alice";
             settings.CleartextPassword = "alicespassword";
 
@@ -449,6 +449,90 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Test.Services.Credentials
                 It.IsAny<IList<string>>(),
                 It.IsAny<string>(),
                 out It.Ref<bool>.IsAny), Times.Never);
+        }
+
+        //---------------------------------------------------------------------
+        // Behavior = Force.
+        //---------------------------------------------------------------------
+
+        [Test]
+        public async Task WhenBehaviorSetToForceAndPermissionsGranted_ThenDialogIsSkippedAndCredentialsAreGenerated()
+        {
+            var taskDialog = new Mock<ITaskDialog>();
+
+            var credentialPrompt = CreateCredentialsPrompt(true, taskDialog);
+            var settings = new ConnectionSettingsEditor(
+                new VmInstanceConnectionSettings(),
+                _ => { },
+                null);
+
+            settings.CredentialGenerationBehavior = RdpCredentialGenerationBehavior.Force;
+
+            await credentialPrompt.ShowCredentialsPromptAsync(
+                null,
+                SampleInstance,
+                settings,
+                true);
+
+            Assert.AreEqual("bob", settings.Username);
+            Assert.AreEqual("secret", settings.Password.AsClearText());
+            Assert.IsNull(settings.Domain);
+
+            // No dialog shown.
+            taskDialog.Verify(t => t.ShowOptionsTaskDialog(
+                It.IsAny<IWin32Window>(),
+                It.IsAny<IntPtr>(),
+                It.IsAny<string>(),
+                It.IsAny<string>(),
+                It.IsAny<string>(),
+                It.IsAny<string>(),
+                It.IsAny<IList<string>>(),
+                It.IsAny<string>(),
+                out It.Ref<bool>.IsAny), Times.Never);
+        }
+
+        [Test]
+        public void WhenBehaviorSetToForceAndPermissionsNotGranted_ThenJumpToSettingsOptionIsShown()
+        {
+            var taskDialog = new Mock<ITaskDialog>();
+            taskDialog.Setup(t => t.ShowOptionsTaskDialog(
+                It.IsAny<IWin32Window>(),
+                It.IsAny<IntPtr>(),
+                It.IsAny<string>(),
+                It.IsAny<string>(),
+                It.IsAny<string>(),
+                It.IsAny<string>(),
+                It.IsAny<IList<string>>(),
+                It.IsAny<string>(),
+                out It.Ref<bool>.IsAny)).Returns(0);
+
+            var credentialPrompt = CreateCredentialsPrompt(false, taskDialog);
+            var window = this.serviceRegistry.AddMock<IConnectionSettingsWindow>();
+            var settings = new ConnectionSettingsEditor(
+                new VmInstanceConnectionSettings(),
+                _ => { },
+                null);
+
+            settings.CredentialGenerationBehavior = RdpCredentialGenerationBehavior.Force;
+
+            AssertEx.ThrowsAggregateException<TaskCanceledException>(
+                () => credentialPrompt.ShowCredentialsPromptAsync(
+                null,
+                SampleInstance,
+                settings,
+                true).Wait());
+
+            window.Verify(w => w.ShowWindow(), Times.Once);
+            taskDialog.Verify(t => t.ShowOptionsTaskDialog(
+                It.IsAny<IWin32Window>(),
+                It.IsAny<IntPtr>(),
+                It.IsAny<string>(),
+                It.IsAny<string>(),
+                It.IsAny<string>(),
+                It.IsAny<string>(),
+                It.Is<IList<string>>(options => options.Count == 2),
+                It.IsAny<string>(),
+                out It.Ref<bool>.IsAny), Times.Once);
         }
     }
 }

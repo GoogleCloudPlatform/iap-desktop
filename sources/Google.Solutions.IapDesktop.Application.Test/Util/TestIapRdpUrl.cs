@@ -218,7 +218,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Util
             Assert.AreEqual(RdpColorDepth.DeepColor, settings.ColorDepth);
             Assert.AreEqual(RdpAudioMode.DoNotPlay, settings.AudioMode);
             Assert.AreEqual(RdpRedirectClipboard.Disabled, settings.RedirectClipboard);
-            Assert.AreEqual(RdpCredentialGenerationBehavior.Always, settings.CredentialGenerationBehavior);
+            Assert.AreEqual(RdpCredentialGenerationBehavior.Allow, settings.CredentialGenerationBehavior);
         }
 
         [Test]
@@ -255,7 +255,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Util
                     ColorDepth = RdpColorDepth.TrueColor,
                     AudioMode = RdpAudioMode.PlayOnServer,
                     RedirectClipboard = RdpRedirectClipboard.Disabled,
-                    CredentialGenerationBehavior = RdpCredentialGenerationBehavior.Disable
+                    CredentialGenerationBehavior = RdpCredentialGenerationBehavior.Disallow
                 });
 
             var copy = IapRdpUrl.FromString(url.ToString());
@@ -272,7 +272,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Util
             Assert.AreEqual(RdpColorDepth.TrueColor, copy.Settings.ColorDepth);
             Assert.AreEqual(RdpAudioMode.PlayOnServer, copy.Settings.AudioMode);
             Assert.AreEqual(RdpRedirectClipboard.Disabled, copy.Settings.RedirectClipboard);
-            Assert.AreEqual(RdpCredentialGenerationBehavior.Disable, copy.Settings.CredentialGenerationBehavior);
+            Assert.AreEqual(RdpCredentialGenerationBehavior.Disallow, copy.Settings.CredentialGenerationBehavior);
         }
     }
 }

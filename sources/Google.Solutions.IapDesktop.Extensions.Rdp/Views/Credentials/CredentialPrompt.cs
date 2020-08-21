@@ -67,16 +67,28 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Views.Credentials
                 settings.Password != null &&
                 settings.Password.Length != 0;
 
+            if (settings.CredentialGenerationBehavior == RdpCredentialGenerationBehavior.Force
+                && await credentialsService
+                        .IsGrantedPermissionToGenerateCredentials(instanceLocator)
+                        .ConfigureAwait(true))
+            {
+                // Generate new credentials right away and skip the prompt.
+                await credentialsService.GenerateCredentialsAsync(
+                        owner,
+                        instanceLocator,
+                        settings)
+                    .ConfigureAwait(true);
+                return;
+            }
+
             var options = new List<CredentialOption>();
             if ((!credentialsExist
-                    && settings.CredentialGenerationBehavior == RdpCredentialGenerationBehavior.Prompt
+                    && settings.CredentialGenerationBehavior == RdpCredentialGenerationBehavior.AllowIfNoCredentialsFound
                     && await credentialsService
                         .IsGrantedPermissionToGenerateCredentials(instanceLocator)
                         .ConfigureAwait(true))
-                || settings.CredentialGenerationBehavior == RdpCredentialGenerationBehavior.Always)
+                || settings.CredentialGenerationBehavior == RdpCredentialGenerationBehavior.Allow)
             {
-                // TODO: check for permission
-
                 options.Add(
                     new CredentialOption()
                     {

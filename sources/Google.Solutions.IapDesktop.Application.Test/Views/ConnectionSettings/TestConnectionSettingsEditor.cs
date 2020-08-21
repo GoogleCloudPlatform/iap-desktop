@@ -373,21 +373,21 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views.ConnectionSettings
         [Test]
         public void WhenCredentialGenerationBehaviorSetInProjectAndZone_ZoneValueIsInheritedDownToVm()
         {
-            this.project.CredentialGenerationBehavior = RdpCredentialGenerationBehavior.Disable;
+            this.project.CredentialGenerationBehavior = RdpCredentialGenerationBehavior.Disallow;
 
-            zoneA.CredentialGenerationBehavior = RdpCredentialGenerationBehavior.Always;
-            Assert.AreEqual(RdpCredentialGenerationBehavior.Always, zoneA.CredentialGenerationBehavior);
+            zoneA.CredentialGenerationBehavior = RdpCredentialGenerationBehavior.Allow;
+            Assert.AreEqual(RdpCredentialGenerationBehavior.Allow, zoneA.CredentialGenerationBehavior);
             Assert.IsTrue(zoneA.ShouldSerializeCredentialGenerationBehavior());
 
-            Assert.AreEqual(RdpCredentialGenerationBehavior.Always, instanceA.CredentialGenerationBehavior);
-            Assert.AreEqual(RdpCredentialGenerationBehavior.Always, instanceA.CreateConnectionSettings("instance").CredentialGenerationBehavior);
+            Assert.AreEqual(RdpCredentialGenerationBehavior.Allow, instanceA.CredentialGenerationBehavior);
+            Assert.AreEqual(RdpCredentialGenerationBehavior.Allow, instanceA.CreateConnectionSettings("instance").CredentialGenerationBehavior);
             Assert.IsFalse(instanceA.ShouldSerializeCredentialGenerationBehavior());
         }
 
         [Test]
         public void WhenCredentialGenerationBehaviorSetInProjectAndResetToDefaultInVm_InheritedValueStillApplies()
         {
-            this.project.CredentialGenerationBehavior = RdpCredentialGenerationBehavior.Always;
+            this.project.CredentialGenerationBehavior = RdpCredentialGenerationBehavior.Allow;
             Assert.AreNotEqual(RdpCredentialGenerationBehavior._Default, this.project.CredentialGenerationBehavior);
 
             instanceA.CredentialGenerationBehavior = RdpCredentialGenerationBehavior._Default;

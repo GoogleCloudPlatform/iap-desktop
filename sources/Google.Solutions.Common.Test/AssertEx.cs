@@ -22,6 +22,7 @@
 using Google.Solutions.Common.Util;
 using NUnit.Framework;
 using System;
+using System.Reflection;
 
 namespace Google.Solutions.Common.Test
 {
@@ -40,6 +41,18 @@ namespace Google.Solutions.Common.Test
                     throw e.Unwrap();
                 }
             });
+        }
+
+        public static void ArePropertiesEqual<T>(T expected, T actual)
+        {
+            var properties = typeof(T).GetProperties(BindingFlags.Public | BindingFlags.Instance);
+            foreach (var property in properties)
+            {
+                var expectedValue = property.GetValue(expected, null);
+                var actualValue = property.GetValue(actual, null);
+
+                Assert.AreEqual(expectedValue, actualValue, $"{property.Name} must match");
+            }
         }
     }
 }

@@ -73,6 +73,42 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Test.Services.Credentials
         }
 
         [Test]
+        public void WhenSuggestedUserNameIsEmpty_ThenSuggestionIsDerivedFromSigninName()
+        {
+            var serviceRegistry = new ServiceRegistry();
+
+            var auth = new Mock<IAuthorization>();
+            auth.SetupGet(a => a.Email).Returns("bobsemail@gmail.com");
+
+            serviceRegistry.AddMock<IAuthorizationAdapter>()
+                .SetupGet(a => a.Authorization).Returns(auth.Object);
+
+            var credDialog = serviceRegistry.AddMock<IGenerateCredentialsDialog>();
+            credDialog
+                .Setup(d => d.PromptForUsername(
+                    It.IsAny<IWin32Window>(),
+                    It.IsAny<string>()))
+                .Returns<string>(null); // Cancel dialog
+
+            var settings = new ConnectionSettingsEditor(
+                new VmInstanceConnectionSettings(),
+                _ => { },
+                null);
+            settings.Username = "";
+
+            var credentialsService = new CredentialsService(serviceRegistry);
+            AssertEx.ThrowsAggregateException<TaskCanceledException>(
+                () => credentialsService.GenerateCredentialsAsync(
+                    null,
+                    SampleInstance,
+                    settings).Wait());
+
+            credDialog.Verify(d => d.PromptForUsername(
+                It.IsAny<IWin32Window>(),
+                It.Is<string>(u => u == "bobsemail")), Times.Once);
+        }
+
+        [Test]
         public void WhenNoSuggestedUserNameProvided_ThenSuggestionIsDerivedFromSigninName()
         {
             var serviceRegistry = new ServiceRegistry();
