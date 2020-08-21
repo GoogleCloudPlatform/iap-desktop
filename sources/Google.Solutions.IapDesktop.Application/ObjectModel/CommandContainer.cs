@@ -150,7 +150,7 @@ namespace Google.Solutions.IapDesktop.Application.ObjectModel
 
             if (index.HasValue)
             {
-                this.menuItems.Insert(index.Value, menuItem);
+                this.menuItems.Insert(Math.Min(index.Value, this.menuItems.Count), menuItem);
             }
             else
             {
