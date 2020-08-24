@@ -194,13 +194,13 @@
           Id="FileGoogleSolutionsIapTunnelingDll"
           Name="Google.Solutions.IapTunneling.dll"
           DiskId="1"
-          Source="Google.Solutions.IapDesktop\bin\$(var.CONFIGURATION)\Google.Solutions.IapTunneling.dll"
+          Source="Google.Solutions.IapDesktop\bin\$(var.CONFIGURATION)\net461\Google.Solutions.IapTunneling.dll"
           Vital="yes"/>
         <File
           Id="FileGoogleSolutionsCommonDll"
           Name="Google.Solutions.Common.dll"
           DiskId="1"
-          Source="Google.Solutions.IapDesktop\bin\$(var.CONFIGURATION)\Google.Solutions.Common.dll"
+          Source="Google.Solutions.IapDesktop\bin\$(var.CONFIGURATION)\net461\Google.Solutions.Common.dll"
           Vital="yes"/>
         <File
           Id="FileGoogleSolutionsActivityDll"
