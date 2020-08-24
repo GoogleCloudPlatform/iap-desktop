@@ -5,6 +5,12 @@
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
     <CodeAnalysisRuleSet>..\Google.Solutions.Common\Google.Solutions.Common.ruleset</CodeAnalysisRuleSet>
     <AssemblyVersion>$(AssemblyVersionNumber)</AssemblyVersion>
+    <FileVersion>$(AssemblyVersionNumber)</FileVersion>
+    <Description>Cloud IAP Tunneling library</Description>
+    <Authors>Google LLC</Authors>
+    <Company>Google LLC</Company>
+    <Product>IAP Desktop</Product>
+    <Copyright>Google LLC</Copyright>
   </PropertyGroup>
 
   <ItemGroup>

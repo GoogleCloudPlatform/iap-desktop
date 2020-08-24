@@ -19,17 +19,6 @@
 // under the License.
 //
 
-using System.Reflection;
 using System.Runtime.CompilerServices;
 
-[assembly: AssemblyTitle("Common")]
-[assembly: AssemblyDescription("Library providing common functionality")]
-[assembly: AssemblyCompany("Google LLC")]
-[assembly: AssemblyProduct("IAP Desktop")]
-[assembly: AssemblyCopyright("Copyright ©  2020")]
-[assembly: AssemblyTrademark("Google LLC")]
-
-[assembly: AssemblyVersion("1.0.1.0")]
-[assembly: AssemblyFileVersion("1.0.1.0")]
-
-[assembly: InternalsVisibleTo("Google.Solutions.Common.Test")]
+[assembly: InternalsVisibleTo("Google.Solutions.IapTunneling.Test")]
