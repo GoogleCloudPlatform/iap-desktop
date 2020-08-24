@@ -20,13 +20,14 @@
 //
 
 using NUnit.Framework;
+using System;
 using System.Diagnostics;
 
 namespace Google.Solutions.Common.Test
 {
     public abstract class FixtureBase
     {
-        private static readonly ConsoleTraceListener listener = new ConsoleTraceListener();
+        private static readonly NunitListener listener = new NunitListener();
 
         [SetUp]
         public void SetUpTracing()
@@ -35,6 +36,19 @@ namespace Google.Solutions.Common.Test
             {
                 TraceSources.Common.Listeners.Add(listener);
                 TraceSources.Common.Switch.Level = SourceLevels.Verbose;
+            }
+        }
+
+        private class NunitListener : TraceListener
+        {
+            public override void Write(string message)
+            {
+                Console.Write(message);
+            }
+
+            public override void WriteLine(string message)
+            {
+                Console.WriteLine(message);
             }
         }
     }
