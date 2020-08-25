@@ -19,6 +19,8 @@
 // under the License.
 //
 
+using Google.Solutions.Common.Locator;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -43,6 +45,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.History
                 {
                     Instance = i,
                     p.ServerId,
+                    p.NodeType,
                     p.From,
                     p.To,
                     p.Tenancy
@@ -58,6 +61,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.History
 
                 yield return new NodeHistory(
                     server.Key,
+                    server.Select(p => p.NodeType).FirstOrDefault(),
                     server.Select(p => p.From).Min(),
                     server.Select(p => p.To).Max(),
                     peakInstanceCount,
@@ -76,6 +80,16 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.History
                     this.Nodes.Select(p => p.FirstUse),
                     this.Nodes.Select(p => p.LastUse));
 
+        /// <summary>
+        /// Create time series indicating the maximum number of parallel 
+        /// physical cores for each day of this set's existence.
+        /// </summary>
+        public IEnumerable<DataPoint> MaxPhysicalCoresByDay(Func<NodeTypeLocator, int> resolveCoreCount) =>
+            this.Nodes == null
+                ? Enumerable.Empty<DataPoint>()
+                : TimeseriesUtil.DailyHistogram(
+                    this.Nodes.Select(p => new DataPoint(p.FirstUse, resolveCoreCount(p.NodeType))),
+                    this.Nodes.Select(p => new DataPoint(p.LastUse, resolveCoreCount(p.NodeType))));
 
         /// <summary>
         /// Create time series indicating the maximum number of parallel 

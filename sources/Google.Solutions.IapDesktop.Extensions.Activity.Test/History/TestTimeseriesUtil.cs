@@ -120,6 +120,44 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.History
         }
 
         [Test]
+        public void WhenJoinersAndLeaversHaveWeights_ThenDailyHistogramUsesTotalOfWeights()
+        {
+            var baseDate = new DateTime(2020, 1, 1);
+
+            var joiners = new[]
+            {
+                new DataPoint(baseDate.AddDays(1), 1),
+                new DataPoint(baseDate.AddDays(2).AddHours(1), 11),
+                new DataPoint(baseDate.AddDays(3), 1),
+                new DataPoint(baseDate.AddDays(7).AddSeconds(1), 2)
+            };
+
+            var leavers = new[]
+            {
+                new DataPoint(baseDate.AddDays(4).AddMinutes(30), 1),
+                new DataPoint(baseDate.AddDays(5), 1),
+                new DataPoint(baseDate.AddDays(6), 3),
+                new DataPoint(baseDate.AddDays(10), 10)
+            };
+
+            var histogram = TimeseriesUtil.DailyHistogram(joiners, leavers).ToList();
+
+            Assert.AreEqual(1, histogram[0].Value);
+            Assert.AreEqual(12, histogram[1].Value);
+            Assert.AreEqual(13, histogram[2].Value);
+            Assert.AreEqual(13, histogram[3].Value);
+            Assert.AreEqual(12, histogram[4].Value);
+            Assert.AreEqual(11, histogram[5].Value);
+            Assert.AreEqual(10, histogram[6].Value);
+            Assert.AreEqual(10, histogram[7].Value);
+            Assert.AreEqual(10, histogram[8].Value);
+            Assert.AreEqual(10, histogram[9].Value);
+
+            Assert.AreEqual(baseDate.AddDays(1), histogram[0].Timestamp);
+            Assert.AreEqual(baseDate.AddDays(10), histogram[9].Timestamp);
+        }
+
+        [Test]
         public void WhenJoinerOnFirstDay_ThenDailyHistoramIsOneAtFirstDay()
         {
             var baseDate = new DateTime(2020, 1, 1);
@@ -144,7 +182,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.History
         }
 
         [Test]
-        public void WhenBalanceChagesThroughoutDay_ThenDailyHistoramReportsMaxButRepeatsLast()
+        public void WhenBalanceChangesThroughoutDay_ThenDailyHistoramReportsMaxButRepeatsLast()
         {
             var baseDate = new DateTime(2020, 1, 1);
 

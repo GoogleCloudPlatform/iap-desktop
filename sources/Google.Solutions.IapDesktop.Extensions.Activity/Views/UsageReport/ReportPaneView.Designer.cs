@@ -105,8 +105,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Views.UsageReport
             this.nodesHeadline = new System.Windows.Forms.Label();
             this.nodesChart = new System.Windows.Forms.DataVisualization.Charting.Chart();
             this.licensesTab = new System.Windows.Forms.TabPage();
-            this.nodeTypeInfoLabel = new System.Windows.Forms.Label();
-            this.infoIcon = new System.Windows.Forms.PictureBox();
             this.noLicenseDataLabel = new System.Windows.Forms.Label();
             this.licenseChart = new System.Windows.Forms.DataVisualization.Charting.Chart();
             this.byolHeadline = new System.Windows.Forms.Label();
@@ -121,7 +119,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Views.UsageReport
             this.nodesSplitContainer.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.nodesChart)).BeginInit();
             this.licensesTab.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.infoIcon)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.licenseChart)).BeginInit();
             this.SuspendLayout();
             // 
@@ -591,8 +588,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Views.UsageReport
             // 
             // licensesTab
             // 
-            this.licensesTab.Controls.Add(this.nodeTypeInfoLabel);
-            this.licensesTab.Controls.Add(this.infoIcon);
             this.licensesTab.Controls.Add(this.noLicenseDataLabel);
             this.licensesTab.Controls.Add(this.licenseChart);
             this.licensesTab.Controls.Add(this.byolHeadline);
@@ -602,24 +597,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Views.UsageReport
             this.licensesTab.TabIndex = 2;
             this.licensesTab.Text = "Licenses";
             this.licensesTab.UseVisualStyleBackColor = true;
-            // 
-            // nodeTypeInfoLabel
-            // 
-            this.nodeTypeInfoLabel.AutoSize = true;
-            this.nodeTypeInfoLabel.Location = new System.Drawing.Point(56, 339);
-            this.nodeTypeInfoLabel.Name = "nodeTypeInfoLabel";
-            this.nodeTypeInfoLabel.Size = new System.Drawing.Size(33, 13);
-            this.nodeTypeInfoLabel.TabIndex = 9;
-            this.nodeTypeInfoLabel.Text = "Note:";
-            // 
-            // infoIcon
-            // 
-            this.infoIcon.Image = ((System.Drawing.Image)(resources.GetObject("infoIcon.Image")));
-            this.infoIcon.Location = new System.Drawing.Point(34, 336);
-            this.infoIcon.Name = "infoIcon";
-            this.infoIcon.Size = new System.Drawing.Size(16, 16);
-            this.infoIcon.TabIndex = 8;
-            this.infoIcon.TabStop = false;
             // 
             // noLicenseDataLabel
             // 
@@ -701,7 +678,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Views.UsageReport
             ((System.ComponentModel.ISupportInitialize)(this.nodesChart)).EndInit();
             this.licensesTab.ResumeLayout(false);
             this.licensesTab.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.infoIcon)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.licenseChart)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
@@ -760,8 +736,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Views.UsageReport
         private System.Windows.Forms.Label byolHeadline;
         private System.Windows.Forms.Label noLicenseDataLabel;
         private System.Windows.Forms.DataVisualization.Charting.Chart licenseChart;
-        private System.Windows.Forms.Label nodeTypeInfoLabel;
-        private System.Windows.Forms.PictureBox infoIcon;
         private System.Windows.Forms.ColumnHeader osColumnHeader;
         private System.Windows.Forms.ColumnHeader licenseColumnHeader;
     }

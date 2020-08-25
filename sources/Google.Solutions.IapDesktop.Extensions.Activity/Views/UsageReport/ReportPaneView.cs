@@ -230,19 +230,13 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Views.UsageReport
             //
             // Licenses tab.
             //
-            this.nodeTypeInfoLabel.BindProperty(
-                l => l.Text,
-                this.viewModel,
-                v => v.LicensesReportPane.NodeTypeWarning,
-                this.components);
+            
             this.components.Add(this.viewModel.LicensesReportPane.OnPropertyChange(
                 v => v.Histogram,
                 dataPoints =>
                 {
                     Plot(dataPoints, this.licenseChart.Series[0]);
                     this.noLicenseDataLabel.Visible = !dataPoints.Any();
-                    this.infoIcon.Visible =
-                        this.nodeTypeInfoLabel.Visible = dataPoints.Any();
                 }));
 
             this.viewModel.Repopulate();

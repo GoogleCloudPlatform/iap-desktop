@@ -19,6 +19,7 @@
 // under the License.
 //
 
+using Google.Solutions.Common.Locator;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -29,6 +30,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.History
     public class NodeHistory
     {
         public string ServerId { get; }
+
+        public NodeTypeLocator NodeType { get; }
 
         public DateTime FirstUse { get; }
         public DateTime LastUse { get; }
@@ -47,6 +50,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.History
 
         internal NodeHistory(
             string serverId,
+            NodeTypeLocator nodeType,
             DateTime firstUse,
             DateTime lastUse,
             uint peakInstanceCount,
@@ -56,6 +60,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.History
             Debug.Assert(firstUse <= lastUse);
 
             this.ServerId = serverId;
+            this.NodeType = nodeType;
             this.FirstUse = firstUse;
             this.LastUse = lastUse;
             this.PeakConcurrentPlacements = peakInstanceCount;
@@ -72,5 +77,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.History
                 : TimeseriesUtil.DailyHistogram(
                     this.Placements.Select(p => p.From),
                     this.Placements.Select(p => p.To));
+
     }
 }
