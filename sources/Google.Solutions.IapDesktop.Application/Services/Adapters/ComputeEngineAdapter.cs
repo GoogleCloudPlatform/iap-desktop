@@ -62,6 +62,15 @@ namespace Google.Solutions.IapDesktop.Application.Services.Adapters
             string projectId,
             CancellationToken cancellationToken);
 
+        Task<IEnumerable<NodeGroup>> ListNodeGroupsAsync(
+            ZoneLocator zone,
+            CancellationToken cancellationToken);
+
+        Task<IEnumerable<NodeGroupNode>> ListNodesAsync(
+            ZoneLocator zone,
+            string nodeGroup,
+            CancellationToken cancellationToken);
+
         Task<NetworkCredential> ResetWindowsUserAsync(
             InstanceLocator instanceRef,
             string username,
@@ -273,6 +282,65 @@ namespace Google.Solutions.IapDesktop.Application.Services.Adapters
                 {
                     throw new ResourceAccessDeniedException(
                         $"Access to disks in project {projectId} has been denied", e);
+                }
+            }
+        }
+
+        public async Task<IEnumerable<NodeGroup>> ListNodeGroupsAsync(
+            ZoneLocator zone,
+            CancellationToken cancellationToken)
+        {
+            using (TraceSources.IapDesktop.TraceMethod().WithParameters(zone))
+            {
+                try
+                {
+                    return await new PageStreamer<
+                        NodeGroup,
+                        NodeGroupsResource.ListRequest,
+                        NodeGroupList,
+                        string>(
+                            (req, token) => req.PageToken = token,
+                            response => response.NextPageToken,
+                            response => response.Items)
+                        .FetchAllAsync(
+                            this.service.NodeGroups.List(zone.ProjectId, zone.Name),
+                            cancellationToken)
+                        .ConfigureAwait(false);
+                }
+                catch (GoogleApiException e) when (e.Error != null && e.Error.Code == 403)
+                {
+                    throw new ResourceAccessDeniedException(
+                        $"Access to node groups in project {zone.ProjectId} has been denied", e);
+                }
+            }
+        }
+
+        public async Task<IEnumerable<NodeGroupNode>> ListNodesAsync(
+            ZoneLocator zone,
+            string nodeGroup,
+            CancellationToken cancellationToken)
+        {
+            using (TraceSources.IapDesktop.TraceMethod().WithParameters(zone, nodeGroup))
+            {
+                try
+                {
+                    return await new PageStreamer<
+                        NodeGroupNode,
+                        NodeGroupsResource.ListNodesRequest,
+                        NodeGroupsListNodes,
+                        string>(
+                            (req, token) => req.PageToken = token,
+                            response => response.NextPageToken,
+                            response => response.Items)
+                        .FetchAllAsync(
+                            this.service.NodeGroups.ListNodes(zone.ProjectId, zone.Name, nodeGroup),
+                            cancellationToken)
+                        .ConfigureAwait(false);
+                }
+                catch (GoogleApiException e) when (e.Error != null && e.Error.Code == 403)
+                {
+                    throw new ResourceAccessDeniedException(
+                        $"Access to nodes in project {zone.ProjectId} has been denied", e);
                 }
             }
         }
