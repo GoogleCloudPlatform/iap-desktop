@@ -127,7 +127,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Adapters
 
             AssertEx.ThrowsAggregateException<ResourceAccessDeniedException>(
                 () => adapter.ListNodeGroupsAsync(
-                    new ZoneLocator(TestProject.ProjectId, "us-central1-a"),
+                    TestProject.ProjectId,
                     CancellationToken.None).Wait());
         }
 
@@ -136,6 +136,11 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Adapters
             [Credential(Role = PredefinedRole.IapTunnelUser)] ResourceTask<ICredential> credential)
         {
             var adapter = new ComputeEngineAdapter(await credential);
+
+            AssertEx.ThrowsAggregateException<ResourceAccessDeniedException>(
+                () => adapter.ListNodesAsync(
+                    TestProject.ProjectId,
+                    CancellationToken.None).Wait());
 
             AssertEx.ThrowsAggregateException<ResourceAccessDeniedException>(
                 () => adapter.ListNodesAsync(
