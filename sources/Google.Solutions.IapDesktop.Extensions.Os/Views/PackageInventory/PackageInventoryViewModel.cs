@@ -222,6 +222,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Os.Views.PackageInventory
                             {
                                 inventory = await inventoryService.ListZoneInventoryAsync(
                                         new ZoneLocator(zoneNode.ProjectId, zoneNode.ZoneId),
+                                        OperatingSystems.Windows,
                                         jobToken)
                                     .ConfigureAwait(false);
                             }
@@ -229,6 +230,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Os.Views.PackageInventory
                             {
                                 inventory = await inventoryService.ListProjectInventoryAsync(
                                         projectNode.ProjectId,
+                                        OperatingSystems.Windows,
                                         jobToken)
                                     .ConfigureAwait(false);
                             }

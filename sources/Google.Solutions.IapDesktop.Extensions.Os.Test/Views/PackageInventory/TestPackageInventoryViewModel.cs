@@ -103,6 +103,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Os.Test.Views.PackageInventory
 
             inventoryService.Setup(s => s.ListZoneInventoryAsync(
                         It.IsAny<ZoneLocator>(),
+                        It.IsAny<OperatingSystems>(),
                         It.IsAny<CancellationToken>()))
                 .ReturnsAsync(
                     new GuestOsInfo[]
@@ -118,6 +119,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Os.Test.Views.PackageInventory
 
             inventoryService.Setup(s => s.ListProjectInventoryAsync(
                         It.IsAny<string>(),
+                        It.IsAny<OperatingSystems>(),
                         It.IsAny<CancellationToken>()))
                 .ReturnsAsync(
                     new GuestOsInfo[]
