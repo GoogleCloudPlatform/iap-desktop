@@ -131,6 +131,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.History
                         image = ImageLocator.FromString(imageUrl);
                     }
 
+                    // TODO: If sole-tenant, lookup serveride, node type.
+
                     AddExistingInstance(
                         (ulong)instance.Id.Value,
                         new InstanceLocator(

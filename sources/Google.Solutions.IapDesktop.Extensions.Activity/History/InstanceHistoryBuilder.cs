@@ -170,7 +170,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.History
                 Debug.Assert(tenancy != Tenancies.Unknown);
                 Debug.Assert(lastSeen != null);
 
-                // Add a synthetic placement.
+                // TODO: use actual serverid, node type instead of a synthetic placement.
                 AddPlacement(new InstancePlacement(tenancy, null, null, lastSeen.Value, lastSeen.Value));
             }
         }
