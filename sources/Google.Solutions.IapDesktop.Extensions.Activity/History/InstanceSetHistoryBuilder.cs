@@ -165,7 +165,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.History
                             this.EndDate,
                             Tenancies.SoleTenant,
                             node?.ServerId,
-                            node.NodeType != null
+                            node?.NodeType != null
                                 ? NodeTypeLocator.FromString(node.NodeType)
                                 : null);
                     }

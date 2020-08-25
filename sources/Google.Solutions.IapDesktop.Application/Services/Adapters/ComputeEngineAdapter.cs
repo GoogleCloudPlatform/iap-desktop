@@ -372,7 +372,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.Adapters
 
                 foreach (var nodeGroup in nodeGroups)
                 {
-                    nodesAcrossGroups.Concat(await ListNodesAsync(
+                    nodesAcrossGroups = nodesAcrossGroups.Concat(await ListNodesAsync(
                             ZoneLocator.FromString(nodeGroup.Zone),
                             nodeGroup.Name,
                             cancellationToken)
