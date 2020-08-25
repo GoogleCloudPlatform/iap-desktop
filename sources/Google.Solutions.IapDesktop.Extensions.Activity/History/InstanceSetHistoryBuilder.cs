@@ -146,6 +146,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.History
                     {
                         // This VM runs on a sole-tenant node.
                         var node = nodes.FirstOrDefault(n => n.Instances
+                            .EnsureNotNull()
                             .Select(uri => InstanceLocator.FromString(uri))
                             .Any(locator => locator == instanceLocator));
                         if (node == null)

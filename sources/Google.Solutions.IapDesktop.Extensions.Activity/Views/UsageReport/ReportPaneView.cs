@@ -85,7 +85,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Views.UsageReport
             this.components = new System.ComponentModel.Container();
 
             InitializeComponent();
-
+            
             // NB. If the tab control is not shown at the correct size, remove
             // the `.ClientSize = xx` statement in InitializeComponent. 
 
