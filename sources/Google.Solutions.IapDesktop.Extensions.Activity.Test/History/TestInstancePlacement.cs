@@ -33,9 +33,11 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.History
         {
             var p1 = new InstancePlacement(
                 null,
+                null,
                 new DateTime(2020, 1, 1, 10, 0, 0),
                 new DateTime(2020, 1, 1, 11, 0, 0));
             var p2 = new InstancePlacement(
+                null,
                 null,
                 new DateTime(2020, 1, 1, 11, 0, 50),
                 new DateTime(2020, 1, 1, 12, 0, 0));
@@ -57,10 +59,12 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.History
         {
             var p1 = new InstancePlacement(
                 null,
+                null,
                 new DateTime(2020, 1, 1, 10, 0, 0),
                 new DateTime(2020, 1, 1, 11, 0, 0));
             var p2 = new InstancePlacement(
-                "server1",
+                "server-1",
+                "type-1",
                 new DateTime(2020, 1, 1, 11, 0, 50),
                 new DateTime(2020, 1, 1, 12, 0, 0));
 
@@ -73,7 +77,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.History
             Assert.AreEqual(
                 new DateTime(2020, 1, 1, 12, 0, 0),
                 merged.To);
-            Assert.AreEqual("server1", merged.ServerId);
+            Assert.AreEqual("server-1", merged.ServerId);
+            Assert.AreEqual("type-1", merged.NodeType);
         }
 
         [Test]
@@ -81,10 +86,12 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.History
         {
             var p1 = new InstancePlacement(
                 "server2",
+                null,
                 new DateTime(2020, 1, 1, 10, 0, 0),
                 new DateTime(2020, 1, 1, 11, 0, 0));
             var p2 = new InstancePlacement(
                 "server1",
+                null, 
                 new DateTime(2020, 1, 1, 11, 0, 50),
                 new DateTime(2020, 1, 1, 12, 0, 0));
 
@@ -96,9 +103,11 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.History
         {
             var p1 = new InstancePlacement(
                 null,
+                null,
                 new DateTime(2020, 1, 1, 10, 0, 0),
                 new DateTime(2020, 1, 1, 11, 0, 0));
             var p2 = new InstancePlacement(
+                null,
                 null,
                 new DateTime(2020, 1, 1, 11, 2, 0),
                 new DateTime(2020, 1, 1, 12, 0, 0));

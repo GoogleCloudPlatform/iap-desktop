@@ -39,6 +39,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.History
         [JsonProperty("server")]
         public string ServerId { get; }
 
+        [JsonProperty("nodeType")]
+        public string NodeType { get; }
+
         [JsonProperty("from")]
         public DateTime From { get; }
 
@@ -69,6 +72,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.History
         internal InstancePlacement(
             [JsonProperty("tenancy")] Tenancies tenancy,
             [JsonProperty("server")] string serverId,
+            [JsonProperty("nodeType")] string nodeType,
             [JsonProperty("from")] DateTime from,
             [JsonProperty("to")] DateTime to)
         {
@@ -78,17 +82,18 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.History
 
             this.Tenancy = tenancy;
             this.ServerId = serverId;
+            this.NodeType = nodeType;
             this.From = from;
             this.To = to;
         }
 
         public InstancePlacement(DateTime from, DateTime to)
-            : this(Tenancies.Fleet, null, from, to)
+            : this(Tenancies.Fleet, null, null, from, to)
         {
         }
 
-        public InstancePlacement(string serverId, DateTime from, DateTime to)
-            : this(Tenancies.SoleTenant, serverId, from, to)
+        public InstancePlacement(string serverId, string nodeType, DateTime from, DateTime to)
+            : this(Tenancies.SoleTenant, serverId, nodeType, from, to)
         {
         }
 
@@ -123,6 +128,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.History
             return new InstancePlacement(
                 MergeTenancy(this.Tenancy, subsequentPlacement.Tenancy),
                 this.ServerId ?? subsequentPlacement.ServerId,
+                this.NodeType ?? subsequentPlacement.NodeType,
                 this.From,
                 subsequentPlacement.To);
         }

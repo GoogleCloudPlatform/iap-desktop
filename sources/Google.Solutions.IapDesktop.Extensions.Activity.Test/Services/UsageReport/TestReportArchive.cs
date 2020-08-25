@@ -63,6 +63,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.Services.UsageRep
                         {
                             new InstancePlacement(
                                 "server-1",
+                                null,
                                 new DateTime(2019, 12, 1, 0, 0, 0, DateTimeKind.Utc),
                                 new DateTime(2019, 12, 2, 0, 0, 0, DateTimeKind.Utc))
                         })

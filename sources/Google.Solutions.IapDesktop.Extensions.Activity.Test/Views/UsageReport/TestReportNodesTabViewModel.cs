@@ -56,7 +56,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.Views.UsageReport
                 if (tenancy == Tenancies.SoleTenant)
                 {
                     // Add sole tenant placement.
-                    instanceBuilder.OnSetPlacement("server-1", BaselineTime);
+                    instanceBuilder.OnSetPlacement("server-1", null, BaselineTime);
                 }
 
                 // Add fleet placement.

@@ -120,14 +120,17 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.History
                     {
                         new InstancePlacement(
                             "server-1",
+                            null,
                             new DateTime(2019, 12, 1, 0, 0, 0, DateTimeKind.Utc),
                             new DateTime(2019, 12, 2, 0, 0, 0, DateTimeKind.Utc)),
                         new InstancePlacement(
                             "server-1",
+                            null,
                             new DateTime(2019, 12, 3, 0, 0, 0, DateTimeKind.Utc),
                             new DateTime(2019, 12, 4, 0, 0, 0, DateTimeKind.Utc)),
                         new InstancePlacement(
                             "server-2",
+                            null,
                             new DateTime(2019, 12, 4, 0, 0, 0, DateTimeKind.Utc),
                             new DateTime(2019, 12, 5, 0, 0, 0, DateTimeKind.Utc)),
                     })
@@ -157,14 +160,17 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.History
                     {
                         new InstancePlacement(
                             "server-1",
+                            null,
                             new DateTime(2019, 12, 1, 0, 0, 0, DateTimeKind.Utc),
                             new DateTime(2019, 12, 2, 0, 0, 0, DateTimeKind.Utc)),
                         new InstancePlacement(
                             "server-1",
+                            null,
                             new DateTime(2019, 12, 13, 0, 0, 0, DateTimeKind.Utc),
                             new DateTime(2019, 12, 14, 0, 0, 0, DateTimeKind.Utc)),
                         new InstancePlacement(
                             "server-2",
+                            null,
                             new DateTime(2019, 12, 4, 0, 0, 0, DateTimeKind.Utc),
                             new DateTime(2019, 12, 5, 0, 0, 0, DateTimeKind.Utc)),
                     })
@@ -196,6 +202,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.History
                     {
                         new InstancePlacement(
                             "server-1",
+                            null,
                             new DateTime(2019, 12, 1, 0, 0, 0, DateTimeKind.Utc),
                             new DateTime(2019, 12, 4, 0, 0, 0, DateTimeKind.Utc))
                     }),
@@ -208,6 +215,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.History
                     {
                         new InstancePlacement(
                             "server-1",
+                            null,
                             new DateTime(2019, 12, 2, 0, 0, 0, DateTimeKind.Utc),
                             new DateTime(2019, 12, 3, 0, 0, 0, DateTimeKind.Utc))
                     })
@@ -236,6 +244,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.History
                     {
                         new InstancePlacement(
                             "server-1",
+                            null,
                             new DateTime(2019, 12, 1, 0, 0, 0, DateTimeKind.Utc),
                             new DateTime(2019, 12, 4, 0, 0, 0, DateTimeKind.Utc))
                     }),
@@ -248,6 +257,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.History
                     {
                         new InstancePlacement(
                             "server-1",
+                            null,
                             new DateTime(2019, 12, 2, 0, 0, 0, DateTimeKind.Utc),
                             new DateTime(2019, 12, 3, 0, 0, 0, DateTimeKind.Utc))
                     })

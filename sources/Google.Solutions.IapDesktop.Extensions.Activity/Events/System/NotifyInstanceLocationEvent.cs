@@ -32,6 +32,10 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Events.System
 
         public string ServerId => base.LogRecord.ProtoPayload.Metadata["serverId"].Value<string>();
 
+        public string NodeType => base.LogRecord.ProtoPayload.Metadata.ContainsKey("nodeType")
+            ? base.LogRecord.ProtoPayload.Metadata["nodeType"].Value<string>()
+            : null;
+
         public DateTime SchedulingTimestamp => base.LogRecord.ProtoPayload.Metadata["timestamp"].Value<DateTime>();
 
         public override string Message => "Instance scheduled to run on sole tenant node " + this.ServerId;
