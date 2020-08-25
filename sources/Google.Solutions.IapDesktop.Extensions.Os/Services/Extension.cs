@@ -38,12 +38,10 @@ namespace Google.Solutions.IapDesktop.Extensions.Os.Services
     {
         public Extension(IServiceProvider serviceProvider)
         {
-            var projectExplorer = serviceProvider.GetService<IProjectExplorer>();
-
             //
             // Add commands to project explorer.
             //
-
+            var projectExplorer = serviceProvider.GetService<IProjectExplorer>();
 
             projectExplorer.ToolbarCommands.AddCommand(
                 new Command<IProjectExplorerNode>(
@@ -95,13 +93,33 @@ namespace Google.Solutions.IapDesktop.Extensions.Os.Services
             mainForm.ViewCommands.AddCommand(
                 new Command<IMainForm>(
                     "&Instance details",
-                    pseudoContext => CommandState.Enabled,
-                    pseudoContext => serviceProvider.GetService<InstanceDetailsWindow>().ShowWindow())
+                    _ => CommandState.Enabled,
+                    _ => serviceProvider.GetService<InstanceDetailsWindow>().ShowWindow())
                 {
                     Image = Resources.ComputerDetails_16,
                     ShortcutKeys = Keys.Control | Keys.Alt | Keys.I
                 },
                 3);
+            mainForm.ViewCommands.AddCommand(
+                new Command<IMainForm>(
+                    "I&nstalled packages",
+                    _ => CommandState.Enabled,
+                    _ => serviceProvider.GetService<InstalledPackageInventoryWindow>().ShowWindow())
+                {
+                    Image = Resources.Package_16,
+                    ShortcutKeys = Keys.Control | Keys.Alt | Keys.P
+                },
+                4);
+            mainForm.ViewCommands.AddCommand(
+                new Command<IMainForm>(
+                    "&Available updates",
+                    _ => CommandState.Enabled,
+                    _ => serviceProvider.GetService<AvailablePackageInventoryWindow>().ShowWindow())
+                {
+                    Image = Resources.PackageUpdate_16,
+                    ShortcutKeys = Keys.Control | Keys.Alt | Keys.U
+                },
+                5);
         }
     }
 }

@@ -47,8 +47,8 @@ namespace Google.Solutions.IapDesktop.Application.ObjectModel
     /// </summary>
     public class Command<TContext> : ICommand<TContext>
     {
-        private Action<TContext> executeFunc;
-        private Func<TContext, CommandState> queryStateFunc;
+        private readonly Action<TContext> executeFunc;
+        private readonly Func<TContext, CommandState> queryStateFunc;
 
         public Command(
             string text,
