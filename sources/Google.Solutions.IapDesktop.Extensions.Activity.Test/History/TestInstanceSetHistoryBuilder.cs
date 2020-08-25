@@ -69,7 +69,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.History
         }
 
         [Test]
-        public void WhenInstanceAdded_ThenInstanceIncludedInSet()
+        public void WhenFleetInstanceAdded_ThenInstanceIncludedInSet()
         {
             var b = new InstanceSetHistoryBuilder(
                 new DateTime(2019, 12, 1, 0, 0, 0, DateTimeKind.Utc),
@@ -89,6 +89,31 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.History
 
             Assert.AreEqual(1, set.Instances.Count());
             Assert.AreEqual(1, set.Instances.First().InstanceId);
+        }
+
+        [Test]
+        public void WhenSoleTenantInstanceAdded_ThenInstanceIncludedInSet()
+        {
+            var b = new InstanceSetHistoryBuilder(
+                new DateTime(2019, 12, 1, 0, 0, 0, DateTimeKind.Utc),
+                new DateTime(2020, 1, 1, 0, 0, 0, DateTimeKind.Utc));
+
+            b.AddExistingInstance(
+                1,
+                SampleReference,
+                SampleImage,
+                InstanceState.Running,
+                DateTime.Now,
+                Tenancies.SoleTenant,
+                "server-1",
+                new NodeTypeLocator("project-1", "zone-1", "type-1"));
+
+            var set = b.Build();
+
+            Assert.AreEqual(1, set.Instances.Count());
+            Assert.AreEqual(1, set.Instances.First().InstanceId);
+            Assert.AreEqual("server-1", set.Instances.First().Placements.First().ServerId);
+            Assert.AreEqual("type-1", set.Instances.First().Placements.First().NodeType.Name);
         }
 
         [Test]
