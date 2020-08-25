@@ -41,7 +41,7 @@ namespace Google.Solutions.Common.Locator
             {
                 resourceReference = StripUrlPrefix(resourceReference);
 
-                var match = new Regex("(?:/compute/beta/)?projects/(.*)/zones/(.*)/diskTypes/(.*)")
+                var match = new Regex("(?:/compute/beta/)?projects/(.+)/zones/(.+)/diskTypes/(.+)")
                     .Match(resourceReference);
                 if (match.Success)
                 {
@@ -114,7 +114,7 @@ namespace Google.Solutions.Common.Locator
             {
                 resourceReference = StripUrlPrefix(resourceReference);
 
-                var match = new Regex("(?:/compute/beta/)?projects/(.*)/zones/(.*)/instances/(.*)")
+                var match = new Regex("(?:/compute/beta/)?projects/(.+)/zones/(.+)/instances/(.+)")
                     .Match(resourceReference);
                 if (match.Success)
                 {
@@ -187,7 +187,7 @@ namespace Google.Solutions.Common.Locator
             {
                 resourceReference = StripUrlPrefix(resourceReference);
 
-                var match = new Regex("(?:/compute/beta/)?projects/(.*)/zones/(.*)/machineTypes/(.*)")
+                var match = new Regex("(?:/compute/beta/)?projects/(.+)/zones/(.+)/machineTypes/(.+)")
                     .Match(resourceReference);
                 if (match.Success)
                 {
@@ -238,6 +238,79 @@ namespace Google.Solutions.Common.Locator
             }
 
             public static bool operator !=(MachineTypeLocator obj1, MachineTypeLocator obj2)
+            {
+                return !(obj1 == obj2);
+            }
+
+		}
+
+	
+		public class NodeTypeLocator : ResourceLocator, IEquatable<NodeTypeLocator>
+		{
+            public string Zone { get; }
+            public override string ResourceType => "nodeTypes";
+
+		    public NodeTypeLocator(string projectId, string zone, string name)
+                : base(projectId, name)
+            {
+                this.Zone = zone;
+            }
+
+            public static NodeTypeLocator FromString(string resourceReference)
+            {
+                resourceReference = StripUrlPrefix(resourceReference);
+
+                var match = new Regex("(?:/compute/beta/)?projects/(.+)/zones/(.+)/nodeTypes/(.+)")
+                    .Match(resourceReference);
+                if (match.Success)
+                {
+                    return new NodeTypeLocator(
+                        match.Groups[1].Value,
+                        match.Groups[2].Value,
+                        match.Groups[3].Value);
+                }
+                else
+                {
+                    throw new ArgumentException($"'{resourceReference}' is not a valid zonal resource reference");
+                }
+            }
+
+            public override int GetHashCode()
+            {
+                return
+                    this.ProjectId.GetHashCode() ^
+                    this.Name.GetHashCode();
+            }
+
+            public override string ToString()
+            {
+                return $"projects/{this.ProjectId}/zones/{this.Zone}/{this.ResourceType}/{this.Name}";
+            }
+
+            public bool Equals(NodeTypeLocator other)
+            {
+                return other is object &&
+                    this.Name == other.Name &&
+                    this.Zone == other.Zone &&
+                    this.ProjectId == other.ProjectId;
+            }
+
+            public override bool Equals(object obj)
+            {
+                return obj is NodeTypeLocator locator && Equals(locator);
+            }
+
+            public static bool operator ==(NodeTypeLocator obj1, NodeTypeLocator obj2)
+            {
+                if (obj1 is null)
+                {
+                    return obj2 is null;
+                }
+
+                return obj1.Equals(obj2);
+            }
+
+            public static bool operator !=(NodeTypeLocator obj1, NodeTypeLocator obj2)
             {
                 return !(obj1 == obj2);
             }

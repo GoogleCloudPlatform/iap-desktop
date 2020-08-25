@@ -115,6 +115,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.Services.Adapters
             var computeAdapter = new ComputeEngineAdapter(await credential);
             instanceBuilder.AddExistingInstances(
                 await computeAdapter.ListInstancesAsync(TestProject.ProjectId, CancellationToken.None),
+                await computeAdapter.ListNodesAsync(TestProject.ProjectId, CancellationToken.None),
                 await computeAdapter.ListDisksAsync(TestProject.ProjectId, CancellationToken.None),
                 TestProject.ProjectId);
 

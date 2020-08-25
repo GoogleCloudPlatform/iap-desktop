@@ -19,6 +19,7 @@
 // under the License.
 //
 
+using Google.Solutions.Common.Locator;
 using Google.Solutions.Common.Util;
 using Newtonsoft.Json;
 using System;
@@ -40,7 +41,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.History
         public string ServerId { get; }
 
         [JsonProperty("nodeType")]
-        public string NodeType { get; }
+        public NodeTypeLocator NodeType { get; }
 
         [JsonProperty("from")]
         public DateTime From { get; }
@@ -72,7 +73,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.History
         internal InstancePlacement(
             [JsonProperty("tenancy")] Tenancies tenancy,
             [JsonProperty("server")] string serverId,
-            [JsonProperty("nodeType")] string nodeType,
+            [JsonProperty("nodeType")] NodeTypeLocator nodeType,
             [JsonProperty("from")] DateTime from,
             [JsonProperty("to")] DateTime to)
         {
@@ -92,7 +93,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.History
         {
         }
 
-        public InstancePlacement(string serverId, string nodeType, DateTime from, DateTime to)
+        public InstancePlacement(string serverId, NodeTypeLocator nodeType, DateTime from, DateTime to)
             : this(Tenancies.SoleTenant, serverId, nodeType, from, to)
         {
         }

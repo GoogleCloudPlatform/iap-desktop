@@ -87,7 +87,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.History
             this.placements.AddFirst(placement);
         }
 
-        public void AddPlacement(Tenancies tenancy, string serverId, string nodeType, DateTime date)
+        public void AddPlacement(Tenancies tenancy, string serverId, NodeTypeLocator nodeType, DateTime date)
         {
             Debug.Assert(!tenancy.IsFlagCombination());
             Debug.Assert(date <= this.lastEventDate);
@@ -152,9 +152,13 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.History
             ImageLocator image,
             InstanceState state,
             DateTime? lastSeen,
-            Tenancies tenancy)
+            Tenancies tenancy,
+            string serverId,
+            NodeTypeLocator nodeType)
         {
             Debug.Assert(!tenancy.IsFlagCombination());
+            Debug.Assert(tenancy == Tenancies.SoleTenant || (serverId == null && nodeType == null));
+
             if (instanceId == 0)
             {
                 throw new ArgumentException("Instance ID cannot be 0");
@@ -170,8 +174,12 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.History
                 Debug.Assert(tenancy != Tenancies.Unknown);
                 Debug.Assert(lastSeen != null);
 
-                // TODO: use actual serverid, node type instead of a synthetic placement.
-                AddPlacement(new InstancePlacement(tenancy, null, null, lastSeen.Value, lastSeen.Value));
+                AddPlacement(new InstancePlacement(
+                    tenancy, 
+                    serverId, 
+                    nodeType, 
+                    lastSeen.Value, 
+                    lastSeen.Value));
             }
         }
 
@@ -181,7 +189,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.History
             ImageLocator image,
             InstanceState state,
             DateTime lastSeen,
-            Tenancies tenancy)
+            Tenancies tenancy,
+            string serverId,
+            NodeTypeLocator nodeType)
         {
             Debug.Assert(!tenancy.IsFlagCombination());
             Debug.Assert(state != InstanceState.Deleted);
@@ -192,7 +202,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.History
                 image,
                 state,
                 lastSeen,
-                tenancy);
+                tenancy,
+                serverId,
+                nodeType);
         }
 
         internal static InstanceHistoryBuilder ForDeletedInstance(ulong instanceId)
@@ -203,7 +215,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.History
                 null,
                 InstanceState.Deleted,
                 (DateTime?)null,    // Not clear yet when it was stopped
-                Tenancies.Unknown);
+                Tenancies.Unknown,
+                null,
+                null);
         }
 
         public InstanceHistory Build()
@@ -298,7 +312,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.History
             }
         }
 
-        public void OnSetPlacement(string serverId, string nodeType, DateTime date)
+        public void OnSetPlacement(string serverId, NodeTypeLocator nodeType, DateTime date)
         {
             Debug.Assert(date <= this.lastEventDate);
             Debug.Assert(serverId != null);

@@ -111,18 +111,29 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services.UsageReport
                     // Therefore, we load disks first and then join the data.
                     //
                     var disks = await this.computeEngineAdapter.ListDisksAsync(
-                        projectId,
-                        cancellationToken).ConfigureAwait(false);
+                            projectId,
+                            cancellationToken)
+                        .ConfigureAwait(false);
+
+                    //
+                    // Load nodes.
+                    //
+                    var nodes = await this.computeEngineAdapter.ListNodesAsync(
+                            projectId,
+                            cancellationToken)
+                        .ConfigureAwait(false);
 
                     //
                     // Load instances.
                     //
                     var instances = await this.computeEngineAdapter.ListInstancesAsync(
-                        projectId,
-                        cancellationToken).ConfigureAwait(false);
+                            projectId,
+                            cancellationToken)
+                        .ConfigureAwait(false);
 
                     this.builder.AddExistingInstances(
                         instances,
+                        nodes,
                         disks,
                         projectId);
                 }

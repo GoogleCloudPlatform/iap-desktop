@@ -50,7 +50,11 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.Views.UsageReport
                     new ImageLocator("project", $"image-{instanceIdSequence}"),
                     InstanceState.Running,
                     BaselineTime.AddDays(i),
-                    tenancy);
+                    tenancy,
+                    tenancy == Tenancies.SoleTenant
+                        ? "server-1"
+                        : null,
+                    null);
 
                 var instanceBuilder = builder.GetInstanceHistoryBuilder(instanceIdSequence);
                 if (tenancy == Tenancies.SoleTenant)

@@ -19,6 +19,7 @@
 // under the License.
 //
 
+using Google.Solutions.Common.Locator;
 using Google.Solutions.IapDesktop.Extensions.Activity.Logs;
 using Newtonsoft.Json.Linq;
 using System;
@@ -32,8 +33,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Events.System
 
         public string ServerId => base.LogRecord.ProtoPayload.Metadata["serverId"].Value<string>();
 
-        public string NodeType => base.LogRecord.ProtoPayload.Metadata.ContainsKey("nodeType")
-            ? base.LogRecord.ProtoPayload.Metadata["nodeType"].Value<string>()
+        public NodeTypeLocator NodeType => base.LogRecord.ProtoPayload.Metadata.ContainsKey("nodeType")
+            ? NodeTypeLocator.FromString(base.LogRecord.ProtoPayload.Metadata["nodeType"].Value<string>())
             : null;
 
         public DateTime SchedulingTimestamp => base.LogRecord.ProtoPayload.Metadata["timestamp"].Value<DateTime>();

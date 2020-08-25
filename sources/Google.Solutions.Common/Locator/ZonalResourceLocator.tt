@@ -30,7 +30,7 @@ using System.Text.RegularExpressions;
 namespace Google.Solutions.Common.Locator
 {
 	<#
-	var classNames = new [] {"DiskType", "Instance", "MachineType"};
+	var classNames = new [] {"DiskType", "Instance", "MachineType", "NodeType"};
 
 	foreach (var className in classNames)
 	{
@@ -52,7 +52,7 @@ namespace Google.Solutions.Common.Locator
             {
                 resourceReference = StripUrlPrefix(resourceReference);
 
-                var match = new Regex("(?:/compute/beta/)?projects/(.*)/zones/(.*)/<#= resourceType #>/(.*)")
+                var match = new Regex("(?:/compute/beta/)?projects/(.+)/zones/(.+)/<#= resourceType #>/(.+)")
                     .Match(resourceReference);
                 if (match.Success)
                 {

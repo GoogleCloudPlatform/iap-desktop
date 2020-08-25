@@ -46,7 +46,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.Events.System
                  },
                  'metadata': {
                    'serverId': '4aaaa7b32a208e7ccb4ee62acedee725',
-                   'nodeType': 'c2-node-60-240',
+                   'nodeType': 'https://www.googleapis.com/compute/v1/projects/project-1/zones/us-central1-a/nodeTypes/c2-node-60-240',
                    'timestamp': '2020-05-04T01:50:10.917Z',
                    '@type': 'type.googleapis.com/google.cloud.audit.GceInstanceLocationMetadata'
                  }
@@ -76,7 +76,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.Events.System
             Assert.AreEqual("INFO", e.Severity);
             Assert.IsNull(e.Status);
             Assert.AreEqual("4aaaa7b32a208e7ccb4ee62acedee725", e.ServerId);
-            Assert.AreEqual("c2-node-60-240", e.NodeType);
+            Assert.AreEqual("c2-node-60-240", e.NodeType.Name);
             Assert.AreEqual(new DateTime(2020, 5, 4, 1, 50, 10, 917), e.SchedulingTimestamp);
         }
     

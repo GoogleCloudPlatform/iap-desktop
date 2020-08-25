@@ -81,7 +81,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.History
                 SampleImage,
                 InstanceState.Running,
                 DateTime.Now,
-                Tenancies.Fleet);
+                Tenancies.Fleet,
+                null,
+                null);
 
             var set = b.Build();
 
