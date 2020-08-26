@@ -134,6 +134,7 @@ namespace Google.Solutions.Common.Test.Extensions
                     () => this.instancesResource.ResetWindowsUserAsync(
                     instanceLocator,
                     "test" + Guid.NewGuid().ToString().Substring(20),
+                    TimeSpan.FromMinutes(1),
                     cts.Token).Wait());
             }
         }
