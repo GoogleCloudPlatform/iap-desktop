@@ -74,6 +74,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Inventory\IPackage.cs" />
     <Compile Include="Inventory\ZypperPatch.cs" />
     <Compile Include="Inventory\Package.cs" />
     <Compile Include="Inventory\GuestPackages.cs" />
@@ -93,6 +94,24 @@
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Services\Inventory\InventoryService.cs" />
+    <Compile Include="Views\PackageInventory\AvailablePackageInventoryWindow.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Views\PackageInventory\InstalledPackageInventoryWindow.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Views\PackageInventory\PackageInventoryType.cs" />
+    <Compile Include="Views\PackageInventory\PackageInventoryModel.cs" />
+    <Compile Include="Views\PackageInventory\PackageInventoryWindow.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Views\PackageInventory\PackageInventoryWindow.Designer.cs">
+      <DependentUpon>PackageInventoryWindow.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Views\PackageInventory\PackageList.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Views\PackageInventory\PackageInventoryViewModel.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
@@ -112,9 +131,24 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
+    <EmbeddedResource Include="Views\PackageInventory\PackageInventoryWindow.resx">
+      <DependentUpon>PackageInventoryWindow.cs</DependentUpon>
+    </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\ComputerDetails_16.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Package_16.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\PackageLight_16.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\PackageWarn_16.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\PackageUpdate_16.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

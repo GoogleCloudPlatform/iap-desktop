@@ -19,8 +19,10 @@
 // under the License.
 //
 
+using Google.Solutions.Common.Util;
 using Newtonsoft.Json;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Google.Solutions.IapDesktop.Extensions.Os.Inventory
 {
@@ -58,6 +60,19 @@ namespace Google.Solutions.IapDesktop.Extensions.Os.Inventory
 
         [JsonProperty("qfe")]
         public IList<QfePackage> QfePackages { get; }
+
+        public IEnumerable<IPackage> AllPackages =>
+            Enumerable.Empty<IPackage>()
+                .Concat(this.YumPackages.EnsureNotNull().Cast<IPackage>())
+                .Concat(this.RpmPackages.EnsureNotNull().Cast<IPackage>())
+                .Concat(this.AptPackages.EnsureNotNull().Cast<IPackage>())
+                .Concat(this.DebPackages.EnsureNotNull().Cast<IPackage>())
+                .Concat(this.ZypperPackages.EnsureNotNull().Cast<IPackage>())
+                .Concat(this.GemPackages.EnsureNotNull().Cast<IPackage>())
+                .Concat(this.PipPackages.EnsureNotNull().Cast<IPackage>())
+                .Concat(this.GoogetPackages.EnsureNotNull().Cast<IPackage>())
+                .Concat(this.WuaPackages.EnsureNotNull().Cast<IPackage>())
+                .Concat(this.QfePackages.EnsureNotNull().Cast<IPackage>());
 
         [JsonConstructor]
         public GuestPackages(

@@ -112,10 +112,30 @@ namespace Google.Solutions.IapDesktop.Extensions.Os.Test.Services.Inventory
                 new ComputeEngineAdapter(await credential));
 
             var info = await service.ListProjectInventoryAsync(
-                TestProject.ProjectId, CancellationToken.None);
+                TestProject.ProjectId,
+                OperatingSystems.All, 
+                CancellationToken.None);
 
-            Assert.IsNotNull(info);
-            Assert.GreaterOrEqual(info.Count(), 1);
+            Assert.IsTrue(info.ToList().Where(i => i.Instance == instanceRef).Any());
+        }
+
+        [Test]
+        public async Task WhenOsMismatches_ThenListProjectInventoryAsyncExcludesInstance(
+            [WindowsInstance(
+                InitializeScript = PublishInventoryScript)] ResourceTask<InstanceLocator> testInstance,
+            [Credential(Role = PredefinedRole.ComputeViewer)] ResourceTask<ICredential> credential)
+        {
+            // Make sure there is at least one instance.
+            var instanceRef = await testInstance;
+            var service = new InventoryService(
+                new ComputeEngineAdapter(await credential));
+
+            var info = await service.ListProjectInventoryAsync(
+                TestProject.ProjectId,
+                OperatingSystems.Linux,
+                CancellationToken.None);
+
+            Assert.IsFalse(info.ToList().Where(i => i.Instance == instanceRef).Any());
         }
 
         [Test]
@@ -131,6 +151,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Os.Test.Services.Inventory
             AssertEx.ThrowsAggregateException<ResourceAccessDeniedException>(
                 () => service.ListProjectInventoryAsync(
                     TestProject.ProjectId,
+                    OperatingSystems.All, 
                     CancellationToken.None).Wait());
         }
 
@@ -151,10 +172,29 @@ namespace Google.Solutions.IapDesktop.Extensions.Os.Test.Services.Inventory
 
             var info = await service.ListZoneInventoryAsync(
                 new ZoneLocator(TestProject.ProjectId, instanceRef.Zone),
+                OperatingSystems.All, 
                 CancellationToken.None);
 
-            Assert.IsNotNull(info);
-            Assert.GreaterOrEqual(info.Count(), 1);
+            Assert.IsTrue(info.ToList().Where(i => i.Instance == instanceRef).Any());
+        }
+
+        [Test]
+        public async Task WhenOsMismatches_ThenListZoneInventoryAsyncExcludesInstance(
+            [WindowsInstance(
+                InitializeScript = PublishInventoryScript)] ResourceTask<InstanceLocator> testInstance,
+            [Credential(Role = PredefinedRole.ComputeViewer)] ResourceTask<ICredential> credential)
+        {
+            // Make sure there is at least one instance.
+            var instanceRef = await testInstance;
+            var service = new InventoryService(
+                new ComputeEngineAdapter(await credential));
+
+            var info = await service.ListZoneInventoryAsync(
+                new ZoneLocator(TestProject.ProjectId, instanceRef.Zone),
+                OperatingSystems.Linux,
+                CancellationToken.None);
+
+            Assert.IsFalse(info.ToList().Where(i => i.Instance == instanceRef).Any());
         }
 
         [Test]
@@ -170,6 +210,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Os.Test.Services.Inventory
             AssertEx.ThrowsAggregateException<ResourceAccessDeniedException>(
                 () => service.ListZoneInventoryAsync(
                     new ZoneLocator(TestProject.ProjectId, instanceRef.Zone),
+                    OperatingSystems.All, 
                     CancellationToken.None).Wait());
         }
     }

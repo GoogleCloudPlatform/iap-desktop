@@ -19,6 +19,7 @@
 // under the License.
 //
 
+using Google.Apis.Compute.v1.Data;
 using Google.Solutions.Common.Locator;
 using Google.Solutions.Common.Util;
 using Google.Solutions.IapDesktop.Application.ObjectModel;
@@ -48,6 +49,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Os.Services.Inventory
         /// <returns>Inventory for instances for which data is available</returns>
         Task<IEnumerable<GuestOsInfo>> ListZoneInventoryAsync(
             ZoneLocator locator,
+            OperatingSystems operatingSystems,
             CancellationToken token);
 
         /// <summary>
@@ -56,7 +58,16 @@ namespace Google.Solutions.IapDesktop.Extensions.Os.Services.Inventory
         /// <returns>Inventory for instances for which data is available</returns>
         Task<IEnumerable<GuestOsInfo>> ListProjectInventoryAsync(
             string projectId,
+            OperatingSystems operatingSystems,
             CancellationToken token);
+    }
+
+    [Flags]
+    public enum OperatingSystems
+    {
+        Windows = 1,
+        Linux = 2,
+        All = Windows | Linux
     }
 
     [Service(typeof(IInventoryService))]
@@ -89,6 +100,23 @@ namespace Google.Solutions.IapDesktop.Extensions.Os.Services.Inventory
                 .ConfigureAwait(false);
         }
 
+        private static bool IsRunningOperatingSystem(
+            Instance instance,
+            OperatingSystems operatingSystems)
+        {
+            switch (operatingSystems)
+            {
+                case OperatingSystems.Windows:
+                    return ComputeEngineAdapter.IsWindowsInstance(instance);
+
+                case OperatingSystems.Linux:
+                    return !ComputeEngineAdapter.IsWindowsInstance(instance);
+
+                default:
+                    return true;
+            }
+        }
+
         //---------------------------------------------------------------------
         // IInventoryService.
         //---------------------------------------------------------------------
@@ -110,26 +138,36 @@ namespace Google.Solutions.IapDesktop.Extensions.Os.Services.Inventory
                 : null;
         }
 
-        public async Task<IEnumerable<GuestOsInfo>> ListProjectInventoryAsync(string projectId, CancellationToken token)
+        public async Task<IEnumerable<GuestOsInfo>> ListProjectInventoryAsync(
+            string projectId,
+            OperatingSystems operatingSystems, 
+            CancellationToken token)
         {
             var instances = await this.computeEngineAdapter
                 .ListInstancesAsync(projectId, token)
                 .ConfigureAwait(false);
 
             return await ListInventoryAsync(
-                    instances.Select(i => i.GetInstanceLocator()), 
+                    instances
+                        .Where(i => IsRunningOperatingSystem(i, operatingSystems))
+                        .Select(i => i.GetInstanceLocator()), 
                     token)
                 .ConfigureAwait(false);
         }
 
-        public async Task<IEnumerable<GuestOsInfo>> ListZoneInventoryAsync(ZoneLocator locator, CancellationToken token)
+        public async Task<IEnumerable<GuestOsInfo>> ListZoneInventoryAsync(
+            ZoneLocator locator,
+            OperatingSystems operatingSystems, 
+            CancellationToken token)
         {
             var instances = await this.computeEngineAdapter
                 .ListInstancesAsync(locator, token)
                 .ConfigureAwait(false);
 
             return await ListInventoryAsync(
-                    instances.Select(i => i.GetInstanceLocator()),
+                    instances
+                        .Where(i => IsRunningOperatingSystem(i, operatingSystems))
+                        .Select(i => i.GetInstanceLocator()),
                     token)
                 .ConfigureAwait(false);
         }

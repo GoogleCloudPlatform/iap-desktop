@@ -37,6 +37,11 @@ namespace Google.Solutions.IapDesktop.Application.Controls
 
         private void ResizeLastColumnToFit()
         {
+            if (this.Columns.Count == 0)
+            {
+                return;
+            }
+
             int widthsOfAllButLastColumns = 0;
             for (int i = 0; i < this.Columns.Count - 1; i++)
             {

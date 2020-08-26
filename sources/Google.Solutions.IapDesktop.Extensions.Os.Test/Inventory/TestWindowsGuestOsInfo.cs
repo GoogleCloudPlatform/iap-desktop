@@ -26,6 +26,7 @@ using Google.Solutions.IapDesktop.Extensions.Os.Inventory;
 using NUnit.Framework;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Google.Solutions.IapDesktop.Extensions.Os.Test.Inventory
 {
@@ -180,7 +181,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Os.Test.Inventory
             // Googet
             Assert.AreEqual(16, attributes.InstalledPackages.GoogetPackages.Count);
             Assert.AreEqual("certgen", attributes.InstalledPackages.GoogetPackages[0].Name);
-            Assert.AreEqual("x86_64", attributes.InstalledPackages.GoogetPackages[0].Arch);
+            Assert.AreEqual("x86_64", attributes.InstalledPackages.GoogetPackages[0].Architecture);
             Assert.AreEqual("1.1.0@1", attributes.InstalledPackages.GoogetPackages[0].Version);
 
             // Wua
@@ -214,6 +215,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Os.Test.Inventory
             Assert.AreEqual(
                 new DateTime(2020, 5, 14, 0, 0, 0, 0, DateTimeKind.Utc),
                 attributes.InstalledPackages.QfePackages[0].InstalledOn.Value.ToUniversalTime());
+
+            Assert.AreEqual(34, attributes.InstalledPackages.AllPackages.Count());
         }
 
         [Test]
@@ -227,7 +230,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Os.Test.Inventory
             // Googet
             Assert.AreEqual(1, attributes.AvailablePackages.GoogetPackages.Count);
             Assert.AreEqual("google-osconfig-agent", attributes.AvailablePackages.GoogetPackages[0].Name);
-            Assert.AreEqual("x86_64", attributes.AvailablePackages.GoogetPackages[0].Arch);
+            Assert.AreEqual("x86_64", attributes.AvailablePackages.GoogetPackages[0].Architecture);
             Assert.AreEqual("20200619.00.0@1", attributes.AvailablePackages.GoogetPackages[0].Version);
 
             // Wua
@@ -255,6 +258,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Os.Test.Inventory
 
             // Qfe
             Assert.IsNull(attributes.AvailablePackages.QfePackages);
+
+            Assert.AreEqual(34, attributes.InstalledPackages.AllPackages.Count());
         }
     }
 }

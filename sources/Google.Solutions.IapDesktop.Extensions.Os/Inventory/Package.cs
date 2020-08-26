@@ -20,19 +20,42 @@
 //
 
 using Newtonsoft.Json;
+using System;
 
 namespace Google.Solutions.IapDesktop.Extensions.Os.Inventory
 {
-    public class Package
+    public class Package : IPackage
     {
         [JsonProperty("Name")]
         public string Name { get; }
 
         [JsonProperty("Arch")]
-        public string Arch { get; }
+        public string Architecture { get; }
 
         [JsonProperty("Version")]
         public string Version { get; }
+
+        //---------------------------------------------------------------------
+        // IPackage
+        //---------------------------------------------------------------------
+
+        string IPackage.PackageId => this.Name;
+
+        string IPackage.Description => null;
+
+        DateTime? IPackage.InstalledOn => null;
+
+        DateTime? IPackage.PublishedOn => null;
+
+        Uri IPackage.Weblink => null;
+
+        PackageCriticality IPackage.Criticality => PackageCriticality.NonCritical;
+
+        string IPackage.PackageType => "Package";
+
+        //---------------------------------------------------------------------
+        // Ctor
+        //---------------------------------------------------------------------
 
         [JsonConstructor]
         public Package(
@@ -41,7 +64,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Os.Inventory
             [JsonProperty("Version")] string version)
         {
             this.Name = name;
-            this.Arch = arch;
+            this.Architecture = arch;
             this.Version = version;
         }
     }

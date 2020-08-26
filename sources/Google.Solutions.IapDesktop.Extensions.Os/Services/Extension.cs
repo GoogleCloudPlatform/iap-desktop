@@ -24,6 +24,7 @@ using Google.Solutions.IapDesktop.Application.Views;
 using Google.Solutions.IapDesktop.Application.Views.ProjectExplorer;
 using Google.Solutions.IapDesktop.Extensions.Os.Properties;
 using Google.Solutions.IapDesktop.Extensions.Os.Views.InstanceDetails;
+using Google.Solutions.IapDesktop.Extensions.Os.Views.PackageInventory;
 using System;
 using System.Windows.Forms;
 
@@ -37,11 +38,20 @@ namespace Google.Solutions.IapDesktop.Extensions.Os.Services
     {
         public Extension(IServiceProvider serviceProvider)
         {
-            var projectExplorer = serviceProvider.GetService<IProjectExplorer>();
-
             //
             // Add commands to project explorer.
             //
+            var projectExplorer = serviceProvider.GetService<IProjectExplorer>();
+
+            projectExplorer.ToolbarCommands.AddCommand(
+                new Command<IProjectExplorerNode>(
+                    "Show &details",
+                    InstanceDetailsViewModel.GetToolbarCommandState,
+                    context => serviceProvider.GetService<InstanceDetailsWindow>().ShowWindow())
+                {
+                    Image = Resources.ComputerDetails_16
+                },
+                4);
 
             projectExplorer.ContextMenuCommands.AddCommand(
                 new Command<IProjectExplorerNode>(
@@ -53,13 +63,27 @@ namespace Google.Solutions.IapDesktop.Extensions.Os.Services
                 },
                 7);
 
-            projectExplorer.ToolbarCommands.AddCommand(
+            var osCommand = projectExplorer.ContextMenuCommands.AddCommand(
                 new Command<IProjectExplorerNode>(
-                    "Show &details",
-                    InstanceDetailsViewModel.GetToolbarCommandState,
-                    context => serviceProvider.GetService<InstanceDetailsWindow>().ShowWindow())
+                    "Soft&ware packages",
+                    PackageInventoryViewModel.GetCommandState,
+                    context => { }),
+                8);
+            osCommand.AddCommand(
+                new Command<IProjectExplorerNode>(
+                    "Show &installed packages",
+                    PackageInventoryViewModel.GetCommandState,
+                    context => serviceProvider.GetService<InstalledPackageInventoryWindow>().ShowWindow())
                 {
-                    Image = Resources.ComputerDetails_16
+                    Image = Resources.Package_16
+                });
+            osCommand.AddCommand(
+                new Command<IProjectExplorerNode>(
+                    "Show &available updates",
+                    PackageInventoryViewModel.GetCommandState,
+                    context => serviceProvider.GetService<AvailablePackageInventoryWindow>().ShowWindow())
+                {
+                    Image = Resources.PackageUpdate_16
                 });
 
             //
@@ -69,13 +93,33 @@ namespace Google.Solutions.IapDesktop.Extensions.Os.Services
             mainForm.ViewCommands.AddCommand(
                 new Command<IMainForm>(
                     "&Instance details",
-                    pseudoContext => CommandState.Enabled,
-                    pseudoContext => serviceProvider.GetService<InstanceDetailsWindow>().ShowWindow())
+                    _ => CommandState.Enabled,
+                    _ => serviceProvider.GetService<InstanceDetailsWindow>().ShowWindow())
                 {
                     Image = Resources.ComputerDetails_16,
                     ShortcutKeys = Keys.Control | Keys.Alt | Keys.I
                 },
                 3);
+            mainForm.ViewCommands.AddCommand(
+                new Command<IMainForm>(
+                    "I&nstalled packages",
+                    _ => CommandState.Enabled,
+                    _ => serviceProvider.GetService<InstalledPackageInventoryWindow>().ShowWindow())
+                {
+                    Image = Resources.Package_16,
+                    ShortcutKeys = Keys.Control | Keys.Alt | Keys.P
+                },
+                4);
+            mainForm.ViewCommands.AddCommand(
+                new Command<IMainForm>(
+                    "&Available updates",
+                    _ => CommandState.Enabled,
+                    _ => serviceProvider.GetService<AvailablePackageInventoryWindow>().ShowWindow())
+                {
+                    Image = Resources.PackageUpdate_16,
+                    ShortcutKeys = Keys.Control | Keys.Alt | Keys.U
+                },
+                5);
         }
     }
 }
