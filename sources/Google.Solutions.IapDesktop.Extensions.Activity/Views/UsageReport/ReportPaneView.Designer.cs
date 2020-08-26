@@ -105,11 +105,10 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Views.UsageReport
             this.nodesHeadline = new System.Windows.Forms.Label();
             this.nodesChart = new System.Windows.Forms.DataVisualization.Charting.Chart();
             this.licensesTab = new System.Windows.Forms.TabPage();
-            this.nodeTypeInfoLabel = new System.Windows.Forms.Label();
-            this.infoIcon = new System.Windows.Forms.PictureBox();
             this.noLicenseDataLabel = new System.Windows.Forms.Label();
             this.licenseChart = new System.Windows.Forms.DataVisualization.Charting.Chart();
             this.byolHeadline = new System.Windows.Forms.Label();
+            this.nodeTypeColumnHeader = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.toolStrip.SuspendLayout();
             this.tabs.SuspendLayout();
             this.instancesTab.SuspendLayout();
@@ -121,7 +120,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Views.UsageReport
             this.nodesSplitContainer.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.nodesChart)).BeginInit();
             this.licensesTab.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.infoIcon)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.licenseChart)).BeginInit();
             this.SuspendLayout();
             // 
@@ -133,7 +131,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Views.UsageReport
             this.includeLicenseMenuItem});
             this.toolStrip.Location = new System.Drawing.Point(0, 0);
             this.toolStrip.Name = "toolStrip";
-            this.toolStrip.Size = new System.Drawing.Size(800, 25);
+            this.toolStrip.Size = new System.Drawing.Size(1124, 25);
             this.toolStrip.TabIndex = 0;
             this.toolStrip.Text = "toolStrip";
             // 
@@ -240,7 +238,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Views.UsageReport
             this.tabs.Multiline = true;
             this.tabs.Name = "tabs";
             this.tabs.SelectedIndex = 0;
-            this.tabs.Size = new System.Drawing.Size(800, 775);
+            this.tabs.Size = new System.Drawing.Size(1124, 834);
             this.tabs.SizeMode = System.Windows.Forms.TabSizeMode.Fixed;
             this.tabs.TabIndex = 1;
             // 
@@ -253,7 +251,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Views.UsageReport
             this.instancesTab.Location = new System.Drawing.Point(140, 4);
             this.instancesTab.Name = "instancesTab";
             this.instancesTab.Padding = new System.Windows.Forms.Padding(3);
-            this.instancesTab.Size = new System.Drawing.Size(656, 767);
+            this.instancesTab.Size = new System.Drawing.Size(980, 826);
             this.instancesTab.TabIndex = 0;
             this.instancesTab.Text = "Instances";
             this.instancesTab.UseVisualStyleBackColor = true;
@@ -265,7 +263,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Views.UsageReport
             this.noInstancesDataLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Italic, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.noInstancesDataLabel.Location = new System.Drawing.Point(330, 160);
             this.noInstancesDataLabel.Name = "noInstancesDataLabel";
-            this.noInstancesDataLabel.Size = new System.Drawing.Size(0, 13);
+            this.noInstancesDataLabel.Size = new System.Drawing.Size(324, 13);
             this.noInstancesDataLabel.TabIndex = 5;
             this.noInstancesDataLabel.Text = "No data to display";
             this.noInstancesDataLabel.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
@@ -291,7 +289,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Views.UsageReport
             this.instancesList.Name = "instancesList";
             this.instancesList.OwnerDraw = true;
             this.instancesList.SelectedModelItem = null;
-            this.instancesList.Size = new System.Drawing.Size(642, 428);
+            this.instancesList.Size = new System.Drawing.Size(966, 487);
             this.instancesList.TabIndex = 2;
             this.instancesList.UseCompatibleStateImageBehavior = false;
             this.instancesList.View = System.Windows.Forms.View.Details;
@@ -333,7 +331,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Views.UsageReport
             // licenseColumnHeader
             // 
             this.licenseColumnHeader.Text = "License";
-            this.licenseColumnHeader.Width = 25;
+            this.licenseColumnHeader.Width = 188;
             // 
             // instancesHeader
             // 
@@ -371,7 +369,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Views.UsageReport
             series1.ChartArea = "mainArea";
             series1.Name = "Series1";
             this.instancesChart.Series.Add(series1);
-            this.instancesChart.Size = new System.Drawing.Size(642, 300);
+            this.instancesChart.Size = new System.Drawing.Size(966, 300);
             this.instancesChart.TabIndex = 0;
             this.instancesChart.GetToolTipText += new System.EventHandler<System.Windows.Forms.DataVisualization.Charting.ToolTipEventArgs>(this.chart_GetToolTipText);
             this.instancesChart.SelectionRangeChanged += new System.EventHandler<System.Windows.Forms.DataVisualization.Charting.CursorEventArgs>(this.instancesChart_SelectionRangeChanged);
@@ -385,7 +383,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Views.UsageReport
             this.nodesTab.Location = new System.Drawing.Point(140, 4);
             this.nodesTab.Name = "nodesTab";
             this.nodesTab.Padding = new System.Windows.Forms.Padding(3);
-            this.nodesTab.Size = new System.Drawing.Size(656, 767);
+            this.nodesTab.Size = new System.Drawing.Size(980, 826);
             this.nodesTab.TabIndex = 1;
             this.nodesTab.Text = "Sole-tenant nodes";
             this.nodesTab.UseVisualStyleBackColor = true;
@@ -397,7 +395,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Views.UsageReport
             this.noNodesDataLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Italic, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.noNodesDataLabel.Location = new System.Drawing.Point(330, 160);
             this.noNodesDataLabel.Name = "noNodesDataLabel";
-            this.noNodesDataLabel.Size = new System.Drawing.Size(219, 13);
+            this.noNodesDataLabel.Size = new System.Drawing.Size(301, 13);
             this.noNodesDataLabel.TabIndex = 4;
             this.noNodesDataLabel.Text = "No sole-tenant nodes used";
             this.noNodesDataLabel.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
@@ -419,12 +417,15 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Views.UsageReport
             // 
             this.nodesSplitContainer.Panel2.Controls.Add(this.nodePlacementsHeadline);
             this.nodesSplitContainer.Panel2.Controls.Add(this.nodePlacementsList);
-            this.nodesSplitContainer.Size = new System.Drawing.Size(861, 602);
-            this.nodesSplitContainer.SplitterDistance = 301;
+            this.nodesSplitContainer.Size = new System.Drawing.Size(967, 484);
+            this.nodesSplitContainer.SplitterDistance = 242;
             this.nodesSplitContainer.TabIndex = 3;
             // 
             // nodesList
             // 
+            this.nodesList.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.nodesList.AutoResizeColumnsOnUpdate = false;
             this.nodesList.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
             this.serverIdColumnHeader,
@@ -433,15 +434,15 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Views.UsageReport
             this.firstUseColumnHeader,
             this.lastUseColumnHeader,
             this.daysUsedColumnHeader,
-            this.peakInstancesColumnHeader});
-            this.nodesList.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.peakInstancesColumnHeader,
+            this.nodeTypeColumnHeader});
             this.nodesList.FullRowSelect = true;
             this.nodesList.HideSelection = false;
             this.nodesList.Location = new System.Drawing.Point(0, 0);
             this.nodesList.Name = "nodesList";
             this.nodesList.OwnerDraw = true;
             this.nodesList.SelectedModelItem = null;
-            this.nodesList.Size = new System.Drawing.Size(861, 301);
+            this.nodesList.Size = new System.Drawing.Size(967, 239);
             this.nodesList.TabIndex = 0;
             this.nodesList.UseCompatibleStateImageBehavior = false;
             this.nodesList.View = System.Windows.Forms.View.Details;
@@ -479,7 +480,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Views.UsageReport
             // peakInstancesColumnHeader
             // 
             this.peakInstancesColumnHeader.Text = "Peak VMs";
-            this.peakInstancesColumnHeader.Width = 173;
+            this.peakInstancesColumnHeader.Width = 100;
             // 
             // nodePlacementsHeadline
             // 
@@ -511,7 +512,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Views.UsageReport
             this.nodePlacementsList.Name = "nodePlacementsList";
             this.nodePlacementsList.OwnerDraw = true;
             this.nodePlacementsList.SelectedModelItem = null;
-            this.nodePlacementsList.Size = new System.Drawing.Size(861, 268);
+            this.nodePlacementsList.Size = new System.Drawing.Size(967, 209);
             this.nodePlacementsList.TabIndex = 1;
             this.nodePlacementsList.UseCompatibleStateImageBehavior = false;
             this.nodePlacementsList.View = System.Windows.Forms.View.Details;
@@ -544,7 +545,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Views.UsageReport
             // nodePlacementToColumnHeader
             // 
             this.nodePlacementToColumnHeader.Text = "To (UTC)";
-            this.nodePlacementToColumnHeader.Width = 283;
+            this.nodePlacementToColumnHeader.Width = 389;
             // 
             // nodesHeadline
             // 
@@ -582,42 +583,22 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Views.UsageReport
             series2.ChartArea = "mainArea";
             series2.Name = "Series1";
             this.nodesChart.Series.Add(series2);
-            this.nodesChart.Size = new System.Drawing.Size(865, 300);
+            this.nodesChart.Size = new System.Drawing.Size(971, 300);
             this.nodesChart.TabIndex = 1;
             this.nodesChart.GetToolTipText += new System.EventHandler<System.Windows.Forms.DataVisualization.Charting.ToolTipEventArgs>(this.chart_GetToolTipText);
             this.nodesChart.SelectionRangeChanged += new System.EventHandler<System.Windows.Forms.DataVisualization.Charting.CursorEventArgs>(this.nodesChart_SelectionRangeChanged);
             // 
             // licensesTab
             // 
-            this.licensesTab.Controls.Add(this.nodeTypeInfoLabel);
-            this.licensesTab.Controls.Add(this.infoIcon);
             this.licensesTab.Controls.Add(this.noLicenseDataLabel);
             this.licensesTab.Controls.Add(this.licenseChart);
             this.licensesTab.Controls.Add(this.byolHeadline);
             this.licensesTab.Location = new System.Drawing.Point(140, 4);
             this.licensesTab.Name = "licensesTab";
-            this.licensesTab.Size = new System.Drawing.Size(656, 767);
+            this.licensesTab.Size = new System.Drawing.Size(980, 826);
             this.licensesTab.TabIndex = 2;
             this.licensesTab.Text = "Licenses";
             this.licensesTab.UseVisualStyleBackColor = true;
-            // 
-            // nodeTypeInfoLabel
-            // 
-            this.nodeTypeInfoLabel.AutoSize = true;
-            this.nodeTypeInfoLabel.Location = new System.Drawing.Point(56, 339);
-            this.nodeTypeInfoLabel.Name = "nodeTypeInfoLabel";
-            this.nodeTypeInfoLabel.Size = new System.Drawing.Size(33, 13);
-            this.nodeTypeInfoLabel.TabIndex = 9;
-            this.nodeTypeInfoLabel.Text = "Note:";
-            // 
-            // infoIcon
-            // 
-            this.infoIcon.Image = ((System.Drawing.Image)(resources.GetObject("infoIcon.Image")));
-            this.infoIcon.Location = new System.Drawing.Point(34, 336);
-            this.infoIcon.Name = "infoIcon";
-            this.infoIcon.Size = new System.Drawing.Size(16, 16);
-            this.infoIcon.TabIndex = 8;
-            this.infoIcon.TabStop = false;
             // 
             // noLicenseDataLabel
             // 
@@ -626,7 +607,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Views.UsageReport
             this.noLicenseDataLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Italic, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.noLicenseDataLabel.Location = new System.Drawing.Point(330, 160);
             this.noLicenseDataLabel.Name = "noLicenseDataLabel";
-            this.noLicenseDataLabel.Size = new System.Drawing.Size(0, 13);
+            this.noLicenseDataLabel.Size = new System.Drawing.Size(258, 16);
             this.noLicenseDataLabel.TabIndex = 7;
             this.noLicenseDataLabel.Text = "No Windows BYOL instances used";
             this.noLicenseDataLabel.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
@@ -656,7 +637,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Views.UsageReport
             series3.ChartArea = "mainArea";
             series3.Name = "Series1";
             this.licenseChart.Series.Add(series3);
-            this.licenseChart.Size = new System.Drawing.Size(642, 300);
+            this.licenseChart.Size = new System.Drawing.Size(966, 300);
             this.licenseChart.TabIndex = 6;
             this.licenseChart.GetToolTipText += new System.EventHandler<System.Windows.Forms.DataVisualization.Charting.ToolTipEventArgs>(this.chart_GetToolTipText);
             // 
@@ -671,12 +652,18 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Views.UsageReport
             this.byolHeadline.TabIndex = 2;
             this.byolHeadline.Text = "Scheduled Windows BYOL cores";
             // 
+            // nodeTypeColumnHeader
+            // 
+            this.nodeTypeColumnHeader.Text = "Node type";
+            this.nodeTypeColumnHeader.Width = 179;
+            // 
             // ReportPaneView
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.AutoScroll = true;
             this.AutoScrollMinSize = new System.Drawing.Size(800, 800);
+            //this.ClientSize = new System.Drawing.Size(1124, 859);
             this.Controls.Add(this.tabs);
             this.Controls.Add(this.toolStrip);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
@@ -698,7 +685,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Views.UsageReport
             ((System.ComponentModel.ISupportInitialize)(this.nodesChart)).EndInit();
             this.licensesTab.ResumeLayout(false);
             this.licensesTab.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.infoIcon)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.licenseChart)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
@@ -757,9 +743,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Views.UsageReport
         private System.Windows.Forms.Label byolHeadline;
         private System.Windows.Forms.Label noLicenseDataLabel;
         private System.Windows.Forms.DataVisualization.Charting.Chart licenseChart;
-        private System.Windows.Forms.Label nodeTypeInfoLabel;
-        private System.Windows.Forms.PictureBox infoIcon;
         private System.Windows.Forms.ColumnHeader osColumnHeader;
         private System.Windows.Forms.ColumnHeader licenseColumnHeader;
+        private System.Windows.Forms.ColumnHeader nodeTypeColumnHeader;
     }
 }

@@ -35,6 +35,10 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Adapters
     [Category("IntegrationTest")]
     public class TestComputeEngineAdapter : FixtureBase
     {
+        //---------------------------------------------------------------------
+        // Instances.
+        //---------------------------------------------------------------------
+
         [Test]
         public async Task WhenUserInViewerRole_ThenListInstancesAsyncReturnsInstances(
             [LinuxInstance] ResourceTask<InstanceLocator> testInstance,
@@ -98,6 +102,58 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Adapters
         }
 
         [Test]
+        public async Task WhenUserNotInRole_ThenGetInstanceAsyncThrowsResourceAccessDeniedException(
+            [LinuxInstance] ResourceTask<InstanceLocator> testInstance,
+            [Credential(Role = PredefinedRole.IapTunnelUser)] ResourceTask<ICredential> credential)
+        {
+            var locator = await testInstance;
+            var adapter = new ComputeEngineAdapter(await credential);
+
+            AssertEx.ThrowsAggregateException<ResourceAccessDeniedException>(
+                () => adapter.GetInstanceAsync(
+                    locator,
+                    CancellationToken.None).Wait());
+        }
+
+        //---------------------------------------------------------------------
+        // Nodes.
+        //---------------------------------------------------------------------
+
+        [Test]
+        public async Task WhenUserNotInRole_ThenListNodeGroupsAsyncThrowsResourceAccessDeniedException(
+            [Credential(Role = PredefinedRole.IapTunnelUser)] ResourceTask<ICredential> credential)
+        {
+            var adapter = new ComputeEngineAdapter(await credential);
+
+            AssertEx.ThrowsAggregateException<ResourceAccessDeniedException>(
+                () => adapter.ListNodeGroupsAsync(
+                    TestProject.ProjectId,
+                    CancellationToken.None).Wait());
+        }
+
+        [Test]
+        public async Task WhenUserNotInRole_ThenListNodesAsyncThrowsResourceAccessDeniedException(
+            [Credential(Role = PredefinedRole.IapTunnelUser)] ResourceTask<ICredential> credential)
+        {
+            var adapter = new ComputeEngineAdapter(await credential);
+
+            AssertEx.ThrowsAggregateException<ResourceAccessDeniedException>(
+                () => adapter.ListNodesAsync(
+                    TestProject.ProjectId,
+                    CancellationToken.None).Wait());
+
+            AssertEx.ThrowsAggregateException<ResourceAccessDeniedException>(
+                () => adapter.ListNodesAsync(
+                    new ZoneLocator(TestProject.ProjectId, "us-central1-a"),
+                    "group-1",
+                    CancellationToken.None).Wait());
+        }
+
+        //---------------------------------------------------------------------
+        // Disks.
+        //---------------------------------------------------------------------
+
+        [Test]
         public async Task WhenUserNotInRole_ThenListDisksAsyncThrowsResourceAccessDeniedException(
             [Credential(Role = PredefinedRole.IapTunnelUser)] ResourceTask<ICredential> credential)
         {
@@ -108,6 +164,10 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Adapters
                     TestProject.ProjectId,
                     CancellationToken.None).Wait());
         }
+
+        //---------------------------------------------------------------------
+        // Images.
+        //---------------------------------------------------------------------
 
         [Test]
         public async Task WhenUserNotInRole_ThenGetImageThrowsResourceAccessDeniedException(
@@ -121,19 +181,9 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Adapters
                     CancellationToken.None).Wait());
         }
 
-        [Test]
-        public async Task WhenUserNotInRole_ThenGetInstanceAsyncThrowsResourceAccessDeniedException(
-            [LinuxInstance] ResourceTask<InstanceLocator> testInstance,
-            [Credential(Role = PredefinedRole.IapTunnelUser)] ResourceTask<ICredential> credential)
-        {
-            var locator = await testInstance;
-            var adapter = new ComputeEngineAdapter(await credential);
-
-            AssertEx.ThrowsAggregateException<ResourceAccessDeniedException>(
-                () => adapter.GetInstanceAsync(
-                    locator,
-                    CancellationToken.None).Wait());
-        }
+        //---------------------------------------------------------------------
+        // Guest attributes.
+        //---------------------------------------------------------------------
 
         [Test]
         public async Task WhenUserNotInRole_ThenGetGuestAttributesAsyncThrowsResourceAccessDeniedException(
@@ -149,6 +199,11 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Adapters
                     "somepath/",
                     CancellationToken.None).Wait());
         }
+
+
+        //---------------------------------------------------------------------
+        // TestPermission.
+        //---------------------------------------------------------------------
 
         [Test]
         public async Task WhenUserInRole_ThenIsGrantedPermissionReturnsTrue(

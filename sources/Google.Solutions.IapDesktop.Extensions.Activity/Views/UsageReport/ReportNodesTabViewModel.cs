@@ -44,12 +44,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Views.UsageReport
             // Create histogram, disregarding the date selection.
             this.Histogram = this.currentNodeSet.MaxNodesByDay;
 
-            // Normally, all nodes should have a proper Server ID. But if a VM
-            // as been freshly placed on a node, the Server ID might not be known
-            // yet (null). 
-            Debug.Assert(this.currentNodeSet.Nodes.All(
-                n => n.ServerId != null ||
-                     n.Placements.All(p => p.From == p.To)));
+            Debug.Assert(this.currentNodeSet.Nodes.All(n => n.ServerId != null));
 
             // For the list of nodes, apply the date selection.
             this.Nodes.Clear();

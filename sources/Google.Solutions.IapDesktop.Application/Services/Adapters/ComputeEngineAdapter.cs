@@ -62,6 +62,19 @@ namespace Google.Solutions.IapDesktop.Application.Services.Adapters
             string projectId,
             CancellationToken cancellationToken);
 
+        Task<IEnumerable<NodeGroup>> ListNodeGroupsAsync(
+            string projectId,
+            CancellationToken cancellationToken);
+
+        Task<IEnumerable<NodeGroupNode>> ListNodesAsync(
+            ZoneLocator zone,
+            string nodeGroup,
+            CancellationToken cancellationToken);
+
+        Task<IEnumerable<NodeGroupNode>> ListNodesAsync(
+            string projectId,
+            CancellationToken cancellationToken);
+
         Task<NetworkCredential> ResetWindowsUserAsync(
             InstanceLocator instanceRef,
             string username,
@@ -274,6 +287,99 @@ namespace Google.Solutions.IapDesktop.Application.Services.Adapters
                     throw new ResourceAccessDeniedException(
                         $"Access to disks in project {projectId} has been denied", e);
                 }
+            }
+        }
+
+        public async Task<IEnumerable<NodeGroup>> ListNodeGroupsAsync(
+            string projectId,
+            CancellationToken cancellationToken)
+        {
+            using (TraceSources.IapDesktop.TraceMethod().WithParameters(projectId))
+            {
+                try
+                {
+                    var groupsByZone = await new PageStreamer<
+                        NodeGroupsScopedList,
+                        NodeGroupsResource.AggregatedListRequest,
+                        NodeGroupAggregatedList,
+                        string>(
+                            (req, token) => req.PageToken = token,
+                            response => response.NextPageToken,
+                            response => response.Items.Values.Where(v => v != null))
+                        .FetchAllAsync(
+                            this.service.NodeGroups.AggregatedList(projectId),
+                            cancellationToken)
+                        .ConfigureAwait(false);
+
+                    var result = groupsByZone
+                        .Where(z => z.NodeGroups != null)    // API returns null for empty zones.
+                        .SelectMany(zone => zone.NodeGroups);
+
+                    TraceSources.IapDesktop.TraceVerbose("Found {0} node groups", result.Count());
+
+                    return result;
+                }
+                catch (GoogleApiException e) when (e.Error != null && e.Error.Code == 403)
+                {
+                    throw new ResourceAccessDeniedException(
+                        $"Access to node groups in project {projectId} has been denied", e);
+                }
+            }
+        }
+
+        public async Task<IEnumerable<NodeGroupNode>> ListNodesAsync(
+            ZoneLocator zone,
+            string nodeGroup,
+            CancellationToken cancellationToken)
+        {
+            using (TraceSources.IapDesktop.TraceMethod().WithParameters(zone, nodeGroup))
+            {
+                try
+                {
+                    return await new PageStreamer<
+                        NodeGroupNode,
+                        NodeGroupsResource.ListNodesRequest,
+                        NodeGroupsListNodes,
+                        string>(
+                            (req, token) => req.PageToken = token,
+                            response => response.NextPageToken,
+                            response => response.Items)
+                        .FetchAllAsync(
+                            this.service.NodeGroups.ListNodes(zone.ProjectId, zone.Name, nodeGroup),
+                            cancellationToken)
+                        .ConfigureAwait(false);
+                }
+                catch (GoogleApiException e) when (e.Error != null && e.Error.Code == 403)
+                {
+                    throw new ResourceAccessDeniedException(
+                        $"Access to nodes in project {zone.ProjectId} has been denied", e);
+                }
+            }
+        }
+
+        public async Task<IEnumerable<NodeGroupNode>> ListNodesAsync(
+            string projectId,
+            CancellationToken cancellationToken)
+        {
+            using (TraceSources.IapDesktop.TraceMethod().WithParameters(projectId))
+            {
+                var nodeGroups = await ListNodeGroupsAsync(
+                        projectId,
+                        cancellationToken)
+                    .ConfigureAwait(false);
+
+                var nodesAcrossGroups = Enumerable.Empty<NodeGroupNode>();
+
+                foreach (var nodeGroup in nodeGroups)
+                {
+                    nodesAcrossGroups = nodesAcrossGroups.Concat(await ListNodesAsync(
+                            ZoneLocator.FromString(nodeGroup.Zone),
+                            nodeGroup.Name,
+                            cancellationToken)
+                        .ConfigureAwait(false));
+                }
+
+                return nodesAcrossGroups;
             }
         }
 

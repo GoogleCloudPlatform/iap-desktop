@@ -33,19 +33,32 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.History
         /// and leavers. The timestamps in the result are not guaranteed
         /// to be unique.
         /// </summary>
-        /// <param name="joinersUnsorted"></param>
-        /// <param name="leaversUnsorted"></param>
-        /// <returns></returns>
-        public static IEnumerable<DataPoint> Balances(
+        private static IEnumerable<DataPoint> Balances(
             IEnumerable<DateTime> joinersUnsorted,
             IEnumerable<DateTime> leaversUnsorted)
         {
+            return Balances(
+                joinersUnsorted.Select(d => new DataPoint(d, 1)),
+                leaversUnsorted.Select(d => new DataPoint(d, 1)));
+        }
+
+        /// <summary>
+        /// Returns the balance numbers considering weights.
+        /// </summary>
+        private static IEnumerable<DataPoint> Balances(
+            IEnumerable<DataPoint> joinersUnsorted,
+            IEnumerable<DataPoint> leaversUnsorted)
+        {
             Debug.Assert(joinersUnsorted.Count() == leaversUnsorted.Count());
 
-            var joinersWithDelta = joinersUnsorted
-                .Select(t => new DataPoint(t, 1));
+            Debug.Assert(joinersUnsorted.All(dp => dp.Value >= 1));
+            Debug.Assert(leaversUnsorted.All(dp => dp.Value >= 1));
+
+            // For joiners, use the positive value as delta,
+            // for leavers, use the negared value.
+            var joinersWithDelta = joinersUnsorted;
             var leaversWithDelta = leaversUnsorted
-                .Select(t => new DataPoint(t, -1));
+                .Select(t => new DataPoint(t.Timestamp, -t.Value));
 
             // Combine them into a sequence: +1 +1 -1 +1 +1 -1 -1 ...
             var sequence =
@@ -81,9 +94,19 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.History
             }
         }
 
+
         public static IEnumerable<DataPoint> DailyHistogram(
             IEnumerable<DateTime> joinersUnsorted,
             IEnumerable<DateTime> leaversUnsorted)
+        {
+            return DailyHistogram(
+                joinersUnsorted.Select(d => new DataPoint(d, 1)),
+                leaversUnsorted.Select(d => new DataPoint(d, 1)));
+        }
+
+        public static IEnumerable<DataPoint> DailyHistogram(
+            IEnumerable<DataPoint> joinersUnsorted,
+            IEnumerable<DataPoint> leaversUnsorted)
         {
             if (!joinersUnsorted.Any())
             {

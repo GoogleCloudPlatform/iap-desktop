@@ -19,6 +19,7 @@
 // under the License.
 //
 
+using Google.Solutions.Common.Locator;
 using Google.Solutions.IapDesktop.Extensions.Activity.Logs;
 using Newtonsoft.Json.Linq;
 using System;
@@ -31,6 +32,28 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Events.System
         public const string Method = "NotifyInstanceLocation";
 
         public string ServerId => base.LogRecord.ProtoPayload.Metadata["serverId"].Value<string>();
+
+        public NodeTypeLocator NodeType
+        {
+            get
+            {
+                // The node type is unqualified, e.g. "n1-node-96-624".
+
+                if (base.LogRecord.ProtoPayload.Metadata.ContainsKey("nodeType") &&
+                    base.LogRecord.Resource.Labels.ContainsKey("project_id") &&
+                    base.LogRecord.Resource.Labels.ContainsKey("zone"))
+                {
+                    return new NodeTypeLocator(
+                        base.LogRecord.Resource.Labels["project_id"],
+                        base.LogRecord.Resource.Labels["zone"],
+                        base.LogRecord.ProtoPayload.Metadata["nodeType"].Value<string>());
+                }
+                else
+                {
+                    return null;
+                }
+            }
+        }
 
         public DateTime SchedulingTimestamp => base.LogRecord.ProtoPayload.Metadata["timestamp"].Value<DateTime>();
 

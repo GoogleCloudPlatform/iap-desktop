@@ -118,6 +118,7 @@
     <Compile Include="Services\Adapters\TestDateRange.cs" />
     <Compile Include="Services\Adapters\TestStorageAdapter.cs" />
     <Compile Include="Services\Adapters\TestStorageObjectLocator.cs" />
+    <Compile Include="Services\UsageReport\TestNodeAnnotation.cs" />
     <Compile Include="Services\UsageReport\TestReportBuilderSources.cs" />
     <Compile Include="Views\EventLog\TestEventLogViewModel.cs" />
     <Compile Include="Services\UsageReport\TestReportBuilderLicenseAnnotations.cs" />

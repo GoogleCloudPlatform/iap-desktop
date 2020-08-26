@@ -19,14 +19,33 @@
 // under the License.
 //
 
+using Google.Solutions.Common.Diagnostics;
+using Google.Solutions.Common.Locator;
+using Google.Solutions.IapDesktop.Application;
 using Newtonsoft.Json;
+using System.Collections;
+using System.Collections.Generic;
+using System.Diagnostics;
 
 namespace Google.Solutions.IapDesktop.Extensions.Activity.Services.UsageReport
 {
     public class NodeAnnotation
     {
-        internal static readonly NodeAnnotation Default =
-            new NodeAnnotation("n1-node-96-624", 56);
+        // Up until mid 2020, this was the only node type available.
+        private static readonly string defaultNodeType = "n1-node-96-624";
+
+        private static readonly IDictionary<string, NodeAnnotation> knownTypes
+            = new Dictionary<string, NodeAnnotation>()
+            {
+                // See https://cloud.google.com/compute/docs/nodes/sole-tenant-nodes#node_types
+                // The core count is not available via API, cf. b/166257346.
+                { "c2-node-60-240", new NodeAnnotation("c2-node-60-240", 36) },
+                { "m1-node-96-1433", new NodeAnnotation("m1-node-96-1433", 56) },
+                { "n1-node-96-624", new NodeAnnotation("n1-node-96-624", 56) },
+                { "n2-node-80-640", new NodeAnnotation("n2-node-80-640", 48)},
+                { "n2d-node-224-896", new NodeAnnotation("n2d-node-224-896", 128) }
+            };
+
 
         [JsonProperty("physicalCores")]
         public int PhysicalCores { get; }
@@ -41,6 +60,26 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services.UsageReport
         {
             this.NodeType = nodeType;
             this.PhysicalCores = physicalCores;
+        }
+
+        internal static NodeAnnotation FromNodeType(NodeTypeLocator nodeType)
+        {
+            if (nodeType == null)
+            {
+                return knownTypes[defaultNodeType];
+            }
+            else if (knownTypes.TryGetValue(nodeType.Name, out NodeAnnotation annotation))
+            {
+                return annotation;
+            }
+            else
+            {
+                TraceSources.IapDesktop.TraceWarning(
+                    "Unrecognized node type {0}, assuming defaults", 
+                    nodeType);
+
+                return knownTypes[defaultNodeType];
+            }
         }
     }
 }

@@ -35,6 +35,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.History
         {
             var node = new NodeHistory(
                 "server-1",
+                null,
                 DateTime.UtcNow.AddDays(-1),
                 DateTime.UtcNow,
                 0,
@@ -55,6 +56,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.History
                 null);
             var node = new NodeHistory(
                 "server-1",
+                null,
                 DateTime.UtcNow.AddDays(-1),
                 DateTime.UtcNow,
                 0,
@@ -81,6 +83,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.History
                 null);
             var node = new NodeHistory(
                 "server-1",
+                null,
                 DateTime.UtcNow.AddDays(-1),
                 DateTime.UtcNow,
                 0,
@@ -101,6 +104,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.History
         {
             var node = new NodeHistory(
                 "server-1",
+                null,
                 DateTime.UtcNow.AddDays(-1),
                 DateTime.UtcNow,
                 0,
@@ -121,6 +125,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.History
                 null);
             var node = new NodeHistory(
                 "server-1",
+                null,
                 baselineDate,
                 baselineDate.AddDays(2),
                 0,

@@ -85,7 +85,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Views.UsageReport
             this.components = new System.ComponentModel.Container();
 
             InitializeComponent();
-
+            
             // NB. If the tab control is not shown at the correct size, remove
             // the `.ClientSize = xx` statement in InitializeComponent. 
 
@@ -169,12 +169,14 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Views.UsageReport
             //
             // Instances tab.
             //
+            // NB. Do not show "From" if we do not have a real date for it.
+            //
             this.instancesList.BindCollection(this.viewModel.InstanceReportPane.Instances);
             this.instancesList.BindColumn(0, n => n.Instance?.InstanceId.ToString());
             this.instancesList.BindColumn(1, n => n.Instance?.Reference?.Name);
             this.instancesList.BindColumn(2, n => n.Instance?.Reference?.Zone);
             this.instancesList.BindColumn(3, n => n.Instance?.Reference?.ProjectId);
-            this.instancesList.BindColumn(4, n => n.From.ToString());
+            this.instancesList.BindColumn(4, n => n.From == n.To ? null : n.From.ToString());
             this.instancesList.BindColumn(5, n => n.To.ToString());
             this.instancesList.BindColumn(6, n => this.viewModel.InstanceReportPane
                 .GetImageAnnotation(n.Instance).OperatingSystem.ToString());
@@ -194,14 +196,17 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Views.UsageReport
             //
             // Nodes tab.
             //
+            // NB. Do not show "FirstUse" if we do not have a real date for it.
+            //
             this.nodesList.BindCollection(this.viewModel.NodeReportPane.Nodes);
             this.nodesList.BindColumn(0, n => n.ServerId);
             this.nodesList.BindColumn(1, n => n.Zone);
             this.nodesList.BindColumn(2, n => n.ProjectId);
-            this.nodesList.BindColumn(3, n => n.FirstUse.ToString());
+            this.nodesList.BindColumn(3, n => n.FirstUse == n.LastUse ? null : n.FirstUse.ToString());
             this.nodesList.BindColumn(4, n => n.LastUse.ToString());
             this.nodesList.BindColumn(5, n => Math.Ceiling((n.LastUse - n.FirstUse).TotalDays).ToString());
             this.nodesList.BindColumn(6, n => n.PeakConcurrentPlacements.ToString());
+            this.nodesList.BindColumn(7, n => n.NodeType?.Name);
 
             this.nodesList.BindProperty(
                 l => l.SelectedModelItem,
@@ -215,7 +220,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Views.UsageReport
             this.nodePlacementsList.BindColumn(1, n => n.Instance?.Reference?.Name);
             this.nodePlacementsList.BindColumn(2, n => n.Instance?.Reference?.Zone);
             this.nodePlacementsList.BindColumn(3, n => n.Instance?.Reference?.ProjectId);
-            this.nodePlacementsList.BindColumn(4, n => n.From.ToString());
+            this.nodePlacementsList.BindColumn(4, n => n.From == n.To ? null : n.From.ToString());
             this.nodePlacementsList.BindColumn(5, n => n.To.ToString());
             this.nodePlacementsList.AddCopyCommands();
 
@@ -230,19 +235,13 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Views.UsageReport
             //
             // Licenses tab.
             //
-            this.nodeTypeInfoLabel.BindProperty(
-                l => l.Text,
-                this.viewModel,
-                v => v.LicensesReportPane.NodeTypeWarning,
-                this.components);
+            
             this.components.Add(this.viewModel.LicensesReportPane.OnPropertyChange(
                 v => v.Histogram,
                 dataPoints =>
                 {
                     Plot(dataPoints, this.licenseChart.Series[0]);
                     this.noLicenseDataLabel.Visible = !dataPoints.Any();
-                    this.infoIcon.Visible =
-                        this.nodeTypeInfoLabel.Visible = dataPoints.Any();
                 }));
 
             this.viewModel.Repopulate();

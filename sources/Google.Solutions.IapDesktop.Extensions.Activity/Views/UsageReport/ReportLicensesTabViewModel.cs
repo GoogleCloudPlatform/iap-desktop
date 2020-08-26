@@ -37,15 +37,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Views.UsageReport
                 Tenancies.SoleTenant);
 
             // Create histogram, disregarding the date selection.
-            this.Histogram = nodeSet.MaxNodesByDay
-                .Select(dp => new DataPoint()
-                {
-                    Timestamp = dp.Timestamp,
-
-                    // XXX: This is only accurate as long as all nodes use the
-                    // same node type.
-                    Value = dp.Value * NodeAnnotation.Default.PhysicalCores
-                });
+            this.Histogram = nodeSet.MaxPhysicalCoresByDay(
+                nodeType => NodeAnnotation.FromNodeType(nodeType).PhysicalCores);
         }
 
         public ReportLicensesTabViewModel(ReportViewModel parent)
@@ -59,8 +52,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Views.UsageReport
         //---------------------------------------------------------------------
 
         public string NodeTypeWarning =>
-            $"All nodes are assumed to use the node type {NodeAnnotation.Default.NodeType}" +
-            $" ({NodeAnnotation.Default.PhysicalCores} cores)";
+            $"All nod";
 
         //---------------------------------------------------------------------
         // "Input" properties.

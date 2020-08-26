@@ -19,6 +19,8 @@
 // under the License.
 //
 
+using Google.Solutions.Common.Locator;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -43,6 +45,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.History
                 {
                     Instance = i,
                     p.ServerId,
+                    p.NodeType,
                     p.From,
                     p.To,
                     p.Tenancy
@@ -50,18 +53,19 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.History
                 .Where(p => tenancies.HasFlag(p.Tenancy))
                 .GroupBy(p => p.ServerId);
 
-            foreach (var server in placementsByServer)
+            foreach (var placements in placementsByServer)
             {
                 var peakInstanceCount = (uint)TimeseriesUtil.HighWatermark(
-                    server.Select(p => p.From),
-                    server.Select(p => p.To));
+                    placements.Select(p => p.From),
+                    placements.Select(p => p.To));
 
                 yield return new NodeHistory(
-                    server.Key,
-                    server.Select(p => p.From).Min(),
-                    server.Select(p => p.To).Max(),
+                    placements.Key,
+                    placements.Where(p => p.NodeType != null).Select(p => p.NodeType).FirstOrDefault(),
+                    placements.Select(p => p.From).Min(),
+                    placements.Select(p => p.To).Max(),
                     peakInstanceCount,
-                    server.Select(p => new NodePlacement(p.From, p.To, p.Instance)));
+                    placements.Select(p => new NodePlacement(p.From, p.To, p.Instance)));
             }
         }
 
@@ -76,6 +80,16 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.History
                     this.Nodes.Select(p => p.FirstUse),
                     this.Nodes.Select(p => p.LastUse));
 
+        /// <summary>
+        /// Create time series indicating the maximum number of parallel 
+        /// physical cores for each day of this set's existence.
+        /// </summary>
+        public IEnumerable<DataPoint> MaxPhysicalCoresByDay(Func<NodeTypeLocator, int> resolveCoreCount) =>
+            this.Nodes == null
+                ? Enumerable.Empty<DataPoint>()
+                : TimeseriesUtil.DailyHistogram(
+                    this.Nodes.Select(p => new DataPoint(p.FirstUse, resolveCoreCount(p.NodeType))),
+                    this.Nodes.Select(p => new DataPoint(p.LastUse, resolveCoreCount(p.NodeType))));
 
         /// <summary>
         /// Create time series indicating the maximum number of parallel 

@@ -24,6 +24,7 @@ using Google.Solutions.Common.Diagnostics;
 using Google.Solutions.Common.Locator;
 using Google.Solutions.Common.Util;
 using Google.Solutions.IapDesktop.Application;
+using Google.Solutions.IapDesktop.Application.Services.Adapters;
 using Google.Solutions.IapDesktop.Extensions.Activity.Events;
 using System;
 using System.Collections.Generic;
@@ -81,7 +82,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.History
             ImageLocator image,
             InstanceState state,
             DateTime lastSeen,
-            Tenancies tenancy)
+            Tenancies tenancy,
+            string serverId,
+            NodeTypeLocator nodeType)
         {
             Debug.Assert(!tenancy.IsFlagCombination());
             this.instanceBuilders[instanceId] = InstanceHistoryBuilder.ForExistingInstance(
@@ -90,11 +93,14 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.History
                 image,
                 state,
                 lastSeen,
-                tenancy);
+                tenancy,
+                serverId,
+                nodeType);
         }
 
         public void AddExistingInstances(
             IEnumerable<Instance> instances,
+            IEnumerable<NodeGroupNode> nodes,
             IEnumerable<Disk> disks,
             string projectId)
         {
@@ -131,20 +137,54 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.History
                         image = ImageLocator.FromString(imageUrl);
                     }
 
-                    AddExistingInstance(
-                        (ulong)instance.Id.Value,
-                        new InstanceLocator(
+                    var instanceLocator = new InstanceLocator(
                             projectId,
                             ShortZoneIdFromUrl(instance.Zone),
-                            instance.Name),
-                        image,
-                        instance.Status == "RUNNING"
-                            ? InstanceState.Running
-                            : InstanceState.Terminated,
-                        this.EndDate,
-                        instance.Scheduling.NodeAffinities != null && instance.Scheduling.NodeAffinities.Any()
-                            ? Tenancies.SoleTenant
-                            : Tenancies.Fleet);
+                            instance.Name);
+
+                    if (instance.Scheduling.NodeAffinities != null && instance.Scheduling.NodeAffinities.Any())
+                    {
+                        // This VM runs on a sole-tenant node.
+                        var node = nodes.FirstOrDefault(n => n.Instances
+                            .EnsureNotNull()
+                            .Select(uri => InstanceLocator.FromString(uri))
+                            .Any(locator => locator == instanceLocator));
+                        if (node == null)
+                        {
+                            TraceSources.IapDesktop.TraceWarning(
+                                "Could not identify node {0} is scheduled on",
+                                instanceLocator);
+                        }
+
+                        AddExistingInstance(
+                            (ulong)instance.Id.Value,
+                            instanceLocator,
+                            image,
+                            instance.Status == "RUNNING"
+                                ? InstanceState.Running
+                                : InstanceState.Terminated,
+                            this.EndDate,
+                            Tenancies.SoleTenant,
+                            node?.ServerId,
+                            node?.NodeType != null
+                                ? NodeTypeLocator.FromString(node.NodeType)
+                                : null);
+                    }
+                    else
+                    {
+                        // Fleet VM.
+                        AddExistingInstance(
+                            (ulong)instance.Id.Value,
+                            instanceLocator,
+                            image,
+                            instance.Status == "RUNNING"
+                                ? InstanceState.Running
+                                : InstanceState.Terminated,
+                            this.EndDate,
+                            Tenancies.Fleet,
+                            null,
+                            null);
+                    }
                 }
             }
         }
