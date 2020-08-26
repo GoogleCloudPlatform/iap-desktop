@@ -490,8 +490,8 @@ namespace Google.Solutions.IapDesktop.Application.Services.Adapters
                 return await this.service.Instances.ResetWindowsUserAsync(
                     instanceRef,
                     username,
-                    token,
-                    timeout).ConfigureAwait(false);
+                    timeout,
+                    token).ConfigureAwait(false);
             }
         }
 

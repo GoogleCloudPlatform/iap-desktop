@@ -20,6 +20,7 @@
 //
 
 using Google.Apis.Compute.v1;
+using Google.Apis.Compute.v1.Data;
 using Google.Solutions.Common.ApiExtensions.Instance;
 using Google.Solutions.Common.Locator;
 using Google.Solutions.Common.Test.Integration;
@@ -118,6 +119,39 @@ namespace Google.Solutions.Common.Test.Extensions
             Assert.AreEqual(username, credentials.UserName);
             Assert.IsEmpty(credentials.Domain);
             Assert.IsNotEmpty(credentials.Password);
+        }
+
+        [Test]
+        public async Task WhenTokenSourceIsCanceled_ThenResetPasswordThrowsTaskCanceledException(
+            [WindowsInstance] ResourceTask<InstanceLocator> testInstance)
+        {
+            var instanceLocator = await testInstance;
+            using (var cts = new CancellationTokenSource())
+            {
+                cts.Cancel();
+
+                AssertEx.ThrowsAggregateException<TaskCanceledException>(
+                    () => this.instancesResource.ResetWindowsUserAsync(
+                    instanceLocator,
+                    "test" + Guid.NewGuid().ToString().Substring(20),
+                    cts.Token).Wait());
+            }
+        }
+
+        [Test]
+        public async Task WhenTimeoutElapses_ThenResetPasswordThrowsPasswordResetException(
+            [WindowsInstance] ResourceTask<InstanceLocator> testInstance)
+        {
+            var instanceLocator = await testInstance;
+            using (var cts = new CancellationTokenSource())
+            {
+                AssertEx.ThrowsAggregateException<PasswordResetException>(
+                    () => this.instancesResource.ResetWindowsUserAsync(
+                    instanceLocator,
+                    "test" + Guid.NewGuid().ToString().Substring(20),
+                    TimeSpan.FromMilliseconds(1),
+                    cts.Token).Wait());
+            }
         }
     }
 }

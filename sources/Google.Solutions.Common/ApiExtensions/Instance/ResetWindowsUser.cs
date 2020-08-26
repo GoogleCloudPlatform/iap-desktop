@@ -177,8 +177,8 @@ namespace Google.Solutions.Common.ApiExtensions.Instance
             this InstancesResource resource,
             InstanceLocator instanceRef,
             string username,
-            CancellationToken token,
-            TimeSpan timeout)
+            TimeSpan timeout,
+            CancellationToken token)
         {
             using (var timeoutCts = new CancellationTokenSource())
             {
