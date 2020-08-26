@@ -62,14 +62,15 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Views.UsageReport
 
         public ImageAnnotation GetImageAnnotation(InstanceHistory instance)
         {
-            ImageAnnotation annotation;
             if (instance.Image != null &&
-                this.parent.Model.LicenseAnnotations.TryGetValue(instance.Image.ToString(), out annotation))
+                this.parent.Model.LicenseAnnotations.TryGetValue(
+                    instance.Image.ToString(), 
+                    out ImageAnnotation annotation))
             {
                 return annotation;
             }
             else
-            { 
+            {
                 return ImageAnnotation.Default;
             }
         }
