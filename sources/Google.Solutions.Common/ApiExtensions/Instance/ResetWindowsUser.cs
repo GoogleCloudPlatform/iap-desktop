@@ -123,52 +123,53 @@ namespace Google.Solutions.Common.ApiExtensions.Instance
                 }
 
                 // Read response from serial port.
-                var serialPortStream = resource.GetSerialPortOutputStream(
+                using (var serialPortStream = resource.GetSerialPortOutputStream(
                     instanceRef,
-                    SerialPort);
-
-                // It is rare, but sometimes a single JSON can be split over multiple
-                // API reads. Therefore, maintain a buffer.
-                var logBuffer = new StringBuilder(64 * 1024);
-                while (true)
+                    SerialPort))
                 {
-                    TraceSources.Common.TraceVerbose("Waiting for agent to supply response...");
-
-                    token.ThrowIfCancellationRequested();
-
-                    string logDelta = await serialPortStream.ReadAsync(token).ConfigureAwait(false);
-                    if (string.IsNullOrEmpty(logDelta))
+                    // It is rare, but sometimes a single JSON can be split over multiple
+                    // API reads. Therefore, maintain a buffer.
+                    var logBuffer = new StringBuilder(64 * 1024);
+                    while (true)
                     {
-                        // Reached end of stream, wait and try again.
-                        await Task.Delay(500, token).ConfigureAwait(false);
-                        continue;
+                        TraceSources.Common.TraceVerbose("Waiting for agent to supply response...");
+
+                        token.ThrowIfCancellationRequested();
+
+                        string logDelta = await serialPortStream.ReadAsync(token).ConfigureAwait(false);
+                        if (string.IsNullOrEmpty(logDelta))
+                        {
+                            // Reached end of stream, wait and try again.
+                            await Task.Delay(500, token).ConfigureAwait(false);
+                            continue;
+                        }
+
+                        logBuffer.Append(logDelta);
+
+                        var response = logBuffer.ToString().Split('\n')
+                            .Where(line => line.Contains(requestPayload.Modulus))
+                            .FirstOrDefault();
+                        if (response == null)
+                        {
+                            // That was not the output we are looking for, keep reading.
+                            continue;
+                        }
+
+                        var responsePayload = JsonConvert.DeserializeObject<ResponsePayload>(response);
+                        if (!string.IsNullOrEmpty(responsePayload.ErrorMessage))
+                        {
+                            throw new PasswordResetException(responsePayload.ErrorMessage);
+                        }
+
+                        var password = rsa.Decrypt(
+                            Convert.FromBase64String(responsePayload.EncryptedPassword),
+                            true);
+
+                        return new NetworkCredential(
+                            username,
+                            new UTF8Encoding().GetString(password),
+                            null);
                     }
-
-                    logBuffer.Append(logDelta);
-
-                    var response = logBuffer.ToString().Split('\n')
-                        .Where(line => line.Contains(requestPayload.Modulus))
-                        .FirstOrDefault();
-                    if (response == null)
-                    {
-                        // That was not the output we are looking for, keep reading.
-                        continue;
-                    }
-
-                    var responsePayload = JsonConvert.DeserializeObject<ResponsePayload>(response);
-                    if (!string.IsNullOrEmpty(responsePayload.ErrorMessage))
-                    {
-                        throw new PasswordResetException(responsePayload.ErrorMessage);
-                    }
-
-                    var password = rsa.Decrypt(
-                        Convert.FromBase64String(responsePayload.EncryptedPassword),
-                        true);
-
-                    return new NetworkCredential(
-                        username,
-                        new UTF8Encoding().GetString(password),
-                        null);
                 }
             }
         }
@@ -236,7 +237,7 @@ namespace Google.Solutions.Common.ApiExtensions.Instance
     }
 
     [Serializable]
-    internal class PasswordResetException : Exception
+    public class PasswordResetException : Exception
     {
         public PasswordResetException(string message) : base(message)
         {

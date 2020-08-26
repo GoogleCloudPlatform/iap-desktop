@@ -23,7 +23,7 @@ using System;
 
 namespace Google.Solutions.IapDesktop.Extensions.Activity.History
 {
-    public struct DataPoint
+    public struct DataPoint : IEquatable<DataPoint>
     {
         public DateTime Timestamp;
         public int Value;
