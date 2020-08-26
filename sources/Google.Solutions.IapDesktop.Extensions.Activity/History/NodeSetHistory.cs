@@ -53,19 +53,19 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.History
                 .Where(p => tenancies.HasFlag(p.Tenancy))
                 .GroupBy(p => p.ServerId);
 
-            foreach (var server in placementsByServer)
+            foreach (var placements in placementsByServer)
             {
                 var peakInstanceCount = (uint)TimeseriesUtil.HighWatermark(
-                    server.Select(p => p.From),
-                    server.Select(p => p.To));
+                    placements.Select(p => p.From),
+                    placements.Select(p => p.To));
 
                 yield return new NodeHistory(
-                    server.Key,
-                    server.Select(p => p.NodeType).FirstOrDefault(),
-                    server.Select(p => p.From).Min(),
-                    server.Select(p => p.To).Max(),
+                    placements.Key,
+                    placements.Where(p => p.NodeType != null).Select(p => p.NodeType).FirstOrDefault(),
+                    placements.Select(p => p.From).Min(),
+                    placements.Select(p => p.To).Max(),
                     peakInstanceCount,
-                    server.Select(p => new NodePlacement(p.From, p.To, p.Instance)));
+                    placements.Select(p => new NodePlacement(p.From, p.To, p.Instance)));
             }
         }
 

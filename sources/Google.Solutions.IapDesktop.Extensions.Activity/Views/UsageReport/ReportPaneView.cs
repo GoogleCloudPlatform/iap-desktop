@@ -206,6 +206,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Views.UsageReport
             this.nodesList.BindColumn(4, n => n.LastUse.ToString());
             this.nodesList.BindColumn(5, n => Math.Ceiling((n.LastUse - n.FirstUse).TotalDays).ToString());
             this.nodesList.BindColumn(6, n => n.PeakConcurrentPlacements.ToString());
+            this.nodesList.BindColumn(7, n => n.NodeType?.Name);
 
             this.nodesList.BindProperty(
                 l => l.SelectedModelItem,

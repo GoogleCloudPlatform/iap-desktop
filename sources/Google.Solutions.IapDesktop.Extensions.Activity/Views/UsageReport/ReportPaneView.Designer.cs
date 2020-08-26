@@ -108,6 +108,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Views.UsageReport
             this.noLicenseDataLabel = new System.Windows.Forms.Label();
             this.licenseChart = new System.Windows.Forms.DataVisualization.Charting.Chart();
             this.byolHeadline = new System.Windows.Forms.Label();
+            this.nodeTypeColumnHeader = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.toolStrip.SuspendLayout();
             this.tabs.SuspendLayout();
             this.instancesTab.SuspendLayout();
@@ -433,7 +434,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Views.UsageReport
             this.firstUseColumnHeader,
             this.lastUseColumnHeader,
             this.daysUsedColumnHeader,
-            this.peakInstancesColumnHeader});
+            this.peakInstancesColumnHeader,
+            this.nodeTypeColumnHeader});
             this.nodesList.FullRowSelect = true;
             this.nodesList.HideSelection = false;
             this.nodesList.Location = new System.Drawing.Point(0, 0);
@@ -478,7 +480,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Views.UsageReport
             // peakInstancesColumnHeader
             // 
             this.peakInstancesColumnHeader.Text = "Peak VMs";
-            this.peakInstancesColumnHeader.Width = 279;
+            this.peakInstancesColumnHeader.Width = 100;
             // 
             // nodePlacementsHeadline
             // 
@@ -650,6 +652,11 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Views.UsageReport
             this.byolHeadline.TabIndex = 2;
             this.byolHeadline.Text = "Scheduled Windows BYOL cores";
             // 
+            // nodeTypeColumnHeader
+            // 
+            this.nodeTypeColumnHeader.Text = "Node type";
+            this.nodeTypeColumnHeader.Width = 179;
+            // 
             // ReportPaneView
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -738,5 +745,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Views.UsageReport
         private System.Windows.Forms.DataVisualization.Charting.Chart licenseChart;
         private System.Windows.Forms.ColumnHeader osColumnHeader;
         private System.Windows.Forms.ColumnHeader licenseColumnHeader;
+        private System.Windows.Forms.ColumnHeader nodeTypeColumnHeader;
     }
 }
