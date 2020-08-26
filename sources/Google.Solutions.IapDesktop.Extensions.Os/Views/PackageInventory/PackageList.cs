@@ -40,7 +40,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Os.Views.PackageInventory
             AddColumn("Instance name", 130);
             AddColumn("Zone", 80);
             AddColumn("Project ID", 120);
-            AddColumn("Date", 120);
+            AddColumn("Published", 90);
+            AddColumn("Installed", 90);
             AddColumn("Description", 250);
 
             this.List.GridLines = true;
@@ -53,8 +54,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Os.Views.PackageInventory
             this.List.BindColumn(4, m => m.Instance.Name);
             this.List.BindColumn(5, m => m.Instance.Zone);
             this.List.BindColumn(6, m => m.Instance.ProjectId);
-            this.List.BindColumn(7, m => m.Package.InstalledOn?.ToShortDateString());
-            this.List.BindColumn(8, m => m.Package.Description);
+            this.List.BindColumn(7, m => m.Package.PublishedOn?.ToShortDateString());
+            this.List.BindColumn(8, m => m.Package.InstalledOn?.ToShortDateString());
+            this.List.BindColumn(9, m => m.Package.Description);
         }
     }
 }

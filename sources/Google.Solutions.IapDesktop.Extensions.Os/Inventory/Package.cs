@@ -45,6 +45,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Os.Inventory
 
         DateTime? IPackage.InstalledOn => null;
 
+        DateTime? IPackage.PublishedOn => null;
+
         Uri IPackage.Weblink => null;
 
         PackageCriticality IPackage.Criticality => PackageCriticality.NonCritical;

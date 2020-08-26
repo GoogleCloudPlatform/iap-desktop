@@ -70,7 +70,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Os.Inventory
             ? new Uri(this.SupportURL)
             : null;
 
-        DateTime? IPackage.InstalledOn => this.LastDeploymentChangeTime;
+        DateTime? IPackage.InstalledOn => null;
+        DateTime? IPackage.PublishedOn => this.LastDeploymentChangeTime;
 
         public PackageCriticality Criticality => WuaPackageType.MaxCriticality(this.CategoryIDs);
 

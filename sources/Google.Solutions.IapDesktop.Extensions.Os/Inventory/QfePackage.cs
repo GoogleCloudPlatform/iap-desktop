@@ -69,6 +69,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Os.Inventory
         PackageCriticality IPackage.Criticality => PackageCriticality.NonCritical;
 
         string IPackage.PackageType => "Hotfix";
+        DateTime? IPackage.PublishedOn => null;
 
         //---------------------------------------------------------------------
         // Ctor

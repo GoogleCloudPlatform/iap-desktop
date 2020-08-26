@@ -32,6 +32,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Os.Inventory
         string Description { get; }
         string Architecture { get; }
         string Version { get; }
+        DateTime? PublishedOn { get; }
         DateTime? InstalledOn { get; }
         Uri Weblink { get; }
     }

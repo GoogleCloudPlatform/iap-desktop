@@ -55,6 +55,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Os.Inventory
             (this.Category != null ? $" ({this.Category})" : string.Empty);
 
         DateTime? IPackage.InstalledOn => null;
+        DateTime? IPackage.PublishedOn => null;
 
         PackageCriticality IPackage.Criticality => PackageCriticality.NonCritical;
 
