@@ -98,26 +98,34 @@ namespace Google.Solutions.IapDesktop.Extensions.Os.Views.InstanceDetails
         [Browsable(true)]
         [Category(InstanceCategory)]
         [DisplayName("Name")]
+        [Description("Name of the VM instance")]
         public string InstanceName => this.instanceDetails.Name;
 
         [Browsable(true)]
         [Category(InstanceCategory)]
         [DisplayName("ID")]
+        [Description("Unique ID of the VM instance")]
         public ulong InstanceId => this.instanceDetails.Id.Value;
 
         [Browsable(true)]
         [Category(InstanceCategory)]
         [DisplayName("Status")]
+        [Description("Status of VM, see " +
+                     "https://cloud.google.com/compute/docs/instances/instance-life-cycle")]
         public string Status => this.instanceDetails.Status;
 
         [Browsable(true)]
         [Category(InstanceCategory)]
         [DisplayName("Hostname")]
+        [Description("Custom hostname, see " +
+                     "https://cloud.google.com/compute/docs/instances/custom-hostname-vm")]
         public string Hostname => this.instanceDetails.Hostname;
 
         [Browsable(true)]
         [Category(InstanceCategory)]
         [DisplayName("Machine type")]
+        [Description("Type and size of VM, see " +
+                     "https://cloud.google.com/compute/docs/machine-types")]
         public string MachineType
             => MachineTypeLocator
                 .FromString(this.instanceDetails.MachineType)
@@ -126,6 +134,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Os.Views.InstanceDetails
         [Browsable(true)]
         [Category(InstanceCategory)]
         [DisplayName("Licenses")]
+        [Description("Operating system, see " +
+                     "https://cloud.google.com/sdk/gcloud/reference/compute/images/import#--os")]
         public string Licenses
              => this.instanceDetails.Disks != null
                 ? string.Join(", ", this.instanceDetails.Disks
@@ -141,6 +151,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Os.Views.InstanceDetails
         [Browsable(true)]
         [Category(NetworkCategory)]
         [DisplayName("Network tags")]
+        [Description("Network tags, see " +
+                     "https://cloud.google.com/vpc/docs/add-remove-network-tags")]
         public string Tags
              => this.instanceDetails.Tags != null && this.instanceDetails.Tags.Items != null
                 ? string.Join(", ", this.instanceDetails.Tags.Items)
@@ -149,6 +161,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Os.Views.InstanceDetails
         [Browsable(true)]
         [Category(NetworkCategory)]
         [DisplayName("IP address (internal)")]
+        [Description("Primary internal IP addresses, see " +
+                     "https://cloud.google.com/compute/docs/ip-addresses#networkaddresses")]
         public string InternalIp
             => this.instanceDetails
                 .NetworkInterfaces
@@ -159,6 +173,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Os.Views.InstanceDetails
         [Browsable(true)]
         [Category(NetworkCategory)]
         [DisplayName("IP address (external)")]
+        [Description("External IP addresses, see " +
+                     "https://cloud.google.com/compute/docs/ip-addresses#externaladdresses")]
         public string ExternalIp
             => this.instanceDetails
                 .NetworkInterfaces
@@ -173,6 +189,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Os.Views.InstanceDetails
         [Browsable(true)]
         [Category(SchedulingCategory)]
         [DisplayName("Sole tenant VM")]
+        [Description("Indicates if this VM is scheduled to run on a sole-tenant node, see " +
+                     "https://cloud.google.com/compute/docs/nodes/sole-tenant-nodes")]
         public bool IsSoleTenant
             => this.instanceDetails.Scheduling?.NodeAffinities != null &&
                this.instanceDetails.Scheduling.NodeAffinities.Any();
