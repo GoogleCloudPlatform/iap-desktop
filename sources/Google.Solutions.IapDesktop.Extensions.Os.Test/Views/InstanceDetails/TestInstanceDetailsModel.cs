@@ -20,6 +20,7 @@
 //
 
 using Google.Apis.Auth.OAuth2;
+using Google.Apis.Compute.v1.Data;
 using Google.Solutions.Common.Locator;
 using Google.Solutions.Common.Test;
 using Google.Solutions.Common.Test.Integration;
@@ -56,7 +57,113 @@ namespace Google.Solutions.IapDesktop.Extensions.Os.Test.Views.InstanceDetails
             Assert.IsNotNull(model.InternalIp);
             Assert.IsNotNull(model.ExternalIp);
             Assert.IsNotNull(model.Licenses);
+            Assert.AreEqual(model.IsOsInventoryInformationPopulated 
+                ? FeatureFlag.Enabled : FeatureFlag.Disabled, model.OsInventory);
+            Assert.AreEqual(FeatureFlag.Disabled, model.Diagnostics);
+            Assert.AreEqual(FeatureFlag.Enabled, model.GuestAttributes);
+            Assert.IsNull(model.InternalDnsMode);
             Assert.IsFalse(model.IsSoleTenant);
+        }
+
+        [Test]
+        public void WhenMetadataIsEmpty_ThenDefaultsAreApplied()
+        {
+            var project = new Project();
+            var instance = new Instance();
+
+            var model = new InstanceDetailsModel(project, instance, null);
+            Assert.AreEqual(FeatureFlag.Disabled, model.OsInventory);
+            Assert.AreEqual(FeatureFlag.Disabled, model.Diagnostics);
+            Assert.AreEqual(FeatureFlag.Disabled, model.SerialPortAccess);
+            Assert.AreEqual(FeatureFlag.Disabled, model.GuestAttributes);
+            Assert.IsNull(model.InternalDnsMode);
+        }
+
+        [Test]
+        public void WhenFlagSetInCommonInstanceMetadataAndInstanceMetadata_ThenInstanceMetadataPrevails()
+        {
+            var project = new Project()
+            {
+                CommonInstanceMetadata = new Metadata()
+                {
+                    Items = new[]
+                    {
+                        new Metadata.ItemsData()
+                        {
+                            Key = "VmDnsSetting",
+                            Value = "ZonalOnly"
+                        }
+                    }
+                }
+            };
+
+            var instance = new Instance
+            {
+                Metadata = new Metadata()
+                {
+                    Items = new[]
+                    {
+                        new Metadata.ItemsData()
+                        {
+                            Key = "VmDnsSetting",
+                            Value = "ZonalPreferred"
+                        }
+                    }
+                }
+            };
+
+            var model = new InstanceDetailsModel(project, instance, null);
+            Assert.AreEqual("ZonalPreferred", model.InternalDnsMode);
+        }
+
+        [Test]
+        public void WhenFlagSetInInstanceMetadataOnly_ThenInstanceMetadataPrevails()
+        {
+            var project = new Project();
+            var instance = new Instance
+            {
+                Metadata = new Metadata()
+                {
+                    Items = new[]
+                    {
+                        new Metadata.ItemsData()
+                        {
+                            Key = "VmDnsSetting",
+                            Value = "ZonalPreferred"
+                        }
+                    }
+                }
+            };
+
+            var model = new InstanceDetailsModel(project, instance, null);
+            Assert.AreEqual("ZonalPreferred", model.InternalDnsMode);
+        }
+
+        [Test]
+        public void WhenFlagSetInCommonInstanceMetadataOnly_ThenInstanceCommonInstanceMetadataPrevails()
+        {
+            var project = new Project()
+            {
+                CommonInstanceMetadata = new Metadata()
+                {
+                    Items = new[]
+                    {
+                        new Metadata.ItemsData()
+                        {
+                            Key = "VmDnsSetting",
+                            Value = "ZonalOnly"
+                        }
+                    }
+                }
+            };
+
+            var instance = new Instance
+            {
+                Metadata = new Metadata()
+            };
+
+            var model = new InstanceDetailsModel(project, instance, null);
+            Assert.AreEqual("ZonalOnly", model.InternalDnsMode);
         }
     }
 }

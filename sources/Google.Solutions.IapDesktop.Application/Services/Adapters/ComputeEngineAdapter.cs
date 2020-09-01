@@ -41,6 +41,10 @@ namespace Google.Solutions.IapDesktop.Application.Services.Adapters
 {
     public interface IComputeEngineAdapter : IDisposable
     {
+        Task<Project> GetProjectAsync(
+            string projectId,
+            CancellationToken cancellationToken);
+
         Task<Instance> GetInstanceAsync(
             InstanceLocator instanceLocator,
             CancellationToken cancellationToken);
@@ -128,6 +132,26 @@ namespace Google.Solutions.IapDesktop.Application.Services.Adapters
         public ComputeEngineAdapter(IServiceProvider serviceProvider)
             : this(serviceProvider.GetService<IAuthorizationAdapter>())
         {
+        }
+
+        public async Task<Project> GetProjectAsync(
+            string projectId,
+            CancellationToken cancellationToken)
+        {
+            using (TraceSources.IapDesktop.TraceMethod().WithParameters(projectId))
+            {
+                try
+                {
+                    return await this.service.Projects.Get(
+                        projectId).ExecuteAsync(cancellationToken)
+                        .ConfigureAwait(false);
+                }
+                catch (GoogleApiException e) when (e.Error != null && e.Error.Code == 403)
+                {
+                    throw new ResourceAccessDeniedException(
+                        $"Access to project {projectId} has been denied", e);
+                }
+            }
         }
 
         public async Task<IEnumerable<Instance>> ListInstancesAsync(

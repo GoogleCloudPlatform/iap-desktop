@@ -35,6 +35,49 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Adapters
     [Category("IntegrationTest")]
     public class TestComputeEngineAdapter : FixtureBase
     {
+
+        //---------------------------------------------------------------------
+        // Projects.
+        //---------------------------------------------------------------------
+
+        [Test]
+        public async Task WhenUserInViewerRole_ThenGetProjectReturnsProject(
+            [Credential(Role = PredefinedRole.ComputeViewer)] ResourceTask<ICredential> credential)
+        {
+            var adapter = new ComputeEngineAdapter(await credential);
+
+            var project = await adapter.GetProjectAsync(
+                    TestProject.ProjectId,
+                    CancellationToken.None);
+
+            Assert.IsNotNull(project);
+            Assert.AreEqual(TestProject.ProjectId, project.Name);
+        }
+
+        [Test]
+        public async Task WhenUserNotInRole_ThenGetProjectThrowsResourceAccessDeniedException(
+            [Credential(Role = PredefinedRole.IapTunnelUser)] ResourceTask<ICredential> credential)
+        {
+            var adapter = new ComputeEngineAdapter(await credential);
+
+            AssertEx.ThrowsAggregateException<ResourceAccessDeniedException>(
+                () => adapter.GetProjectAsync(
+                    TestProject.ProjectId,
+                    CancellationToken.None).Wait());
+        }
+
+        [Test]
+        public async Task WhenProjectIdInvalid_ThenGetProjectThrowsGoogleApiException(
+            [Credential(Role = PredefinedRole.IapTunnelUser)] ResourceTask<ICredential> credential)
+        {
+            var adapter = new ComputeEngineAdapter(await credential);
+
+            AssertEx.ThrowsAggregateException<GoogleApiException>(
+                () => adapter.GetProjectAsync(
+                    "invalid",
+                    CancellationToken.None).Wait());
+        }
+
         //---------------------------------------------------------------------
         // Instances.
         //---------------------------------------------------------------------
