@@ -25,6 +25,7 @@ using Google.Solutions.Common.Util;
 using Google.Solutions.IapDesktop.Application.Services.Adapters;
 using Google.Solutions.IapDesktop.Extensions.Os.Inventory;
 using Google.Solutions.IapDesktop.Extensions.Os.Services.Inventory;
+using System;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
@@ -39,15 +40,52 @@ namespace Google.Solutions.IapDesktop.Extensions.Os.Views.InstanceDetails
         private const string NetworkCategory = "Instance network";
         private const string SchedulingCategory = "Scheduling";
         private const string OsCategory = "Operating system";
+        private const string GuestAgentConfigurationCategory = "Guest agent configuration";
+        private const string InstanceConfigurationCategory = "Instance configuration";
 
+        private readonly Project projectDetails;
         private readonly Instance instanceDetails;
         private readonly GuestOsInfo guestOsInfo;
 
-        public InstanceDetailsModel(
+        private string GetMetadata(string key)
+        {
+            //
+            // Check instance-specific metadata.
+            //
+            var value = this.instanceDetails.Metadata?.Items
+                .EnsureNotNull()
+                .FirstOrDefault(item => item.Key == key)?.Value;
+            if (value != null)
+            {
+                return value;
+            }
+
+            //
+            // Check common instance metadata.
+            //
+            return this.projectDetails.CommonInstanceMetadata?.Items
+                .EnsureNotNull()
+                .FirstOrDefault(item => item.Key == key)?.Value;
+        }
+
+        private FeatureFlag GetMetadataFeatureFlag(string key, bool trueMeansEnabled)
+        {
+            var isTrue = "true".Equals(GetMetadata(key), StringComparison.OrdinalIgnoreCase);
+            var effectiveValue = trueMeansEnabled ? isTrue : !isTrue;
+            return effectiveValue
+                ? FeatureFlag.Enabled
+                : FeatureFlag.Disabled;
+        }
+
+        internal InstanceDetailsModel(
+            Project projectDetails,
             Instance instanceDetails,
             GuestOsInfo guestOsInfo)
         {
+            Debug.Assert(projectDetails != null);
             Debug.Assert(instanceDetails != null);
+
+            this.projectDetails = projectDetails;
             this.instanceDetails = instanceDetails;
             this.guestOsInfo = guestOsInfo;
         }
@@ -95,6 +133,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Os.Views.InstanceDetails
                     .SelectMany(d => d.Licenses)
                     .Select(l => LicenseLocator.FromString(l).Name))
                 : null;
+        //---------------------------------------------------------------------
+        // Network.
+        //---------------------------------------------------------------------
 
         [Browsable(true)]
         [Category(NetworkCategory)]
@@ -135,6 +176,10 @@ namespace Google.Solutions.IapDesktop.Extensions.Os.Views.InstanceDetails
             => this.instanceDetails.Scheduling?.NodeAffinities != null &&
                this.instanceDetails.Scheduling.NodeAffinities.Any();
 
+        //---------------------------------------------------------------------
+        // OS Inventory data.
+        //---------------------------------------------------------------------
+
         [Browsable(false)]
         public bool IsOsInventoryInformationPopulated => this.guestOsInfo != null;
 
@@ -159,6 +204,53 @@ namespace Google.Solutions.IapDesktop.Extensions.Os.Views.InstanceDetails
         public string OperatingSystemVersion => this.guestOsInfo?.OperatingSystemVersion.ToString();
 
         //---------------------------------------------------------------------
+        // Guest agent configuration.
+        //---------------------------------------------------------------------
+
+        [Browsable(true)]
+        [Category(GuestAgentConfigurationCategory)]
+        [DisplayName("OS Inventory")]
+        public FeatureFlag OsInventory => GetMetadataFeatureFlag("enable-os-inventory", true);
+
+        [Browsable(true)]
+        [Category(GuestAgentConfigurationCategory)]
+        [DisplayName("Diagnostics")]
+        public FeatureFlag Diagnostics => GetMetadataFeatureFlag("enable-diagnostics", true);
+
+        //
+        // NB. OS login not relevant yet for Windows.
+        //
+
+        //[Browsable(true)]
+        //[Category(GuestAgentConfigurationCategory)]
+        //[DisplayName("OS Login")]
+        //public FeatureFlag OsLogin => GetMetadataFeatureFlag("enable-oslogin", true);
+
+        //[Browsable(true)]
+        //[Category(GuestAgentConfigurationCategory)]
+        //[DisplayName("OS Login 2FA")]
+        //public FeatureFlag OsLogin2FA => GetMetadataFeatureFlag("enable-oslogin-2fa", true);
+
+        //---------------------------------------------------------------------
+        // Instance configuration.
+        //---------------------------------------------------------------------
+
+        [Browsable(true)]
+        [Category(InstanceConfigurationCategory)]
+        [DisplayName("Serial port access")]
+        public FeatureFlag SerialPortAccess => GetMetadataFeatureFlag("serial-port-enable", true);
+
+        [Browsable(true)]
+        [Category(InstanceConfigurationCategory)]
+        [DisplayName("Guest attributes")]
+        public FeatureFlag GuestAttributes => GetMetadataFeatureFlag("enable-guest-attributes", true);
+
+        [Browsable(true)]
+        [Category(InstanceConfigurationCategory)]
+        [DisplayName("Internal DNS mode")]
+        public string InternalDnsMode => GetMetadata("VmDnsSetting");
+
+        //---------------------------------------------------------------------
         // Loading.
         //---------------------------------------------------------------------
 
@@ -174,6 +266,11 @@ namespace Google.Solutions.IapDesktop.Extensions.Os.Views.InstanceDetails
                     token)
                 .ConfigureAwait(false);
 
+            var project = await computeEngineAdapter
+                .GetProjectAsync(
+                    instanceLocator.ProjectId, 
+                    token)
+                .ConfigureAwait(false);
 
             var osInfo = await inventoryService.GetInstanceInventoryAsync(
                     instanceLocator,
@@ -181,8 +278,15 @@ namespace Google.Solutions.IapDesktop.Extensions.Os.Views.InstanceDetails
                 .ConfigureAwait(false);
 
             return new InstanceDetailsModel(
+                project,
                 instance,
                 osInfo);
         }
+    }
+
+    public enum FeatureFlag
+    {
+        Enabled,
+        Disabled
     }
 }
