@@ -51,7 +51,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Adapters
                     CancellationToken.None);
 
             Assert.IsNotNull(project);
-            Assert.AreEqual(TestProject.ProjectId, project.Id);
+            Assert.AreEqual(TestProject.ProjectId, project.Name);
         }
 
         [Test]
