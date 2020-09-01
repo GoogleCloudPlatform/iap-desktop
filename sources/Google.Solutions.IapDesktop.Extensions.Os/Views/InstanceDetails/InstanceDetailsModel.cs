@@ -22,6 +22,7 @@
 using Google.Apis.Compute.v1.Data;
 using Google.Solutions.Common.Locator;
 using Google.Solutions.Common.Util;
+using Google.Solutions.IapDesktop.Application.Controls;
 using Google.Solutions.IapDesktop.Application.Services.Adapters;
 using Google.Solutions.IapDesktop.Extensions.Os.Inventory;
 using Google.Solutions.IapDesktop.Extensions.Os.Services.Inventory;
@@ -186,21 +187,25 @@ namespace Google.Solutions.IapDesktop.Extensions.Os.Views.InstanceDetails
         [Browsable(true)]
         [Category(OsCategory)]
         [DisplayName("Architecture")]
+        [Description("CPU architecture")]
         public string Architecture => this.guestOsInfo?.Architecture;
 
         [Browsable(true)]
         [Category(OsCategory)]
         [DisplayName("Kernel")]
+        [Description("Kernel version of guest operating system")]
         public string KernelVersion => this.guestOsInfo?.KernelVersion;
 
         [Browsable(true)]
         [Category(OsCategory)]
         [DisplayName("Name")]
+        [Description("Name of guest operating system")]
         public string OperatingSystemFullName => this.guestOsInfo?.OperatingSystemFullName;
 
         [Browsable(true)]
         [Category(OsCategory)]
         [DisplayName("Version")]
+        [Description("Version of guest operating system")]
         public string OperatingSystemVersion => this.guestOsInfo?.OperatingSystemVersion.ToString();
 
         //---------------------------------------------------------------------
@@ -210,11 +215,17 @@ namespace Google.Solutions.IapDesktop.Extensions.Os.Views.InstanceDetails
         [Browsable(true)]
         [Category(GuestAgentConfigurationCategory)]
         [DisplayName("OS Inventory")]
+        [Description("Enable OS inventory management, " +
+                     "see https://cloud.google.com/compute/docs/instances/" +
+                     "view-os-details#enable-guest-attributes")]
         public FeatureFlag OsInventory => GetMetadataFeatureFlag("enable-os-inventory", true);
 
         [Browsable(true)]
         [Category(GuestAgentConfigurationCategory)]
         [DisplayName("Diagnostics")]
+        [Description("Enable collection of diagnostic information, " +
+                     "see https://cloud.google.com/compute/docs/instances/" +
+                     "collecting-diagnostic-information#collecting_diagnostic_information_from_a_vm")]
         public FeatureFlag Diagnostics => GetMetadataFeatureFlag("enable-diagnostics", true);
 
         //
@@ -238,16 +249,23 @@ namespace Google.Solutions.IapDesktop.Extensions.Os.Views.InstanceDetails
         [Browsable(true)]
         [Category(InstanceConfigurationCategory)]
         [DisplayName("Serial port access")]
+        [Description("Enable access to special administrative console, " +
+                     "see https://cloud.google.com/compute/docs/instances/" +
+                     "interacting-with-serial-console#enable_project_access")]
         public FeatureFlag SerialPortAccess => GetMetadataFeatureFlag("serial-port-enable", true);
 
         [Browsable(true)]
         [Category(InstanceConfigurationCategory)]
         [DisplayName("Guest attributes")]
+        [Description("Enable guest attributes, " +
+                     "see https://cloud.google.com/compute/docs/storing-retrieving-metadata#enable_attributes")]
         public FeatureFlag GuestAttributes => GetMetadataFeatureFlag("enable-guest-attributes", true);
 
         [Browsable(true)]
         [Category(InstanceConfigurationCategory)]
         [DisplayName("Internal DNS mode")]
+        [Description("Resolution mode for internal DNS queries, "+
+                     "see https://cloud.google.com/compute/docs/internal-dns")]
         public string InternalDnsMode => GetMetadata("VmDnsSetting");
 
         //---------------------------------------------------------------------
