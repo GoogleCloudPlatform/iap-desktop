@@ -20,6 +20,7 @@
 //
 
 using Google.Solutions.Common.Diagnostics;
+using Google.Solutions.IapDesktop.Application.Controls;
 using Google.Solutions.IapDesktop.Application.ObjectModel;
 using Google.Solutions.IapDesktop.Application.Services.Integration;
 using Google.Solutions.IapDesktop.Application.Views.ProjectExplorer;
@@ -51,6 +52,8 @@ namespace Google.Solutions.IapDesktop.Application.Views.Properties
             this.viewModel = viewModel;
 
             InitializeComponent();
+
+            this.propertyGrid.EnableRichTextDescriptions();
 
             this.infoLabel.BindProperty(
                 c => c.Text,
