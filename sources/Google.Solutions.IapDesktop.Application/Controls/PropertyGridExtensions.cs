@@ -37,6 +37,8 @@ namespace Google.Solutions.IapDesktop.Application.Controls
                 BorderStyle = BorderStyle.None,
                 DetectUrls = true
             };
+
+            rtfLabel.SetPadding(3);
             rtfLabel.LinkClicked += (sender, args) =>
             {
                 Process.Start(args.LinkText);
