@@ -35,6 +35,8 @@ using System.Windows.Forms;
 using System.Windows.Forms.DataVisualization.Charting;
 using DataPoint = Google.Solutions.IapDesktop.Extensions.Activity.History.DataPoint;
 
+#pragma warning disable IDE1006 // Naming Styles
+
 namespace Google.Solutions.IapDesktop.Extensions.Activity.Views.UsageReport
 {
     [SkipCodeCoverage("All logic in view model")]

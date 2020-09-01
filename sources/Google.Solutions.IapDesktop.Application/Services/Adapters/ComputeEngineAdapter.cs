@@ -83,8 +83,8 @@ namespace Google.Solutions.IapDesktop.Application.Services.Adapters
         Task<NetworkCredential> ResetWindowsUserAsync(
             InstanceLocator instanceRef,
             string username,
-            CancellationToken token,
-            TimeSpan timeout);
+            TimeSpan timeout,
+            CancellationToken token);
 
         Task<Image> GetImageAsync(
             ImageLocator image,
@@ -476,22 +476,22 @@ namespace Google.Solutions.IapDesktop.Application.Services.Adapters
             string username,
             CancellationToken token)
         {
-            return ResetWindowsUserAsync(instanceRef, username, token, DefaultPasswordResetTimeout);
+            return ResetWindowsUserAsync(instanceRef, username, DefaultPasswordResetTimeout, token);
         }
 
         public async Task<NetworkCredential> ResetWindowsUserAsync(
             InstanceLocator instanceRef,
             string username,
-            CancellationToken token,
-            TimeSpan timeout)
+            TimeSpan timeout,
+            CancellationToken token)
         {
             using (TraceSources.IapDesktop.TraceMethod().WithParameters(instanceRef, timeout))
             {
                 return await this.service.Instances.ResetWindowsUserAsync(
                     instanceRef,
                     username,
-                    token,
-                    timeout).ConfigureAwait(false);
+                    timeout,
+                    token).ConfigureAwait(false);
             }
         }
 
