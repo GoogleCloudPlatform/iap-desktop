@@ -78,7 +78,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Services
                         .GenerateCredentialsAsync(
                             this.window,
                             vmNode.Reference,
-                            vmNode.SettingsEditor)
+                            vmNode.SettingsEditor,
+                            false)
                         .ConfigureAwait(true);
                 }
             }

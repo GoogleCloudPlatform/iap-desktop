@@ -35,7 +35,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Views.Credentials
         Task GenerateCredentialsAsync(
             IWin32Window owner,
             InstanceLocator instanceRef,
-            ConnectionSettingsEditor settings);
+            ConnectionSettingsEditor settings,
+            bool silent);
 
         Task<bool> IsGrantedPermissionToGenerateCredentials(
             InstanceLocator instanceRef);
@@ -54,23 +55,37 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Views.Credentials
         public async Task GenerateCredentialsAsync(
             IWin32Window owner,
             InstanceLocator instanceLocator,
-            ConnectionSettingsEditor settings)
+            ConnectionSettingsEditor settings,
+            bool silent)
         {
             // Prompt for username to use.
-            var username = this.serviceProvider
-                .GetService<IGenerateCredentialsDialog>()
-                .PromptForUsername(
-                    owner,
-                    string.IsNullOrEmpty(settings.Username) 
-                        ? this.serviceProvider
-                            .GetService<IAuthorizationAdapter>()
-                            .Authorization
-                            .SuggestWindowsUsername()
-                        : settings.Username);
-            if (username == null)
+            string username;
+            if (silent)
             {
-                // Aborted.
-                throw new OperationCanceledException();
+                username = string.IsNullOrEmpty(settings.Username)
+                    ? this.serviceProvider
+                        .GetService<IAuthorizationAdapter>()
+                        .Authorization
+                        .SuggestWindowsUsername()
+                    : settings.Username;
+            }
+            else
+            {
+                username = this.serviceProvider
+                    .GetService<IGenerateCredentialsDialog>()
+                    .PromptForUsername(
+                        owner,
+                        string.IsNullOrEmpty(settings.Username)
+                            ? this.serviceProvider
+                                .GetService<IAuthorizationAdapter>()
+                                .Authorization
+                                .SuggestWindowsUsername()
+                            : settings.Username);
+                if (username == null)
+                {
+                    // Aborted.
+                    throw new OperationCanceledException();
+                }
             }
 
             var credentials = await this.serviceProvider.GetService<IJobService>().RunInBackground(
@@ -83,10 +98,13 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Views.Credentials
                         token))
                 .ConfigureAwait(true);
 
-            this.serviceProvider.GetService<IShowCredentialsDialog>().ShowDialog(
-                owner,
-                credentials.UserName,
-                credentials.Password);
+            if (!silent)
+            {
+                this.serviceProvider.GetService<IShowCredentialsDialog>().ShowDialog(
+                    owner,
+                    credentials.UserName,
+                    credentials.Password);
+            }
 
             // Save credentials.
             settings.Username = credentials.UserName;
