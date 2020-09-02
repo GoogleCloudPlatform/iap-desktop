@@ -26,7 +26,7 @@ using Moq;
 using NUnit.Framework;
 using System;
 
-namespace Google.Solutions.IapDesktop.Extensions.Rdp.Test.Services.Credentials
+namespace Google.Solutions.IapDesktop.Extensions.Rdp.Test.Views.Credentials
 {
     [TestFixture]
     public class TestAuthorizationExtensions : FixtureBase
@@ -51,6 +51,17 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Test.Services.Credentials
             var suggestedUsername = authorization.Object.SuggestWindowsUsername();
 
             Assert.AreEqual(Environment.UserName, suggestedUsername);
+        }
+
+        [Test]
+        public void WhenAuthorizationHasOverlyLongEmail_ThenSuggestWindowsUsernameReturnsUserPartOfEmail()
+        {
+            var authorization = new Mock<IAuthorization>();
+            authorization.SetupGet(a => a.Email).Returns("abcde12345abcde12345abcde12345@example.com");
+
+            var suggestedUsername = authorization.Object.SuggestWindowsUsername();
+
+            Assert.AreEqual("abcde12345abcde12345", suggestedUsername);
         }
 
         [Test]
