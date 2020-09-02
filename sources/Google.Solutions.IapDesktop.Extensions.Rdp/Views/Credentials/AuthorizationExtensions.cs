@@ -28,14 +28,11 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Views.Credentials
     {
         public static string SuggestWindowsUsername(this IAuthorization authorization)
         {
-            var email = authorization.Email;
-
-            int atIndex;
-            if (!string.IsNullOrEmpty(email) && (atIndex = email.IndexOf('@')) > 0)
+            try
             {
-                return email.Substring(0, atIndex);
+                return SamAccountName.FromGoogleEmailAddress(authorization.Email);
             }
-            else
+            catch (ArgumentException)
             {
                 // Such an email should never surface, but revert
                 // to using the local Windows username then.

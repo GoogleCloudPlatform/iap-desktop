@@ -54,6 +54,17 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Test.Services.Credentials
         }
 
         [Test]
+        public void WhenAuthorizationHasOverlyLongEmail_ThenSuggestWindowsUsernameReturnsUserPartOfEmail()
+        {
+            var authorization = new Mock<IAuthorization>();
+            authorization.SetupGet(a => a.Email).Returns("abcde12345abcde12345abcde12345@example.com");
+
+            var suggestedUsername = authorization.Object.SuggestWindowsUsername();
+
+            Assert.AreEqual("abcde12345abcde12345", suggestedUsername);
+        }
+
+        [Test]
         public void WhenAuthorizationHasValidEmail_ThenSuggestWindowsUsernameReturnsUserPartOfEmail()
         {
             var authorization = new Mock<IAuthorization>();
