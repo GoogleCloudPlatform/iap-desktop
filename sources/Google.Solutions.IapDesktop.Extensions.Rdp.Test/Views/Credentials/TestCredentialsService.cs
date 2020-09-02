@@ -32,7 +32,7 @@ using NUnit.Framework;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-namespace Google.Solutions.IapDesktop.Extensions.Rdp.Test.Services.Credentials
+namespace Google.Solutions.IapDesktop.Extensions.Rdp.Test.Views.Credentials
 {
     [TestFixture]
     public class TestCredentialsService : FixtureBase

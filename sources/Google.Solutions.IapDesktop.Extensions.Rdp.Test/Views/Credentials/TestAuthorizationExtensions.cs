@@ -26,7 +26,7 @@ using Moq;
 using NUnit.Framework;
 using System;
 
-namespace Google.Solutions.IapDesktop.Extensions.Rdp.Test.Services.Credentials
+namespace Google.Solutions.IapDesktop.Extensions.Rdp.Test.Views.Credentials
 {
     [TestFixture]
     public class TestAuthorizationExtensions : FixtureBase

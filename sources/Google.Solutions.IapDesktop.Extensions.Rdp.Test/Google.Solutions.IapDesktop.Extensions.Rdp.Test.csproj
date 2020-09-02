@@ -82,11 +82,11 @@
   <ItemGroup>
     <Compile Include="MoqExtensions.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Views\Connection\SynchronousJobService.cs" />
-    <Compile Include="Views\Connection\TestIapRdpConnectionService.cs" />
-    <Compile Include="Services\Credentials\TestAuthorizationExtensions.cs" />
-    <Compile Include="Services\Credentials\TestCredentialPrompt.cs" />
-    <Compile Include="Services\Credentials\TestCredentialsService.cs" />
+    <Compile Include="Services\Connection\SynchronousJobService.cs" />
+    <Compile Include="Services\Connection\TestIapRdpConnectionService.cs" />
+    <Compile Include="Views\Credentials\TestAuthorizationExtensions.cs" />
+    <Compile Include="Views\Credentials\TestCredentialPrompt.cs" />
+    <Compile Include="Views\Credentials\TestCredentialsService.cs" />
     <Compile Include="Views\TunnelsViewer\TestTunnelsViewModel.cs" />
     <Compile Include="Services\Tunnel\TestTunnelBrokerService.cs" />
     <Compile Include="Services\Tunnel\TestTunnelService.cs" />
