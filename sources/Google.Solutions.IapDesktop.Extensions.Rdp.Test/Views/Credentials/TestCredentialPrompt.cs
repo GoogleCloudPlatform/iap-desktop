@@ -46,26 +46,29 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Test.Views.Credentials
 
         private ICredentialPrompt CreateCredentialsPrompt(
             bool isGrantedPermissionToGenerateCredentials,
+            bool expectSilentCredentialGeneration,
             Mock<ITaskDialog> taskDialogMock)
         {
             this.serviceRegistry.AddSingleton<ITaskDialog>(taskDialogMock.Object);
             this.serviceRegistry.AddMock<IConnectionSettingsWindow>();
             this.serviceRegistry.AddMock<IShowCredentialsDialog>();
 
-            var credentialsServoce = this.serviceRegistry.AddMock<ICredentialsService>();
-            credentialsServoce.Setup(s => s.GenerateCredentialsAsync(
+            var credentialsService = this.serviceRegistry.AddMock<ICredentialsService>();
+            credentialsService.Setup(s => s.GenerateCredentialsAsync(
                     It.IsAny<IWin32Window>(),
                     It.IsAny<InstanceLocator>(),
-                    It.IsAny<ConnectionSettingsEditor>()))
+                    It.IsAny<ConnectionSettingsEditor>(),
+                    It.Is<bool>(silent => silent == expectSilentCredentialGeneration)))
                 .Callback(
                     (IWin32Window owner,
                     InstanceLocator instanceRef,
-                    ConnectionSettingsEditor settings) =>
+                    ConnectionSettingsEditor settings,
+                    bool silent) =>
                     {
                         settings.Username = "bob";
                         settings.CleartextPassword = "secret";
                     });
-            credentialsServoce.Setup(s => s.IsGrantedPermissionToGenerateCredentials(
+            credentialsService.Setup(s => s.IsGrantedPermissionToGenerateCredentials(
                     It.IsAny<InstanceLocator>()))
                 .ReturnsAsync(isGrantedPermissionToGenerateCredentials);
 
@@ -92,7 +95,10 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Test.Views.Credentials
                 It.IsAny<string>(),
                 out It.Ref<bool>.IsAny)).Returns(0);
 
-            var credentialPrompt = CreateCredentialsPrompt(isGrantedPermissionToGenerateCredentials, taskDialog);
+            var credentialPrompt = CreateCredentialsPrompt(
+                isGrantedPermissionToGenerateCredentials, 
+                false,
+                taskDialog);
             var settings = new ConnectionSettingsEditor(
                 new VmInstanceConnectionSettings(),
                 _ => { },
@@ -138,7 +144,10 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Test.Views.Credentials
                 It.IsAny<string>(),
                 out It.Ref<bool>.IsAny)).Returns(0);
 
-            var credentialPrompt = CreateCredentialsPrompt(isGrantedPermissionToGenerateCredentials, taskDialog);
+            var credentialPrompt = CreateCredentialsPrompt(
+                isGrantedPermissionToGenerateCredentials, 
+                false, 
+                taskDialog);
             var settings = new ConnectionSettingsEditor(
                 new VmInstanceConnectionSettings(),
                 _ => { },
@@ -189,7 +198,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Test.Views.Credentials
                 It.IsAny<string>(),
                 out It.Ref<bool>.IsAny)).Returns(0);
 
-            var credentialPrompt = CreateCredentialsPrompt(true, taskDialog);
+            var credentialPrompt = CreateCredentialsPrompt(true, false, taskDialog);
             var settings = new ConnectionSettingsEditor(
                 new VmInstanceConnectionSettings(),
                 _ => { },
@@ -234,7 +243,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Test.Views.Credentials
                 It.IsAny<string>(),
                 out It.Ref<bool>.IsAny)).Returns(0);
 
-            var credentialPrompt = CreateCredentialsPrompt(false, taskDialog);
+            var credentialPrompt = CreateCredentialsPrompt(false, false, taskDialog);
             var window = this.serviceRegistry.AddMock<IConnectionSettingsWindow>();
             var settings = new ConnectionSettingsEditor(
                 new VmInstanceConnectionSettings(),
@@ -279,7 +288,10 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Test.Views.Credentials
                 It.IsAny<string>(),
                 out It.Ref<bool>.IsAny)).Returns(0);
 
-            var credentialPrompt = CreateCredentialsPrompt(isGrantedPermissionToGenerateCredentials, taskDialog);
+            var credentialPrompt = CreateCredentialsPrompt(
+                isGrantedPermissionToGenerateCredentials,
+                false, 
+                taskDialog);
             var settings = new ConnectionSettingsEditor(
                 new VmInstanceConnectionSettings(),
                 _ => { },
@@ -330,7 +342,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Test.Views.Credentials
                 It.IsAny<string>(),
                 out It.Ref<bool>.IsAny)).Returns(0);
 
-            var credentialPrompt = CreateCredentialsPrompt(true, taskDialog);
+            var credentialPrompt = CreateCredentialsPrompt(true, false, taskDialog);
             var window = this.serviceRegistry.AddMock<IConnectionSettingsWindow>();
             var settings = new ConnectionSettingsEditor(
                 new VmInstanceConnectionSettings(),
@@ -374,7 +386,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Test.Views.Credentials
                 It.IsAny<string>(),
                 out It.Ref<bool>.IsAny)).Returns(1);
 
-            var credentialPrompt = CreateCredentialsPrompt(true, taskDialog);
+            var credentialPrompt = CreateCredentialsPrompt(true, false, taskDialog);
             var settings = new ConnectionSettingsEditor(
                 new VmInstanceConnectionSettings(),
                 _ => { },
@@ -419,7 +431,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Test.Views.Credentials
                 It.IsAny<string>(),
                 out It.Ref<bool>.IsAny)).Returns(0);
 
-            var credentialPrompt = CreateCredentialsPrompt(true, taskDialog);
+            var credentialPrompt = CreateCredentialsPrompt(true, false, taskDialog);
             var settings = new ConnectionSettingsEditor(
                 new VmInstanceConnectionSettings(),
                 _ => { },
@@ -460,7 +472,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Test.Views.Credentials
         {
             var taskDialog = new Mock<ITaskDialog>();
 
-            var credentialPrompt = CreateCredentialsPrompt(true, taskDialog);
+            var credentialPrompt = CreateCredentialsPrompt(true, true, taskDialog);
             var settings = new ConnectionSettingsEditor(
                 new VmInstanceConnectionSettings(),
                 _ => { },
@@ -506,7 +518,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Test.Views.Credentials
                 It.IsAny<string>(),
                 out It.Ref<bool>.IsAny)).Returns(0);
 
-            var credentialPrompt = CreateCredentialsPrompt(false, taskDialog);
+            var credentialPrompt = CreateCredentialsPrompt(false, false, taskDialog);
             var window = this.serviceRegistry.AddMock<IConnectionSettingsWindow>();
             var settings = new ConnectionSettingsEditor(
                 new VmInstanceConnectionSettings(),

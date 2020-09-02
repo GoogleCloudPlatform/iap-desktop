@@ -76,7 +76,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Views.Credentials
                 await credentialsService.GenerateCredentialsAsync(
                         owner,
                         instanceLocator,
-                        settings)
+                        settings,
+                        true)
                     .ConfigureAwait(true);
                 return;
             }
@@ -97,7 +98,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Views.Credentials
                             .GenerateCredentialsAsync(
                                 owner,
                                 instanceLocator,
-                                settings)
+                                settings,
+                                false)
                     });
             }
 

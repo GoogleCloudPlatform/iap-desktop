@@ -24,11 +24,16 @@ using Google.Solutions.Common.Locator;
 using Google.Solutions.Common.Test;
 using Google.Solutions.IapDesktop.Application.ObjectModel;
 using Google.Solutions.IapDesktop.Application.Services.Adapters;
+using Google.Solutions.IapDesktop.Application.Services.Integration;
 using Google.Solutions.IapDesktop.Application.Services.Persistence;
+using Google.Solutions.IapDesktop.Application.Util;
 using Google.Solutions.IapDesktop.Application.Views.ConnectionSettings;
+using Google.Solutions.IapDesktop.Extensions.Rdp.Test.Services.Connection;
 using Google.Solutions.IapDesktop.Extensions.Rdp.Views.Credentials;
 using Moq;
 using NUnit.Framework;
+using System.Net;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
@@ -65,11 +70,89 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Test.Views.Credentials
                 () => credentialsService.GenerateCredentialsAsync(
                     null,
                     SampleInstance,
-                    settings).Wait());
+                    settings,
+                    false).Wait());
 
             credDialog.Verify(d => d.PromptForUsername(
                 It.IsAny<IWin32Window>(),
                 It.Is<string>(u => u == "alice")), Times.Once);
+        }
+
+        [Test]
+        public async Task WhenSuggestedUserNameProvidedAndSilentIsTrue_ThenSuggestionIsUsedWithoutPrompting()
+        {
+            var serviceRegistry = new ServiceRegistry();
+
+            var auth = new Mock<IAuthorization>();
+            auth.SetupGet(a => a.Email).Returns("bobsemail@gmail.com");
+            serviceRegistry.AddMock<IAuthorizationAdapter>()
+                .SetupGet(a => a.Authorization).Returns(auth.Object);
+
+            serviceRegistry.AddSingleton<IJobService, SynchronousJobService>();
+            serviceRegistry.AddMock<IComputeEngineAdapter>()
+                .Setup(a => a.ResetWindowsUserAsync(
+                    It.IsAny<InstanceLocator>(),
+                    It.Is<string>(user => user == "alice"),
+                    It.IsAny<CancellationToken>()))
+                .ReturnsAsync(new NetworkCredential("alice", "password"));
+
+            var credDialog = serviceRegistry.AddMock<IGenerateCredentialsDialog>();
+            var settings = new ConnectionSettingsEditor(
+                new VmInstanceConnectionSettings(),
+                _ => { },
+                null);
+            settings.Username = "alice";
+
+            var credentialsService = new CredentialsService(serviceRegistry);
+            await credentialsService.GenerateCredentialsAsync(
+                null,
+                SampleInstance,
+                settings,
+                true);
+
+            Assert.AreEqual("alice", settings.Username);
+            Assert.AreEqual("password", settings.Password.AsClearText());
+            credDialog.Verify(d => d.PromptForUsername(
+                It.IsAny<IWin32Window>(),
+                It.IsAny<string>()), Times.Never);
+        }
+
+        [Test]
+        public async Task WhenNoSuggestedUserNameProvidedAndSilentIsTrue_ThenSuggestionIsDerivedFromSigninNameWithoutPrompting()
+        {
+            var serviceRegistry = new ServiceRegistry();
+
+            var auth = new Mock<IAuthorization>();
+            auth.SetupGet(a => a.Email).Returns("bobsemail@gmail.com");
+            serviceRegistry.AddMock<IAuthorizationAdapter>()
+                .SetupGet(a => a.Authorization).Returns(auth.Object);
+
+            serviceRegistry.AddSingleton<IJobService, SynchronousJobService>();
+            serviceRegistry.AddMock<IComputeEngineAdapter>()
+                .Setup(a => a.ResetWindowsUserAsync(
+                    It.IsAny<InstanceLocator>(),
+                    It.Is<string>(user => user == "bobsemail"),
+                    It.IsAny<CancellationToken>()))
+                .ReturnsAsync(new NetworkCredential("bobsemail", "password"));
+
+            var credDialog = serviceRegistry.AddMock<IGenerateCredentialsDialog>();
+            var settings = new ConnectionSettingsEditor(
+                new VmInstanceConnectionSettings(),
+                _ => { },
+                null);
+
+            var credentialsService = new CredentialsService(serviceRegistry);
+            await credentialsService.GenerateCredentialsAsync(
+                null,
+                SampleInstance,
+                settings,
+                true);
+
+            Assert.AreEqual("bobsemail", settings.Username);
+            Assert.AreEqual("password", settings.Password.AsClearText());
+            credDialog.Verify(d => d.PromptForUsername(
+                It.IsAny<IWin32Window>(),
+                It.IsAny<string>()), Times.Never);
         }
 
         [Test]
@@ -79,7 +162,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Test.Views.Credentials
 
             var auth = new Mock<IAuthorization>();
             auth.SetupGet(a => a.Email).Returns("bobsemail@gmail.com");
-
             serviceRegistry.AddMock<IAuthorizationAdapter>()
                 .SetupGet(a => a.Authorization).Returns(auth.Object);
 
@@ -101,7 +183,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Test.Views.Credentials
                 () => credentialsService.GenerateCredentialsAsync(
                     null,
                     SampleInstance,
-                    settings).Wait());
+                    settings,
+                    false).Wait());
 
             credDialog.Verify(d => d.PromptForUsername(
                 It.IsAny<IWin32Window>(),
@@ -136,7 +219,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Test.Views.Credentials
                 () => credentialsService.GenerateCredentialsAsync(
                     null,
                     SampleInstance,
-                    settings).Wait());
+                    settings,
+                    false).Wait());
 
             credDialog.Verify(d => d.PromptForUsername(
                 It.IsAny<IWin32Window>(),
