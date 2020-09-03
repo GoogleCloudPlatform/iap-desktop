@@ -54,7 +54,8 @@ namespace Google.Solutions.IapDesktop.Application.Test
                     vmRef,
                     3389,
                     IapTunnelingEndpoint.DefaultNetworkInterface,
-                    TestProject.UserAgent));
+                    TestProject.UserAgent),
+                new AllowAllRelayPolicy());
 
             var tokenSource = new CancellationTokenSource();
             listener.ListenAsync(tokenSource.Token);

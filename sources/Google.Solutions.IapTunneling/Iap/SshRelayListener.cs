@@ -40,6 +40,7 @@ namespace Google.Solutions.IapTunneling.Iap
         private const int BacklogLength = 32;
 
         private readonly ISshRelayEndpoint server;
+        private readonly ISshRelayPolicy policy;
         private readonly TcpListener listener;
 
         public int LocalPort { get; }
@@ -77,9 +78,13 @@ namespace Google.Solutions.IapTunneling.Iap
         // Ctor
         //---------------------------------------------------------------------
 
-        private SshRelayListener(ISshRelayEndpoint server, int localPort)
+        private SshRelayListener(
+            ISshRelayEndpoint server,
+            ISshRelayPolicy policy,
+            int localPort)
         {
             this.server = server;
+            this.policy = policy;
             this.LocalPort = localPort;
 
             this.listener = new TcpListener(new IPEndPoint(IPAddress.Loopback, localPort));
@@ -118,22 +123,27 @@ namespace Google.Solutions.IapTunneling.Iap
         /// <summary>
         ///  Create a listener using a dynamically selected, unused local port.
         /// </summary>
-        public static SshRelayListener CreateLocalListener(ISshRelayEndpoint server)
+        public static SshRelayListener CreateLocalListener(
+            ISshRelayEndpoint server,
+            ISshRelayPolicy policy)
         {
-            return CreateLocalListener(server, PortFinder.FindFreeLocalPort());
+            return CreateLocalListener(server, policy, PortFinder.FindFreeLocalPort());
         }
 
         /// <summary>
         ///  Create a listener using a defined local port.
         /// </summary>
-        public static SshRelayListener CreateLocalListener(ISshRelayEndpoint server, int port)
+        public static SshRelayListener CreateLocalListener(
+            ISshRelayEndpoint server,
+            ISshRelayPolicy policy,
+            int port)
         {
             if (port < 0 || port > ushort.MaxValue)
             {
                 throw new ArgumentException("port");
             }
 
-            return new SshRelayListener(server, port);
+            return new SshRelayListener(server, policy, port);
         }
 
         /// <summary>
@@ -153,7 +163,16 @@ namespace Google.Solutions.IapTunneling.Iap
                     {
                         try
                         {
-                            var clientStream = new SocketStream(this.listener.AcceptSocket());
+                            var socket = this.listener.AcceptSocket();
+                            if (!this.policy.IsClientAllowed((IPEndPoint)socket.RemoteEndPoint))
+                            {
+                                TraceSources.Compute.TraceWarning(
+                                    "Rejecting connection attempt from {0}", socket.RemoteEndPoint);
+                                socket.Close();
+                                continue;
+                            }
+
+                            var clientStream = new SocketStream(socket);
                             var serverStream = new SshRelayStream(this.server);
 
                             OnClientConnected(clientStream.ToString());

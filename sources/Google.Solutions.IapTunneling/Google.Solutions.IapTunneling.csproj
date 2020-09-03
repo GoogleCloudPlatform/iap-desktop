@@ -76,6 +76,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="BigEndian.cs" />
+    <Compile Include="Iap\ISshRelayPolicy.cs" />
+    <Compile Include="Iap\AllowAllRelayPolicy.cs" />
     <Compile Include="Net\RestrictedHeaderConfigPatch.cs" />
     <Compile Include="TraceSources.cs" />
     <Compile Include="Iap\IapTunnelingEndpoint.cs" />

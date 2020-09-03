@@ -65,7 +65,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Services.Tunnel
                 // Start listener to enable clients to connect. Do not await
                 // the listener as we want to continue listeining in the
                 // background.
-                var listener = SshRelayListener.CreateLocalListener(iapEndpoint);
+                var listener = SshRelayListener.CreateLocalListener(
+                    iapEndpoint,
+                    new AllowAllRelayPolicy()); // TODO: use stricter policy
                 var cts = new CancellationTokenSource();
 
                 _ = listener.ListenAsync(cts.Token);
