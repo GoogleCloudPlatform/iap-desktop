@@ -84,6 +84,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Services\Connection\SynchronousJobService.cs" />
     <Compile Include="Services\Connection\TestIapRdpConnectionService.cs" />
+    <Compile Include="Services\Tunnel\TestTcpTable.cs" />
     <Compile Include="Views\Credentials\TestAuthorizationExtensions.cs" />
     <Compile Include="Views\Credentials\TestCredentialPrompt.cs" />
     <Compile Include="Views\Credentials\TestCredentialsService.cs" />

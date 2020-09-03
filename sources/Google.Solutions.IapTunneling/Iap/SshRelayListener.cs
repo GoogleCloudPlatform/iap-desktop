@@ -164,10 +164,16 @@ namespace Google.Solutions.IapTunneling.Iap
                         try
                         {
                             var socket = this.listener.AcceptSocket();
-                            if (!this.policy.IsClientAllowed((IPEndPoint)socket.RemoteEndPoint))
+                            if (this.policy.IsClientAllowed((IPEndPoint)socket.RemoteEndPoint))
+                            {
+                                TraceSources.Compute.TraceInformation(
+                                    "Connection from {0} allowed by policy", socket.RemoteEndPoint);
+
+                            }
+                            else
                             {
                                 TraceSources.Compute.TraceWarning(
-                                    "Rejecting connection attempt from {0}", socket.RemoteEndPoint);
+                                    "Connection from {0} rejected by policy", socket.RemoteEndPoint);
                                 socket.Close();
                                 continue;
                             }

@@ -21,7 +21,7 @@
 
 using System;
 
-namespace Google.Solutions.IapDesktop.Extensions.Rdp
+namespace Google.Solutions.IapDesktop.Extensions.Rdp.Views.Credentials
 {
     internal static class UnsafeNativeMethods
     {
