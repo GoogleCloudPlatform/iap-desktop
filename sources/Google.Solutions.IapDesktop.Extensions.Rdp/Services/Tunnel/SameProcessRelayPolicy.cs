@@ -30,9 +30,16 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Services.Tunnel
     {
         public bool IsClientAllowed(IPEndPoint remote)
         {
-            var tcpTableEntry = TcpTable.GetTcpTable2().Where(e => e.RemoteEndpoint == remote);
+            // NB. For connections from localhost, there are two
+            // entries in the table. To find out the originating, we need
+            // to find the one where the "local endpoint" matches
+            // the port that is asking for a relay.
+            var tcpTableEntry = TcpTable.GetTcpTable2()
+                .Where(e => e.LocalEndpoint.Equals(remote));
 
-            return remote.Address == IPAddress.Loopback &&
+            // Only permit access if the originating process is
+            // the current process.
+            return remote.Address.Equals(IPAddress.Loopback) &&
                 tcpTableEntry.Any() &&
                 tcpTableEntry.First().ProcessId == Process.GetCurrentProcess().Id;
         }

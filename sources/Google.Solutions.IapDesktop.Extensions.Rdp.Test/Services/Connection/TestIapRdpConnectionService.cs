@@ -37,6 +37,7 @@ using NUnit.Framework;
 using System;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using Google.Solutions.IapTunneling.Iap;
 
 namespace Google.Solutions.IapDesktop.Extensions.Rdp.Test.Services.Connection
 {
@@ -56,6 +57,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Test.Services.Connection
             var tunnelBrokerService = new Mock<ITunnelBrokerService>();
             tunnelBrokerService.Setup(s => s.ConnectAsync(
                 It.IsAny<TunnelDestination>(),
+                It.IsAny<ISshRelayPolicy>(),
                 It.IsAny<TimeSpan>())).Returns(Task.FromResult(tunnel.Object));
             this.serviceRegistry.AddSingleton<ITunnelBrokerService>(tunnelBrokerService.Object);
 

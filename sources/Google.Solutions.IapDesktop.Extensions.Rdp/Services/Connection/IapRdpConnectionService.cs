@@ -78,7 +78,10 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Services.Connection
                         // Note that the timeouts are not additive.
                         var timeout = TimeSpan.FromSeconds(settings.ConnectionTimeout);
 
-                        return await this.tunnelBrokerService.ConnectAsync(destination, timeout)
+                        return await this.tunnelBrokerService.ConnectAsync(
+                                destination, 
+                                new SameProcessRelayPolicy(),
+                                timeout)
                             .ConfigureAwait(false);
                     }
                     catch (NetworkStreamClosedException e)

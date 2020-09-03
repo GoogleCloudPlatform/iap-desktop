@@ -32,7 +32,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Services.Tunnel
 {
     public interface ITunnelService
     {
-        Task<ITunnel> CreateTunnelAsync(TunnelDestination tunnelEndpoint);
+        Task<ITunnel> CreateTunnelAsync(
+            TunnelDestination tunnelEndpoint,
+            ISshRelayPolicy relayPolicy);
     }
 
     [Service(typeof(ITunnelService))]
@@ -50,7 +52,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Services.Tunnel
         {
         }
 
-        public Task<ITunnel> CreateTunnelAsync(TunnelDestination tunnelEndpoint)
+        public Task<ITunnel> CreateTunnelAsync(
+            TunnelDestination tunnelEndpoint,
+            ISshRelayPolicy relayPolicy)
         {
             using (TraceSources.IapDesktop.TraceMethod().WithParameters(tunnelEndpoint))
             {
@@ -67,7 +71,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Services.Tunnel
                 // background.
                 var listener = SshRelayListener.CreateLocalListener(
                     iapEndpoint,
-                    new AllowAllRelayPolicy()); // TODO: use stricter policy
+                    relayPolicy);
                 var cts = new CancellationTokenSource();
 
                 _ = listener.ListenAsync(cts.Token);
