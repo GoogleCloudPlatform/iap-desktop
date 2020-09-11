@@ -166,6 +166,21 @@ namespace Google.Solutions.IapDesktop.Application.ObjectModel
                 this);
         }
 
+
+        public void AddSeparator(int? index = null)
+        {
+            var menuItem = new ToolStripSeparator();
+
+            if (index.HasValue)
+            {
+                this.menuItems.Insert(Math.Min(index.Value, this.menuItems.Count), menuItem);
+            }
+            else
+            {
+                this.menuItems.Add(menuItem);
+            }
+        }
+
         public void ExecuteCommandByKey(Keys keys)
         {
             // Only search top-level menu.

@@ -31,6 +31,7 @@ using Google.Solutions.IapDesktop.Extensions.Rdp.Views.TunnelsViewer;
 using System;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using Google.Solutions.IapDesktop.Extensions.Rdp.Views.RemoteDesktop;
 
 namespace Google.Solutions.IapDesktop.Extensions.Rdp.Services
 {
@@ -62,6 +63,17 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Services
             {
                 return CommandState.Unavailable;
             }
+        }
+
+        private CommandState GetCommandStateWhenActiveSessionRequired()
+        {
+            var activeSession = this.serviceProvider
+                .GetService<IRemoteDesktopService>()
+                .ActiveSession;
+
+            return (activeSession != null && activeSession.IsConnected)
+                ? CommandState.Enabled
+                : CommandState.Disabled;
         }
 
         //---------------------------------------------------------------------
@@ -215,6 +227,64 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Services
                     ShortcutKeys = Keys.Control | Keys.Alt | Keys.T
                 },
                 1);
+
+            //
+            // Desktop menu.
+            //
+            var desktopMenu = mainForm.AddMenu("&Desktop", 1);
+            desktopMenu.AddCommand(
+                new Command<IMainForm>(
+                    "&Full screen",
+                    _ => GetCommandStateWhenActiveSessionRequired(),
+                    _ => DoWithActiveSession(session => session.TrySetFullscreen(true)))
+                {
+                    Image = Resources.Fullscreen_16,
+                    ShortcutKeys = Keys.F11
+                });
+            desktopMenu.AddCommand(
+                new Command<IMainForm>(
+                    "&Disconnect",
+                    _ => GetCommandStateWhenActiveSessionRequired(),
+                    _ => DoWithActiveSession(session => session.Close()))
+                {
+                    Image = Resources.Disconnect_16,
+                    ShortcutKeys = Keys.Control | Keys.F4
+                });
+            desktopMenu.AddSeparator();
+            desktopMenu.AddCommand(
+                new Command<IMainForm>(
+                    "Show &security screen (send Ctrl+Alt+Esc)",
+                    _ => GetCommandStateWhenActiveSessionRequired(),
+                    _ => DoWithActiveSession(session => session.ShowSecurityScreen()))
+                {
+                    ShortcutKeys = Keys.Control | Keys.F4
+                });
+            desktopMenu.AddCommand(
+                new Command<IMainForm>(
+                    "Show &task manager (send Ctrl+Shift+Esc)",
+                    _ => GetCommandStateWhenActiveSessionRequired(),
+                    _ => DoWithActiveSession(session => session.ShowTaskManager()))
+                {
+                    ShortcutKeys = Keys.Control | Keys.F4
+                });
+        }
+
+        private void DoWithActiveSession(Action<IRemoteDesktopSession> action)
+        {
+            try
+            {
+                var session = this.serviceProvider.GetService<IRemoteDesktopService>().ActiveSession;
+                if (session != null)
+                {
+                    action(session);
+                }
+            }
+            catch (Exception e)
+            {
+                this.serviceProvider
+                    .GetService<IExceptionDialog>()
+                    .Show(this.window, "Remote Desktop action failed", e);
+            }
         }
     }
 }

@@ -140,6 +140,10 @@ namespace Google.Solutions.IapDesktop.Windows
                 this.components);
         }
 
+        //---------------------------------------------------------------------
+        // Window events.
+        //---------------------------------------------------------------------
+
         private void MainForm_FormClosing(object sender, FormClosingEventArgs e)
         {
             var settings = this.applicationSettings.GetSettings();
@@ -270,6 +274,36 @@ namespace Google.Solutions.IapDesktop.Windows
             this.urlHandler = handler;
         }
 
+        public CommandContainer<IMainForm> AddMenu(string caption, int? index)
+        {
+            var menu = new ToolStripMenuItem(caption);
+
+            if (index.HasValue)
+            {
+                this.mainMenu.Items.Insert(
+                    Math.Min(index.Value, this.mainMenu.Items.Count),
+                    menu);
+            }
+            else
+            {
+                this.mainMenu.Items.Add(menu);
+            }
+
+            var commandContainer = new CommandContainer<IMainForm>(
+                this,
+                menu.DropDownItems,
+                ToolStripItemDisplayStyle.Text,
+                this.serviceProvider);
+
+            menu.DropDownOpening += (sender, args) =>
+            {
+                // Force re-evaluation of context.
+                commandContainer.Context = this;
+            };
+
+            return commandContainer;
+        }
+
         //---------------------------------------------------------------------
         // Main menu events.
         //---------------------------------------------------------------------
@@ -395,59 +429,6 @@ namespace Google.Solutions.IapDesktop.Windows
             checkForUpdatesOnExitToolStripMenuItem.Checked =
                 !checkForUpdatesOnExitToolStripMenuItem.Checked;
         }
-
-        private void desktopToolStripMenuItem_DropDownOpening(object sender, EventArgs e)
-        {
-            // TODO: Restore Desktop menu
-            //var session = this.serviceProvider.GetService<IRemoteDesktopService>().ActiveSession;
-            //foreach (var item in this.desktopToolStripMenuItem.DropDownItems.OfType<ToolStripDropDownItem>())
-            //{
-            //    item.Enabled = session != null && session.IsConnected;
-            //}
-        }
-
-        private void fullScreenToolStripMenuItem_Click(object sender, EventArgs args)
-        // => DoWithActiveSession(session => session.TrySetFullscreen(true));
-        {
-            // TODO: Restore Desktop menu
-        }
-
-        private void disconnectToolStripMenuItem_Click(object sender, EventArgs args)
-        //    => DoWithActiveSession(session => session.Close());
-        {
-            // TODO: Restore Desktop menu
-        }
-
-        private void showSecurityScreenToolStripMenuItem_Click(object sender, EventArgs args)
-        //    => DoWithActiveSession(session => session.ShowSecurityScreen());
-        {
-            // TODO: Restore Desktop menu
-        }
-
-        private void showtaskManagerToolStripMenuItem_Click(object sender, EventArgs args)
-        //    => DoWithActiveSession(session => session.ShowTaskManager());
-        {
-            // TODO: Restore Desktop menu
-        }
-
-        // TODO: Restore Desktop menu
-        //private void DoWithActiveSession(Action<IRemoteDesktopSession> action)
-        //{
-        //    try
-        //    {
-        //        var session = this.serviceProvider.GetService<IRemoteDesktopService>().ActiveSession;
-        //        if (session != null)
-        //        {
-        //            action(session);
-        //        }
-        //    }
-        //    catch (Exception e)
-        //    {
-        //        this.serviceProvider
-        //            .GetService<IExceptionDialog>()
-        //            .Show(this, "Remote Desktop action failed", e);
-        //    }
-        //}
 
         //---------------------------------------------------------------------
         // IJobHost.

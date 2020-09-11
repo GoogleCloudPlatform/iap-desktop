@@ -55,6 +55,11 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views
             throw new NotImplementedException();
         }
 
+        public CommandContainer<IMainForm> AddMenu(string caption, int? index)
+        {
+            throw new NotImplementedException();
+        }
+
         //---------------------------------------------------------------------
         // IJobService.
         //---------------------------------------------------------------------
@@ -96,5 +101,6 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views
 
         public Task ReauthorizeAsync(CancellationToken token)
             => this.Authorization.ReauthorizeAsync(token);
+
     }
 }
