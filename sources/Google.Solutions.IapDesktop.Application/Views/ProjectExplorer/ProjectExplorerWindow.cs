@@ -27,7 +27,6 @@ using Google.Solutions.IapDesktop.Application.Services.Adapters;
 using Google.Solutions.IapDesktop.Application.Services.Integration;
 using Google.Solutions.IapDesktop.Application.Services.Persistence;
 using Google.Solutions.IapDesktop.Application.Views.ConnectionSettings;
-using Google.Solutions.IapDesktop.Application.Views.RemoteDesktop;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -54,7 +53,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
         private readonly ConnectionSettingsRepository settingsRepository;
         private readonly IAuthorizationAdapter authService;
         private readonly IServiceProvider serviceProvider;
-        private readonly IRemoteDesktopService remoteDesktopService;
+        private readonly IConnectionBroker connectionBroker;
 
         private readonly CloudNode rootNode = new CloudNode();
 
@@ -89,7 +88,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
             this.projectInventoryService = serviceProvider.GetService<ProjectInventoryService>();
             this.settingsRepository = serviceProvider.GetService<ConnectionSettingsRepository>();
             this.authService = serviceProvider.GetService<IAuthorizationAdapter>();
-            this.remoteDesktopService = serviceProvider.GetService<IRemoteDesktopService>();
+            this.connectionBroker = serviceProvider.GetService<IGlobalConnectionBroker>();
 
             this.eventService.BindAsyncHandler<ProjectInventoryService.ProjectAddedEvent>(OnProjectAdded);
             this.eventService.BindHandler<ProjectInventoryService.ProjectDeletedEvent>(OnProjectDeleted);
@@ -119,14 +118,14 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
             {
                 projectNode.Populate(
                     instances,
-                    this.remoteDesktopService.IsConnected);
+                    this.connectionBroker.IsConnected);
             }
             else
             {
                 projectNode = new ProjectNode(this.settingsRepository, projectId);
                 projectNode.Populate(
                     instances,
-                    this.remoteDesktopService.IsConnected);
+                    this.connectionBroker.IsConnected);
                 this.rootNode.Nodes.Add(projectNode);
             }
 

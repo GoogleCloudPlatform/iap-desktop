@@ -26,13 +26,14 @@ using Google.Solutions.IapDesktop.Application.ObjectModel;
 using Google.Solutions.IapDesktop.Application.Services.Adapters;
 using Google.Solutions.IapDesktop.Application.Services.Integration;
 using Google.Solutions.IapDesktop.Application.Services.Persistence;
-using Google.Solutions.IapDesktop.Application.Views.RemoteDesktop;
+using Google.Solutions.IapDesktop.Application.Test.Views;
+using Google.Solutions.IapDesktop.Extensions.Rdp.Views.RemoteDesktop;
 using NUnit.Framework;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Google.Solutions.IapDesktop.Application.Test.Views
+namespace Google.Solutions.IapDesktop.Extensions.Rdp.Test.Views.RemoteDesktop
 {
     [TestFixture]
     [Category("IntegrationTest")]

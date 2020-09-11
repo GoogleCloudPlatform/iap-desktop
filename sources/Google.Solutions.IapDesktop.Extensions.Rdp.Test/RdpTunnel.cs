@@ -26,8 +26,9 @@ using Google.Solutions.IapTunneling.Iap;
 using System;
 using System.Threading;
 
-namespace Google.Solutions.IapDesktop.Application.Test
+namespace Google.Solutions.IapDesktop.Extensions.Rdp.Test
 {
+    // TODO: Rename to IapTunnel
     internal class RdpTunnel : IDisposable
     {
         private readonly SshRelayListener listener;

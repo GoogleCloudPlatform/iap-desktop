@@ -22,9 +22,11 @@
 using AxMSTSCLib;
 using Google.Solutions.Common.Diagnostics;
 using Google.Solutions.Common.Locator;
+using Google.Solutions.IapDesktop.Application;
 using Google.Solutions.IapDesktop.Application.Services.Integration;
 using Google.Solutions.IapDesktop.Application.Services.Persistence;
 using Google.Solutions.IapDesktop.Application.Util;
+using Google.Solutions.IapDesktop.Application.Views;
 using MSTSCLib;
 using System;
 using System.ComponentModel;
@@ -40,7 +42,7 @@ using WeifenLuo.WinFormsUI.Docking;
 #pragma warning disable IDE1006 // Naming Styles
 #pragma warning disable CA1031 // catch Exception
 
-namespace Google.Solutions.IapDesktop.Application.Views.RemoteDesktop
+namespace Google.Solutions.IapDesktop.Extensions.Rdp.Views.RemoteDesktop
 {
     [ComVisible(false)]
     public partial class RemoteDesktopPane : ToolWindow, IRemoteDesktopSession

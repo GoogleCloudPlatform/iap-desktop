@@ -24,7 +24,6 @@ using Google.Solutions.IapDesktop.Application.ObjectModel;
 using Google.Solutions.IapDesktop.Application.Services.Adapters;
 using Google.Solutions.IapDesktop.Application.Services.Integration;
 using Google.Solutions.IapDesktop.Application.Views.ProjectExplorer;
-using Google.Solutions.IapDesktop.Application.Views.RemoteDesktop;
 using Moq;
 using NUnit.Framework;
 using System.Collections.Generic;
@@ -47,7 +46,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views
         [SetUp]
         public void RegisterServices()
         {
-            this.serviceRegistry.AddSingleton<IRemoteDesktopService, RemoteDesktopService>();
+            this.serviceRegistry.AddSingleton<IGlobalConnectionBroker, GlobalConnectionBroker>();
         }
 
         [Test]

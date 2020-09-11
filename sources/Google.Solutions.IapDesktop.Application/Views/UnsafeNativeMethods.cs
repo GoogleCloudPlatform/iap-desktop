@@ -130,8 +130,6 @@ namespace Google.Solutions.IapDesktop.Application.Views
             [Out] out int pnRadioButton,
             [Out] out bool pfVerificationFlagChecked);
 
-        [DllImport("user32.dll")]
-        internal static extern uint MapVirtualKey(uint uCode, uint uMapType);
 
         [DllImport("user32.dll")]
         public static extern bool SetForegroundWindow(IntPtr hWnd);
@@ -144,7 +142,6 @@ namespace Google.Solutions.IapDesktop.Application.Views
 
         public const int SW_RESTORE = 9;
 
-        public const uint E_UNEXPECTED = 0x8000ffff;
 
 
         internal const int EM_SETMARGINS = 0xd3;

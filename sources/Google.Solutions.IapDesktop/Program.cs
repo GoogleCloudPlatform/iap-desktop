@@ -29,7 +29,6 @@ using Google.Solutions.IapDesktop.Application.Views;
 using Google.Solutions.IapDesktop.Application.Views.ConnectionSettings;
 using Google.Solutions.IapDesktop.Application.Views.Diagnostics;
 using Google.Solutions.IapDesktop.Application.Views.ProjectExplorer;
-using Google.Solutions.IapDesktop.Application.Views.RemoteDesktop;
 using Google.Solutions.IapDesktop.Application.Util;
 using Google.Solutions.IapDesktop.Windows;
 using Google.Solutions.IapTunneling.Net;
@@ -245,6 +244,7 @@ namespace Google.Solutions.IapDesktop
             integrationLayer.AddSingleton<IJobService, JobService>();
             integrationLayer.AddSingleton<IEventService>(new EventService(mainForm));
             integrationLayer.AddTransient<ProjectInventoryService>();
+            integrationLayer.AddSingleton<IGlobalConnectionBroker, GlobalConnectionBroker>();
 
 
             //
@@ -258,7 +258,6 @@ namespace Google.Solutions.IapDesktop
             windowAndWorkflowLayer.AddTransient<IConfirmationDialog, ConfirmationDialog>();
             windowAndWorkflowLayer.AddTransient<ITaskDialog, TaskDialog>();
             windowAndWorkflowLayer.AddTransient<IUpdateService, UpdateService>();
-            windowAndWorkflowLayer.AddSingleton<IRemoteDesktopService, RemoteDesktopService>();
             windowAndWorkflowLayer.AddSingleton<IProjectExplorer, ProjectExplorerWindow>();
             windowAndWorkflowLayer.AddSingleton<IConnectionSettingsWindow, ConnectionSettingsWindow>();
 

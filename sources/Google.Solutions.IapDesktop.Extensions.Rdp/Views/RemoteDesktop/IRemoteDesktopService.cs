@@ -24,11 +24,12 @@ using Google.Solutions.Common.Util;
 using Google.Solutions.IapDesktop.Application.ObjectModel;
 using Google.Solutions.IapDesktop.Application.Services.Integration;
 using Google.Solutions.IapDesktop.Application.Services.Persistence;
+using Google.Solutions.IapDesktop.Application.Views;
 using System;
 using System.Linq;
 using WeifenLuo.WinFormsUI.Docking;
 
-namespace Google.Solutions.IapDesktop.Application.Views.RemoteDesktop
+namespace Google.Solutions.IapDesktop.Extensions.Rdp.Views.RemoteDesktop
 {
     public interface IRemoteDesktopSession
     {
@@ -43,13 +44,10 @@ namespace Google.Solutions.IapDesktop.Application.Views.RemoteDesktop
         void ShowTaskManager();
     }
 
-    public interface IRemoteDesktopService
+    // TODO: Rename to RemoteDesktopConnectionBroker
+    public interface IRemoteDesktopService : IConnectionBroker
     {
         IRemoteDesktopSession ActiveSession { get; }
-
-        bool IsConnected(InstanceLocator vmInstance);
-
-        bool TryActivate(InstanceLocator vmInstance);
 
         IRemoteDesktopSession Connect(
             InstanceLocator vmInstance,
@@ -58,6 +56,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.RemoteDesktop
             VmInstanceConnectionSettings settings);
     }
 
+    [Service(typeof(IRemoteDesktopService), ServiceLifetime.Singleton)]
     public class RemoteDesktopService : IRemoteDesktopService
     {
         private readonly IExceptionDialog exceptionDialog;
@@ -115,43 +114,6 @@ namespace Google.Solutions.IapDesktop.Application.Views.RemoteDesktop
             rdpPane.Connect(server, port, settings);
 
             return rdpPane;
-        }
-    }
-
-    public abstract class RemoteDesktopEventBase
-    {
-        public InstanceLocator Instance { get; }
-
-        public RemoteDesktopEventBase(InstanceLocator vmInstance)
-        {
-            this.Instance = vmInstance;
-        }
-    }
-
-    public class RemoteDesktopConnectionSuceededEvent : RemoteDesktopEventBase
-    {
-        public RemoteDesktopConnectionSuceededEvent(InstanceLocator vmInstance) : base(vmInstance)
-        {
-        }
-    }
-
-    public class RemoteDesktopConnectionFailedEvent : RemoteDesktopEventBase
-    {
-        public RdpException Exception { get; }
-
-        public RemoteDesktopConnectionFailedEvent(InstanceLocator vmInstance, RdpException exception)
-            : base(vmInstance)
-        {
-            this.Exception = exception;
-        }
-    }
-
-    public class RemoteDesktopWindowClosedEvent : RemoteDesktopEventBase
-    {
-        public RdpException Exception { get; }
-
-        public RemoteDesktopWindowClosedEvent(InstanceLocator vmInstance) : base(vmInstance)
-        {
         }
     }
 }

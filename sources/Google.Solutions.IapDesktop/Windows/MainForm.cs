@@ -29,7 +29,6 @@ using Google.Solutions.IapDesktop.Application.Services.Persistence;
 using Google.Solutions.IapDesktop.Application.Views;
 using Google.Solutions.IapDesktop.Application.Views.Diagnostics;
 using Google.Solutions.IapDesktop.Application.Views.ProjectExplorer;
-using Google.Solutions.IapDesktop.Application.Views.RemoteDesktop;
 using Google.Solutions.IapDesktop.Application.Util;
 using System;
 using System.ComponentModel;
@@ -399,42 +398,56 @@ namespace Google.Solutions.IapDesktop.Windows
 
         private void desktopToolStripMenuItem_DropDownOpening(object sender, EventArgs e)
         {
-            var session = this.serviceProvider.GetService<IRemoteDesktopService>().ActiveSession;
-            foreach (var item in this.desktopToolStripMenuItem.DropDownItems.OfType<ToolStripDropDownItem>())
-            {
-                item.Enabled = session != null && session.IsConnected;
-            }
+            // TODO: Restore Desktop menu
+            //var session = this.serviceProvider.GetService<IRemoteDesktopService>().ActiveSession;
+            //foreach (var item in this.desktopToolStripMenuItem.DropDownItems.OfType<ToolStripDropDownItem>())
+            //{
+            //    item.Enabled = session != null && session.IsConnected;
+            //}
         }
 
         private void fullScreenToolStripMenuItem_Click(object sender, EventArgs args)
-            => DoWithActiveSession(session => session.TrySetFullscreen(true));
+        // => DoWithActiveSession(session => session.TrySetFullscreen(true));
+        {
+            // TODO: Restore Desktop menu
+        }
 
         private void disconnectToolStripMenuItem_Click(object sender, EventArgs args)
-            => DoWithActiveSession(session => session.Close());
+        //    => DoWithActiveSession(session => session.Close());
+        {
+            // TODO: Restore Desktop menu
+        }
 
         private void showSecurityScreenToolStripMenuItem_Click(object sender, EventArgs args)
-            => DoWithActiveSession(session => session.ShowSecurityScreen());
+        //    => DoWithActiveSession(session => session.ShowSecurityScreen());
+        {
+            // TODO: Restore Desktop menu
+        }
 
         private void showtaskManagerToolStripMenuItem_Click(object sender, EventArgs args)
-            => DoWithActiveSession(session => session.ShowTaskManager());
-
-        private void DoWithActiveSession(Action<IRemoteDesktopSession> action)
+        //    => DoWithActiveSession(session => session.ShowTaskManager());
         {
-            try
-            {
-                var session = this.serviceProvider.GetService<IRemoteDesktopService>().ActiveSession;
-                if (session != null)
-                {
-                    action(session);
-                }
-            }
-            catch (Exception e)
-            {
-                this.serviceProvider
-                    .GetService<IExceptionDialog>()
-                    .Show(this, "Remote Desktop action failed", e);
-            }
+            // TODO: Restore Desktop menu
         }
+
+        // TODO: Restore Desktop menu
+        //private void DoWithActiveSession(Action<IRemoteDesktopSession> action)
+        //{
+        //    try
+        //    {
+        //        var session = this.serviceProvider.GetService<IRemoteDesktopService>().ActiveSession;
+        //        if (session != null)
+        //        {
+        //            action(session);
+        //        }
+        //    }
+        //    catch (Exception e)
+        //    {
+        //        this.serviceProvider
+        //            .GetService<IExceptionDialog>()
+        //            .Show(this, "Remote Desktop action failed", e);
+        //    }
+        //}
 
         //---------------------------------------------------------------------
         // IJobHost.

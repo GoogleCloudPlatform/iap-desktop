@@ -26,7 +26,6 @@ using Google.Solutions.IapDesktop.Application.Services.Persistence;
 using Google.Solutions.IapDesktop.Application.Views;
 using Google.Solutions.IapDesktop.Application.Views.ConnectionSettings;
 using Google.Solutions.IapDesktop.Application.Views.ProjectExplorer;
-using Google.Solutions.IapDesktop.Application.Views.RemoteDesktop;
 using Google.Solutions.IapDesktop.Application.Util;
 using Google.Solutions.IapDesktop.Extensions.Rdp.Views.Credentials;
 using Google.Solutions.IapDesktop.Extensions.Rdp.Services.Tunnel;
@@ -35,6 +34,7 @@ using Google.Solutions.IapTunneling.Net;
 using System;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using Google.Solutions.IapDesktop.Extensions.Rdp.Views.RemoteDesktop;
 
 namespace Google.Solutions.IapDesktop.Extensions.Rdp.Services.Connection
 {
