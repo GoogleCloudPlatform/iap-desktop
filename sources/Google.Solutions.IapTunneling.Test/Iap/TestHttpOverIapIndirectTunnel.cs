@@ -48,7 +48,8 @@ namespace Google.Solutions.IapTunneling.Test.Iap
                     vmRef,
                     80,
                     IapTunnelingEndpoint.DefaultNetworkInterface,
-                    TestProject.UserAgent));
+                    TestProject.UserAgent),
+                new AllowAllRelayPolicy());
             listener.ClientAcceptLimit = 1; // Terminate after first connection.
             listener.ListenAsync(CancellationToken.None);
 

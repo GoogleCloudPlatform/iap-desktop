@@ -19,15 +19,15 @@
 // under the License.
 //
 
-using System;
+using System.Net;
 
-namespace Google.Solutions.IapDesktop.Extensions.Rdp
+namespace Google.Solutions.IapTunneling.Iap
 {
-    internal static class UnsafeNativeMethods
+    public class AllowAllRelayPolicy : ISshRelayPolicy
     {
-
-        internal const int EM_SETMARGINS = 0xd3;
-        [System.Runtime.InteropServices.DllImport("user32.dll")]
-        internal static extern IntPtr SendMessage(IntPtr hWnd, int msg, IntPtr wp, IntPtr lp);
+        public bool IsClientAllowed(IPEndPoint remote)
+        {
+            return true;
+        }
     }
 }

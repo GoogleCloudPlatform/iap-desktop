@@ -81,6 +81,9 @@
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
     <Compile Include="Services\Connection\IapRdpConnectionService.cs" />
+    <Compile Include="Services\Tunnel\SameProcessRelayPolicy.cs" />
+    <Compile Include="Services\Tunnel\TcpTable.cs" />
+    <Compile Include="Services\Tunnel\UnsafeNativeMethods.cs" />
     <Compile Include="Views\Credentials\AuthorizationExtensions.cs" />
     <Compile Include="Views\Credentials\CredentialPrompt.cs" />
     <Compile Include="Views\Credentials\CredentialsService.cs" />
@@ -109,7 +112,7 @@
     <Compile Include="Services\Tunnel\Tunnel.cs" />
     <Compile Include="Services\Tunnel\TunnelBrokerService.cs" />
     <Compile Include="Services\Tunnel\TunnelService.cs" />
-    <Compile Include="UnsafeNativeMethods.cs" />
+    <Compile Include="Views\Credentials\UnsafeNativeMethods.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />

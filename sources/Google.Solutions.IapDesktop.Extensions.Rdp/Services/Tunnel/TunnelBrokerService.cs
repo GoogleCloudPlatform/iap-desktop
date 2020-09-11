@@ -23,6 +23,7 @@ using Google.Solutions.Common.Diagnostics;
 using Google.Solutions.IapDesktop.Application;
 using Google.Solutions.IapDesktop.Application.ObjectModel;
 using Google.Solutions.IapDesktop.Application.Services.Integration;
+using Google.Solutions.IapTunneling.Iap;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -36,7 +37,10 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Services.Tunnel
 
         bool IsConnected(TunnelDestination endpoint);
 
-        Task<ITunnel> ConnectAsync(TunnelDestination endpoint, TimeSpan timeout);
+        Task<ITunnel> ConnectAsync(
+            TunnelDestination endpoint, 
+            ISshRelayPolicy relayPolicy,
+            TimeSpan timeout);
 
         Task DisconnectAsync(TunnelDestination endpoint);
 
@@ -73,9 +77,11 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Services.Tunnel
                 .Where(t => t.IsCompleted && !t.IsFaulted)
                 .Select(t => t.Result);
 
-        private Task<ITunnel> ConnectAndCacheAsync(TunnelDestination endpoint)
+        private Task<ITunnel> ConnectAndCacheAsync(
+            TunnelDestination endpoint,
+            ISshRelayPolicy relayPolicy)
         {
-            var tunnel = this.tunnelService.CreateTunnelAsync(endpoint);
+            var tunnel = this.tunnelService.CreateTunnelAsync(endpoint, relayPolicy);
 
             TraceSources.IapDesktop.TraceVerbose("Created tunnel to {0}", endpoint);
 
@@ -98,13 +104,15 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Services.Tunnel
             }
         }
 
-        private Task<ITunnel> ConnectIfNecessaryAsync(TunnelDestination endpoint)
+        private Task<ITunnel> ConnectIfNecessaryAsync(
+            TunnelDestination endpoint,
+            ISshRelayPolicy relayPolicy)
         {
             lock (this.tunnelsLock)
             {
                 if (!this.tunnels.TryGetValue(endpoint, out Task<ITunnel> tunnel))
                 {
-                    return ConnectAndCacheAsync(endpoint);
+                    return ConnectAndCacheAsync(endpoint, relayPolicy);
                 }
                 else if (tunnel.IsFaulted)
                 {
@@ -113,7 +121,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Services.Tunnel
 
                     // There is no point in handing out a faulty attempt
                     // to create a tunnel. So start anew.
-                    return ConnectAndCacheAsync(endpoint);
+                    return ConnectAndCacheAsync(endpoint, relayPolicy);
                 }
                 else
                 {
@@ -127,18 +135,22 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Services.Tunnel
             }
         }
 
-        public async Task<ITunnel> ConnectAsync(TunnelDestination endpoint, TimeSpan timeout)
+        public async Task<ITunnel> ConnectAsync(
+            TunnelDestination endpoint,
+            ISshRelayPolicy relayPolicy,
+            TimeSpan timeout)
         {
             using (TraceSources.IapDesktop.TraceMethod().WithParameters(endpoint, timeout))
             {
-                var tunnel = await ConnectIfNecessaryAsync(endpoint);
+                var tunnel = await ConnectIfNecessaryAsync(endpoint, relayPolicy)
+                    .ConfigureAwait(false);
 
                 try
                 {
                     // Whether it is a new or existing tunnel, probe it first before 
                     // handing it out. It might be broken after all (because of reauth
                     // or for other reasons).
-                    await tunnel.Probe(timeout);
+                    await tunnel.Probe(timeout).ConfigureAwait(false);
 
                     TraceSources.IapDesktop.TraceVerbose(
                         "Probing tunnel to {0} succeeded", endpoint);
@@ -149,11 +161,13 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Services.Tunnel
                         "Probing tunnel to {0} failed: {1}", endpoint, e.Message);
 
                     // Un-cache this broken tunnel.
-                    await DisconnectAsync(endpoint);
+                    await DisconnectAsync(endpoint).ConfigureAwait(false);
                     throw;
                 }
 
-                await this.eventService.FireAsync(new TunnelOpenedEvent(endpoint));
+                await this.eventService
+                    .FireAsync(new TunnelOpenedEvent(endpoint))
+                    .ConfigureAwait(false);
 
                 return tunnel;
             }
@@ -174,7 +188,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Services.Tunnel
                     this.tunnels.Remove(endpoint);
                 }
 
-                await this.eventService.FireAsync(new TunnelClosedEvent(endpoint));
+                await this.eventService
+                    .FireAsync(new TunnelClosedEvent(endpoint))
+                    .ConfigureAwait(false);
             }
         }
 
@@ -190,7 +206,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Services.Tunnel
                 {
                     try
                     {
-                        await DisconnectAsync(endpoint);
+                        await DisconnectAsync(endpoint).ConfigureAwait(false);
                     }
                     catch (Exception e)
                     {

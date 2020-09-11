@@ -30,6 +30,7 @@ using Google.Solutions.IapTunneling.Iap;
 using Moq;
 using NUnit.Framework;
 using System;
+using System.Net;
 using System.Threading.Tasks;
 
 namespace Google.Solutions.IapDesktop.Extensions.Rdp.Test.Services.Tunnel
@@ -60,7 +61,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Test.Services.Tunnel
                 await testInstance,
                 3389);
 
-            var tunnel = await service.CreateTunnelAsync(destination);
+            var tunnel = await service.CreateTunnelAsync(
+                destination,
+                new SameProcessRelayPolicy());
 
             Assert.AreEqual(destination, tunnel.Destination);
             await tunnel.Probe(TimeSpan.FromSeconds(20));
@@ -80,7 +83,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Test.Services.Tunnel
                     "nonexistinginstance"),
                 3389);
 
-            var tunnel = await service.CreateTunnelAsync(destination);
+            var tunnel = await service.CreateTunnelAsync(
+                destination,
+                new SameProcessRelayPolicy());
 
             Assert.AreEqual(destination, tunnel.Destination);
 
@@ -101,7 +106,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Test.Services.Tunnel
                 await testInstance,
                 3389);
 
-            var tunnel = await service.CreateTunnelAsync(destination);
+            var tunnel = await service.CreateTunnelAsync(
+                destination,
+                new SameProcessRelayPolicy());
 
             Assert.AreEqual(destination, tunnel.Destination);
 
@@ -109,6 +116,32 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Test.Services.Tunnel
                 () => tunnel.Probe(TimeSpan.FromSeconds(20)).Wait());
 
             tunnel.Close();
+        }
+
+        [Test]
+        public async Task WhenInstanceAvailableButRelayPolicyFails_ThenXxxx(
+            [WindowsInstance] ResourceTask<InstanceLocator> testInstance,
+            [Credential(Role = PredefinedRole.ComputeViewer)] ResourceTask<ICredential> credential)
+        {
+            var service = new TunnelService(CreateAuthorizationAdapter(
+                await credential));
+            var destination = new TunnelDestination(
+                await testInstance,
+                3389);
+
+            var tunnel = await service.CreateTunnelAsync(
+                destination,
+                new DenyAllPolicy());
+
+            AssertEx.ThrowsAggregateException<UnauthorizedException>(
+                () => tunnel.Probe(TimeSpan.FromSeconds(20)).Wait());
+
+            tunnel.Close();
+        }
+
+        private class DenyAllPolicy : ISshRelayPolicy
+        {
+            public bool IsClientAllowed(IPEndPoint remote) => false;
         }
     }
 }

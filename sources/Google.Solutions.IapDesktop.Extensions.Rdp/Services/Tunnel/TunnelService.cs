@@ -32,7 +32,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Services.Tunnel
 {
     public interface ITunnelService
     {
-        Task<ITunnel> CreateTunnelAsync(TunnelDestination tunnelEndpoint);
+        Task<ITunnel> CreateTunnelAsync(
+            TunnelDestination tunnelEndpoint,
+            ISshRelayPolicy relayPolicy);
     }
 
     [Service(typeof(ITunnelService))]
@@ -50,7 +52,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Services.Tunnel
         {
         }
 
-        public Task<ITunnel> CreateTunnelAsync(TunnelDestination tunnelEndpoint)
+        public Task<ITunnel> CreateTunnelAsync(
+            TunnelDestination tunnelEndpoint,
+            ISshRelayPolicy relayPolicy)
         {
             using (TraceSources.IapDesktop.TraceMethod().WithParameters(tunnelEndpoint))
             {
@@ -65,7 +69,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Services.Tunnel
                 // Start listener to enable clients to connect. Do not await
                 // the listener as we want to continue listeining in the
                 // background.
-                var listener = SshRelayListener.CreateLocalListener(iapEndpoint);
+                var listener = SshRelayListener.CreateLocalListener(
+                    iapEndpoint,
+                    relayPolicy);
                 var cts = new CancellationTokenSource();
 
                 _ = listener.ListenAsync(cts.Token);

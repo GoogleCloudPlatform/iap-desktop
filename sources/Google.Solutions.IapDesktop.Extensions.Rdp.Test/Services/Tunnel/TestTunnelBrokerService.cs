@@ -23,6 +23,7 @@ using Google.Solutions.Common.Locator;
 using Google.Solutions.Common.Test;
 using Google.Solutions.IapDesktop.Application.Services.Integration;
 using Google.Solutions.IapDesktop.Extensions.Rdp.Services.Tunnel;
+using Google.Solutions.IapTunneling.Iap;
 using Moq;
 using NUnit.Framework;
 using System;
@@ -50,10 +51,15 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Test.Services.Tunnel
             var broker = new TunnelBrokerService(mockTunnelService.Object, mockEventService.Object);
             var vmInstanceRef = new InstanceLocator("project", "zone", "instance");
             var destination = new TunnelDestination(vmInstanceRef, 3389);
-            mockTunnelService.Setup(s => s.CreateTunnelAsync(destination))
+            mockTunnelService.Setup(s => s.CreateTunnelAsync(
+                    destination,
+                    It.IsAny<ISshRelayPolicy>()))
                 .Returns(Task.FromResult(mockTunnel.Object));
 
-            var tunnel = await broker.ConnectAsync(destination, TimeSpan.FromMinutes(1));
+            var tunnel = await broker.ConnectAsync(
+                destination, 
+                new AllowAllRelayPolicy(),
+                TimeSpan.FromMinutes(1));
 
             Assert.IsNotNull(tunnel);
             Assert.AreEqual(1, broker.OpenTunnels.Count());
@@ -78,10 +84,15 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Test.Services.Tunnel
             var broker = new TunnelBrokerService(mockTunnelService.Object, mockEventService.Object);
             var vmInstanceRef = new InstanceLocator("project", "zone", "instance");
             var destination = new TunnelDestination(vmInstanceRef, 3389);
-            mockTunnelService.Setup(s => s.CreateTunnelAsync(destination))
+            mockTunnelService.Setup(s => s.CreateTunnelAsync(
+                    destination,
+                    It.IsAny<ISshRelayPolicy>()))
                 .Returns(Task.FromResult(mockTunnel.Object));
 
-            var tunnel = await broker.ConnectAsync(destination, TimeSpan.FromMinutes(1));
+            var tunnel = await broker.ConnectAsync(
+                destination,
+                new AllowAllRelayPolicy(), 
+                TimeSpan.FromMinutes(1));
 
             mockEventService.Verify(s => s.FireAsync(It.IsAny<TunnelOpenedEvent>()), Times.Once);
         }
@@ -102,11 +113,19 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Test.Services.Tunnel
 
             var vmInstanceRef = new InstanceLocator("project", "zone", "instance");
             var destination = new TunnelDestination(vmInstanceRef, 3389);
-            mockTunnelService.Setup(s => s.CreateTunnelAsync(destination))
+            mockTunnelService.Setup(s => s.CreateTunnelAsync(
+                    destination,
+                    It.IsAny<ISshRelayPolicy>()))
                 .Returns(Task.FromResult(mockTunnel.Object));
 
-            var tunnel1 = await broker.ConnectAsync(destination, TimeSpan.FromMinutes(1));
-            var tunnel2 = await broker.ConnectAsync(destination, TimeSpan.FromMinutes(1));
+            var tunnel1 = await broker.ConnectAsync(
+                destination,
+                new AllowAllRelayPolicy(), 
+                TimeSpan.FromMinutes(1));
+            var tunnel2 = await broker.ConnectAsync(
+                destination,
+                new AllowAllRelayPolicy(), 
+                TimeSpan.FromMinutes(1));
 
             Assert.IsNotNull(tunnel1);
             Assert.IsNotNull(tunnel2);
@@ -126,12 +145,17 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Test.Services.Tunnel
             var broker = new TunnelBrokerService(mockTunnelService.Object, mockEventService.Object);
             var vmInstanceRef = new InstanceLocator("project", "zone", "instance");
             var destination = new TunnelDestination(vmInstanceRef, 3389);
-            mockTunnelService.Setup(s => s.CreateTunnelAsync(destination))
+            mockTunnelService.Setup(s => s.CreateTunnelAsync(
+                    destination,
+                    It.IsAny<ISshRelayPolicy>()))
                 .Returns(Task.FromException<ITunnel>(new ApplicationException()));
 
             AssertEx.ThrowsAggregateException<ApplicationException>(() =>
             {
-                broker.ConnectAsync(destination, TimeSpan.FromMinutes(1)).Wait();
+                broker.ConnectAsync(
+                    destination,
+                    new AllowAllRelayPolicy(), 
+                    TimeSpan.FromMinutes(1)).Wait();
             });
 
             Assert.AreEqual(0, broker.OpenTunnels.Count());
@@ -153,12 +177,17 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Test.Services.Tunnel
             var broker = new TunnelBrokerService(mockTunnelService.Object, mockEventService.Object);
             var vmInstanceRef = new InstanceLocator("project", "zone", "instance");
             var destination = new TunnelDestination(vmInstanceRef, 3389);
-            mockTunnelService.Setup(s => s.CreateTunnelAsync(destination))
+            mockTunnelService.Setup(s => s.CreateTunnelAsync(
+                    destination,
+                    It.IsAny<ISshRelayPolicy>()))
                 .Returns(Task.FromResult(mockTunnel.Object));
 
             AssertEx.ThrowsAggregateException<ApplicationException>(() =>
             {
-                broker.ConnectAsync(destination, TimeSpan.FromMinutes(1)).Wait();
+                broker.ConnectAsync(
+                    destination,
+                    new AllowAllRelayPolicy(), 
+                    TimeSpan.FromMinutes(1)).Wait();
             });
 
             Assert.AreEqual(0, broker.OpenTunnels.Count());
@@ -181,10 +210,15 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Test.Services.Tunnel
             var broker = new TunnelBrokerService(mockTunnelService.Object, mockEventService.Object);
             var vmInstanceRef = new InstanceLocator("project", "zone", "instance");
             var destination = new TunnelDestination(vmInstanceRef, 3389);
-            mockTunnelService.Setup(s => s.CreateTunnelAsync(destination))
+            mockTunnelService.Setup(s => s.CreateTunnelAsync(
+                    destination,
+                    It.IsAny<ISshRelayPolicy>()))
                 .Returns(Task.FromResult(mockTunnel.Object));
 
-            var tunnel = await broker.ConnectAsync(destination, TimeSpan.FromMinutes(1));
+            var tunnel = await broker.ConnectAsync(
+                destination,
+                new AllowAllRelayPolicy(), 
+                TimeSpan.FromMinutes(1));
 
             Assert.AreEqual(1, broker.OpenTunnels.Count());
 
@@ -210,10 +244,15 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Test.Services.Tunnel
             var broker = new TunnelBrokerService(mockTunnelService.Object, mockEventService.Object);
             var vmInstanceRef = new InstanceLocator("project", "zone", "instance");
             var destination = new TunnelDestination(vmInstanceRef, 3389);
-            mockTunnelService.Setup(s => s.CreateTunnelAsync(destination))
+            mockTunnelService.Setup(s => s.CreateTunnelAsync(
+                    destination,
+                    It.IsAny<ISshRelayPolicy>()))
                 .Returns(Task.FromResult(mockTunnel.Object));
 
-            var tunnel = await broker.ConnectAsync(destination, TimeSpan.FromMinutes(1));
+            var tunnel = await broker.ConnectAsync(
+                destination,
+                new AllowAllRelayPolicy(), 
+                TimeSpan.FromMinutes(1));
 
             Assert.AreEqual(1, broker.OpenTunnels.Count());
 
@@ -241,10 +280,15 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Test.Services.Tunnel
             var broker = new TunnelBrokerService(mockTunnelService.Object, mockEventService.Object);
             var vmInstanceRef = new InstanceLocator("project", "zone", "instance");
             var destination = new TunnelDestination(vmInstanceRef, 3389);
-            mockTunnelService.Setup(s => s.CreateTunnelAsync(destination))
+            mockTunnelService.Setup(s => s.CreateTunnelAsync(
+                    destination,
+                    It.IsAny<ISshRelayPolicy>()))
                 .Returns(Task.FromResult(mockTunnel.Object));
 
-            var tunnel = await broker.ConnectAsync(destination, TimeSpan.FromMinutes(1));
+            var tunnel = await broker.ConnectAsync(
+                destination,
+                new AllowAllRelayPolicy(), 
+                TimeSpan.FromMinutes(1));
             await broker.DisconnectAsync(destination);
 
             mockEventService.Verify(s => s.FireAsync(It.IsAny<TunnelClosedEvent>()), Times.Once);
@@ -269,10 +313,15 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Test.Services.Tunnel
             var broker = new TunnelBrokerService(mockTunnelService.Object, mockEventService.Object);
             var vmInstanceRef = new InstanceLocator("project", "zone", "instance");
             var destination = new TunnelDestination(vmInstanceRef, 3389);
-            mockTunnelService.Setup(s => s.CreateTunnelAsync(destination))
+            mockTunnelService.Setup(s => s.CreateTunnelAsync(
+                    destination,
+                    It.IsAny<ISshRelayPolicy>()))
                 .Returns(Task.FromResult(mockTunnel.Object));
 
-            var tunnel = await broker.ConnectAsync(destination, TimeSpan.FromMinutes(1));
+            var tunnel = await broker.ConnectAsync(
+                destination,
+                new AllowAllRelayPolicy(), 
+                TimeSpan.FromMinutes(1));
             await broker.DisconnectAllAsync();
 
             mockEventService.Verify(s => s.FireAsync(It.IsAny<TunnelClosedEvent>()), Times.Once);
