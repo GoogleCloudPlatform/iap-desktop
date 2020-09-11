@@ -25,7 +25,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <AllowUnsafeBlocks>false</AllowUnsafeBlocks>
     <CodeAnalysisRuleSet>..\Google.Solutions.Common\Google.Solutions.Common.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
@@ -35,7 +35,7 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <AllowUnsafeBlocks>false</AllowUnsafeBlocks>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Google.Apis, Version=1.45.0.0, Culture=neutral, PublicKeyToken=4b01fa6e34db77ab, processorArchitecture=MSIL">
@@ -115,6 +115,7 @@
     <Compile Include="Services\Adapters\Permissions.cs" />
     <Compile Include="Services\Adapters\ResourceManagerAdapter.cs" />
     <Compile Include="Global.cs" />
+    <Compile Include="Services\Integration\ConnectionBroker.cs" />
     <Compile Include="Services\Integration\EventService.cs" />
     <Compile Include="Services\Integration\JobService.cs" />
     <Compile Include="ObjectModel\ServiceRegistry.cs" />
@@ -218,15 +219,6 @@
     <Compile Include="Views\ProjectExplorer\ProjectPickerDialog.Designer.cs">
       <DependentUpon>ProjectPickerDialog.cs</DependentUpon>
     </Compile>
-    <Compile Include="Views\RemoteDesktop\RdpClientExtensions.cs" />
-    <Compile Include="Views\RemoteDesktop\RdpExceptions.cs" />
-    <Compile Include="Views\RemoteDesktop\RemoteDesktopPane.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Views\RemoteDesktop\RemoteDesktopPane.Designer.cs">
-      <DependentUpon>RemoteDesktopPane.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Views\RemoteDesktop\IRemoteDesktopService.cs" />
     <Compile Include="Views\ToolWindow.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -247,23 +239,6 @@
       <Project>{fb4c6f4d-32b1-4b0b-ba79-fd47fc4d7912}</Project>
       <Name>Google.Solutions.Common</Name>
     </ProjectReference>
-    <COMReference Include="AxMSTSCLib">
-      <Guid>{8C11EFA1-92C3-11D1-BC1E-00C04FA31489}</Guid>
-      <VersionMajor>1</VersionMajor>
-      <VersionMinor>0</VersionMinor>
-      <Lcid>0</Lcid>
-      <WrapperTool>aximp</WrapperTool>
-      <Isolated>False</Isolated>
-    </COMReference>
-    <COMReference Include="MSTSCLib">
-      <Guid>{8C11EFA1-92C3-11D1-BC1E-00C04FA31489}</Guid>
-      <VersionMajor>1</VersionMajor>
-      <VersionMinor>0</VersionMinor>
-      <Lcid>0</Lcid>
-      <WrapperTool>tlbimp</WrapperTool>
-      <Isolated>False</Isolated>
-      <EmbedInteropTypes>True</EmbedInteropTypes>
-    </COMReference>
     <ProjectReference Include="..\Google.Solutions.IapTunneling\Google.Solutions.IapTunneling.csproj">
       <Project>{d9493479-1751-402b-880f-60ed33ebb885}</Project>
       <Name>Google.Solutions.IapTunneling</Name>
@@ -308,9 +283,6 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Views\ProjectExplorer\ProjectPickerDialog.resx">
       <DependentUpon>ProjectPickerDialog.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Views\RemoteDesktop\RemoteDesktopPane.resx">
-      <DependentUpon>RemoteDesktopPane.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Views\ToolWindow.resx">
       <DependentUpon>ToolWindow.cs</DependentUpon>

@@ -55,13 +55,8 @@ namespace Google.Solutions.IapDesktop.Application.Views.Diagnostics
             this.throwExceptionButton = new System.Windows.Forms.Button();
             this.label = new System.Windows.Forms.Label();
             this.reauthButton = new System.Windows.Forms.Button();
-            this.rdpGroup = new System.Windows.Forms.GroupBox();
-            this.serverLabel = new System.Windows.Forms.Label();
-            this.serverTextBox = new System.Windows.Forms.TextBox();
-            this.connectButton = new System.Windows.Forms.Button();
             this.runInBackgroundCheckBox = new System.Windows.Forms.CheckBox();
             ((System.ComponentModel.ISupportInitialize)(this.spinner)).BeginInit();
-            this.rdpGroup.SuspendLayout();
             this.SuspendLayout();
             // 
             // slowOpButton
@@ -124,45 +119,6 @@ namespace Google.Solutions.IapDesktop.Application.Views.Diagnostics
             this.reauthButton.UseVisualStyleBackColor = true;
             this.reauthButton.Click += new System.EventHandler(this.reauthButton_Click);
             // 
-            // rdpGroup
-            // 
-            this.rdpGroup.Controls.Add(this.serverLabel);
-            this.rdpGroup.Controls.Add(this.serverTextBox);
-            this.rdpGroup.Controls.Add(this.connectButton);
-            this.rdpGroup.Location = new System.Drawing.Point(22, 164);
-            this.rdpGroup.Name = "rdpGroup";
-            this.rdpGroup.Size = new System.Drawing.Size(200, 100);
-            this.rdpGroup.TabIndex = 5;
-            this.rdpGroup.TabStop = false;
-            this.rdpGroup.Text = "RDP";
-            // 
-            // serverLabel
-            // 
-            this.serverLabel.AutoSize = true;
-            this.serverLabel.Location = new System.Drawing.Point(7, 37);
-            this.serverLabel.Name = "serverLabel";
-            this.serverLabel.Size = new System.Drawing.Size(38, 13);
-            this.serverLabel.TabIndex = 2;
-            this.serverLabel.Text = "Server";
-            // 
-            // serverTextBox
-            // 
-            this.serverTextBox.Location = new System.Drawing.Point(51, 37);
-            this.serverTextBox.Name = "serverTextBox";
-            this.serverTextBox.Size = new System.Drawing.Size(100, 20);
-            this.serverTextBox.TabIndex = 1;
-            this.serverTextBox.Text = "localhost:13389";
-            // 
-            // connectButton
-            // 
-            this.connectButton.Location = new System.Drawing.Point(72, 63);
-            this.connectButton.Name = "connectButton";
-            this.connectButton.Size = new System.Drawing.Size(75, 23);
-            this.connectButton.TabIndex = 0;
-            this.connectButton.Text = "Connect";
-            this.connectButton.UseVisualStyleBackColor = true;
-            this.connectButton.Click += new System.EventHandler(this.connectButton_Click);
-            // 
             // runInBackgroundCheckBox
             // 
             this.runInBackgroundCheckBox.AutoSize = true;
@@ -179,7 +135,6 @@ namespace Google.Solutions.IapDesktop.Application.Views.Diagnostics
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(541, 451);
             this.Controls.Add(this.runInBackgroundCheckBox);
-            this.Controls.Add(this.rdpGroup);
             this.Controls.Add(this.label);
             this.Controls.Add(this.spinner);
             this.Controls.Add(this.reauthButton);
@@ -189,8 +144,6 @@ namespace Google.Solutions.IapDesktop.Application.Views.Diagnostics
             this.Name = "DebugJobServiceWindow";
             this.Text = "Debug JobService";
             ((System.ComponentModel.ISupportInitialize)(this.spinner)).EndInit();
-            this.rdpGroup.ResumeLayout(false);
-            this.rdpGroup.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -204,10 +157,6 @@ namespace Google.Solutions.IapDesktop.Application.Views.Diagnostics
         private System.Windows.Forms.Button throwExceptionButton;
         private System.Windows.Forms.Label label;
         private System.Windows.Forms.Button reauthButton;
-        private System.Windows.Forms.GroupBox rdpGroup;
-        private System.Windows.Forms.Label serverLabel;
-        private System.Windows.Forms.TextBox serverTextBox;
-        private System.Windows.Forms.Button connectButton;
         private System.Windows.Forms.CheckBox runInBackgroundCheckBox;
     }
 }

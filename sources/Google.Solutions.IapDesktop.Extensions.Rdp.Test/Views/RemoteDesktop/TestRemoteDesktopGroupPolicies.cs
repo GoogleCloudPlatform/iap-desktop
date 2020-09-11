@@ -26,13 +26,14 @@ using Google.Solutions.IapDesktop.Application.ObjectModel;
 using Google.Solutions.IapDesktop.Application.Services.Adapters;
 using Google.Solutions.IapDesktop.Application.Services.Integration;
 using Google.Solutions.IapDesktop.Application.Services.Persistence;
-using Google.Solutions.IapDesktop.Application.Views.RemoteDesktop;
+using Google.Solutions.IapDesktop.Application.Test.Views;
+using Google.Solutions.IapDesktop.Extensions.Rdp.Views.RemoteDesktop;
 using NUnit.Framework;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Google.Solutions.IapDesktop.Application.Test.Views
+namespace Google.Solutions.IapDesktop.Extensions.Rdp.Test.Views.RemoteDesktop
 {
     [TestFixture]
     [Category("IntegrationTest")]
@@ -50,7 +51,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views
                     CreateRandomUsername(),
                     CancellationToken.None);
 
-                var rdpService = new RemoteDesktopService(this.serviceProvider);
+                var rdpService = new RemoteDesktopConnectionBroker(this.serviceProvider);
                 return rdpService.Connect(
                     vmInstanceReference,
                     "localhost",
@@ -82,7 +83,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views
             {
                 var session = await Connect(tunnel, locator);
 
-                AwaitEvent<RemoteDesktopConnectionFailedEvent>();
+                AwaitEvent<ConnectionFailedEvent>();
                 Assert.IsNotNull(this.ExceptionShown);
                 Assert.IsInstanceOf(typeof(RdpDisconnectedException), this.ExceptionShown);
                 Assert.AreEqual(264, ((RdpDisconnectedException)this.ExceptionShown).DisconnectReason);
@@ -104,13 +105,13 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views
             {
                 var session = await Connect(tunnel, locator);
 
-                AwaitEvent<RemoteDesktopConnectionSuceededEvent>();
+                AwaitEvent<ConnectionSuceededEvent>();
                 Assert.IsNull(this.ExceptionShown);
 
-                RemoteDesktopWindowClosedEvent expectedEvent = null;
+                ConnectionClosedEvent expectedEvent = null;
 
                 this.serviceProvider.GetService<IEventService>()
-                    .BindHandler<RemoteDesktopWindowClosedEvent>(e =>
+                    .BindHandler<ConnectionClosedEvent>(e =>
                     {
                         expectedEvent = e;
                     });
@@ -137,13 +138,13 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views
             {
                 var session = await Connect(tunnel, locator);
 
-                AwaitEvent<RemoteDesktopConnectionSuceededEvent>();
+                AwaitEvent<ConnectionSuceededEvent>();
                 Assert.IsNull(this.ExceptionShown);
 
-                RemoteDesktopWindowClosedEvent expectedEvent = null;
+                ConnectionClosedEvent expectedEvent = null;
 
                 this.serviceProvider.GetService<IEventService>()
-                    .BindHandler<RemoteDesktopWindowClosedEvent>(e =>
+                    .BindHandler<ConnectionClosedEvent>(e =>
                     {
                         expectedEvent = e;
                     });
@@ -170,13 +171,13 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views
             {
                 var session = await Connect(tunnel, locator);
 
-                AwaitEvent<RemoteDesktopConnectionSuceededEvent>();
+                AwaitEvent<ConnectionSuceededEvent>();
                 Assert.IsNull(this.ExceptionShown);
 
-                RemoteDesktopWindowClosedEvent expectedEvent = null;
+                ConnectionClosedEvent expectedEvent = null;
 
                 this.serviceProvider.GetService<IEventService>()
-                    .BindHandler<RemoteDesktopWindowClosedEvent>(e =>
+                    .BindHandler<ConnectionClosedEvent>(e =>
                     {
                         expectedEvent = e;
                     });
@@ -203,13 +204,13 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views
             {
                 var session = await Connect(tunnel, locator);
 
-                AwaitEvent<RemoteDesktopConnectionSuceededEvent>();
+                AwaitEvent<ConnectionSuceededEvent>();
                 Assert.IsNull(this.ExceptionShown);
 
-                RemoteDesktopWindowClosedEvent expectedEvent = null;
+                ConnectionClosedEvent expectedEvent = null;
 
                 this.serviceProvider.GetService<IEventService>()
-                    .BindHandler<RemoteDesktopWindowClosedEvent>(e =>
+                    .BindHandler<ConnectionClosedEvent>(e =>
                     {
                         expectedEvent = e;
                     });
@@ -236,13 +237,13 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views
             {
                 var session = await Connect(tunnel, locator);
 
-                AwaitEvent<RemoteDesktopConnectionSuceededEvent>();
+                AwaitEvent<ConnectionSuceededEvent>();
                 Assert.IsNull(this.ExceptionShown);
 
-                RemoteDesktopWindowClosedEvent expectedEvent = null;
+                ConnectionClosedEvent expectedEvent = null;
 
                 this.serviceProvider.GetService<IEventService>()
-                    .BindHandler<RemoteDesktopWindowClosedEvent>(e =>
+                    .BindHandler<ConnectionClosedEvent>(e =>
                     {
                         expectedEvent = e;
                     });
@@ -269,13 +270,13 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views
             {
                 var session = await Connect(tunnel, locator);
 
-                AwaitEvent<RemoteDesktopConnectionSuceededEvent>();
+                AwaitEvent<ConnectionSuceededEvent>();
                 Assert.IsNull(this.ExceptionShown);
 
-                RemoteDesktopWindowClosedEvent expectedEvent = null;
+                ConnectionClosedEvent expectedEvent = null;
 
                 this.serviceProvider.GetService<IEventService>()
-                    .BindHandler<RemoteDesktopWindowClosedEvent>(e =>
+                    .BindHandler<ConnectionClosedEvent>(e =>
                     {
                         expectedEvent = e;
                     });
@@ -302,13 +303,13 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views
             {
                 var session = await Connect(tunnel, locator);
 
-                AwaitEvent<RemoteDesktopConnectionSuceededEvent>();
+                AwaitEvent<ConnectionSuceededEvent>();
                 Assert.IsNull(this.ExceptionShown);
 
-                RemoteDesktopWindowClosedEvent expectedEvent = null;
+                ConnectionClosedEvent expectedEvent = null;
 
                 this.serviceProvider.GetService<IEventService>()
-                    .BindHandler<RemoteDesktopWindowClosedEvent>(e =>
+                    .BindHandler<ConnectionClosedEvent>(e =>
                     {
                         expectedEvent = e;
                     });

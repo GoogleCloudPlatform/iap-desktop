@@ -29,7 +29,6 @@ using Google.Solutions.IapDesktop.Application.Services.Persistence;
 using Google.Solutions.IapDesktop.Application.Views;
 using Google.Solutions.IapDesktop.Application.Views.Diagnostics;
 using Google.Solutions.IapDesktop.Application.Views.ProjectExplorer;
-using Google.Solutions.IapDesktop.Application.Views.RemoteDesktop;
 using Google.Solutions.IapDesktop.Application.Util;
 using System;
 using System.ComponentModel;
@@ -55,7 +54,7 @@ namespace Google.Solutions.IapDesktop.Windows
         private IIapUrlHandler urlHandler;
 
         public IapRdpUrl StartupUrl { get; set; }
-        public CommandContainer<IMainForm> ViewCommands { get; }
+        public CommandContainer<IMainForm> ViewMenu { get; }
 
         public MainForm(IServiceProvider bootstrappingServiceProvider, IServiceProvider serviceProvider)
         {
@@ -93,12 +92,12 @@ namespace Google.Solutions.IapDesktop.Windows
             // Bind controls.
             //
             this.Text = MainFormViewModel.FriendlyName;
-            this.ViewCommands = new CommandContainer<IMainForm>(
+            this.ViewMenu = new CommandContainer<IMainForm>(
                 this,
                 this.viewToolStripMenuItem.DropDownItems,
                 ToolStripItemDisplayStyle.ImageAndText,
                 this.serviceProvider);
-            this.ViewCommands.Context = this; // There is no real context for this.
+            this.ViewMenu.Context = this; // There is no real context for this.
 
             this.viewModel = new MainFormViewModel(
                 this,
@@ -140,6 +139,10 @@ namespace Google.Solutions.IapDesktop.Windows
                 m => m.IsProtocolRegistred,
                 this.components);
         }
+
+        //---------------------------------------------------------------------
+        // Window events.
+        //---------------------------------------------------------------------
 
         private void MainForm_FormClosing(object sender, FormClosingEventArgs e)
         {
@@ -271,6 +274,36 @@ namespace Google.Solutions.IapDesktop.Windows
             this.urlHandler = handler;
         }
 
+        public CommandContainer<IMainForm> AddMenu(string caption, int? index)
+        {
+            var menu = new ToolStripMenuItem(caption);
+
+            if (index.HasValue)
+            {
+                this.mainMenu.Items.Insert(
+                    Math.Min(index.Value, this.mainMenu.Items.Count),
+                    menu);
+            }
+            else
+            {
+                this.mainMenu.Items.Add(menu);
+            }
+
+            var commandContainer = new CommandContainer<IMainForm>(
+                this,
+                menu.DropDownItems,
+                ToolStripItemDisplayStyle.Text,
+                this.serviceProvider);
+
+            menu.DropDownOpening += (sender, args) =>
+            {
+                // Force re-evaluation of context.
+                commandContainer.Context = this;
+            };
+
+            return commandContainer;
+        }
+
         //---------------------------------------------------------------------
         // Main menu events.
         //---------------------------------------------------------------------
@@ -395,45 +428,6 @@ namespace Google.Solutions.IapDesktop.Windows
         {
             checkForUpdatesOnExitToolStripMenuItem.Checked =
                 !checkForUpdatesOnExitToolStripMenuItem.Checked;
-        }
-
-        private void desktopToolStripMenuItem_DropDownOpening(object sender, EventArgs e)
-        {
-            var session = this.serviceProvider.GetService<IRemoteDesktopService>().ActiveSession;
-            foreach (var item in this.desktopToolStripMenuItem.DropDownItems.OfType<ToolStripDropDownItem>())
-            {
-                item.Enabled = session != null && session.IsConnected;
-            }
-        }
-
-        private void fullScreenToolStripMenuItem_Click(object sender, EventArgs args)
-            => DoWithActiveSession(session => session.TrySetFullscreen(true));
-
-        private void disconnectToolStripMenuItem_Click(object sender, EventArgs args)
-            => DoWithActiveSession(session => session.Close());
-
-        private void showSecurityScreenToolStripMenuItem_Click(object sender, EventArgs args)
-            => DoWithActiveSession(session => session.ShowSecurityScreen());
-
-        private void showtaskManagerToolStripMenuItem_Click(object sender, EventArgs args)
-            => DoWithActiveSession(session => session.ShowTaskManager());
-
-        private void DoWithActiveSession(Action<IRemoteDesktopSession> action)
-        {
-            try
-            {
-                var session = this.serviceProvider.GetService<IRemoteDesktopService>().ActiveSession;
-                if (session != null)
-                {
-                    action(session);
-                }
-            }
-            catch (Exception e)
-            {
-                this.serviceProvider
-                    .GetService<IExceptionDialog>()
-                    .Show(this, "Remote Desktop action failed", e);
-            }
         }
 
         //---------------------------------------------------------------------

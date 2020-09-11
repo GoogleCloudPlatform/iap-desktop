@@ -90,7 +90,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Os.Services
             // Add commands to main menu.
             //
             var mainForm = serviceProvider.GetService<IMainForm>();
-            mainForm.ViewCommands.AddCommand(
+            mainForm.ViewMenu.AddCommand(
                 new Command<IMainForm>(
                     "&Instance details",
                     _ => CommandState.Enabled,
@@ -100,7 +100,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Os.Services
                     ShortcutKeys = Keys.Control | Keys.Alt | Keys.I
                 },
                 3);
-            mainForm.ViewCommands.AddCommand(
+            mainForm.ViewMenu.AddCommand(
                 new Command<IMainForm>(
                     "I&nstalled packages",
                     _ => CommandState.Enabled,
@@ -110,7 +110,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Os.Services
                     ShortcutKeys = Keys.Control | Keys.Alt | Keys.P
                 },
                 4);
-            mainForm.ViewCommands.AddCommand(
+            mainForm.ViewMenu.AddCommand(
                 new Command<IMainForm>(
                     "&Available updates",
                     _ => CommandState.Enabled,

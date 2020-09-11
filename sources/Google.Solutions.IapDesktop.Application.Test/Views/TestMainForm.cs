@@ -48,9 +48,14 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views
 
         public IWin32Window Window => this;
         public DockPanel MainPanel => this.dockPanel;
-        public CommandContainer<IMainForm> ViewCommands => null;
+        public CommandContainer<IMainForm> ViewMenu => null;
 
         public void SetUrlHandler(IIapUrlHandler handler)
+        {
+            throw new NotImplementedException();
+        }
+
+        public CommandContainer<IMainForm> AddMenu(string caption, int? index)
         {
             throw new NotImplementedException();
         }
@@ -96,5 +101,6 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views
 
         public Task ReauthorizeAsync(CancellationToken token)
             => this.Authorization.ReauthorizeAsync(token);
+
     }
 }

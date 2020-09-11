@@ -26,7 +26,6 @@ using Google.Solutions.IapDesktop.Application.Services.Persistence;
 using Google.Solutions.IapDesktop.Application.Views;
 using Google.Solutions.IapDesktop.Application.Views.ConnectionSettings;
 using Google.Solutions.IapDesktop.Application.Views.ProjectExplorer;
-using Google.Solutions.IapDesktop.Application.Views.RemoteDesktop;
 using Google.Solutions.IapDesktop.Application.Util;
 using Google.Solutions.IapDesktop.Extensions.Rdp.Views.Credentials;
 using Google.Solutions.IapDesktop.Extensions.Rdp.Services.Tunnel;
@@ -35,6 +34,7 @@ using Google.Solutions.IapTunneling.Net;
 using System;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using Google.Solutions.IapDesktop.Extensions.Rdp.Views.RemoteDesktop;
 
 namespace Google.Solutions.IapDesktop.Extensions.Rdp.Services.Connection
 {
@@ -45,7 +45,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Services.Connection
 
         private readonly IWin32Window window;
         private readonly IJobService jobService;
-        private readonly IRemoteDesktopService remoteDesktopService;
+        private readonly IRemoteDesktopConnectionBroker remoteDesktopService;
         private readonly ITunnelBrokerService tunnelBrokerService;
         private readonly ICredentialPrompt credentialPrompt;
         private readonly IProjectExplorer projectExplorer;
@@ -53,7 +53,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Services.Connection
         public IapRdpConnectionService(IServiceProvider serviceProvider)
         {
             this.jobService = serviceProvider.GetService<IJobService>();
-            this.remoteDesktopService = serviceProvider.GetService<IRemoteDesktopService>();
+            this.remoteDesktopService = serviceProvider.GetService<IRemoteDesktopConnectionBroker>();
             this.tunnelBrokerService = serviceProvider.GetService<ITunnelBrokerService>();
             this.credentialPrompt = serviceProvider.GetService<ICredentialPrompt>();
             this.projectExplorer = serviceProvider.GetService<IProjectExplorer>();

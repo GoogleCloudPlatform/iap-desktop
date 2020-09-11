@@ -99,7 +99,6 @@
     <Compile Include="Services\Adapters\TestGithubAdapter.cs" />
     <Compile Include="FixtureBase.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="RdpTunnel.cs" />
     <Compile Include="Services\Adapters\TestInstanceExtensions.cs" />
     <Compile Include="Services\Adapters\TestResourceManagerAdapter.cs" />
     <Compile Include="Services\Persistence\TestApplicationSettingsRepository.cs" />
@@ -126,9 +125,6 @@
     </Compile>
     <Compile Include="Views\TestProjectExplorer.cs" />
     <Compile Include="Views\ConnectionSettings\TestConnectionSettingsEditor.cs" />
-    <Compile Include="Views\TestRemoteDesktopGroupPolicies.cs" />
-    <Compile Include="Views\TestRemoteDesktop.cs" />
-    <Compile Include="Views\TestRemoteDesktopOverIap.cs" />
     <Compile Include="Views\WindowTestFixtureBase.cs" />
     <Compile Include="Util\TestSingletonApplicationBase.cs" />
   </ItemGroup>

@@ -23,8 +23,6 @@ using Google.Apis.Auth.OAuth2.Responses;
 using Google.Solutions.Common.Diagnostics;
 using Google.Solutions.IapDesktop.Application.ObjectModel;
 using Google.Solutions.IapDesktop.Application.Services.Integration;
-using Google.Solutions.IapDesktop.Application.Services.Persistence;
-using Google.Solutions.IapDesktop.Application.Views.RemoteDesktop;
 using System;
 using System.Diagnostics;
 using System.Runtime.InteropServices;
@@ -42,7 +40,6 @@ namespace Google.Solutions.IapDesktop.Application.Views.Diagnostics
     {
         private readonly IJobService jobService;
         private readonly IEventService eventService;
-        private readonly IRemoteDesktopService rdpService;
         private readonly DockPanel dockPanel;
         private readonly IServiceProvider serviceProvider;
 
@@ -52,7 +49,6 @@ namespace Google.Solutions.IapDesktop.Application.Views.Diagnostics
 
             this.jobService = serviceProvider.GetService<IJobService>();
             this.eventService = serviceProvider.GetService<IEventService>();
-            this.rdpService = serviceProvider.GetService<IRemoteDesktopService>();
 
             this.TabText = this.Text;
 
@@ -207,29 +203,6 @@ namespace Google.Solutions.IapDesktop.Application.Views.Diagnostics
                 MessageBox.Show(this, ex.Message);
             }
             this.spinner.Visible = false;
-        }
-
-        private void connectButton_Click(object sender, EventArgs args)
-        {
-            var server = this.serverTextBox.Text.Split(':');
-
-            try
-            {
-                this.rdpService.Connect(
-                    null,
-                    server[0],
-                    (ushort)(server.Length > 1 ? int.Parse(server[1]) : 3389),
-                    new VmInstanceConnectionSettings()
-                    {
-
-                    });
-            }
-            catch (Exception e)
-            {
-                this.serviceProvider
-                    .GetService<IExceptionDialog>()
-                    .Show(this, "RDP failed", e);
-            }
         }
     }
 }

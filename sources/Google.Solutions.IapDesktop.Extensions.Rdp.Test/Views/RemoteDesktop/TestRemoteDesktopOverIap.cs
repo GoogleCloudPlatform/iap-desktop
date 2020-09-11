@@ -24,7 +24,6 @@ using Google.Solutions.IapDesktop.Application.ObjectModel;
 using Google.Solutions.IapDesktop.Application.Services.Adapters;
 using Google.Solutions.IapDesktop.Application.Services.Integration;
 using Google.Solutions.IapDesktop.Application.Services.Persistence;
-using Google.Solutions.IapDesktop.Application.Views.RemoteDesktop;
 using Google.Solutions.IapDesktop.Application.Util;
 using NUnit.Framework;
 using System.Threading;
@@ -32,8 +31,10 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using Google.Apis.Auth.OAuth2;
 using Google.Solutions.Common.Locator;
+using Google.Solutions.IapDesktop.Extensions.Rdp.Views.RemoteDesktop;
+using Google.Solutions.IapDesktop.Application.Test.Views;
 
-namespace Google.Solutions.IapDesktop.Application.Test.Views
+namespace Google.Solutions.IapDesktop.Extensions.Rdp.Test.Views.RemoteDesktop
 {
     [TestFixture]
     [Category("IntegrationTest")]
@@ -51,7 +52,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views
                 locator,
                 await credential))
             {
-                var rdpService = new RemoteDesktopService(this.serviceProvider);
+                var rdpService = new RemoteDesktopConnectionBroker(this.serviceProvider);
                 var session = rdpService.Connect(
                     locator,
                     "localhost",
@@ -65,7 +66,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views
                         DesktopSize = RdpDesktopSize.ClientSize
                     });
 
-                AwaitEvent<RemoteDesktopConnectionFailedEvent>();
+                AwaitEvent<ConnectionFailedEvent>();
                 Assert.IsNotNull(this.ExceptionShown);
                 Assert.IsInstanceOf(typeof(RdpDisconnectedException), this.ExceptionShown);
                 Assert.AreEqual(2055, ((RdpDisconnectedException)this.ExceptionShown).DisconnectReason);
@@ -118,7 +119,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views
                     CreateRandomUsername(),
                     CancellationToken.None);
 
-                var rdpService = new RemoteDesktopService(this.serviceProvider);
+                var rdpService = new RemoteDesktopConnectionBroker(this.serviceProvider);
                 var session = rdpService.Connect(
                     locator,
                     "localhost",
@@ -135,14 +136,14 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views
                         BitmapPersistence = RdpBitmapPersistence.Disabled
                     });
 
-                AwaitEvent<RemoteDesktopConnectionSuceededEvent>();
+                AwaitEvent<ConnectionSuceededEvent>();
                 Assert.IsNull(this.ExceptionShown);
 
 
-                RemoteDesktopWindowClosedEvent expectedEvent = null;
+                ConnectionClosedEvent expectedEvent = null;
 
                 this.serviceProvider.GetService<IEventService>()
-                    .BindHandler<RemoteDesktopWindowClosedEvent>(e =>
+                    .BindHandler<ConnectionClosedEvent>(e =>
                     {
                         expectedEvent = e;
                     });
@@ -170,7 +171,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views
                        CreateRandomUsername(),
                        CancellationToken.None);
 
-                var rdpService = new RemoteDesktopService(this.serviceProvider);
+                var rdpService = new RemoteDesktopConnectionBroker(this.serviceProvider);
                 var session = (RemoteDesktopPane)rdpService.Connect(
                     locator,
                     "localhost",
@@ -184,14 +185,14 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views
                         DesktopSize = RdpDesktopSize.ClientSize
                     });
 
-                AwaitEvent<RemoteDesktopConnectionSuceededEvent>();
+                AwaitEvent<ConnectionSuceededEvent>();
 
                 Thread.Sleep(5000);
                 session.ShowSecurityScreen();
                 Thread.Sleep(1000);
                 session.SendKeys(Keys.Menu, Keys.S); // Sign out.
 
-                AwaitEvent<RemoteDesktopWindowClosedEvent>();
+                AwaitEvent<ConnectionClosedEvent>();
                 Assert.IsNull(this.ExceptionShown);
             }
         }

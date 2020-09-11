@@ -24,11 +24,12 @@ using Google.Solutions.Common.Util;
 using Google.Solutions.IapDesktop.Application.ObjectModel;
 using Google.Solutions.IapDesktop.Application.Services.Integration;
 using Google.Solutions.IapDesktop.Application.Services.Persistence;
+using Google.Solutions.IapDesktop.Application.Views;
 using System;
 using System.Linq;
 using WeifenLuo.WinFormsUI.Docking;
 
-namespace Google.Solutions.IapDesktop.Application.Views.RemoteDesktop
+namespace Google.Solutions.IapDesktop.Extensions.Rdp.Views.RemoteDesktop
 {
     public interface IRemoteDesktopSession
     {
@@ -43,13 +44,9 @@ namespace Google.Solutions.IapDesktop.Application.Views.RemoteDesktop
         void ShowTaskManager();
     }
 
-    public interface IRemoteDesktopService
+    public interface IRemoteDesktopConnectionBroker : IConnectionBroker
     {
         IRemoteDesktopSession ActiveSession { get; }
-
-        bool IsConnected(InstanceLocator vmInstance);
-
-        bool TryActivate(InstanceLocator vmInstance);
 
         IRemoteDesktopSession Connect(
             InstanceLocator vmInstance,
@@ -58,24 +55,29 @@ namespace Google.Solutions.IapDesktop.Application.Views.RemoteDesktop
             VmInstanceConnectionSettings settings);
     }
 
-    public class RemoteDesktopService : IRemoteDesktopService
+    [Service(typeof(IRemoteDesktopConnectionBroker), ServiceLifetime.Singleton)]
+    public class RemoteDesktopConnectionBroker : IRemoteDesktopConnectionBroker
     {
         private readonly IExceptionDialog exceptionDialog;
         private readonly IEventService eventService;
         private readonly DockPanel dockPanel;
 
-        public RemoteDesktopService(IServiceProvider serviceProvider)
+        public RemoteDesktopConnectionBroker(IServiceProvider serviceProvider)
         {
             this.dockPanel = serviceProvider.GetService<IMainForm>().MainPanel;
             this.exceptionDialog = serviceProvider.GetService<IExceptionDialog>();
             this.eventService = serviceProvider.GetService<IEventService>();
+
+            // Register as connection broker so that the status of connections
+            // managed by this broker is surfaced in Project Explorer.
+            serviceProvider.GetService<IGlobalConnectionBroker>().Register(this);
         }
 
         private RemoteDesktopPane TryGetExistingPane(InstanceLocator vmInstance)
             => this.dockPanel.Documents
                 .EnsureNotNull()
                 .OfType<RemoteDesktopPane>()
-                .Where(pane => pane.Instance == vmInstance)
+                .Where(pane => pane.Instance == vmInstance && !pane.IsFormClosing)
                 .FirstOrDefault();
 
         public IRemoteDesktopSession ActiveSession
@@ -115,43 +117,6 @@ namespace Google.Solutions.IapDesktop.Application.Views.RemoteDesktop
             rdpPane.Connect(server, port, settings);
 
             return rdpPane;
-        }
-    }
-
-    public abstract class RemoteDesktopEventBase
-    {
-        public InstanceLocator Instance { get; }
-
-        public RemoteDesktopEventBase(InstanceLocator vmInstance)
-        {
-            this.Instance = vmInstance;
-        }
-    }
-
-    public class RemoteDesktopConnectionSuceededEvent : RemoteDesktopEventBase
-    {
-        public RemoteDesktopConnectionSuceededEvent(InstanceLocator vmInstance) : base(vmInstance)
-        {
-        }
-    }
-
-    public class RemoteDesktopConnectionFailedEvent : RemoteDesktopEventBase
-    {
-        public RdpException Exception { get; }
-
-        public RemoteDesktopConnectionFailedEvent(InstanceLocator vmInstance, RdpException exception)
-            : base(vmInstance)
-        {
-            this.Exception = exception;
-        }
-    }
-
-    public class RemoteDesktopWindowClosedEvent : RemoteDesktopEventBase
-    {
-        public RdpException Exception { get; }
-
-        public RemoteDesktopWindowClosedEvent(InstanceLocator vmInstance) : base(vmInstance)
-        {
         }
     }
 }

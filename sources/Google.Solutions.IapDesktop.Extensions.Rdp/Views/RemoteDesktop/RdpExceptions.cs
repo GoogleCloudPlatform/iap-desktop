@@ -24,7 +24,7 @@ using System.Collections.Generic;
 using System.Runtime.Serialization;
 using System.Text;
 
-namespace Google.Solutions.IapDesktop.Application.Views.RemoteDesktop
+namespace Google.Solutions.IapDesktop.Extensions.Rdp.Views.RemoteDesktop
 {
     [Serializable]
     public class RdpException : ApplicationException

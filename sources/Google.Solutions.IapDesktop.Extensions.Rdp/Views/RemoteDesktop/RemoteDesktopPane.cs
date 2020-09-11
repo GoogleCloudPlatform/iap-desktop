@@ -22,9 +22,11 @@
 using AxMSTSCLib;
 using Google.Solutions.Common.Diagnostics;
 using Google.Solutions.Common.Locator;
+using Google.Solutions.IapDesktop.Application;
 using Google.Solutions.IapDesktop.Application.Services.Integration;
 using Google.Solutions.IapDesktop.Application.Services.Persistence;
 using Google.Solutions.IapDesktop.Application.Util;
+using Google.Solutions.IapDesktop.Application.Views;
 using MSTSCLib;
 using System;
 using System.ComponentModel;
@@ -40,7 +42,7 @@ using WeifenLuo.WinFormsUI.Docking;
 #pragma warning disable IDE1006 // Naming Styles
 #pragma warning disable CA1031 // catch Exception
 
-namespace Google.Solutions.IapDesktop.Application.Views.RemoteDesktop
+namespace Google.Solutions.IapDesktop.Extensions.Rdp.Views.RemoteDesktop
 {
     [ComVisible(false)]
     public partial class RemoteDesktopPane : ToolWindow, IRemoteDesktopSession
@@ -56,6 +58,8 @@ namespace Google.Solutions.IapDesktop.Application.Views.RemoteDesktop
         private Size connectionSize;
 
         public InstanceLocator Instance { get; }
+
+        public bool IsFormClosing { get; private set; } = false;
 
         private void UpdateLayout()
         {
@@ -76,7 +80,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.RemoteDesktop
             using (TraceSources.IapDesktop.TraceMethod().WithParameters(e.Message))
             {
                 await this.eventService.FireAsync(
-                    new RemoteDesktopConnectionFailedEvent(this.Instance, e))
+                    new ConnectionFailedEvent(this.Instance, e))
                     .ConfigureAwait(true);
                 this.exceptionDialog.Show(this, caption, e);
                 Close();
@@ -401,8 +405,11 @@ namespace Google.Solutions.IapDesktop.Application.Views.RemoteDesktop
                     }
                 }
 
+                // Mark this pane as being in closing state even though it is still
+                // visible at this point.
+                this.IsFormClosing = true;
                 await this.eventService.FireAsync(
-                    new RemoteDesktopWindowClosedEvent(this.Instance));
+                    new ConnectionClosedEvent(this.Instance));
             }
         }
 
@@ -516,7 +523,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.RemoteDesktop
 
                 // Notify our listeners.
                 await this.eventService.FireAsync(
-                    new RemoteDesktopConnectionSuceededEvent(this.Instance));
+                    new ConnectionSuceededEvent(this.Instance));
 
                 // Wait a bit before clearing the connecting flag. The control can
                 // get flaky if connect operations are done too soon.

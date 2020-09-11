@@ -20,11 +20,13 @@
 //
 
 using Google.Solutions.Common.Locator;
+using Google.Solutions.IapDesktop.Application.Services.Integration;
 using Google.Solutions.IapDesktop.Application.Services.Persistence;
-using Google.Solutions.IapDesktop.Application.Views.RemoteDesktop;
+using Google.Solutions.IapDesktop.Application.Test.Views;
+using Google.Solutions.IapDesktop.Extensions.Rdp.Views.RemoteDesktop;
 using NUnit.Framework;
 
-namespace Google.Solutions.IapDesktop.Application.Test.Views
+namespace Google.Solutions.IapDesktop.Extensions.Rdp.Test.Views.RemoteDesktop
 {
     [TestFixture]
     public class TestRemoteDesktop : WindowTestFixtureBase
@@ -35,14 +37,14 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views
         [Test]
         public void WhenServerInvalid_ThenErrorIsShownAndWindowIsClosed()
         {
-            var rdpService = new RemoteDesktopService(this.serviceProvider);
+            var rdpService = new RemoteDesktopConnectionBroker(this.serviceProvider);
             rdpService.Connect(
                 this.instanceReference,
                 "invalid.corp",
                 3389,
                 new VmInstanceConnectionSettings());
 
-            AwaitEvent<RemoteDesktopConnectionFailedEvent>();
+            AwaitEvent<ConnectionFailedEvent>();
             Assert.IsInstanceOf(typeof(RdpDisconnectedException), this.ExceptionShown);
             Assert.AreEqual(260, ((RdpDisconnectedException)this.ExceptionShown).DisconnectReason);
         }
@@ -50,7 +52,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views
         [Test]
         public void WhenPortNotListening_ThenErrorIsShownAndWindowIsClosed()
         {
-            var rdpService = new RemoteDesktopService(this.serviceProvider);
+            var rdpService = new RemoteDesktopConnectionBroker(this.serviceProvider);
             rdpService.Connect(
                 this.instanceReference,
                 "localhost",
@@ -60,7 +62,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views
                     ConnectionTimeout = 5
                 });
 
-            AwaitEvent<RemoteDesktopConnectionFailedEvent>();
+            AwaitEvent<ConnectionFailedEvent>();
             Assert.IsInstanceOf(typeof(RdpDisconnectedException), this.ExceptionShown);
             Assert.AreEqual(516, ((RdpDisconnectedException)this.ExceptionShown).DisconnectReason);
         }
@@ -69,14 +71,14 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views
         [Ignore("")]
         public void WhenWrongPort_ThenErrorIsShownAndWindowIsClosed()
         {
-            var rdpService = new RemoteDesktopService(this.serviceProvider);
+            var rdpService = new RemoteDesktopConnectionBroker(this.serviceProvider);
             rdpService.Connect(
                 this.instanceReference,
                 "localhost",
                 135,    // That one will be listening, but it is RPC, not RDP.
                 new VmInstanceConnectionSettings());
 
-            AwaitEvent<RemoteDesktopConnectionFailedEvent>();
+            AwaitEvent<ConnectionFailedEvent>();
             Assert.IsInstanceOf(typeof(RdpDisconnectedException), this.ExceptionShown);
             Assert.AreEqual(2308, ((RdpDisconnectedException)this.ExceptionShown).DisconnectReason);
         }

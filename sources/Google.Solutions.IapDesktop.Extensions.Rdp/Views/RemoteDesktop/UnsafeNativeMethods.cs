@@ -19,23 +19,15 @@
 // under the License.
 //
 
-using Google.Solutions.IapDesktop.Application.ObjectModel;
-using Google.Solutions.IapDesktop.Application.Util;
-using System.Windows.Forms;
-using WeifenLuo.WinFormsUI.Docking;
+using System.Runtime.InteropServices;
 
-namespace Google.Solutions.IapDesktop.Application.Views
+namespace Google.Solutions.IapDesktop.Extensions.Rdp.Views.RemoteDesktop
 {
-    public interface IMainForm
+    internal static class UnsafeNativeMethods
     {
-        IWin32Window Window { get; }
-        DockPanel MainPanel { get; }
-        void Close();
+        public const uint E_UNEXPECTED = 0x8000ffff;
 
-        CommandContainer<IMainForm> ViewMenu { get; }
-
-        CommandContainer<IMainForm> AddMenu(string caption, int? index);
-
-        void SetUrlHandler(IIapUrlHandler handler);
+        [DllImport("user32.dll")]
+        internal static extern uint MapVirtualKey(uint uCode, uint uMapType);
     }
 }
