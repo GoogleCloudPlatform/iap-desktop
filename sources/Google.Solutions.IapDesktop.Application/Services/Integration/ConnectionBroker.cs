@@ -93,40 +93,39 @@ namespace Google.Solutions.IapDesktop.Application.Services.Integration
     // Events.
     //-------------------------------------------------------------------------
 
-    // TODO: Rename
-    public abstract class RemoteDesktopEventBase
+    public abstract class ConnectionBrokerEventBase
     {
         public InstanceLocator Instance { get; }
 
-        public RemoteDesktopEventBase(InstanceLocator vmInstance)
+        public ConnectionBrokerEventBase(InstanceLocator vmInstance)
         {
             this.Instance = vmInstance;
         }
     }
 
-    public class RemoteDesktopConnectionSuceededEvent : RemoteDesktopEventBase
+    public class ConnectionSuceededEvent : ConnectionBrokerEventBase
     {
-        public RemoteDesktopConnectionSuceededEvent(InstanceLocator vmInstance) : base(vmInstance)
+        public ConnectionSuceededEvent(InstanceLocator vmInstance) : base(vmInstance)
         {
         }
     }
 
-    public class RemoteDesktopConnectionFailedEvent : RemoteDesktopEventBase
+    public class ConnectionFailedEvent : ConnectionBrokerEventBase
     {
         public Exception Exception { get; }
 
-        public RemoteDesktopConnectionFailedEvent(InstanceLocator vmInstance, Exception exception)
+        public ConnectionFailedEvent(InstanceLocator vmInstance, Exception exception)
             : base(vmInstance)
         {
             this.Exception = exception;
         }
     }
 
-    public class RemoteDesktopWindowClosedEvent : RemoteDesktopEventBase
+    public class ConnectionClosedEvent : ConnectionBrokerEventBase
     {
         public Exception Exception { get; }
 
-        public RemoteDesktopWindowClosedEvent(InstanceLocator vmInstance) : base(vmInstance)
+        public ConnectionClosedEvent(InstanceLocator vmInstance) : base(vmInstance)
         {
         }
     }

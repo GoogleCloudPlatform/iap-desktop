@@ -44,7 +44,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Test.Views.RemoteDesktop
                 3389,
                 new VmInstanceConnectionSettings());
 
-            AwaitEvent<RemoteDesktopConnectionFailedEvent>();
+            AwaitEvent<ConnectionFailedEvent>();
             Assert.IsInstanceOf(typeof(RdpDisconnectedException), this.ExceptionShown);
             Assert.AreEqual(260, ((RdpDisconnectedException)this.ExceptionShown).DisconnectReason);
         }
@@ -62,7 +62,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Test.Views.RemoteDesktop
                     ConnectionTimeout = 5
                 });
 
-            AwaitEvent<RemoteDesktopConnectionFailedEvent>();
+            AwaitEvent<ConnectionFailedEvent>();
             Assert.IsInstanceOf(typeof(RdpDisconnectedException), this.ExceptionShown);
             Assert.AreEqual(516, ((RdpDisconnectedException)this.ExceptionShown).DisconnectReason);
         }
@@ -78,7 +78,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Test.Views.RemoteDesktop
                 135,    // That one will be listening, but it is RPC, not RDP.
                 new VmInstanceConnectionSettings());
 
-            AwaitEvent<RemoteDesktopConnectionFailedEvent>();
+            AwaitEvent<ConnectionFailedEvent>();
             Assert.IsInstanceOf(typeof(RdpDisconnectedException), this.ExceptionShown);
             Assert.AreEqual(2308, ((RdpDisconnectedException)this.ExceptionShown).DisconnectReason);
         }

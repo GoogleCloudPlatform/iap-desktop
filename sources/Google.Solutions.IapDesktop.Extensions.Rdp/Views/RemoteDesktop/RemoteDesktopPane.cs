@@ -80,7 +80,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Views.RemoteDesktop
             using (TraceSources.IapDesktop.TraceMethod().WithParameters(e.Message))
             {
                 await this.eventService.FireAsync(
-                    new RemoteDesktopConnectionFailedEvent(this.Instance, e))
+                    new ConnectionFailedEvent(this.Instance, e))
                     .ConfigureAwait(true);
                 this.exceptionDialog.Show(this, caption, e);
                 Close();
@@ -409,7 +409,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Views.RemoteDesktop
                 // visible at this point.
                 this.IsFormClosing = true;
                 await this.eventService.FireAsync(
-                    new RemoteDesktopWindowClosedEvent(this.Instance));
+                    new ConnectionClosedEvent(this.Instance));
             }
         }
 
@@ -523,7 +523,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Views.RemoteDesktop
 
                 // Notify our listeners.
                 await this.eventService.FireAsync(
-                    new RemoteDesktopConnectionSuceededEvent(this.Instance));
+                    new ConnectionSuceededEvent(this.Instance));
 
                 // Wait a bit before clearing the connecting flag. The control can
                 // get flaky if connect operations are done too soon.

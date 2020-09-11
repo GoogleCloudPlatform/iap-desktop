@@ -92,8 +92,8 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
 
             this.eventService.BindAsyncHandler<ProjectInventoryService.ProjectAddedEvent>(OnProjectAdded);
             this.eventService.BindHandler<ProjectInventoryService.ProjectDeletedEvent>(OnProjectDeleted);
-            this.eventService.BindHandler<RemoteDesktopConnectionSuceededEvent>(OnRdpConnectionSucceeded);
-            this.eventService.BindHandler<RemoteDesktopWindowClosedEvent>(OnRdpConnectionClosed);
+            this.eventService.BindHandler<ConnectionSuceededEvent>(OnRdpConnectionSucceeded);
+            this.eventService.BindHandler<ConnectionClosedEvent>(OnRdpConnectionClosed);
 
             this.ContextMenuCommands = new CommandContainer<IProjectExplorerNode>(
                 this,
@@ -438,7 +438,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
             }
         }
 
-        private void OnRdpConnectionSucceeded(RemoteDesktopConnectionSuceededEvent e)
+        private void OnRdpConnectionSucceeded(ConnectionSuceededEvent e)
         {
             var node = (VmInstanceNode)TryFindNode(e.Instance);
             if (node != null)
@@ -448,7 +448,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
         }
 
 
-        private void OnRdpConnectionClosed(RemoteDesktopWindowClosedEvent e)
+        private void OnRdpConnectionClosed(ConnectionClosedEvent e)
         {
             var node = (VmInstanceNode)TryFindNode(e.Instance);
             if (node != null)

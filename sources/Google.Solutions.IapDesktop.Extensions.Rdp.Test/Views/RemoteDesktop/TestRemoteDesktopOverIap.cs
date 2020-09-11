@@ -66,7 +66,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Test.Views.RemoteDesktop
                         DesktopSize = RdpDesktopSize.ClientSize
                     });
 
-                AwaitEvent<RemoteDesktopConnectionFailedEvent>();
+                AwaitEvent<ConnectionFailedEvent>();
                 Assert.IsNotNull(this.ExceptionShown);
                 Assert.IsInstanceOf(typeof(RdpDisconnectedException), this.ExceptionShown);
                 Assert.AreEqual(2055, ((RdpDisconnectedException)this.ExceptionShown).DisconnectReason);
@@ -136,14 +136,14 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Test.Views.RemoteDesktop
                         BitmapPersistence = RdpBitmapPersistence.Disabled
                     });
 
-                AwaitEvent<RemoteDesktopConnectionSuceededEvent>();
+                AwaitEvent<ConnectionSuceededEvent>();
                 Assert.IsNull(this.ExceptionShown);
 
 
-                RemoteDesktopWindowClosedEvent expectedEvent = null;
+                ConnectionClosedEvent expectedEvent = null;
 
                 this.serviceProvider.GetService<IEventService>()
-                    .BindHandler<RemoteDesktopWindowClosedEvent>(e =>
+                    .BindHandler<ConnectionClosedEvent>(e =>
                     {
                         expectedEvent = e;
                     });
@@ -185,14 +185,14 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Test.Views.RemoteDesktop
                         DesktopSize = RdpDesktopSize.ClientSize
                     });
 
-                AwaitEvent<RemoteDesktopConnectionSuceededEvent>();
+                AwaitEvent<ConnectionSuceededEvent>();
 
                 Thread.Sleep(5000);
                 session.ShowSecurityScreen();
                 Thread.Sleep(1000);
                 session.SendKeys(Keys.Menu, Keys.S); // Sign out.
 
-                AwaitEvent<RemoteDesktopWindowClosedEvent>();
+                AwaitEvent<ConnectionClosedEvent>();
                 Assert.IsNull(this.ExceptionShown);
             }
         }
