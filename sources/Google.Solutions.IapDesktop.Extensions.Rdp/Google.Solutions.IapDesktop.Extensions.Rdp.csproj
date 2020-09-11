@@ -102,7 +102,7 @@
       <DependentUpon>ShowCredentialsDialog.cs</DependentUpon>
     </Compile>
     <Compile Include="Services\Extension.cs" />
-    <Compile Include="Views\RemoteDesktop\IRemoteDesktopService.cs" />
+    <Compile Include="Views\RemoteDesktop\RemoteDesktopService.cs" />
     <Compile Include="Views\RemoteDesktop\RdpClientExtensions.cs" />
     <Compile Include="Views\RemoteDesktop\RdpExceptions.cs" />
     <Compile Include="Views\RemoteDesktop\RemoteDesktopPane.cs">

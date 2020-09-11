@@ -68,6 +68,10 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Views.RemoteDesktop
             this.dockPanel = serviceProvider.GetService<IMainForm>().MainPanel;
             this.exceptionDialog = serviceProvider.GetService<IExceptionDialog>();
             this.eventService = serviceProvider.GetService<IEventService>();
+
+            // Register as connection broker so that the status of connections
+            // managed by this broker is surfaced in Project Explorer.
+            serviceProvider.GetService<IGlobalConnectionBroker>().Register(this);
         }
 
         private RemoteDesktopPane TryGetExistingPane(InstanceLocator vmInstance)

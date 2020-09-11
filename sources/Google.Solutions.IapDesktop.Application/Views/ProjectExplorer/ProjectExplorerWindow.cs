@@ -135,8 +135,9 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
         private async Task<bool> AddProjectAsync()
         {
             await this.jobService.RunInBackground(
-                new JobDescription("Loading projects..."),
-                _ => this.authService.Authorization.Credential.GetAccessTokenForRequestAsync());
+                    new JobDescription("Loading projects..."),
+                    _ => this.authService.Authorization.Credential.GetAccessTokenForRequestAsync())
+                .ConfigureAwait(true);
 
             // Show project picker
             var dialog = this.serviceProvider.GetService<IProjectPickerDialog>();
@@ -148,7 +149,10 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
                 return false;
             }
 
-            await this.projectInventoryService.AddProjectAsync(projectId);
+            await this.projectInventoryService
+                .AddProjectAsync(projectId)
+                .ConfigureAwait(true);
+
             return true;
         }
 
@@ -168,7 +172,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
         {
             try
             {
-                await RefreshAllProjects();
+                await RefreshAllProjects().ConfigureAwait(true);
             }
             catch (Exception e) when (e.IsCancellation())
             {
@@ -188,7 +192,8 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
             {
                 if (this.treeView.SelectedNode is ProjectNode projectNode)
                 {
-                    await RefreshProject(projectNode.ProjectId);
+                    await RefreshProject(projectNode.ProjectId)
+                        .ConfigureAwait(true);
                 }
             }
             catch (Exception e) when (e.IsCancellation())
@@ -207,7 +212,9 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
         {
             if (this.treeView.SelectedNode is ProjectNode projectNode)
             {
-                await this.projectInventoryService.DeleteProjectAsync(projectNode.ProjectId);
+                await this.projectInventoryService
+                    .DeleteProjectAsync(projectNode.ProjectId)
+                    .ConfigureAwait(true);
             }
         }
 
@@ -253,7 +260,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
         {
             try
             {
-                await RefreshAllProjects();
+                await RefreshAllProjects().ConfigureAwait(true);
             }
             catch (Exception e) when (e.IsCancellation())
             {
@@ -271,7 +278,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
         {
             try
             {
-                await AddProjectAsync();
+                await AddProjectAsync().ConfigureAwait(true);
             }
             catch (Exception e) when (e.IsCancellation())
             {
@@ -303,13 +310,13 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
         {
             try
             {
-                await RefreshAllProjects();
+                await RefreshAllProjects().ConfigureAwait(true);
 
                 if (this.rootNode.Nodes.Count == 0)
                 {
                     // No projects in inventory yet - pop open the 'Add Project'
                     // dialog to get the user started.
-                    await AddProjectAsync();
+                    await AddProjectAsync().ConfigureAwait(true);
                 }
             }
             catch (Exception e) when (e.IsCancellation())
@@ -413,7 +420,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
         {
             Debug.Assert(!this.InvokeRequired);
 
-            await RefreshProject(e.ProjectId);
+            await RefreshProject(e.ProjectId).ConfigureAwait(true);
         }
 
         private void OnProjectDeleted(ProjectInventoryService.ProjectDeletedEvent e)
@@ -446,7 +453,9 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
             var node = (VmInstanceNode)TryFindNode(e.Instance);
             if (node != null)
             {
-                node.IsConnected = false;
+                // Another connection might still be open, so re-check before
+                // marking the node as not connected.
+                node.IsConnected = this.connectionBroker.IsConnected(node.Reference);
             }
         }
 
