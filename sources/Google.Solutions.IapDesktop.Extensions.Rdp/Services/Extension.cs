@@ -217,7 +217,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Services
             //
             // TunnelsViewer
             //
-            mainForm.ViewCommands.AddCommand(
+            mainForm.ViewMenu.AddCommand(
                 new Command<IMainForm>(
                     "Active IAP &tunnels",
                     pseudoContext => CommandState.Enabled,

@@ -128,7 +128,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services
             // Add commands to main menu.
             //
             var mainForm = serviceProvider.GetService<IMainForm>();
-            mainForm.ViewCommands.AddCommand(
+            mainForm.ViewMenu.AddCommand(
                 new Command<IMainForm>(
                     "&Event log",
                     pseudoContext => CommandState.Enabled,
@@ -138,7 +138,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services
                     ShortcutKeys = Keys.Control | Keys.Alt | Keys.E
                 });
 
-            var serialPortMenu = mainForm.ViewCommands.AddCommand(
+            var serialPortMenu = mainForm.ViewMenu.AddCommand(
                 new Command<IMainForm>(
                     "Serial port &output",
                     pseudoContext => CommandState.Enabled,

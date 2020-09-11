@@ -48,7 +48,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views
 
         public IWin32Window Window => this;
         public DockPanel MainPanel => this.dockPanel;
-        public CommandContainer<IMainForm> ViewCommands => null;
+        public CommandContainer<IMainForm> ViewMenu => null;
 
         public void SetUrlHandler(IIapUrlHandler handler)
         {

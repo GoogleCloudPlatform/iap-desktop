@@ -32,8 +32,7 @@ namespace Google.Solutions.IapDesktop.Application.Views
         DockPanel MainPanel { get; }
         void Close();
 
-        // TODO: rename to ViewMenu
-        CommandContainer<IMainForm> ViewCommands { get; }
+        CommandContainer<IMainForm> ViewMenu { get; }
 
         CommandContainer<IMainForm> AddMenu(string caption, int? index);
 
