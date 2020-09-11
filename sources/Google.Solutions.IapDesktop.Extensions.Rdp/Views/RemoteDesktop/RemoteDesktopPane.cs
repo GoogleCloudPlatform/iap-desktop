@@ -59,6 +59,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Views.RemoteDesktop
 
         public InstanceLocator Instance { get; }
 
+        public bool IsFormClosing { get; private set; } = false;
+
         private void UpdateLayout()
         {
             // NB. Docking does not work reliably with the OCX, so keep the size
@@ -403,6 +405,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Views.RemoteDesktop
                     }
                 }
 
+                // Mark this pane as being in closing state even though it is still
+                // visible at this point.
+                this.IsFormClosing = true;
                 await this.eventService.FireAsync(
                     new RemoteDesktopWindowClosedEvent(this.Instance));
             }

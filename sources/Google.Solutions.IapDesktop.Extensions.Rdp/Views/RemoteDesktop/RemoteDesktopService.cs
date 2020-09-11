@@ -78,7 +78,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Views.RemoteDesktop
             => this.dockPanel.Documents
                 .EnsureNotNull()
                 .OfType<RemoteDesktopPane>()
-                .Where(pane => pane.Instance == vmInstance)
+                .Where(pane => pane.Instance == vmInstance && !pane.IsFormClosing)
                 .FirstOrDefault();
 
         public IRemoteDesktopSession ActiveSession
