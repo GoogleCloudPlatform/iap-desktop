@@ -51,7 +51,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Test.Views.RemoteDesktop
                     CreateRandomUsername(),
                     CancellationToken.None);
 
-                var rdpService = new RemoteDesktopService(this.serviceProvider);
+                var rdpService = new RemoteDesktopConnectionBroker(this.serviceProvider);
                 return rdpService.Connect(
                     vmInstanceReference,
                     "localhost",

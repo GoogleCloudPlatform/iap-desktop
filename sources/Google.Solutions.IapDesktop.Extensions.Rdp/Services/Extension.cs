@@ -68,7 +68,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Services
         private CommandState GetCommandStateWhenActiveSessionRequired()
         {
             var activeSession = this.serviceProvider
-                .GetService<IRemoteDesktopService>()
+                .GetService<IRemoteDesktopConnectionBroker>()
                 .ActiveSession;
 
             return (activeSession != null && activeSession.IsConnected)
@@ -273,7 +273,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Services
         {
             try
             {
-                var session = this.serviceProvider.GetService<IRemoteDesktopService>().ActiveSession;
+                var session = this.serviceProvider.GetService<IRemoteDesktopConnectionBroker>().ActiveSession;
                 if (session != null)
                 {
                     action(session);

@@ -52,7 +52,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Test.Views.RemoteDesktop
                 locator,
                 await credential))
             {
-                var rdpService = new RemoteDesktopService(this.serviceProvider);
+                var rdpService = new RemoteDesktopConnectionBroker(this.serviceProvider);
                 var session = rdpService.Connect(
                     locator,
                     "localhost",
@@ -119,7 +119,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Test.Views.RemoteDesktop
                     CreateRandomUsername(),
                     CancellationToken.None);
 
-                var rdpService = new RemoteDesktopService(this.serviceProvider);
+                var rdpService = new RemoteDesktopConnectionBroker(this.serviceProvider);
                 var session = rdpService.Connect(
                     locator,
                     "localhost",
@@ -171,7 +171,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Test.Views.RemoteDesktop
                        CreateRandomUsername(),
                        CancellationToken.None);
 
-                var rdpService = new RemoteDesktopService(this.serviceProvider);
+                var rdpService = new RemoteDesktopConnectionBroker(this.serviceProvider);
                 var session = (RemoteDesktopPane)rdpService.Connect(
                     locator,
                     "localhost",

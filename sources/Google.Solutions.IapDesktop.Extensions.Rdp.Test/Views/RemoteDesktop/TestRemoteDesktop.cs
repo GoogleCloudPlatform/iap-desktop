@@ -37,7 +37,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Test.Views.RemoteDesktop
         [Test]
         public void WhenServerInvalid_ThenErrorIsShownAndWindowIsClosed()
         {
-            var rdpService = new RemoteDesktopService(this.serviceProvider);
+            var rdpService = new RemoteDesktopConnectionBroker(this.serviceProvider);
             rdpService.Connect(
                 this.instanceReference,
                 "invalid.corp",
@@ -52,7 +52,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Test.Views.RemoteDesktop
         [Test]
         public void WhenPortNotListening_ThenErrorIsShownAndWindowIsClosed()
         {
-            var rdpService = new RemoteDesktopService(this.serviceProvider);
+            var rdpService = new RemoteDesktopConnectionBroker(this.serviceProvider);
             rdpService.Connect(
                 this.instanceReference,
                 "localhost",
@@ -71,7 +71,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Test.Views.RemoteDesktop
         [Ignore("")]
         public void WhenWrongPort_ThenErrorIsShownAndWindowIsClosed()
         {
-            var rdpService = new RemoteDesktopService(this.serviceProvider);
+            var rdpService = new RemoteDesktopConnectionBroker(this.serviceProvider);
             rdpService.Connect(
                 this.instanceReference,
                 "localhost",

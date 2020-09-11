@@ -80,14 +80,14 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Test.Services.Connection
                     It.IsAny<InstanceLocator>()))
                 .Returns<VmInstanceNode>(null); // Not found
 
-            var remoteDesktopService = new Mock<IRemoteDesktopService>();
+            var remoteDesktopService = new Mock<IRemoteDesktopConnectionBroker>();
             remoteDesktopService.Setup(s => s.Connect(
                 It.IsAny<InstanceLocator>(),
                 "localhost",
                 It.IsAny<ushort>(),
                 It.IsAny<VmInstanceConnectionSettings>())).Returns<IRemoteDesktopSession>(null);
 
-            this.serviceRegistry.AddSingleton<IRemoteDesktopService>(remoteDesktopService.Object);
+            this.serviceRegistry.AddSingleton<IRemoteDesktopConnectionBroker>(remoteDesktopService.Object);
 
             var service = new IapRdpConnectionService(this.serviceRegistry);
             await service.ActivateOrConnectInstanceAsync(
@@ -114,14 +114,14 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Test.Services.Connection
                     It.IsAny<InstanceLocator>()))
                 .Returns<VmInstanceNode>(null); // Not found
 
-            var remoteDesktopService = new Mock<IRemoteDesktopService>();
+            var remoteDesktopService = new Mock<IRemoteDesktopConnectionBroker>();
             remoteDesktopService.Setup(s => s.Connect(
                 It.IsAny<InstanceLocator>(),
                 "localhost",
                 It.IsAny<ushort>(),
                 It.IsAny<VmInstanceConnectionSettings>())).Returns<IRemoteDesktopSession>(null);
 
-            this.serviceRegistry.AddSingleton<IRemoteDesktopService>(remoteDesktopService.Object);
+            this.serviceRegistry.AddSingleton<IRemoteDesktopConnectionBroker>(remoteDesktopService.Object);
 
             var service = new IapRdpConnectionService(this.serviceRegistry);
             await service.ActivateOrConnectInstanceAsync(
@@ -163,14 +163,14 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Test.Services.Connection
                     It.IsAny<InstanceLocator>()))
                 .Returns(vmNode.Object);
 
-            var remoteDesktopService = new Mock<IRemoteDesktopService>();
+            var remoteDesktopService = new Mock<IRemoteDesktopConnectionBroker>();
             remoteDesktopService.Setup(s => s.Connect(
                 It.IsAny<InstanceLocator>(),
                 "localhost",
                 It.IsAny<ushort>(),
                 It.IsAny<VmInstanceConnectionSettings>())).Returns<IRemoteDesktopSession>(null);
 
-            this.serviceRegistry.AddSingleton<IRemoteDesktopService>(remoteDesktopService.Object);
+            this.serviceRegistry.AddSingleton<IRemoteDesktopConnectionBroker>(remoteDesktopService.Object);
 
             var service = new IapRdpConnectionService(this.serviceRegistry);
             await service.ActivateOrConnectInstanceAsync(

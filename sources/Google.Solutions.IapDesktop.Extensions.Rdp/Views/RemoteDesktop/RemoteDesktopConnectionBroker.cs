@@ -44,8 +44,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Views.RemoteDesktop
         void ShowTaskManager();
     }
 
-    // TODO: Rename to RemoteDesktopConnectionBroker
-    public interface IRemoteDesktopService : IConnectionBroker
+    public interface IRemoteDesktopConnectionBroker : IConnectionBroker
     {
         IRemoteDesktopSession ActiveSession { get; }
 
@@ -56,14 +55,14 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Views.RemoteDesktop
             VmInstanceConnectionSettings settings);
     }
 
-    [Service(typeof(IRemoteDesktopService), ServiceLifetime.Singleton)]
-    public class RemoteDesktopService : IRemoteDesktopService
+    [Service(typeof(IRemoteDesktopConnectionBroker), ServiceLifetime.Singleton)]
+    public class RemoteDesktopConnectionBroker : IRemoteDesktopConnectionBroker
     {
         private readonly IExceptionDialog exceptionDialog;
         private readonly IEventService eventService;
         private readonly DockPanel dockPanel;
 
-        public RemoteDesktopService(IServiceProvider serviceProvider)
+        public RemoteDesktopConnectionBroker(IServiceProvider serviceProvider)
         {
             this.dockPanel = serviceProvider.GetService<IMainForm>().MainPanel;
             this.exceptionDialog = serviceProvider.GetService<IExceptionDialog>();
