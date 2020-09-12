@@ -122,7 +122,7 @@
       <DependentUpon>RemoteDesktopPane.cs</DependentUpon>
     </Compile>
     <Compile Include="Views\RemoteDesktop\UnsafeNativeMethods.cs" />
-    <Compile Include="Views\TunnelsViewer\ITunnelsViewer.cs" />
+    <Compile Include="Views\TunnelsViewer\ITunnelsWindow.cs" />
     <Compile Include="Views\TunnelsViewer\TunnelsViewModel.cs" />
     <Compile Include="Views\TunnelsViewer\TunnelsWindow.cs">
       <SubType>Form</SubType>

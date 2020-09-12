@@ -21,7 +21,7 @@
 
 namespace Google.Solutions.IapDesktop.Extensions.Rdp.Views.TunnelsViewer
 {
-    public interface ITunnelsViewer
+    public interface ITunnelsWindow
     {
         void ShowWindow();
     }
