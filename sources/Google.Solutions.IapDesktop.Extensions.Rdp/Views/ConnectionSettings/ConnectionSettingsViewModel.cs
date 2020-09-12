@@ -20,13 +20,13 @@
 //
 
 using Google.Solutions.IapDesktop.Application.ObjectModel;
-using Google.Solutions.IapDesktop.Application.Services.Integration;
 using Google.Solutions.IapDesktop.Application.Views.ProjectExplorer;
 using Google.Solutions.IapDesktop.Application.Views.Properties;
+using Google.Solutions.IapDesktop.Extensions.Rdp.Services.Connection;
 using System.Diagnostics;
 using System.Threading.Tasks;
 
-namespace Google.Solutions.IapDesktop.Application.Views.ConnectionSettings
+namespace Google.Solutions.IapDesktop.Extensions.Rdp.Views.ConnectionSettings
 {
     internal class ConnectionSettingsViewModel : ViewModelBase, IPropertiesViewModel
     {

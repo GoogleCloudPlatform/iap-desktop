@@ -62,6 +62,7 @@
     <Reference Include="System.Core" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.Net.Http" />
+    <Reference Include="System.Web" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
@@ -82,10 +83,18 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
+    <Compile Include="Services\Connection\ConnectionSettingsService.cs" />
     <Compile Include="Services\Connection\IapRdpConnectionService.cs" />
     <Compile Include="Services\Tunnel\SameProcessRelayPolicy.cs" />
     <Compile Include="Services\Tunnel\TcpTable.cs" />
     <Compile Include="Services\Tunnel\UnsafeNativeMethods.cs" />
+    <Compile Include="Services\Connection\ConnectionSettingsEditor.cs" />
+    <Compile Include="Views\ConnectionSettings\ConnectionSettingsViewModel.cs" />
+    <Compile Include="Views\ConnectionSettings\ConnectionSettingsWindow.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Views\ConnectionSettings\HtmlPageGenerator.cs" />
+    <Compile Include="Views\ConnectionSettings\IConnectionSettingsWindow.cs" />
     <Compile Include="Views\Credentials\AuthorizationExtensions.cs" />
     <Compile Include="Views\Credentials\CredentialPrompt.cs" />
     <Compile Include="Views\Credentials\CredentialsService.cs" />

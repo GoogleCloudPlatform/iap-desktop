@@ -20,14 +20,15 @@
 //
 
 using Google.Solutions.Common.Locator;
-using Google.Solutions.IapDesktop.Application.Services.Integration;
+using Google.Solutions.Common.Test;
 using Google.Solutions.IapDesktop.Application.Services.Persistence;
 using Google.Solutions.IapDesktop.Application.Views.ProjectExplorer;
+using Google.Solutions.IapDesktop.Extensions.Rdp.Services.Connection;
 using Microsoft.Win32;
 using Moq;
 using NUnit.Framework;
 
-namespace Google.Solutions.IapDesktop.Application.Test.Services
+namespace Google.Solutions.IapDesktop.Extensions.Rdp.Test.Services.Connection
 {
     [TestFixture]
     public class TestConnectionSettingsService : FixtureBase

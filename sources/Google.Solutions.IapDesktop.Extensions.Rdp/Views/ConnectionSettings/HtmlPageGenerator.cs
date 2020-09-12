@@ -24,23 +24,23 @@ using Google.Solutions.IapDesktop.Application.Views.ProjectExplorer;
 using Google.Solutions.IapDesktop.Application.Util;
 using System;
 using System.Diagnostics;
-using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Text;
-using System.Web;
-using System.Windows.Forms;
-using Google.Solutions.IapDesktop.Application.Services.Integration;
 using Google.Solutions.IapDesktop.Application.Services.Persistence;
+using Google.Solutions.IapDesktop.Extensions.Rdp.Services.Connection;
+using System.Web;
 
-namespace Google.Solutions.IapDesktop.Application.Services
+namespace Google.Solutions.IapDesktop.Extensions.Rdp.Views.ConnectionSettings
 {
+    [Service(ServiceLifetime.Singleton)]
     public class HtmlPageGenerator
     {
         private readonly IConnectionSettingsService settingsService;
 
         public HtmlPageGenerator(IServiceProvider serviceProvider)
         {
+#if DEBUG
             this.settingsService = serviceProvider.GetService<IConnectionSettingsService>();
 
             var projectExplorer = serviceProvider.GetService<IProjectExplorer>();
@@ -51,6 +51,7 @@ namespace Google.Solutions.IapDesktop.Application.Services
                         ? CommandState.Enabled
                         : CommandState.Unavailable,
                     context => GenerateHtmlPage((IProjectExplorerProjectNode)context)));
+#endif
         }
 
         private void GenerateHtmlPage(IProjectExplorerProjectNode context)

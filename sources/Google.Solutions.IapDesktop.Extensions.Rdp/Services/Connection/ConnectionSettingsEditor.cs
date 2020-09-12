@@ -25,9 +25,8 @@ using System;
 using System.ComponentModel;
 using System.Security;
 
-namespace Google.Solutions.IapDesktop.Application.Views.ConnectionSettings
+namespace Google.Solutions.IapDesktop.Extensions.Rdp.Services.Connection
 {
-    // TODO: move to services namespace
     public class ConnectionSettingsEditor : INotifyPropertyChanged
     {
         private readonly ConnectionSettingsEditor parent;

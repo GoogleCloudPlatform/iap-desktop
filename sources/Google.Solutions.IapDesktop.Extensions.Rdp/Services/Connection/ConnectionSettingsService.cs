@@ -22,11 +22,10 @@
 using Google.Solutions.Common.Locator;
 using Google.Solutions.IapDesktop.Application.ObjectModel;
 using Google.Solutions.IapDesktop.Application.Services.Persistence;
-using Google.Solutions.IapDesktop.Application.Views.ConnectionSettings;
 using Google.Solutions.IapDesktop.Application.Views.ProjectExplorer;
 using System;
 
-namespace Google.Solutions.IapDesktop.Application.Services.Integration
+namespace Google.Solutions.IapDesktop.Extensions.Rdp.Services.Connection
 {
     public interface IConnectionSettingsService
     {
@@ -34,6 +33,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.Integration
         ConnectionSettingsEditor GetConnectionSettingsEditor(IProjectExplorerNode node);
     }
 
+    [Service(typeof(IConnectionSettingsService))]
     public class ConnectionSettingsService : IConnectionSettingsService
     {
         private readonly ConnectionSettingsRepository settingsRepository;

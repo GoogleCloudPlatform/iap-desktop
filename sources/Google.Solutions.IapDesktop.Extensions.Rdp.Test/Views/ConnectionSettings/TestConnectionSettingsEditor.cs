@@ -19,12 +19,13 @@
 // under the License.
 //
 
+using Google.Solutions.Common.Test;
 using Google.Solutions.IapDesktop.Application.Services.Persistence;
-using Google.Solutions.IapDesktop.Application.Views.ConnectionSettings;
 using Google.Solutions.IapDesktop.Application.Util;
+using Google.Solutions.IapDesktop.Extensions.Rdp.Services.Connection;
 using NUnit.Framework;
 
-namespace Google.Solutions.IapDesktop.Application.Test.Views.ConnectionSettings
+namespace Google.Solutions.IapDesktop.Extensions.Rdp.Test.Views.ConnectionSettings
 {
     [TestFixture]
     public class TestConnectionSettingsEditor : FixtureBase

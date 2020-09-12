@@ -26,7 +26,6 @@ using Google.Solutions.IapDesktop.Application.Services.Adapters;
 using Google.Solutions.IapDesktop.Application.Services.Integration;
 using Google.Solutions.IapDesktop.Application.Services.Persistence;
 using Google.Solutions.IapDesktop.Application.Views;
-using Google.Solutions.IapDesktop.Application.Views.ConnectionSettings;
 using Google.Solutions.IapDesktop.Application.Views.Diagnostics;
 using Google.Solutions.IapDesktop.Application.Views.ProjectExplorer;
 using Google.Solutions.IapDesktop.Application.Util;
@@ -245,7 +244,6 @@ namespace Google.Solutions.IapDesktop
             integrationLayer.AddSingleton<IEventService>(new EventService(mainForm));
             integrationLayer.AddTransient<ProjectInventoryService>();
             integrationLayer.AddSingleton<IGlobalConnectionBroker, GlobalConnectionBroker>();
-            integrationLayer.AddSingleton<IConnectionSettingsService, ConnectionSettingsService>();
 
 
             //
@@ -260,13 +258,11 @@ namespace Google.Solutions.IapDesktop
             windowAndWorkflowLayer.AddTransient<ITaskDialog, TaskDialog>();
             windowAndWorkflowLayer.AddTransient<IUpdateService, UpdateService>();
             windowAndWorkflowLayer.AddSingleton<IProjectExplorer, ProjectExplorerWindow>();
-            windowAndWorkflowLayer.AddSingleton<IConnectionSettingsWindow, ConnectionSettingsWindow>();
 
 #if DEBUG
             windowAndWorkflowLayer.AddSingleton<DebugJobServiceWindow>();
             windowAndWorkflowLayer.AddSingleton<DebugDockingWindow>();
             windowAndWorkflowLayer.AddSingleton<DebugProjectExplorerTrackingWindow>();
-            windowAndWorkflowLayer.AddSingleton<HtmlPageGenerator>();
 #endif
             //
             // Extension layer.

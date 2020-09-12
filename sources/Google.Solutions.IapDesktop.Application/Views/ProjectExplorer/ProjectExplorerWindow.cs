@@ -25,8 +25,6 @@ using Google.Solutions.Common.Util;
 using Google.Solutions.IapDesktop.Application.ObjectModel;
 using Google.Solutions.IapDesktop.Application.Services.Adapters;
 using Google.Solutions.IapDesktop.Application.Services.Integration;
-using Google.Solutions.IapDesktop.Application.Services.Persistence;
-using Google.Solutions.IapDesktop.Application.Views.ConnectionSettings;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -50,7 +48,6 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
         private readonly IEventService eventService;
         private readonly IJobService jobService;
         private readonly ProjectInventoryService projectInventoryService;
-        private readonly IConnectionSettingsService settingsService;
         private readonly IAuthorizationAdapter authService;
         private readonly IServiceProvider serviceProvider;
         private readonly IConnectionBroker connectionBroker;
@@ -86,7 +83,6 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
             this.eventService = serviceProvider.GetService<IEventService>();
             this.jobService = serviceProvider.GetService<IJobService>();
             this.projectInventoryService = serviceProvider.GetService<ProjectInventoryService>();
-            this.settingsService = serviceProvider.GetService<IConnectionSettingsService>();
             this.authService = serviceProvider.GetService<IAuthorizationAdapter>();
             this.connectionBroker = serviceProvider.GetService<IGlobalConnectionBroker>();
 
@@ -218,9 +214,6 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
             }
         }
 
-        private void propertiesToolStripMenuItem_Click(object sender, EventArgs e)
-            => openSettingsButton_Click(sender, e);
-
         private void openInCloudConsoleToolStripMenuItem_Click(object sender, EventArgs e)
         {
             if (this.treeView.SelectedNode is VmInstanceNode vmInstanceNode)
@@ -292,16 +285,6 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
             }
         }
 
-        private void openSettingsButton_Click(object sender, EventArgs _)
-        {
-            if (this.treeView.SelectedNode is InventoryNode inventoryNode)
-            {
-                this.serviceProvider
-                    .GetService<IConnectionSettingsWindow>()
-                    .ShowWindow();
-            }
-        }
-
         //---------------------------------------------------------------------
         // Other Windows event handlers.
         //---------------------------------------------------------------------
@@ -344,17 +327,11 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
                 var selectedNode = (IProjectExplorerNode)args.Node;
 
                 //
-                // Update toolbar state.
-                //
-                this.openSettingsButton.Enabled = (args.Node is InventoryNode);
-
-                //
                 // Update context menu state.
                 //
                 this.refreshToolStripMenuItem.Visible =
                 this.unloadProjectToolStripMenuItem.Visible = (selectedNode is ProjectNode);
                 this.refreshAllProjectsToolStripMenuItem.Visible = (selectedNode is CloudNode);
-                this.propertiesToolStripMenuItem.Visible = (selectedNode is InventoryNode);
 
                 this.cloudConsoleSeparatorToolStripMenuItem.Visible =
                     this.openInCloudConsoleToolStripMenuItem.Visible = (selectedNode is VmInstanceNode);
@@ -394,11 +371,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
             // child dialogs. With KeyUp, we'd get an event if a child dialog
             // is dismissed by pressing Enter.
 
-            if (e.KeyCode == Keys.F4)
-            {
-                openSettingsButton_Click(sender, EventArgs.Empty);
-            }
-            else if (e.KeyCode == Keys.F5)
+            if (e.KeyCode == Keys.F5)
             {
                 refreshAllProjectsToolStripMenuItem_Click(sender, EventArgs.Empty);
             }

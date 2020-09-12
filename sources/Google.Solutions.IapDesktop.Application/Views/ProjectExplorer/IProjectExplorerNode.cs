@@ -20,7 +20,6 @@
 //
 
 using Google.Solutions.Common.Locator;
-using Google.Solutions.IapDesktop.Application.Views.ConnectionSettings;
 using System.Collections.Generic;
 
 namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer

@@ -105,8 +105,6 @@
     <Compile Include="Services\Persistence\TestApplicationSettingsRepository.cs" />
     <Compile Include="Services\Persistence\TestAppProtocolRegistry.cs" />
     <Compile Include="Services\Persistence\TestVmInstanceConnectionSettings.cs" />
-    <Compile Include="Services\TestConnectionSettingsService.cs" />
-    <Compile Include="Views\ConnectionSettings\TestConnectionSettingsViewModel.cs" />
     <Compile Include="Util\TestHtmlClipboardFormat.cs" />
     <Compile Include="Util\TestLeastRecentlyUsedCache.cs" />
     <Compile Include="Util\TestRangeObservableCollection.cs" />
@@ -126,7 +124,6 @@
       <DependentUpon>TestMainForm.cs</DependentUpon>
     </Compile>
     <Compile Include="Views\TestProjectExplorer.cs" />
-    <Compile Include="Views\ConnectionSettings\TestConnectionSettingsEditor.cs" />
     <Compile Include="Views\WindowTestFixtureBase.cs" />
     <Compile Include="Util\TestSingletonApplicationBase.cs" />
   </ItemGroup>

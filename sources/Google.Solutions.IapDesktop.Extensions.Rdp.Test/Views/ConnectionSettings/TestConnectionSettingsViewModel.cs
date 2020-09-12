@@ -19,16 +19,17 @@
 // under the License.
 //
 
-using Google.Solutions.IapDesktop.Application.Services.Integration;
+using Google.Solutions.Common.Test;
 using Google.Solutions.IapDesktop.Application.Services.Persistence;
-using Google.Solutions.IapDesktop.Application.Views.ConnectionSettings;
 using Google.Solutions.IapDesktop.Application.Views.ProjectExplorer;
+using Google.Solutions.IapDesktop.Extensions.Rdp.Services.Connection;
+using Google.Solutions.IapDesktop.Extensions.Rdp.Views.ConnectionSettings;
 using Microsoft.Win32;
 using Moq;
 using NUnit.Framework;
 using System.Threading.Tasks;
 
-namespace Google.Solutions.IapDesktop.Application.Test.Views.ConnectionSettings
+namespace Google.Solutions.IapDesktop.Extensions.Rdp.Test.Views.ConnectionSettings
 {
     [TestFixture]
     public class TestConnectionSettingsViewModel : FixtureBase
