@@ -25,7 +25,7 @@ using System;
 using System.ComponentModel;
 using System.Security;
 
-namespace Google.Solutions.IapDesktop.Application.Views.ConnectionSettings
+namespace Google.Solutions.IapDesktop.Extensions.Rdp.Services.Connection
 {
     public class ConnectionSettingsEditor : INotifyPropertyChanged
     {

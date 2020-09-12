@@ -32,6 +32,8 @@ using System;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using Google.Solutions.IapDesktop.Extensions.Rdp.Views.RemoteDesktop;
+using Google.Solutions.IapDesktop.Application.Services.Integration;
+using Google.Solutions.IapDesktop.Extensions.Rdp.Views.ConnectionSettings;
 
 namespace Google.Solutions.IapDesktop.Extensions.Rdp.Services
 {
@@ -86,11 +88,15 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Services
             {
                 if (node is IProjectExplorerVmInstanceNode vmNode)
                 {
+                    var settingsEditor = this.serviceProvider
+                        .GetService<IConnectionSettingsService>()
+                        .GetConnectionSettingsEditor(vmNode);
+
                     await this.serviceProvider.GetService<ICredentialsService>()
                         .GenerateCredentialsAsync(
                             this.window,
                             vmNode.Reference,
-                            vmNode.SettingsEditor,
+                            settingsEditor,
                             false)
                         .ConfigureAwait(true);
                 }
@@ -129,6 +135,13 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Services
                     .GetService<IExceptionDialog>()
                     .Show(this.window, "Connecting to VM instance failed", e);
             }
+        }
+
+        private void OpenConnectionSettings()
+        {
+            this.serviceProvider
+                .GetService<IConnectionSettingsWindow>()
+                .ShowWindow();
         }
 
         //---------------------------------------------------------------------
@@ -191,6 +204,34 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Services
                     Image = Resources.Connect_16
                 });
 
+            //
+            // Connection settings.
+            //
+            var settingsService = serviceProvider.GetService<IConnectionSettingsService>();
+            projectExplorer.ContextMenuCommands.AddCommand(
+                new Command<IProjectExplorerNode>(
+                    "Connection settings",
+                    node => settingsService.IsConnectionSettingsEditorAvailable(node)
+                        ? CommandState.Enabled
+                        : CommandState.Unavailable,
+                    _ => OpenConnectionSettings())
+                {
+                    ShortcutKeys = Keys.F4,
+                    Image = Resources.Settings_16
+                },
+                4);
+
+            projectExplorer.ToolbarCommands.AddCommand(
+                new Command<IProjectExplorerNode>(
+                    "Connection &settings",
+                    node => settingsService.IsConnectionSettingsEditorAvailable(node)
+                        ? CommandState.Enabled
+                        : CommandState.Disabled,
+                    _ => OpenConnectionSettings())
+                {
+                    Image = Resources.Settings_16
+                },
+                3);
 
             //
             // Generate credentials.

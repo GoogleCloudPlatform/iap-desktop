@@ -19,8 +19,7 @@
 // under the License.
 //
 
-
-namespace Google.Solutions.IapDesktop.Application.Views.ConnectionSettings
+namespace Google.Solutions.IapDesktop.Extensions.Rdp.Views.ConnectionSettings
 {
     public interface IConnectionSettingsWindow
     {

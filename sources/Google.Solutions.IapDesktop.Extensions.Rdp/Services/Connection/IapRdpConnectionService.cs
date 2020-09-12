@@ -24,7 +24,6 @@ using Google.Solutions.IapDesktop.Application.ObjectModel;
 using Google.Solutions.IapDesktop.Application.Services.Integration;
 using Google.Solutions.IapDesktop.Application.Services.Persistence;
 using Google.Solutions.IapDesktop.Application.Views;
-using Google.Solutions.IapDesktop.Application.Views.ConnectionSettings;
 using Google.Solutions.IapDesktop.Application.Views.ProjectExplorer;
 using Google.Solutions.IapDesktop.Application.Util;
 using Google.Solutions.IapDesktop.Extensions.Rdp.Views.Credentials;
@@ -49,6 +48,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Services.Connection
         private readonly ITunnelBrokerService tunnelBrokerService;
         private readonly ICredentialPrompt credentialPrompt;
         private readonly IProjectExplorer projectExplorer;
+        private readonly IConnectionSettingsService settingsService;
 
         public IapRdpConnectionService(IServiceProvider serviceProvider)
         {
@@ -57,6 +57,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Services.Connection
             this.tunnelBrokerService = serviceProvider.GetService<ITunnelBrokerService>();
             this.credentialPrompt = serviceProvider.GetService<ICredentialPrompt>();
             this.projectExplorer = serviceProvider.GetService<IProjectExplorer>();
+            this.settingsService = serviceProvider.GetService<IConnectionSettingsService>();
             this.window = serviceProvider.GetService<IMainForm>().Window;
         }
 
@@ -119,16 +120,18 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Services.Connection
             // Select node so that tracking windows are updated.
             vmNode.Select();
 
+            var settingsEditor = this.settingsService.GetConnectionSettingsEditor(vmNode);
+
             await this.credentialPrompt.ShowCredentialsPromptAsync(
                     this.window,
                     vmNode.Reference,
-                    vmNode.SettingsEditor,
+                    settingsEditor,
                     true)
                 .ConfigureAwait(true);
 
             await ConnectInstanceAsync(
                     vmNode.Reference,
-                    vmNode.SettingsEditor.CreateConnectionSettings(vmNode.Reference.Name))
+                    settingsEditor.CreateConnectionSettings(vmNode.Reference.Name))
                 .ConfigureAwait(true);
         }
 
@@ -145,7 +148,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Services.Connection
                 is IProjectExplorerVmInstanceNode vmNode)
             {
                 // We have a full set of settings for this VM, so use that as basis
-                settings = vmNode.SettingsEditor
+                settings = this.settingsService.GetConnectionSettingsEditor(vmNode)
                     .CreateConnectionSettings(vmNode.Reference.Name)
                     .OverlayBy(url.Settings);
             }

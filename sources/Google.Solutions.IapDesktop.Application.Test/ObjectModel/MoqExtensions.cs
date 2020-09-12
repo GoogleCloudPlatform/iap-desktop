@@ -18,21 +18,19 @@
 // specific language governing permissions and limitations
 // under the License.
 //
+using Google.Solutions.IapDesktop.Application.ObjectModel;
+using Moq;
 
-using Google.Solutions.Common.Diagnostics;
-using Google.Solutions.IapDesktop.Application.Views.Properties;
-using System;
-
-namespace Google.Solutions.IapDesktop.Application.Views.ConnectionSettings
+namespace Google.Solutions.IapDesktop.Application.Test.ObjectModel
 {
-    [SkipCodeCoverage("All logic in view model")]
-    public class ConnectionSettingsWindow : PropertiesWindow, IConnectionSettingsWindow
+    public static class MoqExtensions
     {
-        public ConnectionSettingsWindow(IServiceProvider serviceProvider)
-            : base(
-                  serviceProvider,
-                  new ConnectionSettingsViewModel())
+        public static Mock<T> AddMock<T>(this ServiceRegistry registry)
+            where T : class
         {
+            var mock = new Mock<T>();
+            registry.AddSingleton<T>(mock.Object);
+            return mock;
         }
     }
 }

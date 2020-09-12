@@ -73,39 +73,9 @@ namespace Google.Solutions.IapDesktop.Application.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap Connect_16 {
-            get {
-                object obj = ResourceManager.GetObject("Connect_16", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized resource of type System.Drawing.Bitmap.
-        /// </summary>
         internal static System.Drawing.Bitmap Copy_16x {
             get {
                 object obj = ResourceManager.GetObject("Copy_16x", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized resource of type System.Drawing.Bitmap.
-        /// </summary>
-        internal static System.Drawing.Bitmap Log_16 {
-            get {
-                object obj = ResourceManager.GetObject("Log_16", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized resource of type System.Drawing.Bitmap.
-        /// </summary>
-        internal static System.Drawing.Bitmap Password_16 {
-            get {
-                object obj = ResourceManager.GetObject("Password_16", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -156,16 +126,6 @@ namespace Google.Solutions.IapDesktop.Application.Properties {
         internal static System.Drawing.Bitmap Search_16 {
             get {
                 object obj = ResourceManager.GetObject("Search_16", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized resource of type System.Drawing.Bitmap.
-        /// </summary>
-        internal static System.Drawing.Bitmap Settings_16 {
-            get {
-                object obj = ResourceManager.GetObject("Settings_16", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }

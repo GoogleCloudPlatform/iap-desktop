@@ -24,6 +24,7 @@ using Google.Solutions.IapDesktop.Application.ObjectModel;
 using Google.Solutions.IapDesktop.Application.Services.Adapters;
 using Google.Solutions.IapDesktop.Application.Services.Integration;
 using Google.Solutions.IapDesktop.Application.Views.ProjectExplorer;
+using Google.Solutions.IapDesktop.Application.Test.ObjectModel;
 using Moq;
 using NUnit.Framework;
 using System.Collections.Generic;
@@ -55,10 +56,8 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views
             var projectPicker = new Mock<IProjectPickerDialog>();
             projectPicker.Setup(p => p.SelectProjectId(It.IsAny<IWin32Window>())).Returns((string)null);
 
-            var computeEngineAdapter = new Mock<IComputeEngineAdapter>();
-
             this.serviceRegistry.AddSingleton<IProjectPickerDialog>(projectPicker.Object);
-            this.serviceRegistry.AddSingleton<IComputeEngineAdapter>(computeEngineAdapter.Object);
+            this.serviceRegistry.AddMock<IComputeEngineAdapter>();
 
             // Open window.
             var window = new ProjectExplorerWindow(this.serviceProvider);

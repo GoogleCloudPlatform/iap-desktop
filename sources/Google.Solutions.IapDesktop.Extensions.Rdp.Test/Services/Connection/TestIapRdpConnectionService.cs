@@ -25,12 +25,12 @@ using Google.Solutions.IapDesktop.Application.ObjectModel;
 using Google.Solutions.IapDesktop.Application.Services.Integration;
 using Google.Solutions.IapDesktop.Application.Services.Persistence;
 using Google.Solutions.IapDesktop.Application.Views;
-using Google.Solutions.IapDesktop.Application.Views.ConnectionSettings;
 using Google.Solutions.IapDesktop.Application.Views.ProjectExplorer;
 using Google.Solutions.IapDesktop.Application.Util;
 using Google.Solutions.IapDesktop.Extensions.Rdp.Services.Connection;
 using Google.Solutions.IapDesktop.Extensions.Rdp.Views.Credentials;
 using Google.Solutions.IapDesktop.Extensions.Rdp.Services.Tunnel;
+using Google.Solutions.IapDesktop.Application.Test.ObjectModel;
 using Moq;
 using NUnit.Framework;
 using System;
@@ -38,6 +38,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using Google.Solutions.IapTunneling.Iap;
 using Google.Solutions.IapDesktop.Extensions.Rdp.Views.RemoteDesktop;
+using Google.Solutions.IapDesktop.Extensions.Rdp.Views.ConnectionSettings;
 
 namespace Google.Solutions.IapDesktop.Extensions.Rdp.Test.Services.Connection
 {
@@ -69,6 +70,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Test.Services.Connection
         [Test]
         public async Task WhenConnectingByUrlWithoutUsernameAndNoCredentialsExist_ThenConnectionIsMadeWithoutUsername()
         {
+            var settingsService = this.serviceRegistry.AddMock<IConnectionSettingsService>();
             this.serviceRegistry.AddMock<ICredentialPrompt>()
                 .Setup(p => p.ShowCredentialsPromptAsync(
                     It.IsAny<IWin32Window>(),
@@ -98,11 +100,14 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Test.Services.Connection
                 "localhost",
                 It.IsAny<ushort>(),
                 It.Is<VmInstanceConnectionSettings>(i => i.Username == null)), Times.Once);
+            settingsService.Verify(s => s.GetConnectionSettingsEditor(
+                It.IsAny<IProjectExplorerNode>()), Times.Never);
         }
 
         [Test]
         public async Task WhenConnectingByUrlWithUsernameAndNoCredentialsExist_ThenConnectionIsMadeWithThisUsername()
         {
+            var settingsService = this.serviceRegistry.AddMock<IConnectionSettingsService>();
             this.serviceRegistry.AddMock<ICredentialPrompt>()
                 .Setup(p => p.ShowCredentialsPromptAsync(
                     It.IsAny<IWin32Window>(),
@@ -132,6 +137,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Test.Services.Connection
                 "localhost",
                 It.IsAny<ushort>(),
                 It.Is<VmInstanceConnectionSettings>(i => i.Username == "john doe")), Times.Once);
+            settingsService.Verify(s => s.GetConnectionSettingsEditor(
+                It.IsAny<IProjectExplorerNode>()), Times.Never);
         }
 
         [Test]
@@ -143,12 +150,15 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Test.Services.Connection
                 Password = SecureStringExtensions.FromClearText("password")
             };
 
-            var vmNode = new Mock<IProjectExplorerVmInstanceNode>();
-            vmNode.SetupGet(n => n.SettingsEditor)
+            var settingsService = this.serviceRegistry.AddMock<IConnectionSettingsService>();
+            settingsService.Setup(s => s.GetConnectionSettingsEditor(
+                    It.IsAny<IProjectExplorerNode>()))
                 .Returns(new ConnectionSettingsEditor(
                     settings,
                     _ => { },
                     null));
+
+            var vmNode = new Mock<IProjectExplorerVmInstanceNode>();
             vmNode.SetupGet(n => n.Reference)
                 .Returns(new InstanceLocator("project-1", "zone-1", "instance-1"));
 
@@ -181,6 +191,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Test.Services.Connection
                 "localhost",
                 It.IsAny<ushort>(),
                 It.Is<VmInstanceConnectionSettings>(i => i.Username == "john doe")), Times.Once);
+            settingsService.Verify(s => s.GetConnectionSettingsEditor(
+                It.IsAny<IProjectExplorerNode>()), Times.Once);
         }
     }
 }

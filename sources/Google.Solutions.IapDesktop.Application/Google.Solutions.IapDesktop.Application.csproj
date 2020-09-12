@@ -133,12 +133,6 @@
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="Views\ConfirmationDialog.cs" />
-    <Compile Include="Views\ConnectionSettings\ConnectionSettingsEditor.cs" />
-    <Compile Include="Views\ConnectionSettings\ConnectionSettingsViewModel.cs" />
-    <Compile Include="Views\ConnectionSettings\ConnectionSettingsWindow.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Views\ConnectionSettings\IConnectionSettingsWindow.cs" />
     <Compile Include="Views\Diagnostics\DebugDockingWindow.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -152,7 +146,6 @@
     <Compile Include="Views\Diagnostics\DebugProjectExplorerTrackingWindow.Designer.cs">
       <DependentUpon>DebugProjectExplorerTrackingWindow.cs</DependentUpon>
     </Compile>
-    <Compile Include="Services\HtmlPageGenerator.cs" />
     <Compile Include="Controls\FlatVerticalTabControl.cs">
       <SubType>Component</SubType>
     </Compile>
