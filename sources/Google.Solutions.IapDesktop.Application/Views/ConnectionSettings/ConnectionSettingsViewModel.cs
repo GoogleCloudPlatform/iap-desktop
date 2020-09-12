@@ -20,6 +20,7 @@
 //
 
 using Google.Solutions.IapDesktop.Application.ObjectModel;
+using Google.Solutions.IapDesktop.Application.Services.Integration;
 using Google.Solutions.IapDesktop.Application.Views.ProjectExplorer;
 using Google.Solutions.IapDesktop.Application.Views.Properties;
 using System.Diagnostics;
@@ -31,11 +32,18 @@ namespace Google.Solutions.IapDesktop.Application.Views.ConnectionSettings
     {
         internal const string DefaultWindowTitle = "Connection settings";
 
+        private readonly IConnectionSettingsService settingsService;
+
         private bool isInformationBarVisible = false;
         private ConnectionSettingsEditor inspectedObject = null;
         private string windowTitle = DefaultWindowTitle;
 
         public string InformationText => "Changes only take effect after reconnecting";
+
+        public ConnectionSettingsViewModel(IConnectionSettingsService settingsService)
+        {
+            this.settingsService = settingsService;
+        }
 
         //---------------------------------------------------------------------
         // Observable properties.
@@ -83,14 +91,14 @@ namespace Google.Solutions.IapDesktop.Application.Views.ConnectionSettings
 
         public Task SwitchToModelAsync(IProjectExplorerNode node)
         {
-            if (node is IProjectExplorerNodeWithSettings settingsNode)
+            if (this.settingsService.IsConnectionSettingsEditorAvailable(node))
             {
                 this.IsInformationBarVisible =
-                    settingsNode is IProjectExplorerVmInstanceNode &&
-                    ((IProjectExplorerVmInstanceNode)settingsNode).IsConnected;
+                    node is IProjectExplorerVmInstanceNode &&
+                    ((IProjectExplorerVmInstanceNode)node).IsConnected;
 
-                this.InspectedObject = settingsNode.SettingsEditor;
-                this.WindowTitle = DefaultWindowTitle + $": {settingsNode.DisplayName}";
+                this.InspectedObject = this.settingsService.GetConnectionSettingsEditor(node);
+                this.WindowTitle = DefaultWindowTitle + $": {node.DisplayName}";
             }
             else
             {

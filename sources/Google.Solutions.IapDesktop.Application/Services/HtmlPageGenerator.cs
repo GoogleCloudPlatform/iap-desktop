@@ -30,71 +30,72 @@ using System.Linq;
 using System.Text;
 using System.Web;
 using System.Windows.Forms;
+using Google.Solutions.IapDesktop.Application.Services.Integration;
+using Google.Solutions.IapDesktop.Application.Services.Persistence;
 
 namespace Google.Solutions.IapDesktop.Application.Services
 {
     public class HtmlPageGenerator
     {
+        private readonly IConnectionSettingsService settingsService;
+
         public HtmlPageGenerator(IServiceProvider serviceProvider)
         {
+            this.settingsService = serviceProvider.GetService<IConnectionSettingsService>();
+
             var projectExplorer = serviceProvider.GetService<IProjectExplorer>();
             projectExplorer.ContextMenuCommands.AddCommand(
-                new GenerateHtmlPageCommand());
+                new Command<IProjectExplorerNode>(
+                    "Generate HTML page",
+                    context => context is IProjectExplorerProjectNode
+                        ? CommandState.Enabled
+                        : CommandState.Unavailable,
+                    context => GenerateHtmlPage((IProjectExplorerProjectNode)context)));
         }
 
-        private class GenerateHtmlPageCommand : ICommand<IProjectExplorerNode>
+        private void GenerateHtmlPage(IProjectExplorerProjectNode context)
         {
-            public string Text => "Generate HTML page";
-            public Image Image => null;
-            public Keys ShortcutKeys => Keys.None;
+            Debug.Assert(context is IProjectExplorerProjectNode);
+            var projectNode = (IProjectExplorerProjectNode)context;
 
-            public void Execute(IProjectExplorerNode context)
+            var buffer = new StringBuilder();
+            buffer.Append("<html><body>");
+
+            buffer.Append($"<h1>{HttpUtility.HtmlEncode(projectNode.ProjectId)}</h1>");
+
+            foreach (var zoneNode in projectNode.Zones)
             {
-                Debug.Assert(context is IProjectExplorerProjectNode);
-                var projectNode = (IProjectExplorerProjectNode)context;
+                buffer.Append($"<h2>{HttpUtility.HtmlEncode(zoneNode.ZoneId)}</h2>");
 
-                var buffer = new StringBuilder();
-                buffer.Append("<html><body>");
+                buffer.Append($"<ul>");
 
-                buffer.Append($"<h1>{HttpUtility.HtmlEncode(projectNode.ProjectId)}</h1>");
-
-                foreach (var zoneNode in projectNode.Zones)
+                foreach (var vmNode in zoneNode.Instances.Cast<VmInstanceNode>())
                 {
-                    buffer.Append($"<h2>{HttpUtility.HtmlEncode(zoneNode.ZoneId)}</h2>");
+                    var settings = (VmInstanceConnectionSettings)this.settingsService
+                        .GetConnectionSettingsEditor(vmNode)
+                        .CreateConnectionSettings(vmNode.Name);
 
-                    buffer.Append($"<ul>");
-
-                    foreach (var vmNode in zoneNode.Instances.Cast<VmInstanceNode>())
-                    {
-                        buffer.Append($"<li>");
-                        buffer.Append($"<a href='{new IapRdpUrl(vmNode.Reference, vmNode.CreateConnectionSettings())}'>");
-                        buffer.Append($"{HttpUtility.HtmlEncode(vmNode.InstanceName)}</a>");
-                        buffer.Append($"</li>");
-                    }
-
-                    buffer.Append($"</ul>");
+                    buffer.Append($"<li>");
+                    buffer.Append($"<a href='{new IapRdpUrl(vmNode.Reference, settings)}'>");
+                    buffer.Append($"{HttpUtility.HtmlEncode(vmNode.InstanceName)}</a>");
+                    buffer.Append($"</li>");
                 }
 
-                buffer.Append("</body></html>");
-
-                var tempFile = Path.GetTempFileName() + ".html";
-                File.WriteAllText(tempFile, buffer.ToString());
-
-                Process.Start(new ProcessStartInfo()
-                {
-                    UseShellExecute = true,
-                    Verb = "open",
-                    FileName = tempFile
-                });
-
+                buffer.Append($"</ul>");
             }
 
-            public CommandState QueryState(IProjectExplorerNode context)
+            buffer.Append("</body></html>");
+
+            var tempFile = Path.GetTempFileName() + ".html";
+            File.WriteAllText(tempFile, buffer.ToString());
+
+            Process.Start(new ProcessStartInfo()
             {
-                return context is IProjectExplorerProjectNode
-                    ? CommandState.Enabled
-                    : CommandState.Unavailable;
-            }
+                UseShellExecute = true,
+                Verb = "open",
+                FileName = tempFile
+            });
+
         }
     }
 }

@@ -30,6 +30,7 @@ using Google.Solutions.IapDesktop.Application.Util;
 using Google.Solutions.IapDesktop.Application.Views.ConnectionSettings;
 using Google.Solutions.IapDesktop.Extensions.Rdp.Test.Services.Connection;
 using Google.Solutions.IapDesktop.Extensions.Rdp.Views.Credentials;
+using Google.Solutions.IapDesktop.Application.Test.ObjectModel;
 using Moq;
 using NUnit.Framework;
 using System.Net;

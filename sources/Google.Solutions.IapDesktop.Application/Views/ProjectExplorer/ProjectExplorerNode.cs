@@ -50,15 +50,11 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
     [ComVisible(false)]
     public abstract class InventoryNode : TreeNode, IProjectExplorerNode
     {
-        public ConnectionSettingsEditor SettingsEditor { get; }
-
         protected InventoryNode(
             string name,
-            int iconIndex,
-            ConnectionSettingsEditor settingsEditor)
+            int iconIndex)
             : base(name, iconIndex, iconIndex)
         {
-            this.SettingsEditor = settingsEditor;
         }
 
         public string DisplayName => this.Text;
@@ -71,22 +67,13 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
     {
         private const int IconIndex = 1;
 
-        private readonly ConnectionSettingsRepository settingsRepository;
-
         public string ProjectId => this.Text;
         public IEnumerable<IProjectExplorerZoneNode> Zones
             => this.Nodes.OfType<IProjectExplorerZoneNode>();
 
-        internal ProjectNode(ConnectionSettingsRepository settingsRepository, string projectId)
-            : base(
-                  projectId,
-                  IconIndex,
-                  new ConnectionSettingsEditor(
-                      settingsRepository.GetProjectSettings(projectId),
-                      settings => settingsRepository.SetProjectSettings((ProjectConnectionSettings)settings),
-                      null))
+        internal ProjectNode(string projectId)
+            : base(projectId, IconIndex)
         {
-            this.settingsRepository = settingsRepository;
         }
 
         public void Populate(
@@ -102,13 +89,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
 
             foreach (var zoneId in zoneIds)
             {
-                var zoneSettings = this.settingsRepository.GetZoneSettings(
-                    this.ProjectId,
-                    zoneId);
-                var zoneNode = new ZoneNode(
-                    zoneSettings,
-                    changedSettings => this.settingsRepository.SetZoneSettings(this.ProjectId, changedSettings),
-                    this);
+                var zoneNode = new ZoneNode(zoneId, this);
 
                 var instancesInZone = instances
                     .Where(i => InventoryNode.ShortIdFromUrl(i.Zone) == zoneId)
@@ -116,14 +97,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
 
                 foreach (var instance in instancesInZone)
                 {
-                    var instanceSettings = this.settingsRepository.GetVmInstanceSettings(
-                        this.ProjectId,
-                        instance.Name);
-                    var instanceNode = new VmInstanceNode(
-                        instance,
-                        instanceSettings,
-                        changedSettings => this.settingsRepository.SetVmInstanceSettings(this.ProjectId, changedSettings),
-                        zoneNode);
+                    var instanceNode = new VmInstanceNode(instance, zoneNode);
                     instanceNode.IsConnected = isConnected(
                         new InstanceLocator(this.ProjectId, zoneId, instance.Name));
 
@@ -149,15 +123,9 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
             => this.Nodes.OfType<VmInstanceNode>();
 
         internal ZoneNode(
-            ZoneConnectionSettings settings,
-            Action<ZoneConnectionSettings> saveSettings,
+            string zoneId,
             ProjectNode parent)
-            : base(
-                settings.ZoneId,
-                IconIndex,
-                new ConnectionSettingsEditor(settings,
-                    changedSettings => saveSettings((ZoneConnectionSettings)changedSettings),
-                    parent.SettingsEditor))
+            : base(zoneId, IconIndex)
         {
         }
     }
@@ -177,24 +145,13 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
 
         internal VmInstanceNode(
             Instance instance,
-            VmInstanceConnectionSettings settings,
-            Action<VmInstanceConnectionSettings> saveSettings,
             ZoneNode parent)
             : base(
-                settings.InstanceName,
-                DisconnectedIconIndex,
-                new ConnectionSettingsEditor(
-                    settings,
-                    changedSettings => saveSettings((VmInstanceConnectionSettings)changedSettings),
-                    parent.SettingsEditor))
+                instance.Name,
+                DisconnectedIconIndex)
         {
             this.InstanceId = instance.Id.Value;
             this.IsRunning = instance.Status == "RUNNING";
-        }
-
-        public VmInstanceConnectionSettings CreateConnectionSettings()
-        {
-            return this.SettingsEditor.CreateConnectionSettings(this.InstanceName);
         }
 
         public string InstanceName => this.Text;

@@ -50,7 +50,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
         private readonly IEventService eventService;
         private readonly IJobService jobService;
         private readonly ProjectInventoryService projectInventoryService;
-        private readonly ConnectionSettingsRepository settingsRepository;
+        private readonly IConnectionSettingsService settingsService;
         private readonly IAuthorizationAdapter authService;
         private readonly IServiceProvider serviceProvider;
         private readonly IConnectionBroker connectionBroker;
@@ -86,7 +86,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
             this.eventService = serviceProvider.GetService<IEventService>();
             this.jobService = serviceProvider.GetService<IJobService>();
             this.projectInventoryService = serviceProvider.GetService<ProjectInventoryService>();
-            this.settingsRepository = serviceProvider.GetService<ConnectionSettingsRepository>();
+            this.settingsService = serviceProvider.GetService<IConnectionSettingsService>();
             this.authService = serviceProvider.GetService<IAuthorizationAdapter>();
             this.connectionBroker = serviceProvider.GetService<IGlobalConnectionBroker>();
 
@@ -122,7 +122,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
             }
             else
             {
-                projectNode = new ProjectNode(this.settingsRepository, projectId);
+                projectNode = new ProjectNode(projectId);
                 projectNode.Populate(
                     instances,
                     this.connectionBroker.IsConnected);

@@ -34,26 +34,21 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
     {
     }
 
-    public interface IProjectExplorerNodeWithSettings : IProjectExplorerNode
-    {
-        ConnectionSettingsEditor SettingsEditor { get; }
-    }
-
-    public interface IProjectExplorerProjectNode : IProjectExplorerNode, IProjectExplorerNodeWithSettings
+    public interface IProjectExplorerProjectNode : IProjectExplorerNode
     {
         string ProjectId { get; }
 
         IEnumerable<IProjectExplorerZoneNode> Zones { get; }
     }
 
-    public interface IProjectExplorerZoneNode : IProjectExplorerNode, IProjectExplorerNodeWithSettings
+    public interface IProjectExplorerZoneNode : IProjectExplorerNode
     {
         string ProjectId { get; }
         string ZoneId { get; }
         IEnumerable<IProjectExplorerVmInstanceNode> Instances { get; }
     }
 
-    public interface IProjectExplorerVmInstanceNode : IProjectExplorerNode, IProjectExplorerNodeWithSettings
+    public interface IProjectExplorerVmInstanceNode : IProjectExplorerNode
     {
         ulong InstanceId { get; }
         string ProjectId { get; }

@@ -21,9 +21,9 @@
 using Google.Solutions.IapDesktop.Application.ObjectModel;
 using Moq;
 
-namespace Google.Solutions.IapDesktop.Extensions.Rdp.Test
+namespace Google.Solutions.IapDesktop.Application.Test.ObjectModel
 {
-    internal static class MoqExtensions
+    public static class MoqExtensions
     {
         public static Mock<T> AddMock<T>(this ServiceRegistry registry)
             where T : class

@@ -19,9 +19,11 @@
 // under the License.
 //
 
+using Google.Solutions.IapDesktop.Application.Services.Integration;
 using Google.Solutions.IapDesktop.Application.Services.Persistence;
 using Google.Solutions.IapDesktop.Application.Views.ConnectionSettings;
 using Google.Solutions.IapDesktop.Application.Views.ProjectExplorer;
+using Microsoft.Win32;
 using Moq;
 using NUnit.Framework;
 using System.Threading.Tasks;
@@ -31,12 +33,26 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views.ConnectionSettings
     [TestFixture]
     public class TestConnectionSettingsViewModel : FixtureBase
     {
-        private static ConnectionSettingsEditor CreateModel()
+        private const string TestKeyPath = @"Software\Google\__Test";
+        private readonly RegistryKey hkcu = RegistryKey.OpenBaseKey(
+            RegistryHive.CurrentUser,
+            RegistryView.Default);
+
+        private ConnectionSettingsService service;
+
+        [SetUp]
+        public void SetUp()
         {
-            return new ConnectionSettingsEditor(
-                new VmInstanceConnectionSettings(),
-                s => { },
-                null);
+            hkcu.DeleteSubKeyTree(TestKeyPath, false);
+
+            var repository = new ConnectionSettingsRepository(hkcu.CreateSubKey(TestKeyPath));
+            repository.SetProjectSettings(new ProjectConnectionSettings()
+            {
+                ProjectId = "project-1",
+                Domain = "project-domain"
+            });
+
+            this.service = new ConnectionSettingsService(repository);
         }
 
         //---------------------------------------------------------------------
@@ -46,14 +62,12 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views.ConnectionSettings
         [Test]
         public async Task WhenInstanceIsRunning_ThenInformationBarIsShown()
         {
-            var viewModel = new ConnectionSettingsViewModel();
-            var model = CreateModel();
+            var viewModel = new ConnectionSettingsViewModel(this.service);
 
             var node = new Mock<IProjectExplorerVmInstanceNode>();
             node.SetupGet(n => n.ProjectId).Returns("project-1");
             node.SetupGet(n => n.ZoneId).Returns("zone-1");
             node.SetupGet(n => n.InstanceName).Returns("instance-1");
-            node.SetupGet(n => n.SettingsEditor).Returns(model);
             node.SetupGet(n => n.IsConnected).Returns(true);
 
             await viewModel.SwitchToModelAsync(node.Object);
@@ -64,14 +78,12 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views.ConnectionSettings
         [Test]
         public async Task WhenInstanceIsNotRunning_ThenInformationBarIsNotShown()
         {
-            var viewModel = new ConnectionSettingsViewModel();
-            var model = CreateModel();
+            var viewModel = new ConnectionSettingsViewModel(this.service);
 
             var node = new Mock<IProjectExplorerVmInstanceNode>();
             node.SetupGet(n => n.ProjectId).Returns("project-1");
             node.SetupGet(n => n.ZoneId).Returns("zone-1");
             node.SetupGet(n => n.InstanceName).Returns("instance-1");
-            node.SetupGet(n => n.SettingsEditor).Returns(model);
             node.SetupGet(n => n.IsConnected).Returns(false);
 
             await viewModel.SwitchToModelAsync(node.Object);
@@ -86,7 +98,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views.ConnectionSettings
         [Test]
         public async Task WhenSwitchingToCloudNode_ThenGridIsDisabled()
         {
-            var viewModel = new ConnectionSettingsViewModel();
+            var viewModel = new ConnectionSettingsViewModel(this.service);
 
             var node = new Mock<IProjectExplorerCloudNode>();
             await viewModel.SwitchToModelAsync(node.Object);
@@ -99,13 +111,11 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views.ConnectionSettings
         [Test]
         public async Task WhenSwitchingToProjectNode_ThenGridIsPopulated()
         {
-            var viewModel = new ConnectionSettingsViewModel();
-            var model = CreateModel();
+            var viewModel = new ConnectionSettingsViewModel(this.service);
 
             var node = new Mock<IProjectExplorerProjectNode>();
             node.SetupGet(n => n.ProjectId).Returns("project-1");
             node.SetupGet(n => n.DisplayName).Returns("display");
-            node.SetupGet(n => n.SettingsEditor).Returns(model);
 
             await viewModel.SwitchToModelAsync(node.Object);
 
@@ -120,14 +130,12 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views.ConnectionSettings
         [Test]
         public async Task WhenSwitchingToZoneNode_ThenGridIsPopulated()
         {
-            var viewModel = new ConnectionSettingsViewModel();
-            var model = CreateModel();
+            var viewModel = new ConnectionSettingsViewModel(this.service);
 
             var node = new Mock<IProjectExplorerZoneNode>();
             node.SetupGet(n => n.ProjectId).Returns("project-1");
             node.SetupGet(n => n.ZoneId).Returns("zone-1");
             node.SetupGet(n => n.DisplayName).Returns("display");
-            node.SetupGet(n => n.SettingsEditor).Returns(model);
 
             await viewModel.SwitchToModelAsync(node.Object);
 
@@ -142,15 +150,13 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views.ConnectionSettings
         [Test]
         public async Task WhenSwitchingToInstanceNode_ThenGridIsPopulated()
         {
-            var viewModel = new ConnectionSettingsViewModel();
-            var model = CreateModel();
+            var viewModel = new ConnectionSettingsViewModel(this.service);
 
             var node = new Mock<IProjectExplorerVmInstanceNode>();
             node.SetupGet(n => n.ProjectId).Returns("project-1");
             node.SetupGet(n => n.ZoneId).Returns("zone-1");
             node.SetupGet(n => n.InstanceName).Returns("instance-1");
             node.SetupGet(n => n.DisplayName).Returns("display");
-            node.SetupGet(n => n.SettingsEditor).Returns(model);
             node.SetupGet(n => n.IsConnected).Returns(false);
 
             await viewModel.SwitchToModelAsync(node.Object);

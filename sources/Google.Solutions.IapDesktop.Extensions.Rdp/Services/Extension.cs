@@ -32,6 +32,7 @@ using System;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using Google.Solutions.IapDesktop.Extensions.Rdp.Views.RemoteDesktop;
+using Google.Solutions.IapDesktop.Application.Services.Integration;
 
 namespace Google.Solutions.IapDesktop.Extensions.Rdp.Services
 {
@@ -86,11 +87,15 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Services
             {
                 if (node is IProjectExplorerVmInstanceNode vmNode)
                 {
+                    var settingsEditor = this.serviceProvider
+                        .GetService<IConnectionSettingsService>()
+                        .GetConnectionSettingsEditor(vmNode);
+
                     await this.serviceProvider.GetService<ICredentialsService>()
                         .GenerateCredentialsAsync(
                             this.window,
                             vmNode.Reference,
-                            vmNode.SettingsEditor,
+                            settingsEditor,
                             false)
                         .ConfigureAwait(true);
                 }

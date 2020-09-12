@@ -20,6 +20,8 @@
 //
 
 using Google.Solutions.Common.Diagnostics;
+using Google.Solutions.IapDesktop.Application.ObjectModel;
+using Google.Solutions.IapDesktop.Application.Services.Integration;
 using Google.Solutions.IapDesktop.Application.Views.Properties;
 using System;
 
@@ -31,7 +33,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.ConnectionSettings
         public ConnectionSettingsWindow(IServiceProvider serviceProvider)
             : base(
                   serviceProvider,
-                  new ConnectionSettingsViewModel())
+                  new ConnectionSettingsViewModel(serviceProvider.GetService<IConnectionSettingsService>()))
         {
         }
     }

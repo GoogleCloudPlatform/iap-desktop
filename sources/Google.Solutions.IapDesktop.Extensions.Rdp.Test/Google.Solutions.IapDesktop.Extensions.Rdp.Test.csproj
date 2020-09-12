@@ -86,7 +86,6 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="MoqExtensions.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RdpTunnel.cs" />
     <Compile Include="Services\Connection\SynchronousJobService.cs" />

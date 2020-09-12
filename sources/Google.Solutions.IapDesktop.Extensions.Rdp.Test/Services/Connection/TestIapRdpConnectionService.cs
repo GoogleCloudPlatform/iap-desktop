@@ -31,6 +31,7 @@ using Google.Solutions.IapDesktop.Application.Util;
 using Google.Solutions.IapDesktop.Extensions.Rdp.Services.Connection;
 using Google.Solutions.IapDesktop.Extensions.Rdp.Views.Credentials;
 using Google.Solutions.IapDesktop.Extensions.Rdp.Services.Tunnel;
+using Google.Solutions.IapDesktop.Application.Test.ObjectModel;
 using Moq;
 using NUnit.Framework;
 using System;
@@ -144,11 +145,11 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Test.Services.Connection
             };
 
             var vmNode = new Mock<IProjectExplorerVmInstanceNode>();
-            vmNode.SetupGet(n => n.SettingsEditor)
-                .Returns(new ConnectionSettingsEditor(
-                    settings,
-                    _ => { },
-                    null));
+            //vmNode.SetupGet(n => n.SettingsEditor)
+            //    .Returns(new ConnectionSettingsEditor(
+            //        settings,
+            //        _ => { },
+            //        null));
             vmNode.SetupGet(n => n.Reference)
                 .Returns(new InstanceLocator("project-1", "zone-1", "instance-1"));
 
