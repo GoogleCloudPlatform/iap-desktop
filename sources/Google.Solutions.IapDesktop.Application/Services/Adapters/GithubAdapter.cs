@@ -38,12 +38,13 @@ namespace Google.Solutions.IapDesktop.Application.Services.Adapters
 
         private void OpenUrl(string url)
         {
-            Process.Start(new ProcessStartInfo()
+            using (Process.Start(new ProcessStartInfo()
             {
                 UseShellExecute = true,
                 Verb = "open",
                 FileName = url
-            });
+            }))
+            { };
         }
 
         public void ReportIssue()

@@ -90,13 +90,13 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Views.ConnectionSettings
             var tempFile = Path.GetTempFileName() + ".html";
             File.WriteAllText(tempFile, buffer.ToString());
 
-            Process.Start(new ProcessStartInfo()
+            using (Process.Start(new ProcessStartInfo()
             {
                 UseShellExecute = true,
                 Verb = "open",
                 FileName = tempFile
-            });
-
+            }))
+            { }
         }
     }
 }

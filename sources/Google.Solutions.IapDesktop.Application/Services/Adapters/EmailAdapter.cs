@@ -44,12 +44,13 @@ namespace Google.Solutions.IapDesktop.Application.Services.Adapters
                 $"subject={WebUtility.UrlEncode("IAP Desktop feedback")}&" +
                 $"body={WebUtility.UrlEncode(body)}";
 
-            Process.Start(new ProcessStartInfo()
+            using (Process.Start(new ProcessStartInfo()
             {
                 UseShellExecute = true,
                 Verb = "open",
                 FileName = url
-            });
+            }))
+            { };
         }
     }
 }
