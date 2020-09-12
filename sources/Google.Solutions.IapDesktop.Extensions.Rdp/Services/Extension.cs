@@ -219,7 +219,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Services
                     ShortcutKeys = Keys.F4,
                     Image = Resources.Settings_16
                 },
-                2);
+                4);
 
             projectExplorer.ToolbarCommands.AddCommand(
                 new Command<IProjectExplorerNode>(
@@ -231,7 +231,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Services
                 {
                     Image = Resources.Settings_16
                 },
-                4);
+                3);
 
             //
             // Generate credentials.
