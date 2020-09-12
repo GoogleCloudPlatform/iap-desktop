@@ -31,8 +31,9 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Persistence
     public class TestConnectionSettingsRepository : FixtureBase
     {
         private const string TestKeyPath = @"Software\Google\__Test";
-        private readonly RegistryKey hkcu = RegistryKey.OpenBaseKey(RegistryHive.CurrentUser, RegistryView.Default);
-
+        private readonly RegistryKey hkcu = RegistryKey.OpenBaseKey(
+            RegistryHive.CurrentUser, 
+            RegistryView.Default);
 
         [SetUp]
         public void SetUp()
