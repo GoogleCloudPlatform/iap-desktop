@@ -48,30 +48,33 @@ namespace Google.Solutions.IapDesktop.Application.Services.Integration
         }
 
         private ConnectionSettingsEditor GetZoneConnectionSettingsEditor(
-            ZoneLocator zone)
+            string projectId, 
+            string zoneId)
         {
             return new ConnectionSettingsEditor(
                 this.settingsRepository.GetZoneSettings(
-                    zone.ProjectId,
-                    zone.Name),
+                    projectId,
+                    zoneId),
                 settings => settingsRepository.SetZoneSettings(
-                    zone.ProjectId,
+                    projectId,
                     (ZoneConnectionSettings)settings),
-                GetProjectConnectionSettingsEditor(zone.ProjectId));
+                GetProjectConnectionSettingsEditor(projectId));
         }
 
         private ConnectionSettingsEditor GetVmInstanceConnectionSettingsEditor(
-            InstanceLocator instance)
+            string projectId,
+            string zoneId,
+            string instanceName)
         {
             return new ConnectionSettingsEditor(
                 this.settingsRepository.GetVmInstanceSettings(
-                    instance.ProjectId,
-                    instance.Name),
+                    projectId,
+                    instanceName),
                 settings => this.settingsRepository.SetVmInstanceSettings(
-                    instance.ProjectId,
+                    projectId,
                     (VmInstanceConnectionSettings)settings),
                 GetZoneConnectionSettingsEditor(
-                    new ZoneLocator(instance.ProjectId, instance.Zone)));
+                    projectId, zoneId));
         }
 
         //---------------------------------------------------------------------
@@ -108,12 +111,14 @@ namespace Google.Solutions.IapDesktop.Application.Services.Integration
             }
             else if (node is IProjectExplorerZoneNode zoneNode)
             {
-                return GetZoneConnectionSettingsEditor(
-                    new ZoneLocator(zoneNode.ProjectId, zoneNode.ZoneId));
+                return GetZoneConnectionSettingsEditor(zoneNode.ProjectId, zoneNode.ZoneId);
             }
             else if (node is IProjectExplorerVmInstanceNode vmNode)
             {
-                return GetVmInstanceConnectionSettingsEditor(vmNode.Reference);
+                return GetVmInstanceConnectionSettingsEditor(
+                    vmNode.ProjectId,
+                    vmNode.ZoneId,
+                    vmNode.InstanceName);
             }
             else
             {

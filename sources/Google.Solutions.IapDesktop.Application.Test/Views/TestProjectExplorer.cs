@@ -48,6 +48,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views
         public void RegisterServices()
         {
             this.serviceRegistry.AddSingleton<IGlobalConnectionBroker, GlobalConnectionBroker>();
+            this.serviceRegistry.AddMock<IConnectionSettingsService>();
         }
 
         [Test]
