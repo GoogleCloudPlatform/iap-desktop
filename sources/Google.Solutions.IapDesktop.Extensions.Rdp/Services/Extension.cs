@@ -33,6 +33,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using Google.Solutions.IapDesktop.Extensions.Rdp.Views.RemoteDesktop;
 using Google.Solutions.IapDesktop.Application.Services.Integration;
+using Google.Solutions.IapDesktop.Extensions.Rdp.Views.ConnectionSettings;
 
 namespace Google.Solutions.IapDesktop.Extensions.Rdp.Services
 {
@@ -136,6 +137,13 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Services
             }
         }
 
+        private void OpenConnectionSettings()
+        {
+            this.serviceProvider
+                .GetService<IConnectionSettingsWindow>()
+                .ShowWindow();
+        }
+
         //---------------------------------------------------------------------
         // Setup
         //---------------------------------------------------------------------
@@ -196,6 +204,34 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Services
                     Image = Resources.Connect_16
                 });
 
+            //
+            // Connection settings.
+            //
+            var settingsService = serviceProvider.GetService<IConnectionSettingsService>();
+            projectExplorer.ContextMenuCommands.AddCommand(
+                new Command<IProjectExplorerNode>(
+                    "Connection settings",
+                    node => settingsService.IsConnectionSettingsEditorAvailable(node)
+                        ? CommandState.Enabled
+                        : CommandState.Unavailable,
+                    _ => OpenConnectionSettings())
+                {
+                    ShortcutKeys = Keys.F4,
+                    Image = Resources.Settings_16
+                },
+                2);
+
+            projectExplorer.ToolbarCommands.AddCommand(
+                new Command<IProjectExplorerNode>(
+                    "Connection &settings",
+                    node => settingsService.IsConnectionSettingsEditorAvailable(node)
+                        ? CommandState.Enabled
+                        : CommandState.Disabled,
+                    _ => OpenConnectionSettings())
+                {
+                    Image = Resources.Settings_16
+                },
+                4);
 
             //
             // Generate credentials.
