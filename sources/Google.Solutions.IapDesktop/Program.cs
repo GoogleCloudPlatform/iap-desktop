@@ -245,6 +245,7 @@ namespace Google.Solutions.IapDesktop
             integrationLayer.AddSingleton<IEventService>(new EventService(mainForm));
             integrationLayer.AddTransient<ProjectInventoryService>();
             integrationLayer.AddSingleton<IGlobalConnectionBroker, GlobalConnectionBroker>();
+            integrationLayer.AddSingleton<IConnectionSettingsService, ConnectionSettingsService>();
 
 
             //
