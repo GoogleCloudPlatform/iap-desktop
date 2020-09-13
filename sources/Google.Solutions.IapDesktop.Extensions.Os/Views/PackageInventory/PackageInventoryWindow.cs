@@ -98,12 +98,13 @@ namespace Google.Solutions.IapDesktop.Extensions.Os.Views.PackageInventory
                 "&Additional information...",
                 null,
                 (sender, args) => {
-                    Process.Start(new ProcessStartInfo()
+                    using (Process.Start(new ProcessStartInfo()
                     {
                         UseShellExecute = true,
                         Verb = "open",
                         FileName = this.packageList.List.SelectedModelItem?.Package?.Weblink.ToString()
-                    });
+                    }))
+                    { };
                 });
             this.packageList.List.ContextMenuStrip.Items.Add(openUrl);
             this.packageList.List.ContextMenuStrip.Opening += (sender, args) =>

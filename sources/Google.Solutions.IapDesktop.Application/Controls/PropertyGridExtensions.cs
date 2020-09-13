@@ -41,7 +41,8 @@ namespace Google.Solutions.IapDesktop.Application.Controls
             rtfLabel.SetPadding(3);
             rtfLabel.LinkClicked += (sender, args) =>
             {
-                Process.Start(args.LinkText);
+                using (Process.Start(args.LinkText))
+                { }
             };
 
             // Add RTF box as child control.
