@@ -65,7 +65,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Views.TunnelsViewer
             this.tunnelsList.BindColumn(0, t => t.Destination.Instance.Name);
             this.tunnelsList.BindColumn(1, t => t.Destination.Instance.ProjectId);
             this.tunnelsList.BindColumn(2, t => t.Destination.Instance.Zone);
-            this.tunnelsList.BindColumn(3, t => t.LocalPort.ToString());
+            this.tunnelsList.BindColumn(3, t => ByteSizeFormatter.Format(t.BytesTransmitted));
+            this.tunnelsList.BindColumn(4, t => ByteSizeFormatter.Format(t.BytesReceived));
+            this.tunnelsList.BindColumn(5, t => t.LocalPort.ToString());
 
             this.tunnelsList.BindProperty(
                 v => this.tunnelsList.SelectedModelItem,

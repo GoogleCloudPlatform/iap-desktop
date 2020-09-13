@@ -55,10 +55,12 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Views.TunnelsViewer
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(TunnelsWindow));
             this.toolStrip = new System.Windows.Forms.ToolStrip();
             this.disconnectToolStripButton = new System.Windows.Forms.ToolStripButton();
-            this.tunnelsList = new TunnelsViewer.TunnelsListView();
+            this.tunnelsList = new Google.Solutions.IapDesktop.Extensions.Rdp.Views.TunnelsViewer.TunnelsListView();
             this.instanceHeader = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.projectIdHeader = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.zoneHeader = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.transmittedHeader = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.receivedHeader = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.localPortHeader = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.contextMenuStrip = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.disconnectTunnelToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -73,7 +75,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Views.TunnelsViewer
             this.disconnectToolStripButton});
             this.toolStrip.Location = new System.Drawing.Point(0, 0);
             this.toolStrip.Name = "toolStrip";
-            this.toolStrip.Size = new System.Drawing.Size(455, 25);
+            this.toolStrip.Size = new System.Drawing.Size(862, 25);
             this.toolStrip.TabIndex = 5;
             this.toolStrip.Text = "toolStrip";
             // 
@@ -96,6 +98,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Views.TunnelsViewer
             this.instanceHeader,
             this.projectIdHeader,
             this.zoneHeader,
+            this.transmittedHeader,
+            this.receivedHeader,
             this.localPortHeader});
             this.tunnelsList.ContextMenuStrip = this.contextMenuStrip;
             this.tunnelsList.Dock = System.Windows.Forms.DockStyle.Fill;
@@ -108,7 +112,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Views.TunnelsViewer
             this.tunnelsList.Name = "tunnelsList";
             this.tunnelsList.OwnerDraw = true;
             this.tunnelsList.SelectedModelItem = null;
-            this.tunnelsList.Size = new System.Drawing.Size(455, 339);
+            this.tunnelsList.Size = new System.Drawing.Size(862, 339);
             this.tunnelsList.TabIndex = 6;
             this.tunnelsList.UseCompatibleStateImageBehavior = false;
             this.tunnelsList.View = System.Windows.Forms.View.Details;
@@ -128,10 +132,20 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Views.TunnelsViewer
             this.zoneHeader.Text = "Zone";
             this.zoneHeader.Width = 130;
             // 
+            // transmittedHeader
+            // 
+            this.transmittedHeader.Text = "Transmitted";
+            this.transmittedHeader.Width = 80;
+            // 
+            // receivedHeader
+            // 
+            this.receivedHeader.Text = "Received";
+            this.receivedHeader.Width = 80;
+            // 
             // localPortHeader
             // 
             this.localPortHeader.Text = "Local Port";
-            this.localPortHeader.Width = 59;
+            this.localPortHeader.Width = 306;
             // 
             // contextMenuStrip
             // 
@@ -152,7 +166,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Views.TunnelsViewer
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(455, 364);
+            this.ClientSize = new System.Drawing.Size(862, 364);
             this.ControlBox = false;
             this.Controls.Add(this.tunnelsList);
             this.Controls.Add(this.toolStrip);
@@ -178,5 +192,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Views.TunnelsViewer
         private System.Windows.Forms.ContextMenuStrip contextMenuStrip;
         private System.Windows.Forms.ToolStripMenuItem disconnectTunnelToolStripMenuItem;
         private WeifenLuo.WinFormsUI.Docking.VS2015LightTheme theme;
+        private System.Windows.Forms.ColumnHeader transmittedHeader;
+        private System.Windows.Forms.ColumnHeader receivedHeader;
     }
 }

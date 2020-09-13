@@ -31,12 +31,12 @@ namespace Google.Solutions.IapTunneling.Net
         public ulong BytesReceived => (ulong)this.bytesReceived;
         public ulong BytesTransmitted => (ulong)this.bytesTransmitted;
 
-        public void OnReceiveCompleted(long bytesReceived)
+        internal void OnReceiveCompleted(long bytesReceived)
         {
             Interlocked.Add(ref this.bytesReceived, bytesReceived);
         }
 
-        public void OnTransmitCompleted(long bytesTransmitted)
+        internal void OnTransmitCompleted(long bytesTransmitted)
         {
             Interlocked.Add(ref this.bytesTransmitted, bytesTransmitted);
         }
