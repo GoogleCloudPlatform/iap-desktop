@@ -33,9 +33,9 @@ using WeifenLuo.WinFormsUI.Docking;
 namespace Google.Solutions.IapDesktop.Extensions.Rdp.Views.TunnelsViewer
 {
     [ComVisible(false)]
-    [Service(typeof(ITunnelsViewer), ServiceLifetime.Singleton)]
+    [Service(typeof(ITunnelsWindow), ServiceLifetime.Singleton)]
     [SkipCodeCoverage("All logic in view model")]
-    public partial class TunnelsWindow : ToolWindow, ITunnelsViewer
+    public partial class TunnelsWindow : ToolWindow, ITunnelsWindow
     {
         private readonly DockPanel dockPanel;
         private readonly IExceptionDialog exceptionDialog;
