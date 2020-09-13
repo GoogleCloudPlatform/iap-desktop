@@ -33,10 +33,12 @@ namespace Google.Solutions.IapTunneling.Net
     {
         private readonly Socket socket;
         private readonly string remoteEndpoint;
+        private readonly ConnectionStatistics statistics;
 
-        public SocketStream(Socket socket)
+        public SocketStream(Socket socket, ConnectionStatistics statistics)
         {
             this.socket = socket;
+            this.statistics = statistics;
             this.remoteEndpoint = socket.RemoteEndPoint.ToString();
         }
 
@@ -120,10 +122,13 @@ namespace Google.Solutions.IapTunneling.Net
             using (var args = new SocketAsyncEventArgs())
             {
                 args.SetBuffer(buffer, offset, count);
-                return await IoAsync(
+                var bytesRead = await IoAsync(
                     this.socket.ReceiveAsync,
                     args,
                     cancellationToken).ConfigureAwait(false);
+
+                this.statistics.OnReceiveCompleted((long)bytesRead);
+                return bytesRead;
             }
         }
 
@@ -136,10 +141,12 @@ namespace Google.Solutions.IapTunneling.Net
             using (var args = new SocketAsyncEventArgs())
             {
                 args.SetBuffer(buffer, offset, count);
-                await IoAsync(
+                var bytesWritten = await IoAsync(
                     this.socket.SendAsync,
                     args,
                     cancellationToken).ConfigureAwait(false);
+
+                this.statistics.OnTransmitCompleted((long)bytesWritten);
             }
         }
 
