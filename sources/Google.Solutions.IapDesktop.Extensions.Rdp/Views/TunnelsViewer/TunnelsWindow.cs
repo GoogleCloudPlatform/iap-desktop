@@ -74,6 +74,11 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Views.TunnelsViewer
                 this.viewModel,
                 m => this.viewModel.SelectedTunnel,
                 this.components);
+            this.refreshToolStripButton.BindProperty(
+                b => b.Enabled,
+                this.viewModel,
+                m => m.IsRefreshButtonEnabled,
+                this.components);
             this.disconnectToolStripButton.BindProperty(
                 b => b.Enabled,
                 this.viewModel,
@@ -101,8 +106,13 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Views.TunnelsViewer
         // Window event handlers.
         //---------------------------------------------------------------------
 
-        private async void disconnectToolStripButton_Click(object sender, EventArgs eventArgse)
-            => await this.viewModel.DisconnectSelectedTunnelAsync();
+        private async void disconnectToolStripButton_Click(object sender, EventArgs _)
+            => await this.viewModel
+                .DisconnectSelectedTunnelAsync()
+                .ConfigureAwait(true);
+
+        private void refreshToolStripButton_Click(object sender, EventArgs _)
+            => this.viewModel.RefreshTunnels();
     }
 
     public class TunnelsListView : BindableListView<ITunnel>

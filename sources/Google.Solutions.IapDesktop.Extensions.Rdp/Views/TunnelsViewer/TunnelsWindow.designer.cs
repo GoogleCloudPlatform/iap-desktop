@@ -65,6 +65,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Views.TunnelsViewer
             this.contextMenuStrip = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.disconnectTunnelToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.theme = new WeifenLuo.WinFormsUI.Docking.VS2015LightTheme();
+            this.refreshToolStripButton = new System.Windows.Forms.ToolStripButton();
             this.toolStrip.SuspendLayout();
             this.contextMenuStrip.SuspendLayout();
             this.SuspendLayout();
@@ -72,7 +73,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Views.TunnelsViewer
             // toolStrip
             // 
             this.toolStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.disconnectToolStripButton});
+            this.disconnectToolStripButton,
+            this.refreshToolStripButton});
             this.toolStrip.Location = new System.Drawing.Point(0, 0);
             this.toolStrip.Name = "toolStrip";
             this.toolStrip.Size = new System.Drawing.Size(862, 25);
@@ -162,6 +164,16 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Views.TunnelsViewer
             this.disconnectTunnelToolStripMenuItem.Text = "&Disconnect tunnel";
             this.disconnectTunnelToolStripMenuItem.Click += new System.EventHandler(this.disconnectToolStripButton_Click);
             // 
+            // refreshToolStripButton
+            // 
+            this.refreshToolStripButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.refreshToolStripButton.Image = ((System.Drawing.Image)(resources.GetObject("refreshToolStripButton.Image")));
+            this.refreshToolStripButton.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.refreshToolStripButton.Name = "refreshToolStripButton";
+            this.refreshToolStripButton.Size = new System.Drawing.Size(23, 22);
+            this.refreshToolStripButton.Text = "toolStripButton1";
+            this.refreshToolStripButton.Click += new System.EventHandler(this.refreshToolStripButton_Click);
+            // 
             // TunnelsWindow
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -194,5 +206,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Views.TunnelsViewer
         private WeifenLuo.WinFormsUI.Docking.VS2015LightTheme theme;
         private System.Windows.Forms.ColumnHeader transmittedHeader;
         private System.Windows.Forms.ColumnHeader receivedHeader;
+        private System.Windows.Forms.ToolStripButton refreshToolStripButton;
     }
 }
