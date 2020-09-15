@@ -32,6 +32,10 @@ namespace Google.Solutions.IapTunneling.Test.Net
     /// </summary>
     public static class PortFinder
     {
+        private const int MaxAttempts = 1000;
+        private const int PortRangeStart = 10000;
+        private const int PortRangeEnd = 49000;
+
         public static HashSet<int> QueryOccupiedPorts()
         {
             var occupiedServerPorts = IPGlobalProperties.GetIPGlobalProperties()
@@ -55,15 +59,21 @@ namespace Google.Solutions.IapTunneling.Test.Net
             // https://support.microsoft.com/en-us/help/929851/the-default-dynamic-port-range-for-tcp-ip-has-changed-in-windows-vista)
             // Try to stay below
 
-            for (var port = 10000; port < 49000; port++)
+            // Use a random port to make port numbers less predictable.
+            var random = new Random(Environment.TickCount);
+
+            // Make a reasonable number of attempts without risking getting
+            // stuck in an infinite loop.
+            for (int attempts = 0; attempts < MaxAttempts; attempts++)
             {
+                var port = random.Next(PortRangeStart, PortRangeEnd);
                 if (!occupiedPorts.Contains(port))
                 {
                     return port;
                 }
             }
 
-            throw new SystemException("No port available");
+            throw new SystemException("Failed to find available TCP port");
         }
     }
 }
