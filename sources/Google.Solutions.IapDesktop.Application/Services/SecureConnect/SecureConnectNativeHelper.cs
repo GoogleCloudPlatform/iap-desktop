@@ -227,7 +227,6 @@ namespace Google.Solutions.IapDesktop.Application.Services.SecureConnect
             public bool? ShouldEnrollDevice { get; set; }
         }
 
-
         //---------------------------------------------------------------------
         // DeviceInfo.
         //---------------------------------------------------------------------
