@@ -26,7 +26,7 @@ using System.Diagnostics;
 
 namespace Google.Solutions.IapDesktop.Application.Services.SecureConnect
 {
-    public sealed class SecureConnectNativeHelper : IDisposable
+    public sealed class SecureConnectNativeHelper
     {
         //
         // The native helper is a Chrome native messaging host
@@ -41,22 +41,13 @@ namespace Google.Solutions.IapDesktop.Application.Services.SecureConnect
 
         private static readonly Version MinimumRequiredComponentVersion = new Version(1, 6);
 
-        private readonly ChromeNativeMessagingHost host;
-
-
-        //---------------------------------------------------------------------
-        // Ctor.
-        //---------------------------------------------------------------------
-
-        private SecureConnectNativeHelper(ChromeNativeMessagingHost host)
+        private static ChromeNativeMessagingHost StartHost()
         {
-            this.host = host;
-        }
-
-        public static SecureConnectNativeHelper Start()
-        {
-            return new SecureConnectNativeHelper(
-                ChromeNativeMessagingHost.Start(HostName, HostRegistrationHive));
+            // 
+            // NB. An instance is only suitable to dispatch a single command, 
+            // it auto-terminated after that.
+            //
+            return ChromeNativeMessagingHost.Start(HostName, HostRegistrationHive);
         }
 
         public static bool IsInstalled => 
@@ -64,39 +55,40 @@ namespace Google.Solutions.IapDesktop.Application.Services.SecureConnect
                 HostName,
                 HostRegistrationHive) != null;
 
-        public void Dispose()
-        {
-            this.host.Dispose();
-        }
-
         //---------------------------------------------------------------------
         // Messages.
         //---------------------------------------------------------------------
 
         public void Ping()
         {
-            var request = new PingRequest();
-            var response = this.host.TransactMessage<PingRequest, PingResponse>(request);
-
-            Debug.Assert(response.CommandId == request.CommandId);
-
-            if (response.Details.ComponentVersion < MinimumRequiredComponentVersion)
+            using (var host = StartHost())
             {
-                throw new SecureConnectException(
-                    $"Installed version {response.Details.ComponentVersion} is older " +
-                    $"than required version {MinimumRequiredComponentVersion}");
+                var request = new PingRequest();
+                var response = host.TransactMessage<PingRequest, PingResponse>(request);
+
+                Debug.Assert(response.CommandId == request.CommandId);
+
+                if (response.Details.ComponentVersion < MinimumRequiredComponentVersion)
+                {
+                    throw new SecureConnectException(
+                        $"Installed version {response.Details.ComponentVersion} is older " +
+                        $"than required version {MinimumRequiredComponentVersion}");
+                }
             }
         }
 
         public bool? ShouldEnrollDevice(string userId)
         {
-            var request = new ShouldEnrollDeviceRequest(userId);
-            var response = this.host.TransactMessage<
-                ShouldEnrollDeviceRequest, ShouldEnrollDeviceResponse>(request);
+            using (var host = StartHost())
+            {
+                var request = new ShouldEnrollDeviceRequest(userId);
+                var response = host.TransactMessage<
+                    ShouldEnrollDeviceRequest, ShouldEnrollDeviceResponse>(request);
 
-            Debug.Assert(response.CommandId == request.CommandId);
+                Debug.Assert(response.CommandId == request.CommandId);
 
-            return response.ShouldEnrollDevice;
+                return response.ShouldEnrollDevice;
+            }
         }
 
         //---------------------------------------------------------------------
