@@ -118,7 +118,8 @@
     <Compile Include="Services\Adapters\Permissions.cs" />
     <Compile Include="Services\Adapters\ResourceManagerAdapter.cs" />
     <Compile Include="Global.cs" />
-    <Compile Include="Services\Adapters\SecureConnectNativeHelperAdapter.cs" />
+    <Compile Include="Services\Adapters\SecureConnectAdapter.cs" />
+    <Compile Include="Services\SecureConnect\SecureConnectNativeHelper.cs" />
     <Compile Include="Services\Integration\ConnectionBroker.cs" />
     <Compile Include="Services\Integration\EventService.cs" />
     <Compile Include="Services\Integration\JobService.cs" />
@@ -146,6 +147,7 @@
     <Compile Include="Views\Authentication\UserFlyoutWindow.Designer.cs">
       <DependentUpon>UserFlyoutWindow.cs</DependentUpon>
     </Compile>
+    <Compile Include="Services\SecureConnect\ChromeNativeMessagingHost.cs" />
     <Compile Include="Views\CloudConsoleService.cs" />
     <Compile Include="Services\Adapters\IAuthorizationAdapter.cs" />
     <Compile Include="Controls\FlatListView.cs">
