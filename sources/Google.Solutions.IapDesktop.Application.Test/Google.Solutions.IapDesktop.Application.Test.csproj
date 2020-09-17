@@ -106,6 +106,7 @@
     <Compile Include="Services\Adapters\TestResourceManagerAdapter.cs" />
     <Compile Include="Services\Integration\TestConnectionBroker.cs" />
     <Compile Include="Services\Settings\TestApplicationSettingsRepository.cs" />
+    <Compile Include="Services\Adapters\TestSecureConnectNativeHelperAdapter.cs" />
     <Compile Include="Services\Persistence\TestAppProtocolRegistry.cs" />
     <Compile Include="Services\Settings\TestAuthSettingsRepository.cs" />
     <Compile Include="Services\Settings\TestProjectRepository.cs" />
