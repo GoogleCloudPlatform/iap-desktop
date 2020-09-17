@@ -33,7 +33,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.SecureConnect
     /// Wrapper to interact with a Chrome native messaging host.
     /// See https://developer.chrome.com/apps/nativeMessaging for details.
     /// </summary>
-    internal class ChromeNativeMessagingHost
+    internal class ChromeNativeMessagingHost : IDisposable
     {
         private const string BaseKeyPath = @"Software\Google\chrome\NativeMessagingHosts";
 

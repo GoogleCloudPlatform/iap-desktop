@@ -20,9 +20,7 @@
 //
 
 using Google.Solutions.IapDesktop.Application.Services.SecureConnect;
-using Microsoft.Win32;
 using NUnit.Framework;
-using System.IO;
 
 namespace Google.Solutions.IapDesktop.Application.Test.Services.SecureConnect
 {
@@ -38,10 +36,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.SecureConnect
                 return;
             }
 
-            using (var helper = SecureConnectNativeHelper.Start())
-            {
-                helper.Ping();
-            }
+            new SecureConnectNativeHelper().Ping();
         }
 
         [Test]
@@ -53,10 +48,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.SecureConnect
                 return;
             }
 
-            using (var helper = SecureConnectNativeHelper.Start())
-            {
-                Assert.IsTrue(helper.ShouldEnrollDevice("1"));
-            }
+            Assert.IsTrue(new SecureConnectNativeHelper().ShouldEnrollDevice("1"));
         }
     }
 }
