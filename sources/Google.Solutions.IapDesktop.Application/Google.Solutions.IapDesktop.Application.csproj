@@ -118,6 +118,7 @@
     <Compile Include="Services\Adapters\Permissions.cs" />
     <Compile Include="Services\Adapters\ResourceManagerAdapter.cs" />
     <Compile Include="Global.cs" />
+    <Compile Include="Services\Adapters\SecureConnectNativeHelperAdapter.cs" />
     <Compile Include="Services\Integration\ConnectionBroker.cs" />
     <Compile Include="Services\Integration\EventService.cs" />
     <Compile Include="Services\Integration\JobService.cs" />
