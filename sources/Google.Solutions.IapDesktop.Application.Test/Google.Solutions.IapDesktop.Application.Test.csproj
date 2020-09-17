@@ -119,6 +119,7 @@
     <Compile Include="Settings\TestSettingsCollectionExtensions.cs" />
     <Compile Include="Util\TestByteSizeFormatter.cs" />
     <Compile Include="Services\SecureConnect\TestChromeNativeMessagingHost.cs" />
+    <Compile Include="Services\SecureConnect\TestSecureConnectAdapter.cs" />
     <Compile Include="Services\SecureConnect\TestSecureConnectNativeHelper.cs" />
     <Compile Include="Util\TestHtmlClipboardFormat.cs" />
     <Compile Include="Util\TestLeastRecentlyUsedCache.cs" />
