@@ -82,7 +82,8 @@ namespace Google.Solutions.IapDesktop.Application.Services.SecureConnect
                     {
                         // Get information about certificate.
                         var fingerprints = helper
-                            .GetDeviceCertificateFingerprints()
+                            .GetDeviceInfo()
+                            .CertificateFingerprints
                             .ToHashSet();
 
                         var certificate = GetDeviceCertificates()

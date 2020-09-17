@@ -28,6 +28,7 @@ using System.Diagnostics;
 using System.Threading;
 using Google.Solutions.Common.Util;
 using System.Linq;
+using System.Windows.Forms.VisualStyles;
 
 namespace Google.Solutions.IapDesktop.Application.Services.SecureConnect
 {
@@ -112,22 +113,24 @@ namespace Google.Solutions.IapDesktop.Application.Services.SecureConnect
             }
         }
 
-        public IEnumerable<string> GetDeviceCertificateFingerprints()
+        public SecureConnectDeviceInfo GetDeviceInfo()
         {
             using (var host = StartHost())
             {
                 var request = new DeviceInfoRequest(
                     Interlocked.Increment(ref this.commandId),
-                    new[] { "certificates" });
+                    new[] { "certificates", "serial_number", "model" });
                 var response = TransactMessage<DeviceInfoRequest, DeviceInfoResponse>(
                     host, 
                     request);
 
                 Debug.Assert(response.CommandId == request.CommandId);
 
-                return response.DeviceInfo.Certificates
-                    .EnsureNotNull()
-                    .Select(cert => cert.Fingerprint);
+                return new SecureConnectDeviceInfo(
+                    response.DeviceInfo.SerialNumber,
+                    response.DeviceInfo.Certificates
+                        .EnsureNotNull()
+                        .Select(cert => cert.Fingerprint));
             }
         }
 
@@ -271,10 +274,30 @@ namespace Google.Solutions.IapDesktop.Application.Services.SecureConnect
             {
                 [JsonProperty("certificates")]
                 public IList<DeviceCertificate> Certificates { get; set; }
+
+                [JsonProperty("serialNumber")]
+                public string SerialNumber { get; set; }
             }
 
             [JsonProperty("deviceInfo")]
             public DeviceInfoDetails DeviceInfo { get; set; }
+        }
+    }
+
+    public class SecureConnectDeviceInfo
+    {
+        [JsonProperty("certificates")]
+        public IEnumerable<string> CertificateFingerprints { get; }
+
+        [JsonProperty("serialNumber")]
+        public string SerialNumber { get; }
+
+        public SecureConnectDeviceInfo(
+            string serialNumber,
+            IEnumerable<string> certificateFingerprints)
+        {
+            this.SerialNumber = serialNumber;
+            this.CertificateFingerprints = certificateFingerprints;
         }
     }
 
