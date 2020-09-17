@@ -162,12 +162,6 @@ namespace Google.Solutions.IapDesktop.Application.Services.SecureConnect
             return Encoding.UTF8.GetString(responseBytes);
         }
 
-        public TResponse TransactMessage<TRequest, TResponse>(TRequest request)
-        {
-            return JsonConvert.DeserializeObject<TResponse>(
-                TransactMessage(JsonConvert.SerializeObject(request)));
-        }
-
         public void Dispose()
         {
             this.input.Dispose();

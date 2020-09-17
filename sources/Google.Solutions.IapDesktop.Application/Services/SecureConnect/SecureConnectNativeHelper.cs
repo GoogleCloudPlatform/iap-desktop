@@ -22,7 +22,12 @@
 using Microsoft.Win32;
 using Newtonsoft.Json;
 using System;
+using System.Collections;
+using System.Collections.Generic;
 using System.Diagnostics;
+using System.Threading;
+using Google.Solutions.Common.Util;
+using System.Linq;
 
 namespace Google.Solutions.IapDesktop.Application.Services.SecureConnect
 {
@@ -40,6 +45,9 @@ namespace Google.Solutions.IapDesktop.Application.Services.SecureConnect
         private const RegistryHive HostRegistrationHive = RegistryHive.LocalMachine;
 
         private static readonly Version MinimumRequiredComponentVersion = new Version(1, 6);
+
+        // The command ID is for debugging only, the native helper does not interpret it.
+        private int commandId = 1;
 
         private static ChromeNativeMessagingHost StartHost()
         {
@@ -59,19 +67,29 @@ namespace Google.Solutions.IapDesktop.Application.Services.SecureConnect
         // Messages.
         //---------------------------------------------------------------------
 
+        private TResponse TransactMessage<TRequest, TResponse>(
+            ChromeNativeMessagingHost host,
+            TRequest request) where TResponse : ResponseBase
+        {
+            var response = JsonConvert.DeserializeObject<TResponse>(
+                host.TransactMessage(JsonConvert.SerializeObject(request)));
+            response.ThrowIfFailed();
+            return response;
+        }
+
         public void Ping()
         {
             using (var host = StartHost())
             {
-                var request = new PingRequest();
-                var response = host.TransactMessage<PingRequest, PingResponse>(request);
+                var request = new PingRequest(Interlocked.Increment(ref this.commandId));
+                var response = TransactMessage<PingRequest, PingResponse>(host, request);
 
                 Debug.Assert(response.CommandId == request.CommandId);
 
-                if (response.Details.ComponentVersion < MinimumRequiredComponentVersion)
+                if (response.Ping.ComponentVersion < MinimumRequiredComponentVersion)
                 {
                     throw new SecureConnectException(
-                        $"Installed version {response.Details.ComponentVersion} is older " +
+                        $"Installed version {response.Ping.ComponentVersion} is older " +
                         $"than required version {MinimumRequiredComponentVersion}");
                 }
             }
@@ -81,13 +99,35 @@ namespace Google.Solutions.IapDesktop.Application.Services.SecureConnect
         {
             using (var host = StartHost())
             {
-                var request = new ShouldEnrollDeviceRequest(userId);
-                var response = host.TransactMessage<
-                    ShouldEnrollDeviceRequest, ShouldEnrollDeviceResponse>(request);
+                var request = new ShouldEnrollDeviceRequest(
+                    Interlocked.Increment(ref this.commandId),
+                    userId);
+                var response = TransactMessage<ShouldEnrollDeviceRequest, ShouldEnrollDeviceResponse>(
+                    host, 
+                    request);
 
                 Debug.Assert(response.CommandId == request.CommandId);
 
                 return response.ShouldEnrollDevice;
+            }
+        }
+
+        public IEnumerable<string> GetDeviceCertificateFingerprints()
+        {
+            using (var host = StartHost())
+            {
+                var request = new DeviceInfoRequest(
+                    Interlocked.Increment(ref this.commandId),
+                    new[] { "certificates" });
+                var response = TransactMessage<DeviceInfoRequest, DeviceInfoResponse>(
+                    host, 
+                    request);
+
+                Debug.Assert(response.CommandId == request.CommandId);
+
+                return response.DeviceInfo.Certificates
+                    .EnsureNotNull()
+                    .Select(cert => cert.Fingerprint);
             }
         }
 
@@ -117,6 +157,18 @@ namespace Google.Solutions.IapDesktop.Application.Services.SecureConnect
         {
             [JsonProperty("commandID")]
             public int CommandId { get; set; }
+
+
+            [JsonProperty("error")]
+            public string Error { get; set; }
+
+            public void ThrowIfFailed()
+            {
+                if (!string.IsNullOrEmpty(this.Error))
+                {
+                    throw new SecureConnectException(this.Error);
+                }
+            }
         }
 
         //---------------------------------------------------------------------
@@ -125,21 +177,21 @@ namespace Google.Solutions.IapDesktop.Application.Services.SecureConnect
 
         public class PingRequest : RequestBase
         {
-            public PingRequest() : base(18, "ping")
+            public PingRequest(int commandId) : base(commandId, "ping")
             {
             }
         }
 
         public class PingResponse : ResponseBase
         {
-            public class Payload
+            public class PingDetails
             {
                 [JsonProperty("componentVersion")]
                 public Version ComponentVersion { get; set; }
             }
 
             [JsonProperty("ping")]
-            public Payload Details { get; set; }
+            public PingDetails Ping { get; set; }
         }
 
         //---------------------------------------------------------------------
@@ -148,23 +200,24 @@ namespace Google.Solutions.IapDesktop.Application.Services.SecureConnect
 
         public class ShouldEnrollDeviceRequest : RequestBase
         {
-            public class Payload
+            public class ArgumentDetails
             {
                 [JsonProperty("userId")]
                 public string UserId { get; }
 
-                public Payload(string userId)
+                public ArgumentDetails(string userId)
                 {
                     this.UserId = userId;
                 }
             }
 
             [JsonProperty("arguments")]
-            public Payload Arguments { get; set; }
+            public ArgumentDetails Arguments { get; set; }
 
-            public ShouldEnrollDeviceRequest(string userId) : base(19, "shouldEnrollDevice")
+            public ShouldEnrollDeviceRequest(int commandId, string userId) 
+                : base(commandId, "shouldEnrollDevice")
             {
-                this.Arguments = new Payload(userId);
+                this.Arguments = new ArgumentDetails(userId);
             }
         }
 
@@ -174,6 +227,56 @@ namespace Google.Solutions.IapDesktop.Application.Services.SecureConnect
             public bool? ShouldEnrollDevice { get; set; }
         }
 
+
+        //---------------------------------------------------------------------
+        // DeviceInfo.
+        //---------------------------------------------------------------------
+
+        public class DeviceInfoRequest : RequestBase
+        {
+            public class ArgumentDetails
+            {
+                [JsonProperty("attributes")]
+                public IList<string> Attributes { get; set; }
+
+                public ArgumentDetails(IList<string> attributes)
+                {
+                    this.Attributes = attributes;
+                }
+            }
+
+            [JsonProperty("arguments")]
+            public ArgumentDetails Arguments { get; set; }
+
+            public DeviceInfoRequest(
+                int commandId,
+                IList<string> attributes
+                ) : base(commandId, "deviceInfo")
+            {
+                this.Arguments = new ArgumentDetails(attributes);
+            }
+        }
+
+        public class DeviceInfoResponse : ResponseBase
+        {
+            public class DeviceCertificate
+            {
+                [JsonProperty("fingerprint")]
+                public string Fingerprint { get; set; }
+
+                [JsonProperty("origin")]
+                public int Origin { get; set; }
+            }
+
+            public class DeviceInfoDetails
+            {
+                [JsonProperty("certificates")]
+                public IList<DeviceCertificate> Certificates { get; set; }
+            }
+
+            [JsonProperty("deviceInfo")]
+            public DeviceInfoDetails DeviceInfo { get; set; }
+        }
     }
 
     public class SecureConnectException : Exception

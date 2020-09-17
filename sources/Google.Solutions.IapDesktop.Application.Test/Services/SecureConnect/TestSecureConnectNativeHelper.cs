@@ -21,6 +21,7 @@
 
 using Google.Solutions.IapDesktop.Application.Services.SecureConnect;
 using NUnit.Framework;
+using System.Linq;
 
 namespace Google.Solutions.IapDesktop.Application.Test.Services.SecureConnect
 {
@@ -49,6 +50,21 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.SecureConnect
             }
 
             Assert.IsTrue(new SecureConnectNativeHelper().ShouldEnrollDevice("1"));
+        }
+
+        [Test]
+        public void WhenDeviceEnrolled_ThenGetDeviceCertificateFingerprintsReturnsCerts()
+        {
+            if (!SecureConnectNativeHelper.IsInstalled)
+            {
+                Assert.Inconclusive("Not installed");
+                return;
+            }
+
+            var certs = new SecureConnectNativeHelper()
+                .GetDeviceCertificateFingerprints()
+                .ToList();
+            CollectionAssert.IsNotEmpty(certs);
         }
     }
 }
