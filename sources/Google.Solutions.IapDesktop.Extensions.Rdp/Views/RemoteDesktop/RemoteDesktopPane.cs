@@ -180,8 +180,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Views.RemoteDesktop
                 // about twice the configured timeout before sending a 
                 // OnDisconnected event.
                 //
-                advancedSettings.singleConnectionTimeout = (int)settings.ConnectionTimeout;
-                advancedSettings.overallConnectionTimeout = (int)settings.ConnectionTimeout;
+                advancedSettings.singleConnectionTimeout = settings.ConnectionTimeout;
+                advancedSettings.overallConnectionTimeout = settings.ConnectionTimeout;
+                advancedSettings.MinutesToIdleTimeout = settings.IdleTimeoutMinutes;
 
                 //
                 // Behavior settings.
