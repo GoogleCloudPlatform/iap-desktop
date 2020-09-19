@@ -40,8 +40,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Services.Connection
     [Service]
     public class IapRdpConnectionService
     {
-        private const int RemoteDesktopPort = 3389;
-
         private readonly IWin32Window window;
         private readonly IJobService jobService;
         private readonly IRemoteDesktopConnectionBroker remoteDesktopService;
@@ -71,9 +69,16 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Services.Connection
                     JobUserFeedbackType.BackgroundFeedback),
                 async token =>
                 {
+                    if (settings.RdpPort == 0 || settings.RdpPort > ushort.MaxValue)
+                    {
+                        throw new ArgumentException("RdpPort out of range");
+                    }
+
                     try
                     {
-                        var destination = new TunnelDestination(instanceRef, RemoteDesktopPort);
+                        var destination = new TunnelDestination(
+                            instanceRef, 
+                            (ushort)settings.RdpPort);
 
                         // Give IAP the same timeout for probing as RDP itself.
                         // Note that the timeouts are not additive.
