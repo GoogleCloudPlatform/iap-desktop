@@ -28,6 +28,7 @@ using NUnit.Framework;
 using System.Net;
 using System.Net.Sockets;
 using System.Threading;
+using System.Threading.Tasks;
 
 namespace Google.Solutions.IapTunneling.Test.Iap
 {
@@ -54,7 +55,7 @@ namespace Google.Solutions.IapTunneling.Test.Iap
             var socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
             socket.Connect(new IPEndPoint(IPAddress.Loopback, listener.LocalPort));
 
-            return new SocketStream(socket);
+            return new SocketStream(socket, new ConnectionStatistics());
         }
     }
 }

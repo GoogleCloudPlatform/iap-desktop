@@ -44,6 +44,7 @@ namespace Google.Solutions.IapTunneling.Iap
         private readonly TcpListener listener;
 
         public int LocalPort { get; }
+        public ConnectionStatistics Statistics { get; } = new ConnectionStatistics();
 
         public event EventHandler<ClientEventArgs> ClientConnected;
         public event EventHandler<ClientEventArgs> ClientDisconnected;
@@ -101,6 +102,7 @@ namespace Google.Solutions.IapTunneling.Iap
                 this.ClientConnected(this, new ClientEventArgs(client));
             }
         }
+        
         private void OnClientDisconnected(string client)
         {
             if (this.ClientDisconnected != null)
@@ -108,6 +110,7 @@ namespace Google.Solutions.IapTunneling.Iap
                 this.ClientDisconnected(this, new ClientEventArgs(client));
             }
         }
+
         private void OnConnectionFailed(Exception e)
         {
             if (this.ConnectionFailed != null)
@@ -178,7 +181,7 @@ namespace Google.Solutions.IapTunneling.Iap
                                 continue;
                             }
 
-                            var clientStream = new SocketStream(socket);
+                            var clientStream = new SocketStream(socket, this.Statistics);
                             var serverStream = new SshRelayStream(this.server);
 
                             OnClientConnected(clientStream.ToString());

@@ -65,12 +65,19 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Views.TunnelsViewer
             this.tunnelsList.BindColumn(0, t => t.Destination.Instance.Name);
             this.tunnelsList.BindColumn(1, t => t.Destination.Instance.ProjectId);
             this.tunnelsList.BindColumn(2, t => t.Destination.Instance.Zone);
-            this.tunnelsList.BindColumn(3, t => t.LocalPort.ToString());
+            this.tunnelsList.BindColumn(3, t => ByteSizeFormatter.Format(t.BytesTransmitted));
+            this.tunnelsList.BindColumn(4, t => ByteSizeFormatter.Format(t.BytesReceived));
+            this.tunnelsList.BindColumn(5, t => t.LocalPort.ToString());
 
             this.tunnelsList.BindProperty(
                 v => this.tunnelsList.SelectedModelItem,
                 this.viewModel,
                 m => this.viewModel.SelectedTunnel,
+                this.components);
+            this.refreshToolStripButton.BindProperty(
+                b => b.Enabled,
+                this.viewModel,
+                m => m.IsRefreshButtonEnabled,
                 this.components);
             this.disconnectToolStripButton.BindProperty(
                 b => b.Enabled,
@@ -99,8 +106,13 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Views.TunnelsViewer
         // Window event handlers.
         //---------------------------------------------------------------------
 
-        private async void disconnectToolStripButton_Click(object sender, EventArgs eventArgse)
-            => await this.viewModel.DisconnectSelectedTunnelAsync();
+        private async void disconnectToolStripButton_Click(object sender, EventArgs _)
+            => await this.viewModel
+                .DisconnectSelectedTunnelAsync()
+                .ConfigureAwait(true);
+
+        private void refreshToolStripButton_Click(object sender, EventArgs _)
+            => this.viewModel.RefreshTunnels();
     }
 
     public class TunnelsListView : BindableListView<ITunnel>

@@ -126,6 +126,7 @@
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
     <Compile Include="Services\Persistence\AppProtocolRegistry.cs" />
+    <Compile Include="Util\ByteSizeFormatter.cs" />
     <Compile Include="Views\CloudConsoleService.cs" />
     <Compile Include="Services\Adapters\IAuthorizationAdapter.cs" />
     <Compile Include="Services\Integration\ProjectInventoryService.cs" />

@@ -1,5 +1,5 @@
 ﻿//
-// Copyright 2019 Google LLC
+// Copyright 2020 Google LLC
 //
 // Licensed to the Apache Software Foundation (ASF) under one
 // or more contributor license agreements.  See the NOTICE file
@@ -25,20 +25,20 @@ using Google.Solutions.Common.Test.Integration;
 using Google.Solutions.IapTunneling.Iap;
 using Google.Solutions.IapTunneling.Net;
 using NUnit.Framework;
+using System.Net;
+using System.Net.Sockets;
 using System.Threading;
 using System.Threading.Tasks;
 
+#pragma warning disable CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
+
 namespace Google.Solutions.IapTunneling.Test.Iap
 {
-    public abstract class TestEchoOverIapBase : FixtureBase
+    [TestFixture]
+    [Category("IntegrationTest")]
+    [Category("IAP")]
+    public class TestSshRelayListener
     {
-        private const int RepeatCount = 10;
-        private CancellationTokenSource tokenSource = new CancellationTokenSource();
-
-        protected abstract INetworkStream ConnectToEchoServer(
-            InstanceLocator vmRef,
-            ICredential credential);
-
         private static void FillArray(byte[] array)
         {
             for (int i = 0; i < array.Length; i++)
@@ -48,39 +48,53 @@ namespace Google.Solutions.IapTunneling.Test.Iap
         }
 
         [Test]
-        public async Task WhenSendingMessagesToEchoServer_MessagesAreReceivedVerbatim(
+        public async Task WhenSendingMessagesToEchoServer_ThenStatisticsAreUpdated(
             [LinuxInstance(InitializeScript = InitializeScripts.InstallEchoServer)] ResourceTask<InstanceLocator> vm,
             [Credential(Role = PredefinedRole.IapTunnelUser)] ResourceTask<ICredential> credential,
             [Values(
                 1,
-                (int)DataMessage.MaxDataLength - 1,
                 (int)DataMessage.MaxDataLength,
-                (int)DataMessage.MaxDataLength + 1,
-                (int)DataMessage.MaxDataLength * 10)] int length,
-            [Values(1, 3)] int count)
+                (int)DataMessage.MaxDataLength * 2)] int length)
         {
 
             var message = new byte[length];
             FillArray(message);
 
             var locator = await vm;
-            var stream = ConnectToEchoServer(
-                locator,
-                await credential);
 
-            for (int i = 0; i < count; i++)
+            var listener = SshRelayListener.CreateLocalListener(
+                new IapTunnelingEndpoint(
+                    await credential,
+                    await vm,
+                    7,
+                    IapTunnelingEndpoint.DefaultNetworkInterface,
+                    TestProject.UserAgent),
+                new AllowAllRelayPolicy());
+            listener.ClientAcceptLimit = 1; // Terminate after first connection.
+            listener.ListenAsync(CancellationToken.None).ContinueWith(_ => { });
+
+            var socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
+            socket.Connect(new IPEndPoint(IPAddress.Loopback, listener.LocalPort));
+
+            var clientStreamStats = new ConnectionStatistics();
+            var clientStream = new SocketStream(socket, clientStreamStats);
+
+            using (var tokenSource = new CancellationTokenSource())
             {
-                await stream.WriteAsync(message, 0, message.Length, this.tokenSource.Token);
+                // Write full payload.
+                await clientStream.WriteAsync(message, 0, message.Length, tokenSource.Token);
+                Assert.AreEqual(length, clientStreamStats.BytesTransmitted);
 
+                // Read entire response.
                 var response = new byte[length];
                 int totalBytesRead = 0;
                 while (true)
                 {
-                    var bytesRead = await stream.ReadAsync(
+                    var bytesRead = await clientStream.ReadAsync(
                         response,
                         totalBytesRead,
                         response.Length - totalBytesRead,
-                        this.tokenSource.Token);
+                        tokenSource.Token);
                     totalBytesRead += bytesRead;
 
                     if (bytesRead == 0 || totalBytesRead >= length)
@@ -89,11 +103,13 @@ namespace Google.Solutions.IapTunneling.Test.Iap
                     }
                 }
 
-                Assert.AreEqual(length, totalBytesRead);
-                Assert.AreEqual(message, response);
-            }
+                await clientStream.CloseAsync(tokenSource.Token);
 
-            await stream.CloseAsync(this.tokenSource.Token);
+                Assert.AreEqual(length, totalBytesRead, "bytes read");
+                Assert.AreEqual(length, clientStreamStats.BytesReceived, "client received");
+                Assert.AreEqual(length, listener.Statistics.BytesReceived, "server received");
+                Assert.AreEqual(length, listener.Statistics.BytesTransmitted, "server sent");
+            }
         }
     }
 }

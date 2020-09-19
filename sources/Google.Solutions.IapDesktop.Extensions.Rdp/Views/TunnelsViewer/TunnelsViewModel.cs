@@ -25,6 +25,7 @@ using Google.Solutions.IapDesktop.Application.Views;
 using Google.Solutions.IapDesktop.Extensions.Rdp.Services.Tunnel;
 using System;
 using System.Collections.ObjectModel;
+using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
@@ -56,6 +57,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Views.TunnelsViewer
         }
 
         public bool IsDisconnectButtonEnabled => this.selectedTunnel != null;
+        public bool IsRefreshButtonEnabled => this.Tunnels.Any();
 
         //---------------------------------------------------------------------
 
@@ -93,6 +95,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Views.TunnelsViewer
             {
                 this.Tunnels.Add(t);
             }
+
+            RaisePropertyChange((TunnelsViewModel m) => m.IsRefreshButtonEnabled);
         }
 
         public async Task DisconnectSelectedTunnelAsync()

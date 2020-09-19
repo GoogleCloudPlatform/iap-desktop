@@ -87,6 +87,37 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Test.Views.TunnelsViewer
             }
         }
 
+        //---------------------------------------------------------------------
+        // Refresh.
+        //---------------------------------------------------------------------
+
+        [Test]
+        public void WhenTunnelsListEmpty_ThenRefreshButtonIsDisabled()
+        {
+            var viewModel = new TunnelsViewModel(
+                CreateTunnelBroker(0).Object,
+                CreateConfirmationDialog(DialogResult.Cancel).Object,
+                new MockEventService());
+            viewModel.RefreshTunnels();
+
+            Assert.IsFalse(viewModel.IsRefreshButtonEnabled);
+        }
+
+        [Test]
+        public void WhenOneTunnelOpen_ThenRefreshButtonIsEnabled()
+        {
+            var viewModel = new TunnelsViewModel(
+                CreateTunnelBroker(1).Object,
+                CreateConfirmationDialog(DialogResult.Cancel).Object,
+                new MockEventService());
+            viewModel.RefreshTunnels();
+
+            Assert.IsTrue(viewModel.IsRefreshButtonEnabled);
+        }
+
+        //---------------------------------------------------------------------
+        // Disconnect.
+        //---------------------------------------------------------------------
 
         [Test]
         public void WhenTunnelsListEmpty_ThenDisconnectButtonIsDisabled()

@@ -31,6 +31,10 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Services.Tunnel
     {
         TunnelDestination Destination { get; }
         int LocalPort { get; }
+
+        ulong BytesReceived { get; }
+        ulong BytesTransmitted { get; }
+
         Task Probe(TimeSpan timeout);
         void Close();
     }
@@ -46,6 +50,15 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Services.Tunnel
         public virtual int LocalPort => listener.LocalPort;
 
         public IapTunnelingEndpoint Endpoint { get; }
+
+        //
+        // NB. The Received/transmitted need to be flipped here as we 
+        // are interested in bytes sent/received from the client app's
+        // point of view. The listener counts from the server's point
+        // of view.
+        //
+        public ulong BytesReceived => this.listener.Statistics.BytesTransmitted;
+        public ulong BytesTransmitted => this.listener.Statistics.BytesReceived;
 
         public Tunnel(
             IapTunnelingEndpoint endpoint,
