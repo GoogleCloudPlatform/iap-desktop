@@ -615,6 +615,15 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Views.RemoteDesktop
             { }
         }
 
+        private void rdpClient_OnIdleTimeoutNotification(object sender, EventArgs e)
+        {
+            using (TraceSources.IapDesktop.TraceMethod().WithoutParameters())
+            {
+                // Configured idle timeout elapsed.
+                Close();
+            }
+        }
+
 
         //---------------------------------------------------------------------
         // IRemoteDesktopSession.

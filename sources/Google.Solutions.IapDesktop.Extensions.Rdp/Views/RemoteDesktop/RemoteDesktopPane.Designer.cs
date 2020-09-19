@@ -76,6 +76,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Views.RemoteDesktop
             this.rdpClient.OnFatalError += new AxMSTSCLib.IMsTscAxEvents_OnFatalErrorEventHandler(this.rdpClient_OnFatalError);
             this.rdpClient.OnWarning += new AxMSTSCLib.IMsTscAxEvents_OnWarningEventHandler(this.rdpClient_OnWarning);
             this.rdpClient.OnRemoteDesktopSizeChange += new AxMSTSCLib.IMsTscAxEvents_OnRemoteDesktopSizeChangeEventHandler(this.rdpClient_OnRemoteDesktopSizeChange);
+            this.rdpClient.OnIdleTimeoutNotification += new System.EventHandler(this.rdpClient_OnIdleTimeoutNotification);
             this.rdpClient.OnAuthenticationWarningDisplayed += new System.EventHandler(this.rdpClient_OnAuthenticationWarningDisplayed);
             this.rdpClient.OnLogonError += new AxMSTSCLib.IMsTscAxEvents_OnLogonErrorEventHandler(this.rdpClient_OnLogonError);
             this.rdpClient.OnFocusReleased += new AxMSTSCLib.IMsTscAxEvents_OnFocusReleasedEventHandler(this.rdpClient_OnFocusReleased);
@@ -87,7 +88,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Views.RemoteDesktop
             // 
             this.spinner.Anchor = System.Windows.Forms.AnchorStyles.None;
             this.spinner.BackColor = System.Drawing.Color.White;
-            this.spinner.Image = Resources.Spinner;
+            this.spinner.Image = global::Google.Solutions.IapDesktop.Extensions.Rdp.Properties.Resources.Spinner;
             this.spinner.Location = new System.Drawing.Point(107, 101);
             this.spinner.Name = "spinner";
             this.spinner.Size = new System.Drawing.Size(44, 44);

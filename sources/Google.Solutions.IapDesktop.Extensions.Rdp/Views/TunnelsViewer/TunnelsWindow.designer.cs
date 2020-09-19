@@ -55,6 +55,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Views.TunnelsViewer
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(TunnelsWindow));
             this.toolStrip = new System.Windows.Forms.ToolStrip();
             this.disconnectToolStripButton = new System.Windows.Forms.ToolStripButton();
+            this.refreshToolStripButton = new System.Windows.Forms.ToolStripButton();
             this.tunnelsList = new Google.Solutions.IapDesktop.Extensions.Rdp.Views.TunnelsViewer.TunnelsListView();
             this.instanceHeader = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.projectIdHeader = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
@@ -65,7 +66,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Views.TunnelsViewer
             this.contextMenuStrip = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.disconnectTunnelToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.theme = new WeifenLuo.WinFormsUI.Docking.VS2015LightTheme();
-            this.refreshToolStripButton = new System.Windows.Forms.ToolStripButton();
+            this.remotePortHeader = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.toolStrip.SuspendLayout();
             this.contextMenuStrip.SuspendLayout();
             this.SuspendLayout();
@@ -92,6 +93,16 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Views.TunnelsViewer
             this.disconnectToolStripButton.Text = "Disconnect tunnel";
             this.disconnectToolStripButton.Click += new System.EventHandler(this.disconnectToolStripButton_Click);
             // 
+            // refreshToolStripButton
+            // 
+            this.refreshToolStripButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.refreshToolStripButton.Image = ((System.Drawing.Image)(resources.GetObject("refreshToolStripButton.Image")));
+            this.refreshToolStripButton.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.refreshToolStripButton.Name = "refreshToolStripButton";
+            this.refreshToolStripButton.Size = new System.Drawing.Size(23, 22);
+            this.refreshToolStripButton.Text = "toolStripButton1";
+            this.refreshToolStripButton.Click += new System.EventHandler(this.refreshToolStripButton_Click);
+            // 
             // tunnelsList
             // 
             this.tunnelsList.AutoResizeColumnsOnUpdate = false;
@@ -102,7 +113,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Views.TunnelsViewer
             this.zoneHeader,
             this.transmittedHeader,
             this.receivedHeader,
-            this.localPortHeader});
+            this.localPortHeader,
+            this.remotePortHeader});
             this.tunnelsList.ContextMenuStrip = this.contextMenuStrip;
             this.tunnelsList.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tunnelsList.FullRowSelect = true;
@@ -146,8 +158,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Views.TunnelsViewer
             // 
             // localPortHeader
             // 
-            this.localPortHeader.Text = "Local Port";
-            this.localPortHeader.Width = 306;
+            this.localPortHeader.Text = "Local port";
+            this.localPortHeader.Width = 80;
             // 
             // contextMenuStrip
             // 
@@ -164,15 +176,10 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Views.TunnelsViewer
             this.disconnectTunnelToolStripMenuItem.Text = "&Disconnect tunnel";
             this.disconnectTunnelToolStripMenuItem.Click += new System.EventHandler(this.disconnectToolStripButton_Click);
             // 
-            // refreshToolStripButton
+            // remotePortHeader
             // 
-            this.refreshToolStripButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.refreshToolStripButton.Image = ((System.Drawing.Image)(resources.GetObject("refreshToolStripButton.Image")));
-            this.refreshToolStripButton.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.refreshToolStripButton.Name = "refreshToolStripButton";
-            this.refreshToolStripButton.Size = new System.Drawing.Size(23, 22);
-            this.refreshToolStripButton.Text = "toolStripButton1";
-            this.refreshToolStripButton.Click += new System.EventHandler(this.refreshToolStripButton_Click);
+            this.remotePortHeader.Text = "Remote port";
+            this.remotePortHeader.Width = 226;
             // 
             // TunnelsWindow
             // 
@@ -207,5 +214,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Views.TunnelsViewer
         private System.Windows.Forms.ColumnHeader transmittedHeader;
         private System.Windows.Forms.ColumnHeader receivedHeader;
         private System.Windows.Forms.ToolStripButton refreshToolStripButton;
+        private System.Windows.Forms.ColumnHeader remotePortHeader;
     }
 }

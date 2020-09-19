@@ -68,6 +68,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Views.TunnelsViewer
             this.tunnelsList.BindColumn(3, t => ByteSizeFormatter.Format(t.BytesTransmitted));
             this.tunnelsList.BindColumn(4, t => ByteSizeFormatter.Format(t.BytesReceived));
             this.tunnelsList.BindColumn(5, t => t.LocalPort.ToString());
+            this.tunnelsList.BindColumn(6, t => t.Destination.RemotePort.ToString());
 
             this.tunnelsList.BindProperty(
                 v => this.tunnelsList.SelectedModelItem,
