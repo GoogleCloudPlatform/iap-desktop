@@ -100,9 +100,9 @@ namespace Google.Solutions.IapTunneling.Test.Iap
                     }
                 }
 
-                Assert.AreEqual(length, totalBytesRead);
-                Assert.AreEqual(length, listener.Statistics.BytesReceived);
-                Assert.AreEqual(length, listener.Statistics.BytesTransmitted);
+                Assert.AreEqual(length, totalBytesRead, "bytes read");
+                Assert.AreEqual(length, listener.Statistics.BytesReceived, "bytes received");
+                Assert.AreEqual(length, listener.Statistics.BytesTransmitted, "bytes sent");
 
                 await stream.CloseAsync(tokenSource.Token);
             }
