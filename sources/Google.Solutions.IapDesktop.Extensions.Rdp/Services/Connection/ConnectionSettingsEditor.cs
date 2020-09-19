@@ -81,7 +81,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Services.Connection
                 Password = this.Password,
                 Domain = this.Domain,
                 BitmapPersistence = this.BitmapPersistence,
-                CredentialGenerationBehavior = this.CredentialGenerationBehavior
+                CredentialGenerationBehavior = this.CredentialGenerationBehavior,
+                IdleTimeoutMinutes = this.IdleTimeoutMinutes,
+                RdpPort = this.RdpPort
             };
         }
 
@@ -305,5 +307,57 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Services.Connection
             => this.settings.CredentialGenerationBehavior != RdpCredentialGenerationBehavior._Default;
 
         public bool ShouldSerializeCredentialGenerationBehavior() => IsCredentialGenerationBehaviorSet;
+
+        //---------------------------------------------------------------------
+
+        [Browsable(true)]
+        [Category("Connection")]
+        [DisplayName("Idle timeout")]
+        [Description("Minutes after which session is terminated automatically")]
+        public int IdleTimeoutMinutes
+        {
+            get => IsIdleTimeoutMinutesSet
+                ? this.settings.IdleTimeoutMinutes
+                : (this.parent != null ? this.parent.IdleTimeoutMinutes : VmInstanceConnectionSettings.DefaultIdleTimeoutMinutes);
+            set
+            {
+                if (value <= 0 || value >= ushort.MaxValue)
+                {
+                    throw new ArgumentOutOfRangeException();
+                }
+
+                this.settings.IdleTimeoutMinutes = value;
+            }
+        }
+
+        protected bool IsIdleTimeoutMinutesSet => this.settings.IdleTimeoutMinutes != VmInstanceConnectionSettings.DefaultIdleTimeoutMinutes;
+
+        public bool ShouldSerializeIdleTimeoutMinutes() => IsIdleTimeoutMinutesSet;
+
+        //---------------------------------------------------------------------
+
+        [Browsable(true)]
+        [Category("Connection")]
+        [DisplayName("RDP port")]
+        [Description("RDP server port")]
+        public int RdpPort
+        {
+            get => IsRdpPortSet
+                ? this.settings.RdpPort
+                : (this.parent != null ? this.parent.RdpPort : VmInstanceConnectionSettings.DefaultRdpPort);
+            set
+            {
+                if (value <= 0 || value >= ushort.MaxValue)
+                {
+                    throw new ArgumentOutOfRangeException();
+                }
+
+                this.settings.RdpPort = value;
+            }
+        }
+
+        protected bool IsRdpPortSet => this.settings.RdpPort != VmInstanceConnectionSettings.DefaultRdpPort;
+
+        public bool ShouldSerializeRdpPort() => IsRdpPortSet;
     }
 }

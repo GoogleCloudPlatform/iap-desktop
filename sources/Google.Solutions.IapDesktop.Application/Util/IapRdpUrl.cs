@@ -114,6 +114,38 @@ namespace Google.Solutions.IapDesktop.Application.Util
             }
         }
 
+        private static int GetPositiveIntFromQuery(
+            NameValueCollection collection,
+            string key,
+            int defaultValue)
+        {
+            var value = collection.Get(key);
+            if (int.TryParse(value, out var intValue) && intValue > 0)
+            {
+                return intValue;
+            }
+            else
+            {
+                return defaultValue;
+            }
+        }
+
+        private static ushort GetUshortFromQuery(
+            NameValueCollection collection,
+            string key,
+            ushort defaultValue)
+        {
+            var value = collection.Get(key);
+            if (ushort.TryParse(value, out var intValue) && intValue != 0)
+            {
+                return intValue;
+            }
+            else
+            {
+                return defaultValue;
+            }
+        }
+
         private static VmInstanceConnectionSettings CreateVmInstanceSettingsFromQuery(
             InstanceLocator instanceRef,
             string queryString)
@@ -131,7 +163,10 @@ namespace Google.Solutions.IapDesktop.Application.Util
                 GetEnumFromQuery(query, "ColorDepth", RdpColorDepth._Default),
                 GetEnumFromQuery(query, "AudioMode", RdpAudioMode._Default),
                 GetEnumFromQuery(query, "RedirectClipboard", RdpRedirectClipboard._Default),
-                GetEnumFromQuery(query, "CredentialGenerationBehavior", RdpCredentialGenerationBehavior._Default));
+                GetEnumFromQuery(query, "CredentialGenerationBehavior", RdpCredentialGenerationBehavior._Default),
+                GetPositiveIntFromQuery(query, "ConnectionTimeout", VmInstanceConnectionSettings.DefaultConnectionTimeout),
+                GetPositiveIntFromQuery(query, "IdleTimeout", VmInstanceConnectionSettings.DefaultIdleTimeoutMinutes),
+                GetPositiveIntFromQuery(query, "RdpPort", VmInstanceConnectionSettings.DefaultRdpPort));
         }
 
         public static IapRdpUrl FromString(string uri)
@@ -175,6 +210,9 @@ namespace Google.Solutions.IapDesktop.Application.Util
                     { "AudioMode", ((int)this.Settings.AudioMode).ToString() },
                     { "RedirectClipboard", ((int)this.Settings.RedirectClipboard).ToString() },
                     { "CredentialGenerationBehavior", ((int)this.Settings.CredentialGenerationBehavior).ToString() },
+                    { "ConnectionTimeout", this.Settings.ConnectionTimeout.ToString() },
+                    { "IdleTimeout", this.Settings.IdleTimeoutMinutes.ToString() },
+                    { "RdpPort", this.Settings.RdpPort.ToString() },
                 };
 
                 var formattedParameters = parameters.Select(p => p.Key + "=" + HttpUtility.UrlEncode(p.Value));

@@ -309,6 +309,9 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Persistence
                 ColorDepth = RdpColorDepth.DeepColor,
                 AudioMode = RdpAudioMode.DoNotPlay,
                 RedirectClipboard = RdpRedirectClipboard.Enabled,
+                ConnectionTimeout = 12,
+                IdleTimeoutMinutes = 23,
+                RdpPort = 34
             });
 
             var settings = repository.GetVmInstanceSettings("pro-1", "vm-1");
@@ -320,6 +323,9 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Persistence
             Assert.AreEqual(RdpColorDepth.DeepColor, settings.ColorDepth);
             Assert.AreEqual(RdpAudioMode.DoNotPlay, settings.AudioMode);
             Assert.AreEqual(RdpRedirectClipboard.Enabled, settings.RedirectClipboard);
+            Assert.AreEqual(12, settings.ConnectionTimeout);
+            Assert.AreEqual(23, settings.IdleTimeoutMinutes);
+            Assert.AreEqual(34, settings.RdpPort);
         }
 
         [Test]

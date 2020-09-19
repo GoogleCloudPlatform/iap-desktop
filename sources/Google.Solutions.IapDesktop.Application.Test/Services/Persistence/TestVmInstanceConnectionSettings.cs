@@ -46,7 +46,10 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Persistence
                 RdpColorDepth.DeepColor,
                 RdpAudioMode.PlayOnServer,
                 RdpRedirectClipboard.Disabled,
-                RdpCredentialGenerationBehavior.Force);
+                RdpCredentialGenerationBehavior.Force,
+                30,
+                60,
+                13389);
 
             var overlay = new VmInstanceConnectionSettings(
                 "instance-1",
@@ -59,7 +62,10 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Persistence
                 RdpColorDepth._Default,
                 RdpAudioMode._Default,
                 RdpRedirectClipboard._Default,
-                RdpCredentialGenerationBehavior._Default);
+                RdpCredentialGenerationBehavior._Default,
+                VmInstanceConnectionSettings.DefaultConnectionTimeout,
+                VmInstanceConnectionSettings.DefaultIdleTimeoutMinutes,
+                VmInstanceConnectionSettings.DefaultRdpPort);
 
             AssertEx.ArePropertiesEqual(baseSettings, baseSettings.OverlayBy(overlay));
         }
@@ -78,7 +84,10 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Persistence
                 RdpColorDepth._Default,
                 RdpAudioMode._Default,
                 RdpRedirectClipboard._Default,
-                RdpCredentialGenerationBehavior._Default);
+                RdpCredentialGenerationBehavior._Default,
+                30,
+                60,
+                13389);
 
             var overlay = new VmInstanceConnectionSettings(
                 "instance-1",
@@ -91,7 +100,10 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Persistence
                 RdpColorDepth.DeepColor,
                 RdpAudioMode.PlayOnServer,
                 RdpRedirectClipboard.Disabled,
-                RdpCredentialGenerationBehavior.Force);
+                RdpCredentialGenerationBehavior.Force,
+                130,
+                160,
+                23389);
 
             AssertEx.ArePropertiesEqual(overlay, baseSettings.OverlayBy(overlay));
         }
@@ -110,7 +122,10 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Persistence
                 RdpColorDepth._Default,
                 RdpAudioMode._Default,
                 RdpRedirectClipboard._Default,
-                RdpCredentialGenerationBehavior._Default);
+                RdpCredentialGenerationBehavior._Default,
+                VmInstanceConnectionSettings.DefaultConnectionTimeout,
+                VmInstanceConnectionSettings.DefaultIdleTimeoutMinutes,
+                VmInstanceConnectionSettings.DefaultRdpPort);
 
             var overlay = new VmInstanceConnectionSettings(
                 "instance-2",
@@ -123,7 +138,10 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Persistence
                 RdpColorDepth._Default,
                 RdpAudioMode._Default,
                 RdpRedirectClipboard._Default,
-                RdpCredentialGenerationBehavior._Default);
+                RdpCredentialGenerationBehavior._Default,
+                VmInstanceConnectionSettings.DefaultConnectionTimeout,
+                VmInstanceConnectionSettings.DefaultIdleTimeoutMinutes,
+                VmInstanceConnectionSettings.DefaultRdpPort);
 
             Assert.Throws<ArgumentException>(() => baseSettings.OverlayBy(overlay));
         }

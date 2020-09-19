@@ -323,8 +323,10 @@ namespace Google.Solutions.IapDesktop.Application.Services.Persistence
                 : RdpBitmapPersistence._Default;
         }
 
+        public const int DefaultConnectionTimeout = 30;
+
         [DwordRegistryValueAttribute("ConnectionTimeout")]
-        public int ConnectionTimeout { get; set; } = 30;
+        public int ConnectionTimeout { get; set; } = DefaultConnectionTimeout;
 
         public RdpCredentialGenerationBehavior CredentialGenerationBehavior { get; set; }
             = RdpCredentialGenerationBehavior._Default;
@@ -337,6 +339,18 @@ namespace Google.Solutions.IapDesktop.Application.Services.Persistence
                 ? (RdpCredentialGenerationBehavior)value
                 : RdpCredentialGenerationBehavior._Default;
         }
+
+
+        public const int DefaultIdleTimeoutMinutes = 120;
+
+        [DwordRegistryValueAttribute("IdleTimeout")]
+        public int IdleTimeoutMinutes { get; set; } = DefaultIdleTimeoutMinutes;
+
+
+        public const int DefaultRdpPort = 3389;
+
+        [DwordRegistryValueAttribute("RdpPort")]
+        public int RdpPort { get; set; } = DefaultRdpPort;
     }
 
     public class VmInstanceConnectionSettings : ConnectionSettingsBase
@@ -358,7 +372,10 @@ namespace Google.Solutions.IapDesktop.Application.Services.Persistence
             RdpColorDepth colorDepth,
             RdpAudioMode audioMode,
             RdpRedirectClipboard redirectClipboard,
-            RdpCredentialGenerationBehavior credentialGenerationBehavior
+            RdpCredentialGenerationBehavior credentialGenerationBehavior,
+            int connectionTimeout,
+            int idleTimeoutMinutes,
+            int rdpPort
             )
         {
             this.InstanceName = instanceName;
@@ -372,6 +389,9 @@ namespace Google.Solutions.IapDesktop.Application.Services.Persistence
             this.AudioMode = audioMode;
             this.RedirectClipboard = redirectClipboard;
             this.CredentialGenerationBehavior = credentialGenerationBehavior;
+            this.ConnectionTimeout = connectionTimeout;
+            this.IdleTimeoutMinutes = idleTimeoutMinutes;
+            this.RdpPort = rdpPort;
         }
 
         public VmInstanceConnectionSettings OverlayBy(
@@ -407,7 +427,16 @@ namespace Google.Solutions.IapDesktop.Application.Services.Persistence
                     : this.RedirectClipboard,
                 overlay.CredentialGenerationBehavior != RdpCredentialGenerationBehavior._Default
                     ? overlay.CredentialGenerationBehavior
-                    : this.CredentialGenerationBehavior);
+                    : this.CredentialGenerationBehavior,
+                overlay.ConnectionTimeout != VmInstanceConnectionSettings.DefaultConnectionTimeout
+                    ? overlay.ConnectionTimeout
+                    : this.ConnectionTimeout,
+                overlay.IdleTimeoutMinutes != VmInstanceConnectionSettings.DefaultIdleTimeoutMinutes
+                    ? overlay.IdleTimeoutMinutes
+                    : this.IdleTimeoutMinutes,
+                overlay.RdpPort != VmInstanceConnectionSettings.DefaultRdpPort
+                    ? overlay.RdpPort
+                    : this.RdpPort);
         }
     }
 

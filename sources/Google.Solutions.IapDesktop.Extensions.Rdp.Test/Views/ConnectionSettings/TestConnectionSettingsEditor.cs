@@ -179,6 +179,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Test.Views.ConnectionSettin
             Assert.IsFalse(instanceB.ShouldSerializeUsername());
         }
 
+        //---------------------------------------------------------------------
+
         [Test]
         public void WhenDesktopSizeSetInProject_ProjectValueIsInheritedDownToVm(
             [Values(RdpDesktopSize.ClientSize, RdpDesktopSize.ScreenSize)]
@@ -236,6 +238,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Test.Views.ConnectionSettin
             Assert.IsFalse(instanceA.ShouldSerializeDesktopSize());
         }
 
+        //---------------------------------------------------------------------
+
         [Test]
         public void WhenAuthenticationLevelSetInProjectAndZone_ZoneValueIsInheritedDownToVm()
         {
@@ -262,6 +266,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Test.Views.ConnectionSettin
             Assert.AreEqual(this.project.AuthenticationLevel, instanceA.CreateConnectionSettings("instance").AuthenticationLevel);
             Assert.IsFalse(instanceA.ShouldSerializeAuthenticationLevel());
         }
+
+        //---------------------------------------------------------------------
 
         [Test]
         public void WhenBitmapPersistenceSetInProjectAndZone_ZoneValueIsInheritedDownToVm()
@@ -290,6 +296,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Test.Views.ConnectionSettin
             Assert.IsFalse(instanceA.ShouldSerializeBitmapPersistence());
         }
 
+        //---------------------------------------------------------------------
+
         [Test]
         public void WhenAudioModeSetInProjectAndZone_ZoneValueIsInheritedDownToVm()
         {
@@ -316,6 +324,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Test.Views.ConnectionSettin
             Assert.AreEqual(this.project.AudioMode, instanceA.CreateConnectionSettings("instance").AudioMode);
             Assert.IsFalse(instanceA.ShouldSerializeAudioMode());
         }
+
+        //---------------------------------------------------------------------
 
         [Test]
         public void WhenColorDepthSetInProjectAndZone_ZoneValueIsInheritedDownToVm()
@@ -344,6 +354,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Test.Views.ConnectionSettin
             Assert.IsFalse(instanceA.ShouldSerializeColorDepth());
         }
 
+        //---------------------------------------------------------------------
+
         [Test]
         public void WhenConnectionBarSetInProjectAndZone_ZoneValueIsInheritedDownToVm()
         {
@@ -371,6 +383,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Test.Views.ConnectionSettin
             Assert.IsFalse(instanceA.ShouldSerializeConnectionBar());
         }
 
+        //---------------------------------------------------------------------
+
         [Test]
         public void WhenCredentialGenerationBehaviorSetInProjectAndZone_ZoneValueIsInheritedDownToVm()
         {
@@ -396,6 +410,64 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Test.Views.ConnectionSettin
             Assert.AreEqual(this.project.CredentialGenerationBehavior, instanceA.CredentialGenerationBehavior);
             Assert.AreEqual(this.project.CredentialGenerationBehavior, instanceA.CreateConnectionSettings("instance").CredentialGenerationBehavior);
             Assert.IsFalse(instanceA.ShouldSerializeCredentialGenerationBehavior());
+        }
+
+        //---------------------------------------------------------------------
+
+        [Test]
+        public void WhenRdpPortSetInProjectAndZone_ZoneValueIsInheritedDownToVm()
+        {
+            this.project.RdpPort = 13389;
+
+            zoneA.RdpPort = 23389;
+            Assert.AreEqual(23389, zoneA.RdpPort);
+            Assert.IsTrue(zoneA.ShouldSerializeRdpPort());
+
+            Assert.AreEqual(23389, instanceA.RdpPort);
+            Assert.AreEqual(23389, instanceA.CreateConnectionSettings("instance").RdpPort);
+            Assert.IsFalse(instanceA.ShouldSerializeRdpPort());
+        }
+
+        [Test]
+        public void WhenRdpPortSetInProjectAndResetToDefaultInVm_InheritedValueStillApplies()
+        {
+            this.project.RdpPort = 13389;
+            Assert.AreNotEqual(VmInstanceConnectionSettings.DefaultRdpPort, this.project.RdpPort);
+
+            instanceA.RdpPort = VmInstanceConnectionSettings.DefaultRdpPort;
+
+            Assert.AreEqual(this.project.RdpPort, instanceA.RdpPort);
+            Assert.AreEqual(this.project.RdpPort, instanceA.CreateConnectionSettings("instance").RdpPort);
+            Assert.IsFalse(instanceA.ShouldSerializeRdpPort());
+        }
+
+        //---------------------------------------------------------------------
+
+        [Test]
+        public void WhenIdleTimeoutMinutesSetInProjectAndZone_ZoneValueIsInheritedDownToVm()
+        {
+            this.project.IdleTimeoutMinutes = 10;
+
+            zoneA.IdleTimeoutMinutes = 20;
+            Assert.AreEqual(20, zoneA.IdleTimeoutMinutes);
+            Assert.IsTrue(zoneA.ShouldSerializeIdleTimeoutMinutes());
+
+            Assert.AreEqual(20, instanceA.IdleTimeoutMinutes);
+            Assert.AreEqual(20, instanceA.CreateConnectionSettings("instance").IdleTimeoutMinutes);
+            Assert.IsFalse(instanceA.ShouldSerializeIdleTimeoutMinutes());
+        }
+
+        [Test]
+        public void WhenIdleTimeoutMinutesSetInProjectAndResetToDefaultInVm_InheritedValueStillApplies()
+        {
+            this.project.IdleTimeoutMinutes = 10;
+            Assert.AreNotEqual(VmInstanceConnectionSettings.DefaultIdleTimeoutMinutes, this.project.IdleTimeoutMinutes);
+
+            instanceA.IdleTimeoutMinutes = VmInstanceConnectionSettings.DefaultIdleTimeoutMinutes;
+
+            Assert.AreEqual(this.project.IdleTimeoutMinutes, instanceA.IdleTimeoutMinutes);
+            Assert.AreEqual(this.project.IdleTimeoutMinutes, instanceA.CreateConnectionSettings("instance").IdleTimeoutMinutes);
+            Assert.IsFalse(instanceA.ShouldSerializeIdleTimeoutMinutes());
         }
     }
 }

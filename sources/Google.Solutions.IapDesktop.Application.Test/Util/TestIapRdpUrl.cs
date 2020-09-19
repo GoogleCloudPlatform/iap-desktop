@@ -151,12 +151,17 @@ namespace Google.Solutions.IapDesktop.Application.Test.Util
             Assert.AreEqual(RdpAudioMode._Default, settings.AudioMode);
             Assert.AreEqual(RdpRedirectClipboard._Default, settings.RedirectClipboard);
             Assert.AreEqual(RdpCredentialGenerationBehavior._Default, settings.CredentialGenerationBehavior);
+            Assert.AreEqual(VmInstanceConnectionSettings.DefaultConnectionTimeout, settings.ConnectionTimeout);
+            Assert.AreEqual(VmInstanceConnectionSettings.DefaultIdleTimeoutMinutes, settings.IdleTimeoutMinutes);
+            Assert.AreEqual(VmInstanceConnectionSettings.DefaultRdpPort, settings.RdpPort);
         }
 
         [Test]
         public void WhenQueryStringContainsNonsense_ThenSettingsUsesDefaults()
         {
-            var url = IapRdpUrl.FromString("iap-rdp:///my-project/us-central1-a/my-instance?a=b&user=wrongcase&_");
+            var url = IapRdpUrl.FromString(
+                "iap-rdp:///my-project/us-central1-a/my-instance?a=b&user=wrongcase&" +
+                "ConnectionTimeout=a&RdpPort=&DefaultIdleTimeout=junk");
             var settings = url.Settings;
 
             Assert.IsNull(settings.Username);
@@ -169,6 +174,9 @@ namespace Google.Solutions.IapDesktop.Application.Test.Util
             Assert.AreEqual(RdpAudioMode._Default, settings.AudioMode);
             Assert.AreEqual(RdpRedirectClipboard._Default, settings.RedirectClipboard);
             Assert.AreEqual(RdpCredentialGenerationBehavior._Default, settings.CredentialGenerationBehavior);
+            Assert.AreEqual(VmInstanceConnectionSettings.DefaultConnectionTimeout, settings.ConnectionTimeout);
+            Assert.AreEqual(VmInstanceConnectionSettings.DefaultIdleTimeoutMinutes, settings.IdleTimeoutMinutes);
+            Assert.AreEqual(VmInstanceConnectionSettings.DefaultRdpPort, settings.RdpPort);
         }
 
         [Test]
@@ -177,7 +185,8 @@ namespace Google.Solutions.IapDesktop.Application.Test.Util
             var url = IapRdpUrl.FromString("iap-rdp:///my-project/us-central1-a/my-instance?" +
                 "ConnectionBar=-1&DesktopSize=a&AuthenticationLevel=null&ColorDepth=&" +
                 "AudioMode=9999&RedirectClipboard=b&RedirectClipboard=c&" +
-                "CredentialGenerationBehavior=-11");
+                "CredentialGenerationBehavior=-11&" +
+                "ConnectionTimeout=-1&RdpPort=-100&DefaultIdleTimeout=0");
             var settings = url.Settings;
 
             Assert.IsNull(settings.Username);
@@ -190,6 +199,9 @@ namespace Google.Solutions.IapDesktop.Application.Test.Util
             Assert.AreEqual(RdpAudioMode._Default, settings.AudioMode);
             Assert.AreEqual(RdpRedirectClipboard._Default, settings.RedirectClipboard);
             Assert.AreEqual(RdpCredentialGenerationBehavior._Default, settings.CredentialGenerationBehavior);
+            Assert.AreEqual(VmInstanceConnectionSettings.DefaultConnectionTimeout, settings.ConnectionTimeout);
+            Assert.AreEqual(VmInstanceConnectionSettings.DefaultIdleTimeoutMinutes, settings.IdleTimeoutMinutes);
+            Assert.AreEqual(VmInstanceConnectionSettings.DefaultRdpPort, settings.RdpPort);
         }
 
         [Test]
@@ -209,7 +221,8 @@ namespace Google.Solutions.IapDesktop.Application.Test.Util
         {
             var url = IapRdpUrl.FromString("iap-rdp:///my-project/us-central1-a/my-instance?" +
                 "ConnectionBar=1&DesktopSize=1&AuthenticationLevel=0&ColorDepth=2&" +
-                "AudioMode=2&RedirectClipboard=0&CredentialGenerationBehavior=0");
+                "AudioMode=2&RedirectClipboard=0&CredentialGenerationBehavior=0&" +
+                "ConnectionTimeout=30&RdpPort=123&IdleTimeout=60");
             var settings = url.Settings;
 
             Assert.AreEqual(RdpConnectionBarState.Pinned, settings.ConnectionBar);
@@ -219,6 +232,9 @@ namespace Google.Solutions.IapDesktop.Application.Test.Util
             Assert.AreEqual(RdpAudioMode.DoNotPlay, settings.AudioMode);
             Assert.AreEqual(RdpRedirectClipboard.Disabled, settings.RedirectClipboard);
             Assert.AreEqual(RdpCredentialGenerationBehavior.Allow, settings.CredentialGenerationBehavior);
+            Assert.AreEqual(30, settings.ConnectionTimeout);
+            Assert.AreEqual(60, settings.IdleTimeoutMinutes);
+            Assert.AreEqual(123, settings.RdpPort);
         }
 
         [Test]
@@ -236,7 +252,8 @@ namespace Google.Solutions.IapDesktop.Application.Test.Util
                 "iap-rdp:///project-1/us-central1-a/instance-1?" +
                     "Username=Tom+%26+Jerry%3f&Domain=%22%3f%22&" +
                     "ConnectionBar=0&DesktopSize=2&AuthenticationLevel=3&ColorDepth=1" +
-                    "&AudioMode=0&RedirectClipboard=1&CredentialGenerationBehavior=1",
+                    "&AudioMode=0&RedirectClipboard=1&CredentialGenerationBehavior=1" +
+                    "&ConnectionTimeout=30&IdleTimeout=120&RdpPort=3389",
                 url.ToString());
         }
 
@@ -255,7 +272,10 @@ namespace Google.Solutions.IapDesktop.Application.Test.Util
                     ColorDepth = RdpColorDepth.TrueColor,
                     AudioMode = RdpAudioMode.PlayOnServer,
                     RedirectClipboard = RdpRedirectClipboard.Disabled,
-                    CredentialGenerationBehavior = RdpCredentialGenerationBehavior.Disallow
+                    CredentialGenerationBehavior = RdpCredentialGenerationBehavior.Disallow,
+                    ConnectionTimeout = 60,
+                    IdleTimeoutMinutes = 30,
+                    RdpPort = 13389
                 });
 
             var copy = IapRdpUrl.FromString(url.ToString());
@@ -273,6 +293,9 @@ namespace Google.Solutions.IapDesktop.Application.Test.Util
             Assert.AreEqual(RdpAudioMode.PlayOnServer, copy.Settings.AudioMode);
             Assert.AreEqual(RdpRedirectClipboard.Disabled, copy.Settings.RedirectClipboard);
             Assert.AreEqual(RdpCredentialGenerationBehavior.Disallow, copy.Settings.CredentialGenerationBehavior);
+            Assert.AreEqual(60, copy.Settings.ConnectionTimeout);
+            Assert.AreEqual(30, copy.Settings.IdleTimeoutMinutes);
+            Assert.AreEqual(13389, copy.Settings.RdpPort);
         }
     }
 }
