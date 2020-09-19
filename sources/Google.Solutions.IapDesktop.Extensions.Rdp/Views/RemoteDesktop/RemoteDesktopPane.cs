@@ -408,8 +408,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Views.RemoteDesktop
                 // Mark this pane as being in closing state even though it is still
                 // visible at this point.
                 this.IsFormClosing = true;
-                await this.eventService.FireAsync(
-                    new ConnectionClosedEvent(this.Instance));
+                await this.eventService
+                    .FireAsync(new ConnectionClosedEvent(this.Instance))
+                    .ConfigureAwait(true);
             }
         }
 
@@ -477,8 +478,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Views.RemoteDesktop
             IMsTscAxEvents_OnFatalErrorEvent args)
         {
             await ShowErrorAndClose(
-                "Fatal error",
-                new RdpFatalException(args.errorCode));
+                    "Fatal error",
+                    new RdpFatalException(args.errorCode))
+                .ConfigureAwait(true);
         }
 
         private async void rdpClient_OnLogonError(
@@ -488,7 +490,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Views.RemoteDesktop
             var e = new RdpLogonException(args.lError);
             if (!e.IsIgnorable)
             {
-                await ShowErrorAndClose("Logon failed", e);
+                await ShowErrorAndClose("Logon failed", e)
+                    .ConfigureAwait(true);
             }
         }
 
@@ -508,7 +511,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Views.RemoteDesktop
                 }
                 else
                 {
-                    await ShowErrorAndClose("Disconnected", e);
+                    await ShowErrorAndClose("Disconnected", e)
+                        .ConfigureAwait(true);
                 }
             }
         }
@@ -522,12 +526,12 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Views.RemoteDesktop
                 this.spinner.Visible = false;
 
                 // Notify our listeners.
-                await this.eventService.FireAsync(
-                    new ConnectionSuceededEvent(this.Instance));
+                await this.eventService.FireAsync(new ConnectionSuceededEvent(this.Instance))
+                    .ConfigureAwait(true);
 
                 // Wait a bit before clearing the connecting flag. The control can
                 // get flaky if connect operations are done too soon.
-                await Task.Delay(2000);
+                await Task.Delay(2000).ConfigureAwait(true);
                 this.connecting = false;
             }
         }
@@ -580,7 +584,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Views.RemoteDesktop
                 {
                     // Wait a bit before clearing the connecting flag. The control can
                     // get flaky if connect operations are done too soon.
-                    await Task.Delay(2000);
+                    await Task.Delay(2000).ConfigureAwait(true);
                     this.connecting = false;
                 }
             }
