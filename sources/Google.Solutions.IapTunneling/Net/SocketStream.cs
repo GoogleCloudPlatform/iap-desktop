@@ -20,6 +20,7 @@
 //
 
 using System;
+using System.Diagnostics;
 using System.Net.Sockets;
 using System.Threading;
 using System.Threading.Tasks;
@@ -146,6 +147,7 @@ namespace Google.Solutions.IapTunneling.Net
                     args,
                     cancellationToken).ConfigureAwait(false);
 
+                Debug.Assert(bytesWritten == count);
                 this.statistics.OnTransmitCompleted((long)bytesWritten);
             }
         }

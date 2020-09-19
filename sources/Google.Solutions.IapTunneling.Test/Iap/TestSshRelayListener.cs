@@ -53,6 +53,7 @@ namespace Google.Solutions.IapTunneling.Test.Iap
             [Credential(Role = PredefinedRole.IapTunnelUser)] ResourceTask<ICredential> credential,
             [Values(
                 1,
+                (int)DataMessage.MaxDataLength,
                 (int)DataMessage.MaxDataLength * 2)] int length)
         {
 
@@ -75,19 +76,21 @@ namespace Google.Solutions.IapTunneling.Test.Iap
             var socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
             socket.Connect(new IPEndPoint(IPAddress.Loopback, listener.LocalPort));
 
-            var stream = new SocketStream(socket, new ConnectionStatistics());
+            var clientStreamStats = new ConnectionStatistics();
+            var clientStream = new SocketStream(socket, clientStreamStats);
 
             using (var tokenSource = new CancellationTokenSource())
             {
                 // Write full payload.
-                await stream.WriteAsync(message, 0, message.Length, tokenSource.Token);
+                await clientStream.WriteAsync(message, 0, message.Length, tokenSource.Token);
+                Assert.AreEqual(length, clientStreamStats.BytesTransmitted);
 
                 // Read entire response.
                 var response = new byte[length];
                 int totalBytesRead = 0;
                 while (true)
                 {
-                    var bytesRead = await stream.ReadAsync(
+                    var bytesRead = await clientStream.ReadAsync(
                         response,
                         totalBytesRead,
                         response.Length - totalBytesRead,
@@ -100,11 +103,12 @@ namespace Google.Solutions.IapTunneling.Test.Iap
                     }
                 }
 
-                Assert.AreEqual(length, totalBytesRead, "bytes read");
-                Assert.AreEqual(length, listener.Statistics.BytesReceived, "bytes received");
-                Assert.AreEqual(length, listener.Statistics.BytesTransmitted, "bytes sent");
+                await clientStream.CloseAsync(tokenSource.Token);
 
-                await stream.CloseAsync(tokenSource.Token);
+                Assert.AreEqual(length, totalBytesRead, "bytes read");
+                Assert.AreEqual(length, clientStreamStats.BytesReceived, "client received");
+                Assert.AreEqual(length, listener.Statistics.BytesReceived, "server received");
+                Assert.AreEqual(length, listener.Statistics.BytesTransmitted, "server sent");
             }
         }
     }
