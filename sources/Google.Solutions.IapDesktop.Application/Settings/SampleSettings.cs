@@ -29,7 +29,8 @@ namespace Google.Solutions.IapDesktop.Application.Settings
                     "The color",
                     "some desc",
                     ConsoleColor.Red,
-                    registryKey)
+                    registryKey,
+                    _ => true)
             };
         }
     }

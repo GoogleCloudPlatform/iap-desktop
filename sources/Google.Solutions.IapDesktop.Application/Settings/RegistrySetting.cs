@@ -25,13 +25,15 @@ namespace Google.Solutions.IapDesktop.Application.Settings
             string title,
             string description,
             string defaultValue,
-            RegistryKey backingKey)
+            RegistryKey backingKey,
+            Func<string, bool> validate)
             : base(
                   key,
                   title,
                   description,
                   (string)backingKey.GetValue(key, defaultValue),
-                  defaultValue)
+                  defaultValue,
+                  validate)
         {
         }
     }
@@ -44,13 +46,15 @@ namespace Google.Solutions.IapDesktop.Application.Settings
             string title,
             string description,
             TEnum defaultValue,
-            RegistryKey backingKey)
+            RegistryKey backingKey,
+            Func<TEnum, bool> validate)
             : base(
                   key,
                   title,
                   description,
                   (TEnum)backingKey.GetValue(key, defaultValue),
-                  defaultValue)
+                  defaultValue,
+                  v => Enum.IsDefined(typeof(TEnum), v))
         {
         }
     }
