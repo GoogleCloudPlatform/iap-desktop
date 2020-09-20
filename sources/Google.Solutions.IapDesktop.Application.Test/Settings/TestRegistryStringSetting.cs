@@ -1,11 +1,28 @@
-﻿using Google.Solutions.IapDesktop.Application.Settings;
+﻿//
+// Copyright 2020 Google LLC
+//
+// Licensed to the Apache Software Foundation (ASF) under one
+// or more contributor license agreements.  See the NOTICE file
+// distributed with this work for additional information
+// regarding copyright ownership.  The ASF licenses this file
+// to you under the Apache License, Version 2.0 (the
+// "License"); you may not use this file except in compliance
+// with the License.  You may obtain a copy of the License at
+// 
+//   http://www.apache.org/licenses/LICENSE-2.0
+// 
+// Unless required by applicable law or agreed to in writing,
+// software distributed under the License is distributed on an
+// "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+// KIND, either express or implied.  See the License for the
+// specific language governing permissions and limitations
+// under the License.
+//
+
+using Google.Solutions.IapDesktop.Application.Settings;
 using Microsoft.Win32;
 using NUnit.Framework;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Google.Solutions.IapDesktop.Application.Test.Settings
 {
@@ -227,7 +244,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Settings
         //---------------------------------------------------------------------
 
         [Test]
-        public void WhenParentIsDefault_ThenOverlayByAppliesParentValueUsedAsNewDefault()
+        public void WhenParentAndChildDefault_ThenOverlayByReturnsCorrectValues()
         {
             using (var key = this.hkcu.CreateSubKey(TestKeyPath))
             {
@@ -262,7 +279,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Settings
         }
 
         [Test]
-        public void WhenParentIsNonDefault_ThenOverlayByAppliesParentValueUsedAsNewDefault()
+        public void WhenParentIsNonDefault_ThenOverlayByReturnsCorrectValues()
         {
             using (var key = this.hkcu.CreateSubKey(TestKeyPath))
             {
@@ -299,7 +316,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Settings
         }
 
         [Test]
-        public void WhenParentIsNonDefaultAndChildIsNonDefault_ThenOverlayByAppliesParentValueUsedAsNewDefault()
+        public void WhenChildIsNonDefault_ThenOverlayByReturnsCorrectValues()
         {
             using (var key = this.hkcu.CreateSubKey(TestKeyPath))
             {
@@ -328,9 +345,45 @@ namespace Google.Solutions.IapDesktop.Application.Test.Settings
                 Assert.AreNotSame(effective, parent);
                 Assert.AreNotSame(effective, child);
 
-
                 Assert.IsNull(effective.Value);
                 Assert.AreEqual("black", effective.DefaultValue);
+                Assert.IsFalse(effective.IsDefault);
+            }
+        }
+
+        [Test]
+        public void WhenParentAndChildNonDefault_ThenOverlayByReturnsCorrectValues()
+        {
+            using (var key = this.hkcu.CreateSubKey(TestKeyPath))
+            {
+                var parent = RegistryStringSetting.FromKey(
+                    "test",
+                    "title",
+                    "description",
+                    "category",
+                    "black",
+                    key,
+                    _ => true);
+                parent.Value = "red";
+                Assert.IsFalse(parent.IsDefault);
+
+                var child = RegistryStringSetting.FromKey(
+                    "test",
+                    "title",
+                    "description",
+                    "category",
+                    "black",
+                    key,
+                    _ => true);
+                child.Value = "green";
+                Assert.IsFalse(child.IsDefault);
+
+                var effective = parent.OverlayBy(child);
+                Assert.AreNotSame(effective, parent);
+                Assert.AreNotSame(effective, child);
+
+                Assert.AreEqual("green", effective.Value);
+                Assert.AreEqual("red", effective.DefaultValue);
                 Assert.IsFalse(effective.IsDefault);
             }
         }
