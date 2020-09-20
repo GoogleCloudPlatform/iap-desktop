@@ -23,6 +23,8 @@ namespace Google.Solutions.IapDesktop.Application.Settings
 
         public string Description { get; }
 
+        public string Category { get; }
+
         //---------------------------------------------------------------------
         // Value.
         //---------------------------------------------------------------------
@@ -99,12 +101,14 @@ namespace Google.Solutions.IapDesktop.Application.Settings
             string key,
             string title,
             string description,
+            string category,
             T initialValue,
             T defaultValue)
         {
             this.Key = key;
             this.Title = title;
             this.Description = description;
+            this.Category = category;
             this.currentValue = initialValue;
             this.DefaultValue = defaultValue;
             

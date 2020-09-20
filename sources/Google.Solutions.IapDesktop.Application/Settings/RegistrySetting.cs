@@ -26,6 +26,7 @@ namespace Google.Solutions.IapDesktop.Application.Settings
             string key,
             string title,
             string description,
+            string category,
             string defaultValue,
             string value,
             Func<string, bool> validate)
@@ -33,16 +34,18 @@ namespace Google.Solutions.IapDesktop.Application.Settings
                   key,
                   title,
                   description,
+                  category,
                   value,
                   defaultValue)
         {
             this.validate = validate;
         }
 
-        public RegistryStringSetting FromKey(
+        public static RegistryStringSetting FromKey(
             string key,
             string title,
             string description,
+            string category,
             string defaultValue,
             RegistryKey backingKey,
             Func<string, bool> validate)
@@ -50,6 +53,7 @@ namespace Google.Solutions.IapDesktop.Application.Settings
                   key,
                   title,
                   description,
+                  category,
                   (string)backingKey.GetValue(key, defaultValue),
                   defaultValue,
                   validate);
@@ -59,6 +63,7 @@ namespace Google.Solutions.IapDesktop.Application.Settings
                 this.Key,
                 this.Title,
                 this.Description,
+                this.Category,
                 defaultValue,
                 value,
                 this.validate);
@@ -74,27 +79,31 @@ namespace Google.Solutions.IapDesktop.Application.Settings
             string key,
             string title,
             string description,
+            string category,
             bool defaultValue,
             bool value)
             : base(
                   key,
                   title,
                   description,
+                  category,
                   value,
                   defaultValue)
         {
         }
 
-        public RegistryBoolSetting FromKey(
+        public static RegistryBoolSetting FromKey(
             string key,
             string title,
             string description,
+            string category,
             bool defaultValue,
             RegistryKey backingKey)
             => new RegistryBoolSetting(
                   key,
                   title,
                   description,
+                  category,
                   (int)backingKey.GetValue(key, defaultValue) != 0,
                   defaultValue);
 
@@ -103,6 +112,7 @@ namespace Google.Solutions.IapDesktop.Application.Settings
                 this.Key,
                 this.Title,
                 this.Description,
+                this.Category,
                 defaultValue,
                 value);
 
@@ -120,6 +130,7 @@ namespace Google.Solutions.IapDesktop.Application.Settings
             string key,
             string title,
             string description,
+            string category,
             int defaultValue,
             int value,
             int minInclusive,
@@ -128,6 +139,7 @@ namespace Google.Solutions.IapDesktop.Application.Settings
                   key,
                   title,
                   description,
+                  category,
                   value,
                   defaultValue)
         {
@@ -135,10 +147,11 @@ namespace Google.Solutions.IapDesktop.Application.Settings
             this.maxInclusive = maxInclusive;
         }
 
-        public RegistryDwordSetting FromKey(
+        public static RegistryDwordSetting FromKey(
             string key,
             string title,
             string description,
+            string category,
             int defaultValue,
             RegistryKey backingKey,
             int minInclusive,
@@ -147,6 +160,7 @@ namespace Google.Solutions.IapDesktop.Application.Settings
                   key,
                   title,
                   description,
+                  category,
                   (int)backingKey.GetValue(key, defaultValue),
                   defaultValue,
                   minInclusive,
@@ -157,6 +171,7 @@ namespace Google.Solutions.IapDesktop.Application.Settings
                 this.Key,
                 this.Title,
                 this.Description,
+                this.Category,
                 defaultValue,
                 value,
                 this.minInclusive,
@@ -175,12 +190,14 @@ namespace Google.Solutions.IapDesktop.Application.Settings
             string key,
             string title,
             string description,
+            string category,
             TEnum defaultValue,
             TEnum value)
             : base(
                   key,
                   title,
                   description,
+                  category,
                   value,
                   defaultValue)
         {
@@ -190,12 +207,14 @@ namespace Google.Solutions.IapDesktop.Application.Settings
             string key,
             string title,
             string description,
+            string category,
             TEnum defaultValue,
             RegistryKey backingKey)
             => new RegistryEnumSetting<TEnum>(
                   key,
                   title,
                   description,
+                  category,
                   (TEnum)backingKey.GetValue(key, defaultValue),
                   defaultValue);
 
@@ -204,6 +223,7 @@ namespace Google.Solutions.IapDesktop.Application.Settings
                 this.Key,
                 this.Title,
                 this.Description,
+                this.Category,
                 defaultValue,
                 value);
 

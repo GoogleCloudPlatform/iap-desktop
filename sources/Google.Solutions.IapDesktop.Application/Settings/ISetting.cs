@@ -12,6 +12,7 @@ namespace Google.Solutions.IapDesktop.Application.Settings
         string Key { get; }
         string Title { get; }
         string Description { get; }
+        string Category { get; }
         object Value { get; }
         bool IsDefault { get; }
         bool IsDirty { get; }
