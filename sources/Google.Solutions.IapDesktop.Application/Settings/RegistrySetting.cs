@@ -126,7 +126,7 @@ namespace Google.Solutions.IapDesktop.Application.Settings
                   description,
                   category,
                   defaultValue,
-                  (int)backingKey.GetValue(key, defaultValue) != 0);
+                  (int?)backingKey.GetValue(key, defaultValue ? 1 : 0) != 0);
 
         protected override SettingBase<bool> CreateNew(bool value, bool defaultValue)
             => new RegistryBoolSetting(
@@ -139,7 +139,8 @@ namespace Google.Solutions.IapDesktop.Application.Settings
 
         protected override bool IsValid(bool value) => true;
 
-        protected override bool Parse(string value) => bool.Parse(value);
+        protected override bool Parse(string value) 
+            => value != null && bool.Parse(value);
     }
 
     public class RegistryDwordSetting : SettingBase<int>, IRegistrySetting
