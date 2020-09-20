@@ -63,7 +63,7 @@ namespace Google.Solutions.IapDesktop.Application.Settings
                 }
                 else if (value is null)
                 {
-                    typedValue = Parse(null);
+                    typedValue = this.DefaultValue;
                 }
                 else if (value is T t)
                 {
@@ -84,6 +84,11 @@ namespace Google.Solutions.IapDesktop.Application.Settings
                 this.currentValue = typedValue;
                 this.IsDirty = !Equals(value, this.DefaultValue);
             }
+        }
+
+        public void Reset()
+        {
+            this.Value = null;
         }
 
         //---------------------------------------------------------------------

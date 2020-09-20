@@ -134,13 +134,34 @@ namespace Google.Solutions.IapDesktop.Application.Test.Settings
                 setting.Value = null;
                 setting.Save(key);
 
-                Assert.AreEqual(0, key.GetValue("test"));
+                Assert.IsNull(key.GetValue("test"));
             }
         }
 
         //---------------------------------------------------------------------
         // Get/set value.
         //---------------------------------------------------------------------
+
+        [Test]
+        public void WhenValueIsNull_ThenSetValueResetsToDefault()
+        {
+            using (var key = this.hkcu.CreateSubKey(TestKeyPath))
+            {
+                var setting = RegistryBoolSetting.FromKey(
+                    "test",
+                    "title",
+                    "description",
+                    "category",
+                    false,
+                    key);
+
+                setting.Value = true;
+                setting.Value = null;
+
+                Assert.AreEqual(false, setting.Value);
+                Assert.IsTrue(setting.IsDefault);
+            }
+        }
 
         [Test]
         public void WhenValueEqualsDefault_ThenSetValueSucceedsAndSettingIsNotDirty()

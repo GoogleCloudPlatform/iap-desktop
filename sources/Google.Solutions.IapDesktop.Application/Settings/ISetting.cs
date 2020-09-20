@@ -31,6 +31,7 @@ namespace Google.Solutions.IapDesktop.Application.Settings
         bool IsDefault { get; }
         bool IsDirty { get; }
         ISetting OverlayBy(ISetting setting);
+        void Reset();
     }
 
     public interface ISetting<T> : ISetting

@@ -267,7 +267,7 @@ namespace Google.Solutions.IapDesktop.Application.Settings
             RegistryKey backingKey)
         {
             Debug.Assert(setting.IsDirty);
-            if (setting.Value == null)
+            if (setting.IsDefault)
             {
                 backingKey.DeleteValue(setting.Key);
             }

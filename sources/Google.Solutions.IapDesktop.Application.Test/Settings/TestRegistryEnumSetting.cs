@@ -23,11 +23,12 @@ using Google.Solutions.IapDesktop.Application.Settings;
 using Microsoft.Win32;
 using NUnit.Framework;
 using System;
+using System.Drawing;
 
 namespace Google.Solutions.IapDesktop.Application.Test.Settings
 {
     [TestFixture]
-    public class TestRegistryStringSetting
+    public class TestRegistryEnumSetting
     {
         private const string TestKeyPath = @"Software\Google\__Test";
         private readonly RegistryKey hkcu = RegistryKey.OpenBaseKey(
@@ -49,20 +50,19 @@ namespace Google.Solutions.IapDesktop.Application.Test.Settings
         {
             using (var key = this.hkcu.CreateSubKey(TestKeyPath))
             {
-                var setting = RegistryStringSetting.FromKey(
+                var setting = RegistryEnumSetting<ConsoleColor>.FromKey(
                     "test",
                     "title",
                     "description",
                     "category",
-                    "blue",
-                    key,
-                    _ => true);
+                    ConsoleColor.Blue,
+                    key);
 
                 Assert.AreEqual("test", setting.Key);
                 Assert.AreEqual("title", setting.Title);
                 Assert.AreEqual("description", setting.Description);
                 Assert.AreEqual("category", setting.Category);
-                Assert.AreEqual("blue", setting.Value);
+                Assert.AreEqual(ConsoleColor.Blue, setting.Value);
                 Assert.IsTrue(setting.IsDefault);
                 Assert.IsFalse(setting.IsDirty);
             }
@@ -73,22 +73,21 @@ namespace Google.Solutions.IapDesktop.Application.Test.Settings
         {
             using (var key = this.hkcu.CreateSubKey(TestKeyPath))
             {
-                key.SetValue("test", "red");
+                key.SetValue("test", (int)ConsoleColor.Red, RegistryValueKind.DWord);
 
-                var setting = RegistryStringSetting.FromKey(
+                var setting = RegistryEnumSetting<ConsoleColor>.FromKey(
                     "test",
                     "title",
                     "description",
                     "category",
-                    "blue",
-                    key,
-                    _ => true);
+                    ConsoleColor.Blue,
+                    key);
 
                 Assert.AreEqual("test", setting.Key);
                 Assert.AreEqual("title", setting.Title);
                 Assert.AreEqual("description", setting.Description);
                 Assert.AreEqual("category", setting.Category);
-                Assert.AreEqual("red", setting.Value);
+                Assert.AreEqual(ConsoleColor.Red, setting.Value);
                 Assert.IsFalse(setting.IsDefault);
                 Assert.IsFalse(setting.IsDirty);
             }
@@ -103,19 +102,18 @@ namespace Google.Solutions.IapDesktop.Application.Test.Settings
         {
             using (var key = this.hkcu.CreateSubKey(TestKeyPath))
             {
-                var setting = RegistryStringSetting.FromKey(
+                var setting = RegistryEnumSetting<ConsoleColor>.FromKey(
                     "test",
                     "title",
                     "description",
                     "category",
-                    "blue",
-                    key,
-                    _ => true);
+                    ConsoleColor.Blue,
+                    key);
 
-                setting.Value = "green";
+                setting.Value = ConsoleColor.Green;
                 setting.Save(key);
 
-                Assert.AreEqual("green", key.GetValue("test"));
+                Assert.AreEqual((int)ConsoleColor.Green, key.GetValue("test"));
             }
         }
 
@@ -124,16 +122,15 @@ namespace Google.Solutions.IapDesktop.Application.Test.Settings
         {
             using (var key = this.hkcu.CreateSubKey(TestKeyPath))
             {
-                key.SetValue("test", "red");
+                key.SetValue("test", (int)ConsoleColor.Red, RegistryValueKind.DWord);
 
-                var setting = RegistryStringSetting.FromKey(
+                var setting = RegistryEnumSetting<ConsoleColor>.FromKey(
                     "test",
                     "title",
                     "description",
                     "category",
-                    "blue",
-                    key,
-                    _ => true);
+                    ConsoleColor.Blue,
+                    key);
 
                 setting.Value = null;
                 setting.Save(key);
@@ -151,19 +148,18 @@ namespace Google.Solutions.IapDesktop.Application.Test.Settings
         {
             using (var key = this.hkcu.CreateSubKey(TestKeyPath))
             {
-                var setting = RegistryStringSetting.FromKey(
+                var setting = RegistryEnumSetting<ConsoleColor>.FromKey(
                     "test",
                     "title",
                     "description",
                     "category",
-                    "blue",
-                    key,
-                    _ => true);
+                    ConsoleColor.Blue,
+                    key);
 
-                setting.Value = "blue";
+                setting.Value = ConsoleColor.Blue;
                 setting.Value = null;
 
-                Assert.AreEqual("blue", setting.Value);
+                Assert.AreEqual(ConsoleColor.Blue, setting.Value);
                 Assert.IsTrue(setting.IsDefault);
             }
         }
@@ -173,37 +169,15 @@ namespace Google.Solutions.IapDesktop.Application.Test.Settings
         {
             using (var key = this.hkcu.CreateSubKey(TestKeyPath))
             {
-                var setting = RegistryStringSetting.FromKey(
+                var setting = RegistryEnumSetting<ConsoleColor>.FromKey(
                     "test",
                     "title",
                     "description",
                     "category",
-                    "blue",
-                    key,
-                    _ => true);
+                    ConsoleColor.Blue,
+                    key);
 
-                setting.Value = "blue";
-
-                Assert.IsTrue(setting.IsDefault);
-                Assert.IsFalse(setting.IsDirty);
-            }
-        }
-
-        [Test]
-        public void WhenValueAndDefaultAreNull_ThenSetValueSucceedsAndSettingIsNotDirty()
-        {
-            using (var key = this.hkcu.CreateSubKey(TestKeyPath))
-            {
-                var setting = RegistryStringSetting.FromKey(
-                    "test",
-                    "title",
-                    "description",
-                    "category",
-                    null,
-                    key,
-                    _ => true);
-
-                setting.Value = null;
+                setting.Value = ConsoleColor.Blue;
 
                 Assert.IsTrue(setting.IsDefault);
                 Assert.IsFalse(setting.IsDirty);
@@ -215,17 +189,37 @@ namespace Google.Solutions.IapDesktop.Application.Test.Settings
         {
             using (var key = this.hkcu.CreateSubKey(TestKeyPath))
             {
-                var setting = RegistryStringSetting.FromKey(
+                var setting = RegistryEnumSetting<ConsoleColor>.FromKey(
                     "test",
                     "title",
                     "description",
                     "category",
-                    "blue",
-                    key,
-                    _ => true);
+                    ConsoleColor.Blue,
+                    key);
 
-                setting.Value = "yellow";
+                setting.Value = ConsoleColor.Yellow;
 
+                Assert.IsFalse(setting.IsDefault);
+                Assert.IsTrue(setting.IsDirty);
+            }
+        }
+
+        [Test]
+        public void WhenValueIsNumericString_ThenSetValueSucceeds()
+        {
+            using (var key = this.hkcu.CreateSubKey(TestKeyPath))
+            {
+                var setting = RegistryEnumSetting<ConsoleColor>.FromKey(
+                    "test",
+                    "title",
+                    "description",
+                    "category",
+                    ConsoleColor.Blue,
+                    key);
+
+                setting.Value = ((int)ConsoleColor.Yellow).ToString();
+
+                Assert.AreEqual(ConsoleColor.Yellow, setting.Value);
                 Assert.IsFalse(setting.IsDefault);
                 Assert.IsTrue(setting.IsDirty);
             }
@@ -236,29 +230,50 @@ namespace Google.Solutions.IapDesktop.Application.Test.Settings
         {
             using (var key = this.hkcu.CreateSubKey(TestKeyPath))
             {
-                var setting = RegistryStringSetting.FromKey(
+                var setting = RegistryEnumSetting<ConsoleColor>.FromKey(
                     "test",
                     "title",
                     "description",
                     "category",
-                    "blue",
-                    key,
-                    _ => true);
+                    ConsoleColor.Blue,
+                    key);
 
-                Assert.Throws<InvalidCastException>(() => setting.Value = 1);
+                Assert.Throws<InvalidCastException>(() => setting.Value = false);
             }
         }
 
         [Test]
         public void WhenValueIsInvalid_ThenSetValueRaisesArgumentOutOfRangeException()
         {
-            Assert.Inconclusive();
+            using (var key = this.hkcu.CreateSubKey(TestKeyPath))
+            {
+                var setting = RegistryEnumSetting<ConsoleColor>.FromKey(
+                    "test",
+                    "title",
+                    "description",
+                    "category",
+                    ConsoleColor.Blue,
+                    key);
+
+                Assert.Throws<ArgumentOutOfRangeException>(() => setting.Value = (ConsoleColor)100);
+            }
         }
 
         [Test]
         public void WhenValueIsUnparsable_ThenSetValueRaisesFormatException()
         {
-            Assert.Inconclusive();
+            using (var key = this.hkcu.CreateSubKey(TestKeyPath))
+            {
+                var setting = RegistryEnumSetting<ConsoleColor>.FromKey(
+                    "test",
+                    "title",
+                    "description",
+                    "category",
+                    ConsoleColor.Blue,
+                    key);
+
+                Assert.Throws<FormatException>(() => setting.Value = "");
+            }
         }
 
         //---------------------------------------------------------------------
@@ -270,31 +285,29 @@ namespace Google.Solutions.IapDesktop.Application.Test.Settings
         {
             using (var key = this.hkcu.CreateSubKey(TestKeyPath))
             {
-                var parent = RegistryStringSetting.FromKey(
+                var parent = RegistryEnumSetting<ConsoleColor>.FromKey(
                     "test",
                     "title",
                     "description",
                     "category",
-                    "black",
-                    key,
-                    _ => true);
+                    ConsoleColor.Black,
+                    key);
                 Assert.IsTrue(parent.IsDefault);
 
-                var child = RegistryStringSetting.FromKey(
+                var child = RegistryEnumSetting<ConsoleColor>.FromKey(
                     "test",
                     "title",
                     "description",
                     "category",
-                    "black",
-                    key,
-                    _ => true);
+                    ConsoleColor.Black,
+                    key);
 
                 var effective = parent.OverlayBy(child);
                 Assert.AreNotSame(effective, parent);
                 Assert.AreNotSame(effective, child);
 
-                Assert.AreEqual("black", effective.DefaultValue);
-                Assert.AreEqual("black", effective.Value);
+                Assert.AreEqual(ConsoleColor.Black, effective.DefaultValue);
+                Assert.AreEqual(ConsoleColor.Black, effective.Value);
                 Assert.IsTrue(effective.IsDefault);
             }
 
@@ -305,25 +318,23 @@ namespace Google.Solutions.IapDesktop.Application.Test.Settings
         {
             using (var key = this.hkcu.CreateSubKey(TestKeyPath))
             {
-                var parent = RegistryStringSetting.FromKey(
+                var parent = RegistryEnumSetting<ConsoleColor>.FromKey(
                     "test",
                     "title",
                     "description",
                     "category",
-                    "black",
-                    key,
-                    _ => true);
-                parent.Value = "red";
+                    ConsoleColor.Black,
+                    key);
+                parent.Value = ConsoleColor.Red;
                 Assert.IsFalse(parent.IsDefault);
 
-                var child = RegistryStringSetting.FromKey(
+                var child = RegistryEnumSetting<ConsoleColor>.FromKey(
                     "test",
                     "title",
                     "description",
                     "category",
-                    "black",
-                    key,
-                    _ => true);
+                    ConsoleColor.Black,
+                    key);
                 Assert.IsTrue(child.IsDefault);
 
                 var effective = parent.OverlayBy(child);
@@ -331,8 +342,8 @@ namespace Google.Solutions.IapDesktop.Application.Test.Settings
                 Assert.AreNotSame(effective, child);
 
 
-                Assert.AreEqual("red", effective.Value);
-                Assert.AreEqual("red", effective.DefaultValue);
+                Assert.AreEqual(ConsoleColor.Red, effective.Value);
+                Assert.AreEqual(ConsoleColor.Red, effective.DefaultValue);
                 Assert.IsTrue(effective.IsDefault);
             }
         }
@@ -342,33 +353,31 @@ namespace Google.Solutions.IapDesktop.Application.Test.Settings
         {
             using (var key = this.hkcu.CreateSubKey(TestKeyPath))
             {
-                var parent = RegistryStringSetting.FromKey(
+                var parent = RegistryEnumSetting<ConsoleColor>.FromKey(
                     "test",
                     "title",
                     "description",
                     "category",
-                    "black",
-                    key,
-                    _ => true);
+                    ConsoleColor.Black,
+                    key);
                 Assert.IsTrue(parent.IsDefault);
 
-                var child = RegistryStringSetting.FromKey(
+                var child = RegistryEnumSetting<ConsoleColor>.FromKey(
                     "test",
                     "title",
                     "description",
                     "category",
-                    "black",
-                    key,
-                    _ => true);
-                child.Value = "yellow";
+                    ConsoleColor.Black,
+                    key);
+                child.Value = ConsoleColor.Yellow;
                 Assert.IsFalse(child.IsDefault);
 
                 var effective = parent.OverlayBy(child);
                 Assert.AreNotSame(effective, parent);
                 Assert.AreNotSame(effective, child);
 
-                Assert.AreEqual("yellow", effective.Value);
-                Assert.AreEqual("black", effective.DefaultValue);
+                Assert.AreEqual(ConsoleColor.Yellow, effective.Value);
+                Assert.AreEqual(ConsoleColor.Black, effective.DefaultValue);
                 Assert.IsFalse(effective.IsDefault);
             }
         }
@@ -378,34 +387,32 @@ namespace Google.Solutions.IapDesktop.Application.Test.Settings
         {
             using (var key = this.hkcu.CreateSubKey(TestKeyPath))
             {
-                var parent = RegistryStringSetting.FromKey(
+                var parent = RegistryEnumSetting<ConsoleColor>.FromKey(
                     "test",
                     "title",
                     "description",
                     "category",
-                    "black",
-                    key,
-                    _ => true);
-                parent.Value = "red";
+                    ConsoleColor.Black,
+                    key);
+                parent.Value = ConsoleColor.Red;
                 Assert.IsFalse(parent.IsDefault);
 
-                var child = RegistryStringSetting.FromKey(
+                var child = RegistryEnumSetting<ConsoleColor>.FromKey(
                     "test",
                     "title",
                     "description",
                     "category",
-                    "black",
-                    key,
-                    _ => true);
-                child.Value = "green";
+                    ConsoleColor.Black,
+                    key);
+                child.Value = ConsoleColor.Green;
                 Assert.IsFalse(child.IsDefault);
 
                 var effective = parent.OverlayBy(child);
                 Assert.AreNotSame(effective, parent);
                 Assert.AreNotSame(effective, child);
 
-                Assert.AreEqual("green", effective.Value);
-                Assert.AreEqual("red", effective.DefaultValue);
+                Assert.AreEqual(ConsoleColor.Green, effective.Value);
+                Assert.AreEqual(ConsoleColor.Red, effective.DefaultValue);
                 Assert.IsFalse(effective.IsDefault);
             }
         }
@@ -415,35 +422,32 @@ namespace Google.Solutions.IapDesktop.Application.Test.Settings
         {
             using (var key = this.hkcu.CreateSubKey(TestKeyPath))
             {
-                var parent = RegistryStringSetting.FromKey(
+                var parent = RegistryEnumSetting<ConsoleColor>.FromKey(
                     "test",
                     "title",
                     "description",
                     "category",
-                    "black",
-                    key,
-                    _ => true);
-                parent.Value = "red";
+                    ConsoleColor.Black,
+                    key);
+                parent.Value = ConsoleColor.Red;
                 Assert.IsFalse(parent.IsDefault);
 
-                var intermediate = RegistryStringSetting.FromKey(
+                var intermediate = RegistryEnumSetting<ConsoleColor>.FromKey(
                     "test",
                     "title",
                     "description",
                     "category",
-                    "black",
-                    key,
-                    _ => true);
+                    ConsoleColor.Black,
+                    key);
                 Assert.IsTrue(intermediate.IsDefault);
 
-                var child = RegistryStringSetting.FromKey(
+                var child = RegistryEnumSetting<ConsoleColor>.FromKey(
                     "test",
                     "title",
                     "description",
                     "category",
-                    "black",
-                    key,
-                    _ => true);
+                    ConsoleColor.Black,
+                    key);
 
                 var effective = parent
                     .OverlayBy(intermediate)
@@ -452,10 +456,10 @@ namespace Google.Solutions.IapDesktop.Application.Test.Settings
                 Assert.AreNotSame(effective, intermediate);
                 Assert.AreNotSame(effective, child);
 
-                effective.Value = "black";
+                effective.Value = ConsoleColor.Black;
 
-                Assert.AreEqual("black", effective.Value);
-                Assert.AreEqual("red", effective.DefaultValue);
+                Assert.AreEqual(ConsoleColor.Black, effective.Value);
+                Assert.AreEqual(ConsoleColor.Red, effective.DefaultValue);
                 Assert.IsFalse(effective.IsDefault);
             }
         }
