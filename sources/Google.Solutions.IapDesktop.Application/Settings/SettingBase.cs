@@ -45,6 +45,10 @@ namespace Google.Solutions.IapDesktop.Application.Settings
                 {
                     typedValue = Parse(stringValue);
                 }
+                else if (value is null)
+                {
+                    typedValue = Parse(null);
+                }
                 else if (value is T t)
                 {
                     typedValue = t;
@@ -62,7 +66,7 @@ namespace Google.Solutions.IapDesktop.Application.Settings
                 }
 
                 this.currentValue = typedValue;
-                this.IsDirty = true;
+                this.IsDirty = !Equals(value, this.DefaultValue);
             }
         }
 
@@ -72,22 +76,32 @@ namespace Google.Solutions.IapDesktop.Application.Settings
 
         public ISetting<T> OverlayBy(ISetting<T> overlaySetting)
         {
+            // NB. The idea of overlaying is that you use a base setting
+            // (root), overlay it with a more specific setting, overlay
+            // it with a more specific setting one again, etc... walking
+            // your way from the root to the leaf.
+
+            Debug.Assert(overlaySetting.Key == this.Key);
+            Debug.Assert(overlaySetting.Title == this.Title);
+            Debug.Assert(overlaySetting.Description == this.Description);
+            Debug.Assert(overlaySetting.Category == this.Category);
+
             if (overlaySetting.IsDefault)
             {
-                // Ignore the overlay.
+                // Overlay does not add anything new, but own setting
+                // becomes new default.
+                return CreateNew(
+                    (T)this.Value,
+                    (T)this.Value);
             }
             else
             {
-                // Apply value from overlay, and also treat it as
-                // the new default.
+                // Overlay changes the effective setting, with
+                // own setting serving as the new default.
                 return CreateNew(
                     (T)overlaySetting.Value,
-                    overlaySetting.DefaultValue);
+                    (T)this.Value);
             }
-
-            return overlaySetting.IsDefault
-                ? this  // Overlay if it is just supplying a default value
-                : overlaySetting;   // Overlay has a relevant value.
         }
 
         public ISetting OverlayBy(ISetting setting)

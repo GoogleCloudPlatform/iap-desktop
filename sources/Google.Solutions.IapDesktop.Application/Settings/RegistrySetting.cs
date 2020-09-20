@@ -12,6 +12,7 @@ namespace Google.Solutions.IapDesktop.Application.Settings
 
     public interface IRegistrySetting : ISetting
     {
+        RegistryValueKind Kind { get; }
     }
 
     public interface IRegistrySettingsCollection : ISettingsCollection
@@ -21,6 +22,8 @@ namespace Google.Solutions.IapDesktop.Application.Settings
     public class RegistryStringSetting : SettingBase<string>, IRegistrySetting
     {
         private readonly Func<string, bool> validate;
+
+        public RegistryValueKind Kind => RegistryValueKind.String;
 
         private RegistryStringSetting(
             string key,
@@ -54,8 +57,8 @@ namespace Google.Solutions.IapDesktop.Application.Settings
                   title,
                   description,
                   category,
-                  (string)backingKey.GetValue(key, defaultValue),
                   defaultValue,
+                  (string)backingKey.GetValue(key, defaultValue),
                   validate);
 
         protected override SettingBase<string> CreateNew(string value, string defaultValue)
@@ -75,6 +78,8 @@ namespace Google.Solutions.IapDesktop.Application.Settings
 
     public class RegistryBoolSetting : SettingBase<bool>, IRegistrySetting
     {
+        public RegistryValueKind Kind => RegistryValueKind.DWord;
+
         private RegistryBoolSetting(
             string key,
             string title,
@@ -104,8 +109,8 @@ namespace Google.Solutions.IapDesktop.Application.Settings
                   title,
                   description,
                   category,
-                  (int)backingKey.GetValue(key, defaultValue) != 0,
-                  defaultValue);
+                  defaultValue,
+                  (int)backingKey.GetValue(key, defaultValue) != 0);
 
         protected override SettingBase<bool> CreateNew(bool value, bool defaultValue)
             => new RegistryBoolSetting(
@@ -125,6 +130,8 @@ namespace Google.Solutions.IapDesktop.Application.Settings
     {
         private readonly int minInclusive;
         private readonly int maxInclusive;
+
+        public RegistryValueKind Kind => RegistryValueKind.DWord;
 
         private RegistryDwordSetting(
             string key,
@@ -161,8 +168,8 @@ namespace Google.Solutions.IapDesktop.Application.Settings
                   title,
                   description,
                   category,
-                  (int)backingKey.GetValue(key, defaultValue),
                   defaultValue,
+                  (int)backingKey.GetValue(key, defaultValue),
                   minInclusive,
                   maxInclusive);
 
@@ -186,6 +193,8 @@ namespace Google.Solutions.IapDesktop.Application.Settings
     public class RegistryEnumSetting<TEnum> : SettingBase<TEnum>, IRegistrySetting
         where TEnum : struct
     {
+        public RegistryValueKind Kind => RegistryValueKind.DWord;
+
         public RegistryEnumSetting(
             string key,
             string title,
@@ -215,8 +224,8 @@ namespace Google.Solutions.IapDesktop.Application.Settings
                   title,
                   description,
                   category,
-                  (TEnum)backingKey.GetValue(key, defaultValue),
-                  defaultValue);
+                  defaultValue,
+                  (TEnum)backingKey.GetValue(key, defaultValue));
 
         protected override SettingBase<TEnum> CreateNew(TEnum value, TEnum defaultValue)
             => new RegistryEnumSetting<TEnum>(
@@ -236,13 +245,24 @@ namespace Google.Solutions.IapDesktop.Application.Settings
 
     public static class RegistrySettingsExtensions
     {
-        public static void Save(this IRegistrySetting setting, RegistryKey backingKey)
+        public static void Save(
+            this IRegistrySetting setting, 
+            RegistryKey backingKey)
         {
             Debug.Assert(setting.IsDirty);
-            backingKey.SetValue(setting.Key, setting.Value, RegistryValueKind.DWord);
+            if (setting.Value == null)
+            {
+                backingKey.DeleteValue(setting.Key);
+            }
+            else
+            {
+                backingKey.SetValue(setting.Key, setting.Value, setting.Kind);
+            }
         }
 
-        public static void Save(this IRegistrySettingsCollection collection, RegistryKey registryKey)
+        public static void Save(
+            this IRegistrySettingsCollection collection, 
+            RegistryKey registryKey)
         {
             foreach (var setting in collection.Settings
                 .Where(s => s.IsDirty)

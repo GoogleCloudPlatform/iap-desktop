@@ -13,7 +13,7 @@ namespace Google.Solutions.IapDesktop.Application.Settings
         string Title { get; }
         string Description { get; }
         string Category { get; }
-        object Value { get; }
+        object Value { get; set; }
         bool IsDefault { get; }
         bool IsDirty { get; }
         ISetting OverlayBy(ISetting setting);
