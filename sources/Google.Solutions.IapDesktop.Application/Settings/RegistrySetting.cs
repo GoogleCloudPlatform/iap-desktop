@@ -38,6 +38,46 @@ namespace Google.Solutions.IapDesktop.Application.Settings
         }
     }
 
+    public class RegistryBoolSetting : SettingBase<bool>, IRegistrySetting
+    {
+        private RegistryBoolSetting(
+            string key,
+            string title,
+            string description,
+            bool defaultValue,
+            RegistryKey backingKey)
+            : base(
+                  key,
+                  title,
+                  description,
+                  (int)backingKey.GetValue(key, defaultValue) != 0,
+                  defaultValue,
+                  _ => true)
+        {
+        }
+    }
+
+    public class RegistryDwordSetting : SettingBase<int>, IRegistrySetting
+    {
+        private RegistryDwordSetting(
+            string key,
+            string title,
+            string description,
+            int defaultValue,
+            RegistryKey backingKey,
+            int minInclusive,
+            int maxInclusive)
+            : base(
+                  key,
+                  title,
+                  description,
+                  (int)backingKey.GetValue(key, defaultValue),
+                  defaultValue,
+                  value => value >= minInclusive && value <= maxInclusive)
+        {
+        }
+    }
+
     public class RegistryEnumSetting<TEnum> : SettingBase<TEnum>, IRegistrySetting
         where TEnum : struct
     {
