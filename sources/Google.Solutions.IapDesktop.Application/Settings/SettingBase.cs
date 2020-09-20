@@ -70,6 +70,19 @@ namespace Google.Solutions.IapDesktop.Application.Settings
 
         public ISetting<T> OverlayBy(ISetting<T> overlaySetting)
         {
+            if (overlaySetting.IsDefault)
+            {
+                // Ignore the overlay.
+            }
+            else
+            {
+                // Apply value from overlay, and also treat it as
+                // the new default.
+                return CreateNew(
+                    (T)overlaySetting.Value,
+                    overlaySetting.DefaultValue);
+            }
+
             return overlaySetting.IsDefault
                 ? this  // Overlay if it is just supplying a default value
                 : overlaySetting;   // Overlay has a relevant value.
@@ -101,5 +114,7 @@ namespace Google.Solutions.IapDesktop.Application.Settings
         protected abstract bool IsValid(T value);
 
         protected abstract T Parse(string value);
+
+        protected abstract SettingBase<T> CreateNew(T value, T defaultValue);
     }
 }

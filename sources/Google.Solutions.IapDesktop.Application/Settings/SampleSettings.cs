@@ -24,13 +24,12 @@ namespace Google.Solutions.IapDesktop.Application.Settings
         {
             return new SampleSettings()
             {
-                Color = new RegistryEnumSetting<ConsoleColor>(
+                Color = RegistryEnumSetting<ConsoleColor>.FromKey(
                     "Color",
                     "The color",
                     "some desc",
                     ConsoleColor.Red,
-                    registryKey,
-                    _ => true)
+                    registryKey)
             };
         }
     }

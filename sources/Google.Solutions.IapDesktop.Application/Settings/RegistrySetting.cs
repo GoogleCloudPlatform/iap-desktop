@@ -27,17 +27,41 @@ namespace Google.Solutions.IapDesktop.Application.Settings
             string title,
             string description,
             string defaultValue,
-            RegistryKey backingKey,
+            string value,
             Func<string, bool> validate)
             : base(
                   key,
                   title,
                   description,
-                  (string)backingKey.GetValue(key, defaultValue),
+                  value,
                   defaultValue)
         {
             this.validate = validate;
         }
+
+        public RegistryStringSetting FromKey(
+            string key,
+            string title,
+            string description,
+            string defaultValue,
+            RegistryKey backingKey,
+            Func<string, bool> validate)
+            => new RegistryStringSetting(
+                  key,
+                  title,
+                  description,
+                  (string)backingKey.GetValue(key, defaultValue),
+                  defaultValue,
+                  validate);
+
+        protected override SettingBase<string> CreateNew(string value, string defaultValue)
+            => new RegistryStringSetting(
+                this.Key,
+                this.Title,
+                this.Description,
+                defaultValue,
+                value,
+                this.validate);
 
         protected override bool IsValid(string value) => validate(value);
 
@@ -51,15 +75,36 @@ namespace Google.Solutions.IapDesktop.Application.Settings
             string title,
             string description,
             bool defaultValue,
-            RegistryKey backingKey)
+            bool value)
             : base(
                   key,
                   title,
                   description,
-                  (int)backingKey.GetValue(key, defaultValue) != 0,
+                  value,
                   defaultValue)
         {
         }
+
+        public RegistryBoolSetting FromKey(
+            string key,
+            string title,
+            string description,
+            bool defaultValue,
+            RegistryKey backingKey)
+            => new RegistryBoolSetting(
+                  key,
+                  title,
+                  description,
+                  (int)backingKey.GetValue(key, defaultValue) != 0,
+                  defaultValue);
+
+        protected override SettingBase<bool> CreateNew(bool value, bool defaultValue)
+            => new RegistryBoolSetting(
+                this.Key,
+                this.Title,
+                this.Description,
+                defaultValue,
+                value);
 
         protected override bool IsValid(bool value) => true;
 
@@ -76,19 +121,46 @@ namespace Google.Solutions.IapDesktop.Application.Settings
             string title,
             string description,
             int defaultValue,
-            RegistryKey backingKey,
+            int value,
             int minInclusive,
             int maxInclusive)
             : base(
                   key,
                   title,
                   description,
-                  (int)backingKey.GetValue(key, defaultValue),
+                  value,
                   defaultValue)
         {
             this.minInclusive = minInclusive;
             this.maxInclusive = maxInclusive;
         }
+
+        public RegistryDwordSetting FromKey(
+            string key,
+            string title,
+            string description,
+            int defaultValue,
+            RegistryKey backingKey,
+            int minInclusive,
+            int maxInclusive)
+            => new RegistryDwordSetting(
+                  key,
+                  title,
+                  description,
+                  (int)backingKey.GetValue(key, defaultValue),
+                  defaultValue,
+                  minInclusive,
+                  maxInclusive);
+
+        protected override SettingBase<int> CreateNew(int value, int defaultValue)
+            => new RegistryDwordSetting(
+                this.Key,
+                this.Title,
+                this.Description,
+                defaultValue,
+                value,
+                this.minInclusive,
+                this.maxInclusive);
 
         protected override bool IsValid(int value)
             => value >= this.minInclusive && value <= this.maxInclusive;
@@ -104,16 +176,36 @@ namespace Google.Solutions.IapDesktop.Application.Settings
             string title,
             string description,
             TEnum defaultValue,
-            RegistryKey backingKey,
-            Func<TEnum, bool> validate)
+            TEnum value)
             : base(
                   key,
                   title,
                   description,
-                  (TEnum)backingKey.GetValue(key, defaultValue),
+                  value,
                   defaultValue)
         {
         }
+
+        public static RegistryEnumSetting<TEnum> FromKey(
+            string key,
+            string title,
+            string description,
+            TEnum defaultValue,
+            RegistryKey backingKey)
+            => new RegistryEnumSetting<TEnum>(
+                  key,
+                  title,
+                  description,
+                  (TEnum)backingKey.GetValue(key, defaultValue),
+                  defaultValue);
+
+        protected override SettingBase<TEnum> CreateNew(TEnum value, TEnum defaultValue)
+            => new RegistryEnumSetting<TEnum>(
+                this.Key,
+                this.Title,
+                this.Description,
+                defaultValue,
+                value);
 
         protected override bool IsValid(TEnum value)
             => Enum.IsDefined(typeof(TEnum), value);
