@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Web.Hosting;
 
 namespace Google.Solutions.IapDesktop.Application.Settings
 {
@@ -11,7 +12,6 @@ namespace Google.Solutions.IapDesktop.Application.Settings
     public abstract class SettingBase<T> : ISetting<T>
     {
         private T currentValue;
-        private Func<T, bool> validate;
 
         //---------------------------------------------------------------------
         // Metadata.
@@ -38,22 +38,29 @@ namespace Google.Solutions.IapDesktop.Application.Settings
             get => this.currentValue;
             set
             {
-                if (value is T typedValue)
+                T typedValue;
+                if (value is string stringValue)
                 {
-                    if (validate != null && !this.validate(typedValue))
-                    {
-                        throw new ArgumentOutOfRangeException(
-                            $"Value {value} is not within the permitted range");
-                    }
-
-                    this.currentValue = typedValue;
-                    this.IsDirty = true;
+                    typedValue = Parse(stringValue);
+                }
+                else if (value is T t)
+                {
+                    typedValue = t;
                 }
                 else
                 {
                     throw new InvalidCastException(
                         "Value must be of type " + typeof(T).Name);
                 }
+
+                if (!IsValid(typedValue))
+                {
+                    throw new ArgumentOutOfRangeException(
+                        $"Value {value} is not within the permitted range");
+                }
+
+                this.currentValue = typedValue;
+                this.IsDirty = true;
             }
         }
 
@@ -80,22 +87,19 @@ namespace Google.Solutions.IapDesktop.Application.Settings
             string title,
             string description,
             T initialValue,
-            T defaultValue,
-            Func<T, bool> validate)
+            T defaultValue)
         {
             this.Key = key;
             this.Title = title;
             this.Description = description;
             this.currentValue = initialValue;
             this.DefaultValue = defaultValue;
-            this.validate = validate;
             
-            if (validate != null)
-            {
-                Debug.Assert(validate(initialValue));
-                Debug.Assert(validate(defaultValue));
-            }
             Debug.Assert(!this.IsDirty);
         }
+
+        protected abstract bool IsValid(T value);
+
+        protected abstract T Parse(string value);
     }
 }

@@ -20,6 +20,8 @@ namespace Google.Solutions.IapDesktop.Application.Settings
 
     public class RegistryStringSetting : SettingBase<string>, IRegistrySetting
     {
+        private readonly Func<string, bool> validate;
+
         private RegistryStringSetting(
             string key,
             string title,
@@ -32,10 +34,14 @@ namespace Google.Solutions.IapDesktop.Application.Settings
                   title,
                   description,
                   (string)backingKey.GetValue(key, defaultValue),
-                  defaultValue,
-                  validate)
+                  defaultValue)
         {
+            this.validate = validate;
         }
+
+        protected override bool IsValid(string value) => validate(value);
+
+        protected override string Parse(string value) => value;
     }
 
     public class RegistryBoolSetting : SettingBase<bool>, IRegistrySetting
@@ -51,14 +57,20 @@ namespace Google.Solutions.IapDesktop.Application.Settings
                   title,
                   description,
                   (int)backingKey.GetValue(key, defaultValue) != 0,
-                  defaultValue,
-                  _ => true)
+                  defaultValue)
         {
         }
+
+        protected override bool IsValid(bool value) => true;
+
+        protected override bool Parse(string value) => bool.Parse(value);
     }
 
     public class RegistryDwordSetting : SettingBase<int>, IRegistrySetting
     {
+        private readonly int minInclusive;
+        private readonly int maxInclusive;
+
         private RegistryDwordSetting(
             string key,
             string title,
@@ -72,10 +84,16 @@ namespace Google.Solutions.IapDesktop.Application.Settings
                   title,
                   description,
                   (int)backingKey.GetValue(key, defaultValue),
-                  defaultValue,
-                  value => value >= minInclusive && value <= maxInclusive)
+                  defaultValue)
         {
+            this.minInclusive = minInclusive;
+            this.maxInclusive = maxInclusive;
         }
+
+        protected override bool IsValid(int value)
+            => value >= this.minInclusive && value <= this.maxInclusive;
+
+        protected override int Parse(string value) => int.Parse(value);
     }
 
     public class RegistryEnumSetting<TEnum> : SettingBase<TEnum>, IRegistrySetting
@@ -93,10 +111,15 @@ namespace Google.Solutions.IapDesktop.Application.Settings
                   title,
                   description,
                   (TEnum)backingKey.GetValue(key, defaultValue),
-                  defaultValue,
-                  v => Enum.IsDefined(typeof(TEnum), v))
+                  defaultValue)
         {
         }
+
+        protected override bool IsValid(TEnum value)
+            => Enum.IsDefined(typeof(TEnum), value);
+
+        protected override TEnum Parse(string value)
+            => (TEnum)(object)int.Parse(value);
     }
 
     public static class RegistrySettingsExtensions
