@@ -120,7 +120,6 @@
     <Compile Include="ObjectModel\MockEventService.cs" />
     <Compile Include="Services\Integration\TestJobService.cs" />
     <Compile Include="Services\Integration\TestProjectInventoryService.cs" />
-    <Compile Include="Services\Persistence\TestAuthSettingsRepository.cs" />
     <Compile Include="Services\Persistence\TestConnectionSettingsRepository.cs" />
     <Compile Include="ObjectModel\TestServiceRegistry.cs" />
     <Compile Include="Util\TestIapRdpUrl.cs" />

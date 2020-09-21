@@ -42,6 +42,7 @@ using System.Reflection;
 using System.Threading;
 using System.Windows.Forms;
 using Google.Solutions.IapDesktop.Application.Services;
+using Google.Solutions.IapDesktop.Application.Services.Settings;
 
 namespace Google.Solutions.IapDesktop
 {

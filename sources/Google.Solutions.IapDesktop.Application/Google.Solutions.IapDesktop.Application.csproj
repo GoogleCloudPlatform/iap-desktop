@@ -177,7 +177,6 @@
     </Compile>
     <Compile Include="Views\TaskDialog.cs" />
     <Compile Include="Services\UpdateService.cs" />
-    <Compile Include="Services\Persistence\AuthSettingsRepository.cs" />
     <Compile Include="TraceSources.cs" />
     <Compile Include="Util\LeastRecentlyUsedCache.cs" />
     <Compile Include="Util\RangeObservableCollection.cs" />
