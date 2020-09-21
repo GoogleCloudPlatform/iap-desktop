@@ -1,6 +1,7 @@
 ﻿using Google.Solutions.Common.Util;
 using System;
 using System.Collections.Generic;
+using System.Collections.Specialized;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -51,6 +52,28 @@ namespace Google.Solutions.IapDesktop.Application.Settings
             ISettingsCollection overlaySettings)
         {
             return new OverlayCollection(Overlay(baseSettings, overlaySettings));
+        }
+
+        public static void ApplyValues(
+            this ISettingsCollection settings,
+            NameValueCollection values,
+            bool ignoreFormatErrors)
+        {
+            foreach (var setting in settings.Settings)
+            {
+                var value = values.Get(setting.Key);
+                if (value != null)
+                {
+                    try
+                    {
+                        setting.Value = value;
+                    }
+                    catch (FormatException) when (ignoreFormatErrors)
+                    {
+                        // Ignore, keeping the previous value.
+                    }
+                }
+            }
         }
 
         private class OverlayCollection : ISettingsCollection

@@ -81,8 +81,8 @@ namespace Google.Solutions.IapDesktop.Application.Settings
                         $"Value {value} is not within the permitted range");
                 }
 
+                this.IsDirty = !Equals(typedValue, this.currentValue);
                 this.currentValue = typedValue;
-                this.IsDirty = !Equals(value, this.DefaultValue);
             }
         }
 

@@ -22,6 +22,10 @@
 using System;
 using System.Diagnostics;
 using System.Linq;
+using System.Security;
+using System.Security.Cryptography;
+using System.Text;
+using Google.Solutions.IapDesktop.Application.Util;
 using Microsoft.Win32;
 
 namespace Google.Solutions.IapDesktop.Application.Settings
@@ -29,6 +33,7 @@ namespace Google.Solutions.IapDesktop.Application.Settings
     public interface IRegistrySetting : ISetting
     {
         RegistryValueKind Kind { get; }
+        object RegistryValue { get; }
     }
 
     public interface IRegistrySettingsCollection : ISettingsCollection
@@ -40,6 +45,7 @@ namespace Google.Solutions.IapDesktop.Application.Settings
         private readonly Func<string, bool> validate;
 
         public RegistryValueKind Kind => RegistryValueKind.String;
+        public object RegistryValue => this.Value;
 
         private RegistryStringSetting(
             string key,
@@ -92,9 +98,124 @@ namespace Google.Solutions.IapDesktop.Application.Settings
         protected override string Parse(string value) => value;
     }
 
+    public class RegistrySecureStringSetting : SettingBase<SecureString>, IRegistrySetting
+    {
+        private readonly DataProtectionScope protectionScope;
+
+        public RegistryValueKind Kind => RegistryValueKind.Binary;
+        public object RegistryValue => Encrypt(
+            this.Key,
+            this.protectionScope,
+            (SecureString)this.Value);
+
+        private RegistrySecureStringSetting(
+            string key,
+            string title,
+            string description,
+            string category,
+            SecureString defaultValue,
+            SecureString value,
+            DataProtectionScope protectionScope)
+            : base(
+                  key,
+                  title,
+                  description,
+                  category,
+                  value,
+                  defaultValue)
+        {
+            this.protectionScope = protectionScope;
+        }
+
+        public static RegistrySecureStringSetting FromKey(
+            string key,
+            string title,
+            string description,
+            string category,
+            RegistryKey backingKey,
+            DataProtectionScope protectionScope)
+            => new RegistrySecureStringSetting(
+                  key,
+                  title,
+                  description,
+                  category,
+                  null,
+                  Decrypt(
+                      key,
+                      protectionScope,
+                      (byte[])backingKey.GetValue(key)),
+                  protectionScope);
+
+        protected override SettingBase<SecureString> CreateNew(
+            SecureString value, 
+            SecureString defaultValue)
+            => new RegistrySecureStringSetting(
+                this.Key,
+                this.Title,
+                this.Description,
+                this.Category,
+                defaultValue,
+                value,
+                this.protectionScope);
+
+        protected override bool IsValid(SecureString value) => true;
+
+        protected override SecureString Parse(string value) 
+            => SecureStringExtensions.FromClearText(value);
+
+        private static byte[] Encrypt(
+            string key,
+            DataProtectionScope scope,
+            SecureString secureString)
+        {
+            if (secureString == null)
+            {
+                return null;
+            }
+
+            var plaintextString = secureString.AsClearText();
+
+            return ProtectedData.Protect(
+                Encoding.UTF8.GetBytes(plaintextString),
+                Encoding.UTF8.GetBytes(key), // Entropy
+                scope);
+        }
+    
+        private static SecureString Decrypt(
+            string key,
+            DataProtectionScope scope,
+            byte[] blob)
+        {
+            try
+            {
+                if (blob == null)
+                {
+                    return null;
+                }
+
+                var plaintextString = Encoding.UTF8.GetString(
+                    ProtectedData.Unprotect(
+                        blob,
+                        Encoding.UTF8.GetBytes(key), // Entropy
+                        scope));
+
+                return SecureStringExtensions.FromClearText(plaintextString);
+            }
+            catch (CryptographicException)
+            {
+                // Value cannot be decrypted. This can happen if it was
+                // written by a different user or if the current user's
+                // key has changed (for example, because its credentials
+                // been reset on GCE).
+                return null;
+            }
+        }
+    }
+
     public class RegistryBoolSetting : SettingBase<bool>, IRegistrySetting
     {
         public RegistryValueKind Kind => RegistryValueKind.DWord;
+        public object RegistryValue => this.Value;
 
         private RegistryBoolSetting(
             string key,
@@ -149,6 +270,7 @@ namespace Google.Solutions.IapDesktop.Application.Settings
         private readonly int maxInclusive;
 
         public RegistryValueKind Kind => RegistryValueKind.DWord;
+        public object RegistryValue => this.Value;
 
         private RegistryDwordSetting(
             string key,
@@ -211,6 +333,7 @@ namespace Google.Solutions.IapDesktop.Application.Settings
         where TEnum : struct
     {
         public RegistryValueKind Kind => RegistryValueKind.DWord;
+        public object RegistryValue => this.Value;
 
         public RegistryEnumSetting(
             string key,
@@ -273,7 +396,10 @@ namespace Google.Solutions.IapDesktop.Application.Settings
             }
             else
             {
-                backingKey.SetValue(setting.Key, setting.Value, setting.Kind);
+                backingKey.SetValue(
+                    setting.Key, 
+                    setting.RegistryValue, 
+                    setting.Kind);
             }
         }
 

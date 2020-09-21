@@ -108,6 +108,7 @@
     <Compile Include="Settings\TestRegistryBoolSetting.cs" />
     <Compile Include="Settings\TestRegistryDwordSetting.cs" />
     <Compile Include="Settings\TestRegistryEnumSetting.cs" />
+    <Compile Include="Settings\TestRegistrySecureStringSetting.cs" />
     <Compile Include="Settings\TestRegistryStringSetting.cs" />
     <Compile Include="Util\TestByteSizeFormatter.cs" />
     <Compile Include="Util\TestHtmlClipboardFormat.cs" />
