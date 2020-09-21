@@ -249,18 +249,6 @@ namespace Google.Solutions.IapDesktop.Application.Test.Settings
             }
         }
 
-        [Test]
-        public void WhenValueIsInvalid_ThenSetValueRaisesArgumentOutOfRangeException()
-        {
-            Assert.Inconclusive();
-        }
-
-        [Test]
-        public void WhenValueIsUnparsable_ThenSetValueRaisesFormatException()
-        {
-            Assert.Inconclusive();
-        }
-
         //---------------------------------------------------------------------
         // Overlay.
         //---------------------------------------------------------------------

@@ -110,6 +110,7 @@
     <Compile Include="Settings\TestRegistryEnumSetting.cs" />
     <Compile Include="Settings\TestRegistrySecureStringSetting.cs" />
     <Compile Include="Settings\TestRegistryStringSetting.cs" />
+    <Compile Include="Settings\TestSettingsCollectionExtensions.cs" />
     <Compile Include="Util\TestByteSizeFormatter.cs" />
     <Compile Include="Util\TestHtmlClipboardFormat.cs" />
     <Compile Include="Util\TestLeastRecentlyUsedCache.cs" />
