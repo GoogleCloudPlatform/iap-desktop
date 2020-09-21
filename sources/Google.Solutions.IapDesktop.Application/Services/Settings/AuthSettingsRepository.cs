@@ -38,7 +38,6 @@ namespace Google.Solutions.IapDesktop.Application.Services.Settings
     {
         public string CredentialStoreKey { get; }
 
-        // TODO: delete ctor?
         public AuthSettingsRepository(RegistryKey baseKey, string credentialStoreKey) : base(baseKey)
         {
             Utilities.ThrowIfNull(baseKey, nameof(baseKey));

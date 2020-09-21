@@ -131,7 +131,6 @@
     <Compile Include="Settings\ISetting.cs" />
     <Compile Include="Settings\ISettingsCollection.cs" />
     <Compile Include="Settings\RegistrySetting.cs" />
-    <Compile Include="Settings\SampleSettings.cs" />
     <Compile Include="Settings\SettingBase.cs" />
     <Compile Include="Util\ByteSizeFormatter.cs" />
     <Compile Include="Views\CloudConsoleService.cs" />
