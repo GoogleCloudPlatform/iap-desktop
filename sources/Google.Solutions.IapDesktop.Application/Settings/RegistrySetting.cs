@@ -108,6 +108,8 @@ namespace Google.Solutions.IapDesktop.Application.Settings
             this.protectionScope,
             (SecureString)this.Value);
 
+        public string ClearTextValue => ((SecureString)this.Value)?.AsClearText();
+
         private RegistrySecureStringSetting(
             string key,
             string title,

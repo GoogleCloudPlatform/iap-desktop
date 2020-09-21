@@ -102,7 +102,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Settings
                 Assert.AreEqual("title", setting.Title);
                 Assert.AreEqual("description", setting.Description);
                 Assert.AreEqual("category", setting.Category);
-                Assert.AreEqual("red", ((SecureString)setting.Value).AsClearText());
+                Assert.AreEqual("red", setting.ClearTextValue);
                 Assert.IsFalse(setting.IsDefault);
                 Assert.IsFalse(setting.IsDirty);
             }
@@ -267,7 +267,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Settings
 
                 setting.Value = "secret";
 
-                Assert.AreEqual("secret", ((SecureString)setting.Value).AsClearText());
+                Assert.AreEqual("secret", setting.ClearTextValue);
             }
         }
 
