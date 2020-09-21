@@ -20,15 +20,14 @@
 //
 
 using Google.Solutions.Common.Test;
-using Google.Solutions.IapDesktop.Application.Services.Persistence;
+using Google.Solutions.IapDesktop.Application.Services.Settings;
 using Google.Solutions.IapDesktop.Application.Util;
 using Microsoft.Win32;
 using NUnit.Framework;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
-// TODO: Delete
-namespace Google.Solutions.IapDesktop.Application.Test.Services.Persistence
+namespace Google.Solutions.IapDesktop.Application.Test.Services.Settings
 {
     [TestFixture]
     public class TestAuthSettingsRepository : FixtureBase
@@ -50,9 +49,8 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Persistence
 
             var settings = repository.GetSettings();
 
-            Assert.IsNull(settings.Credentials);
+            Assert.IsNull(settings.Credentials.Value);
         }
-
 
         [Test]
         public void WhenSettingsSaved_GetSettingsReturnsData()
@@ -60,20 +58,16 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Persistence
             var baseKey = hkcu.CreateSubKey(TestKeyPath);
             var repository = new AuthSettingsRepository(baseKey);
 
-            var originalSettings = new AuthSettings()
-            {
-                Credentials = SecureStringExtensions.FromClearText("secure")
-            };
-
+            var originalSettings = repository.GetSettings();
+            originalSettings.Credentials.Value = SecureStringExtensions.FromClearText("secure");
             repository.SetSettings(originalSettings);
 
             var settings = repository.GetSettings();
 
             Assert.AreEqual(
                 "secure",
-                settings.Credentials.AsClearText());
+                settings.Credentials.ClearTextValue);
         }
-
 
         //---------------------------------------------------------------------
         // IDataStore.
