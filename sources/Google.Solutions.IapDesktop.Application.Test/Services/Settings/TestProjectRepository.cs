@@ -25,6 +25,7 @@ using Google.Solutions.IapDesktop.Application.Services.Settings;
 using Google.Solutions.IapDesktop.Application.Test.ObjectModel;
 using Microsoft.Win32;
 using NUnit.Framework;
+using System;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -82,6 +83,32 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Settings
 
             Assert.AreEqual(1, projects.Count());
             Assert.AreEqual("test-123", projects.First().ProjectID);
+        }
+
+        [Test]
+        public async Task WhenProjectExists_ThenCreateRegistryKeyReturnsKey()
+        {
+            await repository.AddProjectAsync("test-123");
+            using (var key = repository.OpenRegistryKey("test-123", true))
+            {
+                Assert.IsNotNull(key);
+            }
+        }
+
+        [Test]
+        public async Task WhenProjectExists_ThenCreateRegistryKeyWithSubkeyReturnsKey()
+        {
+            await repository.AddProjectAsync("test-123");
+            using (var key = repository.OpenRegistryKey("test-123", "subkey", true))
+            {
+                Assert.IsNotNull(key);
+            }
+        }
+
+        [Test]
+        public void WhenProjectDoesNotExist_ThenOpenRegistryReturnsNull()
+        {
+            Assert.IsNull(repository.OpenRegistryKey("test-123", false));
         }
     }
 }

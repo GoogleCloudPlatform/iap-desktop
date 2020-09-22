@@ -70,9 +70,19 @@ namespace Google.Solutions.IapDesktop.Application.Services.Settings
             return Task.FromResult(projects);
         }
 
-        public RegistryKey OpenRegistryKey(string projectId)
+        public RegistryKey OpenRegistryKey(string projectId, bool create)
         {
-            return this.baseKey.OpenSubKey(projectId, true);
+            return create
+                ? this.baseKey.CreateSubKey(projectId, true)
+                : this.baseKey.OpenSubKey(projectId, true);
+        }
+
+        public RegistryKey OpenRegistryKey(string projectId, string subkey, bool create)
+        {
+            var path = projectId + "\\" + subkey;
+            return create
+                ? this.baseKey.CreateSubKey(path, true)
+                : this.baseKey.OpenSubKey(path, true);
         }
 
         //---------------------------------------------------------------------
