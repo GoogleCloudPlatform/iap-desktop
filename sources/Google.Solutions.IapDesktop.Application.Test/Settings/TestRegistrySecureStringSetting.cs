@@ -71,6 +71,29 @@ namespace Google.Solutions.IapDesktop.Application.Test.Settings
         }
 
         [Test]
+        public void WhenRegistryKeyIsNull_ThenFromKeyUsesDefaults()
+        {
+            using (var key = this.hkcu.CreateSubKey(TestKeyPath))
+            {
+                var setting = RegistrySecureStringSetting.FromKey(
+                    "test",
+                    "title",
+                    "description",
+                    "category",
+                    null,
+                    DataProtectionScope.CurrentUser);
+
+                Assert.AreEqual("test", setting.Key);
+                Assert.AreEqual("title", setting.Title);
+                Assert.AreEqual("description", setting.Description);
+                Assert.AreEqual("category", setting.Category);
+                Assert.IsNull(setting.Value);
+                Assert.IsTrue(setting.IsDefault);
+                Assert.IsFalse(setting.IsDirty);
+            }
+        }
+
+        [Test]
         public void WhenRegistryValueExists_ThenFromKeyUsesValue()
         {
             using (var key = this.hkcu.CreateSubKey(TestKeyPath))

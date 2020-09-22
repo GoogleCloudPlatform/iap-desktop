@@ -2,6 +2,7 @@
 using Google.Solutions.IapDesktop.Application.Services.Persistence;
 using Google.Solutions.IapDesktop.Application.Services.Settings;
 using Google.Solutions.IapDesktop.Application.Settings;
+using Google.Solutions.IapDesktop.Application.Util;
 using Microsoft.Win32;
 using System;
 using System.Collections.Generic;
@@ -287,6 +288,23 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Services.Settings
 
             var settings = new VmInstanceConnectionSettings(projectId, instanceName);
             settings.InitializeFromKey(registryKey);
+            return settings;
+        }
+
+        public static VmInstanceConnectionSettings FromUrl(IapRdpUrl url)
+        {
+            var settings = FromKey(
+                url.Instance.ProjectId, 
+                url.Instance.Name,
+                null);  // Apply defaults.
+            
+            // TODO: Apply values from URL parameters.
+            //settings.ApplyValues(
+            //    url.Parameters,
+            //    true);
+
+            // Never allow the password to be set by a URL parameter.
+            settings.Password.Reset();
             return settings;
         }
     }

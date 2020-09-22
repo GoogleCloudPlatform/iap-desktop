@@ -81,7 +81,9 @@ namespace Google.Solutions.IapDesktop.Application.Settings
                   description,
                   category,
                   defaultValue,
-                  (string)backingKey.GetValue(key, defaultValue),
+                  backingKey == null
+                    ? defaultValue
+                    : (string)backingKey.GetValue(key, defaultValue),
                   validate);
 
         protected override SettingBase<string> CreateNew(string value, string defaultValue)
@@ -146,7 +148,7 @@ namespace Google.Solutions.IapDesktop.Application.Settings
                   Decrypt(
                       key,
                       protectionScope,
-                      (byte[])backingKey.GetValue(key)),
+                      (byte[])backingKey?.GetValue(key)),
                   protectionScope);
 
         protected override SettingBase<SecureString> CreateNew(
@@ -256,7 +258,7 @@ namespace Google.Solutions.IapDesktop.Application.Settings
                   description,
                   category,
                   defaultValue,
-                  (int?)backingKey.GetValue(key, defaultValue ? 1 : 0) != 0);
+                  (int?)backingKey?.GetValue(key, defaultValue ? 1 : 0) != 0);
 
         protected override SettingBase<bool> CreateNew(bool value, bool defaultValue)
             => new RegistryBoolSetting(
@@ -323,7 +325,9 @@ namespace Google.Solutions.IapDesktop.Application.Settings
                   description,
                   category,
                   defaultValue,
-                  (int)backingKey.GetValue(key, defaultValue),
+                  backingKey == null 
+                    ? defaultValue
+                    : (int)backingKey.GetValue(key, defaultValue),
                   minInclusive,
                   maxInclusive);
 
@@ -393,7 +397,9 @@ namespace Google.Solutions.IapDesktop.Application.Settings
                   description,
                   category,
                   defaultValue,
-                  (long)backingKey.GetValue(key, defaultValue),
+                  backingKey == null
+                    ? defaultValue
+                    : (long)backingKey.GetValue(key, defaultValue),
                   minInclusive,
                   maxInclusive);
 
@@ -456,7 +462,9 @@ namespace Google.Solutions.IapDesktop.Application.Settings
                   description,
                   category,
                   defaultValue,
-                  (TEnum)backingKey.GetValue(key, defaultValue));
+                  backingKey == null
+                    ? defaultValue
+                    : (TEnum)backingKey.GetValue(key, defaultValue));
 
         protected override SettingBase<TEnum> CreateNew(TEnum value, TEnum defaultValue)
             => new RegistryEnumSetting<TEnum>(

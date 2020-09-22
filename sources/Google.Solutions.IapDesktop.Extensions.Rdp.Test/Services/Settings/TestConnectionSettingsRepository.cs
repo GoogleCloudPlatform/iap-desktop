@@ -27,11 +27,9 @@ using Microsoft.Win32;
 using Moq;
 using NUnit.Framework;
 using System.Collections.Generic;
-using System.Linq;
 
 namespace Google.Solutions.IapDesktop.Extensions.Rdp.Test.Services.Settings
 {
-    // TODO: Delete
     [TestFixture]
     public class TestConnectionSettingsRepository : FixtureBase
     {
