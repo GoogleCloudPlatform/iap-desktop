@@ -91,6 +91,7 @@
     <Compile Include="Services\Connection\SynchronousJobService.cs" />
     <Compile Include="Services\Connection\TestConnectionSettingsService.cs" />
     <Compile Include="Services\Connection\TestIapRdpConnectionService.cs" />
+    <Compile Include="Services\Settings\TestConnectionSettingsRepository.cs" />
     <Compile Include="Services\Tunnel\TestTcpTable.cs" />
     <Compile Include="Views\ConnectionSettings\TestConnectionSettingsEditor.cs" />
     <Compile Include="Views\ConnectionSettings\TestConnectionSettingsViewModel.cs" />

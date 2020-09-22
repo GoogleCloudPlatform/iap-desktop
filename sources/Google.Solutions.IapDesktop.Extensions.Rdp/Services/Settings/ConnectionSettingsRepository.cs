@@ -5,6 +5,8 @@ using Google.Solutions.IapDesktop.Application.Settings;
 using Microsoft.Win32;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
+using System.Linq;
 using System.Security.Cryptography;
 
 namespace Google.Solutions.IapDesktop.Extensions.Rdp.Services.Settings
@@ -45,20 +47,26 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Services.Settings
 
         public ProjectConnectionSettings GetProjectSettings(string projectId)
         {
-            using (var key = this.projectRepository.OpenRegistryKey(
-                projectId,
-                true))
+            using (var key = this.projectRepository.OpenRegistryKey(projectId))
             {
+                if (key == null)
+                {
+                    throw new KeyNotFoundException(projectId);
+                }
+
                 return ProjectConnectionSettings.FromKey(projectId, key);
             }
         }
 
-        public void SetProjectSettings(string projectId, ProjectConnectionSettings settings)
+        public void SetProjectSettings(ProjectConnectionSettings settings)
         {
-            using (var key = this.projectRepository.OpenRegistryKey(
-                projectId,
-                true))
+            using (var key = this.projectRepository.OpenRegistryKey(settings.ProjectId))
             {
+                if (key == null)
+                {
+                    throw new KeyNotFoundException(settings.ProjectId);
+                }
+
                 settings.Save(key);
             }
         }
@@ -74,14 +82,17 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Services.Settings
                 ZonePrefix + zoneId,
                 true))
             {
-                return ZoneConnectionSettings.FromKey(zoneId, key);
+                return ZoneConnectionSettings.FromKey(
+                    projectId, 
+                    zoneId, 
+                    key);
             }
         }
 
-        public void SetZoneSettings(string projectId, ZoneConnectionSettings settings)
+        public void SetZoneSettings(ZoneConnectionSettings settings)
         {
             using (var key = this.projectRepository.OpenRegistryKey(
-                projectId,
+                settings.ProjectId,
                 ZonePrefix + settings.ZoneId,
                 true))
             {
@@ -100,14 +111,17 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Services.Settings
                 VmPrefix + instanceName,
                 true))
             {
-                return VmInstanceConnectionSettings.FromKey(instanceName, key);
+                return VmInstanceConnectionSettings.FromKey(
+                    projectId, 
+                    instanceName, 
+                    key);
             }
         }
 
-        public void SetVmInstanceSettings(string projectId, VmInstanceConnectionSettings settings)
+        public void SetVmInstanceSettings(VmInstanceConnectionSettings settings)
         {
             using (var key = this.projectRepository.OpenRegistryKey(
-                projectId,
+                settings.ProjectId,
                 VmPrefix + settings.InstanceName,
                 true))
             {
@@ -245,6 +259,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Services.Settings
                 null, // Hidden.
                 RdpCredentialGenerationBehavior._Default,
                 key);
+
+            Debug.Assert(this.Settings.All(s => s != null));
         }
     }
 
@@ -254,19 +270,22 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Services.Settings
 
     public class VmInstanceConnectionSettings : ConnectionSettingsBase
     {
+        public string ProjectId { get; }
         public string InstanceName { get; }
 
-        private VmInstanceConnectionSettings(string instanceName)
+        private VmInstanceConnectionSettings(string projectId, string instanceName)
         {
+            this.ProjectId = projectId;
             this.InstanceName = instanceName;
         }
 
         public static VmInstanceConnectionSettings FromKey(
-            string VmInstanceId,
+            string projectId, 
+            string instanceName,
             RegistryKey registryKey)
         {
 
-            var settings = new VmInstanceConnectionSettings(VmInstanceId);
+            var settings = new VmInstanceConnectionSettings(projectId, instanceName);
             settings.InitializeFromKey(registryKey);
             return settings;
         }
@@ -278,19 +297,22 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Services.Settings
 
     public class ZoneConnectionSettings : ConnectionSettingsBase
     {
+        public string ProjectId { get; }
         public string ZoneId { get; }
 
-        private ZoneConnectionSettings(string zoneId)
+        private ZoneConnectionSettings(string projectId, string zoneId)
         {
+            this.ProjectId = projectId;
             this.ZoneId = zoneId;
         }
 
         public static ZoneConnectionSettings FromKey(
+            string projectId,
             string zoneId,
             RegistryKey registryKey)
         {
 
-            var settings = new ZoneConnectionSettings(zoneId);
+            var settings = new ZoneConnectionSettings(projectId, zoneId);
             settings.InitializeFromKey(registryKey);
             return settings;
         }

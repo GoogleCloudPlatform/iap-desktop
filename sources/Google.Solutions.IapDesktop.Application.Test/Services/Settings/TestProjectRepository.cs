@@ -89,7 +89,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Settings
         public async Task WhenProjectExists_ThenCreateRegistryKeyReturnsKey()
         {
             await repository.AddProjectAsync("test-123");
-            using (var key = repository.OpenRegistryKey("test-123", true))
+            using (var key = repository.OpenRegistryKey("test-123"))
             {
                 Assert.IsNotNull(key);
             }
@@ -106,9 +106,13 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Settings
         }
 
         [Test]
-        public void WhenProjectDoesNotExist_ThenOpenRegistryReturnsNull()
+        public async Task WhenSubkeyDoesNotExist_ThenOpenRegistryReturnsNull()
         {
-            Assert.IsNull(repository.OpenRegistryKey("test-123", false));
+            await repository.AddProjectAsync("test-123");
+            using (var key = repository.OpenRegistryKey("test-123", "subkey", false))
+            {
+                Assert.IsNull(key);
+            }
         }
     }
 }

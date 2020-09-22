@@ -37,7 +37,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.Settings
         Task DeleteProjectAsync(string projectId);
         Task<IEnumerable<Project>> ListProjectsAsync();
 
-        RegistryKey OpenRegistryKey(string projectId, bool create);
+        RegistryKey OpenRegistryKey(string projectId);
 
         RegistryKey OpenRegistryKey(string projectId, string subkey, bool create);
     }
@@ -91,19 +91,25 @@ namespace Google.Solutions.IapDesktop.Application.Services.Settings
             return Task.FromResult(projects);
         }
 
-        public RegistryKey OpenRegistryKey(string projectId, bool create)
+        public RegistryKey OpenRegistryKey(string projectId)
         {
-            return create
-                ? this.baseKey.CreateSubKey(projectId, true)
-                : this.baseKey.OpenSubKey(projectId, true);
+            return this.baseKey.OpenSubKey(projectId, true);
         }
 
         public RegistryKey OpenRegistryKey(string projectId, string subkey, bool create)
         {
-            var path = projectId + "\\" + subkey;
-            return create
-                ? this.baseKey.CreateSubKey(path, true)
-                : this.baseKey.OpenSubKey(path, true);
+            // Make sure the parent key actually exists.
+            using (var parentKey = OpenRegistryKey(projectId))
+            {
+                if (parentKey == null)
+                {
+                    throw new KeyNotFoundException(projectId);
+                }
+
+                return create
+                ? parentKey.CreateSubKey(subkey, true)
+                : parentKey.OpenSubKey(subkey, true);
+            }
         }
 
         //---------------------------------------------------------------------

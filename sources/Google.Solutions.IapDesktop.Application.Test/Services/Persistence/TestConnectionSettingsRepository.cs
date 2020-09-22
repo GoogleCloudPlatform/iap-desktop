@@ -27,6 +27,7 @@ using System.Linq;
 
 namespace Google.Solutions.IapDesktop.Application.Test.Services.Persistence
 {
+    // TODO: Delete
     [TestFixture]
     public class TestConnectionSettingsRepository : FixtureBase
     {
