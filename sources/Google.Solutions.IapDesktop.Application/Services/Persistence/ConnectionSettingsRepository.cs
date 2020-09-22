@@ -34,6 +34,7 @@ using System.Security.Cryptography;
 
 namespace Google.Solutions.IapDesktop.Application.Services.Persistence
 {
+    // TODO: Delete, move enums
     /// <summary>
     /// Registry-backed repository for connection settings.
     /// 

@@ -31,7 +31,28 @@ namespace Google.Solutions.IapDesktop.Application.Services.Settings
     /// <summary>
     /// Registry-backed repository for Project-related settings.
     /// </summary>
-    public class ProjectRepository
+    public interface IProjectRepository
+    {
+        Task AddProjectAsync(string projectId);
+        Task DeleteProjectAsync(string projectId);
+        Task<IEnumerable<Project>> ListProjectsAsync();
+
+        RegistryKey OpenRegistryKey(string projectId, bool create);
+
+        RegistryKey OpenRegistryKey(string projectId, string subkey, bool create);
+    }
+
+    public class Project
+    {
+        public string ProjectID { get; }
+
+        internal Project(string projectId)
+        {
+            this.ProjectID = projectId;
+        }
+    }
+
+    public class ProjectRepository : IProjectRepository
     {
         protected readonly RegistryKey baseKey;
         private readonly IEventService eventService;
@@ -100,20 +121,6 @@ namespace Google.Solutions.IapDesktop.Application.Services.Settings
             if (disposing)
             {
                 this.baseKey.Dispose();
-            }
-        }
-
-        //---------------------------------------------------------------------
-        // Data class.
-        //---------------------------------------------------------------------
-
-        public class Project
-        {
-            public string ProjectID { get; }
-
-            internal Project(string projectId)
-            {
-                this.ProjectID = projectId;
             }
         }
 
