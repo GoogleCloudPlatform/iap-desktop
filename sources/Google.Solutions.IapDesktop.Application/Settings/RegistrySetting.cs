@@ -21,6 +21,7 @@
 
 using System;
 using System.Diagnostics;
+using System.Globalization;
 using System.Linq;
 using System.Security;
 using System.Security.Cryptography;
@@ -212,6 +213,12 @@ namespace Google.Solutions.IapDesktop.Application.Settings
                 return null;
             }
         }
+
+        public bool BoolValue
+        {
+            get => (bool)this.Value;
+            set => this.Value = value;
+        }
     }
 
     public class RegistryBoolSetting : SettingBase<bool>, IRegistrySetting
@@ -264,6 +271,12 @@ namespace Google.Solutions.IapDesktop.Application.Settings
 
         protected override bool Parse(string value) 
             => value != null && bool.Parse(value);
+
+        public bool BoolValue
+        {
+            get => (bool)this.Value;
+            set => this.Value = value;
+        }
     }
 
     public class RegistryDwordSetting : SettingBase<int>, IRegistrySetting
@@ -329,6 +342,12 @@ namespace Google.Solutions.IapDesktop.Application.Settings
             => value >= this.minInclusive && value <= this.maxInclusive;
 
         protected override int Parse(string value) => int.Parse(value);
+
+        public int IntValue
+        {
+            get => (int)this.Value;
+            set => this.Value = value;
+        }
     }
     public class RegistryQwordSetting : SettingBase<long>, IRegistrySetting
     {
@@ -393,6 +412,12 @@ namespace Google.Solutions.IapDesktop.Application.Settings
             => value >= this.minInclusive && value <= this.maxInclusive;
 
         protected override long Parse(string value) => long.Parse(value);
+
+        public long LongValue
+        {
+            get => (long)this.Value;
+            set => this.Value = value;
+        }
     }
 
     public class RegistryEnumSetting<TEnum> : SettingBase<TEnum>, IRegistrySetting
@@ -447,6 +472,12 @@ namespace Google.Solutions.IapDesktop.Application.Settings
 
         protected override TEnum Parse(string value)
             => (TEnum)(object)int.Parse(value);
+
+        public TEnum EnumValue
+        {
+            get => (TEnum)this.Value;
+            set => this.Value = value;
+        }
     }
 
     public static class RegistrySettingsExtensions
@@ -458,7 +489,7 @@ namespace Google.Solutions.IapDesktop.Application.Settings
             Debug.Assert(setting.IsDirty);
             if (setting.IsDefault)
             {
-                backingKey.DeleteValue(setting.Key);
+                backingKey.DeleteValue(setting.Key, false);
             }
             else
             {

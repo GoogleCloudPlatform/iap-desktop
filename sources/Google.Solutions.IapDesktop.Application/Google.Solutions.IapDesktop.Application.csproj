@@ -126,6 +126,7 @@
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
     <Compile Include="Services\Persistence\AppProtocolRegistry.cs" />
+    <Compile Include="Services\Settings\ApplicationSettingsRepository.cs" />
     <Compile Include="Services\Settings\AuthSettingsRepository.cs" />
     <Compile Include="Services\Settings\SettingRepositoryBase.cs" />
     <Compile Include="Settings\ISetting.cs" />
@@ -180,7 +181,6 @@
     <Compile Include="Util\LeastRecentlyUsedCache.cs" />
     <Compile Include="Util\RangeObservableCollection.cs" />
     <Compile Include="Util\SecureStringExtensions.cs" />
-    <Compile Include="Services\Persistence\ApplicationSettingsRepository.cs" />
     <Compile Include="Services\Persistence\SettingRepositoryBase.cs" />
     <Compile Include="Util\RegistryKeyMapper.cs" />
     <Compile Include="Util\RegistryValueAttribute.cs" />

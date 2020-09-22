@@ -68,11 +68,11 @@ namespace Google.Solutions.IapDesktop.Windows
 
         public bool IsUpdateCheckEnabled
         {
-            get => this.applicationSettings.GetSettings().IsUpdateCheckEnabled;
+            get => this.applicationSettings.GetSettings().IsUpdateCheckEnabled.BoolValue;
             set
             {
                 var settings = this.applicationSettings.GetSettings();
-                settings.IsUpdateCheckEnabled = value;
+                settings.IsUpdateCheckEnabled.BoolValue = value;
                 this.applicationSettings.SetSettings(settings);
 
                 RaisePropertyChange();
