@@ -107,6 +107,7 @@
     <Compile Include="Services\Persistence\TestVmInstanceConnectionSettings.cs" />
     <Compile Include="Services\Settings\TestAuthSettingsRepository.cs" />
     <Compile Include="Settings\TestRegistryBoolSetting.cs" />
+    <Compile Include="Settings\TestRegistryQwordSetting.cs" />
     <Compile Include="Settings\TestRegistryDwordSetting.cs" />
     <Compile Include="Settings\TestRegistryEnumSetting.cs" />
     <Compile Include="Settings\TestRegistrySecureStringSetting.cs" />

@@ -330,6 +330,70 @@ namespace Google.Solutions.IapDesktop.Application.Settings
 
         protected override int Parse(string value) => int.Parse(value);
     }
+    public class RegistryQwordSetting : SettingBase<long>, IRegistrySetting
+    {
+        private readonly long minInclusive;
+        private readonly long maxInclusive;
+
+        public RegistryValueKind Kind => RegistryValueKind.QWord;
+        public object RegistryValue => this.Value;
+
+        private RegistryQwordSetting(
+            string key,
+            string title,
+            string description,
+            string category,
+            long defaultValue,
+            long value,
+            long minInclusive,
+            long maxInclusive)
+            : base(
+                  key,
+                  title,
+                  description,
+                  category,
+                  value,
+                  defaultValue)
+        {
+            this.minInclusive = minInclusive;
+            this.maxInclusive = maxInclusive;
+        }
+
+        public static RegistryQwordSetting FromKey(
+            string key,
+            string title,
+            string description,
+            string category,
+            long defaultValue,
+            RegistryKey backingKey,
+            long minInclusive,
+            long maxInclusive)
+            => new RegistryQwordSetting(
+                  key,
+                  title,
+                  description,
+                  category,
+                  defaultValue,
+                  (long)backingKey.GetValue(key, defaultValue),
+                  minInclusive,
+                  maxInclusive);
+
+        protected override SettingBase<long> CreateNew(long value, long defaultValue)
+            => new RegistryQwordSetting(
+                this.Key,
+                this.Title,
+                this.Description,
+                this.Category,
+                defaultValue,
+                value,
+                this.minInclusive,
+                this.maxInclusive);
+
+        protected override bool IsValid(long value)
+            => value >= this.minInclusive && value <= this.maxInclusive;
+
+        protected override long Parse(string value) => long.Parse(value);
+    }
 
     public class RegistryEnumSetting<TEnum> : SettingBase<TEnum>, IRegistrySetting
         where TEnum : struct
