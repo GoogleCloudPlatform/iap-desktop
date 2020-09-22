@@ -29,6 +29,7 @@ using System.Threading.Tasks;
 
 namespace Google.Solutions.IapDesktop.Application.Services.Integration
 {
+    // TODO: Delete
     /// <summary>
     /// This service manages the project inventory.
     /// </summary>

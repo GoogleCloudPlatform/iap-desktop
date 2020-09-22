@@ -21,22 +21,23 @@
 
 using Google.Solutions.IapDesktop.Application.Services.Integration;
 using Google.Solutions.IapDesktop.Application.Services.Persistence;
+using Google.Solutions.IapDesktop.Application.Services.Settings;
 using Google.Solutions.IapDesktop.Application.Test.ObjectModel;
 using Microsoft.Win32;
 using NUnit.Framework;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace Google.Solutions.IapDesktop.Application.Test.Services.Integration
+namespace Google.Solutions.IapDesktop.Application.Test.Services.Settings
 {
-    // TODO: Delete
     [TestFixture]
-    public class TestProjectInventoryService : FixtureBase
+    public class TestProjectRepository : FixtureBase
     {
         private const string TestKeyPath = @"Software\Google\__Test";
-        private readonly RegistryKey hkcu = RegistryKey.OpenBaseKey(RegistryHive.CurrentUser, RegistryView.Default);
+        private readonly RegistryKey hkcu = RegistryKey.OpenBaseKey(
+            RegistryHive.CurrentUser, RegistryView.Default);
 
-        private ProjectInventoryService inventory = null;
+        private ProjectRepository repository = null;
 
         [SetUp]
         public void SetUp()
@@ -44,15 +45,15 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Integration
             hkcu.DeleteSubKeyTree(TestKeyPath, false);
 
             var baseKey = hkcu.CreateSubKey(TestKeyPath);
-            this.inventory = new ProjectInventoryService(
-                new ConnectionSettingsRepository(baseKey),
+            this.repository = new ProjectRepository(
+                baseKey,
                 new MockEventService());
         }
 
         [Test]
         public void WhenNoProjectsAdded_ListProjectsReturnsEmptyList()
         {
-            var projects = this.inventory.ListProjectsAsync().Result;
+            var projects = this.repository.ListProjectsAsync().Result;
 
             Assert.IsFalse(projects.Any());
         }
@@ -60,26 +61,27 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Integration
         [Test]
         public async Task WhenProjectsAddedTwice_ListProjectsReturnsProjectOnce()
         {
-            await inventory.AddProjectAsync("test-123");
-            await inventory.AddProjectAsync("test-123");
+            await repository.AddProjectAsync("test-123");
+            await repository.AddProjectAsync("test-123");
 
-            var projects = this.inventory.ListProjectsAsync().Result;
+            var projects = this.repository.ListProjectsAsync().Result;
 
             Assert.AreEqual(1, projects.Count());
-            Assert.AreEqual("test-123", projects.First().Name);
+            Assert.AreEqual("test-123", projects.First().ProjectID);
         }
 
         [Test]
         public async Task WhenProjectsDeleted_ListProjectsExcludesProject()
         {
-            await inventory.AddProjectAsync("test-123");
-            await inventory.AddProjectAsync("test-456");
-            await inventory.DeleteProjectAsync("test-456");
+            await repository.AddProjectAsync("test-123");
+            await repository.AddProjectAsync("test-456");
+            await repository.DeleteProjectAsync("test-456");
+            await repository.DeleteProjectAsync("test-456");
 
-            var projects = this.inventory.ListProjectsAsync().Result;
+            var projects = this.repository.ListProjectsAsync().Result;
 
             Assert.AreEqual(1, projects.Count());
-            Assert.AreEqual("test-123", projects.First().Name);
+            Assert.AreEqual("test-123", projects.First().ProjectID);
         }
     }
 }

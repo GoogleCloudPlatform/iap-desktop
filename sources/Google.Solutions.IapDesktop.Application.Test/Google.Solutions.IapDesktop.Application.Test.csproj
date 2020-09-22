@@ -102,10 +102,11 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Services\Adapters\TestInstanceExtensions.cs" />
     <Compile Include="Services\Adapters\TestResourceManagerAdapter.cs" />
-    <Compile Include="Services\Persistence\TestApplicationSettingsRepository.cs" />
+    <Compile Include="Services\Settings\TestApplicationSettingsRepository.cs" />
     <Compile Include="Services\Persistence\TestAppProtocolRegistry.cs" />
     <Compile Include="Services\Persistence\TestVmInstanceConnectionSettings.cs" />
     <Compile Include="Services\Settings\TestAuthSettingsRepository.cs" />
+    <Compile Include="Services\Settings\TestProjectRepository.cs" />
     <Compile Include="Settings\TestRegistryBoolSetting.cs" />
     <Compile Include="Settings\TestRegistryQwordSetting.cs" />
     <Compile Include="Settings\TestRegistryDwordSetting.cs" />
