@@ -138,6 +138,30 @@ namespace Google.Solutions.IapDesktop.Application.Test.Settings
             }
         }
 
+        [Test]
+        public void WhenSettingIsNullAndValueDeleted_ThenSaveDoesNothing()
+        {
+            using (var key = this.hkcu.CreateSubKey(TestKeyPath))
+            {
+                key.SetValue("test", 1, RegistryValueKind.DWord);
+
+                var setting = RegistryBoolSetting.FromKey(
+                    "test",
+                    "title",
+                    "description",
+                    "category",
+                    false,
+                    key);
+
+                key.DeleteValue("test");
+
+                setting.Value = null;
+                setting.Save(key);
+
+                Assert.IsNull(key.GetValue("test"));
+            }
+        }
+
         //---------------------------------------------------------------------
         // Get/set value.
         //---------------------------------------------------------------------
