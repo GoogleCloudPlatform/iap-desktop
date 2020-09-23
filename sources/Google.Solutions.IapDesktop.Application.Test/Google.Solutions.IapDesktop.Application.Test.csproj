@@ -104,7 +104,6 @@
     <Compile Include="Services\Adapters\TestResourceManagerAdapter.cs" />
     <Compile Include="Services\Settings\TestApplicationSettingsRepository.cs" />
     <Compile Include="Services\Persistence\TestAppProtocolRegistry.cs" />
-    <Compile Include="Services\Persistence\TestVmInstanceConnectionSettings.cs" />
     <Compile Include="Services\Settings\TestAuthSettingsRepository.cs" />
     <Compile Include="Services\Settings\TestProjectRepository.cs" />
     <Compile Include="Settings\TestRegistryBoolSetting.cs" />
@@ -121,8 +120,6 @@
     <Compile Include="Util\TestRegistryKeyMapper.cs" />
     <Compile Include="ObjectModel\MockEventService.cs" />
     <Compile Include="Services\Integration\TestJobService.cs" />
-    <Compile Include="Services\Integration\TestProjectInventoryService.cs" />
-    <Compile Include="Services\Persistence\TestConnectionSettingsRepository.cs" />
     <Compile Include="ObjectModel\TestServiceRegistry.cs" />
     <Compile Include="Util\TestIapRdpUrl.cs" />
     <Compile Include="Util\TestPropertyMapper.cs" />

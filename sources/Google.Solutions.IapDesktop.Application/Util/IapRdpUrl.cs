@@ -20,9 +20,8 @@
 //
 
 using Google.Solutions.Common.Locator;
-using Google.Solutions.IapDesktop.Application.Services.Persistence;
+using Google.Solutions.Common.Util;
 using System;
-using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Diagnostics;
 using System.Linq;
@@ -50,12 +49,12 @@ namespace Google.Solutions.IapDesktop.Application.Util
         private static readonly Regex InstanceNamePattern = new Regex(@"[a-z](?:[-a-z0-9]{0,61}[a-z0-9])?|[1-9][0-9]{0,19}");
 
         public InstanceLocator Instance { get; }
-        public VmInstanceConnectionSettings Settings { get; }
+        public NameValueCollection Parameters { get; }
 
-        public IapRdpUrl(InstanceLocator instance, VmInstanceConnectionSettings settings)
+        public IapRdpUrl(InstanceLocator instance, NameValueCollection parameters)
         {
             this.Instance = instance;
-            this.Settings = settings;
+            this.Parameters = parameters;
         }
 
         private static InstanceLocator CreateVmInstanceReferenceFromPath(string absolutePath)
@@ -96,44 +95,6 @@ namespace Google.Solutions.IapDesktop.Application.Util
             return new InstanceLocator(pathComponents[1], pathComponents[2], pathComponents[3]);
         }
 
-        private static TEnum GetEnumFromQuery<TEnum>(
-            NameValueCollection collection,
-            string key,
-            TEnum defaultValue) where TEnum : struct
-        {
-            var value = collection.Get(key);
-            if (value != null &&
-                Enum.TryParse<TEnum>(value, out TEnum result) &&
-                Enum.IsDefined(typeof(TEnum), result))
-            {
-                return result;
-            }
-            else
-            {
-                return defaultValue;
-            }
-        }
-
-        private static VmInstanceConnectionSettings CreateVmInstanceSettingsFromQuery(
-            InstanceLocator instanceRef,
-            string queryString)
-        {
-            var query = HttpUtility.ParseQueryString(queryString);
-
-            return new VmInstanceConnectionSettings(
-                instanceRef.Name,
-                query.Get("Username"),
-                null,
-                query.Get("Domain"),
-                GetEnumFromQuery(query, "ConnectionBar", RdpConnectionBarState._Default),
-                GetEnumFromQuery(query, "DesktopSize", RdpDesktopSize._Default),
-                GetEnumFromQuery(query, "AuthenticationLevel", RdpAuthenticationLevel._Default),
-                GetEnumFromQuery(query, "ColorDepth", RdpColorDepth._Default),
-                GetEnumFromQuery(query, "AudioMode", RdpAudioMode._Default),
-                GetEnumFromQuery(query, "RedirectClipboard", RdpRedirectClipboard._Default),
-                GetEnumFromQuery(query, "CredentialGenerationBehavior", RdpCredentialGenerationBehavior._Default));
-        }
-
         public static IapRdpUrl FromString(string uri)
         {
             return FromUri(new Uri(uri));
@@ -155,29 +116,18 @@ namespace Google.Solutions.IapDesktop.Application.Util
 
             return new IapRdpUrl(
                 instanceRef,
-                CreateVmInstanceSettingsFromQuery(instanceRef, uri.Query));
+                HttpUtility.ParseQueryString(uri.Query));
         }
 
-        public string ToString(bool includeSettingsAsQuery)
+        public string ToString(bool includeQuery)
         {
             var url = $"{Scheme}:///{this.Instance.ProjectId}/{this.Instance.Zone}/{this.Instance.Name}";
 
-            if (includeSettingsAsQuery)
+            if (includeQuery)
             {
-                var parameters = new Dictionary<string, string>()
-                {
-                    { "Username", this.Settings.Username },
-                    { "Domain", this.Settings.Domain },
-                    { "ConnectionBar", ((int)this.Settings.ConnectionBar).ToString() },
-                    { "DesktopSize", ((int)this.Settings.DesktopSize).ToString() },
-                    { "AuthenticationLevel", ((int)this.Settings.AuthenticationLevel).ToString() },
-                    { "ColorDepth", ((int)this.Settings.ColorDepth).ToString() },
-                    { "AudioMode", ((int)this.Settings.AudioMode).ToString() },
-                    { "RedirectClipboard", ((int)this.Settings.RedirectClipboard).ToString() },
-                    { "CredentialGenerationBehavior", ((int)this.Settings.CredentialGenerationBehavior).ToString() },
-                };
-
-                var formattedParameters = parameters.Select(p => p.Key + "=" + HttpUtility.UrlEncode(p.Value));
+                var formattedParameters = this.Parameters
+                    .ToKeyValuePairs()
+                    .Select(p => p.Key + "=" + HttpUtility.UrlEncode(p.Value));
                 url += $"?{String.Join("&", formattedParameters)}";
             }
 

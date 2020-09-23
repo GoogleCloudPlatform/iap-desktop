@@ -28,30 +28,6 @@ using System.Threading.Tasks;
 
 namespace Google.Solutions.IapDesktop.Application.Services.Settings
 {
-    /// <summary>
-    /// Registry-backed repository for Project-related settings.
-    /// </summary>
-    public interface IProjectRepository
-    {
-        Task AddProjectAsync(string projectId);
-        Task DeleteProjectAsync(string projectId);
-        Task<IEnumerable<Project>> ListProjectsAsync();
-
-        RegistryKey OpenRegistryKey(string projectId);
-
-        RegistryKey OpenRegistryKey(string projectId, string subkey, bool create);
-    }
-
-    public class Project
-    {
-        public string ProjectID { get; }
-
-        internal Project(string projectId)
-        {
-            this.ProjectID = projectId;
-        }
-    }
-
     public class ProjectRepository : IProjectRepository
     {
         protected readonly RegistryKey baseKey;
@@ -127,30 +103,6 @@ namespace Google.Solutions.IapDesktop.Application.Services.Settings
             if (disposing)
             {
                 this.baseKey.Dispose();
-            }
-        }
-
-        //---------------------------------------------------------------------
-        // Events.
-        //---------------------------------------------------------------------
-
-        public class ProjectAddedEvent
-        {
-            public string ProjectId { get; }
-
-            public ProjectAddedEvent(string projectId)
-            {
-                this.ProjectId = projectId;
-            }
-        }
-
-        public class ProjectDeletedEvent
-        {
-            public string ProjectId { get; }
-
-            public ProjectDeletedEvent(string projectId)
-            {
-                this.ProjectId = projectId;
             }
         }
     }

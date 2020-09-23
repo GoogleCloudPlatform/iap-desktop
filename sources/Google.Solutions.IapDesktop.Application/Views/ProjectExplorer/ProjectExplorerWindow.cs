@@ -25,6 +25,7 @@ using Google.Solutions.Common.Util;
 using Google.Solutions.IapDesktop.Application.ObjectModel;
 using Google.Solutions.IapDesktop.Application.Services.Adapters;
 using Google.Solutions.IapDesktop.Application.Services.Integration;
+using Google.Solutions.IapDesktop.Application.Services.Settings;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -47,7 +48,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
         private readonly IMainForm mainForm;
         private readonly IEventService eventService;
         private readonly IJobService jobService;
-        private readonly ProjectInventoryService projectInventoryService;
+        private readonly IProjectRepository projectInventoryService;
         private readonly IAuthorizationAdapter authService;
         private readonly IServiceProvider serviceProvider;
         private readonly IConnectionBroker connectionBroker;
@@ -82,12 +83,12 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
             this.mainForm = serviceProvider.GetService<IMainForm>();
             this.eventService = serviceProvider.GetService<IEventService>();
             this.jobService = serviceProvider.GetService<IJobService>();
-            this.projectInventoryService = serviceProvider.GetService<ProjectInventoryService>();
+            this.projectInventoryService = serviceProvider.GetService<IProjectRepository>();
             this.authService = serviceProvider.GetService<IAuthorizationAdapter>();
             this.connectionBroker = serviceProvider.GetService<IGlobalConnectionBroker>();
 
-            this.eventService.BindAsyncHandler<ProjectInventoryService.ProjectAddedEvent>(OnProjectAdded);
-            this.eventService.BindHandler<ProjectInventoryService.ProjectDeletedEvent>(OnProjectDeleted);
+            this.eventService.BindAsyncHandler<ProjectAddedEvent>(OnProjectAdded);
+            this.eventService.BindHandler<ProjectDeletedEvent>(OnProjectDeleted);
             this.eventService.BindHandler<ConnectionSuceededEvent>(OnRdpConnectionSucceeded);
             this.eventService.BindHandler<ConnectionClosedEvent>(OnRdpConnectionClosed);
 
@@ -389,14 +390,14 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
         // Service event handlers.
         //---------------------------------------------------------------------
 
-        private async Task OnProjectAdded(ProjectInventoryService.ProjectAddedEvent e)
+        private async Task OnProjectAdded(ProjectAddedEvent e)
         {
             Debug.Assert(!this.InvokeRequired);
 
             await RefreshProject(e.ProjectId).ConfigureAwait(true);
         }
 
-        private void OnProjectDeleted(ProjectInventoryService.ProjectDeletedEvent e)
+        private void OnProjectDeleted(ProjectDeletedEvent e)
         {
             Debug.Assert(!this.InvokeRequired);
             var node = this.rootNode.Nodes
@@ -467,8 +468,8 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
                         {
                             try
                             {
-                                accumulator[project.Name] = await computeEngineAdapter
-                                    .ListInstancesAsync(project.Name, token)
+                                accumulator[project.ProjectId] = await computeEngineAdapter
+                                    .ListInstancesAsync(project.ProjectId, token)
                                     .ConfigureAwait(false);
                             }
                             catch (Exception e) when (e.IsReauthError())
@@ -479,7 +480,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
                             catch (Exception e)
                             {
                                 // If one project fails to load, we should stil load the other onces.
-                                failedProjects[project.Name] = e;
+                                failedProjects[project.ProjectId] = e;
                             }
                         }
 

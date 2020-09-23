@@ -32,6 +32,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using Google.Solutions.IapDesktop.Application.Services.Settings;
 
 namespace Google.Solutions.IapDesktop.Application.Test.Views
 {
@@ -79,7 +80,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views
         public void WhenProjectAdded_ThenWindowsInstancesAreListed()
         {
             // Add a project.
-            this.serviceProvider.GetService<ProjectInventoryService>().AddProjectAsync("project-1").Wait();
+            this.serviceProvider.GetService<IProjectRepository>().AddProjectAsync("project-1").Wait();
 
             // Add some instances.
             var instances = new[]
@@ -123,7 +124,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views
         public void WhenProjectAdded_ThenLinuxInstancesAndInstancesWithoutDiskAreIgnored()
         {
             // Add a project.
-            this.serviceProvider.GetService<ProjectInventoryService>().AddProjectAsync("project-1").Wait();
+            this.serviceProvider.GetService<IProjectRepository>().AddProjectAsync("project-1").Wait();
 
             // Add some instances.
             var instances = new[]
@@ -174,8 +175,8 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views
         public void WhenQueryInstanceFails_ProjectIsShownAsEmpty()
         {
             // Add a project.
-            this.serviceProvider.GetService<ProjectInventoryService>().AddProjectAsync("valid-project").Wait();
-            this.serviceProvider.GetService<ProjectInventoryService>().AddProjectAsync("forbidden-project").Wait();
+            this.serviceProvider.GetService<IProjectRepository>().AddProjectAsync("valid-project").Wait();
+            this.serviceProvider.GetService<IProjectRepository>().AddProjectAsync("forbidden-project").Wait();
 
             // Add some instances to project-1.
             var instances = new[]

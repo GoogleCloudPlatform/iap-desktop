@@ -68,7 +68,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Settings
             var projects = this.repository.ListProjectsAsync().Result;
 
             Assert.AreEqual(1, projects.Count());
-            Assert.AreEqual("test-123", projects.First().ProjectID);
+            Assert.AreEqual("test-123", projects.First().ProjectId);
         }
 
         [Test]
@@ -82,7 +82,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Settings
             var projects = this.repository.ListProjectsAsync().Result;
 
             Assert.AreEqual(1, projects.Count());
-            Assert.AreEqual("test-123", projects.First().ProjectID);
+            Assert.AreEqual("test-123", projects.First().ProjectId);
         }
 
         [Test]

@@ -128,6 +128,7 @@
     <Compile Include="Services\Persistence\AppProtocolRegistry.cs" />
     <Compile Include="Services\Settings\ApplicationSettingsRepository.cs" />
     <Compile Include="Services\Settings\AuthSettingsRepository.cs" />
+    <Compile Include="Services\Settings\IProjectRepository.cs" />
     <Compile Include="Services\Settings\ProjectRepository.cs" />
     <Compile Include="Services\Settings\SettingRepositoryBase.cs" />
     <Compile Include="Settings\ISetting.cs" />
@@ -137,7 +138,6 @@
     <Compile Include="Util\ByteSizeFormatter.cs" />
     <Compile Include="Views\CloudConsoleService.cs" />
     <Compile Include="Services\Adapters\IAuthorizationAdapter.cs" />
-    <Compile Include="Services\Integration\ProjectInventoryService.cs" />
     <Compile Include="Controls\FlatListView.cs">
       <SubType>Component</SubType>
     </Compile>
@@ -185,7 +185,6 @@
     <Compile Include="Services\Persistence\SettingRepositoryBase.cs" />
     <Compile Include="Util\RegistryKeyMapper.cs" />
     <Compile Include="Util\RegistryValueAttribute.cs" />
-    <Compile Include="Services\Persistence\ConnectionSettingsRepository.cs" />
     <Compile Include="Util\IapRdpUrl.cs" />
     <Compile Include="Util\MappedPropertyAttribute.cs" />
     <Compile Include="Util\PropertyMapper.cs" />

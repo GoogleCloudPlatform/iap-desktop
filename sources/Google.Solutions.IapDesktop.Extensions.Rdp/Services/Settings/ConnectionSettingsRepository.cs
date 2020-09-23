@@ -6,6 +6,7 @@ using Google.Solutions.IapDesktop.Application.Util;
 using Microsoft.Win32;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
 using System.Security.Cryptography;
@@ -129,6 +130,107 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Services.Settings
                 settings.Save(key);
             }
         }
+    }
+
+    // TODO: move to separate file
+
+    //
+    // NB. The values do not map to RDP interface values. But the numeric values
+    // must be kept unchanged as they are persisted in the registry.
+    //
+
+    public enum RdpConnectionBarState
+    {
+        AutoHide = 0,
+        Pinned = 1,
+        Off = 2,
+
+        [Browsable(false)]
+        _Default = AutoHide
+    }
+
+    public enum RdpDesktopSize
+    {
+        ClientSize = 0,
+        ScreenSize = 1,
+        AutoAdjust = 2,
+
+        [Browsable(false)]
+        _Default = AutoAdjust
+    }
+
+    public enum RdpAuthenticationLevel
+    {
+        // Likely to fail when using IAP unless the cert has been issued
+        // for "localhost".
+        AttemptServerAuthentication = 0,
+
+        // Almsot guaranteed to fail, so do not even display it.
+        [Browsable(false)]
+        RequireServerAuthentication = 1,
+
+        NoServerAuthentication = 3,
+
+        [Browsable(false)]
+        _Default = NoServerAuthentication
+    }
+
+    public enum RdpColorDepth
+    {
+        HighColor = 0,
+        TrueColor = 1,
+        DeepColor = 2,
+
+        [Browsable(false)]
+        _Default = TrueColor
+    }
+
+    public enum RdpAudioMode
+    {
+        PlayLocally = 0,
+        PlayOnServer = 1,
+        DoNotPlay = 2,
+
+        [Browsable(false)]
+        _Default = PlayLocally
+    }
+
+    public enum RdpRedirectClipboard
+    {
+        Disabled = 0,
+        Enabled = 1,
+
+        [Browsable(false)]
+        _Default = Enabled
+    }
+
+    public enum RdpUserAuthenticationBehavior
+    {
+        PromptOnFailure = 0,
+        AbortOnFailure = 1,
+
+        [Browsable(false)]
+        _Default = PromptOnFailure
+    }
+
+    public enum RdpBitmapPersistence
+    {
+        Disabled = 0,
+        Enabled = 1,
+
+        [Browsable(false)]
+        _Default = Disabled
+    }
+
+    public enum RdpCredentialGenerationBehavior
+    {
+        Allow = 0,
+        AllowIfNoCredentialsFound = 1,
+        Disallow = 2,
+        Force = 3,
+
+        [Browsable(false)]
+        _Default = AllowIfNoCredentialsFound
     }
 
     public abstract class ConnectionSettingsBase : IRegistrySettingsCollection
