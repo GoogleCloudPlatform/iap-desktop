@@ -23,6 +23,7 @@ using Google.Solutions.Common.Test;
 using Google.Solutions.IapDesktop.Application.Services.Integration;
 using Google.Solutions.IapDesktop.Application.Services.Persistence;
 using Google.Solutions.IapDesktop.Application.Services.Settings;
+using Google.Solutions.IapDesktop.Extensions.Rdp.Services.Settings;
 using Microsoft.Win32;
 using Moq;
 using NUnit.Framework;

@@ -34,53 +34,54 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Test.Views.RemoteDesktop
         private readonly InstanceLocator instanceReference =
             new InstanceLocator("project", "zone", "instance");
 
-        [Test]
-        public void WhenServerInvalid_ThenErrorIsShownAndWindowIsClosed()
-        {
-            var rdpService = new RemoteDesktopConnectionBroker(this.serviceProvider);
-            rdpService.Connect(
-                this.instanceReference,
-                "invalid.corp",
-                3389,
-                new VmInstanceConnectionSettings());
+        // TODO: Refactor tests
+        //[Test]
+        //public void WhenServerInvalid_ThenErrorIsShownAndWindowIsClosed()
+        //{
+        //    var rdpService = new RemoteDesktopConnectionBroker(this.serviceProvider);
+        //    rdpService.Connect(
+        //        this.instanceReference,
+        //        "invalid.corp",
+        //        3389,
+        //        new VmInstanceConnectionSettings());
 
-            AwaitEvent<ConnectionFailedEvent>();
-            Assert.IsInstanceOf(typeof(RdpDisconnectedException), this.ExceptionShown);
-            Assert.AreEqual(260, ((RdpDisconnectedException)this.ExceptionShown).DisconnectReason);
-        }
+        //    AwaitEvent<ConnectionFailedEvent>();
+        //    Assert.IsInstanceOf(typeof(RdpDisconnectedException), this.ExceptionShown);
+        //    Assert.AreEqual(260, ((RdpDisconnectedException)this.ExceptionShown).DisconnectReason);
+        //}
 
-        [Test]
-        public void WhenPortNotListening_ThenErrorIsShownAndWindowIsClosed()
-        {
-            var rdpService = new RemoteDesktopConnectionBroker(this.serviceProvider);
-            rdpService.Connect(
-                this.instanceReference,
-                "localhost",
-                1,
-                new VmInstanceConnectionSettings()
-                {
-                    ConnectionTimeout = 5
-                });
+        //[Test]
+        //public void WhenPortNotListening_ThenErrorIsShownAndWindowIsClosed()
+        //{
+        //    var rdpService = new RemoteDesktopConnectionBroker(this.serviceProvider);
+        //    rdpService.Connect(
+        //        this.instanceReference,
+        //        "localhost",
+        //        1,
+        //        new VmInstanceConnectionSettings()
+        //        {
+        //            ConnectionTimeout = 5
+        //        });
 
-            AwaitEvent<ConnectionFailedEvent>();
-            Assert.IsInstanceOf(typeof(RdpDisconnectedException), this.ExceptionShown);
-            Assert.AreEqual(516, ((RdpDisconnectedException)this.ExceptionShown).DisconnectReason);
-        }
+        //    AwaitEvent<ConnectionFailedEvent>();
+        //    Assert.IsInstanceOf(typeof(RdpDisconnectedException), this.ExceptionShown);
+        //    Assert.AreEqual(516, ((RdpDisconnectedException)this.ExceptionShown).DisconnectReason);
+        //}
 
-        [Test]
-        [Ignore("")]
-        public void WhenWrongPort_ThenErrorIsShownAndWindowIsClosed()
-        {
-            var rdpService = new RemoteDesktopConnectionBroker(this.serviceProvider);
-            rdpService.Connect(
-                this.instanceReference,
-                "localhost",
-                135,    // That one will be listening, but it is RPC, not RDP.
-                new VmInstanceConnectionSettings());
+        //[Test]
+        //[Ignore("")]
+        //public void WhenWrongPort_ThenErrorIsShownAndWindowIsClosed()
+        //{
+        //    var rdpService = new RemoteDesktopConnectionBroker(this.serviceProvider);
+        //    rdpService.Connect(
+        //        this.instanceReference,
+        //        "localhost",
+        //        135,    // That one will be listening, but it is RPC, not RDP.
+        //        new VmInstanceConnectionSettings());
 
-            AwaitEvent<ConnectionFailedEvent>();
-            Assert.IsInstanceOf(typeof(RdpDisconnectedException), this.ExceptionShown);
-            Assert.AreEqual(2308, ((RdpDisconnectedException)this.ExceptionShown).DisconnectReason);
-        }
+        //    AwaitEvent<ConnectionFailedEvent>();
+        //    Assert.IsInstanceOf(typeof(RdpDisconnectedException), this.ExceptionShown);
+        //    Assert.AreEqual(2308, ((RdpDisconnectedException)this.ExceptionShown).DisconnectReason);
+        //}
     }
 }

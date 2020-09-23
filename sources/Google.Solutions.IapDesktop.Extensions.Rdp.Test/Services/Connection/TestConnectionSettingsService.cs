@@ -41,8 +41,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Test.Services.Connection
 
         private ConnectionSettingsService service;
 
-        // TODO: FIx tests
-
+        // TODO: Refactor tests
         //[SetUp]
         //public void SetUp()
         //{
