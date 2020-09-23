@@ -19,10 +19,10 @@
 // under the License.
 //
 
-using Google.Solutions.Common.Locator;
 using Google.Solutions.IapDesktop.Application.ObjectModel;
-using Google.Solutions.IapDesktop.Application.Services.Persistence;
+using Google.Solutions.IapDesktop.Application.Settings;
 using Google.Solutions.IapDesktop.Application.Views.ProjectExplorer;
+using Google.Solutions.IapDesktop.Extensions.Rdp.Services.Settings;
 using System;
 
 namespace Google.Solutions.IapDesktop.Extensions.Rdp.Services.Connection
@@ -30,7 +30,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Services.Connection
     public interface IConnectionSettingsService
     {
         bool IsConnectionSettingsEditorAvailable(IProjectExplorerNode node);
-        ConnectionSettingsEditor GetConnectionSettingsEditor(IProjectExplorerNode node);
+        ISettingsEditor GetConnectionSettingsEditor(IProjectExplorerNode node);
     }
 
     [Service(typeof(IConnectionSettingsService))]
@@ -38,43 +38,42 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Services.Connection
     {
         private readonly ConnectionSettingsRepository settingsRepository;
 
-        private ConnectionSettingsEditor GetProjectConnectionSettingsEditor(
+        private ISettingsEditor GetProjectConnectionSettingsEditor(
             string projectId)
         {
-            return new ConnectionSettingsEditor(
+            return new SettingsEditor(
                 this.settingsRepository.GetProjectSettings(projectId),
-                settings => settingsRepository.SetProjectSettings((ProjectConnectionSettings)settings),
-                null);
+                settings => settingsRepository.SetProjectSettings((ProjectConnectionSettings)settings));
         }
 
-        private ConnectionSettingsEditor GetZoneConnectionSettingsEditor(
+        private SettingsEditor GetZoneConnectionSettingsEditor(
             string projectId, 
             string zoneId)
         {
-            return new ConnectionSettingsEditor(
-                this.settingsRepository.GetZoneSettings(
-                    projectId,
-                    zoneId),
-                settings => settingsRepository.SetZoneSettings(
-                    projectId,
-                    (ZoneConnectionSettings)settings),
-                GetProjectConnectionSettingsEditor(projectId));
+            var projectSettings = this.settingsRepository.GetProjectSettings(projectId);
+            var zoneSettings = this.settingsRepository.GetZoneSettings(projectId, zoneId);
+
+            return new SettingsEditor(
+                zoneSettings
+                    .ApplyDefaults(projectSettings),
+                settings => settingsRepository.SetZoneSettings((ZoneConnectionSettings)settings));
         }
 
-        private ConnectionSettingsEditor GetVmInstanceConnectionSettingsEditor(
+        private SettingsEditor GetVmInstanceConnectionSettingsEditor(
             string projectId,
             string zoneId,
             string instanceName)
         {
-            return new ConnectionSettingsEditor(
-                this.settingsRepository.GetVmInstanceSettings(
-                    projectId,
-                    instanceName),
+            var projectSettings = this.settingsRepository.GetProjectSettings(projectId);
+            var zoneSettings = this.settingsRepository.GetZoneSettings(projectId, zoneId);
+            var instanceSettings = this.settingsRepository.GetVmInstanceSettings(projectId, instanceName);
+
+            // TODO: make this prettier!
+
+            return new SettingsEditor(
+                instanceSettings.ApplyDefaults(zoneSettings.ApplyDefaults(projectSettings)),
                 settings => this.settingsRepository.SetVmInstanceSettings(
-                    projectId,
-                    (VmInstanceConnectionSettings)settings),
-                GetZoneConnectionSettingsEditor(
-                    projectId, zoneId));
+                    (VmInstanceConnectionSettings)settings));
         }
 
         //---------------------------------------------------------------------
@@ -103,7 +102,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Services.Connection
                    node is IProjectExplorerVmInstanceNode;
         }
 
-        public ConnectionSettingsEditor GetConnectionSettingsEditor(IProjectExplorerNode node)
+        public ISettingsEditor GetConnectionSettingsEditor(IProjectExplorerNode node)
         {
             if (node is IProjectExplorerProjectNode projectNode)
             {

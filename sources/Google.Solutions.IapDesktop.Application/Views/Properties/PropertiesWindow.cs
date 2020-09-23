@@ -83,6 +83,10 @@ namespace Google.Solutions.IapDesktop.Application.Views.Properties
                         oldObj.PropertyChanged -= RefreshOnPropertyChange;
                     }
 
+                    // TODO: Handle ISettingsCollection
+                    // TODO: implement reset
+                    // TODO: Test property update on cred generation
+
                     this.propertyGrid.SelectedObject = obj;
 
                     if (obj is INotifyPropertyChanged newObj)

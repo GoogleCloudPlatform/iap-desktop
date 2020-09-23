@@ -28,50 +28,12 @@ namespace Google.Solutions.IapDesktop.Application.Settings
 {
     public interface ISettingsCollection
     {
+        // TODO: Make strongly typed
         IEnumerable<ISetting> Settings { get; }
     }
 
     public static class SettingsCollectionExtensions
     {
-        private static IEnumerable<ISetting> Overlay(
-            ISettingsCollection baseSettings,
-            ISettingsCollection overlaySettings)
-        {
-            var overlaySettingsByKey = overlaySettings.Settings.ToDictionary(
-                s => s.Key,
-                s => s);
-
-            foreach (var baseSetting in baseSettings.Settings)
-            {
-                if (overlaySettingsByKey.TryGetValue(
-                    baseSetting.Key,
-                    out var overlaySetting))
-                {
-                    // Setting exists in both collections => overlay.
-                    overlaySettingsByKey.Remove(overlaySetting.Key);
-                    yield return baseSetting.OverlayBy(overlaySetting);
-                }
-                else
-                {
-                    // Setting only exists in base collection => keep.
-                    yield return baseSetting;
-                }
-            }
-
-            foreach (var overlaySetting in overlaySettingsByKey.Values)
-            {
-                // Setting only exists in overlay => add
-                yield return overlaySetting;
-            }
-        }
-
-        public static ISettingsCollection OverlayBy(
-            this ISettingsCollection baseSettings,
-            ISettingsCollection overlaySettings)
-        {
-            return new OverlayCollection(Overlay(baseSettings, overlaySettings));
-        }
-
         public static void ApplyValues(
             this ISettingsCollection settings,
             NameValueCollection values,

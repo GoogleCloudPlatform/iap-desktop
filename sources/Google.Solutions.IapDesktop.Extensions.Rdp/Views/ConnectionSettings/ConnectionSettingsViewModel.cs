@@ -35,7 +35,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Views.ConnectionSettings
         private readonly IConnectionSettingsService settingsService;
 
         private bool isInformationBarVisible = false;
-        private ConnectionSettingsEditor inspectedObject = null;
+        private SettingsEditor inspectedObject = null;
         private string windowTitle = DefaultWindowTitle;
 
         public string InformationText => "Changes only take effect after reconnecting";
@@ -64,7 +64,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Views.ConnectionSettings
             get => this.inspectedObject;
             private set
             {
-                this.inspectedObject = (ConnectionSettingsEditor)value;
+                this.inspectedObject = (SettingsEditor)value;
                 RaisePropertyChange();
             }
         }

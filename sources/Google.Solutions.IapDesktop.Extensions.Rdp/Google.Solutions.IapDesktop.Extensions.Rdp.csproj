@@ -90,7 +90,7 @@
     <Compile Include="Services\Tunnel\SameProcessRelayPolicy.cs" />
     <Compile Include="Services\Tunnel\TcpTable.cs" />
     <Compile Include="Services\Tunnel\UnsafeNativeMethods.cs" />
-    <Compile Include="Services\Connection\ConnectionSettingsEditor.cs" />
+    <Compile Include="Services\Connection\SettingsEditor.cs" />
     <Compile Include="Views\ConnectionSettings\ConnectionSettingsViewModel.cs" />
     <Compile Include="Views\ConnectionSettings\ConnectionSettingsWindow.cs">
       <SubType>Form</SubType>

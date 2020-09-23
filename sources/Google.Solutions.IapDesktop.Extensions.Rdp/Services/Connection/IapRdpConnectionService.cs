@@ -34,6 +34,8 @@ using System;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using Google.Solutions.IapDesktop.Extensions.Rdp.Views.RemoteDesktop;
+using Google.Solutions.IapDesktop.Extensions.Rdp.Services.Settings;
+using Google.Solutions.IapDesktop.Application.Settings;
 
 namespace Google.Solutions.IapDesktop.Extensions.Rdp.Services.Connection
 {
@@ -77,7 +79,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Services.Connection
 
                         // Give IAP the same timeout for probing as RDP itself.
                         // Note that the timeouts are not additive.
-                        var timeout = TimeSpan.FromSeconds(settings.ConnectionTimeout);
+                        var timeout = TimeSpan.FromSeconds(settings.ConnectionTimeout.IntValue);
 
                         return await this.tunnelBrokerService.ConnectAsync(
                                 destination, 
@@ -121,17 +123,21 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Services.Connection
             vmNode.Select();
 
             var settingsEditor = this.settingsService.GetConnectionSettingsEditor(vmNode);
+            var settings = (VmInstanceConnectionSettings)settingsEditor.Settings;
 
             await this.credentialPrompt.ShowCredentialsPromptAsync(
                     this.window,
                     vmNode.Reference,
-                    settingsEditor,
+                    settings,
                     true)
                 .ConfigureAwait(true);
 
+            // Persist new credentials.
+            settingsEditor.SaveChanges();
+
             await ConnectInstanceAsync(
                     vmNode.Reference,
-                    settingsEditor.CreateConnectionSettings(vmNode.Reference.Name))
+                    settings)
                 .ConfigureAwait(true);
         }
 
@@ -148,34 +154,26 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Services.Connection
                 is IProjectExplorerVmInstanceNode vmNode)
             {
                 // We have a full set of settings for this VM, so use that as basis
-                settings = this.settingsService.GetConnectionSettingsEditor(vmNode)
-                    .CreateConnectionSettings(vmNode.Reference.Name)
-                    .OverlayBy(url.Settings);
+                settings = (VmInstanceConnectionSettings)this.settingsService.GetConnectionSettingsEditor(vmNode).Settings;
+                
+                // Apply parameters from URL on top.
+                settings.ApplyValues(url.Parameters, true);
             }
             else
             {
-                settings = url.Settings;
+                settings = VmInstanceConnectionSettings.FromUrl(url);
             }
-
-            // We do not know anything other than what's in the URL.
-
-            // Create an ephemeral settings editor. We do not persist
-            // any changes.
-            var settingsEditor = new ConnectionSettingsEditor(
-                settings,
-                _ => { },
-                null);
 
             await this.credentialPrompt.ShowCredentialsPromptAsync(
                     this.window,
                     url.Instance,
-                    settingsEditor,
+                    settings,
                     false)
                 .ConfigureAwait(true);
 
             await ConnectInstanceAsync(
                     url.Instance,
-                    settingsEditor.CreateConnectionSettings(url.Instance.Name))
+                    settings)
                 .ConfigureAwait(true);
         }
     }

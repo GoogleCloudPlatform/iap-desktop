@@ -34,6 +34,7 @@ using System.Windows.Forms;
 using Google.Solutions.IapDesktop.Extensions.Rdp.Views.RemoteDesktop;
 using Google.Solutions.IapDesktop.Application.Services.Integration;
 using Google.Solutions.IapDesktop.Extensions.Rdp.Views.ConnectionSettings;
+using Google.Solutions.IapDesktop.Extensions.Rdp.Services.Settings;
 
 namespace Google.Solutions.IapDesktop.Extensions.Rdp.Services
 {
@@ -96,9 +97,11 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Services
                         .GenerateCredentialsAsync(
                             this.window,
                             vmNode.Reference,
-                            settingsEditor,
+                            (ConnectionSettingsBase)settingsEditor.Settings,
                             false)
                         .ConfigureAwait(true);
+
+                    settingsEditor.SaveChanges();
                 }
             }
             catch (Exception e) when (e.IsCancellation())

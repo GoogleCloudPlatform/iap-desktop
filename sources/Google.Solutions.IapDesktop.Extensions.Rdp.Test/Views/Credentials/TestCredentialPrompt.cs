@@ -35,6 +35,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using Google.Solutions.IapDesktop.Extensions.Rdp.Services.Connection;
 using Google.Solutions.IapDesktop.Extensions.Rdp.Views.ConnectionSettings;
+using Google.Solutions.IapDesktop.Extensions.Rdp.Services.Settings;
 
 namespace Google.Solutions.IapDesktop.Extensions.Rdp.Test.Views.Credentials
 {

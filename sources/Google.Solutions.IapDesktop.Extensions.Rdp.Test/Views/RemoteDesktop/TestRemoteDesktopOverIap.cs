@@ -33,6 +33,7 @@ using Google.Apis.Auth.OAuth2;
 using Google.Solutions.Common.Locator;
 using Google.Solutions.IapDesktop.Extensions.Rdp.Views.RemoteDesktop;
 using Google.Solutions.IapDesktop.Application.Test.Views;
+using Google.Solutions.IapDesktop.Extensions.Rdp.Services.Settings;
 
 namespace Google.Solutions.IapDesktop.Extensions.Rdp.Test.Views.RemoteDesktop
 {
@@ -52,19 +53,21 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Test.Views.RemoteDesktop
                 locator,
                 await credential))
             {
+                var settings = VmInstanceConnectionSettings.CreateNew(
+                    locator.ProjectId, 
+                    locator.Name);
+                settings.Username.StringValue = "wrong";
+                settings.Password.Value = SecureStringExtensions.FromClearText("wrong");
+                settings.AuthenticationLevel.EnumValue = RdpAuthenticationLevel.NoServerAuthentication;
+                settings.UserAuthenticationBehavior.EnumValue = RdpUserAuthenticationBehavior.AbortOnFailure;
+                settings.DesktopSize.EnumValue = RdpDesktopSize.ClientSize;
+
                 var rdpService = new RemoteDesktopConnectionBroker(this.serviceProvider);
                 var session = rdpService.Connect(
                     locator,
                     "localhost",
                     (ushort)tunnel.LocalPort,
-                    new VmInstanceConnectionSettings()
-                    {
-                        Username = "wrong",
-                        Password = SecureStringExtensions.FromClearText("wrong"),
-                        AuthenticationLevel = RdpAuthenticationLevel.NoServerAuthentication,
-                        UserAuthenticationBehavior = RdpUserAuthenticationBehavior.AbortOnFailure,
-                        DesktopSize = RdpDesktopSize.ClientSize
-                    });
+                    settings);
 
                 AwaitEvent<ConnectionFailedEvent>();
                 Assert.IsNotNull(this.ExceptionShown);
@@ -119,22 +122,24 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Test.Views.RemoteDesktop
                     CreateRandomUsername(),
                     CancellationToken.None);
 
+                var settings = VmInstanceConnectionSettings.CreateNew(
+                    locator.ProjectId,
+                    locator.Name);
+                settings.Username.StringValue = credentials.UserName;
+                settings.Password.Value = credentials.SecurePassword;
+                settings.ConnectionBar.EnumValue = connectionBarState;
+                settings.DesktopSize.EnumValue = desktopSize;
+                settings.AudioMode.EnumValue = audioMode;
+                settings.RedirectClipboard.EnumValue = redirectClipboard;
+                settings.AuthenticationLevel.EnumValue = RdpAuthenticationLevel.NoServerAuthentication;
+                settings.BitmapPersistence.EnumValue = RdpBitmapPersistence.Disabled;
+
                 var rdpService = new RemoteDesktopConnectionBroker(this.serviceProvider);
                 var session = rdpService.Connect(
                     locator,
                     "localhost",
                     (ushort)tunnel.LocalPort,
-                    new VmInstanceConnectionSettings()
-                    {
-                        Username = credentials.UserName,
-                        Password = credentials.SecurePassword,
-                        ConnectionBar = connectionBarState,
-                        DesktopSize = desktopSize,
-                        AudioMode = audioMode,
-                        RedirectClipboard = redirectClipboard,
-                        AuthenticationLevel = RdpAuthenticationLevel.NoServerAuthentication,
-                        BitmapPersistence = RdpBitmapPersistence.Disabled
-                    });
+                    settings);
 
                 AwaitEvent<ConnectionSuceededEvent>();
                 Assert.IsNull(this.ExceptionShown);
@@ -171,19 +176,21 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Test.Views.RemoteDesktop
                        CreateRandomUsername(),
                        CancellationToken.None);
 
+                var settings = VmInstanceConnectionSettings.CreateNew(
+                    locator.ProjectId,
+                    locator.Name);
+                settings.Username.StringValue = credentials.UserName;
+                settings.Password.Value = credentials.SecurePassword;
+                settings.AuthenticationLevel.EnumValue = RdpAuthenticationLevel.NoServerAuthentication;
+                settings.BitmapPersistence.EnumValue = RdpBitmapPersistence.Disabled;
+                settings.DesktopSize.EnumValue = RdpDesktopSize.ClientSize;
+
                 var rdpService = new RemoteDesktopConnectionBroker(this.serviceProvider);
                 var session = (RemoteDesktopPane)rdpService.Connect(
                     locator,
                     "localhost",
                     (ushort)tunnel.LocalPort,
-                    new VmInstanceConnectionSettings()
-                    {
-                        Username = credentials.UserName,
-                        Password = credentials.SecurePassword,
-                        AuthenticationLevel = RdpAuthenticationLevel.NoServerAuthentication,
-                        BitmapPersistence = RdpBitmapPersistence.Disabled,
-                        DesktopSize = RdpDesktopSize.ClientSize
-                    });
+                    settings);
 
                 AwaitEvent<ConnectionSuceededEvent>();
 

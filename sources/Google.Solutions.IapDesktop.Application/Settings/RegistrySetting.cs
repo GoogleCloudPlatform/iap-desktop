@@ -99,6 +99,12 @@ namespace Google.Solutions.IapDesktop.Application.Settings
         protected override bool IsValid(string value) => validate(value);
 
         protected override string Parse(string value) => value;
+
+        public string StringValue
+        {
+            get => (string)this.Value;
+            set => this.Value = value;
+        }
     }
 
     public class RegistrySecureStringSetting : SettingBase<SecureString>, IRegistrySetting
@@ -110,8 +116,6 @@ namespace Google.Solutions.IapDesktop.Application.Settings
             this.Key,
             this.protectionScope,
             (SecureString)this.Value);
-
-        public string ClearTextValue => ((SecureString)this.Value)?.AsClearText();
 
         private RegistrySecureStringSetting(
             string key,
@@ -216,10 +220,10 @@ namespace Google.Solutions.IapDesktop.Application.Settings
             }
         }
 
-        public bool BoolValue
+        public string ClearTextValue
         {
-            get => (bool)this.Value;
-            set => this.Value = value;
+            get => ((SecureString)this.Value)?.AsClearText();
+            set => this.Value = SecureStringExtensions.FromClearText(value);
         }
     }
 

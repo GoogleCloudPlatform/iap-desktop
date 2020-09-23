@@ -365,6 +365,42 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Services.Settings
 
             Debug.Assert(this.Settings.All(s => s != null));
         }
+
+        protected static void ApplyOverlay<T>(
+            T prototype,
+            ConnectionSettingsBase baseSettings,
+            ConnectionSettingsBase overlaySettings)
+            where T : ConnectionSettingsBase
+        {
+            prototype.Username = (RegistryStringSetting)
+                baseSettings.Username.OverlayBy(overlaySettings.Username);
+            prototype.Password = (RegistrySecureStringSetting)
+                baseSettings.Password.OverlayBy(overlaySettings.Password);
+            prototype.Domain = (RegistryStringSetting)
+                baseSettings.Domain.OverlayBy(overlaySettings.Domain);
+            prototype.ConnectionBar = (RegistryEnumSetting<RdpConnectionBarState>)
+                baseSettings.ConnectionBar.OverlayBy(overlaySettings.ConnectionBar);
+            prototype.DesktopSize = (RegistryEnumSetting<RdpDesktopSize>)
+                baseSettings.DesktopSize.OverlayBy(overlaySettings.DesktopSize);
+            prototype.AuthenticationLevel = (RegistryEnumSetting<RdpAuthenticationLevel>)
+                baseSettings.AuthenticationLevel.OverlayBy(overlaySettings.AuthenticationLevel);
+            prototype.ColorDepth = (RegistryEnumSetting<RdpColorDepth>)
+                baseSettings.ColorDepth.OverlayBy(overlaySettings.ColorDepth);
+            prototype.AudioMode = (RegistryEnumSetting<RdpAudioMode>)
+                baseSettings.AudioMode.OverlayBy(overlaySettings.AudioMode);
+            prototype.RedirectClipboard = (RegistryEnumSetting<RdpRedirectClipboard>)
+                baseSettings.RedirectClipboard.OverlayBy(overlaySettings.RedirectClipboard);
+            prototype.UserAuthenticationBehavior = (RegistryEnumSetting<RdpUserAuthenticationBehavior>)
+                baseSettings.UserAuthenticationBehavior.OverlayBy(overlaySettings.UserAuthenticationBehavior);
+            prototype.BitmapPersistence = (RegistryEnumSetting<RdpBitmapPersistence>)
+                baseSettings.BitmapPersistence.OverlayBy(overlaySettings.BitmapPersistence);
+            prototype.ConnectionTimeout = (RegistryDwordSetting)
+                baseSettings.ConnectionTimeout.OverlayBy(overlaySettings.ConnectionTimeout);
+            prototype.CredentialGenerationBehavior = (RegistryEnumSetting<RdpCredentialGenerationBehavior>)
+                baseSettings.CredentialGenerationBehavior.OverlayBy(overlaySettings.CredentialGenerationBehavior);
+
+            Debug.Assert(baseSettings.Settings.All(s => s != null));
+        }
     }
 
     //-------------------------------------------------------------------------
@@ -393,21 +429,34 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Services.Settings
             return settings;
         }
 
+        public static VmInstanceConnectionSettings CreateNew(
+            string projectId, 
+            string instanceName)
+        {
+            return FromKey(
+                projectId,
+                instanceName,
+                null);  // Apply defaults.
+        }
+
         public static VmInstanceConnectionSettings FromUrl(IapRdpUrl url)
         {
-            var settings = FromKey(
-                url.Instance.ProjectId, 
-                url.Instance.Name,
-                null);  // Apply defaults.
+            var settings = CreateNew(
+                url.Instance.ProjectId,
+                url.Instance.Name);
             
-            // TODO: Apply values from URL parameters.
-            //settings.ApplyValues(
-            //    url.Parameters,
-            //    true);
+            settings.ApplyValues(
+                url.Parameters,
+                true);
 
-            // Never allow the password to be set by a URL parameter.
-            settings.Password.Reset();
             return settings;
+        }
+
+        public VmInstanceConnectionSettings ApplyDefaults(ZoneConnectionSettings zoneSettings)
+        {
+            var prototype = new VmInstanceConnectionSettings(this.ProjectId, this.InstanceName);
+            ApplyOverlay(prototype, zoneSettings, this);
+            return prototype;
         }
     }
 
@@ -435,6 +484,13 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Services.Settings
             var settings = new ZoneConnectionSettings(projectId, zoneId);
             settings.InitializeFromKey(registryKey);
             return settings;
+        }
+
+        public ZoneConnectionSettings ApplyDefaults(ProjectConnectionSettings projectSettings)
+        {
+            var prototype = new ZoneConnectionSettings(this.ProjectId, this.ZoneId);
+            ApplyOverlay(prototype, projectSettings, this);
+            return prototype;
         }
     }
 
