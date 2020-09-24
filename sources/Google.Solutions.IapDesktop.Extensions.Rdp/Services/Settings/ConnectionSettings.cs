@@ -19,6 +19,7 @@
 // under the License.
 //
 
+using Google.Solutions.Common.Locator;
 using Google.Solutions.IapDesktop.Application.Settings;
 using Google.Solutions.IapDesktop.Application.Util;
 using Microsoft.Win32;
@@ -334,6 +335,11 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Services.Settings
                 instanceName,
                 null);  // Apply defaults.
         }
+
+        public static VmInstanceConnectionSettings CreateNew(InstanceLocator instance)
+            => CreateNew(
+                instance.ProjectId,
+                instance.Name);
 
         public static VmInstanceConnectionSettings FromUrl(IapRdpUrl url)
         {
