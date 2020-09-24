@@ -141,7 +141,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Views.RemoteDesktop
                 this.rdpClient.Domain = settings.Domain.StringValue;
                 this.rdpClient.UserName = settings.Username.StringValue;
                 advancedSettings.RDPPort = port;
-                advancedSettings.ClearTextPassword = settings.Password.ClearTextValue;
+                advancedSettings.ClearTextPassword = 
+                    settings.Password.ClearTextValue ?? string.Empty;
 
                 //
                 // Connection security settings.

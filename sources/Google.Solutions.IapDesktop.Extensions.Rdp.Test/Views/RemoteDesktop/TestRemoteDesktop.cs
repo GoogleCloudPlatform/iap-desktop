@@ -21,8 +21,8 @@
 
 using Google.Solutions.Common.Locator;
 using Google.Solutions.IapDesktop.Application.Services.Integration;
-using Google.Solutions.IapDesktop.Application.Services.Persistence;
 using Google.Solutions.IapDesktop.Application.Test.Views;
+using Google.Solutions.IapDesktop.Extensions.Rdp.Services.Settings;
 using Google.Solutions.IapDesktop.Extensions.Rdp.Views.RemoteDesktop;
 using NUnit.Framework;
 
@@ -34,54 +34,57 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Test.Views.RemoteDesktop
         private readonly InstanceLocator instanceReference =
             new InstanceLocator("project", "zone", "instance");
 
-        // TODO: Refactor tests
-        //[Test]
-        //public void WhenServerInvalid_ThenErrorIsShownAndWindowIsClosed()
-        //{
-        //    var rdpService = new RemoteDesktopConnectionBroker(this.serviceProvider);
-        //    rdpService.Connect(
-        //        this.instanceReference,
-        //        "invalid.corp",
-        //        3389,
-        //        new VmInstanceConnectionSettings());
+        [Test]
+        public void WhenServerInvalid_ThenErrorIsShownAndWindowIsClosed()
+        {
+            var settings = VmInstanceConnectionSettings.CreateNew(this.instanceReference);
 
-        //    AwaitEvent<ConnectionFailedEvent>();
-        //    Assert.IsInstanceOf(typeof(RdpDisconnectedException), this.ExceptionShown);
-        //    Assert.AreEqual(260, ((RdpDisconnectedException)this.ExceptionShown).DisconnectReason);
-        //}
+            var rdpService = new RemoteDesktopConnectionBroker(this.serviceProvider);
+            rdpService.Connect(
+                this.instanceReference,
+                "invalid.corp",
+                3389,
+                settings);
 
-        //[Test]
-        //public void WhenPortNotListening_ThenErrorIsShownAndWindowIsClosed()
-        //{
-        //    var rdpService = new RemoteDesktopConnectionBroker(this.serviceProvider);
-        //    rdpService.Connect(
-        //        this.instanceReference,
-        //        "localhost",
-        //        1,
-        //        new VmInstanceConnectionSettings()
-        //        {
-        //            ConnectionTimeout = 5
-        //        });
+            AwaitEvent<ConnectionFailedEvent>();
+            Assert.IsInstanceOf(typeof(RdpDisconnectedException), this.ExceptionShown);
+            Assert.AreEqual(260, ((RdpDisconnectedException)this.ExceptionShown).DisconnectReason);
+        }
 
-        //    AwaitEvent<ConnectionFailedEvent>();
-        //    Assert.IsInstanceOf(typeof(RdpDisconnectedException), this.ExceptionShown);
-        //    Assert.AreEqual(516, ((RdpDisconnectedException)this.ExceptionShown).DisconnectReason);
-        //}
+        [Test]
+        public void WhenPortNotListening_ThenErrorIsShownAndWindowIsClosed()
+        {
+            var settings = VmInstanceConnectionSettings.CreateNew(this.instanceReference);
+            settings.ConnectionTimeout.IntValue = 5;
 
-        //[Test]
-        //[Ignore("")]
-        //public void WhenWrongPort_ThenErrorIsShownAndWindowIsClosed()
-        //{
-        //    var rdpService = new RemoteDesktopConnectionBroker(this.serviceProvider);
-        //    rdpService.Connect(
-        //        this.instanceReference,
-        //        "localhost",
-        //        135,    // That one will be listening, but it is RPC, not RDP.
-        //        new VmInstanceConnectionSettings());
+            var rdpService = new RemoteDesktopConnectionBroker(this.serviceProvider);
+            rdpService.Connect(
+                this.instanceReference,
+                "localhost",
+                1,
+                settings);
 
-        //    AwaitEvent<ConnectionFailedEvent>();
-        //    Assert.IsInstanceOf(typeof(RdpDisconnectedException), this.ExceptionShown);
-        //    Assert.AreEqual(2308, ((RdpDisconnectedException)this.ExceptionShown).DisconnectReason);
-        //}
+            AwaitEvent<ConnectionFailedEvent>();
+            Assert.IsInstanceOf(typeof(RdpDisconnectedException), this.ExceptionShown);
+            Assert.AreEqual(516, ((RdpDisconnectedException)this.ExceptionShown).DisconnectReason);
+        }
+
+        [Test]
+        [Ignore("")]
+        public void WhenWrongPort_ThenErrorIsShownAndWindowIsClosed()
+        {
+            var settings = VmInstanceConnectionSettings.CreateNew(this.instanceReference);
+            
+            var rdpService = new RemoteDesktopConnectionBroker(this.serviceProvider);
+            rdpService.Connect(
+                this.instanceReference,
+                "localhost",
+                135,    // That one will be listening, but it is RPC, not RDP.
+                settings);
+
+            AwaitEvent<ConnectionFailedEvent>();
+            Assert.IsInstanceOf(typeof(RdpDisconnectedException), this.ExceptionShown);
+            Assert.AreEqual(2308, ((RdpDisconnectedException)this.ExceptionShown).DisconnectReason);
+        }
     }
 }

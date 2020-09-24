@@ -22,13 +22,11 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
-using System.Linq;
 
 namespace Google.Solutions.IapDesktop.Application.Settings
 {
     public interface ISettingsCollection
     {
-        // TODO: Make strongly typed
         IEnumerable<ISetting> Settings { get; }
     }
 
