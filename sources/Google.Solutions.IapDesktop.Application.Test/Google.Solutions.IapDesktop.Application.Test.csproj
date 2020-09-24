@@ -117,12 +117,10 @@
     <Compile Include="Util\TestHtmlClipboardFormat.cs" />
     <Compile Include="Util\TestLeastRecentlyUsedCache.cs" />
     <Compile Include="Util\TestRangeObservableCollection.cs" />
-    <Compile Include="Util\TestRegistryKeyMapper.cs" />
     <Compile Include="ObjectModel\MockEventService.cs" />
     <Compile Include="Services\Integration\TestJobService.cs" />
     <Compile Include="ObjectModel\TestServiceRegistry.cs" />
     <Compile Include="Util\TestIapRdpUrl.cs" />
-    <Compile Include="Util\TestPropertyMapper.cs" />
     <Compile Include="Views\TestMainForm.cs">
       <SubType>Form</SubType>
     </Compile>

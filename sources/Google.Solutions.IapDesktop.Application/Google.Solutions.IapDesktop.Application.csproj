@@ -182,12 +182,7 @@
     <Compile Include="Util\LeastRecentlyUsedCache.cs" />
     <Compile Include="Util\RangeObservableCollection.cs" />
     <Compile Include="Util\SecureStringExtensions.cs" />
-    <Compile Include="Services\Persistence\SettingRepositoryBase.cs" />
-    <Compile Include="Util\RegistryKeyMapper.cs" />
-    <Compile Include="Util\RegistryValueAttribute.cs" />
     <Compile Include="Util\IapRdpUrl.cs" />
-    <Compile Include="Util\MappedPropertyAttribute.cs" />
-    <Compile Include="Util\PropertyMapper.cs" />
     <Compile Include="Views\AboutWindow.cs">
       <SubType>Form</SubType>
     </Compile>
