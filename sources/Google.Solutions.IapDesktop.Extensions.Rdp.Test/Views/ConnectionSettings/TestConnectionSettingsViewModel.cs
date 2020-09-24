@@ -20,9 +20,11 @@
 //
 
 using Google.Solutions.Common.Test;
-using Google.Solutions.IapDesktop.Application.Services.Persistence;
+using Google.Solutions.IapDesktop.Application.Services.Integration;
+using Google.Solutions.IapDesktop.Application.Services.Settings;
 using Google.Solutions.IapDesktop.Application.Views.ProjectExplorer;
 using Google.Solutions.IapDesktop.Extensions.Rdp.Services.Connection;
+using Google.Solutions.IapDesktop.Extensions.Rdp.Services.Settings;
 using Google.Solutions.IapDesktop.Extensions.Rdp.Views.ConnectionSettings;
 using Microsoft.Win32;
 using Moq;
@@ -34,6 +36,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Test.Views.ConnectionSettin
     [TestFixture]
     public class TestConnectionSettingsViewModel : FixtureBase
     {
+        private const string SampleProjectId = "project-1";
         private const string TestKeyPath = @"Software\Google\__Test";
         private readonly RegistryKey hkcu = RegistryKey.OpenBaseKey(
             RegistryHive.CurrentUser,
@@ -41,135 +44,137 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Test.Views.ConnectionSettin
 
         private ConnectionSettingsService service;
 
-        // TODO: Refactor tests
+        [SetUp]
+        public void SetUp()
+        {
+            hkcu.DeleteSubKeyTree(TestKeyPath, false);
 
-        //[SetUp]
-        //public void SetUp()
-        //{
-        //    hkcu.DeleteSubKeyTree(TestKeyPath, false);
+            var projectRepository = new ProjectRepository(
+                hkcu.CreateSubKey(TestKeyPath),
+                new Mock<IEventService>().Object);
+            var settingsRepository = new ConnectionSettingsRepository(projectRepository);
+            this.service = new ConnectionSettingsService(settingsRepository);
 
-        //    var repository = new ConnectionSettingsRepository(hkcu.CreateSubKey(TestKeyPath));
-        //    repository.SetProjectSettings(new ProjectConnectionSettings()
-        //    {
-        //        ProjectId = "project-1",
-        //        Domain = "project-domain"
-        //    });
+            // Set some initial project settings.
+            projectRepository.AddProjectAsync(SampleProjectId).Wait();
 
-        //    this.service = new ConnectionSettingsService(repository);
-        //}
+            var projectSettings = settingsRepository.GetProjectSettings(SampleProjectId);
+            projectSettings.Domain.Value = "project-domain";
+            settingsRepository.SetProjectSettings(projectSettings);
+        }
 
-        ////---------------------------------------------------------------------
-        //// Properties.
-        ////---------------------------------------------------------------------
+        //---------------------------------------------------------------------
+        // Properties.
+        //---------------------------------------------------------------------
 
-        //[Test]
-        //public async Task WhenInstanceIsRunning_ThenInformationBarIsShown()
-        //{
-        //    var viewModel = new ConnectionSettingsViewModel(this.service);
+        [Test]
+        public async Task WhenInstanceIsRunning_ThenInformationBarIsShown()
+        {
+            var viewModel = new ConnectionSettingsViewModel(this.service);
 
-        //    var node = new Mock<IProjectExplorerVmInstanceNode>();
-        //    node.SetupGet(n => n.ProjectId).Returns("project-1");
-        //    node.SetupGet(n => n.ZoneId).Returns("zone-1");
-        //    node.SetupGet(n => n.InstanceName).Returns("instance-1");
-        //    node.SetupGet(n => n.IsConnected).Returns(true);
+            var node = new Mock<IProjectExplorerVmInstanceNode>();
+            node.SetupGet(n => n.ProjectId).Returns(SampleProjectId);
+            node.SetupGet(n => n.ZoneId).Returns("zone-1");
+            node.SetupGet(n => n.InstanceName).Returns("instance-1");
+            node.SetupGet(n => n.IsConnected).Returns(true);
 
-        //    await viewModel.SwitchToModelAsync(node.Object);
+            await viewModel.SwitchToModelAsync(node.Object);
 
-        //    Assert.IsTrue(viewModel.IsInformationBarVisible);
-        //}
+            Assert.IsTrue(viewModel.IsInformationBarVisible);
+        }
 
-        //[Test]
-        //public async Task WhenInstanceIsNotRunning_ThenInformationBarIsNotShown()
-        //{
-        //    var viewModel = new ConnectionSettingsViewModel(this.service);
+        [Test]
+        public async Task WhenInstanceIsNotRunning_ThenInformationBarIsNotShown()
+        {
+            var viewModel = new ConnectionSettingsViewModel(this.service);
 
-        //    var node = new Mock<IProjectExplorerVmInstanceNode>();
-        //    node.SetupGet(n => n.ProjectId).Returns("project-1");
-        //    node.SetupGet(n => n.ZoneId).Returns("zone-1");
-        //    node.SetupGet(n => n.InstanceName).Returns("instance-1");
-        //    node.SetupGet(n => n.IsConnected).Returns(false);
+            var node = new Mock<IProjectExplorerVmInstanceNode>();
+            node.SetupGet(n => n.ProjectId).Returns(SampleProjectId);
+            node.SetupGet(n => n.ZoneId).Returns("zone-1");
+            node.SetupGet(n => n.InstanceName).Returns("instance-1");
+            node.SetupGet(n => n.IsConnected).Returns(false);
 
-        //    await viewModel.SwitchToModelAsync(node.Object);
+            await viewModel.SwitchToModelAsync(node.Object);
 
-        //    Assert.IsFalse(viewModel.IsInformationBarVisible);
-        //}
+            Assert.IsFalse(viewModel.IsInformationBarVisible);
+        }
 
-        ////---------------------------------------------------------------------
-        //// Model switching.
-        ////---------------------------------------------------------------------
+        //---------------------------------------------------------------------
+        // Model switching.
+        //---------------------------------------------------------------------
 
-        //[Test]
-        //public async Task WhenSwitchingToCloudNode_ThenGridIsDisabled()
-        //{
-        //    var viewModel = new ConnectionSettingsViewModel(this.service);
+        [Test]
+        public async Task WhenSwitchingToCloudNode_ThenGridIsDisabled()
+        {
+            var viewModel = new ConnectionSettingsViewModel(this.service);
 
-        //    var node = new Mock<IProjectExplorerCloudNode>();
-        //    await viewModel.SwitchToModelAsync(node.Object);
+            var node = new Mock<IProjectExplorerCloudNode>();
+            await viewModel.SwitchToModelAsync(node.Object);
 
-        //    Assert.IsFalse(viewModel.IsInformationBarVisible);
-        //    Assert.IsNull(viewModel.InspectedObject);
-        //    Assert.AreEqual(ConnectionSettingsViewModel.DefaultWindowTitle, viewModel.WindowTitle);
-        //}
+            Assert.IsFalse(viewModel.IsInformationBarVisible);
+            Assert.IsNull(viewModel.InspectedObject);
+            Assert.AreEqual(ConnectionSettingsViewModel.DefaultWindowTitle, viewModel.WindowTitle);
+        }
 
-        //[Test]
-        //public async Task WhenSwitchingToProjectNode_ThenGridIsPopulated()
-        //{
-        //    var viewModel = new ConnectionSettingsViewModel(this.service);
+        [Test]
+        public async Task WhenSwitchingToProjectNode_ThenGridIsPopulated()
+        {
+            var viewModel = new ConnectionSettingsViewModel(this.service);
 
-        //    var node = new Mock<IProjectExplorerProjectNode>();
-        //    node.SetupGet(n => n.ProjectId).Returns("project-1");
-        //    node.SetupGet(n => n.DisplayName).Returns("display");
+            var node = new Mock<IProjectExplorerProjectNode>();
+            node.SetupGet(n => n.ProjectId).Returns(SampleProjectId);
+            node.SetupGet(n => n.DisplayName).Returns("display");
 
-        //    await viewModel.SwitchToModelAsync(node.Object);
+            await viewModel.SwitchToModelAsync(node.Object);
 
-        //    // Switch again.
-        //    await viewModel.SwitchToModelAsync(node.Object);
+            // Switch again.
+            await viewModel.SwitchToModelAsync(node.Object);
 
-        //    Assert.IsNotNull(viewModel.InspectedObject);
-        //    StringAssert.Contains(ConnectionSettingsViewModel.DefaultWindowTitle, viewModel.WindowTitle);
-        //    StringAssert.Contains("display", viewModel.WindowTitle);
-        //}
+            Assert.IsNotNull(viewModel.InspectedObject);
+            StringAssert.Contains(ConnectionSettingsViewModel.DefaultWindowTitle, viewModel.WindowTitle);
+            StringAssert.Contains("display", viewModel.WindowTitle);
+        }
 
-        //[Test]
-        //public async Task WhenSwitchingToZoneNode_ThenGridIsPopulated()
-        //{
-        //    var viewModel = new ConnectionSettingsViewModel(this.service);
+        [Test]
+        public async Task WhenSwitchingToZoneNode_ThenGridIsPopulated()
+        {
+            var viewModel = new ConnectionSettingsViewModel(this.service);
 
-        //    var node = new Mock<IProjectExplorerZoneNode>();
-        //    node.SetupGet(n => n.ProjectId).Returns("project-1");
-        //    node.SetupGet(n => n.ZoneId).Returns("zone-1");
-        //    node.SetupGet(n => n.DisplayName).Returns("display");
+            var node = new Mock<IProjectExplorerZoneNode>();
+            node.SetupGet(n => n.ProjectId).Returns(SampleProjectId);
+            node.SetupGet(n => n.ZoneId).Returns("zone-1");
+            node.SetupGet(n => n.DisplayName).Returns("display");
 
-        //    await viewModel.SwitchToModelAsync(node.Object);
+            await viewModel.SwitchToModelAsync(node.Object);
 
-        //    // Switch again.
-        //    await viewModel.SwitchToModelAsync(node.Object);
+            // Switch again.
+            await viewModel.SwitchToModelAsync(node.Object);
 
-        //    Assert.IsNotNull(viewModel.InspectedObject);
-        //    StringAssert.Contains(ConnectionSettingsViewModel.DefaultWindowTitle, viewModel.WindowTitle);
-        //    StringAssert.Contains("display", viewModel.WindowTitle);
-        //}
+            Assert.IsNotNull(viewModel.InspectedObject);
+            StringAssert.Contains(ConnectionSettingsViewModel.DefaultWindowTitle, viewModel.WindowTitle);
+            StringAssert.Contains("display", viewModel.WindowTitle);
+        }
 
-        //[Test]
-        //public async Task WhenSwitchingToInstanceNode_ThenGridIsPopulated()
-        //{
-        //    var viewModel = new ConnectionSettingsViewModel(this.service);
+        [Test]
+        public async Task WhenSwitchingToInstanceNode_ThenGridIsPopulated()
+        {
+            var viewModel = new ConnectionSettingsViewModel(this.service);
 
-        //    var node = new Mock<IProjectExplorerVmInstanceNode>();
-        //    node.SetupGet(n => n.ProjectId).Returns("project-1");
-        //    node.SetupGet(n => n.ZoneId).Returns("zone-1");
-        //    node.SetupGet(n => n.InstanceName).Returns("instance-1");
-        //    node.SetupGet(n => n.DisplayName).Returns("display");
-        //    node.SetupGet(n => n.IsConnected).Returns(false);
+            var node = new Mock<IProjectExplorerVmInstanceNode>();
+            node.SetupGet(n => n.ProjectId).Returns(SampleProjectId);
+            node.SetupGet(n => n.ZoneId).Returns("zone-1");
+            node.SetupGet(n => n.InstanceName).Returns("instance-1");
+            node.SetupGet(n => n.DisplayName).Returns("display");
+            node.SetupGet(n => n.IsConnected).Returns(false);
 
-        //    await viewModel.SwitchToModelAsync(node.Object);
+            await viewModel.SwitchToModelAsync(node.Object);
 
-        //    // Switch again.
-        //    await viewModel.SwitchToModelAsync(node.Object);
+            // Switch again.
+            await viewModel.SwitchToModelAsync(node.Object);
 
-        //    Assert.IsNotNull(viewModel.InspectedObject);
-        //    StringAssert.Contains(ConnectionSettingsViewModel.DefaultWindowTitle, viewModel.WindowTitle);
-        //    StringAssert.Contains("display", viewModel.WindowTitle);
-        //}
+            Assert.IsNotNull(viewModel.InspectedObject);
+            StringAssert.Contains(ConnectionSettingsViewModel.DefaultWindowTitle, viewModel.WindowTitle);
+            StringAssert.Contains("display", viewModel.WindowTitle);
+        }
     }
 }

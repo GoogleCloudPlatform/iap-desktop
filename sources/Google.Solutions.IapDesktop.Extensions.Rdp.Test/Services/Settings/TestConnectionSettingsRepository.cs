@@ -21,7 +21,6 @@
 
 using Google.Solutions.Common.Test;
 using Google.Solutions.IapDesktop.Application.Services.Integration;
-using Google.Solutions.IapDesktop.Application.Services.Persistence;
 using Google.Solutions.IapDesktop.Application.Services.Settings;
 using Google.Solutions.IapDesktop.Extensions.Rdp.Services.Settings;
 using Microsoft.Win32;
@@ -41,8 +40,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Test.Services.Settings
 
         private ProjectRepository projectRepository;
 
-        // TODO: un-qualify
-        private Google.Solutions.IapDesktop.Extensions.Rdp.Services.Settings.ConnectionSettingsRepository repository;
+        private ConnectionSettingsRepository repository;
 
         [SetUp]
         public void SetUp()
@@ -54,7 +52,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Test.Services.Settings
             this.projectRepository = new ProjectRepository(
                 baseKey,
                 new Mock<IEventService>().Object);
-            this.repository = new Google.Solutions.IapDesktop.Extensions.Rdp.Services.Settings.ConnectionSettingsRepository(
+            this.repository = new ConnectionSettingsRepository(
                 this.projectRepository);
         }
 
