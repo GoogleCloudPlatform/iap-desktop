@@ -54,8 +54,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Services.Connection
             var zoneSettings = this.settingsRepository.GetZoneSettings(projectId, zoneId);
 
             return new SettingsEditor(
-                zoneSettings
-                    .ApplyDefaults(projectSettings),
+                projectSettings
+                    .OverlayBy(zoneSettings),
                 settings => settingsRepository.SetZoneSettings((ZoneConnectionSettings)settings));
         }
 
@@ -68,10 +68,10 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Services.Connection
             var zoneSettings = this.settingsRepository.GetZoneSettings(projectId, zoneId);
             var instanceSettings = this.settingsRepository.GetVmInstanceSettings(projectId, instanceName);
 
-            // TODO: make this prettier!
-
             return new SettingsEditor(
-                instanceSettings.ApplyDefaults(zoneSettings.ApplyDefaults(projectSettings)),
+                projectSettings
+                    .OverlayBy(zoneSettings)
+                    .OverlayBy(instanceSettings),
                 settings => this.settingsRepository.SetVmInstanceSettings(
                     (VmInstanceConnectionSettings)settings));
         }
