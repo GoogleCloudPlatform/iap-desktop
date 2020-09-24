@@ -41,6 +41,8 @@ namespace Google.Solutions.IapDesktop.Application.Settings
 
         public string Category { get; }
 
+        public Type ValueType => typeof(T);
+
         //---------------------------------------------------------------------
         // Value.
         //---------------------------------------------------------------------

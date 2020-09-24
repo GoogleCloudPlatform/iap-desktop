@@ -21,10 +21,8 @@
 
 using Google.Solutions.IapDesktop.Application.ObjectModel;
 using Google.Solutions.IapDesktop.Application.Views.ProjectExplorer;
-using Google.Solutions.IapDesktop.Extensions.Rdp.Services.Connection;
 using System;
 
-// TODO: Merge namespaces
 namespace Google.Solutions.IapDesktop.Extensions.Rdp.Services.Connection
 {
     public interface IConnectionSettingsService

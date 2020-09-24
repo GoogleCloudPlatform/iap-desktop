@@ -169,6 +169,7 @@
     <Compile Include="Views\Properties\PropertiesWindow.Designer.cs">
       <DependentUpon>PropertiesWindow.cs</DependentUpon>
     </Compile>
+    <Compile Include="Views\Properties\SettingsCollectionTypeDescriptor.cs" />
     <Compile Include="Views\SlowLoadingPane.cs">
       <SubType>Form</SubType>
     </Compile>

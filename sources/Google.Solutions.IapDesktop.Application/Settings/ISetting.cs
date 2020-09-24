@@ -19,6 +19,7 @@
 // under the License.
 //
 
+using System;
 using System.Collections.Generic;
 
 namespace Google.Solutions.IapDesktop.Application.Settings
@@ -34,6 +35,8 @@ namespace Google.Solutions.IapDesktop.Application.Settings
         bool IsDirty { get; }
         ISetting OverlayBy(ISetting setting);
         void Reset();
+
+        Type ValueType { get; }
     }
 
     public interface ISetting<T> : ISetting

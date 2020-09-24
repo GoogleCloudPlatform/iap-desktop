@@ -110,8 +110,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Views.Credentials
             settings.Username.StringValue = credentials.UserName;
             settings.Password.ClearTextValue = credentials.Password;
             settings.Domain.StringValue = null;
-            
-            // TODO: validate!!  settings.SaveChanges();
         }
 
         public Task<bool> IsGrantedPermissionToGenerateCredentials(InstanceLocator instance)
