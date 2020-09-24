@@ -23,7 +23,6 @@ using Google.Solutions.Common.Locator;
 using Google.Solutions.Common.Test;
 using Google.Solutions.IapDesktop.Application.ObjectModel;
 using Google.Solutions.IapDesktop.Application.Services.Integration;
-using Google.Solutions.IapDesktop.Application.Services.Persistence;
 using Google.Solutions.IapDesktop.Application.Views;
 using Google.Solutions.IapDesktop.Application.Views.ProjectExplorer;
 using Google.Solutions.IapDesktop.Application.Util;
@@ -39,6 +38,7 @@ using System.Windows.Forms;
 using Google.Solutions.IapTunneling.Iap;
 using Google.Solutions.IapDesktop.Extensions.Rdp.Views.RemoteDesktop;
 using Google.Solutions.IapDesktop.Extensions.Rdp.Views.ConnectionSettings;
+using Google.Solutions.IapDesktop.Extensions.Rdp.Services.Settings;
 
 namespace Google.Solutions.IapDesktop.Extensions.Rdp.Test.Services.Connection
 {
@@ -67,134 +67,127 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Test.Services.Connection
             this.serviceRegistry.AddMock<IMainForm>();
         }
 
-        // TODO: Refactor tests
+        [Test]
+        public async Task WhenConnectingByUrlWithoutUsernameAndNoCredentialsExist_ThenConnectionIsMadeWithoutUsername()
+        {
+            var settingsService = this.serviceRegistry.AddMock<IConnectionSettingsService>();
+            this.serviceRegistry.AddMock<ICredentialPrompt>()
+                .Setup(p => p.ShowCredentialsPromptAsync(
+                    It.IsAny<IWin32Window>(),
+                    It.IsAny<InstanceLocator>(),
+                    It.IsAny<ConnectionSettingsBase>(),
+                    It.IsAny<bool>())); // Nop -> Connect without configuring credentials.
+            this.serviceRegistry.AddMock<IProjectExplorer>()
+                .Setup(p => p.TryFindNode(
+                    It.IsAny<InstanceLocator>()))
+                .Returns<VmInstanceNode>(null); // Not found
 
-        //[Test]
-        //public async Task WhenConnectingByUrlWithoutUsernameAndNoCredentialsExist_ThenConnectionIsMadeWithoutUsername()
-        //{
-        //    var settingsService = this.serviceRegistry.AddMock<IConnectionSettingsService>();
-        //    this.serviceRegistry.AddMock<ICredentialPrompt>()
-        //        .Setup(p => p.ShowCredentialsPromptAsync(
-        //            It.IsAny<IWin32Window>(),
-        //            It.IsAny<InstanceLocator>(),
-        //            It.IsAny<ConnectionSettingsEditor>(),
-        //            It.IsAny<bool>())); // Nop -> Connect without configuring credentials.
-        //    this.serviceRegistry.AddMock<IProjectExplorer>()
-        //        .Setup(p => p.TryFindNode(
-        //            It.IsAny<InstanceLocator>()))
-        //        .Returns<VmInstanceNode>(null); // Not found
+            var remoteDesktopService = new Mock<IRemoteDesktopConnectionBroker>();
+            remoteDesktopService.Setup(s => s.Connect(
+                It.IsAny<InstanceLocator>(),
+                "localhost",
+                It.IsAny<ushort>(),
+                It.IsAny<VmInstanceConnectionSettings>())).Returns<IRemoteDesktopSession>(null);
 
-        //    var remoteDesktopService = new Mock<IRemoteDesktopConnectionBroker>();
-        //    remoteDesktopService.Setup(s => s.Connect(
-        //        It.IsAny<InstanceLocator>(),
-        //        "localhost",
-        //        It.IsAny<ushort>(),
-        //        It.IsAny<VmInstanceConnectionSettings>())).Returns<IRemoteDesktopSession>(null);
+            this.serviceRegistry.AddSingleton<IRemoteDesktopConnectionBroker>(remoteDesktopService.Object);
 
-        //    this.serviceRegistry.AddSingleton<IRemoteDesktopConnectionBroker>(remoteDesktopService.Object);
+            var service = new IapRdpConnectionService(this.serviceRegistry);
+            await service.ActivateOrConnectInstanceAsync(
+                IapRdpUrl.FromString("iap-rdp:///project/us-central-1/instance"));
 
-        //    var service = new IapRdpConnectionService(this.serviceRegistry);
-        //    await service.ActivateOrConnectInstanceAsync(
-        //        IapRdpUrl.FromString("iap-rdp:///project/us-central-1/instance"));
+            remoteDesktopService.Verify(s => s.Connect(
+                It.IsAny<InstanceLocator>(),
+                "localhost",
+                It.IsAny<ushort>(),
+                It.Is<VmInstanceConnectionSettings>(i => i.Username.Value == null)), Times.Once);
+            settingsService.Verify(s => s.GetConnectionSettings(
+                It.IsAny<IProjectExplorerNode>()), Times.Never);
+        }
 
-        //    remoteDesktopService.Verify(s => s.Connect(
-        //        It.IsAny<InstanceLocator>(),
-        //        "localhost",
-        //        It.IsAny<ushort>(),
-        //        It.Is<VmInstanceConnectionSettings>(i => i.Username == null)), Times.Once);
-        //    settingsService.Verify(s => s.GetConnectionSettingsEditor(
-        //        It.IsAny<IProjectExplorerNode>()), Times.Never);
-        //}
+        [Test]
+        public async Task WhenConnectingByUrlWithUsernameAndNoCredentialsExist_ThenConnectionIsMadeWithThisUsername()
+        {
+            var settingsService = this.serviceRegistry.AddMock<IConnectionSettingsService>();
+            this.serviceRegistry.AddMock<ICredentialPrompt>()
+                .Setup(p => p.ShowCredentialsPromptAsync(
+                    It.IsAny<IWin32Window>(),
+                    It.IsAny<InstanceLocator>(),
+                    It.IsAny<ConnectionSettingsBase>(),
+                    It.IsAny<bool>())); // Nop -> Connect without configuring credentials.
+            this.serviceRegistry.AddMock<IProjectExplorer>()
+                .Setup(p => p.TryFindNode(
+                    It.IsAny<InstanceLocator>()))
+                .Returns<VmInstanceNode>(null); // Not found
 
-        //[Test]
-        //public async Task WhenConnectingByUrlWithUsernameAndNoCredentialsExist_ThenConnectionIsMadeWithThisUsername()
-        //{
-        //    var settingsService = this.serviceRegistry.AddMock<IConnectionSettingsService>();
-        //    this.serviceRegistry.AddMock<ICredentialPrompt>()
-        //        .Setup(p => p.ShowCredentialsPromptAsync(
-        //            It.IsAny<IWin32Window>(),
-        //            It.IsAny<InstanceLocator>(),
-        //            It.IsAny<ConnectionSettingsEditor>(),
-        //            It.IsAny<bool>())); // Nop -> Connect without configuring credentials.
-        //    this.serviceRegistry.AddMock<IProjectExplorer>()
-        //        .Setup(p => p.TryFindNode(
-        //            It.IsAny<InstanceLocator>()))
-        //        .Returns<VmInstanceNode>(null); // Not found
+            var remoteDesktopService = new Mock<IRemoteDesktopConnectionBroker>();
+            remoteDesktopService.Setup(s => s.Connect(
+                It.IsAny<InstanceLocator>(),
+                "localhost",
+                It.IsAny<ushort>(),
+                It.IsAny<VmInstanceConnectionSettings>())).Returns<IRemoteDesktopSession>(null);
 
-        //    var remoteDesktopService = new Mock<IRemoteDesktopConnectionBroker>();
-        //    remoteDesktopService.Setup(s => s.Connect(
-        //        It.IsAny<InstanceLocator>(),
-        //        "localhost",
-        //        It.IsAny<ushort>(),
-        //        It.IsAny<VmInstanceConnectionSettings>())).Returns<IRemoteDesktopSession>(null);
+            this.serviceRegistry.AddSingleton<IRemoteDesktopConnectionBroker>(remoteDesktopService.Object);
 
-        //    this.serviceRegistry.AddSingleton<IRemoteDesktopConnectionBroker>(remoteDesktopService.Object);
+            var service = new IapRdpConnectionService(this.serviceRegistry);
+            await service.ActivateOrConnectInstanceAsync(
+                IapRdpUrl.FromString("iap-rdp:///project/us-central-1/instance?username=john%20doe"));
 
-        //    var service = new IapRdpConnectionService(this.serviceRegistry);
-        //    await service.ActivateOrConnectInstanceAsync(
-        //        IapRdpUrl.FromString("iap-rdp:///project/us-central-1/instance?username=john%20doe"));
+            remoteDesktopService.Verify(s => s.Connect(
+                It.IsAny<InstanceLocator>(),
+                "localhost",
+                It.IsAny<ushort>(),
+                It.Is<VmInstanceConnectionSettings>(i => i.Username.StringValue == "john doe")), Times.Once);
+            settingsService.Verify(s => s.GetConnectionSettings(
+                It.IsAny<IProjectExplorerNode>()), Times.Never);
+        }
 
-        //    remoteDesktopService.Verify(s => s.Connect(
-        //        It.IsAny<InstanceLocator>(),
-        //        "localhost",
-        //        It.IsAny<ushort>(),
-        //        It.Is<VmInstanceConnectionSettings>(i => i.Username == "john doe")), Times.Once);
-        //    settingsService.Verify(s => s.GetConnectionSettingsEditor(
-        //        It.IsAny<IProjectExplorerNode>()), Times.Never);
-        //}
+        [Test]
+        public async Task WhenConnectingByUrlWithUsernameAndCredentialsExist_ThenConnectionIsMadeWithUsernameFromUrl()
+        {
+            var settings = VmInstanceConnectionSettings.CreateNew("project", "instance-1");
+            settings.Username.Value = "existinguser";
+            settings.Password.Value = SecureStringExtensions.FromClearText("password");
 
-        //[Test]
-        //public async Task WhenConnectingByUrlWithUsernameAndCredentialsExist_ThenConnectionIsMadeWithUsernameFromUrl()
-        //{
-        //    var settings = new VmInstanceConnectionSettings()
-        //    {
-        //        Username = "existinguser",
-        //        Password = SecureStringExtensions.FromClearText("password")
-        //    };
+            var settingsService = this.serviceRegistry.AddMock<IConnectionSettingsService>();
+            settingsService.Setup(s => s.GetConnectionSettings(
+                    It.IsAny<IProjectExplorerNode>()))
+                .Returns(settings);
 
-        //    var settingsService = this.serviceRegistry.AddMock<IConnectionSettingsService>();
-        //    settingsService.Setup(s => s.GetConnectionSettingsEditor(
-        //            It.IsAny<IProjectExplorerNode>()))
-        //        .Returns(new ConnectionSettingsEditor(
-        //            settings,
-        //            _ => { },
-        //            null));
+            var vmNode = new Mock<IProjectExplorerVmInstanceNode>();
+            vmNode.SetupGet(n => n.Reference)
+                .Returns(new InstanceLocator("project-1", "zone-1", "instance-1"));
 
-        //    var vmNode = new Mock<IProjectExplorerVmInstanceNode>();
-        //    vmNode.SetupGet(n => n.Reference)
-        //        .Returns(new InstanceLocator("project-1", "zone-1", "instance-1"));
+            this.serviceRegistry.AddMock<ICredentialPrompt>()
+                .Setup(p => p.ShowCredentialsPromptAsync(
+                    It.IsAny<IWin32Window>(),
+                    It.IsAny<InstanceLocator>(),
+                    It.IsAny<ConnectionSettingsBase>(),
+                    It.IsAny<bool>()));
+            this.serviceRegistry.AddMock<IProjectExplorer>()
+                .Setup(p => p.TryFindNode(
+                    It.IsAny<InstanceLocator>()))
+                .Returns(vmNode.Object);
 
-        //    this.serviceRegistry.AddMock<ICredentialPrompt>()
-        //        .Setup(p => p.ShowCredentialsPromptAsync(
-        //            It.IsAny<IWin32Window>(),
-        //            It.IsAny<InstanceLocator>(),
-        //            It.IsAny<ConnectionSettingsEditor>(),
-        //            It.IsAny<bool>()));
-        //    this.serviceRegistry.AddMock<IProjectExplorer>()
-        //        .Setup(p => p.TryFindNode(
-        //            It.IsAny<InstanceLocator>()))
-        //        .Returns(vmNode.Object);
+            var remoteDesktopService = new Mock<IRemoteDesktopConnectionBroker>();
+            remoteDesktopService.Setup(s => s.Connect(
+                It.IsAny<InstanceLocator>(),
+                "localhost",
+                It.IsAny<ushort>(),
+                It.IsAny<VmInstanceConnectionSettings>())).Returns<IRemoteDesktopSession>(null);
 
-        //    var remoteDesktopService = new Mock<IRemoteDesktopConnectionBroker>();
-        //    remoteDesktopService.Setup(s => s.Connect(
-        //        It.IsAny<InstanceLocator>(),
-        //        "localhost",
-        //        It.IsAny<ushort>(),
-        //        It.IsAny<VmInstanceConnectionSettings>())).Returns<IRemoteDesktopSession>(null);
+            this.serviceRegistry.AddSingleton<IRemoteDesktopConnectionBroker>(remoteDesktopService.Object);
 
-        //    this.serviceRegistry.AddSingleton<IRemoteDesktopConnectionBroker>(remoteDesktopService.Object);
+            var service = new IapRdpConnectionService(this.serviceRegistry);
+            await service.ActivateOrConnectInstanceAsync(
+                IapRdpUrl.FromString("iap-rdp:///project/us-central-1/instance-1?username=john%20doe"));
 
-        //    var service = new IapRdpConnectionService(this.serviceRegistry);
-        //    await service.ActivateOrConnectInstanceAsync(
-        //        IapRdpUrl.FromString("iap-rdp:///project/us-central-1/instance-1?username=john%20doe"));
-
-        //    remoteDesktopService.Verify(s => s.Connect(
-        //        It.IsAny<InstanceLocator>(),
-        //        "localhost",
-        //        It.IsAny<ushort>(),
-        //        It.Is<VmInstanceConnectionSettings>(i => i.Username == "john doe")), Times.Once);
-        //    settingsService.Verify(s => s.GetConnectionSettingsEditor(
-        //        It.IsAny<IProjectExplorerNode>()), Times.Once);
-        //}
+            remoteDesktopService.Verify(s => s.Connect(
+                It.IsAny<InstanceLocator>(),
+                "localhost",
+                It.IsAny<ushort>(),
+                It.Is<VmInstanceConnectionSettings>(i => i.Username.StringValue == "john doe")), Times.Once);
+            settingsService.Verify(s => s.GetConnectionSettings(
+                It.IsAny<IProjectExplorerNode>()), Times.Once);
+        }
     }
 }
