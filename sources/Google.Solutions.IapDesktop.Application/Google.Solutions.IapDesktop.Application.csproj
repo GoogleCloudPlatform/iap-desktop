@@ -132,7 +132,6 @@
     <Compile Include="Services\Settings\ProjectRepository.cs" />
     <Compile Include="Services\Settings\SettingRepositoryBase.cs" />
     <Compile Include="Settings\ISetting.cs" />
-    <Compile Include="Settings\ISettingsCollection.cs" />
     <Compile Include="Settings\RegistrySetting.cs" />
     <Compile Include="Settings\SettingBase.cs" />
     <Compile Include="Util\ByteSizeFormatter.cs" />

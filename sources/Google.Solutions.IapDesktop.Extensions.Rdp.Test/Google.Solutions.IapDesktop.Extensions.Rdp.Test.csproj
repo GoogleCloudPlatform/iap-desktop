@@ -92,6 +92,7 @@
     <Compile Include="Services\Connection\TestConnectionSettingsService.cs" />
     <Compile Include="Services\Connection\TestIapRdpConnectionService.cs" />
     <Compile Include="Services\Connection\TestConnectionSettingsRepository.cs" />
+    <Compile Include="Services\Connection\TestIapRdpUrlConnectionSettings.cs" />
     <Compile Include="Services\Tunnel\TestTcpTable.cs" />
     <Compile Include="Views\ConnectionSettings\TestConnectionSettingsViewModel.cs" />
     <Compile Include="Views\Credentials\TestAuthorizationExtensions.cs" />

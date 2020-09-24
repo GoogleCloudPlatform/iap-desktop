@@ -19,6 +19,8 @@
 // under the License.
 //
 
+using System.Collections.Generic;
+
 namespace Google.Solutions.IapDesktop.Application.Settings
 {
     public interface ISetting
@@ -38,5 +40,10 @@ namespace Google.Solutions.IapDesktop.Application.Settings
     {
         T DefaultValue { get; }
         ISetting<T> OverlayBy(ISetting<T> setting);
+    }
+
+    public interface ISettingsCollection
+    {
+        IEnumerable<ISetting> Settings { get; }
     }
 }

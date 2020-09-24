@@ -23,7 +23,9 @@ using Google.Solutions.Common.Locator;
 using Google.Solutions.IapDesktop.Application.Settings;
 using Google.Solutions.IapDesktop.Application.Util;
 using Microsoft.Win32;
+using System;
 using System.Collections.Generic;
+using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
@@ -315,6 +317,17 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Services.Connection
             this.InstanceName = instanceName;
         }
 
+        protected VmInstanceConnectionSettings ApplyDefaults(ZoneConnectionSettings zoneSettings)
+        {
+            var prototype = new VmInstanceConnectionSettings(this.ProjectId, this.InstanceName);
+            ApplyOverlay(prototype, zoneSettings, this);
+            return prototype;
+        }
+
+        //-------------------------------------------------------------------------
+        // Create.
+        //-------------------------------------------------------------------------
+        
         public static VmInstanceConnectionSettings FromKey(
             string projectId,
             string instanceName,
@@ -326,7 +339,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Services.Connection
             return settings;
         }
 
-        public static VmInstanceConnectionSettings CreateNew(
+        internal static VmInstanceConnectionSettings CreateNew(
             string projectId,
             string instanceName)
         {
@@ -336,10 +349,36 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Services.Connection
                 null);  // Apply defaults.
         }
 
-        public static VmInstanceConnectionSettings CreateNew(InstanceLocator instance)
+        internal static VmInstanceConnectionSettings CreateNew(InstanceLocator instance)
             => CreateNew(
                 instance.ProjectId,
                 instance.Name);
+
+
+        //-------------------------------------------------------------------------
+        // To/from URL.
+        //-------------------------------------------------------------------------
+
+        public void ApplyUrlQuery(NameValueCollection parameters)
+        {
+            // NB. Ignore passwords in URLs.
+            foreach (var setting in this.Settings
+                .Where(s => !(s is RegistrySecureStringSetting)))
+            {
+                var value = parameters.Get(setting.Key);
+                if (value != null)
+                {
+                    try
+                    {
+                        setting.Value = value;
+                    }
+                    catch (Exception)
+                    {
+                        // Ignore, keeping the previous value.
+                    }
+                }
+            }
+        }
 
         public static VmInstanceConnectionSettings FromUrl(IapRdpUrl url)
         {
@@ -347,18 +386,32 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Services.Connection
                 url.Instance.ProjectId,
                 url.Instance.Name);
 
-            settings.ApplyValues(
-                url.Parameters,
-                true);
+            settings.ApplyUrlQuery(url.Parameters);
 
             return settings;
         }
 
-        public VmInstanceConnectionSettings ApplyDefaults(ZoneConnectionSettings zoneSettings)
+        public NameValueCollection ToUrlQuery()
         {
-            var prototype = new VmInstanceConnectionSettings(this.ProjectId, this.InstanceName);
-            ApplyOverlay(prototype, zoneSettings, this);
-            return prototype;
+            // NB. Do not allow passwords to leak into URLs.
+            var collection = new NameValueCollection();
+            foreach (var setting in this.Settings
+                .Where(s => !(s is RegistrySecureStringSetting))
+                .Where(s => !s.IsDefault))
+            {
+                if (setting.Value is Enum enumValue)
+                {
+                    // Use numeric value instead of symbol because
+                    // the numeric value is stable.
+                    collection.Add(setting.Key, ((int)setting.Value).ToString());
+                }
+                else
+                {
+                    collection.Add(setting.Key, setting.Value.ToString());
+                }
+            }
+
+            return collection;
         }
     }
 

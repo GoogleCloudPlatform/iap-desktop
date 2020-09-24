@@ -282,5 +282,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Test.Services.Connection
                 this.repository.GetVmInstanceSettings("pro-1", "vm-1");
             });
         }
+
     }
 }

@@ -158,7 +158,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Services.Connection
                     this.settingsService.GetConnectionSettings(vmNode);
                 
                 // Apply parameters from URL on top.
-                settings.ApplyValues(url.Parameters, true);
+                settings.ApplyUrlQuery(url.Parameters);
             }
             else
             {
