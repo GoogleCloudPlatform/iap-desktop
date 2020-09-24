@@ -73,7 +73,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Views.ConnectionSettings
                 foreach (var vmNode in zoneNode.Instances.Cast<VmInstanceNode>())
                 {
                     var settings = this.settingsService
-                        .GetConnectionSettingsEditor(vmNode)
+                        .GetConnectionSettings(vmNode)
                         .Settings;
 
                     buffer.Append($"<li>");

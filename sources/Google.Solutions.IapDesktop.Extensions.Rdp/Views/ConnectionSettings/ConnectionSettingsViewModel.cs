@@ -23,6 +23,7 @@ using Google.Solutions.IapDesktop.Application.ObjectModel;
 using Google.Solutions.IapDesktop.Application.Views.ProjectExplorer;
 using Google.Solutions.IapDesktop.Application.Views.Properties;
 using Google.Solutions.IapDesktop.Extensions.Rdp.Services.Connection;
+using Google.Solutions.IapDesktop.Extensions.Rdp.Services.Settings;
 using System.Diagnostics;
 using System.Threading.Tasks;
 
@@ -35,7 +36,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Views.ConnectionSettings
         private readonly IConnectionSettingsService settingsService;
 
         private bool isInformationBarVisible = false;
-        private SettingsEditor inspectedObject = null;
+        private ConnectionSettingsBase inspectedObject = null;
         private string windowTitle = DefaultWindowTitle;
 
         public string InformationText => "Changes only take effect after reconnecting";
@@ -64,7 +65,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Views.ConnectionSettings
             get => this.inspectedObject;
             private set
             {
-                this.inspectedObject = (SettingsEditor)value;
+                this.inspectedObject = (ConnectionSettingsBase)value;
                 RaisePropertyChange();
             }
         }
@@ -86,18 +87,18 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Views.ConnectionSettings
         public void SaveChanges()
         {
             Debug.Assert(this.inspectedObject != null);
-            this.inspectedObject.SaveChanges();
+            this.settingsService.SaveConnectionSettings(this.inspectedObject);
         }
 
         public Task SwitchToModelAsync(IProjectExplorerNode node)
         {
-            if (this.settingsService.IsConnectionSettingsEditorAvailable(node))
+            if (this.settingsService.IsConnectionSettingsAvailable(node))
             {
                 this.IsInformationBarVisible =
                     node is IProjectExplorerVmInstanceNode &&
                     ((IProjectExplorerVmInstanceNode)node).IsConnected;
 
-                this.InspectedObject = this.settingsService.GetConnectionSettingsEditor(node);
+                this.InspectedObject = this.settingsService.GetConnectionSettings(node);
                 this.WindowTitle = DefaultWindowTitle + $": {node.DisplayName}";
             }
             else

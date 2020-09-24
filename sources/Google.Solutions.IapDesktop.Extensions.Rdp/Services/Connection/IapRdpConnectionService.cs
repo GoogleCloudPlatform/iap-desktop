@@ -122,8 +122,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Services.Connection
             // Select node so that tracking windows are updated.
             vmNode.Select();
 
-            var settingsEditor = this.settingsService.GetConnectionSettingsEditor(vmNode);
-            var settings = (VmInstanceConnectionSettings)settingsEditor.Settings;
+            var settings = (VmInstanceConnectionSettings)
+                this.settingsService.GetConnectionSettings(vmNode);
 
             await this.credentialPrompt.ShowCredentialsPromptAsync(
                     this.window,
@@ -133,7 +133,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Services.Connection
                 .ConfigureAwait(true);
 
             // Persist new credentials.
-            settingsEditor.SaveChanges();
+            this.settingsService.SaveConnectionSettings(settings);
 
             await ConnectInstanceAsync(
                     vmNode.Reference,
@@ -154,7 +154,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Services.Connection
                 is IProjectExplorerVmInstanceNode vmNode)
             {
                 // We have a full set of settings for this VM, so use that as basis
-                settings = (VmInstanceConnectionSettings)this.settingsService.GetConnectionSettingsEditor(vmNode).Settings;
+                settings = (VmInstanceConnectionSettings)
+                    this.settingsService.GetConnectionSettings(vmNode);
                 
                 // Apply parameters from URL on top.
                 settings.ApplyValues(url.Parameters, true);

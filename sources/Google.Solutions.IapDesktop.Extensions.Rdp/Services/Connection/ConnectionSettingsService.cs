@@ -20,61 +20,25 @@
 //
 
 using Google.Solutions.IapDesktop.Application.ObjectModel;
-using Google.Solutions.IapDesktop.Application.Settings;
 using Google.Solutions.IapDesktop.Application.Views.ProjectExplorer;
 using Google.Solutions.IapDesktop.Extensions.Rdp.Services.Settings;
 using System;
 
+// TODO: Merge namespaces
 namespace Google.Solutions.IapDesktop.Extensions.Rdp.Services.Connection
 {
     public interface IConnectionSettingsService
     {
-        bool IsConnectionSettingsEditorAvailable(IProjectExplorerNode node);
-        ISettingsEditor GetConnectionSettingsEditor(IProjectExplorerNode node);
+        bool IsConnectionSettingsAvailable(IProjectExplorerNode node);
+        ConnectionSettingsBase GetConnectionSettings(IProjectExplorerNode node);
+        
+        void SaveConnectionSettings(ConnectionSettingsBase settings);
     }
 
     [Service(typeof(IConnectionSettingsService))]
     public class ConnectionSettingsService : IConnectionSettingsService
     {
-        private readonly ConnectionSettingsRepository settingsRepository;
-
-        private ISettingsEditor GetProjectConnectionSettingsEditor(
-            string projectId)
-        {
-            return new SettingsEditor(
-                this.settingsRepository.GetProjectSettings(projectId),
-                settings => settingsRepository.SetProjectSettings((ProjectConnectionSettings)settings));
-        }
-
-        private SettingsEditor GetZoneConnectionSettingsEditor(
-            string projectId, 
-            string zoneId)
-        {
-            var projectSettings = this.settingsRepository.GetProjectSettings(projectId);
-            var zoneSettings = this.settingsRepository.GetZoneSettings(projectId, zoneId);
-
-            return new SettingsEditor(
-                projectSettings
-                    .OverlayBy(zoneSettings),
-                settings => settingsRepository.SetZoneSettings((ZoneConnectionSettings)settings));
-        }
-
-        private SettingsEditor GetVmInstanceConnectionSettingsEditor(
-            string projectId,
-            string zoneId,
-            string instanceName)
-        {
-            var projectSettings = this.settingsRepository.GetProjectSettings(projectId);
-            var zoneSettings = this.settingsRepository.GetZoneSettings(projectId, zoneId);
-            var instanceSettings = this.settingsRepository.GetVmInstanceSettings(projectId, instanceName);
-
-            return new SettingsEditor(
-                projectSettings
-                    .OverlayBy(zoneSettings)
-                    .OverlayBy(instanceSettings),
-                settings => this.settingsRepository.SetVmInstanceSettings(
-                    (VmInstanceConnectionSettings)settings));
-        }
+        private readonly ConnectionSettingsRepository repository;
 
         //---------------------------------------------------------------------
         // Ctor.
@@ -83,7 +47,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Services.Connection
         public ConnectionSettingsService(
             ConnectionSettingsRepository settingsRepository)
         {
-            this.settingsRepository = settingsRepository;
+            this.repository = settingsRepository;
         }
 
         public ConnectionSettingsService(IServiceProvider serviceProvider)
@@ -95,33 +59,70 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Services.Connection
         // IConnectionSettingsService.
         //---------------------------------------------------------------------
 
-        public bool IsConnectionSettingsEditorAvailable(IProjectExplorerNode node)
+        public bool IsConnectionSettingsAvailable(IProjectExplorerNode node)
         {
             return node is IProjectExplorerProjectNode ||
                    node is IProjectExplorerZoneNode ||
                    node is IProjectExplorerVmInstanceNode;
         }
 
-        public ISettingsEditor GetConnectionSettingsEditor(IProjectExplorerNode node)
+        public ConnectionSettingsBase GetConnectionSettings(IProjectExplorerNode node)
         {
             if (node is IProjectExplorerProjectNode projectNode)
             {
-                return GetProjectConnectionSettingsEditor(projectNode.ProjectId);
+                return this.repository.GetProjectSettings(projectNode.ProjectId);
             }
             else if (node is IProjectExplorerZoneNode zoneNode)
             {
-                return GetZoneConnectionSettingsEditor(zoneNode.ProjectId, zoneNode.ZoneId);
+                var projectSettings = this.repository.GetProjectSettings(
+                    zoneNode.ProjectId);
+                var zoneSettings = this.repository.GetZoneSettings(
+                    zoneNode.ProjectId, 
+                    zoneNode.ZoneId);
+
+                // Apply overlay to get effective settings.
+                return projectSettings
+                    .OverlayBy(zoneSettings);
             }
             else if (node is IProjectExplorerVmInstanceNode vmNode)
             {
-                return GetVmInstanceConnectionSettingsEditor(
+                var projectSettings = this.repository.GetProjectSettings(
+                    vmNode.ProjectId);
+                var zoneSettings = this.repository.GetZoneSettings(
                     vmNode.ProjectId,
-                    vmNode.ZoneId,
+                    vmNode.ZoneId);
+                var instanceSettings = this.repository.GetVmInstanceSettings(
+                    vmNode.ProjectId,
                     vmNode.InstanceName);
+
+                // Apply overlay to get effective settings.
+                return projectSettings
+                    .OverlayBy(zoneSettings)
+                    .OverlayBy(instanceSettings);
             }
             else
             {
                 throw new ArgumentException("Unsupported node type: " + node.GetType().Name);
+            }
+        }
+
+        public void SaveConnectionSettings(ConnectionSettingsBase settings)
+        {
+            if (settings is ProjectConnectionSettings projectSettings)
+            {
+                this.repository.SetProjectSettings(projectSettings);
+            }
+            else if (settings is ZoneConnectionSettings zoneSettings)
+            {
+                this.repository.SetZoneSettings(zoneSettings);
+            }
+            else if (settings is VmInstanceConnectionSettings instanceSettings)
+            {
+                this.repository.SetVmInstanceSettings(instanceSettings);
+            }
+            else
+            {
+                throw new ArgumentException("Unsupported settings type: " + settings.GetType().Name);
             }
         }
     }
