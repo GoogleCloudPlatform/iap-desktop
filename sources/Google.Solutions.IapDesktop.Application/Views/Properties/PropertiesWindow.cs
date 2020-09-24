@@ -73,10 +73,10 @@ namespace Google.Solutions.IapDesktop.Application.Views.Properties
                 title => this.TabText = this.Text = title));
             this.components.Add(this.viewModel.OnPropertyChange(
                 m => m.InspectedObject,
-                obj => ShowSettings((ISettingsCollection)obj)));
+                obj => SetInspectedObject(obj)));
         }
 
-        private void ShowSettings(ISettingsCollection settings)
+        private void SetInspectedObject(object obj)
         {
             // NB. The PropertyGrid displays a snapshot, if any of the
             // properties of the object changes, the grid does not
@@ -87,11 +87,19 @@ namespace Google.Solutions.IapDesktop.Application.Views.Properties
                 oldObj.PropertyChanged -= RefreshOnPropertyChange;
             }
 
-            // TODO: Test property update on cred generation
+            if (obj is ISettingsCollection)
+            {
+                // Use a custom type descriptor to interpret each setting
+                // as property.
+                this.propertyGrid.SelectedObject = 
+                    new SettingsCollectionTypeDescriptor((ISettingsCollection)obj);
+            }
+            else
+            {
+                this.propertyGrid.SelectedObject = obj;
+            }
 
-            this.propertyGrid.SelectedObject = new SettingsCollectionTypeDescriptor(settings);
-
-            if (settings is INotifyPropertyChanged newObj)
+            if (obj is INotifyPropertyChanged newObj)
             {
                 newObj.PropertyChanged += RefreshOnPropertyChange;
             }
