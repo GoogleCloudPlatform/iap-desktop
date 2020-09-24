@@ -86,6 +86,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.Properties
                     // TODO: Handle ISettingsCollection
                     // TODO: implement reset
                     // TODO: Test property update on cred generation
+                    // TODO: Mask passwords
 
                     this.propertyGrid.SelectedObject = obj;
 
