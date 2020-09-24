@@ -21,7 +21,8 @@
 
 using Google.Solutions.Common.Locator;
 using Google.Solutions.Common.Test;
-using Google.Solutions.IapDesktop.Application.Services.Persistence;
+using Google.Solutions.IapDesktop.Application.Services.Integration;
+using Google.Solutions.IapDesktop.Application.Services.Settings;
 using Google.Solutions.IapDesktop.Application.Views.ProjectExplorer;
 using Google.Solutions.IapDesktop.Extensions.Rdp.Services.Connection;
 using Google.Solutions.IapDesktop.Extensions.Rdp.Services.Settings;
@@ -34,6 +35,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Test.Services.Connection
     [TestFixture]
     public class TestConnectionSettingsService : FixtureBase
     {
+        private const string SampleProjectId = "project-1";
         private const string TestKeyPath = @"Software\Google\__Test";
         private readonly RegistryKey hkcu = RegistryKey.OpenBaseKey(
             RegistryHive.CurrentUser, 
@@ -41,134 +43,137 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Test.Services.Connection
 
         private ConnectionSettingsService service;
 
-        // TODO: Refactor tests
-        //[SetUp]
-        //public void SetUp()
-        //{
-        //    hkcu.DeleteSubKeyTree(TestKeyPath, false);
+        [SetUp]
+        public void SetUp()
+        {
+            hkcu.DeleteSubKeyTree(TestKeyPath, false);
 
-        //    var repository = new ConnectionSettingsRepository(hkcu.CreateSubKey(TestKeyPath));
-        //    repository.SetProjectSettings(new ProjectConnectionSettings()
-        //    {
-        //        ProjectId = "project-1",
-        //        Domain = "project-domain"
-        //    });
+            var projectRepository = new ProjectRepository(
+                hkcu.CreateSubKey(TestKeyPath),
+                new Mock<IEventService>().Object);
+            var settingsRepository = new ConnectionSettingsRepository(projectRepository);
+            this.service = new ConnectionSettingsService(settingsRepository);
 
-        //    this.service = new ConnectionSettingsService(repository);
-        //}
+            // Set some initial project settings.
+            projectRepository.AddProjectAsync(SampleProjectId).Wait();
 
-        //[Test]
-        //public void WhenNodeUnsupported_ThenIsConnectionSettingsEditorAvailableReturnsFalse()
-        //{
-        //    Assert.IsFalse(service.IsConnectionSettingsEditorAvailable(
-        //        new Mock<IProjectExplorerNode>().Object));
-        //    Assert.IsFalse(service.IsConnectionSettingsEditorAvailable(
-        //        new Mock<IProjectExplorerCloudNode>().Object));
-        //}
+            var projectSettings = settingsRepository.GetProjectSettings(SampleProjectId);
+            projectSettings.Domain.Value = "project-domain";
+            settingsRepository.SetProjectSettings(projectSettings);
+        }
 
-        //[Test]
-        //public void WhenNodeSupported_ThenIsConnectionSettingsEditorAvailableReturnsTrue()
-        //{
-        //    Assert.IsTrue(service.IsConnectionSettingsEditorAvailable(
-        //        new Mock<IProjectExplorerProjectNode>().Object));
-        //    Assert.IsTrue(service.IsConnectionSettingsEditorAvailable(
-        //        new Mock<IProjectExplorerZoneNode>().Object));
-        //    Assert.IsTrue(service.IsConnectionSettingsEditorAvailable(
-        //        new Mock<IProjectExplorerVmInstanceNode>().Object));
-        //}
+        [Test]
+        public void WhenNodeUnsupported_ThenIsConnectionSettingsAvailableReturnsFalse()
+        {
+            Assert.IsFalse(service.IsConnectionSettingsAvailable(
+                new Mock<IProjectExplorerNode>().Object));
+            Assert.IsFalse(service.IsConnectionSettingsAvailable(
+                new Mock<IProjectExplorerCloudNode>().Object));
+        }
 
-        ////---------------------------------------------------------------------
-        //// Project.
-        ////---------------------------------------------------------------------
+        [Test]
+        public void WhenNodeSupported_ThenIsConnectionSettingsAvailableReturnsTrue()
+        {
+            Assert.IsTrue(service.IsConnectionSettingsAvailable(
+                new Mock<IProjectExplorerProjectNode>().Object));
+            Assert.IsTrue(service.IsConnectionSettingsAvailable(
+                new Mock<IProjectExplorerZoneNode>().Object));
+            Assert.IsTrue(service.IsConnectionSettingsAvailable(
+                new Mock<IProjectExplorerVmInstanceNode>().Object));
+        }
 
-        //[Test]
-        //public void WhenReadingProjectSettings_ThenExistingProjectSettingIsVisible()
-        //{
-        //    var projectNode = new Mock<IProjectExplorerProjectNode>();
-        //    projectNode.SetupGet(n => n.ProjectId).Returns("project-1");
+        //---------------------------------------------------------------------
+        // Project.
+        //---------------------------------------------------------------------
 
-        //    var editor = service.GetConnectionSettingsEditor(projectNode.Object);
-        //    Assert.AreEqual("project-domain", editor.Domain);
-        //}
+        [Test]
+        public void WhenReadingProjectSettings_ThenExistingProjectSettingIsVisible()
+        {
+            var projectNode = new Mock<IProjectExplorerProjectNode>();
+            projectNode.SetupGet(n => n.ProjectId).Returns(SampleProjectId);
 
-        //[Test]
-        //public void WhenChangingProjectSetting_ThenSettingIsSaved()
-        //{
-        //    var projectNode = new Mock<IProjectExplorerProjectNode>();
-        //    projectNode.SetupGet(n => n.ProjectId).Returns("project-1");
+            var settings = this.service.GetConnectionSettings(projectNode.Object);
+            Assert.AreEqual("project-domain", settings.Domain.Value);
+        }
 
-        //    var firstEditor = service.GetConnectionSettingsEditor(projectNode.Object);
-        //    firstEditor.Username = "bob";
-        //    firstEditor.SaveChanges();
+        [Test]
+        public void WhenChangingProjectSetting_ThenSettingIsSaved()
+        {
+            var projectNode = new Mock<IProjectExplorerProjectNode>();
+            projectNode.SetupGet(n => n.ProjectId).Returns(SampleProjectId);
 
-        //    var secondEditor = service.GetConnectionSettingsEditor(projectNode.Object);
-        //    Assert.AreEqual("bob", secondEditor.Username);
-        //}
+            var firstSettings = this.service.GetConnectionSettings(projectNode.Object);
+            firstSettings.Username.Value = "bob";
+            this.service.SaveConnectionSettings(firstSettings);
 
-        ////---------------------------------------------------------------------
-        //// Zone.
-        ////---------------------------------------------------------------------
+            var secondSettings = this.service.GetConnectionSettings(projectNode.Object);
+            Assert.AreEqual("bob", secondSettings.Username.Value);
+        }
 
-        //[Test]
-        //public void WhenReadingZoneSettings_ThenExistingProjectSettingIsVisible()
-        //{
-        //    var zoneNode = new Mock<IProjectExplorerZoneNode>();
-        //    zoneNode.SetupGet(n => n.ProjectId).Returns("project-1");
-        //    zoneNode.SetupGet(n => n.ZoneId).Returns("zone-1");
+        //---------------------------------------------------------------------
+        // Zone.
+        //---------------------------------------------------------------------
 
-        //    var editor = service.GetConnectionSettingsEditor(zoneNode.Object);
-        //    Assert.AreEqual("project-domain", editor.Domain);
-        //}
+        [Test]
+        public void WhenReadingZoneSettings_ThenExistingProjectSettingIsVisible()
+        {
+            var zoneNode = new Mock<IProjectExplorerZoneNode>();
+            zoneNode.SetupGet(n => n.ProjectId).Returns(SampleProjectId);
+            zoneNode.SetupGet(n => n.ZoneId).Returns("zone-1");
 
-        //[Test]
-        //public void WhenChangingZoneSetting_ThenSettingIsSaved()
-        //{
-        //    var zoneNode = new Mock<IProjectExplorerZoneNode>();
-        //    zoneNode.SetupGet(n => n.ProjectId).Returns("project-1");
-        //    zoneNode.SetupGet(n => n.ZoneId).Returns("zone-1");
+            var settings = this.service.GetConnectionSettings(zoneNode.Object);
+            Assert.AreEqual("project-domain", settings.Domain.Value);
+        }
 
-        //    var firstEditor = service.GetConnectionSettingsEditor(zoneNode.Object);
-        //    firstEditor.Username = "bob";
-        //    firstEditor.SaveChanges();
+        [Test]
+        public void WhenChangingZoneSetting_ThenSettingIsSaved()
+        {
+            var zoneNode = new Mock<IProjectExplorerZoneNode>();
+            zoneNode.SetupGet(n => n.ProjectId).Returns(SampleProjectId);
+            zoneNode.SetupGet(n => n.ZoneId).Returns("zone-1");
 
-        //    var secondEditor = service.GetConnectionSettingsEditor(zoneNode.Object);
-        //    Assert.AreEqual("bob", secondEditor.Username);
-        //}
+            var firstSettings = this.service.GetConnectionSettings(zoneNode.Object);
+            firstSettings.Username.Value = "bob";
+            this.service.SaveConnectionSettings(firstSettings);
 
-        ////---------------------------------------------------------------------
-        //// VM.
-        ////---------------------------------------------------------------------
+            var secondSettings = this.service.GetConnectionSettings(zoneNode.Object);
+            Assert.AreEqual("bob", secondSettings.Username.Value);
+        }
 
-        //[Test]
-        //public void WhenReadingVmInstanceSettings_ThenExistingProjectSettingIsVisible()
-        //{
-        //    var vmNode = new Mock<IProjectExplorerVmInstanceNode>();
-        //    vmNode.SetupGet(n => n.ProjectId).Returns("project-1");
-        //    vmNode.SetupGet(n => n.ZoneId).Returns("zone-1");
-        //    vmNode.SetupGet(n => n.InstanceName).Returns("instance-1");
-        //    vmNode.SetupGet(n => n.Reference).Returns(
-        //        new InstanceLocator("project-1", "zone-1", "instance-1"));
+        //---------------------------------------------------------------------
+        // VM.
+        //---------------------------------------------------------------------
 
-        //    var editor = service.GetConnectionSettingsEditor(vmNode.Object);
-        //    Assert.AreEqual("project-domain", editor.Domain);
-        //}
+        [Test]
+        public void WhenReadingVmInstanceSettings_ThenExistingProjectSettingIsVisible()
+        {
+            var vmNode = new Mock<IProjectExplorerVmInstanceNode>();
+            vmNode.SetupGet(n => n.ProjectId).Returns(SampleProjectId);
+            vmNode.SetupGet(n => n.ZoneId).Returns("zone-1");
+            vmNode.SetupGet(n => n.InstanceName).Returns("instance-1");
+            vmNode.SetupGet(n => n.Reference).Returns(
+                new InstanceLocator(SampleProjectId, "zone-1", "instance-1"));
 
-        //[Test]
-        //public void WhenChangingVmInstanceSetting_ThenSettingIsSaved()
-        //{
-        //    var vmNode = new Mock<IProjectExplorerVmInstanceNode>();
-        //    vmNode.SetupGet(n => n.ProjectId).Returns("project-1");
-        //    vmNode.SetupGet(n => n.ZoneId).Returns("zone-1");
-        //    vmNode.SetupGet(n => n.InstanceName).Returns("instance-1");
-        //    vmNode.SetupGet(n => n.Reference).Returns(
-        //        new InstanceLocator("project-1", "zone-1", "instance-1"));
+            var settings = this.service.GetConnectionSettings(vmNode.Object);
+            Assert.AreEqual("project-domain", settings.Domain.Value);
+        }
 
-        //    var firstEditor = service.GetConnectionSettingsEditor(vmNode.Object);
-        //    firstEditor.Username = "bob";
-        //    firstEditor.SaveChanges();
+        [Test]
+        public void WhenChangingVmInstanceSetting_ThenSettingIsSaved()
+        {
+            var vmNode = new Mock<IProjectExplorerVmInstanceNode>();
+            vmNode.SetupGet(n => n.ProjectId).Returns(SampleProjectId);
+            vmNode.SetupGet(n => n.ZoneId).Returns("zone-1");
+            vmNode.SetupGet(n => n.InstanceName).Returns("instance-1");
+            vmNode.SetupGet(n => n.Reference).Returns(
+                new InstanceLocator(SampleProjectId, "zone-1", "instance-1"));
 
-        //    var secondEditor = service.GetConnectionSettingsEditor(vmNode.Object);
-        //    Assert.AreEqual("bob", secondEditor.Username);
-        //}
+            var firstSettings = this.service.GetConnectionSettings(vmNode.Object);
+            firstSettings.Username.Value = "bob";
+            this.service.SaveConnectionSettings(firstSettings);
+
+            var secondSettings = this.service.GetConnectionSettings(vmNode.Object);
+            Assert.AreEqual("bob", secondSettings.Username.Value);
+        }
     }
 }
