@@ -65,8 +65,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Views.Credentials
             //
             var credentialsExist =
                 !string.IsNullOrEmpty(settings.Username.StringValue) &&
-                settings.Password != null &&
-                settings.Password.ClearTextValue.Length != 0;
+                !string.IsNullOrEmpty(settings.Password.ClearTextValue);
 
             if (settings.CredentialGenerationBehavior.EnumValue == RdpCredentialGenerationBehavior.Force
                 && await credentialsService
