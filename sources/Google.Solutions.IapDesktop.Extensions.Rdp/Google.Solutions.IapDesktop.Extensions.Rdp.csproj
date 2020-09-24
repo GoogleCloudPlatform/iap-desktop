@@ -86,8 +86,8 @@
     </Compile>
     <Compile Include="Services\Connection\ConnectionSettingsService.cs" />
     <Compile Include="Services\Connection\IapRdpConnectionService.cs" />
-    <Compile Include="Services\Settings\ConnectionSettings.cs" />
-    <Compile Include="Services\Settings\ConnectionSettingsRepository.cs" />
+    <Compile Include="Services\Connection\ConnectionSettings.cs" />
+    <Compile Include="Services\Connection\ConnectionSettingsRepository.cs" />
     <Compile Include="Services\Tunnel\SameProcessRelayPolicy.cs" />
     <Compile Include="Services\Tunnel\TcpTable.cs" />
     <Compile Include="Services\Tunnel\UnsafeNativeMethods.cs" />

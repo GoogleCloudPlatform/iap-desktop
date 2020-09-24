@@ -24,7 +24,6 @@ using Google.Solutions.IapDesktop.Application.ObjectModel;
 using Google.Solutions.IapDesktop.Application.Services.Adapters;
 using Google.Solutions.IapDesktop.Application.Services.Integration;
 using Google.Solutions.IapDesktop.Extensions.Rdp.Services.Connection;
-using Google.Solutions.IapDesktop.Extensions.Rdp.Services.Settings;
 using System;
 using System.Threading.Tasks;
 using System.Windows.Forms;

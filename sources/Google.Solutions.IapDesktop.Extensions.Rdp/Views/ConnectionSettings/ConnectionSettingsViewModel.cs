@@ -23,7 +23,6 @@ using Google.Solutions.IapDesktop.Application.ObjectModel;
 using Google.Solutions.IapDesktop.Application.Views.ProjectExplorer;
 using Google.Solutions.IapDesktop.Application.Views.Properties;
 using Google.Solutions.IapDesktop.Extensions.Rdp.Services.Connection;
-using Google.Solutions.IapDesktop.Extensions.Rdp.Services.Settings;
 using System.Diagnostics;
 using System.Threading.Tasks;
 

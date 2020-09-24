@@ -21,7 +21,7 @@
 
 using Google.Solutions.IapDesktop.Application.ObjectModel;
 using Google.Solutions.IapDesktop.Application.Views.ProjectExplorer;
-using Google.Solutions.IapDesktop.Extensions.Rdp.Services.Settings;
+using Google.Solutions.IapDesktop.Extensions.Rdp.Services.Connection;
 using System;
 
 // TODO: Merge namespaces

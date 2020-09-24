@@ -34,7 +34,7 @@ using System;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using Google.Solutions.IapDesktop.Extensions.Rdp.Views.RemoteDesktop;
-using Google.Solutions.IapDesktop.Extensions.Rdp.Services.Settings;
+using Google.Solutions.IapDesktop.Extensions.Rdp.Services.Connection;
 using Google.Solutions.IapDesktop.Application.Settings;
 
 namespace Google.Solutions.IapDesktop.Extensions.Rdp.Services.Connection

@@ -27,7 +27,7 @@ using Google.Solutions.IapDesktop.Application.Services.Integration;
 using Google.Solutions.IapDesktop.Application.Services.Persistence;
 using Google.Solutions.IapDesktop.Application.Util;
 using Google.Solutions.IapDesktop.Application.Views;
-using Google.Solutions.IapDesktop.Extensions.Rdp.Services.Settings;
+using Google.Solutions.IapDesktop.Extensions.Rdp.Services.Connection;
 using MSTSCLib;
 using System;
 using System.ComponentModel;

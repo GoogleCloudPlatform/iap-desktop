@@ -24,7 +24,6 @@ using Google.Solutions.IapDesktop.Application.ObjectModel;
 using Google.Solutions.IapDesktop.Application.Services.Persistence;
 using Google.Solutions.IapDesktop.Application.Views;
 using Google.Solutions.IapDesktop.Extensions.Rdp.Services.Connection;
-using Google.Solutions.IapDesktop.Extensions.Rdp.Services.Settings;
 using Google.Solutions.IapDesktop.Extensions.Rdp.Views.ConnectionSettings;
 using System;
 using System.Collections.Generic;

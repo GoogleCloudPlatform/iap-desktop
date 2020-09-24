@@ -34,7 +34,7 @@ using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using Google.Solutions.IapDesktop.Extensions.Rdp.Services.Settings;
+using Google.Solutions.IapDesktop.Extensions.Rdp.Services.Connection;
 
 namespace Google.Solutions.IapDesktop.Extensions.Rdp.Test.Views.Credentials
 {

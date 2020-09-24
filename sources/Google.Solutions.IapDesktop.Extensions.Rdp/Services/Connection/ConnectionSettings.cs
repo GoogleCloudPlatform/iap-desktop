@@ -29,7 +29,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Security.Cryptography;
 
-namespace Google.Solutions.IapDesktop.Extensions.Rdp.Services.Settings
+namespace Google.Solutions.IapDesktop.Extensions.Rdp.Services.Connection
 {
     //
     // NB. The values do not map to RDP interface values. But the numeric values

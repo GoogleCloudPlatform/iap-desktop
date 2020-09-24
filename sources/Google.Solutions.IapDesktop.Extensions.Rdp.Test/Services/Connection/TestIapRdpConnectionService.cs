@@ -38,7 +38,6 @@ using System.Windows.Forms;
 using Google.Solutions.IapTunneling.Iap;
 using Google.Solutions.IapDesktop.Extensions.Rdp.Views.RemoteDesktop;
 using Google.Solutions.IapDesktop.Extensions.Rdp.Views.ConnectionSettings;
-using Google.Solutions.IapDesktop.Extensions.Rdp.Services.Settings;
 
 namespace Google.Solutions.IapDesktop.Extensions.Rdp.Test.Services.Connection
 {
