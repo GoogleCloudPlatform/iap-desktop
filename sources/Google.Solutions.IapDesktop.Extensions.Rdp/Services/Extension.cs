@@ -32,7 +32,6 @@ using System;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using Google.Solutions.IapDesktop.Extensions.Rdp.Views.RemoteDesktop;
-using Google.Solutions.IapDesktop.Application.Services.Integration;
 using Google.Solutions.IapDesktop.Extensions.Rdp.Views.ConnectionSettings;
 
 namespace Google.Solutions.IapDesktop.Extensions.Rdp.Services
@@ -88,17 +87,19 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Services
             {
                 if (node is IProjectExplorerVmInstanceNode vmNode)
                 {
-                    var settingsEditor = this.serviceProvider
-                        .GetService<IConnectionSettingsService>()
-                        .GetConnectionSettingsEditor(vmNode);
+                    var settingsService = this.serviceProvider
+                        .GetService<IConnectionSettingsService>();
+                    var settings = settingsService.GetConnectionSettings(vmNode);
 
                     await this.serviceProvider.GetService<ICredentialsService>()
                         .GenerateCredentialsAsync(
                             this.window,
                             vmNode.Reference,
-                            settingsEditor,
+                            settings,
                             false)
                         .ConfigureAwait(true);
+
+                    settingsService.SaveConnectionSettings(settings);
                 }
             }
             catch (Exception e) when (e.IsCancellation())
@@ -211,7 +212,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Services
             projectExplorer.ContextMenuCommands.AddCommand(
                 new Command<IProjectExplorerNode>(
                     "Connection settings",
-                    node => settingsService.IsConnectionSettingsEditorAvailable(node)
+                    node => settingsService.IsConnectionSettingsAvailable(node)
                         ? CommandState.Enabled
                         : CommandState.Unavailable,
                     _ => OpenConnectionSettings())
@@ -224,7 +225,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Services
             projectExplorer.ToolbarCommands.AddCommand(
                 new Command<IProjectExplorerNode>(
                     "Connection &settings",
-                    node => settingsService.IsConnectionSettingsEditorAvailable(node)
+                    node => settingsService.IsConnectionSettingsAvailable(node)
                         ? CommandState.Enabled
                         : CommandState.Disabled,
                     _ => OpenConnectionSettings())

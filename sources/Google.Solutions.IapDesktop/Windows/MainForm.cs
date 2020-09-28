@@ -40,6 +40,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using WeifenLuo.WinFormsUI.Docking;
 using Google.Solutions.IapDesktop.Application.Services;
+using Google.Solutions.IapDesktop.Application.Services.Settings;
 
 #pragma warning disable IDE1006 // Naming Styles
 
@@ -66,18 +67,18 @@ namespace Google.Solutions.IapDesktop.Windows
             // Restore window settings.
             //
             var windowSettings = this.applicationSettings.GetSettings();
-            if (windowSettings.IsMainWindowMaximized)
+            if (windowSettings.IsMainWindowMaximized.BoolValue)
             {
                 this.WindowState = FormWindowState.Maximized;
                 InitializeComponent();
             }
-            else if (windowSettings.MainWindowHeight != 0 &&
-                     windowSettings.MainWindowWidth != 0)
+            else if (windowSettings.MainWindowHeight.IntValue != 0 &&
+                     windowSettings.MainWindowWidth.IntValue != 0)
             {
                 InitializeComponent();
                 this.Size = new Size(
-                    windowSettings.MainWindowWidth,
-                    windowSettings.MainWindowHeight);
+                    windowSettings.MainWindowWidth.IntValue,
+                    windowSettings.MainWindowHeight.IntValue);
             }
             else
             {
@@ -148,8 +149,8 @@ namespace Google.Solutions.IapDesktop.Windows
         {
             var settings = this.applicationSettings.GetSettings();
 
-            if (settings.IsUpdateCheckEnabled &&
-                (DateTime.UtcNow - DateTime.FromBinary(settings.LastUpdateCheck)).Days > 7)
+            if (settings.IsUpdateCheckEnabled.BoolValue &&
+                (DateTime.UtcNow - DateTime.FromBinary(settings.LastUpdateCheck.LongValue)).Days > 7)
             {
                 // Time to check for updates again.
                 try
@@ -160,8 +161,8 @@ namespace Google.Solutions.IapDesktop.Windows
                         TimeSpan.FromSeconds(5),
                         out bool donotCheckForUpdatesAgain);
 
-                    settings.IsUpdateCheckEnabled = !donotCheckForUpdatesAgain;
-                    settings.LastUpdateCheck = DateTime.UtcNow.ToBinary();
+                    settings.IsUpdateCheckEnabled.BoolValue = !donotCheckForUpdatesAgain;
+                    settings.LastUpdateCheck.LongValue = DateTime.UtcNow.ToBinary();
                 }
                 catch (Exception)
                 {
@@ -170,9 +171,9 @@ namespace Google.Solutions.IapDesktop.Windows
             }
 
             // Save window state.
-            settings.IsMainWindowMaximized = this.WindowState == FormWindowState.Maximized;
-            settings.MainWindowHeight = this.Size.Height;
-            settings.MainWindowWidth = this.Size.Width;
+            settings.IsMainWindowMaximized.BoolValue = this.WindowState == FormWindowState.Maximized;
+            settings.MainWindowHeight.IntValue = this.Size.Height;
+            settings.MainWindowWidth.IntValue = this.Size.Width;
 
             this.applicationSettings.SetSettings(settings);
         }

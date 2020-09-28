@@ -23,6 +23,7 @@ using Google.Solutions.Common.Diagnostics;
 using Google.Solutions.IapDesktop.Application.Controls;
 using Google.Solutions.IapDesktop.Application.ObjectModel;
 using Google.Solutions.IapDesktop.Application.Services.Integration;
+using Google.Solutions.IapDesktop.Application.Settings;
 using Google.Solutions.IapDesktop.Application.Views.ProjectExplorer;
 using System;
 using System.ComponentModel;
@@ -72,24 +73,36 @@ namespace Google.Solutions.IapDesktop.Application.Views.Properties
                 title => this.TabText = this.Text = title));
             this.components.Add(this.viewModel.OnPropertyChange(
                 m => m.InspectedObject,
-                obj =>
-                {
-                    // NB. The PropertyGrid displays a snapshot, if any of the
-                    // properties of the object changes, the grid does not
-                    // update automatically. 
+                obj => SetInspectedObject(obj)));
+        }
 
-                    if (this.propertyGrid.SelectedObject is INotifyPropertyChanged oldObj)
-                    {
-                        oldObj.PropertyChanged -= RefreshOnPropertyChange;
-                    }
+        private void SetInspectedObject(object obj)
+        {
+            // NB. The PropertyGrid displays a snapshot, if any of the
+            // properties of the object changes, the grid does not
+            // update automatically. 
 
-                    this.propertyGrid.SelectedObject = obj;
+            if (this.propertyGrid.SelectedObject is INotifyPropertyChanged oldObj)
+            {
+                oldObj.PropertyChanged -= RefreshOnPropertyChange;
+            }
 
-                    if (obj is INotifyPropertyChanged newObj)
-                    {
-                        newObj.PropertyChanged += RefreshOnPropertyChange;
-                    }
-                }));
+            if (obj is ISettingsCollection)
+            {
+                // Use a custom type descriptor to interpret each setting
+                // as property.
+                this.propertyGrid.SelectedObject = 
+                    new SettingsCollectionTypeDescriptor((ISettingsCollection)obj);
+            }
+            else
+            {
+                this.propertyGrid.SelectedObject = obj;
+            }
+
+            if (obj is INotifyPropertyChanged newObj)
+            {
+                newObj.PropertyChanged += RefreshOnPropertyChange;
+            }
         }
 
         private void RefreshOnPropertyChange(
@@ -142,9 +155,8 @@ namespace Google.Solutions.IapDesktop.Application.Views.Properties
         {
             var property = this.propertyGrid.SelectedGridItem?.PropertyDescriptor;
 
-            // We only allow resetting strings.
             this.resetToolStripMenuItem.Enabled =
-                property != null && property.PropertyType == typeof(string);
+                property != null && property.CanResetValue(this.propertyGrid.SelectedObject);
         }
 
         private void PropertiesWindow_SizeChanged(object sender, EventArgs e)

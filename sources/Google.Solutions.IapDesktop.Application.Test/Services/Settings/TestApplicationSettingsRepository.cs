@@ -20,10 +20,11 @@
 //
 
 using Google.Solutions.IapDesktop.Application.Services.Persistence;
+using Google.Solutions.IapDesktop.Application.Services.Settings;
 using Microsoft.Win32;
 using NUnit.Framework;
 
-namespace Google.Solutions.IapDesktop.Application.Test.Services.Persistence
+namespace Google.Solutions.IapDesktop.Application.Test.Services.Settings
 {
     [TestFixture]
     public class TestApplicationSettingsRepository
@@ -45,11 +46,11 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Persistence
 
             var settings = repository.GetSettings();
 
-            Assert.AreEqual(false, settings.IsMainWindowMaximized);
-            Assert.AreEqual(0, settings.MainWindowHeight);
-            Assert.AreEqual(0, settings.MainWindowWidth);
-            Assert.AreEqual(true, settings.IsUpdateCheckEnabled);
-            Assert.AreEqual(0, settings.LastUpdateCheck);
+            Assert.AreEqual(false, settings.IsMainWindowMaximized.Value);
+            Assert.AreEqual(0, settings.MainWindowHeight.Value);
+            Assert.AreEqual(0, settings.MainWindowWidth.Value);
+            Assert.AreEqual(true, settings.IsUpdateCheckEnabled.Value);
+            Assert.AreEqual(0, settings.LastUpdateCheck.Value);
         }
 
         [Test]
@@ -58,22 +59,21 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Persistence
             var baseKey = hkcu.CreateSubKey(TestKeyPath);
             var repository = new ApplicationSettingsRepository(baseKey);
 
-            repository.SetSettings(new ApplicationSettings()
-            {
-                IsMainWindowMaximized = true,
-                MainWindowHeight = 480,
-                MainWindowWidth = 640,
-                IsUpdateCheckEnabled = false,
-                LastUpdateCheck = 123
-            });
-
             var settings = repository.GetSettings();
+            settings.IsMainWindowMaximized.BoolValue = true;
+            settings.MainWindowHeight.IntValue = 480;
+            settings.MainWindowWidth.IntValue = 640;
+            settings.IsUpdateCheckEnabled.BoolValue = false;
+            settings.LastUpdateCheck.LongValue = 123L;
+            repository.SetSettings(settings);
 
-            Assert.IsTrue(settings.IsMainWindowMaximized);
-            Assert.AreEqual(480, settings.MainWindowHeight);
-            Assert.AreEqual(640, settings.MainWindowWidth);
-            Assert.AreEqual(false, settings.IsUpdateCheckEnabled);
-            Assert.AreEqual(123, settings.LastUpdateCheck);
+            settings = repository.GetSettings();
+
+            Assert.AreEqual(true, settings.IsMainWindowMaximized.BoolValue);
+            Assert.AreEqual(480, settings.MainWindowHeight.IntValue);
+            Assert.AreEqual(640, settings.MainWindowWidth.IntValue);
+            Assert.AreEqual(false, settings.IsUpdateCheckEnabled.BoolValue);
+            Assert.AreEqual(123, settings.LastUpdateCheck.LongValue);
         }
     }
 }

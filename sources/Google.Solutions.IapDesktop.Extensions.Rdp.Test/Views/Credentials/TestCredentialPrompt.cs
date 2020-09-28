@@ -22,9 +22,7 @@
 using Google.Solutions.Common.Locator;
 using Google.Solutions.Common.Test;
 using Google.Solutions.IapDesktop.Application.ObjectModel;
-using Google.Solutions.IapDesktop.Application.Services.Persistence;
 using Google.Solutions.IapDesktop.Application.Views;
-using Google.Solutions.IapDesktop.Application.Util;
 using Google.Solutions.IapDesktop.Extensions.Rdp.Views.Credentials;
 using Google.Solutions.IapDesktop.Application.Test.ObjectModel;
 using Moq;
@@ -33,8 +31,8 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using Google.Solutions.IapDesktop.Extensions.Rdp.Services.Connection;
 using Google.Solutions.IapDesktop.Extensions.Rdp.Views.ConnectionSettings;
+using Google.Solutions.IapDesktop.Extensions.Rdp.Services.Connection;
 
 namespace Google.Solutions.IapDesktop.Extensions.Rdp.Test.Views.Credentials
 {
@@ -59,16 +57,16 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Test.Views.Credentials
             credentialsService.Setup(s => s.GenerateCredentialsAsync(
                     It.IsAny<IWin32Window>(),
                     It.IsAny<InstanceLocator>(),
-                    It.IsAny<ConnectionSettingsEditor>(),
+                    It.IsAny<ConnectionSettingsBase>(),
                     It.Is<bool>(silent => silent == expectSilentCredentialGeneration)))
                 .Callback(
                     (IWin32Window owner,
                     InstanceLocator instanceRef,
-                    ConnectionSettingsEditor settings,
+                    ConnectionSettingsBase settings,
                     bool silent) =>
                     {
-                        settings.Username = "bob";
-                        settings.CleartextPassword = "secret";
+                        settings.Username.Value = "bob";
+                        settings.Password.ClearTextValue = "secret";
                     });
             credentialsService.Setup(s => s.IsGrantedPermissionToGenerateCredentials(
                     It.IsAny<InstanceLocator>()))
@@ -98,15 +96,12 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Test.Views.Credentials
                 out It.Ref<bool>.IsAny)).Returns(0);
 
             var credentialPrompt = CreateCredentialsPrompt(
-                isGrantedPermissionToGenerateCredentials, 
+                isGrantedPermissionToGenerateCredentials,
                 false,
                 taskDialog);
-            var settings = new ConnectionSettingsEditor(
-                new VmInstanceConnectionSettings(),
-                _ => { },
-                null);
 
-            settings.CredentialGenerationBehavior = RdpCredentialGenerationBehavior.Allow;
+            var settings = VmInstanceConnectionSettings.CreateNew(SampleInstance);
+            settings.CredentialGenerationBehavior.EnumValue = RdpCredentialGenerationBehavior.Allow;
 
             await credentialPrompt.ShowCredentialsPromptAsync(
                 null,
@@ -114,9 +109,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Test.Views.Credentials
                 settings,
                 true);
 
-            Assert.AreEqual("bob", settings.Username);
-            Assert.AreEqual("secret", settings.Password.AsClearText());
-            Assert.IsNull(settings.Domain);
+            Assert.AreEqual("bob", settings.Username.Value);
+            Assert.AreEqual("secret", settings.Password.ClearTextValue);
+            Assert.IsNull(settings.Domain.Value);
 
             taskDialog.Verify(t => t.ShowOptionsTaskDialog(
                 It.IsAny<IWin32Window>(),
@@ -147,17 +142,13 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Test.Views.Credentials
                 out It.Ref<bool>.IsAny)).Returns(0);
 
             var credentialPrompt = CreateCredentialsPrompt(
-                isGrantedPermissionToGenerateCredentials, 
-                false, 
+                isGrantedPermissionToGenerateCredentials,
+                false,
                 taskDialog);
-            var settings = new ConnectionSettingsEditor(
-                new VmInstanceConnectionSettings(),
-                _ => { },
-                null);
-
-            settings.CredentialGenerationBehavior = RdpCredentialGenerationBehavior.Allow;
-            settings.Username = "alice";
-            settings.CleartextPassword = "alicespassword";
+            var settings = VmInstanceConnectionSettings.CreateNew(SampleInstance);
+            settings.CredentialGenerationBehavior.EnumValue = RdpCredentialGenerationBehavior.Allow;
+            settings.Username.StringValue = "alice";
+            settings.Password.ClearTextValue = "alicespassword";
 
             await credentialPrompt.ShowCredentialsPromptAsync(
                 null,
@@ -165,9 +156,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Test.Views.Credentials
                 settings,
                 true);
 
-            Assert.AreEqual("bob", settings.Username);
-            Assert.AreEqual("secret", settings.Password.AsClearText());
-            Assert.IsNull(settings.Domain);
+            Assert.AreEqual("bob", settings.Username.Value);
+            Assert.AreEqual("secret", settings.Password.ClearTextValue);
+            Assert.IsNull(settings.Domain.Value);
 
             taskDialog.Verify(t => t.ShowOptionsTaskDialog(
                 It.IsAny<IWin32Window>(),
@@ -201,12 +192,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Test.Views.Credentials
                 out It.Ref<bool>.IsAny)).Returns(0);
 
             var credentialPrompt = CreateCredentialsPrompt(true, false, taskDialog);
-            var settings = new ConnectionSettingsEditor(
-                new VmInstanceConnectionSettings(),
-                _ => { },
-                null);
-
-            settings.CredentialGenerationBehavior = RdpCredentialGenerationBehavior.AllowIfNoCredentialsFound;
+            
+            var settings = VmInstanceConnectionSettings.CreateNew(SampleInstance);
+            settings.CredentialGenerationBehavior.EnumValue = RdpCredentialGenerationBehavior.AllowIfNoCredentialsFound;
 
             await credentialPrompt.ShowCredentialsPromptAsync(
                 null,
@@ -214,9 +202,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Test.Views.Credentials
                 settings,
                 true);
 
-            Assert.AreEqual("bob", settings.Username);
-            Assert.AreEqual("secret", settings.Password.AsClearText());
-            Assert.IsNull(settings.Domain);
+            Assert.AreEqual("bob", settings.Username.Value);
+            Assert.AreEqual("secret", settings.Password.ClearTextValue);
+            Assert.IsNull(settings.Domain.Value);
 
             taskDialog.Verify(t => t.ShowOptionsTaskDialog(
                 It.IsAny<IWin32Window>(),
@@ -247,12 +235,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Test.Views.Credentials
 
             var credentialPrompt = CreateCredentialsPrompt(false, false, taskDialog);
             var window = this.serviceRegistry.AddMock<IConnectionSettingsWindow>();
-            var settings = new ConnectionSettingsEditor(
-                new VmInstanceConnectionSettings(),
-                _ => { },
-                null);
-
-            settings.CredentialGenerationBehavior = RdpCredentialGenerationBehavior.AllowIfNoCredentialsFound;
+            
+            var settings = VmInstanceConnectionSettings.CreateNew(SampleInstance);
+            settings.CredentialGenerationBehavior.EnumValue = RdpCredentialGenerationBehavior.AllowIfNoCredentialsFound;
 
             AssertEx.ThrowsAggregateException<TaskCanceledException>(
                 () => credentialPrompt.ShowCredentialsPromptAsync(
@@ -292,16 +277,13 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Test.Views.Credentials
 
             var credentialPrompt = CreateCredentialsPrompt(
                 isGrantedPermissionToGenerateCredentials,
-                false, 
+                false,
                 taskDialog);
-            var settings = new ConnectionSettingsEditor(
-                new VmInstanceConnectionSettings(),
-                _ => { },
-                null);
 
-            settings.CredentialGenerationBehavior = RdpCredentialGenerationBehavior.AllowIfNoCredentialsFound;
-            settings.Username = "alice";
-            settings.CleartextPassword = "alicespassword";
+            var settings = VmInstanceConnectionSettings.CreateNew(SampleInstance);
+            settings.CredentialGenerationBehavior.EnumValue = RdpCredentialGenerationBehavior.AllowIfNoCredentialsFound;
+            settings.Username.StringValue = "alice";
+            settings.Password.ClearTextValue = "alicespassword";
 
             await credentialPrompt.ShowCredentialsPromptAsync(
                 null,
@@ -309,9 +291,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Test.Views.Credentials
                 settings,
                 true);
 
-            Assert.AreEqual("alice", settings.Username);
-            Assert.AreEqual("alicespassword", settings.Password.AsClearText());
-            Assert.IsNull(settings.Domain);
+            Assert.AreEqual("alice", settings.Username.Value);
+            Assert.AreEqual("alicespassword", settings.Password.ClearTextValue);
+            Assert.IsNull(settings.Domain.Value);
 
             taskDialog.Verify(t => t.ShowOptionsTaskDialog(
                 It.IsAny<IWin32Window>(),
@@ -346,12 +328,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Test.Views.Credentials
 
             var credentialPrompt = CreateCredentialsPrompt(true, false, taskDialog);
             var window = this.serviceRegistry.AddMock<IConnectionSettingsWindow>();
-            var settings = new ConnectionSettingsEditor(
-                new VmInstanceConnectionSettings(),
-                _ => { },
-                null);
 
-            settings.CredentialGenerationBehavior = RdpCredentialGenerationBehavior.Disallow;
+            var settings = VmInstanceConnectionSettings.CreateNew(SampleInstance);
+            settings.CredentialGenerationBehavior.EnumValue = RdpCredentialGenerationBehavior.Disallow;
 
             AssertEx.ThrowsAggregateException<TaskCanceledException>(
                 () => credentialPrompt.ShowCredentialsPromptAsync(
@@ -389,12 +368,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Test.Views.Credentials
                 out It.Ref<bool>.IsAny)).Returns(1);
 
             var credentialPrompt = CreateCredentialsPrompt(true, false, taskDialog);
-            var settings = new ConnectionSettingsEditor(
-                new VmInstanceConnectionSettings(),
-                _ => { },
-                null);
 
-            settings.CredentialGenerationBehavior = RdpCredentialGenerationBehavior.Disallow;
+            var settings = VmInstanceConnectionSettings.CreateNew(SampleInstance);
+            settings.CredentialGenerationBehavior.EnumValue = RdpCredentialGenerationBehavior.Disallow;
 
             await credentialPrompt.ShowCredentialsPromptAsync(
                 null,
@@ -402,9 +378,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Test.Views.Credentials
                 settings,
                 false);
 
-            Assert.IsNull(settings.Username);
-            Assert.IsNull(settings.Password);
-            Assert.IsNull(settings.Domain);
+            Assert.IsNull(settings.Username.Value);
+            Assert.IsNull(settings.Password.Value);
+            Assert.IsNull(settings.Domain.Value);
 
             taskDialog.Verify(t => t.ShowOptionsTaskDialog(
                 It.IsAny<IWin32Window>(),
@@ -434,14 +410,11 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Test.Views.Credentials
                 out It.Ref<bool>.IsAny)).Returns(0);
 
             var credentialPrompt = CreateCredentialsPrompt(true, false, taskDialog);
-            var settings = new ConnectionSettingsEditor(
-                new VmInstanceConnectionSettings(),
-                _ => { },
-                null);
 
-            settings.CredentialGenerationBehavior = RdpCredentialGenerationBehavior.Disallow;
-            settings.Username = "alice";
-            settings.CleartextPassword = "alicespassword";
+            var settings = VmInstanceConnectionSettings.CreateNew(SampleInstance);
+            settings.CredentialGenerationBehavior.EnumValue = RdpCredentialGenerationBehavior.Disallow;
+            settings.Username.StringValue = "alice";
+            settings.Password.ClearTextValue = "alicespassword";
 
             await credentialPrompt.ShowCredentialsPromptAsync(
                 null,
@@ -449,9 +422,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Test.Views.Credentials
                 settings,
                 true);
 
-            Assert.AreEqual("alice", settings.Username);
-            Assert.AreEqual("alicespassword", settings.Password.AsClearText());
-            Assert.IsNull(settings.Domain);
+            Assert.AreEqual("alice", settings.Username.Value);
+            Assert.AreEqual("alicespassword", settings.Password.ClearTextValue);
+            Assert.IsNull(settings.Domain.Value);
 
             taskDialog.Verify(t => t.ShowOptionsTaskDialog(
                 It.IsAny<IWin32Window>(),
@@ -475,12 +448,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Test.Views.Credentials
             var taskDialog = new Mock<ITaskDialog>();
 
             var credentialPrompt = CreateCredentialsPrompt(true, true, taskDialog);
-            var settings = new ConnectionSettingsEditor(
-                new VmInstanceConnectionSettings(),
-                _ => { },
-                null);
 
-            settings.CredentialGenerationBehavior = RdpCredentialGenerationBehavior.Force;
+            var settings = VmInstanceConnectionSettings.CreateNew(SampleInstance);
+            settings.CredentialGenerationBehavior.EnumValue = RdpCredentialGenerationBehavior.Force;
 
             await credentialPrompt.ShowCredentialsPromptAsync(
                 null,
@@ -488,9 +458,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Test.Views.Credentials
                 settings,
                 true);
 
-            Assert.AreEqual("bob", settings.Username);
-            Assert.AreEqual("secret", settings.Password.AsClearText());
-            Assert.IsNull(settings.Domain);
+            Assert.AreEqual("bob", settings.Username.StringValue);
+            Assert.AreEqual("secret", settings.Password.ClearTextValue);
+            Assert.IsNull(settings.Domain.Value);
 
             // No dialog shown.
             taskDialog.Verify(t => t.ShowOptionsTaskDialog(
@@ -522,12 +492,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Test.Views.Credentials
 
             var credentialPrompt = CreateCredentialsPrompt(false, false, taskDialog);
             var window = this.serviceRegistry.AddMock<IConnectionSettingsWindow>();
-            var settings = new ConnectionSettingsEditor(
-                new VmInstanceConnectionSettings(),
-                _ => { },
-                null);
 
-            settings.CredentialGenerationBehavior = RdpCredentialGenerationBehavior.Force;
+            var settings = VmInstanceConnectionSettings.CreateNew(SampleInstance);
+            settings.CredentialGenerationBehavior.EnumValue = RdpCredentialGenerationBehavior.Force;
 
             AssertEx.ThrowsAggregateException<TaskCanceledException>(
                 () => credentialPrompt.ShowCredentialsPromptAsync(

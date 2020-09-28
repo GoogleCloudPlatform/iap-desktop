@@ -126,10 +126,17 @@
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
     <Compile Include="Services\Persistence\AppProtocolRegistry.cs" />
+    <Compile Include="Services\Settings\ApplicationSettingsRepository.cs" />
+    <Compile Include="Services\Settings\AuthSettingsRepository.cs" />
+    <Compile Include="Services\Settings\IProjectRepository.cs" />
+    <Compile Include="Services\Settings\ProjectRepository.cs" />
+    <Compile Include="Services\Settings\SettingRepositoryBase.cs" />
+    <Compile Include="Settings\ISetting.cs" />
+    <Compile Include="Settings\RegistrySetting.cs" />
+    <Compile Include="Settings\SettingBase.cs" />
     <Compile Include="Util\ByteSizeFormatter.cs" />
     <Compile Include="Views\CloudConsoleService.cs" />
     <Compile Include="Services\Adapters\IAuthorizationAdapter.cs" />
-    <Compile Include="Services\Integration\ProjectInventoryService.cs" />
     <Compile Include="Controls\FlatListView.cs">
       <SubType>Component</SubType>
     </Compile>
@@ -162,6 +169,7 @@
     <Compile Include="Views\Properties\PropertiesWindow.Designer.cs">
       <DependentUpon>PropertiesWindow.cs</DependentUpon>
     </Compile>
+    <Compile Include="Views\Properties\SettingsCollectionTypeDescriptor.cs" />
     <Compile Include="Views\SlowLoadingPane.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -170,19 +178,11 @@
     </Compile>
     <Compile Include="Views\TaskDialog.cs" />
     <Compile Include="Services\UpdateService.cs" />
-    <Compile Include="Services\Persistence\AuthSettingsRepository.cs" />
     <Compile Include="TraceSources.cs" />
     <Compile Include="Util\LeastRecentlyUsedCache.cs" />
     <Compile Include="Util\RangeObservableCollection.cs" />
     <Compile Include="Util\SecureStringExtensions.cs" />
-    <Compile Include="Services\Persistence\ApplicationSettingsRepository.cs" />
-    <Compile Include="Services\Persistence\SettingRepositoryBase.cs" />
-    <Compile Include="Util\RegistryKeyMapper.cs" />
-    <Compile Include="Util\RegistryValueAttribute.cs" />
-    <Compile Include="Services\Persistence\ConnectionSettingsRepository.cs" />
     <Compile Include="Util\IapRdpUrl.cs" />
-    <Compile Include="Util\MappedPropertyAttribute.cs" />
-    <Compile Include="Util\PropertyMapper.cs" />
     <Compile Include="Views\AboutWindow.cs">
       <SubType>Form</SubType>
     </Compile>

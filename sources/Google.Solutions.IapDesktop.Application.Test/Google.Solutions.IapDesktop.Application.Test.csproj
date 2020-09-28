@@ -102,22 +102,25 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Services\Adapters\TestInstanceExtensions.cs" />
     <Compile Include="Services\Adapters\TestResourceManagerAdapter.cs" />
-    <Compile Include="Services\Persistence\TestApplicationSettingsRepository.cs" />
+    <Compile Include="Services\Settings\TestApplicationSettingsRepository.cs" />
     <Compile Include="Services\Persistence\TestAppProtocolRegistry.cs" />
-    <Compile Include="Services\Persistence\TestVmInstanceConnectionSettings.cs" />
+    <Compile Include="Services\Settings\TestAuthSettingsRepository.cs" />
+    <Compile Include="Services\Settings\TestProjectRepository.cs" />
+    <Compile Include="Settings\TestRegistryBoolSetting.cs" />
+    <Compile Include="Settings\TestRegistryQwordSetting.cs" />
+    <Compile Include="Settings\TestRegistryDwordSetting.cs" />
+    <Compile Include="Settings\TestRegistryEnumSetting.cs" />
+    <Compile Include="Settings\TestRegistrySecureStringSetting.cs" />
+    <Compile Include="Settings\TestRegistryStringSetting.cs" />
+    <Compile Include="Settings\TestSettingsCollectionExtensions.cs" />
     <Compile Include="Util\TestByteSizeFormatter.cs" />
     <Compile Include="Util\TestHtmlClipboardFormat.cs" />
     <Compile Include="Util\TestLeastRecentlyUsedCache.cs" />
     <Compile Include="Util\TestRangeObservableCollection.cs" />
-    <Compile Include="Util\TestRegistryKeyMapper.cs" />
     <Compile Include="ObjectModel\MockEventService.cs" />
     <Compile Include="Services\Integration\TestJobService.cs" />
-    <Compile Include="Services\Integration\TestProjectInventoryService.cs" />
-    <Compile Include="Services\Persistence\TestAuthSettingsRepository.cs" />
-    <Compile Include="Services\Persistence\TestConnectionSettingsRepository.cs" />
     <Compile Include="ObjectModel\TestServiceRegistry.cs" />
     <Compile Include="Util\TestIapRdpUrl.cs" />
-    <Compile Include="Util\TestPropertyMapper.cs" />
     <Compile Include="Views\TestMainForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -125,6 +128,7 @@
       <DependentUpon>TestMainForm.cs</DependentUpon>
     </Compile>
     <Compile Include="Views\TestProjectExplorer.cs" />
+    <Compile Include="Views\TestPropertiesWindow.cs" />
     <Compile Include="Views\WindowTestFixtureBase.cs" />
     <Compile Include="Util\TestSingletonApplicationBase.cs" />
   </ItemGroup>
@@ -159,6 +163,7 @@
       <DependentUpon>TestMainForm.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>

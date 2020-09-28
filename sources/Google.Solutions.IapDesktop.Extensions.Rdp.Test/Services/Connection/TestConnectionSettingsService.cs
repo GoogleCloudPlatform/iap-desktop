@@ -21,18 +21,21 @@
 
 using Google.Solutions.Common.Locator;
 using Google.Solutions.Common.Test;
-using Google.Solutions.IapDesktop.Application.Services.Persistence;
+using Google.Solutions.IapDesktop.Application.Services.Integration;
+using Google.Solutions.IapDesktop.Application.Services.Settings;
 using Google.Solutions.IapDesktop.Application.Views.ProjectExplorer;
 using Google.Solutions.IapDesktop.Extensions.Rdp.Services.Connection;
 using Microsoft.Win32;
 using Moq;
 using NUnit.Framework;
+using System;
 
 namespace Google.Solutions.IapDesktop.Extensions.Rdp.Test.Services.Connection
 {
     [TestFixture]
     public class TestConnectionSettingsService : FixtureBase
     {
+        private const string SampleProjectId = "project-1";
         private const string TestKeyPath = @"Software\Google\__Test";
         private readonly RegistryKey hkcu = RegistryKey.OpenBaseKey(
             RegistryHive.CurrentUser, 
@@ -45,33 +48,78 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Test.Services.Connection
         {
             hkcu.DeleteSubKeyTree(TestKeyPath, false);
 
-            var repository = new ConnectionSettingsRepository(hkcu.CreateSubKey(TestKeyPath));
-            repository.SetProjectSettings(new ProjectConnectionSettings()
-            {
-                ProjectId = "project-1",
-                Domain = "project-domain"
-            });
+            var projectRepository = new ProjectRepository(
+                hkcu.CreateSubKey(TestKeyPath),
+                new Mock<IEventService>().Object);
+            var settingsRepository = new ConnectionSettingsRepository(projectRepository);
+            this.service = new ConnectionSettingsService(settingsRepository);
 
-            this.service = new ConnectionSettingsService(repository);
+            // Set some initial project settings.
+            projectRepository.AddProjectAsync(SampleProjectId).Wait();
+
+            var projectSettings = settingsRepository.GetProjectSettings(SampleProjectId);
+            projectSettings.Domain.Value = "project-domain";
+            settingsRepository.SetProjectSettings(projectSettings);
         }
 
-        [Test]
-        public void WhenNodeUnsupported_ThenIsConnectionSettingsEditorAvailableReturnsFalse()
+
+        private IProjectExplorerProjectNode CreateProjectNode()
         {
-            Assert.IsFalse(service.IsConnectionSettingsEditorAvailable(
+            var projectNode = new Mock<IProjectExplorerProjectNode>();
+            projectNode.SetupGet(n => n.ProjectId).Returns(SampleProjectId);
+
+            return projectNode.Object;
+        }
+
+        private IProjectExplorerZoneNode CreateZoneNode()
+        {
+            var zoneNode = new Mock<IProjectExplorerZoneNode>();
+            zoneNode.SetupGet(n => n.ProjectId).Returns(SampleProjectId);
+            zoneNode.SetupGet(n => n.ZoneId).Returns("zone-1");
+
+            return zoneNode.Object;
+        }
+
+        private IProjectExplorerVmInstanceNode CreateVmInstanceNode()
+        {
+            var vmNode = new Mock<IProjectExplorerVmInstanceNode>();
+            vmNode.SetupGet(n => n.ProjectId).Returns(SampleProjectId);
+            vmNode.SetupGet(n => n.ZoneId).Returns("zone-1");
+            vmNode.SetupGet(n => n.InstanceName).Returns("instance-1");
+            vmNode.SetupGet(n => n.Reference).Returns(
+                new InstanceLocator(SampleProjectId, "zone-1", "instance-1"));
+
+            return vmNode.Object;
+        }
+
+        //---------------------------------------------------------------------
+        // IsConnectionSettingsAvailable.
+        //---------------------------------------------------------------------
+
+        [Test]
+        public void WhenNodeUnsupported_ThenIsConnectionSettingsAvailableReturnsFalse()
+        {
+            Assert.IsFalse(service.IsConnectionSettingsAvailable(
                 new Mock<IProjectExplorerNode>().Object));
-            Assert.IsFalse(service.IsConnectionSettingsEditorAvailable(
+            Assert.IsFalse(service.IsConnectionSettingsAvailable(
                 new Mock<IProjectExplorerCloudNode>().Object));
         }
 
         [Test]
-        public void WhenNodeSupported_ThenIsConnectionSettingsEditorAvailableReturnsTrue()
+        public void WhenNodeUnsupported_ThenGetConnectionSettingsRaisesArgumentException()
         {
-            Assert.IsTrue(service.IsConnectionSettingsEditorAvailable(
+            Assert.Throws<ArgumentException>(() => service.GetConnectionSettings(
+                new Mock<IProjectExplorerNode>().Object));
+        }
+
+        [Test]
+        public void WhenNodeSupported_ThenIsConnectionSettingsAvailableReturnsTrue()
+        {
+            Assert.IsTrue(service.IsConnectionSettingsAvailable(
                 new Mock<IProjectExplorerProjectNode>().Object));
-            Assert.IsTrue(service.IsConnectionSettingsEditorAvailable(
+            Assert.IsTrue(service.IsConnectionSettingsAvailable(
                 new Mock<IProjectExplorerZoneNode>().Object));
-            Assert.IsTrue(service.IsConnectionSettingsEditorAvailable(
+            Assert.IsTrue(service.IsConnectionSettingsAvailable(
                 new Mock<IProjectExplorerVmInstanceNode>().Object));
         }
 
@@ -82,25 +130,23 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Test.Services.Connection
         [Test]
         public void WhenReadingProjectSettings_ThenExistingProjectSettingIsVisible()
         {
-            var projectNode = new Mock<IProjectExplorerProjectNode>();
-            projectNode.SetupGet(n => n.ProjectId).Returns("project-1");
+            var projectNode = CreateProjectNode();
 
-            var editor = service.GetConnectionSettingsEditor(projectNode.Object);
-            Assert.AreEqual("project-domain", editor.Domain);
+            var settings = this.service.GetConnectionSettings(projectNode);
+            Assert.AreEqual("project-domain", settings.Domain.Value);
         }
 
         [Test]
         public void WhenChangingProjectSetting_ThenSettingIsSaved()
         {
-            var projectNode = new Mock<IProjectExplorerProjectNode>();
-            projectNode.SetupGet(n => n.ProjectId).Returns("project-1");
+            var projectNode = CreateProjectNode();
 
-            var firstEditor = service.GetConnectionSettingsEditor(projectNode.Object);
-            firstEditor.Username = "bob";
-            firstEditor.SaveChanges();
+            var firstSettings = this.service.GetConnectionSettings(projectNode);
+            firstSettings.Username.Value = "bob";
+            this.service.SaveConnectionSettings(firstSettings);
 
-            var secondEditor = service.GetConnectionSettingsEditor(projectNode.Object);
-            Assert.AreEqual("bob", secondEditor.Username);
+            var secondSettings = this.service.GetConnectionSettings(projectNode);
+            Assert.AreEqual("bob", secondSettings.Username.Value);
         }
 
         //---------------------------------------------------------------------
@@ -110,27 +156,23 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Test.Services.Connection
         [Test]
         public void WhenReadingZoneSettings_ThenExistingProjectSettingIsVisible()
         {
-            var zoneNode = new Mock<IProjectExplorerZoneNode>();
-            zoneNode.SetupGet(n => n.ProjectId).Returns("project-1");
-            zoneNode.SetupGet(n => n.ZoneId).Returns("zone-1");
+            var zoneNode = CreateZoneNode();
 
-            var editor = service.GetConnectionSettingsEditor(zoneNode.Object);
-            Assert.AreEqual("project-domain", editor.Domain);
+            var settings = this.service.GetConnectionSettings(zoneNode);
+            Assert.AreEqual("project-domain", settings.Domain.Value);
         }
 
         [Test]
         public void WhenChangingZoneSetting_ThenSettingIsSaved()
         {
-            var zoneNode = new Mock<IProjectExplorerZoneNode>();
-            zoneNode.SetupGet(n => n.ProjectId).Returns("project-1");
-            zoneNode.SetupGet(n => n.ZoneId).Returns("zone-1");
+            var zoneNode = CreateZoneNode();
 
-            var firstEditor = service.GetConnectionSettingsEditor(zoneNode.Object);
-            firstEditor.Username = "bob";
-            firstEditor.SaveChanges();
+            var firstSettings = this.service.GetConnectionSettings(zoneNode);
+            firstSettings.Username.Value = "bob";
+            this.service.SaveConnectionSettings(firstSettings);
 
-            var secondEditor = service.GetConnectionSettingsEditor(zoneNode.Object);
-            Assert.AreEqual("bob", secondEditor.Username);
+            var secondSettings = this.service.GetConnectionSettings(zoneNode);
+            Assert.AreEqual("bob", secondSettings.Username.Value);
         }
 
         //---------------------------------------------------------------------
@@ -140,33 +182,63 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Test.Services.Connection
         [Test]
         public void WhenReadingVmInstanceSettings_ThenExistingProjectSettingIsVisible()
         {
-            var vmNode = new Mock<IProjectExplorerVmInstanceNode>();
-            vmNode.SetupGet(n => n.ProjectId).Returns("project-1");
-            vmNode.SetupGet(n => n.ZoneId).Returns("zone-1");
-            vmNode.SetupGet(n => n.InstanceName).Returns("instance-1");
-            vmNode.SetupGet(n => n.Reference).Returns(
-                new InstanceLocator("project-1", "zone-1", "instance-1"));
+            var vmNode = CreateVmInstanceNode();
 
-            var editor = service.GetConnectionSettingsEditor(vmNode.Object);
-            Assert.AreEqual("project-domain", editor.Domain);
+            var settings = this.service.GetConnectionSettings(vmNode);
+            Assert.AreEqual("project-domain", settings.Domain.Value);
         }
 
         [Test]
         public void WhenChangingVmInstanceSetting_ThenSettingIsSaved()
         {
-            var vmNode = new Mock<IProjectExplorerVmInstanceNode>();
-            vmNode.SetupGet(n => n.ProjectId).Returns("project-1");
-            vmNode.SetupGet(n => n.ZoneId).Returns("zone-1");
-            vmNode.SetupGet(n => n.InstanceName).Returns("instance-1");
-            vmNode.SetupGet(n => n.Reference).Returns(
-                new InstanceLocator("project-1", "zone-1", "instance-1"));
+            var vmNode = CreateVmInstanceNode();
 
-            var firstEditor = service.GetConnectionSettingsEditor(vmNode.Object);
-            firstEditor.Username = "bob";
-            firstEditor.SaveChanges();
+            var firstSettings = this.service.GetConnectionSettings(vmNode);
+            firstSettings.Username.Value = "bob";
+            this.service.SaveConnectionSettings(firstSettings);
 
-            var secondEditor = service.GetConnectionSettingsEditor(vmNode.Object);
-            Assert.AreEqual("bob", secondEditor.Username);
+            var secondSettings = this.service.GetConnectionSettings(vmNode);
+            Assert.AreEqual("bob", secondSettings.Username.Value);
+        }
+
+        //---------------------------------------------------------------------
+        // Inheritance.
+        //---------------------------------------------------------------------
+
+        [Test]
+        public void WhenUsernameSetInProject_ProjectValueIsInheritedDownToVm(
+            [Values("user", null)]
+                string username)
+        {
+            var projectSettings = this.service.GetConnectionSettings(CreateProjectNode());
+            projectSettings.Username.Value = username;
+            this.service.SaveConnectionSettings(projectSettings);
+
+            // Inherited value is shown...
+            var instanceSettings = this.service.GetConnectionSettings(CreateVmInstanceNode());
+            Assert.AreEqual(username, instanceSettings.Username.Value);
+            Assert.IsTrue(instanceSettings.Username.IsDefault);
+        }
+
+        [Test]
+        public void WhenUsernameSetInProjectAndZone_ZoneValueIsInheritedDownToVm()
+        {
+            var projectSettings = this.service.GetConnectionSettings(CreateProjectNode());
+            projectSettings.Username.Value = "root-value";
+            this.service.SaveConnectionSettings(projectSettings);
+
+            var zoneSettings = this.service.GetConnectionSettings(CreateZoneNode());
+            zoneSettings.Username.Value = "overriden-value";
+            this.service.SaveConnectionSettings(zoneSettings);
+
+            // Inherited value is shown...
+            zoneSettings = this.service.GetConnectionSettings(CreateZoneNode());
+            Assert.AreEqual("overriden-value", zoneSettings.Username.Value);
+            Assert.IsFalse(zoneSettings.Username.IsDefault);
+
+            var instanceSettings = this.service.GetConnectionSettings(CreateVmInstanceNode());
+            Assert.AreEqual("overriden-value", instanceSettings.Username.Value);
+            Assert.IsTrue(instanceSettings.Username.IsDefault);
         }
     }
 }

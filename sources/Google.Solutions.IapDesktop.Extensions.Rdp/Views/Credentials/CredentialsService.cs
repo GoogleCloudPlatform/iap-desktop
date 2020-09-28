@@ -35,7 +35,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Views.Credentials
         Task GenerateCredentialsAsync(
             IWin32Window owner,
             InstanceLocator instanceRef,
-            ConnectionSettingsEditor settings,
+            ConnectionSettingsBase settings,
             bool silent);
 
         Task<bool> IsGrantedPermissionToGenerateCredentials(
@@ -55,19 +55,19 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Views.Credentials
         public async Task GenerateCredentialsAsync(
             IWin32Window owner,
             InstanceLocator instanceLocator,
-            ConnectionSettingsEditor settings,
+            ConnectionSettingsBase settings,
             bool silent)
         {
             // Prompt for username to use.
             string username;
             if (silent)
             {
-                username = string.IsNullOrEmpty(settings.Username)
+                username = string.IsNullOrEmpty(settings.Username.StringValue)
                     ? this.serviceProvider
                         .GetService<IAuthorizationAdapter>()
                         .Authorization
                         .SuggestWindowsUsername()
-                    : settings.Username;
+                    : settings.Username.StringValue;
             }
             else
             {
@@ -75,12 +75,12 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Views.Credentials
                     .GetService<IGenerateCredentialsDialog>()
                     .PromptForUsername(
                         owner,
-                        string.IsNullOrEmpty(settings.Username)
+                        string.IsNullOrEmpty(settings.Username.StringValue)
                             ? this.serviceProvider
                                 .GetService<IAuthorizationAdapter>()
                                 .Authorization
                                 .SuggestWindowsUsername()
-                            : settings.Username);
+                            : settings.Username.StringValue);
                 if (username == null)
                 {
                     // Aborted.
@@ -107,10 +107,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Views.Credentials
             }
 
             // Save credentials.
-            settings.Username = credentials.UserName;
-            settings.CleartextPassword = credentials.Password;
-            settings.Domain = null;
-            settings.SaveChanges();
+            settings.Username.StringValue = credentials.UserName;
+            settings.Password.ClearTextValue = credentials.Password;
+            settings.Domain.StringValue = null;
         }
 
         public Task<bool> IsGrantedPermissionToGenerateCredentials(InstanceLocator instance)

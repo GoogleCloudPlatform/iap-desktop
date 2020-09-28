@@ -38,7 +38,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Views.Credentials
         Task ShowCredentialsPromptAsync(
            IWin32Window owner,
            InstanceLocator instanceLocator,
-           ConnectionSettingsEditor settings,
+           ConnectionSettingsBase settings,
            bool allowJumpToSettings);
     }
 
@@ -55,7 +55,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Views.Credentials
         public async Task ShowCredentialsPromptAsync(
             IWin32Window owner,
             InstanceLocator instanceLocator,
-            ConnectionSettingsEditor settings,
+            ConnectionSettingsBase settings,
             bool allowJumpToSettings)
         {
             var credentialsService = this.serviceProvider.GetService<ICredentialsService>();
@@ -64,11 +64,10 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Views.Credentials
             // Determine which options to show in prompt.
             //
             var credentialsExist =
-                !string.IsNullOrEmpty(settings.Username) &&
-                settings.Password != null &&
-                settings.Password.Length != 0;
+                !string.IsNullOrEmpty(settings.Username.StringValue) &&
+                !string.IsNullOrEmpty(settings.Password.ClearTextValue);
 
-            if (settings.CredentialGenerationBehavior == RdpCredentialGenerationBehavior.Force
+            if (settings.CredentialGenerationBehavior.EnumValue == RdpCredentialGenerationBehavior.Force
                 && await credentialsService
                         .IsGrantedPermissionToGenerateCredentials(instanceLocator)
                         .ConfigureAwait(true))
@@ -85,11 +84,11 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Views.Credentials
 
             var options = new List<CredentialOption>();
             if ((!credentialsExist
-                    && settings.CredentialGenerationBehavior == RdpCredentialGenerationBehavior.AllowIfNoCredentialsFound
+                    && settings.CredentialGenerationBehavior.EnumValue == RdpCredentialGenerationBehavior.AllowIfNoCredentialsFound
                     && await credentialsService
                         .IsGrantedPermissionToGenerateCredentials(instanceLocator)
                         .ConfigureAwait(true))
-                || settings.CredentialGenerationBehavior == RdpCredentialGenerationBehavior.Allow)
+                || settings.CredentialGenerationBehavior.EnumValue == RdpCredentialGenerationBehavior.Allow)
             {
                 options.Add(
                     new CredentialOption()

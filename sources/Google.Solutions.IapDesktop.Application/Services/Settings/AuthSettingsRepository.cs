@@ -22,24 +22,20 @@
 using Google.Apis.Json;
 using Google.Apis.Util;
 using Google.Apis.Util.Store;
+using Google.Solutions.IapDesktop.Application.Settings;
 using Google.Solutions.IapDesktop.Application.Util;
 using Microsoft.Win32;
 using System.Collections.Generic;
-using System.Runtime.InteropServices;
-using System.Security;
 using System.Security.Cryptography;
 using System.Threading.Tasks;
 
-namespace Google.Solutions.IapDesktop.Application.Services.Persistence
+namespace Google.Solutions.IapDesktop.Application.Services.Settings
 {
     /// <summary>
     /// Registry-backed repository for UI layout settings.
     /// </summary>
-    [ComVisible(false)]
     public class AuthSettingsRepository : SettingsRepositoryBase<AuthSettings>, IDataStore
     {
-        private static readonly Task CompletedTask = Task.FromResult(0);
-
         public string CredentialStoreKey { get; }
 
         public AuthSettingsRepository(RegistryKey baseKey, string credentialStoreKey) : base(baseKey)
@@ -55,6 +51,13 @@ namespace Google.Solutions.IapDesktop.Application.Services.Persistence
         }
 
         //---------------------------------------------------------------------
+        // SettingsRepositoryBase
+        //---------------------------------------------------------------------
+
+        protected override AuthSettings LoadSettings(RegistryKey key)
+            => AuthSettings.FromKey(key);
+
+        //---------------------------------------------------------------------
         // IDataStore.
         //
         // Rather than supporting all possible keys, this implementation only 
@@ -63,8 +66,8 @@ namespace Google.Solutions.IapDesktop.Application.Services.Persistence
 
         public Task ClearAsync()
         {
-            SetSettings(new AuthSettings());
-            return CompletedTask;
+            ClearSettings();
+            return Task.CompletedTask;
         }
 
         public Task DeleteAsync<T>(string key)
@@ -87,7 +90,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.Persistence
 
             if (key == CredentialStoreKey)
             {
-                var clearText = GetSettings().Credentials.AsClearText();
+                var clearText = GetSettings().Credentials.ClearTextValue;
                 return Task.FromResult(
                     NewtonsoftJsonSerializer.Instance.Deserialize<T>(clearText));
             }
@@ -103,13 +106,12 @@ namespace Google.Solutions.IapDesktop.Application.Services.Persistence
 
             if (key == CredentialStoreKey)
             {
-                SetSettings(new AuthSettings()
-                {
-                    Credentials = SecureStringExtensions.FromClearText(
-                        NewtonsoftJsonSerializer.Instance.Serialize(value))
-                });
+                var settings = GetSettings();
+                settings.Credentials.Value = SecureStringExtensions.FromClearText(
+                        NewtonsoftJsonSerializer.Instance.Serialize(value));
+                SetSettings(settings);
 
-                return CompletedTask;
+                return Task.CompletedTask;
             }
             else
             {
@@ -118,10 +120,30 @@ namespace Google.Solutions.IapDesktop.Application.Services.Persistence
         }
     }
 
-    public class AuthSettings
+    public class AuthSettings : IRegistrySettingsCollection
     {
+        public RegistrySecureStringSetting Credentials { get; private set; }
 
-        [SecureStringRegistryValue("Credentials", DataProtectionScope.CurrentUser)]
-        public SecureString Credentials { get; set; }
+        public IEnumerable<ISetting> Settings => new ISetting[]
+        {
+            this.Credentials
+        };
+
+        private AuthSettings()
+        { }
+
+        public static AuthSettings FromKey(RegistryKey registryKey)
+        {
+            return new AuthSettings()
+            {
+                Credentials = RegistrySecureStringSetting.FromKey(
+                    "Credentials",
+                    "OAuth credentials",
+                    null,
+                    null,
+                    registryKey,
+                    DataProtectionScope.CurrentUser)
+            };
+        }
     }
 }

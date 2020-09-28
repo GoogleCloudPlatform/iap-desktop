@@ -21,6 +21,7 @@
 
 using Google.Solutions.IapDesktop.Application.ObjectModel;
 using Google.Solutions.IapDesktop.Application.Services.Persistence;
+using Google.Solutions.IapDesktop.Application.Services.Settings;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -50,8 +51,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Views.UsageReport
             InitializeComponent();
 
             // Populate list of projects.
-            var projectIds = serviceProvider.GetService<ConnectionSettingsRepository>()
-                .ListProjectSettings()
+            var projectIds = serviceProvider.GetService<IProjectRepository>()
+                .ListProjectsAsync()
+                .Result     // This is super-fast, so ok to block here.
                 .Select(p => p.ProjectId);
 
             this.projectsList.Items.AddRange(projectIds

@@ -73,11 +73,10 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Views.ConnectionSettings
                 foreach (var vmNode in zoneNode.Instances.Cast<VmInstanceNode>())
                 {
                     var settings = (VmInstanceConnectionSettings)this.settingsService
-                        .GetConnectionSettingsEditor(vmNode)
-                        .CreateConnectionSettings(vmNode.Name);
+                        .GetConnectionSettings(vmNode);
 
                     buffer.Append($"<li>");
-                    buffer.Append($"<a href='{new IapRdpUrl(vmNode.Reference, settings)}'>");
+                    buffer.Append($"<a href='{new IapRdpUrl(vmNode.Reference, settings.ToUrlQuery())}'>");
                     buffer.Append($"{HttpUtility.HtmlEncode(vmNode.InstanceName)}</a>");
                     buffer.Append($"</li>");
                 }

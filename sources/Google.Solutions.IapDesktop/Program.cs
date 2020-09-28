@@ -42,6 +42,7 @@ using System.Reflection;
 using System.Threading;
 using System.Windows.Forms;
 using Google.Solutions.IapDesktop.Application.Services;
+using Google.Solutions.IapDesktop.Application.Services.Settings;
 
 namespace Google.Solutions.IapDesktop
 {
@@ -219,8 +220,6 @@ namespace Google.Solutions.IapDesktop
             persistenceLayer.AddSingleton(new AuthSettingsRepository(
                 hkcu.CreateSubKey($@"{BaseRegistryKeyPath}\Auth"),
                 GoogleAuthAdapter.StoreUserId));
-            persistenceLayer.AddSingleton(new ConnectionSettingsRepository(
-                hkcu.CreateSubKey($@"{BaseRegistryKeyPath}\Inventory")));
 
             var mainForm = new MainForm(persistenceLayer, windowAndWorkflowLayer)
             {
@@ -240,11 +239,13 @@ namespace Google.Solutions.IapDesktop
             //
             // Integration layer.
             //
+            var eventService = new EventService(mainForm);
             integrationLayer.AddSingleton<IJobService, JobService>();
-            integrationLayer.AddSingleton<IEventService>(new EventService(mainForm));
-            integrationLayer.AddTransient<ProjectInventoryService>();
+            integrationLayer.AddSingleton<IEventService>(eventService);
             integrationLayer.AddSingleton<IGlobalConnectionBroker, GlobalConnectionBroker>();
-
+            integrationLayer.AddSingleton<IProjectRepository>(new ProjectRepository(
+                hkcu.CreateSubKey($@"{BaseRegistryKeyPath}\Inventory"),
+                eventService));
 
             //
             // Window & workflow layer.

@@ -20,7 +20,8 @@
 //
 
 using Google.Solutions.Common.Test;
-using Google.Solutions.IapDesktop.Application.Services.Persistence;
+using Google.Solutions.IapDesktop.Application.Services.Integration;
+using Google.Solutions.IapDesktop.Application.Services.Settings;
 using Google.Solutions.IapDesktop.Application.Views.ProjectExplorer;
 using Google.Solutions.IapDesktop.Extensions.Rdp.Services.Connection;
 using Google.Solutions.IapDesktop.Extensions.Rdp.Views.ConnectionSettings;
@@ -34,6 +35,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Test.Views.ConnectionSettin
     [TestFixture]
     public class TestConnectionSettingsViewModel : FixtureBase
     {
+        private const string SampleProjectId = "project-1";
         private const string TestKeyPath = @"Software\Google\__Test";
         private readonly RegistryKey hkcu = RegistryKey.OpenBaseKey(
             RegistryHive.CurrentUser,
@@ -46,14 +48,18 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Test.Views.ConnectionSettin
         {
             hkcu.DeleteSubKeyTree(TestKeyPath, false);
 
-            var repository = new ConnectionSettingsRepository(hkcu.CreateSubKey(TestKeyPath));
-            repository.SetProjectSettings(new ProjectConnectionSettings()
-            {
-                ProjectId = "project-1",
-                Domain = "project-domain"
-            });
+            var projectRepository = new ProjectRepository(
+                hkcu.CreateSubKey(TestKeyPath),
+                new Mock<IEventService>().Object);
+            var settingsRepository = new ConnectionSettingsRepository(projectRepository);
+            this.service = new ConnectionSettingsService(settingsRepository);
 
-            this.service = new ConnectionSettingsService(repository);
+            // Set some initial project settings.
+            projectRepository.AddProjectAsync(SampleProjectId).Wait();
+
+            var projectSettings = settingsRepository.GetProjectSettings(SampleProjectId);
+            projectSettings.Domain.Value = "project-domain";
+            settingsRepository.SetProjectSettings(projectSettings);
         }
 
         //---------------------------------------------------------------------
@@ -66,7 +72,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Test.Views.ConnectionSettin
             var viewModel = new ConnectionSettingsViewModel(this.service);
 
             var node = new Mock<IProjectExplorerVmInstanceNode>();
-            node.SetupGet(n => n.ProjectId).Returns("project-1");
+            node.SetupGet(n => n.ProjectId).Returns(SampleProjectId);
             node.SetupGet(n => n.ZoneId).Returns("zone-1");
             node.SetupGet(n => n.InstanceName).Returns("instance-1");
             node.SetupGet(n => n.IsConnected).Returns(true);
@@ -82,7 +88,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Test.Views.ConnectionSettin
             var viewModel = new ConnectionSettingsViewModel(this.service);
 
             var node = new Mock<IProjectExplorerVmInstanceNode>();
-            node.SetupGet(n => n.ProjectId).Returns("project-1");
+            node.SetupGet(n => n.ProjectId).Returns(SampleProjectId);
             node.SetupGet(n => n.ZoneId).Returns("zone-1");
             node.SetupGet(n => n.InstanceName).Returns("instance-1");
             node.SetupGet(n => n.IsConnected).Returns(false);
@@ -115,7 +121,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Test.Views.ConnectionSettin
             var viewModel = new ConnectionSettingsViewModel(this.service);
 
             var node = new Mock<IProjectExplorerProjectNode>();
-            node.SetupGet(n => n.ProjectId).Returns("project-1");
+            node.SetupGet(n => n.ProjectId).Returns(SampleProjectId);
             node.SetupGet(n => n.DisplayName).Returns("display");
 
             await viewModel.SwitchToModelAsync(node.Object);
@@ -134,7 +140,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Test.Views.ConnectionSettin
             var viewModel = new ConnectionSettingsViewModel(this.service);
 
             var node = new Mock<IProjectExplorerZoneNode>();
-            node.SetupGet(n => n.ProjectId).Returns("project-1");
+            node.SetupGet(n => n.ProjectId).Returns(SampleProjectId);
             node.SetupGet(n => n.ZoneId).Returns("zone-1");
             node.SetupGet(n => n.DisplayName).Returns("display");
 
@@ -154,7 +160,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Test.Views.ConnectionSettin
             var viewModel = new ConnectionSettingsViewModel(this.service);
 
             var node = new Mock<IProjectExplorerVmInstanceNode>();
-            node.SetupGet(n => n.ProjectId).Returns("project-1");
+            node.SetupGet(n => n.ProjectId).Returns(SampleProjectId);
             node.SetupGet(n => n.ZoneId).Returns("zone-1");
             node.SetupGet(n => n.InstanceName).Returns("instance-1");
             node.SetupGet(n => n.DisplayName).Returns("display");

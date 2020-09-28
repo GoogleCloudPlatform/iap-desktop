@@ -25,8 +25,6 @@ using Google.Solutions.Common.Test;
 using Google.Solutions.IapDesktop.Application.ObjectModel;
 using Google.Solutions.IapDesktop.Application.Services.Adapters;
 using Google.Solutions.IapDesktop.Application.Services.Integration;
-using Google.Solutions.IapDesktop.Application.Services.Persistence;
-using Google.Solutions.IapDesktop.Application.Util;
 using Google.Solutions.IapDesktop.Extensions.Rdp.Test.Services.Connection;
 using Google.Solutions.IapDesktop.Extensions.Rdp.Views.Credentials;
 using Google.Solutions.IapDesktop.Application.Test.ObjectModel;
@@ -48,7 +46,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Test.Views.Credentials
         private static readonly InstanceLocator SampleInstance
             = new InstanceLocator("project-1", "zone-1", "instance-1");
 
-
         [Test]
         public void WhenSuggestedUserNameProvided_ThenSuggestionIsUsed()
         {
@@ -60,11 +57,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Test.Views.Credentials
                     It.IsAny<string>()))
                 .Returns<string>(null); // Cancel dialog
 
-            var settings = new ConnectionSettingsEditor(
-                new VmInstanceConnectionSettings(),
-                _ => { },
-                null);
-            settings.Username = "alice";
+            var settings = VmInstanceConnectionSettings.CreateNew(SampleInstance);
+            settings.Username.Value = "alice";
 
             var credentialsService = new CredentialsService(serviceRegistry);
             AssertEx.ThrowsAggregateException<TaskCanceledException>(
@@ -98,11 +92,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Test.Views.Credentials
                 .ReturnsAsync(new NetworkCredential("alice", "password"));
 
             var credDialog = serviceRegistry.AddMock<IGenerateCredentialsDialog>();
-            var settings = new ConnectionSettingsEditor(
-                new VmInstanceConnectionSettings(),
-                _ => { },
-                null);
-            settings.Username = "alice";
+            var settings = VmInstanceConnectionSettings.CreateNew(SampleInstance);
+            settings.Username.Value = "alice";
 
             var credentialsService = new CredentialsService(serviceRegistry);
             await credentialsService.GenerateCredentialsAsync(
@@ -111,8 +102,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Test.Views.Credentials
                 settings,
                 true);
 
-            Assert.AreEqual("alice", settings.Username);
-            Assert.AreEqual("password", settings.Password.AsClearText());
+            Assert.AreEqual("alice", settings.Username.Value);
+            Assert.AreEqual("password", settings.Password.ClearTextValue);
             credDialog.Verify(d => d.PromptForUsername(
                 It.IsAny<IWin32Window>(),
                 It.IsAny<string>()), Times.Never);
@@ -137,10 +128,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Test.Views.Credentials
                 .ReturnsAsync(new NetworkCredential("bobsemail", "password"));
 
             var credDialog = serviceRegistry.AddMock<IGenerateCredentialsDialog>();
-            var settings = new ConnectionSettingsEditor(
-                new VmInstanceConnectionSettings(),
-                _ => { },
-                null);
+            var settings = VmInstanceConnectionSettings.CreateNew(SampleInstance);
 
             var credentialsService = new CredentialsService(serviceRegistry);
             await credentialsService.GenerateCredentialsAsync(
@@ -149,8 +137,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Test.Views.Credentials
                 settings,
                 true);
 
-            Assert.AreEqual("bobsemail", settings.Username);
-            Assert.AreEqual("password", settings.Password.AsClearText());
+            Assert.AreEqual("bobsemail", settings.Username.Value);
+            Assert.AreEqual("password", settings.Password.ClearTextValue);
             credDialog.Verify(d => d.PromptForUsername(
                 It.IsAny<IWin32Window>(),
                 It.IsAny<string>()), Times.Never);
@@ -173,11 +161,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Test.Views.Credentials
                     It.IsAny<string>()))
                 .Returns<string>(null); // Cancel dialog
 
-            var settings = new ConnectionSettingsEditor(
-                new VmInstanceConnectionSettings(),
-                _ => { },
-                null);
-            settings.Username = "";
+
+            var settings = VmInstanceConnectionSettings.CreateNew(SampleInstance);
+            settings.Username.Value = "";
 
             var credentialsService = new CredentialsService(serviceRegistry);
             AssertEx.ThrowsAggregateException<TaskCanceledException>(
@@ -210,10 +196,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Test.Views.Credentials
                     It.IsAny<string>()))
                 .Returns<string>(null); // Cancel dialog
 
-            var settings = new ConnectionSettingsEditor(
-                new VmInstanceConnectionSettings(),
-                _ => { },
-                null);
+
+            var settings = VmInstanceConnectionSettings.CreateNew(SampleInstance);
 
             var credentialsService = new CredentialsService(serviceRegistry);
             AssertEx.ThrowsAggregateException<TaskCanceledException>(

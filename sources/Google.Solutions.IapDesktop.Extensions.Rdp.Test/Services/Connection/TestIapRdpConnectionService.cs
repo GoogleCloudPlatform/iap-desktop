@@ -23,7 +23,6 @@ using Google.Solutions.Common.Locator;
 using Google.Solutions.Common.Test;
 using Google.Solutions.IapDesktop.Application.ObjectModel;
 using Google.Solutions.IapDesktop.Application.Services.Integration;
-using Google.Solutions.IapDesktop.Application.Services.Persistence;
 using Google.Solutions.IapDesktop.Application.Views;
 using Google.Solutions.IapDesktop.Application.Views.ProjectExplorer;
 using Google.Solutions.IapDesktop.Application.Util;
@@ -75,7 +74,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Test.Services.Connection
                 .Setup(p => p.ShowCredentialsPromptAsync(
                     It.IsAny<IWin32Window>(),
                     It.IsAny<InstanceLocator>(),
-                    It.IsAny<ConnectionSettingsEditor>(),
+                    It.IsAny<ConnectionSettingsBase>(),
                     It.IsAny<bool>())); // Nop -> Connect without configuring credentials.
             this.serviceRegistry.AddMock<IProjectExplorer>()
                 .Setup(p => p.TryFindNode(
@@ -99,8 +98,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Test.Services.Connection
                 It.IsAny<InstanceLocator>(),
                 "localhost",
                 It.IsAny<ushort>(),
-                It.Is<VmInstanceConnectionSettings>(i => i.Username == null)), Times.Once);
-            settingsService.Verify(s => s.GetConnectionSettingsEditor(
+                It.Is<VmInstanceConnectionSettings>(i => i.Username.Value == null)), Times.Once);
+            settingsService.Verify(s => s.GetConnectionSettings(
                 It.IsAny<IProjectExplorerNode>()), Times.Never);
         }
 
@@ -112,7 +111,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Test.Services.Connection
                 .Setup(p => p.ShowCredentialsPromptAsync(
                     It.IsAny<IWin32Window>(),
                     It.IsAny<InstanceLocator>(),
-                    It.IsAny<ConnectionSettingsEditor>(),
+                    It.IsAny<ConnectionSettingsBase>(),
                     It.IsAny<bool>())); // Nop -> Connect without configuring credentials.
             this.serviceRegistry.AddMock<IProjectExplorer>()
                 .Setup(p => p.TryFindNode(
@@ -136,27 +135,22 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Test.Services.Connection
                 It.IsAny<InstanceLocator>(),
                 "localhost",
                 It.IsAny<ushort>(),
-                It.Is<VmInstanceConnectionSettings>(i => i.Username == "john doe")), Times.Once);
-            settingsService.Verify(s => s.GetConnectionSettingsEditor(
+                It.Is<VmInstanceConnectionSettings>(i => i.Username.StringValue == "john doe")), Times.Once);
+            settingsService.Verify(s => s.GetConnectionSettings(
                 It.IsAny<IProjectExplorerNode>()), Times.Never);
         }
 
         [Test]
         public async Task WhenConnectingByUrlWithUsernameAndCredentialsExist_ThenConnectionIsMadeWithUsernameFromUrl()
         {
-            var settings = new VmInstanceConnectionSettings()
-            {
-                Username = "existinguser",
-                Password = SecureStringExtensions.FromClearText("password")
-            };
+            var settings = VmInstanceConnectionSettings.CreateNew("project", "instance-1");
+            settings.Username.Value = "existinguser";
+            settings.Password.Value = SecureStringExtensions.FromClearText("password");
 
             var settingsService = this.serviceRegistry.AddMock<IConnectionSettingsService>();
-            settingsService.Setup(s => s.GetConnectionSettingsEditor(
+            settingsService.Setup(s => s.GetConnectionSettings(
                     It.IsAny<IProjectExplorerNode>()))
-                .Returns(new ConnectionSettingsEditor(
-                    settings,
-                    _ => { },
-                    null));
+                .Returns(settings);
 
             var vmNode = new Mock<IProjectExplorerVmInstanceNode>();
             vmNode.SetupGet(n => n.Reference)
@@ -166,7 +160,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Test.Services.Connection
                 .Setup(p => p.ShowCredentialsPromptAsync(
                     It.IsAny<IWin32Window>(),
                     It.IsAny<InstanceLocator>(),
-                    It.IsAny<ConnectionSettingsEditor>(),
+                    It.IsAny<ConnectionSettingsBase>(),
                     It.IsAny<bool>()));
             this.serviceRegistry.AddMock<IProjectExplorer>()
                 .Setup(p => p.TryFindNode(
@@ -190,8 +184,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Test.Services.Connection
                 It.IsAny<InstanceLocator>(),
                 "localhost",
                 It.IsAny<ushort>(),
-                It.Is<VmInstanceConnectionSettings>(i => i.Username == "john doe")), Times.Once);
-            settingsService.Verify(s => s.GetConnectionSettingsEditor(
+                It.Is<VmInstanceConnectionSettings>(i => i.Username.StringValue == "john doe")), Times.Once);
+            settingsService.Verify(s => s.GetConnectionSettings(
                 It.IsAny<IProjectExplorerNode>()), Times.Once);
         }
     }

@@ -24,6 +24,7 @@ using Google.Solutions.IapDesktop.Application.ObjectModel;
 using Google.Solutions.IapDesktop.Application.Services.Adapters;
 using Google.Solutions.IapDesktop.Application.Services.Integration;
 using Google.Solutions.IapDesktop.Application.Services.Persistence;
+using Google.Solutions.IapDesktop.Application.Services.Settings;
 using Google.Solutions.IapDesktop.Application.Views;
 using Microsoft.Win32;
 using NUnit.Framework;
@@ -66,17 +67,19 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views
             var hkcu = RegistryKey.OpenBaseKey(RegistryHive.CurrentUser, RegistryView.Default);
             hkcu.DeleteSubKeyTree(TestKeyPath, false);
 
-            var registry = new ServiceRegistry();
-            registry.AddSingleton(new ConnectionSettingsRepository(hkcu.CreateSubKey(TestKeyPath)));
-            registry.AddTransient<ProjectInventoryService>();
-
             var mainForm = new TestMainForm();
+            this.eventService = new EventService(mainForm);
+
+            var registry = new ServiceRegistry();
+            registry.AddSingleton<IProjectRepository>(new ProjectRepository(
+                hkcu.CreateSubKey(TestKeyPath),
+                eventService));
+
             registry.AddSingleton<IMainForm>(mainForm);
             registry.AddSingleton<IJobService>(mainForm);
             registry.AddSingleton<IAuthorizationAdapter>(mainForm);
             registry.AddSingleton<IGlobalConnectionBroker, GlobalConnectionBroker>();
 
-            this.eventService = new EventService(mainForm);
             registry.AddSingleton<IEventService>(this.eventService);
 
             this.exceptionDialog = new MockExceptionDialog();
@@ -176,6 +179,18 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views
 
     internal static class ControlTestExtensions
     {
+        public static IEnumerable<Control> GetAllControls(this Control parent)
+        {
+            foreach (Control control in parent.Controls)
+            {
+                yield return control;
+                foreach (Control descendant in control.GetAllControls())
+                {
+                    yield return descendant;
+                }
+            }
+        }
+
         public static T GetChild<T>(this Control control, string name) where T : Control
         {
             if (control.Controls.ContainsKey(name))
