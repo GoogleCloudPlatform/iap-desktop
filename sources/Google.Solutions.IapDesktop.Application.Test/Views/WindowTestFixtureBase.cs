@@ -179,6 +179,18 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views
 
     internal static class ControlTestExtensions
     {
+        public static IEnumerable<Control> GetAllControls(this Control parent)
+        {
+            foreach (Control control in parent.Controls)
+            {
+                yield return control;
+                foreach (Control descendant in control.GetAllControls())
+                {
+                    yield return descendant;
+                }
+            }
+        }
+
         public static T GetChild<T>(this Control control, string name) where T : Control
         {
             if (control.Controls.ContainsKey(name))
