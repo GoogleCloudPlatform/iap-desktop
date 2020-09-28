@@ -296,18 +296,12 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Services
                 new Command<IMainForm>(
                     "Show &security screen (send Ctrl+Alt+Esc)",
                     _ => GetCommandStateWhenActiveSessionRequired(),
-                    _ => DoWithActiveSession(session => session.ShowSecurityScreen()))
-                {
-                    ShortcutKeys = Keys.Control | Keys.F4
-                });
+                    _ => DoWithActiveSession(session => session.ShowSecurityScreen())));
             desktopMenu.AddCommand(
                 new Command<IMainForm>(
                     "Show &task manager (send Ctrl+Shift+Esc)",
                     _ => GetCommandStateWhenActiveSessionRequired(),
-                    _ => DoWithActiveSession(session => session.ShowTaskManager()))
-                {
-                    ShortcutKeys = Keys.Control | Keys.F4
-                });
+                    _ => DoWithActiveSession(session => session.ShowTaskManager())));
         }
 
         private void DoWithActiveSession(Action<IRemoteDesktopSession> action)
