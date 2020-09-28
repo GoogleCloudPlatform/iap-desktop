@@ -101,6 +101,10 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
                     // The window is currently not visible to the user, so
                     // do not bother updating it immediately. 
                     this.ignoredNode = node;
+
+                    TraceSources.IapDesktop.TraceVerbose(
+                        "Ignoring switch to {0} because window is not visible", node);
+                    
                     return;
                 }
                 else

@@ -46,7 +46,6 @@ namespace Google.Solutions.IapDesktop.Application.Views
             this.CloseSafely();
         }
 
-
         private void ToolWindow_KeyUp(object sender, KeyEventArgs e)
         {
             if (e.Shift && e.KeyCode == Keys.Escape)
@@ -91,6 +90,15 @@ namespace Google.Solutions.IapDesktop.Application.Views
 
             // Move focus to window.
             Activate();
+
+            //
+            // If an auto-hide window loses focus and closes, we fail to 
+            // catch that event. 
+            // To force an update, disregard the cached state and re-raise
+            // the UserVisibilityChanged event.
+            //
+            OnUserVisibilityChanged(true);
+            this.wasUserVisible = true;
         }
 
         protected bool IsAutoHide
@@ -178,7 +186,6 @@ namespace Google.Solutions.IapDesktop.Application.Views
                 this.wasUserVisible = this.IsUserVisible;
             }
         }
-
 
         protected override void OnEnter(EventArgs e)
         {
