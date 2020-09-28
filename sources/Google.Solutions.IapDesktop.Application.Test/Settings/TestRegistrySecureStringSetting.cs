@@ -26,6 +26,7 @@ using NUnit.Framework;
 using System;
 using System.Security;
 using System.Security.Cryptography;
+using System.Text;
 
 namespace Google.Solutions.IapDesktop.Application.Test.Settings
 {
@@ -88,6 +89,32 @@ namespace Google.Solutions.IapDesktop.Application.Test.Settings
                 Assert.AreEqual("description", setting.Description);
                 Assert.AreEqual("category", setting.Category);
                 Assert.IsNull(setting.Value);
+                Assert.IsTrue(setting.IsDefault);
+                Assert.IsFalse(setting.IsDirty);
+            }
+        }
+
+        [Test]
+        public void WhenRegistryValueContainsGibberish_ThenFromKeyUsesDefaults()
+        {
+            using (var key = this.hkcu.CreateSubKey(TestKeyPath))
+            {
+                key.SetValue("test", Encoding.ASCII.GetBytes("gibberish"), RegistryValueKind.Binary);
+
+                var setting = RegistrySecureStringSetting.FromKey(
+                    "test",
+                    "title",
+                    "description",
+                    "category",
+                    key,
+                    DataProtectionScope.CurrentUser);
+
+                Assert.AreEqual("test", setting.Key);
+                Assert.AreEqual("title", setting.Title);
+                Assert.AreEqual("description", setting.Description);
+                Assert.AreEqual("category", setting.Category);
+                Assert.IsNull(setting.Value);
+                Assert.IsNull(setting.ClearTextValue);
                 Assert.IsTrue(setting.IsDefault);
                 Assert.IsFalse(setting.IsDirty);
             }

@@ -28,6 +28,7 @@ using Google.Solutions.IapDesktop.Extensions.Rdp.Services.Connection;
 using Microsoft.Win32;
 using Moq;
 using NUnit.Framework;
+using System;
 
 namespace Google.Solutions.IapDesktop.Extensions.Rdp.Test.Services.Connection
 {
@@ -102,6 +103,13 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Test.Services.Connection
                 new Mock<IProjectExplorerNode>().Object));
             Assert.IsFalse(service.IsConnectionSettingsAvailable(
                 new Mock<IProjectExplorerCloudNode>().Object));
+        }
+
+        [Test]
+        public void WhenNodeUnsupported_ThenGetConnectionSettingsRaisesArgumentException()
+        {
+            Assert.Throws<ArgumentException>(() => service.GetConnectionSettings(
+                new Mock<IProjectExplorerNode>().Object));
         }
 
         [Test]

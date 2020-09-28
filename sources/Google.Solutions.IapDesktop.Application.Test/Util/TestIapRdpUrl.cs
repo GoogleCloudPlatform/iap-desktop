@@ -70,6 +70,12 @@ namespace Google.Solutions.IapDesktop.Application.Test.Util
         }
 
         [Test]
+        public void WhenTooManySlashed_ThenFromStringThrowsIapRdpUrlFormatException()
+        {
+            Assert.Throws<IapRdpUrlFormatException>(() => IapRdpUrl.FromString("iap-rdp:my-project/us-central1-a/my-instance/baz"));
+        }
+
+        [Test]
         public void WhenProjectIdIsIsInvalid_ThenFromStringThrowsIapRdpUrlFormatException()
         {
             Assert.Throws<IapRdpUrlFormatException>(() =>
