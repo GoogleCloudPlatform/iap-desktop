@@ -123,6 +123,12 @@
     <Compile Include="Views\RemoteDesktop\RemoteDesktopPane.Designer.cs">
       <DependentUpon>RemoteDesktopPane.cs</DependentUpon>
     </Compile>
+    <Compile Include="Views\RemoteDesktop\ShortcutsWindow.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Views\RemoteDesktop\ShortcutsWindow.Designer.cs">
+      <DependentUpon>ShortcutsWindow.cs</DependentUpon>
+    </Compile>
     <Compile Include="Views\RemoteDesktop\UnsafeNativeMethods.cs" />
     <Compile Include="Views\TunnelsViewer\ITunnelsWindow.cs" />
     <Compile Include="Views\TunnelsViewer\TunnelsViewModel.cs" />
@@ -175,6 +181,7 @@
   <ItemGroup>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
+      <SubType>Designer</SubType>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
     <EmbeddedResource Include="Views\Credentials\GenerateCredentialsDialog.resx">
@@ -185,6 +192,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Views\RemoteDesktop\RemoteDesktopPane.resx">
       <DependentUpon>RemoteDesktopPane.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Views\RemoteDesktop\ShortcutsWindow.resx">
+      <DependentUpon>ShortcutsWindow.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Views\TunnelsViewer\TunnelsWindow.resx">
       <DependentUpon>TunnelsWindow.cs</DependentUpon>
@@ -200,6 +210,7 @@
     <None Include="Resources\Connect_16.png" />
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="Resources\Shortcuts.rtf" />
     <None Include="Resources\Tunnel_16.png" />
   </ItemGroup>
   <ItemGroup>
