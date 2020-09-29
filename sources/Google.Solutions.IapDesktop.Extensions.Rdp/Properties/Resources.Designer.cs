@@ -63,6 +63,26 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap Close_16 {
+            get {
+                object obj = ResourceManager.GetObject("Close_16", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap Close_161 {
+            get {
+                object obj = ResourceManager.GetObject("Close_161", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap Connect_16 {
             get {
                 object obj = ResourceManager.GetObject("Connect_16", resourceCulture);

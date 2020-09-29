@@ -292,6 +292,11 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Services
                     Image = Resources.Disconnect_16,
                     ShortcutKeys = Keys.Control | Keys.F4
                 });
+            desktopMenu.AddCommand(
+                new Command<IMainForm>(
+                    "&Keyboard shortcuts",
+                    _ => GetCommandStateWhenActiveSessionRequired(),
+                    _ => new ShortcutsWindow().Show(this.window)));
             desktopMenu.AddSeparator();
             desktopMenu.AddCommand(
                 new Command<IMainForm>(
@@ -300,7 +305,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Services
                     _ => DoWithActiveSession(session => session.ShowSecurityScreen())));
             desktopMenu.AddCommand(
                 new Command<IMainForm>(
-                    "Show &task manager (send Ctrl+Shift+Esc)",
+                    "Open &task manager (send Ctrl+Shift+Esc)",
                     _ => GetCommandStateWhenActiveSessionRequired(),
                     _ => DoWithActiveSession(session => session.ShowTaskManager())));
         }
