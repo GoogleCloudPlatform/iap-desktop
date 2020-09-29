@@ -147,6 +147,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Services.Connection
         public RegistryEnumSetting<RdpBitmapPersistence> BitmapPersistence { get; private set; }
         public RegistryDwordSetting ConnectionTimeout { get; private set; }
         public RegistryEnumSetting<RdpCredentialGenerationBehavior> CredentialGenerationBehavior { get; private set; }
+        public RegistryDwordSetting RdpPort { get; private set; }
 
         public IEnumerable<ISetting> Settings => new ISetting[]
         {
@@ -163,6 +164,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Services.Connection
             this.BitmapPersistence,
             this.ConnectionTimeout,
             this.CredentialGenerationBehavior,
+            this.RdpPort
         };
 
         protected void InitializeFromKey(RegistryKey key)
@@ -261,6 +263,15 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Services.Connection
                 null, // Hidden.
                 RdpCredentialGenerationBehavior._Default,
                 key);
+            this.RdpPort = RegistryDwordSetting.FromKey(
+                "RdpPort",
+                "RDP port",
+                "RDP port",
+                "Connection",
+                3389,
+                key,
+                1,
+                ushort.MaxValue);
 
             Debug.Assert(this.Settings.All(s => s != null));
         }
@@ -297,6 +308,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Services.Connection
                 baseSettings.ConnectionTimeout.OverlayBy(overlaySettings.ConnectionTimeout);
             prototype.CredentialGenerationBehavior = (RegistryEnumSetting<RdpCredentialGenerationBehavior>)
                 baseSettings.CredentialGenerationBehavior.OverlayBy(overlaySettings.CredentialGenerationBehavior);
+            prototype.RdpPort = (RegistryDwordSetting)
+                baseSettings.RdpPort.OverlayBy(overlaySettings.RdpPort);
 
             Debug.Assert(baseSettings.Settings.All(s => s != null));
         }
