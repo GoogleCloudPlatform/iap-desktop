@@ -49,7 +49,6 @@ namespace Google.Solutions.IapDesktop.Windows
         /// </summary>
         private void InitializeComponent()
         {
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(AuthorizeDialog));
             this.signInButton = new System.Windows.Forms.Button();
             this.spinner = new System.Windows.Forms.PictureBox();
             ((System.ComponentModel.ISupportInitialize)(this.spinner)).BeginInit();
@@ -58,7 +57,7 @@ namespace Google.Solutions.IapDesktop.Windows
             // signInButton
             // 
             this.signInButton.Image = global::Google.Solutions.IapDesktop.Windows.Resources.btn_google_signin_dark_normal_web;
-            this.signInButton.Location = new System.Drawing.Point(346, 186);
+            this.signInButton.Location = new System.Drawing.Point(356, 124);
             this.signInButton.Name = "signInButton";
             this.signInButton.Size = new System.Drawing.Size(191, 46);
             this.signInButton.TabIndex = 0;
@@ -69,7 +68,7 @@ namespace Google.Solutions.IapDesktop.Windows
             // 
             this.spinner.BackColor = System.Drawing.Color.White;
             this.spinner.Image = global::Google.Solutions.IapDesktop.Windows.Resources.Spinner;
-            this.spinner.Location = new System.Drawing.Point(420, 113);
+            this.spinner.Location = new System.Drawing.Point(439, 125);
             this.spinner.Name = "spinner";
             this.spinner.Size = new System.Drawing.Size(44, 44);
             this.spinner.TabIndex = 2;
@@ -79,7 +78,7 @@ namespace Google.Solutions.IapDesktop.Windows
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("$this.BackgroundImage")));
+            this.BackgroundImage = global::Google.Solutions.IapDesktop.Properties.Resources.Splash;
             this.ClientSize = new System.Drawing.Size(634, 290);
             this.Controls.Add(this.spinner);
             this.Controls.Add(this.signInButton);
