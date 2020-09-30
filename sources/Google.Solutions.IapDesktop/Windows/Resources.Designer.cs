@@ -75,13 +75,11 @@ namespace Google.Solutions.IapDesktop.Windows {
         ///                margin-top: -100px;
         ///                margin-left: -200px;
         ///                font-family: Arial, Helvetica, sans-serif;
+        ///                text-align: center
         ///            }
         ///
         ///            img {
-        ///                vertical-align: middle;
-        ///            }
-        ///
-        ///      [rest of string was truncated]&quot;;.
+        ///                vertical-al [rest of string was truncated]&quot;;.
         /// </summary>
         internal static string AuthorizationSuccessful {
             get {
