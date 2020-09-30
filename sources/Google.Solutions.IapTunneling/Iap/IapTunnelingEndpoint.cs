@@ -41,7 +41,7 @@ namespace Google.Solutions.IapTunneling.Iap
     /// </summary>
     public class IapTunnelingEndpoint : ISshRelayEndpoint
     {
-        private const string TlsBaseUri = "wss://tunnel.cloudproxy.app/v4/";
+        private const string TlsBaseUri = "wss://mtls.tunnel.cloudproxy.app/v4/";
         private const string MtlsBaseUri = "wss://mtls.tunnel.cloudproxy.app/v4/";
         private const string SubprotocolName = "relay.tunnel.cloudproxy.app";
         private const string Origin = "bot:iap-tunneler";

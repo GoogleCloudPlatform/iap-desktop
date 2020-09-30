@@ -78,7 +78,6 @@
     <Compile Include="BigEndian.cs" />
     <Compile Include="Iap\ISshRelayPolicy.cs" />
     <Compile Include="Iap\AllowAllRelayPolicy.cs" />
-    <Compile Include="Iap\TlsMode.cs" />
     <Compile Include="Net\RestrictedHeaderConfigPatch.cs" />
     <Compile Include="Net\ConnectionStatistics.cs" />
     <Compile Include="TraceSources.cs" />
