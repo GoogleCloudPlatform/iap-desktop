@@ -87,6 +87,11 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Views.EventLog
                 this.viewModel,
                 m => m.IsIncludeSystemEventsButtonChecked,
                 this.components);
+            this.includeAccessEventsButton.BindProperty(
+                c => c.Checked,
+                this.viewModel,
+                m => m.IsIncludeAccessEventsButtonChecked,
+                this.components);
 
             this.openInCloudConsoleToolStripMenuItem.BindProperty(
                 b => b.Enabled,

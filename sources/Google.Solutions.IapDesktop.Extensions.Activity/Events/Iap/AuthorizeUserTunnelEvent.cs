@@ -59,7 +59,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Events.Iap
                     userAgent = userAgent.Substring(0, parenthesis).Trim();
                 }
 
-                return $"{SourceHost ?? "(unknown)"} to " + 
+                return $"Authorize tunnel from {SourceHost ?? "(unknown)"} to " + 
                     $"{DestinationHost ?? "(unknown host)"}:{DestinationPort ?? "(unknown port)"} "+
                     $"using {userAgent}";
             }

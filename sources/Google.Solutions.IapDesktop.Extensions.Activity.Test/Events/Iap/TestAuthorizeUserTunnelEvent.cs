@@ -115,7 +115,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.Events.Iap
             Assert.AreEqual("10.0.0.1", e.DestinationHost);
             Assert.AreEqual("3389", e.DestinationPort);
 
-            Assert.AreEqual("3.4.5.6 to 10.0.0.1:3389 using IAP-Desktop/1.0.1.0", e.Message);
+            Assert.AreEqual("Authorize tunnel from 3.4.5.6 to 10.0.0.1:3389 using IAP-Desktop/1.0.1.0", e.Message);
         }
 
         [Test]
@@ -203,7 +203,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.Events.Iap
             Assert.AreEqual("10.0.0.1", e.DestinationHost);
             Assert.AreEqual("3389", e.DestinationPort);
 
-            Assert.AreEqual("3.4.5.6 to 10.0.0.1:3389 using gzip [Permission Denied.]", e.Message);
+            Assert.AreEqual("Authorize tunnel from 3.4.5.6 to 10.0.0.1:3389 using gzip [Permission Denied.]", e.Message);
         }
 
         [Test]
@@ -261,7 +261,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.Events.Iap
             Assert.IsNull(e.DestinationHost);
             Assert.IsNull(e.DestinationPort);
 
-            Assert.AreEqual("(unknown) to (unknown host):(unknown port) using (unknown agent) [Permission Denied.]", e.Message);
+            Assert.AreEqual("Authorize tunnel from (unknown) to (unknown host):(unknown port) using (unknown agent) [Permission Denied.]", e.Message);
         }
 
         [Test]

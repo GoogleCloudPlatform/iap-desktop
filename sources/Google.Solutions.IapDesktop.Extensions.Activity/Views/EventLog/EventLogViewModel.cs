@@ -61,8 +61,11 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Views.EventLog
         private bool isEventListEnabled = false;
         private bool isRefreshButtonEnabled = false;
         private bool isTimeframeComboBoxEnabled = false;
+
         private bool includeSystemEvents = true;
         private bool includeLifecycleEvents = true;
+        private bool includeAccessEvents = true;
+
         private string windowTitle = DefaultWindowTitle;
 
         private Timeframe SelectedTimeframe => AvailableTimeframes[this.selectedTimeframeIndex];
@@ -163,6 +166,19 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Views.EventLog
             set
             {
                 this.includeLifecycleEvents = value;
+                RaisePropertyChange();
+
+                // Reapply filters.
+                ApplyModel(true);
+            }
+        }
+
+        public bool IsIncludeAccessEventsButtonChecked
+        {
+            get => this.includeAccessEvents;
+            set
+            {
+                this.includeAccessEvents = value;
                 RaisePropertyChange();
 
                 // Reapply filters.
@@ -313,7 +329,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Views.EventLog
 
                 this.Events.AddRange(this.Model.Events
                     .Where(e => !e.LogRecord.IsActivityEvent || this.includeLifecycleEvents)
-                    .Where(e => !e.LogRecord.IsSystemEvent || this.includeSystemEvents));
+                    .Where(e => !e.LogRecord.IsSystemEvent || this.includeSystemEvents)
+                    .Where(e => !e.LogRecord.IsDataAccessEvent || this.includeAccessEvents));
             }
         }
 
