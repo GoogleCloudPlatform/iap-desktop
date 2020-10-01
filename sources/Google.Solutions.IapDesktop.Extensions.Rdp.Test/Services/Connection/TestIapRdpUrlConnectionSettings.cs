@@ -184,7 +184,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Test.Services.Connection
         {
             var url = IapRdpUrl.FromString("iap-rdp:///my-project/us-central1-a/my-instance?" +
                 "ConnectionBar=1&DesktopSize=1&AuthenticationLevel=0&ColorDepth=2&" +
-                "AudioMode=2&RedirectClipboard=0&CredentialGenerationBehavior=0");
+                "AudioMode=2&RedirectClipboard=0&CredentialGenerationBehavior=0&Rdpport=13389");
             var settings = VmInstanceConnectionSettings.FromUrl(url);
 
             Assert.AreEqual(RdpConnectionBarState.Pinned, settings.ConnectionBar.Value);
@@ -194,6 +194,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Test.Services.Connection
             Assert.AreEqual(RdpAudioMode.DoNotPlay, settings.AudioMode.Value);
             Assert.AreEqual(RdpRedirectClipboard.Disabled, settings.RedirectClipboard.Value);
             Assert.AreEqual(RdpCredentialGenerationBehavior.Allow, settings.CredentialGenerationBehavior.Value);
+            Assert.AreEqual(13389, settings.RdpPort.Value);
         }
     }
 }
