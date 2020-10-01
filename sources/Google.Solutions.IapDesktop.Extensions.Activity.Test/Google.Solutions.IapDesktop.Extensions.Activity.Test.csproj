@@ -88,6 +88,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Events\Iap\TestAuthorizeUserTunnelEvent.cs" />
     <Compile Include="Events\Lifecycle\TestResumeInstanceEvent.cs" />
     <Compile Include="Events\Lifecycle\TestSuspendInstanceEvent.cs" />
     <Compile Include="Events\Lifecycle\TestResetInstanceEvent.cs" />

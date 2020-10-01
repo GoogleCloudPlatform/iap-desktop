@@ -75,9 +75,11 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Logs
 
         public string ProjectId => SplitLogName()[1];
 
-        public bool IsSystemEvent => this.LogName.EndsWith("%2Fsystem_event");
+        public bool IsSystemEvent => this.LogName.EndsWith("cloudaudit.googleapis.com%2Fsystem_event");
 
-        public bool IsActivityEvent => this.LogName.EndsWith("%2Factivity");
+        public bool IsActivityEvent => this.LogName.EndsWith("cloudaudit.googleapis.com%2Factivity");
+        
+        public bool IsDataAccessEvent => this.LogName.EndsWith("cloudaudit.googleapis.com%2Fdata_access");
 
         //---------------------------------------------------------------------
         // Parsing.

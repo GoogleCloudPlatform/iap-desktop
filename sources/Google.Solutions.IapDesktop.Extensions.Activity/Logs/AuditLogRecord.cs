@@ -54,6 +54,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Logs
         [JsonProperty("metadata")]
         public JObject Metadata { get; set; }
 
+        [JsonProperty("requestMetadata")]
+        public JObject RequestMetadata { get; set; }
+
         [JsonProperty("request")]
         public JObject Request { get; set; }
 
