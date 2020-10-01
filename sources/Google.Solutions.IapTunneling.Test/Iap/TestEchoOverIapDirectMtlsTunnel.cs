@@ -42,7 +42,7 @@ namespace Google.Solutions.IapTunneling.Test.Iap
             var adapter = new SecureConnectAdapter();
 
             // TODO: Use test user ID.
-            var enrollment = adapter.GetEnrollmentInfoAsync("113269283503306052571").Result;
+            var enrollment = adapter.GetEnrollmentInfoAsync("115616459346772244770").Result;
             Assert.IsNotNull(enrollment.DeviceCertificate);
 
             var stream = new FragmentingStream(new SshRelayStream(
