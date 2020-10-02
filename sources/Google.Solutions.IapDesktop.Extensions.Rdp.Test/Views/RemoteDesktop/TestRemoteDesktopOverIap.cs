@@ -33,6 +33,7 @@ using Google.Solutions.Common.Locator;
 using Google.Solutions.IapDesktop.Extensions.Rdp.Views.RemoteDesktop;
 using Google.Solutions.IapDesktop.Application.Test.Views;
 using Google.Solutions.IapDesktop.Extensions.Rdp.Services.Connection;
+using System;
 
 namespace Google.Solutions.IapDesktop.Extensions.Rdp.Test.Views.RemoteDesktop
 {
@@ -119,6 +120,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Test.Views.RemoteDesktop
                 var credentials = await gceAdapter.ResetWindowsUserAsync(
                     locator,
                     CreateRandomUsername(),
+                    TimeSpan.FromSeconds(60),
                     CancellationToken.None);
 
                 var settings = VmInstanceConnectionSettings.CreateNew(
@@ -173,6 +175,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Test.Views.RemoteDesktop
                 var credentials = await gceAdapter.ResetWindowsUserAsync(
                        locator,
                        CreateRandomUsername(),
+                       TimeSpan.FromSeconds(60),
                        CancellationToken.None);
 
                 var settings = VmInstanceConnectionSettings.CreateNew(
