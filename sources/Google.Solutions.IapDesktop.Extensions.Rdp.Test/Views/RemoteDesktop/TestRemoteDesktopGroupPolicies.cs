@@ -49,6 +49,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Test.Views.RemoteDesktop
                 var credentials = await gceAdapter.ResetWindowsUserAsync(
                     vmInstanceReference,
                     CreateRandomUsername(),
+                    TimeSpan.FromSeconds(60),
                     CancellationToken.None);
 
                 var settings = VmInstanceConnectionSettings.CreateNew(vmInstanceReference);
