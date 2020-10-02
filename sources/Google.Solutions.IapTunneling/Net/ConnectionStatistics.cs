@@ -28,8 +28,8 @@ namespace Google.Solutions.IapTunneling.Net
         private long bytesReceived = 0;
         private long bytesTransmitted = 0;
 
-        public ulong BytesReceived => (ulong)this.bytesReceived;
-        public ulong BytesTransmitted => (ulong)this.bytesTransmitted;
+        public ulong BytesReceived => (ulong)Interlocked.Read(ref this.bytesReceived);
+        public ulong BytesTransmitted => (ulong)Interlocked.Read(ref this.bytesTransmitted);
 
         internal void OnReceiveCompleted(long bytesReceived)
         {
