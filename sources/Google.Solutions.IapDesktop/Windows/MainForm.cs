@@ -122,7 +122,7 @@ namespace Google.Solutions.IapDesktop.Windows
                 this.viewModel,
                 m => m.BackgroundJobStatus,
                 this.components);
-            this.toolStripEmail.BindProperty(
+            this.toolStripEmailButton.BindProperty(
                 c => c.Text,
                 this.viewModel,
                 m => m.UserEmail,
@@ -477,5 +477,7 @@ namespace Google.Solutions.IapDesktop.Windows
         public Task ReauthorizeAsync(CancellationToken token)
             => this.viewModel.ReauthorizeAsync(token);
 
+        private void toolStripEmailButton_Click(object sender, EventArgs e)
+            => this.viewModel.OpenMyAccountPage();
     }
 }
