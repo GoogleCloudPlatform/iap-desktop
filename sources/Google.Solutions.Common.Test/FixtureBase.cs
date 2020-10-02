@@ -36,6 +36,14 @@ namespace Google.Solutions.Common.Test
                 TraceSources.Common.Listeners.Add(listener);
                 TraceSources.Common.Switch.Level = SourceLevels.Verbose;
             }
+
+            listener.WriteLine("Start " + TestContext.CurrentContext.Test.FullName);
+        }
+
+        [TearDown]
+        public void TearDownTracing()
+        {
+            listener.WriteLine("End " + TestContext.CurrentContext.Test.FullName);
         }
     }
 }

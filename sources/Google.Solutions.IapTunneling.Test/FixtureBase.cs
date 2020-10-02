@@ -46,6 +46,14 @@ namespace Google.Solutions.IapTunneling.Test
                     trace.Switch.Level = System.Diagnostics.SourceLevels.Verbose;
                 }
             }
+
+            listener.WriteLine("Start " + TestContext.CurrentContext.Test.FullName);
+        }
+
+        [TearDown]
+        public void TearDownTracing()
+        {
+            listener.WriteLine("End " + TestContext.CurrentContext.Test.FullName);
         }
     }
 }
