@@ -168,7 +168,7 @@ namespace Google.Solutions.IapTunneling.Net
                 {
                     Debug.Assert(bytesReceived == 0);
 
-                    TraceSources.Compute.TraceVerbose($"Connection closed by server: {result.CloseStatus}");
+                    TraceSources.Compute.TraceVerbose($"WebSocketStream: Connection closed by server: {result.CloseStatus}");
 
                     this.closeByServerReceived = new WebSocketStreamClosedByServerException(
                         result.CloseStatus.Value,

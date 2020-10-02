@@ -73,7 +73,7 @@ namespace Google.Solutions.IapTunneling.Net
                         if (bytesRead > 0)
                         {
                             TraceSources.Compute.TraceVerbose(
-                                "NetworkStream [{0} > {1}]: Read {2} bytes",
+                                "NetworkStream [{0} > {1}]: Relaying {2} bytes",
                                 readStream,
                                 writeStream,
                                 bytesRead);
