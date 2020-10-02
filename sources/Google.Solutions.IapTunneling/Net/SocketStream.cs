@@ -43,11 +43,18 @@ namespace Google.Solutions.IapTunneling.Net
             this.remoteEndpoint = socket.RemoteEndPoint.ToString();
         }
 
-        private static void OnIoCompleted(TaskCompletionSource<int> tcs, SocketAsyncEventArgs args)
+        private static void OnIoCompleted(
+            TaskCompletionSource<int> tcs, 
+            Action<int> trackBytesTransferred,
+            SocketAsyncEventArgs args)
         {
             switch (args.SocketError)
             {
                 case SocketError.Success:
+                    // Update statistics before releasing waiters.
+                    trackBytesTransferred(args.BytesTransferred);
+
+                    // Release waiters.
                     tcs.SetResult(args.BytesTransferred);
                     break;
 
@@ -66,27 +73,29 @@ namespace Google.Solutions.IapTunneling.Net
         }
 
         protected Task<int> IoAsync(
-            Func<SocketAsyncEventArgs, bool> func,
+            Func<SocketAsyncEventArgs, bool> ioFunc,
+            Action<int> trackBytesTransferred,
             SocketAsyncEventArgs eventArgs)
         {
             var tcs = new TaskCompletionSource<int>();
 
             eventArgs.Completed += (sender, args) =>
             {
-                OnIoCompleted(tcs, args);
+                OnIoCompleted(tcs, trackBytesTransferred, args);
             };
 
-            if (!func(eventArgs))
+            if (!ioFunc(eventArgs))
             {
                 // I/O completed synchronously.
-                OnIoCompleted(tcs, eventArgs);
+                OnIoCompleted(tcs, trackBytesTransferred, eventArgs);
             }
 
             return tcs.Task;
         }
 
         protected async Task<int> IoAsync(
-            Func<SocketAsyncEventArgs, bool> func,
+            Func<SocketAsyncEventArgs, bool> ioFunc,
+            Action<int> trackBytesTransferred,
             SocketAsyncEventArgs eventArgs,
             CancellationToken cancellationToken)
         {
@@ -97,7 +106,11 @@ namespace Google.Solutions.IapTunneling.Net
             {
                 try
                 {
-                    return await IoAsync(func, eventArgs).ConfigureAwait(false);
+                    return await IoAsync(
+                            ioFunc, 
+                            trackBytesTransferred, 
+                            eventArgs)
+                        .ConfigureAwait(false);
                 }
                 catch (SocketException e) when (e.SocketErrorCode == SocketError.OperationAborted)
                 {
@@ -125,10 +138,10 @@ namespace Google.Solutions.IapTunneling.Net
                 args.SetBuffer(buffer, offset, count);
                 var bytesRead = await IoAsync(
                     this.socket.ReceiveAsync,
+                    this.statistics.OnReceiveCompleted,
                     args,
                     cancellationToken).ConfigureAwait(false);
 
-                this.statistics.OnReceiveCompleted((long)bytesRead);
                 return bytesRead;
             }
         }
@@ -144,11 +157,11 @@ namespace Google.Solutions.IapTunneling.Net
                 args.SetBuffer(buffer, offset, count);
                 var bytesWritten = await IoAsync(
                     this.socket.SendAsync,
+                    this.statistics.OnTransmitCompleted,
                     args,
                     cancellationToken).ConfigureAwait(false);
 
                 Debug.Assert(bytesWritten == count);
-                this.statistics.OnTransmitCompleted((long)bytesWritten);
             }
         }
 
@@ -158,6 +171,7 @@ namespace Google.Solutions.IapTunneling.Net
             {
                 await IoAsync(
                     this.socket.DisconnectAsync,
+                    _ => { },
                     args,
                     cancellationToken).ConfigureAwait(false);
             }
