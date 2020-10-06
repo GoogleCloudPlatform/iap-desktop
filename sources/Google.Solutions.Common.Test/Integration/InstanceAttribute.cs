@@ -57,7 +57,7 @@ namespace Google.Solutions.Common.Test.Integration
             imageSpecification.Append(this.ImageFamily);
             imageSpecification.Append(this.InitializeScript);
             imageSpecification.Append(this.EnableOsInventory);
-            imageSpecification.Append(this.ServiceAccount);
+            imageSpecification.Append(this.ServiceAccount.ToString());
 
             var kokoroJobType = Environment.GetEnvironmentVariable("KOKORO_JOB_TYPE");
             if (!string.IsNullOrEmpty(kokoroJobType))
@@ -224,7 +224,7 @@ namespace Google.Solutions.Common.Test.Integration
 
     public enum InstanceServiceAccount
     {
-        None,
-        ComputeDefault
+        None = 0,
+        ComputeDefault = 1
     }
 }
