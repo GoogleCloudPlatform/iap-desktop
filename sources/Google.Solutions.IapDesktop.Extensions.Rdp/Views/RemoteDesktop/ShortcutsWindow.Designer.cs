@@ -70,13 +70,12 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Views.RemoteDesktop
             this.closeButton.DialogResult = System.Windows.Forms.DialogResult.Cancel;
             this.closeButton.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
             this.closeButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.closeButton.Font = new System.Drawing.Font("Wingdings 2", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(2)));
             this.closeButton.ForeColor = System.Drawing.Color.White;
             this.closeButton.Location = new System.Drawing.Point(425, 2);
             this.closeButton.Name = "closeButton";
             this.closeButton.Size = new System.Drawing.Size(24, 24);
             this.closeButton.TabIndex = 0;
-            this.closeButton.Text = "Ñ";
+            this.closeButton.Text = "✖";
             this.closeButton.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageAboveText;
             this.closeButton.UseVisualStyleBackColor = false;
             this.closeButton.Click += new System.EventHandler(this.closeButton_Click);
