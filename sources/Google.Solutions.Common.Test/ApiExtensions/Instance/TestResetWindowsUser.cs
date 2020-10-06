@@ -52,7 +52,7 @@ namespace Google.Solutions.Common.Test.Extensions
             [Credential(Role = PredefinedRole.ComputeInstanceAdminV1)] ResourceTask<ICredential> credential)
         {
             var computeService = CreateComputeService(await credential);
-            var username = "test" + Guid.NewGuid().ToString();
+            var username = "test" + Guid.NewGuid().ToString().Substring(20);
             try
             {
                 await computeService.Instances.ResetWindowsUserAsync(
@@ -72,7 +72,7 @@ namespace Google.Solutions.Common.Test.Extensions
             [Credential(Role = PredefinedRole.ComputeInstanceAdminV1)] ResourceTask<ICredential> credential)
         {
             var computeService = CreateComputeService(await credential);
-            var username = "test" + Guid.NewGuid().ToString();
+            var username = "test" + Guid.NewGuid().ToString().Substring(20);
 
             // Use correct project, but wrong VM.
             var instanceRef = new InstanceLocator(
