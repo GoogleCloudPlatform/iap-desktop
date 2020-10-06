@@ -52,7 +52,7 @@ namespace Google.Solutions.Common.Test.Extensions
             [Credential(Role = PredefinedRole.ComputeInstanceAdminV1)] ResourceTask<ICredential> credential)
         {
             var computeService = CreateComputeService(await credential);
-            var username = "test" + Guid.NewGuid().ToString().Substring(20);
+            var username = "test" + Guid.NewGuid().ToString();
             try
             {
                 await computeService.Instances.ResetWindowsUserAsync(
