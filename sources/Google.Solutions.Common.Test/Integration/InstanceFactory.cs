@@ -21,6 +21,7 @@
 
 using Google.Apis.Compute.v1;
 using Google.Apis.Compute.v1.Data;
+using Google.Apis.Iam.v1.Data;
 using Google.Solutions.Common.ApiExtensions.Instance;
 using Google.Solutions.Common.Diagnostics;
 using Google.Solutions.Common.Locator;
@@ -30,6 +31,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using ServiceAccount = Google.Apis.Compute.v1.Data.ServiceAccount;
 
 namespace Google.Solutions.Common.Test.Integration
 {
@@ -87,10 +89,23 @@ namespace Google.Solutions.Common.Test.Integration
             throw new TimeoutException($"Timeout waiting for {locator} to become ready");
         }
 
+        private static async Task<string> GetComputeEngineDefaultServiceAccount()
+        {
+            var iamService = TestProject.CreateIamService();
+            var allServiceAccounts = await iamService.Projects.ServiceAccounts
+                .List($"projects/{TestProject.ProjectId}")
+                .ExecuteAsync();
+            return allServiceAccounts
+                .Accounts
+                .First(sa => sa.Email.EndsWith("compute@developer.gserviceaccount.com"))
+                .Email;
+        }
+
         public static async Task<InstanceLocator> CreateOrStartInstanceAsync(
             string name,
             string machineType,
             string imageFamily,
+            InstanceServiceAccount serviceAccount,
             IEnumerable<Metadata.ItemsData> metadataItems)
         {
             var computeEngine = TestProject.CreateComputeService();
@@ -113,6 +128,19 @@ namespace Google.Solutions.Common.Test.Integration
             {
                 TraceSources.Common.TraceVerbose(
                     "Trying to create new instance {0}...", name);
+
+                IList<ServiceAccount> serviceAccounts = null;
+                if (serviceAccount == InstanceServiceAccount.ComputeDefault)
+                {
+                    serviceAccounts = new List<ServiceAccount>()
+                    {
+                        new ServiceAccount()
+                        {
+                            Email = await GetComputeEngineDefaultServiceAccount(),
+                            Scopes = new [] { "https://www.googleapis.com/auth/cloud-platform" }
+                        }
+                    };
+                }
 
                 await computeEngine.Instances.Insert(
                     new Apis.Compute.v1.Data.Instance()
@@ -145,7 +173,8 @@ namespace Google.Solutions.Common.Test.Integration
                         Scheduling = new Scheduling()
                         {
                             Preemptible = true
-                        }
+                        },
+                        ServiceAccounts = serviceAccounts
                     },
                     locator.ProjectId,
                     locator.Zone).ExecuteAsync();

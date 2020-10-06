@@ -108,7 +108,7 @@ namespace Google.Solutions.Common.ApiExtensions.Instance
                 catch (GoogleApiException e) when (e.Error == null || e.Error.Code == 403)
                 {
                     TraceSources.Common.TraceVerbose(
-                        "Setting request payload metadata failed: {0} ({1})",
+                        "Setting request payload metadata failed with 403: {0} ({1})",
                         e.Message,
                         e.Error?.Errors.EnsureNotNull().Select(er => er.Reason).FirstOrDefault());
 
@@ -120,6 +120,22 @@ namespace Google.Solutions.Common.ApiExtensions.Instance
                         "You need the 'Service Account User' and " +
                         "'Compute Instance Admin' roles (or equivalent custom roles) " +
                         "to perform this action.");
+                }
+                catch (GoogleApiException e) when (e.Error != null && e.Error.Code == 400 && e.Error.Message == "BAD REQUEST")
+                {
+                    TraceSources.Common.TraceVerbose(
+                        "Setting request payload metadata failed with 400: {0} ({1})",
+                        e.Message,
+                        e.Error?.Errors.EnsureNotNull().Select(er => er.Reason).FirstOrDefault());
+
+                    // This slightly weirdly encoded error happens if the user has the necessary
+                    // permissions on the VM, but lacks ActAs permission on the associated 
+                    // service account.
+
+                    throw new PasswordResetException(
+                        "You do not have sufficient permissions to reset a Windows password. " +
+                        "Because this VM instance uses a service account, you also need the " +
+                        "'Service Account User' role.");
                 }
 
                 // Read response from serial port.

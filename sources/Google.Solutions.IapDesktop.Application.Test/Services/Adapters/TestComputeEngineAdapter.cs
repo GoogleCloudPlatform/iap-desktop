@@ -20,11 +20,13 @@
 //
 
 using Google.Apis.Auth.OAuth2;
+using Google.Solutions.Common.ApiExtensions.Instance;
 using Google.Solutions.Common.Locator;
 using Google.Solutions.Common.Test;
 using Google.Solutions.Common.Test.Integration;
 using Google.Solutions.IapDesktop.Application.Services.Adapters;
 using NUnit.Framework;
+using System;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -243,7 +245,6 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Adapters
                     CancellationToken.None).Wait());
         }
 
-
         //---------------------------------------------------------------------
         // TestPermission.
         //---------------------------------------------------------------------
@@ -278,9 +279,13 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Adapters
             Assert.IsFalse(result);
         }
 
+        //---------------------------------------------------------------------
+        // ResetWindowsUSer.
+        //---------------------------------------------------------------------
+
         [Test]
         public async Task WhenUserInRole_ThenIsGrantedPermissionToResetWindowsUserReturnsTrue(
-            [LinuxInstance] ResourceTask<InstanceLocator> testInstance,
+            [WindowsInstance] ResourceTask<InstanceLocator> testInstance,
             [Credential(Role = PredefinedRole.ComputeInstanceAdminV1)] ResourceTask<ICredential> credential)
         {
             var locator = await testInstance;
@@ -294,7 +299,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Adapters
 
         [Test]
         public async Task WhenUserNotInRole_ThenIsGrantedPermissionToResetWindowsUserReturnsFalse(
-            [LinuxInstance] ResourceTask<InstanceLocator> testInstance,
+            [WindowsInstance] ResourceTask<InstanceLocator> testInstance,
             [Credential(Role = PredefinedRole.ComputeViewer)] ResourceTask<ICredential> credential)
         {
             var locator = await testInstance;
@@ -304,6 +309,71 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Adapters
                 locator);
 
             Assert.IsFalse(result);
+        }
+
+        [Test]
+        public async Task WhenUserNotInInstanceAdminRole_ThenResetWindowsUserAsyncThrowsPasswordResetException(
+            [WindowsInstance(ServiceAccount = InstanceServiceAccount.None)] ResourceTask<InstanceLocator> testInstance,
+            [Credential(Role = PredefinedRole.ComputeViewer)] ResourceTask<ICredential> credential)
+        {
+            var locator = await testInstance;
+            var adapter = new ComputeEngineAdapter(await credential);
+            var username = "test" + Guid.NewGuid().ToString();
+
+            AssertEx.ThrowsAggregateException<PasswordResetException>(
+                () => adapter.ResetWindowsUserAsync(
+                    locator,
+                    username,
+                    CancellationToken.None).Wait());
+        }
+
+        [Test]
+        public async Task WhenInstanceHasNoServiceAccountAndUserInInstanceAdminRole_ThenResetWindowsUserAsyncSucceeds(
+            [WindowsInstance(ServiceAccount = InstanceServiceAccount.None)] ResourceTask<InstanceLocator> testInstance,
+            [Credential(Role = PredefinedRole.ComputeInstanceAdminV1)] ResourceTask<ICredential> credential)
+        {
+            var adapter = new ComputeEngineAdapter(await credential);
+            var username = "test" + Guid.NewGuid().ToString().Substring(20);
+
+            var result = await adapter.ResetWindowsUserAsync(
+                await testInstance,
+                username,
+                CancellationToken.None);
+            Assert.IsNotNull(result.Password);
+        }
+
+        [Test]
+        public async Task WhenInstanceHasServiceAccountAndUserInInstanceAdminRole_ThenResetWindowsUserAsyncThrowsPasswordResetException(
+            [WindowsInstance(ServiceAccount = InstanceServiceAccount.ComputeDefault)] ResourceTask<InstanceLocator> testInstance,
+            [Credential(Role = PredefinedRole.ComputeInstanceAdminV1)] ResourceTask<ICredential> credential)
+        {
+            var locator = await testInstance;
+            var adapter = new ComputeEngineAdapter(await credential);
+            var username = "test" + Guid.NewGuid().ToString();
+
+            AssertEx.ThrowsAggregateException<PasswordResetException>(
+                () => adapter.ResetWindowsUserAsync(
+                    locator,
+                    username,
+                    CancellationToken.None).Wait());
+        }
+
+        [Test]
+        public async Task WhenInstanceHasServiceAccountAndUserInInstanceAndServiceAccountUserAdminRole_ThenResetWindowsUserAsyncSucceeds(
+            [WindowsInstance(ServiceAccount = InstanceServiceAccount.ComputeDefault)] ResourceTask<InstanceLocator> testInstance,
+            [Credential(Roles = new [] {
+                PredefinedRole.ComputeInstanceAdminV1,
+                PredefinedRole.ServiceAccountUser
+            })] ResourceTask<ICredential> credential)
+        {
+            var adapter = new ComputeEngineAdapter(await credential);
+            var username = "test" + Guid.NewGuid().ToString().Substring(20);
+
+            var result = await adapter.ResetWindowsUserAsync(
+                await testInstance,
+                username,
+                CancellationToken.None);
+            Assert.IsNotNull(result.Password);
         }
     }
 }

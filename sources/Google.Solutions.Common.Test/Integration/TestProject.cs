@@ -51,7 +51,8 @@ namespace Google.Solutions.Common.Test.Integration
         {
             // This account must have the following roles:
             // - Compute Admin
-            // - Service Account Admin
+            // - Service Account Admin (to create service accounts)
+            // - Service Account User (to access Compute Engine Service account)
             // - IAP-secured Tunnel User
             // - Logs Viewer
             // - Project IAM Admin

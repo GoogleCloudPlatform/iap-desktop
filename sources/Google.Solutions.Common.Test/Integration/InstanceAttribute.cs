@@ -37,6 +37,7 @@ namespace Google.Solutions.Common.Test.Integration
         public string MachineType { get; set; } = "n1-standard-1";
         public string ImageFamily { get; set; }
         public string InitializeScript { get; set; }
+        public InstanceServiceAccount ServiceAccount { get; set; } = InstanceServiceAccount.None;
 
         public bool EnableOsInventory { get; set; } = false;
 
@@ -56,6 +57,7 @@ namespace Google.Solutions.Common.Test.Integration
             imageSpecification.Append(this.ImageFamily);
             imageSpecification.Append(this.InitializeScript);
             imageSpecification.Append(this.EnableOsInventory);
+            imageSpecification.Append(this.ServiceAccount.ToString());
 
             var kokoroJobType = Environment.GetEnvironmentVariable("KOKORO_JOB_TYPE");
             if (!string.IsNullOrEmpty(kokoroJobType))
@@ -92,6 +94,7 @@ namespace Google.Solutions.Common.Test.Integration
                             fingerprint,
                             this.MachineType,
                             this.ImageFamily,
+                            this.ServiceAccount,
                             this.Metadata))
                 };
             }
@@ -217,5 +220,11 @@ namespace Google.Solutions.Common.Test.Integration
                 }
             }
         }
+    }
+
+    public enum InstanceServiceAccount
+    {
+        None = 0,
+        ComputeDefault = 1
     }
 }

@@ -19,8 +19,10 @@
 // under the License.
 //
 
+using Google.Apis.Auth.OAuth2;
 using Google.Apis.Compute.v1;
 using Google.Apis.Compute.v1.Data;
+using Google.Apis.Services;
 using Google.Solutions.Common.ApiExtensions.Instance;
 using Google.Solutions.Common.Locator;
 using Google.Solutions.Common.Test.Integration;
@@ -36,22 +38,24 @@ namespace Google.Solutions.Common.Test.Extensions
     [Category("Windows")]
     public class TestResetWindowsUser : FixtureBase
     {
-        private InstancesResource instancesResource;
-
-        [SetUp]
-        public void SetUp()
+        public ComputeService CreateComputeService(ICredential credential)
         {
-            this.instancesResource = TestProject.CreateComputeService().Instances;
+            return new ComputeService(new BaseClientService.Initializer
+            {
+                HttpClientInitializer = credential
+            });
         }
 
         [Test]
         public async Task WhenUsernameIsSuperLong_ThenPasswordResetExceptionIsThrown(
-            [WindowsInstance] ResourceTask<InstanceLocator> testInstance)
+            [WindowsInstance] ResourceTask<InstanceLocator> testInstance,
+            [Credential(Role = PredefinedRole.ComputeInstanceAdminV1)] ResourceTask<ICredential> credential)
         {
+            var computeService = CreateComputeService(await credential);
             var username = "test" + Guid.NewGuid().ToString();
             try
             {
-                await this.instancesResource.ResetWindowsUserAsync(
+                await computeService.Instances.ResetWindowsUserAsync(
                     await testInstance,
                     username,
                     CancellationToken.None);
@@ -64,9 +68,11 @@ namespace Google.Solutions.Common.Test.Extensions
         }
 
         [Test]
-        public async Task WhenInstanceDoesntExist_ThenPasswordResetExceptionIsThrown()
+        public async Task WhenInstanceDoesntExist_ThenPasswordResetExceptionIsThrown(
+            [Credential(Role = PredefinedRole.ComputeInstanceAdminV1)] ResourceTask<ICredential> credential)
         {
-            var username = "test" + Guid.NewGuid().ToString();
+            var computeService = CreateComputeService(await credential);
+            var username = "test" + Guid.NewGuid().ToString().Substring(20);
 
             // Use correct project, but wrong VM.
             var instanceRef = new InstanceLocator(
@@ -75,7 +81,7 @@ namespace Google.Solutions.Common.Test.Extensions
                 "doesnotexist");
             try
             {
-                await this.instancesResource.ResetWindowsUserAsync(
+                await computeService.Instances.ResetWindowsUserAsync(
                     instanceRef,
                     username,
                     CancellationToken.None);
@@ -89,10 +95,12 @@ namespace Google.Solutions.Common.Test.Extensions
 
         [Test]
         public async Task WhenUserDoesntExist_ThenResetPasswordCreatesNewUser(
-            [WindowsInstance] ResourceTask<InstanceLocator> testInstance)
+            [WindowsInstance] ResourceTask<InstanceLocator> testInstance,
+            [Credential(Role = PredefinedRole.ComputeInstanceAdminV1)] ResourceTask<ICredential> credential)
         {
+            var computeService = CreateComputeService(await credential);
             var username = "test" + Guid.NewGuid().ToString().Substring(20);
-            var credentials = await this.instancesResource.ResetWindowsUserAsync(
+            var credentials = await computeService.Instances.ResetWindowsUserAsync(
                 await testInstance,
                 username,
                 CancellationToken.None);
@@ -104,14 +112,16 @@ namespace Google.Solutions.Common.Test.Extensions
 
         [Test]
         public async Task WhenUserExists_ThenResetPasswordUpdatesPassword(
-            [WindowsInstance] ResourceTask<InstanceLocator> testInstance)
+            [WindowsInstance] ResourceTask<InstanceLocator> testInstance,
+            [Credential(Role = PredefinedRole.ComputeInstanceAdminV1)] ResourceTask<ICredential> credential)
         {
+            var computeService = CreateComputeService(await credential);
             var username = "existinguser";
-            await this.instancesResource.ResetWindowsUserAsync(
+            await computeService.Instances.ResetWindowsUserAsync(
                 await testInstance,
                 username,
                 CancellationToken.None);
-            var credentials = await this.instancesResource.ResetWindowsUserAsync(
+            var credentials = await computeService.Instances.ResetWindowsUserAsync(
                 await testInstance,
                 username,
                 CancellationToken.None);
@@ -123,15 +133,17 @@ namespace Google.Solutions.Common.Test.Extensions
 
         [Test]
         public async Task WhenTokenSourceIsCanceled_ThenResetPasswordThrowsTaskCanceledException(
-            [WindowsInstance] ResourceTask<InstanceLocator> testInstance)
+            [WindowsInstance] ResourceTask<InstanceLocator> testInstance,
+            [Credential(Role = PredefinedRole.ComputeInstanceAdminV1)] ResourceTask<ICredential> credential)
         {
+            var computeService = CreateComputeService(await credential);
             var instanceLocator = await testInstance;
             using (var cts = new CancellationTokenSource())
             {
                 cts.Cancel();
 
                 AssertEx.ThrowsAggregateException<TaskCanceledException>(
-                    () => this.instancesResource.ResetWindowsUserAsync(
+                    () => computeService.Instances.ResetWindowsUserAsync(
                     instanceLocator,
                     "test" + Guid.NewGuid().ToString().Substring(20),
                     TimeSpan.FromMinutes(1),
@@ -141,13 +153,15 @@ namespace Google.Solutions.Common.Test.Extensions
 
         [Test]
         public async Task WhenTimeoutElapses_ThenResetPasswordThrowsPasswordResetException(
-            [WindowsInstance] ResourceTask<InstanceLocator> testInstance)
+            [WindowsInstance] ResourceTask<InstanceLocator> testInstance,
+            [Credential(Role = PredefinedRole.ComputeInstanceAdminV1)] ResourceTask<ICredential> credential)
         {
+            var computeService = CreateComputeService(await credential);
             var instanceLocator = await testInstance;
             using (var cts = new CancellationTokenSource())
             {
                 AssertEx.ThrowsAggregateException<PasswordResetException>(
-                    () => this.instancesResource.ResetWindowsUserAsync(
+                    () => computeService.Instances.ResetWindowsUserAsync(
                     instanceLocator,
                     "test" + Guid.NewGuid().ToString().Substring(20),
                     TimeSpan.FromMilliseconds(1),
