@@ -20,6 +20,7 @@
 //
 
 using Google.Solutions.Common.Locator;
+using Google.Solutions.Common.Util;
 using Google.Solutions.IapDesktop.Application.ObjectModel;
 using Google.Solutions.IapDesktop.Application.Services.Persistence;
 using Google.Solutions.IapDesktop.Application.Views;
@@ -52,6 +53,29 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Views.Credentials
             this.serviceProvider = serviceProvider;
         }
 
+        private async Task<bool> IsGrantedPermissionToGenerateCredentials(
+            ICredentialsService credentialsService,
+            InstanceLocator instanceLocator)
+        {
+            //
+            // The call can fail if the session expired, but it's not worth/
+            // reasonable to move the call into a job. Therefore, catch
+            // the reauth error and fail open so that the re-auth error
+            // can be handled during the connection or password reset
+            // attempt.
+            //
+            try
+            {
+                return await credentialsService
+                    .IsGrantedPermissionToGenerateCredentials(instanceLocator)
+                    .ConfigureAwait(true);
+            }
+            catch (Exception e) when (e.IsReauthError())
+            {
+                return true;
+            }
+        }
+
         public async Task ShowCredentialsPromptAsync(
             IWin32Window owner,
             InstanceLocator instanceLocator,
@@ -68,8 +92,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Views.Credentials
                 !string.IsNullOrEmpty(settings.Password.ClearTextValue);
 
             if (settings.CredentialGenerationBehavior.EnumValue == RdpCredentialGenerationBehavior.Force
-                && await credentialsService
-                        .IsGrantedPermissionToGenerateCredentials(instanceLocator)
+                && await IsGrantedPermissionToGenerateCredentials(
+                            credentialsService, 
+                            instanceLocator)
                         .ConfigureAwait(true))
             {
                 // Generate new credentials right away and skip the prompt.
@@ -85,9 +110,10 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Views.Credentials
             var options = new List<CredentialOption>();
             if ((!credentialsExist
                     && settings.CredentialGenerationBehavior.EnumValue == RdpCredentialGenerationBehavior.AllowIfNoCredentialsFound
-                    && await credentialsService
-                        .IsGrantedPermissionToGenerateCredentials(instanceLocator)
-                        .ConfigureAwait(true))
+                    && await IsGrantedPermissionToGenerateCredentials(
+                                credentialsService, 
+                                instanceLocator)
+                            .ConfigureAwait(true))
                 || settings.CredentialGenerationBehavior.EnumValue == RdpCredentialGenerationBehavior.Allow)
             {
                 options.Add(
