@@ -30,7 +30,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Events
 {
     public static class EventFactory
     {
-        private readonly static IDictionary<string, Func<LogRecord, EventBase>> lifecycleEvents
+        private readonly static IDictionary<string, Func<LogRecord, EventBase>> activityEvents
             = new Dictionary<string, Func<LogRecord, EventBase>>()
             {
                 { DeleteInstanceEvent.Method, rec => new DeleteInstanceEvent(rec) },
@@ -48,8 +48,12 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Events
                 { ResumeInstanceEvent.Method, rec => new ResumeInstanceEvent(rec) },
                 { ResumeInstanceEvent.BetaMethod, rec => new ResumeInstanceEvent(rec) },
                 { ResumeInstanceEvent.AlphaMethod, rec => new ResumeInstanceEvent(rec) },
+                
+                // Some lifecyce-related beta events omitted (based on audit_log_services.ts),
 
-                // Some beta events omitted (based on audit_log_services.ts)
+                { ResetWindowsUserEvent.Method, rec => ResetWindowsUserEvent.IsResetWindowsUserEvent(rec)
+                    ? (EventBase)new ResetWindowsUserEvent(rec)
+                    : new UnknownEvent(rec)}
             };
 
         private readonly static IDictionary<string, Func<LogRecord, EventBase>> systemEvents
@@ -75,7 +79,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Events
                 { AuthorizeUserTunnelEvent.Method, rec => new AuthorizeUserTunnelEvent(rec) }
             };
 
-        public static IEnumerable<string> LifecycleEventMethods => lifecycleEvents.Keys;
+        public static IEnumerable<string> LifecycleEventMethods => activityEvents.Keys;
         public static IEnumerable<string> SystemEventMethods => systemEvents.Keys;
         public static IEnumerable<string> SecurityEventMethods => accessEvents.Keys;
 
@@ -100,7 +104,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Events
             }
             else if (record.IsActivityEvent)
             {
-                if (lifecycleEvents.TryGetValue(record.ProtoPayload.MethodName, out var lcFunc))
+                if (activityEvents.TryGetValue(record.ProtoPayload.MethodName, out var lcFunc))
                 {
                     return lcFunc(record);
                 }

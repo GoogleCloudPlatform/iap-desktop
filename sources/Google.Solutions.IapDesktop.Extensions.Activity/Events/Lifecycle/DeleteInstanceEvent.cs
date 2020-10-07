@@ -24,7 +24,7 @@ using System.Diagnostics;
 
 namespace Google.Solutions.IapDesktop.Extensions.Activity.Events.Lifecycle
 {
-    public class DeleteInstanceEvent : LifecycleEventBase, IInstanceStateChangeEvent
+    public class DeleteInstanceEvent : VmInstanceActivityEventBase, IInstanceStateChangeEvent
     {
         public const string Method = "v1.compute.instances.delete";
 

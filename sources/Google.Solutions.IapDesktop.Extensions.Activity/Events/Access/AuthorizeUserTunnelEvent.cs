@@ -48,31 +48,14 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Events.Access
             : TunnelDescription;
 
         private string TunnelDescription
-        {
-            get
-            {
-                var userAgent = this.UserAgent ?? "(unknown agent)";
-                int parenthesis = userAgent.IndexOf('(');
-                if (parenthesis > 0)
-                {
-                    // Strip version and details.
-                    userAgent = userAgent.Substring(0, parenthesis).Trim();
-                }
-
-                return $"Authorize tunnel from {SourceHost ?? "(unknown)"} to " + 
-                    $"{DestinationHost ?? "(unknown host)"}:{DestinationPort ?? "(unknown port)"} "+
-                    $"using {userAgent}";
-            }
-        }
+            => $"Authorize tunnel from {this.SourceHost ?? "(unknown)"} to " + 
+                $"{DestinationHost ?? "(unknown host)"}:{this.DestinationPort ?? "(unknown port)"} "+
+                $"using {base.UserAgentShort ?? "(unknown agent"}";
 
         //---------------------------------------------------------------------
         // Record-specific fields.
         //---------------------------------------------------------------------
 
-        public string SourceHost => 
-            base.LogRecord.ProtoPayload.RequestMetadata?.Value<string>("callerIp");
-        public string UserAgent => 
-            base.LogRecord.ProtoPayload.RequestMetadata?.Value<string>("callerSuppliedUserAgent");
         public string DestinationHost =>
             base.LogRecord.ProtoPayload.RequestMetadata?["destinationAttributes"]?.Value<string>("ip");
         public string DestinationPort =>

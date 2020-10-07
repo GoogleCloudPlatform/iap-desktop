@@ -22,9 +22,9 @@
 using Google.Solutions.IapDesktop.Extensions.Activity.Logs;
 using System.Diagnostics;
 
-namespace Google.Solutions.IapDesktop.Extensions.Activity.Events.Lifecycle
+namespace Google.Solutions.IapDesktop.Extensions.Activity.Events
 {
-    public abstract class LifecycleEventBase : VmInstanceEventBase
+    public abstract class VmInstanceActivityEventBase : VmInstanceEventBase
     {
         protected abstract string SuccessMessage { get; }
         protected abstract string ErrorMessage { get; }
@@ -58,7 +58,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Events.Lifecycle
 
         public bool IsError => this.Severity == "ERROR";
 
-        public LifecycleEventBase(LogRecord logRecord) : base(logRecord)
+        public VmInstanceActivityEventBase(LogRecord logRecord) : base(logRecord)
         {
             Debug.Assert(!IsError || logRecord.ProtoPayload.Status != null);
         }

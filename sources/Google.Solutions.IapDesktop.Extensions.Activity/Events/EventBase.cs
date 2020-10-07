@@ -38,6 +38,29 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Events
             ? this.LogRecord.ProtoPayload?.Status
             : null;
 
+        public string SourceHost =>
+            this.LogRecord.ProtoPayload.RequestMetadata?.Value<string>("callerIp");
+        public string UserAgent =>
+            this.LogRecord.ProtoPayload.RequestMetadata?.Value<string>("callerSuppliedUserAgent");
+
+        public string UserAgentShort
+        {
+            get
+            {
+                var userAgent = this.UserAgent ?? "(unknown agent)";
+                int parenthesis = userAgent.IndexOf('(');
+                if (parenthesis > 0)
+                {
+                    // Strip version and details.
+                    return userAgent.Substring(0, parenthesis).Trim();
+                }
+                else
+                {
+                    return userAgent;
+                }
+            }
+        }
+
         public abstract string Message { get; }
 
         protected EventBase(LogRecord logRecord)
