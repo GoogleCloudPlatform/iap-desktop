@@ -22,7 +22,7 @@
 using Google.Solutions.IapDesktop.Extensions.Activity.Logs;
 using System.Diagnostics;
 
-namespace Google.Solutions.IapDesktop.Extensions.Activity.Events.Iap
+namespace Google.Solutions.IapDesktop.Extensions.Activity.Events.Access
 {
     public class AuthorizeUserTunnelEvent : EventBase
     {

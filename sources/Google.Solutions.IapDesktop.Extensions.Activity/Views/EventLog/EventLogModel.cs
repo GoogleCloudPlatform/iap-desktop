@@ -36,7 +36,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Views.EventLog
         public IEnumerable<string> SupportedMethods =>
             EventFactory.LifecycleEventMethods
                 .Concat(EventFactory.SystemEventMethods)
-                .Concat(EventFactory.DataAccessEventMethods);
+                .Concat(EventFactory.SecurityEventMethods);
 
         public string DisplayName { get; }
 

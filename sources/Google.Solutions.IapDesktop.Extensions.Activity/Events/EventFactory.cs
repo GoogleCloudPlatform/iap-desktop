@@ -19,7 +19,7 @@
 // under the License.
 //
 
-using Google.Solutions.IapDesktop.Extensions.Activity.Events.Iap;
+using Google.Solutions.IapDesktop.Extensions.Activity.Events.Access;
 using Google.Solutions.IapDesktop.Extensions.Activity.Events.Lifecycle;
 using Google.Solutions.IapDesktop.Extensions.Activity.Events.System;
 using Google.Solutions.IapDesktop.Extensions.Activity.Logs;
@@ -69,7 +69,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Events
                 // Some more esoteric event types omitted (based on InstanceEventInfo.java).
             };
 
-        private readonly static IDictionary<string, Func<LogRecord, EventBase>> dataAccessEvents
+        private readonly static IDictionary<string, Func<LogRecord, EventBase>> accessEvents
             = new Dictionary<string, Func<LogRecord, EventBase>>()
             {
                 { AuthorizeUserTunnelEvent.Method, rec => new AuthorizeUserTunnelEvent(rec) }
@@ -77,7 +77,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Events
 
         public static IEnumerable<string> LifecycleEventMethods => lifecycleEvents.Keys;
         public static IEnumerable<string> SystemEventMethods => systemEvents.Keys;
-        public static IEnumerable<string> DataAccessEventMethods => dataAccessEvents.Keys;
+        public static IEnumerable<string> SecurityEventMethods => accessEvents.Keys;
 
         public static EventBase FromRecord(LogRecord record)
         {
@@ -107,7 +107,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Events
             }
             else if (record.IsDataAccessEvent)
             {
-                if (dataAccessEvents.TryGetValue(record.ProtoPayload.MethodName, out var lcFunc))
+                if (accessEvents.TryGetValue(record.ProtoPayload.MethodName, out var lcFunc))
                 {
                     return lcFunc(record);
                 }

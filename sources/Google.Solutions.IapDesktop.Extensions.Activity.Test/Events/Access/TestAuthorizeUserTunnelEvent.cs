@@ -20,11 +20,11 @@
 //
 
 using Google.Solutions.IapDesktop.Extensions.Activity.Events;
-using Google.Solutions.IapDesktop.Extensions.Activity.Events.Iap;
+using Google.Solutions.IapDesktop.Extensions.Activity.Events.Access;
 using Google.Solutions.IapDesktop.Extensions.Activity.Logs;
 using NUnit.Framework;
 
-namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.Events.Iap
+namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.Events.Access
 {
     [TestFixture]
     public class TestAuthorizeUserTunnelEvent : FixtureBase
