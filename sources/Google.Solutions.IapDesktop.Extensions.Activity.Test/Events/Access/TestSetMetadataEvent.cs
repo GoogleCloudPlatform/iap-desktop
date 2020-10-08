@@ -27,10 +27,10 @@ using NUnit.Framework;
 namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.Events.Access
 {
     [TestFixture]
-    public class TestResetWindowsUserEvent : FixtureBase
+    public class TestSetMetadataEvent : FixtureBase
     {
         [Test]
-        public void WhenOperationIsFirstAndSeverityIsNotice_ThenFieldsAreExtracted()
+        public void WhenOperationIsFirstAndRecordContainsWindowsKeys_ThenFieldsAreExtracted()
         {
             var json = @"
              {
@@ -101,9 +101,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.Events.Access
              }";
 
             var r = LogRecord.Deserialize(json);
-            Assert.IsTrue(ResetWindowsUserEvent.IsResetWindowsUserEvent(r));
+            Assert.IsTrue(SetMetadataEvent.IsSetMetadataEvent(r));
 
-            var e = (ResetWindowsUserEvent)r.ToEvent();
+            var e = (SetMetadataEvent)r.ToEvent();
 
             Assert.AreEqual("user@example.com", e.PrincipalEmail);
             Assert.AreEqual(20008111111111111, e.InstanceId);
@@ -115,11 +115,11 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.Events.Access
             Assert.AreEqual("1.2.3.4", e.SourceHost);
             Assert.AreEqual("IAP-Desktop/1.0.1.0 (Microsoft ...),gzip(gfe)", e.UserAgent);
 
-            Assert.AreEqual("Windows credential reset from 1.2.3.4 using IAP-Desktop/1.0.1.0 (operation started)", e.Message);
+            Assert.AreEqual("Windows credential update from 1.2.3.4 using IAP-Desktop/1.0.1.0 (operation started)", e.Message);
         }
 
         [Test]
-        public void WhenOperationIsLastAndSeverityIsNotice_ThenFieldsAreExtracted()
+        public void WhenOperationIsLastAndRecordContainsWindowsKeys_ThenFieldsAreExtracted()
         {
             var json = @"
              {
@@ -168,9 +168,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.Events.Access
              }";
 
             var r = LogRecord.Deserialize(json);
-            Assert.IsTrue(ResetWindowsUserEvent.IsResetWindowsUserEvent(r));
+            Assert.IsTrue(SetMetadataEvent.IsSetMetadataEvent(r));
 
-            var e = (ResetWindowsUserEvent)r.ToEvent();
+            var e = (SetMetadataEvent)r.ToEvent();
 
             Assert.AreEqual("user@example.com", e.PrincipalEmail);
             Assert.AreEqual(20008111111111111, e.InstanceId);
@@ -182,7 +182,76 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.Events.Access
             Assert.IsNull(e.SourceHost);
             Assert.IsNull(e.UserAgent);
 
-            Assert.AreEqual("Windows credential reset from (unknown) using (unknown agent) (operation completed)", e.Message);
+            Assert.AreEqual("Windows credential update from (unknown) using (unknown agent) (operation completed)", e.Message);
+        }
+
+        [Test]
+        public void WhenOperationIsLastAndRecordContainsSshKeys_ThenFieldsAreExtracted()
+        {
+            var json = @"
+             {
+               'protoPayload': {
+                 '@type': 'type.googleapis.com/google.cloud.audit.AuditLog',
+                 'authenticationInfo': {
+                   'principalEmail': 'user@example.com',
+                 },
+                 'requestMetadata': {
+                   'callerIp': '1.2.3.4',
+                   'callerSuppliedUserAgent': 'IAP-Desktop/1.0.1.0 (Microsoft ...),gzip(gfe)',
+                 },
+                 'serviceName': 'compute.googleapis.com',
+                 'methodName': 'v1.compute.instances.setMetadata',
+                 'resourceName': 'projects/project-1/zones/us-central1-a/instances/instance-a',
+                 'request': {
+                   'Metadata Keys Added': [
+                     'ssh-keys'
+                   ],
+                   '@type': 'type.googleapis.com/compute.instances.setMetadata'
+                 },
+                 'metadata': {
+                   '@type': 'type.googleapis.com/google.cloud.audit.GceInstanceAuditMetadata',
+                   'instanceMetadataDelta': {
+                     'addedMetadataKeys': [
+                       'ssh-keys'
+                     ]
+                   }
+                 }
+               },
+               'insertId': '-8b5rzjcui4',
+               'resource': {
+                 'type': 'gce_instance',
+                 'labels': {
+                   'project_id': 'project-1',
+                   'instance_id': '37848154511111',
+                   'zone': 'us-central1-a'
+                 }
+               },
+               'timestamp': '2020-10-08T14:10:30.078247Z',
+               'severity': 'NOTICE',
+               'logName': 'projects/project-1/logs/cloudaudit.googleapis.com%2Factivity',
+               'operation': {
+                 'producer': 'compute.googleapis.com',
+                 'last': true
+               },
+               'receiveTimestamp': '2020-10-08T14:10:30.777783607Z'
+             }";
+
+            var r = LogRecord.Deserialize(json);
+            Assert.IsTrue(SetMetadataEvent.IsSetMetadataEvent(r));
+
+            var e = (SetMetadataEvent)r.ToEvent();
+
+            Assert.AreEqual("user@example.com", e.PrincipalEmail);
+            Assert.AreEqual(37848154511111, e.InstanceId);
+            Assert.AreEqual("us-central1-a", e.InstanceReference.Zone);
+            Assert.AreEqual("project-1", e.InstanceReference.ProjectId);
+            Assert.AreEqual("NOTICE", e.Severity);
+            Assert.IsNull(e.Status);
+
+            Assert.AreEqual("1.2.3.4", e.SourceHost);
+            Assert.AreEqual("IAP-Desktop/1.0.1.0 (Microsoft ...),gzip(gfe)", e.UserAgent);
+
+            Assert.AreEqual("Linux SSH keys update from 1.2.3.4 using IAP-Desktop/1.0.1.0 (operation completed)", e.Message);
         }
 
         [Test]
@@ -245,9 +314,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.Events.Access
              }";
 
             var r = LogRecord.Deserialize(json);
-            Assert.IsTrue(ResetWindowsUserEvent.IsResetWindowsUserEvent(r));
+            Assert.IsTrue(SetMetadataEvent.IsSetMetadataEvent(r));
 
-            var e = (ResetWindowsUserEvent)r.ToEvent();
+            var e = (SetMetadataEvent)r.ToEvent();
 
             Assert.AreEqual("user@example.com", e.PrincipalEmail);
             Assert.AreEqual(0, e.InstanceId);
@@ -260,11 +329,11 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.Events.Access
             Assert.AreEqual("1.2.3.4", e.SourceHost);
             Assert.AreEqual("IAP-Desktop/1.0.1.0 (Microsoft ...),gzip(gfe)", e.UserAgent);
 
-            Assert.AreEqual("Metadata or Windows credentials reset from 1.2.3.4 using IAP-Desktop/1.0.1.0 failed [Required ...]", e.Message);
+            Assert.AreEqual("Metadata, Windows credentials, or SSH key update from 1.2.3.4 using IAP-Desktop/1.0.1.0 failed [Required ...]", e.Message);
         }
 
         [Test]
-        public void WhenRecordIsOtherMetadataOperation_ThenIsResetWindowsUserEventReturnsFalse()
+        public void WhenRecordContainsOtherMetadataKeys_ThenIsResetWindowsUserEventReturnsFalse()
         {
             var json = @"
              {
@@ -334,7 +403,21 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.Events.Access
              }";
 
             var r = LogRecord.Deserialize(json);
-            Assert.IsFalse(ResetWindowsUserEvent.IsResetWindowsUserEvent(r));
+            Assert.IsTrue(SetMetadataEvent.IsSetMetadataEvent(r));
+
+            var e = (SetMetadataEvent)r.ToEvent();
+
+            Assert.AreEqual("user@example.com", e.PrincipalEmail);
+            Assert.AreEqual(20008111111111111, e.InstanceId);
+            Assert.AreEqual("us-central1-a", e.InstanceReference.Zone);
+            Assert.AreEqual("project-1", e.InstanceReference.ProjectId);
+            Assert.AreEqual("NOTICE", e.Severity);
+            Assert.IsNull(e.Status);
+
+            Assert.AreEqual("1.2.3.4", e.SourceHost);
+            Assert.AreEqual("IAP-Desktop/1.0.1.0 (Microsoft ...),gzip(gfe)", e.UserAgent);
+
+            Assert.AreEqual("Metadata update from 1.2.3.4 using IAP-Desktop/1.0.1.0 (operation started)", e.Message);
         }
     }
 }

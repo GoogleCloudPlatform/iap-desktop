@@ -86,7 +86,7 @@
   <ItemGroup>
     <Compile Include="DateTimeUtil.cs" />
     <Compile Include="Events\Access\AuthorizeUserTunnelEvent.cs" />
-    <Compile Include="Events\Access\ResetWindowsUserEvent.cs" />
+    <Compile Include="Events\Access\SetMetadataEvent.cs" />
     <Compile Include="Events\IEventProcessor.cs" />
     <Compile Include="Events\IInstanceStateChangeEvent.cs" />
     <Compile Include="Events\VmInstanceActivityEventBase.cs" />

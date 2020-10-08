@@ -21,48 +21,74 @@
 
 using Google.Solutions.Common.Util;
 using Google.Solutions.IapDesktop.Extensions.Activity.Logs;
-using System;
 using System.Diagnostics;
 using System.Linq;
 
 namespace Google.Solutions.IapDesktop.Extensions.Activity.Events.Access
 {
-    public class ResetWindowsUserEvent : VmInstanceActivityEventBase
+    public class SetMetadataEvent : VmInstanceActivityEventBase
     {
         public const string Method = "v1.compute.instances.setMetadata";
 
         protected override string SuccessMessage => 
-            $"Windows credential reset from {this.SourceHost ?? "(unknown)"} " +
+            $"{this.Description} from {this.SourceHost ?? "(unknown)"} " +
             $"using {this.UserAgentShort ?? "(unknown agent)"}";
 
         protected override string ErrorMessage =>
-            $"Metadata or Windows credentials reset from {this.SourceHost ?? "(unknown)"} "+
+            $"{this.Description} from {this.SourceHost ?? "(unknown)"} "+
             $"using {this.UserAgentShort ?? "(unknown agent)"} failed";
 
-        internal ResetWindowsUserEvent(LogRecord logRecord) : base(logRecord)
+        private string Description
         {
-            Debug.Assert(IsResetWindowsUserEvent(logRecord));
+            get
+            {
+                //
+                // NB. Windows user resets are regular set-metadata requests - the only
+                // characteristic aspect about them is that they update the "windows-keys"
+                // metadata item. Same for Linux/SSH keys.
+                //
+                // Operation start-records and successful operation end-records contain
+                // the metadata key, so we can clearly identify them as being Windows
+                // user reset events. Error records however lack this information - so
+                // we if we see a failed set-metadata request, it may or may not be
+                // the result of a Windows reset user event.
+                //
+                
+                if (IsModifyingKey("windows-keys"))
+                {
+                    return "Windows credential update";
+                }
+                else if (IsModifyingKey("ssh-keys"))
+                {
+                    return "Linux SSH keys update";
+                }
+                else if (this.LogRecord.Severity == "ERROR")
+                {
+                    return "Metadata, Windows credentials, or SSH key update";
+                }
+                else
+                {
+                    return "Metadata update";
+                }
+            }
         }
 
-        public static bool IsResetWindowsUserEvent(LogRecord record)
+        internal SetMetadataEvent(LogRecord logRecord) : base(logRecord)
         {
-            //
-            // NB. Windows user resets are regular set-metadata requests - the only
-            // characteristic aspect about them is that they update the "windows-keys"
-            // metadata item.
-            //
-            // Operation start-records and successful operation end-records contain
-            // the metadata key, so we can clearly identify them as being Windows
-            // user reset events. Error records however lack this information - so
-            // we if we see a failed set-metadata request, it may or may not be
-            // the result of a Windows reset user event.
-            //
+            Debug.Assert(IsSetMetadataEvent(logRecord));
+        }
 
+        public static bool IsSetMetadataEvent(LogRecord record)
+        {
             return record.IsActivityEvent &&
-                record.ProtoPayload.MethodName == Method &&
-                record.Severity == "ERROR" || ExtractModifiedMetadataKeys(record)
-                    .EnsureNotNull()
-                    .Any(v => v == "windows-keys");
+                record.ProtoPayload.MethodName == Method;
+        }
+
+        public bool IsModifyingKey(string key)
+        {
+            return ExtractModifiedMetadataKeys(this.LogRecord)
+                .EnsureNotNull()
+                .Any(v => v == key);
         }
 
         private static string[] ExtractModifiedMetadataKeys(LogRecord record)
@@ -86,6 +112,5 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Events.Access
 
             return null;
         }
-
     }
 }
