@@ -29,6 +29,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Events.Lifecycle
         public const string Method = "v1.compute.instances.startWithEncryptionKey";
         public const string BetaMethod = "beta.compute.instances.startWithEncryptionKey";
 
+        public override EventCategory Category => EventCategory.Lifecycle;
         protected override string SuccessMessage => "Instance started with encryption key";
         protected override string ErrorMessage => "Starting instance with encryption key failed";
 

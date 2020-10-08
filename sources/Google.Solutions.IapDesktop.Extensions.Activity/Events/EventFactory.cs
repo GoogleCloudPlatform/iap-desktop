@@ -25,20 +25,14 @@ using Google.Solutions.IapDesktop.Extensions.Activity.Events.System;
 using Google.Solutions.IapDesktop.Extensions.Activity.Logs;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
+using System.Linq;
 
 namespace Google.Solutions.IapDesktop.Extensions.Activity.Events
 {
     public static class EventFactory
     {
-        //
-        // We separate events into three buckets:
-        // - Lifecyle: affect the lifecycle of a VM, initiated by the user
-        // - System: affect the lifecycle of a VM, initiated by system
-        // - Access: other, security-relevant events 
-        //
-        // This distinction does not map 1:1 admin activity/system/data access events!
-        //
-
+        
         private readonly static IDictionary<string, Func<LogRecord, EventBase>> lifecycleEvents
             = new Dictionary<string, Func<LogRecord, EventBase>>()
             {
@@ -59,10 +53,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Events
                 { ResumeInstanceEvent.AlphaMethod, rec => new ResumeInstanceEvent(rec) },
                 
                 // Some lifecyce-related beta events omitted (based on audit_log_services.ts),
-
-                { SetMetadataEvent.Method, rec => SetMetadataEvent.IsSetMetadataEvent(rec)
-                    ? (EventBase)new SetMetadataEvent(rec)
-                    : new UnknownEvent(rec)}
             };
 
         private readonly static IDictionary<string, Func<LogRecord, EventBase>> systemEvents
@@ -85,7 +75,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Events
         private readonly static IDictionary<string, Func<LogRecord, EventBase>> accessEvents
             = new Dictionary<string, Func<LogRecord, EventBase>>()
             {
-                { AuthorizeUserTunnelEvent.Method, rec => new AuthorizeUserTunnelEvent(rec) }
+                { AuthorizeUserTunnelEvent.Method, rec => new AuthorizeUserTunnelEvent(rec) },
+                { SetMetadataEvent.Method, rec => new SetMetadataEvent(rec) }
             };
 
         public static IEnumerable<string> LifecycleEventMethods => lifecycleEvents.Keys;
@@ -101,15 +92,21 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Events
 
             if (lifecycleEvents.TryGetValue(record.ProtoPayload.MethodName, out var lcFunc))
             {
-                return lcFunc(record);
+                var e = lcFunc(record);
+                Debug.Assert(e.Category == EventCategory.Lifecycle);
+                return e;
             }
             else if (systemEvents.TryGetValue(record.ProtoPayload.MethodName, out var sysFunc))
             {
-                return sysFunc(record);
+                var e = sysFunc(record);
+                Debug.Assert(e.Category == EventCategory.System);
+                return e;
             }
             if (accessEvents.TryGetValue(record.ProtoPayload.MethodName, out var accessFunc))
             {
-                return accessFunc(record);
+                var e = accessFunc(record);
+                Debug.Assert(e.Category == EventCategory.Access);
+                return e;
             }
             else if (record.IsSystemEvent)
             {

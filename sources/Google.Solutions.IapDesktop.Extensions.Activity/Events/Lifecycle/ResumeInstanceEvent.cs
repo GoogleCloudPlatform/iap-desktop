@@ -30,6 +30,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Events.Lifecycle
         public const string BetaMethod = "beta.compute.instances.resume";
         public const string AlphaMethod = "alpha.compute.instances.resume";
 
+        public override EventCategory Category => EventCategory.Lifecycle;
         protected override string SuccessMessage => "Instance resumed";
         protected override string ErrorMessage => "Resuming instance failed";
 

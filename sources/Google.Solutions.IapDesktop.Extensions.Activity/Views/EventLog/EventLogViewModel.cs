@@ -328,9 +328,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Views.EventLog
                 this.WindowTitle = DefaultWindowTitle + $": {this.Model.DisplayName}";
 
                 this.Events.AddRange(this.Model.Events
-                    .Where(e => !e.LogRecord.IsActivityEvent || this.includeLifecycleEvents)
-                    .Where(e => !e.LogRecord.IsSystemEvent || this.includeSystemEvents)
-                    .Where(e => !e.LogRecord.IsDataAccessEvent || this.includeAccessEvents));
+                    .Where(e => e.Category != EventCategory.Lifecycle || this.includeLifecycleEvents)
+                    .Where(e => e.Category != EventCategory.System || this.includeSystemEvents)
+                    .Where(e => e.Category != EventCategory.Access || this.includeAccessEvents));
             }
         }
 

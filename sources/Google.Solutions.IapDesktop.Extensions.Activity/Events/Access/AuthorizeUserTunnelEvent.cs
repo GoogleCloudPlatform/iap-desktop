@@ -29,6 +29,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Events.Access
         public const string ServiceName = "iap.googleapis.com";
         public const string Method = "AuthorizeUser";
 
+        public override EventCategory Category => EventCategory.Access;
+
         internal AuthorizeUserTunnelEvent(LogRecord logRecord) : base(logRecord)
         {
             Debug.Assert(IsAuthorizeUserEvent(logRecord));

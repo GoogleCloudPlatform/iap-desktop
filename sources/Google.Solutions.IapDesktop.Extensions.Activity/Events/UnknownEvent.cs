@@ -25,6 +25,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Events
 {
     public class UnknownEvent : EventBase
     {
+        public override EventCategory Category => EventCategory.Unknown;
+
         public override string Message => this.LogRecord.ProtoPayload != null
             ? $"Event {this.LogRecord.ProtoPayload.MethodName} occured"
             : $"Unknown event occured";

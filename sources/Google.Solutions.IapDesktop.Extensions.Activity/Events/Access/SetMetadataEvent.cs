@@ -29,7 +29,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Events.Access
     public class SetMetadataEvent : VmInstanceActivityEventBase
     {
         public const string Method = "v1.compute.instances.setMetadata";
-
+        
+        public override EventCategory Category => EventCategory.Access;
+        
         protected override string SuccessMessage => 
             $"{this.Description} from {this.SourceHost ?? "(unknown)"} " +
             $"using {this.UserAgentShort ?? "(unknown agent)"}";

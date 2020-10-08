@@ -30,6 +30,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Events.Lifecycle
         public const string BetaMethod = "beta.compute.instances.suspend";
         public const string AlphaMethod = "alpha.compute.instances.suspend";
 
+        public override EventCategory Category => EventCategory.Lifecycle;
         protected override string SuccessMessage => "Instance suspended";
         protected override string ErrorMessage => "Suspending instance failed";
 

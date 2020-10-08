@@ -26,6 +26,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Events
 {
     public abstract class EventBase
     {
+        public abstract EventCategory Category { get; }
         public LogRecord LogRecord { get; }
 
         public DateTime Timestamp => this.LogRecord.Timestamp;
@@ -72,5 +73,28 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Events
         {
             return $"{this.Timestamp} {this.Severity} {this.Message}";
         }
+    }
+
+    public enum EventCategory
+    {
+        // NB. Categories are contextual and do not map 1:1 to admin 
+        // activity/system/data access events!
+
+        Unknown,
+
+        /// <summary>
+        ///  Events that affect the lifecycle of a VM, initiated by the user
+        /// </summary>
+        Lifecycle,
+
+        /// <summary>
+        /// Events that affect the lifecycle of a VM, initiated by system
+        /// </summary>
+        System,
+
+        /// <summary>
+        /// Other, security-relevant events 
+        /// </summary>
+        Access
     }
 }

@@ -28,6 +28,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Events.Lifecycle
     {
         public const string Method = "v1.compute.instances.start";
 
+        public override EventCategory Category => EventCategory.Lifecycle;
         protected override string SuccessMessage => "Instance started";
         protected override string ErrorMessage => "Starting instance failed";
 

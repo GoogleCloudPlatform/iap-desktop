@@ -31,6 +31,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Events.Lifecycle
         public const string Method = "v1.compute.instances.insert";
         public const string BetaMethod = "beta.compute.instances.insert";
 
+        public override EventCategory Category => EventCategory.Lifecycle;
         protected override string SuccessMessage => "Instance created";
         protected override string ErrorMessage => "Creating instance failed";
 
