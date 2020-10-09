@@ -283,7 +283,11 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services.Adapters
                         // The file might contain empty lines.
                         if (!string.IsNullOrWhiteSpace(line))
                         {
-                            events.Add(EventFactory.FromRecord(LogRecord.Deserialize(line)));
+                            var record = LogRecord.Deserialize(line);
+                            if (record.IsValidAuditLogRecord)
+                            {
+                                events.Add(EventFactory.FromRecord(record));
+                            }
                         }
                     }
                 }
