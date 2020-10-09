@@ -22,7 +22,6 @@
 using Google.Solutions.Common.Diagnostics;
 using System;
 using System.Drawing;
-using System.Runtime.InteropServices;
 using System.Windows.Forms;
 
 namespace Google.Solutions.IapDesktop.Application.Views
@@ -30,9 +29,6 @@ namespace Google.Solutions.IapDesktop.Application.Views
     [SkipCodeCoverage("View")]
     public partial class FlyoutWindow : Form
     {
-        private IWin32Window owner;
-
-
         public FlyoutWindow()
         {
             InitializeComponent();
@@ -96,7 +92,6 @@ namespace Google.Solutions.IapDesktop.Application.Views
                 screenPositionOfControlToAlignTo.Location.X + offsetX,
                 screenPositionOfControlToAlignTo.Location.Y + offsetY);
 
-            this.owner = owner;
             Show(owner);
         }
 
@@ -112,18 +107,13 @@ namespace Google.Solutions.IapDesktop.Application.Views
             Close();
         }
 
-        private void closeButton_Click(object sender, EventArgs e)
-        {
-            Close();
-        }
-
         private void FlyoutWindow_Paint(object sender, PaintEventArgs e)
         {
             // Draw border around form.
             ControlPaint.DrawBorder(
                 e.Graphics,
                 this.ClientRectangle,
-                Color.Blue,
+                UiColors.Accent,
                 ButtonBorderStyle.Solid);
         }
     }
