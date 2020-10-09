@@ -24,8 +24,6 @@ using Google.Solutions.Common.Diagnostics;
 using Google.Solutions.Common.Locator;
 using Google.Solutions.IapDesktop.Application;
 using Google.Solutions.IapDesktop.Application.Services.Integration;
-using Google.Solutions.IapDesktop.Application.Services.Persistence;
-using Google.Solutions.IapDesktop.Application.Util;
 using Google.Solutions.IapDesktop.Application.Views;
 using Google.Solutions.IapDesktop.Extensions.Rdp.Services.Connection;
 using MSTSCLib;
@@ -74,6 +72,14 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Views.RemoteDesktop
             this.spinner.Location = new Point(
                 (this.Size.Width - this.spinner.Width) / 2,
                 (this.Size.Height - this.spinner.Height) / 2);
+
+            this.timeoutIcon.Location = new Point(
+                (this.Size.Width - this.timeoutIcon.Width) / 2,
+                (this.Size.Height - this.timeoutIcon.Height) / 2);
+
+            this.reconnectButton.Location = new Point(
+                (this.Size.Width - this.reconnectButton.Width) / 2,
+                (this.Size.Height - this.reconnectButton.Height) / 2 + this.timeoutIcon.Height + 10);
         }
 
         private async Task ShowErrorAndClose(string caption, RdpException e)
@@ -283,6 +289,21 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Views.RemoteDesktop
             }
         }
 
+        private void Reconnect()
+        {
+            using (TraceSources.IapDesktop.TraceMethod().WithoutParameters())
+            {
+                UpdateLayout();
+
+                this.timeoutIcon.Visible =
+                    this.reconnectButton.Visible = false;
+                this.spinner.Visible = true;
+
+                this.connecting = true;
+                this.rdpClient.Connect();
+            }
+        }
+
         private void ReconnectToResize(Size size)
         {
             using (TraceSources.IapDesktop.TraceMethod().WithParameters(this.connectionSize, size))
@@ -410,8 +431,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Views.RemoteDesktop
                 // Mark this pane as being in closing state even though it is still
                 // visible at this point.
                 this.IsFormClosing = true;
-                await this.eventService.FireAsync(
-                    new ConnectionClosedEvent(this.Instance));
+                await this.eventService.FireAsync(new ConnectionClosedEvent(this.Instance))
+                    .ConfigureAwait(true);
             }
         }
 
@@ -479,8 +500,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Views.RemoteDesktop
             IMsTscAxEvents_OnFatalErrorEvent args)
         {
             await ShowErrorAndClose(
-                "Fatal error",
-                new RdpFatalException(args.errorCode));
+                    "Fatal error",
+                    new RdpFatalException(args.errorCode))
+                .ConfigureAwait(true);
         }
 
         private async void rdpClient_OnLogonError(
@@ -490,7 +512,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Views.RemoteDesktop
             var e = new RdpLogonException(args.lError);
             if (!e.IsIgnorable)
             {
-                await ShowErrorAndClose("Logon failed", e);
+                await ShowErrorAndClose("Logon failed", e)
+                    .ConfigureAwait(true); ;
             }
         }
 
@@ -504,13 +527,20 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Views.RemoteDesktop
 
             using (TraceSources.IapDesktop.TraceMethod().WithParameters(e.Message))
             {
-                if (e.IsIgnorable)
+                if (e.IsTimeout)
+                {
+                    // Connection timed out, this is common for Desktop OSes.
+                    this.timeoutIcon.Visible = true;
+                    this.reconnectButton.Visible = true;
+                }
+                else if (e.IsIgnorable)
                 {
                     Close();
                 }
                 else
                 {
-                    await ShowErrorAndClose("Disconnected", e);
+                    await ShowErrorAndClose("Disconnected", e)
+                        .ConfigureAwait(true); ;
                 }
             }
         }
@@ -524,12 +554,12 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Views.RemoteDesktop
                 this.spinner.Visible = false;
 
                 // Notify our listeners.
-                await this.eventService.FireAsync(
-                    new ConnectionSuceededEvent(this.Instance));
+                await this.eventService.FireAsync(new ConnectionSuceededEvent(this.Instance))
+                    .ConfigureAwait(true);
 
                 // Wait a bit before clearing the connecting flag. The control can
                 // get flaky if connect operations are done too soon.
-                await Task.Delay(2000);
+                await Task.Delay(2000).ConfigureAwait(true); ;
                 this.connecting = false;
             }
         }
@@ -582,7 +612,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Views.RemoteDesktop
                 {
                     // Wait a bit before clearing the connecting flag. The control can
                     // get flaky if connect operations are done too soon.
-                    await Task.Delay(2000);
+                    await Task.Delay(2000).ConfigureAwait(true); ;
                     this.connecting = false;
                 }
             }
@@ -612,6 +642,13 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Views.RemoteDesktop
             { }
         }
 
+        private void reconnectButton_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+        {
+            using (TraceSources.IapDesktop.TraceMethod().WithoutParameters())
+            {
+                Reconnect();
+            }
+        }
 
         //---------------------------------------------------------------------
         // IRemoteDesktopSession.
@@ -673,5 +710,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Views.RemoteDesktop
                 nonScriptable.SendKeys(keys);
             }
         }
+
     }
 }

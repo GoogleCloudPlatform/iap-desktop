@@ -56,8 +56,11 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Views.RemoteDesktop
             this.rdpClient = new AxMSTSCLib.AxMsRdpClient9NotSafeForScripting();
             this.spinner = new System.Windows.Forms.PictureBox();
             this.reconnectToResizeTimer = new System.Windows.Forms.Timer(this.components);
+            this.timeoutIcon = new System.Windows.Forms.PictureBox();
+            this.reconnectButton = new System.Windows.Forms.LinkLabel();
             ((System.ComponentModel.ISupportInitialize)(this.rdpClient)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.spinner)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.timeoutIcon)).BeginInit();
             this.SuspendLayout();
             // 
             // rdpClient
@@ -87,7 +90,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Views.RemoteDesktop
             // 
             this.spinner.Anchor = System.Windows.Forms.AnchorStyles.None;
             this.spinner.BackColor = System.Drawing.Color.White;
-            this.spinner.Image = Resources.Spinner;
+            this.spinner.Image = global::Google.Solutions.IapDesktop.Extensions.Rdp.Properties.Resources.Spinner;
             this.spinner.Location = new System.Drawing.Point(107, 101);
             this.spinner.Name = "spinner";
             this.spinner.Size = new System.Drawing.Size(44, 44);
@@ -99,11 +102,37 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Views.RemoteDesktop
             this.reconnectToResizeTimer.Interval = 1000;
             this.reconnectToResizeTimer.Tick += new System.EventHandler(this.reconnectToResizeTimer_Tick);
             // 
+            // timeoutIcon
+            // 
+            this.timeoutIcon.BackColor = System.Drawing.Color.White;
+            this.timeoutIcon.Image = ((System.Drawing.Image)(resources.GetObject("timeoutIcon.Image")));
+            this.timeoutIcon.Location = new System.Drawing.Point(235, 228);
+            this.timeoutIcon.Name = "timeoutIcon";
+            this.timeoutIcon.Size = new System.Drawing.Size(51, 48);
+            this.timeoutIcon.TabIndex = 4;
+            this.timeoutIcon.TabStop = false;
+            this.timeoutIcon.Visible = false;
+            // 
+            // reconnectButton
+            // 
+            this.reconnectButton.AutoSize = true;
+            this.reconnectButton.BackColor = System.Drawing.Color.White;
+            this.reconnectButton.Location = new System.Drawing.Point(220, 353);
+            this.reconnectButton.Name = "reconnectButton";
+            this.reconnectButton.Size = new System.Drawing.Size(189, 13);
+            this.reconnectButton.TabIndex = 6;
+            this.reconnectButton.TabStop = true;
+            this.reconnectButton.Text = "Remote Desktop connection timed out";
+            this.reconnectButton.Visible = false;
+            this.reconnectButton.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.reconnectButton_LinkClicked);
+            // 
             // RemoteDesktopPane
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(763, 431);
+            this.Controls.Add(this.reconnectButton);
+            this.Controls.Add(this.timeoutIcon);
             this.Controls.Add(this.spinner);
             this.Controls.Add(this.rdpClient);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
@@ -113,7 +142,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Views.RemoteDesktop
             this.SizeChanged += new System.EventHandler(this.RemoteDesktopPane_SizeChanged);
             ((System.ComponentModel.ISupportInitialize)(this.rdpClient)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.spinner)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.timeoutIcon)).EndInit();
             this.ResumeLayout(false);
+            this.PerformLayout();
 
         }
 
@@ -122,5 +153,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Views.RemoteDesktop
         private AxMSTSCLib.AxMsRdpClient9NotSafeForScripting rdpClient;
         private System.Windows.Forms.PictureBox spinner;
         private System.Windows.Forms.Timer reconnectToResizeTimer;
+        private System.Windows.Forms.PictureBox timeoutIcon;
+        private System.Windows.Forms.LinkLabel reconnectButton;
     }
 }
