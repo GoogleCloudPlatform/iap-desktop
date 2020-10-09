@@ -70,6 +70,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Views.EventLog
             this.severityColumn = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.descriptionColumn = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.principalColumn = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.includeAccessEventsButton = new System.Windows.Forms.ToolStripMenuItem();
             this.contextMenuStrip.SuspendLayout();
             this.toolStrip.SuspendLayout();
             this.SuspendLayout();
@@ -131,7 +132,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Views.EventLog
             // 
             this.lifecycleEventsDropDown.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.includeLifecycleEventsButton,
-            this.includeSystemEventsButton});
+            this.includeSystemEventsButton,
+            this.includeAccessEventsButton});
             this.lifecycleEventsDropDown.Image = ((System.Drawing.Image)(resources.GetObject("lifecycleEventsDropDown.Image")));
             this.lifecycleEventsDropDown.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.lifecycleEventsDropDown.Name = "lifecycleEventsDropDown";
@@ -142,15 +144,15 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Views.EventLog
             // 
             this.includeLifecycleEventsButton.CheckOnClick = true;
             this.includeLifecycleEventsButton.Name = "includeLifecycleEventsButton";
-            this.includeLifecycleEventsButton.Size = new System.Drawing.Size(149, 22);
-            this.includeLifecycleEventsButton.Text = "User events";
+            this.includeLifecycleEventsButton.Size = new System.Drawing.Size(180, 22);
+            this.includeLifecycleEventsButton.Text = "VM lifecycle events";
             // 
             // includeSystemEventsButton
             // 
             this.includeSystemEventsButton.CheckOnClick = true;
             this.includeSystemEventsButton.Name = "includeSystemEventsButton";
-            this.includeSystemEventsButton.Size = new System.Drawing.Size(149, 22);
-            this.includeSystemEventsButton.Text = "System events";
+            this.includeSystemEventsButton.Size = new System.Drawing.Size(180, 22);
+            this.includeSystemEventsButton.Text = "VM system events";
             // 
             // timeFrameComboBox
             // 
@@ -223,6 +225,13 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Views.EventLog
             this.principalColumn.Text = "User";
             this.principalColumn.Width = 152;
             // 
+            // includeAccessEventsButton
+            // 
+            this.includeAccessEventsButton.CheckOnClick = true;
+            this.includeAccessEventsButton.Name = "includeAccessEventsButton";
+            this.includeAccessEventsButton.Size = new System.Drawing.Size(180, 22);
+            this.includeAccessEventsButton.Text = "VM access events";
+            // 
             // EventLogWindow
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -261,5 +270,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Views.EventLog
         private System.Windows.Forms.ToolStripMenuItem openInCloudConsoleToolStripMenuItem;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator2;
         private System.Windows.Forms.ToolStripButton openLogsButton;
+        private System.Windows.Forms.ToolStripMenuItem includeAccessEventsButton;
     }
 }

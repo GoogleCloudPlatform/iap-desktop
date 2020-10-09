@@ -26,6 +26,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Events.System
 {
     public abstract class SystemEventBase : VmInstanceEventBase
     {
+        public override EventCategory Category => EventCategory.System;
         public SystemEventBase(LogRecord logRecord) : base(logRecord)
         {
             // System events are always INFO-level.

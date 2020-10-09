@@ -26,6 +26,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Events
 {
     public abstract class EventBase
     {
+        public abstract EventCategory Category { get; }
         public LogRecord LogRecord { get; }
 
         public DateTime Timestamp => this.LogRecord.Timestamp;
@@ -38,6 +39,29 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Events
             ? this.LogRecord.ProtoPayload?.Status
             : null;
 
+        public string SourceHost =>
+            this.LogRecord.ProtoPayload.RequestMetadata?.Value<string>("callerIp");
+        public string UserAgent =>
+            this.LogRecord.ProtoPayload.RequestMetadata?.Value<string>("callerSuppliedUserAgent");
+
+        public string UserAgentShort
+        {
+            get
+            {
+                var userAgent = this.UserAgent ?? "(unknown agent)";
+                int parenthesis = userAgent.IndexOf('(');
+                if (parenthesis > 0)
+                {
+                    // Strip version and details.
+                    return userAgent.Substring(0, parenthesis).Trim();
+                }
+                else
+                {
+                    return userAgent;
+                }
+            }
+        }
+
         public abstract string Message { get; }
 
         protected EventBase(LogRecord logRecord)
@@ -49,5 +73,28 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Events
         {
             return $"{this.Timestamp} {this.Severity} {this.Message}";
         }
+    }
+
+    public enum EventCategory
+    {
+        // NB. Categories are contextual and do not map 1:1 to admin 
+        // activity/system/data access events!
+
+        Unknown,
+
+        /// <summary>
+        ///  Events that affect the lifecycle of a VM, initiated by the user
+        /// </summary>
+        Lifecycle,
+
+        /// <summary>
+        /// Events that affect the lifecycle of a VM, initiated by system
+        /// </summary>
+        System,
+
+        /// <summary>
+        /// Other, security-relevant events 
+        /// </summary>
+        Access
     }
 }

@@ -26,11 +26,12 @@ using System.Diagnostics;
 
 namespace Google.Solutions.IapDesktop.Extensions.Activity.Events.Lifecycle
 {
-    public class InsertInstanceEvent : LifecycleEventBase, IInstanceStateChangeEvent
+    public class InsertInstanceEvent : VmInstanceActivityEventBase, IInstanceStateChangeEvent
     {
         public const string Method = "v1.compute.instances.insert";
         public const string BetaMethod = "beta.compute.instances.insert";
 
+        public override EventCategory Category => EventCategory.Lifecycle;
         protected override string SuccessMessage => "Instance created";
         protected override string ErrorMessage => "Creating instance failed";
 

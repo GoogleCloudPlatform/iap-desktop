@@ -24,10 +24,11 @@ using System.Diagnostics;
 
 namespace Google.Solutions.IapDesktop.Extensions.Activity.Events.Lifecycle
 {
-    public class ResetInstanceEvent : LifecycleEventBase, IInstanceStateChangeEvent
+    public class ResetInstanceEvent : VmInstanceActivityEventBase, IInstanceStateChangeEvent
     {
         public const string Method = "v1.compute.instances.reset";
 
+        public override EventCategory Category => EventCategory.Lifecycle;
         protected override string SuccessMessage => "Instance reset";
         protected override string ErrorMessage => "Resetting instance failed";
 

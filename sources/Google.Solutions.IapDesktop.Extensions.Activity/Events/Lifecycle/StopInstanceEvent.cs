@@ -24,11 +24,12 @@ using System.Diagnostics;
 
 namespace Google.Solutions.IapDesktop.Extensions.Activity.Events.Lifecycle
 {
-    public class StopInstanceEvent : LifecycleEventBase, IInstanceStateChangeEvent
+    public class StopInstanceEvent : VmInstanceActivityEventBase, IInstanceStateChangeEvent
     {
         public const string BetaMethod = "beta.compute.instances.stop";
         public const string Method = "v1.compute.instances.stop";
 
+        public override EventCategory Category => EventCategory.Lifecycle;
         protected override string SuccessMessage => "Instance stopped";
         protected override string ErrorMessage => "Stopping instance failed";
 

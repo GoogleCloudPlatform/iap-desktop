@@ -19,16 +19,20 @@
 // under the License.
 //
 
+using Google.Solutions.IapDesktop.Extensions.Activity.Events.Access;
 using Google.Solutions.IapDesktop.Extensions.Activity.Events.Lifecycle;
 using Google.Solutions.IapDesktop.Extensions.Activity.Events.System;
 using Google.Solutions.IapDesktop.Extensions.Activity.Logs;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
+using System.Linq;
 
 namespace Google.Solutions.IapDesktop.Extensions.Activity.Events
 {
     public static class EventFactory
     {
+        
         private readonly static IDictionary<string, Func<LogRecord, EventBase>> lifecycleEvents
             = new Dictionary<string, Func<LogRecord, EventBase>>()
             {
@@ -47,8 +51,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Events
                 { ResumeInstanceEvent.Method, rec => new ResumeInstanceEvent(rec) },
                 { ResumeInstanceEvent.BetaMethod, rec => new ResumeInstanceEvent(rec) },
                 { ResumeInstanceEvent.AlphaMethod, rec => new ResumeInstanceEvent(rec) },
-
-                // Some beta events omitted (based on audit_log_services.ts)
+                
+                // Some lifecyce-related beta events omitted (based on audit_log_services.ts),
             };
 
         private readonly static IDictionary<string, Func<LogRecord, EventBase>> systemEvents
@@ -68,8 +72,16 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Events
                 // Some more esoteric event types omitted (based on InstanceEventInfo.java).
             };
 
+        private readonly static IDictionary<string, Func<LogRecord, EventBase>> accessEvents
+            = new Dictionary<string, Func<LogRecord, EventBase>>()
+            {
+                { AuthorizeUserTunnelEvent.Method, rec => new AuthorizeUserTunnelEvent(rec) },
+                { SetMetadataEvent.Method, rec => new SetMetadataEvent(rec) }
+            };
+
         public static IEnumerable<string> LifecycleEventMethods => lifecycleEvents.Keys;
         public static IEnumerable<string> SystemEventMethods => systemEvents.Keys;
+        public static IEnumerable<string> AccessEventMethods => accessEvents.Keys;
 
         public static EventBase FromRecord(LogRecord record)
         {
@@ -77,30 +89,37 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Events
             {
                 throw new ArgumentException("Not a valid audit log record");
             }
+
+            if (lifecycleEvents.TryGetValue(record.ProtoPayload.MethodName, out var lcFunc))
+            {
+                var e = lcFunc(record);
+                Debug.Assert(e.Category == EventCategory.Lifecycle);
+                return e;
+            }
+            else if (systemEvents.TryGetValue(record.ProtoPayload.MethodName, out var sysFunc))
+            {
+                var e = sysFunc(record);
+                Debug.Assert(e.Category == EventCategory.System);
+                return e;
+            }
+            if (accessEvents.TryGetValue(record.ProtoPayload.MethodName, out var accessFunc))
+            {
+                var e = accessFunc(record);
+                Debug.Assert(e.Category == EventCategory.Access);
+                return e;
+            }
             else if (record.IsSystemEvent)
             {
-                if (systemEvents.TryGetValue(record.ProtoPayload.MethodName, out var sysFunc))
-                {
-                    return sysFunc(record);
-                }
-                else
-                {
-                    // There are some less common/more esoteric system events that do not
-                    // have a wrapper class. Map these to GenericSystemEvent.
-                    return new GenericSystemEvent(record);
-                }
+                // There are some less common/more esoteric system events that do not
+                // have a wrapper class. Map these to GenericSystemEvent.
+                return new GenericSystemEvent(record);
             }
-            else if (record.IsActivityEvent)
+            else
             {
-                if (lifecycleEvents.TryGetValue(record.ProtoPayload.MethodName, out var lcFunc))
-                {
-                    return lcFunc(record);
-                }
+                // The list of activity event types is incomplete any might grow stale over time,
+                // so ensure to fail open.
+                return new UnknownEvent(record);
             }
-
-            // The list of activity event types is incomplete any might grow stale over time,
-            // so ensure to fail open.
-            return new UnknownEvent(record);
         }
 
         public static EventBase ToEvent(this LogRecord record) => FromRecord(record);
