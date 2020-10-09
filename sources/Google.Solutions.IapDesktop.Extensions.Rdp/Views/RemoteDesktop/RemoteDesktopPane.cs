@@ -73,13 +73,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Views.RemoteDesktop
                 (this.Size.Width - this.spinner.Width) / 2,
                 (this.Size.Height - this.spinner.Height) / 2);
 
-            this.timeoutIcon.Location = new Point(
-                (this.Size.Width - this.timeoutIcon.Width) / 2,
-                (this.Size.Height - this.timeoutIcon.Height) / 2);
-
-            this.reconnectButton.Location = new Point(
-                (this.Size.Width - this.reconnectButton.Width) / 2,
-                (this.Size.Height - this.reconnectButton.Height) / 2 + this.timeoutIcon.Height + 10);
+            this.reconnectPanel.Location = new Point(
+                (this.Size.Width - this.reconnectPanel.Width) / 2,
+                (this.Size.Height - this.reconnectPanel.Height) / 2);
         }
 
         private async Task ShowErrorAndClose(string caption, RdpException e)
@@ -295,8 +291,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Views.RemoteDesktop
             {
                 UpdateLayout();
 
-                this.timeoutIcon.Visible =
-                    this.reconnectButton.Visible = false;
+                // Reset visibility to default values.
+                this.reconnectPanel.Visible = false;
                 this.spinner.Visible = true;
 
                 this.connecting = true;
@@ -530,8 +526,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Views.RemoteDesktop
                 if (e.IsTimeout)
                 {
                     // Connection timed out, this is common for Desktop OSes.
-                    this.timeoutIcon.Visible = true;
-                    this.reconnectButton.Visible = true;
+                    this.reconnectPanel.Visible = true;
                 }
                 else if (e.IsIgnorable)
                 {

@@ -56,10 +56,13 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Views.RemoteDesktop
             this.rdpClient = new AxMSTSCLib.AxMsRdpClient9NotSafeForScripting();
             this.spinner = new System.Windows.Forms.PictureBox();
             this.reconnectToResizeTimer = new System.Windows.Forms.Timer(this.components);
+            this.reconnectPanel = new System.Windows.Forms.Panel();
             this.timeoutIcon = new System.Windows.Forms.PictureBox();
             this.reconnectButton = new System.Windows.Forms.LinkLabel();
+            this.reconnectLabel = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.rdpClient)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.spinner)).BeginInit();
+            this.reconnectPanel.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.timeoutIcon)).BeginInit();
             this.SuspendLayout();
             // 
@@ -102,37 +105,55 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Views.RemoteDesktop
             this.reconnectToResizeTimer.Interval = 1000;
             this.reconnectToResizeTimer.Tick += new System.EventHandler(this.reconnectToResizeTimer_Tick);
             // 
+            // reconnectPanel
+            // 
+            this.reconnectPanel.BackColor = System.Drawing.Color.White;
+            this.reconnectPanel.Controls.Add(this.reconnectLabel);
+            this.reconnectPanel.Controls.Add(this.reconnectButton);
+            this.reconnectPanel.Controls.Add(this.timeoutIcon);
+            this.reconnectPanel.Location = new System.Drawing.Point(414, 202);
+            this.reconnectPanel.Name = "reconnectPanel";
+            this.reconnectPanel.Size = new System.Drawing.Size(207, 100);
+            this.reconnectPanel.TabIndex = 7;
+            this.reconnectPanel.Visible = false;
+            // 
             // timeoutIcon
             // 
             this.timeoutIcon.BackColor = System.Drawing.Color.White;
             this.timeoutIcon.Image = ((System.Drawing.Image)(resources.GetObject("timeoutIcon.Image")));
-            this.timeoutIcon.Location = new System.Drawing.Point(235, 228);
+            this.timeoutIcon.Location = new System.Drawing.Point(77, 3);
             this.timeoutIcon.Name = "timeoutIcon";
             this.timeoutIcon.Size = new System.Drawing.Size(51, 48);
-            this.timeoutIcon.TabIndex = 4;
+            this.timeoutIcon.TabIndex = 5;
             this.timeoutIcon.TabStop = false;
-            this.timeoutIcon.Visible = false;
             // 
             // reconnectButton
             // 
             this.reconnectButton.AutoSize = true;
             this.reconnectButton.BackColor = System.Drawing.Color.White;
-            this.reconnectButton.Location = new System.Drawing.Point(220, 353);
+            this.reconnectButton.Location = new System.Drawing.Point(71, 74);
             this.reconnectButton.Name = "reconnectButton";
-            this.reconnectButton.Size = new System.Drawing.Size(189, 13);
-            this.reconnectButton.TabIndex = 6;
+            this.reconnectButton.Size = new System.Drawing.Size(60, 13);
+            this.reconnectButton.TabIndex = 7;
             this.reconnectButton.TabStop = true;
-            this.reconnectButton.Text = "Remote Desktop connection timed out";
-            this.reconnectButton.Visible = false;
+            this.reconnectButton.Text = "Reconnect";
             this.reconnectButton.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.reconnectButton_LinkClicked);
+            // 
+            // reconnectLabel
+            // 
+            this.reconnectLabel.AutoSize = true;
+            this.reconnectLabel.Location = new System.Drawing.Point(11, 58);
+            this.reconnectLabel.Name = "reconnectLabel";
+            this.reconnectLabel.Size = new System.Drawing.Size(189, 13);
+            this.reconnectLabel.TabIndex = 8;
+            this.reconnectLabel.Text = "Remote Desktop connection timed out";
             // 
             // RemoteDesktopPane
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(763, 431);
-            this.Controls.Add(this.reconnectButton);
-            this.Controls.Add(this.timeoutIcon);
+            this.Controls.Add(this.reconnectPanel);
             this.Controls.Add(this.spinner);
             this.Controls.Add(this.rdpClient);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
@@ -142,9 +163,10 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Views.RemoteDesktop
             this.SizeChanged += new System.EventHandler(this.RemoteDesktopPane_SizeChanged);
             ((System.ComponentModel.ISupportInitialize)(this.rdpClient)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.spinner)).EndInit();
+            this.reconnectPanel.ResumeLayout(false);
+            this.reconnectPanel.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.timeoutIcon)).EndInit();
             this.ResumeLayout(false);
-            this.PerformLayout();
 
         }
 
@@ -153,7 +175,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Views.RemoteDesktop
         private AxMSTSCLib.AxMsRdpClient9NotSafeForScripting rdpClient;
         private System.Windows.Forms.PictureBox spinner;
         private System.Windows.Forms.Timer reconnectToResizeTimer;
-        private System.Windows.Forms.PictureBox timeoutIcon;
+        private System.Windows.Forms.Panel reconnectPanel;
+        private System.Windows.Forms.Label reconnectLabel;
         private System.Windows.Forms.LinkLabel reconnectButton;
+        private System.Windows.Forms.PictureBox timeoutIcon;
     }
 }
