@@ -15,11 +15,21 @@ namespace Google.Solutions.IapDesktop.Application.Views.Authentication
     {
         private readonly UserFlyoutViewModel viewModel;
 
-        public UserFlyoutWindow(UserFlyoutViewModel viewModel)
+        public UserFlyoutWindow(UserFlyoutViewModel viewModel) : base()
         {
             this.viewModel = viewModel; 
             
             InitializeComponent();
         }
+
+        //---------------------------------------------------------------------
+        // Window events.
+        //---------------------------------------------------------------------
+
+        private void manageLink_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+            => this.viewModel.OpenMyAccountPage();
+
+        private void closeButton_Click(object sender, EventArgs e)
+            => Close();
     }
 }

@@ -22,6 +22,7 @@
 using Google.Solutions.Common.Diagnostics;
 using System;
 using System.Drawing;
+using System.Runtime.InteropServices;
 using System.Windows.Forms;
 
 namespace Google.Solutions.IapDesktop.Application.Views
@@ -29,6 +30,9 @@ namespace Google.Solutions.IapDesktop.Application.Views
     [SkipCodeCoverage("View")]
     public partial class FlyoutWindow : Form
     {
+        private IWin32Window owner;
+
+
         public FlyoutWindow()
         {
             InitializeComponent();
@@ -39,8 +43,6 @@ namespace Google.Solutions.IapDesktop.Application.Views
             Rectangle screenPositionOfControlToAlignTo, 
             ContentAlignment alignment)
         {
-            int offsetX, offsetY;
-
             //
             // Position the window relative to the reference control. 
             //
@@ -60,7 +62,9 @@ namespace Google.Solutions.IapDesktop.Application.Views
             //          | Control |
             //          +---------+
             //
-            
+
+            int offsetX, offsetY;
+
             switch (alignment)
             {
                 case ContentAlignment.TopRight:
@@ -92,6 +96,7 @@ namespace Google.Solutions.IapDesktop.Application.Views
                 screenPositionOfControlToAlignTo.Location.X + offsetX,
                 screenPositionOfControlToAlignTo.Location.Y + offsetY);
 
+            this.owner = owner;
             Show(owner);
         }
 

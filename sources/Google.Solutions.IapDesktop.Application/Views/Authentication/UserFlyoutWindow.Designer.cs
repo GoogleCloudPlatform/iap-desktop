@@ -32,6 +32,8 @@
             this.userIcon = new System.Windows.Forms.PictureBox();
             this.emailHeaderLabel = new System.Windows.Forms.Label();
             this.emailLabel = new System.Windows.Forms.Label();
+            this.manageLink = new System.Windows.Forms.LinkLabel();
+            this.closeButton = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.userIcon)).BeginInit();
             this.SuspendLayout();
             // 
@@ -47,35 +49,60 @@
             // emailHeaderLabel
             // 
             this.emailHeaderLabel.AutoSize = true;
-            this.emailHeaderLabel.Location = new System.Drawing.Point(66, 21);
+            this.emailHeaderLabel.Location = new System.Drawing.Point(66, 11);
             this.emailHeaderLabel.Name = "emailHeaderLabel";
-            this.emailHeaderLabel.Size = new System.Drawing.Size(106, 13);
+            this.emailHeaderLabel.Size = new System.Drawing.Size(68, 13);
             this.emailHeaderLabel.TabIndex = 3;
-            this.emailHeaderLabel.Text = "You are signed in as:";
+            this.emailHeaderLabel.Text = "Signed in as:";
             // 
             // emailLabel
             // 
             this.emailLabel.AutoEllipsis = true;
             this.emailLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.emailLabel.Location = new System.Drawing.Point(66, 35);
+            this.emailLabel.Location = new System.Drawing.Point(67, 25);
             this.emailLabel.Name = "emailLabel";
             this.emailLabel.Size = new System.Drawing.Size(160, 13);
             this.emailLabel.TabIndex = 3;
             this.emailLabel.Text = "foo@example.com";
             // 
+            // manageLink
+            // 
+            this.manageLink.AutoSize = true;
+            this.manageLink.Location = new System.Drawing.Point(66, 51);
+            this.manageLink.Name = "manageLink";
+            this.manageLink.Size = new System.Drawing.Size(111, 13);
+            this.manageLink.TabIndex = 4;
+            this.manageLink.TabStop = true;
+            this.manageLink.Text = "Manage user account";
+            this.manageLink.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.manageLink_LinkClicked);
+            // 
+            // closeButton
+            // 
+            this.closeButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.closeButton.DialogResult = System.Windows.Forms.DialogResult.Cancel;
+            this.closeButton.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
+            this.closeButton.FlatStyle = System.Windows.Forms.FlatStyle.System;
+            this.closeButton.Location = new System.Drawing.Point(227, 2);
+            this.closeButton.Name = "closeButton";
+            this.closeButton.Size = new System.Drawing.Size(24, 24);
+            this.closeButton.TabIndex = 5;
+            this.closeButton.Text = "✖";
+            this.closeButton.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageAboveText;
+            this.closeButton.UseVisualStyleBackColor = true;
+            this.closeButton.Click += new System.EventHandler(this.closeButton_Click);
+            // 
             // UserFlyoutWindow
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(242, 68);
+            this.ClientSize = new System.Drawing.Size(254, 82);
+            this.Controls.Add(this.closeButton);
+            this.Controls.Add(this.manageLink);
             this.Controls.Add(this.emailLabel);
             this.Controls.Add(this.emailHeaderLabel);
             this.Controls.Add(this.userIcon);
             this.Name = "UserFlyoutWindow";
             this.Text = "UserFlyoutWindow";
-            this.Controls.SetChildIndex(this.userIcon, 0);
-            this.Controls.SetChildIndex(this.emailHeaderLabel, 0);
-            this.Controls.SetChildIndex(this.emailLabel, 0);
             ((System.ComponentModel.ISupportInitialize)(this.userIcon)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
@@ -87,5 +114,7 @@
         private System.Windows.Forms.PictureBox userIcon;
         private System.Windows.Forms.Label emailHeaderLabel;
         private System.Windows.Forms.Label emailLabel;
+        private System.Windows.Forms.LinkLabel manageLink;
+        private System.Windows.Forms.Button closeButton;
     }
 }
