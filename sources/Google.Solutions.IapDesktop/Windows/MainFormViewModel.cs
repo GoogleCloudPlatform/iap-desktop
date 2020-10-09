@@ -28,7 +28,6 @@ using Google.Solutions.IapDesktop.Application.Services.Settings;
 using Google.Solutions.IapDesktop.Application.Util;
 using Google.Solutions.IapTunneling.Iap;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -195,17 +194,6 @@ namespace Google.Solutions.IapDesktop.Windows
         public Task RevokeAuthorizationAsync()
         {
             return this.Authorization.RevokeAsync();
-        }
-
-        public void OpenMyAccountPage()
-        {
-            using (Process.Start(new ProcessStartInfo()
-            {
-                UseShellExecute = true,
-                Verb = "open",
-                FileName = "https://myaccount.google.com/security"
-            }))
-            { };
         }
 
         //---------------------------------------------------------------------

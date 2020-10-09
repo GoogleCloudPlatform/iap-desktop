@@ -34,13 +34,13 @@ using System;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Drawing;
-using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using WeifenLuo.WinFormsUI.Docking;
 using Google.Solutions.IapDesktop.Application.Services;
 using Google.Solutions.IapDesktop.Application.Services.Settings;
+using Google.Solutions.IapDesktop.Application.Views.Authentication;
 
 #pragma warning disable IDE1006 // Naming Styles
 
@@ -468,6 +468,19 @@ namespace Google.Solutions.IapDesktop.Windows
         private void cancelBackgroundJobsButton_Click(object sender, EventArgs e)
             => this.viewModel.CancelBackgroundJobs();
 
+        private void toolStripEmailButton_Click(object sender, EventArgs e)
+        {
+            var button = (ToolStripItem)sender;
+            var screenPosition = new Rectangle(
+                this.statusStrip.PointToScreen(button.Bounds.Location),
+                button.Size);
+
+            new UserFlyoutWindow(new UserFlyoutViewModel(this.Authorization)).Show(
+                this,
+                screenPosition,
+                ContentAlignment.TopLeft);
+        }
+
         //---------------------------------------------------------------------
         // IAuthorizationAdapter.
         //---------------------------------------------------------------------
@@ -476,8 +489,5 @@ namespace Google.Solutions.IapDesktop.Windows
 
         public Task ReauthorizeAsync(CancellationToken token)
             => this.viewModel.ReauthorizeAsync(token);
-
-        private void toolStripEmailButton_Click(object sender, EventArgs e)
-            => this.viewModel.OpenMyAccountPage();
     }
 }
