@@ -34,6 +34,10 @@ namespace Google.Solutions.IapDesktop.Application.Views.Authentication
         {
             this.Email = authorization.Email;
 
+            //
+            // Indicate if this is a managed (i.e Cloud Identity/Workspace) 
+            // user account.
+            //
             var hd = authorization?.UserInfo.HostedDomain;
             this.ManagedBy = (hd != null)
                 ? $"(managed by {hd})"

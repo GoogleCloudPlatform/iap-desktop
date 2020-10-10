@@ -81,7 +81,10 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views
 
             public string Email => "test@example.com";
 
-            public UserInfo UserInfo => null;
+            public UserInfo UserInfo => new UserInfo()
+            {
+                Email = "test@example.com"
+            };
 
             public SimpleAuthorization(ICredential credential)
             {
