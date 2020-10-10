@@ -27,11 +27,17 @@ namespace Google.Solutions.IapDesktop.Application.Views.Authentication
 {
     public class UserFlyoutViewModel : ViewModelBase
     {
-        public string Email { get; set; }
+        public string Email { get; }
+        public string ManagedBy { get; }
 
         public UserFlyoutViewModel(IAuthorization authorization)
         {
             this.Email = authorization.Email;
+
+            var hd = authorization?.UserInfo.HostedDomain;
+            this.ManagedBy = (hd != null)
+                ? $"(managed by {hd})"
+                : string.Empty;
         }
 
         //---------------------------------------------------------------------

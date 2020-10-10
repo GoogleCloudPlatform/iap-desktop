@@ -37,6 +37,8 @@ namespace Google.Solutions.Common.Auth
         Task ReauthorizeAsync(CancellationToken token);
 
         string Email { get; }
+
+        UserInfo UserInfo { get; }
     }
 
     public class OAuthAuthorization : IAuthorization
@@ -59,6 +61,7 @@ namespace Google.Solutions.Common.Auth
 
         public ICredential Credential => this.credential;
         public string Email => this.credential.UserInfo.Email;
+        public UserInfo UserInfo => this.credential.UserInfo;
 
         public Task RevokeAsync()
         {

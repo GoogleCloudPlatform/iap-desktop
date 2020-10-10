@@ -55,6 +55,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.Authentication
             this.emailLabel = new System.Windows.Forms.Label();
             this.manageLink = new System.Windows.Forms.LinkLabel();
             this.closeButton = new System.Windows.Forms.Button();
+            this.managedByLabel = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.userIcon)).BeginInit();
             this.SuspendLayout();
             // 
@@ -80,7 +81,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.Authentication
             // 
             this.emailLabel.AutoEllipsis = true;
             this.emailLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.emailLabel.Location = new System.Drawing.Point(67, 25);
+            this.emailLabel.Location = new System.Drawing.Point(67, 26);
             this.emailLabel.Name = "emailLabel";
             this.emailLabel.Size = new System.Drawing.Size(160, 13);
             this.emailLabel.TabIndex = 3;
@@ -89,7 +90,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.Authentication
             // manageLink
             // 
             this.manageLink.AutoSize = true;
-            this.manageLink.Location = new System.Drawing.Point(66, 51);
+            this.manageLink.Location = new System.Drawing.Point(66, 63);
             this.manageLink.Name = "manageLink";
             this.manageLink.Size = new System.Drawing.Size(111, 13);
             this.manageLink.TabIndex = 4;
@@ -112,15 +113,26 @@ namespace Google.Solutions.IapDesktop.Application.Views.Authentication
             this.closeButton.UseVisualStyleBackColor = true;
             this.closeButton.Click += new System.EventHandler(this.closeButton_Click);
             // 
+            // managedByLabel
+            // 
+            this.managedByLabel.AutoEllipsis = true;
+            this.managedByLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.managedByLabel.Location = new System.Drawing.Point(66, 41);
+            this.managedByLabel.Name = "managedByLabel";
+            this.managedByLabel.Size = new System.Drawing.Size(160, 13);
+            this.managedByLabel.TabIndex = 3;
+            this.managedByLabel.Text = " ";
+            // 
             // UserFlyoutWindow
             // 
             this.AcceptButton = this.closeButton;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.closeButton;
-            this.ClientSize = new System.Drawing.Size(254, 82);
+            this.ClientSize = new System.Drawing.Size(254, 90);
             this.Controls.Add(this.closeButton);
             this.Controls.Add(this.manageLink);
+            this.Controls.Add(this.managedByLabel);
             this.Controls.Add(this.emailLabel);
             this.Controls.Add(this.emailHeaderLabel);
             this.Controls.Add(this.userIcon);
@@ -139,5 +151,6 @@ namespace Google.Solutions.IapDesktop.Application.Views.Authentication
         private System.Windows.Forms.Label emailLabel;
         private System.Windows.Forms.LinkLabel manageLink;
         private System.Windows.Forms.Button closeButton;
+        private System.Windows.Forms.Label managedByLabel;
     }
 }

@@ -35,6 +35,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.Authentication
             InitializeComponent();
 
             this.emailLabel.Text = viewModel.Email;
+            this.managedByLabel.Text = viewModel.ManagedBy;
         }
 
         //---------------------------------------------------------------------
