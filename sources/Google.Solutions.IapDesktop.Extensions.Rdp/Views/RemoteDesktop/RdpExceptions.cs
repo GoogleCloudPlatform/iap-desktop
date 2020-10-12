@@ -208,10 +208,11 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Views.RemoteDesktop
         public int DisconnectReason { get; }
 
         public bool IsTimeout =>
-            this.DisconnectReason <= 3 ||
-            this.DisconnectReason <= 264;
+            this.DisconnectReason == 3 ||
+            this.DisconnectReason == 264;
 
         public bool IsIgnorable =>
+            this.DisconnectReason <= 3 ||
             this.DisconnectReason == 263 ||  // Dismissed server auth warning.
             this.DisconnectReason == 7943;   // Dismissed login prompt.
 
