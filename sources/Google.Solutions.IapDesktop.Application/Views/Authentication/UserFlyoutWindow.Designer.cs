@@ -92,10 +92,10 @@ namespace Google.Solutions.IapDesktop.Application.Views.Authentication
             this.manageLink.AutoSize = true;
             this.manageLink.Location = new System.Drawing.Point(66, 63);
             this.manageLink.Name = "manageLink";
-            this.manageLink.Size = new System.Drawing.Size(111, 13);
+            this.manageLink.Size = new System.Drawing.Size(86, 13);
             this.manageLink.TabIndex = 4;
             this.manageLink.TabStop = true;
-            this.manageLink.Text = "Manage user account";
+            this.manageLink.Text = "Account settings";
             this.manageLink.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.manageLink_LinkClicked);
             // 
             // closeButton
