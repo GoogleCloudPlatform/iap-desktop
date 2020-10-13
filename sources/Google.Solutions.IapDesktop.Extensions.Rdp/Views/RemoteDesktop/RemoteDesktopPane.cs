@@ -523,9 +523,14 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Views.RemoteDesktop
 
             using (TraceSources.IapDesktop.TraceMethod().WithParameters(e.Message))
             {
-                if (e.IsTimeout)
+                if (!this.connecting && e.IsTimeout)
                 {
-                    // Connection timed out, this is common for Desktop OSes.
+                    // An already-established connection timed out, this is common when
+                    // connecting to Windows 10 VMs.
+                    //
+                    // NB. The same error code can occur during the initial connection,
+                    // but then it should be treated as an error.
+
                     this.reconnectPanel.Visible = true;
                 }
                 else if (e.IsIgnorable)
