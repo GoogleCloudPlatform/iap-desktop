@@ -22,13 +22,11 @@
 using Microsoft.Win32;
 using Newtonsoft.Json;
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Threading;
 using Google.Solutions.Common.Util;
 using System.Linq;
-using System.Windows.Forms.VisualStyles;
 
 namespace Google.Solutions.IapDesktop.Application.Services.SecureConnect
 {
