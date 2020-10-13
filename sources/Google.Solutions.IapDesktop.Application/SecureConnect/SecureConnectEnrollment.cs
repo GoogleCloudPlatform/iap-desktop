@@ -21,6 +21,7 @@
 
 using Google.Solutions.Common.Diagnostics;
 using Google.Solutions.Common.Util;
+using Google.Solutions.IapDesktop.Application.Services.Adapters;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -28,11 +29,27 @@ using System.Security.Cryptography;
 using System.Security.Cryptography.X509Certificates;
 using System.Threading.Tasks;
 
-namespace Google.Solutions.IapDesktop.Application.Services.SecureConnect
+namespace Google.Solutions.IapDesktop.Application.SecureConnect
 {
-    public class SecureConnectAdapter
+    public class SecureConnectEnrollment : IDeviceEnrollment
     {
         private const string DeviceCertIssuer = "CN=Google Endpoint Verification";
+
+        public DeviceEnrollmentState State { get; private set; }
+        public X509Certificate2 Certificate { get; private set; }
+
+        private SecureConnectEnrollment()
+        {
+            // Initialize to a default state. The real initialization
+            // happens in RefreshAsync().
+
+            this.State = DeviceEnrollmentState.NotInstalled;
+            this.Certificate = null;
+        }
+
+        //---------------------------------------------------------------------
+        // Privates.
+        //---------------------------------------------------------------------
 
         private static string CreateSha256Thumbprint(X509Certificate2 certificate)
         {
@@ -60,15 +77,16 @@ namespace Google.Solutions.IapDesktop.Application.Services.SecureConnect
             }
         }
 
-        public Task<SecureConnectEnrollmentInfo> GetEnrollmentInfoAsync(string userId)
+        public Task RefreshAsync(string userId)
         {
             using (TraceSources.IapDesktop.TraceMethod().WithParameters(userId))
             {
-                return Task.Run<SecureConnectEnrollmentInfo>(() =>
+                return Task.Run(() =>
                 {
                     if (!SecureConnectNativeHelper.IsInstalled)
                     {
-                        return SecureConnectEnrollmentInfo.NotEnrolled;
+                        this.State = DeviceEnrollmentState.NotInstalled;
+                        return;
                     }
 
                     var helper = new SecureConnectNativeHelper();
@@ -92,7 +110,8 @@ namespace Google.Solutions.IapDesktop.Application.Services.SecureConnect
 
                         if (certificate != null)
                         {
-                            return new SecureConnectEnrollmentInfo(true, certificate);
+                            this.State = DeviceEnrollmentState.Enrolled;
+                            this.Certificate = certificate;
                         }
                         else
                         {
@@ -103,7 +122,8 @@ namespace Google.Solutions.IapDesktop.Application.Services.SecureConnect
                             TraceSources.IapDesktop.TraceInformation(
                                 "Device enrolled, but no device certificate provisioned");
 
-                            return SecureConnectEnrollmentInfo.EnrolledWithoutCertificate;
+                            this.State = DeviceEnrollmentState.EnrolledWithoutCertificate;
+                            this.Certificate = null;
                         }
                     }
                     else
@@ -111,30 +131,23 @@ namespace Google.Solutions.IapDesktop.Application.Services.SecureConnect
                         TraceSources.IapDesktop.TraceInformation(
                             "Endpoint Verification installed, but device not enrolled");
 
-                        return SecureConnectEnrollmentInfo.NotEnrolled;
+                        this.State = DeviceEnrollmentState.NotEnrolled;
+                        this.Certificate = null;
                     }
                 });
             }
         }
-    }
 
-    public class SecureConnectEnrollmentInfo
-    {
-        internal static SecureConnectEnrollmentInfo NotEnrolled =
-            new SecureConnectEnrollmentInfo(false, null);
-        internal static SecureConnectEnrollmentInfo EnrolledWithoutCertificate =
-            new SecureConnectEnrollmentInfo(true, null);
+        //---------------------------------------------------------------------
+        // Publics.
+        //---------------------------------------------------------------------
 
-        public bool IsEnrolled { get; }
-
-        public X509Certificate2 DeviceCertificate { get; }
-
-        public SecureConnectEnrollmentInfo(
-            bool isEnrolled,
-            X509Certificate2 deviceCertificate)
+        public static async Task<SecureConnectEnrollment> CreateEnrollmentAsync(string userId)
         {
-            this.IsEnrolled = isEnrolled;
-            this.DeviceCertificate = deviceCertificate;
+            var enrollment = new SecureConnectEnrollment();
+            await enrollment.RefreshAsync(userId)
+                .ConfigureAwait(false);
+            return enrollment;
         }
     }
 }

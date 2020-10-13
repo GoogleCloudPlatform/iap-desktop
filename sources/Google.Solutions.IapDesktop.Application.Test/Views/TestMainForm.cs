@@ -32,6 +32,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using WeifenLuo.WinFormsUI.Docking;
+using System.Security.Cryptography.X509Certificates;
 
 namespace Google.Solutions.IapDesktop.Application.Test.Views
 {
@@ -102,7 +103,16 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views
             }
         }
 
+        private class SimpleDeviceEnrollment : IDeviceEnrollment
+        {
+            public DeviceEnrollmentState State => DeviceEnrollmentState.NotInstalled;
+
+            public X509Certificate2 Certificate => null;
+        }
+
         public IAuthorization Authorization => new SimpleAuthorization(TestProject.GetAdminCredential());
+
+        public IDeviceEnrollment DeviceEnrollment => new SimpleDeviceEnrollment();
 
         public Task ReauthorizeAsync(CancellationToken token)
             => this.Authorization.ReauthorizeAsync(token);

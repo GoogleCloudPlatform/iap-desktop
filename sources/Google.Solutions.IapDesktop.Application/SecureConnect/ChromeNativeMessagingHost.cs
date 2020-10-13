@@ -27,7 +27,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Text;
 
-namespace Google.Solutions.IapDesktop.Application.Services.SecureConnect
+namespace Google.Solutions.IapDesktop.Application.SecureConnect
 {
     /// <summary>
     /// Wrapper to interact with a Chrome native messaging host.
@@ -140,7 +140,9 @@ namespace Google.Solutions.IapDesktop.Application.Services.SecureConnect
                 RedirectStandardError = true,
                 RedirectStandardInput = true,
                 RedirectStandardOutput = true,
-                UseShellExecute = false
+                UseShellExecute = false,
+                WindowStyle = ProcessWindowStyle.Hidden,
+                CreateNoWindow = true
             };
 
             return new ChromeNativeMessagingHost(Process.Start(startupInfo));

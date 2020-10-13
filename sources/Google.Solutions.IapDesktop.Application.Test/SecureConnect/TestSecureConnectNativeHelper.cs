@@ -19,47 +19,42 @@
 // under the License.
 //
 
-using Google.Solutions.IapDesktop.Application.Services.SecureConnect;
+using Google.Solutions.IapDesktop.Application.SecureConnect;
 using NUnit.Framework;
 
-namespace Google.Solutions.IapDesktop.Application.Test.Services.SecureConnect
+namespace Google.Solutions.IapDesktop.Application.Test.SecureConnect
 {
     [TestFixture]
     public class TestSecureConnectNativeHelper
     {
+        [SetUp]
+        public void SetUp()
+        {
+            SecureConnectNativeHelper.Disabled = false;
+        }
+
+        [Test]
+        public void WhenHelperDisabled_ThenPingThrowsSecureConnectException()
+        {
+            SecureConnectNativeHelper.Disabled = true;
+            Assert.Throws<SecureConnectException>(() => new SecureConnectNativeHelper().Ping());
+        }
+
         [Test]
         public void WhenHelperInstalled_ThenPingSucceeds()
         {
-            if (!SecureConnectNativeHelper.IsInstalled)
-            {
-                Assert.Inconclusive("Not installed");
-                return;
-            }
-
             new SecureConnectNativeHelper().Ping();
         }
 
         [Test]
         public void WhenUserIdUnknown_ThenShouldEnrollDeviceReturnsTrue()
         {
-            if (!SecureConnectNativeHelper.IsInstalled)
-            {
-                Assert.Inconclusive("Not installed");
-                return;
-            }
-
             Assert.IsTrue(new SecureConnectNativeHelper().ShouldEnrollDevice("1"));
         }
 
         [Test]
         public void WhenUserIdKnown_ThenShouldEnrollDeviceReturnsFalse()
         {
-            if (!SecureConnectNativeHelper.IsInstalled)
-            {
-                Assert.Inconclusive("Not installed");
-                return;
-            }
-
             // TODO: use enrolled ID
             Assert.IsFalse(new SecureConnectNativeHelper().ShouldEnrollDevice("TODO"));
         }
@@ -67,12 +62,6 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.SecureConnect
         [Test]
         public void WhenDeviceEnrolled_ThenGetDeviceInfoReturnsCerts()
         {
-            if (!SecureConnectNativeHelper.IsInstalled)
-            {
-                Assert.Inconclusive("Not installed");
-                return;
-            }
-
             var info = new SecureConnectNativeHelper().GetDeviceInfo();
 
             Assert.IsNotNull(info.SerialNumber);
