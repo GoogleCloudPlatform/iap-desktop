@@ -77,7 +77,7 @@ namespace Google.Solutions.IapDesktop.Windows
             this.backgroundJobLabel = new System.Windows.Forms.ToolStripStatusLabel();
             this.cancelBackgroundJobsButton = new System.Windows.Forms.ToolStripDropDownButton();
             this.toolStripStatus = new System.Windows.Forms.ToolStripStatusLabel();
-            this.toolStripEmail = new System.Windows.Forms.ToolStripStatusLabel();
+            this.toolStripEmailButton = new System.Windows.Forms.ToolStripDropDownButton();
             this.dockPanel = new WeifenLuo.WinFormsUI.Docking.DockPanel();
             this.mainMenu.SuspendLayout();
             this.statusStrip.SuspendLayout();
@@ -259,7 +259,7 @@ namespace Google.Solutions.IapDesktop.Windows
             this.backgroundJobLabel,
             this.cancelBackgroundJobsButton,
             this.toolStripStatus,
-            this.toolStripEmail});
+            this.toolStripEmailButton});
             this.statusStrip.Location = new System.Drawing.Point(0, 639);
             this.statusStrip.Name = "statusStrip";
             this.statusStrip.Size = new System.Drawing.Size(984, 22);
@@ -286,15 +286,20 @@ namespace Google.Solutions.IapDesktop.Windows
             // toolStripStatus
             // 
             this.toolStripStatus.Name = "toolStripStatus";
-            this.toolStripStatus.Size = new System.Drawing.Size(849, 17);
+            this.toolStripStatus.Size = new System.Drawing.Size(798, 17);
             this.toolStripStatus.Spring = true;
             this.toolStripStatus.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
-            // toolStripEmail
+            // toolStripEmailButton
             // 
-            this.toolStripEmail.Name = "toolStripEmail";
-            this.toolStripEmail.Size = new System.Drawing.Size(84, 17);
-            this.toolStripEmail.Text = "(not signed in)";
+            this.toolStripEmailButton.Image = ((System.Drawing.Image)(resources.GetObject("toolStripEmailButton.Image")));
+            this.toolStripEmailButton.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
+            this.toolStripEmailButton.ImageTransparentColor = System.Drawing.Color.FromArgb(((int)(((byte)(204)))), ((int)(((byte)(204)))), ((int)(((byte)(204)))));
+            this.toolStripEmailButton.Name = "toolStripEmailButton";
+            this.toolStripEmailButton.ShowDropDownArrow = false;
+            this.toolStripEmailButton.Size = new System.Drawing.Size(104, 20);
+            this.toolStripEmailButton.Text = "(not signed in)";
+            this.toolStripEmailButton.Click += new System.EventHandler(this.toolStripEmailButton_Click);
             // 
             // dockPanel
             // 
@@ -354,11 +359,11 @@ namespace Google.Solutions.IapDesktop.Windows
         private System.Windows.Forms.ToolStripMenuItem enableloggingToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem checkForUpdatesOnExitToolStripMenuItem;
         private System.Windows.Forms.ToolStripStatusLabel toolStripStatus;
-        private System.Windows.Forms.ToolStripStatusLabel toolStripEmail;
         private System.Windows.Forms.ToolStripMenuItem enableAppProtocolToolStripMenuItem;
         private System.Windows.Forms.ToolStripDropDownButton cancelBackgroundJobsButton;
         private System.Windows.Forms.ToolStripStatusLabel backgroundJobLabel;
         private System.Windows.Forms.ToolStripMenuItem shareFeedbackToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem viewHelpToolStripMenuItem;
+        private System.Windows.Forms.ToolStripDropDownButton toolStripEmailButton;
     }
 }

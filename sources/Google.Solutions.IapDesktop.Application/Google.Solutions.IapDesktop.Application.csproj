@@ -135,6 +135,13 @@
     <Compile Include="Settings\RegistrySetting.cs" />
     <Compile Include="Settings\SettingBase.cs" />
     <Compile Include="Util\ByteSizeFormatter.cs" />
+    <Compile Include="Views\Authentication\UserFlyoutViewModel.cs" />
+    <Compile Include="Views\Authentication\UserFlyoutWindow.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Views\Authentication\UserFlyoutWindow.Designer.cs">
+      <DependentUpon>UserFlyoutWindow.cs</DependentUpon>
+    </Compile>
     <Compile Include="Views\CloudConsoleService.cs" />
     <Compile Include="Services\Adapters\IAuthorizationAdapter.cs" />
     <Compile Include="Controls\FlatListView.cs">
@@ -159,6 +166,12 @@
     </Compile>
     <Compile Include="Util\HtmlClipboardFormat.cs" />
     <Compile Include="Util\IIapUrlHandler.cs" />
+    <Compile Include="Views\FlyoutWindow.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Views\FlyoutWindow.Designer.cs">
+      <DependentUpon>FlyoutWindow.cs</DependentUpon>
+    </Compile>
     <Compile Include="Views\ProjectExplorer\ProjectExplorerTrackingToolWindow.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -219,6 +232,7 @@
     <Compile Include="Views\ToolWindow.Designer.cs">
       <DependentUpon>ToolWindow.cs</DependentUpon>
     </Compile>
+    <Compile Include="Views\UiColors.cs" />
     <Compile Include="Views\UnsafeNativeMethods.cs" />
     <Compile Include="Views\WaitDialog.cs">
       <SubType>Form</SubType>
@@ -257,6 +271,9 @@
     <EmbeddedResource Include="Views\AboutWindow.resx">
       <DependentUpon>AboutWindow.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Views\Authentication\UserFlyoutWindow.resx">
+      <DependentUpon>UserFlyoutWindow.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Views\Diagnostics\DebugDockingWindow.resx">
       <DependentUpon>DebugDockingWindow.cs</DependentUpon>
     </EmbeddedResource>
@@ -265,6 +282,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Views\Diagnostics\DebugJobServiceWindow.resx">
       <DependentUpon>DebugJobServiceWindow.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Views\FlyoutWindow.resx">
+      <DependentUpon>FlyoutWindow.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Views\Properties\PropertiesWindow.resx">
       <DependentUpon>PropertiesWindow.cs</DependentUpon>

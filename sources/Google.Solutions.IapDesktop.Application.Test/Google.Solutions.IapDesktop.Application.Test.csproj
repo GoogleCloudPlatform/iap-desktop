@@ -121,6 +121,7 @@
     <Compile Include="Services\Integration\TestJobService.cs" />
     <Compile Include="ObjectModel\TestServiceRegistry.cs" />
     <Compile Include="Util\TestIapRdpUrl.cs" />
+    <Compile Include="Views\Authentication\TestUserFlyoutViewModel.cs" />
     <Compile Include="Views\TestMainForm.cs">
       <SubType>Form</SubType>
     </Compile>

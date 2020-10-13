@@ -50,5 +50,14 @@ namespace Google.Solutions.Common.Auth
     {
         [JsonProperty("email")]
         public string Email { get; set; }
+
+        [JsonProperty("name")]
+        public string Name { get; set; }
+
+        [JsonProperty("hd")]
+        public string HostedDomain { get; set; }
+
+        [JsonProperty("sub")]
+        public string Subject { get; set; }
     }
 }
