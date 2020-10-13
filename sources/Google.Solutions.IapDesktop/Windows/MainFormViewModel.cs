@@ -28,6 +28,7 @@ using Google.Solutions.IapDesktop.Application.Services.Settings;
 using Google.Solutions.IapDesktop.Application.Util;
 using Google.Solutions.IapTunneling.Iap;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -131,6 +132,8 @@ namespace Google.Solutions.IapDesktop.Windows
 
         public void Authorize()
         {
+            Debug.Assert(this.Authorization == null);
+
             this.Authorization = AuthorizeDialog.Authorize(
                 (Control)this.View,
                 OAuthClient.Secrets,
@@ -142,6 +145,8 @@ namespace Google.Solutions.IapDesktop.Windows
 
         public async Task ReauthorizeAsync(CancellationToken token)
         {
+            Debug.Assert(this.Authorization != null);
+            
             await this.Authorization.ReauthorizeAsync(token)
                 .ConfigureAwait(true);
 
@@ -150,6 +155,8 @@ namespace Google.Solutions.IapDesktop.Windows
 
         public Task RevokeAuthorizationAsync()
         {
+            Debug.Assert(this.Authorization != null);
+
             return this.Authorization.RevokeAsync();
         }
 
