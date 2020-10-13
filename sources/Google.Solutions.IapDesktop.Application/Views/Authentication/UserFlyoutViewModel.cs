@@ -32,13 +32,13 @@ namespace Google.Solutions.IapDesktop.Application.Views.Authentication
 
         public UserFlyoutViewModel(IAuthorization authorization)
         {
-            this.Email = authorization.Email;
+            this.Email = authorization.Email ?? string.Empty;
 
             //
             // Indicate if this is a managed (i.e Cloud Identity/Workspace) 
             // user account.
             //
-            var hd = authorization?.UserInfo.HostedDomain;
+            var hd = authorization.UserInfo?.HostedDomain;
             this.ManagedBy = (hd != null)
                 ? $"(managed by {hd})"
                 : string.Empty;
