@@ -19,12 +19,12 @@
 // under the License.
 //
 
-using Google.Solutions.IapDesktop.Application.Services.SecureConnect;
+using Google.Solutions.IapDesktop.Application.SecureConnect;
 using Microsoft.Win32;
 using NUnit.Framework;
 using System.IO;
 
-namespace Google.Solutions.IapDesktop.Application.Test.Services.SecureConnect
+namespace Google.Solutions.IapDesktop.Application.Test.SecureConnect
 {
     [TestFixture]
     public class TestChromeNativeMessagingHost

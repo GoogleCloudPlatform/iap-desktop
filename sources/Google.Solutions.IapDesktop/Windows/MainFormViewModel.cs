@@ -22,6 +22,8 @@
 using Google.Solutions.CloudIap;
 using Google.Solutions.Common.Auth;
 using Google.Solutions.IapDesktop.Application.ObjectModel;
+using Google.Solutions.IapDesktop.Application.SecureConnect;
+using Google.Solutions.IapDesktop.Application.Services.Adapters;
 using Google.Solutions.IapDesktop.Application.Services.Integration;
 using Google.Solutions.IapDesktop.Application.Services.Persistence;
 using Google.Solutions.IapDesktop.Application.Services.Settings;
@@ -123,16 +125,17 @@ namespace Google.Solutions.IapDesktop.Windows
             }
         }
 
-
         //---------------------------------------------------------------------
         // Authorization actions.
         //---------------------------------------------------------------------
 
         public IAuthorization Authorization { get; private set; }
+        public SecureConnectEnrollment DeviceEnrollment { get; private set; }
 
         public void Authorize()
         {
             Debug.Assert(this.Authorization == null);
+            Debug.Assert(this.DeviceEnrollment == null);
 
             this.Authorization = AuthorizeDialog.Authorize(
                 (Control)this.View,
@@ -140,14 +143,23 @@ namespace Google.Solutions.IapDesktop.Windows
                 new[] { IapTunnelingEndpoint.RequiredScope },
                 this.authSettings);
 
+            this.DeviceEnrollment = SecureConnectEnrollment.CreateEnrollmentAsync(
+                this.Authorization.UserInfo.Subject).Result;    // Force sync execution.
+
             this.UserEmail = this.Authorization?.Email;
         }
 
         public async Task ReauthorizeAsync(CancellationToken token)
         {
             Debug.Assert(this.Authorization != null);
-            
+            Debug.Assert(this.DeviceEnrollment != null);
+
+            // Reauthorize, this might cause another OAuth code flow.
             await this.Authorization.ReauthorizeAsync(token)
+                .ConfigureAwait(true);
+
+            // Refresh enrollment info as the user might have switched identities.
+            await this.DeviceEnrollment.RefreshAsync(this.Authorization.UserInfo.Subject)
                 .ConfigureAwait(true);
 
             this.UserEmail = this.Authorization.Email;
@@ -156,6 +168,7 @@ namespace Google.Solutions.IapDesktop.Windows
         public Task RevokeAuthorizationAsync()
         {
             Debug.Assert(this.Authorization != null);
+            Debug.Assert(this.DeviceEnrollment != null);
 
             return this.Authorization.RevokeAsync();
         }

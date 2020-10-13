@@ -28,7 +28,7 @@ using System.Threading;
 using Google.Solutions.Common.Util;
 using System.Linq;
 
-namespace Google.Solutions.IapDesktop.Application.Services.SecureConnect
+namespace Google.Solutions.IapDesktop.Application.SecureConnect
 {
     public sealed class SecureConnectNativeHelper
     {
@@ -45,11 +45,18 @@ namespace Google.Solutions.IapDesktop.Application.Services.SecureConnect
 
         private static readonly Version MinimumRequiredComponentVersion = new Version(1, 6);
 
+        internal static bool Disabled = false;
+
         // The command ID is for debugging only, the native helper does not interpret it.
         private int commandId = 1;
 
         private static ChromeNativeMessagingHost StartHost()
         {
+            if (SecureConnectNativeHelper.Disabled)
+            {
+                throw new SecureConnectException("SecureConnect is disabled");
+            }
+
             // 
             // NB. An instance is only suitable to dispatch a single command, 
             // it auto-terminated after that.
@@ -58,6 +65,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.SecureConnect
         }
 
         public static bool IsInstalled => 
+            !SecureConnectNativeHelper.Disabled && 
             ChromeNativeMessagingHost.FindNativeHelperLocation(
                 HostName,
                 HostRegistrationHive) != null;
