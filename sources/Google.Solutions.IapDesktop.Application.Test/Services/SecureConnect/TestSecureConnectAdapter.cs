@@ -21,7 +21,6 @@
 
 using Google.Solutions.IapDesktop.Application.Services.SecureConnect;
 using NUnit.Framework;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace Google.Solutions.IapDesktop.Application.Test.Services.SecureConnect
@@ -30,13 +29,36 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.SecureConnect
     public class TestSecureConnectAdapter
     {
         [Test]
-        public async Task WhenUserIdInvalid_ThenDeviceIsNotEnrolled()
+        public async Task WhenUserIdUnknown_ThenDeviceIsNotEnrolled()
         {
+            if (!SecureConnectNativeHelper.IsInstalled)
+            {
+                Assert.Inconclusive("Not installed");
+                return;
+            }
+
             var adapter = new SecureConnectAdapter();
             var info = await adapter.GetEnrollmentInfoAsync("1");
             Assert.IsNotNull(info);
             Assert.IsFalse(info.IsEnrolled);
             Assert.IsNull(info.DeviceCertificate);
+        }
+
+        [Test]
+        public async Task WhenUserIdKnown_ThenDeviceIsEnrolled()
+        {
+            if (!SecureConnectNativeHelper.IsInstalled)
+            {
+                Assert.Inconclusive("Not installed");
+                return;
+            }
+
+            var adapter = new SecureConnectAdapter();
+            var info = await adapter.GetEnrollmentInfoAsync("1");
+            Assert.IsNotNull(info);
+            Assert.IsTrue(info.IsEnrolled);
+            Assert.IsNotNull(info.DeviceCertificate);
+            Assert.AreEqual("Google Endpoint Verification", info.DeviceCertificate.Subject);
         }
     }
 }

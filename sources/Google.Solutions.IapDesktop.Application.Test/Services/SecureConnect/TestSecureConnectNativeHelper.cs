@@ -21,8 +21,6 @@
 
 using Google.Solutions.IapDesktop.Application.Services.SecureConnect;
 using NUnit.Framework;
-using System;
-using System.Linq;
 
 namespace Google.Solutions.IapDesktop.Application.Test.Services.SecureConnect
 {
@@ -51,6 +49,19 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.SecureConnect
             }
 
             Assert.IsTrue(new SecureConnectNativeHelper().ShouldEnrollDevice("1"));
+        }
+
+        [Test]
+        public void WhenUserIdKnown_ThenShouldEnrollDeviceReturnsFalse()
+        {
+            if (!SecureConnectNativeHelper.IsInstalled)
+            {
+                Assert.Inconclusive("Not installed");
+                return;
+            }
+
+            // TODO: use enrolled ID
+            Assert.IsFalse(new SecureConnectNativeHelper().ShouldEnrollDevice("TODO"));
         }
 
         [Test]
