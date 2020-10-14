@@ -142,11 +142,20 @@ namespace Google.Solutions.IapDesktop.Windows
                 OAuthClient.Secrets,
                 new[] { IapTunnelingEndpoint.RequiredScope },
                 this.authSettings);
+            if (this.Authorization == null)
+            {
+                // Aborted.
+                return;
+            }
 
+            // TODO: Run this asynchronously.
             this.DeviceEnrollment = SecureConnectEnrollment.CreateEnrollmentAsync(
-                this.Authorization.UserInfo.Subject).Result;    // Force sync execution.
+                this.Authorization.UserInfo.Subject).Result;
 
-            this.UserEmail = this.Authorization?.Email;
+            this.UserEmail = this.Authorization.Email;
+
+            Debug.Assert(this.UserEmail!= null);
+            Debug.Assert(this.DeviceEnrollment != null);
         }
 
         public async Task ReauthorizeAsync(CancellationToken token)
