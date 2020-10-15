@@ -97,6 +97,7 @@
     <Compile Include="ObjectModel\TestCommandContainerForContextMenu.cs" />
     <Compile Include="ObjectModel\TestModelCachingViewModelBase.cs" />
     <Compile Include="ObjectModel\TestServiceAttribute.cs" />
+    <Compile Include="Services\Adapters\TestCertificateStoreAdapter.cs" />
     <Compile Include="Services\Adapters\TestComputeEngineAdapter.cs" />
     <Compile Include="Services\Adapters\TestGithubAdapter.cs" />
     <Compile Include="FixtureBase.cs" />
@@ -117,9 +118,9 @@
     <Compile Include="Settings\TestRegistryStringSetting.cs" />
     <Compile Include="Settings\TestSettingsCollectionExtensions.cs" />
     <Compile Include="Util\TestByteSizeFormatter.cs" />
-    <Compile Include="SecureConnect\TestChromeNativeMessagingHost.cs" />
-    <Compile Include="SecureConnect\TestSecureConnectEnrollment.cs" />
-    <Compile Include="SecureConnect\TestSecureConnectNativeHelper.cs" />
+    <Compile Include="Services\SecureConnect\TestChromeNativeMessagingHost.cs" />
+    <Compile Include="Services\SecureConnect\TestSecureConnectEnrollment.cs" />
+    <Compile Include="Services\SecureConnect\TestSecureConnectAdapter.cs" />
     <Compile Include="Util\TestHtmlClipboardFormat.cs" />
     <Compile Include="Util\TestLeastRecentlyUsedCache.cs" />
     <Compile Include="Util\TestRangeObservableCollection.cs" />

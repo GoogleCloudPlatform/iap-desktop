@@ -27,10 +27,24 @@ using System.Diagnostics;
 using System.Threading;
 using Google.Solutions.Common.Util;
 using System.Linq;
+using Google.Solutions.Common.Diagnostics;
 
-namespace Google.Solutions.IapDesktop.Application.SecureConnect
+namespace Google.Solutions.IapDesktop.Application.Services.SecureConnect
 {
-    public sealed class SecureConnectNativeHelper
+    public interface ISecureConnectAdapter
+    {
+        bool IsInstalled { get; }
+        bool IsDeviceEnrolledForUser(string userId);
+        ISecureConnectDeviceInfo DeviceInfo { get; }
+    }
+
+    public interface ISecureConnectDeviceInfo
+    {
+        string SerialNumber { get; }
+        IEnumerable<string> CertificateThumbprints { get; }
+    }
+
+    public sealed class SecureConnectAdapter : ISecureConnectAdapter
     {
         //
         // The native helper is a Chrome native messaging host
@@ -45,30 +59,17 @@ namespace Google.Solutions.IapDesktop.Application.SecureConnect
 
         private static readonly Version MinimumRequiredComponentVersion = new Version(1, 6);
 
-        internal static bool Disabled = false;
-
         // The command ID is for debugging only, the native helper does not interpret it.
         private int commandId = 1;
 
         private static ChromeNativeMessagingHost StartHost()
         {
-            if (SecureConnectNativeHelper.Disabled)
-            {
-                throw new SecureConnectException("SecureConnect is disabled");
-            }
-
             // 
             // NB. An instance is only suitable to dispatch a single command, 
             // it auto-terminated after that.
             //
             return ChromeNativeMessagingHost.Start(HostName, HostRegistrationHive);
         }
-
-        public static bool IsInstalled => 
-            !SecureConnectNativeHelper.Disabled && 
-            ChromeNativeMessagingHost.FindNativeHelperLocation(
-                HostName,
-                HostRegistrationHive) != null;
 
         //---------------------------------------------------------------------
         // Messages.
@@ -84,25 +85,52 @@ namespace Google.Solutions.IapDesktop.Application.SecureConnect
             return response;
         }
 
-        public void Ping()
+        //---------------------------------------------------------------------
+        // ISecureConnectAdapter.
+        //---------------------------------------------------------------------
+
+        public bool IsInstalled
         {
-            using (var host = StartHost())
+            get
             {
-                var request = new PingRequest(Interlocked.Increment(ref this.commandId));
-                var response = TransactMessage<PingRequest, PingResponse>(host, request);
-
-                Debug.Assert(response.CommandId == request.CommandId);
-
-                if (response.Ping.ComponentVersion < MinimumRequiredComponentVersion)
+                if (ChromeNativeMessagingHost.FindNativeHelperLocation(
+                    HostName,
+                    HostRegistrationHive) == null)
                 {
-                    throw new SecureConnectException(
-                        $"Installed version {response.Ping.ComponentVersion} is older " +
-                        $"than required version {MinimumRequiredComponentVersion}");
+                    // Extension not found.
+                    TraceSources.IapDesktop.TraceWarning(
+                        "SecureConnect native messaging host not found");
+
+                    return false;
                 }
+
+                //
+                // Validate installed version.
+                //
+
+                using (var host = StartHost())
+                {
+                    var request = new PingRequest(Interlocked.Increment(ref this.commandId));
+                    var response = TransactMessage<PingRequest, PingResponse>(host, request);
+
+                    Debug.Assert(response.CommandId == request.CommandId);
+
+                    if (response.Ping.ComponentVersion < MinimumRequiredComponentVersion)
+                    {
+                        TraceSources.IapDesktop.TraceWarning(
+                            "Installed version {0} is older than required version {1}",
+                            response.Ping.ComponentVersion,
+                            MinimumRequiredComponentVersion);
+                        return false;
+                    }
+                }
+
+                return true;
             }
         }
+            
 
-        public bool? ShouldEnrollDevice(string userId)
+        public bool IsDeviceEnrolledForUser(string userId)
         {
             using (var host = StartHost())
             {
@@ -110,38 +138,41 @@ namespace Google.Solutions.IapDesktop.Application.SecureConnect
                     Interlocked.Increment(ref this.commandId),
                     userId);
                 var response = TransactMessage<ShouldEnrollDeviceRequest, ShouldEnrollDeviceResponse>(
-                    host, 
+                    host,
                     request);
 
                 Debug.Assert(response.CommandId == request.CommandId);
 
-                return response.ShouldEnrollDevice;
+                return response.ShouldEnrollDevice == false;
             }
         }
 
-        public SecureConnectDeviceInfo GetDeviceInfo()
+        public ISecureConnectDeviceInfo DeviceInfo
         {
-            using (var host = StartHost())
+            get
             {
-                var request = new DeviceInfoRequest(
-                    Interlocked.Increment(ref this.commandId),
-                    new[] { "certificates", "serial_number", "model" });
-                var response = TransactMessage<DeviceInfoRequest, DeviceInfoResponse>(
-                    host, 
-                    request);
+                using (var host = StartHost())
+                {
+                    var request = new DeviceInfoRequest(
+                        Interlocked.Increment(ref this.commandId),
+                        new[] { "certificates", "serial_number", "model" });
+                    var response = TransactMessage<DeviceInfoRequest, DeviceInfoResponse>(
+                        host,
+                        request);
 
-                Debug.Assert(response.CommandId == request.CommandId);
+                    Debug.Assert(response.CommandId == request.CommandId);
 
-                return new SecureConnectDeviceInfo(
-                    response.DeviceInfo.SerialNumber,
-                    response.DeviceInfo.Certificates
-                        .EnsureNotNull()
-                        .Select(cert => cert.Fingerprint));
+                    return new SecureConnectDeviceInfo(
+                        response.DeviceInfo.SerialNumber,
+                        response.DeviceInfo.Certificates
+                            .EnsureNotNull()
+                            .Select(cert => cert.Fingerprint));
+                }
             }
         }
 
         //---------------------------------------------------------------------
-        // Messages.
+        // Message: base classes.
         //---------------------------------------------------------------------
 
         public abstract class RequestBase
@@ -181,7 +212,7 @@ namespace Google.Solutions.IapDesktop.Application.SecureConnect
         }
 
         //---------------------------------------------------------------------
-        // Ping.
+        // Message: Ping.
         //---------------------------------------------------------------------
 
         public class PingRequest : RequestBase
@@ -204,7 +235,7 @@ namespace Google.Solutions.IapDesktop.Application.SecureConnect
         }
 
         //---------------------------------------------------------------------
-        // ShouldEnrollDevice.
+        // Message: ShouldEnrollDevice.
         //---------------------------------------------------------------------
 
         public class ShouldEnrollDeviceRequest : RequestBase
@@ -237,7 +268,7 @@ namespace Google.Solutions.IapDesktop.Application.SecureConnect
         }
 
         //---------------------------------------------------------------------
-        // DeviceInfo.
+        // Message: DeviceInfo.
         //---------------------------------------------------------------------
 
         public class DeviceInfoRequest : RequestBase
@@ -290,20 +321,20 @@ namespace Google.Solutions.IapDesktop.Application.SecureConnect
         }
     }
 
-    public class SecureConnectDeviceInfo
+    public class SecureConnectDeviceInfo : ISecureConnectDeviceInfo
     {
         [JsonProperty("certificates")]
-        public IEnumerable<string> CertificateFingerprints { get; }
+        public IEnumerable<string> CertificateThumbprints { get; }
 
         [JsonProperty("serialNumber")]
         public string SerialNumber { get; }
 
         public SecureConnectDeviceInfo(
             string serialNumber,
-            IEnumerable<string> certificateFingerprints)
+            IEnumerable<string> certificateThumbprints)
         {
             this.SerialNumber = serialNumber;
-            this.CertificateFingerprints = certificateFingerprints;
+            this.CertificateThumbprints = certificateThumbprints;
         }
     }
 
