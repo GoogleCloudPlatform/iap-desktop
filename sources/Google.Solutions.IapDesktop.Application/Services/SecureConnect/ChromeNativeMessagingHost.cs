@@ -27,7 +27,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Text;
 
-namespace Google.Solutions.IapDesktop.Application.SecureConnect
+namespace Google.Solutions.IapDesktop.Application.Services.SecureConnect
 {
     /// <summary>
     /// Wrapper to interact with a Chrome native messaging host.

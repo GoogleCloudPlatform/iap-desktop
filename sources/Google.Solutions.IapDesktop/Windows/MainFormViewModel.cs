@@ -22,10 +22,10 @@
 using Google.Solutions.CloudIap;
 using Google.Solutions.Common.Auth;
 using Google.Solutions.IapDesktop.Application.ObjectModel;
-using Google.Solutions.IapDesktop.Application.SecureConnect;
 using Google.Solutions.IapDesktop.Application.Services.Adapters;
 using Google.Solutions.IapDesktop.Application.Services.Integration;
 using Google.Solutions.IapDesktop.Application.Services.Persistence;
+using Google.Solutions.IapDesktop.Application.Services.SecureConnect;
 using Google.Solutions.IapDesktop.Application.Services.Settings;
 using Google.Solutions.IapDesktop.Application.Util;
 using Google.Solutions.IapTunneling.Iap;
@@ -150,6 +150,8 @@ namespace Google.Solutions.IapDesktop.Windows
 
             // TODO: Run this asynchronously.
             this.DeviceEnrollment = SecureConnectEnrollment.CreateEnrollmentAsync(
+                new SecureConnectAdapter(),
+                new CertificateStoreAdapter(),
                 this.Authorization.UserInfo.Subject).Result;
 
             this.UserEmail = this.Authorization.Email;

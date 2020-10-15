@@ -23,23 +23,30 @@ using Google.Solutions.Common.Diagnostics;
 using Google.Solutions.Common.Util;
 using Google.Solutions.IapDesktop.Application.Services.Adapters;
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Security.Cryptography;
 using System.Security.Cryptography.X509Certificates;
 using System.Threading.Tasks;
 
-namespace Google.Solutions.IapDesktop.Application.SecureConnect
+namespace Google.Solutions.IapDesktop.Application.Services.SecureConnect
 {
     public class SecureConnectEnrollment : IDeviceEnrollment
     {
         private const string DeviceCertIssuer = "CN=Google Endpoint Verification";
 
+        private readonly ISecureConnectAdapter adapter;
+        private readonly ICertificateStoreAdapter certificateStore;
+
         public DeviceEnrollmentState State { get; private set; }
         public X509Certificate2 Certificate { get; private set; }
 
-        private SecureConnectEnrollment()
+        private SecureConnectEnrollment(
+            ISecureConnectAdapter adapter,
+            ICertificateStoreAdapter certificateStore)
         {
+            this.adapter = adapter;
+            this.certificateStore = certificateStore;
+
             // Initialize to a default state. The real initialization
             // happens in RefreshAsync().
 
@@ -51,7 +58,7 @@ namespace Google.Solutions.IapDesktop.Application.SecureConnect
         // Privates.
         //---------------------------------------------------------------------
 
-        private static string CreateSha256Thumbprint(X509Certificate2 certificate)
+        internal static string CreateSha256Thumbprint(X509Certificate2 certificate)
         {
             // NB. X509Certificate2.Thumbprint returns the SHA1, not SHA-256.
             using (var sha256 = new SHA256Managed())
@@ -64,48 +71,28 @@ namespace Google.Solutions.IapDesktop.Application.SecureConnect
             }
         }
 
-        private IEnumerable<X509Certificate2> GetDeviceCertificates()
-        {
-            using (var store = new X509Store(StoreName.My, StoreLocation.CurrentUser))
-            {
-                store.Open(OpenFlags.ReadOnly);
-                // Endpoint verification certificates have Issuer = CN = DeviceCertIssuer.
-                return store.Certificates
-                    .Cast<X509Certificate2>()
-                    .Where(c => c.Issuer == DeviceCertIssuer)
-                    .Where(c => c.Subject == DeviceCertIssuer);
-            }
-        }
-
         public Task RefreshAsync(string userId)
         {
             using (TraceSources.IapDesktop.TraceMethod().WithParameters(userId))
             {
                 return Task.Run(() =>
                 {
-                    if (!SecureConnectNativeHelper.IsInstalled)
+                    if (!this.adapter.IsInstalled)
                     {
                         this.State = DeviceEnrollmentState.NotInstalled;
                         return;
                     }
 
-                    var helper = new SecureConnectNativeHelper();
-
-                    // Ping helper to verify we have the right version installed.
-                    helper.Ping();
-
-                    // Check if this device is enrolled at all.
-                    var shouldEnroll = helper.ShouldEnrollDevice(userId);
-                    if (shouldEnroll == false)
+                    if (this.adapter.IsDeviceEnrolledForUser(userId))
                     {
                         // Get information about certificate.
-                        var fingerprints = helper
-                            .GetDeviceInfo()
-                            .CertificateFingerprints
-                            .ToHashSet();
+                        var deviceInfo = this.adapter.DeviceInfo;
+                        var thumbprints = deviceInfo.CertificateThumbprints.ToHashSet();
 
-                        var certificate = GetDeviceCertificates()
-                            .Where(c => fingerprints.Contains(CreateSha256Thumbprint(c)))
+                        var certificate = this.certificateStore.ListCertitficates(
+                                DeviceCertIssuer,
+                                DeviceCertIssuer)
+                            .Where(c => thumbprints.Contains(CreateSha256Thumbprint(c)))
                             .FirstOrDefault();
 
                         if (certificate != null)
@@ -142,9 +129,12 @@ namespace Google.Solutions.IapDesktop.Application.SecureConnect
         // Publics.
         //---------------------------------------------------------------------
 
-        public static async Task<SecureConnectEnrollment> CreateEnrollmentAsync(string userId)
+        public static async Task<SecureConnectEnrollment> CreateEnrollmentAsync(
+            ISecureConnectAdapter adapter,
+            ICertificateStoreAdapter certificateStore,
+            string userId)
         {
-            var enrollment = new SecureConnectEnrollment();
+            var enrollment = new SecureConnectEnrollment(adapter, certificateStore);
             await enrollment.RefreshAsync(userId)
                 .ConfigureAwait(false);
             return enrollment;
