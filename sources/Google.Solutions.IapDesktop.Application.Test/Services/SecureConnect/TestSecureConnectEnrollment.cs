@@ -41,7 +41,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.SecureConnect
         // then exported as PFX, and base64-encoded:
         //   & certutil.exe -encode .\cert.pfx cert.pfx.txt
         //
-        private const string ExampleCertitficate = @"
+        private const string ExampleCertitficatePfx = @"
             MIIJwAIBAzCCCXwGCSqGSIb3DQEHAaCCCW0EgglpMIIJZTCCBgAGCSqGSIb3DQEH
             AaCCBfEEggXtMIIF6TCCBeUGCyqGSIb3DQEMCgECoIIE/jCCBPowHAYKKoZIhvcN
             AQwBAzAOBAhGyxG118BUAAICB9AEggTYsa/K6uD5Toq8F7bbP+7JGzFdWMSagnwA
@@ -98,7 +98,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.SecureConnect
             ";
         private const string ExampleCertitficateSubject = "CN=Example";
         private readonly X509Certificate2 ExampleCertificate =
-            new X509Certificate2(Convert.FromBase64String(ExampleCertitficate), "example");
+            new X509Certificate2(Convert.FromBase64String(ExampleCertitficatePfx), "example");
 
         [Test]
         public async Task WhenNotInstalled_ThenStateIsNotInstalled()
@@ -115,7 +115,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.SecureConnect
             Assert.AreEqual(DeviceEnrollmentState.NotInstalled, enrollment.State);
             Assert.IsNull(enrollment.Certificate);
 
-            certificateStore.Verify(s => s.ListCertitficates(
+            certificateStore.Verify(s => s.ListUserCertitficates(
                     It.IsAny<string>(),
                     It.IsAny<string>()), 
                 Times.Never);
@@ -139,7 +139,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.SecureConnect
             Assert.AreEqual(DeviceEnrollmentState.NotEnrolled, enrollment.State);
             Assert.IsNull(enrollment.Certificate);
 
-            certificateStore.Verify(s => s.ListCertitficates(
+            certificateStore.Verify(s => s.ListUserCertitficates(
                     It.IsAny<string>(),
                     It.IsAny<string>()),
                 Times.Never);
@@ -149,7 +149,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.SecureConnect
         public async Task WhenUserIdHasDeviceEnrolledButCertificateMissingInStore_ThenStateIsEnrolledWithoutCertificate()
         {
             var certificateStore = new Mock<ICertificateStoreAdapter>();
-            certificateStore.Setup(s => s.ListCertitficates(
+            certificateStore.Setup(s => s.ListUserCertitficates(
                     It.IsAny<string>(),
                     It.IsAny<string>()))
                 .Returns(Enumerable.Empty<X509Certificate2>());
@@ -179,7 +179,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.SecureConnect
         public async Task WhenUserIdHasDeviceEnrolledAndCertificateFoundInStoreButThumbprintMismatches_ThenStateIsEnrolledWithoutCertificate()
         {
             var certificateStore = new Mock<ICertificateStoreAdapter>();
-            certificateStore.Setup(s => s.ListCertitficates(
+            certificateStore.Setup(s => s.ListUserCertitficates(
                     It.IsAny<string>(),
                     It.IsAny<string>()))
                 .Returns(new[] { ExampleCertificate });
@@ -209,7 +209,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.SecureConnect
         public async Task WhenUserIdHasDeviceEnrolledAndCertificateFoundInStore_ThenStateIsEnrolled()
         {
             var certificateStore = new Mock<ICertificateStoreAdapter>();
-            certificateStore.Setup(s => s.ListCertitficates(
+            certificateStore.Setup(s => s.ListUserCertitficates(
                     It.IsAny<string>(),
                     It.IsAny<string>()))
                 .Returns(new[] { ExampleCertificate });
@@ -240,7 +240,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.SecureConnect
         public async Task WhenSwitchingUserIdsFromKnownToUnknown_ThenRefreshUpdatesStateToNotEnrolled()
         {
             var certificateStore = new Mock<ICertificateStoreAdapter>();
-            certificateStore.Setup(s => s.ListCertitficates(
+            certificateStore.Setup(s => s.ListUserCertitficates(
                     It.IsAny<string>(),
                     It.IsAny<string>()))
                 .Returns(new[] { ExampleCertificate });

@@ -28,14 +28,35 @@ namespace Google.Solutions.IapDesktop.Application.Services.Adapters
 {
     public interface ICertificateStoreAdapter
     {
-        IEnumerable<X509Certificate2> ListCertitficates(
+        IEnumerable<X509Certificate2> ListUserCertitficates(
             string issuer,
             string subject);
     }
 
     public class CertificateStoreAdapter : ICertificateStoreAdapter
     {
-        public IEnumerable<X509Certificate2> ListCertitficates(
+        internal void AddUserCertitficate(
+            X509Certificate2 certificate)
+        {
+            using (TraceSources.IapDesktop.TraceMethod().WithoutParameters())
+            using (var store = new X509Store(StoreName.My, StoreLocation.CurrentUser))
+            {
+                store.Open(OpenFlags.ReadWrite);
+                store.Add(certificate);
+            }
+        }
+        internal void RemoveUserCertitficate(
+            X509Certificate2 certificate)
+        {
+            using (TraceSources.IapDesktop.TraceMethod().WithoutParameters())
+            using (var store = new X509Store(StoreName.My, StoreLocation.CurrentUser))
+            {
+                store.Open(OpenFlags.ReadWrite);
+                store.Remove(certificate);
+            }
+        }
+
+        public IEnumerable<X509Certificate2> ListUserCertitficates(
             string issuer,
             string subject)
         {
@@ -43,7 +64,6 @@ namespace Google.Solutions.IapDesktop.Application.Services.Adapters
             using (var store = new X509Store(StoreName.My, StoreLocation.CurrentUser))
             {
                 store.Open(OpenFlags.ReadOnly);
-                // Endpoint verification certificates have Issuer = CN = DeviceCertIssuer.
                 return store.Certificates
                     .Cast<X509Certificate2>()
                     .Where(c => c.Issuer == issuer)

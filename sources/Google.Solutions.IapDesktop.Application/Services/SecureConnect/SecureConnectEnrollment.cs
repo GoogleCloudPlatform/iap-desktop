@@ -82,7 +82,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.SecureConnect
                         "Device certificate thumbprints: {0}", 
                         string.Join(",", thumbprints));
 
-                    var certificate = this.certificateStore.ListCertitficates(
+                    var certificate = this.certificateStore.ListUserCertitficates(
                             DeviceCertIssuer,
                             DeviceCertIssuer)
                         .Where(c => thumbprints.Contains(c.ThumbprintSha256()))
