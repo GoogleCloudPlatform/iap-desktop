@@ -22,9 +22,8 @@
 using Google.Solutions.Common.Diagnostics;
 using Google.Solutions.Common.Util;
 using Google.Solutions.IapDesktop.Application.Services.Adapters;
-using System;
+using Google.Solutions.IapDesktop.Application.Util;
 using System.Linq;
-using System.Security.Cryptography;
 using System.Security.Cryptography.X509Certificates;
 using System.Threading.Tasks;
 
@@ -58,19 +57,6 @@ namespace Google.Solutions.IapDesktop.Application.Services.SecureConnect
         // Privates.
         //---------------------------------------------------------------------
 
-        internal static string CreateSha256Thumbprint(X509Certificate2 certificate)
-        {
-            // NB. X509Certificate2.Thumbprint returns the SHA1, not SHA-256.
-            using (var sha256 = new SHA256Managed())
-            {
-                var hash = sha256.ComputeHash(certificate.GetRawCertData());
-
-                // NB. The native helper uses base 64 without padding, so remove
-                // any trailing '=' is present.
-                return Convert.ToBase64String(hash).Replace("=", string.Empty);
-            }
-        }
-
         public Task RefreshAsync(string userId)
         {
             using (TraceSources.IapDesktop.TraceMethod().WithParameters(userId))
@@ -92,7 +78,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.SecureConnect
                         var certificate = this.certificateStore.ListCertitficates(
                                 DeviceCertIssuer,
                                 DeviceCertIssuer)
-                            .Where(c => thumbprints.Contains(CreateSha256Thumbprint(c)))
+                            .Where(c => thumbprints.Contains(c.ThumbprintSha256()))
                             .FirstOrDefault();
 
                         if (certificate != null)
