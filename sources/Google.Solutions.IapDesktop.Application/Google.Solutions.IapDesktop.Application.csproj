@@ -142,7 +142,14 @@
     <Compile Include="Settings\SettingBase.cs" />
     <Compile Include="Util\ByteSizeFormatter.cs" />
     <Compile Include="Util\X509CertificateExtensions.cs" />
+    <Compile Include="Views\Authentication\DeviceFlyoutViewModel.cs" />
     <Compile Include="Views\Authentication\UserFlyoutViewModel.cs" />
+    <Compile Include="Views\Authentication\DeviceFlyoutWindow.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Views\Authentication\DeviceFlyoutWindow.Designer.cs">
+      <DependentUpon>DeviceFlyoutWindow.cs</DependentUpon>
+    </Compile>
     <Compile Include="Views\Authentication\UserFlyoutWindow.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -303,6 +310,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Views\AboutWindow.resx">
       <DependentUpon>AboutWindow.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Views\Authentication\DeviceFlyoutWindow.resx">
+      <DependentUpon>DeviceFlyoutWindow.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Views\Authentication\UserFlyoutWindow.resx">
       <DependentUpon>UserFlyoutWindow.cs</DependentUpon>

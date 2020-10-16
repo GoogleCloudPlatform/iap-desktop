@@ -76,7 +76,8 @@ namespace Google.Solutions.IapDesktop.Windows
             this.backgroundJobLabel = new System.Windows.Forms.ToolStripStatusLabel();
             this.cancelBackgroundJobsButton = new System.Windows.Forms.ToolStripDropDownButton();
             this.toolStripStatus = new System.Windows.Forms.ToolStripStatusLabel();
-            this.toolStripEmailButton = new System.Windows.Forms.ToolStripDropDownButton();
+            this.toolStripSignInStateButton = new System.Windows.Forms.ToolStripDropDownButton();
+            this.toolStripDeviceStateButton = new System.Windows.Forms.ToolStripDropDownButton();
             this.dockPanel = new WeifenLuo.WinFormsUI.Docking.DockPanel();
             this.mainMenu.SuspendLayout();
             this.statusStrip.SuspendLayout();
@@ -250,7 +251,8 @@ namespace Google.Solutions.IapDesktop.Windows
             this.backgroundJobLabel,
             this.cancelBackgroundJobsButton,
             this.toolStripStatus,
-            this.toolStripEmailButton});
+            this.toolStripSignInStateButton,
+            this.toolStripDeviceStateButton});
             this.statusStrip.Location = new System.Drawing.Point(0, 639);
             this.statusStrip.Name = "statusStrip";
             this.statusStrip.Size = new System.Drawing.Size(984, 22);
@@ -277,20 +279,31 @@ namespace Google.Solutions.IapDesktop.Windows
             // toolStripStatus
             // 
             this.toolStripStatus.Name = "toolStripStatus";
-            this.toolStripStatus.Size = new System.Drawing.Size(829, 17);
+            this.toolStripStatus.Size = new System.Drawing.Size(703, 17);
             this.toolStripStatus.Spring = true;
             this.toolStripStatus.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
-            // toolStripEmailButton
+            // toolStripSignInStateButton
             // 
-            this.toolStripEmailButton.Image = ((System.Drawing.Image)(resources.GetObject("toolStripEmailButton.Image")));
-            this.toolStripEmailButton.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
-            this.toolStripEmailButton.ImageTransparentColor = System.Drawing.Color.FromArgb(((int)(((byte)(204)))), ((int)(((byte)(204)))), ((int)(((byte)(204)))));
-            this.toolStripEmailButton.Name = "toolStripEmailButton";
-            this.toolStripEmailButton.ShowDropDownArrow = false;
-            this.toolStripEmailButton.Size = new System.Drawing.Size(104, 20);
-            this.toolStripEmailButton.Text = "(not signed in)";
-            this.toolStripEmailButton.Click += new System.EventHandler(this.toolStripEmailButton_Click);
+            this.toolStripSignInStateButton.Image = ((System.Drawing.Image)(resources.GetObject("toolStripSignInStateButton.Image")));
+            this.toolStripSignInStateButton.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
+            this.toolStripSignInStateButton.ImageTransparentColor = System.Drawing.Color.FromArgb(((int)(((byte)(204)))), ((int)(((byte)(204)))), ((int)(((byte)(204)))));
+            this.toolStripSignInStateButton.Name = "toolStripSignInStateButton";
+            this.toolStripSignInStateButton.ShowDropDownArrow = false;
+            this.toolStripSignInStateButton.Size = new System.Drawing.Size(104, 20);
+            this.toolStripSignInStateButton.Text = "(not signed in)";
+            this.toolStripSignInStateButton.Click += new System.EventHandler(this.toolStripEmailButton_Click);
+            // 
+            // toolStripDeviceStateButton
+            // 
+            this.toolStripDeviceStateButton.Image = ((System.Drawing.Image)(resources.GetObject("toolStripDeviceStateButton.Image")));
+            this.toolStripDeviceStateButton.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
+            this.toolStripDeviceStateButton.ImageTransparentColor = System.Drawing.Color.FromArgb(((int)(((byte)(204)))), ((int)(((byte)(204)))), ((int)(((byte)(204)))));
+            this.toolStripDeviceStateButton.Name = "toolStripDeviceStateButton";
+            this.toolStripDeviceStateButton.ShowDropDownArrow = false;
+            this.toolStripDeviceStateButton.Size = new System.Drawing.Size(95, 20);
+            this.toolStripDeviceStateButton.Text = "(not verified)";
+            this.toolStripDeviceStateButton.Click += new System.EventHandler(this.toolStripDeviceStateButton_Click);
             // 
             // dockPanel
             // 
@@ -353,7 +366,8 @@ namespace Google.Solutions.IapDesktop.Windows
         private System.Windows.Forms.ToolStripStatusLabel backgroundJobLabel;
         private System.Windows.Forms.ToolStripMenuItem shareFeedbackToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem viewHelpToolStripMenuItem;
-        private System.Windows.Forms.ToolStripDropDownButton toolStripEmailButton;
         private System.Windows.Forms.ToolStripMenuItem optionsToolStripMenuItem;
+        private System.Windows.Forms.ToolStripDropDownButton toolStripSignInStateButton;
+        private System.Windows.Forms.ToolStripDropDownButton toolStripDeviceStateButton;
     }
 }

@@ -42,19 +42,23 @@ namespace Google.Solutions.IapDesktop.Windows
     internal class MainFormViewModel : ViewModelBase
     {
         private readonly AuthSettingsRepository authSettings;
+        private readonly ApplicationSettingsRepository applicationSettings;
 
         // NB. This list is only access from the UI thread, so no locking required.
         private readonly LinkedList<BackgroundJob> backgroundJobs
             = new LinkedList<BackgroundJob>();
 
         private bool isBackgroundJobStatusVisible = false;
-        private string userEmail = null;
+        private string signInState = null;
+        private string deviceState = null;
 
         public MainFormViewModel(
             Control view,
+            ApplicationSettingsRepository applicationSettings,
             AuthSettingsRepository authSettings)
         {
             this.View = view;
+            this.applicationSettings = applicationSettings;
             this.authSettings = authSettings;
         }
 
@@ -95,12 +99,22 @@ namespace Google.Solutions.IapDesktop.Windows
             }
         }
 
-        public string UserEmail
+        public string SignInStateCaption
         {
-            get => this.userEmail;
+            get => this.signInState;
             set
             {
-                this.userEmail = value;
+                this.signInState = value;
+                RaisePropertyChange();
+            }
+        }
+
+        public string DeviceStateCaption
+        {
+            get => this.deviceState;
+            set
+            {
+                this.deviceState = value;
                 RaisePropertyChange();
             }
         }
@@ -169,9 +183,12 @@ namespace Google.Solutions.IapDesktop.Windows
                 this.DeviceEnrollment = new DisabledDeviceEnrollment();
             }
 
-            this.UserEmail = this.Authorization.Email;
+            this.SignInStateCaption = this.Authorization.Email;
+            this.DeviceStateCaption = this.DeviceEnrollment.State == DeviceEnrollmentState.Enrolled
+                ? "Device enrolled"
+                : "Device not enrolled";
 
-            Debug.Assert(this.UserEmail!= null);
+            Debug.Assert(this.SignInStateCaption!= null);
             Debug.Assert(this.DeviceEnrollment != null);
         }
 
@@ -189,7 +206,7 @@ namespace Google.Solutions.IapDesktop.Windows
                 .RefreshAsync(this.Authorization.UserInfo.Subject)
                 .ConfigureAwait(true);
 
-            this.UserEmail = this.Authorization.Email;
+            this.SignInStateCaption = this.Authorization.Email;
         }
 
         public Task RevokeAuthorizationAsync()
