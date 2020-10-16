@@ -134,6 +134,11 @@ namespace Google.Solutions.IapDesktop.Windows
                 this.viewModel,
                 m => m.DeviceStateCaption,
                 this.components);
+            this.toolStripDeviceStateButton.BindProperty(
+                c => c.Visible,
+                this.viewModel,
+                m => m.IsDeviceStateVisible,
+                this.components);
         }
 
         //---------------------------------------------------------------------
