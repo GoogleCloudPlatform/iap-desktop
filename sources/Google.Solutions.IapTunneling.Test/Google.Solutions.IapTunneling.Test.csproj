@@ -93,7 +93,6 @@
     <Compile Include="Iap\InitializeScripts.cs" />
     <Compile Include="Iap\Mocks.cs" />
     <Compile Include="Iap\TestEchoOverIapBase.cs" />
-    <Compile Include="Iap\TestEchoOverIapDirectMtlsTunnel.cs" />
     <Compile Include="Iap\TestEchoOverIapDirectTunnel.cs" />
     <Compile Include="Iap\TestEchoOverIapIndirectTunnel.cs" />
     <Compile Include="Iap\TestHttpOverIapTunnelBase.cs" />
