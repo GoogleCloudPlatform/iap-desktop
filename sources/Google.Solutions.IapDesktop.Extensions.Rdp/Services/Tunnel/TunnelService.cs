@@ -58,14 +58,25 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Services.Tunnel
         {
             using (TraceSources.IapDesktop.TraceMethod().WithParameters(tunnelEndpoint))
             {
+                var clientCertificate = 
+                        (this.authorizationService.DeviceEnrollment != null &&
+                        this.authorizationService.DeviceEnrollment.State == DeviceEnrollmentState.Enrolled)
+                    ? this.authorizationService.DeviceEnrollment.Certificate
+                    : null;
+
+                if (clientCertificate != null)
+                {
+                    TraceSources.IapDesktop.TraceInformation(
+                        "Using client certificate (valid till {0})", clientCertificate.NotAfter);
+                }
+
                 var iapEndpoint = new IapTunnelingEndpoint(
                     this.authorizationService.Authorization.Credential,
                     tunnelEndpoint.Instance,
                     tunnelEndpoint.RemotePort,
                     IapTunnelingEndpoint.DefaultNetworkInterface,
                     Globals.UserAgent,
-                    this.authorizationService.DeviceEnrollment.Certificate);
-
+                    clientCertificate);
 
                 // Start listener to enable clients to connect. Do not await
                 // the listener as we want to continue listeining in the
