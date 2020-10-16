@@ -19,6 +19,7 @@
 // under the License.
 //
 
+using Google.Solutions.Common.Diagnostics;
 using System.Collections.Generic;
 using System.Linq;
 using System.Security.Cryptography.X509Certificates;
@@ -38,6 +39,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.Adapters
             string issuer,
             string subject)
         {
+            using (TraceSources.IapDesktop.TraceMethod().WithParameters(issuer, subject))
             using (var store = new X509Store(StoreName.My, StoreLocation.CurrentUser))
             {
                 store.Open(OpenFlags.ReadOnly);

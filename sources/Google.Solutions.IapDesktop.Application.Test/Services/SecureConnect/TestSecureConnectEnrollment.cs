@@ -105,7 +105,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.SecureConnect
         {
             var certificateStore = new Mock<ICertificateStoreAdapter>();
             var adapter = new Mock<ISecureConnectAdapter>();
-            adapter.SetupGet(a => a.IsInstalled).Returns(false);
+            adapter.Setup(a => a.IsInstalledAsync()).ReturnsAsync(false);
 
             var enrollment = await SecureConnectEnrollment.CreateEnrollmentAsync(
                 adapter.Object,
@@ -126,10 +126,10 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.SecureConnect
         {
             var certificateStore = new Mock<ICertificateStoreAdapter>();
             var adapter = new Mock<ISecureConnectAdapter>();
-            adapter.SetupGet(a => a.IsInstalled).Returns(true);
-            adapter.Setup(a => a.IsDeviceEnrolledForUser(
+            adapter.Setup(a => a.IsInstalledAsync()).ReturnsAsync(true);
+            adapter.Setup(a => a.IsDeviceEnrolledForUserAsync(
                     It.Is<string>(id => id == "111")))
-                .Returns(false);
+                .ReturnsAsync(false);
 
             var enrollment = await SecureConnectEnrollment.CreateEnrollmentAsync(
                 adapter.Object,
@@ -159,12 +159,12 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.SecureConnect
                 .Returns(new[] { "thumb" });
 
             var adapter = new Mock<ISecureConnectAdapter>();
-            adapter.SetupGet(a => a.IsInstalled).Returns(true);
-            adapter.Setup(a => a.IsDeviceEnrolledForUser(
+            adapter.Setup(a => a.IsInstalledAsync()).ReturnsAsync(true);
+            adapter.Setup(a => a.IsDeviceEnrolledForUserAsync(
                     It.Is<string>(id => id == "111")))
-                .Returns(true);
-            adapter.SetupGet(a => a.DeviceInfo)
-                .Returns(deviceInfo.Object);
+                .ReturnsAsync(true);
+            adapter.Setup(a => a.GetDeviceInfoAsync())
+                .ReturnsAsync(deviceInfo.Object);
 
             var enrollment = await SecureConnectEnrollment.CreateEnrollmentAsync(
                 adapter.Object,
@@ -189,12 +189,12 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.SecureConnect
                 .Returns(new[] { "nottherealthumbprint" });
 
             var adapter = new Mock<ISecureConnectAdapter>();
-            adapter.SetupGet(a => a.IsInstalled).Returns(true);
-            adapter.Setup(a => a.IsDeviceEnrolledForUser(
+            adapter.Setup(a => a.IsInstalledAsync()).ReturnsAsync(true);
+            adapter.Setup(a => a.IsDeviceEnrolledForUserAsync(
                     It.Is<string>(id => id == "111")))
-                .Returns(true);
-            adapter.SetupGet(a => a.DeviceInfo)
-                .Returns(deviceInfo.Object);
+                .ReturnsAsync(true);
+            adapter.Setup(a => a.GetDeviceInfoAsync())
+                .ReturnsAsync(deviceInfo.Object);
 
             var enrollment = await SecureConnectEnrollment.CreateEnrollmentAsync(
                 adapter.Object,
@@ -219,12 +219,12 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.SecureConnect
                 .Returns(new[] { ExampleCertificate.ThumbprintSha256() });
 
             var adapter = new Mock<ISecureConnectAdapter>();
-            adapter.SetupGet(a => a.IsInstalled).Returns(true);
-            adapter.Setup(a => a.IsDeviceEnrolledForUser(
+            adapter.Setup(a => a.IsInstalledAsync()).ReturnsAsync(true);
+            adapter.Setup(a => a.IsDeviceEnrolledForUserAsync(
                     It.Is<string>(id => id == "111")))
-                .Returns(true);
-            adapter.SetupGet(a => a.DeviceInfo)
-                .Returns(deviceInfo.Object);
+                .ReturnsAsync(true);
+            adapter.Setup(a => a.GetDeviceInfoAsync())
+                .ReturnsAsync(deviceInfo.Object);
 
             var enrollment = await SecureConnectEnrollment.CreateEnrollmentAsync(
                 adapter.Object,
@@ -250,12 +250,12 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.SecureConnect
                 .Returns(new[] { ExampleCertificate.ThumbprintSha256() });
 
             var adapter = new Mock<ISecureConnectAdapter>();
-            adapter.SetupGet(a => a.IsInstalled).Returns(true);
-            adapter.Setup(a => a.IsDeviceEnrolledForUser(
+            adapter.Setup(a => a.IsInstalledAsync()).ReturnsAsync(true);
+            adapter.Setup(a => a.IsDeviceEnrolledForUserAsync(
                     It.Is<string>(id => id == "111")))
-                .Returns(true);
-            adapter.SetupGet(a => a.DeviceInfo)
-                .Returns(deviceInfo.Object);
+                .ReturnsAsync(true);
+            adapter.Setup(a => a.GetDeviceInfoAsync())
+                .ReturnsAsync(deviceInfo.Object);
 
             var enrollment = await SecureConnectEnrollment.CreateEnrollmentAsync(
                 adapter.Object,
@@ -265,9 +265,9 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.SecureConnect
             Assert.AreEqual(DeviceEnrollmentState.Enrolled, enrollment.State);
             Assert.IsNotNull(enrollment.Certificate);
 
-            adapter.Setup(a => a.IsDeviceEnrolledForUser(
+            adapter.Setup(a => a.IsDeviceEnrolledForUserAsync(
                     It.Is<string>(id => id == "111")))
-                .Returns(false);
+                .ReturnsAsync(false);
 
             await enrollment.RefreshAsync("1");
             Assert.AreEqual(DeviceEnrollmentState.NotEnrolled, enrollment.State);

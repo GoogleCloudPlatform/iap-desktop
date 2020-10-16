@@ -26,12 +26,15 @@ using System;
 using System.Diagnostics;
 using System.IO;
 using System.Text;
+using Google.Solutions.Common.Diagnostics;
 
 namespace Google.Solutions.IapDesktop.Application.Services.SecureConnect
 {
     /// <summary>
     /// Wrapper to interact with a Chrome native messaging host.
     /// See https://developer.chrome.com/apps/nativeMessaging for details.
+    /// 
+    /// All methods can block.
     /// </summary>
     internal class ChromeNativeMessagingHost : IDisposable
     {
@@ -133,6 +136,8 @@ namespace Google.Solutions.IapDesktop.Application.Services.SecureConnect
                 throw new ChromeNativeMessagingHostNotAvailableException(
                     $"Chrome extension '{extensionName}' not found");
             }
+
+            TraceSources.IapDesktop.TraceVerbose("Found native helper at {0}", location);
 
             var startupInfo = new ProcessStartInfo()
             {
