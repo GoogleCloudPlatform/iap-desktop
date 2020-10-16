@@ -67,6 +67,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Views.TunnelsViewer
             this.contextMenuStrip = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.disconnectTunnelToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.theme = new WeifenLuo.WinFormsUI.Docking.VS2015LightTheme();
+            this.protocolHeader = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.toolStrip.SuspendLayout();
             this.contextMenuStrip.SuspendLayout();
             this.SuspendLayout();
@@ -114,7 +115,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Views.TunnelsViewer
             this.transmittedHeader,
             this.receivedHeader,
             this.localPortHeader,
-            this.remotePortHeader});
+            this.remotePortHeader,
+            this.protocolHeader});
             this.tunnelsList.ContextMenuStrip = this.contextMenuStrip;
             this.tunnelsList.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tunnelsList.FullRowSelect = true;
@@ -164,7 +166,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Views.TunnelsViewer
             // remotePortHeader
             // 
             this.remotePortHeader.Text = "Remote port";
-            this.remotePortHeader.Width = 226;
+            this.remotePortHeader.Width = 80;
             // 
             // contextMenuStrip
             // 
@@ -180,6 +182,11 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Views.TunnelsViewer
             this.disconnectTunnelToolStripMenuItem.Size = new System.Drawing.Size(170, 22);
             this.disconnectTunnelToolStripMenuItem.Text = "&Disconnect tunnel";
             this.disconnectTunnelToolStripMenuItem.Click += new System.EventHandler(this.disconnectToolStripButton_Click);
+            // 
+            // protocolHeader
+            // 
+            this.protocolHeader.Text = "Protocol";
+            this.protocolHeader.Width = 146;
             // 
             // TunnelsWindow
             // 
@@ -215,5 +222,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Views.TunnelsViewer
         private System.Windows.Forms.ColumnHeader receivedHeader;
         private System.Windows.Forms.ToolStripButton refreshToolStripButton;
         private System.Windows.Forms.ColumnHeader remotePortHeader;
+        private System.Windows.Forms.ColumnHeader protocolHeader;
     }
 }

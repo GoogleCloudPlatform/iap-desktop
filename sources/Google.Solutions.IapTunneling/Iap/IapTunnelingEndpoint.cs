@@ -58,9 +58,11 @@ namespace Google.Solutions.IapTunneling.Iap
 
         public UserAgent UserAgent { get; }
 
+        public bool IsMutualTlsEnabled => this.clientCertificate != null;
+
         private readonly ICredential credential;
 
-        private X509Certificate2 ClientCertificate { get; }
+        private readonly X509Certificate2 clientCertificate;
 
         private Uri CreateUri(
             string sid,
@@ -87,7 +89,7 @@ namespace Google.Solutions.IapTunneling.Iap
                 urlParams.Select(kvp => kvp.Key + "=" + WebUtility.UrlEncode(kvp.Value)));
 
             return new Uri(
-                (this.ClientCertificate == null ? TlsBaseUri : MtlsBaseUri) +
+                (this.clientCertificate == null ? TlsBaseUri : MtlsBaseUri) +
                 (sid == null ? "connect" : "reconnect") +
                 "?" +
                 queryString);
@@ -106,7 +108,7 @@ namespace Google.Solutions.IapTunneling.Iap
             this.Port = port;
             this.Interface = nic;
             this.UserAgent = userAgent;
-            this.ClientCertificate = clientCertificate;
+            this.clientCertificate = clientCertificate;
         }
 
         public IapTunnelingEndpoint(
@@ -152,9 +154,9 @@ namespace Google.Solutions.IapTunneling.Iap
                 TraceSources.Compute.TraceWarning("Failed to set User-Agent header");
             }
 
-            if (this.ClientCertificate != null)
+            if (this.clientCertificate != null)
             {
-                websocket.Options.ClientCertificates.Add(this.ClientCertificate);
+                websocket.Options.ClientCertificates.Add(this.clientCertificate);
             }
 
             await websocket.ConnectAsync(

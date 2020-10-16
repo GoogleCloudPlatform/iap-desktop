@@ -23,11 +23,13 @@ using Google.Solutions.IapDesktop.Application.ObjectModel;
 using Google.Solutions.IapDesktop.Application.Services.Adapters;
 using System.Diagnostics;
 using System.Security.Cryptography.X509Certificates;
+using System.Windows.Forms;
 
 namespace Google.Solutions.IapDesktop.Application.Views.Authentication
 {
     public class DeviceFlyoutViewModel : ViewModelBase
     {
+        private const string ProductName = "Secure Connect Endpoint Verification";
         private readonly IDeviceEnrollment enrollment;
 
         public bool IsDeviceEnrolledIconVisible { get; }
@@ -36,14 +38,18 @@ namespace Google.Solutions.IapDesktop.Application.Views.Authentication
         public string DetailsLinkCaption { get; }
         public bool IsDetailsLinkVisible { get; }
 
-        public DeviceFlyoutViewModel(IDeviceEnrollment enrollment)
+        public DeviceFlyoutViewModel(
+            IWin32Window window,
+            IDeviceEnrollment enrollment)
         {
+            this.View = window;
             this.enrollment = enrollment;
 
             switch (enrollment.State)
             {
                 case DeviceEnrollmentState.NotInstalled:
-                    this.EnrollmentStateDescription = "Endpoint verification not installed";
+                    this.EnrollmentStateDescription =
+                        $"{ProductName} is not available on this computer";
                     this.IsDeviceEnrolledIconVisible = false;
                     this.IsDeviceNotEnrolledIconVisible = true;
                     this.IsDetailsLinkVisible = true;
@@ -51,15 +57,17 @@ namespace Google.Solutions.IapDesktop.Application.Views.Authentication
                     break;
 
                 case DeviceEnrollmentState.NotEnrolled:
-                    this.EnrollmentStateDescription = "Not enrolled in endpoint verification";
+                    this.EnrollmentStateDescription = 
+                        $"This computer is currently not enrolled in {ProductName}";
                     this.IsDeviceEnrolledIconVisible = false;
                     this.IsDeviceNotEnrolledIconVisible = true;
-                    this.IsDetailsLinkVisible = false;
-                    this.DetailsLinkCaption = string.Empty;
+                    this.IsDetailsLinkVisible = true;
+                    this.DetailsLinkCaption = "More information";
                     break;
 
                 case DeviceEnrollmentState.EnrolledWithoutCertificate:
-                    this.EnrollmentStateDescription = "Device certificate missing";
+                    this.EnrollmentStateDescription = 
+                        $"This computer is enrolled in {ProductName}, but lacks a device certificate";
                     this.IsDeviceEnrolledIconVisible = false;
                     this.IsDeviceNotEnrolledIconVisible = true;
                     this.IsDetailsLinkVisible = false;
@@ -67,7 +75,8 @@ namespace Google.Solutions.IapDesktop.Application.Views.Authentication
                     break;
 
                 case DeviceEnrollmentState.Enrolled:
-                    this.EnrollmentStateDescription = "Enrolled in endpoint verification";
+                    this.EnrollmentStateDescription = 
+                        $"This computer is enrolled in {ProductName}";
                     this.IsDeviceEnrolledIconVisible = true;
                     this.IsDeviceNotEnrolledIconVisible = false;
                     this.IsDetailsLinkVisible = true;
@@ -86,7 +95,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.Authentication
             {
                 UseShellExecute = true,
                 Verb = "open",
-                FileName = "https://support.google.com/a/answer/9007320#install-helper"
+                FileName = "https://cloud.google.com/endpoint-verification/docs/overview"
             }))
             { };
 
@@ -94,19 +103,21 @@ namespace Google.Solutions.IapDesktop.Application.Views.Authentication
 
         private void OpenDeviceCertificate()
         {
-            X509Certificate2UI.DisplayCertificate(this.enrollment.Certificate);
+            X509Certificate2UI.DisplayCertificate(
+                this.enrollment.Certificate, 
+                this.View.Handle);
         }
 
         public void OpenDetails()
         {
             switch (this.enrollment.State)
             {
-                case DeviceEnrollmentState.NotInstalled:
-                    OpenEndpointVerificationHelp();
-                    break;
-
                 case DeviceEnrollmentState.Enrolled:
                     OpenDeviceCertificate();
+                    break;
+
+                default:
+                    OpenEndpointVerificationHelp();
                     break;
             }
         }

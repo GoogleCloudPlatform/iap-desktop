@@ -184,9 +184,7 @@ namespace Google.Solutions.IapDesktop.Windows
             }
 
             this.SignInStateCaption = this.Authorization.Email;
-            this.DeviceStateCaption = this.DeviceEnrollment.State == DeviceEnrollmentState.Enrolled
-                ? "Device enrolled"
-                : "Device not enrolled";
+            this.DeviceStateCaption = "Secure Connect";
 
             Debug.Assert(this.SignInStateCaption!= null);
             Debug.Assert(this.DeviceEnrollment != null);
