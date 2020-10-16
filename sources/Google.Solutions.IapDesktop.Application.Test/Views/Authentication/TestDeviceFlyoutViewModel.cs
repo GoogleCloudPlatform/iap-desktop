@@ -24,6 +24,7 @@ using Google.Solutions.IapDesktop.Application.Services.Adapters;
 using Google.Solutions.IapDesktop.Application.Views.Authentication;
 using Moq;
 using NUnit.Framework;
+using System.Windows.Forms;
 
 namespace Google.Solutions.IapDesktop.Application.Test.Views.Authentication
 {
@@ -36,7 +37,9 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views.Authentication
             var enrollment = new Mock<IDeviceEnrollment>();
             enrollment.SetupGet(e => e.State).Returns(DeviceEnrollmentState.NotInstalled);
 
-            var viewModel = new DeviceFlyoutViewModel(enrollment.Object);
+            var viewModel = new DeviceFlyoutViewModel(
+                new Mock<IWin32Window>().Object,
+                enrollment.Object);
 
             Assert.IsNotEmpty(viewModel.EnrollmentStateDescription);
             Assert.IsFalse(viewModel.IsDeviceEnrolledIconVisible);
@@ -51,13 +54,15 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views.Authentication
             var enrollment = new Mock<IDeviceEnrollment>();
             enrollment.SetupGet(e => e.State).Returns(DeviceEnrollmentState.NotEnrolled);
 
-            var viewModel = new DeviceFlyoutViewModel(enrollment.Object);
+            var viewModel = new DeviceFlyoutViewModel(
+                new Mock<IWin32Window>().Object,
+                enrollment.Object);
 
             Assert.IsNotEmpty(viewModel.EnrollmentStateDescription);
             Assert.IsFalse(viewModel.IsDeviceEnrolledIconVisible);
             Assert.IsTrue(viewModel.IsDeviceNotEnrolledIconVisible);
-            Assert.IsFalse(viewModel.IsDetailsLinkVisible);
-            Assert.IsEmpty(viewModel.DetailsLinkCaption);
+            Assert.IsTrue(viewModel.IsDetailsLinkVisible);
+            Assert.IsNotEmpty(viewModel.DetailsLinkCaption);
         }
 
         [Test]
@@ -66,7 +71,9 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views.Authentication
             var enrollment = new Mock<IDeviceEnrollment>();
             enrollment.SetupGet(e => e.State).Returns(DeviceEnrollmentState.EnrolledWithoutCertificate);
 
-            var viewModel = new DeviceFlyoutViewModel(enrollment.Object);
+            var viewModel = new DeviceFlyoutViewModel(
+                new Mock<IWin32Window>().Object,
+                enrollment.Object);
 
             Assert.IsNotEmpty(viewModel.EnrollmentStateDescription);
             Assert.IsFalse(viewModel.IsDeviceEnrolledIconVisible);
@@ -81,7 +88,9 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views.Authentication
             var enrollment = new Mock<IDeviceEnrollment>();
             enrollment.SetupGet(e => e.State).Returns(DeviceEnrollmentState.Enrolled);
 
-            var viewModel = new DeviceFlyoutViewModel(enrollment.Object);
+            var viewModel = new DeviceFlyoutViewModel(
+                new Mock<IWin32Window>().Object,
+                enrollment.Object);
 
             Assert.IsNotEmpty(viewModel.EnrollmentStateDescription);
             Assert.IsTrue(viewModel.IsDeviceEnrolledIconVisible);
@@ -89,6 +98,5 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views.Authentication
             Assert.IsTrue(viewModel.IsDetailsLinkVisible);
             Assert.IsNotEmpty(viewModel.DetailsLinkCaption);
         }
-
     }
 }

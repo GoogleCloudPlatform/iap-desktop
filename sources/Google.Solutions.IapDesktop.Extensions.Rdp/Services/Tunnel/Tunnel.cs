@@ -31,6 +31,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Services.Tunnel
     {
         TunnelDestination Destination { get; }
         int LocalPort { get; }
+        bool IsMutualTlsEnabled { get; }
 
         ulong BytesReceived { get; }
         ulong BytesTransmitted { get; }
@@ -48,6 +49,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Services.Tunnel
             this.Endpoint.VmInstance, this.Endpoint.Port);
 
         public virtual int LocalPort => listener.LocalPort;
+
+        public bool IsMutualTlsEnabled => this.Endpoint.IsMutualTlsEnabled;
+
 
         public IapTunnelingEndpoint Endpoint { get; }
 

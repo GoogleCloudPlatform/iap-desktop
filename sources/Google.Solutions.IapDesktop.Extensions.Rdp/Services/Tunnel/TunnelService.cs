@@ -63,7 +63,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Services.Tunnel
                     tunnelEndpoint.Instance,
                     tunnelEndpoint.RemotePort,
                     IapTunnelingEndpoint.DefaultNetworkInterface,
-                    Globals.UserAgent);
+                    Globals.UserAgent,
+                    this.authorizationService.DeviceEnrollment.Certificate);
 
 
                 // Start listener to enable clients to connect. Do not await

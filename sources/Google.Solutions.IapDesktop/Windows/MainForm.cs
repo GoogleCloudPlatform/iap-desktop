@@ -529,7 +529,7 @@ namespace Google.Solutions.IapDesktop.Windows
                 this.statusStrip.PointToScreen(button.Bounds.Location),
                 button.Size);
 
-            new DeviceFlyoutWindow(new DeviceFlyoutViewModel(this.DeviceEnrollment)).Show(
+            new DeviceFlyoutWindow(new DeviceFlyoutViewModel(this, this.DeviceEnrollment)).Show(
                 this,
                 screenPosition,
                 ContentAlignment.TopLeft);

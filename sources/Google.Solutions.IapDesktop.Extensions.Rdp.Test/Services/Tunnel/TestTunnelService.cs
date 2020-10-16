@@ -66,6 +66,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Test.Services.Tunnel
                 new SameProcessRelayPolicy());
 
             Assert.AreEqual(destination, tunnel.Destination);
+            Assert.IsFalse(tunnel.IsMutualTlsEnabled);
+
             await tunnel.Probe(TimeSpan.FromSeconds(20));
             tunnel.Close();
         }
@@ -119,7 +121,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Test.Services.Tunnel
         }
 
         [Test]
-        public async Task WhenInstanceAvailableButRelayPolicyFails_ThenXxxx(
+        public async Task WhenInstanceAvailableButRelayPolicyFails_ThenProbeThrowsUnauthorizedException(
             [WindowsInstance] ResourceTask<InstanceLocator> testInstance,
             [Credential(Role = PredefinedRole.ComputeViewer)] ResourceTask<ICredential> credential)
         {
