@@ -180,6 +180,7 @@ namespace Google.Solutions.IapDesktop.Windows
             {
                 try
                 {
+                    // NB. If the user cancels, no exception is thrown.
                     this.viewModel.Authorize();
                 }
                 catch (Exception e)
@@ -220,7 +221,7 @@ namespace Google.Solutions.IapDesktop.Windows
                     { }
                 }
 
-                if (this.viewModel.Authorization == null)
+                if (!this.viewModel.IsAuthorized)
                 {
                     // Not authorized, either because the user cancelled or an 
                     // error occured -> close.

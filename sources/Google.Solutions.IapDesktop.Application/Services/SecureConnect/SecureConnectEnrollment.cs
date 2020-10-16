@@ -124,7 +124,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.SecureConnect
         // Publics.
         //---------------------------------------------------------------------
 
-        public static async Task<SecureConnectEnrollment> CreateEnrollmentAsync(
+        public static async Task<SecureConnectEnrollment> GetEnrollmentAsync(
             ISecureConnectAdapter adapter,
             ICertificateStoreAdapter certificateStore,
             string userId)
