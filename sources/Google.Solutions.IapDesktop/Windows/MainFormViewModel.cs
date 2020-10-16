@@ -51,6 +51,7 @@ namespace Google.Solutions.IapDesktop.Windows
         private bool isBackgroundJobStatusVisible = false;
         private string signInState = null;
         private string deviceState = null;
+        private bool isDeviceStateVisible = false;
 
         public MainFormViewModel(
             Control view,
@@ -119,6 +120,16 @@ namespace Google.Solutions.IapDesktop.Windows
             }
         }
 
+        public bool IsDeviceStateVisible
+        {
+            get => this.isDeviceStateVisible;
+            set
+            {
+                this.isDeviceStateVisible = value;
+                RaisePropertyChange();
+            }
+        }
+
         //---------------------------------------------------------------------
         // Background job actions.
         //---------------------------------------------------------------------
@@ -170,7 +181,11 @@ namespace Google.Solutions.IapDesktop.Windows
             //
             // Determine enrollment state of this device.
             //
-            if (this.applicationSettings.GetSettings().IsDeviceCertificateAuthenticationEnabled.BoolValue)
+            var isDeviceCertificateAuthenticationEnabled = this.applicationSettings
+                .GetSettings()
+                .IsDeviceCertificateAuthenticationEnabled;
+
+            if (isDeviceCertificateAuthenticationEnabled.BoolValue)
             {
                 // TODO: Run this asynchronously.
                 this.DeviceEnrollment = SecureConnectEnrollment.GetEnrollmentAsync(
@@ -185,6 +200,7 @@ namespace Google.Solutions.IapDesktop.Windows
 
             this.SignInStateCaption = this.Authorization.Email;
             this.DeviceStateCaption = "Secure Connect";
+            this.IsDeviceStateVisible = isDeviceCertificateAuthenticationEnabled.BoolValue;
 
             Debug.Assert(this.SignInStateCaption!= null);
             Debug.Assert(this.DeviceEnrollment != null);

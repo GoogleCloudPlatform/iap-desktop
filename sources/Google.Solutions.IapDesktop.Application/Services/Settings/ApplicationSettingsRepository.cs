@@ -162,7 +162,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.Settings
                     "IsDeviceCertificateAuthenticationEnabled",
                     null,
                     null,
-                    true,
+                    false,
                     registryKey),
             };
         }
