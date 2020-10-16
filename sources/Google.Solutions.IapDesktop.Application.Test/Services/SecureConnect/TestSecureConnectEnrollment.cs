@@ -107,7 +107,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.SecureConnect
             var adapter = new Mock<ISecureConnectAdapter>();
             adapter.Setup(a => a.IsInstalledAsync()).ReturnsAsync(false);
 
-            var enrollment = await SecureConnectEnrollment.CreateEnrollmentAsync(
+            var enrollment = await SecureConnectEnrollment.GetEnrollmentAsync(
                 adapter.Object,
                 certificateStore.Object,
                 "111");
@@ -131,7 +131,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.SecureConnect
                     It.Is<string>(id => id == "111")))
                 .ReturnsAsync(false);
 
-            var enrollment = await SecureConnectEnrollment.CreateEnrollmentAsync(
+            var enrollment = await SecureConnectEnrollment.GetEnrollmentAsync(
                 adapter.Object,
                 certificateStore.Object,
                 "111");
@@ -166,7 +166,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.SecureConnect
             adapter.Setup(a => a.GetDeviceInfoAsync())
                 .ReturnsAsync(deviceInfo.Object);
 
-            var enrollment = await SecureConnectEnrollment.CreateEnrollmentAsync(
+            var enrollment = await SecureConnectEnrollment.GetEnrollmentAsync(
                 adapter.Object,
                 certificateStore.Object,
                 "111");
@@ -196,7 +196,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.SecureConnect
             adapter.Setup(a => a.GetDeviceInfoAsync())
                 .ReturnsAsync(deviceInfo.Object);
 
-            var enrollment = await SecureConnectEnrollment.CreateEnrollmentAsync(
+            var enrollment = await SecureConnectEnrollment.GetEnrollmentAsync(
                 adapter.Object,
                 certificateStore.Object,
                 "111");
@@ -226,7 +226,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.SecureConnect
             adapter.Setup(a => a.GetDeviceInfoAsync())
                 .ReturnsAsync(deviceInfo.Object);
 
-            var enrollment = await SecureConnectEnrollment.CreateEnrollmentAsync(
+            var enrollment = await SecureConnectEnrollment.GetEnrollmentAsync(
                 adapter.Object,
                 certificateStore.Object,
                 "111");
@@ -257,7 +257,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.SecureConnect
             adapter.Setup(a => a.GetDeviceInfoAsync())
                 .ReturnsAsync(deviceInfo.Object);
 
-            var enrollment = await SecureConnectEnrollment.CreateEnrollmentAsync(
+            var enrollment = await SecureConnectEnrollment.GetEnrollmentAsync(
                 adapter.Object,
                 certificateStore.Object,
                 "111");

@@ -20,7 +20,12 @@
 //
 
 using Google.Solutions.IapDesktop.Application.Services.SecureConnect;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using NUnit.Framework;
+using System;
+using System.IO;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace Google.Solutions.IapDesktop.Application.Test.Services.SecureConnect
@@ -29,7 +34,22 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.SecureConnect
     [Category("DCA")]
     public class TestSecureConnectNativeHelper : FixtureBase
     {
-        private string userIdWithEnrolledDevice = "";
+        public string GetUserIdForEnrolledDevice()
+        {
+            // A nasty way to obtain the user ID associated with the current device.
+            var accountsJsonPath = Path.Combine(
+                Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
+                "Google",
+                "Endpoint Verification",
+                "accounts.json");
+
+            using (var reader = new JsonTextReader(File.OpenText(accountsJsonPath)))
+            {
+                var firstProperty = JToken.ReadFrom(reader).Children().FirstOrDefault() as JProperty;
+                return firstProperty?.Name;
+            }
+        }
+
 
         [Test]
         public async Task WhenHelperInstalled_ThenIsInstalledReturnsTrue()
@@ -44,15 +64,16 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.SecureConnect
         {
             var adapter = new SecureConnectAdapter();
 
-            Assert.IsFalse(await adapter.IsDeviceEnrolledForUserAsync("111"));
+            Assert.IsFalse(await adapter.IsDeviceEnrolledForUserAsync("unknown"));
         }
 
         [Test]
         public async Task WhenUserIdHasDeviceEnrolled_ThenIsDeviceEnrolledForUserReturnsTrue()
         {
             var adapter = new SecureConnectAdapter();
+            var userId = GetUserIdForEnrolledDevice();
 
-            Assert.IsTrue(await adapter.IsDeviceEnrolledForUserAsync(userIdWithEnrolledDevice));
+            Assert.IsTrue(await adapter.IsDeviceEnrolledForUserAsync(userId));
         }
 
         [Test]

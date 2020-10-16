@@ -130,13 +130,17 @@ namespace Google.Solutions.IapDesktop.Windows
         //---------------------------------------------------------------------
 
         public IAuthorization Authorization { get; private set; }
-        public SecureConnectEnrollment DeviceEnrollment { get; private set; }
+        public IDeviceEnrollment DeviceEnrollment { get; private set; }
 
         public void Authorize()
         {
             Debug.Assert(this.Authorization == null);
             Debug.Assert(this.DeviceEnrollment == null);
 
+            //
+            // Get the user authorization, either by using stored
+            // credentials or by initiating an OAuth authorization flow.
+            //
             this.Authorization = AuthorizeDialog.Authorize(
                 (Control)this.View,
                 OAuthClient.Secrets,
@@ -148,8 +152,11 @@ namespace Google.Solutions.IapDesktop.Windows
                 return;
             }
 
+            //
+            // Determine enrollment state of this device.
+            //
             // TODO: Run this asynchronously.
-            this.DeviceEnrollment = SecureConnectEnrollment.CreateEnrollmentAsync(
+            this.DeviceEnrollment = SecureConnectEnrollment.GetEnrollmentAsync(
                 new SecureConnectAdapter(),
                 new CertificateStoreAdapter(),
                 this.Authorization.UserInfo.Subject).Result;
@@ -170,7 +177,8 @@ namespace Google.Solutions.IapDesktop.Windows
                 .ConfigureAwait(true);
 
             // Refresh enrollment info as the user might have switched identities.
-            await this.DeviceEnrollment.RefreshAsync(this.Authorization.UserInfo.Subject)
+            await ((SecureConnectEnrollment)this.DeviceEnrollment)
+                .RefreshAsync(this.Authorization.UserInfo.Subject)
                 .ConfigureAwait(true);
 
             this.UserEmail = this.Authorization.Email;
@@ -183,6 +191,10 @@ namespace Google.Solutions.IapDesktop.Windows
 
             return this.Authorization.RevokeAsync();
         }
+
+        public bool IsAuthorized =>
+            this.Authorization != null &&
+            this.DeviceEnrollment != null;
 
         //---------------------------------------------------------------------
         // Helper classes.
