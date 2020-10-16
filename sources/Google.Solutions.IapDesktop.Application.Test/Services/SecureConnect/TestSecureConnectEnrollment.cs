@@ -21,6 +21,7 @@
 
 using Google.Solutions.IapDesktop.Application.Services.Adapters;
 using Google.Solutions.IapDesktop.Application.Services.SecureConnect;
+using Google.Solutions.IapDesktop.Application.Util;
 using Moq;
 using NUnit.Framework;
 using System;
@@ -215,7 +216,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.SecureConnect
 
             var deviceInfo = new Mock<ISecureConnectDeviceInfo>();
             deviceInfo.SetupGet(i => i.CertificateThumbprints)
-                .Returns(new[] { SecureConnectEnrollment.CreateSha256Thumbprint(ExampleCertificate) });
+                .Returns(new[] { ExampleCertificate.ThumbprintSha256() });
 
             var adapter = new Mock<ISecureConnectAdapter>();
             adapter.SetupGet(a => a.IsInstalled).Returns(true);
@@ -246,7 +247,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.SecureConnect
 
             var deviceInfo = new Mock<ISecureConnectDeviceInfo>();
             deviceInfo.SetupGet(i => i.CertificateThumbprints)
-                .Returns(new[] { SecureConnectEnrollment.CreateSha256Thumbprint(ExampleCertificate) });
+                .Returns(new[] { ExampleCertificate.ThumbprintSha256() });
 
             var adapter = new Mock<ISecureConnectAdapter>();
             adapter.SetupGet(a => a.IsInstalled).Returns(true);
