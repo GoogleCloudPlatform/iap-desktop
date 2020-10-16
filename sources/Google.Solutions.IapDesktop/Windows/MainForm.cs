@@ -105,6 +105,7 @@ namespace Google.Solutions.IapDesktop.Windows
 
             this.viewModel = new MainFormViewModel(
                 this,
+                bootstrappingServiceProvider.GetService<ApplicationSettingsRepository>(),
                 bootstrappingServiceProvider.GetService<AuthSettingsRepository>());
 
             // Status bar.
@@ -123,10 +124,15 @@ namespace Google.Solutions.IapDesktop.Windows
                 this.viewModel,
                 m => m.BackgroundJobStatus,
                 this.components);
-            this.toolStripEmailButton.BindProperty(
+            this.toolStripSignInStateButton.BindProperty(
                 c => c.Text,
                 this.viewModel,
-                m => m.UserEmail,
+                m => m.SignInStateCaption,
+                this.components);
+            this.toolStripDeviceStateButton.BindProperty(
+                c => c.Text,
+                this.viewModel,
+                m => m.DeviceStateCaption,
                 this.components);
         }
 
@@ -514,6 +520,19 @@ namespace Google.Solutions.IapDesktop.Windows
                     this,
                     screenPosition,
                     ContentAlignment.TopLeft);
+        }
+
+        private void toolStripDeviceStateButton_Click(object sender, EventArgs e)
+        {
+            var button = (ToolStripItem)sender;
+            var screenPosition = new Rectangle(
+                this.statusStrip.PointToScreen(button.Bounds.Location),
+                button.Size);
+
+            new DeviceFlyoutWindow(new DeviceFlyoutViewModel(this.DeviceEnrollment)).Show(
+                this,
+                screenPosition,
+                ContentAlignment.TopLeft);
         }
 
         //---------------------------------------------------------------------
