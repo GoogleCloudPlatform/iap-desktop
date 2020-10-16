@@ -38,6 +38,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.Adapters
     {
         DeviceEnrollmentState State { get; }
         X509Certificate2 Certificate { get; }
+        Task RefreshAsync(string userId);
     }
 
     public enum DeviceEnrollmentState

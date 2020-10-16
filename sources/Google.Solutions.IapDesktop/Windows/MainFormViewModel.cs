@@ -32,6 +32,7 @@ using Google.Solutions.IapTunneling.Iap;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Security.Cryptography.X509Certificates;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -155,11 +156,18 @@ namespace Google.Solutions.IapDesktop.Windows
             //
             // Determine enrollment state of this device.
             //
-            // TODO: Run this asynchronously.
-            this.DeviceEnrollment = SecureConnectEnrollment.GetEnrollmentAsync(
-                new SecureConnectAdapter(),
-                new CertificateStoreAdapter(),
-                this.Authorization.UserInfo.Subject).Result;
+            if (this.applicationSettings.GetSettings().IsDeviceCertificateAuthenticationEnabled.BoolValue)
+            {
+                // TODO: Run this asynchronously.
+                this.DeviceEnrollment = SecureConnectEnrollment.GetEnrollmentAsync(
+                    new SecureConnectAdapter(),
+                    new CertificateStoreAdapter(),
+                    this.Authorization.UserInfo.Subject).Result;
+            }
+            else
+            {
+                this.DeviceEnrollment = new DisabledDeviceEnrollment();
+            }
 
             this.UserEmail = this.Authorization.Email;
 
@@ -177,7 +185,7 @@ namespace Google.Solutions.IapDesktop.Windows
                 .ConfigureAwait(true);
 
             // Refresh enrollment info as the user might have switched identities.
-            await ((SecureConnectEnrollment)this.DeviceEnrollment)
+            await this.DeviceEnrollment
                 .RefreshAsync(this.Authorization.UserInfo.Subject)
                 .ConfigureAwait(true);
 
@@ -236,6 +244,15 @@ namespace Google.Solutions.IapDesktop.Windows
                 this.viewModel.backgroundJobs.AddLast(this);
                 this.viewModel.IsBackgroundJobStatusVisible = true;
             }
+        }
+
+        private class DisabledDeviceEnrollment : IDeviceEnrollment
+        {
+            public DeviceEnrollmentState State => DeviceEnrollmentState.NotInstalled;
+
+            public X509Certificate2 Certificate => null;
+
+            public Task RefreshAsync(string userId) => Task.CompletedTask;
         }
     }
 }

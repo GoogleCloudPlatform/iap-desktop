@@ -108,6 +108,11 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views
             public DeviceEnrollmentState State => DeviceEnrollmentState.NotInstalled;
 
             public X509Certificate2 Certificate => null;
+
+            public Task RefreshAsync(string userId)
+            {
+                throw new NotImplementedException();
+            }
         }
 
         public IAuthorization Authorization => new SimpleAuthorization(TestProject.GetAdminCredential());
