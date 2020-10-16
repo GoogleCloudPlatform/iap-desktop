@@ -21,6 +21,7 @@
 
 using Google.Solutions.IapDesktop.Application.Services.SecureConnect;
 using NUnit.Framework;
+using System.Threading.Tasks;
 
 namespace Google.Solutions.IapDesktop.Application.Test.Services.SecureConnect
 {
@@ -31,34 +32,34 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.SecureConnect
         private string userIdWithEnrolledDevice = "";
 
         [Test]
-        public void WhenHelperInstalled_ThenIsInstalledReturnsTrue()
+        public async Task WhenHelperInstalled_ThenIsInstalledReturnsTrue()
         {
             var adapter = new SecureConnectAdapter();
 
-            Assert.IsTrue(adapter.IsInstalled);
+            Assert.IsTrue(await adapter.IsInstalledAsync());
         }
 
         [Test]
-        public void WhenUserIdDoesNotHaveDeviceEnrolled_ThenIsDeviceEnrolledForUserReturnsFalse()
+        public async Task WhenUserIdDoesNotHaveDeviceEnrolled_ThenIsDeviceEnrolledForUserReturnsFalse()
         {
             var adapter = new SecureConnectAdapter();
 
-            Assert.IsFalse(adapter.IsDeviceEnrolledForUser("111"));
+            Assert.IsFalse(await adapter.IsDeviceEnrolledForUserAsync("111"));
         }
 
         [Test]
-        public void WhenUserIdHasDeviceEnrolled_ThenIsDeviceEnrolledForUserReturnsTrue()
+        public async Task WhenUserIdHasDeviceEnrolled_ThenIsDeviceEnrolledForUserReturnsTrue()
         {
             var adapter = new SecureConnectAdapter();
 
-            Assert.IsTrue(adapter.IsDeviceEnrolledForUser(userIdWithEnrolledDevice));
+            Assert.IsTrue(await adapter.IsDeviceEnrolledForUserAsync(userIdWithEnrolledDevice));
         }
 
         [Test]
-        public void WhenDeviceEnrolled_ThenGetDeviceInfoReturnsCerts()
+        public async Task WhenDeviceEnrolled_ThenGetDeviceInfoReturnsCerts()
         {
             var adapter = new SecureConnectAdapter();
-            var info = adapter.DeviceInfo;
+            var info = await adapter.GetDeviceInfoAsync();
 
             Assert.IsNotNull(info.SerialNumber);
             CollectionAssert.IsNotEmpty(info.CertificateThumbprints);

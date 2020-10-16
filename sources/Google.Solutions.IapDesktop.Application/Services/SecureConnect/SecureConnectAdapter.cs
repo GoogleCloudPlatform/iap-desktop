@@ -28,14 +28,17 @@ using System.Threading;
 using Google.Solutions.Common.Util;
 using System.Linq;
 using Google.Solutions.Common.Diagnostics;
+using System.Threading.Tasks;
 
 namespace Google.Solutions.IapDesktop.Application.Services.SecureConnect
 {
     public interface ISecureConnectAdapter
     {
-        bool IsInstalled { get; }
-        bool IsDeviceEnrolledForUser(string userId);
-        ISecureConnectDeviceInfo DeviceInfo { get; }
+        Task<bool> IsInstalledAsync();
+
+        Task<bool> IsDeviceEnrolledForUserAsync(string userId);
+        
+        Task<ISecureConnectDeviceInfo> GetDeviceInfoAsync();
     }
 
     public interface ISecureConnectDeviceInfo
@@ -89,85 +92,102 @@ namespace Google.Solutions.IapDesktop.Application.Services.SecureConnect
         // ISecureConnectAdapter.
         //---------------------------------------------------------------------
 
-        public bool IsInstalled
+        public Task<bool> IsInstalledAsync()
         {
-            get
+            using (TraceSources.IapDesktop.TraceMethod().WithoutParameters())
             {
-                if (ChromeNativeMessagingHost.FindNativeHelperLocation(
-                    HostName,
-                    HostRegistrationHive) == null)
+                return Task.Run(() =>
                 {
-                    // Extension not found.
-                    TraceSources.IapDesktop.TraceWarning(
-                        "SecureConnect native messaging host not found");
-
-                    return false;
-                }
-
-                //
-                // Validate installed version.
-                //
-
-                using (var host = StartHost())
-                {
-                    var request = new PingRequest(Interlocked.Increment(ref this.commandId));
-                    var response = TransactMessage<PingRequest, PingResponse>(host, request);
-
-                    Debug.Assert(response.CommandId == request.CommandId);
-
-                    if (response.Ping.ComponentVersion < MinimumRequiredComponentVersion)
+                    if (ChromeNativeMessagingHost.FindNativeHelperLocation(
+                        HostName,
+                        HostRegistrationHive) == null)
                     {
+                        // Extension not found.
                         TraceSources.IapDesktop.TraceWarning(
-                            "Installed version {0} is older than required version {1}",
-                            response.Ping.ComponentVersion,
-                            MinimumRequiredComponentVersion);
+                            "SecureConnect native helper not found");
+
                         return false;
                     }
-                }
 
-                return true;
+                    //
+                    // Validate installed version.
+                    //
+
+                    using (var host = StartHost())
+                    {
+                        var request = new PingRequest(Interlocked.Increment(ref this.commandId));
+                        var response = TransactMessage<PingRequest, PingResponse>(host, request);
+
+                        Debug.Assert(response.CommandId == request.CommandId);
+
+                        if (response.Ping.ComponentVersion < MinimumRequiredComponentVersion)
+                        {
+                            TraceSources.IapDesktop.TraceWarning(
+                                "Installed version {0} is older than required version {1}",
+                                response.Ping.ComponentVersion,
+                                MinimumRequiredComponentVersion);
+                            return false;
+                        }
+
+                        TraceSources.IapDesktop.TraceWarning(
+                            "Native helper version: {0}",
+                            response.Ping.ComponentVersion);
+                    }
+
+                    return true;
+                });
             }
         }
             
 
-        public bool IsDeviceEnrolledForUser(string userId)
+        public Task<bool> IsDeviceEnrolledForUserAsync(string userId)
         {
-            using (var host = StartHost())
+            using (TraceSources.IapDesktop.TraceMethod().WithParameters(userId))
             {
-                var request = new ShouldEnrollDeviceRequest(
-                    Interlocked.Increment(ref this.commandId),
-                    userId);
-                var response = TransactMessage<ShouldEnrollDeviceRequest, ShouldEnrollDeviceResponse>(
-                    host,
-                    request);
+                return Task.Run(() =>
+                {
+                    using (var host = StartHost())
+                    {
+                        var request = new ShouldEnrollDeviceRequest(
+                            Interlocked.Increment(ref this.commandId),
+                            userId);
+                        var response = TransactMessage<ShouldEnrollDeviceRequest, ShouldEnrollDeviceResponse>(
+                            host,
+                            request);
 
-                Debug.Assert(response.CommandId == request.CommandId);
+                        Debug.Assert(response.CommandId == request.CommandId);
 
-                return response.ShouldEnrollDevice == false;
+                        return response.ShouldEnrollDevice == false;
+                    }
+                });
             }
         }
 
-        public ISecureConnectDeviceInfo DeviceInfo
+        public Task<ISecureConnectDeviceInfo> GetDeviceInfoAsync()
         {
-            get
+
+            using (TraceSources.IapDesktop.TraceMethod().WithoutParameters())
             {
-                using (var host = StartHost())
+                return Task.Run<ISecureConnectDeviceInfo>(() =>
                 {
-                    var request = new DeviceInfoRequest(
-                        Interlocked.Increment(ref this.commandId),
-                        new[] { "certificates", "serial_number", "model" });
-                    var response = TransactMessage<DeviceInfoRequest, DeviceInfoResponse>(
-                        host,
-                        request);
+                    using (var host = StartHost())
+                    {
+                        var request = new DeviceInfoRequest(
+                            Interlocked.Increment(ref this.commandId),
+                            new[] { "certificates", "serial_number", "model" });
+                        var response = TransactMessage<DeviceInfoRequest, DeviceInfoResponse>(
+                            host,
+                            request);
 
-                    Debug.Assert(response.CommandId == request.CommandId);
+                        Debug.Assert(response.CommandId == request.CommandId);
 
-                    return new SecureConnectDeviceInfo(
-                        response.DeviceInfo.SerialNumber,
-                        response.DeviceInfo.Certificates
-                            .EnsureNotNull()
-                            .Select(cert => cert.Fingerprint));
-                }
+                        return new SecureConnectDeviceInfo(
+                            response.DeviceInfo.SerialNumber,
+                            response.DeviceInfo.Certificates
+                                .EnsureNotNull()
+                                .Select(cert => cert.Fingerprint));
+                    }
+                });
             }
         }
 
