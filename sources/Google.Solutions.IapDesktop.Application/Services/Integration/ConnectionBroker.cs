@@ -20,8 +20,8 @@
 //
 
 using Google.Solutions.Common.Locator;
+using Google.Solutions.IapDesktop.Application.ObjectModel;
 using System;
-using System.Collections.Generic;
 
 namespace Google.Solutions.IapDesktop.Application.Services.Integration
 {
@@ -34,7 +34,6 @@ namespace Google.Solutions.IapDesktop.Application.Services.Integration
 
     public interface IGlobalConnectionBroker : IConnectionBroker
     {
-        void Register(IConnectionBroker broker);
     }
 
     /// <summary>
@@ -43,29 +42,21 @@ namespace Google.Solutions.IapDesktop.Application.Services.Integration
     /// </summary>
     public class GlobalConnectionBroker : IGlobalConnectionBroker
     {
-        private readonly LinkedList<IConnectionBroker> brokers =
-            new LinkedList<IConnectionBroker>();
-        private readonly object brokersLock = new object();
+        private readonly IServiceCategoryProvider serviceProvider;
 
-            
-        public void Register(IConnectionBroker broker)
+        public GlobalConnectionBroker(IServiceCategoryProvider serviceProvider)
         {
-            lock (this.brokersLock)
-            {
-                this.brokers.AddLast(broker);
-            }
+            this.serviceProvider = serviceProvider;
         }
 
         public bool IsConnected(InstanceLocator vmInstance)
         {
-            lock (this.brokersLock)
+            foreach (var broker in this.serviceProvider
+                .GetServicesByCategory<IConnectionBroker>())
             {
-                foreach (var broker in this.brokers)
+                if (broker.IsConnected(vmInstance))
                 {
-                    if (broker.IsConnected(vmInstance))
-                    {
-                        return true;
-                    }
+                    return true;
                 }
             }
 
@@ -74,14 +65,12 @@ namespace Google.Solutions.IapDesktop.Application.Services.Integration
 
         public bool TryActivate(InstanceLocator vmInstance)
         {
-            lock (this.brokersLock)
-            {
-                foreach (var broker in this.brokers)
+            foreach (var broker in this.serviceProvider
+                .GetServicesByCategory<IConnectionBroker>())
+            { 
+                if (broker.TryActivate(vmInstance))
                 {
-                    if (broker.TryActivate(vmInstance))
-                    {
-                        return true;
-                    }
+                    return true;
                 }
             }
 

@@ -33,7 +33,12 @@ namespace Google.Solutions.IapDesktop.Application.ObjectModel
         public Type ServiceInterface { get; }
         public ServiceLifetime Lifetime { get; }
 
-        public ServiceAttribute(Type serviceInterface, ServiceLifetime lifetime)
+        public ServiceVisibility Visibility { get; } = ServiceVisibility.Scoped;
+
+        public ServiceAttribute(
+            Type serviceInterface, 
+            ServiceLifetime lifetime, 
+            ServiceVisibility visibility)
         {
             if (serviceInterface != null && !serviceInterface.IsInterface)
             {
@@ -42,6 +47,12 @@ namespace Google.Solutions.IapDesktop.Application.ObjectModel
 
             this.ServiceInterface = serviceInterface;
             this.Lifetime = lifetime;
+            this.Visibility = visibility;
+        }
+
+        public ServiceAttribute(Type serviceInterface, ServiceLifetime lifetime)
+            : this(serviceInterface, lifetime, ServiceVisibility.Scoped)
+        {
         }
 
         public ServiceAttribute(Type serviceInterface)
@@ -53,6 +64,12 @@ namespace Google.Solutions.IapDesktop.Application.ObjectModel
             : this(null, lifetime)
         {
         }
+
+        public ServiceAttribute(ServiceLifetime lifetime, ServiceVisibility visibility)
+            : this(null, lifetime, visibility)
+        {
+        }
+
         public ServiceAttribute()
             : this(null, ServiceLifetime.Transient)
         {
@@ -63,5 +80,34 @@ namespace Google.Solutions.IapDesktop.Application.ObjectModel
     {
         Transient,
         Singleton
+    }
+
+    public enum ServiceVisibility
+    {
+        /// <summary>
+        /// Visible across all layers of service registries.
+        /// </summary>
+        Global,
+
+        /// <summary>
+        /// Visible within current and lower layers.
+        /// </summary>
+        Scoped
+    }
+
+
+    /// <summary>
+    /// Declare that a class implements a category interface.
+    /// Only valid in extension DLLs.
+    /// </summary>
+    [AttributeUsage(AttributeTargets.Class)]
+    public class ServiceCategoryAttribute : Attribute
+    {
+        public Type Category { get; }
+
+        public ServiceCategoryAttribute(Type category)
+        {
+            this.Category = category;
+        }
     }
 }
