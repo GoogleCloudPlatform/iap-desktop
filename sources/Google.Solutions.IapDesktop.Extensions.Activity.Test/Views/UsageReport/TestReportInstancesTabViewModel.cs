@@ -39,23 +39,27 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.Views.UsageReport
         private void AddExistingInstance(
             InstanceSetHistoryBuilder builder,
             int count,
+            DateTime lastSeen,
             Tenancies tenancy)
         {
             for (int i = 0; i < count; i++)
             {
                 instanceIdSequence++;
 
+                var locator = new InstanceLocator("project", "zone", $"instance-{instanceIdSequence}");
                 builder.AddExistingInstance(
                     instanceIdSequence,
-                    new InstanceLocator("project", "zone", $"instance-{instanceIdSequence}"),
+                    locator,
                     new ImageLocator("project", $"image-{instanceIdSequence}"),
                     InstanceState.Running,
-                    BaselineTime.AddDays(i),
+                    lastSeen,
                     tenancy,
                     tenancy == Tenancies.SoleTenant
                         ? "server-1"
                         : null,
                     null);
+                builder.GetInstanceHistoryBuilder(instanceIdSequence)
+                    .OnStart(BaselineTime.AddDays(i), locator);
             }
         }
 
@@ -69,8 +73,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.Views.UsageReport
                 BaselineTime,
                 BaselineTime.AddDays(7));
 
-            AddExistingInstance(builder, fleetInstanceCount, Tenancies.Fleet);
-            AddExistingInstance(builder, soleTenantInstanceCount, Tenancies.SoleTenant);
+            AddExistingInstance(builder, fleetInstanceCount, builder.EndDate, Tenancies.Fleet);
+            AddExistingInstance(builder, soleTenantInstanceCount, builder.EndDate, Tenancies.SoleTenant);
 
             return new ReportViewModel(new ReportArchive(builder.Build()));
         }
@@ -222,7 +226,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.Views.UsageReport
 
             var histogram = viewModel.Histogram;
             Assert.AreEqual(BaselineTime, histogram.First().Timestamp);
-            Assert.AreEqual(BaselineTime.AddDays(2), histogram.Last().Timestamp);
+            Assert.AreEqual(BaselineTime.AddDays(7), histogram.Last().Timestamp);
 
             viewModel.Selection = new DateSelection()
             {
@@ -231,7 +235,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.Views.UsageReport
             };
 
             Assert.AreEqual(BaselineTime, histogram.First().Timestamp);
-            Assert.AreEqual(BaselineTime.AddDays(2), histogram.Last().Timestamp);
+            Assert.AreEqual(BaselineTime.AddDays(7), histogram.Last().Timestamp);
         }
     }
 }
