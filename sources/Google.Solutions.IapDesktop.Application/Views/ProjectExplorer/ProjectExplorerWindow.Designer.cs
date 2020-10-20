@@ -135,9 +135,9 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
             this.refreshAllProjectsToolStripMenuItem,
             this.unloadProjectToolStripMenuItem,
             this.iapSeparatorToolStripMenuItem,
+            this.openInCloudConsoleToolStripMenuItem,
             this.configureIapAccessToolStripMenuItem,
-            this.cloudConsoleSeparatorToolStripMenuItem,
-            this.openInCloudConsoleToolStripMenuItem});
+            this.cloudConsoleSeparatorToolStripMenuItem});
             this.contextMenu.Name = "contextMenu";
             this.contextMenu.Size = new System.Drawing.Size(207, 148);
             // 

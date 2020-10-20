@@ -31,10 +31,10 @@ using Google.Solutions.IapDesktop.Application.ObjectModel;
 using Google.Solutions.IapDesktop.Application.Settings;
 using System.Collections.Generic;
 
-namespace Google.Solutions.IapDesktop.Application.Test.Views
+namespace Google.Solutions.IapDesktop.Application.Test.Views.Properties
 {
     [TestFixture]
-    public class TestPropertiesWindow : WindowTestFixtureBase
+    public class TestPropertiesInspectorWindow : WindowTestFixtureBase
     {
         public class PocoWithoutProperty
         {
@@ -61,7 +61,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views
             };
         }
 
-        public class ViewModel<T> : ViewModelBase, IPropertiesViewModel
+        public class ViewModel<T> : ViewModelBase, IPropertiesInspectorViewModel
         {
             private object inspectedObject;
 
@@ -98,7 +98,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views
             this.serviceRegistry.AddMock<IProjectExplorer>();
             var viewModel = new ViewModel<PocoWithoutProperty>();
 
-            var window = new PropertiesWindow(this.serviceProvider, viewModel);
+            var window = new PropertiesInspectorWindow(this.serviceProvider, viewModel);
             viewModel.InspectedObject = new PocoWithoutProperty();
 
             window.ShowWindow();
@@ -117,7 +117,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views
             this.serviceRegistry.AddMock<IProjectExplorer>();
             var viewModel = new ViewModel<PocoWithoutProperty>();
             
-            var window = new PropertiesWindow(this.serviceProvider, viewModel);
+            var window = new PropertiesInspectorWindow(this.serviceProvider, viewModel);
             viewModel.InspectedObject = new PocoWithProperty();
             
             window.ShowWindow();
@@ -136,7 +136,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views
             this.serviceRegistry.AddMock<IProjectExplorer>();
             var viewModel = new ViewModel<Settings>();
 
-            var window = new PropertiesWindow(this.serviceProvider, viewModel);
+            var window = new PropertiesInspectorWindow(this.serviceProvider, viewModel);
             viewModel.InspectedObject = new Settings();
 
             window.ShowWindow();

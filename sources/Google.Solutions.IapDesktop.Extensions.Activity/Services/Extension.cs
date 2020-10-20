@@ -112,7 +112,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services
                 {
                     Image = Resources.Log_16
                 },
-                5);
+                7);
             projectExplorer.ContextMenuCommands.AddCommand(
                 new Command<IProjectExplorerNode>(
                     "Show &event log",
@@ -121,7 +121,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services
                 {
                     Image = Resources.EventLog_16
                 },
-                6);
+                8);
 
 
             //

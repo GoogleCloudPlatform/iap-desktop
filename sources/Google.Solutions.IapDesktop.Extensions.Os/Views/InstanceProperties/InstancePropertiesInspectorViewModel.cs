@@ -34,10 +34,10 @@ using System.Diagnostics;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Google.Solutions.IapDesktop.Extensions.Os.Views.InstanceDetails
+namespace Google.Solutions.IapDesktop.Extensions.Os.Views.InstanceProperties
 {
-    internal class InstanceDetailsViewModel
-        : ModelCachingViewModelBase<IProjectExplorerNode, InstanceDetailsModel>, IPropertiesViewModel
+    internal class InstancePropertiesViewModel
+        : ModelCachingViewModelBase<IProjectExplorerNode, InstanceDetailsModel>, IPropertiesInspectorViewModel
     {
         private const int ModelCacheCapacity = 5;
         internal const string DefaultWindowTitle = "VM instance";
@@ -50,7 +50,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Os.Views.InstanceDetails
 
         public string InformationText => "OS inventory data not available";
 
-        public InstanceDetailsViewModel(IServiceProvider serviceProvider)
+        public InstancePropertiesViewModel(IServiceProvider serviceProvider)
             : base(ModelCacheCapacity)
         {
             this.serviceProvider = serviceProvider;

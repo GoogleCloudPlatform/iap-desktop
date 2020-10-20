@@ -19,22 +19,20 @@
 // under the License.
 //
 
-using Google.Solutions.Common.Diagnostics;
-using Google.Solutions.IapDesktop.Application.ObjectModel;
-using Google.Solutions.IapDesktop.Application.Views.Properties;
-using System;
+using Google.Solutions.IapDesktop.Application.Views.ProjectExplorer;
+using System.ComponentModel;
+using System.Threading.Tasks;
 
-namespace Google.Solutions.IapDesktop.Extensions.Os.Views.InstanceDetails
+namespace Google.Solutions.IapDesktop.Application.Views.Properties
 {
-    [Service(ServiceLifetime.Singleton)]
-    [SkipCodeCoverage("All logic in view model")]
-    internal class InstanceDetailsWindow : PropertiesWindow
+    public interface IPropertiesInspectorViewModel : INotifyPropertyChanged
     {
-        public InstanceDetailsWindow(IServiceProvider serviceProvider)
-            : base(
-                  serviceProvider,
-                  new InstanceDetailsViewModel(serviceProvider))
-        {
-        }
+        bool IsInformationBarVisible { get; }
+        string InformationText { get; }
+        object InspectedObject { get; }
+        string WindowTitle { get; }
+
+        Task SwitchToModelAsync(IProjectExplorerNode node);
+        void SaveChanges();
     }
 }

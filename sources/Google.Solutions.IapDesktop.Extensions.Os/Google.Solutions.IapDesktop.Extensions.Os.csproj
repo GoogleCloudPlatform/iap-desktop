@@ -88,9 +88,9 @@
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
     <Compile Include="Services\Extension.cs" />
-    <Compile Include="Views\InstanceDetails\InstanceDetailsModel.cs" />
-    <Compile Include="Views\InstanceDetails\InstanceDetailsViewModel.cs" />
-    <Compile Include="Views\InstanceDetails\InstanceDetailsWindow.cs">
+    <Compile Include="Views\InstanceProperties\InstancePropertiesInspectorModel.cs" />
+    <Compile Include="Views\InstanceProperties\InstancePropertiesInspectorViewModel.cs" />
+    <Compile Include="Views\InstanceProperties\InstancePropertiesInspectorWindow.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Services\Inventory\InventoryService.cs" />

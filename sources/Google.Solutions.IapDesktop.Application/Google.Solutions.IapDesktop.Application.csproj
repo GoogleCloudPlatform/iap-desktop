@@ -175,12 +175,12 @@
     <Compile Include="Views\ProjectExplorer\ProjectExplorerTrackingToolWindow.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Views\Properties\IPropertiesViewModel.cs" />
-    <Compile Include="Views\Properties\PropertiesWindow.cs">
+    <Compile Include="Views\Properties\IPropertiesInspectorViewModel.cs" />
+    <Compile Include="Views\Properties\PropertiesInspectorWindow.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Views\Properties\PropertiesWindow.Designer.cs">
-      <DependentUpon>PropertiesWindow.cs</DependentUpon>
+    <Compile Include="Views\Properties\PropertiesInspectorWindow.Designer.cs">
+      <DependentUpon>PropertiesInspectorWindow.cs</DependentUpon>
     </Compile>
     <Compile Include="Views\Properties\SettingsCollectionTypeDescriptor.cs" />
     <Compile Include="Views\SlowLoadingPane.cs">
@@ -286,8 +286,8 @@
     <EmbeddedResource Include="Views\FlyoutWindow.resx">
       <DependentUpon>FlyoutWindow.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Views\Properties\PropertiesWindow.resx">
-      <DependentUpon>PropertiesWindow.cs</DependentUpon>
+    <EmbeddedResource Include="Views\Properties\PropertiesInspectorWindow.resx">
+      <DependentUpon>PropertiesInspectorWindow.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Views\SlowLoadingPane.resx">
       <DependentUpon>SlowLoadingPane.cs</DependentUpon>
