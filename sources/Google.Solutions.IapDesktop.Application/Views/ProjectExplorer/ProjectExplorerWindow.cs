@@ -334,10 +334,10 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
                 this.unloadProjectToolStripMenuItem.Visible = (selectedNode is ProjectNode);
                 this.refreshAllProjectsToolStripMenuItem.Visible = (selectedNode is CloudNode);
 
-                this.cloudConsoleSeparatorToolStripMenuItem.Visible =
-                    this.openInCloudConsoleToolStripMenuItem.Visible = (selectedNode is VmInstanceNode);
+                this.openInCloudConsoleToolStripMenuItem.Visible = (selectedNode is VmInstanceNode);
 
                 this.iapSeparatorToolStripMenuItem.Visible =
+                    this.cloudConsoleSeparatorToolStripMenuItem.Visible =
                     this.configureIapAccessToolStripMenuItem.Visible =
                          (selectedNode is VmInstanceNode || selectedNode is ProjectNode);
 

@@ -22,6 +22,7 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 using System.Reflection;
 using System.Runtime.Serialization;
 
@@ -33,12 +34,20 @@ namespace Google.Solutions.IapDesktop.Application.ObjectModel
     /// 
     /// ServiceRegistries can be nested. In this case, a registry first queries its
     /// own services before delegating to the parent registry.
+    /// 
+    /// Service registration is not thread-safe and expected to happen during
+    /// startup. Once all services have been registered, service lookup is
+    /// thread-safe.
     /// </summary>
     public class ServiceRegistry : IServiceProvider
     {
         private readonly ServiceRegistry parent;
         private readonly IDictionary<Type, SingletonStub> singletons = new Dictionary<Type, SingletonStub>();
         private readonly IDictionary<Type, Func<object>> transients = new Dictionary<Type, Func<object>>();
+
+        // Categories map a category type to a list of service types. They can be used if there
+        // are multiple implementations for a common function.
+        private readonly IDictionary<Type, IList<Type>> categories = new Dictionary<Type, IList<Type>>();
 
         public ServiceRegistry()
         {
@@ -49,6 +58,10 @@ namespace Google.Solutions.IapDesktop.Application.ObjectModel
         {
             this.parent = parent;
         }
+
+        //---------------------------------------------------------------------
+        // Service registration and instantiation.
+        //---------------------------------------------------------------------
 
         private object CreateInstance(Type serviceType)
         {
@@ -126,6 +139,57 @@ namespace Google.Solutions.IapDesktop.Application.ObjectModel
             }
         }
 
+        //---------------------------------------------------------------------
+        // Categories.
+        //---------------------------------------------------------------------
+
+        public void AddServiceToCategory(Type categoryType, Type serviceType)
+        {
+            if (!categoryType.IsInterface)
+            {
+                throw new ArgumentException("Category must be an interface");
+            }
+            
+            if (!this.singletons.ContainsKey(serviceType) &&
+                !this.transients.ContainsKey(serviceType))
+            {
+                throw new UnknownServiceException(serviceType.Name);
+            }
+
+            if (this.categories.TryGetValue(categoryType, out IList<Type> serviceTypes))
+            {
+                serviceTypes.Add(serviceType);
+            }
+            else
+            {
+                this.categories[categoryType] = new List<Type>()
+                { 
+                    serviceType 
+                };
+            }
+        }
+
+        public void AddServiceToCategory<TCategory, TService>()
+        {
+            AddServiceToCategory(typeof(TCategory), typeof(TService));
+        }
+
+        public IEnumerable<TCategory> GetServicesByCategory<TCategory>()
+        { 
+            if (this.categories.TryGetValue(typeof(TCategory), out IList<Type> serviceTypes))
+            {
+                return serviceTypes.Select(t => (TCategory)GetService(t));
+            }
+            else
+            {
+                return Enumerable.Empty<TCategory>();
+            }
+        }
+
+        //---------------------------------------------------------------------
+        // Extension assembly handling.
+        //---------------------------------------------------------------------
+
         public void AddExtensionAssembly(Assembly assembly)
         {
             //
@@ -172,6 +236,10 @@ namespace Google.Solutions.IapDesktop.Application.ObjectModel
                 Debug.Assert(instance != null);
             }
         }
+
+        //---------------------------------------------------------------------
+        // Helper classes.
+        //---------------------------------------------------------------------
 
         private class SingletonStub
         {

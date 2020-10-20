@@ -22,6 +22,7 @@
 using Google.Solutions.IapDesktop.Application.ObjectModel;
 using NUnit.Framework;
 using System;
+using System.Linq;
 
 namespace Google.Solutions.IapDesktop.Application.Test.ObjectModel
 {
@@ -46,6 +47,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.ObjectModel
                 this.provider = provider;
             }
         }
+
         public class ServiceWithIncompatibleConstructor
         {
             public ServiceWithIncompatibleConstructor(string s)
@@ -53,8 +55,21 @@ namespace Google.Solutions.IapDesktop.Application.Test.ObjectModel
             }
         }
 
+        public interface ICategory
+        { }
+
+        public class FirstServiceImplementingCategory : ICategory
+        { }
+
+        public class SecondServiceImplementingCategory : ICategory
+        { }
+
+        //---------------------------------------------------------------------
+        // Singleton services.
+        //---------------------------------------------------------------------
+
         [Test]
-        public void WhenRequestingUnknownService_UnknownServiceExceptionIsThrown()
+        public void WhenServiceUnknown_ThenThenGetServiceThrowsUnknownServiceException()
         {
             var registry = new ServiceRegistry();
 
@@ -65,7 +80,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.ObjectModel
         }
 
         [Test]
-        public void WhenRequestingSingleton_ExistingInstanceIsReturned()
+        public void WhenSingletonRegistered_ThenThenGetServiceReturnsExistingInstance()
         {
             var registry = new ServiceRegistry();
             var singleton = new ServiceWithDefaultConstructor();
@@ -74,8 +89,12 @@ namespace Google.Solutions.IapDesktop.Application.Test.ObjectModel
             Assert.AreSame(singleton, registry.GetService<ServiceWithDefaultConstructor>());
         }
 
+        //---------------------------------------------------------------------
+        // Transient services.
+        //---------------------------------------------------------------------
+
         [Test]
-        public void WhenRequestingTransientWithDefaultConstructor_NewInstanceIsReturned()
+        public void WhenTransientHasDefaultConstructor_ThenGetServiceReturnsNewInstance()
         {
             var registry = new ServiceRegistry();
             registry.AddTransient<ServiceWithDefaultConstructor>();
@@ -84,7 +103,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.ObjectModel
         }
 
         [Test]
-        public void WhenRequestingTransientWithSericeProviderConstructor_NewInstanceIsReturned()
+        public void WhenTransientHasSericeProviderConstructor_ThenGetServiceReturnsNewInstance()
         {
             var registry = new ServiceRegistry();
             registry.AddTransient<ServiceWithServiceProviderConstructor>();
@@ -96,7 +115,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.ObjectModel
         }
 
         [Test]
-        public void WhenRequestingTransientWithIncompatibleConstructor_UnknownServiceExceptionIsThrown()
+        public void WhenTransientHasIncompatibleConstructor_ThenGetServiceThrowsUnknownServiceException()
         {
             var registry = new ServiceRegistry();
 
@@ -106,14 +125,75 @@ namespace Google.Solutions.IapDesktop.Application.Test.ObjectModel
             });
         }
 
+        //---------------------------------------------------------------------
+        // Nesting.
+        //---------------------------------------------------------------------
+
         [Test]
-        public void WhenRequestingUnknownService_ThenParentRegistryIsQuerid()
+        public void WhenServiceUnknown_ThenGetServiceQueriesParent()
         {
             var parent = new ServiceRegistry();
             parent.AddTransient<ServiceWithDefaultConstructor>();
 
             var child = new ServiceRegistry(parent);
             Assert.IsNotNull(child.GetService<ServiceWithDefaultConstructor>());
+        }
+
+        //---------------------------------------------------------------------
+        // Categories.
+        //---------------------------------------------------------------------
+
+        [Test]
+        public void WhenCategoryUnknown_ThenGetServicesByCategoryReturnsEmptyEnum()
+        {
+            var registry = new ServiceRegistry();
+            var services = registry.GetServicesByCategory<ICloneable>();
+
+            Assert.IsNotNull(services);
+            CollectionAssert.IsEmpty(services);
+        }
+
+        [Test]
+        public void WhenCategoryIsClass_ThenAddServiceToCategoryThrowsArgumentException()
+        {
+            var registry = new ServiceRegistry();
+            
+            Assert.Throws<ArgumentException>(() => registry.AddServiceToCategory<Uri, Uri>());
+        }
+
+        [Test]
+        public void WhenServiceUnknown_ThenAddServiceToCategoryThrowsUnknownServiceException()
+        {
+            var registry = new ServiceRegistry();
+
+            Assert.Throws<UnknownServiceException>(
+                () => registry.AddServiceToCategory<ICategory, FirstServiceImplementingCategory>());
+        }
+
+        [Test]
+        public void WhenServiceDoesNotImplementCategory_ThenGetServicesByCategoryThrowsInvalidCastException()
+        {
+            var registry = new ServiceRegistry();
+            registry.AddTransient<ServiceWithDefaultConstructor>();
+            registry.AddServiceToCategory<ICategory, ServiceWithDefaultConstructor>();
+
+            Assert.Throws<InvalidCastException>(
+                () => registry.GetServicesByCategory<ICategory>().ToArray());
+        }
+
+        [Test]
+        public void WhenTwoServiceImplementCategory_ThenGetServicesByCategoryReturnsBoth()
+        {
+            var registry = new ServiceRegistry();
+            registry.AddSingleton<FirstServiceImplementingCategory>();
+            registry.AddTransient<SecondServiceImplementingCategory>();
+
+            registry.AddServiceToCategory<ICategory, FirstServiceImplementingCategory>();
+            registry.AddServiceToCategory<ICategory, SecondServiceImplementingCategory>();
+
+            var services = registry.GetServicesByCategory<ICategory>();
+            Assert.IsNotNull(services);
+            Assert.AreEqual(2, services.Count());
         }
     }
 }
