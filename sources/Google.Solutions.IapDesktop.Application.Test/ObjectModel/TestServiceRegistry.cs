@@ -160,6 +160,22 @@ namespace Google.Solutions.IapDesktop.Application.Test.ObjectModel
             Assert.IsNotNull(child.GetService<ServiceWithDefaultConstructor>());
         }
 
+        [Test]
+        public void WhenRegistryHasNoParent_ThenRootRegistryReturnsThis()
+        {
+            var registry = new ServiceRegistry();
+            Assert.AreSame(registry, registry.RootRegistry);
+        }
+
+        [Test]
+        public void WhenRegistryHasParent_ThenRootRegistryReturnsParent()
+        {
+            var parent = new ServiceRegistry();
+            var child = new ServiceRegistry(parent);
+            var grandChild = new ServiceRegistry(child);
+            Assert.AreSame(parent, grandChild.RootRegistry);
+        }
+
         //---------------------------------------------------------------------
         // Categories.
         //---------------------------------------------------------------------

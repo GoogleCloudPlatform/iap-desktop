@@ -21,6 +21,7 @@
 
 using Google.Solutions.IapDesktop.Application.ObjectModel;
 using NUnit.Framework;
+using System;
 using System.Linq;
 using System.Reflection;
 
@@ -111,6 +112,65 @@ namespace Google.Solutions.IapDesktop.Application.Test.ObjectModel
             Assert.AreNotSame(
                 registry.GetService<TransientService>(),
                 registry.GetService<TransientService>());
+        }
+
+        //---------------------------------------------------------------------
+        // Visibility.
+        //---------------------------------------------------------------------
+
+        [Service(ServiceLifetime.Transient)]
+        public class TransientServiceWithVisibilityScoped
+        {
+        }
+
+        [Service(ServiceLifetime.Transient, ServiceVisibility.Global)]
+        public class TransientServiceWithVisibilityGlobal
+        {
+        }
+
+        [Service(ServiceLifetime.Singleton, ServiceVisibility.Global)]
+        public class SingletonServiceWithVisibilityGlobal
+        {
+            public SingletonServiceWithVisibilityGlobal(IServiceProvider sp)
+            {
+                Assert.IsNotNull(sp.GetService<TransientServiceWithVisibilityScoped>());
+            }
+        }
+
+        [Test]
+        public void WhenVisibilityIsScoped_ThenServiceIsNotVisibleToParentRegistry()
+        {
+            var parentRegistry = new ServiceRegistry();
+            var childRegistry = new ServiceRegistry(parentRegistry);
+            childRegistry.AddExtensionAssembly(Assembly.GetExecutingAssembly());
+
+            Assert.IsNotNull(childRegistry.GetService<TransientServiceWithVisibilityScoped>());
+            Assert.Throws<UnknownServiceException>(() => parentRegistry.GetService<TransientServiceWithVisibilityScoped>());
+        }
+
+        [Test]
+        public void WhenVisibilityIsGlobal_ThenServiceIsNotVisibleToParentRegistry()
+        {
+            var parentRegistry = new ServiceRegistry();
+            var childRegistry = new ServiceRegistry(parentRegistry);
+            childRegistry.AddExtensionAssembly(Assembly.GetExecutingAssembly());
+
+            Assert.IsNotNull(childRegistry.GetService<TransientServiceWithVisibilityGlobal>());
+            Assert.IsNotNull(parentRegistry.GetService<TransientServiceWithVisibilityGlobal>());
+        }
+
+        [Test]
+        public void WhenVisibilityIsGlobal_ThenDependenciesOfSameLayerAreResolved()
+        {
+            var parentRegistry = new ServiceRegistry();
+            var childRegistry = new ServiceRegistry(parentRegistry);
+            childRegistry.AddExtensionAssembly(Assembly.GetExecutingAssembly());
+
+            Assert.IsNotNull(childRegistry.GetService<SingletonServiceWithVisibilityGlobal>());
+            Assert.IsNotNull(parentRegistry.GetService<SingletonServiceWithVisibilityGlobal>());
+            Assert.AreSame(
+                childRegistry.GetService<SingletonServiceWithVisibilityGlobal>(),
+                parentRegistry.GetService<SingletonServiceWithVisibilityGlobal>());
         }
 
         //---------------------------------------------------------------------

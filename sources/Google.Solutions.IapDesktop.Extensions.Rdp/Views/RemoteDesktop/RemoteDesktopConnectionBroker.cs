@@ -55,7 +55,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Views.RemoteDesktop
             VmInstanceConnectionSettings settings);
     }
 
-    [Service(typeof(IRemoteDesktopConnectionBroker), ServiceLifetime.Singleton)]
+    [Service(typeof(IRemoteDesktopConnectionBroker), ServiceLifetime.Singleton, ServiceVisibility.Global)]
+    [ServiceCategory(typeof(IConnectionBroker))]
     public class RemoteDesktopConnectionBroker : IRemoteDesktopConnectionBroker
     {
         private readonly IExceptionDialog exceptionDialog;
@@ -68,9 +69,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Views.RemoteDesktop
             this.exceptionDialog = serviceProvider.GetService<IExceptionDialog>();
             this.eventService = serviceProvider.GetService<IEventService>();
 
-            // Register as connection broker so that the status of connections
-            // managed by this broker is surfaced in Project Explorer.
-            serviceProvider.GetService<IGlobalConnectionBroker>().Register(this);
+            // NB. The ServiceCategory attribute causes this class to be 
+            // announced to the global connection broker.
         }
 
         private RemoteDesktopPane TryGetExistingPane(InstanceLocator vmInstance)

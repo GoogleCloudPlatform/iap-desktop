@@ -59,6 +59,10 @@ namespace Google.Solutions.IapDesktop.Application.ObjectModel
             this.parent = parent;
         }
 
+        internal ServiceRegistry RootRegistry => this.parent != null
+            ? this.parent.RootRegistry
+            : this;
+
         //---------------------------------------------------------------------
         // Service registration and instantiation.
         //---------------------------------------------------------------------
@@ -118,14 +122,14 @@ namespace Google.Solutions.IapDesktop.Application.ObjectModel
             AddSingleton(typeof(TService), new SingletonStub(singleton));
         }
 
-        public void AddSingleton<TService>()
-        {
-            AddSingleton(typeof(TService), new SingletonStub(CreateInstance<TService>()));
-        }
-
         public void AddSingleton<TService, TServiceClass>()
         {
             AddSingleton(typeof(TService), new SingletonStub(CreateInstance<TServiceClass>()));
+        }
+
+        public void AddSingleton<TService>()
+        {
+            AddSingleton<TService, TService>();
         }
 
         //---------------------------------------------------------------------
@@ -209,6 +213,11 @@ namespace Google.Solutions.IapDesktop.Application.ObjectModel
         public IEnumerable<TCategory> GetServicesByCategory<TCategory>()
         {
             //
+            // NB. Services registered for the same category in a lower layer
+            // are not visible unless they are registered as "global".
+            //
+
+            //
             // Consider parent services.
             //
             IEnumerable<TCategory> services;
@@ -236,8 +245,25 @@ namespace Google.Solutions.IapDesktop.Application.ObjectModel
         // Extension assembly handling.
         //---------------------------------------------------------------------
 
+        private ServiceRegistry GetServiceRegistryToRegisterWith(ServiceAttribute attribute)
+        {
+            // If it's visible globally, use the root registry.
+            return attribute.Visibility == ServiceVisibility.Global
+                ? this.RootRegistry
+                : this;
+        }
+
         public void AddExtensionAssembly(Assembly assembly)
         {
+            //
+            // NB. By default, services are registered in this service registry, making
+            // them visible to this and lower layers.
+            //
+            // Services can optionally register as "global" to be registered in the
+            // root registry. This makes them visible across all layers. Their dependencies
+            // are still resolved in this layer -- not in the root layer.
+            //
+
             //
             // (1) First, register all transients. 
             //
@@ -246,7 +272,7 @@ namespace Google.Solutions.IapDesktop.Application.ObjectModel
                 if (type.GetCustomAttribute<ServiceAttribute>() is ServiceAttribute attribute &&
                     attribute.Lifetime == ServiceLifetime.Transient)
                 {
-                    AddTransient(
+                    GetServiceRegistryToRegisterWith(attribute).AddTransient(
                         attribute.ServiceInterface ?? type,
                         type);
                 }
@@ -269,7 +295,7 @@ namespace Google.Solutions.IapDesktop.Application.ObjectModel
                 if (type.GetCustomAttribute<ServiceAttribute>() is ServiceAttribute attribute &&
                     attribute.Lifetime == ServiceLifetime.Singleton)
                 {
-                    AddSingleton(
+                    GetServiceRegistryToRegisterWith(attribute).AddSingleton(
                         attribute.ServiceInterface ?? type,
                         new SingletonStub(() => CreateInstance(type)));
                 }
@@ -283,7 +309,7 @@ namespace Google.Solutions.IapDesktop.Application.ObjectModel
                 if (type.GetCustomAttribute<ServiceAttribute>() is ServiceAttribute attribute &&
                     type.GetCustomAttribute<ServiceCategoryAttribute>() is ServiceCategoryAttribute categoryAttribute)
                 {
-                    AddServiceToCategory(
+                    GetServiceRegistryToRegisterWith(attribute).AddServiceToCategory(
                         categoryAttribute.Category,
                         attribute.ServiceInterface ?? type);
                 }
