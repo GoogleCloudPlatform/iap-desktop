@@ -39,17 +39,20 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.Views.UsageReport
         private void AddExistingInstance(
             InstanceSetHistoryBuilder builder,
             int count,
+            DateTime lastSeen,
             Tenancies tenancy)
         {
             for (int i = 0; i < count; i++)
             {
                 instanceIdSequence++;
+
+                var locator = new InstanceLocator("project", "zone", $"instance-{instanceIdSequence}");
                 builder.AddExistingInstance(
                     instanceIdSequence,
-                    new InstanceLocator("project", "zone", $"instance-{instanceIdSequence}"),
+                    locator,
                     new ImageLocator("project", $"image-{instanceIdSequence}"),
                     InstanceState.Running,
-                    BaselineTime.AddDays(i),
+                    lastSeen,
                     tenancy,
                     tenancy == Tenancies.SoleTenant
                         ? "server-1"
@@ -60,16 +63,11 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.Views.UsageReport
                 if (tenancy == Tenancies.SoleTenant)
                 {
                     // Add sole tenant placement.
-                    instanceBuilder.OnSetPlacement("server-1", null, BaselineTime);
+                    instanceBuilder.OnSetPlacement("server-1", null, lastSeen.AddHours(-1));
                 }
 
                 // Add fleet placement.
-                instanceBuilder.OnStop(
-                    BaselineTime.AddDays(-1),
-                    new InstanceLocator("project", "zone", $"instance-{instanceIdSequence}"));
-                instanceBuilder.OnStart(
-                    BaselineTime.AddDays(-2),
-                    new InstanceLocator("project", "zone", $"instance-{instanceIdSequence}"));
+                instanceBuilder.OnStart(BaselineTime.AddDays(i), locator);
             }
         }
 
@@ -83,8 +81,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.Views.UsageReport
                 BaselineTime,
                 BaselineTime.AddDays(7));
 
-            AddExistingInstance(builder, fleetInstanceCount, Tenancies.Fleet);
-            AddExistingInstance(builder, soleTenantInstanceCount, Tenancies.SoleTenant);
+            AddExistingInstance(builder, fleetInstanceCount, builder.EndDate, Tenancies.Fleet);
+            AddExistingInstance(builder, soleTenantInstanceCount, builder.EndDate, Tenancies.SoleTenant);
 
             return new ReportViewModel(new ReportArchive(builder.Build()));
         }
@@ -262,8 +260,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.Views.UsageReport
 
             viewModel.Selection = new DateSelection()
             {
-                StartDate = BaselineTime.AddDays(1),
-                EndDate = BaselineTime.AddDays(2)
+                StartDate = BaselineTime,
+                EndDate = BaselineTime.AddDays(1)
             };
             viewModel.SelectedNode = viewModel.Nodes.FirstOrDefault();
 
@@ -281,7 +279,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.Views.UsageReport
 
             var histogram = viewModel.Histogram;
             Assert.AreEqual(BaselineTime, histogram.First().Timestamp);
-            Assert.AreEqual(BaselineTime.AddDays(2), histogram.Last().Timestamp);
+            Assert.AreEqual(BaselineTime.AddDays(7), histogram.Last().Timestamp);
 
             viewModel.Selection = new DateSelection()
             {
@@ -290,7 +288,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.Views.UsageReport
             };
 
             Assert.AreEqual(BaselineTime, histogram.First().Timestamp);
-            Assert.AreEqual(BaselineTime.AddDays(2), histogram.Last().Timestamp);
+            Assert.AreEqual(BaselineTime.AddDays(7), histogram.Last().Timestamp);
         }
     }
 }

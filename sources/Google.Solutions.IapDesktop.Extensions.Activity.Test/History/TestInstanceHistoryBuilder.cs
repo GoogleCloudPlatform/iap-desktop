@@ -41,7 +41,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.History
         public void WhenInstanceIsDeletedAndNoEventsRegistered_ThenImageIsNull()
         {
             var b = InstanceHistoryBuilder.ForDeletedInstance(1);
-            var i = b.Build();
+            var i = b.Build(new DateTime(2019, 12, 1));
 
             Assert.AreEqual(1, i.InstanceId);
 
@@ -68,7 +68,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.History
             b.OnSetPlacement("server-1", null, new DateTime(2019, 12, 30));
             b.OnSetPlacement("server-1", SampleNodeType, new DateTime(2019, 12, 29));
 
-            var placements = b.Build().Placements.ToList();
+            var placements = b.Build(new DateTime(2019, 12, 1)).Placements.ToList();
             Assert.AreEqual(1, placements.Count());
             Assert.AreEqual(new DateTime(2019, 12, 29), placements[0].From);
             Assert.AreEqual(new DateTime(2019, 12, 31), placements[0].To);
@@ -92,7 +92,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.History
             b.OnStop(new DateTime(2019, 12, 29), SampleReference);
             b.OnSetPlacement("server-1", null, new DateTime(2019, 12, 28));
 
-            var placements = b.Build().Placements.ToList();
+            var placements = b.Build(new DateTime(2019, 12, 1)).Placements.ToList();
             Assert.AreEqual(2, placements.Count());
             Assert.AreEqual(new DateTime(2019, 12, 28), placements[0].From);
             Assert.AreEqual(new DateTime(2019, 12, 29), placements[0].To);
@@ -115,7 +115,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.History
             b.OnSetPlacement("server-1", SampleNodeType, new DateTime(2019, 12, 30));
             b.OnSetPlacement("server-2", null, new DateTime(2019, 12, 29));
 
-            var placements = b.Build().Placements.ToList();
+            var placements = b.Build(new DateTime(2019, 12, 1)).Placements.ToList();
             Assert.AreEqual(2, placements.Count());
             Assert.AreEqual("server-2", placements[0].ServerId);
             Assert.IsNull(placements[0].NodeType);
@@ -141,7 +141,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.History
                 null);
             b.OnSetPlacement("server-1", null, new DateTime(2019, 12, 30));
 
-            var i = b.Build();
+            var i = b.Build(new DateTime(2019, 12, 1));
 
             Assert.AreEqual(1, i.InstanceId);
             Assert.AreEqual(1, i.Placements.Count());
@@ -167,7 +167,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.History
             b.OnSetPlacement("server-2", null, new DateTime(2019, 12, 30));
             b.OnSetPlacement("server-1", SampleNodeType, new DateTime(2019, 12, 29));
 
-            var i = b.Build();
+            var i = b.Build(new DateTime(2019, 12, 1));
 
             var placements = i.Placements.ToList();
             Assert.AreEqual(2, i.Placements.Count());
@@ -199,7 +199,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.History
             b.OnStop(new DateTime(2019, 12, 29), SampleReference);
             b.OnSetPlacement("server-1", null, new DateTime(2019, 12, 28));
 
-            var i = b.Build();
+            var i = b.Build(new DateTime(2019, 12, 1));
 
             var placements = i.Placements.ToList();
             Assert.AreEqual(2, i.Placements.Count());
@@ -213,6 +213,30 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.History
             Assert.AreEqual(new DateTime(2019, 12, 31), placements[1].To);
         }
 
+        [Test]
+        public void WhenInstanceRunningAndNoPlacementRegistered_ThenInstanceHasSyntheticPlacementSpanningEntirePeriod()
+        {
+            var reportStartDate = new DateTime(2019, 12, 1);
+            var lastSeen = new DateTime(2019, 12, 31);
+            var b = InstanceHistoryBuilder.ForExistingInstance(
+                1,
+                SampleReference,
+                SampleImage,
+                InstanceState.Running,
+                lastSeen,
+                Tenancies.SoleTenant,
+                "server-2",
+                null);
+
+            var i = b.Build(reportStartDate);
+
+            var placements = i.Placements.ToList();
+            Assert.AreEqual(1, i.Placements.Count());
+
+            Assert.AreEqual("server-2", placements[0].ServerId);
+            Assert.AreEqual(reportStartDate, placements[0].From);
+            Assert.AreEqual(lastSeen, placements[0].To);
+        }
 
         //---------------------------------------------------------------------
         // Placement events for deleted instances.
@@ -227,7 +251,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.History
             b.OnSetPlacement("server-1", null, new DateTime(2019, 12, 30));
 
             Assert.AreEqual(Tenancies.SoleTenant, b.Tenancy);
-            var i = b.Build();
+            var i = b.Build(new DateTime(2019, 12, 1));
 
             Assert.AreEqual(1, i.InstanceId);
             Assert.AreEqual(1, i.Placements.Count());
@@ -247,7 +271,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.History
             b.OnSetPlacement("server-1", null, new DateTime(2019, 12, 29));
 
             Assert.AreEqual(Tenancies.SoleTenant, b.Tenancy);
-            var i = b.Build();
+            var i = b.Build(new DateTime(2019, 12, 1));
 
             var placements = i.Placements.ToList();
             Assert.AreEqual(2, i.Placements.Count());
@@ -271,7 +295,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.History
             b.OnSetPlacement("server-1", null, new DateTime(2019, 12, 28));
 
             Assert.AreEqual(Tenancies.SoleTenant, b.Tenancy);
-            var i = b.Build();
+            var i = b.Build(new DateTime(2019, 12, 1));
 
             var placements = i.Placements.ToList();
             Assert.AreEqual(2, i.Placements.Count());

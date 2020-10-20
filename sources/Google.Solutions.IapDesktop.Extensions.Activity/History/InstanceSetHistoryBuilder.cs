@@ -194,7 +194,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.History
             return new InstanceSetHistory(
                 this.StartDate,
                 this.EndDate,
-                this.instanceBuilders.Values.Select(b => b.Build()).ToList());
+                this.instanceBuilders.Values.Select(b => b.Build(this.StartDate)).ToList());
         }
 
         //---------------------------------------------------------------------

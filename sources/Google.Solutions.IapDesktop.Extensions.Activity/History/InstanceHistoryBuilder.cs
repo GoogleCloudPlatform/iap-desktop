@@ -220,14 +220,42 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.History
                 null);
         }
 
-        public InstanceHistory Build()
+        public InstanceHistory Build(DateTime reportStartDate)
         {
+            IEnumerable<InstancePlacement> sanitizedPlacements = this.placements;
+
+            if (placements.Count() == 1 &&
+                placements.First() is InstancePlacement firstPlacement &&
+                firstPlacement.From == this.lastStoppedOn &&
+                firstPlacement.To == this.lastStoppedOn)
+            {
+                // This instance is running, but we did not see a 
+                // start event -- so the instance must have been started
+                // even earlier.
+                //
+                // Keeping the (synthetic) placement would cause statistics
+                // to count this instance as not running - therefore, extend
+                // the placement so that it covers the entire analyzed time
+                // frame. 
+                sanitizedPlacements = new[]
+                {
+                    new InstancePlacement(
+                        firstPlacement.Tenancy,
+                        firstPlacement.ServerId,
+                        firstPlacement.NodeType,
+                        reportStartDate,
+                        firstPlacement.To)
+                };
+            }
+
+            Debug.Assert(sanitizedPlacements.All(p => p.From != p.To));
+
             return new InstanceHistory(
                 this.InstanceId,
                 this.reference,
                 this.State,
                 this.image,
-                this.placements);
+                sanitizedPlacements);
         }
 
         public InstanceHistoryState State
