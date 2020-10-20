@@ -51,9 +51,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Events.Lifecycle
         // IInstanceStateChangeEvent.
         //---------------------------------------------------------------------
 
-        public bool IsStartingInstance => false;
+        public bool IsStartingInstance => !IsError;
 
-        public bool IsTerminatingInstance => !IsError;
+        public bool IsTerminatingInstance => false;
 
     }
 }
