@@ -104,30 +104,52 @@ namespace Google.Solutions.IapDesktop.Application.ObjectModel
             return (TService)CreateInstance(typeof(TService));
         }
 
+        //---------------------------------------------------------------------
+        // Singleton registration.
+        //---------------------------------------------------------------------
+
+        private void AddSingleton(Type singletonType, SingletonStub stub)
+        {
+            this.singletons[singletonType] = stub;
+        }
+
         public void AddSingleton<TService>(TService singleton)
         {
-            this.singletons[typeof(TService)] = new SingletonStub(singleton);
+            AddSingleton(typeof(TService), new SingletonStub(singleton));
         }
 
         public void AddSingleton<TService>()
         {
-            this.singletons[typeof(TService)] = new SingletonStub(CreateInstance<TService>());
+            AddSingleton(typeof(TService), new SingletonStub(CreateInstance<TService>()));
         }
 
         public void AddSingleton<TService, TServiceClass>()
         {
-            this.singletons[typeof(TService)] = new SingletonStub(CreateInstance<TServiceClass>());
+            AddSingleton(typeof(TService), new SingletonStub(CreateInstance<TServiceClass>()));
+        }
+
+        //---------------------------------------------------------------------
+        // Transient registration.
+        //---------------------------------------------------------------------
+
+        private void AddTransient(Type serviceType, Type implementationType)
+        {
+            this.transients[serviceType] = () => CreateInstance(implementationType);
         }
 
         public void AddTransient<TService>()
         {
-            this.transients[typeof(TService)] = () => CreateInstance<TService>();
+            AddTransient(typeof(TService), typeof(TService));
         }
 
         public void AddTransient<TService, TServiceClass>()
         {
-            this.transients[typeof(TService)] = () => CreateInstance<TServiceClass>();
+            AddTransient(typeof(TService), typeof(TServiceClass));
         }
+
+        //---------------------------------------------------------------------
+        // Lookup.
+        //---------------------------------------------------------------------
 
         public object GetService(Type serviceType)
         {
@@ -224,8 +246,9 @@ namespace Google.Solutions.IapDesktop.Application.ObjectModel
                 if (type.GetCustomAttribute<ServiceAttribute>() is ServiceAttribute attribute &&
                     attribute.Lifetime == ServiceLifetime.Transient)
                 {
-                    this.transients[attribute.ServiceInterface ?? type] =
-                        () => CreateInstance(type);
+                    AddTransient(
+                        attribute.ServiceInterface ?? type,
+                        type);
                 }
             }
 
@@ -246,8 +269,9 @@ namespace Google.Solutions.IapDesktop.Application.ObjectModel
                 if (type.GetCustomAttribute<ServiceAttribute>() is ServiceAttribute attribute &&
                     attribute.Lifetime == ServiceLifetime.Singleton)
                 {
-                    this.singletons[attribute.ServiceInterface ?? type] 
-                        = new SingletonStub(() => CreateInstance(type));
+                    AddSingleton(
+                        attribute.ServiceInterface ?? type,
+                        new SingletonStub(() => CreateInstance(type)));
                 }
             }
 
