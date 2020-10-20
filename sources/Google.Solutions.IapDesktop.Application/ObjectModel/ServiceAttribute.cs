@@ -64,4 +64,20 @@ namespace Google.Solutions.IapDesktop.Application.ObjectModel
         Transient,
         Singleton
     }
+
+
+    /// <summary>
+    /// Declare that a class implements a category interface.
+    /// Only valid in extension DLLs.
+    /// </summary>
+    [AttributeUsage(AttributeTargets.Class)]
+    public class ServiceCategoryAttribute : Attribute
+    {
+        public Type Category { get; }
+
+        public ServiceCategoryAttribute(Type category)
+        {
+            this.Category = category;
+        }
+    }
 }

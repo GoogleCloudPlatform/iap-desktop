@@ -193,7 +193,7 @@ namespace Google.Solutions.IapDesktop.Application.ObjectModel
         public void AddExtensionAssembly(Assembly assembly)
         {
             //
-            // First, register all transients. 
+            // (1) First, register all transients. 
             //
             foreach (var type in assembly.GetTypes())
             {
@@ -215,7 +215,7 @@ namespace Google.Solutions.IapDesktop.Application.ObjectModel
             //
 
             //
-            // (1) Register stubs, but do not create instances yet.
+            // (2) Register stubs, but do not create instances yet.
             //
             foreach (var type in assembly.GetTypes())
             {
@@ -228,7 +228,22 @@ namespace Google.Solutions.IapDesktop.Application.ObjectModel
             }
 
             //
-            // (2) Trigger stubs to create instances.
+            // (3) Register categories.
+            //
+            foreach (var type in assembly.GetTypes())
+            {
+                if (type.GetCustomAttribute<ServiceAttribute>() is ServiceAttribute attribute &&
+                    type.GetCustomAttribute<ServiceCategoryAttribute>() is ServiceCategoryAttribute categoryAttribute)
+                {
+                    AddServiceToCategory(
+                        categoryAttribute.Category,
+                        attribute.ServiceInterface ?? type);
+                }
+            }
+
+            //
+            // (4) Trigger stubs to run constructors of singletons. The constructors
+            //     now have access to all services.
             //
             foreach (var stub in this.singletons.Values)
             {

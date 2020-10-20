@@ -21,6 +21,7 @@
 
 using Google.Solutions.IapDesktop.Application.ObjectModel;
 using NUnit.Framework;
+using System.Linq;
 using System.Reflection;
 
 namespace Google.Solutions.IapDesktop.Application.Test.ObjectModel
@@ -110,6 +111,41 @@ namespace Google.Solutions.IapDesktop.Application.Test.ObjectModel
             Assert.AreNotSame(
                 registry.GetService<TransientService>(),
                 registry.GetService<TransientService>());
+        }
+
+        //---------------------------------------------------------------------
+        // Register service category.
+        //---------------------------------------------------------------------
+
+        public interface ICategory
+        {
+        }
+
+        [Service]
+        [ServiceCategory(typeof(ICategory))]
+        public class TransientServiceImplementingCategory : ICategory
+        { }
+
+        public interface ITransientServiceWithInterface
+        { 
+        }
+
+        [Service(typeof(ITransientServiceWithInterface))]
+        [ServiceCategory(typeof(ICategory))]
+        public class TransientServiceWithInterfaceImplementingCategory : ITransientServiceWithInterface, ICategory
+        { }
+
+        [Test]
+        public void WhenClassesAnnotatedAsServiceCategory_ThenServicesCanBeResolvedViaCategory()
+        {
+            var registry = new ServiceRegistry();
+            registry.AddExtensionAssembly(Assembly.GetExecutingAssembly());
+
+            var services = registry.GetServicesByCategory<ICategory>();
+            Assert.IsNotNull(services);
+            Assert.AreEqual(2, services.Count());
+            Assert.AreEqual(1, services.OfType<TransientServiceImplementingCategory>().Count());
+            Assert.AreEqual(1, services.OfType<TransientServiceWithInterfaceImplementingCategory>().Count());
         }
     }
 }
