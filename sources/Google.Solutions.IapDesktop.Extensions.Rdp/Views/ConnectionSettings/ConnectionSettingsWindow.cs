@@ -29,7 +29,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Views.ConnectionSettings
 {
     [SkipCodeCoverage("All logic in view model")]
     [Service(typeof(IConnectionSettingsWindow), ServiceLifetime.Singleton)]
-    public class ConnectionSettingsWindow : PropertiesWindow, IConnectionSettingsWindow
+    public class ConnectionSettingsWindow : PropertiesInspectorWindow, IConnectionSettingsWindow
     {
         public ConnectionSettingsWindow(IServiceProvider serviceProvider)
             : base(

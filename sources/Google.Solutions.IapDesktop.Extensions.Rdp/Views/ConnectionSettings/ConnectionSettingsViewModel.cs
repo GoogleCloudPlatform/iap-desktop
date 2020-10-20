@@ -28,7 +28,7 @@ using System.Threading.Tasks;
 
 namespace Google.Solutions.IapDesktop.Extensions.Rdp.Views.ConnectionSettings
 {
-    internal class ConnectionSettingsViewModel : ViewModelBase, IPropertiesViewModel
+    internal class ConnectionSettingsViewModel : ViewModelBase, IPropertiesInspectorViewModel
     {
         internal const string DefaultWindowTitle = "Connection settings";
 

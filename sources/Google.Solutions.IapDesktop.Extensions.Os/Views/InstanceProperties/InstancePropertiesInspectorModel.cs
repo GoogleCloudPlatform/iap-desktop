@@ -22,7 +22,6 @@
 using Google.Apis.Compute.v1.Data;
 using Google.Solutions.Common.Locator;
 using Google.Solutions.Common.Util;
-using Google.Solutions.IapDesktop.Application.Controls;
 using Google.Solutions.IapDesktop.Application.Services.Adapters;
 using Google.Solutions.IapDesktop.Extensions.Os.Inventory;
 using Google.Solutions.IapDesktop.Extensions.Os.Services.Inventory;
@@ -33,7 +32,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Google.Solutions.IapDesktop.Extensions.Os.Views.InstanceDetails
+namespace Google.Solutions.IapDesktop.Extensions.Os.Views.InstanceProperties
 {
     internal class InstanceDetailsModel
     {

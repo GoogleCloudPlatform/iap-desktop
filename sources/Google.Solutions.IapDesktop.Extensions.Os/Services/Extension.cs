@@ -23,7 +23,7 @@ using Google.Solutions.IapDesktop.Application.ObjectModel;
 using Google.Solutions.IapDesktop.Application.Views;
 using Google.Solutions.IapDesktop.Application.Views.ProjectExplorer;
 using Google.Solutions.IapDesktop.Extensions.Os.Properties;
-using Google.Solutions.IapDesktop.Extensions.Os.Views.InstanceDetails;
+using Google.Solutions.IapDesktop.Extensions.Os.Views.InstanceProperties;
 using Google.Solutions.IapDesktop.Extensions.Os.Views.PackageInventory;
 using System;
 using System.Windows.Forms;
@@ -45,30 +45,20 @@ namespace Google.Solutions.IapDesktop.Extensions.Os.Services
 
             projectExplorer.ToolbarCommands.AddCommand(
                 new Command<IProjectExplorerNode>(
-                    "Show &details",
-                    InstanceDetailsViewModel.GetToolbarCommandState,
-                    context => serviceProvider.GetService<InstanceDetailsWindow>().ShowWindow())
+                    "Properties",
+                    InstancePropertiesViewModel.GetToolbarCommandState,
+                    context => serviceProvider.GetService<InstancePropertiesWindow>().ShowWindow())
                 {
                     Image = Resources.ComputerDetails_16
                 },
                 4);
-
-            projectExplorer.ContextMenuCommands.AddCommand(
-                new Command<IProjectExplorerNode>(
-                    "Show &details",
-                    InstanceDetailsViewModel.GetContextMenuCommandState,
-                    context => serviceProvider.GetService<InstanceDetailsWindow>().ShowWindow())
-                {
-                    Image = Resources.ComputerDetails_16
-                },
-                7);
 
             var osCommand = projectExplorer.ContextMenuCommands.AddCommand(
                 new Command<IProjectExplorerNode>(
                     "Soft&ware packages",
                     PackageInventoryViewModel.GetCommandState,
                     context => { }),
-                8);
+                7);
             osCommand.AddCommand(
                 new Command<IProjectExplorerNode>(
                     "Show &installed packages",
@@ -86,6 +76,16 @@ namespace Google.Solutions.IapDesktop.Extensions.Os.Services
                     Image = Resources.PackageUpdate_16
                 });
 
+            projectExplorer.ContextMenuCommands.AddCommand(
+                new Command<IProjectExplorerNode>(
+                    "P&roperties",
+                    InstancePropertiesViewModel.GetContextMenuCommandState,
+                    context => serviceProvider.GetService<InstancePropertiesWindow>().ShowWindow())
+                {
+                    Image = Resources.ComputerDetails_16
+                },
+                8);
+
             //
             // Add commands to main menu.
             //
@@ -94,7 +94,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Os.Services
                 new Command<IMainForm>(
                     "&Instance details",
                     _ => CommandState.Enabled,
-                    _ => serviceProvider.GetService<InstanceDetailsWindow>().ShowWindow())
+                    _ => serviceProvider.GetService<InstancePropertiesWindow>().ShowWindow())
                 {
                     Image = Resources.ComputerDetails_16,
                     ShortcutKeys = Keys.Control | Keys.Alt | Keys.I

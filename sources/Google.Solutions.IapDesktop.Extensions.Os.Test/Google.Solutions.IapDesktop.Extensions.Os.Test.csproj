@@ -89,8 +89,8 @@
     <Compile Include="Inventory\TestWuaPackage.cs" />
     <Compile Include="Inventory\TestWuaPackageType.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Views\InstanceDetails\TestInstanceDetailsModel.cs" />
-    <Compile Include="Views\InstanceDetails\TestInstanceDetailsViewModel.cs" />
+    <Compile Include="Views\InstanceProperties\TestInstancePropertiesInspectorModel.cs" />
+    <Compile Include="Views\InstanceProperties\TestInstancePropertiesInspectorViewModel.cs" />
     <Compile Include="Services\Inventory\TestInventoryService.cs" />
     <Compile Include="Views\PackageInventory\TestPackageInventoryViewModel.cs" />
   </ItemGroup>
