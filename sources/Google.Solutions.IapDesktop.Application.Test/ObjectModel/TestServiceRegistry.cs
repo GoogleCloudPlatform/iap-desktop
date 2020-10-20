@@ -55,6 +55,16 @@ namespace Google.Solutions.IapDesktop.Application.Test.ObjectModel
             }
         }
 
+        public class ServiceWithServiceCategoryProviderConstructor
+        {
+            public IServiceCategoryProvider provider;
+
+            public ServiceWithServiceCategoryProviderConstructor(IServiceCategoryProvider provider)
+            {
+                this.provider = provider;
+            }
+        }
+
         public interface ICategory
         { }
 
@@ -112,6 +122,17 @@ namespace Google.Solutions.IapDesktop.Application.Test.ObjectModel
             Assert.IsNotNull(service);
             Assert.AreSame(registry, service.provider);
 
+        }
+
+        [Test]
+        public void WhenTransientHasSericeCategoryProviderConstructor_ThenGetServiceReturnsNewInstance()
+        {
+            var registry = new ServiceRegistry();
+            registry.AddTransient<ServiceWithServiceCategoryProviderConstructor>();
+
+            var service = registry.GetService<ServiceWithServiceCategoryProviderConstructor>();
+            Assert.IsNotNull(service);
+            Assert.AreSame(registry, service.provider);
         }
 
         [Test]

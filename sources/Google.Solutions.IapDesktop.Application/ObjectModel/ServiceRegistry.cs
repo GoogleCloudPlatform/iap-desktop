@@ -39,7 +39,7 @@ namespace Google.Solutions.IapDesktop.Application.ObjectModel
     /// startup. Once all services have been registered, service lookup is
     /// thread-safe.
     /// </summary>
-    public class ServiceRegistry : IServiceProvider
+    public class ServiceRegistry : IServiceCategoryProvider, IServiceProvider
     {
         private readonly ServiceRegistry parent;
         private readonly IDictionary<Type, SingletonStub> singletons = new Dictionary<Type, SingletonStub>();
@@ -73,6 +73,16 @@ namespace Google.Solutions.IapDesktop.Application.ObjectModel
             if (constructorWithServiceProvider != null)
             {
                 return Activator.CreateInstance(serviceType, (IServiceProvider)this);
+            }
+
+            var constructorWithServiceCategoryProvider = serviceType.GetConstructor(
+                BindingFlags.Public | BindingFlags.Instance,
+                null,
+                new[] { typeof(IServiceCategoryProvider) },
+                null);
+            if (constructorWithServiceCategoryProvider != null)
+            {
+                return Activator.CreateInstance(serviceType, (IServiceCategoryProvider)this);
             }
 
             var defaultConstructor = serviceType.GetConstructor(
