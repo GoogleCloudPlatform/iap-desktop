@@ -175,15 +175,29 @@ namespace Google.Solutions.IapDesktop.Application.ObjectModel
         }
 
         public IEnumerable<TCategory> GetServicesByCategory<TCategory>()
-        { 
-            if (this.categories.TryGetValue(typeof(TCategory), out IList<Type> serviceTypes))
+        {
+            //
+            // Consider parent services.
+            //
+            IEnumerable<TCategory> services;
+            if (this.parent != null)
             {
-                return serviceTypes.Select(t => (TCategory)GetService(t));
+                services = this.parent.GetServicesByCategory<TCategory>();
             }
             else
             {
-                return Enumerable.Empty<TCategory>();
+                services = Enumerable.Empty<TCategory>();
             }
+
+            //
+            // Consider own services.
+            //
+            if (this.categories.TryGetValue(typeof(TCategory), out IList<Type> serviceTypes))
+            {
+                services = services.Concat(serviceTypes.Select(t => (TCategory)GetService(t)));
+            }
+
+            return services;
         }
 
         //---------------------------------------------------------------------

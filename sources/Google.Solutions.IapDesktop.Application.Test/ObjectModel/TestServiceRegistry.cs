@@ -195,5 +195,25 @@ namespace Google.Solutions.IapDesktop.Application.Test.ObjectModel
             Assert.IsNotNull(services);
             Assert.AreEqual(2, services.Count());
         }
+
+        [Test]
+        public void WhenParentAndChildHaveServiceThatImplementCategory_ThenGetServicesByCategoryReturnsBoth()
+        {
+            var parentRegistry = new ServiceRegistry();
+            parentRegistry.AddSingleton<FirstServiceImplementingCategory>();
+            parentRegistry.AddServiceToCategory<ICategory, FirstServiceImplementingCategory>();
+
+            var childRegistry = new ServiceRegistry(parentRegistry);
+            childRegistry.AddTransient<SecondServiceImplementingCategory>();
+            childRegistry.AddServiceToCategory<ICategory, SecondServiceImplementingCategory>();
+
+            var parentServices = parentRegistry.GetServicesByCategory<ICategory>();
+            Assert.IsNotNull(parentServices);
+            Assert.AreEqual(1, parentServices.Count());
+
+            var childServices = childRegistry.GetServicesByCategory<ICategory>();
+            Assert.IsNotNull(childServices);
+            Assert.AreEqual(2, childServices.Count());
+        }
     }
 }
