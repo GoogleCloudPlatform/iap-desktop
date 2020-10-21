@@ -105,6 +105,8 @@ namespace Google.Solutions.IapTunneling.Test.Iap
 
                 await clientStream.CloseAsync(tokenSource.Token);
 
+                await Task.Delay(50);
+
                 Assert.AreEqual(length, totalBytesRead, "bytes read");
                 Assert.AreEqual(length, clientStreamStats.BytesReceived, "client received");
                 Assert.AreEqual(length, listener.Statistics.BytesReceived, "server received");
