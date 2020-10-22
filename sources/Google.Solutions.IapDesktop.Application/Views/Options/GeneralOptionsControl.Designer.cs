@@ -29,9 +29,9 @@
         private void InitializeComponent()
         {
             this.updateCheckBox = new System.Windows.Forms.GroupBox();
-            this.enableUpdateCheckBox = new System.Windows.Forms.CheckBox();
-            this.lastCheckHeaderLabel = new System.Windows.Forms.Label();
             this.lastCheckLabel = new System.Windows.Forms.Label();
+            this.lastCheckHeaderLabel = new System.Windows.Forms.Label();
+            this.enableUpdateCheckBox = new System.Windows.Forms.CheckBox();
             this.browserIntegrationBox = new System.Windows.Forms.GroupBox();
             this.enableBrowserIntegrationCheclBox = new System.Windows.Forms.CheckBox();
             this.updateCheckBox.SuspendLayout();
@@ -50,15 +50,14 @@
             this.updateCheckBox.TabStop = false;
             this.updateCheckBox.Text = "Updates";
             // 
-            // enableUpdateCheckBox
+            // lastCheckLabel
             // 
-            this.enableUpdateCheckBox.AutoSize = true;
-            this.enableUpdateCheckBox.Location = new System.Drawing.Point(10, 24);
-            this.enableUpdateCheckBox.Name = "enableUpdateCheckBox";
-            this.enableUpdateCheckBox.Size = new System.Drawing.Size(287, 17);
-            this.enableUpdateCheckBox.TabIndex = 1;
-            this.enableUpdateCheckBox.Text = "Periodically check for updates when closing application";
-            this.enableUpdateCheckBox.UseVisualStyleBackColor = true;
+            this.lastCheckLabel.AutoSize = true;
+            this.lastCheckLabel.Location = new System.Drawing.Point(95, 48);
+            this.lastCheckLabel.Name = "lastCheckLabel";
+            this.lastCheckLabel.Size = new System.Drawing.Size(10, 13);
+            this.lastCheckLabel.TabIndex = 2;
+            this.lastCheckLabel.Text = "-";
             // 
             // lastCheckHeaderLabel
             // 
@@ -69,14 +68,15 @@
             this.lastCheckHeaderLabel.TabIndex = 2;
             this.lastCheckHeaderLabel.Text = "Last check:";
             // 
-            // lastCheckLabel
+            // enableUpdateCheckBox
             // 
-            this.lastCheckLabel.AutoSize = true;
-            this.lastCheckLabel.Location = new System.Drawing.Point(95, 48);
-            this.lastCheckLabel.Name = "lastCheckLabel";
-            this.lastCheckLabel.Size = new System.Drawing.Size(10, 13);
-            this.lastCheckLabel.TabIndex = 2;
-            this.lastCheckLabel.Text = "-";
+            this.enableUpdateCheckBox.AutoSize = true;
+            this.enableUpdateCheckBox.Location = new System.Drawing.Point(10, 24);
+            this.enableUpdateCheckBox.Name = "enableUpdateCheckBox";
+            this.enableUpdateCheckBox.Size = new System.Drawing.Size(287, 17);
+            this.enableUpdateCheckBox.TabIndex = 1;
+            this.enableUpdateCheckBox.Text = "Periodically check for updates when closing application";
+            this.enableUpdateCheckBox.UseVisualStyleBackColor = true;
             // 
             // browserIntegrationBox
             // 
@@ -93,9 +93,9 @@
             this.enableBrowserIntegrationCheclBox.AutoSize = true;
             this.enableBrowserIntegrationCheclBox.Location = new System.Drawing.Point(10, 24);
             this.enableBrowserIntegrationCheclBox.Name = "enableBrowserIntegrationCheclBox";
-            this.enableBrowserIntegrationCheclBox.Size = new System.Drawing.Size(262, 17);
+            this.enableBrowserIntegrationCheclBox.Size = new System.Drawing.Size(234, 17);
             this.enableBrowserIntegrationCheclBox.TabIndex = 1;
-            this.enableBrowserIntegrationCheclBox.Text = "Open IAP Desktop when opening iap-rdp:/// links";
+            this.enableBrowserIntegrationCheclBox.Text = "Associate IAP Desktop with iap-rdp:/// links";
             this.enableBrowserIntegrationCheclBox.UseVisualStyleBackColor = true;
             // 
             // GeneralOptionsControl

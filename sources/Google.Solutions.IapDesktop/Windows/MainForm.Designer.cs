@@ -61,9 +61,8 @@ namespace Google.Solutions.IapDesktop.Windows
             this.viewToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.projectExplorerToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.checkForUpdatesOnExitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.enableloggingToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.enableAppProtocolToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.optionsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.helpToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.viewHelpToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.openIapDocsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -79,7 +78,6 @@ namespace Google.Solutions.IapDesktop.Windows
             this.toolStripStatus = new System.Windows.Forms.ToolStripStatusLabel();
             this.toolStripEmailButton = new System.Windows.Forms.ToolStripDropDownButton();
             this.dockPanel = new WeifenLuo.WinFormsUI.Docking.DockPanel();
-            this.optionsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.mainMenu.SuspendLayout();
             this.statusStrip.SuspendLayout();
             this.SuspendLayout();
@@ -157,34 +155,25 @@ namespace Google.Solutions.IapDesktop.Windows
             // toolsToolStripMenuItem
             // 
             this.toolsToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.checkForUpdatesOnExitToolStripMenuItem,
             this.enableloggingToolStripMenuItem,
-            this.enableAppProtocolToolStripMenuItem,
             this.optionsToolStripMenuItem});
             this.toolsToolStripMenuItem.Name = "toolsToolStripMenuItem";
             this.toolsToolStripMenuItem.Size = new System.Drawing.Size(46, 20);
             this.toolsToolStripMenuItem.Text = "&Tools";
             // 
-            // checkForUpdatesOnExitToolStripMenuItem
-            // 
-            this.checkForUpdatesOnExitToolStripMenuItem.Name = "checkForUpdatesOnExitToolStripMenuItem";
-            this.checkForUpdatesOnExitToolStripMenuItem.Size = new System.Drawing.Size(243, 22);
-            this.checkForUpdatesOnExitToolStripMenuItem.Text = "Check for &updates on exit";
-            this.checkForUpdatesOnExitToolStripMenuItem.Click += new System.EventHandler(this.checkForUpdatesOnExitToolStripMenuItem_Click);
-            // 
             // enableloggingToolStripMenuItem
             // 
             this.enableloggingToolStripMenuItem.Name = "enableloggingToolStripMenuItem";
-            this.enableloggingToolStripMenuItem.Size = new System.Drawing.Size(243, 22);
+            this.enableloggingToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.enableloggingToolStripMenuItem.Text = "Enable &logging";
             this.enableloggingToolStripMenuItem.Click += new System.EventHandler(this.enableloggingToolStripMenuItem_Click);
             // 
-            // enableAppProtocolToolStripMenuItem
+            // optionsToolStripMenuItem
             // 
-            this.enableAppProtocolToolStripMenuItem.Name = "enableAppProtocolToolStripMenuItem";
-            this.enableAppProtocolToolStripMenuItem.Size = new System.Drawing.Size(243, 22);
-            this.enableAppProtocolToolStripMenuItem.Text = "Associate with \'iap-rdp:///\' &links";
-            this.enableAppProtocolToolStripMenuItem.Click += new System.EventHandler(this.enableAppProtocolToolStripMenuItem_Click);
+            this.optionsToolStripMenuItem.Name = "optionsToolStripMenuItem";
+            this.optionsToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.optionsToolStripMenuItem.Text = "&Options";
+            this.optionsToolStripMenuItem.Click += new System.EventHandler(this.optionsToolStripMenuItem_Click);
             // 
             // helpToolStripMenuItem
             // 
@@ -313,13 +302,6 @@ namespace Google.Solutions.IapDesktop.Windows
             this.dockPanel.Size = new System.Drawing.Size(984, 615);
             this.dockPanel.TabIndex = 9;
             // 
-            // optionsToolStripMenuItem
-            // 
-            this.optionsToolStripMenuItem.Name = "optionsToolStripMenuItem";
-            this.optionsToolStripMenuItem.Size = new System.Drawing.Size(243, 22);
-            this.optionsToolStripMenuItem.Text = "&Options";
-            this.optionsToolStripMenuItem.Click += new System.EventHandler(this.optionsToolStripMenuItem_Click);
-            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -366,9 +348,7 @@ namespace Google.Solutions.IapDesktop.Windows
         private System.Windows.Forms.ToolStripMenuItem reportIssueToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem toolsToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem enableloggingToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem checkForUpdatesOnExitToolStripMenuItem;
         private System.Windows.Forms.ToolStripStatusLabel toolStripStatus;
-        private System.Windows.Forms.ToolStripMenuItem enableAppProtocolToolStripMenuItem;
         private System.Windows.Forms.ToolStripDropDownButton cancelBackgroundJobsButton;
         private System.Windows.Forms.ToolStripStatusLabel backgroundJobLabel;
         private System.Windows.Forms.ToolStripMenuItem shareFeedbackToolStripMenuItem;

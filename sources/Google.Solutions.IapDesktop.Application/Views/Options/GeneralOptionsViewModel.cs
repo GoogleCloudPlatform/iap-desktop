@@ -9,9 +9,9 @@ using System.Windows.Forms;
 
 namespace Google.Solutions.IapDesktop.Application.Views.Options
 {
-    internal class GeneralOptionsViewModel : ViewModelBase, IOptionsDialogPane
+    public class GeneralOptionsViewModel : ViewModelBase, IOptionsDialogPane
     {
-        internal const string FriendlyName = "IAP Desktop - Identity-Aware Proxy for Remote Desktop";
+        public const string FriendlyName = "IAP Desktop - Identity-Aware Proxy for Remote Desktop";
 
         private readonly ApplicationSettingsRepository settingsRepository;
         private readonly ApplicationSettings settings;

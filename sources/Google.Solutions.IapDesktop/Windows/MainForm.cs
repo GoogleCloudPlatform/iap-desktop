@@ -93,7 +93,7 @@ namespace Google.Solutions.IapDesktop.Windows
             //
             // Bind controls.
             //
-            this.Text = MainFormViewModel.FriendlyName;
+            this.Text = GeneralOptionsViewModel.FriendlyName;
             this.ViewMenu = new CommandContainer<IMainForm>(
                 this,
                 this.viewToolStripMenuItem.DropDownItems,
@@ -103,9 +103,7 @@ namespace Google.Solutions.IapDesktop.Windows
 
             this.viewModel = new MainFormViewModel(
                 this,
-                this.applicationSettings,
-                bootstrappingServiceProvider.GetService<AuthSettingsRepository>(),
-                bootstrappingServiceProvider.GetService<AppProtocolRegistry>());
+                bootstrappingServiceProvider.GetService<AuthSettingsRepository>());
 
             // Status bar.
             this.backgroundJobLabel.BindProperty(
@@ -127,18 +125,6 @@ namespace Google.Solutions.IapDesktop.Windows
                 c => c.Text,
                 this.viewModel,
                 m => m.UserEmail,
-                this.components);
-
-            // Menus.
-            this.checkForUpdatesOnExitToolStripMenuItem.BindProperty(
-                c => c.Checked,
-                this.viewModel,
-                m => m.IsUpdateCheckEnabled,
-                this.components);
-            this.enableAppProtocolToolStripMenuItem.BindProperty(
-                c => c.Checked,
-                this.viewModel,
-                m => m.IsProtocolRegistred,
                 this.components);
         }
 
@@ -418,18 +404,6 @@ namespace Google.Solutions.IapDesktop.Windows
                     .GetService<IExceptionDialog>()
                     .Show(this, "Configuring logging failed", e);
             }
-        }
-
-        private void enableAppProtocolToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            this.enableAppProtocolToolStripMenuItem.Checked =
-                !this.enableAppProtocolToolStripMenuItem.Checked;
-        }
-
-        private void checkForUpdatesOnExitToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            checkForUpdatesOnExitToolStripMenuItem.Checked =
-                !checkForUpdatesOnExitToolStripMenuItem.Checked;
         }
 
         private void optionsToolStripMenuItem_Click(object sender, EventArgs _)
