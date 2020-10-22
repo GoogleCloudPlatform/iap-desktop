@@ -3,6 +3,7 @@ using Google.Solutions.IapDesktop.Application.Services.Persistence;
 using Google.Solutions.IapDesktop.Application.Services.Settings;
 using Google.Solutions.IapDesktop.Application.Util;
 using System;
+using System.Diagnostics;
 using System.Reflection;
 using System.Windows.Forms;
 
@@ -14,21 +15,34 @@ namespace Google.Solutions.IapDesktop.Application.Views.Options
 
         private readonly ApplicationSettingsRepository settingsRepository;
         private readonly ApplicationSettings settings;
-        private readonly AppProtocolRegistry protocolRegistry;
+        private readonly IAppProtocolRegistry protocolRegistry;
 
         private bool isBrowserIntegrationEnabled;
         private bool isDirty = false;
 
-        public GeneralOptionsViewModel(IServiceProvider serviceProvider)
+        public GeneralOptionsViewModel(
+            ApplicationSettingsRepository settingsRepository,
+            IAppProtocolRegistry protocolRegistry)
         {
-            this.settingsRepository = serviceProvider.GetService<ApplicationSettingsRepository>();
-            this.settings = this.settingsRepository.GetSettings();
+            this.settingsRepository = settingsRepository;
+            this.protocolRegistry = protocolRegistry;
 
-            this.protocolRegistry = serviceProvider.GetService<AppProtocolRegistry>();
+            this.settings = this.settingsRepository.GetSettings();
             this.isBrowserIntegrationEnabled = this.protocolRegistry.IsRegistered(
                 IapRdpUrl.Scheme,
-                Assembly.GetEntryAssembly().Location);
+                ExecutableLocation);
         }
+
+        public GeneralOptionsViewModel(IServiceProvider serviceProvider)
+            : this(
+                  serviceProvider.GetService<ApplicationSettingsRepository>(),
+                  serviceProvider.GetService<IAppProtocolRegistry>())
+        {
+        }
+
+        // NB. GetEntryAssembly returns the .exe, but this does not work during tests.
+        private static string ExecutableLocation =>
+            (Assembly.GetEntryAssembly() ?? Assembly.GetExecutingAssembly()).Location;
 
         //---------------------------------------------------------------------
         // Observable properties.
@@ -78,6 +92,8 @@ namespace Google.Solutions.IapDesktop.Application.Views.Options
 
         public void ApplyChanges()
         {
+            Debug.Assert(this.IsDirty);
+
             // Save changed settings.
             this.settingsRepository.SetSettings(this.settings);
 
@@ -87,7 +103,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.Options
                 this.protocolRegistry.Register(
                     IapRdpUrl.Scheme,
                     FriendlyName,
-                    Assembly.GetEntryAssembly().Location);
+                    ExecutableLocation);
             }
             else
             {

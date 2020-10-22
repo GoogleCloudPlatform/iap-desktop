@@ -214,7 +214,7 @@ namespace Google.Solutions.IapDesktop
             // 
             // Persistence layer.
             //
-            persistenceLayer.AddTransient<AppProtocolRegistry>();
+            persistenceLayer.AddTransient<IAppProtocolRegistry, AppProtocolRegistry>();
             persistenceLayer.AddSingleton(new ApplicationSettingsRepository(
                 hkcu.CreateSubKey($@"{BaseRegistryKeyPath}\Application")));
             persistenceLayer.AddSingleton(new AuthSettingsRepository(

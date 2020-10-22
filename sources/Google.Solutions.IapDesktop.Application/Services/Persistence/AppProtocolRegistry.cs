@@ -23,7 +23,19 @@ using Microsoft.Win32;
 
 namespace Google.Solutions.IapDesktop.Application.Services.Persistence
 {
-    public class AppProtocolRegistry
+    public interface IAppProtocolRegistry
+    {
+        bool IsRegistered(string scheme, string applicationLocation);
+        
+        void Register(
+            string scheme,
+            string friendlyName,
+            string applicationLocation);
+
+        void Unregister(string scheme);
+    }
+
+    public class AppProtocolRegistry : IAppProtocolRegistry
     {
         private static string KeyPathFromScheme(string scheme)
             => $@"SOFTWARE\Classes\{scheme}";
