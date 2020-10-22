@@ -41,6 +41,7 @@ using WeifenLuo.WinFormsUI.Docking;
 using Google.Solutions.IapDesktop.Application.Services;
 using Google.Solutions.IapDesktop.Application.Services.Settings;
 using Google.Solutions.IapDesktop.Application.Views.Authentication;
+using Google.Solutions.IapDesktop.Application.Views.Options;
 
 #pragma warning disable IDE1006 // Naming Styles
 
@@ -431,6 +432,24 @@ namespace Google.Solutions.IapDesktop.Windows
                 !checkForUpdatesOnExitToolStripMenuItem.Checked;
         }
 
+        private void optionsToolStripMenuItem_Click(object sender, EventArgs _)
+        {
+            try
+            {
+                new OptionsDialog((IServiceCategoryProvider)this.serviceProvider).ShowDialog(this);
+            }
+            catch (TaskCanceledException)
+            {
+                // Ignore.
+            }
+            catch (Exception e)
+            {
+                this.serviceProvider
+                    .GetService<IExceptionDialog>()
+                    .Show(this, "Opening Options window failed", e);
+            }
+        }
+
         //---------------------------------------------------------------------
         // IJobHost.
         //---------------------------------------------------------------------
@@ -489,5 +508,6 @@ namespace Google.Solutions.IapDesktop.Windows
 
         public Task ReauthorizeAsync(CancellationToken token)
             => this.viewModel.ReauthorizeAsync(token);
+
     }
 }
