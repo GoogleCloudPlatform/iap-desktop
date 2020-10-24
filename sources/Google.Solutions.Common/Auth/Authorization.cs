@@ -174,7 +174,7 @@ namespace Google.Solutions.Common.Auth
 
             public Task<string> GetAccessTokenForRequestAsync(
                 string authUri = null,
-                CancellationToken cancellationToken = default(CancellationToken))
+                CancellationToken cancellationToken = default)
             {
                 return this.currentCredential.GetAccessTokenForRequestAsync(authUri, cancellationToken);
             }

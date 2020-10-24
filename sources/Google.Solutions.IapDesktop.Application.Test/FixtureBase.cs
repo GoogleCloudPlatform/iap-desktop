@@ -26,9 +26,9 @@ namespace Google.Solutions.IapDesktop.Application.Test
 {
     public abstract class FixtureBase
     {
-        private static ConsoleTraceListener listener = new ConsoleTraceListener();
+        private static readonly ConsoleTraceListener listener = new ConsoleTraceListener();
 
-        private static TraceSource[] Traces = new[]
+        private static readonly TraceSource[] Traces = new[]
         {
             Google.Solutions.Common.TraceSources.Common,
             Google.Solutions.IapTunneling.TraceSources.Compute,

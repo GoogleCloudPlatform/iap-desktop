@@ -31,6 +31,8 @@ using System.Diagnostics;
 using System.Linq;
 using System.Security.Cryptography;
 
+#pragma warning disable CA1027 // Mark enums with FlagsAttribute
+
 namespace Google.Solutions.IapDesktop.Extensions.Rdp.Services.Connection
 {
     //

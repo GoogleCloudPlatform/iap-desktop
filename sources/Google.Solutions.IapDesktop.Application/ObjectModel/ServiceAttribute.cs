@@ -28,7 +28,7 @@ namespace Google.Solutions.IapDesktop.Application.ObjectModel
     /// Only valid in extension DLLs.
     /// </summary>
     [AttributeUsage(AttributeTargets.Class)]
-    public class ServiceAttribute : Attribute
+    public sealed class ServiceAttribute : Attribute
     {
         public Type ServiceInterface { get; }
         public ServiceLifetime Lifetime { get; }

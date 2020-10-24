@@ -65,9 +65,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services.UsageReport
             OperatingSystemTypes osTypes,
             LicenseTypes licenseTypes)
         {
-            ImageAnnotation annotation;
             if (instance.Image == null ||
-                !this.LicenseAnnotations.TryGetValue(instance.Image.ToString(), out annotation))
+                !this.LicenseAnnotations.TryGetValue(instance.Image.ToString(), out ImageAnnotation annotation))
             {
                 annotation = ImageAnnotation.Default;
             }

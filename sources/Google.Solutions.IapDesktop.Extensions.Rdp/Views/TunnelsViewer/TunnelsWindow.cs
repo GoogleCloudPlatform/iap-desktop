@@ -38,7 +38,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Views.TunnelsViewer
     public partial class TunnelsWindow : ToolWindow, ITunnelsWindow
     {
         private readonly DockPanel dockPanel;
-        private readonly IExceptionDialog exceptionDialog;
         private readonly TunnelsViewModel viewModel;
 
         public TunnelsWindow(IServiceProvider serviceProvider)
@@ -50,16 +49,16 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Views.TunnelsViewer
 
             this.theme.ApplyTo(this.toolStrip);
 
-            this.exceptionDialog = serviceProvider.GetService<IExceptionDialog>();
-
             //
             // This window is a singleton, so we never want it to be closed,
             // just hidden.
             //
             this.HideOnClose = true;
 
-            this.viewModel = new TunnelsViewModel(serviceProvider);
-            this.viewModel.View = this;
+            this.viewModel = new TunnelsViewModel(serviceProvider)
+            {
+                View = this
+            };
 
             this.tunnelsList.BindCollection(viewModel.Tunnels);
             this.tunnelsList.BindColumn(0, t => t.Destination.Instance.Name);

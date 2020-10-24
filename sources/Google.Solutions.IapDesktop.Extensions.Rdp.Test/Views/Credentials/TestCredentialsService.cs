@@ -41,8 +41,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Test.Views.Credentials
     [TestFixture]
     public class TestCredentialsService : FixtureBase
     {
-        private readonly ServiceRegistry serviceRegistry = new ServiceRegistry();
-
         private static readonly InstanceLocator SampleInstance
             = new InstanceLocator("project-1", "zone-1", "instance-1");
 

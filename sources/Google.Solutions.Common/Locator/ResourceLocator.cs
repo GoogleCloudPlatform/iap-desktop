@@ -22,6 +22,8 @@
 using Google.Apis.Util;
 using System.Diagnostics;
 
+#pragma warning disable CA1055 // Uri return values should not be strings
+
 namespace Google.Solutions.Common.Locator
 {
     public abstract class ResourceLocator

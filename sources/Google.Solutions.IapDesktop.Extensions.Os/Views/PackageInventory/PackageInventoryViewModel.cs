@@ -179,7 +179,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Os.Views.PackageInventory
 
         internal static CommandState GetCommandState(IProjectExplorerNode node)
         {
-            return (node is IProjectExplorerVmInstanceNode vmNode ||
+            return (node is IProjectExplorerVmInstanceNode ||
                     node is IProjectExplorerZoneNode ||
                     node is IProjectExplorerProjectNode)
                 ? CommandState.Enabled
