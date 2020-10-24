@@ -25,6 +25,8 @@ using System;
 using System.Linq;
 using System.Reflection;
 
+#pragma warning disable CA1034 // Nested types should not be visible
+
 namespace Google.Solutions.IapDesktop.Application.Test.ObjectModel
 {
     [TestFixture]

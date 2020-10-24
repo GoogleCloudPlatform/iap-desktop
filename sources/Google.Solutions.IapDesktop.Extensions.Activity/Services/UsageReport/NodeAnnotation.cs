@@ -32,7 +32,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services.UsageReport
     public class NodeAnnotation
     {
         // Up until mid 2020, this was the only node type available.
-        private static readonly string defaultNodeType = "n1-node-96-624";
+        private const string defaultNodeType = "n1-node-96-624";
 
         private static readonly IDictionary<string, NodeAnnotation> knownTypes
             = new Dictionary<string, NodeAnnotation>()

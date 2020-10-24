@@ -38,7 +38,7 @@ namespace Google.Solutions.Common.Util
 
         public static IEnumerable<T> EnsureNotNull<T>(this IEnumerable<T> e)
         {
-            return e == null ? Enumerable.Empty<T>() : e;
+            return e ?? Enumerable.Empty<T>();
         }
 
         public static bool ContainsAll<T>(this IEnumerable<T> sequence, IEnumerable<T> lookup)

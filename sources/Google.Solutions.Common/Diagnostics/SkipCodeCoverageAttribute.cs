@@ -29,7 +29,7 @@ namespace Google.Solutions.Common.Diagnostics
     /// Mark class to be exluded from code coverage.
     /// </summary>
     [AttributeUsage(AttributeTargets.Class | AttributeTargets.Method | AttributeTargets.Property)]
-    public class SkipCodeCoverageAttribute : Attribute
+    public sealed class SkipCodeCoverageAttribute : Attribute
     {
         public SkipCodeCoverageAttribute(string justification)
         {

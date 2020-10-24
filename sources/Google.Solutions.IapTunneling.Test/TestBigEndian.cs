@@ -33,9 +33,18 @@ namespace Google.Solutions.IapTunneling.Test
             BigEndian.EncodeUInt16(ushort.MaxValue, buffer, 0);
             Assert.AreEqual(ushort.MaxValue, BigEndian.DecodeUInt16(buffer, 0));
 
-
             BigEndian.EncodeUInt16(0xABCD, buffer, 0);
             Assert.AreEqual(0xABCD, BigEndian.DecodeUInt16(buffer, 0));
+        }
+
+        [Test]
+        public void EncodeDecodeInt16WithOffset()
+        {
+            var buffer = new byte[4];
+            BigEndian.EncodeUInt16(ushort.MaxValue, buffer, 2);
+            Assert.AreEqual(0, buffer[0]);
+            Assert.AreEqual(0, buffer[1]);
+            Assert.AreEqual(ushort.MaxValue, BigEndian.DecodeUInt16(buffer, 2));
         }
 
         [Test]
@@ -44,7 +53,6 @@ namespace Google.Solutions.IapTunneling.Test
             var buffer = new byte[4];
             BigEndian.EncodeUInt32(uint.MaxValue, buffer, 0);
             Assert.AreEqual(uint.MaxValue, BigEndian.DecodeUInt32(buffer, 0));
-
 
             BigEndian.EncodeUInt32(0xABCDEF12, buffer, 0);
             Assert.AreEqual(0xABCDEF12, BigEndian.DecodeUInt32(buffer, 0));

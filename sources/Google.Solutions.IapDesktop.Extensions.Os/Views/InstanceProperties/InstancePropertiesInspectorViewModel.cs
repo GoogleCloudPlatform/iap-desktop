@@ -107,14 +107,14 @@ namespace Google.Solutions.IapDesktop.Extensions.Os.Views.InstanceProperties
 
         public static CommandState GetContextMenuCommandState(IProjectExplorerNode node)
         {
-            return node is IProjectExplorerVmInstanceNode vmNode
+            return node is IProjectExplorerVmInstanceNode
                 ? CommandState.Enabled
                 : CommandState.Unavailable;
         }
 
         public static CommandState GetToolbarCommandState(IProjectExplorerNode node)
         {
-            return node is IProjectExplorerVmInstanceNode vmNode
+            return node is IProjectExplorerVmInstanceNode
                 ? CommandState.Enabled
                 : CommandState.Disabled;
         }

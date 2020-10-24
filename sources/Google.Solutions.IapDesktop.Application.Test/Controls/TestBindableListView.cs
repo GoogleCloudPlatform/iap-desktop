@@ -96,8 +96,10 @@ namespace Google.Solutions.IapDesktop.Application.Test.Controls
         [Test]
         public void WhenNoOtherPropertiesBound_ThenBindCollectionSucceeds()
         {
-            var items = new ObservableCollection<ModelItem>();
-            items.Add(new ModelItem());
+            var items = new ObservableCollection<ModelItem>
+            {
+                new ModelItem()
+            };
 
             this.listView.BindCollection(items);
 
@@ -116,8 +118,10 @@ namespace Google.Solutions.IapDesktop.Application.Test.Controls
                 Name = "initial name"
             };
 
-            var items = new ObservableCollection<ModelItem>();
-            items.Add(item);
+            var items = new ObservableCollection<ModelItem>
+            {
+                item
+            };
 
             this.listView.BindColumn(0, m => m.Name);
             this.listView.BindCollection(items);
@@ -132,11 +136,13 @@ namespace Google.Solutions.IapDesktop.Application.Test.Controls
         [Test]
         public void WhenModelAddsItems_ThenListViewIsUpdated()
         {
-            var items = new ObservableCollection<ModelItem>();
-            items.Add(new ModelItem()
+            var items = new ObservableCollection<ModelItem>
             {
-                Name = "one"
-            });
+                new ModelItem()
+                {
+                    Name = "one"
+                }
+            };
 
             this.listView.BindColumn(0, m => m.Name);
             this.listView.BindCollection(items);
@@ -154,15 +160,17 @@ namespace Google.Solutions.IapDesktop.Application.Test.Controls
         [Test]
         public void WhenModelRemovesItems_ThenListViewIsUpdated()
         {
-            var items = new ObservableCollection<ModelItem>();
-            items.Add(new ModelItem()
+            var items = new ObservableCollection<ModelItem>
             {
-                Name = "one"
-            });
-            items.Add(new ModelItem()
-            {
-                Name = "two"
-            });
+                new ModelItem()
+                {
+                    Name = "one"
+                },
+                new ModelItem()
+                {
+                    Name = "two"
+                }
+            };
 
             this.listView.BindColumn(0, m => m.Name);
             this.listView.BindCollection(items);
@@ -177,15 +185,17 @@ namespace Google.Solutions.IapDesktop.Application.Test.Controls
         [Test]
         public void WhenModelReplacesItem_ThenListViewIsUpdated()
         {
-            var items = new ObservableCollection<ModelItem>();
-            items.Add(new ModelItem()
+            var items = new ObservableCollection<ModelItem>
             {
-                Name = "one"
-            });
-            items.Add(new ModelItem()
-            {
-                Name = "two"
-            });
+                new ModelItem()
+                {
+                    Name = "one"
+                },
+                new ModelItem()
+                {
+                    Name = "two"
+                }
+            };
 
             this.listView.BindColumn(0, m => m.Name);
             this.listView.BindCollection(items);
@@ -210,8 +220,10 @@ namespace Google.Solutions.IapDesktop.Application.Test.Controls
                 Name = "initial name"
             };
 
-            var items = new ObservableCollection<ModelItem>();
-            items.Add(item);
+            var items = new ObservableCollection<ModelItem>
+            {
+                item
+            };
 
             this.listView.BindColumn(0, m => m.Name);
             this.listView.BindCollection(items);
@@ -231,8 +243,10 @@ namespace Google.Solutions.IapDesktop.Application.Test.Controls
                 Name = "initial name"
             };
 
-            var items = new ObservableCollection<ModelItem>();
-            items.Add(item);
+            var items = new ObservableCollection<ModelItem>
+            {
+                item
+            };
 
             this.listView.BindColumn(0, m => m.Name);
             this.listView.BindCollection(items);
@@ -252,8 +266,10 @@ namespace Google.Solutions.IapDesktop.Application.Test.Controls
                 Name = "initial name"
             };
 
-            var items = new ObservableCollection<ModelItem>();
-            items.Add(item);
+            var items = new ObservableCollection<ModelItem>
+            {
+                item
+            };
 
             this.listView.BindColumn(0, m => m.Name);
             this.listView.BindCollection(items);
@@ -279,9 +295,11 @@ namespace Google.Solutions.IapDesktop.Application.Test.Controls
                 ImageIndex = 2
             };
 
-            var items = new ObservableCollection<ModelItem>();
-            items.Add(item1);
-            items.Add(item2);
+            var items = new ObservableCollection<ModelItem>
+            {
+                item1,
+                item2
+            };
 
             this.listView.BindColumn(0, m => m.Name);
             this.listView.BindImageIndex(m => m.ImageIndex);

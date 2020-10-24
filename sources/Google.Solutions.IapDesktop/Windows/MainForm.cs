@@ -97,8 +97,10 @@ namespace Google.Solutions.IapDesktop.Windows
                 this,
                 this.viewToolStripMenuItem.DropDownItems,
                 ToolStripItemDisplayStyle.ImageAndText,
-                this.serviceProvider);
-            this.ViewMenu.Context = this; // There is no real context for this.
+                this.serviceProvider)
+            {
+                Context = this // There is no real context for this.
+            };
 
             this.viewModel = new MainFormViewModel(
                 this,

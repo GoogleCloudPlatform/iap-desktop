@@ -39,7 +39,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.Services.Adapters
         private static readonly StorageObjectLocator SampleLocator = new StorageObjectLocator(
             GcsTestData.Bucket, 
             typeof(TestStorageAdapter).Name + ".dat");
-        private static readonly string SampleData = "test data";
+        private const string SampleData = "test data";
 
         [SetUp]
         public void SetUpTestBucket()

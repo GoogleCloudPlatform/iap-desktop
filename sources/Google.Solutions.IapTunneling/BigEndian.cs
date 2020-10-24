@@ -30,7 +30,7 @@ namespace Google.Solutions.IapTunneling
     {
         public static UInt16 DecodeUInt16(byte[] buffer, int offset)
         {
-            return (UInt16)((int)buffer[0] << 8 | (int)buffer[1]);
+            return (UInt16)((int)buffer[offset] << 8 | (int)buffer[offset + 1]);
         }
 
         public static void EncodeUInt16(UInt16 value, byte[] buffer, int offset)

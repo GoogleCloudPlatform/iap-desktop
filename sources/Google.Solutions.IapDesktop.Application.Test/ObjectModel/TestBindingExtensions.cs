@@ -191,8 +191,10 @@ namespace Google.Solutions.IapDesktop.Application.Test.ObjectModel
         public void WhenControlBound_ThenValueFromModelIsApplied()
         {
             var control = new TextBox();
-            var model = new Observable();
-            model.One = "text from model";
+            var model = new Observable
+            {
+                One = "text from model"
+            };
 
             control.BindProperty(
                 t => t.Text,

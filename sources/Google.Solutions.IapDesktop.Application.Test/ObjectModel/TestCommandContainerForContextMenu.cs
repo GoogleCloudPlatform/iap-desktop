@@ -42,8 +42,10 @@ namespace Google.Solutions.IapDesktop.Application.Test.ObjectModel
         {
             this.contextMenu = new ContextMenuStrip();
 
-            this.form = new Form();
-            this.form.ContextMenuStrip = this.contextMenu;
+            this.form = new Form
+            {
+                ContextMenuStrip = this.contextMenu
+            };
             this.contextMenu.Items.Add(new ToolStripSeparator());
             this.form.Show();
 
