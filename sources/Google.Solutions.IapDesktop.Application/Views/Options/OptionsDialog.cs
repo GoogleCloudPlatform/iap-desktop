@@ -35,6 +35,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.Options
             this.Text = "Options";
 
             AddPane(new GeneralOptionsViewModel(serviceProvider));
+            AddPane(new NetworkOptionsViewModel(serviceProvider));
 
             // Load all services implementing IOptionsDialogPane and
             // add them automatically. This gives extensions a chance

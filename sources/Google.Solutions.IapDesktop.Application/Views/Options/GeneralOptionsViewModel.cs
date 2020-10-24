@@ -70,13 +70,13 @@ namespace Google.Solutions.IapDesktop.Application.Views.Options
         private static string ExecutableLocation =>
             (Assembly.GetEntryAssembly() ?? Assembly.GetExecutingAssembly()).Location;
 
-        public UserControl CreateControl() => new GeneralOptionsControl(this);
-
         //---------------------------------------------------------------------
-        // Observable properties.
+        // IOptionsDialogPane.
         //---------------------------------------------------------------------
 
         public string Title => "General";
+
+        public UserControl CreateControl() => new GeneralOptionsControl(this);
 
         public bool IsDirty
         {
@@ -87,6 +87,33 @@ namespace Google.Solutions.IapDesktop.Application.Views.Options
                 RaisePropertyChange();
             }
         }
+
+        public void ApplyChanges()
+        {
+            Debug.Assert(this.IsDirty);
+
+            // Save changed settings.
+            this.settingsRepository.SetSettings(this.settings);
+
+            // Update protocol registration.
+            if (this.isBrowserIntegrationEnabled)
+            {
+                this.protocolRegistry.Register(
+                    IapRdpUrl.Scheme,
+                    FriendlyName,
+                    ExecutableLocation);
+            }
+            else
+            {
+                this.protocolRegistry.Unregister(IapRdpUrl.Scheme);
+            }
+
+            this.IsDirty = false;
+        }
+
+        //---------------------------------------------------------------------
+        // Observable properties.
+        //---------------------------------------------------------------------
 
         public bool IsUpdateCheckEnabled
         {
@@ -117,29 +144,6 @@ namespace Google.Solutions.IapDesktop.Application.Views.Options
         //---------------------------------------------------------------------
         // Actions.
         //---------------------------------------------------------------------
-
-        public void ApplyChanges()
-        {
-            Debug.Assert(this.IsDirty);
-
-            // Save changed settings.
-            this.settingsRepository.SetSettings(this.settings);
-
-            // Update protocol registration.
-            if (this.isBrowserIntegrationEnabled)
-            {
-                this.protocolRegistry.Register(
-                    IapRdpUrl.Scheme,
-                    FriendlyName,
-                    ExecutableLocation);
-            }
-            else
-            {
-                this.protocolRegistry.Unregister(IapRdpUrl.Scheme);
-            }
-
-            this.IsDirty = false;
-        }
 
         public void OpenBrowserIntegrationDocs()
             => this.helpService.OpenBrowserIntegrationDocs();
