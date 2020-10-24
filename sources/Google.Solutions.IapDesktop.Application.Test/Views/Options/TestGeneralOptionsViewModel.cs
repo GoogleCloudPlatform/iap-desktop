@@ -22,6 +22,7 @@
 using Google.Solutions.IapDesktop.Application.Services.Persistence;
 using Google.Solutions.IapDesktop.Application.Services.Settings;
 using Google.Solutions.IapDesktop.Application.Util;
+using Google.Solutions.IapDesktop.Application.Views;
 using Google.Solutions.IapDesktop.Application.Views.Options;
 using Microsoft.Win32;
 using Moq;
@@ -48,7 +49,8 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views.Options
             this.protocolRegistryMock = new Mock<IAppProtocolRegistry>();
             this.viewModel = new GeneralOptionsViewModel(
                 repository,
-                this.protocolRegistryMock.Object);
+                this.protocolRegistryMock.Object,
+                new HelpService());
         }
 
         //---------------------------------------------------------------------

@@ -26,8 +26,12 @@ namespace Google.Solutions.IapDesktop.Application.Views.Options
 {
     internal partial class GeneralOptionsControl : UserControl
     {
+        private readonly GeneralOptionsViewModel viewModel;
+
         public GeneralOptionsControl(GeneralOptionsViewModel viewModel)
         {
+            this.viewModel = viewModel;
+
             InitializeComponent();
 
             this.enableUpdateCheckBox.BindProperty(
@@ -46,5 +50,8 @@ namespace Google.Solutions.IapDesktop.Application.Views.Options
                 m => m.IsBrowserIntegrationEnabled,
                 this.Container);
         }
+
+        private void browserIntegrationLink_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+            => this.viewModel.OpenBrowserIntegrationDocs();
     }
 }

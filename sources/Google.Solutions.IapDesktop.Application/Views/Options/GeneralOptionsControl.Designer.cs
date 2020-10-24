@@ -49,32 +49,40 @@ namespace Google.Solutions.IapDesktop.Application.Views.Options
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(GeneralOptionsControl));
             this.updateCheckBox = new System.Windows.Forms.GroupBox();
             this.lastCheckLabel = new System.Windows.Forms.Label();
             this.lastCheckHeaderLabel = new System.Windows.Forms.Label();
             this.enableUpdateCheckBox = new System.Windows.Forms.CheckBox();
             this.browserIntegrationBox = new System.Windows.Forms.GroupBox();
             this.enableBrowserIntegrationCheclBox = new System.Windows.Forms.CheckBox();
+            this.linkIcon = new System.Windows.Forms.PictureBox();
+            this.updateIcon = new System.Windows.Forms.PictureBox();
+            this.browserIntegrationLink = new System.Windows.Forms.LinkLabel();
+            this.label1 = new System.Windows.Forms.Label();
             this.updateCheckBox.SuspendLayout();
             this.browserIntegrationBox.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.linkIcon)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.updateIcon)).BeginInit();
             this.SuspendLayout();
             // 
             // updateCheckBox
             // 
+            this.updateCheckBox.Controls.Add(this.updateIcon);
             this.updateCheckBox.Controls.Add(this.lastCheckLabel);
             this.updateCheckBox.Controls.Add(this.lastCheckHeaderLabel);
             this.updateCheckBox.Controls.Add(this.enableUpdateCheckBox);
-            this.updateCheckBox.Location = new System.Drawing.Point(4, 70);
+            this.updateCheckBox.Location = new System.Drawing.Point(4, 110);
             this.updateCheckBox.Name = "updateCheckBox";
             this.updateCheckBox.Size = new System.Drawing.Size(336, 83);
             this.updateCheckBox.TabIndex = 1;
             this.updateCheckBox.TabStop = false;
-            this.updateCheckBox.Text = "Updates";
+            this.updateCheckBox.Text = "Updates:";
             // 
             // lastCheckLabel
             // 
             this.lastCheckLabel.AutoSize = true;
-            this.lastCheckLabel.Location = new System.Drawing.Point(95, 48);
+            this.lastCheckLabel.Location = new System.Drawing.Point(143, 48);
             this.lastCheckLabel.Name = "lastCheckLabel";
             this.lastCheckLabel.Size = new System.Drawing.Size(10, 13);
             this.lastCheckLabel.TabIndex = 2;
@@ -83,7 +91,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.Options
             // lastCheckHeaderLabel
             // 
             this.lastCheckHeaderLabel.AutoSize = true;
-            this.lastCheckHeaderLabel.Location = new System.Drawing.Point(26, 48);
+            this.lastCheckHeaderLabel.Location = new System.Drawing.Point(74, 48);
             this.lastCheckHeaderLabel.Name = "lastCheckHeaderLabel";
             this.lastCheckHeaderLabel.Size = new System.Drawing.Size(63, 13);
             this.lastCheckHeaderLabel.TabIndex = 2;
@@ -91,33 +99,72 @@ namespace Google.Solutions.IapDesktop.Application.Views.Options
             // 
             // enableUpdateCheckBox
             // 
-            this.enableUpdateCheckBox.AutoSize = true;
-            this.enableUpdateCheckBox.Location = new System.Drawing.Point(10, 24);
+            this.enableUpdateCheckBox.Location = new System.Drawing.Point(58, 23);
             this.enableUpdateCheckBox.Name = "enableUpdateCheckBox";
             this.enableUpdateCheckBox.Size = new System.Drawing.Size(287, 17);
             this.enableUpdateCheckBox.TabIndex = 1;
-            this.enableUpdateCheckBox.Text = "Periodically check for updates when closing application";
+            this.enableUpdateCheckBox.Text = "Periodically check for updates on exit";
             this.enableUpdateCheckBox.UseVisualStyleBackColor = true;
             // 
             // browserIntegrationBox
             // 
+            this.browserIntegrationBox.Controls.Add(this.label1);
+            this.browserIntegrationBox.Controls.Add(this.browserIntegrationLink);
+            this.browserIntegrationBox.Controls.Add(this.linkIcon);
             this.browserIntegrationBox.Controls.Add(this.enableBrowserIntegrationCheclBox);
             this.browserIntegrationBox.Location = new System.Drawing.Point(4, 3);
             this.browserIntegrationBox.Name = "browserIntegrationBox";
-            this.browserIntegrationBox.Size = new System.Drawing.Size(336, 61);
+            this.browserIntegrationBox.Size = new System.Drawing.Size(336, 99);
             this.browserIntegrationBox.TabIndex = 1;
             this.browserIntegrationBox.TabStop = false;
-            this.browserIntegrationBox.Text = "Browser integration";
+            this.browserIntegrationBox.Text = "Browser integration:";
             // 
             // enableBrowserIntegrationCheclBox
             // 
             this.enableBrowserIntegrationCheclBox.AutoSize = true;
-            this.enableBrowserIntegrationCheclBox.Location = new System.Drawing.Point(10, 24);
+            this.enableBrowserIntegrationCheclBox.Location = new System.Drawing.Point(58, 24);
             this.enableBrowserIntegrationCheclBox.Name = "enableBrowserIntegrationCheclBox";
-            this.enableBrowserIntegrationCheclBox.Size = new System.Drawing.Size(234, 17);
+            this.enableBrowserIntegrationCheclBox.Size = new System.Drawing.Size(258, 17);
             this.enableBrowserIntegrationCheclBox.TabIndex = 1;
-            this.enableBrowserIntegrationCheclBox.Text = "Associate IAP Desktop with iap-rdp:/// links";
+            this.enableBrowserIntegrationCheclBox.Text = "Allow launching IAP Desktop from a web browser";
             this.enableBrowserIntegrationCheclBox.UseVisualStyleBackColor = true;
+            // 
+            // linkIcon
+            // 
+            this.linkIcon.Image = ((System.Drawing.Image)(resources.GetObject("linkIcon.Image")));
+            this.linkIcon.Location = new System.Drawing.Point(10, 21);
+            this.linkIcon.Name = "linkIcon";
+            this.linkIcon.Size = new System.Drawing.Size(36, 36);
+            this.linkIcon.TabIndex = 2;
+            this.linkIcon.TabStop = false;
+            // 
+            // updateIcon
+            // 
+            this.updateIcon.Image = ((System.Drawing.Image)(resources.GetObject("updateIcon.Image")));
+            this.updateIcon.Location = new System.Drawing.Point(10, 21);
+            this.updateIcon.Name = "updateIcon";
+            this.updateIcon.Size = new System.Drawing.Size(36, 36);
+            this.updateIcon.TabIndex = 3;
+            this.updateIcon.TabStop = false;
+            // 
+            // browserIntegrationLink
+            // 
+            this.browserIntegrationLink.AutoSize = true;
+            this.browserIntegrationLink.Location = new System.Drawing.Point(74, 67);
+            this.browserIntegrationLink.Name = "browserIntegrationLink";
+            this.browserIntegrationLink.Size = new System.Drawing.Size(85, 13);
+            this.browserIntegrationLink.TabIndex = 3;
+            this.browserIntegrationLink.TabStop = true;
+            this.browserIntegrationLink.Text = "More information";
+            this.browserIntegrationLink.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.browserIntegrationLink_LinkClicked);
+            // 
+            // label1
+            // 
+            this.label1.Location = new System.Drawing.Point(75, 42);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(239, 13);
+            this.label1.TabIndex = 4;
+            this.label1.Text = "when selecting iap-rdp:/// links";
             // 
             // GeneralOptionsControl
             // 
@@ -131,6 +178,8 @@ namespace Google.Solutions.IapDesktop.Application.Views.Options
             this.updateCheckBox.PerformLayout();
             this.browserIntegrationBox.ResumeLayout(false);
             this.browserIntegrationBox.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.linkIcon)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.updateIcon)).EndInit();
             this.ResumeLayout(false);
 
         }
@@ -143,5 +192,9 @@ namespace Google.Solutions.IapDesktop.Application.Views.Options
         private System.Windows.Forms.CheckBox enableUpdateCheckBox;
         private System.Windows.Forms.GroupBox browserIntegrationBox;
         private System.Windows.Forms.CheckBox enableBrowserIntegrationCheclBox;
+        private System.Windows.Forms.PictureBox linkIcon;
+        private System.Windows.Forms.PictureBox updateIcon;
+        private System.Windows.Forms.LinkLabel browserIntegrationLink;
+        private System.Windows.Forms.Label label1;
     }
 }

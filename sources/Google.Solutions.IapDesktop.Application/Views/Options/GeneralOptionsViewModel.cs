@@ -37,16 +37,19 @@ namespace Google.Solutions.IapDesktop.Application.Views.Options
         private readonly ApplicationSettingsRepository settingsRepository;
         private readonly ApplicationSettings settings;
         private readonly IAppProtocolRegistry protocolRegistry;
+        private readonly HelpService helpService;
 
         private bool isBrowserIntegrationEnabled;
         private bool isDirty = false;
 
         public GeneralOptionsViewModel(
             ApplicationSettingsRepository settingsRepository,
-            IAppProtocolRegistry protocolRegistry)
+            IAppProtocolRegistry protocolRegistry,
+            HelpService helpService)
         {
             this.settingsRepository = settingsRepository;
             this.protocolRegistry = protocolRegistry;
+            this.helpService = helpService;
 
             this.settings = this.settingsRepository.GetSettings();
             this.isBrowserIntegrationEnabled = this.protocolRegistry.IsRegistered(
@@ -54,16 +57,20 @@ namespace Google.Solutions.IapDesktop.Application.Views.Options
                 ExecutableLocation);
         }
 
+
         public GeneralOptionsViewModel(IServiceProvider serviceProvider)
             : this(
                   serviceProvider.GetService<ApplicationSettingsRepository>(),
-                  serviceProvider.GetService<IAppProtocolRegistry>())
+                  serviceProvider.GetService<IAppProtocolRegistry>(),
+                  serviceProvider.GetService<HelpService>())
         {
         }
 
         // NB. GetEntryAssembly returns the .exe, but this does not work during tests.
         private static string ExecutableLocation =>
             (Assembly.GetEntryAssembly() ?? Assembly.GetExecutingAssembly()).Location;
+
+        public UserControl CreateControl() => new GeneralOptionsControl(this);
 
         //---------------------------------------------------------------------
         // Observable properties.
@@ -134,6 +141,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.Options
             this.IsDirty = false;
         }
 
-        public UserControl CreateControl() => new GeneralOptionsControl(this);
+        public void OpenBrowserIntegrationDocs()
+            => this.helpService.OpenBrowserIntegrationDocs();
     }
 }
