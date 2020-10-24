@@ -214,7 +214,7 @@ namespace Google.Solutions.IapDesktop
             // 
             // Persistence layer.
             //
-            persistenceLayer.AddTransient<AppProtocolRegistry>();
+            persistenceLayer.AddTransient<IAppProtocolRegistry, AppProtocolRegistry>();
             persistenceLayer.AddSingleton(new ApplicationSettingsRepository(
                 hkcu.CreateSubKey($@"{BaseRegistryKeyPath}\Application")));
             persistenceLayer.AddSingleton(new AuthSettingsRepository(
@@ -252,6 +252,7 @@ namespace Google.Solutions.IapDesktop
             //
             windowAndWorkflowLayer.AddSingleton<IMainForm>(mainForm);
             windowAndWorkflowLayer.AddTransient<CloudConsoleService>();
+            windowAndWorkflowLayer.AddTransient<HelpService>();
             windowAndWorkflowLayer.AddTransient<IProjectPickerDialog, ProjectPickerDialog>();
             windowAndWorkflowLayer.AddTransient<AboutWindow>();
             windowAndWorkflowLayer.AddTransient<IExceptionDialog, ExceptionDialog>();

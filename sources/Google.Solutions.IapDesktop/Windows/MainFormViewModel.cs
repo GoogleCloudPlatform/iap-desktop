@@ -37,11 +37,7 @@ namespace Google.Solutions.IapDesktop.Windows
 {
     internal class MainFormViewModel : ViewModelBase
     {
-        internal const string FriendlyName = "IAP Desktop - Identity-Aware Proxy for Remote Desktop";
-
-        private readonly ApplicationSettingsRepository applicationSettings;
         private readonly AuthSettingsRepository authSettings;
-        private readonly AppProtocolRegistry protocolRegistry;
 
         // NB. This list is only access from the UI thread, so no locking required.
         private readonly LinkedList<BackgroundJob> backgroundJobs
@@ -52,55 +48,16 @@ namespace Google.Solutions.IapDesktop.Windows
 
         public MainFormViewModel(
             Control view,
-            ApplicationSettingsRepository applicationSettings,
-            AuthSettingsRepository authSettings,
-            AppProtocolRegistry protocolRegistry)
+            AuthSettingsRepository authSettings)
         {
             this.View = view;
-            this.applicationSettings = applicationSettings;
             this.authSettings = authSettings;
-            this.protocolRegistry = protocolRegistry;
         }
 
         //---------------------------------------------------------------------
         // Observable properties.
         //---------------------------------------------------------------------
 
-        public bool IsUpdateCheckEnabled
-        {
-            get => this.applicationSettings.GetSettings().IsUpdateCheckEnabled.BoolValue;
-            set
-            {
-                var settings = this.applicationSettings.GetSettings();
-                settings.IsUpdateCheckEnabled.BoolValue = value;
-                this.applicationSettings.SetSettings(settings);
-
-                RaisePropertyChange();
-            }
-        }
-
-        public bool IsProtocolRegistred
-        {
-            get => this.protocolRegistry.IsRegistered(
-                IapRdpUrl.Scheme,
-                GetType().Assembly.Location);
-            set
-            {
-                if (value)
-                {
-                    this.protocolRegistry.Register(
-                        IapRdpUrl.Scheme,
-                        FriendlyName,
-                        GetType().Assembly.Location);
-                }
-                else
-                {
-                    this.protocolRegistry.Unregister(IapRdpUrl.Scheme);
-                }
-
-                RaisePropertyChange();
-            }
-        }
 
         public bool IsBackgroundJobStatusVisible
         {

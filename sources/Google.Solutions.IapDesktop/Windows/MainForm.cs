@@ -25,7 +25,6 @@ using Google.Solutions.Common.Util;
 using Google.Solutions.IapDesktop.Application.ObjectModel;
 using Google.Solutions.IapDesktop.Application.Services.Adapters;
 using Google.Solutions.IapDesktop.Application.Services.Integration;
-using Google.Solutions.IapDesktop.Application.Services.Persistence;
 using Google.Solutions.IapDesktop.Application.Views;
 using Google.Solutions.IapDesktop.Application.Views.Diagnostics;
 using Google.Solutions.IapDesktop.Application.Views.ProjectExplorer;
@@ -41,6 +40,7 @@ using WeifenLuo.WinFormsUI.Docking;
 using Google.Solutions.IapDesktop.Application.Services;
 using Google.Solutions.IapDesktop.Application.Services.Settings;
 using Google.Solutions.IapDesktop.Application.Views.Authentication;
+using Google.Solutions.IapDesktop.Application.Views.Options;
 
 #pragma warning disable IDE1006 // Naming Styles
 
@@ -92,7 +92,7 @@ namespace Google.Solutions.IapDesktop.Windows
             //
             // Bind controls.
             //
-            this.Text = MainFormViewModel.FriendlyName;
+            this.Text = GeneralOptionsViewModel.FriendlyName;
             this.ViewMenu = new CommandContainer<IMainForm>(
                 this,
                 this.viewToolStripMenuItem.DropDownItems,
@@ -104,9 +104,7 @@ namespace Google.Solutions.IapDesktop.Windows
 
             this.viewModel = new MainFormViewModel(
                 this,
-                this.applicationSettings,
-                bootstrappingServiceProvider.GetService<AuthSettingsRepository>(),
-                bootstrappingServiceProvider.GetService<AppProtocolRegistry>());
+                bootstrappingServiceProvider.GetService<AuthSettingsRepository>());
 
             // Status bar.
             this.backgroundJobLabel.BindProperty(
@@ -128,18 +126,6 @@ namespace Google.Solutions.IapDesktop.Windows
                 c => c.Text,
                 this.viewModel,
                 m => m.UserEmail,
-                this.components);
-
-            // Menus.
-            this.checkForUpdatesOnExitToolStripMenuItem.BindProperty(
-                c => c.Checked,
-                this.viewModel,
-                m => m.IsUpdateCheckEnabled,
-                this.components);
-            this.enableAppProtocolToolStripMenuItem.BindProperty(
-                c => c.Checked,
-                this.viewModel,
-                m => m.IsProtocolRegistred,
                 this.components);
         }
 
@@ -349,12 +335,12 @@ namespace Google.Solutions.IapDesktop.Windows
 
         private void openIapDocsToolStripMenuItem_Click(object sender, EventArgs _)
         {
-            this.serviceProvider.GetService<CloudConsoleService>().OpenIapOverviewDocs();
+            this.serviceProvider.GetService<HelpService>().OpenIapOverviewDocs();
         }
 
         private void openIapAccessDocsToolStripMenuItem_Click(object sender, EventArgs _)
         {
-            this.serviceProvider.GetService<CloudConsoleService>().OpenIapAccessDocs();
+            this.serviceProvider.GetService<HelpService>().OpenIapAccessDocs();
         }
 
         private void reportIssueToolStripMenuItem_Click(object sender, EventArgs e)
@@ -421,16 +407,22 @@ namespace Google.Solutions.IapDesktop.Windows
             }
         }
 
-        private void enableAppProtocolToolStripMenuItem_Click(object sender, EventArgs e)
+        private void optionsToolStripMenuItem_Click(object sender, EventArgs _)
         {
-            this.enableAppProtocolToolStripMenuItem.Checked =
-                !this.enableAppProtocolToolStripMenuItem.Checked;
-        }
-
-        private void checkForUpdatesOnExitToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            checkForUpdatesOnExitToolStripMenuItem.Checked =
-                !checkForUpdatesOnExitToolStripMenuItem.Checked;
+            try
+            {
+                new OptionsDialog((IServiceCategoryProvider)this.serviceProvider).ShowDialog(this);
+            }
+            catch (TaskCanceledException)
+            {
+                // Ignore.
+            }
+            catch (Exception e)
+            {
+                this.serviceProvider
+                    .GetService<IExceptionDialog>()
+                    .Show(this, "Opening Options window failed", e);
+            }
         }
 
         //---------------------------------------------------------------------
@@ -491,5 +483,6 @@ namespace Google.Solutions.IapDesktop.Windows
 
         public Task ReauthorizeAsync(CancellationToken token)
             => this.viewModel.ReauthorizeAsync(token);
+
     }
 }
