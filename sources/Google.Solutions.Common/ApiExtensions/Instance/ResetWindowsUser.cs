@@ -32,6 +32,8 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
+#pragma warning disable CA1032 // Implement standard exception constructors
+
 namespace Google.Solutions.Common.ApiExtensions.Instance
 {
     /// <summary>

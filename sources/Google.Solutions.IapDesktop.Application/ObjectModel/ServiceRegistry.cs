@@ -26,6 +26,8 @@ using System.Linq;
 using System.Reflection;
 using System.Runtime.Serialization;
 
+#pragma warning disable CA1032 // Implement standard exception constructors
+
 namespace Google.Solutions.IapDesktop.Application.ObjectModel
 {
     /// <summary>

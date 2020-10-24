@@ -29,6 +29,8 @@ using System.Security.Permissions;
 using System.Threading;
 using System.Threading.Tasks;
 
+#pragma warning disable CA1032 // Implement standard exception constructors
+
 namespace Google.Solutions.IapTunneling.Net
 {
     /// <summary>
@@ -299,7 +301,10 @@ namespace Google.Solutions.IapTunneling.Net
         public override void GetObjectData(SerializationInfo info, StreamingContext context)
         {
             if (info == null)
-                throw new ArgumentNullException("info");
+            {
+                throw new ArgumentNullException(nameof(info));
+            }
+
             info.AddValue("CloseStatus", this.CloseStatus);
             info.AddValue("CloseStatusDescription", this.CloseStatusDescription);
             base.GetObjectData(info, context);

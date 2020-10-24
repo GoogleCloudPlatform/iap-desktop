@@ -31,6 +31,8 @@ using Google.Solutions.IapDesktop.Application.ObjectModel;
 using Google.Solutions.IapDesktop.Application.Settings;
 using System.Collections.Generic;
 
+#pragma warning disable CA1034 // Nested types should not be visible
+
 namespace Google.Solutions.IapDesktop.Application.Test.Views.Properties
 {
     [TestFixture]
