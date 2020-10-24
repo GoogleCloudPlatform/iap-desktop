@@ -475,10 +475,14 @@ namespace Google.Solutions.IapDesktop.Windows
                 this.statusStrip.PointToScreen(button.Bounds.Location),
                 button.Size);
 
-            new UserFlyoutWindow(new UserFlyoutViewModel(this.Authorization)).Show(
-                this,
-                screenPosition,
-                ContentAlignment.TopLeft);
+            new UserFlyoutWindow(
+                    new UserFlyoutViewModel(
+                        this.Authorization,
+                        this.serviceProvider.GetService<CloudConsoleService>()))
+                .Show(
+                    this,
+                    screenPosition,
+                    ContentAlignment.TopLeft);
         }
 
         //---------------------------------------------------------------------

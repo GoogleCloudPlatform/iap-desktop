@@ -102,5 +102,10 @@ namespace Google.Solutions.IapDesktop.Application.Views
         {
             OpenUrl($"https://console.cloud.google.com/security/iap?project={projectId}");
         }
+
+        public void OpenMyAccount()
+        {
+            OpenUrl("https://myaccount.google.com/security");
+        }
     }
 }
