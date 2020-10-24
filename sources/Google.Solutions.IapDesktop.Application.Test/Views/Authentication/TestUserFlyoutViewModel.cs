@@ -20,6 +20,7 @@
 //
 
 using Google.Solutions.Common.Auth;
+using Google.Solutions.IapDesktop.Application.Views;
 using Google.Solutions.IapDesktop.Application.Views.Authentication;
 using Moq;
 using NUnit.Framework;
@@ -34,7 +35,9 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views.Authentication
         {
             var authorization = new Mock<IAuthorization>();
 
-            var viewModel = new UserFlyoutViewModel(authorization.Object);
+            var viewModel = new UserFlyoutViewModel(
+                authorization.Object,
+                new CloudConsoleService());
 
             Assert.AreEqual("", viewModel.Email);
             Assert.AreEqual("", viewModel.ManagedBy);
@@ -49,7 +52,9 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views.Authentication
             authorization.SetupGet(a => a.UserInfo)
                 .Returns(new UserInfo());
 
-            var viewModel = new UserFlyoutViewModel(authorization.Object);
+            var viewModel = new UserFlyoutViewModel(
+                authorization.Object,
+                new CloudConsoleService());
             
             Assert.AreEqual("bob@example.com", viewModel.Email);
             Assert.AreEqual("", viewModel.ManagedBy);
@@ -67,7 +72,9 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views.Authentication
                     HostedDomain = "example.com"
                 });
 
-            var viewModel = new UserFlyoutViewModel(authorization.Object);
+            var viewModel = new UserFlyoutViewModel(
+                authorization.Object,
+                new CloudConsoleService());
 
             Assert.AreEqual("bob@example.com", viewModel.Email);
             Assert.AreEqual("(managed by example.com)", viewModel.ManagedBy);

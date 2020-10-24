@@ -21,17 +21,21 @@
 
 using Google.Solutions.Common.Auth;
 using Google.Solutions.IapDesktop.Application.ObjectModel;
-using System.Diagnostics;
 
 namespace Google.Solutions.IapDesktop.Application.Views.Authentication
 {
     public class UserFlyoutViewModel : ViewModelBase
     {
+        private readonly CloudConsoleService cloudConsole;
+
         public string Email { get; }
         public string ManagedBy { get; }
 
-        public UserFlyoutViewModel(IAuthorization authorization)
+        public UserFlyoutViewModel(
+            IAuthorization authorization,
+            CloudConsoleService cloudConsole)
         {
+            this.cloudConsole = cloudConsole;
             this.Email = authorization.Email ?? string.Empty;
 
             //
@@ -49,14 +53,6 @@ namespace Google.Solutions.IapDesktop.Application.Views.Authentication
         //---------------------------------------------------------------------
 
         public void OpenMyAccountPage()
-        {
-            using (Process.Start(new ProcessStartInfo()
-            {
-                UseShellExecute = true,
-                Verb = "open",
-                FileName = "https://myaccount.google.com/security"
-            }))
-            { };
-        }
+            => this.cloudConsole.OpenMyAccount();
     }
 }

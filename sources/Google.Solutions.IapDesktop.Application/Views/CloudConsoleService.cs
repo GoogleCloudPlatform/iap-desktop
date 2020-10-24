@@ -19,6 +19,7 @@
 // under the License.
 //
 
+using Google.Solutions.Common.Diagnostics;
 using Google.Solutions.Common.Locator;
 using Google.Solutions.IapDesktop.Application.Views.ProjectExplorer;
 using System;
@@ -27,6 +28,7 @@ using System.Net;
 
 namespace Google.Solutions.IapDesktop.Application.Views
 {
+    [SkipCodeCoverage("UI code")]
     public class CloudConsoleService
     {
         private void OpenUrl(string url)
@@ -89,6 +91,11 @@ namespace Google.Solutions.IapDesktop.Application.Views
         public void ConfigureIapAccess(string projectId)
         {
             OpenUrl($"https://console.cloud.google.com/security/iap?project={projectId}");
+        }
+
+        public void OpenMyAccount()
+        {
+            OpenUrl("https://myaccount.google.com/security");
         }
     }
 }

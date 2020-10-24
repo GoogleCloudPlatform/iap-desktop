@@ -19,11 +19,13 @@
 // under the License.
 //
 
+using Google.Solutions.Common.Diagnostics;
 using System;
 using System.Windows.Forms;
 
 namespace Google.Solutions.IapDesktop.Application.Views.Authentication
 {
+    [SkipCodeCoverage("UI code")]
     public partial class UserFlyoutWindow : FlyoutWindow
     {
         private readonly UserFlyoutViewModel viewModel;

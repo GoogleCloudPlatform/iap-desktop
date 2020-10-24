@@ -19,6 +19,7 @@
 // under the License.
 //
 
+using Google.Solutions.Common.Diagnostics;
 using Google.Solutions.Common.Util;
 using Google.Solutions.IapDesktop.Application.ObjectModel;
 using System;
@@ -31,6 +32,7 @@ using System.Windows.Forms;
 namespace Google.Solutions.IapDesktop.Application.Views
 {
     [ComVisible(false)]
+    [SkipCodeCoverage("UI code")]
     public partial class SlowLoadingPane : ToolWindow
     {
         private readonly IServiceProvider serviceProvider;

@@ -19,12 +19,14 @@
 // under the License.
 //
 
+using Google.Solutions.Common.Diagnostics;
 using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Windows.Forms;
 
 namespace Google.Solutions.IapDesktop.Application.Controls
 {
+    [SkipCodeCoverage("UI code")]
     public class FlatVerticalTabControl : TabControl
     {
         public FlatVerticalTabControl()

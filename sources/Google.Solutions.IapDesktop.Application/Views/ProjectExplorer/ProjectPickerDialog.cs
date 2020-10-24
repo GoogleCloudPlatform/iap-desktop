@@ -69,7 +69,8 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
             if (minLengthEntered && !updatingSuggestions)
             {
                 this.updatingSuggestions = true;
-                await UpdateSuggestionsAsync(this.projectComboBox.Text);
+                await UpdateSuggestionsAsync(this.projectComboBox.Text)
+                    .ConfigureAwait(true);
 
                 this.updatingSuggestions = false;
             }
@@ -88,7 +89,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
 
                 foreach (var project in await this.resourceManager.QueryProjectsByPrefix(
                     prefix,
-                    CancellationToken.None))
+                    CancellationToken.None).ConfigureAwait(true))
                 {
                     suggestions.Add($"{project.Name} ({project.ProjectId})");
                 }
@@ -121,8 +122,9 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
             // NB. The DialogResult property of the button is not set so that this
             // event handler is run to completion *before* ShowDialog returns.
             var project = await this.resourceManager.QueryProjectsById(
-                this.SelectedProjectId,
-                CancellationToken.None);
+                    this.SelectedProjectId,
+                    CancellationToken.None)
+                .ConfigureAwait(true);
             if (project.Any())
             {
                 this.DialogResult = DialogResult.OK;
