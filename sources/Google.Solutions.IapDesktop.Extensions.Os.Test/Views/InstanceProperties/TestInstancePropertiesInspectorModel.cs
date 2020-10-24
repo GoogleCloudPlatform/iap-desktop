@@ -45,7 +45,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Os.Test.Views.InstancePropertie
             var locator = await testInstance;
 
             var gceAdapter = new ComputeEngineAdapter(await credential);
-            var model = await InstanceDetailsModel.LoadAsync(
+            var model = await InstancePropertiesInspectorModel.LoadAsync(
                 await testInstance,
                 gceAdapter,
                 new InventoryService(gceAdapter),
@@ -63,6 +63,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Os.Test.Views.InstancePropertie
             Assert.AreEqual(FeatureFlag.Enabled, model.GuestAttributes);
             Assert.IsNull(model.InternalDnsMode);
             Assert.IsFalse(model.IsSoleTenant);
+            Assert.AreEqual(WindowsInstanceAttribute.DefaultMachineType, model.MachineType);
+            Assert.IsNull(model.Tags);
         }
 
         [Test]
@@ -71,7 +73,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Os.Test.Views.InstancePropertie
             var project = new Project();
             var instance = new Instance();
 
-            var model = new InstanceDetailsModel(project, instance, null);
+            var model = new InstancePropertiesInspectorModel(project, instance, null);
             Assert.AreEqual(FeatureFlag.Disabled, model.OsInventory);
             Assert.AreEqual(FeatureFlag.Disabled, model.Diagnostics);
             Assert.AreEqual(FeatureFlag.Disabled, model.SerialPortAccess);
@@ -112,7 +114,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Os.Test.Views.InstancePropertie
                 }
             };
 
-            var model = new InstanceDetailsModel(project, instance, null);
+            var model = new InstancePropertiesInspectorModel(project, instance, null);
             Assert.AreEqual("ZonalPreferred", model.InternalDnsMode);
         }
 
@@ -135,7 +137,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Os.Test.Views.InstancePropertie
                 }
             };
 
-            var model = new InstanceDetailsModel(project, instance, null);
+            var model = new InstancePropertiesInspectorModel(project, instance, null);
             Assert.AreEqual("ZonalPreferred", model.InternalDnsMode);
         }
 
@@ -162,7 +164,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Os.Test.Views.InstancePropertie
                 Metadata = new Metadata()
             };
 
-            var model = new InstanceDetailsModel(project, instance, null);
+            var model = new InstancePropertiesInspectorModel(project, instance, null);
             Assert.AreEqual("ZonalOnly", model.InternalDnsMode);
         }
     }
