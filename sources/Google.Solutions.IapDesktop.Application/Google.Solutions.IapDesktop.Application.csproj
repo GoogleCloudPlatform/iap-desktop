@@ -173,6 +173,7 @@
     <Compile Include="Views\FlyoutWindow.Designer.cs">
       <DependentUpon>FlyoutWindow.cs</DependentUpon>
     </Compile>
+    <Compile Include="Views\HelpService.cs" />
     <Compile Include="Views\Options\GeneralOptionsControl.cs">
       <SubType>UserControl</SubType>
     </Compile>

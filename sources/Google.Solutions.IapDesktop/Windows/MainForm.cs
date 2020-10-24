@@ -333,12 +333,12 @@ namespace Google.Solutions.IapDesktop.Windows
 
         private void openIapDocsToolStripMenuItem_Click(object sender, EventArgs _)
         {
-            this.serviceProvider.GetService<CloudConsoleService>().OpenIapOverviewDocs();
+            this.serviceProvider.GetService<HelpService>().OpenIapOverviewDocs();
         }
 
         private void openIapAccessDocsToolStripMenuItem_Click(object sender, EventArgs _)
         {
-            this.serviceProvider.GetService<CloudConsoleService>().OpenIapAccessDocs();
+            this.serviceProvider.GetService<HelpService>().OpenIapAccessDocs();
         }
 
         private void reportIssueToolStripMenuItem_Click(object sender, EventArgs e)

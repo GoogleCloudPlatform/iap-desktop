@@ -86,16 +86,6 @@ namespace Google.Solutions.IapDesktop.Application.Views
                     $"timestamp<=\"{timestamp.ToString("o")}\"");
         }
 
-        public void OpenIapOverviewDocs()
-        {
-            OpenUrl("https://cloud.google.com/iap/docs/tcp-forwarding-overview");
-        }
-
-        public void OpenIapAccessDocs()
-        {
-            OpenUrl("https://cloud.google.com/iap/docs/using-tcp-forwarding");
-        }
-
         public void ConfigureIapAccess(string projectId)
         {
             OpenUrl($"https://console.cloud.google.com/security/iap?project={projectId}");
