@@ -24,6 +24,8 @@ using System.Collections.Generic;
 using System.Runtime.Serialization;
 using System.Text;
 
+#pragma warning disable CA1032 // Implement standard exception constructors
+
 namespace Google.Solutions.IapDesktop.Extensions.Rdp.Views.RemoteDesktop
 {
     [Serializable]

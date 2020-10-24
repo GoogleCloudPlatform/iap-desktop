@@ -101,7 +101,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views
             this.mainForm.Close();
         }
 
-        protected void PumpWindowMessages()
+        protected static void PumpWindowMessages()
             => System.Windows.Forms.Application.DoEvents();
 
         protected TEvent AwaitEvent<TEvent>(TimeSpan timeout) where TEvent : class
@@ -137,7 +137,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views
         protected TEvent AwaitEvent<TEvent>() where TEvent : class
             => AwaitEvent<TEvent>(TimeSpan.FromSeconds(90));
 
-        protected void Delay(TimeSpan timeout)
+        protected static void Delay(TimeSpan timeout)
         {
             var deadline = DateTime.Now.Add(timeout);
 
@@ -170,11 +170,10 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views
             };
         }
 
-        protected string CreateRandomUsername()
+        protected static string CreateRandomUsername()
         {
             return "test" + Guid.NewGuid().ToString().Substring(0, 4);
         }
-
     }
 
     internal static class ControlTestExtensions

@@ -40,6 +40,7 @@ using WeifenLuo.WinFormsUI.Docking;
 
 #pragma warning disable IDE1006 // Naming Styles
 #pragma warning disable CA1031 // catch Exception
+#pragma warning disable CA1801 // Review unused parameters
 
 namespace Google.Solutions.IapDesktop.Extensions.Rdp.Views.RemoteDesktop
 {

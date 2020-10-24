@@ -28,6 +28,8 @@ using System.Net.WebSockets;
 using System.Threading;
 using System.Threading.Tasks;
 
+#pragma warning disable CA1825 // Avoid zero-length array allocations.
+
 namespace Google.Solutions.IapTunneling.Test.Iap
 {
 

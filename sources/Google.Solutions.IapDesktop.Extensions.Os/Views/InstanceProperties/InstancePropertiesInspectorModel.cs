@@ -34,7 +34,7 @@ using System.Threading.Tasks;
 
 namespace Google.Solutions.IapDesktop.Extensions.Os.Views.InstanceProperties
 {
-    internal class InstanceDetailsModel
+    internal class InstancePropertiesInspectorModel
     {
         private const string InstanceCategory = "Instance details";
         private const string NetworkCategory = "Instance network";
@@ -77,7 +77,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Os.Views.InstanceProperties
                 : FeatureFlag.Disabled;
         }
 
-        internal InstanceDetailsModel(
+        internal InstancePropertiesInspectorModel(
             Project projectDetails,
             Instance instanceDetails,
             GuestOsInfo guestOsInfo)
@@ -289,7 +289,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Os.Views.InstanceProperties
         // Loading.
         //---------------------------------------------------------------------
 
-        public async static Task<InstanceDetailsModel> LoadAsync(
+        public async static Task<InstancePropertiesInspectorModel> LoadAsync(
             InstanceLocator instanceLocator,
             IComputeEngineAdapter computeEngineAdapter,
             IInventoryService inventoryService,
@@ -312,7 +312,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Os.Views.InstanceProperties
                     token)
                 .ConfigureAwait(false);
 
-            return new InstanceDetailsModel(
+            return new InstancePropertiesInspectorModel(
                 project,
                 instance,
                 osInfo);

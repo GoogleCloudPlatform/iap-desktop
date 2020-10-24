@@ -29,7 +29,7 @@ using System.Text;
 
 namespace Google.Solutions.Common.Test.Integration
 {
-    public class CredentialAttribute : NUnitAttribute, IParameterDataSource
+    public sealed class CredentialAttribute : NUnitAttribute, IParameterDataSource
     {
         public string[] Roles { get; set; } = Array.Empty<string>();
 

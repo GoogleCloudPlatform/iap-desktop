@@ -37,7 +37,7 @@ namespace Google.Solutions.IapTunneling.Test.Iap
         protected const string InstallApache = "sudo apt-get install -y apache2";
 
         private const int RepeatCount = 5;
-        private CancellationTokenSource tokenSource = new CancellationTokenSource();
+        private readonly CancellationTokenSource tokenSource = new CancellationTokenSource();
 
         protected abstract INetworkStream ConnectToWebServer(
             InstanceLocator vmRef,

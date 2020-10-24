@@ -32,8 +32,7 @@ namespace Google.Solutions.IapTunneling.Test.Iap
 {
     public abstract class TestEchoOverIapBase : FixtureBase
     {
-        private const int RepeatCount = 10;
-        private CancellationTokenSource tokenSource = new CancellationTokenSource();
+        private readonly CancellationTokenSource tokenSource = new CancellationTokenSource();
 
         protected abstract INetworkStream ConnectToEchoServer(
             InstanceLocator vmRef,

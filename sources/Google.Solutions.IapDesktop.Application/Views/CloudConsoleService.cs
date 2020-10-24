@@ -85,7 +85,7 @@ namespace Google.Solutions.IapDesktop.Application.Views
                 projectId,
                 "resource.type=\"gce_instance\"\n" +
                     $"insertId=\"{insertId}\"\n" +
-                    $"timestamp<=\"{timestamp.ToString("o")}\"");
+                    $"timestamp<=\"{timestamp:o}\"");
         }
 
         public void ConfigureIapAccess(string projectId)

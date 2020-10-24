@@ -25,8 +25,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.History
 {
     public struct DataPoint : IEquatable<DataPoint>
     {
-        public DateTime Timestamp;
-        public int Value;
+        public readonly DateTime Timestamp;
+        public readonly int Value;
 
         public DataPoint(DateTime timestamp, int value)
         {

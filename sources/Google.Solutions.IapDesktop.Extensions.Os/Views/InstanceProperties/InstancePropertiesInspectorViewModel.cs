@@ -36,8 +36,8 @@ using System.Threading.Tasks;
 
 namespace Google.Solutions.IapDesktop.Extensions.Os.Views.InstanceProperties
 {
-    internal class InstancePropertiesViewModel
-        : ModelCachingViewModelBase<IProjectExplorerNode, InstanceDetailsModel>, IPropertiesInspectorViewModel
+    internal class InstancePropertiesInspectorViewModel
+        : ModelCachingViewModelBase<IProjectExplorerNode, InstancePropertiesInspectorModel>, IPropertiesInspectorViewModel
     {
         private const int ModelCacheCapacity = 5;
         internal const string DefaultWindowTitle = "VM instance";
@@ -50,7 +50,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Os.Views.InstanceProperties
 
         public string InformationText => "OS inventory data not available";
 
-        public InstancePropertiesViewModel(IServiceProvider serviceProvider)
+        public InstancePropertiesInspectorViewModel(IServiceProvider serviceProvider)
             : base(ModelCacheCapacity)
         {
             this.serviceProvider = serviceProvider;
@@ -119,7 +119,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Os.Views.InstanceProperties
                 : CommandState.Disabled;
         }
 
-        protected async override Task<InstanceDetailsModel> LoadModelAsync(
+        protected async override Task<InstancePropertiesInspectorModel> LoadModelAsync(
             IProjectExplorerNode node,
             CancellationToken token)
         {
@@ -138,7 +138,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Os.Views.InstanceProperties
                         {
                             using (var combinedTokenSource = jobToken.Combine(token))
                             {
-                                return await InstanceDetailsModel.LoadAsync(
+                                return await InstancePropertiesInspectorModel.LoadAsync(
                                     new InstanceLocator(
                                         vmNode.ProjectId,
                                         vmNode.ZoneId,

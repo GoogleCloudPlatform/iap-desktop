@@ -30,6 +30,9 @@ using System.Runtime.Serialization;
 using System.Threading;
 using System.Threading.Tasks;
 
+#pragma warning disable CA1031 // Do not catch general exception types
+#pragma warning disable CA1032 // Implement standard exception constructors
+
 namespace Google.Solutions.IapTunneling.Iap
 {
     /// <summary>
@@ -207,8 +210,8 @@ namespace Google.Solutions.IapTunneling.Iap
                     cts.CancelAfter(timeout);
 
                     var connection = await this.endpoint.ConnectAsync(cts.Token).ConfigureAwait(false);
-                    await connection.ReadAsync(new byte[0], 0, 0, cts.Token).ConfigureAwait(false);
-                    await connection.CloseAsync(cts.Token);
+                    await connection.ReadAsync(Array.Empty<byte>(), 0, 0, cts.Token).ConfigureAwait(false);
+                    await connection.CloseAsync(cts.Token).ConfigureAwait(false);
                 }
             }
             catch (WebSocketStreamClosedByServerException e)
@@ -456,10 +459,12 @@ namespace Google.Solutions.IapTunneling.Iap
 
                     // Send data.
 
-                    var newMessage = new DataMessage((uint)count);
-                    newMessage.Tag = MessageTag.DATA;
-                    newMessage.DataLength = (uint)count;
-                    newMessage.SequenceNumber = Thread.VolatileRead(ref this.bytesSent);
+                    var newMessage = new DataMessage((uint)count)
+                    {
+                        Tag = MessageTag.DATA,
+                        DataLength = (uint)count,
+                        SequenceNumber = Thread.VolatileRead(ref this.bytesSent)
+                    };
                     Array.Copy(buffer, offset, newMessage.Buffer, DataMessage.DataOffset, count);
 
                     TraceLine($"Sending DATA #{newMessage.SequenceNumber}...");

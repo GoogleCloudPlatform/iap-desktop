@@ -26,6 +26,8 @@ using Google.Solutions.IapDesktop.Application.Properties;
 using Google.Solutions.Common.Diagnostics;
 using Google.Solutions.IapDesktop.Application.Views;
 
+#pragma warning disable IDE1006 // Naming Styles
+
 namespace Google.Solutions.IapDesktop.Application.Controls
 {
     [SkipCodeCoverage("Pure UI code")]
@@ -78,8 +80,10 @@ namespace Google.Solutions.IapDesktop.Application.Controls
             //
             // Add Search button as overlay.
             //
-            var searchButton = new Button();
-            searchButton.Size = new Size(16, 16);//, this.searchTextBox.ClientSize.Height + 2);
+            var searchButton = new Button
+            {
+                Size = new Size(16, 16)
+            };
             searchButton.Location = new Point(this.searchTextBox.ClientSize.Width - searchButton.Width - 4, 2);
             searchButton.Anchor = AnchorStyles.Right | AnchorStyles.Top;
             searchButton.FlatStyle = FlatStyle.Flat;

@@ -101,7 +101,7 @@ namespace Google.Solutions.IapDesktop.Application.ObjectModel
     /// Only valid in extension DLLs.
     /// </summary>
     [AttributeUsage(AttributeTargets.Class)]
-    public class ServiceCategoryAttribute : Attribute
+    public sealed class ServiceCategoryAttribute : Attribute
     {
         public Type Category { get; }
 

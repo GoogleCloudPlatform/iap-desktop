@@ -46,7 +46,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Os.Test.Views.InstancePropertie
                 => jobFunc(CancellationToken.None);
         }
 
-        private static InstancePropertiesViewModel CreateInstanceDetailsViewModel(bool throwOnLoad)
+        private static InstancePropertiesInspectorViewModel CreateInstanceDetailsViewModel(bool throwOnLoad)
         {
             var registry = new ServiceRegistry();
             registry.AddSingleton<IJobService>(new JobServiceMock());
@@ -68,7 +68,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Os.Test.Views.InstancePropertie
             registry.AddSingleton<IComputeEngineAdapter>(gceAdapter.Object);
             registry.AddSingleton<IInventoryService>(new InventoryService(gceAdapter.Object));
 
-            return new InstancePropertiesViewModel(registry);
+            return new InstancePropertiesInspectorViewModel(registry);
         }
 
         //---------------------------------------------------------------------
@@ -85,7 +85,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Os.Test.Views.InstancePropertie
 
             Assert.IsFalse(viewModel.IsInformationBarVisible);
             Assert.IsNull(viewModel.InspectedObject);
-            Assert.AreEqual(InstancePropertiesViewModel.DefaultWindowTitle, viewModel.WindowTitle);
+            Assert.AreEqual(InstancePropertiesInspectorViewModel.DefaultWindowTitle, viewModel.WindowTitle);
         }
 
         [Test]
@@ -99,7 +99,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Os.Test.Views.InstancePropertie
 
             Assert.IsFalse(viewModel.IsInformationBarVisible);
             Assert.IsNull(viewModel.InspectedObject);
-            Assert.AreEqual(InstancePropertiesViewModel.DefaultWindowTitle, viewModel.WindowTitle);
+            Assert.AreEqual(InstancePropertiesInspectorViewModel.DefaultWindowTitle, viewModel.WindowTitle);
         }
 
         [Test]
@@ -114,7 +114,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Os.Test.Views.InstancePropertie
 
             Assert.IsFalse(viewModel.IsInformationBarVisible);
             Assert.IsNull(viewModel.InspectedObject);
-            Assert.AreEqual(InstancePropertiesViewModel.DefaultWindowTitle, viewModel.WindowTitle);
+            Assert.AreEqual(InstancePropertiesInspectorViewModel.DefaultWindowTitle, viewModel.WindowTitle);
         }
 
         [Test]
@@ -132,7 +132,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Os.Test.Views.InstancePropertie
             await viewModel.SwitchToModelAsync(node.Object);
 
             Assert.IsNotNull(viewModel.InspectedObject);
-            StringAssert.Contains(InstancePropertiesViewModel.DefaultWindowTitle, viewModel.WindowTitle);
+            StringAssert.Contains(InstancePropertiesInspectorViewModel.DefaultWindowTitle, viewModel.WindowTitle);
             StringAssert.Contains("instance-1", viewModel.WindowTitle);
         }
 
@@ -158,7 +158,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Os.Test.Views.InstancePropertie
 
             Assert.IsFalse(viewModel.IsInformationBarVisible);
             Assert.IsNull(viewModel.InspectedObject);
-            Assert.AreEqual(InstancePropertiesViewModel.DefaultWindowTitle, viewModel.WindowTitle);
+            Assert.AreEqual(InstancePropertiesInspectorViewModel.DefaultWindowTitle, viewModel.WindowTitle);
         }
     }
 }

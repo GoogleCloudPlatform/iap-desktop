@@ -21,7 +21,6 @@
 
 using Google.Apis.Compute.v1;
 using Google.Apis.Compute.v1.Data;
-using Google.Apis.Iam.v1.Data;
 using Google.Solutions.Common.ApiExtensions.Instance;
 using Google.Solutions.Common.Diagnostics;
 using Google.Solutions.Common.Locator;
@@ -32,6 +31,8 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using ServiceAccount = Google.Apis.Compute.v1.Data.ServiceAccount;
+
+#pragma warning disable CA1031 // Do not catch general exception types
 
 namespace Google.Solutions.Common.Test.Integration
 {

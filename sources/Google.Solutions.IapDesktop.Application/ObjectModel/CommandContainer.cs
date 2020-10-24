@@ -25,6 +25,8 @@ using System;
 using System.Linq;
 using System.Windows.Forms;
 
+#pragma warning disable CA1031 // Do not catch general exception types
+
 namespace Google.Solutions.IapDesktop.Application.ObjectModel
 {
     public class CommandContainer<TContext>

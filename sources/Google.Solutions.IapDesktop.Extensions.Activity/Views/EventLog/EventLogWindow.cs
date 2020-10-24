@@ -31,6 +31,8 @@ using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 
+#pragma warning disable IDE1006 // Naming Styles
+
 namespace Google.Solutions.IapDesktop.Extensions.Activity.Views.EventLog
 {
     [Service(ServiceLifetime.Singleton)]

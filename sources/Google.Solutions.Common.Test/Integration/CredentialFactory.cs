@@ -27,6 +27,8 @@ using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 
+#pragma warning disable CA1031 // Do not catch general exception types
+
 namespace Google.Solutions.Common.Test.Integration
 {
     public static class CredentialFactory
