@@ -19,6 +19,7 @@
 // under the License.
 //
 
+using Google.Solutions.Common.Diagnostics;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -50,6 +51,7 @@ namespace Google.Solutions.IapDesktop.Application.Views
         public static readonly IntPtr TD_SHIELD_ICON_WARNING_BACKGROUND = new IntPtr(65530);
     }
 
+    [SkipCodeCoverage("UI code")]
     public class TaskDialog : ITaskDialog
     {
         private readonly int ButtonIdOffset = 1000;

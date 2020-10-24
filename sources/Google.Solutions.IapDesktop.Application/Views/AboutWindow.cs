@@ -19,6 +19,7 @@
 // under the License.
 //
 
+using Google.Solutions.Common.Diagnostics;
 using Google.Solutions.IapDesktop.Application.ObjectModel;
 using Google.Solutions.IapDesktop.Application.Services;
 using System;
@@ -26,6 +27,7 @@ using System.Windows.Forms;
 
 namespace Google.Solutions.IapDesktop.Application.Views
 {
+    [SkipCodeCoverage("UI code")]
     public partial class AboutWindow : Form
     {
         public static Version ProgramVersion => typeof(AboutWindow).Assembly.GetName().Version;
