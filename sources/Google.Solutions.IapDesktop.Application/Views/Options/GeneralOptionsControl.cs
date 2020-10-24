@@ -20,10 +20,12 @@
 //
 
 using System.Windows.Forms;
+using Google.Solutions.Common.Diagnostics;
 using Google.Solutions.IapDesktop.Application.ObjectModel;
 
 namespace Google.Solutions.IapDesktop.Application.Views.Options
 {
+    [SkipCodeCoverage("UI code")]
     internal partial class GeneralOptionsControl : UserControl
     {
         private readonly GeneralOptionsViewModel viewModel;

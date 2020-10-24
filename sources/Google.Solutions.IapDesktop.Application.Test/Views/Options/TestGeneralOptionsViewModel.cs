@@ -37,6 +37,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views.Options
         private readonly RegistryKey hkcu = RegistryKey.OpenBaseKey(RegistryHive.CurrentUser, RegistryView.Default);
 
         private GeneralOptionsViewModel viewModel;
+        private ApplicationSettingsRepository settingsRepository;
         private Mock<IAppProtocolRegistry> protocolRegistryMock;
 
         [SetUp]
@@ -44,11 +45,11 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views.Options
         {
             hkcu.DeleteSubKeyTree(TestKeyPath, false);
             var baseKey = hkcu.CreateSubKey(TestKeyPath);
-            var repository = new ApplicationSettingsRepository(baseKey);
-
+            
+            this.settingsRepository = new ApplicationSettingsRepository(baseKey);
             this.protocolRegistryMock = new Mock<IAppProtocolRegistry>();
             this.viewModel = new GeneralOptionsViewModel(
-                repository,
+                this.settingsRepository,
                 this.protocolRegistryMock.Object,
                 new HelpService());
         }
@@ -67,8 +68,29 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views.Options
             Assert.IsTrue(viewModel.IsDirty);
         }
 
+        [Test]
+        public void WhenLastCheckIsZero_ThenLastUpdateCheckReturnsNever()
+        {
+            Assert.AreEqual("never", viewModel.LastUpdateCheck);
+        }
+
+        [Test]
+        public void WhenLastCheckIsNonZero_ThenLastUpdateCheckReturnsNever()
+        {
+            var settings = this.settingsRepository.GetSettings();
+            settings.LastUpdateCheck.LongValue = 1234567L;
+            this.settingsRepository.SetSettings(settings);
+
+            var viewModelWithCustomSettings = new GeneralOptionsViewModel(
+                this.settingsRepository,
+                this.protocolRegistryMock.Object,
+                new HelpService());
+
+            Assert.AreNotEqual("never", viewModelWithCustomSettings.LastUpdateCheck);
+        }
+
         //---------------------------------------------------------------------
-        // Update check.
+        // Browser integration.
         //---------------------------------------------------------------------
 
         [Test]
