@@ -51,6 +51,12 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Settings
                 new MockEventService());
         }
 
+        [TearDown]
+        public void TearDown()
+        {
+            this.repository?.Dispose();
+        }
+
         [Test]
         public void WhenNoProjectsAdded_ListProjectsReturnsEmptyList()
         {
