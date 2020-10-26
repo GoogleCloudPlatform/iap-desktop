@@ -55,12 +55,11 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Adapters
         [Test]
         public async Task WhenUsingCustomProxySettingsWithoutCredentials_ThenRequestsAreSentToProxy()
         {
-            var proxyPort = 8000;
-            using (var proxy = new InProcessHttpProxy(proxyPort))
+            using (var proxy = new InProcessHttpProxy())
             {
                 var adapter = new HttpProxyAdapter();
                 adapter.UseCustomProxySettings(
-                    new Uri($"http://localhost:{proxyPort}"),
+                    new Uri($"http://localhost:{proxy.Port}"),
                     null);
 
                 await SendWebRequest(SampleHttpsUrl);
@@ -73,15 +72,13 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Adapters
         [Test]
         public async Task WhenUsingCustomProxySettingsWithCredentials_ThenRequestsAreSentToProxyWithCredentials()
         {
-            var proxyPort = 8001;
             var proxyCredentials = new NetworkCredential("proxyuser", "proxypass");
             using (var proxy = new InProcessAuthenticatingHttpProxy(
-                proxyPort, 
                 proxyCredentials))
             {
                 var adapter = new HttpProxyAdapter();
                 adapter.UseCustomProxySettings(
-                    new Uri($"http://localhost:{proxyPort}"),
+                    new Uri($"http://localhost:{proxy.Port}"),
                     proxyCredentials);
 
                 await SendWebRequest(SampleHttpsUrl);
@@ -94,15 +91,13 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Adapters
         [Test]
         public async Task WhenRevertedToSystemProxySettings_ThenRequestsAreNotSentToProxy()
         {
-            var proxyPort = 8002;
             var proxyCredentials = new NetworkCredential("proxyuser", "proxypass");
             using (var proxy = new InProcessAuthenticatingHttpProxy(
-                proxyPort,
                 proxyCredentials))
             {
                 var adapter = new HttpProxyAdapter();
                 adapter.UseCustomProxySettings(
-                    new Uri($"http://localhost:{proxyPort}"),
+                    new Uri($"http://localhost:{proxy.Port}"),
                     proxyCredentials);
                 adapter.UseSystemProxySettings();
 

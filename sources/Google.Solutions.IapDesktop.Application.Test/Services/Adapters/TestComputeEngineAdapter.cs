@@ -24,10 +24,13 @@ using Google.Solutions.Common.ApiExtensions.Instance;
 using Google.Solutions.Common.Locator;
 using Google.Solutions.Common.Test;
 using Google.Solutions.Common.Test.Integration;
+using Google.Solutions.Common.Util;
 using Google.Solutions.IapDesktop.Application.Services.Adapters;
 using NUnit.Framework;
 using System;
 using System.Linq;
+using System.Net;
+using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -280,7 +283,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Adapters
         }
 
         //---------------------------------------------------------------------
-        // ResetWindowsUSer.
+        // ResetWindowsUser.
         //---------------------------------------------------------------------
 
         [Test]
@@ -374,6 +377,58 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Adapters
                 username,
                 CancellationToken.None);
             Assert.IsNotNull(result.Password);
+        }
+
+        //---------------------------------------------------------------------
+        // Proxy.
+        //---------------------------------------------------------------------
+
+        [Test]
+        public async Task WhenProxyEnabledAndCredentialsCorrect_ThenGetProjectAsyncSucceeds(
+            [Credential(Role = PredefinedRole.ComputeViewer)] ResourceTask<ICredential> credential)
+        {
+            var proxyCredentials = new NetworkCredential("proxyuser", "proxypass");
+            using (var proxy = new InProcessAuthenticatingHttpProxy(
+                proxyCredentials))
+            {
+                var proxyAdapter = new HttpProxyAdapter();
+                proxyAdapter.UseCustomProxySettings(
+                    new Uri($"http://localhost:{proxy.Port}"),
+                    proxyCredentials);
+
+                var adapter = new ComputeEngineAdapter(await credential);
+                await adapter.GetProjectAsync(TestProject.ProjectId, CancellationToken.None);
+            }
+        }
+
+        [Test]
+        public async Task WhenProxyEnabledAndCredentialsWrong_ThenGetProjectAsyncThrowsXxx(
+            [Credential(Role = PredefinedRole.ComputeViewer)] ResourceTask<ICredential> credential)
+        {
+            var proxyCredentials = new NetworkCredential("proxyuser", "proxypass");
+            using (var proxy = new InProcessAuthenticatingHttpProxy(
+                proxyCredentials))
+            {
+                var proxyAdapter = new HttpProxyAdapter();
+                proxyAdapter.UseCustomProxySettings(
+                    new Uri($"http://localhost:{proxy.Port}"),
+                    new NetworkCredential("proxyuser", "wrong"));
+
+
+                try
+                {
+                    var adapter = new ComputeEngineAdapter(await credential);
+                    await adapter.GetProjectAsync(TestProject.ProjectId, CancellationToken.None);
+
+                    Assert.Fail("Exception expected");
+                }
+                catch (HttpRequestException e) when (e.InnerException is WebException exception)
+                {
+                    Assert.AreEqual(
+                        HttpStatusCode.ProxyAuthenticationRequired,
+                        ((HttpWebResponse)exception.Response).StatusCode);
+                }
+            }
         }
     }
 }

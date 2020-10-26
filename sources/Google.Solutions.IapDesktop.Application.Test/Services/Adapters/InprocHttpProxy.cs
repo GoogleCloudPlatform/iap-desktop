@@ -19,6 +19,7 @@
 // under the License.
 //
 
+using Microsoft.Win32.SafeHandles;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -40,12 +41,17 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Adapters
         private static readonly Regex HttpRequestPattern
             = new Regex(@"^CONNECT ([a-zA-Z0-9\.*]+):(\d+) HTTP/1.1");
 
+        // NB. Avoid reusing the same port twice in the same process.
+        private static ushort nextProxyPort = 3128;
+
         private readonly CancellationTokenSource cancellation
             = new CancellationTokenSource();
 
         private readonly LinkedList<string> connectionTargets = new LinkedList<string>();
 
         public IEnumerable<string> ConnectionTargets => this.connectionTargets;
+
+        public ushort Port { get; }        
 
         private void DispatchRequests(TcpListener listener)
         {
@@ -134,14 +140,19 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Adapters
             }
         }
 
-        public InProcessHttpProxy(int port)
+        public InProcessHttpProxy(ushort port)
         {
+            this.Port = port;
+
             var listener = new TcpListener(new IPEndPoint(IPAddress.Loopback, port));
             listener.Start();
 
             Task.Run(() => DispatchRequests(listener));
         }
 
+        public InProcessHttpProxy() : this(nextProxyPort++)
+        {
+        }
 
         public void Dispose()
         {
@@ -164,9 +175,16 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Adapters
         public NetworkCredential Credential { get; set; }
 
         public InProcessAuthenticatingHttpProxy(
-            int port,
+            ushort port,
             NetworkCredential credential)
             : base(port)
+        {
+            this.Credential = credential;
+        }
+
+        public InProcessAuthenticatingHttpProxy(
+            NetworkCredential credential)
+            : base()
         {
             this.Credential = credential;
         }
