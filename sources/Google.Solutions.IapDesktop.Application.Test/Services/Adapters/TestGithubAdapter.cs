@@ -20,7 +20,11 @@
 //
 
 using Google.Solutions.IapDesktop.Application.Services.Adapters;
+using Google.Solutions.IapDesktop.Application.Test.Services.Adapters;
 using NUnit.Framework;
+using System;
+using System.Net;
+using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -37,6 +41,54 @@ namespace Google.Solutions.IapDesktop.Application.Test.Adapters
 
             Assert.IsNotNull(release);
             Assert.IsTrue(release.TagVersion.Major >= 1);
+        }
+
+        //---------------------------------------------------------------------
+        // Proxy.
+        //---------------------------------------------------------------------
+
+        [Test]
+        public async Task WhenProxyEnabledAndCredentialsCorrect_ThenRequestSucceeds()
+        {
+            var proxyCredentials = new NetworkCredential("proxyuser", "proxypass");
+            using (var proxy = new InProcessAuthenticatingHttpProxy(
+                proxyCredentials))
+            {
+                var proxyAdapter = new HttpProxyAdapter();
+                proxyAdapter.UseCustomProxySettings(
+                    new Uri($"http://localhost:{proxy.Port}"),
+                    proxyCredentials);
+
+                var adapter = new GithubAdapter();
+                await adapter.FindLatestReleaseAsync(CancellationToken.None);
+            }
+        }
+
+        [Test]
+        public async Task WhenProxyEnabledAndCredentialsWrong_ThenRequestThrowsWebException()
+        {
+            var proxyCredentials = new NetworkCredential("proxyuser", "proxypass");
+            using (var proxy = new InProcessAuthenticatingHttpProxy(
+                proxyCredentials))
+            {
+                var proxyAdapter = new HttpProxyAdapter();
+                proxyAdapter.UseCustomProxySettings(
+                    new Uri($"http://localhost:{proxy.Port}"),
+                    new NetworkCredential("proxyuser", "wrong"));
+
+                try
+                {
+                    var adapter = new GithubAdapter();
+                    await adapter.FindLatestReleaseAsync(CancellationToken.None);
+                    Assert.Fail("Exception expected");
+                }
+                catch (HttpRequestException e) when (e.InnerException is WebException exception)
+                {
+                    Assert.AreEqual(
+                        HttpStatusCode.ProxyAuthenticationRequired,
+                        ((HttpWebResponse)exception.Response).StatusCode);
+                }
+            }
         }
     }
 }
