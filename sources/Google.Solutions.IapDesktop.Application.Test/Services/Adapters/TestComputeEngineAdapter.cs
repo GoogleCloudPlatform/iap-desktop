@@ -384,7 +384,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Adapters
         //---------------------------------------------------------------------
 
         [Test]
-        public async Task WhenProxyEnabledAndCredentialsCorrect_ThenGetProjectAsyncSucceeds(
+        public async Task WhenProxyEnabledAndCredentialsCorrect_ThenRequestSucceeds(
             [Credential(Role = PredefinedRole.ComputeViewer)] ResourceTask<ICredential> credential)
         {
             var proxyCredentials = new NetworkCredential("proxyuser", "proxypass");
@@ -396,13 +396,15 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Adapters
                     new Uri($"http://localhost:{proxy.Port}"),
                     proxyCredentials);
 
-                var adapter = new ComputeEngineAdapter(await credential);
-                await adapter.GetProjectAsync(TestProject.ProjectId, CancellationToken.None);
+                using (var adapter = new ComputeEngineAdapter(await credential))
+                {
+                    await adapter.GetProjectAsync(TestProject.ProjectId, CancellationToken.None);
+                }
             }
         }
 
         [Test]
-        public async Task WhenProxyEnabledAndCredentialsWrong_ThenGetProjectAsyncThrowsXxx(
+        public async Task WhenProxyEnabledAndCredentialsWrong_ThenRequestThrowsWebException(
             [Credential(Role = PredefinedRole.ComputeViewer)] ResourceTask<ICredential> credential)
         {
             var proxyCredentials = new NetworkCredential("proxyuser", "proxypass");
@@ -414,13 +416,13 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Adapters
                     new Uri($"http://localhost:{proxy.Port}"),
                     new NetworkCredential("proxyuser", "wrong"));
 
-
                 try
                 {
-                    var adapter = new ComputeEngineAdapter(await credential);
-                    await adapter.GetProjectAsync(TestProject.ProjectId, CancellationToken.None);
-
-                    Assert.Fail("Exception expected");
+                    using (var adapter = new ComputeEngineAdapter(await credential))
+                    {
+                        await adapter.GetProjectAsync(TestProject.ProjectId, CancellationToken.None);
+                        Assert.Fail("Exception expected");
+                    }
                 }
                 catch (HttpRequestException e) when (e.InnerException is WebException exception)
                 {

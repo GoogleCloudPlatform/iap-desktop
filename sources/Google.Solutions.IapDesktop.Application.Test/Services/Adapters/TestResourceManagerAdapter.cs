@@ -23,7 +23,10 @@ using Google.Apis.Auth.OAuth2;
 using Google.Solutions.Common.Test.Integration;
 using Google.Solutions.IapDesktop.Application.Services.Adapters;
 using NUnit.Framework;
+using System;
 using System.Linq;
+using System.Net;
+using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -95,6 +98,64 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Adapters
                 CollectionAssert.Contains(
                     project.Select(p => p.ProjectId),
                     TestProject.ProjectId);
+            }
+        }
+
+        //---------------------------------------------------------------------
+        // Proxy.
+        //---------------------------------------------------------------------
+
+        [Test]
+        public async Task WhenProxyEnabledAndCredentialsCorrect_ThenRequestSucceeds(
+            [Credential(Role = PredefinedRole.ComputeViewer)] ResourceTask<ICredential> credential)
+        {
+            var proxyCredentials = new NetworkCredential("proxyuser", "proxypass");
+            using (var proxy = new InProcessAuthenticatingHttpProxy(
+                proxyCredentials))
+            {
+                var proxyAdapter = new HttpProxyAdapter();
+                proxyAdapter.UseCustomProxySettings(
+                    new Uri($"http://localhost:{proxy.Port}"),
+                    proxyCredentials);
+
+                using (var adapter = new ResourceManagerAdapter(await credential))
+                {
+                    await adapter.QueryProjectsById(
+                        TestProject.ProjectId,
+                        CancellationToken.None);
+                }
+            }
+        }
+
+        [Test]
+        public async Task WhenProxyEnabledAndCredentialsWrong_ThenRequestThrowsWebException(
+            [Credential(Role = PredefinedRole.ComputeViewer)] ResourceTask<ICredential> credential)
+        {
+            var proxyCredentials = new NetworkCredential("proxyuser", "proxypass");
+            using (var proxy = new InProcessAuthenticatingHttpProxy(
+                proxyCredentials))
+            {
+                var proxyAdapter = new HttpProxyAdapter();
+                proxyAdapter.UseCustomProxySettings(
+                    new Uri($"http://localhost:{proxy.Port}"),
+                    new NetworkCredential("proxyuser", "wrong"));
+
+                try
+                {
+                    using (var adapter = new ResourceManagerAdapter(await credential))
+                    {
+                        await adapter.QueryProjectsById(
+                            TestProject.ProjectId,
+                            CancellationToken.None);
+                        Assert.Fail("Exception expected");
+                    }
+                }
+                catch (HttpRequestException e) when (e.InnerException is WebException exception)
+                {
+                    Assert.AreEqual(
+                        HttpStatusCode.ProxyAuthenticationRequired,
+                        ((HttpWebResponse)exception.Response).StatusCode);
+                }
             }
         }
     }
