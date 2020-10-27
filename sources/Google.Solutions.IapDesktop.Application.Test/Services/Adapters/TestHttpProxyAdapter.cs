@@ -59,7 +59,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Adapters
             using (var proxy = new InProcessHttpProxy())
             {
                 var adapter = new HttpProxyAdapter();
-                adapter.UseCustomProxySettings(
+                adapter.ActivateCustomProxySettings(
                     new Uri($"http://localhost:{proxy.Port}"),
                     null);
 
@@ -78,7 +78,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Adapters
                 proxyCredentials))
             {
                 var adapter = new HttpProxyAdapter();
-                adapter.UseCustomProxySettings(
+                adapter.ActivateCustomProxySettings(
                     new Uri($"http://localhost:{proxy.Port}"),
                     proxyCredentials);
 
@@ -97,10 +97,10 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Adapters
                 proxyCredentials))
             {
                 var adapter = new HttpProxyAdapter();
-                adapter.UseCustomProxySettings(
+                adapter.ActivateCustomProxySettings(
                     new Uri($"http://localhost:{proxy.Port}"),
                     proxyCredentials);
-                adapter.UseSystemProxySettings();
+                adapter.ActivateSystemProxySettings();
 
                 await SendWebRequest(SampleHttpsUrl);
 

@@ -34,18 +34,33 @@ namespace Google.Solutions.IapDesktop.Application.Views.Properties
     [SkipCodeCoverage("UI code")]
     public partial class PropertiesDialog : Form
     {
-        public PropertiesDialog()
+        private readonly IServiceProvider serviceProvider;
+
+        public PropertiesDialog(IServiceProvider serviceProvider)
         {
+            this.serviceProvider = serviceProvider;
+
             InitializeComponent();
         }
 
-        private void ApplyChanges()
+        private bool ApplyChanges()
         {
-            foreach (var tab in this.Panes
-                .Where(t => t.IsDirty))
+            try
             {
-                tab.ApplyChanges();
-                Debug.Assert(!tab.IsDirty);
+                foreach (var tab in this.Panes
+                    .Where(t => t.IsDirty))
+                {
+                    tab.ApplyChanges();
+                    Debug.Assert(!tab.IsDirty);
+                }
+
+                return true;
+            }
+            catch (Exception e)
+            {
+                this.serviceProvider.GetService<IExceptionDialog>()
+                    .Show(this, "Applying changes failed", e);
+                return false;
             }
         }
 
@@ -92,8 +107,10 @@ namespace Google.Solutions.IapDesktop.Application.Views.Properties
 
         private void okButton_Click(object sender, EventArgs e)
         {
-            ApplyChanges();
-            Close();
+            if (ApplyChanges())
+            {
+                Close();
+            }
         }
 
         private void cancelButton_Click(object sender, EventArgs e)

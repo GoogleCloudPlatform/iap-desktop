@@ -22,6 +22,7 @@
 using Google.Apis.Util;
 using Google.Solutions.IapDesktop.Application.Settings;
 using Microsoft.Win32;
+using System;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
 
@@ -55,6 +56,8 @@ namespace Google.Solutions.IapDesktop.Application.Services.Settings
 
         public RegistryBoolSetting IsPreviewFeatureSetEnabled { get; private set; }
 
+        public RegistryStringSetting ProxyUrl { get; private set; }
+
         public IEnumerable<ISetting> Settings => new ISetting[]
         {
             this.IsMainWindowMaximized,
@@ -62,7 +65,8 @@ namespace Google.Solutions.IapDesktop.Application.Services.Settings
             this.MainWindowWidth,
             this.IsUpdateCheckEnabled,
             this.LastUpdateCheck,
-            this.IsUpdateCheckEnabled
+            this.IsUpdateCheckEnabled,
+            this.ProxyUrl
         };
 
         private ApplicationSettings()
@@ -120,6 +124,14 @@ namespace Google.Solutions.IapDesktop.Application.Services.Settings
                     null,
                     false,
                     registryKey),
+                ProxyUrl = RegistryStringSetting.FromKey(
+                    "ProxyUrl",
+                    "ProxyUrl",
+                    null,
+                    null,
+                    null,
+                    registryKey,
+                    url => url == null || Uri.TryCreate(url, UriKind.Absolute, out Uri _)),
             };
         }
     }

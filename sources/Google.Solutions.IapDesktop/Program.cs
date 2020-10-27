@@ -235,6 +235,11 @@ namespace Google.Solutions.IapDesktop
             adapterLayer.AddTransient<IComputeEngineAdapter, ComputeEngineAdapter>();
             adapterLayer.AddTransient<GithubAdapter>();
             adapterLayer.AddTransient<EmailAdapter>();
+            adapterLayer.AddTransient<IHttpProxyAdapter, HttpProxyAdapter>();
+
+            // Activate proxy settings based on app settings.
+            adapterLayer.GetService<IHttpProxyAdapter>().ActivateSettings(
+                adapterLayer.GetService<ApplicationSettingsRepository>().GetSettings());
 
             //
             // Integration layer.

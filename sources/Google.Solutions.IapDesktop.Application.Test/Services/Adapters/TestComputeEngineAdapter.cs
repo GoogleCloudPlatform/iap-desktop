@@ -395,7 +395,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Adapters
                 proxyCredentials))
             {
                 var proxyAdapter = new HttpProxyAdapter();
-                proxyAdapter.UseCustomProxySettings(
+                proxyAdapter.ActivateCustomProxySettings(
                     new Uri($"http://localhost:{proxy.Port}"),
                     proxyCredentials);
 
@@ -414,7 +414,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Adapters
                 proxyCredentials))
             {
                 var proxyAdapter = new HttpProxyAdapter();
-                proxyAdapter.UseCustomProxySettings(
+                proxyAdapter.ActivateCustomProxySettings(
                     new Uri($"http://localhost:{proxy.Port}"),
                     new NetworkCredential("proxyuser", "wrong"));
 

@@ -166,7 +166,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Test.Services.Tunnel
                 proxyCredentials))
             {
                 var proxyAdapter = new HttpProxyAdapter();
-                proxyAdapter.UseCustomProxySettings(
+                proxyAdapter.ActivateCustomProxySettings(
                     new Uri($"http://localhost:{proxy.Port}"),
                     proxyCredentials);
 
@@ -202,7 +202,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Test.Services.Tunnel
                     3389);
 
                 var proxyAdapter = new HttpProxyAdapter();
-                proxyAdapter.UseCustomProxySettings(
+                proxyAdapter.ActivateCustomProxySettings(
                     new Uri($"http://localhost:{proxy.Port}"),
                     new NetworkCredential("proxyuser", "wrong"));
 

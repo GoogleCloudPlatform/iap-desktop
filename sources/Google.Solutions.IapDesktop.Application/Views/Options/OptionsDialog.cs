@@ -30,7 +30,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.Options
     public class OptionsDialog : PropertiesDialog
     {
         public OptionsDialog(IServiceCategoryProvider serviceProvider)
-            : base()
+            : base(serviceProvider)
         {
             this.Text = "Options";
 

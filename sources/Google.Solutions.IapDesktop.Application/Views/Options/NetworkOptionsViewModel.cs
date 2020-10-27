@@ -20,6 +20,8 @@
 //
 
 using Google.Solutions.IapDesktop.Application.ObjectModel;
+using Google.Solutions.IapDesktop.Application.Services.Adapters;
+using Google.Solutions.IapDesktop.Application.Services.Settings;
 using System;
 using System.Diagnostics;
 using System.Windows.Forms;
@@ -28,12 +30,38 @@ namespace Google.Solutions.IapDesktop.Application.Views.Options
 {
     public class NetworkOptionsViewModel : ViewModelBase, IOptionsDialogPane
     {
+        private readonly IHttpProxyAdapter proxyAdapter;
+        private readonly ApplicationSettingsRepository settingsRepository;
 
+        private string proxyServer = null;
+        private string proxyPort = null;
         private bool isDirty = false;
 
-        public NetworkOptionsViewModel(IServiceProvider serviceProvider)
+        public NetworkOptionsViewModel(
+            ApplicationSettingsRepository settingsRepository,
+            IHttpProxyAdapter proxyAdapter)
         {
-            // TODO
+            this.settingsRepository = settingsRepository;
+            this.proxyAdapter = proxyAdapter;
+
+            //
+            // Read current settings.
+            //
+
+            var settings = this.settingsRepository.GetSettings();
+            if (!string.IsNullOrEmpty(settings.ProxyUrl.StringValue))
+            {
+                var proxyUrl = new Uri(settings.ProxyUrl.StringValue);
+                this.proxyServer = proxyUrl.Host;
+                this.proxyPort = proxyUrl.Port.ToString();
+            }
+        }
+
+        public NetworkOptionsViewModel(IServiceProvider serviceProvider)
+            : this(
+                  serviceProvider.GetService<ApplicationSettingsRepository>(),
+                  serviceProvider.GetService<IHttpProxyAdapter>())
+        { 
         }
 
         //---------------------------------------------------------------------
@@ -58,7 +86,31 @@ namespace Google.Solutions.IapDesktop.Application.Views.Options
         {
             Debug.Assert(this.IsDirty);
 
-            // TODO
+            if (this.proxyServer != null && !IsValidProxyHost(this.proxyServer))
+            {
+                throw new ArgumentException($"'{this.proxyServer}' is not a valid host name");
+            }
+            if (this.proxyPort != null && !IsValidProxyPort(this.proxyPort))
+            {
+                throw new ArgumentException($"'{this.proxyPort}' is not a valid port number");
+            }
+
+            //
+            // Save changed settings.
+            //
+
+            var settings = this.settingsRepository.GetSettings();
+            settings.ProxyUrl.StringValue = this.proxyServer != null
+                ? $"http://{this.proxyServer}:{this.proxyPort}"
+                : null;
+            this.settingsRepository.SetSettings(settings);
+
+            //
+            // Activate changed proxy settings so that the app
+            // does not need to be restarted.
+            //
+
+            this.proxyAdapter.ActivateSettings(settings);
 
             this.IsDirty = false;
         }
@@ -68,12 +120,55 @@ namespace Google.Solutions.IapDesktop.Application.Views.Options
         // Observable properties.
         //---------------------------------------------------------------------
 
-        public bool IsCustomProxyServerEnabled => false; // TODO
+        public bool IsCustomProxyServerEnabled
+        {
+            get => this.proxyServer != null;
+            set
+            {
+                if (value)
+                {
+                    // Initialize to a sane default.
+                    this.ProxyServer = this.ProxyServer ?? "proxy";
+                    this.ProxyPort = this.ProxyPort ?? "3128";
+                }
+                else
+                {
+                    this.ProxyServer = null;
+                    this.ProxyPort = null;
+                }
 
-        public bool IsSystemProxyServerEnabled => true; // TODO
+                RaisePropertyChange();
+                RaisePropertyChange((NetworkOptionsViewModel m) => m.IsSystemProxyServerEnabled);
+            }
+        }
 
-        public string ProxyServer => null; // TODO
-        public string ProxyPort => null; // TODO
+        public bool IsSystemProxyServerEnabled
+        {
+            get => !IsCustomProxyServerEnabled;
+            set => IsCustomProxyServerEnabled = !value;
+        }
+
+        public string ProxyServer
+        {
+            get => this.proxyServer;
+            set
+            {
+                this.proxyServer = value;
+                this.IsDirty = true;
+                RaisePropertyChange();
+            }
+        }
+
+        public string ProxyPort
+        {
+            get => this.proxyPort;
+            set
+            {
+                this.proxyPort = value;
+                this.IsDirty = true;
+                RaisePropertyChange();
+            }
+        }
 
         //---------------------------------------------------------------------
         // Actions.
@@ -84,9 +179,11 @@ namespace Google.Solutions.IapDesktop.Application.Views.Options
                 portNumber > 0 &&
                 portNumber <= ushort.MaxValue;
 
+        public bool IsValidProxyHost(string host)
+            => Uri.TryCreate($"http://{host}", UriKind.Absolute, out Uri _);
+
         public void OpenProxyControlPanelApplet()
         {
-
             using (Process.Start(new ProcessStartInfo()
             {
                 UseShellExecute = false,
