@@ -35,9 +35,11 @@ namespace Google.Solutions.IapDesktop.Application.Views.Options
         public const string FriendlyName = "IAP Desktop - Identity-Aware Proxy for Remote Desktop";
 
         private readonly ApplicationSettingsRepository settingsRepository;
-        private readonly ApplicationSettings settings;
         private readonly IAppProtocolRegistry protocolRegistry;
         private readonly HelpService helpService;
+
+        private bool isUpdateCheckEnabled;
+        private string lastUpdateCheck;
 
         private bool isBrowserIntegrationEnabled;
         private bool isDirty = false;
@@ -51,7 +53,19 @@ namespace Google.Solutions.IapDesktop.Application.Views.Options
             this.protocolRegistry = protocolRegistry;
             this.helpService = helpService;
 
-            this.settings = this.settingsRepository.GetSettings();
+            //
+            // Read current settings.
+            //
+            // NB. Do not hold on to the settings object because other tabs
+            // might apply changes to other application settings.
+            //
+
+            var settings = this.settingsRepository.GetSettings();
+            this.isUpdateCheckEnabled = settings.IsUpdateCheckEnabled.BoolValue;
+            this.lastUpdateCheck = settings.LastUpdateCheck.IsDefault
+                ? "never"
+                : DateTime.FromBinary(settings.LastUpdateCheck.LongValue).ToString();
+
             this.isBrowserIntegrationEnabled = this.protocolRegistry.IsRegistered(
                 IapRdpUrl.Scheme,
                 ExecutableLocation);
@@ -92,8 +106,14 @@ namespace Google.Solutions.IapDesktop.Application.Views.Options
         {
             Debug.Assert(this.IsDirty);
 
+
+            //
             // Save changed settings.
-            this.settingsRepository.SetSettings(this.settings);
+            //
+
+            var settings = this.settingsRepository.GetSettings();
+            settings.IsUpdateCheckEnabled.BoolValue = this.isUpdateCheckEnabled;
+            this.settingsRepository.SetSettings(settings);
 
             // Update protocol registration.
             if (this.isBrowserIntegrationEnabled)
@@ -117,10 +137,10 @@ namespace Google.Solutions.IapDesktop.Application.Views.Options
 
         public bool IsUpdateCheckEnabled
         {
-            get => this.settings.IsUpdateCheckEnabled.BoolValue;
+            get => this.isUpdateCheckEnabled;
             set
             {
-                this.settings.IsUpdateCheckEnabled.BoolValue = value;
+                this.isUpdateCheckEnabled = value;
                 this.IsDirty = true;
                 RaisePropertyChange();
             }
@@ -137,9 +157,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.Options
             }
         }
 
-        public string LastUpdateCheck => this.settings.LastUpdateCheck.IsDefault
-            ? "never"
-            : DateTime.FromBinary(this.settings.LastUpdateCheck.LongValue).ToString();
+        public string LastUpdateCheck => this.lastUpdateCheck;
 
         //---------------------------------------------------------------------
         // Actions.

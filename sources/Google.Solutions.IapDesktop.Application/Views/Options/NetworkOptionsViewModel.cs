@@ -47,6 +47,9 @@ namespace Google.Solutions.IapDesktop.Application.Views.Options
             //
             // Read current settings.
             //
+            // NB. Do not hold on to the settings object because other tabs
+            // might apply changes to other application settings.
+            //
 
             var settings = this.settingsRepository.GetSettings();
             if (!string.IsNullOrEmpty(settings.ProxyUrl.StringValue))
@@ -114,7 +117,6 @@ namespace Google.Solutions.IapDesktop.Application.Views.Options
 
             this.IsDirty = false;
         }
-
 
         //---------------------------------------------------------------------
         // Observable properties.
