@@ -19,6 +19,7 @@
 // under the License.
 //
 
+using Google.Solutions.Common.Diagnostics;
 using Google.Solutions.Common.Util;
 using Google.Solutions.IapDesktop.Application.Services.Settings;
 using System;
@@ -69,23 +70,31 @@ namespace Google.Solutions.IapDesktop.Application.Services.Adapters
             IEnumerable<string> bypassList,
             ICredentials credentials)
         {
-            lock (this.configLock)
+            using (TraceSources.IapDesktop.TraceMethod().WithParameters(
+                proxyAddress,
+                credentials != null ? "(credentials)" : null))
             {
-                WebRequest.DefaultWebProxy = new WebProxy(proxyAddress)
+                lock (this.configLock)
                 {
-                    Credentials = credentials,
-                    BypassList = bypassList
-                        .EnsureNotNull()
-                        .ToArray()
-                };
+                    WebRequest.DefaultWebProxy = new WebProxy(proxyAddress)
+                    {
+                        Credentials = credentials,
+                        BypassList = bypassList
+                            .EnsureNotNull()
+                            .ToArray()
+                    };
+                }
             }
         }
 
         public void ActivateSystemProxySettings()
         {
-            lock (this.configLock)
+            using (TraceSources.IapDesktop.TraceMethod().WithoutParameters())
             {
-                WebRequest.DefaultWebProxy = defaultProxy;
+                lock (this.configLock)
+                {
+                    WebRequest.DefaultWebProxy = defaultProxy;
+                }
             }
         }
 

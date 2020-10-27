@@ -189,29 +189,34 @@ namespace Google.Solutions.IapDesktop.Windows
                     // settings.
                     //
 
-                    if (this.serviceProvider.GetService<ITaskDialog>()
-                        .ShowOptionsTaskDialog(
-                            this,
-                            TaskDialogIcons.TD_ERROR_ICON,
-                            "Authorization failed",
-                            "IAP Desktop failed to complete the OAuth authorization. " +
-                                "This might be due to network communication issues.",
-                            e.Message,
-                            "",
-                            new[]
-                            {
-                                "Change network settings"
-                            },
-                            null,
-                            out bool _) == 0)
+                    try
                     {
-                        // Open settings.
-                        if (this.serviceProvider.GetService<OptionsDialog>().ShowDialog(this) == DialogResult.OK)
+                        if (this.serviceProvider.GetService<ITaskDialog>()
+                            .ShowOptionsTaskDialog(
+                                this,
+                                TaskDialogIcons.TD_ERROR_ICON,
+                                "Authorization failed",
+                                "IAP Desktop failed to complete the OAuth authorization. " +
+                                    "This might be due to network communication issues.",
+                                e.Message,
+                                "",
+                                new[]
+                                {
+                                    "Change network settings"
+                                },
+                                null,
+                                out bool _) == 0)
                         {
-                            // Ok, retry with modified settings.
-                            continue;
+                            // Open settings.
+                            if (this.serviceProvider.GetService<OptionsDialog>().ShowDialog(this) == DialogResult.OK)
+                            {
+                                // Ok, retry with modified settings.
+                                continue;
+                            }
                         }
                     }
+                    catch (OperationCanceledException)
+                    { }
                 }
 
                 if (this.viewModel.Authorization == null)
