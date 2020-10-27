@@ -37,6 +37,13 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Adapters
     [Category("IntegrationTest")]
     public class TestResourceManagerAdapter : FixtureBase
     {
+        [TearDown]
+        public void RestoreProxySettings()
+        {
+            // Restore settings to not impact other tests.
+            new HttpProxyAdapter().ActivateSystemProxySettings();
+        }
+
         [Test]
         public async Task WhenUserInRole_ThenIsGrantedPermissionReturnsTrue(
             [Credential(Role = PredefinedRole.ComputeViewer)] ResourceTask<ICredential> credential)

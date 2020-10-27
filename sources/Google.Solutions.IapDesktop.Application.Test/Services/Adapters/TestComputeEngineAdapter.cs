@@ -25,7 +25,6 @@ using Google.Solutions.Common.Locator;
 using Google.Solutions.Common.Test;
 using Google.Solutions.Common.Test.Integration;
 using Google.Solutions.Common.Test.Net;
-using Google.Solutions.Common.Util;
 using Google.Solutions.IapDesktop.Application.Services.Adapters;
 using NUnit.Framework;
 using System;
@@ -41,6 +40,12 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Adapters
     [Category("IntegrationTest")]
     public class TestComputeEngineAdapter : FixtureBase
     {
+        [TearDown]
+        public void RestoreProxySettings()
+        {
+            // Restore settings to not impact other tests.
+            new HttpProxyAdapter().ActivateSystemProxySettings();
+        }
 
         //---------------------------------------------------------------------
         // Projects.

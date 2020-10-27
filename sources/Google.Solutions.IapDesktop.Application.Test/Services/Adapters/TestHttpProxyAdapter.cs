@@ -39,6 +39,14 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Adapters
         private static readonly Uri SampleHttpsUrl = 
             new Uri("https://fonts.googleapis.com/css?family=Open+Sans&display=swap");
 
+
+        [TearDown]
+        public void RestoreProxySettings()
+        {
+            // Restore settings to not impact other tests.
+            new HttpProxyAdapter().ActivateSystemProxySettings();
+        }
+
         private static async Task<string> SendWebRequest(Uri url)
         {
             using (var client = new HttpClient())

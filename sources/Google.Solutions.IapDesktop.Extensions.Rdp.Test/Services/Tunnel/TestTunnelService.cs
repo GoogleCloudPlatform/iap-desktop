@@ -42,6 +42,13 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Test.Services.Tunnel
     [Category("IntegrationTest")]
     public class TestTunnelService
     {
+        [TearDown]
+        public void RestoreProxySettings()
+        {
+            // Restore settings to not impact other tests.
+            new HttpProxyAdapter().ActivateSystemProxySettings();
+        }
+
         private IAuthorizationAdapter CreateAuthorizationAdapter(ICredential credential)
         {
             var authz = new Mock<IAuthorization>();
