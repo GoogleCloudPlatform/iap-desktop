@@ -21,13 +21,9 @@
 
 using Google.Apis.Auth.OAuth2;
 using Google.Solutions.Common.Test.Integration;
-using Google.Solutions.Common.Test.Net;
 using Google.Solutions.IapDesktop.Application.Services.Adapters;
 using NUnit.Framework;
-using System;
 using System.Linq;
-using System.Net;
-using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -37,13 +33,6 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Adapters
     [Category("IntegrationTest")]
     public class TestResourceManagerAdapter : FixtureBase
     {
-        [TearDown]
-        public void RestoreProxySettings()
-        {
-            // Restore settings to not impact other tests.
-            new HttpProxyAdapter().ActivateSystemProxySettings();
-        }
-
         [Test]
         public async Task WhenUserInRole_ThenIsGrantedPermissionReturnsTrue(
             [Credential(Role = PredefinedRole.ComputeViewer)] ResourceTask<ICredential> credential)
@@ -106,66 +95,6 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Adapters
                 CollectionAssert.Contains(
                     project.Select(p => p.ProjectId),
                     TestProject.ProjectId);
-            }
-        }
-
-        //---------------------------------------------------------------------
-        // Proxy.
-        //---------------------------------------------------------------------
-
-        [Test]
-        [Ignore("Unreliable in CI")]
-        public async Task WhenProxyEnabledAndCredentialsCorrect_ThenRequestSucceeds(
-            [Credential(Role = PredefinedRole.ComputeViewer)] ResourceTask<ICredential> credential)
-        {
-            var proxyCredentials = new NetworkCredential("proxyuser", "proxypass");
-
-            using (var adapter = new ResourceManagerAdapter(await credential))
-            using (var proxy = new InProcessAuthenticatingHttpProxy(
-                proxyCredentials))
-            {
-                var proxyAdapter = new HttpProxyAdapter();
-                proxyAdapter.ActivateCustomProxySettings(
-                    new Uri($"http://localhost:{proxy.Port}"),
-                    null,
-                    proxyCredentials);
-
-                await adapter.QueryProjectsById(
-                    TestProject.ProjectId,
-                    CancellationToken.None);
-            }
-        }
-
-        [Test]
-        [Ignore("Unreliable in CI")]
-        public async Task WhenProxyEnabledAndCredentialsWrong_ThenRequestThrowsWebException(
-            [Credential(Role = PredefinedRole.ComputeViewer)] ResourceTask<ICredential> credential)
-        {
-            var proxyCredentials = new NetworkCredential("proxyuser", "proxypass");
-
-            using (var adapter = new ResourceManagerAdapter(await credential))
-            using (var proxy = new InProcessAuthenticatingHttpProxy(
-                proxyCredentials))
-            {
-                var proxyAdapter = new HttpProxyAdapter();
-                proxyAdapter.ActivateCustomProxySettings(
-                    new Uri($"http://localhost:{proxy.Port}"),
-                    null,
-                    new NetworkCredential("proxyuser", "wrong"));
-
-                try
-                {
-                    await adapter.QueryProjectsById(
-                        TestProject.ProjectId,
-                        CancellationToken.None);
-                    Assert.Fail("Exception expected");
-                }
-                catch (HttpRequestException e) when (e.InnerException is WebException exception)
-                {
-                    Assert.AreEqual(
-                        HttpStatusCode.ProxyAuthenticationRequired,
-                        ((HttpWebResponse)exception.Response).StatusCode);
-                }
             }
         }
     }
