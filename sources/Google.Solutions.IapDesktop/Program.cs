@@ -43,6 +43,7 @@ using System.Threading;
 using System.Windows.Forms;
 using Google.Solutions.IapDesktop.Application.Services;
 using Google.Solutions.IapDesktop.Application.Services.Settings;
+using Google.Solutions.IapDesktop.Application.Views.Options;
 
 namespace Google.Solutions.IapDesktop
 {
@@ -265,6 +266,7 @@ namespace Google.Solutions.IapDesktop
             windowAndWorkflowLayer.AddTransient<ITaskDialog, TaskDialog>();
             windowAndWorkflowLayer.AddTransient<IUpdateService, UpdateService>();
             windowAndWorkflowLayer.AddSingleton<IProjectExplorer, ProjectExplorerWindow>();
+            windowAndWorkflowLayer.AddTransient<OptionsDialog>();
 
 #if DEBUG
             windowAndWorkflowLayer.AddSingleton<DebugJobServiceWindow>();

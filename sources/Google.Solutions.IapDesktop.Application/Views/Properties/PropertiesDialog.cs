@@ -109,12 +109,14 @@ namespace Google.Solutions.IapDesktop.Application.Views.Properties
         {
             if (ApplyChanges())
             {
+                this.DialogResult = DialogResult.OK;
                 Close();
             }
         }
 
         private void cancelButton_Click(object sender, EventArgs e)
         {
+            this.DialogResult = DialogResult.Cancel;
             Close();
         }
 

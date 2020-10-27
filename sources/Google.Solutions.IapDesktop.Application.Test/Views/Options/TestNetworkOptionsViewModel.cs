@@ -38,7 +38,6 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views.Options
         private const string TestKeyPath = @"Software\Google\__Test";
         private readonly RegistryKey hkcu = RegistryKey.OpenBaseKey(RegistryHive.CurrentUser, RegistryView.Default);
 
-        private NetworkOptionsViewModel viewModel;
         private ApplicationSettingsRepository settingsRepository;
         private Mock<IHttpProxyAdapter> proxyAdapterMock;
 
