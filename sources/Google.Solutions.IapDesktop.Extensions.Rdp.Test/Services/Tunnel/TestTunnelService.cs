@@ -32,7 +32,6 @@ using Moq;
 using NUnit.Framework;
 using System;
 using System.Net;
-using System.Net.Http;
 using System.Net.WebSockets;
 using System.Threading.Tasks;
 
@@ -164,6 +163,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Test.Services.Tunnel
         //---------------------------------------------------------------------
 
         [Test]
+        [Ignore("Unreliable in CI")]
         public async Task WhenProxyEnabledAndCredentialsCorrect_ThenProbeSucceeds(
             [WindowsInstance] ResourceTask<InstanceLocator> testInstance,
             [Credential(Role = PredefinedRole.IapTunnelUser)] ResourceTask<ICredential> credential)
@@ -175,6 +175,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Test.Services.Tunnel
                 var proxyAdapter = new HttpProxyAdapter();
                 proxyAdapter.ActivateCustomProxySettings(
                     new Uri($"http://localhost:{proxy.Port}"),
+                    null,
                     proxyCredentials);
 
                 var service = new TunnelService(CreateAuthorizationAdapter(
@@ -194,6 +195,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Test.Services.Tunnel
         }
 
         [Test]
+        [Ignore("Unreliable in CI")]
         public async Task WhenProxyEnabledAndCredentialsWrong_ThenProbeThrowsWebException(
             [WindowsInstance] ResourceTask<InstanceLocator> testInstance,
             [Credential(Role = PredefinedRole.IapTunnelUser)] ResourceTask<ICredential> credential)
@@ -211,6 +213,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Test.Services.Tunnel
                 var proxyAdapter = new HttpProxyAdapter();
                 proxyAdapter.ActivateCustomProxySettings(
                     new Uri($"http://localhost:{proxy.Port}"),
+                    null,
                     new NetworkCredential("proxyuser", "wrong"));
 
                 ITunnel tunnel = null;

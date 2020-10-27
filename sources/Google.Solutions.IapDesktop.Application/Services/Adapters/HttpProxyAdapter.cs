@@ -21,7 +21,9 @@
 
 using Google.Solutions.IapDesktop.Application.Services.Settings;
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 using System.Net;
 
 namespace Google.Solutions.IapDesktop.Application.Services.Adapters
@@ -32,7 +34,10 @@ namespace Google.Solutions.IapDesktop.Application.Services.Adapters
         /// Set a custom HTTP proxy for the current process. Settings
         /// are not persisted.
         /// </summary>
-        void ActivateCustomProxySettings(Uri proxyAddress, ICredentials credetial);
+        void ActivateCustomProxySettings(
+            Uri proxyAddress,
+            IEnumerable<string> bypassList,
+            ICredentials credentials);
 
         /// <summary>
         /// Reset current process to use system-defined proxy settings.
@@ -58,13 +63,19 @@ namespace Google.Solutions.IapDesktop.Application.Services.Adapters
             Debug.Assert(defaultProxy != null);
         }
 
-        public void ActivateCustomProxySettings(Uri proxyAddress, ICredentials credentials)
+        public void ActivateCustomProxySettings(
+            Uri proxyAddress, 
+            IEnumerable<string> bypassList,
+            ICredentials credentials)
         {
             lock (this.configLock)
             {
                 WebRequest.DefaultWebProxy = new WebProxy(proxyAddress)
                 {
-                    Credentials = credentials
+                    Credentials = credentials,
+                    BypassList = bypassList != null
+                        ? bypassList.ToArray()
+                        : null
                 };
             }
         }
@@ -81,7 +92,10 @@ namespace Google.Solutions.IapDesktop.Application.Services.Adapters
         {
             if (!string.IsNullOrEmpty(settings.ProxyUrl.StringValue))
             {
-                ActivateCustomProxySettings(new Uri(settings.ProxyUrl.StringValue), null);
+                ActivateCustomProxySettings(
+                    new Uri(settings.ProxyUrl.StringValue), 
+                    null,
+                    null);
             }
             else
             {

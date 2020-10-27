@@ -32,13 +32,20 @@ using System.Threading.Tasks;
 namespace Google.Solutions.IapDesktop.Application.Test.Services.Adapters
 {
     [TestFixture]
+    [Category("IntegrationTest")]
     public class TestHttpProxyAdapter : FixtureBase
     {
         // Use a host name that is unlikely to be hit by any initialization code
         // which might be running in parallel with a test case.
         private static readonly Uri SampleHttpsUrl = 
-            new Uri("https://fonts.googleapis.com/css?family=Open+Sans&display=swap");
+            new Uri("https://www.gstatic.com/ipranges/goog.json");
 
+        // Bypass normal API requests so that we do not interfere with
+        // VM or credential provisioning which might happen in parallel.
+        private static readonly string[] ProxyBypassList = new[]
+        {
+            "(.*).googleapis.com"
+        };
 
         [TearDown]
         public void RestoreProxySettings()
@@ -69,11 +76,12 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Adapters
                 var adapter = new HttpProxyAdapter();
                 adapter.ActivateCustomProxySettings(
                     new Uri($"http://localhost:{proxy.Port}"),
+                    ProxyBypassList,
                     null);
 
                 await SendWebRequest(SampleHttpsUrl);
 
-                Assert.AreEqual(1, proxy.ConnectionTargets.Count());
+                Assert.AreEqual(1, proxy.ConnectionTargets.Distinct().Count());
                 CollectionAssert.Contains(proxy.ConnectionTargets, SampleHttpsUrl.Host);
             }
         }
@@ -88,11 +96,12 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Adapters
                 var adapter = new HttpProxyAdapter();
                 adapter.ActivateCustomProxySettings(
                     new Uri($"http://localhost:{proxy.Port}"),
+                    ProxyBypassList,
                     proxyCredentials);
 
                 await SendWebRequest(SampleHttpsUrl);
 
-                Assert.IsTrue(proxy.ConnectionTargets.Any());
+                Assert.AreEqual(1, proxy.ConnectionTargets.Distinct().Count());
                 CollectionAssert.Contains(proxy.ConnectionTargets, SampleHttpsUrl.Host);
             }
         }
@@ -107,6 +116,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Adapters
                 var adapter = new HttpProxyAdapter();
                 adapter.ActivateCustomProxySettings(
                     new Uri($"http://localhost:{proxy.Port}"),
+                    ProxyBypassList,
                     proxyCredentials);
                 adapter.ActivateSystemProxySettings();
 
