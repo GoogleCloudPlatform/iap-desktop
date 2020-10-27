@@ -19,26 +19,31 @@
 // under the License.
 //
 
-using Google.Solutions.Common.Diagnostics;
-using Google.Solutions.IapDesktop.Application.ObjectModel;
-using Google.Solutions.IapDesktop.Application.Services;
 using System;
-using System.Windows.Forms;
+using System.Diagnostics;
 
-namespace Google.Solutions.IapDesktop.Application.Views
+namespace Google.Solutions.Common.Diagnostics
 {
-    [SkipCodeCoverage("UI code")]
-    public partial class AboutWindow : Form
+    public static class ClrVersion
     {
-        public static Version ProgramVersion => typeof(AboutWindow).Assembly.GetName().Version;
-
-        public AboutWindow(IServiceProvider serviceProvider)
+        /// <summary>
+        /// Obtain the real CLR version (Environment.Version reports bogus values). 
+        /// </summary>
+        public static Version Version
         {
-            InitializeComponent();
+            get
+            {
+                // Get the file version of mscorlib.dll.
 
-            var updateService = serviceProvider.GetService<IUpdateService>();
-            this.infoLabel.Text = $"IAP Desktop\nVersion {updateService.InstalledVersion}";
-            this.clrInfoLabel.Text = $".NET {ClrVersion.Version}";
+                var assemblyUri = typeof(System.String).Assembly.CodeBase;
+                var versionInfo = FileVersionInfo.GetVersionInfo(new Uri(assemblyUri).LocalPath);
+
+                return new Version(
+                    versionInfo.FileMajorPart,
+                    versionInfo.FileMinorPart,
+                    versionInfo.FileBuildPart,
+                    versionInfo.FilePrivatePart);
+            }
         }
     }
 }

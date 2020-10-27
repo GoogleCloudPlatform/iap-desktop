@@ -61,7 +61,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.Adapters
                        "* ...\n" +
                        "\n" +
                        $"Installed version: {version}\n" +
-                       $".NET Version: {Environment.Version}\n" +
+                       $".NET Version: {ClrVersion.Version}\n" +
                        $"OS Version: {Environment.OSVersion}";
             OpenUrl($"{BaseUrl}/issues/new?body={WebUtility.UrlEncode(body)}");
         }

@@ -19,6 +19,7 @@
 // under the License.
 //
 
+using Google.Solutions.Common.Diagnostics;
 using System;
 using System.Diagnostics;
 using System.Net;
@@ -37,7 +38,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.Adapters
                 "sensitive information.\n" +
                 "\n\n\n\n\n" +
                 $"I am currently using IAP Desktop {version} " +
-                $"and .NET version {Environment.Version} " +
+                $"and .NET version {ClrVersion.Version} " +
                 $"on {Environment.OSVersion}";
             var url = 
                 $"mailto:{GroupAlias}?" +
