@@ -24,6 +24,7 @@ using Google.Solutions.Common.ApiExtensions.Instance;
 using Google.Solutions.Common.Locator;
 using Google.Solutions.Common.Test;
 using Google.Solutions.Common.Test.Integration;
+using Google.Solutions.Common.Test.Net;
 using Google.Solutions.Common.Util;
 using Google.Solutions.IapDesktop.Application.Services.Adapters;
 using NUnit.Framework;
@@ -388,6 +389,8 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Adapters
             [Credential(Role = PredefinedRole.ComputeViewer)] ResourceTask<ICredential> credential)
         {
             var proxyCredentials = new NetworkCredential("proxyuser", "proxypass");
+
+            using (var adapter = new ComputeEngineAdapter(await credential))
             using (var proxy = new InProcessAuthenticatingHttpProxy(
                 proxyCredentials))
             {
@@ -396,10 +399,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Adapters
                     new Uri($"http://localhost:{proxy.Port}"),
                     proxyCredentials);
 
-                using (var adapter = new ComputeEngineAdapter(await credential))
-                {
-                    await adapter.GetProjectAsync(TestProject.ProjectId, CancellationToken.None);
-                }
+                await adapter.GetProjectAsync(TestProject.ProjectId, CancellationToken.None);
             }
         }
 
@@ -408,6 +408,8 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Adapters
             [Credential(Role = PredefinedRole.ComputeViewer)] ResourceTask<ICredential> credential)
         {
             var proxyCredentials = new NetworkCredential("proxyuser", "proxypass");
+
+            using (var adapter = new ComputeEngineAdapter(await credential))
             using (var proxy = new InProcessAuthenticatingHttpProxy(
                 proxyCredentials))
             {
@@ -418,11 +420,8 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Adapters
 
                 try
                 {
-                    using (var adapter = new ComputeEngineAdapter(await credential))
-                    {
-                        await adapter.GetProjectAsync(TestProject.ProjectId, CancellationToken.None);
-                        Assert.Fail("Exception expected");
-                    }
+                    await adapter.GetProjectAsync(TestProject.ProjectId, CancellationToken.None);
+                    Assert.Fail("Exception expected");
                 }
                 catch (HttpRequestException e) when (e.InnerException is WebException exception)
                 {

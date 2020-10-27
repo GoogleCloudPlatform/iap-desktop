@@ -24,6 +24,7 @@ using Google.Solutions.Common.Auth;
 using Google.Solutions.Common.Locator;
 using Google.Solutions.Common.Test;
 using Google.Solutions.Common.Test.Integration;
+using Google.Solutions.Common.Test.Net;
 using Google.Solutions.IapDesktop.Application.Services.Adapters;
 using Google.Solutions.IapDesktop.Extensions.Rdp.Services.Tunnel;
 using Google.Solutions.IapTunneling.Iap;
@@ -31,6 +32,8 @@ using Moq;
 using NUnit.Framework;
 using System;
 using System.Net;
+using System.Net.Http;
+using System.Net.WebSockets;
 using System.Threading.Tasks;
 
 namespace Google.Solutions.IapDesktop.Extensions.Rdp.Test.Services.Tunnel
@@ -118,8 +121,12 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Test.Services.Tunnel
             tunnel.Close();
         }
 
+        //---------------------------------------------------------------------
+        // Policy.
+        //---------------------------------------------------------------------
+
         [Test]
-        public async Task WhenInstanceAvailableButRelayPolicyFails_ThenXxxx(
+        public async Task WhenInstanceAvailableButRelayPolicyFails_ThenProbeThrowsUnauthorizedException(
             [WindowsInstance] ResourceTask<InstanceLocator> testInstance,
             [Credential(Role = PredefinedRole.ComputeViewer)] ResourceTask<ICredential> credential)
         {
@@ -142,6 +149,85 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Test.Services.Tunnel
         private class DenyAllPolicy : ISshRelayPolicy
         {
             public bool IsClientAllowed(IPEndPoint remote) => false;
+        }
+
+
+        //---------------------------------------------------------------------
+        // Proxy.
+        //---------------------------------------------------------------------
+
+        [Test]
+        public async Task WhenProxyEnabledAndCredentialsCorrect_ThenProbeSucceeds(
+            [WindowsInstance] ResourceTask<InstanceLocator> testInstance,
+            [Credential(Role = PredefinedRole.IapTunnelUser)] ResourceTask<ICredential> credential)
+        {
+            var proxyCredentials = new NetworkCredential("proxyuser", "proxypass");
+            using (var proxy = new InProcessAuthenticatingHttpProxy(
+                proxyCredentials))
+            {
+                var proxyAdapter = new HttpProxyAdapter();
+                proxyAdapter.UseCustomProxySettings(
+                    new Uri($"http://localhost:{proxy.Port}"),
+                    proxyCredentials);
+
+                var service = new TunnelService(CreateAuthorizationAdapter(
+                    await credential));
+                var destination = new TunnelDestination(
+                    await testInstance,
+                    3389);
+
+                var tunnel = await service.CreateTunnelAsync(
+                    destination,
+                    new SameProcessRelayPolicy());
+
+                Assert.AreEqual(destination, tunnel.Destination);
+                await tunnel.Probe(TimeSpan.FromSeconds(20));
+                tunnel.Close();
+            }
+        }
+
+        [Test]
+        public async Task WhenProxyEnabledAndCredentialsWrong_ThenProbeThrowsWebException(
+            [WindowsInstance] ResourceTask<InstanceLocator> testInstance,
+            [Credential(Role = PredefinedRole.IapTunnelUser)] ResourceTask<ICredential> credential)
+        {
+            var proxyCredentials = new NetworkCredential("proxyuser", "proxypass");
+            using (var proxy = new InProcessAuthenticatingHttpProxy(
+                proxyCredentials))
+            {
+                var service = new TunnelService(CreateAuthorizationAdapter(
+                        await credential));
+                var destination = new TunnelDestination(
+                    await testInstance,
+                    3389);
+
+                var proxyAdapter = new HttpProxyAdapter();
+                proxyAdapter.UseCustomProxySettings(
+                    new Uri($"http://localhost:{proxy.Port}"),
+                    new NetworkCredential("proxyuser", "wrong"));
+
+                ITunnel tunnel = null;
+                try
+                {
+                    tunnel = await service.CreateTunnelAsync(
+                        destination,
+                        new SameProcessRelayPolicy());
+
+                    Assert.AreEqual(destination, tunnel.Destination);
+                    await tunnel.Probe(TimeSpan.FromSeconds(20));
+                    Assert.Fail("Exception expected");
+                }
+                catch (WebSocketException e) when (e.InnerException is WebException exception)
+                {
+                    Assert.AreEqual(
+                        HttpStatusCode.ProxyAuthenticationRequired,
+                        ((HttpWebResponse)exception.Response).StatusCode);
+                }
+                finally
+                {
+                    tunnel?.Close();
+                }
+            }
         }
     }
 }

@@ -19,7 +19,6 @@
 // under the License.
 //
 
-using Microsoft.Win32.SafeHandles;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -31,12 +30,12 @@ using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Google.Solutions.IapDesktop.Application.Test.Services.Adapters
+namespace Google.Solutions.Common.Test.Net
 {
     /// <summary>
     /// Simple implementation of a HTTP proxy that can be used in tests.
     /// </summary>
-    internal class InProcessHttpProxy : IDisposable
+    public class InProcessHttpProxy : IDisposable
     {
         private static readonly Regex HttpRequestPattern
             = new Regex(@"^CONNECT ([a-zA-Z0-9\.*]+):(\d+) HTTP/1.1");
@@ -44,20 +43,19 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Adapters
         // NB. Avoid reusing the same port twice in the same process.
         private static ushort nextProxyPort = 3128;
 
-        private readonly CancellationTokenSource cancellation
-            = new CancellationTokenSource();
-
+        private readonly CancellationTokenSource cancellation = new CancellationTokenSource();
         private readonly LinkedList<string> connectionTargets = new LinkedList<string>();
+        private readonly TcpListener listener;
 
         public IEnumerable<string> ConnectionTargets => this.connectionTargets;
 
         public ushort Port { get; }        
 
-        private void DispatchRequests(TcpListener listener)
+        private void DispatchRequests()
         {
             while (!this.cancellation.IsCancellationRequested)
             {
-                var socket = new NetworkStream(listener.AcceptSocket(), true);
+                var socket = new NetworkStream(this.listener.AcceptSocket(), true);
                 var _ = DispatchRequestAsync(socket).ConfigureAwait(false);
             }
         }
@@ -143,11 +141,10 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Adapters
         public InProcessHttpProxy(ushort port)
         {
             this.Port = port;
+            this.listener = new TcpListener(new IPEndPoint(IPAddress.Loopback, port));
+            this.listener.Start();
 
-            var listener = new TcpListener(new IPEndPoint(IPAddress.Loopback, port));
-            listener.Start();
-
-            Task.Run(() => DispatchRequests(listener));
+            Task.Run(() => DispatchRequests());
         }
 
         public InProcessHttpProxy() : this(nextProxyPort++)
@@ -165,11 +162,12 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Adapters
             if (disposing)
             {
                 this.cancellation.Cancel();
+                this.listener.Stop();
             }
         }
     }
 
-    internal class InProcessAuthenticatingHttpProxy : InProcessHttpProxy
+    public class InProcessAuthenticatingHttpProxy : InProcessHttpProxy
     {
         public string Realm { get; set; } = "default";
         public NetworkCredential Credential { get; set; }

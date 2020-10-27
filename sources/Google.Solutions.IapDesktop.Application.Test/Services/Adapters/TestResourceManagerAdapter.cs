@@ -21,6 +21,7 @@
 
 using Google.Apis.Auth.OAuth2;
 using Google.Solutions.Common.Test.Integration;
+using Google.Solutions.Common.Test.Net;
 using Google.Solutions.IapDesktop.Application.Services.Adapters;
 using NUnit.Framework;
 using System;
@@ -110,6 +111,8 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Adapters
             [Credential(Role = PredefinedRole.ComputeViewer)] ResourceTask<ICredential> credential)
         {
             var proxyCredentials = new NetworkCredential("proxyuser", "proxypass");
+
+            using (var adapter = new ResourceManagerAdapter(await credential))
             using (var proxy = new InProcessAuthenticatingHttpProxy(
                 proxyCredentials))
             {
@@ -118,12 +121,9 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Adapters
                     new Uri($"http://localhost:{proxy.Port}"),
                     proxyCredentials);
 
-                using (var adapter = new ResourceManagerAdapter(await credential))
-                {
-                    await adapter.QueryProjectsById(
-                        TestProject.ProjectId,
-                        CancellationToken.None);
-                }
+                await adapter.QueryProjectsById(
+                    TestProject.ProjectId,
+                    CancellationToken.None);
             }
         }
 
@@ -132,6 +132,8 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Adapters
             [Credential(Role = PredefinedRole.ComputeViewer)] ResourceTask<ICredential> credential)
         {
             var proxyCredentials = new NetworkCredential("proxyuser", "proxypass");
+
+            using (var adapter = new ResourceManagerAdapter(await credential))
             using (var proxy = new InProcessAuthenticatingHttpProxy(
                 proxyCredentials))
             {
@@ -142,13 +144,10 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Adapters
 
                 try
                 {
-                    using (var adapter = new ResourceManagerAdapter(await credential))
-                    {
-                        await adapter.QueryProjectsById(
-                            TestProject.ProjectId,
-                            CancellationToken.None);
-                        Assert.Fail("Exception expected");
-                    }
+                    await adapter.QueryProjectsById(
+                        TestProject.ProjectId,
+                        CancellationToken.None);
+                    Assert.Fail("Exception expected");
                 }
                 catch (HttpRequestException e) when (e.InnerException is WebException exception)
                 {

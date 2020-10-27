@@ -19,6 +19,7 @@
 // under the License.
 //
 
+using Google.Solutions.Common.Test.Net;
 using Google.Solutions.IapDesktop.Application.Services.Adapters;
 using NUnit.Framework;
 using System;

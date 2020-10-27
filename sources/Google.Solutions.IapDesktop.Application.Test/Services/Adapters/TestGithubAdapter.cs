@@ -19,8 +19,8 @@
 // under the License.
 //
 
+using Google.Solutions.Common.Test.Net;
 using Google.Solutions.IapDesktop.Application.Services.Adapters;
-using Google.Solutions.IapDesktop.Application.Test.Services.Adapters;
 using NUnit.Framework;
 using System;
 using System.Net;
@@ -54,12 +54,13 @@ namespace Google.Solutions.IapDesktop.Application.Test.Adapters
             using (var proxy = new InProcessAuthenticatingHttpProxy(
                 proxyCredentials))
             {
+                var adapter = new GithubAdapter();
+
                 var proxyAdapter = new HttpProxyAdapter();
                 proxyAdapter.UseCustomProxySettings(
                     new Uri($"http://localhost:{proxy.Port}"),
                     proxyCredentials);
 
-                var adapter = new GithubAdapter();
                 await adapter.FindLatestReleaseAsync(CancellationToken.None);
             }
         }
@@ -71,6 +72,8 @@ namespace Google.Solutions.IapDesktop.Application.Test.Adapters
             using (var proxy = new InProcessAuthenticatingHttpProxy(
                 proxyCredentials))
             {
+                var adapter = new GithubAdapter();
+
                 var proxyAdapter = new HttpProxyAdapter();
                 proxyAdapter.UseCustomProxySettings(
                     new Uri($"http://localhost:{proxy.Port}"),
@@ -78,7 +81,6 @@ namespace Google.Solutions.IapDesktop.Application.Test.Adapters
 
                 try
                 {
-                    var adapter = new GithubAdapter();
                     await adapter.FindLatestReleaseAsync(CancellationToken.None);
                     Assert.Fail("Exception expected");
                 }
