@@ -238,9 +238,16 @@ namespace Google.Solutions.IapDesktop
             adapterLayer.AddTransient<EmailAdapter>();
             adapterLayer.AddTransient<IHttpProxyAdapter, HttpProxyAdapter>();
 
-            // Activate proxy settings based on app settings.
-            adapterLayer.GetService<IHttpProxyAdapter>().ActivateSettings(
-                adapterLayer.GetService<ApplicationSettingsRepository>().GetSettings());
+            try
+            {
+                // Activate proxy settings based on app settings.
+                adapterLayer.GetService<IHttpProxyAdapter>().ActivateSettings(
+                    adapterLayer.GetService<ApplicationSettingsRepository>().GetSettings());
+            }
+            catch (Exception)
+            {
+                // Settings invalid -> ignore.
+            }
 
             //
             // Integration layer.

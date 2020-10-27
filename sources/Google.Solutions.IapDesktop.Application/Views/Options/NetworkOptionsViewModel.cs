@@ -52,9 +52,9 @@ namespace Google.Solutions.IapDesktop.Application.Views.Options
             //
 
             var settings = this.settingsRepository.GetSettings();
-            if (!string.IsNullOrEmpty(settings.ProxyUrl.StringValue))
+            if (!string.IsNullOrEmpty(settings.ProxyUrl.StringValue) &&
+                Uri.TryCreate(settings.ProxyUrl.StringValue, UriKind.Absolute, out Uri proxyUrl))
             {
-                var proxyUrl = new Uri(settings.ProxyUrl.StringValue);
                 this.proxyServer = proxyUrl.Host;
                 this.proxyPort = proxyUrl.Port.ToString();
             }

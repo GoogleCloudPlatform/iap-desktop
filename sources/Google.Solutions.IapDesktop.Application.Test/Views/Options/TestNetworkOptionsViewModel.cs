@@ -34,6 +34,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views.Options
     {
         private const string TestKeyPath = @"Software\Google\__Test";
         private readonly RegistryKey hkcu = RegistryKey.OpenBaseKey(RegistryHive.CurrentUser, RegistryView.Default);
+        private RegistryKey settingsKey;
 
         private ApplicationSettingsRepository settingsRepository;
         private Mock<IHttpProxyAdapter> proxyAdapterMock;
@@ -42,9 +43,9 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views.Options
         public void SetUp()
         {
             hkcu.DeleteSubKeyTree(TestKeyPath, false);
-            var baseKey = hkcu.CreateSubKey(TestKeyPath);
+            this.settingsKey = hkcu.CreateSubKey(TestKeyPath);
             
-            this.settingsRepository = new ApplicationSettingsRepository(baseKey);
+            this.settingsRepository = new ApplicationSettingsRepository(this.settingsKey);
             this.proxyAdapterMock = new Mock<IHttpProxyAdapter>();
         }
 
@@ -81,6 +82,23 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views.Options
             Assert.IsTrue(viewModel.IsCustomProxyServerEnabled);
             Assert.AreEqual("proxy-server", viewModel.ProxyServer);
             Assert.AreEqual("80", viewModel.ProxyPort);
+            Assert.IsFalse(viewModel.IsDirty);
+        }
+
+        [Test]
+        public void WhenProxyConfiguredButInvalid_ThenDefaultsAreUsed()
+        {
+            // Store an invalid URL.
+            this.settingsKey.SetValue("ProxyUrl", "123", RegistryValueKind.String);
+
+            var viewModel = new NetworkOptionsViewModel(
+                this.settingsRepository,
+                this.proxyAdapterMock.Object);
+
+            Assert.IsTrue(viewModel.IsSystemProxyServerEnabled);
+            Assert.IsFalse(viewModel.IsCustomProxyServerEnabled);
+            Assert.IsNull(viewModel.ProxyServer);
+            Assert.IsNull(viewModel.ProxyPort);
             Assert.IsFalse(viewModel.IsDirty);
         }
 
