@@ -43,6 +43,7 @@ using System.Threading;
 using System.Windows.Forms;
 using Google.Solutions.IapDesktop.Application.Services;
 using Google.Solutions.IapDesktop.Application.Services.Settings;
+using Google.Solutions.IapDesktop.Application.Views.Options;
 
 namespace Google.Solutions.IapDesktop
 {
@@ -235,6 +236,18 @@ namespace Google.Solutions.IapDesktop
             adapterLayer.AddTransient<IComputeEngineAdapter, ComputeEngineAdapter>();
             adapterLayer.AddTransient<GithubAdapter>();
             adapterLayer.AddTransient<EmailAdapter>();
+            adapterLayer.AddTransient<IHttpProxyAdapter, HttpProxyAdapter>();
+
+            try
+            {
+                // Activate proxy settings based on app settings.
+                adapterLayer.GetService<IHttpProxyAdapter>().ActivateSettings(
+                    adapterLayer.GetService<ApplicationSettingsRepository>().GetSettings());
+            }
+            catch (Exception)
+            {
+                // Settings invalid -> ignore.
+            }
 
             //
             // Integration layer.
@@ -260,6 +273,7 @@ namespace Google.Solutions.IapDesktop
             windowAndWorkflowLayer.AddTransient<ITaskDialog, TaskDialog>();
             windowAndWorkflowLayer.AddTransient<IUpdateService, UpdateService>();
             windowAndWorkflowLayer.AddSingleton<IProjectExplorer, ProjectExplorerWindow>();
+            windowAndWorkflowLayer.AddTransient<OptionsDialog>();
 
 #if DEBUG
             windowAndWorkflowLayer.AddSingleton<DebugJobServiceWindow>();

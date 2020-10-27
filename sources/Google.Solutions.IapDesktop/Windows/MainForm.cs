@@ -176,23 +176,58 @@ namespace Google.Solutions.IapDesktop.Windows
             //
             // Authorize.
             //
-            try
+            while (this.viewModel.Authorization == null)
             {
-                this.viewModel.Authorize();
-            }
-            catch (Exception e)
-            {
-                this.serviceProvider
-                    .GetService<IExceptionDialog>()
-                    .Show(this, "Authorization failed", e);
-            }
+                try
+                {
+                    this.viewModel.Authorize();
+                }
+                catch (Exception e)
+                {
+                    //
+                    // This exception might be due to a missing/incorrect proxy
+                    // configuration, so give the user a chance to change proxy
+                    // settings.
+                    //
 
-            if (this.viewModel.Authorization == null)
-            {
-                // Not authorized -> close.
-                Close();
-                return;
-            }
+                    try
+                    {
+                        if (this.serviceProvider.GetService<ITaskDialog>()
+                            .ShowOptionsTaskDialog(
+                                this,
+                                TaskDialogIcons.TD_ERROR_ICON,
+                                "Authorization failed",
+                                "IAP Desktop failed to complete the OAuth authorization. " +
+                                    "This might be due to network communication issues.",
+                                e.Message,
+                                "",
+                                new[]
+                                {
+                                    "Change network settings"
+                                },
+                                null,
+                                out bool _) == 0)
+                        {
+                            // Open settings.
+                            if (this.serviceProvider.GetService<OptionsDialog>().ShowDialog(this) == DialogResult.OK)
+                            {
+                                // Ok, retry with modified settings.
+                                continue;
+                            }
+                        }
+                    }
+                    catch (OperationCanceledException)
+                    { }
+                }
+
+                if (this.viewModel.Authorization == null)
+                {
+                    // Not authorized, either because the user cancelled or an 
+                    // error occured -> close.
+                    Close();
+                    return;
+                }
+            } 
 
             // 
             // Set up sub-windows.

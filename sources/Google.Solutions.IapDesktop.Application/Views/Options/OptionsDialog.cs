@@ -30,11 +30,12 @@ namespace Google.Solutions.IapDesktop.Application.Views.Options
     public class OptionsDialog : PropertiesDialog
     {
         public OptionsDialog(IServiceCategoryProvider serviceProvider)
-            : base()
+            : base(serviceProvider)
         {
             this.Text = "Options";
 
             AddPane(new GeneralOptionsViewModel(serviceProvider));
+            AddPane(new NetworkOptionsViewModel(serviceProvider));
 
             // Load all services implementing IOptionsDialogPane and
             // add them automatically. This gives extensions a chance

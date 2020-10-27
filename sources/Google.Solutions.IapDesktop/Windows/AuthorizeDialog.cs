@@ -73,8 +73,9 @@ namespace Google.Solutions.IapDesktop.Windows
                     {
                         // Try to authorize using OAuth.
                         dialog.authorization = await OAuthAuthorization.TryLoadExistingAuthorizationAsync(
-                            oauthAdapter,
-                            CancellationToken.None);
+                                oauthAdapter,
+                                CancellationToken.None)
+                            .ConfigureAwait(true);
 
                         if (dialog.authorization != null)
                         {
@@ -104,8 +105,9 @@ namespace Google.Solutions.IapDesktop.Windows
                     try
                     {
                         dialog.authorization = await OAuthAuthorization.CreateAuthorizationAsync(
-                            oauthAdapter,
-                            CancellationToken.None);
+                                oauthAdapter,
+                                CancellationToken.None)
+                            .ConfigureAwait(true);
                     }
                     catch (Exception e)
                     {
@@ -117,6 +119,7 @@ namespace Google.Solutions.IapDesktop.Windows
 
                 dialog.ShowDialog(parent);
 
+#pragma warning disable CA1508 // Avoid dead conditional code
                 if (caughtException != null)
                 {
                     throw caughtException;
@@ -125,6 +128,7 @@ namespace Google.Solutions.IapDesktop.Windows
                 {
                     return dialog.authorization;
                 }
+#pragma warning restore CA1508 // Avoid dead conditional code
             }
         }
     }
