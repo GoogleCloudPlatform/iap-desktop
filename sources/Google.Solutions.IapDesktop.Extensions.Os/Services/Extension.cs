@@ -82,7 +82,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Os.Services
                     InstancePropertiesInspectorViewModel.GetContextMenuCommandState,
                     context => serviceProvider.GetService<InstancePropertiesInspectorWindow>().ShowWindow())
                 {
-                    Image = Resources.ComputerDetails_16
+                    Image = Resources.ComputerDetails_16,
+                    ShortcutKeys = Keys.Alt | Keys.Enter
                 },
                 10);
 
