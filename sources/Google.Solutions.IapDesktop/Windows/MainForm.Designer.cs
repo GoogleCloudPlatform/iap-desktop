@@ -194,49 +194,49 @@ namespace Google.Solutions.IapDesktop.Windows
             this.viewHelpToolStripMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("viewHelpToolStripMenuItem.Image")));
             this.viewHelpToolStripMenuItem.Name = "viewHelpToolStripMenuItem";
             this.viewHelpToolStripMenuItem.ShortcutKeys = System.Windows.Forms.Keys.F1;
-            this.viewHelpToolStripMenuItem.Size = new System.Drawing.Size(286, 22);
-            this.viewHelpToolStripMenuItem.Text = "View documentation...";
+            this.viewHelpToolStripMenuItem.Size = new System.Drawing.Size(277, 22);
+            this.viewHelpToolStripMenuItem.Text = "&Documentation";
             this.viewHelpToolStripMenuItem.Click += new System.EventHandler(this.viewHelpToolStripMenuItem_Click);
             // 
             // openIapDocsToolStripMenuItem
             // 
             this.openIapDocsToolStripMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("openIapDocsToolStripMenuItem.Image")));
             this.openIapDocsToolStripMenuItem.Name = "openIapDocsToolStripMenuItem";
-            this.openIapDocsToolStripMenuItem.Size = new System.Drawing.Size(286, 22);
-            this.openIapDocsToolStripMenuItem.Text = "Overview of Cloud &IAP TCP forwarding...";
+            this.openIapDocsToolStripMenuItem.Size = new System.Drawing.Size(277, 22);
+            this.openIapDocsToolStripMenuItem.Text = "Overview of Cloud &IAP TCP forwarding";
             this.openIapDocsToolStripMenuItem.Click += new System.EventHandler(this.openIapDocsToolStripMenuItem_Click);
             // 
             // openIapAccessDocsToolStripMenuItem
             // 
             this.openIapAccessDocsToolStripMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("openIapAccessDocsToolStripMenuItem.Image")));
             this.openIapAccessDocsToolStripMenuItem.Name = "openIapAccessDocsToolStripMenuItem";
-            this.openIapAccessDocsToolStripMenuItem.Size = new System.Drawing.Size(286, 22);
-            this.openIapAccessDocsToolStripMenuItem.Text = "&Configuring access to Cloud IAP...";
+            this.openIapAccessDocsToolStripMenuItem.Size = new System.Drawing.Size(277, 22);
+            this.openIapAccessDocsToolStripMenuItem.Text = "&Configuring access to Cloud IAP";
             this.openIapAccessDocsToolStripMenuItem.Click += new System.EventHandler(this.openIapAccessDocsToolStripMenuItem_Click);
             // 
             // aboutSeparatorToolStripMenuItem
             // 
             this.aboutSeparatorToolStripMenuItem.Name = "aboutSeparatorToolStripMenuItem";
-            this.aboutSeparatorToolStripMenuItem.Size = new System.Drawing.Size(283, 6);
+            this.aboutSeparatorToolStripMenuItem.Size = new System.Drawing.Size(274, 6);
             // 
             // shareFeedbackToolStripMenuItem
             // 
             this.shareFeedbackToolStripMenuItem.Name = "shareFeedbackToolStripMenuItem";
-            this.shareFeedbackToolStripMenuItem.Size = new System.Drawing.Size(286, 22);
+            this.shareFeedbackToolStripMenuItem.Size = new System.Drawing.Size(277, 22);
             this.shareFeedbackToolStripMenuItem.Text = "Send feedback...";
             this.shareFeedbackToolStripMenuItem.Click += new System.EventHandler(this.shareFeedbackToolStripMenuItem_Click);
             // 
             // reportIssueToolStripMenuItem
             // 
             this.reportIssueToolStripMenuItem.Name = "reportIssueToolStripMenuItem";
-            this.reportIssueToolStripMenuItem.Size = new System.Drawing.Size(286, 22);
+            this.reportIssueToolStripMenuItem.Size = new System.Drawing.Size(277, 22);
             this.reportIssueToolStripMenuItem.Text = "&Report issue...";
             this.reportIssueToolStripMenuItem.Click += new System.EventHandler(this.reportIssueToolStripMenuItem_Click);
             // 
             // aboutToolStripMenuItem
             // 
             this.aboutToolStripMenuItem.Name = "aboutToolStripMenuItem";
-            this.aboutToolStripMenuItem.Size = new System.Drawing.Size(286, 22);
+            this.aboutToolStripMenuItem.Size = new System.Drawing.Size(277, 22);
             this.aboutToolStripMenuItem.Text = "&About";
             this.aboutToolStripMenuItem.Click += new System.EventHandler(this.aboutToolStripMenuItem_Click);
             // 
