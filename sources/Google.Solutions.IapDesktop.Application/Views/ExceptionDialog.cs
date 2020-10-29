@@ -22,6 +22,7 @@
 using Google.Solutions.Common.Diagnostics;
 using Google.Solutions.Common.Util;
 using System;
+using System.Diagnostics;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Windows.Forms;
@@ -30,7 +31,17 @@ namespace Google.Solutions.IapDesktop.Application.Views
 {
     public interface IExceptionDialog
     {
-        void Show(IWin32Window parent, string caption, Exception e);
+        void Show(
+            IWin32Window parent,
+            string caption,
+            Exception e);
+
+        void Show(
+            IWin32Window parent,
+            string caption,
+            Exception e,
+            string helpText,
+            Action helpAction);
     }
 
     /// <summary>
@@ -39,14 +50,22 @@ namespace Google.Solutions.IapDesktop.Application.Views
     /// </summary>
     public class ExceptionDialog : IExceptionDialog
     {
-        private void ShowErrorDialog(IWin32Window parent, string caption, string message, string details)
+        private void ShowErrorDialogWithHelp(
+            IWin32Window parent, 
+            string caption, 
+            string message, 
+            string details,
+            string helpText,
+            Action helpAction)
         {
+            Debug.Assert((helpText == null) == (helpAction == null));
+
             using (TraceSources.IapDesktop.TraceMethod().WithParameters(caption, message, details))
             {
                 var config = new UnsafeNativeMethods.TASKDIALOGCONFIG()
                 {
                     cbSize = (uint)Marshal.SizeOf(typeof(UnsafeNativeMethods.TASKDIALOGCONFIG)),
-                    hwndParent = parent.Handle,
+                    hwndParent = parent?.Handle ?? IntPtr.Zero,
                     dwFlags = 0,
                     dwCommonButtons = UnsafeNativeMethods.TASKDIALOG_COMMON_BUTTON_FLAGS.TDCBF_OK_BUTTON,
                     pszWindowTitle = "An error occured",
@@ -56,6 +75,27 @@ namespace Google.Solutions.IapDesktop.Application.Views
                     pszExpandedInformation = details.ToString()
                 };
 
+                if (helpText != null && helpAction != null)
+                {
+                    //
+                    // Add hyperlinked footer text.
+                    //
+
+                    config.FooterIcon = TaskDialogIcons.TD_INFORMATION_ICON;
+                    config.dwFlags |= UnsafeNativeMethods.TASKDIALOG_FLAGS.TDF_EXPAND_FOOTER_AREA |
+                                      UnsafeNativeMethods.TASKDIALOG_FLAGS.TDF_ENABLE_HYPERLINKS;
+                    config.pszFooter = $"<A HREF=\"#\">{helpText}</A>";
+                    config.pfCallback = (hwnd, notification, wParam, lParam, refData) =>
+                    {
+                        if (notification == UnsafeNativeMethods.TASKDIALOG_NOTIFICATIONS.TDN_HYPERLINK_CLICKED)
+                        {
+                            helpAction();
+                        }
+
+                        return 0; // S_OK;
+                    };
+                }
+
                 UnsafeNativeMethods.TaskDialogIndirect(
                     ref config,
                     out int buttonPressed,
@@ -64,7 +104,12 @@ namespace Google.Solutions.IapDesktop.Application.Views
             }
         }
 
-        public void Show(IWin32Window parent, string caption, Exception e)
+        public void Show(
+            IWin32Window parent, 
+            string caption, 
+            Exception e,
+            string helpText,
+            Action helpAction)
         {
             e = e.Unwrap();
 
@@ -92,11 +137,13 @@ namespace Google.Solutions.IapDesktop.Application.Views
                         caption,
                         details);
 
-                    ShowErrorDialog(
+                    ShowErrorDialogWithHelp(
                         parent,
                         caption,
                         apiException.Error.Message,
-                        details.ToString());
+                        details.ToString(),
+                        helpText,
+                        helpAction);
                 }
                 else
                 {
@@ -118,13 +165,18 @@ namespace Google.Solutions.IapDesktop.Application.Views
                         caption,
                         details);
 
-                    ShowErrorDialog(
+                    ShowErrorDialogWithHelp(
                         parent,
                         caption,
                         e.Message,
-                        details.ToString());
+                        details.ToString(),
+                        helpText,
+                        helpAction);
                 }
             }
         }
+
+        public void Show(IWin32Window parent, string caption, Exception e)
+            => Show(parent, caption, e, null, null);
     }
 }
