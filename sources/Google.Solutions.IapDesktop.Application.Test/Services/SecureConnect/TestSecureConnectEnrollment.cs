@@ -21,7 +21,9 @@
 
 using Google.Solutions.IapDesktop.Application.Services.Adapters;
 using Google.Solutions.IapDesktop.Application.Services.SecureConnect;
+using Google.Solutions.IapDesktop.Application.Services.Settings;
 using Google.Solutions.IapDesktop.Application.Util;
+using Microsoft.Win32;
 using Moq;
 using NUnit.Framework;
 using System;
@@ -99,19 +101,35 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.SecureConnect
                     AgIH0A=="), 
                 "example");
 
-        [Test]
-        public async Task WhenNotInstalled_ThenStateIsNotInstalled()
+        private const string TestKeyPath = @"Software\Google\__Test";
+        private ApplicationSettingsRepository settingsRepository;
+        private const string SampleUserId = "unused";
+
+        [SetUp]
+        public void SetUp()
         {
+            var hkcu = RegistryKey.OpenBaseKey(RegistryHive.CurrentUser, RegistryView.Default);
+            hkcu.DeleteSubKeyTree(TestKeyPath, false);
+            var settingsKey = hkcu.CreateSubKey(TestKeyPath);
+
+            this.settingsRepository = new ApplicationSettingsRepository(settingsKey);
+        }
+
+        [Test]
+        public async Task WhenDcaIsDisabledInSettings_ThenStateIsNotInstalled()
+        {
+            // Disable DCA.
+            var settings = this.settingsRepository.GetSettings();
+            settings.IsDeviceCertificateAuthenticationEnabled.BoolValue = false;
+            this.settingsRepository.SetSettings(settings);
+
             var certificateStore = new Mock<ICertificateStoreAdapter>();
-            var adapter = new Mock<ISecureConnectAdapter>();
-            adapter.Setup(a => a.IsInstalledAsync()).ReturnsAsync(false);
-
             var enrollment = await SecureConnectEnrollment.GetEnrollmentAsync(
-                adapter.Object,
                 certificateStore.Object,
-                "111");
+                this.settingsRepository,
+                SampleUserId);
 
-            Assert.AreEqual(DeviceEnrollmentState.NotInstalled, enrollment.State);
+            Assert.AreEqual(DeviceEnrollmentState.Disabled, enrollment.State);
             Assert.IsNull(enrollment.Certificate);
 
             certificateStore.Verify(s => s.ListUserCertitficates(
@@ -121,114 +139,46 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.SecureConnect
         }
 
         [Test]
-        public async Task WhenUserIdDoesNotHaveDeviceEnrolled_ThenStateIsNotEnrolled()
+        public async Task WhenDcaEnabledButNoCertificateInStore_ThenStateIsNotEnrolled()
         {
-            var certificateStore = new Mock<ICertificateStoreAdapter>();
-            var adapter = new Mock<ISecureConnectAdapter>();
-            adapter.Setup(a => a.IsInstalledAsync()).ReturnsAsync(true);
-            adapter.Setup(a => a.IsDeviceEnrolledForUserAsync(
-                    It.Is<string>(id => id == "111")))
-                .ReturnsAsync(false);
+            // Enable DCA.
+            var settings = this.settingsRepository.GetSettings();
+            settings.IsDeviceCertificateAuthenticationEnabled.BoolValue = true;
+            this.settingsRepository.SetSettings(settings);
 
-            var enrollment = await SecureConnectEnrollment.GetEnrollmentAsync(
-                adapter.Object,
-                certificateStore.Object,
-                "111");
-
-            Assert.AreEqual(DeviceEnrollmentState.NotEnrolled, enrollment.State);
-            Assert.IsNull(enrollment.Certificate);
-
-            certificateStore.Verify(s => s.ListUserCertitficates(
-                    It.IsAny<string>(),
-                    It.IsAny<string>()),
-                Times.Never);
-        }
-
-        [Test]
-        public async Task WhenUserIdHasDeviceEnrolledButCertificateMissingInStore_ThenStateIsEnrolledWithoutCertificate()
-        {
             var certificateStore = new Mock<ICertificateStoreAdapter>();
             certificateStore.Setup(s => s.ListUserCertitficates(
                     It.IsAny<string>(),
                     It.IsAny<string>()))
                 .Returns(Enumerable.Empty<X509Certificate2>());
 
-            var deviceInfo = new Mock<ISecureConnectDeviceInfo>();
-            deviceInfo.SetupGet(i => i.CertificateThumbprints)
-                .Returns(new[] { "thumb" });
-
-            var adapter = new Mock<ISecureConnectAdapter>();
-            adapter.Setup(a => a.IsInstalledAsync()).ReturnsAsync(true);
-            adapter.Setup(a => a.IsDeviceEnrolledForUserAsync(
-                    It.Is<string>(id => id == "111")))
-                .ReturnsAsync(true);
-            adapter.Setup(a => a.GetDeviceInfoAsync())
-                .ReturnsAsync(deviceInfo.Object);
-
             var enrollment = await SecureConnectEnrollment.GetEnrollmentAsync(
-                adapter.Object,
                 certificateStore.Object,
-                "111");
+                this.settingsRepository,
+                SampleUserId);
 
-            Assert.AreEqual(DeviceEnrollmentState.EnrolledWithoutCertificate, enrollment.State);
+            Assert.AreEqual(DeviceEnrollmentState.NotEnrolled, enrollment.State);
             Assert.IsNull(enrollment.Certificate);
         }
 
         [Test]
-        public async Task WhenUserIdHasDeviceEnrolledAndCertificateFoundInStoreButThumbprintMismatches_ThenStateIsEnrolledWithoutCertificate()
+        public async Task WhenDcaEnabledAndCertificateFoundInStore_ThenStateIsEnrolled()
         {
+            // Enable DCA.
+            var settings = this.settingsRepository.GetSettings();
+            settings.IsDeviceCertificateAuthenticationEnabled.BoolValue = true;
+            this.settingsRepository.SetSettings(settings);
+
             var certificateStore = new Mock<ICertificateStoreAdapter>();
             certificateStore.Setup(s => s.ListUserCertitficates(
                     It.IsAny<string>(),
                     It.IsAny<string>()))
                 .Returns(new[] { ExampleCertificate });
 
-            var deviceInfo = new Mock<ISecureConnectDeviceInfo>();
-            deviceInfo.SetupGet(i => i.CertificateThumbprints)
-                .Returns(new[] { "nottherealthumbprint" });
-
-            var adapter = new Mock<ISecureConnectAdapter>();
-            adapter.Setup(a => a.IsInstalledAsync()).ReturnsAsync(true);
-            adapter.Setup(a => a.IsDeviceEnrolledForUserAsync(
-                    It.Is<string>(id => id == "111")))
-                .ReturnsAsync(true);
-            adapter.Setup(a => a.GetDeviceInfoAsync())
-                .ReturnsAsync(deviceInfo.Object);
-
             var enrollment = await SecureConnectEnrollment.GetEnrollmentAsync(
-                adapter.Object,
                 certificateStore.Object,
-                "111");
-
-            Assert.AreEqual(DeviceEnrollmentState.EnrolledWithoutCertificate, enrollment.State);
-            Assert.IsNull(enrollment.Certificate);
-        }
-
-        [Test]
-        public async Task WhenUserIdHasDeviceEnrolledAndCertificateFoundInStore_ThenStateIsEnrolled()
-        {
-            var certificateStore = new Mock<ICertificateStoreAdapter>();
-            certificateStore.Setup(s => s.ListUserCertitficates(
-                    It.IsAny<string>(),
-                    It.IsAny<string>()))
-                .Returns(new[] { ExampleCertificate });
-
-            var deviceInfo = new Mock<ISecureConnectDeviceInfo>();
-            deviceInfo.SetupGet(i => i.CertificateThumbprints)
-                .Returns(new[] { ExampleCertificate.ThumbprintSha256() });
-
-            var adapter = new Mock<ISecureConnectAdapter>();
-            adapter.Setup(a => a.IsInstalledAsync()).ReturnsAsync(true);
-            adapter.Setup(a => a.IsDeviceEnrolledForUserAsync(
-                    It.Is<string>(id => id == "111")))
-                .ReturnsAsync(true);
-            adapter.Setup(a => a.GetDeviceInfoAsync())
-                .ReturnsAsync(deviceInfo.Object);
-
-            var enrollment = await SecureConnectEnrollment.GetEnrollmentAsync(
-                adapter.Object,
-                certificateStore.Object,
-                "111");
+                this.settingsRepository,
+                SampleUserId);
 
             Assert.AreEqual(DeviceEnrollmentState.Enrolled, enrollment.State);
             Assert.IsNotNull(enrollment.Certificate);
@@ -236,40 +186,36 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.SecureConnect
         }
 
         [Test]
-        public async Task WhenSwitchingUserIdsFromKnownToUnknown_ThenRefreshUpdatesStateToNotEnrolled()
+        public async Task WhenDisablingDca_ThenRefreshUpdatesStateToDisabled()
         {
+            // Enable DCA.
+            var settings = this.settingsRepository.GetSettings();
+            settings.IsDeviceCertificateAuthenticationEnabled.BoolValue = true;
+            this.settingsRepository.SetSettings(settings);
+
             var certificateStore = new Mock<ICertificateStoreAdapter>();
             certificateStore.Setup(s => s.ListUserCertitficates(
                     It.IsAny<string>(),
                     It.IsAny<string>()))
                 .Returns(new[] { ExampleCertificate });
 
-            var deviceInfo = new Mock<ISecureConnectDeviceInfo>();
-            deviceInfo.SetupGet(i => i.CertificateThumbprints)
-                .Returns(new[] { ExampleCertificate.ThumbprintSha256() });
-
-            var adapter = new Mock<ISecureConnectAdapter>();
-            adapter.Setup(a => a.IsInstalledAsync()).ReturnsAsync(true);
-            adapter.Setup(a => a.IsDeviceEnrolledForUserAsync(
-                    It.Is<string>(id => id == "111")))
-                .ReturnsAsync(true);
-            adapter.Setup(a => a.GetDeviceInfoAsync())
-                .ReturnsAsync(deviceInfo.Object);
-
             var enrollment = await SecureConnectEnrollment.GetEnrollmentAsync(
-                adapter.Object,
                 certificateStore.Object,
-                "111");
+                this.settingsRepository,
+                SampleUserId);
 
             Assert.AreEqual(DeviceEnrollmentState.Enrolled, enrollment.State);
             Assert.IsNotNull(enrollment.Certificate);
+            Assert.AreEqual(ExampleCertitficateSubject, enrollment.Certificate.Subject);
 
-            adapter.Setup(a => a.IsDeviceEnrolledForUserAsync(
-                    It.Is<string>(id => id == "111")))
-                .ReturnsAsync(false);
 
-            await enrollment.RefreshAsync("1");
-            Assert.AreEqual(DeviceEnrollmentState.NotEnrolled, enrollment.State);
+            // Disable DCA.
+            settings.IsDeviceCertificateAuthenticationEnabled.BoolValue = false;
+            this.settingsRepository.SetSettings(settings);
+
+            await enrollment.RefreshAsync(SampleUserId);
+
+            Assert.AreEqual(DeviceEnrollmentState.Disabled, enrollment.State);
             Assert.IsNull(enrollment.Certificate);
         }
     }

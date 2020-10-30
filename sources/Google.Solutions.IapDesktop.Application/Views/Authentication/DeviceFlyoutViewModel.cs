@@ -47,7 +47,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.Authentication
 
             switch (enrollment.State)
             {
-                case DeviceEnrollmentState.NotInstalled:
+                case DeviceEnrollmentState.Disabled:
                     this.EnrollmentStateDescription =
                         $"{ProductName} is not available on this computer";
                     this.IsDeviceEnrolledIconVisible = false;
@@ -63,15 +63,6 @@ namespace Google.Solutions.IapDesktop.Application.Views.Authentication
                     this.IsDeviceNotEnrolledIconVisible = true;
                     this.IsDetailsLinkVisible = true;
                     this.DetailsLinkCaption = "More information";
-                    break;
-
-                case DeviceEnrollmentState.EnrolledWithoutCertificate:
-                    this.EnrollmentStateDescription = 
-                        $"This computer is enrolled in {ProductName}, but lacks a device certificate";
-                    this.IsDeviceEnrolledIconVisible = false;
-                    this.IsDeviceNotEnrolledIconVisible = true;
-                    this.IsDetailsLinkVisible = false;
-                    this.DetailsLinkCaption = string.Empty;
                     break;
 
                 case DeviceEnrollmentState.Enrolled:

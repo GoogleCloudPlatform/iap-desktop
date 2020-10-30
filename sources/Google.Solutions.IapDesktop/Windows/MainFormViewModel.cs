@@ -181,26 +181,16 @@ namespace Google.Solutions.IapDesktop.Windows
             //
             // Determine enrollment state of this device.
             //
-            var isDeviceCertificateAuthenticationEnabled = this.applicationSettings
-                .GetSettings()
-                .IsDeviceCertificateAuthenticationEnabled;
 
-            if (isDeviceCertificateAuthenticationEnabled.BoolValue)
-            {
-                // TODO: Run this asynchronously.
-                this.DeviceEnrollment = SecureConnectEnrollment.GetEnrollmentAsync(
-                    new SecureConnectAdapter(),
-                    new CertificateStoreAdapter(),
-                    this.Authorization.UserInfo.Subject).Result;
-            }
-            else
-            {
-                this.DeviceEnrollment = new DisabledDeviceEnrollment();
-            }
-
+            // TODO: Run this asynchronously.
+            this.DeviceEnrollment = SecureConnectEnrollment.GetEnrollmentAsync(
+                new CertificateStoreAdapter(),
+                this.applicationSettings,
+                this.Authorization.UserInfo.Subject).Result;
+        
             this.SignInStateCaption = this.Authorization.Email;
             this.DeviceStateCaption = "Secure Connect";
-            this.IsDeviceStateVisible = isDeviceCertificateAuthenticationEnabled.BoolValue;
+            this.IsDeviceStateVisible = this.DeviceEnrollment.State != DeviceEnrollmentState.Disabled;
 
             Debug.Assert(this.SignInStateCaption!= null);
             Debug.Assert(this.DeviceEnrollment != null);
@@ -275,15 +265,6 @@ namespace Google.Solutions.IapDesktop.Windows
                 this.viewModel.backgroundJobs.AddLast(this);
                 this.viewModel.IsBackgroundJobStatusVisible = true;
             }
-        }
-
-        private class DisabledDeviceEnrollment : IDeviceEnrollment
-        {
-            public DeviceEnrollmentState State => DeviceEnrollmentState.NotInstalled;
-
-            public X509Certificate2 Certificate => null;
-
-            public Task RefreshAsync(string userId) => Task.CompletedTask;
         }
     }
 }

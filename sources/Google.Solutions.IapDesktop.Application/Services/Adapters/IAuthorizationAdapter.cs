@@ -43,9 +43,8 @@ namespace Google.Solutions.IapDesktop.Application.Services.Adapters
 
     public enum DeviceEnrollmentState
     {
-        NotInstalled,
+        Disabled,
         NotEnrolled,
-        EnrolledWithoutCertificate,
         Enrolled
     }
 }

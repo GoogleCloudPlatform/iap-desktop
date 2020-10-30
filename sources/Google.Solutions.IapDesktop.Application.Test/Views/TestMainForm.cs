@@ -105,7 +105,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views
 
         private class SimpleDeviceEnrollment : IDeviceEnrollment
         {
-            public DeviceEnrollmentState State => DeviceEnrollmentState.NotInstalled;
+            public DeviceEnrollmentState State => DeviceEnrollmentState.Disabled;
 
             public X509Certificate2 Certificate => null;
 

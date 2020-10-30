@@ -20,9 +20,8 @@
 //
 
 using Google.Solutions.Common.Diagnostics;
-using Google.Solutions.Common.Util;
 using Google.Solutions.IapDesktop.Application.Services.Adapters;
-using Google.Solutions.IapDesktop.Application.Util;
+using Google.Solutions.IapDesktop.Application.Services.Settings;
 using System.Linq;
 using System.Security.Cryptography.X509Certificates;
 using System.Threading.Tasks;
@@ -33,86 +32,68 @@ namespace Google.Solutions.IapDesktop.Application.Services.SecureConnect
     {
         private const string DeviceCertIssuer = "CN=Google Endpoint Verification";
 
-        private readonly ISecureConnectAdapter adapter;
+        private readonly ApplicationSettingsRepository applicationSettingsRepository;
         private readonly ICertificateStoreAdapter certificateStore;
 
-        public DeviceEnrollmentState State { get; private set; }
-        public X509Certificate2 Certificate { get; private set; }
-
         private SecureConnectEnrollment(
-            ISecureConnectAdapter adapter,
-            ICertificateStoreAdapter certificateStore)
+            ICertificateStoreAdapter certificateStore,
+            ApplicationSettingsRepository applicationSettingsRepository)
         {
-            this.adapter = adapter;
+            this.applicationSettingsRepository = applicationSettingsRepository;
             this.certificateStore = certificateStore;
 
             // Initialize to a default state. The real initialization
             // happens in RefreshAsync().
 
-            this.State = DeviceEnrollmentState.NotInstalled;
+            this.State = DeviceEnrollmentState.Disabled;
             this.Certificate = null;
         }
 
-        //---------------------------------------------------------------------
-        // Privates.
-        //---------------------------------------------------------------------
-
-        public async Task RefreshAsync(string userId)
+        private void Refresh()
         {
-            using (TraceSources.IapDesktop.TraceMethod().WithParameters(userId))
+            using (TraceSources.IapDesktop.TraceMethod().WithoutParameters())
             {
-                if (!(await this.adapter.IsInstalledAsync()
-                    .ConfigureAwait(false)))
+                if (!this.applicationSettingsRepository.GetSettings()
+                    .IsDeviceCertificateAuthenticationEnabled.BoolValue)
                 {
-                    this.State = DeviceEnrollmentState.NotInstalled;
+                    this.State = DeviceEnrollmentState.Disabled;
+                    this.Certificate = null;
                     return;
                 }
 
-                if (await this.adapter.IsDeviceEnrolledForUserAsync(userId)
-                    .ConfigureAwait(false))
+                //
+                // Check if there is a certificate in the certificate store.
+                //
+                var certificate = this.certificateStore.ListUserCertitficates(
+                        DeviceCertIssuer,
+                        DeviceCertIssuer)
+                    .FirstOrDefault();
+
+                if (certificate != null)
                 {
-                    TraceSources.IapDesktop.TraceVerbose("Device enrolled for user {0}", userId);
+                    //
+                    // Certificate found - this does not necessarily mean that it's
+                    // associated with the signed-on user, but finding out
+                    // would require interacting with the undocumented APIs
+                    // of the native helper. 
+                    //
+                    // False positives are harmless, so assume the device is enrolled.
+                    //
 
-                    // Get information about certificate.
-                    var deviceInfo = await this.adapter.GetDeviceInfoAsync()
-                        .ConfigureAwait(false);
-                    var thumbprints = deviceInfo.CertificateThumbprints.ToHashSet();
+                    TraceSources.IapDesktop.TraceInformation("Device certificate found " +
+                        "in certificate store, assuming device to be enrolled");
 
-                    TraceSources.IapDesktop.TraceVerbose(
-                        "Device certificate thumbprints: {0}", 
-                        string.Join(",", thumbprints));
-
-                    var certificate = this.certificateStore.ListUserCertitficates(
-                            DeviceCertIssuer,
-                            DeviceCertIssuer)
-                        .Where(c => thumbprints.Contains(c.ThumbprintSha256()))
-                        .FirstOrDefault();
-
-                    if (certificate != null)
-                    {
-                        TraceSources.IapDesktop.TraceVerbose(
-                            "Device certificate found in certificate store");
-
-                        this.State = DeviceEnrollmentState.Enrolled;
-                        this.Certificate = certificate;
-                    }
-                    else
-                    {
-                        // Device enrolled, but no certificate found - as device
-                        // certificates are not a mandatory part of an enrollment,
-                        // this is a common case.
-
-                        TraceSources.IapDesktop.TraceInformation(
-                            "Device enrolled, but no device certificate provisioned");
-
-                        this.State = DeviceEnrollmentState.EnrolledWithoutCertificate;
-                        this.Certificate = null;
-                    }
+                    this.State = DeviceEnrollmentState.Enrolled;
+                    this.Certificate = certificate;
                 }
                 else
                 {
-                    TraceSources.IapDesktop.TraceInformation(
-                        "Endpoint Verification installed, but device not enrolled");
+                    //
+                    // No certiticate found, so the device cannot be enrolled.
+                    // 
+
+                    TraceSources.IapDesktop.TraceInformation("No device certificate found " +
+                        "in certificate store, device not enrolled");
 
                     this.State = DeviceEnrollmentState.NotEnrolled;
                     this.Certificate = null;
@@ -121,15 +102,29 @@ namespace Google.Solutions.IapDesktop.Application.Services.SecureConnect
         }
 
         //---------------------------------------------------------------------
+        // IDeviceEnrollment.
+        //---------------------------------------------------------------------
+
+        public DeviceEnrollmentState State { get; private set; }
+        public X509Certificate2 Certificate { get; private set; }
+
+        public Task RefreshAsync(string userId)
+        {
+            return Task.Run(() => Refresh());
+        }
+
+        //---------------------------------------------------------------------
         // Publics.
         //---------------------------------------------------------------------
 
         public static async Task<SecureConnectEnrollment> GetEnrollmentAsync(
-            ISecureConnectAdapter adapter,
             ICertificateStoreAdapter certificateStore,
+            ApplicationSettingsRepository applicationSettingsRepository,
             string userId)
         {
-            var enrollment = new SecureConnectEnrollment(adapter, certificateStore);
+            var enrollment = new SecureConnectEnrollment(
+                certificateStore,
+                applicationSettingsRepository);
             await enrollment.RefreshAsync(userId)
                 .ConfigureAwait(false);
             return enrollment;
