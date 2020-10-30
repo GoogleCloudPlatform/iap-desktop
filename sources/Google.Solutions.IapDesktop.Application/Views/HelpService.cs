@@ -46,7 +46,7 @@ namespace Google.Solutions.IapDesktop.Application.Views
 
         public static IHelpTopic IapAccess = new HelpTopic(
             "Configuring access to Cloud IAP",
-            "https://cloud.google.com/iap/docs/using-tcp-forwarding");
+            "https://cloud.google.com/iap/docs/using-tcp-forwarding#grant-permission");
 
         public static IHelpTopic CreateIapFirewallRule  = new HelpTopic(
             "Creating a firewall rule for Cloud IAP",
