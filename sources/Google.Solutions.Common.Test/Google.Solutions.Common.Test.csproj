@@ -97,6 +97,7 @@
     <Compile Include="AssertEx.cs" />
     <Compile Include="Auth\TestAuthorization.cs" />
     <Compile Include="Auth\TestGoogleAuthAdapter.cs" />
+    <Compile Include="Diagnostics\TestClrVersion.cs" />
     <Compile Include="FixtureBase.cs" />
     <Compile Include="Integration\CredentialFactory.cs" />
     <Compile Include="Integration\PredefinedRole.cs" />

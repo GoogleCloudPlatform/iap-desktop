@@ -53,6 +53,7 @@ namespace Google.Solutions.IapDesktop.Application.Views
             this.okButton = new System.Windows.Forms.Button();
             this.infoLabel = new System.Windows.Forms.Label();
             this.legalTextBox = new System.Windows.Forms.TextBox();
+            this.clrInfoLabel = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 
             // okButton
@@ -86,6 +87,16 @@ namespace Google.Solutions.IapDesktop.Application.Views
             this.legalTextBox.TabIndex = 2;
             this.legalTextBox.Text = resources.GetString("legalTextBox.Text");
             // 
+            // clrInfoLabel
+            // 
+            this.clrInfoLabel.AutoSize = true;
+            this.clrInfoLabel.Location = new System.Drawing.Point(303, 93);
+            this.clrInfoLabel.Name = "clrInfoLabel";
+            this.clrInfoLabel.Size = new System.Drawing.Size(10, 13);
+            this.clrInfoLabel.TabIndex = 1;
+            this.clrInfoLabel.Text = "-";
+            this.clrInfoLabel.TextAlign = System.Drawing.ContentAlignment.TopRight;
+            // 
             // AboutWindow
             // 
             this.AcceptButton = this.okButton;
@@ -96,6 +107,7 @@ namespace Google.Solutions.IapDesktop.Application.Views
             this.CancelButton = this.okButton;
             this.ClientSize = new System.Drawing.Size(414, 270);
             this.Controls.Add(this.legalTextBox);
+            this.Controls.Add(this.clrInfoLabel);
             this.Controls.Add(this.infoLabel);
             this.Controls.Add(this.okButton);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
@@ -117,5 +129,6 @@ namespace Google.Solutions.IapDesktop.Application.Views
         private System.Windows.Forms.Button okButton;
         private System.Windows.Forms.Label infoLabel;
         private System.Windows.Forms.TextBox legalTextBox;
+        private System.Windows.Forms.Label clrInfoLabel;
     }
 }

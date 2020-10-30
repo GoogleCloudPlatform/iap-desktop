@@ -20,25 +20,20 @@
 //
 
 using Google.Solutions.Common.Diagnostics;
-using Google.Solutions.IapDesktop.Application.ObjectModel;
-using Google.Solutions.IapDesktop.Application.Services;
-using System;
-using System.Windows.Forms;
+using NUnit.Framework;
 
-namespace Google.Solutions.IapDesktop.Application.Views
+namespace Google.Solutions.Common.Test.Diagnostics
 {
-    [SkipCodeCoverage("UI code")]
-    public partial class AboutWindow : Form
+    [TestFixture]
+    public class TestClrVersion : FixtureBase
     {
-        public static Version ProgramVersion => typeof(AboutWindow).Assembly.GetName().Version;
-
-        public AboutWindow(IServiceProvider serviceProvider)
+        [Test]
+        public void VersionPopulated()
         {
-            InitializeComponent();
+            var version = ClrVersion.Version;
 
-            var updateService = serviceProvider.GetService<IUpdateService>();
-            this.infoLabel.Text = $"IAP Desktop\nVersion {updateService.InstalledVersion}";
-            this.clrInfoLabel.Text = $".NET {ClrVersion.Version}";
+            Assert.IsNotNull(version);
+            StringAssert.StartsWith("4.", version.ToString());
         }
     }
 }
