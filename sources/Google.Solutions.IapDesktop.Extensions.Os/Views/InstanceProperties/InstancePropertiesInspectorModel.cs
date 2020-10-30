@@ -289,6 +289,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Os.Views.InstanceProperties
         // Loading.
         //---------------------------------------------------------------------
 
+        public override string ToString() => this.InstanceName;
+
         public async static Task<InstancePropertiesInspectorModel> LoadAsync(
             InstanceLocator instanceLocator,
             IComputeEngineAdapter computeEngineAdapter,

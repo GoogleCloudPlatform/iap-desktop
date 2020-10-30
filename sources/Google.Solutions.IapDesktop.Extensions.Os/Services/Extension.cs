@@ -93,7 +93,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Os.Services
             var mainForm = serviceProvider.GetService<IMainForm>();
             mainForm.ViewMenu.AddCommand(
                 new Command<IMainForm>(
-                    "&Instance details",
+                    "&Instance properties",
                     _ => CommandState.Enabled,
                     _ => serviceProvider.GetService<InstancePropertiesInspectorWindow>().ShowWindow())
                 {
