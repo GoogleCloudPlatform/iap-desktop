@@ -140,7 +140,6 @@
     <Compile Include="Settings\RegistrySetting.cs" />
     <Compile Include="Settings\SettingBase.cs" />
     <Compile Include="Util\ByteSizeFormatter.cs" />
-    <Compile Include="Util\X509CertificateExtensions.cs" />
     <Compile Include="Views\Authentication\DeviceFlyoutViewModel.cs" />
     <Compile Include="Views\Authentication\UserFlyoutViewModel.cs" />
     <Compile Include="Views\Authentication\DeviceFlyoutWindow.cs">
