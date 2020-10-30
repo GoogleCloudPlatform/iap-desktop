@@ -66,11 +66,6 @@ namespace Google.Solutions.IapDesktop.Application.Services.Adapters
             OpenUrl($"{BaseUrl}/issues/new?body={WebUtility.UrlEncode(body)}");
         }
 
-        public void OpenWiki()
-        {
-            OpenUrl(BaseUrl + "/wiki");
-        }
-
         public async Task<Release> FindLatestReleaseAsync(CancellationToken cancellationToken)
         {
             using (TraceSources.IapDesktop.TraceMethod().WithoutParameters())
