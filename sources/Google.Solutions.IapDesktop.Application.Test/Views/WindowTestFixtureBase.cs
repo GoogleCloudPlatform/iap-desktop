@@ -59,11 +59,6 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views
             {
                 this.ExceptionShown = e;
             }
-
-            public void Show(IWin32Window parent, string caption, Exception e, string helpText, Action helpAction)
-            {
-                this.ExceptionShown = e;
-            }
         }
 
         [SetUp]

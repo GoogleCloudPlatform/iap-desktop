@@ -40,7 +40,6 @@ namespace Google.Solutions.IapDesktop.Application.Views
             "Browser Integration",
             "https://github.com/GoogleCloudPlatform/iap-desktop/wiki/Browser-Integration");
 
-        
         public static IHelpTopic IapOverview = new HelpTopic(
             "Overview of Cloud IAP TCP forwarding",
             "https://cloud.google.com/iap/docs/tcp-forwarding-overview");
@@ -48,6 +47,10 @@ namespace Google.Solutions.IapDesktop.Application.Views
         public static IHelpTopic IapAccess = new HelpTopic(
             "Configuring access to Cloud IAP",
             "https://cloud.google.com/iap/docs/using-tcp-forwarding");
+
+        public static IHelpTopic CreateIapFirewallRule  = new HelpTopic(
+            "Creating a firewall rule for Cloud IAP",
+            "https://cloud.google.com/iap/docs/using-tcp-forwarding#create-firewall-rule");
 
         private class HelpTopic : IHelpTopic
         {

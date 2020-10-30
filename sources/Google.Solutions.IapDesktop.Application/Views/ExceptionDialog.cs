@@ -21,6 +21,7 @@
 
 using Google.Solutions.Common.Diagnostics;
 using Google.Solutions.Common.Util;
+using Google.Solutions.IapDesktop.Application.ObjectModel;
 using System;
 using System.Diagnostics;
 using System.Runtime.InteropServices;
@@ -35,13 +36,11 @@ namespace Google.Solutions.IapDesktop.Application.Views
             IWin32Window parent,
             string caption,
             Exception e);
+    }
 
-        void Show(
-            IWin32Window parent,
-            string caption,
-            Exception e,
-            string helpText,
-            Action helpAction);
+    public interface IExceptionWithHelpTopic : _Exception
+    {
+        IHelpTopic Help { get; }
     }
 
     /// <summary>
@@ -50,16 +49,20 @@ namespace Google.Solutions.IapDesktop.Application.Views
     /// </summary>
     public class ExceptionDialog : IExceptionDialog
     {
+        private readonly IServiceProvider serviceProvider;
+
+        public ExceptionDialog(IServiceProvider serviceProvider)
+        {
+            this.serviceProvider = serviceProvider;
+        }
+
         private void ShowErrorDialogWithHelp(
             IWin32Window parent, 
             string caption, 
             string message, 
             string details,
-            string helpText,
-            Action helpAction)
+            IHelpTopic helpTopic)
         {
-            Debug.Assert((helpText == null) == (helpAction == null));
-
             using (TraceSources.IapDesktop.TraceMethod().WithParameters(caption, message, details))
             {
                 var config = new UnsafeNativeMethods.TASKDIALOGCONFIG()
@@ -75,7 +78,7 @@ namespace Google.Solutions.IapDesktop.Application.Views
                     pszExpandedInformation = details.ToString()
                 };
 
-                if (helpText != null && helpAction != null)
+                if (helpTopic != null)
                 {
                     //
                     // Add hyperlinked footer text.
@@ -84,12 +87,12 @@ namespace Google.Solutions.IapDesktop.Application.Views
                     config.FooterIcon = TaskDialogIcons.TD_INFORMATION_ICON;
                     config.dwFlags |= UnsafeNativeMethods.TASKDIALOG_FLAGS.TDF_EXPAND_FOOTER_AREA |
                                       UnsafeNativeMethods.TASKDIALOG_FLAGS.TDF_ENABLE_HYPERLINKS;
-                    config.pszFooter = $"<A HREF=\"#\">{helpText}</A>";
+                    config.pszFooter = $"For more information, see <A HREF=\"#\">{helpTopic.Title}</A>";
                     config.pfCallback = (hwnd, notification, wParam, lParam, refData) =>
                     {
                         if (notification == UnsafeNativeMethods.TASKDIALOG_NOTIFICATIONS.TDN_HYPERLINK_CLICKED)
                         {
-                            helpAction();
+                            this.serviceProvider.GetService<HelpService>().OpenTopic(helpTopic);
                         }
 
                         return 0; // S_OK;
@@ -107,20 +110,19 @@ namespace Google.Solutions.IapDesktop.Application.Views
         public void Show(
             IWin32Window parent, 
             string caption, 
-            Exception e,
-            string helpText,
-            Action helpAction)
+            Exception e)
         {
             e = e.Unwrap();
 
             using (TraceSources.IapDesktop.TraceMethod().WithParameters(caption, e))
             {
+                var details = new StringBuilder();
+                string message = string.Empty;
                 if (e is GoogleApiException apiException && apiException.Error != null)
                 {
                     // The .Message property contains a rather ugly concatenation of
                     // the information enclosed in the .Error object.
 
-                    var details = new StringBuilder();
                     details.Append($"Status code: {apiException.Error.Code}\n\n");
 
                     foreach (var error in apiException.Error.Errors)
@@ -131,24 +133,10 @@ namespace Google.Solutions.IapDesktop.Application.Views
                         details.Append("\n");
                     }
 
-                    TraceSources.IapDesktop.TraceError(
-                        "Exception {0} ({1}): {2}",
-                        e.GetType().Name,
-                        caption,
-                        details);
-
-                    ShowErrorDialogWithHelp(
-                        parent,
-                        caption,
-                        apiException.Error.Message,
-                        details.ToString(),
-                        helpText,
-                        helpAction);
+                    message = apiException.Error.Message;
                 }
                 else
                 {
-                    var details = new StringBuilder();
-
                     for (var innerException = e.InnerException;
                          innerException != null; innerException =
                          innerException.InnerException)
@@ -159,24 +147,22 @@ namespace Google.Solutions.IapDesktop.Application.Views
                         details.Append("\n");
                     }
 
-                    TraceSources.IapDesktop.TraceError(
-                        "Exception {0} ({1}): {2}",
-                        e.GetType().Name,
-                        caption,
-                        details);
-
-                    ShowErrorDialogWithHelp(
-                        parent,
-                        caption,
-                        e.Message,
-                        details.ToString(),
-                        helpText,
-                        helpAction);
+                    message = e.Message;
                 }
+
+                TraceSources.IapDesktop.TraceError(
+                    "Exception {0} ({1}): {2}",
+                    e.GetType().Name,
+                    caption,
+                    details);
+
+                ShowErrorDialogWithHelp(
+                    parent,
+                    caption,
+                    message,
+                    details.ToString(),
+                    (e as IExceptionWithHelpTopic)?.Help);
             }
         }
-
-        public void Show(IWin32Window parent, string caption, Exception e)
-            => Show(parent, caption, e, null, null);
     }
 }
