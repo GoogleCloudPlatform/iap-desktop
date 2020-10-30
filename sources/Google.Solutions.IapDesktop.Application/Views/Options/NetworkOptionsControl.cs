@@ -53,6 +53,12 @@ namespace Google.Solutions.IapDesktop.Application.Views.Options
                 m => m.IsCustomProxyServerEnabled,
                 this.Container);
 
+            this.addressLabel.BindProperty(
+                c => c.Enabled,
+                this.viewModel,
+                m => m.IsCustomProxyServerEnabled,
+                this.Container);
+
             this.proxyServerTextBox.BindProperty(
                 c => c.Enabled,
                 this.viewModel,
@@ -73,6 +79,53 @@ namespace Google.Solutions.IapDesktop.Application.Views.Options
                 c => c.Text,
                 this.viewModel,
                 m => m.ProxyPort,
+                this.Container);
+
+            //
+            // Proxy auth.
+            //
+
+            this.proxyAuthCheckBox.BindProperty(
+                c => c.Checked,
+                this.viewModel,
+                m => m.IsProxyAuthenticationEnabled,
+                this.Container);
+            this.proxyAuthCheckBox.BindProperty(
+                c => c.Enabled,
+                this.viewModel,
+                m => m.IsCustomProxyServerEnabled,
+                this.Container);
+
+            this.proxyAuthUsernameTextBox.BindProperty(
+                c => c.Text,
+                this.viewModel,
+                m => m.ProxyUsername,
+                this.Container);
+            this.proxyAuthUsernameTextBox.BindProperty(
+                c => c.Enabled,
+                this.viewModel,
+                m => m.IsProxyAuthenticationEnabled,
+                this.Container);
+            this.proxyAuthUsernameLabel.BindProperty(
+                c => c.Enabled,
+                this.viewModel,
+                m => m.IsProxyAuthenticationEnabled,
+                this.Container);
+
+            this.proxyAuthPasswordTextBox.BindProperty(
+                c => c.Text,
+                this.viewModel,
+                m => m.ProxyPassword,
+                this.Container);
+            this.proxyAuthPasswordTextBox.BindProperty(
+                c => c.Enabled,
+                this.viewModel,
+                m => m.IsProxyAuthenticationEnabled,
+                this.Container);
+            this.proxyAuthPasswordLabel.BindProperty(
+                c => c.Enabled,
+                this.viewModel,
+                m => m.IsProxyAuthenticationEnabled,
                 this.Container);
         }
 

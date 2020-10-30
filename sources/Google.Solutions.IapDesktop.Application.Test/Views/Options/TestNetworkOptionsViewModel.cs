@@ -26,6 +26,7 @@ using Microsoft.Win32;
 using Moq;
 using NUnit.Framework;
 using System;
+using System.Windows.Forms;
 
 namespace Google.Solutions.IapDesktop.Application.Test.Views.Options
 {
@@ -50,7 +51,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views.Options
         }
 
         //---------------------------------------------------------------------
-        // Update check.
+        // Proxy en/disable.
         //---------------------------------------------------------------------
 
         [Test]
@@ -64,6 +65,11 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views.Options
             Assert.IsFalse(viewModel.IsCustomProxyServerEnabled);
             Assert.IsNull(viewModel.ProxyServer);
             Assert.IsNull(viewModel.ProxyPort);
+
+            Assert.IsFalse(viewModel.IsProxyAuthenticationEnabled);
+            Assert.IsNull(viewModel.ProxyUsername);
+            Assert.IsNull(viewModel.ProxyPassword);
+            
             Assert.IsFalse(viewModel.IsDirty);
         }
 
@@ -82,6 +88,9 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views.Options
             Assert.IsTrue(viewModel.IsCustomProxyServerEnabled);
             Assert.AreEqual("proxy-server", viewModel.ProxyServer);
             Assert.AreEqual("80", viewModel.ProxyPort);
+            Assert.IsFalse(viewModel.IsProxyAuthenticationEnabled);
+            Assert.IsNull(viewModel.ProxyUsername);
+            Assert.IsNull(viewModel.ProxyPassword);
             Assert.IsFalse(viewModel.IsDirty);
         }
 
@@ -99,6 +108,9 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views.Options
             Assert.IsFalse(viewModel.IsCustomProxyServerEnabled);
             Assert.IsNull(viewModel.ProxyServer);
             Assert.IsNull(viewModel.ProxyPort);
+            Assert.IsFalse(viewModel.IsProxyAuthenticationEnabled);
+            Assert.IsNull(viewModel.ProxyUsername);
+            Assert.IsNull(viewModel.ProxyPassword);
             Assert.IsFalse(viewModel.IsDirty);
         }
 
@@ -115,6 +127,9 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views.Options
             Assert.IsTrue(viewModel.IsCustomProxyServerEnabled);
             Assert.AreEqual("proxy", viewModel.ProxyServer);
             Assert.AreEqual("3128", viewModel.ProxyPort);
+            Assert.IsFalse(viewModel.IsProxyAuthenticationEnabled);
+            Assert.IsNull(viewModel.ProxyUsername);
+            Assert.IsNull(viewModel.ProxyPassword);
             Assert.IsTrue(viewModel.IsDirty);
         }
 
@@ -134,6 +149,70 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views.Options
             Assert.IsFalse(viewModel.IsCustomProxyServerEnabled);
             Assert.IsNull(viewModel.ProxyServer);
             Assert.IsNull(viewModel.ProxyPort);
+            Assert.IsFalse(viewModel.IsProxyAuthenticationEnabled);
+            Assert.IsNull(viewModel.ProxyUsername);
+            Assert.IsNull(viewModel.ProxyPassword);
+            Assert.IsTrue(viewModel.IsDirty);
+        }
+
+
+        //---------------------------------------------------------------------
+        // Proxy auth.
+        //---------------------------------------------------------------------
+
+        [Test]
+        public void WhenProxyAuthConfigured_ThenPropertiesAreInitializedCorrectly()
+        {
+            var settings = this.settingsRepository.GetSettings();
+            settings.ProxyUrl.StringValue = "http://proxy-server";
+            settings.ProxyUsername.StringValue = "user";
+            settings.ProxyPassword.ClearTextValue = "pass";
+            this.settingsRepository.SetSettings(settings);
+
+            var viewModel = new NetworkOptionsViewModel(
+                this.settingsRepository,
+                this.proxyAdapterMock.Object);
+
+            Assert.IsFalse(viewModel.IsSystemProxyServerEnabled);
+            Assert.IsTrue(viewModel.IsCustomProxyServerEnabled);
+            Assert.AreEqual("proxy-server", viewModel.ProxyServer);
+            Assert.AreEqual("80", viewModel.ProxyPort);
+            Assert.IsTrue(viewModel.IsProxyAuthenticationEnabled);
+            Assert.AreEqual("user", viewModel.ProxyUsername);
+            Assert.AreEqual("pass", viewModel.ProxyPassword);
+            Assert.IsFalse(viewModel.IsDirty);
+        }
+
+        [Test]
+        public void WhenEnablingProxyAuth_ThenProxyUsernameSetToDefault()
+        {
+            var viewModel = new NetworkOptionsViewModel(
+                this.settingsRepository,
+                this.proxyAdapterMock.Object);
+
+            viewModel.IsCustomProxyServerEnabled = true;
+            viewModel.IsProxyAuthenticationEnabled = true;
+
+            Assert.AreEqual(Environment.UserName, viewModel.ProxyUsername);
+            Assert.IsNull(viewModel.ProxyPassword);
+            Assert.IsTrue(viewModel.IsDirty);
+        }
+
+        [Test]
+        public void WhenDisablingProxyAuth_ThenProxyUsernameAndPasswordAreCleared()
+        {
+            var viewModel = new NetworkOptionsViewModel(
+                this.settingsRepository,
+                this.proxyAdapterMock.Object);
+
+            viewModel.IsCustomProxyServerEnabled = true;
+            viewModel.IsProxyAuthenticationEnabled = true;
+            viewModel.ProxyUsername = "user";
+            viewModel.ProxyPassword = "pass";
+            viewModel.IsProxyAuthenticationEnabled = false;
+
+            Assert.IsNull(viewModel.ProxyUsername);
+            Assert.IsNull(viewModel.ProxyPassword);
             Assert.IsTrue(viewModel.IsDirty);
         }
 
@@ -184,6 +263,21 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views.Options
         }
 
         [Test]
+        public void WhenProxyAuthIncomplete_ThenApplyChangesThrowsArgumentException()
+        {
+            var viewModel = new NetworkOptionsViewModel(
+                this.settingsRepository,
+                this.proxyAdapterMock.Object);
+
+            viewModel.IsCustomProxyServerEnabled = true;
+            viewModel.ProxyServer = "proxy";
+            viewModel.ProxyPort = "1000";
+            viewModel.ProxyPassword = "pass";
+
+            Assert.Throws<ArgumentException>(() => viewModel.ApplyChanges());
+        }
+
+        [Test]
         public void WhenEnablingCustomProxy_ThenProxyAdapterIsUpdated()
         {
             var viewModel = new NetworkOptionsViewModel(
@@ -195,6 +289,45 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views.Options
 
             this.proxyAdapterMock.Verify(m => m.ActivateSettings(
                     It.IsAny<ApplicationSettings>()), Times.Once);
+        }
+
+        [Test]
+        public void WhenEnablingOrDisablingCustomProxy_ThenSettingsAreSaved()
+        {
+            var viewModel = new NetworkOptionsViewModel(
+                this.settingsRepository,
+                this.proxyAdapterMock.Object);
+
+            // Enable proxy with authentication.
+            viewModel.IsCustomProxyServerEnabled = true;
+            viewModel.ProxyServer = "prx";
+            viewModel.ProxyPort = "123";
+            viewModel.ProxyUsername = "user";
+            viewModel.ProxyPassword = "pass";
+            viewModel.ApplyChanges();
+
+            var settings = this.settingsRepository.GetSettings();
+            Assert.AreEqual("http://prx:123", settings.ProxyUrl.StringValue);
+            Assert.AreEqual("user", settings.ProxyUsername.StringValue);
+            Assert.AreEqual("pass", settings.ProxyPassword.ClearTextValue);
+
+            // Disable authentication.
+            viewModel.IsProxyAuthenticationEnabled = false;
+            viewModel.ApplyChanges();
+
+            settings = this.settingsRepository.GetSettings();
+            Assert.AreEqual("http://prx:123", settings.ProxyUrl.StringValue);
+            Assert.IsNull(settings.ProxyUsername.StringValue);
+            Assert.IsNull(settings.ProxyPassword.ClearTextValue);
+
+            // Disable proxy.
+            viewModel.IsCustomProxyServerEnabled = false;
+            viewModel.ApplyChanges();
+
+            settings = this.settingsRepository.GetSettings();
+            Assert.IsNull(settings.ProxyUrl.StringValue);
+            Assert.IsNull(settings.ProxyUsername.StringValue);
+            Assert.IsNull(settings.ProxyPassword.ClearTextValue);
         }
 
         [Test]

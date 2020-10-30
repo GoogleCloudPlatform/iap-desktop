@@ -27,6 +27,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Net;
+using System.Security;
 
 namespace Google.Solutions.IapDesktop.Application.Services.Adapters
 {
@@ -102,10 +103,18 @@ namespace Google.Solutions.IapDesktop.Application.Services.Adapters
         {
             if (!string.IsNullOrEmpty(settings.ProxyUrl.StringValue))
             {
+                NetworkCredential credential = null;
+                if (!string.IsNullOrEmpty(settings.ProxyUsername.StringValue))
+                {
+                    credential = new NetworkCredential(
+                        settings.ProxyUsername.StringValue,
+                        (SecureString)settings.ProxyPassword.Value);
+                }
+
                 ActivateCustomProxySettings(
                     new Uri(settings.ProxyUrl.StringValue), 
                     null,
-                    null);
+                    credential);
             }
             else
             {
