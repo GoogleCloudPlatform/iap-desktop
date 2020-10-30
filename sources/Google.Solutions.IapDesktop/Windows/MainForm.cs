@@ -200,7 +200,7 @@ namespace Google.Solutions.IapDesktop.Windows
                                 "IAP Desktop failed to complete the OAuth authorization. " +
                                     "This might be due to network communication issues.",
                                 e.Message,
-                                "",
+                                e.FullMessage(),
                                 new[]
                                 {
                                     "Change network settings"
