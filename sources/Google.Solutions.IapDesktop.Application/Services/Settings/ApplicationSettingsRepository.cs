@@ -25,6 +25,7 @@ using Microsoft.Win32;
 using System;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
+using System.Security.Cryptography;
 
 namespace Google.Solutions.IapDesktop.Application.Services.Settings
 {
@@ -58,6 +59,10 @@ namespace Google.Solutions.IapDesktop.Application.Services.Settings
 
         public RegistryStringSetting ProxyUrl { get; private set; }
 
+        public RegistryStringSetting ProxyUsername { get; private set; }
+
+        public RegistrySecureStringSetting ProxyPassword { get; private set; }
+
         public IEnumerable<ISetting> Settings => new ISetting[]
         {
             this.IsMainWindowMaximized,
@@ -66,7 +71,9 @@ namespace Google.Solutions.IapDesktop.Application.Services.Settings
             this.IsUpdateCheckEnabled,
             this.LastUpdateCheck,
             this.IsUpdateCheckEnabled,
-            this.ProxyUrl
+            this.ProxyUrl,
+            this.ProxyUsername,
+            this.ProxyPassword
         };
 
         private ApplicationSettings()
@@ -132,6 +139,21 @@ namespace Google.Solutions.IapDesktop.Application.Services.Settings
                     null,
                     registryKey,
                     url => url == null || Uri.TryCreate(url, UriKind.Absolute, out Uri _)),
+                ProxyUsername = RegistryStringSetting.FromKey(
+                    "ProxyUsername",
+                    "ProxyUsername",
+                    null,
+                    null,
+                    null,
+                    registryKey,
+                    _ => true),
+                ProxyPassword = RegistrySecureStringSetting.FromKey(
+                    "ProxyPassword",
+                    "ProxyPassword",
+                    null,
+                    null,
+                    registryKey,
+                    DataProtectionScope.CurrentUser)
             };
         }
     }

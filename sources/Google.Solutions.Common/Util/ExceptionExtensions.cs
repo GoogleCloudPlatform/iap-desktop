@@ -22,6 +22,7 @@
 using Google.Apis.Auth.OAuth2.Responses;
 using System;
 using System.Reflection;
+using System.Text;
 using System.Threading.Tasks;
 
 namespace Google.Solutions.Common.Util
@@ -66,6 +67,23 @@ namespace Google.Solutions.Common.Util
             {
                 return false;
             }
+        }
+
+        public static string FullMessage(this Exception exception)
+        {
+            var fullMessage = new StringBuilder();
+
+            for (var ex = exception; ex != null; ex = ex.InnerException)
+            {
+                if (fullMessage.Length > 0)
+                {
+                    fullMessage.Append(": ");
+                }
+
+                fullMessage.Append(ex.Message);
+            }
+
+            return fullMessage.ToString();
         }
     }
 }

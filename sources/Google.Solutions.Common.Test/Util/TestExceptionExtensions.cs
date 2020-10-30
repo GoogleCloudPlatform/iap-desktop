@@ -61,5 +61,21 @@ namespace Google.Solutions.Common.Test.Util
 
             Assert.AreSame(inner, unwrapped);
         }
+
+        [Test]
+        public void WhenExceptionHasNoInnerException_ThenFullMessageIsSameAsMessage()
+        {
+            var ex = new ArgumentException("something went wrong!");
+            Assert.AreEqual(ex.Message, ex.FullMessage());
+        }
+
+        [Test]
+        public void WhenExceptionHasInnerException_ThenFullMessageContainsAllMessages()
+        {
+            var ex = new ArgumentException("One",
+                new InvalidOperationException("two", 
+                    new Exception("three")));
+            Assert.AreEqual("One: two: three", ex.FullMessage());
+        }
     }
 }

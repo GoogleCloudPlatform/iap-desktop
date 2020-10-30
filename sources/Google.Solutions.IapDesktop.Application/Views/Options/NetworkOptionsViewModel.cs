@@ -35,6 +35,8 @@ namespace Google.Solutions.IapDesktop.Application.Views.Options
 
         private string proxyServer = null;
         private string proxyPort = null;
+        private string proxyUsername = null;
+        private string proxyPassword = null;
         private bool isDirty = false;
 
         public NetworkOptionsViewModel(
@@ -57,6 +59,9 @@ namespace Google.Solutions.IapDesktop.Application.Views.Options
             {
                 this.proxyServer = proxyUrl.Host;
                 this.proxyPort = proxyUrl.Port.ToString();
+
+                this.proxyUsername = settings.ProxyUsername.StringValue;
+                this.proxyPassword = settings.ProxyPassword.ClearTextValue;
             }
         }
 
@@ -93,9 +98,15 @@ namespace Google.Solutions.IapDesktop.Application.Views.Options
             {
                 throw new ArgumentException($"'{this.proxyServer}' is not a valid host name");
             }
+
             if (this.proxyPort != null && !IsValidProxyPort(this.proxyPort))
             {
                 throw new ArgumentException($"'{this.proxyPort}' is not a valid port number");
+            }
+            
+            if (string.IsNullOrEmpty(this.proxyUsername) != string.IsNullOrEmpty(this.proxyPassword))
+            {
+                throw new ArgumentException("Proxy credentials are incomplete");
             }
 
             //
@@ -106,6 +117,18 @@ namespace Google.Solutions.IapDesktop.Application.Views.Options
             settings.ProxyUrl.StringValue = this.proxyServer != null
                 ? $"http://{this.proxyServer}:{this.proxyPort}"
                 : null;
+
+            settings.ProxyUsername.StringValue = this.proxyUsername;
+
+            if (this.proxyPassword != null)
+            {
+                settings.ProxyPassword.ClearTextValue = this.proxyPassword;
+            }
+            else
+            {
+                settings.ProxyPassword.Value = null;
+            }
+
             this.settingsRepository.SetSettings(settings);
 
             //
@@ -137,10 +160,13 @@ namespace Google.Solutions.IapDesktop.Application.Views.Options
                 {
                     this.ProxyServer = null;
                     this.ProxyPort = null;
+                    this.ProxyUsername = null;
+                    this.ProxyPassword = null;
                 }
 
                 RaisePropertyChange();
                 RaisePropertyChange((NetworkOptionsViewModel m) => m.IsSystemProxyServerEnabled);
+                RaisePropertyChange((NetworkOptionsViewModel m) => m.IsProxyAuthenticationEnabled);
             }
         }
 
@@ -167,6 +193,48 @@ namespace Google.Solutions.IapDesktop.Application.Views.Options
             set
             {
                 this.proxyPort = value;
+                this.IsDirty = true;
+                RaisePropertyChange();
+            }
+        }
+
+        public bool IsProxyAuthenticationEnabled
+        {
+            get => IsCustomProxyServerEnabled && !string.IsNullOrEmpty(this.proxyUsername);
+            set
+            {
+                if (value)
+                {
+                    // Initialize to a sane default.
+                    this.ProxyUsername = Environment.UserName;
+                }
+                else
+                {
+                    this.ProxyUsername = null;
+                    this.ProxyPassword = null;
+                }
+
+                RaisePropertyChange();
+            }
+        }
+
+        public string ProxyUsername
+        {
+            get => this.proxyUsername;
+            set
+            {
+                this.proxyUsername = value;
+                this.IsDirty = true;
+                RaisePropertyChange();
+            }
+        }
+
+        public string ProxyPassword
+        {
+            get => this.proxyPassword;
+            set
+            {
+                this.proxyPassword = value;
                 this.IsDirty = true;
                 RaisePropertyChange();
             }
