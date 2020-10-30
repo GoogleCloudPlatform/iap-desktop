@@ -89,18 +89,20 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Services.Connection
                     }
                     catch (NetworkStreamClosedException e)
                     {
-                        throw new ApplicationException(
+                        throw new IapRdpConnectionFailedException(
                             "Connecting to the instance failed. Make sure that you have " +
                             "configured your firewall rules to permit Cloud IAP access " +
                             $"to {instanceRef.Name}",
+                            HelpTopics.CreateIapFirewallRule,
                             e);
                     }
                     catch (UnauthorizedException)
                     {
-                        throw new ApplicationException(
+                        throw new IapRdpConnectionFailedException(
                             "You are not authorized to connect to this VM instance.\n\n" +
                             $"Verify that the Cloud IAP API is enabled in the project {instanceRef.ProjectId} " +
-                            "and that your user has the 'IAP-secured Tunnel User' role.");
+                            "and that your user has the 'IAP-secured Tunnel User' role.",
+                            HelpTopics.IapAccess);
                     }
                 }).ConfigureAwait(true);
 
@@ -176,6 +178,27 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Services.Connection
                     url.Instance,
                     settings)
                 .ConfigureAwait(true);
+        }
+    }
+
+    public class IapRdpConnectionFailedException : ApplicationException, IExceptionWithHelpTopic
+    {
+        public IHelpTopic Help { get; }
+
+        public IapRdpConnectionFailedException(
+            string message,
+            IHelpTopic helpTopic) : base(message)
+        {
+            this.Help = helpTopic;
+        }
+
+        public IapRdpConnectionFailedException(
+            string message,
+            IHelpTopic helpTopic,
+            Exception innerException) 
+            : base(message, innerException)
+        {
+            this.Help = helpTopic;
         }
     }
 }

@@ -164,6 +164,6 @@ namespace Google.Solutions.IapDesktop.Application.Views.Options
         //---------------------------------------------------------------------
 
         public void OpenBrowserIntegrationDocs()
-            => this.helpService.OpenBrowserIntegrationDocs();
+            => this.helpService.OpenTopic(HelpTopics.BrowserIntegration);
     }
 }

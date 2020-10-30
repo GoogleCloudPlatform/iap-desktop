@@ -21,6 +21,7 @@
 
 using Google.Solutions.Common.Locator;
 using Google.Solutions.Common.Util;
+using Google.Solutions.IapDesktop.Application.Views;
 using System;
 using System.Collections.Specialized;
 using System.Diagnostics;
@@ -138,8 +139,10 @@ namespace Google.Solutions.IapDesktop.Application.Util
 
     [Serializable]
     [ComVisible(false)]
-    public class IapRdpUrlFormatException : UriFormatException
+    public class IapRdpUrlFormatException : UriFormatException, IExceptionWithHelpTopic
     {
+        public IHelpTopic Help => HelpTopics.BrowserIntegration;
+
         protected IapRdpUrlFormatException(SerializationInfo info, StreamingContext context)
             : base(info, context)
         {

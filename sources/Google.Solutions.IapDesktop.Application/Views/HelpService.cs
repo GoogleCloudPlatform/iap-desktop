@@ -19,36 +19,63 @@
 // under the License.
 //
 
+using System;
 using System.Diagnostics;
 
 namespace Google.Solutions.IapDesktop.Application.Views
 {
+    public interface IHelpTopic
+    {
+        string Title { get; }
+        Uri Address { get; }
+    }
+
+    public static class HelpTopics
+    {
+        public static IHelpTopic General = new HelpTopic(
+            "Documentation",
+            "https://github.com/GoogleCloudPlatform/iap-desktop/wiki");
+
+        public static IHelpTopic BrowserIntegration = new HelpTopic(
+            "Browser Integration",
+            "https://github.com/GoogleCloudPlatform/iap-desktop/wiki/Browser-Integration");
+
+        public static IHelpTopic IapOverview = new HelpTopic(
+            "Overview of Cloud IAP TCP forwarding",
+            "https://cloud.google.com/iap/docs/tcp-forwarding-overview");
+
+        public static IHelpTopic IapAccess = new HelpTopic(
+            "Configuring access to Cloud IAP",
+            "https://cloud.google.com/iap/docs/using-tcp-forwarding#grant-permission");
+
+        public static IHelpTopic CreateIapFirewallRule  = new HelpTopic(
+            "Creating a firewall rule for Cloud IAP",
+            "https://cloud.google.com/iap/docs/using-tcp-forwarding#create-firewall-rule");
+
+        private class HelpTopic : IHelpTopic
+        {
+            public string Title { get; }
+            public Uri Address { get; }
+
+            public HelpTopic(string title, string address)
+            {
+                this.Title = title;
+                this.Address = new Uri(address);
+            }
+        }
+    }
+
     public class HelpService
     {
-        private void OpenUrl(string url)
+        public void OpenTopic(IHelpTopic topic)
         {
             using (Process.Start(new ProcessStartInfo()
             {
                 UseShellExecute = true,
                 Verb = "open",
-                FileName = url
+                FileName = topic.Address.ToString()
             }))
             { };
-        }
-
-        public void OpenIapOverviewDocs()
-        {
-            OpenUrl("https://cloud.google.com/iap/docs/tcp-forwarding-overview");
-        }
-
-        public void OpenIapAccessDocs()
-        {
-            OpenUrl("https://cloud.google.com/iap/docs/using-tcp-forwarding");
-        }
-
-        public void OpenBrowserIntegrationDocs()
-        {
-            OpenUrl("https://github.com/GoogleCloudPlatform/iap-desktop/wiki/Browser-Integration");
         }
     }
 }

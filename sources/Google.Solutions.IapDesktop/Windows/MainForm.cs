@@ -371,12 +371,12 @@ namespace Google.Solutions.IapDesktop.Windows
 
         private void openIapDocsToolStripMenuItem_Click(object sender, EventArgs _)
         {
-            this.serviceProvider.GetService<HelpService>().OpenIapOverviewDocs();
+            this.serviceProvider.GetService<HelpService>().OpenTopic(HelpTopics.IapOverview);
         }
 
         private void openIapAccessDocsToolStripMenuItem_Click(object sender, EventArgs _)
         {
-            this.serviceProvider.GetService<HelpService>().OpenIapAccessDocs();
+            this.serviceProvider.GetService<HelpService>().OpenTopic(HelpTopics.IapAccess);
         }
 
         private void reportIssueToolStripMenuItem_Click(object sender, EventArgs e)
@@ -385,7 +385,7 @@ namespace Google.Solutions.IapDesktop.Windows
         }
         private void viewHelpToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            this.serviceProvider.GetService<GithubAdapter>().OpenWiki();
+            this.serviceProvider.GetService<HelpService>().OpenTopic(HelpTopics.General);
         }
 
         private void shareFeedbackToolStripMenuItem_Click(object sender, EventArgs e)
