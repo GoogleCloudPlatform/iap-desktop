@@ -19,13 +19,18 @@
 // under the License.
 //
 
+using Google.Solutions.Common.Locator;
 using Google.Solutions.IapDesktop.Extensions.Activity.Logs;
 using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace Google.Solutions.IapDesktop.Extensions.Activity.Events
 {
     public abstract class EventBase
     {
+        private static string NullIfEmpty(string s) => string.IsNullOrEmpty(s) ? null : s;
+
         public abstract EventCategory Category { get; }
         public LogRecord LogRecord { get; }
 
@@ -33,7 +38,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Events
 
         public string Severity => this.LogRecord.Severity;
 
-        public string PrincipalEmail => this.LogRecord.ProtoPayload?.AuthenticationInfo?.PrincipalEmail;
+        public string PrincipalEmail => this.LogRecord.ProtoPayload?
+            .AuthenticationInfo?
+            .PrincipalEmail;
 
         public StatusInfo Status => this.LogRecord.ProtoPayload?.Status?.Message != null
             ? this.LogRecord.ProtoPayload?.Status
@@ -61,6 +68,30 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Events
                 }
             }
         }
+
+        public IEnumerable<AccessLevelLocator> AccessLevels
+        {
+            get
+            {
+                var accessLevels = this.LogRecord.ProtoPayload?
+                    .RequestMetadata?["requestAttributes"]?["auth"]?["accessLevels"];
+                if (accessLevels != null)
+                {
+                    return accessLevels.Values<string>()
+                        .Select(AccessLevelLocator.FromString);
+                }
+                else
+                {
+                    return Enumerable.Empty<AccessLevelLocator>();
+                }
+            }
+        }
+
+        public string DeviceState 
+            => NullIfEmpty(this.LogRecord.ProtoPayload?.Metadata?.Value<string>("device_state"));
+
+        public string DeviceId 
+            => NullIfEmpty(this.LogRecord.ProtoPayload?.Metadata?.Value<string>("device_id"));
 
         public abstract string Message { get; }
 

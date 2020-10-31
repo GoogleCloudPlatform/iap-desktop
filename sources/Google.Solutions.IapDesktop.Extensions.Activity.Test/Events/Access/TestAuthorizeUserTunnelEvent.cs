@@ -19,10 +19,12 @@
 // under the License.
 //
 
+using Google.Solutions.Common.Locator;
 using Google.Solutions.IapDesktop.Extensions.Activity.Events;
 using Google.Solutions.IapDesktop.Extensions.Activity.Events.Access;
 using Google.Solutions.IapDesktop.Extensions.Activity.Logs;
 using NUnit.Framework;
+using System.Linq;
 
 namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.Events.Access
 {
@@ -115,6 +117,116 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.Events.Access
             Assert.AreEqual("10.0.0.1", e.DestinationHost);
             Assert.AreEqual("3389", e.DestinationPort);
 
+            CollectionAssert.IsEmpty(e.AccessLevels);
+            Assert.IsNull(e.DeviceId);
+            Assert.AreEqual("Unknown", e.DeviceState);
+
+            Assert.AreEqual("Authorize tunnel from 3.4.5.6 to 10.0.0.1:3389 using IAP-Desktop/1.0.1.0", e.Message);
+        }
+
+
+        [Test]
+        public void WhenMetadataContainsAccessLevel_ThenFieldsAreExtracted()
+        {
+            var json = @"
+              {
+               'protoPayload': {
+                 '@type': 'type.googleapis.com/google.cloud.audit.AuditLog',
+                 'status': {},
+                 'authenticationInfo': {
+                 },
+                 'requestMetadata': {
+                   'callerIp': '3.4.5.6',
+                   'callerSuppliedUserAgent': 'IAP-Desktop/1.0.1.0 (Microsoft ...),gzip(gfe)',
+                   'requestAttributes': {
+                     'time': '2020-09-30T09:35:39.114684837Z',
+                     'auth': {
+                        'accessLevels': [
+                        'accessPolicies/policy-1/accessLevels/level-1',
+                        'accessPolicies/policy-2/accessLevels/level-2'
+                        ]
+                      }
+                   },
+                   'destinationAttributes': {
+                     'ip': '10.0.0.1',
+                     'port': '3389'
+                   }
+                 },
+                 'serviceName': 'iap.googleapis.com',
+                 'methodName': 'AuthorizeUser',
+                 'authorizationInfo': [
+                   {
+                     'resource': 'projects/111/iap_tunnel/zones/us-central1-a/instances/312951312222222222',
+                     'permission': 'iap.tunnelInstances.accessViaIAP',
+                     'granted': true,
+                     'resourceAttributes': {
+                       'service': 'iap.googleapis.com',
+                       'type': 'iap.googleapis.com/TunnelInstance'
+                     }
+                   }
+                 ],
+                 'resourceName': '312951312222222222',
+                 'request': {
+                   'httpRequest': {
+                     'url': ''
+                   },
+                   '@type': 'type.googleapis.com/cloud.security.gatekeeper.AuthorizeUserRequest'
+                 },
+                 'metadata': {
+                   'request_id': '10362245139430470968',
+                   'unsatisfied_access_levels': [
+                     'accessPolicies/1072146573138/accessLevels/Windows_10_in_Germany',
+                     'accessPolicies/1072146573138/accessLevels/mTLS_client_certificate'
+                   ],
+                   'device_state': 'Normal',
+                   'device_id': 'DEVICE-1'
+                 }
+               },
+               'insertId': '822bjve2s5t9',
+               'resource': {
+                 'type': 'gce_instance',
+                 'labels': {
+                   'instance_id': '312951312222222222',
+                   'project_id': 'project-1',
+                   'zone': 'us-central1-a'
+                 }
+               },
+               'timestamp': '2020-09-30T09:35:39.102788424Z',
+               'severity': 'INFO',
+               'logName': 'projects/project-1/logs/cloudaudit.googleapis.com%2Fdata_access',
+               'operation': {
+                 'id': 'C6FU-2MNF-BVJL-2EGL-5MVS-IOMS',
+                 'producer': 'iap.googleapis.com'
+               },
+               'receiveTimestamp': '2020-09-30T09:35:39.345791898Z'
+             }";
+
+            var r = LogRecord.Deserialize(json);
+            Assert.IsTrue(AuthorizeUserTunnelEvent.IsAuthorizeUserEvent(r));
+
+            var e = (AuthorizeUserTunnelEvent)r.ToEvent();
+
+            Assert.AreEqual(312951312222222222, e.InstanceId);
+            Assert.AreEqual("us-central1-a", e.Zone);
+            Assert.AreEqual("project-1", e.ProjectId);
+            Assert.AreEqual("INFO", e.Severity);
+            Assert.IsNull(e.Status);
+            Assert.AreEqual("3.4.5.6", e.SourceHost);
+            Assert.AreEqual("IAP-Desktop/1.0.1.0 (Microsoft ...),gzip(gfe)", e.UserAgent);
+            Assert.AreEqual("10.0.0.1", e.DestinationHost);
+            Assert.AreEqual("3389", e.DestinationPort);
+
+            Assert.AreEqual(2, e.AccessLevels.Count());
+            Assert.AreEqual(
+                new AccessLevelLocator("policy-1", "level-1"),
+                e.AccessLevels.First());
+            Assert.AreEqual(
+                new AccessLevelLocator("policy-2", "level-2"),
+                e.AccessLevels.Last());
+
+            Assert.AreEqual("DEVICE-1", e.DeviceId);
+            Assert.AreEqual("Normal", e.DeviceState);
+
             Assert.AreEqual("Authorize tunnel from 3.4.5.6 to 10.0.0.1:3389 using IAP-Desktop/1.0.1.0", e.Message);
         }
 
@@ -163,10 +275,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.Events.Access
                    '@type': 'type.googleapis.com/cloud.security.gatekeeper.AuthorizeUserRequest'
                  },
                  'metadata': {
-                   'device_state': 'Unknown',
                    'unsatisfied_access_levels': [],
-                   'device_id': '',
-                   'request_id': '6220373645367465577'
+                   'device_state': 'Unknown',
+                   'device_id': ''
                  }
                },
                'insertId': 'p92rcge2oepz',
@@ -202,6 +313,10 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.Events.Access
             Assert.AreEqual("gzip(gfe)", e.UserAgent);
             Assert.AreEqual("10.0.0.1", e.DestinationHost);
             Assert.AreEqual("3389", e.DestinationPort);
+
+            CollectionAssert.IsEmpty(e.AccessLevels);
+            Assert.IsNull(e.DeviceId);
+            Assert.AreEqual("Unknown", e.DeviceState);
 
             Assert.AreEqual("Authorize tunnel from 3.4.5.6 to 10.0.0.1:3389 using gzip [Permission Denied.]", e.Message);
         }
@@ -260,6 +375,10 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.Events.Access
             Assert.IsNull(e.UserAgent);
             Assert.IsNull(e.DestinationHost);
             Assert.IsNull(e.DestinationPort);
+
+            CollectionAssert.IsEmpty(e.AccessLevels);
+            Assert.IsNull(e.DeviceId);
+            Assert.IsNull(e.DeviceState);
 
             Assert.AreEqual("Authorize tunnel from (unknown) to (unknown host):(unknown port) using (unknown agent) [Permission Denied.]", e.Message);
         }

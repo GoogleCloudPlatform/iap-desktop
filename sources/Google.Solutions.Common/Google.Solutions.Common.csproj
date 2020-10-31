@@ -81,6 +81,7 @@
     <Compile Include="Diagnostics\TraceCallScope.cs" />
     <Compile Include="Diagnostics\TraceSourceExtensions.cs" />
     <Compile Include="Diagnostics\TraceSourceLogger.cs" />
+    <Compile Include="Locator\AccessLevelLocator.cs" />
     <Compile Include="Locator\GlobalResourceLocator.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
