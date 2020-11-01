@@ -1,5 +1,5 @@
 #
-# Copyright 2019 Google LLC
+# Copyright 2020 Google LLC
 #
 # Licensed to the Apache Software Foundation (ASF) under one
 # or more contributor license agreements.  See the NOTICE file
@@ -19,28 +19,12 @@
 # under the License.
 #
 
-$ErrorActionPreference = "Continue"
+set(VCPKG_TARGET_ARCHITECTURE x86)
 
-$SourcesRoot = "${PSScriptRoot}\.."
-
-# Delete bin directories
-Resolve-Path -Path "$SourcesRoot\Google.Solutions.*\bin" | 
-	% { Remove-Item -Recurse -Force $_ }
-
-# Delete obj directories
-Resolve-Path -Path "$SourcesRoot\Google.Solutions.*\obj" | 
-	% { Remove-Item -Recurse -Force $_  }
-	
-# Delete installer directories
-if (Test-Path "$SourcesRoot\installer\obj") {
-	Remove-Item -Recurse -Force "$SourcesRoot\installer\obj"
-}
-
-if (Test-Path "$SourcesRoot\installer\bin") {
-	Remove-Item -Recurse -Force "$SourcesRoot\installer\bin"
-}
-
-# Delete packages
-if (Test-Path "$SourcesRoot\packages") {
-	Remove-Item -Recurse -Force "$SourcesRoot\packages"
-}
+if(${PORT} MATCHES "libssh2")
+	set(VCPKG_CRT_LINKAGE dynamic)
+	set(VCPKG_LIBRARY_LINKAGE dynamic)
+else()
+	set(VCPKG_CRT_LINKAGE static)
+	set(VCPKG_LIBRARY_LINKAGE static)
+endif()
