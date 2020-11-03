@@ -36,7 +36,6 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views.Options
         private const string TestKeyPath = @"Software\Google\__Test";
         private readonly RegistryKey hkcu = RegistryKey.OpenBaseKey(RegistryHive.CurrentUser, RegistryView.Default);
 
-        private GeneralOptionsViewModel viewModel;
         private ApplicationSettingsRepository settingsRepository;
         private Mock<IAppProtocolRegistry> protocolRegistryMock;
 
@@ -48,10 +47,6 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views.Options
             
             this.settingsRepository = new ApplicationSettingsRepository(baseKey);
             this.protocolRegistryMock = new Mock<IAppProtocolRegistry>();
-            this.viewModel = new GeneralOptionsViewModel(
-                this.settingsRepository,
-                this.protocolRegistryMock.Object,
-                new HelpService());
         }
 
         //---------------------------------------------------------------------
@@ -59,8 +54,62 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views.Options
         //---------------------------------------------------------------------
 
         [Test]
+        public void WhenSettingEnabled_ThenIsUpdateCheckEnabledIsTrue()
+        {
+            var settings = this.settingsRepository.GetSettings();
+            settings.IsUpdateCheckEnabled.BoolValue = true;
+            this.settingsRepository.SetSettings(settings);
+
+            var viewModel = new GeneralOptionsViewModel(
+                this.settingsRepository,
+                this.protocolRegistryMock.Object,
+                new HelpService());
+
+            Assert.IsTrue(viewModel.IsUpdateCheckEnabled);
+        }
+
+        [Test]
+        public void WhenSettingDisabled_ThenIsUpdateCheckEnabledIsTrue()
+        {
+            var settings = this.settingsRepository.GetSettings();
+            settings.IsUpdateCheckEnabled.BoolValue = false;
+            this.settingsRepository.SetSettings(settings);
+
+            var viewModel = new GeneralOptionsViewModel(
+                this.settingsRepository,
+                this.protocolRegistryMock.Object,
+                new HelpService());
+
+            Assert.IsFalse(viewModel.IsUpdateCheckEnabled);
+        }
+
+        [Test]
+        public void WhenDisablingUpdateCheck_ThenChangeIsApplied()
+        {
+            var settings = this.settingsRepository.GetSettings();
+            settings.IsUpdateCheckEnabled.BoolValue = true;
+            this.settingsRepository.SetSettings(settings);
+
+            var viewModel = new GeneralOptionsViewModel(
+                this.settingsRepository,
+                this.protocolRegistryMock.Object,
+                new HelpService());
+
+            viewModel.IsUpdateCheckEnabled = false;
+            viewModel.ApplyChanges();
+
+            settings = this.settingsRepository.GetSettings();
+            Assert.IsFalse(settings.IsUpdateCheckEnabled.BoolValue);
+        }
+
+        [Test]
         public void WhenUpdateCheckChanged_ThenIsDirtyIsTrueUntilApplied()
         {
+            var viewModel = new GeneralOptionsViewModel(
+                this.settingsRepository,
+                this.protocolRegistryMock.Object,
+                new HelpService());
+
             Assert.IsFalse(viewModel.IsDirty);
 
             viewModel.IsUpdateCheckEnabled = !viewModel.IsUpdateCheckEnabled;
@@ -71,6 +120,11 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views.Options
         [Test]
         public void WhenLastCheckIsZero_ThenLastUpdateCheckReturnsNever()
         {
+            var viewModel = new GeneralOptionsViewModel(
+                this.settingsRepository,
+                this.protocolRegistryMock.Object,
+                new HelpService());
+
             Assert.AreEqual("never", viewModel.LastUpdateCheck);
         }
 
@@ -81,12 +135,12 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views.Options
             settings.LastUpdateCheck.LongValue = 1234567L;
             this.settingsRepository.SetSettings(settings);
 
-            var viewModelWithCustomSettings = new GeneralOptionsViewModel(
+            var viewModel = new GeneralOptionsViewModel(
                 this.settingsRepository,
                 this.protocolRegistryMock.Object,
                 new HelpService());
 
-            Assert.AreNotEqual("never", viewModelWithCustomSettings.LastUpdateCheck);
+            Assert.AreNotEqual("never", viewModel.LastUpdateCheck);
         }
 
         //---------------------------------------------------------------------
@@ -145,6 +199,11 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views.Options
         [Test]
         public void WhenDcaChanged_ThenIsDirtyIsTrueUntilApplied()
         {
+            var viewModel = new GeneralOptionsViewModel(
+                this.settingsRepository,
+                this.protocolRegistryMock.Object,
+                new HelpService()); 
+            
             Assert.IsFalse(viewModel.IsDirty);
 
             viewModel.IsDeviceCertificateAuthenticationEnabled = !viewModel.IsDeviceCertificateAuthenticationEnabled;
@@ -159,6 +218,11 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views.Options
         [Test]
         public void WhenBrowserIntegrationChanged_ThenIsDirtyIsTrueUntilApplied()
         {
+            var viewModel = new GeneralOptionsViewModel(
+                this.settingsRepository,
+                this.protocolRegistryMock.Object,
+                new HelpService());
+
             Assert.IsFalse(viewModel.IsDirty);
 
             viewModel.IsBrowserIntegrationEnabled = !viewModel.IsBrowserIntegrationEnabled;
@@ -169,6 +233,11 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views.Options
         [Test]
         public void WhenBrowserIntegrationEnabled_ThenApplyChangesRegistersProtocol()
         {
+            var viewModel = new GeneralOptionsViewModel(
+                this.settingsRepository,
+                this.protocolRegistryMock.Object,
+                new HelpService());
+
             viewModel.IsBrowserIntegrationEnabled = true;
             viewModel.ApplyChanges();
 
@@ -182,6 +251,11 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views.Options
         [Test]
         public void WhenBrowserIntegrationDisabled_ThenApplyChangesUnregistersProtocol()
         {
+            var viewModel = new GeneralOptionsViewModel(
+                this.settingsRepository,
+                this.protocolRegistryMock.Object,
+                new HelpService());
+
             viewModel.IsBrowserIntegrationEnabled = false;
             viewModel.ApplyChanges();
 

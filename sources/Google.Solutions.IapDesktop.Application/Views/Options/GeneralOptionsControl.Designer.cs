@@ -175,7 +175,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.Options
             this.secureConnectBox.Size = new System.Drawing.Size(336, 141);
             this.secureConnectBox.TabIndex = 1;
             this.secureConnectBox.TabStop = false;
-            this.secureConnectBox.Text = "Secure Connect Endpoint Verification";
+            this.secureConnectBox.Text = "Secure Connect Endpoint Verification:";
             // 
             // secureConnectLink
             // 
@@ -203,10 +203,10 @@ namespace Google.Solutions.IapDesktop.Application.Views.Options
             this.enableDcaCheckBox.CheckAlign = System.Drawing.ContentAlignment.TopLeft;
             this.enableDcaCheckBox.Location = new System.Drawing.Point(58, 24);
             this.enableDcaCheckBox.Name = "enableDcaCheckBox";
-            this.enableDcaCheckBox.Size = new System.Drawing.Size(224, 43);
+            this.enableDcaCheckBox.Size = new System.Drawing.Size(254, 43);
             this.enableDcaCheckBox.TabIndex = 1;
             this.enableDcaCheckBox.Text = "Automatically enable device certiticate \r\nauthentication when computer is detecte" +
-    "d\r\nto be enrolled in Endpoint Verification";
+    "d to be \r\nenrolled in Endpoint Verification";
             this.enableDcaCheckBox.UseVisualStyleBackColor = true;
             // 
             // label1
