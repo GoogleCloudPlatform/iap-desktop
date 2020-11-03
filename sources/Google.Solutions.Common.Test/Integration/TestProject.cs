@@ -98,7 +98,7 @@ namespace Google.Solutions.Common.Test.Integration
 
             var collection = new X509Certificate2Collection();
             collection.Import(
-                @"C:\dev\22-rdcman\dca-test-1@beyondcorp.us.dca.pfx", 
+                credentialsPath, 
                 string.Empty, // No passphrase
                 X509KeyStorageFlags.DefaultKeySet);
             
