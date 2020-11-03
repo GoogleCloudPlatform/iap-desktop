@@ -90,6 +90,69 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views.Options
         }
 
         //---------------------------------------------------------------------
+        // DCA.
+        //---------------------------------------------------------------------
+
+        [Test]
+        public void WhenSettingEnabled_ThenIsDeviceCertificateAuthenticationEnabledIsTrue()
+        {
+            var settings = this.settingsRepository.GetSettings();
+            settings.IsDeviceCertificateAuthenticationEnabled.BoolValue = true;
+            this.settingsRepository.SetSettings(settings);
+
+            var viewModel = new GeneralOptionsViewModel(
+                this.settingsRepository,
+                this.protocolRegistryMock.Object,
+                new HelpService());
+
+            Assert.IsTrue(viewModel.IsDeviceCertificateAuthenticationEnabled);
+        }
+
+        [Test]
+        public void WhenSettingDisabled_ThenIsDeviceCertificateAuthenticationEnabledIsTrue()
+        {
+            var settings = this.settingsRepository.GetSettings();
+            settings.IsDeviceCertificateAuthenticationEnabled.BoolValue = false;
+            this.settingsRepository.SetSettings(settings);
+
+            var viewModel = new GeneralOptionsViewModel(
+                this.settingsRepository,
+                this.protocolRegistryMock.Object,
+                new HelpService());
+
+            Assert.IsFalse(viewModel.IsDeviceCertificateAuthenticationEnabled);
+        }
+
+        [Test]
+        public void WhenDisablingDca_ThenChangeIsApplied()
+        {
+            var settings = this.settingsRepository.GetSettings();
+            settings.IsDeviceCertificateAuthenticationEnabled.BoolValue = true;
+            this.settingsRepository.SetSettings(settings);
+
+            var viewModel = new GeneralOptionsViewModel(
+                this.settingsRepository,
+                this.protocolRegistryMock.Object,
+                new HelpService());
+
+            viewModel.IsDeviceCertificateAuthenticationEnabled = false;
+            viewModel.ApplyChanges();
+
+            settings = this.settingsRepository.GetSettings();
+            Assert.IsFalse(settings.IsDeviceCertificateAuthenticationEnabled.BoolValue);
+        }
+
+        [Test]
+        public void WhenDcaChanged_ThenIsDirtyIsTrueUntilApplied()
+        {
+            Assert.IsFalse(viewModel.IsDirty);
+
+            viewModel.IsDeviceCertificateAuthenticationEnabled = !viewModel.IsDeviceCertificateAuthenticationEnabled;
+
+            Assert.IsTrue(viewModel.IsDirty);
+        }
+
+        //---------------------------------------------------------------------
         // Browser integration.
         //---------------------------------------------------------------------
 

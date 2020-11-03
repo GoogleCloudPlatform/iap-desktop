@@ -71,7 +71,6 @@ namespace Google.Solutions.Common.Test.Integration
             // This account must have:
             // - Cloud Identity Premium
             // - an associated device certiticate on the local machine
-            // - IAP-secured Tunnel User
 
             var credentialsPath = Environment.GetEnvironmentVariable("SECURECONNECT_CREDENTIALS");
             if (string.IsNullOrEmpty(credentialsPath))

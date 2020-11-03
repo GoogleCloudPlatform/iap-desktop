@@ -132,7 +132,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Test.Services.Tunnel
                 Assert.AreEqual(destination, tunnel.Destination);
                 Assert.IsTrue(tunnel.IsMutualTlsEnabled);
 
-                // The probe will fail, but it will leave a trace.
+                // The probe will fail, but it will leave a record in the audit log.
                 try
                 {
                     await tunnel.Probe(TimeSpan.FromMilliseconds(500));

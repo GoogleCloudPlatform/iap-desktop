@@ -42,6 +42,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.Options
         private string lastUpdateCheck;
 
         private bool isBrowserIntegrationEnabled;
+        private bool isDcaEnabled;
         private bool isDirty = false;
 
         public GeneralOptionsViewModel(
@@ -62,6 +63,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.Options
 
             var settings = this.settingsRepository.GetSettings();
             this.isUpdateCheckEnabled = settings.IsUpdateCheckEnabled.BoolValue;
+            this.isDcaEnabled = settings.IsDeviceCertificateAuthenticationEnabled.BoolValue;
             this.lastUpdateCheck = settings.LastUpdateCheck.IsDefault
                 ? "never"
                 : DateTime.FromBinary(settings.LastUpdateCheck.LongValue).ToString();
@@ -113,6 +115,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.Options
 
             var settings = this.settingsRepository.GetSettings();
             settings.IsUpdateCheckEnabled.BoolValue = this.isUpdateCheckEnabled;
+            settings.IsDeviceCertificateAuthenticationEnabled.BoolValue = this.isDcaEnabled;
             this.settingsRepository.SetSettings(settings);
 
             // Update protocol registration.
@@ -157,6 +160,17 @@ namespace Google.Solutions.IapDesktop.Application.Views.Options
             }
         }
 
+        public bool IsDeviceCertificateAuthenticationEnabled
+        {
+            get => this.isDcaEnabled;
+            set
+            {
+                this.isDcaEnabled = value;
+                this.IsDirty = true;
+                RaisePropertyChange();
+            }
+        }
+
         public string LastUpdateCheck => this.lastUpdateCheck;
 
         //---------------------------------------------------------------------
@@ -165,5 +179,8 @@ namespace Google.Solutions.IapDesktop.Application.Views.Options
 
         public void OpenBrowserIntegrationDocs()
             => this.helpService.OpenTopic(HelpTopics.BrowserIntegration);
+
+        public void OpenSecureConnectDcaOverviewDocs()
+            => this.helpService.OpenTopic(HelpTopics.SecureConnectDcaOverview);
     }
 }
