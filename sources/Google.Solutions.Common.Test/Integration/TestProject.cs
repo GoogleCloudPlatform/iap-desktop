@@ -57,6 +57,7 @@ namespace Google.Solutions.Common.Test.Integration
             // - Service Account User (to access Compute Engine Service account)
             // - IAP-secured Tunnel User
             // - Logs Viewer
+            // - Private Logs Viewer (for data access log)
             // - Project IAM Admin
             // - Service Account Token Creator
 
