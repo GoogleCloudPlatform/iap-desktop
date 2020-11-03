@@ -116,6 +116,8 @@ Write-Host "========================================================"
 
 $Env:GOOGLE_APPLICATION_CREDENTIALS = "${env:KOKORO_GFILE_DIR}\iap-windows-rdc-plugin-tests.json"
 $Env:GOOGLE_CLOUD_PROJECT = (Get-Content $Env:GOOGLE_APPLICATION_CREDENTIALS | Out-String | ConvertFrom-Json).project_id
+$Env:SECURECONNECT_CREDENTIALS = "${env:KOKORO_GFILE_DIR}\dca-user.adc.json"
+$Env:SECURECONNECT_CERTIFICATE = "${env:KOKORO_GFILE_DIR}\dca-user.dca.pfx"
 
 & gcloud auth activate-service-account --key-file=$Env:GOOGLE_APPLICATION_CREDENTIALS | Out-Default
 & gcloud compute firewall-rules create allow-ingress-from-iap `

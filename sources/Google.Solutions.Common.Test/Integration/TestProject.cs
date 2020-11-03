@@ -27,7 +27,9 @@ using Google.Apis.IAMCredentials.v1;
 using Google.Apis.Services;
 using Google.Solutions.Common.Net;
 using System;
+using System.Linq;
 using System.Reflection;
+using System.Security.Cryptography.X509Certificates;
 
 namespace Google.Solutions.Common.Test.Integration
 {
@@ -71,12 +73,39 @@ namespace Google.Solutions.Common.Test.Integration
             // - an associated device certiticate on the local machine
             // - IAP-secured Tunnel User
 
-            // TODO: load from file.
+            var credentialsPath = Environment.GetEnvironmentVariable("SECURECONNECT_CREDENTIALS");
+            if (string.IsNullOrEmpty(credentialsPath))
+            {
+                throw new ApplicationException(
+                    "SECURECONNECT_CREDENTIALS not set, needs to point to credentials " +
+                    "JSON of a SecureConnect-enabled user");
+            }
 
-            var credential = GoogleCredential.GetApplicationDefault();
+            var credential = GoogleCredential.FromFile(credentialsPath);
             return credential.IsCreateScopedRequired
                 ? credential.CreateScoped(CloudPlatformScope)
                 : credential;
+        }
+
+        public static X509Certificate2 GetDeviceCertificate()
+        {
+            var credentialsPath = Environment.GetEnvironmentVariable("SECURECONNECT_CERTIFICATE");
+            if (string.IsNullOrEmpty(credentialsPath))
+            {
+                throw new ApplicationException(
+                    "SECURECONNECT_CERTIFICATE not set, needs to point to a PFX " +
+                    "containing a SecureConnect device certificate");
+            }
+
+            var collection = new X509Certificate2Collection();
+            collection.Import(
+                @"C:\dev\22-rdcman\dca-test-1@beyondcorp.us.dca.pfx", 
+                string.Empty, // No passphrase
+                X509KeyStorageFlags.DefaultKeySet);
+            
+            return collection
+                .OfType<X509Certificate2>()
+                .First();
         }
 
         public static ComputeService CreateComputeService()
