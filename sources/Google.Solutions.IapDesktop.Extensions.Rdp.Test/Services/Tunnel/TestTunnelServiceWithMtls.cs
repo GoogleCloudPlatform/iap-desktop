@@ -135,9 +135,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Test.Services.Tunnel
                 // The probe will fail, but it will leave a record in the audit log.
                 try
                 {
-                    await tunnel.Probe(TimeSpan.FromSeconds(2));
+                    await tunnel.Probe(TimeSpan.FromSeconds(5));
                 }
-                catch (Exception)
+                catch (UnauthorizedException)
                 { }
             }
 
