@@ -64,6 +64,21 @@ namespace Google.Solutions.Common.Test.Integration
                 : credential;
         }
 
+        public static GoogleCredential GetSecureConnectCredential()
+        {
+            // This account must have:
+            // - Cloud Identity Premium
+            // - an associated device certiticate on the local machine
+            // - IAP-secured Tunnel User
+
+            // TODO: load from file.
+
+            var credential = GoogleCredential.GetApplicationDefault();
+            return credential.IsCreateScopedRequired
+                ? credential.CreateScoped(CloudPlatformScope)
+                : credential;
+        }
+
         public static ComputeService CreateComputeService()
         {
             return new ComputeService(new BaseClientService.Initializer

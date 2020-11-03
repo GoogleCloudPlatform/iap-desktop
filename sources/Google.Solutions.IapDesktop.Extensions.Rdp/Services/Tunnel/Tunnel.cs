@@ -27,7 +27,7 @@ using System.Threading.Tasks;
 
 namespace Google.Solutions.IapDesktop.Extensions.Rdp.Services.Tunnel
 {
-    public interface ITunnel
+    public interface ITunnel : IDisposable
     {
         TunnelDestination Destination { get; }
         int LocalPort { get; }
@@ -86,6 +86,20 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Services.Tunnel
             using (var stream = new SshRelayStream(this.Endpoint))
             {
                 await stream.TestConnectionAsync(timeout).ConfigureAwait(false);
+            }
+        }
+
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                Close();
             }
         }
     }

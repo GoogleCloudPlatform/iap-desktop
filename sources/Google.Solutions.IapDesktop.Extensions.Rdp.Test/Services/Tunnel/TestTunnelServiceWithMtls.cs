@@ -20,16 +20,24 @@
 //
 
 using Google.Apis.Auth.OAuth2;
+using Google.Apis.Logging.v2;
+using Google.Apis.Logging.v2.Data;
 using Google.Solutions.Common.Auth;
 using Google.Solutions.Common.Locator;
 using Google.Solutions.Common.Test;
 using Google.Solutions.Common.Test.Integration;
 using Google.Solutions.IapDesktop.Application.Services.Adapters;
+using Google.Solutions.IapDesktop.Application.Services.SecureConnect;
+using Google.Solutions.IapDesktop.Application.Services.Settings;
 using Google.Solutions.IapDesktop.Extensions.Rdp.Services.Tunnel;
 using Google.Solutions.IapTunneling.Iap;
+using Microsoft.Win32;
 using Moq;
+using Newtonsoft.Json.Linq;
 using NUnit.Framework;
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Security.Cryptography.X509Certificates;
 using System.Threading.Tasks;
 
@@ -40,6 +48,33 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Test.Services.Tunnel
     [Category("SecureConnect")]
     public class TestTunnelServiceWithMtls : FixtureBase
     {
+        private const string TestKeyPath = @"Software\Google\__Test";
+        private ApplicationSettingsRepository applicationSettingsRepository;
+
+        [SetUp]
+        public void SetUp()
+        {
+            var hkcu = RegistryKey.OpenBaseKey(
+                RegistryHive.CurrentUser,
+                RegistryView.Default);
+            hkcu.DeleteSubKeyTree(TestKeyPath, false);
+            this.applicationSettingsRepository = new ApplicationSettingsRepository(
+                hkcu.CreateSubKey(TestKeyPath));
+        }
+
+        private Task<SecureConnectEnrollment> GetEnrollmentAsync()
+        {
+            // Enable DCA.
+            var settings = this.applicationSettingsRepository.GetSettings();
+            settings.IsDeviceCertificateAuthenticationEnabled.BoolValue = true;
+            this.applicationSettingsRepository.SetSettings(settings);
+
+            return SecureConnectEnrollment.GetEnrollmentAsync(
+                new CertificateStoreAdapter(),
+                this.applicationSettingsRepository,
+                string.Empty);
+        }
+
         private IAuthorizationAdapter CreateAuthorizationAdapter(
             ICredential credential,
             IDeviceEnrollment enrollment)
@@ -54,60 +89,117 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Test.Services.Tunnel
             return adapter.Object;
         }
 
+        private static async Task<IList<LogEntry>> GetIapAccessLogsForPortAsync(ushort port)
+        {
+            var loggingService = TestProject.CreateService<LoggingService>();
+            var request = new ListLogEntriesRequest()
+            {
+                ResourceNames = new[] { "projects/" + TestProject.ProjectId },
+                Filter =
+                    "protoPayload.methodName=\"AuthorizeUser\"\n" +
+                    $"logName=\"projects/{TestProject.ProjectId}/logs/cloudaudit.googleapis.com%2Fdata_access\"\n" +
+                    $"protoPayload.requestMetadata.destinationAttributes.port=\"{port}\"",
+                OrderBy = "timestamp desc"
+            };
+
+            // Logs take some time to show up, so retry a few times.
+            for (int retry = 0; retry < 30; retry++)
+            {
+                var entries = await loggingService.Entries.List(request).ExecuteAsync();
+
+                if (entries.Entries.Any())
+                {
+                    return entries.Entries;
+                }
+
+                await Task.Delay(1000);
+            }
+
+            return new List<LogEntry>();
+        }
+
+        [Test]
+        public async Task WhenDeviceEnrolled_ThenAuditLogIndicatesDevice(
+            [WindowsInstance] ResourceTask<InstanceLocator> testInstance)
+        {
+            var service = new TunnelService(CreateAuthorizationAdapter(
+                TestProject.GetSecureConnectCredential(),
+                await GetEnrollmentAsync()));
+
+            // Probe a random port so that we have something unique to look for
+            // in the audit log.
+
+            var randomPort = (ushort)new Random().Next(10000, 50000);
+            var destination = new TunnelDestination(
+                await testInstance,
+                randomPort);
+
+            using (var tunnel = await service.CreateTunnelAsync(
+                destination,
+                new SameProcessRelayPolicy()))
+            {
+                Assert.AreEqual(destination, tunnel.Destination);
+                Assert.IsTrue(tunnel.IsMutualTlsEnabled);
+
+                // The probe will fail, but it will leave a trace.
+                AssertEx.ThrowsAggregateException<UnauthorizedException>(
+                    () => tunnel.Probe(TimeSpan.FromMilliseconds(500)).Wait());
+            }
+
+            var logs = await GetIapAccessLogsForPortAsync(randomPort);
+            Assert.IsTrue(logs.Any(), "data access log emitted");
+
+            var metadata = (JToken)logs.First().ProtoPayload["metadata"];
+            Assert.AreNotEqual(
+                "Unknown",
+                metadata.Value<string>("device_state"));
+            CollectionAssert.Contains(
+                new[] { "Normal", "Cross Organization" }, 
+                metadata.Value<string>("device_state"));
+        }
+
         [Test]
         public async Task WhenUsingExpiredClientCertificate_ThenProbeThrowsUnauthorizedException(
-            [WindowsInstance] ResourceTask<InstanceLocator> testInstance,
-            [Credential(Role = PredefinedRole.IapTunnelUser)] ResourceTask<ICredential> credential)
+            [WindowsInstance] ResourceTask<InstanceLocator> testInstance)
         {
-            var enrollment = new Mock<IDeviceEnrollment>();
-            enrollment.SetupGet(e => e.State).Returns(DeviceEnrollmentState.Enrolled);
-            enrollment.SetupGet(e => e.Certificate).Returns(ExpiredCertitficate);
-
             var service = new TunnelService(CreateAuthorizationAdapter(
-                await credential,
-                enrollment.Object));
+                TestProject.GetSecureConnectCredential(),
+                await GetEnrollmentAsync()));
 
             var destination = new TunnelDestination(
                 await testInstance,
                 3389);
 
-            var tunnel = await service.CreateTunnelAsync(
+            using (var tunnel = await service.CreateTunnelAsync(
                 destination,
-                new SameProcessRelayPolicy());
-
-            Assert.IsTrue(tunnel.IsMutualTlsEnabled);
-            AssertEx.ThrowsAggregateException<UnauthorizedException>(
-                () => tunnel.Probe(TimeSpan.FromSeconds(20)).Wait());
-
-            tunnel.Close();
+                new SameProcessRelayPolicy()))
+            {
+                Assert.IsTrue(tunnel.IsMutualTlsEnabled);
+                AssertEx.ThrowsAggregateException<UnauthorizedException>(
+                    () => tunnel.Probe(TimeSpan.FromSeconds(20)).Wait());
+            }
         }
 
         [Test]
         public async Task WhenUsingClientCertificateWithWrongSubject_ThenProbeThrowsUnauthorizedException(
-            [WindowsInstance] ResourceTask<InstanceLocator> testInstance,
-            [Credential(Role = PredefinedRole.IapTunnelUser)] ResourceTask<ICredential> credential)
+            [WindowsInstance] ResourceTask<InstanceLocator> testInstance)
         {
-            var enrollment = new Mock<IDeviceEnrollment>();
-            enrollment.SetupGet(e => e.State).Returns(DeviceEnrollmentState.Enrolled);
-            enrollment.SetupGet(e => e.Certificate).Returns(CertitficateWithWrongSubject);
-
             var service = new TunnelService(CreateAuthorizationAdapter(
-                await credential,
-                enrollment.Object));
+                TestProject.GetSecureConnectCredential(),
+                await GetEnrollmentAsync()));
 
             var destination = new TunnelDestination(
                 await testInstance,
                 3389);
 
-            var tunnel = await service.CreateTunnelAsync(
+            using (var tunnel = await service.CreateTunnelAsync(
                 destination,
-                new SameProcessRelayPolicy());
-
-            Assert.IsTrue(tunnel.IsMutualTlsEnabled);
-            AssertEx.ThrowsAggregateException<UnauthorizedException>(
-                () => tunnel.Probe(TimeSpan.FromSeconds(20)).Wait());
-
-            tunnel.Close();
+                new SameProcessRelayPolicy()))
+            {
+                Assert.IsTrue(tunnel.IsMutualTlsEnabled);
+                AssertEx.ThrowsAggregateException<UnauthorizedException>(
+                    () => tunnel.Probe(TimeSpan.FromSeconds(20)).Wait());
+            }
         }
 
         //

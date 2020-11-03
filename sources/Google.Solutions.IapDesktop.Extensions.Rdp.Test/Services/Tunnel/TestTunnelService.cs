@@ -66,15 +66,16 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Test.Services.Tunnel
                 await testInstance,
                 3389);
 
-            var tunnel = await service.CreateTunnelAsync(
+            using (var tunnel = await service.CreateTunnelAsync(
                 destination,
-                new SameProcessRelayPolicy());
+                new SameProcessRelayPolicy()))
+            {
 
-            Assert.AreEqual(destination, tunnel.Destination);
-            Assert.IsFalse(tunnel.IsMutualTlsEnabled);
+                Assert.AreEqual(destination, tunnel.Destination);
+                Assert.IsFalse(tunnel.IsMutualTlsEnabled);
 
-            await tunnel.Probe(TimeSpan.FromSeconds(20));
-            tunnel.Close();
+                await tunnel.Probe(TimeSpan.FromSeconds(20));
+            }
         }
 
         [Test]
@@ -91,16 +92,15 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Test.Services.Tunnel
                     "nonexistinginstance"),
                 3389);
 
-            var tunnel = await service.CreateTunnelAsync(
+            using (var tunnel = await service.CreateTunnelAsync(
                 destination,
-                new SameProcessRelayPolicy());
+                new SameProcessRelayPolicy()))
+            {
+                Assert.AreEqual(destination, tunnel.Destination);
 
-            Assert.AreEqual(destination, tunnel.Destination);
-
-            AssertEx.ThrowsAggregateException<UnauthorizedException>(
-                () => tunnel.Probe(TimeSpan.FromSeconds(20)).Wait());
-
-            tunnel.Close();
+                AssertEx.ThrowsAggregateException<UnauthorizedException>(
+                    () => tunnel.Probe(TimeSpan.FromSeconds(20)).Wait());
+            }
         }
 
         [Test]
@@ -115,16 +115,15 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Test.Services.Tunnel
                 await testInstance,
                 3389);
 
-            var tunnel = await service.CreateTunnelAsync(
+            using (var tunnel = await service.CreateTunnelAsync(
                 destination,
-                new SameProcessRelayPolicy());
+                new SameProcessRelayPolicy()))
+            {
+                Assert.AreEqual(destination, tunnel.Destination);
 
-            Assert.AreEqual(destination, tunnel.Destination);
-
-            AssertEx.ThrowsAggregateException<UnauthorizedException>(
-                () => tunnel.Probe(TimeSpan.FromSeconds(20)).Wait());
-
-            tunnel.Close();
+                AssertEx.ThrowsAggregateException<UnauthorizedException>(
+                    () => tunnel.Probe(TimeSpan.FromSeconds(20)).Wait());
+            }
         }
 
         [Test]
@@ -139,20 +138,19 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Test.Services.Tunnel
                 await testInstance,
                 3389);
 
-            var tunnel = await service.CreateTunnelAsync(
+            using (var tunnel = await service.CreateTunnelAsync(
                 destination,
-                new DenyAllPolicy());
+                new DenyAllPolicy()))
+            {
+                // The Probe should still succeed.
+                await tunnel.Probe(TimeSpan.FromSeconds(20));
 
-            // The Probe should still succeed.
-            await tunnel.Probe(TimeSpan.FromSeconds(20));
-
-            // Trying to send ot receive anything should cause a connection reset.
-            var socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
-            socket.Connect(new IPEndPoint(IPAddress.Loopback, tunnel.LocalPort));
-            socket.ReceiveTimeout = 100;
-            Assert.AreEqual(0, socket.Receive(new byte[1]));
-
-            tunnel.Close();
+                // Trying to send ot receive anything should cause a connection reset.
+                var socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
+                socket.Connect(new IPEndPoint(IPAddress.Loopback, tunnel.LocalPort));
+                socket.ReceiveTimeout = 100;
+                Assert.AreEqual(0, socket.Receive(new byte[1]));
+            }
         }
 
         private class DenyAllPolicy : ISshRelayPolicy
