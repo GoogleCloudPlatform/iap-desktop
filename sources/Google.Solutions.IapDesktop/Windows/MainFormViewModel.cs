@@ -22,12 +22,13 @@
 using Google.Solutions.CloudIap;
 using Google.Solutions.Common.Auth;
 using Google.Solutions.IapDesktop.Application.ObjectModel;
+using Google.Solutions.IapDesktop.Application.Services.Adapters;
 using Google.Solutions.IapDesktop.Application.Services.Integration;
-using Google.Solutions.IapDesktop.Application.Services.Persistence;
+using Google.Solutions.IapDesktop.Application.Services.SecureConnect;
 using Google.Solutions.IapDesktop.Application.Services.Settings;
-using Google.Solutions.IapDesktop.Application.Util;
 using Google.Solutions.IapTunneling.Iap;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -38,19 +39,24 @@ namespace Google.Solutions.IapDesktop.Windows
     internal class MainFormViewModel : ViewModelBase
     {
         private readonly AuthSettingsRepository authSettings;
+        private readonly ApplicationSettingsRepository applicationSettings;
 
         // NB. This list is only access from the UI thread, so no locking required.
         private readonly LinkedList<BackgroundJob> backgroundJobs
             = new LinkedList<BackgroundJob>();
 
         private bool isBackgroundJobStatusVisible = false;
-        private string userEmail = null;
+        private string signInState = null;
+        private string deviceState = null;
+        private bool isDeviceStateVisible = false;
 
         public MainFormViewModel(
             Control view,
+            ApplicationSettingsRepository applicationSettings,
             AuthSettingsRepository authSettings)
         {
             this.View = view;
+            this.applicationSettings = applicationSettings;
             this.authSettings = authSettings;
         }
 
@@ -91,12 +97,32 @@ namespace Google.Solutions.IapDesktop.Windows
             }
         }
 
-        public string UserEmail
+        public string SignInStateCaption
         {
-            get => this.userEmail;
+            get => this.signInState;
             set
             {
-                this.userEmail = value;
+                this.signInState = value;
+                RaisePropertyChange();
+            }
+        }
+
+        public string DeviceStateCaption
+        {
+            get => this.deviceState;
+            set
+            {
+                this.deviceState = value;
+                RaisePropertyChange();
+            }
+        }
+
+        public bool IsDeviceStateVisible
+        {
+            get => this.isDeviceStateVisible;
+            set
+            {
+                this.isDeviceStateVisible = value;
                 RaisePropertyChange();
             }
         }
@@ -122,36 +148,79 @@ namespace Google.Solutions.IapDesktop.Windows
             }
         }
 
-
         //---------------------------------------------------------------------
         // Authorization actions.
         //---------------------------------------------------------------------
 
         public IAuthorization Authorization { get; private set; }
+        public IDeviceEnrollment DeviceEnrollment { get; private set; }
 
         public void Authorize()
         {
+            Debug.Assert(this.Authorization == null);
+            Debug.Assert(this.DeviceEnrollment == null);
+
+            //
+            // Get the user authorization, either by using stored
+            // credentials or by initiating an OAuth authorization flow.
+            //
             this.Authorization = AuthorizeDialog.Authorize(
                 (Control)this.View,
                 OAuthClient.Secrets,
                 new[] { IapTunnelingEndpoint.RequiredScope },
                 this.authSettings);
+            if (this.Authorization == null)
+            {
+                // Aborted.
+                return;
+            }
 
-            this.UserEmail = this.Authorization?.Email;
+            //
+            // Determine enrollment state of this device.
+            //
+
+            // TODO: Run this asynchronously.
+            this.DeviceEnrollment = SecureConnectEnrollment.GetEnrollmentAsync(
+                new CertificateStoreAdapter(),
+                this.applicationSettings,
+                this.Authorization.UserInfo.Subject).Result;
+        
+            this.SignInStateCaption = this.Authorization.Email;
+            this.DeviceStateCaption = "Secure Connect";
+            this.IsDeviceStateVisible = this.DeviceEnrollment.State != DeviceEnrollmentState.Disabled;
+
+            Debug.Assert(this.SignInStateCaption!= null);
+            Debug.Assert(this.DeviceEnrollment != null);
         }
 
         public async Task ReauthorizeAsync(CancellationToken token)
         {
+            Debug.Assert(this.Authorization != null);
+            Debug.Assert(this.DeviceEnrollment != null);
+
+            // Reauthorize, this might cause another OAuth code flow.
             await this.Authorization.ReauthorizeAsync(token)
                 .ConfigureAwait(true);
 
-            this.UserEmail = this.Authorization.Email;
+            // Refresh enrollment info as the user might have switched identities.
+            await this.DeviceEnrollment
+                .RefreshAsync(this.Authorization.UserInfo.Subject)
+                .ConfigureAwait(true);
+
+            this.SignInStateCaption = this.Authorization.Email;
         }
 
         public Task RevokeAuthorizationAsync()
         {
+            Debug.Assert(this.Authorization != null);
+            Debug.Assert(this.DeviceEnrollment != null);
+
             return this.Authorization.RevokeAsync();
         }
+
+        public bool IsAuthorized =>
+            this.Authorization != null &&
+            this.DeviceEnrollment != null;
 
         //---------------------------------------------------------------------
         // Helper classes.

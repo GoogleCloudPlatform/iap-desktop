@@ -52,6 +52,10 @@ namespace Google.Solutions.IapDesktop.Application.Views
             "Creating a firewall rule for Cloud IAP",
             "https://cloud.google.com/iap/docs/using-tcp-forwarding#create-firewall-rule");
 
+        public static IHelpTopic SecureConnectDcaOverview = new HelpTopic(
+            "Device certiticate authentication",
+            "https://cloud.google.com/endpoint-verification/docs/overview");
+
         private class HelpTopic : IHelpTopic
         {
             public string Title { get; }

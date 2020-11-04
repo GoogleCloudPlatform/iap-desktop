@@ -63,6 +63,8 @@ namespace Google.Solutions.IapDesktop.Application.Services.Settings
 
         public RegistrySecureStringSetting ProxyPassword { get; private set; }
 
+        public RegistryBoolSetting IsDeviceCertificateAuthenticationEnabled { get; private set; }
+
         public IEnumerable<ISetting> Settings => new ISetting[]
         {
             this.IsMainWindowMaximized,
@@ -73,7 +75,8 @@ namespace Google.Solutions.IapDesktop.Application.Services.Settings
             this.IsUpdateCheckEnabled,
             this.ProxyUrl,
             this.ProxyUsername,
-            this.ProxyPassword
+            this.ProxyPassword,
+            this.IsDeviceCertificateAuthenticationEnabled
         };
 
         private ApplicationSettings()
@@ -153,7 +156,14 @@ namespace Google.Solutions.IapDesktop.Application.Services.Settings
                     null,
                     null,
                     registryKey,
-                    DataProtectionScope.CurrentUser)
+                    DataProtectionScope.CurrentUser),
+                IsDeviceCertificateAuthenticationEnabled = RegistryBoolSetting.FromKey(
+                    "IsDeviceCertificateAuthenticationEnabled",
+                    "IsDeviceCertificateAuthenticationEnabled",
+                    null,
+                    null,
+                    false,
+                    registryKey),
             };
         }
     }

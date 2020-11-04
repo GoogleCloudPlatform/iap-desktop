@@ -122,6 +122,10 @@
       <Project>{fb4c6f4d-32b1-4b0b-ba79-fd47fc4d7912}</Project>
       <Name>Google.Solutions.Common</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Google.Solutions.IapDesktop.Application\Google.Solutions.IapDesktop.Application.csproj">
+      <Project>{842B003E-6EEB-429D-A3A1-53B4E642E83B}</Project>
+      <Name>Google.Solutions.IapDesktop.Application</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Google.Solutions.IapTunneling\Google.Solutions.IapTunneling.csproj">
       <Project>{d9493479-1751-402b-880f-60ed33ebb885}</Project>
       <Name>Google.Solutions.IapTunneling</Name>

@@ -97,6 +97,7 @@
     <Compile Include="ObjectModel\TestCommandContainerForContextMenu.cs" />
     <Compile Include="ObjectModel\TestModelCachingViewModelBase.cs" />
     <Compile Include="ObjectModel\TestServiceAttribute.cs" />
+    <Compile Include="Services\Adapters\TestCertificateStoreAdapter.cs" />
     <Compile Include="Services\Adapters\TestComputeEngineAdapter.cs" />
     <Compile Include="Services\Adapters\TestGithubAdapter.cs" />
     <Compile Include="FixtureBase.cs" />
@@ -117,6 +118,7 @@
     <Compile Include="Settings\TestRegistryStringSetting.cs" />
     <Compile Include="Settings\TestSettingsCollectionExtensions.cs" />
     <Compile Include="Util\TestByteSizeFormatter.cs" />
+    <Compile Include="Services\SecureConnect\TestSecureConnectEnrollment.cs" />
     <Compile Include="Util\TestHtmlClipboardFormat.cs" />
     <Compile Include="Util\TestLeastRecentlyUsedCache.cs" />
     <Compile Include="Util\TestRangeObservableCollection.cs" />
@@ -124,6 +126,7 @@
     <Compile Include="Services\Integration\TestJobService.cs" />
     <Compile Include="ObjectModel\TestServiceRegistry.cs" />
     <Compile Include="Util\TestIapRdpUrl.cs" />
+    <Compile Include="Views\Authentication\TestDeviceFlyoutViewModel.cs" />
     <Compile Include="Views\Authentication\TestUserFlyoutViewModel.cs" />
     <Compile Include="Views\Options\TestNetworkOptionsViewModel.cs" />
     <Compile Include="Views\Options\TestGeneralOptionsViewModel.cs" />

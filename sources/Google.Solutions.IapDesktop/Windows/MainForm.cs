@@ -105,6 +105,7 @@ namespace Google.Solutions.IapDesktop.Windows
 
             this.viewModel = new MainFormViewModel(
                 this,
+                bootstrappingServiceProvider.GetService<ApplicationSettingsRepository>(),
                 bootstrappingServiceProvider.GetService<AuthSettingsRepository>());
 
             // Status bar.
@@ -123,10 +124,20 @@ namespace Google.Solutions.IapDesktop.Windows
                 this.viewModel,
                 m => m.BackgroundJobStatus,
                 this.components);
-            this.toolStripEmailButton.BindProperty(
+            this.toolStripSignInStateButton.BindProperty(
                 c => c.Text,
                 this.viewModel,
-                m => m.UserEmail,
+                m => m.SignInStateCaption,
+                this.components);
+            this.toolStripDeviceStateButton.BindProperty(
+                c => c.Text,
+                this.viewModel,
+                m => m.DeviceStateCaption,
+                this.components);
+            this.toolStripDeviceStateButton.BindProperty(
+                c => c.Visible,
+                this.viewModel,
+                m => m.IsDeviceStateVisible,
                 this.components);
         }
 
@@ -180,6 +191,7 @@ namespace Google.Solutions.IapDesktop.Windows
             {
                 try
                 {
+                    // NB. If the user cancels, no exception is thrown.
                     this.viewModel.Authorize();
                 }
                 catch (Exception e)
@@ -220,7 +232,7 @@ namespace Google.Solutions.IapDesktop.Windows
                     { }
                 }
 
-                if (this.viewModel.Authorization == null)
+                if (!this.viewModel.IsAuthorized)
                 {
                     // Not authorized, either because the user cancelled or an 
                     // error occured -> close.
@@ -515,11 +527,25 @@ namespace Google.Solutions.IapDesktop.Windows
                     ContentAlignment.TopLeft);
         }
 
+        private void toolStripDeviceStateButton_Click(object sender, EventArgs e)
+        {
+            var button = (ToolStripItem)sender;
+            var screenPosition = new Rectangle(
+                this.statusStrip.PointToScreen(button.Bounds.Location),
+                button.Size);
+
+            new DeviceFlyoutWindow(new DeviceFlyoutViewModel(this, this.DeviceEnrollment)).Show(
+                this,
+                screenPosition,
+                ContentAlignment.TopLeft);
+        }
+
         //---------------------------------------------------------------------
         // IAuthorizationAdapter.
         //---------------------------------------------------------------------
 
         public IAuthorization Authorization => this.viewModel.Authorization;
+        public IDeviceEnrollment DeviceEnrollment => this.viewModel.DeviceEnrollment;
 
         public Task ReauthorizeAsync(CancellationToken token)
             => this.viewModel.ReauthorizeAsync(token);

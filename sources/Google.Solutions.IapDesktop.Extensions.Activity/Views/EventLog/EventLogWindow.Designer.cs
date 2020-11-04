@@ -61,6 +61,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Views.EventLog
             this.lifecycleEventsDropDown = new System.Windows.Forms.ToolStripDropDownButton();
             this.includeLifecycleEventsButton = new System.Windows.Forms.ToolStripMenuItem();
             this.includeSystemEventsButton = new System.Windows.Forms.ToolStripMenuItem();
+            this.includeAccessEventsButton = new System.Windows.Forms.ToolStripMenuItem();
             this.timeFrameComboBox = new System.Windows.Forms.ToolStripComboBox();
             this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
             this.openLogsButton = new System.Windows.Forms.ToolStripButton();
@@ -70,7 +71,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Views.EventLog
             this.severityColumn = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.descriptionColumn = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.principalColumn = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-            this.includeAccessEventsButton = new System.Windows.Forms.ToolStripMenuItem();
+            this.deviceColumn = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.deviceStateColumn = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.accessLevelsColumn = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.contextMenuStrip.SuspendLayout();
             this.toolStrip.SuspendLayout();
             this.SuspendLayout();
@@ -144,15 +147,22 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Views.EventLog
             // 
             this.includeLifecycleEventsButton.CheckOnClick = true;
             this.includeLifecycleEventsButton.Name = "includeLifecycleEventsButton";
-            this.includeLifecycleEventsButton.Size = new System.Drawing.Size(180, 22);
+            this.includeLifecycleEventsButton.Size = new System.Drawing.Size(175, 22);
             this.includeLifecycleEventsButton.Text = "VM lifecycle events";
             // 
             // includeSystemEventsButton
             // 
             this.includeSystemEventsButton.CheckOnClick = true;
             this.includeSystemEventsButton.Name = "includeSystemEventsButton";
-            this.includeSystemEventsButton.Size = new System.Drawing.Size(180, 22);
+            this.includeSystemEventsButton.Size = new System.Drawing.Size(175, 22);
             this.includeSystemEventsButton.Text = "VM system events";
+            // 
+            // includeAccessEventsButton
+            // 
+            this.includeAccessEventsButton.CheckOnClick = true;
+            this.includeAccessEventsButton.Name = "includeAccessEventsButton";
+            this.includeAccessEventsButton.Size = new System.Drawing.Size(175, 22);
+            this.includeAccessEventsButton.Text = "VM access events";
             // 
             // timeFrameComboBox
             // 
@@ -183,7 +193,10 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Views.EventLog
             this.instanceNameColumn,
             this.severityColumn,
             this.descriptionColumn,
-            this.principalColumn});
+            this.principalColumn,
+            this.deviceColumn,
+            this.deviceStateColumn,
+            this.accessLevelsColumn});
             this.list.ContextMenuStrip = this.contextMenuStrip;
             this.list.Dock = System.Windows.Forms.DockStyle.Fill;
             this.list.FullRowSelect = true;
@@ -218,19 +231,26 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Views.EventLog
             // descriptionColumn
             // 
             this.descriptionColumn.Text = "Description";
-            this.descriptionColumn.Width = 300;
+            this.descriptionColumn.Width = 350;
             // 
             // principalColumn
             // 
             this.principalColumn.Text = "User";
-            this.principalColumn.Width = 152;
+            this.principalColumn.Width = 150;
             // 
-            // includeAccessEventsButton
+            // deviceColumn
             // 
-            this.includeAccessEventsButton.CheckOnClick = true;
-            this.includeAccessEventsButton.Name = "includeAccessEventsButton";
-            this.includeAccessEventsButton.Size = new System.Drawing.Size(180, 22);
-            this.includeAccessEventsButton.Text = "VM access events";
+            this.deviceColumn.Text = "Device";
+            // 
+            // deviceStateColumn
+            // 
+            this.deviceStateColumn.Text = "Device state";
+            this.deviceStateColumn.Width = 80;
+            // 
+            // accessLevelsColumn
+            // 
+            this.accessLevelsColumn.Text = "Access levels";
+            this.accessLevelsColumn.Width = 25;
             // 
             // EventLogWindow
             // 
@@ -271,5 +291,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Views.EventLog
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator2;
         private System.Windows.Forms.ToolStripButton openLogsButton;
         private System.Windows.Forms.ToolStripMenuItem includeAccessEventsButton;
+        private System.Windows.Forms.ColumnHeader deviceColumn;
+        private System.Windows.Forms.ColumnHeader deviceStateColumn;
+        private System.Windows.Forms.ColumnHeader accessLevelsColumn;
     }
 }

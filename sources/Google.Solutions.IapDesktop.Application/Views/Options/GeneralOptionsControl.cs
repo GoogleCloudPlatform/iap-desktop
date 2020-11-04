@@ -43,12 +43,17 @@ namespace Google.Solutions.IapDesktop.Application.Views.Options
                 viewModel,
                 m => m.IsUpdateCheckEnabled,
                 this.Container);
+            this.enableDcaCheckBox.BindProperty(
+                c => c.Checked,
+                viewModel,
+                m => m.IsDeviceCertificateAuthenticationEnabled,
+                this.Container);
             this.lastCheckLabel.BindProperty(
                 c => c.Text,
                 viewModel,
                 m => m.LastUpdateCheck,
                 this.Container);
-            this.enableBrowserIntegrationCheclBox.BindProperty(
+            this.enableBrowserIntegrationCheckBox.BindProperty(
                 c => c.Checked,
                 viewModel,
                 m => m.IsBrowserIntegrationEnabled,
@@ -57,5 +62,8 @@ namespace Google.Solutions.IapDesktop.Application.Views.Options
 
         private void browserIntegrationLink_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
             => this.viewModel.OpenBrowserIntegrationDocs();
+
+        private void secureConnectLink_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+            => this.viewModel.OpenSecureConnectDcaOverviewDocs();
     }
 }

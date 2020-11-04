@@ -29,6 +29,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Net.WebSockets;
+using System.Security.AccessControl;
+using System.Security.Cryptography.X509Certificates;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -39,7 +41,8 @@ namespace Google.Solutions.IapTunneling.Iap
     /// </summary>
     public class IapTunnelingEndpoint : ISshRelayEndpoint
     {
-        private const string BaseUri = "wss://tunnel.cloudproxy.app/v4/";
+        private const string TlsBaseUri = "wss://tunnel.cloudproxy.app/v4/";
+        private const string MtlsBaseUri = "wss://mtls.tunnel.cloudproxy.app/v4/";
         private const string SubprotocolName = "relay.tunnel.cloudproxy.app";
         private const string Origin = "bot:iap-tunneler";
         public const string DefaultNetworkInterface = "nic0";
@@ -55,31 +58,15 @@ namespace Google.Solutions.IapTunneling.Iap
 
         public UserAgent UserAgent { get; }
 
+        public bool IsMutualTlsEnabled => this.clientCertificate != null;
+
         private readonly ICredential credential;
 
-        public IapTunnelingEndpoint(
-            ICredential credential,
-            InstanceLocator vmInstance,
-            ushort port,
-            string nic,
-            UserAgent userAgent)
-        {
-            this.credential = credential;
-            this.VmInstance = vmInstance;
-            this.Port = port;
-            this.Interface = nic;
-            this.UserAgent = userAgent;
-        }
+        private readonly X509Certificate2 clientCertificate;
 
-        public Task<INetworkStream> ConnectAsync(CancellationToken token)
-        {
-            return ReconnectAsync(null, 0, token);
-        }
-
-        public async Task<INetworkStream> ReconnectAsync(
+        private Uri CreateUri(
             string sid,
-            ulong ack,
-            CancellationToken token)
+            ulong ack)
         {
             var urlParams = new Dictionary<string, string>
             {
@@ -101,12 +88,51 @@ namespace Google.Solutions.IapTunneling.Iap
                 "&",
                 urlParams.Select(kvp => kvp.Key + "=" + WebUtility.UrlEncode(kvp.Value)));
 
-            var uri = new Uri(
-                BaseUri +
+            return new Uri(
+                (this.clientCertificate == null ? TlsBaseUri : MtlsBaseUri) +
                 (sid == null ? "connect" : "reconnect") +
                 "?" +
                 queryString);
+        }
 
+        public IapTunnelingEndpoint(
+            ICredential credential,
+            InstanceLocator vmInstance,
+            ushort port,
+            string nic,
+            UserAgent userAgent,
+            X509Certificate2 clientCertificate)
+        {
+            this.credential = credential;
+            this.VmInstance = vmInstance;
+            this.Port = port;
+            this.Interface = nic;
+            this.UserAgent = userAgent;
+            this.clientCertificate = clientCertificate;
+        }
+
+        public IapTunnelingEndpoint(
+            ICredential credential,
+            InstanceLocator vmInstance,
+            ushort port,
+            string nic,
+            UserAgent userAgent)
+            : this(credential, vmInstance, port, nic, userAgent, null)
+        { }
+
+        public Task<INetworkStream> ConnectAsync(CancellationToken token)
+        {
+            return ReconnectAsync(null, 0, token);
+        }
+
+        public async Task<INetworkStream> ReconnectAsync(
+            string sid,
+            ulong ack,
+            CancellationToken token)
+        {
+            //
+            // Configure web socket.
+            //
             var accessToken = await this.credential.GetAccessTokenForRequestAsync(
                 null,
                 token).ConfigureAwait(false);
@@ -128,7 +154,14 @@ namespace Google.Solutions.IapTunneling.Iap
                 TraceSources.Compute.TraceWarning("Failed to set User-Agent header");
             }
 
-            await websocket.ConnectAsync(uri, token).ConfigureAwait(false);
+            if (this.clientCertificate != null)
+            {
+                websocket.Options.ClientCertificates.Add(this.clientCertificate);
+            }
+
+            await websocket.ConnectAsync(
+                CreateUri(sid, ack),
+                token).ConfigureAwait(false);
 
             return new WebSocketStream(websocket, (int)DataMessage.MaxTotalLength);
         }

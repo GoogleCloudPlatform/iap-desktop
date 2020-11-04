@@ -31,21 +31,25 @@ using Moq;
 using NUnit.Framework;
 using System;
 using System.Net;
+using System.Net.Sockets;
 using System.Threading.Tasks;
 
 namespace Google.Solutions.IapDesktop.Extensions.Rdp.Test.Services.Tunnel
 {
     [TestFixture]
     [Category("IntegrationTest")]
-    public class TestTunnelService
+    public class TestTunnelService : FixtureBase
     {
-        private IAuthorizationAdapter CreateAuthorizationAdapter(ICredential credential)
+        private IAuthorizationAdapter CreateAuthorizationAdapter(
+            ICredential credential,
+            IDeviceEnrollment enrollment)
         {
             var authz = new Mock<IAuthorization>();
             authz.SetupGet(a => a.Credential).Returns(credential);
 
             var adapter = new Mock<IAuthorizationAdapter>();
             adapter.SetupGet(a => a.Authorization).Returns(authz.Object);
+            adapter.SetupGet(a => a.DeviceEnrollment).Returns(enrollment);
 
             return adapter.Object;
         }
@@ -56,26 +60,31 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Test.Services.Tunnel
             [Credential(Role = PredefinedRole.IapTunnelUser)] ResourceTask<ICredential> credential)
         {
             var service = new TunnelService(CreateAuthorizationAdapter(
-                await credential));
+                await credential,
+                null));
             var destination = new TunnelDestination(
                 await testInstance,
                 3389);
 
-            var tunnel = await service.CreateTunnelAsync(
+            using (var tunnel = await service.CreateTunnelAsync(
                 destination,
-                new SameProcessRelayPolicy());
+                new SameProcessRelayPolicy()))
+            {
 
-            Assert.AreEqual(destination, tunnel.Destination);
-            await tunnel.Probe(TimeSpan.FromSeconds(20));
-            tunnel.Close();
+                Assert.AreEqual(destination, tunnel.Destination);
+                Assert.IsFalse(tunnel.IsMutualTlsEnabled);
+
+                await tunnel.Probe(TimeSpan.FromSeconds(20));
+            }
         }
 
         [Test]
         public async Task WhenInstanceNotAvailable_ThenProbeFails(
-            [Credential(Role = PredefinedRole.ComputeViewer)] ResourceTask<ICredential> credential)
+            [Credential(Role = PredefinedRole.IapTunnelUser)] ResourceTask<ICredential> credential)
         {
             var service = new TunnelService(CreateAuthorizationAdapter(
-                await credential));
+                await credential,
+                null));
             var destination = new TunnelDestination(
                 new InstanceLocator(
                     TestProject.ProjectId,
@@ -83,16 +92,15 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Test.Services.Tunnel
                     "nonexistinginstance"),
                 3389);
 
-            var tunnel = await service.CreateTunnelAsync(
+            using (var tunnel = await service.CreateTunnelAsync(
                 destination,
-                new SameProcessRelayPolicy());
+                new SameProcessRelayPolicy()))
+            {
+                Assert.AreEqual(destination, tunnel.Destination);
 
-            Assert.AreEqual(destination, tunnel.Destination);
-
-            AssertEx.ThrowsAggregateException<UnauthorizedException>(
-                () => tunnel.Probe(TimeSpan.FromSeconds(20)).Wait());
-
-            tunnel.Close();
+                AssertEx.ThrowsAggregateException<UnauthorizedException>(
+                    () => tunnel.Probe(TimeSpan.FromSeconds(20)).Wait());
+            }
         }
 
         [Test]
@@ -101,42 +109,48 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Test.Services.Tunnel
             [Credential(Role = PredefinedRole.ComputeViewer)] ResourceTask<ICredential> credential)
         {
             var service = new TunnelService(CreateAuthorizationAdapter(
-                await credential));
+                await credential,
+                null));
             var destination = new TunnelDestination(
                 await testInstance,
                 3389);
 
-            var tunnel = await service.CreateTunnelAsync(
+            using (var tunnel = await service.CreateTunnelAsync(
                 destination,
-                new SameProcessRelayPolicy());
+                new SameProcessRelayPolicy()))
+            {
+                Assert.AreEqual(destination, tunnel.Destination);
 
-            Assert.AreEqual(destination, tunnel.Destination);
-
-            AssertEx.ThrowsAggregateException<UnauthorizedException>(
-                () => tunnel.Probe(TimeSpan.FromSeconds(20)).Wait());
-
-            tunnel.Close();
+                AssertEx.ThrowsAggregateException<UnauthorizedException>(
+                    () => tunnel.Probe(TimeSpan.FromSeconds(20)).Wait());
+            }
         }
 
         [Test]
-        public async Task WhenInstanceAvailableButRelayPolicyFails_ThenXxxx(
+        public async Task WhenInstanceAvailableButRelayPolicyFails_ThenProbeThrowsUnauthorizedException(
             [WindowsInstance] ResourceTask<InstanceLocator> testInstance,
-            [Credential(Role = PredefinedRole.ComputeViewer)] ResourceTask<ICredential> credential)
+            [Credential(Role = PredefinedRole.IapTunnelUser)] ResourceTask<ICredential> credential)
         {
             var service = new TunnelService(CreateAuthorizationAdapter(
-                await credential));
+                await credential,
+                null));
             var destination = new TunnelDestination(
                 await testInstance,
                 3389);
 
-            var tunnel = await service.CreateTunnelAsync(
+            using (var tunnel = await service.CreateTunnelAsync(
                 destination,
-                new DenyAllPolicy());
+                new DenyAllPolicy()))
+            {
+                // The Probe should still succeed.
+                await tunnel.Probe(TimeSpan.FromSeconds(20));
 
-            AssertEx.ThrowsAggregateException<UnauthorizedException>(
-                () => tunnel.Probe(TimeSpan.FromSeconds(20)).Wait());
-
-            tunnel.Close();
+                // Trying to send ot receive anything should cause a connection reset.
+                var socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
+                socket.Connect(new IPEndPoint(IPAddress.Loopback, tunnel.LocalPort));
+                socket.ReceiveTimeout = 100;
+                Assert.AreEqual(0, socket.Receive(new byte[1]));
+            }
         }
 
         private class DenyAllPolicy : ISshRelayPolicy

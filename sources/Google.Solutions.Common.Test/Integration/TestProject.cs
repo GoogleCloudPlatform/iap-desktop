@@ -27,7 +27,9 @@ using Google.Apis.IAMCredentials.v1;
 using Google.Apis.Services;
 using Google.Solutions.Common.Net;
 using System;
+using System.Linq;
 using System.Reflection;
+using System.Security.Cryptography.X509Certificates;
 
 namespace Google.Solutions.Common.Test.Integration
 {
@@ -55,6 +57,7 @@ namespace Google.Solutions.Common.Test.Integration
             // - Service Account User (to access Compute Engine Service account)
             // - IAP-secured Tunnel User
             // - Logs Viewer
+            // - Private Logs Viewer (for data access log)
             // - Project IAM Admin
             // - Service Account Token Creator
 
@@ -62,6 +65,47 @@ namespace Google.Solutions.Common.Test.Integration
             return credential.IsCreateScopedRequired
                 ? credential.CreateScoped(CloudPlatformScope)
                 : credential;
+        }
+
+        public static GoogleCredential GetSecureConnectCredential()
+        {
+            // This account must have:
+            // - Cloud Identity Premium
+            // - an associated device certiticate on the local machine
+
+            var credentialsPath = Environment.GetEnvironmentVariable("SECURECONNECT_CREDENTIALS");
+            if (string.IsNullOrEmpty(credentialsPath))
+            {
+                throw new ApplicationException(
+                    "SECURECONNECT_CREDENTIALS not set, needs to point to credentials " +
+                    "JSON of a SecureConnect-enabled user");
+            }
+
+            var credential = GoogleCredential.FromFile(credentialsPath);
+            return credential.IsCreateScopedRequired
+                ? credential.CreateScoped(CloudPlatformScope)
+                : credential;
+        }
+
+        public static X509Certificate2 GetDeviceCertificate()
+        {
+            var credentialsPath = Environment.GetEnvironmentVariable("SECURECONNECT_CERTIFICATE");
+            if (string.IsNullOrEmpty(credentialsPath))
+            {
+                throw new ApplicationException(
+                    "SECURECONNECT_CERTIFICATE not set, needs to point to a PFX " +
+                    "containing a SecureConnect device certificate");
+            }
+
+            var collection = new X509Certificate2Collection();
+            collection.Import(
+                credentialsPath, 
+                string.Empty, // No passphrase
+                X509KeyStorageFlags.DefaultKeySet);
+            
+            return collection
+                .OfType<X509Certificate2>()
+                .First();
         }
 
         public static ComputeService CreateComputeService()

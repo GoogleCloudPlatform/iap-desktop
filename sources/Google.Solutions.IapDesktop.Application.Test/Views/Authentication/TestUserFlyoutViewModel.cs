@@ -28,7 +28,7 @@ using NUnit.Framework;
 namespace Google.Solutions.IapDesktop.Application.Test.Views.Authentication
 {
     [TestFixture]
-    public class TestUserFlyoutViewModel
+    public class TestUserFlyoutViewModel : FixtureBase
     {
         [Test]
         public void WhenUserInfoIsNull_ThenManagedByIsEmpty()
