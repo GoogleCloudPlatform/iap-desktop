@@ -70,11 +70,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services.Adapters
 
         public AuditLogAdapter(ICredential credential)
         {
-            this.service = new LoggingService(new BaseClientService.Initializer
-            {
-                HttpClientInitializer = credential,
-                ApplicationName = Globals.UserAgent.ToApplicationName()
-            });
+            this.service = new LoggingService(new ClientServiceInitializer(credential));
         }
 
         public AuditLogAdapter(IServiceProvider serviceProvider)

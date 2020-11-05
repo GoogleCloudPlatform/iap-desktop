@@ -60,11 +60,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.Adapters
         public ResourceManagerAdapter(ICredential credential)
         {
             this.service = new CloudResourceManagerService(
-                new BaseClientService.Initializer
-                {
-                    HttpClientInitializer = credential,
-                    ApplicationName = Globals.UserAgent.ToApplicationName()
-                });
+                new ClientServiceInitializer(credential));
         }
 
         public ResourceManagerAdapter(IAuthorizationAdapter authService)

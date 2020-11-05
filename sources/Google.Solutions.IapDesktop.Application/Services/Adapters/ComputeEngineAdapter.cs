@@ -117,11 +117,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.Adapters
 
         public ComputeEngineAdapter(ICredential credential)
         {
-            this.service = new ComputeService(new BaseClientService.Initializer
-            {
-                HttpClientInitializer = credential,
-                ApplicationName = Globals.UserAgent.ToApplicationName()
-            });
+            this.service = new ComputeService(new ClientServiceInitializer(credential));
         }
 
         public ComputeEngineAdapter(IAuthorizationAdapter authService)

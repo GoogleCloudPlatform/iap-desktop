@@ -111,6 +111,7 @@
     </Compile>
     <Compile Include="Services\Adapters\AdapterException.cs" />
     <Compile Include="Services\Adapters\CertificateStoreAdapter.cs" />
+    <Compile Include="Services\Adapters\ClientServiceInitializer.cs" />
     <Compile Include="Services\Adapters\ComputeEngineAdapter.cs" />
     <Compile Include="Services\Adapters\EmailAdapter.cs" />
     <Compile Include="Services\Adapters\GithubAdapter.cs" />

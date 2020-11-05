@@ -62,11 +62,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services.Adapters
 
         public StorageAdapter(ICredential credential)
         {
-            this.service = new StorageService(new BaseClientService.Initializer
-            {
-                HttpClientInitializer = credential,
-                ApplicationName = Globals.UserAgent.ToApplicationName()
-            });
+            this.service = new StorageService(new ClientServiceInitializer(credential));
         }
         public StorageAdapter(IServiceProvider serviceProvider)
             : this(serviceProvider.GetService<IAuthorizationAdapter>().Authorization.Credential)
