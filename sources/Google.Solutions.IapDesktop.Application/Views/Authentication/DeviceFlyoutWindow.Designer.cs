@@ -74,7 +74,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.Authentication
             this.enrollmentStateLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.enrollmentStateLabel.Location = new System.Drawing.Point(66, 11);
             this.enrollmentStateLabel.Name = "enrollmentStateLabel";
-            this.enrollmentStateLabel.Size = new System.Drawing.Size(155, 65);
+            this.enrollmentStateLabel.Size = new System.Drawing.Size(160, 65);
             this.enrollmentStateLabel.TabIndex = 3;
             this.enrollmentStateLabel.Text = " ";
             // 

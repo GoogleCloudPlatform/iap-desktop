@@ -29,7 +29,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.Authentication
 {
     public class DeviceFlyoutViewModel : ViewModelBase
     {
-        private const string ProductName = "Secure Connect Endpoint Verification";
+        private const string ProductName = "Endpoint Verification";
         private readonly IDeviceEnrollment enrollment;
 
         public bool IsDeviceEnrolledIconVisible { get; }
@@ -67,7 +67,8 @@ namespace Google.Solutions.IapDesktop.Application.Views.Authentication
 
                 case DeviceEnrollmentState.Enrolled:
                     this.EnrollmentStateDescription = 
-                        $"This computer is enrolled in {ProductName}";
+                        $"Computer is enrolled in {ProductName} and uses " + 
+                        "device certificate authentication";
                     this.IsDeviceEnrolledIconVisible = true;
                     this.IsDeviceNotEnrolledIconVisible = false;
                     this.IsDetailsLinkVisible = true;

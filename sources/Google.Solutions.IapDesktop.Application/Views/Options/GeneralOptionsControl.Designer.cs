@@ -60,10 +60,11 @@ namespace Google.Solutions.IapDesktop.Application.Views.Options
             this.linkIcon = new System.Windows.Forms.PictureBox();
             this.enableBrowserIntegrationCheckBox = new System.Windows.Forms.CheckBox();
             this.secureConnectBox = new System.Windows.Forms.GroupBox();
+            this.label1 = new System.Windows.Forms.Label();
             this.secureConnectLink = new System.Windows.Forms.LinkLabel();
             this.secureConnectIcon = new System.Windows.Forms.PictureBox();
             this.enableDcaCheckBox = new System.Windows.Forms.CheckBox();
-            this.label1 = new System.Windows.Forms.Label();
+            this.label2 = new System.Windows.Forms.Label();
             this.updateCheckBox.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.updateIcon)).BeginInit();
             this.browserIntegrationBox.SuspendLayout();
@@ -78,7 +79,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.Options
             this.updateCheckBox.Controls.Add(this.lastCheckLabel);
             this.updateCheckBox.Controls.Add(this.lastCheckHeaderLabel);
             this.updateCheckBox.Controls.Add(this.enableUpdateCheckBox);
-            this.updateCheckBox.Location = new System.Drawing.Point(4, 266);
+            this.updateCheckBox.Location = new System.Drawing.Point(4, 272);
             this.updateCheckBox.Name = "updateCheckBox";
             this.updateCheckBox.Size = new System.Drawing.Size(336, 83);
             this.updateCheckBox.TabIndex = 1;
@@ -128,7 +129,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.Options
             this.browserIntegrationBox.Controls.Add(this.enableBrowserIntegrationCheckBox);
             this.browserIntegrationBox.Location = new System.Drawing.Point(4, 3);
             this.browserIntegrationBox.Name = "browserIntegrationBox";
-            this.browserIntegrationBox.Size = new System.Drawing.Size(336, 99);
+            this.browserIntegrationBox.Size = new System.Drawing.Size(336, 92);
             this.browserIntegrationBox.TabIndex = 1;
             this.browserIntegrationBox.TabStop = false;
             this.browserIntegrationBox.Text = "Browser integration:";
@@ -136,7 +137,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.Options
             // browserIntegrationLink
             // 
             this.browserIntegrationLink.AutoSize = true;
-            this.browserIntegrationLink.Location = new System.Drawing.Point(74, 67);
+            this.browserIntegrationLink.Location = new System.Drawing.Point(74, 62);
             this.browserIntegrationLink.Name = "browserIntegrationLink";
             this.browserIntegrationLink.Size = new System.Drawing.Size(85, 13);
             this.browserIntegrationLink.TabIndex = 3;
@@ -166,21 +167,31 @@ namespace Google.Solutions.IapDesktop.Application.Views.Options
             // 
             // secureConnectBox
             // 
+            this.secureConnectBox.Controls.Add(this.label2);
             this.secureConnectBox.Controls.Add(this.label1);
             this.secureConnectBox.Controls.Add(this.secureConnectLink);
             this.secureConnectBox.Controls.Add(this.secureConnectIcon);
             this.secureConnectBox.Controls.Add(this.enableDcaCheckBox);
-            this.secureConnectBox.Location = new System.Drawing.Point(4, 113);
+            this.secureConnectBox.Location = new System.Drawing.Point(4, 101);
             this.secureConnectBox.Name = "secureConnectBox";
-            this.secureConnectBox.Size = new System.Drawing.Size(336, 141);
+            this.secureConnectBox.Size = new System.Drawing.Size(336, 164);
             this.secureConnectBox.TabIndex = 1;
             this.secureConnectBox.TabStop = false;
-            this.secureConnectBox.Text = "Secure Connect Endpoint Verification:";
+            this.secureConnectBox.Text = "Endpoint Verification:";
+            // 
+            // label1
+            // 
+            this.label1.AutoSize = true;
+            this.label1.Location = new System.Drawing.Point(74, 136);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(236, 13);
+            this.label1.TabIndex = 4;
+            this.label1.Text = "Changes take effect after restarting IAP Desktop";
             // 
             // secureConnectLink
             // 
             this.secureConnectLink.AutoSize = true;
-            this.secureConnectLink.Location = new System.Drawing.Point(74, 78);
+            this.secureConnectLink.Location = new System.Drawing.Point(73, 111);
             this.secureConnectLink.Name = "secureConnectLink";
             this.secureConnectLink.Size = new System.Drawing.Size(85, 13);
             this.secureConnectLink.TabIndex = 3;
@@ -203,20 +214,21 @@ namespace Google.Solutions.IapDesktop.Application.Views.Options
             this.enableDcaCheckBox.CheckAlign = System.Drawing.ContentAlignment.TopLeft;
             this.enableDcaCheckBox.Location = new System.Drawing.Point(58, 24);
             this.enableDcaCheckBox.Name = "enableDcaCheckBox";
-            this.enableDcaCheckBox.Size = new System.Drawing.Size(254, 43);
+            this.enableDcaCheckBox.Size = new System.Drawing.Size(242, 30);
             this.enableDcaCheckBox.TabIndex = 1;
-            this.enableDcaCheckBox.Text = "Automatically enable device certiticate \r\nauthentication when computer is detecte" +
-    "d to be \r\nenrolled in Endpoint Verification";
+            this.enableDcaCheckBox.Text = "Secure connections to Google Cloud by using\r\ndevice certificate authentication if" +
+    " possible";
             this.enableDcaCheckBox.UseVisualStyleBackColor = true;
             // 
-            // label1
+            // label2
             // 
-            this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(74, 108);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(236, 13);
-            this.label1.TabIndex = 4;
-            this.label1.Text = "Changes take effect after restarting IAP Desktop";
+            this.label2.AutoSize = true;
+            this.label2.Location = new System.Drawing.Point(73, 62);
+            this.label2.Name = "label2";
+            this.label2.Size = new System.Drawing.Size(218, 39);
+            this.label2.TabIndex = 4;
+            this.label2.Text = "Device certificate authentication requires the\r\ncomputer to be enrolled and the E" +
+    "ndpoint \r\nVerification native helper to be installed";
             // 
             // GeneralOptionsControl
             // 
@@ -256,5 +268,6 @@ namespace Google.Solutions.IapDesktop.Application.Views.Options
         private System.Windows.Forms.PictureBox secureConnectIcon;
         private System.Windows.Forms.CheckBox enableDcaCheckBox;
         private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.Label label2;
     }
 }

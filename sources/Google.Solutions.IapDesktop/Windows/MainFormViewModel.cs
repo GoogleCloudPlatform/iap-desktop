@@ -186,7 +186,7 @@ namespace Google.Solutions.IapDesktop.Windows
                 this.Authorization.UserInfo.Subject).Result;
         
             this.SignInStateCaption = this.Authorization.Email;
-            this.DeviceStateCaption = "Secure Connect";
+            this.DeviceStateCaption = "Endpoint Verification";
             this.IsDeviceStateVisible = this.DeviceEnrollment.State != DeviceEnrollmentState.Disabled;
 
             Debug.Assert(this.SignInStateCaption!= null);
