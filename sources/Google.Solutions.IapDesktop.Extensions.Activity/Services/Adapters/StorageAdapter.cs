@@ -31,6 +31,7 @@ using Google.Solutions.IapDesktop.Application.ObjectModel;
 using Google.Solutions.IapDesktop.Application.Services.Adapters;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Threading;
@@ -58,14 +59,43 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services.Adapters
     [Service(typeof(IStorageAdapter))]
     public class StorageAdapter : IStorageAdapter
     {
+        private const string MtlsBaseUri = "https://storage.mtls.googleapis.com/storage/v1/";
+
         private readonly StorageService service;
 
-        public StorageAdapter(ICredential credential)
+        public bool IsDeviceCertiticateAuthenticationEnabled
+            => this.service.IsMtlsEnabled() && this.service.IsClientCertificateProvided();
+
+        public StorageAdapter(
+            ICredential credential,
+            IDeviceEnrollment deviceEnrollment)
         {
-            this.service = new StorageService(new ClientServiceInitializer(credential));
+            this.service = new StorageService(
+                ClientServiceFactory.ForMtlsEndpoint(
+                    credential,
+                    deviceEnrollment,
+                    MtlsBaseUri));
+
+            Debug.Assert((deviceEnrollment?.Certificate != null)
+                == IsDeviceCertiticateAuthenticationEnabled);
         }
+
+        public StorageAdapter(ICredential credential)
+            : this(credential, null)
+        {
+            // This constructor should only be used for test cases
+            Debug.Assert(Globals.IsTestCase);
+        }
+
+        public StorageAdapter(IAuthorizationAdapter authService)
+            : this(
+                  authService.Authorization.Credential,
+                  authService.DeviceEnrollment)
+        {
+        }
+
         public StorageAdapter(IServiceProvider serviceProvider)
-            : this(serviceProvider.GetService<IAuthorizationAdapter>().Authorization.Credential)
+            : this(serviceProvider.GetService<IAuthorizationAdapter>())
         {
         }
 

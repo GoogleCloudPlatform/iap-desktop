@@ -32,8 +32,10 @@ using Google.Solutions.Common.Util;
 using Google.Solutions.IapDesktop.Application.ObjectModel;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Net;
+using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -111,17 +113,39 @@ namespace Google.Solutions.IapDesktop.Application.Services.Adapters
     /// </summary>
     public class ComputeEngineAdapter : IComputeEngineAdapter
     {
+        private const string MtlsBaseUri = "https://compute.mtls.googleapis.com/compute/v1/projects/";
         private static readonly TimeSpan DefaultPasswordResetTimeout = TimeSpan.FromSeconds(25);
 
         private readonly ComputeService service;
 
-        public ComputeEngineAdapter(ICredential credential)
+        public bool IsDeviceCertiticateAuthenticationEnabled
+            => this.service.IsMtlsEnabled() && this.service.IsClientCertificateProvided();
+
+        public ComputeEngineAdapter(
+            ICredential credential,
+            IDeviceEnrollment deviceEnrollment)
         {
-            this.service = new ComputeService(new ClientServiceInitializer(credential));
+            this.service = new ComputeService(
+                ClientServiceFactory.ForMtlsEndpoint(
+                    credential,
+                    deviceEnrollment,
+                    MtlsBaseUri));
+
+            Debug.Assert((deviceEnrollment?.Certificate != null) 
+                == IsDeviceCertiticateAuthenticationEnabled);
+        }
+
+        public ComputeEngineAdapter(ICredential credential)
+            : this(credential, null)
+        {
+            // This constructor should only be used for test cases
+            Debug.Assert(Globals.IsTestCase);
         }
 
         public ComputeEngineAdapter(IAuthorizationAdapter authService)
-            : this(authService.Authorization.Credential)
+            : this(
+                  authService.Authorization.Credential,
+                  authService.DeviceEnrollment)
         {
         }
 

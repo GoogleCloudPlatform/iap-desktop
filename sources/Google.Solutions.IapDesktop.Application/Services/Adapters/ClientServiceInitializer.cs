@@ -20,17 +20,83 @@
 //
 
 using Google.Apis.Auth.OAuth2;
+using Google.Apis.Http;
 using Google.Apis.Services;
+using System;
+using System.Net.Http;
+using System.Security.Cryptography.X509Certificates;
 
 namespace Google.Solutions.IapDesktop.Application.Services.Adapters
 {
-    public class ClientServiceInitializer : BaseClientService.Initializer
+    public static class ClientServiceFactory
     {
-        public ClientServiceInitializer(
-            ICredential credential)
+        public static BaseClientService.Initializer ForMtlsEndpoint(
+            ICredential credential,
+            IDeviceEnrollment enrollment,
+            string baseUri)
         {
-            base.HttpClientInitializer = credential;
-            base.ApplicationName = Globals.UserAgent.ToApplicationName();
+            var initializer = new BaseClientService.Initializer()
+            {
+                HttpClientInitializer = credential,
+                ApplicationName = Globals.UserAgent.ToApplicationName()
+            };
+
+            if (enrollment?.Certificate != null)
+            {
+                TraceSources.IapDesktop.TraceInformation(
+                    "Enabling MTLS for {0}", 
+                    baseUri);
+
+                // Switch to mTLS endpoint.
+                initializer.BaseUri = baseUri;
+
+                // Add client certificate.
+                initializer.HttpClientFactory = new MtlsHttpClientFactory(enrollment.Certificate);
+            }
+
+            return initializer;
+        }
+        
+        private class MtlsHttpClientFactory : HttpClientFactory
+        {
+            private readonly X509Certificate2 clientCertificate;
+
+            public MtlsHttpClientFactory(X509Certificate2 clientCertificate)
+            {
+                this.clientCertificate = clientCertificate;
+            }
+
+            protected override HttpClientHandler CreateClientHandler()
+            {
+                var handler = new WebRequestHandler();
+                handler.ClientCertificates.Add(this.clientCertificate);
+                return handler;
+            }
+        }
+    }
+
+    public static class ClientServiceExtensions
+    {
+        public static bool IsMtlsEnabled(this IClientService service)
+            => service.BaseUri.Contains(".mtls.googleapis.com");
+
+        public static bool IsClientCertificateProvided(this IClientService service)
+            => IsClientCertificateProvided(service.HttpClient.MessageHandler);
+
+        private static bool IsClientCertificateProvided(HttpMessageHandler handler)
+        {
+            if (handler is DelegatingHandler delegatingHandler)
+            {
+                return IsClientCertificateProvided(delegatingHandler.InnerHandler);
+            }
+            else if (handler is WebRequestHandler webHandler)
+            {
+                return webHandler.ClientCertificates.Count > 0;
+            }
+            else
+            {
+                throw new ArgumentException("Unrecognized handler");
+            }
         }
     }
 }

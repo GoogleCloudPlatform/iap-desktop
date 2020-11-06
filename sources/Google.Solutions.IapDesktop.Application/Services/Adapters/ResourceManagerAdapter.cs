@@ -28,6 +28,7 @@ using Google.Solutions.Common.Diagnostics;
 using Google.Solutions.IapDesktop.Application.ObjectModel;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -55,16 +56,38 @@ namespace Google.Solutions.IapDesktop.Application.Services.Adapters
 
     public class ResourceManagerAdapter : IResourceManagerAdapter
     {
+        private const string MtlsBaseUri = "https://cloudresourcemanager.mtls.googleapis.com/";
+
         private readonly CloudResourceManagerService service;
 
-        public ResourceManagerAdapter(ICredential credential)
+        public bool IsDeviceCertiticateAuthenticationEnabled
+            => this.service.IsMtlsEnabled() && this.service.IsClientCertificateProvided();
+
+        public ResourceManagerAdapter(
+            ICredential credential,
+            IDeviceEnrollment deviceEnrollment)
         {
             this.service = new CloudResourceManagerService(
-                new ClientServiceInitializer(credential));
+                ClientServiceFactory.ForMtlsEndpoint(
+                    credential,
+                    deviceEnrollment,
+                    MtlsBaseUri));
+
+            Debug.Assert((deviceEnrollment?.Certificate != null)
+                == IsDeviceCertiticateAuthenticationEnabled);
+        }
+
+        public ResourceManagerAdapter(ICredential credential)
+            : this(credential, null)
+        {
+            // This constructor should only be used for test cases
+            Debug.Assert(Globals.IsTestCase);
         }
 
         public ResourceManagerAdapter(IAuthorizationAdapter authService)
-            : this(authService.Authorization.Credential)
+            : this(
+                  authService.Authorization.Credential,
+                  authService.DeviceEnrollment)
         {
         }
 
