@@ -42,6 +42,14 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.Services.Adapters
     [Category("IntegrationTest")]
     public class TestAuditLogAdapter : FixtureBase
     {
+        [Test]
+        public async Task WhenNoEnrollmentProvided_ThenDeviceCertiticateAuthenticationIsOff(
+            [Credential(Role = PredefinedRole.ComputeViewer)] ResourceTask<ICredential> credential)
+        {
+            var adapter = new AuditLogAdapter(await credential);
+            Assert.IsFalse(adapter.IsDeviceCertiticateAuthenticationEnabled);
+        }
+
         //---------------------------------------------------------------------
         // ListEventsAsync
         //---------------------------------------------------------------------

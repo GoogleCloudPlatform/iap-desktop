@@ -34,6 +34,14 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Adapters
     public class TestResourceManagerAdapter : FixtureBase
     {
         [Test]
+        public async Task WhenNoEnrollmentProvided_ThenDeviceCertiticateAuthenticationIsOff(
+            [Credential(Role = PredefinedRole.ComputeViewer)] ResourceTask<ICredential> credential)
+        {
+            var adapter = new ResourceManagerAdapter(await credential);
+            Assert.IsFalse(adapter.IsDeviceCertiticateAuthenticationEnabled);
+        }
+
+        [Test]
         public async Task WhenUserInRole_ThenIsGrantedPermissionReturnsTrue(
             [Credential(Role = PredefinedRole.ComputeViewer)] ResourceTask<ICredential> credential)
         {

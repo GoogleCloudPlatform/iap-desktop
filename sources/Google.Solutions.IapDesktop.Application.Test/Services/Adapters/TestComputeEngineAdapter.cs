@@ -37,6 +37,13 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Adapters
     [Category("IntegrationTest")]
     public class TestComputeEngineAdapter : FixtureBase
     {
+        [Test]
+        public async Task WhenNoEnrollmentProvided_ThenDeviceCertiticateAuthenticationIsOff(
+            [Credential(Role = PredefinedRole.ComputeViewer)] ResourceTask<ICredential> credential)
+        {
+            var adapter = new ComputeEngineAdapter(await credential);
+            Assert.IsFalse(adapter.IsDeviceCertiticateAuthenticationEnabled);
+        }
 
         //---------------------------------------------------------------------
         // Projects.
