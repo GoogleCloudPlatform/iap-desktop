@@ -76,8 +76,10 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services.Adapters
                     deviceEnrollment,
                     MtlsBaseUri));
 
-            Debug.Assert((deviceEnrollment?.Certificate != null)
-                == IsDeviceCertiticateAuthenticationEnabled);
+            Debug.Assert(
+                (deviceEnrollment?.Certificate != null &&
+                    HttpClientHandlerExtensions.IsClientCertificateSupported)
+                    == IsDeviceCertiticateAuthenticationEnabled);
         }
 
         public StorageAdapter(ICredential credential)

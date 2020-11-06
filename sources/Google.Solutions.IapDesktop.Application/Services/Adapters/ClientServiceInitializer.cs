@@ -22,8 +22,11 @@
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Http;
 using Google.Apis.Services;
-using System;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.Linq;
 using System.Net.Http;
+using System.Reflection;
 using System.Security.Cryptography.X509Certificates;
 
 namespace Google.Solutions.IapDesktop.Application.Services.Adapters
@@ -41,7 +44,8 @@ namespace Google.Solutions.IapDesktop.Application.Services.Adapters
                 ApplicationName = Globals.UserAgent.ToApplicationName()
             };
 
-            if (enrollment?.Certificate != null)
+            if (enrollment?.Certificate != null && 
+                HttpClientHandlerExtensions.IsClientCertificateSupported)
             {
                 TraceSources.IapDesktop.TraceInformation(
                     "Enabling MTLS for {0}", 
@@ -68,8 +72,9 @@ namespace Google.Solutions.IapDesktop.Application.Services.Adapters
 
             protected override HttpClientHandler CreateClientHandler()
             {
-                var handler = new WebRequestHandler();
-                handler.ClientCertificates.Add(this.clientCertificate);
+                var handler = base.CreateClientHandler();
+                var added = handler.TryAddClientCertificate(this.clientCertificate);
+                Debug.Assert(added);
                 return handler;
             }
         }
@@ -89,13 +94,62 @@ namespace Google.Solutions.IapDesktop.Application.Services.Adapters
             {
                 return IsClientCertificateProvided(delegatingHandler.InnerHandler);
             }
-            else if (handler is WebRequestHandler webHandler)
+            else if (handler is HttpClientHandler httpHandler)
             {
-                return webHandler.ClientCertificates.Count > 0;
+                return httpHandler.GetClientCertificates().Any();
             }
             else
             {
-                throw new ArgumentException("Unrecognized handler");
+                return false;
+            }
+        }
+    }
+
+    public static class HttpClientHandlerExtensions
+    {
+        //
+        // NB. The ClientCertificate property is only available as of v4.7.1. 
+        //
+        // In older framework versions, WebRequestHandler can be used for mTLS,
+        // but this is incompatible with the Google Http library.
+        //
+        internal static readonly PropertyInfo clientCertificatesProperty = 
+            typeof(HttpClientHandler).GetProperty(
+                "ClientCertificates",
+                BindingFlags.Instance | BindingFlags.Public);
+
+        public static bool IsClientCertificateSupported 
+            => clientCertificatesProperty != null;
+
+        internal static bool TryAddClientCertificate(
+            this HttpClientHandler handler,
+            X509Certificate2 certificate)
+        {
+            if (IsClientCertificateSupported)
+            {
+                var clientCertificates = (X509CertificateCollection)
+                    clientCertificatesProperty.GetValue(handler);
+                clientCertificates.Add(certificate);
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
+
+        internal static IEnumerable<X509Certificate2> GetClientCertificates(
+            this HttpClientHandler handler)
+        {
+            if (IsClientCertificateSupported)
+            {
+                var certificates = (X509CertificateCollection)
+                    clientCertificatesProperty.GetValue(handler);
+                return certificates.Cast<X509Certificate2>();
+            }
+            else
+            {
+                return Enumerable.Empty<X509Certificate2>();
             }
         }
     }
