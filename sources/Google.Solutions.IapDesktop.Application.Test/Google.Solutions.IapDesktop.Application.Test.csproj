@@ -97,14 +97,17 @@
     <Compile Include="ObjectModel\TestCommandContainerForContextMenu.cs" />
     <Compile Include="ObjectModel\TestModelCachingViewModelBase.cs" />
     <Compile Include="ObjectModel\TestServiceAttribute.cs" />
+    <Compile Include="SecureConnectFixtureBase.cs" />
     <Compile Include="Services\Adapters\TestCertificateStoreAdapter.cs" />
     <Compile Include="Services\Adapters\TestComputeEngineAdapter.cs" />
+    <Compile Include="Services\Adapters\TestComputeEngineAdapterWithMtls.cs" />
     <Compile Include="Services\Adapters\TestGithubAdapter.cs" />
     <Compile Include="FixtureBase.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Services\Adapters\TestHttpProxyAdapter.cs" />
     <Compile Include="Services\Adapters\TestInstanceExtensions.cs" />
     <Compile Include="Services\Adapters\TestResourceManagerAdapter.cs" />
+    <Compile Include="Services\Adapters\TestResourceManagerAdapterWithMtls.cs" />
     <Compile Include="Services\Integration\TestConnectionBroker.cs" />
     <Compile Include="Services\Settings\TestApplicationSettingsRepository.cs" />
     <Compile Include="Services\Persistence\TestAppProtocolRegistry.cs" />
