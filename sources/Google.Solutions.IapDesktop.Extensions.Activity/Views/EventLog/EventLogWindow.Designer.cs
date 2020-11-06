@@ -140,28 +140,28 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Views.EventLog
             this.lifecycleEventsDropDown.Image = ((System.Drawing.Image)(resources.GetObject("lifecycleEventsDropDown.Image")));
             this.lifecycleEventsDropDown.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.lifecycleEventsDropDown.Name = "lifecycleEventsDropDown";
-            this.lifecycleEventsDropDown.Size = new System.Drawing.Size(147, 22);
-            this.lifecycleEventsDropDown.Text = "VM instance lifecycle";
+            this.lifecycleEventsDropDown.Size = new System.Drawing.Size(96, 22);
+            this.lifecycleEventsDropDown.Text = "Event types";
             // 
             // includeLifecycleEventsButton
             // 
             this.includeLifecycleEventsButton.CheckOnClick = true;
             this.includeLifecycleEventsButton.Name = "includeLifecycleEventsButton";
-            this.includeLifecycleEventsButton.Size = new System.Drawing.Size(175, 22);
+            this.includeLifecycleEventsButton.Size = new System.Drawing.Size(180, 22);
             this.includeLifecycleEventsButton.Text = "VM lifecycle events";
             // 
             // includeSystemEventsButton
             // 
             this.includeSystemEventsButton.CheckOnClick = true;
             this.includeSystemEventsButton.Name = "includeSystemEventsButton";
-            this.includeSystemEventsButton.Size = new System.Drawing.Size(175, 22);
+            this.includeSystemEventsButton.Size = new System.Drawing.Size(180, 22);
             this.includeSystemEventsButton.Text = "VM system events";
             // 
             // includeAccessEventsButton
             // 
             this.includeAccessEventsButton.CheckOnClick = true;
             this.includeAccessEventsButton.Name = "includeAccessEventsButton";
-            this.includeAccessEventsButton.Size = new System.Drawing.Size(175, 22);
+            this.includeAccessEventsButton.Size = new System.Drawing.Size(180, 22);
             this.includeAccessEventsButton.Text = "VM access events";
             // 
             // timeFrameComboBox
