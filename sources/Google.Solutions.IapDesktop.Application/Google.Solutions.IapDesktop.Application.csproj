@@ -132,7 +132,7 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
-    <Compile Include="Services\Persistence\AppProtocolRegistry.cs" />
+    <Compile Include="Services\Settings\AppProtocolRegistry.cs" />
     <Compile Include="Services\Settings\ApplicationSettingsRepository.cs" />
     <Compile Include="Services\Settings\AuthSettingsRepository.cs" />
     <Compile Include="Services\Settings\IProjectRepository.cs" />
@@ -296,7 +296,6 @@
     <None Include="packages.config" />
     <None Include="Services\Adapters\README.md" />
     <None Include="Services\Integration\README.md" />
-    <None Include="Services\Persistence\README.md" />
     <None Include="Views\README.md" />
   </ItemGroup>
   <ItemGroup>

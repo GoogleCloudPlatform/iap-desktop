@@ -22,7 +22,6 @@
 using Google.Solutions.Common.Locator;
 using Google.Solutions.Common.Util;
 using Google.Solutions.IapDesktop.Application.ObjectModel;
-using Google.Solutions.IapDesktop.Application.Services.Persistence;
 using Google.Solutions.IapDesktop.Application.Views;
 using Google.Solutions.IapDesktop.Extensions.Rdp.Services.Connection;
 using Google.Solutions.IapDesktop.Extensions.Rdp.Views.ConnectionSettings;

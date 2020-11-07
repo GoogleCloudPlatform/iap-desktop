@@ -110,7 +110,7 @@
     <Compile Include="Services\Adapters\TestResourceManagerAdapterWithMtls.cs" />
     <Compile Include="Services\Integration\TestConnectionBroker.cs" />
     <Compile Include="Services\Settings\TestApplicationSettingsRepository.cs" />
-    <Compile Include="Services\Persistence\TestAppProtocolRegistry.cs" />
+    <Compile Include="Services\Settings\TestAppProtocolRegistry.cs" />
     <Compile Include="Services\Settings\TestAuthSettingsRepository.cs" />
     <Compile Include="Services\Settings\TestProjectRepository.cs" />
     <Compile Include="Settings\TestRegistryBoolSetting.cs" />
