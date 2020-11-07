@@ -64,7 +64,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Views.UsageReport
         {
             if (instance.Image != null &&
                 this.parent.Model.LicenseAnnotations.TryGetValue(
-                    instance.Image.ToString(), 
+                    instance.Image.ToString(),
                     out ImageAnnotation annotation))
             {
                 return annotation;

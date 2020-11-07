@@ -29,7 +29,6 @@ using Google.Solutions.IapDesktop.Application.Test;
 using Google.Solutions.IapDesktop.Extensions.Rdp.Services.Tunnel;
 using Google.Solutions.IapTunneling.Iap;
 using Microsoft.Win32;
-using Moq;
 using Newtonsoft.Json.Linq;
 using NUnit.Framework;
 using System;
@@ -125,7 +124,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Test.Services.Tunnel
                 "Unknown",
                 metadata.Value<string>("device_state"));
             CollectionAssert.Contains(
-                new[] { "Normal", "Cross Organization" }, 
+                new[] { "Normal", "Cross Organization" },
                 metadata.Value<string>("device_state"));
         }
     }

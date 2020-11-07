@@ -21,7 +21,6 @@
 
 using Google.Solutions.IapDesktop.Extensions.Os.Inventory;
 using NUnit.Framework;
-using System;
 
 namespace Google.Solutions.IapDesktop.Extensions.Os.Test.Inventory
 {

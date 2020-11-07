@@ -75,7 +75,7 @@ namespace Google.Solutions.Common.Test.Extensions
 
             // Use correct project, but wrong VM.
             var instanceRef = new InstanceLocator(
-                TestProject .ProjectId,
+                TestProject.ProjectId,
                 TestProject.Zone,
                 "doesnotexist");
             try

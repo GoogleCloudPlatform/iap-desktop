@@ -22,7 +22,6 @@
 using Google.Solutions.IapDesktop.Application.Settings;
 using NUnit.Framework;
 using System.Collections.Generic;
-using System.Linq;
 
 namespace Google.Solutions.IapDesktop.Application.Test.Settings
 {

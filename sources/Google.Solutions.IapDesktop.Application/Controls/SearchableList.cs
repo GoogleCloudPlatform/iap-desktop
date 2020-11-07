@@ -19,12 +19,12 @@
 // under the License.
 //
 
+using Google.Solutions.Common.Diagnostics;
+using Google.Solutions.IapDesktop.Application.Properties;
+using Google.Solutions.IapDesktop.Application.Views;
 using System;
 using System.Drawing;
 using System.Windows.Forms;
-using Google.Solutions.IapDesktop.Application.Properties;
-using Google.Solutions.Common.Diagnostics;
-using Google.Solutions.IapDesktop.Application.Views;
 
 #pragma warning disable IDE1006 // Naming Styles
 
@@ -47,7 +47,7 @@ namespace Google.Solutions.IapDesktop.Application.Controls
             InitializeComponent();
         }
 
-        public bool Loading 
+        public bool Loading
         {
             get => this.progressBar.Enabled;
             set
@@ -89,7 +89,8 @@ namespace Google.Solutions.IapDesktop.Application.Controls
             searchButton.FlatStyle = FlatStyle.Flat;
             searchButton.FlatAppearance.BorderSize = 0;
             searchButton.FlatAppearance.MouseOverBackColor = searchButton.BackColor;
-            searchButton.BackColorChanged += (s, _) => {
+            searchButton.BackColorChanged += (s, _) =>
+            {
                 searchButton.FlatAppearance.MouseOverBackColor = searchButton.BackColor;
             };
             searchButton.TabStop = false;

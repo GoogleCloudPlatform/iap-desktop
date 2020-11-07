@@ -19,7 +19,6 @@
 // under the License.
 //
 
-using Google.Solutions.Common.Locator;
 using Google.Solutions.IapDesktop.Application.Util;
 using NUnit.Framework;
 using System;

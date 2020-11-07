@@ -21,7 +21,6 @@
 
 using Google.Solutions.IapDesktop.Extensions.Activity.History;
 using Google.Solutions.IapDesktop.Extensions.Activity.Services.UsageReport;
-using System.Linq;
 
 namespace Google.Solutions.IapDesktop.Extensions.Activity.Views.UsageReport
 {

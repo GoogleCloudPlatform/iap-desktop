@@ -19,7 +19,6 @@
 // under the License.
 //
 
-using Google.Solutions.Common.Auth;
 using Google.Solutions.IapDesktop.Application.Services.Adapters;
 using Google.Solutions.IapDesktop.Application.Views.Authentication;
 using Moq;

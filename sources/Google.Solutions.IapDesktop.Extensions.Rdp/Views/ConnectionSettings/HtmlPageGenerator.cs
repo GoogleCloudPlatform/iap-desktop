@@ -20,14 +20,14 @@
 //
 
 using Google.Solutions.IapDesktop.Application.ObjectModel;
-using Google.Solutions.IapDesktop.Application.Views.ProjectExplorer;
 using Google.Solutions.IapDesktop.Application.Util;
+using Google.Solutions.IapDesktop.Application.Views.ProjectExplorer;
+using Google.Solutions.IapDesktop.Extensions.Rdp.Services.Connection;
 using System;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text;
-using Google.Solutions.IapDesktop.Extensions.Rdp.Services.Connection;
 using System.Web;
 
 namespace Google.Solutions.IapDesktop.Extensions.Rdp.Views.ConnectionSettings

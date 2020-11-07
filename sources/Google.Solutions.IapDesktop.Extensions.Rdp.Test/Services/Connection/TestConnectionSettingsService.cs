@@ -38,7 +38,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Test.Services.Connection
         private const string SampleProjectId = "project-1";
         private const string TestKeyPath = @"Software\Google\__Test";
         private readonly RegistryKey hkcu = RegistryKey.OpenBaseKey(
-            RegistryHive.CurrentUser, 
+            RegistryHive.CurrentUser,
             RegistryView.Default);
 
         private ConnectionSettingsService service;

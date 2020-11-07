@@ -26,7 +26,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.Settings
     public interface IAppProtocolRegistry
     {
         bool IsRegistered(string scheme, string applicationLocation);
-        
+
         void Register(
             string scheme,
             string friendlyName,

@@ -37,7 +37,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.Services.Adapters
     public class TestStorageAdapter : FixtureBase
     {
         private static readonly StorageObjectLocator SampleLocator = new StorageObjectLocator(
-            GcsTestData.Bucket, 
+            GcsTestData.Bucket,
             typeof(TestStorageAdapter).Name + ".dat");
         private const string SampleData = "test data";
 
@@ -83,7 +83,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.Services.Adapters
 
             Assert.IsNotNull(buckets);
             CollectionAssert.Contains(
-                buckets.Select(o => o.Name).ToList(), 
+                buckets.Select(o => o.Name).ToList(),
                 GcsTestData.Bucket);
         }
 

@@ -175,7 +175,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Os.Test.Views.PackageInventory
                 PackageInventoryType.AvailablePackages,
                 PackageInventoryType.InstalledPackages)]  PackageInventoryType type)
         {
-            
+
             var node = new Mock<IProjectExplorerProjectNode>();
             node.SetupGet(n => n.ProjectId).Returns("project-1");
             node.SetupGet(n => n.DisplayName).Returns("project-1");
@@ -301,9 +301,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Os.Test.Views.PackageInventory
 
             var viewModel = CreateViewModel(PackageInventoryType.InstalledPackages);
             await viewModel.SwitchToModelAsync(node.Object);
-            
+
             viewModel.Filter = "PACKAGE \t Arch-2   ver-3";
-            
+
             Assert.AreEqual(1, viewModel.FilteredPackages.Count);
         }
 

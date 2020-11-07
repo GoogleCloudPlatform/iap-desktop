@@ -23,7 +23,6 @@ using Google.Solutions.Common.Diagnostics;
 using Google.Solutions.Common.Util;
 using Google.Solutions.IapDesktop.Application.ObjectModel;
 using System;
-using System.Diagnostics;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Windows.Forms;
@@ -57,9 +56,9 @@ namespace Google.Solutions.IapDesktop.Application.Views.Dialog
         }
 
         private void ShowErrorDialogWithHelp(
-            IWin32Window parent, 
-            string caption, 
-            string message, 
+            IWin32Window parent,
+            string caption,
+            string message,
             string details,
             IHelpTopic helpTopic)
         {
@@ -108,8 +107,8 @@ namespace Google.Solutions.IapDesktop.Application.Views.Dialog
         }
 
         public void Show(
-            IWin32Window parent, 
-            string caption, 
+            IWin32Window parent,
+            string caption,
             Exception e)
         {
             e = e.Unwrap();

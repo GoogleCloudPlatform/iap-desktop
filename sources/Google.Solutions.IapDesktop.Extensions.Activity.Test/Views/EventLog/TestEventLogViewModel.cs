@@ -64,7 +64,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.Views.EventLog
             public int CallCount = 0;
 
             public Task<IEnumerable<LogSink>> ListCloudStorageSinksAsync(
-                string projectId, 
+                string projectId,
                 CancellationToken cancellationToken)
             {
                 throw new NotImplementedException();

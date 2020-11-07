@@ -19,21 +19,21 @@
 // under the License.
 //
 
+using Google.Apis.Auth.OAuth2;
+using Google.Solutions.Common.Locator;
 using Google.Solutions.Common.Test.Integration;
 using Google.Solutions.IapDesktop.Application.ObjectModel;
 using Google.Solutions.IapDesktop.Application.Services.Adapters;
 using Google.Solutions.IapDesktop.Application.Services.Integration;
+using Google.Solutions.IapDesktop.Application.Test.Views;
 using Google.Solutions.IapDesktop.Application.Util;
+using Google.Solutions.IapDesktop.Extensions.Rdp.Services.Connection;
+using Google.Solutions.IapDesktop.Extensions.Rdp.Views.RemoteDesktop;
 using NUnit.Framework;
+using System;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using Google.Apis.Auth.OAuth2;
-using Google.Solutions.Common.Locator;
-using Google.Solutions.IapDesktop.Extensions.Rdp.Views.RemoteDesktop;
-using Google.Solutions.IapDesktop.Application.Test.Views;
-using Google.Solutions.IapDesktop.Extensions.Rdp.Services.Connection;
-using System;
 
 namespace Google.Solutions.IapDesktop.Extensions.Rdp.Test.Views.RemoteDesktop
 {
@@ -54,7 +54,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Test.Views.RemoteDesktop
                 await credential))
             {
                 var settings = VmInstanceConnectionSettings.CreateNew(
-                    locator.ProjectId, 
+                    locator.ProjectId,
                     locator.Name);
                 settings.Username.StringValue = "wrong";
                 settings.Password.Value = SecureStringExtensions.FromClearText("wrong");

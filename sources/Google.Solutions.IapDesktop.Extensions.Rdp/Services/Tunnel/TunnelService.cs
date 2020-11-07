@@ -58,7 +58,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Services.Tunnel
         {
             using (TraceSources.IapDesktop.TraceMethod().WithParameters(tunnelEndpoint))
             {
-                var clientCertificate = 
+                var clientCertificate =
                         (this.authorizationService.DeviceEnrollment != null &&
                         this.authorizationService.DeviceEnrollment.State == DeviceEnrollmentState.Enrolled)
                     ? this.authorizationService.DeviceEnrollment.Certificate

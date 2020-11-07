@@ -54,7 +54,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.Services.UsageRep
                     new StorageAdapter(await credential),
                     new AuditLogAdapter(await credential)),
                 new ComputeEngineAdapter(await credential),
-                AuditLogSources.Api, 
+                AuditLogSources.Api,
                 new[] { TestProject.ProjectId },
                 startDate);
             var report = await builder.BuildAsync(CancellationToken.None);
@@ -83,7 +83,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.Services.UsageRep
                     new StorageAdapter(await credential),
                     new AuditLogAdapter(await credential)),
                 new ComputeEngineAdapter(await credential),
-                AuditLogSources.Api, 
+                AuditLogSources.Api,
                 new[] { TestProject.ProjectId },
                 startDate);
             var report = await builder.BuildAsync(CancellationToken.None);

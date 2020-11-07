@@ -73,7 +73,7 @@ namespace Google.Solutions.Common.Test.Util
         public void WhenExceptionHasInnerException_ThenFullMessageContainsAllMessages()
         {
             var ex = new ArgumentException("One",
-                new InvalidOperationException("two", 
+                new InvalidOperationException("two",
                     new Exception("three")));
             Assert.AreEqual("One: two: three", ex.FullMessage());
         }

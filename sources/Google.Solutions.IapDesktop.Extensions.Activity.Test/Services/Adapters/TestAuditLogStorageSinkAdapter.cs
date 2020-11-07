@@ -19,10 +19,11 @@
 // under the License.
 //
 
+using Google.Apis.Auth.OAuth2;
 using Google.Apis.Logging.v2.Data;
-using GcsObject = Google.Apis.Storage.v1.Data.Object;
 using Google.Solutions.Common.Test;
 using Google.Solutions.Common.Test.Integration;
+using Google.Solutions.IapDesktop.Application.Services.Adapters;
 using Google.Solutions.IapDesktop.Extensions.Activity.Events;
 using Google.Solutions.IapDesktop.Extensions.Activity.History;
 using Google.Solutions.IapDesktop.Extensions.Activity.Services.Adapters;
@@ -34,8 +35,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using Google.Solutions.IapDesktop.Application.Services.Adapters;
-using Google.Apis.Auth.OAuth2;
+using GcsObject = Google.Apis.Storage.v1.Data.Object;
 
 namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.Services.Adapters
 {
@@ -272,7 +272,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.Services.Adapters
                 new AuditLogAdapter(await credential));
 
             var events = await service.ListInstanceEventsAsync(
-                EmptyLocator, 
+                EmptyLocator,
                 CancellationToken.None);
             CollectionAssert.IsEmpty(events);
         }
@@ -286,7 +286,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.Services.Adapters
                 new AuditLogAdapter(await credential));
 
             var events = await service.ListInstanceEventsAsync(
-                ValidLocator_Jan1_00, 
+                ValidLocator_Jan1_00,
                 CancellationToken.None);
             Assert.AreEqual(3, events.Count());
         }

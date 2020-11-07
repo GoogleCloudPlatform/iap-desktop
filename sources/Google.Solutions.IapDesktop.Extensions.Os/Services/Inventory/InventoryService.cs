@@ -86,7 +86,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Os.Services.Inventory
         }
 
         private async Task<IEnumerable<GuestOsInfo>> ListInventoryAsync(
-            IEnumerable<InstanceLocator> instanceLocators, 
+            IEnumerable<InstanceLocator> instanceLocators,
             CancellationToken token)
         {
             // There is no way to query guest attributes for multiple instances at one,
@@ -122,7 +122,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Os.Services.Inventory
         //---------------------------------------------------------------------
 
         public async Task<GuestOsInfo> GetInstanceInventoryAsync(
-            InstanceLocator instanceLocator, 
+            InstanceLocator instanceLocator,
             CancellationToken token)
         {
             var guestAttributes = await this.computeEngineAdapter
@@ -140,7 +140,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Os.Services.Inventory
 
         public async Task<IEnumerable<GuestOsInfo>> ListProjectInventoryAsync(
             string projectId,
-            OperatingSystems operatingSystems, 
+            OperatingSystems operatingSystems,
             CancellationToken token)
         {
             var instances = await this.computeEngineAdapter
@@ -150,14 +150,14 @@ namespace Google.Solutions.IapDesktop.Extensions.Os.Services.Inventory
             return await ListInventoryAsync(
                     instances
                         .Where(i => IsRunningOperatingSystem(i, operatingSystems))
-                        .Select(i => i.GetInstanceLocator()), 
+                        .Select(i => i.GetInstanceLocator()),
                     token)
                 .ConfigureAwait(false);
         }
 
         public async Task<IEnumerable<GuestOsInfo>> ListZoneInventoryAsync(
             ZoneLocator locator,
-            OperatingSystems operatingSystems, 
+            OperatingSystems operatingSystems,
             CancellationToken token)
         {
             var instances = await this.computeEngineAdapter

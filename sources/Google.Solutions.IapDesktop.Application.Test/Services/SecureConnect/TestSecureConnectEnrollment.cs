@@ -97,7 +97,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.SecureConnect
                     kKe5HxLPBf2IlNugltuGHJ9BDrhx2b8Bg7+L+B+4qdnC2mr538HoHZs2XDTryB2c
                     5QcupsOHJ9hOby6TKkN1LDEVMBMGCSqGSIb3DQEJFTEGBAQBAAAAMDswHzAHBgUr
                     DgMCGgQUvB5xKdRFL/tU9CwlmVl0ULzjVOIEFOWQVSDrZgZyO7TlwcQK+GEH5G16
-                    AgIH0A=="), 
+                    AgIH0A=="),
                 "example");
 
         private const string TestKeyPath = @"Software\Google\__Test";
@@ -133,7 +133,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.SecureConnect
 
             certificateStore.Verify(s => s.ListUserCertitficates(
                     It.IsAny<string>(),
-                    It.IsAny<string>()), 
+                    It.IsAny<string>()),
                 Times.Never);
         }
 

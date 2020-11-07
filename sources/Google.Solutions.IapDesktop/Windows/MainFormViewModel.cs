@@ -184,12 +184,12 @@ namespace Google.Solutions.IapDesktop.Windows
                 new CertificateStoreAdapter(),
                 this.applicationSettings,
                 this.Authorization.UserInfo.Subject).Result;
-        
+
             this.SignInStateCaption = this.Authorization.Email;
             this.DeviceStateCaption = "Endpoint Verification";
             this.IsDeviceStateVisible = this.DeviceEnrollment.State != DeviceEnrollmentState.Disabled;
 
-            Debug.Assert(this.SignInStateCaption!= null);
+            Debug.Assert(this.SignInStateCaption != null);
             Debug.Assert(this.DeviceEnrollment != null);
         }
 

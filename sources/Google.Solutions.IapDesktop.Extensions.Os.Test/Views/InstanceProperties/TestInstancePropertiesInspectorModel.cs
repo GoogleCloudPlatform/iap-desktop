@@ -57,7 +57,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Os.Test.Views.InstancePropertie
             Assert.IsNotNull(model.InternalIp);
             Assert.IsNotNull(model.ExternalIp);
             Assert.IsNotNull(model.Licenses);
-            Assert.AreEqual(model.IsOsInventoryInformationPopulated 
+            Assert.AreEqual(model.IsOsInventoryInformationPopulated
                 ? FeatureFlag.Enabled : FeatureFlag.Disabled, model.OsInventory);
             Assert.AreEqual(FeatureFlag.Disabled, model.Diagnostics);
             Assert.AreEqual(FeatureFlag.Enabled, model.GuestAttributes);

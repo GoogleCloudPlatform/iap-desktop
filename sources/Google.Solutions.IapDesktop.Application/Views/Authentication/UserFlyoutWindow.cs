@@ -32,8 +32,8 @@ namespace Google.Solutions.IapDesktop.Application.Views.Authentication
 
         public UserFlyoutWindow(UserFlyoutViewModel viewModel) : base()
         {
-            this.viewModel = viewModel; 
-            
+            this.viewModel = viewModel;
+
             InitializeComponent();
 
             this.emailLabel.Text = viewModel.Email;

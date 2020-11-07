@@ -99,10 +99,10 @@ namespace Google.Solutions.Common.Test.Integration
 
             var collection = new X509Certificate2Collection();
             collection.Import(
-                credentialsPath, 
+                credentialsPath,
                 string.Empty, // No passphrase
                 X509KeyStorageFlags.DefaultKeySet);
-            
+
             return collection
                 .OfType<X509Certificate2>()
                 .First();

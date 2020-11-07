@@ -21,7 +21,6 @@
 
 using Google.Solutions.IapDesktop.Extensions.Os.Inventory;
 using NUnit.Framework;
-using System;
 
 namespace Google.Solutions.IapDesktop.Extensions.Os.Test.Inventory
 {
@@ -58,7 +57,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Os.Test.Inventory
         [Test]
         public void WhenAllCategoryIdsUnknown_ThenMaxCriticalityIsNonCritical()
         {
-            var criticality = WuaPackageType.MaxCriticality(new []
+            var criticality = WuaPackageType.MaxCriticality(new[]
                 {
                     "145233b6-2d99-4f56-ba70-3748c1b6fdbd",
                     "145233b6-2d99-4f56-ba70-3748c1b6fdba"
@@ -70,7 +69,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Os.Test.Inventory
         [Test]
         public void WhenSomeCategoryIdsCritical_ThenMaxCriticalityIsCritical()
         {
-            var criticality = WuaPackageType.MaxCriticality(new []
+            var criticality = WuaPackageType.MaxCriticality(new[]
                 {
                     "145233b6-2d99-4f56-ba70-3748c1b6fdbd",
                     "145233b6-2d99-4f56-ba70-3748c1b6fdba",

@@ -95,7 +95,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.History
                 new DateTime(2020, 1, 1, 11, 0, 0));
             var p2 = new InstancePlacement(
                 "server1",
-                null, 
+                null,
                 new DateTime(2020, 1, 1, 11, 0, 50),
                 new DateTime(2020, 1, 1, 12, 0, 0));
 

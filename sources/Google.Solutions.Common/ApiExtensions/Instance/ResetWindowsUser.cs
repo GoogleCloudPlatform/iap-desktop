@@ -169,7 +169,7 @@ namespace Google.Solutions.Common.ApiExtensions.Instance
                         // for the modulus.
                         var response = logBuffer.ToString()
                             .Split('\n')
-                            .Where(line => line.Contains(requestPayload.Modulus) || 
+                            .Where(line => line.Contains(requestPayload.Modulus) ||
                                            line.Replace("\\/", "/").Contains(requestPayload.Modulus))
                             .FirstOrDefault();
                         if (response == null)

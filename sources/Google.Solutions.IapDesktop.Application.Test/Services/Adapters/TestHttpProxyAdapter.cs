@@ -37,7 +37,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Adapters
     {
         // Use a host name that is unlikely to be hit by any initialization code
         // which might be running in parallel with a test case.
-        private static readonly Uri SampleHttpsUrl = 
+        private static readonly Uri SampleHttpsUrl =
             new Uri("https://www.gstatic.com/ipranges/goog.json");
 
         // Bypass normal API requests so that we do not interfere with

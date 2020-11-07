@@ -74,7 +74,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Test.Views.RemoteDesktop
         public void WhenWrongPort_ThenErrorIsShownAndWindowIsClosed()
         {
             var settings = VmInstanceConnectionSettings.CreateNew(this.instanceReference);
-            
+
             var rdpService = new RemoteDesktopConnectionBroker(this.serviceProvider);
             rdpService.Connect(
                 this.instanceReference,

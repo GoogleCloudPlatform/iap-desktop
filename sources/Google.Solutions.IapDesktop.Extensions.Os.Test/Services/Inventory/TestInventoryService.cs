@@ -113,7 +113,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Os.Test.Services.Inventory
 
             var info = await service.ListProjectInventoryAsync(
                 TestProject.ProjectId,
-                OperatingSystems.All, 
+                OperatingSystems.All,
                 CancellationToken.None);
 
             Assert.IsTrue(info.ToList().Where(i => i.Instance == instanceRef).Any());
@@ -151,7 +151,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Os.Test.Services.Inventory
             AssertEx.ThrowsAggregateException<ResourceAccessDeniedException>(
                 () => service.ListProjectInventoryAsync(
                     TestProject.ProjectId,
-                    OperatingSystems.All, 
+                    OperatingSystems.All,
                     CancellationToken.None).Wait());
         }
 
@@ -172,7 +172,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Os.Test.Services.Inventory
 
             var info = await service.ListZoneInventoryAsync(
                 new ZoneLocator(TestProject.ProjectId, instanceRef.Zone),
-                OperatingSystems.All, 
+                OperatingSystems.All,
                 CancellationToken.None);
 
             Assert.IsTrue(info.ToList().Where(i => i.Instance == instanceRef).Any());
@@ -210,7 +210,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Os.Test.Services.Inventory
             AssertEx.ThrowsAggregateException<ResourceAccessDeniedException>(
                 () => service.ListZoneInventoryAsync(
                     new ZoneLocator(TestProject.ProjectId, instanceRef.Zone),
-                    OperatingSystems.All, 
+                    OperatingSystems.All,
                     CancellationToken.None).Wait());
         }
     }

@@ -90,8 +90,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services.Adapters
         private static DateTime? DateFromObjectName(string name)
         {
             var match = new Regex(
-                    "cloudaudit.googleapis.com/.*/"+
-                    "([0-9]{4})/([0-9]{2})/([0-9]{2})/[0-9]{2}:[0-9]{2}:[0-9]{2}_"+
+                    "cloudaudit.googleapis.com/.*/" +
+                    "([0-9]{4})/([0-9]{2})/([0-9]{2})/[0-9]{2}:[0-9]{2}:[0-9]{2}_" +
                     "[0-9]{2}:[0-9]{2}:[0-9]{2}_.*.json")
                 .Match(name);
 
@@ -134,7 +134,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services.Adapters
                     .ConfigureAwait(false);
 
                 return objectsByBucket
-                    .Where(o => o.Name.StartsWith(ActivityLogPrefix) || 
+                    .Where(o => o.Name.StartsWith(ActivityLogPrefix) ||
                                 o.Name.StartsWith(SystemEventLogPrefix))
                     .Select(o => new StorageObjectLocator(o.Bucket, o.Name));
             }
@@ -157,7 +157,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services.Adapters
             using (TraceSources.IapDesktop.TraceMethod().WithParameters(bucket, startTime))
             {
                 var exportObjects = await FindAuditLogExportObjects(
-                        bucket, 
+                        bucket,
                         cancellationToken)
                     .ConfigureAwait(false);
 

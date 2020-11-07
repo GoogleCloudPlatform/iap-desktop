@@ -57,7 +57,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Test.Services.Tunnel
                 .Returns(Task.FromResult(mockTunnel.Object));
 
             var tunnel = await broker.ConnectAsync(
-                destination, 
+                destination,
                 new AllowAllRelayPolicy(),
                 TimeSpan.FromMinutes(1));
 
@@ -91,7 +91,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Test.Services.Tunnel
 
             var tunnel = await broker.ConnectAsync(
                 destination,
-                new AllowAllRelayPolicy(), 
+                new AllowAllRelayPolicy(),
                 TimeSpan.FromMinutes(1));
 
             mockEventService.Verify(s => s.FireAsync(It.IsAny<TunnelOpenedEvent>()), Times.Once);
@@ -120,11 +120,11 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Test.Services.Tunnel
 
             var tunnel1 = await broker.ConnectAsync(
                 destination,
-                new AllowAllRelayPolicy(), 
+                new AllowAllRelayPolicy(),
                 TimeSpan.FromMinutes(1));
             var tunnel2 = await broker.ConnectAsync(
                 destination,
-                new AllowAllRelayPolicy(), 
+                new AllowAllRelayPolicy(),
                 TimeSpan.FromMinutes(1));
 
             Assert.IsNotNull(tunnel1);
@@ -154,7 +154,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Test.Services.Tunnel
             {
                 broker.ConnectAsync(
                     destination,
-                    new AllowAllRelayPolicy(), 
+                    new AllowAllRelayPolicy(),
                     TimeSpan.FromMinutes(1)).Wait();
             });
 
@@ -186,7 +186,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Test.Services.Tunnel
             {
                 broker.ConnectAsync(
                     destination,
-                    new AllowAllRelayPolicy(), 
+                    new AllowAllRelayPolicy(),
                     TimeSpan.FromMinutes(1)).Wait();
             });
 
@@ -217,7 +217,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Test.Services.Tunnel
 
             var tunnel = await broker.ConnectAsync(
                 destination,
-                new AllowAllRelayPolicy(), 
+                new AllowAllRelayPolicy(),
                 TimeSpan.FromMinutes(1));
 
             Assert.AreEqual(1, broker.OpenTunnels.Count());
@@ -251,7 +251,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Test.Services.Tunnel
 
             var tunnel = await broker.ConnectAsync(
                 destination,
-                new AllowAllRelayPolicy(), 
+                new AllowAllRelayPolicy(),
                 TimeSpan.FromMinutes(1));
 
             Assert.AreEqual(1, broker.OpenTunnels.Count());
@@ -287,7 +287,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Test.Services.Tunnel
 
             var tunnel = await broker.ConnectAsync(
                 destination,
-                new AllowAllRelayPolicy(), 
+                new AllowAllRelayPolicy(),
                 TimeSpan.FromMinutes(1));
             await broker.DisconnectAsync(destination);
 
@@ -320,7 +320,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Test.Services.Tunnel
 
             var tunnel = await broker.ConnectAsync(
                 destination,
-                new AllowAllRelayPolicy(), 
+                new AllowAllRelayPolicy(),
                 TimeSpan.FromMinutes(1));
             await broker.DisconnectAllAsync();
 

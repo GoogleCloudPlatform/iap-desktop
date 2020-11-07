@@ -281,7 +281,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Os.Views.InstanceProperties
         [Browsable(true)]
         [Category(InstanceConfigurationCategory)]
         [DisplayName("Internal DNS mode")]
-        [Description("Resolution mode for internal DNS queries, "+
+        [Description("Resolution mode for internal DNS queries, " +
                      "see https://cloud.google.com/compute/docs/internal-dns")]
         public string InternalDnsMode => GetMetadata("VmDnsSetting");
 
@@ -305,7 +305,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Os.Views.InstanceProperties
 
             var project = await computeEngineAdapter
                 .GetProjectAsync(
-                    instanceLocator.ProjectId, 
+                    instanceLocator.ProjectId,
                     token)
                 .ConfigureAwait(false);
 

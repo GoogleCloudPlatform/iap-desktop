@@ -25,7 +25,7 @@ using System;
 
 namespace Google.Solutions.IapDesktop.Application.Services.Settings
 {
-    public abstract class SettingsRepositoryBase<TSettings> : IDisposable 
+    public abstract class SettingsRepositoryBase<TSettings> : IDisposable
         where TSettings : IRegistrySettingsCollection
     {
         protected readonly RegistryKey baseKey;

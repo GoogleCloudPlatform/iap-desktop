@@ -22,20 +22,18 @@
 using Google.Solutions.Common.Locator;
 using Google.Solutions.IapDesktop.Application.ObjectModel;
 using Google.Solutions.IapDesktop.Application.Services.Integration;
-using Google.Solutions.IapDesktop.Application.Views;
-using Google.Solutions.IapDesktop.Application.Views.ProjectExplorer;
 using Google.Solutions.IapDesktop.Application.Util;
-using Google.Solutions.IapDesktop.Extensions.Rdp.Views.Credentials;
+using Google.Solutions.IapDesktop.Application.Views;
+using Google.Solutions.IapDesktop.Application.Views.Dialog;
+using Google.Solutions.IapDesktop.Application.Views.ProjectExplorer;
 using Google.Solutions.IapDesktop.Extensions.Rdp.Services.Tunnel;
+using Google.Solutions.IapDesktop.Extensions.Rdp.Views.Credentials;
+using Google.Solutions.IapDesktop.Extensions.Rdp.Views.RemoteDesktop;
 using Google.Solutions.IapTunneling.Iap;
 using Google.Solutions.IapTunneling.Net;
 using System;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using Google.Solutions.IapDesktop.Extensions.Rdp.Views.RemoteDesktop;
-using Google.Solutions.IapDesktop.Extensions.Rdp.Services.Connection;
-using Google.Solutions.IapDesktop.Application.Settings;
-using Google.Solutions.IapDesktop.Application.Views.Dialog;
 
 namespace Google.Solutions.IapDesktop.Extensions.Rdp.Services.Connection
 {
@@ -74,7 +72,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Services.Connection
                     try
                     {
                         var destination = new TunnelDestination(
-                            instanceRef, 
+                            instanceRef,
                             (ushort)settings.RdpPort.IntValue);
 
                         // Give IAP the same timeout for probing as RDP itself.
@@ -82,7 +80,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Services.Connection
                         var timeout = TimeSpan.FromSeconds(settings.ConnectionTimeout.IntValue);
 
                         return await this.tunnelBrokerService.ConnectAsync(
-                                destination, 
+                                destination,
                                 new SameProcessRelayPolicy(),
                                 timeout)
                             .ConfigureAwait(false);
@@ -158,7 +156,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Services.Connection
                 // We have a full set of settings for this VM, so use that as basis
                 settings = (VmInstanceConnectionSettings)
                     this.settingsService.GetConnectionSettings(vmNode);
-                
+
                 // Apply parameters from URL on top.
                 settings.ApplyUrlQuery(url.Parameters);
             }
@@ -195,7 +193,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Services.Connection
         public IapRdpConnectionFailedException(
             string message,
             IHelpTopic helpTopic,
-            Exception innerException) 
+            Exception innerException)
             : base(message, innerException)
         {
             this.Help = helpTopic;

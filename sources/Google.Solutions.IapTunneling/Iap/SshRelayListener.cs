@@ -102,7 +102,7 @@ namespace Google.Solutions.IapTunneling.Iap
                 this.ClientConnected(this, new ClientEventArgs(client));
             }
         }
-        
+
         private void OnClientDisconnected(string client)
         {
             if (this.ClientDisconnected != null)

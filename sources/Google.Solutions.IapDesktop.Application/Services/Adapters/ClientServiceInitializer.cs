@@ -44,11 +44,11 @@ namespace Google.Solutions.IapDesktop.Application.Services.Adapters
                 ApplicationName = Globals.UserAgent.ToApplicationName()
             };
 
-            if (enrollment?.Certificate != null && 
+            if (enrollment?.Certificate != null &&
                 HttpClientHandlerExtensions.IsClientCertificateSupported)
             {
                 TraceSources.IapDesktop.TraceInformation(
-                    "Enabling MTLS for {0}", 
+                    "Enabling MTLS for {0}",
                     baseUri);
 
                 // Switch to mTLS endpoint.
@@ -60,7 +60,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.Adapters
 
             return initializer;
         }
-        
+
         private class MtlsHttpClientFactory : HttpClientFactory
         {
             private readonly X509Certificate2 clientCertificate;
@@ -113,12 +113,12 @@ namespace Google.Solutions.IapDesktop.Application.Services.Adapters
         // In older framework versions, WebRequestHandler can be used for mTLS,
         // but this is incompatible with the Google Http library.
         //
-        internal static readonly PropertyInfo clientCertificatesProperty = 
+        internal static readonly PropertyInfo clientCertificatesProperty =
             typeof(HttpClientHandler).GetProperty(
                 "ClientCertificates",
                 BindingFlags.Instance | BindingFlags.Public);
 
-        public static bool IsClientCertificateSupported 
+        public static bool IsClientCertificateSupported
             => clientCertificatesProperty != null;
 
         internal static bool TryAddClientCertificate(

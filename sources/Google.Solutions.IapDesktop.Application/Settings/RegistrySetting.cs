@@ -19,15 +19,14 @@
 // under the License.
 //
 
+using Google.Solutions.IapDesktop.Application.Util;
+using Microsoft.Win32;
 using System;
 using System.Diagnostics;
-using System.Globalization;
 using System.Linq;
 using System.Security;
 using System.Security.Cryptography;
 using System.Text;
-using Google.Solutions.IapDesktop.Application.Util;
-using Microsoft.Win32;
 
 namespace Google.Solutions.IapDesktop.Application.Settings
 {
@@ -156,7 +155,7 @@ namespace Google.Solutions.IapDesktop.Application.Settings
                   protectionScope);
 
         protected override SettingBase<SecureString> CreateNew(
-            SecureString value, 
+            SecureString value,
             SecureString defaultValue)
             => new RegistrySecureStringSetting(
                 this.Key,
@@ -169,7 +168,7 @@ namespace Google.Solutions.IapDesktop.Application.Settings
 
         protected override bool IsValid(SecureString value) => true;
 
-        protected override SecureString Parse(string value) 
+        protected override SecureString Parse(string value)
             => SecureStringExtensions.FromClearText(value);
 
         private static byte[] Encrypt(
@@ -189,7 +188,7 @@ namespace Google.Solutions.IapDesktop.Application.Settings
                 Encoding.UTF8.GetBytes(key), // Entropy
                 scope);
         }
-    
+
         private static SecureString Decrypt(
             string key,
             DataProtectionScope scope,
@@ -275,7 +274,7 @@ namespace Google.Solutions.IapDesktop.Application.Settings
 
         protected override bool IsValid(bool value) => true;
 
-        protected override bool Parse(string value) 
+        protected override bool Parse(string value)
             => value != null && bool.Parse(value);
 
         public bool BoolValue
@@ -329,7 +328,7 @@ namespace Google.Solutions.IapDesktop.Application.Settings
                   description,
                   category,
                   defaultValue,
-                  backingKey == null 
+                  backingKey == null
                     ? defaultValue
                     : (int)backingKey.GetValue(key, defaultValue),
                   minInclusive,
@@ -495,7 +494,7 @@ namespace Google.Solutions.IapDesktop.Application.Settings
     public static class RegistrySettingsExtensions
     {
         public static void Save(
-            this IRegistrySetting setting, 
+            this IRegistrySetting setting,
             RegistryKey backingKey)
         {
             Debug.Assert(setting.IsDirty);
@@ -506,14 +505,14 @@ namespace Google.Solutions.IapDesktop.Application.Settings
             else
             {
                 backingKey.SetValue(
-                    setting.Key, 
-                    setting.RegistryValue, 
+                    setting.Key,
+                    setting.RegistryValue,
                     setting.Kind);
             }
         }
 
         public static void Save(
-            this IRegistrySettingsCollection collection, 
+            this IRegistrySettingsCollection collection,
             RegistryKey registryKey)
         {
             foreach (var setting in collection.Settings

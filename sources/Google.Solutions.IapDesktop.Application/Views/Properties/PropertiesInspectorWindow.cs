@@ -96,7 +96,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.Properties
             {
                 // Use a custom type descriptor to interpret each setting
                 // as property.
-                this.propertyGrid.SelectedObject = 
+                this.propertyGrid.SelectedObject =
                     new SettingsCollectionTypeDescriptor((ISettingsCollection)obj);
             }
             else

@@ -29,15 +29,15 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Events.Access
     public class SetMetadataEvent : VmInstanceActivityEventBase
     {
         public const string Method = "v1.compute.instances.setMetadata";
-        
+
         public override EventCategory Category => EventCategory.Access;
-        
-        protected override string SuccessMessage => 
+
+        protected override string SuccessMessage =>
             $"{this.Description} from {this.SourceHost ?? "(unknown)"} " +
             $"using {this.UserAgentShort ?? "(unknown agent)"}";
 
         protected override string ErrorMessage =>
-            $"{this.Description} from {this.SourceHost ?? "(unknown)"} "+
+            $"{this.Description} from {this.SourceHost ?? "(unknown)"} " +
             $"using {this.UserAgentShort ?? "(unknown agent)"} failed";
 
         private string Description
@@ -55,7 +55,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Events.Access
                 // we if we see a failed set-metadata request, it may or may not be
                 // the result of a Windows reset user event.
                 //
-                
+
                 if (IsModifyingKey("windows-keys"))
                 {
                     return "Windows credential update";

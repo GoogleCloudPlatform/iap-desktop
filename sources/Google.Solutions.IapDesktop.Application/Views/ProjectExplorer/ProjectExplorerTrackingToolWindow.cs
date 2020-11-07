@@ -105,7 +105,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
 
                     TraceSources.IapDesktop.TraceVerbose(
                         "Ignoring switch to {0} because window is not visible", node);
-                    
+
                     return;
                 }
                 else

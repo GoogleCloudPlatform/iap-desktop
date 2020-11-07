@@ -62,7 +62,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.Dialog
         {
             TDN_CREATED = 0,
             TDN_NAVIGATED = 1,
-            TDN_BUTTON_CLICKED = 2, 
+            TDN_BUTTON_CLICKED = 2,
             TDN_HYPERLINK_CLICKED = 3,
             TDN_TIMER = 4,
             TDN_DESTROYED = 5,
@@ -136,10 +136,10 @@ namespace Google.Solutions.IapDesktop.Application.Views.Dialog
         }
 
         internal delegate int TaskDialogCallback(
-            [In] IntPtr hwnd, 
-            [In] TASKDIALOG_NOTIFICATIONS msg, 
-            [In] UIntPtr wParam, 
-            [In] IntPtr lParam, 
+            [In] IntPtr hwnd,
+            [In] TASKDIALOG_NOTIFICATIONS msg,
+            [In] UIntPtr wParam,
+            [In] IntPtr lParam,
             [In] IntPtr refData);
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Interoperability", "CA1400:PInvokeEntryPointsShouldExist")]

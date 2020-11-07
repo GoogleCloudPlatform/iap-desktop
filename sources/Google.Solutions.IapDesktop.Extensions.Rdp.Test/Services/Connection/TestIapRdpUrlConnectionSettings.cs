@@ -68,7 +68,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Test.Services.Connection
             var url = new IapRdpUrl(
                 new InstanceLocator("project-1", "us-central1-a", "instance-1"),
                 settings.ToUrlQuery());
-            
+
             Assert.AreEqual(
                 "iap-rdp:///project-1/us-central1-a/instance-1?" +
                     "Username=Tom+%26+Jerry%3f&Domain=%22%3f%22",

@@ -189,7 +189,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.ObjectModel
         { }
 
         public interface ITransientServiceWithInterface
-        { 
+        {
         }
 
         [Service(typeof(ITransientServiceWithInterface))]

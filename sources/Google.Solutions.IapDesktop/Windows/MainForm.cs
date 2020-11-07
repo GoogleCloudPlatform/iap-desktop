@@ -23,12 +23,17 @@ using Google.Apis.Util;
 using Google.Solutions.Common.Auth;
 using Google.Solutions.Common.Util;
 using Google.Solutions.IapDesktop.Application.ObjectModel;
+using Google.Solutions.IapDesktop.Application.Services;
 using Google.Solutions.IapDesktop.Application.Services.Adapters;
 using Google.Solutions.IapDesktop.Application.Services.Integration;
-using Google.Solutions.IapDesktop.Application.Views;
-using Google.Solutions.IapDesktop.Application.Views.Diagnostics;
-using Google.Solutions.IapDesktop.Application.Views.ProjectExplorer;
+using Google.Solutions.IapDesktop.Application.Services.Settings;
 using Google.Solutions.IapDesktop.Application.Util;
+using Google.Solutions.IapDesktop.Application.Views;
+using Google.Solutions.IapDesktop.Application.Views.Authentication;
+using Google.Solutions.IapDesktop.Application.Views.Diagnostics;
+using Google.Solutions.IapDesktop.Application.Views.Dialog;
+using Google.Solutions.IapDesktop.Application.Views.Options;
+using Google.Solutions.IapDesktop.Application.Views.ProjectExplorer;
 using System;
 using System.ComponentModel;
 using System.Diagnostics;
@@ -37,11 +42,6 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using WeifenLuo.WinFormsUI.Docking;
-using Google.Solutions.IapDesktop.Application.Services;
-using Google.Solutions.IapDesktop.Application.Services.Settings;
-using Google.Solutions.IapDesktop.Application.Views.Authentication;
-using Google.Solutions.IapDesktop.Application.Views.Options;
-using Google.Solutions.IapDesktop.Application.Views.Dialog;
 
 #pragma warning disable IDE1006 // Naming Styles
 #pragma warning disable CA1031 // Do not catch general exception types
@@ -240,7 +240,7 @@ namespace Google.Solutions.IapDesktop.Windows
                     Close();
                     return;
                 }
-            } 
+            }
 
             // 
             // Set up sub-windows.

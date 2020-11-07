@@ -69,7 +69,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.Options
             : this(
                   serviceProvider.GetService<ApplicationSettingsRepository>(),
                   serviceProvider.GetService<IHttpProxyAdapter>())
-        { 
+        {
         }
 
         //---------------------------------------------------------------------
@@ -103,7 +103,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.Options
             {
                 throw new ArgumentException($"'{this.proxyPort}' is not a valid port number");
             }
-            
+
             if (string.IsNullOrEmpty(this.proxyUsername) != string.IsNullOrEmpty(this.proxyPassword))
             {
                 throw new ArgumentException("Proxy credentials are incomplete");

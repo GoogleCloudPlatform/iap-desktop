@@ -90,7 +90,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services.UsageReport
 
         public string BuildStatus { get; private set; } = string.Empty;
 
-        public async Task<ReportArchive> BuildAsync( 
+        public async Task<ReportArchive> BuildAsync(
             CancellationToken cancellationToken)
         {
             using (TraceSources.IapDesktop.TraceMethod().WithParameters(this.projectIds, sources))
@@ -162,7 +162,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services.UsageReport
                             .ConfigureAwait(false);
 
                         if (auditLogExportBucket != null)
-                        { 
+                        {
                             TraceSources.IapDesktop.TraceVerbose(
                                 "Found storage export buckets for {0}: {1}",
                                 projectId,

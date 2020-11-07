@@ -19,17 +19,17 @@
 // under the License.
 //
 
-using Google.Solutions.IapDesktop.Application.Views.ProjectExplorer;
-using Google.Solutions.IapDesktop.Application.Test.ObjectModel;
-using Google.Solutions.IapDesktop.Application.Views.Properties;
-using NUnit.Framework;
-using System.Threading.Tasks;
-using System.Windows.Forms;
-using System.ComponentModel;
-using System.Linq;
 using Google.Solutions.IapDesktop.Application.ObjectModel;
 using Google.Solutions.IapDesktop.Application.Settings;
+using Google.Solutions.IapDesktop.Application.Test.ObjectModel;
+using Google.Solutions.IapDesktop.Application.Views.ProjectExplorer;
+using Google.Solutions.IapDesktop.Application.Views.Properties;
+using NUnit.Framework;
 using System.Collections.Generic;
+using System.ComponentModel;
+using System.Linq;
+using System.Threading.Tasks;
+using System.Windows.Forms;
 
 #pragma warning disable CA1034 // Nested types should not be visible
 
@@ -118,10 +118,10 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views.Properties
         {
             this.serviceRegistry.AddMock<IProjectExplorer>();
             var viewModel = new ViewModel<PocoWithoutProperty>();
-            
+
             var window = new PropertiesInspectorWindow(this.serviceProvider, viewModel);
             viewModel.InspectedObject = new PocoWithProperty();
-            
+
             window.ShowWindow();
             PumpWindowMessages();
 

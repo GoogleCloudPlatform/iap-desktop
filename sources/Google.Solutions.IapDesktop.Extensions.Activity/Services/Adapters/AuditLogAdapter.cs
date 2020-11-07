@@ -22,7 +22,6 @@
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Logging.v2;
 using Google.Apis.Logging.v2.Data;
-using Google.Apis.Services;
 using Google.Apis.Util;
 using Google.Solutions.Common.ApiExtensions.Request;
 using Google.Solutions.Common.Diagnostics;
@@ -190,7 +189,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services.Adapters
             string projectId,
             CancellationToken cancellationToken)
         {
-            using(TraceSources.IapDesktop.TraceMethod().WithParameters(projectId))
+            using (TraceSources.IapDesktop.TraceMethod().WithParameters(projectId))
             {
                 try
                 {

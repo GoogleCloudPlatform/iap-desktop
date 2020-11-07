@@ -175,10 +175,10 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.History
                 Debug.Assert(lastSeen != null);
 
                 AddPlacement(new InstancePlacement(
-                    tenancy, 
-                    serverId, 
-                    nodeType, 
-                    lastSeen.Value, 
+                    tenancy,
+                    serverId,
+                    nodeType,
+                    lastSeen.Value,
                     lastSeen.Value));
             }
         }
@@ -369,8 +369,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.History
                 if (e is NotifyInstanceLocationEvent notifyLocation)
                 {
                     OnSetPlacement(
-                        notifyLocation.ServerId, 
-                        notifyLocation.NodeType, 
+                        notifyLocation.ServerId,
+                        notifyLocation.NodeType,
                         notifyLocation.Timestamp);
                 }
                 else if (e is InsertInstanceEvent insert)
