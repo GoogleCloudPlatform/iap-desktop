@@ -25,6 +25,7 @@ using Google.Solutions.Common.Locator;
 using Google.Solutions.IapDesktop.Application;
 using Google.Solutions.IapDesktop.Application.Services.Integration;
 using Google.Solutions.IapDesktop.Application.Views;
+using Google.Solutions.IapDesktop.Application.Views.Dialog;
 using Google.Solutions.IapDesktop.Extensions.Rdp.Services.Connection;
 using MSTSCLib;
 using System;

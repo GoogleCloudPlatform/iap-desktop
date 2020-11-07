@@ -41,6 +41,7 @@ using Google.Solutions.IapDesktop.Application.Services;
 using Google.Solutions.IapDesktop.Application.Services.Settings;
 using Google.Solutions.IapDesktop.Application.Views.Authentication;
 using Google.Solutions.IapDesktop.Application.Views.Options;
+using Google.Solutions.IapDesktop.Application.Views.Dialog;
 
 #pragma warning disable IDE1006 // Naming Styles
 #pragma warning disable CA1031 // Do not catch general exception types

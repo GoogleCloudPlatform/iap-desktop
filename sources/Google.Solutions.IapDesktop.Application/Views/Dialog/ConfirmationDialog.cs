@@ -21,7 +21,7 @@
 
 using System.Windows.Forms;
 
-namespace Google.Solutions.IapDesktop.Application.Views
+namespace Google.Solutions.IapDesktop.Application.Views.Dialog
 {
     public interface IConfirmationDialog
     {

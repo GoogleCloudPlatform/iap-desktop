@@ -43,6 +43,7 @@ using System.Windows.Forms;
 using Google.Solutions.IapDesktop.Application.Services;
 using Google.Solutions.IapDesktop.Application.Services.Settings;
 using Google.Solutions.IapDesktop.Application.Views.Options;
+using Google.Solutions.IapDesktop.Application.Views.Dialog;
 
 namespace Google.Solutions.IapDesktop
 {
