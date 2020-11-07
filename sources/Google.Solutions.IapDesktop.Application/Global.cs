@@ -39,7 +39,5 @@ public static class Globals
         UserAgent = new UserAgent("IAP-Desktop", Version);
     }
 
-#if DEBUG
     public static bool IsTestCase => Assembly.GetEntryAssembly() == null;
-#endif
 }
