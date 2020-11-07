@@ -20,9 +20,6 @@
 //
 
 using Google.Solutions.Common.Diagnostics;
-using Google.Solutions.IapDesktop.Application.ObjectModel;
-using Google.Solutions.IapDesktop.Application.Services.Integration;
-using Google.Solutions.IapDesktop.Application.Views.Dialog;
 using Google.Solutions.IapDesktop.Application.Views.ProjectExplorer;
 using System;
 using System.Runtime.InteropServices;
@@ -36,11 +33,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.Diagnostics
         : ProjectExplorerTrackingToolWindow<DebugProjectExplorerTrackingViewModel>
     {
         public DebugProjectExplorerTrackingWindow(IServiceProvider serviceProvider)
-            : base(
-                  serviceProvider.GetService<IMainForm>().MainPanel,
-                  serviceProvider.GetService<IProjectExplorer>(),
-                  serviceProvider.GetService<IEventService>(),
-                  serviceProvider.GetService<IExceptionDialog>())
+            : base(serviceProvider)
         {
             InitializeComponent();
         }

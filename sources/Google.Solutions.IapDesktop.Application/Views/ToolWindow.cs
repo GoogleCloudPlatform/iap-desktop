@@ -20,18 +20,21 @@
 //
 
 using Google.Solutions.Common.Diagnostics;
+using Google.Solutions.IapDesktop.Application.ObjectModel;
 using System;
+using System.Diagnostics;
 using System.Runtime.InteropServices;
 using System.Windows.Forms;
 using WeifenLuo.WinFormsUI.Docking;
 
 namespace Google.Solutions.IapDesktop.Application.Views
-
 {
     [ComVisible(false)]
     [SkipCodeCoverage("GUI plumbing")]
     public partial class ToolWindow : DockContent
     {
+        private readonly DockPanel dockPanel;
+
         public ContextMenuStrip TabContextStrip => this.contextMenuStrip;
 
         public ToolWindow()
@@ -40,18 +43,14 @@ namespace Google.Solutions.IapDesktop.Application.Views
             AutoScaleMode = AutoScaleMode.Dpi;
         }
 
-        private void closeMenuItem_Click(object sender, System.EventArgs e)
+        public ToolWindow(IServiceProvider serviceProvider) : this()
         {
-            this.CloseSafely();
+            this.dockPanel = serviceProvider.GetService<IMainForm>().MainPanel;
         }
 
-        private void ToolWindow_KeyUp(object sender, KeyEventArgs e)
-        {
-            if (e.Shift && e.KeyCode == Keys.Escape)
-            {
-                CloseSafely();
-            }
-        }
+        //---------------------------------------------------------------------
+        // Show/Hide.
+        //---------------------------------------------------------------------
 
         protected void CloseSafely()
         {
@@ -64,6 +63,16 @@ namespace Google.Solutions.IapDesktop.Application.Views
                 Close();
             }
         }
+
+        public void ShowWindow()
+        {
+            Debug.Assert(this.dockPanel != null);
+
+            this.TabText = this.Text;
+            this.ShowOrActivate(this.dockPanel, this.DefaultState);
+        }
+
+        protected virtual DockState DefaultState => DockState.DockBottomAutoHide;
 
         public void ShowOrActivate(DockPanel dockPanel, DockState defaultState)
         {
@@ -133,6 +142,23 @@ namespace Google.Solutions.IapDesktop.Application.Views
                     default:
                         return false;
                 }
+            }
+        }
+
+        //---------------------------------------------------------------------
+        // Window events.
+        //---------------------------------------------------------------------
+
+        private void closeMenuItem_Click(object sender, System.EventArgs e)
+        {
+            this.CloseSafely();
+        }
+
+        private void ToolWindow_KeyUp(object sender, KeyEventArgs e)
+        {
+            if (e.Shift && e.KeyCode == Keys.Escape)
+            {
+                CloseSafely();
             }
         }
 
