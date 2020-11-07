@@ -55,7 +55,10 @@ namespace Google.Solutions.IapDesktop.Application.Services.Settings
 
         public void SetSetting(ToolWindowStateSettings settings)
         {
-            settings.DockState.Save(this.baseKey);
+            if (settings.DockState.IsDirty)
+            {
+                settings.DockState.Save(this.baseKey);
+            }
         }
 
         //---------------------------------------------------------------------

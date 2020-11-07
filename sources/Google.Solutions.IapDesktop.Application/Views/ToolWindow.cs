@@ -21,6 +21,7 @@
 
 using Google.Solutions.Common.Diagnostics;
 using Google.Solutions.IapDesktop.Application.ObjectModel;
+using Google.Solutions.IapDesktop.Application.Services.Settings;
 using System;
 using System.Diagnostics;
 using System.Runtime.InteropServices;
@@ -34,7 +35,8 @@ namespace Google.Solutions.IapDesktop.Application.Views
     public partial class ToolWindow : DockContent
     {
         private readonly DockPanel panel;
-        private readonly DockState defaultDockState;
+        private DockState initialDockState;
+        private DockState lastDockState;
 
         public ContextMenuStrip TabContextStrip => this.contextMenuStrip;
 
@@ -49,7 +51,36 @@ namespace Google.Solutions.IapDesktop.Application.Views
             DockState defaultDockState) : this()
         {
             this.panel = serviceProvider.GetService<IMainForm>().MainPanel;
-            this.defaultDockState = defaultDockState;
+            var stateRepository = serviceProvider.GetService<ToolWindowStateRepository>();
+
+            this.lastDockState = defaultDockState;
+
+            // Read persisted window state.
+            var state = stateRepository.GetSetting(
+                GetType().Name, // Unique name of tool window
+                defaultDockState);
+            this.initialDockState = state.DockState.EnumValue;
+
+            // Save persisted window state.
+            this.Disposed += (sender, args) =>
+            {
+                //
+                // NB. At this point, it's too late to read this.DockState,
+                // so we have to rely on the value captured during previous
+                // state transitions.
+                //
+
+                try
+                {
+                    state.DockState.EnumValue = lastDockState;
+                    stateRepository.SetSetting(state);
+                }
+                catch (Exception e)
+                {
+                    TraceSources.IapDesktop.TraceWarning(
+                        "Saving tool window state failed: {0}", e.Message);
+                }
+            };
         }
 
         //---------------------------------------------------------------------
@@ -79,7 +110,7 @@ namespace Google.Solutions.IapDesktop.Application.Views
             if (this.IsHidden)
             {
                 // Show in default position.
-                Show(this.panel, this.defaultDockState);
+                Show(this.panel, this.initialDockState);
             }
 
             // If the window is in auto-hide mode, simply activating
@@ -213,24 +244,32 @@ namespace Google.Solutions.IapDesktop.Application.Views
         protected override void OnEnter(EventArgs e)
         {
             base.OnEnter(e);
+
+            this.lastDockState = this.DockState;
             RaiseUserVisibilityChanged();
         }
 
         protected override void OnLeave(EventArgs e)
         {
             base.OnLeave(e);
+
+            this.lastDockState = this.DockState;
             RaiseUserVisibilityChanged();
         }
 
         protected override void OnVisibleChanged(EventArgs e)
         {
             base.OnVisibleChanged(e);
+
+            this.lastDockState = this.DockState;
             RaiseUserVisibilityChanged();
         }
 
         protected override void OnShown(EventArgs e)
         {
             base.OnShown(e);
+
+            this.lastDockState = this.DockState;
             RaiseUserVisibilityChanged();
         }
 
