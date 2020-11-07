@@ -23,7 +23,6 @@ using Google.Apis.Auth.OAuth2;
 using Google.Apis.Compute.v1;
 using Google.Apis.Compute.v1.Data;
 using Google.Apis.Requests;
-using Google.Apis.Services;
 using Google.Solutions.Common.ApiExtensions.Instance;
 using Google.Solutions.Common.Diagnostics;
 using Google.Solutions.Common.Locator;
@@ -35,7 +34,6 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Net;
-using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -132,8 +130,8 @@ namespace Google.Solutions.IapDesktop.Application.Services.Adapters
                     MtlsBaseUri));
 
             Debug.Assert(
-                (deviceEnrollment?.Certificate != null && 
-                    HttpClientHandlerExtensions.IsClientCertificateSupported) 
+                (deviceEnrollment?.Certificate != null &&
+                    HttpClientHandlerExtensions.IsClientCertificateSupported)
                     == IsDeviceCertiticateAuthenticationEnabled);
         }
 

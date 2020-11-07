@@ -22,8 +22,7 @@
 using Google.Solutions.Common.Locator;
 using Google.Solutions.Common.Util;
 using Google.Solutions.IapDesktop.Application.ObjectModel;
-using Google.Solutions.IapDesktop.Application.Services.Persistence;
-using Google.Solutions.IapDesktop.Application.Views;
+using Google.Solutions.IapDesktop.Application.Views.Dialog;
 using Google.Solutions.IapDesktop.Extensions.Rdp.Services.Connection;
 using Google.Solutions.IapDesktop.Extensions.Rdp.Views.ConnectionSettings;
 using System;
@@ -93,7 +92,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Views.Credentials
 
             if (settings.CredentialGenerationBehavior.EnumValue == RdpCredentialGenerationBehavior.Force
                 && await IsGrantedPermissionToGenerateCredentials(
-                            credentialsService, 
+                            credentialsService,
                             instanceLocator)
                         .ConfigureAwait(true))
             {
@@ -111,7 +110,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Views.Credentials
             if ((!credentialsExist
                     && settings.CredentialGenerationBehavior.EnumValue == RdpCredentialGenerationBehavior.AllowIfNoCredentialsFound
                     && await IsGrantedPermissionToGenerateCredentials(
-                                credentialsService, 
+                                credentialsService,
                                 instanceLocator)
                             .ConfigureAwait(true))
                 || settings.CredentialGenerationBehavior.EnumValue == RdpCredentialGenerationBehavior.Allow)

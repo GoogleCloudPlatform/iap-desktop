@@ -342,7 +342,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Services.Connection
         //-------------------------------------------------------------------------
         // Create.
         //-------------------------------------------------------------------------
-        
+
         public static VmInstanceConnectionSettings FromKey(
             string projectId,
             string instanceName,

@@ -24,6 +24,7 @@ using Google.Solutions.IapDesktop.Application.Controls;
 using Google.Solutions.IapDesktop.Application.ObjectModel;
 using Google.Solutions.IapDesktop.Application.Services.Integration;
 using Google.Solutions.IapDesktop.Application.Settings;
+using Google.Solutions.IapDesktop.Application.Views.Dialog;
 using Google.Solutions.IapDesktop.Application.Views.ProjectExplorer;
 using System;
 using System.ComponentModel;
@@ -95,7 +96,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.Properties
             {
                 // Use a custom type descriptor to interpret each setting
                 // as property.
-                this.propertyGrid.SelectedObject = 
+                this.propertyGrid.SelectedObject =
                     new SettingsCollectionTypeDescriptor((ISettingsCollection)obj);
             }
             else

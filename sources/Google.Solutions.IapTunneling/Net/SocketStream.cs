@@ -44,7 +44,7 @@ namespace Google.Solutions.IapTunneling.Net
         }
 
         private static void OnIoCompleted(
-            TaskCompletionSource<int> tcs, 
+            TaskCompletionSource<int> tcs,
             Action<int> trackBytesTransferred,
             SocketAsyncEventArgs args)
         {
@@ -107,8 +107,8 @@ namespace Google.Solutions.IapTunneling.Net
                 try
                 {
                     return await IoAsync(
-                            ioFunc, 
-                            trackBytesTransferred, 
+                            ioFunc,
+                            trackBytesTransferred,
                             eventArgs)
                         .ConfigureAwait(false);
                 }

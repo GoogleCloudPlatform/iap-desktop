@@ -25,6 +25,7 @@ using Google.Solutions.Common.Locator;
 using Google.Solutions.IapDesktop.Application;
 using Google.Solutions.IapDesktop.Application.Services.Integration;
 using Google.Solutions.IapDesktop.Application.Views;
+using Google.Solutions.IapDesktop.Application.Views.Dialog;
 using Google.Solutions.IapDesktop.Extensions.Rdp.Services.Connection;
 using MSTSCLib;
 using System;
@@ -144,7 +145,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Views.RemoteDesktop
                 this.rdpClient.Domain = settings.Domain.StringValue;
                 this.rdpClient.UserName = settings.Username.StringValue;
                 advancedSettings.RDPPort = port;
-                advancedSettings.ClearTextPassword = 
+                advancedSettings.ClearTextPassword =
                     settings.Password.ClearTextValue ?? string.Empty;
 
                 //

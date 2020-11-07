@@ -63,7 +63,7 @@ namespace Google.Solutions.Common.Test.ApiExtensions.Instance
             Assert.AreEqual(1, metadata.Items.Count);
             Assert.AreEqual("value", metadata.Items.First(i => i.Key == "key").Value);
         }
-        
+
         [Test]
         public void WhenMetadataContainsOtherEntry_ThenAddKeyInsertsItem()
         {

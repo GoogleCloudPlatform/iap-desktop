@@ -28,7 +28,7 @@ namespace Google.Solutions.IapDesktop.Application.Util
     {
         private const string Prolog = "<!DOCTYPE><html><body><!--StartFragment -->";
         private const string Epilog = "<!--EndFragment --></body></html>";
-        private const string Header = 
+        private const string Header =
             "Version:0.9\r\n" +
             "StartHTML:A0000000\r\n" +
             "EndHTML:B0000000\r\n" +

@@ -21,6 +21,7 @@
 
 using Google.Solutions.Common.Diagnostics;
 using Google.Solutions.IapDesktop.Application.Services.Integration;
+using Google.Solutions.IapDesktop.Application.Views.Dialog;
 using System;
 using System.Runtime.InteropServices;
 using System.Threading;
@@ -104,7 +105,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
 
                     TraceSources.IapDesktop.TraceVerbose(
                         "Ignoring switch to {0} because window is not visible", node);
-                    
+
                     return;
                 }
                 else

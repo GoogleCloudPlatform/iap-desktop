@@ -57,7 +57,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.Authentication
                     break;
 
                 case DeviceEnrollmentState.NotEnrolled:
-                    this.EnrollmentStateDescription = 
+                    this.EnrollmentStateDescription =
                         $"This computer is currently not enrolled in {ProductName}";
                     this.IsDeviceEnrolledIconVisible = false;
                     this.IsDeviceNotEnrolledIconVisible = true;
@@ -66,8 +66,8 @@ namespace Google.Solutions.IapDesktop.Application.Views.Authentication
                     break;
 
                 case DeviceEnrollmentState.Enrolled:
-                    this.EnrollmentStateDescription = 
-                        $"Computer is enrolled in {ProductName} and uses " + 
+                    this.EnrollmentStateDescription =
+                        $"Computer is enrolled in {ProductName} and uses " +
                         "device certificate authentication";
                     this.IsDeviceEnrolledIconVisible = true;
                     this.IsDeviceNotEnrolledIconVisible = false;
@@ -96,7 +96,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.Authentication
         private void OpenDeviceCertificate()
         {
             X509Certificate2UI.DisplayCertificate(
-                this.enrollment.Certificate, 
+                this.enrollment.Certificate,
                 this.View.Handle);
         }
 

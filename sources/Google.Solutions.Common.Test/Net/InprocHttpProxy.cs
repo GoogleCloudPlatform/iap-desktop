@@ -49,7 +49,7 @@ namespace Google.Solutions.Common.Test.Net
 
         public IEnumerable<string> ConnectionTargets => this.connectionTargets;
 
-        public ushort Port { get; }        
+        public ushort Port { get; }
 
         private void DispatchRequests()
         {

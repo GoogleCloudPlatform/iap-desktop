@@ -26,7 +26,6 @@ using Microsoft.Win32;
 using Moq;
 using NUnit.Framework;
 using System;
-using System.Windows.Forms;
 
 namespace Google.Solutions.IapDesktop.Application.Test.Views.Options
 {
@@ -45,7 +44,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views.Options
         {
             hkcu.DeleteSubKeyTree(TestKeyPath, false);
             this.settingsKey = hkcu.CreateSubKey(TestKeyPath);
-            
+
             this.settingsRepository = new ApplicationSettingsRepository(this.settingsKey);
             this.proxyAdapterMock = new Mock<IHttpProxyAdapter>();
         }
@@ -69,7 +68,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views.Options
             Assert.IsFalse(viewModel.IsProxyAuthenticationEnabled);
             Assert.IsNull(viewModel.ProxyUsername);
             Assert.IsNull(viewModel.ProxyPassword);
-            
+
             Assert.IsFalse(viewModel.IsDirty);
         }
 

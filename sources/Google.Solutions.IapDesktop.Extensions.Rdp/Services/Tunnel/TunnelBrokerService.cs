@@ -38,7 +38,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Services.Tunnel
         bool IsConnected(TunnelDestination endpoint);
 
         Task<ITunnel> ConnectAsync(
-            TunnelDestination endpoint, 
+            TunnelDestination endpoint,
             ISshRelayPolicy relayPolicy,
             TimeSpan timeout);
 

@@ -36,7 +36,7 @@ namespace Google.Solutions.IapDesktop.Application.Views
 
         public void Show(
             IWin32Window owner,
-            Rectangle screenPositionOfControlToAlignTo, 
+            Rectangle screenPositionOfControlToAlignTo,
             ContentAlignment alignment)
         {
             //

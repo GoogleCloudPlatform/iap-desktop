@@ -33,14 +33,14 @@ namespace Google.Solutions.IapDesktop.Application.Services.Adapters
         public void SendFeedback()
         {
             var version = typeof(GithubAdapter).Assembly.GetName().Version;
-            var body = 
+            var body =
                 "Have feedback? We'd love to hear it, but please don't share " +
                 "sensitive information.\n" +
                 "\n\n\n\n\n" +
                 $"I am currently using IAP Desktop {version} " +
                 $"and .NET version {ClrVersion.Version} " +
                 $"on {Environment.OSVersion}";
-            var url = 
+            var url =
                 $"mailto:{GroupAlias}?" +
                 $"subject={WebUtility.UrlEncode("IAP Desktop feedback")}&" +
                 $"body={WebUtility.UrlEncode(body)}";

@@ -38,11 +38,11 @@ namespace Google.Solutions.Common.Util
             foreach (var batch in inputItems.Chunk(batchSize))
             {
                 var tasks = batch.Select(mapFunc);
-                
+
                 await Task
                     .WhenAll(tasks.ToArray())
                     .ConfigureAwait(false);
-                
+
                 result.AddRange(tasks
                     .Select(t => t.Result)
                     .Where(res => res != null));

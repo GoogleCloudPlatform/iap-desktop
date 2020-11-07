@@ -29,7 +29,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Services.Connection
     {
         bool IsConnectionSettingsAvailable(IProjectExplorerNode node);
         ConnectionSettingsBase GetConnectionSettings(IProjectExplorerNode node);
-        
+
         void SaveConnectionSettings(ConnectionSettingsBase settings);
     }
 
@@ -75,7 +75,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Services.Connection
                 var projectSettings = this.repository.GetProjectSettings(
                     zoneNode.ProjectId);
                 var zoneSettings = this.repository.GetZoneSettings(
-                    zoneNode.ProjectId, 
+                    zoneNode.ProjectId,
                     zoneNode.ZoneId);
 
                 // Apply overlay to get effective settings.

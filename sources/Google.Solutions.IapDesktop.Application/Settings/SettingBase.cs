@@ -148,7 +148,7 @@ namespace Google.Solutions.IapDesktop.Application.Settings
             this.Category = category;
             this.currentValue = initialValue;
             this.DefaultValue = defaultValue;
-            
+
             Debug.Assert(!this.IsDirty);
         }
 

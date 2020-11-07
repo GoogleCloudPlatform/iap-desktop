@@ -67,7 +67,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.Adapters
         }
 
         public void ActivateCustomProxySettings(
-            Uri proxyAddress, 
+            Uri proxyAddress,
             IEnumerable<string> bypassList,
             ICredentials credentials)
         {
@@ -112,7 +112,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.Adapters
                 }
 
                 ActivateCustomProxySettings(
-                    new Uri(settings.ProxyUrl.StringValue), 
+                    new Uri(settings.ProxyUrl.StringValue),
                     null,
                     credential);
             }

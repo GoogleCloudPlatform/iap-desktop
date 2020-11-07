@@ -87,10 +87,10 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Events
             }
         }
 
-        public string DeviceState 
+        public string DeviceState
             => NullIfEmpty(this.LogRecord.ProtoPayload?.Metadata?.Value<string>("device_state"));
 
-        public string DeviceId 
+        public string DeviceId
             => NullIfEmpty(this.LogRecord.ProtoPayload?.Metadata?.Value<string>("device_id"));
 
         public abstract string Message { get; }

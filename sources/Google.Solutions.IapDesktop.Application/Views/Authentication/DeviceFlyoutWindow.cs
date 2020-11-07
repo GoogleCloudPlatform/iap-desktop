@@ -32,8 +32,8 @@ namespace Google.Solutions.IapDesktop.Application.Views.Authentication
 
         public DeviceFlyoutWindow(DeviceFlyoutViewModel viewModel) : base()
         {
-            this.viewModel = viewModel; 
-            
+            this.viewModel = viewModel;
+
             InitializeComponent();
 
             this.enrollmentStateLabel.Text = this.viewModel.EnrollmentStateDescription;

@@ -78,7 +78,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Logs
         public bool IsSystemEvent => this.LogName.EndsWith("cloudaudit.googleapis.com%2Fsystem_event");
 
         public bool IsActivityEvent => this.LogName.EndsWith("cloudaudit.googleapis.com%2Factivity");
-        
+
         public bool IsDataAccessEvent => this.LogName.EndsWith("cloudaudit.googleapis.com%2Fdata_access");
 
         //---------------------------------------------------------------------

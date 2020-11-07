@@ -30,7 +30,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Integration
     [TestFixture]
     public class TestConnectionBroker : FixtureBase
     {
-        private static readonly InstanceLocator SampleLocator 
+        private static readonly InstanceLocator SampleLocator
             = new InstanceLocator("project-1", "zone-1", "instance-1");
 
         [Test]

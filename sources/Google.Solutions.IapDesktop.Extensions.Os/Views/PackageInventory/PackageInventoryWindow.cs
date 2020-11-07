@@ -24,6 +24,7 @@ using Google.Solutions.IapDesktop.Application.Controls;
 using Google.Solutions.IapDesktop.Application.ObjectModel;
 using Google.Solutions.IapDesktop.Application.Services.Integration;
 using Google.Solutions.IapDesktop.Application.Views;
+using Google.Solutions.IapDesktop.Application.Views.Dialog;
 using Google.Solutions.IapDesktop.Application.Views.ProjectExplorer;
 using System;
 using System.Diagnostics;
@@ -97,7 +98,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Os.Views.PackageInventory
             var openUrl = new ToolStripMenuItem(
                 "&Additional information...",
                 null,
-                (sender, args) => {
+                (sender, args) =>
+                {
                     using (Process.Start(new ProcessStartInfo()
                     {
                         UseShellExecute = true,
@@ -134,7 +136,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Os.Views.PackageInventory
             // child dialogs. With KeyUp, we'd get an event if a child dialog
             // is dismissed by pressing Enter.
 
-            if ((e.Control && e.KeyCode == Keys.F) || 
+            if ((e.Control && e.KeyCode == Keys.F) ||
                  e.KeyCode == Keys.F3)
             {
                 this.packageList.SetFocusOnSearchBox();

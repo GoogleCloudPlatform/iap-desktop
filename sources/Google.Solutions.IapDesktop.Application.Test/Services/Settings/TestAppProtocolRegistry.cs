@@ -19,11 +19,11 @@
 // under the License.
 //
 
-using Google.Solutions.IapDesktop.Application.Services.Persistence;
+using Google.Solutions.IapDesktop.Application.Services.Settings;
 using Microsoft.Win32;
 using NUnit.Framework;
 
-namespace Google.Solutions.IapDesktop.Application.Test.Services.Persistence
+namespace Google.Solutions.IapDesktop.Application.Test.Services.Settings
 {
     [TestFixture]
     public class TestAppProtocolRegistry : FixtureBase

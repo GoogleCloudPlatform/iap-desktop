@@ -76,7 +76,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Controls
             var tsv = this.listView.ToTabSeparatedText(false);
 
             Assert.AreEqual(
-                "\"The 'first' header\"\t\"The second header\"\r\n\""+
+                "\"The 'first' header\"\t\"The second header\"\r\n\"" +
                 "'first' item\"\t\"-42\"\r\n",
                 tsv);
         }

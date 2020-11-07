@@ -67,7 +67,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.Integration
         {
             foreach (var broker in this.serviceProvider
                 .GetServicesByCategory<IConnectionBroker>())
-            { 
+            {
                 if (broker.TryActivate(vmInstance))
                 {
                     return true;

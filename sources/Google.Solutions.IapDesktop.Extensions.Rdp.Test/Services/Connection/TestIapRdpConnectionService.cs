@@ -23,21 +23,21 @@ using Google.Solutions.Common.Locator;
 using Google.Solutions.Common.Test;
 using Google.Solutions.IapDesktop.Application.ObjectModel;
 using Google.Solutions.IapDesktop.Application.Services.Integration;
+using Google.Solutions.IapDesktop.Application.Test.ObjectModel;
+using Google.Solutions.IapDesktop.Application.Util;
 using Google.Solutions.IapDesktop.Application.Views;
 using Google.Solutions.IapDesktop.Application.Views.ProjectExplorer;
-using Google.Solutions.IapDesktop.Application.Util;
 using Google.Solutions.IapDesktop.Extensions.Rdp.Services.Connection;
-using Google.Solutions.IapDesktop.Extensions.Rdp.Views.Credentials;
 using Google.Solutions.IapDesktop.Extensions.Rdp.Services.Tunnel;
-using Google.Solutions.IapDesktop.Application.Test.ObjectModel;
+using Google.Solutions.IapDesktop.Extensions.Rdp.Views.ConnectionSettings;
+using Google.Solutions.IapDesktop.Extensions.Rdp.Views.Credentials;
+using Google.Solutions.IapDesktop.Extensions.Rdp.Views.RemoteDesktop;
+using Google.Solutions.IapTunneling.Iap;
 using Moq;
 using NUnit.Framework;
 using System;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using Google.Solutions.IapTunneling.Iap;
-using Google.Solutions.IapDesktop.Extensions.Rdp.Views.RemoteDesktop;
-using Google.Solutions.IapDesktop.Extensions.Rdp.Views.ConnectionSettings;
 
 namespace Google.Solutions.IapDesktop.Extensions.Rdp.Test.Services.Connection
 {

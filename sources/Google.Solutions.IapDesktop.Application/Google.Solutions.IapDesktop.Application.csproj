@@ -132,7 +132,7 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
-    <Compile Include="Services\Persistence\AppProtocolRegistry.cs" />
+    <Compile Include="Services\Settings\AppProtocolRegistry.cs" />
     <Compile Include="Services\Settings\ApplicationSettingsRepository.cs" />
     <Compile Include="Services\Settings\AuthSettingsRepository.cs" />
     <Compile Include="Services\Settings\IProjectRepository.cs" />
@@ -161,7 +161,7 @@
     <Compile Include="Controls\FlatListView.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="Views\ConfirmationDialog.cs" />
+    <Compile Include="Views\Dialog\ConfirmationDialog.cs" />
     <Compile Include="Views\Diagnostics\DebugDockingWindow.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -180,6 +180,7 @@
     </Compile>
     <Compile Include="Util\HtmlClipboardFormat.cs" />
     <Compile Include="Util\IIapUrlHandler.cs" />
+    <Compile Include="Views\Dialog\UnsafeNativeMethods.cs" />
     <Compile Include="Views\FlyoutWindow.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -228,7 +229,7 @@
     <Compile Include="Views\SlowLoadingPane.Designer.cs">
       <DependentUpon>SlowLoadingPane.cs</DependentUpon>
     </Compile>
-    <Compile Include="Views\TaskDialog.cs" />
+    <Compile Include="Views\Dialog\TaskDialog.cs" />
     <Compile Include="Services\UpdateService.cs" />
     <Compile Include="TraceSources.cs" />
     <Compile Include="Util\LeastRecentlyUsedCache.cs" />
@@ -247,7 +248,7 @@
     <Compile Include="Views\Diagnostics\DebugJobServiceWindow.Designer.cs">
       <DependentUpon>DebugJobServiceWindow.cs</DependentUpon>
     </Compile>
-    <Compile Include="Views\ExceptionDialog.cs" />
+    <Compile Include="Views\Dialog\ExceptionDialog.cs" />
     <Compile Include="Views\IMainForm.cs" />
     <Compile Include="Views\ProjectExplorer\IProjectExplorer.cs" />
     <Compile Include="Views\ProjectExplorer\IProjectExplorerNode.cs" />
@@ -296,7 +297,6 @@
     <None Include="packages.config" />
     <None Include="Services\Adapters\README.md" />
     <None Include="Services\Integration\README.md" />
-    <None Include="Services\Persistence\README.md" />
     <None Include="Views\README.md" />
   </ItemGroup>
   <ItemGroup>

@@ -99,8 +99,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Services.Connection
                 true))
             {
                 return ZoneConnectionSettings.FromKey(
-                    projectId, 
-                    zoneId, 
+                    projectId,
+                    zoneId,
                     key);
             }
         }
@@ -128,8 +128,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Services.Connection
                 true))
             {
                 return VmInstanceConnectionSettings.FromKey(
-                    projectId, 
-                    instanceName, 
+                    projectId,
+                    instanceName,
                     key);
             }
         }

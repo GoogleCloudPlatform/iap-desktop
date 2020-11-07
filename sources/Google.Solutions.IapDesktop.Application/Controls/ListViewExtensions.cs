@@ -21,7 +21,6 @@
 
 using Google.Solutions.IapDesktop.Application.Properties;
 using Google.Solutions.IapDesktop.Application.Util;
-using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Web;
@@ -40,7 +39,7 @@ namespace Google.Solutions.IapDesktop.Application.Controls
             var items = selectedItemsOnly
                     ? listView.SelectedItems.Cast<ListViewItem>()
                     : listView.Items.Cast<ListViewItem>();
-            
+
             var buffer = new StringBuilder();
             buffer.Append(string.Join(
                 "\t",
@@ -74,7 +73,7 @@ namespace Google.Solutions.IapDesktop.Application.Controls
 
             buffer.AppendLine("<tr>");
             buffer.AppendLine(string.Join(
-                string.Empty, 
+                string.Empty,
                 headers.Select(h => $"<th>{HttpUtility.HtmlEncode(h.Text)}</th>")));
             buffer.AppendLine("</tr>");
 
@@ -82,7 +81,7 @@ namespace Google.Solutions.IapDesktop.Application.Controls
             {
                 buffer.AppendLine("<tr>");
                 buffer.AppendLine(string.Join(
-                    string.Empty, 
+                    string.Empty,
                     item.SubItems
                         .Cast<ListViewSubItem>()
                         .Select(s => $"<td>{HttpUtility.HtmlEncode(s.Text)}</td>")));

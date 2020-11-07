@@ -50,8 +50,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Events.Access
             : TunnelDescription;
 
         private string TunnelDescription
-            => $"Authorize tunnel from {this.SourceHost ?? "(unknown)"} to " + 
-                $"{DestinationHost ?? "(unknown host)"}:{this.DestinationPort ?? "(unknown port)"} "+
+            => $"Authorize tunnel from {this.SourceHost ?? "(unknown)"} to " +
+                $"{DestinationHost ?? "(unknown host)"}:{this.DestinationPort ?? "(unknown port)"} " +
                 $"using {base.UserAgentShort ?? "(unknown agent"}";
 
         //---------------------------------------------------------------------

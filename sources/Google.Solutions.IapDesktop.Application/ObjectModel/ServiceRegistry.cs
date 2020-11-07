@@ -187,7 +187,7 @@ namespace Google.Solutions.IapDesktop.Application.ObjectModel
             {
                 throw new ArgumentException("Category must be an interface");
             }
-            
+
             if (!this.singletons.ContainsKey(serviceType) &&
                 !this.transients.ContainsKey(serviceType))
             {
@@ -201,8 +201,8 @@ namespace Google.Solutions.IapDesktop.Application.ObjectModel
             else
             {
                 this.categories[categoryType] = new List<Type>()
-                { 
-                    serviceType 
+                {
+                    serviceType
                 };
             }
         }

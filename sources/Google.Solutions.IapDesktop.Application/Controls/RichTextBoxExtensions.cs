@@ -32,15 +32,15 @@ namespace Google.Solutions.IapDesktop.Application.Controls
         {
             var rect = new UnsafeNativeMethods.RECT();
             UnsafeNativeMethods.SendMessageRect(
-                textBox.Handle, 
-                UnsafeNativeMethods.EM_GETRECT, 
-                0, 
+                textBox.Handle,
+                UnsafeNativeMethods.EM_GETRECT,
+                0,
                 ref rect);
 
             var newRect = new UnsafeNativeMethods.RECT(
                 padding,
-                padding, 
-                rect.Right  - padding * 2, 
+                padding,
+                rect.Right - padding * 2,
                 rect.Bottom - padding * 2);
 
             UnsafeNativeMethods.SendMessageRect(

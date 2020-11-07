@@ -26,13 +26,12 @@ using Google.Solutions.IapDesktop.Extensions.Activity.Logs;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
 
 namespace Google.Solutions.IapDesktop.Extensions.Activity.Events
 {
     public static class EventFactory
     {
-        
+
         private readonly static IDictionary<string, Func<LogRecord, EventBase>> lifecycleEvents
             = new Dictionary<string, Func<LogRecord, EventBase>>()
             {

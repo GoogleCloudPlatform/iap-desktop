@@ -40,7 +40,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Os.Views.PackageInventory
         : ModelCachingViewModelBase<IProjectExplorerNode, PackageInventoryModel>
     {
         private const int ModelCacheCapacity = 5;
-        
+
         private readonly PackageInventoryType inventoryType;
         private readonly IServiceProvider serviceProvider;
 

@@ -93,7 +93,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Adapters
                     t3rrQe4VwU22F5Hud/pDxM09CHoAp6s5Xk4i5TEVMBMGCSqGSIb3DQEJFTEGBAQB
                     AAAAMDswHzAHBgUrDgMCGgQUvimjWhbfkj8p2K4QIulCZWCmly8EFFi+fHv0Hz2l
                     08dwKJjVk0fmFAt8AgIH0A==
-                    "), 
+                    "),
                 "password");
 
         [SetUp]
@@ -126,7 +126,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Adapters
             Assert.IsNotNull(certificates);
             Assert.AreEqual(1, certificates.Count());
             Assert.AreEqual(
-                TestCertificateStoreAdapter.ExampleCertificate.Thumbprint, 
+                TestCertificateStoreAdapter.ExampleCertificate.Thumbprint,
                 certificates.First().Thumbprint);
         }
     }

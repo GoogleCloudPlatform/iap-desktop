@@ -36,8 +36,8 @@ namespace Google.Solutions.IapDesktop.Application.ObjectModel
         public ServiceVisibility Visibility { get; } = ServiceVisibility.Scoped;
 
         public ServiceAttribute(
-            Type serviceInterface, 
-            ServiceLifetime lifetime, 
+            Type serviceInterface,
+            ServiceLifetime lifetime,
             ServiceVisibility visibility)
         {
             if (serviceInterface != null && !serviceInterface.IsInterface)

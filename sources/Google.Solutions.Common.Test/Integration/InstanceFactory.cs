@@ -42,7 +42,7 @@ namespace Google.Solutions.Common.Test.Integration
         internal const string GuestAttributeToAwaitKey = "guest-attribute-to-await";
 
         private static async Task AwaitInstanceCreatedAndReady(
-            InstancesResource resource, 
+            InstancesResource resource,
             InstanceLocator locator)
         {
             for (int i = 0; i < 60; i++)
@@ -65,13 +65,13 @@ namespace Google.Solutions.Common.Test.Integration
                         locator.ProjectId,
                         locator.Zone,
                         locator.Name);
-                        request.QueryPath = GuestAttributeNamespace + "/";
+                    request.QueryPath = GuestAttributeNamespace + "/";
                     var guestAttributes = await request.ExecuteAsync();
 
                     if (guestAttributes
                         .QueryValue
                         .Items
-                        .Where(item => item.Namespace__ == GuestAttributeNamespace && 
+                        .Where(item => item.Namespace__ == GuestAttributeNamespace &&
                                        item.Key == guestAttributeToAwait)
                         .Any())
                     {
@@ -233,7 +233,7 @@ namespace Google.Solutions.Common.Test.Integration
                 else
                 {
                     TraceSources.Common.TraceError(
-                        "Creating instance {0} failed, current status is {1}", 
+                        "Creating instance {0} failed, current status is {1}",
                         locator.Name,
                         instance.Status);
                     TraceSources.Common.TraceError(e);

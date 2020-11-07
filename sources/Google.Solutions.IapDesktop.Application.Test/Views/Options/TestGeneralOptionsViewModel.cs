@@ -19,7 +19,6 @@
 // under the License.
 //
 
-using Google.Solutions.IapDesktop.Application.Services.Persistence;
 using Google.Solutions.IapDesktop.Application.Services.Settings;
 using Google.Solutions.IapDesktop.Application.Util;
 using Google.Solutions.IapDesktop.Application.Views;
@@ -44,7 +43,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views.Options
         {
             hkcu.DeleteSubKeyTree(TestKeyPath, false);
             var baseKey = hkcu.CreateSubKey(TestKeyPath);
-            
+
             this.settingsRepository = new ApplicationSettingsRepository(baseKey);
             this.protocolRegistryMock = new Mock<IAppProtocolRegistry>();
         }
@@ -202,8 +201,8 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views.Options
             var viewModel = new GeneralOptionsViewModel(
                 this.settingsRepository,
                 this.protocolRegistryMock.Object,
-                new HelpService()); 
-            
+                new HelpService());
+
             Assert.IsFalse(viewModel.IsDirty);
 
             viewModel.IsDeviceCertificateAuthenticationEnabled = !viewModel.IsDeviceCertificateAuthenticationEnabled;
@@ -244,7 +243,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views.Options
             this.protocolRegistryMock.Verify(r => r.Register(
                     It.Is<string>(s => s == IapRdpUrl.Scheme),
                     It.Is<string>(s => s == GeneralOptionsViewModel.FriendlyName),
-                    It.IsAny<string>()), 
+                    It.IsAny<string>()),
                 Times.Once);
         }
 
@@ -260,7 +259,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views.Options
             viewModel.ApplyChanges();
 
             this.protocolRegistryMock.Verify(r => r.Unregister(
-                    It.Is<string>(s => s == IapRdpUrl.Scheme)), 
+                    It.Is<string>(s => s == IapRdpUrl.Scheme)),
                 Times.Once);
         }
     }

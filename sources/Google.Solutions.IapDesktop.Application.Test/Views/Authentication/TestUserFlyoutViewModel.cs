@@ -55,7 +55,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views.Authentication
             var viewModel = new UserFlyoutViewModel(
                 authorization.Object,
                 new CloudConsoleService());
-            
+
             Assert.AreEqual("bob@example.com", viewModel.Email);
             Assert.AreEqual("", viewModel.ManagedBy);
         }

@@ -37,7 +37,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Util
                 "StartHTML:00000095\r\n" +
                 "EndHTML:00000187\r\n" +
                 "StartFragment:00000138\r\n" +
-                "EndFragment:00000154<!DOCTYPE><html><body><!--StartFragment -->"+
+                "EndFragment:00000154<!DOCTYPE><html><body><!--StartFragment -->" +
                 "<b>some html</b><!--EndFragment --></body></html>",
                 formatted);
         }

@@ -197,7 +197,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.ObjectModel
         public void WhenCategoryIsClass_ThenAddServiceToCategoryThrowsArgumentException()
         {
             var registry = new ServiceRegistry();
-            
+
             Assert.Throws<ArgumentException>(() => registry.AddServiceToCategory<Uri, Uri>());
         }
 

@@ -29,11 +29,11 @@ namespace Google.Solutions.IapDesktop.Application.Controls
     {
         public static void EnableRichTextDescriptions(this PropertyGrid propertyGrid)
         {
-            var rtfLabel = new RichTextBox() 
-            { 
-                Multiline = true, 
-                WordWrap = true, 
-                ReadOnly = true, 
+            var rtfLabel = new RichTextBox()
+            {
+                Multiline = true,
+                WordWrap = true,
+                ReadOnly = true,
                 BorderStyle = BorderStyle.None,
                 DetectUrls = true
             };
@@ -55,17 +55,17 @@ namespace Google.Solutions.IapDesktop.Application.Controls
                 .Controls
                 .OfType<Label>()
                 .Last();
-            descriptionLabel.TextChanged += delegate 
+            descriptionLabel.TextChanged += delegate
             {
                 rtfLabel.Text = descriptionLabel.Text;
             };
-            
-            descriptionLabel.SizeChanged += delegate 
+
+            descriptionLabel.SizeChanged += delegate
             {
                 rtfLabel.Size = descriptionLabel.Size;
             };
-            
-            descriptionLabel.LocationChanged += delegate 
+
+            descriptionLabel.LocationChanged += delegate
             {
                 rtfLabel.Location = descriptionLabel.Location;
             };

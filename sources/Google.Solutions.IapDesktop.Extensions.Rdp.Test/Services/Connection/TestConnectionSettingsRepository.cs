@@ -35,7 +35,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Test.Services.Connection
     {
         private const string TestKeyPath = @"Software\Google\__Test";
         private readonly RegistryKey hkcu = RegistryKey.OpenBaseKey(
-            RegistryHive.CurrentUser, 
+            RegistryHive.CurrentUser,
             RegistryView.Default);
 
         private ProjectRepository projectRepository;
@@ -254,7 +254,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Test.Services.Connection
             originalSettings.RedirectClipboard.Value = RdpRedirectClipboard.Enabled;
 
             this.repository.SetVmInstanceSettings(originalSettings);
-            
+
 
             var settings = this.repository.GetVmInstanceSettings("pro-1", "vm-1");
 

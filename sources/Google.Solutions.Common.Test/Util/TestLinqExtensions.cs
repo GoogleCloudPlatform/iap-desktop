@@ -109,7 +109,7 @@ namespace Google.Solutions.Common.Test.Util
         [Test]
         public void WhenEnumNotEmpty_ThenConcatItemAppendsItem()
         {
-            var e = new[] {"foo", "bar"}
+            var e = new[] { "foo", "bar" }
                 .ConcatItem("test");
 
             Assert.AreEqual(3, e.Count());

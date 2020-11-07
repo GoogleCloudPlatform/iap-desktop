@@ -21,7 +21,6 @@
 
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Requests;
-using Google.Apis.Services;
 using Google.Apis.Storage.v1;
 using Google.Apis.Storage.v1.Data;
 using Google.Solutions.Common.Diagnostics;
@@ -156,7 +155,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services.Adapters
 
                     return objects;
                 }
-                catch (GoogleApiException e) 
+                catch (GoogleApiException e)
                     when (e.Error != null && (e.Error.Code == 403 || e.Error.Code == 404))
                 {
                     throw new ResourceAccessDeniedException(
@@ -187,7 +186,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services.Adapters
                     buffer.Seek(0, SeekOrigin.Begin);
                     return buffer;
                 }
-                catch (GoogleApiException e) 
+                catch (GoogleApiException e)
                     when ((e.Error != null && (e.Error.Code == 403 || e.Error.Code == 404)) ||
                           e.Message == "Not Found" ||
                           e.Message.Contains("storage.objects.get access"))

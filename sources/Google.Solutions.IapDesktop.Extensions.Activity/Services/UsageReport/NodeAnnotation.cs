@@ -23,9 +23,7 @@ using Google.Solutions.Common.Diagnostics;
 using Google.Solutions.Common.Locator;
 using Google.Solutions.IapDesktop.Application;
 using Newtonsoft.Json;
-using System.Collections;
 using System.Collections.Generic;
-using System.Diagnostics;
 
 namespace Google.Solutions.IapDesktop.Extensions.Activity.Services.UsageReport
 {
@@ -75,7 +73,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services.UsageReport
             else
             {
                 TraceSources.IapDesktop.TraceWarning(
-                    "Unrecognized node type {0}, assuming defaults", 
+                    "Unrecognized node type {0}, assuming defaults",
                     nodeType);
 
                 return knownTypes[defaultNodeType];
