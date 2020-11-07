@@ -19,17 +19,13 @@
 // under the License.
 //
 
-using Google.Apis.Auth.OAuth2;
 using Google.Apis.Logging.v2;
 using Google.Apis.Logging.v2.Data;
-using Google.Solutions.Common.Auth;
 using Google.Solutions.Common.Locator;
-using Google.Solutions.Common.Test;
 using Google.Solutions.Common.Test.Integration;
 using Google.Solutions.Common.Util;
-using Google.Solutions.IapDesktop.Application.Services.Adapters;
-using Google.Solutions.IapDesktop.Application.Services.SecureConnect;
 using Google.Solutions.IapDesktop.Application.Services.Settings;
+using Google.Solutions.IapDesktop.Application.Test;
 using Google.Solutions.IapDesktop.Extensions.Rdp.Services.Tunnel;
 using Google.Solutions.IapTunneling.Iap;
 using Microsoft.Win32;
@@ -39,8 +35,6 @@ using NUnit.Framework;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Net.WebSockets;
-using System.Security.Cryptography.X509Certificates;
 using System.Threading.Tasks;
 
 namespace Google.Solutions.IapDesktop.Extensions.Rdp.Test.Services.Tunnel
@@ -48,7 +42,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Test.Services.Tunnel
     [TestFixture]
     [Category("IntegrationTest")]
     [Category("SecureConnect")]
-    public class TestTunnelServiceWithMtls : FixtureBase
+    public class TestTunnelServiceWithMtls : SecureConnectFixtureBase
     {
         private const string TestKeyPath = @"Software\Google\__Test";
         private ApplicationSettingsRepository applicationSettingsRepository;
@@ -62,24 +56,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Test.Services.Tunnel
             hkcu.DeleteSubKeyTree(TestKeyPath, false);
             this.applicationSettingsRepository = new ApplicationSettingsRepository(
                 hkcu.CreateSubKey(TestKeyPath));
-        }
-
-        private IAuthorizationAdapter CreateAuthorizationAdapterForSecureConnectUser()
-        {
-            var authz = new Mock<IAuthorization>();
-            authz.SetupGet(a => a.Credential).Returns(TestProject.GetSecureConnectCredential());
-
-            var enrollment = new Mock<IDeviceEnrollment>();
-            enrollment.SetupGet(e => e.State)
-                .Returns(DeviceEnrollmentState.Enrolled);
-            enrollment.SetupGet(e => e.Certificate)
-                .Returns(TestProject.GetDeviceCertificate());
-
-            var adapter = new Mock<IAuthorizationAdapter>();
-            adapter.SetupGet(a => a.Authorization).Returns(authz.Object);
-            adapter.SetupGet(a => a.DeviceEnrollment).Returns(enrollment.Object);
-
-            return adapter.Object;
         }
 
         private static async Task<IList<LogEntry>> GetIapAccessLogsForPortAsync(ushort port)

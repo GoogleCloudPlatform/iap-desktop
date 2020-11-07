@@ -116,9 +116,11 @@
     <Compile Include="FixtureBase.cs" />
     <Compile Include="History\TestDataPoint.cs" />
     <Compile Include="History\TestInstanceHistoryBuilder.cs" />
+    <Compile Include="Services\Adapters\TestAuditLogAdapterWithMtls.cs" />
     <Compile Include="Services\Adapters\TestAuditLogStorageSinkAdapter.cs" />
     <Compile Include="Services\Adapters\TestDateRange.cs" />
     <Compile Include="Services\Adapters\TestStorageAdapter.cs" />
+    <Compile Include="Services\Adapters\TestStorageAdapterWithMtls.cs" />
     <Compile Include="Services\Adapters\TestStorageObjectLocator.cs" />
     <Compile Include="Services\UsageReport\TestNodeAnnotation.cs" />
     <Compile Include="Services\UsageReport\TestReportBuilderSources.cs" />
@@ -151,6 +153,10 @@
     <ProjectReference Include="..\Google.Solutions.Common\Google.Solutions.Common.csproj">
       <Project>{fb4c6f4d-32b1-4b0b-ba79-fd47fc4d7912}</Project>
       <Name>Google.Solutions.Common</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Google.Solutions.IapDesktop.Application.Test\Google.Solutions.IapDesktop.Application.Test.csproj">
+      <Project>{BD834B99-2AEE-4160-BC38-1821695D4174}</Project>
+      <Name>Google.Solutions.IapDesktop.Application.Test</Name>
     </ProjectReference>
     <ProjectReference Include="..\Google.Solutions.IapDesktop.Application\Google.Solutions.IapDesktop.Application.csproj">
       <Project>{842B003E-6EEB-429D-A3A1-53B4E642E83B}</Project>

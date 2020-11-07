@@ -47,6 +47,14 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.Services.Adapters
             GcsTestData.CreateObjectIfNotExist(SampleLocator, SampleData);
         }
 
+        [Test]
+        public async Task WhenNoEnrollmentProvided_ThenDeviceCertiticateAuthenticationIsOff(
+            [Credential(Role = PredefinedRole.ComputeViewer)] ResourceTask<ICredential> credential)
+        {
+            var adapter = new StorageAdapter(await credential);
+            Assert.IsFalse(adapter.IsDeviceCertiticateAuthenticationEnabled);
+        }
+
         //---------------------------------------------------------------------
         // ListBucketsAsync
         //---------------------------------------------------------------------

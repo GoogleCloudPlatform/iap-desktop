@@ -21,6 +21,7 @@
 
 using Google.Solutions.Common.Net;
 using System;
+using System.Diagnostics;
 using System.Reflection;
 using System.Runtime.CompilerServices;
 
@@ -37,4 +38,6 @@ public static class Globals
         Version = Assembly.GetExecutingAssembly().GetName().Version;
         UserAgent = new UserAgent("IAP-Desktop", Version);
     }
+
+    public static bool IsTestCase => Assembly.GetEntryAssembly() == null;
 }

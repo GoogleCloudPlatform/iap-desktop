@@ -62,23 +62,49 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services.Adapters
     [Service(typeof(IAuditLogAdapter), ServiceLifetime.Transient)]
     public class AuditLogAdapter : IAuditLogAdapter
     {
+        private const string MtlsBaseUri = "https://logging.mtls.googleapis.com/";
+
         private const int MaxPageSize = 1000;
         private const int MaxRetries = 10;
         private static readonly TimeSpan initialBackOff = TimeSpan.FromMilliseconds(100);
 
         private readonly LoggingService service;
 
-        public AuditLogAdapter(ICredential credential)
+        public bool IsDeviceCertiticateAuthenticationEnabled
+            => this.service.IsMtlsEnabled() && this.service.IsClientCertificateProvided();
+
+        public AuditLogAdapter(
+            ICredential credential,
+            IDeviceEnrollment deviceEnrollment)
         {
-            this.service = new LoggingService(new BaseClientService.Initializer
-            {
-                HttpClientInitializer = credential,
-                ApplicationName = Globals.UserAgent.ToApplicationName()
-            });
+            this.service = new LoggingService(
+                ClientServiceFactory.ForMtlsEndpoint(
+                    credential,
+                    deviceEnrollment,
+                    MtlsBaseUri));
+
+            Debug.Assert(
+                (deviceEnrollment?.Certificate != null &&
+                    HttpClientHandlerExtensions.IsClientCertificateSupported)
+                    == IsDeviceCertiticateAuthenticationEnabled);
+        }
+
+        public AuditLogAdapter(ICredential credential)
+            : this(credential, null)
+        {
+            // This constructor should only be used for test cases
+            Debug.Assert(Globals.IsTestCase);
+        }
+
+        public AuditLogAdapter(IAuthorizationAdapter authService)
+            : this(
+                  authService.Authorization.Credential,
+                  authService.DeviceEnrollment)
+        {
         }
 
         public AuditLogAdapter(IServiceProvider serviceProvider)
-            : this(serviceProvider.GetService<IAuthorizationAdapter>().Authorization.Credential)
+            : this(serviceProvider.GetService<IAuthorizationAdapter>())
         {
         }
 
