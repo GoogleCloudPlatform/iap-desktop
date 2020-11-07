@@ -138,6 +138,7 @@
     <Compile Include="Services\Settings\IProjectRepository.cs" />
     <Compile Include="Services\Settings\ProjectRepository.cs" />
     <Compile Include="Services\Settings\SettingRepositoryBase.cs" />
+    <Compile Include="Services\Settings\ToolWindowStateRepository.cs" />
     <Compile Include="Settings\ISetting.cs" />
     <Compile Include="Settings\RegistrySetting.cs" />
     <Compile Include="Settings\SettingBase.cs" />

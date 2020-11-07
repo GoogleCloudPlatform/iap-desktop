@@ -22,11 +22,12 @@
 using Google.Solutions.IapDesktop.Application.Services.Settings;
 using Microsoft.Win32;
 using NUnit.Framework;
+using WeifenLuo.WinFormsUI.Docking;
 
 namespace Google.Solutions.IapDesktop.Application.Test.Services.Settings
 {
     [TestFixture]
-    public class TestApplicationSettingsRepository : FixtureBase
+    public class TestToolWindowStateRepository : FixtureBase
     {
         private const string TestKeyPath = @"Software\Google\__Test";
         private readonly RegistryKey hkcu = RegistryKey.OpenBaseKey(
@@ -43,38 +44,34 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Settings
         public void WhenKeyEmpty_ThenDefaultsAreProvided()
         {
             var baseKey = hkcu.CreateSubKey(TestKeyPath);
-            var repository = new ApplicationSettingsRepository(baseKey);
+            var repository = new ToolWindowStateRepository(baseKey);
 
-            var settings = repository.GetSettings();
+            var settings = repository.GetSetting(
+                "Sample1",
+                DockState.Unknown);
 
-            Assert.AreEqual(false, settings.IsMainWindowMaximized.Value);
-            Assert.AreEqual(0, settings.MainWindowHeight.Value);
-            Assert.AreEqual(0, settings.MainWindowWidth.Value);
-            Assert.AreEqual(true, settings.IsUpdateCheckEnabled.Value);
-            Assert.AreEqual(0, settings.LastUpdateCheck.Value);
+            Assert.AreEqual(DockState.Unknown, settings.DockState.EnumValue);
+            Assert.AreEqual(DockState.Unknown, settings.DockState.DefaultValue);
         }
 
         [Test]
         public void WhenSettingsSaved_ThenSettingsCanBeRead()
         {
             var baseKey = hkcu.CreateSubKey(TestKeyPath);
-            var repository = new ApplicationSettingsRepository(baseKey);
+            var repository = new ToolWindowStateRepository(baseKey);
 
-            var settings = repository.GetSettings();
-            settings.IsMainWindowMaximized.BoolValue = true;
-            settings.MainWindowHeight.IntValue = 480;
-            settings.MainWindowWidth.IntValue = 640;
-            settings.IsUpdateCheckEnabled.BoolValue = false;
-            settings.LastUpdateCheck.LongValue = 123L;
-            repository.SetSettings(settings);
+            var settings = repository.GetSetting(
+                "Sample1",
+                DockState.Unknown);
 
-            settings = repository.GetSettings();
+            settings.DockState.EnumValue = DockState.Float;
+            repository.SetSetting(settings);
 
-            Assert.AreEqual(true, settings.IsMainWindowMaximized.BoolValue);
-            Assert.AreEqual(480, settings.MainWindowHeight.IntValue);
-            Assert.AreEqual(640, settings.MainWindowWidth.IntValue);
-            Assert.AreEqual(false, settings.IsUpdateCheckEnabled.BoolValue);
-            Assert.AreEqual(123, settings.LastUpdateCheck.LongValue);
+            settings = repository.GetSetting(
+                "Sample1",
+                DockState.Unknown);
+
+            Assert.AreEqual(DockState.Float, settings.DockState.EnumValue);
         }
     }
 }
