@@ -33,7 +33,8 @@ namespace Google.Solutions.IapDesktop.Application.Views
     [SkipCodeCoverage("GUI plumbing")]
     public partial class ToolWindow : DockContent
     {
-        private readonly DockPanel dockPanel;
+        private readonly DockPanel panel;
+        private readonly DockState defaultDockState;
 
         public ContextMenuStrip TabContextStrip => this.contextMenuStrip;
 
@@ -43,9 +44,12 @@ namespace Google.Solutions.IapDesktop.Application.Views
             AutoScaleMode = AutoScaleMode.Dpi;
         }
 
-        public ToolWindow(IServiceProvider serviceProvider) : this()
+        public ToolWindow(
+            IServiceProvider serviceProvider,
+            DockState defaultDockState) : this()
         {
-            this.dockPanel = serviceProvider.GetService<IMainForm>().MainPanel;
+            this.panel = serviceProvider.GetService<IMainForm>().MainPanel;
+            this.defaultDockState = defaultDockState;
         }
 
         //---------------------------------------------------------------------
@@ -64,24 +68,18 @@ namespace Google.Solutions.IapDesktop.Application.Views
             }
         }
 
-        public void ShowWindow()
+        public virtual void ShowWindow()
         {
-            Debug.Assert(this.dockPanel != null);
+            Debug.Assert(this.panel != null);
 
             this.TabText = this.Text;
-            this.ShowOrActivate(this.dockPanel, this.DefaultState);
-        }
 
-        protected virtual DockState DefaultState => DockState.DockBottomAutoHide;
-
-        public void ShowOrActivate(DockPanel dockPanel, DockState defaultState)
-        {
             // NB. IsHidden indicates that the window is not shown at all,
             // not even as auto-hide.
             if (this.IsHidden)
             {
                 // Show in default position.
-                Show(dockPanel, defaultState);
+                Show(this.panel, this.defaultDockState);
             }
 
             // If the window is in auto-hide mode, simply activating
@@ -92,7 +90,7 @@ namespace Google.Solutions.IapDesktop.Application.Views
                 case DockState.DockBottomAutoHide:
                 case DockState.DockLeftAutoHide:
                 case DockState.DockRightAutoHide:
-                    dockPanel.ActiveAutoHideContent = this;
+                    this.panel.ActiveAutoHideContent = this;
                     break;
             }
 

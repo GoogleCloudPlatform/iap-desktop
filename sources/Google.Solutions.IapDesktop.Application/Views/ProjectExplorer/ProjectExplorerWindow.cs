@@ -45,7 +45,6 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
     [ComVisible(false)]
     public partial class ProjectExplorerWindow : ToolWindow, IProjectExplorer
     {
-        private readonly DockPanel dockPanel;
         private readonly IMainForm mainForm;
         private readonly IEventService eventService;
         private readonly IJobService jobService;
@@ -60,10 +59,10 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
         public CommandContainer<IProjectExplorerNode> ToolbarCommands { get; }
 
         public ProjectExplorerWindow(IServiceProvider serviceProvider)
+            : base(serviceProvider, DockState.DockLeft)
         {
             InitializeComponent();
 
-            this.dockPanel = serviceProvider.GetService<IMainForm>().MainPanel;
             this.serviceProvider = serviceProvider;
 
             this.TabText = this.Text;
@@ -437,11 +436,6 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
         //---------------------------------------------------------------------
         // IProjectExplorer.
         //---------------------------------------------------------------------
-
-        public void ShowWindow()
-        {
-            ShowOrActivate(this.dockPanel, DockState.DockLeft);
-        }
 
         public async Task RefreshAllProjects()
         {

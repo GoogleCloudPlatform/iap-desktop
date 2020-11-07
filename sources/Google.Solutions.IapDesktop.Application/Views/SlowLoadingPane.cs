@@ -52,6 +52,7 @@ namespace Google.Solutions.IapDesktop.Application.Views
         }
 
         public SlowLoadingPane(string title, IServiceProvider serviceProvider)
+            : base(serviceProvider, WeifenLuo.WinFormsUI.Docking.DockState.Document)
         {
             this.serviceProvider = serviceProvider;
 

@@ -33,7 +33,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.Diagnostics
         : ProjectExplorerTrackingToolWindow<DebugProjectExplorerTrackingViewModel>
     {
         public DebugProjectExplorerTrackingWindow(IServiceProvider serviceProvider)
-            : base(serviceProvider)
+            : base(serviceProvider, WeifenLuo.WinFormsUI.Docking.DockState.DockBottomAutoHide)
         {
             InitializeComponent();
         }

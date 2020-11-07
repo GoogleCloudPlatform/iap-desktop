@@ -41,7 +41,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Views.EventLog
         private readonly EventLogViewModel viewModel;
 
         public EventLogWindow(IServiceProvider serviceProvider)
-            : base(serviceProvider)
+            : base(serviceProvider, WeifenLuo.WinFormsUI.Docking.DockState.DockBottomAutoHide)
         {
             InitializeComponent();
 

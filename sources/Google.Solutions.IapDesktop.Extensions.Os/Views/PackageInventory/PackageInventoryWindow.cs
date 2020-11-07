@@ -39,7 +39,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Os.Views.PackageInventory
         public PackageInventoryWindow(
             PackageInventoryType inventoryType,
             IServiceProvider serviceProvider)
-            : base(serviceProvider)
+            : base(serviceProvider, WeifenLuo.WinFormsUI.Docking.DockState.DockBottomAutoHide)
         {
             this.components = new System.ComponentModel.Container();
 

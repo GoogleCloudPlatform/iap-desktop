@@ -44,6 +44,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.Diagnostics
         private readonly IServiceProvider serviceProvider;
 
         public DebugJobServiceWindow(IServiceProvider serviceProvider)
+            : base(serviceProvider, DockState.DockRightAutoHide)
         {
             InitializeComponent();
 
@@ -67,11 +68,6 @@ namespace Google.Solutions.IapDesktop.Application.Views.Diagnostics
 
             this.dockPanel = serviceProvider.GetService<IMainForm>().MainPanel;
             this.serviceProvider = serviceProvider;
-        }
-
-        public void ShowWindow()
-        {
-            Show(this.dockPanel, DockState.DockRightAutoHide);
         }
 
         public class StatusUpdatedEvent

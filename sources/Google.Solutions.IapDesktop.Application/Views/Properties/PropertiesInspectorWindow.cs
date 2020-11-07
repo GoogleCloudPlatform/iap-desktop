@@ -42,7 +42,9 @@ namespace Google.Solutions.IapDesktop.Application.Views.Properties
         public PropertiesInspectorWindow(
             IServiceProvider serviceProvider,
             IPropertiesInspectorViewModel viewModel)
-            : base(serviceProvider)
+            : base(
+                  serviceProvider,
+                  DockState.DockRightAutoHide)
         {
             this.components = new System.ComponentModel.Container();
             this.viewModel = viewModel;
@@ -110,9 +112,6 @@ namespace Google.Solutions.IapDesktop.Application.Views.Properties
         {
             this.propertyGrid.Refresh();
         }
-
-        protected override DockState DefaultState
-            => WeifenLuo.WinFormsUI.Docking.DockState.DockRightAutoHide;
 
         //---------------------------------------------------------------------
         // ProjectExplorerTrackingToolWindow.

@@ -45,8 +45,12 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
             // Designer only.
         }
 
-        public ProjectExplorerTrackingToolWindow(IServiceProvider serviceProvider) 
-            : base(serviceProvider)
+        public ProjectExplorerTrackingToolWindow(
+            IServiceProvider serviceProvider,
+            DockState defaultDockState) 
+            : base(
+                  serviceProvider,
+                  defaultDockState)
         {
             this.exceptionDialog = serviceProvider.GetService<IExceptionDialog>();
 

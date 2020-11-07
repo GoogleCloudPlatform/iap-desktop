@@ -38,7 +38,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Views.SerialOutput
         public SerialOutputWindow(
             IServiceProvider serviceProvider,
             ushort serialPortNumber)
-            : base(serviceProvider)
+            : base(serviceProvider, WeifenLuo.WinFormsUI.Docking.DockState.DockBottomAutoHide)
         {
             this.components = new System.ComponentModel.Container();
 

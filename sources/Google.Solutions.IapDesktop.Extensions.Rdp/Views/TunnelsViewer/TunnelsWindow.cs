@@ -41,6 +41,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Views.TunnelsViewer
         private readonly TunnelsViewModel viewModel;
 
         public TunnelsWindow(IServiceProvider serviceProvider)
+            : base(serviceProvider, DockState.DockBottomAutoHide)
         {
             InitializeComponent();
 
@@ -96,9 +97,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Views.TunnelsViewer
         // ITunnelsList.
         //---------------------------------------------------------------------
 
-        public void ShowWindow()
+        public override void ShowWindow()
         {
-            ShowOrActivate(this.dockPanel, DockState.DockBottomAutoHide);
+            base.ShowWindow();
 
             this.viewModel.RefreshTunnels();
         }
