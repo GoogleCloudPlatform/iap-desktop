@@ -27,6 +27,7 @@ using Google.Solutions.Common.Test.Integration;
 using Google.Solutions.IapDesktop.Application.Services.Adapters;
 using Google.Solutions.IapDesktop.Extensions.Os.Services.Inventory;
 using Google.Solutions.IapDesktop.Extensions.Os.Views.InstanceProperties;
+using Moq;
 using NUnit.Framework;
 using System.Threading;
 using System.Threading.Tasks;
@@ -65,6 +66,42 @@ namespace Google.Solutions.IapDesktop.Extensions.Os.Test.Views.InstancePropertie
             Assert.IsFalse(model.IsSoleTenant);
             Assert.AreEqual(WindowsInstanceAttribute.DefaultMachineType, model.MachineType);
             Assert.IsNull(model.Tags);
+        }
+
+        [Test]
+        public async Task WhenGuestAttributesDisabledByPolicy_ThenOsPropertiesAreNull(
+            [WindowsInstance] ResourceTask<InstanceLocator> testInstance,
+            [Credential(Role = PredefinedRole.ComputeViewer)] ResourceTask<ICredential> credential)
+        {
+            var locator = await testInstance;
+
+            var gceAdapter = new ComputeEngineAdapter(await credential);
+            var inventoryService = new Mock<IInventoryService>();
+            inventoryService.Setup(s => s.GetInstanceInventoryAsync(
+                    It.IsAny<InstanceLocator>(),
+                    It.IsAny<CancellationToken>()))
+                .Throws(new GoogleApiException("mock", "mock")
+                {
+                    Error = new Apis.Requests.RequestError()
+                    {
+                        Code = 412
+                    }
+                });
+
+            var model = await InstancePropertiesInspectorModel.LoadAsync(
+                await testInstance,
+                gceAdapter,
+                inventoryService.Object,
+                CancellationToken.None);
+
+            Assert.AreEqual(locator.Name, model.InstanceName);
+            Assert.AreEqual("RUNNING", model.Status);
+
+            Assert.IsFalse(model.IsOsInventoryInformationPopulated);
+            Assert.IsNull(model.Architecture);
+            Assert.IsNull(model.KernelVersion);
+            Assert.IsNull(model.OperatingSystemFullName);
+            Assert.IsNull(model.OperatingSystemVersion);
         }
 
         [Test]

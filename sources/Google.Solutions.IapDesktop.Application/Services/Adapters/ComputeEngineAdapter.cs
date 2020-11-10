@@ -23,6 +23,7 @@ using Google.Apis.Auth.OAuth2;
 using Google.Apis.Compute.v1;
 using Google.Apis.Compute.v1.Data;
 using Google.Apis.Requests;
+using Google.Solutions.Common.ApiExtensions;
 using Google.Solutions.Common.ApiExtensions.Instance;
 using Google.Solutions.Common.Diagnostics;
 using Google.Solutions.Common.Locator;
@@ -166,7 +167,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.Adapters
                         projectId).ExecuteAsync(cancellationToken)
                         .ConfigureAwait(false);
                 }
-                catch (GoogleApiException e) when (e.Error != null && e.Error.Code == 403)
+                catch (GoogleApiException e) when (e.IsAccessDenied())
                 {
                     throw new ResourceAccessDeniedException(
                         $"Access to project {projectId} has been denied", e);
@@ -203,7 +204,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.Adapters
 
                     return result;
                 }
-                catch (GoogleApiException e) when (e.Error != null && e.Error.Code == 403)
+                catch (GoogleApiException e) when (e.IsAccessDenied())
                 {
                     throw new ResourceAccessDeniedException(
                         $"Access to VM instances in project {projectId} has been denied", e);
@@ -236,7 +237,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.Adapters
 
                     return result;
                 }
-                catch (GoogleApiException e) when (e.Error != null && e.Error.Code == 403)
+                catch (GoogleApiException e) when (e.IsAccessDenied())
                 {
                     throw new ResourceAccessDeniedException(
                         $"Access to VM instances in project {zoneLocator.ProjectId} has been denied", e);
@@ -258,7 +259,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.Adapters
                         instanceLocator.Name).ExecuteAsync(cancellationToken)
                         .ConfigureAwait(false);
                 }
-                catch (GoogleApiException e) when (e.Error != null && e.Error.Code == 403)
+                catch (GoogleApiException e) when (e.IsAccessDenied())
                 {
                     throw new ResourceAccessDeniedException(
                         $"Access to VM instance {instanceLocator.Name} has been denied", e);
@@ -284,12 +285,12 @@ namespace Google.Solutions.IapDesktop.Application.Services.Adapters
                         .ExecuteAsync(cancellationToken)
                         .ConfigureAwait(false);
                 }
-                catch (GoogleApiException e) when (e.Error != null && e.Error.Code == 404)
+                catch (GoogleApiException e) when (e.IsNotFound())
                 {
                     // No guest attributes present.
                     return null;
                 }
-                catch (GoogleApiException e) when (e.Error != null && e.Error.Code == 403)
+                catch (GoogleApiException e) when (e.IsAccessDenied())
                 {
                     throw new ResourceAccessDeniedException(
                         $"Access to VM instance {instanceLocator.Name} has been denied", e);
@@ -326,7 +327,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.Adapters
 
                     return result;
                 }
-                catch (GoogleApiException e) when (e.Error != null && e.Error.Code == 403)
+                catch (GoogleApiException e) when (e.IsAccessDenied())
                 {
                     throw new ResourceAccessDeniedException(
                         $"Access to disks in project {projectId} has been denied", e);
@@ -363,7 +364,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.Adapters
 
                     return result;
                 }
-                catch (GoogleApiException e) when (e.Error != null && e.Error.Code == 403)
+                catch (GoogleApiException e) when (e.IsAccessDenied())
                 {
                     throw new ResourceAccessDeniedException(
                         $"Access to node groups in project {projectId} has been denied", e);
@@ -393,7 +394,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.Adapters
                             cancellationToken)
                         .ConfigureAwait(false);
                 }
-                catch (GoogleApiException e) when (e.Error != null && e.Error.Code == 403)
+                catch (GoogleApiException e) when (e.IsAccessDenied())
                 {
                     throw new ResourceAccessDeniedException(
                         $"Access to nodes in project {zone.ProjectId} has been denied", e);
@@ -445,16 +446,12 @@ namespace Google.Solutions.IapDesktop.Application.Services.Adapters
                 }
             }
             catch (Exception e) when (
-                e.Unwrap() is GoogleApiException apiEx &&
-                apiEx.Error != null &&
-                apiEx.Error.Code == 404)
+                e.Unwrap() is GoogleApiException apiEx && apiEx.IsNotFound())
             {
                 throw new ResourceNotFoundException($"Image {image} not found", e);
             }
             catch (Exception e) when (
-                e.Unwrap() is GoogleApiException apiEx &&
-                apiEx.Error != null &&
-                (apiEx.Error.Code == 403))
+                e.Unwrap() is GoogleApiException apiEx && apiEx.IsAccessDenied())
             {
                 throw new ResourceAccessDeniedException($"Access to {image} denied", e);
             }

@@ -20,6 +20,7 @@
 //
 
 using Google.Solutions.Common.Locator;
+using Google.Solutions.Common.Test;
 using Google.Solutions.IapDesktop.Application.ObjectModel;
 using Google.Solutions.IapDesktop.Application.Services.Integration;
 using Google.Solutions.IapDesktop.Application.Views.ProjectExplorer;
@@ -37,7 +38,7 @@ using System.Threading.Tasks;
 namespace Google.Solutions.IapDesktop.Extensions.Os.Test.Views.PackageInventory
 {
     [TestFixture]
-    public class TestPackageInventoryViewModel
+    public class TestPackageInventoryViewModel : FixtureBase
     {
         private static GuestOsInfo CreateGuestOsInfo(
             InstanceLocator locator,

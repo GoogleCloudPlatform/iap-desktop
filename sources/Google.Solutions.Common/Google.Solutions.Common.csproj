@@ -67,6 +67,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ApiExtensions\GoogleApiExceptionExtensions.cs" />
     <Compile Include="ApiExtensions\Instance\AddMetadata.cs" />
     <Compile Include="ApiExtensions\Instance\GetSerialPortOutputStream.cs" />
     <Compile Include="ApiExtensions\Instance\MetadataExtensions.cs" />

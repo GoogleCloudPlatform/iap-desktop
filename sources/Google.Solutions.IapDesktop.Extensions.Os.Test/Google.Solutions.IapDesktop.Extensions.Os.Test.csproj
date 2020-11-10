@@ -92,6 +92,7 @@
     <Compile Include="Views\InstanceProperties\TestInstancePropertiesInspectorModel.cs" />
     <Compile Include="Views\InstanceProperties\TestInstancePropertiesInspectorViewModel.cs" />
     <Compile Include="Services\Inventory\TestInventoryService.cs" />
+    <Compile Include="Views\PackageInventory\TestPackageInventoryModel.cs" />
     <Compile Include="Views\PackageInventory\TestPackageInventoryViewModel.cs" />
   </ItemGroup>
   <ItemGroup>
