@@ -19,8 +19,10 @@
 // under the License.
 //
 
+using Google.Solutions.Common.ApiExtensions;
 using Google.Solutions.Common.Diagnostics;
 using Google.Solutions.Common.Locator;
+using Google.Solutions.Common.Util;
 using Google.Solutions.IapDesktop.Application;
 using Google.Solutions.IapDesktop.Application.ObjectModel;
 using Google.Solutions.IapDesktop.Application.Services.Integration;
@@ -205,45 +207,14 @@ namespace Google.Solutions.IapDesktop.Extensions.Os.Views.PackageInventory
                         new JobDescription(
                             $"Loading inventory for {node.DisplayName}",
                             JobUserFeedbackType.BackgroundFeedback),
-                        async jobToken =>
+                        async jobToken => 
                         {
-                            IEnumerable<GuestOsInfo> inventory;
-                            if (node is IProjectExplorerVmInstanceNode vmNode)
-                            {
-                                var info = await inventoryService.GetInstanceInventoryAsync(
-                                        vmNode.Reference,
-                                        jobToken)
-                                    .ConfigureAwait(false);
-                                inventory = info != null
-                                    ? new GuestOsInfo[] { info }
-                                    : Enumerable.Empty<GuestOsInfo>();
-                            }
-                            else if (node is IProjectExplorerZoneNode zoneNode)
-                            {
-                                inventory = await inventoryService.ListZoneInventoryAsync(
-                                        new ZoneLocator(zoneNode.ProjectId, zoneNode.ZoneId),
-                                        OperatingSystems.Windows,
-                                        jobToken)
-                                    .ConfigureAwait(false);
-                            }
-                            else if (node is IProjectExplorerProjectNode projectNode)
-                            {
-                                inventory = await inventoryService.ListProjectInventoryAsync(
-                                        projectNode.ProjectId,
-                                        OperatingSystems.Windows,
-                                        jobToken)
-                                    .ConfigureAwait(false);
-                            }
-                            else
-                            {
-                                // Unknown/unsupported node.
-                                return null;
-                            }
-
-                            return PackageInventoryModel.FromInventory(
-                                node.DisplayName,
-                                this.inventoryType,
-                                inventory);
+                            return await PackageInventoryModel.LoadAsync(
+                                    inventoryService,
+                                    this.inventoryType,
+                                    node,
+                                    jobToken)
+                                .ConfigureAwait(false);
                         }).ConfigureAwait(true);  // Back to original (UI) thread.
                 }
                 finally

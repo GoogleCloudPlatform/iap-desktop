@@ -19,11 +19,19 @@
 // under the License.
 //
 
+using Google.Solutions.Common.ApiExtensions;
+using Google.Solutions.Common.Diagnostics;
 using Google.Solutions.Common.Locator;
+using Google.Solutions.Common.Util;
+using Google.Solutions.IapDesktop.Application;
+using Google.Solutions.IapDesktop.Application.Views.ProjectExplorer;
 using Google.Solutions.IapDesktop.Extensions.Os.Inventory;
+using Google.Solutions.IapDesktop.Extensions.Os.Services.Inventory;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace Google.Solutions.IapDesktop.Extensions.Os.Views.PackageInventory
 {
@@ -43,7 +51,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Os.Views.PackageInventory
             this.Packages = packages;
         }
 
-        public static PackageInventoryModel FromInventory(
+        private static PackageInventoryModel FromInventory(
             string displayName,
             PackageInventoryType inventoryType,
             IEnumerable<GuestOsInfo> inventory)
@@ -75,6 +83,66 @@ namespace Google.Solutions.IapDesktop.Extensions.Os.Views.PackageInventory
                     throw new ArgumentException(nameof(inventoryType));
 
             }
+        }
+
+        public static async Task<PackageInventoryModel> LoadAsync(
+            IInventoryService inventoryService,
+            PackageInventoryType inventoryType,
+            IProjectExplorerNode node,
+            CancellationToken token)
+        {
+            IEnumerable<GuestOsInfo> inventory;
+            try
+            {
+                if (node is IProjectExplorerVmInstanceNode vmNode)
+                {
+                    var info = await inventoryService.GetInstanceInventoryAsync(
+                            vmNode.Reference,
+                            token)
+                        .ConfigureAwait(false);
+                    inventory = info != null
+                        ? new GuestOsInfo[] { info }
+                        : Enumerable.Empty<GuestOsInfo>();
+                }
+                else if (node is IProjectExplorerZoneNode zoneNode)
+                {
+                    inventory = await inventoryService.ListZoneInventoryAsync(
+                            new ZoneLocator(zoneNode.ProjectId, zoneNode.ZoneId),
+                            OperatingSystems.Windows,
+                            token)
+                        .ConfigureAwait(false);
+                }
+                else if (node is IProjectExplorerProjectNode projectNode)
+                {
+                    inventory = await inventoryService.ListProjectInventoryAsync(
+                            projectNode.ProjectId,
+                            OperatingSystems.Windows,
+                            token)
+                        .ConfigureAwait(false);
+                }
+                else
+                {
+                    // Unknown/unsupported node.
+                    return null;
+                }
+            }
+            catch (Exception e) when (e.Unwrap() is GoogleApiException apiEx &&
+                apiEx.IsConstraintViolation())
+            {
+                //
+                // Reading OS inventory data can fail because of a 
+                // `compute.disableGuestAttributesAccess` constraint.
+                //
+                TraceSources.IapDesktop.TraceWarning(
+                    "Failed to load OS inventory data: {0}", e);
+
+                inventory = Enumerable.Empty<GuestOsInfo>();
+            }
+
+            return PackageInventoryModel.FromInventory(
+                node.DisplayName,
+                inventoryType,
+                inventory);
         }
 
         public class Item
