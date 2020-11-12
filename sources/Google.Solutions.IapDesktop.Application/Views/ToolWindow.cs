@@ -39,6 +39,8 @@ namespace Google.Solutions.IapDesktop.Application.Views
         private DockState lastDockState;
 
         public ContextMenuStrip TabContextStrip => this.contextMenuStrip;
+        
+        public bool IsClosed { get; private set; } = false;
 
         public ToolWindow()
         {
@@ -72,7 +74,30 @@ namespace Google.Solutions.IapDesktop.Application.Views
 
                 try
                 {
-                    state.DockState.EnumValue = lastDockState;
+                    if (
+                        // If the window was closed, reset its saved state.
+                        // Note that we're only interested in storing the
+                        // location, not whether the window is visible or not.
+                        this.IsClosed ||
+                        lastDockState == DockState.Hidden ||
+                        lastDockState == DockState.Unknown ||
+
+                        // Ignore Document and Float as these are more complicated
+                        // and not worth the trouble.
+                        lastDockState == DockState.Document ||
+                        lastDockState == DockState.Float)
+                    {
+                        // Ignore Hidden state as we only want to restore
+                        // the dock location, not whether the window is
+                        // shown or not. 
+                        state.DockState.Reset();
+                    }
+                    else
+                    {
+                        // Restore dock state on next run.
+                        state.DockState.EnumValue = lastDockState;
+                    }
+
                     stateRepository.SetSetting(state);
                 }
                 catch (Exception e)
@@ -99,7 +124,7 @@ namespace Google.Solutions.IapDesktop.Application.Views
             }
         }
 
-        public virtual void ShowWindow()
+        public virtual void ShowWindow(bool activate)
         {
             Debug.Assert(this.panel != null);
 
@@ -113,30 +138,35 @@ namespace Google.Solutions.IapDesktop.Application.Views
                 Show(this.panel, this.initialDockState);
             }
 
-            // If the window is in auto-hide mode, simply activating
-            // is not enough.
-            switch (this.VisibleState)
+            if (activate)
             {
-                case DockState.DockTopAutoHide:
-                case DockState.DockBottomAutoHide:
-                case DockState.DockLeftAutoHide:
-                case DockState.DockRightAutoHide:
-                    this.panel.ActiveAutoHideContent = this;
-                    break;
+                // If the window is in auto-hide mode, simply activating
+                // is not enough.
+                switch (this.VisibleState)
+                {
+                    case DockState.DockTopAutoHide:
+                    case DockState.DockBottomAutoHide:
+                    case DockState.DockLeftAutoHide:
+                    case DockState.DockRightAutoHide:
+                        this.panel.ActiveAutoHideContent = this;
+                        break;
+                }
+
+                // Move focus to window.
+                Activate();
+
+                //
+                // If an auto-hide window loses focus and closes, we fail to 
+                // catch that event. 
+                // To force an update, disregard the cached state and re-raise
+                // the UserVisibilityChanged event.
+                //
+                OnUserVisibilityChanged(true);
+                this.wasUserVisible = true;
             }
-
-            // Move focus to window.
-            Activate();
-
-            //
-            // If an auto-hide window loses focus and closes, we fail to 
-            // catch that event. 
-            // To force an update, disregard the cached state and re-raise
-            // the UserVisibilityChanged event.
-            //
-            OnUserVisibilityChanged(true);
-            this.wasUserVisible = true;
         }
+
+        public virtual void ShowWindow() => ShowWindow(true);
 
         protected bool IsAutoHide
         {
@@ -271,6 +301,14 @@ namespace Google.Solutions.IapDesktop.Application.Views
 
             this.lastDockState = this.DockState;
             RaiseUserVisibilityChanged();
+        }
+
+        protected override void OnClosed(EventArgs e)
+        {
+            base.OnClosed(e);
+
+            Debug.Assert(!this.IsClosed);
+            this.IsClosed = true;
         }
 
         protected virtual void OnUserVisibilityChanged(bool visible)
