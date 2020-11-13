@@ -27,6 +27,8 @@ PRODUCT_VERSION = 2.8
 CONFIGURATION = Release
 PLATFORM=x86
 
+MAIN_ASSEMBLY = Google.Solutions.IapDesktop\bin\$(CONFIGURATION)\IapDesktop.exe
+
 NUNIT_ASSEMBLIES = \
 	Google.Solutions.Common.Test\bin\$(CONFIGURATION)\Google.Solutions.Common.Test.dll	\
 	Google.Solutions.IapTunneling.Test\bin\release\Google.Solutions.IapTunneling.Test.dll \
@@ -42,6 +44,7 @@ NUNIT_COVERAGE_FILTER = \
 	+[Google.Solutions.IapDesktop.Extensions.Os]* \
 	+[Google.Solutions.IapDesktop.Extensions.Rdp]* \
 	+[Google.Solutions.IapDesktop.Application]*
+
 #------------------------------------------------------------------------------
 # Ancillary variables
 #------------------------------------------------------------------------------
@@ -59,10 +62,28 @@ BINARY_VERSION = $(PRODUCT_VERSION).0
 POWERSHELL = powershell -NoProfile -ExecutionPolicy Unrestricted
 
 #------------------------------------------------------------------------------
-# Main targets
+# Output targets
 #------------------------------------------------------------------------------
 
 default: kokoro-continuous-integration
+
+Google.Solutions.IapDesktop\OAuthClient.cs:
+	@echo "========================================================"
+	@echo "=== Patching OAuth credentials                      ==="
+	@echo "========================================================"
+
+	copy "$(KOKORO_GFILE_DIR)\OAuthClient.cs" $@
+
+$(MAIN_ASSEMBLY) $(NUNIT_ASSEMBLIES): Google.Solutions.IapDesktop\OAuthClient.cs
+	@echo "========================================================"
+	@echo "=== Building solution                                ==="
+	@echo "========================================================"
+
+	msbuild /t:Rebuild /p:Configuration=$(CONFIGURATION);Platform=$(PLATFORM);AssemblyVersionNumber=$(BINARY_VERSION)
+
+#------------------------------------------------------------------------------
+# Main targets
+#------------------------------------------------------------------------------
 
 cmd:
 	@echo "========================================================"
@@ -78,6 +99,12 @@ clean:
 
 	$(POWERSHELL) $(MAKEDIR)\scripts\clean.ps1
 
+restore:
+	@echo "========================================================"
+	@echo "=== Restoring nuget packages                         ==="
+	@echo "========================================================"
+
+	nuget restore
 
 check-copyright-headers:
 	@echo "========================================================"
@@ -86,27 +113,7 @@ check-copyright-headers:
 
 	$(POWERSHELL) $(MAKEDIR)\scripts\check-copyright-headers.ps1
 
-
-Google.Solutions.IapDesktop\OAuthClient.cs:
-	@echo "========================================================"
-	@echo "=== Patching OAuth credentials                      ==="
-	@echo "========================================================"
-
-	copy "$(KOKORO_GFILE_DIR)\OAuthClient.cs" $@
-
-restore:
-	@echo "========================================================"
-	@echo "=== Restoring nuget packages                         ==="
-	@echo "========================================================"
-
-	nuget restore
-
-build: Google.Solutions.IapDesktop\OAuthClient.cs restore
-	@echo "========================================================"
-	@echo "=== Building solution                                ==="
-	@echo "========================================================"
-
-	msbuild /t:Rebuild /p:Configuration=$(CONFIGURATION);Platform=$(PLATFORM);AssemblyVersionNumber=$(BINARY_VERSION)
+build: $(MAIN_ASSEMBLY)
 
 test: $(NUNIT_ASSEMBLIES)
 	@echo "========================================================"
@@ -127,7 +134,7 @@ test: $(NUNIT_ASSEMBLIES)
 		-targetdir:coveragereport \
 		-reporttypes:HTML
 	
-installer: build
+installer: $(MAIN_ASSEMBLY)
 	@echo "========================================================"
 	@echo "=== Building installer                               ==="
 	@echo "========================================================"
@@ -153,4 +160,4 @@ kokoro-iap-firewallrule:
 		--source-ranges=35.235.240.0/20 \
 		--project=$(GOOGLE_CLOUD_PROJECT)
 
-kokoro-continuous-integration: kokoro-iap-firewallrule installer test
+kokoro-continuous-integration: check-copyright-headers kokoro-iap-firewallrule installer test
