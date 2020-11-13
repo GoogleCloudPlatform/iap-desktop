@@ -81,6 +81,12 @@ if ((Get-Command "nuget.exe" -ErrorAction SilentlyContinue) -eq $null)
 
 & $Nmake restore
 
+if ($LastExitCode -ne 0)
+{
+    exit $LastExitCode
+}
+
+
 $ToolsDirectories = (Get-ChildItem packages -Directory -Recurse `
 	| Where-Object {$_.Name.EndsWith("tools")} `
     | Select-Object -ExpandProperty FullName)
@@ -115,9 +121,15 @@ Write-Host "Google Cloud project: ${Env:GOOGLE_CLOUD_PROJECT}" -ForegroundColor 
 Write-Host "Google Cloud credentials: ${Env:GOOGLE_APPLICATION_CREDENTIALS}" -ForegroundColor Yellow
 Write-Host "SecureConnect credentials: ${Env:SECURECONNECT_CREDENTIALS}" -ForegroundColor Yellow
 Write-Host "SecureConnect certificate: ${Env:SECURECONNECT_CERTIFICATE}" -ForegroundColor Yellow
+Write-Host "PATH: ${Env:PATH}" -ForegroundColor Yellow
 
 #------------------------------------------------------------------------------
 # Run nmake.
 #------------------------------------------------------------------------------
 
 & $Nmake $args
+
+if ($LastExitCode -ne 0)
+{
+    exit $LastExitCode
+}
