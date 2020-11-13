@@ -24,10 +24,12 @@ $ErrorActionPreference = "stop"
 # Use TLS 1.2 for all downloads.
 [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
 
-#
+#------------------------------------------------------------------------------
 # Find MSBuild
-#
-$Msbuild = (Resolve-Path ([IO.Path]::Combine(${Env:ProgramFiles(x86)}, 'Microsoft Visual Studio', '*', '*', 'MSBuild', '*' , 'bin', 'msbuild.exe'))).Path | Select-Object -Last 1
+#------------------------------------------------------------------------------
+
+$Msbuild = (Resolve-Path ([IO.Path]::Combine(${Env:ProgramFiles(x86)}, 
+	'Microsoft Visual Studio', '*', '*', 'MSBuild', '*' , 'bin', 'msbuild.exe'))).Path | Select-Object -Last 1
 if ($Msbuild)
 {
 	$MsbuildDir = (Split-Path $Msbuild -Parent)
@@ -39,10 +41,12 @@ else
 	exit 1
 }
 
-#
+#------------------------------------------------------------------------------
 # Find nmake
-#
-$Nmake = (Resolve-Path ([IO.Path]::Combine(${Env:ProgramFiles(x86)}, 'Microsoft Visual Studio', '*', '*', 'VC', 'Tools', 'MSVC', '*' , 'bin', 'Hostx86', '*' , 'nmake.exe'))).Path | Select-Object -Last 1
+#------------------------------------------------------------------------------
+
+$Nmake = (Resolve-Path ([IO.Path]::Combine(${Env:ProgramFiles(x86)}, 
+	'Microsoft Visual Studio', '*', '*', 'VC', 'Tools', 'MSVC', '*' , 'bin', 'Hostx86', '*' , 'nmake.exe'))).Path | Select-Object -Last 1
 if ($Nmake)
 {
 	$NMakeDir = (Split-Path $NMake -Parent)
@@ -54,9 +58,9 @@ else
 	exit 1
 }
 
-#
+#------------------------------------------------------------------------------
 # Find nuget
-#
+#------------------------------------------------------------------------------
 if ((Get-Command "nuget.exe" -ErrorAction SilentlyContinue) -eq $null) 
 {
 	$NugetDownloadUrl = "https://dist.nuget.org/win-x86-commandline/latest/nuget.exe"
@@ -68,4 +72,38 @@ if ((Get-Command "nuget.exe" -ErrorAction SilentlyContinue) -eq $null)
 	$env:Path += ";${PSScriptRoot}\.tools"
 }
 
+#------------------------------------------------------------------------------
+# Find Google Cloud credentials and project (for tests)
+#------------------------------------------------------------------------------
+
+if (!$Env:GOOGLE_APPLICATION_CREDENTIALS)
+{
+	$Env:GOOGLE_APPLICATION_CREDENTIALS = "${env:KOKORO_GFILE_DIR}\iap-windows-rdc-plugin-tests.json"
+}
+
+if (!${Env:GOOGLE_CLOUD_PROJECT})
+{
+	${Env:GOOGLE_CLOUD_PROJECT} = (Get-Content $Env:GOOGLE_APPLICATION_CREDENTIALS | Out-String | ConvertFrom-Json).project_id
+}
+
+if (!$Env:SECURECONNECT_CREDENTIALS)
+{
+	$Env:SECURECONNECT_CREDENTIALS = "${env:KOKORO_GFILE_DIR}\dca-user.adc.json"
+}
+
+if (!$Env:SECURECONNECT_CERTIFICATE)
+{
+	$Env:SECURECONNECT_CERTIFICATE = "${env:KOKORO_GFILE_DIR}\dca-user.dca.pfx"
+}
+
+Write-Host "Google Cloud project: ${Env:GOOGLE_CLOUD_PROJECT}" -ForegroundColor Yellow
+Write-Host "Google Cloud credentials: ${Env:GOOGLE_APPLICATION_CREDENTIALS}" -ForegroundColor Yellow
+Write-Host "SecureConnect credentials: ${Env:SECURECONNECT_CREDENTIALS}" -ForegroundColor Yellow
+Write-Host "SecureConnect certificate: ${Env:SECURECONNECT_CERTIFICATE}" -ForegroundColor Yellow
+
+#------------------------------------------------------------------------------
+# Run nmake.
+#------------------------------------------------------------------------------
+
+${env:__BUILD_ENV_INITIALIZED} = "1"
 & $Nmake $args
