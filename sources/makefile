@@ -19,14 +19,52 @@
 # under the License.
 #
 
-default: installer
+default: build
 
+PRODUCT_VERSION = 2.8
+
+!if ( "$(KOKORO_BUILD_NUMBER)" != "" ) 
+BINARY_VERSION = $(PRODUCT_VERSION).$(KOKORO_BUILD_NUMBER)
+!else
+BINARY_VERSION = $(PRODUCT_VERSION).0
+!endif
 
 clean:
-	# Delete bin directories
-	powershell -NoProfile -ExecutionPolicy Unrestricted -Command \
-		"Resolve-Path -Path '${PSScriptRoot}\Google.Solutions.*\bin' | % { Remove-Item -Recurse -Force $_ }"
+	@echo "========================================================"
+	@echo "=== Cleaning up                                      ==="
+	@echo "========================================================"
 
-	# Delete obj directories
-	powershell -NoProfile -ExecutionPolicy Unrestricted -Command \
-		"Resolve-Path -Path '${PSScriptRoot}\Google.Solutions.*\obj' | % { Remove-Item -Recurse -Force $_ }"
+	powershell -NoProfile -ExecutionPolicy Unrestricted $(MAKEDIR)\scripts\clean.ps1
+
+
+check-copyright-headers:
+	@echo "========================================================"
+	@echo "===  Checking copyright headers                      ==="
+	@echo "========================================================"
+
+	powershell -NoProfile -ExecutionPolicy Unrestricted $(MAKEDIR)\scripts\check-copyright-headers.ps1
+
+
+Google.Solutions.IapDesktop\OAuthClient.cs:
+	@echo "========================================================"
+	@echo "===  Patching OAuth credentials                      ==="
+	@echo "========================================================"
+
+	copy "$(KOKORO_GFILE_DIR)\OAuthClient.cs" $@
+
+
+nuget-packages:
+	@echo "========================================================"
+	@echo "===  Restoring nuget packages                        ==="
+	@echo "========================================================"
+
+	nuget restore
+
+build: Google.Solutions.IapDesktop\OAuthClient.cs nuget-packages
+	@echo "========================================================"
+	@echo "===  Building solution                               ==="
+	@echo "========================================================"
+
+	msbuild /t:Rebuild /p:Configuration=Release;Platform=x86;AssemblyVersionNumber=$(BINARY_VERSION)
+
+
