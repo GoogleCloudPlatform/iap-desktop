@@ -331,7 +331,10 @@ namespace Google.Solutions.IapDesktop.Windows
                 this,
                 menu.DropDownItems,
                 ToolStripItemDisplayStyle.Text,
-                this.serviceProvider);
+                this.serviceProvider)
+            {
+                Context = this // There is no real context for this.
+            };
 
             menu.DropDownOpening += (sender, args) =>
             {
