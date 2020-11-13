@@ -91,7 +91,7 @@ $ToolsDirectories = (Get-ChildItem packages -Directory -Recurse `
 	| Where-Object {$_.Name.EndsWith("tools")} `
     | Select-Object -ExpandProperty FullName)
 
-$env:Path += $ToolsDirectories -join ";"
+$env:Path += ";" + ($ToolsDirectories -join ";")
 
 #------------------------------------------------------------------------------
 # Find Google Cloud credentials and project (for tests)
