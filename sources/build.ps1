@@ -88,7 +88,7 @@ if ($LastExitCode -ne 0)
 
 
 $ToolsDirectories = (Get-ChildItem packages -Directory -Recurse `
-	| Where-Object {$_.Name.EndsWith("tools")} `
+	| Where-Object {$_.Name.EndsWith("tools") -or $_.FullName.Contains("tools\net4") } `
     | Select-Object -ExpandProperty FullName)
 
 $env:Path += ";" + ($ToolsDirectories -join ";")
