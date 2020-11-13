@@ -24,8 +24,10 @@ $ErrorActionPreference = "stop"
 # Use TLS 1.2 for all downloads.
 [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
 
+${env:__BUILD_ENV_INITIALIZED} = "1"
+
 #------------------------------------------------------------------------------
-# Find MSBuild
+# Find MSBuild and add to PATH
 #------------------------------------------------------------------------------
 
 $Msbuild = (Resolve-Path ([IO.Path]::Combine(${Env:ProgramFiles(x86)}, 
@@ -42,7 +44,7 @@ else
 }
 
 #------------------------------------------------------------------------------
-# Find nmake
+# Find nmake and add to PATH
 #------------------------------------------------------------------------------
 
 $Nmake = (Resolve-Path ([IO.Path]::Combine(${Env:ProgramFiles(x86)}, 
@@ -59,8 +61,9 @@ else
 }
 
 #------------------------------------------------------------------------------
-# Find nuget
+# Find nuget and add to PATH
 #------------------------------------------------------------------------------
+
 if ((Get-Command "nuget.exe" -ErrorAction SilentlyContinue) -eq $null) 
 {
 	$NugetDownloadUrl = "https://dist.nuget.org/win-x86-commandline/latest/nuget.exe"
@@ -71,6 +74,18 @@ if ((Get-Command "nuget.exe" -ErrorAction SilentlyContinue) -eq $null)
 	
 	$env:Path += ";${PSScriptRoot}\.tools"
 }
+
+#------------------------------------------------------------------------------
+# Restore packages and add tools to PATH
+#------------------------------------------------------------------------------
+
+& $Nmake restore
+
+$ToolsDirectories = (Get-ChildItem packages -Directory -Recurse `
+	| Where-Object {$_.Name.EndsWith("tools")} `
+    | Select-Object -ExpandProperty FullName)
+
+$env:Path += $ToolsDirectories -join ";"
 
 #------------------------------------------------------------------------------
 # Find Google Cloud credentials and project (for tests)
@@ -105,5 +120,4 @@ Write-Host "SecureConnect certificate: ${Env:SECURECONNECT_CERTIFICATE}" -Foregr
 # Run nmake.
 #------------------------------------------------------------------------------
 
-${env:__BUILD_ENV_INITIALIZED} = "1"
 & $Nmake $args

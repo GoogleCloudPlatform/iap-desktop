@@ -27,6 +27,22 @@ PRODUCT_VERSION = 2.8
 CONFIGURATION = Release
 PLATFORM=x86
 
+NUNIT_ASSEMBLIES = \
+    Google.Solutions.Common.Test\bin\$(CONFIGURATION)\Google.Solutions.Common.Test.dll
+#	\
+#    Google.Solutions.IapTunneling.Test\bin\release\Google.Solutions.IapTunneling.Test.dll \
+#    Google.Solutions.IapDesktop.Extensions.Activity.Test\bin\release\Google.Solutions.IapDesktop.Extensions.Activity.Test.dll \
+#    Google.Solutions.IapDesktop.Extensions.Os.Test\bin\release\Google.Solutions.IapDesktop.Extensions.Os.Test.dll \
+#	Google.Solutions.IapDesktop.Extensions.Rdp.Test\bin\release\Google.Solutions.IapDesktop.Extensions.Rdp.Test.dll \
+#    Google.Solutions.IapDesktop.Application.Test\bin\release\Google.Solutions.IapDesktop.Application.Test.dll
+
+NUNIT_COVERAGE_FILTER = \
+	+[Google.Solutions.Common]* \
+	+[Google.Solutions.IapTunneling]* \
+	+[Google.Solutions.IapDesktop.Extensions.Activity]* \
+	+[Google.Solutions.IapDesktop.Extensions.Os]* \
+	+[Google.Solutions.IapDesktop.Extensions.Rdp]* \
+	+[Google.Solutions.IapDesktop.Application]*
 #------------------------------------------------------------------------------
 # Ancillary variables
 #------------------------------------------------------------------------------
@@ -47,7 +63,14 @@ POWERSHELL = powershell -NoProfile -ExecutionPolicy Unrestricted
 # Main targets
 #------------------------------------------------------------------------------
 
-default: build
+default: kokoro-continuous-integration
+
+cmd:
+	@echo "========================================================"
+	@echo "=== Opening command prompt                           ==="
+	@echo "========================================================"
+
+	cmd
 
 clean:
 	@echo "========================================================"
@@ -72,40 +95,47 @@ Google.Solutions.IapDesktop\OAuthClient.cs:
 
 	copy "$(KOKORO_GFILE_DIR)\OAuthClient.cs" $@
 
-nuget-packages:
+restore:
 	@echo "========================================================"
 	@echo "=== Restoring nuget packages                         ==="
 	@echo "========================================================"
 
 	nuget restore
 
-build: Google.Solutions.IapDesktop\OAuthClient.cs nuget-packages
+build: Google.Solutions.IapDesktop\OAuthClient.cs restore
 	@echo "========================================================"
 	@echo "=== Building solution                                ==="
 	@echo "========================================================"
 
 	msbuild /t:Rebuild /p:Configuration=$(CONFIGURATION);Platform=$(PLATFORM);AssemblyVersionNumber=$(BINARY_VERSION)
 
-test: build
+test: $(NUNIT_ASSEMBLIES)
 	@echo "========================================================"
 	@echo "=== Testing solution                                 ==="
 	@echo "========================================================"
 
-	$(POWERSHELL) $(MAKEDIR)\scripts\run-tests.ps1
+	OpenCover.Console.exe \
+		-register:user \
+		-returntargetcode \
+		-target:nunit3-console.exe \
+		"-targetargs:$(NUNIT_ASSEMBLIES) --result=sponge_log.xml;transform=..\kokoro\nunit-to-sponge.xsl" \
+		-filter:"$(NUNIT_COVERAGE_FILTER)" \
+		"-excludebyattribute:*.SkipCodeCoverage*;*CompilerGenerated*" \
+		-output:opencovertests.xml
+
+	ReportGenerator.exe \
+		-reports:opencovertests.xml \
+		-targetdir:coveragereport \
+		-reporttypes:HTML
 	
 installer: build
 	@echo "========================================================"
-	@echo "=== Building installe                                ==="
+	@echo "=== Building installer                               ==="
 	@echo "========================================================"
 
-	??
-
-symbols: build
-	@echo "========================================================"
-	@echo "=== Building installe                                ==="
-	@echo "========================================================"
-
-	??
+	$(POWERSHELL) .\build-installer.ps1 \
+		-ProductVersion $(PRODUCT_VERSION) \
+		-Configuration $(CONFIGURATION)
 
 #------------------------------------------------------------------------------
 # Kokoro specific targets
@@ -124,4 +154,4 @@ kokoro-iap-firewallrule:
 		--source-ranges=35.235.240.0/20 \
 		--project=$(GOOGLE_CLOUD_PROJECT)
 
-kokoro-continuous-integration: kokoro-iap-firewallrule test installer symbols
+kokoro-continuous-integration: kokoro-iap-firewallrule installer test
