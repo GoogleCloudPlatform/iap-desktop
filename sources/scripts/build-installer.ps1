@@ -31,8 +31,8 @@ $WixTools = (Resolve-Path ([IO.Path]::Combine('packages', 'WiX.*', 'tools'))).Pa
 $Candle = Join-Path $WixTools 'candle.exe'
 $Light = Join-Path $WixTools 'light.exe'
 
-$SourcesDir = "installer"
-$ObjDir = "installer\bin"
+$SourcesDir = "${PSScriptRoot}\..\installer"
+$ObjDir = "${PSScriptRoot}\..\installer\bin"
 
 #
 # Compile MSI.
@@ -73,7 +73,7 @@ if (Test-path $SymbolsArchive) {
     Remove-item $SymbolsArchive
 }
 
-New-Item -Type Directory -Force $SymbolsDir
+New-Item -Type Directory -Force $SymbolsDir | Out-Null
 Copy-Item -Path "Google.Solutions.IapDesktop\bin\$Configuration\*.pdb" -Destination $SymbolsDir
 
 Add-Type -Assembly "System.IO.Compression.FileSystem"

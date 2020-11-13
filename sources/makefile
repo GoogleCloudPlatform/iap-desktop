@@ -27,7 +27,15 @@ PRODUCT_VERSION = 2.8
 CONFIGURATION = Release
 PLATFORM=x86
 
+!if ( "$(KOKORO_BUILD_NUMBER)" != "" ) 
+BINARY_VERSION = $(PRODUCT_VERSION).$(KOKORO_BUILD_NUMBER)
+!else
+BINARY_VERSION = $(PRODUCT_VERSION).0
+!endif
+
 MAIN_ASSEMBLY = Google.Solutions.IapDesktop\bin\$(CONFIGURATION)\IapDesktop.exe
+
+INSTALLER_PACKAGE = installer\bin\$(CONFIGURATION)\IapDesktop-$(BINARY_VERSION).msi
 
 NUNIT_ASSEMBLIES = \
 	Google.Solutions.Common.Test\bin\$(CONFIGURATION)\Google.Solutions.Common.Test.dll	\
@@ -53,12 +61,6 @@ NUNIT_COVERAGE_FILTER = \
 !	ERROR "build must be invoked by build.ps1"
 !endif
 
-!if ( "$(KOKORO_BUILD_NUMBER)" != "" ) 
-BINARY_VERSION = $(PRODUCT_VERSION).$(KOKORO_BUILD_NUMBER)
-!else
-BINARY_VERSION = $(PRODUCT_VERSION).0
-!endif
-
 POWERSHELL = powershell -NoProfile -ExecutionPolicy Unrestricted
 
 #------------------------------------------------------------------------------
@@ -80,6 +82,15 @@ $(MAIN_ASSEMBLY) $(NUNIT_ASSEMBLIES): Google.Solutions.IapDesktop\OAuthClient.cs
 	@echo "========================================================"
 
 	msbuild /t:Rebuild /p:Configuration=$(CONFIGURATION);Platform=$(PLATFORM);AssemblyVersionNumber=$(BINARY_VERSION)
+
+$(INSTALLER_PACKAGE): $(MAIN_ASSEMBLY)
+	@echo "========================================================"
+	@echo "=== Building installer                               ==="
+	@echo "========================================================"
+
+	$(POWERSHELL) $(MAKEDIR)\scripts\build-installer.ps1 \
+		-ProductVersion $(BINARY_VERSION) \
+		-Configuration $(CONFIGURATION)
 
 #------------------------------------------------------------------------------
 # Main targets
@@ -134,14 +145,7 @@ test: $(NUNIT_ASSEMBLIES)
 		-targetdir:coveragereport \
 		-reporttypes:HTML
 	
-installer: $(MAIN_ASSEMBLY)
-	@echo "========================================================"
-	@echo "=== Building installer                               ==="
-	@echo "========================================================"
-
-	$(POWERSHELL) .\build-installer.ps1 \
-		-ProductVersion $(PRODUCT_VERSION) \
-		-Configuration $(CONFIGURATION)
+installer: $(INSTALLER_PACKAGE)
 
 #------------------------------------------------------------------------------
 # Kokoro specific targets
