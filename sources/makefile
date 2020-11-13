@@ -147,7 +147,7 @@ kokoro-iap-firewallrule:
 	@echo "========================================================"
 
 	gcloud auth activate-service-account --key-file=$(GOOGLE_APPLICATION_CREDENTIALS)
-	gcloud compute firewall-rules create allow-ingress-from-iap \
+	-gcloud compute firewall-rules create allow-ingress-from-iap \
 		--direction=INGRESS \
 		--action=allow \
 		--rules=tcp \
