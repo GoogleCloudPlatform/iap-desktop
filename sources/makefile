@@ -88,7 +88,27 @@ $(INSTALLER_PACKAGE): $(MAIN_ASSEMBLY)
 	@echo "=== Building installer                               ==="
 	@echo "========================================================"
 
-	$(POWERSHELL) $(MAKEDIR)\scripts\build-installer.ps1 \
+	candle \
+		-nologo \
+		-out $(MAKEDIR)\installer\bin\$(CONFIGURATION)\ \
+		-dCONFIGURATION=$(CONFIGURATION) \
+		-dVERSION=$(BINARY_VERSION) \
+		-dBASEDIR=$(MAKEDIR)\installer \
+		-arch x86 \
+		-ext packages\Wix.$(Wix)\tools\WixUIExtension.dll \
+		-ext packages\Wix.$(Wix)\tools\WixUtilExtension.dll \
+		 $(MAKEDIR)\installer\Product.wxs
+
+	light \
+		-nologo \
+		-out $@ \
+		-sw1076 \
+		-cultures:null \
+		-ext packages\Wix.$(Wix)\tools\WixUIExtension.dll \
+		-ext packages\Wix.$(Wix)\tools\WixUtilExtension.dll \
+		$(MAKEDIR)\installer\bin\$(CONFIGURATION)\Product.wixobj"
+
+	$(POWERSHELL) $(MAKEDIR)\scripts\package-symbols.ps1 \
 		-ProductVersion $(BINARY_VERSION) \
 		-Configuration $(CONFIGURATION)
 
