@@ -33,3 +33,6 @@ Resolve-Path -Path "$SourcesRoot\Google.Solutions.*\obj" |
 	
 # Delete obj directories
 Remove-Item -Recurse -Force "$SourcesRoot\installer\bin"
+
+# Delete packages
+Remove-Item -Recurse -Force "$SourcesRoot\packages"

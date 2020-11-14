@@ -36,6 +36,7 @@ BINARY_VERSION = $(PRODUCT_VERSION).0
 MAIN_ASSEMBLY = Google.Solutions.IapDesktop\bin\$(CONFIGURATION)\IapDesktop.exe
 
 INSTALLER_PACKAGE = installer\bin\$(CONFIGURATION)\IapDesktop-$(BINARY_VERSION).msi
+SYMBOLS_PACKAGE = installer\bin\$(CONFIGURATION)\Symbols-$(BINARY_VERSION).zip
 
 NUNIT_ASSEMBLIES = \
 	Google.Solutions.Common.Test\bin\$(CONFIGURATION)\Google.Solutions.Common.Test.dll	\
@@ -82,15 +83,15 @@ $(MAIN_ASSEMBLY) $(NUNIT_ASSEMBLIES): Google.Solutions.IapDesktop\OAuthClient.cs
 	@echo "========================================================"
 
 	msbuild /t:Rebuild /p:Configuration=$(CONFIGURATION);Platform=$(PLATFORM);AssemblyVersionNumber=$(BINARY_VERSION)
-
-$(INSTALLER_PACKAGE): $(MAIN_ASSEMBLY)
+	
+$(INSTALLER_PACKAGE).wixobj: $(MAIN_ASSEMBLY) $(MAKEDIR)\installer\Product.wxs
 	@echo "========================================================"
-	@echo "=== Building installer                               ==="
+	@echo "=== Compiling installer                              ==="
 	@echo "========================================================"
 
 	candle \
 		-nologo \
-		-out $(MAKEDIR)\installer\bin\$(CONFIGURATION)\ \
+		-out $(INSTALLER_PACKAGE).wixobj \
 		-dCONFIGURATION=$(CONFIGURATION) \
 		-dVERSION=$(BINARY_VERSION) \
 		-dBASEDIR=$(MAKEDIR)\installer \
@@ -99,6 +100,11 @@ $(INSTALLER_PACKAGE): $(MAIN_ASSEMBLY)
 		-ext packages\Wix.$(Wix)\tools\WixUtilExtension.dll \
 		 $(MAKEDIR)\installer\Product.wxs
 
+$(INSTALLER_PACKAGE): $(INSTALLER_PACKAGE).wixobj $(MAIN_ASSEMBLY)
+	@echo "========================================================"
+	@echo "=== Linking installer                                ==="
+	@echo "========================================================"
+
 	light \
 		-nologo \
 		-out $@ \
@@ -106,7 +112,12 @@ $(INSTALLER_PACKAGE): $(MAIN_ASSEMBLY)
 		-cultures:null \
 		-ext packages\Wix.$(Wix)\tools\WixUIExtension.dll \
 		-ext packages\Wix.$(Wix)\tools\WixUtilExtension.dll \
-		$(MAKEDIR)\installer\bin\$(CONFIGURATION)\Product.wixobj"
+		$(INSTALLER_PACKAGE).wixobj
+		
+$(SYMBOLS_PACKAGE): $(MAIN_ASSEMBLY)
+	@echo "========================================================"
+	@echo "=== Packaging symbols                                ==="
+	@echo "========================================================"
 
 	$(POWERSHELL) $(MAKEDIR)\scripts\package-symbols.ps1 \
 		-ProductVersion $(BINARY_VERSION) \
@@ -165,7 +176,7 @@ test: $(NUNIT_ASSEMBLIES)
 		-targetdir:coveragereport \
 		-reporttypes:HTML
 	
-installer: $(INSTALLER_PACKAGE)
+installer: $(INSTALLER_PACKAGE) $(SYMBOLS_PACKAGE)
 
 #------------------------------------------------------------------------------
 # Kokoro specific targets
