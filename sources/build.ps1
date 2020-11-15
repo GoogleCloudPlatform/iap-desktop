@@ -21,154 +21,124 @@
 
 $ErrorActionPreference = "stop"
 
-# Product version to be used for MSI (2 digit).
-$ProductVersion="2.8"
-
-$Msbuild = (Resolve-Path ([IO.Path]::Combine(${Env:ProgramFiles(x86)}, 'Microsoft Visual Studio', '*', '*', 'MSBuild', '*' , 'bin' , 'msbuild.exe'))).Path		| Select-Object -Last 1
-$VsixInstaller = (Resolve-Path ([IO.Path]::Combine(${Env:ProgramFiles(x86)}, 'Microsoft Visual Studio', '*', '*', 'Common7', 'IDE', 'VSIXInstaller.exe'))).Path | Select-Object -Last 1
-
-$NugetDownloadUrl = "https://dist.nuget.org/win-x86-commandline/latest/nuget.exe"
-$RdcManDownloadUrl = "https://download.microsoft.com/download/A/F/0/AF0071F3-B198-4A35-AA90-C68D103BDCCF/rdcman.msi"
-
 # Use TLS 1.2 for all downloads.
 [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
 
-Write-Host "========================================================"
-Write-Host "=== Preparing build                                 ==="
-Write-Host "========================================================"
-Write-Host "Using MSBuild: $Msbuild"
-Write-Host "Using VsixInstaller: $VsixInstaller"
+${env:__BUILD_ENV_INITIALIZED} = "1"
 
+#------------------------------------------------------------------------------
+# Find MSBuild and add to PATH
+#------------------------------------------------------------------------------
 
-Write-Host "========================================================"
-Write-Host "=== Checking copyright headers                       ==="
-Write-Host "========================================================"
+$Msbuild = (Resolve-Path ([IO.Path]::Combine(${Env:ProgramFiles(x86)}, 
+	'Microsoft Visual Studio', '*', '*', 'MSBuild', '*' , 'bin', 'msbuild.exe'))).Path | Select-Object -Last 1
+if ($Msbuild)
+{
+	$MsbuildDir = (Split-Path $Msbuild -Parent)
+	$env:Path += ";$MsbuildDir"
+}
+else
+{
+	Write-Host "Could not find msbuild" -ForegroundColor Red
+	exit 1
+}
 
-$FilesWithoutCopyrightHeader = (Get-ChildItem -Recurse `
-    | Where-Object {$_.Name.EndsWith(".cs")} `
-    | Where-Object {$_.Name -ne "OAuthClient.cs"} `
-    | Where-Object {$_.Name -ne "Settings.Designer.cs"} `
-    | Where-Object {$_.Name -ne "Resources.Designer.cs"} `
-    | Where-Object {-not $_.Name.StartsWith("TemporaryGeneratedFile")} `
-    | Where-Object {-not [System.IO.File]::ReadAllText($_.FullName).Contains("Copyright")}  `
+#------------------------------------------------------------------------------
+# Find nmake and add to PATH
+#------------------------------------------------------------------------------
+
+$Nmake = (Resolve-Path ([IO.Path]::Combine(${Env:ProgramFiles(x86)}, 
+	'Microsoft Visual Studio', '*', '*', 'VC', 'Tools', 'MSVC', '*' , 'bin', 'Hostx86', '*' , 'nmake.exe'))).Path | Select-Object -Last 1
+if ($Nmake)
+{
+	$NMakeDir = (Split-Path $NMake -Parent)
+	$env:Path += ";$NMakeDir"
+}
+else
+{
+	Write-Host "Could not find nmake" -ForegroundColor Red
+	exit 1
+}
+
+#------------------------------------------------------------------------------
+# Find nuget and add to PATH
+#------------------------------------------------------------------------------
+
+if ((Get-Command "nuget.exe" -ErrorAction SilentlyContinue) -eq $null) 
+{
+	$NugetDownloadUrl = "https://dist.nuget.org/win-x86-commandline/latest/nuget.exe"
+
+	New-Item -ItemType Directory -Force "${PSScriptRoot}\.tools" | Out-Null
+	$Nuget = "${PSScriptRoot}\.tools\nuget.exe"
+	(New-Object System.Net.WebClient).DownloadFile($NugetDownloadUrl, $Nuget)
+	
+	$env:Path += ";${PSScriptRoot}\.tools"
+}
+
+#------------------------------------------------------------------------------
+# Restore packages and make them available in the environment
+#------------------------------------------------------------------------------
+
+& $Nmake restore
+
+if ($LastExitCode -ne 0)
+{
+    exit $LastExitCode
+}
+
+#
+# Add all tools to PATH.
+#
+
+$ToolsDirectories = (Get-ChildItem packages -Directory -Recurse `
+	| Where-Object {$_.Name.EndsWith("tools") -or $_.FullName.Contains("tools\net4") } `
     | Select-Object -ExpandProperty FullName)
-    
-if ($FilesWithoutCopyrightHeader)
+
+$env:Path += ";" + ($ToolsDirectories -join ";")
+
+#
+# Add environment variables indicating package versions, for example
+# $env:Google_Apis_Auth = 1.2.3
+#
+
+(nuget list -Source C:\dev\22-rdcman\Plugin.CloudIap\sources\packages\) `
+	| ForEach-Object { New-Item -Name $_.Split(" ")[0].Replace(".", "_") -value $_.Split(" ")[1] -ItemType Variable -Path Env: }
+
+#------------------------------------------------------------------------------
+# Find Google Cloud credentials and project (for tests)
+#------------------------------------------------------------------------------
+
+if (!$Env:GOOGLE_APPLICATION_CREDENTIALS)
 {
-    Write-Host("Multiple files lack a copyright header")
-    $FilesWithoutCopyrightHeader
-    exit 1
+	$Env:GOOGLE_APPLICATION_CREDENTIALS = "${env:KOKORO_GFILE_DIR}\iap-windows-rdc-plugin-tests.json"
 }
 
-Write-Host "========================================================"
-Write-Host "=== Patch OAuth credentials                          ==="
-Write-Host "========================================================"
-
-Copy-Item -Path "${env:KOKORO_GFILE_DIR}\OAuthClient.cs" -Destination "Google.Solutions.IapDesktop\OAuthClient.cs" -Force
-
-Write-Host "========================================================"
-Write-Host "=== Install Nuget                                    ==="
-Write-Host "========================================================"
-
-$Nuget = $env:TEMP + "\nuget.exe"
-(New-Object System.Net.WebClient).DownloadFile($NugetDownloadUrl, $Nuget)
-
-
-Write-Host "========================================================"
-Write-Host "=== Restore Nuget packages                           ==="
-Write-Host "========================================================"
-
-& $Nuget restore | Out-Default
-
-if ($LastExitCode -ne 0)
+if (!${Env:GOOGLE_CLOUD_PROJECT})
 {
-    exit $LastExitCode
+	${Env:GOOGLE_CLOUD_PROJECT} = (Get-Content $Env:GOOGLE_APPLICATION_CREDENTIALS | Out-String | ConvertFrom-Json).project_id
 }
 
-
-Write-Host "========================================================"
-Write-Host "=== Build solution                                   ==="
-Write-Host "========================================================"
-
-& $Msbuild  "/t:Rebuild" "/p:Configuration=Release;Platform=x86;AssemblyVersionNumber=$ProductVersion.${env:KOKORO_BUILD_NUMBER}.0" | Out-Default
-
-if ($LastExitCode -ne 0)
+if (!$Env:SECURECONNECT_CREDENTIALS)
 {
-    exit $LastExitCode
+	$Env:SECURECONNECT_CREDENTIALS = "${env:KOKORO_GFILE_DIR}\dca-user.adc.json"
 }
 
-
-Write-Host "========================================================"
-Write-Host "=== Build installer                                  ==="
-Write-Host "========================================================"
-
-.\build-installer.ps1 -ProductVersion "$ProductVersion.${env:KOKORO_BUILD_NUMBER}.0" -Configuration Release
-
-if ($LastExitCode -ne 0)
+if (!$Env:SECURECONNECT_CERTIFICATE)
 {
-    exit $LastExitCode
+	$Env:SECURECONNECT_CERTIFICATE = "${env:KOKORO_GFILE_DIR}\dca-user.dca.pfx"
 }
 
+Write-Host "Google Cloud project: ${Env:GOOGLE_CLOUD_PROJECT}" -ForegroundColor Yellow
+Write-Host "Google Cloud credentials: ${Env:GOOGLE_APPLICATION_CREDENTIALS}" -ForegroundColor Yellow
+Write-Host "SecureConnect credentials: ${Env:SECURECONNECT_CREDENTIALS}" -ForegroundColor Yellow
+Write-Host "SecureConnect certificate: ${Env:SECURECONNECT_CERTIFICATE}" -ForegroundColor Yellow
+Write-Host "PATH: ${Env:PATH}" -ForegroundColor Yellow
 
-Write-Host "========================================================"
-Write-Host "=== Run tests                                        ==="
-Write-Host "========================================================"
+#------------------------------------------------------------------------------
+# Run nmake.
+#------------------------------------------------------------------------------
 
-$Env:GOOGLE_APPLICATION_CREDENTIALS = "${env:KOKORO_GFILE_DIR}\iap-windows-rdc-plugin-tests.json"
-$Env:GOOGLE_CLOUD_PROJECT = (Get-Content $Env:GOOGLE_APPLICATION_CREDENTIALS | Out-String | ConvertFrom-Json).project_id
-$Env:SECURECONNECT_CREDENTIALS = "${env:KOKORO_GFILE_DIR}\dca-user.adc.json"
-$Env:SECURECONNECT_CERTIFICATE = "${env:KOKORO_GFILE_DIR}\dca-user.dca.pfx"
-
-& gcloud auth activate-service-account --key-file=$Env:GOOGLE_APPLICATION_CREDENTIALS | Out-Default
-& gcloud compute firewall-rules create allow-ingress-from-iap `
-    --direction=INGRESS `
-    --action=allow `
-    --rules=tcp `
-    --source-ranges=35.235.240.0/20 `
-    --project=$Env:GOOGLE_CLOUD_PROJECT | Out-Default
-
-# NB. The OpenCover version must match the CLR version installed on Kokoro. The version
-# is defined in the NuGet dependencies of the main project.
-
-$OpenCover = (Resolve-Path -Path "packages\OpenCover.*\tools\OpenCover.Console.exe").Path
-$Nunit = (Resolve-Path -Path "packages\NUnit.ConsoleRunner.*\tools\nunit3-console.exe").Path
-
-$NunitArguments = `
-    "Google.Solutions.Common.Test\bin\release\Google.Solutions.Common.Test.dll " + `
-    "Google.Solutions.IapTunneling.Test\bin\release\Google.Solutions.IapTunneling.Test.dll " + `
-    "Google.Solutions.IapDesktop.Extensions.Activity.Test\bin\release\Google.Solutions.IapDesktop.Extensions.Activity.Test.dll " + `
-    "Google.Solutions.IapDesktop.Extensions.Os.Test\bin\release\Google.Solutions.IapDesktop.Extensions.Os.Test.dll " + `
-    "Google.Solutions.IapDesktop.Extensions.Rdp.Test\bin\release\Google.Solutions.IapDesktop.Extensions.Rdp.Test.dll " + `
-    "Google.Solutions.IapDesktop.Application.Test\bin\release\Google.Solutions.IapDesktop.Application.Test.dll " + `
-    "--result=sponge_log.xml;transform=..\kokoro\nunit-to-sponge.xsl "
-#    "--where \""cat != IntegrationTest\"""
-
-& $OpenCover `
-    -register:user `
-    -returntargetcode `
-    -target:$Nunit `
-    "-targetargs:$NunitArguments" `
-    -filter:"+[Google.Solutions.Common]* +[Google.Solutions.IapTunneling]* +[Google.Solutions.IapDesktop.Extensions.Activity]* +[Google.Solutions.IapDesktop.Extensions.Os]* +[Google.Solutions.IapDesktop.Extensions.Rdp]* +[Google.Solutions.IapDesktop.Application]*" `
-    "-excludebyattribute:*.SkipCodeCoverage*;*CompilerGenerated*" `
-    -output:opencovertests.xml | Out-Default
-
-if ($LastExitCode -ne 0)
-{
-    Write-Host "Tests failed: $LastExitCode"
-    exit $LastExitCode
-}
-
-
-Write-Host "========================================================"
-Write-Host "=== Create code coverage report                      ==="
-Write-Host "========================================================"
-
-$ReportGenerator = (Resolve-Path -Path "packages\ReportGenerator.*\tools\net4*\ReportGenerator.exe").Path
-
-&$ReportGenerator `
-    "-reports:opencovertests.xml" `
-    "-targetdir:coveragereport" `
-    -reporttypes:HTML
+& $Nmake $args
 
 if ($LastExitCode -ne 0)
 {

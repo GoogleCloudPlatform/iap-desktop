@@ -271,3 +271,6 @@ sources/Google.Solutions.IapDesktop/OAuthClient.cs
 source/coveragereport/
 source/opencovertests.xml
 source/sponge_log.xml
+.tools/
+opencovertests.xml
+sponge_log.xml

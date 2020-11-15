@@ -27,45 +27,7 @@ Param(
 
 $ErrorActionPreference = "stop"
 
-$WixTools = (Resolve-Path ([IO.Path]::Combine('packages', 'WiX.*', 'tools'))).Path
-$Candle = Join-Path $WixTools 'candle.exe'
-$Light = Join-Path $WixTools 'light.exe'
-
-$SourcesDir = "installer"
 $ObjDir = "installer\bin"
-
-#
-# Compile MSI.
-#
-
-& $Candle `
-    -nologo `
-    -out "$ObjDir\$Configuration\" `
-    "-dCONFIGURATION=$Configuration" `
-    "-dVERSION=$ProductVersion" `
-    "-dBASEDIR=$SourcesDir" `
-    -arch x86 `
-    -ext "$WixTools\WixUIExtension.dll" `
-    -ext "$WixTools\WixUtilExtension.dll" `
-    "$SourcesDir\Product.wxs"
-
-#
-# Link MSI.
-#
-
-& $Light `
-    -nologo `
-    -out "$ObjDir\$Configuration\IapDesktop-$ProductVersion.msi" `
-    -sw1076 `
-    -cultures:null `
-    -ext "$WixTools\WixUIExtension.dll" `
-    -ext "$WixTools\WixUtilExtension.dll" `
-    "$ObjDir\$Configuration\Product.wixobj"
-
-#
-# Package symbols.
-#
-
 $SymbolsDir = Join-Path -Path (Resolve-Path -Path "$ObjDir\$Configuration") -ChildPath "Symbols"
 $SymbolsArchive = Join-Path -Path (Resolve-Path -Path "$ObjDir\$Configuration") -ChildPath "Symbols-$ProductVersion.zip"
 
@@ -73,7 +35,7 @@ if (Test-path $SymbolsArchive) {
     Remove-item $SymbolsArchive
 }
 
-New-Item -Type Directory -Force $SymbolsDir
+New-Item -Type Directory -Force $SymbolsDir | Out-Null
 Copy-Item -Path "Google.Solutions.IapDesktop\bin\$Configuration\*.pdb" -Destination $SymbolsDir
 
 Add-Type -Assembly "System.IO.Compression.FileSystem"

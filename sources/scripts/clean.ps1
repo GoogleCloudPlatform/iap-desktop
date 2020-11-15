@@ -21,10 +21,18 @@
 
 $ErrorActionPreference = "stop"
 
+$SourcesRoot = "${PSScriptRoot}\.."
+
 # Delete bin directories
-Resolve-Path -Path "${PSScriptRoot}\Google.Solutions.*\bin" | 
+Resolve-Path -Path "$SourcesRoot\Google.Solutions.*\bin" | 
 	% { Remove-Item -Recurse -Force $_ }
 
 # Delete obj directories
-Resolve-Path -Path "${PSScriptRoot}\Google.Solutions.*\obj" | 
+Resolve-Path -Path "$SourcesRoot\Google.Solutions.*\obj" | 
 	% { Remove-Item -Recurse -Force $_ }
+	
+# Delete obj directories
+Remove-Item -Recurse -Force "$SourcesRoot\installer\bin"
+
+# Delete packages
+Remove-Item -Recurse -Force "$SourcesRoot\packages"
