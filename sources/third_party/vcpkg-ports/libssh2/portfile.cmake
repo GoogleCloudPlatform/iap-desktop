@@ -24,8 +24,15 @@ include(vcpkg_common_functions)
 vcpkg_from_github(
     OUT_SOURCE_PATH SOURCE_PATH
     REPO libssh2/libssh2
-    REF 6c7769dcc422250d14af1b06fce378b6ee009440
-    SHA512 fa34c598149d28b12f5cefbee4816f30a807a1bde89faa3be469f690057cf2ea7dd1a83191b2a2cae3794e307d676efebd7a31d70d9587e42e0926f82a1ae73d
+
+    # Build 1.9.0
+    REF 42d37aa63129a1b2644bf6495198923534322d64
+    SHA512 e86c0787e2aa7be5e9f19356e543493e53c7d1b51b585c46facfb05f769e6491209f820b207bf594348f4760c492c32dda3fcc94fc0af93cb09c736492a8e231
+
+    # Build Ref with WinCNG fixes
+    #    REF 6c7769dcc422250d14af1b06fce378b6ee009440
+    #    SHA512 fa34c598149d28b12f5cefbee4816f30a807a1bde89faa3be469f690057cf2ea7dd1a83191b2a2cae3794e307d676efebd7a31d70d9587e42e0926f82a1ae73d
+
     HEAD_REF master
     PATCHES "${CMAKE_CURRENT_LIST_DIR}/0001-Fix-UWP.patch"
 )
@@ -39,7 +46,7 @@ vcpkg_configure_cmake(
         -DDENABLE_DEBUG_LOGGING=ON
         -DCMAKE_CXX_FLAGS_RELEASE=/MT
         -DCMAKE_C_FLAGS_RELEASE=/MT
-        -DCRYPTO_BACKEND=WinCNG
+#        -DCRYPTO_BACKEND=WinCNG
 )
 
 vcpkg_install_cmake()

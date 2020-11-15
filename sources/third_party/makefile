@@ -22,12 +22,13 @@ CONFIGURATION = Release
 
 VTNETCORE_SHA = 9e68f5561dc52edb780615b3fe133289216b3dba
 VTNETCORE_URL = https://github.com/darrenstarr/VtNetCore.git
-VTNETCORE_VERSION = 1.2.8
+VTNETCORE_VERSION = 2020.11.1
 
-VCPKG_TAG = 2020.07
+# NB. The version/tag built is set in vcpkg-ports\libssh2\portfile.cmake, with
+# dependcies depending on the vcpkg tag.
+VCPKG_TAG = 2020.11
 VCPKG_URL = https://github.com/microsoft/vcpkg.git
-
-LIBSSH2_VERSION = 1.2.8
+LIBSSH2_VERSION = 1.9.0
 
 default: vtnetcore libssh2
 
