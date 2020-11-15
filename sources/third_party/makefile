@@ -126,9 +126,13 @@ $(MAKEDIR)\obj\vcpkg\installed\libssh2-x86-windows-mixed\bin\libssh2.$(LIBSSH2_V
     <owners>https://www.libssh2.org/</owners>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>libssh2 is a client-side C library implementing the SSH2 protocol</description>
+	<tags>Native, native</tags>
   </metadata>
   <files>
-    <file src="obj\vcpkg\installed\libssh2-x86-windows-mixed\bin\libssh2.dll" target="runtimes\win-x86\native" />
+	<!-- pretend the library is platform-neutral -->
+    <file src="obj\vcpkg\installed\libssh2-x86-windows-mixed\bin\libssh2.dll" target="build" />
+    <file src="obj\vcpkg\installed\libssh2-x86-windows-mixed\bin\libssh2.dll" target="build\net46" />
+    <file src="libssh2.targets" target="build" />
   </files>
 </package>
 <<NOKEEP
