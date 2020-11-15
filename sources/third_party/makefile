@@ -40,7 +40,7 @@ $(MAKEDIR)\NuGetPackages:
 	@echo "=== Creating nuget package repository                ===
 	@echo "========================================================"
 	md $(MAKEDIR)\NuGetPackages
-	nuget sources add -Name iap-desktop-third-party -Source $(MAKEDIR)\NuGetPackages
+	-nuget sources add -Name iap-desktop-third-party -Source $(MAKEDIR)\NuGetPackages
 
 #------------------------------------------------------------------------------
 # Vtnetcore targets
@@ -67,7 +67,7 @@ $(MAKEDIR)\obj\vtnetcore\VtNetCore\bin\$(CONFIGURATION)\vtnetcore.$(VTNETCORE_VE
 		"/p:Configuration=$(CONFIGURATION);Platform=Any CPU;AssemblyName=vtnetcore;Version=$(VTNETCORE_VERSION);OutputPath=bin\$(CONFIGURATION)" \
 		"$(MAKEDIR)\obj\vtnetcore\VtNetCore\VtNetCore.csproj"
 
-	cd ..
+	cd $(MAKEDIR)
 
 vtnetcore: $(MAKEDIR)\obj\vtnetcore\VtNetCore\bin\$(CONFIGURATION)\vtnetcore.$(VTNETCORE_VERSION).nupkg $(MAKEDIR)\NuGetPackages
 	@echo "========================================================"
@@ -94,7 +94,7 @@ $(MAKEDIR)\obj\vcpkg\vcpkg.exe: $(MAKEDIR)\obj\vcpkg\bootstrap-vcpkg.bat
 	@echo "========================================================"
 	cd $(MAKEDIR)\obj\vcpkg
 	git checkout $(VCPKG_TAG)
-	cd ..
+	cd $(MAKEDIR)
 	
 	$(MAKEDIR)\obj\vcpkg\bootstrap-vcpkg.bat
 

@@ -1,9 +1,32 @@
 # Building
 
-## Building the application
+## Prerequisites
 
-IAP Desktop is written in C#. Building the solution requires Visual C# 2019.
+Building IAP Desktop requires:
 
-## Building the Windows Installer package
+* Visual Studio 2019 with C# and C++ support or the equivalent components
+  from the Windows SDK
+* Internet access to download dependencies  
+  
+## Building
 
-The Windows Installer package is built using [WiX Toolset](https://wixtoolset.org/).
+1. Open a command prompt (`cmd.exe`)
+1. Build third-party packages:
+
+    ```
+    cd %WORKSPACE%\sources\third_party
+    build
+    ```
+
+    You should now have a local Nuget package repository at
+    %WORKSPACE%\sources\third_party\NuGetPackages containing
+    third-party packages.
+
+1. Build the main solution:
+
+    ```
+    cd %WORKSPACE%\sources
+    build installer
+    ```
+
+    You should now find an MSI package at %WORKSPACE%\sources\installer\bin.

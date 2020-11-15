@@ -105,7 +105,6 @@ if (Test-Path "*.sln")
 
 	(nuget list -Source (Resolve-Path packages)) `
 		| ForEach-Object { New-Item -Name $_.Split(" ")[0].Replace(".", "_") -value $_.Split(" ")[1] -ItemType Variable -Path Env: }
-
 }
 
 Write-Host "PATH: ${Env:PATH}" -ForegroundColor Yellow
