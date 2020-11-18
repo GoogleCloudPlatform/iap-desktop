@@ -38,15 +38,11 @@ namespace Google.Solutions.IapDesktop.Application.Views.Diagnostics
         private int eventId = 1;
 
         public DebugDockingWindow(IServiceProvider serviceProvider)
+            : base(serviceProvider, DockState.DockRightAutoHide)
         {
             InitializeComponent();
             this.TabText = this.Text;
             this.dockPanel = serviceProvider.GetService<IMainForm>().MainPanel;
-        }
-
-        public void ShowWindow()
-        {
-            Show(this.dockPanel, DockState.DockRightAutoHide);
         }
 
         private void WriteOutput(string text)

@@ -22,9 +22,6 @@
 using Google.Solutions.Common.Diagnostics;
 using Google.Solutions.IapDesktop.Application.Controls;
 using Google.Solutions.IapDesktop.Application.ObjectModel;
-using Google.Solutions.IapDesktop.Application.Services.Integration;
-using Google.Solutions.IapDesktop.Application.Views;
-using Google.Solutions.IapDesktop.Application.Views.Dialog;
 using Google.Solutions.IapDesktop.Application.Views.ProjectExplorer;
 using Google.Solutions.IapDesktop.Extensions.Activity.Events;
 using System;
@@ -44,11 +41,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Views.EventLog
         private readonly EventLogViewModel viewModel;
 
         public EventLogWindow(IServiceProvider serviceProvider)
-            : base(
-                  serviceProvider.GetService<IMainForm>().MainPanel,
-                  serviceProvider.GetService<IProjectExplorer>(),
-                  serviceProvider.GetService<IEventService>(),
-                  serviceProvider.GetService<IExceptionDialog>())
+            : base(serviceProvider, WeifenLuo.WinFormsUI.Docking.DockState.DockBottomAutoHide)
         {
             InitializeComponent();
 

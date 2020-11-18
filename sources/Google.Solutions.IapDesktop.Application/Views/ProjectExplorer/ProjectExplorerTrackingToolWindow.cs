@@ -20,6 +20,7 @@
 //
 
 using Google.Solutions.Common.Diagnostics;
+using Google.Solutions.IapDesktop.Application.ObjectModel;
 using Google.Solutions.IapDesktop.Application.Services.Integration;
 using Google.Solutions.IapDesktop.Application.Views.Dialog;
 using System;
@@ -39,20 +40,19 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
 
         private IProjectExplorerNode ignoredNode = null;
 
-        private DockPanel dockPanel;
-
         protected ProjectExplorerTrackingToolWindow()
         {
             // Designer only.
         }
 
         public ProjectExplorerTrackingToolWindow(
-            DockPanel dockPanel,
-            IProjectExplorer projectExplorer,
-            IEventService eventService,
-            IExceptionDialog exceptionDialog)
+            IServiceProvider serviceProvider,
+            DockState defaultDockState) 
+            : base(
+                  serviceProvider,
+                  defaultDockState)
         {
-            this.exceptionDialog = exceptionDialog;
+            this.exceptionDialog = serviceProvider.GetService<IExceptionDialog>();
 
             // Capture the GUI thread scheduler.
             this.taskScheduler = TaskScheduler.FromCurrentSynchronizationContext();
@@ -62,25 +62,16 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
             // just hidden.
             //
             this.HideOnClose = true;
-            this.dockPanel = dockPanel;
-
 
             // Use currently selected node.
+            var projectExplorer = serviceProvider.GetService<IProjectExplorer>();
             OnProjectExplorerNodeSelected(projectExplorer.SelectedNode);
 
             // Track current selection in project explorer.
+            var eventService = serviceProvider.GetService<IEventService>();
             eventService.BindHandler<ProjectExplorerNodeSelectedEvent>(
                 e => OnProjectExplorerNodeSelected(e.SelectedNode));
         }
-
-        public void ShowWindow()
-        {
-            this.TabText = this.Text;
-            this.ShowOrActivate(this.dockPanel, this.DefaultState);
-        }
-
-        protected virtual WeifenLuo.WinFormsUI.Docking.DockState DefaultState
-            => WeifenLuo.WinFormsUI.Docking.DockState.DockBottomAutoHide;
 
         protected override void OnUserVisibilityChanged(bool visible)
         {

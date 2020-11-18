@@ -22,9 +22,7 @@
 using Google.Solutions.Common.Diagnostics;
 using Google.Solutions.IapDesktop.Application.Controls;
 using Google.Solutions.IapDesktop.Application.ObjectModel;
-using Google.Solutions.IapDesktop.Application.Services.Integration;
 using Google.Solutions.IapDesktop.Application.Settings;
-using Google.Solutions.IapDesktop.Application.Views.Dialog;
 using Google.Solutions.IapDesktop.Application.Views.ProjectExplorer;
 using System;
 using System.ComponentModel;
@@ -45,10 +43,8 @@ namespace Google.Solutions.IapDesktop.Application.Views.Properties
             IServiceProvider serviceProvider,
             IPropertiesInspectorViewModel viewModel)
             : base(
-                  serviceProvider.GetService<IMainForm>().MainPanel,
-                  serviceProvider.GetService<IProjectExplorer>(),
-                  serviceProvider.GetService<IEventService>(),
-                  serviceProvider.GetService<IExceptionDialog>())
+                  serviceProvider,
+                  DockState.DockRightAutoHide)
         {
             this.components = new System.ComponentModel.Container();
             this.viewModel = viewModel;
@@ -116,9 +112,6 @@ namespace Google.Solutions.IapDesktop.Application.Views.Properties
         {
             this.propertyGrid.Refresh();
         }
-
-        protected override DockState DefaultState
-            => WeifenLuo.WinFormsUI.Docking.DockState.DockRightAutoHide;
 
         //---------------------------------------------------------------------
         // ProjectExplorerTrackingToolWindow.

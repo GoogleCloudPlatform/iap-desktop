@@ -72,9 +72,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services
                 ReportViewModel.CreateReportName(projectIds),
                 builder,
                 serviceProvider);
-            view.ShowOrActivate(
-                mainForm.MainPanel,
-                WeifenLuo.WinFormsUI.Docking.DockState.Document);
+            view.ShowWindow();
         }
 
         public Extension(IServiceProvider serviceProvider)

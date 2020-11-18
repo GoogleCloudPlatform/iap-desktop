@@ -21,9 +21,6 @@
 
 using Google.Solutions.Common.Diagnostics;
 using Google.Solutions.IapDesktop.Application.ObjectModel;
-using Google.Solutions.IapDesktop.Application.Services.Integration;
-using Google.Solutions.IapDesktop.Application.Views;
-using Google.Solutions.IapDesktop.Application.Views.Dialog;
 using Google.Solutions.IapDesktop.Application.Views.ProjectExplorer;
 using System;
 using System.Diagnostics;
@@ -41,11 +38,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Views.SerialOutput
         public SerialOutputWindow(
             IServiceProvider serviceProvider,
             ushort serialPortNumber)
-            : base(
-                  serviceProvider.GetService<IMainForm>().MainPanel,
-                  serviceProvider.GetService<IProjectExplorer>(),
-                  serviceProvider.GetService<IEventService>(),
-                  serviceProvider.GetService<IExceptionDialog>())
+            : base(serviceProvider, WeifenLuo.WinFormsUI.Docking.DockState.DockBottomAutoHide)
         {
             this.components = new System.ComponentModel.Container();
 

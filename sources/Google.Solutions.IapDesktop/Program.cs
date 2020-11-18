@@ -218,6 +218,8 @@ namespace Google.Solutions.IapDesktop
             persistenceLayer.AddTransient<IAppProtocolRegistry, AppProtocolRegistry>();
             persistenceLayer.AddSingleton(new ApplicationSettingsRepository(
                 hkcu.CreateSubKey($@"{BaseRegistryKeyPath}\Application")));
+            persistenceLayer.AddSingleton(new ToolWindowStateRepository(
+                hkcu.CreateSubKey($@"{BaseRegistryKeyPath}\ToolWindows")));
             persistenceLayer.AddSingleton(new AuthSettingsRepository(
                 hkcu.CreateSubKey($@"{BaseRegistryKeyPath}\Auth"),
                 GoogleAuthAdapter.StoreUserId));

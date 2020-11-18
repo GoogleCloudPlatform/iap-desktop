@@ -183,7 +183,7 @@ namespace Google.Solutions.IapDesktop.Windows
         {
         }
 
-        private void MainForm_Shown(object sender, EventArgs _)
+        private void MainForm_Shown(object sender, EventArgs args)
         {
             //
             // Authorize.
@@ -271,9 +271,23 @@ namespace Google.Solutions.IapDesktop.Windows
             }
 
 #if DEBUG
-            this.serviceProvider.GetService<DebugJobServiceWindow>().ShowWindow();
-            this.serviceProvider.GetService<DebugDockingWindow>().ShowWindow();
-            this.serviceProvider.GetService<DebugProjectExplorerTrackingWindow>().ShowWindow();
+            var debugCommand = this.ViewMenu.AddCommand(
+                new Command<IMainForm>(
+                    "Debug",
+                    _ => CommandState.Enabled,
+                    context => { }));
+            debugCommand.AddCommand(new Command<IMainForm>(
+                "Job Service",
+                _ => CommandState.Enabled,
+                _ => this.serviceProvider.GetService<DebugJobServiceWindow>().ShowWindow()));
+            debugCommand.AddCommand(new Command<IMainForm>(
+                "Docking ",
+                _ => CommandState.Enabled,
+                _ => this.serviceProvider.GetService<DebugDockingWindow>().ShowWindow()));
+            debugCommand.AddCommand(new Command<IMainForm>(
+                "Project Explorer Tracking",
+                _ => CommandState.Enabled,
+                _ => this.serviceProvider.GetService<DebugProjectExplorerTrackingWindow>().ShowWindow()));
 #endif
         }
 

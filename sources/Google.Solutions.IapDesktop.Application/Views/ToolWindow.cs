@@ -20,19 +20,27 @@
 //
 
 using Google.Solutions.Common.Diagnostics;
+using Google.Solutions.IapDesktop.Application.ObjectModel;
+using Google.Solutions.IapDesktop.Application.Services.Settings;
 using System;
+using System.Diagnostics;
 using System.Runtime.InteropServices;
 using System.Windows.Forms;
 using WeifenLuo.WinFormsUI.Docking;
 
 namespace Google.Solutions.IapDesktop.Application.Views
-
 {
     [ComVisible(false)]
     [SkipCodeCoverage("GUI plumbing")]
     public partial class ToolWindow : DockContent
     {
+        private readonly DockPanel panel;
+        private DockState initialDockState;
+        private DockState lastDockState;
+
         public ContextMenuStrip TabContextStrip => this.contextMenuStrip;
+        
+        public bool IsClosed { get; private set; } = false;
 
         public ToolWindow()
         {
@@ -40,18 +48,69 @@ namespace Google.Solutions.IapDesktop.Application.Views
             AutoScaleMode = AutoScaleMode.Dpi;
         }
 
-        private void closeMenuItem_Click(object sender, System.EventArgs e)
+        public ToolWindow(
+            IServiceProvider serviceProvider,
+            DockState defaultDockState) : this()
         {
-            this.CloseSafely();
+            this.panel = serviceProvider.GetService<IMainForm>().MainPanel;
+            var stateRepository = serviceProvider.GetService<ToolWindowStateRepository>();
+
+            this.lastDockState = defaultDockState;
+
+            // Read persisted window state.
+            var state = stateRepository.GetSetting(
+                GetType().Name, // Unique name of tool window
+                defaultDockState);
+            this.initialDockState = state.DockState.EnumValue;
+
+            // Save persisted window state.
+            this.Disposed += (sender, args) =>
+            {
+                //
+                // NB. At this point, it's too late to read this.DockState,
+                // so we have to rely on the value captured during previous
+                // state transitions.
+                //
+
+                try
+                {
+                    if (
+                        // If the window was closed, reset its saved state.
+                        // Note that we're only interested in storing the
+                        // location, not whether the window is visible or not.
+                        this.IsClosed ||
+                        lastDockState == DockState.Hidden ||
+                        lastDockState == DockState.Unknown ||
+
+                        // Ignore Document and Float as these are more complicated
+                        // and not worth the trouble.
+                        lastDockState == DockState.Document ||
+                        lastDockState == DockState.Float)
+                    {
+                        // Ignore Hidden state as we only want to restore
+                        // the dock location, not whether the window is
+                        // shown or not. 
+                        state.DockState.Reset();
+                    }
+                    else
+                    {
+                        // Restore dock state on next run.
+                        state.DockState.EnumValue = lastDockState;
+                    }
+
+                    stateRepository.SetSetting(state);
+                }
+                catch (Exception e)
+                {
+                    TraceSources.IapDesktop.TraceWarning(
+                        "Saving tool window state failed: {0}", e.Message);
+                }
+            };
         }
 
-        private void ToolWindow_KeyUp(object sender, KeyEventArgs e)
-        {
-            if (e.Shift && e.KeyCode == Keys.Escape)
-            {
-                CloseSafely();
-            }
-        }
+        //---------------------------------------------------------------------
+        // Show/Hide.
+        //---------------------------------------------------------------------
 
         protected void CloseSafely()
         {
@@ -65,40 +124,49 @@ namespace Google.Solutions.IapDesktop.Application.Views
             }
         }
 
-        public void ShowOrActivate(DockPanel dockPanel, DockState defaultState)
+        public virtual void ShowWindow(bool activate)
         {
+            Debug.Assert(this.panel != null);
+
+            this.TabText = this.Text;
+
             // NB. IsHidden indicates that the window is not shown at all,
             // not even as auto-hide.
             if (this.IsHidden)
             {
                 // Show in default position.
-                Show(dockPanel, defaultState);
+                Show(this.panel, this.initialDockState);
             }
 
-            // If the window is in auto-hide mode, simply activating
-            // is not enough.
-            switch (this.VisibleState)
+            if (activate)
             {
-                case DockState.DockTopAutoHide:
-                case DockState.DockBottomAutoHide:
-                case DockState.DockLeftAutoHide:
-                case DockState.DockRightAutoHide:
-                    dockPanel.ActiveAutoHideContent = this;
-                    break;
+                // If the window is in auto-hide mode, simply activating
+                // is not enough.
+                switch (this.VisibleState)
+                {
+                    case DockState.DockTopAutoHide:
+                    case DockState.DockBottomAutoHide:
+                    case DockState.DockLeftAutoHide:
+                    case DockState.DockRightAutoHide:
+                        this.panel.ActiveAutoHideContent = this;
+                        break;
+                }
+
+                // Move focus to window.
+                Activate();
+
+                //
+                // If an auto-hide window loses focus and closes, we fail to 
+                // catch that event. 
+                // To force an update, disregard the cached state and re-raise
+                // the UserVisibilityChanged event.
+                //
+                OnUserVisibilityChanged(true);
+                this.wasUserVisible = true;
             }
-
-            // Move focus to window.
-            Activate();
-
-            //
-            // If an auto-hide window loses focus and closes, we fail to 
-            // catch that event. 
-            // To force an update, disregard the cached state and re-raise
-            // the UserVisibilityChanged event.
-            //
-            OnUserVisibilityChanged(true);
-            this.wasUserVisible = true;
         }
+
+        public virtual void ShowWindow() => ShowWindow(true);
 
         protected bool IsAutoHide
         {
@@ -133,6 +201,23 @@ namespace Google.Solutions.IapDesktop.Application.Views
                     default:
                         return false;
                 }
+            }
+        }
+
+        //---------------------------------------------------------------------
+        // Window events.
+        //---------------------------------------------------------------------
+
+        private void closeMenuItem_Click(object sender, System.EventArgs e)
+        {
+            this.CloseSafely();
+        }
+
+        private void ToolWindow_KeyUp(object sender, KeyEventArgs e)
+        {
+            if (e.Shift && e.KeyCode == Keys.Escape)
+            {
+                CloseSafely();
             }
         }
 
@@ -189,25 +274,41 @@ namespace Google.Solutions.IapDesktop.Application.Views
         protected override void OnEnter(EventArgs e)
         {
             base.OnEnter(e);
+
+            this.lastDockState = this.DockState;
             RaiseUserVisibilityChanged();
         }
 
         protected override void OnLeave(EventArgs e)
         {
             base.OnLeave(e);
+
+            this.lastDockState = this.DockState;
             RaiseUserVisibilityChanged();
         }
 
         protected override void OnVisibleChanged(EventArgs e)
         {
             base.OnVisibleChanged(e);
+
+            this.lastDockState = this.DockState;
             RaiseUserVisibilityChanged();
         }
 
         protected override void OnShown(EventArgs e)
         {
             base.OnShown(e);
+
+            this.lastDockState = this.DockState;
             RaiseUserVisibilityChanged();
+        }
+
+        protected override void OnClosed(EventArgs e)
+        {
+            base.OnClosed(e);
+
+            Debug.Assert(!this.IsClosed);
+            this.IsClosed = true;
         }
 
         protected virtual void OnUserVisibilityChanged(bool visible)
