@@ -21,6 +21,7 @@
 
 using Google.Solutions.IapDesktop.Application.ObjectModel;
 using Google.Solutions.IapDesktop.Application.Services.Adapters;
+using Google.Solutions.IapDesktop.Application.Views.Dialog;
 using System;
 using System.Linq;
 using System.Text.RegularExpressions;
@@ -41,6 +42,8 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
         private bool clearedInput = false;
         private bool updatingSuggestions = false;
         private string suggestionsPrefix = null;
+
+        private readonly IExceptionDialog exceptionDialog;
         private readonly IResourceManagerAdapter resourceManager;
 
         public ProjectPickerDialog(IServiceProvider serviceProvider)
@@ -48,6 +51,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
             InitializeComponent();
 
             this.resourceManager = serviceProvider.GetService<IResourceManagerAdapter>();
+            this.exceptionDialog = serviceProvider.GetService<IExceptionDialog>();
         }
 
         private void projectComboBox_Enter(object sender, EventArgs e)
@@ -117,29 +121,36 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
             }
         }
 
-        private async void okButton_Click(object sender, EventArgs e)
+        private async void okButton_Click(object sender, EventArgs _)
         {
-            // NB. The DialogResult property of the button is not set so that this
-            // event handler is run to completion *before* ShowDialog returns.
-            var project = await this.resourceManager.QueryProjectsById(
-                    this.SelectedProjectId,
-                    CancellationToken.None)
-                .ConfigureAwait(true);
-            if (project.Any())
+            try
             {
-                this.DialogResult = DialogResult.OK;
-            }
-            else
-            {
-                // Invalid project ID.
-                MessageBox.Show(
-                    this,
-                    "The project does not exist or you do not have the permission to access it",
-                    this.Text,
-                    MessageBoxButtons.OK,
-                    MessageBoxIcon.Error);
+                // NB. The DialogResult property of the button is not set so that this
+                // event handler is run to completion *before* ShowDialog returns.
+                var project = await this.resourceManager.QueryProjectsById(
+                        this.SelectedProjectId,
+                        CancellationToken.None)
+                    .ConfigureAwait(true);
+                if (project.Any())
+                {
+                    this.DialogResult = DialogResult.OK;
+                }
+                else
+                {
+                    // Invalid project ID.
+                    MessageBox.Show(
+                        this,
+                        "The project does not exist or you do not have the permission to access it",
+                        this.Text,
+                        MessageBoxButtons.OK,
+                        MessageBoxIcon.Error);
 
-                this.DialogResult = DialogResult.None;
+                    this.DialogResult = DialogResult.None;
+                }
+            }
+            catch (Exception e)
+            {
+                this.exceptionDialog.Show(this, "Resolving project failed", e);
             }
         }
 
