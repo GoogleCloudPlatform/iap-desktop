@@ -299,15 +299,20 @@ namespace Google.Solutions.IapDesktop.Application.Views
         {
             base.OnShown(e);
 
+            this.IsClosed = false;
+
             this.lastDockState = this.DockState;
             RaiseUserVisibilityChanged();
         }
 
         protected override void OnClosed(EventArgs e)
         {
-            base.OnClosed(e);
+            // NB. This method might be invoked more than once if a disconnect
+            // event coincides (which is reasnably common when closing the app
+            // with active sessions).
 
-            Debug.Assert(!this.IsClosed);
+            base.OnClosed(e);
+            
             this.IsClosed = true;
         }
 
