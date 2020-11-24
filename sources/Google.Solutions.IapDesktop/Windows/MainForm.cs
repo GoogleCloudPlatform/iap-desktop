@@ -106,10 +106,21 @@ namespace Google.Solutions.IapDesktop.Windows
 
             this.viewModel = new MainFormViewModel(
                 this,
+                this.vs2015LightTheme.ColorPalette,
                 bootstrappingServiceProvider.GetService<ApplicationSettingsRepository>(),
                 bootstrappingServiceProvider.GetService<AuthSettingsRepository>());
 
             // Status bar.
+            this.statusStrip.BindProperty(
+                c => c.BackColor,
+                this.viewModel,
+                m => m.StatusBarBackColor,
+                this.components);
+            this.toolStripStatus.BindProperty(
+                c => c.Text,
+                this.viewModel,
+                m => m.StatusText,
+                this.components);
             this.backgroundJobLabel.BindProperty(
                 c => c.Visible,
                 this.viewModel,
@@ -139,6 +150,13 @@ namespace Google.Solutions.IapDesktop.Windows
                 c => c.Visible,
                 this.viewModel,
                 m => m.IsDeviceStateVisible,
+                this.components);
+
+            // Logging.
+            this.enableloggingToolStripMenuItem.BindProperty(
+                c => c.Checked,
+                this.viewModel,
+                m => m.IsLoggingEnabled,
                 this.components);
         }
 
@@ -445,25 +463,10 @@ namespace Google.Solutions.IapDesktop.Windows
 
         private void enableloggingToolStripMenuItem_Click(object sender, EventArgs _)
         {
-            var loggingEnabled =
-                this.enableloggingToolStripMenuItem.Checked =
-                !this.enableloggingToolStripMenuItem.Checked;
-
             try
             {
-                Program.IsLoggingEnabled = loggingEnabled;
-
-                if (loggingEnabled)
-                {
-                    this.toolStripStatus.Text = $"Logging to {Program.LogFile}, performance " +
-                        "might be degraded while logging is enabled.";
-                    this.statusStrip.BackColor = Color.Red;
-                }
-                else
-                {
-                    this.toolStripStatus.Text = string.Empty;
-                    this.statusStrip.BackColor = this.vs2015LightTheme.ColorPalette.ToolWindowCaptionActive.Background;
-                }
+                // Toggle logging state.
+                this.viewModel.IsLoggingEnabled = !this.viewModel.IsLoggingEnabled;
             }
             catch (Exception e)
             {

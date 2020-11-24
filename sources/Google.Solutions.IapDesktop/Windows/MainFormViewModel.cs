@@ -29,15 +29,18 @@ using Google.Solutions.IapDesktop.Application.Services.Settings;
 using Google.Solutions.IapTunneling.Iap;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Drawing;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using WeifenLuo.WinFormsUI.Docking;
 
 namespace Google.Solutions.IapDesktop.Windows
 {
     internal class MainFormViewModel : ViewModelBase
     {
+        private readonly DockPanelColorPalette colorPalette;
         private readonly AuthSettingsRepository authSettings;
         private readonly ApplicationSettingsRepository applicationSettings;
 
@@ -52,10 +55,13 @@ namespace Google.Solutions.IapDesktop.Windows
 
         public MainFormViewModel(
             Control view,
+            DockPanelColorPalette colorPalette,
             ApplicationSettingsRepository applicationSettings,
             AuthSettingsRepository authSettings)
         {
             this.View = view;
+            this.colorPalette = colorPalette;
+
             this.applicationSettings = applicationSettings;
             this.authSettings = authSettings;
         }
@@ -64,6 +70,31 @@ namespace Google.Solutions.IapDesktop.Windows
         // Observable properties.
         //---------------------------------------------------------------------
 
+        public bool IsLoggingEnabled
+        {
+            get => Program.IsLoggingEnabled;
+            set
+            {
+                Program.IsLoggingEnabled = value;
+                RaisePropertyChange();
+                RaisePropertyChange((MainFormViewModel m) => m.StatusBarBackColor);
+                RaisePropertyChange((MainFormViewModel m) => m.StatusText);
+            }
+        }
+
+        public Color StatusBarBackColor
+        {
+            get => this.IsLoggingEnabled
+                ? Color.Red
+                : this.colorPalette.ToolWindowCaptionActive.Background;
+        }
+
+        public string StatusText
+        {
+            get => this.IsLoggingEnabled
+                ? $"Logging to {Program.LogFile}, performance might be degraded while logging is enabled."
+                : string.Empty;
+        }
 
         public bool IsBackgroundJobStatusVisible
         {
