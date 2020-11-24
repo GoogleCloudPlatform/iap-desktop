@@ -49,7 +49,13 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Views.SerialOutput
 
             this.components.Add(this.viewModel.OnPropertyChange(
                 m => m.WindowTitle,
-                title => this.TabText = this.Text = title));
+                title =>
+                {
+                    // NB. Update properties separately instead of using multi-assignment,
+                    // otherwise the title does not update properly.
+                    this.TabText = title;
+                    this.Text = title;
+                }));
             this.components.Add(this.viewModel.OnPropertyChange(
                 m => m.Output,
                 text =>
