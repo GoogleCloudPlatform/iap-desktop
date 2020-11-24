@@ -59,6 +59,9 @@ namespace Google.Solutions.IapTunneling.Iap
     {
         private readonly ISshRelayEndpoint endpoint;
         private readonly SemaphoreSlim connectSemaphore = new SemaphoreSlim(1);
+
+        // Queue of un-ack'ed messages that might require re-sending.
+        private readonly object sentButUnacknoledgedQueueLock = new object();
         private readonly Queue<DataMessage> sentButUnacknoledgedQueue = new Queue<DataMessage>();
 
         public string Sid { get; private set; }
@@ -73,9 +76,29 @@ namespace Google.Solutions.IapTunneling.Iap
 
         private ulong lastAck = 0;
 
-        internal ulong ExpectedAck => this.sentButUnacknoledgedQueue.Any()
-            ? this.sentButUnacknoledgedQueue.Last().ExpectedAck : 0;
-        internal int UnacknoledgedMessageCount => this.sentButUnacknoledgedQueue.Count;
+        internal ulong ExpectedAck
+        {
+            get
+            {
+                lock (this.sentButUnacknoledgedQueueLock)
+                {
+                    return this.sentButUnacknoledgedQueue.Any()
+                        ? this.sentButUnacknoledgedQueue.Last().ExpectedAck
+                        : 0;
+                }
+            }
+        }
+
+        internal int UnacknoledgedMessageCount
+        {
+            get
+            {
+                lock (this.sentButUnacknoledgedQueueLock)
+                {
+                    return this.sentButUnacknoledgedQueue.Count;
+                }
+            }
+        }
 
         //---------------------------------------------------------------------
         // Ctor
@@ -99,7 +122,7 @@ namespace Google.Solutions.IapTunneling.Iap
                     Thread.VolatileRead(ref this.bytesSent),
                     Thread.VolatileRead(ref this.bytesSentAndAcknoledged),
                     Thread.VolatileRead(ref this.bytesReceived),
-                    this.sentButUnacknoledgedQueue.Count,
+                    this.UnacknoledgedMessageCount,
                     message);
             }
         }
@@ -140,16 +163,28 @@ namespace Google.Solutions.IapTunneling.Iap
                     }
 
                     // Resend any un-ack'ed data.
-                    while (this.sentButUnacknoledgedQueue.Any())
+                    while (true)
                     {
-                        var message = this.sentButUnacknoledgedQueue.Dequeue();
+                        Task resendMessage = null;
+                        lock (this.sentButUnacknoledgedQueueLock)
+                        {
+                            if (!this.sentButUnacknoledgedQueue.Any())
+                            {
+                                break;
+                            }
 
-                        TraceLine($"Resending DATA #{message.SequenceNumber}...");
-                        await this.__currentConnection.WriteAsync(
-                            message.Buffer,
-                            0,
-                            message.BufferLength,
-                            cancellationToken).ConfigureAwait(false);
+                            var message = this.sentButUnacknoledgedQueue.Dequeue();
+
+                            TraceLine($"Resending DATA #{message.SequenceNumber}...");
+                            resendMessage = this.__currentConnection.WriteAsync(
+                                message.Buffer,
+                                0,
+                                message.BufferLength,
+                                cancellationToken);
+                        }
+
+                        Debug.Assert(resendMessage != null);
+                        await resendMessage.ConfigureAwait(false);
                     }
 
                     // The first receive should be a CONNECT_SUCCESS_SID or
@@ -317,12 +352,15 @@ namespace Google.Solutions.IapTunneling.Iap
 
                                 this.bytesSentAndAcknoledged = ackMessage.Ack;
 
-                                // The server might be acknolodging multiple messages at once.
-                                while (this.sentButUnacknoledgedQueue.Count > 0 &&
-                                       this.sentButUnacknoledgedQueue.Peek().ExpectedAck
-                                            <= Thread.VolatileRead(ref this.bytesSentAndAcknoledged))
+                                lock (this.sentButUnacknoledgedQueueLock)
                                 {
-                                    this.sentButUnacknoledgedQueue.Dequeue();
+                                    // The server might be acknolodging multiple messages at once.
+                                    while (this.sentButUnacknoledgedQueue.Count > 0 &&
+                                           this.sentButUnacknoledgedQueue.Peek().ExpectedAck
+                                                <= Thread.VolatileRead(ref this.bytesSentAndAcknoledged))
+                                    {
+                                        this.sentButUnacknoledgedQueue.Dequeue();
+                                    }
                                 }
 
                                 TraceLine($"Received ACK #{ackMessage.Ack}");
@@ -481,7 +519,10 @@ namespace Google.Solutions.IapTunneling.Iap
                         cancellationToken).ConfigureAwait(false);
 
                     // We should get an ACK for this message.
-                    this.sentButUnacknoledgedQueue.Enqueue(newMessage);
+                    lock (this.sentButUnacknoledgedQueueLock)
+                    {
+                        this.sentButUnacknoledgedQueue.Enqueue(newMessage);
+                    }
 
                     return;
                 }
