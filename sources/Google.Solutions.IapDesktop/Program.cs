@@ -21,6 +21,7 @@
 
 using Google.Solutions.Common.Auth;
 using Google.Solutions.Common.Diagnostics;
+using Google.Solutions.IapDesktop.Application.Host;
 using Google.Solutions.IapDesktop.Application.ObjectModel;
 using Google.Solutions.IapDesktop.Application.Services;
 using Google.Solutions.IapDesktop.Application.Services.Adapters;
@@ -108,47 +109,6 @@ namespace Google.Solutions.IapDesktop
             }
         }
 
-        private static IapRdpUrl ParseCommandLine(string[] args)
-        {
-            if (args.Length == 0)
-            {
-                // No arguments passed.
-                return null;
-            }
-            else if (args.Length > 1 && args[0] == "/url")
-            {
-                // Certain legacy browsers do not properly quote URLs when passing them
-                // as command line arguments. If the URL contains a space, it might be
-                // delivered as two separate arguments.
-
-                var url = string.Join(" ", args.Skip(1)).Trim();
-
-                try
-                {
-                    return IapRdpUrl.FromString(url);
-                }
-                catch (UriFormatException e)
-                {
-                    MessageBox.Show(
-                        "Invalid command line options.\n\n" + e.Message,
-                        "IAP Desktop",
-                        MessageBoxButtons.OK,
-                        MessageBoxIcon.Error);
-                }
-            }
-            else
-            {
-                MessageBox.Show(
-                    "Invalid command line options.",
-                    "IAP Desktop",
-                    MessageBoxButtons.OK,
-                    MessageBoxIcon.Error);
-            }
-
-            Environment.Exit(1);
-            return null;
-        }
-
         private IEnumerable<Assembly> LoadExtensionAssemblies()
         {
             return Directory.GetFiles(
@@ -170,9 +130,9 @@ namespace Google.Solutions.IapDesktop
 
         protected override int HandleFirstInvocation(string[] args)
         {
-            var startupUrl = ParseCommandLine(args);
+            var options = CommandLineOptions.ParseOrExit(args);
 
-            IsLoggingEnabled = false;
+            IsLoggingEnabled = options.IsLoggingEnabled;
 
 #if DEBUG
             Google.Solutions.IapDesktop.Application.TraceSources.IapDesktop.Switch.Level = SourceLevels.Verbose;
@@ -226,7 +186,7 @@ namespace Google.Solutions.IapDesktop
 
             var mainForm = new MainForm(persistenceLayer, windowAndWorkflowLayer)
             {
-                StartupUrl = startupUrl
+                StartupUrl = options.StartupUrl
             };
 
             //
@@ -305,9 +265,9 @@ namespace Google.Solutions.IapDesktop
 
         protected override int HandleSubsequentInvocation(string[] args)
         {
-            var url = ParseCommandLine(args);
+            var options = CommandLineOptions.ParseOrExit(args);
 
-            // Make sure the main form is ready.e
+            // Make sure the main form is ready.
             this.mainFormInitialized.WaitOne();
             Debug.Assert(this.initializedMainForm != null);
 
@@ -315,9 +275,9 @@ namespace Google.Solutions.IapDesktop
             // main thread before doing any GUI stuff.
             this.initializedMainForm.Invoke(((Action)(() =>
             {
-                if (url != null)
+                if (options.StartupUrl != null)
                 {
-                    this.initializedMainForm.ConnectToUrl(url);
+                    this.initializedMainForm.ConnectToUrl(options.StartupUrl);
                 }
             })));
 
@@ -339,7 +299,7 @@ namespace Google.Solutions.IapDesktop
         {
             // Parse command line to catch errors before even passing an invalid
             // command line to another instance of the app.
-            ParseCommandLine(args);
+            CommandLineOptions.ParseOrExit(args);
 
             new Program().Run(args);
         }
