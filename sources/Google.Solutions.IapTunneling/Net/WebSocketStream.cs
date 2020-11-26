@@ -165,8 +165,8 @@ namespace Google.Solutions.IapTunneling.Net
                         cancellationToken).ConfigureAwait(false);
                     bytesReceived += result.Count;
 
-                    TraceSources.Compute.TraceVerbose
-                        ("WebSocketStream: end ReadAsync() - {0} bytes read [socket: {1}]",
+                    TraceSources.Compute.TraceVerbose(
+                        "WebSocketStream: end ReadAsync() - {0} bytes read [socket: {1}]",
                         result.Count,
                         this.socket.State);
                 }
