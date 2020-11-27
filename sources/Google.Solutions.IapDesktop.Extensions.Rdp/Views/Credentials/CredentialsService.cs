@@ -109,7 +109,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Views.Credentials
             // Save credentials.
             settings.Username.StringValue = credentials.UserName;
             settings.Password.ClearTextValue = credentials.Password;
-            settings.Domain.StringValue = null;
+
+            // NB. The computer might be joined to a domain, therefore force a local logon.
+            settings.Domain.StringValue = ".";
         }
 
         public Task<bool> IsGrantedPermissionToGenerateCredentials(InstanceLocator instance)
