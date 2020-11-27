@@ -153,7 +153,10 @@ namespace Google.Solutions.IapTunneling.Net
                         throw new OverflowException("Buffer too small to receive an entire message");
                     }
 
-                    TraceSources.Compute.TraceVerbose($"WebSocketStream: begin ReadAsync()... [socket: {this.socket.State}]");
+                    TraceSources.Compute.TraceVerbose(
+                        "WebSocketStream: begin ReadAsync()... [socket: {0}]", 
+                        this.socket.State);
+
                     result = await this.socket.ReceiveAsync(
                         new ArraySegment<byte>(
                             buffer,
@@ -162,7 +165,10 @@ namespace Google.Solutions.IapTunneling.Net
                         cancellationToken).ConfigureAwait(false);
                     bytesReceived += result.Count;
 
-                    TraceSources.Compute.TraceVerbose($"WebSocketStream: end ReadAsync() - {result.Count} bytes read [socket: {this.socket.State}]");
+                    TraceSources.Compute.TraceVerbose(
+                        "WebSocketStream: end ReadAsync() - {0} bytes read [socket: {1}]",
+                        result.Count,
+                        this.socket.State);
                 }
                 while (count > 0 && !result.EndOfMessage);
 
@@ -170,7 +176,9 @@ namespace Google.Solutions.IapTunneling.Net
                 {
                     Debug.Assert(bytesReceived == 0);
 
-                    TraceSources.Compute.TraceVerbose($"WebSocketStream: Connection closed by server: {result.CloseStatus}");
+                    TraceSources.Compute.TraceVerbose(
+                        "WebSocketStream: Connection closed by server: {0}",
+                        result.CloseStatus);
 
                     this.closeByServerReceived = new WebSocketStreamClosedByServerException(
                         result.CloseStatus.Value,
@@ -193,7 +201,7 @@ namespace Google.Solutions.IapTunneling.Net
             }
             catch (Exception e) when (IsSocketError(e, SocketError.ConnectionAborted))
             {
-                TraceSources.Compute.TraceVerbose($"WebSocketStream.Receive: connection aborted - {e}");
+                TraceSources.Compute.TraceVerbose("WebSocketStream.Receive: connection aborted - {0}", e);
 
                 // ClientWebSocket/WinHttp can also throw an exception if
                 // the connection has been closed.
@@ -216,17 +224,24 @@ namespace Google.Solutions.IapTunneling.Net
 
             try
             {
-                TraceSources.Compute.TraceVerbose($"WebSocketStream: begin WriteAsync({count} bytes)... [socket: {this.socket.State}]");
+                TraceSources.Compute.TraceVerbose(
+                    "WebSocketStream: begin WriteAsync({0} bytes)... [socket: {1}]",
+                    count,
+                    this.socket.State);
+
                 await this.socket.SendAsync(
                     new ArraySegment<byte>(buffer, offset, count),
                     WebSocketMessageType.Binary,
                     true,
                     cancellationToken).ConfigureAwait(false);
-                TraceSources.Compute.TraceVerbose($"WebSocketStream: end WriteAsync()... [socket: {this.socket.State}]");
+                
+                TraceSources.Compute.TraceVerbose(
+                    "WebSocketStream: end WriteAsync()... [socket: {0}]",
+                    this.socket.State);
             }
             catch (Exception e) when (IsSocketError(e, SocketError.ConnectionAborted))
             {
-                TraceSources.Compute.TraceVerbose($"WebSocketStream.Send: connection aborted - {e}");
+                TraceSources.Compute.TraceVerbose("WebSocketStream.Send: connection aborted - {0}", e);
 
                 this.closeByServerReceived = new WebSocketStreamClosedByServerException(
                     WebSocketCloseStatus.NormalClosure,
