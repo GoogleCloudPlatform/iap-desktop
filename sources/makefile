@@ -35,7 +35,7 @@ BINARY_VERSION = $(PRODUCT_VERSION).0
 
 MAIN_ASSEMBLY = Google.Solutions.IapDesktop\bin\$(CONFIGURATION)\IapDesktop.exe
 
-INSTALLER_BUILD_PACKAGE = installer\bin\$(CONFIGURATION)\Installer-$(BINARY_VERSION).zip
+INSTALLER_SNAPSHOT = installer\bin\$(CONFIGURATION)\InstallerSnapshot-$(BINARY_VERSION).zip
 INSTALLER_PACKAGE = installer\bin\$(CONFIGURATION)\IapDesktop-$(BINARY_VERSION).msi
 SYMBOLS_PACKAGE = installer\bin\$(CONFIGURATION)\Symbols-$(BINARY_VERSION).zip
 
@@ -54,6 +54,8 @@ NUNIT_COVERAGE_FILTER = \
 	+[Google.Solutions.IapDesktop.Extensions.Os]* \
 	+[Google.Solutions.IapDesktop.Extensions.Rdp]* \
 	+[Google.Solutions.IapDesktop.Application]*
+	
+SIGNTOOL_FLAGS = /v /tr http://timestamp.digicert.com /i SHA2 /fd sha256 /td sha256
 
 #------------------------------------------------------------------------------
 # Ancillary variables
@@ -85,7 +87,7 @@ $(MAIN_ASSEMBLY) $(NUNIT_ASSEMBLIES): Google.Solutions.IapDesktop\OAuthClient.cs
 
 	msbuild /t:Rebuild /p:Configuration=$(CONFIGURATION);Platform=$(PLATFORM);AssemblyVersionNumber=$(BINARY_VERSION)
 	
-!if ( "$(USE_EXISTING_STAGING_AREA)" == "" ) 
+!if ( "$(SKIP_ASSEMBLY_BUILD)" == "" ) 
 $(MAKEDIR)\installer\obj\$(CONFIGURATION): $(MAIN_ASSEMBLY)
 	@echo "========================================================"
 	@echo "=== Creating staging area for installer              ==="
@@ -124,6 +126,11 @@ $(INSTALLER_PACKAGE): $(INSTALLER_PACKAGE).wixobj
 	@echo "=== Linking installer                                ==="
 	@echo "========================================================"
 
+!if ( "$(CODESIGN)" != "" ) 
+	signtool sign $(SIGNTOOL_FLAGS) $(MAKEDIR)\installer\obj\$(CONFIGURATION)\*.dll
+	signtool sign $(SIGNTOOL_FLAGS) $(MAKEDIR)\installer\obj\$(CONFIGURATION)\*.exe
+!endif
+
 	light \
 		-nologo \
 		-out $@ \
@@ -133,13 +140,17 @@ $(INSTALLER_PACKAGE): $(INSTALLER_PACKAGE).wixobj
 		-ext packages\Wix.$(WIX)\tools\WixUtilExtension.dll \
 		$(INSTALLER_PACKAGE).wixobj
 
-$(INSTALLER_BUILD_PACKAGE): $(MAKEDIR)\installer\obj\$(CONFIGURATION)
+!if ( "$(CODESIGN)" != "" ) 
+	signtool sign $(SIGNTOOL_FLAGS) $(INSTALLER_PACKAGE)
+!endif
+
+$(INSTALLER_SNAPSHOT): $(MAKEDIR)\installer\obj\$(CONFIGURATION)
 	@echo "========================================================"
 	@echo "=== Packaging installer staging area                 ==="
 	@echo "========================================================"
 	
 	$(POWERSHELL) $(MAKEDIR)\scripts\create-zip.ps1 \
-		-ZipFile $(INSTALLER_BUILD_PACKAGE) \
+		-ZipFile $(INSTALLER_SNAPSHOT) \
 		-Path $(MAKEDIR)\makefile, \
 			  $(MAKEDIR)\installer, \
 			  $(MAKEDIR)\packages\Wix.$(WIX)\tools
@@ -211,7 +222,9 @@ test: $(NUNIT_ASSEMBLIES)
 		-targetdir:coveragereport \
 		-reporttypes:HTML
 	
-installer: $(INSTALLER_PACKAGE) $(INSTALLER_BUILD_PACKAGE) $(SYMBOLS_PACKAGE)
+installer: $(INSTALLER_PACKAGE)
+installer-snapshot: $(INSTALLER_SNAPSHOT) 
+symbols: $(SYMBOLS_PACKAGE)
 
 #------------------------------------------------------------------------------
 # Kokoro specific targets
@@ -230,4 +243,12 @@ kokoro-iap-firewallrule:
 		--source-ranges=35.235.240.0/20 \
 		--project=$(GOOGLE_CLOUD_PROJECT)
 
-kokoro-continuous-integration: check-copyright-headers kokoro-iap-firewallrule installer test
+kokoro-continuous-integration: \
+	check-copyright-headers \
+	kokoro-iap-firewallrule \
+	installer \
+	installer-snapshot \
+	symbols \
+	test
+
+kokoro-sign: installer
