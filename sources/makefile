@@ -119,9 +119,14 @@ $(SYMBOLS_PACKAGE): $(MAIN_ASSEMBLY)
 	@echo "=== Packaging symbols                                ==="
 	@echo "========================================================"
 
-	$(POWERSHELL) $(MAKEDIR)\scripts\package-symbols.ps1 \
-		-ProductVersion $(BINARY_VERSION) \
-		-Configuration $(CONFIGURATION)
+	if not exist $(MAKEDIR)\installer\bin\$(CONFIGURATION)\symbols \
+		md $(MAKEDIR)\installer\bin\$(CONFIGURATION)\symbols
+
+	copy Google.Solutions.IapDesktop\bin\$(CONFIGURATION)\*.pdb \
+		$(MAKEDIR)\installer\bin\$(CONFIGURATION)\symbols
+
+	$(POWERSHELL) $(MAKEDIR)\scripts\create-zip.ps1 $(SYMBOLS_PACKAGE) \
+		$(MAKEDIR)\installer\bin\$(CONFIGURATION)\symbols
 
 #------------------------------------------------------------------------------
 # Main targets

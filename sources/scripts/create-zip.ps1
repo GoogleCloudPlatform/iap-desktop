@@ -21,22 +21,11 @@
 
 [CmdletBinding()]
 Param(
-    [Parameter(Mandatory=$True)]$ProductVersion,
-    [Parameter(Mandatory=$True)]$Configuration
+    [Parameter(Mandatory=$True)]$ZipFile,
+    [Parameter(Mandatory=$True)]$Directory
 )
 
 $ErrorActionPreference = "stop"
 
-$ObjDir = "installer\bin"
-$SymbolsDir = Join-Path -Path (Resolve-Path -Path "$ObjDir\$Configuration") -ChildPath "Symbols"
-$SymbolsArchive = Join-Path -Path (Resolve-Path -Path "$ObjDir\$Configuration") -ChildPath "Symbols-$ProductVersion.zip"
-
-if (Test-path $SymbolsArchive) {
-    Remove-item $SymbolsArchive
-}
-
-New-Item -Type Directory -Force $SymbolsDir | Out-Null
-Copy-Item -Path "Google.Solutions.IapDesktop\bin\$Configuration\*.pdb" -Destination $SymbolsDir
-
 Add-Type -Assembly "System.IO.Compression.FileSystem"
-[System.IO.Compression.ZipFile]::CreateFromDirectory($SymbolsDir, $SymbolsArchive)
+[System.IO.Compression.ZipFile]::CreateFromDirectory($Directory, $ZipFile)
