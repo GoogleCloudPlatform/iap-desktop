@@ -35,6 +35,7 @@ BINARY_VERSION = $(PRODUCT_VERSION).0
 
 MAIN_ASSEMBLY = Google.Solutions.IapDesktop\bin\$(CONFIGURATION)\IapDesktop.exe
 
+INSTALLER_BUILD_PACKAGE = installer\bin\$(CONFIGURATION)\Installer-$(BINARY_VERSION).zip
 INSTALLER_PACKAGE = installer\bin\$(CONFIGURATION)\IapDesktop-$(BINARY_VERSION).msi
 SYMBOLS_PACKAGE = installer\bin\$(CONFIGURATION)\Symbols-$(BINARY_VERSION).zip
 
@@ -84,7 +85,23 @@ $(MAIN_ASSEMBLY) $(NUNIT_ASSEMBLIES): Google.Solutions.IapDesktop\OAuthClient.cs
 
 	msbuild /t:Rebuild /p:Configuration=$(CONFIGURATION);Platform=$(PLATFORM);AssemblyVersionNumber=$(BINARY_VERSION)
 	
-$(INSTALLER_PACKAGE).wixobj: $(MAIN_ASSEMBLY) $(MAKEDIR)\installer\Product.wxs
+$(MAKEDIR)\installer\obj\$(CONFIGURATION): $(MAIN_ASSEMBLY)
+	@echo "========================================================"
+	@echo "=== Creating staging area for installer              ==="
+	@echo "========================================================"
+	
+	md $(MAKEDIR)\installer\obj\$(CONFIGURATION)
+		
+	copy $(MAKEDIR)\installer\*.* \
+		$(MAKEDIR)\installer\obj\$(CONFIGURATION)
+	copy $(MAKEDIR)\Google.Solutions.IapDesktop\bin\$(CONFIGURATION)\*.exe* \
+		$(MAKEDIR)\installer\obj\$(CONFIGURATION)
+	copy $(MAKEDIR)\Google.Solutions.IapDesktop\bin\$(CONFIGURATION)\*.dll \
+		$(MAKEDIR)\installer\obj\$(CONFIGURATION)
+
+$(INSTALLER_PACKAGE).wixobj: \
+			$(MAKEDIR)\installer\Product.wxs \
+			$(MAKEDIR)\installer\obj\$(CONFIGURATION)
 	@echo "========================================================"
 	@echo "=== Compiling installer                              ==="
 	@echo "========================================================"
@@ -100,7 +117,7 @@ $(INSTALLER_PACKAGE).wixobj: $(MAIN_ASSEMBLY) $(MAKEDIR)\installer\Product.wxs
 		-ext packages\Wix.$(Wix)\tools\WixUtilExtension.dll \
 		 $(MAKEDIR)\installer\Product.wxs
 
-$(INSTALLER_PACKAGE): $(INSTALLER_PACKAGE).wixobj $(MAIN_ASSEMBLY)
+$(INSTALLER_PACKAGE): $(INSTALLER_PACKAGE).wixobj
 	@echo "========================================================"
 	@echo "=== Linking installer                                ==="
 	@echo "========================================================"
@@ -113,6 +130,15 @@ $(INSTALLER_PACKAGE): $(INSTALLER_PACKAGE).wixobj $(MAIN_ASSEMBLY)
 		-ext packages\Wix.$(Wix)\tools\WixUIExtension.dll \
 		-ext packages\Wix.$(Wix)\tools\WixUtilExtension.dll \
 		$(INSTALLER_PACKAGE).wixobj
+
+$(INSTALLER_BUILD_PACKAGE): $(MAKEDIR)\installer\obj\$(CONFIGURATION)
+	@echo "========================================================"
+	@echo "=== Packaging installer staging area                 ==="
+	@echo "========================================================"
+	
+	$(POWERSHELL) $(MAKEDIR)\scripts\create-zip.ps1 \
+		-ZipFile $(INSTALLER_BUILD_PACKAGE) \
+		-Path makefile, $(MAKEDIR)\installer
 		
 $(SYMBOLS_PACKAGE): $(MAIN_ASSEMBLY)
 	@echo "========================================================"
@@ -122,11 +148,11 @@ $(SYMBOLS_PACKAGE): $(MAIN_ASSEMBLY)
 	if not exist $(MAKEDIR)\installer\bin\$(CONFIGURATION)\symbols \
 		md $(MAKEDIR)\installer\bin\$(CONFIGURATION)\symbols
 
-	copy Google.Solutions.IapDesktop\bin\$(CONFIGURATION)\*.pdb \
+	copy $(MAKEDIR)\Google.Solutions.IapDesktop\bin\$(CONFIGURATION)\*.pdb \
 		$(MAKEDIR)\installer\bin\$(CONFIGURATION)\symbols
 
 	$(POWERSHELL) $(MAKEDIR)\scripts\create-zip.ps1 $(SYMBOLS_PACKAGE) \
-		$(MAKEDIR)\installer\bin\$(CONFIGURATION)\symbols
+		$(MAKEDIR)\installer\bin\$(CONFIGURATION)\symbols\*
 
 #------------------------------------------------------------------------------
 # Main targets
@@ -181,7 +207,7 @@ test: $(NUNIT_ASSEMBLIES)
 		-targetdir:coveragereport \
 		-reporttypes:HTML
 	
-installer: $(INSTALLER_PACKAGE) $(SYMBOLS_PACKAGE)
+installer: $(INSTALLER_PACKAGE) $(INSTALLER_BUILD_PACKAGE) $(SYMBOLS_PACKAGE)
 
 #------------------------------------------------------------------------------
 # Kokoro specific targets

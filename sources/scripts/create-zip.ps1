@@ -22,10 +22,16 @@
 [CmdletBinding()]
 Param(
     [Parameter(Mandatory=$True)]$ZipFile,
-    [Parameter(Mandatory=$True)]$Directory
+    [Parameter(Mandatory=$True)][string[]]$Path
 )
 
 $ErrorActionPreference = "stop"
 
-Add-Type -Assembly "System.IO.Compression.FileSystem"
-[System.IO.Compression.ZipFile]::CreateFromDirectory($Directory, $ZipFile)
+$ZipDirectory = Split-Path -Path $ZipFile
+if (-not (Test-Path $ZipDirectory)) {
+    New-Item -ItemType Directory $ZipDirectory
+}
+
+Compress-Archive -DestinationPath $ZipFile -Path $Path
+#Add-Type -Assembly "System.IO.Compression.FileSystem"
+#[System.IO.Compression.ZipFile]::CreateFromDirectory($Path, $ZipFile)
