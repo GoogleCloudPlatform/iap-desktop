@@ -85,6 +85,7 @@ $(MAIN_ASSEMBLY) $(NUNIT_ASSEMBLIES): Google.Solutions.IapDesktop\OAuthClient.cs
 
 	msbuild /t:Rebuild /p:Configuration=$(CONFIGURATION);Platform=$(PLATFORM);AssemblyVersionNumber=$(BINARY_VERSION)
 	
+!if ( "$(USE_EXISTING_STAGING_AREA)" == "" ) 
 $(MAKEDIR)\installer\obj\$(CONFIGURATION): $(MAIN_ASSEMBLY)
 	@echo "========================================================"
 	@echo "=== Creating staging area for installer              ==="
@@ -98,6 +99,7 @@ $(MAKEDIR)\installer\obj\$(CONFIGURATION): $(MAIN_ASSEMBLY)
 		$(MAKEDIR)\installer\obj\$(CONFIGURATION)
 	copy $(MAKEDIR)\Google.Solutions.IapDesktop\bin\$(CONFIGURATION)\*.dll \
 		$(MAKEDIR)\installer\obj\$(CONFIGURATION)
+!endif
 
 $(INSTALLER_PACKAGE).wixobj: \
 			$(MAKEDIR)\installer\Product.wxs \
@@ -139,10 +141,9 @@ $(INSTALLER_BUILD_PACKAGE): $(MAKEDIR)\installer\obj\$(CONFIGURATION)
 	$(POWERSHELL) $(MAKEDIR)\scripts\create-zip.ps1 \
 		-ZipFile $(INSTALLER_BUILD_PACKAGE) \
 		-Path $(MAKEDIR)\makefile, \
-			  $(MAKEDIR)\build.ps1, \
-			  $(MAKEDIR)\build.bat, \
-			  $(MAKEDIR)\installer
-		
+			  $(MAKEDIR)\installer, \
+			  $(MAKEDIR)\packages\Wix.$(WIX)\tools
+
 $(SYMBOLS_PACKAGE): $(MAIN_ASSEMBLY)
 	@echo "========================================================"
 	@echo "=== Packaging symbols                                ==="
