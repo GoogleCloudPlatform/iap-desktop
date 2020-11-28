@@ -146,12 +146,13 @@ $(INSTALLER_PACKAGE): $(INSTALLER_PACKAGE).wixobj
 
 $(INSTALLER_SNAPSHOT): $(MAKEDIR)\installer\obj\$(CONFIGURATION)
 	@echo "========================================================"
-	@echo "=== Packaging installer staging area                 ==="
+	@echo "=== Packaging installer snapshot                     ==="
 	@echo "========================================================"
 	
 	$(POWERSHELL) $(MAKEDIR)\scripts\create-zip.ps1 \
 		-ZipFile $(INSTALLER_SNAPSHOT) \
 		-Path $(MAKEDIR)\makefile, \
+			  $(MAKEDIR)\build.ps1, \
 			  $(MAKEDIR)\installer, \
 			  $(MAKEDIR)\packages\Wix.$(WIX)\tools
 

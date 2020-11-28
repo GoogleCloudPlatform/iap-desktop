@@ -87,26 +87,25 @@ if (Test-Path "*.sln")
 	{
 		exit $LastExitCode
 	}
+
+	#
+	# Add all tools to PATH.
+	#
+
+	$ToolsDirectories = (Get-ChildItem packages -Directory -Recurse `
+		| Where-Object {$_.Name.EndsWith("tools") -or $_.FullName.Contains("tools\net4") } `
+		| Select-Object -ExpandProperty FullName)
+
+	$env:Path += ";" + ($ToolsDirectories -join ";")
+
+	#
+	# Add environment variables indicating package versions, for example
+	# $env:Google_Apis_Auth = 1.2.3
+	#
+
+	(nuget list -Source (Resolve-Path packages)) `
+		| ForEach-Object { New-Item -Name $_.Split(" ")[0].Replace(".", "_") -value $_.Split(" ")[1] -ItemType Variable -Path Env: }
 }
-
-#
-# Add all tools to PATH.
-#
-
-$ToolsDirectories = (Get-ChildItem packages -Directory -Recurse `
-	| Where-Object {$_.Name.EndsWith("tools") -or $_.FullName.Contains("tools\net4") } `
-	| Select-Object -ExpandProperty FullName)
-
-$env:Path += ";" + ($ToolsDirectories -join ";")
-
-#
-# Add environment variables indicating package versions, for example
-# $env:Google_Apis_Auth = 1.2.3
-#
-
-(nuget list -Source (Resolve-Path packages)) `
-	| ForEach-Object { New-Item -Name $_.Split(" ")[0].Replace(".", "_") -value $_.Split(" ")[1] -ItemType Variable -Path Env: }
-
 
 #------------------------------------------------------------------------------
 # Find Google Cloud credentials and project (for tests)
