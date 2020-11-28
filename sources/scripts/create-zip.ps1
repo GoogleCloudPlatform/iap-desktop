@@ -33,5 +33,3 @@ if (-not (Test-Path $ZipDirectory)) {
 }
 
 Compress-Archive -DestinationPath $ZipFile -Path $Path
-#Add-Type -Assembly "System.IO.Compression.FileSystem"
-#[System.IO.Compression.ZipFile]::CreateFromDirectory($Path, $ZipFile)
