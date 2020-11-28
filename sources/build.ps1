@@ -79,11 +79,14 @@ if ((Get-Command "nuget.exe" -ErrorAction SilentlyContinue) -eq $null)
 # Restore packages and make them available in the environment
 #------------------------------------------------------------------------------
 
-& $Nmake restore
-
-if ($LastExitCode -ne 0)
+if (Test-Path "*.sln")
 {
-    exit $LastExitCode
+	& $Nmake restore
+
+	if ($LastExitCode -ne 0)
+	{
+		exit $LastExitCode
+	}
 }
 
 #
@@ -92,7 +95,7 @@ if ($LastExitCode -ne 0)
 
 $ToolsDirectories = (Get-ChildItem packages -Directory -Recurse `
 	| Where-Object {$_.Name.EndsWith("tools") -or $_.FullName.Contains("tools\net4") } `
-    | Select-Object -ExpandProperty FullName)
+	| Select-Object -ExpandProperty FullName)
 
 $env:Path += ";" + ($ToolsDirectories -join ";")
 
@@ -101,8 +104,9 @@ $env:Path += ";" + ($ToolsDirectories -join ";")
 # $env:Google_Apis_Auth = 1.2.3
 #
 
-(nuget list -Source C:\dev\22-rdcman\Plugin.CloudIap\sources\packages\) `
+(nuget list -Source (Resolve-Path packages)) `
 	| ForEach-Object { New-Item -Name $_.Split(" ")[0].Replace(".", "_") -value $_.Split(" ")[1] -ItemType Variable -Path Env: }
+
 
 #------------------------------------------------------------------------------
 # Find Google Cloud credentials and project (for tests)

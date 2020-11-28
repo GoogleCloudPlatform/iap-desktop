@@ -113,8 +113,8 @@ $(INSTALLER_PACKAGE).wixobj: \
 		-dVERSION=$(BINARY_VERSION) \
 		-dBASEDIR=$(MAKEDIR)\installer \
 		-arch x86 \
-		-ext packages\Wix.$(Wix)\tools\WixUIExtension.dll \
-		-ext packages\Wix.$(Wix)\tools\WixUtilExtension.dll \
+		-ext packages\Wix.$(WIX)\tools\WixUIExtension.dll \
+		-ext packages\Wix.$(WIX)\tools\WixUtilExtension.dll \
 		 $(MAKEDIR)\installer\Product.wxs
 
 $(INSTALLER_PACKAGE): $(INSTALLER_PACKAGE).wixobj
@@ -127,8 +127,8 @@ $(INSTALLER_PACKAGE): $(INSTALLER_PACKAGE).wixobj
 		-out $@ \
 		-sw1076 \
 		-cultures:null \
-		-ext packages\Wix.$(Wix)\tools\WixUIExtension.dll \
-		-ext packages\Wix.$(Wix)\tools\WixUtilExtension.dll \
+		-ext packages\Wix.$(WIX)\tools\WixUIExtension.dll \
+		-ext packages\Wix.$(WIX)\tools\WixUtilExtension.dll \
 		$(INSTALLER_PACKAGE).wixobj
 
 $(INSTALLER_BUILD_PACKAGE): $(MAKEDIR)\installer\obj\$(CONFIGURATION)
@@ -138,7 +138,10 @@ $(INSTALLER_BUILD_PACKAGE): $(MAKEDIR)\installer\obj\$(CONFIGURATION)
 	
 	$(POWERSHELL) $(MAKEDIR)\scripts\create-zip.ps1 \
 		-ZipFile $(INSTALLER_BUILD_PACKAGE) \
-		-Path makefile, $(MAKEDIR)\installer
+		-Path $(MAKEDIR)\makefile, \
+			  $(MAKEDIR)\build.ps1, \
+			  $(MAKEDIR)\build.bat, \
+			  $(MAKEDIR)\installer
 		
 $(SYMBOLS_PACKAGE): $(MAIN_ASSEMBLY)
 	@echo "========================================================"
