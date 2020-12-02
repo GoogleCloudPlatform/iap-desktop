@@ -124,7 +124,7 @@ namespace Google.Solutions.IapDesktop.Windows
             // 
             this.signoutToolStripMenuItem.Name = "signoutToolStripMenuItem";
             this.signoutToolStripMenuItem.Size = new System.Drawing.Size(221, 22);
-            this.signoutToolStripMenuItem.Text = "Sign &out";
+            this.signoutToolStripMenuItem.Text = "Sign &out and exit";
             this.signoutToolStripMenuItem.Click += new System.EventHandler(this.signoutToolStripMenuItem_Click);
             // 
             // exitToolStripMenuItem
@@ -165,14 +165,14 @@ namespace Google.Solutions.IapDesktop.Windows
             // enableloggingToolStripMenuItem
             // 
             this.enableloggingToolStripMenuItem.Name = "enableloggingToolStripMenuItem";
-            this.enableloggingToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.enableloggingToolStripMenuItem.Size = new System.Drawing.Size(153, 22);
             this.enableloggingToolStripMenuItem.Text = "Enable &logging";
             this.enableloggingToolStripMenuItem.Click += new System.EventHandler(this.enableloggingToolStripMenuItem_Click);
             // 
             // optionsToolStripMenuItem
             // 
             this.optionsToolStripMenuItem.Name = "optionsToolStripMenuItem";
-            this.optionsToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.optionsToolStripMenuItem.Size = new System.Drawing.Size(153, 22);
             this.optionsToolStripMenuItem.Text = "&Options";
             this.optionsToolStripMenuItem.Click += new System.EventHandler(this.optionsToolStripMenuItem_Click);
             // 
@@ -279,7 +279,7 @@ namespace Google.Solutions.IapDesktop.Windows
             // toolStripStatus
             // 
             this.toolStripStatus.Name = "toolStripStatus";
-            this.toolStripStatus.Size = new System.Drawing.Size(703, 17);
+            this.toolStripStatus.Size = new System.Drawing.Size(734, 17);
             this.toolStripStatus.Spring = true;
             this.toolStripStatus.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 

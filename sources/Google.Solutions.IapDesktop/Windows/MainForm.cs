@@ -396,13 +396,7 @@ namespace Google.Solutions.IapDesktop.Windows
             try
             {
                 await this.viewModel.RevokeAuthorizationAsync().ConfigureAwait(true);
-                MessageBox.Show(
-                    this,
-                    "The authorization for this application has been revoked.\n\n" +
-                    "You will be prompted to sign in again the next time you start the application.",
-                    "Signed out",
-                    MessageBoxButtons.OK,
-                    MessageBoxIcon.Information);
+                Close();
             }
             catch (Exception e)
             {
