@@ -31,8 +31,16 @@ Resolve-Path -Path "$SourcesRoot\Google.Solutions.*\bin" |
 Resolve-Path -Path "$SourcesRoot\Google.Solutions.*\obj" | 
 	% { Remove-Item -Recurse -Force $_ }
 	
-# Delete obj directories
-Remove-Item -Recurse -Force "$SourcesRoot\installer\bin"
+# Delete installer directories
+if (Test-Path "$SourcesRoot\installer\obj") {
+	Remove-Item -Recurse -Force "$SourcesRoot\installer\obj"
+}
+
+if (Test-Path "$SourcesRoot\installer\bin") {
+	Remove-Item -Recurse -Force "$SourcesRoot\installer\bin"
+}
 
 # Delete packages
-Remove-Item -Recurse -Force "$SourcesRoot\packages"
+if (Test-Path "$SourcesRoot\packages") {
+	Remove-Item -Recurse -Force "$SourcesRoot\packages"
+}

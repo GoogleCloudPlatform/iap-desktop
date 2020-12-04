@@ -1,6 +1,6 @@
 # Building
 
-## Building the plugin
+## Building the application
 
 IAP Desktop is written in C#. Building the solution requires Visual C# 2019.
 

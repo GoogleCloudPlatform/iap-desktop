@@ -35,6 +35,7 @@ BINARY_VERSION = $(PRODUCT_VERSION).0
 
 MAIN_ASSEMBLY = Google.Solutions.IapDesktop\bin\$(CONFIGURATION)\IapDesktop.exe
 
+INSTALLER_SNAPSHOT = installer\bin\$(CONFIGURATION)\InstallerSnapshot-$(BINARY_VERSION).zip
 INSTALLER_PACKAGE = installer\bin\$(CONFIGURATION)\IapDesktop-$(BINARY_VERSION).msi
 SYMBOLS_PACKAGE = installer\bin\$(CONFIGURATION)\Symbols-$(BINARY_VERSION).zip
 
@@ -53,6 +54,8 @@ NUNIT_COVERAGE_FILTER = \
 	+[Google.Solutions.IapDesktop.Extensions.Os]* \
 	+[Google.Solutions.IapDesktop.Extensions.Rdp]* \
 	+[Google.Solutions.IapDesktop.Application]*
+	
+SIGNTOOL_FLAGS = /v /tr http://timestamp.digicert.com /i SHA2 /fd sha256 /td sha256
 
 #------------------------------------------------------------------------------
 # Ancillary variables
@@ -84,7 +87,25 @@ $(MAIN_ASSEMBLY) $(NUNIT_ASSEMBLIES): Google.Solutions.IapDesktop\OAuthClient.cs
 
 	msbuild /t:Rebuild /p:Configuration=$(CONFIGURATION);Platform=$(PLATFORM);AssemblyVersionNumber=$(BINARY_VERSION)
 	
-$(INSTALLER_PACKAGE).wixobj: $(MAIN_ASSEMBLY) $(MAKEDIR)\installer\Product.wxs
+!if ( "$(SKIP_ASSEMBLY_BUILD)" == "" ) 
+$(MAKEDIR)\installer\obj\$(CONFIGURATION): $(MAIN_ASSEMBLY)
+	@echo "========================================================"
+	@echo "=== Creating staging area for installer              ==="
+	@echo "========================================================"
+	
+	md $(MAKEDIR)\installer\obj\$(CONFIGURATION)
+		
+	copy $(MAKEDIR)\installer\*.* \
+		$(MAKEDIR)\installer\obj\$(CONFIGURATION)
+	copy $(MAKEDIR)\Google.Solutions.IapDesktop\bin\$(CONFIGURATION)\*.exe* \
+		$(MAKEDIR)\installer\obj\$(CONFIGURATION)
+	copy $(MAKEDIR)\Google.Solutions.IapDesktop\bin\$(CONFIGURATION)\*.dll \
+		$(MAKEDIR)\installer\obj\$(CONFIGURATION)
+!endif
+
+$(INSTALLER_PACKAGE).wixobj: \
+			$(MAKEDIR)\installer\Product.wxs \
+			$(MAKEDIR)\installer\obj\$(CONFIGURATION)
 	@echo "========================================================"
 	@echo "=== Compiling installer                              ==="
 	@echo "========================================================"
@@ -96,32 +117,58 @@ $(INSTALLER_PACKAGE).wixobj: $(MAIN_ASSEMBLY) $(MAKEDIR)\installer\Product.wxs
 		-dVERSION=$(BINARY_VERSION) \
 		-dBASEDIR=$(MAKEDIR)\installer \
 		-arch x86 \
-		-ext packages\Wix.$(Wix)\tools\WixUIExtension.dll \
-		-ext packages\Wix.$(Wix)\tools\WixUtilExtension.dll \
+		-ext packages\Wix.$(WIX)\tools\WixUIExtension.dll \
+		-ext packages\Wix.$(WIX)\tools\WixUtilExtension.dll \
 		 $(MAKEDIR)\installer\Product.wxs
 
-$(INSTALLER_PACKAGE): $(INSTALLER_PACKAGE).wixobj $(MAIN_ASSEMBLY)
+$(INSTALLER_PACKAGE): $(INSTALLER_PACKAGE).wixobj
 	@echo "========================================================"
 	@echo "=== Linking installer                                ==="
 	@echo "========================================================"
+
+!if ( "$(CODESIGN)" != "" ) 
+	signtool sign $(SIGNTOOL_FLAGS) $(MAKEDIR)\installer\obj\$(CONFIGURATION)\Google.*.dll
+	signtool sign $(SIGNTOOL_FLAGS) $(MAKEDIR)\installer\obj\$(CONFIGURATION)\IapDesktop.exe
+!endif
 
 	light \
 		-nologo \
 		-out $@ \
 		-sw1076 \
 		-cultures:null \
-		-ext packages\Wix.$(Wix)\tools\WixUIExtension.dll \
-		-ext packages\Wix.$(Wix)\tools\WixUtilExtension.dll \
+		-ext packages\Wix.$(WIX)\tools\WixUIExtension.dll \
+		-ext packages\Wix.$(WIX)\tools\WixUtilExtension.dll \
 		$(INSTALLER_PACKAGE).wixobj
-		
+
+!if ( "$(CODESIGN)" != "" ) 
+	signtool sign $(SIGNTOOL_FLAGS) $(INSTALLER_PACKAGE)
+!endif
+
+$(INSTALLER_SNAPSHOT): $(MAKEDIR)\installer\obj\$(CONFIGURATION)
+	@echo "========================================================"
+	@echo "=== Packaging installer snapshot                     ==="
+	@echo "========================================================"
+	
+	$(POWERSHELL) $(MAKEDIR)\scripts\create-zip.ps1 \
+		-ZipFile $(INSTALLER_SNAPSHOT) \
+		-Path $(MAKEDIR)\makefile, \
+			  $(MAKEDIR)\build.ps1, \
+			  $(MAKEDIR)\installer, \
+			  $(MAKEDIR)\packages\Wix.$(WIX)\tools
+
 $(SYMBOLS_PACKAGE): $(MAIN_ASSEMBLY)
 	@echo "========================================================"
 	@echo "=== Packaging symbols                                ==="
 	@echo "========================================================"
 
-	$(POWERSHELL) $(MAKEDIR)\scripts\package-symbols.ps1 \
-		-ProductVersion $(BINARY_VERSION) \
-		-Configuration $(CONFIGURATION)
+	if not exist $(MAKEDIR)\installer\bin\$(CONFIGURATION)\symbols \
+		md $(MAKEDIR)\installer\bin\$(CONFIGURATION)\symbols
+
+	copy $(MAKEDIR)\Google.Solutions.IapDesktop\bin\$(CONFIGURATION)\*.pdb \
+		$(MAKEDIR)\installer\bin\$(CONFIGURATION)\symbols
+
+	$(POWERSHELL) $(MAKEDIR)\scripts\create-zip.ps1 $(SYMBOLS_PACKAGE) \
+		$(MAKEDIR)\installer\bin\$(CONFIGURATION)\symbols\*
 
 #------------------------------------------------------------------------------
 # Main targets
@@ -176,7 +223,9 @@ test: $(NUNIT_ASSEMBLIES)
 		-targetdir:coveragereport \
 		-reporttypes:HTML
 	
-installer: $(INSTALLER_PACKAGE) $(SYMBOLS_PACKAGE)
+installer: $(INSTALLER_PACKAGE)
+installer-snapshot: $(INSTALLER_SNAPSHOT) 
+symbols: $(SYMBOLS_PACKAGE)
 
 #------------------------------------------------------------------------------
 # Kokoro specific targets
@@ -195,4 +244,12 @@ kokoro-iap-firewallrule:
 		--source-ranges=35.235.240.0/20 \
 		--project=$(GOOGLE_CLOUD_PROJECT)
 
-kokoro-continuous-integration: check-copyright-headers kokoro-iap-firewallrule installer test
+kokoro-continuous-integration: \
+	check-copyright-headers \
+	kokoro-iap-firewallrule \
+	installer \
+	installer-snapshot \
+	symbols \
+	test
+
+kokoro-sign: installer
