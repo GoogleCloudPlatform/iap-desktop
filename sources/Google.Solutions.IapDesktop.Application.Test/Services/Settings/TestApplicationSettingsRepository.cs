@@ -22,6 +22,7 @@
 using Google.Solutions.IapDesktop.Application.Services.Settings;
 using Microsoft.Win32;
 using NUnit.Framework;
+using System;
 
 namespace Google.Solutions.IapDesktop.Application.Test.Services.Settings
 {
@@ -75,6 +76,32 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Settings
             Assert.AreEqual(640, settings.MainWindowWidth.IntValue);
             Assert.AreEqual(false, settings.IsUpdateCheckEnabled.BoolValue);
             Assert.AreEqual(123, settings.LastUpdateCheck.LongValue);
+        }
+
+        [Test]
+        public void WhenProxyUrlInvalid_ThenSetValueThrowsArgumentOutOfRangeException()
+        {
+            var baseKey = hkcu.CreateSubKey(TestKeyPath);
+            var repository = new ApplicationSettingsRepository(baseKey);
+
+            var settings = repository.GetSettings();
+            settings.ProxyUrl.Value = null;
+
+            Assert.Throws<ArgumentOutOfRangeException>(
+                () => settings.ProxyUrl.Value = "thisisnotanurl");
+        }
+
+        [Test]
+        public void WhenProxyPacUrlInvalid_ThenSetValueThrowsArgumentOutOfRangeException()
+        {
+            var baseKey = hkcu.CreateSubKey(TestKeyPath);
+            var repository = new ApplicationSettingsRepository(baseKey);
+
+            var settings = repository.GetSettings();
+            settings.ProxyPacUrl.Value = null;
+
+            Assert.Throws<ArgumentOutOfRangeException>(
+                () => settings.ProxyPacUrl.Value = "thisisnotanurl");
         }
     }
 }

@@ -27,6 +27,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Net;
+using System.Reflection;
 using System.Security;
 
 namespace Google.Solutions.IapDesktop.Application.Services.Adapters
@@ -40,6 +41,14 @@ namespace Google.Solutions.IapDesktop.Application.Services.Adapters
         void ActivateCustomProxySettings(
             Uri proxyAddress,
             IEnumerable<string> bypassList,
+            ICredentials credentials);
+
+        /// <summary>
+        /// Obtain HTTP proxy settings from a PAC URL. Settings
+        /// are not persisted.
+        /// </summary>
+        void ActivateProxyAutoConfigSettings(
+            Uri pacAddress,
             ICredentials credentials);
 
         /// <summary>
@@ -88,6 +97,47 @@ namespace Google.Solutions.IapDesktop.Application.Services.Adapters
             }
         }
 
+        public void ActivateProxyAutoConfigSettings(
+            Uri pacAddress,
+            ICredentials credentials)
+        {
+            using (TraceSources.IapDesktop.TraceMethod().WithParameters(
+                pacAddress,
+                credentials != null ? "(credentials)" : null))
+            {
+                lock (this.configLock)
+                {
+                    var proxy = new WebProxy();
+
+                    // 
+                    // NB. The necessary properties are internal only. The only
+                    // "official" way to populate them is via a DefaultProxySection,
+                    // which is impractical in our case.
+                    //
+
+                    var autoDetect = typeof(WebProxy).GetProperty(
+                        "AutoDetect", 
+                        BindingFlags.NonPublic | BindingFlags.Instance);
+                    var scriptLocation = typeof(WebProxy).GetProperty(
+                        "ScriptLocation", 
+                        BindingFlags.NonPublic | BindingFlags.Instance);
+
+                    if (autoDetect == null || scriptLocation == null)
+                    {
+                        throw new InvalidOperationException(
+                            "Failed to set auto proxy settings because "+
+                            "properties could not be accessed");
+                    }
+
+                    //autoDetect.SetValue(proxy, true);
+                    scriptLocation.SetValue(proxy, pacAddress);
+                    proxy.Credentials = credentials;
+                    
+                    WebRequest.DefaultWebProxy = proxy;
+                }
+            }
+        }
+
         public void ActivateSystemProxySettings()
         {
             using (TraceSources.IapDesktop.TraceMethod().WithoutParameters())
@@ -101,20 +151,32 @@ namespace Google.Solutions.IapDesktop.Application.Services.Adapters
 
         public void ActivateSettings(ApplicationSettings settings)
         {
-            if (!string.IsNullOrEmpty(settings.ProxyUrl.StringValue))
+            NetworkCredential GetProxyCredential()
             {
-                NetworkCredential credential = null;
                 if (!string.IsNullOrEmpty(settings.ProxyUsername.StringValue))
                 {
-                    credential = new NetworkCredential(
+                    return new NetworkCredential(
                         settings.ProxyUsername.StringValue,
                         (SecureString)settings.ProxyPassword.Value);
                 }
+                else
+                {
+                    return null;
+                }
+            }
 
+            if (!string.IsNullOrEmpty(settings.ProxyUrl.StringValue))
+            {
                 ActivateCustomProxySettings(
                     new Uri(settings.ProxyUrl.StringValue),
                     null,
-                    credential);
+                    GetProxyCredential());
+            }
+            else if (!string.IsNullOrEmpty(settings.ProxyPacUrl.StringValue))
+            {
+                ActivateProxyAutoConfigSettings(
+                    new Uri(settings.ProxyPacUrl.StringValue),
+                    GetProxyCredential());
             }
             else
             {

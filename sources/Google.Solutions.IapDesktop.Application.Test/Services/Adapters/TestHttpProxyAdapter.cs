@@ -23,6 +23,7 @@ using Google.Solutions.Common.Test.Net;
 using Google.Solutions.IapDesktop.Application.Services.Adapters;
 using NUnit.Framework;
 using System;
+using System.Diagnostics;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
@@ -104,6 +105,44 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Adapters
                 Assert.AreEqual(1, proxy.ConnectionTargets.Distinct().Count());
                 CollectionAssert.Contains(proxy.ConnectionTargets, SampleHttpsUrl.Host);
             }
+        }
+
+
+        [Test]
+        public async Task WhenUsingProxyAutoConfigWithoutCredentials_ThenRequestsAreSentToProxy()
+        {
+            NetTracing.Enabled = true;
+            NetTracing.Web.Switch.Level = System.Diagnostics.SourceLevels.Verbose;
+            NetTracing.Web.Listeners.Add(new ConsoleTraceListener());
+
+
+            using (var proxy = new InProcessHttpProxy())
+            {
+                proxy.AddStaticFile(
+                    "/proxy.pac",
+                    "function FindProxyForURL(url, host) " +
+                    "{ return \"PROXY localhost:" + proxy.Port + "; DIRECT\";}");
+
+                var adapter = new HttpProxyAdapter();
+                adapter.ActivateProxyAutoConfigSettings(
+                    //new Uri($"http://localhost:{proxy.Port}/proxy.pac"),
+                    new Uri("https://gist.githubusercontent.com/jpassing/74ef3acf00bde508d1bcf8e542eb54ad/raw/f0d759b3fd210c9396ddb9d5c6fd79c3317cdff8/gistfile1.txt"),
+                    null);
+
+                var proxiedUrl = WebRequest.DefaultWebProxy.GetProxy(SampleHttpsUrl);
+                Assert.AreNotEqual(proxiedUrl, SampleHttpsUrl);
+
+                await SendWebRequest(SampleHttpsUrl);
+
+                Assert.AreEqual(1, proxy.ConnectionTargets.Distinct().Count());
+                CollectionAssert.Contains(proxy.ConnectionTargets, SampleHttpsUrl.Host);
+            }
+        }
+
+        [Test]
+        public async Task WhenUsingProxyAutoConfigWithCredentials_ThenRequestsAreSentToProxyWithCredentials()
+        {
+            Assert.Fail();
         }
 
         [Test]

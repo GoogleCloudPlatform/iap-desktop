@@ -37,8 +37,10 @@ namespace Google.Solutions.Common.Test.Net
     /// </summary>
     public class InProcessHttpProxy : IDisposable
     {
-        private static readonly Regex HttpRequestPattern
+        private static readonly Regex ConnectRequestPattern
             = new Regex(@"^CONNECT ([a-zA-Z0-9\.*]+):(\d+) HTTP/1.1");
+        private static readonly Regex GetRequestPattern
+            = new Regex(@"^GET (.*) HTTP/1.1");
 
         // NB. Avoid reusing the same port twice in the same process.
         private static ushort nextProxyPort = 3128;
@@ -46,6 +48,9 @@ namespace Google.Solutions.Common.Test.Net
         private readonly CancellationTokenSource cancellation = new CancellationTokenSource();
         private readonly LinkedList<string> connectionTargets = new LinkedList<string>();
         private readonly TcpListener listener;
+
+        private readonly IDictionary<string, string> staticFiles =
+            new Dictionary<string, string>();
 
         public IEnumerable<string> ConnectionTargets => this.connectionTargets;
 
@@ -83,32 +88,44 @@ namespace Google.Solutions.Common.Test.Net
         {
             using (clientStream)
             {
-                var match = HttpRequestPattern.Match(ReadLine(clientStream));
-                if (!match.Success)
+                var firstLine = ReadLine(clientStream);
+                if (ConnectRequestPattern.Match(firstLine) is Match matchConnect && matchConnect.Success)
+                {
+                    //
+                    // Read headers.
+                    //
+                    var headers = new Dictionary<string, string>();
+                    string line;
+                    while ((line = ReadLine(clientStream)) != string.Empty)
+                    {
+                        var parts = line.Split(':');
+                        headers.Add(parts[0].ToLower(), parts[1].Trim());
+                    }
+
+                    this.connectionTargets.AddLast(matchConnect.Groups[1].Value);
+
+                    await DispatchRequestAsync(
+                        matchConnect.Groups[1].Value,
+                        ushort.Parse(matchConnect.Groups[2].Value),
+                        headers,
+                        clientStream);
+                }
+                else if (GetRequestPattern.Match(firstLine) is Match getMatch && 
+                    getMatch.Success &&
+                    this.staticFiles.TryGetValue(getMatch.Groups[1].Value, out var responseBody))
+                {
+                    var response = Encoding.ASCII.GetBytes(
+                        "HTTP/1.1 200 OK\r\n"+
+                        $"Content-Length: {responseBody.Length}\r\n" +
+                        "\r\n" + 
+                        responseBody);
+                    clientStream.Write(response, 0, response.Length);
+                }
+                else
                 {
                     var error = Encoding.ASCII.GetBytes($"HTTP /1.1 400 Bad Request");
                     clientStream.Write(error, 0, error.Length);
-                    return;
                 }
-
-                //
-                // Read headers.
-                //
-                var headers = new Dictionary<string, string>();
-                string line;
-                while ((line = ReadLine(clientStream)) != string.Empty)
-                {
-                    var parts = line.Split(':');
-                    headers.Add(parts[0].ToLower(), parts[1].Trim());
-                }
-
-                this.connectionTargets.AddLast(match.Groups[1].Value);
-
-                await DispatchRequestAsync(
-                    match.Groups[1].Value,
-                    ushort.Parse(match.Groups[2].Value),
-                    headers,
-                    clientStream);
             }
         }
 
@@ -149,6 +166,11 @@ namespace Google.Solutions.Common.Test.Net
 
         public InProcessHttpProxy() : this(nextProxyPort++)
         {
+        }
+
+        public void AddStaticFile(string path, string body)
+        {
+            this.staticFiles.Add(path, body);
         }
 
         public void Dispose()

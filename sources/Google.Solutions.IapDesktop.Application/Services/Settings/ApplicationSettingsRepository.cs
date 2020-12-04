@@ -58,6 +58,8 @@ namespace Google.Solutions.IapDesktop.Application.Services.Settings
 
         public RegistryStringSetting ProxyUrl { get; private set; }
 
+        public RegistryStringSetting ProxyPacUrl { get; private set; }
+
         public RegistryStringSetting ProxyUsername { get; private set; }
 
         public RegistrySecureStringSetting ProxyPassword { get; private set; }
@@ -73,6 +75,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.Settings
             this.LastUpdateCheck,
             this.IsUpdateCheckEnabled,
             this.ProxyUrl,
+            this.ProxyPacUrl,
             this.ProxyUsername,
             this.ProxyPassword,
             this.IsDeviceCertificateAuthenticationEnabled
@@ -136,6 +139,14 @@ namespace Google.Solutions.IapDesktop.Application.Services.Settings
                 ProxyUrl = RegistryStringSetting.FromKey(
                     "ProxyUrl",
                     "ProxyUrl",
+                    null,
+                    null,
+                    null,
+                    registryKey,
+                    url => url == null || Uri.TryCreate(url, UriKind.Absolute, out Uri _)),
+                ProxyPacUrl = RegistryStringSetting.FromKey(
+                    "ProxyPacUrl",
+                    "ProxyPacUrl",
                     null,
                     null,
                     null,
