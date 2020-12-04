@@ -127,8 +127,8 @@ $(INSTALLER_PACKAGE): $(INSTALLER_PACKAGE).wixobj
 	@echo "========================================================"
 
 !if ( "$(CODESIGN)" != "" ) 
-	signtool sign $(SIGNTOOL_FLAGS) $(MAKEDIR)\installer\obj\$(CONFIGURATION)\*.dll
-	signtool sign $(SIGNTOOL_FLAGS) $(MAKEDIR)\installer\obj\$(CONFIGURATION)\*.exe
+	signtool sign $(SIGNTOOL_FLAGS) $(MAKEDIR)\installer\obj\$(CONFIGURATION)\Google.*.dll
+	signtool sign $(SIGNTOOL_FLAGS) $(MAKEDIR)\installer\obj\$(CONFIGURATION)\IapDesktop.exe
 !endif
 
 	light \
