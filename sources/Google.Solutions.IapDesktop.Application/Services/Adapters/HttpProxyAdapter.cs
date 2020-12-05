@@ -27,6 +27,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Net;
+using System.Net.Http;
 using System.Reflection;
 using System.Security;
 
@@ -107,36 +108,38 @@ namespace Google.Solutions.IapDesktop.Application.Services.Adapters
             {
                 lock (this.configLock)
                 {
-                    var proxy = new WebProxy();
-
-                    // 
-                    // NB. The necessary properties are internal only. The only
+                    //
+                    // NB. WinHTTP requires that the PAC script is delivered using 
+                    // content type "application/x-ns-proxy-autoconfig" or that the
+                    // URL has a file extension of .js, .pac, or .dat. Otherwise,
+                    // the proxy script will be silently ignored.
+                    //
+                    // If the system already has a PAC address configured by group
+                    // policy, then the script might also be silently ignored
+                    // (in the Net trace, you'll see WinHTTP 10107 errors, but the
+                    // API won't reveal any errors).
+                    //
+                    // The necessary properties are internal only. The only
                     // "official" way to populate them is via a DefaultProxySection,
                     // which is impractical in our case.
                     //
 
-                    var autoDetect = typeof(WebProxy).GetProperty(
-                        "AutoDetect", 
-                        BindingFlags.NonPublic | BindingFlags.Instance);
                     var scriptLocation = typeof(WebProxy).GetProperty(
                         "ScriptLocation", 
                         BindingFlags.NonPublic | BindingFlags.Instance);
 
-                    if (autoDetect == null || scriptLocation == null)
+                    if (scriptLocation == null)
                     {
                         throw new InvalidOperationException(
                             "Failed to set auto proxy settings because "+
                             "properties could not be accessed");
                     }
 
-                    //autoDetect.SetValue(proxy, true);
+                    var proxy = new WebProxy();
                     scriptLocation.SetValue(proxy, pacAddress);
                     proxy.Credentials = credentials;
                     
                     WebRequest.DefaultWebProxy = proxy;
-
-                    // TODO: Probe
-                    // Note: not process a proxy script if the Content-Type response header is not "application/x-ns-proxy-autoconfig" or the URL's file extension is not one of .js, .pac, or .dat. Also, remember that WinHTTP will not use proxy script files from file:// URLs, on any version of Windows.
                 }
             }
         }

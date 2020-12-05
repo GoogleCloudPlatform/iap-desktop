@@ -19,6 +19,7 @@
 // under the License.
 //
 
+using Google.Solutions.Common.Test.Net;
 using NUnit.Framework;
 using System.Diagnostics;
 
@@ -47,6 +48,13 @@ namespace Google.Solutions.IapDesktop.Application.Test
                     trace.Switch.Level = System.Diagnostics.SourceLevels.Verbose;
                 }
             }
+
+            //
+            // Enable System.Net tracing.
+            //
+            NetTracing.Enabled = true;
+            NetTracing.Web.Switch.Level = System.Diagnostics.SourceLevels.Verbose;
+            NetTracing.Web.Listeners.Add(new ConsoleTraceListener());
         }
     }
 }
