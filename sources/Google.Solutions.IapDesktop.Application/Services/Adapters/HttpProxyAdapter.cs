@@ -134,6 +134,9 @@ namespace Google.Solutions.IapDesktop.Application.Services.Adapters
                     proxy.Credentials = credentials;
                     
                     WebRequest.DefaultWebProxy = proxy;
+
+                    // TODO: Probe
+                    // Note: not process a proxy script if the Content-Type response header is not "application/x-ns-proxy-autoconfig" or the URL's file extension is not one of .js, .pac, or .dat. Also, remember that WinHTTP will not use proxy script files from file:// URLs, on any version of Windows.
                 }
             }
         }

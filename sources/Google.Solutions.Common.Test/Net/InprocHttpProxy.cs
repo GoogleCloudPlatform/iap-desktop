@@ -117,6 +117,7 @@ namespace Google.Solutions.Common.Test.Net
                     var response = Encoding.ASCII.GetBytes(
                         "HTTP/1.1 200 OK\r\n"+
                         $"Content-Length: {responseBody.Length}\r\n" +
+                        $"Content-Type: application/x-ns-proxy-autoconfig\r\n" +
                         "\r\n" + 
                         responseBody);
                     clientStream.Write(response, 0, response.Length);
