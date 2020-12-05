@@ -124,7 +124,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Adapters
                 var proxiedUrl = WebRequest.DefaultWebProxy.GetProxy(SampleHttpsUrl);
 
                 Assert.AreEqual(
-                    new Uri("http://localhost:3128"), 
+                    new Uri($"http://localhost:{proxy.Port}/"),
                     proxiedUrl,
                     "This might fail on systems that have a proxy PAC configured by GPO");
 
@@ -155,7 +155,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Adapters
                 var proxiedUrl = WebRequest.DefaultWebProxy.GetProxy(SampleHttpsUrl);
 
                 Assert.AreEqual(
-                    new Uri("http://localhost:3128"),
+                    new Uri($"http://localhost:{proxy.Port}/"),
                     proxiedUrl,
                     "This might fail on systems that have a proxy PAC configured by GPO");
 
