@@ -128,6 +128,7 @@ $(INSTALLER_PACKAGE): $(INSTALLER_PACKAGE).wixobj
 
 !if ( "$(CODESIGN)" != "" ) 
 	signtool sign $(SIGNTOOL_FLAGS) $(MAKEDIR)\installer\obj\$(CONFIGURATION)\Google.*.dll
+	signtool sign $(SIGNTOOL_FLAGS) $(MAKEDIR)\installer\obj\$(CONFIGURATION)\*Interop*.dll
 	signtool sign $(SIGNTOOL_FLAGS) $(MAKEDIR)\installer\obj\$(CONFIGURATION)\IapDesktop.exe
 !endif
 
