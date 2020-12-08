@@ -51,20 +51,23 @@ namespace Google.Solutions.IapDesktop.Application.Views.Options
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(NetworkOptionsControl));
             this.proxyBox = new System.Windows.Forms.GroupBox();
+            this.proxyAuthCheckBox = new System.Windows.Forms.CheckBox();
             this.linkIcon = new System.Windows.Forms.PictureBox();
             this.label2 = new System.Windows.Forms.Label();
             this.proxyDescriptionLabel = new System.Windows.Forms.Label();
+            this.proxyAuthPasswordLabel = new System.Windows.Forms.Label();
+            this.proxyAuthUsernameLabel = new System.Windows.Forms.Label();
+            this.pacAddressLabel = new System.Windows.Forms.Label();
             this.addressLabel = new System.Windows.Forms.Label();
             this.proxyPortTextBox = new System.Windows.Forms.TextBox();
+            this.proxyAuthPasswordTextBox = new System.Windows.Forms.TextBox();
+            this.proxyAuthUsernameTextBox = new System.Windows.Forms.TextBox();
+            this.proxyPacTextBox = new System.Windows.Forms.TextBox();
             this.proxyServerTextBox = new System.Windows.Forms.TextBox();
             this.openProxyControlPanelAppletButton = new System.Windows.Forms.Button();
+            this.usePacRadioButton = new System.Windows.Forms.RadioButton();
             this.useCustomRadioButton = new System.Windows.Forms.RadioButton();
             this.useSystemRadioButton = new System.Windows.Forms.RadioButton();
-            this.proxyAuthCheckBox = new System.Windows.Forms.CheckBox();
-            this.proxyAuthUsernameTextBox = new System.Windows.Forms.TextBox();
-            this.proxyAuthUsernameLabel = new System.Windows.Forms.Label();
-            this.proxyAuthPasswordTextBox = new System.Windows.Forms.TextBox();
-            this.proxyAuthPasswordLabel = new System.Windows.Forms.Label();
             this.proxyBox.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.linkIcon)).BeginInit();
             this.SuspendLayout();
@@ -77,20 +80,33 @@ namespace Google.Solutions.IapDesktop.Application.Views.Options
             this.proxyBox.Controls.Add(this.proxyDescriptionLabel);
             this.proxyBox.Controls.Add(this.proxyAuthPasswordLabel);
             this.proxyBox.Controls.Add(this.proxyAuthUsernameLabel);
+            this.proxyBox.Controls.Add(this.pacAddressLabel);
             this.proxyBox.Controls.Add(this.addressLabel);
             this.proxyBox.Controls.Add(this.proxyPortTextBox);
             this.proxyBox.Controls.Add(this.proxyAuthPasswordTextBox);
             this.proxyBox.Controls.Add(this.proxyAuthUsernameTextBox);
+            this.proxyBox.Controls.Add(this.proxyPacTextBox);
             this.proxyBox.Controls.Add(this.proxyServerTextBox);
             this.proxyBox.Controls.Add(this.openProxyControlPanelAppletButton);
+            this.proxyBox.Controls.Add(this.usePacRadioButton);
             this.proxyBox.Controls.Add(this.useCustomRadioButton);
             this.proxyBox.Controls.Add(this.useSystemRadioButton);
             this.proxyBox.Location = new System.Drawing.Point(3, 4);
             this.proxyBox.Name = "proxyBox";
-            this.proxyBox.Size = new System.Drawing.Size(336, 267);
+            this.proxyBox.Size = new System.Drawing.Size(336, 335);
             this.proxyBox.TabIndex = 2;
             this.proxyBox.TabStop = false;
             this.proxyBox.Text = "Proxy:";
+            // 
+            // proxyAuthCheckBox
+            // 
+            this.proxyAuthCheckBox.AutoSize = true;
+            this.proxyAuthCheckBox.Location = new System.Drawing.Point(58, 244);
+            this.proxyAuthCheckBox.Name = "proxyAuthCheckBox";
+            this.proxyAuthCheckBox.Size = new System.Drawing.Size(194, 17);
+            this.proxyAuthCheckBox.TabIndex = 7;
+            this.proxyAuthCheckBox.Text = "Proxy server requires authentication";
+            this.proxyAuthCheckBox.UseVisualStyleBackColor = true;
             // 
             // linkIcon
             // 
@@ -119,6 +135,33 @@ namespace Google.Solutions.IapDesktop.Application.Views.Options
             this.proxyDescriptionLabel.TabIndex = 3;
             this.proxyDescriptionLabel.Text = "Connect to the internet via a proxy server";
             // 
+            // proxyAuthPasswordLabel
+            // 
+            this.proxyAuthPasswordLabel.AutoSize = true;
+            this.proxyAuthPasswordLabel.Location = new System.Drawing.Point(74, 296);
+            this.proxyAuthPasswordLabel.Name = "proxyAuthPasswordLabel";
+            this.proxyAuthPasswordLabel.Size = new System.Drawing.Size(56, 13);
+            this.proxyAuthPasswordLabel.TabIndex = 3;
+            this.proxyAuthPasswordLabel.Text = "Password:";
+            // 
+            // proxyAuthUsernameLabel
+            // 
+            this.proxyAuthUsernameLabel.AutoSize = true;
+            this.proxyAuthUsernameLabel.Location = new System.Drawing.Point(74, 270);
+            this.proxyAuthUsernameLabel.Name = "proxyAuthUsernameLabel";
+            this.proxyAuthUsernameLabel.Size = new System.Drawing.Size(58, 13);
+            this.proxyAuthUsernameLabel.TabIndex = 3;
+            this.proxyAuthUsernameLabel.Text = "Username:";
+            // 
+            // pacAddressLabel
+            // 
+            this.pacAddressLabel.AutoSize = true;
+            this.pacAddressLabel.Location = new System.Drawing.Point(75, 210);
+            this.pacAddressLabel.Name = "pacAddressLabel";
+            this.pacAddressLabel.Size = new System.Drawing.Size(48, 13);
+            this.pacAddressLabel.TabIndex = 3;
+            this.pacAddressLabel.Text = "Address:";
+            // 
             // addressLabel
             // 
             this.addressLabel.AutoSize = true;
@@ -133,8 +176,33 @@ namespace Google.Solutions.IapDesktop.Application.Views.Options
             this.proxyPortTextBox.Location = new System.Drawing.Point(261, 141);
             this.proxyPortTextBox.Name = "proxyPortTextBox";
             this.proxyPortTextBox.Size = new System.Drawing.Size(46, 20);
-            this.proxyPortTextBox.TabIndex = 3;
+            this.proxyPortTextBox.TabIndex = 4;
             this.proxyPortTextBox.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.proxyPortTextBox_KeyPress);
+            // 
+            // proxyAuthPasswordTextBox
+            // 
+            this.proxyAuthPasswordTextBox.Location = new System.Drawing.Point(138, 293);
+            this.proxyAuthPasswordTextBox.MaxLength = 64;
+            this.proxyAuthPasswordTextBox.Name = "proxyAuthPasswordTextBox";
+            this.proxyAuthPasswordTextBox.PasswordChar = '●';
+            this.proxyAuthPasswordTextBox.Size = new System.Drawing.Size(169, 20);
+            this.proxyAuthPasswordTextBox.TabIndex = 9;
+            // 
+            // proxyAuthUsernameTextBox
+            // 
+            this.proxyAuthUsernameTextBox.Location = new System.Drawing.Point(138, 267);
+            this.proxyAuthUsernameTextBox.MaxLength = 64;
+            this.proxyAuthUsernameTextBox.Name = "proxyAuthUsernameTextBox";
+            this.proxyAuthUsernameTextBox.Size = new System.Drawing.Size(169, 20);
+            this.proxyAuthUsernameTextBox.TabIndex = 8;
+            // 
+            // proxyPacTextBox
+            // 
+            this.proxyPacTextBox.Location = new System.Drawing.Point(125, 207);
+            this.proxyPacTextBox.MaxLength = 256;
+            this.proxyPacTextBox.Name = "proxyPacTextBox";
+            this.proxyPacTextBox.Size = new System.Drawing.Size(182, 20);
+            this.proxyPacTextBox.TabIndex = 6;
             // 
             // proxyServerTextBox
             // 
@@ -142,7 +210,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.Options
             this.proxyServerTextBox.MaxLength = 64;
             this.proxyServerTextBox.Name = "proxyServerTextBox";
             this.proxyServerTextBox.Size = new System.Drawing.Size(127, 20);
-            this.proxyServerTextBox.TabIndex = 2;
+            this.proxyServerTextBox.TabIndex = 3;
             // 
             // openProxyControlPanelAppletButton
             // 
@@ -154,13 +222,24 @@ namespace Google.Solutions.IapDesktop.Application.Views.Options
             this.openProxyControlPanelAppletButton.UseVisualStyleBackColor = true;
             this.openProxyControlPanelAppletButton.Click += new System.EventHandler(this.openProxyControlPanelAppletButton_Click);
             // 
+            // usePacRadioButton
+            // 
+            this.usePacRadioButton.AutoSize = true;
+            this.usePacRadioButton.Location = new System.Drawing.Point(58, 176);
+            this.usePacRadioButton.Name = "usePacRadioButton";
+            this.usePacRadioButton.Size = new System.Drawing.Size(185, 17);
+            this.usePacRadioButton.TabIndex = 5;
+            this.usePacRadioButton.TabStop = true;
+            this.usePacRadioButton.Text = "Use automatic configuration script";
+            this.usePacRadioButton.UseVisualStyleBackColor = true;
+            // 
             // useCustomRadioButton
             // 
             this.useCustomRadioButton.AutoSize = true;
             this.useCustomRadioButton.Location = new System.Drawing.Point(58, 110);
             this.useCustomRadioButton.Name = "useCustomRadioButton";
             this.useCustomRadioButton.Size = new System.Drawing.Size(151, 17);
-            this.useCustomRadioButton.TabIndex = 0;
+            this.useCustomRadioButton.TabIndex = 2;
             this.useCustomRadioButton.TabStop = true;
             this.useCustomRadioButton.Text = "Connect via a proxy server";
             this.useCustomRadioButton.UseVisualStyleBackColor = true;
@@ -175,51 +254,6 @@ namespace Google.Solutions.IapDesktop.Application.Views.Options
             this.useSystemRadioButton.TabStop = true;
             this.useSystemRadioButton.Text = "Use system settings (recommended)";
             this.useSystemRadioButton.UseVisualStyleBackColor = true;
-            // 
-            // proxyAuthCheckBox
-            // 
-            this.proxyAuthCheckBox.AutoSize = true;
-            this.proxyAuthCheckBox.Location = new System.Drawing.Point(78, 174);
-            this.proxyAuthCheckBox.Name = "proxyAuthCheckBox";
-            this.proxyAuthCheckBox.Size = new System.Drawing.Size(194, 17);
-            this.proxyAuthCheckBox.TabIndex = 5;
-            this.proxyAuthCheckBox.Text = "Proxy server requires authentication";
-            this.proxyAuthCheckBox.UseVisualStyleBackColor = true;
-            // 
-            // proxyAuthUsernameTextBox
-            // 
-            this.proxyAuthUsernameTextBox.Location = new System.Drawing.Point(159, 200);
-            this.proxyAuthUsernameTextBox.MaxLength = 64;
-            this.proxyAuthUsernameTextBox.Name = "proxyAuthUsernameTextBox";
-            this.proxyAuthUsernameTextBox.Size = new System.Drawing.Size(148, 20);
-            this.proxyAuthUsernameTextBox.TabIndex = 6;
-            // 
-            // proxyAuthUsernameLabel
-            // 
-            this.proxyAuthUsernameLabel.AutoSize = true;
-            this.proxyAuthUsernameLabel.Location = new System.Drawing.Point(95, 203);
-            this.proxyAuthUsernameLabel.Name = "proxyAuthUsernameLabel";
-            this.proxyAuthUsernameLabel.Size = new System.Drawing.Size(58, 13);
-            this.proxyAuthUsernameLabel.TabIndex = 3;
-            this.proxyAuthUsernameLabel.Text = "Username:";
-            // 
-            // proxyAuthPasswordTextBox
-            // 
-            this.proxyAuthPasswordTextBox.Location = new System.Drawing.Point(159, 226);
-            this.proxyAuthPasswordTextBox.MaxLength = 64;
-            this.proxyAuthPasswordTextBox.Name = "proxyAuthPasswordTextBox";
-            this.proxyAuthPasswordTextBox.PasswordChar = '●';
-            this.proxyAuthPasswordTextBox.Size = new System.Drawing.Size(148, 20);
-            this.proxyAuthPasswordTextBox.TabIndex = 7;
-            // 
-            // proxyAuthPasswordLabel
-            // 
-            this.proxyAuthPasswordLabel.AutoSize = true;
-            this.proxyAuthPasswordLabel.Location = new System.Drawing.Point(95, 229);
-            this.proxyAuthPasswordLabel.Name = "proxyAuthPasswordLabel";
-            this.proxyAuthPasswordLabel.Size = new System.Drawing.Size(56, 13);
-            this.proxyAuthPasswordLabel.TabIndex = 3;
-            this.proxyAuthPasswordLabel.Text = "Password:";
             // 
             // NetworkOptionsControl
             // 
@@ -252,5 +286,8 @@ namespace Google.Solutions.IapDesktop.Application.Views.Options
         private System.Windows.Forms.Label proxyAuthUsernameLabel;
         private System.Windows.Forms.TextBox proxyAuthPasswordTextBox;
         private System.Windows.Forms.TextBox proxyAuthUsernameTextBox;
+        private System.Windows.Forms.Label pacAddressLabel;
+        private System.Windows.Forms.TextBox proxyPacTextBox;
+        private System.Windows.Forms.RadioButton usePacRadioButton;
     }
 }

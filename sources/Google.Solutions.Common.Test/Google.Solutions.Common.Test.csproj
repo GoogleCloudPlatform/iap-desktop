@@ -111,6 +111,7 @@
     <Compile Include="Locator\TestInstanceLocator.cs" />
     <Compile Include="Locator\TestMachineTypeLocator.cs" />
     <Compile Include="Net\InprocHttpProxy.cs" />
+    <Compile Include="Net\NetTracing.cs" />
     <Compile Include="Net\TestRestClient.cs" />
     <Compile Include="Net\TestUserAgent.cs" />
     <Compile Include="Integration\TestProject.cs" />

@@ -52,13 +52,11 @@ namespace Google.Solutions.IapDesktop.Application.Views.Options
                 this.viewModel,
                 m => m.IsCustomProxyServerEnabled,
                 this.Container);
-
             this.addressLabel.BindProperty(
                 c => c.Enabled,
                 this.viewModel,
                 m => m.IsCustomProxyServerEnabled,
                 this.Container);
-
             this.proxyServerTextBox.BindProperty(
                 c => c.Enabled,
                 this.viewModel,
@@ -69,7 +67,6 @@ namespace Google.Solutions.IapDesktop.Application.Views.Options
                 this.viewModel,
                 m => m.ProxyServer,
                 this.Container);
-
             this.proxyPortTextBox.BindProperty(
                 c => c.Enabled,
                 this.viewModel,
@@ -79,6 +76,27 @@ namespace Google.Solutions.IapDesktop.Application.Views.Options
                 c => c.Text,
                 this.viewModel,
                 m => m.ProxyPort,
+                this.Container);
+
+            this.usePacRadioButton.BindProperty(
+                c => c.Checked,
+                this.viewModel,
+                m => m.IsProxyAutoConfigurationEnabled,
+                this.Container);
+            this.pacAddressLabel.BindProperty(
+                c => c.Enabled,
+                this.viewModel,
+                m => m.IsProxyAutoConfigurationEnabled,
+                this.Container);
+            this.proxyPacTextBox.BindProperty(
+                c => c.Enabled,
+                this.viewModel,
+                m => m.IsProxyAutoConfigurationEnabled,
+                this.Container);
+            this.proxyPacTextBox.BindProperty(
+                c => c.Text,
+                this.viewModel,
+                m => m.ProxyAutoconfigurationAddress,
                 this.Container);
 
             //
@@ -93,7 +111,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.Options
             this.proxyAuthCheckBox.BindProperty(
                 c => c.Enabled,
                 this.viewModel,
-                m => m.IsCustomProxyServerEnabled,
+                m => m.IsCustomProxyServerOrProxyAutoConfigurationEnabled,
                 this.Container);
 
             this.proxyAuthUsernameTextBox.BindProperty(

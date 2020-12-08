@@ -33,6 +33,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.Options
         private readonly IHttpProxyAdapter proxyAdapter;
         private readonly ApplicationSettingsRepository settingsRepository;
 
+        private string proxyPacAddress = null;
         private string proxyServer = null;
         private string proxyPort = null;
         private string proxyUsername = null;
@@ -59,7 +60,16 @@ namespace Google.Solutions.IapDesktop.Application.Views.Options
             {
                 this.proxyServer = proxyUrl.Host;
                 this.proxyPort = proxyUrl.Port.ToString();
+            }
 
+            if (!string.IsNullOrEmpty(settings.ProxyPacUrl.StringValue) &&
+                IsValidProxyAutoConfigurationAddress(settings.ProxyPacUrl.StringValue))
+            {
+                this.proxyPacAddress = settings.ProxyPacUrl.StringValue;
+            }
+
+            if (this.proxyServer != null || this.proxyPacAddress != null)
+            {
                 this.proxyUsername = settings.ProxyUsername.StringValue;
                 this.proxyPassword = settings.ProxyPassword.ClearTextValue;
             }
@@ -94,29 +104,52 @@ namespace Google.Solutions.IapDesktop.Application.Views.Options
         {
             Debug.Assert(this.IsDirty);
 
-            if (this.proxyServer != null && !IsValidProxyHost(this.proxyServer))
-            {
-                throw new ArgumentException($"'{this.proxyServer}' is not a valid host name");
-            }
+            //
+            // Validate ans save settings.
+            //
+            var settings = this.settingsRepository.GetSettings();
 
-            if (this.proxyPort != null && !IsValidProxyPort(this.proxyPort))
+            switch (this.Proxy)
             {
-                throw new ArgumentException($"'{this.proxyPort}' is not a valid port number");
+                case ProxyType.Custom:
+                    if (!IsValidProxyHost(this.proxyServer))
+                    {
+                        throw new ArgumentException(
+                            $"'{this.proxyServer}' is not a valid host name");
+                    }
+
+                    if (!IsValidProxyPort(this.proxyPort))
+                    {
+                        throw new ArgumentException(
+                            $"'{this.proxyPort}' is not a valid port number");
+                    }
+
+                    settings.ProxyUrl.StringValue = $"http://{this.proxyServer}:{this.proxyPort}";
+                    settings.ProxyPacUrl.Reset();
+                    break;
+
+                case ProxyType.Autoconfig:
+
+                    if (!IsValidProxyAutoConfigurationAddress(this.proxyPacAddress))
+                    {
+                        throw new ArgumentException(
+                            $"'{this.proxyPacAddress}' is not a valid proxy autoconfiguration URL");
+                    }
+
+                    settings.ProxyUrl.Reset();
+                    settings.ProxyPacUrl.StringValue = this.proxyPacAddress;
+                    break;
+
+                case ProxyType.System:
+                    settings.ProxyUrl.Reset();
+                    settings.ProxyPacUrl.Reset();
+                    break;
             }
 
             if (string.IsNullOrEmpty(this.proxyUsername) != string.IsNullOrEmpty(this.proxyPassword))
             {
                 throw new ArgumentException("Proxy credentials are incomplete");
             }
-
-            //
-            // Save changed settings.
-            //
-
-            var settings = this.settingsRepository.GetSettings();
-            settings.ProxyUrl.StringValue = this.proxyServer != null
-                ? $"http://{this.proxyServer}:{this.proxyPort}"
-                : null;
 
             settings.ProxyUsername.StringValue = this.proxyUsername;
 
@@ -145,35 +178,114 @@ namespace Google.Solutions.IapDesktop.Application.Views.Options
         // Observable properties.
         //---------------------------------------------------------------------
 
+        public enum ProxyType
+        {
+            System,
+            Custom,
+            Autoconfig
+        }
+
+        public ProxyType Proxy
+        {
+            set
+            {
+                switch (value)
+                {
+                    case ProxyType.System:
+                        // Reset everything.
+                        this.ProxyAutoconfigurationAddress = null;
+                        this.ProxyServer = null;
+                        this.ProxyPort = null;
+                        this.ProxyUsername = null;
+                        this.ProxyPassword = null;
+                        break;
+
+                    case ProxyType.Custom:
+                        // Initialize to a sane default.
+                        this.ProxyAutoconfigurationAddress = null;
+                        this.ProxyServer = this.ProxyServer ?? "proxy";
+                        this.ProxyPort = this.ProxyPort ?? "3128";
+                        break;
+
+                    case ProxyType.Autoconfig:
+                        // Initialize to a sane default.
+                        this.ProxyAutoconfigurationAddress = "http://proxy/proxy.pac";
+                        this.ProxyServer = null;
+                        this.ProxyPort = null;
+                        break;
+                }
+
+                RaisePropertyChange((NetworkOptionsViewModel m) => m.IsSystemProxyServerEnabled);
+                RaisePropertyChange((NetworkOptionsViewModel m) => m.IsCustomProxyServerEnabled);
+                RaisePropertyChange((NetworkOptionsViewModel m) => m.IsProxyAutoConfigurationEnabled);
+                RaisePropertyChange((NetworkOptionsViewModel m) => m.IsCustomProxyServerOrProxyAutoConfigurationEnabled); 
+                RaisePropertyChange((NetworkOptionsViewModel m) => m.IsProxyAuthenticationEnabled);
+            }
+            get
+            {
+                if (this.proxyPacAddress != null)
+                {
+                    return ProxyType.Autoconfig;
+                }
+                else if (this.proxyServer != null)
+                {
+                    return ProxyType.Custom;
+                }
+                else
+                {
+                    return ProxyType.System;
+                }
+            }
+        }
+
         public bool IsCustomProxyServerEnabled
         {
-            get => this.proxyServer != null;
+            get => this.Proxy == ProxyType.Custom;
             set
             {
                 if (value)
                 {
-                    // Initialize to a sane default.
-                    this.ProxyServer = this.ProxyServer ?? "proxy";
-                    this.ProxyPort = this.ProxyPort ?? "3128";
+                    this.Proxy = ProxyType.Custom;
                 }
-                else
-                {
-                    this.ProxyServer = null;
-                    this.ProxyPort = null;
-                    this.ProxyUsername = null;
-                    this.ProxyPassword = null;
-                }
+            }
+        }
 
-                RaisePropertyChange();
-                RaisePropertyChange((NetworkOptionsViewModel m) => m.IsSystemProxyServerEnabled);
-                RaisePropertyChange((NetworkOptionsViewModel m) => m.IsProxyAuthenticationEnabled);
+        public bool IsProxyAutoConfigurationEnabled
+        {
+            get => this.Proxy == ProxyType.Autoconfig;
+            set
+            {
+                if (value)
+                {
+                    this.Proxy = ProxyType.Autoconfig;
+                }
             }
         }
 
         public bool IsSystemProxyServerEnabled
         {
-            get => !IsCustomProxyServerEnabled;
-            set => IsCustomProxyServerEnabled = !value;
+            get => this.Proxy == ProxyType.System;
+            set {
+                if (value)
+                {
+                    this.Proxy = ProxyType.System;
+                }
+            }
+        }
+
+        public bool IsCustomProxyServerOrProxyAutoConfigurationEnabled
+            => this.IsCustomProxyServerEnabled ||
+               this.IsProxyAutoConfigurationEnabled;
+
+        public string ProxyAutoconfigurationAddress
+        {
+            get => this.proxyPacAddress;
+            set
+            {
+                this.proxyPacAddress = value;
+                this.IsDirty = true;
+                RaisePropertyChange();
+            }
         }
 
         public string ProxyServer
@@ -200,7 +312,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.Options
 
         public bool IsProxyAuthenticationEnabled
         {
-            get => IsCustomProxyServerEnabled && !string.IsNullOrEmpty(this.proxyUsername);
+            get => !IsSystemProxyServerEnabled && !string.IsNullOrEmpty(this.proxyUsername);
             set
             {
                 if (value)
@@ -251,6 +363,10 @@ namespace Google.Solutions.IapDesktop.Application.Views.Options
 
         public bool IsValidProxyHost(string host)
             => Uri.TryCreate($"http://{host}", UriKind.Absolute, out Uri _);
+
+        public bool IsValidProxyAutoConfigurationAddress(string pacAddress)
+            => Uri.TryCreate(pacAddress, UriKind.Absolute, out Uri uri) &&
+               (uri.Scheme == "http" || uri.Scheme == "https");
 
         public void OpenProxyControlPanelApplet()
         {

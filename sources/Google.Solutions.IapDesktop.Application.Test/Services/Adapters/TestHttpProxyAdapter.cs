@@ -107,6 +107,66 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Adapters
         }
 
         [Test]
+        public async Task WhenUsingProxyAutoConfigWithoutCredentials_ThenRequestsAreSentToProxy()
+        {
+            using (var proxy = new InProcessHttpProxy())
+            {
+                proxy.AddStaticFile(
+                    "/proxy.pac",
+                    "function FindProxyForURL(url, host) " +
+                    "{ return \"PROXY localhost:" + proxy.Port + "; DIRECT\";}");
+
+                var adapter = new HttpProxyAdapter();
+                adapter.ActivateProxyAutoConfigSettings(
+                    new Uri($"http://localhost:{proxy.Port}/proxy.pac"),
+                    null);
+
+                var proxiedUrl = WebRequest.DefaultWebProxy.GetProxy(SampleHttpsUrl);
+
+                Assert.AreEqual(
+                    new Uri($"http://localhost:{proxy.Port}/"),
+                    proxiedUrl,
+                    "This might fail on systems that have a proxy PAC configured by GPO");
+
+                await SendWebRequest(SampleHttpsUrl);
+
+                Assert.AreEqual(1, proxy.ConnectionTargets.Distinct().Count());
+                CollectionAssert.Contains(proxy.ConnectionTargets, SampleHttpsUrl.Host);
+            }
+        }
+
+        [Test]
+        public async Task WhenUsingProxyAutoConfigWithCredentials_ThenRequestsAreSentToProxyWithCredentials()
+        {
+            var proxyCredentials = new NetworkCredential("proxyuser", "proxypass");
+            using (var proxy = new InProcessAuthenticatingHttpProxy(
+                proxyCredentials))
+            {
+                proxy.AddStaticFile(
+                    "/proxy.pac",
+                    "function FindProxyForURL(url, host) " +
+                    "{ return \"PROXY localhost:" + proxy.Port + "; DIRECT\";}");
+
+                var adapter = new HttpProxyAdapter();
+                adapter.ActivateProxyAutoConfigSettings(
+                    new Uri($"http://localhost:{proxy.Port}/proxy.pac"),
+                    proxyCredentials);
+
+                var proxiedUrl = WebRequest.DefaultWebProxy.GetProxy(SampleHttpsUrl);
+
+                Assert.AreEqual(
+                    new Uri($"http://localhost:{proxy.Port}/"),
+                    proxiedUrl,
+                    "This might fail on systems that have a proxy PAC configured by GPO");
+
+                await SendWebRequest(SampleHttpsUrl);
+
+                Assert.AreEqual(1, proxy.ConnectionTargets.Distinct().Count());
+                CollectionAssert.Contains(proxy.ConnectionTargets, SampleHttpsUrl.Host);
+            }
+        }
+
+        [Test]
         public async Task WhenRevertedToSystemProxySettings_ThenRequestsAreNotSentToProxy()
         {
             var proxyCredentials = new NetworkCredential("proxyuser", "proxypass");
