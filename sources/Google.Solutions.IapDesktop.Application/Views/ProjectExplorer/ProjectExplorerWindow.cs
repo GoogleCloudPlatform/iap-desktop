@@ -217,27 +217,37 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
 
         private void openInCloudConsoleToolStripMenuItem_Click(object sender, EventArgs e)
         {
+            var cloudConsoleService = this.serviceProvider.GetService<CloudConsoleService>();
+
             if (this.treeView.SelectedNode is VmInstanceNode vmInstanceNode)
             {
-                this.serviceProvider
-                    .GetService<CloudConsoleService>()
-                    .OpenVmInstance(vmInstanceNode.Reference);
+                cloudConsoleService.OpenInstanceDetails(vmInstanceNode.Reference);
+            }
+            else if (this.treeView.SelectedNode is ZoneNode zoneNode)
+            {
+                cloudConsoleService.OpenInstanceList(zoneNode.Locator);
+            }
+            else if (this.treeView.SelectedNode is ProjectNode projectNode)
+            {
+                cloudConsoleService.OpenInstanceList(projectNode.ProjectId);
             }
         }
 
         private void configureIapAccessToolStripMenuItem_Click(object sender, EventArgs e)
         {
+            var cloudConsoleService = this.serviceProvider.GetService<CloudConsoleService>();
+
             if (this.treeView.SelectedNode is ProjectNode projectNode)
             {
-                this.serviceProvider
-                    .GetService<CloudConsoleService>()
-                    .ConfigureIapAccess(projectNode.ProjectId);
+                cloudConsoleService.ConfigureIapAccess(projectNode.ProjectId);
+            }
+            else if (this.treeView.SelectedNode is ZoneNode zoneNode)
+            {
+                cloudConsoleService.ConfigureIapAccess(zoneNode.ProjectId);
             }
             else if (this.treeView.SelectedNode is VmInstanceNode vmInstanceNode)
             {
-                this.serviceProvider
-                    .GetService<CloudConsoleService>()
-                    .ConfigureIapAccess(vmInstanceNode.ProjectId);
+                cloudConsoleService.ConfigureIapAccess(vmInstanceNode.ProjectId);
             }
         }
 
@@ -334,12 +344,13 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
                 this.unloadProjectToolStripMenuItem.Visible = (selectedNode is ProjectNode);
                 this.refreshAllProjectsToolStripMenuItem.Visible = (selectedNode is CloudNode);
 
-                this.openInCloudConsoleToolStripMenuItem.Visible = (selectedNode is VmInstanceNode);
-
-                this.iapSeparatorToolStripMenuItem.Visible =
+                this.openInCloudConsoleToolStripMenuItem.Visible =
+                    this.iapSeparatorToolStripMenuItem.Visible =
                     this.cloudConsoleSeparatorToolStripMenuItem.Visible =
                     this.configureIapAccessToolStripMenuItem.Visible =
-                         (selectedNode is VmInstanceNode || selectedNode is ProjectNode);
+                        (selectedNode is VmInstanceNode ||
+                         selectedNode is ZoneNode ||
+                         selectedNode is ProjectNode);
 
                 // 
                 // Handle dynamic menu items.

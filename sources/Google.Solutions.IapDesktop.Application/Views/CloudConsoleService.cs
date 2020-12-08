@@ -42,10 +42,23 @@ namespace Google.Solutions.IapDesktop.Application.Views
             { };
         }
 
-        public void OpenVmInstance(InstanceLocator instance)
+        public void OpenInstanceDetails(InstanceLocator instance)
         {
             OpenUrl("https://console.cloud.google.com/compute/instancesDetail/zones/" +
                     $"{instance.Zone}/instances/{instance.Name}?project={instance.ProjectId}");
+        }
+
+        public void OpenInstanceList(string projectId)
+        {
+            OpenUrl("https://console.cloud.google.com/compute/instances" + 
+                $"?project={projectId}");
+        }
+
+        public void OpenInstanceList(ZoneLocator zone)
+        {
+            var query = "[{\"k\":\"zoneForFilter\",\"v\":\"" + zone.Name + "\"}]";
+            OpenUrl("https://console.cloud.google.com/compute/instances" + 
+                $"?project={zone.ProjectId}&instancesquery={WebUtility.UrlEncode(query)}");
         }
 
         private void OpenLogs(string projectId, string query)
