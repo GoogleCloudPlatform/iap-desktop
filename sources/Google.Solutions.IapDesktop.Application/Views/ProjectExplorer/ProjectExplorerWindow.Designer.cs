@@ -173,7 +173,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
             // 
             this.configureIapAccessToolStripMenuItem.Name = "configureIapAccessToolStripMenuItem";
             this.configureIapAccessToolStripMenuItem.Size = new System.Drawing.Size(206, 22);
-            this.configureIapAccessToolStripMenuItem.Text = "Configure IAP a&ccess...";
+            this.configureIapAccessToolStripMenuItem.Text = "Configure IAP a&ccess";
             this.configureIapAccessToolStripMenuItem.Click += new System.EventHandler(this.configureIapAccessToolStripMenuItem_Click);
             // 
             // cloudConsoleSeparatorToolStripMenuItem
@@ -185,7 +185,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
             // 
             this.openInCloudConsoleToolStripMenuItem.Name = "openInCloudConsoleToolStripMenuItem";
             this.openInCloudConsoleToolStripMenuItem.Size = new System.Drawing.Size(206, 22);
-            this.openInCloudConsoleToolStripMenuItem.Text = "Open in Cloud Consol&e...";
+            this.openInCloudConsoleToolStripMenuItem.Text = "Open in Cloud Consol&e";
             this.openInCloudConsoleToolStripMenuItem.Click += new System.EventHandler(this.openInCloudConsoleToolStripMenuItem_Click);
             // 
             // imageList

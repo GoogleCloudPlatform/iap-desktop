@@ -120,6 +120,8 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
         public IEnumerable<IProjectExplorerVmInstanceNode> Instances
             => this.Nodes.OfType<VmInstanceNode>();
 
+        public ZoneLocator Locator => new ZoneLocator(this.ProjectId, this.ZoneId);
+
         internal ZoneNode(
             string zoneId,
             ProjectNode parent)
