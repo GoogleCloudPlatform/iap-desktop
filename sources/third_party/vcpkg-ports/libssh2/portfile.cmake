@@ -34,7 +34,6 @@ vcpkg_from_github(
     #    SHA512 fa34c598149d28b12f5cefbee4816f30a807a1bde89faa3be469f690057cf2ea7dd1a83191b2a2cae3794e307d676efebd7a31d70d9587e42e0926f82a1ae73d
 
     HEAD_REF master
-    PATCHES "${CMAKE_CURRENT_LIST_DIR}/0001-Fix-UWP.patch"
 )
 
 vcpkg_configure_cmake(
