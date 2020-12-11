@@ -79,7 +79,7 @@ if ((Get-Command "nuget.exe" -ErrorAction SilentlyContinue) -eq $null)
 # Restore packages and make them available in the environment
 #------------------------------------------------------------------------------
 
-if (Test-Path "*.sln")
+if ((Test-Path "*.sln") -and !$args.Contains("clean"))
 {
 	& $Nmake restore
 
