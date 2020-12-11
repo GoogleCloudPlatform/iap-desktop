@@ -1,4 +1,7 @@
-﻿using Google.Solutions.Common.Test.Integration;
+﻿using Google.Solutions.Common.Locator;
+using Google.Solutions.Common.Test;
+using Google.Solutions.Common.Test.Integration;
+using Google.Solutions.Common.Util;
 using Google.Solutions.Ssh.Native;
 using NUnit.Framework;
 using System;
@@ -115,18 +118,22 @@ namespace Google.Solutions.Ssh.Test.Native
         }
 
         [Test]
-        public void WhenHandshakeCompleted_ThenActiveMethodReturnsAlgorithm()
+        public async Task WhenPreferringIncompatibleAlgorithm_ThenHandshakeFails(
+            [LinuxInstance] ResourceTask<InstanceLocator> instanceLocatorTask)
         {
-            Assert.Fail();
             using (var session = CreateSession())
             {
-                session.SetPreferredMethods(LIBSSH2_METHOD.KEX, new[] { "diffie-hellman-group-exchange-sha1" });
+                using (var socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp))
+                {
+                    session.SetPreferredMethods(LIBSSH2_METHOD.KEX, new[] { "diffie-hellman-group-exchange-sha1" });
 
-                var algorithms = session.GetActiveAlgorithms(LIBSSH2_METHOD.KEX);
+                    socket.Connect(
+                        await InstanceUtil.PublicIpAddressForInstanceAsync(await instanceLocatorTask),
+                        22);
 
-                Assert.IsNotNull(algorithms);
-                Assert.AreEqual(1, algorithms.Length);
-                CollectionAssert.Contains(algorithms, "diffie-hellman-group1-sha1");
+                    AssertEx.ThrowsAggregateException<SshNativeException>(
+                        () => session.HandshakeAsync(socket).Wait());
+                }
             }
         }
 
@@ -143,13 +150,20 @@ namespace Google.Solutions.Ssh.Test.Native
             }
         }
 
-        [Test]
-        public void WhenConnected_ThenGetRemoteBannerReturnsBanner()
+        public async Task WhenConnected_ThenGetRemoteBannerReturnsBanner(
+            [LinuxInstance] ResourceTask<InstanceLocator> instanceLocatorTask)
         {
-            // TODO: connect
             using (var session = CreateSession())
             {
-                Assert.IsNotNull(session.GetRemoteBanner());
+                using (var socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp))
+                {
+                    socket.Connect(
+                        await InstanceUtil.PublicIpAddressForInstanceAsync(await instanceLocatorTask),
+                        22);
+                    await session.HandshakeAsync(socket);
+
+                    Assert.IsNotNull(session.GetRemoteBanner());
+                }
             }
         }
 
@@ -167,15 +181,42 @@ namespace Google.Solutions.Ssh.Test.Native
         }
 
         [Test]
-        public void WhenConnected_ThenGetRemoteHostKeyReturnsKey()
+        public async Task WhenConnected_ThenGetRemoteHostKeyReturnsKey(
+            [LinuxInstance] ResourceTask<InstanceLocator> instanceLocatorTask)
         {
-            // TODO: connect
             using (var session = CreateSession())
             {
-                Assert.IsNotNull(session.GetRemoteHostKey());
+                using (var socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp))
+                {
+                    socket.Connect(
+                        await InstanceUtil.PublicIpAddressForInstanceAsync(await instanceLocatorTask),
+                        22);
+                    await session.HandshakeAsync(socket);
+
+                    Assert.IsNotNull(session.GetRemoteHostKey());
+                }
             }
         }
 
+        [Test]
+        public async Task WhenConnected_ThenGetRemoteHostKeyTypeReturnsEcdsa256(
+            [LinuxInstance] ResourceTask<InstanceLocator> instanceLocatorTask)
+        {
+            using (var session = CreateSession())
+            {
+                using (var socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp))
+                {
+                    socket.Connect(
+                        await InstanceUtil.PublicIpAddressForInstanceAsync(await instanceLocatorTask),
+                        22);
+                    await session.HandshakeAsync(socket);
+
+                    Assert.AreEqual(
+                        LIBSSH2_HOSTKEY_TYPE.ECDSA_256,
+                        session.GetRemoteHostKeyTyoe());
+                }
+            }
+        }
 
         [Test]
         public void WhenNotConnected_ThenGetRemoteHostKeyHashReturnsNull()
@@ -189,14 +230,22 @@ namespace Google.Solutions.Ssh.Test.Native
         }
 
         [Test]
-        public void WhenConnected_ThenGetRemoteHostKeyHashReturnsKeyHash()
+        public async Task WhenConnected_ThenGetRemoteHostKeyHashReturnsKeyHash(
+            [LinuxInstance] ResourceTask<InstanceLocator> instanceLocatorTask)
         {
-            // TODO: connect
             using (var session = CreateSession())
             {
-                Assert.IsNotNull(session.GetRemoteHostKeyHash(LIBSSH2_HOSTKEY_HASH.MD5));
-                Assert.IsNotNull(session.GetRemoteHostKeyHash(LIBSSH2_HOSTKEY_HASH.SHA1));
-                Assert.IsNotNull(session.GetRemoteHostKeyHash(LIBSSH2_HOSTKEY_HASH.SHA256));
+                using (var socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp))
+                {
+                    socket.Connect(
+                        await InstanceUtil.PublicIpAddressForInstanceAsync(await instanceLocatorTask),
+                        22);
+                    await session.HandshakeAsync(socket);
+
+                    Assert.IsNotNull(session.GetRemoteHostKeyHash(LIBSSH2_HOSTKEY_HASH.MD5));
+                    Assert.IsNotNull(session.GetRemoteHostKeyHash(LIBSSH2_HOSTKEY_HASH.SHA1));
+                    Assert.IsNotNull(session.GetRemoteHostKeyHash(LIBSSH2_HOSTKEY_HASH.SHA256));
+                }
             }
         }
 
@@ -205,14 +254,14 @@ namespace Google.Solutions.Ssh.Test.Native
         //---------------------------------------------------------------------
 
         [Test]
-        public void WhenSocketNotConnected_ThenHandshakeThrowsException()
+        public async Task WhenSocketNotConnected_ThenHandshakeThrowsException()
         {
             using (var session = CreateSession())
             using (var socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp))
             {
                 try
                 {
-                    session.Handshake(socket);
+                    await session.HandshakeAsync(socket);
                     Assert.Fail("Expected exception");
                 }
                 catch (SshNativeException e)
@@ -222,27 +271,20 @@ namespace Google.Solutions.Ssh.Test.Native
             }
         }
 
-        //[Test]
-        //public void WhenSocketConnected_ThenHandshakeSucceeds(
-        //    [LinuxInstance()] ResourceTask<InstanceLocator> vm)
-        //{
-        //    using (var session = CreateSession())
-        //    {
-        //        session.SetTraceHandler(
-        //            LIBSSH2_TRACE.SOCKET | LIBSSH2_TRACE.ERROR | LIBSSH2_TRACE.CONN | LIBSSH2_TRACE.AUTH | LIBSSH2_TRACE.KEX,
-        //            Console.WriteLine);
-        //        using (var socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp))
-        //        {
-        //            // TODO: hangs
-        //            //Assert.Fail();
-        //            //session.SetPreferredMethods(LIBSSH2_METHOD.KEX, new[] { "diffie-hellman-group-exchange-sha256" });
-        //            //socket.Connect(new EndPoint((await vm).);
-        //            //socket.Connect("35.189.245.72", 22);
-        //            //socket.Blocking = false;
-        //            //session.Blocking = false;
-        //            session.Handshake(socket);
-        //        }
-        //    }
-        //}
+        [Test]
+        public async Task WhenSocketConnected_ThenHandshakeSucceeds(
+            [LinuxInstance] ResourceTask<InstanceLocator> instanceLocatorTask)
+        {
+            using (var session = CreateSession())
+            {
+                using (var socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp))
+                {
+                    socket.Connect(
+                        await InstanceUtil.PublicIpAddressForInstanceAsync(await instanceLocatorTask), 
+                        22);
+                    await session.HandshakeAsync(socket);
+                }
+            }
+        }
     }
 }

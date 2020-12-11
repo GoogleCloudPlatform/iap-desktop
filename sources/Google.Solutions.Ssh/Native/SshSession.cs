@@ -140,8 +140,8 @@ namespace Google.Solutions.Ssh.Native
         public void SetLocalBanner(string banner)
         {
             UnsafeNativeMethods.libssh2_session_banner_set(
-                   this.sessionHandle,
-                   banner);
+                this.sessionHandle,
+                banner);
         }
 
         public string GetRemoteBanner()
@@ -158,15 +158,18 @@ namespace Google.Solutions.Ssh.Native
         // Handshake.
         //---------------------------------------------------------------------
 
-        public void Handshake(Socket socket)
+        public Task HandshakeAsync(Socket socket)
         {
-            var result = (LIBSSH2_ERROR)UnsafeNativeMethods.libssh2_session_handshake(
-                this.sessionHandle,
-                socket.Handle);
-            if (result != LIBSSH2_ERROR.NONE)
+            return Task.Run(() =>
             {
-                throw new SshNativeException(result);
-            }
+                var result = (LIBSSH2_ERROR)UnsafeNativeMethods.libssh2_session_handshake(
+                    this.sessionHandle,
+                    socket.Handle);
+                if (result != LIBSSH2_ERROR.NONE)
+                {
+                    throw new SshNativeException(result);
+                }
+            });
         }
 
         public byte[] GetRemoteHostKeyHash(LIBSSH2_HOSTKEY_HASH hashType)
@@ -191,7 +194,8 @@ namespace Google.Solutions.Ssh.Native
         {
             var keyPtr = UnsafeNativeMethods.libssh2_session_hostkey(
                 this.sessionHandle,
-                out var keyLength);
+                out var keyLength,
+                out var _);
 
             if (keyPtr == IntPtr.Zero || keyLength <= 0)
             {
@@ -202,6 +206,22 @@ namespace Google.Solutions.Ssh.Native
                 var key = new byte[keyLength];
                 Marshal.Copy(keyPtr, key, 0, keyLength);
                 return key;
+            }
+        }
+        public LIBSSH2_HOSTKEY_TYPE GetRemoteHostKeyTyoe()
+        {
+            var keyPtr = UnsafeNativeMethods.libssh2_session_hostkey(
+                this.sessionHandle,
+                out var _,
+                out var type);
+
+            if (keyPtr == IntPtr.Zero)
+            {
+                return LIBSSH2_HOSTKEY_TYPE.UNKNOWN;
+            }
+            else
+            {
+                return type;
             }
         }
 

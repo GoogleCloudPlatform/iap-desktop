@@ -46,6 +46,17 @@ namespace Google.Solutions.Ssh.Native
         SOCKET    = (1<<9)
     }
 
+    public enum LIBSSH2_HOSTKEY_TYPE : Int32
+    {
+        UNKNOWN = 0,
+        RSA = 1,
+        DSS = 2,
+        ECDSA_256 = 3,
+        ECDSA_384 = 4,
+        ECDSA_521 = 5,
+        ED25519 = 6
+    }
+
     internal static class UnsafeNativeMethods
     {
         private const string Libssh2 = "libssh2.dll";
@@ -146,7 +157,8 @@ namespace Google.Solutions.Ssh.Native
         [DllImport(Libssh2)]
         public static extern IntPtr libssh2_session_hostkey(
             SshSessionHandle session,
-            out Int32 length);
+            out Int32 length,
+            out LIBSSH2_HOSTKEY_TYPE type);
 
 
         [DllImport(Libssh2)]
