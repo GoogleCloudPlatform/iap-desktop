@@ -57,6 +57,10 @@
     <Compile Include="Native\TestSession.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Google.Solutions.Common.Test\Google.Solutions.Common.Test.csproj">
+      <Project>{aa8cd2fb-d463-42bd-a880-9247c93f9395}</Project>
+      <Name>Google.Solutions.Common.Test</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Google.Solutions.Ssh\Google.Solutions.Ssh.csproj">
       <Project>{3e4a828d-819b-40d2-89b3-47d5b52f67fb}</Project>
       <Name>Google.Solutions.Ssh</Name>

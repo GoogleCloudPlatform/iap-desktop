@@ -1,4 +1,5 @@
-﻿using Google.Solutions.Ssh.Native;
+﻿using Google.Solutions.Common.Test.Integration;
+using Google.Solutions.Ssh.Native;
 using NUnit.Framework;
 using System;
 using System.Collections.Generic;
@@ -14,8 +15,6 @@ namespace Google.Solutions.Ssh.Test.Native
     [TestFixture]
     public class TestSession
     {
-        private readonly IPEndPoint sshEndpoint = new IPEndPoint(IPAddress.Loopback, 22);
-
         private static SshSession CreateSession()
         {
             var session = new SshSession();
@@ -106,25 +105,25 @@ namespace Google.Solutions.Ssh.Test.Native
         }
 
         [Test]
-        public void WhenRequestingInvalidType_ThenSupportedAlgorithmsReturnsEmptyArray()
+        public void WhenRequestingInvalidType_ThenSupportedAlgorithmsThrowsException()
         {
             using (var session = CreateSession())
             {
-                var algorithms = session.GetSupportedAlgorithms((LIBSSH2_METHOD)Int32.MaxValue);
-                Assert.IsNotNull(algorithms);
-                Assert.AreEqual(0, algorithms.Length);
+                Assert.Throws<SshNativeException>(
+                    () => session.GetSupportedAlgorithms((LIBSSH2_METHOD)Int32.MaxValue));
             }
         }
 
         [Test]
-        public void WhenSettingPreferredKexMethod_ThenActiveMethodReflectsPreference()
+        public void WhenHandshakeCompleted_ThenActiveMethodReturnsAlgorithm()
         {
+            Assert.Fail();
             using (var session = CreateSession())
             {
-                session.SetPreferredMethods(LIBSSH2_METHOD.KEX, new [] { "diffie-hellman-group1-sha1"});
+                session.SetPreferredMethods(LIBSSH2_METHOD.KEX, new[] { "diffie-hellman-group-exchange-sha1" });
 
                 var algorithms = session.GetActiveAlgorithms(LIBSSH2_METHOD.KEX);
-                
+
                 Assert.IsNotNull(algorithms);
                 Assert.AreEqual(1, algorithms.Length);
                 CollectionAssert.Contains(algorithms, "diffie-hellman-group1-sha1");
@@ -132,19 +131,72 @@ namespace Google.Solutions.Ssh.Test.Native
         }
 
         //---------------------------------------------------------------------
-        // Blocking.
+        // Banner.
         //---------------------------------------------------------------------
 
         [Test]
-        public void WhenSetBlocking_ThenGetBlockingReturnsSameValue()
+        public void WhenNotConnected_ThenGetRemoteBannerReturnsNull()
         {
             using (var session = CreateSession())
             {
-                session.Blocking = true;
-                Assert.IsTrue(session.Blocking);
+                Assert.IsNull(session.GetRemoteBanner());
+            }
+        }
 
-                session.Blocking = false;
-                Assert.IsFalse(session.Blocking);
+        [Test]
+        public void WhenConnected_ThenGetRemoteBannerReturnsBanner()
+        {
+            // TODO: connect
+            using (var session = CreateSession())
+            {
+                Assert.IsNotNull(session.GetRemoteBanner());
+            }
+        }
+
+        //---------------------------------------------------------------------
+        // Host Key.
+        //---------------------------------------------------------------------
+
+        [Test]
+        public void WhenNotConnected_ThenGetRemoteHostKeyReturnsNull()
+        {
+            using (var session = CreateSession())
+            {
+                Assert.IsNull(session.GetRemoteHostKey());
+            }
+        }
+
+        [Test]
+        public void WhenConnected_ThenGetRemoteHostKeyReturnsKey()
+        {
+            // TODO: connect
+            using (var session = CreateSession())
+            {
+                Assert.IsNotNull(session.GetRemoteHostKey());
+            }
+        }
+
+
+        [Test]
+        public void WhenNotConnected_ThenGetRemoteHostKeyHashReturnsNull()
+        {
+            using (var session = CreateSession())
+            {
+                Assert.IsNull(session.GetRemoteHostKeyHash(LIBSSH2_HOSTKEY_HASH.SHA1));
+                Assert.IsNull(session.GetRemoteHostKeyHash(LIBSSH2_HOSTKEY_HASH.SHA256));
+                Assert.IsNull(session.GetRemoteHostKeyHash(LIBSSH2_HOSTKEY_HASH.MD5));
+            }
+        }
+
+        [Test]
+        public void WhenConnected_ThenGetRemoteHostKeyHashReturnsKeyHash()
+        {
+            // TODO: connect
+            using (var session = CreateSession())
+            {
+                Assert.IsNotNull(session.GetRemoteHostKeyHash(LIBSSH2_HOSTKEY_HASH.MD5));
+                Assert.IsNotNull(session.GetRemoteHostKeyHash(LIBSSH2_HOSTKEY_HASH.SHA1));
+                Assert.IsNotNull(session.GetRemoteHostKeyHash(LIBSSH2_HOSTKEY_HASH.SHA256));
             }
         }
 
@@ -170,26 +222,27 @@ namespace Google.Solutions.Ssh.Test.Native
             }
         }
 
-        [Test]
-        public void WhenSocketConnected_ThenHandshakeSucceeds()
-        {
-            using (var session = CreateSession())
-            {
-                session.SetTraceHandler(
-                    LIBSSH2_TRACE.SOCKET | LIBSSH2_TRACE.ERROR | LIBSSH2_TRACE.CONN | LIBSSH2_TRACE.AUTH | LIBSSH2_TRACE.KEX,
-                    Console.WriteLine);
-                using (var socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp))
-                {
-                    // TODO: hangs
-                    //Assert.Fail();
-                    //session.SetPreferredMethods(LIBSSH2_METHOD.KEX, new[] { "diffie-hellman-group-exchange-sha256" });
-                    socket.Connect(this.sshEndpoint);
-                    //socket.Connect("35.189.245.72", 22);
-                    //socket.Blocking = false;
-                    //session.Blocking = false;
-                    session.Handshake(socket);
-                }
-            }
-        }
+        //[Test]
+        //public void WhenSocketConnected_ThenHandshakeSucceeds(
+        //    [LinuxInstance()] ResourceTask<InstanceLocator> vm)
+        //{
+        //    using (var session = CreateSession())
+        //    {
+        //        session.SetTraceHandler(
+        //            LIBSSH2_TRACE.SOCKET | LIBSSH2_TRACE.ERROR | LIBSSH2_TRACE.CONN | LIBSSH2_TRACE.AUTH | LIBSSH2_TRACE.KEX,
+        //            Console.WriteLine);
+        //        using (var socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp))
+        //        {
+        //            // TODO: hangs
+        //            //Assert.Fail();
+        //            //session.SetPreferredMethods(LIBSSH2_METHOD.KEX, new[] { "diffie-hellman-group-exchange-sha256" });
+        //            //socket.Connect(new EndPoint((await vm).);
+        //            //socket.Connect("35.189.245.72", 22);
+        //            //socket.Blocking = false;
+        //            //session.Blocking = false;
+        //            session.Handshake(socket);
+        //        }
+        //    }
+        //}
     }
 }

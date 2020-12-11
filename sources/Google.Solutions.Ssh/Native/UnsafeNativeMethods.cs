@@ -113,6 +113,20 @@ namespace Google.Solutions.Ssh.Native
 
 
         //---------------------------------------------------------------------
+        // Banner functions.
+        //---------------------------------------------------------------------
+
+        [DllImport(Libssh2)]
+        public static extern IntPtr libssh2_session_banner_get(
+            SshSessionHandle session);
+
+
+        [DllImport(Libssh2, CharSet = CharSet.Ansi)]
+        public static extern Int32 libssh2_session_banner_set(
+            SshSessionHandle session,
+            [MarshalAs(UnmanagedType.LPStr)] string banner);
+
+        //---------------------------------------------------------------------
         // Handshake functions.
         //---------------------------------------------------------------------
 
@@ -129,30 +143,21 @@ namespace Google.Solutions.Ssh.Native
         // Hostkey functions.
         //---------------------------------------------------------------------
 
-        [DllImport(Libssh2, CharSet = CharSet.Ansi)]
+        [DllImport(Libssh2)]
+        public static extern IntPtr libssh2_session_hostkey(
+            SshSessionHandle session,
+            out Int32 length);
+
+
+        [DllImport(Libssh2)]
         public static extern IntPtr libssh2_hostkey_hash(
             SshSessionHandle session,
             LIBSSH2_HOSTKEY_HASH hashType);
 
-        public static void Call(Func<Int32> function)
-        {
-            LIBSSH2_ERROR result = 0;
-            do
-            {
-                result = (LIBSSH2_ERROR) function();
-            }
-            while (result == LIBSSH2_ERROR.EAGAIN);
-
-            if (result != LIBSSH2_ERROR.NONE)
-            {
-                throw new SshNativeException(result);
-            }
-        }
-
         //---------------------------------------------------------------------
         // Tracing functions.
         //---------------------------------------------------------------------
-        
+
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         public delegate void TraceHandler(
             IntPtr sessionHandle,
@@ -183,8 +188,7 @@ namespace Google.Solutions.Ssh.Native
         [ReliabilityContract(Consistency.WillNotCorruptState, Cer.MayFail)]
         override protected bool ReleaseHandle()
         {
-            UnsafeNativeMethods.Call(
-                () => UnsafeNativeMethods.libssh2_session_free(handle));
+            UnsafeNativeMethods.libssh2_session_free(handle);
             return true;
         }
     }

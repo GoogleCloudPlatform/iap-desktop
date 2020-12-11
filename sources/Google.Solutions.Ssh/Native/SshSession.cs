@@ -9,6 +9,10 @@ using System.Threading.Tasks;
 
 namespace Google.Solutions.Ssh.Native
 {
+    /// <summary>
+    /// Wrapper for native libssh functions.
+    /// All methods are potentially blocking.
+    /// </summary>
     public sealed class SshSession : IDisposable
     {
         private readonly SshSessionHandle sessionHandle;
@@ -39,8 +43,12 @@ namespace Google.Solutions.Ssh.Native
         {
             try
             {
-                UnsafeNativeMethods.Call(
-                    () => UnsafeNativeMethods.libssh2_init(0));
+
+                var result = (LIBSSH2_ERROR)UnsafeNativeMethods.libssh2_init(0);
+                if (result != LIBSSH2_ERROR.NONE)
+                {
+                    throw new SshNativeException(result);
+                }
             }
             catch (EntryPointNotFoundException)
             {
@@ -58,23 +66,8 @@ namespace Google.Solutions.Ssh.Native
         }
 
         //---------------------------------------------------------------------
-        // Publics.
+        // Algorithms.
         //---------------------------------------------------------------------
-
-        public bool Blocking
-        {
-            get
-            {
-                return UnsafeNativeMethods.libssh2_session_get_blocking(
-                    this.sessionHandle) != 0;
-            }
-            set
-            {
-                UnsafeNativeMethods.libssh2_session_set_blocking(
-                    this.sessionHandle,
-                    value ? 1 : 0);
-            }
-        }
 
         public string[] GetSupportedAlgorithms(LIBSSH2_METHOD methodType)
         {
@@ -82,23 +75,29 @@ namespace Google.Solutions.Ssh.Native
                 this.sessionHandle,
                 methodType,
                 out IntPtr algorithmsPtrPtr);
-            if (count == 0 || algorithmsPtrPtr == IntPtr.Zero)
+            if (count > 0 && algorithmsPtrPtr != IntPtr.Zero)
+            {
+                var algorithmsPtrs = new IntPtr[count];
+                Marshal.Copy(algorithmsPtrPtr, algorithmsPtrs, 0, algorithmsPtrs.Length);
+
+                var algorithms = algorithmsPtrs
+                    .Select(ptr => Marshal.PtrToStringAnsi(ptr))
+                    .ToArray();
+
+                UnsafeNativeMethods.libssh2_free(
+                    this.sessionHandle,
+                    algorithmsPtrPtr);
+
+                return algorithms;
+            }
+            else if (count < 0)
+            {
+                throw new SshNativeException((LIBSSH2_ERROR)count);
+            }
+            else
             {
                 return Array.Empty<string>();
             }
-
-            var algorithmsPtrs = new IntPtr[count];
-            Marshal.Copy(algorithmsPtrPtr, algorithmsPtrs, 0, algorithmsPtrs.Length);
-
-            var algorithms = algorithmsPtrs
-                .Select(ptr => Marshal.PtrToStringAnsi(ptr))
-                .ToArray();
-
-            UnsafeNativeMethods.libssh2_free(
-                this.sessionHandle,
-                algorithmsPtrPtr);
-
-            return algorithms;
         }
 
         public string[] GetActiveAlgorithms(LIBSSH2_METHOD methodType)
@@ -124,34 +123,91 @@ namespace Google.Solutions.Ssh.Native
         {
             var prefs = string.Join(",", methods);
 
-            UnsafeNativeMethods.Call(
-                () => UnsafeNativeMethods.libssh2_session_method_pref(
-                    this.sessionHandle,
-                    methodType,
-                    prefs));
+            var result = (LIBSSH2_ERROR)UnsafeNativeMethods.libssh2_session_method_pref(
+                this.sessionHandle,
+                methodType,
+                prefs);
+            if (result != LIBSSH2_ERROR.NONE)
+            {
+                throw new SshNativeException(result);
+            }
         }
 
+        //---------------------------------------------------------------------
+        // Banner.
+        //---------------------------------------------------------------------
 
+        public void SetLocalBanner(string banner)
+        {
+            UnsafeNativeMethods.libssh2_session_banner_set(
+                   this.sessionHandle,
+                   banner);
+        }
 
+        public string GetRemoteBanner()
+        {
+            var bannerPtr = UnsafeNativeMethods.libssh2_session_banner_get(
+                this.sessionHandle);
+
+            return bannerPtr == IntPtr.Zero
+                ? null
+                : Marshal.PtrToStringAnsi(bannerPtr);
+        }
+
+        //---------------------------------------------------------------------
+        // Handshake.
+        //---------------------------------------------------------------------
 
         public void Handshake(Socket socket)
         {
-            UnsafeNativeMethods.Call(
-                () => UnsafeNativeMethods.libssh2_session_handshake(
-                    this.sessionHandle,
-                    socket.Handle));
+            var result = (LIBSSH2_ERROR)UnsafeNativeMethods.libssh2_session_handshake(
+                this.sessionHandle,
+                socket.Handle);
+            if (result != LIBSSH2_ERROR.NONE)
+            {
+                throw new SshNativeException(result);
+            }
         }
 
-        public byte[] GetHostKeyHash(LIBSSH2_HOSTKEY_HASH hashType)
+        public byte[] GetRemoteHostKeyHash(LIBSSH2_HOSTKEY_HASH hashType)
         {
             var hashPtr = UnsafeNativeMethods.libssh2_hostkey_hash(
                 this.sessionHandle, 
                 hashType);
 
-            var hash = new byte[HostKeyHashLength(hashType)];
-            Marshal.Copy(hashPtr, hash, 0, hash.Length);
-            return hash;
+            if (hashPtr == IntPtr.Zero)
+            {
+                return null;
+            }
+            else
+            {
+                var hash = new byte[HostKeyHashLength(hashType)];
+                Marshal.Copy(hashPtr, hash, 0, hash.Length);
+                return hash;
+            }
         }
+
+        public byte[] GetRemoteHostKey()
+        {
+            var keyPtr = UnsafeNativeMethods.libssh2_session_hostkey(
+                this.sessionHandle,
+                out var keyLength);
+
+            if (keyPtr == IntPtr.Zero || keyLength <= 0)
+            {
+                return null;
+            }
+            else
+            {
+                var key = new byte[keyLength];
+                Marshal.Copy(keyPtr, key, 0, keyLength);
+                return key;
+            }
+        }
+
+        //---------------------------------------------------------------------
+        // Tracing.
+        //---------------------------------------------------------------------
 
         public void SetTraceHandler(
             LIBSSH2_TRACE mask,
@@ -176,12 +232,13 @@ namespace Google.Solutions.Ssh.Native
 
         public void Dispose()
         {
-            UnsafeNativeMethods.Call(
-                () => UnsafeNativeMethods.libssh2_session_disconnect_ex(
-                    this.sessionHandle,
-                    0,
-                    null,
-                    null));
+            var result = (LIBSSH2_ERROR)UnsafeNativeMethods.libssh2_session_disconnect_ex(
+                this.sessionHandle,
+                0,
+                null,
+                null);
+
+            Debug.Assert(result == LIBSSH2_ERROR.NONE);
 
             this.sessionHandle.Dispose();
         }
