@@ -26,6 +26,39 @@ namespace Google.Solutions.Ssh.Test.Native
         }
 
         //---------------------------------------------------------------------
+        // Version.
+        //---------------------------------------------------------------------
+
+        [Test]
+        public void WhenRequriedVersionIsHigher_ThenVersionReturnsNull()
+        {
+            var version = SshSession.GetVersion(new Version(0xCC, 0xBB, 0xAA));
+            Assert.IsNull(version);
+        }
+
+        [Test]
+        public void WhenRequriedVersionIsLower_ThenVersionReturnsXxx()
+        {
+            var version = SshSession.GetVersion(new Version(1, 0, 0));
+            Assert.IsNotNull(version);
+        }
+
+        //---------------------------------------------------------------------
+        // Timeout.
+        //---------------------------------------------------------------------
+
+        [Test]
+        public void WhenTimeoutSet_ThenTimeoutReflectsValue()
+        {
+            using (var session = CreateSession())
+            {
+                session.Timeout = TimeSpan.FromSeconds(123);
+
+                Assert.AreEqual(TimeSpan.FromSeconds(123), session.Timeout);
+            }
+        }
+
+        //---------------------------------------------------------------------
         // Algorithms.
         //---------------------------------------------------------------------
 

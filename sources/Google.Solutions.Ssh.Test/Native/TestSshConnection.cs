@@ -3,6 +3,7 @@ using Google.Solutions.Common.Test.Integration;
 using Google.Solutions.Ssh.Native;
 using NUnit.Framework;
 using System;
+using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
 
@@ -38,6 +39,34 @@ namespace Google.Solutions.Ssh.Test.Native
             using (var connection = await session.ConnectAsync(endpoint))
             {
                 Assert.IsNotNull(connection.GetRemoteBanner());
+            }
+        }
+
+
+        //---------------------------------------------------------------------
+        // Algorithms.
+        //---------------------------------------------------------------------
+
+        [Test]
+        public async Task WhenConnected_ThenActiveAlgorithmsAreSet(
+            [LinuxInstance] ResourceTask<InstanceLocator> instanceLocatorTask)
+        {
+            var endpoint = new IPEndPoint(
+                await InstanceUtil.PublicIpAddressForInstanceAsync(await instanceLocatorTask),
+                22);
+            using (var session = CreateSession())
+            using (var connection = await session.ConnectAsync(endpoint))
+            {
+                Assert.IsNotNull(connection.GetActiveAlgorithms(LIBSSH2_METHOD.KEX     ));
+                Assert.IsNotNull(connection.GetActiveAlgorithms(LIBSSH2_METHOD.HOSTKEY ));
+                Assert.IsNotNull(connection.GetActiveAlgorithms(LIBSSH2_METHOD.CRYPT_CS));
+                Assert.IsNotNull(connection.GetActiveAlgorithms(LIBSSH2_METHOD.CRYPT_SC));
+                Assert.IsNotNull(connection.GetActiveAlgorithms(LIBSSH2_METHOD.MAC_CS  ));
+                Assert.IsNotNull(connection.GetActiveAlgorithms(LIBSSH2_METHOD.MAC_SC  ));
+                Assert.IsNotNull(connection.GetActiveAlgorithms(LIBSSH2_METHOD.COMP_CS ));
+                Assert.IsNotNull(connection.GetActiveAlgorithms(LIBSSH2_METHOD.COMP_SC ));
+                Assert.IsNotNull(connection.GetActiveAlgorithms(LIBSSH2_METHOD.LANG_CS ));
+                Assert.IsNotNull(connection.GetActiveAlgorithms(LIBSSH2_METHOD.LANG_SC ));
             }
         }
 
@@ -106,6 +135,23 @@ namespace Google.Solutions.Ssh.Test.Native
             using (var connection = await session.ConnectAsync(endpoint))
             {
                 Assert.IsFalse(connection.IsAuthenticated);
+            }
+        }
+
+        [Test]
+        public async Task WhenConnected_ThenGetAuthenticationMethodsReturnsPublicKey(
+            [LinuxInstance] ResourceTask<InstanceLocator> instanceLocatorTask)
+        {
+            var endpoint = new IPEndPoint(
+                await InstanceUtil.PublicIpAddressForInstanceAsync(await instanceLocatorTask),
+                22);
+            using (var session = CreateSession())
+            using (var connection = await session.ConnectAsync(endpoint))
+            {
+                var methods = connection.GetAuthenticationMethods(string.Empty);
+                Assert.IsNotNull(methods);
+                Assert.AreEqual(1, methods.Length);
+                Assert.AreEqual("publickey", methods.First());
             }
         }
     }

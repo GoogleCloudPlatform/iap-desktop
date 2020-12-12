@@ -19,6 +19,28 @@ namespace Google.Solutions.Ssh.Native
 
         internal SshSessionHandle Handle => this.sessionHandle;
 
+        private static IntPtr Alloc(
+            IntPtr size,
+            IntPtr context)
+        {
+            return Marshal.AllocHGlobal(size);
+        }
+
+        private static IntPtr Realloc(
+            IntPtr ptr,
+            IntPtr size,
+            IntPtr context)
+        {
+            return Marshal.ReAllocHGlobal(ptr, size);
+        }
+
+        private static void Free(
+            IntPtr ptr,
+            IntPtr context)
+        {
+            Marshal.FreeHGlobal(ptr);
+        }
+
         //---------------------------------------------------------------------
         // Ctor.
         //---------------------------------------------------------------------
@@ -27,7 +49,6 @@ namespace Google.Solutions.Ssh.Native
         {
             try
             {
-
                 var result = (LIBSSH2_ERROR)UnsafeNativeMethods.libssh2_init(0);
                 if (result != LIBSSH2_ERROR.NONE)
                 {
@@ -43,10 +64,22 @@ namespace Google.Solutions.Ssh.Native
         public SshSession()
         {
             this.sessionHandle = UnsafeNativeMethods.libssh2_session_init_ex(
-                IntPtr.Zero,
-                IntPtr.Zero,
-                IntPtr.Zero,
+                Alloc,
+                Free,
+                Realloc,
                 IntPtr.Zero);
+        }
+
+        public static string GetVersion(Version requiredVersion)
+        {
+            var requiredVersionEncoded = 
+                (requiredVersion.Major << 16) |
+                (requiredVersion.Minor << 8) |
+                (requiredVersion.Build);
+
+            return Marshal.PtrToStringAnsi(
+                UnsafeNativeMethods.libssh2_version(
+                    requiredVersionEncoded));
         }
 
         //---------------------------------------------------------------------
@@ -81,23 +114,6 @@ namespace Google.Solutions.Ssh.Native
             else
             {
                 return Array.Empty<string>();
-            }
-        }
-
-        public string[] GetActiveAlgorithms(LIBSSH2_METHOD methodType)
-        {
-            var stringPtr = UnsafeNativeMethods.libssh2_session_methods(
-                this.sessionHandle,
-                methodType);
-
-            if (stringPtr == IntPtr.Zero)
-            {
-                return Array.Empty<string>();
-            }
-            else
-            {
-                var algorithmList = Marshal.PtrToStringAnsi(stringPtr);
-                return algorithmList.Split(',').ToArray();
             }
         }
 
@@ -138,13 +154,13 @@ namespace Google.Solutions.Ssh.Native
             {
                 var millis = UnsafeNativeMethods.libssh2_session_get_timeout(
                     this.sessionHandle);
-                return TimeSpan.FromMinutes(millis);
+                return TimeSpan.FromMilliseconds(millis);
             }
             set
             {
                 UnsafeNativeMethods.libssh2_session_set_timeout(
                     this.sessionHandle,
-                    (long)value.TotalMilliseconds);
+                    (int)value.TotalMilliseconds);
             }
         }
 
@@ -191,8 +207,8 @@ namespace Google.Solutions.Ssh.Native
                 {
                     Debug.Assert(contextPtr == IntPtr.Zero);
 
-                    var data = new byte[length];
-                    Marshal.Copy(dataPtr, data, 0, length);
+                    var data = new byte[length.ToInt32()];
+                    Marshal.Copy(dataPtr, data, 0, length.ToInt32());
 
                     handler(Encoding.ASCII.GetString(data));
                 });

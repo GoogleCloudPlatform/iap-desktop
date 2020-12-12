@@ -64,17 +64,36 @@ namespace Google.Solutions.Ssh.Native
         [DllImport(Libssh2)]
         public static extern Int32 libssh2_init(Int32 flags);
 
-        
+        [DllImport(Libssh2)]
+        public static extern IntPtr libssh2_version(
+            int requiredVersion);
+
         //---------------------------------------------------------------------
         // Session functions.
         //---------------------------------------------------------------------
 
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+        public delegate IntPtr Alloc(
+            IntPtr size,
+            IntPtr context);
+
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+        public delegate IntPtr Realloc(
+            IntPtr ptr,
+            IntPtr size,
+            IntPtr context);
+
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+        public delegate void Free(
+            IntPtr ptr,
+            IntPtr context);
+
         [DllImport(Libssh2)]
         public static extern SshSessionHandle libssh2_session_init_ex(
-            IntPtr alloc,
-            IntPtr free,
-            IntPtr realloc,
-            IntPtr userData);
+            Alloc alloc,
+            Free free,
+            Realloc realloc,
+            IntPtr context);
 
         [DllImport(Libssh2)]
         public static extern Int32 libssh2_free(
@@ -157,7 +176,7 @@ namespace Google.Solutions.Ssh.Native
         [DllImport(Libssh2)]
         public static extern IntPtr libssh2_session_hostkey(
             SshSessionHandle session,
-            out Int32 length,
+            out IntPtr length,
             out LIBSSH2_HOSTKEY_TYPE type);
 
 
@@ -171,21 +190,49 @@ namespace Google.Solutions.Ssh.Native
         //---------------------------------------------------------------------
 
         [DllImport(Libssh2)]
-        public static extern long libssh2_session_get_timeout(
+        public static extern int libssh2_session_get_timeout(
             SshSessionHandle session);
 
         [DllImport(Libssh2)]
         public static extern void libssh2_session_set_timeout(
             SshSessionHandle session,
-            long timeout);
+            int timeout);
 
         //---------------------------------------------------------------------
         // User auth.
+        //
+        // NB. The documentation on libssh2_userauth_publickey is extremely sparse.
+        // For a usage example, see:
+        // https://github.com/stuntbadger/GuacamoleServer/blob/master/src/common-ssh/ssh.c
         //---------------------------------------------------------------------
 
         [DllImport(Libssh2)]
         public static extern Int32 libssh2_userauth_authenticated(
             SshSessionHandle session);
+
+        [DllImport(Libssh2, CharSet = CharSet.Ansi)]
+        public static extern IntPtr libssh2_userauth_list(
+            SshSessionHandle session,
+            [MarshalAs(UnmanagedType.LPStr)] string username,
+            int usernameLength);
+
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+        public delegate int SignCallback(
+            SshSessionHandle session, 
+            out IntPtr signature, 
+            out IntPtr signatureLength,
+            IntPtr data, 
+            IntPtr dataLength, 
+            IntPtr context);
+
+        [DllImport(Libssh2, CharSet = CharSet.Ansi)]
+        public static extern int libssh2_userauth_publickey(
+            SshSessionHandle session,
+            [MarshalAs(UnmanagedType.LPStr)] string username,
+            [MarshalAs(UnmanagedType.LPStr)] string pemPublicKey,
+            IntPtr pemPublicKeyLength,
+            SignCallback callback,
+            IntPtr context);
 
         //---------------------------------------------------------------------
         // Tracing functions.
@@ -196,7 +243,7 @@ namespace Google.Solutions.Ssh.Native
             IntPtr sessionHandle,
             IntPtr context,
             IntPtr data,
-            Int32 length);
+            IntPtr length);
 
         [DllImport(Libssh2)]
         public static extern void libssh2_trace(
