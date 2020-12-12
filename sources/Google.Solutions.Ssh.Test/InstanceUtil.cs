@@ -4,6 +4,7 @@ using Google.Solutions.Common.Util;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -11,7 +12,7 @@ namespace Google.Solutions.Ssh.Test
 {
     internal static class InstanceUtil
     {
-        public static async Task<string> PublicIpAddressForInstanceAsync(InstanceLocator instanceLocator)
+        public static async Task<IPAddress> PublicIpAddressForInstanceAsync(InstanceLocator instanceLocator)
         {
             using (var service = TestProject.CreateComputeService())
             {
@@ -21,7 +22,7 @@ namespace Google.Solutions.Ssh.Test
                             instanceLocator.Zone,
                             instanceLocator.Name)
                     .ExecuteAsync();
-                return instance
+                var ip = instance
                     .NetworkInterfaces
                     .EnsureNotNull()
                     .Where(nic => nic.AccessConfigs != null)
@@ -30,6 +31,7 @@ namespace Google.Solutions.Ssh.Test
                     .Where(accessConfig => accessConfig.Type == "ONE_TO_ONE_NAT")
                     .Select(accessConfig => accessConfig.NatIP)
                     .FirstOrDefault();
+                return IPAddress.Parse(ip);
             }
         }
     }

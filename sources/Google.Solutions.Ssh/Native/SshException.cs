@@ -30,6 +30,7 @@ namespace Google.Solutions.Ssh.Native
                 { LIBSSH2_ERROR.BAD_USE, "Invalid address of algs" },
                 { LIBSSH2_ERROR.ALLOC, "Allocation of memory failed" },
                 { LIBSSH2_ERROR.METHOD_NOT_SUPPORTED, "The requested method is not supported" },
+                { LIBSSH2_ERROR.TIMEOUT, "The operation timed out" },
             };
 
         public LIBSSH2_ERROR ErrorCode { get; }

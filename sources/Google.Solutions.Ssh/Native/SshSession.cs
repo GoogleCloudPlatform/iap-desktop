@@ -1,7 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Net;
 using System.Net.Sockets;
 using System.Runtime.InteropServices;
 using System.Text;
@@ -10,30 +10,14 @@ using System.Threading.Tasks;
 namespace Google.Solutions.Ssh.Native
 {
     /// <summary>
-    /// Wrapper for native libssh functions.
-    /// All methods are potentially blocking.
+    /// An (unconnected) Libssh2 session.
     /// </summary>
-    public sealed class SshSession : IDisposable
+    public class SshSession : IDisposable
     {
         private readonly SshSessionHandle sessionHandle;
+        private bool disposed = false;
 
-        private static int HostKeyHashLength(LIBSSH2_HOSTKEY_HASH hashType)
-        {
-            switch (hashType)
-            {
-                case LIBSSH2_HOSTKEY_HASH.MD5:
-                    return 16;
-
-                case LIBSSH2_HOSTKEY_HASH.SHA1:
-                    return 16;
-
-                case LIBSSH2_HOSTKEY_HASH.SHA256:
-                    return 32;
-
-                default:
-                    throw new ArgumentException(nameof(hashType));
-            }
-        }
+        internal SshSessionHandle Handle => this.sessionHandle;
 
         //---------------------------------------------------------------------
         // Ctor.
@@ -144,85 +128,52 @@ namespace Google.Solutions.Ssh.Native
                 banner);
         }
 
-        public string GetRemoteBanner()
-        {
-            var bannerPtr = UnsafeNativeMethods.libssh2_session_banner_get(
-                this.sessionHandle);
+        //---------------------------------------------------------------------
+        // Timeout.
+        //---------------------------------------------------------------------
 
-            return bannerPtr == IntPtr.Zero
-                ? null
-                : Marshal.PtrToStringAnsi(bannerPtr);
+        public TimeSpan Timeout
+        {
+            get
+            {
+                var millis = UnsafeNativeMethods.libssh2_session_get_timeout(
+                    this.sessionHandle);
+                return TimeSpan.FromMinutes(millis);
+            }
+            set
+            {
+                UnsafeNativeMethods.libssh2_session_set_timeout(
+                    this.sessionHandle,
+                    (long)value.TotalMilliseconds);
+            }
         }
 
         //---------------------------------------------------------------------
         // Handshake.
         //---------------------------------------------------------------------
 
-        public Task HandshakeAsync(Socket socket)
+        public Task<SshConnection> ConnectAsync(EndPoint remoteEndpoint)
         {
             return Task.Run(() =>
             {
+                var socket = new Socket(
+                    AddressFamily.InterNetwork,
+                    SocketType.Stream,
+                    ProtocolType.Tcp);
+
+                socket.Connect(remoteEndpoint);
+
                 var result = (LIBSSH2_ERROR)UnsafeNativeMethods.libssh2_session_handshake(
                     this.sessionHandle,
                     socket.Handle);
                 if (result != LIBSSH2_ERROR.NONE)
                 {
+                    socket.Close();
                     throw new SshNativeException(result);
                 }
+
+                return new SshConnection(this, socket);
             });
-        }
-
-        public byte[] GetRemoteHostKeyHash(LIBSSH2_HOSTKEY_HASH hashType)
-        {
-            var hashPtr = UnsafeNativeMethods.libssh2_hostkey_hash(
-                this.sessionHandle, 
-                hashType);
-
-            if (hashPtr == IntPtr.Zero)
-            {
-                return null;
-            }
-            else
-            {
-                var hash = new byte[HostKeyHashLength(hashType)];
-                Marshal.Copy(hashPtr, hash, 0, hash.Length);
-                return hash;
-            }
-        }
-
-        public byte[] GetRemoteHostKey()
-        {
-            var keyPtr = UnsafeNativeMethods.libssh2_session_hostkey(
-                this.sessionHandle,
-                out var keyLength,
-                out var _);
-
-            if (keyPtr == IntPtr.Zero || keyLength <= 0)
-            {
-                return null;
-            }
-            else
-            {
-                var key = new byte[keyLength];
-                Marshal.Copy(keyPtr, key, 0, keyLength);
-                return key;
-            }
-        }
-        public LIBSSH2_HOSTKEY_TYPE GetRemoteHostKeyTyoe()
-        {
-            var keyPtr = UnsafeNativeMethods.libssh2_session_hostkey(
-                this.sessionHandle,
-                out var _,
-                out var type);
-
-            if (keyPtr == IntPtr.Zero)
-            {
-                return LIBSSH2_HOSTKEY_TYPE.UNKNOWN;
-            }
-            else
-            {
-                return type;
-            }
         }
 
         //---------------------------------------------------------------------
@@ -250,17 +201,36 @@ namespace Google.Solutions.Ssh.Native
                 mask);
         }
 
+        //---------------------------------------------------------------------
+        // Dispose.
+        //---------------------------------------------------------------------
+
         public void Dispose()
         {
-            var result = (LIBSSH2_ERROR)UnsafeNativeMethods.libssh2_session_disconnect_ex(
-                this.sessionHandle,
-                0,
-                null,
-                null);
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
 
-            Debug.Assert(result == LIBSSH2_ERROR.NONE);
+        // Protected implementation of Dispose pattern.
+        protected virtual void Dispose(bool disposing)
+        {
+            if (this.disposed)
+            {
+                return;
+            }
 
-            this.sessionHandle.Dispose();
+            if (disposing)
+            {
+                var result = (LIBSSH2_ERROR)UnsafeNativeMethods.libssh2_session_disconnect_ex(
+                    this.sessionHandle,
+                    0,
+                    null,
+                    null);
+
+                Debug.Assert(result == LIBSSH2_ERROR.NONE);
+
+                this.sessionHandle.Dispose();
+            }
         }
     }
 }

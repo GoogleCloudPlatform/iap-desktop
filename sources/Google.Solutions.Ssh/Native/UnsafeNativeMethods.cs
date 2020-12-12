@@ -167,6 +167,27 @@ namespace Google.Solutions.Ssh.Native
             LIBSSH2_HOSTKEY_HASH hashType);
 
         //---------------------------------------------------------------------
+        // Timeout.
+        //---------------------------------------------------------------------
+
+        [DllImport(Libssh2)]
+        public static extern long libssh2_session_get_timeout(
+            SshSessionHandle session);
+
+        [DllImport(Libssh2)]
+        public static extern void libssh2_session_set_timeout(
+            SshSessionHandle session,
+            long timeout);
+
+        //---------------------------------------------------------------------
+        // User auth.
+        //---------------------------------------------------------------------
+
+        [DllImport(Libssh2)]
+        public static extern Int32 libssh2_userauth_authenticated(
+            SshSessionHandle session);
+
+        //---------------------------------------------------------------------
         // Tracing functions.
         //---------------------------------------------------------------------
 
