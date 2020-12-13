@@ -176,45 +176,54 @@ namespace Google.Solutions.Ssh.Native
         public Task Authenticate(
             string username,
             RSACng key)
-            => Authenticate(
-                username, 
-                key.ToSshPublicKey());
-
-        public Task Authenticate(
-            string username,
-            byte[] publicKey)
         {
+            //
+            // NB. The callbacks very sparsely documented in the libssh2 sources
+            // and docs. For sample usage, the Guacamole sources can be helpful, cf.
+            // https://github.com/stuntbadger/GuacamoleServer/blob/a06ae0743b0609cde0ceccc7ed136b0d71009105/src/common-ssh/ssh.c#L335
+            //
+
             int Sign(
                 IntPtr session,
-                out IntPtr signature,
+                out IntPtr signaturePtr,
                 out IntPtr signatureLength,
-                IntPtr data,
+                IntPtr dataPtr,
                 IntPtr dataLength,
                 IntPtr context)
             {
                 Debug.Assert(context == IntPtr.Zero);
                 Debug.Assert(session == this.session.Handle.DangerousGetHandle());
+                
+                //
+                // Copy data to managed buffer and create signature.
+                //
+                var data = new byte[dataLength.ToInt32()];
+                Marshal.Copy(dataPtr, data, 0, data.Length);
 
-                signature = IntPtr.Zero;
-                signatureLength = IntPtr.Zero;
+                var signature = key.SignData(
+                    data,
+                    HashAlgorithmName.SHA1,     // TODO: always use SHA-1?
+                    RSASignaturePadding.Pkcs1); // TODO: always use PKCS#1?
 
-                // NB. libssh2 frees the data using the allocator passed in
-                // libssh2_session_init_ex.
+                //
+                // Copy data back to a buffer that libssh2 can free using
+                // the allocator specified in libssh2_session_init_ex.
+                //
 
-                return (int)LIBSSH2_ERROR.INVAL;
+                signatureLength = new IntPtr(signature.Length);
+                signaturePtr = this.session.AllocDelegate(signatureLength, IntPtr.Zero);
+                Marshal.Copy(signature, 0, signaturePtr, signature.Length);
+                
+                return (int)LIBSSH2_ERROR.NONE;
             }
 
-            // NB. The public key is expected to be in OpenSSH format, not PEM.
-            // cf. https://tools.ietf.org/html/rfc4253#section-6.6
-
-
-            // TODO: Format public key as ssh-rda/ssh-dsa,
-            // see https://github.com/stuntbadger/GuacamoleServer/blob/a06ae0743b0609cde0ceccc7ed136b0d71009105/src/common-ssh/key.c#L86
-            // Example: https://blog.oddbit.com/post/2011-05-08-converting-openssh-public-keys/
-
-            //return Task.Run(() =>
+            return Task.Run(() =>
             {
-                // Debug.Assert(false);
+                //
+                // NB. The public key must be passed in OpenSSH format, not PEM.
+                // cf. https://tools.ietf.org/html/rfc4253#section-6.6
+                //
+                var publicKey = key.ToSshPublicKey();
                 var result = (LIBSSH2_ERROR)UnsafeNativeMethods.libssh2_userauth_publickey(
                     this.session.Handle,
                     username,
@@ -226,9 +235,7 @@ namespace Google.Solutions.Ssh.Native
                 {
                     throw new SshNativeException(result);
                 }
-            } //);
-
-            return Task.CompletedTask;
+            });
         }
 
         //---------------------------------------------------------------------

@@ -65,8 +65,8 @@ namespace Google.Solutions.Ssh.Test
                         {
                             new Metadata.ItemsData()
                             {
-                                Key = username,
-                                Value = $"ssh-rsa {rsaPublicKey} {username}"
+                                Key = "ssh-keys",
+                                Value = $"{username}:ssh-rsa {rsaPublicKey} {username}"
                             }
                         }
                     },

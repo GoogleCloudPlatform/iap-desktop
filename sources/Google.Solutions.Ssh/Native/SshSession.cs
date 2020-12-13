@@ -19,9 +19,9 @@ namespace Google.Solutions.Ssh.Native
 
         internal SshSessionHandle Handle => this.sessionHandle;
 
-        private readonly UnsafeNativeMethods.Alloc AllocDelegate;
-        private readonly UnsafeNativeMethods.Free FreeDelegate;
-        private readonly UnsafeNativeMethods.Realloc ReallocDelegate;
+        internal readonly UnsafeNativeMethods.Alloc AllocDelegate;
+        internal readonly UnsafeNativeMethods.Free FreeDelegate;
+        internal readonly UnsafeNativeMethods.Realloc ReallocDelegate;
 
         //---------------------------------------------------------------------
         // Ctor.

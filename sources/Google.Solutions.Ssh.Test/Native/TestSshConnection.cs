@@ -156,21 +156,21 @@ namespace Google.Solutions.Ssh.Test.Native
             }
         }
 
-        [Test]
-        public async Task WhenPublicKeyInvalid_ThenAuthenticateThrowsPublicKeyUnverified(
-            [LinuxInstance] ResourceTask<InstanceLocator> instanceLocatorTask)
-        {
-            var endpoint = new IPEndPoint(
-                await InstanceUtil.PublicIpAddressForInstanceAsync(await instanceLocatorTask),
-                22);
-            using (var session = CreateSession())
-            using (var connection = await session.ConnectAsync(endpoint))
-            {
-                SshAssert.ThrowsNativeExceptionWithError(
-                    LIBSSH2_ERROR.PUBLICKEY_UNVERIFIED,
-                    () => connection.Authenticate("bob", new byte[] { 1, 2, 3, 4, 5, 6 }).Wait());
-            }
-        }
+        //[Test]
+        //public async Task WhenPublicKeyInvalid_ThenAuthenticateThrowsPublicKeyUnverified(
+        //    [LinuxInstance] ResourceTask<InstanceLocator> instanceLocatorTask)
+        //{
+        //    var endpoint = new IPEndPoint(
+        //        await InstanceUtil.PublicIpAddressForInstanceAsync(await instanceLocatorTask),
+        //        22);
+        //    using (var session = CreateSession())
+        //    using (var connection = await session.ConnectAsync(endpoint))
+        //    {
+        //        SshAssert.ThrowsNativeExceptionWithError(
+        //            LIBSSH2_ERROR.PUBLICKEY_UNVERIFIED,
+        //            () => connection.Authenticate("bob", new byte[] { 1, 2, 3, 4, 5, 6 }).Wait());
+        //    }
+        //}
 
         [Test]
         public async Task WhenPublicKeyValidButUnrecognized_ThenAuthenticateThrowsAuthenticationFailed(
@@ -190,7 +190,7 @@ namespace Google.Solutions.Ssh.Test.Native
         }
 
         [Test]
-        public async Task WhenPublicKeyValidAndKnownFromMetadata_ThenAuthenticateThrowsAuthenticationFailed(
+        public async Task WhenPublicKeyValidAndKnownFromMetadata_ThenAuthenticateThrowsAuthenticationSucceeds(
             [LinuxInstance] ResourceTask<InstanceLocator> instanceLocatorTask)
         {
             var endpoint = new IPEndPoint(
