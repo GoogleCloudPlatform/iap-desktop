@@ -237,13 +237,11 @@ namespace Google.Solutions.Ssh.Native
 
             if (disposing)
             {
-                var result = (LIBSSH2_ERROR)UnsafeNativeMethods.libssh2_session_disconnect_ex(
+                UnsafeNativeMethods.libssh2_trace_sethandler(
                     this.sessionHandle,
-                    0,
-                    null,
+                    IntPtr.Zero,
                     null);
 
-                Debug.Assert(result == LIBSSH2_ERROR.NONE);
 
                 this.sessionHandle.Dispose();
             }

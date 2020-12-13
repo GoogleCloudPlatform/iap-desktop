@@ -1,8 +1,11 @@
-﻿using System;
+﻿using Google.Solutions.Ssh.Cryptography;
+using System;
 using System.Diagnostics;
 using System.Linq;
 using System.Net.Sockets;
 using System.Runtime.InteropServices;
+using System.Security.Cryptography;
+using System.Threading.Tasks;
 
 namespace Google.Solutions.Ssh.Native
 {
@@ -170,12 +173,19 @@ namespace Google.Solutions.Ssh.Native
             }
         }
 
-        public void Authenticate(
+        public Task Authenticate(
             string username,
-            string pemPublicKey)
+            RSACng key)
+            => Authenticate(
+                username, 
+                key.ToSshPublicKey());
+
+        public Task Authenticate(
+            string username,
+            byte[] publicKey)
         {
             int Sign(
-                SshSessionHandle session,
+                IntPtr session,
                 out IntPtr signature,
                 out IntPtr signatureLength,
                 IntPtr data,
@@ -183,8 +193,7 @@ namespace Google.Solutions.Ssh.Native
                 IntPtr context)
             {
                 Debug.Assert(context == IntPtr.Zero);
-                Debug.Assert(session.DangerousGetHandle() == 
-                    this.session.Handle.DangerousGetHandle());
+                Debug.Assert(session == this.session.Handle.DangerousGetHandle());
 
                 signature = IntPtr.Zero;
                 signatureLength = IntPtr.Zero;
@@ -192,24 +201,31 @@ namespace Google.Solutions.Ssh.Native
                 // NB. libssh2 frees the data using the allocator passed in
                 // libssh2_session_init_ex.
 
-                return (int)LIBSSH2_ERROR.NONE;
+                return (int)LIBSSH2_ERROR.INVAL;
             }
+
+            // NB. The public key is expected to be in OpenSSH format, not PEM.
+            // cf. https://tools.ietf.org/html/rfc4253#section-6.6
 
 
             // TODO: Format public key as ssh-rda/ssh-dsa,
             // see https://github.com/stuntbadger/GuacamoleServer/blob/a06ae0743b0609cde0ceccc7ed136b0d71009105/src/common-ssh/key.c#L86
+            // Example: https://blog.oddbit.com/post/2011-05-08-converting-openssh-public-keys/
 
-            var result = (LIBSSH2_ERROR)UnsafeNativeMethods.libssh2_userauth_publickey(
-                this.session.Handle,
-                username,
-                pemPublicKey,
-                new IntPtr(pemPublicKey.Length),
-                Sign,
-                IntPtr.Zero);
-            if (result != LIBSSH2_ERROR.NONE)
+            return Task.Run(() =>
             {
-                throw new SshNativeException(result);
-            }
+                var result = (LIBSSH2_ERROR)UnsafeNativeMethods.libssh2_userauth_publickey(
+                    this.session.Handle,
+                    username,
+                    publicKey,
+                    new IntPtr(publicKey.Length),
+                    Sign,
+                    IntPtr.Zero);
+                if (result != LIBSSH2_ERROR.NONE)
+                {
+                    throw new SshNativeException(result);
+                }
+            });
         }
 
         //---------------------------------------------------------------------
@@ -232,6 +248,13 @@ namespace Google.Solutions.Ssh.Native
 
             if (disposing)
             {
+                var result = (LIBSSH2_ERROR)UnsafeNativeMethods.libssh2_session_disconnect_ex(
+                    this.session.Handle,
+                    SSH_DISCONNECT.BY_APPLICATION,
+                    null,
+                    null);
+
+                Debug.Assert(result == LIBSSH2_ERROR.NONE);
                 this.socket.Dispose();
             }
         }

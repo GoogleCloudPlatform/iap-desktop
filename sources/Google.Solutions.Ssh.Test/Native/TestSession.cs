@@ -201,16 +201,9 @@ namespace Google.Solutions.Ssh.Test.Native
                 7);
             using (var session = CreateSession())
             {
-                try
-                {
-                    await session.ConnectAsync(endpoint);
-                    Assert.Fail("Expected exception");
-                }
-                catch (Exception e)
-                {
-                    Assert.IsInstanceOf(typeof(SshNativeException), e);
-                    Assert.AreEqual(LIBSSH2_ERROR.TIMEOUT, ((SshNativeException)e).ErrorCode);
-                }
+                SshAssert.ThrowsNativeExceptionWithError(
+                    LIBSSH2_ERROR.TIMEOUT,
+                    () => session.ConnectAsync(endpoint).Wait());
             }
         }
     }

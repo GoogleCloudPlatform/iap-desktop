@@ -57,6 +57,25 @@ namespace Google.Solutions.Ssh.Native
         ED25519 = 6
     }
 
+    public enum SSH_DISCONNECT : Int32
+    {
+        HOST_NOT_ALLOWED_TO_CONNECT = 1,
+        PROTOCOL_ERROR = 2,
+        KEY_EXCHANGE_FAILED = 3,
+        RESERVED = 4,
+        MAC_ERROR = 5,
+        COMPRESSION_ERROR = 6,
+        SERVICE_NOT_AVAILABLE = 7,
+        PROTOCOL_VERSION_NOT_SUPPORTED = 8,
+        HOST_KEY_NOT_VERIFIABLE = 9,
+        CONNECTION_LOST = 10,
+        BY_APPLICATION = 11,
+        TOO_MANY_CONNECTIONS = 12,
+        AUTH_CANCELLED_BY_USER = 13,
+        NO_MORE_AUTH_METHODS_AVAILABLE = 14,
+        ILLEGAL_USER_NAME = 15
+    }
+
     internal static class UnsafeNativeMethods
     {
         private const string Libssh2 = "libssh2.dll";
@@ -107,7 +126,7 @@ namespace Google.Solutions.Ssh.Native
         [DllImport(Libssh2, CharSet = CharSet.Ansi)]
         public static extern Int32 libssh2_session_disconnect_ex(
             SshSessionHandle session,
-            Int32 reason,
+            SSH_DISCONNECT reason,
             [MarshalAs(UnmanagedType.LPStr)] string description,
             [MarshalAs(UnmanagedType.LPStr)] string lang);
 
@@ -218,7 +237,7 @@ namespace Google.Solutions.Ssh.Native
 
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         public delegate int SignCallback(
-            SshSessionHandle session, 
+            IntPtr session, 
             out IntPtr signature, 
             out IntPtr signatureLength,
             IntPtr data, 
@@ -229,7 +248,7 @@ namespace Google.Solutions.Ssh.Native
         public static extern int libssh2_userauth_publickey(
             SshSessionHandle session,
             [MarshalAs(UnmanagedType.LPStr)] string username,
-            [MarshalAs(UnmanagedType.LPStr)] string pemPublicKey,
+            [MarshalAs(UnmanagedType.LPArray)] byte[] publicKey,
             IntPtr pemPublicKeyLength,
             SignCallback callback,
             IntPtr context);

@@ -5,6 +5,7 @@ using NUnit.Framework;
 using System;
 using System.Linq;
 using System.Net;
+using System.Security.Cryptography;
 using System.Threading.Tasks;
 
 namespace Google.Solutions.Ssh.Test.Native
@@ -152,6 +153,58 @@ namespace Google.Solutions.Ssh.Test.Native
                 Assert.IsNotNull(methods);
                 Assert.AreEqual(1, methods.Length);
                 Assert.AreEqual("publickey", methods.First());
+            }
+        }
+
+        [Test]
+        public async Task WhenPublicKeyInvalid_ThenAuthenticateThrowsPublicKeyUnverified(
+            [LinuxInstance] ResourceTask<InstanceLocator> instanceLocatorTask)
+        {
+            var endpoint = new IPEndPoint(
+                await InstanceUtil.PublicIpAddressForInstanceAsync(await instanceLocatorTask),
+                22);
+            using (var session = CreateSession())
+            using (var connection = await session.ConnectAsync(endpoint))
+            {
+                SshAssert.ThrowsNativeExceptionWithError(
+                    LIBSSH2_ERROR.PUBLICKEY_UNVERIFIED,
+                    () => connection.Authenticate("bob", new byte[] { 1, 2, 3, 4, 5, 6 }).Wait());
+            }
+        }
+
+        [Test]
+        public async Task WhenPublicKeyValidButUnrecognized_ThenAuthenticateThrowsAuthenticationFailed(
+            [LinuxInstance] ResourceTask<InstanceLocator> instanceLocatorTask)
+        {
+            var endpoint = new IPEndPoint(
+                await InstanceUtil.PublicIpAddressForInstanceAsync(await instanceLocatorTask),
+                22);
+            using (var session = CreateSession())
+            using (var connection = await session.ConnectAsync(endpoint))
+            using (var key = new RSACng())
+            {
+                SshAssert.ThrowsNativeExceptionWithError(
+                    LIBSSH2_ERROR.AUTHENTICATION_FAILED,
+                    () => connection.Authenticate("invaliduser", key).Wait());
+            }
+        }
+
+        [Test]
+        public async Task WhenPublicKeyValidAndKnownFromMetadata_ThenAuthenticateThrowsAuthenticationFailed(
+            [LinuxInstance] ResourceTask<InstanceLocator> instanceLocatorTask)
+        {
+            var endpoint = new IPEndPoint(
+                await InstanceUtil.PublicIpAddressForInstanceAsync(await instanceLocatorTask),
+                22);
+            using (var session = CreateSession())
+            using (var connection = await session.ConnectAsync(endpoint))
+            using (var key = new RSACng())
+            {
+                await InstanceUtil.AddPublicKeyToMetadata(
+                    await instanceLocatorTask,
+                    "testuser",
+                    key);
+                await connection.Authenticate("testuser", key);
             }
         }
     }

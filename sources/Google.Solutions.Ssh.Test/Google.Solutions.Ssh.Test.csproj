@@ -76,6 +76,7 @@
   <ItemGroup>
     <Compile Include="InstanceUtil.cs" />
     <Compile Include="Native\InitializeScripts.cs" />
+    <Compile Include="Native\SshAssert.cs" />
     <Compile Include="Native\TestSshConnection.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Native\TestSession.cs" />

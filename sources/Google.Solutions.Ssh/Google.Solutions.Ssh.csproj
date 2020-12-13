@@ -43,6 +43,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Cryptography\RSACngExtensions.cs" />
     <Compile Include="Native\SshConnection.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Native\SshException.cs" />
