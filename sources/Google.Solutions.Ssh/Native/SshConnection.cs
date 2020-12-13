@@ -212,8 +212,9 @@ namespace Google.Solutions.Ssh.Native
             // see https://github.com/stuntbadger/GuacamoleServer/blob/a06ae0743b0609cde0ceccc7ed136b0d71009105/src/common-ssh/key.c#L86
             // Example: https://blog.oddbit.com/post/2011-05-08-converting-openssh-public-keys/
 
-            return Task.Run(() =>
+            //return Task.Run(() =>
             {
+                // Debug.Assert(false);
                 var result = (LIBSSH2_ERROR)UnsafeNativeMethods.libssh2_userauth_publickey(
                     this.session.Handle,
                     username,
@@ -225,7 +226,9 @@ namespace Google.Solutions.Ssh.Native
                 {
                     throw new SshNativeException(result);
                 }
-            });
+            } //);
+
+            return Task.CompletedTask;
         }
 
         //---------------------------------------------------------------------

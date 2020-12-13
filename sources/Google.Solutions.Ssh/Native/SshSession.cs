@@ -19,27 +19,9 @@ namespace Google.Solutions.Ssh.Native
 
         internal SshSessionHandle Handle => this.sessionHandle;
 
-        private static IntPtr Alloc(
-            IntPtr size,
-            IntPtr context)
-        {
-            return Marshal.AllocHGlobal(size);
-        }
-
-        private static IntPtr Realloc(
-            IntPtr ptr,
-            IntPtr size,
-            IntPtr context)
-        {
-            return Marshal.ReAllocHGlobal(ptr, size);
-        }
-
-        private static void Free(
-            IntPtr ptr,
-            IntPtr context)
-        {
-            Marshal.FreeHGlobal(ptr);
-        }
+        private readonly UnsafeNativeMethods.Alloc AllocDelegate;
+        private readonly UnsafeNativeMethods.Free FreeDelegate;
+        private readonly UnsafeNativeMethods.Realloc ReallocDelegate;
 
         //---------------------------------------------------------------------
         // Ctor.
@@ -63,10 +45,18 @@ namespace Google.Solutions.Ssh.Native
 
         public SshSession()
         {
+            // Store these delegates in fields to prevent them from being
+            // garbage collected. Otherwise callbacks will suddenly
+            // start hitting GC'ed memory.
+
+            this.AllocDelegate = (size, context) => Marshal.AllocHGlobal(size);
+            this.ReallocDelegate = (ptr, size, context) => Marshal.ReAllocHGlobal(ptr, size);
+            this.FreeDelegate = (ptr, context) => Marshal.FreeHGlobal(ptr);
+
             this.sessionHandle = UnsafeNativeMethods.libssh2_session_init_ex(
-                Alloc,
-                Free,
-                Realloc,
+                this.AllocDelegate,
+                this.FreeDelegate,
+                this.ReallocDelegate,
                 IntPtr.Zero);
         }
 
@@ -196,22 +186,30 @@ namespace Google.Solutions.Ssh.Native
         // Tracing.
         //---------------------------------------------------------------------
 
+        private UnsafeNativeMethods.TraceHandler TraceHandlerDelegate;
+
         public void SetTraceHandler(
             LIBSSH2_TRACE mask,
             Action<string> handler)
         {
+            // Store this delegate in a field to prevent it from being
+            // garbage collected. Otherwise callbacks will suddenly
+            // start hitting GC'ed memory.
+            this.TraceHandlerDelegate = (sessionPtr, contextPtr, dataPtr, length) =>
+            {
+                Debug.Assert(contextPtr == IntPtr.Zero);
+
+                var data = new byte[length.ToInt32()];
+                Marshal.Copy(dataPtr, data, 0, length.ToInt32());
+
+                handler(Encoding.ASCII.GetString(data));
+            };
+
             UnsafeNativeMethods.libssh2_trace_sethandler(
                 this.sessionHandle,
                 IntPtr.Zero,
-                (sessionPtr, contextPtr, dataPtr, length) =>
-                {
-                    Debug.Assert(contextPtr == IntPtr.Zero);
+                this.TraceHandlerDelegate);
 
-                    var data = new byte[length.ToInt32()];
-                    Marshal.Copy(dataPtr, data, 0, length.ToInt32());
-
-                    handler(Encoding.ASCII.GetString(data));
-                });
             UnsafeNativeMethods.libssh2_trace(
                 this.sessionHandle, 
                 mask);
