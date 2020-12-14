@@ -14,6 +14,7 @@ namespace Google.Solutions.Ssh.Native
     public class SshSessionChannel : SshChannelBase
     {
         public const string Type = "session";
+        private bool processRequested = false;
 
         //---------------------------------------------------------------------
         // Ctor.
@@ -28,7 +29,7 @@ namespace Google.Solutions.Ssh.Native
         // Environment.
         //---------------------------------------------------------------------
 
-        public Task SetEnvironmentVariable(
+        public Task SetEnvironmentVariableAsync(
             string variableName,
             string value)
         {
@@ -58,12 +59,18 @@ namespace Google.Solutions.Ssh.Native
         // Process/Shell.
         //---------------------------------------------------------------------
 
-        public Task StartShell()
+        public Task StartShellAsync()
         {
             return Task.Run(() =>
             {
                 lock (this.channelHandle.SyncRoot)
                 {
+                    if (this.processRequested)
+                    {
+                        throw new InvalidOperationException(
+                            "Only one process can be requested per channel");
+                    }
+
                     var request = "shell";
                     var result = (LIBSSH2_ERROR)UnsafeNativeMethods.libssh2_channel_process_startup(
                         this.channelHandle,
@@ -71,6 +78,8 @@ namespace Google.Solutions.Ssh.Native
                         (uint)request.Length,
                         null,
                         0);
+
+                    this.processRequested = true;
 
                     if (result != LIBSSH2_ERROR.NONE)
                     {
@@ -80,12 +89,18 @@ namespace Google.Solutions.Ssh.Native
             });
         }
 
-        public Task Execute(string command)
+        public Task ExecuteAsync(string command)
         {
             return Task.Run(() =>
             {
                 lock (this.channelHandle.SyncRoot)
                 {
+                    if (this.processRequested)
+                    {
+                        throw new InvalidOperationException(
+                            "Only one process can be requested per channel");
+                    }
+
                     var request = "exec";
                     var result = (LIBSSH2_ERROR)UnsafeNativeMethods.libssh2_channel_process_startup(
                         this.channelHandle,
@@ -93,6 +108,8 @@ namespace Google.Solutions.Ssh.Native
                         (uint)request.Length,
                         command,
                         (uint)command.Length);
+
+                    this.processRequested = true;
 
                     if (result != LIBSSH2_ERROR.NONE)
                     {
@@ -108,6 +125,7 @@ namespace Google.Solutions.Ssh.Native
             {
                 lock (this.channelHandle.SyncRoot)
                 {
+                    // TODO: blocking?
                     return UnsafeNativeMethods.libssh2_channel_get_exit_status(
                         this.channelHandle);
                 }
@@ -120,6 +138,7 @@ namespace Google.Solutions.Ssh.Native
             {
                 lock (this.channelHandle.SyncRoot)
                 {
+                    // TODO: blocking?
                     var result = (LIBSSH2_ERROR)UnsafeNativeMethods.libssh2_channel_get_exit_signal(
                         this.channelHandle,
                         out IntPtr signalPtr, 

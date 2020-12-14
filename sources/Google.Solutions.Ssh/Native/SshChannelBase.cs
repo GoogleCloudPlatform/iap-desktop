@@ -36,6 +36,7 @@ namespace Google.Solutions.Ssh.Native
         {
             return Task.Run(() =>
             {
+                // TODO: Remove lock?
                 lock (this.channelHandle.SyncRoot)
                 {
                     var result = (LIBSSH2_ERROR)UnsafeNativeMethods.libssh2_channel_flush_ex(
@@ -61,6 +62,7 @@ namespace Google.Solutions.Ssh.Native
 
             return Task.Run(() =>
             {
+                // TODO: Remove lock?
                 lock (this.channelHandle.SyncRoot)
                 {
                     var bytesRead = UnsafeNativeMethods.libssh2_channel_read_ex(
@@ -93,6 +95,7 @@ namespace Google.Solutions.Ssh.Native
 
             return Task.Run(() =>
             {
+                // TODO: Remove lock?
                 lock (this.channelHandle.SyncRoot)
                 {
                     var bytesWritten = UnsafeNativeMethods.libssh2_channel_write_ex(
