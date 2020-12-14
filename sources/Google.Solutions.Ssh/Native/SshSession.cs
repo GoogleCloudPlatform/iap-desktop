@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Google.Apis.Util;
+using System;
 using System.Diagnostics;
 using System.Linq;
 using System.Net;
@@ -76,6 +77,11 @@ namespace Google.Solutions.Ssh.Native
 
         public string[] GetSupportedAlgorithms(LIBSSH2_METHOD methodType)
         {
+            if (!Enum.IsDefined(typeof(LIBSSH2_METHOD), methodType))
+            {
+                throw new ArgumentException(nameof(methodType));
+            }
+
             lock (this.sessionHandle.SyncRoot)
             {
                 int count = UnsafeNativeMethods.libssh2_session_supported_algs(
@@ -112,6 +118,16 @@ namespace Google.Solutions.Ssh.Native
             LIBSSH2_METHOD methodType,
             string[] methods)
         {
+            if (!Enum.IsDefined(typeof(LIBSSH2_METHOD), methodType))
+            {
+                throw new ArgumentException(nameof(methodType));
+            }
+
+            if (methods == null || methods.Length == 0)
+            {
+                throw new ArgumentException(nameof(methods));
+            }
+
             var prefs = string.Join(",", methods);
 
             lock (this.sessionHandle.SyncRoot)
@@ -133,6 +149,8 @@ namespace Google.Solutions.Ssh.Native
 
         public void SetLocalBanner(string banner)
         {
+            Utilities.ThrowIfNullOrEmpty(banner, nameof(banner));
+
             lock (this.sessionHandle.SyncRoot)
             {
                 UnsafeNativeMethods.libssh2_session_banner_set(
@@ -224,6 +242,8 @@ namespace Google.Solutions.Ssh.Native
             LIBSSH2_TRACE mask,
             Action<string> handler)
         {
+            Utilities.ThrowIfNull(handler, nameof(handler));
+
             // Store this delegate in a field to prevent it from being
             // garbage collected. Otherwise callbacks will suddenly
             // start hitting GC'ed memory.
@@ -277,8 +297,8 @@ namespace Google.Solutions.Ssh.Native
                         IntPtr.Zero,
                         null);
 
-
                     this.sessionHandle.Dispose();
+                    this.disposed = true;
                 }
             }
         }

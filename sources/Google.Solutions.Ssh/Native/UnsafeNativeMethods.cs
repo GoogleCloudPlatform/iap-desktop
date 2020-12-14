@@ -262,6 +262,10 @@ namespace Google.Solutions.Ssh.Native
         public static extern int libssh2_channel_close(
             IntPtr channel);
 
+        [DllImport(Libssh2)]
+        public static extern int libssh2_channel_free(
+            IntPtr channel);
+
         [DllImport(Libssh2, CharSet = CharSet.Ansi)]
         public static extern SshChannelHandle libssh2_channel_open_ex(
             SshSessionHandle session,
@@ -271,6 +275,52 @@ namespace Google.Solutions.Ssh.Native
             uint packetSize,
             [MarshalAs(UnmanagedType.LPStr)] string message,
             uint messageLength);
+
+
+        [DllImport(Libssh2, CharSet = CharSet.Ansi)]
+        public static extern int libssh2_channel_setenv_ex(
+            SshChannelHandle channel,
+            [MarshalAs(UnmanagedType.LPStr)] string variableName,
+            uint variableNameLength,
+            [MarshalAs(UnmanagedType.LPStr)] string variableValue,
+            uint variableValueLength);
+
+
+        [DllImport(Libssh2, CharSet = CharSet.Ansi)]
+        public static extern int libssh2_channel_process_startup(
+            SshChannelHandle channel,
+            [MarshalAs(UnmanagedType.LPStr)] string request,
+            uint requestLength,
+            [MarshalAs(UnmanagedType.LPStr)] string message,
+            uint messageLength);
+
+        [DllImport(Libssh2)]
+        public static extern int libssh2_channel_read_ex(
+            SshChannelHandle channel,
+            int streamId,
+            byte[] buffer,
+            IntPtr bufferSize);        
+        
+        [DllImport(Libssh2)]
+        public static extern int libssh2_channel_write_ex(
+            SshChannelHandle channel,
+            int streamId,
+            byte[] buffer,
+            IntPtr bufferSize);
+
+        [DllImport(Libssh2)]
+        public static extern int libssh2_channel_get_exit_status(
+            SshChannelHandle channel);
+
+        [DllImport(Libssh2)]
+        public static extern int libssh2_channel_get_exit_signal(
+            SshChannelHandle channel,
+            out IntPtr exitsignal,
+            out IntPtr exitsignalLength,
+            out IntPtr errmsg,
+            out IntPtr errmsgLength,
+            out IntPtr langTag,
+            out IntPtr langTagLength);
 
         //---------------------------------------------------------------------
         // Error functions.
@@ -338,6 +388,10 @@ namespace Google.Solutions.Ssh.Native
         {
             var result = (LIBSSH2_ERROR)UnsafeNativeMethods.libssh2_channel_close(handle);
             Debug.Assert(result == LIBSSH2_ERROR.NONE);
+
+            result = (LIBSSH2_ERROR)UnsafeNativeMethods.libssh2_channel_free(handle);
+            Debug.Assert(result == LIBSSH2_ERROR.NONE);
+            
             return true;
         }
 

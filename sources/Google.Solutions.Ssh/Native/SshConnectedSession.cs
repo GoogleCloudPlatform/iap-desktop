@@ -1,4 +1,5 @@
-﻿using Google.Solutions.Ssh.Cryptography;
+﻿using Google.Apis.Util;
+using Google.Solutions.Ssh.Cryptography;
 using System;
 using System.Diagnostics;
 using System.Linq;
@@ -70,6 +71,11 @@ namespace Google.Solutions.Ssh.Native
 
         public string[] GetActiveAlgorithms(LIBSSH2_METHOD methodType)
         {
+            if (!Enum.IsDefined(typeof(LIBSSH2_METHOD), methodType))
+            {
+                throw new ArgumentException(nameof(methodType));
+            }
+
             lock (this.sessionHandle.SyncRoot)
             {
                 var stringPtr = UnsafeNativeMethods.libssh2_session_methods(
@@ -94,6 +100,11 @@ namespace Google.Solutions.Ssh.Native
 
         public byte[] GetRemoteHostKeyHash(LIBSSH2_HOSTKEY_HASH hashType)
         {
+            if (!Enum.IsDefined(typeof(LIBSSH2_HOSTKEY_HASH), hashType))
+            {
+                throw new ArgumentException(nameof(hashType));
+            }
+
             lock (this.sessionHandle.SyncRoot)
             {
                 var hashPtr = UnsafeNativeMethods.libssh2_hostkey_hash(
@@ -198,6 +209,9 @@ namespace Google.Solutions.Ssh.Native
             string username,
             RSACng key)
         {
+            Utilities.ThrowIfNullOrEmpty(username, nameof(username));
+            Utilities.ThrowIfNull(key, nameof(key));
+
             //
             // NB. The callbacks very sparsely documented in the libssh2 sources
             // and docs. For sample usage, the Guacamole sources can be helpful, cf.
@@ -296,6 +310,7 @@ namespace Google.Solutions.Ssh.Native
 
                     Debug.Assert(result == LIBSSH2_ERROR.NONE);
                     this.socket.Dispose();
+                    this.disposed = true;
                 }
             }
         }

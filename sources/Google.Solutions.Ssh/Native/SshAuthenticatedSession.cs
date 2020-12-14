@@ -30,7 +30,7 @@ namespace Google.Solutions.Ssh.Native
         // Channel.
         //---------------------------------------------------------------------
 
-        public Task<SshChannel> OpenChannel(string channelType)
+        public Task<SshSessionChannel> OpenSessionChannel()
         {
             return Task.Run(() =>
             {
@@ -38,8 +38,8 @@ namespace Google.Solutions.Ssh.Native
                 {
                     var handle = UnsafeNativeMethods.libssh2_channel_open_ex(
                         this.sessionHandle,
-                        channelType,
-                        (uint)channelType.Length,
+                        SshSessionChannel.Type,
+                        (uint)SshSessionChannel.Type.Length,
                         DefaultWindowSize,
                         DefaultPacketSize,
                         null,
@@ -60,7 +60,7 @@ namespace Google.Solutions.Ssh.Native
                     }
                     else
                     {
-                        return new SshChannel(handle);
+                        return new SshSessionChannel(handle);
                     }
                 }
             });

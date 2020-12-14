@@ -78,6 +78,7 @@
     <Compile Include="Native\InitializeScripts.cs" />
     <Compile Include="Native\SshAssert.cs" />
     <Compile Include="Native\SshFixtureBase.cs" />
+    <Compile Include="Native\SshSessionChannel.cs" />
     <Compile Include="Native\TestSshAuthenticatedSession.cs" />
     <Compile Include="Native\TestSshConnectedSession.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

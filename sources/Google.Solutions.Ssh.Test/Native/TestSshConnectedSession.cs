@@ -1,4 +1,5 @@
 ﻿using Google.Solutions.Common.Locator;
+using Google.Solutions.Common.Test;
 using Google.Solutions.Common.Test.Integration;
 using Google.Solutions.Ssh.Native;
 using NUnit.Framework;
@@ -150,22 +151,6 @@ namespace Google.Solutions.Ssh.Test.Native
             }
         }
 
-        //[Test]
-        //public async Task WhenPublicKeyInvalid_ThenAuthenticateThrowsPublicKeyUnverified(
-        //    [LinuxInstance] ResourceTask<InstanceLocator> instanceLocatorTask)
-        //{
-        //    var endpoint = new IPEndPoint(
-        //        await InstanceUtil.PublicIpAddressForInstanceAsync(await instanceLocatorTask),
-        //        22);
-        //    using (var session = CreateSession())
-        //    using (var connection = await session.ConnectAsync(endpoint))
-        //    {
-        //        SshAssert.ThrowsNativeExceptionWithError(
-        //            LIBSSH2_ERROR.PUBLICKEY_UNVERIFIED,
-        //            () => connection.Authenticate("bob", new byte[] { 1, 2, 3, 4, 5, 6 }).Wait());
-        //    }
-        //}
-
         [Test]
         public async Task WhenPublicKeyValidButUnrecognized_ThenAuthenticateThrowsAuthenticationFailed(
             [LinuxInstance] ResourceTask<InstanceLocator> instanceLocatorTask)
@@ -181,6 +166,31 @@ namespace Google.Solutions.Ssh.Test.Native
                     session,
                     LIBSSH2_ERROR.AUTHENTICATION_FAILED,
                     () => connection.Authenticate("invaliduser", key).Wait());
+            }
+        }
+
+        [Test]
+        public async Task WhenSessionDisconnected_ThenAuthenticateThrowsSocketSend(
+            [LinuxInstance] ResourceTask<InstanceLocator> instanceLocatorTask)
+        {
+            var endpoint = new IPEndPoint(
+                await InstanceUtil.PublicIpAddressForInstanceAsync(await instanceLocatorTask),
+                22);
+            using (var session = CreateSession())
+            using (var connection = await session.ConnectAsync(endpoint))
+            using (var key = new RSACng())
+            {
+                await InstanceUtil.AddPublicKeyToMetadata(
+                    await instanceLocatorTask,
+                    "testuser",
+                    key);
+
+                connection.Dispose();
+
+                SshAssert.ThrowsNativeExceptionWithError(
+                    session,
+                    LIBSSH2_ERROR.SOCKET_SEND,
+                    () => connection.Authenticate("testuser", key).Wait());
             }
         }
 
