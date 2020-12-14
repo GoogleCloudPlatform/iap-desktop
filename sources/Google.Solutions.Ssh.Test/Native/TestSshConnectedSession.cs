@@ -12,20 +12,8 @@ namespace Google.Solutions.Ssh.Test.Native
 {
 
     [TestFixture]
-    public class TestSshConnection
+    public class TestSshConnectedSession : SshFixtureBase
     {
-        private static SshSession CreateSession()
-        {
-            var session = new SshSession();
-            session.SetTraceHandler(
-                LIBSSH2_TRACE.SOCKET | LIBSSH2_TRACE.ERROR | LIBSSH2_TRACE.CONN |
-                                       LIBSSH2_TRACE.AUTH | LIBSSH2_TRACE.KEX,
-                Console.WriteLine);
-
-            session.Timeout = TimeSpan.FromSeconds(5);
-            return session;
-        }
-
         //---------------------------------------------------------------------
         // Banner.
         //---------------------------------------------------------------------
@@ -39,7 +27,9 @@ namespace Google.Solutions.Ssh.Test.Native
             using (var session = CreateSession())
             using (var connection = await session.ConnectAsync(endpoint))
             {
-                Assert.IsNotNull(connection.GetRemoteBanner());
+                var banner = connection.GetRemoteBanner();
+                Assert.AreEqual(LIBSSH2_ERROR.NONE, session.LastError);
+                Assert.IsNotNull(banner);
             }
         }
 
@@ -85,7 +75,9 @@ namespace Google.Solutions.Ssh.Test.Native
             using (var session = CreateSession())
             using (var connection = await session.ConnectAsync(endpoint))
             {
-                Assert.IsNotNull(connection.GetRemoteHostKey());
+                var key = connection.GetRemoteHostKey();
+                Assert.AreEqual(LIBSSH2_ERROR.NONE, session.LastError);
+                Assert.IsNotNull(key);
             }
         }
 
@@ -99,9 +91,11 @@ namespace Google.Solutions.Ssh.Test.Native
             using (var session = CreateSession())
             using (var connection = await session.ConnectAsync(endpoint))
             {
+                var keyType = connection.GetRemoteHostKeyType();
+                Assert.AreEqual(LIBSSH2_ERROR.NONE, session.LastError);
                 Assert.AreEqual(
                     LIBSSH2_HOSTKEY_TYPE.ECDSA_256,
-                    connection.GetRemoteHostKeyTyoe());
+                    keyType);
             }
         }
 
@@ -184,6 +178,7 @@ namespace Google.Solutions.Ssh.Test.Native
             using (var key = new RSACng())
             {
                 SshAssert.ThrowsNativeExceptionWithError(
+                    session,
                     LIBSSH2_ERROR.AUTHENTICATION_FAILED,
                     () => connection.Authenticate("invaliduser", key).Wait());
             }
@@ -204,7 +199,8 @@ namespace Google.Solutions.Ssh.Test.Native
                     await instanceLocatorTask,
                     "testuser",
                     key);
-                await connection.Authenticate("testuser", key);
+                var authSession = await connection.Authenticate("testuser", key);
+                Assert.IsNotNull(authSession);
             }
         }
     }

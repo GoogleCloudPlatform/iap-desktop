@@ -171,7 +171,7 @@ namespace Google.Solutions.Ssh.Native
         // Handshake.
         //---------------------------------------------------------------------
 
-        public Task<SshConnection> ConnectAsync(EndPoint remoteEndpoint)
+        public Task<SshConnectedSession> ConnectAsync(EndPoint remoteEndpoint)
         {
             return Task.Run(() =>
             {
@@ -193,9 +193,25 @@ namespace Google.Solutions.Ssh.Native
                         throw new SshNativeException(result);
                     }
 
-                    return new SshConnection(this.sessionHandle, socket);
+                    return new SshConnectedSession(this.sessionHandle, socket);
                 }
             });
+        }
+
+        //---------------------------------------------------------------------
+        // Error.
+        //---------------------------------------------------------------------
+
+        public LIBSSH2_ERROR LastError
+        {
+            get
+            {
+                lock (this.sessionHandle.SyncRoot)
+                {
+                    return (LIBSSH2_ERROR)UnsafeNativeMethods.libssh2_session_last_errno(
+                        this.sessionHandle);
+                }
+            }
         }
 
         //---------------------------------------------------------------------

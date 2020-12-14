@@ -1,6 +1,7 @@
 ﻿using Microsoft.Win32.SafeHandles;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Runtime.ConstrainedExecution;
 using System.Runtime.InteropServices;
@@ -254,6 +255,32 @@ namespace Google.Solutions.Ssh.Native
             IntPtr context);
 
         //---------------------------------------------------------------------
+        // Channel.
+        //---------------------------------------------------------------------
+
+        [DllImport(Libssh2)]
+        public static extern int libssh2_channel_close(
+            IntPtr channel);
+
+        [DllImport(Libssh2, CharSet = CharSet.Ansi)]
+        public static extern SshChannelHandle libssh2_channel_open_ex(
+            SshSessionHandle session,
+            [MarshalAs(UnmanagedType.LPStr)] string channelType,
+            uint channelTypeLength,
+            uint windowSize,
+            uint packetSize,
+            [MarshalAs(UnmanagedType.LPStr)] string message,
+            uint messageLength);
+
+        //---------------------------------------------------------------------
+        // Error functions.
+        //---------------------------------------------------------------------
+
+        [DllImport(Libssh2)]
+        public static extern int libssh2_session_last_errno(
+            SshSessionHandle session);
+
+        //---------------------------------------------------------------------
         // Tracing functions.
         //---------------------------------------------------------------------
 
@@ -287,7 +314,30 @@ namespace Google.Solutions.Ssh.Native
         [ReliabilityContract(Consistency.WillNotCorruptState, Cer.MayFail)]
         override protected bool ReleaseHandle()
         {
-            UnsafeNativeMethods.libssh2_session_free(handle);
+            var result = (LIBSSH2_ERROR)UnsafeNativeMethods.libssh2_session_free(handle);
+            Debug.Assert(result == LIBSSH2_ERROR.NONE);
+            return true;
+        }
+
+        /// <summary>
+        /// Object to take a lock on before using the handle. Libssh2 handles
+        /// are not allowed to be accessed concurrently on multiple threads.
+        /// </summary>
+        public object SyncRoot => new object();
+    }
+
+    internal class SshChannelHandle : SafeHandleZeroOrMinusOneIsInvalid
+    {
+        private SshChannelHandle() : base(true)
+        {
+            // Safe handle "owns" the handle.
+        }
+
+        [ReliabilityContract(Consistency.WillNotCorruptState, Cer.MayFail)]
+        override protected bool ReleaseHandle()
+        {
+            var result = (LIBSSH2_ERROR)UnsafeNativeMethods.libssh2_channel_close(handle);
+            Debug.Assert(result == LIBSSH2_ERROR.NONE);
             return true;
         }
 

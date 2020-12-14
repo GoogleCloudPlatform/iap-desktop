@@ -12,7 +12,7 @@ namespace Google.Solutions.Ssh.Native
     /// <summary>
     /// An connected Libssh2 session.
     /// </summary>
-    public class SshConnection : IDisposable
+    public class SshConnectedSession : IDisposable
     {
         private readonly SshSessionHandle sessionHandle;
         private readonly Socket socket;
@@ -40,7 +40,7 @@ namespace Google.Solutions.Ssh.Native
         // Ctor.
         //---------------------------------------------------------------------
 
-        internal SshConnection(SshSessionHandle sessionHandle, Socket socket)
+        internal SshConnectedSession(SshSessionHandle sessionHandle, Socket socket)
         {
             this.sessionHandle = sessionHandle;
             this.socket = socket;
@@ -135,7 +135,7 @@ namespace Google.Solutions.Ssh.Native
             }
         }
 
-        public LIBSSH2_HOSTKEY_TYPE GetRemoteHostKeyTyoe()
+        public LIBSSH2_HOSTKEY_TYPE GetRemoteHostKeyType()
         {
             lock (this.sessionHandle.SyncRoot)
             {
@@ -194,7 +194,7 @@ namespace Google.Solutions.Ssh.Native
             }
         }
 
-        public Task Authenticate(
+        public Task<SshAuthenticatedSession> Authenticate(
             string username,
             RSACng key)
         {
@@ -257,6 +257,10 @@ namespace Google.Solutions.Ssh.Native
                     if (result != LIBSSH2_ERROR.NONE)
                     {
                         throw new SshNativeException(result);
+                    }
+                    else
+                    {
+                        return new SshAuthenticatedSession(this.sessionHandle);
                     }
                 }
             });

@@ -12,6 +12,7 @@ namespace Google.Solutions.Ssh.Test.Native
     internal static class SshAssert
     {
         public static void ThrowsNativeExceptionWithError(
+            SshSession session,
             LIBSSH2_ERROR expected, 
             Action action)
         {
@@ -20,10 +21,12 @@ namespace Google.Solutions.Ssh.Test.Native
                 action();
                 Assert.Fail("Expected SshNativeException with error " + expected);
             }
-            catch (Exception e)
+            catch (Exception e) when (!(e is AssertionException))
             {
                 Assert.IsInstanceOf(typeof(SshNativeException), e.Unwrap());
                 Assert.AreEqual(expected, ((SshNativeException)e.Unwrap()).ErrorCode);
+
+                Assert.AreEqual(expected, session.LastError);
             }
         }
     }

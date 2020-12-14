@@ -11,20 +11,8 @@ using System.Threading.Tasks;
 namespace Google.Solutions.Ssh.Test.Native
 {
     [TestFixture]
-    public class TestSession
+    public class TestSession : SshFixtureBase
     {
-        private static SshSession CreateSession()
-        {
-            var session = new SshSession();
-            session.SetTraceHandler(
-                LIBSSH2_TRACE.SOCKET | LIBSSH2_TRACE.ERROR | LIBSSH2_TRACE.CONN |
-                                       LIBSSH2_TRACE.AUTH | LIBSSH2_TRACE.KEX,
-                Console.WriteLine);
-
-            session.Timeout = TimeSpan.FromSeconds(5);
-            return session;
-        }
-
         //---------------------------------------------------------------------
         // Version.
         //---------------------------------------------------------------------
@@ -69,6 +57,8 @@ namespace Google.Solutions.Ssh.Test.Native
             {
                 var algorithms = session.GetSupportedAlgorithms(LIBSSH2_METHOD.KEX);
 
+                Assert.AreEqual(LIBSSH2_ERROR.NONE, session.LastError);
+
                 CollectionAssert.Contains(algorithms, "diffie-hellman-group-exchange-sha256");
                 CollectionAssert.Contains(algorithms, "diffie-hellman-group-exchange-sha1");
                 CollectionAssert.Contains(algorithms, "diffie-hellman-group14-sha1");
@@ -83,6 +73,8 @@ namespace Google.Solutions.Ssh.Test.Native
             {
                 var algorithms = session.GetSupportedAlgorithms(LIBSSH2_METHOD.HOSTKEY);
 
+                Assert.AreEqual(LIBSSH2_ERROR.NONE, session.LastError);
+
                 CollectionAssert.Contains(algorithms, "ssh-rsa");
                 CollectionAssert.Contains(algorithms, "ssh-dss");
             }
@@ -94,6 +86,8 @@ namespace Google.Solutions.Ssh.Test.Native
             using (var session = CreateSession())
             {
                 var algorithms = session.GetSupportedAlgorithms(LIBSSH2_METHOD.CRYPT_CS);
+
+                Assert.AreEqual(LIBSSH2_ERROR.NONE, session.LastError);
 
                 CollectionAssert.Contains(algorithms, "aes128-ctr");
                 CollectionAssert.Contains(algorithms, "aes256-ctr");
@@ -107,6 +101,8 @@ namespace Google.Solutions.Ssh.Test.Native
             {
                 var algorithms = session.GetSupportedAlgorithms(LIBSSH2_METHOD.CRYPT_SC);
 
+                Assert.AreEqual(LIBSSH2_ERROR.NONE, session.LastError);
+
                 CollectionAssert.Contains(algorithms, "aes128-ctr");
                 CollectionAssert.Contains(algorithms, "aes256-ctr");
             }
@@ -118,6 +114,8 @@ namespace Google.Solutions.Ssh.Test.Native
             using (var session = CreateSession())
             {
                 var algorithms = session.GetSupportedAlgorithms(LIBSSH2_METHOD.MAC_SC);
+
+                Assert.AreEqual(LIBSSH2_ERROR.NONE, session.LastError);
 
                 CollectionAssert.Contains(algorithms, "hmac-sha2-256");
                 CollectionAssert.Contains(algorithms, "hmac-sha2-512");
@@ -131,6 +129,8 @@ namespace Google.Solutions.Ssh.Test.Native
             {
                 var algorithms = session.GetSupportedAlgorithms(LIBSSH2_METHOD.MAC_CS);
 
+                Assert.AreEqual(LIBSSH2_ERROR.NONE, session.LastError);
+
                 CollectionAssert.Contains(algorithms, "hmac-sha2-256");
                 CollectionAssert.Contains(algorithms, "hmac-sha2-512");
             }
@@ -141,7 +141,9 @@ namespace Google.Solutions.Ssh.Test.Native
         {
             using (var session = CreateSession())
             {
-                Assert.Throws<SshNativeException>(
+                SshAssert.ThrowsNativeExceptionWithError(
+                    session,
+                    LIBSSH2_ERROR.METHOD_NOT_SUPPORTED,
                     () => session.GetSupportedAlgorithms((LIBSSH2_METHOD)Int32.MaxValue));
             }
         }
@@ -155,8 +157,13 @@ namespace Google.Solutions.Ssh.Test.Native
                 22);
             using (var session = CreateSession())
             {
-                session.SetPreferredMethods(LIBSSH2_METHOD.KEX, new[] { "diffie-hellman-group-exchange-sha1" });
-                AssertEx.ThrowsAggregateException<SshNativeException>(
+                session.SetPreferredMethods(
+                    LIBSSH2_METHOD.KEX, 
+                    new[] { "diffie-hellman-group-exchange-sha1" });
+
+                SshAssert.ThrowsNativeExceptionWithError(
+                    session,
+                    LIBSSH2_ERROR.KEX_FAILURE,
                     () => session.ConnectAsync(endpoint).Wait());
             }
         }
@@ -175,6 +182,7 @@ namespace Google.Solutions.Ssh.Test.Native
             using (var session = CreateSession())
             using (var connection = await session.ConnectAsync(endpoint))
             {
+                Assert.AreEqual(LIBSSH2_ERROR.NONE, session.LastError);
             }
         }
 
@@ -202,6 +210,7 @@ namespace Google.Solutions.Ssh.Test.Native
             using (var session = CreateSession())
             {
                 SshAssert.ThrowsNativeExceptionWithError(
+                    session,
                     LIBSSH2_ERROR.TIMEOUT,
                     () => session.ConnectAsync(endpoint).Wait());
             }
