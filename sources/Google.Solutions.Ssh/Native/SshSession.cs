@@ -17,11 +17,9 @@ namespace Google.Solutions.Ssh.Native
         private readonly SshSessionHandle sessionHandle;
         private bool disposed = false;
 
-        internal SshSessionHandle Handle => this.sessionHandle;
-
-        internal readonly UnsafeNativeMethods.Alloc AllocDelegate;
-        internal readonly UnsafeNativeMethods.Free FreeDelegate;
-        internal readonly UnsafeNativeMethods.Realloc ReallocDelegate;
+        internal static readonly UnsafeNativeMethods.Alloc AllocDelegate;
+        internal static readonly UnsafeNativeMethods.Free FreeDelegate;
+        internal static readonly UnsafeNativeMethods.Realloc ReallocDelegate;
 
         //---------------------------------------------------------------------
         // Ctor.
@@ -29,6 +27,14 @@ namespace Google.Solutions.Ssh.Native
 
         static SshSession()
         {
+            // Store these delegates in fields to prevent them from being
+            // garbage collected. Otherwise callbacks will suddenly
+            // start hitting GC'ed memory.
+
+            AllocDelegate = (size, context) => Marshal.AllocHGlobal(size);
+            ReallocDelegate = (ptr, size, context) => Marshal.ReAllocHGlobal(ptr, size);
+            FreeDelegate = (ptr, context) => Marshal.FreeHGlobal(ptr);
+
             try
             {
                 var result = (LIBSSH2_ERROR)UnsafeNativeMethods.libssh2_init(0);
@@ -45,18 +51,10 @@ namespace Google.Solutions.Ssh.Native
 
         public SshSession()
         {
-            // Store these delegates in fields to prevent them from being
-            // garbage collected. Otherwise callbacks will suddenly
-            // start hitting GC'ed memory.
-
-            this.AllocDelegate = (size, context) => Marshal.AllocHGlobal(size);
-            this.ReallocDelegate = (ptr, size, context) => Marshal.ReAllocHGlobal(ptr, size);
-            this.FreeDelegate = (ptr, context) => Marshal.FreeHGlobal(ptr);
-
             this.sessionHandle = UnsafeNativeMethods.libssh2_session_init_ex(
-                this.AllocDelegate,
-                this.FreeDelegate,
-                this.ReallocDelegate,
+                AllocDelegate,
+                FreeDelegate,
+                ReallocDelegate,
                 IntPtr.Zero);
         }
 
@@ -195,7 +193,7 @@ namespace Google.Solutions.Ssh.Native
                         throw new SshNativeException(result);
                     }
 
-                    return new SshConnection(this, socket);
+                    return new SshConnection(this.sessionHandle, socket);
                 }
             });
         }

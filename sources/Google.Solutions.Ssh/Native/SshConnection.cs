@@ -14,7 +14,7 @@ namespace Google.Solutions.Ssh.Native
     /// </summary>
     public class SshConnection : IDisposable
     {
-        private readonly SshSession session;
+        private readonly SshSessionHandle sessionHandle;
         private readonly Socket socket;
         private bool disposed = false;
 
@@ -40,9 +40,9 @@ namespace Google.Solutions.Ssh.Native
         // Ctor.
         //---------------------------------------------------------------------
 
-        internal SshConnection(SshSession session, Socket socket)
+        internal SshConnection(SshSessionHandle sessionHandle, Socket socket)
         {
-            this.session = session;
+            this.sessionHandle = sessionHandle;
             this.socket = socket;
         }
 
@@ -52,10 +52,10 @@ namespace Google.Solutions.Ssh.Native
 
         public string GetRemoteBanner()
         {
-            lock (this.session.Handle.SyncRoot)
+            lock (this.sessionHandle.SyncRoot)
             {
                 var bannerPtr = UnsafeNativeMethods.libssh2_session_banner_get(
-                    this.session.Handle);
+                    this.sessionHandle);
 
                 return bannerPtr == IntPtr.Zero
                     ? null
@@ -70,10 +70,10 @@ namespace Google.Solutions.Ssh.Native
 
         public string[] GetActiveAlgorithms(LIBSSH2_METHOD methodType)
         {
-            lock (this.session.Handle.SyncRoot)
+            lock (this.sessionHandle.SyncRoot)
             {
                 var stringPtr = UnsafeNativeMethods.libssh2_session_methods(
-                    this.session.Handle,
+                    this.sessionHandle,
                     methodType);
 
                 if (stringPtr == IntPtr.Zero)
@@ -94,10 +94,10 @@ namespace Google.Solutions.Ssh.Native
 
         public byte[] GetRemoteHostKeyHash(LIBSSH2_HOSTKEY_HASH hashType)
         {
-            lock (this.session.Handle.SyncRoot)
+            lock (this.sessionHandle.SyncRoot)
             {
                 var hashPtr = UnsafeNativeMethods.libssh2_hostkey_hash(
-                    this.session.Handle,
+                    this.sessionHandle,
                     hashType);
 
                 if (hashPtr == IntPtr.Zero)
@@ -115,10 +115,10 @@ namespace Google.Solutions.Ssh.Native
 
         public byte[] GetRemoteHostKey()
         {
-            lock (this.session.Handle.SyncRoot)
+            lock (this.sessionHandle.SyncRoot)
             {
                 var keyPtr = UnsafeNativeMethods.libssh2_session_hostkey(
-                    this.session.Handle,
+                    this.sessionHandle,
                     out var keyLength,
                     out var _);
 
@@ -137,10 +137,10 @@ namespace Google.Solutions.Ssh.Native
 
         public LIBSSH2_HOSTKEY_TYPE GetRemoteHostKeyTyoe()
         {
-            lock (this.session.Handle.SyncRoot)
+            lock (this.sessionHandle.SyncRoot)
             {
                 var keyPtr = UnsafeNativeMethods.libssh2_session_hostkey(
-                    this.session.Handle,
+                    this.sessionHandle,
                     out var _,
                     out var type);
 
@@ -163,20 +163,20 @@ namespace Google.Solutions.Ssh.Native
         {
             get
             {
-                lock (this.session.Handle.SyncRoot)
+                lock (this.sessionHandle.SyncRoot)
                 {
                     return UnsafeNativeMethods.libssh2_userauth_authenticated(
-                      this.session.Handle) == 1;
+                      this.sessionHandle) == 1;
                 }
             }
         }
 
         public string[] GetAuthenticationMethods(string username)
         {
-            lock (this.session.Handle.SyncRoot)
+            lock (this.sessionHandle.SyncRoot)
             {
                 var stringPtr = UnsafeNativeMethods.libssh2_userauth_list(
-                    this.session.Handle,
+                    this.sessionHandle,
                     username,
                     username.Length);
 
@@ -213,7 +213,7 @@ namespace Google.Solutions.Ssh.Native
                 IntPtr context)
             {
                 Debug.Assert(context == IntPtr.Zero);
-                Debug.Assert(session == this.session.Handle.DangerousGetHandle());
+                Debug.Assert(session == this.sessionHandle.DangerousGetHandle());
                 
                 //
                 // Copy data to managed buffer and create signature.
@@ -232,7 +232,7 @@ namespace Google.Solutions.Ssh.Native
                 //
 
                 signatureLength = new IntPtr(signature.Length);
-                signaturePtr = this.session.AllocDelegate(signatureLength, IntPtr.Zero);
+                signaturePtr = SshSession.AllocDelegate(signatureLength, IntPtr.Zero);
                 Marshal.Copy(signature, 0, signaturePtr, signature.Length);
                 
                 return (int)LIBSSH2_ERROR.NONE;
@@ -245,10 +245,10 @@ namespace Google.Solutions.Ssh.Native
                 // cf. https://tools.ietf.org/html/rfc4253#section-6.6
                 //
                 var publicKey = key.ToSshPublicKey();
-                lock (this.session.Handle.SyncRoot)
+                lock (this.sessionHandle.SyncRoot)
                 {
                     var result = (LIBSSH2_ERROR)UnsafeNativeMethods.libssh2_userauth_publickey(
-                        this.session.Handle,
+                        this.sessionHandle,
                         username,
                         publicKey,
                         new IntPtr(publicKey.Length),
@@ -282,10 +282,10 @@ namespace Google.Solutions.Ssh.Native
 
             if (disposing)
             {
-                lock (this.session.Handle.SyncRoot)
+                lock (this.sessionHandle.SyncRoot)
                 {
                     var result = (LIBSSH2_ERROR)UnsafeNativeMethods.libssh2_session_disconnect_ex(
-                        this.session.Handle,
+                        this.sessionHandle,
                         SSH_DISCONNECT.BY_APPLICATION,
                         null,
                         null);
