@@ -20,7 +20,7 @@ namespace Google.Solutions.Ssh.Test.Native
         //---------------------------------------------------------------------
 
         [Test]
-        public async Task WhenSessionTypeInvalid_ThenOpenChannelThrowsXxx(
+        public async Task WhenChannelTypeInvalid_ThenOpenChannelThrowsChannelFailure(
             [LinuxInstance] ResourceTask<InstanceLocator> instanceLocatorTask)
         {
             var endpoint = new IPEndPoint(
@@ -40,6 +40,29 @@ namespace Google.Solutions.Ssh.Test.Native
                         session,
                         LIBSSH2_ERROR.CHANNEL_FAILURE,
                         () => authSession.OpenChannel("invalid").Wait());
+                }
+            }
+        }
+
+        [Test]
+        public async Task WhenChannelTypeIsSession_ThenOpenChannelSucceeds(
+            [LinuxInstance] ResourceTask<InstanceLocator> instanceLocatorTask)
+        {
+            var endpoint = new IPEndPoint(
+                await InstanceUtil.PublicIpAddressForInstanceAsync(await instanceLocatorTask),
+                22);
+            using (var session = CreateSession())
+            using (var connection = await session.ConnectAsync(endpoint))
+            using (var key = new RSACng())
+            {
+                await InstanceUtil.AddPublicKeyToMetadata(
+                    await instanceLocatorTask,
+                    "testuser",
+                    key);
+                using (var authSession = await connection.Authenticate("testuser", key))
+                using (var channel = await authSession.OpenChannel(SshChannel.SessionChannel))
+                {
+
                 }
             }
         }

@@ -17,8 +17,6 @@ namespace Google.Solutions.Ssh.Native
         private readonly uint DefaultWindowSize = (2 * 1024 * 1024);
         private readonly uint DefaultPacketSize = 32768;
 
-        public const string SessionChannel = "session";
-
         //---------------------------------------------------------------------
         // Ctor.
         //---------------------------------------------------------------------

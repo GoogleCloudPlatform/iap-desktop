@@ -14,6 +14,8 @@ namespace Google.Solutions.Ssh.Native
         private readonly SshChannelHandle channelHandle;
         private bool disposed = false;
 
+        public const string SessionChannel = "session";
+
         //---------------------------------------------------------------------
         // Ctor.
         //---------------------------------------------------------------------
