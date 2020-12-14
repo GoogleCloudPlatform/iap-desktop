@@ -77,6 +77,13 @@ namespace Google.Solutions.Ssh.Native
         ILLEGAL_USER_NAME = 15
     }
 
+    public enum LIBSSH2_CHANNEL_EXTENDED_DATA : Int32
+    {
+        NORMAL = 0,
+        IGNORE = 1,
+        MERGE = 2,
+    }
+
     public enum LIBSSH2_STREAM : Int32
     {
         NORMAL = 0,
@@ -332,6 +339,11 @@ namespace Google.Solutions.Ssh.Native
             out IntPtr errmsgLength,
             out IntPtr langTag,
             out IntPtr langTagLength);
+
+        [DllImport(Libssh2)]
+        public static extern int libssh2_channel_handle_extended_data2(
+            SshChannelHandle channel,
+            LIBSSH2_CHANNEL_EXTENDED_DATA mode);
 
         //---------------------------------------------------------------------
         // Error functions.

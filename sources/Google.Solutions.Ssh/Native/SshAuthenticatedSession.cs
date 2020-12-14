@@ -33,7 +33,8 @@ namespace Google.Solutions.Ssh.Native
 
         public Task<SshSessionChannel> OpenSessionChannelAsync(
             string request,
-            string command)
+            string command,
+            LIBSSH2_CHANNEL_EXTENDED_DATA mode)
         {
             Utilities.ThrowIfNull(request, nameof(request));
 
@@ -64,7 +65,23 @@ namespace Google.Solutions.Ssh.Native
                         }
                     }
 
-                    var result = (LIBSSH2_ERROR)UnsafeNativeMethods.libssh2_channel_process_startup(
+                    //
+                    // Configure how extended data (stderr, in particular) should
+                    // be handled.
+                    //
+                    var result = (LIBSSH2_ERROR)UnsafeNativeMethods.libssh2_channel_handle_extended_data2(
+                        channelHandle,
+                        mode);
+                    if (result != LIBSSH2_ERROR.NONE)
+                    {
+                        channelHandle.Dispose();
+                        throw new SshNativeException(result);
+                    }
+
+                    //
+                    // Launch the process.
+                    //
+                    result = (LIBSSH2_ERROR)UnsafeNativeMethods.libssh2_channel_process_startup(
                         channelHandle,
                         request,
                         (uint)request.Length,
@@ -82,11 +99,14 @@ namespace Google.Solutions.Ssh.Native
             });
         }
 
-        public Task<SshSessionChannel> OpenShellChannelAsync()
-            => OpenSessionChannelAsync("shell", null);
+        public Task<SshSessionChannel> OpenShellChannelAsync(
+            LIBSSH2_CHANNEL_EXTENDED_DATA mode)
+            => OpenSessionChannelAsync("shell", null, mode);
 
-        public Task<SshSessionChannel> OpenExecChannelAsync(string command)
-            => OpenSessionChannelAsync("exec", command);
+        public Task<SshSessionChannel> OpenExecChannelAsync(
+            string command,
+            LIBSSH2_CHANNEL_EXTENDED_DATA mode)
+            => OpenSessionChannelAsync("exec", command, mode);
 
         //---------------------------------------------------------------------
         // Dispose.
