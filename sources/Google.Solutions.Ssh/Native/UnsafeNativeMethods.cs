@@ -290,5 +290,11 @@ namespace Google.Solutions.Ssh.Native
             UnsafeNativeMethods.libssh2_session_free(handle);
             return true;
         }
+
+        /// <summary>
+        /// Object to take a lock on before using the handle. Libssh2 handles
+        /// are not allowed to be accessed concurrently on multiple threads.
+        /// </summary>
+        public object SyncRoot => new object();
     }
 }

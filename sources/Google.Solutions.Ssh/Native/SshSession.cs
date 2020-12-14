@@ -78,32 +78,35 @@ namespace Google.Solutions.Ssh.Native
 
         public string[] GetSupportedAlgorithms(LIBSSH2_METHOD methodType)
         {
-            int count = UnsafeNativeMethods.libssh2_session_supported_algs(
-                this.sessionHandle,
-                methodType,
-                out IntPtr algorithmsPtrPtr);
-            if (count > 0 && algorithmsPtrPtr != IntPtr.Zero)
+            lock (this.sessionHandle.SyncRoot)
             {
-                var algorithmsPtrs = new IntPtr[count];
-                Marshal.Copy(algorithmsPtrPtr, algorithmsPtrs, 0, algorithmsPtrs.Length);
-
-                var algorithms = algorithmsPtrs
-                    .Select(ptr => Marshal.PtrToStringAnsi(ptr))
-                    .ToArray();
-
-                UnsafeNativeMethods.libssh2_free(
+                int count = UnsafeNativeMethods.libssh2_session_supported_algs(
                     this.sessionHandle,
-                    algorithmsPtrPtr);
+                    methodType,
+                    out IntPtr algorithmsPtrPtr);
+                if (count > 0 && algorithmsPtrPtr != IntPtr.Zero)
+                {
+                    var algorithmsPtrs = new IntPtr[count];
+                    Marshal.Copy(algorithmsPtrPtr, algorithmsPtrs, 0, algorithmsPtrs.Length);
 
-                return algorithms;
-            }
-            else if (count < 0)
-            {
-                throw new SshNativeException((LIBSSH2_ERROR)count);
-            }
-            else
-            {
-                return Array.Empty<string>();
+                    var algorithms = algorithmsPtrs
+                        .Select(ptr => Marshal.PtrToStringAnsi(ptr))
+                        .ToArray();
+
+                    UnsafeNativeMethods.libssh2_free(
+                        this.sessionHandle,
+                        algorithmsPtrPtr);
+
+                    return algorithms;
+                }
+                else if (count < 0)
+                {
+                    throw new SshNativeException((LIBSSH2_ERROR)count);
+                }
+                else
+                {
+                    return Array.Empty<string>();
+                }
             }
         }
 
@@ -113,13 +116,16 @@ namespace Google.Solutions.Ssh.Native
         {
             var prefs = string.Join(",", methods);
 
-            var result = (LIBSSH2_ERROR)UnsafeNativeMethods.libssh2_session_method_pref(
-                this.sessionHandle,
-                methodType,
-                prefs);
-            if (result != LIBSSH2_ERROR.NONE)
+            lock (this.sessionHandle.SyncRoot)
             {
-                throw new SshNativeException(result);
+                var result = (LIBSSH2_ERROR)UnsafeNativeMethods.libssh2_session_method_pref(
+                    this.sessionHandle,
+                    methodType,
+                    prefs);
+                if (result != LIBSSH2_ERROR.NONE)
+                {
+                    throw new SshNativeException(result);
+                }
             }
         }
 
@@ -129,9 +135,12 @@ namespace Google.Solutions.Ssh.Native
 
         public void SetLocalBanner(string banner)
         {
-            UnsafeNativeMethods.libssh2_session_banner_set(
-                this.sessionHandle,
-                banner);
+            lock (this.sessionHandle.SyncRoot)
+            {
+                UnsafeNativeMethods.libssh2_session_banner_set(
+                    this.sessionHandle,
+                    banner);
+            }
         }
 
         //---------------------------------------------------------------------
@@ -142,15 +151,21 @@ namespace Google.Solutions.Ssh.Native
         {
             get
             {
-                var millis = UnsafeNativeMethods.libssh2_session_get_timeout(
-                    this.sessionHandle);
-                return TimeSpan.FromMilliseconds(millis);
+                lock (this.sessionHandle.SyncRoot)
+                {
+                    var millis = UnsafeNativeMethods.libssh2_session_get_timeout(
+                        this.sessionHandle);
+                    return TimeSpan.FromMilliseconds(millis);
+                }
             }
             set
             {
-                UnsafeNativeMethods.libssh2_session_set_timeout(
-                    this.sessionHandle,
-                    (int)value.TotalMilliseconds);
+                lock (this.sessionHandle.SyncRoot)
+                {
+                    UnsafeNativeMethods.libssh2_session_set_timeout(
+                        this.sessionHandle,
+                        (int)value.TotalMilliseconds);
+                }
             }
         }
 
@@ -169,16 +184,19 @@ namespace Google.Solutions.Ssh.Native
 
                 socket.Connect(remoteEndpoint);
 
-                var result = (LIBSSH2_ERROR)UnsafeNativeMethods.libssh2_session_handshake(
-                    this.sessionHandle,
-                    socket.Handle);
-                if (result != LIBSSH2_ERROR.NONE)
+                lock (this.sessionHandle.SyncRoot)
                 {
-                    socket.Close();
-                    throw new SshNativeException(result);
-                }
+                    var result = (LIBSSH2_ERROR)UnsafeNativeMethods.libssh2_session_handshake(
+                        this.sessionHandle,
+                        socket.Handle);
+                    if (result != LIBSSH2_ERROR.NONE)
+                    {
+                        socket.Close();
+                        throw new SshNativeException(result);
+                    }
 
-                return new SshConnection(this, socket);
+                    return new SshConnection(this, socket);
+                }
             });
         }
 
@@ -205,14 +223,17 @@ namespace Google.Solutions.Ssh.Native
                 handler(Encoding.ASCII.GetString(data));
             };
 
-            UnsafeNativeMethods.libssh2_trace_sethandler(
-                this.sessionHandle,
-                IntPtr.Zero,
-                this.TraceHandlerDelegate);
+            lock (this.sessionHandle.SyncRoot)
+            {
+                UnsafeNativeMethods.libssh2_trace_sethandler(
+                    this.sessionHandle,
+                    IntPtr.Zero,
+                    this.TraceHandlerDelegate);
 
-            UnsafeNativeMethods.libssh2_trace(
-                this.sessionHandle, 
-                mask);
+                UnsafeNativeMethods.libssh2_trace(
+                    this.sessionHandle,
+                    mask);
+            }
         }
 
         //---------------------------------------------------------------------
@@ -235,13 +256,16 @@ namespace Google.Solutions.Ssh.Native
 
             if (disposing)
             {
-                UnsafeNativeMethods.libssh2_trace_sethandler(
-                    this.sessionHandle,
-                    IntPtr.Zero,
-                    null);
+                lock (this.sessionHandle.SyncRoot)
+                {
+                    UnsafeNativeMethods.libssh2_trace_sethandler(
+                        this.sessionHandle,
+                        IntPtr.Zero,
+                        null);
 
 
-                this.sessionHandle.Dispose();
+                    this.sessionHandle.Dispose();
+                }
             }
         }
     }
