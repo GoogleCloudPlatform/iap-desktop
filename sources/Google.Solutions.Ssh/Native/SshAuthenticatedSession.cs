@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Google.Apis.Util;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -30,13 +31,17 @@ namespace Google.Solutions.Ssh.Native
         // Channel.
         //---------------------------------------------------------------------
 
-        public Task<SshSessionChannel> OpenSessionChannelAsync()
+        public Task<SshSessionChannel> OpenSessionChannelAsync(
+            string request,
+            string command)
         {
+            Utilities.ThrowIfNull(request, nameof(request));
+
             return Task.Run(() =>
             {
                 lock (this.sessionHandle.SyncRoot)
                 {
-                    var handle = UnsafeNativeMethods.libssh2_channel_open_ex(
+                    var channelHandle = UnsafeNativeMethods.libssh2_channel_open_ex(
                         this.sessionHandle,
                         SshSessionChannel.Type,
                         (uint)SshSessionChannel.Type.Length,
@@ -45,7 +50,7 @@ namespace Google.Solutions.Ssh.Native
                         null,
                         0);
 
-                    if (handle.IsInvalid)
+                    if (channelHandle.IsInvalid)
                     {
                         var lastError = (LIBSSH2_ERROR)UnsafeNativeMethods.libssh2_session_last_errno(
                             this.sessionHandle);
@@ -58,13 +63,30 @@ namespace Google.Solutions.Ssh.Native
                             throw new SshNativeException(lastError);
                         }
                     }
-                    else
+
+                    var result = (LIBSSH2_ERROR)UnsafeNativeMethods.libssh2_channel_process_startup(
+                        channelHandle,
+                        request,
+                        (uint)request.Length,
+                        command,
+                        command == null ? 0 : (uint)command.Length);
+
+                    if (result != LIBSSH2_ERROR.NONE)
                     {
-                        return new SshSessionChannel(handle);
+                        channelHandle.Dispose();
+                        throw new SshNativeException(result);
                     }
+
+                    return new SshSessionChannel(channelHandle);
                 }
             });
         }
+
+        public Task<SshSessionChannel> OpenShellChannelAsync()
+            => OpenSessionChannelAsync("shell", null);
+
+        public Task<SshSessionChannel> OpenExecChannelAsync(string command)
+            => OpenSessionChannelAsync("exec", command);
 
         //---------------------------------------------------------------------
         // Dispose.

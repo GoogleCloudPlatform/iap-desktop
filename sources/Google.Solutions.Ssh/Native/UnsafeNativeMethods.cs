@@ -77,6 +77,12 @@ namespace Google.Solutions.Ssh.Native
         ILLEGAL_USER_NAME = 15
     }
 
+    public enum LIBSSH2_STREAM : Int32
+    {
+        NORMAL = 0,
+        EXTENDED_DATA_STDERR = 1
+    }
+
     internal static class UnsafeNativeMethods
     {
         private const string Libssh2 = "libssh2.dll";

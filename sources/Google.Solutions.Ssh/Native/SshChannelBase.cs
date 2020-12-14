@@ -19,9 +19,6 @@ namespace Google.Solutions.Ssh.Native
         private bool closedForWriting = false;
         private bool disposed = false;
 
-        private const int DefaultStream = 0;
-        private const int StdErrStream = 1;
-
         //---------------------------------------------------------------------
         // Ctor.
         //---------------------------------------------------------------------
@@ -35,7 +32,7 @@ namespace Google.Solutions.Ssh.Native
         // I/O.
         //---------------------------------------------------------------------
 
-        public Task FlushAsync(int streamId)
+        public Task FlushAsync(LIBSSH2_STREAM streamId)
         {
             return Task.Run(() =>
             {
@@ -46,7 +43,7 @@ namespace Google.Solutions.Ssh.Native
 
                     var result = (LIBSSH2_ERROR)UnsafeNativeMethods.libssh2_channel_flush_ex(
                         this.channelHandle,
-                        streamId);
+                        (int)streamId);
 
                     if (result != LIBSSH2_ERROR.NONE)
                     {
@@ -56,11 +53,11 @@ namespace Google.Solutions.Ssh.Native
             });
         }
 
-        public Task FlushAsync() => FlushAsync(DefaultStream);
-        public Task FlushStdErrAsync() => FlushAsync(StdErrStream);
+        public Task FlushAsync() 
+            => FlushAsync(LIBSSH2_STREAM.NORMAL);
 
         public Task<uint> ReadAsync(
-            int streamId,
+            LIBSSH2_STREAM streamId,
             byte[] buffer)
         {
             Utilities.ThrowIfNull(buffer, nameof(buffer));
@@ -72,7 +69,7 @@ namespace Google.Solutions.Ssh.Native
                 {
                     var bytesRead = UnsafeNativeMethods.libssh2_channel_read_ex(
                         this.channelHandle,
-                        streamId,
+                        (int)streamId,
                         buffer,
                         new IntPtr(buffer.Length));
 
@@ -88,12 +85,11 @@ namespace Google.Solutions.Ssh.Native
             });
         }
 
-        public Task<uint> ReadAsync(byte[] buffer) => ReadAsync(DefaultStream, buffer);
-
-        public Task<uint> ReadStdErrAsync(byte[] buffer) => ReadAsync(StdErrStream, buffer);
+        public Task<uint> ReadAsync(byte[] buffer) 
+            => ReadAsync(LIBSSH2_STREAM.NORMAL, buffer);
 
         public Task<uint> WriteAsync(
-            int streamId,
+            LIBSSH2_STREAM streamId,
             byte[] buffer)
         {
             Utilities.ThrowIfNull(buffer, nameof(buffer));
@@ -107,7 +103,7 @@ namespace Google.Solutions.Ssh.Native
 
                     var bytesWritten = UnsafeNativeMethods.libssh2_channel_write_ex(
                         this.channelHandle,
-                        streamId,
+                        (int)streamId,
                         buffer,
                         new IntPtr(buffer.Length));
 
@@ -123,9 +119,8 @@ namespace Google.Solutions.Ssh.Native
             });
         }
 
-        public Task<uint> WriteAsync(byte[] buffer) => WriteAsync(DefaultStream, buffer);
-
-        public Task<uint> WriteStdErrAsync(byte[] buffer) => WriteAsync(StdErrStream, buffer);
+        public Task<uint> WriteAsync(byte[] buffer) 
+            => WriteAsync(LIBSSH2_STREAM.NORMAL, buffer);
 
         public Task CloseAsync()
         {

@@ -37,7 +37,7 @@ namespace Google.Solutions.Ssh.Test.Native
                     key);
 
                 using (var authSession = await connection.AuthenticateAsync("testuser", key))
-                using (var channel = await authSession.OpenSessionChannelAsync())
+                using (var channel = await authSession.OpenShellChannelAsync())
                 {
                     await channel.SetEnvironmentVariableAsync("FOO", "bar");
                     await channel.CloseAsync();
@@ -50,7 +50,7 @@ namespace Google.Solutions.Ssh.Test.Native
         //---------------------------------------------------------------------
 
         [Test]
-        public async Task WhenConnected_ThenStartShellSucceeds(
+        public async Task WhenConnected_ThenOpenShellChannelAsyncSucceeds(
             [LinuxInstance] ResourceTask<InstanceLocator> instanceLocatorTask)
         {
             var endpoint = new IPEndPoint(
@@ -66,10 +66,8 @@ namespace Google.Solutions.Ssh.Test.Native
                     key);
 
                 using (var authSession = await connection.AuthenticateAsync("testuser", key))
-                using (var channel = await authSession.OpenSessionChannelAsync())
+                using (var channel = await authSession.OpenShellChannelAsync())
                 {
-                    await channel.StartShellAsync();
-                    
                     var bytesWritten = await channel.WriteAsync(Encoding.ASCII.GetBytes("whoami;exit"));
                     Assert.AreEqual(11, bytesWritten);
 
@@ -90,41 +88,12 @@ namespace Google.Solutions.Ssh.Test.Native
             }
         }
 
-
-        [Test]
-        public async Task WhenExecuteCalledPreviously_ThenStartShellThrowsInvalidOperationException(
-            [LinuxInstance] ResourceTask<InstanceLocator> instanceLocatorTask)
-        {
-            var endpoint = new IPEndPoint(
-                await InstanceUtil.PublicIpAddressForInstanceAsync(await instanceLocatorTask),
-                22);
-            using (var session = CreateSession())
-            using (var connection = await session.ConnectAsync(endpoint))
-            using (var key = new RSACng())
-            {
-                await InstanceUtil.AddPublicKeyToMetadata(
-                    await instanceLocatorTask,
-                    "testuser",
-                    key);
-
-                using (var authSession = await connection.AuthenticateAsync("testuser", key))
-                using (var channel = await authSession.OpenSessionChannelAsync())
-                {
-                    await channel.ExecuteAsync("whoami");
-                    await channel.CloseAsync();
-
-                    AssertEx.ThrowsAggregateException<InvalidOperationException>(
-                        () => channel.StartShellAsync().Wait());
-                }
-            }
-        }
-
         //---------------------------------------------------------------------
         // Execute.
         //---------------------------------------------------------------------
 
         [Test]
-        public async Task WhenCommandIsValid_ThenExecuteSucceeds(
+        public async Task WhenCommandIsValid_ThenOpenExecChannelAsyncSucceeds(
             [LinuxInstance] ResourceTask<InstanceLocator> instanceLocatorTask)
         {
             var endpoint = new IPEndPoint(
@@ -140,9 +109,8 @@ namespace Google.Solutions.Ssh.Test.Native
                     key);
 
                 using (var authSession = await connection.AuthenticateAsync("testuser", key))
-                using (var channel = await authSession.OpenSessionChannelAsync())
+                using (var channel = await authSession.OpenExecChannelAsync("whoami"))
                 {
-                    await channel.ExecuteAsync("whoami");
                     await channel.CloseAsync();
 
                     var buffer = new byte[1024];
@@ -153,34 +121,6 @@ namespace Google.Solutions.Ssh.Test.Native
 
                     Assert.AreEqual(0, channel.ExitCode);
                     Assert.IsNull(channel.ExitSignal);
-                }
-            }
-        }
-
-        [Test]
-        public async Task WhenExecuteCalledPreviously_ThenExecuteThrowsInvalidOperationException(
-            [LinuxInstance] ResourceTask<InstanceLocator> instanceLocatorTask)
-        {
-            var endpoint = new IPEndPoint(
-                await InstanceUtil.PublicIpAddressForInstanceAsync(await instanceLocatorTask),
-                22);
-            using (var session = CreateSession())
-            using (var connection = await session.ConnectAsync(endpoint))
-            using (var key = new RSACng())
-            {
-                await InstanceUtil.AddPublicKeyToMetadata(
-                    await instanceLocatorTask,
-                    "testuser",
-                    key);
-
-                using (var authSession = await connection.AuthenticateAsync("testuser", key))
-                using (var channel = await authSession.OpenSessionChannelAsync())
-                {
-                    await channel.ExecuteAsync("whoami");
-                    await channel.CloseAsync();
-
-                    AssertEx.ThrowsAggregateException<InvalidOperationException>(
-                        () => channel.ExecuteAsync("whoami").Wait());
                 }
             }
         }
@@ -202,13 +142,14 @@ namespace Google.Solutions.Ssh.Test.Native
                     key);
 
                 using (var authSession = await connection.AuthenticateAsync("testuser", key))
-                using (var channel = await authSession.OpenSessionChannelAsync())
+                using (var channel = await authSession.OpenExecChannelAsync("invalidcommand"))
                 {
-                    await channel.ExecuteAsync("invalidcommand");
                     await channel.CloseAsync();
 
                     var buffer = new byte[1024];
-                    var bytesRead = await channel.ReadStdErrAsync(buffer);
+                    var bytesRead = await channel.ReadAsync(
+                        LIBSSH2_STREAM.EXTENDED_DATA_STDERR, 
+                        buffer);
                     Assert.AreNotEqual(0, bytesRead);
 
                     Assert.AreEqual(
