@@ -16,7 +16,7 @@ namespace Google.Solutions.Ssh.Native
     {
         internal readonly SshChannelHandle channelHandle;
 
-        private bool closed = false;
+        private bool closedForWriting = false;
         private bool disposed = false;
 
         private const int DefaultStream = 0;
@@ -42,7 +42,7 @@ namespace Google.Solutions.Ssh.Native
                 // TODO: Remove lock?
                 lock (this.channelHandle.SyncRoot)
                 {
-                    Debug.Assert(!this.closed);
+                    Debug.Assert(!this.closedForWriting);
 
                     var result = (LIBSSH2_ERROR)UnsafeNativeMethods.libssh2_channel_flush_ex(
                         this.channelHandle,
@@ -70,8 +70,6 @@ namespace Google.Solutions.Ssh.Native
                 // TODO: Remove lock?
                 lock (this.channelHandle.SyncRoot)
                 {
-                    Debug.Assert(!this.closed);
-
                     var bytesRead = UnsafeNativeMethods.libssh2_channel_read_ex(
                         this.channelHandle,
                         streamId,
@@ -105,7 +103,7 @@ namespace Google.Solutions.Ssh.Native
                 // TODO: Remove lock?
                 lock (this.channelHandle.SyncRoot)
                 {
-                    Debug.Assert(!this.closed);
+                    Debug.Assert(!this.closedForWriting);
 
                     var bytesWritten = UnsafeNativeMethods.libssh2_channel_write_ex(
                         this.channelHandle,
@@ -131,7 +129,7 @@ namespace Google.Solutions.Ssh.Native
 
         public Task CloseAsync()
         {
-            if (this.closed)
+            if (this.closedForWriting)
             {
                 return Task.CompletedTask;
             }
@@ -142,13 +140,13 @@ namespace Google.Solutions.Ssh.Native
                 lock (this.channelHandle.SyncRoot)
                 {
                     // Avoid closing more than once.
-                    if (!this.closed)
+                    if (!this.closedForWriting)
                     {
                         var result = (LIBSSH2_ERROR)UnsafeNativeMethods.libssh2_channel_close(
                             this.channelHandle);
                         Debug.Assert(result == LIBSSH2_ERROR.NONE);
 
-                        this.closed = true;
+                        this.closedForWriting = true;
                     }
                 }
             });
@@ -174,7 +172,7 @@ namespace Google.Solutions.Ssh.Native
 
             if (disposing)
             {
-                Debug.Assert(this.closed);
+                Debug.Assert(this.closedForWriting);
                 this.channelHandle.Dispose();
                 this.disposed = true;
             }
