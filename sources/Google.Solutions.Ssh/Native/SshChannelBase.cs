@@ -1,6 +1,7 @@
 ﻿using Google.Apis.Util;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
@@ -14,6 +15,8 @@ namespace Google.Solutions.Ssh.Native
     public abstract class SshChannelBase : IDisposable
     {
         internal readonly SshChannelHandle channelHandle;
+
+        private bool closed = false;
         private bool disposed = false;
 
         private const int DefaultStream = 0;
@@ -39,6 +42,8 @@ namespace Google.Solutions.Ssh.Native
                 // TODO: Remove lock?
                 lock (this.channelHandle.SyncRoot)
                 {
+                    Debug.Assert(!this.closed);
+
                     var result = (LIBSSH2_ERROR)UnsafeNativeMethods.libssh2_channel_flush_ex(
                         this.channelHandle,
                         streamId);
@@ -65,6 +70,8 @@ namespace Google.Solutions.Ssh.Native
                 // TODO: Remove lock?
                 lock (this.channelHandle.SyncRoot)
                 {
+                    Debug.Assert(!this.closed);
+
                     var bytesRead = UnsafeNativeMethods.libssh2_channel_read_ex(
                         this.channelHandle,
                         streamId,
@@ -98,6 +105,8 @@ namespace Google.Solutions.Ssh.Native
                 // TODO: Remove lock?
                 lock (this.channelHandle.SyncRoot)
                 {
+                    Debug.Assert(!this.closed);
+
                     var bytesWritten = UnsafeNativeMethods.libssh2_channel_write_ex(
                         this.channelHandle,
                         streamId,
@@ -120,6 +129,31 @@ namespace Google.Solutions.Ssh.Native
 
         public Task<uint> WriteStdErrAsync(byte[] buffer) => WriteAsync(StdErrStream, buffer);
 
+        public Task CloseAsync()
+        {
+            if (this.closed)
+            {
+                return Task.CompletedTask;
+            }
+
+            return Task.Run(() =>
+            {
+                // TODO: Remove lock?
+                lock (this.channelHandle.SyncRoot)
+                {
+                    // Avoid closing more than once.
+                    if (!this.closed)
+                    {
+                        var result = (LIBSSH2_ERROR)UnsafeNativeMethods.libssh2_channel_close(
+                            this.channelHandle);
+                        Debug.Assert(result == LIBSSH2_ERROR.NONE);
+
+                        this.closed = true;
+                    }
+                }
+            });
+        }
+
         //---------------------------------------------------------------------
         // Dispose.
         //---------------------------------------------------------------------
@@ -140,6 +174,7 @@ namespace Google.Solutions.Ssh.Native
 
             if (disposing)
             {
+                Debug.Assert(this.closed);
                 this.channelHandle.Dispose();
                 this.disposed = true;
             }

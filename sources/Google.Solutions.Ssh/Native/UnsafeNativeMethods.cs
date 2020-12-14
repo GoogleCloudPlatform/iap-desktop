@@ -260,7 +260,7 @@ namespace Google.Solutions.Ssh.Native
 
         [DllImport(Libssh2)]
         public static extern int libssh2_channel_close(
-            IntPtr channel);
+            SshChannelHandle channel);
 
         [DllImport(Libssh2)]
         public static extern int libssh2_channel_free(
@@ -391,10 +391,7 @@ namespace Google.Solutions.Ssh.Native
         [ReliabilityContract(Consistency.WillNotCorruptState, Cer.MayFail)]
         override protected bool ReleaseHandle()
         {
-            var result = (LIBSSH2_ERROR)UnsafeNativeMethods.libssh2_channel_close(handle);
-            Debug.Assert(result == LIBSSH2_ERROR.NONE);
-
-            result = (LIBSSH2_ERROR)UnsafeNativeMethods.libssh2_channel_free(handle);
+            var result = (LIBSSH2_ERROR)UnsafeNativeMethods.libssh2_channel_free(handle);
             Debug.Assert(result == LIBSSH2_ERROR.NONE);
             
             return true;

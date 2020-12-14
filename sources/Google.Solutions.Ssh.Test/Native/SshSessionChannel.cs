@@ -40,6 +40,7 @@ namespace Google.Solutions.Ssh.Test.Native
                 using (var channel = await authSession.OpenSessionChannelAsync())
                 {
                     await channel.SetEnvironmentVariableAsync("FOO", "bar");
+                    await channel.CloseAsync();
                 }
             }
         }
@@ -72,7 +73,8 @@ namespace Google.Solutions.Ssh.Test.Native
                     var bytesWritten = await channel.WriteAsync(Encoding.ASCII.GetBytes("whoami;exit"));
                     Assert.AreEqual(11, bytesWritten);
 
-                    await channel.FlushAsync();
+                    //await channel.FlushAsync();
+                    await channel.CloseAsync();
 
                     var buffer = new byte[1024];
                     var bytesRead = await channel.ReadAsync(buffer);
@@ -109,6 +111,7 @@ namespace Google.Solutions.Ssh.Test.Native
                 using (var channel = await authSession.OpenSessionChannelAsync())
                 {
                     await channel.ExecuteAsync("whoami");
+                    await channel.CloseAsync();
 
                     AssertEx.ThrowsAggregateException<InvalidOperationException>(
                         () => channel.StartShellAsync().Wait());
@@ -140,6 +143,7 @@ namespace Google.Solutions.Ssh.Test.Native
                 using (var channel = await authSession.OpenSessionChannelAsync())
                 {
                     await channel.ExecuteAsync("whoami");
+                    await channel.CloseAsync();
 
                     var buffer = new byte[1024];
                     var bytesRead = await channel.ReadAsync(buffer);
@@ -173,6 +177,7 @@ namespace Google.Solutions.Ssh.Test.Native
                 using (var channel = await authSession.OpenSessionChannelAsync())
                 {
                     await channel.ExecuteAsync("whoami");
+                    await channel.CloseAsync();
 
                     AssertEx.ThrowsAggregateException<InvalidOperationException>(
                         () => channel.ExecuteAsync("whoami").Wait());
@@ -200,6 +205,7 @@ namespace Google.Solutions.Ssh.Test.Native
                 using (var channel = await authSession.OpenSessionChannelAsync())
                 {
                     await channel.ExecuteAsync("invalidcommand");
+                    await channel.CloseAsync();
 
                     var buffer = new byte[1024];
                     var bytesRead = await channel.ReadStdErrAsync(buffer);

@@ -50,6 +50,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Cryptography\RSACngExtensions.cs" />
+    <Compile Include="Native\SshOutputStream.cs" />
     <Compile Include="Native\SshSessionChannel.cs" />
     <Compile Include="Native\SshChannelBase.cs" />
     <Compile Include="Native\SshAuthenticatedSession.cs" />
