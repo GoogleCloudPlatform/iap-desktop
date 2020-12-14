@@ -165,7 +165,7 @@ namespace Google.Solutions.Ssh.Test.Native
                 SshAssert.ThrowsNativeExceptionWithError(
                     session,
                     LIBSSH2_ERROR.AUTHENTICATION_FAILED,
-                    () => connection.Authenticate("invaliduser", key).Wait());
+                    () => connection.AuthenticateAsync("invaliduser", key).Wait());
             }
         }
 
@@ -190,7 +190,7 @@ namespace Google.Solutions.Ssh.Test.Native
                 SshAssert.ThrowsNativeExceptionWithError(
                     session,
                     LIBSSH2_ERROR.SOCKET_SEND,
-                    () => connection.Authenticate("testuser", key).Wait());
+                    () => connection.AuthenticateAsync("testuser", key).Wait());
             }
         }
 
@@ -209,7 +209,7 @@ namespace Google.Solutions.Ssh.Test.Native
                     await instanceLocatorTask,
                     "testuser",
                     key);
-                var authSession = await connection.Authenticate("testuser", key);
+                var authSession = await connection.AuthenticateAsync("testuser", key);
                 Assert.IsNotNull(authSession);
             }
         }

@@ -295,6 +295,11 @@ namespace Google.Solutions.Ssh.Native
             uint messageLength);
 
         [DllImport(Libssh2)]
+        public static extern int libssh2_channel_flush_ex(
+            SshChannelHandle channel,
+            int streamId);
+
+        [DllImport(Libssh2)]
         public static extern int libssh2_channel_read_ex(
             SshChannelHandle channel,
             int streamId,

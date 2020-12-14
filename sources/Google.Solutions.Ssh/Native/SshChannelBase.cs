@@ -32,7 +32,28 @@ namespace Google.Solutions.Ssh.Native
         // I/O.
         //---------------------------------------------------------------------
 
-        public Task<uint> Read(
+        public Task FlushAsync(int streamId)
+        {
+            return Task.Run(() =>
+            {
+                lock (this.channelHandle.SyncRoot)
+                {
+                    var result = (LIBSSH2_ERROR)UnsafeNativeMethods.libssh2_channel_flush_ex(
+                        this.channelHandle,
+                        streamId);
+
+                    if (result != LIBSSH2_ERROR.NONE)
+                    {
+                        throw new SshNativeException(result);
+                    }
+                }
+            });
+        }
+
+        public Task FlushAsync() => FlushAsync(DefaultStream);
+        public Task FlushStdErrAsync() => FlushAsync(StdErrStream);
+
+        public Task<uint> ReadAsync(
             int streamId,
             byte[] buffer)
         {
@@ -60,11 +81,11 @@ namespace Google.Solutions.Ssh.Native
             });
         }
 
-        public Task<uint> Read(byte[] buffer) => Read(DefaultStream, buffer);
+        public Task<uint> ReadAsync(byte[] buffer) => ReadAsync(DefaultStream, buffer);
 
-        public Task<uint> ReadStdErr(byte[] buffer) => Read(StdErrStream, buffer);
+        public Task<uint> ReadStdErrAsync(byte[] buffer) => ReadAsync(StdErrStream, buffer);
 
-        public Task<uint> Write(
+        public Task<uint> WriteAsync(
             int streamId,
             byte[] buffer)
         {
@@ -92,9 +113,9 @@ namespace Google.Solutions.Ssh.Native
             });
         }
 
-        public Task<uint> Write(byte[] buffer) => Write(DefaultStream, buffer);
+        public Task<uint> WriteAsync(byte[] buffer) => WriteAsync(DefaultStream, buffer);
 
-        public Task<uint> WriteStdErr(byte[] buffer) => Write(StdErrStream, buffer);
+        public Task<uint> WriteStdErrAsync(byte[] buffer) => WriteAsync(StdErrStream, buffer);
 
         //---------------------------------------------------------------------
         // Dispose.

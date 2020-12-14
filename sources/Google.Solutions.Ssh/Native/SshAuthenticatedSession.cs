@@ -30,7 +30,7 @@ namespace Google.Solutions.Ssh.Native
         // Channel.
         //---------------------------------------------------------------------
 
-        public Task<SshSessionChannel> OpenSessionChannel()
+        public Task<SshSessionChannel> OpenSessionChannelAsync()
         {
             return Task.Run(() =>
             {

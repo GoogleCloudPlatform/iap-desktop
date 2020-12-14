@@ -141,9 +141,7 @@ namespace Google.Solutions.Ssh.Test.Native
         {
             using (var session = CreateSession())
             {
-                SshAssert.ThrowsNativeExceptionWithError(
-                    session,
-                    LIBSSH2_ERROR.METHOD_NOT_SUPPORTED,
+                Assert.Throws<ArgumentException>(
                     () => session.GetSupportedAlgorithms((LIBSSH2_METHOD)Int32.MaxValue));
             }
         }

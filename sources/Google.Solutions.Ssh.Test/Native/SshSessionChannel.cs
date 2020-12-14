@@ -36,8 +36,8 @@ namespace Google.Solutions.Ssh.Test.Native
                     "testuser",
                     key);
 
-                using (var authSession = await connection.Authenticate("testuser", key))
-                using (var channel = await authSession.OpenSessionChannel())
+                using (var authSession = await connection.AuthenticateAsync("testuser", key))
+                using (var channel = await authSession.OpenSessionChannelAsync())
                 {
                     await channel.SetEnvironmentVariable("FOO", "bar");
                 }
@@ -64,17 +64,18 @@ namespace Google.Solutions.Ssh.Test.Native
                     "testuser",
                     key);
 
-                using (var authSession = await connection.Authenticate("testuser", key))
-                using (var channel = await authSession.OpenSessionChannel())
+                using (var authSession = await connection.AuthenticateAsync("testuser", key))
+                using (var channel = await authSession.OpenSessionChannelAsync())
                 {
                     await channel.StartShell();
                     
-                    var bytesWritten = await channel.Write(Encoding.ASCII.GetBytes("whoami;exit"));
+                    var bytesWritten = await channel.WriteAsync(Encoding.ASCII.GetBytes("whoami;exit"));
                     Assert.AreEqual(11, bytesWritten);
 
-                    var buffer = new byte[1024];
+                    await channel.FlushAsync();
 
-                    var bytesRead = await channel.Read(buffer);
+                    var buffer = new byte[1024];
+                    var bytesRead = await channel.ReadAsync(buffer);
                     Assert.AreNotEqual(0, bytesRead);
 
                     StringAssert.Contains(
@@ -103,13 +104,24 @@ namespace Google.Solutions.Ssh.Test.Native
                     "testuser",
                     key);
 
-                using (var authSession = await connection.Authenticate("testuser", key))
-                using (var channel = await authSession.OpenSessionChannel())
+                using (var authSession = await connection.AuthenticateAsync("testuser", key))
+                using (var channel = await authSession.OpenSessionChannelAsync())
                 {
                     await channel.Execute("whoami");
 
                     var buffer = new byte[1024];
-                    var bytesRead = await channel.Read(buffer);
+                    var bytesRead = await channel.ReadAsync(buffer);
+                    Assert.AreNotEqual(0, bytesRead);
+
+                    Assert.AreEqual("testuser\n", Encoding.ASCII.GetString(buffer, 0, (int)bytesRead));
+
+                    Assert.AreEqual(0, channel.ExitCode);
+                    Assert.IsNull(channel.ExitSignal);
+
+                    await channel.Execute("whoami");
+
+                    buffer = new byte[1024];
+                    bytesRead = await channel.ReadAsync(buffer);
                     Assert.AreNotEqual(0, bytesRead);
 
                     Assert.AreEqual("testuser\n", Encoding.ASCII.GetString(buffer, 0, (int)bytesRead));
@@ -121,7 +133,7 @@ namespace Google.Solutions.Ssh.Test.Native
         }
 
         [Test]
-        public async Task WhenCommandInvalid_ThenExecSucceedsAndStderrContainsError(
+        public async Task WhenCommandInvalid_ThenExecuteSucceedsAndStderrContainsError(
             [LinuxInstance] ResourceTask<InstanceLocator> instanceLocatorTask)
         {
             var endpoint = new IPEndPoint(
@@ -136,13 +148,13 @@ namespace Google.Solutions.Ssh.Test.Native
                     "testuser",
                     key);
 
-                using (var authSession = await connection.Authenticate("testuser", key))
-                using (var channel = await authSession.OpenSessionChannel())
+                using (var authSession = await connection.AuthenticateAsync("testuser", key))
+                using (var channel = await authSession.OpenSessionChannelAsync())
                 {
                     await channel.Execute("invalidcommand");
 
                     var buffer = new byte[1024];
-                    var bytesRead = await channel.ReadStdErr(buffer);
+                    var bytesRead = await channel.ReadStdErrAsync(buffer);
                     Assert.AreNotEqual(0, bytesRead);
 
                     Assert.AreEqual(

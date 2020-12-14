@@ -205,7 +205,7 @@ namespace Google.Solutions.Ssh.Native
             }
         }
 
-        public Task<SshAuthenticatedSession> Authenticate(
+        public Task<SshAuthenticatedSession> AuthenticateAsync(
             string username,
             RSACng key)
         {

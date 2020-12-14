@@ -33,13 +33,13 @@ namespace Google.Solutions.Ssh.Test.Native
                     await instanceLocatorTask,
                     "testuser",
                     key);
-                using (var authSession = await connection.Authenticate("testuser", key))
+                using (var authSession = await connection.AuthenticateAsync("testuser", key))
                 {
                     connection.Dispose();
                     SshAssert.ThrowsNativeExceptionWithError(
                         session,
                         LIBSSH2_ERROR.SOCKET_SEND,
-                        () => authSession.OpenSessionChannel().Wait());
+                        () => authSession.OpenSessionChannelAsync().Wait());
                 }
             }
         }
@@ -59,8 +59,8 @@ namespace Google.Solutions.Ssh.Test.Native
                     await instanceLocatorTask,
                     "testuser",
                     key);
-                using (var authSession = await connection.Authenticate("testuser", key))
-                using (var channel = await authSession.OpenSessionChannel())
+                using (var authSession = await connection.AuthenticateAsync("testuser", key))
+                using (var channel = await authSession.OpenSessionChannelAsync())
                 {
 
                 }
