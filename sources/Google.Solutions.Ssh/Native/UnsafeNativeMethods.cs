@@ -381,7 +381,7 @@ namespace Google.Solutions.Ssh.Native
     {
         private SshSessionHandle() : base(true)
         {
-            // Safe handle "owns" the handle.
+            HandleTable.OnHandleCreated(this, "SSH session");
         }
 
         [ReliabilityContract(Consistency.WillNotCorruptState, Cer.MayFail)]
@@ -389,6 +389,9 @@ namespace Google.Solutions.Ssh.Native
         {
             var result = (LIBSSH2_ERROR)UnsafeNativeMethods.libssh2_session_free(handle);
             Debug.Assert(result == LIBSSH2_ERROR.NONE);
+
+            HandleTable.OnHandleClosed(this);
+
             return true;
         }
 
@@ -403,7 +406,7 @@ namespace Google.Solutions.Ssh.Native
     {
         private SshChannelHandle() : base(true)
         {
-            // Safe handle "owns" the handle.
+            HandleTable.OnHandleCreated(this, "SSH session");
         }
 
         [ReliabilityContract(Consistency.WillNotCorruptState, Cer.MayFail)]
@@ -411,7 +414,9 @@ namespace Google.Solutions.Ssh.Native
         {
             var result = (LIBSSH2_ERROR)UnsafeNativeMethods.libssh2_channel_free(handle);
             Debug.Assert(result == LIBSSH2_ERROR.NONE);
-            
+
+            HandleTable.OnHandleClosed(this);
+
             return true;
         }
 

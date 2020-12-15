@@ -23,5 +23,18 @@ namespace Google.Solutions.Ssh.Test.Native
             session.Timeout = TimeSpan.FromSeconds(5);
             return session;
         }
+
+        [SetUp]
+        public void ClearOpenHandles()
+        {
+            HandleTable.Clear();
+        }
+
+        [TearDown]
+        public void CheckOpenHandles()
+        {
+            HandleTable.DumpOpenHandles();
+            Assert.AreEqual(0, HandleTable.HandleCount);
+        }
     }
 }

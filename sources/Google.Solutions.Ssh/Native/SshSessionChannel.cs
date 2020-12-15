@@ -60,7 +60,10 @@ namespace Google.Solutions.Ssh.Native
             {
                 lock (this.channelHandle.SyncRoot)
                 {
-                    // TODO: blocking?
+                    // 
+                    // NB. This call does not cause network traffic and therefore
+                    // should not block.
+                    //
                     return UnsafeNativeMethods.libssh2_channel_get_exit_status(
                         this.channelHandle);
                 }
@@ -73,7 +76,11 @@ namespace Google.Solutions.Ssh.Native
             {
                 lock (this.channelHandle.SyncRoot)
                 {
-                    // TODO: blocking?
+                    // 
+                    // NB. This call does not cause network traffic and therefore
+                    // should not block.
+                    //
+
                     var result = (LIBSSH2_ERROR)UnsafeNativeMethods.libssh2_channel_get_exit_signal(
                         this.channelHandle,
                         out IntPtr signalPtr, 
