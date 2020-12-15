@@ -345,6 +345,10 @@ namespace Google.Solutions.Ssh.Native
             SshChannelHandle channel,
             LIBSSH2_CHANNEL_EXTENDED_DATA mode);
 
+        [DllImport(Libssh2)]
+        public static extern int libssh2_channel_eof(
+            SshChannelHandle channel);
+
         //---------------------------------------------------------------------
         // Error functions.
         //---------------------------------------------------------------------

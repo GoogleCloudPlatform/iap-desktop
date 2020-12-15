@@ -70,8 +70,8 @@ namespace Google.Solutions.Ssh.Test.Native
                 using (var channel = await authSession.OpenShellChannelAsync(
                     LIBSSH2_CHANNEL_EXTENDED_DATA.MERGE))
                 {
-                    var bytesWritten = await channel.WriteAsync(Encoding.ASCII.GetBytes("whoami;exit"));
-                    Assert.AreEqual(11, bytesWritten);
+                    var bytesWritten = await channel.WriteAsync(Encoding.ASCII.GetBytes("whoami"));
+                    //Assert.AreEqual(11, bytesWritten);
 
                     //await channel.CloseAsync();
 

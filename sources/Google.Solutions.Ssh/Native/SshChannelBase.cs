@@ -32,6 +32,21 @@ namespace Google.Solutions.Ssh.Native
         // I/O.
         //---------------------------------------------------------------------
 
+        /// <summary>
+        /// Indicates whether the server has sent an EOF.
+        /// </summary>
+        public bool IsEndOfStream
+        {
+            get
+            {
+                return UnsafeNativeMethods.libssh2_channel_eof(
+                     this.channelHandle) == 1;
+            }
+        }
+
+        /// <summary>
+        /// Flush buffer containing unread data.
+        /// </summary>
         public uint Flush(LIBSSH2_STREAM streamId)
         {
             // TODO: Remove lock?
@@ -68,6 +83,13 @@ namespace Google.Solutions.Ssh.Native
                 // TODO: Remove lock?
                 lock (this.channelHandle.SyncRoot)
                 {
+                    if (this.IsEndOfStream)
+                    {
+                        // Server sent EOF, trying to read would just
+                        // end up in a timeout.
+                        return 0u;
+                    }
+
                     var bytesRead = UnsafeNativeMethods.libssh2_channel_read_ex(
                         this.channelHandle,
                         (int)streamId,

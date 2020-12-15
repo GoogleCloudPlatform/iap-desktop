@@ -52,7 +52,7 @@ namespace Google.Solutions.Ssh.Test.Native
         }
 
         [Test]
-        public async Task WhenNoMoreDataToRead_ThenReadThrowsOperationCanceledException(
+        public async Task WhenNoMoreDataToRead_ThenReadReturnZero(
             [LinuxInstance] ResourceTask<InstanceLocator> instanceLocatorTask)
         {
             var endpoint = new IPEndPoint(
