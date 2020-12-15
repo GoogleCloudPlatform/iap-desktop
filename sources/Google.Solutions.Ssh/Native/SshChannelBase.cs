@@ -32,29 +32,30 @@ namespace Google.Solutions.Ssh.Native
         // I/O.
         //---------------------------------------------------------------------
 
-        public Task FlushAsync(LIBSSH2_STREAM streamId)
+        public uint Flush(LIBSSH2_STREAM streamId)
         {
-            return Task.Run(() =>
+            // TODO: Remove lock?
+            lock (this.channelHandle.SyncRoot)
             {
-                // TODO: Remove lock?
-                lock (this.channelHandle.SyncRoot)
+                Debug.Assert(!this.closedForWriting);
+
+                var bytesFlushed = UnsafeNativeMethods.libssh2_channel_flush_ex(
+                    this.channelHandle,
+                    (int)streamId);
+
+                if (bytesFlushed < 0)
                 {
-                    Debug.Assert(!this.closedForWriting);
-
-                    var result = (LIBSSH2_ERROR)UnsafeNativeMethods.libssh2_channel_flush_ex(
-                        this.channelHandle,
-                        (int)streamId);
-
-                    if (result != LIBSSH2_ERROR.NONE)
-                    {
-                        throw new SshNativeException(result);
-                    }
+                    throw new SshNativeException((LIBSSH2_ERROR)bytesFlushed);
                 }
-            });
+                else
+                {
+                    return (uint)bytesFlushed;
+                }
+            }
         }
 
-        public Task FlushAsync() 
-            => FlushAsync(LIBSSH2_STREAM.NORMAL);
+        public uint Flush() 
+            => Flush(LIBSSH2_STREAM.NORMAL);
 
         public Task<uint> ReadAsync(
             LIBSSH2_STREAM streamId,
@@ -73,7 +74,11 @@ namespace Google.Solutions.Ssh.Native
                         buffer,
                         new IntPtr(buffer.Length));
 
-                    if (bytesRead < 0)
+                    if (bytesRead == (int)LIBSSH2_ERROR.TIMEOUT)
+                    {
+                        throw new OperationCanceledException("Read operation timed out");
+                    }
+                    else if (bytesRead < 0)
                     {
                         throw new SshNativeException((LIBSSH2_ERROR)bytesRead);
                     }
@@ -107,7 +112,11 @@ namespace Google.Solutions.Ssh.Native
                         buffer,
                         new IntPtr(buffer.Length));
 
-                    if (bytesWritten < 0)
+                    if (bytesWritten == (int)LIBSSH2_ERROR.TIMEOUT)
+                    {
+                        throw new OperationCanceledException("Read operation timed out");
+                    }
+                    else if (bytesWritten < 0)
                     {
                         throw new SshNativeException((LIBSSH2_ERROR)bytesWritten);
                     }
