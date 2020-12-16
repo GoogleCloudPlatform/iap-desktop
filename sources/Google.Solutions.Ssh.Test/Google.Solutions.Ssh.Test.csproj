@@ -76,7 +76,7 @@
   <ItemGroup>
     <Compile Include="InstanceUtil.cs" />
     <Compile Include="Native\InitializeScripts.cs" />
-    <Compile Include="Native\SshAssert.cs" />
+    <Compile Include="SshAssert.cs" />
     <Compile Include="SshFixtureBase.cs" />
     <Compile Include="Native\TestSshExecChannel.cs" />
     <Compile Include="Native\TestSshShellChannel.cs" />
