@@ -1,12 +1,8 @@
 ﻿using Microsoft.Win32.SafeHandles;
 using System;
-using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
 using System.Runtime.ConstrainedExecution;
 using System.Runtime.InteropServices;
-using System.Text;
-using System.Threading.Tasks;
 
 #pragma warning disable CA2101 // Specify marshaling for P/Invoke string arguments
 
@@ -21,30 +17,30 @@ namespace Google.Solutions.Ssh.Native
 
     public enum LIBSSH2_METHOD : Int32
     {
-        KEX       = 0,
-        HOSTKEY   = 1,
-        CRYPT_CS  = 2,  // Client -> Server
-        CRYPT_SC  = 3,  // Server -> Client
-        MAC_CS    = 4,  // Client -> Server
-        MAC_SC    = 5,  // Server -> Client
-        COMP_CS   = 6,  // Compression Client -> Server
-        COMP_SC   = 7,  // Compression Server -> Client
-        LANG_CS   = 8,  // Client -> Server
-        LANG_SC   = 9,  // Server -> Client
+        KEX = 0,
+        HOSTKEY = 1,
+        CRYPT_CS = 2,  // Client -> Server
+        CRYPT_SC = 3,  // Server -> Client
+        MAC_CS = 4,  // Client -> Server
+        MAC_SC = 5,  // Server -> Client
+        COMP_CS = 6,  // Compression Client -> Server
+        COMP_SC = 7,  // Compression Server -> Client
+        LANG_CS = 8,  // Client -> Server
+        LANG_SC = 9,  // Server -> Client
     }
 
     [Flags]
     public enum LIBSSH2_TRACE : Int32
     {
-        TRANS     = (1<<1),
-        KEX       = (1<<2),
-        AUTH      = (1<<3),
-        CONN      = (1<<4),
-        SCP       = (1<<5),
-        SFTP      = (1<<6),
-        ERROR     = (1<<7),
-        PUBLICKEY = (1<<8),
-        SOCKET    = (1<<9)
+        TRANS = (1 << 1),
+        KEX = (1 << 2),
+        AUTH = (1 << 3),
+        CONN = (1 << 4),
+        SCP = (1 << 5),
+        SFTP = (1 << 6),
+        ERROR = (1 << 7),
+        PUBLICKEY = (1 << 8),
+        SOCKET = (1 << 9)
     }
 
     public enum LIBSSH2_HOSTKEY_TYPE : Int32
@@ -251,11 +247,11 @@ namespace Google.Solutions.Ssh.Native
 
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         public delegate int SignCallback(
-            IntPtr session, 
-            out IntPtr signature, 
+            IntPtr session,
+            out IntPtr signature,
             out IntPtr signatureLength,
-            IntPtr data, 
-            IntPtr dataLength, 
+            IntPtr data,
+            IntPtr dataLength,
             IntPtr context);
 
         [DllImport(Libssh2, CharSet = CharSet.Ansi)]
@@ -317,8 +313,8 @@ namespace Google.Solutions.Ssh.Native
             SshChannelHandle channel,
             int streamId,
             byte[] buffer,
-            IntPtr bufferSize);        
-        
+            IntPtr bufferSize);
+
         [DllImport(Libssh2)]
         public static extern int libssh2_channel_write_ex(
             SshChannelHandle channel,
@@ -352,13 +348,13 @@ namespace Google.Solutions.Ssh.Native
         [DllImport(Libssh2, CharSet = CharSet.Ansi)]
         public static extern int libssh2_channel_request_pty_ex(
             SshChannelHandle channel,
-            [MarshalAs(UnmanagedType.LPStr)] string term, 
+            [MarshalAs(UnmanagedType.LPStr)] string term,
             uint termLength,
-            byte[] modes, 
-            uint modesLength, 
-            int width, 
-            int height, 
-            int widthPx, 
+            byte[] modes,
+            uint modesLength,
+            int width,
+            int height,
+            int widthPx,
             int heightPx);
 
         [DllImport(Libssh2)]

@@ -250,7 +250,7 @@ namespace Google.Solutions.Ssh.Native
             {
                 Debug.Assert(context == IntPtr.Zero);
                 Debug.Assert(session == this.sessionHandle.DangerousGetHandle());
-                
+
                 //
                 // Copy data to managed buffer and create signature.
                 //
@@ -270,14 +270,14 @@ namespace Google.Solutions.Ssh.Native
                 signatureLength = new IntPtr(signature.Length);
                 signaturePtr = SshSession.AllocDelegate(signatureLength, IntPtr.Zero);
                 Marshal.Copy(signature, 0, signaturePtr, signature.Length);
-                
+
                 return (int)LIBSSH2_ERROR.NONE;
             }
 
             return Task.Run(() =>
             {
                 using (SshTraceSources.Default.TraceMethod().WithParameters(username))
-                { 
+                {
                     //
                     // NB. The public key must be passed in OpenSSH format, not PEM.
                     // cf. https://tools.ietf.org/html/rfc4253#section-6.6

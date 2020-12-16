@@ -156,7 +156,7 @@ namespace Google.Solutions.Ssh.Test.Native
             using (var session = CreateSession())
             {
                 session.SetPreferredMethods(
-                    LIBSSH2_METHOD.KEX, 
+                    LIBSSH2_METHOD.KEX,
                     new[] { "diffie-hellman-group-exchange-sha1" });
 
                 SshAssert.ThrowsNativeExceptionWithError(

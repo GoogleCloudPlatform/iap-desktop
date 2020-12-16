@@ -1,11 +1,7 @@
 ﻿using Google.Apis.Util;
 using Google.Solutions.Common.Diagnostics;
 using System;
-using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
-using System.Runtime.InteropServices;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace Google.Solutions.Ssh.Native
@@ -76,7 +72,7 @@ namespace Google.Solutions.Ssh.Native
             }
         }
 
-        public uint Flush() 
+        public uint Flush()
             => Flush(LIBSSH2_STREAM.NORMAL);
 
         public Task<uint> ReadAsync(
@@ -122,7 +118,7 @@ namespace Google.Solutions.Ssh.Native
             });
         }
 
-        public Task<uint> ReadAsync(byte[] buffer) 
+        public Task<uint> ReadAsync(byte[] buffer)
             => ReadAsync(LIBSSH2_STREAM.NORMAL, buffer);
 
         public Task<uint> WriteAsync(
@@ -163,7 +159,7 @@ namespace Google.Solutions.Ssh.Native
             });
         }
 
-        public Task<uint> WriteAsync(byte[] buffer) 
+        public Task<uint> WriteAsync(byte[] buffer)
             => WriteAsync(LIBSSH2_STREAM.NORMAL, buffer);
 
         public Task CloseAsync()

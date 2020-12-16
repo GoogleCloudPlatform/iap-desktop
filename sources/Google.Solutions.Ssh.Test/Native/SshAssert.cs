@@ -2,9 +2,6 @@
 using Google.Solutions.Ssh.Native;
 using NUnit.Framework;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace Google.Solutions.Ssh.Test.Native
@@ -13,7 +10,7 @@ namespace Google.Solutions.Ssh.Test.Native
     {
         public static void ThrowsNativeExceptionWithError(
             SshSession session,
-            LIBSSH2_ERROR expected, 
+            LIBSSH2_ERROR expected,
             Action action)
         {
             try

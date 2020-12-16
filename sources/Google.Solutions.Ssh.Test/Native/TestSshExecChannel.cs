@@ -1,10 +1,7 @@
 ﻿using Google.Solutions.Common.Locator;
-using Google.Solutions.Common.Test;
 using Google.Solutions.Common.Test.Integration;
 using Google.Solutions.Ssh.Native;
 using NUnit.Framework;
-using System;
-using System.Linq;
 using System.Net;
 using System.Security.Cryptography;
 using System.Text;
@@ -109,12 +106,12 @@ namespace Google.Solutions.Ssh.Test.Native
 
                     var buffer = new byte[1024];
                     var bytesRead = await channel.ReadAsync(
-                        LIBSSH2_STREAM.EXTENDED_DATA_STDERR, 
+                        LIBSSH2_STREAM.EXTENDED_DATA_STDERR,
                         buffer);
                     Assert.AreNotEqual(0, bytesRead);
 
                     Assert.AreEqual(
-                        "bash: invalidcommand: command not found\n", 
+                        "bash: invalidcommand: command not found\n",
                         Encoding.ASCII.GetString(buffer, 0, (int)bytesRead));
 
                     Assert.AreEqual(127, channel.ExitCode);

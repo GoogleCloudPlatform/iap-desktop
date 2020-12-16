@@ -1,9 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Google.Solutions.Ssh.Native
 {
@@ -48,7 +45,7 @@ namespace Google.Solutions.Ssh.Native
             }
         }
 
-        public SshNativeException(LIBSSH2_ERROR code) 
+        public SshNativeException(LIBSSH2_ERROR code)
             : base(MessageFromCode(code))
         {
             Debug.Assert(code != LIBSSH2_ERROR.NONE);

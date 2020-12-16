@@ -1,11 +1,8 @@
 ﻿using Google.Solutions.Common.Locator;
-using Google.Solutions.Common.Test;
 using Google.Solutions.Common.Test.Integration;
 using Google.Solutions.Ssh.Native;
 using NUnit.Framework;
-using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Net;
 using System.Security.Cryptography;
 using System.Text;
@@ -94,7 +91,7 @@ namespace Google.Solutions.Ssh.Test.Native
                     // Read command output.
                     var output = await ReadToEndAsync(channel, Encoding.ASCII);
                     StringAssert.Contains(
-                        "whoami;exit\r\ntestuser\r\nlogout\r\n", 
+                        "whoami;exit\r\ntestuser\r\nlogout\r\n",
                         output);
 
                     Assert.AreEqual(0, channel.ExitCode);
@@ -209,7 +206,7 @@ namespace Google.Solutions.Ssh.Test.Native
                     // Read initial terminal size.
                     await channel.WriteAsync(Encoding.ASCII.GetBytes("echo $COLUMNS $LINES\n"));
                     await ReadUntilAsync(channel, "\n", Encoding.ASCII);
-                    
+
                     var terminalSize = await ReadUntilAsync(channel, "\n", Encoding.ASCII);
                     Assert.AreEqual("80 24\r\n", terminalSize);
 
@@ -219,7 +216,7 @@ namespace Google.Solutions.Ssh.Test.Native
                     // Read terminal size again.
                     await channel.WriteAsync(Encoding.ASCII.GetBytes("echo $COLUMNS $LINES\n"));
                     await ReadUntilAsync(channel, "\n", Encoding.ASCII);
-                    
+
                     terminalSize = await ReadUntilAsync(channel, "\n", Encoding.ASCII);
                     Assert.AreEqual("100 30\r\n", terminalSize);
 

@@ -1,10 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace Google.Solutions.Ssh.Cryptography
 {
@@ -37,7 +34,7 @@ namespace Google.Solutions.Ssh.Cryptography
             {
                 buffer.Write(ToBytes(prefixEncoded.Length), 0, 4);
                 buffer.Write(prefixEncoded, 0, prefixEncoded.Length);
-                
+
                 buffer.Write(ToBytes(exponent.Length), 0, 4);
                 buffer.Write(exponent, 0, exponent.Length);
 

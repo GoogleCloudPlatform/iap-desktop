@@ -5,11 +5,9 @@ using Google.Solutions.Common.Test.Integration;
 using Google.Solutions.Common.Util;
 using Google.Solutions.Ssh.Cryptography;
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Security.Cryptography;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
