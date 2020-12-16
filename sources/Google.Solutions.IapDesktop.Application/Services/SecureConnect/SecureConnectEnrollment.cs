@@ -51,7 +51,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.SecureConnect
 
         private void Refresh()
         {
-            using (TraceSources.IapDesktop.TraceMethod().WithoutParameters())
+            using (ApplicationTraceSources.Default.TraceMethod().WithoutParameters())
             {
                 if (!this.applicationSettingsRepository.GetSettings()
                     .IsDeviceCertificateAuthenticationEnabled.BoolValue)
@@ -80,7 +80,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.SecureConnect
                     // False positives are harmless, so assume the device is enrolled.
                     //
 
-                    TraceSources.IapDesktop.TraceInformation("Device certificate found " +
+                    ApplicationTraceSources.Default.TraceInformation("Device certificate found " +
                         "in certificate store, assuming device to be enrolled");
 
                     this.State = DeviceEnrollmentState.Enrolled;
@@ -92,7 +92,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.SecureConnect
                     // No certiticate found, so the device cannot be enrolled.
                     // 
 
-                    TraceSources.IapDesktop.TraceInformation("No device certificate found " +
+                    ApplicationTraceSources.Default.TraceInformation("No device certificate found " +
                         "in certificate store, device not enrolled");
 
                     this.State = DeviceEnrollmentState.NotEnrolled;

@@ -133,7 +133,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Os.Views.PackageInventory
                 // Reading OS inventory data can fail because of a 
                 // `compute.disableGuestAttributesAccess` constraint.
                 //
-                TraceSources.IapDesktop.TraceWarning(
+                ApplicationTraceSources.Default.TraceWarning(
                     "Failed to load OS inventory data: {0}", e);
 
                 inventory = Enumerable.Empty<GuestOsInfo>();

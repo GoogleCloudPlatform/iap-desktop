@@ -93,7 +93,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services.UsageReport
         public async Task<ReportArchive> BuildAsync(
             CancellationToken cancellationToken)
         {
-            using (TraceSources.IapDesktop.TraceMethod().WithParameters(this.projectIds, sources))
+            using (ApplicationTraceSources.Default.TraceMethod().WithParameters(this.projectIds, sources))
             {
                 this.PercentageDone = 5;
                 this.BuildStatus = "1. Analyzing current inventory...";
@@ -163,7 +163,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services.UsageReport
 
                         if (auditLogExportBucket != null)
                         {
-                            TraceSources.IapDesktop.TraceVerbose(
+                            ApplicationTraceSources.Default.TraceVerbose(
                                 "Found storage export buckets for {0}: {1}",
                                 projectId,
                                 auditLogExportBucket);
@@ -192,7 +192,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services.UsageReport
                     this.PercentageDone = 30;
                     this.BuildStatus += $"\n3. Querying Audit Log API...";
 
-                    TraceSources.IapDesktop.TraceVerbose(
+                    ApplicationTraceSources.Default.TraceVerbose(
                         "Querying audit log API for remaining projects {0}",
                         string.Join(", ", pendingProjectIds));
 

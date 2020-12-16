@@ -241,7 +241,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Views.EventLog
             IProjectExplorerNode node,
             CancellationToken token)
         {
-            using (TraceSources.IapDesktop.TraceMethod().WithParameters(node))
+            using (ApplicationTraceSources.Default.TraceMethod().WithParameters(node))
             {
                 IEnumerable<ulong> instanceIdFilter;
                 IEnumerable<string> zonesFilter;

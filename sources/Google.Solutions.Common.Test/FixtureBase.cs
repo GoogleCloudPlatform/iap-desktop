@@ -31,10 +31,10 @@ namespace Google.Solutions.Common.Test
         [SetUp]
         public void SetUpTracing()
         {
-            if (!TraceSources.Common.Listeners.Contains(listener))
+            if (!CommonTraceSources.Default.Listeners.Contains(listener))
             {
-                TraceSources.Common.Listeners.Add(listener);
-                TraceSources.Common.Switch.Level = SourceLevels.Verbose;
+                CommonTraceSources.Default.Listeners.Add(listener);
+                CommonTraceSources.Default.Switch.Level = SourceLevels.Verbose;
             }
 
             listener.WriteLine("Start " + TestContext.CurrentContext.Test.FullName);

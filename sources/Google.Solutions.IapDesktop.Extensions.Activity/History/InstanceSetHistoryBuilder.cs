@@ -103,7 +103,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.History
             IEnumerable<Disk> disks,
             string projectId)
         {
-            using (TraceSources.IapDesktop.TraceMethod().WithParameters(projectId))
+            using (ApplicationTraceSources.Default.TraceMethod().WithParameters(projectId))
             {
                 //
                 // NB. Instances.list returns the disks associated with each
@@ -114,12 +114,12 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.History
                     .EnsureNotNull()
                     .ToDictionary(d => d.SelfLink, d => d.SourceImage);
 
-                TraceSources.IapDesktop.TraceVerbose("Found {0} existing disks", sourceImagesByDisk.Count());
-                TraceSources.IapDesktop.TraceVerbose("Found {0} existing instances", instances.Count());
+                ApplicationTraceSources.Default.TraceVerbose("Found {0} existing disks", sourceImagesByDisk.Count());
+                ApplicationTraceSources.Default.TraceVerbose("Found {0} existing instances", instances.Count());
 
                 foreach (var instance in instances)
                 {
-                    TraceSources.IapDesktop.TraceVerbose("Adding {0}", instance.Id);
+                    ApplicationTraceSources.Default.TraceVerbose("Adding {0}", instance.Id);
 
                     var bootDiskUrl = instance.Disks
                         .EnsureNotNull()
@@ -150,7 +150,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.History
                             .Any(locator => locator == instanceLocator));
                         if (node == null)
                         {
-                            TraceSources.IapDesktop.TraceWarning(
+                            ApplicationTraceSources.Default.TraceWarning(
                                 "Could not identify node {0} is scheduled on",
                                 instanceLocator);
                         }

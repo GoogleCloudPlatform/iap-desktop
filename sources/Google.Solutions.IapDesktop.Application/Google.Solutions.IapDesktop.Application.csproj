@@ -233,7 +233,7 @@
     </Compile>
     <Compile Include="Views\Dialog\TaskDialog.cs" />
     <Compile Include="Services\UpdateService.cs" />
-    <Compile Include="TraceSources.cs" />
+    <Compile Include="ApplicationTraceSources.cs" />
     <Compile Include="Util\LeastRecentlyUsedCache.cs" />
     <Compile Include="Util\RangeObservableCollection.cs" />
     <Compile Include="Util\SecureStringExtensions.cs" />

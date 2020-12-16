@@ -101,7 +101,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.Adapters
             string filter,
             CancellationToken cancellationToken)
         {
-            using (TraceSources.IapDesktop.TraceMethod().WithParameters(filter))
+            using (ApplicationTraceSources.Default.TraceMethod().WithParameters(filter))
             {
                 var request = new ProjectsResource.ListRequest(this.service)
                 {
@@ -122,7 +122,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.Adapters
                 // Filter projects in deleted/pending delete state.
                 var result = projects.Where(p => p.LifecycleState == "ACTIVE");
 
-                TraceSources.IapDesktop.TraceVerbose("Found {0} projects", result.Count());
+                ApplicationTraceSources.Default.TraceVerbose("Found {0} projects", result.Count());
 
                 return result;
             }
@@ -148,7 +148,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.Adapters
             string projectId,
             string permission)
         {
-            using (TraceSources.IapDesktop.TraceMethod().WithParameters(permission))
+            using (ApplicationTraceSources.Default.TraceMethod().WithParameters(permission))
             {
                 var response = await this.service.Projects.TestIamPermissions(
                         new TestIamPermissionsRequest()

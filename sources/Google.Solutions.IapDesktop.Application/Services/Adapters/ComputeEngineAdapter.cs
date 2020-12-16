@@ -159,7 +159,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.Adapters
             string projectId,
             CancellationToken cancellationToken)
         {
-            using (TraceSources.IapDesktop.TraceMethod().WithParameters(projectId))
+            using (ApplicationTraceSources.Default.TraceMethod().WithParameters(projectId))
             {
                 try
                 {
@@ -179,7 +179,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.Adapters
             string projectId,
             CancellationToken cancellationToken)
         {
-            using (TraceSources.IapDesktop.TraceMethod().WithParameters(projectId))
+            using (ApplicationTraceSources.Default.TraceMethod().WithParameters(projectId))
             {
                 try
                 {
@@ -200,7 +200,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.Adapters
                         .Where(z => z.Instances != null)    // API returns null for empty zones.
                         .SelectMany(zone => zone.Instances);
 
-                    TraceSources.IapDesktop.TraceVerbose("Found {0} instances", result.Count());
+                    ApplicationTraceSources.Default.TraceVerbose("Found {0} instances", result.Count());
 
                     return result;
                 }
@@ -216,7 +216,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.Adapters
             ZoneLocator zoneLocator,
             CancellationToken cancellationToken)
         {
-            using (TraceSources.IapDesktop.TraceMethod().WithParameters(zoneLocator))
+            using (ApplicationTraceSources.Default.TraceMethod().WithParameters(zoneLocator))
             {
                 try
                 {
@@ -233,7 +233,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.Adapters
                             cancellationToken)
                         .ConfigureAwait(false);
 
-                    TraceSources.IapDesktop.TraceVerbose("Found {0} instances", result.Count());
+                    ApplicationTraceSources.Default.TraceVerbose("Found {0} instances", result.Count());
 
                     return result;
                 }
@@ -249,7 +249,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.Adapters
             InstanceLocator instanceLocator,
             CancellationToken cancellationToken)
         {
-            using (TraceSources.IapDesktop.TraceMethod().WithParameters(instanceLocator))
+            using (ApplicationTraceSources.Default.TraceMethod().WithParameters(instanceLocator))
             {
                 try
                 {
@@ -272,7 +272,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.Adapters
             string queryPath,
             CancellationToken cancellationToken)
         {
-            using (TraceSources.IapDesktop.TraceMethod().WithParameters(instanceLocator))
+            using (ApplicationTraceSources.Default.TraceMethod().WithParameters(instanceLocator))
             {
                 try
                 {
@@ -302,7 +302,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.Adapters
             string projectId,
             CancellationToken cancellationToken)
         {
-            using (TraceSources.IapDesktop.TraceMethod().WithParameters(projectId))
+            using (ApplicationTraceSources.Default.TraceMethod().WithParameters(projectId))
             {
                 try
                 {
@@ -323,7 +323,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.Adapters
                         .Where(z => z.Disks != null)    // API returns null for empty zones.
                         .SelectMany(zone => zone.Disks);
 
-                    TraceSources.IapDesktop.TraceVerbose("Found {0} disks", result.Count());
+                    ApplicationTraceSources.Default.TraceVerbose("Found {0} disks", result.Count());
 
                     return result;
                 }
@@ -339,7 +339,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.Adapters
             string projectId,
             CancellationToken cancellationToken)
         {
-            using (TraceSources.IapDesktop.TraceMethod().WithParameters(projectId))
+            using (ApplicationTraceSources.Default.TraceMethod().WithParameters(projectId))
             {
                 try
                 {
@@ -360,7 +360,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.Adapters
                         .Where(z => z.NodeGroups != null)    // API returns null for empty zones.
                         .SelectMany(zone => zone.NodeGroups);
 
-                    TraceSources.IapDesktop.TraceVerbose("Found {0} node groups", result.Count());
+                    ApplicationTraceSources.Default.TraceVerbose("Found {0} node groups", result.Count());
 
                     return result;
                 }
@@ -377,7 +377,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.Adapters
             string nodeGroup,
             CancellationToken cancellationToken)
         {
-            using (TraceSources.IapDesktop.TraceMethod().WithParameters(zone, nodeGroup))
+            using (ApplicationTraceSources.Default.TraceMethod().WithParameters(zone, nodeGroup))
             {
                 try
                 {
@@ -406,7 +406,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.Adapters
             string projectId,
             CancellationToken cancellationToken)
         {
-            using (TraceSources.IapDesktop.TraceMethod().WithParameters(projectId))
+            using (ApplicationTraceSources.Default.TraceMethod().WithParameters(projectId))
             {
                 var nodeGroups = await ListNodeGroupsAsync(
                         projectId,
@@ -459,7 +459,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.Adapters
 
         public async Task<Instance> GetInstanceAsync(string projectId, string zone, string instanceName)
         {
-            using (TraceSources.IapDesktop.TraceMethod().WithParameters(projectId, zone, instanceName))
+            using (ApplicationTraceSources.Default.TraceMethod().WithParameters(projectId, zone, instanceName))
             {
                 return await this.service.Instances.Get(projectId, zone, instanceName)
                     .ExecuteAsync()
@@ -472,7 +472,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.Adapters
 
         public IAsyncReader<string> GetSerialPortOutput(InstanceLocator instanceRef, ushort portNumber)
         {
-            using (TraceSources.IapDesktop.TraceMethod().WithParameters(instanceRef))
+            using (ApplicationTraceSources.Default.TraceMethod().WithParameters(instanceRef))
             {
                 return this.service.Instances.GetSerialPortOutputStream(instanceRef, portNumber);
             }
@@ -482,7 +482,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.Adapters
             InstanceLocator instanceLocator,
             string permission)
         {
-            using (TraceSources.IapDesktop.TraceMethod().WithParameters(permission))
+            using (ApplicationTraceSources.Default.TraceMethod().WithParameters(permission))
             {
                 var response = await this.service.Instances.TestIamPermissions(
                         new TestPermissionsRequest
@@ -526,7 +526,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.Adapters
             TimeSpan timeout,
             CancellationToken token)
         {
-            using (TraceSources.IapDesktop.TraceMethod().WithParameters(instanceRef, timeout))
+            using (ApplicationTraceSources.Default.TraceMethod().WithParameters(instanceRef, timeout))
             {
                 return await this.service.Instances.ResetWindowsUserAsync(
                     instanceRef,

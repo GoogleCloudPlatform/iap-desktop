@@ -123,7 +123,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Os.Views.InstanceProperties
             IProjectExplorerNode node,
             CancellationToken token)
         {
-            using (TraceSources.IapDesktop.TraceMethod().WithParameters(node))
+            using (ApplicationTraceSources.Default.TraceMethod().WithParameters(node))
             {
                 if (node is IProjectExplorerVmInstanceNode vmNode)
                 {
@@ -160,7 +160,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Os.Views.InstanceProperties
 
         protected override void ApplyModel(bool cached)
         {
-            using (TraceSources.IapDesktop.TraceMethod().WithParameters(this.Model, cached))
+            using (ApplicationTraceSources.Default.TraceMethod().WithParameters(this.Model, cached))
             {
                 if (this.Model == null)
                 {

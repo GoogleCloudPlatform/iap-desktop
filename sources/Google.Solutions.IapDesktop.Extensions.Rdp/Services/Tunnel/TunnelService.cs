@@ -56,7 +56,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Services.Tunnel
             TunnelDestination tunnelEndpoint,
             ISshRelayPolicy relayPolicy)
         {
-            using (TraceSources.IapDesktop.TraceMethod().WithParameters(tunnelEndpoint))
+            using (ApplicationTraceSources.Default.TraceMethod().WithParameters(tunnelEndpoint))
             {
                 var clientCertificate =
                         (this.authorizationService.DeviceEnrollment != null &&
@@ -66,7 +66,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Services.Tunnel
 
                 if (clientCertificate != null)
                 {
-                    TraceSources.IapDesktop.TraceInformation(
+                    ApplicationTraceSources.Default.TraceInformation(
                         "Using client certificate (valid till {0})", clientCertificate.NotAfter);
                 }
 

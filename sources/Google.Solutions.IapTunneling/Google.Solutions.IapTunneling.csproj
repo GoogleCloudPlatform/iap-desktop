@@ -80,7 +80,7 @@
     <Compile Include="Iap\AllowAllRelayPolicy.cs" />
     <Compile Include="Net\RestrictedHeaderConfigPatch.cs" />
     <Compile Include="Net\ConnectionStatistics.cs" />
-    <Compile Include="TraceSources.cs" />
+    <Compile Include="IapTraceSources.cs" />
     <Compile Include="Iap\IapTunnelingEndpoint.cs" />
     <Compile Include="Net\FragmentingStream.cs" />
     <Compile Include="Net\INetworkStream.cs" />

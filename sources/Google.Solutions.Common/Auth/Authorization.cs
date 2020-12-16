@@ -78,12 +78,12 @@ namespace Google.Solutions.Common.Auth
 
             if (oauthAdapter.IsRefreshTokenValid(existingTokenResponse))
             {
-                TraceSources.Common.TraceVerbose("Found existing credentials");
+                CommonTraceSources.Default.TraceVerbose("Found existing credentials");
 
                 var scopesOfExistingTokenResponse = existingTokenResponse.Scope.Split(' ');
                 if (!scopesOfExistingTokenResponse.ContainsAll(oauthAdapter.Scopes))
                 {
-                    TraceSources.Common.TraceVerbose(
+                    CommonTraceSources.Default.TraceVerbose(
                         "Dropping existing credential as it lacks one or more scopes");
 
                     // The existing auth might be fine, but it lacks a scope.
@@ -115,7 +115,7 @@ namespace Google.Solutions.Common.Auth
             IAuthAdapter oauthAdapter,
             CancellationToken token)
         {
-            TraceSources.Common.TraceVerbose("Authorizing");
+            CommonTraceSources.Default.TraceVerbose("Authorizing");
 
             // Pop up browser window.
             var credential = await oauthAdapter

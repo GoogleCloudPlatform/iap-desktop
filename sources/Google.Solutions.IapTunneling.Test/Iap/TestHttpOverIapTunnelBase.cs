@@ -127,7 +127,7 @@ namespace Google.Solutions.IapTunneling.Test.Iap
 
                     if (response.IsComplete)
                     {
-                        TraceSources.Compute.TraceVerbose("Got full response");
+                        IapTraceSources.Default.TraceVerbose("Got full response");
                         break;
                     }
                 }

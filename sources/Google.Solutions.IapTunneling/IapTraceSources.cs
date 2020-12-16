@@ -23,8 +23,8 @@ using System.Diagnostics;
 
 namespace Google.Solutions.IapTunneling
 {
-    public static class TraceSources
+    public static class IapTraceSources
     {
-        public static readonly TraceSource Compute = new TraceSource(typeof(TraceSources).Namespace);
+        public static readonly TraceSource Default = new TraceSource(typeof(IapTraceSources).Namespace);
     }
 }

@@ -169,13 +169,13 @@ namespace Google.Solutions.IapTunneling.Iap
                             var socket = this.listener.AcceptSocket();
                             if (this.policy.IsClientAllowed((IPEndPoint)socket.RemoteEndPoint))
                             {
-                                TraceSources.Compute.TraceInformation(
+                                IapTraceSources.Default.TraceInformation(
                                     "Connection from {0} allowed by policy", socket.RemoteEndPoint);
 
                             }
                             else
                             {
-                                TraceSources.Compute.TraceWarning(
+                                IapTraceSources.Default.TraceWarning(
                                     "Connection from {0} rejected by policy", socket.RemoteEndPoint);
                                 socket.Close();
                                 continue;
@@ -192,7 +192,7 @@ namespace Google.Solutions.IapTunneling.Iap
                                     serverStream.RelayToAsync(clientStream, token))
                                 .ContinueWith(t =>
                                 {
-                                    TraceSources.Compute.TraceVerbose("SshRelayListener: Closed connection");
+                                    IapTraceSources.Default.TraceVerbose("SshRelayListener: Closed connection");
 
                                     if (t.IsFaulted)
                                     {

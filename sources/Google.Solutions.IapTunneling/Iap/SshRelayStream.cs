@@ -115,9 +115,9 @@ namespace Google.Solutions.IapTunneling.Iap
 
         private void TraceLine(string message)
         {
-            if (TraceSources.Compute.Switch.ShouldTrace(TraceEventType.Verbose))
+            if (IapTraceSources.Default.Switch.ShouldTrace(TraceEventType.Verbose))
             {
-                TraceSources.Compute.TraceVerbose(
+                IapTraceSources.Default.TraceVerbose(
                     "SshRelayStream [TX: {0} TXA: {1} RX: {2} AQ: {3}]: {4}",
                     Thread.VolatileRead(ref this.bytesSent),
                     Thread.VolatileRead(ref this.bytesSentAndAcknoledged),
