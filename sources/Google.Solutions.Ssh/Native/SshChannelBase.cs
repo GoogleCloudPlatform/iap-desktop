@@ -1,4 +1,5 @@
 ﻿using Google.Apis.Util;
+using Google.Solutions.Common.Diagnostics;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -39,8 +40,11 @@ namespace Google.Solutions.Ssh.Native
         {
             get
             {
-                return UnsafeNativeMethods.libssh2_channel_eof(
-                     this.channelHandle) == 1;
+                using (SshTraceSources.Default.TraceMethod().WithoutParameters())
+                {
+                    return UnsafeNativeMethods.libssh2_channel_eof(
+                        this.channelHandle) == 1;
+                }
             }
         }
 
@@ -49,20 +53,25 @@ namespace Google.Solutions.Ssh.Native
         /// </summary>
         public uint Flush(LIBSSH2_STREAM streamId)
         {
-            // TODO: Remove lock?
-            lock (this.channelHandle.SyncRoot)
+            using (SshTraceSources.Default.TraceMethod().WithParameters(streamId))
             {
-                var bytesFlushed = UnsafeNativeMethods.libssh2_channel_flush_ex(
-                    this.channelHandle,
-                    (int)streamId);
+                // TODO: Remove lock?
+                lock (this.channelHandle.SyncRoot)
+                {
+                    Debug.Assert(!this.closedForWriting);
 
-                if (bytesFlushed < 0)
-                {
-                    throw new SshNativeException((LIBSSH2_ERROR)bytesFlushed);
-                }
-                else
-                {
-                    return (uint)bytesFlushed;
+                    var bytesFlushed = UnsafeNativeMethods.libssh2_channel_flush_ex(
+                        this.channelHandle,
+                        (int)streamId);
+
+                    if (bytesFlushed < 0)
+                    {
+                        throw new SshNativeException((LIBSSH2_ERROR)bytesFlushed);
+                    }
+                    else
+                    {
+                        return (uint)bytesFlushed;
+                    }
                 }
             }
         }
@@ -78,33 +87,36 @@ namespace Google.Solutions.Ssh.Native
 
             return Task.Run(() =>
             {
-                // TODO: Remove lock?
-                lock (this.channelHandle.SyncRoot)
+                using (SshTraceSources.Default.TraceMethod().WithParameters(streamId))
                 {
-                    if (this.IsEndOfStream)
+                    // TODO: Remove lock?
+                    lock (this.channelHandle.SyncRoot)
                     {
-                        // Server sent EOF, trying to read would just
-                        // end up in a timeout.
-                        return 0u;
-                    }
+                        if (this.IsEndOfStream)
+                        {
+                            // Server sent EOF, trying to read would just
+                            // end up in a timeout.
+                            return 0u;
+                        }
 
-                    var bytesRead = UnsafeNativeMethods.libssh2_channel_read_ex(
-                        this.channelHandle,
-                        (int)streamId,
-                        buffer,
-                        new IntPtr(buffer.Length));
+                        var bytesRead = UnsafeNativeMethods.libssh2_channel_read_ex(
+                            this.channelHandle,
+                            (int)streamId,
+                            buffer,
+                            new IntPtr(buffer.Length));
 
-                    if (bytesRead == (int)LIBSSH2_ERROR.TIMEOUT)
-                    {
-                        throw new TimeoutException("Read operation timed out");
-                    }
-                    else if (bytesRead < 0)
-                    {
-                        throw new SshNativeException((LIBSSH2_ERROR)bytesRead);
-                    }
-                    else
-                    {
-                        return (uint)bytesRead;
+                        if (bytesRead == (int)LIBSSH2_ERROR.TIMEOUT)
+                        {
+                            throw new TimeoutException("Read operation timed out");
+                        }
+                        else if (bytesRead < 0)
+                        {
+                            throw new SshNativeException((LIBSSH2_ERROR)bytesRead);
+                        }
+                        else
+                        {
+                            return (uint)bytesRead;
+                        }
                     }
                 }
             });
@@ -121,28 +133,31 @@ namespace Google.Solutions.Ssh.Native
 
             return Task.Run(() =>
             {
-                // TODO: Remove lock?
-                lock (this.channelHandle.SyncRoot)
+                using (SshTraceSources.Default.TraceMethod().WithParameters(streamId))
                 {
-                    Debug.Assert(!this.closedForWriting);
+                    // TODO: Remove lock?
+                    lock (this.channelHandle.SyncRoot)
+                    {
+                        Debug.Assert(!this.closedForWriting);
 
-                    var bytesWritten = UnsafeNativeMethods.libssh2_channel_write_ex(
-                        this.channelHandle,
-                        (int)streamId,
-                        buffer,
-                        new IntPtr(buffer.Length));
+                        var bytesWritten = UnsafeNativeMethods.libssh2_channel_write_ex(
+                            this.channelHandle,
+                            (int)streamId,
+                            buffer,
+                            new IntPtr(buffer.Length));
 
-                    if (bytesWritten == (int)LIBSSH2_ERROR.TIMEOUT)
-                    {
-                        throw new TimeoutException("Read operation timed out");
-                    }
-                    else if (bytesWritten < 0)
-                    {
-                        throw new SshNativeException((LIBSSH2_ERROR)bytesWritten);
-                    }
-                    else
-                    {
-                        return (uint)bytesWritten;
+                        if (bytesWritten == (int)LIBSSH2_ERROR.TIMEOUT)
+                        {
+                            throw new TimeoutException("Read operation timed out");
+                        }
+                        else if (bytesWritten < 0)
+                        {
+                            throw new SshNativeException((LIBSSH2_ERROR)bytesWritten);
+                        }
+                        else
+                        {
+                            return (uint)bytesWritten;
+                        }
                     }
                 }
             });
@@ -160,17 +175,20 @@ namespace Google.Solutions.Ssh.Native
 
             return Task.Run(() =>
             {
-                // TODO: Remove lock?
-                lock (this.channelHandle.SyncRoot)
+                using (SshTraceSources.Default.TraceMethod().WithoutParameters())
                 {
-                    // Avoid closing more than once.
-                    if (!this.closedForWriting)
+                    // TODO: Remove lock?
+                    lock (this.channelHandle.SyncRoot)
                     {
-                        var result = (LIBSSH2_ERROR)UnsafeNativeMethods.libssh2_channel_close(
-                            this.channelHandle);
-                        Debug.Assert(result == LIBSSH2_ERROR.NONE);
+                        // Avoid closing more than once.
+                        if (!this.closedForWriting)
+                        {
+                            var result = (LIBSSH2_ERROR)UnsafeNativeMethods.libssh2_channel_close(
+                                this.channelHandle);
+                            Debug.Assert(result == LIBSSH2_ERROR.NONE);
 
-                        this.closedForWriting = true;
+                            this.closedForWriting = true;
+                        }
                     }
                 }
             });

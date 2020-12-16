@@ -1,4 +1,5 @@
 ﻿using Google.Apis.Util;
+using Google.Solutions.Common.Diagnostics;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -28,14 +29,17 @@ namespace Google.Solutions.Ssh.Native
         {
             get
             {
-                lock (this.channelHandle.SyncRoot)
+                using (SshTraceSources.Default.TraceMethod().WithoutParameters())
                 {
-                    // 
-                    // NB. This call does not cause network traffic and therefore
-                    // should not block.
-                    //
-                    return UnsafeNativeMethods.libssh2_channel_get_exit_status(
-                        this.channelHandle);
+                    lock (this.channelHandle.SyncRoot)
+                    {
+                        // 
+                        // NB. This call does not cause network traffic and therefore
+                        // should not block.
+                        //
+                        return UnsafeNativeMethods.libssh2_channel_get_exit_status(
+                            this.channelHandle);
+                    }
                 }
             }
         }
@@ -44,46 +48,49 @@ namespace Google.Solutions.Ssh.Native
         {
             get
             {
-                lock (this.channelHandle.SyncRoot)
+                using (SshTraceSources.Default.TraceMethod().WithoutParameters())
                 {
-                    // 
-                    // NB. This call does not cause network traffic and therefore
-                    // should not block.
-                    //
+                    lock (this.channelHandle.SyncRoot)
+                    {
+                        // 
+                        // NB. This call does not cause network traffic and therefore
+                        // should not block.
+                        //
 
-                    var result = (LIBSSH2_ERROR)UnsafeNativeMethods.libssh2_channel_get_exit_signal(
-                        this.channelHandle,
-                        out IntPtr signalPtr, 
-                        out IntPtr signalLength,
-                        out IntPtr errmsgPtr,
-                        out IntPtr errmsgLength,
-                        out IntPtr langTagPtr,
-                        out IntPtr langTagLength);
-                    if (result != LIBSSH2_ERROR.NONE)
-                    {
-                        throw new SshNativeException(result);
-                    }
+                        var result = (LIBSSH2_ERROR)UnsafeNativeMethods.libssh2_channel_get_exit_signal(
+                            this.channelHandle,
+                            out IntPtr signalPtr,
+                            out IntPtr signalLength,
+                            out IntPtr errmsgPtr,
+                            out IntPtr errmsgLength,
+                            out IntPtr langTagPtr,
+                            out IntPtr langTagLength);
+                        if (result != LIBSSH2_ERROR.NONE)
+                        {
+                            throw new SshNativeException(result);
+                        }
 
-                    //
-                    // NB. Currently, libssh2 only populates the signal
-                    // parameter, errmsg and langtag are always NULL. 
-                    //
-                    try
-                    {
-                        if (signalPtr != IntPtr.Zero)
+                        //
+                        // NB. Currently, libssh2 only populates the signal
+                        // parameter, errmsg and langtag are always NULL. 
+                        //
+                        try
                         {
-                            return Marshal.PtrToStringAnsi(signalPtr, signalLength.ToInt32());
+                            if (signalPtr != IntPtr.Zero)
+                            {
+                                return Marshal.PtrToStringAnsi(signalPtr, signalLength.ToInt32());
+                            }
+                            else
+                            {
+                                return null;
+                            }
                         }
-                        else
+                        finally
                         {
-                            return null;
+                            SshSession.FreeDelegate(signalPtr, IntPtr.Zero);
+                            SshSession.FreeDelegate(errmsgPtr, IntPtr.Zero);
+                            SshSession.FreeDelegate(langTagPtr, IntPtr.Zero);
                         }
-                    }
-                    finally
-                    {
-                        SshSession.FreeDelegate(signalPtr, IntPtr.Zero);
-                        SshSession.FreeDelegate(errmsgPtr, IntPtr.Zero);
-                        SshSession.FreeDelegate(langTagPtr, IntPtr.Zero);
                     }
                 }
             }
