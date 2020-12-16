@@ -52,8 +52,6 @@ namespace Google.Solutions.Ssh.Native
             // TODO: Remove lock?
             lock (this.channelHandle.SyncRoot)
             {
-                Debug.Assert(!this.closedForWriting);
-
                 var bytesFlushed = UnsafeNativeMethods.libssh2_channel_flush_ex(
                     this.channelHandle,
                     (int)streamId);

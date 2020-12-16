@@ -16,6 +16,10 @@ namespace Google.Solutions.Ssh.Test.Native
     [TestFixture]
     public class TestSshExecChannel : SshFixtureBase
     {
+        //---------------------------------------------------------------------
+        // Exec.
+        //---------------------------------------------------------------------
+
         [Test]
         public async Task WhenCommandIsValid_ThenOpenExecChannelAsyncSucceeds(
             [LinuxInstance] ResourceTask<InstanceLocator> instanceLocatorTask)
@@ -153,6 +157,46 @@ namespace Google.Solutions.Ssh.Test.Native
 
                     Assert.AreEqual(127, channel.ExitCode);
                     Assert.IsNull(channel.ExitSignal);
+                }
+            }
+        }
+
+        //---------------------------------------------------------------------
+        // I/O.
+        //---------------------------------------------------------------------
+
+        [Test]
+        public async Task WhenStreamFlushed_ThenReadReturnsZero(
+            [LinuxInstance] ResourceTask<InstanceLocator> instanceLocatorTask)
+        {
+            var endpoint = new IPEndPoint(
+                await InstanceUtil.PublicIpAddressForInstanceAsync(await instanceLocatorTask),
+                22);
+            using (var session = CreateSession())
+            using (var connection = await session.ConnectAsync(endpoint))
+            using (var key = new RSACng())
+            {
+                await InstanceUtil.AddPublicKeyToMetadata(
+                    await instanceLocatorTask,
+                    "testuser",
+                    key);
+
+                using (var authSession = await connection.AuthenticateAsync("testuser", key))
+                using (var channel = await authSession.OpenExecChannelAsync(
+                    "whoami",
+                    LIBSSH2_CHANNEL_EXTENDED_DATA.NORMAL))
+                {
+                    await channel.CloseAsync();
+
+                    // Read first byte of output.
+                    await channel.ReadAsync(new byte[1]);
+
+                    // Flush the rest of the read buffer.
+                    Assert.AreNotEqual(0, channel.Flush());
+                    Assert.AreEqual(0, channel.Flush());
+
+                    var bytesRead = await channel.ReadAsync(new byte[1024]);
+                    Assert.AreEqual(0, bytesRead);
                 }
             }
         }

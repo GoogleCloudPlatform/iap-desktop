@@ -227,48 +227,5 @@ namespace Google.Solutions.Ssh.Test.Native
                 }
             }
         }
-
-        //---------------------------------------------------------------------
-        // I/O.
-        //---------------------------------------------------------------------
-
-        [Test]
-        [Ignore("")]
-        public async Task WhenStreamFlushed_ThenReadReturnsZero(
-            [LinuxInstance] ResourceTask<InstanceLocator> instanceLocatorTask)
-        {
-            var endpoint = new IPEndPoint(
-                await InstanceUtil.PublicIpAddressForInstanceAsync(await instanceLocatorTask),
-                22);
-            using (var session = CreateSession())
-            using (var connection = await session.ConnectAsync(endpoint))
-            using (var key = new RSACng())
-            {
-                await InstanceUtil.AddPublicKeyToMetadata(
-                    await instanceLocatorTask,
-                    "testuser",
-                    key);
-
-                using (var authSession = await connection.AuthenticateAsync("testuser", key))
-                using (var channel = await authSession.OpenShellChannelAsync(
-                    LIBSSH2_CHANNEL_EXTENDED_DATA.MERGE,
-                    DefaultTerminal,
-                    80,
-                    24))
-                {
-                    var bytesWritten = await channel.WriteAsync(Encoding.ASCII.GetBytes("exit\n"));
-                    await channel.CloseAsync();
-
-                    await Task.Delay(2000);
-                    // The read buffer now contains the welcome message, but
-                    // we flush it.
-                    Assert.AreNotEqual(0, channel.Flush());
-                    Assert.AreEqual(0, channel.Flush());
-
-                    var bytesRead = await channel.ReadAsync(new byte[1024]);
-                    Assert.AreEqual(0, bytesRead);
-                }
-            }
-        }
     }
 }
