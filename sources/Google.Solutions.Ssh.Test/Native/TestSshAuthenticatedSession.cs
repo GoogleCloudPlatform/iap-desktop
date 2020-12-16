@@ -19,7 +19,7 @@ namespace Google.Solutions.Ssh.Test.Native
         //---------------------------------------------------------------------
 
         [Test]
-        public async Task WhenDisconnected_ThenOpenShellChannelAsyncThrowsSocketSend(
+        public async Task WhenDisconnected_ThenOpenExecChannelAsyncThrowsSocketSend(
             [LinuxInstance] ResourceTask<InstanceLocator> instanceLocatorTask)
         {
             var endpoint = new IPEndPoint(
@@ -39,7 +39,9 @@ namespace Google.Solutions.Ssh.Test.Native
                     SshAssert.ThrowsNativeExceptionWithError(
                         session,
                         LIBSSH2_ERROR.SOCKET_SEND,
-                        () => authSession.OpenShellChannelAsync(LIBSSH2_CHANNEL_EXTENDED_DATA.NORMAL).Wait());
+                        () => authSession.OpenExecChannelAsync(
+                            "whoami",
+                            LIBSSH2_CHANNEL_EXTENDED_DATA.NORMAL).Wait());
                 }
             }
         }
@@ -60,7 +62,9 @@ namespace Google.Solutions.Ssh.Test.Native
                     "testuser",
                     key);
                 using (var authSession = await connection.AuthenticateAsync("testuser", key))
-                using (var channel = await authSession.OpenShellChannelAsync(LIBSSH2_CHANNEL_EXTENDED_DATA.NORMAL))
+                using (var channel = await authSession.OpenExecChannelAsync(
+                    "whoami",
+                    LIBSSH2_CHANNEL_EXTENDED_DATA.NORMAL))
                 {
                     await channel.CloseAsync();
                 }

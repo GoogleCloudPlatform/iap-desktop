@@ -11,7 +11,7 @@ namespace Google.Solutions.Ssh.Native
     /// <summary>
     /// An interactive SSH channel.
     /// </summary>
-    public class SshSessionChannel : SshChannelBase
+    public abstract class SshSessionChannelBase : SshChannelBase
     {
         public const string Type = "session";
 
@@ -19,39 +19,9 @@ namespace Google.Solutions.Ssh.Native
         // Ctor.
         //---------------------------------------------------------------------
 
-        internal SshSessionChannel(SshChannelHandle channelHandle)
+        internal SshSessionChannelBase(SshChannelHandle channelHandle)
             : base(channelHandle)
         {
-        }
-
-        //---------------------------------------------------------------------
-        // Environment.
-        //---------------------------------------------------------------------
-
-        public Task SetEnvironmentVariableAsync(
-            string variableName,
-            string value)
-        {
-            Utilities.ThrowIfNullOrEmpty(variableName, nameof(variableName));
-            Utilities.ThrowIfNullOrEmpty(value, nameof(value));
-
-            return Task.Run(() =>
-            {
-                lock (this.channelHandle.SyncRoot)
-                {
-                    var result = (LIBSSH2_ERROR)UnsafeNativeMethods.libssh2_channel_setenv_ex(
-                        this.channelHandle,
-                        variableName,
-                        (uint)variableName.Length,
-                        value,
-                        (uint)value.Length);
-
-                    if (result != LIBSSH2_ERROR.NONE)
-                    {
-                        throw new SshNativeException(result);
-                    }
-                }
-            });
         }
 
         public int ExitCode
@@ -117,6 +87,52 @@ namespace Google.Solutions.Ssh.Native
                     }
                 }
             }
+        }
+    }
+
+    public class SshExecChannel : SshSessionChannelBase
+    {
+        //---------------------------------------------------------------------
+        // Ctor.
+        //---------------------------------------------------------------------
+
+        internal SshExecChannel(SshChannelHandle channelHandle)
+            : base(channelHandle)
+        {
+        }
+    }
+
+    public class SshShellChannel : SshSessionChannelBase
+    {
+        //---------------------------------------------------------------------
+        // Ctor.
+        //---------------------------------------------------------------------
+
+        internal SshShellChannel(SshChannelHandle channelHandle)
+            : base(channelHandle)
+        {
+        }
+
+        public Task ResizePseudoTerminal(
+            ushort widthInChars,
+            ushort heightInChars)
+        {
+            return Task.Run(() =>
+            {
+                lock (this.channelHandle.SyncRoot)
+                {
+                    var result = (LIBSSH2_ERROR)UnsafeNativeMethods.libssh2_channel_request_pty_size_ex(
+                        this.channelHandle,
+                        widthInChars,
+                        heightInChars,
+                        0,
+                        0);
+                    if (result != LIBSSH2_ERROR.NONE)
+                    {
+                        throw new SshNativeException(result);
+                    }
+                }
+            });
         }
     }
 }

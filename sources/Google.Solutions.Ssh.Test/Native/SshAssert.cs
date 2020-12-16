@@ -26,7 +26,8 @@ namespace Google.Solutions.Ssh.Test.Native
                 Assert.IsInstanceOf(typeof(SshNativeException), e.Unwrap());
                 Assert.AreEqual(expected, ((SshNativeException)e.Unwrap()).ErrorCode);
 
-                Assert.AreEqual(expected, session.LastError);
+                Assert.IsTrue(session.LastError == LIBSSH2_ERROR.NONE ||
+                              session.LastError == expected);
             }
         }
     }

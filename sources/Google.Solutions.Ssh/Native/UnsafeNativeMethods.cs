@@ -349,6 +349,26 @@ namespace Google.Solutions.Ssh.Native
         public static extern int libssh2_channel_eof(
             SshChannelHandle channel);
 
+        [DllImport(Libssh2, CharSet = CharSet.Ansi)]
+        public static extern int libssh2_channel_request_pty_ex(
+            SshChannelHandle channel,
+            [MarshalAs(UnmanagedType.LPStr)] string term, 
+            uint termLength,
+            byte[] modes, 
+            uint modesLength, 
+            int width, 
+            int height, 
+            int widthPx, 
+            int heightPx);
+
+        [DllImport(Libssh2)]
+        public static extern int libssh2_channel_request_pty_size_ex(
+            SshChannelHandle channel,
+            int width,
+            int height,
+            int widthPx,
+            int heightPx);
+
         //---------------------------------------------------------------------
         // Error functions.
         //---------------------------------------------------------------------

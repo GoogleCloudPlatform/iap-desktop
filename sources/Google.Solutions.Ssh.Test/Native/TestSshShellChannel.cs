@@ -4,6 +4,7 @@ using Google.Solutions.Common.Test.Integration;
 using Google.Solutions.Ssh.Native;
 using NUnit.Framework;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Security.Cryptography;
@@ -16,34 +17,45 @@ namespace Google.Solutions.Ssh.Test.Native
     [TestFixture]
     public class TestSshShellChannel : SshFixtureBase
     {
-        //---------------------------------------------------------------------
-        // Environment.
-        //---------------------------------------------------------------------
+        private const string DefaultTerminal = "vanilla";
 
-        [Test]
-        public async Task WhenConnected_ThenSetEnvironmentVariableSucceeds(
-            [LinuxInstance] ResourceTask<InstanceLocator> instanceLocatorTask)
+        private async Task<string> ReadToEndAsync(
+            SshChannelBase channel,
+            Encoding encoding)
         {
-            var endpoint = new IPEndPoint(
-                await InstanceUtil.PublicIpAddressForInstanceAsync(await instanceLocatorTask),
-                22);
-            using (var session = CreateSession())
-            using (var connection = await session.ConnectAsync(endpoint))
-            using (var key = new RSACng())
-            {
-                await InstanceUtil.AddPublicKeyToMetadata(
-                    await instanceLocatorTask,
-                    "testuser",
-                    key);
+            var text = new StringBuilder();
+            var buffer = new byte[1024];
+            uint bytesRead;
 
-                using (var authSession = await connection.AuthenticateAsync("testuser", key))
-                using (var channel = await authSession.OpenShellChannelAsync(
-                    LIBSSH2_CHANNEL_EXTENDED_DATA.MERGE))
+            while ((bytesRead = await channel.ReadAsync(buffer)) > 0)
+            {
+                text.Append(encoding.GetString(buffer, 0, (int)bytesRead));
+            }
+
+            return text.ToString();
+        }
+
+        private async Task<string> ReadUntilAsync(
+            SshChannelBase channel,
+            string delimiter,
+            Encoding encoding)
+        {
+            var text = new StringBuilder();
+
+            var buffer = new byte[1];
+
+            while ((await channel.ReadAsync(buffer)) > 0)
+            {
+                var ch = encoding.GetString(buffer, 0, 1);
+                text.Append(ch);
+
+                if (text.ToString().EndsWith(delimiter))
                 {
-                    await channel.SetEnvironmentVariableAsync("FOO", "bar");
-                    await channel.CloseAsync();
+                    return text.ToString();
                 }
             }
+
+            return text.ToString();
         }
 
         //---------------------------------------------------------------------
@@ -68,28 +80,160 @@ namespace Google.Solutions.Ssh.Test.Native
 
                 using (var authSession = await connection.AuthenticateAsync("testuser", key))
                 using (var channel = await authSession.OpenShellChannelAsync(
-                    LIBSSH2_CHANNEL_EXTENDED_DATA.MERGE))
+                    LIBSSH2_CHANNEL_EXTENDED_DATA.MERGE,
+                    DefaultTerminal,
+                    80,
+                    24))
                 {
-                    var bytesWritten = await channel.WriteAsync(Encoding.ASCII.GetBytes("whoami"));
-                    //Assert.AreEqual(11, bytesWritten);
+                    // Run command.
+                    var bytesWritten = await channel.WriteAsync(Encoding.ASCII.GetBytes("whoami;exit\n"));
+                    Assert.AreEqual(12, bytesWritten);
 
-                    //await channel.CloseAsync();
+                    await channel.CloseAsync();
 
-                    var buffer = new byte[1024];
-                    var bytesRead = await channel.ReadAsync(buffer);
-                    Assert.AreNotEqual(0, bytesRead);
-
+                    // Read command output.
+                    var output = await ReadToEndAsync(channel, Encoding.ASCII);
                     StringAssert.Contains(
-                        "testuser", 
-                        Encoding.ASCII.GetString(buffer, 0, (int)bytesRead));
+                        "whoami;exit\r\ntestuser\r\nlogout\r\n", 
+                        output);
 
                     Assert.AreEqual(0, channel.ExitCode);
-                    Assert.AreEqual("", channel.ExitSignal);
+                    Assert.AreEqual(null, channel.ExitSignal);
                 }
             }
         }
 
         [Test]
+        public async Task WhenWhitelistedEnvironmentVariablePassed_ThenShellCanAccessVariable(
+            [LinuxInstance] ResourceTask<InstanceLocator> instanceLocatorTask)
+        {
+            var endpoint = new IPEndPoint(
+                await InstanceUtil.PublicIpAddressForInstanceAsync(await instanceLocatorTask),
+                22);
+            using (var session = CreateSession())
+            using (var connection = await session.ConnectAsync(endpoint))
+            using (var key = new RSACng())
+            {
+                await InstanceUtil.AddPublicKeyToMetadata(
+                    await instanceLocatorTask,
+                    "testuser",
+                    key);
+
+                using (var authSession = await connection.AuthenticateAsync("testuser", key))
+                using (var channel = await authSession.OpenShellChannelAsync(
+                    LIBSSH2_CHANNEL_EXTENDED_DATA.MERGE,
+                    DefaultTerminal,
+                    80,
+                    24,
+                    new Dictionary<string, string>
+                    {
+                        { "LANG", "LC_ALL" } // LANG is whitelisted by sshd by default.
+                    }))
+                {
+                    var bytesWritten = await channel.WriteAsync(Encoding.ASCII.GetBytes("echo $LANG;exit\n"));
+                    Assert.AreEqual(16, bytesWritten);
+
+                    await channel.CloseAsync();
+
+                    var output = await ReadToEndAsync(channel, Encoding.ASCII);
+
+                    StringAssert.Contains(
+                        "en_US.UTF-8",
+                        output);
+
+                    Assert.AreEqual(0, channel.ExitCode);
+                }
+            }
+        }
+
+        [Test]
+        public async Task WhenNonWhitelistedEnvironmentVariablePassed_ThenOpenShellChannelAsyncThrowsRequestDenied(
+            [LinuxInstance] ResourceTask<InstanceLocator> instanceLocatorTask)
+        {
+            var endpoint = new IPEndPoint(
+                await InstanceUtil.PublicIpAddressForInstanceAsync(await instanceLocatorTask),
+                22);
+            using (var session = CreateSession())
+            using (var connection = await session.ConnectAsync(endpoint))
+            using (var key = new RSACng())
+            {
+                await InstanceUtil.AddPublicKeyToMetadata(
+                    await instanceLocatorTask,
+                    "testuser",
+                    key);
+
+                using (var authSession = await connection.AuthenticateAsync("testuser", key))
+                {
+                    SshAssert.ThrowsNativeExceptionWithError(
+                        session,
+                        LIBSSH2_ERROR.CHANNEL_REQUEST_DENIED,
+                        () => authSession.OpenShellChannelAsync(
+                            LIBSSH2_CHANNEL_EXTENDED_DATA.MERGE,
+                            DefaultTerminal,
+                            80,
+                            24,
+                            new Dictionary<string, string>
+                            {
+                                { "FOO", "foo" },
+                                { "BAR", "bar" }
+                            }).Wait());
+                }
+            }
+        }
+
+        [Test]
+        public async Task WhenPseudoterminalResized_ThenShellReflectsNewSize(
+            [LinuxInstance] ResourceTask<InstanceLocator> instanceLocatorTask)
+        {
+            var endpoint = new IPEndPoint(
+                await InstanceUtil.PublicIpAddressForInstanceAsync(await instanceLocatorTask),
+                22);
+            using (var session = CreateSession())
+            using (var connection = await session.ConnectAsync(endpoint))
+            using (var key = new RSACng())
+            {
+                await InstanceUtil.AddPublicKeyToMetadata(
+                    await instanceLocatorTask,
+                    "testuser",
+                    key);
+
+                using (var authSession = await connection.AuthenticateAsync("testuser", key))
+                using (var channel = await authSession.OpenShellChannelAsync(
+                    LIBSSH2_CHANNEL_EXTENDED_DATA.MERGE,
+                    DefaultTerminal,
+                    80,
+                    24))
+                {
+                    var welcome = await ReadUntilAsync(channel, "~$", Encoding.ASCII);
+
+                    // Read initial terminal size.
+                    await channel.WriteAsync(Encoding.ASCII.GetBytes("echo $COLUMNS $LINES\n"));
+                    await ReadUntilAsync(channel, "\n", Encoding.ASCII);
+                    
+                    var terminalSize = await ReadUntilAsync(channel, "\n", Encoding.ASCII);
+                    Assert.AreEqual("80 24\r\n", terminalSize);
+
+                    // Resize terminal.
+                    await channel.ResizePseudoTerminal(100, 30);
+
+                    // Read terminal size again.
+                    await channel.WriteAsync(Encoding.ASCII.GetBytes("echo $COLUMNS $LINES\n"));
+                    await ReadUntilAsync(channel, "\n", Encoding.ASCII);
+                    
+                    terminalSize = await ReadUntilAsync(channel, "\n", Encoding.ASCII);
+                    Assert.AreEqual("100 30\r\n", terminalSize);
+
+                    await channel.CloseAsync();
+                }
+            }
+        }
+
+        //---------------------------------------------------------------------
+        // I/O.
+        //---------------------------------------------------------------------
+
+        [Test]
+        [Ignore("")]
         public async Task WhenStreamFlushed_ThenReadReturnsZero(
             [LinuxInstance] ResourceTask<InstanceLocator> instanceLocatorTask)
         {
@@ -107,15 +251,19 @@ namespace Google.Solutions.Ssh.Test.Native
 
                 using (var authSession = await connection.AuthenticateAsync("testuser", key))
                 using (var channel = await authSession.OpenShellChannelAsync(
-                    LIBSSH2_CHANNEL_EXTENDED_DATA.MERGE))
+                    LIBSSH2_CHANNEL_EXTENDED_DATA.MERGE,
+                    DefaultTerminal,
+                    80,
+                    24))
                 {
-                    var bytesWritten = await channel.WriteAsync(Encoding.ASCII.GetBytes("exit"));
+                    var bytesWritten = await channel.WriteAsync(Encoding.ASCII.GetBytes("exit\n"));
+                    await channel.CloseAsync();
 
+                    await Task.Delay(2000);
                     // The read buffer now contains the welcome message, but
                     // we flush it.
                     Assert.AreNotEqual(0, channel.Flush());
                     Assert.AreEqual(0, channel.Flush());
-                    await channel.CloseAsync();
 
                     var bytesRead = await channel.ReadAsync(new byte[1024]);
                     Assert.AreEqual(0, bytesRead);

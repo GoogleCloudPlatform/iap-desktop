@@ -98,7 +98,7 @@ namespace Google.Solutions.Ssh.Native
 
                     if (bytesRead == (int)LIBSSH2_ERROR.TIMEOUT)
                     {
-                        throw new OperationCanceledException("Read operation timed out");
+                        throw new TimeoutException("Read operation timed out");
                     }
                     else if (bytesRead < 0)
                     {
@@ -136,7 +136,7 @@ namespace Google.Solutions.Ssh.Native
 
                     if (bytesWritten == (int)LIBSSH2_ERROR.TIMEOUT)
                     {
-                        throw new OperationCanceledException("Read operation timed out");
+                        throw new TimeoutException("Read operation timed out");
                     }
                     else if (bytesWritten < 0)
                     {
