@@ -130,6 +130,9 @@ $(INSTALLER_PACKAGE): $(INSTALLER_PACKAGE).wixobj
 	signtool sign $(SIGNTOOL_FLAGS) $(MAKEDIR)\installer\obj\$(CONFIGURATION)\Google.*.dll
 	signtool sign $(SIGNTOOL_FLAGS) $(MAKEDIR)\installer\obj\$(CONFIGURATION)\*Interop*.dll
 	signtool sign $(SIGNTOOL_FLAGS) $(MAKEDIR)\installer\obj\$(CONFIGURATION)\IapDesktop.exe
+    
+    signtool verify /pa $(MAKEDIR)\installer\obj\$(CONFIGURATION)\*.exe
+    signtool verify /pa $(MAKEDIR)\installer\obj\$(CONFIGURATION)\*.dll
 !endif
 
 	light \
