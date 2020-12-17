@@ -17,7 +17,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Google.Solutions.IapDesktop
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Google.Solutions.IapDesktop", "Google.Solutions.IapDesktop\Google.Solutions.IapDesktop.csproj", "{274DA71A-6CD4-4E11-B3E9-1B39767039D5}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "IapTunneling", "IapTunneling", "{7EFB4313-FCC0-4109-80EC-4AA017CC5D11}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Base.IapTunneling", "Base.IapTunneling", "{7EFB4313-FCC0-4109-80EC-4AA017CC5D11}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "IapDesktop", "IapDesktop", "{5206FD39-47A5-4E69-AA4F-94275A1A4791}"
 EndProject
@@ -35,7 +35,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Installer", "Installer", "{
 		installer\Product.wxs = installer\Product.wxs
 	EndProjectSection
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Common", "Common", "{22C51D9C-CFD8-434C-85A0-8908C3046855}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Base.Common", "Base.Common", "{22C51D9C-CFD8-434C-85A0-8908C3046855}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Google.Solutions.Common", "Google.Solutions.Common\Google.Solutions.Common.csproj", "{FB4C6F4D-32B1-4B0B-BA79-FD47FC4D7912}"
 EndProject
@@ -54,6 +54,12 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Google.Solutions.IapDesktop.Extensions.Rdp", "Google.Solutions.IapDesktop.Extensions.Rdp\Google.Solutions.IapDesktop.Extensions.Rdp.csproj", "{B5F53A65-1B67-4CA1-9AB0-A81799C0C215}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Google.Solutions.IapDesktop.Extensions.Rdp.Test", "Google.Solutions.IapDesktop.Extensions.Rdp.Test\Google.Solutions.IapDesktop.Extensions.Rdp.Test.csproj", "{EF5D7227-BA6F-4DF7-A3B6-CD547C443AAB}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Base.Ssh", "Base.Ssh", "{E957A43B-A602-4629-AB83-3EEC0EF95C6B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Google.Solutions.Ssh", "Google.Solutions.Ssh\Google.Solutions.Ssh.csproj", "{3E4A828D-819B-40D2-89B3-47D5B52F67FB}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Google.Solutions.Ssh.Test", "Google.Solutions.Ssh.Test\Google.Solutions.Ssh.Test.csproj", "{AEA98584-CCBF-4598-8457-6F5AE177B549}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -221,6 +227,30 @@ Global
 		{EF5D7227-BA6F-4DF7-A3B6-CD547C443AAB}.Release|Any CPU.Build.0 = Release|Any CPU
 		{EF5D7227-BA6F-4DF7-A3B6-CD547C443AAB}.Release|x86.ActiveCfg = Release|Any CPU
 		{EF5D7227-BA6F-4DF7-A3B6-CD547C443AAB}.Release|x86.Build.0 = Release|Any CPU
+		{3E4A828D-819B-40D2-89B3-47D5B52F67FB}.Debug (OAuth)|Any CPU.ActiveCfg = Debug|Any CPU
+		{3E4A828D-819B-40D2-89B3-47D5B52F67FB}.Debug (OAuth)|Any CPU.Build.0 = Debug|Any CPU
+		{3E4A828D-819B-40D2-89B3-47D5B52F67FB}.Debug (OAuth)|x86.ActiveCfg = Debug|Any CPU
+		{3E4A828D-819B-40D2-89B3-47D5B52F67FB}.Debug (OAuth)|x86.Build.0 = Debug|Any CPU
+		{3E4A828D-819B-40D2-89B3-47D5B52F67FB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3E4A828D-819B-40D2-89B3-47D5B52F67FB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3E4A828D-819B-40D2-89B3-47D5B52F67FB}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{3E4A828D-819B-40D2-89B3-47D5B52F67FB}.Debug|x86.Build.0 = Debug|Any CPU
+		{3E4A828D-819B-40D2-89B3-47D5B52F67FB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3E4A828D-819B-40D2-89B3-47D5B52F67FB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3E4A828D-819B-40D2-89B3-47D5B52F67FB}.Release|x86.ActiveCfg = Release|Any CPU
+		{3E4A828D-819B-40D2-89B3-47D5B52F67FB}.Release|x86.Build.0 = Release|Any CPU
+		{AEA98584-CCBF-4598-8457-6F5AE177B549}.Debug (OAuth)|Any CPU.ActiveCfg = Debug|Any CPU
+		{AEA98584-CCBF-4598-8457-6F5AE177B549}.Debug (OAuth)|Any CPU.Build.0 = Debug|Any CPU
+		{AEA98584-CCBF-4598-8457-6F5AE177B549}.Debug (OAuth)|x86.ActiveCfg = Debug|Any CPU
+		{AEA98584-CCBF-4598-8457-6F5AE177B549}.Debug (OAuth)|x86.Build.0 = Debug|Any CPU
+		{AEA98584-CCBF-4598-8457-6F5AE177B549}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AEA98584-CCBF-4598-8457-6F5AE177B549}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AEA98584-CCBF-4598-8457-6F5AE177B549}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{AEA98584-CCBF-4598-8457-6F5AE177B549}.Debug|x86.Build.0 = Debug|Any CPU
+		{AEA98584-CCBF-4598-8457-6F5AE177B549}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AEA98584-CCBF-4598-8457-6F5AE177B549}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AEA98584-CCBF-4598-8457-6F5AE177B549}.Release|x86.ActiveCfg = Release|Any CPU
+		{AEA98584-CCBF-4598-8457-6F5AE177B549}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -239,6 +269,8 @@ Global
 		{2A1A5D4D-AE63-439E-A914-6F5FE5EB9435} = {32A110AB-A2D9-4DD3-BF10-B24168390CD0}
 		{B5F53A65-1B67-4CA1-9AB0-A81799C0C215} = {CEE34323-B85C-4F7C-AB73-17FE47C6B5DF}
 		{EF5D7227-BA6F-4DF7-A3B6-CD547C443AAB} = {CEE34323-B85C-4F7C-AB73-17FE47C6B5DF}
+		{3E4A828D-819B-40D2-89B3-47D5B52F67FB} = {E957A43B-A602-4629-AB83-3EEC0EF95C6B}
+		{AEA98584-CCBF-4598-8457-6F5AE177B549} = {E957A43B-A602-4629-AB83-3EEC0EF95C6B}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {75502EC2-01DB-49D6-B896-7A5DDE267F6A}
