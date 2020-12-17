@@ -72,7 +72,7 @@ namespace Google.Solutions.IapDesktop.Application.ObjectModel
                     // Another asynchnous load/bind operation is ongoing.
                     // Cancel that one because we won't need its result.
 
-                    TraceSources.IapDesktop.TraceVerbose("Cancelling previous model load task");
+                    ApplicationTraceSources.Default.TraceVerbose("Cancelling previous model load task");
                     this.tokenSourceForCurrentTask.Cancel();
                     this.tokenSourceForCurrentTask = null;
                 }
@@ -90,7 +90,7 @@ namespace Google.Solutions.IapDesktop.Application.ObjectModel
                 }
                 catch (Exception e) when (e.IsCancellation())
                 {
-                    TraceSources.IapDesktop.TraceVerbose("Model load cancelled");
+                    ApplicationTraceSources.Default.TraceVerbose("Model load cancelled");
                 }
             }
         }

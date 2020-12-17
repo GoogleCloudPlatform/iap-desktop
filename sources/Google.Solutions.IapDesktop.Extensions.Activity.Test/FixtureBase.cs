@@ -30,8 +30,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Test
 
         private static readonly TraceSource[] Traces = new[]
         {
-            Google.Solutions.Common.TraceSources.Common,
-            Google.Solutions.IapDesktop.Application.TraceSources.IapDesktop,
+            Google.Solutions.Common.CommonTraceSources.Default,
+            Google.Solutions.IapDesktop.Application.ApplicationTraceSources.Default,
         };
 
         [SetUp]

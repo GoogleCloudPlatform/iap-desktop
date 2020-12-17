@@ -192,7 +192,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Os.Views.PackageInventory
             IProjectExplorerNode node,
             CancellationToken token)
         {
-            using (TraceSources.IapDesktop.TraceMethod().WithParameters(node))
+            using (ApplicationTraceSources.Default.TraceMethod().WithParameters(node))
             {
                 try
                 {

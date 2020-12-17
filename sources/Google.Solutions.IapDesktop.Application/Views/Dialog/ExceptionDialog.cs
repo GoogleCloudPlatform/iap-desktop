@@ -62,7 +62,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.Dialog
             string details,
             IHelpTopic helpTopic)
         {
-            using (TraceSources.IapDesktop.TraceMethod().WithParameters(caption, message, details))
+            using (ApplicationTraceSources.Default.TraceMethod().WithParameters(caption, message, details))
             {
                 var config = new UnsafeNativeMethods.TASKDIALOGCONFIG()
                 {
@@ -113,7 +113,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.Dialog
         {
             e = e.Unwrap();
 
-            using (TraceSources.IapDesktop.TraceMethod().WithParameters(caption, e))
+            using (ApplicationTraceSources.Default.TraceMethod().WithParameters(caption, e))
             {
                 var details = new StringBuilder();
                 string message = string.Empty;
@@ -149,7 +149,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.Dialog
                     message = e.Message;
                 }
 
-                TraceSources.IapDesktop.TraceError(
+                ApplicationTraceSources.Default.TraceError(
                     "Exception {0} ({1}): {2}",
                     e.GetType().Name,
                     caption,

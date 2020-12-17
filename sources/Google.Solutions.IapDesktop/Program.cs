@@ -19,8 +19,10 @@
 // under the License.
 //
 
+using Google.Solutions.Common;
 using Google.Solutions.Common.Auth;
 using Google.Solutions.Common.Diagnostics;
+using Google.Solutions.IapDesktop.Application;
 using Google.Solutions.IapDesktop.Application.Host;
 using Google.Solutions.IapDesktop.Application.ObjectModel;
 using Google.Solutions.IapDesktop.Application.Services;
@@ -34,6 +36,7 @@ using Google.Solutions.IapDesktop.Application.Views.Dialog;
 using Google.Solutions.IapDesktop.Application.Views.Options;
 using Google.Solutions.IapDesktop.Application.Views.ProjectExplorer;
 using Google.Solutions.IapDesktop.Windows;
+using Google.Solutions.IapTunneling;
 using Google.Solutions.IapTunneling.Net;
 using Microsoft.Win32;
 using System;
@@ -56,10 +59,10 @@ namespace Google.Solutions.IapDesktop
 
         private static readonly TraceSource[] Traces = new[]
         {
-            Google.Solutions.Common.TraceSources.Google,
-            Google.Solutions.Common.TraceSources.Common,
-            Google.Solutions.IapTunneling.TraceSources.Compute,
-            Google.Solutions.IapDesktop.Application.TraceSources.IapDesktop
+            CommonTraceSources.Google,
+            CommonTraceSources.Default,
+            IapTraceSources.Default,
+            ApplicationTraceSources.Default
         };
 
         public static string LogFile =>
@@ -135,7 +138,7 @@ namespace Google.Solutions.IapDesktop
             IsLoggingEnabled = options.IsLoggingEnabled;
 
 #if DEBUG
-            Google.Solutions.IapDesktop.Application.TraceSources.IapDesktop.Switch.Level = SourceLevels.Verbose;
+            ApplicationTraceSources.Default.Switch.Level = SourceLevels.Verbose;
 #endif
 
             // Use TLS 1.2 if possible.
@@ -154,7 +157,7 @@ namespace Google.Solutions.IapDesktop
             }
             catch (InvalidOperationException)
             {
-                Google.Solutions.IapDesktop.Application.TraceSources.IapDesktop.TraceWarning(
+                ApplicationTraceSources.Default.TraceWarning(
                     "Failed to un-restrict User-Agent headers");
             }
 

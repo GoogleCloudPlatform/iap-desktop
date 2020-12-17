@@ -30,8 +30,8 @@ namespace Google.Solutions.IapTunneling.Test
 
         private static readonly TraceSource[] Traces = new[]
         {
-            Google.Solutions.Common.TraceSources.Common,
-            Google.Solutions.IapTunneling.TraceSources.Compute,
+            Google.Solutions.Common.CommonTraceSources.Default,
+            Google.Solutions.IapTunneling.IapTraceSources.Default,
         };
 
         [SetUp]

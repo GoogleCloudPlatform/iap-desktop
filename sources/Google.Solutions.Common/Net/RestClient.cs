@@ -48,7 +48,7 @@ namespace Google.Solutions.Common.Net
             string url,
             CancellationToken cancellationToken)
         {
-            using (TraceSources.Common.TraceMethod().WithParameters(url))
+            using (CommonTraceSources.Default.TraceMethod().WithParameters(url))
             using (var client = new HttpClient())
             using (var request = new HttpRequestMessage(HttpMethod.Get, url))
             {

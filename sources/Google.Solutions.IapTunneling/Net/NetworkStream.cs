@@ -59,7 +59,7 @@ namespace Google.Solutions.IapTunneling.Net
 
                     try
                     {
-                        TraceSources.Compute.TraceVerbose(
+                        IapTraceSources.Default.TraceVerbose(
                             "NetworkStream [{0} > {1}]: Reading...",
                             readStream,
                             writeStream);
@@ -72,7 +72,7 @@ namespace Google.Solutions.IapTunneling.Net
 
                         if (bytesRead > 0)
                         {
-                            TraceSources.Compute.TraceVerbose(
+                            IapTraceSources.Default.TraceVerbose(
                                 "NetworkStream [{0} > {1}]: Relaying {2} bytes",
                                 readStream,
                                 writeStream,
@@ -82,7 +82,7 @@ namespace Google.Solutions.IapTunneling.Net
                         }
                         else
                         {
-                            TraceSources.Compute.TraceVerbose(
+                            IapTraceSources.Default.TraceVerbose(
                                 "NetworkStream [{0} > {1}]: gracefully closed connection",
                                 readStream,
                                 writeStream);
@@ -95,7 +95,7 @@ namespace Google.Solutions.IapTunneling.Net
                     }
                     catch (NetworkStreamClosedException e)
                     {
-                        TraceSources.Compute.TraceWarning(
+                        IapTraceSources.Default.TraceWarning(
                             "NetworkStream [{0} > {1}]: forcefully closed connection: {2}",
                             readStream,
                             writeStream,
@@ -108,7 +108,7 @@ namespace Google.Solutions.IapTunneling.Net
                     }
                     catch (Exception e)
                     {
-                        TraceSources.Compute.TraceWarning(
+                        IapTraceSources.Default.TraceWarning(
                             "NetworkStream [{0} > {1}]: Caught unhandled exception: {2} {3}",
                             readStream,
                             writeStream,

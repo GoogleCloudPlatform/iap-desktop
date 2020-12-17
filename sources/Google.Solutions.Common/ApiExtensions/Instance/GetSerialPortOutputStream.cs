@@ -72,7 +72,7 @@ namespace Google.Solutions.Common.ApiExtensions.Instance
 
         public async Task<string> ReadAsync(CancellationToken token)
         {
-            using (TraceSources.Common.TraceMethod().WithParameters(this.nextOffset))
+            using (CommonTraceSources.Default.TraceMethod().WithParameters(this.nextOffset))
             {
                 var request = this.instancesResource.GetSerialPortOutput(
                     this.instance.ProjectId,
@@ -82,7 +82,7 @@ namespace Google.Solutions.Common.ApiExtensions.Instance
                 request.Start = this.nextOffset;
                 var output = await request.ExecuteAsync(token).ConfigureAwait(false);
 
-                TraceSources.Common.TraceVerbose(
+                CommonTraceSources.Default.TraceVerbose(
                     "Read {0} chars from serial port [start={1}, next={2}]",
                     output.Contents == null ? 0 : output.Contents.Length,
                     output.Start.Value,

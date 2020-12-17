@@ -79,7 +79,7 @@ namespace Google.Solutions.Common.ApiExtensions.Request
                     // Too many requests.
                     if (retries < backOff.MaxNumOfRetries)
                     {
-                        TraceSources.Common.TraceWarning(
+                        CommonTraceSources.Default.TraceWarning(
                             "Too many requests - backing of and retrying...", retries);
 
                         retries++;
@@ -90,7 +90,7 @@ namespace Google.Solutions.Common.ApiExtensions.Request
                     else
                     {
                         // Retried too often already.
-                        TraceSources.Common.TraceWarning("Giving up after {0} retries", retries);
+                        CommonTraceSources.Default.TraceWarning("Giving up after {0} retries", retries);
                         throw;
                     }
                 }

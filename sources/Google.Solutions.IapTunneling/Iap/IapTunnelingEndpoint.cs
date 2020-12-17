@@ -150,7 +150,7 @@ namespace Google.Solutions.IapTunneling.Iap
             }
             catch (ArgumentException)
             {
-                TraceSources.Compute.TraceWarning("Failed to set User-Agent header");
+                IapTraceSources.Default.TraceWarning("Failed to set User-Agent header");
             }
 
             if (this.clientCertificate != null)

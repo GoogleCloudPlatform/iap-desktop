@@ -108,7 +108,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services.Adapters
             string projectId,
             CancellationToken cancellationToken)
         {
-            using (TraceSources.IapDesktop.TraceMethod().WithParameters(projectId))
+            using (ApplicationTraceSources.Default.TraceMethod().WithParameters(projectId))
             {
                 try
                 {
@@ -131,7 +131,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services.Adapters
             string prefix,
             CancellationToken cancellationToken)
         {
-            using (TraceSources.IapDesktop.TraceMethod().WithParameters(bucket))
+            using (ApplicationTraceSources.Default.TraceMethod().WithParameters(bucket))
             {
                 try
                 {
@@ -151,7 +151,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services.Adapters
                             cancellationToken)
                         .ConfigureAwait(false);
 
-                    TraceSources.IapDesktop.TraceVerbose("Found {0} instances", objects.Count());
+                    ApplicationTraceSources.Default.TraceVerbose("Found {0} instances", objects.Count());
 
                     return objects;
                 }
@@ -168,7 +168,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services.Adapters
             StorageObjectLocator locator,
             CancellationToken cancellationToken)
         {
-            using (TraceSources.IapDesktop.TraceMethod().WithParameters(locator))
+            using (ApplicationTraceSources.Default.TraceMethod().WithParameters(locator))
             {
                 try
                 {

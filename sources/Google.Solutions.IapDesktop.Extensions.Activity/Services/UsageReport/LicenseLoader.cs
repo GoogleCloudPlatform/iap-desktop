@@ -81,7 +81,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services.UsageReport
                         image,
                         license);
 
-                    TraceSources.IapDesktop.TraceVerbose("License for {0} is {1}", image, license);
+                    ApplicationTraceSources.Default.TraceVerbose("License for {0} is {1}", image, license);
                 }
                 catch (ResourceNotFoundException) when (image.ProjectId == "windows-cloud")
                 {
@@ -92,19 +92,19 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services.UsageReport
                         OperatingSystemTypes.Windows,
                         LicenseTypes.Spla);
 
-                    TraceSources.IapDesktop.TraceVerbose(
+                    ApplicationTraceSources.Default.TraceVerbose(
                         "License for {0} could not be found, but must be Windows/SPLA", image);
                 }
                 catch (ResourceNotFoundException e)
                 {
                     // Unknown or inaccessible image, skip.
-                    TraceSources.IapDesktop.TraceWarning(
+                    ApplicationTraceSources.Default.TraceWarning(
                         "License for {0} could not be found: {0}", image, e);
                 }
                 catch (ResourceAccessDeniedException e)
                 {
                     // Unknown or inaccessible image, skip.
-                    TraceSources.IapDesktop.TraceWarning(
+                    ApplicationTraceSources.Default.TraceWarning(
                         "License for {0} could not be accessed: {0}", image, e);
                 }
             }

@@ -47,7 +47,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.Adapters
             if (enrollment?.Certificate != null &&
                 HttpClientHandlerExtensions.IsClientCertificateSupported)
             {
-                TraceSources.IapDesktop.TraceInformation(
+                ApplicationTraceSources.Default.TraceInformation(
                     "Enabling MTLS for {0}",
                     baseUri);
 

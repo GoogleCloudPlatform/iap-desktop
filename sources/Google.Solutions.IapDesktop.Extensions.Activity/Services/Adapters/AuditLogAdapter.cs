@@ -113,7 +113,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services.Adapters
             ExponentialBackOff backOff,
             CancellationToken cancellationToken)
         {
-            using (TraceSources.IapDesktop.TraceMethod().WithParameters(request.Filter))
+            using (ApplicationTraceSources.Default.TraceMethod().WithParameters(request.Filter))
             {
                 try
                 {
@@ -189,7 +189,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services.Adapters
             string projectId,
             CancellationToken cancellationToken)
         {
-            using (TraceSources.IapDesktop.TraceMethod().WithParameters(projectId))
+            using (ApplicationTraceSources.Default.TraceMethod().WithParameters(projectId))
             {
                 try
                 {
@@ -222,7 +222,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services.Adapters
         {
             Utilities.ThrowIfNull(projectIds, nameof(projectIds));
 
-            using (TraceSources.IapDesktop.TraceMethod().WithParameters(
+            using (ApplicationTraceSources.Default.TraceMethod().WithParameters(
                 string.Join(", ", projectIds),
                 startTime))
             {

@@ -81,7 +81,7 @@ namespace Google.Solutions.Common.Test.Integration
                 catch (Exception)
                 { }
 
-                TraceSources.Common.TraceVerbose(
+                CommonTraceSources.Default.TraceVerbose(
                     "Waiting for instance {0} to become ready...", locator.Name);
 
                 await Task.Delay(5 * 1000);
@@ -127,7 +127,7 @@ namespace Google.Solutions.Common.Test.Integration
 
             try
             {
-                TraceSources.Common.TraceVerbose(
+                CommonTraceSources.Default.TraceVerbose(
                     "Trying to create new instance {0}...", name);
 
                 IList<ServiceAccount> serviceAccounts = null;
@@ -200,7 +200,7 @@ namespace Google.Solutions.Common.Test.Integration
                     instance.Status == "PROVISIONING" ||
                     instance.Status == "STAGING")
                 {
-                    TraceSources.Common.TraceVerbose(
+                    CommonTraceSources.Default.TraceVerbose(
                         "Instance {0} exists and is running...", locator.Name);
 
                     await AwaitInstanceCreatedAndReady(
@@ -210,7 +210,7 @@ namespace Google.Solutions.Common.Test.Integration
                 }
                 else if (instance.Status == "TERMINATED")
                 {
-                    TraceSources.Common.TraceVerbose(
+                    CommonTraceSources.Default.TraceVerbose(
                         "Instance {0} exists, but is TERMINATED, starting...", locator.Name);
 
                     // Reapply metadata.
@@ -232,11 +232,11 @@ namespace Google.Solutions.Common.Test.Integration
                 }
                 else
                 {
-                    TraceSources.Common.TraceError(
+                    CommonTraceSources.Default.TraceError(
                         "Creating instance {0} failed, current status is {1}",
                         locator.Name,
                         instance.Status);
-                    TraceSources.Common.TraceError(e);
+                    CommonTraceSources.Default.TraceError(e);
                     throw;
                 }
             }

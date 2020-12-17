@@ -106,7 +106,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.History
                 }
                 else
                 {
-                    TraceSources.IapDesktop.TraceWarning(
+                    ApplicationTraceSources.Default.TraceWarning(
                         "Instance {0} was placed, but never stopped, " +
                         "and yet is not running anymore. Flagging as defunct.",
                         this.InstanceId);
@@ -364,7 +364,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.History
 
         public void Process(EventBase e)
         {
-            using (TraceSources.IapDesktop.TraceMethod().WithParameters(e))
+            using (ApplicationTraceSources.Default.TraceMethod().WithParameters(e))
             {
                 if (e is NotifyInstanceLocationEvent notifyLocation)
                 {

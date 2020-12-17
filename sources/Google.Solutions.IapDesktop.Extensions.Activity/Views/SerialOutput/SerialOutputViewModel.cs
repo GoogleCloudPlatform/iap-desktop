@@ -82,7 +82,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Views.SerialOutput
             }
 
             Debug.Assert(this.TailCancellationTokenSource == null);
-            TraceSources.IapDesktop.TraceVerbose("Start tailing");
+            ApplicationTraceSources.Default.TraceVerbose("Start tailing");
 
             this.TailCancellationTokenSource = new CancellationTokenSource();
             this.Model.TailAsync(
@@ -94,7 +94,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Views.SerialOutput
         {
             if (this.TailCancellationTokenSource != null)
             {
-                TraceSources.IapDesktop.TraceVerbose("Stop tailing");
+                ApplicationTraceSources.Default.TraceVerbose("Stop tailing");
                 this.TailCancellationTokenSource.Cancel();
                 this.TailCancellationTokenSource = null;
             }
@@ -206,7 +206,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Views.SerialOutput
             IProjectExplorerNode node,
             CancellationToken token)
         {
-            using (TraceSources.IapDesktop.TraceMethod().WithParameters(node))
+            using (ApplicationTraceSources.Default.TraceMethod().WithParameters(node))
             {
                 if (node is IProjectExplorerVmInstanceNode vmNode && vmNode.IsRunning)
                 {
@@ -246,7 +246,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Views.SerialOutput
 
         protected override void ApplyModel(bool cached)
         {
-            using (TraceSources.IapDesktop.TraceMethod().WithParameters(this.Model, cached))
+            using (ApplicationTraceSources.Default.TraceMethod().WithParameters(this.Model, cached))
             {
                 // Stop tailing the old model.
                 this.IsTailBlocked = true;

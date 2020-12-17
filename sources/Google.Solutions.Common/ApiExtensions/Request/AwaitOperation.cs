@@ -64,7 +64,7 @@ namespace Google.Solutions.Common.ApiExtensions.Request
                                 .ToList()
                             : NoErrors;
 
-                        TraceSources.Common.TraceWarning("Operation failed: {0}", operation.HttpErrorMessage);
+                        CommonTraceSources.Default.TraceWarning("Operation failed: {0}", operation.HttpErrorMessage);
 
                         throw new GoogleApiException(
                             "ComputeEngine",
@@ -80,7 +80,7 @@ namespace Google.Solutions.Common.ApiExtensions.Request
                     }
                     else
                     {
-                        TraceSources.Common.TraceVerbose("Operation completed");
+                        CommonTraceSources.Default.TraceVerbose("Operation completed");
                         return;
                     }
                 }

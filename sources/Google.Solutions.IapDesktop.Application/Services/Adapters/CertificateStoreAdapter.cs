@@ -38,7 +38,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.Adapters
         internal void AddUserCertitficate(
             X509Certificate2 certificate)
         {
-            using (TraceSources.IapDesktop.TraceMethod().WithoutParameters())
+            using (ApplicationTraceSources.Default.TraceMethod().WithoutParameters())
             using (var store = new X509Store(StoreName.My, StoreLocation.CurrentUser))
             {
                 store.Open(OpenFlags.ReadWrite);
@@ -48,7 +48,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.Adapters
         internal void RemoveUserCertitficate(
             X509Certificate2 certificate)
         {
-            using (TraceSources.IapDesktop.TraceMethod().WithoutParameters())
+            using (ApplicationTraceSources.Default.TraceMethod().WithoutParameters())
             using (var store = new X509Store(StoreName.My, StoreLocation.CurrentUser))
             {
                 store.Open(OpenFlags.ReadWrite);
@@ -60,7 +60,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.Adapters
             string issuer,
             string subject)
         {
-            using (TraceSources.IapDesktop.TraceMethod().WithParameters(issuer, subject))
+            using (ApplicationTraceSources.Default.TraceMethod().WithParameters(issuer, subject))
             using (var store = new X509Store(StoreName.My, StoreLocation.CurrentUser))
             {
                 store.Open(OpenFlags.ReadOnly);

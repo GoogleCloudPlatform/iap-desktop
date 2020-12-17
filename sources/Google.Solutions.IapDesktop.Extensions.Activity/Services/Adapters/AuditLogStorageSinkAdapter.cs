@@ -116,7 +116,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services.Adapters
             string bucket,
             CancellationToken cancellationToken)
         {
-            using (TraceSources.IapDesktop.TraceMethod().WithParameters(bucket))
+            using (ApplicationTraceSources.Default.TraceMethod().WithParameters(bucket))
             {
                 //
                 // The object names for audit logs follow this convention:
@@ -154,7 +154,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services.Adapters
                 throw new ArgumentException(nameof(startTime));
             }
 
-            using (TraceSources.IapDesktop.TraceMethod().WithParameters(bucket, startTime))
+            using (ApplicationTraceSources.Default.TraceMethod().WithParameters(bucket, startTime))
             {
                 var exportObjects = await FindAuditLogExportObjects(
                         bucket,
@@ -191,7 +191,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services.Adapters
             DateTime earliestDateRequired,
             CancellationToken cancellationToken)
         {
-            using (TraceSources.IapDesktop.TraceMethod().WithParameters(
+            using (ApplicationTraceSources.Default.TraceMethod().WithParameters(
                 projectId,
                 earliestDateRequired))
             {
@@ -236,7 +236,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services.Adapters
                     }
                     catch (ResourceAccessDeniedException)
                     {
-                        TraceSources.IapDesktop.TraceWarning(
+                        ApplicationTraceSources.Default.TraceWarning(
                             "Found storage export bucket {0} for project {1}, but cannot access it",
                             sink.GetDestinationBucket(),
                             projectId);
@@ -253,7 +253,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services.Adapters
                 }
 
                 // No suitable sink found.
-                TraceSources.IapDesktop.TraceVerbose(
+                ApplicationTraceSources.Default.TraceVerbose(
                     "No GCS export bucket for audit log data found for project {0}",
                     projectId);
                 return null;
@@ -264,7 +264,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services.Adapters
             StorageObjectLocator locator,
             CancellationToken cancellationToken)
         {
-            using (TraceSources.IapDesktop.TraceMethod().WithParameters(locator))
+            using (ApplicationTraceSources.Default.TraceMethod().WithParameters(locator))
             {
                 var events = new List<EventBase>();
 
@@ -300,7 +300,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services.Adapters
             IEnumerable<StorageObjectLocator> locators,
             CancellationToken cancellationToken)
         {
-            using (TraceSources.IapDesktop.TraceMethod().WithParameters(
+            using (ApplicationTraceSources.Default.TraceMethod().WithParameters(
                 string.Join(", ", locators)))
             {
                 var resultsByLocator = await locators.SelectParallelAsync(
@@ -327,7 +327,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services.Adapters
                 return;
             }
 
-            using (TraceSources.IapDesktop.TraceMethod().WithParameters(bucket, startTime))
+            using (ApplicationTraceSources.Default.TraceMethod().WithParameters(bucket, startTime))
             {
                 var severitiesWhitelist = processor.SupportedSeverities.ToHashSet();
                 var methodsWhitelist = processor.SupportedMethods.ToHashSet();
@@ -345,7 +345,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services.Adapters
 
                 foreach (var day in days)
                 {
-                    TraceSources.IapDesktop.TraceVerbose("Processing {0}", day);
+                    ApplicationTraceSources.Default.TraceVerbose("Processing {0}", day);
 
                     //
                     // Grab the objects for this day (typically 2, one activity and one system event).
@@ -356,7 +356,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services.Adapters
 
                     if (objectsByDay.TryGetValue(day, out IEnumerable<StorageObjectLocator> objectsForDay))
                     {
-                        TraceSources.IapDesktop.TraceVerbose(
+                        ApplicationTraceSources.Default.TraceVerbose(
                             "Processing {1} export objects for {0}", day, objectsForDay.Count());
 
                         var eventsForDay = await ListInstanceEventsAsync(
@@ -381,7 +381,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services.Adapters
                     }
                     else
                     {
-                        TraceSources.IapDesktop.TraceWarning("No export objects found for {0}", day);
+                        ApplicationTraceSources.Default.TraceWarning("No export objects found for {0}", day);
                     }
                 }
             }

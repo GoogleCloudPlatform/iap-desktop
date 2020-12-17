@@ -72,7 +72,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services.UsageReport
             }
             else
             {
-                TraceSources.IapDesktop.TraceWarning(
+                ApplicationTraceSources.Default.TraceWarning(
                     "Unrecognized node type {0}, assuming defaults",
                     nodeType);
 

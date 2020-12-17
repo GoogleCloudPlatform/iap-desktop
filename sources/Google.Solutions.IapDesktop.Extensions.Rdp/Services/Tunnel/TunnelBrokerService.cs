@@ -83,7 +83,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Services.Tunnel
         {
             var tunnel = this.tunnelService.CreateTunnelAsync(endpoint, relayPolicy);
 
-            TraceSources.IapDesktop.TraceVerbose("Created tunnel to {0}", endpoint);
+            ApplicationTraceSources.Default.TraceVerbose("Created tunnel to {0}", endpoint);
 
             this.tunnels[endpoint] = tunnel;
             return tunnel;
@@ -116,7 +116,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Services.Tunnel
                 }
                 else if (tunnel.IsFaulted)
                 {
-                    TraceSources.IapDesktop.TraceVerbose(
+                    ApplicationTraceSources.Default.TraceVerbose(
                         "Tunnel to {0} is faulted.. reconnecting", endpoint);
 
                     // There is no point in handing out a faulty attempt
@@ -125,7 +125,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Services.Tunnel
                 }
                 else
                 {
-                    TraceSources.IapDesktop.TraceVerbose(
+                    ApplicationTraceSources.Default.TraceVerbose(
                         "Reusing tunnel to {0}", endpoint);
 
                     // This tunnel is good or still in the process
@@ -140,7 +140,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Services.Tunnel
             ISshRelayPolicy relayPolicy,
             TimeSpan timeout)
         {
-            using (TraceSources.IapDesktop.TraceMethod().WithParameters(endpoint, timeout))
+            using (ApplicationTraceSources.Default.TraceMethod().WithParameters(endpoint, timeout))
             {
                 var tunnel = await ConnectIfNecessaryAsync(endpoint, relayPolicy)
                     .ConfigureAwait(false);
@@ -152,12 +152,12 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Services.Tunnel
                     // or for other reasons).
                     await tunnel.Probe(timeout).ConfigureAwait(false);
 
-                    TraceSources.IapDesktop.TraceVerbose(
+                    ApplicationTraceSources.Default.TraceVerbose(
                         "Probing tunnel to {0} succeeded", endpoint);
                 }
                 catch (Exception e)
                 {
-                    TraceSources.IapDesktop.TraceVerbose(
+                    ApplicationTraceSources.Default.TraceVerbose(
                         "Probing tunnel to {0} failed: {1}", endpoint, e.Message);
 
                     // Un-cache this broken tunnel.
@@ -175,7 +175,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Services.Tunnel
 
         public async Task DisconnectAsync(TunnelDestination endpoint)
         {
-            using (TraceSources.IapDesktop.TraceMethod().WithParameters(endpoint))
+            using (ApplicationTraceSources.Default.TraceMethod().WithParameters(endpoint))
             {
                 lock (this.tunnelsLock)
                 {
@@ -196,7 +196,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Services.Tunnel
 
         public async Task DisconnectAllAsync()
         {
-            using (TraceSources.IapDesktop.TraceMethod().WithoutParameters())
+            using (ApplicationTraceSources.Default.TraceMethod().WithoutParameters())
             {
                 // Create a copy of the list to avoid race conditions.
                 var copyOfEndpoints = new List<TunnelDestination>(this.tunnels.Keys);

@@ -119,11 +119,11 @@ namespace Google.Solutions.Common.ApiExtensions.Instance
             Metadata metadata,
             CancellationToken token)
         {
-            using (TraceSources.Common.TraceMethod().WithParameters(instanceRef))
+            using (CommonTraceSources.Default.TraceMethod().WithParameters(instanceRef))
             {
                 for (int attempt = 0; attempt < 6; attempt++)
                 {
-                    TraceSources.Common.TraceVerbose("Adding metadata {0} on {1}...", metadata, instanceRef.Name);
+                    CommonTraceSources.Default.TraceVerbose("Adding metadata {0} on {1}...", metadata, instanceRef.Name);
 
                     //
                     // NB. Metadata must be updated all-at-once. Therefore,
@@ -156,7 +156,7 @@ namespace Google.Solutions.Common.ApiExtensions.Instance
                             // in patallel. 
 
                             int backoff = 100;
-                            TraceSources.Common.TraceWarning(
+                            CommonTraceSources.Default.TraceWarning(
                                 "SetMetadata failed with {0} - retrying after {1}ms", e.Message,
                                 e.Error?.Code,
                                 backoff);
@@ -165,7 +165,7 @@ namespace Google.Solutions.Common.ApiExtensions.Instance
                         }
                         else
                         {
-                            TraceSources.Common.TraceWarning(
+                            CommonTraceSources.Default.TraceWarning(
                                 "Setting metdata failed {0} (code error {1})", e.Message,
                                 e.Error?.Code);
 

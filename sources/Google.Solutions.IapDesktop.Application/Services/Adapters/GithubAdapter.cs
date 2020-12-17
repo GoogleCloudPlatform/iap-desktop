@@ -68,7 +68,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.Adapters
 
         public async Task<Release> FindLatestReleaseAsync(CancellationToken cancellationToken)
         {
-            using (TraceSources.IapDesktop.TraceMethod().WithoutParameters())
+            using (ApplicationTraceSources.Default.TraceMethod().WithoutParameters())
             {
                 var assemblyName = typeof(ComputeEngineAdapter).Assembly.GetName();
                 var client = new RestClient()
@@ -85,7 +85,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.Adapters
                 }
                 else
                 {
-                    TraceSources.IapDesktop.TraceVerbose("Found new release: {0}", latestRelease.TagName);
+                    ApplicationTraceSources.Default.TraceVerbose("Found new release: {0}", latestRelease.TagName);
 
                     // New release available.
                     return latestRelease;
