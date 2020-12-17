@@ -1,6 +1,11 @@
-# Building
+# IAP Desktop sources
 
-## Prerequisites
+This folder contains the source code of IAP Desktop.
+
+## Building IAP Desktop
+
+Before you can build IAP Desktop, you must build the `/dependencies` folder
+first.
 
 Building IAP Desktop requires:
 
@@ -8,21 +13,10 @@ Building IAP Desktop requires:
   from the Windows SDK
 * Internet access to download dependencies  
   
-## Building
+Steps to build IAP Desktop:
 
 1. Open a command prompt (`cmd.exe`)
-1. Build third-party packages:
-
-    ```
-    cd %WORKSPACE%\dependencies
-    build
-    ```
-
-    You should now have a local Nuget package repository at
-    %WORKSPACE%\sources\third_party\NuGetPackages containing
-    third-party packages.
-
-1. Build the main solution:
+1. Build the application and installer:
 
     ```
     cd %WORKSPACE%\sources
