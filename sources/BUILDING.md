@@ -14,7 +14,7 @@ Building IAP Desktop requires:
 1. Build third-party packages:
 
     ```
-    cd %WORKSPACE%\sources\third_party
+    cd %WORKSPACE%\dependencies
     build
     ```
 

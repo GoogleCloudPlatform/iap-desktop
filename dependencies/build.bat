@@ -24,6 +24,7 @@ rem
 rem Change to the directory where this script is located in
 cd %~dp0
 
-echo "This is a placeholder, no dependencies to build yet"
+rem Invoke build.
+powershell -NoProfile -ExecutionPolicy Bypass -File ..\sources\build.ps1 %*
 
 exit /b %ERRORLEVEL%
