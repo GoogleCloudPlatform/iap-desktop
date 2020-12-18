@@ -19,7 +19,7 @@
 // under the License.
 //
 
-namespace Google.Solutions.IapDesktop.Application.Views
+namespace Google.Solutions.IapDesktop.Application.Views.About
 {
     partial class AboutWindow
     {
@@ -49,11 +49,10 @@ namespace Google.Solutions.IapDesktop.Application.Views
         /// </summary>
         private void InitializeComponent()
         {
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(AboutWindow));
             this.okButton = new System.Windows.Forms.Button();
             this.infoLabel = new System.Windows.Forms.Label();
-            this.legalTextBox = new System.Windows.Forms.TextBox();
             this.clrInfoLabel = new System.Windows.Forms.Label();
+            this.licenseText = new System.Windows.Forms.RichTextBox();
             this.SuspendLayout();
             // 
             // okButton
@@ -75,18 +74,6 @@ namespace Google.Solutions.IapDesktop.Application.Views
             this.infoLabel.TabIndex = 1;
             this.infoLabel.Text = "-";
             // 
-            // legalTextBox
-            // 
-            this.legalTextBox.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.5F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.legalTextBox.Location = new System.Drawing.Point(16, 133);
-            this.legalTextBox.Multiline = true;
-            this.legalTextBox.Name = "legalTextBox";
-            this.legalTextBox.ReadOnly = true;
-            this.legalTextBox.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.legalTextBox.Size = new System.Drawing.Size(376, 82);
-            this.legalTextBox.TabIndex = 2;
-            this.legalTextBox.Text = resources.GetString("legalTextBox.Text");
-            // 
             // clrInfoLabel
             // 
             this.clrInfoLabel.AutoSize = true;
@@ -97,6 +84,16 @@ namespace Google.Solutions.IapDesktop.Application.Views
             this.clrInfoLabel.Text = "-";
             this.clrInfoLabel.TextAlign = System.Drawing.ContentAlignment.TopRight;
             // 
+            // licenseText
+            // 
+            this.licenseText.Location = new System.Drawing.Point(16, 133);
+            this.licenseText.Name = "licenseText";
+            this.licenseText.ReadOnly = true;
+            this.licenseText.Size = new System.Drawing.Size(376, 82);
+            this.licenseText.TabIndex = 2;
+            this.licenseText.Text = "";
+            this.licenseText.LinkClicked += new System.Windows.Forms.LinkClickedEventHandler(this.licenseText_LinkClicked);
+            // 
             // AboutWindow
             // 
             this.AcceptButton = this.okButton;
@@ -106,7 +103,7 @@ namespace Google.Solutions.IapDesktop.Application.Views
             this.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
             this.CancelButton = this.okButton;
             this.ClientSize = new System.Drawing.Size(414, 270);
-            this.Controls.Add(this.legalTextBox);
+            this.Controls.Add(this.licenseText);
             this.Controls.Add(this.clrInfoLabel);
             this.Controls.Add(this.infoLabel);
             this.Controls.Add(this.okButton);
@@ -128,7 +125,7 @@ namespace Google.Solutions.IapDesktop.Application.Views
 
         private System.Windows.Forms.Button okButton;
         private System.Windows.Forms.Label infoLabel;
-        private System.Windows.Forms.TextBox legalTextBox;
         private System.Windows.Forms.Label clrInfoLabel;
+        private System.Windows.Forms.RichTextBox licenseText;
     }
 }
