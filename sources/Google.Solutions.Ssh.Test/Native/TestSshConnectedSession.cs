@@ -30,7 +30,6 @@ using System.Threading.Tasks;
 
 namespace Google.Solutions.Ssh.Test.Native
 {
-
     [TestFixture]
     public class TestSshConnectedSession : SshFixtureBase
     {
