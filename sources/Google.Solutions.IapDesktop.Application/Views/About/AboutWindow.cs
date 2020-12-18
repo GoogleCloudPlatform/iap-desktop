@@ -23,9 +23,12 @@ using Google.Solutions.Common.Diagnostics;
 using Google.Solutions.IapDesktop.Application.ObjectModel;
 using Google.Solutions.IapDesktop.Application.Services;
 using System;
+using System.Diagnostics;
+using System.IO;
+using System.Linq;
 using System.Windows.Forms;
 
-namespace Google.Solutions.IapDesktop.Application.Views
+namespace Google.Solutions.IapDesktop.Application.Views.About
 {
     [SkipCodeCoverage("UI code")]
     public partial class AboutWindow : Form
@@ -39,6 +42,21 @@ namespace Google.Solutions.IapDesktop.Application.Views
             var updateService = serviceProvider.GetService<IUpdateService>();
             this.infoLabel.Text = $"IAP Desktop\nVersion {updateService.InstalledVersion}";
             this.clrInfoLabel.Text = $".NET {ClrVersion.Version}";
+
+            var assembly = GetType().Assembly;
+            var resourceName = assembly.GetManifestResourceNames().First(s => s.EndsWith("About.rtf"));
+            using (var stream = assembly.GetManifestResourceStream(resourceName))
+            using (var reader = new StreamReader(stream))
+            {
+                string result = reader.ReadToEnd();
+                this.licenseText.Rtf = result;
+            }
+        }
+
+        private void licenseText_LinkClicked(object sender, LinkClickedEventArgs e)
+        {
+            using (Process.Start(e.LinkText))
+            { }
         }
     }
 }

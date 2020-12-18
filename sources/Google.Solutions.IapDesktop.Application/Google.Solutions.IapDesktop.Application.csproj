@@ -238,10 +238,10 @@
     <Compile Include="Util\RangeObservableCollection.cs" />
     <Compile Include="Util\SecureStringExtensions.cs" />
     <Compile Include="Util\IapRdpUrl.cs" />
-    <Compile Include="Views\AboutWindow.cs">
+    <Compile Include="Views\About\AboutWindow.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Views\AboutWindow.Designer.cs">
+    <Compile Include="Views\About\AboutWindow.Designer.cs">
       <DependentUpon>AboutWindow.cs</DependentUpon>
     </Compile>
     <Compile Include="Views\Diagnostics\DebugJobServiceWindow.cs">
@@ -296,6 +296,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
+    <EmbeddedResource Include="Resources\About.rtf" />
     <None Include="packages.config" />
     <None Include="Services\Adapters\README.md" />
     <None Include="Services\Integration\README.md" />
@@ -309,7 +310,7 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
-    <EmbeddedResource Include="Views\AboutWindow.resx">
+    <EmbeddedResource Include="Views\About\AboutWindow.resx">
       <DependentUpon>AboutWindow.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Views\Authentication\DeviceFlyoutWindow.resx">
