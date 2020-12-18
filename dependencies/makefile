@@ -20,25 +20,21 @@
 #
 CONFIGURATION = Release
 
-!if ( "$(KOKORO_BUILD_NUMBER)" != "" ) 
-BUILD_NUMBER = $(KOKORO_BUILD_NUMBER)
-!else
-BUILD_NUMBER = 1
-!endif
-
+# The tag should be increased whenever one of the dependencies is changed
+TAG = 8
 
 VTNETCORE_SHA = 9e68f5561dc52edb780615b3fe133289216b3dba
 VTNETCORE_URL = https://github.com/darrenstarr/VtNetCore.git
-VTNETCORE_VERSION = 1.0.0.$(BUILD_NUMBER)
+VTNETCORE_VERSION = 1.0.0.$(TAG)
 
 # NB. The libssh2 version is defined in vcpkg-ports\libssh2\portfile.cmake,
 # with dependencies determined by the vcpkg tag.
 VCPKG_TAG = master
 VCPKG_URL = https://github.com/microsoft/vcpkg.git
-LIBSSH2_VERSION = 1.9.0.$(BUILD_NUMBER)
+LIBSSH2_VERSION = 1.9.0.$(TAG)
 
 # GCS bucket used for storing results
-PACKAGES_BUCKET = jpassing-188008-workspace
+PACKAGES_BUCKET = iap-windows-rdc-plugin
 
 default: dependencies
 
