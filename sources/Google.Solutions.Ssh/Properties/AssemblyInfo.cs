@@ -1,4 +1,4 @@
-﻿//
+//
 // Copyright 2020 Google LLC
 //
 // Licensed to the Apache Software Foundation (ASF) under one
@@ -33,4 +33,4 @@ using System.Runtime.CompilerServices;
 [assembly: AssemblyVersion("1.0.1.0")]
 [assembly: AssemblyFileVersion("1.0.1.0")]
 
-[assembly: InternalsVisibleTo("Google.Solutions.Ssh.Test")]
+[assembly: InternalsVisibleTo("Google.Solutions.IapDesktop.Ssh.Test")]
