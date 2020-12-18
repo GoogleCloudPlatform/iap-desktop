@@ -278,10 +278,15 @@ namespace Google.Solutions.Ssh.Native
                 var data = new byte[dataLength.ToInt32()];
                 Marshal.Copy(dataPtr, data, 0, data.Length);
 
+                //
+                // NB. Since we are using RSA, signing always needs to use
+                // SHA-1 and PKCS#1, 
+                // cf. https://tools.ietf.org/html/rfc4253#section-6.6
+                //
                 var signature = key.SignData(
                     data,
-                    HashAlgorithmName.SHA1,     // TODO: always use SHA-1?
-                    RSASignaturePadding.Pkcs1); // TODO: always use PKCS#1?
+                    HashAlgorithmName.SHA1,
+                    RSASignaturePadding.Pkcs1);
 
                 //
                 // Copy data back to a buffer that libssh2 can free using
@@ -303,7 +308,9 @@ namespace Google.Solutions.Ssh.Native
                     // NB. The public key must be passed in OpenSSH format, not PEM.
                     // cf. https://tools.ietf.org/html/rfc4253#section-6.6
                     //
-                    var publicKey = key.ToSshPublicKey();
+                    // We only support RSA.
+                    //
+                    var publicKey = key.ToSshRsaPublicKey();
                     lock (this.sessionHandle.SyncRoot)
                     {
                         var result = (LIBSSH2_ERROR)UnsafeNativeMethods.libssh2_userauth_publickey(
