@@ -19,6 +19,7 @@
 // under the License.
 //
 
+using Google.Solutions.Common;
 using Google.Solutions.Ssh.Native;
 using NUnit.Framework;
 using System;
@@ -32,7 +33,7 @@ namespace Google.Solutions.Ssh.Test
 
         private static readonly TraceSource[] Traces = new[]
         {
-            Google.Solutions.Common.TraceSources.Common,
+            CommonTraceSources.Default,
             SshTraceSources.Default,
         };
 
