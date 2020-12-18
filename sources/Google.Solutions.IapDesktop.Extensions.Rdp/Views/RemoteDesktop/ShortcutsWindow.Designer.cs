@@ -55,7 +55,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Views.RemoteDesktop
             // 
             // richTextBox
             // 
-            this.richTextBox.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
             this.richTextBox.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.richTextBox.ForeColor = System.Drawing.Color.White;
             this.richTextBox.Location = new System.Drawing.Point(13, 12);
@@ -68,16 +67,12 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Views.RemoteDesktop
             // closeButton
             // 
             this.closeButton.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.closeButton.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
-            this.closeButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.closeButton.ForeColor = System.Drawing.Color.White;
-            this.closeButton.Location = new System.Drawing.Point(425, 2);
+            this.closeButton.Location = new System.Drawing.Point(363, 215);
             this.closeButton.Name = "closeButton";
-            this.closeButton.Size = new System.Drawing.Size(24, 24);
-            this.closeButton.TabIndex = 0;
-            this.closeButton.Text = "✖";
-            this.closeButton.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageAboveText;
-            this.closeButton.UseVisualStyleBackColor = false;
+            this.closeButton.Size = new System.Drawing.Size(75, 23);
+            this.closeButton.TabIndex = 2;
+            this.closeButton.Text = "Close";
+            this.closeButton.UseVisualStyleBackColor = true;
             this.closeButton.Click += new System.EventHandler(this.closeButton_Click);
             // 
             // ShortcutsWindow
@@ -85,17 +80,16 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Views.RemoteDesktop
             this.AcceptButton = this.closeButton;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
             this.CancelButton = this.closeButton;
             this.ClientSize = new System.Drawing.Size(450, 250);
             this.Controls.Add(this.closeButton);
             this.Controls.Add(this.richTextBox);
-            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
             this.Name = "ShortcutsWindow";
             this.ShowInTaskbar = false;
             this.SizeGripStyle = System.Windows.Forms.SizeGripStyle.Hide;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
-            this.Text = "ShortcutsWindow";
+            this.Text = "Keyboard shortcuts";
             this.Deactivate += new System.EventHandler(this.ShortcutsWindow_Deactivate);
             this.Load += new System.EventHandler(this.ShortcutsWindow_Load);
             this.ResumeLayout(false);
@@ -103,8 +97,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Views.RemoteDesktop
         }
 
         #endregion
-
-        private System.Windows.Forms.Button closeButton;
         private System.Windows.Forms.RichTextBox richTextBox;
+        private System.Windows.Forms.Button closeButton;
     }
 }
