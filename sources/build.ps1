@@ -79,7 +79,7 @@ if ((Get-Command "nuget.exe" -ErrorAction SilentlyContinue) -eq $null)
 # Restore packages and make them available in the environment
 #------------------------------------------------------------------------------
 
-if (Test-Path "*.sln")
+if ((Test-Path "*.sln") -and !$args.Contains("clean"))
 {
 	& $Nmake restore
 
@@ -105,7 +105,6 @@ if (Test-Path "*.sln")
 
 	(nuget list -Source (Resolve-Path packages)) `
 		| ForEach-Object { New-Item -Name $_.Split(" ")[0].Replace(".", "_") -value $_.Split(" ")[1] -ItemType Variable -Path Env: }
-
 }
 
 Write-Host "PATH: ${Env:PATH}" -ForegroundColor Yellow
@@ -114,7 +113,7 @@ Write-Host "PATH: ${Env:PATH}" -ForegroundColor Yellow
 # Find Google Cloud credentials and project (for tests)
 #------------------------------------------------------------------------------
 
-if (Test-Path "*.sln")
+if (Test-Path "${env:KOKORO_GFILE_DIR}\iap-windows-rdc-plugin-tests.json")
 {
 	if (!$Env:GOOGLE_APPLICATION_CREDENTIALS)
 	{
@@ -125,20 +124,30 @@ if (Test-Path "*.sln")
 	{
 		${Env:GOOGLE_CLOUD_PROJECT} = (Get-Content $Env:GOOGLE_APPLICATION_CREDENTIALS | Out-String | ConvertFrom-Json).project_id
 	}
+    
+    & gcloud auth activate-service-account --key-file=$Env:GOOGLE_APPLICATION_CREDENTIALS | Out-Default
+    
+	Write-Host "Google Cloud project: ${Env:GOOGLE_CLOUD_PROJECT}" -ForegroundColor Yellow
+	Write-Host "Google Cloud credentials: ${Env:GOOGLE_APPLICATION_CREDENTIALS}" -ForegroundColor Yellow
+}
 
+if (Test-Path "${env:KOKORO_GFILE_DIR}\dca-user.adc.json")
+{
 	if (!$Env:SECURECONNECT_CREDENTIALS)
 	{
 		$Env:SECURECONNECT_CREDENTIALS = "${env:KOKORO_GFILE_DIR}\dca-user.adc.json"
 	}
 
+	Write-Host "SecureConnect credentials: ${Env:SECURECONNECT_CREDENTIALS}" -ForegroundColor Yellow
+}
+
+if (Test-Path "${env:KOKORO_GFILE_DIR}\dca-user.dca.pfx")
+{
 	if (!$Env:SECURECONNECT_CERTIFICATE)
 	{
 		$Env:SECURECONNECT_CERTIFICATE = "${env:KOKORO_GFILE_DIR}\dca-user.dca.pfx"
 	}
 
-	Write-Host "Google Cloud project: ${Env:GOOGLE_CLOUD_PROJECT}" -ForegroundColor Yellow
-	Write-Host "Google Cloud credentials: ${Env:GOOGLE_APPLICATION_CREDENTIALS}" -ForegroundColor Yellow
-	Write-Host "SecureConnect credentials: ${Env:SECURECONNECT_CREDENTIALS}" -ForegroundColor Yellow
 	Write-Host "SecureConnect certificate: ${Env:SECURECONNECT_CERTIFICATE}" -ForegroundColor Yellow
 }
 
