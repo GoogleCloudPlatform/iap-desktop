@@ -125,6 +125,8 @@ if (Test-Path "${env:KOKORO_GFILE_DIR}\iap-windows-rdc-plugin-tests.json")
 		${Env:GOOGLE_CLOUD_PROJECT} = (Get-Content $Env:GOOGLE_APPLICATION_CREDENTIALS | Out-String | ConvertFrom-Json).project_id
 	}
     
+    & gcloud auth activate-service-account --key-file=$(GOOGLE_APPLICATION_CREDENTIALS) | Out-Default
+    
 	Write-Host "Google Cloud project: ${Env:GOOGLE_CLOUD_PROJECT}" -ForegroundColor Yellow
 	Write-Host "Google Cloud credentials: ${Env:GOOGLE_APPLICATION_CREDENTIALS}" -ForegroundColor Yellow
 }

@@ -33,7 +33,7 @@ BUILD_NUMBER = $(KOKORO_BUILD_NUMBER)
 BUILD_NUMBER = 1
 !endif
 
-BINARY_VERSION = $(PRODUCT_VERSION).$(KOKORO_BUILD_NUMBER).$(BUILD_NUMBER)
+BINARY_VERSION = $(PRODUCT_VERSION).$(BUILD_NUMBER)
 
 MAIN_ASSEMBLY = Google.Solutions.IapDesktop\bin\$(CONFIGURATION)\IapDesktop.exe
 
@@ -243,7 +243,6 @@ kokoro-iap-firewallrule:
 	@echo "=== Creating firewall rule                           ==="
 	@echo "========================================================"
 
-	gcloud auth activate-service-account --key-file=$(GOOGLE_APPLICATION_CREDENTIALS)
 	-gcloud compute firewall-rules create allow-ingress-from-iap \
 		--direction=INGRESS \
 		--action=allow \
