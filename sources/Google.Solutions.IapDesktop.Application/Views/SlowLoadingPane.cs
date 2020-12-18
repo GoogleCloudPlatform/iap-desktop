@@ -59,7 +59,8 @@ namespace Google.Solutions.IapDesktop.Application.Views
             // Show the form as normal, which presents the progress bar.
             InitializeComponent();
 
-            this.TabText = title;
+            this.Text = title;
+
             this.DockAreas = WeifenLuo.WinFormsUI.Docking.DockAreas.Document;
         }
 
