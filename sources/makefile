@@ -43,7 +43,6 @@ SYMBOLS_PACKAGE = installer\bin\$(CONFIGURATION)\Symbols-$(BINARY_VERSION).zip
 
 NUNIT_ASSEMBLIES = \
 	Google.Solutions.Common.Test\bin\$(CONFIGURATION)\Google.Solutions.Common.Test.dll	\
-	Google.Solutions.Ssh.Test\bin\release\Google.Solutions.Ssh.Test.dll \
 	Google.Solutions.IapTunneling.Test\bin\release\Google.Solutions.IapTunneling.Test.dll \
 	Google.Solutions.IapDesktop.Extensions.Activity.Test\bin\release\Google.Solutions.IapDesktop.Extensions.Activity.Test.dll \
 	Google.Solutions.IapDesktop.Extensions.Os.Test\bin\release\Google.Solutions.IapDesktop.Extensions.Os.Test.dll \
@@ -52,7 +51,6 @@ NUNIT_ASSEMBLIES = \
 
 NUNIT_COVERAGE_FILTER = \
 	+[Google.Solutions.Common]* \
-	+[Google.Solutions.Ssh]* \
 	+[Google.Solutions.IapTunneling]* \
 	+[Google.Solutions.IapDesktop.Extensions.Activity]* \
 	+[Google.Solutions.IapDesktop.Extensions.Os]* \

@@ -55,12 +55,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Google.Solutions.IapDesktop
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Google.Solutions.IapDesktop.Extensions.Rdp.Test", "Google.Solutions.IapDesktop.Extensions.Rdp.Test\Google.Solutions.IapDesktop.Extensions.Rdp.Test.csproj", "{EF5D7227-BA6F-4DF7-A3B6-CD547C443AAB}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Base.Ssh", "Base.Ssh", "{E957A43B-A602-4629-AB83-3EEC0EF95C6B}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Google.Solutions.Ssh", "Google.Solutions.Ssh\Google.Solutions.Ssh.csproj", "{3E4A828D-819B-40D2-89B3-47D5B52F67FB}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Google.Solutions.Ssh.Test", "Google.Solutions.Ssh.Test\Google.Solutions.Ssh.Test.csproj", "{AEA98584-CCBF-4598-8457-6F5AE177B549}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug (OAuth)|Any CPU = Debug (OAuth)|Any CPU
