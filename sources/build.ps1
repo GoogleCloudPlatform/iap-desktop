@@ -113,7 +113,7 @@ Write-Host "PATH: ${Env:PATH}" -ForegroundColor Yellow
 # Find Google Cloud credentials and project (for tests)
 #------------------------------------------------------------------------------
 
-if (Test-Path "*.sln")
+if (Test-Path "${env:KOKORO_GFILE_DIR}\iap-windows-rdc-plugin-tests.json")
 {
 	if (!$Env:GOOGLE_APPLICATION_CREDENTIALS)
 	{
@@ -124,20 +124,28 @@ if (Test-Path "*.sln")
 	{
 		${Env:GOOGLE_CLOUD_PROJECT} = (Get-Content $Env:GOOGLE_APPLICATION_CREDENTIALS | Out-String | ConvertFrom-Json).project_id
 	}
+    
+	Write-Host "Google Cloud project: ${Env:GOOGLE_CLOUD_PROJECT}" -ForegroundColor Yellow
+	Write-Host "Google Cloud credentials: ${Env:GOOGLE_APPLICATION_CREDENTIALS}" -ForegroundColor Yellow
+}
 
+if (Test-Path "${env:KOKORO_GFILE_DIR}\dca-user.adc.json")
+{
 	if (!$Env:SECURECONNECT_CREDENTIALS)
 	{
 		$Env:SECURECONNECT_CREDENTIALS = "${env:KOKORO_GFILE_DIR}\dca-user.adc.json"
 	}
 
+	Write-Host "SecureConnect credentials: ${Env:SECURECONNECT_CREDENTIALS}" -ForegroundColor Yellow
+}
+
+if (Test-Path "${env:KOKORO_GFILE_DIR}\dca-user.dca.pfx")
+{
 	if (!$Env:SECURECONNECT_CERTIFICATE)
 	{
 		$Env:SECURECONNECT_CERTIFICATE = "${env:KOKORO_GFILE_DIR}\dca-user.dca.pfx"
 	}
 
-	Write-Host "Google Cloud project: ${Env:GOOGLE_CLOUD_PROJECT}" -ForegroundColor Yellow
-	Write-Host "Google Cloud credentials: ${Env:GOOGLE_APPLICATION_CREDENTIALS}" -ForegroundColor Yellow
-	Write-Host "SecureConnect credentials: ${Env:SECURECONNECT_CREDENTIALS}" -ForegroundColor Yellow
 	Write-Host "SecureConnect certificate: ${Env:SECURECONNECT_CERTIFICATE}" -ForegroundColor Yellow
 }
 

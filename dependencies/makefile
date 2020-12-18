@@ -20,17 +20,27 @@
 #
 CONFIGURATION = Release
 
+!if ( "$(KOKORO_BUILD_NUMBER)" != "" ) 
+BUILD_NUMBER = $(KOKORO_BUILD_NUMBER)
+!else
+BUILD_NUMBER = 1
+!endif
+
+
 VTNETCORE_SHA = 9e68f5561dc52edb780615b3fe133289216b3dba
 VTNETCORE_URL = https://github.com/darrenstarr/VtNetCore.git
-VTNETCORE_VERSION = 2020.11.1
+VTNETCORE_VERSION = 1.0.0.$(BUILD_NUMBER)
 
-# NB. The version/tag built is set in vcpkg-ports\libssh2\portfile.cmake, with
-# dependcies depending on the vcpkg tag.
-VCPKG_TAG = 2020.11
+# NB. The libssh2 version is defined in vcpkg-ports\libssh2\portfile.cmake,
+# with dependencies determined by the vcpkg tag.
+VCPKG_TAG = master
 VCPKG_URL = https://github.com/microsoft/vcpkg.git
-LIBSSH2_VERSION = 1.9.0
+LIBSSH2_VERSION = 1.9.0.$(BUILD_NUMBER)
 
-default: vtnetcore libssh2
+# GCS bucket used for storing results
+PACKAGES_BUCKET = jpassing-188008-workspace
+
+default: dependencies
 
 #------------------------------------------------------------------------------
 # Common targets
@@ -41,7 +51,7 @@ $(MAKEDIR)\NuGetPackages:
 	@echo "=== Creating nuget package repository                ===
 	@echo "========================================================"
 	md $(MAKEDIR)\NuGetPackages
-	-nuget sources add -Name iap-desktop-third-party -Source $(MAKEDIR)\NuGetPackages
+	-nuget sources add -Name iap-desktop-dependencies -Source $(MAKEDIR)\NuGetPackages
 
 #------------------------------------------------------------------------------
 # Vtnetcore targets
@@ -77,6 +87,8 @@ vtnetcore: $(MAKEDIR)\obj\vtnetcore\VtNetCore\bin\$(CONFIGURATION)\vtnetcore.$(V
 	nuget add \
 		$(MAKEDIR)\obj\vtnetcore\VtNetCore\bin\$(CONFIGURATION)\vtnetcore.$(VTNETCORE_VERSION).nupkg \
 		-Source $(MAKEDIR)\NuGetPackages
+
+
 
 #------------------------------------------------------------------------------
 # vcpkg
@@ -149,6 +161,11 @@ libssh2: $(MAKEDIR)\obj\vcpkg\installed\libssh2-x86-windows-mixed\bin\libssh2.$(
 #------------------------------------------------------------------------------
 # Main targets
 #------------------------------------------------------------------------------
+
+dependencies: vtnetcore libssh2
+!if ( "$(KOKORO_BUILD_NUMBER)" != "" ) 
+    gsutil cp -r NuGetPackages gs://$(PACKAGES_BUCKET)/NuGetPackages
+!endif
 
 clean:
 	rd /S /Q obj
