@@ -220,18 +220,17 @@ namespace Google.Solutions.Ssh.Test.Native
         }
 
         [Test]
-        public async Task WhenPortIsNotSsh_ThenHandshakeTimesOut(
-            [LinuxInstance(InitializeScript = InitializeScripts.InstallEchoServer)] ResourceTask<InstanceLocator> instanceLocatorTask)
+        public void WhenPortIsNotSsh_ThenHandshakeThrowsDisconnect()
         {
-            var endpoint = new IPEndPoint(
-                await InstanceUtil.PublicIpAddressForInstanceAsync(await instanceLocatorTask),
-                7);
+            var dnsEndpoint = new IPEndPoint(
+                IPAddress.Parse("8.8.8.8"),
+                53);
             using (var session = CreateSession())
             {
                 SshAssert.ThrowsNativeExceptionWithError(
                     session,
-                    LIBSSH2_ERROR.TIMEOUT,
-                    () => session.ConnectAsync(endpoint).Wait());
+                    LIBSSH2_ERROR.SOCKET_DISCONNECT,
+                    () => session.ConnectAsync(dnsEndpoint).Wait());
             }
         }
     }

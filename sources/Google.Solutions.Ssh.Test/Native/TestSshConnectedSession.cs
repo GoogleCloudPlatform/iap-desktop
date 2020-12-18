@@ -113,9 +113,9 @@ namespace Google.Solutions.Ssh.Test.Native
             {
                 var keyType = connection.GetRemoteHostKeyType();
                 Assert.AreEqual(LIBSSH2_ERROR.NONE, session.LastError);
-                Assert.AreEqual(
-                    LIBSSH2_HOSTKEY_TYPE.ECDSA_256,
-                    keyType);
+                Assert.IsTrue(
+                    keyType == LIBSSH2_HOSTKEY_TYPE.ECDSA_256 ||
+                    keyType == LIBSSH2_HOSTKEY_TYPE.RSA);
             }
         }
 
@@ -129,9 +129,9 @@ namespace Google.Solutions.Ssh.Test.Native
             using (var session = CreateSession())
             using (var connection = await session.ConnectAsync(endpoint))
             {
-                Assert.IsNotNull(connection.GetRemoteHostKeyHash(LIBSSH2_HOSTKEY_HASH.MD5));
-                Assert.IsNotNull(connection.GetRemoteHostKeyHash(LIBSSH2_HOSTKEY_HASH.SHA1));
-                Assert.IsNotNull(connection.GetRemoteHostKeyHash(LIBSSH2_HOSTKEY_HASH.SHA256));
+                Assert.IsNotNull(connection.GetRemoteHostKeyHash(LIBSSH2_HOSTKEY_HASH.MD5), "MD5");
+                Assert.IsNotNull(connection.GetRemoteHostKeyHash(LIBSSH2_HOSTKEY_HASH.SHA1), "SHA1");
+                Assert.IsNotNull(connection.GetRemoteHostKeyHash(LIBSSH2_HOSTKEY_HASH.SHA256), "SHA256");
             }
         }
 
