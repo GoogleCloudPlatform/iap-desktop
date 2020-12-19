@@ -27,7 +27,7 @@ using System.Net.WebSockets;
 namespace Google.Solutions.IapTunneling.Test.Net
 {
     [TestFixture]
-    public class TestRestrictedHeaderConfigPatch : FixtureBase
+    public class TestRestrictedHeaderConfigPatch : IapFixtureBase
     {
         [Test]
         public void WhenPatchNotApplied_ThenSetUserAgentHeaderFails()

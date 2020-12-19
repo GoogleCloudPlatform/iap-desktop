@@ -28,7 +28,7 @@ using NUnit.Framework;
 namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.Events.Lifecycle
 {
     [TestFixture]
-    public class TestStartWithEncryptionKeyEvent : FixtureBase
+    public class TestStartWithEncryptionKeyEvent : ActivityFixtureBase
     {
         [Test]
         public void WhenSeverityIsNotice_ThenFieldsAreExtracted()

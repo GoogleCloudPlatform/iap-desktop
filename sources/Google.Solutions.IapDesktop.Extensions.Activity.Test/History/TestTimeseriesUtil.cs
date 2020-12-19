@@ -27,7 +27,7 @@ using System.Linq;
 namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.History
 {
     [TestFixture]
-    public class TestTimeseriesUtil : FixtureBase
+    public class TestTimeseriesUtil : ActivityFixtureBase
     {
         //---------------------------------------------------------------------
         // High watermark tests.

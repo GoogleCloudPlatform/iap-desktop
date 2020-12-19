@@ -35,7 +35,7 @@ using System.Windows.Forms;
 namespace Google.Solutions.IapDesktop.Extensions.Rdp.Test.Views.TunnelsViewer
 {
     [TestFixture]
-    public class TestTunnelsViewModel : FixtureBase
+    public class TestTunnelsViewModel : CommonFixtureBase
     {
         private static Mock<IConfirmationDialog> CreateConfirmationDialog(DialogResult result)
         {

@@ -25,7 +25,7 @@ using NUnit.Framework;
 namespace Google.Solutions.IapDesktop.Application.Test.Host
 {
     [TestFixture]
-    public class TestCommandLineOptions : FixtureBase
+    public class TestCommandLineOptions : ApplicationFixtureBase
     {
         [Test]
         public void WhenArgsEmpty_ThenParseReturnsValidOptions()

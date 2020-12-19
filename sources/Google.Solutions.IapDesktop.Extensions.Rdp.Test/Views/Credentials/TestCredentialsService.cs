@@ -39,7 +39,7 @@ using System.Windows.Forms;
 namespace Google.Solutions.IapDesktop.Extensions.Rdp.Test.Views.Credentials
 {
     [TestFixture]
-    public class TestCredentialsService : FixtureBase
+    public class TestCredentialsService : CommonFixtureBase
     {
         private static readonly InstanceLocator SampleInstance
             = new InstanceLocator("project-1", "zone-1", "instance-1");

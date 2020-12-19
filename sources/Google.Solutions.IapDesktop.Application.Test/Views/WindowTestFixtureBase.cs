@@ -39,7 +39,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views
     [TestFixture]
     [Apartment(ApartmentState.STA)]
     [Timeout(10 * 60 * 1000)]
-    public class WindowTestFixtureBase : FixtureBase
+    public class WindowTestFixtureBase : ApplicationFixtureBase
     {
         private const string TestKeyPath = @"Software\Google\__Test";
 

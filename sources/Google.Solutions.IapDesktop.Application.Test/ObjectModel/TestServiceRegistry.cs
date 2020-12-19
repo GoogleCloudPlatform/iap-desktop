@@ -30,7 +30,7 @@ using System.Linq;
 namespace Google.Solutions.IapDesktop.Application.Test.ObjectModel
 {
     [TestFixture]
-    public class TestServiceRegistry : FixtureBase
+    public class TestServiceRegistry : ApplicationFixtureBase
     {
         public class ServiceWithDefaultConstructor
         {

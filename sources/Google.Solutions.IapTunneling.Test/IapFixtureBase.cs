@@ -19,31 +19,20 @@
 // under the License.
 //
 
+using Google.Solutions.Common;
+using Google.Solutions.Common.Test;
 using NUnit.Framework;
+using System.Collections.Generic;
 using System.Diagnostics;
 
-namespace Google.Solutions.Common.Test
+namespace Google.Solutions.IapTunneling.Test
 {
-    public abstract class FixtureBase
+    public abstract class IapFixtureBase : CommonFixtureBase
     {
-        private static readonly ConsoleTraceListener listener = new ConsoleTraceListener();
-
-        [SetUp]
-        public void SetUpTracing()
+        protected override IEnumerable<TraceSource> Sources => new[]
         {
-            if (!CommonTraceSources.Default.Listeners.Contains(listener))
-            {
-                CommonTraceSources.Default.Listeners.Add(listener);
-                CommonTraceSources.Default.Switch.Level = SourceLevels.Verbose;
-            }
-
-            listener.WriteLine("Start " + TestContext.CurrentContext.Test.FullName);
-        }
-
-        [TearDown]
-        public void TearDownTracing()
-        {
-            listener.WriteLine("End " + TestContext.CurrentContext.Test.FullName);
-        }
+            CommonTraceSources.Default,
+            IapTraceSources.Default
+        };
     }
 }

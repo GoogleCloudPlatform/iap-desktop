@@ -27,7 +27,7 @@ using System.Threading.Tasks;
 namespace Google.Solutions.IapDesktop.Application.Test.ObjectModel
 {
     [TestFixture]
-    public class TestModelCachingViewModelBase : FixtureBase
+    public class TestModelCachingViewModelBase : ApplicationFixtureBase
     {
         private class SampleViewModel : ModelCachingViewModelBase<string, string>
         {

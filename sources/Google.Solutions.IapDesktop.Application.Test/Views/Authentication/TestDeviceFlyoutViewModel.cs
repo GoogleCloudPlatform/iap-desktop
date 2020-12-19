@@ -28,7 +28,7 @@ using System.Windows.Forms;
 namespace Google.Solutions.IapDesktop.Application.Test.Views.Authentication
 {
     [TestFixture]
-    public class TestDeviceFlyoutViewModel : FixtureBase
+    public class TestDeviceFlyoutViewModel : ApplicationFixtureBase
     {
         [Test]
         public void WhenNotInstalled_ThenPropertiesAreSetAccordingly()

@@ -29,7 +29,7 @@ using System.Linq;
 namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.History
 {
     [TestFixture]
-    public class TestInstanceHistoryBuilder : FixtureBase
+    public class TestInstanceHistoryBuilder : ActivityFixtureBase
     {
         private static readonly InstanceLocator SampleReference = new InstanceLocator("pro", "zone", "name");
         private static readonly ImageLocator SampleImage

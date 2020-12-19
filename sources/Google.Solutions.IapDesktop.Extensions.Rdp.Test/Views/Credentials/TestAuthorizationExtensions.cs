@@ -29,7 +29,7 @@ using System;
 namespace Google.Solutions.IapDesktop.Extensions.Rdp.Test.Views.Credentials
 {
     [TestFixture]
-    public class TestAuthorizationExtensions : FixtureBase
+    public class TestAuthorizationExtensions : CommonFixtureBase
     {
         [Test]
         public void WhenAuthorizationEmailIsNull_ThenSuggestWindowsUsernameReturnsWindowsUsername()

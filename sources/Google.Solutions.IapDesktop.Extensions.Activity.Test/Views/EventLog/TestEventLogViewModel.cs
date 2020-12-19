@@ -40,7 +40,7 @@ using System.Threading.Tasks;
 namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.Views.EventLog
 {
     [TestFixture]
-    public class TestEventLogViewModel : FixtureBase
+    public class TestEventLogViewModel : ActivityFixtureBase
     {
         private JobServiceMock jobServiceMock;
         private AuditLogAdapterMock auditLogAdapter;

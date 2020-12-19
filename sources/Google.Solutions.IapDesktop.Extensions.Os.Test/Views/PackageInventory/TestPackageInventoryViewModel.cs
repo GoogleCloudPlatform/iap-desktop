@@ -38,7 +38,7 @@ using System.Threading.Tasks;
 namespace Google.Solutions.IapDesktop.Extensions.Os.Test.Views.PackageInventory
 {
     [TestFixture]
-    public class TestPackageInventoryViewModel : FixtureBase
+    public class TestPackageInventoryViewModel : CommonFixtureBase
     {
         private static GuestOsInfo CreateGuestOsInfo(
             InstanceLocator locator,

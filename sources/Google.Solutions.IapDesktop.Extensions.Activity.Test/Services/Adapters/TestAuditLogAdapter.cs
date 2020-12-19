@@ -40,7 +40,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.Services.Adapters
 {
     [TestFixture]
     [Category("IntegrationTest")]
-    public class TestAuditLogAdapter : FixtureBase
+    public class TestAuditLogAdapter : ActivityFixtureBase
     {
         //---------------------------------------------------------------------
         // ListEventsAsync

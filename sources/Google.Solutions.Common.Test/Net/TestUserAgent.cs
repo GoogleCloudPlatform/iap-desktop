@@ -26,7 +26,7 @@ using System;
 namespace Google.Solutions.Common.Test.Net
 {
     [TestFixture]
-    public class TestUserAgent : FixtureBase
+    public class TestUserAgent : CommonFixtureBase
     {
         [Test]
         public void ToHeaderValueReturnsProperString()

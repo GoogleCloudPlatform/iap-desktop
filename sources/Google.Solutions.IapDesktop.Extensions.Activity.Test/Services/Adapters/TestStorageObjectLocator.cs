@@ -25,7 +25,7 @@ using NUnit.Framework;
 namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.Services.Adapters
 {
     [TestFixture]
-    public class TestStorageObjectLocator : FixtureBase
+    public class TestStorageObjectLocator : ActivityFixtureBase
     {
         [Test]
         public void WhenReferencesAreEquivalent_ThenEqualsReturnsTrue()

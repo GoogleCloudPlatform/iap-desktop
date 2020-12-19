@@ -28,7 +28,7 @@ using System.Linq;
 namespace Google.Solutions.Common.Test.ApiExtensions.Instance
 {
     [TestFixture]
-    public class TestMetadataExtensions : FixtureBase
+    public class TestMetadataExtensions : CommonFixtureBase
     {
         //---------------------------------------------------------------------
         // Add key/value

@@ -25,7 +25,7 @@ using NUnit.Framework;
 namespace Google.Solutions.IapDesktop.Application.Test.Util
 {
     [TestFixture]
-    public class TestHtmlClipboardFormat : FixtureBase
+    public class TestHtmlClipboardFormat : ApplicationFixtureBase
     {
         [Test]
         public void FormatAddsHeader()

@@ -27,7 +27,7 @@ using System.Linq;
 namespace Google.Solutions.Common.Test.Util
 {
     [TestFixture]
-    public class TestLinqExtensions : FixtureBase
+    public class TestLinqExtensions : CommonFixtureBase
     {
         [Test]
         public void WhenEnumIsNull_EnsureNotNullReturnsEmpty()

@@ -33,7 +33,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Adapters
 {
     [TestFixture]
     [Category("IntegrationTest")]
-    public class TestHttpProxyAdapter : FixtureBase
+    public class TestHttpProxyAdapter : ApplicationFixtureBase
     {
         // Use a host name that is unlikely to be hit by any initialization code
         // which might be running in parallel with a test case.

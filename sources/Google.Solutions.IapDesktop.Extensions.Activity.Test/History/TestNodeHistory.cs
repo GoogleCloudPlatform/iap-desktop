@@ -28,7 +28,7 @@ using System.Linq;
 namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.History
 {
     [TestFixture]
-    public class TestNodeHistory : FixtureBase
+    public class TestNodeHistory : ActivityFixtureBase
     {
         [Test]
         public void WhenNodeHasNoPlacements_ThenZoneAndProjectIdAreNull()

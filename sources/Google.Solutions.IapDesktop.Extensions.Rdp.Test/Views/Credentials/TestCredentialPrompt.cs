@@ -37,7 +37,7 @@ using System.Windows.Forms;
 namespace Google.Solutions.IapDesktop.Extensions.Rdp.Test.Views.Credentials
 {
     [TestFixture]
-    public class TestCredentialPrompt : FixtureBase
+    public class TestCredentialPrompt : CommonFixtureBase
     {
         private readonly ServiceRegistry serviceRegistry = new ServiceRegistry();
 

@@ -26,7 +26,7 @@ using System;
 namespace Google.Solutions.IapDesktop.Application.Test.Util
 {
     [TestFixture]
-    public class TestIapRdpUrl : FixtureBase
+    public class TestIapRdpUrl : ApplicationFixtureBase
     {
         //---------------------------------------------------------------------
         // Base URL parsing.

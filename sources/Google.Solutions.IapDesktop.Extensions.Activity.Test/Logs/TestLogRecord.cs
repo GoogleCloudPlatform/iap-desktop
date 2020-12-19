@@ -26,7 +26,7 @@ using System;
 namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.Logs
 {
     [TestFixture]
-    public class TestLogRecord : FixtureBase
+    public class TestLogRecord : ActivityFixtureBase
     {
         [Test]
         public void WhenSystemEventJsonValid_ThenFieldsAreDeserialized()

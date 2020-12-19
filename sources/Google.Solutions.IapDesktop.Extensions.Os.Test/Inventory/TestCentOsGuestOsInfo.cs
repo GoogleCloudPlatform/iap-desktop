@@ -31,7 +31,7 @@ using System.Linq;
 namespace Google.Solutions.IapDesktop.Extensions.Os.Test.Inventory
 {
     [TestFixture]
-    public class TestCentOsGuestOsInfo : FixtureBase
+    public class TestCentOsGuestOsInfo : CommonFixtureBase
     {
         private static readonly InstanceLocator SampleLocator =
             new InstanceLocator("project-1", "zone-1", "instance-1");

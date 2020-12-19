@@ -41,7 +41,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.Services.Adapters
 {
     [TestFixture]
     [Category("IntegrationTest")]
-    public class TestAuditLogStorageSinkAdapter : FixtureBase
+    public class TestAuditLogStorageSinkAdapter : ActivityFixtureBase
     {
         private static readonly StorageObjectLocator GarbageLocator = new StorageObjectLocator(
             GcsTestData.Bucket,

@@ -32,7 +32,7 @@ using System.Threading.Tasks;
 
 namespace Google.Solutions.IapTunneling.Test.Iap
 {
-    public abstract class TestHttpOverIapTunnelBase : FixtureBase
+    public abstract class TestHttpOverIapTunnelBase : IapFixtureBase
     {
         protected const string InstallApache = "sudo apt-get install -y apache2";
 

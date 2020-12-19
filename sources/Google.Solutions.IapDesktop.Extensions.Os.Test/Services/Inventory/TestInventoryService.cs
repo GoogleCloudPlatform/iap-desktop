@@ -34,7 +34,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Os.Test.Services.Inventory
 {
     [TestFixture]
     [Category("IntegrationTest")]
-    public class TestInventoryService : FixtureBase
+    public class TestInventoryService : CommonFixtureBase
     {
         // Publish dummy OS inventory data. The real data is published asynchronously,
         // so it's difficult to rely on it in integration tests.

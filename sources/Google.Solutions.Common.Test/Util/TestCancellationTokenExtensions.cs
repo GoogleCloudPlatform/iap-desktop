@@ -26,7 +26,7 @@ using System.Threading;
 namespace Google.Solutions.Common.Test.Util
 {
     [TestFixture]
-    public class TestCancellationTokenExtensions : FixtureBase
+    public class TestCancellationTokenExtensions : CommonFixtureBase
     {
         [Test]
         public void WhenFirstTokenCancelled_CombinedTokenIsCancelled()

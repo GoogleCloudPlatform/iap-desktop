@@ -27,7 +27,7 @@ using System;
 namespace Google.Solutions.IapDesktop.Application.Test.Services.Settings
 {
     [TestFixture]
-    public class TestApplicationSettingsRepository : FixtureBase
+    public class TestApplicationSettingsRepository : ApplicationFixtureBase
     {
         private const string TestKeyPath = @"Software\Google\__Test";
         private readonly RegistryKey hkcu = RegistryKey.OpenBaseKey(

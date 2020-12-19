@@ -28,7 +28,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Controls
 {
     [TestFixture]
     [Apartment(ApartmentState.STA)]
-    public class TestListViewExtensions : FixtureBase
+    public class TestListViewExtensions : ApplicationFixtureBase
     {
         private ListView listView;
         private Form form;

@@ -31,7 +31,7 @@ using System.Collections.Generic;
 namespace Google.Solutions.IapDesktop.Extensions.Rdp.Test.Services.Connection
 {
     [TestFixture]
-    public class TestConnectionSettingsRepository : FixtureBase
+    public class TestConnectionSettingsRepository : CommonFixtureBase
     {
         private const string TestKeyPath = @"Software\Google\__Test";
         private readonly RegistryKey hkcu = RegistryKey.OpenBaseKey(

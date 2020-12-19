@@ -24,7 +24,7 @@ using NUnit.Framework;
 namespace Google.Solutions.IapTunneling.Test
 {
     [TestFixture]
-    public class TestBigEndian : FixtureBase
+    public class TestBigEndian : IapFixtureBase
     {
         [Test]
         public void EncodeDecodeInt16()

@@ -25,7 +25,7 @@ using NUnit.Framework;
 namespace Google.Solutions.Common.Test.Diagnostics
 {
     [TestFixture]
-    public class TestClrVersion : FixtureBase
+    public class TestClrVersion : CommonFixtureBase
     {
         [Test]
         public void VersionPopulated()

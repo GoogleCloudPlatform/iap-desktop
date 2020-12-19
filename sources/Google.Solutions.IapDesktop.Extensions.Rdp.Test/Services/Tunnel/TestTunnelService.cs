@@ -38,7 +38,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Test.Services.Tunnel
 {
     [TestFixture]
     [Category("IntegrationTest")]
-    public class TestTunnelService : FixtureBase
+    public class TestTunnelService : CommonFixtureBase
     {
         private IAuthorizationAdapter CreateAuthorizationAdapter(
             ICredential credential,

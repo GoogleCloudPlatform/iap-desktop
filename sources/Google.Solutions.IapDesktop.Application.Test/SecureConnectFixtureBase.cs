@@ -26,7 +26,7 @@ using Moq;
 
 namespace Google.Solutions.IapDesktop.Application.Test
 {
-    public class SecureConnectFixtureBase : FixtureBase
+    public class SecureConnectFixtureBase : ApplicationFixtureBase
     {
         protected static IAuthorizationAdapter CreateAuthorizationAdapterForSecureConnectUser()
         {

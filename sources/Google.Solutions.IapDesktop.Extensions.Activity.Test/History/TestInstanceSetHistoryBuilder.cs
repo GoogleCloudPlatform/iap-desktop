@@ -36,7 +36,7 @@ using System.Reflection;
 namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.History
 {
     [TestFixture]
-    public class TestInstanceSetHistoryBuilder : FixtureBase
+    public class TestInstanceSetHistoryBuilder : ActivityFixtureBase
     {
         private static readonly InstanceLocator SampleReference = new InstanceLocator("pro", "zone", "name");
         private static readonly ImageLocator SampleImage

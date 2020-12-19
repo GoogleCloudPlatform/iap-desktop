@@ -27,7 +27,7 @@ using System;
 namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.Logs
 {
     [TestFixture]
-    public class TestAuditLogRecord : FixtureBase
+    public class TestAuditLogRecord : ActivityFixtureBase
     {
         [Test]
         public void WhenJsonContainsAuditLogRecord_ThenAuditLogRecordIsDeserialized()

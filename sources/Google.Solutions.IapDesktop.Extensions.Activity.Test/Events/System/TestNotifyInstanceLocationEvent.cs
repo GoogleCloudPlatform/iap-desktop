@@ -28,7 +28,7 @@ using System;
 namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.Events.System
 {
     [TestFixture]
-    public class TestNotifyInstanceLocationEvent : FixtureBase
+    public class TestNotifyInstanceLocationEvent : ActivityFixtureBase
     {
         [Test]
         public void WhenRecordContainsNodeType_ThenFieldsAreExtracted()

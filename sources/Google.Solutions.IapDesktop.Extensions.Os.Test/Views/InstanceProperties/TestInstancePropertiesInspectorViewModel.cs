@@ -36,7 +36,7 @@ using System.Threading.Tasks;
 namespace Google.Solutions.IapDesktop.Extensions.Os.Test.Views.InstanceProperties
 {
     [TestFixture]
-    public class TestInstancePropertiesInspectorViewModel : FixtureBase
+    public class TestInstancePropertiesInspectorViewModel : CommonFixtureBase
     {
         private class JobServiceMock : IJobService
         {

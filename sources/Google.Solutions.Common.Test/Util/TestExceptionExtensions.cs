@@ -27,7 +27,7 @@ using System.Reflection;
 namespace Google.Solutions.Common.Test.Util
 {
     [TestFixture]
-    public class TestExceptionExtensions : FixtureBase
+    public class TestExceptionExtensions : CommonFixtureBase
     {
         [Test]
         public void WhenRegularException_UnwrapDoesNothing()

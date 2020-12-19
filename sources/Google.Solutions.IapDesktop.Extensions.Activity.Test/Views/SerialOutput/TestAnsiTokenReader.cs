@@ -30,7 +30,7 @@ using System.Threading.Tasks;
 namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.Views.SerialOutput
 {
     [TestFixture]
-    public class TestAnsiTokenReader : FixtureBase
+    public class TestAnsiTokenReader : ActivityFixtureBase
     {
         private readonly string[] AnsiSequences = new[]
         {

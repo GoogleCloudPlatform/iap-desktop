@@ -25,7 +25,7 @@ using NUnit.Framework;
 namespace Google.Solutions.Common.Test.Locator
 {
     [TestFixture]
-    public class TestInstanceLocator : FixtureBase
+    public class TestInstanceLocator : CommonFixtureBase
     {
         [Test]
         public void WhenCreatedFromPath_ThenToStringReturnsPath()

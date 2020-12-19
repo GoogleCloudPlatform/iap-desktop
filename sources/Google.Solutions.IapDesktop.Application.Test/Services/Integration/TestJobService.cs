@@ -34,7 +34,7 @@ using System.Threading.Tasks;
 namespace Google.Solutions.IapDesktop.Application.Test.Services.Integration
 {
     [TestFixture]
-    public class TestJobService : FixtureBase
+    public class TestJobService : ApplicationFixtureBase
     {
         private class SynchronousInvoker : ISynchronizeInvoke
         {

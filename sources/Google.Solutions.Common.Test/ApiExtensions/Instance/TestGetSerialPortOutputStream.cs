@@ -33,7 +33,7 @@ namespace Google.Solutions.Common.Test.Extensions
     [TestFixture]
     [Category("IntegrationTest")]
     [Category("Windows")]
-    public class TestGetSerialPortOutputStream : FixtureBase
+    public class TestGetSerialPortOutputStream : CommonFixtureBase
     {
         private InstancesResource instancesResource;
 

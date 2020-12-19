@@ -27,7 +27,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Util
 {
 
     [TestFixture]
-    public class TestRangeObservableCollection : FixtureBase
+    public class TestRangeObservableCollection : ApplicationFixtureBase
     {
         [Test]
         public void WhenAddUsed_ThenIndividualEventsAreFired()

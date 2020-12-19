@@ -29,7 +29,7 @@ using System.Threading.Tasks;
 namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.Views.SerialOutput
 {
     [TestFixture]
-    public class TestAnsiTextReader : FixtureBase
+    public class TestAnsiTextReader : ActivityFixtureBase
     {
         [Test]
         public async Task WhenStreamContainsPlainTextOnly_ThenTextIsReturnedVerbatim()

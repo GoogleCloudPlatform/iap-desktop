@@ -34,7 +34,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.Services.Adapters
 {
     [TestFixture]
     [Category("IntegrationTest")]
-    public class TestStorageAdapter : FixtureBase
+    public class TestStorageAdapter : ActivityFixtureBase
     {
         private static readonly StorageObjectLocator SampleLocator = new StorageObjectLocator(
             GcsTestData.Bucket,

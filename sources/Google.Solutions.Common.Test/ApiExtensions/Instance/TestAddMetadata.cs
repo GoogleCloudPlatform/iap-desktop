@@ -34,7 +34,7 @@ namespace Google.Solutions.Common.Test.Extensions
     [TestFixture]
     [Category("IntegrationTest")]
     [Category("Windows")]
-    public class TestAddMetadata : FixtureBase
+    public class TestAddMetadata : CommonFixtureBase
     {
         private InstancesResource instancesResource;
 

@@ -28,7 +28,7 @@ using System.Security.Cryptography.X509Certificates;
 namespace Google.Solutions.IapDesktop.Application.Test.Services.Adapters
 {
     [TestFixture]
-    public class TestCertificateStoreAdapter : FixtureBase
+    public class TestCertificateStoreAdapter : ApplicationFixtureBase
     {
         //
         // Self-signed certificate, created using:

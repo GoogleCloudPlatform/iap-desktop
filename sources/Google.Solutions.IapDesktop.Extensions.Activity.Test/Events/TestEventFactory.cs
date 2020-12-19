@@ -27,7 +27,7 @@ using System;
 namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.Events
 {
     [TestFixture]
-    public class TestEventFactory : FixtureBase
+    public class TestEventFactory : ActivityFixtureBase
     {
         [Test]
         public void WhenRecordIsLegacyRecord_ThenFromRecordThrowsArgumentException()

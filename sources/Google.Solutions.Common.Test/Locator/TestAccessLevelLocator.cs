@@ -26,7 +26,7 @@ using System;
 namespace Google.Solutions.Common.Test.Locator
 {
     [TestFixture]
-    public class TestAccessLevelLocator : FixtureBase
+    public class TestAccessLevelLocator : CommonFixtureBase
     {
         [Test]
         public void WhenPathIsValid_FromStringReturnsObject()
