@@ -30,6 +30,7 @@ using Microsoft.Win32;
 using NUnit.Framework;
 using System;
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Windows.Forms;
 
@@ -106,7 +107,9 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views
         protected static void PumpWindowMessages()
             => System.Windows.Forms.Application.DoEvents();
 
-        protected TEvent AwaitEvent<TEvent>(TimeSpan timeout) where TEvent : class
+        protected TEvent AwaitEvent<TEvent>(
+            TimeSpan timeout,
+            [CallerMemberName] string testCase = null) where TEvent : class
         {
             var deadline = DateTime.Now.Add(timeout);
 
@@ -127,7 +130,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views
 
                 if ((i % 100) == 0)
                 {
-                    Console.WriteLine($"Still waiting for {typeof(TEvent).Name} (until {deadline})");
+                    Console.WriteLine($"{testCase}: Still waiting for {typeof(TEvent).Name} (until {deadline})");
                 }
 
                 PumpWindowMessages();
@@ -136,8 +139,9 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views
             return deliveredEvent;
         }
 
-        protected TEvent AwaitEvent<TEvent>() where TEvent : class
-            => AwaitEvent<TEvent>(TimeSpan.FromSeconds(90));
+        protected TEvent AwaitEvent<TEvent>(
+            [CallerMemberName] string testCase = null) where TEvent : class
+            => AwaitEvent<TEvent>(TimeSpan.FromSeconds(90), testCase);
 
         protected static void Delay(TimeSpan timeout)
         {
