@@ -84,7 +84,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Test.Views.RemoteDesktop
             {
                 var session = await Connect(tunnel, locator);
 
-                AwaitEvent<ConnectionFailedEvent>();
+                AwaitEvent<ConnectionFailedEvent>(TimeSpan.FromSeconds(90));
                 Assert.IsNotNull(this.ExceptionShown);
                 Assert.IsInstanceOf(typeof(RdpDisconnectedException), this.ExceptionShown);
                 Assert.AreEqual(264, ((RdpDisconnectedException)this.ExceptionShown).DisconnectReason);

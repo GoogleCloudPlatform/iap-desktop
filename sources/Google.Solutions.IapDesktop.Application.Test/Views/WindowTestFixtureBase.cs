@@ -128,7 +128,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views
                         $"Timeout waiting for event {typeof(TEvent).Name} elapsed");
                 }
 
-                if ((i % 100) == 0)
+                if ((i % 1000) == 0)
                 {
                     Console.WriteLine($"{testCase}: Still waiting for {typeof(TEvent).Name} (until {deadline})");
                 }
