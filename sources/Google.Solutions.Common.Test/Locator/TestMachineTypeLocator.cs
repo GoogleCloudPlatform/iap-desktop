@@ -26,7 +26,7 @@ using System;
 namespace Google.Solutions.Common.Test.Locator
 {
     [TestFixture]
-    public class TestMachineTypeLocator : FixtureBase
+    public class TestMachineTypeLocator : CommonFixtureBase
     {
 
         [Test]

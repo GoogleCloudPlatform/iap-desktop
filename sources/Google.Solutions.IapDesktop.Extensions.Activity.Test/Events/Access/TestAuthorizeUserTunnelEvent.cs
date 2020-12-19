@@ -29,7 +29,7 @@ using System.Linq;
 namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.Events.Access
 {
     [TestFixture]
-    public class TestAuthorizeUserTunnelEvent : FixtureBase
+    public class TestAuthorizeUserTunnelEvent : ActivityFixtureBase
     {
         [Test]
         public void WhenSeverityIsInfo_ThenFieldsAreExtracted()

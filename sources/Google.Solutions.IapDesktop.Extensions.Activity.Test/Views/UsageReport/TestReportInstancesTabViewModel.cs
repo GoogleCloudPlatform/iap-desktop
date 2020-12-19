@@ -31,7 +31,7 @@ using System.Linq;
 namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.Views.UsageReport
 {
     [TestFixture]
-    public class TestReportInstancesTabViewModel : FixtureBase
+    public class TestReportInstancesTabViewModel : ActivityFixtureBase
     {
         private static readonly DateTime BaselineTime = new DateTime(2020, 1, 1, 0, 0, 0, DateTimeKind.Utc);
         private ulong instanceIdSequence;

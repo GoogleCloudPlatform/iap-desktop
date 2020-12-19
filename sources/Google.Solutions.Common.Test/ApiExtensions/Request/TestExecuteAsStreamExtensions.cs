@@ -33,7 +33,7 @@ namespace Google.Solutions.Common.Test.Extensions
 
     [TestFixture]
     [Category("IntegrationTest")]
-    public class TestExecuteAsStreamExtensions : FixtureBase
+    public class TestExecuteAsStreamExtensions : CommonFixtureBase
     {
         [Test]
         public async Task WhenApiReturns404_ThenExecuteAsStreamOrThrowAsyncThrowsException(

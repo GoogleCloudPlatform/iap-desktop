@@ -32,7 +32,7 @@ using System.Threading.Tasks;
 namespace Google.Solutions.IapTunneling.Test.Iap
 {
     [TestFixture]
-    public class TestSshRelayStreamWriting : FixtureBase
+    public class TestSshRelayStreamWriting : IapFixtureBase
     {
         private readonly CancellationTokenSource tokenSource = new CancellationTokenSource();
 

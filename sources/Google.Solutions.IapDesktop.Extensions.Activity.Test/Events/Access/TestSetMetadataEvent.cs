@@ -27,7 +27,7 @@ using NUnit.Framework;
 namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.Events.Access
 {
     [TestFixture]
-    public class TestSetMetadataEvent : FixtureBase
+    public class TestSetMetadataEvent : ActivityFixtureBase
     {
         [Test]
         public void WhenOperationIsFirstAndRecordContainsWindowsKeys_ThenFieldsAreExtracted()

@@ -27,7 +27,7 @@ using WeifenLuo.WinFormsUI.Docking;
 namespace Google.Solutions.IapDesktop.Application.Test.Services.Settings
 {
     [TestFixture]
-    public class TestToolWindowStateRepository : FixtureBase
+    public class TestToolWindowStateRepository : ApplicationFixtureBase
     {
         private const string TestKeyPath = @"Software\Google\__Test";
         private readonly RegistryKey hkcu = RegistryKey.OpenBaseKey(

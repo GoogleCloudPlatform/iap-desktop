@@ -1,5 +1,5 @@
 ﻿//
-// Copyright 2020 Google LLC
+// Copyright 2019 Google LLC
 //
 // Licensed to the Apache Software Foundation (ASF) under one
 // or more contributor license agreements.  See the NOTICE file
@@ -19,24 +19,13 @@
 // under the License.
 //
 
-using Google.Solutions.IapDesktop.Application.Services.Adapters;
+using Google.Solutions.IapDesktop.Application.Test;
 using NUnit.Framework;
-using System.Threading;
-using System.Threading.Tasks;
+using System.Diagnostics;
 
-namespace Google.Solutions.IapDesktop.Application.Test.Services.Adapters
+namespace Google.Solutions.IapDesktop.Extensions.Activity.Test
 {
-    [TestFixture]
-    public class TestGithubAdapter : ApplicationFixtureBase
+    public abstract class ActivityFixtureBase : ApplicationFixtureBase
     {
-        [Test]
-        public async Task WhenFindingLatestRelease_OneReleaseIsReturned()
-        {
-            var adapter = new GithubAdapter();
-            var release = await adapter.FindLatestReleaseAsync(CancellationToken.None);
-
-            Assert.IsNotNull(release);
-            Assert.IsTrue(release.TagVersion.Major >= 1);
-        }
     }
 }

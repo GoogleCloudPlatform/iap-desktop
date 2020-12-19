@@ -37,7 +37,7 @@ namespace Google.Solutions.IapTunneling.Test.Iap
     [TestFixture]
     [Category("IntegrationTest")]
     [Category("IAP")]
-    public class TestSshRelayListener : FixtureBase
+    public class TestSshRelayListener : IapFixtureBase
     {
         private static void FillArray(byte[] array)
         {

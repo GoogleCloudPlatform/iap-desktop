@@ -30,7 +30,7 @@ using System;
 namespace Google.Solutions.IapDesktop.Application.Test.Views.Options
 {
     [TestFixture]
-    public class TestNetworkOptionsViewModel : FixtureBase
+    public class TestNetworkOptionsViewModel : ApplicationFixtureBase
     {
         private const string TestKeyPath = @"Software\Google\__Test";
         private readonly RegistryKey hkcu = RegistryKey.OpenBaseKey(RegistryHive.CurrentUser, RegistryView.Default);

@@ -34,7 +34,7 @@ namespace Google.Solutions.IapTunneling.Test.Iap
     [TestFixture]
     [Category("IntegrationTest")]
     [Category("IAP")]
-    public class TestSshRelayProber : FixtureBase
+    public class TestSshRelayProber : IapFixtureBase
     {
         [Test]
         public async Task WhenProjectDoesntExist_ThenProbeFailsWithUnauthorizedException(

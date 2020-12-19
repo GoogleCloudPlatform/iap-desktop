@@ -30,7 +30,7 @@ using System.Reflection;
 namespace Google.Solutions.IapDesktop.Application.Test.ObjectModel
 {
     [TestFixture]
-    public class TestServiceAttribute : FixtureBase
+    public class TestServiceAttribute : ApplicationFixtureBase
     {
         //---------------------------------------------------------------------
         // Register singleton service.

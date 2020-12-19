@@ -26,7 +26,7 @@ using System;
 namespace Google.Solutions.Common.Test.Locator
 {
     [TestFixture]
-    public class TestDiskTypeLocator : FixtureBase
+    public class TestDiskTypeLocator : CommonFixtureBase
     {
         [Test]
         public void WhenPathIsValid_FromStringReturnsObject()

@@ -30,7 +30,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Controls
 {
     [TestFixture]
     [Apartment(ApartmentState.STA)]
-    public class TestBindableListView : FixtureBase
+    public class TestBindableListView : ApplicationFixtureBase
     {
         private class ModelItem : ViewModelBase
         {

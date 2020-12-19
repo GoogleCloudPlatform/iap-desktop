@@ -30,7 +30,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Adapters
 {
     [TestFixture]
     [Category("IntegrationTest")]
-    public class TestInstanceExtensions : FixtureBase
+    public class TestInstanceExtensions : ApplicationFixtureBase
     {
         [Test]
         public async Task WhenInstancePopulated_ThenGetInstanceLocatorSucceeds(

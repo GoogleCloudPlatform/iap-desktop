@@ -33,7 +33,7 @@ using System.Threading.Tasks;
 namespace Google.Solutions.IapDesktop.Extensions.Os.Test.Views.PackageInventory
 {
     [TestFixture]
-    public class TestPackageInventoryModel : FixtureBase
+    public class TestPackageInventoryModel : CommonFixtureBase
     {
         [Test]
         public async Task WhenGuestAttributesDisabledByPolicy_ThenPackageListIsEmpty()

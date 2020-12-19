@@ -30,7 +30,7 @@ using System.Threading.Tasks;
 
 namespace Google.Solutions.IapTunneling.Test.Iap
 {
-    public abstract class TestEchoOverIapBase : FixtureBase
+    public abstract class TestEchoOverIapBase : IapFixtureBase
     {
         private readonly CancellationTokenSource tokenSource = new CancellationTokenSource();
 

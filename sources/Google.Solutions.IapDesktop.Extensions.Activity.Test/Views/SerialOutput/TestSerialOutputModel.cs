@@ -37,7 +37,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.Views.SerialOutpu
 {
     [TestFixture]
     [Category("IntegrationTest")]
-    public class TestSerialOutputModel : FixtureBase
+    public class TestSerialOutputModel : ActivityFixtureBase
     {
         [Test]
         public async Task WhenLoadAsyncCompletes_ThenOutputContainsExistingData(

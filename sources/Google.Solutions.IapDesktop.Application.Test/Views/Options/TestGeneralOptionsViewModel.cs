@@ -30,7 +30,7 @@ using NUnit.Framework;
 namespace Google.Solutions.IapDesktop.Application.Test.Views.Options
 {
     [TestFixture]
-    public class TestGeneralOptionsViewModel : FixtureBase
+    public class TestGeneralOptionsViewModel : ApplicationFixtureBase
     {
         private const string TestKeyPath = @"Software\Google\__Test";
         private readonly RegistryKey hkcu = RegistryKey.OpenBaseKey(RegistryHive.CurrentUser, RegistryView.Default);

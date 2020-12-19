@@ -30,7 +30,7 @@ using System.Linq;
 namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.Services.UsageReport
 {
     [TestFixture]
-    public class TestReportArchive : FixtureBase
+    public class TestReportArchive : ActivityFixtureBase
     {
         [Test]
         public void WhenSerializedAndDeserialized_ThenObjectsAreEquivalent()

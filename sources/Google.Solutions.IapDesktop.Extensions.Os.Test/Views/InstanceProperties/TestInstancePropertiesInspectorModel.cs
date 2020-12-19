@@ -36,7 +36,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Os.Test.Views.InstancePropertie
 {
     [TestFixture]
     [Category("IntegrationTest")]
-    public class TestInstancePropertiesInspectorModel : FixtureBase
+    public class TestInstancePropertiesInspectorModel : CommonFixtureBase
     {
         [Test]
         public async Task WhenLoadAsyncCompletes_ThenPropertiesArePopulated(

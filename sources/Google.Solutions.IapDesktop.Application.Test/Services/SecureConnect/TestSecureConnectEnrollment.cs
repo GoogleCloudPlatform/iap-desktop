@@ -33,7 +33,7 @@ using System.Threading.Tasks;
 namespace Google.Solutions.IapDesktop.Application.Test.Services.SecureConnect
 {
     [TestFixture]
-    public class TestSecureConnectEnrollment : FixtureBase
+    public class TestSecureConnectEnrollment : ApplicationFixtureBase
     {
         //
         // Self-signed certificate, created using:

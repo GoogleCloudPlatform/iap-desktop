@@ -91,7 +91,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="FixtureBase.cs" />
+    <Compile Include="IapFixtureBase.cs" />
     <Compile Include="Iap\InitializeScripts.cs" />
     <Compile Include="Iap\Mocks.cs" />
     <Compile Include="Iap\TestEchoOverIapBase.cs" />

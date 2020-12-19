@@ -31,7 +31,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.ObjectModel
 {
     [TestFixture]
     [Apartment(ApartmentState.STA)]
-    public class TestCommandContainerForToolbar : FixtureBase
+    public class TestCommandContainerForToolbar : ApplicationFixtureBase
     {
         private Form form;
         private ToolStrip toolStrip;

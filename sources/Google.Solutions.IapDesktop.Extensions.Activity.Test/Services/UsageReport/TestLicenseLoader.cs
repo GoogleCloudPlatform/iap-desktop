@@ -36,7 +36,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.Services.UsageRep
 
     [TestFixture]
     [Category("IntegrationTest")]
-    public class TestLicenseLoader : FixtureBase
+    public class TestLicenseLoader : ActivityFixtureBase
     {
         private ReportArchive CreateSet(ImageLocator image)
         {

@@ -35,7 +35,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Adapters
 {
     [TestFixture]
     [Category("IntegrationTest")]
-    public class TestComputeEngineAdapter : FixtureBase
+    public class TestComputeEngineAdapter : ApplicationFixtureBase
     {
         //---------------------------------------------------------------------
         // Projects.

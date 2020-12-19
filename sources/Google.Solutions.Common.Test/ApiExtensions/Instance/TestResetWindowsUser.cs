@@ -35,7 +35,7 @@ namespace Google.Solutions.Common.Test.Extensions
     [TestFixture]
     [Category("IntegrationTest")]
     [Category("Windows")]
-    public class TestResetWindowsUser : FixtureBase
+    public class TestResetWindowsUser : CommonFixtureBase
     {
         public ComputeService CreateComputeService(ICredential credential)
         {

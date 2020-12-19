@@ -28,7 +28,7 @@ using NUnit.Framework;
 namespace Google.Solutions.IapDesktop.Application.Test.Services.Integration
 {
     [TestFixture]
-    public class TestConnectionBroker : FixtureBase
+    public class TestConnectionBroker : ApplicationFixtureBase
     {
         private static readonly InstanceLocator SampleLocator
             = new InstanceLocator("project-1", "zone-1", "instance-1");

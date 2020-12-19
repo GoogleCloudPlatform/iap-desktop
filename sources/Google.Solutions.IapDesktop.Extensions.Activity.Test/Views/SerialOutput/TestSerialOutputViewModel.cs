@@ -37,7 +37,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.Views.SerialOutpu
 {
     [TestFixture]
     [Category("IntegrationTest")]
-    public class TestSerialOutputViewModel : FixtureBase
+    public class TestSerialOutputViewModel : ActivityFixtureBase
     {
         private class MockJobService : IJobService
         {

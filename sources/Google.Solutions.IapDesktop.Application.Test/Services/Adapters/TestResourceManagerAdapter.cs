@@ -31,7 +31,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Adapters
 {
     [TestFixture]
     [Category("IntegrationTest")]
-    public class TestResourceManagerAdapter : FixtureBase
+    public class TestResourceManagerAdapter : ApplicationFixtureBase
     {
         [Test]
         public async Task WhenUserInRole_ThenIsGrantedPermissionReturnsTrue(

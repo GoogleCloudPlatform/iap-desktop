@@ -27,7 +27,7 @@ using System.Threading.Tasks;
 namespace Google.Solutions.Common.Test.Auth
 {
     [TestFixture]
-    public class TestGoogleAuthAdapter : FixtureBase
+    public class TestGoogleAuthAdapter : CommonFixtureBase
     {
         [Test]
         public async Task WhenCalled_ThenQueryOpenIdConfigurationAsyncReturnsInfo()

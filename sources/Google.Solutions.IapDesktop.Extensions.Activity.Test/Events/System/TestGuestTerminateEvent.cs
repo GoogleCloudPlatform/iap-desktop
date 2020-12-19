@@ -28,7 +28,7 @@ using NUnit.Framework;
 namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.Events.System
 {
     [TestFixture]
-    public class TestGuestTerminateEvent : FixtureBase
+    public class TestGuestTerminateEvent : ActivityFixtureBase
     {
         [Test]
         public void WhenSeverityIsInfo_ThenFieldsAreExtracted()

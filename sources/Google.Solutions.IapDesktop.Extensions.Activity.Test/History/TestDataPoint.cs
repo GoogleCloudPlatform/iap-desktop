@@ -26,7 +26,7 @@ using System;
 namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.History
 {
     [TestFixture]
-    public class TestDataPoint : FixtureBase
+    public class TestDataPoint : ActivityFixtureBase
     {
         private static readonly DateTime SampleDate = new DateTime(2020, 1, 2, 3, 4, 5, 6);
 

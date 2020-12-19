@@ -26,7 +26,7 @@ using NUnit.Framework;
 namespace Google.Solutions.IapDesktop.Application.Test.Services.Settings
 {
     [TestFixture]
-    public class TestAppProtocolRegistry : FixtureBase
+    public class TestAppProtocolRegistry : ApplicationFixtureBase
     {
         private const string TestScheme = "iapdesktop-test";
 

@@ -42,7 +42,7 @@ using System.Windows.Forms;
 namespace Google.Solutions.IapDesktop.Extensions.Rdp.Test.Services.Connection
 {
     [TestFixture]
-    public class TestIapRdpConnectionService : FixtureBase
+    public class TestIapRdpConnectionService : CommonFixtureBase
     {
         private readonly ServiceRegistry serviceRegistry = new ServiceRegistry();
 

@@ -34,7 +34,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Controls
 {
     [TestFixture]
     [Apartment(ApartmentState.STA)]
-    public class TestBindableTreeView : FixtureBase
+    public class TestBindableTreeView : ApplicationFixtureBase
     {
         private class ModelNode : ViewModelBase
         {

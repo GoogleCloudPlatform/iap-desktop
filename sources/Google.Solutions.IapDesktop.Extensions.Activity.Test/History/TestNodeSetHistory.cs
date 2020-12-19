@@ -28,7 +28,7 @@ using System.Linq;
 namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.History
 {
     [TestFixture]
-    public class TestNodeSetHistory : FixtureBase
+    public class TestNodeSetHistory : ActivityFixtureBase
     {
         [Test]
         public void WhenAllInstancesAreFromFleet_ThenSetsContainRightNodes()

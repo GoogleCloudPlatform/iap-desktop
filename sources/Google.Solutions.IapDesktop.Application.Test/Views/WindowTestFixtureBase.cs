@@ -30,6 +30,7 @@ using Microsoft.Win32;
 using NUnit.Framework;
 using System;
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Windows.Forms;
 
@@ -38,7 +39,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views
     [TestFixture]
     [Apartment(ApartmentState.STA)]
     [Timeout(10 * 60 * 1000)]
-    public class WindowTestFixtureBase : FixtureBase
+    public class WindowTestFixtureBase : ApplicationFixtureBase
     {
         private const string TestKeyPath = @"Software\Google\__Test";
 
@@ -106,7 +107,9 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views
         protected static void PumpWindowMessages()
             => System.Windows.Forms.Application.DoEvents();
 
-        protected TEvent AwaitEvent<TEvent>(TimeSpan timeout) where TEvent : class
+        protected TEvent AwaitEvent<TEvent>(
+            TimeSpan timeout,
+            [CallerMemberName] string testCase = null) where TEvent : class
         {
             var deadline = DateTime.Now.Add(timeout);
 
@@ -117,6 +120,8 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views
                 deliveredEvent = e;
             });
 
+            var lastLog = DateTime.Now;
+
             for (int i = 0; deliveredEvent == null; i++)
             {
                 if (deadline < DateTime.Now)
@@ -125,9 +130,11 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views
                         $"Timeout waiting for event {typeof(TEvent).Name} elapsed");
                 }
 
-                if ((i % 100) == 0)
+                // Print out a message once per second.
+                if (DateTime.Now.Subtract(lastLog).TotalSeconds >= 1)
                 {
-                    Console.WriteLine($"Still waiting for {typeof(TEvent).Name} (until {deadline})");
+                    Console.WriteLine($"{testCase}: Still waiting for {typeof(TEvent).Name} (until {deadline})");
+                    lastLog = DateTime.Now;
                 }
 
                 PumpWindowMessages();
@@ -136,8 +143,9 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views
             return deliveredEvent;
         }
 
-        protected TEvent AwaitEvent<TEvent>() where TEvent : class
-            => AwaitEvent<TEvent>(TimeSpan.FromSeconds(90));
+        protected TEvent AwaitEvent<TEvent>(
+            [CallerMemberName] string testCase = null) where TEvent : class
+            => AwaitEvent<TEvent>(TimeSpan.FromSeconds(45), testCase);
 
         protected static void Delay(TimeSpan timeout)
         {

@@ -30,7 +30,7 @@ using System.Threading.Tasks;
 namespace Google.Solutions.Common.Test.Auth
 {
     [TestFixture]
-    public class TestAuthorization : FixtureBase
+    public class TestAuthorization : CommonFixtureBase
     {
         [Test]
         public async Task WhenNoExistingAuthPresent_TryLoadExistingAuthorizationAsyncReturnsNull()

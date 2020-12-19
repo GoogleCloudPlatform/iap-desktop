@@ -31,7 +31,7 @@ using System.Linq;
 namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.Logs
 {
     [TestFixture]
-    public class TestListLogEntriesParser : FixtureBase
+    public class TestListLogEntriesParser : ActivityFixtureBase
     {
         [Test]
         public void WhenPageIsEmpty_ThenReadPageReturnsEmptySequence()

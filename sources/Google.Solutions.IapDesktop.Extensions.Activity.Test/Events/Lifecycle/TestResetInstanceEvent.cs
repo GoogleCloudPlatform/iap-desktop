@@ -28,7 +28,7 @@ using NUnit.Framework;
 namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.Events.Lifecycle
 {
     [TestFixture]
-    public class TestResetInstanceEvent : FixtureBase
+    public class TestResetInstanceEvent : ActivityFixtureBase
     {
         [Test]
         public void WhenSeverityIsNotice_ThenFieldsAreExtracted()

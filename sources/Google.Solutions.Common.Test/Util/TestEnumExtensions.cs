@@ -26,7 +26,7 @@ using System;
 namespace Google.Solutions.Common.Test.Util
 {
     [TestFixture]
-    public class TestEnumExtensions : FixtureBase
+    public class TestEnumExtensions : CommonFixtureBase
     {
         [Flags]
         public enum SomeEnum

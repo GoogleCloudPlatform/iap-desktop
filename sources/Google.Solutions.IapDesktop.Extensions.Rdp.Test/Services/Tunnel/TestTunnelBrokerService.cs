@@ -33,7 +33,7 @@ using System.Threading.Tasks;
 namespace Google.Solutions.IapDesktop.Extensions.Rdp.Test.Services.Tunnel
 {
     [TestFixture]
-    public class TestTunnelBrokerService : FixtureBase
+    public class TestTunnelBrokerService : CommonFixtureBase
     {
         [Test]
         public async Task WhenConnectSuccessful_ThenOpenTunnelsIncludesTunnel()
