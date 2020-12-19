@@ -42,9 +42,13 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Test.Views.RemoteDesktop
     [Category("IAP")]
     public class TestRemoteDesktopOverIap : WindowTestFixtureBase
     {
+        // Use a larger machine type as all this RDP'ing consumes a fair
+        // amount of memory.
+        private const string MachineTypeForRdp = "n1-highmem-2";
+
         [Test]
         public async Task WhenCredentialsInvalid_ThenErrorIsShownAndWindowIsClosed(
-            [WindowsInstance] ResourceTask<InstanceLocator> testInstance,
+            [WindowsInstance(MachineType = MachineTypeForRdp)] ResourceTask<InstanceLocator> testInstance,
             [Credential(Role = PredefinedRole.IapTunnelUser)] ResourceTask<ICredential> credential)
         {
             var locator = await testInstance;
@@ -105,9 +109,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Test.Views.RemoteDesktop
             [Values(RdpRedirectClipboard.Disabled, RdpRedirectClipboard.Enabled)]
             RdpRedirectClipboard redirectClipboard,
 
-            // Use a slightly larger machine type as all this RDP'ing consumes a fair
-            // amount of memory.
-            [WindowsInstance(MachineType = "n1-standard-2")] ResourceTask<InstanceLocator> testInstance,
+            [WindowsInstance(MachineType = MachineTypeForRdp)] ResourceTask<InstanceLocator> testInstance,
             [Credential(Role = PredefinedRole.IapTunnelUser)] ResourceTask<ICredential> credential)
         {
             var locator = await testInstance;
