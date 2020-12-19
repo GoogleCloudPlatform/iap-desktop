@@ -204,7 +204,7 @@ namespace Google.Solutions.Common.Test.Integration
                 {
                     Key = "startup-script",
                     Value = script +
-                        "curl -X PUT --data \"TRUE\" " +
+                        "sleep 5 && curl -X PUT --data \"TRUE\" " +
                         "http://metadata.google.internal/computeMetadata/v1/instance/" +
                         $"guest-attributes/{InstanceFactory.GuestAttributeNamespace}/{key} " +
                         "-H \"Metadata-Flavor: Google\""
