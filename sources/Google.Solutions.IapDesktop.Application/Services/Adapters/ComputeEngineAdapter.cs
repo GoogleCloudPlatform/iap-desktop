@@ -30,6 +30,7 @@ using Google.Solutions.Common.Locator;
 using Google.Solutions.Common.Text;
 using Google.Solutions.Common.Util;
 using Google.Solutions.IapDesktop.Application.ObjectModel;
+using Google.Solutions.IapDesktop.Application.Views;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -170,7 +171,11 @@ namespace Google.Solutions.IapDesktop.Application.Services.Adapters
                 catch (GoogleApiException e) when (e.IsAccessDenied())
                 {
                     throw new ResourceAccessDeniedException(
-                        $"Access to project {projectId} has been denied", e);
+                        $"You do not have sufficient permissions to access project {projectId}. " +
+                        "You need the 'Compute Viewer' role (or an equivalent custom role) " +
+                        "to perform this action.",
+                        HelpTopics.ProjectAccessControl,
+                        e);
                 }
             }
         }
@@ -207,7 +212,12 @@ namespace Google.Solutions.IapDesktop.Application.Services.Adapters
                 catch (GoogleApiException e) when (e.IsAccessDenied())
                 {
                     throw new ResourceAccessDeniedException(
-                        $"Access to VM instances in project {projectId} has been denied", e);
+                        "You do not have sufficient permissions to list VM instances in " +
+                        $"project {projectId}. " +
+                        "You need the 'Compute Viewer' role (or an equivalent custom role) " +
+                        "to perform this action.",
+                        HelpTopics.ProjectAccessControl, 
+                        e);
                 }
             }
         }
@@ -240,7 +250,12 @@ namespace Google.Solutions.IapDesktop.Application.Services.Adapters
                 catch (GoogleApiException e) when (e.IsAccessDenied())
                 {
                     throw new ResourceAccessDeniedException(
-                        $"Access to VM instances in project {zoneLocator.ProjectId} has been denied", e);
+                        "You do not have sufficient permissions to list VM instances in " +
+                        $"project {zoneLocator.ProjectId}. " +
+                        "You need the 'Compute Viewer' role (or an equivalent custom role) " +
+                        "to perform this action.",
+                        HelpTopics.ProjectAccessControl,
+                        e);
                 }
             }
         }
@@ -262,7 +277,9 @@ namespace Google.Solutions.IapDesktop.Application.Services.Adapters
                 catch (GoogleApiException e) when (e.IsAccessDenied())
                 {
                     throw new ResourceAccessDeniedException(
-                        $"Access to VM instance {instanceLocator.Name} has been denied", e);
+                        $"Access to VM instance {instanceLocator.Name} has been denied",
+                        HelpTopics.ProjectAccessControl, 
+                        e);
                 }
             }
         }
@@ -293,7 +310,9 @@ namespace Google.Solutions.IapDesktop.Application.Services.Adapters
                 catch (GoogleApiException e) when (e.IsAccessDenied())
                 {
                     throw new ResourceAccessDeniedException(
-                        $"Access to VM instance {instanceLocator.Name} has been denied", e);
+                        $"Access to VM instance {instanceLocator.Name} has been denied",
+                        HelpTopics.ProjectAccessControl, 
+                        e);
                 }
             }
         }
@@ -330,7 +349,9 @@ namespace Google.Solutions.IapDesktop.Application.Services.Adapters
                 catch (GoogleApiException e) when (e.IsAccessDenied())
                 {
                     throw new ResourceAccessDeniedException(
-                        $"Access to disks in project {projectId} has been denied", e);
+                        $"Access to disks in project {projectId} has been denied",
+                        HelpTopics.ProjectAccessControl, 
+                        e);
                 }
             }
         }
@@ -367,7 +388,9 @@ namespace Google.Solutions.IapDesktop.Application.Services.Adapters
                 catch (GoogleApiException e) when (e.IsAccessDenied())
                 {
                     throw new ResourceAccessDeniedException(
-                        $"Access to node groups in project {projectId} has been denied", e);
+                        $"Access to node groups in project {projectId} has been denied",
+                        HelpTopics.ProjectAccessControl, 
+                        e);
                 }
             }
         }
@@ -397,7 +420,9 @@ namespace Google.Solutions.IapDesktop.Application.Services.Adapters
                 catch (GoogleApiException e) when (e.IsAccessDenied())
                 {
                     throw new ResourceAccessDeniedException(
-                        $"Access to nodes in project {zone.ProjectId} has been denied", e);
+                        $"Access to nodes in project {zone.ProjectId} has been denied",
+                        HelpTopics.ProjectAccessControl, 
+                        e);
                 }
             }
         }
