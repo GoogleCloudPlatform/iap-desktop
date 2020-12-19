@@ -251,6 +251,12 @@ kokoro-iap-firewallrule:
 		--rules=tcp \
 		--source-ranges=35.235.240.0/20 \
 		--project=$(GOOGLE_CLOUD_PROJECT)
+	-gcloud compute firewall-rules create allow-ssh-ingress \
+		--direction=INGRESS \
+		--action=allow \
+		--rules=tcp:22 \
+		--source-ranges=0.0.0.0/0 \
+		--project=$(GOOGLE_CLOUD_PROJECT)
 
 kokoro-continuous-integration: \
 	check-copyright-headers \

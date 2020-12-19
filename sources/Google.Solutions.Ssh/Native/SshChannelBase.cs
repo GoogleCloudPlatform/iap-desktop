@@ -72,11 +72,8 @@ namespace Google.Solutions.Ssh.Native
         {
             using (SshTraceSources.Default.TraceMethod().WithParameters(streamId))
             {
-                // TODO: Remove lock?
                 lock (this.channelHandle.SyncRoot)
                 {
-                    Debug.Assert(!this.closedForWriting);
-
                     var bytesFlushed = UnsafeNativeMethods.libssh2_channel_flush_ex(
                         this.channelHandle,
                         (int)streamId);
