@@ -141,7 +141,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views
 
         protected TEvent AwaitEvent<TEvent>(
             [CallerMemberName] string testCase = null) where TEvent : class
-            => AwaitEvent<TEvent>(TimeSpan.FromSeconds(90), testCase);
+            => AwaitEvent<TEvent>(TimeSpan.FromSeconds(30), testCase);
 
         protected static void Delay(TimeSpan timeout)
         {
