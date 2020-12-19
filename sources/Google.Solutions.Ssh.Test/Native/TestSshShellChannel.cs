@@ -43,11 +43,14 @@ namespace Google.Solutions.Ssh.Test.Native
         {
             var text = new StringBuilder();
             var buffer = new byte[1024];
-            uint bytesRead;
-
-            while ((bytesRead = await channel.ReadAsync(buffer)) > 0)
+            
+            while (!channel.IsEndOfStream)
             {
-                text.Append(encoding.GetString(buffer, 0, (int)bytesRead));
+                uint bytesRead = await channel.ReadAsync(buffer);
+                if (bytesRead > 0)
+                {
+                    text.Append(encoding.GetString(buffer, 0, (int)bytesRead));
+                }
             }
 
             return text.ToString();
@@ -87,6 +90,7 @@ namespace Google.Solutions.Ssh.Test.Native
             var endpoint = new IPEndPoint(
                 await InstanceUtil.PublicIpAddressForInstanceAsync(await instanceLocatorTask),
                 22);
+
             using (var session = CreateSession())
             using (var connection = await session.ConnectAsync(endpoint))
             using (var key = new RSACng())
