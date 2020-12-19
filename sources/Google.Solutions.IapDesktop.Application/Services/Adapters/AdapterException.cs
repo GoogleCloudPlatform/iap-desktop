@@ -19,6 +19,8 @@
 // under the License.
 //
 
+using Google.Solutions.IapDesktop.Application.Views;
+using Google.Solutions.IapDesktop.Application.Views.Dialog;
 using System;
 using System.Runtime.Serialization;
 
@@ -54,16 +56,29 @@ namespace Google.Solutions.IapDesktop.Application.Services.Adapters
     }
 
     [Serializable]
-    public class ResourceAccessDeniedException : AdapterException
+    public class ResourceAccessDeniedException : AdapterException, IExceptionWithHelpTopic
     {
+        public IHelpTopic Help { get; }
+
         protected ResourceAccessDeniedException(SerializationInfo info, StreamingContext context)
             : base(info, context)
         {
         }
 
-        public ResourceAccessDeniedException(string message, Exception inner)
+        public ResourceAccessDeniedException(
+            string message, 
+            Exception inner)
             : base(message, inner)
         {
+        }
+
+        public ResourceAccessDeniedException(
+            string message,
+            IHelpTopic helpTopic,
+            Exception inner)
+            : base(message, inner)
+        {
+            this.Help = helpTopic;
         }
     }
 }

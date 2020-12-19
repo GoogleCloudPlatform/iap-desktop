@@ -56,6 +56,10 @@ namespace Google.Solutions.IapDesktop.Application.Views
             "Device certiticate authentication",
             "https://cloud.google.com/endpoint-verification/docs/overview");
 
+        public static IHelpTopic ProjectAccessControl = new HelpTopic(
+            "Project access control",
+            "https://cloud.google.com/compute/docs/access");
+
         private class HelpTopic : IHelpTopic
         {
             public string Title { get; }
