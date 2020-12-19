@@ -120,6 +120,8 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views
                 deliveredEvent = e;
             });
 
+            var lastLog = DateTime.Now;
+
             for (int i = 0; deliveredEvent == null; i++)
             {
                 if (deadline < DateTime.Now)
@@ -128,9 +130,11 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views
                         $"Timeout waiting for event {typeof(TEvent).Name} elapsed");
                 }
 
-                if ((i % 1000) == 0)
+                // Print out a message once per second.
+                if (DateTime.Now.Subtract(lastLog).TotalSeconds >= 1)
                 {
                     Console.WriteLine($"{testCase}: Still waiting for {typeof(TEvent).Name} (until {deadline})");
+                    lastLog = DateTime.Now;
                 }
 
                 PumpWindowMessages();
@@ -141,7 +145,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views
 
         protected TEvent AwaitEvent<TEvent>(
             [CallerMemberName] string testCase = null) where TEvent : class
-            => AwaitEvent<TEvent>(TimeSpan.FromSeconds(30), testCase);
+            => AwaitEvent<TEvent>(TimeSpan.FromSeconds(45), testCase);
 
         protected static void Delay(TimeSpan timeout)
         {

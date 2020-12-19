@@ -54,7 +54,7 @@ namespace Google.Solutions.IapDesktop.Application.Test
             // Enable System.Net tracing.
             //
             NetTracing.Enabled = true;
-            NetTracing.Web.Switch.Level = System.Diagnostics.SourceLevels.Verbose;
+            NetTracing.Web.Switch.Level = System.Diagnostics.SourceLevels.Information;
             NetTracing.Web.Listeners.Add(new ConsoleTraceListener());
 #endif
         }
