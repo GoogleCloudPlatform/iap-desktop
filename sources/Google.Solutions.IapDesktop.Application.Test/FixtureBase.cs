@@ -49,12 +49,14 @@ namespace Google.Solutions.IapDesktop.Application.Test
                 }
             }
 
+#if DEBUG
             //
             // Enable System.Net tracing.
             //
             NetTracing.Enabled = true;
             NetTracing.Web.Switch.Level = System.Diagnostics.SourceLevels.Verbose;
             NetTracing.Web.Listeners.Add(new ConsoleTraceListener());
+#endif
         }
     }
 }
