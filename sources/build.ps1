@@ -81,8 +81,18 @@ if ((Get-Command "nuget.exe" -ErrorAction SilentlyContinue) -eq $null)
 
 if ((Test-Path "*.sln") -and !$args.Contains("clean"))
 {
-	& $Nmake restore
+    #
+    # Register feed containing pre-built dependencies.
+    #
+    if (Test-Path "${env:KOKORO_GFILE_DIR}\NuGetPackages")
+    {
+        & nuget sources add -Name iap-desktop-dependencies -Source "${env:KOKORO_GFILE_DIR}\NuGetPackages" | Out-Default
+    }
 
+    #
+    # Restore packages for solution.
+    #
+	& $Nmake restore
 	if ($LastExitCode -ne 0)
 	{
 		exit $LastExitCode
@@ -91,7 +101,6 @@ if ((Test-Path "*.sln") -and !$args.Contains("clean"))
 	#
 	# Add all tools to PATH.
 	#
-
 	$ToolsDirectories = (Get-ChildItem packages -Directory -Recurse `
 		| Where-Object {$_.Name.EndsWith("tools") -or $_.FullName.Contains("tools\net4") } `
 		| Select-Object -ExpandProperty FullName)
@@ -102,7 +111,6 @@ if ((Test-Path "*.sln") -and !$args.Contains("clean"))
 	# Add environment variables indicating package versions, for example
 	# $env:Google_Apis_Auth = 1.2.3
 	#
-
 	(nuget list -Source (Resolve-Path packages)) `
 		| ForEach-Object { New-Item -Name $_.Split(" ")[0].Replace(".", "_") -value $_.Split(" ")[1] -ItemType Variable -Path Env: }
 }

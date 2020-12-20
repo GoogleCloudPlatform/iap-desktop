@@ -33,7 +33,7 @@ BUILD_NUMBER = $(KOKORO_BUILD_NUMBER)
 BUILD_NUMBER = 1
 !endif
 
-BINARY_VERSION = $(PRODUCT_VERSION).$(BUILD_NUMBER)
+BINARY_VERSION = $(PRODUCT_VERSION).$(KOKORO_BUILD_NUMBER).$(BUILD_NUMBER)
 
 MAIN_ASSEMBLY = Google.Solutions.IapDesktop\bin\$(CONFIGURATION)\IapDesktop.exe
 
@@ -43,6 +43,7 @@ SYMBOLS_PACKAGE = installer\bin\$(CONFIGURATION)\Symbols-$(BINARY_VERSION).zip
 
 NUNIT_ASSEMBLIES = \
 	Google.Solutions.Common.Test\bin\$(CONFIGURATION)\Google.Solutions.Common.Test.dll	\
+	Google.Solutions.Ssh.Test\bin\release\Google.Solutions.Ssh.Test.dll \
 	Google.Solutions.IapTunneling.Test\bin\release\Google.Solutions.IapTunneling.Test.dll \
 	Google.Solutions.IapDesktop.Extensions.Activity.Test\bin\release\Google.Solutions.IapDesktop.Extensions.Activity.Test.dll \
 	Google.Solutions.IapDesktop.Extensions.Os.Test\bin\release\Google.Solutions.IapDesktop.Extensions.Os.Test.dll \
@@ -51,6 +52,7 @@ NUNIT_ASSEMBLIES = \
 
 NUNIT_COVERAGE_FILTER = \
 	+[Google.Solutions.Common]* \
+	+[Google.Solutions.Ssh]* \
 	+[Google.Solutions.IapTunneling]* \
 	+[Google.Solutions.IapDesktop.Extensions.Activity]* \
 	+[Google.Solutions.IapDesktop.Extensions.Os]* \
@@ -248,6 +250,12 @@ kokoro-iap-firewallrule:
 		--action=allow \
 		--rules=tcp \
 		--source-ranges=35.235.240.0/20 \
+		--project=$(GOOGLE_CLOUD_PROJECT)
+	-gcloud compute firewall-rules create allow-ssh-ingress \
+		--direction=INGRESS \
+		--action=allow \
+		--rules=tcp:22 \
+		--source-ranges=0.0.0.0/0 \
 		--project=$(GOOGLE_CLOUD_PROJECT)
 
 kokoro-continuous-integration: \
