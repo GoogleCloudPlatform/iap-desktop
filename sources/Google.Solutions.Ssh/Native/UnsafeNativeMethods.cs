@@ -344,6 +344,14 @@ namespace Google.Solutions.Ssh.Native
             IntPtr bufferSize);
 
         [DllImport(Libssh2)]
+        public static extern int libssh2_channel_wait_closed(
+            SshChannelHandle channel);
+
+        [DllImport(Libssh2)]
+        public static extern int libssh2_channel_wait_eof(
+            SshChannelHandle channel);
+
+        [DllImport(Libssh2)]
         public static extern int libssh2_channel_get_exit_status(
             SshChannelHandle channel);
 

@@ -41,16 +41,14 @@ namespace Google.Solutions.Ssh.Test.Native
             SshChannelBase channel,
             Encoding encoding)
         {
+            await channel.AwaitEndOfStreamAsync();
+
             var text = new StringBuilder();
             var buffer = new byte[1024];
-            
-            while (!channel.IsEndOfStream)
+            uint bytesRead;
+            while ((bytesRead = await channel.ReadAsync(buffer)) > 0)
             {
-                uint bytesRead = await channel.ReadAsync(buffer);
-                if (bytesRead > 0)
-                {
-                    text.Append(encoding.GetString(buffer, 0, (int)bytesRead));
-                }
+                text.Append(encoding.GetString(buffer, 0, (int)bytesRead));
             }
 
             return text.ToString();
@@ -114,12 +112,9 @@ namespace Google.Solutions.Ssh.Test.Native
                     await channel.CloseAsync();
 
                     // Read command output.
-                    var output = await ReadUntilAsync(
-                        channel,
-                        "logout",
-                        Encoding.ASCII);
+                    var output = await ReadToEndAsync(channel, Encoding.ASCII);
                     StringAssert.Contains(
-                        "whoami;exit\r\ntestuser\r\nlogout",
+                        "whoami;exit\r\ntestuser\r\nlogout\r\n",
                         output);
 
                     Assert.AreEqual(0, channel.ExitCode);
@@ -160,10 +155,7 @@ namespace Google.Solutions.Ssh.Test.Native
 
                     await channel.CloseAsync();
 
-                    var output = await ReadUntilAsync(
-                        channel, 
-                        "logout",
-                        Encoding.ASCII);
+                    var output = await ReadToEndAsync(channel, Encoding.ASCII);
 
                     StringAssert.Contains(
                         "en_US.UTF-8",

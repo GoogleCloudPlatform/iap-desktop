@@ -180,6 +180,48 @@ namespace Google.Solutions.Ssh.Native
         public Task<uint> WriteAsync(byte[] buffer)
             => WriteAsync(LIBSSH2_STREAM.NORMAL, buffer);
 
+        public Task AwaitCloseAsync()
+        {
+            return Task.Run(() =>
+            {
+                using (SshTraceSources.Default.TraceMethod().WithoutParameters())
+                {
+                    // TODO: Remove lock?
+                    lock (this.channelHandle.SyncRoot)
+                    {
+                        var result = (LIBSSH2_ERROR)UnsafeNativeMethods.libssh2_channel_wait_closed(
+                            this.channelHandle);
+
+                        if (result != LIBSSH2_ERROR.NONE)
+                        {
+                            throw new SshNativeException((LIBSSH2_ERROR)result);
+                        }
+                    }
+                }
+            });
+        }
+
+        public Task AwaitEndOfStreamAsync()
+        {
+            return Task.Run(() =>
+            {
+                using (SshTraceSources.Default.TraceMethod().WithoutParameters())
+                {
+                    // TODO: Remove lock?
+                    lock (this.channelHandle.SyncRoot)
+                    {
+                        var result = (LIBSSH2_ERROR)UnsafeNativeMethods.libssh2_channel_wait_eof(
+                            this.channelHandle);
+
+                        if (result != LIBSSH2_ERROR.NONE)
+                        {
+                            throw new SshNativeException((LIBSSH2_ERROR)result);
+                        }
+                    }
+                }
+            });
+        }
+
         public Task CloseAsync()
         {
             if (this.closedForWriting)
