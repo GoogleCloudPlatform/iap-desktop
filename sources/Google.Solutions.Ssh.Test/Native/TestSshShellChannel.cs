@@ -36,6 +36,7 @@ namespace Google.Solutions.Ssh.Test.Native
     public class TestSshShellChannel : SshFixtureBase
     {
         private const string DefaultTerminal = "vanilla";
+        private const string DebianWelcomeMessageToken = "permitted by applicable law";
 
         private async Task<string> ReadToEndAsync(
             SshChannelBase channel,
@@ -107,6 +108,11 @@ namespace Google.Solutions.Ssh.Test.Native
                     80,
                     24))
                 {
+                    await ReadUntilAsync(
+                        channel,
+                        DebianWelcomeMessageToken,
+                        Encoding.ASCII);
+
                     // Run command.
                     var bytesWritten = await channel.WriteAsync(Encoding.ASCII.GetBytes("whoami;exit\n"));
                     Assert.AreEqual(12, bytesWritten);
@@ -152,12 +158,21 @@ namespace Google.Solutions.Ssh.Test.Native
                         { "LANG", "LC_ALL" } // LANG is whitelisted by sshd by default.
                     }))
                 {
+                    await ReadUntilAsync(
+                        channel,
+                        DebianWelcomeMessageToken,
+                        Encoding.ASCII);
+
+                    // Run command.
                     var bytesWritten = await channel.WriteAsync(Encoding.ASCII.GetBytes("echo $LANG;exit\n"));
                     Assert.AreEqual(16, bytesWritten);
 
                     await channel.CloseAsync();
 
-                    var output = await ReadToEndAsync(channel, Encoding.ASCII);
+                    // Read command output.
+                    var output = await ReadToEndAsync(
+                        channel, 
+                        Encoding.ASCII);
 
                     StringAssert.Contains(
                         "en_US.UTF-8",
