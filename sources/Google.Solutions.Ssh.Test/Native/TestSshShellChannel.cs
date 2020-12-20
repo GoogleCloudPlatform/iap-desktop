@@ -109,10 +109,10 @@ namespace Google.Solutions.Ssh.Test.Native
                     var bytesWritten = await channel.WriteAsync(Encoding.ASCII.GetBytes("whoami;exit\n"));
                     Assert.AreEqual(12, bytesWritten);
 
-                    await channel.CloseAsync();
-
                     // Read command output.
                     var output = await ReadToEndAsync(channel, Encoding.ASCII);
+                    await channel.CloseAsync();
+
                     StringAssert.Contains(
                         "whoami;exit\r\ntestuser\r\nlogout\r\n",
                         output);
@@ -153,9 +153,8 @@ namespace Google.Solutions.Ssh.Test.Native
                     var bytesWritten = await channel.WriteAsync(Encoding.ASCII.GetBytes("echo $LANG;exit\n"));
                     Assert.AreEqual(16, bytesWritten);
 
-                    await channel.CloseAsync();
-
                     var output = await ReadToEndAsync(channel, Encoding.ASCII);
+                    await channel.CloseAsync();
 
                     StringAssert.Contains(
                         "en_US.UTF-8",
