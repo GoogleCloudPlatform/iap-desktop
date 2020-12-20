@@ -1,5 +1,5 @@
 ﻿//
-// Copyright 2020 Google LLC
+// Copyright 2019 Google LLC
 //
 // Licensed to the Apache Software Foundation (ASF) under one
 // or more contributor license agreements.  See the NOTICE file
@@ -19,27 +19,17 @@
 // under the License.
 //
 
-using Google.Solutions.Common.Net;
-using System;
 using System.Reflection;
 using System.Runtime.CompilerServices;
 
-[assembly: InternalsVisibleTo("Google.Solutions.IapDesktop.Application.Test")]
+[assembly: AssemblyTitle("SSH extension library")]
+[assembly: AssemblyDescription("SSH extension library")]
+[assembly: AssemblyCompany("Google LLC")]
+[assembly: AssemblyProduct("IAP Desktop")]
+[assembly: AssemblyCopyright("Copyright ©  2020")]
+[assembly: AssemblyTrademark("Google LLC")]
 
-namespace Google.Solutions.IapDesktop.Application
-{
-    public static class Globals
-    {
-        public static UserAgent UserAgent { get; }
+[assembly: AssemblyVersion("1.0.1.0")]
+[assembly: AssemblyFileVersion("1.0.1.0")]
 
-        public static Version Version { get; }
-
-        static Globals()
-        {
-            Version = Assembly.GetExecutingAssembly().GetName().Version;
-            UserAgent = new UserAgent("IAP-Desktop", Version);
-        }
-
-        public static bool IsTestCase => Assembly.GetEntryAssembly() == null;
-    }
-}
+[assembly: InternalsVisibleTo("Google.Solutions.IapDesktop.Extensions.Ssh.Test")]

@@ -46,8 +46,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views
         protected ServiceRegistry serviceRegistry;
         protected IServiceProvider serviceProvider;
         protected IMainForm mainForm;
-
-        private IEventService eventService;
+        protected IEventService eventService;
         private MockExceptionDialog exceptionDialog;
 
         protected Exception ExceptionShown => this.exceptionDialog.ExceptionShown;

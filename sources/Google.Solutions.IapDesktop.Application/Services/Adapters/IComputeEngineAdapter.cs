@@ -103,6 +103,16 @@ namespace Google.Solutions.IapDesktop.Application.Services.Adapters
             ushort portNumber);
 
         //---------------------------------------------------------------------
+        // Metadata.
+        //---------------------------------------------------------------------
+
+        Task AddMetadataAsync(
+            InstanceLocator instanceRef,
+            string key,
+            string value,
+            CancellationToken token);
+
+        //---------------------------------------------------------------------
         // Windows user.
         //---------------------------------------------------------------------
 

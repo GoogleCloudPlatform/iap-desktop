@@ -125,7 +125,6 @@ namespace Google.Solutions.IapDesktop.Application.Services.Adapters
         //---------------------------------------------------------------------
         // Instances.
         //---------------------------------------------------------------------
-
         public async Task<IEnumerable<Instance>> ListInstancesAsync(
             string projectId,
             CancellationToken cancellationToken)
@@ -453,6 +452,23 @@ namespace Google.Solutions.IapDesktop.Application.Services.Adapters
                     instanceRef, 
                     portNumber);
             }
+        }
+
+        //---------------------------------------------------------------------
+        // Metadata.
+        //---------------------------------------------------------------------
+
+        public Task AddMetadataAsync(
+            InstanceLocator instanceRef,
+            string key,
+            string value,
+            CancellationToken token)
+        {
+            return this.service.Instances.AddMetadataAsync(
+                instanceRef,
+                key,
+                value,
+                token);
         }
 
         //---------------------------------------------------------------------
