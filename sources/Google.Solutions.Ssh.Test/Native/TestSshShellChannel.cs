@@ -122,7 +122,7 @@ namespace Google.Solutions.Ssh.Test.Native
                     // Read command output.
                     var output = await ReadToEndAsync(channel, Encoding.ASCII);
                     StringAssert.Contains(
-                        "whoami;exit\r\ntestuser\r\nlogout\r\n",
+                        "whoami;exit\r\ntestuser\r\n",
                         output);
 
                     Assert.AreEqual(0, channel.ExitCode);
