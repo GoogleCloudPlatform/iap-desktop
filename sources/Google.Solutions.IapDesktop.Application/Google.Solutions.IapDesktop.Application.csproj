@@ -118,6 +118,7 @@
     <Compile Include="Services\Adapters\EmailAdapter.cs" />
     <Compile Include="Services\Adapters\GithubAdapter.cs" />
     <Compile Include="Services\Adapters\HttpProxyAdapter.cs" />
+    <Compile Include="Services\Adapters\IComputeEngineAdapter.cs" />
     <Compile Include="Services\Adapters\InstanceExtensions.cs" />
     <Compile Include="Services\Adapters\Permissions.cs" />
     <Compile Include="Services\Adapters\ResourceManagerAdapter.cs" />

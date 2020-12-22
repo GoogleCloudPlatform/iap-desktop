@@ -41,73 +41,7 @@ using System.Threading.Tasks;
 
 namespace Google.Solutions.IapDesktop.Application.Services.Adapters
 {
-    public interface IComputeEngineAdapter : IDisposable
-    {
-        Task<Project> GetProjectAsync(
-            string projectId,
-            CancellationToken cancellationToken);
-
-        Task<Instance> GetInstanceAsync(
-            InstanceLocator instanceLocator,
-            CancellationToken cancellationToken);
-
-        Task<GuestAttributes> GetGuestAttributesAsync(
-            InstanceLocator instanceLocator,
-            string queryPath,
-            CancellationToken cancellationToken);
-
-        Task<IEnumerable<Instance>> ListInstancesAsync(
-            string projectId,
-            CancellationToken cancellationToken);
-
-        Task<IEnumerable<Instance>> ListInstancesAsync(
-            ZoneLocator zoneLocator,
-            CancellationToken cancellationToken);
-
-        Task<IEnumerable<Disk>> ListDisksAsync(
-            string projectId,
-            CancellationToken cancellationToken);
-
-        Task<IEnumerable<NodeGroup>> ListNodeGroupsAsync(
-            string projectId,
-            CancellationToken cancellationToken);
-
-        Task<IEnumerable<NodeGroupNode>> ListNodesAsync(
-            ZoneLocator zone,
-            string nodeGroup,
-            CancellationToken cancellationToken);
-
-        Task<IEnumerable<NodeGroupNode>> ListNodesAsync(
-            string projectId,
-            CancellationToken cancellationToken);
-
-        Task<NetworkCredential> ResetWindowsUserAsync(
-            InstanceLocator instanceRef,
-            string username,
-            CancellationToken token);
-
-        Task<NetworkCredential> ResetWindowsUserAsync(
-            InstanceLocator instanceRef,
-            string username,
-            TimeSpan timeout,
-            CancellationToken token);
-
-        Task<Image> GetImageAsync(
-            ImageLocator image,
-            CancellationToken cancellationToken);
-
-        IAsyncReader<string> GetSerialPortOutput(
-            InstanceLocator instanceRef,
-            ushort portNumber);
-
-        Task<bool> IsGrantedPermission(
-            InstanceLocator instanceRef,
-            string permission);
-
-        Task<bool> IsGrantedPermissionToResetWindowsUser(
-            InstanceLocator instanceRef);
-    }
-
+    
     /// <summary>
     /// Adapter class for the Compute Engine API.
     /// </summary>
