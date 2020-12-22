@@ -29,6 +29,46 @@ namespace Google.Solutions.IapDesktop.Application.Services.Adapters
 {
     public static class InstanceExtensions
     {
+        //---------------------------------------------------------------------
+        // Private
+        //---------------------------------------------------------------------
+
+        private static bool IsWindowsInstanceByGuestOsFeature(Instance instance)
+        {
+            // For an instance to be a valid Windows instance, at least one of the disks
+            // (the boot disk) has to be marked as "WINDOWS". 
+            // Note that older disks might lack this feature.
+            return instance.Disks
+                .EnsureNotNull()
+                .Where(d => d.GuestOsFeatures != null)
+                .SelectMany(d => d.GuestOsFeatures)
+                .EnsureNotNull()
+                .Any(f => f.Type == "WINDOWS");
+        }
+
+        private static bool IsWindowsInstanceByLicense(Instance instance)
+        {
+            // For an instance to be a valid Windows instance, at least one of the disks
+            // has to have an associated Windows license. This is also true for
+            // BYOL'ed instances.
+            return instance.Disks
+                .EnsureNotNull()
+                .Where(d => d.Licenses != null)
+                .SelectMany(d => d.Licenses)
+                .EnsureNotNull()
+                .Any(l => LicenseLocator.FromString(l).IsWindowsLicense());
+        }
+
+        //---------------------------------------------------------------------
+        // Public
+        //---------------------------------------------------------------------
+        
+        public static bool IsWindowsInstance(this Instance instance)
+        {
+            return IsWindowsInstanceByGuestOsFeature(instance) ||
+                   IsWindowsInstanceByLicense(instance);
+        }
+
         public static ZoneLocator GetZoneLocator(this Instance instance)
         {
             return ZoneLocator.FromString(instance.Zone);

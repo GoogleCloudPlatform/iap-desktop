@@ -82,7 +82,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
 
             // Narrow the list down to Windows instances - there is no point 
             // of adding Linux instanes to the list of servers.
-            var instances = allInstances.Where(i => ComputeEngineAdapter.IsWindowsInstance(i));
+            var instances = allInstances.Where(i => i.IsWindowsInstance());
             var zoneIds = instances.Select(i => InventoryNode.ShortIdFromUrl(i.Zone)).ToHashSet();
 
             foreach (var zoneId in zoneIds)

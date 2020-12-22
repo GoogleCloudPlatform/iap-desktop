@@ -42,51 +42,6 @@ namespace Google.Solutions.Common.ApiExtensions.Instance
         /// </summary>
         public static Task AddMetadataAsync(
             this InstancesResource resource,
-            string project,
-            string zone,
-            string instance,
-            string key,
-            string value,
-            CancellationToken token)
-        {
-            return AddMetadataAsync(
-                resource,
-                new InstanceLocator(project, zone, instance),
-                key,
-                value,
-                token);
-        }
-
-        /// <summary>
-        /// Query a metadata entry for an instance.
-        /// </summary>
-        /// <returns>null if not set/found</returns>
-        public static async Task<Metadata.ItemsData> QueryMetadataKeyAsync(
-            this InstancesResource resource,
-            InstanceLocator instanceRef,
-            string key)
-        {
-            var instance = await resource.Get(
-                instanceRef.ProjectId,
-                instanceRef.Zone,
-                instanceRef.Name).ExecuteAsync().ConfigureAwait(false);
-
-            if (instance.Metadata == null || instance.Metadata.Items == null)
-            {
-                return null;
-            }
-
-            return instance.Metadata.Items
-                .Where(i => i.Key == key)
-                .FirstOrDefault();
-        }
-
-        /// <summary>
-        /// Adds or overwrites a metadata key/value pair to a GCE 
-        /// instance. Any existing metadata is kept as is.
-        /// </summary>
-        public static Task AddMetadataAsync(
-            this InstancesResource resource,
             InstanceLocator instanceRef,
             string key,
             string value,

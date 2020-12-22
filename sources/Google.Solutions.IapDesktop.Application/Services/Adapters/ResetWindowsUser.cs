@@ -20,6 +20,7 @@
 //
 
 using Google.Apis.Compute.v1;
+using Google.Solutions.Common.ApiExtensions.Instance;
 using Google.Solutions.Common.Diagnostics;
 using Google.Solutions.Common.Locator;
 using Google.Solutions.Common.Util;
@@ -34,12 +35,12 @@ using System.Threading.Tasks;
 
 #pragma warning disable CA1032 // Implement standard exception constructors
 
-namespace Google.Solutions.Common.ApiExtensions.Instance
+namespace Google.Solutions.IapDesktop.Application.Services.Adapters
 {
     /// <summary>
     /// Extend 'InstancesResource' by a 'ResetWindowsUserAsync' method.
     /// </summary>
-    public static class ResetWindowsUserExtensions
+    internal static class ResetWindowsUserExtensions
     {
         private const int RsaKeySize = 2048;
         private const int SerialPort = 4;
@@ -76,7 +77,7 @@ namespace Google.Solutions.Common.ApiExtensions.Instance
             string username,
             CancellationToken token)
         {
-            using (CommonTraceSources.Default.TraceMethod().WithParameters(instanceRef, username))
+            using (ApplicationTraceSources.Default.TraceMethod().WithParameters(instanceRef, username))
             using (RSACryptoServiceProvider rsa = new RSACryptoServiceProvider(RsaKeySize))
             {
                 var keyParameters = rsa.ExportParameters(false);
@@ -102,14 +103,14 @@ namespace Google.Solutions.Common.ApiExtensions.Instance
                 }
                 catch (GoogleApiException e) when (e.Error != null && e.Error.Code == 404)
                 {
-                    CommonTraceSources.Default.TraceVerbose("Instance does not exist: {0}", e.Message);
+                    ApplicationTraceSources.Default.TraceVerbose("Instance does not exist: {0}", e.Message);
 
                     throw new PasswordResetException(
                         $"Instance {instanceRef.Name} was not found.");
                 }
                 catch (GoogleApiException e) when (e.Error == null || e.Error.Code == 403)
                 {
-                    CommonTraceSources.Default.TraceVerbose(
+                    ApplicationTraceSources.Default.TraceVerbose(
                         "Setting request payload metadata failed with 403: {0} ({1})",
                         e.Message,
                         e.Error?.Errors.EnsureNotNull().Select(er => er.Reason).FirstOrDefault());
@@ -125,7 +126,7 @@ namespace Google.Solutions.Common.ApiExtensions.Instance
                 }
                 catch (GoogleApiException e) when (e.Error != null && e.Error.Code == 400 && e.Error.Message == "BAD REQUEST")
                 {
-                    CommonTraceSources.Default.TraceVerbose(
+                    ApplicationTraceSources.Default.TraceVerbose(
                         "Setting request payload metadata failed with 400: {0} ({1})",
                         e.Message,
                         e.Error?.Errors.EnsureNotNull().Select(er => er.Reason).FirstOrDefault());
@@ -141,7 +142,8 @@ namespace Google.Solutions.Common.ApiExtensions.Instance
                 }
 
                 // Read response from serial port.
-                using (var serialPortStream = resource.GetSerialPortOutputStream(
+                using (var serialPortStream = new SerialPortStream(
+                    resource,
                     instanceRef,
                     SerialPort))
                 {
@@ -150,7 +152,7 @@ namespace Google.Solutions.Common.ApiExtensions.Instance
                     var logBuffer = new StringBuilder(64 * 1024);
                     while (true)
                     {
-                        CommonTraceSources.Default.TraceVerbose("Waiting for agent to supply response...");
+                        ApplicationTraceSources.Default.TraceVerbose("Waiting for agent to supply response...");
 
                         token.ThrowIfCancellationRequested();
 
@@ -220,7 +222,7 @@ namespace Google.Solutions.Common.ApiExtensions.Instance
                     }
                     catch (Exception e) when (e.IsCancellation() && timeoutCts.IsCancellationRequested)
                     {
-                        CommonTraceSources.Default.TraceError(e);
+                        ApplicationTraceSources.Default.TraceError(e);
                         // This task was cancelled because of a timeout, not because
                         // the enclosing job was cancelled.
                         throw new PasswordResetException(

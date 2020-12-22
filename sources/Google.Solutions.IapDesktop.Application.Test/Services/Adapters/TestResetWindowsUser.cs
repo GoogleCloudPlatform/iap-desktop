@@ -22,20 +22,21 @@
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Compute.v1;
 using Google.Apis.Services;
-using Google.Solutions.Common.ApiExtensions.Instance;
 using Google.Solutions.Common.Locator;
+using Google.Solutions.Common.Test;
 using Google.Solutions.Common.Test.Integration;
+using Google.Solutions.IapDesktop.Application.Services.Adapters;
 using NUnit.Framework;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Google.Solutions.Common.Test.Extensions
+namespace Google.Solutions.IapDesktop.Application.Test.Services.Adapters
 {
     [TestFixture]
     [Category("IntegrationTest")]
     [Category("Windows")]
-    public class TestResetWindowsUser : CommonFixtureBase
+    public class TestResetWindowsUser : ApplicationFixtureBase
     {
         public ComputeService CreateComputeService(ICredential credential)
         {

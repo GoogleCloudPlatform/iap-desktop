@@ -41,73 +41,7 @@ using System.Threading.Tasks;
 
 namespace Google.Solutions.IapDesktop.Application.Services.Adapters
 {
-    public interface IComputeEngineAdapter : IDisposable
-    {
-        Task<Project> GetProjectAsync(
-            string projectId,
-            CancellationToken cancellationToken);
-
-        Task<Instance> GetInstanceAsync(
-            InstanceLocator instanceLocator,
-            CancellationToken cancellationToken);
-
-        Task<GuestAttributes> GetGuestAttributesAsync(
-            InstanceLocator instanceLocator,
-            string queryPath,
-            CancellationToken cancellationToken);
-
-        Task<IEnumerable<Instance>> ListInstancesAsync(
-            string projectId,
-            CancellationToken cancellationToken);
-
-        Task<IEnumerable<Instance>> ListInstancesAsync(
-            ZoneLocator zoneLocator,
-            CancellationToken cancellationToken);
-
-        Task<IEnumerable<Disk>> ListDisksAsync(
-            string projectId,
-            CancellationToken cancellationToken);
-
-        Task<IEnumerable<NodeGroup>> ListNodeGroupsAsync(
-            string projectId,
-            CancellationToken cancellationToken);
-
-        Task<IEnumerable<NodeGroupNode>> ListNodesAsync(
-            ZoneLocator zone,
-            string nodeGroup,
-            CancellationToken cancellationToken);
-
-        Task<IEnumerable<NodeGroupNode>> ListNodesAsync(
-            string projectId,
-            CancellationToken cancellationToken);
-
-        Task<NetworkCredential> ResetWindowsUserAsync(
-            InstanceLocator instanceRef,
-            string username,
-            CancellationToken token);
-
-        Task<NetworkCredential> ResetWindowsUserAsync(
-            InstanceLocator instanceRef,
-            string username,
-            TimeSpan timeout,
-            CancellationToken token);
-
-        Task<Image> GetImageAsync(
-            ImageLocator image,
-            CancellationToken cancellationToken);
-
-        IAsyncReader<string> GetSerialPortOutput(
-            InstanceLocator instanceRef,
-            ushort portNumber);
-
-        Task<bool> IsGrantedPermission(
-            InstanceLocator instanceRef,
-            string permission);
-
-        Task<bool> IsGrantedPermissionToResetWindowsUser(
-            InstanceLocator instanceRef);
-    }
-
+    
     /// <summary>
     /// Adapter class for the Compute Engine API.
     /// </summary>
@@ -118,8 +52,12 @@ namespace Google.Solutions.IapDesktop.Application.Services.Adapters
 
         private readonly ComputeService service;
 
-        public bool IsDeviceCertiticateAuthenticationEnabled
+        internal bool IsDeviceCertiticateAuthenticationEnabled
             => this.service.IsMtlsEnabled() && this.service.IsClientCertificateProvided();
+
+        //---------------------------------------------------------------------
+        // Ctor.
+        //---------------------------------------------------------------------
 
         public ComputeEngineAdapter(
             ICredential credential,
@@ -156,6 +94,10 @@ namespace Google.Solutions.IapDesktop.Application.Services.Adapters
         {
         }
 
+        //---------------------------------------------------------------------
+        // Projects.
+        //---------------------------------------------------------------------
+
         public async Task<Project> GetProjectAsync(
             string projectId,
             CancellationToken cancellationToken)
@@ -179,6 +121,10 @@ namespace Google.Solutions.IapDesktop.Application.Services.Adapters
                 }
             }
         }
+
+        //---------------------------------------------------------------------
+        // Instances.
+        //---------------------------------------------------------------------
 
         public async Task<IEnumerable<Instance>> ListInstancesAsync(
             string projectId,
@@ -284,6 +230,10 @@ namespace Google.Solutions.IapDesktop.Application.Services.Adapters
             }
         }
 
+        //---------------------------------------------------------------------
+        // Guest attributes.
+        //---------------------------------------------------------------------
+
         public async Task<GuestAttributes> GetGuestAttributesAsync(
             InstanceLocator instanceLocator,
             string queryPath,
@@ -317,44 +267,9 @@ namespace Google.Solutions.IapDesktop.Application.Services.Adapters
             }
         }
 
-        public async Task<IEnumerable<Disk>> ListDisksAsync(
-            string projectId,
-            CancellationToken cancellationToken)
-        {
-            using (ApplicationTraceSources.Default.TraceMethod().WithParameters(projectId))
-            {
-                try
-                {
-                    var disksByZone = await new PageStreamer<
-                        DisksScopedList,
-                        DisksResource.AggregatedListRequest,
-                        DiskAggregatedList,
-                        string>(
-                            (req, token) => req.PageToken = token,
-                            response => response.NextPageToken,
-                            response => response.Items.Values.Where(v => v != null))
-                        .FetchAllAsync(
-                            this.service.Disks.AggregatedList(projectId),
-                            cancellationToken)
-                        .ConfigureAwait(false);
-
-                    var result = disksByZone
-                        .Where(z => z.Disks != null)    // API returns null for empty zones.
-                        .SelectMany(zone => zone.Disks);
-
-                    ApplicationTraceSources.Default.TraceVerbose("Found {0} disks", result.Count());
-
-                    return result;
-                }
-                catch (GoogleApiException e) when (e.IsAccessDenied())
-                {
-                    throw new ResourceAccessDeniedException(
-                        $"Access to disks in project {projectId} has been denied",
-                        HelpTopics.ProjectAccessControl, 
-                        e);
-                }
-            }
-        }
+        //---------------------------------------------------------------------
+        // Nodes.
+        //---------------------------------------------------------------------
 
         public async Task<IEnumerable<NodeGroup>> ListNodeGroupsAsync(
             string projectId,
@@ -453,6 +368,49 @@ namespace Google.Solutions.IapDesktop.Application.Services.Adapters
             }
         }
 
+        //---------------------------------------------------------------------
+        // Disks/images.
+        //---------------------------------------------------------------------
+
+        public async Task<IEnumerable<Disk>> ListDisksAsync(
+            string projectId,
+            CancellationToken cancellationToken)
+        {
+            using (ApplicationTraceSources.Default.TraceMethod().WithParameters(projectId))
+            {
+                try
+                {
+                    var disksByZone = await new PageStreamer<
+                        DisksScopedList,
+                        DisksResource.AggregatedListRequest,
+                        DiskAggregatedList,
+                        string>(
+                            (req, token) => req.PageToken = token,
+                            response => response.NextPageToken,
+                            response => response.Items.Values.Where(v => v != null))
+                        .FetchAllAsync(
+                            this.service.Disks.AggregatedList(projectId),
+                            cancellationToken)
+                        .ConfigureAwait(false);
+
+                    var result = disksByZone
+                        .Where(z => z.Disks != null)    // API returns null for empty zones.
+                        .SelectMany(zone => zone.Disks);
+
+                    ApplicationTraceSources.Default.TraceVerbose("Found {0} disks", result.Count());
+
+                    return result;
+                }
+                catch (GoogleApiException e) when (e.IsAccessDenied())
+                {
+                    throw new ResourceAccessDeniedException(
+                        $"Access to disks in project {projectId} has been denied",
+                        HelpTopics.ProjectAccessControl,
+                        e);
+                }
+            }
+        }
+
         public async Task<Image> GetImageAsync(ImageLocator image, CancellationToken cancellationToken)
         {
             try
@@ -482,26 +440,52 @@ namespace Google.Solutions.IapDesktop.Application.Services.Adapters
             }
         }
 
-        public async Task<Instance> GetInstanceAsync(string projectId, string zone, string instanceName)
-        {
-            using (ApplicationTraceSources.Default.TraceMethod().WithParameters(projectId, zone, instanceName))
-            {
-                return await this.service.Instances.Get(projectId, zone, instanceName)
-                    .ExecuteAsync()
-                    .ConfigureAwait(false);
-            }
-        }
-
-        public Task<Instance> GetInstanceAsync(InstanceLocator instanceRef)
-            => GetInstanceAsync(instanceRef.ProjectId, instanceRef.Zone, instanceRef.Name);
+        //---------------------------------------------------------------------
+        // Serial port.
+        //---------------------------------------------------------------------
 
         public IAsyncReader<string> GetSerialPortOutput(InstanceLocator instanceRef, ushort portNumber)
         {
             using (ApplicationTraceSources.Default.TraceMethod().WithParameters(instanceRef))
             {
-                return this.service.Instances.GetSerialPortOutputStream(instanceRef, portNumber);
+                return new SerialPortStream(
+                    this.service.Instances, 
+                    instanceRef, 
+                    portNumber);
             }
         }
+
+        //---------------------------------------------------------------------
+        // Windows user.
+        //---------------------------------------------------------------------
+
+        public Task<NetworkCredential> ResetWindowsUserAsync(
+            InstanceLocator instanceRef,
+            string username,
+            CancellationToken token)
+        {
+            return ResetWindowsUserAsync(instanceRef, username, DefaultPasswordResetTimeout, token);
+        }
+
+        public async Task<NetworkCredential> ResetWindowsUserAsync(
+            InstanceLocator instanceRef,
+            string username,
+            TimeSpan timeout,
+            CancellationToken token)
+        {
+            using (ApplicationTraceSources.Default.TraceMethod().WithParameters(instanceRef, timeout))
+            {
+                return await this.service.Instances.ResetWindowsUserAsync(
+                    instanceRef,
+                    username,
+                    timeout,
+                    token).ConfigureAwait(false);
+            }
+        }
+
+        //---------------------------------------------------------------------
+        // Permission check.
+        //---------------------------------------------------------------------
 
         public async Task<bool> IsGrantedPermission(
             InstanceLocator instanceLocator,
@@ -535,62 +519,6 @@ namespace Google.Solutions.IapDesktop.Application.Services.Adapters
             // For performance reasons, only check (1).
             //
             return IsGrantedPermission(instanceRef, Permissions.ComputeInstancesSetMetadata);
-        }
-
-        public Task<NetworkCredential> ResetWindowsUserAsync(
-            InstanceLocator instanceRef,
-            string username,
-            CancellationToken token)
-        {
-            return ResetWindowsUserAsync(instanceRef, username, DefaultPasswordResetTimeout, token);
-        }
-
-        public async Task<NetworkCredential> ResetWindowsUserAsync(
-            InstanceLocator instanceRef,
-            string username,
-            TimeSpan timeout,
-            CancellationToken token)
-        {
-            using (ApplicationTraceSources.Default.TraceMethod().WithParameters(instanceRef, timeout))
-            {
-                return await this.service.Instances.ResetWindowsUserAsync(
-                    instanceRef,
-                    username,
-                    timeout,
-                    token).ConfigureAwait(false);
-            }
-        }
-
-        private static bool IsWindowsInstanceByGuestOsFeature(Instance instance)
-        {
-            // For an instance to be a valid Windows instance, at least one of the disks
-            // (the boot disk) has to be marked as "WINDOWS". 
-            // Note that older disks might lack this feature.
-            return instance.Disks
-                .EnsureNotNull()
-                .Where(d => d.GuestOsFeatures != null)
-                .SelectMany(d => d.GuestOsFeatures)
-                .EnsureNotNull()
-                .Any(f => f.Type == "WINDOWS");
-        }
-
-        private static bool IsWindowsInstanceByLicense(Instance instance)
-        {
-            // For an instance to be a valid Windows instance, at least one of the disks
-            // has to have an associated Windows license. This is also true for
-            // BYOL'ed instances.
-            return instance.Disks
-                .EnsureNotNull()
-                .Where(d => d.Licenses != null)
-                .SelectMany(d => d.Licenses)
-                .EnsureNotNull()
-                .Any(l => LicenseLocator.FromString(l).IsWindowsLicense());
-        }
-
-        public static bool IsWindowsInstance(Instance instance)
-        {
-            return IsWindowsInstanceByGuestOsFeature(instance) ||
-                   IsWindowsInstanceByLicense(instance);
         }
 
         public void Dispose()

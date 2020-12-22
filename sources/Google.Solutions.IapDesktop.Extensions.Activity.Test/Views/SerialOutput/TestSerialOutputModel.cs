@@ -39,6 +39,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.Views.SerialOutpu
     [Category("IntegrationTest")]
     public class TestSerialOutputModel : ActivityFixtureBase
     {
+        public const ushort ConsolePort = 1;
+
         [Test]
         public async Task WhenLoadAsyncCompletes_ThenOutputContainsExistingData(
             [WindowsInstance] ResourceTask<InstanceLocator> testInstance,
@@ -50,7 +52,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.Views.SerialOutpu
                 "display-name",
                 new ComputeEngineAdapter(await credential),
                 await testInstance,
-                SerialPortStream.ConsolePort,
+                ConsolePort,
                 CancellationToken.None);
 
             Assert.IsFalse(string.IsNullOrWhiteSpace(model.Output));
@@ -76,7 +78,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.Views.SerialOutpu
                 "display-name",
                 adapter.Object,
                 new InstanceLocator("project-1", "zone-1", "instance-1"),
-                SerialPortStream.ConsolePort,
+                ConsolePort,
                 CancellationToken.None);
 
             using (var cts = new CancellationTokenSource())
@@ -110,7 +112,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.Views.SerialOutpu
                 "display-name",
                 adapter.Object,
                 new InstanceLocator("project-1", "zone-1", "instance-1"),
-                SerialPortStream.ConsolePort,
+                ConsolePort,
                 CancellationToken.None);
 
             // ...but fail the tailing.

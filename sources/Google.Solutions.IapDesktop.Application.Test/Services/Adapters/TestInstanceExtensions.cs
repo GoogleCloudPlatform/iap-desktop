@@ -24,6 +24,7 @@ using Google.Solutions.Common.Locator;
 using Google.Solutions.Common.Test.Integration;
 using Google.Solutions.IapDesktop.Application.Services.Adapters;
 using NUnit.Framework;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Google.Solutions.IapDesktop.Application.Test.Services.Adapters
@@ -38,7 +39,9 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Adapters
             [Credential(Role = PredefinedRole.ComputeViewer)] ResourceTask<ICredential> credential)
         {
             var adapter = new ComputeEngineAdapter(await credential);
-            var instance = await adapter.GetInstanceAsync(await testInstance);
+            var instance = await adapter.GetInstanceAsync(
+                await testInstance,
+                CancellationToken.None);
 
             var zoneLocator = instance.GetZoneLocator();
             var instanceLocator = instance.GetInstanceLocator();
@@ -55,7 +58,9 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Adapters
             [Credential(Role = PredefinedRole.ComputeViewer)] ResourceTask<ICredential> credential)
         {
             var adapter = new ComputeEngineAdapter(await credential);
-            var instance = await adapter.GetInstanceAsync(await testInstance);
+            var instance = await adapter.GetInstanceAsync(
+                await testInstance,
+                CancellationToken.None);
 
             Assert.IsNotNull(instance.InternalAddress());
             CollectionAssert.Contains(
@@ -70,7 +75,9 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Adapters
             [Credential(Role = PredefinedRole.ComputeViewer)] ResourceTask<ICredential> credential)
         {
             var adapter = new ComputeEngineAdapter(await credential);
-            var instance = await adapter.GetInstanceAsync(await testInstance);
+            var instance = await adapter.GetInstanceAsync(
+                await testInstance,
+                CancellationToken.None);
 
             Assert.IsNull(instance.PublicAddress());
         }
@@ -81,7 +88,9 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Adapters
             [Credential(Role = PredefinedRole.ComputeViewer)] ResourceTask<ICredential> credential)
         {
             var adapter = new ComputeEngineAdapter(await credential);
-            var instance = await adapter.GetInstanceAsync(await testInstance);
+            var instance = await adapter.GetInstanceAsync(
+                await testInstance,
+                CancellationToken.None);
 
             Assert.IsNotNull(instance.PublicAddress());
             CollectionAssert.DoesNotContain(

@@ -118,10 +118,13 @@
     <Compile Include="Services\Adapters\EmailAdapter.cs" />
     <Compile Include="Services\Adapters\GithubAdapter.cs" />
     <Compile Include="Services\Adapters\HttpProxyAdapter.cs" />
+    <Compile Include="Services\Adapters\IComputeEngineAdapter.cs" />
     <Compile Include="Services\Adapters\InstanceExtensions.cs" />
     <Compile Include="Services\Adapters\Permissions.cs" />
+    <Compile Include="Services\Adapters\ResetWindowsUser.cs" />
     <Compile Include="Services\Adapters\ResourceManagerAdapter.cs" />
     <Compile Include="Global.cs" />
+    <Compile Include="Services\Adapters\SerialPortStream.cs" />
     <Compile Include="Services\SecureConnect\SecureConnectEnrollment.cs" />
     <Compile Include="Services\Integration\ConnectionBroker.cs" />
     <Compile Include="Services\Integration\EventService.cs" />

@@ -26,29 +26,10 @@ using Google.Solutions.Common.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Google.Solutions.Common.ApiExtensions.Instance
+namespace Google.Solutions.IapDesktop.Application.Services.Adapters
 {
-    /// <summary>
-    /// Extend 'InstancesResource' by a 'GetSerialPortOutputStream' method.
-    /// </summary>
-    public static class GetSerialPortOutputStreamExtensions
+    internal sealed class SerialPortStream : IAsyncReader<string>
     {
-        /// <summary>
-        /// Read serial port output as a continuous stream.
-        /// </summary>
-        public static IAsyncReader<string> GetSerialPortOutputStream(
-            this InstancesResource resource,
-            InstanceLocator instanceRef,
-            ushort port)
-        {
-            return new SerialPortStream(resource, instanceRef, port);
-        }
-    }
-
-    public sealed class SerialPortStream : IAsyncReader<string>
-    {
-        public const ushort ConsolePort = 1;
-
         private readonly InstancesResource instancesResource;
         private readonly InstanceLocator instance;
         private readonly ushort port;
@@ -72,7 +53,7 @@ namespace Google.Solutions.Common.ApiExtensions.Instance
 
         public async Task<string> ReadAsync(CancellationToken token)
         {
-            using (CommonTraceSources.Default.TraceMethod().WithParameters(this.nextOffset))
+            using (ApplicationTraceSources.Default.TraceMethod().WithParameters(this.nextOffset))
             {
                 var request = this.instancesResource.GetSerialPortOutput(
                     this.instance.ProjectId,
@@ -82,7 +63,7 @@ namespace Google.Solutions.Common.ApiExtensions.Instance
                 request.Start = this.nextOffset;
                 var output = await request.ExecuteAsync(token).ConfigureAwait(false);
 
-                CommonTraceSources.Default.TraceVerbose(
+                ApplicationTraceSources.Default.TraceVerbose(
                     "Read {0} chars from serial port [start={1}, next={2}]",
                     output.Contents == null ? 0 : output.Contents.Length,
                     output.Start.Value,
