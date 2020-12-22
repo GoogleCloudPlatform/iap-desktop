@@ -107,10 +107,10 @@ namespace Google.Solutions.IapDesktop.Extensions.Os.Services.Inventory
             switch (operatingSystems)
             {
                 case OperatingSystems.Windows:
-                    return ComputeEngineAdapter.IsWindowsInstance(instance);
+                    return instance.IsWindowsInstance();
 
                 case OperatingSystems.Linux:
-                    return !ComputeEngineAdapter.IsWindowsInstance(instance);
+                    return !instance.IsWindowsInstance();
 
                 default:
                     return true;
