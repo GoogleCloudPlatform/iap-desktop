@@ -52,8 +52,12 @@ namespace Google.Solutions.IapDesktop.Application.Services.Adapters
 
         private readonly ComputeService service;
 
-        public bool IsDeviceCertiticateAuthenticationEnabled
+        internal bool IsDeviceCertiticateAuthenticationEnabled
             => this.service.IsMtlsEnabled() && this.service.IsClientCertificateProvided();
+
+        //---------------------------------------------------------------------
+        // Ctor.
+        //---------------------------------------------------------------------
 
         public ComputeEngineAdapter(
             ICredential credential,
@@ -90,6 +94,10 @@ namespace Google.Solutions.IapDesktop.Application.Services.Adapters
         {
         }
 
+        //---------------------------------------------------------------------
+        // Projects.
+        //---------------------------------------------------------------------
+
         public async Task<Project> GetProjectAsync(
             string projectId,
             CancellationToken cancellationToken)
@@ -113,6 +121,10 @@ namespace Google.Solutions.IapDesktop.Application.Services.Adapters
                 }
             }
         }
+
+        //---------------------------------------------------------------------
+        // Instances.
+        //---------------------------------------------------------------------
 
         public async Task<IEnumerable<Instance>> ListInstancesAsync(
             string projectId,
@@ -251,44 +263,9 @@ namespace Google.Solutions.IapDesktop.Application.Services.Adapters
             }
         }
 
-        public async Task<IEnumerable<Disk>> ListDisksAsync(
-            string projectId,
-            CancellationToken cancellationToken)
-        {
-            using (ApplicationTraceSources.Default.TraceMethod().WithParameters(projectId))
-            {
-                try
-                {
-                    var disksByZone = await new PageStreamer<
-                        DisksScopedList,
-                        DisksResource.AggregatedListRequest,
-                        DiskAggregatedList,
-                        string>(
-                            (req, token) => req.PageToken = token,
-                            response => response.NextPageToken,
-                            response => response.Items.Values.Where(v => v != null))
-                        .FetchAllAsync(
-                            this.service.Disks.AggregatedList(projectId),
-                            cancellationToken)
-                        .ConfigureAwait(false);
-
-                    var result = disksByZone
-                        .Where(z => z.Disks != null)    // API returns null for empty zones.
-                        .SelectMany(zone => zone.Disks);
-
-                    ApplicationTraceSources.Default.TraceVerbose("Found {0} disks", result.Count());
-
-                    return result;
-                }
-                catch (GoogleApiException e) when (e.IsAccessDenied())
-                {
-                    throw new ResourceAccessDeniedException(
-                        $"Access to disks in project {projectId} has been denied",
-                        HelpTopics.ProjectAccessControl, 
-                        e);
-                }
-            }
-        }
+        //---------------------------------------------------------------------
+        // Nodes.
+        //---------------------------------------------------------------------
 
         public async Task<IEnumerable<NodeGroup>> ListNodeGroupsAsync(
             string projectId,
@@ -387,6 +364,49 @@ namespace Google.Solutions.IapDesktop.Application.Services.Adapters
             }
         }
 
+        //---------------------------------------------------------------------
+        // Disks/images.
+        //---------------------------------------------------------------------
+
+        public async Task<IEnumerable<Disk>> ListDisksAsync(
+            string projectId,
+            CancellationToken cancellationToken)
+        {
+            using (ApplicationTraceSources.Default.TraceMethod().WithParameters(projectId))
+            {
+                try
+                {
+                    var disksByZone = await new PageStreamer<
+                        DisksScopedList,
+                        DisksResource.AggregatedListRequest,
+                        DiskAggregatedList,
+                        string>(
+                            (req, token) => req.PageToken = token,
+                            response => response.NextPageToken,
+                            response => response.Items.Values.Where(v => v != null))
+                        .FetchAllAsync(
+                            this.service.Disks.AggregatedList(projectId),
+                            cancellationToken)
+                        .ConfigureAwait(false);
+
+                    var result = disksByZone
+                        .Where(z => z.Disks != null)    // API returns null for empty zones.
+                        .SelectMany(zone => zone.Disks);
+
+                    ApplicationTraceSources.Default.TraceVerbose("Found {0} disks", result.Count());
+
+                    return result;
+                }
+                catch (GoogleApiException e) when (e.IsAccessDenied())
+                {
+                    throw new ResourceAccessDeniedException(
+                        $"Access to disks in project {projectId} has been denied",
+                        HelpTopics.ProjectAccessControl,
+                        e);
+                }
+            }
+        }
+
         public async Task<Image> GetImageAsync(ImageLocator image, CancellationToken cancellationToken)
         {
             try
@@ -416,18 +436,9 @@ namespace Google.Solutions.IapDesktop.Application.Services.Adapters
             }
         }
 
-        public async Task<Instance> GetInstanceAsync(string projectId, string zone, string instanceName)
-        {
-            using (ApplicationTraceSources.Default.TraceMethod().WithParameters(projectId, zone, instanceName))
-            {
-                return await this.service.Instances.Get(projectId, zone, instanceName)
-                    .ExecuteAsync()
-                    .ConfigureAwait(false);
-            }
-        }
-
-        public Task<Instance> GetInstanceAsync(InstanceLocator instanceRef)
-            => GetInstanceAsync(instanceRef.ProjectId, instanceRef.Zone, instanceRef.Name);
+        //---------------------------------------------------------------------
+        // Serial port.
+        //---------------------------------------------------------------------
 
         public IAsyncReader<string> GetSerialPortOutput(InstanceLocator instanceRef, ushort portNumber)
         {
@@ -436,6 +447,38 @@ namespace Google.Solutions.IapDesktop.Application.Services.Adapters
                 return this.service.Instances.GetSerialPortOutputStream(instanceRef, portNumber);
             }
         }
+
+        //---------------------------------------------------------------------
+        // Windows user.
+        //---------------------------------------------------------------------
+
+        public Task<NetworkCredential> ResetWindowsUserAsync(
+            InstanceLocator instanceRef,
+            string username,
+            CancellationToken token)
+        {
+            return ResetWindowsUserAsync(instanceRef, username, DefaultPasswordResetTimeout, token);
+        }
+
+        public async Task<NetworkCredential> ResetWindowsUserAsync(
+            InstanceLocator instanceRef,
+            string username,
+            TimeSpan timeout,
+            CancellationToken token)
+        {
+            using (ApplicationTraceSources.Default.TraceMethod().WithParameters(instanceRef, timeout))
+            {
+                return await this.service.Instances.ResetWindowsUserAsync(
+                    instanceRef,
+                    username,
+                    timeout,
+                    token).ConfigureAwait(false);
+            }
+        }
+
+        //---------------------------------------------------------------------
+        // Permission check.
+        //---------------------------------------------------------------------
 
         public async Task<bool> IsGrantedPermission(
             InstanceLocator instanceLocator,
@@ -469,30 +512,6 @@ namespace Google.Solutions.IapDesktop.Application.Services.Adapters
             // For performance reasons, only check (1).
             //
             return IsGrantedPermission(instanceRef, Permissions.ComputeInstancesSetMetadata);
-        }
-
-        public Task<NetworkCredential> ResetWindowsUserAsync(
-            InstanceLocator instanceRef,
-            string username,
-            CancellationToken token)
-        {
-            return ResetWindowsUserAsync(instanceRef, username, DefaultPasswordResetTimeout, token);
-        }
-
-        public async Task<NetworkCredential> ResetWindowsUserAsync(
-            InstanceLocator instanceRef,
-            string username,
-            TimeSpan timeout,
-            CancellationToken token)
-        {
-            using (ApplicationTraceSources.Default.TraceMethod().WithParameters(instanceRef, timeout))
-            {
-                return await this.service.Instances.ResetWindowsUserAsync(
-                    instanceRef,
-                    username,
-                    timeout,
-                    token).ConfigureAwait(false);
-            }
         }
 
         public void Dispose()

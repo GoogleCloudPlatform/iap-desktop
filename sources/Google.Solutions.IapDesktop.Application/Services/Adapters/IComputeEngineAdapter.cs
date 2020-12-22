@@ -32,9 +32,17 @@ namespace Google.Solutions.IapDesktop.Application.Services.Adapters
 {
     public interface IComputeEngineAdapter : IDisposable
     {
+        //---------------------------------------------------------------------
+        // Projects.
+        //---------------------------------------------------------------------
+
         Task<Project> GetProjectAsync(
             string projectId,
             CancellationToken cancellationToken);
+
+        //---------------------------------------------------------------------
+        // Instances.
+        //---------------------------------------------------------------------
 
         Task<Instance> GetInstanceAsync(
             InstanceLocator instanceLocator,
@@ -53,9 +61,9 @@ namespace Google.Solutions.IapDesktop.Application.Services.Adapters
             ZoneLocator zoneLocator,
             CancellationToken cancellationToken);
 
-        Task<IEnumerable<Disk>> ListDisksAsync(
-            string projectId,
-            CancellationToken cancellationToken);
+        //---------------------------------------------------------------------
+        // Nodes.
+        //---------------------------------------------------------------------
 
         Task<IEnumerable<NodeGroup>> ListNodeGroupsAsync(
             string projectId,
@@ -70,6 +78,30 @@ namespace Google.Solutions.IapDesktop.Application.Services.Adapters
             string projectId,
             CancellationToken cancellationToken);
 
+        //---------------------------------------------------------------------
+        // Disks/images.
+        //---------------------------------------------------------------------
+
+        Task<IEnumerable<Disk>> ListDisksAsync(
+            string projectId,
+            CancellationToken cancellationToken);
+
+        Task<Image> GetImageAsync(
+            ImageLocator image,
+            CancellationToken cancellationToken);
+
+        //---------------------------------------------------------------------
+        // Serial port.
+        //---------------------------------------------------------------------
+
+        IAsyncReader<string> GetSerialPortOutput(
+            InstanceLocator instanceRef,
+            ushort portNumber);
+
+        //---------------------------------------------------------------------
+        // Windows user.
+        //---------------------------------------------------------------------
+
         Task<NetworkCredential> ResetWindowsUserAsync(
             InstanceLocator instanceRef,
             string username,
@@ -81,13 +113,9 @@ namespace Google.Solutions.IapDesktop.Application.Services.Adapters
             TimeSpan timeout,
             CancellationToken token);
 
-        Task<Image> GetImageAsync(
-            ImageLocator image,
-            CancellationToken cancellationToken);
-
-        IAsyncReader<string> GetSerialPortOutput(
-            InstanceLocator instanceRef,
-            ushort portNumber);
+        //---------------------------------------------------------------------
+        // Permission check.
+        //---------------------------------------------------------------------
 
         Task<bool> IsGrantedPermission(
             InstanceLocator instanceRef,
