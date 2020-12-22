@@ -121,6 +121,7 @@
     <Compile Include="Services\Adapters\IComputeEngineAdapter.cs" />
     <Compile Include="Services\Adapters\InstanceExtensions.cs" />
     <Compile Include="Services\Adapters\Permissions.cs" />
+    <Compile Include="Services\Adapters\ResetWindowsUser.cs" />
     <Compile Include="Services\Adapters\ResourceManagerAdapter.cs" />
     <Compile Include="Global.cs" />
     <Compile Include="Services\SecureConnect\SecureConnectEnrollment.cs" />
