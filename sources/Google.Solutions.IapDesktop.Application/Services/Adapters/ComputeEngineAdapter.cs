@@ -230,6 +230,10 @@ namespace Google.Solutions.IapDesktop.Application.Services.Adapters
             }
         }
 
+        //---------------------------------------------------------------------
+        // Guest attributes.
+        //---------------------------------------------------------------------
+
         public async Task<GuestAttributes> GetGuestAttributesAsync(
             InstanceLocator instanceLocator,
             string queryPath,

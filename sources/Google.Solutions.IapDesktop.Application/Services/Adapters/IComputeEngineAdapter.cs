@@ -48,17 +48,21 @@ namespace Google.Solutions.IapDesktop.Application.Services.Adapters
             InstanceLocator instanceLocator,
             CancellationToken cancellationToken);
 
-        Task<GuestAttributes> GetGuestAttributesAsync(
-            InstanceLocator instanceLocator,
-            string queryPath,
-            CancellationToken cancellationToken);
-
         Task<IEnumerable<Instance>> ListInstancesAsync(
             string projectId,
             CancellationToken cancellationToken);
 
         Task<IEnumerable<Instance>> ListInstancesAsync(
             ZoneLocator zoneLocator,
+            CancellationToken cancellationToken);
+
+        //---------------------------------------------------------------------
+        // Guest attributes.
+        //---------------------------------------------------------------------
+
+        Task<GuestAttributes> GetGuestAttributesAsync(
+            InstanceLocator instanceLocator,
+            string queryPath,
             CancellationToken cancellationToken);
 
         //---------------------------------------------------------------------

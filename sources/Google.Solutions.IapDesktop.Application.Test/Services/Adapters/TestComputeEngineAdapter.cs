@@ -160,6 +160,25 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Adapters
         }
 
         //---------------------------------------------------------------------
+        // Guest attributes.
+        //---------------------------------------------------------------------
+
+        [Test]
+        public async Task WhenUserNotInRole_ThenGetGuestAttributesAsyncThrowsResourceAccessDeniedException(
+            [LinuxInstance] ResourceTask<InstanceLocator> testInstance,
+            [Credential(Role = PredefinedRole.IapTunnelUser)] ResourceTask<ICredential> credential)
+        {
+            var locator = await testInstance;
+            var adapter = new ComputeEngineAdapter(await credential);
+
+            AssertEx.ThrowsAggregateException<ResourceAccessDeniedException>(
+                () => adapter.GetGuestAttributesAsync(
+                    locator,
+                    "somepath/",
+                    CancellationToken.None).Wait());
+        }
+
+        //---------------------------------------------------------------------
         // Nodes.
         //---------------------------------------------------------------------
 
@@ -194,7 +213,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Adapters
         }
 
         //---------------------------------------------------------------------
-        // Disks.
+        // Disks/Images.
         //---------------------------------------------------------------------
 
         [Test]
@@ -209,10 +228,6 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Adapters
                     CancellationToken.None).Wait());
         }
 
-        //---------------------------------------------------------------------
-        // Images.
-        //---------------------------------------------------------------------
-
         [Test]
         public async Task WhenUserNotInRole_ThenGetImageThrowsResourceAccessDeniedException(
             [Credential(Role = PredefinedRole.IapTunnelUser)] ResourceTask<ICredential> credential)
@@ -226,60 +241,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Adapters
         }
 
         //---------------------------------------------------------------------
-        // Guest attributes.
-        //---------------------------------------------------------------------
-
-        [Test]
-        public async Task WhenUserNotInRole_ThenGetGuestAttributesAsyncThrowsResourceAccessDeniedException(
-            [LinuxInstance] ResourceTask<InstanceLocator> testInstance,
-            [Credential(Role = PredefinedRole.IapTunnelUser)] ResourceTask<ICredential> credential)
-        {
-            var locator = await testInstance;
-            var adapter = new ComputeEngineAdapter(await credential);
-
-            AssertEx.ThrowsAggregateException<ResourceAccessDeniedException>(
-                () => adapter.GetGuestAttributesAsync(
-                    locator,
-                    "somepath/",
-                    CancellationToken.None).Wait());
-        }
-
-        //---------------------------------------------------------------------
-        // TestPermission.
-        //---------------------------------------------------------------------
-
-        [Test]
-        public async Task WhenUserInRole_ThenIsGrantedPermissionReturnsTrue(
-            [LinuxInstance] ResourceTask<InstanceLocator> testInstance,
-            [Credential(Role = PredefinedRole.ComputeViewer)] ResourceTask<ICredential> credential)
-        {
-            var locator = await testInstance;
-            var adapter = new ComputeEngineAdapter(await credential);
-
-            var result = await adapter.IsGrantedPermission(
-                locator,
-                Permissions.ComputeInstancesGet);
-
-            Assert.IsTrue(result);
-        }
-
-        [Test]
-        public async Task WhenUserNotInRole_ThenIsGrantedPermissionReturnsFalse(
-            [LinuxInstance] ResourceTask<InstanceLocator> testInstance,
-            [Credential(Role = PredefinedRole.ComputeViewer)] ResourceTask<ICredential> credential)
-        {
-            var locator = await testInstance;
-            var adapter = new ComputeEngineAdapter(await credential);
-
-            var result = await adapter.IsGrantedPermission(
-                locator,
-                Permissions.ComputeInstancesSetMetadata);
-
-            Assert.IsFalse(result);
-        }
-
-        //---------------------------------------------------------------------
-        // ResetWindowsUSer.
+        // Windows user.
         //---------------------------------------------------------------------
 
         [Test]
@@ -373,6 +335,40 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Adapters
                 username,
                 CancellationToken.None);
             Assert.IsNotNull(result.Password);
+        }
+
+        //---------------------------------------------------------------------
+        // Permission check.
+        //---------------------------------------------------------------------
+
+        [Test]
+        public async Task WhenUserInRole_ThenIsGrantedPermissionReturnsTrue(
+            [LinuxInstance] ResourceTask<InstanceLocator> testInstance,
+            [Credential(Role = PredefinedRole.ComputeViewer)] ResourceTask<ICredential> credential)
+        {
+            var locator = await testInstance;
+            var adapter = new ComputeEngineAdapter(await credential);
+
+            var result = await adapter.IsGrantedPermission(
+                locator,
+                Permissions.ComputeInstancesGet);
+
+            Assert.IsTrue(result);
+        }
+
+        [Test]
+        public async Task WhenUserNotInRole_ThenIsGrantedPermissionReturnsFalse(
+            [LinuxInstance] ResourceTask<InstanceLocator> testInstance,
+            [Credential(Role = PredefinedRole.ComputeViewer)] ResourceTask<ICredential> credential)
+        {
+            var locator = await testInstance;
+            var adapter = new ComputeEngineAdapter(await credential);
+
+            var result = await adapter.IsGrantedPermission(
+                locator,
+                Permissions.ComputeInstancesSetMetadata);
+
+            Assert.IsFalse(result);
         }
     }
 }
