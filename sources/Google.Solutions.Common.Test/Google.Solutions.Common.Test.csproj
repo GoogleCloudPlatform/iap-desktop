@@ -91,7 +91,6 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ApiExtensions\Instance\TestGetSerialPortOutputStream.cs" />
     <Compile Include="ApiExtensions\Instance\TestAddMetadata.cs" />
     <Compile Include="ApiExtensions\Instance\TestMetadataExtensions.cs" />
     <Compile Include="ApiExtensions\Request\TestExecuteAsStreamExtensions.cs" />

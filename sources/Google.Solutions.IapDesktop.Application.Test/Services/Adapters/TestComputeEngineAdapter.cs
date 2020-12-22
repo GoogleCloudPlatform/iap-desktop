@@ -241,6 +241,35 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Adapters
         }
 
         //---------------------------------------------------------------------
+        // Serial port.
+        //---------------------------------------------------------------------
+
+        [Test]
+        public async Task WhenLaunchingInstance_ThenInstanceSetupFinishedTextAppearsInStream(
+            [WindowsInstance] ResourceTask<InstanceLocator> testInstance,
+            [Credential(Role = PredefinedRole.ComputeViewer)] ResourceTask<ICredential> credential)
+        {
+            var adapter = new ComputeEngineAdapter(await credential);
+
+            var stream = adapter.GetSerialPortOutput(
+                await testInstance,
+                1);
+
+            var startTime = DateTime.Now;
+
+            while (DateTime.Now < startTime.AddMinutes(3))
+            {
+                var log = await stream.ReadAsync(CancellationToken.None);
+                if (log.Contains("Finished running startup scripts"))
+                {
+                    return;
+                }
+            }
+
+            Assert.Fail("Timeout waiting for serial console output to appear");
+        }
+
+        //---------------------------------------------------------------------
         // Windows user.
         //---------------------------------------------------------------------
 

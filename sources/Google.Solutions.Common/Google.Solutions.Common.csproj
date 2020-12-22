@@ -69,7 +69,6 @@
   <ItemGroup>
     <Compile Include="ApiExtensions\GoogleApiExceptionExtensions.cs" />
     <Compile Include="ApiExtensions\Instance\AddMetadata.cs" />
-    <Compile Include="ApiExtensions\Instance\GetSerialPortOutputStream.cs" />
     <Compile Include="ApiExtensions\Instance\MetadataExtensions.cs" />
     <Compile Include="ApiExtensions\Request\AwaitOperation.cs" />
     <Compile Include="ApiExtensions\Request\ExecuteAsStreamExtensions.cs" />

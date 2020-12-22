@@ -142,7 +142,8 @@ namespace Google.Solutions.IapDesktop.Application.Services.Adapters
                 }
 
                 // Read response from serial port.
-                using (var serialPortStream = resource.GetSerialPortOutputStream(
+                using (var serialPortStream = new SerialPortStream(
+                    resource,
                     instanceRef,
                     SerialPort))
                 {

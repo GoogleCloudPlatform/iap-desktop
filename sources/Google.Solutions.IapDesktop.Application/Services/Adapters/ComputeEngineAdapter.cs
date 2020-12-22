@@ -448,7 +448,10 @@ namespace Google.Solutions.IapDesktop.Application.Services.Adapters
         {
             using (ApplicationTraceSources.Default.TraceMethod().WithParameters(instanceRef))
             {
-                return this.service.Instances.GetSerialPortOutputStream(instanceRef, portNumber);
+                return new SerialPortStream(
+                    this.service.Instances, 
+                    instanceRef, 
+                    portNumber);
             }
         }
 
