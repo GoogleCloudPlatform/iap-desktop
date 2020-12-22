@@ -36,6 +36,7 @@ namespace Google.Solutions.Common.Test.Integration
         public string Zone { get; set; } = TestProject.Zone;
         public string MachineType { get; set; } = "n1-standard-1";
         public string ImageFamily { get; set; }
+        public bool PublicIp { get; set; } = true;
         public string InitializeScript { get; set; }
         public InstanceServiceAccount ServiceAccount { get; set; } = InstanceServiceAccount.None;
 
@@ -55,6 +56,7 @@ namespace Google.Solutions.Common.Test.Integration
             var imageSpecification = new StringBuilder();
             imageSpecification.Append(this.MachineType);
             imageSpecification.Append(this.ImageFamily);
+            imageSpecification.Append(this.PublicIp);
             imageSpecification.Append(this.InitializeScript);
             imageSpecification.Append(this.EnableOsInventory);
             imageSpecification.Append(this.ServiceAccount.ToString());
@@ -94,6 +96,7 @@ namespace Google.Solutions.Common.Test.Integration
                             fingerprint,
                             this.MachineType,
                             this.ImageFamily,
+                            this.PublicIp,
                             this.ServiceAccount,
                             this.Metadata))
                 };

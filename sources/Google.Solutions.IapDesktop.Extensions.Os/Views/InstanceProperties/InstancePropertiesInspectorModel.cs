@@ -165,28 +165,14 @@ namespace Google.Solutions.IapDesktop.Extensions.Os.Views.InstanceProperties
         [DisplayName("IP address (internal)")]
         [Description("Primary internal IP addresses, see " +
                      "https://cloud.google.com/compute/docs/ip-addresses#networkaddresses")]
-        public string InternalIp
-            => this.instanceDetails
-                .NetworkInterfaces
-                .EnsureNotNull()
-                .Select(nic => nic.NetworkIP)
-                .FirstOrDefault();
+        public string InternalIp => this.instanceDetails.InternalAddress()?.ToString();
 
         [Browsable(true)]
         [Category(NetworkCategory)]
         [DisplayName("IP address (external)")]
         [Description("External IP addresses, see " +
                      "https://cloud.google.com/compute/docs/ip-addresses#externaladdresses")]
-        public string ExternalIp
-            => this.instanceDetails
-                .NetworkInterfaces
-                .EnsureNotNull()
-                .Where(nic => nic.AccessConfigs != null)
-                .SelectMany(nic => nic.AccessConfigs)
-                .EnsureNotNull()
-                .Where(accessConfig => accessConfig.Type == "ONE_TO_ONE_NAT")
-                .Select(accessConfig => accessConfig.NatIP)
-                .FirstOrDefault();
+        public string ExternalIp => this.instanceDetails.PublicAddress()?.ToString();
 
         [Browsable(true)]
         [Category(SchedulingCategory)]

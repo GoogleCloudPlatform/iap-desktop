@@ -106,6 +106,7 @@ namespace Google.Solutions.Common.Test.Integration
             string name,
             string machineType,
             string imageFamily,
+            bool publicIp,
             InstanceServiceAccount serviceAccount,
             IEnumerable<Metadata.ItemsData> metadataItems)
         {
@@ -165,10 +166,9 @@ namespace Google.Solutions.Common.Test.Integration
                         {
                             new NetworkInterface()
                             {
-                                AccessConfigs = new []
-                                {
-                                    new AccessConfig()
-                                }
+                                AccessConfigs = publicIp 
+                                    ? new [] { new AccessConfig() }
+                                    : null
                             }
                         },
                         Scheduling = new Scheduling()

@@ -21,6 +21,9 @@
 
 using Google.Apis.Compute.v1.Data;
 using Google.Solutions.Common.Locator;
+using Google.Solutions.Common.Util;
+using System.Linq;
+using System.Net;
 
 namespace Google.Solutions.IapDesktop.Application.Services.Adapters
 {
@@ -38,6 +41,32 @@ namespace Google.Solutions.IapDesktop.Application.Services.Adapters
                 zone.ProjectId,
                 zone.Name,
                 instance.Name);
+        }
+
+        public static IPAddress PublicAddress(this Instance instance)
+        {
+            return instance
+                .NetworkInterfaces
+                .EnsureNotNull()
+                .Where(nic => nic.AccessConfigs != null)
+                .SelectMany(nic => nic.AccessConfigs)
+                .EnsureNotNull()
+                .Where(accessConfig => accessConfig.Type == "ONE_TO_ONE_NAT")
+                .Select(accessConfig => accessConfig.NatIP)
+                .Where(ip => ip != null)
+                .Select(ip => IPAddress.Parse(ip))
+                .FirstOrDefault();
+        }
+
+        public static IPAddress InternalAddress(this Instance instance)
+        {
+            return instance
+                .NetworkInterfaces
+                .EnsureNotNull()
+                .Select(nic => nic.NetworkIP)
+                .Where(ip => ip != null)
+                .Select(ip => IPAddress.Parse(ip))
+                .FirstOrDefault();
         }
     }
 }
