@@ -48,5 +48,46 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Adapters
 
             Assert.AreEqual(await testInstance, instanceLocator);
         }
+
+        [Test]
+        public async Task WhenInstanceHasInternalIp_ThenPrivateAddressReturnsRfc1918Ip(
+            [LinuxInstance] ResourceTask<InstanceLocator> testInstance,
+            [Credential(Role = PredefinedRole.ComputeViewer)] ResourceTask<ICredential> credential)
+        {
+            var adapter = new ComputeEngineAdapter(await credential);
+            var instance = await adapter.GetInstanceAsync(await testInstance);
+
+            Assert.IsNotNull(instance.InternalAddress());
+            CollectionAssert.Contains(
+                new byte[] { 172, 192, 10 },
+                instance.InternalAddress().GetAddressBytes()[0],
+                "Is RFC1918 address");
+        }
+
+        [Test]
+        public async Task WhenInstanceLacksPublicIp_ThenPublicAddressReturnsNull(
+            [LinuxInstance(PublicIp = false)] ResourceTask<InstanceLocator> testInstance,
+            [Credential(Role = PredefinedRole.ComputeViewer)] ResourceTask<ICredential> credential)
+        {
+            var adapter = new ComputeEngineAdapter(await credential);
+            var instance = await adapter.GetInstanceAsync(await testInstance);
+
+            Assert.IsNull(instance.PublicAddress());
+        }
+
+        [Test]
+        public async Task WhenInstanceHasPublicIp_ThenPublicAddressReturnsNonRfc1918Ip(
+            [LinuxInstance] ResourceTask<InstanceLocator> testInstance,
+            [Credential(Role = PredefinedRole.ComputeViewer)] ResourceTask<ICredential> credential)
+        {
+            var adapter = new ComputeEngineAdapter(await credential);
+            var instance = await adapter.GetInstanceAsync(await testInstance);
+
+            Assert.IsNotNull(instance.PublicAddress());
+            CollectionAssert.DoesNotContain(
+                new byte[] { 172, 192, 10 },
+                instance.PublicAddress().GetAddressBytes()[0],
+                "Is not a RFC1918 address");
+        }
     }
 }
