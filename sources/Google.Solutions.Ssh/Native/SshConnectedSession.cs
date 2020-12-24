@@ -27,8 +27,6 @@ using System.Diagnostics;
 using System.Linq;
 using System.Net.Sockets;
 using System.Runtime.InteropServices;
-using System.Security.Cryptography;
-using System.Threading.Tasks;
 
 namespace Google.Solutions.Ssh.Native
 {
@@ -40,6 +38,8 @@ namespace Google.Solutions.Ssh.Native
         private readonly SshSessionHandle sessionHandle;
         private readonly Socket socket;
         private bool disposed = false;
+
+        public Socket Socket => this.socket;
 
         private static int HostKeyHashLength(LIBSSH2_HOSTKEY_HASH hashType)
         {
@@ -75,17 +75,16 @@ namespace Google.Solutions.Ssh.Native
 
         public string GetRemoteBanner()
         {
+            this.sessionHandle.CheckCurrentThreadOwnsHandle();
+
             using (SshTraceSources.Default.TraceMethod().WithoutParameters())
             {
-                lock (this.sessionHandle.SyncRoot)
-                {
-                    var bannerPtr = UnsafeNativeMethods.libssh2_session_banner_get(
-                        this.sessionHandle);
+                var bannerPtr = UnsafeNativeMethods.libssh2_session_banner_get(
+                    this.sessionHandle);
 
-                    return bannerPtr == IntPtr.Zero
-                        ? null
-                        : Marshal.PtrToStringAnsi(bannerPtr);
-                }
+                return bannerPtr == IntPtr.Zero
+                    ? null
+                    : Marshal.PtrToStringAnsi(bannerPtr);
             }
         }
 
@@ -96,28 +95,26 @@ namespace Google.Solutions.Ssh.Native
 
         public string[] GetActiveAlgorithms(LIBSSH2_METHOD methodType)
         {
+            this.sessionHandle.CheckCurrentThreadOwnsHandle();
+            if (!Enum.IsDefined(typeof(LIBSSH2_METHOD), methodType))
+            {
+                throw new ArgumentException(nameof(methodType));
+            }
+
             using (SshTraceSources.Default.TraceMethod().WithParameters(methodType))
             {
-                if (!Enum.IsDefined(typeof(LIBSSH2_METHOD), methodType))
+                var stringPtr = UnsafeNativeMethods.libssh2_session_methods(
+                    this.sessionHandle,
+                    methodType);
+
+                if (stringPtr == IntPtr.Zero)
                 {
-                    throw new ArgumentException(nameof(methodType));
+                    return Array.Empty<string>();
                 }
-
-                lock (this.sessionHandle.SyncRoot)
+                else
                 {
-                    var stringPtr = UnsafeNativeMethods.libssh2_session_methods(
-                        this.sessionHandle,
-                        methodType);
-
-                    if (stringPtr == IntPtr.Zero)
-                    {
-                        return Array.Empty<string>();
-                    }
-                    else
-                    {
-                        var algorithmList = Marshal.PtrToStringAnsi(stringPtr);
-                        return algorithmList.Split(',').ToArray();
-                    }
+                    var algorithmList = Marshal.PtrToStringAnsi(stringPtr);
+                    return algorithmList.Split(',').ToArray();
                 }
             }
         }
@@ -128,77 +125,73 @@ namespace Google.Solutions.Ssh.Native
 
         public byte[] GetRemoteHostKeyHash(LIBSSH2_HOSTKEY_HASH hashType)
         {
+            this.sessionHandle.CheckCurrentThreadOwnsHandle();
+            if (!Enum.IsDefined(typeof(LIBSSH2_HOSTKEY_HASH), hashType))
+            {
+                throw new ArgumentException(nameof(hashType));
+            }
+
             using (SshTraceSources.Default.TraceMethod().WithParameters(hashType))
             {
-                if (!Enum.IsDefined(typeof(LIBSSH2_HOSTKEY_HASH), hashType))
+                var hashPtr = UnsafeNativeMethods.libssh2_hostkey_hash(
+                    this.sessionHandle,
+                    hashType);
+
+                if (hashPtr == IntPtr.Zero)
                 {
-                    throw new ArgumentException(nameof(hashType));
+                    return null;
                 }
-
-                lock (this.sessionHandle.SyncRoot)
+                else
                 {
-                    var hashPtr = UnsafeNativeMethods.libssh2_hostkey_hash(
-                        this.sessionHandle,
-                        hashType);
-
-                    if (hashPtr == IntPtr.Zero)
-                    {
-                        return null;
-                    }
-                    else
-                    {
-                        var hash = new byte[HostKeyHashLength(hashType)];
-                        Marshal.Copy(hashPtr, hash, 0, hash.Length);
-                        return hash;
-                    }
+                    var hash = new byte[HostKeyHashLength(hashType)];
+                    Marshal.Copy(hashPtr, hash, 0, hash.Length);
+                    return hash;
                 }
             }
         }
 
         public byte[] GetRemoteHostKey()
         {
+            this.sessionHandle.CheckCurrentThreadOwnsHandle();
+
             using (SshTraceSources.Default.TraceMethod().WithoutParameters())
             {
-                lock (this.sessionHandle.SyncRoot)
-                {
-                    var keyPtr = UnsafeNativeMethods.libssh2_session_hostkey(
-                        this.sessionHandle,
-                        out var keyLength,
-                        out var _);
+                var keyPtr = UnsafeNativeMethods.libssh2_session_hostkey(
+                    this.sessionHandle,
+                    out var keyLength,
+                    out var _);
 
-                    if (keyPtr == IntPtr.Zero || keyLength.ToInt32() <= 0)
-                    {
-                        return null;
-                    }
-                    else
-                    {
-                        var key = new byte[keyLength.ToInt32()];
-                        Marshal.Copy(keyPtr, key, 0, keyLength.ToInt32());
-                        return key;
-                    }
+                if (keyPtr == IntPtr.Zero || keyLength.ToInt32() <= 0)
+                {
+                    return null;
+                }
+                else
+                {
+                    var key = new byte[keyLength.ToInt32()];
+                    Marshal.Copy(keyPtr, key, 0, keyLength.ToInt32());
+                    return key;
                 }
             }
         }
 
         public LIBSSH2_HOSTKEY_TYPE GetRemoteHostKeyType()
         {
+            this.sessionHandle.CheckCurrentThreadOwnsHandle();
+
             using (SshTraceSources.Default.TraceMethod().WithoutParameters())
             {
-                lock (this.sessionHandle.SyncRoot)
-                {
-                    var keyPtr = UnsafeNativeMethods.libssh2_session_hostkey(
-                        this.sessionHandle,
-                        out var _,
-                        out var type);
+                var keyPtr = UnsafeNativeMethods.libssh2_session_hostkey(
+                    this.sessionHandle,
+                    out var _,
+                    out var type);
 
-                    if (keyPtr == IntPtr.Zero)
-                    {
-                        return LIBSSH2_HOSTKEY_TYPE.UNKNOWN;
-                    }
-                    else
-                    {
-                        return type;
-                    }
+                if (keyPtr == IntPtr.Zero)
+                {
+                    return LIBSSH2_HOSTKEY_TYPE.UNKNOWN;
+                }
+                else
+                {
+                    return type;
                 }
             }
         }
@@ -213,45 +206,44 @@ namespace Google.Solutions.Ssh.Native
             {
                 using (SshTraceSources.Default.TraceMethod().WithoutParameters())
                 {
-                    lock (this.sessionHandle.SyncRoot)
-                    {
-                        return UnsafeNativeMethods.libssh2_userauth_authenticated(
-                          this.sessionHandle) == 1;
-                    }
+                    this.sessionHandle.CheckCurrentThreadOwnsHandle();
+
+                    return UnsafeNativeMethods.libssh2_userauth_authenticated(
+                        this.sessionHandle) == 1;
                 }
             }
         }
 
         public string[] GetAuthenticationMethods(string username)
         {
+            this.sessionHandle.CheckCurrentThreadOwnsHandle();
+
             using (SshTraceSources.Default.TraceMethod().WithParameters(username))
             {
-                lock (this.sessionHandle.SyncRoot)
-                {
-                    var stringPtr = UnsafeNativeMethods.libssh2_userauth_list(
-                        this.sessionHandle,
-                        username,
-                        username.Length);
+                var stringPtr = UnsafeNativeMethods.libssh2_userauth_list(
+                    this.sessionHandle,
+                    username,
+                    username.Length);
 
-                    if (stringPtr == IntPtr.Zero)
-                    {
-                        return Array.Empty<string>();
-                    }
-                    else
-                    {
-                        return Marshal
-                            .PtrToStringAnsi(stringPtr)
-                            .Split(',')
-                            .ToArray();
-                    }
+                if (stringPtr == IntPtr.Zero)
+                {
+                    return Array.Empty<string>();
+                }
+                else
+                {
+                    return Marshal
+                        .PtrToStringAnsi(stringPtr)
+                        .Split(',')
+                        .ToArray();
                 }
             }
         }
 
-        public Task<SshAuthenticatedSession> AuthenticateAsync(
+        public SshAuthenticatedSession Authenticate(
             string username,
-            RSACng key)
+            ISshKey key)
         {
+            this.sessionHandle.CheckCurrentThreadOwnsHandle();
             Utilities.ThrowIfNullOrEmpty(username, nameof(username));
             Utilities.ThrowIfNull(key, nameof(key));
 
@@ -278,15 +270,7 @@ namespace Google.Solutions.Ssh.Native
                 var data = new byte[dataLength.ToInt32()];
                 Marshal.Copy(dataPtr, data, 0, data.Length);
 
-                //
-                // NB. Since we are using RSA, signing always needs to use
-                // SHA-1 and PKCS#1, 
-                // cf. https://tools.ietf.org/html/rfc4253#section-6.6
-                //
-                var signature = key.SignData(
-                    data,
-                    HashAlgorithmName.SHA1,
-                    RSASignaturePadding.Pkcs1);
+                var signature = key.SignData(data);
 
                 //
                 // Copy data back to a buffer that libssh2 can free using
@@ -294,43 +278,37 @@ namespace Google.Solutions.Ssh.Native
                 //
 
                 signatureLength = new IntPtr(signature.Length);
-                signaturePtr = SshSession.AllocDelegate(signatureLength, IntPtr.Zero);
+                signaturePtr = SshSession.Alloc(signatureLength, IntPtr.Zero);
                 Marshal.Copy(signature, 0, signaturePtr, signature.Length);
 
                 return (int)LIBSSH2_ERROR.NONE;
             }
 
-            return Task.Run(() =>
+            using (SshTraceSources.Default.TraceMethod().WithParameters(username))
             {
-                using (SshTraceSources.Default.TraceMethod().WithParameters(username))
+                //
+                // NB. The public key must be passed in OpenSSH format, not PEM.
+                // cf. https://tools.ietf.org/html/rfc4253#section-6.6
+                //
+                var publicKey = key.PublicKey;
+
+                var result = (LIBSSH2_ERROR)UnsafeNativeMethods.libssh2_userauth_publickey(
+                    this.sessionHandle,
+                    username,
+                    key.PublicKey,
+                    new IntPtr(publicKey.Length),
+                    Sign,
+                    IntPtr.Zero);
+
+                if (result != LIBSSH2_ERROR.NONE)
                 {
-                    //
-                    // NB. The public key must be passed in OpenSSH format, not PEM.
-                    // cf. https://tools.ietf.org/html/rfc4253#section-6.6
-                    //
-                    // We only support RSA.
-                    //
-                    var publicKey = key.ToSshRsaPublicKey();
-                    lock (this.sessionHandle.SyncRoot)
-                    {
-                        var result = (LIBSSH2_ERROR)UnsafeNativeMethods.libssh2_userauth_publickey(
-                            this.sessionHandle,
-                            username,
-                            publicKey,
-                            new IntPtr(publicKey.Length),
-                            Sign,
-                            IntPtr.Zero);
-                        if (result != LIBSSH2_ERROR.NONE)
-                        {
-                            throw new SshNativeException(result);
-                        }
-                        else
-                        {
-                            return new SshAuthenticatedSession(this.sessionHandle);
-                        }
-                    }
+                    throw new SshNativeException(result);
                 }
-            });
+                else
+                {
+                    return new SshAuthenticatedSession(this.sessionHandle);
+                }
+            }
         }
 
         //---------------------------------------------------------------------
@@ -353,18 +331,17 @@ namespace Google.Solutions.Ssh.Native
 
             if (disposing)
             {
-                lock (this.sessionHandle.SyncRoot)
-                {
-                    var result = (LIBSSH2_ERROR)UnsafeNativeMethods.libssh2_session_disconnect_ex(
-                        this.sessionHandle,
-                        SSH_DISCONNECT.BY_APPLICATION,
-                        null,
-                        null);
+                this.sessionHandle.CheckCurrentThreadOwnsHandle();
 
-                    Debug.Assert(result == LIBSSH2_ERROR.NONE);
-                    this.socket.Dispose();
-                    this.disposed = true;
-                }
+                var result = (LIBSSH2_ERROR)UnsafeNativeMethods.libssh2_session_disconnect_ex(
+                    this.sessionHandle,
+                    SSH_DISCONNECT.BY_APPLICATION,
+                    null,
+                    null);
+
+                Debug.Assert(result == LIBSSH2_ERROR.NONE);
+                this.socket.Dispose();
+                this.disposed = true;
             }
         }
     }

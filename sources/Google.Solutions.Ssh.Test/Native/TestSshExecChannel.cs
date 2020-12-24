@@ -45,30 +45,31 @@ namespace Google.Solutions.Ssh.Test.Native
             var endpoint = new IPEndPoint(
                 await InstanceUtil.PublicIpAddressForInstanceAsync(await instanceLocatorTask),
                 22);
-            using (var session = CreateSession())
-            using (var connection = await session.ConnectAsync(endpoint))
-            using (var key = new RSACng())
+            using (var key = new RsaSshKey(new RSACng()))
             {
                 await InstanceUtil.AddPublicKeyToMetadata(
                     await instanceLocatorTask,
                     "testuser",
-                    key);
+                    key).ConfigureAwait(true);
 
-                using (var authSession = await connection.AuthenticateAsync("testuser", key))
-                using (var channel = await authSession.OpenExecChannelAsync(
+                using (var session = CreateSession())
+                using (var connection = session.Connect(endpoint))
+                using (var authSession = connection.Authenticate("testuser", key))
+                using (var channel = authSession.OpenExecChannel(
                     "whoami",
                     LIBSSH2_CHANNEL_EXTENDED_DATA.NORMAL))
                 {
-                    await channel.CloseAsync();
+                    channel.WaitForEndOfStream();
 
                     var buffer = new byte[1024];
-                    var bytesRead = await channel.ReadAsync(buffer);
+                    var bytesRead = channel.Read(buffer);
                     Assert.AreNotEqual(0, bytesRead);
 
                     Assert.AreEqual("testuser\n", Encoding.ASCII.GetString(buffer, 0, (int)bytesRead));
 
                     Assert.AreEqual(0, channel.ExitCode);
                     Assert.IsNull(channel.ExitSignal);
+                    channel.Close();
                 }
             }
         }
@@ -80,24 +81,24 @@ namespace Google.Solutions.Ssh.Test.Native
             var endpoint = new IPEndPoint(
                 await InstanceUtil.PublicIpAddressForInstanceAsync(await instanceLocatorTask),
                 22);
-            using (var session = CreateSession())
-            using (var connection = await session.ConnectAsync(endpoint))
-            using (var key = new RSACng())
+            using (var key = new RsaSshKey(new RSACng()))
             {
                 await InstanceUtil.AddPublicKeyToMetadata(
                     await instanceLocatorTask,
                     "testuser",
-                    key);
+                    key).ConfigureAwait(true);
 
-                using (var authSession = await connection.AuthenticateAsync("testuser", key))
-                using (var channel = await authSession.OpenExecChannelAsync(
+                using (var session = CreateSession())
+                using (var connection = session.Connect(endpoint))
+                using (var authSession = connection.Authenticate("testuser", key))
+                using (var channel = authSession.OpenExecChannel(
                     "whoami",
                     LIBSSH2_CHANNEL_EXTENDED_DATA.NORMAL))
                 {
-                    await channel.CloseAsync();
-
-                    Assert.AreNotEqual(0, await channel.ReadAsync(new byte[1024]));
-                    Assert.AreEqual(0, await channel.ReadAsync(new byte[1024]));
+                    channel.WaitForEndOfStream();
+                    Assert.AreNotEqual(0, channel.Read(new byte[1024]));
+                    Assert.AreEqual(0, channel.Read(new byte[1024]));
+                    channel.Close();
                 }
             }
         }
@@ -109,26 +110,26 @@ namespace Google.Solutions.Ssh.Test.Native
             var endpoint = new IPEndPoint(
                 await InstanceUtil.PublicIpAddressForInstanceAsync(await instanceLocatorTask),
                 22);
-            using (var session = CreateSession())
-            using (var connection = await session.ConnectAsync(endpoint))
-            using (var key = new RSACng())
+            using (var key = new RsaSshKey(new RSACng()))
             {
                 await InstanceUtil.AddPublicKeyToMetadata(
                     await instanceLocatorTask,
                     "testuser",
-                    key);
+                    key).ConfigureAwait(true);
 
-                using (var authSession = await connection.AuthenticateAsync("testuser", key))
-                using (var channel = await authSession.OpenExecChannelAsync(
+                using (var session = CreateSession())
+                using (var connection = session.Connect(endpoint))
+                using (var authSession = connection.Authenticate("testuser", key))
+                using (var channel = authSession.OpenExecChannel(
                     "invalidcommand",
                     LIBSSH2_CHANNEL_EXTENDED_DATA.NORMAL))
                 {
-                    await channel.CloseAsync();
+                    channel.WaitForEndOfStream();
 
                     var buffer = new byte[1024];
-                    var bytesRead = await channel.ReadAsync(
-                        LIBSSH2_STREAM.EXTENDED_DATA_STDERR,
-                        buffer);
+                    var bytesRead = channel.Read(
+                        buffer,
+                        LIBSSH2_STREAM.EXTENDED_DATA_STDERR);
                     Assert.AreNotEqual(0, bytesRead);
 
                     Assert.AreEqual(
@@ -137,6 +138,7 @@ namespace Google.Solutions.Ssh.Test.Native
 
                     Assert.AreEqual(127, channel.ExitCode);
                     Assert.IsNull(channel.ExitSignal);
+                    channel.Close();
                 }
             }
         }
@@ -148,24 +150,24 @@ namespace Google.Solutions.Ssh.Test.Native
             var endpoint = new IPEndPoint(
                 await InstanceUtil.PublicIpAddressForInstanceAsync(await instanceLocatorTask),
                 22);
-            using (var session = CreateSession())
-            using (var connection = await session.ConnectAsync(endpoint))
-            using (var key = new RSACng())
+            using (var key = new RsaSshKey(new RSACng()))
             {
                 await InstanceUtil.AddPublicKeyToMetadata(
                     await instanceLocatorTask,
                     "testuser",
-                    key);
+                    key).ConfigureAwait(true);
 
-                using (var authSession = await connection.AuthenticateAsync("testuser", key))
-                using (var channel = await authSession.OpenExecChannelAsync(
+                using (var session = CreateSession())
+                using (var connection = session.Connect(endpoint))
+                using (var authSession = connection.Authenticate("testuser", key))
+                using (var channel = authSession.OpenExecChannel(
                     "invalidcommand",
                     LIBSSH2_CHANNEL_EXTENDED_DATA.MERGE))
                 {
-                    await channel.CloseAsync();
+                    channel.WaitForEndOfStream();
 
                     var buffer = new byte[1024];
-                    var bytesRead = await channel.ReadAsync(
+                    var bytesRead = channel.Read(
                         buffer);
                     Assert.AreNotEqual(0, bytesRead);
 
@@ -173,48 +175,8 @@ namespace Google.Solutions.Ssh.Test.Native
                         "bash: invalidcommand: command not found\n",
                         Encoding.ASCII.GetString(buffer, 0, (int)bytesRead));
 
-                    Assert.AreEqual(127, channel.ExitCode);
                     Assert.IsNull(channel.ExitSignal);
-                }
-            }
-        }
-
-        //---------------------------------------------------------------------
-        // I/O.
-        //---------------------------------------------------------------------
-
-        [Test]
-        public async Task WhenStreamFlushed_ThenReadReturnsZero(
-            [LinuxInstance] ResourceTask<InstanceLocator> instanceLocatorTask)
-        {
-            var endpoint = new IPEndPoint(
-                await InstanceUtil.PublicIpAddressForInstanceAsync(await instanceLocatorTask),
-                22);
-            using (var session = CreateSession())
-            using (var connection = await session.ConnectAsync(endpoint))
-            using (var key = new RSACng())
-            {
-                await InstanceUtil.AddPublicKeyToMetadata(
-                    await instanceLocatorTask,
-                    "testuser",
-                    key);
-
-                using (var authSession = await connection.AuthenticateAsync("testuser", key))
-                using (var channel = await authSession.OpenExecChannelAsync(
-                    "whoami",
-                    LIBSSH2_CHANNEL_EXTENDED_DATA.NORMAL))
-                {
-                    await channel.CloseAsync();
-
-                    // Read first byte of output.
-                    await channel.ReadAsync(new byte[1]);
-
-                    // Flush the rest of the read buffer.
-                    Assert.AreNotEqual(0, channel.Flush());
-                    Assert.AreEqual(0, channel.Flush());
-
-                    var bytesRead = await channel.ReadAsync(new byte[1024]);
-                    Assert.AreEqual(0, bytesRead);
+                    channel.Close();
                 }
             }
         }

@@ -34,6 +34,9 @@ namespace Google.Solutions.Ssh.Test.Native
     [TestFixture]
     public class TestSession : SshFixtureBase
     {
+        private readonly IPEndPoint NonSshEndpoint =
+            new IPEndPoint(IPAddress.Parse("8.8.8.8"), 53);
+
         //---------------------------------------------------------------------
         // Version.
         //---------------------------------------------------------------------
@@ -183,7 +186,7 @@ namespace Google.Solutions.Ssh.Test.Native
                 SshAssert.ThrowsNativeExceptionWithError(
                     session,
                     LIBSSH2_ERROR.KEX_FAILURE,
-                    () => session.ConnectAsync(endpoint).Wait());
+                    () => session.Connect(endpoint));
             }
         }
 
@@ -199,7 +202,7 @@ namespace Google.Solutions.Ssh.Test.Native
                 await InstanceUtil.PublicIpAddressForInstanceAsync(await instanceLocatorTask),
                 22);
             using (var session = CreateSession())
-            using (var connection = await session.ConnectAsync(endpoint))
+            using (var connection = session.Connect(endpoint))
             {
                 Assert.AreEqual(LIBSSH2_ERROR.NONE, session.LastError);
             }
@@ -215,22 +218,19 @@ namespace Google.Solutions.Ssh.Test.Native
             using (var session = CreateSession())
             {
                 AssertEx.ThrowsAggregateException<SocketException>(
-                    () => session.ConnectAsync(endpoint).Wait());
+                    () => session.Connect(endpoint));
             }
         }
 
         [Test]
         public void WhenPortIsNotSsh_ThenHandshakeThrowsDisconnect()
         {
-            var dnsEndpoint = new IPEndPoint(
-                IPAddress.Parse("8.8.8.8"),
-                53);
             using (var session = CreateSession())
             {
                 SshAssert.ThrowsNativeExceptionWithError(
                     session,
                     LIBSSH2_ERROR.SOCKET_DISCONNECT,
-                    () => session.ConnectAsync(dnsEndpoint).Wait());
+                    () => session.Connect(NonSshEndpoint));
             }
         }
     }

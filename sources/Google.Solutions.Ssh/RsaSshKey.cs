@@ -19,56 +19,52 @@
 // under the License.
 //
 
-using Google.Solutions.Common;
-using Google.Solutions.Common.Test;
-using Google.Solutions.Ssh.Native;
-using NUnit.Framework;
-using System;
-using System.Collections.Generic;
-using System.Diagnostics;
+using Google.Solutions.Ssh.Cryptography;
+using System.Security.Cryptography;
 
-namespace Google.Solutions.Ssh.Test
+namespace Google.Solutions.Ssh
 {
-    public abstract class SshFixtureBase : CommonFixtureBase
+    public sealed class RsaSshKey : ISshKey
     {
-        protected override IEnumerable<TraceSource> Sources => new[]
-        {
-            CommonTraceSources.Default,
-            SshTraceSources.Default,
-        };
+        private readonly RSACng key;
 
-        //---------------------------------------------------------------------
-        // Handle tracking.
-        //---------------------------------------------------------------------
-
-        [SetUp]
-        public void ClearOpenHandles()
+        public RsaSshKey(RSACng key)
         {
-            HandleTable.Clear();
+            this.key = key;
         }
 
-        [TearDown]
-        public void CheckOpenHandles()
+        public static RsaSshKey NewEphemeralKey()
         {
-            HandleTable.DumpOpenHandles();
-            Assert.AreEqual(0, HandleTable.HandleCount);
+            return new RsaSshKey(new RSACng());
         }
 
         //---------------------------------------------------------------------
-        // Helper methods.
+        // ISshKey.
         //---------------------------------------------------------------------
 
-        protected static SshSession CreateSession()
+        public byte[] PublicKey => this.key.ToSshRsaPublicKey();
+
+
+        public byte[] SignData(byte[] data)
         {
-            var session = new SshSession();
-            session.SetTraceHandler(
-                LIBSSH2_TRACE.SOCKET | LIBSSH2_TRACE.ERROR | LIBSSH2_TRACE.CONN |
-                                       LIBSSH2_TRACE.AUTH | LIBSSH2_TRACE.KEX,
-                Console.WriteLine);
+            //
+            // NB. Since we are using RSA, signing always needs to use
+            // SHA-1 and PKCS#1, 
+            // cf. https://tools.ietf.org/html/rfc4253#section-6.6
+            //
+            return this.key.SignData(
+                data,
+                HashAlgorithmName.SHA1,
+                RSASignaturePadding.Pkcs1);
+        }
 
-            session.Timeout = TimeSpan.FromSeconds(5);
+        //---------------------------------------------------------------------
+        // IDisposable.
+        //---------------------------------------------------------------------
 
-            return session;
+        public void Dispose()
+        {
+            this.key.Dispose();
         }
     }
 }
