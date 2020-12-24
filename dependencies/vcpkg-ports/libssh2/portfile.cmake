@@ -36,6 +36,9 @@ vcpkg_from_github(
     HEAD_REF master
 )
 
+# Strip the _DEV suffix from the version
+vcpkg_replace_string(${SOURCE_PATH}/include/libssh2.h "_DEV" "")
+
 vcpkg_configure_cmake(
     SOURCE_PATH ${SOURCE_PATH}
     OPTIONS
