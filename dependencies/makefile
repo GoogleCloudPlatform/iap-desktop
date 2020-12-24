@@ -21,11 +21,11 @@
 CONFIGURATION = Release
 
 # The tag should be increased whenever one of the dependencies is changed
-TAG = 8
+TAG = 9
 
 VTNETCORE_SHA = 9e68f5561dc52edb780615b3fe133289216b3dba
 VTNETCORE_URL = https://github.com/darrenstarr/VtNetCore.git
-VTNETCORE_VERSION = 1.0.0.$(TAG)
+VTNETCORE_VERSION = 1.0.30.$(TAG)
 
 # NB. The libssh2 version is defined in vcpkg-ports\libssh2\portfile.cmake,
 # with dependencies determined by the vcpkg tag.
@@ -83,8 +83,6 @@ vtnetcore: $(MAKEDIR)\obj\vtnetcore\VtNetCore\bin\$(CONFIGURATION)\vtnetcore.$(V
 	nuget add \
 		$(MAKEDIR)\obj\vtnetcore\VtNetCore\bin\$(CONFIGURATION)\vtnetcore.$(VTNETCORE_VERSION).nupkg \
 		-Source $(MAKEDIR)\NuGetPackages
-
-
 
 #------------------------------------------------------------------------------
 # vcpkg
@@ -154,6 +152,15 @@ libssh2: $(MAKEDIR)\obj\vcpkg\installed\libssh2-x86-windows-mixed\bin\libssh2.$(
 		$(MAKEDIR)\obj\vcpkg\installed\libssh2-x86-windows-mixed\bin\libssh2.$(LIBSSH2_VERSION).nupkg \
 		-Source $(MAKEDIR)\NuGetPackages
 
+clean-libssh2: $(MAKEDIR)\obj\vcpkg\vcpkg.exe
+	@echo "========================================================"
+	@echo "=== Cleaning libssh2                                 ==="
+	@echo "========================================================"
+	$(MAKEDIR)\obj\vcpkg\vcpkg.exe remove libssh2 \
+		--triplet libssh2-x86-windows-mixed \
+		--overlay-ports=$(MAKEDIR)\vcpkg-ports \
+		--overlay-triplets=$(MAKEDIR)\vcpkg-triplets
+        
 #------------------------------------------------------------------------------
 # Main targets
 #------------------------------------------------------------------------------
