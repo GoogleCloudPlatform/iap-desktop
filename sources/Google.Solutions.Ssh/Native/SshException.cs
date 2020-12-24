@@ -34,7 +34,7 @@ namespace Google.Solutions.Ssh.Native
 
     public class SshNativeException : SshException
     {
-        private static IDictionary<LIBSSH2_ERROR, string> messages
+        private static readonly IDictionary<LIBSSH2_ERROR, string> messages
             = new Dictionary<LIBSSH2_ERROR, string>()
             {
                 { LIBSSH2_ERROR.SOCKET_NONE, "The socket is invalid"},
@@ -70,7 +70,7 @@ namespace Google.Solutions.Ssh.Native
             : base(MessageFromCode(code))
         {
             Debug.Assert(code != LIBSSH2_ERROR.NONE);
-            Debug.Assert(code != LIBSSH2_ERROR.EAGAIN);
+            //Debug.Assert(code != LIBSSH2_ERROR.EAGAIN);
 
             this.ErrorCode = code;
         }

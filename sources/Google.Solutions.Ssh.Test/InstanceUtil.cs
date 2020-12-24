@@ -63,11 +63,11 @@ namespace Google.Solutions.Ssh.Test
         public static Task AddPublicKeyToMetadata(
             InstanceLocator instanceLocator,
             string username,
-            RSACng key)
+            ISshKey key)
             => AddPublicKeyToMetadata(
                 instanceLocator,
                 username,
-                Convert.ToBase64String(key.ToSshRsaPublicKey()));
+                Convert.ToBase64String(key.PublicKey));
 
         public static async Task AddPublicKeyToMetadata(
             InstanceLocator instanceLocator,

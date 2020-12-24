@@ -44,7 +44,7 @@ namespace Google.Solutions.Ssh.Test.Native
                 await InstanceUtil.PublicIpAddressForInstanceAsync(await instanceLocatorTask),
                 22);
             using (var session = CreateSession())
-            using (var connection = await session.ConnectAsync(endpoint))
+            using (var connection = session.Connect(endpoint))
             {
                 var banner = connection.GetRemoteBanner();
                 Assert.AreEqual(LIBSSH2_ERROR.NONE, session.LastError);
@@ -65,7 +65,7 @@ namespace Google.Solutions.Ssh.Test.Native
                 await InstanceUtil.PublicIpAddressForInstanceAsync(await instanceLocatorTask),
                 22);
             using (var session = CreateSession())
-            using (var connection = await session.ConnectAsync(endpoint))
+            using (var connection = session.Connect(endpoint))
             {
                 Assert.IsNotNull(connection.GetActiveAlgorithms(LIBSSH2_METHOD.KEX));
                 Assert.IsNotNull(connection.GetActiveAlgorithms(LIBSSH2_METHOD.HOSTKEY));
@@ -92,7 +92,7 @@ namespace Google.Solutions.Ssh.Test.Native
                 await InstanceUtil.PublicIpAddressForInstanceAsync(await instanceLocatorTask),
                 22);
             using (var session = CreateSession())
-            using (var connection = await session.ConnectAsync(endpoint))
+            using (var connection = session.Connect(endpoint))
             {
                 var key = connection.GetRemoteHostKey();
                 Assert.AreEqual(LIBSSH2_ERROR.NONE, session.LastError);
@@ -108,7 +108,7 @@ namespace Google.Solutions.Ssh.Test.Native
                 await InstanceUtil.PublicIpAddressForInstanceAsync(await instanceLocatorTask),
                 22);
             using (var session = CreateSession())
-            using (var connection = await session.ConnectAsync(endpoint))
+            using (var connection = session.Connect(endpoint))
             {
                 var keyType = connection.GetRemoteHostKeyType();
                 Assert.AreEqual(LIBSSH2_ERROR.NONE, session.LastError);
@@ -126,7 +126,7 @@ namespace Google.Solutions.Ssh.Test.Native
                 await InstanceUtil.PublicIpAddressForInstanceAsync(await instanceLocatorTask),
                 22);
             using (var session = CreateSession())
-            using (var connection = await session.ConnectAsync(endpoint))
+            using (var connection = session.Connect(endpoint))
             {
                 Assert.IsNotNull(connection.GetRemoteHostKeyHash(LIBSSH2_HOSTKEY_HASH.MD5), "MD5");
                 Assert.IsNotNull(connection.GetRemoteHostKeyHash(LIBSSH2_HOSTKEY_HASH.SHA1), "SHA1");
@@ -148,9 +148,26 @@ namespace Google.Solutions.Ssh.Test.Native
                 await InstanceUtil.PublicIpAddressForInstanceAsync(await instanceLocatorTask),
                 22);
             using (var session = CreateSession())
-            using (var connection = await session.ConnectAsync(endpoint))
+            using (var connection = session.Connect(endpoint))
             {
                 Assert.IsFalse(connection.IsAuthenticated);
+            }
+        }
+
+        [Test]
+        public async Task WhenCustomBannerSet_ThenConnectionSucceeds(
+            [LinuxInstance] ResourceTask<InstanceLocator> instanceLocatorTask)
+        {
+            var endpoint = new IPEndPoint(
+                await InstanceUtil.PublicIpAddressForInstanceAsync(await instanceLocatorTask),
+                22);
+            using (var session = CreateSession())
+            {
+                session.SetLocalBanner("SSH-2.0-test-123");
+                using (var connection = session.Connect(endpoint))
+                {
+                    Assert.IsFalse(connection.IsAuthenticated);
+                }
             }
         }
 
@@ -162,7 +179,7 @@ namespace Google.Solutions.Ssh.Test.Native
                 await InstanceUtil.PublicIpAddressForInstanceAsync(await instanceLocatorTask),
                 22);
             using (var session = CreateSession())
-            using (var connection = await session.ConnectAsync(endpoint))
+            using (var connection = session.Connect(endpoint))
             {
                 var methods = connection.GetAuthenticationMethods(string.Empty);
                 Assert.IsNotNull(methods);
@@ -179,13 +196,13 @@ namespace Google.Solutions.Ssh.Test.Native
                 await InstanceUtil.PublicIpAddressForInstanceAsync(await instanceLocatorTask),
                 22);
             using (var session = CreateSession())
-            using (var connection = await session.ConnectAsync(endpoint))
-            using (var key = new RSACng())
+            using (var connection = session.Connect(endpoint))
+            using (var key = new RsaSshKey(new RSACng()))
             {
                 SshAssert.ThrowsNativeExceptionWithError(
                     session,
                     LIBSSH2_ERROR.AUTHENTICATION_FAILED,
-                    () => connection.AuthenticateAsync("invaliduser", key).Wait());
+                    () => connection.Authenticate("invaliduser", key));
             }
         }
 
@@ -196,21 +213,23 @@ namespace Google.Solutions.Ssh.Test.Native
             var endpoint = new IPEndPoint(
                 await InstanceUtil.PublicIpAddressForInstanceAsync(await instanceLocatorTask),
                 22);
-            using (var session = CreateSession())
-            using (var connection = await session.ConnectAsync(endpoint))
-            using (var key = new RSACng())
+            using (var key = new RsaSshKey(new RSACng()))
             {
                 await InstanceUtil.AddPublicKeyToMetadata(
                     await instanceLocatorTask,
                     "testuser",
                     key);
 
-                connection.Dispose();
+                using (var session = CreateSession())
+                using (var connection = session.Connect(endpoint))
+                {
+                    connection.Dispose();
 
-                SshAssert.ThrowsNativeExceptionWithError(
-                    session,
-                    LIBSSH2_ERROR.SOCKET_SEND,
-                    () => connection.AuthenticateAsync("testuser", key).Wait());
+                    SshAssert.ThrowsNativeExceptionWithError(
+                        session,
+                        LIBSSH2_ERROR.SOCKET_SEND,
+                        () => connection.Authenticate("testuser", key));
+                }
             }
         }
 
@@ -221,16 +240,19 @@ namespace Google.Solutions.Ssh.Test.Native
             var endpoint = new IPEndPoint(
                 await InstanceUtil.PublicIpAddressForInstanceAsync(await instanceLocatorTask),
                 22);
-            using (var session = CreateSession())
-            using (var connection = await session.ConnectAsync(endpoint))
-            using (var key = new RSACng())
+            using (var key = new RsaSshKey(new RSACng()))
             {
                 await InstanceUtil.AddPublicKeyToMetadata(
                     await instanceLocatorTask,
                     "testuser",
                     key);
-                var authSession = await connection.AuthenticateAsync("testuser", key);
-                Assert.IsNotNull(authSession);
+
+                using (var session = CreateSession())
+                using (var connection = session.Connect(endpoint))
+                {
+                    var authSession = connection.Authenticate("testuser", key);
+                    Assert.IsNotNull(authSession);
+                }
             }
         }
     }

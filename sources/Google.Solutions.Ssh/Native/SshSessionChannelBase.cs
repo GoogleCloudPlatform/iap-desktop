@@ -22,7 +22,6 @@
 using Google.Solutions.Common.Diagnostics;
 using System;
 using System.Runtime.InteropServices;
-using System.Threading.Tasks;
 
 namespace Google.Solutions.Ssh.Native
 {
@@ -46,17 +45,16 @@ namespace Google.Solutions.Ssh.Native
         {
             get
             {
+                this.channelHandle.CheckCurrentThreadOwnsHandle();
+
                 using (SshTraceSources.Default.TraceMethod().WithoutParameters())
                 {
-                    lock (this.channelHandle.SyncRoot)
-                    {
-                        // 
-                        // NB. This call does not cause network traffic and therefore
-                        // should not block.
-                        //
-                        return UnsafeNativeMethods.libssh2_channel_get_exit_status(
-                            this.channelHandle);
-                    }
+                    // 
+                    // NB. This call does not cause network traffic and therefore
+                    // should not block.
+                    //
+                    return UnsafeNativeMethods.libssh2_channel_get_exit_status(
+                        this.channelHandle);
                 }
             }
         }
@@ -65,49 +63,48 @@ namespace Google.Solutions.Ssh.Native
         {
             get
             {
+                this.channelHandle.CheckCurrentThreadOwnsHandle();
+
                 using (SshTraceSources.Default.TraceMethod().WithoutParameters())
                 {
-                    lock (this.channelHandle.SyncRoot)
+                    // 
+                    // NB. This call does not cause network traffic and therefore
+                    // should not block.
+                    //
+
+                    var result = (LIBSSH2_ERROR)UnsafeNativeMethods.libssh2_channel_get_exit_signal(
+                        this.channelHandle,
+                        out IntPtr signalPtr,
+                        out IntPtr signalLength,
+                        out IntPtr errmsgPtr,
+                        out IntPtr errmsgLength,
+                        out IntPtr langTagPtr,
+                        out IntPtr langTagLength);
+                    if (result != LIBSSH2_ERROR.NONE)
                     {
-                        // 
-                        // NB. This call does not cause network traffic and therefore
-                        // should not block.
-                        //
+                        throw new SshNativeException(result);
+                    }
 
-                        var result = (LIBSSH2_ERROR)UnsafeNativeMethods.libssh2_channel_get_exit_signal(
-                            this.channelHandle,
-                            out IntPtr signalPtr,
-                            out IntPtr signalLength,
-                            out IntPtr errmsgPtr,
-                            out IntPtr errmsgLength,
-                            out IntPtr langTagPtr,
-                            out IntPtr langTagLength);
-                        if (result != LIBSSH2_ERROR.NONE)
+                    //
+                    // NB. Currently, libssh2 only populates the signal
+                    // parameter, errmsg and langtag are always NULL. 
+                    //
+                    try
+                    {
+                        if (signalPtr != IntPtr.Zero)
                         {
-                            throw new SshNativeException(result);
+                            return Marshal.PtrToStringAnsi(signalPtr, signalLength.ToInt32());
                         }
-
-                        //
-                        // NB. Currently, libssh2 only populates the signal
-                        // parameter, errmsg and langtag are always NULL. 
-                        //
-                        try
+                        else
                         {
-                            if (signalPtr != IntPtr.Zero)
-                            {
-                                return Marshal.PtrToStringAnsi(signalPtr, signalLength.ToInt32());
-                            }
-                            else
-                            {
-                                return null;
-                            }
+                            return null;
                         }
-                        finally
-                        {
-                            SshSession.FreeDelegate(signalPtr, IntPtr.Zero);
-                            SshSession.FreeDelegate(errmsgPtr, IntPtr.Zero);
-                            SshSession.FreeDelegate(langTagPtr, IntPtr.Zero);
-                        }
+                    }
+                    finally
+                    {
+                        SshSession.Free(signalPtr, IntPtr.Zero);
+                        SshSession.Free(errmsgPtr, IntPtr.Zero);
+                        SshSession.Free(langTagPtr, IntPtr.Zero);
                     }
                 }
             }
@@ -137,26 +134,23 @@ namespace Google.Solutions.Ssh.Native
         {
         }
 
-        public Task ResizePseudoTerminal(
+        public void ResizePseudoTerminal(
             ushort widthInChars,
             ushort heightInChars)
         {
-            return Task.Run(() =>
+            this.channelHandle.CheckCurrentThreadOwnsHandle();
+
+            var result = (LIBSSH2_ERROR)UnsafeNativeMethods.libssh2_channel_request_pty_size_ex(
+                this.channelHandle,
+                widthInChars,
+                heightInChars,
+                0,
+                0);
+
+            if (result != LIBSSH2_ERROR.NONE)
             {
-                lock (this.channelHandle.SyncRoot)
-                {
-                    var result = (LIBSSH2_ERROR)UnsafeNativeMethods.libssh2_channel_request_pty_size_ex(
-                        this.channelHandle,
-                        widthInChars,
-                        heightInChars,
-                        0,
-                        0);
-                    if (result != LIBSSH2_ERROR.NONE)
-                    {
-                        throw new SshNativeException(result);
-                    }
-                }
-            });
+                throw new SshNativeException(result);
+            }
         }
     }
 }

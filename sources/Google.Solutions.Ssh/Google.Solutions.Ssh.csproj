@@ -50,6 +50,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Cryptography\RSACngExtensions.cs" />
+    <Compile Include="ISshKey.cs" />
+    <Compile Include="Native\Disposable.cs" />
     <Compile Include="Native\HandleTable.cs" />
     <Compile Include="Native\SshSessionChannelBase.cs" />
     <Compile Include="Native\SshChannelBase.cs" />
@@ -59,6 +61,11 @@
     <Compile Include="Native\SshException.cs" />
     <Compile Include="Native\SshSession.cs" />
     <Compile Include="Native\UnsafeNativeMethods.cs" />
+    <Compile Include="RsaSshKey.cs" />
+    <Compile Include="SshConnectionBase.cs" />
+    <Compile Include="SshShellConnection.cs" />
+    <Compile Include="SshWorkerThread.cs" />
+    <Compile Include="TerminalSize.cs" />
     <Compile Include="TraceSources.cs" />
   </ItemGroup>
   <ItemGroup>

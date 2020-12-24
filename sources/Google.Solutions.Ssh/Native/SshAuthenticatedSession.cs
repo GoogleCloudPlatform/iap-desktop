@@ -24,7 +24,6 @@ using Google.Solutions.Common.Diagnostics;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 
 namespace Google.Solutions.Ssh.Native
 {
@@ -52,11 +51,14 @@ namespace Google.Solutions.Ssh.Native
         // Channel.
         //---------------------------------------------------------------------
 
-        private SshChannelHandle OpenChannelSynchronous(
+        private SshChannelHandle OpenChannelInternal(
             LIBSSH2_CHANNEL_EXTENDED_DATA mode)
         {
+            this.sessionHandle.CheckCurrentThreadOwnsHandle();
+
             using (SshTraceSources.Default.TraceMethod().WithParameters(mode))
             {
+                LIBSSH2_ERROR result;
                 var channelHandle = UnsafeNativeMethods.libssh2_channel_open_ex(
                     this.sessionHandle,
                     SshSessionChannelBase.Type,
@@ -68,23 +70,24 @@ namespace Google.Solutions.Ssh.Native
 
                 if (channelHandle.IsInvalid)
                 {
-                    var lastError = (LIBSSH2_ERROR)UnsafeNativeMethods.libssh2_session_last_errno(
+                    result = (LIBSSH2_ERROR)UnsafeNativeMethods.libssh2_session_last_errno(
                         this.sessionHandle);
-                    if (lastError == LIBSSH2_ERROR.NONE)
-                    {
-                        throw new SshNativeException(LIBSSH2_ERROR.INVAL);
-                    }
-                    else
-                    {
-                        throw new SshNativeException(lastError);
-                    }
+                }
+                else
+                {
+                    result = LIBSSH2_ERROR.NONE;
+                }
+
+                if (result != LIBSSH2_ERROR.NONE)
+                {
+                    throw new SshNativeException(result);
                 }
 
                 //
                 // Configure how extended data (stderr, in particular) should
                 // be handled.
                 //
-                var result = (LIBSSH2_ERROR)UnsafeNativeMethods.libssh2_channel_handle_extended_data2(
+                result = (LIBSSH2_ERROR)UnsafeNativeMethods.libssh2_channel_handle_extended_data2(
                     channelHandle,
                     mode);
                 if (result != LIBSSH2_ERROR.NONE)
@@ -97,133 +100,135 @@ namespace Google.Solutions.Ssh.Native
             }
         }
 
-        public Task<SshShellChannel> OpenShellChannelAsync(
+        private static void SetEnvironmentVariable(
+            SshChannelHandle channelHandle,
+            string key,
+            string value)
+        {
+            channelHandle.CheckCurrentThreadOwnsHandle();
+
+            //
+            // NB. By default, sshd only allows certain environment
+            // variables to be specified. Trying to set a non-whiteisted
+            // variable causes a CHANNEL_REQUEST_DENIED error.
+            //
+            var result = (LIBSSH2_ERROR)UnsafeNativeMethods.libssh2_channel_setenv_ex(
+                channelHandle,
+                key,
+                (uint)key.Length,
+                value,
+                (uint)value.Length);
+
+            if (result != LIBSSH2_ERROR.NONE)
+            {
+                channelHandle.Dispose();
+                throw new SshNativeException(result);
+            }
+        }
+
+        public SshShellChannel OpenShellChannel(
             LIBSSH2_CHANNEL_EXTENDED_DATA mode,
             string term,
             ushort widthInChars,
             ushort heightInChars,
             IDictionary<string, string> environmentVariables = null)
         {
+            this.sessionHandle.CheckCurrentThreadOwnsHandle();
             Utilities.ThrowIfNull(term, nameof(term));
 
-            return Task.Run(() =>
+            using (SshTraceSources.Default.TraceMethod().WithParameters(
+                term,
+                widthInChars,
+                heightInChars))
             {
-                using (SshTraceSources.Default.TraceMethod().WithParameters(
-                    term,
-                    widthInChars,
-                    heightInChars))
+                var channelHandle = OpenChannelInternal(mode);
+
+                if (environmentVariables != null)
                 {
-                    lock (this.sessionHandle.SyncRoot)
+                    foreach (var environmentVariable in environmentVariables
+                        .Where(i => !string.IsNullOrEmpty(i.Value)))
                     {
-                        var channelHandle = OpenChannelSynchronous(mode);
-
-                        LIBSSH2_ERROR result;
-
-                        if (environmentVariables != null)
-                        {
-                            foreach (var environmentVariable in environmentVariables
-                                .Where(i => !string.IsNullOrEmpty(i.Value)))
-                            {
-                                //
-                                // NB. By default, sshd only allows certain environment
-                                // variables to be specified. Trying to set a non-whiteisted
-                                // variable causes a CHANNEL_REQUEST_DENIED error.
-                                //
-                                result = (LIBSSH2_ERROR)UnsafeNativeMethods.libssh2_channel_setenv_ex(
-                                    channelHandle,
-                                    environmentVariable.Key,
-                                    (uint)environmentVariable.Key.Length,
-                                    environmentVariable.Value,
-                                    (uint)environmentVariable.Value.Length);
-
-                                if (result != LIBSSH2_ERROR.NONE)
-                                {
-                                    channelHandle.Dispose();
-                                    throw new SshNativeException(result);
-                                }
-                            }
-                        }
-
-                        //
-                        // Request a pseudoterminal. This must be done before the shell
-                        // is launched.
-                        //
-                        result = (LIBSSH2_ERROR)UnsafeNativeMethods.libssh2_channel_request_pty_ex(
+                        SetEnvironmentVariable(
                             channelHandle,
-                            term,
-                            (uint)term.Length,
-                            null,   // TODO: pass modifiers?
-                            0,
-                            widthInChars,
-                            heightInChars,
-                            0,
-                            0);
-                        if (result != LIBSSH2_ERROR.NONE)
-                        {
-                            channelHandle.Dispose();
-                            throw new SshNativeException(result);
-                        }
-
-                        //
-                        // Launch the shell.
-                        //
-                        var request = "shell";
-                        result = (LIBSSH2_ERROR)UnsafeNativeMethods.libssh2_channel_process_startup(
-                            channelHandle,
-                            request,
-                            (uint)request.Length,
-                            null,
-                            0);
-
-                        if (result != LIBSSH2_ERROR.NONE)
-                        {
-                            channelHandle.Dispose();
-                            throw new SshNativeException(result);
-                        }
-
-                        return new SshShellChannel(channelHandle);
+                            environmentVariable.Key,
+                            environmentVariable.Value);
                     }
                 }
-            });
+
+                //
+                // Request a pseudoterminal. This must be done before the shell
+                // is launched.
+                //
+                var result = (LIBSSH2_ERROR)UnsafeNativeMethods.libssh2_channel_request_pty_ex(
+                    channelHandle,
+                    term,
+                    (uint)term.Length,
+                    null,   // TODO: pass modifiers?
+                    0,
+                    widthInChars,
+                    heightInChars,
+                    0,
+                    0);
+
+                if (result != LIBSSH2_ERROR.NONE)
+                {
+                    channelHandle.Dispose();
+                    throw new SshNativeException(result);
+                }
+
+                //
+                // Launch the shell.
+                //
+                var request = "shell";
+                result = (LIBSSH2_ERROR)UnsafeNativeMethods.libssh2_channel_process_startup(
+                    channelHandle,
+                    request,
+                    (uint)request.Length,
+                    null,
+                    0);
+
+                if (result != LIBSSH2_ERROR.NONE)
+                {
+                    channelHandle.Dispose();
+                    throw new SshNativeException(result);
+                }
+
+                return new SshShellChannel(channelHandle);
+            }
         }
 
-        public Task<SshExecChannel> OpenExecChannelAsync(
+        public SshExecChannel OpenExecChannel(
             string command,
             LIBSSH2_CHANNEL_EXTENDED_DATA mode)
         {
+            this.sessionHandle.CheckCurrentThreadOwnsHandle();
             Utilities.ThrowIfNull(command, nameof(command));
 
-            return Task.Run(() =>
+            using (SshTraceSources.Default.TraceMethod().WithParameters(
+                command,
+                mode))
             {
-                using (SshTraceSources.Default.TraceMethod().WithParameters(
+                var channelHandle = OpenChannelInternal(mode);
+
+                //
+                // Launch the process.
+                //
+                var request = "exec";
+                var result = (LIBSSH2_ERROR)UnsafeNativeMethods.libssh2_channel_process_startup(
+                    channelHandle,
+                    request,
+                    (uint)request.Length,
                     command,
-                    mode))
+                    command == null ? 0 : (uint)command.Length);
+
+                if (result != LIBSSH2_ERROR.NONE)
                 {
-                    lock (this.sessionHandle.SyncRoot)
-                    {
-                        var channelHandle = OpenChannelSynchronous(mode);
-
-                        //
-                        // Launch the process.
-                        //
-                        var request = "exec";
-                        var result = (LIBSSH2_ERROR)UnsafeNativeMethods.libssh2_channel_process_startup(
-                            channelHandle,
-                            request,
-                            (uint)request.Length,
-                            command,
-                            command == null ? 0 : (uint)command.Length);
-
-                        if (result != LIBSSH2_ERROR.NONE)
-                        {
-                            channelHandle.Dispose();
-                            throw new SshNativeException(result);
-                        }
-
-                        return new SshExecChannel(channelHandle);
-                    }
+                    channelHandle.Dispose();
+                    throw new SshNativeException(result);
                 }
-            });
+
+                return new SshExecChannel(channelHandle);
+            }
         }
 
         //---------------------------------------------------------------------
@@ -246,7 +251,8 @@ namespace Google.Solutions.Ssh.Native
 
             if (disposing)
             {
-
+                this.sessionHandle.CheckCurrentThreadOwnsHandle();
+                this.disposed = true;
             }
         }
     }

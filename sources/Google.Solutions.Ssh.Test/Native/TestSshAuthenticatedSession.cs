@@ -40,26 +40,28 @@ namespace Google.Solutions.Ssh.Test.Native
         public async Task WhenDisconnected_ThenOpenExecChannelAsyncThrowsSocketSend(
             [LinuxInstance] ResourceTask<InstanceLocator> instanceLocatorTask)
         {
+            var instanceLocator = await instanceLocatorTask;
             var endpoint = new IPEndPoint(
                 await InstanceUtil.PublicIpAddressForInstanceAsync(await instanceLocatorTask),
                 22);
-            using (var session = CreateSession())
-            using (var connection = await session.ConnectAsync(endpoint))
-            using (var key = new RSACng())
+            using (var key = new RsaSshKey(new RSACng()))
             {
                 await InstanceUtil.AddPublicKeyToMetadata(
-                    await instanceLocatorTask,
+                    instanceLocator,
                     "testuser",
-                    key);
-                using (var authSession = await connection.AuthenticateAsync("testuser", key))
+                    key).ConfigureAwait(true);
+
+                using (var session = CreateSession())
+                using (var connection = session.Connect(endpoint))
+                using (var authSession = connection.Authenticate("testuser", key))
                 {
                     connection.Dispose();
                     SshAssert.ThrowsNativeExceptionWithError(
                         session,
                         LIBSSH2_ERROR.SOCKET_SEND,
-                        () => authSession.OpenExecChannelAsync(
+                        () => authSession.OpenExecChannel(
                             "whoami",
-                            LIBSSH2_CHANNEL_EXTENDED_DATA.NORMAL).Wait());
+                            LIBSSH2_CHANNEL_EXTENDED_DATA.NORMAL));
                 }
             }
         }
@@ -68,23 +70,25 @@ namespace Google.Solutions.Ssh.Test.Native
         public async Task WhenConnected_ThenOpenShellChannelAsyncChannelSucceeds(
             [LinuxInstance] ResourceTask<InstanceLocator> instanceLocatorTask)
         {
+            var instanceLocator = await instanceLocatorTask;
             var endpoint = new IPEndPoint(
                 await InstanceUtil.PublicIpAddressForInstanceAsync(await instanceLocatorTask),
                 22);
-            using (var session = CreateSession())
-            using (var connection = await session.ConnectAsync(endpoint))
-            using (var key = new RSACng())
+            using (var key = new RsaSshKey(new RSACng()))
             {
                 await InstanceUtil.AddPublicKeyToMetadata(
-                    await instanceLocatorTask,
+                    instanceLocator,
                     "testuser",
-                    key);
-                using (var authSession = await connection.AuthenticateAsync("testuser", key))
-                using (var channel = await authSession.OpenExecChannelAsync(
+                    key).ConfigureAwait(true);
+
+                using (var session = CreateSession())
+                using (var connection = session.Connect(endpoint))
+                using (var authSession = connection.Authenticate("testuser", key))
+                using (var channel = authSession.OpenExecChannel(
                     "whoami",
                     LIBSSH2_CHANNEL_EXTENDED_DATA.NORMAL))
                 {
-                    await channel.CloseAsync();
+                    channel.Close();
                 }
             }
         }

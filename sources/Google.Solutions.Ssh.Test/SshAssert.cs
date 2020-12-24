@@ -29,6 +29,7 @@ namespace Google.Solutions.Ssh.Test
 {
     internal static class SshAssert
     {
+
         public static void ThrowsNativeExceptionWithError(
             SshSession session,
             LIBSSH2_ERROR expected,
@@ -44,9 +45,32 @@ namespace Google.Solutions.Ssh.Test
                 Assert.IsInstanceOf(typeof(SshNativeException), e.Unwrap());
                 Assert.AreEqual(expected, ((SshNativeException)e.Unwrap()).ErrorCode);
 
-                Assert.IsTrue(session.LastError == LIBSSH2_ERROR.NONE ||
-                              session.LastError == expected);
+                if (session != null)
+                {
+                    Assert.IsTrue(session.LastError == LIBSSH2_ERROR.NONE ||
+                                  session.LastError == expected);
+                }
             }
+        }
+
+        public static void ThrowsAggregateExceptionWithError(
+            LIBSSH2_ERROR expected, 
+            TestDelegate code) 
+        {
+            ThrowsNativeExceptionWithError(
+                null,
+                expected,
+                () =>
+            {
+                try
+                {
+                    code();
+                }
+                catch (AggregateException e)
+                {
+                    throw e.Unwrap();
+                }
+            });
         }
     }
 }

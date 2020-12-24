@@ -23,7 +23,6 @@ using Google.Apis.Util;
 using Google.Solutions.Common.Diagnostics;
 using System;
 using System.Diagnostics;
-using System.Threading.Tasks;
 
 namespace Google.Solutions.Ssh.Native
 {
@@ -57,6 +56,8 @@ namespace Google.Solutions.Ssh.Native
         {
             get
             {
+                this.channelHandle.CheckCurrentThreadOwnsHandle();
+
                 using (SshTraceSources.Default.TraceMethod().WithoutParameters())
                 {
                     return UnsafeNativeMethods.libssh2_channel_eof(
@@ -65,189 +66,123 @@ namespace Google.Solutions.Ssh.Native
             }
         }
 
-        /// <summary>
-        /// Flush buffer containing unread data.
-        /// </summary>
-        public uint Flush(LIBSSH2_STREAM streamId)
+        public uint Read(
+            byte[] buffer,
+            LIBSSH2_STREAM streamId = LIBSSH2_STREAM.NORMAL)
         {
+            this.channelHandle.CheckCurrentThreadOwnsHandle();
+            Utilities.ThrowIfNull(buffer, nameof(buffer));
+
             using (SshTraceSources.Default.TraceMethod().WithParameters(streamId))
             {
-                lock (this.channelHandle.SyncRoot)
+                if (this.IsEndOfStream)
                 {
-                    var bytesFlushed = UnsafeNativeMethods.libssh2_channel_flush_ex(
-                        this.channelHandle,
-                        (int)streamId);
+                    // Server sent EOF, trying to read would just
+                    // end up in a timeout.
+                    return 0u;
+                }
 
-                    if (bytesFlushed < 0)
-                    {
-                        throw new SshNativeException((LIBSSH2_ERROR)bytesFlushed);
-                    }
-                    else
-                    {
-                        return (uint)bytesFlushed;
-                    }
+                var bytesRead = UnsafeNativeMethods.libssh2_channel_read_ex(
+                    this.channelHandle,
+                    (int)streamId,
+                    buffer,
+                    new IntPtr(buffer.Length));
+
+                if (bytesRead >= 0)
+                {
+                    return (uint)bytesRead;
+                }
+                else
+                {
+                    throw new SshNativeException((LIBSSH2_ERROR)bytesRead);
                 }
             }
         }
 
-        public uint Flush()
-            => Flush(LIBSSH2_STREAM.NORMAL);
-
-        public Task<uint> ReadAsync(
-            LIBSSH2_STREAM streamId,
-            byte[] buffer)
+        public uint Write(
+            byte[] buffer,
+            LIBSSH2_STREAM streamId = LIBSSH2_STREAM.NORMAL)
         {
+            this.channelHandle.CheckCurrentThreadOwnsHandle();
             Utilities.ThrowIfNull(buffer, nameof(buffer));
 
-            return Task.Run(() =>
+            using (SshTraceSources.Default.TraceMethod().WithParameters(streamId))
             {
-                using (SshTraceSources.Default.TraceMethod().WithParameters(streamId))
+                Debug.Assert(!this.closedForWriting);
+
+                var bytesWritten = UnsafeNativeMethods.libssh2_channel_write_ex(
+                    this.channelHandle,
+                    (int)streamId,
+                    buffer,
+                    new IntPtr(buffer.Length));
+
+                if (bytesWritten >= 0)
                 {
-                    // TODO: Remove lock?
-                    lock (this.channelHandle.SyncRoot)
-                    {
-                        if (this.IsEndOfStream)
-                        {
-                            // Server sent EOF, trying to read would just
-                            // end up in a timeout.
-                            return 0u;
-                        }
-
-                        var bytesRead = UnsafeNativeMethods.libssh2_channel_read_ex(
-                            this.channelHandle,
-                            (int)streamId,
-                            buffer,
-                            new IntPtr(buffer.Length));
-
-                        if (bytesRead == (int)LIBSSH2_ERROR.TIMEOUT)
-                        {
-                            throw new TimeoutException("Read operation timed out");
-                        }
-                        else if (bytesRead < 0)
-                        {
-                            throw new SshNativeException((LIBSSH2_ERROR)bytesRead);
-                        }
-                        else
-                        {
-                            return (uint)bytesRead;
-                        }
-                    }
+                    return (uint)bytesWritten;
                 }
-            });
-        }
-
-        public Task<uint> ReadAsync(byte[] buffer)
-            => ReadAsync(LIBSSH2_STREAM.NORMAL, buffer);
-
-        public Task<uint> WriteAsync(
-            LIBSSH2_STREAM streamId,
-            byte[] buffer)
-        {
-            Utilities.ThrowIfNull(buffer, nameof(buffer));
-
-            return Task.Run(() =>
-            {
-                using (SshTraceSources.Default.TraceMethod().WithParameters(streamId))
+                else
                 {
-                    // TODO: Remove lock?
-                    lock (this.channelHandle.SyncRoot)
-                    {
-                        Debug.Assert(!this.closedForWriting);
-
-                        var bytesWritten = UnsafeNativeMethods.libssh2_channel_write_ex(
-                            this.channelHandle,
-                            (int)streamId,
-                            buffer,
-                            new IntPtr(buffer.Length));
-
-                        if (bytesWritten == (int)LIBSSH2_ERROR.TIMEOUT)
-                        {
-                            throw new TimeoutException("Read operation timed out");
-                        }
-                        else if (bytesWritten < 0)
-                        {
-                            throw new SshNativeException((LIBSSH2_ERROR)bytesWritten);
-                        }
-                        else
-                        {
-                            return (uint)bytesWritten;
-                        }
-                    }
+                    throw new SshNativeException((LIBSSH2_ERROR)bytesWritten);
                 }
-            });
-        }
-
-        public Task<uint> WriteAsync(byte[] buffer)
-            => WriteAsync(LIBSSH2_STREAM.NORMAL, buffer);
-
-        public Task AwaitCloseAsync()
-        {
-            return Task.Run(() =>
-            {
-                using (SshTraceSources.Default.TraceMethod().WithoutParameters())
-                {
-                    // TODO: Remove lock?
-                    lock (this.channelHandle.SyncRoot)
-                    {
-                        var result = (LIBSSH2_ERROR)UnsafeNativeMethods.libssh2_channel_wait_closed(
-                            this.channelHandle);
-
-                        if (result != LIBSSH2_ERROR.NONE)
-                        {
-                            throw new SshNativeException((LIBSSH2_ERROR)result);
-                        }
-                    }
-                }
-            });
-        }
-
-        public Task AwaitEndOfStreamAsync()
-        {
-            return Task.Run(() =>
-            {
-                using (SshTraceSources.Default.TraceMethod().WithoutParameters())
-                {
-                    // TODO: Remove lock?
-                    lock (this.channelHandle.SyncRoot)
-                    {
-                        var result = (LIBSSH2_ERROR)UnsafeNativeMethods.libssh2_channel_wait_eof(
-                            this.channelHandle);
-
-                        if (result != LIBSSH2_ERROR.NONE)
-                        {
-                            throw new SshNativeException((LIBSSH2_ERROR)result);
-                        }
-                    }
-                }
-            });
-        }
-
-        public Task CloseAsync()
-        {
-            if (this.closedForWriting)
-            {
-                return Task.CompletedTask;
             }
+        }
 
-            return Task.Run(() =>
+        public void WaitForClose()
+        {
+            this.channelHandle.CheckCurrentThreadOwnsHandle();
+
+            using (SshTraceSources.Default.TraceMethod().WithoutParameters())
             {
-                using (SshTraceSources.Default.TraceMethod().WithoutParameters())
-                {
-                    // TODO: Remove lock?
-                    lock (this.channelHandle.SyncRoot)
-                    {
-                        // Avoid closing more than once.
-                        if (!this.closedForWriting)
-                        {
-                            var result = (LIBSSH2_ERROR)UnsafeNativeMethods.libssh2_channel_close(
-                                this.channelHandle);
-                            Debug.Assert(result == LIBSSH2_ERROR.NONE);
+                var result = (LIBSSH2_ERROR)UnsafeNativeMethods.libssh2_channel_wait_closed(
+                    this.channelHandle);
 
-                            this.closedForWriting = true;
-                        }
-                    }
+                if (result != LIBSSH2_ERROR.NONE)
+                {
+                    throw new SshNativeException((LIBSSH2_ERROR)result);
                 }
-            });
+            }
+        }
+
+        public void WaitForEndOfStream()
+        {
+            this.channelHandle.CheckCurrentThreadOwnsHandle();
+            
+            using (SshTraceSources.Default.TraceMethod().WithoutParameters())
+            {
+                var result = (LIBSSH2_ERROR)UnsafeNativeMethods.libssh2_channel_wait_eof(
+                    this.channelHandle);
+
+                if (result != LIBSSH2_ERROR.NONE)
+                {
+                    throw new SshNativeException((LIBSSH2_ERROR)result);
+                }
+            }
+        }
+
+        public void Close()
+        {
+            this.channelHandle.CheckCurrentThreadOwnsHandle();
+            
+            using (SshTraceSources.Default.TraceMethod().WithoutParameters())
+            {
+                // Avoid closing more than once.
+                if (!this.closedForWriting)
+                {
+                    var result = (LIBSSH2_ERROR)UnsafeNativeMethods.libssh2_channel_close(
+                        this.channelHandle);
+
+                    if (result == LIBSSH2_ERROR.SOCKET_SEND)
+                    {
+                        // Broken connection, nevermind then.
+                    }
+                    else if (result != LIBSSH2_ERROR.NONE)
+                    {
+                        throw new SshNativeException((LIBSSH2_ERROR)result);
+                    }
+
+                    this.closedForWriting = true;
+                }
+            }
         }
 
         //---------------------------------------------------------------------
@@ -270,7 +205,6 @@ namespace Google.Solutions.Ssh.Native
 
             if (disposing)
             {
-                Debug.Assert(this.closedForWriting);
                 this.channelHandle.Dispose();
                 this.disposed = true;
             }
