@@ -21,6 +21,7 @@
 
 using Google.Solutions.Common.Diagnostics;
 using Google.Solutions.Common.Locator;
+using Google.Solutions.Common.Util;
 using Google.Solutions.IapDesktop.Application;
 using Google.Solutions.IapDesktop.Application.Controls;
 using Google.Solutions.IapDesktop.Application.ObjectModel;
@@ -31,6 +32,7 @@ using System;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Globalization;
+using System.Linq;
 using System.Net;
 using System.Text;
 using System.Threading.Tasks;
@@ -45,7 +47,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Ssh.Views.Terminal
         private readonly IPEndPoint endpoint;
         private readonly ISshKey key;
 
-        private Status connectionStatus = Status.Disconnected;
+        private Status connectionStatus = Status.ConnectionFailed;
         private SshShellConnection currentConnection = null;
 
 #if DEBUG
@@ -54,7 +56,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Ssh.Views.Terminal
 
         public InstanceLocator Instance { get; }
 
-        public EventHandler<ConnectionFailedEventArgs> ConnectionFailed;
+        public EventHandler<ConnectionErrorEventArgs> ConnectionFailed;
+        public EventHandler<ConnectionErrorEventArgs> ConnectionLost;
         public EventHandler<DataReceivedEventArgs> DataReceived;
 
         private ISynchronizeInvoke ViewInvoker => (ISynchronizeInvoke)this.View;
@@ -67,7 +70,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Ssh.Views.Terminal
         {
             Connecting,
             Connected,
-            Disconnected
+            ConnectionFailed,
+            ConnectionLost
         }
 
         //---------------------------------------------------------------------
@@ -98,16 +102,20 @@ namespace Google.Solutions.IapDesktop.Extensions.Ssh.Views.Terminal
             get => this.connectionStatus;
             private set
             {
+                Debug.Assert(!this.ViewInvoker.InvokeRequired, "Accessed from UI thread");
+
                 this.connectionStatus = value;
 
                 RaisePropertyChange();
                 RaisePropertyChange((SshTerminalPaneViewModel m) => m.IsSpinnerVisible);
                 RaisePropertyChange((SshTerminalPaneViewModel m) => m.IsTerminalVisible);
+                RaisePropertyChange((SshTerminalPaneViewModel m) => m.IsReconnectPanelVisible);
             }
         }
 
         public bool IsSpinnerVisible => this.ConnectionStatus == Status.Connecting;
         public bool IsTerminalVisible => this.ConnectionStatus == Status.Connected;
+        public bool IsReconnectPanelVisible => this.ConnectionStatus == Status.ConnectionLost;
 
         //---------------------------------------------------------------------
         // Actions.
@@ -118,30 +126,57 @@ namespace Google.Solutions.IapDesktop.Extensions.Ssh.Views.Terminal
             void OnErrorReceivedFromServerAsync(Exception exception)
             {
                 // NB. Callback runs on SSH thread, not on UI thread.
+                using (ApplicationTraceSources.Default.TraceMethod().WithParameters(exception))
+                {
+                    var errorsIndicatingLostConnection = new[]
+                    {
+                        LIBSSH2_ERROR.SOCKET_SEND,
+                        LIBSSH2_ERROR.SOCKET_RECV,
+                        LIBSSH2_ERROR.SOCKET_TIMEOUT
+                    };
 
-                this.ViewInvoker.InvokeAndForget(
-                    () => this.ConnectionFailed?.Invoke(
-                        this,
-                        new ConnectionFailedEventArgs(exception)));
+                    if (this.ConnectionStatus == Status.Connected &&
+                        exception.Unwrap() is SshNativeException sshEx &&
+                        errorsIndicatingLostConnection.Contains(sshEx.ErrorCode))
+                    {
+                        this.ViewInvoker.InvokeAndForget(
+                            () =>
+                            {
+                                this.ConnectionStatus = Status.ConnectionLost;
+                                this.ConnectionLost?.Invoke(
+                                    this,
+                                    new ConnectionErrorEventArgs(exception));
+                            });
+                    }
+                    else
+                    {
+                        this.ViewInvoker.InvokeAndForget(
+                            () => this.ConnectionFailed?.Invoke(
+                                this,
+                                new ConnectionErrorEventArgs(exception)));
+                    }
 
-                // Notify listeners.
-                this.eventService.FireAsync(
-                    new ConnectionFailedEvent(this.Instance, exception))
-                    .ContinueWith(_ => { });
+                    // Notify listeners.
+                    this.eventService.FireAsync(
+                        new ConnectionFailedEvent(this.Instance, exception))
+                        .ContinueWith(_ => { });
+                }
             }
 
             void OnDataReceivedFromServerAsync(string data)
             {
                 // NB. Callback runs on SSH thread, not on UI thread.
-
+                using (ApplicationTraceSources.Default.TraceMethod().WithoutParameters())
+                {
 #if DEBUG
-                this.receivedData.Append(data);
+                    this.receivedData.Append(data);
 #endif
 
-                this.ViewInvoker.InvokeAndForget(
-                    () => this.DataReceived?.Invoke(
-                        this,
-                        new DataReceivedEventArgs(data)));
+                    this.ViewInvoker.InvokeAndForget(
+                        () => this.DataReceived?.Invoke(
+                            this,
+                            new DataReceivedEventArgs(data)));
+                }
             }
 
             using (ApplicationTraceSources.Default.TraceMethod().WithoutParameters())
@@ -184,10 +219,12 @@ namespace Google.Solutions.IapDesktop.Extensions.Ssh.Views.Terminal
                 }
                 catch (Exception e)
                 {
-                    this.ConnectionStatus = Status.Disconnected;
+                    ApplicationTraceSources.Default.TraceError(e);
+
+                    this.ConnectionStatus = Status.ConnectionFailed;
                     this.ConnectionFailed?.Invoke(
                         this,
-                        new ConnectionFailedEventArgs(e));
+                        new ConnectionErrorEventArgs(e));
 
                     // Notify listeners.
                     await this.eventService.FireAsync(
@@ -280,11 +317,11 @@ namespace Google.Solutions.IapDesktop.Extensions.Ssh.Views.Terminal
         }
     }
 
-    public class ConnectionFailedEventArgs
+    public class ConnectionErrorEventArgs
     {
         public Exception Error { get; }
 
-        public ConnectionFailedEventArgs(Exception error)
+        public ConnectionErrorEventArgs(Exception error)
         {
             this.Error = error;
         }

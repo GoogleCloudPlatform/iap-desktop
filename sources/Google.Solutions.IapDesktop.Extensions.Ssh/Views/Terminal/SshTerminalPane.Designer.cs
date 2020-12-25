@@ -63,7 +63,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Ssh.Views.Terminal
             // 
             // reconnectPanel
             // 
-            this.reconnectPanel.BackColor = System.Drawing.Color.White;
             this.reconnectPanel.Controls.Add(this.reconnectLabel);
             this.reconnectPanel.Controls.Add(this.reconnectButton);
             this.reconnectPanel.Controls.Add(this.timeoutIcon);
@@ -76,27 +75,27 @@ namespace Google.Solutions.IapDesktop.Extensions.Ssh.Views.Terminal
             // reconnectLabel
             // 
             this.reconnectLabel.AutoSize = true;
-            this.reconnectLabel.Location = new System.Drawing.Point(11, 56);
+            this.reconnectLabel.Location = new System.Drawing.Point(37, 56);
             this.reconnectLabel.Name = "reconnectLabel";
-            this.reconnectLabel.Size = new System.Drawing.Size(189, 26);
+            this.reconnectLabel.Size = new System.Drawing.Size(131, 26);
             this.reconnectLabel.TabIndex = 8;
-            this.reconnectLabel.Text = "Remote Desktop connection timed out\r\nor has been disconnected";
+            this.reconnectLabel.Text = "SSH connection timed out\r\nor has been disconnected";
             this.reconnectLabel.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
             // reconnectButton
             // 
             this.reconnectButton.AutoSize = true;
-            this.reconnectButton.BackColor = System.Drawing.Color.White;
             this.reconnectButton.Location = new System.Drawing.Point(71, 85);
             this.reconnectButton.Name = "reconnectButton";
             this.reconnectButton.Size = new System.Drawing.Size(60, 13);
             this.reconnectButton.TabIndex = 7;
             this.reconnectButton.TabStop = true;
             this.reconnectButton.Text = "Reconnect";
+            this.reconnectButton.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.OnReconnectLinkClicked);
             // 
             // timeoutIcon
             // 
-            this.timeoutIcon.BackColor = System.Drawing.Color.White;
+            this.timeoutIcon.BackColor = System.Drawing.Color.Transparent;
             this.timeoutIcon.Image = ((System.Drawing.Image)(resources.GetObject("timeoutIcon.Image")));
             this.timeoutIcon.Location = new System.Drawing.Point(77, 3);
             this.timeoutIcon.Name = "timeoutIcon";

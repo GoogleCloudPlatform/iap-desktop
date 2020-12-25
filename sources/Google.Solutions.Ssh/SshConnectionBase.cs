@@ -154,8 +154,11 @@ namespace Google.Solutions.Ssh
 
         protected override void OnConnectionError(Exception exception)
         {
-            // Complete task, but force continuation to run on different thread.
-            Task.Run(() => this.connectionCompleted.SetException(exception));
+            if (!this.connectionCompleted.Task.IsCompleted)
+            {
+                // Complete task, but force continuation to run on different thread.
+                Task.Run(() => this.connectionCompleted.SetException(exception));
+            }
         }
 
         protected Task SendAsync(Action<SshChannelBase> operation)

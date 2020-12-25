@@ -75,6 +75,11 @@ namespace Google.Solutions.IapDesktop.Extensions.Ssh.Views.Terminal
             this.Text = vmInstance.Name;
             this.DockAreas = DockAreas.Document;
 
+            this.reconnectPanel.BindProperty(
+                c => c.Visible,
+                this.viewModel,
+                m => m.IsReconnectPanelVisible,
+                this.components);
             this.spinner.BindProperty(
                 c => c.Visible,
                 this.viewModel,
@@ -94,7 +99,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Ssh.Views.Terminal
                         this.terminal.Focus();
                     }
                 });
-
+            
             Debug.Assert(this.Text != this.Name);
 
             this.Disposed += (sender, args) =>
@@ -219,11 +224,17 @@ namespace Google.Solutions.IapDesktop.Extensions.Ssh.Views.Terminal
 
         private void OnErrorReceivedFromServerAsync(
             object sender,
-            ConnectionFailedEventArgs args)
+            ConnectionErrorEventArgs args)
         {
             Debug.Assert(!this.InvokeRequired);
 
             ShowErrorAndClose("SSH connection terminated", args.Error);
+        }
+
+        private async void OnReconnectLinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+        {
+            await ConnectAsync()
+                .ConfigureAwait(false);
         }
 
         //---------------------------------------------------------------------
@@ -248,5 +259,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Ssh.Views.Terminal
 
         public Task SendAsync(string command) 
             => this.viewModel.SendAsync(command);
+
     }
 }
