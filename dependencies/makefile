@@ -167,7 +167,7 @@ clean-libssh2: $(MAKEDIR)\obj\vcpkg\vcpkg.exe
 
 dependencies: vtnetcore libssh2
 !if ( "$(KOKORO_BUILD_NUMBER)" != "" ) 
-    gsutil cp -r NuGetPackages gs://$(PACKAGES_BUCKET)/NuGetPackages
+    gsutil cp -r NuGetPackages/* gs://$(PACKAGES_BUCKET)/NuGetPackages/
 !endif
 
 clean:
