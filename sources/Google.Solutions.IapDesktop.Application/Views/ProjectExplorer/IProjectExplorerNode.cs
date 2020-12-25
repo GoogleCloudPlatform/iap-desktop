@@ -59,6 +59,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
         bool IsRunning { get; }
         bool IsConnected { get; }
 
+        bool IsWindowsInstance { get; }
         void Select();
     }
 }

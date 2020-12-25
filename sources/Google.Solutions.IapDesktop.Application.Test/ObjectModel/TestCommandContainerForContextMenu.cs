@@ -194,5 +194,65 @@ namespace Google.Solutions.IapDesktop.Application.Test.ObjectModel
             Assert.AreEqual("ctx", parentMenu.Context);
             Assert.AreEqual("ctx", subMenu.Context);
         }
+
+        //---------------------------------------------------------------------
+        // Default commands.
+        //---------------------------------------------------------------------
+
+        [Test]
+        public void WhenContainerDoesNotHaveDefaultCommand_ThenExecuteDefaultCommandDoesNothing()
+        {
+            this.commandContainer.AddCommand(
+                new Command<string>(
+                    "test",
+                    ctx => CommandState.Enabled,
+                    ctx =>
+                    {
+                        Assert.Fail();
+                    })
+                {
+                });
+
+            this.commandContainer.ExecuteDefaultCommand();
+        }
+
+        [Test]
+        public void WhenDefaultCommandIsDisabled_ThenExecuteDefaultCommandDoesNothing()
+        {
+
+            this.commandContainer.AddCommand(
+                new Command<string>(
+                    "test",
+                    ctx => CommandState.Disabled,
+                    ctx =>
+                    {
+                        Assert.Fail();
+                    })
+                {
+                    IsDefault = true
+                });
+
+            this.commandContainer.ExecuteDefaultCommand();
+        }
+
+        [Test]
+        public void WhenDefaultCommandIsEnabled_ThenExecuteDefaultExecutesCommand()
+        {
+            bool commandExecuted = false;
+            this.commandContainer.AddCommand(
+                new Command<string>(
+                    "test",
+                    ctx => CommandState.Enabled,
+                    ctx =>
+                    {
+                        commandExecuted = true;
+                    })
+                {
+                    IsDefault = true
+                });
+
+            this.commandContainer.ExecuteDefaultCommand();
+            Assert.IsTrue(commandExecuted);
+        }
     }
 }

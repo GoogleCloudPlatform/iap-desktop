@@ -212,6 +212,8 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
             this.imageList.Images.SetKeyName(4, "Computer_16.png");
             this.imageList.Images.SetKeyName(5, "ComputerBlue_16.png");
             this.imageList.Images.SetKeyName(6, "ComputerStopped_16.png");
+            this.imageList.Images.SetKeyName(7, "ComputerTerminal_16.png");
+            this.imageList.Images.SetKeyName(8, "ComputerTerminalBlue_16.png");
             // 
             // ProjectExplorerWindow
             // 

@@ -349,8 +349,8 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
                 // Update context menu state.
                 //
                 this.refreshToolStripMenuItem.Visible =
-                this.unloadProjectToolStripMenuItem.Visible = (selectedNode is ProjectNode);
-                this.refreshAllProjectsToolStripMenuItem.Visible = (selectedNode is CloudNode);
+                    this.unloadProjectToolStripMenuItem.Visible = (selectedNode is ProjectNode);
+                    this.refreshAllProjectsToolStripMenuItem.Visible = (selectedNode is CloudNode);
 
                 this.openInCloudConsoleToolStripMenuItem.Visible =
                     this.iapSeparatorToolStripMenuItem.Visible =
