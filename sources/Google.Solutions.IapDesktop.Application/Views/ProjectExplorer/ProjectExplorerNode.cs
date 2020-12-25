@@ -75,14 +75,11 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
         }
 
         public void Populate(
-            IEnumerable<Instance> allInstances,
+            IEnumerable<Instance> instances,
             Func<InstanceLocator, bool> isConnected)
         {
             this.Nodes.Clear();
 
-            // Narrow the list down to Windows instances - there is no point 
-            // of adding Linux instanes to the list of servers.
-            var instances = allInstances.Where(i => i.IsWindowsInstance());
             var zoneIds = instances.Select(i => InventoryNode.ShortIdFromUrl(i.Zone)).ToHashSet();
 
             foreach (var zoneId in zoneIds)
