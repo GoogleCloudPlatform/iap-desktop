@@ -240,10 +240,12 @@ namespace Google.Solutions.IapDesktop.Extensions.Ssh.Views.Terminal
 
         public void CopyReceivedDataToClipboard()
         {
+#if DEBUG
             if (this.receivedData.Length > 0)
             {
                 Clipboard.SetText(this.receivedData.ToString());
             }
+#endif
         }
 
         //---------------------------------------------------------------------
