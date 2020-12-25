@@ -28,6 +28,7 @@ using Google.Solutions.IapDesktop.Extensions.Ssh.Controls;
 using Google.Solutions.Ssh;
 using System;
 using System.Diagnostics;
+using System.Drawing;
 using System.Net;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -73,6 +74,26 @@ namespace Google.Solutions.IapDesktop.Extensions.Ssh.Views.Terminal
 
             this.Text = vmInstance.Name;
             this.DockAreas = DockAreas.Document;
+
+            this.spinner.BindProperty(
+                c => c.Visible,
+                this.viewModel,
+                m => m.IsSpinnerVisible,
+                this.components);
+            this.terminal.BindProperty(
+                c => c.Visible,
+                this.viewModel,
+                m => m.IsTerminalVisible,
+                this.components);
+            this.viewModel.OnPropertyChange(
+                m => m.IsTerminalVisible,
+                visible =>
+                {
+                    if (visible)
+                    {
+                        this.terminal.Focus();
+                    }
+                });
 
             Debug.Assert(this.Text != this.Name);
 
@@ -121,6 +142,17 @@ namespace Google.Solutions.IapDesktop.Extensions.Ssh.Views.Terminal
         //---------------------------------------------------------------------
         // Event handlers
         //---------------------------------------------------------------------
+
+        private void OnLayout(object sender, LayoutEventArgs e)
+        {
+            this.spinner.Location = new Point(
+                (this.Size.Width - this.spinner.Width) / 2,
+                (this.Size.Height - this.spinner.Height) / 2);
+
+            this.reconnectPanel.Location = new Point(
+                (this.Size.Width - this.reconnectPanel.Width) / 2,
+                (this.Size.Height - this.reconnectPanel.Height) / 2);
+        }
 
         private void ShowErrorAndClose(string caption, Exception e)
         {

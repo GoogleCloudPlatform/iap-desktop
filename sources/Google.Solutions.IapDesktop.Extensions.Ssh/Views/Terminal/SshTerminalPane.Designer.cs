@@ -50,27 +50,16 @@ namespace Google.Solutions.IapDesktop.Extensions.Ssh.Views.Terminal
         private void InitializeComponent()
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(SshTerminalPane));
-            this.terminal = new Google.Solutions.IapDesktop.Extensions.Ssh.Controls.VirtualTerminal();
             this.reconnectPanel = new System.Windows.Forms.Panel();
             this.reconnectLabel = new System.Windows.Forms.Label();
             this.reconnectButton = new System.Windows.Forms.LinkLabel();
             this.timeoutIcon = new System.Windows.Forms.PictureBox();
             this.spinner = new System.Windows.Forms.PictureBox();
+            this.terminal = new Google.Solutions.IapDesktop.Extensions.Ssh.Controls.VirtualTerminal();
             this.reconnectPanel.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.timeoutIcon)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.spinner)).BeginInit();
             this.SuspendLayout();
-            // 
-            // terminal
-            // 
-            this.terminal.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.terminal.Font = new System.Drawing.Font("Consolas", 9.75F);
-            this.terminal.Location = new System.Drawing.Point(0, 0);
-            this.terminal.Name = "terminal";
-            this.terminal.Size = new System.Drawing.Size(800, 450);
-            this.terminal.TabIndex = 0;
-            this.terminal.ViewTop = 0;
-            this.terminal.WindowTitle = null;
             // 
             // reconnectPanel
             // 
@@ -118,12 +107,23 @@ namespace Google.Solutions.IapDesktop.Extensions.Ssh.Views.Terminal
             // spinner
             // 
             this.spinner.Anchor = System.Windows.Forms.AnchorStyles.None;
-            this.spinner.BackColor = System.Drawing.Color.White;
+            this.spinner.Image = ((System.Drawing.Image)(resources.GetObject("spinner.Image")));
             this.spinner.Location = new System.Drawing.Point(218, 81);
             this.spinner.Name = "spinner";
             this.spinner.Size = new System.Drawing.Size(44, 44);
             this.spinner.TabIndex = 9;
             this.spinner.TabStop = false;
+            // 
+            // terminal
+            // 
+            this.terminal.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.terminal.Font = new System.Drawing.Font("Consolas", 9.75F);
+            this.terminal.Location = new System.Drawing.Point(0, 0);
+            this.terminal.Name = "terminal";
+            this.terminal.Size = new System.Drawing.Size(800, 450);
+            this.terminal.TabIndex = 0;
+            this.terminal.ViewTop = 0;
+            this.terminal.WindowTitle = null;
             // 
             // SshTerminalPane
             // 
@@ -136,6 +136,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Ssh.Views.Terminal
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "SshTerminalPane";
             this.Text = "TerminalPaneBase";
+            this.Layout += new System.Windows.Forms.LayoutEventHandler(this.OnLayout);
             this.reconnectPanel.ResumeLayout(false);
             this.reconnectPanel.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.timeoutIcon)).EndInit();

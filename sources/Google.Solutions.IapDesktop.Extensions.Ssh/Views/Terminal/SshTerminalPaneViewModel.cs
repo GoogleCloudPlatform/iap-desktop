@@ -45,7 +45,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Ssh.Views.Terminal
         private readonly IPEndPoint endpoint;
         private readonly ISshKey key;
 
-        private Status connectionStatus = Status.Connecting;
+        private Status connectionStatus = Status.Disconnected;
         private SshShellConnection currentConnection = null;
 
 #if DEBUG
@@ -99,9 +99,15 @@ namespace Google.Solutions.IapDesktop.Extensions.Ssh.Views.Terminal
             private set
             {
                 this.connectionStatus = value;
+
                 RaisePropertyChange();
+                RaisePropertyChange((SshTerminalPaneViewModel m) => m.IsSpinnerVisible);
+                RaisePropertyChange((SshTerminalPaneViewModel m) => m.IsTerminalVisible);
             }
         }
+
+        public bool IsSpinnerVisible => this.ConnectionStatus == Status.Connecting;
+        public bool IsTerminalVisible => this.ConnectionStatus == Status.Connected;
 
         //---------------------------------------------------------------------
         // Actions.
@@ -152,6 +158,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Ssh.Views.Terminal
                 //
                 try
                 {
+                    this.ConnectionStatus = Status.Connecting;
                     this.currentConnection = new SshShellConnection(
                         this.username,
                         this.endpoint,
@@ -168,6 +175,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Ssh.Views.Terminal
                     await this.currentConnection.ConnectAsync()
                         .ConfigureAwait(true);
 
+                    this.ConnectionStatus = Status.Connected;
+
                     // Notify listeners.
                     await this.eventService.FireAsync(
                         new ConnectionSuceededEvent(this.Instance))
@@ -175,6 +184,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Ssh.Views.Terminal
                 }
                 catch (Exception e)
                 {
+                    this.ConnectionStatus = Status.Disconnected;
                     this.ConnectionFailed?.Invoke(
                         this,
                         new ConnectionFailedEventArgs(e));
