@@ -111,7 +111,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Ssh.Services
                         "us-central1-a",
                         "u5399e2efe48901");
                     var endpoint = new IPEndPoint(
-                        IPAddress.Parse("104.197.0.54"),
+                        IPAddress.Parse("35.226.214.252"),
                         22);
 
                     using (var gceAdapter = this.serviceProvider.GetService<IComputeEngineAdapter>())

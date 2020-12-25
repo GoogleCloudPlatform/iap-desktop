@@ -31,5 +31,10 @@ namespace Google.Solutions.Ssh
             this.Columns = columns;
             this.Rows = rows;
         }
+
+        public override string ToString()
+        {
+            return $"{this.Columns}x{this.Rows}";
+        }
     }
 }

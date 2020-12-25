@@ -189,10 +189,11 @@ namespace Google.Solutions.IapDesktop.Extensions.Ssh.Test.Views.Terminal
                 new ComputeEngineAdapter(await credential)))
             {
                 await keyAdapter.PushPublicKeyAsync(
-                    instanceLocator,
-                    "test",
-                    key,
-                    CancellationToken.None);
+                        instanceLocator,
+                        "test",
+                        key,
+                        CancellationToken.None)
+                    .ConfigureAwait(true);
 
                 // Connect and wait for event
                 ConnectionSuceededEvent connectedEvent = null;

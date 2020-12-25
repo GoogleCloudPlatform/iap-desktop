@@ -95,6 +95,7 @@
     <Compile Include="Views\Terminal\SshTerminalPane.Designer.cs">
       <DependentUpon>SshTerminalPane.cs</DependentUpon>
     </Compile>
+    <Compile Include="Views\Terminal\SshTerminalPaneViewModel.cs" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Controls\VirtualTerminal.resx">

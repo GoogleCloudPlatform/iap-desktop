@@ -123,7 +123,8 @@ namespace Google.Solutions.IapDesktop.Application.Services.Integration
 
                 var completionSource = new TaskCompletionSource<TEvent>();
 
-                this.invoker.Invoke((Action)(() => FireOnUiThread<TEvent>(eventObject, completionSource)), null);
+                this.invoker.BeginInvoke(
+                    (Action)(() => FireOnUiThread<TEvent>(eventObject, completionSource)), null);
 
                 return completionSource.Task;
             }

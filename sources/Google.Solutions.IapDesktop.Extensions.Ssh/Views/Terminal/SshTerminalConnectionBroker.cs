@@ -112,7 +112,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Ssh.Views.Terminal
                 key);
             pane.ShowWindow(true);
 
-            await pane.ConnectShellAsync()
+            await pane.ConnectAsync()
                 .ConfigureAwait(false);
 
             return pane;

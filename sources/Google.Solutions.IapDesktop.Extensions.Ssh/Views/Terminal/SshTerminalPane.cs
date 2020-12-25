@@ -19,21 +19,16 @@
 // under the License.
 //
 
-using Google.Solutions.Common.Diagnostics;
 using Google.Solutions.Common.Locator;
-using Google.Solutions.IapDesktop.Application;
 using Google.Solutions.IapDesktop.Application.ObjectModel;
 using Google.Solutions.IapDesktop.Application.Services.Integration;
 using Google.Solutions.IapDesktop.Application.Views;
 using Google.Solutions.IapDesktop.Application.Views.Dialog;
 using Google.Solutions.IapDesktop.Extensions.Ssh.Controls;
 using Google.Solutions.Ssh;
-using Google.Solutions.Ssh.Native;
 using System;
 using System.Diagnostics;
-using System.Globalization;
 using System.Net;
-using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using WeifenLuo.WinFormsUI.Docking;
@@ -43,24 +38,15 @@ namespace Google.Solutions.IapDesktop.Extensions.Ssh.Views.Terminal
     public partial class SshTerminalPane : ToolWindow, ISshTerminalPane
     {
         private readonly IExceptionDialog exceptionDialog;
-        private readonly IEventService eventService;
+        private readonly SshTerminalPaneViewModel viewModel;
 
-        private readonly string username;
-        private readonly IPEndPoint endpoint;
-        private readonly ISshKey key;
-
-        private SshShellConnection currentConnection = null;
-
-#if DEBUG
-        private readonly StringBuilder receivedData = new StringBuilder();
-#endif
         //---------------------------------------------------------------------
         // Properties.
         //---------------------------------------------------------------------
 
-        public InstanceLocator Instance { get; }
-
         public VirtualTerminal Terminal => this.terminal;
+
+        public InstanceLocator Instance => this.viewModel.Instance;
 
         //---------------------------------------------------------------------
         // Ctor.
@@ -77,17 +63,23 @@ namespace Google.Solutions.IapDesktop.Extensions.Ssh.Views.Terminal
             InitializeComponent();
 
             this.exceptionDialog = serviceProvider.GetService<IExceptionDialog>();
-            this.eventService = serviceProvider.GetService<IEventService>();
-            this.username = username;
-            this.endpoint = endpoint;
-            this.key = key;
-            this.Instance = vmInstance;
+            this.viewModel = new SshTerminalPaneViewModel(
+                serviceProvider.GetService<IEventService>(),
+                vmInstance,
+                username,
+                endpoint,
+                key);
+            this.viewModel.View = this;
+
             this.Text = vmInstance.Name;
             this.DockAreas = DockAreas.Document;
 
             Debug.Assert(this.Text != this.Name);
 
-            this.Disposed += OnDisposed;
+            this.Disposed += (sender, args) =>
+            {
+                this.viewModel.Dispose();
+            };
             this.FormClosed += OnFormClosed;
             this.Terminal.InputReceived += (sender, args) =>
             {
@@ -98,7 +90,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Ssh.Views.Terminal
                 // to fire-and-forget it.
                 //
                 OnInputReceivedFromUserAsync(args.Data)
-                    .ConfigureAwait(false);
+                    .ContinueWith(_ => { });
             };
 
             this.Terminal.TerminalResized += (sender, args) =>
@@ -108,7 +100,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Ssh.Views.Terminal
                 // to fire-and-forget it.
                 //
                 OnTerminalResizedByUser()
-                    .ConfigureAwait(false);
+                    .ContinueWith(_ => { });
             };
 
             this.Terminal.WindowTitleChanged += (sender, args) =>
@@ -116,217 +108,113 @@ namespace Google.Solutions.IapDesktop.Extensions.Ssh.Views.Terminal
                 this.TabText = this.Terminal.WindowTitle;
             };
 
+            this.viewModel.ConnectionFailed += OnErrorReceivedFromServerAsync;
+            this.viewModel.DataReceived += OnDataReceivedFromServerAsync;
+
 #if DEBUG
             var copyStream = new ToolStripMenuItem("DEBUG: Copy received data");
-            copyStream.Click += (sender, args) =>
-            {
-                if (this.receivedData.Length > 0)
-                {
-                    Clipboard.SetText(this.receivedData.ToString());
-                }
-            };
+            copyStream.Click += (sender, args) => this.viewModel.CopyReceivedDataToClipboard();
             this.TabContextStrip.Items.Add(copyStream);
 #endif
-        }
-
-        private void OnFormClosed(object sender, System.Windows.Forms.FormClosedEventArgs e)
-        {
-            DisconnectAsync().Wait();
-        }
-
-        private void OnDisposed(object sender, EventArgs e)
-        {
-            this.currentConnection?.Dispose();
-        }
-
-        //---------------------------------------------------------------------
-        // Protected.
-        //---------------------------------------------------------------------
-
-        protected async Task ShowErrorAndCloseAsync(string caption, Exception e)
-        {
-            void ShowErrorAndCloseUnsafe()
-            {
-                Debug.Assert(!this.InvokeRequired);
-
-                this.exceptionDialog.Show(this, caption, e);
-                Close();
-            }
-
-            using (ApplicationTraceSources.Default.TraceMethod().WithParameters(e.Message))
-            {
-                // Notify listeners.
-                await this.eventService.FireAsync(
-                    new ConnectionFailedEvent(this.Instance, e))
-                    .ConfigureAwait(true);
-
-                if (this.InvokeRequired)
-                {
-                    this.BeginInvoke((Action)ShowErrorAndCloseUnsafe);
-                }
-                else
-                {
-                    ShowErrorAndCloseUnsafe();
-                }
-            }
-        }
-
-        protected async Task DisconnectAsync()
-        {
-            using (ApplicationTraceSources.Default.TraceMethod().WithoutParameters())
-            {
-                if (this.currentConnection != null)
-                {
-                    this.currentConnection.Dispose();
-                    this.currentConnection = null;
-
-                    // Notify listeners.
-                    await this.eventService.FireAsync(
-                        new ConnectionClosedEvent(this.Instance))
-                        .ConfigureAwait(true);
-                }
-            }
         }
 
         //---------------------------------------------------------------------
         // Event handlers
         //---------------------------------------------------------------------
 
-        private async Task ReconnectAsync()
+        private void ShowErrorAndClose(string caption, Exception e)
         {
-            using (ApplicationTraceSources.Default.TraceMethod().WithoutParameters())
-            {
-                //
-                // Disconnect previous session, if any.
-                //
-                await DisconnectAsync()
-                    .ConfigureAwait(true);
-                Debug.Assert(this.currentConnection == null);
+            Debug.Assert(!this.InvokeRequired);
 
-                //
-                // Establish a new connection and create a shell.
-                //
-                try
-                {
-                    this.currentConnection = new SshShellConnection(
-                        this.username,
-                        this.endpoint,
-                        this.key,
-                        SshShellConnection.DefaultTerminal,
-                        new TerminalSize(
-                            (ushort)this.terminal.Columns,
-                            (ushort)this.terminal.Rows),
-                        CultureInfo.CurrentUICulture,
-                        OnDataReceivedFromServerAsync,
-                        OnErrorReceivedFromServerAsync)
-                    {
-                        Banner = SshSession.BannerPrefix + Globals.UserAgent
-                    };
+            this.exceptionDialog.Show(this, caption, e);
+            Close();
+        }
 
-                    await this.currentConnection.ConnectAsync()
-                        .ConfigureAwait(true);
-
-                    // Notify listeners.
-                    await this.eventService.FireAsync(
-                        new ConnectionSuceededEvent(this.Instance))
-                        .ConfigureAwait(true);
-                }
-                catch (Exception e)
-                {
-                    this.currentConnection = null;
-                    await ShowErrorAndCloseAsync("Connection failed", e)
-                        .ConfigureAwait(false);
-                }
-            }
+        private void OnFormClosed(object sender, System.Windows.Forms.FormClosedEventArgs e)
+        {
+            this.viewModel.DisconnectAsync().Wait();
         }
 
         private async Task OnInputReceivedFromUserAsync(string input)
         {
+            Debug.Assert(!this.InvokeRequired);
+
             try
             {
-                Debug.Assert(this.currentConnection != null);
-
-                if (this.currentConnection != null)
-                {
-                    await this.currentConnection.SendAsync(input)
-                        .ConfigureAwait(false);
-                }
+                await this.viewModel.SendAsync(input)
+                    .ConfigureAwait(true);
             }
             catch (Exception e)
             {
-                await ShowErrorAndCloseAsync(
-                        "Sending data failed",
-                        e)
-                    .ConfigureAwait(false);
+                ShowErrorAndClose("Sending data failed", e);
             }
         }
 
         private async Task OnTerminalResizedByUser()
         {
+            Debug.Assert(!this.InvokeRequired);
+
             try
             {
-                if (this.currentConnection != null)
-                {
-                   await this.currentConnection.ResizeTerminalAsync(
-                       new TerminalSize(
-                           (ushort)this.Terminal.Columns,
-                           (ushort)this.Terminal.Rows))
-                       .ConfigureAwait(false);
-                }
+                await this.viewModel.ResizeTerminal(
+                    new TerminalSize(
+                        (ushort)this.Terminal.Columns,
+                        (ushort)this.Terminal.Rows))
+                    .ConfigureAwait(false);
             }
             catch (Exception e)
             {
-                await ShowErrorAndCloseAsync(
-                        "Sending data failed",
-                        e)
-                    .ConfigureAwait(false);
+                ShowErrorAndClose("Sending data failed", e);
             }
         }
 
-        private void OnDataReceivedFromServerAsync(string data)
+        private void OnDataReceivedFromServerAsync(
+            object sender,
+            DataReceivedEventArgs args)
         {
-            Debug.Assert(this.currentConnection != null);
+            Debug.Assert(!this.InvokeRequired);
 
-#if DEBUG
-            this.receivedData.Append(data);
-#endif
-
-            // NB. This callback might be invoked on a non-UI thread.
-            this.BeginInvoke((Action)(() =>
+            if (args.Data.Length == 0)
             {
-                if (data.Length == 0)
-                {
-                    // End of stream -> close the pane.
-                    Close();
-                }
-                else
-                {
-                    this.Terminal.PushText(data);
-                }
-            }));
-        }
-
-        private void OnErrorReceivedFromServerAsync(Exception exception)
-        {
-            Debug.Assert(this.currentConnection != null);
-
-            ShowErrorAndCloseAsync("SSH connection terminated", exception)
-                .ContinueWith(_ => { });
-        }
-
-        //---------------------------------------------------------------------
-        // Publics.
-        //---------------------------------------------------------------------
-
-        public Task ConnectShellAsync() => ReconnectAsync();
-
-        public async Task SendAsync(string command)
-        {
-            if (this.currentConnection != null)
+                // End of stream -> close the pane.
+                Close();
+            }
+            else
             {
-                await this.currentConnection.SendAsync(command)
-                    .ConfigureAwait(false);
+                this.Terminal.PushText(args.Data);
             }
         }
+
+        private void OnErrorReceivedFromServerAsync(
+            object sender,
+            ConnectionFailedEventArgs args)
+        {
+            Debug.Assert(!this.InvokeRequired);
+
+            ShowErrorAndClose("SSH connection terminated", args.Error);
+        }
+
+        //---------------------------------------------------------------------
+        // Actions
+        //---------------------------------------------------------------------
+
+        public async Task ConnectAsync()
+        {
+            try
+            {
+                await this.viewModel.ConnectAsync(
+                        new TerminalSize(
+                            (ushort)this.terminal.Columns,
+                            (ushort)this.terminal.Rows))
+                    .ConfigureAwait(true);
+            }
+            catch (Exception e)
+            {
+                ShowErrorAndClose("Connection failed", e);
+            }
+        }
+
+        public Task SendAsync(string command) 
+            => this.viewModel.SendAsync(command);
     }
 }
