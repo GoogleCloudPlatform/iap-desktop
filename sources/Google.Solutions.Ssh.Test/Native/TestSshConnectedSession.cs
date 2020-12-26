@@ -23,6 +23,7 @@ using Google.Solutions.Common.Locator;
 using Google.Solutions.Common.Test.Integration;
 using Google.Solutions.Ssh.Native;
 using NUnit.Framework;
+using System;
 using System.Linq;
 using System.Net;
 using System.Security.Cryptography;
@@ -77,6 +78,21 @@ namespace Google.Solutions.Ssh.Test.Native
                 Assert.IsNotNull(connection.GetActiveAlgorithms(LIBSSH2_METHOD.COMP_SC));
                 Assert.IsNotNull(connection.GetActiveAlgorithms(LIBSSH2_METHOD.LANG_CS));
                 Assert.IsNotNull(connection.GetActiveAlgorithms(LIBSSH2_METHOD.LANG_SC));
+            }
+        }
+
+        [Test]
+        public async Task WhenRequestedAlgorithmInvalid_ThenActiveAlgorithmsThrowsArgumentException(
+            [LinuxInstance] ResourceTask<InstanceLocator> instanceLocatorTask)
+        {
+            var endpoint = new IPEndPoint(
+                await InstanceUtil.PublicIpAddressForInstanceAsync(await instanceLocatorTask),
+                22);
+            using (var session = CreateSession())
+            using (var connection = session.Connect(endpoint))
+            {
+                Assert.Throws<ArgumentException>(
+                    () => connection.GetActiveAlgorithms((LIBSSH2_METHOD)9999999));
             }
         }
 
@@ -136,12 +152,8 @@ namespace Google.Solutions.Ssh.Test.Native
             }
         }
 
-        //---------------------------------------------------------------------
-        // User auth.
-        //---------------------------------------------------------------------
-
         [Test]
-        public async Task WhenConnected_ThenIsAuthenticatedIsFalse(
+        public async Task WhenRequestedAlgorithmInvalid_ThennGetRemoteHostKeyHashThrowsArgumentException(
             [LinuxInstance] ResourceTask<InstanceLocator> instanceLocatorTask)
         {
             var endpoint = new IPEndPoint(
@@ -150,7 +162,22 @@ namespace Google.Solutions.Ssh.Test.Native
             using (var session = CreateSession())
             using (var connection = session.Connect(endpoint))
             {
-                Assert.IsFalse(connection.IsAuthenticated);
+                Assert.Throws<ArgumentException>(
+                    () => connection.GetRemoteHostKeyHash((LIBSSH2_HOSTKEY_HASH)9999999));
+            }
+        }
+
+        //---------------------------------------------------------------------
+        // Banner.
+        //---------------------------------------------------------------------
+
+        [Test]
+        public void WhenCustomBannerHasWrongPrefix_ThenSetLocalBannerThrowsArgumentException()
+        {
+            using (var session = CreateSession())
+            {
+                Assert.Throws<ArgumentException>(
+                    () => session.SetLocalBanner("SSH-test-123"));
             }
         }
 
@@ -168,6 +195,41 @@ namespace Google.Solutions.Ssh.Test.Native
                 {
                     Assert.IsFalse(connection.IsAuthenticated);
                 }
+            }
+
+        }
+
+        [Test]
+        public async Task WhenConnected_GetRemoteBannerReturnsBanner(
+            [LinuxInstance] ResourceTask<InstanceLocator> instanceLocatorTask)
+        {
+            var endpoint = new IPEndPoint(
+                await InstanceUtil.PublicIpAddressForInstanceAsync(await instanceLocatorTask),
+                22);
+            using (var session = CreateSession())
+            {
+                using (var connection = session.Connect(endpoint))
+                {
+                    StringAssert.StartsWith("SSH", connection.GetRemoteBanner());
+                }
+            }
+        }
+
+        //---------------------------------------------------------------------
+        // User auth.
+        //---------------------------------------------------------------------
+
+        [Test]
+        public async Task WhenConnected_ThenIsAuthenticatedIsFalse(
+            [LinuxInstance] ResourceTask<InstanceLocator> instanceLocatorTask)
+        {
+            var endpoint = new IPEndPoint(
+                await InstanceUtil.PublicIpAddressForInstanceAsync(await instanceLocatorTask),
+                22);
+            using (var session = CreateSession())
+            using (var connection = session.Connect(endpoint))
+            {
+                Assert.IsFalse(connection.IsAuthenticated);
             }
         }
 

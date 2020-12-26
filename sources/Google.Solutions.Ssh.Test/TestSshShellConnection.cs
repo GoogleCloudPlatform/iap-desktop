@@ -20,6 +20,7 @@
 //
 
 using Google.Solutions.Common.Locator;
+using Google.Solutions.Common.Test;
 using Google.Solutions.Common.Test.Integration;
 using NUnit.Framework;
 using System;
@@ -113,6 +114,10 @@ namespace Google.Solutions.Ssh.Test
                     }))
                 {
                     await connection.ConnectAsync();
+
+                    AssertEx.ThrowsAggregateException<InvalidOperationException>(
+                        () => connection.ConnectAsync().Wait());
+
                     await connection.SendAsync("whoami\n");
                     await connection.SendAsync("exit\n");
 
@@ -124,6 +129,40 @@ namespace Google.Solutions.Ssh.Test
                     StringAssert.Contains(
                         "testuser",
                         receiveBuffer.ToString());
+                }
+            }
+        }
+
+
+        [Test]
+        public async Task WhenDisposingConnection_ThenWorkerIsStopped(
+            [LinuxInstance] ResourceTask<InstanceLocator> instanceLocatorTask)
+        {
+            var endpoint = new IPEndPoint(
+                await InstanceUtil.PublicIpAddressForInstanceAsync(await instanceLocatorTask),
+                22);
+
+            using (var key = new RsaSshKey(new RSACng()))
+            {
+                await InstanceUtil.AddPublicKeyToMetadata(
+                    await instanceLocatorTask,
+                    "testuser",
+                    key);
+
+                using (var connection = new SshShellConnection(
+                    "testuser",
+                    endpoint,
+                    key,
+                    SshShellConnection.DefaultTerminal,
+                    SshShellConnection.DefaultTerminalSize,
+                    CultureInfo.InvariantCulture,
+                    _ => { },
+                    exception =>
+                    {
+                        Assert.Fail("Unexpected error");
+                    }))
+                {
+                    await connection.ConnectAsync();
                 }
             }
         }

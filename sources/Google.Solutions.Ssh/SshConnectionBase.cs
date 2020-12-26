@@ -148,12 +148,14 @@ namespace Google.Solutions.Ssh
 
         protected override void OnConnected()
         {
-            this.connectionCompleted.SetResult(0);
+            // Complete task, but force continuation to run on different thread.
+            Task.Run(() => this.connectionCompleted.SetResult(0));
         }
 
         protected override void OnConnectionError(Exception exception)
         {
-            this.connectionCompleted.SetException(exception);
+            // Complete task, but force continuation to run on different thread.
+            Task.Run(() => this.connectionCompleted.SetException(exception));
         }
 
         protected Task SendAsync(Action<SshChannelBase> operation)

@@ -71,6 +71,19 @@ namespace Google.Solutions.Ssh.Test.Native
         }
 
         //---------------------------------------------------------------------
+        // Blocking.
+        //---------------------------------------------------------------------
+
+        [Test]
+        public void WhenUsingDefaults_ThenBlockingIsEnabled()
+        {
+            using (var session = CreateSession())
+            {
+                Assert.IsTrue(session.IsBlocking);
+            }
+        }
+
+        //---------------------------------------------------------------------
         // Algorithms.
         //---------------------------------------------------------------------
 
@@ -187,6 +200,32 @@ namespace Google.Solutions.Ssh.Test.Native
                     session,
                     LIBSSH2_ERROR.KEX_FAILURE,
                     () => session.Connect(endpoint));
+            }
+        }
+
+        [Test]
+        public void WhenPreferredMethodIsEmpty_ThenSetPreferredMethodsThrowsNotSupportedError()
+        {
+            using (var session = CreateSession())
+            {
+                Assert.Throws<ArgumentException>(
+                    () => session.SetPreferredMethods(
+                        LIBSSH2_METHOD.KEX,
+                        new string[0]));
+            }
+        }
+
+        [Test]
+        public void WhenPreferredMethodIsInvalid_ThenSetPreferredMethodsThrowsArgumentException()
+        {
+            using (var session = CreateSession())
+            {
+                SshAssert.ThrowsNativeExceptionWithError(
+                    session,
+                    LIBSSH2_ERROR.METHOD_NOT_SUPPORTED,
+                    () => session.SetPreferredMethods(
+                        LIBSSH2_METHOD.KEX,
+                        new[] { "invalid" }));
             }
         }
 

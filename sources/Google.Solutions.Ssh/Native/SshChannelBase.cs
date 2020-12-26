@@ -127,22 +127,6 @@ namespace Google.Solutions.Ssh.Native
             }
         }
 
-        public void WaitForClose()
-        {
-            this.channelHandle.CheckCurrentThreadOwnsHandle();
-
-            using (SshTraceSources.Default.TraceMethod().WithoutParameters())
-            {
-                var result = (LIBSSH2_ERROR)UnsafeNativeMethods.libssh2_channel_wait_closed(
-                    this.channelHandle);
-
-                if (result != LIBSSH2_ERROR.NONE)
-                {
-                    throw new SshNativeException((LIBSSH2_ERROR)result);
-                }
-            }
-        }
-
         public void WaitForEndOfStream()
         {
             this.channelHandle.CheckCurrentThreadOwnsHandle();

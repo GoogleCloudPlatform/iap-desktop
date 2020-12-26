@@ -84,7 +84,7 @@ namespace Google.Solutions.Ssh.Native
                 IntPtr.Zero);
 
             // Use blocking I/O by default.
-            this.Blocking = true;
+            this.IsBlocking = true;
         }
 
         public static string GetVersion(Version requiredVersion)
@@ -102,7 +102,7 @@ namespace Google.Solutions.Ssh.Native
             }
         }
 
-        private bool Blocking
+        public bool IsBlocking
         {
             get
             {
@@ -110,7 +110,7 @@ namespace Google.Solutions.Ssh.Native
                 return UnsafeNativeMethods.libssh2_session_get_blocking(
                     this.sessionHandle) != 0;
             }
-            set
+            private set
             {
                 this.sessionHandle.CheckCurrentThreadOwnsHandle();
                 UnsafeNativeMethods.libssh2_session_set_blocking(
@@ -121,8 +121,8 @@ namespace Google.Solutions.Ssh.Native
 
         public IDisposable AsNonBlocking()
         {
-            this.Blocking = false;
-            return Disposable.For(() => this.Blocking = true);
+            this.IsBlocking = false;
+            return Disposable.For(() => this.IsBlocking = true);
         }
 
         //---------------------------------------------------------------------

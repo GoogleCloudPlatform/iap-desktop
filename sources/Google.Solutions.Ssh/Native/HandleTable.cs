@@ -19,6 +19,7 @@
 // under the License.
 //
 
+using Google.Solutions.Common.Diagnostics;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Runtime.InteropServices;
@@ -28,6 +29,7 @@ namespace Google.Solutions.Ssh.Native
     /// <summary>
     /// Track open safe handles. Only active in Debug builds, for diagnostics only.
     /// </summary>
+    [SkipCodeCoverageAttribute("For debug purposes only")]
     internal static class HandleTable
     {
         private static readonly object handlesLock;
