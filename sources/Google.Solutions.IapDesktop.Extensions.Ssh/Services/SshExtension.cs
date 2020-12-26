@@ -52,9 +52,10 @@ namespace Google.Solutions.IapDesktop.Extensions.Ssh.Services
         private readonly IServiceProvider serviceProvider;
         private readonly IWin32Window window;
 
-        private static CommandState GetContextMenuCommandStateWhenRunningInstanceRequired(IProjectExplorerNode node)
+        private static CommandState GetContextMenuCommandStateWhenRunningInstanceRequired(
+            IProjectExplorerNode node)
         {
-            if (node is IProjectExplorerVmInstanceNode vmNode)
+            if (node is IProjectExplorerVmInstanceNode vmNode && !vmNode.IsWindowsInstance)
             {
                 return vmNode.IsRunning
                     ? CommandState.Enabled
@@ -105,35 +106,32 @@ namespace Google.Solutions.IapDesktop.Extensions.Ssh.Services
             {
                 if (node is IProjectExplorerVmInstanceNode vmNode)
                 {
-                    // TODO: Use real instance/endpoint
-                    var instanceLocator = new InstanceLocator(
-                        "iap-windows-rdc-plugin-tests",
-                        "us-central1-a",
-                        "u5399e2efe48901");
-                    var endpoint = new IPEndPoint(
-                        IPAddress.Parse("35.226.214.252"),
-                        22);
-
                     using (var gceAdapter = this.serviceProvider.GetService<IComputeEngineAdapter>())
                     using (var keysAdapter = this.serviceProvider.GetService<IComputeEngineKeysAdapter>())
                     {
+                        var instanceTask = gceAdapter.GetInstanceAsync(
+                                vmNode.Reference,
+                                CancellationToken.None);
+
                         // TODO: Use proper key.
                         var key = RsaSshKey.NewEphemeralKey();
 
                         await keysAdapter.PushPublicKeyAsync(
-                                instanceLocator,
+                                vmNode.Reference,
                                 "test",
                                 key,
                                 CancellationToken.None)
                             .ConfigureAwait(true);
 
+                        var instance = await instanceTask.ConfigureAwait(true);
+                        
                         // TODO: Use ActivateOrConnectInstanceAsync
                         await this.serviceProvider
                             .GetService<ISshTerminalConnectionBroker>()
                             .ConnectAsync(
                                 vmNode.Reference,
                                 "test",
-                                endpoint,
+                                new IPEndPoint(instance.PublicAddress(), 22),
                                 key)
                             .ConfigureAwait(true);
                     }
