@@ -20,6 +20,7 @@
 //
 
 using Google.Solutions.Common.Locator;
+using Google.Solutions.Common.Test;
 using Google.Solutions.Common.Test.Integration;
 using NUnit.Framework;
 using System;
@@ -113,6 +114,10 @@ namespace Google.Solutions.Ssh.Test
                     }))
                 {
                     await connection.ConnectAsync();
+
+                    AssertEx.ThrowsAggregateException<InvalidOperationException>(
+                        () => connection.ConnectAsync().Wait());
+
                     await connection.SendAsync("whoami\n");
                     await connection.SendAsync("exit\n");
 

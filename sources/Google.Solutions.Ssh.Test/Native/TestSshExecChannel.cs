@@ -60,6 +60,7 @@ namespace Google.Solutions.Ssh.Test.Native
                     LIBSSH2_CHANNEL_EXTENDED_DATA.NORMAL))
                 {
                     channel.WaitForEndOfStream();
+                    channel.WaitForClose();
 
                     var buffer = new byte[1024];
                     var bytesRead = channel.Read(buffer);
@@ -96,6 +97,8 @@ namespace Google.Solutions.Ssh.Test.Native
                     LIBSSH2_CHANNEL_EXTENDED_DATA.NORMAL))
                 {
                     channel.WaitForEndOfStream();
+                    channel.WaitForClose();
+
                     Assert.AreNotEqual(0, channel.Read(new byte[1024]));
                     Assert.AreEqual(0, channel.Read(new byte[1024]));
                     channel.Close();
@@ -125,6 +128,7 @@ namespace Google.Solutions.Ssh.Test.Native
                     LIBSSH2_CHANNEL_EXTENDED_DATA.NORMAL))
                 {
                     channel.WaitForEndOfStream();
+                    channel.WaitForClose();
 
                     var buffer = new byte[1024];
                     var bytesRead = channel.Read(
@@ -165,6 +169,7 @@ namespace Google.Solutions.Ssh.Test.Native
                     LIBSSH2_CHANNEL_EXTENDED_DATA.MERGE))
                 {
                     channel.WaitForEndOfStream();
+                    channel.WaitForClose();
 
                     var buffer = new byte[1024];
                     var bytesRead = channel.Read(
