@@ -32,7 +32,9 @@ namespace Google.Solutions.Ssh.Native
     /// </summary>
     public class SshAuthenticatedSession : IDisposable
     {
-        private readonly SshSessionHandle sessionHandle;
+        // NB. This object does not own this handle and should not dispose it.
+        private readonly SshSession session;
+
         private bool disposed = false;
 
         private readonly uint DefaultWindowSize = (2 * 1024 * 1024);
@@ -42,9 +44,9 @@ namespace Google.Solutions.Ssh.Native
         // Ctor.
         //---------------------------------------------------------------------
 
-        internal SshAuthenticatedSession(SshSessionHandle sessionHandle)
+        internal SshAuthenticatedSession(SshSession session)
         {
-            this.sessionHandle = sessionHandle;
+            this.session= session;
         }
 
         //---------------------------------------------------------------------
@@ -54,13 +56,13 @@ namespace Google.Solutions.Ssh.Native
         private SshChannelHandle OpenChannelInternal(
             LIBSSH2_CHANNEL_EXTENDED_DATA mode)
         {
-            this.sessionHandle.CheckCurrentThreadOwnsHandle();
+            this.session.Handle.CheckCurrentThreadOwnsHandle();
 
             using (SshTraceSources.Default.TraceMethod().WithParameters(mode))
             {
                 LIBSSH2_ERROR result;
                 var channelHandle = UnsafeNativeMethods.libssh2_channel_open_ex(
-                    this.sessionHandle,
+                    this.session.Handle,
                     SshSessionChannelBase.Type,
                     (uint)SshSessionChannelBase.Type.Length,
                     DefaultWindowSize,
@@ -71,7 +73,7 @@ namespace Google.Solutions.Ssh.Native
                 if (channelHandle.IsInvalid)
                 {
                     result = (LIBSSH2_ERROR)UnsafeNativeMethods.libssh2_session_last_errno(
-                        this.sessionHandle);
+                        this.session.Handle);
                 }
                 else
                 {
@@ -80,7 +82,7 @@ namespace Google.Solutions.Ssh.Native
 
                 if (result != LIBSSH2_ERROR.NONE)
                 {
-                    throw new SshNativeException(result);
+                    throw this.session.CreateException(result);
                 }
 
                 //
@@ -93,14 +95,14 @@ namespace Google.Solutions.Ssh.Native
                 if (result != LIBSSH2_ERROR.NONE)
                 {
                     channelHandle.Dispose();
-                    throw new SshNativeException(result);
+                    throw this.session.CreateException(result);
                 }
 
                 return channelHandle;
             }
         }
 
-        private static void SetEnvironmentVariable(
+        private void SetEnvironmentVariable(
             SshChannelHandle channelHandle,
             string key,
             string value)
@@ -122,7 +124,7 @@ namespace Google.Solutions.Ssh.Native
             if (result != LIBSSH2_ERROR.NONE)
             {
                 channelHandle.Dispose();
-                throw new SshNativeException(result);
+                throw this.session.CreateException(result);
             }
         }
 
@@ -133,7 +135,7 @@ namespace Google.Solutions.Ssh.Native
             ushort heightInChars,
             IDictionary<string, string> environmentVariables = null)
         {
-            this.sessionHandle.CheckCurrentThreadOwnsHandle();
+            this.session.Handle.CheckCurrentThreadOwnsHandle();
             Utilities.ThrowIfNull(term, nameof(term));
 
             using (SshTraceSources.Default.TraceMethod().WithParameters(
@@ -173,7 +175,7 @@ namespace Google.Solutions.Ssh.Native
                 if (result != LIBSSH2_ERROR.NONE)
                 {
                     channelHandle.Dispose();
-                    throw new SshNativeException(result);
+                    throw this.session.CreateException(result);
                 }
 
                 //
@@ -190,10 +192,10 @@ namespace Google.Solutions.Ssh.Native
                 if (result != LIBSSH2_ERROR.NONE)
                 {
                     channelHandle.Dispose();
-                    throw new SshNativeException(result);
+                    throw this.session.CreateException(result);
                 }
 
-                return new SshShellChannel(channelHandle);
+                return new SshShellChannel(this.session, channelHandle);
             }
         }
 
@@ -201,7 +203,7 @@ namespace Google.Solutions.Ssh.Native
             string command,
             LIBSSH2_CHANNEL_EXTENDED_DATA mode)
         {
-            this.sessionHandle.CheckCurrentThreadOwnsHandle();
+            this.session.Handle.CheckCurrentThreadOwnsHandle();
             Utilities.ThrowIfNull(command, nameof(command));
 
             using (SshTraceSources.Default.TraceMethod().WithParameters(
@@ -224,10 +226,10 @@ namespace Google.Solutions.Ssh.Native
                 if (result != LIBSSH2_ERROR.NONE)
                 {
                     channelHandle.Dispose();
-                    throw new SshNativeException(result);
+                    throw this.session.CreateException(result);
                 }
 
-                return new SshExecChannel(channelHandle);
+                return new SshExecChannel(this.session, channelHandle);
             }
         }
 
@@ -251,7 +253,7 @@ namespace Google.Solutions.Ssh.Native
 
             if (disposing)
             {
-                this.sessionHandle.CheckCurrentThreadOwnsHandle();
+                this.session.Handle.CheckCurrentThreadOwnsHandle();
                 this.disposed = true;
             }
         }

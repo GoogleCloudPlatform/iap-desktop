@@ -83,7 +83,7 @@
     <Compile Include="Native\TestSshAuthenticatedSession.cs" />
     <Compile Include="Native\TestSshConnectedSession.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Native\TestSession.cs" />
+    <Compile Include="Native\TestSshSession.cs" />
     <Compile Include="TestSshShellConnection.cs" />
   </ItemGroup>
   <ItemGroup>

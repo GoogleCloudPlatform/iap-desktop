@@ -20,7 +20,6 @@
 //
 
 using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 
 namespace Google.Solutions.Ssh.Native
@@ -34,43 +33,14 @@ namespace Google.Solutions.Ssh.Native
 
     public class SshNativeException : SshException
     {
-        private static readonly IDictionary<LIBSSH2_ERROR, string> messages
-            = new Dictionary<LIBSSH2_ERROR, string>()
-            {
-                { LIBSSH2_ERROR.SOCKET_NONE, "The socket is invalid"},
-                { LIBSSH2_ERROR.BANNER_SEND, "Unable to send banner to remote host"},
-                { LIBSSH2_ERROR.KEX_FAILURE, "Encryption key exchange with the remote host failed"},
-                { LIBSSH2_ERROR.SOCKET_SEND, "Unable to send data on socket"},
-                { LIBSSH2_ERROR.SOCKET_DISCONNECT, "The socket was disconnected"},
-                { LIBSSH2_ERROR.PROTO, "An invalid SSH protocol response was received on the socket"},
-                { LIBSSH2_ERROR.INVAL, "The requested method type was invalid" },
-                { LIBSSH2_ERROR.METHOD_NONE, "No method has been set" },
-                { LIBSSH2_ERROR.BAD_USE, "Invalid address of algs" },
-                { LIBSSH2_ERROR.ALLOC, "Allocation of memory failed" },
-                { LIBSSH2_ERROR.METHOD_NOT_SUPPORTED, "The requested method is not supported" },
-                { LIBSSH2_ERROR.TIMEOUT, "The operation timed out" },
-            };
-
         public LIBSSH2_ERROR ErrorCode { get; }
 
-
-        private static string MessageFromCode(LIBSSH2_ERROR code)
-        {
-            if (messages.TryGetValue(code, out var message))
-            {
-                return message;
-            }
-            else
-            {
-                return $"Unknown SSH error {code}";
-            }
-        }
-
-        public SshNativeException(LIBSSH2_ERROR code)
-            : base(MessageFromCode(code))
+        internal SshNativeException(
+            LIBSSH2_ERROR code,
+            string errorMessage)
+            : base(errorMessage)
         {
             Debug.Assert(code != LIBSSH2_ERROR.NONE);
-            //Debug.Assert(code != LIBSSH2_ERROR.EAGAIN);
 
             this.ErrorCode = code;
         }

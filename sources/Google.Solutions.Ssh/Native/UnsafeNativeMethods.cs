@@ -414,6 +414,13 @@ namespace Google.Solutions.Ssh.Native
         public static extern int libssh2_session_last_errno(
             SshSessionHandle session);
 
+        [DllImport(Libssh2, CallingConvention = CallingConvention.Cdecl)]
+        public static extern int libssh2_session_last_error(
+            SshSessionHandle session,
+            out IntPtr errorMessage,
+            out int errorMessageLength,
+            int allocateBuffer);
+
         //---------------------------------------------------------------------
         // Tracing functions.
         //---------------------------------------------------------------------

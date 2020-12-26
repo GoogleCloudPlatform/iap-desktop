@@ -36,8 +36,10 @@ namespace Google.Solutions.Ssh.Native
         // Ctor.
         //---------------------------------------------------------------------
 
-        internal SshSessionChannelBase(SshChannelHandle channelHandle)
-            : base(channelHandle)
+        internal SshSessionChannelBase(
+            SshSession session,
+            SshChannelHandle channelHandle)
+            : base(session, channelHandle)
         {
         }
 
@@ -82,7 +84,7 @@ namespace Google.Solutions.Ssh.Native
                         out IntPtr langTagLength);
                     if (result != LIBSSH2_ERROR.NONE)
                     {
-                        throw new SshNativeException(result);
+                        throw this.session.CreateException(result);
                     }
 
                     //
@@ -117,8 +119,10 @@ namespace Google.Solutions.Ssh.Native
         // Ctor.
         //---------------------------------------------------------------------
 
-        internal SshExecChannel(SshChannelHandle channelHandle)
-            : base(channelHandle)
+        internal SshExecChannel(
+            SshSession session,
+            SshChannelHandle channelHandle)
+            : base(session, channelHandle)
         {
         }
     }
@@ -129,8 +133,10 @@ namespace Google.Solutions.Ssh.Native
         // Ctor.
         //---------------------------------------------------------------------
 
-        internal SshShellChannel(SshChannelHandle channelHandle)
-            : base(channelHandle)
+        internal SshShellChannel(
+            SshSession session,
+            SshChannelHandle channelHandle)
+            : base(session, channelHandle)
         {
         }
 
@@ -149,7 +155,7 @@ namespace Google.Solutions.Ssh.Native
 
             if (result != LIBSSH2_ERROR.NONE)
             {
-                throw new SshNativeException(result);
+                throw this.session.CreateException(result);
             }
         }
     }
