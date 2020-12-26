@@ -41,6 +41,8 @@ namespace Google.Solutions.Ssh.Native
         private readonly SshSessionHandle sessionHandle;
         private bool disposed = false;
 
+        internal SshSessionHandle Handle => this.sessionHandle;
+
         internal static readonly UnsafeNativeMethods.Alloc Alloc;
         internal static readonly UnsafeNativeMethods.Free Free;
         internal static readonly UnsafeNativeMethods.Realloc Realloc;
@@ -66,7 +68,9 @@ namespace Google.Solutions.Ssh.Native
                 var result = (LIBSSH2_ERROR)UnsafeNativeMethods.libssh2_init(0);
                 if (result != LIBSSH2_ERROR.NONE)
                 {
-                    throw new SshNativeException(result);
+                    throw new SshNativeException(
+                        result,
+                        "Failed to initialize libssh2");
                 }
             }
             catch (EntryPointNotFoundException)
@@ -160,7 +164,7 @@ namespace Google.Solutions.Ssh.Native
                 }
                 else if (count < 0)
                 {
-                    throw new SshNativeException((LIBSSH2_ERROR)count);
+                    throw CreateException((LIBSSH2_ERROR)count);
                 }
                 else
                 {
@@ -174,15 +178,16 @@ namespace Google.Solutions.Ssh.Native
             string[] methods)
         {
             this.sessionHandle.CheckCurrentThreadOwnsHandle();
-                if (!Enum.IsDefined(typeof(LIBSSH2_METHOD), methodType))
-                {
-                    throw new ArgumentException(nameof(methodType));
-                }
 
-                if (methods == null || methods.Length == 0)
-                {
-                    throw new ArgumentException(nameof(methods));
-                }
+            if (!Enum.IsDefined(typeof(LIBSSH2_METHOD), methodType))
+            {
+                throw new ArgumentException(nameof(methodType));
+            }
+
+            if (methods == null || methods.Length == 0)
+            {
+                throw new ArgumentException(nameof(methods));
+            }
 
 
             using (SshTraceSources.Default.TraceMethod().WithParameters(
@@ -197,7 +202,7 @@ namespace Google.Solutions.Ssh.Native
                     prefs);
                 if (result != LIBSSH2_ERROR.NONE)
                 {
-                    throw new SshNativeException(result);
+                    throw CreateException(result);
                 }
             }
         }
@@ -287,7 +292,7 @@ namespace Google.Solutions.Ssh.Native
                 
                 if (result != LIBSSH2_ERROR.NONE)
                 {
-                    throw new SshNativeException(result);
+                    throw CreateException(result);
                 }
 
                 Debug.Assert(secondsTillNextKeepalive > 0);
@@ -309,11 +314,13 @@ namespace Google.Solutions.Ssh.Native
                 var socket = new Socket(
                     AddressFamily.InterNetwork,
                     SocketType.Stream,
-                    ProtocolType.Tcp);
+                    ProtocolType.Tcp)
+                {
 
-                // Flush input data immediately so that the user does not
-                // experience a lag.
-                socket.NoDelay = true;
+                    // Flush input data immediately so that the user does not
+                    // experience a lag.
+                    NoDelay = true
+                };
 
                 socket.Connect(remoteEndpoint);
 
@@ -324,10 +331,10 @@ namespace Google.Solutions.Ssh.Native
                 if (result != LIBSSH2_ERROR.NONE)
                 {
                     socket.Close();
-                    throw new SshNativeException(result);
+                    throw CreateException(result);
                 }
 
-                return new SshConnectedSession(this.sessionHandle, socket);
+                return new SshConnectedSession(this, socket);
             }
         }
 
@@ -343,6 +350,30 @@ namespace Google.Solutions.Ssh.Native
 
                 return (LIBSSH2_ERROR)UnsafeNativeMethods.libssh2_session_last_errno(
                     this.sessionHandle);
+            }
+        }
+        
+        public SshNativeException CreateException(LIBSSH2_ERROR error)
+        {
+            var lastError = (LIBSSH2_ERROR)UnsafeNativeMethods.libssh2_session_last_error(
+                this.sessionHandle,
+                out IntPtr errorMessage,
+                out int errorMessageLength,
+                0);
+
+            if (lastError == error)
+            { 
+                return new SshNativeException(
+                    error,
+                    Marshal.PtrToStringAnsi(errorMessage, errorMessageLength));
+            }
+            else
+            {
+                // The last error is something else, so create a generic
+                // exception
+                return new SshNativeException(
+                    error,
+                    $"SSH operation failed: {error}");
             }
         }
 

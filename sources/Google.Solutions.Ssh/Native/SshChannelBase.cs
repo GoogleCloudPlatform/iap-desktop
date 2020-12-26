@@ -33,6 +33,9 @@ namespace Google.Solutions.Ssh.Native
     {
         internal readonly SshChannelHandle channelHandle;
 
+        // NB. This object does not own this handle and should not dispose it.
+        protected readonly SshSession session;
+
         private bool closedForWriting = false;
         private bool disposed = false;
 
@@ -40,8 +43,11 @@ namespace Google.Solutions.Ssh.Native
         // Ctor.
         //---------------------------------------------------------------------
 
-        internal SshChannelBase(SshChannelHandle channelHandle)
+        internal SshChannelBase(
+            SshSession session,
+            SshChannelHandle channelHandle)
         {
+            this.session = session;
             this.channelHandle = channelHandle;
         }
 
@@ -94,7 +100,7 @@ namespace Google.Solutions.Ssh.Native
                 }
                 else
                 {
-                    throw new SshNativeException((LIBSSH2_ERROR)bytesRead);
+                    throw this.session.CreateException((LIBSSH2_ERROR)bytesRead);
                 }
             }
         }
@@ -122,7 +128,7 @@ namespace Google.Solutions.Ssh.Native
                 }
                 else
                 {
-                    throw new SshNativeException((LIBSSH2_ERROR)bytesWritten);
+                    throw this.session.CreateException((LIBSSH2_ERROR)bytesWritten);
                 }
             }
         }
@@ -138,7 +144,7 @@ namespace Google.Solutions.Ssh.Native
 
                 if (result != LIBSSH2_ERROR.NONE)
                 {
-                    throw new SshNativeException((LIBSSH2_ERROR)result);
+                    throw this.session.CreateException((LIBSSH2_ERROR)result);
                 }
             }
         }
@@ -161,7 +167,7 @@ namespace Google.Solutions.Ssh.Native
                     }
                     else if (result != LIBSSH2_ERROR.NONE)
                     {
-                        throw new SshNativeException((LIBSSH2_ERROR)result);
+                        throw this.session.CreateException((LIBSSH2_ERROR)result);
                     }
 
                     this.closedForWriting = true;

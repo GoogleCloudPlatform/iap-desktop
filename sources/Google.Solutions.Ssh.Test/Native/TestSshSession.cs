@@ -32,7 +32,7 @@ using System.Threading.Tasks;
 namespace Google.Solutions.Ssh.Test.Native
 {
     [TestFixture]
-    public class TestSession : SshFixtureBase
+    public class TestSshSession : SshFixtureBase
     {
         private readonly IPEndPoint NonSshEndpoint =
             new IPEndPoint(IPAddress.Parse("8.8.8.8"), 53);
@@ -80,6 +80,44 @@ namespace Google.Solutions.Ssh.Test.Native
             using (var session = CreateSession())
             {
                 Assert.IsTrue(session.IsBlocking);
+            }
+        }
+
+        //---------------------------------------------------------------------
+        // Error.
+        //---------------------------------------------------------------------
+
+        [Test]
+        public void WhenLastErrorStillApplies_ThenExceptionContainsErrorMessage()
+        {
+            using (var session = CreateSession())
+            {
+                // Trigger an error
+                try
+                {
+                    session.SetPreferredMethods(LIBSSH2_METHOD.KEX, new[] { "invalid" });
+                }
+                catch (Exception)
+                { }
+
+                var exception = session.CreateException(LIBSSH2_ERROR.METHOD_NOT_SUPPORTED);
+                Assert.AreEqual(
+                    "The requested method(s) are not currently supported", 
+                    exception.Message);
+                Assert.AreEqual(LIBSSH2_ERROR.METHOD_NOT_SUPPORTED, exception.ErrorCode);
+            }
+        }
+
+        [Test]
+        public void WhenLastErrorDoesNotApplyAnymore_ThenExceptionContainsGenericErrorMessage()
+        {
+            using (var session = CreateSession())
+            {
+                var exception = session.CreateException(LIBSSH2_ERROR.PASSWORD_EXPIRED);
+                Assert.AreEqual(
+                    "SSH operation failed: PASSWORD_EXPIRED",
+                    exception.Message);
+                Assert.AreEqual(LIBSSH2_ERROR.PASSWORD_EXPIRED, exception.ErrorCode);
             }
         }
 

@@ -35,7 +35,9 @@ namespace Google.Solutions.Ssh.Native
     /// </summary>
     public class SshConnectedSession : IDisposable
     {
-        private readonly SshSessionHandle sessionHandle;
+        // NB. This object does not own this handle and should not dispose it.
+        private readonly SshSession session;
+
         private readonly Socket socket;
         private bool disposed = false;
 
@@ -63,9 +65,9 @@ namespace Google.Solutions.Ssh.Native
         // Ctor.
         //---------------------------------------------------------------------
 
-        internal SshConnectedSession(SshSessionHandle sessionHandle, Socket socket)
+        internal SshConnectedSession(SshSession session, Socket socket)
         {
-            this.sessionHandle = sessionHandle;
+            this.session= session;
             this.socket = socket;
         }
 
@@ -75,12 +77,12 @@ namespace Google.Solutions.Ssh.Native
 
         public string GetRemoteBanner()
         {
-            this.sessionHandle.CheckCurrentThreadOwnsHandle();
+            this.session.Handle.CheckCurrentThreadOwnsHandle();
 
             using (SshTraceSources.Default.TraceMethod().WithoutParameters())
             {
                 var bannerPtr = UnsafeNativeMethods.libssh2_session_banner_get(
-                    this.sessionHandle);
+                    this.session.Handle);
 
                 return bannerPtr == IntPtr.Zero
                     ? null
@@ -95,7 +97,7 @@ namespace Google.Solutions.Ssh.Native
 
         public string[] GetActiveAlgorithms(LIBSSH2_METHOD methodType)
         {
-            this.sessionHandle.CheckCurrentThreadOwnsHandle();
+            this.session.Handle.CheckCurrentThreadOwnsHandle();
             if (!Enum.IsDefined(typeof(LIBSSH2_METHOD), methodType))
             {
                 throw new ArgumentException(nameof(methodType));
@@ -104,7 +106,7 @@ namespace Google.Solutions.Ssh.Native
             using (SshTraceSources.Default.TraceMethod().WithParameters(methodType))
             {
                 var stringPtr = UnsafeNativeMethods.libssh2_session_methods(
-                    this.sessionHandle,
+                    this.session.Handle,
                     methodType);
 
                 if (stringPtr == IntPtr.Zero)
@@ -125,7 +127,7 @@ namespace Google.Solutions.Ssh.Native
 
         public byte[] GetRemoteHostKeyHash(LIBSSH2_HOSTKEY_HASH hashType)
         {
-            this.sessionHandle.CheckCurrentThreadOwnsHandle();
+            this.session.Handle.CheckCurrentThreadOwnsHandle();
             if (!Enum.IsDefined(typeof(LIBSSH2_HOSTKEY_HASH), hashType))
             {
                 throw new ArgumentException(nameof(hashType));
@@ -134,7 +136,7 @@ namespace Google.Solutions.Ssh.Native
             using (SshTraceSources.Default.TraceMethod().WithParameters(hashType))
             {
                 var hashPtr = UnsafeNativeMethods.libssh2_hostkey_hash(
-                    this.sessionHandle,
+                    this.session.Handle,
                     hashType);
 
                 if (hashPtr == IntPtr.Zero)
@@ -152,12 +154,12 @@ namespace Google.Solutions.Ssh.Native
 
         public byte[] GetRemoteHostKey()
         {
-            this.sessionHandle.CheckCurrentThreadOwnsHandle();
+            this.session.Handle.CheckCurrentThreadOwnsHandle();
 
             using (SshTraceSources.Default.TraceMethod().WithoutParameters())
             {
                 var keyPtr = UnsafeNativeMethods.libssh2_session_hostkey(
-                    this.sessionHandle,
+                    this.session.Handle,
                     out var keyLength,
                     out var _);
 
@@ -176,12 +178,12 @@ namespace Google.Solutions.Ssh.Native
 
         public LIBSSH2_HOSTKEY_TYPE GetRemoteHostKeyType()
         {
-            this.sessionHandle.CheckCurrentThreadOwnsHandle();
+            this.session.Handle.CheckCurrentThreadOwnsHandle();
 
             using (SshTraceSources.Default.TraceMethod().WithoutParameters())
             {
                 var keyPtr = UnsafeNativeMethods.libssh2_session_hostkey(
-                    this.sessionHandle,
+                    this.session.Handle,
                     out var _,
                     out var type);
 
@@ -206,22 +208,22 @@ namespace Google.Solutions.Ssh.Native
             {
                 using (SshTraceSources.Default.TraceMethod().WithoutParameters())
                 {
-                    this.sessionHandle.CheckCurrentThreadOwnsHandle();
+                    this.session.Handle.CheckCurrentThreadOwnsHandle();
 
                     return UnsafeNativeMethods.libssh2_userauth_authenticated(
-                        this.sessionHandle) == 1;
+                        this.session.Handle) == 1;
                 }
             }
         }
 
         public string[] GetAuthenticationMethods(string username)
         {
-            this.sessionHandle.CheckCurrentThreadOwnsHandle();
+            this.session.Handle.CheckCurrentThreadOwnsHandle();
 
             using (SshTraceSources.Default.TraceMethod().WithParameters(username))
             {
                 var stringPtr = UnsafeNativeMethods.libssh2_userauth_list(
-                    this.sessionHandle,
+                    this.session.Handle,
                     username,
                     username.Length);
 
@@ -243,7 +245,7 @@ namespace Google.Solutions.Ssh.Native
             string username,
             ISshKey key)
         {
-            this.sessionHandle.CheckCurrentThreadOwnsHandle();
+            this.session.Handle.CheckCurrentThreadOwnsHandle();
             Utilities.ThrowIfNullOrEmpty(username, nameof(username));
             Utilities.ThrowIfNull(key, nameof(key));
 
@@ -262,7 +264,7 @@ namespace Google.Solutions.Ssh.Native
                 IntPtr context)
             {
                 Debug.Assert(context == IntPtr.Zero);
-                Debug.Assert(session == this.sessionHandle.DangerousGetHandle());
+                Debug.Assert(session == this.session.Handle.DangerousGetHandle());
 
                 //
                 // Copy data to managed buffer and create signature.
@@ -293,7 +295,7 @@ namespace Google.Solutions.Ssh.Native
                 var publicKey = key.PublicKey;
 
                 var result = (LIBSSH2_ERROR)UnsafeNativeMethods.libssh2_userauth_publickey(
-                    this.sessionHandle,
+                    this.session.Handle,
                     username,
                     key.PublicKey,
                     new IntPtr(publicKey.Length),
@@ -302,11 +304,11 @@ namespace Google.Solutions.Ssh.Native
 
                 if (result != LIBSSH2_ERROR.NONE)
                 {
-                    throw new SshNativeException(result);
+                    throw this.session.CreateException(result);
                 }
                 else
                 {
-                    return new SshAuthenticatedSession(this.sessionHandle);
+                    return new SshAuthenticatedSession(this.session);
                 }
             }
         }
@@ -331,10 +333,10 @@ namespace Google.Solutions.Ssh.Native
 
             if (disposing)
             {
-                this.sessionHandle.CheckCurrentThreadOwnsHandle();
+                this.session.Handle.CheckCurrentThreadOwnsHandle();
 
                 var result = (LIBSSH2_ERROR)UnsafeNativeMethods.libssh2_session_disconnect_ex(
-                    this.sessionHandle,
+                    this.session.Handle,
                     SSH_DISCONNECT.BY_APPLICATION,
                     null,
                     null);
