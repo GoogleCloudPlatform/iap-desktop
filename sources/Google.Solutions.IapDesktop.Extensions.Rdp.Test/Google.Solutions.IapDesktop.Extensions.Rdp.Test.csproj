@@ -102,9 +102,9 @@
     <Compile Include="Views\Credentials\TestAuthorizationExtensions.cs" />
     <Compile Include="Views\Credentials\TestCredentialPrompt.cs" />
     <Compile Include="Views\Credentials\TestCredentialsService.cs" />
-    <Compile Include="Views\RemoteDesktop\TestRemoteDesktop.cs" />
-    <Compile Include="Views\RemoteDesktop\TestRemoteDesktopGroupPolicies.cs" />
-    <Compile Include="Views\RemoteDesktop\TestRemoteDesktopOverIap.cs" />
+    <Compile Include="Views\RemoteDesktop\TestRemoteDesktopConnectionBroker.cs" />
+    <Compile Include="Views\RemoteDesktop\TestRemoteDesktopPane.cs" />
+    <Compile Include="Views\RemoteDesktop\TestRemoteDesktopPaneWithGroupPolicies.cs" />
     <Compile Include="Views\TunnelsViewer\TestTunnelsViewModel.cs" />
     <Compile Include="Services\Tunnel\TestTunnelBrokerService.cs" />
     <Compile Include="Services\Tunnel\TestTunnelService.cs" />

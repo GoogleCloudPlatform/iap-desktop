@@ -35,16 +35,79 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
+
 namespace Google.Solutions.IapDesktop.Extensions.Rdp.Test.Views.RemoteDesktop
 {
     [TestFixture]
-    [Category("IntegrationTest")]
-    [Category("IAP")]
-    public class TestRemoteDesktopOverIap : WindowTestFixtureBase
+    public class TestRemoteDesktopPane : WindowTestFixtureBase
     {
         // Use a larger machine type as all this RDP'ing consumes a fair
         // amount of memory.
         private const string MachineTypeForRdp = "n1-highmem-2";
+
+        private readonly InstanceLocator SampleLocator =
+            new InstanceLocator("project", "zone", "instance");
+
+        //---------------------------------------------------------------------
+        // Invalid server
+        //---------------------------------------------------------------------
+
+        [Test]
+        public void WhenServerInvalid_ThenErrorIsShownAndWindowIsClosed()
+        {
+            var settings = VmInstanceConnectionSettings.CreateNew(this.SampleLocator);
+
+            var rdpService = new RemoteDesktopConnectionBroker(this.serviceProvider);
+            rdpService.Connect(
+                this.SampleLocator,
+                "invalid.corp",
+                3389,
+                settings);
+
+            AwaitEvent<ConnectionFailedEvent>();
+            Assert.IsInstanceOf(typeof(RdpDisconnectedException), this.ExceptionShown);
+            Assert.AreEqual(260, ((RdpDisconnectedException)this.ExceptionShown).DisconnectReason);
+        }
+
+        [Test]
+        public void WhenPortNotListening_ThenErrorIsShownAndWindowIsClosed()
+        {
+            var settings = VmInstanceConnectionSettings.CreateNew(this.SampleLocator);
+            settings.ConnectionTimeout.IntValue = 5;
+
+            var rdpService = new RemoteDesktopConnectionBroker(this.serviceProvider);
+            rdpService.Connect(
+                this.SampleLocator,
+                "localhost",
+                1,
+                settings);
+
+            AwaitEvent<ConnectionFailedEvent>();
+            Assert.IsInstanceOf(typeof(RdpDisconnectedException), this.ExceptionShown);
+            Assert.AreEqual(516, ((RdpDisconnectedException)this.ExceptionShown).DisconnectReason);
+        }
+
+        [Test]
+        [Ignore("")]
+        public void WhenWrongPort_ThenErrorIsShownAndWindowIsClosed()
+        {
+            var settings = VmInstanceConnectionSettings.CreateNew(this.SampleLocator);
+
+            var rdpService = new RemoteDesktopConnectionBroker(this.serviceProvider);
+            rdpService.Connect(
+                this.SampleLocator,
+                "localhost",
+                135,    // That one will be listening, but it is RPC, not RDP.
+                settings);
+
+            AwaitEvent<ConnectionFailedEvent>();
+            Assert.IsInstanceOf(typeof(RdpDisconnectedException), this.ExceptionShown);
+            Assert.AreEqual(2308, ((RdpDisconnectedException)this.ExceptionShown).DisconnectReason);
+        }
+
+        //---------------------------------------------------------------------
+        // Connect via IAP
+        //---------------------------------------------------------------------
 
         [Test]
         public async Task WhenCredentialsInvalid_ThenErrorIsShownAndWindowIsClosed(
@@ -80,20 +143,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Test.Views.RemoteDesktop
             }
         }
 
-        //
-        // There's no reliable way to dismiss the warning/error, so these tests seem 
-        // challenging to implement.
-        //
-        //[Test]
-        //public void WhenAttemptServerAuthentication_ThenWarningIsShown()
-        //{
-        //}
-
-        //[Test]
-        //public void WhenRequireServerAuthentication_ThenConnectionFails(
-        //    [WindowsInstance] ResourceTask<InstanceLocator> testInstance)
-        //{
-        //}
 
         [Test]
         public async Task WhenCredentialsValid_ThenConnectingSucceeds(
@@ -160,6 +209,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Test.Views.RemoteDesktop
                 Assert.IsNotNull(expectedEvent);
             }
         }
+
 
         [Test, Ignore("Unreliable in CI")]
         public async Task WhenSigningOutPerSendKeys_ThenWindowIsClosed(
