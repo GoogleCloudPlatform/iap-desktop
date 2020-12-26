@@ -125,7 +125,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Ssh.Services
 
                         var instance = await instanceTask.ConfigureAwait(true);
                         
-                        // TODO: Use ActivateOrConnectInstanceAsync
                         await this.serviceProvider
                             .GetService<ISshTerminalConnectionBroker>()
                             .ConnectAsync(

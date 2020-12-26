@@ -25,53 +25,53 @@ using System.Windows.Forms;
 
 namespace Google.Solutions.IapDesktop.Extensions.Ssh.Controls
 {
-	internal sealed class Caret : IDisposable
-	{
-		public bool Visible { get; private set; } = true;
+    internal sealed class Caret : IDisposable
+    {
+        public bool Visible { get; private set; } = true;
 
-		public IWin32Window Owner { get; }
+        public IWin32Window Owner { get; }
 
-		public Point Position
+        public Point Position
         {
-			set
+            set
             {
-				UnsafeNativeMethods.SetCaretPos(value.X, value.Y);
+                UnsafeNativeMethods.SetCaretPos(value.X, value.Y);
             }
-			get
+            get
             {
-				UnsafeNativeMethods.GetCaretPos(
-					out UnsafeNativeMethods.POINT position);
-				return new Point(position.X, position.Y);
-			}
+                UnsafeNativeMethods.GetCaretPos(
+                    out UnsafeNativeMethods.POINT position);
+                return new Point(position.X, position.Y);
+            }
         }
 
-		public Caret(IWin32Window owner, Size size)
-		{
-			this.Owner = owner;
-			UnsafeNativeMethods.CreateCaret(owner.Handle, 0, size.Width, size.Height);
-		}
+        public Caret(IWin32Window owner, Size size)
+        {
+            this.Owner = owner;
+            UnsafeNativeMethods.CreateCaret(owner.Handle, 0, size.Width, size.Height);
+        }
 
-		public void Hide()
-		{
-			if (this.Visible)
-			{
-				UnsafeNativeMethods.HideCaret(this.Owner.Handle);
-				this.Visible = false;
-			}
-		}
+        public void Hide()
+        {
+            if (this.Visible)
+            {
+                UnsafeNativeMethods.HideCaret(this.Owner.Handle);
+                this.Visible = false;
+            }
+        }
 
-		public void Show()
-		{
-			if (!this.Visible)
-			{
-				UnsafeNativeMethods.ShowCaret(this.Owner.Handle);
-				this.Visible = true;
-			}
-		}
+        public void Show()
+        {
+            if (!this.Visible)
+            {
+                UnsafeNativeMethods.ShowCaret(this.Owner.Handle);
+                this.Visible = true;
+            }
+        }
 
         public void Dispose()
         {
-			UnsafeNativeMethods.DestroyCaret();
-		}
+            UnsafeNativeMethods.DestroyCaret();
+        }
     }
 }
