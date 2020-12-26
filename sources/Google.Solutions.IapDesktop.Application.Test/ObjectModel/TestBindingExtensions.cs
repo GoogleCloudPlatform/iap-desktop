@@ -235,5 +235,59 @@ namespace Google.Solutions.IapDesktop.Application.Test.ObjectModel
             model.One = "test";
             Assert.AreEqual("test", control.Text);
         }
+
+
+        //---------------------------------------------------------------------
+        // Readonly bind tests.
+        //---------------------------------------------------------------------
+
+        [Test]
+        public void WhenControlBoundReadonly_ThenValueFromModelIsApplied()
+        {
+            var control = new TextBox();
+            var model = new Observable
+            {
+                One = "text from model"
+            };
+
+            control.BindReadonlyProperty(
+                t => t.Text,
+                model,
+                m => m.One);
+
+            Assert.AreEqual("text from model", control.Text);
+        }
+
+        [Test]
+        public void WhenControlBoundReadonlyAndControlChanges_ThenModelIsNotUpdated()
+        {
+            var control = new TextBox();
+            var model = new Observable();
+
+            control.BindReadonlyProperty(
+                t => t.Text,
+                model,
+                m => m.One);
+
+            Assert.IsNull(model.One);
+            control.Text = "test";
+            Assert.IsNull(model.One);
+        }
+
+        [Test]
+        public void WhenControlBoundReadonlyAndModelChanges_ThenControlIsUpdated()
+        {
+            var control = new TextBox();
+            var model = new Observable();
+
+            control.BindReadonlyProperty(
+                t => t.Text,
+                model,
+                m => m.One);
+
+            Assert.AreEqual("", control.Text);
+            model.One = "test";
+            Assert.AreEqual("test", control.Text);
+        }
     }
 }

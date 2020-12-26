@@ -75,17 +75,17 @@ namespace Google.Solutions.IapDesktop.Extensions.Ssh.Views.Terminal
             this.Text = vmInstance.Name;
             this.DockAreas = DockAreas.Document;
 
-            this.reconnectPanel.BindProperty(
+            this.reconnectPanel.BindReadonlyProperty(
                 c => c.Visible,
                 this.viewModel,
                 m => m.IsReconnectPanelVisible,
                 this.components);
-            this.spinner.BindProperty(
+            this.spinner.BindReadonlyProperty(
                 c => c.Visible,
                 this.viewModel,
                 m => m.IsSpinnerVisible,
                 this.components);
-            this.terminal.BindProperty(
+            this.terminal.BindReadonlyProperty(
                 c => c.Visible,
                 this.viewModel,
                 m => m.IsTerminalVisible,
