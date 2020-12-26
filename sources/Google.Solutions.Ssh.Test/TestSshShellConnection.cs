@@ -132,5 +132,39 @@ namespace Google.Solutions.Ssh.Test
                 }
             }
         }
+
+
+        [Test]
+        public async Task WhenDisposingConnection_ThenWorkerIsStopped(
+            [LinuxInstance] ResourceTask<InstanceLocator> instanceLocatorTask)
+        {
+            var endpoint = new IPEndPoint(
+                await InstanceUtil.PublicIpAddressForInstanceAsync(await instanceLocatorTask),
+                22);
+
+            using (var key = new RsaSshKey(new RSACng()))
+            {
+                await InstanceUtil.AddPublicKeyToMetadata(
+                    await instanceLocatorTask,
+                    "testuser",
+                    key);
+
+                using (var connection = new SshShellConnection(
+                    "testuser",
+                    endpoint,
+                    key,
+                    SshShellConnection.DefaultTerminal,
+                    SshShellConnection.DefaultTerminalSize,
+                    CultureInfo.InvariantCulture,
+                    _ => { },
+                    exception =>
+                    {
+                        Assert.Fail("Unexpected error");
+                    }))
+                {
+                    await connection.ConnectAsync();
+                }
+            }
+        }
     }
 }
