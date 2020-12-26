@@ -104,9 +104,17 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
                 this.serviceProvider);
         }
 
-        private void PopulateProjectNode(string projectId, IEnumerable<Instance> instances)
+        private void PopulateProjectNode(
+            string projectId, 
+            IEnumerable<Instance> instances)
         {
             Debug.Assert(!this.InvokeRequired);
+
+            if (!this.includeLinuxToolStripButton.Checked)
+            {
+                // Narrow the list down to Windows instances.
+                instances = instances.Where(i => i.IsWindowsInstance());
+            }
 
             var projectNode = this.rootNode.Nodes
                 .Cast<ProjectNode>()
@@ -341,8 +349,8 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
                 // Update context menu state.
                 //
                 this.refreshToolStripMenuItem.Visible =
-                this.unloadProjectToolStripMenuItem.Visible = (selectedNode is ProjectNode);
-                this.refreshAllProjectsToolStripMenuItem.Visible = (selectedNode is CloudNode);
+                    this.unloadProjectToolStripMenuItem.Visible = (selectedNode is ProjectNode);
+                    this.refreshAllProjectsToolStripMenuItem.Visible = (selectedNode is CloudNode);
 
                 this.openInCloudConsoleToolStripMenuItem.Visible =
                     this.iapSeparatorToolStripMenuItem.Visible =

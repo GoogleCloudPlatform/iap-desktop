@@ -63,6 +63,7 @@ namespace Google.Solutions.IapDesktop.Application.ObjectModel
         public string Text { get; }
         public Image Image { get; set; }
         public Keys ShortcutKeys { get; set; }
+        public bool IsDefault { get; set; }
 
         public void Execute(TContext context)
         {

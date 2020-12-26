@@ -46,16 +46,19 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Services
         private readonly IServiceProvider serviceProvider;
         private readonly IWin32Window window;
 
-        private static CommandState GetToolbarCommandStateWhenRunningInstanceRequired(IProjectExplorerNode node)
+        private static CommandState GetToolbarCommandStateWhenRunningInstanceRequired(
+            IProjectExplorerNode node)
         {
-            return node is IProjectExplorerVmInstanceNode vmNode && vmNode.IsRunning
+            return node is IProjectExplorerVmInstanceNode vmNode && 
+                        vmNode.IsRunning && 
+                        vmNode.IsWindowsInstance
                 ? CommandState.Enabled
                 : CommandState.Disabled;
         }
 
         private static CommandState GetContextMenuCommandStateWhenRunningInstanceRequired(IProjectExplorerNode node)
         {
-            if (node is IProjectExplorerVmInstanceNode vmNode)
+            if (node is IProjectExplorerVmInstanceNode vmNode && vmNode.IsWindowsInstance)
             {
                 return vmNode.IsRunning
                     ? CommandState.Enabled
@@ -193,7 +196,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Services
                     GetContextMenuCommandStateWhenRunningInstanceRequired,
                     Connect)
                 {
-                    Image = Resources.Connect_16
+                    Image = Resources.Connect_16,
+                    IsDefault = true
                 },
                 0);
 

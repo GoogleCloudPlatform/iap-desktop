@@ -75,14 +75,11 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
         }
 
         public void Populate(
-            IEnumerable<Instance> allInstances,
+            IEnumerable<Instance> instances,
             Func<InstanceLocator, bool> isConnected)
         {
             this.Nodes.Clear();
 
-            // Narrow the list down to Windows instances - there is no point 
-            // of adding Linux instanes to the list of servers.
-            var instances = allInstances.Where(i => i.IsWindowsInstance());
             var zoneIds = instances.Select(i => InventoryNode.ShortIdFromUrl(i.Zone)).ToHashSet();
 
             foreach (var zoneId in zoneIds)
@@ -133,25 +130,43 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
     [ComVisible(false)]
     public class VmInstanceNode : InventoryNode, IProjectExplorerVmInstanceNode
     {
-        private const int DisconnectedIconIndex = 4;
-        private const int ConnectedIconIndex = 5;
+        private const int WindowsDisconnectedIconIndex = 4;
+        private const int WindowsConnectedIconIndex = 5;
         private const int StoppedIconIndex = 6;
+        private const int LinuxDisconnectedIconIndex = 7;
+        private const int LinuxConnectedIconIndex = 8;
 
         public InstanceLocator Reference
             => new InstanceLocator(this.ProjectId, this.ZoneId, this.InstanceName);
 
+        public bool IsWindowsInstance { get; private set; }
+
         public string ProjectId => ((ZoneNode)this.Parent).ProjectId;
         public string ZoneId => ((ZoneNode)this.Parent).ZoneId;
+
+        private VmInstanceNode(
+            Instance instance,
+            ZoneNode parent,
+            bool isWindowsInstance)
+            : base(
+                instance.Name,
+                isWindowsInstance 
+                  ? WindowsDisconnectedIconIndex 
+                  : LinuxDisconnectedIconIndex)
+        {
+            this.InstanceId = instance.Id.Value;
+            this.IsRunning = instance.Status == "RUNNING";
+            this.IsWindowsInstance = isWindowsInstance;
+        }
 
         internal VmInstanceNode(
             Instance instance,
             ZoneNode parent)
-            : base(
-                instance.Name,
-                DisconnectedIconIndex)
+            : this(
+                instance,
+                parent,
+                instance.IsWindowsInstance())
         {
-            this.InstanceId = instance.Id.Value;
-            this.IsRunning = instance.Status == "RUNNING";
         }
 
         public string InstanceName => this.Text;
@@ -162,12 +177,15 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
 
         public bool IsConnected
         {
-            get => this.ImageIndex == ConnectedIconIndex;
+            get => this.ImageIndex == WindowsConnectedIconIndex;
             set
             {
                 if (value)
                 {
-                    this.ImageIndex = this.SelectedImageIndex = ConnectedIconIndex;
+                    var iconIndex = this.IsWindowsInstance
+                        ? WindowsConnectedIconIndex
+                        : LinuxConnectedIconIndex;
+                    this.ImageIndex = this.SelectedImageIndex = iconIndex;
                 }
                 else if (!IsRunning)
                 {
@@ -175,7 +193,10 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
                 }
                 else
                 {
-                    this.ImageIndex = this.SelectedImageIndex = DisconnectedIconIndex;
+                    var iconIndex = this.IsWindowsInstance
+                        ? WindowsDisconnectedIconIndex
+                        : LinuxDisconnectedIconIndex;
+                    this.ImageIndex = this.SelectedImageIndex = iconIndex;
                 }
             }
         }

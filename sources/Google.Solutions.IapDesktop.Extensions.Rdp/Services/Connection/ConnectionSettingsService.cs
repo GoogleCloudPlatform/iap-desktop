@@ -61,7 +61,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Services.Connection
         {
             return node is IProjectExplorerProjectNode ||
                    node is IProjectExplorerZoneNode ||
-                   node is IProjectExplorerVmInstanceNode;
+                   (node is IProjectExplorerVmInstanceNode vmNode && vmNode.IsWindowsInstance);
         }
 
         public ConnectionSettingsBase GetConnectionSettings(IProjectExplorerNode node)

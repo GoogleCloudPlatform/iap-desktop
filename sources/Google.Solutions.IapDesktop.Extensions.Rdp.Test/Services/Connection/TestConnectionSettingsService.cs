@@ -115,12 +115,17 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Test.Services.Connection
         [Test]
         public void WhenNodeSupported_ThenIsConnectionSettingsAvailableReturnsTrue()
         {
+            var windowsVm = new Mock<IProjectExplorerVmInstanceNode>();
+            windowsVm.SetupGet(n => n.IsWindowsInstance).Returns(true);
+            var linuxVm = new Mock<IProjectExplorerVmInstanceNode>();
+            linuxVm.SetupGet(n => n.IsWindowsInstance).Returns(false);
+
             Assert.IsTrue(service.IsConnectionSettingsAvailable(
                 new Mock<IProjectExplorerProjectNode>().Object));
             Assert.IsTrue(service.IsConnectionSettingsAvailable(
                 new Mock<IProjectExplorerZoneNode>().Object));
-            Assert.IsTrue(service.IsConnectionSettingsAvailable(
-                new Mock<IProjectExplorerVmInstanceNode>().Object));
+            Assert.IsFalse(service.IsConnectionSettingsAvailable(linuxVm.Object));
+            Assert.IsTrue(service.IsConnectionSettingsAvailable(windowsVm.Object));
         }
 
         //---------------------------------------------------------------------

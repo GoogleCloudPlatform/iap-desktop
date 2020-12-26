@@ -76,6 +76,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Test.Views.ConnectionSettin
             node.SetupGet(n => n.ZoneId).Returns("zone-1");
             node.SetupGet(n => n.InstanceName).Returns("instance-1");
             node.SetupGet(n => n.IsConnected).Returns(true);
+            node.SetupGet(n => n.IsWindowsInstance).Returns(true);
 
             await viewModel.SwitchToModelAsync(node.Object);
 
@@ -92,6 +93,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Test.Views.ConnectionSettin
             node.SetupGet(n => n.ZoneId).Returns("zone-1");
             node.SetupGet(n => n.InstanceName).Returns("instance-1");
             node.SetupGet(n => n.IsConnected).Returns(false);
+            node.SetupGet(n => n.IsWindowsInstance).Returns(true);
 
             await viewModel.SwitchToModelAsync(node.Object);
 
@@ -165,6 +167,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Test.Views.ConnectionSettin
             node.SetupGet(n => n.InstanceName).Returns("instance-1");
             node.SetupGet(n => n.DisplayName).Returns("display");
             node.SetupGet(n => n.IsConnected).Returns(false);
+            node.SetupGet(n => n.IsWindowsInstance).Returns(true);
 
             await viewModel.SwitchToModelAsync(node.Object);
 

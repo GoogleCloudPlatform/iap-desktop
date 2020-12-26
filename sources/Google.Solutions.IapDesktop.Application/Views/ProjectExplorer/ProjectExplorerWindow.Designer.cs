@@ -54,6 +54,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
             this.toolStrip = new System.Windows.Forms.ToolStrip();
             this.refreshButton = new System.Windows.Forms.ToolStripButton();
             this.addButton = new System.Windows.Forms.ToolStripButton();
+            this.includeLinuxToolStripButton = new System.Windows.Forms.ToolStripButton();
             this.vmToolStripSeparator = new System.Windows.Forms.ToolStripSeparator();
             this.vsToolStripExtender = new WeifenLuo.WinFormsUI.Docking.VisualStudioToolStripExtender(this.components);
             this.vs2015LightTheme = new WeifenLuo.WinFormsUI.Docking.VS2015LightTheme();
@@ -63,9 +64,9 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
             this.refreshAllProjectsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.unloadProjectToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.iapSeparatorToolStripMenuItem = new System.Windows.Forms.ToolStripSeparator();
+            this.openInCloudConsoleToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.configureIapAccessToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.cloudConsoleSeparatorToolStripMenuItem = new System.Windows.Forms.ToolStripSeparator();
-            this.openInCloudConsoleToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.imageList = new System.Windows.Forms.ImageList(this.components);
             this.toolStrip.SuspendLayout();
             this.contextMenu.SuspendLayout();
@@ -76,6 +77,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
             this.toolStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.refreshButton,
             this.addButton,
+            this.includeLinuxToolStripButton,
             this.vmToolStripSeparator});
             this.toolStrip.Location = new System.Drawing.Point(0, 0);
             this.toolStrip.Name = "toolStrip";
@@ -102,6 +104,17 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
             this.addButton.Size = new System.Drawing.Size(23, 22);
             this.addButton.Text = "Add project";
             this.addButton.Click += new System.EventHandler(this.addButton_Click);
+            // 
+            // includeLinuxToolStripButton
+            // 
+            this.includeLinuxToolStripButton.CheckOnClick = true;
+            this.includeLinuxToolStripButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.includeLinuxToolStripButton.Image = ((System.Drawing.Image)(resources.GetObject("includeLinuxToolStripButton.Image")));
+            this.includeLinuxToolStripButton.ImageTransparentColor = System.Drawing.Color.White;
+            this.includeLinuxToolStripButton.Name = "includeLinuxToolStripButton";
+            this.includeLinuxToolStripButton.Size = new System.Drawing.Size(23, 22);
+            this.includeLinuxToolStripButton.Text = "Show Linux VM instances";
+            this.includeLinuxToolStripButton.Click += new System.EventHandler(this.refreshAllProjectsToolStripMenuItem_Click);
             // 
             // vmToolStripSeparator
             // 
@@ -139,13 +152,13 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
             this.configureIapAccessToolStripMenuItem,
             this.cloudConsoleSeparatorToolStripMenuItem});
             this.contextMenu.Name = "contextMenu";
-            this.contextMenu.Size = new System.Drawing.Size(207, 148);
+            this.contextMenu.Size = new System.Drawing.Size(198, 126);
             // 
             // refreshToolStripMenuItem
             // 
             this.refreshToolStripMenuItem.Image = global::Google.Solutions.IapDesktop.Application.Properties.Resources.Refresh_16;
             this.refreshToolStripMenuItem.Name = "refreshToolStripMenuItem";
-            this.refreshToolStripMenuItem.Size = new System.Drawing.Size(206, 22);
+            this.refreshToolStripMenuItem.Size = new System.Drawing.Size(197, 22);
             this.refreshToolStripMenuItem.Text = "&Refresh project";
             this.refreshToolStripMenuItem.Click += new System.EventHandler(this.refreshToolStripMenuItem_Click);
             // 
@@ -153,40 +166,40 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
             // 
             this.refreshAllProjectsToolStripMenuItem.Image = global::Google.Solutions.IapDesktop.Application.Properties.Resources.Refresh_161;
             this.refreshAllProjectsToolStripMenuItem.Name = "refreshAllProjectsToolStripMenuItem";
-            this.refreshAllProjectsToolStripMenuItem.Size = new System.Drawing.Size(206, 22);
+            this.refreshAllProjectsToolStripMenuItem.Size = new System.Drawing.Size(197, 22);
             this.refreshAllProjectsToolStripMenuItem.Text = "Refresh &all projects";
             this.refreshAllProjectsToolStripMenuItem.Click += new System.EventHandler(this.refreshAllProjectsToolStripMenuItem_Click);
             // 
             // unloadProjectToolStripMenuItem
             // 
             this.unloadProjectToolStripMenuItem.Name = "unloadProjectToolStripMenuItem";
-            this.unloadProjectToolStripMenuItem.Size = new System.Drawing.Size(206, 22);
+            this.unloadProjectToolStripMenuItem.Size = new System.Drawing.Size(197, 22);
             this.unloadProjectToolStripMenuItem.Text = "&Unload project";
             this.unloadProjectToolStripMenuItem.Click += new System.EventHandler(this.unloadProjectToolStripMenuItem_Click);
             // 
             // iapSeparatorToolStripMenuItem
             // 
             this.iapSeparatorToolStripMenuItem.Name = "iapSeparatorToolStripMenuItem";
-            this.iapSeparatorToolStripMenuItem.Size = new System.Drawing.Size(203, 6);
+            this.iapSeparatorToolStripMenuItem.Size = new System.Drawing.Size(194, 6);
+            // 
+            // openInCloudConsoleToolStripMenuItem
+            // 
+            this.openInCloudConsoleToolStripMenuItem.Name = "openInCloudConsoleToolStripMenuItem";
+            this.openInCloudConsoleToolStripMenuItem.Size = new System.Drawing.Size(197, 22);
+            this.openInCloudConsoleToolStripMenuItem.Text = "Open in Cloud Consol&e";
+            this.openInCloudConsoleToolStripMenuItem.Click += new System.EventHandler(this.openInCloudConsoleToolStripMenuItem_Click);
             // 
             // configureIapAccessToolStripMenuItem
             // 
             this.configureIapAccessToolStripMenuItem.Name = "configureIapAccessToolStripMenuItem";
-            this.configureIapAccessToolStripMenuItem.Size = new System.Drawing.Size(206, 22);
+            this.configureIapAccessToolStripMenuItem.Size = new System.Drawing.Size(197, 22);
             this.configureIapAccessToolStripMenuItem.Text = "Configure IAP a&ccess";
             this.configureIapAccessToolStripMenuItem.Click += new System.EventHandler(this.configureIapAccessToolStripMenuItem_Click);
             // 
             // cloudConsoleSeparatorToolStripMenuItem
             // 
             this.cloudConsoleSeparatorToolStripMenuItem.Name = "cloudConsoleSeparatorToolStripMenuItem";
-            this.cloudConsoleSeparatorToolStripMenuItem.Size = new System.Drawing.Size(203, 6);
-            // 
-            // openInCloudConsoleToolStripMenuItem
-            // 
-            this.openInCloudConsoleToolStripMenuItem.Name = "openInCloudConsoleToolStripMenuItem";
-            this.openInCloudConsoleToolStripMenuItem.Size = new System.Drawing.Size(206, 22);
-            this.openInCloudConsoleToolStripMenuItem.Text = "Open in Cloud Consol&e";
-            this.openInCloudConsoleToolStripMenuItem.Click += new System.EventHandler(this.openInCloudConsoleToolStripMenuItem_Click);
+            this.cloudConsoleSeparatorToolStripMenuItem.Size = new System.Drawing.Size(194, 6);
             // 
             // imageList
             // 
@@ -199,6 +212,8 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
             this.imageList.Images.SetKeyName(4, "Computer_16.png");
             this.imageList.Images.SetKeyName(5, "ComputerBlue_16.png");
             this.imageList.Images.SetKeyName(6, "ComputerStopped_16.png");
+            this.imageList.Images.SetKeyName(7, "ComputerTerminal_16.png");
+            this.imageList.Images.SetKeyName(8, "ComputerTerminalBlue_16.png");
             // 
             // ProjectExplorerWindow
             // 
@@ -237,5 +252,6 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
         private System.Windows.Forms.ToolStripSeparator iapSeparatorToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem configureIapAccessToolStripMenuItem;
         private System.Windows.Forms.ToolStripSeparator vmToolStripSeparator;
+        private System.Windows.Forms.ToolStripButton includeLinuxToolStripButton;
     }
 }
