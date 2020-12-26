@@ -28,12 +28,14 @@ using System.Windows.Forms;
 using VtNetCore.VirtualTerminal;
 using VtNetCore.XTermParser;
 using VtNetCore.VirtualTerminal.Layout;
+using Google.Solutions.Common.Diagnostics;
 
 namespace Google.Solutions.IapDesktop.Extensions.Ssh.Controls
 {
     /// <summary>
     /// Virtual terminal control.
     /// </summary>
+    [SkipCodeCoverage("UI code")]
     public partial class VirtualTerminal : UserControl
     {
         private readonly Point TextOrigin = new Point(3, 0);
