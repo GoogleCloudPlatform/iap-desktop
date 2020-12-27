@@ -19,6 +19,7 @@
 // under the License.
 //
 
+using Google.Solutions.IapDesktop.Application.Properties;
 using System;
 using System.Drawing;
 using System.Windows.Forms;
@@ -38,7 +39,7 @@ namespace Google.Solutions.IapDesktop.Application.Views
             target.Controls.AddRange(controls);
         }
 
-        private static Rectangle BoundsOfAllScreens
+        protected static Rectangle BoundsOfAllScreens
         {
             get
             {
@@ -57,10 +58,10 @@ namespace Google.Solutions.IapDesktop.Application.Views
         //---------------------------------------------------------------------
 
         public DocumentWindow(
-            IServiceProvider serviceProvider,
-            DockState defaultDockState) 
-            : base(serviceProvider, defaultDockState)
+            IServiceProvider serviceProvider) 
+            : base(serviceProvider, DockState.Document)
         {
+            this.DockAreas = DockAreas.Document;
         }
 
         //---------------------------------------------------------------------
@@ -83,9 +84,7 @@ namespace Google.Solutions.IapDesktop.Application.Views
                     var area = BoundsOfAllScreens;
                     this.fullScreenForm = new Form()
                     {
-                        // TODO: set icon
-                        // TODO: Handle Win+Down
-
+                        Icon = Resources.logo,
                         FormBorderStyle = FormBorderStyle.None,
                         Bounds = area,
                         StartPosition = FormStartPosition.Manual,

@@ -31,7 +31,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.Diagnostics
     public partial class DebugFullScreenPane : DocumentWindow
     {
         public DebugFullScreenPane(IServiceProvider serviceProvider)
-            : base(serviceProvider, DockState.Document)
+            : base(serviceProvider)
         {
             InitializeComponent();
             this.TabText = this.Text;

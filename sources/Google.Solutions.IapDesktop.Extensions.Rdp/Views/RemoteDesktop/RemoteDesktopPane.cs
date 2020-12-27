@@ -23,6 +23,7 @@ using AxMSTSCLib;
 using Google.Solutions.Common.Diagnostics;
 using Google.Solutions.Common.Locator;
 using Google.Solutions.IapDesktop.Application;
+using Google.Solutions.IapDesktop.Application.ObjectModel;
 using Google.Solutions.IapDesktop.Application.Services.Integration;
 using Google.Solutions.IapDesktop.Application.Views;
 using Google.Solutions.IapDesktop.Application.Views.Dialog;
@@ -46,7 +47,7 @@ using WeifenLuo.WinFormsUI.Docking;
 namespace Google.Solutions.IapDesktop.Extensions.Rdp.Views.RemoteDesktop
 {
     [ComVisible(false)]
-    public partial class RemoteDesktopPane : ToolWindow, IRemoteDesktopSession
+    public partial class RemoteDesktopPane : DocumentWindow, IRemoteDesktopSession
     {
         private readonly IExceptionDialog exceptionDialog;
         private readonly IEventService eventService;
@@ -97,16 +98,15 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Views.RemoteDesktop
         //---------------------------------------------------------------------
 
         public RemoteDesktopPane(
-            IEventService eventService,
-            IExceptionDialog exceptionDialog,
-            InstanceLocator vmInstance)
+            IServiceProvider serviceProvider,
+            InstanceLocator vmInstance) 
+            : base(serviceProvider)
         {
-            this.exceptionDialog = exceptionDialog;
-            this.eventService = eventService;
+            this.exceptionDialog = serviceProvider.GetService<IExceptionDialog>();
+            this.eventService = serviceProvider.GetService<IEventService>();
             this.Instance = vmInstance;
 
             this.TabText = vmInstance.Name;
-            this.DockAreas = DockAreas.Document;
 
             // The ActiveX fails when trying to drag/dock a window, so disable
             // that feature.
@@ -200,6 +200,11 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Views.RemoteDesktop
                 nonScriptable.ConnectionBarText = this.Instance.Name;
                 advancedSettings.EnableWindowsKey = 1;
                 advancedSettings.GrabFocusOnConnect = false;
+
+                //
+                // Trigger OnRequestGoFullScreen event.
+                //
+                advancedSettings.ContainerHandledFullScreen = 1;
 
                 //
                 // Local resources settings.
@@ -470,26 +475,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Views.RemoteDesktop
             }
         }
 
-        private void rdpClient_OnEnterFullScreenMode(object sender, EventArgs e)
-        {
-            if (!this.IsConnecting && this.autoResize)
-            {
-                // Adjust desktop size to full screen.
-                var screenSize = Screen.GetBounds(this);
-
-                ReconnectToResize(screenSize.Size);
-            }
-        }
-
-        private void rdpClient_OnLeaveFullScreenMode(object sender, EventArgs e)
-        {
-            if (!this.IsConnecting && this.autoResize)
-            {
-                // Return to normal size.
-                ReconnectToResize(this.Size);
-            }
-        }
-
         //---------------------------------------------------------------------
         // RDP callbacks.
         //---------------------------------------------------------------------
@@ -653,6 +638,47 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Views.RemoteDesktop
             }
         }
 
+        private void rdpClient_OnEnterFullScreenMode(object sender, EventArgs e)
+        {
+            // TODO: Obsolete?
+            if (!this.IsConnecting && this.autoResize)
+            {
+                // Adjust desktop size to full screen.
+                var screenSize = Screen.GetBounds(this);
+
+                ReconnectToResize(screenSize.Size);
+            }
+        }
+
+        private void rdpClient_OnLeaveFullScreenMode(object sender, EventArgs e)
+        {
+            // TODO: Obsolete?
+            if (!this.IsConnecting && this.autoResize)
+            {
+                // Return to normal size.
+                ReconnectToResize(this.Size);
+            }
+        }
+
+        private void rdpClient_OnRequestGoFullScreen(object sender, EventArgs e)
+        {
+            // TODO: Make multi-screen configurable.
+            // TODO: ConnectionBar disappears on 2nd attempt
+
+            this.MultiScreenFullScreen = true;
+            this.rdpClient.Size = this.rdpClient.Parent.Size;
+            ReconnectToResize(this.rdpClient.Size);
+        }
+
+        private void rdpClient_OnRequestLeaveFullScreen(object sender, EventArgs e)
+        {
+            this.MultiScreenFullScreen = false;
+            this.rdpClient.Size = this.rdpClient.Parent.Size;
+            ReconnectToResize(this.rdpClient.Size);
+
+            // TODO: Leave on disconnect also.
+        }
+
         //---------------------------------------------------------------------
         // IRemoteDesktopSession.
         //---------------------------------------------------------------------
@@ -706,13 +732,12 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Views.RemoteDesktop
                 if (this.keysSent++ == 0)
                 {
                     // The RDP control sometimes swallows the first key combination
-                    // that is sent. So start by a harmess ESC.
+                    // that is sent. So start by a harmless ESC.
                     SendKeys(Keys.Escape);
                 }
 
                 nonScriptable.SendKeys(keys);
             }
         }
-
     }
 }
