@@ -192,6 +192,9 @@
     <Compile Include="Util\HtmlClipboardFormat.cs" />
     <Compile Include="Util\IIapUrlHandler.cs" />
     <Compile Include="Views\Dialog\UnsafeNativeMethods.cs" />
+    <Compile Include="Views\DocumentWindow.cs">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="Views\FlyoutWindow.cs">
       <SubType>Form</SubType>
     </Compile>
