@@ -62,120 +62,43 @@ namespace Google.Solutions.IapDesktop.Application.Views.Diagnostics
             }
         }
 
-        protected bool IsFullscreen => this.savedBounds != null;
+        private Form fullScreenForm = null;
+        protected bool IsFullscreen => this.fullScreenForm != null;
 
-        private Rectangle? savedBounds = null;
+        private void MoveControls(Form source, Form target)
+        {
+            var controls = new Control[source.Controls.Count];
+            source.Controls.CopyTo(controls, 0);
+            source.Controls.Clear();
+
+            target.Controls.AddRange(controls);
+        }
 
         private void fullScreenToggleButton_Click(object sender, EventArgs e)
         {
-            try
+            if (this.IsFullscreen)
             {
-                SuspendLayout();
-
-                if (this.IsFullscreen)
-                {
-                    DockTo(this.dockPanel, DockStyle.Fill);
-                    this.Bounds = this.savedBounds.Value;
-                    this.TopMost = false;
-                    this.savedBounds = null;
-                }
-                else
-                {
-                    this.savedBounds = this.Bounds;
-                    var area = this.BoundsOfAllMonitors;
-
-                    FloatAt(area);
-
-                    var style = GetWindowLongPtr(this.Handle, GWL_STYLE);
-                    var style64 = style.ToInt64();
-                    style64 &= ~(WS_CAPTION | WS_THICKFRAME | WS_MINIMIZEBOX | WS_MAXIMIZEBOX | WS_SYSMENU);
-
-                    var result = SetWindowLongPtr(this.Handle, GWL_STYLE, new IntPtr(style64));
-                    Debug.Assert(result != IntPtr.Zero);
-
-                    SetWindowPos(this.Handle, HWND_TOP, area.Left, area.Top, area.Width, area.Height, SWP_FRAMECHANGED);
-
-                    //this.CloseButtonVisible = false;
-                    //this.CloseButton = false;
-                    ////this.FormBorderStyle = FormBorderStyle.None;
-                    //this.Top = area.Top;
-                    //this.Left = area.Left;
-                    //this.Width = area.Width;
-                    //this.Height = area.Height;
-                    //this.TopMost = true;
-                }
+                MoveControls(this.fullScreenForm, this);
+                this.fullScreenForm.Close();
+                this.fullScreenForm = null;
             }
-            finally
+            else
             {
-                ResumeLayout();
+                var area = this.BoundsOfAllMonitors;
+                this.fullScreenForm = new Form()
+                {
+                    FormBorderStyle = FormBorderStyle.None,
+                    //Location = new Point(area.X, area.Y),
+                    //Size = new Size(area.Width, area.Height),
+                    Bounds = area,
+                    StartPosition = FormStartPosition.Manual,
+                    //WindowState = FormWindowState.Maximized,
+                    TopMost = true
+                };
+
+                MoveControls(this, this.fullScreenForm);
+                this.fullScreenForm.Show();
             }
-        }
-
-        private const int GWL_STYLE = -16;
-        private const int HWND_TOP = 0;
-        private const int SWP_FRAMECHANGED = 0x0020;
-        private const uint WS_MAXIMIZEBOX = 0x00010000;
-        private const uint WS_MINIMIZEBOX = 0x00020000;
-        private const uint WS_THICKFRAME = 0x00040000;
-        private const uint WS_SYSMENU = 0x00080000;
-        private const uint WS_CAPTION = 0x00C00000;
-
-
-
-        [DllImport("user32.dll")]
-        private static extern IntPtr SetWindowPos
-            (IntPtr hWnd, 
-            int hWndInsertAfter, 
-            int x, 
-            int y, 
-            int cx, 
-            int cy, 
-            int wFlags);
-
-
-        [DllImport("user32.dll", EntryPoint = "GetWindowLong")]
-        private static extern IntPtr GetWindowLongPtr32(IntPtr hWnd, int nIndex);
-
-        [DllImport("user32.dll", EntryPoint = "GetWindowLongPtr")]
-        private static extern IntPtr GetWindowLongPtr64(IntPtr hWnd, int nIndex);
-
-        // This static method is required because Win32 does not support
-        // GetWindowLongPtr directly
-        public static IntPtr GetWindowLongPtr(IntPtr hWnd, int nIndex)
-        {
-            if (IntPtr.Size == 8)
-                return GetWindowLongPtr64(hWnd, nIndex);
-            else
-                return GetWindowLongPtr32(hWnd, nIndex);
-        }
-
-
-
-
-
-        [DllImport("user32.dll", EntryPoint = "SetWindowLong")]
-        private static extern IntPtr SetWindowLongPtr32(
-            IntPtr hWnd,
-            int nIndex,
-            IntPtr dwNewLong);
-
-        [DllImport("user32.dll", EntryPoint = "SetWindowLongPtr")]
-        private static extern IntPtr SetWindowLongPtr64(
-            IntPtr hWnd,
-            int nIndex,
-            IntPtr dwNewLong);
-
-        // This static method is required because Win32 does not support
-        // SetWindowLongPtr directly
-        public static IntPtr SetWindowLongPtr(
-            IntPtr hWnd,
-            int nIndex,
-            IntPtr dwNewLong)
-        {
-            if (IntPtr.Size == 8)
-                return SetWindowLongPtr64(hWnd, nIndex, dwNewLong);
-            else
-                return SetWindowLongPtr32(hWnd, nIndex, dwNewLong);
         }
     }
 }
