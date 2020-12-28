@@ -60,6 +60,10 @@ namespace Google.Solutions.IapDesktop.Application.Views
             "Project access control",
             "https://cloud.google.com/compute/docs/access");
 
+        public static IHelpTopic PermissionsToResetWindowsUser = new HelpTopic(
+            "Generating Windows passwords",
+            "https://cloud.google.com/compute/docs/instances/windows/creating-passwords-for-windows-instances#permissions-required-for-this-task");
+
         private class HelpTopic : IHelpTopic
         {
             public string Title { get; }

@@ -24,6 +24,8 @@ using Google.Solutions.Common.ApiExtensions.Instance;
 using Google.Solutions.Common.Diagnostics;
 using Google.Solutions.Common.Locator;
 using Google.Solutions.Common.Util;
+using Google.Solutions.IapDesktop.Application.Views;
+using Google.Solutions.IapDesktop.Application.Views.Dialog;
 using Newtonsoft.Json;
 using System;
 using System.Linq;
@@ -122,7 +124,8 @@ namespace Google.Solutions.IapDesktop.Application.Services.Adapters
                         "You do not have sufficient permissions to reset a Windows password. " +
                         "You need the 'Service Account User' and " +
                         "'Compute Instance Admin' roles (or equivalent custom roles) " +
-                        "to perform this action.");
+                        "to perform this action.",
+                        HelpTopics.PermissionsToResetWindowsUser);
                 }
                 catch (GoogleApiException e) when (e.Error != null && e.Error.Code == 400 && e.Error.Message == "BAD REQUEST")
                 {
@@ -138,7 +141,8 @@ namespace Google.Solutions.IapDesktop.Application.Services.Adapters
                     throw new PasswordResetException(
                         "You do not have sufficient permissions to reset a Windows password. " +
                         "Because this VM instance uses a service account, you also need the " +
-                        "'Service Account User' role.");
+                        "'Service Account User' role.",
+                        HelpTopics.PermissionsToResetWindowsUser);
                 }
 
                 // Read response from serial port.
@@ -227,7 +231,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.Adapters
                         // the enclosing job was cancelled.
                         throw new PasswordResetException(
                             $"Timeout waiting for Compute Engine agent to reset password for user {username}. " +
-                            "Verify that the agent is running.");
+                            "Verify that the agent is running and that the account manager feature is enabled.");
                     }
                 }
             }
@@ -262,10 +266,18 @@ namespace Google.Solutions.IapDesktop.Application.Services.Adapters
     }
 
     [Serializable]
-    public class PasswordResetException : Exception
+    public class PasswordResetException : Exception, IExceptionWithHelpTopic
     {
+        public IHelpTopic Help { get; }
+
         public PasswordResetException(string message) : base(message)
         {
+        }
+
+        public PasswordResetException(string message, IHelpTopic helpTopic)
+            : base(message)
+        {
+            this.Help = helpTopic;
         }
     }
 }
