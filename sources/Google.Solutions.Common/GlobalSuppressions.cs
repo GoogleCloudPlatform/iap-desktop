@@ -27,4 +27,3 @@
 using System.Diagnostics.CodeAnalysis;
 
 [assembly: SuppressMessage("Style", "IDE0034:Simplify 'default' expression", Justification = "VS 2017 compat")]
-[assembly: SuppressMessage("Design", "CA1032:Implement standard exception constructors", Justification = "Avoid dead code")]

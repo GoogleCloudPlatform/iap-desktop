@@ -30,7 +30,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.Settings
     {
         protected readonly RegistryKey baseKey;
 
-        public SettingsRepositoryBase(RegistryKey baseKey)
+        protected SettingsRepositoryBase(RegistryKey baseKey)
         {
             this.baseKey = baseKey;
         }

@@ -57,8 +57,8 @@ namespace Google.Solutions.Common.Test
 
         private class TestCaseTraceListener : ConsoleTraceListener
         {
-            private string Prefix =>
-                $"[{TestContext.CurrentContext?.Test?.Name} {DateTime.Now.ToString("o")}] ";
+            private static string Prefix =>
+                $"[{TestContext.CurrentContext?.Test?.Name} {DateTime.Now:o}] ";
 
             public override void WriteLine(object o)
             {
@@ -72,12 +72,12 @@ namespace Google.Solutions.Common.Test
 
             public override void WriteLine(string message)
             {
-                base.WriteLine(this.Prefix + message);
+                base.WriteLine(Prefix + message);
             }
 
             public override void WriteLine(string message, string category)
             {
-                base.WriteLine(this.Prefix + message, category);
+                base.WriteLine(Prefix + message, category);
             }
         }
     }

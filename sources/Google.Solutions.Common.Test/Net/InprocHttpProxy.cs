@@ -96,7 +96,7 @@ namespace Google.Solutions.Common.Test.Net
                     //
                     var headers = new Dictionary<string, string>();
                     string line;
-                    while ((line = ReadLine(clientStream)) != string.Empty)
+                    while (!string.IsNullOrEmpty((line = ReadLine(clientStream))))
                     {
                         var parts = line.Split(':');
                         headers.Add(parts[0].ToLower(), parts[1].Trim());

@@ -148,12 +148,13 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views.Options
         {
             var viewModel = new NetworkOptionsViewModel(
                 this.settingsRepository,
-                this.proxyAdapterMock.Object);
-
-            viewModel.IsCustomProxyServerEnabled = true;
-            viewModel.ProxyServer = "myserver";
-            viewModel.ProxyPort = "442";
-            viewModel.IsSystemProxyServerEnabled = true;
+                this.proxyAdapterMock.Object)
+            {
+                IsCustomProxyServerEnabled = true,
+                ProxyServer = "myserver",
+                ProxyPort = "442",
+                IsSystemProxyServerEnabled = true
+            };
 
             Assert.IsTrue(viewModel.IsSystemProxyServerEnabled);
             Assert.IsFalse(viewModel.IsCustomProxyServerEnabled);
@@ -221,9 +222,10 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views.Options
         {
             var viewModel = new NetworkOptionsViewModel(
                 this.settingsRepository,
-                this.proxyAdapterMock.Object);
-
-            viewModel.IsProxyAutoConfigurationEnabled = true;
+                this.proxyAdapterMock.Object)
+            {
+                IsProxyAutoConfigurationEnabled = true
+            };
 
             Assert.IsFalse(viewModel.IsSystemProxyServerEnabled);
             Assert.IsFalse(viewModel.IsCustomProxyServerEnabled);
@@ -242,11 +244,12 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views.Options
         {
             var viewModel = new NetworkOptionsViewModel(
                 this.settingsRepository,
-                this.proxyAdapterMock.Object);
-
-            viewModel.IsProxyAutoConfigurationEnabled = true;
-            viewModel.ProxyAutoconfigurationAddress = "http://proxy-server/proxy.pac";
-            viewModel.IsSystemProxyServerEnabled = true;
+                this.proxyAdapterMock.Object)
+            {
+                IsProxyAutoConfigurationEnabled = true,
+                ProxyAutoconfigurationAddress = "http://proxy-server/proxy.pac",
+                IsSystemProxyServerEnabled = true
+            };
 
             Assert.IsTrue(viewModel.IsSystemProxyServerEnabled);
             Assert.IsFalse(viewModel.IsCustomProxyServerEnabled);
@@ -292,10 +295,11 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views.Options
         {
             var viewModel = new NetworkOptionsViewModel(
                 this.settingsRepository,
-                this.proxyAdapterMock.Object);
-
-            viewModel.IsCustomProxyServerEnabled = true;
-            viewModel.IsProxyAuthenticationEnabled = true;
+                this.proxyAdapterMock.Object)
+            {
+                IsCustomProxyServerEnabled = true,
+                IsProxyAuthenticationEnabled = true
+            };
 
             Assert.AreEqual(Environment.UserName, viewModel.ProxyUsername);
             Assert.IsNull(viewModel.ProxyPassword);
@@ -307,12 +311,13 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views.Options
         {
             var viewModel = new NetworkOptionsViewModel(
                 this.settingsRepository,
-                this.proxyAdapterMock.Object);
-
-            viewModel.IsCustomProxyServerEnabled = true;
-            viewModel.IsProxyAuthenticationEnabled = true;
-            viewModel.ProxyUsername = "user";
-            viewModel.ProxyPassword = "pass";
+                this.proxyAdapterMock.Object)
+            {
+                IsCustomProxyServerEnabled = true,
+                IsProxyAuthenticationEnabled = true,
+                ProxyUsername = "user",
+                ProxyPassword = "pass"
+            };
             viewModel.IsProxyAuthenticationEnabled = false;
 
             Assert.IsNull(viewModel.ProxyUsername);
@@ -329,11 +334,12 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views.Options
         {
             var viewModel = new NetworkOptionsViewModel(
                 this.settingsRepository,
-                this.proxyAdapterMock.Object);
-
-            viewModel.IsCustomProxyServerEnabled = true;
-            viewModel.ProxyServer = " .";
-            viewModel.ProxyPort = "442";
+                this.proxyAdapterMock.Object)
+            {
+                IsCustomProxyServerEnabled = true,
+                ProxyServer = " .",
+                ProxyPort = "442"
+            };
 
             Assert.Throws<ArgumentException>(() => viewModel.ApplyChanges());
         }
@@ -343,11 +349,12 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views.Options
         {
             var viewModel = new NetworkOptionsViewModel(
                 this.settingsRepository,
-                this.proxyAdapterMock.Object);
-
-            viewModel.IsCustomProxyServerEnabled = true;
-            viewModel.ProxyServer = "proxy";
-            viewModel.ProxyPort = "0";
+                this.proxyAdapterMock.Object)
+            {
+                IsCustomProxyServerEnabled = true,
+                ProxyServer = "proxy",
+                ProxyPort = "0"
+            };
 
             Assert.Throws<ArgumentException>(() => viewModel.ApplyChanges());
         }
@@ -357,11 +364,12 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views.Options
         {
             var viewModel = new NetworkOptionsViewModel(
                 this.settingsRepository,
-                this.proxyAdapterMock.Object);
-
-            viewModel.IsCustomProxyServerEnabled = true;
-            viewModel.ProxyServer = "proxy";
-            viewModel.ProxyPort = "70000";
+                this.proxyAdapterMock.Object)
+            {
+                IsCustomProxyServerEnabled = true,
+                ProxyServer = "proxy",
+                ProxyPort = "70000"
+            };
 
             Assert.Throws<ArgumentException>(() => viewModel.ApplyChanges());
         }
@@ -371,10 +379,11 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views.Options
         {
             var viewModel = new NetworkOptionsViewModel(
                 this.settingsRepository,
-                this.proxyAdapterMock.Object);
-
-            viewModel.IsProxyAutoConfigurationEnabled = true;
-            viewModel.ProxyAutoconfigurationAddress = "file:///proxy.pac";
+                this.proxyAdapterMock.Object)
+            {
+                IsProxyAutoConfigurationEnabled = true,
+                ProxyAutoconfigurationAddress = "file:///proxy.pac"
+            };
 
             Assert.Throws<ArgumentException>(() => viewModel.ApplyChanges());
         }
@@ -384,12 +393,13 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views.Options
         {
             var viewModel = new NetworkOptionsViewModel(
                 this.settingsRepository,
-                this.proxyAdapterMock.Object);
-
-            viewModel.IsCustomProxyServerEnabled = true;
-            viewModel.ProxyServer = "proxy";
-            viewModel.ProxyPort = "1000";
-            viewModel.ProxyPassword = "pass";
+                this.proxyAdapterMock.Object)
+            {
+                IsCustomProxyServerEnabled = true,
+                ProxyServer = "proxy",
+                ProxyPort = "1000",
+                ProxyPassword = "pass"
+            };
 
             Assert.Throws<ArgumentException>(() => viewModel.ApplyChanges());
         }
@@ -399,9 +409,10 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views.Options
         {
             var viewModel = new NetworkOptionsViewModel(
                 this.settingsRepository,
-                this.proxyAdapterMock.Object);
-
-            viewModel.IsCustomProxyServerEnabled = true;
+                this.proxyAdapterMock.Object)
+            {
+                IsCustomProxyServerEnabled = true
+            };
             viewModel.ApplyChanges();
 
             this.proxyAdapterMock.Verify(m => m.ActivateSettings(
@@ -413,14 +424,16 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views.Options
         {
             var viewModel = new NetworkOptionsViewModel(
                 this.settingsRepository,
-                this.proxyAdapterMock.Object);
+                this.proxyAdapterMock.Object)
+            {
 
-            // Enable proxy with authentication.
-            viewModel.IsCustomProxyServerEnabled = true;
-            viewModel.ProxyServer = "prx";
-            viewModel.ProxyPort = "123";
-            viewModel.ProxyUsername = "user";
-            viewModel.ProxyPassword = "pass";
+                // Enable proxy with authentication.
+                IsCustomProxyServerEnabled = true,
+                ProxyServer = "prx",
+                ProxyPort = "123",
+                ProxyUsername = "user",
+                ProxyPassword = "pass"
+            };
             viewModel.ApplyChanges();
 
             var settings = this.settingsRepository.GetSettings();
@@ -453,13 +466,15 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views.Options
         {
             var viewModel = new NetworkOptionsViewModel(
                 this.settingsRepository,
-                this.proxyAdapterMock.Object);
+                this.proxyAdapterMock.Object)
+            {
 
-            // Enable proxy with authentication.
-            viewModel.IsProxyAutoConfigurationEnabled = true;
-            viewModel.ProxyAutoconfigurationAddress = "https://www/proxy.pac";
-            viewModel.ProxyUsername = "user";
-            viewModel.ProxyPassword = "pass";
+                // Enable proxy with authentication.
+                IsProxyAutoConfigurationEnabled = true,
+                ProxyAutoconfigurationAddress = "https://www/proxy.pac",
+                ProxyUsername = "user",
+                ProxyPassword = "pass"
+            };
             viewModel.ApplyChanges();
 
             var settings = this.settingsRepository.GetSettings();
@@ -491,9 +506,10 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views.Options
         {
             var viewModel = new NetworkOptionsViewModel(
                 this.settingsRepository,
-                this.proxyAdapterMock.Object);
-
-            viewModel.IsCustomProxyServerEnabled = true;
+                this.proxyAdapterMock.Object)
+            {
+                IsCustomProxyServerEnabled = true
+            };
 
             Assert.IsTrue(viewModel.IsDirty);
 

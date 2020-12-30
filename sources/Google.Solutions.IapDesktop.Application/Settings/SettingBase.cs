@@ -134,7 +134,7 @@ namespace Google.Solutions.IapDesktop.Application.Settings
         // Ctor.
         //---------------------------------------------------------------------
 
-        public SettingBase(
+        protected SettingBase(
             string key,
             string title,
             string description,

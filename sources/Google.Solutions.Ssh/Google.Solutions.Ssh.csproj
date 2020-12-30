@@ -50,6 +50,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Cryptography\RSACngExtensions.cs" />
+    <Compile Include="GlobalSuppressions.cs" />
     <Compile Include="ISshKey.cs" />
     <Compile Include="Native\Disposable.cs" />
     <Compile Include="Native\HandleTable.cs" />
