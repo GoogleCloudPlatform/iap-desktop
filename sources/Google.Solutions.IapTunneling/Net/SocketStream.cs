@@ -72,7 +72,7 @@ namespace Google.Solutions.IapTunneling.Net
             }
         }
 
-        protected Task<int> IoAsync(
+        protected static Task<int> IoAsync(
             Func<SocketAsyncEventArgs, bool> ioFunc,
             Action<int> trackBytesTransferred,
             SocketAsyncEventArgs eventArgs)

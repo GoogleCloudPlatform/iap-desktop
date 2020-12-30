@@ -127,9 +127,10 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views.Options
         {
             var viewModel = new NetworkOptionsViewModel(
                 this.settingsRepository,
-                this.proxyAdapterMock.Object);
-
-            viewModel.IsCustomProxyServerEnabled = true;
+                this.proxyAdapterMock.Object)
+            {
+                IsCustomProxyServerEnabled = true
+            };
 
             Assert.IsFalse(viewModel.IsSystemProxyServerEnabled);
             Assert.IsTrue(viewModel.IsCustomProxyServerEnabled);

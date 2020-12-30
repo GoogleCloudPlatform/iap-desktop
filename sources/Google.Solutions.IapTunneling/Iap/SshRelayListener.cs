@@ -97,26 +97,17 @@ namespace Google.Solutions.IapTunneling.Iap
 
         private void OnClientConnected(string client)
         {
-            if (this.ClientConnected != null)
-            {
-                this.ClientConnected(this, new ClientEventArgs(client));
-            }
+            this.ClientConnected?.Invoke(this, new ClientEventArgs(client));
         }
 
         private void OnClientDisconnected(string client)
         {
-            if (this.ClientDisconnected != null)
-            {
-                this.ClientDisconnected(this, new ClientEventArgs(client));
-            }
+            this.ClientDisconnected?.Invoke(this, new ClientEventArgs(client));
         }
 
         private void OnConnectionFailed(Exception e)
         {
-            if (this.ConnectionFailed != null)
-            {
-                this.ConnectionFailed(this, new ConnectionFailedEventArgs(e));
-            }
+            this.ConnectionFailed?.Invoke(this, new ConnectionFailedEventArgs(e));
         }
 
         //---------------------------------------------------------------------
