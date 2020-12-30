@@ -85,6 +85,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Views.RemoteDesktop
         {
             using (ApplicationTraceSources.Default.TraceMethod().WithParameters(e.Message))
             {
+                // Make sure we're not fullscreen anymore.
+                LeaveFullScreen();
+
                 await this.eventService.FireAsync(
                     new ConnectionFailedEvent(this.Instance, e))
                     .ConfigureAwait(true);
@@ -199,7 +202,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Views.RemoteDesktop
                     (settings.ConnectionBar.EnumValue == RdpConnectionBarState.Pinned);
                 nonScriptable.ConnectionBarText = this.Instance.Name;
                 advancedSettings.EnableWindowsKey = 1;
-                advancedSettings.GrabFocusOnConnect = false;
 
                 //
                 // Trigger OnRequestGoFullScreen event.
@@ -511,6 +513,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Views.RemoteDesktop
 
             using (ApplicationTraceSources.Default.TraceMethod().WithParameters(e.Message))
             {
+                LeaveFullScreen();
+
                 if (!this.connecting && e.IsTimeout)
                 {
                     // An already-established connection timed out, this is common when
@@ -638,34 +642,15 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Views.RemoteDesktop
             }
         }
 
-        private void rdpClient_OnEnterFullScreenMode(object sender, EventArgs e)
-        {
-            // TODO: Obsolete?
-            if (!this.IsConnecting && this.autoResize)
-            {
-                // Adjust desktop size to full screen.
-                var screenSize = Screen.GetBounds(this);
-
-                ReconnectToResize(screenSize.Size);
-            }
-        }
-
-        private void rdpClient_OnLeaveFullScreenMode(object sender, EventArgs e)
-        {
-            // TODO: Obsolete?
-            if (!this.IsConnecting && this.autoResize)
-            {
-                // Return to normal size.
-                ReconnectToResize(this.Size);
-            }
-        }
-
         private void rdpClient_OnRequestGoFullScreen(object sender, EventArgs e)
         {
             // TODO: Make multi-screen configurable.
+            // TODO: Use Multimon to adapt layout
             // TODO: ConnectionBar disappears on 2nd attempt
 
-            EnterFullscreen(true);
+            EnterFullscreen(false);
+
+
             this.rdpClient.Size = this.rdpClient.Parent.Size;
             ReconnectToResize(this.rdpClient.Size);
         }
@@ -675,8 +660,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Views.RemoteDesktop
             LeaveFullScreen();
             this.rdpClient.Size = this.rdpClient.Parent.Size;
             ReconnectToResize(this.rdpClient.Size);
-
-            // TODO: Leave on disconnect also.
         }
 
         //---------------------------------------------------------------------
