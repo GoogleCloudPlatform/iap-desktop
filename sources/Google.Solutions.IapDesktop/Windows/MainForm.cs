@@ -526,6 +526,8 @@ namespace Google.Solutions.IapDesktop.Windows
         private void cancelBackgroundJobsButton_Click(object sender, EventArgs e)
             => this.viewModel.CancelBackgroundJobs();
 
+#pragma warning disable IDE0067 // Dispose objects before losing scope
+
         private void toolStripEmailButton_Click(object sender, EventArgs e)
         {
             var button = (ToolStripItem)sender;
@@ -550,11 +552,15 @@ namespace Google.Solutions.IapDesktop.Windows
                 this.statusStrip.PointToScreen(button.Bounds.Location),
                 button.Size);
 
-            new DeviceFlyoutWindow(new DeviceFlyoutViewModel(this, this.DeviceEnrollment)).Show(
-                this,
-                screenPosition,
-                ContentAlignment.TopLeft);
+            new DeviceFlyoutWindow(
+                    new DeviceFlyoutViewModel(this, this.DeviceEnrollment))
+                .Show(
+                    this,
+                    screenPosition,
+                    ContentAlignment.TopLeft);
         }
+
+#pragma warning restore IDE0067 // Dispose objects before losing scope
 
         //---------------------------------------------------------------------
         // IAuthorizationAdapter.

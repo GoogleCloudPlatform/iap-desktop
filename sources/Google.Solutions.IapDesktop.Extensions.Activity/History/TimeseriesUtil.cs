@@ -84,17 +84,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.History
                 .Max();
         }
 
-        private static IEnumerable<DateTime> DateSequence(
-            DateTime from,
-            DateTime to)
-        {
-            for (var d = from.Date; d <= to.Date; d = d.AddDays(1))
-            {
-                yield return d;
-            }
-        }
-
-
         public static IEnumerable<DataPoint> DailyHistogram(
             IEnumerable<DateTime> joinersUnsorted,
             IEnumerable<DateTime> leaversUnsorted)
