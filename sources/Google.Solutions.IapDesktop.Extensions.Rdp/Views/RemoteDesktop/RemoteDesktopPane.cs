@@ -665,14 +665,14 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Views.RemoteDesktop
             // TODO: Make multi-screen configurable.
             // TODO: ConnectionBar disappears on 2nd attempt
 
-            this.MultiScreenFullScreen = true;
+            EnterFullscreen(true);
             this.rdpClient.Size = this.rdpClient.Parent.Size;
             ReconnectToResize(this.rdpClient.Size);
         }
 
         private void rdpClient_OnRequestLeaveFullScreen(object sender, EventArgs e)
         {
-            this.MultiScreenFullScreen = false;
+            LeaveFullScreen();
             this.rdpClient.Size = this.rdpClient.Parent.Size;
             ReconnectToResize(this.rdpClient.Size);
 

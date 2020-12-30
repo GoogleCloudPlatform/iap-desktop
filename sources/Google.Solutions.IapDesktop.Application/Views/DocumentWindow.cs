@@ -19,8 +19,10 @@
 // under the License.
 //
 
+using Google.Solutions.Common.Diagnostics;
 using Google.Solutions.IapDesktop.Application.Properties;
 using System;
+using System.Diagnostics;
 using System.Drawing;
 using System.Windows.Forms;
 using WeifenLuo.WinFormsUI.Docking;
@@ -57,6 +59,11 @@ namespace Google.Solutions.IapDesktop.Application.Views
         // Ctor.
         //---------------------------------------------------------------------
 
+        public DocumentWindow()
+        {
+            // Constructor is for designer only.
+        }
+
         public DocumentWindow(
             IServiceProvider serviceProvider) 
             : base(serviceProvider, DockState.Document)
@@ -65,35 +72,62 @@ namespace Google.Solutions.IapDesktop.Application.Views
         }
 
         //---------------------------------------------------------------------
-        // Multi-monitor full-screen.
+        // Full-screen support.
         //---------------------------------------------------------------------
 
-        public bool MultiScreenFullScreen
+        protected bool IsFullscreen => this.fullScreenForm != null;
+
+        protected void EnterFullscreen(bool allScreens)
         {
-            get => this.fullScreenForm != null;
-            set
+            using (ApplicationTraceSources.Default.TraceMethod()
+                .WithParameters(allScreens))
             {
+                Debug.Assert(this.fullScreenForm == null);
                 if (this.fullScreenForm != null)
                 {
-                    MoveControls(this.fullScreenForm, this);
-                    this.fullScreenForm.Close();
-                    this.fullScreenForm = null;
+                    // In full screen mode already.
+                    return;
                 }
-                else
-                {
-                    var area = BoundsOfAllScreens;
-                    this.fullScreenForm = new Form()
-                    {
-                        Icon = Resources.logo,
-                        FormBorderStyle = FormBorderStyle.None,
-                        Bounds = area,
-                        StartPosition = FormStartPosition.Manual,
-                        TopMost = true
-                    };
 
-                    MoveControls(this, this.fullScreenForm);
-                    this.fullScreenForm.Show();
+                var bounds = allScreens
+                    ? BoundsOfAllScreens
+                    : Screen.PrimaryScreen.Bounds;
+
+                //
+                // NB. You can make a docking window full-screen, but it
+                // is not possible to hide their frame. To provide a true
+                // full screen experience, create a new window and 
+                // temporarily move all controls to this window.
+                //
+
+                this.fullScreenForm = new Form()
+                {
+                    Icon = Resources.logo,
+                    FormBorderStyle = FormBorderStyle.None,
+                    Bounds = bounds,
+                    StartPosition = FormStartPosition.Manual,
+                    TopMost = true
+                };
+
+                MoveControls(this, this.fullScreenForm);
+                this.fullScreenForm.Show();
+            }
+        }
+
+        protected void LeaveFullScreen()
+        {
+            using (ApplicationTraceSources.Default.TraceMethod().WithoutParameters())
+            {
+                Debug.Assert(this.fullScreenForm != null);
+                if (this.fullScreenForm == null)
+                {
+                    // Not in full screen mode already.
+                    return;
                 }
+
+                MoveControls(this.fullScreenForm, this);
+                this.fullScreenForm.Close();
+                this.fullScreenForm = null;
             }
         }
     }

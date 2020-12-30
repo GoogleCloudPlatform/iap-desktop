@@ -30,6 +30,11 @@ namespace Google.Solutions.IapDesktop.Application.Views.Diagnostics
     [SkipCodeCoverage("For debug purposes only")]
     public partial class DebugFullScreenPane : DocumentWindow
     {
+        public DebugFullScreenPane()
+        {
+            // Constructor is for designer only.
+        }
+
         public DebugFullScreenPane(IServiceProvider serviceProvider)
             : base(serviceProvider)
         {
@@ -42,7 +47,14 @@ namespace Google.Solutions.IapDesktop.Application.Views.Diagnostics
 
         private void fullScreenToggleButton_Click(object sender, EventArgs e)
         {
-            this.MultiScreenFullScreen = !this.MultiScreenFullScreen;
+            if (base.IsFullscreen)
+            {
+                LeaveFullScreen();
+            }
+            else
+            {
+                EnterFullscreen(this.allScreensCheckBox.Checked);
+            }
         }
     }
 }
