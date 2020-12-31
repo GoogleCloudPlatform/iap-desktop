@@ -39,6 +39,8 @@ namespace Google.Solutions.IapDesktop.Application.Views
             source.Controls.CopyTo(controls, 0);
             source.Controls.Clear();
             target.Controls.AddRange(controls);
+
+            Debug.Assert(source.Controls.Count == 0);
         }
 
         protected static Rectangle BoundsOfAllScreens
@@ -106,7 +108,8 @@ namespace Google.Solutions.IapDesktop.Application.Views
                     FormBorderStyle = FormBorderStyle.None,
                     Bounds = bounds,
                     StartPosition = FormStartPosition.Manual,
-                    TopMost = true
+                    TopMost = true,
+                    WindowState = FormWindowState.Maximized
                 };
 
                 MoveControls(this, this.fullScreenForm);

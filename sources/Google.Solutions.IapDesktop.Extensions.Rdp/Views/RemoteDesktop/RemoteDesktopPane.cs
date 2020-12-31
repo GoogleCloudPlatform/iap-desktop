@@ -658,6 +658,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Views.RemoteDesktop
         private void rdpClient_OnRequestLeaveFullScreen(object sender, EventArgs e)
         {
             LeaveFullScreen();
+
             this.rdpClient.Size = this.rdpClient.Parent.Size;
             ReconnectToResize(this.rdpClient.Size);
         }
@@ -676,7 +677,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Views.RemoteDesktop
                     return false;
                 }
 
-                ApplicationTraceSources.Default.TraceVerbose("Setting full screen mode to ", fullscreen);
+                ApplicationTraceSources.Default.TraceVerbose("Setting full screen mode to {0}", fullscreen);
                 this.rdpClient.FullScreen = fullscreen;
                 return true;
             }
