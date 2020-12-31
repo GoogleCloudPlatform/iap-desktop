@@ -197,6 +197,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Views.RemoteDesktop
                 advancedSettings.ConnectionBarShowMinimizeButton = false;
                 advancedSettings.PinConnectionBar =
                     (settings.ConnectionBar.EnumValue == RdpConnectionBarState.Pinned);
+                nonScriptable.ConnectionBarText = this.Instance.Name;
                 advancedSettings.EnableWindowsKey = 1;
                 advancedSettings.GrabFocusOnConnect = false;
 
