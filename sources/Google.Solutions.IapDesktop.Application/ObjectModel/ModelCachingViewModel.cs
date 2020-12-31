@@ -40,7 +40,7 @@ namespace Google.Solutions.IapDesktop.Application.ObjectModel
         protected TModel Model { get; private set; }
         protected TModelKey ModelKey { get; private set; }
 
-        public ModelCachingViewModelBase(int cacheCapacity)
+        protected ModelCachingViewModelBase(int cacheCapacity)
         {
             this.modelCache = new LeastRecentlyUsedCache<TModelKey, TModel>(
                 cacheCapacity);

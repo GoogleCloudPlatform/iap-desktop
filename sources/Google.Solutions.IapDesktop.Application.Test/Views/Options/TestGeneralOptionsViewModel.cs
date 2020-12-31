@@ -92,9 +92,10 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views.Options
             var viewModel = new GeneralOptionsViewModel(
                 this.settingsRepository,
                 this.protocolRegistryMock.Object,
-                new HelpService());
-
-            viewModel.IsUpdateCheckEnabled = false;
+                new HelpService())
+            {
+                IsUpdateCheckEnabled = false
+            };
             viewModel.ApplyChanges();
 
             settings = this.settingsRepository.GetSettings();
@@ -186,9 +187,10 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views.Options
             var viewModel = new GeneralOptionsViewModel(
                 this.settingsRepository,
                 this.protocolRegistryMock.Object,
-                new HelpService());
-
-            viewModel.IsDeviceCertificateAuthenticationEnabled = false;
+                new HelpService())
+            {
+                IsDeviceCertificateAuthenticationEnabled = false
+            };
             viewModel.ApplyChanges();
 
             settings = this.settingsRepository.GetSettings();
@@ -235,9 +237,10 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views.Options
             var viewModel = new GeneralOptionsViewModel(
                 this.settingsRepository,
                 this.protocolRegistryMock.Object,
-                new HelpService());
-
-            viewModel.IsBrowserIntegrationEnabled = true;
+                new HelpService())
+            {
+                IsBrowserIntegrationEnabled = true
+            };
             viewModel.ApplyChanges();
 
             this.protocolRegistryMock.Verify(r => r.Register(
@@ -253,9 +256,10 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views.Options
             var viewModel = new GeneralOptionsViewModel(
                 this.settingsRepository,
                 this.protocolRegistryMock.Object,
-                new HelpService());
-
-            viewModel.IsBrowserIntegrationEnabled = false;
+                new HelpService())
+            {
+                IsBrowserIntegrationEnabled = false
+            };
             viewModel.ApplyChanges();
 
             this.protocolRegistryMock.Verify(r => r.Unregister(

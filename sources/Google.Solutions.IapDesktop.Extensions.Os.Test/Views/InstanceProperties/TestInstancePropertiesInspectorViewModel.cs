@@ -46,7 +46,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Os.Test.Views.InstancePropertie
                 => jobFunc(CancellationToken.None);
         }
 
-        private static InstancePropertiesInspectorViewModel CreateInstanceDetailsViewModel(bool throwOnLoad)
+        private static InstancePropertiesInspectorViewModel CreateInstanceDetailsViewModel()
         {
             var registry = new ServiceRegistry();
             registry.AddSingleton<IJobService>(new JobServiceMock());
@@ -78,7 +78,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Os.Test.Views.InstancePropertie
         [Test]
         public async Task WhenSwitchingToCloudNode_ThenGridIsDisabled()
         {
-            var viewModel = CreateInstanceDetailsViewModel(false);
+            var viewModel = CreateInstanceDetailsViewModel();
 
             var node = new Mock<IProjectExplorerCloudNode>();
             await viewModel.SwitchToModelAsync(node.Object);
@@ -91,7 +91,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Os.Test.Views.InstancePropertie
         [Test]
         public async Task WhenSwitchingToProjectNode_ThenGridIsDisabled()
         {
-            var viewModel = CreateInstanceDetailsViewModel(false);
+            var viewModel = CreateInstanceDetailsViewModel();
 
             var node = new Mock<IProjectExplorerProjectNode>();
             node.SetupGet(n => n.ProjectId).Returns("project-1");
@@ -105,7 +105,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Os.Test.Views.InstancePropertie
         [Test]
         public async Task WhenSwitchingToZoneNode_ThenGridIsDisabled()
         {
-            var viewModel = CreateInstanceDetailsViewModel(false);
+            var viewModel = CreateInstanceDetailsViewModel();
 
             var node = new Mock<IProjectExplorerZoneNode>();
             node.SetupGet(n => n.ProjectId).Returns("project-1");
@@ -120,7 +120,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Os.Test.Views.InstancePropertie
         [Test]
         public async Task WhenSwitchingToInstanceNode_ThenGridIsPopulated()
         {
-            var viewModel = CreateInstanceDetailsViewModel(false);
+            var viewModel = CreateInstanceDetailsViewModel();
 
             var node = new Mock<IProjectExplorerVmInstanceNode>();
             node.SetupGet(n => n.ProjectId).Returns("project-1");
@@ -139,7 +139,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Os.Test.Views.InstancePropertie
         [Test]
         public async Task WhenSwitchingToInstanceNodeAndLoadFails_ThenGridIsDisabled()
         {
-            var viewModel = CreateInstanceDetailsViewModel(true);
+            var viewModel = CreateInstanceDetailsViewModel();
 
             var node = new Mock<IProjectExplorerVmInstanceNode>();
             node.SetupGet(n => n.ProjectId).Returns("project-1");

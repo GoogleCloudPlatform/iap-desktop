@@ -86,7 +86,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.Integration
     {
         public InstanceLocator Instance { get; }
 
-        public ConnectionBrokerEventBase(InstanceLocator vmInstance)
+        protected ConnectionBrokerEventBase(InstanceLocator vmInstance)
         {
             this.Instance = vmInstance;
         }

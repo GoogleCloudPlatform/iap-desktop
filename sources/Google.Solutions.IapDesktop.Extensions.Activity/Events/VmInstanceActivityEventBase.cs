@@ -58,7 +58,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Events
 
         public bool IsError => this.Severity == "ERROR";
 
-        public VmInstanceActivityEventBase(LogRecord logRecord) : base(logRecord)
+        protected VmInstanceActivityEventBase(LogRecord logRecord) : base(logRecord)
         {
             Debug.Assert(!IsError || logRecord.ProtoPayload.Status != null);
         }

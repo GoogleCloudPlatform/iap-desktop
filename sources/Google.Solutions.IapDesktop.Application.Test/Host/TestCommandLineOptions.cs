@@ -21,6 +21,7 @@
 
 using Google.Solutions.IapDesktop.Application.Host;
 using NUnit.Framework;
+using System;
 
 namespace Google.Solutions.IapDesktop.Application.Test.Host
 {
@@ -30,7 +31,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Host
         [Test]
         public void WhenArgsEmpty_ThenParseReturnsValidOptions()
         {
-            var options = CommandLineOptions.Parse(new string[0]);
+            var options = CommandLineOptions.Parse(Array.Empty<string>());
             
             Assert.IsFalse(options.IsLoggingEnabled);
             Assert.IsNull(options.StartupUrl);

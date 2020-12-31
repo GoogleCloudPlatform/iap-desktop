@@ -249,7 +249,7 @@ namespace Google.Solutions.Ssh.Test.Native
                 Assert.Throws<ArgumentException>(
                     () => session.SetPreferredMethods(
                         LIBSSH2_METHOD.KEX,
-                        new string[0]));
+                        Array.Empty<string>()));
             }
         }
 
