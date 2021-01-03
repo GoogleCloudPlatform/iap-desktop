@@ -52,6 +52,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Views.RemoteDesktop
         private readonly IExceptionDialog exceptionDialog;
         private readonly IEventService eventService;
 
+        private bool useAllScreensForFullScreen = false;
+
         private int keysSent = 0;
         private bool autoResize = false;
         private bool connecting = false;
@@ -115,9 +117,16 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Views.RemoteDesktop
             // that feature.
             this.AllowEndUserDocking = false;
 
-            var fullScreenMenuItem = new ToolStripMenuItem("&Full screen");
-            fullScreenMenuItem.Click += fullScreenMenuItem_Click;
-            this.TabContextStrip.Items.Add(fullScreenMenuItem);
+            var singleScreenFullScreenMenuItem = new ToolStripMenuItem("&Full screen");
+            singleScreenFullScreenMenuItem.Click += (sender, _) 
+                => TrySetFullscreen(FullScreenMode.SingleScreen);
+            this.TabContextStrip.Items.Add(singleScreenFullScreenMenuItem);
+            this.TabContextStrip.Opening += tabContextStrip_Opening;
+
+            var allScreensFullScreenMenuItem = new ToolStripMenuItem("&Full screen (use all displays)");
+            allScreensFullScreenMenuItem.Click += (sender, _) 
+                => TrySetFullscreen(FullScreenMode.AllScreens);
+            this.TabContextStrip.Items.Add(allScreensFullScreenMenuItem);
             this.TabContextStrip.Opening += tabContextStrip_Opening;
         }
 
@@ -451,11 +460,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Views.RemoteDesktop
             }
         }
 
-        private void fullScreenMenuItem_Click(object sender, EventArgs e)
-        {
-            TrySetFullscreen(true);
-        }
-
         private void reconnectToResizeTimer_Tick(object sender, EventArgs e)
         {
             Debug.Assert(this.autoResize);
@@ -647,7 +651,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Views.RemoteDesktop
             // TODO: Add 'Full screen (all screens)' command?
             // TODO: Use Multimon to adapt layout
 
-            EnterFullscreen(false);
+            EnterFullscreen(this.useAllScreensForFullScreen);
 
             this.rdpClient.Size = this.rdpClient.Parent.Size;
             ReconnectToResize(this.rdpClient.Size);
@@ -665,9 +669,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Views.RemoteDesktop
         // IRemoteDesktopSession.
         //---------------------------------------------------------------------
 
-        public bool TrySetFullscreen(bool fullscreen)
+        public bool TrySetFullscreen(FullScreenMode mode)
         {
-            using (ApplicationTraceSources.Default.TraceMethod().WithoutParameters())
+            using (ApplicationTraceSources.Default.TraceMethod().WithParameters(mode))
             {
                 if (this.IsConnecting)
                 {
@@ -675,8 +679,15 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Views.RemoteDesktop
                     return false;
                 }
 
-                ApplicationTraceSources.Default.TraceVerbose("Setting full screen mode to {0}", fullscreen);
-                this.rdpClient.FullScreen = fullscreen;
+                ApplicationTraceSources.Default.TraceVerbose("Setting full screen mode to {0}", mode);
+
+                //
+                // Request full screen - this causes OnRequestGoFullScreen
+                // to be fired, which does the actuall full-screen switch.
+                //
+                this.useAllScreensForFullScreen = (mode == FullScreenMode.AllScreens);
+                this.rdpClient.FullScreen = (mode != FullScreenMode.Off);
+
                 return true;
             }
         }

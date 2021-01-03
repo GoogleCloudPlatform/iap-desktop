@@ -90,7 +90,6 @@ namespace Google.Solutions.IapDesktop.Application.Views
             using (ApplicationTraceSources.Default.TraceMethod()
                 .WithParameters(allScreens))
             {
-                Debug.Assert(!IsFullscreen);
                 if (IsFullscreen)
                 {
                     // In full screen mode already.
@@ -117,20 +116,18 @@ namespace Google.Solutions.IapDesktop.Application.Views
                     // First time to go full screen, create the
                     // full-screen window.
                     //
-                    var bounds = allScreens
-                        ? BoundsOfAllScreens
-                        : Screen.PrimaryScreen.Bounds;
-
                     fullScreenForm = new Form()
                     {
                         Icon = Resources.logo,
                         FormBorderStyle = FormBorderStyle.None,
-                        Bounds = bounds,
                         StartPosition = FormStartPosition.Manual,
                         TopMost = true,
-                        WindowState = FormWindowState.Maximized
                     };
                 }
+
+                fullScreenForm.Bounds = allScreens
+                    ? BoundsOfAllScreens
+                    : Screen.FromControl(this).Bounds;
 
                 MoveControls(this, fullScreenForm);
                 fullScreenForm.Show();

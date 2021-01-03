@@ -36,13 +36,20 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Views.RemoteDesktop
     {
         void Close();
 
-        bool TrySetFullscreen(bool fullscreen);
+        bool TrySetFullscreen(FullScreenMode mode);
 
         bool IsConnected { get; }
 
         void ShowSecurityScreen();
 
         void ShowTaskManager();
+    }
+
+    public enum FullScreenMode
+    {
+        Off,
+        SingleScreen,
+        AllScreens
     }
 
     public interface IRemoteDesktopConnectionBroker : IConnectionBroker
