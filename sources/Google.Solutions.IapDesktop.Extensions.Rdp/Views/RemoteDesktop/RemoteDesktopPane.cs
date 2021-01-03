@@ -648,10 +648,13 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Views.RemoteDesktop
             // TODO: Use Multimon to adapt layout
             // TODO: ConnectionBar disappears on 2nd attempt
 
+            Debug.WriteLine("Control bounds before going full-screen: " + this.rdpClient.Bounds);
             EnterFullscreen(false);
 
 
             this.rdpClient.Size = this.rdpClient.Parent.Size;
+
+            Debug.WriteLine("Control bounds after going full-screen: " + this.rdpClient.Bounds);
             ReconnectToResize(this.rdpClient.Size);
         }
 

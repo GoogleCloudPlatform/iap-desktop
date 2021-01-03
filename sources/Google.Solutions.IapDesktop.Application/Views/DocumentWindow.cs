@@ -24,6 +24,7 @@ using Google.Solutions.IapDesktop.Application.Properties;
 using System;
 using System.Diagnostics;
 using System.Drawing;
+using System.Linq;
 using System.Windows.Forms;
 using WeifenLuo.WinFormsUI.Docking;
 
@@ -39,6 +40,11 @@ namespace Google.Solutions.IapDesktop.Application.Views
             source.Controls.CopyTo(controls, 0);
             source.Controls.Clear();
             target.Controls.AddRange(controls);
+
+            //foreach (var axControl in controls.OfType<AxHost>())
+            //{
+            //    axControl.ContainingControl = target;
+            //}
 
             Debug.Assert(source.Controls.Count == 0);
         }
@@ -77,7 +83,8 @@ namespace Google.Solutions.IapDesktop.Application.Views
         // Full-screen support.
         //---------------------------------------------------------------------
 
-        protected bool IsFullscreen => this.fullScreenForm != null;
+        protected bool IsFullscreen => this.fullScreenForm != null &&
+            this.fullScreenForm.Visible;
 
         protected void EnterFullscreen(bool allScreens)
         {
@@ -85,15 +92,11 @@ namespace Google.Solutions.IapDesktop.Application.Views
                 .WithParameters(allScreens))
             {
                 Debug.Assert(this.fullScreenForm == null);
-                if (this.fullScreenForm != null)
+                if (this.IsFullscreen)
                 {
                     // In full screen mode already.
                     return;
                 }
-
-                var bounds = allScreens
-                    ? BoundsOfAllScreens
-                    : Screen.PrimaryScreen.Bounds;
 
                 //
                 // NB. You can make a docking window full-screen, but it
@@ -102,15 +105,22 @@ namespace Google.Solutions.IapDesktop.Application.Views
                 // temporarily move all controls to this window.
                 //
 
-                this.fullScreenForm = new Form()
+                if (this.fullScreenForm == null)
                 {
-                    Icon = Resources.logo,
-                    FormBorderStyle = FormBorderStyle.None,
-                    Bounds = bounds,
-                    StartPosition = FormStartPosition.Manual,
-                    TopMost = true,
-                    WindowState = FormWindowState.Maximized
-                };
+                    var bounds = allScreens
+                        ? BoundsOfAllScreens
+                        : Screen.PrimaryScreen.Bounds;
+
+                    this.fullScreenForm = new Form()
+                    {
+                        Icon = Resources.logo,
+                        FormBorderStyle = FormBorderStyle.None,
+                        Bounds = bounds,
+                        StartPosition = FormStartPosition.Manual,
+                        TopMost = true,
+                        WindowState = FormWindowState.Maximized
+                    };
+                }
 
                 MoveControls(this, this.fullScreenForm);
                 this.fullScreenForm.Show();
@@ -129,8 +139,10 @@ namespace Google.Solutions.IapDesktop.Application.Views
                 }
 
                 MoveControls(this.fullScreenForm, this);
-                this.fullScreenForm.Close();
-                this.fullScreenForm = null;
+
+                //this.fullScreenForm.Close();
+                //this.fullScreenForm = null;
+                this.fullScreenForm.Hide();
             }
         }
     }
