@@ -32,7 +32,11 @@ namespace Google.Solutions.IapDesktop.Application.Views
 {
     public class DocumentWindow : ToolWindow
     {
-        private Form fullScreenForm = null;
+        //
+        // Full screen form -- created lazily. There can only be one window
+        // full scnreen at a time, so it's static.
+        //
+        private static Form fullScreenForm = null;
 
         private static void MoveControls(Form source, Form target)
         {
@@ -40,11 +44,6 @@ namespace Google.Solutions.IapDesktop.Application.Views
             source.Controls.CopyTo(controls, 0);
             source.Controls.Clear();
             target.Controls.AddRange(controls);
-
-            //foreach (var axControl in controls.OfType<AxHost>())
-            //{
-            //    axControl.ContainingControl = target;
-            //}
 
             Debug.Assert(source.Controls.Count == 0);
         }
@@ -83,16 +82,16 @@ namespace Google.Solutions.IapDesktop.Application.Views
         // Full-screen support.
         //---------------------------------------------------------------------
 
-        protected bool IsFullscreen => this.fullScreenForm != null &&
-            this.fullScreenForm.Visible;
+        protected static bool IsFullscreen 
+            => fullScreenForm != null && fullScreenForm.Visible;
 
         protected void EnterFullscreen(bool allScreens)
         {
             using (ApplicationTraceSources.Default.TraceMethod()
                 .WithParameters(allScreens))
             {
-                Debug.Assert(this.fullScreenForm == null);
-                if (this.IsFullscreen)
+                Debug.Assert(!IsFullscreen);
+                if (IsFullscreen)
                 {
                     // In full screen mode already.
                     return;
@@ -104,14 +103,25 @@ namespace Google.Solutions.IapDesktop.Application.Views
                 // full screen experience, create a new window and 
                 // temporarily move all controls to this window.
                 //
+                // The RDP ActiveX has some quirk where the connection bar
+                // disappears when you go full-screen a second time and the
+                // hosting window is different from the first time.
+                // By using a single/static form and keeping it around
+                // after first use, we ensure that the form is always the
+                // same, thus circumventing the quirk.
+                //
 
-                if (this.fullScreenForm == null)
+                if (fullScreenForm == null)
                 {
+                    //
+                    // First time to go full screen, create the
+                    // full-screen window.
+                    //
                     var bounds = allScreens
                         ? BoundsOfAllScreens
                         : Screen.PrimaryScreen.Bounds;
 
-                    this.fullScreenForm = new Form()
+                    fullScreenForm = new Form()
                     {
                         Icon = Resources.logo,
                         FormBorderStyle = FormBorderStyle.None,
@@ -122,8 +132,8 @@ namespace Google.Solutions.IapDesktop.Application.Views
                     };
                 }
 
-                MoveControls(this, this.fullScreenForm);
-                this.fullScreenForm.Show();
+                MoveControls(this, fullScreenForm);
+                fullScreenForm.Show();
             }
         }
 
@@ -131,18 +141,19 @@ namespace Google.Solutions.IapDesktop.Application.Views
         {
             using (ApplicationTraceSources.Default.TraceMethod().WithoutParameters())
             {
-                Debug.Assert(this.fullScreenForm != null);
-                if (this.fullScreenForm == null)
+                Debug.Assert(IsFullscreen);
+                if (!IsFullscreen)
                 {
-                    // Not in full screen mode already.
+                    // Not in full screen mode.
                     return;
                 }
 
-                MoveControls(this.fullScreenForm, this);
+                MoveControls(fullScreenForm, this);
 
-                //this.fullScreenForm.Close();
-                //this.fullScreenForm = null;
-                this.fullScreenForm.Hide();
+                //
+                // Only hide the window, we might need it again.
+                //
+                fullScreenForm.Hide();
             }
         }
     }

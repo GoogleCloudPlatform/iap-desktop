@@ -47,7 +47,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.Diagnostics
 
         private void fullScreenToggleButton_Click(object sender, EventArgs e)
         {
-            if (base.IsFullscreen)
+            if (IsFullscreen)
             {
                 LeaveFullScreen();
             }
