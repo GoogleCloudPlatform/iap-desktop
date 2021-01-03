@@ -98,14 +98,14 @@ namespace Google.Solutions.IapDesktop.Application.Views
 
                 //
                 // NB. You can make a docking window full-screen, but it
-                // is not possible to hide their frame. To provide a true
-                // full screen experience, create a new window and 
+                // is not possible to hide its frame. To provide a true
+                // full screen experience, we create a new window and 
                 // temporarily move all controls to this window.
                 //
-                // The RDP ActiveX has some quirk where the connection bar
+                // NB. The RDP ActiveX has some quirk where the connection bar
                 // disappears when you go full-screen a second time and the
                 // hosting window is different from the first time.
-                // By using a single/static form and keeping it around
+                // By using a single/static window and keeping it around
                 // after first use, we ensure that the form is always the
                 // same, thus circumventing the quirk.
                 //
