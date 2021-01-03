@@ -644,9 +644,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Views.RemoteDesktop
 
         private void rdpClient_OnRequestGoFullScreen(object sender, EventArgs e)
         {
-            // TODO: Make multi-screen configurable.
+            // TODO: Add 'Full screen (all screens)' command?
             // TODO: Use Multimon to adapt layout
-            // TODO: ConnectionBar disappears on 2nd attempt
 
             EnterFullscreen(false);
 
