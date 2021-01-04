@@ -33,14 +33,34 @@ namespace Google.Solutions.IapDesktop.Application.Test.Controls
     {
         private Form form;
 
+        private class ScreenSelectorItem : IScreenSelectorModelItem
+        {
+            public Screen Screen { get; }
+
+            public bool IsSelected { get; set; }
+
+            public ScreenSelectorItem(Screen screen)
+            {
+                this.Screen = screen;
+                this.IsSelected = false;
+            }
+        }
+
         [Test]
         public void __()
         {
-            var selector = new ScreenSelector()
+            var model = new ObservableCollection<ScreenSelectorItem>();
+            foreach (var s in Screen.AllScreens)
+            {
+                model.Add(new ScreenSelectorItem(s));
+            }
+
+            var selector = new ScreenSelector<ScreenSelectorItem>()
             {
                 Dock = DockStyle.Fill
             };
-            selector.BindCollection(new ObservableCollection<string>());
+
+            selector.BindCollection(model);
             this.form = new Form();
             this.form.Controls.Add(selector);
 

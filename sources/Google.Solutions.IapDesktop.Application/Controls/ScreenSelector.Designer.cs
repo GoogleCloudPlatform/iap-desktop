@@ -1,6 +1,6 @@
 ﻿namespace Google.Solutions.IapDesktop.Application.Controls
 {
-    partial class ScreenSelector
+    partial class ScreenSelector<TModelItem>
     {
         /// <summary> 
         /// Required designer variable.
@@ -38,7 +38,6 @@
             this.Click += new System.EventHandler(this.ScreenSelector_Click);
             this.Paint += new System.Windows.Forms.PaintEventHandler(this.ScreenSelector_Paint);
             this.MouseMove += new System.Windows.Forms.MouseEventHandler(this.ScreenSelector_MouseMove);
-            this.Resize += new System.EventHandler(this.ScreenSelector_Resize);
             this.ResumeLayout(false);
 
         }

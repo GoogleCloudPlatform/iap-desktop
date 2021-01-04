@@ -11,26 +11,12 @@ using System.Collections.ObjectModel;
 
 namespace Google.Solutions.IapDesktop.Application.Controls
 {
-    public partial class ScreenSelector : UserControl
+    public partial class ScreenSelector<TModelItem> : UserControl
+        where TModelItem : IScreenSelectorModelItem
     {
-        private IList<ScreenIcon> screens;
         private Point currentMouseLocation = new Point(0, 0);
 
-        private ObservableCollection<string> selectedScreens = null;
-
-        internal class ScreenIcon
-        {
-            public Screen Screen { get; }
-            public Rectangle Bounds { get; }
-
-            public ScreenIcon(
-                Screen screen,
-                Rectangle bounds)
-            {
-                this.Screen = screen;
-                this.Bounds = bounds;
-            }
-        }
+        private ObservableCollection<TModelItem> model = null;
 
         public ScreenSelector()
         {
@@ -38,6 +24,72 @@ namespace Google.Solutions.IapDesktop.Application.Controls
 
             this.ResizeRedraw = true;
             this.DoubleBuffered = true;
+        }
+
+        //---------------------------------------------------------------------
+        // ScreenIcon.
+        //---------------------------------------------------------------------
+
+        internal class ScreenIcon
+        {
+            public TModelItem Model { get; }
+            public Rectangle Bounds { get; }
+
+            public ScreenIcon(
+                TModelItem screen,
+                Rectangle bounds)
+            {
+                this.Model = screen;
+                this.Bounds = bounds;
+            }
+        }
+
+        private IList<ScreenIcon> GetModelIcons()
+        {
+            // Calulate a bounding box around all screens.
+            var unionOfAllScreens = new Rectangle();
+            foreach (Screen s in this.model.Select(m => m.Screen))
+            {
+                unionOfAllScreens = Rectangle.Union(unionOfAllScreens, s.Bounds);
+            }
+
+            var scalingFactor = Math.Min(
+                (double)this.Width / unionOfAllScreens.Width,
+                (double)this.Height / unionOfAllScreens.Height);
+
+            return this.model
+                .OrderBy(modelItem => modelItem.Screen.DeviceName)
+
+                // Shift bounds so that they have positive coordinates.
+                .Select(modelItem =>
+                    new ScreenIcon(
+                        modelItem,
+                        new Rectangle(
+                            modelItem.Screen.Bounds.X + Math.Abs(unionOfAllScreens.X),
+                            modelItem.Screen.Bounds.Y + Math.Abs(unionOfAllScreens.Y),
+                            modelItem.Screen.Bounds.Width,
+                            modelItem.Screen.Bounds.Height)))
+
+                // Scale down to size of control.
+                .Select(icon =>
+                    new ScreenIcon(
+                        icon.Model,
+                        new Rectangle(
+                            (int)((double)icon.Bounds.X * scalingFactor),
+                            (int)((double)icon.Bounds.Y * scalingFactor),
+                            (int)((double)icon.Bounds.Width * scalingFactor),
+                            (int)((double)icon.Bounds.Height * scalingFactor))))
+
+                // Add some padding
+                .Select(icon =>
+                    new ScreenIcon(
+                        icon.Model,
+                        new Rectangle(
+                            icon.Bounds.X + 2,
+                            icon.Bounds.Y + 2,
+                            icon.Bounds.Width - 4,
+                            icon.Bounds.Height - 4)))
+                .ToList();
         }
 
         //---------------------------------------------------------------------
@@ -49,26 +101,23 @@ namespace Google.Solutions.IapDesktop.Application.Controls
             using (var pen = new Pen(Color.Black, 2))
             {
                 var screenOrdinal = 1;
-                foreach (var screen in this.screens)
+                foreach (var screenIcon in GetModelIcons())
                 {
-                    var active = this.selectedScreens != null &&
-                        this.selectedScreens.Contains(screen.Screen.DeviceName);
-
                     e.Graphics.FillRectangle(
-                        active 
+                        screenIcon.Model.IsSelected 
                             ? SystemBrushes.Highlight
                             : SystemBrushes.ControlLight,
-                        screen.Bounds);
+                        screenIcon.Bounds);
                     e.Graphics.DrawRectangle(
                         pen,
-                        screen.Bounds);
+                        screenIcon.Bounds);
                     e.Graphics.DrawString(
                         (screenOrdinal++).ToString(), 
-                        this.Font, 
-                        active 
+                        this.Font,
+                        screenIcon.Model.IsSelected
                             ? Brushes.White
                             : SystemBrushes.ControlText, 
-                        screen.Bounds,
+                        screenIcon.Bounds,
                         new StringFormat
                         {
                             LineAlignment = StringAlignment.Center,
@@ -80,64 +129,15 @@ namespace Google.Solutions.IapDesktop.Application.Controls
 
         private void ScreenSelector_Click(object sender, EventArgs e)
         {
-            var selected = this.screens.FirstOrDefault(s => s.Bounds.Contains(this.currentMouseLocation));
-            if (selected != null && this.selectedScreens != null)
-            {
-                if (!this.selectedScreens.Remove(selected.Screen.DeviceName))
-                {
-                    this.selectedScreens.Add(selected.Screen.DeviceName);
-                }
+            var selected = GetModelIcons().FirstOrDefault(
+                s => s.Bounds.Contains(this.currentMouseLocation));
 
+            if (selected != null)
+            {
+                // Toggle selected state.
+                selected.Model.IsSelected = !selected.Model.IsSelected;
                 Invalidate();
             }
-        }
-
-        private void ScreenSelector_Resize(object sender, EventArgs e)
-        {
-            // Calulate a bounding box around all screens.
-            var allScreens = Screen.AllScreens;
-            var unionOfAllScreens = new Rectangle();
-            foreach (Screen s in allScreens)
-            {
-                unionOfAllScreens = Rectangle.Union(unionOfAllScreens, s.Bounds);
-            }
-
-            var scalingFactor = Math.Min(
-                (double)this.Width / unionOfAllScreens.Width,
-                (double)this.Height / unionOfAllScreens.Height);
-
-            this.screens = allScreens
-                .OrderBy(s => s.DeviceName)
-                // Shift bounds so that they have positive coordinates.
-                .Select(screen =>
-                    new ScreenIcon(
-                        screen,
-                        new Rectangle(
-                            screen.Bounds.X + Math.Abs(unionOfAllScreens.X),
-                            screen.Bounds.Y + Math.Abs(unionOfAllScreens.Y),
-                            screen.Bounds.Width,
-                            screen.Bounds.Height)))
-
-                // Scale down to size of control.
-                .Select(icon =>
-                    new ScreenIcon(
-                        icon.Screen,
-                        new Rectangle(
-                            (int)((double)icon.Bounds.X * scalingFactor),
-                            (int)((double)icon.Bounds.Y * scalingFactor),
-                            (int)((double)icon.Bounds.Width * scalingFactor),
-                            (int)((double)icon.Bounds.Height * scalingFactor))))
-
-                // Add some padding
-                .Select(icon =>
-                    new ScreenIcon(
-                        icon.Screen,
-                        new Rectangle(
-                            icon.Bounds.X + 2,
-                            icon.Bounds.Y + 2,
-                            icon.Bounds.Width - 4,
-                            icon.Bounds.Height - 4)))
-                .ToList();
         }
 
         private void ScreenSelector_MouseMove(object sender, MouseEventArgs e)
@@ -149,9 +149,15 @@ namespace Google.Solutions.IapDesktop.Application.Controls
         // List Binding.
         //---------------------------------------------------------------------
 
-        public void BindCollection(ObservableCollection<string> model)
+        public void BindCollection(ObservableCollection<TModelItem> model)
         {
-            this.selectedScreens = model;
+            this.model = model;
         }
+    }
+
+    public interface IScreenSelectorModelItem
+    {
+        Screen Screen { get; }
+        bool IsSelected { get; set; }
     }
 }
