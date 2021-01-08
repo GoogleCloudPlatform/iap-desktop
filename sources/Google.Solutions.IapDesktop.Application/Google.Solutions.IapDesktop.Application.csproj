@@ -93,11 +93,11 @@
     <Compile Include="Controls\ListViewExtensions.cs" />
     <Compile Include="Controls\PropertyGridExtensions.cs" />
     <Compile Include="Controls\RichTextBoxExtensions.cs" />
-    <Compile Include="Controls\ScreenSelector.cs">
+    <Compile Include="Controls\ScreenPicker.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="Controls\ScreenSelector.Designer.cs">
-      <DependentUpon>ScreenSelector.cs</DependentUpon>
+    <Compile Include="Controls\ScreenPicker.Designer.cs">
+      <DependentUpon>ScreenPicker.cs</DependentUpon>
     </Compile>
     <Compile Include="Controls\SearchableList.cs">
       <SubType>UserControl</SubType>
@@ -314,8 +314,8 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
-    <EmbeddedResource Include="Controls\ScreenSelector.resx">
-      <DependentUpon>ScreenSelector.cs</DependentUpon>
+    <EmbeddedResource Include="Controls\ScreenPicker.resx">
+      <DependentUpon>ScreenPicker.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Resources\About.rtf" />
     <None Include="packages.config" />

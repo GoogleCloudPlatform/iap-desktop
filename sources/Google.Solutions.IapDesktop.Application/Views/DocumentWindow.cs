@@ -138,7 +138,6 @@ namespace Google.Solutions.IapDesktop.Application.Views
         {
             using (ApplicationTraceSources.Default.TraceMethod().WithoutParameters())
             {
-                Debug.Assert(IsFullscreen);
                 if (!IsFullscreen)
                 {
                     // Not in full screen mode.

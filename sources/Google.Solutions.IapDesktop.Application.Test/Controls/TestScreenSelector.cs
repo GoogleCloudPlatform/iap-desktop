@@ -47,15 +47,30 @@ namespace Google.Solutions.IapDesktop.Application.Test.Controls
         }
 
         [Test]
-        public void __()
+        public void WhenNoModelProvided_ThenShowDialogSucceeds()
         {
+            var selector = new ScreenPicker<ScreenSelectorItem>()
+            {
+                Dock = DockStyle.Fill
+            };
+
+            this.form = new Form();
+            this.form.Controls.Add(selector);
+            this.form.ShowDialog();
+        }
+
+
+        [Test]
+        public void WhenModelProvided_ThenShowDialogSucceeds()
+        {
+            // TODO: remove 
             var model = new ObservableCollection<ScreenSelectorItem>();
             foreach (var s in Screen.AllScreens)
             {
                 model.Add(new ScreenSelectorItem(s));
             }
 
-            var selector = new ScreenSelector<ScreenSelectorItem>()
+            var selector = new ScreenPicker<ScreenSelectorItem>()
             {
                 Dock = DockStyle.Fill
             };

@@ -1,6 +1,6 @@
 ﻿namespace Google.Solutions.IapDesktop.Application.Controls
 {
-    partial class ScreenSelector<TModelItem>
+    partial class ScreenPicker<TModelItem>
     {
         /// <summary> 
         /// Required designer variable.
