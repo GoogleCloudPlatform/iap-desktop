@@ -20,11 +20,8 @@
 //
 
 using Google.Solutions.IapDesktop.Application.Services.Settings;
-using Google.Solutions.IapDesktop.Application.Util;
-using Google.Solutions.IapDesktop.Application.Views;
 using Google.Solutions.IapDesktop.Application.Views.Options;
 using Microsoft.Win32;
-using Moq;
 using NUnit.Framework;
 using System.Linq;
 using System.Windows.Forms;

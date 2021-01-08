@@ -20,7 +20,10 @@
 //
 
 using Google.Solutions.Common.Diagnostics;
+using Google.Solutions.Common.Util;
+using Google.Solutions.IapDesktop.Application.ObjectModel;
 using Google.Solutions.IapDesktop.Application.Properties;
+using Google.Solutions.IapDesktop.Application.Services.Settings;
 using System;
 using System.Diagnostics;
 using System.Drawing;
@@ -38,6 +41,8 @@ namespace Google.Solutions.IapDesktop.Application.Views
         //
         private static Form fullScreenForm = null;
 
+        private readonly ApplicationSettingsRepository settingsRepository;
+
         private static void MoveControls(Form source, Form target)
         {
             var controls = new Control[source.Controls.Count];
@@ -48,12 +53,32 @@ namespace Google.Solutions.IapDesktop.Application.Views
             Debug.Assert(source.Controls.Count == 0);
         }
 
-        protected static Rectangle BoundsOfAllScreens
+        protected Rectangle BoundsOfAllScreens
         {
             get
             {
+                //
+                // Read list of screen devices to use.
+                // 
+                // NB. The list of devices might include devices that
+                // do not exist anymore. 
+                //
+                var selectedDevices = (this.settingsRepository.GetSettings()
+                    .FullScreenDevices.StringValue ?? string.Empty)
+                        .Split(ApplicationSettings.FullScreenDevicesSeparator)
+                        .ToHashSet();
+
+                var screens = Screen.AllScreens
+                    .Where(s => selectedDevices.Contains(s.DeviceName));
+
+                if (!screens.Any())
+                {
+                    // Default to all screens.
+                    screens = Screen.AllScreens;
+                }
+
                 Rectangle r = new Rectangle();
-                foreach (Screen s in Screen.AllScreens)
+                foreach (var s in screens)
                 {
                     r = Rectangle.Union(r, s.Bounds);
                 }
@@ -75,6 +100,8 @@ namespace Google.Solutions.IapDesktop.Application.Views
             IServiceProvider serviceProvider) 
             : base(serviceProvider, DockState.Document)
         {
+            this.settingsRepository = serviceProvider.GetService<ApplicationSettingsRepository>();
+
             this.DockAreas = DockAreas.Document;
         }
 
