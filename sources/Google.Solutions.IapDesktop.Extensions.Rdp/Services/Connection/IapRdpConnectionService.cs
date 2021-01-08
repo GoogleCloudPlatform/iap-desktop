@@ -111,7 +111,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Services.Connection
                 settings);
         }
 
-        public async Task ActivateOrConnectInstanceAsync(IProjectExplorerVmInstanceNode vmNode)
+        public async Task ActivateOrConnectInstanceAsync(
+            IProjectExplorerVmInstanceNode vmNode,
+            bool allowPersistentCredentials)
         {
             if (this.remoteDesktopService.TryActivate(vmNode.Reference))
             {
@@ -125,15 +127,29 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Services.Connection
             var settings = (VmInstanceConnectionSettings)
                 this.settingsService.GetConnectionSettings(vmNode);
 
-            await this.credentialPrompt.ShowCredentialsPromptAsync(
-                    this.window,
-                    vmNode.Reference,
-                    settings,
-                    true)
-                .ConfigureAwait(true);
+            if (allowPersistentCredentials)
+            {
+                await this.credentialPrompt.ShowCredentialsPromptAsync(
+                        this.window,
+                        vmNode.Reference,
+                        settings,
+                        true)
+                    .ConfigureAwait(true);
 
-            // Persist new credentials.
-            this.settingsService.SaveConnectionSettings(settings);
+                // Persist new credentials.
+                this.settingsService.SaveConnectionSettings(settings);
+            }
+            else
+            {
+                //
+                //Temporarily clear persisted credentials so that the
+                // default credential prompt is triggered.
+                //
+                // NB. Use an empty string (as opposed to null) to
+                // avoid an inherited setting from kicking in.
+                //
+                settings.Password.Value = string.Empty;
+            }
 
             await ConnectInstanceAsync(
                     vmNode.Reference,
