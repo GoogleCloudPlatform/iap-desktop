@@ -123,7 +123,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Views.RemoteDesktop
             this.TabContextStrip.Items.Add(singleScreenFullScreenMenuItem);
             this.TabContextStrip.Opening += tabContextStrip_Opening;
 
-            var allScreensFullScreenMenuItem = new ToolStripMenuItem("&Full screen (use all displays)");
+            var allScreensFullScreenMenuItem = new ToolStripMenuItem("&Full screen (multiple displays)");
             allScreensFullScreenMenuItem.Click += (sender, _) 
                 => TrySetFullscreen(FullScreenMode.AllScreens);
             this.TabContextStrip.Items.Add(allScreensFullScreenMenuItem);

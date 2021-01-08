@@ -35,7 +35,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Controls
     {
         private Form form;
 
-        private class ScreenSelectorItem : IScreenSelectorModelItem
+        private class ScreenSelectorItem : IScreenPickerModelItem
         {
             public Rectangle ScreenBounds { get; set; }
 

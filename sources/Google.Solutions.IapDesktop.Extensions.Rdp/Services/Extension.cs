@@ -290,7 +290,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Services
                 });
             desktopMenu.AddCommand(
                 new Command<IMainForm>(
-                    "&Full screen (use all displays)",
+                    "&Full screen (multiple displays)",
                     _ => GetCommandStateWhenActiveSessionRequired(),
                     _ => DoWithActiveSession(session => session.TrySetFullscreen(FullScreenMode.AllScreens)))
                 {

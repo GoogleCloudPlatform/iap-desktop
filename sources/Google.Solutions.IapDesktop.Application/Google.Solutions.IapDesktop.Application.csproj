@@ -208,6 +208,13 @@
       <DependentUpon>FlyoutWindow.cs</DependentUpon>
     </Compile>
     <Compile Include="Views\HelpService.cs" />
+    <Compile Include="Views\Options\ScreenOptionsViewModel.cs" />
+    <Compile Include="Views\Options\ScreenOptionsControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Views\Options\ScreenOptionsControl.Designer.cs">
+      <DependentUpon>ScreenOptionsControl.cs</DependentUpon>
+    </Compile>
     <Compile Include="Views\Options\GeneralOptionsControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -354,6 +361,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Views\FlyoutWindow.resx">
       <DependentUpon>FlyoutWindow.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Views\Options\ScreenOptionsControl.resx">
+      <DependentUpon>ScreenOptionsControl.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Views\Options\GeneralOptionsControl.resx">
       <DependentUpon>GeneralOptionsControl.cs</DependentUpon>

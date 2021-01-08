@@ -139,6 +139,7 @@
     <Compile Include="Util\TestIapRdpUrl.cs" />
     <Compile Include="Views\Authentication\TestDeviceFlyoutViewModel.cs" />
     <Compile Include="Views\Authentication\TestUserFlyoutViewModel.cs" />
+    <Compile Include="Views\Options\TestScreenOptionsViewModel.cs" />
     <Compile Include="Views\Options\TestNetworkOptionsViewModel.cs" />
     <Compile Include="Views\Options\TestGeneralOptionsViewModel.cs" />
     <Compile Include="Views\TestMainForm.cs">

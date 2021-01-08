@@ -36,7 +36,7 @@ namespace Google.Solutions.IapDesktop.Application.Controls
     /// </summary>
     [SkipCodeCoverage("View")]
     public partial class ScreenPicker<TModelItem> : UserControl
-        where TModelItem : IScreenSelectorModelItem
+        where TModelItem : IScreenPickerModelItem
     {
         private Point currentMouseLocation = new Point(0, 0);
 
@@ -187,7 +187,7 @@ namespace Google.Solutions.IapDesktop.Application.Controls
         }
     }
 
-    public interface IScreenSelectorModelItem
+    public interface IScreenPickerModelItem
     {
         string DeviceName { get; }
         Rectangle ScreenBounds { get; }

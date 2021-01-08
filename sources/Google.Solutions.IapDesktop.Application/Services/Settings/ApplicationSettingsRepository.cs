@@ -44,6 +44,8 @@ namespace Google.Solutions.IapDesktop.Application.Services.Settings
 
     public class ApplicationSettings : IRegistrySettingsCollection
     {
+        public const char FullScreenDevicesSeparator = ',';
+
         public RegistryBoolSetting IsMainWindowMaximized { get; private set; }
 
         public RegistryDwordSetting MainWindowHeight { get; private set; }
@@ -65,6 +67,8 @@ namespace Google.Solutions.IapDesktop.Application.Services.Settings
         public RegistrySecureStringSetting ProxyPassword { get; private set; }
 
         public RegistryBoolSetting IsDeviceCertificateAuthenticationEnabled { get; private set; }
+        
+        public RegistryStringSetting FullScreenDevices { get; private set; }
 
         public IEnumerable<ISetting> Settings => new ISetting[]
         {
@@ -78,7 +82,8 @@ namespace Google.Solutions.IapDesktop.Application.Services.Settings
             this.ProxyPacUrl,
             this.ProxyUsername,
             this.ProxyPassword,
-            this.IsDeviceCertificateAuthenticationEnabled
+            this.IsDeviceCertificateAuthenticationEnabled,
+            this.FullScreenDevices
         };
 
         private ApplicationSettings()
@@ -174,6 +179,14 @@ namespace Google.Solutions.IapDesktop.Application.Services.Settings
                     null,
                     false,
                     registryKey),
+                FullScreenDevices = RegistryStringSetting.FromKey(
+                    "FullScreenDevices",
+                    "FullScreenDevices",
+                    null,
+                    null,
+                    null,
+                    registryKey,
+                    _ => true),
             };
         }
     }
