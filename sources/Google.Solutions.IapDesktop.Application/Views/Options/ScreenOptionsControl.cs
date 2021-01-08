@@ -20,36 +20,31 @@
 //
 
 using Google.Solutions.Common.Diagnostics;
+using Google.Solutions.IapDesktop.Application.Controls;
 using Google.Solutions.IapDesktop.Application.ObjectModel;
-using Google.Solutions.IapDesktop.Application.Views.Properties;
-using System.Linq;
+using System.Windows.Forms;
+
+#pragma warning disable IDE1006 // Naming Styles
 
 namespace Google.Solutions.IapDesktop.Application.Views.Options
 {
     [SkipCodeCoverage("UI code")]
-    public class OptionsDialog : PropertiesDialog
+    internal partial class ScreenOptionsControl : UserControl
     {
-        public OptionsDialog(IServiceCategoryProvider serviceProvider)
-            : base(serviceProvider)
+        private readonly ScreenOptionsViewModel viewModel;
+
+        public ScreenOptionsControl(ScreenOptionsViewModel viewModel)
         {
-            this.Text = "Options";
+            this.viewModel = viewModel;
 
-            AddPane(new GeneralOptionsViewModel(serviceProvider));
-            AddPane(new NetworkOptionsViewModel(serviceProvider));
-            AddPane(new ScreenOptionsViewModel(serviceProvider));
+            InitializeComponent();
 
-            // Load all services implementing IOptionsDialogPane and
-            // add them automatically. This gives extensions a chance
-            // to plug in their own panes.
-            foreach (var pane in serviceProvider
-                .GetServicesByCategory<IOptionsDialogPane>()
-                .OrderBy(p => p.Title))
-            {
-                AddPane(pane);
-            }
+            this.screenPicker.BindCollection(this.viewModel.Devices);
         }
     }
 
-    public interface IOptionsDialogPane : IPropertiesDialogPane
-    { }
+    public class ScreenDevicePicker : ScreenPicker<ScreenOptionsViewModel.ScreenDevice>
+    {
+
+    }
 }

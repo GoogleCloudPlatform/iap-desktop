@@ -36,13 +36,20 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Views.RemoteDesktop
     {
         void Close();
 
-        bool TrySetFullscreen(bool fullscreen);
+        bool TrySetFullscreen(FullScreenMode mode);
 
         bool IsConnected { get; }
 
         void ShowSecurityScreen();
 
         void ShowTaskManager();
+    }
+
+    public enum FullScreenMode
+    {
+        Off,
+        SingleScreen,
+        AllScreens
     }
 
     public interface IRemoteDesktopConnectionBroker : IConnectionBroker
@@ -60,15 +67,13 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Views.RemoteDesktop
     [ServiceCategory(typeof(IConnectionBroker))]
     public class RemoteDesktopConnectionBroker : IRemoteDesktopConnectionBroker
     {
-        private readonly IExceptionDialog exceptionDialog;
-        private readonly IEventService eventService;
+        private readonly IServiceProvider serviceProvider;
         private readonly DockPanel dockPanel;
 
         public RemoteDesktopConnectionBroker(IServiceProvider serviceProvider)
         {
+            this.serviceProvider = serviceProvider;
             this.dockPanel = serviceProvider.GetService<IMainForm>().MainPanel;
-            this.exceptionDialog = serviceProvider.GetService<IExceptionDialog>();
-            this.eventService = serviceProvider.GetService<IEventService>();
 
             // NB. The ServiceCategory attribute causes this class to be 
             // announced to the global connection broker.
@@ -110,8 +115,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Views.RemoteDesktop
             VmInstanceConnectionSettings settings)
         {
             var rdpPane = new RemoteDesktopPane(
-                this.eventService,
-                this.exceptionDialog,
+                this.serviceProvider,
                 vmInstance);
             rdpPane.Show(this.dockPanel, DockState.Document);
 

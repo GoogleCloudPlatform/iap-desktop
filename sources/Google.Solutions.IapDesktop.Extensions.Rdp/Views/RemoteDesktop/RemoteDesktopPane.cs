@@ -23,6 +23,7 @@ using AxMSTSCLib;
 using Google.Solutions.Common.Diagnostics;
 using Google.Solutions.Common.Locator;
 using Google.Solutions.IapDesktop.Application;
+using Google.Solutions.IapDesktop.Application.ObjectModel;
 using Google.Solutions.IapDesktop.Application.Services.Integration;
 using Google.Solutions.IapDesktop.Application.Views;
 using Google.Solutions.IapDesktop.Application.Views.Dialog;
@@ -46,10 +47,12 @@ using WeifenLuo.WinFormsUI.Docking;
 namespace Google.Solutions.IapDesktop.Extensions.Rdp.Views.RemoteDesktop
 {
     [ComVisible(false)]
-    public partial class RemoteDesktopPane : ToolWindow, IRemoteDesktopSession
+    public partial class RemoteDesktopPane : DocumentWindow, IRemoteDesktopSession
     {
         private readonly IExceptionDialog exceptionDialog;
         private readonly IEventService eventService;
+
+        private bool useAllScreensForFullScreen = false;
 
         private int keysSent = 0;
         private bool autoResize = false;
@@ -84,6 +87,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Views.RemoteDesktop
         {
             using (ApplicationTraceSources.Default.TraceMethod().WithParameters(e.Message))
             {
+                // Make sure we're not fullscreen anymore.
+                LeaveFullScreen();
+
                 await this.eventService.FireAsync(
                     new ConnectionFailedEvent(this.Instance, e))
                     .ConfigureAwait(true);
@@ -97,24 +103,30 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Views.RemoteDesktop
         //---------------------------------------------------------------------
 
         public RemoteDesktopPane(
-            IEventService eventService,
-            IExceptionDialog exceptionDialog,
-            InstanceLocator vmInstance)
+            IServiceProvider serviceProvider,
+            InstanceLocator vmInstance) 
+            : base(serviceProvider)
         {
-            this.exceptionDialog = exceptionDialog;
-            this.eventService = eventService;
+            this.exceptionDialog = serviceProvider.GetService<IExceptionDialog>();
+            this.eventService = serviceProvider.GetService<IEventService>();
             this.Instance = vmInstance;
 
             this.TabText = vmInstance.Name;
-            this.DockAreas = DockAreas.Document;
 
             // The ActiveX fails when trying to drag/dock a window, so disable
             // that feature.
             this.AllowEndUserDocking = false;
 
-            var fullScreenMenuItem = new ToolStripMenuItem("&Full screen");
-            fullScreenMenuItem.Click += fullScreenMenuItem_Click;
-            this.TabContextStrip.Items.Add(fullScreenMenuItem);
+            var singleScreenFullScreenMenuItem = new ToolStripMenuItem("&Full screen");
+            singleScreenFullScreenMenuItem.Click += (sender, _) 
+                => TrySetFullscreen(FullScreenMode.SingleScreen);
+            this.TabContextStrip.Items.Add(singleScreenFullScreenMenuItem);
+            this.TabContextStrip.Opening += tabContextStrip_Opening;
+
+            var allScreensFullScreenMenuItem = new ToolStripMenuItem("&Full screen (multiple displays)");
+            allScreensFullScreenMenuItem.Click += (sender, _) 
+                => TrySetFullscreen(FullScreenMode.AllScreens);
+            this.TabContextStrip.Items.Add(allScreensFullScreenMenuItem);
             this.TabContextStrip.Opening += tabContextStrip_Opening;
         }
 
@@ -199,7 +211,11 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Views.RemoteDesktop
                     (settings.ConnectionBar.EnumValue == RdpConnectionBarState.Pinned);
                 nonScriptable.ConnectionBarText = this.Instance.Name;
                 advancedSettings.EnableWindowsKey = 1;
-                advancedSettings.GrabFocusOnConnect = false;
+
+                //
+                // Trigger OnRequestGoFullScreen event.
+                //
+                advancedSettings.ContainerHandledFullScreen = 1;
 
                 //
                 // Local resources settings.
@@ -444,11 +460,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Views.RemoteDesktop
             }
         }
 
-        private void fullScreenMenuItem_Click(object sender, EventArgs e)
-        {
-            TrySetFullscreen(true);
-        }
-
         private void reconnectToResizeTimer_Tick(object sender, EventArgs e)
         {
             Debug.Assert(this.autoResize);
@@ -467,26 +478,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Views.RemoteDesktop
 
                 // Do not fire again.
                 reconnectToResizeTimer.Stop();
-            }
-        }
-
-        private void rdpClient_OnEnterFullScreenMode(object sender, EventArgs e)
-        {
-            if (!this.IsConnecting && this.autoResize)
-            {
-                // Adjust desktop size to full screen.
-                var screenSize = Screen.GetBounds(this);
-
-                ReconnectToResize(screenSize.Size);
-            }
-        }
-
-        private void rdpClient_OnLeaveFullScreenMode(object sender, EventArgs e)
-        {
-            if (!this.IsConnecting && this.autoResize)
-            {
-                // Return to normal size.
-                ReconnectToResize(this.Size);
             }
         }
 
@@ -526,6 +517,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Views.RemoteDesktop
 
             using (ApplicationTraceSources.Default.TraceMethod().WithParameters(e.Message))
             {
+                LeaveFullScreen();
+
                 if (!this.connecting && e.IsTimeout)
                 {
                     // An already-established connection timed out, this is common when
@@ -653,13 +646,32 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Views.RemoteDesktop
             }
         }
 
+        private void rdpClient_OnRequestGoFullScreen(object sender, EventArgs e)
+        {
+            // TODO: Add 'Full screen (all screens)' command?
+            // TODO: Use Multimon to adapt layout
+
+            EnterFullscreen(this.useAllScreensForFullScreen);
+
+            this.rdpClient.Size = this.rdpClient.Parent.Size;
+            ReconnectToResize(this.rdpClient.Size);
+        }
+
+        private void rdpClient_OnRequestLeaveFullScreen(object sender, EventArgs e)
+        {
+            LeaveFullScreen();
+
+            this.rdpClient.Size = this.rdpClient.Parent.Size;
+            ReconnectToResize(this.rdpClient.Size);
+        }
+
         //---------------------------------------------------------------------
         // IRemoteDesktopSession.
         //---------------------------------------------------------------------
 
-        public bool TrySetFullscreen(bool fullscreen)
+        public bool TrySetFullscreen(FullScreenMode mode)
         {
-            using (ApplicationTraceSources.Default.TraceMethod().WithoutParameters())
+            using (ApplicationTraceSources.Default.TraceMethod().WithParameters(mode))
             {
                 if (this.IsConnecting)
                 {
@@ -667,8 +679,15 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Views.RemoteDesktop
                     return false;
                 }
 
-                ApplicationTraceSources.Default.TraceVerbose("Setting full screen mode to ", fullscreen);
-                this.rdpClient.FullScreen = fullscreen;
+                ApplicationTraceSources.Default.TraceVerbose("Setting full screen mode to {0}", mode);
+
+                //
+                // Request full screen - this causes OnRequestGoFullScreen
+                // to be fired, which does the actuall full-screen switch.
+                //
+                this.useAllScreensForFullScreen = (mode == FullScreenMode.AllScreens);
+                this.rdpClient.FullScreen = (mode != FullScreenMode.Off);
+
                 return true;
             }
         }
@@ -706,13 +725,12 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Views.RemoteDesktop
                 if (this.keysSent++ == 0)
                 {
                     // The RDP control sometimes swallows the first key combination
-                    // that is sent. So start by a harmess ESC.
+                    // that is sent. So start by a harmless ESC.
                     SendKeys(Keys.Escape);
                 }
 
                 nonScriptable.SendKeys(keys);
             }
         }
-
     }
 }

@@ -94,6 +94,7 @@
   <ItemGroup>
     <Compile Include="Controls\TestBindableListView.cs" />
     <Compile Include="Controls\TestBindableTreeView.cs" />
+    <Compile Include="Controls\TestScreenPicker.cs" />
     <Compile Include="Controls\TestListViewExtensions.cs" />
     <Compile Include="ObjectModel\MoqExtensions.cs" />
     <Compile Include="ObjectModel\TestBindingExtensions.cs" />
@@ -138,6 +139,7 @@
     <Compile Include="Util\TestIapRdpUrl.cs" />
     <Compile Include="Views\Authentication\TestDeviceFlyoutViewModel.cs" />
     <Compile Include="Views\Authentication\TestUserFlyoutViewModel.cs" />
+    <Compile Include="Views\Options\TestScreenOptionsViewModel.cs" />
     <Compile Include="Views\Options\TestNetworkOptionsViewModel.cs" />
     <Compile Include="Views\Options\TestGeneralOptionsViewModel.cs" />
     <Compile Include="Views\TestMainForm.cs">

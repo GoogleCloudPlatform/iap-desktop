@@ -296,10 +296,19 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Services
                 new Command<IMainForm>(
                     "&Full screen",
                     _ => GetCommandStateWhenActiveSessionRequired(),
-                    _ => DoWithActiveSession(session => session.TrySetFullscreen(true)))
+                    _ => DoWithActiveSession(session => session.TrySetFullscreen(FullScreenMode.SingleScreen)))
                 {
                     Image = Resources.Fullscreen_16,
                     ShortcutKeys = Keys.F11
+                });
+            desktopMenu.AddCommand(
+                new Command<IMainForm>(
+                    "&Full screen (multiple displays)",
+                    _ => GetCommandStateWhenActiveSessionRequired(),
+                    _ => DoWithActiveSession(session => session.TrySetFullscreen(FullScreenMode.AllScreens)))
+                {
+                    Image = Resources.Fullscreen_16,
+                    ShortcutKeys = Keys.F11 | Keys.Shift
                 });
             desktopMenu.AddCommand(
                 new Command<IMainForm>(
