@@ -77,6 +77,8 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views
                 eventService));
             registry.AddSingleton(new ToolWindowStateRepository(
                 hkcu.CreateSubKey(TestKeyPath)));
+            registry.AddSingleton(new ApplicationSettingsRepository(
+                hkcu.CreateSubKey(TestKeyPath)));
 
             registry.AddSingleton<IMainForm>(mainForm);
             registry.AddSingleton<IJobService>(mainForm);
