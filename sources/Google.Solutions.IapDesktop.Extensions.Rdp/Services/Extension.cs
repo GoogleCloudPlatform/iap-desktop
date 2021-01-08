@@ -118,7 +118,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Services
             }
         }
 
-        private async void Connect(IProjectExplorerNode node)
+        private async void Connect(
+            IProjectExplorerNode node,
+            bool allowPersistentCredentials)
         {
             try
             {
@@ -126,7 +128,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Services
                 {
                     await this.serviceProvider
                         .GetService<IapRdpConnectionService>()
-                        .ActivateOrConnectInstanceAsync(vmNode)
+                        .ActivateOrConnectInstanceAsync(
+                            vmNode,
+                            allowPersistentCredentials)
                         .ConfigureAwait(true);
                 }
             }
@@ -194,18 +198,27 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Services
                 new Command<IProjectExplorerNode>(
                     "&Connect",
                     GetContextMenuCommandStateWhenRunningInstanceRequired,
-                    Connect)
+                    node => Connect(node, true))
                 {
                     Image = Resources.Connect_16,
                     IsDefault = true
                 },
                 0);
+            projectExplorer.ContextMenuCommands.AddCommand(
+                new Command<IProjectExplorerNode>(
+                    "Connect &as user...",
+                    GetContextMenuCommandStateWhenRunningInstanceRequired,
+                    node => Connect(node, false))
+                {
+                    Image = Resources.Connect_16
+                },
+                1);
 
             projectExplorer.ToolbarCommands.AddCommand(
                 new Command<IProjectExplorerNode>(
                     "Connect to remote desktop",
                     GetToolbarCommandStateWhenRunningInstanceRequired,
-                    Connect)
+                    node => Connect(node, true))
                 {
                     Image = Resources.Connect_16
                 });
@@ -250,7 +263,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Services
                 {
                     Image = Resources.Password_16
                 },
-                1);
+                2);
 
             projectExplorer.ToolbarCommands.AddCommand(
                 new Command<IProjectExplorerNode>(

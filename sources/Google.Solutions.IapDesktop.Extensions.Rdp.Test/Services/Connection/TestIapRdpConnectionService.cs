@@ -66,6 +66,104 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Test.Services.Connection
             this.serviceRegistry.AddMock<IMainForm>();
         }
 
+        //---------------------------------------------------------------------
+        // Connect by node.
+        //---------------------------------------------------------------------
+
+        [Test]
+        public async Task WhenConnectingByNodeAndPersistentCredentialsDisallowed_ThenPasswordIsClear()
+        {
+            var settings = VmInstanceConnectionSettings.CreateNew("project", "instance-1");
+            settings.Username.Value = "existinguser";
+            settings.Password.Value = SecureStringExtensions.FromClearText("password");
+
+            var settingsService = this.serviceRegistry.AddMock<IConnectionSettingsService>();
+            settingsService.Setup(s => s.GetConnectionSettings(
+                    It.IsAny<IProjectExplorerNode>()))
+                .Returns(settings);
+
+            var vmNode = new Mock<IProjectExplorerVmInstanceNode>();
+            vmNode.SetupGet(n => n.Reference)
+                .Returns(new InstanceLocator("project-1", "zone-1", "instance-1"));
+
+            this.serviceRegistry.AddMock<IProjectExplorer>()
+                .Setup(p => p.TryFindNode(
+                    It.IsAny<InstanceLocator>()))
+                .Returns(vmNode.Object);
+
+            var remoteDesktopService = new Mock<IRemoteDesktopConnectionBroker>();
+            remoteDesktopService.Setup(s => s.Connect(
+                It.IsAny<InstanceLocator>(),
+                "localhost",
+                It.IsAny<ushort>(),
+                It.IsAny<VmInstanceConnectionSettings>())).Returns<IRemoteDesktopSession>(null);
+
+            this.serviceRegistry.AddSingleton<IRemoteDesktopConnectionBroker>(remoteDesktopService.Object);
+
+            var service = new IapRdpConnectionService(this.serviceRegistry);
+            await service.ActivateOrConnectInstanceAsync(vmNode.Object, false);
+
+            remoteDesktopService.Verify(s => s.Connect(
+                It.IsAny<InstanceLocator>(),
+                "localhost",
+                It.IsAny<ushort>(),
+                It.Is<VmInstanceConnectionSettings>(i => 
+                    i.Username.StringValue == "existinguser" && 
+                    i.Password.ClearTextValue == "")), Times.Once);
+
+            settingsService.Verify(s => s.SaveConnectionSettings(
+                It.IsAny<ConnectionSettingsBase>()), Times.Never);
+        }
+
+        [Test]
+        public async Task WhenConnectingByNodeAndPersistentCredentialsAllowed_ThenCredentialsAreUsed()
+        {
+            var settings = VmInstanceConnectionSettings.CreateNew("project", "instance-1");
+            settings.Username.Value = "existinguser";
+            settings.Password.Value = SecureStringExtensions.FromClearText("password");
+
+            var settingsService = this.serviceRegistry.AddMock<IConnectionSettingsService>();
+            settingsService.Setup(s => s.GetConnectionSettings(
+                    It.IsAny<IProjectExplorerNode>()))
+                .Returns(settings);
+
+            var vmNode = new Mock<IProjectExplorerVmInstanceNode>();
+            vmNode.SetupGet(n => n.Reference)
+                .Returns(new InstanceLocator("project-1", "zone-1", "instance-1"));
+
+            this.serviceRegistry.AddMock<IProjectExplorer>()
+                .Setup(p => p.TryFindNode(
+                    It.IsAny<InstanceLocator>()))
+                .Returns(vmNode.Object);
+
+            var remoteDesktopService = new Mock<IRemoteDesktopConnectionBroker>();
+            remoteDesktopService.Setup(s => s.Connect(
+                It.IsAny<InstanceLocator>(),
+                "localhost",
+                It.IsAny<ushort>(),
+                It.IsAny<VmInstanceConnectionSettings>())).Returns<IRemoteDesktopSession>(null);
+
+            this.serviceRegistry.AddSingleton<IRemoteDesktopConnectionBroker>(remoteDesktopService.Object);
+
+            var service = new IapRdpConnectionService(this.serviceRegistry);
+            await service.ActivateOrConnectInstanceAsync(vmNode.Object, true);
+
+            remoteDesktopService.Verify(s => s.Connect(
+                It.IsAny<InstanceLocator>(),
+                "localhost",
+                It.IsAny<ushort>(),
+                It.Is<VmInstanceConnectionSettings>(i =>
+                    i.Username.StringValue == "existinguser" &&
+                    i.Password.ClearTextValue == "password")), Times.Once);
+
+            settingsService.Verify(s => s.SaveConnectionSettings(
+                It.IsAny<ConnectionSettingsBase>()), Times.Once);
+        }
+
+        //---------------------------------------------------------------------
+        // Connect by URL.
+        //---------------------------------------------------------------------
+
         [Test]
         public async Task WhenConnectingByUrlWithoutUsernameAndNoCredentialsExist_ThenConnectionIsMadeWithoutUsername()
         {
