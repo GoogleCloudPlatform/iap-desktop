@@ -94,7 +94,7 @@
   <ItemGroup>
     <Compile Include="Controls\TestBindableListView.cs" />
     <Compile Include="Controls\TestBindableTreeView.cs" />
-    <Compile Include="Controls\TestScreenSelector.cs" />
+    <Compile Include="Controls\TestScreenPicker.cs" />
     <Compile Include="Controls\TestListViewExtensions.cs" />
     <Compile Include="ObjectModel\MoqExtensions.cs" />
     <Compile Include="ObjectModel\TestBindingExtensions.cs" />
