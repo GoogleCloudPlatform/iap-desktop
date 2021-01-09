@@ -133,7 +133,6 @@ namespace Google.Solutions.Ssh.Test
             }
         }
 
-
         [Test]
         public async Task WhenDisposingConnection_ThenWorkerIsStopped(
             [LinuxInstance] ResourceTask<InstanceLocator> instanceLocatorTask)
@@ -163,6 +162,120 @@ namespace Google.Solutions.Ssh.Test
                     }))
                 {
                     await connection.ConnectAsync();
+                }
+            }
+        }
+
+        [Test]
+        public async Task WhenServerAcceptsLocale_ThenShellUsesRightLocale(
+            [LinuxInstance] ResourceTask<InstanceLocator> instanceLocatorTask)
+        {
+            var endpoint = new IPEndPoint(
+                await InstanceUtil.PublicIpAddressForInstanceAsync(await instanceLocatorTask),
+                22);
+
+            using (var key = new RsaSshKey(new RSACng()))
+            {
+                await InstanceUtil.AddPublicKeyToMetadata(
+                    await instanceLocatorTask,
+                    "testuser",
+                    key);
+
+                var receiveBuffer = new StringBuilder();
+                SshShellConnection.ReceiveStringDataHandler receiveHandler = data =>
+                {
+                    lock (receiveBuffer)
+                    {
+                        receiveBuffer.Append(data);
+                    }
+                };
+
+                using (var connection = new SshShellConnection(
+                    "testuser",
+                    endpoint,
+                    key,
+                    SshShellConnection.DefaultTerminal,
+                    SshShellConnection.DefaultTerminalSize,
+                    new CultureInfo("en-AU"),
+                    receiveHandler,
+                    exception =>
+                    {
+                        Assert.Fail("Unexpected error");
+                    }))
+                {
+                    await connection.ConnectAsync();
+
+                    AssertEx.ThrowsAggregateException<InvalidOperationException>(
+                        () => connection.ConnectAsync().Wait());
+
+                    await connection.SendAsync("locale;sleep 1;exit\n");
+
+                    await AwaitBufferContentAsync(
+                        receiveBuffer,
+                        TimeSpan.FromSeconds(10),
+                        "testuser");
+
+                    StringAssert.Contains(
+                        "LC_ALL=en_AU.UTF-8",
+                        receiveBuffer.ToString());
+                }
+            }
+        }
+
+        [Test]
+        public async Task WhenServerRejectsLocale_ThenShellUsesDefaultLocale(
+            [LinuxInstance(InitializeScript =
+                "sed -i '/AcceptEnv/d' /etc/ssh/sshd_config && systemctl restart sshd")] 
+                ResourceTask<InstanceLocator> instanceLocatorTask)
+        {
+            var endpoint = new IPEndPoint(
+                await InstanceUtil.PublicIpAddressForInstanceAsync(await instanceLocatorTask),
+                22);
+
+            using (var key = new RsaSshKey(new RSACng()))
+            {
+                await InstanceUtil.AddPublicKeyToMetadata(
+                    await instanceLocatorTask,
+                    "testuser",
+                    key);
+
+                var receiveBuffer = new StringBuilder();
+                SshShellConnection.ReceiveStringDataHandler receiveHandler = data =>
+                {
+                    lock (receiveBuffer)
+                    {
+                        receiveBuffer.Append(data);
+                    }
+                };
+
+                using (var connection = new SshShellConnection(
+                    "testuser",
+                    endpoint,
+                    key,
+                    SshShellConnection.DefaultTerminal,
+                    SshShellConnection.DefaultTerminalSize,
+                    new CultureInfo("en-AU"),
+                    receiveHandler,
+                    exception =>
+                    {
+                        Assert.Fail("Unexpected error");
+                    }))
+                {
+                    await connection.ConnectAsync();
+
+                    AssertEx.ThrowsAggregateException<InvalidOperationException>(
+                        () => connection.ConnectAsync().Wait());
+
+                    await connection.SendAsync("locale;sleep 1;exit\n");
+
+                    await AwaitBufferContentAsync(
+                        receiveBuffer,
+                        TimeSpan.FromSeconds(10),
+                        "testuser");
+
+                    StringAssert.Contains(
+                        "LC_ALL=\r\n",
+                        receiveBuffer.ToString());
                 }
             }
         }

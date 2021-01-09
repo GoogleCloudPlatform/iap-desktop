@@ -87,9 +87,16 @@ namespace Google.Solutions.Ssh
                 this.terminal,
                 this.terminalSize.Columns,
                 this.terminalSize.Rows,
-                new Dictionary<string, string>()
+                new []
                 {
-                    { "LC_ALL", $"{currentLanguage}.UTF-8" }
+                    //
+                    // Try to pass locale - but do not fail the connedction if
+                    // the server rejects it.
+                    //
+                    new SshAuthenticatedSession.EnvironmentVariable(
+                        "LC_ALL", 
+                        $"{currentLanguage}.UTF-8",
+                        false)
                 });
         }
 

@@ -23,6 +23,7 @@ using Google.Apis.Util;
 using Google.Solutions.Common.Diagnostics;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 
 namespace Google.Solutions.Ssh.Native
@@ -104,9 +105,11 @@ namespace Google.Solutions.Ssh.Native
 
         private void SetEnvironmentVariable(
             SshChannelHandle channelHandle,
-            string key,
-            string value)
+            EnvironmentVariable environmentVariable)
         {
+            Debug.Assert(environmentVariable.Name != null);
+            Debug.Assert(environmentVariable.Value != null);
+
             channelHandle.CheckCurrentThreadOwnsHandle();
 
             //
@@ -116,15 +119,30 @@ namespace Google.Solutions.Ssh.Native
             //
             var result = (LIBSSH2_ERROR)UnsafeNativeMethods.libssh2_channel_setenv_ex(
                 channelHandle,
-                key,
-                (uint)key.Length,
-                value,
-                (uint)value.Length);
+                environmentVariable.Name,
+                (uint)environmentVariable.Name.Length,
+                environmentVariable.Value,
+                (uint)environmentVariable.Value.Length);
 
             if (result != LIBSSH2_ERROR.NONE)
             {
-                channelHandle.Dispose();
-                throw this.session.CreateException(result);
+                if (environmentVariable.Required)
+                {
+                    channelHandle.Dispose();
+                    throw this.session.CreateException(result);
+                }
+                else
+                {
+                    //
+                    // Non-required environment variable - emit a warning
+                    // and carry on.
+                    //
+
+                    SshTraceSources.Default.TraceWarning(
+                        "Environment variable {0} was rejected by server: {1}",
+                        environmentVariable.Name,
+                        result);
+                }
             }
         }
 
@@ -133,7 +151,7 @@ namespace Google.Solutions.Ssh.Native
             string term,
             ushort widthInChars,
             ushort heightInChars,
-            IDictionary<string, string> environmentVariables = null)
+            IEnumerable<EnvironmentVariable> environmentVariables = null)
         {
             this.session.Handle.CheckCurrentThreadOwnsHandle();
             Utilities.ThrowIfNull(term, nameof(term));
@@ -152,8 +170,7 @@ namespace Google.Solutions.Ssh.Native
                     {
                         SetEnvironmentVariable(
                             channelHandle,
-                            environmentVariable.Key,
-                            environmentVariable.Value);
+                            environmentVariable);
                     }
                 }
 
@@ -255,6 +272,26 @@ namespace Google.Solutions.Ssh.Native
             {
                 this.session.Handle.CheckCurrentThreadOwnsHandle();
                 this.disposed = true;
+            }
+        }
+
+        //---------------------------------------------------------------------
+        // Inner struct.
+        //---------------------------------------------------------------------
+
+        public struct EnvironmentVariable
+        {
+            public string Name { get; set; }
+            public string Value { get; set; }
+            public bool Required { get; set; }
+
+            public EnvironmentVariable(string name, string value, bool required)
+            {
+                Utilities.ThrowIfNullOrEmpty(name, nameof(name));
+
+                this.Name = name;
+                this.Value = value;
+                this.Required = required;
             }
         }
     }
