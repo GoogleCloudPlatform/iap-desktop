@@ -399,5 +399,20 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Adapters
 
             Assert.IsFalse(result);
         }
+
+        [Test]
+        public async Task WhenUserLacksInstanceListPermission_ThenIsGrantedPermissionFailsOpenAndReturnsTrue(
+            [LinuxInstance] ResourceTask<InstanceLocator> testInstance,
+            [Credential(Role = PredefinedRole.IapTunnelUser)] ResourceTask<ICredential> credential)
+        {
+            var locator = await testInstance;
+            var adapter = new ComputeEngineAdapter(await credential);
+
+            var result = await adapter.IsGrantedPermission(
+                locator,
+                Permissions.ComputeInstancesSetMetadata);
+
+            Assert.IsTrue(result);
+        }
     }
 }
