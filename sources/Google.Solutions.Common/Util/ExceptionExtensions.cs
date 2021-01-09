@@ -69,6 +69,11 @@ namespace Google.Solutions.Common.Util
             }
         }
 
+        public static bool IsAccessDeniedError(this Exception e)
+        {
+            return e.Unwrap() is GoogleApiException apiEx && apiEx.Error.Code == 403;
+        }
+
         public static string FullMessage(this Exception exception)
         {
             var fullMessage = new StringBuilder();

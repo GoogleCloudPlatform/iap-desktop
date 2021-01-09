@@ -493,19 +493,34 @@ namespace Google.Solutions.IapDesktop.Application.Services.Adapters
         {
             using (ApplicationTraceSources.Default.TraceMethod().WithParameters(permission))
             {
-                var response = await this.service.Instances.TestIamPermissions(
-                        new TestPermissionsRequest
-                        {
-                            Permissions = new[] { permission }
-                        },
-                        instanceLocator.ProjectId,
-                        instanceLocator.Zone,
-                        instanceLocator.Name)
-                    .ExecuteAsync()
-                    .ConfigureAwait(false);
-                return response != null &&
-                    response.Permissions != null &&
-                    response.Permissions.Any(p => p == permission);
+                try
+                {
+                    var response = await this.service.Instances.TestIamPermissions(
+                            new TestPermissionsRequest
+                            {
+                                Permissions = new[] { permission }
+                            },
+                            instanceLocator.ProjectId,
+                            instanceLocator.Zone,
+                            instanceLocator.Name)
+                        .ExecuteAsync()
+                        .ConfigureAwait(false);
+                    return response != null &&
+                        response.Permissions != null &&
+                        response.Permissions.Any(p => p == permission);
+                }
+                catch (Exception e) when (e.IsAccessDeniedError())
+                {
+                    //
+                    // NB. testPermission requires the 'compute.instances.list'
+                    // permission. Fail open if the caller does not have that
+                    // permission.
+                    //
+                    ApplicationTraceSources.Default.TraceWarning(
+                        "Permission check failed because caller does not have " +
+                        "the permission to test permissions");
+                    return true;
+                }
             }
         }
 
