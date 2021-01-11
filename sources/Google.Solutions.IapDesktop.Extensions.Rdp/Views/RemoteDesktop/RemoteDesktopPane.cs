@@ -159,6 +159,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Views.RemoteDesktop
                 advancedSettings.RDPPort = port;
                 advancedSettings.ClearTextPassword =
                     settings.Password.ClearTextValue ?? string.Empty;
+                nonScriptable.AllowCredentialSaving = false;
 
                 //
                 // Connection security settings.
