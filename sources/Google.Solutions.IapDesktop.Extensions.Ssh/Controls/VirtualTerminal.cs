@@ -470,13 +470,10 @@ namespace Google.Solutions.IapDesktop.Extensions.Ssh.Controls
             }
         }
 
-        public string KeyCodeToUnicode(Keys key)
+        private static string KeyCodeToUnicode(Keys key)
         {
-            // TODO: Cleanup.
             byte[] keyboardState = new byte[255];
-            bool keyboardStateStatus = UnsafeNativeMethods.GetKeyboardState(keyboardState);
-
-            if (!keyboardStateStatus)
+            if (!UnsafeNativeMethods.GetKeyboardState(keyboardState))
             {
                 return "";
             }
@@ -491,8 +488,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Ssh.Controls
                 scanCode, 
                 keyboardState, 
                 result, 
-                (int)result.Capacity    , 
-                (uint)0, 
+                (int)result.Capacity, 
+                0, 
                 inputLocaleIdentifier);
 
             return result.ToString();
@@ -507,6 +504,10 @@ namespace Google.Solutions.IapDesktop.Extensions.Ssh.Controls
                 e.Control,
                 e.Shift))
             {
+                //
+                // This is a key sequence that needs to be
+                // translated to some VT sequence.
+                //
                 e.Handled = this.controller.KeyPressed(
                     NameFromKey(e.KeyCode),
                     e.Control,
@@ -514,6 +515,15 @@ namespace Google.Solutions.IapDesktop.Extensions.Ssh.Controls
             }
             else
             {
+                //
+                // This is a plain character. Typically, we'd
+                // handle such input in KeyPress - but it is
+                // difficult to ensure that KeyPress does not
+                // handle any keys that were already handled here
+                // Therefore, do the virtual key translation
+                // manually here so that we do not need KeyPress
+                // at all.
+                //
                 var ch = KeyCodeToUnicode(e.KeyCode);
                 e.Handled = this.controller.KeyPressed(
                     ch,
