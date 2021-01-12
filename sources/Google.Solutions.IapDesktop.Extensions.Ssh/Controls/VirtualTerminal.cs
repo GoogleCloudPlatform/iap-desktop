@@ -458,6 +458,22 @@ namespace Google.Solutions.IapDesktop.Extensions.Ssh.Controls
             }
         }
 
+        private static string NameFromKey(Keys key)
+        {
+            // Return name that is compatible with vtnetcore's KeyboardTranslation
+            switch (key)
+            {
+                case Keys.Next: // Alias for PageDown
+                    return "PageDown";
+
+                case Keys.Prior:   // Alias for PageUp
+                    return "PageUp";
+
+                default:
+                    return key.ToString();
+            }
+        }
+
         protected override void OnKeyDown(KeyEventArgs e)
         {
             this.scrolling = false;
@@ -490,7 +506,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Ssh.Controls
                 case Keys.Tab:
                 //case Keys.Enter:
                 case Keys.Escape:
-                    if (this.controller.KeyPressed(e.KeyCode.ToString(), false, false))
+                    if (this.controller.KeyPressed(NameFromKey(e.KeyCode), false, false))
                     {
                         // Do not bubble this key event up to parent controls.
                         e.Handled = true;
