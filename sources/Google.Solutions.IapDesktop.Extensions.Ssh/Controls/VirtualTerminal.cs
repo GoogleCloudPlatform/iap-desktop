@@ -29,6 +29,7 @@ using VtNetCore.VirtualTerminal;
 using VtNetCore.XTermParser;
 using VtNetCore.VirtualTerminal.Layout;
 using Google.Solutions.Common.Diagnostics;
+using System.Linq;
 
 namespace Google.Solutions.IapDesktop.Extensions.Ssh.Controls
 {
@@ -448,13 +449,20 @@ namespace Google.Solutions.IapDesktop.Extensions.Ssh.Controls
             }
         }
 
+        private bool IsKeySequence(string key, bool control, bool shift)
+        {
+            return this.controller.GetKeySequence(key, control, shift) != null;
+        }
+
         protected override void OnKeyPress(KeyPressEventArgs e)
         {
+            var shift = Control.ModifierKeys == Keys.Shift;
+            var control = Control.ModifierKeys == Keys.Control;
             var ch = e.KeyChar.ToString();
-            var code = this.controller.GetKeySequence(ch, false, false);
-            if (code == null)
+
+            if (!IsKeySequence(e.KeyChar.ToString(), control, shift))
             {
-                e.Handled = this.controller.KeyPressed(ch, false, false);
+                e.Handled = this.controller.KeyPressed(ch, control, shift);
             }
         }
 
@@ -478,45 +486,26 @@ namespace Google.Solutions.IapDesktop.Extensions.Ssh.Controls
         {
             this.scrolling = false;
 
-            switch (e.KeyCode)
-            {
-                case Keys.Down:
-                case Keys.Up:
-                case Keys.Left:
-                case Keys.Right:
-                case Keys.Home:
-                case Keys.Insert:
-                case Keys.Delete:
-                case Keys.End:
-                case Keys.PageUp:
-                case Keys.PageDown:
-                case Keys.F1:
-                case Keys.F2:
-                case Keys.F3:
-                case Keys.F4:
-                case Keys.F5:
-                case Keys.F6:
-                case Keys.F7:
-                case Keys.F8:
-                case Keys.F9:
-                case Keys.F10:
-                case Keys.F11:
-                case Keys.F12:
-                //case Keys.Back:
-                case Keys.Tab:
-                //case Keys.Enter:
-                case Keys.Escape:
-                    if (this.controller.KeyPressed(NameFromKey(e.KeyCode), false, false))
-                    {
-                        // Do not bubble this key event up to parent controls.
-                        e.Handled = true;
-                        return;
-                    }
-                    break;
+            var keysThatMustNotBeProcessedTwice = new[] { 
+                Keys.Back, 
+                Keys.Enter,
+                Keys.Tab
+            };
 
-                default:
-                    base.OnKeyDown(e);
-                    break;
+            if (!keysThatMustNotBeProcessedTwice.Contains(e.KeyCode) &&
+                IsKeySequence(
+                NameFromKey(e.KeyCode),
+                e.Control,
+                e.Shift))
+            {
+                e.Handled = this.controller.KeyPressed(
+                    NameFromKey(e.KeyCode),
+                    e.Control,
+                    e.Shift);
+            }
+            else
+            {
+                base.OnKeyDown(e);
             }
         }
 
