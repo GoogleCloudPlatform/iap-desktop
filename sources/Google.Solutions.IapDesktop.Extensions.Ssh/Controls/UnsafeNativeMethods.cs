@@ -21,6 +21,7 @@
 
 using System;
 using System.Runtime.InteropServices;
+using System.Text;
 
 namespace Google.Solutions.IapDesktop.Extensions.Ssh.Controls
 {
@@ -70,5 +71,27 @@ namespace Google.Solutions.IapDesktop.Extensions.Ssh.Controls
 
 		[DllImport("User32.dll")]
 		internal static extern bool HideCaret(IntPtr hWnd);
+
+
+
+        [DllImport("user32.dll")]
+        internal static extern bool GetKeyboardState(byte[] lpKeyState);
+
+        [DllImport("user32.dll")]
+        internal static extern uint MapVirtualKey(uint uCode, uint uMapType);
+
+        [DllImport("user32.dll")]
+        internal static extern IntPtr GetKeyboardLayout(uint idThread);
+
+        [DllImport("user32.dll")]
+        internal static extern int ToUnicodeEx(
+            uint wVirtKey,
+            uint wScanCode,
+            byte[] lpKeyState,
+            [Out, MarshalAs(UnmanagedType.LPWStr)] StringBuilder pwszBuff,
+            int cchBuff,
+            uint wFlags,
+            IntPtr dwhkl);
+        
     }
 }

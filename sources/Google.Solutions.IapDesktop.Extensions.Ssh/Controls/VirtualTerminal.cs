@@ -454,18 +454,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Ssh.Controls
             return this.controller.GetKeySequence(key, control, shift) != null;
         }
 
-        protected override void OnKeyPress(KeyPressEventArgs e)
-        {
-            var shift = Control.ModifierKeys == Keys.Shift;
-            var control = Control.ModifierKeys == Keys.Control;
-            var ch = e.KeyChar.ToString();
-
-            if (!IsKeySequence(e.KeyChar.ToString(), control, shift))
-            {
-                e.Handled = this.controller.KeyPressed(ch, control, shift);
-            }
-        }
-
         private static string NameFromKey(Keys key)
         {
             // Return name that is compatible with vtnetcore's KeyboardTranslation
@@ -482,18 +470,39 @@ namespace Google.Solutions.IapDesktop.Extensions.Ssh.Controls
             }
         }
 
+        public string KeyCodeToUnicode(Keys key)
+        {
+            // TODO: Cleanup.
+            byte[] keyboardState = new byte[255];
+            bool keyboardStateStatus = UnsafeNativeMethods.GetKeyboardState(keyboardState);
+
+            if (!keyboardStateStatus)
+            {
+                return "";
+            }
+
+            uint virtualKeyCode = (uint)key;
+            uint scanCode = UnsafeNativeMethods.MapVirtualKey(virtualKeyCode, 0);
+            IntPtr inputLocaleIdentifier = UnsafeNativeMethods.GetKeyboardLayout(0);
+
+            StringBuilder result = new StringBuilder(10);
+            UnsafeNativeMethods.ToUnicodeEx(
+                virtualKeyCode, 
+                scanCode, 
+                keyboardState, 
+                result, 
+                (int)result.Capacity    , 
+                (uint)0, 
+                inputLocaleIdentifier);
+
+            return result.ToString();
+        }
+
         protected override void OnKeyDown(KeyEventArgs e)
         {
             this.scrolling = false;
 
-            var keysThatMustNotBeProcessedTwice = new[] { 
-                Keys.Back, 
-                Keys.Enter,
-                Keys.Tab
-            };
-
-            if (!keysThatMustNotBeProcessedTwice.Contains(e.KeyCode) &&
-                IsKeySequence(
+            if (IsKeySequence(
                 NameFromKey(e.KeyCode),
                 e.Control,
                 e.Shift))
@@ -505,7 +514,11 @@ namespace Google.Solutions.IapDesktop.Extensions.Ssh.Controls
             }
             else
             {
-                base.OnKeyDown(e);
+                var ch = KeyCodeToUnicode(e.KeyCode);
+                e.Handled = this.controller.KeyPressed(
+                    ch,
+                    e.Control,
+                    e.Shift); ;
             }
         }
 
