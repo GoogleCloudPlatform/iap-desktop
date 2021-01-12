@@ -412,7 +412,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Ssh.Controls
 
         protected override bool ProcessDialogKey(Keys keyData)
         {
-            // Pass all control keys to KeyDown.
             switch (keyData)
             {
                 case Keys.Down:
@@ -441,6 +440,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Ssh.Controls
                 case Keys.Tab:
                 case Keys.Enter:
                 case Keys.Escape:
+                    // Pass all control keys to KeyDown.
                     return false;
 
                 default:
@@ -492,6 +492,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Ssh.Controls
                 case Keys.Escape:
                     if (this.controller.KeyPressed(e.KeyCode.ToString(), false, false))
                     {
+                        // Do not bubble this key event up to parent controls.
+                        e.Handled = true;
                         return;
                     }
                     break;
