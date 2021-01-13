@@ -34,6 +34,8 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using WeifenLuo.WinFormsUI.Docking;
 
+#pragma warning disable IDE0069 // Disposable fields should be disposed
+
 namespace Google.Solutions.IapDesktop.Extensions.Ssh.Views.Terminal
 {
     public partial class SshTerminalPane : ToolWindow, ISshTerminalPane
@@ -69,8 +71,10 @@ namespace Google.Solutions.IapDesktop.Extensions.Ssh.Views.Terminal
                 vmInstance,
                 username,
                 endpoint,
-                key);
-            this.viewModel.View = this;
+                key)
+            {
+                View = this
+            };
 
             this.Text = vmInstance.Name;
             this.DockAreas = DockAreas.Document;
@@ -241,6 +245,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Ssh.Views.Terminal
         // Actions
         //---------------------------------------------------------------------
 
+        #pragma warning disable CA1031 // Do not catch general exception types
+
         public async Task ConnectAsync()
         {
             try
@@ -256,6 +262,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Ssh.Views.Terminal
                 ShowErrorAndClose("Connection failed", e);
             }
         }
+        
+        #pragma warning restore CA1031 // Do not catch general exception types
 
         public Task SendAsync(string command) 
             => this.viewModel.SendAsync(command);

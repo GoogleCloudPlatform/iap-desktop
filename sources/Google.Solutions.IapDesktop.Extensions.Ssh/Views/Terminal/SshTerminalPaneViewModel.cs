@@ -56,9 +56,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Ssh.Views.Terminal
 
         public InstanceLocator Instance { get; }
 
-        public EventHandler<ConnectionErrorEventArgs> ConnectionFailed;
-        public EventHandler<ConnectionErrorEventArgs> ConnectionLost;
-        public EventHandler<DataReceivedEventArgs> DataReceived;
+        public event EventHandler<ConnectionErrorEventArgs> ConnectionFailed;
+        public event EventHandler<ConnectionErrorEventArgs> ConnectionLost;
+        public event EventHandler<DataReceivedEventArgs> DataReceived;
 
         private ISynchronizeInvoke ViewInvoker => (ISynchronizeInvoke)this.View;
 

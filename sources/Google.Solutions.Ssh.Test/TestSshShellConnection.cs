@@ -92,13 +92,14 @@ namespace Google.Solutions.Ssh.Test
                     key);
 
                 var receiveBuffer = new StringBuilder();
-                SshShellConnection.ReceiveStringDataHandler receiveHandler = data =>
+
+                void receiveHandler(string data)
                 {
                     lock (receiveBuffer)
                     {
                         receiveBuffer.Append(data);
                     }
-                };
+                }
 
                 using (var connection = new SshShellConnection(
                     "testuser",
@@ -182,13 +183,14 @@ namespace Google.Solutions.Ssh.Test
                     key);
 
                 var receiveBuffer = new StringBuilder();
-                SshShellConnection.ReceiveStringDataHandler receiveHandler = data =>
+
+                void receiveHandler(string data)
                 {
                     lock (receiveBuffer)
                     {
                         receiveBuffer.Append(data);
                     }
-                };
+                }
 
                 using (var connection = new SshShellConnection(
                     "testuser",
@@ -240,13 +242,14 @@ namespace Google.Solutions.Ssh.Test
                     key);
 
                 var receiveBuffer = new StringBuilder();
-                SshShellConnection.ReceiveStringDataHandler receiveHandler = data =>
+
+                void receiveHandler(string data)
                 {
                     lock (receiveBuffer)
                     {
                         receiveBuffer.Append(data);
                     }
-                };
+                }
 
                 using (var connection = new SshShellConnection(
                     "testuser",

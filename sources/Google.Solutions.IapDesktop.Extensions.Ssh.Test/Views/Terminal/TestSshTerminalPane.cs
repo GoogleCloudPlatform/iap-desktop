@@ -26,7 +26,6 @@ using Google.Solutions.IapDesktop.Application.Services.Adapters;
 using Google.Solutions.IapDesktop.Application.Services.Integration;
 using Google.Solutions.IapDesktop.Application.Test.Views;
 using Google.Solutions.IapDesktop.Extensions.Ssh.Services.Adapter;
-using Google.Solutions.IapDesktop.Extensions.Ssh.Test.Controls;
 using Google.Solutions.IapDesktop.Extensions.Ssh.Views.Terminal;
 using Google.Solutions.Ssh;
 using Google.Solutions.Ssh.Native;
@@ -264,7 +263,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Ssh.Test.Views.Terminal
                     Assert.IsNotNull(connectedEvent, "ConnectionSuceededEvent event fired");
 
                     // Send command and wait for event
-                    pane.SendAsync("exit\n");
+                    await pane.SendAsync("exit\n");
 
                     AwaitEvent<ConnectionClosedEvent>();
                 }
@@ -354,7 +353,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Ssh.Test.Views.Terminal
                     Assert.IsNotNull(connectedEvent, "ConnectionSuceededEvent event fired");
 
                     // Measure initial window.
-                    pane.SendAsync("echo 1: $COLUMNS x $LINES\n");
+                    await pane.SendAsync("echo 1: $COLUMNS x $LINES\n");
 
                     var expectedInitialSize = $"1: {pane.Terminal.Columns} x {pane.Terminal.Rows}";
 
@@ -363,7 +362,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Ssh.Test.Views.Terminal
                     window.Size = new Size(window.Size.Width + 100, window.Size.Height + 100);
                     PumpWindowMessages();
 
-                    pane.SendAsync("echo 2: $COLUMNS x $LINES;exit\n");
+                    await pane.SendAsync("echo 2: $COLUMNS x $LINES;exit\n");
 
                     var expectedFinalSize = $"2: {pane.Terminal.Columns} x {pane.Terminal.Rows}";
 
@@ -414,7 +413,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Ssh.Test.Views.Terminal
                 {
                     Assert.IsNotNull(connectedEvent, "ConnectionSuceededEvent event fired");
 
-                    pane.SendAsync("locale;sleep 1;exit\n");
+                    await pane.SendAsync("locale;sleep 1;exit\n");
 
                     AwaitEvent<ConnectionClosedEvent>();
                     var buffer = pane.Terminal.GetBuffer();
@@ -478,6 +477,12 @@ namespace Google.Solutions.IapDesktop.Extensions.Ssh.Test.Views.Terminal
                 }
             }
         }
+
+        // TODO: more tests
+        // - back
+        // - enter 
+        // - pgup/dn
+        // - (see translation table)
 
         [Test]
         public void WhenScatteringLotsOfInput_ThenTerminalPerseveres()

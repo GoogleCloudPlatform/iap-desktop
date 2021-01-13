@@ -470,32 +470,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Ssh.Controls
             }
         }
 
-        private static string KeyCodeToUnicode(Keys key)
-        {
-            // TODO: move to helper class.
-            byte[] keyboardState = new byte[255];
-            if (!UnsafeNativeMethods.GetKeyboardState(keyboardState))
-            {
-                return "";
-            }
-
-            uint virtualKeyCode = (uint)key;
-            uint scanCode = UnsafeNativeMethods.MapVirtualKey(virtualKeyCode, 0);
-            IntPtr inputLocaleIdentifier = UnsafeNativeMethods.GetKeyboardLayout(0);
-
-            StringBuilder result = new StringBuilder(10);
-            UnsafeNativeMethods.ToUnicodeEx(
-                virtualKeyCode, 
-                scanCode, 
-                keyboardState, 
-                result, 
-                (int)result.Capacity, 
-                0, 
-                inputLocaleIdentifier);
-
-            return result.ToString();
-        }
-
         internal bool SendKey(
             Keys keyCode,
             bool control,
@@ -528,7 +502,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Ssh.Controls
                 // manually here so that we do not need KeyPress
                 // at all.
                 //
-                var ch = KeyCodeToUnicode(keyCode);
+                var ch = KeyUtil.CharFromKeyCode(keyCode);
                 return  this.controller.KeyPressed(
                     ch,
                     control,
