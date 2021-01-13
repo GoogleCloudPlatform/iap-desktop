@@ -991,5 +991,31 @@ namespace Google.Solutions.IapDesktop.Extensions.Ssh.Test.Controls
 
         [DllImport("user32.dll")]
         public static extern bool SetForegroundWindow(IntPtr hWnd);
+
+        public enum WindowMessage : uint
+        {
+            WM_KEYDOWN = 0x0100,
+            WM_KEYUP = 0x0101,
+            WM_CHAR = 0x0102
+        }
+
+        [DllImport("user32.dll")]
+        public static extern IntPtr PostMessage(
+            IntPtr hWnd,
+            uint Msg,
+            UIntPtr wParam,
+            UIntPtr lParam);
+
+        [DllImport("user32.dll")]
+        public static extern IntPtr SendMessage(
+            IntPtr hWnd,
+            uint Msg,
+            UIntPtr wParam,
+            UIntPtr lParam);
+
+        public const uint MAPVK_VK_TO_VSC_EX = 0x04;
+
+        [DllImport("user32.dll")]
+        public static extern uint MapVirtualKey(uint uCode, uint uMapType);
     }
 }

@@ -433,7 +433,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Ssh.Test.Views.Terminal
         }
 
         [Test]
-        [Ignore("Do not work in CI")]
         public async Task WhenSendingBackspace_ThenLastCharacterIsRemoved(
             [LinuxInstance] ResourceTask<InstanceLocator> instanceLocatorTask,
             [Credential(Role = PredefinedRole.ComputeInstanceAdminV1)] ResourceTask<ICredential> credential)
@@ -465,17 +464,15 @@ namespace Google.Solutions.IapDesktop.Extensions.Ssh.Test.Views.Terminal
                 {
                     Assert.IsNotNull(connectedEvent, "ConnectionSuceededEvent event fired");
 
-                    // Send keystroke and wait for event
-                    pane.SendKeySequence(
-                        new[]
-                        {
-                            UnsafeNativeMethods.VirtualKeyShort.KEY_A,
-                            UnsafeNativeMethods.VirtualKeyShort.KEY_B,
-                            UnsafeNativeMethods.VirtualKeyShort.KEY_C,
-                            UnsafeNativeMethods.VirtualKeyShort.BACK,
-                        });
-                    pane.SendControlC();
-                    pane.SendControlD();
+                    PumpWindowMessages();
+
+                    pane.Terminal.SendKey(Keys.A, false, false);
+                    pane.Terminal.SendKey(Keys.B, false, false);
+                    pane.Terminal.SendKey(Keys.C, false, false);
+                    pane.Terminal.SendKey(Keys.Back, false, false);
+
+                    pane.Terminal.SendKey(Keys.C, true, false);
+                    pane.Terminal.SendKey(Keys.D, true, false);
 
                     AwaitEvent<ConnectionClosedEvent>();
                     StringAssert.Contains("ab^C", pane.Terminal.GetBuffer().Trim());

@@ -472,6 +472,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Ssh.Controls
 
         private static string KeyCodeToUnicode(Keys key)
         {
+            // TODO: move to helper class.
             byte[] keyboardState = new byte[255];
             if (!UnsafeNativeMethods.GetKeyboardState(keyboardState))
             {
@@ -495,23 +496,26 @@ namespace Google.Solutions.IapDesktop.Extensions.Ssh.Controls
             return result.ToString();
         }
 
-        protected override void OnKeyDown(KeyEventArgs e)
+        internal bool SendKey(
+            Keys keyCode,
+            bool control,
+            bool shift)
         {
             this.scrolling = false;
 
             if (IsKeySequence(
-                NameFromKey(e.KeyCode),
-                e.Control,
-                e.Shift))
+                NameFromKey(keyCode),
+                control,
+                shift))
             {
                 //
                 // This is a key sequence that needs to be
                 // translated to some VT sequence.
                 //
-                e.Handled = this.controller.KeyPressed(
-                    NameFromKey(e.KeyCode),
-                    e.Control,
-                    e.Shift);
+                return this.controller.KeyPressed(
+                    NameFromKey(keyCode),
+                    control,
+                    shift);
             }
             else
             {
@@ -519,17 +523,22 @@ namespace Google.Solutions.IapDesktop.Extensions.Ssh.Controls
                 // This is a plain character. Typically, we'd
                 // handle such input in KeyPress - but it is
                 // difficult to ensure that KeyPress does not
-                // handle any keys that were already handled here
+                // handle any keys again that were already handled here.
                 // Therefore, do the virtual key translation
                 // manually here so that we do not need KeyPress
                 // at all.
                 //
-                var ch = KeyCodeToUnicode(e.KeyCode);
-                e.Handled = this.controller.KeyPressed(
+                var ch = KeyCodeToUnicode(keyCode);
+                return  this.controller.KeyPressed(
                     ch,
-                    e.Control,
-                    e.Shift); ;
+                    control,
+                    shift); ;
             }
+        }
+
+        protected override void OnKeyDown(KeyEventArgs e)
+        {
+            e.Handled = SendKey(e.KeyCode, e.Control, e.Shift);
         }
 
         protected override void OnResize(EventArgs e)
