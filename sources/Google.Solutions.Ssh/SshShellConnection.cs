@@ -37,7 +37,6 @@ namespace Google.Solutions.Ssh
 
         private readonly string terminal;
         private readonly TerminalSize terminalSize;
-        private readonly ReceiveStringDataHandler receiveStringDataHandler;
         private readonly CultureInfo language;
 
         //---------------------------------------------------------------------
@@ -71,7 +70,6 @@ namespace Google.Solutions.Ssh
             this.terminal = terminal;
             this.terminalSize = terminalSize;
             this.language = language;
-            this.receiveStringDataHandler = receiveDataHandler;
         }
 
         //---------------------------------------------------------------------

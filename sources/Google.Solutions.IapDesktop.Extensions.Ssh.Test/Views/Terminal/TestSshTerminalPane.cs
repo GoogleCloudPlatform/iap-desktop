@@ -107,8 +107,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Ssh.Test.Views.Terminal
                     this.serviceProvider);
                 await broker.ConnectAsync(
                         new InstanceLocator("project-1", "zone-1", "instance-1"),
-                        "test", 
-                        UnboundEndpoint,
+                        "test",
+                        NonSshEndpoint,
                         key)
                     .ConfigureAwait(true);
 
@@ -223,12 +223,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Ssh.Test.Views.Terminal
         //---------------------------------------------------------------------
         // Disonnect
         //---------------------------------------------------------------------
-
-        [Test]
-        public void WhenClosingPane_ThenDisconnectedEventIsFiredAndSessionIsDisconnected()
-        {
-            Assert.Inconclusive();
-        }
 
         [Test]
         public async Task WhenSendingExit_ThenDisconnectedEventIsFiredAndWindowIsClosed(
@@ -484,10 +478,5 @@ namespace Google.Solutions.IapDesktop.Extensions.Ssh.Test.Views.Terminal
         // - pgup/dn
         // - (see translation table)
 
-        [Test]
-        public void WhenScatteringLotsOfInput_ThenTerminalPerseveres()
-        {
-            Assert.Inconclusive();
-        }
     }
 }

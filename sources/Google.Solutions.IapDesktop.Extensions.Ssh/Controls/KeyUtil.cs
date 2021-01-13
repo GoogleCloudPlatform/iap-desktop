@@ -23,6 +23,8 @@ using System;
 using System.Text;
 using System.Windows.Forms;
 
+#pragma warning disable CA1806 // return code ignored
+
 namespace Google.Solutions.IapDesktop.Extensions.Ssh.Controls
 {
     internal static class KeyUtil

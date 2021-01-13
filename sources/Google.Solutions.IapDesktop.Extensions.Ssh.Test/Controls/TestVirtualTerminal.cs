@@ -11,6 +11,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Ssh.Test.Controls
     [Apartment(ApartmentState.STA)]
     public class TestVirtualTerminal : ApplicationFixtureBase
     {
+        // TODO: resurrect or remove
         private static void PumpMessages()
             => System.Windows.Forms.Application.DoEvents();
 

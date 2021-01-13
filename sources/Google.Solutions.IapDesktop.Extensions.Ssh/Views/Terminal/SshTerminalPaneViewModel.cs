@@ -38,6 +38,8 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
+#pragma warning disable CA1031 // Do not catch general exception types
+
 namespace Google.Solutions.IapDesktop.Extensions.Ssh.Views.Terminal
 {
     public class SshTerminalPaneViewModel : ViewModelBase, IDisposable

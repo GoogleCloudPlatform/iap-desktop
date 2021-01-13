@@ -47,7 +47,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Ssh.Controls
         public event EventHandler<TerminalResizeEventArgs> TerminalResized;
         public event EventHandler WindowTitleChanged;
 
+        #pragma warning disable IDE0069 // Disposable fields should be disposed
         private Caret caret;
+        #pragma warning restore IDE0069 // Disposable fields should be disposed
 
         private TextRange textSelection;
         private bool scrolling;
