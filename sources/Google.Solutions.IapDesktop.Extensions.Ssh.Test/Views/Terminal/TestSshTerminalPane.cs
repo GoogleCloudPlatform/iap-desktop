@@ -272,7 +272,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Ssh.Test.Views.Terminal
         }
 
         [Test]
-        [Ignore("Do not work in CI")]
         public async Task WhenSendingCtrlD_ThenDisconnectedEventIsFiredAndWindowIsClosed(
             [LinuxInstance] ResourceTask<InstanceLocator> instanceLocatorTask,
             [Credential(Role = PredefinedRole.ComputeInstanceAdminV1)] ResourceTask<ICredential> credential)
@@ -305,7 +304,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Ssh.Test.Views.Terminal
                     Assert.IsNotNull(connectedEvent, "ConnectionSuceededEvent event fired");
 
                     // Send keystroke and wait for event
-                    pane.SendControlD();
+                    pane.Terminal.SendKey(Keys.D, true, false);
 
                     AwaitEvent<ConnectionClosedEvent>();
                 }

@@ -73,11 +73,9 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Controls\InputSimulatorExtensions.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Controls\TestVirtualTerminal.cs" />
     <Compile Include="Controls\TestTerminalFont.cs" />
-    <Compile Include="Controls\UnsafeNativeMethods.cs" />
     <Compile Include="Views\Terminal\TestSshTerminalPane.cs" />
     <Compile Include="Views\Terminal\TestSshTerminalConnectionBroker.cs" />
   </ItemGroup>
