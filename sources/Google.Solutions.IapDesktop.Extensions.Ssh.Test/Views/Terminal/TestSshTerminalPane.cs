@@ -265,46 +265,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Ssh.Test.Views.Terminal
         }
 
         [Test]
-        public async Task WhenSendingCtrlD_ThenDisconnectedEventIsFiredAndWindowIsClosed(
-            [LinuxInstance] ResourceTask<InstanceLocator> instanceLocatorTask,
-            [Credential(Role = PredefinedRole.ComputeInstanceAdminV1)] ResourceTask<ICredential> credential)
-        {
-            var instanceLocator = await instanceLocatorTask;
-
-            using (var key = new RsaSshKey(new RSACng()))
-            using (var keyAdapter = new ComputeEngineKeysAdapter(
-                new ComputeEngineAdapter(await credential)))
-            {
-                await keyAdapter.PushPublicKeyAsync(
-                    instanceLocator,
-                    "test",
-                    key,
-                    CancellationToken.None);
-
-                // Connect and wait for event
-                ConnectionSuceededEvent connectedEvent = null;
-                this.eventService.BindHandler<ConnectionSuceededEvent>(e => connectedEvent = e);
-
-                var broker = new SshTerminalConnectionBroker(
-                    this.serviceProvider);
-                using (var pane = (SshTerminalPane)await broker.ConnectAsync(
-                        instanceLocator,
-                        "test",
-                        new IPEndPoint(await PublicAddressFromLocator(instanceLocator), 22),
-                        key)
-                    .ConfigureAwait(true))
-                {
-                    Assert.IsNotNull(connectedEvent, "ConnectionSuceededEvent event fired");
-
-                    // Send keystroke and wait for event
-                    pane.Terminal.SendKey(Keys.D, true, false);
-
-                    AwaitEvent<ConnectionClosedEvent>();
-                }
-            }
-        }
-
-        [Test]
         public void WhenSocketForceClosed_ThenErrorIsShownAndWindowIsClosed()
         {
             Assert.Inconclusive();
@@ -345,6 +305,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Ssh.Test.Views.Terminal
                     .ConfigureAwait(true))
                 {
                     Assert.IsNotNull(connectedEvent, "ConnectionSuceededEvent event fired");
+
+                    PumpWindowMessages();
 
                     // Measure initial window.
                     await pane.SendAsync("echo 1: $COLUMNS x $LINES\n");
@@ -407,6 +369,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Ssh.Test.Views.Terminal
                 {
                     Assert.IsNotNull(connectedEvent, "ConnectionSuceededEvent event fired");
 
+                    PumpWindowMessages();
+
                     await pane.SendAsync("locale;sleep 1;exit\n");
 
                     AwaitEvent<ConnectionClosedEvent>();
@@ -423,6 +387,49 @@ namespace Google.Solutions.IapDesktop.Extensions.Ssh.Test.Views.Terminal
                 CultureInfo.CurrentUICulture = CultureInfo.InvariantCulture;
             }
         }
+
+        [Test]
+        public async Task WhenSendingCtrlD_ThenDisconnectedEventIsFiredAndWindowIsClosed(
+            [LinuxInstance] ResourceTask<InstanceLocator> instanceLocatorTask,
+            [Credential(Role = PredefinedRole.ComputeInstanceAdminV1)] ResourceTask<ICredential> credential)
+        {
+            var instanceLocator = await instanceLocatorTask;
+
+            using (var key = new RsaSshKey(new RSACng()))
+            using (var keyAdapter = new ComputeEngineKeysAdapter(
+                new ComputeEngineAdapter(await credential)))
+            {
+                await keyAdapter.PushPublicKeyAsync(
+                    instanceLocator,
+                    "test",
+                    key,
+                    CancellationToken.None);
+
+                // Connect and wait for event
+                ConnectionSuceededEvent connectedEvent = null;
+                this.eventService.BindHandler<ConnectionSuceededEvent>(e => connectedEvent = e);
+
+                var broker = new SshTerminalConnectionBroker(
+                    this.serviceProvider);
+                using (var pane = (SshTerminalPane)await broker.ConnectAsync(
+                        instanceLocator,
+                        "test",
+                        new IPEndPoint(await PublicAddressFromLocator(instanceLocator), 22),
+                        key)
+                    .ConfigureAwait(true))
+                {
+                    Assert.IsNotNull(connectedEvent, "ConnectionSuceededEvent event fired");
+
+                    PumpWindowMessages();
+
+                    // Send keystroke and wait for event
+                    pane.Terminal.SendKey(Keys.D, true, false);
+
+                    AwaitEvent<ConnectionClosedEvent>();
+                }
+            }
+        }
+
 
         [Test]
         public async Task WhenSendingBackspace_ThenLastCharacterIsRemoved(
