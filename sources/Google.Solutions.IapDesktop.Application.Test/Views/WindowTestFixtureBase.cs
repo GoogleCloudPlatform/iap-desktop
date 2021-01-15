@@ -148,6 +148,51 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views
             [CallerMemberName] string testCase = null) where TEvent : class
             => AwaitEvent<TEvent>(TimeSpan.FromSeconds(45), testCase);
 
+        protected TEvent AssertRaisesEvent<TEvent>(
+            Action action,
+            TimeSpan timeout) where TEvent : class
+        {
+            var deadline = DateTime.Now.Add(timeout);
+
+            // Set up event handler.
+            TEvent deliveredEvent = null;
+            this.eventService.BindHandler<TEvent>(e =>
+            {
+                deliveredEvent = e;
+            });
+
+            // Invoke the action - it can either synchrounously
+            // or asynchronously delliver the event.
+            action();
+
+            // Wait for event in case it has not been delivered yet.
+
+            var lastLog = DateTime.Now;
+            for (int i = 0; deliveredEvent == null; i++)
+            {
+                if (deadline < DateTime.Now)
+                {
+                    throw new TimeoutException(
+                        $"Timeout waiting for event {typeof(TEvent).Name} elapsed");
+                }
+
+                // Print out a message once per second.
+                if (DateTime.Now.Subtract(lastLog).TotalSeconds >= 1)
+                {
+                    Console.WriteLine($"Still waiting for {typeof(TEvent).Name} (until {deadline})");
+                    lastLog = DateTime.Now;
+                }
+
+                PumpWindowMessages();
+            }
+
+            return deliveredEvent;
+        }
+
+        protected TEvent AssertRaisesEvent<TEvent>(Action action)
+            where TEvent : class
+            => AssertRaisesEvent<TEvent>(action, TimeSpan.FromSeconds(45));
+
         protected static void Delay(TimeSpan timeout)
         {
             var deadline = DateTime.Now.Add(timeout);

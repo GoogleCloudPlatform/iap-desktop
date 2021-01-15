@@ -66,6 +66,41 @@ namespace Google.Solutions.IapDesktop.Extensions.Ssh.Test.Views.Terminal
             }
         }
 
+        private async Task<SshTerminalPane> ConnectSshTerminalPane(
+            InstanceLocator instanceLocator,
+            ICredential credential)
+        {
+            using (var key = new RsaSshKey(new RSACng()))
+            using (var keyAdapter = new ComputeEngineKeysAdapter(
+                new ComputeEngineAdapter(credential)))
+            {
+                await keyAdapter.PushPublicKeyAsync(
+                        instanceLocator,
+                        "test",
+                        key,
+                        CancellationToken.None)
+                    .ConfigureAwait(true);
+
+                // Connect and wait for event
+                ConnectionSuceededEvent connectedEvent = null;
+                this.eventService.BindHandler<ConnectionSuceededEvent>(e => connectedEvent = e);
+
+                var broker = new SshTerminalConnectionBroker(
+                    this.serviceProvider);
+                var pane = await broker.ConnectAsync(
+                        instanceLocator,
+                        "test",
+                        new IPEndPoint(await PublicAddressFromLocator(instanceLocator), 22),
+                        key)
+                    .ConfigureAwait(true);
+
+                Assert.IsNotNull(connectedEvent, "ConnectionSuceededEvent event fired");
+                PumpWindowMessages();
+
+                return (SshTerminalPane)pane;
+            }
+        }
+
         //---------------------------------------------------------------------
         // Connect
         //---------------------------------------------------------------------
@@ -115,7 +150,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Ssh.Test.Views.Terminal
                 Assert.IsNotNull(deliveredEvent, "Event fired");
                 Assert.IsInstanceOf(typeof(SocketException), this.ExceptionShown);
                 Assert.AreEqual(
-                    SocketError.ConnectionRefused, 
+                    SocketError.ConnectionRefused,
                     ((SocketException)this.ExceptionShown).SocketErrorCode);
             }
         }
@@ -181,42 +216,17 @@ namespace Google.Solutions.IapDesktop.Extensions.Ssh.Test.Views.Terminal
             [LinuxInstance] ResourceTask<InstanceLocator> instanceLocatorTask,
             [Credential(Role = PredefinedRole.ComputeInstanceAdminV1)] ResourceTask<ICredential> credential)
         {
-            var instanceLocator = await instanceLocatorTask;
+            ConnectionClosedEvent closedEvent = null;
+            this.eventService.BindHandler<ConnectionClosedEvent>(e => closedEvent = e);
 
-            using (var key = new RsaSshKey(new RSACng()))
-            using (var keyAdapter = new ComputeEngineKeysAdapter(
-                new ComputeEngineAdapter(await credential)))
+            using (var pane = await ConnectSshTerminalPane(
+                await instanceLocatorTask,
+                await credential))
             {
-                await keyAdapter.PushPublicKeyAsync(
-                        instanceLocator,
-                        "test",
-                        key,
-                        CancellationToken.None)
-                    .ConfigureAwait(true);
+                // Close the pane (not the window).
+                pane.Close();
 
-                // Connect and wait for event
-                ConnectionSuceededEvent connectedEvent = null;
-                this.eventService.BindHandler<ConnectionSuceededEvent>(e => connectedEvent = e);
-
-                var broker = new SshTerminalConnectionBroker(
-                    this.serviceProvider);
-                using (var pane = await broker.ConnectAsync(
-                        instanceLocator,
-                        "test",
-                        new IPEndPoint(await PublicAddressFromLocator(instanceLocator), 22),
-                        key)
-                    .ConfigureAwait(true))
-                {
-                    Assert.IsNotNull(connectedEvent, "ConnectionSuceededEvent event fired");
-
-                    // Close and wait for event
-                    ConnectionClosedEvent closedEvent = null;
-                    this.eventService.BindHandler<ConnectionClosedEvent>(e => closedEvent = e);
-
-                    pane.Close();
-
-                    Assert.IsNotNull(closedEvent, "ConnectionClosedEvent event fired");
-                }
+                Assert.IsNotNull(closedEvent, "ConnectionClosedEvent event fired");
             }
         }
 
@@ -229,38 +239,14 @@ namespace Google.Solutions.IapDesktop.Extensions.Ssh.Test.Views.Terminal
             [LinuxInstance] ResourceTask<InstanceLocator> instanceLocatorTask,
             [Credential(Role = PredefinedRole.ComputeInstanceAdminV1)] ResourceTask<ICredential> credential)
         {
-            var instanceLocator = await instanceLocatorTask;
-
-            using (var key = new RsaSshKey(new RSACng()))
-            using (var keyAdapter = new ComputeEngineKeysAdapter(
-                new ComputeEngineAdapter(await credential)))
+            using (var pane = await ConnectSshTerminalPane(
+                await instanceLocatorTask,
+                await credential))
             {
-                await keyAdapter.PushPublicKeyAsync(
-                    instanceLocator,
-                    "test",
-                    key,
-                    CancellationToken.None);
+                // Send command and wait for event
+                await pane.SendAsync("exit\n");
 
-                // Connect and wait for event
-                ConnectionSuceededEvent connectedEvent = null;
-                this.eventService.BindHandler<ConnectionSuceededEvent>(e => connectedEvent = e);
-
-                var broker = new SshTerminalConnectionBroker(
-                    this.serviceProvider);
-                using (var pane = (SshTerminalPane)await broker.ConnectAsync(
-                        instanceLocator,
-                        "test",
-                        new IPEndPoint(await PublicAddressFromLocator(instanceLocator), 22),
-                        key)
-                    .ConfigureAwait(true))
-                {
-                    Assert.IsNotNull(connectedEvent, "ConnectionSuceededEvent event fired");
-
-                    // Send command and wait for event
-                    await pane.SendAsync("exit\n");
-
-                    AwaitEvent<ConnectionClosedEvent>();
-                }
+                AwaitEvent<ConnectionClosedEvent>();
             }
         }
 
@@ -279,113 +265,61 @@ namespace Google.Solutions.IapDesktop.Extensions.Ssh.Test.Views.Terminal
             [LinuxInstance] ResourceTask<InstanceLocator> instanceLocatorTask,
             [Credential(Role = PredefinedRole.ComputeInstanceAdminV1)] ResourceTask<ICredential> credential)
         {
-            var instanceLocator = await instanceLocatorTask;
-
-            using (var key = new RsaSshKey(new RSACng()))
-            using (var keyAdapter = new ComputeEngineKeysAdapter(
-                new ComputeEngineAdapter(await credential)))
+            using (var pane = await ConnectSshTerminalPane(
+                await instanceLocatorTask,
+                await credential))
             {
-                await keyAdapter.PushPublicKeyAsync(
-                    instanceLocator,
-                    "test",
-                    key,
-                    CancellationToken.None);
+                // Measure initial window.
+                await pane.SendAsync("echo 1: $COLUMNS x $LINES\n");
 
-                // Connect and wait for event
-                ConnectionSuceededEvent connectedEvent = null;
-                this.eventService.BindHandler<ConnectionSuceededEvent>(e => connectedEvent = e);
+                var expectedInitialSize = $"1: {pane.Terminal.Columns} x {pane.Terminal.Rows}";
 
-                var broker = new SshTerminalConnectionBroker(
-                    this.serviceProvider);
-                using (var pane = (SshTerminalPane)await broker.ConnectAsync(
-                        instanceLocator,
-                        "test",
-                        new IPEndPoint(await PublicAddressFromLocator(instanceLocator), 22),
-                        key)
-                    .ConfigureAwait(true))
-                {
-                    Assert.IsNotNull(connectedEvent, "ConnectionSuceededEvent event fired");
+                // Resize window and measure again.
+                var window = ((Form)mainForm);
+                window.Size = new Size(window.Size.Width + 100, window.Size.Height + 100);
+                PumpWindowMessages();
 
-                    PumpWindowMessages();
+                await pane.SendAsync("echo 2: $COLUMNS x $LINES;exit\n");
 
-                    // Measure initial window.
-                    await pane.SendAsync("echo 1: $COLUMNS x $LINES\n");
+                var expectedFinalSize = $"2: {pane.Terminal.Columns} x {pane.Terminal.Rows}";
 
-                    var expectedInitialSize = $"1: {pane.Terminal.Columns} x {pane.Terminal.Rows}";
+                AwaitEvent<ConnectionClosedEvent>();
+                var buffer = pane.Terminal.GetBuffer();
 
-                    // Resize window and measure again.
-                    var window = ((Form)mainForm);
-                    window.Size = new Size(window.Size.Width + 100, window.Size.Height + 100);
-                    PumpWindowMessages();
-
-                    await pane.SendAsync("echo 2: $COLUMNS x $LINES;exit\n");
-
-                    var expectedFinalSize = $"2: {pane.Terminal.Columns} x {pane.Terminal.Rows}";
-
-                    AwaitEvent<ConnectionClosedEvent>();
-                    var buffer = pane.Terminal.GetBuffer();
-
-                    StringAssert.Contains(
-                        expectedInitialSize,
-                        buffer);
-                    StringAssert.Contains(
-                        expectedFinalSize,
-                        buffer);
-                }
+                StringAssert.Contains(
+                    expectedInitialSize,
+                    buffer);
+                StringAssert.Contains(
+                    expectedFinalSize,
+                    buffer);
             }
         }
-        
+
         [Test]
         public async Task WhenConnected_ThenPseudoterminalHasRightEncoding(
             [LinuxInstance] ResourceTask<InstanceLocator> instanceLocatorTask,
             [Credential(Role = PredefinedRole.ComputeInstanceAdminV1)] ResourceTask<ICredential> credential)
         {
-            var instanceLocator = await instanceLocatorTask;
+            CultureInfo.CurrentUICulture = new CultureInfo("en-AU");
 
-            using (var key = new RsaSshKey(new RSACng()))
-            using (var keyAdapter = new ComputeEngineKeysAdapter(
-                new ComputeEngineAdapter(await credential)))
+            using (var pane = await ConnectSshTerminalPane(
+                await instanceLocatorTask,
+                await credential))
             {
-                await keyAdapter.PushPublicKeyAsync(
-                    instanceLocator,
-                    "test",
-                    key,
-                    CancellationToken.None);
+                await pane.SendAsync("locale;sleep 1;exit\n");
 
-                // Connect and wait for event
-                ConnectionSuceededEvent connectedEvent = null;
-                this.eventService.BindHandler<ConnectionSuceededEvent>(e => connectedEvent = e);
+                AwaitEvent<ConnectionClosedEvent>();
+                var buffer = pane.Terminal.GetBuffer();
 
-                CultureInfo.CurrentUICulture = new CultureInfo("en-AU");
-
-                var broker = new SshTerminalConnectionBroker(
-                    this.serviceProvider);
-                using (var pane = (SshTerminalPane)await broker.ConnectAsync(
-                        instanceLocator,
-                        "test",
-                        new IPEndPoint(await PublicAddressFromLocator(instanceLocator), 22),
-                        key)
-                    .ConfigureAwait(true))
-                {
-                    Assert.IsNotNull(connectedEvent, "ConnectionSuceededEvent event fired");
-
-                    PumpWindowMessages();
-
-                    await pane.SendAsync("locale;sleep 1;exit\n");
-
-                    AwaitEvent<ConnectionClosedEvent>();
-                    var buffer = pane.Terminal.GetBuffer();
-
-                    StringAssert.Contains(
-                        "LC_ALL=en_AU.UTF-8",
-                        buffer);
-                    StringAssert.Contains(
-                        "LC_CTYPE=\"en_AU.UTF-8\"",
-                        buffer);
-                }
-
-                CultureInfo.CurrentUICulture = CultureInfo.InvariantCulture;
+                StringAssert.Contains(
+                    "LC_ALL=en_AU.UTF-8",
+                    buffer);
+                StringAssert.Contains(
+                    "LC_CTYPE=\"en_AU.UTF-8\"",
+                    buffer);
             }
+
+            CultureInfo.CurrentUICulture = CultureInfo.InvariantCulture;
         }
 
         [Test]
@@ -393,40 +327,13 @@ namespace Google.Solutions.IapDesktop.Extensions.Ssh.Test.Views.Terminal
             [LinuxInstance] ResourceTask<InstanceLocator> instanceLocatorTask,
             [Credential(Role = PredefinedRole.ComputeInstanceAdminV1)] ResourceTask<ICredential> credential)
         {
-            var instanceLocator = await instanceLocatorTask;
-
-            using (var key = new RsaSshKey(new RSACng()))
-            using (var keyAdapter = new ComputeEngineKeysAdapter(
-                new ComputeEngineAdapter(await credential)))
+            using (var pane = await ConnectSshTerminalPane(
+                await instanceLocatorTask,
+                await credential))
             {
-                await keyAdapter.PushPublicKeyAsync(
-                    instanceLocator,
-                    "test",
-                    key,
-                    CancellationToken.None);
-
-                // Connect and wait for event
-                ConnectionSuceededEvent connectedEvent = null;
-                this.eventService.BindHandler<ConnectionSuceededEvent>(e => connectedEvent = e);
-
-                var broker = new SshTerminalConnectionBroker(
-                    this.serviceProvider);
-                using (var pane = (SshTerminalPane)await broker.ConnectAsync(
-                        instanceLocator,
-                        "test",
-                        new IPEndPoint(await PublicAddressFromLocator(instanceLocator), 22),
-                        key)
-                    .ConfigureAwait(true))
-                {
-                    Assert.IsNotNull(connectedEvent, "ConnectionSuceededEvent event fired");
-
-                    PumpWindowMessages();
-
-                    // Send keystroke and wait for event
-                    pane.Terminal.SendKey(Keys.D, true, false);
-
-                    AwaitEvent<ConnectionClosedEvent>();
-                }
+                // Send keystroke and wait for event
+                AssertRaisesEvent<ConnectionClosedEvent>(
+                    () => pane.Terminal.SendKey(Keys.D, true, false));
             }
         }
 
@@ -436,46 +343,21 @@ namespace Google.Solutions.IapDesktop.Extensions.Ssh.Test.Views.Terminal
             [LinuxInstance] ResourceTask<InstanceLocator> instanceLocatorTask,
             [Credential(Role = PredefinedRole.ComputeInstanceAdminV1)] ResourceTask<ICredential> credential)
         {
-            var instanceLocator = await instanceLocatorTask;
-
-            using (var key = new RsaSshKey(new RSACng()))
-            using (var keyAdapter = new ComputeEngineKeysAdapter(
-                new ComputeEngineAdapter(await credential)))
+            using (var pane = await ConnectSshTerminalPane(
+                await instanceLocatorTask,
+                await credential))
             {
-                await keyAdapter.PushPublicKeyAsync(
-                    instanceLocator,
-                    "test",
-                    key,
-                    CancellationToken.None);
+                pane.Terminal.SendKey(Keys.A, false, false);
+                pane.Terminal.SendKey(Keys.B, false, false);
+                pane.Terminal.SendKey(Keys.C, false, false);
+                pane.Terminal.SendKey(Keys.Back, false, false);
 
-                // Connect and wait for event
-                ConnectionSuceededEvent connectedEvent = null;
-                this.eventService.BindHandler<ConnectionSuceededEvent>(e => connectedEvent = e);
+                pane.Terminal.SendKey(Keys.C, true, false);
 
-                var broker = new SshTerminalConnectionBroker(
-                    this.serviceProvider);
-                using (var pane = (SshTerminalPane)await broker.ConnectAsync(
-                        instanceLocator,
-                        "test",
-                        new IPEndPoint(await PublicAddressFromLocator(instanceLocator), 22),
-                        key)
-                    .ConfigureAwait(true))
-                {
-                    Assert.IsNotNull(connectedEvent, "ConnectionSuceededEvent event fired");
-
-                    PumpWindowMessages();
-
-                    pane.Terminal.SendKey(Keys.A, false, false);
-                    pane.Terminal.SendKey(Keys.B, false, false);
-                    pane.Terminal.SendKey(Keys.C, false, false);
-                    pane.Terminal.SendKey(Keys.Back, false, false);
-
-                    pane.Terminal.SendKey(Keys.C, true, false);
-                    pane.Terminal.SendKey(Keys.D, true, false);
-
-                    AwaitEvent<ConnectionClosedEvent>();
-                    StringAssert.Contains("ab^C", pane.Terminal.GetBuffer().Trim());
-                }
+                AssertRaisesEvent<ConnectionClosedEvent>(
+                    () => pane.Terminal.SendKey(Keys.D, true, false));
+                
+                StringAssert.Contains("ab^C", pane.Terminal.GetBuffer().Trim());
             }
         }
 
