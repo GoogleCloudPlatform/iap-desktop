@@ -250,12 +250,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Ssh.Test.Views.Terminal
             }
         }
 
-        [Test]
-        public void WhenSocketForceClosed_ThenErrorIsShownAndWindowIsClosed()
-        {
-            Assert.Inconclusive();
-        }
-
         //---------------------------------------------------------------------
         // Terminal input
         //---------------------------------------------------------------------
@@ -337,7 +331,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Ssh.Test.Views.Terminal
             }
         }
 
-
         [Test]
         public async Task WhenSendingBackspace_ThenLastCharacterIsRemoved(
             [LinuxInstance] ResourceTask<InstanceLocator> instanceLocatorTask,
@@ -352,6 +345,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Ssh.Test.Views.Terminal
                 pane.Terminal.SendKey(Keys.C, false, false);
                 pane.Terminal.SendKey(Keys.Back, false, false);
 
+                await Task.Delay(50); // Do not let the Ctrl+C abort the echo.
                 pane.Terminal.SendKey(Keys.C, true, false);
 
                 AssertRaisesEvent<ConnectionClosedEvent>(
@@ -361,11 +355,70 @@ namespace Google.Solutions.IapDesktop.Extensions.Ssh.Test.Views.Terminal
             }
         }
 
-        // TODO: more tests
-        // - back
-        // - enter 
-        // - pgup/dn
-        // - (see translation table)
+        [Test]
+        public async Task WhenUsingHomeAndEnd_ThenCursorJumpsToPosition(
+            [LinuxInstance] ResourceTask<InstanceLocator> instanceLocatorTask,
+            [Credential(Role = PredefinedRole.ComputeInstanceAdminV1)] ResourceTask<ICredential> credential)
+        {
+            using (var pane = await ConnectSshTerminalPane(
+                await instanceLocatorTask,
+                await credential))
+            {
+                pane.Terminal.SendKey(Keys.A, false, false);
+                pane.Terminal.SendKey(Keys.B, false, false);
+                pane.Terminal.SendKey(Keys.C, false, false);
 
+                pane.Terminal.SendKey(Keys.Home, false, false);
+                pane.Terminal.SendKey(Keys.Delete, false, false);
+                pane.Terminal.SendKey(Keys.E, false, false);
+                pane.Terminal.SendKey(Keys.C, false, false);
+                pane.Terminal.SendKey(Keys.H, false, false);
+                pane.Terminal.SendKey(Keys.O, false, false);
+                pane.Terminal.SendKey(Keys.Space, false, false);
+                pane.Terminal.SendKey(Keys.X, false, false);
+                pane.Terminal.SendKey(Keys.End, false, false);
+                pane.Terminal.SendKey(Keys.Z, false, false);
+
+                pane.Terminal.SendKey(Keys.Enter, false, false);
+
+                AssertRaisesEvent<ConnectionClosedEvent>(
+                    () => pane.Terminal.SendKey(Keys.D, true, false));
+
+                StringAssert.Contains("echo xbcz", pane.Terminal.GetBuffer().Trim());
+            }
+        }
+
+        [Test]
+        public async Task WhenUsingCtrlAAndCtrlE_ThenCursorJumpsToPosition(
+            [LinuxInstance] ResourceTask<InstanceLocator> instanceLocatorTask,
+            [Credential(Role = PredefinedRole.ComputeInstanceAdminV1)] ResourceTask<ICredential> credential)
+        {
+            using (var pane = await ConnectSshTerminalPane(
+                await instanceLocatorTask,
+                await credential))
+            {
+                pane.Terminal.SendKey(Keys.A, false, false);
+                pane.Terminal.SendKey(Keys.B, false, false);
+                pane.Terminal.SendKey(Keys.C, false, false);
+
+                pane.Terminal.SendKey(Keys.A, true, false);
+                pane.Terminal.SendKey(Keys.Delete, false, false);
+                pane.Terminal.SendKey(Keys.E, false, false);
+                pane.Terminal.SendKey(Keys.C, false, false);
+                pane.Terminal.SendKey(Keys.H, false, false);
+                pane.Terminal.SendKey(Keys.O, false, false);
+                pane.Terminal.SendKey(Keys.Space, false, false);
+                pane.Terminal.SendKey(Keys.X, false, false);
+                pane.Terminal.SendKey(Keys.E, true, false);
+                pane.Terminal.SendKey(Keys.Z, false, false);
+
+                pane.Terminal.SendKey(Keys.Enter, false, false);
+
+                AssertRaisesEvent<ConnectionClosedEvent>(
+                    () => pane.Terminal.SendKey(Keys.D, true, false));
+
+                StringAssert.Contains("echo xbcz", pane.Terminal.GetBuffer().Trim());
+            }
+        }
     }
 }
