@@ -113,7 +113,7 @@
     </PropertyGroup>
     <Error Condition="!Exists('..\packages\NUnit.3.12.0\build\NUnit.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\NUnit.3.12.0\build\NUnit.props'))" />
     <Error Condition="!Exists('..\packages\NUnit3TestAdapter.3.17.0\build\net35\NUnit3TestAdapter.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\NUnit3TestAdapter.3.17.0\build\net35\NUnit3TestAdapter.props'))" />
-    <Error Condition="!Exists('..\packages\libssh2.1.9.0.8\build\libssh2.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\libssh2.1.9.0.8\build\libssh2.targets'))" />
+    <Error Condition="!Exists('..\packages\libssh2.1.9.0.9\build\libssh2.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\libssh2.1.9.0.9\build\libssh2.targets'))" />
   </Target>
-  <Import Project="..\packages\libssh2.1.9.0.8\build\libssh2.targets" Condition="Exists('..\packages\libssh2.1.9.0.8\build\libssh2.targets')" />
+  <Import Project="..\packages\libssh2.1.9.0.9\build\libssh2.targets" Condition="Exists('..\packages\libssh2.1.9.0.9\build\libssh2.targets')" />
 </Project>
