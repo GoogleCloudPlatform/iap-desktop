@@ -327,7 +327,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Ssh.Test.Views.Terminal
             {
                 // Send keystroke and wait for event
                 AssertRaisesEvent<ConnectionClosedEvent>(
-                    () => pane.Terminal.SendKey(Keys.D, true, false, false));
+                    () => pane.Terminal.SimulateKey(Keys.D | Keys.Control));
             }
         }
 
@@ -340,16 +340,16 @@ namespace Google.Solutions.IapDesktop.Extensions.Ssh.Test.Views.Terminal
                 await instanceLocatorTask,
                 await credential))
             {
-                pane.Terminal.SendKey(Keys.A, false, false, false);
-                pane.Terminal.SendKey(Keys.B, false, false, false);
-                pane.Terminal.SendKey(Keys.C, false, false, false);
-                pane.Terminal.SendKey(Keys.Back, false, false, false);
+                pane.Terminal.SimulateKey(Keys.A);
+                pane.Terminal.SimulateKey(Keys.B);
+                pane.Terminal.SimulateKey(Keys.C);
+                pane.Terminal.SimulateKey(Keys.Back);
 
                 await Task.Delay(50); // Do not let the Ctrl+C abort the echo.
-                pane.Terminal.SendKey(Keys.C, true, false, false);
+                pane.Terminal.SimulateKey(Keys.C | Keys.Control);
 
                 AssertRaisesEvent<ConnectionClosedEvent>(
-                    () => pane.Terminal.SendKey(Keys.D, true, false, false));
+                    () => pane.Terminal.SimulateKey(Keys.D | Keys.Control));
                 
                 StringAssert.Contains("ab^C", pane.Terminal.GetBuffer().Trim());
             }
@@ -364,25 +364,25 @@ namespace Google.Solutions.IapDesktop.Extensions.Ssh.Test.Views.Terminal
                 await instanceLocatorTask,
                 await credential))
             {
-                pane.Terminal.SendKey(Keys.A, false, false, false);
-                pane.Terminal.SendKey(Keys.B, false, false, false);
-                pane.Terminal.SendKey(Keys.C, false, false, false);
+                pane.Terminal.SimulateKey(Keys.A);
+                pane.Terminal.SimulateKey(Keys.B);
+                pane.Terminal.SimulateKey(Keys.C);
 
-                pane.Terminal.SendKey(Keys.Home, false, false, false);
-                pane.Terminal.SendKey(Keys.Delete, false, false, false);
-                pane.Terminal.SendKey(Keys.E, false, false, false);
-                pane.Terminal.SendKey(Keys.C, false, false, false);
-                pane.Terminal.SendKey(Keys.H, false, false, false);
-                pane.Terminal.SendKey(Keys.O, false, false, false);
-                pane.Terminal.SendKey(Keys.Space, false, false, false);
-                pane.Terminal.SendKey(Keys.X, false, false, false);
-                pane.Terminal.SendKey(Keys.End, false, false, false);
-                pane.Terminal.SendKey(Keys.Z, false, false, false);
+                pane.Terminal.SimulateKey(Keys.Home);
+                pane.Terminal.SimulateKey(Keys.Delete);
+                pane.Terminal.SimulateKey(Keys.E);
+                pane.Terminal.SimulateKey(Keys.C);
+                pane.Terminal.SimulateKey(Keys.H);
+                pane.Terminal.SimulateKey(Keys.O);
+                pane.Terminal.SimulateKey(Keys.Space);
+                pane.Terminal.SimulateKey(Keys.X);
+                pane.Terminal.SimulateKey(Keys.End);
+                pane.Terminal.SimulateKey(Keys.Z);
 
-                pane.Terminal.SendKey(Keys.Enter, false, false, false);
+                pane.Terminal.SimulateKey(Keys.Enter);
 
                 AssertRaisesEvent<ConnectionClosedEvent>(
-                    () => pane.Terminal.SendKey(Keys.D, true, false, false));
+                    () => pane.Terminal.SimulateKey(Keys.D | Keys.Control));
 
                 StringAssert.Contains("echo xbcz", pane.Terminal.GetBuffer().Trim());
             }
@@ -397,25 +397,25 @@ namespace Google.Solutions.IapDesktop.Extensions.Ssh.Test.Views.Terminal
                 await instanceLocatorTask,
                 await credential))
             {
-                pane.Terminal.SendKey(Keys.A, false, false, false);
-                pane.Terminal.SendKey(Keys.B, false, false, false);
-                pane.Terminal.SendKey(Keys.C, false, false, false);
+                pane.Terminal.SimulateKey(Keys.A);
+                pane.Terminal.SimulateKey(Keys.B);
+                pane.Terminal.SimulateKey(Keys.C);
 
-                pane.Terminal.SendKey(Keys.A, true, false, false);
-                pane.Terminal.SendKey(Keys.Delete, false, false, false);
-                pane.Terminal.SendKey(Keys.E, false, false, false);
-                pane.Terminal.SendKey(Keys.C, false, false, false);
-                pane.Terminal.SendKey(Keys.H, false, false, false);
-                pane.Terminal.SendKey(Keys.O, false, false, false);
-                pane.Terminal.SendKey(Keys.Space, false, false, false);
-                pane.Terminal.SendKey(Keys.X, false, false, false);
-                pane.Terminal.SendKey(Keys.E, true, false, false);
-                pane.Terminal.SendKey(Keys.Z, false, false, false);
+                pane.Terminal.SimulateKey(Keys.A | Keys.Control);
+                pane.Terminal.SimulateKey(Keys.Delete);
+                pane.Terminal.SimulateKey(Keys.E);
+                pane.Terminal.SimulateKey(Keys.C);
+                pane.Terminal.SimulateKey(Keys.H);
+                pane.Terminal.SimulateKey(Keys.O);
+                pane.Terminal.SimulateKey(Keys.Space);
+                pane.Terminal.SimulateKey(Keys.X);
+                pane.Terminal.SimulateKey(Keys.E | Keys.Control);
+                pane.Terminal.SimulateKey(Keys.Z);
 
-                pane.Terminal.SendKey(Keys.Enter, false, false, false);
+                pane.Terminal.SimulateKey(Keys.Enter);
 
                 AssertRaisesEvent<ConnectionClosedEvent>(
-                    () => pane.Terminal.SendKey(Keys.D, true, false, false));
+                    () => pane.Terminal.SimulateKey(Keys.D | Keys.Control));
 
                 StringAssert.Contains("echo xbcz", pane.Terminal.GetBuffer().Trim());
             }
@@ -430,12 +430,13 @@ namespace Google.Solutions.IapDesktop.Extensions.Ssh.Test.Views.Terminal
                 await instanceLocatorTask,
                 await credential))
             {
-                pane.Terminal.SendKey(Keys.A, false, false, false);
-                pane.Terminal.SendKey(Keys.D, true, true, false);
-                pane.Terminal.SendKey(Keys.B, false, false, false);
+                pane.Terminal.SimulateKey(Keys.A);
+                pane.Terminal.SimulateKey(Keys.C | Keys.Control | Keys.Alt);
+                pane.Terminal.SimulateKey(Keys.B);
+                pane.Terminal.SimulateKey(Keys.Enter);
 
                 AssertRaisesEvent<ConnectionClosedEvent>(
-                    () => pane.Terminal.SendKey(Keys.D, true, false, false));
+                    () => pane.Terminal.SimulateKey(Keys.D | Keys.Control));
 
                 StringAssert.Contains("ab", pane.Terminal.GetBuffer().Trim());
             }

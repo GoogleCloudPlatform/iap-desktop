@@ -478,7 +478,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Ssh.Controls
             }
         }
 
-        internal bool SendKey(
+        private bool SendKey(
             Keys keyCode,
             bool control,
             bool alt,
@@ -562,6 +562,26 @@ namespace Google.Solutions.IapDesktop.Extensions.Ssh.Controls
         {
             Invalidate();
             base.OnResize(e);
+        }
+
+        //---------------------------------------------------------------------
+        // For testing only.
+        //---------------------------------------------------------------------
+
+        internal void SimulateKey(Keys keyCode)
+        {
+            var keyDown = new KeyEventArgs(keyCode);
+            OnKeyDown(keyDown);
+            if (!keyDown.SuppressKeyPress)
+            {
+                // NB. This does not work for any combining characters, but
+                // that's ok sind the method is for testing only.
+                var ch = KeyUtil.CharFromKeyCode(keyCode);
+                if (ch.Length >= 1)
+                {
+                    OnKeyPress(new KeyPressEventArgs(ch[0]));
+                }
+            }
         }
 
         //---------------------------------------------------------------------
