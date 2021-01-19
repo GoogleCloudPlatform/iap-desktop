@@ -413,13 +413,26 @@ namespace Google.Solutions.IapDesktop.Extensions.Ssh.Controls
         // Keybpard event handlers.
         //---------------------------------------------------------------------
 
-        protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
-        {
-            return base.ProcessCmdKey(ref msg, keyData);
-        }
+        //protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
+        //{
+        //    if ((keyData & Keys.Alt) != 0)
+        //    {
+        //        return true;
+        //    }
+        //    else
+        //    {
+        //        return base.ProcessCmdKey(ref msg, keyData);
+        //    }
+        //}
 
         protected override bool ProcessDialogKey(Keys keyData)
         {
+            if ((keyData & Keys.Alt) != 0)
+            {
+                // Pass to KeyDown.
+                return false;
+            }
+
             switch (keyData)
             {
                 case Keys.Down:
@@ -485,7 +498,10 @@ namespace Google.Solutions.IapDesktop.Extensions.Ssh.Controls
         {
             this.scrolling = false;
 
-            // NB. Alt is never part of a key sequence.
+            //
+            // If Alt is pressed, it cannot be a key sequence. 
+            // Otherwise, it might.
+            //
             if (!alt && IsKeySequence(
                 NameFromKey(keyCode),
                 control,
@@ -502,9 +518,14 @@ namespace Google.Solutions.IapDesktop.Extensions.Ssh.Controls
             }
             else if (alt)
             {
+                //
                 // Somewhat non-standard, emulate the behavior
                 // of other terminals and escape the character.
-
+                //
+                // This enables applications like midnight 
+                // commander which rely on Alt+<char> keyboard
+                // shortcuts.
+                //
                 var ch = KeyUtil.CharFromKeyCode(keyCode);
                 OnInput(new InputEventArgs("\u001b" + ch));
                 return true;
@@ -531,6 +552,11 @@ namespace Google.Solutions.IapDesktop.Extensions.Ssh.Controls
         protected override void OnKeyDown(KeyEventArgs e)
         {
             e.Handled = SendKey(e.KeyCode, e.Control, e.Alt, e.Shift);
+            
+            // If the Alt key was pressed, suppress the key press
+            // event - otherwise the event bubbles up and moves
+            // the focus to the menu strip (if any).
+            e.SuppressKeyPress = e.Alt;
         }
 
         protected override void OnResize(EventArgs e)
