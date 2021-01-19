@@ -500,6 +500,15 @@ namespace Google.Solutions.IapDesktop.Extensions.Ssh.Controls
                     control,
                     shift);
             }
+            else if (alt)
+            {
+                // Somewhat non-standard, emulate the behavior
+                // of other terminals and escape the character.
+
+                var ch = KeyUtil.CharFromKeyCode(keyCode);
+                OnInput(new InputEventArgs("\u001b" + ch));
+                return true;
+            }
             else
             {
                 //
