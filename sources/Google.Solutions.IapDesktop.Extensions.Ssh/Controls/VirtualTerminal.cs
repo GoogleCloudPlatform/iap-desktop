@@ -413,18 +413,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Ssh.Controls
         // Keybpard event handlers.
         //---------------------------------------------------------------------
 
-        //protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
-        //{
-        //    if ((keyData & Keys.Alt) != 0)
-        //    {
-        //        return true;
-        //    }
-        //    else
-        //    {
-        //        return base.ProcessCmdKey(ref msg, keyData);
-        //    }
-        //}
-
         protected override bool ProcessDialogKey(Keys keyData)
         {
             if ((keyData & Keys.Alt) != 0)
@@ -533,30 +521,41 @@ namespace Google.Solutions.IapDesktop.Extensions.Ssh.Controls
             else
             {
                 //
-                // This is a plain character. Typically, we'd
-                // handle such input in KeyPress - but it is
-                // difficult to ensure that KeyPress does not
-                // handle any keys again that were already handled here.
-                // Therefore, do the virtual key translation
-                // manually here so that we do not need KeyPress
-                // at all.
-                //
-                var ch = KeyUtil.CharFromKeyCode(keyCode);
-                return  this.controller.KeyPressed(
-                    ch,
-                    control,
-                    shift); ;
+                // This is a plain character. Defer handling to 
+                // KeyPress so that Windows does the nasty key
+                // composition and dead key handling for us.
+                return false;
             }
         }
 
         protected override void OnKeyDown(KeyEventArgs e)
         {
             e.Handled = SendKey(e.KeyCode, e.Control, e.Alt, e.Shift);
-            
-            // If the Alt key was pressed, suppress the key press
-            // event - otherwise the event bubbles up and moves
+
+            //
+            // Suppress KeyPress if we already handled the key.
+            //
+            // This also ensures that KeyPress is never called
+            // when an Alt + ... is pressed - that's important
+            // because otherwise the event bubbles up and moves
             // the focus to the menu strip (if any).
-            e.SuppressKeyPress = e.Alt;
+            //
+            e.SuppressKeyPress = e.Handled;
+        }
+
+        protected override void OnKeyPress(KeyPressEventArgs e)
+        {
+            //
+            // This character is guaranteed to not be part of
+            // a key sequence, because OnKeyDown handles those
+            //
+            // That means the status of the Control, Alt, and
+            // Shift modifiers also does not matter.
+            //
+            e.Handled = this.controller.KeyPressed(
+                e.KeyChar.ToString(),
+                false,
+                false);
         }
 
         protected override void OnResize(EventArgs e)
