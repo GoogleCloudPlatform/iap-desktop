@@ -413,6 +413,11 @@ namespace Google.Solutions.IapDesktop.Extensions.Ssh.Controls
         // Keybpard event handlers.
         //---------------------------------------------------------------------
 
+        protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
+        {
+            return base.ProcessCmdKey(ref msg, keyData);
+        }
+
         protected override bool ProcessDialogKey(Keys keyData)
         {
             switch (keyData)
@@ -475,11 +480,13 @@ namespace Google.Solutions.IapDesktop.Extensions.Ssh.Controls
         internal bool SendKey(
             Keys keyCode,
             bool control,
+            bool alt,
             bool shift)
         {
             this.scrolling = false;
 
-            if (IsKeySequence(
+            // NB. Alt is never part of a key sequence.
+            if (!alt && IsKeySequence(
                 NameFromKey(keyCode),
                 control,
                 shift))
@@ -514,7 +521,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Ssh.Controls
 
         protected override void OnKeyDown(KeyEventArgs e)
         {
-            e.Handled = SendKey(e.KeyCode, e.Control, e.Shift);
+            e.Handled = SendKey(e.KeyCode, e.Control, e.Alt, e.Shift);
         }
 
         protected override void OnResize(EventArgs e)
