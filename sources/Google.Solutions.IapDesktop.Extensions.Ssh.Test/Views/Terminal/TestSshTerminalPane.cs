@@ -212,12 +212,12 @@ namespace Google.Solutions.IapDesktop.Extensions.Ssh.Test.Views.Terminal
         }
 
         [Test]
-        public async Task WhenAuthenticationSucceeds_ThenConnectedEventIsFired(
+        public async Task WhenAuthenticationSucceeds_ThenConnectionSuceededEventEventIsFired(
             [LinuxInstance] ResourceTask<InstanceLocator> instanceLocatorTask,
             [Credential(Role = PredefinedRole.ComputeInstanceAdminV1)] ResourceTask<ICredential> credential)
         {
-            ConnectionClosedEvent closedEvent = null;
-            this.eventService.BindHandler<ConnectionClosedEvent>(e => closedEvent = e);
+            ConnectionSuceededEvent connectedEvent = null;
+            this.eventService.BindHandler<ConnectionSuceededEvent>(e => connectedEvent = e);
 
             using (var pane = await ConnectSshTerminalPane(
                 await instanceLocatorTask,
@@ -226,7 +226,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Ssh.Test.Views.Terminal
                 // Close the pane (not the window).
                 pane.Close();
 
-                Assert.IsNotNull(closedEvent, "ConnectionClosedEvent event fired");
+                Assert.IsNotNull(connectedEvent, "ConnectionSuceededEvent event fired");
             }
         }
 
@@ -243,6 +243,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Ssh.Test.Views.Terminal
                 await instanceLocatorTask,
                 await credential))
             {
+                await Task.Delay(50);
+
                 // Send command and wait for event
                 AssertRaisesEvent<ConnectionClosedEvent>(
                     () => pane.SendAsync("exit\n").Wait());
@@ -258,8 +260,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Ssh.Test.Views.Terminal
                 await instanceLocatorTask,
                 await credential))
             {
-                await Task.Delay(50);
-
                 // Send keystroke and wait for event
                 AssertRaisesEvent<ConnectionClosedEvent>(
                     () => pane.Terminal.SimulateKey(Keys.D | Keys.Control));
