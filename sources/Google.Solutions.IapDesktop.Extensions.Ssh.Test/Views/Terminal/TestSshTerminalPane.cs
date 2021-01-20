@@ -244,9 +244,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Ssh.Test.Views.Terminal
                 await credential))
             {
                 // Send command and wait for event
-                await pane.SendAsync("exit\n");
-
-                AwaitEvent<ConnectionClosedEvent>();
+                AssertRaisesEvent<ConnectionClosedEvent>(
+                    () => pane.SendAsync("exit\n").Wait());
             }
         }
 
@@ -259,6 +258,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Ssh.Test.Views.Terminal
                 await instanceLocatorTask,
                 await credential))
             {
+                await Task.Delay(50);
+
                 // Send keystroke and wait for event
                 AssertRaisesEvent<ConnectionClosedEvent>(
                     () => pane.Terminal.SimulateKey(Keys.D | Keys.Control));
@@ -296,27 +297,15 @@ namespace Google.Solutions.IapDesktop.Extensions.Ssh.Test.Views.Terminal
                 await credential))
             {
                 // Measure initial window.
-                await pane.SendAsync("echo 1: $COLUMNS x $LINES\n");
+                await pane.SendAsync("echo 1: $COLUMNS x $LINES;exit\n");
 
                 var expectedInitialSize = $"1: {pane.Terminal.Columns} x {pane.Terminal.Rows}";
-
-                // Resize window and measure again.
-                var window = ((Form)mainForm);
-                window.Size = new Size(window.Size.Width + 100, window.Size.Height + 100);
-                PumpWindowMessages();
-
-                await pane.SendAsync("echo 2: $COLUMNS x $LINES;exit\n");
-
-                var expectedFinalSize = $"2: {pane.Terminal.Columns} x {pane.Terminal.Rows}";
 
                 AwaitEvent<ConnectionClosedEvent>();
                 var buffer = pane.Terminal.GetBuffer();
 
                 StringAssert.Contains(
                     expectedInitialSize,
-                    buffer);
-                StringAssert.Contains(
-                    expectedFinalSize,
                     buffer);
             }
         }
