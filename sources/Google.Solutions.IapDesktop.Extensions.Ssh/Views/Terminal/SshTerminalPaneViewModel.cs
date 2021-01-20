@@ -104,6 +104,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Ssh.Views.Terminal
             get => this.connectionStatus;
             private set
             {
+                Debug.Assert(this.ViewInvoker != null);
                 Debug.Assert(!this.ViewInvoker.InvokeRequired, "Accessed from UI thread");
 
                 this.connectionStatus = value;
@@ -128,57 +129,56 @@ namespace Google.Solutions.IapDesktop.Extensions.Ssh.Views.Terminal
             void OnErrorReceivedFromServerAsync(Exception exception)
             {
                 // NB. Callback runs on SSH thread, not on UI thread.
-                using (ApplicationTraceSources.Default.TraceMethod().WithParameters(exception))
+                ApplicationTraceSources.Default.TraceVerbose("Error received from server: {0}", exception);
+
+                var errorsIndicatingLostConnection = new[]
                 {
-                    var errorsIndicatingLostConnection = new[]
-                    {
-                        LIBSSH2_ERROR.SOCKET_SEND,
-                        LIBSSH2_ERROR.SOCKET_RECV,
-                        LIBSSH2_ERROR.SOCKET_TIMEOUT
-                    };
+                    LIBSSH2_ERROR.SOCKET_SEND,
+                    LIBSSH2_ERROR.SOCKET_RECV,
+                    LIBSSH2_ERROR.SOCKET_TIMEOUT
+                };
 
-                    if (this.ConnectionStatus == Status.Connected &&
-                        exception.Unwrap() is SshNativeException sshEx &&
-                        errorsIndicatingLostConnection.Contains(sshEx.ErrorCode))
-                    {
-                        this.ViewInvoker.InvokeAndForget(
-                            () =>
-                            {
-                                this.ConnectionStatus = Status.ConnectionLost;
-                                this.ConnectionLost?.Invoke(
-                                    this,
-                                    new ConnectionErrorEventArgs(exception));
-                            });
-                    }
-                    else
-                    {
-                        this.ViewInvoker.InvokeAndForget(
-                            () => this.ConnectionFailed?.Invoke(
+                if (this.ConnectionStatus == Status.Connected &&
+                    exception.Unwrap() is SshNativeException sshEx &&
+                    errorsIndicatingLostConnection.Contains(sshEx.ErrorCode))
+                {
+                    this.ViewInvoker?.InvokeAndForget(
+                        () =>
+                        {
+                            this.ConnectionStatus = Status.ConnectionLost;
+                            this.ConnectionLost?.Invoke(
                                 this,
-                                new ConnectionErrorEventArgs(exception)));
-                    }
-
-                    // Notify listeners.
-                    this.eventService.FireAsync(
-                        new ConnectionFailedEvent(this.Instance, exception))
-                        .ContinueWith(_ => { });
+                                new ConnectionErrorEventArgs(exception));
+                        });
                 }
+                else
+                {
+                    this.ViewInvoker?.InvokeAndForget(
+                        () => this.ConnectionFailed?.Invoke(
+                            this,
+                            new ConnectionErrorEventArgs(exception)));
+                }
+
+                // Notify listeners.
+                this.eventService.FireAsync(
+                    new ConnectionFailedEvent(this.Instance, exception))
+                    .ContinueWith(_ => { });
             }
 
             void OnDataReceivedFromServerAsync(string data)
             {
                 // NB. Callback runs on SSH thread, not on UI thread.
-                using (ApplicationTraceSources.Default.TraceMethod().WithoutParameters())
-                {
+                
+                ApplicationTraceSources.Default.TraceVerbose("Received {0} chars from server", data?.Length);
+
 #if DEBUG
-                    this.receivedData.Append(data);
+                this.receivedData.Append(data);
 #endif
 
-                    this.ViewInvoker.InvokeAndForget(
-                        () => this.DataReceived?.Invoke(
-                            this,
-                            new DataReceivedEventArgs(data)));
-                }
+                this.ViewInvoker?.InvokeAndForget(
+                    () => this.DataReceived?.Invoke(
+                        this,
+                        new DataReceivedEventArgs(data)));
             }
 
             using (ApplicationTraceSources.Default.TraceMethod().WithoutParameters())
@@ -295,6 +295,16 @@ namespace Google.Solutions.IapDesktop.Extensions.Ssh.Views.Terminal
         {
             if (disposing)
             {
+                // 
+                // Do not invoke any more view callbacks since they can lead to
+                // a deadlock: If the connection is being disposed, odds are
+                // that the window (ViewInvoker) has already been destructed.
+                // That could cause InvokeAndForget to hang, causing a deadlock
+                // between the UI thread and the SSH worker thread.
+                //
+
+                this.View = null;
+
                 this.currentConnection?.Dispose();
             }
         }

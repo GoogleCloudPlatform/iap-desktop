@@ -267,5 +267,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Ssh.Views.Terminal
         public Task SendAsync(string command) 
             => this.viewModel.SendAsync(command);
 
+        public Task DisconnectAsync() 
+            => this.viewModel.DisconnectAsync();
     }
 }

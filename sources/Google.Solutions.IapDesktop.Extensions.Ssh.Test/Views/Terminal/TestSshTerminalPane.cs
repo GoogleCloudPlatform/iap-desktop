@@ -250,8 +250,40 @@ namespace Google.Solutions.IapDesktop.Extensions.Ssh.Test.Views.Terminal
             }
         }
 
+        [Test]
+        public async Task WhenSendingCtrlD_ThenDisconnectedEventIsFiredAndWindowIsClosed(
+            [LinuxInstance] ResourceTask<InstanceLocator> instanceLocatorTask,
+            [Credential(Role = PredefinedRole.ComputeInstanceAdminV1)] ResourceTask<ICredential> credential)
+        {
+            using (var pane = await ConnectSshTerminalPane(
+                await instanceLocatorTask,
+                await credential))
+            {
+                // Send keystroke and wait for event
+                AssertRaisesEvent<ConnectionClosedEvent>(
+                    () => pane.Terminal.SimulateKey(Keys.D | Keys.Control));
+            }
+        }
+
+        [Test]
+        public async Task WhenClosingPane_ThenDisposeDoesNotHang(
+            [LinuxInstance] ResourceTask<InstanceLocator> instanceLocatorTask,
+            [Credential(Role = PredefinedRole.ComputeInstanceAdminV1)] ResourceTask<ICredential> credential)
+        {
+            using (var pane = await ConnectSshTerminalPane(
+                await instanceLocatorTask,
+                await credential))
+            {
+                pane.Terminal.SimulateKey(Keys.A);
+                pane.Terminal.SimulateKey(Keys.B);
+                pane.Terminal.SimulateKey(Keys.C);
+
+                pane.Close();
+            }
+        }
+
         //---------------------------------------------------------------------
-        // Terminal input
+        // Terminal input processing
         //---------------------------------------------------------------------
 
         [Test]
@@ -317,21 +349,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Ssh.Test.Views.Terminal
         }
 
         [Test]
-        public async Task WhenSendingCtrlD_ThenDisconnectedEventIsFiredAndWindowIsClosed(
-            [LinuxInstance] ResourceTask<InstanceLocator> instanceLocatorTask,
-            [Credential(Role = PredefinedRole.ComputeInstanceAdminV1)] ResourceTask<ICredential> credential)
-        {
-            using (var pane = await ConnectSshTerminalPane(
-                await instanceLocatorTask,
-                await credential))
-            {
-                // Send keystroke and wait for event
-                AssertRaisesEvent<ConnectionClosedEvent>(
-                    () => pane.Terminal.SimulateKey(Keys.D | Keys.Control));
-            }
-        }
-
-        [Test]
         public async Task WhenSendingBackspace_ThenLastCharacterIsRemoved(
             [LinuxInstance] ResourceTask<InstanceLocator> instanceLocatorTask,
             [Credential(Role = PredefinedRole.ComputeInstanceAdminV1)] ResourceTask<ICredential> credential)
@@ -348,9 +365,10 @@ namespace Google.Solutions.IapDesktop.Extensions.Ssh.Test.Views.Terminal
                 await Task.Delay(50); // Do not let the Ctrl+C abort the echo.
                 pane.Terminal.SimulateKey(Keys.C | Keys.Control);
 
+                await Task.Delay(50);
                 AssertRaisesEvent<ConnectionClosedEvent>(
                     () => pane.Terminal.SimulateKey(Keys.D | Keys.Control));
-                
+
                 StringAssert.Contains("ab^C", pane.Terminal.GetBuffer().Trim());
             }
         }
@@ -378,9 +396,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Ssh.Test.Views.Terminal
                 pane.Terminal.SimulateKey(Keys.X);
                 pane.Terminal.SimulateKey(Keys.End);
                 pane.Terminal.SimulateKey(Keys.Z);
-
                 pane.Terminal.SimulateKey(Keys.Enter);
 
+                await Task.Delay(50);
                 AssertRaisesEvent<ConnectionClosedEvent>(
                     () => pane.Terminal.SimulateKey(Keys.D | Keys.Control));
 
@@ -411,9 +429,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Ssh.Test.Views.Terminal
                 pane.Terminal.SimulateKey(Keys.X);
                 pane.Terminal.SimulateKey(Keys.E | Keys.Control);
                 pane.Terminal.SimulateKey(Keys.Z);
-
                 pane.Terminal.SimulateKey(Keys.Enter);
 
+                await Task.Delay(50);
                 AssertRaisesEvent<ConnectionClosedEvent>(
                     () => pane.Terminal.SimulateKey(Keys.D | Keys.Control));
 
@@ -435,6 +453,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Ssh.Test.Views.Terminal
                 pane.Terminal.SimulateKey(Keys.B);
                 pane.Terminal.SimulateKey(Keys.Enter);
 
+                await Task.Delay(50);
                 AssertRaisesEvent<ConnectionClosedEvent>(
                     () => pane.Terminal.SimulateKey(Keys.D | Keys.Control));
 
