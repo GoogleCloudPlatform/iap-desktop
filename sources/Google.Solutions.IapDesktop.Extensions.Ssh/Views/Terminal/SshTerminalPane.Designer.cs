@@ -77,7 +77,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Ssh.Views.Terminal
             this.reconnectLabel.AutoSize = true;
             this.reconnectLabel.Location = new System.Drawing.Point(37, 56);
             this.reconnectLabel.Name = "reconnectLabel";
-            this.reconnectLabel.Size = new System.Drawing.Size(131, 26);
+            this.reconnectLabel.Size = new System.Drawing.Size(195, 40);
             this.reconnectLabel.TabIndex = 8;
             this.reconnectLabel.Text = "SSH connection timed out\r\nor has been disconnected";
             this.reconnectLabel.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
@@ -87,7 +87,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Ssh.Views.Terminal
             this.reconnectButton.AutoSize = true;
             this.reconnectButton.Location = new System.Drawing.Point(71, 85);
             this.reconnectButton.Name = "reconnectButton";
-            this.reconnectButton.Size = new System.Drawing.Size(60, 13);
+            this.reconnectButton.Size = new System.Drawing.Size(87, 20);
             this.reconnectButton.TabIndex = 7;
             this.reconnectButton.TabStop = true;
             this.reconnectButton.Text = "Reconnect";
@@ -118,6 +118,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Ssh.Views.Terminal
             this.terminal.Dock = System.Windows.Forms.DockStyle.Fill;
             this.terminal.Font = new System.Drawing.Font("Consolas", 9.75F);
             this.terminal.Location = new System.Drawing.Point(0, 0);
+            this.terminal.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.terminal.Name = "terminal";
             this.terminal.Size = new System.Drawing.Size(800, 450);
             this.terminal.TabIndex = 0;
@@ -126,7 +127,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Ssh.Views.Terminal
             // 
             // SshTerminalPane
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 20F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(800, 450);
             this.Controls.Add(this.spinner);
