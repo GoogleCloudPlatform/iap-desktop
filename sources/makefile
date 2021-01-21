@@ -48,6 +48,7 @@ NUNIT_ASSEMBLIES = \
 	Google.Solutions.IapDesktop.Extensions.Activity.Test\bin\release\Google.Solutions.IapDesktop.Extensions.Activity.Test.dll \
 	Google.Solutions.IapDesktop.Extensions.Os.Test\bin\release\Google.Solutions.IapDesktop.Extensions.Os.Test.dll \
 	Google.Solutions.IapDesktop.Extensions.Rdp.Test\bin\release\Google.Solutions.IapDesktop.Extensions.Rdp.Test.dll \
+	Google.Solutions.IapDesktop.Extensions.Ssh.Test\bin\release\Google.Solutions.IapDesktop.Extensions.Ssh.Test.dll \
 	Google.Solutions.IapDesktop.Application.Test\bin\release\Google.Solutions.IapDesktop.Application.Test.dll
 
 NUNIT_COVERAGE_FILTER = \
@@ -57,6 +58,7 @@ NUNIT_COVERAGE_FILTER = \
 	+[Google.Solutions.IapDesktop.Extensions.Activity]* \
 	+[Google.Solutions.IapDesktop.Extensions.Os]* \
 	+[Google.Solutions.IapDesktop.Extensions.Rdp]* \
+	+[Google.Solutions.IapDesktop.Extensions.Ssh]* \
 	+[Google.Solutions.IapDesktop.Application]*
 	
 SIGNTOOL_FLAGS = /v /tr http://timestamp.digicert.com /i SHA2 /fd sha256 /td sha256
@@ -222,7 +224,7 @@ test: $(NUNIT_ASSEMBLIES)
 		-register:user \
 		-returntargetcode \
 		-target:nunit3-console.exe \
-		"-targetargs:$(NUNIT_ASSEMBLIES) --result=sponge_log.xml;transform=kokoro\nunit-to-sponge.xsl" \
+		"-targetargs:$(NUNIT_ASSEMBLIES) --result=sponge_log.xml;transform=kokoro\nunit-to-sponge.xsl --agents=1" \
 		-filter:"$(NUNIT_COVERAGE_FILTER)" \
 		"-excludebyattribute:*.SkipCodeCoverage*;*CompilerGenerated*" \
 		-output:opencovertests.xml

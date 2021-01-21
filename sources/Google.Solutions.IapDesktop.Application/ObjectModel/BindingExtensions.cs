@@ -138,6 +138,31 @@ namespace Google.Solutions.IapDesktop.Application.ObjectModel
             }
         }
 
+        public static void BindReadonlyProperty<TControl, TProperty, TModel>(
+            this TControl control,
+            Expression<Func<TControl, TProperty>> controlProperty,
+            TModel model,
+            Expression<Func<TModel, TProperty>> modelProperty,
+            IContainer container = null)
+            where TModel : INotifyPropertyChanged
+            where TControl : IComponent
+        {
+            // Apply initial value.
+            var modelValue = modelProperty.Compile()(model);
+            CreateSetter(control, controlProperty)(modelValue);
+
+            var binding = model.OnPropertyChange(
+                modelProperty,
+                CreateSetter(control, controlProperty));
+
+            if (container != null)
+            {
+                // To ensure that the bindings are disposed, add them to the
+                // container of the control.
+                container.Add(binding);
+            }
+        }
+
         public abstract class Binding : Component
         {
             public bool IsBusy { get; internal set; } = false;

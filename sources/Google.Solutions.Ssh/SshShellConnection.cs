@@ -37,7 +37,6 @@ namespace Google.Solutions.Ssh
 
         private readonly string terminal;
         private readonly TerminalSize terminalSize;
-        private readonly ReceiveStringDataHandler receiveStringDataHandler;
         private readonly CultureInfo language;
 
         //---------------------------------------------------------------------
@@ -71,7 +70,6 @@ namespace Google.Solutions.Ssh
             this.terminal = terminal;
             this.terminalSize = terminalSize;
             this.language = language;
-            this.receiveStringDataHandler = receiveDataHandler;
         }
 
         //---------------------------------------------------------------------
@@ -87,9 +85,16 @@ namespace Google.Solutions.Ssh
                 this.terminal,
                 this.terminalSize.Columns,
                 this.terminalSize.Rows,
-                new Dictionary<string, string>()
+                new []
                 {
-                    { "LC_ALL", $"{currentLanguage}.UTF-8" }
+                    //
+                    // Try to pass locale - but do not fail the connedction if
+                    // the server rejects it.
+                    //
+                    new SshAuthenticatedSession.EnvironmentVariable(
+                        "LC_ALL", 
+                        $"{currentLanguage}.UTF-8",
+                        false)
                 });
         }
 

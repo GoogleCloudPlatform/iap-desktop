@@ -39,6 +39,7 @@ using Google.Solutions.IapDesktop.Application.Views.ProjectExplorer;
 using Google.Solutions.IapDesktop.Windows;
 using Google.Solutions.IapTunneling;
 using Google.Solutions.IapTunneling.Net;
+using Google.Solutions.Ssh;
 using Microsoft.Win32;
 using System;
 using System.Collections.Generic;
@@ -63,6 +64,7 @@ namespace Google.Solutions.IapDesktop
             CommonTraceSources.Google,
             CommonTraceSources.Default,
             IapTraceSources.Default,
+            SshTraceSources.Default,
             ApplicationTraceSources.Default
         };
 
@@ -140,6 +142,7 @@ namespace Google.Solutions.IapDesktop
 
 #if DEBUG
             ApplicationTraceSources.Default.Switch.Level = SourceLevels.Verbose;
+            //SshTraceSources.Default.Switch.Level = SourceLevels.Verbose;
 #endif
 
             // Use TLS 1.2 if possible.

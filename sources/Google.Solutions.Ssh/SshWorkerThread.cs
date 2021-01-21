@@ -51,7 +51,7 @@ namespace Google.Solutions.Ssh
         /// </summary>
         public TimeSpan KeepAliveInterval { get; set; } = TimeSpan.FromSeconds(5);
 
-        public TimeSpan SocketWaitInterval { get; set; } = TimeSpan.FromMilliseconds(100);
+        public TimeSpan SocketWaitInterval { get; set; } = TimeSpan.FromSeconds(2);
 
         public string Banner { get; set; }
 
@@ -265,6 +265,13 @@ namespace Google.Solutions.Ssh
                                             readyToReceive.DangerousGetHandle(),
                                             this.readyToSend.DangerousGetHandle()
                                         };
+
+                                        //
+                                        // NB. The timeout should not be lower than approx.
+                                        // one second, otherwise we spend too much time calling
+                                        // libssh2's keepalive function, which causes the terminal
+                                        // to become sluggish.
+                                        //
 
                                         var waitResult = UnsafeNativeMethods.WSAWaitForMultipleEvents(
                                             (uint)waitHandles.Length,

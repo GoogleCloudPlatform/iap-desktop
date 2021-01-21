@@ -144,9 +144,12 @@ namespace Google.Solutions.Ssh.Test.Native
                     DefaultTerminal,
                     80,
                     24,
-                    new Dictionary<string, string>
+                    new[]
                     {
-                        { "LANG", "LC_ALL" } // LANG is whitelisted by sshd by default.
+                        new SshAuthenticatedSession.EnvironmentVariable(
+                            "LANG",
+                            "LC_ALL",
+                            true) // LANG is whitelisted by sshd by default.
                     }))
                 {
                     var bytesWritten = channel.Write(Encoding.ASCII.GetBytes("echo $LANG;exit\n"));
@@ -190,10 +193,10 @@ namespace Google.Solutions.Ssh.Test.Native
                             DefaultTerminal,
                             80,
                             24,
-                            new Dictionary<string, string>
+                            new []
                             {
-                                { "FOO", "foo" },
-                                { "BAR", "bar" }
+                                new SshAuthenticatedSession.EnvironmentVariable("FOO", "foo", true),
+                                new SshAuthenticatedSession.EnvironmentVariable("BAR", "bar", true)
                             }));
                 }
             }

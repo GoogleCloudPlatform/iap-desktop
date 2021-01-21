@@ -89,6 +89,7 @@
     <Compile Include="Controls\BindableTreeView.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="Controls\ControlExtensions.cs" />
     <Compile Include="Controls\ExceptionEventArgs.cs" />
     <Compile Include="Controls\ListViewExtensions.cs" />
     <Compile Include="Controls\PropertyGridExtensions.cs" />
