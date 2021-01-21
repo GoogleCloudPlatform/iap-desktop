@@ -260,6 +260,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Ssh.Test.Views.Terminal
                 await instanceLocatorTask,
                 await credential))
             {
+                await Task.Delay(50);
+
                 // Send keystroke and wait for event
                 AssertRaisesEvent<ConnectionClosedEvent>(
                     () => pane.Terminal.SimulateKey(Keys.D | Keys.Control));
