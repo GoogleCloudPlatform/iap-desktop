@@ -21,18 +21,43 @@
 
 using Google.Apis.Compute.v1.Data;
 using Google.Solutions.IapDesktop.Application.Test;
-using Google.Solutions.IapDesktop.Extensions.Ssh.Services.Auth;
+using Google.Solutions.IapDesktop.Extensions.Ssh.Services.Adapter;
 using NUnit.Framework;
 using System;
 using System.Linq;
 
-namespace Google.Solutions.IapDesktop.Extensions.Ssh.Test.Services.Auth
+namespace Google.Solutions.IapDesktop.Extensions.Ssh.Test.Services.Adapter
 {
     [TestFixture]
     public class TestMetadataAuthorizedKeySet : ApplicationFixtureBase
     {
         [Test]
-        public void WhenMetadataHasWrongKey_ThenFromMetadataThrowsArgumentException()
+        public void WhenMetadataIsEmpry_ThenFromMetadataThrowsArgumentException()
+        {
+            var metadata = new Metadata();
+
+            CollectionAssert.IsEmpty(MetadataAuthorizedKeySet.FromMetadata(metadata).Keys);
+        }
+
+        [Test]
+        public void WhenMetadataContainsDifferentKeys_ThenFromMetadataThrowsArgumentException()
+        {
+            var metadata = new Metadata()
+            {
+                Items = new[]
+                {
+                    new Metadata.ItemsData()
+                    {
+                        Key = "foo"
+                    }
+                }
+            };
+
+            CollectionAssert.IsEmpty(MetadataAuthorizedKeySet.FromMetadata(metadata).Keys);
+        }
+
+        [Test]
+        public void WhenMetadataItemHasWrongKey_ThenFromMetadataThrowsArgumentException()
         {
             var metadata = new Metadata.ItemsData()
             {
@@ -45,7 +70,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Ssh.Test.Services.Auth
         }
 
         [Test]
-        public void WhenMetadataContainsJunk_ThenFromMetadataThrowsArgumentException()
+        public void WhenMetadataItemContainsJunk_ThenFromMetadataThrowsArgumentException()
         {
             var metadata = new Metadata.ItemsData()
             {
@@ -58,7 +83,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Ssh.Test.Services.Auth
         }
 
         [Test]
-        public void WhenMetadataIsEmpty_ThenKeySetIsEmpty()
+        public void WhenMetadataItemIsEmpty_ThenKeySetIsEmpty()
         {
             var metadata = new Metadata.ItemsData()
             {
@@ -70,7 +95,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Ssh.Test.Services.Auth
         }
 
         [Test]
-        public void WhenMetadataContainsData_ThenKeySetIsPopulated()
+        public void WhenMetadataItemContainsData_ThenKeySetIsPopulated()
         {
             var metadata = new Metadata.ItemsData()
             {
@@ -121,7 +146,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Ssh.Test.Services.Auth
             var metadata = new Metadata.ItemsData()
             {
                 Key = MetadataAuthorizedKeySet.MetadataKey,
-                Value = $"bob:ssh-rsa key1 google-ssh {{\"userName\":\"bob@example.com\",\"expireOn\":\"{DateTime.UtcNow.AddMinutes(1):O}\"}}\n" +
+                Value = $"alice:ssh-rsa key alice\n" +
                         $"joe:ssh-rsa key2 google-ssh {{\"userName\":\"joe@example.com\",\"expireOn\":\"{DateTime.UtcNow.AddMinutes(-1):O}\"}}\n" +
                         $"moe:ssh-rsa key2 google-ssh {{\"userName\":\"moe@example.com\",\"expireOn\":\"{DateTime.UtcNow.AddMinutes(1):O}\"}}\n"
             };

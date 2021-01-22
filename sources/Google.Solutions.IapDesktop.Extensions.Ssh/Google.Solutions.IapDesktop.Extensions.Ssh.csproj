@@ -93,8 +93,10 @@
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
     <Compile Include="Services\Adapter\ComputeEngineKeysAdapter.cs" />
-    <Compile Include="Services\Auth\MetadataAuthorizedKey.cs" />
-    <Compile Include="Services\Auth\MetadataAuthorizedKeySet.cs" />
+    <Compile Include="Services\Adapter\LoginProfileAdapter.cs" />
+    <Compile Include="Services\Adapter\MetadataAuthorizedKeysAdapter.cs" />
+    <Compile Include="Services\Adapter\MetadataAuthorizedKey.cs" />
+    <Compile Include="Services\Adapter\MetadataAuthorizedKeySet.cs" />
     <Compile Include="Services\Auth\PublicKeyService.cs" />
     <Compile Include="Services\SshExtension.cs" />
     <Compile Include="Views\Terminal\SshTerminalConnectionBroker.cs" />

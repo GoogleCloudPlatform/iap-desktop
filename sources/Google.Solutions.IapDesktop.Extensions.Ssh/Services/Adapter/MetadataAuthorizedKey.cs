@@ -26,7 +26,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Text.RegularExpressions;
 
-namespace Google.Solutions.IapDesktop.Extensions.Ssh.Services.Auth
+namespace Google.Solutions.IapDesktop.Extensions.Ssh.Services.Adapter
 {
     /// <summary>
     /// Single authorized key.

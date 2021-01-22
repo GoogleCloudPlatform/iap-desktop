@@ -5,7 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Google.Solutions.IapDesktop.Extensions.Ssh.Services.Auth
+namespace Google.Solutions.IapDesktop.Extensions.Ssh.Services.Adapter
 {
     /// <summary>
     /// A set of authorized keys.
@@ -42,6 +42,20 @@ namespace Google.Solutions.IapDesktop.Extensions.Ssh.Services.Auth
                     .ToList());
         }
 
+        public static MetadataAuthorizedKeySet FromMetadata(Metadata data)
+        {
+            var item = data?.Items?.FirstOrDefault(i => i.Key == MetadataKey);
+            if (item != null)
+            {
+                return FromMetadata(item);
+            }
+            else
+            {
+                return new MetadataAuthorizedKeySet(
+                    Enumerable.Empty<MetadataAuthorizedKey>());
+            }
+        }
+
         public MetadataAuthorizedKeySet Add(MetadataAuthorizedKey key)
         {
             if (Contains(key))
@@ -65,6 +79,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Ssh.Services.Auth
                     }
                     else
                     {
+                        // Unmanaged keys never expire.
                         return true;
                     }
                 }));

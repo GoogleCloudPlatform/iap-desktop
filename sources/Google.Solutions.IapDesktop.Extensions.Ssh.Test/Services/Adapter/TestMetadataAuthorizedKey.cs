@@ -20,11 +20,11 @@
 //
 
 using Google.Solutions.IapDesktop.Application.Test;
-using Google.Solutions.IapDesktop.Extensions.Ssh.Services.Auth;
+using Google.Solutions.IapDesktop.Extensions.Ssh.Services.Adapter;
 using NUnit.Framework;
 using System;
 
-namespace Google.Solutions.IapDesktop.Extensions.Ssh.Test.Services.Auth
+namespace Google.Solutions.IapDesktop.Extensions.Ssh.Test.Services.Adapter
 {
     [TestFixture]
     public class TestMetadataAuthorizedKey : ApplicationFixtureBase

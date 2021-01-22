@@ -32,39 +32,39 @@ namespace Google.Solutions.IapDesktop.Application.Views
 
     public static class HelpTopics
     {
-        public static IHelpTopic General = new HelpTopic(
+        public static readonly IHelpTopic General = new HelpTopic(
             "Documentation",
             "https://github.com/GoogleCloudPlatform/iap-desktop/wiki");
 
-        public static IHelpTopic BrowserIntegration = new HelpTopic(
+        public static readonly IHelpTopic BrowserIntegration = new HelpTopic(
             "Browser Integration",
             "https://github.com/GoogleCloudPlatform/iap-desktop/wiki/Browser-Integration");
 
-        public static IHelpTopic IapOverview = new HelpTopic(
+        public static readonly IHelpTopic IapOverview = new HelpTopic(
             "Overview of Cloud IAP TCP forwarding",
             "https://cloud.google.com/iap/docs/tcp-forwarding-overview");
 
-        public static IHelpTopic IapAccess = new HelpTopic(
+        public static readonly IHelpTopic IapAccess = new HelpTopic(
             "Configuring access to Cloud IAP",
             "https://cloud.google.com/iap/docs/using-tcp-forwarding#grant-permission");
 
-        public static IHelpTopic CreateIapFirewallRule = new HelpTopic(
+        public static readonly IHelpTopic CreateIapFirewallRule = new HelpTopic(
             "Creating a firewall rule for Cloud IAP",
             "https://cloud.google.com/iap/docs/using-tcp-forwarding#create-firewall-rule");
 
-        public static IHelpTopic SecureConnectDcaOverview = new HelpTopic(
+        public static readonly IHelpTopic SecureConnectDcaOverview = new HelpTopic(
             "Device certiticate authentication",
             "https://cloud.google.com/endpoint-verification/docs/overview");
 
-        public static IHelpTopic ProjectAccessControl = new HelpTopic(
+        public static readonly IHelpTopic ProjectAccessControl = new HelpTopic(
             "Project access control",
             "https://cloud.google.com/compute/docs/access");
 
-        public static IHelpTopic PermissionsToResetWindowsUser = new HelpTopic(
+        public static readonly IHelpTopic PermissionsToResetWindowsUser = new HelpTopic(
             "Generating Windows passwords",
             "https://cloud.google.com/compute/docs/instances/windows/creating-passwords-for-windows-instances#permissions-required-for-this-task");
 
-        public static IHelpTopic ManagingMetadataAuthorizedKeys = new HelpTopic(
+        public static readonly IHelpTopic ManagingMetadataAuthorizedKeys = new HelpTopic(
             "Managing SSH keys in metadata",
             "https://cloud.google.com/compute/docs/instances/adding-removing-ssh-keys");
 

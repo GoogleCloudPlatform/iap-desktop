@@ -32,5 +32,8 @@ namespace Google.Solutions.Ssh
         byte[] PublicKey { get; }
 
         byte[] SignData(byte[] data);
+
+        string PublicKeyString { get; }
+        string Type { get; }
     }
 }
