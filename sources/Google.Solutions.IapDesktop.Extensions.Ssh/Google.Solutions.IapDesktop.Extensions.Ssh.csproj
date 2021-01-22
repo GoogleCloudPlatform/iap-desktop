@@ -93,7 +93,7 @@
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
     <Compile Include="Services\Adapter\ComputeEngineKeysAdapter.cs" />
-    <Compile Include="Services\Adapter\LoginProfileAdapter.cs" />
+    <Compile Include="Services\Auth\LoginProfile.cs" />
     <Compile Include="Services\Adapter\MetadataAuthorizedKeysAdapter.cs" />
     <Compile Include="Services\Adapter\MetadataAuthorizedKey.cs" />
     <Compile Include="Services\Adapter\MetadataAuthorizedKeySet.cs" />

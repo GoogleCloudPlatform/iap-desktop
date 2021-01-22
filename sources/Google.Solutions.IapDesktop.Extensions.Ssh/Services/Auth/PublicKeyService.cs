@@ -13,6 +13,7 @@ using Google.Solutions.IapDesktop.Application.Views.Dialog;
 using Google.Solutions.IapDesktop.Extensions.Ssh.Services.Adapter;
 using Google.Solutions.Ssh;
 using System;
+using System.Diagnostics;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -21,11 +22,11 @@ namespace Google.Solutions.IapDesktop.Extensions.Ssh.Services.Auth
 {
     interface IPublicKeyService
     {
-        Task PushPublicKeyAsync(
+        Task<LoginProfile> PushPublicKeyAsync(
             InstanceLocator instance,
-            string username,
-            ISshKey key,
             IAuthorization authorization,
+            ISshKey key,
+            string preferredPosixUsername,
             TimeSpan validity,
             CancellationToken token);
     }
@@ -35,25 +36,33 @@ namespace Google.Solutions.IapDesktop.Extensions.Ssh.Services.Auth
         private const string EnableOsLoginFlag = "enable-oslogin";
         private const string BlockProjectSshKeysFlag = "block-project-ssh-keys";
 
+        private readonly IAuthorizationAdapter authorizationAdapter;
         private readonly IComputeEngineAdapter computeEngineAdapter;
         private readonly IMetadataAuthorizedKeysAdapter metadataAdapter;
+        private readonly IOsLoginAdapter osLoginAdapter;
 
         //---------------------------------------------------------------------
         // Ctor.
         //---------------------------------------------------------------------
 
         public PublicKeyService(
+            IAuthorizationAdapter authorizationAdapter,
             IComputeEngineAdapter computeEngineAdapter,
-            IMetadataAuthorizedKeysAdapter metadataAdapter)
+            IMetadataAuthorizedKeysAdapter metadataAdapter,
+            IOsLoginAdapter osLoginAdapter)
         {
+            this.authorizationAdapter = authorizationAdapter;
             this.computeEngineAdapter = computeEngineAdapter;
             this.metadataAdapter = metadataAdapter;
+            this.osLoginAdapter = osLoginAdapter
         }
 
         public PublicKeyService(IServiceProvider serviceProvider)
             : this(
+                  serviceProvider.GetService<IAuthorizationAdapter>(),
                   serviceProvider.GetService<IComputeEngineAdapter>(),
-                  serviceProvider.GetService<IMetadataAuthorizedKeysAdapter>())
+                  serviceProvider.GetService<IMetadataAuthorizedKeysAdapter>(),
+                  serviceProvider.GetService<IOsLoginAdapter>())
         { }
 
         //---------------------------------------------------------------------
@@ -79,22 +88,89 @@ namespace Google.Solutions.IapDesktop.Extensions.Ssh.Services.Auth
                 project.CommonInstanceMetadata.GetValue(BlockProjectSshKeysFlag));
         }
 
+        private async Task PushPublicKeyToMetadataAsync(
+            InstanceLocator instance,
+            bool useInstanceKeySet,
+            MetadataAuthorizedKeySet existingKeySet,
+            ManagedMetadataAuthorizedKey authorizedKey,
+            CancellationToken token)
+        {
+
+            try
+            {
+                //
+                // Add new key, and take the opportunity to purge expired keys.
+                //
+                var newKeySet = existingKeySet
+                    .RemoveExpiredKeys()
+                    .Add(authorizedKey);
+
+                if (useInstanceKeySet)
+                {
+                    await this.metadataAdapter.PushAuthorizedKeySetToInstanceMetadataAsync(
+                            instance,
+                            newKeySet,
+                            token)
+                        .ConfigureAwait(false);
+                }
+                else
+                {
+                    await this.metadataAdapter.PushAuthorizedKeySetToProjectMetadataAsync(
+                            instance,
+                            newKeySet,
+                            token)
+                        .ConfigureAwait(false);
+                }
+            }
+            catch (GoogleApiException e) when (e.Error == null || e.Error.Code == 403)
+            {
+                ApplicationTraceSources.Default.TraceVerbose(
+                    "Setting request payload metadata failed with 403: {0} ({1})",
+                    e.Message,
+                    e.Error?.Errors.EnsureNotNull().Select(er => er.Reason).FirstOrDefault());
+
+                // Setting metadata failed due to lack of permissions. Note that
+                // the Error object is not always populated, hence the OR filter.
+
+                throw new SshKeyPushFailedException(
+                    "You do not have sufficient permissions to publish an SSH key. " +
+                    "You need the 'Service Account User' and " +
+                    "'Compute Instance Admin' roles (or equivalent custom roles) " +
+                    "to perform this action.",
+                    HelpTopics.ManagingMetadataAuthorizedKeys);
+            }
+            catch (GoogleApiException e) when (e.IsBadRequest())
+            {
+                ApplicationTraceSources.Default.TraceVerbose(
+                    "Setting request payload metadata failed with 400: {0} ({1})",
+                    e.Message,
+                    e.Error?.Errors.EnsureNotNull().Select(er => er.Reason).FirstOrDefault());
+
+                // This slightly weirdly encoded error happens if the user has the necessary
+                // permissions on the VM, but lacks ActAs permission on the associated 
+                // service account.
+
+                throw new SshKeyPushFailedException(
+                    "You do not have sufficient permissions to publish an SSH key. " +
+                    "Because this VM instance uses a service account, you also need the " +
+                    "'Service Account User' role.",
+                    HelpTopics.ManagingMetadataAuthorizedKeys);
+            }
+        }
+
         //---------------------------------------------------------------------
         // IPublicKeyService.
         //---------------------------------------------------------------------
 
-        public async Task PushPublicKeyAsync(
-            InstanceLocator instance, 
-            string username, 
+        public async Task<LoginProfile> PushPublicKeyAsync(
+            InstanceLocator instance,
             ISshKey key,
-            IAuthorization authorization,
+            string preferredPosixUsername,
             TimeSpan validity,
             CancellationToken token)
         {
             Utilities.ThrowIfNull(instance, nameof(key));
-            Utilities.ThrowIfNullOrEmpty(username, nameof(username));
-            Utilities.ThrowIfNull(instance, nameof(instance));
-            Utilities.ThrowIfNull(authorization, nameof(authorization));
+            Utilities.ThrowIfNull(key, nameof(key));
 
             using (ApplicationTraceSources.Default.TraceMethod().WithParameters(instance))
             {
@@ -121,10 +197,29 @@ namespace Google.Solutions.IapDesktop.Extensions.Ssh.Services.Auth
 
                 if (osLoginEnabled)
                 {
+                    //
+                    // If OS Login is enabled for a project, we have to use
+                    // the Posix username from the OS Login login profile.
+                    //
+                    // Note that:
+                    //  - The username differs based on the organization the
+                    //    project is part of.
+                    //  - The login profile is empty if no public key has beem
+                    //    pushed yet for this organization.
+                    //
+
                     try
                     {
-                        // TODO: Add OS Login
-                        throw new NotImplementedException("OS Login is not supported yet");
+                        //
+                        // NB. It's cheaper to unconditionally push the key than
+                        // to check for previous keys first.
+                        // 
+                        return await this.osLoginAdapter.ImportSshPublicKeyAsync(
+                                instance.ProjectId,
+                                key,
+                                validity,
+                                token)
+                            .ConfigureAwait(false);
                     }
                     catch (GoogleApiException)
                     {
@@ -148,18 +243,26 @@ namespace Google.Solutions.IapDesktop.Extensions.Ssh.Services.Auth
                             HelpTopics.ManagingMetadataAuthorizedKeys);
                     }
 
+                    //
+                    // There is no legacy key, so we're good to push a new key.
+                    // 
+                    // Now figure out which username to use and where to push it.
+                    //
+                    var loginProfile = LoginProfile.Create(preferredPosixUsername);
+                    Debug.Assert(loginProfile.PosixUsername != null);
+
                     var authorizedKey = new ManagedMetadataAuthorizedKey(
-                        username,
+                        loginProfile.PosixUsername,
                         key.Type,
                         key.PublicKeyString,
                         new ManagedKeyMetadata(
-                            authorization.Email,
+                            this.authorizationAdapter.Authorization.Email,
                             DateTime.UtcNow.Add(validity)));
 
                     var useInstanceKeySet = IsProjectSshKeysBlocked(await projectDetailsTask);
                     var existingKeySet = MetadataAuthorizedKeySet.FromMetadata(
-                        useInstanceKeySet 
-                            ? instanceMetadata 
+                        useInstanceKeySet
+                            ? instanceMetadata
                             : projectMetadata);
 
                     if (existingKeySet.Contains(authorizedKey))
@@ -169,77 +272,24 @@ namespace Google.Solutions.IapDesktop.Extensions.Ssh.Services.Auth
                         //
                         ApplicationTraceSources.Default.TraceVerbose(
                             "Existing SSH key found for {0}",
-                            username);
+                            loginProfile.PosixUsername);
                     }
                     else
                     {
                         ApplicationTraceSources.Default.TraceVerbose(
                             "Pushing new SSH key for {0}",
-                            username);
+                            loginProfile.PosixUsername);
 
-                        try
-                        {
-                            //
-                            // Add new key, and take the opportunity to purge expired keys.
-                            //
-                            var newKeySet = existingKeySet
-                                .RemoveExpiredKeys()
-                                .Add(authorizedKey);
-
-                            if (useInstanceKeySet)
-                            {
-                                await this.metadataAdapter.PushPublicKeyToInstanceMetadataAsync(
-                                        instance,
-                                        username,
-                                        key,
-                                        token)
-                                    .ConfigureAwait(false);
-                            }
-                            else
-                            {
-                                await this.metadataAdapter.PushPublicKeyToProjectMetadataAsync(
-                                        instance,
-                                        username,
-                                        key,
-                                        token)
-                                    .ConfigureAwait(false);
-                            }
-                        }
-                        catch (GoogleApiException e) when (e.Error == null || e.Error.Code == 403)
-                        {
-                            ApplicationTraceSources.Default.TraceVerbose(
-                                "Setting request payload metadata failed with 403: {0} ({1})",
-                                e.Message,
-                                e.Error?.Errors.EnsureNotNull().Select(er => er.Reason).FirstOrDefault());
-
-                            // Setting metadata failed due to lack of permissions. Note that
-                            // the Error object is not always populated, hence the OR filter.
-
-                            throw new SshKeyPushFailedException(
-                                "You do not have sufficient permissions to publish an SSH key. " +
-                                "You need the 'Service Account User' and " +
-                                "'Compute Instance Admin' roles (or equivalent custom roles) " +
-                                "to perform this action.",
-                                HelpTopics.ManagingMetadataAuthorizedKeys);
-                        }
-                        catch (GoogleApiException e) when (e.IsBadRequest())
-                        {
-                            ApplicationTraceSources.Default.TraceVerbose(
-                                "Setting request payload metadata failed with 400: {0} ({1})",
-                                e.Message,
-                                e.Error?.Errors.EnsureNotNull().Select(er => er.Reason).FirstOrDefault());
-
-                            // This slightly weirdly encoded error happens if the user has the necessary
-                            // permissions on the VM, but lacks ActAs permission on the associated 
-                            // service account.
-
-                            throw new SshKeyPushFailedException(
-                                "You do not have sufficient permissions to publish an SSH key. " +
-                                "Because this VM instance uses a service account, you also need the " +
-                                "'Service Account User' role.",
-                                HelpTopics.ManagingMetadataAuthorizedKeys);
-                        }
+                        await PushPublicKeyToMetadataAsync(
+                            instance,
+                            useInstanceKeySet,
+                            existingKeySet,
+                            authorizedKey,
+                            token)
+                        .ConfigureAwait(false);
                     }
+
+                    return loginProfile;
                 }
             }
         }

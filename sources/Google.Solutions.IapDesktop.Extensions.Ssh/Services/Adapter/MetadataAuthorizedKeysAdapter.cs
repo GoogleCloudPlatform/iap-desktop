@@ -13,26 +13,23 @@ namespace Google.Solutions.IapDesktop.Extensions.Ssh.Services.Adapter
 {
     public interface IMetadataAuthorizedKeysAdapter
     {
-        Task PushPublicKeyToProjectMetadataAsync(
+        Task PushAuthorizedKeySetToProjectMetadataAsync(
             InstanceLocator instance,
-            string username,
-            ISshKey key,
+            MetadataAuthorizedKeySet keySet,
             CancellationToken token);
 
-        Task PushPublicKeyToInstanceMetadataAsync(
+        Task PushAuthorizedKeySetToInstanceMetadataAsync(
             InstanceLocator instance,
-            string username,
-            ISshKey key,
+            MetadataAuthorizedKeySet keySet,
             CancellationToken token);
     }
 
     public class MetadataAuthorizedKeysAdapter : IMetadataAuthorizedKeysAdapter
     {
 
-        public Task PushPublicKeyToProjectMetadataAsync(
+        public Task PushAuthorizedKeySetToProjectMetadataAsync(
             InstanceLocator instance,
-            string username,
-            ISshKey key,
+            MetadataAuthorizedKeySet keySet,
             CancellationToken token)
         {
             using (ApplicationTraceSources.Default.TraceMethod().WithParameters(instance))
@@ -41,10 +38,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Ssh.Services.Adapter
             }
         }
 
-        public Task PushPublicKeyToInstanceMetadataAsync(
+        public Task PushAuthorizedKeySetToInstanceMetadataAsync(
             InstanceLocator instance,
-            string username,
-            ISshKey key,
+            MetadataAuthorizedKeySet keySet,
             CancellationToken token)
         {
             using (ApplicationTraceSources.Default.TraceMethod().WithParameters(instance))
