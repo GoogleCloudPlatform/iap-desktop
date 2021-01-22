@@ -111,6 +111,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Services\Adapters\TestHttpProxyAdapter.cs" />
     <Compile Include="Services\Adapters\TestInstanceExtensions.cs" />
+    <Compile Include="Services\Adapters\TestMetadataExtensions.cs" />
     <Compile Include="Services\Adapters\TestResetWindowsUser.cs" />
     <Compile Include="Services\Adapters\TestResourceManagerAdapter.cs" />
     <Compile Include="Services\Adapters\TestResourceManagerAdapterWithMtls.cs" />

@@ -19,20 +19,25 @@
 // under the License.
 //
 
-namespace Google.Solutions.Common.ApiExtensions
+using Google.Apis.Compute.v1.Data;
+using Google.Solutions.Common.Util;
+using System.Linq;
+
+namespace Google.Solutions.IapDesktop.Application.Services.Adapters
 {
-    public static class GoogleApiExceptionExtensions
+    public static class MetadataExtensions
     {
-        public static bool IsConstraintViolation(this GoogleApiException e)
-            => e.Error != null && e.Error.Code == 412;
 
-        public static bool IsAccessDenied(this GoogleApiException e)
-            => e.Error != null && e.Error.Code == 403;
-        
-        public static bool IsNotFound(this GoogleApiException e)
-            => e.Error != null && e.Error.Code == 404;
+        public static Metadata.ItemsData GetItem(this Metadata metadata, string key)
+        {
+            return metadata?.Items
+                .EnsureNotNull()
+                .FirstOrDefault(item => item.Key == key);
+        }
 
-        public static bool IsBadRequest(this GoogleApiException e)
-            => e.Error != null && e.Error.Code == 400 && e.Error.Message == "BAD REQUEST";
+        public static string GetValue(this Metadata metadata, string key)
+        {
+            return GetItem(metadata, key)?.Value;
+        }
     }
 }

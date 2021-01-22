@@ -94,7 +94,8 @@
     </Compile>
     <Compile Include="Services\Adapter\ComputeEngineKeysAdapter.cs" />
     <Compile Include="Services\Auth\MetadataAuthorizedKey.cs" />
-    <Compile Include="Services\Auth\SshKeyService.cs" />
+    <Compile Include="Services\Auth\MetadataAuthorizedKeySet.cs" />
+    <Compile Include="Services\Auth\PublicKeyService.cs" />
     <Compile Include="Services\SshExtension.cs" />
     <Compile Include="Views\Terminal\SshTerminalConnectionBroker.cs" />
     <Compile Include="Views\Terminal\SshTerminalPane.cs">

@@ -29,7 +29,7 @@ using System.Text.RegularExpressions;
 namespace Google.Solutions.IapDesktop.Extensions.Ssh.Services.Auth
 {
     /// <summary>
-    /// Authorized key entry in metadata. 
+    /// Single authorized key.
     /// See https://cloud.google.com/compute/docs/instances/adding-removing-ssh-keys.
     /// </summary>
     public abstract class MetadataAuthorizedKey

@@ -20,6 +20,7 @@
 //
 
 using Google.Apis.Compute.v1;
+using Google.Solutions.Common.ApiExtensions;
 using Google.Solutions.Common.ApiExtensions.Instance;
 using Google.Solutions.Common.Diagnostics;
 using Google.Solutions.Common.Locator;
@@ -103,7 +104,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.Adapters
                         requestJson,
                         token).ConfigureAwait(false);
                 }
-                catch (GoogleApiException e) when (e.Error != null && e.Error.Code == 404)
+                catch (GoogleApiException e) when (e.IsNotFound())
                 {
                     ApplicationTraceSources.Default.TraceVerbose("Instance does not exist: {0}", e.Message);
 
@@ -127,7 +128,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.Adapters
                         "to perform this action.",
                         HelpTopics.PermissionsToResetWindowsUser);
                 }
-                catch (GoogleApiException e) when (e.Error != null && e.Error.Code == 400 && e.Error.Message == "BAD REQUEST")
+                catch (GoogleApiException e) when (e.IsBadRequest())
                 {
                     ApplicationTraceSources.Default.TraceVerbose(
                         "Setting request payload metadata failed with 400: {0} ({1})",

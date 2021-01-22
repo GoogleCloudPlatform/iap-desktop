@@ -64,6 +64,10 @@ namespace Google.Solutions.IapDesktop.Application.Views
             "Generating Windows passwords",
             "https://cloud.google.com/compute/docs/instances/windows/creating-passwords-for-windows-instances#permissions-required-for-this-task");
 
+        public static IHelpTopic ManagingMetadataAuthorizedKeys = new HelpTopic(
+            "Managing SSH keys in metadata",
+            "https://cloud.google.com/compute/docs/instances/adding-removing-ssh-keys");
+
         private class HelpTopic : IHelpTopic
         {
             public string Title { get; }
