@@ -32,101 +32,214 @@ using System.Threading.Tasks;
 namespace Google.Solutions.Common.ApiExtensions.Instance
 {
     /// <summary>
-    /// Extend 'InstancesResource' by a 'AddMetadataAsync' method. 
+    /// Extension methods for mutating instance metadata.
     /// </summary>
     public static class AddMetadataExtensions
     {
+        private const uint DefaultAttempts = 6;
+
         /// <summary>
-        /// Modifies existing GCE metadata.
+        /// Generic helper method that works for both instance and
+        /// project metdata
         /// </summary>
-        public static async Task UpdateMetadataAsync(
-            this InstancesResource resource,
-            InstanceLocator instanceRef,
+        private static async Task UpdateMetadataAsync(
+            Func<Task<Metadata>> readMetadata,
+            Func<Metadata, Task> writeMetadata,
             Action<Metadata> updateMetadata,
-            CancellationToken token)
+            uint maxAttempts)
         {
-            using (CommonTraceSources.Default.TraceMethod().WithParameters(instanceRef))
+            for (int attempt = 1; ; attempt++)
             {
-                var maxAttempts = 6;
-                for (int attempt = 1; ; attempt++)
+                //
+                // NB. Metadata must be updated all-at-once. Therefore,
+                // fetch the existing entries first before merging them
+                // with the new entries.
+                //
+                var metadata = await readMetadata()
+                    .ConfigureAwait(false);
+
+                updateMetadata(metadata);
+
+                try
                 {
-                    CommonTraceSources.Default.TraceVerbose(
-                        "Adding metadata on {0}...", 
-                        instanceRef.Name);
-
-                    //
-                    // NB. Metadata must be updated all-at-once. Therefore,
-                    // fetch the existing entries first before merging them
-                    // with the new entries.
-                    //
-
-                    var instance = await resource.Get(
-                        instanceRef.ProjectId,
-                        instanceRef.Zone,
-                        instanceRef.Name).ExecuteAsync(token).ConfigureAwait(false);
-
-                    //
-                    // Apply whatever update the caller wants to make.
-                    //
-                    var updatedMetadata = instance.Metadata;
-                    updateMetadata(instance.Metadata);
-
-                    try
+                    await writeMetadata(metadata)
+                        .ConfigureAwait(false);
+                    break;
+                }
+                catch (GoogleApiException e)
+                {
+                    if (attempt == maxAttempts)
                     {
-                        await resource.SetMetadata(
-                                updatedMetadata,
-                                instanceRef.ProjectId,
-                                instanceRef.Zone,
-                                instanceRef.Name)
-                            .ExecuteAndAwaitOperationAsync(
-                                instanceRef.ProjectId, 
-                                token)
-                            .ConfigureAwait(false);
-                        break;
+                        //
+                        // That's enough, give up.
+                        //
+                        CommonTraceSources.Default.TraceWarning(
+                            "SetMetadata failed with {0} (code error {1})", e.Message,
+                            e.Error?.Code);
+
+                        throw;
                     }
-                    catch (GoogleApiException e)
+
+                    if (e.Error != null && e.Error.Code == 412)
                     {
-                        if (attempt == maxAttempts)
-                        {
-                            //
-                            // That's enough, give up.
-                            //
-                            CommonTraceSources.Default.TraceWarning(
-                                "SetMetadata failed with {0} (code error {1})", e.Message,
-                                e.Error?.Code);
+                        // Fingerprint mismatch - that happens when somebody else updated metadata
+                        // in patallel. 
 
-                            throw;
-                        }
+                        int backoff = 100;
+                        CommonTraceSources.Default.TraceWarning(
+                            "SetMetadata failed with {0} (code error {1}) - retrying after {2}ms", e.Message,
+                            e.Error?.Code,
+                            backoff);
 
-                        if (e.Error != null && e.Error.Code == 412)
-                        {
-                            // Fingerprint mismatch - that happens when somebody else updated metadata
-                            // in patallel. 
+                        await Task.Delay(backoff).ConfigureAwait(false);
+                    }
+                    else
+                    {
+                        CommonTraceSources.Default.TraceWarning(
+                            "Setting metdata failed {0} (code error {1})", e.Message,
+                            e.Error?.Code);
 
-                            int backoff = 100;
-                            CommonTraceSources.Default.TraceWarning(
-                                "SetMetadata failed with {0} (code error {1}) - retrying after {2}ms", e.Message,
-                                e.Error?.Code,
-                                backoff);
-
-                            await Task.Delay(backoff).ConfigureAwait(false);
-                        }
-                        else
-                        {
-                            CommonTraceSources.Default.TraceWarning(
-                                "Setting metdata failed {0} (code error {1})", e.Message,
-                                e.Error?.Code);
-
-                            throw;
-                        }
+                        throw;
                     }
                 }
             }
         }
 
+        //---------------------------------------------------------------------
+        // Project metadata.
+        //---------------------------------------------------------------------
+
         /// <summary>
-        /// Adds or overwrites a metadata key/value pair to a GCE 
-        /// instance. Any existing metadata is kept as is.
+        /// Project/common instance metadata.
+        /// </summary>
+        public static async Task UpdateMetadataAsync(
+            this ProjectsResource resource,
+            string projectId,
+            Action<Metadata> updateMetadata,
+            CancellationToken token,
+            uint maxAttempts = DefaultAttempts)
+        {
+            using (CommonTraceSources.Default.TraceMethod().WithParameters(projectId))
+            {
+                await UpdateMetadataAsync(
+                        async () =>
+                        {
+                            var project = await resource.Get(projectId)
+                                .ExecuteAsync(token)
+                                .ConfigureAwait(false);
+
+                            return project.CommonInstanceMetadata;
+                        },
+                        async metadata =>
+                        {
+                            await resource.SetCommonInstanceMetadata(
+                                    metadata,
+                                    projectId)
+                                .ExecuteAndAwaitOperationAsync(
+                                    projectId,
+                                    token)
+                                .ConfigureAwait(false);
+                        },
+                        updateMetadata,
+                        maxAttempts)
+                    .ConfigureAwait(false);
+            }
+        }
+
+
+        /// <summary>
+        /// Adds or overwrite a metadata key/value pair.
+        /// Existing metadata is kept as is.
+        /// </summary>
+        public static Task AddMetadataAsync(
+            this ProjectsResource resource,
+            string projectId,
+            string key,
+            string value,
+            CancellationToken token)
+        {
+            return AddMetadataAsync(
+                resource,
+                projectId,
+                new Metadata()
+                {
+                    Items = new List<Metadata.ItemsData>()
+                    {
+                        new Metadata.ItemsData()
+                        {
+                            Key = key,
+                            Value = value
+                        }
+                    }
+                },
+                token);
+        }
+
+        public static Task AddMetadataAsync(
+           this ProjectsResource resource,
+           string projectId,
+           Metadata metadata,
+           CancellationToken token)
+        {
+            return UpdateMetadataAsync(
+                resource,
+                projectId,
+                existingMetadata =>
+                {
+                    existingMetadata.Add(metadata);
+                },
+                token);
+        }
+
+        //---------------------------------------------------------------------
+        // Instance metadata.
+        //---------------------------------------------------------------------
+
+        /// <summary>
+        /// Modify instance metadata.
+        /// </summary>
+        public static async Task UpdateMetadataAsync(
+            this InstancesResource resource,
+            InstanceLocator instanceRef,
+            Action<Metadata> updateMetadata,
+            CancellationToken token,
+            uint maxAttempts = DefaultAttempts)
+        {
+            using (CommonTraceSources.Default.TraceMethod().WithParameters(instanceRef))
+            {
+                await UpdateMetadataAsync(
+                        async () =>
+                        {
+                            var instance = await resource.Get(
+                                    instanceRef.ProjectId,
+                                    instanceRef.Zone,
+                                    instanceRef.Name)
+                                .ExecuteAsync(token)
+                                .ConfigureAwait(false);
+
+                            return instance.Metadata;
+                        },
+                        async metadata =>
+                        {
+                            await resource.SetMetadata(
+                                    metadata,
+                                    instanceRef.ProjectId,
+                                    instanceRef.Zone,
+                                    instanceRef.Name)
+                                .ExecuteAndAwaitOperationAsync(
+                                    instanceRef.ProjectId,
+                                    token)
+                                .ConfigureAwait(false);
+                        },
+                        updateMetadata,
+                        maxAttempts)
+                    .ConfigureAwait(false);
+            }
+        }
+
+        /// <summary>
+        /// Adds or overwrite a metadata key/value pair.
+        /// Existing metadata is kept as is.
         /// </summary>
         public static Task AddMetadataAsync(
             this InstancesResource resource,

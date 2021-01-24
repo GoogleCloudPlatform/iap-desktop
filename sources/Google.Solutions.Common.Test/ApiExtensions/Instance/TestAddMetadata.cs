@@ -37,15 +37,23 @@ namespace Google.Solutions.Common.Test.Extensions
     public class TestAddMetadata : CommonFixtureBase
     {
         private InstancesResource instancesResource;
+        private ProjectsResource projectsResource;
 
         [SetUp]
         public void SetUp()
         {
-            this.instancesResource = TestProject.CreateComputeService().Instances;
+            var service = TestProject.CreateComputeService();
+
+            this.instancesResource = service.Instances;
+            this.projectsResource = service.Projects;
         }
 
+        //---------------------------------------------------------------------
+        // Instance metadata.
+        //---------------------------------------------------------------------
+
         [Test]
-        public async Task WhenUsingNewKey_ThenAddMetadataSucceeds(
+        public async Task WhenUsingNewKey_ThenAddInstanceMetadataSucceeds(
             [WindowsInstance] ResourceTask<InstanceLocator> testInstance)
         {
             var locator = await testInstance;
@@ -60,11 +68,11 @@ namespace Google.Solutions.Common.Test.Extensions
                 CancellationToken.None);
 
             var instance = await this.instancesResource.Get(
-                locator.ProjectId,
-                locator.Zone,
-                locator.Name)
-                    .ExecuteAsync(CancellationToken.None)
-                    .ConfigureAwait(false);
+                    locator.ProjectId,
+                    locator.Zone,
+                    locator.Name)
+                .ExecuteAsync(CancellationToken.None)
+                .ConfigureAwait(false);
 
             Assert.AreEqual(
                 value,
@@ -72,7 +80,7 @@ namespace Google.Solutions.Common.Test.Extensions
         }
 
         [Test]
-        public async Task WhenUsingExistingKey_ThenAddMetadataSucceeds(
+        public async Task WhenUsingExistingKey_ThenAddInstanceMetadataSucceeds(
             [WindowsInstance] ResourceTask<InstanceLocator> testInstance)
         {
             var locator = await testInstance;
@@ -93,11 +101,11 @@ namespace Google.Solutions.Common.Test.Extensions
                 CancellationToken.None);
 
             var instance = await this.instancesResource.Get(
-                locator.ProjectId,
-                locator.Zone,
-                locator.Name)
-                    .ExecuteAsync(CancellationToken.None)
-                    .ConfigureAwait(false);
+                    locator.ProjectId,
+                    locator.Zone,
+                    locator.Name)
+                .ExecuteAsync(CancellationToken.None)
+                .ConfigureAwait(false);
 
             Assert.AreEqual(
                 value,
@@ -105,7 +113,7 @@ namespace Google.Solutions.Common.Test.Extensions
         }
 
         [Test]
-        public async Task WhenUpdateConflictingOnFirstAttempt_ThenUpdateMetadataRetriesAndSucceeds(
+        public async Task WhenUpdateConflictingOnFirstAttempt_ThenUpdateInstanceMetadataRetriesAndSucceeds(
             [WindowsInstance] ResourceTask<InstanceLocator> testInstance)
         {
             var locator = await testInstance;
@@ -129,24 +137,23 @@ namespace Google.Solutions.Common.Test.Extensions
 
                     metadata.Add(key, "value");
                 },
-                CancellationToken.None);
+                CancellationToken.None,
+                2);
 
             var instance = await this.instancesResource.Get(
-                locator.ProjectId,
-                locator.Zone,
-                locator.Name)
-                    .ExecuteAsync(CancellationToken.None)
-                    .ConfigureAwait(false);
+                    locator.ProjectId,
+                    locator.Zone,
+                    locator.Name)
+                .ExecuteAsync(CancellationToken.None)
+                .ConfigureAwait(false);
 
             Assert.AreEqual(
                 "value",
                 instance.Metadata.Items.First(i => i.Key == key).Value);
         }
 
-
-
         [Test]
-        public async Task WhenUpdateKeepsConflicting_ThenUpdateMetadataThrowsException(
+        public async Task WhenUpdateKeepsConflicting_ThenUpdateInstanceMetadataThrowsException(
             [WindowsInstance] ResourceTask<InstanceLocator> testInstance)
         {
             var locator = await testInstance;
@@ -168,7 +175,118 @@ namespace Google.Solutions.Common.Test.Extensions
 
                         metadata.Add(key, "value");
                     },
-                    CancellationToken.None).Wait());
+                    CancellationToken.None,
+                    2).Wait());
+        }
+
+        //---------------------------------------------------------------------
+        // Project metadata.
+        //---------------------------------------------------------------------
+
+        [Test]
+        public async Task WhenUsingNewKey_ThenAddProjectMetadataSucceeds()
+        {
+            var key = Guid.NewGuid().ToString();
+            var value = "metadata value";
+
+            await this.projectsResource.AddMetadataAsync(
+                TestProject.ProjectId,
+                key,
+                value,
+                CancellationToken.None);
+
+            var project = await this.projectsResource.Get(TestProject.ProjectId)
+                .ExecuteAsync(CancellationToken.None)
+                .ConfigureAwait(false);
+
+            Assert.AreEqual(
+                value,
+                project.CommonInstanceMetadata.Items.First(i => i.Key == key).Value);
+        }
+
+        [Test]
+        public async Task WhenUsingExistingKey_ThenAddProjectMetadataSucceeds()
+        {
+            var key = Guid.NewGuid().ToString();
+
+            await this.projectsResource.AddMetadataAsync(
+                TestProject.ProjectId,
+                key,
+                "value to be overridden",
+                CancellationToken.None);
+
+            var value = "metadata value";
+            await this.projectsResource.AddMetadataAsync(
+                TestProject.ProjectId,
+                key,
+                value,
+                CancellationToken.None);
+
+            var project = await this.projectsResource.Get(TestProject.ProjectId)
+                .ExecuteAsync(CancellationToken.None)
+                .ConfigureAwait(false);
+
+            Assert.AreEqual(
+                value,
+                project.CommonInstanceMetadata.Items.First(i => i.Key == key).Value);
+        }
+
+        [Test]
+        public async Task WhenUpdateConflictingOnFirstAttempt_ThenUpdateProjectMetadataRetriesAndSucceeds()
+        {
+            var key = Guid.NewGuid().ToString();
+
+            int callbacks = 0;
+            await this.projectsResource.UpdateMetadataAsync(
+                TestProject.ProjectId,
+                metadata =>
+                {
+                    if (callbacks++ == 0)
+                    {
+                        // Provoke a conflict on the first attempt.
+                        this.projectsResource.AddMetadataAsync(
+                            TestProject.ProjectId,
+                            key,
+                            "conflict #" + callbacks,
+                            CancellationToken.None).Wait();
+                    }
+
+                    metadata.Add(key, "value");
+                },
+                CancellationToken.None,
+                2);
+
+            var project = await this.projectsResource.Get(TestProject.ProjectId)
+                .ExecuteAsync(CancellationToken.None)
+                .ConfigureAwait(false);
+
+            Assert.AreEqual(
+                "value",
+                project.CommonInstanceMetadata.Items.First(i => i.Key == key).Value);
+        }
+
+        [Test]
+        public void WhenUpdateKeepsConflicting_ThenUpdateProjectMetadataThrowsException()
+        {
+            var key = Guid.NewGuid().ToString();
+
+            int callbacks = 0;
+            AssertEx.ThrowsAggregateException<GoogleApiException>(
+                () => this.projectsResource.UpdateMetadataAsync(
+                    TestProject.ProjectId,
+                    metadata =>
+                    {
+                        // Provoke a conflict every time.
+                        this.projectsResource.AddMetadataAsync(
+                            TestProject.ProjectId,
+                            key,
+                            "conflict #" + callbacks++,
+                            CancellationToken.None).Wait();
+
+                        metadata.Add(key, "value");
+                    },
+                    CancellationToken.None,
+                    1).Wait());
         }
     }
 }

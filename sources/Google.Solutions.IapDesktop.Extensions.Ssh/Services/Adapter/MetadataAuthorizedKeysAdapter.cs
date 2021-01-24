@@ -5,11 +5,7 @@ using Google.Solutions.Common.Locator;
 using Google.Solutions.IapDesktop.Application;
 using Google.Solutions.IapDesktop.Application.ObjectModel;
 using Google.Solutions.IapDesktop.Application.Services.Adapters;
-using Google.Solutions.Ssh;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -48,17 +44,37 @@ namespace Google.Solutions.IapDesktop.Extensions.Ssh.Services.Adapter
         }
 
         //---------------------------------------------------------------------
+
+        private static void MergeKeyIntoMetadata(
+            Metadata metadata,
+            MetadataAuthorizedKey newKey)
+        {
+            //
+            // Merge new key into existing keyset, and take 
+            // the opportunity to purge expired keys.
+            //
+            var newKeySet = MetadataAuthorizedKeySet.FromMetadata(metadata)
+                .RemoveExpiredKeys()
+                .Add(newKey);
+            metadata.Add(MetadataAuthorizedKeySet.MetadataKey, newKeySet.ToString());
+        }
+
+        //---------------------------------------------------------------------
         // IMetadataAuthorizedKeysAdapter.
         //---------------------------------------------------------------------
 
-        public Task PushAuthorizedKeySetToProjectMetadataAsync(
+        public async Task PushAuthorizedKeySetToProjectMetadataAsync(
             InstanceLocator instance,
             MetadataAuthorizedKey newKey,
             CancellationToken token)
         {
             using (ApplicationTraceSources.Default.TraceMethod().WithParameters(instance))
             {
-                throw new NotImplementedException();
+                await this.computeEngineAdapter.UpdateCommonInstanceMetadataAsync(
+                        instance.ProjectId,
+                        metadata => MergeKeyIntoMetadata(metadata, newKey),
+                        token)
+                    .ConfigureAwait(false);
             }
         }
 
@@ -71,17 +87,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Ssh.Services.Adapter
             {
                 await this.computeEngineAdapter.UpdateMetadataAsync(
                         instance,
-                        metadata =>
-                        {
-                            //
-                            // Merge new key into existing keyset, and take 
-                            // the opportunity to purge expired keys.
-                            //
-                            var newKeySet = MetadataAuthorizedKeySet.FromMetadata(metadata)
-                                .RemoveExpiredKeys()
-                                .Add(newKey);
-                            metadata.Add(MetadataAuthorizedKeySet.MetadataKey, newKeySet.ToString());
-                        },
+                        metadata => MergeKeyIntoMetadata(metadata, newKey),
                         token)
                     .ConfigureAwait(false);
             }

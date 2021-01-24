@@ -483,6 +483,17 @@ namespace Google.Solutions.IapDesktop.Application.Services.Adapters
                 token);
         }
 
+        public Task UpdateCommonInstanceMetadataAsync(
+            string projectId,
+            Action<Metadata> updateMetadata,
+            CancellationToken token)
+        {
+            return this.service.Projects.UpdateMetadataAsync(
+                projectId,
+                updateMetadata,
+                token);
+        }
+
         //---------------------------------------------------------------------
         // Windows user.
         //---------------------------------------------------------------------
