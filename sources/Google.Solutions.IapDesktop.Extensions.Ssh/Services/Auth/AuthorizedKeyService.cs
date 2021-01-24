@@ -1,6 +1,7 @@
 ﻿using Google.Apis.Compute.v1.Data;
 using Google.Apis.Util;
 using Google.Solutions.Common.ApiExtensions;
+using Google.Solutions.Common.ApiExtensions.Instance;
 using Google.Solutions.Common.Auth;
 using Google.Solutions.Common.Diagnostics;
 using Google.Solutions.Common.Locator;
@@ -37,7 +38,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Ssh.Services.Auth
 
         private readonly IAuthorizationAdapter authorizationAdapter;
         private readonly IComputeEngineAdapter computeEngineAdapter;
-        private readonly IMetadataAuthorizedKeysAdapter metadataAdapter;
         private readonly IOsLoginAdapter osLoginAdapter;
 
         //---------------------------------------------------------------------
@@ -47,12 +47,10 @@ namespace Google.Solutions.IapDesktop.Extensions.Ssh.Services.Auth
         public AuthorizedKeyService(
             IAuthorizationAdapter authorizationAdapter,
             IComputeEngineAdapter computeEngineAdapter,
-            IMetadataAuthorizedKeysAdapter metadataAdapter,
             IOsLoginAdapter osLoginAdapter)
         {
             this.authorizationAdapter = authorizationAdapter;
             this.computeEngineAdapter = computeEngineAdapter;
-            this.metadataAdapter = metadataAdapter;
             this.osLoginAdapter = osLoginAdapter;
         }
 
@@ -60,7 +58,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Ssh.Services.Auth
             : this(
                   serviceProvider.GetService<IAuthorizationAdapter>(),
                   serviceProvider.GetService<IComputeEngineAdapter>(),
-                  serviceProvider.GetService<IMetadataAuthorizedKeysAdapter>(),
                   serviceProvider.GetService<IOsLoginAdapter>())
         { }
 
@@ -87,31 +84,43 @@ namespace Google.Solutions.IapDesktop.Extensions.Ssh.Services.Auth
                 project.CommonInstanceMetadata.GetValue(BlockProjectSshKeysFlag));
         }
 
+        private static void MergeKeyIntoMetadata(
+            Metadata metadata,
+            MetadataAuthorizedKey newKey)
+        {
+            //
+            // Merge new key into existing keyset, and take 
+            // the opportunity to purge expired keys.
+            //
+            var newKeySet = MetadataAuthorizedKeySet.FromMetadata(metadata)
+                .RemoveExpiredKeys()
+                .Add(newKey);
+            metadata.Add(MetadataAuthorizedKeySet.MetadataKey, newKeySet.ToString());
+        }
+
         private async Task PushPublicKeyToMetadataAsync(
             InstanceLocator instance,
             bool useInstanceKeySet,
-            MetadataAuthorizedKeySet existingKeySet,
-            ManagedMetadataAuthorizedKey authorizedKey,
+            ManagedMetadataAuthorizedKey metadataKey,
             CancellationToken token)
         {
-
             try
             {
                 if (useInstanceKeySet)
                 {
-                    await this.metadataAdapter.PushAuthorizedKeySetToInstanceMetadataAsync(
-                            instance,
-                            authorizedKey,
-                            token)
-                        .ConfigureAwait(false);
+                    await this.computeEngineAdapter.UpdateMetadataAsync(
+                        instance,
+                        metadata => MergeKeyIntoMetadata(metadata, metadataKey),
+                        token)
+                    .ConfigureAwait(false);
                 }
                 else
                 {
-                    await this.metadataAdapter.PushAuthorizedKeySetToProjectMetadataAsync(
-                            instance,
-                            authorizedKey,
-                            token)
-                        .ConfigureAwait(false);
+                    await this.computeEngineAdapter.UpdateCommonInstanceMetadataAsync(
+                       instance.ProjectId,
+                       metadata => MergeKeyIntoMetadata(metadata, metadataKey),
+                       token)
+                   .ConfigureAwait(false);
                 }
             }
             catch (GoogleApiException e) when (e.Error == null || e.Error.Code == 403)
@@ -240,11 +249,11 @@ namespace Google.Solutions.IapDesktop.Extensions.Ssh.Services.Auth
                     // 
                     // Now figure out which username to use and where to push it.
                     //
-                    var loginProfile = AuthorizedKey.Create(preferredPosixUsername);
-                    Debug.Assert(loginProfile.Username != null);
+                    var profile = AuthorizedKey.Create(preferredPosixUsername);
+                    Debug.Assert(profile.Username != null);
 
-                    var authorizedKey = new ManagedMetadataAuthorizedKey(
-                        loginProfile.Username,
+                    var metadataKey = new ManagedMetadataAuthorizedKey(
+                        profile.Username,
                         key.Type,
                         key.PublicKeyString,
                         new ManagedKeyMetadata(
@@ -257,31 +266,30 @@ namespace Google.Solutions.IapDesktop.Extensions.Ssh.Services.Auth
                             ? instanceMetadata
                             : projectMetadata);
 
-                    if (existingKeySet.Contains(authorizedKey))
+                    if (existingKeySet.Contains(metadataKey))
                     {
                         //
-                        // We are all set.
+                        // The key is there already, so we are all set.
                         //
                         ApplicationTraceSources.Default.TraceVerbose(
                             "Existing SSH key found for {0}",
-                            loginProfile.Username);
+                            profile.Username);
                     }
                     else
                     {
                         ApplicationTraceSources.Default.TraceVerbose(
                             "Pushing new SSH key for {0}",
-                            loginProfile.Username);
+                            profile.Username);
 
                         await PushPublicKeyToMetadataAsync(
                             instance,
                             useInstanceKeySet,
-                            existingKeySet,
-                            authorizedKey,
+                            metadataKey,
                             token)
                         .ConfigureAwait(false);
                     }
 
-                    return loginProfile;
+                    return profile;
                 }
             }
         }

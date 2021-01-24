@@ -71,35 +71,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Ssh.Services
         // Commands.
         //---------------------------------------------------------------------
 
-        private async Task __AddPublicKeyAsync(
-            InstanceLocator instance,
-            string username,
-            ISshKey key)
-        {
-            var authz = serviceProvider.GetService<IAuthorizationAdapter>().Authorization;
-            var service = new ComputeService(new BaseClientService.Initializer()
-            {
-                HttpClientInitializer = authz.Credential,
-            });
-
-            var rsaPublicKey = Convert.ToBase64String(key.PublicKey);
-            await service.Instances.AddMetadataAsync(
-                    instance,
-                    new Metadata()
-                    {
-                        Items = new[]
-                        {
-                            new Metadata.ItemsData()
-                            {
-                                Key = "ssh-keys",
-                                Value = $"{username}:ssh-rsa {rsaPublicKey} {username}"
-                            }
-                        }
-                    },
-                    CancellationToken.None)
-                .ConfigureAwait(false);
-        }
-
         private async void ConnectToPublicEndpoint(IProjectExplorerNode node)
         {
             try
