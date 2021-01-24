@@ -112,6 +112,11 @@ namespace Google.Solutions.IapDesktop.Application.Services.Adapters
             string value,
             CancellationToken token);
 
+        Task UpdateMetadataAsync(
+           InstanceLocator instanceRef,
+           Action<Metadata> updateMetadata,
+           CancellationToken token);
+
         //---------------------------------------------------------------------
         // Windows user.
         //---------------------------------------------------------------------

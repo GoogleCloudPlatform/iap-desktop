@@ -24,8 +24,8 @@ using Google.Apis.Compute.v1.Data;
 using Google.Solutions.Common.ApiExtensions.Request;
 using Google.Solutions.Common.Diagnostics;
 using Google.Solutions.Common.Locator;
+using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -36,6 +36,94 @@ namespace Google.Solutions.Common.ApiExtensions.Instance
     /// </summary>
     public static class AddMetadataExtensions
     {
+        /// <summary>
+        /// Modifies existing GCE metadata.
+        /// </summary>
+        public static async Task UpdateMetadataAsync(
+            this InstancesResource resource,
+            InstanceLocator instanceRef,
+            Action<Metadata> updateMetadata,
+            CancellationToken token)
+        {
+            using (CommonTraceSources.Default.TraceMethod().WithParameters(instanceRef))
+            {
+                var maxAttempts = 6;
+                for (int attempt = 1; ; attempt++)
+                {
+                    CommonTraceSources.Default.TraceVerbose(
+                        "Adding metadata on {0}...", 
+                        instanceRef.Name);
+
+                    //
+                    // NB. Metadata must be updated all-at-once. Therefore,
+                    // fetch the existing entries first before merging them
+                    // with the new entries.
+                    //
+
+                    var instance = await resource.Get(
+                        instanceRef.ProjectId,
+                        instanceRef.Zone,
+                        instanceRef.Name).ExecuteAsync(token).ConfigureAwait(false);
+
+                    //
+                    // Apply whatever update the caller wants to make.
+                    //
+                    var updatedMetadata = instance.Metadata;
+                    updateMetadata(instance.Metadata);
+
+                    try
+                    {
+                        await resource.SetMetadata(
+                                updatedMetadata,
+                                instanceRef.ProjectId,
+                                instanceRef.Zone,
+                                instanceRef.Name)
+                            .ExecuteAndAwaitOperationAsync(
+                                instanceRef.ProjectId, 
+                                token)
+                            .ConfigureAwait(false);
+                        break;
+                    }
+                    catch (GoogleApiException e)
+                    {
+                        if (attempt == maxAttempts)
+                        {
+                            //
+                            // That's enough, give up.
+                            //
+                            CommonTraceSources.Default.TraceWarning(
+                                "SetMetadata failed with {0} (code error {1})", e.Message,
+                                e.Error?.Code);
+
+                            throw;
+                        }
+
+                        if (e.Error != null && e.Error.Code == 412)
+                        {
+                            // Fingerprint mismatch - that happens when somebody else updated metadata
+                            // in patallel. 
+
+                            int backoff = 100;
+                            CommonTraceSources.Default.TraceWarning(
+                                "SetMetadata failed with {0} (code error {1}) - retrying after {2}ms", e.Message,
+                                e.Error?.Code,
+                                backoff);
+
+                            await Task.Delay(backoff).ConfigureAwait(false);
+                        }
+                        else
+                        {
+                            CommonTraceSources.Default.TraceWarning(
+                                "Setting metdata failed {0} (code error {1})", e.Message,
+                                e.Error?.Code);
+
+                            throw;
+                        }
+                    }
+                }
+            }
+        }
+
         /// <summary>
         /// Adds or overwrites a metadata key/value pair to a GCE 
         /// instance. Any existing metadata is kept as is.
@@ -64,71 +152,20 @@ namespace Google.Solutions.Common.ApiExtensions.Instance
                 token);
         }
 
-        /// <summary>
-        /// Adds or overwrites a metadata key/value pair to a GCE 
-        /// instance. Any existing metadata is kept as is.
-        /// </summary>
-        public static async Task AddMetadataAsync(
-            this InstancesResource resource,
-            InstanceLocator instanceRef,
-            Metadata metadata,
-            CancellationToken token)
+        public static Task AddMetadataAsync(
+           this InstancesResource resource,
+           InstanceLocator instanceRef,
+           Metadata metadata,
+           CancellationToken token)
         {
-            using (CommonTraceSources.Default.TraceMethod().WithParameters(instanceRef))
-            {
-                for (int attempt = 0; attempt < 6; attempt++)
+            return UpdateMetadataAsync(
+                resource,
+                instanceRef,
+                existingMetadata =>
                 {
-                    CommonTraceSources.Default.TraceVerbose("Adding metadata {0} on {1}...", metadata, instanceRef.Name);
-
-                    //
-                    // NB. Metadata must be updated all-at-once. Therefore,
-                    // fetch the existing entries first before merging them
-                    // with the new entries.
-                    //
-
-                    var instance = await resource.Get(
-                        instanceRef.ProjectId,
-                        instanceRef.Zone,
-                        instanceRef.Name).ExecuteAsync(token).ConfigureAwait(false);
-
-                    var mergedMetadata = instance.Metadata;
-                    mergedMetadata.Add(metadata);
-
-                    try
-                    {
-                        await resource.SetMetadata(
-                            mergedMetadata,
-                            instanceRef.ProjectId,
-                            instanceRef.Zone,
-                            instanceRef.Name).ExecuteAndAwaitOperationAsync(instanceRef.ProjectId, token).ConfigureAwait(false);
-                        break;
-                    }
-                    catch (GoogleApiException e)
-                    {
-                        if (e.Error != null && e.Error.Code == 412)
-                        {
-                            // Fingerprint mismatch - that happens when somebody else updated metadata
-                            // in patallel. 
-
-                            int backoff = 100;
-                            CommonTraceSources.Default.TraceWarning(
-                                "SetMetadata failed with {0} - retrying after {1}ms", e.Message,
-                                e.Error?.Code,
-                                backoff);
-
-                            await Task.Delay(backoff).ConfigureAwait(false);
-                        }
-                        else
-                        {
-                            CommonTraceSources.Default.TraceWarning(
-                                "Setting metdata failed {0} (code error {1})", e.Message,
-                                e.Error?.Code);
-
-                            throw;
-                        }
-                    }
-                }
-            }
+                    existingMetadata.Add(metadata);
+                },
+                token);
         }
     }
 }

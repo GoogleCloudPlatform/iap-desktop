@@ -103,5 +103,72 @@ namespace Google.Solutions.Common.Test.Extensions
                 value,
                 instance.Metadata.Items.First(i => i.Key == key).Value);
         }
+
+        [Test]
+        public async Task WhenUpdateConflictingOnFirstAttempt_ThenUpdateMetadataRetriesAndSucceeds(
+            [WindowsInstance] ResourceTask<InstanceLocator> testInstance)
+        {
+            var locator = await testInstance;
+
+            var key = Guid.NewGuid().ToString();
+
+            int callbacks = 0;
+            await this.instancesResource.UpdateMetadataAsync(
+                locator,
+                metadata =>
+                {
+                    if (callbacks++ == 0)
+                    {
+                        // Provoke a conflict on the first attempt.
+                        this.instancesResource.AddMetadataAsync(
+                            locator,
+                            key,
+                            "conflict #" + callbacks,
+                            CancellationToken.None).Wait();
+                    }
+
+                    metadata.Add(key, "value");
+                },
+                CancellationToken.None);
+
+            var instance = await this.instancesResource.Get(
+                locator.ProjectId,
+                locator.Zone,
+                locator.Name)
+                    .ExecuteAsync(CancellationToken.None)
+                    .ConfigureAwait(false);
+
+            Assert.AreEqual(
+                "value",
+                instance.Metadata.Items.First(i => i.Key == key).Value);
+        }
+
+
+
+        [Test]
+        public async Task WhenUpdateKeepsConflicting_ThenUpdateMetadataThrowsException(
+            [WindowsInstance] ResourceTask<InstanceLocator> testInstance)
+        {
+            var locator = await testInstance;
+
+            var key = Guid.NewGuid().ToString();
+
+            int callbacks = 0;
+            AssertEx.ThrowsAggregateException<GoogleApiException>(
+                () => this.instancesResource.UpdateMetadataAsync(
+                    locator,
+                    metadata =>
+                    {
+                        // Provoke a conflict every time.
+                        this.instancesResource.AddMetadataAsync(
+                            locator,
+                            key,
+                            "conflict #" + callbacks++,
+                            CancellationToken.None).Wait();
+
+                        metadata.Add(key, "value");
+                    },
+                    CancellationToken.None).Wait());
+        }
     }
 }

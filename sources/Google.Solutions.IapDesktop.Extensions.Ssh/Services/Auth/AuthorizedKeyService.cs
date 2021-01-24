@@ -20,18 +20,17 @@ using System.Threading.Tasks;
 
 namespace Google.Solutions.IapDesktop.Extensions.Ssh.Services.Auth
 {
-    interface IPublicKeyService
+    interface IAuthorizedKeyService
     {
-        Task<LoginProfile> PushPublicKeyAsync(
+        Task<AuthorizedKey> AuthorizeKeyAsync(
             InstanceLocator instance,
-            IAuthorization authorization,
             ISshKey key,
+            TimeSpan keyValidity,
             string preferredPosixUsername,
-            TimeSpan validity,
             CancellationToken token);
     }
 
-    public class PublicKeyService : IPublicKeyService
+    public class AuthorizedKeyService : IAuthorizedKeyService
     {
         private const string EnableOsLoginFlag = "enable-oslogin";
         private const string BlockProjectSshKeysFlag = "block-project-ssh-keys";
@@ -45,7 +44,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Ssh.Services.Auth
         // Ctor.
         //---------------------------------------------------------------------
 
-        public PublicKeyService(
+        public AuthorizedKeyService(
             IAuthorizationAdapter authorizationAdapter,
             IComputeEngineAdapter computeEngineAdapter,
             IMetadataAuthorizedKeysAdapter metadataAdapter,
@@ -54,10 +53,10 @@ namespace Google.Solutions.IapDesktop.Extensions.Ssh.Services.Auth
             this.authorizationAdapter = authorizationAdapter;
             this.computeEngineAdapter = computeEngineAdapter;
             this.metadataAdapter = metadataAdapter;
-            this.osLoginAdapter = osLoginAdapter
+            this.osLoginAdapter = osLoginAdapter;
         }
 
-        public PublicKeyService(IServiceProvider serviceProvider)
+        public AuthorizedKeyService(IServiceProvider serviceProvider)
             : this(
                   serviceProvider.GetService<IAuthorizationAdapter>(),
                   serviceProvider.GetService<IComputeEngineAdapter>(),
@@ -98,18 +97,11 @@ namespace Google.Solutions.IapDesktop.Extensions.Ssh.Services.Auth
 
             try
             {
-                //
-                // Add new key, and take the opportunity to purge expired keys.
-                //
-                var newKeySet = existingKeySet
-                    .RemoveExpiredKeys()
-                    .Add(authorizedKey);
-
                 if (useInstanceKeySet)
                 {
                     await this.metadataAdapter.PushAuthorizedKeySetToInstanceMetadataAsync(
                             instance,
-                            newKeySet,
+                            authorizedKey,
                             token)
                         .ConfigureAwait(false);
                 }
@@ -117,7 +109,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Ssh.Services.Auth
                 {
                     await this.metadataAdapter.PushAuthorizedKeySetToProjectMetadataAsync(
                             instance,
-                            newKeySet,
+                            authorizedKey,
                             token)
                         .ConfigureAwait(false);
                 }
@@ -162,11 +154,11 @@ namespace Google.Solutions.IapDesktop.Extensions.Ssh.Services.Auth
         // IPublicKeyService.
         //---------------------------------------------------------------------
 
-        public async Task<LoginProfile> PushPublicKeyAsync(
+        public async Task<AuthorizedKey> AuthorizeKeyAsync(
             InstanceLocator instance,
             ISshKey key,
-            string preferredPosixUsername,
             TimeSpan validity,
+            string preferredPosixUsername,
             CancellationToken token)
         {
             Utilities.ThrowIfNull(instance, nameof(key));
@@ -248,11 +240,11 @@ namespace Google.Solutions.IapDesktop.Extensions.Ssh.Services.Auth
                     // 
                     // Now figure out which username to use and where to push it.
                     //
-                    var loginProfile = LoginProfile.Create(preferredPosixUsername);
-                    Debug.Assert(loginProfile.PosixUsername != null);
+                    var loginProfile = AuthorizedKey.Create(preferredPosixUsername);
+                    Debug.Assert(loginProfile.Username != null);
 
                     var authorizedKey = new ManagedMetadataAuthorizedKey(
-                        loginProfile.PosixUsername,
+                        loginProfile.Username,
                         key.Type,
                         key.PublicKeyString,
                         new ManagedKeyMetadata(
@@ -272,13 +264,13 @@ namespace Google.Solutions.IapDesktop.Extensions.Ssh.Services.Auth
                         //
                         ApplicationTraceSources.Default.TraceVerbose(
                             "Existing SSH key found for {0}",
-                            loginProfile.PosixUsername);
+                            loginProfile.Username);
                     }
                     else
                     {
                         ApplicationTraceSources.Default.TraceVerbose(
                             "Pushing new SSH key for {0}",
-                            loginProfile.PosixUsername);
+                            loginProfile.Username);
 
                         await PushPublicKeyToMetadataAsync(
                             instance,
