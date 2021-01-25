@@ -28,7 +28,17 @@ namespace Google.Solutions.IapDesktop.Extensions.Ssh.Services.Auth
             ISshKey key,
             TimeSpan keyValidity,
             string preferredPosixUsername,
+            AuthorizeKeyMethods methods,
             CancellationToken token);
+    }
+
+    [Flags]
+    public enum AuthorizeKeyMethods
+    {
+        InstanceMetadata = 1,
+        ProjectMetadata = 2,
+        Oslogin = 4,
+        All = 7
     }
 
     [Service(typeof(IAuthorizedKeyService))]
@@ -169,6 +179,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Ssh.Services.Auth
             ISshKey key,
             TimeSpan validity,
             string preferredPosixUsername,
+            AuthorizeKeyMethods allowedMethods,
             CancellationToken token)
         {
             Utilities.ThrowIfNull(instance, nameof(key));
@@ -200,6 +211,16 @@ namespace Google.Solutions.IapDesktop.Extensions.Ssh.Services.Auth
                 if (osLoginEnabled)
                 {
                     //
+                    // If OS Login is enabled, it has to be used. Any metadata keys
+                    // are ignored.
+                    //
+                    if (!allowedMethods.HasFlag(AuthorizeKeyMethods.Oslogin))
+                    {
+                        throw new InvalidOperationException(
+                            $"{instance} requires OS Login to beused");
+                    }
+
+                    //
                     // If OS Login is enabled for a project, we have to use
                     // the Posix username from the OS Login login profile.
                     //
@@ -229,7 +250,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Ssh.Services.Auth
                         throw;
                     }
                 }
-                else
+                else 
                 {
                     //
                     // Check if there is a legacy SSH key. If there is one,
@@ -264,7 +285,40 @@ namespace Google.Solutions.IapDesktop.Extensions.Ssh.Services.Auth
                             this.authorizationAdapter.Authorization.Email,
                             DateTime.UtcNow.Add(validity)));
 
-                    var useInstanceKeySet = IsProjectSshKeysBlocked(await projectDetailsTask);
+                    //
+                    // Find out where to push the metadata key.
+                    //
+                    bool useInstanceKeySet;
+                    if (allowedMethods.HasFlag(AuthorizeKeyMethods.ProjectMetadata) &&
+                        allowedMethods.HasFlag(AuthorizeKeyMethods.InstanceMetadata))
+                    {
+                        // Both allowed, so determine automatically.
+                        useInstanceKeySet = IsProjectSshKeysBlocked(await projectDetailsTask);
+                    }
+                    else if (allowedMethods.HasFlag(AuthorizeKeyMethods.ProjectMetadata))
+                    {
+                        // Only project allowed.
+                        if (IsProjectSshKeysBlocked(await projectDetailsTask))
+                        {
+                            throw new InvalidOperationException(
+                                $"Project {instance.ProjectId} does not allow project-level SSH keys");
+                        }
+                        else
+                        {
+                            useInstanceKeySet = false;
+                        }
+                    }
+                    else if (allowedMethods.HasFlag(AuthorizeKeyMethods.InstanceMetadata))
+                    {
+                        // Only instance allowed.
+                        useInstanceKeySet = true;
+                    }
+                    else
+                    {
+                        // Neither project nor instance allowed.
+                        throw new ArgumentException(nameof(allowedMethods));
+                    }
+
                     var existingKeySet = MetadataAuthorizedKeySet.FromMetadata(
                         useInstanceKeySet
                             ? instanceMetadata
@@ -281,6 +335,10 @@ namespace Google.Solutions.IapDesktop.Extensions.Ssh.Services.Auth
                     }
                     else
                     {
+                        //
+                        // Key not known yet, so we have to push it to
+                        // the metadata.
+                        //
                         ApplicationTraceSources.Default.TraceVerbose(
                             "Pushing new SSH key for {0}",
                             profile.Username);

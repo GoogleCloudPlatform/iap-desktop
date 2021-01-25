@@ -56,8 +56,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Ssh.Services.Adapter
             Utilities.ThrowIfNullOrEmpty(keyType, nameof(keyType));
             Utilities.ThrowIfNullOrEmpty(key, nameof(key));
 
-            Debug.Assert(keyType.StartsWith("ssh-"));
-
             this.LoginUsername = loginUsername;
             this.KeyType = keyType;
             this.Key = key;
@@ -135,7 +133,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Ssh.Services.Adapter
         {
             Utilities.ThrowIfNull(metadata, nameof(metadata));
             Debug.Assert(metadata.Username.Contains("@"));
-            
+            Debug.Assert(metadata.ExpireOn.Kind == DateTimeKind.Utc);
+
             this.Metadata = metadata;
         }
 
@@ -145,7 +144,16 @@ namespace Google.Solutions.IapDesktop.Extensions.Ssh.Services.Adapter
                 this.Metadata,
                 new JsonSerializerSettings
                 {
-                    DateTimeZoneHandling = DateTimeZoneHandling.Utc
+                    DateTimeZoneHandling = DateTimeZoneHandling.Utc,
+
+                    //
+                    // The GCE agent does not support a "Z" suffix and also 
+                    // cannot parse a +00:00 suffix (with colons). So the standrd
+                    // .NET format strings do not work.
+                    //
+                    // We know that the date is in UTC, so fake the offset.
+                    //
+                    DateFormatString = "yyyy-MM-dd'T'HH:mm:ss+0000"
                 });
             return $"{this.LoginUsername}:{this.KeyType} {this.Key} {ManagedKeyToken} {metadata}";
         }
@@ -165,7 +173,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Ssh.Services.Adapter
             [JsonProperty("expireOn")] DateTime expireOn)
         {
             this.Username = username;
-            this.ExpireOn = expireOn;
+            this.ExpireOn = expireOn.ToUniversalTime();
         }
     }
 }

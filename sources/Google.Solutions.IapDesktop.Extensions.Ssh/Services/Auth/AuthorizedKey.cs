@@ -135,6 +135,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Ssh.Services.Auth
         }
     }
 
+    // TODO: Use AuthorizationMethods
     public enum KeyAuthorizationMethod
     {
         Metadata,

@@ -73,7 +73,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Ssh.Test.Services.Adapter
         [Test]
         public void WhenKeyIsManaged_ThenParseReturnsManagedKey()
         {
-            var line = "login:ssh-rsa key google-ssh {\"userName\":\"username@example.com\",\"expireOn\":\"2021-01-15T15:22:35Z\"}";
+            var line = "login:ssh-rsa key google-ssh {\"userName\":\"username@example.com\",\"expireOn\":\"2021-01-15T15:22:35+0000\"}";
             var key = MetadataAuthorizedKey.Parse(line);
             Assert.IsInstanceOf<ManagedMetadataAuthorizedKey>(key);
 
@@ -85,6 +85,22 @@ namespace Google.Solutions.IapDesktop.Extensions.Ssh.Test.Services.Adapter
                 ((ManagedMetadataAuthorizedKey)key).Metadata.ExpireOn.ToUniversalTime());
 
             Assert.AreEqual(line, key.ToString());
+        }
+
+        [Test]
+        public void WhenKeySerialized_ThenTimestampHasNoMilliseconds()
+        {
+            var key = new ManagedMetadataAuthorizedKey(
+                "login",
+                "ssh-rsa",
+                "key",
+                new ManagedKeyMetadata(
+                    "joe@example.com",
+                    new DateTime(2020, 1, 1, 23, 59, 59, 123, DateTimeKind.Utc)));
+
+            Assert.AreEqual(
+                "login:ssh-rsa key google-ssh {\"userName\":\"joe@example.com\",\"expireOn\":\"2020-01-01T23:59:59+0000\"}",
+                key.ToString());
         }
     }
 }

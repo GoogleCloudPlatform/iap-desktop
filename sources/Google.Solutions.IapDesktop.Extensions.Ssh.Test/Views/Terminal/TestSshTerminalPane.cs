@@ -91,8 +91,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Ssh.Test.Views.Terminal
                 var authorizedKey = await keyAdapter.AuthorizeKeyAsync(
                         instanceLocator,
                         key,
-                        TimeSpan.FromMinutes(1),
-                        "test",
+                        TimeSpan.FromMinutes(10),
+                        null,
+                        AuthorizeKeyMethods.InstanceMetadata,
                         CancellationToken.None)
                     .ConfigureAwait(true);
 

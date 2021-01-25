@@ -93,6 +93,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Ssh.Services
                                 key,
                                 TimeSpan.FromHours(1),
                                 "test",
+                                AuthorizeKeyMethods.All,
                                 CancellationToken.None)
                             .ConfigureAwait(true);
 
