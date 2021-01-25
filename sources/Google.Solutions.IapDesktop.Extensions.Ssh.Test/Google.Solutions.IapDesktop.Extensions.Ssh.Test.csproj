@@ -78,6 +78,7 @@
     <Compile Include="Controls\TestTerminalFont.cs" />
     <Compile Include="Services\Adapter\TestMetadataAuthorizedKey.cs" />
     <Compile Include="Services\Adapter\TestMetadataAuthorizedKeySet.cs" />
+    <Compile Include="Services\Auth\TestAuthorizedKey.cs" />
     <Compile Include="Services\Auth\TestPublicKeyService.cs" />
     <Compile Include="Views\Terminal\TestSshTerminalPane.cs" />
     <Compile Include="Views\Terminal\TestSshTerminalConnectionBroker.cs" />

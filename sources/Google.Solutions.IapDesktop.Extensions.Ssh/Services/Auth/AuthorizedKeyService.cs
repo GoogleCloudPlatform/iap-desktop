@@ -250,7 +250,10 @@ namespace Google.Solutions.IapDesktop.Extensions.Ssh.Services.Auth
                     // 
                     // Now figure out which username to use and where to push it.
                     //
-                    var profile = AuthorizedKey.Create(preferredPosixUsername);
+                    var profile = AuthorizedKey.ForMetadata(
+                        key,
+                        preferredPosixUsername,
+                        this.authorizationAdapter.Authorization);
                     Debug.Assert(profile.Username != null);
 
                     var metadataKey = new ManagedMetadataAuthorizedKey(
@@ -294,7 +297,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Ssh.Services.Auth
                 }
             }
         }
-
 
         //---------------------------------------------------------------------
         // IDisposable.
