@@ -20,6 +20,7 @@
 //
 
 using Google.Solutions.Ssh.Cryptography;
+using System;
 using System.Security.Cryptography;
 
 namespace Google.Solutions.Ssh
@@ -44,6 +45,9 @@ namespace Google.Solutions.Ssh
 
         public byte[] PublicKey => this.key.ToSshRsaPublicKey();
 
+        public string PublicKeyString => Convert.ToBase64String(this.PublicKey);
+
+        public string Type => "ssh-rsa";
 
         public byte[] SignData(byte[] data)
         {

@@ -458,20 +458,6 @@ namespace Google.Solutions.IapDesktop.Application.Services.Adapters
         // Metadata.
         //---------------------------------------------------------------------
 
-        // TODO: Remove
-        public Task AddMetadataAsync(
-            InstanceLocator instanceRef,
-            string key,
-            string value,
-            CancellationToken token)
-        {
-            return this.service.Instances.AddMetadataAsync(
-                instanceRef,
-                key,
-                value,
-                token);
-        }
-
         public Task UpdateMetadataAsync(
             InstanceLocator instanceRef,
             Action<Metadata> updateMetadata,

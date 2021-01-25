@@ -106,12 +106,6 @@ namespace Google.Solutions.IapDesktop.Application.Services.Adapters
         // Metadata.
         //---------------------------------------------------------------------
 
-        Task AddMetadataAsync(
-            InstanceLocator instanceRef,
-            string key,
-            string value,
-            CancellationToken token);
-
         Task UpdateMetadataAsync(
            InstanceLocator instanceRef,
            Action<Metadata> updateMetadata,

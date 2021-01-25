@@ -20,17 +20,20 @@
 //
 
 using Google.Apis.Auth.OAuth2;
+using Google.Solutions.Common.Auth;
 using Google.Solutions.Common.Locator;
 using Google.Solutions.Common.Test.Integration;
 using Google.Solutions.IapDesktop.Application.Services.Adapters;
 using Google.Solutions.IapDesktop.Application.Services.Integration;
 using Google.Solutions.IapDesktop.Application.Test.Views;
 using Google.Solutions.IapDesktop.Extensions.Ssh.Services.Adapter;
+using Google.Solutions.IapDesktop.Extensions.Ssh.Services.Auth;
 using Google.Solutions.IapDesktop.Extensions.Ssh.Views.Terminal;
 using Google.Solutions.Ssh;
 using Google.Solutions.Ssh.Native;
+using Moq;
 using NUnit.Framework;
-using System.Drawing;
+using System;
 using System.Globalization;
 using System.Net;
 using System.Net.Sockets;
@@ -70,14 +73,26 @@ namespace Google.Solutions.IapDesktop.Extensions.Ssh.Test.Views.Terminal
             InstanceLocator instanceLocator,
             ICredential credential)
         {
+            var authorization = new Mock<IAuthorization>();
+            authorization
+                .SetupGet(a => a.Email)
+                .Returns("test@example.com");
+            var authorizationAdapter = new Mock<IAuthorizationAdapter>();
+            authorizationAdapter
+                .Setup(a => a.Authorization)
+                .Returns(authorization.Object);
+
             using (var key = new RsaSshKey(new RSACng()))
-            using (var keyAdapter = new ComputeEngineKeysAdapter(
-                new ComputeEngineAdapter(credential)))
+            using (var keyAdapter = new AuthorizedKeyService(
+                authorizationAdapter.Object,
+                new ComputeEngineAdapter(credential),
+                new Mock<IOsLoginAdapter>().Object))
             {
-                await keyAdapter.PushPublicKeyAsync(
+                var authorizedKey = await keyAdapter.AuthorizeKeyAsync(
                         instanceLocator,
-                        "test",
                         key,
+                        TimeSpan.FromMinutes(1),
+                        "test",
                         CancellationToken.None)
                     .ConfigureAwait(true);
 
@@ -89,7 +104,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Ssh.Test.Views.Terminal
                     this.serviceProvider);
                 var pane = await broker.ConnectAsync(
                         instanceLocator,
-                        "test",
+                        authorizedKey.Username,
                         new IPEndPoint(await PublicAddressFromLocator(instanceLocator), 22),
                         key)
                     .ConfigureAwait(true);

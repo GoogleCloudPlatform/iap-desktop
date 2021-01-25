@@ -21,6 +21,8 @@
 
 using System;
 
+#pragma warning disable CS1819 // Properties should not return arrays
+
 namespace Google.Solutions.Ssh
 {
     public interface ISshKey : IDisposable

@@ -30,7 +30,7 @@ using System.Runtime.CompilerServices;
 [assembly: AssemblyCopyright("Copyright ©  2020")]
 [assembly: AssemblyTrademark("Google LLC")]
 
-[assembly: AssemblyVersion("1.0.1.0")]
-[assembly: AssemblyFileVersion("1.0.1.0")]
+[assembly: AssemblyVersion("2.10.1")]
+[assembly: AssemblyFileVersion("2.10.1")]
 
 [assembly: InternalsVisibleTo("Google.Solutions.Ssh.Test")]

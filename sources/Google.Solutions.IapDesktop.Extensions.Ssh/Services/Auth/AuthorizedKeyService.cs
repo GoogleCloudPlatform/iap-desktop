@@ -21,7 +21,7 @@ using System.Threading.Tasks;
 
 namespace Google.Solutions.IapDesktop.Extensions.Ssh.Services.Auth
 {
-    interface IAuthorizedKeyService
+    interface IAuthorizedKeyService : IDisposable
     {
         Task<AuthorizedKey> AuthorizeKeyAsync(
             InstanceLocator instance,
@@ -31,6 +31,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Ssh.Services.Auth
             CancellationToken token);
     }
 
+    [Service(typeof(IAuthorizedKeyService))]
     public class AuthorizedKeyService : IAuthorizedKeyService
     {
         private const string EnableOsLoginFlag = "enable-oslogin";
@@ -292,6 +293,25 @@ namespace Google.Solutions.IapDesktop.Extensions.Ssh.Services.Auth
                     return profile;
                 }
             }
+        }
+
+
+        //---------------------------------------------------------------------
+        // IDisposable.
+        //---------------------------------------------------------------------
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                this.computeEngineAdapter.Dispose();
+            }
+        }
+
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
         }
     }
 

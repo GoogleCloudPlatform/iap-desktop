@@ -31,6 +31,7 @@ using Google.Solutions.IapDesktop.Application.Views;
 using Google.Solutions.IapDesktop.Application.Views.Dialog;
 using Google.Solutions.IapDesktop.Application.Views.ProjectExplorer;
 using Google.Solutions.IapDesktop.Extensions.Ssh.Services.Adapter;
+using Google.Solutions.IapDesktop.Extensions.Ssh.Services.Auth;
 using Google.Solutions.IapDesktop.Extensions.Ssh.Views.Terminal;
 using Google.Solutions.Ssh;
 using Google.Solutions.Ssh.Cryptography;
@@ -78,7 +79,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Ssh.Services
                 if (node is IProjectExplorerVmInstanceNode vmNode)
                 {
                     using (var gceAdapter = this.serviceProvider.GetService<IComputeEngineAdapter>())
-                    using (var keysAdapter = this.serviceProvider.GetService<IComputeEngineKeysAdapter>())
+                    using (var keysService = this.serviceProvider.GetService<IAuthorizedKeyService>())
                     {
                         var instanceTask = gceAdapter.GetInstanceAsync(
                                 vmNode.Reference,
@@ -87,10 +88,11 @@ namespace Google.Solutions.IapDesktop.Extensions.Ssh.Services
                         // TODO: Use proper key.
                         var key = RsaSshKey.NewEphemeralKey();
 
-                        await keysAdapter.PushPublicKeyAsync(
+                        var authorizedKey = await keysService.AuthorizeKeyAsync(
                                 vmNode.Reference,
-                                "test",
                                 key,
+                                TimeSpan.FromHours(1),
+                                "test",
                                 CancellationToken.None)
                             .ConfigureAwait(true);
 
@@ -100,7 +102,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Ssh.Services
                             .GetService<ISshTerminalConnectionBroker>()
                             .ConnectAsync(
                                 vmNode.Reference,
-                                "test",
+                                authorizedKey.Username,
                                 new IPEndPoint(instance.PublicAddress(), 22),
                                 key)
                             .ConfigureAwait(true);
