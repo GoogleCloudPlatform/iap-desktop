@@ -20,63 +20,62 @@
 //
 
 using Google.Solutions.IapDesktop.Application.Test;
-using Google.Solutions.IapDesktop.Extensions.Ssh.Services.Auth;
 using NUnit.Framework;
-using System;
 
 namespace Google.Solutions.IapDesktop.Extensions.Ssh.Test.Services.Auth
 {
-    [TestFixture]
-    public class TestPublicKeyService : ApplicationFixtureBase
-    {
-        //---------------------------------------------------------------------
-        // OS Login.
-        //---------------------------------------------------------------------
+    // TODO: Add tests
+    //[TestFixture]
+    //public class TestPublicKeyService : ApplicationFixtureBase
+    //{
+    //    //---------------------------------------------------------------------
+    //    // OS Login.
+    //    //---------------------------------------------------------------------
 
-        [Test]
-        public void WhenOsLoginEnabledByInstance_ThenPushPublicKeyAsyncCallsXxxxxxxx()
-        {
-            Assert.Fail();
-        }
+    //    [Test]
+    //    public void WhenOsLoginEnabledByInstance_ThenPushPublicKeyAsyncCallsXxxxxxxx()
+    //    {
+    //        Assert.Fail();
+    //    }
 
-        [Test]
-        public void WhenOsLoginEnabledByProject_ThenPushPublicKeyAsyncCallsXxxxxxxx()
-        {
-            Assert.Fail();
-        }
+    //    [Test]
+    //    public void WhenOsLoginEnabledByProject_ThenPushPublicKeyAsyncCallsXxxxxxxx()
+    //    {
+    //        Assert.Fail();
+    //    }
 
-        //---------------------------------------------------------------------
-        // Metadata.
-        //---------------------------------------------------------------------
+    //    //---------------------------------------------------------------------
+    //    // Metadata.
+    //    //---------------------------------------------------------------------
 
-        [Test]
-        public void WhenLegacySshKeyPresent_ThenPushPublicKeyAsyncThrowsUnsupportedException()
-        {
-            Assert.Fail();
-        }
+    //    [Test]
+    //    public void WhenLegacySshKeyPresent_ThenPushPublicKeyAsyncThrowsUnsupportedException()
+    //    {
+    //        Assert.Fail();
+    //    }
 
-        [Test]
-        public void WhenProjectKeysNotBlocked_ThenPushPublicKeyAsyncUpdatesProjectMetadata()
-        {
-            Assert.Fail();
-        }
+    //    [Test]
+    //    public void WhenProjectKeysNotBlocked_ThenPushPublicKeyAsyncUpdatesProjectMetadata()
+    //    {
+    //        Assert.Fail();
+    //    }
 
-        [Test]
-        public void WhenProjectKeysBlocked_ThenPushPublicKeyAsyncUpdatesInstanceMetadata()
-        {
-            Assert.Fail();
-        }
+    //    [Test]
+    //    public void WhenProjectKeysBlocked_ThenPushPublicKeyAsyncUpdatesInstanceMetadata()
+    //    {
+    //        Assert.Fail();
+    //    }
 
-        [Test]
-        public void WhenMetadataContainsValidKeys_ThenPushPublicKeyAsyncRetainsThem()
-        {
-            Assert.Fail();
-        }
+    //    [Test]
+    //    public void WhenMetadataContainsValidKeys_ThenPushPublicKeyAsyncRetainsThem()
+    //    {
+    //        Assert.Fail();
+    //    }
 
-        [Test]
-        public void WhenMetadataContainsExpiredKeys_ThenPushPublicKeyAsyncRemovesThem()
-        {
-            Assert.Fail();
-        }
-    }
+    //    [Test]
+    //    public void WhenMetadataContainsExpiredKeys_ThenPushPublicKeyAsyncRemovesThem()
+    //    {
+    //        Assert.Fail();
+    //    }
+    //}
 }

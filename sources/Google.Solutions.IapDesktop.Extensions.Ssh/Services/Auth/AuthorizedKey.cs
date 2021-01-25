@@ -35,7 +35,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Ssh.Services.Auth
         //
         // NB. This is the pattern used by Debian's shadow-utils.
         //
-        private static Regex posixUsernamePattern = new Regex("^[a-z_][a-z0-9_-]*$");
+        private static readonly Regex posixUsernamePattern = new Regex("^[a-z_][a-z0-9_-]*$");
         private const int MaxUsernameLength = 32;
 
         public AuthorizeKeyMethods AuthorizationMethod { get; }
