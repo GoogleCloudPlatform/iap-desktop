@@ -43,12 +43,14 @@ namespace Google.Solutions.IapDesktop.Extensions.Ssh.Test.Services.Auth
                 () => AuthorizedKey.ForMetadata(
                     new Mock<ISshKey>().Object,
                     "",
+                    false,
                     new Mock<IAuthorization>().Object));
 
             Assert.Throws<ArgumentException>(
                 () => AuthorizedKey.ForMetadata(
                     new Mock<ISshKey>().Object,
                     " ",
+                    false,
                     new Mock<IAuthorization>().Object));
         }
 
@@ -59,6 +61,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Ssh.Test.Services.Auth
                 () => AuthorizedKey.ForMetadata(
                     new Mock<ISshKey>().Object,
                     "!user",
+                    false,
                     new Mock<IAuthorization>().Object));
         }
 
@@ -78,10 +81,11 @@ namespace Google.Solutions.IapDesktop.Extensions.Ssh.Test.Services.Auth
             var authorizedKey = AuthorizedKey.ForMetadata(
                 sshKey,
                 null,
+                true,
                 authorization.Object);
 
             Assert.AreEqual("j", authorizedKey.Username);
-            Assert.AreEqual(KeyAuthorizationMethod.Metadata, authorizedKey.AuthorizationMethod);
+            Assert.AreEqual(AuthorizeKeyMethods.InstanceMetadata, authorizedKey.AuthorizationMethod);
             Assert.AreSame(sshKey, authorizedKey.Key);
         }
 
@@ -97,10 +101,11 @@ namespace Google.Solutions.IapDesktop.Extensions.Ssh.Test.Services.Auth
             var authorizedKey = AuthorizedKey.ForMetadata(
                 sshKey,
                 null,
+                false,
                 authorization.Object);
 
             Assert.AreEqual("abcdefghijklmnopqrstuvwxyzabcxyz", authorizedKey.Username);
-            Assert.AreEqual(KeyAuthorizationMethod.Metadata, authorizedKey.AuthorizationMethod);
+            Assert.AreEqual(AuthorizeKeyMethods.ProjectMetadata, authorizedKey.AuthorizationMethod);
             Assert.AreSame(sshKey, authorizedKey.Key);
         }
 
@@ -116,10 +121,11 @@ namespace Google.Solutions.IapDesktop.Extensions.Ssh.Test.Services.Auth
             var authorizedKey = AuthorizedKey.ForMetadata(
                 sshKey,
                 null,
+                false,
                 authorization.Object);
 
             Assert.AreEqual("g1_9", authorizedKey.Username);
-            Assert.AreEqual(KeyAuthorizationMethod.Metadata, authorizedKey.AuthorizationMethod);
+            Assert.AreEqual(AuthorizeKeyMethods.ProjectMetadata, authorizedKey.AuthorizationMethod);
             Assert.AreSame(sshKey, authorizedKey.Key);
         }
 
@@ -135,10 +141,11 @@ namespace Google.Solutions.IapDesktop.Extensions.Ssh.Test.Services.Auth
             var authorizedKey = AuthorizedKey.ForMetadata(
                 sshKey,
                 null,
+                false,
                 authorization.Object);
 
             Assert.AreEqual("abc", authorizedKey.Username);
-            Assert.AreEqual(KeyAuthorizationMethod.Metadata, authorizedKey.AuthorizationMethod);
+            Assert.AreEqual(AuthorizeKeyMethods.ProjectMetadata, authorizedKey.AuthorizationMethod);
             Assert.AreSame(sshKey, authorizedKey.Key);
         }
     }

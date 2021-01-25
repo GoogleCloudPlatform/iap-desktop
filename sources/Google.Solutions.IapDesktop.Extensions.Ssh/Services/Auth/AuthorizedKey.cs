@@ -21,6 +21,7 @@
 
 using Google.Apis.Util;
 using Google.Solutions.Common.Auth;
+using Google.Solutions.Common.Util;
 using Google.Solutions.Ssh;
 using System;
 using System.Diagnostics;
@@ -37,16 +38,17 @@ namespace Google.Solutions.IapDesktop.Extensions.Ssh.Services.Auth
         private static Regex posixUsernamePattern = new Regex("^[a-z_][a-z0-9_-]*$");
         private const int MaxUsernameLength = 32;
 
-        public KeyAuthorizationMethod AuthorizationMethod { get; }
+        public AuthorizeKeyMethods AuthorizationMethod { get; }
         public ISshKey Key { get; }
         public string Username { get; }
 
         private AuthorizedKey(
             ISshKey key,
-            KeyAuthorizationMethod method,
+            AuthorizeKeyMethods method,
             string posixUsername)
         {
             Debug.Assert(IsValidUsername(posixUsername));
+            Debug.Assert(method.IsSingleFlag());
 
             this.Key = key;
             this.AuthorizationMethod = method;
@@ -75,6 +77,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Ssh.Services.Auth
         public static AuthorizedKey ForMetadata(
             ISshKey key,
             string preferredUsername,
+            bool useInstanceKeySet,
             IAuthorization authorization)
         {
             Utilities.ThrowIfNull(key, nameof(key));
@@ -94,7 +97,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Ssh.Services.Auth
                     //
                     return new AuthorizedKey(
                         key,
-                        KeyAuthorizationMethod.Metadata,
+                        useInstanceKeySet 
+                            ? AuthorizeKeyMethods.InstanceMetadata
+                            : AuthorizeKeyMethods.ProjectMetadata,
                         preferredUsername);
                 }
             }
@@ -129,16 +134,11 @@ namespace Google.Solutions.IapDesktop.Extensions.Ssh.Services.Auth
 
                 return new AuthorizedKey(
                     key,
-                    KeyAuthorizationMethod.Metadata,
+                    useInstanceKeySet
+                        ? AuthorizeKeyMethods.InstanceMetadata
+                        : AuthorizeKeyMethods.ProjectMetadata,
                     username);
             }
         }
-    }
-
-    // TODO: Use AuthorizationMethods
-    public enum KeyAuthorizationMethod
-    {
-        Metadata,
-        OsLogin
     }
 }

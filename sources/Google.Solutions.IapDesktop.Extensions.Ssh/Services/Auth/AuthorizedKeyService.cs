@@ -2,7 +2,6 @@
 using Google.Apis.Util;
 using Google.Solutions.Common.ApiExtensions;
 using Google.Solutions.Common.ApiExtensions.Instance;
-using Google.Solutions.Common.Auth;
 using Google.Solutions.Common.Diagnostics;
 using Google.Solutions.Common.Locator;
 using Google.Solutions.Common.Util;
@@ -21,26 +20,7 @@ using System.Threading.Tasks;
 
 namespace Google.Solutions.IapDesktop.Extensions.Ssh.Services.Auth
 {
-    interface IAuthorizedKeyService : IDisposable
-    {
-        Task<AuthorizedKey> AuthorizeKeyAsync(
-            InstanceLocator instance,
-            ISshKey key,
-            TimeSpan keyValidity,
-            string preferredPosixUsername,
-            AuthorizeKeyMethods methods,
-            CancellationToken token);
-    }
-
-    [Flags]
-    public enum AuthorizeKeyMethods
-    {
-        InstanceMetadata = 1,
-        ProjectMetadata = 2,
-        Oslogin = 4,
-        All = 7
-    }
-
+    
     [Service(typeof(IAuthorizedKeyService))]
     public class AuthorizedKeyService : IAuthorizedKeyService
     {
@@ -271,23 +251,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Ssh.Services.Auth
                     // 
                     // Now figure out which username to use and where to push it.
                     //
-                    var profile = AuthorizedKey.ForMetadata(
-                        key,
-                        preferredPosixUsername,
-                        this.authorizationAdapter.Authorization);
-                    Debug.Assert(profile.Username != null);
-
-                    var metadataKey = new ManagedMetadataAuthorizedKey(
-                        profile.Username,
-                        key.Type,
-                        key.PublicKeyString,
-                        new ManagedKeyMetadata(
-                            this.authorizationAdapter.Authorization.Email,
-                            DateTime.UtcNow.Add(validity)));
-
-                    //
-                    // Find out where to push the metadata key.
-                    //
                     bool useInstanceKeySet;
                     if (allowedMethods.HasFlag(AuthorizeKeyMethods.ProjectMetadata) &&
                         allowedMethods.HasFlag(AuthorizeKeyMethods.InstanceMetadata))
@@ -318,6 +281,21 @@ namespace Google.Solutions.IapDesktop.Extensions.Ssh.Services.Auth
                         // Neither project nor instance allowed.
                         throw new ArgumentException(nameof(allowedMethods));
                     }
+
+                    var profile = AuthorizedKey.ForMetadata(
+                        key,
+                        preferredPosixUsername,
+                        useInstanceKeySet,
+                        this.authorizationAdapter.Authorization);
+                    Debug.Assert(profile.Username != null);
+
+                    var metadataKey = new ManagedMetadataAuthorizedKey(
+                        profile.Username,
+                        key.Type,
+                        key.PublicKeyString,
+                        new ManagedKeyMetadata(
+                            this.authorizationAdapter.Authorization.Email,
+                            DateTime.UtcNow.Add(validity)));
 
                     var existingKeySet = MetadataAuthorizedKeySet.FromMetadata(
                         useInstanceKeySet

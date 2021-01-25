@@ -98,6 +98,7 @@
     <Compile Include="Services\Adapter\MetadataAuthorizedKeySet.cs" />
     <Compile Include="Services\Auth\AuthorizedKeyService.cs" />
     <Compile Include="Services\Auth\AuthorizedKey.cs" />
+    <Compile Include="Services\Auth\IAuthorizedKeyService.cs" />
     <Compile Include="Services\SshExtension.cs" />
     <Compile Include="Views\Terminal\SshTerminalConnectionBroker.cs" />
     <Compile Include="Views\Terminal\SshTerminalPane.cs">
