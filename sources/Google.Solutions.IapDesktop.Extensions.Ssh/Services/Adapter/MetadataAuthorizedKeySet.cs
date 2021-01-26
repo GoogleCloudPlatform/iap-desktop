@@ -114,15 +114,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Ssh.Services.Adapter
                           k.LoginUsername == key.LoginUsername);
         }
 
-        public Metadata.ItemsData ToMetadata()
-        {
-            return new Metadata.ItemsData()
-            {
-                Key = MetadataKey,
-                Value = ToString()
-            };
-        }
-
         public override string ToString()
         {
             return string.Join("\n", this.Keys);

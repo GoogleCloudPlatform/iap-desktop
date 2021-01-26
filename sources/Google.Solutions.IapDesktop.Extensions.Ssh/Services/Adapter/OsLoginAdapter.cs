@@ -19,6 +19,7 @@
 // under the License.
 //
 
+using Google.Solutions.IapDesktop.Application.ObjectModel;
 using Google.Solutions.IapDesktop.Extensions.Ssh.Services.Auth;
 using Google.Solutions.Ssh;
 using System;
@@ -34,5 +35,17 @@ namespace Google.Solutions.IapDesktop.Extensions.Ssh.Services.Adapter
             ISshKey key,
             TimeSpan validity,
             CancellationToken token);
+    }
+
+    [Service(typeof(IOsLoginAdapter))]
+    public class OsLoginAdapter : IOsLoginAdapter
+    {
+        public Task<AuthorizedKey> ImportSshPublicKeyAsync(string projectId,
+            ISshKey key,
+            TimeSpan validity,
+            CancellationToken token)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

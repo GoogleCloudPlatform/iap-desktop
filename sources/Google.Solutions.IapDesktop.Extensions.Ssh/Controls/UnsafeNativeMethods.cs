@@ -26,7 +26,7 @@ using System.Text;
 namespace Google.Solutions.IapDesktop.Extensions.Ssh.Controls
 {
     internal static class UnsafeNativeMethods
-	{
+    {
         //---------------------------------------------------------------------
         // Caret.
         //---------------------------------------------------------------------
@@ -55,22 +55,22 @@ namespace Google.Solutions.IapDesktop.Extensions.Ssh.Controls
         }
 
         [DllImport("User32.dll")]
-		internal static extern bool CreateCaret(IntPtr hWnd, int hBitmap, int nWidth, int nHeight);
+        internal static extern bool CreateCaret(IntPtr hWnd, int hBitmap, int nWidth, int nHeight);
 
-		[DllImport("User32.dll")]
-		internal static extern bool SetCaretPos(int x, int y);
+        [DllImport("User32.dll")]
+        internal static extern bool SetCaretPos(int x, int y);
 
-		[DllImport("User32.dll")]
-		internal static extern bool GetCaretPos(out POINT position);
+        [DllImport("User32.dll")]
+        internal static extern bool GetCaretPos(out POINT position);
 
-		[DllImport("User32.dll")]
-		internal static extern bool DestroyCaret();
+        [DllImport("User32.dll")]
+        internal static extern bool DestroyCaret();
 
-		[DllImport("User32.dll")]
-		internal static extern bool ShowCaret(IntPtr hWnd);
+        [DllImport("User32.dll")]
+        internal static extern bool ShowCaret(IntPtr hWnd);
 
-		[DllImport("User32.dll")]
-		internal static extern bool HideCaret(IntPtr hWnd);
+        [DllImport("User32.dll")]
+        internal static extern bool HideCaret(IntPtr hWnd);
 
 
 

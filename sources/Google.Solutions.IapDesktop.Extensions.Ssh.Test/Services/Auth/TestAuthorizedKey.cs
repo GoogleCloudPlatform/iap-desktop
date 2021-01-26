@@ -65,6 +65,17 @@ namespace Google.Solutions.IapDesktop.Extensions.Ssh.Test.Services.Auth
                     new Mock<IAuthorization>().Object));
         }
 
+        [Test]
+        public void WhenPreferredUsernameIsValid_ThenUsernameIsUsed()
+        {
+            var key = AuthorizedKey.ForMetadata(
+                new Mock<ISshKey>().Object,
+                "user",
+                false,
+                new Mock<IAuthorization>().Object);
+            Assert.AreEqual("user", key.Username);
+        }
+
         //---------------------------------------------------------------------
         // Metadata without preferred username.
         //---------------------------------------------------------------------
