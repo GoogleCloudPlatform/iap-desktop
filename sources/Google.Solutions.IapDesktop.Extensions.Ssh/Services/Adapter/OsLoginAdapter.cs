@@ -23,6 +23,7 @@ using Google.Apis.Auth.OAuth2;
 using Google.Apis.CloudOSLogin.v1;
 using Google.Apis.CloudOSLogin.v1.Data;
 using Google.Apis.Util;
+using Google.Solutions.Common.ApiExtensions;
 using Google.Solutions.Common.Diagnostics;
 using Google.Solutions.IapDesktop.Application;
 using Google.Solutions.IapDesktop.Application.ObjectModel;
@@ -143,28 +144,44 @@ namespace Google.Solutions.IapDesktop.Extensions.Ssh.Services.Adapter
                     $"users/{userEmail}");
                 request.ProjectId = projectId;
 
-                var response = await request
-                    .ExecuteAsync(token)
-                    .ConfigureAwait(false);
-
-                //
-                // Although rare, there could be multiple POSIX accounts.
-                //
-                var account = response.LoginProfile.PosixAccounts
-                    .FirstOrDefault(a => a.Primary == true &&
-                                         a.OperatingSystemType == "LINUX");
-
-                if (account == null)
+                try
                 {
-                    // 
-                    // This is strange, the account should have been created.
-                    //
-                    throw new OsLoginSshKeyImportFailedException(
-                        "Imported SSH key to OSLogin, but no POSIX account was created",
-                        HelpTopics.TroubleshootingOsLogin);
-                }
+                    var response = await request
+                        .ExecuteAsync(token)
+                        .ConfigureAwait(false);
 
-                return AuthorizedKey.ForOsLoginAccount(key, account);
+                    //
+                    // Although rare, there could be multiple POSIX accounts.
+                    //
+                    var account = response.LoginProfile.PosixAccounts
+                        .FirstOrDefault(a => a.Primary == true &&
+                                             a.OperatingSystemType == "LINUX");
+
+                    if (account == null)
+                    {
+                        // 
+                        // This is strange, the account should have been created.
+                        //
+                        throw new OsLoginSshKeyImportFailedException(
+                            "Imported SSH key to OSLogin, but no POSIX account was created",
+                            HelpTopics.TroubleshootingOsLogin);
+                    }
+
+                    return AuthorizedKey.ForOsLoginAccount(key, account);
+                }
+                catch (GoogleApiException e) when (e.IsAccessDenied())
+                {
+                    //
+                    // Likely reason: The user account is a consumer account or
+                    // an administrator has disable POSIX account/SSH key information
+                    // updates in the Admin Console.
+                    //
+                    throw new ResourceAccessDeniedException(
+                        "You do not have sufficient permissions to use OS Login: " +
+                        e.Error?.Message ?? "access denied",
+                        HelpTopics.ManagingOsLogin,
+                        e);
+                }
             }
         }
     }
