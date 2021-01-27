@@ -91,7 +91,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Ssh.Services
                         var authorizedKey = await keysService.AuthorizeKeyAsync(
                                 vmNode.Reference,
                                 key,
-                                TimeSpan.FromHours(1),
+                                TimeSpan.FromHours(2),
                                 "test",
                                 AuthorizeKeyMethods.All,
                                 CancellationToken.None)

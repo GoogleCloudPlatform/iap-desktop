@@ -68,6 +68,10 @@ namespace Google.Solutions.IapDesktop.Application.Views
             "Managing SSH keys in metadata",
             "https://cloud.google.com/compute/docs/instances/adding-removing-ssh-keys");
 
+        public static readonly IHelpTopic TroubleshootingOsLogin = new HelpTopic(
+            "Troubleshooting OS Login",
+            "https://cloud.google.com/compute/docs/oslogin/troubleshoot-os-login");
+
         private class HelpTopic : IHelpTopic
         {
             public string Title { get; }

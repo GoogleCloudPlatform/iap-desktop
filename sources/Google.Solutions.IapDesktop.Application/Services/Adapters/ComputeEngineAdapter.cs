@@ -59,7 +59,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.Adapters
         // Ctor.
         //---------------------------------------------------------------------
 
-        public ComputeEngineAdapter(
+        private ComputeEngineAdapter(
             ICredential credential,
             IDeviceEnrollment deviceEnrollment)
         {

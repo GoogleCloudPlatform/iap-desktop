@@ -19,6 +19,7 @@
 // under the License.
 //
 
+using Google.Apis.CloudOSLogin.v1.Data;
 using Google.Apis.Util;
 using Google.Solutions.Common.Auth;
 using Google.Solutions.Common.Util;
@@ -72,6 +73,25 @@ namespace Google.Solutions.IapDesktop.Extensions.Ssh.Services.Auth
                 username.Length > 0 &&
                 username.Length <= MaxUsernameLength &&
                 posixUsernamePattern.IsMatch(username);
+        }
+
+        //---------------------------------------------------------------------
+        // Factory methods.
+        //---------------------------------------------------------------------
+
+        public static AuthorizedKey ForOsLoginAccount(
+            ISshKey key,
+            PosixAccount posixAccount)
+        {
+            Utilities.ThrowIfNull(key, nameof(key));
+            Utilities.ThrowIfNull(posixAccount, nameof(posixAccount));
+
+            Debug.Assert(IsValidUsername(posixAccount.Username));
+
+            return new AuthorizedKey(
+                key,
+                AuthorizeKeyMethods.Oslogin,
+                posixAccount.Username);
         }
 
         public static AuthorizedKey ForMetadata(

@@ -222,34 +222,16 @@ namespace Google.Solutions.IapDesktop.Extensions.Ssh.Services.Auth
                     }
 
                     //
-                    // If OS Login is enabled for a project, we have to use
-                    // the Posix username from the OS Login login profile.
-                    //
-                    // Note that:
-                    //  - The username differs based on the organization the
-                    //    project is part of.
-                    //  - The login profile is empty if no public key has beem
-                    //    pushed yet for this organization.
-                    //
-
-                    try
-                    {
-                        //
-                        // NB. It's cheaper to unconditionally push the key than
-                        // to check for previous keys first.
-                        // 
-                        return await this.osLoginAdapter.ImportSshPublicKeyAsync(
-                                instance.ProjectId,
-                                key,
-                                validity,
-                                token)
-                            .ConfigureAwait(false);
-                    }
-                    catch (GoogleApiException)
-                    {
-                        // TODO: handle denied-by-policy
-                        throw;
-                    }
+                    // NB. It's cheaper to unconditionally push the key than
+                    // to check for previous keys first.
+                    // 
+                    return await this.osLoginAdapter.ImportSshPublicKeyAsync(
+                            instance.ProjectId,
+                            OsLoginSystemType.Linux,
+                            key,
+                            validity,
+                            token)
+                        .ConfigureAwait(false);
                 }
                 else 
                 {
