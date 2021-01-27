@@ -25,6 +25,7 @@ using Google.Solutions.IapDesktop.Application.Services.Integration;
 using Google.Solutions.IapDesktop.Application.Views;
 using Google.Solutions.IapDesktop.Application.Views.Dialog;
 using Google.Solutions.IapDesktop.Extensions.Ssh.Controls;
+using Google.Solutions.IapDesktop.Extensions.Ssh.Services.Auth;
 using Google.Solutions.Ssh;
 using System;
 using System.Diagnostics;
@@ -61,9 +62,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Ssh.Views.Terminal
         internal SshTerminalPane(
             IServiceProvider serviceProvider,
             InstanceLocator vmInstance,
-            string username,
             IPEndPoint endpoint,
-            ISshKey key)
+            AuthorizedKey authorizedKey)
             : base(serviceProvider, DockState.Document)
         {
             InitializeComponent();
@@ -72,9 +72,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Ssh.Views.Terminal
             this.viewModel = new SshTerminalPaneViewModel(
                 serviceProvider.GetService<IEventService>(),
                 vmInstance,
-                username,
                 endpoint,
-                key)
+                authorizedKey)
             {
                 View = this
             };

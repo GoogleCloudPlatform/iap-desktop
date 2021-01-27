@@ -24,6 +24,7 @@ using Google.Solutions.Common.Util;
 using Google.Solutions.IapDesktop.Application.ObjectModel;
 using Google.Solutions.IapDesktop.Application.Services.Integration;
 using Google.Solutions.IapDesktop.Application.Views;
+using Google.Solutions.IapDesktop.Extensions.Ssh.Services.Auth;
 using Google.Solutions.Ssh;
 using System;
 using System.Linq;
@@ -44,9 +45,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Ssh.Views.Terminal
 
         Task<ISshTerminalPane> ConnectAsync(
             InstanceLocator vmInstance,
-            string username,
             IPEndPoint endpoint,
-            ISshKey key);
+            AuthorizedKey authorizedKey);
     }
 
     [Service(typeof(ISshTerminalConnectionBroker), ServiceLifetime.Singleton, ServiceVisibility.Global)]
@@ -100,16 +100,14 @@ namespace Google.Solutions.IapDesktop.Extensions.Ssh.Views.Terminal
 
         public async Task<ISshTerminalPane> ConnectAsync(
             InstanceLocator vmInstance,
-            string username,
             IPEndPoint endpoint,
-            ISshKey key)
+            AuthorizedKey authorizedKey)
         {
             var pane = new SshTerminalPane(
                 this.serviceProvider,
                 vmInstance,
-                username,
                 endpoint,
-                key);
+                authorizedKey);
             pane.ShowWindow(true);
 
             await pane.ConnectAsync()

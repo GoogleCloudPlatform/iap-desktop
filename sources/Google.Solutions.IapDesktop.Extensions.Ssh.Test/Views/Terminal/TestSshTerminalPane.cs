@@ -105,9 +105,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Ssh.Test.Views.Terminal
                     this.serviceProvider);
                 var pane = await broker.ConnectAsync(
                         instanceLocator,
-                        authorizedKey.Username,
                         new IPEndPoint(await PublicAddressFromLocator(instanceLocator), 22),
-                        key)
+                        authorizedKey)
                     .ConfigureAwait(true);
 
                 Assert.IsNotNull(connectedEvent, "ConnectionSuceededEvent event fired");
@@ -133,9 +132,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Ssh.Test.Views.Terminal
                     this.serviceProvider);
                 await broker.ConnectAsync(
                         new InstanceLocator("project-1", "zone-1", "instance-1"),
-                        "test",
                         UnboundEndpoint,
-                        key)
+                        AuthorizedKey.ForMetadata(key, "test", true, null))
                     .ConfigureAwait(true);
 
                 Assert.IsNotNull(deliveredEvent, "Event fired");
@@ -158,9 +156,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Ssh.Test.Views.Terminal
                     this.serviceProvider);
                 await broker.ConnectAsync(
                         new InstanceLocator("project-1", "zone-1", "instance-1"),
-                        "test",
                         NonSshEndpoint,
-                        key)
+                        AuthorizedKey.ForMetadata(key, "test", true, null))
                     .ConfigureAwait(true);
 
                 Assert.IsNotNull(deliveredEvent, "Event fired");
@@ -186,9 +183,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Ssh.Test.Views.Terminal
                     this.serviceProvider);
                 await broker.ConnectAsync(
                         instanceLocator,
-                        "not POSIX compli@nt",
                         new IPEndPoint(await PublicAddressFromLocator(instanceLocator), 22),
-                        key)
+                        AuthorizedKey.ForMetadata(key, "not POSIX compli@nt", true, null))
                     .ConfigureAwait(true);
 
                 Assert.IsNotNull(deliveredEvent, "Event fired");
@@ -214,9 +210,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Ssh.Test.Views.Terminal
                     this.serviceProvider);
                 await broker.ConnectAsync(
                         instanceLocator,
-                        "test",
                         new IPEndPoint(await PublicAddressFromLocator(instanceLocator), 22),
-                        key)
+                        AuthorizedKey.ForMetadata(key, "test", true, null))
                     .ConfigureAwait(true);
 
                 Assert.IsNotNull(deliveredEvent, "Event fired");

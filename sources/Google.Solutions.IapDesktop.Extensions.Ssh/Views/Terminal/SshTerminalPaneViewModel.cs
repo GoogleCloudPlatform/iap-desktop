@@ -26,6 +26,9 @@ using Google.Solutions.IapDesktop.Application;
 using Google.Solutions.IapDesktop.Application.Controls;
 using Google.Solutions.IapDesktop.Application.ObjectModel;
 using Google.Solutions.IapDesktop.Application.Services.Integration;
+using Google.Solutions.IapDesktop.Application.Views;
+using Google.Solutions.IapDesktop.Application.Views.Dialog;
+using Google.Solutions.IapDesktop.Extensions.Ssh.Services.Auth;
 using Google.Solutions.Ssh;
 using Google.Solutions.Ssh.Native;
 using System;
@@ -45,9 +48,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Ssh.Views.Terminal
     public class SshTerminalPaneViewModel : ViewModelBase, IDisposable
     {
         private readonly IEventService eventService;
-        private readonly string username;
         private readonly IPEndPoint endpoint;
-        private readonly ISshKey key;
+        private readonly AuthorizedKey authorizedKey;
 
         private Status connectionStatus = Status.ConnectionFailed;
         private SshShellConnection currentConnection = null;
@@ -83,14 +85,12 @@ namespace Google.Solutions.IapDesktop.Extensions.Ssh.Views.Terminal
         public SshTerminalPaneViewModel(
             IEventService eventService,
             InstanceLocator vmInstance,
-            string username,
             IPEndPoint endpoint,
-            ISshKey key)
+            AuthorizedKey authorizedKey)
         {
             this.eventService = eventService;
-            this.username = username;
             this.endpoint = endpoint;
-            this.key = key;
+            this.authorizedKey = authorizedKey;
             this.Instance = vmInstance;
 
         }
@@ -123,6 +123,28 @@ namespace Google.Solutions.IapDesktop.Extensions.Ssh.Views.Terminal
         //---------------------------------------------------------------------
         // Actions.
         //---------------------------------------------------------------------
+
+        private async Task ConnectAndTranslateErrorsAsync()
+        {
+            try
+            {
+                await this.currentConnection.ConnectAsync()
+                    .ConfigureAwait(false);
+            }
+            catch (SshNativeException e) when (
+                e.ErrorCode == LIBSSH2_ERROR.AUTHENTICATION_FAILED &&
+                this.authorizedKey.AuthorizationMethod == AuthorizeKeyMethods.Oslogin)
+            {
+                throw new OsLoginAuthenticationFailedException(
+                    "You do not have sufficient permissions to access this VM instance.\n\n" +
+                    "To perform this action, you need the following roles (or an equivalent custom role):\n\n" +
+                    " 1. 'Compute OS Login' or 'Compute OS Admin Login'\n" + 
+                    " 2. 'Service Account User' (only if the VM instance uses a service account)\n" +
+                    " 3. 'Compute OS Login External User' (only if the VM instance is in a different GCP organization\n",
+                    e,
+                    HelpTopics.GrantingOsLoginRoles);
+            }
+        }
 
         public async Task ConnectAsync(TerminalSize initialSize)
         {
@@ -197,9 +219,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Ssh.Views.Terminal
                 {
                     this.ConnectionStatus = Status.Connecting;
                     this.currentConnection = new SshShellConnection(
-                        this.username,
+                        this.authorizedKey.Username,
                         this.endpoint,
-                        this.key,
+                        this.authorizedKey.Key,
                         SshShellConnection.DefaultTerminal,
                         initialSize,
                         CultureInfo.CurrentUICulture,
@@ -209,8 +231,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Ssh.Views.Terminal
                         Banner = SshSession.BannerPrefix + Globals.UserAgent
                     };
 
-                    await this.currentConnection.ConnectAsync()
-                        .ConfigureAwait(true);
+                    await ConnectAndTranslateErrorsAsync().ConfigureAwait(true);
 
                     this.ConnectionStatus = Status.Connected;
 
@@ -317,8 +338,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Ssh.Views.Terminal
         }
     }
 
-
-
     public class DataReceivedEventArgs
     {
         public string Data { get; }
@@ -336,6 +355,20 @@ namespace Google.Solutions.IapDesktop.Extensions.Ssh.Views.Terminal
         public ConnectionErrorEventArgs(Exception error)
         {
             this.Error = error;
+        }
+    }
+
+    public class OsLoginAuthenticationFailedException : Exception, IExceptionWithHelpTopic
+    {
+        public IHelpTopic Help { get; }
+
+        public OsLoginAuthenticationFailedException(
+            string message,
+            Exception inner,
+            IHelpTopic helpTopic)
+            : base(message, inner)
+        {
+            this.Help = helpTopic;
         }
     }
 }

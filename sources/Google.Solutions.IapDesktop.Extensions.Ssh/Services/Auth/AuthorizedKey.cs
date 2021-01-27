@@ -101,7 +101,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Ssh.Services.Auth
             IAuthorization authorization)
         {
             Utilities.ThrowIfNull(key, nameof(key));
-            Utilities.ThrowIfNull(authorization, nameof(authorization));
 
             if (preferredUsername != null)
             {
@@ -125,6 +124,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Ssh.Services.Auth
             }
             else
             {
+                Utilities.ThrowIfNull(authorization, nameof(authorization));
+
                 // 
                 // No preferred username provided, so derive one
                 // from the user's email address:

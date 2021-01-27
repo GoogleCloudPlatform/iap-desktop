@@ -103,9 +103,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Ssh.Services
                             .GetService<ISshTerminalConnectionBroker>()
                             .ConnectAsync(
                                 vmNode.Reference,
-                                authorizedKey.Username,
                                 new IPEndPoint(instance.PublicAddress(), 22),
-                                key)
+                                authorizedKey)
                             .ConfigureAwait(true);
                     }
                 }

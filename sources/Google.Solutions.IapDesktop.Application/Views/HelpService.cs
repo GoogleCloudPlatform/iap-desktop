@@ -76,6 +76,10 @@ namespace Google.Solutions.IapDesktop.Application.Views
             "Troubleshooting OS Login",
             "https://cloud.google.com/compute/docs/oslogin/troubleshoot-os-login");
 
+        public static readonly IHelpTopic GrantingOsLoginRoles = new HelpTopic(
+            "Granting OS Login IAM roles",
+            "https://cloud.google.com/compute/docs/instances/managing-instance-access#grant-iam-roles");
+
         private class HelpTopic : IHelpTopic
         {
             public string Title { get; }
