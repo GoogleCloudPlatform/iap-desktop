@@ -62,7 +62,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Ssh.Test.Services.Auth
         private Mock<IComputeEngineAdapter> CreateComputeEngineAdapterMock(
             bool osLoginEnabledForProject,
             bool osLoginEnabledForInstance,
-            bool legecySshKeyPresent,
+            bool osLogin2fa,
+            bool legacySshKeyPresent,
             bool projectWideKeysBlocked)
         {
             var projectMetadata = new Metadata();
@@ -71,10 +72,16 @@ namespace Google.Solutions.IapDesktop.Extensions.Ssh.Test.Services.Auth
                 projectMetadata.Add("enable-oslogin", "true");
             }
 
+            if (osLoginEnabledForProject && osLogin2fa)
+            {
+                projectMetadata.Add("enable-oslogin-2fa", "true");
+            }
+
             if (projectWideKeysBlocked)
             {
                 projectMetadata.Add("block-project-ssh-keys", "true");
             }
+
 
             var instanceMetadata = new Metadata();
             if (osLoginEnabledForInstance)
@@ -82,7 +89,12 @@ namespace Google.Solutions.IapDesktop.Extensions.Ssh.Test.Services.Auth
                 instanceMetadata.Add("enable-oslogin", "true");
             }
 
-            if (legecySshKeyPresent)
+            if (osLoginEnabledForInstance && osLogin2fa)
+            {
+                instanceMetadata.Add("enable-oslogin-2fa", "true");
+            }
+
+            if (legacySshKeyPresent)
             {
                 instanceMetadata.Add("sshKeys", "somedata");
             }
@@ -126,6 +138,10 @@ namespace Google.Solutions.IapDesktop.Extensions.Ssh.Test.Services.Auth
             return osLoginService;
         }
 
+        //---------------------------------------------------------------------
+        // Os Login.
+        //---------------------------------------------------------------------
+
         [Test]
         public async Task WhenOsLoginEnabledForProject_ThenAuthorizeKeyAsyncUsesOsLogin()
         {
@@ -134,7 +150,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Ssh.Test.Services.Auth
                 CreateComputeEngineAdapterMock(
                     osLoginEnabledForProject: true,
                     osLoginEnabledForInstance: false,
-                    legecySshKeyPresent: true,
+                    osLogin2fa: false,
+                    legacySshKeyPresent: true,
                     projectWideKeysBlocked: false).Object,
                 CreateOsLoginServiceMock().Object);
 
@@ -159,7 +176,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Ssh.Test.Services.Auth
                 CreateComputeEngineAdapterMock(
                     osLoginEnabledForProject: false,
                     osLoginEnabledForInstance: true,
-                    legecySshKeyPresent: true,
+                    osLogin2fa: false,
+                    legacySshKeyPresent: true,
                     projectWideKeysBlocked: false).Object,
                 CreateOsLoginServiceMock().Object);
 
@@ -184,7 +202,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Ssh.Test.Services.Auth
                 CreateComputeEngineAdapterMock(
                     osLoginEnabledForProject: true,
                     osLoginEnabledForInstance: false,
-                    legecySshKeyPresent: false,
+                    osLogin2fa: false,
+                    legacySshKeyPresent: false,
                     projectWideKeysBlocked: false).Object,
                 CreateOsLoginServiceMock().Object);
 
@@ -206,7 +225,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Ssh.Test.Services.Auth
                 CreateComputeEngineAdapterMock(
                     osLoginEnabledForProject: false,
                     osLoginEnabledForInstance: true,
-                    legecySshKeyPresent: false,
+                    osLogin2fa: false,
+                    legacySshKeyPresent: false,
                     projectWideKeysBlocked: false).Object,
                 CreateOsLoginServiceMock().Object);
 
@@ -221,14 +241,42 @@ namespace Google.Solutions.IapDesktop.Extensions.Ssh.Test.Services.Auth
         }
 
         [Test]
+        public void WhenOsLogin2faEnabled_ThenAuthorizeKeyThrowsNotImplementedException()
+        {
+            var service = new AuthorizedKeyService(
+                CreateAuthorizationAdapterMock().Object,
+                CreateComputeEngineAdapterMock(
+                    osLoginEnabledForProject: true,
+                    osLoginEnabledForInstance: true,
+                    osLogin2fa: true,
+                    legacySshKeyPresent: false,
+                    projectWideKeysBlocked: false).Object,
+                CreateOsLoginServiceMock().Object);
+
+            AssertEx.ThrowsAggregateException<NotImplementedException>(
+                () => service.AuthorizeKeyAsync(
+                    SampleLocator,
+                    new Mock<ISshKey>().Object,
+                    TimeSpan.FromMinutes(1),
+                    null,
+                    AuthorizeKeyMethods.All,
+                    CancellationToken.None).Wait());
+        }
+
+        //---------------------------------------------------------------------
+        // Metadata.
+        //---------------------------------------------------------------------
+
+        [Test]
         public void WhenLegacySshKeyPresent_ThenAuthorizeKeyAsyncThrowsUnsupportedLegacySshKeyEncounteredException()
         {
             var service = new AuthorizedKeyService(
                 CreateAuthorizationAdapterMock().Object,
                 CreateComputeEngineAdapterMock(
                     osLoginEnabledForProject: false,
-                    osLoginEnabledForInstance: false, 
-                    legecySshKeyPresent: true,
+                    osLoginEnabledForInstance: false,
+                    osLogin2fa: false,
+                    legacySshKeyPresent: true,
                     projectWideKeysBlocked: false).Object,
                 CreateOsLoginServiceMock().Object);
 
@@ -248,7 +296,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Ssh.Test.Services.Auth
             var computeEngineAdapter = CreateComputeEngineAdapterMock(
                 osLoginEnabledForProject: false,
                 osLoginEnabledForInstance: false,
-                legecySshKeyPresent: false,
+                osLogin2fa: false,
+                legacySshKeyPresent: false,
                 projectWideKeysBlocked: true);
             var service = new AuthorizedKeyService(
                 CreateAuthorizationAdapterMock().Object,
@@ -282,7 +331,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Ssh.Test.Services.Auth
             var computeEngineAdapter = CreateComputeEngineAdapterMock(
                 osLoginEnabledForProject: false,
                 osLoginEnabledForInstance: false,
-                legecySshKeyPresent: false,
+                osLogin2fa: false,
+                legacySshKeyPresent: false,
                 projectWideKeysBlocked: true);
             var service = new AuthorizedKeyService(
                 CreateAuthorizationAdapterMock().Object,
@@ -305,7 +355,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Ssh.Test.Services.Auth
             var computeEngineAdapter = CreateComputeEngineAdapterMock(
                 osLoginEnabledForProject: false,
                 osLoginEnabledForInstance: false,
-                legecySshKeyPresent: false,
+                osLogin2fa: false,
+                legacySshKeyPresent: false,
                 projectWideKeysBlocked: false);
             var service = new AuthorizedKeyService(
                 CreateAuthorizationAdapterMock().Object,
@@ -339,7 +390,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Ssh.Test.Services.Auth
             var computeEngineAdapter = CreateComputeEngineAdapterMock(
                 osLoginEnabledForProject: false,
                 osLoginEnabledForInstance: false,
-                legecySshKeyPresent: false,
+                osLogin2fa: false,
+                legacySshKeyPresent: false,
                 projectWideKeysBlocked: false);
             var service = new AuthorizedKeyService(
                 CreateAuthorizationAdapterMock().Object,
@@ -376,7 +428,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Ssh.Test.Services.Auth
             var computeEngineAdapter = CreateComputeEngineAdapterMock(
                 osLoginEnabledForProject: false,
                 osLoginEnabledForInstance: false,
-                legecySshKeyPresent: false,
+                osLogin2fa: false,
+                legacySshKeyPresent: false,
                 projectWideKeysBlocked: false);
             computeEngineAdapter
                 .Setup(a => a.UpdateCommonInstanceMetadataAsync(

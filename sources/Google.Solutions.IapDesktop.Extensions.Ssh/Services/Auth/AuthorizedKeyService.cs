@@ -46,6 +46,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Ssh.Services.Auth
     public class AuthorizedKeyService : IAuthorizedKeyService
     {
         private const string EnableOsLoginFlag = "enable-oslogin";
+        private const string EnableOsLoginMultiFactorFlag = "enable-oslogin-2fa";
         private const string BlockProjectSshKeysFlag = "block-project-ssh-keys";
 
         private readonly IAuthorizationAdapter authorizationAdapter;
@@ -77,9 +78,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Ssh.Services.Auth
         // Privates.
         //---------------------------------------------------------------------
 
-        private bool IsOsLoginEnabled(Metadata metadata)
+        private bool IsFlagEnabled(Metadata metadata, string flag)
         {
-            var enabled = metadata.GetValue(EnableOsLoginFlag);
+            var enabled = metadata.GetValue(flag);
             return enabled != null &&
                 enabled.Equals("true", StringComparison.OrdinalIgnoreCase);
         }
@@ -203,8 +204,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Ssh.Services.Auth
                 var instanceMetadata = (await instanceDetailsTask).Metadata;
                 var projectMetadata = (await projectDetailsTask).CommonInstanceMetadata;
                 
-                var osLoginEnabled = IsOsLoginEnabled(instanceMetadata) || 
-                                     IsOsLoginEnabled(projectMetadata);
+                var osLoginEnabled = IsFlagEnabled(instanceMetadata, EnableOsLoginFlag) || 
+                                     IsFlagEnabled(projectMetadata, EnableOsLoginFlag);
 
                 ApplicationTraceSources.Default.TraceVerbose(
                     "OS Login status for {0}: {1}", instance, osLoginEnabled);
@@ -219,6 +220,13 @@ namespace Google.Solutions.IapDesktop.Extensions.Ssh.Services.Auth
                     {
                         throw new InvalidOperationException(
                             $"{instance} requires OS Login to beused");
+                    }
+
+                    if (IsFlagEnabled(instanceMetadata, EnableOsLoginMultiFactorFlag) ||
+                        IsFlagEnabled(projectMetadata, EnableOsLoginMultiFactorFlag))
+                    {
+                        throw new NotImplementedException(
+                            "OS Login 2-factor authentication is not supported");
                     }
 
                     //
