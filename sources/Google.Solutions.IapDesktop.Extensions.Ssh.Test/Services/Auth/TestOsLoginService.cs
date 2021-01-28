@@ -58,7 +58,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Ssh.Test.Services.Auth
             AssertEx.ThrowsAggregateException<ArgumentNullException>(() => service.AuthorizeKeyAsync(
                 "project-1",
                 OsLoginSystemType.Linux,
-                new Mock<ISshKey>().Object,
+                null,
                 TimeSpan.FromDays(1),
                 CancellationToken.None).Wait());
         }

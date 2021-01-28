@@ -21,6 +21,7 @@
 
 using Google.Apis.Util;
 using Google.Solutions.Common.Diagnostics;
+using Google.Solutions.Common.Util;
 using Google.Solutions.IapDesktop.Application;
 using Google.Solutions.IapDesktop.Application.ObjectModel;
 using Google.Solutions.IapDesktop.Application.Views;
@@ -122,6 +123,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Ssh.Services.Auth
                 // Although rare, there could be multiple POSIX accounts.
                 //
                 var account = loginProfile.PosixAccounts
+                    .EnsureNotNull()
                     .FirstOrDefault(a => a.Primary == true &&
                                             a.OperatingSystemType == "LINUX");
 
