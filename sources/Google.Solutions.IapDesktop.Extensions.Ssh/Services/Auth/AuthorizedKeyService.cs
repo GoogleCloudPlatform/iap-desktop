@@ -50,7 +50,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Ssh.Services.Auth
 
         private readonly IAuthorizationAdapter authorizationAdapter;
         private readonly IComputeEngineAdapter computeEngineAdapter;
-        private readonly IOsLoginAdapter osLoginAdapter;
+        private readonly IOsLoginService osLoginService;
 
         //---------------------------------------------------------------------
         // Ctor.
@@ -59,18 +59,18 @@ namespace Google.Solutions.IapDesktop.Extensions.Ssh.Services.Auth
         public AuthorizedKeyService(
             IAuthorizationAdapter authorizationAdapter,
             IComputeEngineAdapter computeEngineAdapter,
-            IOsLoginAdapter osLoginAdapter)
+            IOsLoginService osLoginAdapter)
         {
             this.authorizationAdapter = authorizationAdapter;
             this.computeEngineAdapter = computeEngineAdapter;
-            this.osLoginAdapter = osLoginAdapter;
+            this.osLoginService = osLoginAdapter;
         }
 
         public AuthorizedKeyService(IServiceProvider serviceProvider)
             : this(
                   serviceProvider.GetService<IAuthorizationAdapter>(),
                   serviceProvider.GetService<IComputeEngineAdapter>(),
-                  serviceProvider.GetService<IOsLoginAdapter>())
+                  serviceProvider.GetService<IOsLoginService>())
         { }
 
         //---------------------------------------------------------------------
@@ -225,7 +225,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Ssh.Services.Auth
                     // NB. It's cheaper to unconditionally push the key than
                     // to check for previous keys first.
                     // 
-                    return await this.osLoginAdapter.ImportSshPublicKeyAsync(
+                    return await this.osLoginService.AuthorizeKeyAsync(
                             instance.ProjectId,
                             OsLoginSystemType.Linux,
                             key,
