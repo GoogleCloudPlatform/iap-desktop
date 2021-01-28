@@ -169,33 +169,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Ssh.Test.Views.Terminal
         }
 
         [Test]
-        public async Task WhenUsernameIsNotPosixCompliant_ThenErrorIsShownAndWindowIsClosed(
-            [LinuxInstance] ResourceTask<InstanceLocator> instanceLocatorTask)
-        {
-            var instanceLocator = await instanceLocatorTask;
-
-            using (var key = new RsaSshKey(new RSACng()))
-            {
-                ConnectionFailedEvent deliveredEvent = null;
-                this.eventService.BindHandler<ConnectionFailedEvent>(e => deliveredEvent = e);
-
-                var broker = new SshTerminalConnectionBroker(
-                    this.serviceProvider);
-                await broker.ConnectAsync(
-                        instanceLocator,
-                        new IPEndPoint(await PublicAddressFromLocator(instanceLocator), 22),
-                        AuthorizedKey.ForMetadata(key, "not POSIX compli@nt", true, null))
-                    .ConfigureAwait(true);
-
-                Assert.IsNotNull(deliveredEvent, "Event fired");
-                Assert.IsInstanceOf(typeof(SshNativeException), this.ExceptionShown);
-                Assert.AreEqual(
-                    LIBSSH2_ERROR.AUTHENTICATION_FAILED,
-                    ((SshNativeException)this.ExceptionShown).ErrorCode);
-            }
-        }
-
-        [Test]
         public async Task WhenKeyUnknown_ThenErrorIsShownAndWindowIsClosed(
             [LinuxInstance] ResourceTask<InstanceLocator> instanceLocatorTask)
         {

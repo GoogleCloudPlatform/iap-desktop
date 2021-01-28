@@ -139,8 +139,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Ssh.Views.Terminal
                     "You do not have sufficient permissions to access this VM instance.\n\n" +
                     "To perform this action, you need the following roles (or an equivalent custom role):\n\n" +
                     " 1. 'Compute OS Login' or 'Compute OS Admin Login'\n" + 
-                    " 2. 'Service Account User' (only if the VM instance uses a service account)\n" +
-                    " 3. 'Compute OS Login External User' (only if the VM instance is in a different GCP organization\n",
+                    " 2. 'Service Account User' (if the VM uses a service account)\n" +
+                    " 3. 'Compute OS Login External User' (if the VM belongs to a different GCP organization\n",
                     e,
                     HelpTopics.GrantingOsLoginRoles);
             }
