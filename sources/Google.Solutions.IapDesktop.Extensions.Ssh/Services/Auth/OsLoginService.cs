@@ -19,22 +19,15 @@
 // under the License.
 //
 
-using Google.Apis.Auth.OAuth2;
-using Google.Apis.CloudOSLogin.v1;
-using Google.Apis.CloudOSLogin.v1.Data;
 using Google.Apis.Util;
-using Google.Solutions.Common.ApiExtensions;
 using Google.Solutions.Common.Diagnostics;
 using Google.Solutions.IapDesktop.Application;
 using Google.Solutions.IapDesktop.Application.ObjectModel;
-using Google.Solutions.IapDesktop.Application.Services.Adapters;
 using Google.Solutions.IapDesktop.Application.Views;
 using Google.Solutions.IapDesktop.Application.Views.Dialog;
 using Google.Solutions.IapDesktop.Extensions.Ssh.Services.Adapter;
-using Google.Solutions.IapDesktop.Extensions.Ssh.Services.Auth;
 using Google.Solutions.Ssh;
 using System;
-using System.Diagnostics;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;

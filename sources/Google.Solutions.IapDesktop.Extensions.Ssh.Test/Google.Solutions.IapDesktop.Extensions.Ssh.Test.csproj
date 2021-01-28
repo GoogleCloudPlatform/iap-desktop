@@ -81,6 +81,7 @@
     <Compile Include="Controls\TestTerminalFont.cs" />
     <Compile Include="Services\Adapter\TestMetadataAuthorizedKey.cs" />
     <Compile Include="Services\Adapter\TestMetadataAuthorizedKeySet.cs" />
+    <Compile Include="Services\Auth\TestAuthorizedKeyService.cs" />
     <Compile Include="Services\Auth\TestOsLoginService.cs" />
     <Compile Include="Services\Auth\TestAuthorizedKey.cs" />
     <Compile Include="Services\Auth\TestPublicKeyService.cs" />

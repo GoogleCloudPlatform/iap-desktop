@@ -59,11 +59,11 @@ namespace Google.Solutions.IapDesktop.Extensions.Ssh.Services.Auth
         public AuthorizedKeyService(
             IAuthorizationAdapter authorizationAdapter,
             IComputeEngineAdapter computeEngineAdapter,
-            IOsLoginService osLoginAdapter)
+            IOsLoginService osLoginService)
         {
             this.authorizationAdapter = authorizationAdapter;
             this.computeEngineAdapter = computeEngineAdapter;
-            this.osLoginService = osLoginAdapter;
+            this.osLoginService = osLoginService;
         }
 
         public AuthorizedKeyService(IServiceProvider serviceProvider)
