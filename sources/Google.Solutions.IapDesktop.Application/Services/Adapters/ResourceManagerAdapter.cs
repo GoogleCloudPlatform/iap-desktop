@@ -48,6 +48,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.Adapters
             string projectId,
             CancellationToken cancellationToken);
 
+        // TODO: Add cancellation token
         Task<bool> IsGrantedPermission(
             string projectId,
             string permission);

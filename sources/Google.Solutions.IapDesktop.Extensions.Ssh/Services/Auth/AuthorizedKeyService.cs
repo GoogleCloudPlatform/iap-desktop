@@ -51,6 +51,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Ssh.Services.Auth
 
         private readonly IAuthorizationAdapter authorizationAdapter;
         private readonly IComputeEngineAdapter computeEngineAdapter;
+        private readonly IResourceManagerAdapter resourceManagerAdapter;
         private readonly IOsLoginService osLoginService;
 
         //---------------------------------------------------------------------
@@ -60,10 +61,12 @@ namespace Google.Solutions.IapDesktop.Extensions.Ssh.Services.Auth
         public AuthorizedKeyService(
             IAuthorizationAdapter authorizationAdapter,
             IComputeEngineAdapter computeEngineAdapter,
+            IResourceManagerAdapter resourceManagerAdapter,
             IOsLoginService osLoginService)
         {
             this.authorizationAdapter = authorizationAdapter;
             this.computeEngineAdapter = computeEngineAdapter;
+            this.resourceManagerAdapter = resourceManagerAdapter;
             this.osLoginService = osLoginService;
         }
 
@@ -71,6 +74,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Ssh.Services.Auth
             : this(
                   serviceProvider.GetService<IAuthorizationAdapter>(),
                   serviceProvider.GetService<IComputeEngineAdapter>(),
+                  serviceProvider.GetService<IResourceManagerAdapter>(),
                   serviceProvider.GetService<IOsLoginService>())
         { }
 
@@ -287,8 +291,18 @@ namespace Google.Solutions.IapDesktop.Extensions.Ssh.Services.Auth
                     if (allowedMethods.HasFlag(AuthorizeKeyMethods.ProjectMetadata) &&
                         allowedMethods.HasFlag(AuthorizeKeyMethods.InstanceMetadata))
                     {
-                        // Both allowed, so determine automatically.
-                        useInstanceKeySet = blockProjectSshKeys;
+                        //
+                        // Both allowed - use project metadata unless:
+                        // - project keys are blocked
+                        // - we do not have the permission to update project metadata.
+                        //
+                        var canUpdateProjectMetadata = await this.resourceManagerAdapter
+                            .IsGrantedPermission(
+                                instance.ProjectId,
+                                Permissions.ComputeProjectsSetCommonInstanceMetadata)
+                            .ConfigureAwait(false);
+
+                        useInstanceKeySet = blockProjectSshKeys || !canUpdateProjectMetadata;
                     }
                     else if (allowedMethods.HasFlag(AuthorizeKeyMethods.ProjectMetadata))
                     {

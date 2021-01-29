@@ -146,6 +146,19 @@ namespace Google.Solutions.IapDesktop.Extensions.Ssh.Test.Services.Auth
             return osLoginService;
         }
 
+        private static Mock<IResourceManagerAdapter> CreateResourceManagerAdapterMock(
+            bool allowSetCommonInstanceMetadata)
+        {
+            var adapter = new Mock<IResourceManagerAdapter>();
+            adapter
+                .Setup(a => a.IsGrantedPermission(
+                        It.IsAny<string>(),
+                        It.IsAny<string>()))
+                .ReturnsAsync(allowSetCommonInstanceMetadata);
+
+            return adapter;
+        }
+
         //---------------------------------------------------------------------
         // Os Login.
         //---------------------------------------------------------------------
@@ -162,6 +175,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Ssh.Test.Services.Auth
                     legacySshKeyPresent: true,
                     projectWideKeysBlockedForProject: false,
                     projectWideKeysBlockedForInstance: false).Object,
+                CreateResourceManagerAdapterMock(true).Object,
                 CreateOsLoginServiceMock().Object);
 
             var authorizedKey = await service.AuthorizeKeyAsync(
@@ -189,6 +203,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Ssh.Test.Services.Auth
                     legacySshKeyPresent: true,
                     projectWideKeysBlockedForProject: false,
                     projectWideKeysBlockedForInstance: false).Object,
+                CreateResourceManagerAdapterMock(true).Object,
                 CreateOsLoginServiceMock().Object);
 
             var authorizedKey = await service.AuthorizeKeyAsync(
@@ -216,6 +231,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Ssh.Test.Services.Auth
                     legacySshKeyPresent: true,
                     projectWideKeysBlockedForProject: false,
                     projectWideKeysBlockedForInstance: false).Object,
+                CreateResourceManagerAdapterMock(true).Object,
                 CreateOsLoginServiceMock().Object);
 
             var authorizedKey = await service.AuthorizeKeyAsync(
@@ -244,6 +260,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Ssh.Test.Services.Auth
             var service = new AuthorizedKeyService(
                 CreateAuthorizationAdapterMock().Object,
                 computeEngineAdapter.Object,
+                CreateResourceManagerAdapterMock(true).Object,
                 CreateOsLoginServiceMock().Object);
 
             using (var key = RsaSshKey.NewEphemeralKey())
@@ -279,6 +296,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Ssh.Test.Services.Auth
                     legacySshKeyPresent: false,
                     projectWideKeysBlockedForProject: false,
                     projectWideKeysBlockedForInstance: false).Object,
+                CreateResourceManagerAdapterMock(true).Object,
                 CreateOsLoginServiceMock().Object);
 
             AssertEx.ThrowsAggregateException<InvalidOperationException>(
@@ -303,6 +321,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Ssh.Test.Services.Auth
                     legacySshKeyPresent: false,
                     projectWideKeysBlockedForProject: false,
                     projectWideKeysBlockedForInstance: false).Object,
+                CreateResourceManagerAdapterMock(true).Object,
                 CreateOsLoginServiceMock().Object);
 
             AssertEx.ThrowsAggregateException<InvalidOperationException>(
@@ -327,6 +346,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Ssh.Test.Services.Auth
                     legacySshKeyPresent: false,
                     projectWideKeysBlockedForProject: false,
                     projectWideKeysBlockedForInstance: false).Object,
+                CreateResourceManagerAdapterMock(true).Object,
                 CreateOsLoginServiceMock().Object);
 
             AssertEx.ThrowsAggregateException<NotImplementedException>(
@@ -355,6 +375,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Ssh.Test.Services.Auth
                     legacySshKeyPresent: true,
                     projectWideKeysBlockedForProject: false,
                     projectWideKeysBlockedForInstance: false).Object,
+                CreateResourceManagerAdapterMock(true).Object,
                 CreateOsLoginServiceMock().Object);
 
             AssertEx.ThrowsAggregateException<UnsupportedLegacySshKeyEncounteredException>(
@@ -380,6 +401,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Ssh.Test.Services.Auth
             var service = new AuthorizedKeyService(
                 CreateAuthorizationAdapterMock().Object,
                 computeEngineAdapter.Object,
+                CreateResourceManagerAdapterMock(true).Object,
                 CreateOsLoginServiceMock().Object);
 
             using (var key = RsaSshKey.NewEphemeralKey())
@@ -416,6 +438,44 @@ namespace Google.Solutions.IapDesktop.Extensions.Ssh.Test.Services.Auth
             var service = new AuthorizedKeyService(
                 CreateAuthorizationAdapterMock().Object,
                 computeEngineAdapter.Object,
+                CreateResourceManagerAdapterMock(true).Object,
+                CreateOsLoginServiceMock().Object);
+
+            using (var key = RsaSshKey.NewEphemeralKey())
+            {
+                var authorizedKey = await service.AuthorizeKeyAsync(
+                    SampleLocator,
+                    key,
+                    TimeSpan.FromMinutes(1),
+                    null,
+                    AuthorizeKeyMethods.All,
+                    CancellationToken.None);
+
+                Assert.IsNotNull(authorizedKey);
+                Assert.AreEqual(AuthorizeKeyMethods.InstanceMetadata, authorizedKey.AuthorizationMethod);
+                Assert.AreEqual("bob", authorizedKey.Username);
+
+                computeEngineAdapter.Verify(a => a.UpdateMetadataAsync(
+                    It.Is((InstanceLocator loc) => loc == SampleLocator),
+                    It.IsAny<Action<Metadata>>(),
+                    It.IsAny<CancellationToken>()), Times.Once);
+            }
+        }
+
+        [Test]
+        public async Task WhenProjectMetadataNotWritable_ThenAuthorizeKeyAsyncPushesKeyToInstanceMetadata()
+        {
+            var computeEngineAdapter = CreateComputeEngineAdapterMock(
+                osLoginEnabledForProject: null,
+                osLoginEnabledForInstance: null,
+                osLogin2fa: false,
+                legacySshKeyPresent: false,
+                projectWideKeysBlockedForProject: false,
+                projectWideKeysBlockedForInstance: false);
+            var service = new AuthorizedKeyService(
+                CreateAuthorizationAdapterMock().Object,
+                computeEngineAdapter.Object,
+                CreateResourceManagerAdapterMock(false).Object,
                 CreateOsLoginServiceMock().Object);
 
             using (var key = RsaSshKey.NewEphemeralKey())
@@ -452,6 +512,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Ssh.Test.Services.Auth
             var service = new AuthorizedKeyService(
                 CreateAuthorizationAdapterMock().Object,
                 computeEngineAdapter.Object,
+                CreateResourceManagerAdapterMock(true).Object,
                 CreateOsLoginServiceMock().Object);
 
             AssertEx.ThrowsAggregateException<InvalidOperationException>(
@@ -477,6 +538,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Ssh.Test.Services.Auth
             var service = new AuthorizedKeyService(
                 CreateAuthorizationAdapterMock().Object,
                 computeEngineAdapter.Object,
+                CreateResourceManagerAdapterMock(true).Object,
                 CreateOsLoginServiceMock().Object);
 
             using (var key = RsaSshKey.NewEphemeralKey())
@@ -513,6 +575,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Ssh.Test.Services.Auth
             var service = new AuthorizedKeyService(
                 CreateAuthorizationAdapterMock().Object,
                 computeEngineAdapter.Object,
+                CreateResourceManagerAdapterMock(true).Object,
                 CreateOsLoginServiceMock().Object);
 
             using (var key = RsaSshKey.NewEphemeralKey())
@@ -562,6 +625,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Ssh.Test.Services.Auth
             var service = new AuthorizedKeyService(
                 CreateAuthorizationAdapterMock().Object,
                 computeEngineAdapter.Object,
+                CreateResourceManagerAdapterMock(true).Object,
                 CreateOsLoginServiceMock().Object);
 
             using (var key = RsaSshKey.NewEphemeralKey())
