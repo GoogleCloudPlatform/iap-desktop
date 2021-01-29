@@ -60,36 +60,39 @@ namespace Google.Solutions.IapDesktop.Extensions.Ssh.Test.Services.Auth
         }
 
         private Mock<IComputeEngineAdapter> CreateComputeEngineAdapterMock(
-            bool osLoginEnabledForProject,
-            bool osLoginEnabledForInstance,
+            bool? osLoginEnabledForProject,
+            bool? osLoginEnabledForInstance,
             bool osLogin2fa,
             bool legacySshKeyPresent,
-            bool projectWideKeysBlocked)
+            bool projectWideKeysBlockedForProject,
+            bool projectWideKeysBlockedForInstance)
         {
             var projectMetadata = new Metadata();
-            if (osLoginEnabledForProject)
+            if (osLoginEnabledForProject.HasValue)
             {
-                projectMetadata.Add("enable-oslogin", "true");
+                projectMetadata.Add("enable-oslogin", 
+                    osLoginEnabledForProject.Value.ToString());
             }
 
-            if (osLoginEnabledForProject && osLogin2fa)
+            if (osLoginEnabledForProject.HasValue && osLogin2fa)
             {
                 projectMetadata.Add("enable-oslogin-2fa", "true");
             }
 
-            if (projectWideKeysBlocked)
+            if (projectWideKeysBlockedForProject)
             {
                 projectMetadata.Add("block-project-ssh-keys", "true");
             }
 
 
             var instanceMetadata = new Metadata();
-            if (osLoginEnabledForInstance)
+            if (osLoginEnabledForInstance.HasValue)
             {
-                instanceMetadata.Add("enable-oslogin", "true");
+                instanceMetadata.Add("enable-oslogin", 
+                    osLoginEnabledForInstance.Value.ToString());
             }
 
-            if (osLoginEnabledForInstance && osLogin2fa)
+            if (osLoginEnabledForInstance.HasValue && osLogin2fa)
             {
                 instanceMetadata.Add("enable-oslogin-2fa", "true");
             }
@@ -97,6 +100,11 @@ namespace Google.Solutions.IapDesktop.Extensions.Ssh.Test.Services.Auth
             if (legacySshKeyPresent)
             {
                 instanceMetadata.Add("sshKeys", "somedata");
+            }
+
+            if (projectWideKeysBlockedForInstance)
+            {
+                instanceMetadata.Add("block-project-ssh-keys", "true");
             }
 
             var adapter = new Mock<IComputeEngineAdapter>();
@@ -149,10 +157,11 @@ namespace Google.Solutions.IapDesktop.Extensions.Ssh.Test.Services.Auth
                 CreateAuthorizationAdapterMock().Object,
                 CreateComputeEngineAdapterMock(
                     osLoginEnabledForProject: true,
-                    osLoginEnabledForInstance: false,
+                    osLoginEnabledForInstance: null,
                     osLogin2fa: false,
                     legacySshKeyPresent: true,
-                    projectWideKeysBlocked: false).Object,
+                    projectWideKeysBlockedForProject: false,
+                    projectWideKeysBlockedForInstance: false).Object,
                 CreateOsLoginServiceMock().Object);
 
             var authorizedKey = await service.AuthorizeKeyAsync(
@@ -174,11 +183,12 @@ namespace Google.Solutions.IapDesktop.Extensions.Ssh.Test.Services.Auth
             var service = new AuthorizedKeyService(
                 CreateAuthorizationAdapterMock().Object,
                 CreateComputeEngineAdapterMock(
-                    osLoginEnabledForProject: false,
+                    osLoginEnabledForProject: null,
                     osLoginEnabledForInstance: true,
                     osLogin2fa: false,
                     legacySshKeyPresent: true,
-                    projectWideKeysBlocked: false).Object,
+                    projectWideKeysBlockedForProject: false,
+                    projectWideKeysBlockedForInstance: false).Object,
                 CreateOsLoginServiceMock().Object);
 
             var authorizedKey = await service.AuthorizeKeyAsync(
@@ -195,16 +205,80 @@ namespace Google.Solutions.IapDesktop.Extensions.Ssh.Test.Services.Auth
         }
 
         [Test]
+        public async Task WhenOsLoginDisabledForProjectButEnabledForInstance_ThenAuthorizeKeyAsyncUsesOsLogin()
+        {
+            var service = new AuthorizedKeyService(
+                CreateAuthorizationAdapterMock().Object,
+                CreateComputeEngineAdapterMock(
+                    osLoginEnabledForProject: false,
+                    osLoginEnabledForInstance: true,
+                    osLogin2fa: false,
+                    legacySshKeyPresent: true,
+                    projectWideKeysBlockedForProject: false,
+                    projectWideKeysBlockedForInstance: false).Object,
+                CreateOsLoginServiceMock().Object);
+
+            var authorizedKey = await service.AuthorizeKeyAsync(
+                SampleLocator,
+                new Mock<ISshKey>().Object,
+                TimeSpan.FromMinutes(1),
+                null,
+                AuthorizeKeyMethods.All,
+                CancellationToken.None);
+
+            Assert.IsNotNull(authorizedKey);
+            Assert.AreEqual(AuthorizeKeyMethods.Oslogin, authorizedKey.AuthorizationMethod);
+            Assert.AreEqual("bob", authorizedKey.Username);
+        }
+
+        [Test]
+        public async Task WhenOsLoginEnabledForProjectButDisabledForInstance_ThenAuthorizeKeyAsyncPushesKeyToProjectMetadata()
+        {
+            var computeEngineAdapter = CreateComputeEngineAdapterMock(
+                osLoginEnabledForProject: true,
+                osLoginEnabledForInstance: false,
+                osLogin2fa: false,
+                legacySshKeyPresent: false,
+                projectWideKeysBlockedForProject: false,
+                projectWideKeysBlockedForInstance: false);
+            var service = new AuthorizedKeyService(
+                CreateAuthorizationAdapterMock().Object,
+                computeEngineAdapter.Object,
+                CreateOsLoginServiceMock().Object);
+
+            using (var key = RsaSshKey.NewEphemeralKey())
+            {
+                var authorizedKey = await service.AuthorizeKeyAsync(
+                    SampleLocator,
+                    key,
+                    TimeSpan.FromMinutes(1),
+                    null,
+                    AuthorizeKeyMethods.All,
+                    CancellationToken.None);
+
+                Assert.IsNotNull(authorizedKey);
+                Assert.AreEqual(AuthorizeKeyMethods.ProjectMetadata, authorizedKey.AuthorizationMethod);
+                Assert.AreEqual("bob", authorizedKey.Username);
+
+                computeEngineAdapter.Verify(a => a.UpdateCommonInstanceMetadataAsync(
+                    It.IsAny<string>(),
+                    It.IsAny<Action<Metadata>>(),
+                    It.IsAny<CancellationToken>()), Times.Once);
+            }
+        }
+
+        [Test]
         public void WhenOsLoginEnabledForProjectButOsLoginNotAllowed_ThenAuthorizeKeyThrowsInvalidOperationException()
         {
             var service = new AuthorizedKeyService(
                 CreateAuthorizationAdapterMock().Object,
                 CreateComputeEngineAdapterMock(
                     osLoginEnabledForProject: true,
-                    osLoginEnabledForInstance: false,
+                    osLoginEnabledForInstance: null,
                     osLogin2fa: false,
                     legacySshKeyPresent: false,
-                    projectWideKeysBlocked: false).Object,
+                    projectWideKeysBlockedForProject: false,
+                    projectWideKeysBlockedForInstance: false).Object,
                 CreateOsLoginServiceMock().Object);
 
             AssertEx.ThrowsAggregateException<InvalidOperationException>(
@@ -223,11 +297,12 @@ namespace Google.Solutions.IapDesktop.Extensions.Ssh.Test.Services.Auth
             var service = new AuthorizedKeyService(
                 CreateAuthorizationAdapterMock().Object,
                 CreateComputeEngineAdapterMock(
-                    osLoginEnabledForProject: false,
+                    osLoginEnabledForProject: null,
                     osLoginEnabledForInstance: true,
                     osLogin2fa: false,
                     legacySshKeyPresent: false,
-                    projectWideKeysBlocked: false).Object,
+                    projectWideKeysBlockedForProject: false,
+                    projectWideKeysBlockedForInstance: false).Object,
                 CreateOsLoginServiceMock().Object);
 
             AssertEx.ThrowsAggregateException<InvalidOperationException>(
@@ -247,10 +322,11 @@ namespace Google.Solutions.IapDesktop.Extensions.Ssh.Test.Services.Auth
                 CreateAuthorizationAdapterMock().Object,
                 CreateComputeEngineAdapterMock(
                     osLoginEnabledForProject: true,
-                    osLoginEnabledForInstance: true,
+                    osLoginEnabledForInstance: null,
                     osLogin2fa: true,
                     legacySshKeyPresent: false,
-                    projectWideKeysBlocked: false).Object,
+                    projectWideKeysBlockedForProject: false,
+                    projectWideKeysBlockedForInstance: false).Object,
                 CreateOsLoginServiceMock().Object);
 
             AssertEx.ThrowsAggregateException<NotImplementedException>(
@@ -273,11 +349,12 @@ namespace Google.Solutions.IapDesktop.Extensions.Ssh.Test.Services.Auth
             var service = new AuthorizedKeyService(
                 CreateAuthorizationAdapterMock().Object,
                 CreateComputeEngineAdapterMock(
-                    osLoginEnabledForProject: false,
-                    osLoginEnabledForInstance: false,
+                    osLoginEnabledForProject: null,
+                    osLoginEnabledForInstance: null,
                     osLogin2fa: false,
                     legacySshKeyPresent: true,
-                    projectWideKeysBlocked: false).Object,
+                    projectWideKeysBlockedForProject: false,
+                    projectWideKeysBlockedForInstance: false).Object,
                 CreateOsLoginServiceMock().Object);
 
             AssertEx.ThrowsAggregateException<UnsupportedLegacySshKeyEncounteredException>(
@@ -291,14 +368,51 @@ namespace Google.Solutions.IapDesktop.Extensions.Ssh.Test.Services.Auth
         }
 
         [Test]
-        public async Task WhenProjectWideSshKeysBlocked_ThenAuthorizeKeyAsyncPushesKeyToInstanceMetadata()
+        public async Task WhenProjectWideSshKeysBlockedInProject_ThenAuthorizeKeyAsyncPushesKeyToInstanceMetadata()
         {
             var computeEngineAdapter = CreateComputeEngineAdapterMock(
-                osLoginEnabledForProject: false,
-                osLoginEnabledForInstance: false,
+                osLoginEnabledForProject: null,
+                osLoginEnabledForInstance: null,
                 osLogin2fa: false,
                 legacySshKeyPresent: false,
-                projectWideKeysBlocked: true);
+                projectWideKeysBlockedForProject: true,
+                projectWideKeysBlockedForInstance: false);
+            var service = new AuthorizedKeyService(
+                CreateAuthorizationAdapterMock().Object,
+                computeEngineAdapter.Object,
+                CreateOsLoginServiceMock().Object);
+
+            using (var key = RsaSshKey.NewEphemeralKey())
+            {
+                var authorizedKey = await service.AuthorizeKeyAsync(
+                    SampleLocator,
+                    key,
+                    TimeSpan.FromMinutes(1),
+                    null,
+                    AuthorizeKeyMethods.All,
+                    CancellationToken.None);
+
+                Assert.IsNotNull(authorizedKey);
+                Assert.AreEqual(AuthorizeKeyMethods.InstanceMetadata, authorizedKey.AuthorizationMethod);
+                Assert.AreEqual("bob", authorizedKey.Username);
+
+                computeEngineAdapter.Verify(a => a.UpdateMetadataAsync(
+                    It.Is((InstanceLocator loc) => loc == SampleLocator),
+                    It.IsAny<Action<Metadata>>(),
+                    It.IsAny<CancellationToken>()), Times.Once);
+            }
+        }
+
+        [Test]
+        public async Task WhenProjectWideSshKeysBlockedInInstance_ThenAuthorizeKeyAsyncPushesKeyToInstanceMetadata()
+        {
+            var computeEngineAdapter = CreateComputeEngineAdapterMock(
+                osLoginEnabledForProject: null,
+                osLoginEnabledForInstance: null,
+                osLogin2fa: false,
+                legacySshKeyPresent: false,
+                projectWideKeysBlockedForProject: false,
+                projectWideKeysBlockedForInstance: true);
             var service = new AuthorizedKeyService(
                 CreateAuthorizationAdapterMock().Object,
                 computeEngineAdapter.Object,
@@ -329,11 +443,12 @@ namespace Google.Solutions.IapDesktop.Extensions.Ssh.Test.Services.Auth
         public void WhenProjectWideSshKeysBlockedButInstanceMetadataNotAllowed_ThenAuthorizeKeyThrowsInvalidOperationException()
         {
             var computeEngineAdapter = CreateComputeEngineAdapterMock(
-                osLoginEnabledForProject: false,
-                osLoginEnabledForInstance: false,
+                osLoginEnabledForProject: null,
+                osLoginEnabledForInstance: null,
                 osLogin2fa: false,
                 legacySshKeyPresent: false,
-                projectWideKeysBlocked: true);
+                projectWideKeysBlockedForProject: true,
+                projectWideKeysBlockedForInstance: false);
             var service = new AuthorizedKeyService(
                 CreateAuthorizationAdapterMock().Object,
                 computeEngineAdapter.Object,
@@ -353,11 +468,12 @@ namespace Google.Solutions.IapDesktop.Extensions.Ssh.Test.Services.Auth
         public async Task WhenProjectMetadataNotAllowed_ThenAuthorizeKeyAsyncPushesKeyToInstanceMetadata()
         {
             var computeEngineAdapter = CreateComputeEngineAdapterMock(
-                osLoginEnabledForProject: false,
-                osLoginEnabledForInstance: false,
+                osLoginEnabledForProject: null,
+                osLoginEnabledForInstance: null,
                 osLogin2fa: false,
                 legacySshKeyPresent: false,
-                projectWideKeysBlocked: false);
+                projectWideKeysBlockedForProject: false,
+                projectWideKeysBlockedForInstance: false);
             var service = new AuthorizedKeyService(
                 CreateAuthorizationAdapterMock().Object,
                 computeEngineAdapter.Object,
@@ -388,11 +504,12 @@ namespace Google.Solutions.IapDesktop.Extensions.Ssh.Test.Services.Auth
         public async Task WhenProjectAndInstanceMetadataAllowed_ThenAuthorizeKeyAsyncPushesKeyToProjectMetadata()
         {
             var computeEngineAdapter = CreateComputeEngineAdapterMock(
-                osLoginEnabledForProject: false,
-                osLoginEnabledForInstance: false,
+                osLoginEnabledForProject: null,
+                osLoginEnabledForInstance: null,
                 osLogin2fa: false,
                 legacySshKeyPresent: false,
-                projectWideKeysBlocked: false);
+                projectWideKeysBlockedForProject: false,
+                projectWideKeysBlockedForInstance: false);
             var service = new AuthorizedKeyService(
                 CreateAuthorizationAdapterMock().Object,
                 computeEngineAdapter.Object,
@@ -426,11 +543,12 @@ namespace Google.Solutions.IapDesktop.Extensions.Ssh.Test.Services.Auth
             HttpStatusCode.BadRequest)] HttpStatusCode httpStatus)
         {
             var computeEngineAdapter = CreateComputeEngineAdapterMock(
-                osLoginEnabledForProject: false,
-                osLoginEnabledForInstance: false,
+                osLoginEnabledForProject: null,
+                osLoginEnabledForInstance: null,
                 osLogin2fa: false,
                 legacySshKeyPresent: false,
-                projectWideKeysBlocked: false);
+                projectWideKeysBlockedForProject: false,
+                projectWideKeysBlockedForInstance: false);
             computeEngineAdapter
                 .Setup(a => a.UpdateCommonInstanceMetadataAsync(
                     It.IsAny<string>(),

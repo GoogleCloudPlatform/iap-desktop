@@ -78,23 +78,34 @@ namespace Google.Solutions.IapDesktop.Extensions.Ssh.Services.Auth
         // Privates.
         //---------------------------------------------------------------------
 
-        private bool IsFlagEnabled(Metadata metadata, string flag)
+        private bool IsFlagEnabled(
+            Project project,
+            Instance instance, 
+            string flag)
         {
-            var enabled = metadata.GetValue(flag);
-            return enabled != null &&
-                enabled.Equals("true", StringComparison.OrdinalIgnoreCase);
+            var projectValue = project.CommonInstanceMetadata?.GetValue(flag);
+            var instanceValue = instance.Metadata?.GetValue(flag);
+
+            if (!string.IsNullOrEmpty(instanceValue))
+            {
+                // The instance takes precedence.
+                return instanceValue.Equals("true", StringComparison.OrdinalIgnoreCase);
+            }
+            else if (!string.IsNullOrEmpty(projectValue))
+            {
+                // The project value only applies if the instance value was null.
+                return projectValue.Equals("true", StringComparison.OrdinalIgnoreCase);
+            }
+            else
+            {
+                return false;
+            }
         }
 
         private bool IsLegacySshKeyPresent(Metadata metadata)
         {
             return !string.IsNullOrEmpty(
                 metadata.GetValue(MetadataAuthorizedKeySet.LegacyMetadataKey));
-        }
-
-        private bool IsProjectSshKeysBlocked(Project project)
-        {
-            return !string.IsNullOrEmpty(
-                project.CommonInstanceMetadata.GetValue(BlockProjectSshKeysFlag));
         }
 
         private static void MergeKeyIntoMetadata(
@@ -201,11 +212,13 @@ namespace Google.Solutions.IapDesktop.Extensions.Ssh.Services.Auth
                         token)
                     .ConfigureAwait(false);
 
-                var instanceMetadata = (await instanceDetailsTask).Metadata;
-                var projectMetadata = (await projectDetailsTask).CommonInstanceMetadata;
-                
-                var osLoginEnabled = IsFlagEnabled(instanceMetadata, EnableOsLoginFlag) || 
-                                     IsFlagEnabled(projectMetadata, EnableOsLoginFlag);
+                var instanceDetails = await instanceDetailsTask;
+                var projectDetails = await projectDetailsTask;
+
+                var osLoginEnabled = IsFlagEnabled(
+                    projectDetails, 
+                    instanceDetails, 
+                    EnableOsLoginFlag);
 
                 ApplicationTraceSources.Default.TraceVerbose(
                     "OS Login status for {0}: {1}", instance, osLoginEnabled);
@@ -222,8 +235,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Ssh.Services.Auth
                             $"{instance} requires OS Login to beused");
                     }
 
-                    if (IsFlagEnabled(instanceMetadata, EnableOsLoginMultiFactorFlag) ||
-                        IsFlagEnabled(projectMetadata, EnableOsLoginMultiFactorFlag))
+                    if (IsFlagEnabled(projectDetails, instanceDetails, EnableOsLoginMultiFactorFlag))
                     {
                         throw new NotImplementedException(
                             "OS Login 2-factor authentication is not supported");
@@ -243,6 +255,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Ssh.Services.Auth
                 }
                 else 
                 {
+                    var instanceMetadata = instanceDetails.Metadata;
+                    var projectMetadata = projectDetails.CommonInstanceMetadata;
+
                     //
                     // Check if there is a legacy SSH key. If there is one,
                     // other keys are ignored.
@@ -253,7 +268,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Ssh.Services.Auth
                     if (IsLegacySshKeyPresent(instanceMetadata))
                     {
                         throw new UnsupportedLegacySshKeyEncounteredException(
-                            $"Instance {instance} uses legacy SSH keys",
+                            $"Connecting to the VM instance {instance.Name} is not supported " +
+                            "because the instance uses legacy SSH keys in its metadata (sshKeys)",
                             HelpTopics.ManagingMetadataAuthorizedKeys);
                     }
 
@@ -262,17 +278,22 @@ namespace Google.Solutions.IapDesktop.Extensions.Ssh.Services.Auth
                     // 
                     // Now figure out which username to use and where to push it.
                     //
+                    var blockProjectSshKeys = IsFlagEnabled(
+                        projectDetails,
+                        instanceDetails,
+                        BlockProjectSshKeysFlag);
+
                     bool useInstanceKeySet;
                     if (allowedMethods.HasFlag(AuthorizeKeyMethods.ProjectMetadata) &&
                         allowedMethods.HasFlag(AuthorizeKeyMethods.InstanceMetadata))
                     {
                         // Both allowed, so determine automatically.
-                        useInstanceKeySet = IsProjectSshKeysBlocked(await projectDetailsTask);
+                        useInstanceKeySet = blockProjectSshKeys;
                     }
                     else if (allowedMethods.HasFlag(AuthorizeKeyMethods.ProjectMetadata))
                     {
                         // Only project allowed.
-                        if (IsProjectSshKeysBlocked(await projectDetailsTask))
+                        if (blockProjectSshKeys)
                         {
                             throw new InvalidOperationException(
                                 $"Project {instance.ProjectId} does not allow project-level SSH keys");
