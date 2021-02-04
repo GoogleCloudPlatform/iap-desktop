@@ -47,8 +47,10 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Views.Credentials
 
         private void ShowCredentialsDialog_Load(object sender, System.EventArgs e)
         {
-            var copyPasswordButton = new Button();
-            copyPasswordButton.Size = new Size(25, passwordText.ClientSize.Height + 2);
+            var copyPasswordButton = new Button
+            {
+                Size = new Size(25, passwordText.ClientSize.Height + 2)
+            };
             copyPasswordButton.Location = new Point(passwordText.ClientSize.Width - copyPasswordButton.Width, -1);
             copyPasswordButton.Image = Resources.Copy_16x;
             copyPasswordButton.Cursor = Cursors.Default;

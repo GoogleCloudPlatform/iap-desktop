@@ -38,6 +38,7 @@ namespace Google.Solutions.Ssh.Test.Native
         // Banner.
         //---------------------------------------------------------------------
 
+        [Test]
         public async Task WhenConnected_ThenGetRemoteBannerReturnsBanner(
             [LinuxInstance] ResourceTask<InstanceLocator> instanceLocatorTask)
         {

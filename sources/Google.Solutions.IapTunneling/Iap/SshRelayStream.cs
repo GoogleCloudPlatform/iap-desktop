@@ -214,7 +214,6 @@ namespace Google.Solutions.IapTunneling.Iap
                     if (this.__currentConnection != null)
                     {
                         await this.__currentConnection.CloseAsync(cancellationToken).ConfigureAwait(false);
-                        this.__currentConnection.Dispose();
                     }
                 }
                 catch (Exception e)
@@ -570,7 +569,6 @@ namespace Google.Solutions.IapTunneling.Iap
             base.Dispose(disposing);
 
             this.connectSemaphore.Dispose();
-            this.__currentConnection?.Dispose();
         }
     }
 

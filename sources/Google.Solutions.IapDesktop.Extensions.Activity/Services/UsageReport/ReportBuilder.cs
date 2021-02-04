@@ -216,8 +216,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services.UsageReport
                 var archive = ReportArchive.FromInstanceSetHistory(this.builder.Build());
 
                 await archive.LoadLicenseAnnotationsAsync(
-                    this.computeEngineAdapter,
-                    cancellationToken).ConfigureAwait(false);
+                        this.computeEngineAdapter,
+                        cancellationToken)
+                    .ConfigureAwait(false);
 
                 return archive;
             }
