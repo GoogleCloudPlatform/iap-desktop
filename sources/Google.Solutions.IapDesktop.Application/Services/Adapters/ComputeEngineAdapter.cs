@@ -59,7 +59,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.Adapters
         // Ctor.
         //---------------------------------------------------------------------
 
-        public ComputeEngineAdapter(
+        private ComputeEngineAdapter(
             ICredential credential,
             IDeviceEnrollment deviceEnrollment)
         {
@@ -458,16 +458,25 @@ namespace Google.Solutions.IapDesktop.Application.Services.Adapters
         // Metadata.
         //---------------------------------------------------------------------
 
-        public Task AddMetadataAsync(
+        public Task UpdateMetadataAsync(
             InstanceLocator instanceRef,
-            string key,
-            string value,
+            Action<Metadata> updateMetadata,
             CancellationToken token)
         {
-            return this.service.Instances.AddMetadataAsync(
+            return this.service.Instances.UpdateMetadataAsync(
                 instanceRef,
-                key,
-                value,
+                updateMetadata,
+                token);
+        }
+
+        public Task UpdateCommonInstanceMetadataAsync(
+            string projectId,
+            Action<Metadata> updateMetadata,
+            CancellationToken token)
+        {
+            return this.service.Projects.UpdateMetadataAsync(
+                projectId,
+                updateMetadata,
                 token);
         }
 

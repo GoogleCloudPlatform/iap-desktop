@@ -19,23 +19,25 @@
 // under the License.
 //
 
-using System;
+using Google.Apis.Compute.v1.Data;
+using Google.Solutions.Common.Util;
+using System.Linq;
 
-#pragma warning disable CS1819 // Properties should not return arrays
-
-namespace Google.Solutions.Ssh
+namespace Google.Solutions.IapDesktop.Application.Services.Adapters
 {
-    public interface ISshKey : IDisposable
+    public static class MetadataExtensions
     {
-        /// <summary>
-        /// Return public key in a format compliant with
-        /// https://tools.ietf.org/html/rfc4253#section-6.6
-        /// </summary>
-        byte[] PublicKey { get; }
 
-        byte[] SignData(byte[] data);
+        public static Metadata.ItemsData GetItem(this Metadata metadata, string key)
+        {
+            return metadata?.Items
+                .EnsureNotNull()
+                .FirstOrDefault(item => item.Key == key);
+        }
 
-        string PublicKeyString { get; }
-        string Type { get; }
+        public static string GetValue(this Metadata metadata, string key)
+        {
+            return GetItem(metadata, key)?.Value;
+        }
     }
 }

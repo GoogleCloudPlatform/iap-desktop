@@ -87,14 +87,25 @@ namespace Google.Solutions.Common.ApiExtensions.Request
 
                 await Task.Delay(200).ConfigureAwait(false);
 
-                var pollRequest = new ZoneOperationsResource(request.Service).Get(
-                    projectId,
-                    ShortIdFromUrl(operation.Zone),
-                    operation.Name);
-
-                operation = await pollRequest
-                    .ExecuteAsync(token)
-                    .ConfigureAwait(false);
+                if (operation.Zone != null)
+                {
+                    // Zonal operation.
+                    operation = await new ZoneOperationsResource(request.Service)
+                        .Get(
+                            projectId,
+                            ShortIdFromUrl(operation.Zone),
+                            operation.Name)
+                        .ExecuteAsync(token)
+                        .ConfigureAwait(false);
+                }
+                else
+                {
+                    // Global operation.
+                    operation = await new GlobalOperationsResource(request.Service)
+                        .Get(projectId, operation.Name)
+                        .ExecuteAsync(token)
+                        .ConfigureAwait(false);
+                }
             }
         }
     }

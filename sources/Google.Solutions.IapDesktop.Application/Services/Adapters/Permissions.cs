@@ -21,9 +21,10 @@
 
 namespace Google.Solutions.IapDesktop.Application.Services.Adapters
 {
-    internal static class Permissions
+    public static class Permissions
     {
         public const string ComputeInstancesSetMetadata = "compute.instances.setMetadata";
         public const string ComputeInstancesGet = "compute.instances.get";
+        public const string ComputeProjectsSetCommonInstanceMetadata = "compute.projects.setCommonInstanceMetadata";
     }
 }

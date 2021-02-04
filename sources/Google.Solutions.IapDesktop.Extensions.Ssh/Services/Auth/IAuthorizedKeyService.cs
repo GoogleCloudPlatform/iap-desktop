@@ -19,23 +19,32 @@
 // under the License.
 //
 
+using Google.Solutions.Common.Locator;
+using Google.Solutions.Ssh;
 using System;
+using System.Threading;
+using System.Threading.Tasks;
 
-#pragma warning disable CS1819 // Properties should not return arrays
-
-namespace Google.Solutions.Ssh
+namespace Google.Solutions.IapDesktop.Extensions.Ssh.Services.Auth
 {
-    public interface ISshKey : IDisposable
+    public interface IAuthorizedKeyService : IDisposable
     {
-        /// <summary>
-        /// Return public key in a format compliant with
-        /// https://tools.ietf.org/html/rfc4253#section-6.6
-        /// </summary>
-        byte[] PublicKey { get; }
-
-        byte[] SignData(byte[] data);
-
-        string PublicKeyString { get; }
-        string Type { get; }
+        Task<AuthorizedKey> AuthorizeKeyAsync(
+            InstanceLocator instance,
+            ISshKey key,
+            TimeSpan keyValidity,
+            string preferredPosixUsername,
+            AuthorizeKeyMethods methods,
+            CancellationToken token);
     }
+
+    [Flags]
+    public enum AuthorizeKeyMethods
+    {
+        InstanceMetadata = 1,
+        ProjectMetadata = 2,
+        Oslogin = 4,
+        All = 7
+    }
+
 }

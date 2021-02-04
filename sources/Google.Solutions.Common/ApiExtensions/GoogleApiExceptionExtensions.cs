@@ -31,5 +31,8 @@ namespace Google.Solutions.Common.ApiExtensions
         
         public static bool IsNotFound(this GoogleApiException e)
             => e.Error != null && e.Error.Code == 404;
+
+        public static bool IsBadRequest(this GoogleApiException e)
+            => e.Error != null && e.Error.Code == 400 && e.Error.Message == "BAD REQUEST";
     }
 }

@@ -31,6 +31,7 @@ using Google.Solutions.IapDesktop.Application.Views;
 using Google.Solutions.IapDesktop.Application.Views.Dialog;
 using Google.Solutions.IapDesktop.Application.Views.ProjectExplorer;
 using Google.Solutions.IapDesktop.Extensions.Ssh.Services.Adapter;
+using Google.Solutions.IapDesktop.Extensions.Ssh.Services.Auth;
 using Google.Solutions.IapDesktop.Extensions.Ssh.Views.Terminal;
 using Google.Solutions.Ssh;
 using Google.Solutions.Ssh.Cryptography;
@@ -71,35 +72,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Ssh.Services
         // Commands.
         //---------------------------------------------------------------------
 
-        private async Task __AddPublicKeyAsync(
-            InstanceLocator instance,
-            string username,
-            ISshKey key)
-        {
-            var authz = serviceProvider.GetService<IAuthorizationAdapter>().Authorization;
-            var service = new ComputeService(new BaseClientService.Initializer()
-            {
-                HttpClientInitializer = authz.Credential,
-            });
-
-            var rsaPublicKey = Convert.ToBase64String(key.PublicKey);
-            await service.Instances.AddMetadataAsync(
-                    instance,
-                    new Metadata()
-                    {
-                        Items = new[]
-                        {
-                            new Metadata.ItemsData()
-                            {
-                                Key = "ssh-keys",
-                                Value = $"{username}:ssh-rsa {rsaPublicKey} {username}"
-                            }
-                        }
-                    },
-                    CancellationToken.None)
-                .ConfigureAwait(false);
-        }
-
         private async void ConnectToPublicEndpoint(IProjectExplorerNode node)
         {
             try
@@ -107,7 +79,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Ssh.Services
                 if (node is IProjectExplorerVmInstanceNode vmNode)
                 {
                     using (var gceAdapter = this.serviceProvider.GetService<IComputeEngineAdapter>())
-                    using (var keysAdapter = this.serviceProvider.GetService<IComputeEngineKeysAdapter>())
+                    using (var keysService = this.serviceProvider.GetService<IAuthorizedKeyService>())
                     {
                         var instanceTask = gceAdapter.GetInstanceAsync(
                                 vmNode.Reference,
@@ -116,10 +88,12 @@ namespace Google.Solutions.IapDesktop.Extensions.Ssh.Services
                         // TODO: Use proper key.
                         var key = RsaSshKey.NewEphemeralKey();
 
-                        await keysAdapter.PushPublicKeyAsync(
+                        var authorizedKey = await keysService.AuthorizeKeyAsync(
                                 vmNode.Reference,
-                                "test",
                                 key,
+                                TimeSpan.FromHours(2),
+                                "test",
+                                AuthorizeKeyMethods.All,
                                 CancellationToken.None)
                             .ConfigureAwait(true);
 
@@ -129,9 +103,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Ssh.Services
                             .GetService<ISshTerminalConnectionBroker>()
                             .ConnectAsync(
                                 vmNode.Reference,
-                                "test",
                                 new IPEndPoint(instance.PublicAddress(), 22),
-                                key)
+                                authorizedKey)
                             .ConfigureAwait(true);
                     }
                 }

@@ -20,17 +20,20 @@
 //
 
 using Google.Apis.Auth.OAuth2;
+using Google.Solutions.Common.Auth;
 using Google.Solutions.Common.Locator;
 using Google.Solutions.Common.Test.Integration;
 using Google.Solutions.IapDesktop.Application.Services.Adapters;
 using Google.Solutions.IapDesktop.Application.Services.Integration;
 using Google.Solutions.IapDesktop.Application.Test.Views;
 using Google.Solutions.IapDesktop.Extensions.Ssh.Services.Adapter;
+using Google.Solutions.IapDesktop.Extensions.Ssh.Services.Auth;
 using Google.Solutions.IapDesktop.Extensions.Ssh.Views.Terminal;
 using Google.Solutions.Ssh;
 using Google.Solutions.Ssh.Native;
+using Moq;
 using NUnit.Framework;
-using System.Drawing;
+using System;
 using System.Globalization;
 using System.Net;
 using System.Net.Sockets;
@@ -70,14 +73,28 @@ namespace Google.Solutions.IapDesktop.Extensions.Ssh.Test.Views.Terminal
             InstanceLocator instanceLocator,
             ICredential credential)
         {
+            var authorization = new Mock<IAuthorization>();
+            authorization
+                .SetupGet(a => a.Email)
+                .Returns("test@example.com");
+            var authorizationAdapter = new Mock<IAuthorizationAdapter>();
+            authorizationAdapter
+                .Setup(a => a.Authorization)
+                .Returns(authorization.Object);
+
             using (var key = new RsaSshKey(new RSACng()))
-            using (var keyAdapter = new ComputeEngineKeysAdapter(
-                new ComputeEngineAdapter(credential)))
+            using (var keyAdapter = new AuthorizedKeyService(
+                authorizationAdapter.Object,
+                new ComputeEngineAdapter(credential),
+                new ResourceManagerAdapter(credential),
+                new Mock<IOsLoginService>().Object))
             {
-                await keyAdapter.PushPublicKeyAsync(
+                var authorizedKey = await keyAdapter.AuthorizeKeyAsync(
                         instanceLocator,
-                        "test",
                         key,
+                        TimeSpan.FromMinutes(10),
+                        null,
+                        AuthorizeKeyMethods.InstanceMetadata,
                         CancellationToken.None)
                     .ConfigureAwait(true);
 
@@ -89,9 +106,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Ssh.Test.Views.Terminal
                     this.serviceProvider);
                 var pane = await broker.ConnectAsync(
                         instanceLocator,
-                        "test",
                         new IPEndPoint(await PublicAddressFromLocator(instanceLocator), 22),
-                        key)
+                        authorizedKey)
                     .ConfigureAwait(true);
 
                 Assert.IsNotNull(connectedEvent, "ConnectionSuceededEvent event fired");
@@ -117,9 +133,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Ssh.Test.Views.Terminal
                     this.serviceProvider);
                 await broker.ConnectAsync(
                         new InstanceLocator("project-1", "zone-1", "instance-1"),
-                        "test",
                         UnboundEndpoint,
-                        key)
+                        AuthorizedKey.ForMetadata(key, "test", true, null))
                     .ConfigureAwait(true);
 
                 Assert.IsNotNull(deliveredEvent, "Event fired");
@@ -142,9 +157,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Ssh.Test.Views.Terminal
                     this.serviceProvider);
                 await broker.ConnectAsync(
                         new InstanceLocator("project-1", "zone-1", "instance-1"),
-                        "test",
                         NonSshEndpoint,
-                        key)
+                        AuthorizedKey.ForMetadata(key, "test", true, null))
                     .ConfigureAwait(true);
 
                 Assert.IsNotNull(deliveredEvent, "Event fired");
@@ -152,34 +166,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Ssh.Test.Views.Terminal
                 Assert.AreEqual(
                     SocketError.ConnectionRefused,
                     ((SocketException)this.ExceptionShown).SocketErrorCode);
-            }
-        }
-
-        [Test]
-        public async Task WhenUsernameIsNotPosixCompliant_ThenErrorIsShownAndWindowIsClosed(
-            [LinuxInstance] ResourceTask<InstanceLocator> instanceLocatorTask)
-        {
-            var instanceLocator = await instanceLocatorTask;
-
-            using (var key = new RsaSshKey(new RSACng()))
-            {
-                ConnectionFailedEvent deliveredEvent = null;
-                this.eventService.BindHandler<ConnectionFailedEvent>(e => deliveredEvent = e);
-
-                var broker = new SshTerminalConnectionBroker(
-                    this.serviceProvider);
-                await broker.ConnectAsync(
-                        instanceLocator,
-                        "not POSIX compli@nt",
-                        new IPEndPoint(await PublicAddressFromLocator(instanceLocator), 22),
-                        key)
-                    .ConfigureAwait(true);
-
-                Assert.IsNotNull(deliveredEvent, "Event fired");
-                Assert.IsInstanceOf(typeof(SshNativeException), this.ExceptionShown);
-                Assert.AreEqual(
-                    LIBSSH2_ERROR.AUTHENTICATION_FAILED,
-                    ((SshNativeException)this.ExceptionShown).ErrorCode);
             }
         }
 
@@ -198,9 +184,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Ssh.Test.Views.Terminal
                     this.serviceProvider);
                 await broker.ConnectAsync(
                         instanceLocator,
-                        "test",
                         new IPEndPoint(await PublicAddressFromLocator(instanceLocator), 22),
-                        key)
+                        AuthorizedKey.ForMetadata(key, "test", true, null))
                     .ConfigureAwait(true);
 
                 Assert.IsNotNull(deliveredEvent, "Event fired");

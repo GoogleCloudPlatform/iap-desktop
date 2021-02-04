@@ -40,6 +40,9 @@
     </Reference>
     <Reference Include="Google.Apis, Version=1.49.0.0, Culture=neutral, PublicKeyToken=4b01fa6e34db77ab" />
     <Reference Include="Google.Apis.Auth, Version=1.49.0.0, Culture=neutral, PublicKeyToken=4b01fa6e34db77ab" />
+    <Reference Include="Google.Apis.CloudOSLogin.v1, Version=1.49.0.2191, Culture=neutral, PublicKeyToken=4b01fa6e34db77ab, processorArchitecture=MSIL">
+      <HintPath>..\packages\Google.Apis.CloudOSLogin.v1.1.49.0.2191\lib\net45\Google.Apis.CloudOSLogin.v1.dll</HintPath>
+    </Reference>
     <Reference Include="Google.Apis.Compute.v1, Version=1.49.0.2121, Culture=neutral, PublicKeyToken=4b01fa6e34db77ab" />
     <Reference Include="Google.Apis.Core, Version=1.49.0.0, Culture=neutral, PublicKeyToken=4b01fa6e34db77ab, processorArchitecture=MSIL">
       <HintPath>..\packages\Google.Apis.Core.1.49.0\lib\net45\Google.Apis.Core.dll</HintPath>
@@ -74,8 +77,12 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Controls\TestVirtualTerminal.cs" />
     <Compile Include="Controls\TestTerminalFont.cs" />
+    <Compile Include="Services\Adapter\TestMetadataAuthorizedKey.cs" />
+    <Compile Include="Services\Adapter\TestMetadataAuthorizedKeySet.cs" />
+    <Compile Include="Services\Auth\TestAuthorizedKeyService.cs" />
+    <Compile Include="Services\Auth\TestOsLoginService.cs" />
+    <Compile Include="Services\Auth\TestAuthorizedKey.cs" />
     <Compile Include="Views\Terminal\TestSshTerminalPane.cs" />
     <Compile Include="Views\Terminal\TestSshTerminalConnectionBroker.cs" />
   </ItemGroup>
@@ -83,9 +90,7 @@
     <None Include="app.config" />
     <None Include="packages.config" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Services\" />
-  </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
     <ProjectReference Include="..\Google.Solutions.Common.Test\Google.Solutions.Common.Test.csproj">
       <Project>{AA8CD2FB-D463-42BD-A880-9247C93F9395}</Project>
