@@ -33,7 +33,7 @@ using System.Threading.Tasks;
 
 namespace Google.Solutions.IapDesktop.Extensions.Activity.Services.UsageReport
 {
-    internal interface IReportBuilder
+    internal interface IReportBuilder : IDisposable
     {
         ushort PercentageDone { get; }
         string BuildStatus { get; }
@@ -47,7 +47,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services.UsageReport
         StorageExport
     }
 
-    internal class ReportBuilder : IReportBuilder, IEventProcessor
+    internal sealed class ReportBuilder : IReportBuilder, IEventProcessor
     {
         private readonly ushort MaxPeriod = 400;
 
@@ -57,7 +57,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services.UsageReport
 
         private readonly IAuditLogAdapter auditLogAdapter;
         private readonly IAuditLogStorageSinkAdapter auditExportAdapter;
-        private readonly IComputeEngineAdapter computeEngineAdapter;
+        private readonly IComputeEngineAdapter computeEngineAdapter; 
 
         public ReportBuilder(
             IAuditLogAdapter auditLogAdapter,
@@ -244,6 +244,16 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services.UsageReport
                 (this.builder.EndDate - this.builder.StartDate).TotalDays);
 
             this.builder.Process(e);
+        }
+
+
+        //---------------------------------------------------------------------
+        // IDisposable.
+        //---------------------------------------------------------------------
+
+        public void Dispose()
+        {
+            this.computeEngineAdapter.Dispose();
         }
     }
 }

@@ -33,7 +33,7 @@ using System.Threading.Tasks;
 
 namespace Google.Solutions.IapDesktop.Extensions.Os.Services.Inventory
 {
-    public interface IInventoryService
+    public interface IInventoryService : IDisposable
     {
         /// <summary>
         /// Get OS inventory data for instance.
@@ -71,7 +71,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Os.Services.Inventory
     }
 
     [Service(typeof(IInventoryService))]
-    public class InventoryService : IInventoryService
+    public sealed class InventoryService : IInventoryService
     {
         private readonly IComputeEngineAdapter computeEngineAdapter;
 
@@ -170,6 +170,15 @@ namespace Google.Solutions.IapDesktop.Extensions.Os.Services.Inventory
                         .Select(i => i.GetInstanceLocator()),
                     token)
                 .ConfigureAwait(false);
+        }
+
+        //---------------------------------------------------------------------
+        // IDisposable.
+        //---------------------------------------------------------------------
+
+        public void Dispose()
+        {
+            this.computeEngineAdapter.Dispose();
         }
     }
 }

@@ -199,7 +199,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Os.Views.PackageInventory
                     this.IsLoading = true;
 
                     var jobService = this.serviceProvider.GetService<IJobService>();
-                    var inventoryService = this.serviceProvider.GetService<IInventoryService>();
 
                     // Load data using a job so that the task is retried in case
                     // of authentication issues.
@@ -209,12 +208,15 @@ namespace Google.Solutions.IapDesktop.Extensions.Os.Views.PackageInventory
                             JobUserFeedbackType.BackgroundFeedback),
                         async jobToken => 
                         {
-                            return await PackageInventoryModel.LoadAsync(
-                                    inventoryService,
-                                    this.inventoryType,
-                                    node,
-                                    jobToken)
-                                .ConfigureAwait(false);
+                            using (var inventoryService = this.serviceProvider.GetService<IInventoryService>())
+                            {
+                                return await PackageInventoryModel.LoadAsync(
+                                        inventoryService,
+                                        this.inventoryType,
+                                        node,
+                                        jobToken)
+                                    .ConfigureAwait(false);
+                            }
                         }).ConfigureAwait(true);  // Back to original (UI) thread.
                 }
                 finally
