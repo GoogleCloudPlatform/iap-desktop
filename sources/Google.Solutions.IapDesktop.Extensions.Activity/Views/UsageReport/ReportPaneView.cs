@@ -66,6 +66,11 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Views.UsageReport
                 .GetObject("$this.Icon");
 
             BeginLoad(LoadAsync, InitializeForm);
+
+            this.Disposed += (sender, args) =>
+            {
+                this.reportBuilder.Dispose();
+            };
         }
 
         //---------------------------------------------------------------------

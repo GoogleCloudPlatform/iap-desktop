@@ -88,35 +88,42 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Views.Credentials
                 }
             }
 
-            var credentials = await this.serviceProvider.GetService<IJobService>().RunInBackground(
-                new JobDescription("Generating Windows logon credentials..."),
-                token => this.serviceProvider
-                    .GetService<IComputeEngineAdapter>()
-                    .ResetWindowsUserAsync(
-                        instanceLocator,
-                        username,
-                        token))
-                .ConfigureAwait(true);
-
-            if (!silent)
+            using (var computeEngineAdapter = this.serviceProvider.GetService<IComputeEngineAdapter>())
             {
-                this.serviceProvider.GetService<IShowCredentialsDialog>().ShowDialog(
-                    owner,
-                    credentials.UserName,
-                    credentials.Password);
+                var credentials = await this.serviceProvider.GetService<IJobService>().RunInBackground(
+                    new JobDescription("Generating Windows logon credentials..."),
+                    token => computeEngineAdapter
+                        .ResetWindowsUserAsync(
+                            instanceLocator,
+                            username,
+                            token))
+                    .ConfigureAwait(true);
+
+                if (!silent)
+                {
+                    this.serviceProvider.GetService<IShowCredentialsDialog>().ShowDialog(
+                        owner,
+                        credentials.UserName,
+                        credentials.Password);
+                }
+
+                // Save credentials.
+                settings.Username.StringValue = credentials.UserName;
+                settings.Password.ClearTextValue = credentials.Password;
+
+                // NB. The computer might be joined to a domain, therefore force a local logon.
+                settings.Domain.StringValue = ".";
             }
-
-            // Save credentials.
-            settings.Username.StringValue = credentials.UserName;
-            settings.Password.ClearTextValue = credentials.Password;
-
-            // NB. The computer might be joined to a domain, therefore force a local logon.
-            settings.Domain.StringValue = ".";
         }
 
-        public Task<bool> IsGrantedPermissionToGenerateCredentials(InstanceLocator instance)
-            => this.serviceProvider
-                .GetService<IComputeEngineAdapter>()
-                .IsGrantedPermissionToResetWindowsUser(instance);
+        public async Task<bool> IsGrantedPermissionToGenerateCredentials(InstanceLocator instance)
+        {
+            using (var computeEngineAdapter = this.serviceProvider.GetService<IComputeEngineAdapter>())
+            {
+                return await computeEngineAdapter
+                    .IsGrantedPermissionToResetWindowsUser(instance)
+                    .ConfigureAwait(false);
+            }
+        }
     }
 }

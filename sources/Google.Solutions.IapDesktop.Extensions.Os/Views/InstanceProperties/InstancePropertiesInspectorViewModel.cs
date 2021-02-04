@@ -137,14 +137,16 @@ namespace Google.Solutions.IapDesktop.Extensions.Os.Views.InstanceProperties
                         async jobToken =>
                         {
                             using (var combinedTokenSource = jobToken.Combine(token))
+                            using (var gceAdapter = this.serviceProvider.GetService<IComputeEngineAdapter>())
+                            using (var inventoryService = this.serviceProvider.GetService<IInventoryService>())
                             {
                                 return await InstancePropertiesInspectorModel.LoadAsync(
                                     new InstanceLocator(
                                         vmNode.ProjectId,
                                         vmNode.ZoneId,
                                         vmNode.InstanceName),
-                                    this.serviceProvider.GetService<IComputeEngineAdapter>(),
-                                    this.serviceProvider.GetService<IInventoryService>(),
+                                    gceAdapter,
+                                    inventoryService,
                                     combinedTokenSource.Token)
                                     .ConfigureAwait(false);
                             }

@@ -50,7 +50,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Ssh.Services.Auth
         private const string BlockProjectSshKeysFlag = "block-project-ssh-keys";
 
         private readonly IAuthorizationAdapter authorizationAdapter;
-        private readonly IComputeEngineAdapter computeEngineAdapter;
+        private readonly IComputeEngineAdapter computeEngineAdapter; // TODO: Dispose
         private readonly IResourceManagerAdapter resourceManagerAdapter;
         private readonly IOsLoginService osLoginService;
 
