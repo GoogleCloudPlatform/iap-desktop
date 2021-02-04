@@ -51,7 +51,8 @@ namespace Google.Solutions.IapDesktop.Application.Services.Adapters
         // TODO: Add cancellation token
         Task<bool> IsGrantedPermission(
             string projectId,
-            string permission);
+            string permission,
+            CancellationToken cancellationToken);
     }
 
     public class ResourceManagerAdapter : IResourceManagerAdapter
@@ -147,7 +148,8 @@ namespace Google.Solutions.IapDesktop.Application.Services.Adapters
 
         public async Task<bool> IsGrantedPermission(
             string projectId,
-            string permission)
+            string permission,
+            CancellationToken cancellationToken)
         {
             using (ApplicationTraceSources.Default.TraceMethod().WithParameters(permission))
             {
@@ -157,7 +159,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.Adapters
                             Permissions = new[] { permission }
                         },
                         projectId)
-                    .ExecuteAsync()
+                    .ExecuteAsync(cancellationToken)
                     .ConfigureAwait(false);
                 return response != null &&
                     response.Permissions != null &&

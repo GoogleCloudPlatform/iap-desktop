@@ -41,7 +41,8 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Adapters
             {
                 var result = await adapter.IsGrantedPermission(
                     TestProject.ProjectId,
-                    Permissions.ComputeInstancesGet);
+                    Permissions.ComputeInstancesGet,
+                    CancellationToken.None);
 
                 Assert.IsTrue(result);
             }
@@ -55,7 +56,8 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Adapters
             {
                 var result = await adapter.IsGrantedPermission(
                     TestProject.ProjectId,
-                    "compute.disks.create");
+                    "compute.disks.create",
+                    CancellationToken.None);
 
                 Assert.IsFalse(result);
             }
