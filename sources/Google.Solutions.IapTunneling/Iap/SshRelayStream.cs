@@ -214,6 +214,7 @@ namespace Google.Solutions.IapTunneling.Iap
                     if (this.__currentConnection != null)
                     {
                         await this.__currentConnection.CloseAsync(cancellationToken).ConfigureAwait(false);
+                        this.__currentConnection.Dispose();
                     }
                 }
                 catch (Exception e)
@@ -562,6 +563,14 @@ namespace Google.Solutions.IapTunneling.Iap
         {
             var sidToken = this.Sid != null ? this.Sid.Substring(0, 10) : "(unknown)";
             return $"[SshRelay {sidToken}]";
+        }
+
+        protected override void Dispose(bool disposing)
+        {
+            base.Dispose(disposing);
+
+            this.connectSemaphore.Dispose();
+            this.__currentConnection?.Dispose();
         }
     }
 
