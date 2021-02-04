@@ -153,7 +153,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Ssh.Test.Services.Auth
             adapter
                 .Setup(a => a.IsGrantedPermission(
                         It.IsAny<string>(),
-                        It.IsAny<string>()))
+                        It.IsAny<string>(),
+                        It.IsAny<CancellationToken>()))
                 .ReturnsAsync(allowSetCommonInstanceMetadata);
 
             return adapter;

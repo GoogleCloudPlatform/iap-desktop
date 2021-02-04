@@ -299,7 +299,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Ssh.Services.Auth
                         var canUpdateProjectMetadata = await this.resourceManagerAdapter
                             .IsGrantedPermission(
                                 instance.ProjectId,
-                                Permissions.ComputeProjectsSetCommonInstanceMetadata)
+                                Permissions.ComputeProjectsSetCommonInstanceMetadata,
+                                token)
                             .ConfigureAwait(false);
 
                         useInstanceKeySet = blockProjectSshKeys || !canUpdateProjectMetadata;
