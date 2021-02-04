@@ -55,7 +55,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.Services.UsageRep
                 computeEngineAdapter.Object,
                 AuditLogSources.Api | AuditLogSources.StorageExport,
                 new[] { "project-1" },
-                new DateTime(2020, 1, 1, 0, 0, 0, DateTimeKind.Utc));
+                DateTime.UtcNow.AddYears(-1));
 
             await reportBuilder.BuildAsync(CancellationToken.None);
 
@@ -96,7 +96,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.Services.UsageRep
                 computeEngineAdapter.Object,
                 AuditLogSources.Api | AuditLogSources.StorageExport,
                 new[] { "project-1" },
-                new DateTime(2020, 1, 1, 0, 0, 0, DateTimeKind.Utc));
+                DateTime.UtcNow.AddYears(-1));
 
             await reportBuilder.BuildAsync(CancellationToken.None);
 
