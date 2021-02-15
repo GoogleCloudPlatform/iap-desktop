@@ -563,6 +563,13 @@ namespace Google.Solutions.IapTunneling.Iap
             var sidToken = this.Sid != null ? this.Sid.Substring(0, 10) : "(unknown)";
             return $"[SshRelay {sidToken}]";
         }
+
+        protected override void Dispose(bool disposing)
+        {
+            base.Dispose(disposing);
+
+            this.connectSemaphore.Dispose();
+        }
     }
 
     [Serializable]

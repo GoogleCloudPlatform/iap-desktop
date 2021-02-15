@@ -113,9 +113,10 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services.UsageReport
             CancellationToken cancellationToken)
         {
             await LicenseLoader.LoadLicenseAnnotationsAsync(
-                this,
-                computeEngineAdapter,
-                cancellationToken);
+                    this,
+                    computeEngineAdapter,
+                    cancellationToken)
+                .ConfigureAwait(false);
         }
 
         //---------------------------------------------------------------------

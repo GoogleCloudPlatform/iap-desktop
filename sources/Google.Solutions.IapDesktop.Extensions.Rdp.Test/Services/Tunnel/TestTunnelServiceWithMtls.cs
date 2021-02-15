@@ -44,7 +44,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Test.Services.Tunnel
     public class TestTunnelServiceWithMtls : SecureConnectFixtureBase
     {
         private const string TestKeyPath = @"Software\Google\__Test";
-        private ApplicationSettingsRepository applicationSettingsRepository;
 
         [SetUp]
         public void SetUp()
@@ -53,8 +52,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Test.Services.Tunnel
                 RegistryHive.CurrentUser,
                 RegistryView.Default);
             hkcu.DeleteSubKeyTree(TestKeyPath, false);
-            this.applicationSettingsRepository = new ApplicationSettingsRepository(
-                hkcu.CreateSubKey(TestKeyPath));
         }
 
         private static async Task<IList<LogEntry>> GetIapAccessLogsForPortAsync(ushort port)
