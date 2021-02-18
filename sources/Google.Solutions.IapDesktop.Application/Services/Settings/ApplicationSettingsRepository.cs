@@ -20,6 +20,7 @@
 //
 
 using Google.Apis.Util;
+using Google.Solutions.IapDesktop.Application.Services.Adapters;
 using Google.Solutions.IapDesktop.Application.Settings;
 using Microsoft.Win32;
 using System;
@@ -70,6 +71,8 @@ namespace Google.Solutions.IapDesktop.Application.Services.Settings
         
         public RegistryStringSetting FullScreenDevices { get; private set; }
 
+        public RegistryEnumSetting<OperatingSystems> ShowOperatingSystems { get; private set; }
+
         public IEnumerable<ISetting> Settings => new ISetting[]
         {
             this.IsMainWindowMaximized,
@@ -83,7 +86,8 @@ namespace Google.Solutions.IapDesktop.Application.Services.Settings
             this.ProxyUsername,
             this.ProxyPassword,
             this.IsDeviceCertificateAuthenticationEnabled,
-            this.FullScreenDevices
+            this.FullScreenDevices,
+            this.ShowOperatingSystems
         };
 
         private ApplicationSettings()
@@ -187,6 +191,13 @@ namespace Google.Solutions.IapDesktop.Application.Services.Settings
                     null,
                     registryKey,
                     _ => true),
+                ShowOperatingSystems = RegistryEnumSetting<OperatingSystems>.FromKey(
+                    "ShowOperatingSystems",
+                    "ShowOperatingSystems",
+                    null,
+                    null,
+                    OperatingSystems.Windows,
+                    registryKey)
             };
         }
     }
