@@ -36,6 +36,7 @@ using Google.Solutions.IapDesktop.Application.Views.Diagnostics;
 using Google.Solutions.IapDesktop.Application.Views.Dialog;
 using Google.Solutions.IapDesktop.Application.Views.Options;
 using Google.Solutions.IapDesktop.Application.Views.ProjectExplorer;
+using Google.Solutions.IapDesktop.Application.Views.ProjectPicker;
 using Google.Solutions.IapDesktop.Windows;
 using Google.Solutions.IapTunneling;
 using Google.Solutions.IapTunneling.Net;
@@ -235,7 +236,7 @@ namespace Google.Solutions.IapDesktop
             windowAndWorkflowLayer.AddSingleton<IMainForm>(mainForm);
             windowAndWorkflowLayer.AddTransient<CloudConsoleService>();
             windowAndWorkflowLayer.AddTransient<HelpService>();
-            windowAndWorkflowLayer.AddTransient<IProjectPickerDialog, ProjectPickerDialog>();
+            windowAndWorkflowLayer.AddTransient<IProjectPickerWindow, ProjectPickerWindow>();
             windowAndWorkflowLayer.AddTransient<AboutWindow>();
             windowAndWorkflowLayer.AddTransient<IExceptionDialog, ExceptionDialog>();
             windowAndWorkflowLayer.AddTransient<IConfirmationDialog, ConfirmationDialog>();

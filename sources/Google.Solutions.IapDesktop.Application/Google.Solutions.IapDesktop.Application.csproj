@@ -239,6 +239,16 @@
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Views\ProjectExplorer\ProjectExplorerViewModel.cs" />
+    <Compile Include="Views\ProjectPicker\ProjectList.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Views\ProjectPicker\ProjectPickerViewModel.cs" />
+    <Compile Include="Views\ProjectPicker\ProjectPickerWindow.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Views\ProjectPicker\ProjectPickerWindow.Designer.cs">
+      <DependentUpon>ProjectPickerWindow.cs</DependentUpon>
+    </Compile>
     <Compile Include="Views\Properties\IPropertiesDialogPane.cs" />
     <Compile Include="Views\Properties\IPropertiesInspectorViewModel.cs" />
     <Compile Include="Views\Properties\PropertiesDialog.cs">
@@ -291,12 +301,7 @@
     <Compile Include="Views\ProjectExplorer\ProjectExplorerWindow.Designer.cs">
       <DependentUpon>ProjectExplorerWindow.cs</DependentUpon>
     </Compile>
-    <Compile Include="Views\ProjectExplorer\ProjectPickerDialog.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Views\ProjectExplorer\ProjectPickerDialog.Designer.cs">
-      <DependentUpon>ProjectPickerDialog.cs</DependentUpon>
-    </Compile>
+    <Compile Include="Views\ThemeColors.cs" />
     <Compile Include="Views\ToolWindow.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -375,6 +380,9 @@
     <EmbeddedResource Include="Views\Options\NetworkOptionsControl.resx">
       <DependentUpon>NetworkOptionsControl.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Views\ProjectPicker\ProjectPickerWindow.resx">
+      <DependentUpon>ProjectPickerWindow.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Views\Properties\PropertiesDialog.resx">
       <DependentUpon>PropertiesDialog.cs</DependentUpon>
     </EmbeddedResource>
@@ -386,9 +394,6 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Views\ProjectExplorer\ProjectExplorerWindow.resx">
       <DependentUpon>ProjectExplorerWindow.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Views\ProjectExplorer\ProjectPickerDialog.resx">
-      <DependentUpon>ProjectPickerDialog.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Views\ToolWindow.resx">
       <DependentUpon>ToolWindow.cs</DependentUpon>

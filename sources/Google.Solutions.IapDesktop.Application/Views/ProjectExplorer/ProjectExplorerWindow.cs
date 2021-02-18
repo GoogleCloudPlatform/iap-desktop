@@ -27,6 +27,7 @@ using Google.Solutions.IapDesktop.Application.Services.Adapters;
 using Google.Solutions.IapDesktop.Application.Services.Integration;
 using Google.Solutions.IapDesktop.Application.Services.Settings;
 using Google.Solutions.IapDesktop.Application.Views.Dialog;
+using Google.Solutions.IapDesktop.Application.Views.ProjectPicker;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -172,8 +173,8 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
                 .ConfigureAwait(true);
 
             // Show project picker
-            var dialog = this.serviceProvider.GetService<IProjectPickerDialog>();
-            string projectId = projectId = dialog.SelectProjectId(this);
+            var dialog = this.serviceProvider.GetService<IProjectPickerWindow>();
+            string projectId = dialog.SelectProject(this);
 
             if (projectId == null)
             {
