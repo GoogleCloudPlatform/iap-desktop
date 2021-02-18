@@ -79,7 +79,7 @@ namespace Google.Solutions.Ssh.Native
             }
         }
 
-        public SshSession()
+        internal SshSession()
         {
             this.sessionHandle = UnsafeNativeMethods.libssh2_session_init_ex(
                 Alloc,

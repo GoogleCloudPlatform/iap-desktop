@@ -29,7 +29,7 @@ namespace Google.Solutions.Ssh.Native
         public string Value { get; set; }
         public bool Required { get; set; }
 
-        public EnvironmentVariable(string name, string value, bool required)
+        internal EnvironmentVariable(string name, string value, bool required)
         {
             Utilities.ThrowIfNullOrEmpty(name, nameof(name));
 
