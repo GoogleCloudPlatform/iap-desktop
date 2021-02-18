@@ -71,7 +71,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.Settings
         
         public RegistryStringSetting FullScreenDevices { get; private set; }
 
-        public RegistryEnumSetting<OperatingSystems> ShowOperatingSystems { get; private set; }
+        public RegistryEnumSetting<OperatingSystems> IncludeOperatingSystems { get; private set; }
 
         public IEnumerable<ISetting> Settings => new ISetting[]
         {
@@ -87,7 +87,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.Settings
             this.ProxyPassword,
             this.IsDeviceCertificateAuthenticationEnabled,
             this.FullScreenDevices,
-            this.ShowOperatingSystems
+            this.IncludeOperatingSystems
         };
 
         private ApplicationSettings()
@@ -191,9 +191,9 @@ namespace Google.Solutions.IapDesktop.Application.Services.Settings
                     null,
                     registryKey,
                     _ => true),
-                ShowOperatingSystems = RegistryEnumSetting<OperatingSystems>.FromKey(
-                    "ShowOperatingSystems",
-                    "ShowOperatingSystems",
+                IncludeOperatingSystems = RegistryEnumSetting<OperatingSystems>.FromKey(
+                    "IncludeOperatingSystems",
+                    "IncludeOperatingSystems",
                     null,
                     null,
                     OperatingSystems.Windows,

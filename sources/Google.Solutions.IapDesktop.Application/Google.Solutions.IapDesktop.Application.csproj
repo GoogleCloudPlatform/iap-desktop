@@ -238,6 +238,7 @@
     <Compile Include="Views\ProjectExplorer\ProjectExplorerTrackingToolWindow.cs">
       <SubType>Form</SubType>
     </Compile>
+    <Compile Include="Views\ProjectExplorer\ProjectExplorerViewModel.cs" />
     <Compile Include="Views\Properties\IPropertiesDialogPane.cs" />
     <Compile Include="Views\Properties\IPropertiesInspectorViewModel.cs" />
     <Compile Include="Views\Properties\PropertiesDialog.cs">
