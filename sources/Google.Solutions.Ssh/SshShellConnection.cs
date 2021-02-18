@@ -40,13 +40,6 @@ namespace Google.Solutions.Ssh
         private readonly CultureInfo language;
 
         //---------------------------------------------------------------------
-        // Delegates.
-        //---------------------------------------------------------------------
-
-        public delegate void ReceiveStringDataHandler(
-            string data);
-
-        //---------------------------------------------------------------------
         // Ctor.
         //---------------------------------------------------------------------
 
@@ -63,9 +56,9 @@ namespace Google.Solutions.Ssh
                   username, 
                   endpoint, 
                   key,
-                  (buf, offset, count) =>   // TODO: handle partial UTF-8 sequences
-                      receiveDataHandler(Encoding.GetString(buf, (int)offset, (int)count)),
-                  receiveErrorHandler)
+                  receiveDataHandler,
+                  receiveErrorHandler,
+                  Encoding)
         {
             this.terminal = terminal;
             this.terminalSize = terminalSize;
