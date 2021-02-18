@@ -22,10 +22,11 @@
 using Google.Solutions.IapDesktop.Application.ObjectModel;
 using Google.Solutions.IapDesktop.Application.Services.Adapters;
 using Google.Solutions.IapDesktop.Application.Services.Settings;
+using System;
 
 namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
 {
-    internal class ProjectExplorerViewModel : ViewModelBase
+    internal class ProjectExplorerViewModel : ViewModelBase, IDisposable
     {
         private readonly ApplicationSettingsRepository settingsRepository;
         private OperatingSystems includedOperatingSystems;
@@ -97,6 +98,15 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
             var settings = this.settingsRepository.GetSettings();
             settings.IncludeOperatingSystems.EnumValue = this.includedOperatingSystems;
             this.settingsRepository.SetSettings(settings);
+        }
+
+        //---------------------------------------------------------------------
+        // IDisposable.
+        //---------------------------------------------------------------------
+
+        public void Dispose()
+        {
+            this.settingsRepository.Dispose();
         }
     }
 }

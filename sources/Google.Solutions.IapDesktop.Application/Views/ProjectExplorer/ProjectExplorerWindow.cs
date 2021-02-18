@@ -53,6 +53,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
         private readonly IServiceProvider serviceProvider;
         private readonly IConnectionBroker connectionBroker;
 
+        private readonly ProjectExplorerViewModel viewModel;
         private readonly CloudNode rootNode = new CloudNode();
 
         public CommandContainer<IProjectExplorerNode> ContextMenuCommands { get; }
@@ -102,6 +103,33 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
                 this.toolStrip.Items,
                 ToolStripItemDisplayStyle.Image,
                 this.serviceProvider);
+
+            this.viewModel = new ProjectExplorerViewModel(
+                serviceProvider.GetService<ApplicationSettingsRepository>());
+            this.Disposed += (sender, args) =>
+            {
+                this.viewModel.Dispose();
+            };
+
+            //
+            // Bind controls.
+            //
+            this.linuxInstancesToolStripMenuItem.BindProperty(
+                c => c.Checked,
+                this.viewModel,
+                m => m.IsLinuxIncluded,
+                this.Container);
+            this.windowsInstancesToolStripMenuItem.BindProperty(
+                c => c.Checked,
+                this.viewModel,
+                m => m.IsWindowsIncluded,
+                this.Container);
+
+            this.viewModel.PropertyChanged += (sender, args) =>
+            {
+                // Refresh tree, and show message on error.
+                refreshButton_Click(sender, EventArgs.Empty);
+            };
         }
 
         private void PopulateProjectNode(
@@ -110,11 +138,10 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
         {
             Debug.Assert(!this.InvokeRequired);
 
-            if (!this.includeLinuxToolStripButton.Checked)
-            {
-                // Narrow the list down to Windows instances.
-                instances = instances.Where(i => i.IsWindowsInstance());
-            }
+            // Narrow the list down by operating system.
+            instances = instances.Where(i => i.IsWindowsInstance()
+                ? this.viewModel.IsWindowsIncluded
+                : this.viewModel.IsLinuxIncluded);
 
             var projectNode = this.rootNode.Nodes
                 .Cast<ProjectNode>()

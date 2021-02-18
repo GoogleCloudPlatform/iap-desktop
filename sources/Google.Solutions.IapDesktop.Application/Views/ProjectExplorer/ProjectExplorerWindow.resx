@@ -140,12 +140,11 @@
         WP6FR2hX3xeMRcgPb1oShJCiQKgAAAAASUVORK5CYII=
 </value>
   </data>
-  <data name="includeLinuxToolStripButton.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+  <data name="osDropDownButton.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
         iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8
-        YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAABpSURBVDhPxZBRCgAhCAU9uWfzZrsUPlBXpdiggfehjhLR
-        EZj56aJaTbZko1oNRBFx2T5QRbUaiPdfsCRnxAO27jKXB7HphgVLB5wUcLNR4NdRz0HD5wCCOutbXC+K
-        2UKkdezBLqr/gegFxP0FtQMFEJgAAAAASUVORK5CYII=
+        YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAAmSURBVDhPYxgFCFBaWvqfFAzVNhgBNuciY6iyoQKGqLOH
+        GmBgAABnEjQVGJhjVAAAAABJRU5ErkJggg==
 </value>
   </data>
   <metadata name="vsToolStripExtender.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
@@ -165,7 +164,7 @@
         AAEAAAD/////AQAAAAAAAAAMAgAAAFdTeXN0ZW0uV2luZG93cy5Gb3JtcywgVmVyc2lvbj00LjAuMC4w
         LCBDdWx0dXJlPW5ldXRyYWwsIFB1YmxpY0tleVRva2VuPWI3N2E1YzU2MTkzNGUwODkFAQAAACZTeXN0
         ZW0uV2luZG93cy5Gb3Jtcy5JbWFnZUxpc3RTdHJlYW1lcgEAAAAERGF0YQcCAgAAAAkDAAAADwMAAADG
-        CwAAAk1TRnQBSQFMAgEBCQEAAZgBAQGYAQEBEAEAARABAAT/ARkBAAj/AUIBTQE2BwABNgMAASgDAAFA
+        CwAAAk1TRnQBSQFMAgEBCQEAAcgBAQHIAQEBEAEAARABAAT/ARkBAAj/AUIBTQE2BwABNgMAASgDAAFA
         AwABMAMAAQEBAAEYBgABJBIAMP+QAA//AfQBhQFCAfQBhQFCAfQBhQFCAfQBhQFCAfQBhQFCAfQBhQFC
         AfQBhQFCAfQBhQFCAfQBhQFCAfQBhQFCA/+QAAP/CX4D/wH0AYUBQhj/AfQBhQFCA/+QAAP/CX4D/wH0
         AYUBQgP/AfQBhQFCAfQBhQFCAfQBhQFCDP8B9AGFAUID/5AAA/8DfgPAA34D/wH0AYUBQhj/AfQBhQFC
