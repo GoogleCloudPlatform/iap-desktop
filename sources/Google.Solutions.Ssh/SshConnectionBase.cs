@@ -24,6 +24,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Net;
+using System.Text;
 using System.Threading.Tasks;
 
 namespace Google.Solutions.Ssh
@@ -34,6 +35,7 @@ namespace Google.Solutions.Ssh
         private readonly TaskCompletionSource<int> connectionCompleted 
             = new TaskCompletionSource<int>();
 
+        private readonly StreamingDecoder receiveDecoder;
         private readonly byte[] receiveBuffer = new byte[64 * 1024];
         private readonly ReceiveDataHandler receiveDataHandler;
         private readonly ReceiveErrorHandler receiveErrorHandler;
@@ -50,6 +52,9 @@ namespace Google.Solutions.Ssh
         public delegate void ReceiveErrorHandler(
             Exception exception);
 
+        public delegate void ReceiveStringDataHandler(
+            string data);
+
         //---------------------------------------------------------------------
         // Ctor.
         //---------------------------------------------------------------------
@@ -58,11 +63,18 @@ namespace Google.Solutions.Ssh
             string username,
             IPEndPoint endpoint,
             ISshKey key,
-            ReceiveDataHandler receiveHandler,
-            ReceiveErrorHandler receiveErrorHandler)
+            ReceiveStringDataHandler receiveHandler,
+            ReceiveErrorHandler receiveErrorHandler,
+            Encoding dataEncoding)
             : base(username, endpoint, key)
         {
-            this.receiveDataHandler = receiveHandler;
+            this.receiveDecoder = new StreamingDecoder(
+                dataEncoding,
+                s => receiveHandler(s));
+
+            this.receiveDataHandler = (buf, offset, count) 
+                => this.receiveDecoder.Decode(buf, (int)offset, (int)count);
+
             this.receiveErrorHandler = receiveErrorHandler;
         }
 
