@@ -479,7 +479,16 @@ namespace Google.Solutions.IapDesktop.Application.Settings
                 value);
 
         protected override bool IsValid(TEnum value)
-            => Enum.IsDefined(typeof(TEnum), value);
+        {
+            var numericValue = Convert.ToInt64(value);
+
+            // Create a bit field with all flags on.
+            var max = Enum.GetValues(typeof(TEnum)).Cast<TEnum>()
+                .Select(v => Convert.ToInt64(v))
+                .Aggregate((e1, e2) => e1 | e2);
+
+            return (max & numericValue) == numericValue;
+        }
 
         protected override TEnum Parse(string value)
             => (TEnum)(object)int.Parse(value);

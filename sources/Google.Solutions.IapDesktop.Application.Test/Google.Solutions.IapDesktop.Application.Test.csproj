@@ -122,6 +122,7 @@
     <Compile Include="Services\Settings\TestAuthSettingsRepository.cs" />
     <Compile Include="Services\Settings\TestProjectRepository.cs" />
     <Compile Include="Settings\TestRegistryBoolSetting.cs" />
+    <Compile Include="Settings\TestRegistryEnumFlagsSetting.cs" />
     <Compile Include="Settings\TestRegistryQwordSetting.cs" />
     <Compile Include="Settings\TestRegistryDwordSetting.cs" />
     <Compile Include="Settings\TestRegistryEnumSetting.cs" />
