@@ -62,14 +62,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Os.Services.Inventory
             CancellationToken token);
     }
 
-    [Flags]
-    public enum OperatingSystems
-    {
-        Windows = 1,
-        Linux = 2,
-        All = Windows | Linux
-    }
-
     [Service(typeof(IInventoryService))]
     public sealed class InventoryService : IInventoryService
     {
