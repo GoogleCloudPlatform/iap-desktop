@@ -182,7 +182,7 @@ namespace Google.Solutions.Ssh.Native
                     channelHandle,
                     term,
                     (uint)term.Length,
-                    null,   // TODO: pass modifiers?
+                    null,
                     0,
                     widthInChars,
                     heightInChars,
@@ -272,26 +272,6 @@ namespace Google.Solutions.Ssh.Native
             {
                 this.session.Handle.CheckCurrentThreadOwnsHandle();
                 this.disposed = true;
-            }
-        }
-
-        //---------------------------------------------------------------------
-        // Inner struct.
-        //---------------------------------------------------------------------
-
-        public struct EnvironmentVariable
-        {
-            public string Name { get; set; }
-            public string Value { get; set; }
-            public bool Required { get; set; }
-
-            public EnvironmentVariable(string name, string value, bool required)
-            {
-                Utilities.ThrowIfNullOrEmpty(name, nameof(name));
-
-                this.Name = name;
-                this.Value = value;
-                this.Required = required;
             }
         }
     }

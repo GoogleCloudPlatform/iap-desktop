@@ -7,3 +7,4 @@ using System.Diagnostics.CodeAnalysis;
 
 [assembly: SuppressMessage("Usage", "CA2237:Mark ISerializable types with serializable", Justification = "<Pending>", Scope = "type", Target = "~T:Google.Solutions.IapDesktop.Extensions.Ssh.Services.Auth.UnsupportedLegacySshKeyEncounteredException")]
 [assembly: SuppressMessage("Maintainability", "CA1508:Avoid dead conditional code", Justification = "<Pending>", Scope = "member", Target = "~M:Google.Solutions.IapDesktop.Extensions.Ssh.Controls.VirtualTerminal.PaintBackgroundLayer(System.Drawing.Graphics,System.Collections.Generic.List{VtNetCore.VirtualTerminal.Layout.LayoutRow})")]
+[assembly: SuppressMessage("Usage", "CA2237:Mark ISerializable types with serializable", Justification = "<Pending>", Scope = "type", Target = "~T:Google.Solutions.IapDesktop.Extensions.Ssh.Services.Auth.SshKeyPushFailedException")]

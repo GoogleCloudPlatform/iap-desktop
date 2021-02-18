@@ -206,12 +206,12 @@ namespace Google.Solutions.Ssh
         // Inner classes.
         //---------------------------------------------------------------------
 
-        protected class SendOperation
+        protected internal class SendOperation
         {
-            public readonly TaskCompletionSource<uint> CompletionSource;
-            public readonly Action<SshChannelBase> Operation;
+            internal readonly TaskCompletionSource<uint> CompletionSource;
+            internal readonly Action<SshChannelBase> Operation;
 
-            public SendOperation(Action<SshChannelBase> operation)
+            internal SendOperation(Action<SshChannelBase> operation)
             {
                 this.Operation = operation;
                 this.CompletionSource = new TaskCompletionSource<uint>();

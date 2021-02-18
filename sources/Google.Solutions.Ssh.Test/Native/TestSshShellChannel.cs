@@ -146,7 +146,7 @@ namespace Google.Solutions.Ssh.Test.Native
                     24,
                     new[]
                     {
-                        new SshAuthenticatedSession.EnvironmentVariable(
+                        new EnvironmentVariable(
                             "LANG",
                             "LC_ALL",
                             true) // LANG is whitelisted by sshd by default.
@@ -195,8 +195,8 @@ namespace Google.Solutions.Ssh.Test.Native
                             24,
                             new []
                             {
-                                new SshAuthenticatedSession.EnvironmentVariable("FOO", "foo", true),
-                                new SshAuthenticatedSession.EnvironmentVariable("BAR", "bar", true)
+                                new EnvironmentVariable("FOO", "foo", true),
+                                new EnvironmentVariable("BAR", "bar", true)
                             }));
                 }
             }

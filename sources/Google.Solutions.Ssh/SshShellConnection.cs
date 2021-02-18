@@ -91,7 +91,7 @@ namespace Google.Solutions.Ssh
                     // Try to pass locale - but do not fail the connedction if
                     // the server rejects it.
                     //
-                    new SshAuthenticatedSession.EnvironmentVariable(
+                    new EnvironmentVariable(
                         "LC_ALL", 
                         $"{currentLanguage}.UTF-8",
                         false)
