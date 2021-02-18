@@ -439,7 +439,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Views.RemoteDesktop
                         ApplicationTraceSources.Default.TraceVerbose(
                             "RemoteDesktopPane: Disconnecting failed");
 
-                        // TODO: Ignore?
                         this.exceptionDialog.Show(this, "Disconnecting failed", e);
                     }
                 }
@@ -649,9 +648,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Views.RemoteDesktop
 
         private void rdpClient_OnRequestGoFullScreen(object sender, EventArgs e)
         {
-            // TODO: Add 'Full screen (all screens)' command?
-            // TODO: Use Multimon to adapt layout
-
             EnterFullscreen(this.useAllScreensForFullScreen);
 
             this.rdpClient.Size = this.rdpClient.Parent.Size;
