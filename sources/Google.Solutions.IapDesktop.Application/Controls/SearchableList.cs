@@ -23,6 +23,7 @@ using Google.Solutions.Common.Diagnostics;
 using Google.Solutions.IapDesktop.Application.Properties;
 using Google.Solutions.IapDesktop.Application.Views;
 using System;
+using System.ComponentModel;
 using System.Drawing;
 using System.Windows.Forms;
 
@@ -36,17 +37,29 @@ namespace Google.Solutions.IapDesktop.Application.Controls
         public event EventHandler LoadingChanged;
         public event EventHandler SearchTermChanged;
 
+        public SearchableList()
+        {
+            InitializeComponent();
+        }
+
+        [Browsable(true)]
+        public bool SearchOnKeyDown { get; set; } = false;
+
+        [Browsable(true)]
+        public bool MultiSelect
+        {
+            get => this.list.MultiSelect;
+            set => this.list.MultiSelect = value;
+        }
+
+        [Browsable(true)]
         public string SearchTerm
         {
             get => this.searchTextBox.Text;
             set => this.searchTextBox.Text = value;
         }
 
-        public SearchableList()
-        {
-            InitializeComponent();
-        }
-
+        [Browsable(false)]
         public bool Loading
         {
             get => this.progressBar.Enabled;
@@ -109,7 +122,11 @@ namespace Google.Solutions.IapDesktop.Application.Controls
 
         private void searchTextBox_KeyDown(object sender, KeyEventArgs e)
         {
-            if (e.KeyCode == Keys.Enter)
+            if (e.KeyCode == Keys.Down)
+            {
+                this.list.Focus();
+            }
+            else if (this.SearchOnKeyDown || e.KeyCode == Keys.Enter)
             {
                 StartSearch();
             }

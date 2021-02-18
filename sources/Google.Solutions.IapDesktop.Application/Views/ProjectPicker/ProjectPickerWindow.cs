@@ -68,12 +68,17 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectPicker
                 m => m.IsLoading,
                 this.components);
 
+            // Reset filter to kick off a search.
+            this.viewModel.Filter = null;
+
             // Bind buttons.
             this.addProjectButton.BindProperty(
                 c => c.Enabled,
                 this.viewModel,
                 m => m.IsProjectSelected,
                 this.components);
+
+            // TODO: Ctrl+F to re-focus on search
 
             this.headlineLabel.ForeColor = ThemeColors.HighlightBlue;
 

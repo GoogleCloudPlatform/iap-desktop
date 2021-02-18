@@ -29,32 +29,20 @@
         private void InitializeComponent()
         {
             this.headlineLabel = new System.Windows.Forms.Label();
-            this.projectList = new Google.Solutions.IapDesktop.Application.Views.ProjectPicker.ProjectList();
             this.cancelButton = new System.Windows.Forms.Button();
             this.addProjectButton = new System.Windows.Forms.Button();
+            this.projectList = new Google.Solutions.IapDesktop.Application.Views.ProjectPicker.ProjectList();
             this.SuspendLayout();
             // 
             // headlineLabel
             // 
             this.headlineLabel.AutoSize = true;
             this.headlineLabel.Font = new System.Drawing.Font("Segoe UI", 16F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.headlineLabel.Location = new System.Drawing.Point(15, 15);
+            this.headlineLabel.Location = new System.Drawing.Point(11, 15);
             this.headlineLabel.Name = "headlineLabel";
             this.headlineLabel.Size = new System.Drawing.Size(127, 30);
             this.headlineLabel.TabIndex = 0;
             this.headlineLabel.Text = "Add project";
-            // 
-            // projectList
-            // 
-            this.projectList.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.projectList.Loading = true;
-            this.projectList.Location = new System.Drawing.Point(15, 60);
-            this.projectList.Name = "projectList";
-            this.projectList.SearchTerm = "";
-            this.projectList.Size = new System.Drawing.Size(450, 351);
-            this.projectList.TabIndex = 1;
             // 
             // cancelButton
             // 
@@ -77,6 +65,20 @@
             this.addProjectButton.Text = "&Add project";
             this.addProjectButton.UseVisualStyleBackColor = true;
             // 
+            // projectList
+            // 
+            this.projectList.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.projectList.Loading = true;
+            this.projectList.Location = new System.Drawing.Point(15, 60);
+            this.projectList.MultiSelect = false;
+            this.projectList.Name = "projectList";
+            this.projectList.SearchOnKeyDown = true;
+            this.projectList.SearchTerm = "";
+            this.projectList.Size = new System.Drawing.Size(450, 351);
+            this.projectList.TabIndex = 1;
+            // 
             // ProjectPickerWindow
             // 
             this.AcceptButton = this.addProjectButton;
@@ -94,6 +96,7 @@
             this.Name = "ProjectPickerWindow";
             this.ShowIcon = false;
             this.ShowInTaskbar = false;
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "Add project";
             this.ResumeLayout(false);
             this.PerformLayout();

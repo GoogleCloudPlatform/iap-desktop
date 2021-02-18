@@ -80,6 +80,12 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectPicker
             {
                 this.filter = value;
 
+                if (string.IsNullOrWhiteSpace(this.filter))
+                {
+                    // TODO: Load all projects
+                    return;
+                }
+
                 this.isLoading = true;
                 this.FilteredProjects.Clear();
 
