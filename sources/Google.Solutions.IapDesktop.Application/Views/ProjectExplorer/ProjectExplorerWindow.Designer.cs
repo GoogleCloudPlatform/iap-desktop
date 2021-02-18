@@ -54,7 +54,9 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
             this.toolStrip = new System.Windows.Forms.ToolStrip();
             this.refreshButton = new System.Windows.Forms.ToolStripButton();
             this.addButton = new System.Windows.Forms.ToolStripButton();
-            this.includeLinuxToolStripButton = new System.Windows.Forms.ToolStripButton();
+            this.osDropDownButton = new System.Windows.Forms.ToolStripDropDownButton();
+            this.windowsInstancesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.linuxInstancesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.vmToolStripSeparator = new System.Windows.Forms.ToolStripSeparator();
             this.vsToolStripExtender = new WeifenLuo.WinFormsUI.Docking.VisualStudioToolStripExtender(this.components);
             this.vs2015LightTheme = new WeifenLuo.WinFormsUI.Docking.VS2015LightTheme();
@@ -77,7 +79,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
             this.toolStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.refreshButton,
             this.addButton,
-            this.includeLinuxToolStripButton,
+            this.osDropDownButton,
             this.vmToolStripSeparator});
             this.toolStrip.Location = new System.Drawing.Point(0, 0);
             this.toolStrip.Name = "toolStrip";
@@ -105,16 +107,32 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
             this.addButton.Text = "Add project";
             this.addButton.Click += new System.EventHandler(this.addButton_Click);
             // 
-            // includeLinuxToolStripButton
+            // osDropDownButton
             // 
-            this.includeLinuxToolStripButton.CheckOnClick = true;
-            this.includeLinuxToolStripButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.includeLinuxToolStripButton.Image = ((System.Drawing.Image)(resources.GetObject("includeLinuxToolStripButton.Image")));
-            this.includeLinuxToolStripButton.ImageTransparentColor = System.Drawing.Color.White;
-            this.includeLinuxToolStripButton.Name = "includeLinuxToolStripButton";
-            this.includeLinuxToolStripButton.Size = new System.Drawing.Size(23, 22);
-            this.includeLinuxToolStripButton.Text = "Show Linux VM instances";
-            this.includeLinuxToolStripButton.Click += new System.EventHandler(this.refreshAllProjectsToolStripMenuItem_Click);
+            this.osDropDownButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.osDropDownButton.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.windowsInstancesToolStripMenuItem,
+            this.linuxInstancesToolStripMenuItem});
+            this.osDropDownButton.Image = ((System.Drawing.Image)(resources.GetObject("osDropDownButton.Image")));
+            this.osDropDownButton.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.osDropDownButton.Name = "osDropDownButton";
+            this.osDropDownButton.Size = new System.Drawing.Size(29, 22);
+            // 
+            // windowsInstancesToolStripMenuItem
+            // 
+            this.windowsInstancesToolStripMenuItem.CheckOnClick = true;
+            this.windowsInstancesToolStripMenuItem.Image = global::Google.Solutions.IapDesktop.Application.Properties.Resources.Computer_16;
+            this.windowsInstancesToolStripMenuItem.Name = "windowsInstancesToolStripMenuItem";
+            this.windowsInstancesToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.windowsInstancesToolStripMenuItem.Text = "Windows instances";
+            // 
+            // linuxInstancesToolStripMenuItem
+            // 
+            this.linuxInstancesToolStripMenuItem.CheckOnClick = true;
+            this.linuxInstancesToolStripMenuItem.Image = global::Google.Solutions.IapDesktop.Application.Properties.Resources.ComputerTerminal_161;
+            this.linuxInstancesToolStripMenuItem.Name = "linuxInstancesToolStripMenuItem";
+            this.linuxInstancesToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.linuxInstancesToolStripMenuItem.Text = "Linux instances";
             // 
             // vmToolStripSeparator
             // 
@@ -252,6 +270,8 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
         private System.Windows.Forms.ToolStripSeparator iapSeparatorToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem configureIapAccessToolStripMenuItem;
         private System.Windows.Forms.ToolStripSeparator vmToolStripSeparator;
-        private System.Windows.Forms.ToolStripButton includeLinuxToolStripButton;
+        private System.Windows.Forms.ToolStripDropDownButton osDropDownButton;
+        private System.Windows.Forms.ToolStripMenuItem windowsInstancesToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem linuxInstancesToolStripMenuItem;
     }
 }
