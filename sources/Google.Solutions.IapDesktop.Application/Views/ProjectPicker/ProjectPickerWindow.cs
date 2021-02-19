@@ -118,5 +118,10 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectPicker
                 return null;
             }
         }
+
+        private void addProjectButton_Click(object sender, EventArgs e)
+        {
+            this.DialogResult = DialogResult.OK;
+        }
     }
 }

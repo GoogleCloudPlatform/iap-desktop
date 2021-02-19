@@ -48,6 +48,10 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Adapters
             }
         }
 
+        //---------------------------------------------------------------------
+        // IsGrantedPermission.
+        //---------------------------------------------------------------------
+
         [Test]
         public async Task WhenUserNotInRole_ThenIsGrantedPermissionReturnsFalse(
             [Credential(Role = PredefinedRole.ComputeViewer)] ResourceTask<ICredential> credential)
@@ -62,6 +66,10 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Adapters
                 Assert.IsFalse(result);
             }
         }
+
+        //---------------------------------------------------------------------
+        // ListProjects.
+        //---------------------------------------------------------------------
 
         [Test]
         public async Task WhenProjectIdExists_ThenQueryProjectsByIdReturnsProject(
@@ -101,6 +109,26 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Adapters
                     result.Projects.Select(p => p.ProjectId),
                     TestProject.ProjectId);
             }
+        }
+
+        //---------------------------------------------------------------------
+        // ProjectFilter.
+        //---------------------------------------------------------------------
+
+        [Test]
+        public void WhenTermContainsSpecialCharacters_ThenByProjectIdIgnoresThem()
+        {
+            Assert.AreEqual(
+                "id:\"foo-bar\"",
+                ProjectFilter.ByProjectId("foo:'\"-bar").ToString());
+        }
+
+        [Test]
+        public void WhenTermContainsSpecialCharacters_ThenByPrefixIgnoresThem()
+        {
+            Assert.AreEqual(
+                "name:\"foo-bar*\" OR id:\"foo-bar*\"",
+                ProjectFilter.ByPrefix("foo:'\"-bar").ToString());
         }
     }
 }

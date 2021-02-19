@@ -65,6 +65,7 @@
             this.addProjectButton.TabIndex = 2;
             this.addProjectButton.Text = "&Add project";
             this.addProjectButton.UseVisualStyleBackColor = true;
+            this.addProjectButton.Click += new System.EventHandler(this.addProjectButton_Click);
             // 
             // projectList
             // 

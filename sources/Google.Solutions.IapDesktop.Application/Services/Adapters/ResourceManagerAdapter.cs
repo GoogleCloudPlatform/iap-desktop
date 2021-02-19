@@ -209,13 +209,23 @@ namespace Google.Solutions.IapDesktop.Application.Services.Adapters
             this.filter = filter;
         }
 
+        private static string Sanitize(string filter)
+        {
+            return filter
+                .Replace(":", "")
+                .Replace("\"", "")
+                .Replace("'", "");
+        }
+
         public static ProjectFilter ByProjectId(string projectId)
         {
+            projectId = Sanitize(projectId);
             return new ProjectFilter($"id:\"{projectId}\"");
         }
 
         public static ProjectFilter ByPrefix(string idOrNamePrefix)
         {
+            idOrNamePrefix = Sanitize(idOrNamePrefix);
             return new ProjectFilter($"name:\"{idOrNamePrefix}*\" OR id:\"{idOrNamePrefix}*\"");
         }
 
