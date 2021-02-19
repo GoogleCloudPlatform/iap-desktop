@@ -43,7 +43,7 @@ namespace Google.Solutions.Ssh.Cryptography
         /// Export the public key in a format compliant with
         /// https://tools.ietf.org/html/rfc4253#section-6.6
         /// </summary>
-        public static byte[] ToSshRsaPublicKey(this RSACng key, bool puttyCompatible = true)
+        public static byte[] ToSshRsaPublicKey(this RSA key, bool puttyCompatible = true)
         {
             var prefix = "ssh-rsa";
 

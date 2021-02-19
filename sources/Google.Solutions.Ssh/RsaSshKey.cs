@@ -27,9 +27,9 @@ namespace Google.Solutions.Ssh
 {
     public sealed class RsaSshKey : ISshKey
     {
-        private readonly RSACng key;
+        private readonly RSA key;
 
-        public RsaSshKey(RSACng key)
+        public RsaSshKey(RSA key)
         {
             this.key = key;
         }
