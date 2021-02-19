@@ -100,7 +100,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Ssh.Services
                         var instance = await instanceTask.ConfigureAwait(true);
                         
                         await this.serviceProvider
-                            .GetService<ISshTerminalConnectionBroker>()
+                            .GetService<ISshTerminalSessionBroker>()
                             .ConnectAsync(
                                 vmNode.Reference,
                                 new IPEndPoint(instance.PublicAddress(), 22),

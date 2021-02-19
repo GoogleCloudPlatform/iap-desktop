@@ -39,7 +39,7 @@ using WeifenLuo.WinFormsUI.Docking;
 
 namespace Google.Solutions.IapDesktop.Extensions.Ssh.Views.Terminal
 {
-    public partial class SshTerminalPane : ToolWindow, ISshTerminalPane
+    public partial class SshTerminalPane : ToolWindow, ISshTerminalSession
     {
         private readonly IExceptionDialog exceptionDialog;
 

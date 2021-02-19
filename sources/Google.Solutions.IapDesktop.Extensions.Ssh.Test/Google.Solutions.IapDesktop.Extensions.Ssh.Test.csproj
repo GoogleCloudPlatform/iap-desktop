@@ -86,7 +86,7 @@
     <Compile Include="Services\Auth\TestOsLoginService.cs" />
     <Compile Include="Services\Auth\TestAuthorizedKey.cs" />
     <Compile Include="Views\Terminal\TestSshTerminalPane.cs" />
-    <Compile Include="Views\Terminal\TestSshTerminalConnectionBroker.cs" />
+    <Compile Include="Views\Terminal\TestSshTerminalSessionBroker.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />

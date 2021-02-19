@@ -25,14 +25,14 @@ using System;
 
 namespace Google.Solutions.IapDesktop.Application.Services.Integration
 {
-    public interface IConnectionBroker
+    public interface ISessionBroker
     {
         bool IsConnected(InstanceLocator vmInstance);
 
         bool TryActivate(InstanceLocator vmInstance);
     }
 
-    public interface IGlobalConnectionBroker : IConnectionBroker
+    public interface IGlobalSessionBroker : ISessionBroker
     {
     }
 
@@ -40,11 +40,11 @@ namespace Google.Solutions.IapDesktop.Application.Services.Integration
     /// Meta-broker that maintains a list of connection brokers
     /// and forwards requests to these.
     /// </summary>
-    public class GlobalConnectionBroker : IGlobalConnectionBroker
+    public class GlobalSessionBroker : IGlobalSessionBroker
     {
         private readonly IServiceCategoryProvider serviceProvider;
 
-        public GlobalConnectionBroker(IServiceCategoryProvider serviceProvider)
+        public GlobalSessionBroker(IServiceCategoryProvider serviceProvider)
         {
             this.serviceProvider = serviceProvider;
         }
@@ -52,7 +52,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.Integration
         public bool IsConnected(InstanceLocator vmInstance)
         {
             foreach (var broker in this.serviceProvider
-                .GetServicesByCategory<IConnectionBroker>())
+                .GetServicesByCategory<ISessionBroker>())
             {
                 if (broker.IsConnected(vmInstance))
                 {
@@ -66,7 +66,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.Integration
         public bool TryActivate(InstanceLocator vmInstance)
         {
             foreach (var broker in this.serviceProvider
-                .GetServicesByCategory<IConnectionBroker>())
+                .GetServicesByCategory<ISessionBroker>())
             {
                 if (broker.TryActivate(vmInstance))
                 {
@@ -82,39 +82,39 @@ namespace Google.Solutions.IapDesktop.Application.Services.Integration
     // Events.
     //-------------------------------------------------------------------------
 
-    public abstract class ConnectionBrokerEventBase
+    public abstract class SessionBrokerEventBase
     {
         public InstanceLocator Instance { get; }
 
-        protected ConnectionBrokerEventBase(InstanceLocator vmInstance)
+        protected SessionBrokerEventBase(InstanceLocator vmInstance)
         {
             this.Instance = vmInstance;
         }
     }
 
-    public class ConnectionSuceededEvent : ConnectionBrokerEventBase
+    public class SessionStartedEvent : SessionBrokerEventBase
     {
-        public ConnectionSuceededEvent(InstanceLocator vmInstance) : base(vmInstance)
+        public SessionStartedEvent(InstanceLocator vmInstance) : base(vmInstance)
         {
         }
     }
 
-    public class ConnectionFailedEvent : ConnectionBrokerEventBase
+    public class SessionAbortedEvent : SessionBrokerEventBase
     {
         public Exception Exception { get; }
 
-        public ConnectionFailedEvent(InstanceLocator vmInstance, Exception exception)
+        public SessionAbortedEvent(InstanceLocator vmInstance, Exception exception)
             : base(vmInstance)
         {
             this.Exception = exception;
         }
     }
 
-    public class ConnectionClosedEvent : ConnectionBrokerEventBase
+    public class SessionEndedEvent : SessionBrokerEventBase
     {
         public Exception Exception { get; }
 
-        public ConnectionClosedEvent(InstanceLocator vmInstance) : base(vmInstance)
+        public SessionEndedEvent(InstanceLocator vmInstance) : base(vmInstance)
         {
         }
     }

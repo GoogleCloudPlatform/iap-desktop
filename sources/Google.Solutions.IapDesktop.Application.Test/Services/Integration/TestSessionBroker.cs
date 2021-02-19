@@ -28,7 +28,7 @@ using NUnit.Framework;
 namespace Google.Solutions.IapDesktop.Application.Test.Services.Integration
 {
     [TestFixture]
-    public class TestConnectionBroker : ApplicationFixtureBase
+    public class TestSessionBroker : ApplicationFixtureBase
     {
         private static readonly InstanceLocator SampleLocator
             = new InstanceLocator("project-1", "zone-1", "instance-1");
@@ -37,7 +37,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Integration
         public void WhenNoServiceRegistered_ThenIsConnectedReturnsFalse()
         {
             var registry = new ServiceRegistry();
-            var broker = new GlobalConnectionBroker(registry);
+            var broker = new GlobalSessionBroker(registry);
 
             Assert.IsFalse(broker.IsConnected(SampleLocator));
         }
@@ -46,7 +46,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Integration
         public void WhenNoServiceRegistered_ThenTryActivateReturnsFalse()
         {
             var registry = new ServiceRegistry();
-            var broker = new GlobalConnectionBroker(registry);
+            var broker = new GlobalSessionBroker(registry);
 
             Assert.IsFalse(broker.IsConnected(SampleLocator));
         }
@@ -55,16 +55,16 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Integration
         [Test]
         public void WhenServicesRegistered_ThenIsConnectedReturnsResult()
         {
-            var service = new Mock<IConnectionBroker>();
+            var service = new Mock<ISessionBroker>();
             service.Setup(s => s.IsConnected(
                     It.Is<InstanceLocator>(l => l.Equals(SampleLocator))))
                 .Returns(true);
 
             var registry = new ServiceRegistry();
-            registry.AddSingleton<IConnectionBroker>(service.Object);
-            registry.AddServiceToCategory(typeof(IConnectionBroker), typeof(IConnectionBroker));
+            registry.AddSingleton<ISessionBroker>(service.Object);
+            registry.AddServiceToCategory(typeof(ISessionBroker), typeof(ISessionBroker));
 
-            var broker = new GlobalConnectionBroker(registry);
+            var broker = new GlobalSessionBroker(registry);
 
             Assert.IsTrue(broker.IsConnected(SampleLocator));
 
@@ -75,16 +75,16 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Integration
         [Test]
         public void WhenServicesRegistered_ThenTryActivateReturnsResult()
         {
-            var service = new Mock<IConnectionBroker>();
+            var service = new Mock<ISessionBroker>();
             service.Setup(s => s.TryActivate(
                     It.Is<InstanceLocator>(l => l.Equals(SampleLocator))))
                 .Returns(true);
 
             var registry = new ServiceRegistry();
-            registry.AddSingleton<IConnectionBroker>(service.Object);
-            registry.AddServiceToCategory(typeof(IConnectionBroker), typeof(IConnectionBroker));
+            registry.AddSingleton<ISessionBroker>(service.Object);
+            registry.AddServiceToCategory(typeof(ISessionBroker), typeof(ISessionBroker));
 
-            var broker = new GlobalConnectionBroker(registry);
+            var broker = new GlobalSessionBroker(registry);
 
             Assert.IsTrue(broker.TryActivate(SampleLocator));
 

@@ -52,7 +52,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Views.RemoteDesktop
         AllScreens
     }
 
-    public interface IRemoteDesktopConnectionBroker : IConnectionBroker
+    public interface IRemoteDesktopSessionBroker : ISessionBroker
     {
         IRemoteDesktopSession ActiveSession { get; }
 
@@ -63,14 +63,14 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Views.RemoteDesktop
             VmInstanceConnectionSettings settings);
     }
 
-    [Service(typeof(IRemoteDesktopConnectionBroker), ServiceLifetime.Singleton, ServiceVisibility.Global)]
-    [ServiceCategory(typeof(IConnectionBroker))]
-    public class RemoteDesktopConnectionBroker : IRemoteDesktopConnectionBroker
+    [Service(typeof(IRemoteDesktopSessionBroker), ServiceLifetime.Singleton, ServiceVisibility.Global)]
+    [ServiceCategory(typeof(ISessionBroker))]
+    public class RemoteDesktopSessionBroker : IRemoteDesktopSessionBroker
     {
         private readonly IServiceProvider serviceProvider;
         private readonly DockPanel dockPanel;
 
-        public RemoteDesktopConnectionBroker(IServiceProvider serviceProvider)
+        public RemoteDesktopSessionBroker(IServiceProvider serviceProvider)
         {
             this.serviceProvider = serviceProvider;
             this.dockPanel = serviceProvider.GetService<IMainForm>().MainPanel;

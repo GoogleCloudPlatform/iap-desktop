@@ -36,7 +36,7 @@ using System.Threading.Tasks;
 namespace Google.Solutions.IapDesktop.Extensions.Rdp.Test.Views.RemoteDesktop
 {
     [TestFixture]
-    public class TestRemoteDesktopConnectionBroker : WindowTestFixtureBase
+    public class TestRemoteDesktopSessionBroker : WindowTestFixtureBase
     {
         // Use a larger machine type as all this RDP'ing consumes a fair
         // amount of memory.
@@ -52,7 +52,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Test.Views.RemoteDesktop
         [Test]
         public void WhenNotConnected_ThenActiveSessionIsNullAndTryActivateReturnsFails()
         {
-            var broker = new RemoteDesktopConnectionBroker(this.serviceProvider);
+            var broker = new RemoteDesktopSessionBroker(this.serviceProvider);
 
             Assert.IsFalse(broker.IsConnected(SampleLocator));
             Assert.IsNull(broker.ActiveSession);
@@ -83,14 +83,14 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Test.Views.RemoteDesktop
                 settings.Username.StringValue = credentials.UserName;
                 settings.Password.Value = credentials.SecurePassword;
 
-                var broker = new RemoteDesktopConnectionBroker(this.serviceProvider);
+                var broker = new RemoteDesktopSessionBroker(this.serviceProvider);
                 var session = broker.Connect(
                     locator,
                     "localhost",
                     (ushort)tunnel.LocalPort,
                     settings);
 
-                AwaitEvent<ConnectionSuceededEvent>();
+                AwaitEvent<SessionStartedEvent>();
                 Assert.IsNull(this.ExceptionShown);
 
                 Assert.IsTrue(broker.IsConnected(locator));
@@ -100,10 +100,10 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Test.Views.RemoteDesktop
                 Assert.IsFalse(broker.TryActivate(SampleLocator));
                 Assert.IsFalse(broker.IsConnected(SampleLocator));
 
-                ConnectionClosedEvent expectedEvent = null;
+                SessionEndedEvent expectedEvent = null;
 
                 this.serviceProvider.GetService<IEventService>()
-                    .BindHandler<ConnectionClosedEvent>(e =>
+                    .BindHandler<SessionEndedEvent>(e =>
                     {
                         expectedEvent = e;
                     });

@@ -135,7 +135,7 @@
     <Compile Include="Global.cs" />
     <Compile Include="Services\Adapters\SerialPortStream.cs" />
     <Compile Include="Services\SecureConnect\SecureConnectEnrollment.cs" />
-    <Compile Include="Services\Integration\ConnectionBroker.cs" />
+    <Compile Include="Services\Integration\SessionBroker.cs" />
     <Compile Include="Services\Integration\EventService.cs" />
     <Compile Include="Services\Integration\JobService.cs" />
     <Compile Include="ObjectModel\ServiceRegistry.cs" />

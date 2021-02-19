@@ -99,10 +99,10 @@ namespace Google.Solutions.IapDesktop.Extensions.Ssh.Test.Views.Terminal
                     .ConfigureAwait(true);
 
                 // Connect and wait for event
-                ConnectionSuceededEvent connectedEvent = null;
-                this.eventService.BindHandler<ConnectionSuceededEvent>(e => connectedEvent = e);
+                SessionStartedEvent connectedEvent = null;
+                this.eventService.BindHandler<SessionStartedEvent>(e => connectedEvent = e);
 
-                var broker = new SshTerminalConnectionBroker(
+                var broker = new SshTerminalSessionBroker(
                     this.serviceProvider);
                 var pane = await broker.ConnectAsync(
                         instanceLocator,
@@ -126,10 +126,10 @@ namespace Google.Solutions.IapDesktop.Extensions.Ssh.Test.Views.Terminal
         {
             using (var key = new RsaSshKey(new RSACng()))
             {
-                ConnectionFailedEvent deliveredEvent = null;
-                this.eventService.BindHandler<ConnectionFailedEvent>(e => deliveredEvent = e);
+                SessionAbortedEvent deliveredEvent = null;
+                this.eventService.BindHandler<SessionAbortedEvent>(e => deliveredEvent = e);
 
-                var broker = new SshTerminalConnectionBroker(
+                var broker = new SshTerminalSessionBroker(
                     this.serviceProvider);
                 await broker.ConnectAsync(
                         new InstanceLocator("project-1", "zone-1", "instance-1"),
@@ -150,10 +150,10 @@ namespace Google.Solutions.IapDesktop.Extensions.Ssh.Test.Views.Terminal
         {
             using (var key = new RsaSshKey(new RSACng()))
             {
-                ConnectionFailedEvent deliveredEvent = null;
-                this.eventService.BindHandler<ConnectionFailedEvent>(e => deliveredEvent = e);
+                SessionAbortedEvent deliveredEvent = null;
+                this.eventService.BindHandler<SessionAbortedEvent>(e => deliveredEvent = e);
 
-                var broker = new SshTerminalConnectionBroker(
+                var broker = new SshTerminalSessionBroker(
                     this.serviceProvider);
                 await broker.ConnectAsync(
                         new InstanceLocator("project-1", "zone-1", "instance-1"),
@@ -177,10 +177,10 @@ namespace Google.Solutions.IapDesktop.Extensions.Ssh.Test.Views.Terminal
 
             using (var key = new RsaSshKey(new RSACng()))
             {
-                ConnectionFailedEvent deliveredEvent = null;
-                this.eventService.BindHandler<ConnectionFailedEvent>(e => deliveredEvent = e);
+                SessionAbortedEvent deliveredEvent = null;
+                this.eventService.BindHandler<SessionAbortedEvent>(e => deliveredEvent = e);
 
-                var broker = new SshTerminalConnectionBroker(
+                var broker = new SshTerminalSessionBroker(
                     this.serviceProvider);
                 await broker.ConnectAsync(
                         instanceLocator,
@@ -201,8 +201,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Ssh.Test.Views.Terminal
             [LinuxInstance] ResourceTask<InstanceLocator> instanceLocatorTask,
             [Credential(Role = PredefinedRole.ComputeInstanceAdminV1)] ResourceTask<ICredential> credential)
         {
-            ConnectionSuceededEvent connectedEvent = null;
-            this.eventService.BindHandler<ConnectionSuceededEvent>(e => connectedEvent = e);
+            SessionStartedEvent connectedEvent = null;
+            this.eventService.BindHandler<SessionStartedEvent>(e => connectedEvent = e);
 
             using (var pane = await ConnectSshTerminalPane(
                 await instanceLocatorTask,
@@ -231,7 +231,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Ssh.Test.Views.Terminal
                 await Task.Delay(50);
 
                 // Send command and wait for event
-                AssertRaisesEvent<ConnectionClosedEvent>(
+                AssertRaisesEvent<SessionEndedEvent>(
                     () => pane.SendAsync("exit\n").Wait());
             }
         }
@@ -248,7 +248,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Ssh.Test.Views.Terminal
                 await Task.Delay(50);
 
                 // Send keystroke and wait for event
-                AssertRaisesEvent<ConnectionClosedEvent>(
+                AssertRaisesEvent<SessionEndedEvent>(
                     () => pane.Terminal.SimulateKey(Keys.D | Keys.Control));
             }
         }
@@ -288,7 +288,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Ssh.Test.Views.Terminal
 
                 var expectedInitialSize = $"1: {pane.Terminal.Columns} x {pane.Terminal.Rows}";
 
-                AwaitEvent<ConnectionClosedEvent>();
+                AwaitEvent<SessionEndedEvent>();
                 var buffer = pane.Terminal.GetBuffer();
 
                 StringAssert.Contains(
@@ -310,7 +310,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Ssh.Test.Views.Terminal
             {
                 await pane.SendAsync("locale;sleep 1;exit\n");
 
-                AwaitEvent<ConnectionClosedEvent>();
+                AwaitEvent<SessionEndedEvent>();
                 var buffer = pane.Terminal.GetBuffer();
 
                 StringAssert.Contains(
@@ -342,7 +342,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Ssh.Test.Views.Terminal
                 pane.Terminal.SimulateKey(Keys.C | Keys.Control);
 
                 await Task.Delay(50);
-                AssertRaisesEvent<ConnectionClosedEvent>(
+                AssertRaisesEvent<SessionEndedEvent>(
                     () => pane.Terminal.SimulateKey(Keys.D | Keys.Control));
 
                 StringAssert.Contains("ab^C", pane.Terminal.GetBuffer().Trim());
@@ -375,7 +375,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Ssh.Test.Views.Terminal
                 pane.Terminal.SimulateKey(Keys.Enter);
 
                 await Task.Delay(50);
-                AssertRaisesEvent<ConnectionClosedEvent>(
+                AssertRaisesEvent<SessionEndedEvent>(
                     () => pane.Terminal.SimulateKey(Keys.D | Keys.Control));
 
                 StringAssert.Contains("echo xbcz", pane.Terminal.GetBuffer().Trim());
@@ -408,7 +408,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Ssh.Test.Views.Terminal
                 pane.Terminal.SimulateKey(Keys.Enter);
 
                 await Task.Delay(50);
-                AssertRaisesEvent<ConnectionClosedEvent>(
+                AssertRaisesEvent<SessionEndedEvent>(
                     () => pane.Terminal.SimulateKey(Keys.D | Keys.Control));
 
                 StringAssert.Contains("echo xbcz", pane.Terminal.GetBuffer().Trim());
@@ -430,7 +430,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Ssh.Test.Views.Terminal
                 pane.Terminal.SimulateKey(Keys.Enter);
 
                 await Task.Delay(50);
-                AssertRaisesEvent<ConnectionClosedEvent>(
+                AssertRaisesEvent<SessionEndedEvent>(
                     () => pane.Terminal.SimulateKey(Keys.D | Keys.Control));
 
                 StringAssert.Contains("ab", pane.Terminal.GetBuffer().Trim());

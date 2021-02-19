@@ -49,7 +49,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views
         [SetUp]
         public void RegisterServices()
         {
-            this.serviceRegistry.AddSingleton<IGlobalConnectionBroker, GlobalConnectionBroker>();
+            this.serviceRegistry.AddSingleton<IGlobalSessionBroker, GlobalSessionBroker>();
         }
 
         [Test]
