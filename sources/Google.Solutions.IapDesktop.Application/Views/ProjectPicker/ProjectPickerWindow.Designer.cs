@@ -32,6 +32,7 @@
             this.cancelButton = new System.Windows.Forms.Button();
             this.addProjectButton = new System.Windows.Forms.Button();
             this.projectList = new Google.Solutions.IapDesktop.Application.Views.ProjectPicker.ProjectList();
+            this.statusLabel = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 
             // headlineLabel
@@ -79,6 +80,15 @@
             this.projectList.Size = new System.Drawing.Size(450, 351);
             this.projectList.TabIndex = 1;
             // 
+            // statusLabel
+            // 
+            this.statusLabel.AutoSize = true;
+            this.statusLabel.Location = new System.Drawing.Point(13, 425);
+            this.statusLabel.Name = "statusLabel";
+            this.statusLabel.Size = new System.Drawing.Size(16, 13);
+            this.statusLabel.TabIndex = 3;
+            this.statusLabel.Text = "...";
+            // 
             // ProjectPickerWindow
             // 
             this.AcceptButton = this.addProjectButton;
@@ -87,12 +97,14 @@
             this.BackColor = System.Drawing.Color.White;
             this.CancelButton = this.cancelButton;
             this.ClientSize = new System.Drawing.Size(484, 461);
+            this.Controls.Add(this.statusLabel);
             this.Controls.Add(this.addProjectButton);
             this.Controls.Add(this.cancelButton);
             this.Controls.Add(this.projectList);
             this.Controls.Add(this.headlineLabel);
             this.MaximizeBox = false;
             this.MinimizeBox = false;
+            this.MinimumSize = new System.Drawing.Size(500, 500);
             this.Name = "ProjectPickerWindow";
             this.ShowIcon = false;
             this.ShowInTaskbar = false;
@@ -109,5 +121,6 @@
         private ProjectList projectList;
         private System.Windows.Forms.Button cancelButton;
         private System.Windows.Forms.Button addProjectButton;
+        private System.Windows.Forms.Label statusLabel;
     }
 }

@@ -68,6 +68,17 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectPicker
                 m => m.IsLoading,
                 this.components);
 
+            this.statusLabel.BindProperty(
+                c => c.Visible,
+                this.viewModel,
+                m => m.IsStatusTextVisible,
+                this.components);
+            this.statusLabel.BindProperty(
+                c => c.Text,
+                this.viewModel,
+                m => m.StatusText,
+                this.components);
+
             // Reset filter to kick off a search.
             this.viewModel.Filter = null;
 

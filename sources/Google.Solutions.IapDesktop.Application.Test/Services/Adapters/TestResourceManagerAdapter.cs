@@ -69,8 +69,9 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Adapters
         {
             using (var adapter = new ResourceManagerAdapter(await credential))
             {
-                var project = await adapter.QueryProjectsById(
-                    TestProject.ProjectId,
+                var project = await adapter.ListProjects(
+                    ProjectFilter.ByProjectId(TestProject.ProjectId),
+                    null,
                     CancellationToken.None);
 
                 Assert.IsNotNull(project);
@@ -88,8 +89,9 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Adapters
                 // Remove last character from project ID.
                 var prefix = TestProject.ProjectId.Substring(0, TestProject.ProjectId.Length - 1);
 
-                var project = await adapter.QueryProjectsByPrefix(
-                    prefix,
+                var project = await adapter.ListProjects(
+                    ProjectFilter.ByPrefix(prefix),
+                    10,
                     CancellationToken.None);
 
                 Assert.IsNotNull(project);

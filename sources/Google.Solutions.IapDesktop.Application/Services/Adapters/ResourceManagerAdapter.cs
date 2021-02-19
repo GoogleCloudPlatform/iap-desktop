@@ -23,6 +23,7 @@ using Google.Apis.Auth.OAuth2;
 using Google.Apis.CloudResourceManager.v1;
 using Google.Apis.CloudResourceManager.v1.Data;
 using Google.Apis.Requests;
+using Google.Apis.Util;
 using Google.Solutions.Common.Diagnostics;
 using Google.Solutions.IapDesktop.Application.ObjectModel;
 using System;
@@ -36,16 +37,9 @@ namespace Google.Solutions.IapDesktop.Application.Services.Adapters
 {
     public interface IResourceManagerAdapter : IDisposable
     {
-        Task<IEnumerable<Project>> QueryProjects(
-            string filter,
-            CancellationToken cancellationToken);
-
-        Task<IEnumerable<Project>> QueryProjectsByPrefix(
-            string idOrNamePrefix,
-            CancellationToken cancellationToken);
-
-        Task<IEnumerable<Project>> QueryProjectsById(
-            string projectId,
+        Task<IEnumerable<Project>> ListProjects(
+            ProjectFilter filter,
+            int? maxResults,
             CancellationToken cancellationToken);
 
         Task<bool> IsGrantedPermission(
@@ -98,27 +92,42 @@ namespace Google.Solutions.IapDesktop.Application.Services.Adapters
         {
         }
 
-        public async Task<IEnumerable<Project>> QueryProjects(
-            string filter,
+        public async Task<IEnumerable<Project>> ListProjects(
+            ProjectFilter filter,
+            int? maxResults,
             CancellationToken cancellationToken)
         {
             using (ApplicationTraceSources.Default.TraceMethod().WithParameters(filter))
             {
                 var request = new ProjectsResource.ListRequest(this.service)
                 {
-                    Filter = filter
+                    Filter = filter?.ToString(),
+                    PageSize = maxResults
                 };
 
-                var projects = await new PageStreamer<
-                    Project,
-                    ProjectsResource.ListRequest,
-                    ListProjectsResponse,
-                    string>(
-                        (req, token) => req.PageToken = token,
-                        response => response.NextPageToken,
-                        response => response.Projects)
-                    .FetchAllAsync(request, cancellationToken)
-                    .ConfigureAwait(false);
+                IList<Project> projects;
+                if (maxResults.HasValue)
+                {
+                    // Read single page.
+                    var response = await request
+                        .ExecuteAsync(cancellationToken)
+                        .ConfigureAwait(false);
+                    projects = response.Projects;
+                }
+                else
+                {
+                    // Read multiple pages.
+                    projects = await new PageStreamer<
+                        Project,
+                        ProjectsResource.ListRequest,
+                        ListProjectsResponse,
+                        string>(
+                            (req, token) => req.PageToken = token,
+                            response => response.NextPageToken,
+                            response => response.Projects)
+                        .FetchAllAsync(request, cancellationToken)
+                        .ConfigureAwait(false);
+                }
 
                 // Filter projects in deleted/pending delete state.
                 var result = projects.Where(p => p.LifecycleState == "ACTIVE");
@@ -127,22 +136,6 @@ namespace Google.Solutions.IapDesktop.Application.Services.Adapters
 
                 return result;
             }
-        }
-
-        public Task<IEnumerable<Project>> QueryProjectsByPrefix(
-            string idOrNamePrefix,
-            CancellationToken cancellationToken)
-        {
-            return QueryProjects(
-                $"name:\"{idOrNamePrefix}*\" OR id:\"{idOrNamePrefix}*\"",
-                cancellationToken);
-        }
-
-        public Task<IEnumerable<Project>> QueryProjectsById(
-            string projectId,
-            CancellationToken cancellationToken)
-        {
-            return QueryProjects($"id:\"{projectId}\"", cancellationToken);
         }
 
         public async Task<bool> IsGrantedPermission(
@@ -166,6 +159,10 @@ namespace Google.Solutions.IapDesktop.Application.Services.Adapters
             }
         }
 
+        //---------------------------------------------------------------------
+        // IDisposable.
+        //---------------------------------------------------------------------
+
         public void Dispose()
         {
             Dispose(true);
@@ -178,6 +175,31 @@ namespace Google.Solutions.IapDesktop.Application.Services.Adapters
             {
                 this.service.Dispose();
             }
+        }
+    }
+
+    public class ProjectFilter
+    {
+        private readonly string filter;
+
+        private ProjectFilter(string filter)
+        {
+            this.filter = filter;
+        }
+
+        public static ProjectFilter ByProjectId(string projectId)
+        {
+            return new ProjectFilter($"id:\"{projectId}\"");
+        }
+
+        public static ProjectFilter ByPrefix(string idOrNamePrefix)
+        {
+            return new ProjectFilter($"name:\"{idOrNamePrefix}*\" OR id:\"{idOrNamePrefix}*\"");
+        }
+
+        public override string ToString()
+        {
+            return this.filter;
         }
     }
 }

@@ -128,7 +128,7 @@ namespace Google.Solutions.IapDesktop.Application.Controls
             }
             else if (this.SearchOnKeyDown || e.KeyCode == Keys.Enter)
             {
-                StartSearch();
+                StartSearch();  // TODO: Consider last typed character!
             }
         }
 

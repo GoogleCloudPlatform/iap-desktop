@@ -15,11 +15,13 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectPicker
 {
     public sealed class ProjectPickerViewModel : ViewModelBase,  IDisposable
     {
+        private const int MaxResults = 100;
+
         private readonly IResourceManagerAdapter resourceManager;
 
         private string filter;
+        private string statusText;
         private bool isLoading;
-        private bool isListTruncated;
         private Exception filteringException;
 
         public ProjectPickerViewModel(
@@ -45,16 +47,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectPicker
             }
         }
 
-        public bool IsListTruncated
-        {
-            get => this.isListTruncated;
-            private set
-            {
-                this.isListTruncated = value;
-                RaisePropertyChange();
-            }
-        }
-
+        
         public bool IsProjectSelected => false;
 
         public Project SelectedProject => null;
@@ -69,6 +62,22 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectPicker
             }
         }
 
+        public string StatusText
+        {
+            get => this.statusText;
+            private set
+            {
+                this.statusText = value;
+                RaisePropertyChange();
+                RaisePropertyChange((ProjectPickerViewModel m) => m.IsStatusTextVisible);
+            }
+        }
+
+        public bool IsStatusTextVisible
+        {
+            get => this.statusText != null;
+        }
+
         //---------------------------------------------------------------------
         // "Input" properties.
         //---------------------------------------------------------------------
@@ -80,12 +89,6 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectPicker
             {
                 this.filter = value;
 
-                if (string.IsNullOrWhiteSpace(this.filter))
-                {
-                    // TODO: Load all projects
-                    return;
-                }
-
                 this.isLoading = true;
                 this.FilteredProjects.Clear();
 
@@ -94,18 +97,27 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectPicker
                 // asynchronously, but on UI thread.
                 //
 
-                // TODO: Set limit
-
-                this.resourceManager.QueryProjectsByPrefix(
-                        value,
+                this.resourceManager.ListProjects(
+                        string.IsNullOrEmpty(this.filter)
+                            ? null // All projects.
+                            : ProjectFilter.ByPrefix(value),
+                        MaxResults,
                         CancellationToken.None)
                     .ContinueWith(t =>
                     {
                         try
                         {
                             this.FilteredProjects.AddRange(t.Result);
-
-                            // TODO: Set IsTruncated flag
+                            if (t.Result.Count() == MaxResults)
+                            {
+                                // TODO: Page might not be entirely filled
+                                this.StatusText = $"Over {t.Result.Count()} projects found, " +
+                                                   "use search to refine selection";
+                            }
+                            else
+                            {
+                                this.StatusText = $"{t.Result.Count()} projects found";
+                            }
                         }
                         catch (Exception e)
                         {
