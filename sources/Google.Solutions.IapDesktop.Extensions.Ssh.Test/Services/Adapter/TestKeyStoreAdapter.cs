@@ -20,12 +20,13 @@
 //
 
 using Google.Solutions.Common.Test;
-using Google.Solutions.IapDesktop.Application.Services.Adapters;
+using Google.Solutions.IapDesktop.Application.Test;
+using Google.Solutions.IapDesktop.Extensions.Ssh.Services.Adapter;
 using NUnit.Framework;
 using System.Security.Cryptography;
 using System.Threading.Tasks;
 
-namespace Google.Solutions.IapDesktop.Application.Test.Services.Adapters
+namespace Google.Solutions.IapDesktop.Extensions.Ssh.Test.Services.Adapter
 {
     [TestFixture]
     public class TestKeyStoreAdapter : ApplicationFixtureBase

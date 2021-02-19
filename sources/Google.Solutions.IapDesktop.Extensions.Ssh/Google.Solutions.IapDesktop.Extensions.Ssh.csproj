@@ -96,6 +96,7 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
+    <Compile Include="Services\Adapter\KeyStoreAdapter.cs" />
     <Compile Include="Services\Adapter\OsLoginAdapter.cs" />
     <Compile Include="Services\Adapter\MetadataAuthorizedKey.cs" />
     <Compile Include="Services\Adapter\MetadataAuthorizedKeySet.cs" />

@@ -20,11 +20,12 @@
 //
 
 using Google.Solutions.Common.Diagnostics;
+using Google.Solutions.IapDesktop.Application;
 using System;
 using System.Security.Cryptography;
 using System.Threading.Tasks;
 
-namespace Google.Solutions.IapDesktop.Application.Services.Adapters
+namespace Google.Solutions.IapDesktop.Extensions.Ssh.Services.Adapter
 {
     public interface IKeyStoreAdapter
     {

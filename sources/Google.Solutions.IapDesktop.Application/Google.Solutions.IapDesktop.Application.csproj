@@ -127,7 +127,6 @@
     <Compile Include="Services\Adapters\HttpProxyAdapter.cs" />
     <Compile Include="Services\Adapters\IComputeEngineAdapter.cs" />
     <Compile Include="Services\Adapters\InstanceExtensions.cs" />
-    <Compile Include="Services\Adapters\KeyStoreAdapter.cs" />
     <Compile Include="Services\Adapters\MetadataExtensions.cs" />
     <Compile Include="Services\Adapters\OperatingSystems.cs" />
     <Compile Include="Services\Adapters\Permissions.cs" />
