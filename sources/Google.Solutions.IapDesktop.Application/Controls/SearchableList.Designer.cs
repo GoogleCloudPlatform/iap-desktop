@@ -77,7 +77,7 @@ namespace Google.Solutions.IapDesktop.Application.Controls
             this.searchTextBox.Name = "searchTextBox";
             this.searchTextBox.Size = new System.Drawing.Size(250, 21);
             this.searchTextBox.TabIndex = 0;
-            this.searchTextBox.KeyDown += new System.Windows.Forms.KeyEventHandler(this.searchTextBox_KeyDown);
+            this.searchTextBox.KeyUp += new System.Windows.Forms.KeyEventHandler(this.searchTextBox_KeyUp);
             // 
             // list
             // 

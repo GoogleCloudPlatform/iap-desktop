@@ -120,7 +120,7 @@ namespace Google.Solutions.IapDesktop.Application.Controls
                 (IntPtr)(searchButton.Width << 16));
         }
 
-        private void searchTextBox_KeyDown(object sender, KeyEventArgs e)
+        private void searchTextBox_KeyUp(object sender, KeyEventArgs e)
         {
             if (e.KeyCode == Keys.Down)
             {
@@ -128,7 +128,7 @@ namespace Google.Solutions.IapDesktop.Application.Controls
             }
             else if (this.SearchOnKeyDown || e.KeyCode == Keys.Enter)
             {
-                StartSearch();  // TODO: Consider last typed character!
+                StartSearch();
             }
         }
 
