@@ -25,6 +25,7 @@ using Google.Apis.CloudResourceManager.v1.Data;
 using Google.Apis.Requests;
 using Google.Apis.Util;
 using Google.Solutions.Common.Diagnostics;
+using Google.Solutions.Common.Util;
 using Google.Solutions.IapDesktop.Application.ObjectModel;
 using System;
 using System.Collections.Generic;
@@ -134,11 +135,14 @@ namespace Google.Solutions.IapDesktop.Application.Services.Adapters
                 }
 
                 // Filter projects in deleted/pending delete state.
-                var result = projects.Where(p => p.LifecycleState == "ACTIVE");
+                var activeProjects = projects
+                    .EnsureNotNull()
+                    .Where(p => p.LifecycleState == "ACTIVE");
 
-                ApplicationTraceSources.Default.TraceVerbose("Found {0} projects", result.Count());
+                ApplicationTraceSources.Default.TraceVerbose(
+                    "Found {0} projects", activeProjects.Count());
 
-                return new FilteredProjectList(projects, truncated);
+                return new FilteredProjectList(activeProjects, truncated);
             }
         }
 

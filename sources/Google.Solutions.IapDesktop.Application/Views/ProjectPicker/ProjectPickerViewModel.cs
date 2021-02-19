@@ -3,9 +3,7 @@ using Google.Solutions.IapDesktop.Application.ObjectModel;
 using Google.Solutions.IapDesktop.Application.Services.Adapters;
 using Google.Solutions.IapDesktop.Application.Util;
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -19,6 +17,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectPicker
 
         private readonly IResourceManagerAdapter resourceManager;
 
+        private Project selectedProject;
         private string filter;
         private string statusText;
         private bool isLoading;
@@ -46,11 +45,19 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectPicker
                 RaisePropertyChange();
             }
         }
-
         
-        public bool IsProjectSelected => false;
+        public bool IsProjectSelected => this.selectedProject != null;
 
-        public Project SelectedProject => null;
+        public Project SelectedProject
+        {
+            get => this.selectedProject;
+            set
+            {
+                this.selectedProject = value;
+                RaisePropertyChange();
+                RaisePropertyChange((ProjectPickerViewModel m) => m.IsProjectSelected);
+            }
+        }
 
         public Exception LoadingError
         {
@@ -87,51 +94,64 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectPicker
             get => this.filter;
             set
             {
-                this.filter = value;
+                FilterAsync(value).ContinueWith(t => { });
+            }
+        }
 
-                this.isLoading = true;
-                this.FilteredProjects.Clear();
+        //---------------------------------------------------------------------
+        // Actions.
+        //---------------------------------------------------------------------
 
-                //
-                // Start server-side search, update view model
-                // asynchronously, but on UI thread.
-                //
+        public async Task FilterAsync(string filter)
+        {
+            //
+            // Update property synchrounously.
+            //
+            this.filter = filter;
+            RaisePropertyChange((ProjectPickerViewModel m) => m.Filter);
 
-                this.resourceManager.ListProjects(
+            this.IsLoading = true;
+            this.SelectedProject = null;
+            this.FilteredProjects.Clear();
+
+            //
+            // Start server-side search asynchronously, then 
+            // update remaining properties on original (UI) thread.
+            //
+            try
+            {
+                var result = await this.resourceManager.ListProjects(
                         string.IsNullOrEmpty(this.filter)
                             ? null // All projects.
-                            : ProjectFilter.ByPrefix(value),
+                            : ProjectFilter.ByPrefix(this.filter),
                         MaxResults,
                         CancellationToken.None)
-                    .ContinueWith(t =>
-                    {
-                        try
-                        {
-                            this.FilteredProjects.AddRange(t.Result.Projects);
-                            if (t.Result.IsTruncated)
-                            {
-                                this.StatusText = $"Over {t.Result.Projects.Count()} projects found, " +
-                                                   "use search to refine selection";
-                            }
-                            else
-                            {
-                                this.StatusText = $"{t.Result.Projects.Count()} projects found";
-                            }
-                        }
-                        catch (Exception e)
-                        {
-                            this.LoadingError = e;
-                        }
+                    .ConfigureAwait(true);
 
-                        this.isLoading = false;
-                    },
-                CancellationToken.None,
-                TaskContinuationOptions.None,
-                TaskScheduler.FromCurrentSynchronizationContext()); // Continue on UI thread.
-
-                RaisePropertyChange((ProjectPickerViewModel m) => m.FilteredProjects);
-                RaisePropertyChange();
+                // Clear again because multiple filter operations might be running
+                // in parallel.
+                this.FilteredProjects.Clear();
+                this.FilteredProjects.AddRange(result.Projects);
+                if (result.IsTruncated)
+                {
+                    this.StatusText =
+                        $"Over {result.Projects.Count()} projects found, " +
+                            "use search to refine selection";
+                }
+                else
+                {
+                    this.StatusText =
+                        $"{result.Projects.Count()} projects found";
+                }
             }
+            catch (Exception e)
+            {
+                this.LoadingError = e;
+            }
+
+            this.IsLoading = false;
+
+            RaisePropertyChange((ProjectPickerViewModel m) => m.FilteredProjects);
         }
 
         //---------------------------------------------------------------------

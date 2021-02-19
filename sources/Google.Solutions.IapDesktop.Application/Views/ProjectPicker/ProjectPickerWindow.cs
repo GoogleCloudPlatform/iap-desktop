@@ -23,6 +23,7 @@ using Google.Solutions.Common.Diagnostics;
 using Google.Solutions.IapDesktop.Application.Controls;
 using Google.Solutions.IapDesktop.Application.ObjectModel;
 using Google.Solutions.IapDesktop.Application.Services.Adapters;
+using Google.Solutions.IapDesktop.Application.Views.Dialog;
 using System;
 using System.Diagnostics;
 using System.Windows.Forms;
@@ -50,8 +51,8 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectPicker
                 m => m.LoadingError,
                 e =>
                 {
-                    // TODO:
-                    Debug.Assert(false);
+                    serviceProvider.GetService<IExceptionDialog>()
+                        .Show(this, "Loading projects failed", e);
                 });
 
             // Bind list.
@@ -66,6 +67,11 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectPicker
                 c => c.Loading,
                 this.viewModel,
                 m => m.IsLoading,
+                this.components);
+            this.projectList.List.BindProperty(
+                c => c.SelectedModelItem,
+                this.viewModel,
+                m => m.SelectedProject,
                 this.components);
 
             this.statusLabel.BindProperty(
@@ -83,13 +89,11 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectPicker
             this.viewModel.Filter = null;
 
             // Bind buttons.
-            this.addProjectButton.BindProperty(
+            this.addProjectButton.BindReadonlyProperty(
                 c => c.Enabled,
                 this.viewModel,
                 m => m.IsProjectSelected,
                 this.components);
-
-            // TODO: Ctrl+F to re-focus on search
 
             this.headlineLabel.ForeColor = ThemeColors.HighlightBlue;
 
@@ -105,8 +109,14 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectPicker
 
         public string SelectProject(IWin32Window owner)
         {
-            ShowDialog(owner);
-            return this.viewModel.SelectedProject?.ProjectId;
+            if (ShowDialog(owner) == DialogResult.OK)
+            {
+                return this.viewModel.SelectedProject?.ProjectId;
+            }
+            else
+            {
+                return null;
+            }
         }
     }
 }
