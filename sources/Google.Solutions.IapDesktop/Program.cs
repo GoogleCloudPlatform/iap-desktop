@@ -225,7 +225,7 @@ namespace Google.Solutions.IapDesktop
             var eventService = new EventService(mainForm);
             integrationLayer.AddSingleton<IJobService, JobService>();
             integrationLayer.AddSingleton<IEventService>(eventService);
-            integrationLayer.AddSingleton<IGlobalConnectionBroker, GlobalConnectionBroker>();
+            integrationLayer.AddSingleton<IGlobalSessionBroker, GlobalSessionBroker>();
             integrationLayer.AddSingleton<IProjectRepository>(new ProjectRepository(
                 hkcu.CreateSubKey($@"{BaseRegistryKeyPath}\Inventory"),
                 eventService));

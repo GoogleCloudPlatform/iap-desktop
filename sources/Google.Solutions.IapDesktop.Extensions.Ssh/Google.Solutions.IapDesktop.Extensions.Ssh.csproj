@@ -105,7 +105,7 @@
     <Compile Include="Services\Auth\IAuthorizedKeyService.cs" />
     <Compile Include="Services\Auth\OsLoginService.cs" />
     <Compile Include="Services\SshExtension.cs" />
-    <Compile Include="Views\Terminal\SshTerminalConnectionBroker.cs" />
+    <Compile Include="Views\Terminal\SshTerminalSessionBroker.cs" />
     <Compile Include="Views\Terminal\SshTerminalPane.cs">
       <SubType>Form</SubType>
     </Compile>

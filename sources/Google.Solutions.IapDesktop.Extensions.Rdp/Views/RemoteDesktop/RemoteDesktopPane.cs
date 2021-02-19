@@ -91,7 +91,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Views.RemoteDesktop
                 LeaveFullScreen();
 
                 await this.eventService.FireAsync(
-                    new ConnectionFailedEvent(this.Instance, e))
+                    new SessionAbortedEvent(this.Instance, e))
                     .ConfigureAwait(true);
                 this.exceptionDialog.Show(this, caption, e);
                 Close();
@@ -446,7 +446,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Views.RemoteDesktop
                 // Mark this pane as being in closing state even though it is still
                 // visible at this point.
                 this.IsFormClosing = true;
-                await this.eventService.FireAsync(new ConnectionClosedEvent(this.Instance))
+                await this.eventService.FireAsync(new SessionEndedEvent(this.Instance))
                     .ConfigureAwait(true);
             }
         }
@@ -550,7 +550,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Views.RemoteDesktop
                 this.spinner.Visible = false;
 
                 // Notify our listeners.
-                await this.eventService.FireAsync(new ConnectionSuceededEvent(this.Instance))
+                await this.eventService.FireAsync(new SessionStartedEvent(this.Instance))
                     .ConfigureAwait(true);
 
                 // Wait a bit before clearing the connecting flag. The control can

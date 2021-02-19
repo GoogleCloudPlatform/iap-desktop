@@ -25,7 +25,7 @@ using NUnit.Framework;
 namespace Google.Solutions.IapDesktop.Extensions.Ssh.Test.Views.Terminal
 {
     [TestFixture]
-    public class TestSshTerminalConnectionBroker : WindowTestFixtureBase
+    public class TestSshTerminalSessionBroker : WindowTestFixtureBase
     {
 
         //---------------------------------------------------------------------

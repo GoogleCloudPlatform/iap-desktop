@@ -183,7 +183,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Ssh.Views.Terminal
 
                 // Notify listeners.
                 this.eventService.FireAsync(
-                    new ConnectionFailedEvent(this.Instance, exception))
+                    new SessionAbortedEvent(this.Instance, exception))
                     .ContinueWith(_ => { });
             }
 
@@ -237,7 +237,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Ssh.Views.Terminal
 
                     // Notify listeners.
                     await this.eventService.FireAsync(
-                        new ConnectionSuceededEvent(this.Instance))
+                        new SessionStartedEvent(this.Instance))
                         .ConfigureAwait(true);
                 }
                 catch (Exception e)
@@ -251,7 +251,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Ssh.Views.Terminal
 
                     // Notify listeners.
                     await this.eventService.FireAsync(
-                        new ConnectionFailedEvent(this.Instance, e))
+                        new SessionAbortedEvent(this.Instance, e))
                         .ConfigureAwait(true);
 
                     this.currentConnection = null;
@@ -270,7 +270,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Ssh.Views.Terminal
 
                     // Notify listeners.
                     await this.eventService.FireAsync(
-                        new ConnectionClosedEvent(this.Instance))
+                        new SessionEndedEvent(this.Instance))
                         .ConfigureAwait(true);
                 }
             }

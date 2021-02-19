@@ -82,7 +82,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views
             registry.AddSingleton<IMainForm>(mainForm);
             registry.AddSingleton<IJobService>(mainForm);
             registry.AddSingleton<IAuthorizationAdapter>(mainForm);
-            registry.AddSingleton<IGlobalConnectionBroker, GlobalConnectionBroker>();
+            registry.AddSingleton<IGlobalSessionBroker, GlobalSessionBroker>();
 
             registry.AddSingleton<IEventService>(this.eventService);
 

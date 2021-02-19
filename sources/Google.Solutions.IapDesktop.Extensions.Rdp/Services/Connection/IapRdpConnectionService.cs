@@ -42,7 +42,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Services.Connection
     {
         private readonly IWin32Window window;
         private readonly IJobService jobService;
-        private readonly IRemoteDesktopConnectionBroker remoteDesktopService;
+        private readonly IRemoteDesktopSessionBroker remoteDesktopService;
         private readonly ITunnelBrokerService tunnelBrokerService;
         private readonly ICredentialPrompt credentialPrompt;
         private readonly IProjectExplorer projectExplorer;
@@ -51,7 +51,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Services.Connection
         public IapRdpConnectionService(IServiceProvider serviceProvider)
         {
             this.jobService = serviceProvider.GetService<IJobService>();
-            this.remoteDesktopService = serviceProvider.GetService<IRemoteDesktopConnectionBroker>();
+            this.remoteDesktopService = serviceProvider.GetService<IRemoteDesktopSessionBroker>();
             this.tunnelBrokerService = serviceProvider.GetService<ITunnelBrokerService>();
             this.credentialPrompt = serviceProvider.GetService<ICredentialPrompt>();
             this.projectExplorer = serviceProvider.GetService<IProjectExplorer>();

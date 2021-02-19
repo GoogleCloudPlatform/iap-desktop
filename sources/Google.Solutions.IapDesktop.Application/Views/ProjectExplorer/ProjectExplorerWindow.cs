@@ -52,7 +52,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
         private readonly IProjectRepository projectInventoryService;
         private readonly IAuthorizationAdapter authService;
         private readonly IServiceProvider serviceProvider;
-        private readonly IConnectionBroker connectionBroker;
+        private readonly ISessionBroker sessionBroker;
 
         private readonly ProjectExplorerViewModel viewModel;
         private readonly CloudNode rootNode = new CloudNode();
@@ -87,12 +87,12 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
             this.jobService = serviceProvider.GetService<IJobService>();
             this.projectInventoryService = serviceProvider.GetService<IProjectRepository>();
             this.authService = serviceProvider.GetService<IAuthorizationAdapter>();
-            this.connectionBroker = serviceProvider.GetService<IGlobalConnectionBroker>();
+            this.sessionBroker = serviceProvider.GetService<IGlobalSessionBroker>();
 
             this.eventService.BindAsyncHandler<ProjectAddedEvent>(OnProjectAdded);
             this.eventService.BindHandler<ProjectDeletedEvent>(OnProjectDeleted);
-            this.eventService.BindHandler<ConnectionSuceededEvent>(OnRdpConnectionSucceeded);
-            this.eventService.BindHandler<ConnectionClosedEvent>(OnRdpConnectionClosed);
+            this.eventService.BindHandler<SessionStartedEvent>(OnRdpSessionStarted);
+            this.eventService.BindHandler<SessionEndedEvent>(OnRdpSessionEnded);
 
             this.ContextMenuCommands = new CommandContainer<IProjectExplorerNode>(
                 this,
@@ -151,14 +151,14 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
             {
                 projectNode.Populate(
                     instances,
-                    this.connectionBroker.IsConnected);
+                    this.sessionBroker.IsConnected);
             }
             else
             {
                 projectNode = new ProjectNode(projectId);
                 projectNode.Populate(
                     instances,
-                    this.connectionBroker.IsConnected);
+                    this.sessionBroker.IsConnected);
                 this.rootNode.Nodes.Add(projectNode);
             }
 
@@ -459,7 +459,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
             }
         }
 
-        private void OnRdpConnectionSucceeded(ConnectionSuceededEvent e)
+        private void OnRdpSessionStarted(SessionStartedEvent e)
         {
             var node = (VmInstanceNode)TryFindNode(e.Instance);
             if (node != null)
@@ -469,14 +469,14 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
         }
 
 
-        private void OnRdpConnectionClosed(ConnectionClosedEvent e)
+        private void OnRdpSessionEnded(SessionEndedEvent e)
         {
             var node = (VmInstanceNode)TryFindNode(e.Instance);
             if (node != null)
             {
                 // Another connection might still be open, so re-check before
                 // marking the node as not connected.
-                node.IsConnected = this.connectionBroker.IsConnected(node.Reference);
+                node.IsConnected = this.sessionBroker.IsConnected(node.Reference);
             }
         }
 

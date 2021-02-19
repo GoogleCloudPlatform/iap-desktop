@@ -59,7 +59,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Test.Views.RemoteDesktop
                 settings.BitmapPersistence.Value = RdpBitmapPersistence.Disabled;
                 settings.DesktopSize.Value = RdpDesktopSize.ClientSize;
 
-                var rdpService = new RemoteDesktopConnectionBroker(this.serviceProvider);
+                var rdpService = new RemoteDesktopSessionBroker(this.serviceProvider);
                 return rdpService.Connect(
                     vmInstanceReference,
                     "localhost",
@@ -84,7 +84,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Test.Views.RemoteDesktop
             {
                 var session = await Connect(tunnel, locator);
 
-                AwaitEvent<ConnectionFailedEvent>(TimeSpan.FromSeconds(90));
+                AwaitEvent<SessionAbortedEvent>(TimeSpan.FromSeconds(90));
                 Assert.IsNotNull(this.ExceptionShown);
                 Assert.IsInstanceOf(typeof(RdpDisconnectedException), this.ExceptionShown);
                 Assert.AreEqual(264, ((RdpDisconnectedException)this.ExceptionShown).DisconnectReason);
@@ -106,13 +106,13 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Test.Views.RemoteDesktop
             {
                 var session = await Connect(tunnel, locator);
 
-                AwaitEvent<ConnectionSuceededEvent>();
+                AwaitEvent<SessionStartedEvent>();
                 Assert.IsNull(this.ExceptionShown);
 
-                ConnectionClosedEvent expectedEvent = null;
+                SessionEndedEvent expectedEvent = null;
 
                 this.serviceProvider.GetService<IEventService>()
-                    .BindHandler<ConnectionClosedEvent>(e =>
+                    .BindHandler<SessionEndedEvent>(e =>
                     {
                         expectedEvent = e;
                     });
@@ -139,13 +139,13 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Test.Views.RemoteDesktop
             {
                 var session = await Connect(tunnel, locator);
 
-                AwaitEvent<ConnectionSuceededEvent>();
+                AwaitEvent<SessionStartedEvent>();
                 Assert.IsNull(this.ExceptionShown);
 
-                ConnectionClosedEvent expectedEvent = null;
+                SessionEndedEvent expectedEvent = null;
 
                 this.serviceProvider.GetService<IEventService>()
-                    .BindHandler<ConnectionClosedEvent>(e =>
+                    .BindHandler<SessionEndedEvent>(e =>
                     {
                         expectedEvent = e;
                     });
@@ -172,13 +172,13 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Test.Views.RemoteDesktop
             {
                 var session = await Connect(tunnel, locator);
 
-                AwaitEvent<ConnectionSuceededEvent>();
+                AwaitEvent<SessionStartedEvent>();
                 Assert.IsNull(this.ExceptionShown);
 
-                ConnectionClosedEvent expectedEvent = null;
+                SessionEndedEvent expectedEvent = null;
 
                 this.serviceProvider.GetService<IEventService>()
-                    .BindHandler<ConnectionClosedEvent>(e =>
+                    .BindHandler<SessionEndedEvent>(e =>
                     {
                         expectedEvent = e;
                     });
@@ -205,13 +205,13 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Test.Views.RemoteDesktop
             {
                 var session = await Connect(tunnel, locator);
 
-                AwaitEvent<ConnectionSuceededEvent>();
+                AwaitEvent<SessionStartedEvent>();
                 Assert.IsNull(this.ExceptionShown);
 
-                ConnectionClosedEvent expectedEvent = null;
+                SessionEndedEvent expectedEvent = null;
 
                 this.serviceProvider.GetService<IEventService>()
-                    .BindHandler<ConnectionClosedEvent>(e =>
+                    .BindHandler<SessionEndedEvent>(e =>
                     {
                         expectedEvent = e;
                     });
@@ -238,13 +238,13 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Test.Views.RemoteDesktop
             {
                 var session = await Connect(tunnel, locator);
 
-                AwaitEvent<ConnectionSuceededEvent>();
+                AwaitEvent<SessionStartedEvent>();
                 Assert.IsNull(this.ExceptionShown);
 
-                ConnectionClosedEvent expectedEvent = null;
+                SessionEndedEvent expectedEvent = null;
 
                 this.serviceProvider.GetService<IEventService>()
-                    .BindHandler<ConnectionClosedEvent>(e =>
+                    .BindHandler<SessionEndedEvent>(e =>
                     {
                         expectedEvent = e;
                     });
@@ -271,13 +271,13 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Test.Views.RemoteDesktop
             {
                 var session = await Connect(tunnel, locator);
 
-                AwaitEvent<ConnectionSuceededEvent>();
+                AwaitEvent<SessionStartedEvent>();
                 Assert.IsNull(this.ExceptionShown);
 
-                ConnectionClosedEvent expectedEvent = null;
+                SessionEndedEvent expectedEvent = null;
 
                 this.serviceProvider.GetService<IEventService>()
-                    .BindHandler<ConnectionClosedEvent>(e =>
+                    .BindHandler<SessionEndedEvent>(e =>
                     {
                         expectedEvent = e;
                     });
@@ -304,13 +304,13 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Test.Views.RemoteDesktop
             {
                 var session = await Connect(tunnel, locator);
 
-                AwaitEvent<ConnectionSuceededEvent>();
+                AwaitEvent<SessionStartedEvent>();
                 Assert.IsNull(this.ExceptionShown);
 
-                ConnectionClosedEvent expectedEvent = null;
+                SessionEndedEvent expectedEvent = null;
 
                 this.serviceProvider.GetService<IEventService>()
-                    .BindHandler<ConnectionClosedEvent>(e =>
+                    .BindHandler<SessionEndedEvent>(e =>
                     {
                         expectedEvent = e;
                     });

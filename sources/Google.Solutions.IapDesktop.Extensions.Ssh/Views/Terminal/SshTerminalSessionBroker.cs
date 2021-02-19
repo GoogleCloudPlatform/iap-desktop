@@ -34,29 +34,29 @@ using WeifenLuo.WinFormsUI.Docking;
 
 namespace Google.Solutions.IapDesktop.Extensions.Ssh.Views.Terminal
 {
-    public interface ISshTerminalPane : IDisposable
+    public interface ISshTerminalSession : IDisposable
     {
         void Close();
     }
 
-    public interface ISshTerminalConnectionBroker : IConnectionBroker
+    public interface ISshTerminalSessionBroker : ISessionBroker
     {
-        ISshTerminalPane ActiveSession { get; }
+        ISshTerminalSession ActiveSession { get; }
 
-        Task<ISshTerminalPane> ConnectAsync(
+        Task<ISshTerminalSession> ConnectAsync(
             InstanceLocator vmInstance,
             IPEndPoint endpoint,
             AuthorizedKey authorizedKey);
     }
 
-    [Service(typeof(ISshTerminalConnectionBroker), ServiceLifetime.Singleton, ServiceVisibility.Global)]
-    [ServiceCategory(typeof(IConnectionBroker))]
-    public class SshTerminalConnectionBroker : ISshTerminalConnectionBroker
+    [Service(typeof(ISshTerminalSessionBroker), ServiceLifetime.Singleton, ServiceVisibility.Global)]
+    [ServiceCategory(typeof(ISessionBroker))]
+    public class SshTerminalSessionBroker : ISshTerminalSessionBroker
     {
         private readonly IServiceProvider serviceProvider;
         private readonly DockPanel dockPanel;
 
-        public SshTerminalConnectionBroker(IServiceProvider serviceProvider)
+        public SshTerminalSessionBroker(IServiceProvider serviceProvider)
         {
             this.dockPanel = serviceProvider.GetService<IMainForm>().MainPanel;
             this.serviceProvider = serviceProvider;
@@ -76,8 +76,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Ssh.Views.Terminal
         // Public
         //---------------------------------------------------------------------
 
-        public ISshTerminalPane ActiveSession
-            => this.dockPanel.ActiveDocument as ISshTerminalPane;
+        public ISshTerminalSession ActiveSession
+            => this.dockPanel.ActiveDocument as ISshTerminalSession;
 
         public bool IsConnected(InstanceLocator vmInstance)
             => TryGetExistingPane(vmInstance) != null;
@@ -98,7 +98,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Ssh.Views.Terminal
             }
         }
 
-        public async Task<ISshTerminalPane> ConnectAsync(
+        public async Task<ISshTerminalSession> ConnectAsync(
             InstanceLocator vmInstance,
             IPEndPoint endpoint,
             AuthorizedKey authorizedKey)
