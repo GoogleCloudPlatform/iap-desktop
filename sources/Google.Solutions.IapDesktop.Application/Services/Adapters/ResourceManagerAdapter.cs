@@ -37,7 +37,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.Adapters
 {
     public interface IResourceManagerAdapter : IDisposable
     {
-        Task<IEnumerable<Project>> ListProjects(
+        Task<FilteredProjectList> ListProjects(
             ProjectFilter filter,
             int? maxResults,
             CancellationToken cancellationToken);
@@ -92,7 +92,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.Adapters
         {
         }
 
-        public async Task<IEnumerable<Project>> ListProjects(
+        public async Task<FilteredProjectList> ListProjects(
             ProjectFilter filter,
             int? maxResults,
             CancellationToken cancellationToken)
@@ -106,17 +106,21 @@ namespace Google.Solutions.IapDesktop.Application.Services.Adapters
                 };
 
                 IList<Project> projects;
+                bool truncated;
                 if (maxResults.HasValue)
                 {
                     // Read single page.
                     var response = await request
                         .ExecuteAsync(cancellationToken)
                         .ConfigureAwait(false);
+
+                    truncated = response.NextPageToken != null;
                     projects = response.Projects;
                 }
                 else
                 {
-                    // Read multiple pages.
+                    // Read all pages.
+                    truncated = false;
                     projects = await new PageStreamer<
                         Project,
                         ProjectsResource.ListRequest,
@@ -134,7 +138,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.Adapters
 
                 ApplicationTraceSources.Default.TraceVerbose("Found {0} projects", result.Count());
 
-                return result;
+                return new FilteredProjectList(projects, truncated);
             }
         }
 
@@ -175,6 +179,20 @@ namespace Google.Solutions.IapDesktop.Application.Services.Adapters
             {
                 this.service.Dispose();
             }
+        }
+    }
+
+    public class FilteredProjectList
+    {
+        public IEnumerable<Project> Projects { get; }
+        public bool IsTruncated { get; }
+
+        public FilteredProjectList(
+            IEnumerable<Project> projects,
+            bool isTruncated)
+        {
+            this.Projects = projects;
+            this.IsTruncated = isTruncated;
         }
     }
 

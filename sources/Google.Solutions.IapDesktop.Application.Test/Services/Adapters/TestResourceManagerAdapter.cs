@@ -69,14 +69,15 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Adapters
         {
             using (var adapter = new ResourceManagerAdapter(await credential))
             {
-                var project = await adapter.ListProjects(
+                var result = await adapter.ListProjects(
                     ProjectFilter.ByProjectId(TestProject.ProjectId),
                     null,
                     CancellationToken.None);
 
-                Assert.IsNotNull(project);
-                Assert.AreEqual(1, project.Count());
-                Assert.AreEqual(TestProject.ProjectId, project.First().ProjectId);
+                Assert.IsNotNull(result);
+                Assert.IsFalse(result.IsTruncated);
+                Assert.AreEqual(1, result.Projects.Count());
+                Assert.AreEqual(TestProject.ProjectId, result.Projects.First().ProjectId);
             }
         }
 
@@ -89,15 +90,15 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Adapters
                 // Remove last character from project ID.
                 var prefix = TestProject.ProjectId.Substring(0, TestProject.ProjectId.Length - 1);
 
-                var project = await adapter.ListProjects(
+                var result = await adapter.ListProjects(
                     ProjectFilter.ByPrefix(prefix),
                     10,
                     CancellationToken.None);
 
-                Assert.IsNotNull(project);
-                Assert.IsTrue(project.Any());
+                Assert.IsNotNull(result);
+                Assert.IsTrue(result.Projects.Any());
                 CollectionAssert.Contains(
-                    project.Select(p => p.ProjectId),
+                    result.Projects.Select(p => p.ProjectId),
                     TestProject.ProjectId);
             }
         }

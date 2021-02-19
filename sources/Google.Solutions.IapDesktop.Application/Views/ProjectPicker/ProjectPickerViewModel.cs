@@ -107,16 +107,15 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectPicker
                     {
                         try
                         {
-                            this.FilteredProjects.AddRange(t.Result);
-                            if (t.Result.Count() == MaxResults)
+                            this.FilteredProjects.AddRange(t.Result.Projects);
+                            if (t.Result.IsTruncated)
                             {
-                                // TODO: Page might not be entirely filled
-                                this.StatusText = $"Over {t.Result.Count()} projects found, " +
+                                this.StatusText = $"Over {t.Result.Projects.Count()} projects found, " +
                                                    "use search to refine selection";
                             }
                             else
                             {
-                                this.StatusText = $"{t.Result.Count()} projects found";
+                                this.StatusText = $"{t.Result.Projects.Count()} projects found";
                             }
                         }
                         catch (Exception e)

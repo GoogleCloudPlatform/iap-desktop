@@ -115,9 +115,6 @@
     <Compile Include="ObjectModel\ModelCachingViewModel.cs" />
     <Compile Include="ObjectModel\ServiceAttribute.cs" />
     <Compile Include="ObjectModel\ViewModelBase.cs" />
-    <Compile Include="Controls\ProjectList.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
     <Compile Include="Services\Adapters\AdapterException.cs" />
     <Compile Include="Services\Adapters\CertificateStoreAdapter.cs" />
     <Compile Include="Services\Adapters\ClientServiceInitializer.cs" />

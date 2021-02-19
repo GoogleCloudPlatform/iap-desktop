@@ -82,6 +82,7 @@
             // 
             // statusLabel
             // 
+            this.statusLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.statusLabel.AutoSize = true;
             this.statusLabel.Location = new System.Drawing.Point(13, 425);
             this.statusLabel.Name = "statusLabel";
