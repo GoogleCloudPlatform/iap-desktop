@@ -23,7 +23,9 @@ using Google.Apis.Auth.OAuth2;
 using Google.Apis.CloudResourceManager.v1;
 using Google.Apis.CloudResourceManager.v1.Data;
 using Google.Apis.Requests;
+using Google.Apis.Util;
 using Google.Solutions.Common.Diagnostics;
+using Google.Solutions.Common.Util;
 using Google.Solutions.IapDesktop.Application.ObjectModel;
 using System;
 using System.Collections.Generic;
@@ -36,16 +38,9 @@ namespace Google.Solutions.IapDesktop.Application.Services.Adapters
 {
     public interface IResourceManagerAdapter : IDisposable
     {
-        Task<IEnumerable<Project>> QueryProjects(
-            string filter,
-            CancellationToken cancellationToken);
-
-        Task<IEnumerable<Project>> QueryProjectsByPrefix(
-            string idOrNamePrefix,
-            CancellationToken cancellationToken);
-
-        Task<IEnumerable<Project>> QueryProjectsById(
-            string projectId,
+        Task<FilteredProjectList> ListProjects(
+            ProjectFilter filter,
+            int? maxResults,
             CancellationToken cancellationToken);
 
         Task<bool> IsGrantedPermission(
@@ -98,51 +93,57 @@ namespace Google.Solutions.IapDesktop.Application.Services.Adapters
         {
         }
 
-        public async Task<IEnumerable<Project>> QueryProjects(
-            string filter,
+        public async Task<FilteredProjectList> ListProjects(
+            ProjectFilter filter,
+            int? maxResults,
             CancellationToken cancellationToken)
         {
             using (ApplicationTraceSources.Default.TraceMethod().WithParameters(filter))
             {
                 var request = new ProjectsResource.ListRequest(this.service)
                 {
-                    Filter = filter
+                    Filter = filter?.ToString(),
+                    PageSize = maxResults
                 };
 
-                var projects = await new PageStreamer<
-                    Project,
-                    ProjectsResource.ListRequest,
-                    ListProjectsResponse,
-                    string>(
-                        (req, token) => req.PageToken = token,
-                        response => response.NextPageToken,
-                        response => response.Projects)
-                    .FetchAllAsync(request, cancellationToken)
-                    .ConfigureAwait(false);
+                IList<Project> projects;
+                bool truncated;
+                if (maxResults.HasValue)
+                {
+                    // Read single page.
+                    var response = await request
+                        .ExecuteAsync(cancellationToken)
+                        .ConfigureAwait(false);
+
+                    truncated = response.NextPageToken != null;
+                    projects = response.Projects;
+                }
+                else
+                {
+                    // Read all pages.
+                    truncated = false;
+                    projects = await new PageStreamer<
+                        Project,
+                        ProjectsResource.ListRequest,
+                        ListProjectsResponse,
+                        string>(
+                            (req, token) => req.PageToken = token,
+                            response => response.NextPageToken,
+                            response => response.Projects)
+                        .FetchAllAsync(request, cancellationToken)
+                        .ConfigureAwait(false);
+                }
 
                 // Filter projects in deleted/pending delete state.
-                var result = projects.Where(p => p.LifecycleState == "ACTIVE");
+                var activeProjects = projects
+                    .EnsureNotNull()
+                    .Where(p => p.LifecycleState == "ACTIVE");
 
-                ApplicationTraceSources.Default.TraceVerbose("Found {0} projects", result.Count());
+                ApplicationTraceSources.Default.TraceVerbose(
+                    "Found {0} projects", activeProjects.Count());
 
-                return result;
+                return new FilteredProjectList(activeProjects, truncated);
             }
-        }
-
-        public Task<IEnumerable<Project>> QueryProjectsByPrefix(
-            string idOrNamePrefix,
-            CancellationToken cancellationToken)
-        {
-            return QueryProjects(
-                $"name:\"{idOrNamePrefix}*\" OR id:\"{idOrNamePrefix}*\"",
-                cancellationToken);
-        }
-
-        public Task<IEnumerable<Project>> QueryProjectsById(
-            string projectId,
-            CancellationToken cancellationToken)
-        {
-            return QueryProjects($"id:\"{projectId}\"", cancellationToken);
         }
 
         public async Task<bool> IsGrantedPermission(
@@ -166,6 +167,10 @@ namespace Google.Solutions.IapDesktop.Application.Services.Adapters
             }
         }
 
+        //---------------------------------------------------------------------
+        // IDisposable.
+        //---------------------------------------------------------------------
+
         public void Dispose()
         {
             Dispose(true);
@@ -178,6 +183,55 @@ namespace Google.Solutions.IapDesktop.Application.Services.Adapters
             {
                 this.service.Dispose();
             }
+        }
+    }
+
+    public class FilteredProjectList
+    {
+        public IEnumerable<Project> Projects { get; }
+        public bool IsTruncated { get; }
+
+        public FilteredProjectList(
+            IEnumerable<Project> projects,
+            bool isTruncated)
+        {
+            this.Projects = projects;
+            this.IsTruncated = isTruncated;
+        }
+    }
+
+    public class ProjectFilter
+    {
+        private readonly string filter;
+
+        private ProjectFilter(string filter)
+        {
+            this.filter = filter;
+        }
+
+        private static string Sanitize(string filter)
+        {
+            return filter
+                .Replace(":", "")
+                .Replace("\"", "")
+                .Replace("'", "");
+        }
+
+        public static ProjectFilter ByProjectId(string projectId)
+        {
+            projectId = Sanitize(projectId);
+            return new ProjectFilter($"id:\"{projectId}\"");
+        }
+
+        public static ProjectFilter ByPrefix(string idOrNamePrefix)
+        {
+            idOrNamePrefix = Sanitize(idOrNamePrefix);
+            return new ProjectFilter($"name:\"{idOrNamePrefix}*\" OR id:\"{idOrNamePrefix}*\"");
+        }
+
+        public override string ToString()
+        {
+            return this.filter;
         }
     }
 }

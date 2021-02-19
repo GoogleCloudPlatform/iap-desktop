@@ -1,5 +1,5 @@
 ﻿//
-// Copyright 2019 Google LLC
+// Copyright 2020 Google LLC
 //
 // Licensed to the Apache Software Foundation (ASF) under one
 // or more contributor license agreements.  See the NOTICE file
@@ -20,22 +20,25 @@
 //
 
 using Google.Apis.CloudResourceManager.v1.Data;
+using Google.Solutions.IapDesktop.Application.Controls;
 using Google.Solutions.IapDesktop.Application.Properties;
 using System.Windows.Forms;
 
-namespace Google.Solutions.IapDesktop.Application.Controls
+namespace Google.Solutions.IapDesktop.Application.Views.ProjectPicker
 {
-    public class ProjectList : SearchableList<Project>
+    internal class ProjectList : SearchableList<Project>
     {
         public ProjectList()
         {
             this.List.SmallImageList = new ImageList();
-            this.List.SmallImageList.Images.Add(Resources.Project);
+            this.List.SmallImageList.Images.Add(Resources.Project_small);
 
-            AddColumn("Name", 100);
-            AddColumn("Project ID", 100);
+            AddColumn("Name", 200);
+            AddColumn("ID", 200);
 
-            this.List.BindImageIndex(_ => 0);
+            this.List.GridLines = true;
+
+            this.List.BindImageIndex(m => 0);
             this.List.BindColumn(0, m => m.Name);
             this.List.BindColumn(1, m => m.ProjectId);
         }

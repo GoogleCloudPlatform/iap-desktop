@@ -64,7 +64,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Os.Views.PackageInventory
             // packageList
             // 
             this.packageList.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.packageList.Loading = true;
             this.packageList.Location = new System.Drawing.Point(0, 0);
             this.packageList.Name = "packageList";
             this.packageList.SearchTerm = "";

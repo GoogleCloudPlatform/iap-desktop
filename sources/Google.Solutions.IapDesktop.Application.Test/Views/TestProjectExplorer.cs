@@ -26,6 +26,7 @@ using Google.Solutions.IapDesktop.Application.Services.Integration;
 using Google.Solutions.IapDesktop.Application.Services.Settings;
 using Google.Solutions.IapDesktop.Application.Test.ObjectModel;
 using Google.Solutions.IapDesktop.Application.Views.ProjectExplorer;
+using Google.Solutions.IapDesktop.Application.Views.ProjectPicker;
 using Moq;
 using NUnit.Framework;
 using System;
@@ -55,10 +56,10 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views
         [Test]
         public void WhenNoProjectsLoaded_ThenRootNodeIsEmptyAndProjectPickerOpens()
         {
-            var projectPicker = new Mock<IProjectPickerDialog>();
-            projectPicker.Setup(p => p.SelectProjectId(It.IsAny<IWin32Window>())).Returns((string)null);
+            var projectPicker = new Mock<IProjectPickerWindow>();
+            projectPicker.Setup(p => p.SelectProject(It.IsAny<IWin32Window>())).Returns((string)null);
 
-            this.serviceRegistry.AddSingleton<IProjectPickerDialog>(projectPicker.Object);
+            this.serviceRegistry.AddSingleton<IProjectPickerWindow>(projectPicker.Object);
             this.serviceRegistry.AddMock<IComputeEngineAdapter>();
 
             // Open window.
@@ -72,7 +73,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views
             Assert.AreEqual(0, rootNode.Nodes.Count);
 
             // Check picker
-            projectPicker.Verify(p => p.SelectProjectId(It.IsAny<IWin32Window>()), Times.Once);
+            projectPicker.Verify(p => p.SelectProject(It.IsAny<IWin32Window>()), Times.Once);
 
             Assert.IsNull(this.ExceptionShown);
         }
