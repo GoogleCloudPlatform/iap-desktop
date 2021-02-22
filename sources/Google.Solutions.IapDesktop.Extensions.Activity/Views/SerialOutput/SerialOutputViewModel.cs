@@ -225,11 +225,10 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Views.SerialOutput
                         async jobToken =>
                         {
                             using (var combinedTokenSource = jobToken.Combine(token))
-                            using (var gceAdapter = this.serviceProvider.GetService<IComputeEngineAdapter>())
                             {
                                 return await SerialOutputModel.LoadAsync(
                                     vmNode.InstanceName,
-                                    gceAdapter,
+                                    this.serviceProvider.GetService<IComputeEngineAdapter>(),
                                     instanceLocator,
                                     this.serialPortNumber,
                                     combinedTokenSource.Token)
