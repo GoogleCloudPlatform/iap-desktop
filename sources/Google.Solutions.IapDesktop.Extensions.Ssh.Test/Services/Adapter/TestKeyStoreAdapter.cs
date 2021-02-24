@@ -57,7 +57,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Ssh.Test.Services.Adapter
             Assert.IsNull(await adapter.CreateRsaKeyAsync(
                 KeyName,
                 CngKeyUsages.Signing,
-                false));
+                false,
+                null));
         }
 
         [Test]
@@ -70,7 +71,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Ssh.Test.Services.Adapter
             var key = await adapter.CreateRsaKeyAsync(
                 KeyName,
                 CngKeyUsages.Signing,
-                true);
+                true,
+                null);
 
             Assert.IsNotNull(key);
             Assert.AreEqual("RSA", key.SignatureAlgorithm);
@@ -86,12 +88,14 @@ namespace Google.Solutions.IapDesktop.Extensions.Ssh.Test.Services.Adapter
             var key1 = await adapter.CreateRsaKeyAsync(
                 KeyName,
                 CngKeyUsages.Signing,
-                true);
+                true,
+                null);
 
             var key2 = await adapter.CreateRsaKeyAsync(
                 KeyName,
                 CngKeyUsages.Signing,
-                false);
+                false,
+                null);
 
             Assert.IsNotNull(key2);
             Assert.AreEqual(key1.ExportParameters(false).Modulus, key2.ExportParameters(false).Modulus);
@@ -108,13 +112,15 @@ namespace Google.Solutions.IapDesktop.Extensions.Ssh.Test.Services.Adapter
             var key1 = await adapter.CreateRsaKeyAsync(
                 KeyName,
                 CngKeyUsages.Signing,
-                true);
+                true,
+                null);
 
             AssertEx.ThrowsAggregateException<CryptographicException>(
                 () => adapter.CreateRsaKeyAsync(
                     KeyName,
                     CngKeyUsages.Decryption,
-                    false).Wait());
+                    false,
+                    null).Wait());
         }
     }
 }
