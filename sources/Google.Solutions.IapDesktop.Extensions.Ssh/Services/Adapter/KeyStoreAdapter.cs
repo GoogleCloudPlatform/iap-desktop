@@ -24,6 +24,7 @@ using Google.Solutions.IapDesktop.Application;
 using System;
 using System.Security.Cryptography;
 using System.Threading.Tasks;
+using System.Windows.Forms;
 
 namespace Google.Solutions.IapDesktop.Extensions.Ssh.Services.Adapter
 {
@@ -55,7 +56,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Ssh.Services.Adapter
         public Task<RSA> CreateRsaKeyAsync(
             string name,
             CngKeyUsages usage,
-            bool createNewIfNotExists)
+            bool createNewIfNotExists,
+            IWin32Window window)
         {
             using (ApplicationTraceSources.Default.TraceMethod().WithoutParameters())
             {
@@ -102,9 +104,17 @@ namespace Google.Solutions.IapDesktop.Extensions.Ssh.Services.Adapter
                             ExportPolicy = CngExportPolicies.None,
 
                             Provider = this.provider,
-
                             KeyUsage = usage
                         };
+
+                        //
+                        // NB. If we're using the Smart Card provider, the key store
+                        // might show a UI dialog.
+                        //
+                        if (window != null && window.Handle != null)
+                        {
+                            keyParams.ParentWindowHandle = window.Handle;
+                        }
 
                         keyParams.Parameters.Add(
                             new CngProperty(
