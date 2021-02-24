@@ -55,7 +55,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Test.Views.RemoteDesktop
             var broker = new RemoteDesktopSessionBroker(this.serviceProvider);
 
             Assert.IsFalse(broker.IsConnected(SampleLocator));
-            Assert.IsNull(broker.ActiveSession);
             Assert.IsFalse(broker.TryActivate(SampleLocator));
         }
 
@@ -83,34 +82,43 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Test.Views.RemoteDesktop
                 settings.Username.StringValue = credentials.UserName;
                 settings.Password.Value = credentials.SecurePassword;
 
+                // Connect
                 var broker = new RemoteDesktopSessionBroker(this.serviceProvider);
-                var session = broker.Connect(
-                    locator,
-                    "localhost",
-                    (ushort)tunnel.LocalPort,
-                    settings);
 
-                AwaitEvent<SessionStartedEvent>();
+                IRemoteDesktopSession session = null;
+                AssertRaisesEvent<SessionStartedEvent>(
+                    () => session = broker.Connect(
+                        locator,
+                        "localhost",
+                        (ushort)tunnel.LocalPort,
+                        settings));
+
                 Assert.IsNull(this.ExceptionShown);
 
+                // Verify session is connected.
                 Assert.IsTrue(broker.IsConnected(locator));
                 Assert.AreSame(session, broker.ActiveSession);
                 Assert.IsTrue(broker.TryActivate(locator));
 
+                // Verify dummy session is not connected.
                 Assert.IsFalse(broker.TryActivate(SampleLocator));
                 Assert.IsFalse(broker.IsConnected(SampleLocator));
 
-                SessionEndedEvent expectedEvent = null;
-
-                this.serviceProvider.GetService<IEventService>()
-                    .BindHandler<SessionEndedEvent>(e =>
-                    {
-                        expectedEvent = e;
-                    });
-                session.Close();
-
-                Assert.IsNotNull(expectedEvent);
+                AssertRaisesEvent<SessionEndedEvent>(
+                    () => session.Close());
             }
+        }
+
+        //---------------------------------------------------------------------
+        // ActiveSession
+        //---------------------------------------------------------------------
+
+        [Test]
+        public void WhenNotConnected_ThenActiveSessionReturnsNull()
+        {
+            var broker = new RemoteDesktopSessionBroker(this.serviceProvider);
+
+            Assert.IsNull(broker.ActiveSession);
         }
     }
 }

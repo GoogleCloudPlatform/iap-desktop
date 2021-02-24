@@ -32,6 +32,7 @@ using System;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using System.Threading;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace Google.Solutions.IapDesktop.Application.Test.Views
@@ -148,8 +149,8 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views
             [CallerMemberName] string testCase = null) where TEvent : class
             => AwaitEvent<TEvent>(TimeSpan.FromSeconds(45), testCase);
 
-        protected TEvent AssertRaisesEvent<TEvent>(
-            Action action,
+        protected async Task<TEvent> AssertRaisesEventAsync<TEvent>(
+            Func<Task> action,
             TimeSpan timeout) where TEvent : class
         {
             var deadline = DateTime.Now.Add(timeout);
@@ -162,8 +163,8 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views
             });
 
             // Invoke the action - it can either synchrounously
-            // or asynchronously delliver the event.
-            action();
+            // or asynchronously deliver the event.
+            await action().ConfigureAwait(true);
 
             // Wait for event in case it has not been delivered yet.
 
@@ -188,10 +189,21 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views
 
             return deliveredEvent;
         }
+        protected Task<TEvent> AssertRaisesEventAsync<TEvent>(
+            Func<Task> action) where TEvent : class
+            => AssertRaisesEventAsync<TEvent>(
+                action,
+                TimeSpan.FromSeconds(45));
 
         protected TEvent AssertRaisesEvent<TEvent>(Action action)
             where TEvent : class
-            => AssertRaisesEvent<TEvent>(action, TimeSpan.FromSeconds(45));
+            => AssertRaisesEventAsync<TEvent>(
+                () =>
+                {
+                    action();
+                    return Task.CompletedTask;
+                }, 
+                TimeSpan.FromSeconds(45)).Result;
 
         protected static void Delay(TimeSpan timeout)
         {
