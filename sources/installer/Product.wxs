@@ -196,13 +196,13 @@
           DiskId="1"
           Source="$(var.BASEDIR)\obj\$(var.CONFIGURATION)\Google.Solutions.Common.dll"
           Vital="yes"/>
-        <!--<File
+        <File
           Id="FileGoogleSolutionsSshDll"
           Name="Google.Solutions.Ssh.dll"
           DiskId="1"
           Source="Google.Solutions.IapDesktop\bin\$(var.CONFIGURATION)\Google.Solutions.Ssh.dll"
           Vital="yes"/>
-        <File
+        <!--<File
           Id="FileLibssh2Dll"
           Name="Libssh2.dll"
           DiskId="1"
