@@ -20,17 +20,13 @@
 //
 
 using Google.Solutions.Common.Locator;
-using Google.Solutions.Common.Util;
 using Google.Solutions.IapDesktop.Application.ObjectModel;
 using Google.Solutions.IapDesktop.Application.Services.Integration;
 using Google.Solutions.IapDesktop.Application.Views;
 using Google.Solutions.IapDesktop.Extensions.Ssh.Services.Auth;
-using Google.Solutions.Ssh;
 using System;
-using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
-using WeifenLuo.WinFormsUI.Docking;
 
 namespace Google.Solutions.IapDesktop.Extensions.Ssh.Views.Terminal
 {
@@ -54,42 +50,43 @@ namespace Google.Solutions.IapDesktop.Extensions.Ssh.Views.Terminal
     public class SshTerminalSessionBroker : ISshTerminalSessionBroker
     {
         private readonly IServiceProvider serviceProvider;
-        private readonly DockPanel dockPanel;
+        private readonly IMainForm mainForm;
 
         public SshTerminalSessionBroker(IServiceProvider serviceProvider)
         {
-            this.dockPanel = serviceProvider.GetService<IMainForm>().MainPanel;
+            this.mainForm = serviceProvider.GetService<IMainForm>();
             this.serviceProvider = serviceProvider;
 
             // NB. The ServiceCategory attribute causes this class to be 
             // announced to the global connection broker.
         }
 
-        private SshTerminalPane TryGetExistingPane(InstanceLocator vmInstance)
-            => this.dockPanel.Documents
-                .EnsureNotNull()
-                .OfType<SshTerminalPane>()
-                .Where(pane => pane.Instance == vmInstance)
-                .FirstOrDefault();
-
         //---------------------------------------------------------------------
         // Public
         //---------------------------------------------------------------------
 
         public ISshTerminalSession ActiveSession
-            => this.dockPanel.ActiveDocument as ISshTerminalSession;
+        {
+            get => SshTerminalPane.TryGetActivePane(this.mainForm);
+        }
 
         public bool IsConnected(InstanceLocator vmInstance)
-            => TryGetExistingPane(vmInstance) != null;
+        {
+            return SshTerminalPane.TryGetExistingPane(
+                this.mainForm,
+                vmInstance) != null;
+        }
 
         public bool TryActivate(InstanceLocator vmInstance)
         {
             // Check if there is an existing session/pane.
-            var pane = TryGetExistingPane(vmInstance);
+            var pane = SshTerminalPane.TryGetExistingPane(
+                this.mainForm,
+                vmInstance);
             if (pane != null)
             {
                 // Pane found, activate.
-                pane.Show(this.dockPanel, DockState.Document);
+                pane.ShowWindow();
                 return true;
             }
             else

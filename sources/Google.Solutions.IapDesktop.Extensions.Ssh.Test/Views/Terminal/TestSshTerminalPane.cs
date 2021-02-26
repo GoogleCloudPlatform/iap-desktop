@@ -23,10 +23,10 @@ using Google.Apis.Auth.OAuth2;
 using Google.Solutions.Common.Auth;
 using Google.Solutions.Common.Locator;
 using Google.Solutions.Common.Test.Integration;
+using Google.Solutions.IapDesktop.Application.ObjectModel;
 using Google.Solutions.IapDesktop.Application.Services.Adapters;
 using Google.Solutions.IapDesktop.Application.Services.Integration;
 using Google.Solutions.IapDesktop.Application.Test.Views;
-using Google.Solutions.IapDesktop.Extensions.Ssh.Services.Adapter;
 using Google.Solutions.IapDesktop.Extensions.Ssh.Services.Auth;
 using Google.Solutions.IapDesktop.Extensions.Ssh.Views.Terminal;
 using Google.Solutions.Ssh;
@@ -434,6 +434,73 @@ namespace Google.Solutions.IapDesktop.Extensions.Ssh.Test.Views.Terminal
                     () => pane.Terminal.SimulateKey(Keys.D | Keys.Control));
 
                 StringAssert.Contains("ab", pane.Terminal.GetBuffer().Trim());
+            }
+        }
+
+        //---------------------------------------------------------------------
+        // TryGetExistingPane, TryGetActivePane
+        //---------------------------------------------------------------------
+
+        [Test]
+        public void WhenNotConnected_ThenTryGetExistingPaneReturnsNull()
+        {
+            var sampleLocator = new InstanceLocator("project", "zone", "instance");
+            Assert.IsNull(SshTerminalPane.TryGetExistingPane(this.mainForm, sampleLocator));
+        }
+
+        [Test]
+        public void WhenNotConnected_ThenTryGetActivePaneReturnsNull()
+        {
+            Assert.IsNull(SshTerminalPane.TryGetActivePane(this.mainForm));
+        }
+
+        [Test]
+        public async Task WhenConnected_ThenGetActivePaneReturnsPane(
+            [LinuxInstance] ResourceTask<InstanceLocator> testInstance,
+            [Credential(Role = PredefinedRole.ComputeInstanceAdminV1)] ResourceTask<ICredential> credential)
+        {
+            var locator = await testInstance;
+
+            using (var key = new RsaSshKey(new RSACng()))
+            using (var gceAdapter = new ComputeEngineAdapter(
+                this.serviceProvider.GetService<IAuthorizationAdapter>()))
+            using (var keyAdapter = new AuthorizedKeyService(
+                this.serviceProvider.GetService<IAuthorizationAdapter>(),
+                new ComputeEngineAdapter(await credential),
+                new ResourceManagerAdapter(await credential),
+                new Mock<IOsLoginService>().Object))
+            {
+                var authorizedKey = await keyAdapter.AuthorizeKeyAsync(
+                        locator,
+                        key,
+                        TimeSpan.FromMinutes(10),
+                        null,
+                        AuthorizeKeyMethods.InstanceMetadata,
+                        CancellationToken.None)
+                    .ConfigureAwait(true);
+
+                var instance = await gceAdapter.GetInstanceAsync(
+                        locator,
+                        CancellationToken.None)
+                    .ConfigureAwait(true);
+
+                // Connect
+                var broker = new SshTerminalSessionBroker(this.serviceProvider);
+
+                ISshTerminalSession session = null;
+                await AssertRaisesEventAsync<SessionStartedEvent>(
+                    async () => session = await broker.ConnectAsync(
+                        locator,
+                        new IPEndPoint(instance.PublicAddress(), 22),
+                        authorizedKey));
+
+                Assert.IsNull(this.ExceptionShown);
+
+                Assert.AreSame(session, SshTerminalPane.TryGetActivePane(this.mainForm));
+                Assert.AreSame(session, SshTerminalPane.TryGetExistingPane(this.mainForm, locator));
+
+                AssertRaisesEvent<SessionEndedEvent>(
+                    () => session.Close());
             }
         }
     }

@@ -75,25 +75,24 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Views.RemoteDesktop
             // announced to the session connection broker.
         }
 
-        private RemoteDesktopPane TryGetExistingPane(InstanceLocator vmInstance)
-        {
-            return RemoteDesktopPane.TryGetExistingPane(
-                this.mainForm,
-                vmInstance);
-        }
-
         public IRemoteDesktopSession ActiveSession
         {
             get => RemoteDesktopPane.TryGetActivePane(this.mainForm);
         }
 
         public bool IsConnected(InstanceLocator vmInstance)
-            => TryGetExistingPane(vmInstance) != null;
+        {
+            return RemoteDesktopPane.TryGetExistingPane(
+                this.mainForm,
+                vmInstance) != null;
+        }
 
         public bool TryActivate(InstanceLocator vmInstance)
         {
             // Check if there is an existing session/pane.
-            var rdpPane = TryGetExistingPane(vmInstance);
+            var rdpPane = RemoteDesktopPane.TryGetExistingPane(
+                this.mainForm,
+                vmInstance);
             if (rdpPane != null)
             {
                 // Pane found, activate.

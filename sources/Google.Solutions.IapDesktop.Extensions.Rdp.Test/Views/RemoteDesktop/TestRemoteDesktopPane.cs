@@ -265,8 +265,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Test.Views.RemoteDesktop
         [Test]
         public void WhenNotConnected_ThenTryGetExistingPaneReturnsNull()
         {
-            var broker = new RemoteDesktopSessionBroker(this.serviceProvider);
-
             Assert.IsNull(RemoteDesktopPane.TryGetExistingPane(this.mainForm, SampleLocator));
         }
 

@@ -122,7 +122,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Views.RemoteDesktop
         }
 
         //---------------------------------------------------------------------
-        // Publics.
+        // Ctor.
         //---------------------------------------------------------------------
 
         public RemoteDesktopPane(
@@ -150,6 +150,10 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Views.RemoteDesktop
             this.TabContextStrip.Items.Add(allScreensFullScreenMenuItem);
             this.TabContextStrip.Opening += tabContextStrip_Opening;
         }
+
+        //---------------------------------------------------------------------
+        // Publics.
+        //---------------------------------------------------------------------
 
         public override string Text 
         { 
