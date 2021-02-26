@@ -33,7 +33,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Views.ConnectionSettings
     {
         internal const string DefaultWindowTitle = "Connection settings";
 
-        private readonly IConnectionSettingsService settingsService;
+        private readonly IRdpSettingsService settingsService;
 
         private bool isInformationBarVisible = false;
         private IPersistentSettingsCollection inspectedObject = null;
@@ -41,7 +41,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Views.ConnectionSettings
 
         public string InformationText => "Changes only take effect after reconnecting";
 
-        public ConnectionSettingsViewModel(IConnectionSettingsService settingsService)
+        public ConnectionSettingsViewModel(IRdpSettingsService settingsService)
         {
             this.settingsService = settingsService;
         }

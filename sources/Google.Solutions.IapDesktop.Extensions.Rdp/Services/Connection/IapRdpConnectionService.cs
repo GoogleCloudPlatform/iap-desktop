@@ -46,7 +46,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Services.Connection
         private readonly ITunnelBrokerService tunnelBrokerService;
         private readonly ICredentialPrompt credentialPrompt;
         private readonly IProjectExplorer projectExplorer;
-        private readonly IConnectionSettingsService settingsService;
+        private readonly IRdpSettingsService settingsService;
 
         public IapRdpConnectionService(IServiceProvider serviceProvider)
         {
@@ -55,13 +55,13 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Services.Connection
             this.tunnelBrokerService = serviceProvider.GetService<ITunnelBrokerService>();
             this.credentialPrompt = serviceProvider.GetService<ICredentialPrompt>();
             this.projectExplorer = serviceProvider.GetService<IProjectExplorer>();
-            this.settingsService = serviceProvider.GetService<IConnectionSettingsService>();
+            this.settingsService = serviceProvider.GetService<IRdpSettingsService>();
             this.window = serviceProvider.GetService<IMainForm>().Window;
         }
 
         private async Task ConnectInstanceAsync(
             InstanceLocator instanceRef,
-            VmInstanceConnectionSettings settings)
+            RdpInstanceSettings settings)
         {
             var tunnel = await this.jobService.RunInBackground(
                 new JobDescription(
@@ -152,7 +152,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Services.Connection
 
             await ConnectInstanceAsync(
                     vmNode.Reference,
-                    (VmInstanceConnectionSettings)settings.TypedCollection)
+                    (RdpInstanceSettings)settings.TypedCollection)
                 .ConfigureAwait(true);
         }
 
@@ -164,12 +164,12 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Services.Connection
                 return;
             }
 
-            VmInstanceConnectionSettings settings;
+            RdpInstanceSettings settings;
             if (this.projectExplorer.TryFindNode(url.Instance)
                 is IProjectExplorerVmInstanceNode vmNode)
             {
                 // We have a full set of settings for this VM, so use that as basis
-                settings = (VmInstanceConnectionSettings)
+                settings = (RdpInstanceSettings)
                     this.settingsService.GetConnectionSettings(vmNode).TypedCollection;
 
                 // Apply parameters from URL on top.
@@ -177,7 +177,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Services.Connection
             }
             else
             {
-                settings = VmInstanceConnectionSettings.FromUrl(url);
+                settings = RdpInstanceSettings.FromUrl(url);
             }
 
             await this.credentialPrompt.ShowCredentialsPromptAsync(

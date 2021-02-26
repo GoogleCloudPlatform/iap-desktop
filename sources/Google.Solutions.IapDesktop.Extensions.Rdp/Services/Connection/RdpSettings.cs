@@ -134,7 +134,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Services.Connection
         _Default = AllowIfNoCredentialsFound
     }
 
-    public abstract class ConnectionSettingsBase : IRegistrySettingsCollection
+    public abstract class RdpSettingsBase : IRegistrySettingsCollection
     {
         public RegistryStringSetting Username { get; private set; }
         public RegistrySecureStringSetting Password { get; private set; }
@@ -280,9 +280,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Services.Connection
 
         protected static void ApplyOverlay<T>(
             T prototype,
-            ConnectionSettingsBase baseSettings,
-            ConnectionSettingsBase overlaySettings)
-            where T : ConnectionSettingsBase
+            RdpSettingsBase baseSettings,
+            RdpSettingsBase overlaySettings)
+            where T : RdpSettingsBase
         {
             prototype.Username = (RegistryStringSetting)
                 baseSettings.Username.OverlayBy(overlaySettings.Username);
@@ -321,20 +321,20 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Services.Connection
     // VM instance.
     //-------------------------------------------------------------------------
 
-    public class VmInstanceConnectionSettings : ConnectionSettingsBase
+    public class RdpInstanceSettings : RdpSettingsBase
     {
         public string ProjectId { get; }
         public string InstanceName { get; }
 
-        private VmInstanceConnectionSettings(string projectId, string instanceName)
+        private RdpInstanceSettings(string projectId, string instanceName)
         {
             this.ProjectId = projectId;
             this.InstanceName = instanceName;
         }
 
-        protected VmInstanceConnectionSettings ApplyDefaults(ZoneConnectionSettings zoneSettings)
+        protected RdpInstanceSettings ApplyDefaults(RdpZoneSettings zoneSettings)
         {
-            var prototype = new VmInstanceConnectionSettings(this.ProjectId, this.InstanceName);
+            var prototype = new RdpInstanceSettings(this.ProjectId, this.InstanceName);
             ApplyOverlay(prototype, zoneSettings, this);
             return prototype;
         }
@@ -343,18 +343,18 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Services.Connection
         // Create.
         //-------------------------------------------------------------------------
 
-        public static VmInstanceConnectionSettings FromKey(
+        public static RdpInstanceSettings FromKey(
             string projectId,
             string instanceName,
             RegistryKey registryKey)
         {
 
-            var settings = new VmInstanceConnectionSettings(projectId, instanceName);
+            var settings = new RdpInstanceSettings(projectId, instanceName);
             settings.InitializeFromKey(registryKey);
             return settings;
         }
 
-        internal static VmInstanceConnectionSettings CreateNew(
+        internal static RdpInstanceSettings CreateNew(
             string projectId,
             string instanceName)
         {
@@ -364,7 +364,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Services.Connection
                 null);  // Apply defaults.
         }
 
-        internal static VmInstanceConnectionSettings CreateNew(InstanceLocator instance)
+        internal static RdpInstanceSettings CreateNew(InstanceLocator instance)
             => CreateNew(
                 instance.ProjectId,
                 instance.Name);
@@ -395,7 +395,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Services.Connection
             }
         }
 
-        public static VmInstanceConnectionSettings FromUrl(IapRdpUrl url)
+        public static RdpInstanceSettings FromUrl(IapRdpUrl url)
         {
             var settings = CreateNew(
                 url.Instance.ProjectId,
@@ -434,29 +434,29 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Services.Connection
     // Zone.
     //-------------------------------------------------------------------------
 
-    public class ZoneConnectionSettings : ConnectionSettingsBase
+    public class RdpZoneSettings : RdpSettingsBase
     {
         public string ProjectId { get; }
         public string ZoneId { get; }
 
-        private ZoneConnectionSettings(string projectId, string zoneId)
+        private RdpZoneSettings(string projectId, string zoneId)
         {
             this.ProjectId = projectId;
             this.ZoneId = zoneId;
         }
 
-        public static ZoneConnectionSettings FromKey(
+        public static RdpZoneSettings FromKey(
             string projectId,
             string zoneId,
             RegistryKey registryKey)
         {
 
-            var settings = new ZoneConnectionSettings(projectId, zoneId);
+            var settings = new RdpZoneSettings(projectId, zoneId);
             settings.InitializeFromKey(registryKey);
             return settings;
         }
 
-        public static ZoneConnectionSettings CreateNew(
+        public static RdpZoneSettings CreateNew(
             string projectId,
             string zoneId)
         {
@@ -466,9 +466,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Services.Connection
                 null);  // Apply defaults.
         }
 
-        public VmInstanceConnectionSettings OverlayBy(VmInstanceConnectionSettings instanceSettings)
+        public RdpInstanceSettings OverlayBy(RdpInstanceSettings instanceSettings)
         {
-            var result = VmInstanceConnectionSettings.CreateNew(
+            var result = RdpInstanceSettings.CreateNew(
                 instanceSettings.ProjectId,
                 instanceSettings.InstanceName);
             ApplyOverlay(result, this, instanceSettings);
@@ -480,28 +480,28 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Services.Connection
     // Project.
     //-------------------------------------------------------------------------
 
-    public class ProjectConnectionSettings : ConnectionSettingsBase
+    public class RdpProjectSettings : RdpSettingsBase
     {
         public string ProjectId { get; }
 
-        private ProjectConnectionSettings(string projectId)
+        private RdpProjectSettings(string projectId)
         {
             this.ProjectId = projectId;
         }
 
-        public static ProjectConnectionSettings FromKey(
+        public static RdpProjectSettings FromKey(
             string ProjectId,
             RegistryKey registryKey)
         {
 
-            var settings = new ProjectConnectionSettings(ProjectId);
+            var settings = new RdpProjectSettings(ProjectId);
             settings.InitializeFromKey(registryKey);
             return settings;
         }
 
-        public ZoneConnectionSettings OverlayBy(ZoneConnectionSettings zoneSettings)
+        public RdpZoneSettings OverlayBy(RdpZoneSettings zoneSettings)
         {
-            var result = ZoneConnectionSettings.CreateNew(
+            var result = RdpZoneSettings.CreateNew(
                 zoneSettings.ProjectId,
                 zoneSettings.ZoneId);
             ApplyOverlay(result, this, zoneSettings);

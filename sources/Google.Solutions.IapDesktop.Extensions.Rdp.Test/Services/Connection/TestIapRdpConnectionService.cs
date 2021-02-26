@@ -74,11 +74,11 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Test.Services.Connection
         [Test]
         public async Task WhenConnectingByNodeAndPersistentCredentialsDisallowed_ThenPasswordIsClear()
         {
-            var settings = VmInstanceConnectionSettings.CreateNew("project", "instance-1");
+            var settings = RdpInstanceSettings.CreateNew("project", "instance-1");
             settings.Username.Value = "existinguser";
             settings.Password.Value = SecureStringExtensions.FromClearText("password");
 
-            var settingsService = this.serviceRegistry.AddMock<IConnectionSettingsService>();
+            var settingsService = this.serviceRegistry.AddMock<IRdpSettingsService>();
             settingsService.Setup(s => s.GetConnectionSettings(
                     It.IsAny<IProjectExplorerNode>()))
                 .Returns(
@@ -98,7 +98,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Test.Services.Connection
                 It.IsAny<InstanceLocator>(),
                 "localhost",
                 It.IsAny<ushort>(),
-                It.IsAny<VmInstanceConnectionSettings>())).Returns<IRemoteDesktopSession>(null);
+                It.IsAny<RdpInstanceSettings>())).Returns<IRemoteDesktopSession>(null);
 
             this.serviceRegistry.AddSingleton<IRemoteDesktopSessionBroker>(remoteDesktopService.Object);
 
@@ -109,7 +109,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Test.Services.Connection
                 It.IsAny<InstanceLocator>(),
                 "localhost",
                 It.IsAny<ushort>(),
-                It.Is<VmInstanceConnectionSettings>(i => 
+                It.Is<RdpInstanceSettings>(i => 
                     i.Username.StringValue == "existinguser" && 
                     i.Password.ClearTextValue == "")), Times.Once);
         }
@@ -117,13 +117,13 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Test.Services.Connection
         [Test]
         public async Task WhenConnectingByNodeAndPersistentCredentialsAllowed_ThenCredentialsAreUsed()
         {
-            var settings = VmInstanceConnectionSettings.CreateNew("project", "instance-1");
+            var settings = RdpInstanceSettings.CreateNew("project", "instance-1");
             settings.Username.Value = "existinguser";
             settings.Password.Value = SecureStringExtensions.FromClearText("password");
 
             bool settingsSaved = false;
 
-            var settingsService = this.serviceRegistry.AddMock<IConnectionSettingsService>();
+            var settingsService = this.serviceRegistry.AddMock<IRdpSettingsService>();
             settingsService.Setup(s => s.GetConnectionSettings(
                     It.IsAny<IProjectExplorerNode>()))
                 .Returns(
@@ -143,7 +143,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Test.Services.Connection
                 It.IsAny<InstanceLocator>(),
                 "localhost",
                 It.IsAny<ushort>(),
-                It.IsAny<VmInstanceConnectionSettings>())).Returns<IRemoteDesktopSession>(null);
+                It.IsAny<RdpInstanceSettings>())).Returns<IRemoteDesktopSession>(null);
 
             this.serviceRegistry.AddSingleton<IRemoteDesktopSessionBroker>(remoteDesktopService.Object);
 
@@ -154,7 +154,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Test.Services.Connection
                 It.IsAny<InstanceLocator>(),
                 "localhost",
                 It.IsAny<ushort>(),
-                It.Is<VmInstanceConnectionSettings>(i =>
+                It.Is<RdpInstanceSettings>(i =>
                     i.Username.StringValue == "existinguser" &&
                     i.Password.ClearTextValue == "password")), Times.Once);
 
@@ -168,12 +168,12 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Test.Services.Connection
         [Test]
         public async Task WhenConnectingByUrlWithoutUsernameAndNoCredentialsExist_ThenConnectionIsMadeWithoutUsername()
         {
-            var settingsService = this.serviceRegistry.AddMock<IConnectionSettingsService>();
+            var settingsService = this.serviceRegistry.AddMock<IRdpSettingsService>();
             this.serviceRegistry.AddMock<ICredentialPrompt>()
                 .Setup(p => p.ShowCredentialsPromptAsync(
                     It.IsAny<IWin32Window>(),
                     It.IsAny<InstanceLocator>(),
-                    It.IsAny<ConnectionSettingsBase>(),
+                    It.IsAny<RdpSettingsBase>(),
                     It.IsAny<bool>())); // Nop -> Connect without configuring credentials.
             this.serviceRegistry.AddMock<IProjectExplorer>()
                 .Setup(p => p.TryFindNode(
@@ -185,7 +185,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Test.Services.Connection
                 It.IsAny<InstanceLocator>(),
                 "localhost",
                 It.IsAny<ushort>(),
-                It.IsAny<VmInstanceConnectionSettings>())).Returns<IRemoteDesktopSession>(null);
+                It.IsAny<RdpInstanceSettings>())).Returns<IRemoteDesktopSession>(null);
 
             this.serviceRegistry.AddSingleton<IRemoteDesktopSessionBroker>(remoteDesktopService.Object);
 
@@ -197,7 +197,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Test.Services.Connection
                 It.IsAny<InstanceLocator>(),
                 "localhost",
                 It.IsAny<ushort>(),
-                It.Is<VmInstanceConnectionSettings>(i => i.Username.Value == null)), Times.Once);
+                It.Is<RdpInstanceSettings>(i => i.Username.Value == null)), Times.Once);
             settingsService.Verify(s => s.GetConnectionSettings(
                 It.IsAny<IProjectExplorerNode>()), Times.Never);
         }
@@ -205,12 +205,12 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Test.Services.Connection
         [Test]
         public async Task WhenConnectingByUrlWithUsernameAndNoCredentialsExist_ThenConnectionIsMadeWithThisUsername()
         {
-            var settingsService = this.serviceRegistry.AddMock<IConnectionSettingsService>();
+            var settingsService = this.serviceRegistry.AddMock<IRdpSettingsService>();
             this.serviceRegistry.AddMock<ICredentialPrompt>()
                 .Setup(p => p.ShowCredentialsPromptAsync(
                     It.IsAny<IWin32Window>(),
                     It.IsAny<InstanceLocator>(),
-                    It.IsAny<ConnectionSettingsBase>(),
+                    It.IsAny<RdpSettingsBase>(),
                     It.IsAny<bool>())); // Nop -> Connect without configuring credentials.
             this.serviceRegistry.AddMock<IProjectExplorer>()
                 .Setup(p => p.TryFindNode(
@@ -222,7 +222,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Test.Services.Connection
                 It.IsAny<InstanceLocator>(),
                 "localhost",
                 It.IsAny<ushort>(),
-                It.IsAny<VmInstanceConnectionSettings>())).Returns<IRemoteDesktopSession>(null);
+                It.IsAny<RdpInstanceSettings>())).Returns<IRemoteDesktopSession>(null);
 
             this.serviceRegistry.AddSingleton<IRemoteDesktopSessionBroker>(remoteDesktopService.Object);
 
@@ -234,7 +234,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Test.Services.Connection
                 It.IsAny<InstanceLocator>(),
                 "localhost",
                 It.IsAny<ushort>(),
-                It.Is<VmInstanceConnectionSettings>(i => i.Username.StringValue == "john doe")), Times.Once);
+                It.Is<RdpInstanceSettings>(i => i.Username.StringValue == "john doe")), Times.Once);
             settingsService.Verify(s => s.GetConnectionSettings(
                 It.IsAny<IProjectExplorerNode>()), Times.Never);
         }
@@ -242,11 +242,11 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Test.Services.Connection
         [Test]
         public async Task WhenConnectingByUrlWithUsernameAndCredentialsExist_ThenConnectionIsMadeWithUsernameFromUrl()
         {
-            var settings = VmInstanceConnectionSettings.CreateNew("project", "instance-1");
+            var settings = RdpInstanceSettings.CreateNew("project", "instance-1");
             settings.Username.Value = "existinguser";
             settings.Password.Value = SecureStringExtensions.FromClearText("password");
 
-            var settingsService = this.serviceRegistry.AddMock<IConnectionSettingsService>();
+            var settingsService = this.serviceRegistry.AddMock<IRdpSettingsService>();
             settingsService.Setup(s => s.GetConnectionSettings(
                     It.IsAny<IProjectExplorerNode>()))
                 .Returns(
@@ -260,7 +260,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Test.Services.Connection
                 .Setup(p => p.ShowCredentialsPromptAsync(
                     It.IsAny<IWin32Window>(),
                     It.IsAny<InstanceLocator>(),
-                    It.IsAny<ConnectionSettingsBase>(),
+                    It.IsAny<RdpSettingsBase>(),
                     It.IsAny<bool>()));
             this.serviceRegistry.AddMock<IProjectExplorer>()
                 .Setup(p => p.TryFindNode(
@@ -272,7 +272,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Test.Services.Connection
                 It.IsAny<InstanceLocator>(),
                 "localhost",
                 It.IsAny<ushort>(),
-                It.IsAny<VmInstanceConnectionSettings>())).Returns<IRemoteDesktopSession>(null);
+                It.IsAny<RdpInstanceSettings>())).Returns<IRemoteDesktopSession>(null);
 
             this.serviceRegistry.AddSingleton<IRemoteDesktopSessionBroker>(remoteDesktopService.Object);
 
@@ -284,7 +284,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Test.Services.Connection
                 It.IsAny<InstanceLocator>(),
                 "localhost",
                 It.IsAny<ushort>(),
-                It.Is<VmInstanceConnectionSettings>(i => i.Username.StringValue == "john doe")), Times.Once);
+                It.Is<RdpInstanceSettings>(i => i.Username.StringValue == "john doe")), Times.Once);
             settingsService.Verify(s => s.GetConnectionSettings(
                 It.IsAny<IProjectExplorerNode>()), Times.Once);
         }

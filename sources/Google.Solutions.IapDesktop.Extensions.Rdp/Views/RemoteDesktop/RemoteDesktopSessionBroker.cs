@@ -60,7 +60,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Views.RemoteDesktop
             InstanceLocator vmInstance,
             string server,
             ushort port,
-            VmInstanceConnectionSettings settings);
+            RdpInstanceSettings settings);
     }
 
     [Service(typeof(IRemoteDesktopSessionBroker), ServiceLifetime.Singleton, ServiceVisibility.Global)]
@@ -112,7 +112,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Views.RemoteDesktop
             InstanceLocator vmInstance,
             string server,
             ushort port,
-            VmInstanceConnectionSettings settings)
+            RdpInstanceSettings settings)
         {
             var rdpPane = new RemoteDesktopPane(
                 this.serviceProvider,

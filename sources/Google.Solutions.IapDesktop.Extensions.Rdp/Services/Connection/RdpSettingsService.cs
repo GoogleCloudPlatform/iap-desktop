@@ -26,30 +26,30 @@ using System;
 
 namespace Google.Solutions.IapDesktop.Extensions.Rdp.Services.Connection
 {
-    public interface IConnectionSettingsService
+    public interface IRdpSettingsService
     {
         bool IsConnectionSettingsAvailable(IProjectExplorerNode node);
-        IPersistentSettingsCollection<ConnectionSettingsBase> GetConnectionSettings(
+        IPersistentSettingsCollection<RdpSettingsBase> GetConnectionSettings(
             IProjectExplorerNode node);
     }
 
-    [Service(typeof(IConnectionSettingsService))]
-    public class ConnectionSettingsService : IConnectionSettingsService
+    [Service(typeof(IRdpSettingsService))]
+    public class RdpSettingsService : IRdpSettingsService
     {
-        private readonly ConnectionSettingsRepository repository;
+        private readonly RdpSettingsRepository repository;
 
         //---------------------------------------------------------------------
         // Ctor.
         //---------------------------------------------------------------------
 
-        public ConnectionSettingsService(
-            ConnectionSettingsRepository settingsRepository)
+        public RdpSettingsService(
+            RdpSettingsRepository settingsRepository)
         {
             this.repository = settingsRepository;
         }
 
-        public ConnectionSettingsService(IServiceProvider serviceProvider)
-            : this(serviceProvider.GetService<ConnectionSettingsRepository>())
+        public RdpSettingsService(IServiceProvider serviceProvider)
+            : this(serviceProvider.GetService<RdpSettingsRepository>())
         {
         }
 
@@ -64,7 +64,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Services.Connection
                    (node is IProjectExplorerVmInstanceNode vmNode && vmNode.IsWindowsInstance);
         }
 
-        public IPersistentSettingsCollection<ConnectionSettingsBase> GetConnectionSettings(
+        public IPersistentSettingsCollection<RdpSettingsBase> GetConnectionSettings(
             IProjectExplorerNode node)
         {
             if (node is IProjectExplorerProjectNode projectNode)

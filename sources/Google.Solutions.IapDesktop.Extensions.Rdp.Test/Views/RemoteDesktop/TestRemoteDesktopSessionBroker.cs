@@ -76,7 +76,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Test.Views.RemoteDesktop
                     TimeSpan.FromSeconds(60),
                     CancellationToken.None);
 
-                var settings = VmInstanceConnectionSettings.CreateNew(
+                var settings = RdpInstanceSettings.CreateNew(
                     locator.ProjectId,
                     locator.Name);
                 settings.Username.StringValue = credentials.UserName;

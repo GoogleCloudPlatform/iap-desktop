@@ -55,7 +55,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Test.Views.RemoteDesktop
         [Test]
         public void WhenServerInvalid_ThenErrorIsShownAndWindowIsClosed()
         {
-            var settings = VmInstanceConnectionSettings.CreateNew(this.SampleLocator);
+            var settings = RdpInstanceSettings.CreateNew(this.SampleLocator);
 
             var rdpService = new RemoteDesktopSessionBroker(this.serviceProvider);
             rdpService.Connect(
@@ -72,7 +72,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Test.Views.RemoteDesktop
         [Test]
         public void WhenPortNotListening_ThenErrorIsShownAndWindowIsClosed()
         {
-            var settings = VmInstanceConnectionSettings.CreateNew(this.SampleLocator);
+            var settings = RdpInstanceSettings.CreateNew(this.SampleLocator);
             settings.ConnectionTimeout.IntValue = 5;
 
             var rdpService = new RemoteDesktopSessionBroker(this.serviceProvider);
@@ -91,7 +91,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Test.Views.RemoteDesktop
         [Ignore("")]
         public void WhenWrongPort_ThenErrorIsShownAndWindowIsClosed()
         {
-            var settings = VmInstanceConnectionSettings.CreateNew(this.SampleLocator);
+            var settings = RdpInstanceSettings.CreateNew(this.SampleLocator);
 
             var rdpService = new RemoteDesktopSessionBroker(this.serviceProvider);
             rdpService.Connect(
@@ -120,7 +120,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Test.Views.RemoteDesktop
                 locator,
                 await credential))
             {
-                var settings = VmInstanceConnectionSettings.CreateNew(
+                var settings = RdpInstanceSettings.CreateNew(
                     locator.ProjectId,
                     locator.Name);
                 settings.Username.StringValue = "wrong";
@@ -174,7 +174,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Test.Views.RemoteDesktop
                     TimeSpan.FromSeconds(60),
                     CancellationToken.None);
 
-                var settings = VmInstanceConnectionSettings.CreateNew(
+                var settings = RdpInstanceSettings.CreateNew(
                     locator.ProjectId,
                     locator.Name);
                 settings.Username.StringValue = credentials.UserName;
@@ -230,7 +230,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Test.Views.RemoteDesktop
                        TimeSpan.FromSeconds(60),
                        CancellationToken.None);
 
-                var settings = VmInstanceConnectionSettings.CreateNew(
+                var settings = RdpInstanceSettings.CreateNew(
                     locator.ProjectId,
                     locator.Name);
                 settings.Username.StringValue = credentials.UserName;
