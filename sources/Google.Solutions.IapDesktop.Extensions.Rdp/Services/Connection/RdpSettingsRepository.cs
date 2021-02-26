@@ -40,19 +40,19 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Services.Connection
     ///      
     /// </summary>
     [Service]
-    public class ConnectionSettingsRepository
+    public class RdpSettingsRepository
     {
         private const string ZonePrefix = "zone-";
         private const string VmPrefix = "vm-";
 
         private readonly IProjectRepository projectRepository;
 
-        public ConnectionSettingsRepository(IProjectRepository projectRepository)
+        public RdpSettingsRepository(IProjectRepository projectRepository)
         {
             this.projectRepository = projectRepository;
         }
 
-        public ConnectionSettingsRepository(IServiceProvider serviceProvider)
+        public RdpSettingsRepository(IServiceProvider serviceProvider)
             : this(serviceProvider.GetService<IProjectRepository>())
         {
         }
@@ -61,7 +61,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Services.Connection
         // Projects.
         //---------------------------------------------------------------------
 
-        public ProjectConnectionSettings GetProjectSettings(string projectId)
+        public RdpProjectSettings GetProjectSettings(string projectId)
         {
             using (var key = this.projectRepository.OpenRegistryKey(projectId))
             {
@@ -70,11 +70,11 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Services.Connection
                     throw new KeyNotFoundException(projectId);
                 }
 
-                return ProjectConnectionSettings.FromKey(projectId, key);
+                return RdpProjectSettings.FromKey(projectId, key);
             }
         }
 
-        public void SetProjectSettings(ProjectConnectionSettings settings)
+        public void SetProjectSettings(RdpProjectSettings settings)
         {
             using (var key = this.projectRepository.OpenRegistryKey(settings.ProjectId))
             {
@@ -91,21 +91,21 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Services.Connection
         // Zones.
         //---------------------------------------------------------------------
 
-        public ZoneConnectionSettings GetZoneSettings(string projectId, string zoneId)
+        public RdpZoneSettings GetZoneSettings(string projectId, string zoneId)
         {
             using (var key = this.projectRepository.OpenRegistryKey(
                 projectId,
                 ZonePrefix + zoneId,
                 true))
             {
-                return ZoneConnectionSettings.FromKey(
+                return RdpZoneSettings.FromKey(
                     projectId,
                     zoneId,
                     key);
             }
         }
 
-        public void SetZoneSettings(ZoneConnectionSettings settings)
+        public void SetZoneSettings(RdpZoneSettings settings)
         {
             using (var key = this.projectRepository.OpenRegistryKey(
                 settings.ProjectId,
@@ -120,21 +120,21 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Services.Connection
         // Virtual Machines.
         //---------------------------------------------------------------------
 
-        public VmInstanceConnectionSettings GetVmInstanceSettings(string projectId, string instanceName)
+        public RdpInstanceSettings GetVmInstanceSettings(string projectId, string instanceName)
         {
             using (var key = this.projectRepository.OpenRegistryKey(
                 projectId,
                 VmPrefix + instanceName,
                 true))
             {
-                return VmInstanceConnectionSettings.FromKey(
+                return RdpInstanceSettings.FromKey(
                     projectId,
                     instanceName,
                     key);
             }
         }
 
-        public void SetVmInstanceSettings(VmInstanceConnectionSettings settings)
+        public void SetVmInstanceSettings(RdpInstanceSettings settings)
         {
             using (var key = this.projectRepository.OpenRegistryKey(
                 settings.ProjectId,

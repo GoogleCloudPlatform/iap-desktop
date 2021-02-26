@@ -46,7 +46,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Services.Connection
         private readonly ITunnelBrokerService tunnelBrokerService;
         private readonly ICredentialPrompt credentialPrompt;
         private readonly IProjectExplorer projectExplorer;
-        private readonly IConnectionSettingsService settingsService;
+        private readonly IRdpSettingsService settingsService;
 
         public IapRdpConnectionService(IServiceProvider serviceProvider)
         {
@@ -55,13 +55,13 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Services.Connection
             this.tunnelBrokerService = serviceProvider.GetService<ITunnelBrokerService>();
             this.credentialPrompt = serviceProvider.GetService<ICredentialPrompt>();
             this.projectExplorer = serviceProvider.GetService<IProjectExplorer>();
-            this.settingsService = serviceProvider.GetService<IConnectionSettingsService>();
+            this.settingsService = serviceProvider.GetService<IRdpSettingsService>();
             this.window = serviceProvider.GetService<IMainForm>().Window;
         }
 
         private async Task ConnectInstanceAsync(
             InstanceLocator instanceRef,
-            VmInstanceConnectionSettings settings)
+            RdpInstanceSettings settings)
         {
             var tunnel = await this.jobService.RunInBackground(
                 new JobDescription(
@@ -124,20 +124,19 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Services.Connection
             // Select node so that tracking windows are updated.
             vmNode.Select();
 
-            var settings = (VmInstanceConnectionSettings)
-                this.settingsService.GetConnectionSettings(vmNode);
+            var settings = this.settingsService.GetConnectionSettings(vmNode);
 
             if (allowPersistentCredentials)
             {
                 await this.credentialPrompt.ShowCredentialsPromptAsync(
                         this.window,
                         vmNode.Reference,
-                        settings,
+                        settings.TypedCollection,
                         true)
                     .ConfigureAwait(true);
 
                 // Persist new credentials.
-                this.settingsService.SaveConnectionSettings(settings);
+                settings.Save();
             }
             else
             {
@@ -148,12 +147,12 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Services.Connection
                 // NB. Use an empty string (as opposed to null) to
                 // avoid an inherited setting from kicking in.
                 //
-                settings.Password.Value = string.Empty;
+                settings.TypedCollection.Password.Value = string.Empty;
             }
 
             await ConnectInstanceAsync(
                     vmNode.Reference,
-                    settings)
+                    (RdpInstanceSettings)settings.TypedCollection)
                 .ConfigureAwait(true);
         }
 
@@ -165,20 +164,20 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Services.Connection
                 return;
             }
 
-            VmInstanceConnectionSettings settings;
+            RdpInstanceSettings settings;
             if (this.projectExplorer.TryFindNode(url.Instance)
                 is IProjectExplorerVmInstanceNode vmNode)
             {
                 // We have a full set of settings for this VM, so use that as basis
-                settings = (VmInstanceConnectionSettings)
-                    this.settingsService.GetConnectionSettings(vmNode);
+                settings = (RdpInstanceSettings)
+                    this.settingsService.GetConnectionSettings(vmNode).TypedCollection;
 
                 // Apply parameters from URL on top.
                 settings.ApplyUrlQuery(url.Parameters);
             }
             else
             {
-                settings = VmInstanceConnectionSettings.FromUrl(url);
+                settings = RdpInstanceSettings.FromUrl(url);
             }
 
             await this.credentialPrompt.ShowCredentialsPromptAsync(

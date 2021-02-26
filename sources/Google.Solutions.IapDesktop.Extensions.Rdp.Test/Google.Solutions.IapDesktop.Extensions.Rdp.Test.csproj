@@ -93,9 +93,9 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RdpTunnel.cs" />
     <Compile Include="Services\Connection\SynchronousJobService.cs" />
-    <Compile Include="Services\Connection\TestConnectionSettingsService.cs" />
+    <Compile Include="Services\Connection\TestRdpSettingsService.cs" />
     <Compile Include="Services\Connection\TestIapRdpConnectionService.cs" />
-    <Compile Include="Services\Connection\TestConnectionSettingsRepository.cs" />
+    <Compile Include="Services\Connection\TestRdpSettingsRepository.cs" />
     <Compile Include="Services\Connection\TestIapRdpUrlConnectionSettings.cs" />
     <Compile Include="Services\Tunnel\TestTcpTable.cs" />
     <Compile Include="Services\Tunnel\TestTunnelServiceWithMtls.cs" />
@@ -103,7 +103,6 @@
     <Compile Include="Views\Credentials\TestAuthorizationExtensions.cs" />
     <Compile Include="Views\Credentials\TestCredentialPrompt.cs" />
     <Compile Include="Views\Credentials\TestCredentialsService.cs" />
-    <Compile Include="Views\RemoteDesktop\TestRemoteDesktopSessionBroker.cs" />
     <Compile Include="Views\RemoteDesktop\TestRemoteDesktopPane.cs" />
     <Compile Include="Views\RemoteDesktop\TestRemoteDesktopPaneWithGroupPolicies.cs" />
     <Compile Include="Views\TunnelsViewer\TestTunnelsViewModel.cs" />

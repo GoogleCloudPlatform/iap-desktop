@@ -20,6 +20,7 @@
 //
 
 using Google.Solutions.IapDesktop.Application.ObjectModel;
+using Google.Solutions.IapDesktop.Application.Settings;
 using Google.Solutions.IapDesktop.Application.Views.ProjectExplorer;
 using Google.Solutions.IapDesktop.Application.Views.Properties;
 using Google.Solutions.IapDesktop.Extensions.Rdp.Services.Connection;
@@ -32,15 +33,15 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Views.ConnectionSettings
     {
         internal const string DefaultWindowTitle = "Connection settings";
 
-        private readonly IConnectionSettingsService settingsService;
+        private readonly IRdpSettingsService settingsService;
 
         private bool isInformationBarVisible = false;
-        private ConnectionSettingsBase inspectedObject = null;
+        private IPersistentSettingsCollection inspectedObject = null;
         private string windowTitle = DefaultWindowTitle;
 
         public string InformationText => "Changes only take effect after reconnecting";
 
-        public ConnectionSettingsViewModel(IConnectionSettingsService settingsService)
+        public ConnectionSettingsViewModel(IRdpSettingsService settingsService)
         {
             this.settingsService = settingsService;
         }
@@ -64,7 +65,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Views.ConnectionSettings
             get => this.inspectedObject;
             private set
             {
-                this.inspectedObject = (ConnectionSettingsBase)value;
+                this.inspectedObject = (IPersistentSettingsCollection)value;
                 RaisePropertyChange();
             }
         }
@@ -86,7 +87,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Views.ConnectionSettings
         public void SaveChanges()
         {
             Debug.Assert(this.inspectedObject != null);
-            this.settingsService.SaveConnectionSettings(this.inspectedObject);
+            this.inspectedObject.Save();
         }
 
         public Task SwitchToModelAsync(IProjectExplorerNode node)

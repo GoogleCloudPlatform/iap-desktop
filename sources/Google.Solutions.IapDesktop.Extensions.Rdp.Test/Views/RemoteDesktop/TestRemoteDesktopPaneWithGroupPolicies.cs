@@ -52,7 +52,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Test.Views.RemoteDesktop
                     TimeSpan.FromSeconds(60),
                     CancellationToken.None);
 
-                var settings = VmInstanceConnectionSettings.CreateNew(vmInstanceReference);
+                var settings = RdpInstanceSettings.CreateNew(vmInstanceReference);
                 settings.Username.Value = credentials.UserName;
                 settings.Password.Value = credentials.SecurePassword;
                 settings.AuthenticationLevel.Value = RdpAuthenticationLevel.NoServerAuthentication;

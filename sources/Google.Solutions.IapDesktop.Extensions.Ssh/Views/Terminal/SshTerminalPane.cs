@@ -20,6 +20,7 @@
 //
 
 using Google.Solutions.Common.Locator;
+using Google.Solutions.Common.Util;
 using Google.Solutions.IapDesktop.Application.ObjectModel;
 using Google.Solutions.IapDesktop.Application.Services.Integration;
 using Google.Solutions.IapDesktop.Application.Views;
@@ -30,6 +31,7 @@ using Google.Solutions.Ssh;
 using System;
 using System.Diagnostics;
 using System.Drawing;
+using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -55,6 +57,35 @@ namespace Google.Solutions.IapDesktop.Extensions.Ssh.Views.Terminal
 
         public InstanceLocator Instance => this.viewModel.Instance;
 
+
+        public override string Text
+        {
+            get => this.viewModel?.Instance?.Name ?? "SSH";
+            set { }
+        }
+
+        //---------------------------------------------------------------------
+        // Statics.
+        //---------------------------------------------------------------------
+
+        public static SshTerminalPane TryGetExistingPane(
+            IMainForm mainForm,
+            InstanceLocator vmInstance)
+        {
+            return mainForm.MainPanel
+                .Documents
+                .EnsureNotNull()
+                .OfType<SshTerminalPane>()
+                .Where(pane => pane.Instance == vmInstance)
+                .FirstOrDefault();
+        }
+
+        public static SshTerminalPane TryGetActivePane(
+            IMainForm mainForm)
+        {
+            return mainForm.MainPanel.ActiveDocument as SshTerminalPane;
+        }
+
         //---------------------------------------------------------------------
         // Ctor.
         //---------------------------------------------------------------------
@@ -78,7 +109,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Ssh.Views.Terminal
                 View = this
             };
 
-            this.Text = vmInstance.Name;
             this.DockAreas = DockAreas.Document;
 
             this.reconnectPanel.BindReadonlyProperty(

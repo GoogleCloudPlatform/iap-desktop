@@ -85,10 +85,10 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
-    <Compile Include="Services\Connection\ConnectionSettingsService.cs" />
+    <Compile Include="Services\Connection\RdpSettingsService.cs" />
     <Compile Include="Services\Connection\IapRdpConnectionService.cs" />
-    <Compile Include="Services\Connection\ConnectionSettings.cs" />
-    <Compile Include="Services\Connection\ConnectionSettingsRepository.cs" />
+    <Compile Include="Services\Connection\RdpSettings.cs" />
+    <Compile Include="Services\Connection\RdpSettingsRepository.cs" />
     <Compile Include="Services\Tunnel\SameProcessRelayPolicy.cs" />
     <Compile Include="Services\Tunnel\TcpTable.cs" />
     <Compile Include="Services\Tunnel\UnsafeNativeMethods.cs" />

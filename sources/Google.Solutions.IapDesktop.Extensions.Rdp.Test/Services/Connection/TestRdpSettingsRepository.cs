@@ -31,7 +31,7 @@ using System.Collections.Generic;
 namespace Google.Solutions.IapDesktop.Extensions.Rdp.Test.Services.Connection
 {
     [TestFixture]
-    public class TestConnectionSettingsRepository : CommonFixtureBase
+    public class TestRdpSettingsRepository : CommonFixtureBase
     {
         private const string TestKeyPath = @"Software\Google\__Test";
         private readonly RegistryKey hkcu = RegistryKey.OpenBaseKey(
@@ -40,7 +40,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Test.Services.Connection
 
         private ProjectRepository projectRepository;
 
-        private ConnectionSettingsRepository repository;
+        private RdpSettingsRepository repository;
 
         [SetUp]
         public void SetUp()
@@ -52,7 +52,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Test.Services.Connection
             this.projectRepository = new ProjectRepository(
                 baseKey,
                 new Mock<IEventService>().Object);
-            this.repository = new ConnectionSettingsRepository(
+            this.repository = new RdpSettingsRepository(
                 this.projectRepository);
         }
 

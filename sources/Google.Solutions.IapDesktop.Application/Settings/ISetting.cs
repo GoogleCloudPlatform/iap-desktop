@@ -49,4 +49,15 @@ namespace Google.Solutions.IapDesktop.Application.Settings
     {
         IEnumerable<ISetting> Settings { get; }
     }
+
+    public interface IPersistentSettingsCollection : ISettingsCollection
+    {
+        void Save();
+    }
+
+    public interface IPersistentSettingsCollection<out TCollection> : IPersistentSettingsCollection
+        where TCollection : ISettingsCollection
+    {
+        TCollection TypedCollection { get; }
+    }
 }

@@ -35,12 +35,12 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Views.ConnectionSettings
     [Service(ServiceLifetime.Singleton)]
     public class HtmlPageGenerator
     {
-        private readonly IConnectionSettingsService settingsService;
+        private readonly IRdpSettingsService settingsService;
 
         public HtmlPageGenerator(IServiceProvider serviceProvider)
         {
 #if DEBUG
-            this.settingsService = serviceProvider.GetService<IConnectionSettingsService>();
+            this.settingsService = serviceProvider.GetService<IRdpSettingsService>();
 
             var projectExplorer = serviceProvider.GetService<IProjectExplorer>();
             projectExplorer.ContextMenuCommands.AddCommand(
@@ -71,7 +71,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Views.ConnectionSettings
 
                 foreach (var vmNode in zoneNode.Instances.Cast<VmInstanceNode>())
                 {
-                    var settings = (VmInstanceConnectionSettings)this.settingsService
+                    var settings = (RdpInstanceSettings)this.settingsService
                         .GetConnectionSettings(vmNode);
 
                     buffer.Append($"<li>");

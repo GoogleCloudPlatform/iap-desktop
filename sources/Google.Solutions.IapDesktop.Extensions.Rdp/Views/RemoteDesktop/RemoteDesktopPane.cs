@@ -22,6 +22,7 @@
 using AxMSTSCLib;
 using Google.Solutions.Common.Diagnostics;
 using Google.Solutions.Common.Locator;
+using Google.Solutions.Common.Util;
 using Google.Solutions.IapDesktop.Application;
 using Google.Solutions.IapDesktop.Application.ObjectModel;
 using Google.Solutions.IapDesktop.Application.Services.Integration;
@@ -99,7 +100,29 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Views.RemoteDesktop
         }
 
         //---------------------------------------------------------------------
-        // Publics.
+        // Statics.
+        //---------------------------------------------------------------------
+
+        public static RemoteDesktopPane TryGetExistingPane(
+            IMainForm mainForm,
+            InstanceLocator vmInstance)
+        {
+            return mainForm.MainPanel
+                .Documents
+                .EnsureNotNull()
+                .OfType<RemoteDesktopPane>()
+                .Where(pane => pane.Instance == vmInstance && !pane.IsFormClosing)
+                .FirstOrDefault();
+        }
+
+        public static RemoteDesktopPane TryGetActivePane(
+            IMainForm mainForm)
+        {
+            return mainForm.MainPanel.ActiveDocument as RemoteDesktopPane;
+        }
+
+        //---------------------------------------------------------------------
+        // Ctor.
         //---------------------------------------------------------------------
 
         public RemoteDesktopPane(
@@ -110,8 +133,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Views.RemoteDesktop
             this.exceptionDialog = serviceProvider.GetService<IExceptionDialog>();
             this.eventService = serviceProvider.GetService<IEventService>();
             this.Instance = vmInstance;
-
-            this.TabText = vmInstance.Name;
 
             // The ActiveX fails when trying to drag/dock a window, so disable
             // that feature.
@@ -130,10 +151,20 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Views.RemoteDesktop
             this.TabContextStrip.Opening += tabContextStrip_Opening;
         }
 
+        //---------------------------------------------------------------------
+        // Publics.
+        //---------------------------------------------------------------------
+
+        public override string Text 
+        { 
+            get => this.Instance?.Name ?? "Remote Desktop"; 
+            set { }
+        }
+
         public void Connect(
             string server,
             ushort port,
-            VmInstanceConnectionSettings settings
+            RdpInstanceSettings settings
             )
         {
             using (ApplicationTraceSources.Default.TraceMethod().WithParameters(
