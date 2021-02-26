@@ -23,7 +23,7 @@ using Google.Solutions.Common.Locator;
 using Google.Solutions.Common.Util;
 using Google.Solutions.IapDesktop.Application.ObjectModel;
 using Google.Solutions.IapDesktop.Application.Views.Dialog;
-using Google.Solutions.IapDesktop.Extensions.Rdp.Services.Connection;
+using Google.Solutions.IapDesktop.Extensions.Rdp.Services.ConnectionSettings;
 using Google.Solutions.IapDesktop.Extensions.Rdp.Views.ConnectionSettings;
 using System;
 using System.Collections.Generic;
@@ -38,7 +38,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Views.Credentials
         Task ShowCredentialsPromptAsync(
            IWin32Window owner,
            InstanceLocator instanceLocator,
-           RdpSettingsBase settings,
+           ConnectionSettingsBase settings,
            bool allowJumpToSettings);
     }
 
@@ -78,7 +78,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Views.Credentials
         public async Task ShowCredentialsPromptAsync(
             IWin32Window owner,
             InstanceLocator instanceLocator,
-            RdpSettingsBase settings,
+            ConnectionSettingsBase settings,
             bool allowJumpToSettings)
         {
             var credentialsService = this.serviceProvider.GetService<ICredentialsService>();

@@ -26,7 +26,7 @@ using Google.Solutions.IapDesktop.Application.ObjectModel;
 using Google.Solutions.IapDesktop.Application.Services.Adapters;
 using Google.Solutions.IapDesktop.Application.Services.Integration;
 using Google.Solutions.IapDesktop.Application.Test.Views;
-using Google.Solutions.IapDesktop.Extensions.Rdp.Services.Connection;
+using Google.Solutions.IapDesktop.Extensions.Rdp.Services.ConnectionSettings;
 using Google.Solutions.IapDesktop.Extensions.Rdp.Views.RemoteDesktop;
 using NUnit.Framework;
 using System;
@@ -52,7 +52,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Test.Views.RemoteDesktop
                     TimeSpan.FromSeconds(60),
                     CancellationToken.None);
 
-                var settings = RdpInstanceSettings.CreateNew(vmInstanceReference);
+                var settings = InstanceConnectionSettings.CreateNew(vmInstanceReference);
                 settings.Username.Value = credentials.UserName;
                 settings.Password.Value = credentials.SecurePassword;
                 settings.AuthenticationLevel.Value = RdpAuthenticationLevel.NoServerAuthentication;

@@ -21,10 +21,10 @@
 
 using Google.Solutions.Common.Locator;
 using Google.Solutions.IapDesktop.Application.Util;
-using Google.Solutions.IapDesktop.Extensions.Rdp.Services.Connection;
+using Google.Solutions.IapDesktop.Extensions.Rdp.Services.ConnectionSettings;
 using NUnit.Framework;
 
-namespace Google.Solutions.IapDesktop.Extensions.Rdp.Test.Services.Connection
+namespace Google.Solutions.IapDesktop.Extensions.Rdp.Test.Services.ConnectionSettings
 {
     [TestFixture]
     public class TestIapRdpUrlConnectionSettings
@@ -36,7 +36,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Test.Services.Connection
         [Test]
         public void WhenVmInstanceSettingsAreAllDefaults_ThenToUrlQueryReturnsEmptyCollection()
         {
-            var settings = RdpInstanceSettings.CreateNew("pro-1", "instance-1");
+            var settings = InstanceConnectionSettings.CreateNew("pro-1", "instance-1");
 
             Assert.AreEqual(0, settings.ToUrlQuery().Count);
         }
@@ -44,7 +44,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Test.Services.Connection
         [Test]
         public void WhenVmInstanceSettingsArePopulated_ThenToUrlQueryExcludesPassword()
         {
-            var settings = RdpInstanceSettings.CreateNew("pro-1", "instance-1");
+            var settings = InstanceConnectionSettings.CreateNew("pro-1", "instance-1");
             settings.Username.Value = "bob";
             settings.Password.ClearTextValue = "secret";
             settings.RedirectClipboard.EnumValue = RdpRedirectClipboard.Disabled;
@@ -61,7 +61,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Test.Services.Connection
         [Test]
         public void WhenSettingsContainsEscapableChars_ThenToStringEscapesThem()
         {
-            var settings = RdpInstanceSettings.CreateNew("project-1", "instance-1");
+            var settings = InstanceConnectionSettings.CreateNew("project-1", "instance-1");
             settings.Username.Value = "Tom & Jerry?";
             settings.Domain.Value = "\"?\"";
 
@@ -78,7 +78,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Test.Services.Connection
         [Test]
         public void WhenParseStringCreatedByToString_ResultIsSame()
         {
-            var settings = RdpInstanceSettings.CreateNew("project-1", "instance-1");
+            var settings = InstanceConnectionSettings.CreateNew("project-1", "instance-1");
             settings.Username.Value = "user";
             settings.Domain.Value = "domain";
             settings.ConnectionBar.Value = RdpConnectionBarState.Off;
@@ -93,7 +93,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Test.Services.Connection
                 new InstanceLocator("project-1", "us-central1-a", "instance-1"),
                 settings.ToUrlQuery());
 
-            var copy = RdpInstanceSettings.FromUrl(url);
+            var copy = InstanceConnectionSettings.FromUrl(url);
 
             Assert.AreEqual("user", copy.Username.Value);
             Assert.AreEqual("domain", copy.Domain.Value);
@@ -114,7 +114,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Test.Services.Connection
         public void WhenQueryStringMissing_ThenSettingsUsesDefaults()
         {
             var url = IapRdpUrl.FromString("iap-rdp:///my-project/us-central1-a/my-instance");
-            var settings = RdpInstanceSettings.FromUrl(url);
+            var settings = InstanceConnectionSettings.FromUrl(url);
 
             Assert.IsNull(settings.Username.Value);
             Assert.IsNull(settings.Password.Value);
@@ -132,7 +132,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Test.Services.Connection
         public void WhenQueryStringContainsNonsense_ThenSettingsUsesDefaults()
         {
             var url = IapRdpUrl.FromString("iap-rdp:///my-project/us-central1-a/my-instance?a=b&user=wrongcase&_");
-            var settings = RdpInstanceSettings.FromUrl(url);
+            var settings = InstanceConnectionSettings.FromUrl(url);
 
             Assert.IsNull(settings.Username.Value);
             Assert.IsNull(settings.Password.Value);
@@ -153,7 +153,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Test.Services.Connection
                 "ConnectionBar=-1&DesktopSize=a&AuthenticationLevel=null&ColorDepth=&" +
                 "AudioMode=9999&RedirectClipboard=b&RedirectClipboard=c&" +
                 "CredentialGenerationBehavior=-11");
-            var settings = RdpInstanceSettings.FromUrl(url);
+            var settings = InstanceConnectionSettings.FromUrl(url);
 
             Assert.IsNull(settings.Username.Value);
             Assert.IsNull(settings.Password.Value);
@@ -172,7 +172,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Test.Services.Connection
         {
             var url = IapRdpUrl.FromString("iap-rdp:///my-project/us-central1-a/my-instance?" +
                 "userNAME=John%20Doe&PassworD=ignore&Domain=%20%20mydomain&");
-            var settings = RdpInstanceSettings.FromUrl(url);
+            var settings = InstanceConnectionSettings.FromUrl(url);
 
             Assert.AreEqual("John Doe", settings.Username.Value);
             Assert.IsNull(settings.Password.Value);
@@ -185,7 +185,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Test.Services.Connection
             var url = IapRdpUrl.FromString("iap-rdp:///my-project/us-central1-a/my-instance?" +
                 "ConnectionBar=1&DesktopSize=1&AuthenticationLevel=0&ColorDepth=2&" +
                 "AudioMode=2&RedirectClipboard=0&CredentialGenerationBehavior=0&Rdpport=13389");
-            var settings = RdpInstanceSettings.FromUrl(url);
+            var settings = InstanceConnectionSettings.FromUrl(url);
 
             Assert.AreEqual(RdpConnectionBarState.Pinned, settings.ConnectionBar.Value);
             Assert.AreEqual(RdpDesktopSize.ScreenSize, settings.DesktopSize.Value);

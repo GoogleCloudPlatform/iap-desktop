@@ -26,6 +26,7 @@ using Google.Solutions.IapDesktop.Application.Util;
 using Google.Solutions.IapDesktop.Application.Views;
 using Google.Solutions.IapDesktop.Application.Views.Dialog;
 using Google.Solutions.IapDesktop.Application.Views.ProjectExplorer;
+using Google.Solutions.IapDesktop.Extensions.Rdp.Services.ConnectionSettings;
 using Google.Solutions.IapDesktop.Extensions.Rdp.Services.Tunnel;
 using Google.Solutions.IapDesktop.Extensions.Rdp.Views.Credentials;
 using Google.Solutions.IapDesktop.Extensions.Rdp.Views.RemoteDesktop;
@@ -35,10 +36,17 @@ using System;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-namespace Google.Solutions.IapDesktop.Extensions.Rdp.Services.Connection
+namespace Google.Solutions.IapDesktop.Extensions.Rdp.Services.Rdp
 {
-    [Service]
-    public class IapRdpConnectionService
+    public interface IRdpConnectionService
+    {
+        Task ActivateOrConnectInstanceAsync(
+            IProjectExplorerVmInstanceNode vmNode,
+            bool allowPersistentCredentials);
+    }
+
+    [Service(typeof(IRdpConnectionService))]
+    public class RdpConnectionService : IRdpConnectionService
     {
         private readonly IWin32Window window;
         private readonly IJobService jobService;
@@ -46,22 +54,22 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Services.Connection
         private readonly ITunnelBrokerService tunnelBrokerService;
         private readonly ICredentialPrompt credentialPrompt;
         private readonly IProjectExplorer projectExplorer;
-        private readonly IRdpSettingsService settingsService;
+        private readonly IConnectionSettingsService settingsService;
 
-        public IapRdpConnectionService(IServiceProvider serviceProvider)
+        public RdpConnectionService(IServiceProvider serviceProvider)
         {
             this.jobService = serviceProvider.GetService<IJobService>();
             this.remoteDesktopService = serviceProvider.GetService<IRemoteDesktopSessionBroker>();
             this.tunnelBrokerService = serviceProvider.GetService<ITunnelBrokerService>();
             this.credentialPrompt = serviceProvider.GetService<ICredentialPrompt>();
             this.projectExplorer = serviceProvider.GetService<IProjectExplorer>();
-            this.settingsService = serviceProvider.GetService<IRdpSettingsService>();
+            this.settingsService = serviceProvider.GetService<IConnectionSettingsService>();
             this.window = serviceProvider.GetService<IMainForm>().Window;
         }
 
         private async Task ConnectInstanceAsync(
             InstanceLocator instanceRef,
-            RdpInstanceSettings settings)
+            InstanceConnectionSettings settings)
         {
             var tunnel = await this.jobService.RunInBackground(
                 new JobDescription(
@@ -152,7 +160,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Services.Connection
 
             await ConnectInstanceAsync(
                     vmNode.Reference,
-                    (RdpInstanceSettings)settings.TypedCollection)
+                    (InstanceConnectionSettings)settings.TypedCollection)
                 .ConfigureAwait(true);
         }
 
@@ -164,12 +172,12 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Services.Connection
                 return;
             }
 
-            RdpInstanceSettings settings;
+            InstanceConnectionSettings settings;
             if (this.projectExplorer.TryFindNode(url.Instance)
                 is IProjectExplorerVmInstanceNode vmNode)
             {
                 // We have a full set of settings for this VM, so use that as basis
-                settings = (RdpInstanceSettings)
+                settings = (InstanceConnectionSettings)
                     this.settingsService.GetConnectionSettings(vmNode).TypedCollection;
 
                 // Apply parameters from URL on top.
@@ -177,7 +185,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Services.Connection
             }
             else
             {
-                settings = RdpInstanceSettings.FromUrl(url);
+                settings = InstanceConnectionSettings.FromUrl(url);
             }
 
             await this.credentialPrompt.ShowCredentialsPromptAsync(

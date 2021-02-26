@@ -22,16 +22,16 @@
 using Google.Solutions.Common.Test;
 using Google.Solutions.IapDesktop.Application.Services.Integration;
 using Google.Solutions.IapDesktop.Application.Services.Settings;
-using Google.Solutions.IapDesktop.Extensions.Rdp.Services.Connection;
+using Google.Solutions.IapDesktop.Extensions.Rdp.Services.ConnectionSettings;
 using Microsoft.Win32;
 using Moq;
 using NUnit.Framework;
 using System.Collections.Generic;
 
-namespace Google.Solutions.IapDesktop.Extensions.Rdp.Test.Services.Connection
+namespace Google.Solutions.IapDesktop.Extensions.Rdp.Test.Services.ConnectionSettings
 {
     [TestFixture]
-    public class TestRdpSettingsRepository : CommonFixtureBase
+    public class TestConnectionSettingsRepository : CommonFixtureBase
     {
         private const string TestKeyPath = @"Software\Google\__Test";
         private readonly RegistryKey hkcu = RegistryKey.OpenBaseKey(
@@ -40,7 +40,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Test.Services.Connection
 
         private ProjectRepository projectRepository;
 
-        private RdpSettingsRepository repository;
+        private ConnectionSettingsRepository repository;
 
         [SetUp]
         public void SetUp()
@@ -52,7 +52,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Test.Services.Connection
             this.projectRepository = new ProjectRepository(
                 baseKey,
                 new Mock<IEventService>().Object);
-            this.repository = new RdpSettingsRepository(
+            this.repository = new ConnectionSettingsRepository(
                 this.projectRepository);
         }
 

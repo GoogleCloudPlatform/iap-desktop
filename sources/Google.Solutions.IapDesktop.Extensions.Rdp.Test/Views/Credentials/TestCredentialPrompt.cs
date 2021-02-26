@@ -24,7 +24,7 @@ using Google.Solutions.Common.Test;
 using Google.Solutions.IapDesktop.Application.ObjectModel;
 using Google.Solutions.IapDesktop.Application.Test.ObjectModel;
 using Google.Solutions.IapDesktop.Application.Views.Dialog;
-using Google.Solutions.IapDesktop.Extensions.Rdp.Services.Connection;
+using Google.Solutions.IapDesktop.Extensions.Rdp.Services.ConnectionSettings;
 using Google.Solutions.IapDesktop.Extensions.Rdp.Views.ConnectionSettings;
 using Google.Solutions.IapDesktop.Extensions.Rdp.Views.Credentials;
 using Moq;
@@ -57,12 +57,12 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Test.Views.Credentials
             credentialsService.Setup(s => s.GenerateCredentialsAsync(
                     It.IsAny<IWin32Window>(),
                     It.IsAny<InstanceLocator>(),
-                    It.IsAny<RdpSettingsBase>(),
+                    It.IsAny<ConnectionSettingsBase>(),
                     It.Is<bool>(silent => silent == expectSilentCredentialGeneration)))
                 .Callback(
                     (IWin32Window owner,
                     InstanceLocator instanceRef,
-                    RdpSettingsBase settings,
+                    ConnectionSettingsBase settings,
                     bool silent) =>
                     {
                         settings.Username.Value = "bob";
@@ -100,7 +100,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Test.Views.Credentials
                 false,
                 taskDialog);
 
-            var settings = RdpInstanceSettings.CreateNew(SampleInstance);
+            var settings = InstanceConnectionSettings.CreateNew(SampleInstance);
             settings.CredentialGenerationBehavior.EnumValue = RdpCredentialGenerationBehavior.Allow;
 
             await credentialPrompt.ShowCredentialsPromptAsync(
@@ -145,7 +145,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Test.Views.Credentials
                 isGrantedPermissionToGenerateCredentials,
                 false,
                 taskDialog);
-            var settings = RdpInstanceSettings.CreateNew(SampleInstance);
+            var settings = InstanceConnectionSettings.CreateNew(SampleInstance);
             settings.CredentialGenerationBehavior.EnumValue = RdpCredentialGenerationBehavior.Allow;
             settings.Username.StringValue = "alice";
             settings.Password.ClearTextValue = "alicespassword";
@@ -193,7 +193,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Test.Views.Credentials
 
             var credentialPrompt = CreateCredentialsPrompt(true, false, taskDialog);
 
-            var settings = RdpInstanceSettings.CreateNew(SampleInstance);
+            var settings = InstanceConnectionSettings.CreateNew(SampleInstance);
             settings.CredentialGenerationBehavior.EnumValue = RdpCredentialGenerationBehavior.AllowIfNoCredentialsFound;
 
             await credentialPrompt.ShowCredentialsPromptAsync(
@@ -236,7 +236,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Test.Views.Credentials
             var credentialPrompt = CreateCredentialsPrompt(false, false, taskDialog);
             var window = this.serviceRegistry.AddMock<IConnectionSettingsWindow>();
 
-            var settings = RdpInstanceSettings.CreateNew(SampleInstance);
+            var settings = InstanceConnectionSettings.CreateNew(SampleInstance);
             settings.CredentialGenerationBehavior.EnumValue = RdpCredentialGenerationBehavior.AllowIfNoCredentialsFound;
 
             AssertEx.ThrowsAggregateException<TaskCanceledException>(
@@ -280,7 +280,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Test.Views.Credentials
                 false,
                 taskDialog);
 
-            var settings = RdpInstanceSettings.CreateNew(SampleInstance);
+            var settings = InstanceConnectionSettings.CreateNew(SampleInstance);
             settings.CredentialGenerationBehavior.EnumValue = RdpCredentialGenerationBehavior.AllowIfNoCredentialsFound;
             settings.Username.StringValue = "alice";
             settings.Password.ClearTextValue = "alicespassword";
@@ -329,7 +329,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Test.Views.Credentials
             var credentialPrompt = CreateCredentialsPrompt(true, false, taskDialog);
             var window = this.serviceRegistry.AddMock<IConnectionSettingsWindow>();
 
-            var settings = RdpInstanceSettings.CreateNew(SampleInstance);
+            var settings = InstanceConnectionSettings.CreateNew(SampleInstance);
             settings.CredentialGenerationBehavior.EnumValue = RdpCredentialGenerationBehavior.Disallow;
 
             AssertEx.ThrowsAggregateException<TaskCanceledException>(
@@ -369,7 +369,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Test.Views.Credentials
 
             var credentialPrompt = CreateCredentialsPrompt(true, false, taskDialog);
 
-            var settings = RdpInstanceSettings.CreateNew(SampleInstance);
+            var settings = InstanceConnectionSettings.CreateNew(SampleInstance);
             settings.CredentialGenerationBehavior.EnumValue = RdpCredentialGenerationBehavior.Disallow;
 
             await credentialPrompt.ShowCredentialsPromptAsync(
@@ -411,7 +411,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Test.Views.Credentials
 
             var credentialPrompt = CreateCredentialsPrompt(true, false, taskDialog);
 
-            var settings = RdpInstanceSettings.CreateNew(SampleInstance);
+            var settings = InstanceConnectionSettings.CreateNew(SampleInstance);
             settings.CredentialGenerationBehavior.EnumValue = RdpCredentialGenerationBehavior.Disallow;
             settings.Username.StringValue = "alice";
             settings.Password.ClearTextValue = "alicespassword";
@@ -449,7 +449,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Test.Views.Credentials
 
             var credentialPrompt = CreateCredentialsPrompt(true, true, taskDialog);
 
-            var settings = RdpInstanceSettings.CreateNew(SampleInstance);
+            var settings = InstanceConnectionSettings.CreateNew(SampleInstance);
             settings.CredentialGenerationBehavior.EnumValue = RdpCredentialGenerationBehavior.Force;
 
             await credentialPrompt.ShowCredentialsPromptAsync(
@@ -493,7 +493,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Test.Views.Credentials
             var credentialPrompt = CreateCredentialsPrompt(false, false, taskDialog);
             var window = this.serviceRegistry.AddMock<IConnectionSettingsWindow>();
 
-            var settings = RdpInstanceSettings.CreateNew(SampleInstance);
+            var settings = InstanceConnectionSettings.CreateNew(SampleInstance);
             settings.CredentialGenerationBehavior.EnumValue = RdpCredentialGenerationBehavior.Force;
 
             AssertEx.ThrowsAggregateException<TaskCanceledException>(

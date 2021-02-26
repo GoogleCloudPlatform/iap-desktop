@@ -24,16 +24,16 @@ using Google.Solutions.Common.Test;
 using Google.Solutions.IapDesktop.Application.Services.Integration;
 using Google.Solutions.IapDesktop.Application.Services.Settings;
 using Google.Solutions.IapDesktop.Application.Views.ProjectExplorer;
-using Google.Solutions.IapDesktop.Extensions.Rdp.Services.Connection;
+using Google.Solutions.IapDesktop.Extensions.Rdp.Services.ConnectionSettings;
 using Microsoft.Win32;
 using Moq;
 using NUnit.Framework;
 using System;
 
-namespace Google.Solutions.IapDesktop.Extensions.Rdp.Test.Services.Connection
+namespace Google.Solutions.IapDesktop.Extensions.Rdp.Test.Services.ConnectionSettings
 {
     [TestFixture]
-    public class TestRdpSettingsService : CommonFixtureBase
+    public class TestConnectionSettingsService : CommonFixtureBase
     {
         private const string SampleProjectId = "project-1";
         private const string TestKeyPath = @"Software\Google\__Test";
@@ -41,7 +41,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Test.Services.Connection
             RegistryHive.CurrentUser,
             RegistryView.Default);
 
-        private RdpSettingsService service;
+        private ConnectionSettingsService service;
 
         [SetUp]
         public void SetUp()
@@ -51,8 +51,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Test.Services.Connection
             var projectRepository = new ProjectRepository(
                 hkcu.CreateSubKey(TestKeyPath),
                 new Mock<IEventService>().Object);
-            var settingsRepository = new RdpSettingsRepository(projectRepository);
-            this.service = new RdpSettingsService(settingsRepository);
+            var settingsRepository = new ConnectionSettingsRepository(projectRepository);
+            this.service = new ConnectionSettingsService(settingsRepository);
 
             // Set some initial project settings.
             projectRepository.AddProjectAsync(SampleProjectId).Wait();

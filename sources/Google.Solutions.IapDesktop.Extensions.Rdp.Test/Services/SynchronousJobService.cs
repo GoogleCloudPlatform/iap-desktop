@@ -24,7 +24,7 @@ using System;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Google.Solutions.IapDesktop.Extensions.Rdp.Test.Services.Connection
+namespace Google.Solutions.IapDesktop.Extensions.Rdp.Test.Services
 {
     internal class SynchronousJobService : IJobService
     {
