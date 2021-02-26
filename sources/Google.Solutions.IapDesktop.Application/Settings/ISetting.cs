@@ -54,4 +54,10 @@ namespace Google.Solutions.IapDesktop.Application.Settings
     {
         void Save();
     }
+
+    public interface IPersistentSettingsCollection<out TCollection> : IPersistentSettingsCollection
+        where TCollection : ISettingsCollection
+    {
+        TCollection TypedCollection { get; }
+    }
 }

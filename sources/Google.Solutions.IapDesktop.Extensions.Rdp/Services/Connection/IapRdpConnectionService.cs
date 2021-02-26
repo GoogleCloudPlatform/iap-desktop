@@ -124,20 +124,19 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Services.Connection
             // Select node so that tracking windows are updated.
             vmNode.Select();
 
-            var settings = (VmInstanceConnectionSettings)
-                this.settingsService.GetConnectionSettings(vmNode);
+            var settings = this.settingsService.GetConnectionSettings(vmNode);
 
             if (allowPersistentCredentials)
             {
                 await this.credentialPrompt.ShowCredentialsPromptAsync(
                         this.window,
                         vmNode.Reference,
-                        settings,
+                        settings.TypedCollection,
                         true)
                     .ConfigureAwait(true);
 
                 // Persist new credentials.
-                this.settingsService.SaveConnectionSettings(settings);
+                settings.Save();
             }
             else
             {
@@ -148,12 +147,12 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Services.Connection
                 // NB. Use an empty string (as opposed to null) to
                 // avoid an inherited setting from kicking in.
                 //
-                settings.Password.Value = string.Empty;
+                settings.TypedCollection.Password.Value = string.Empty;
             }
 
             await ConnectInstanceAsync(
                     vmNode.Reference,
-                    settings)
+                    (VmInstanceConnectionSettings)settings.TypedCollection)
                 .ConfigureAwait(true);
         }
 
@@ -171,7 +170,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Services.Connection
             {
                 // We have a full set of settings for this VM, so use that as basis
                 settings = (VmInstanceConnectionSettings)
-                    this.settingsService.GetConnectionSettings(vmNode);
+                    this.settingsService.GetConnectionSettings(vmNode).TypedCollection;
 
                 // Apply parameters from URL on top.
                 settings.ApplyUrlQuery(url.Parameters);

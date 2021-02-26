@@ -99,11 +99,11 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Services
                         .GenerateCredentialsAsync(
                             this.window,
                             vmNode.Reference,
-                            settings,
+                            settings.TypedCollection,
                             false)
                         .ConfigureAwait(true);
 
-                    settingsService.SaveConnectionSettings(settings);
+                    settings.Save();
                 }
             }
             catch (Exception e) when (e.IsCancellation())

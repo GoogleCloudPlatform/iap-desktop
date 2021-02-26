@@ -23,6 +23,7 @@ using Google.Solutions.Common.Locator;
 using Google.Solutions.Common.Test;
 using Google.Solutions.IapDesktop.Application.ObjectModel;
 using Google.Solutions.IapDesktop.Application.Services.Integration;
+using Google.Solutions.IapDesktop.Application.Settings;
 using Google.Solutions.IapDesktop.Application.Test.ObjectModel;
 using Google.Solutions.IapDesktop.Application.Util;
 using Google.Solutions.IapDesktop.Application.Views;
@@ -80,7 +81,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Test.Services.Connection
             var settingsService = this.serviceRegistry.AddMock<IConnectionSettingsService>();
             settingsService.Setup(s => s.GetConnectionSettings(
                     It.IsAny<IProjectExplorerNode>()))
-                .Returns(settings);
+                .Returns(
+                    settings.ToPersistentSettingsCollection(s => Assert.Fail("should not be called")));
 
             var vmNode = new Mock<IProjectExplorerVmInstanceNode>();
             vmNode.SetupGet(n => n.Reference)
@@ -110,9 +112,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Test.Services.Connection
                 It.Is<VmInstanceConnectionSettings>(i => 
                     i.Username.StringValue == "existinguser" && 
                     i.Password.ClearTextValue == "")), Times.Once);
-
-            settingsService.Verify(s => s.SaveConnectionSettings(
-                It.IsAny<ConnectionSettingsBase>()), Times.Never);
         }
 
         [Test]
@@ -122,10 +121,13 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Test.Services.Connection
             settings.Username.Value = "existinguser";
             settings.Password.Value = SecureStringExtensions.FromClearText("password");
 
+            bool settingsSaved = false;
+
             var settingsService = this.serviceRegistry.AddMock<IConnectionSettingsService>();
             settingsService.Setup(s => s.GetConnectionSettings(
                     It.IsAny<IProjectExplorerNode>()))
-                .Returns(settings);
+                .Returns(
+                    settings.ToPersistentSettingsCollection(s => settingsSaved = true));
 
             var vmNode = new Mock<IProjectExplorerVmInstanceNode>();
             vmNode.SetupGet(n => n.Reference)
@@ -156,8 +158,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Test.Services.Connection
                     i.Username.StringValue == "existinguser" &&
                     i.Password.ClearTextValue == "password")), Times.Once);
 
-            settingsService.Verify(s => s.SaveConnectionSettings(
-                It.IsAny<ConnectionSettingsBase>()), Times.Once);
+            Assert.IsTrue(settingsSaved);
         }
 
         //---------------------------------------------------------------------
@@ -248,7 +249,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Test.Services.Connection
             var settingsService = this.serviceRegistry.AddMock<IConnectionSettingsService>();
             settingsService.Setup(s => s.GetConnectionSettings(
                     It.IsAny<IProjectExplorerNode>()))
-                .Returns(settings);
+                .Returns(
+                    settings.ToPersistentSettingsCollection(s => Assert.Fail("should not be called")));
 
             var vmNode = new Mock<IProjectExplorerVmInstanceNode>();
             vmNode.SetupGet(n => n.Reference)

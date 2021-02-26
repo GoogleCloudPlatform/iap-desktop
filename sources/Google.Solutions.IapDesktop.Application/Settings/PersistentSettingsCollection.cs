@@ -26,26 +26,26 @@ namespace Google.Solutions.IapDesktop.Application.Settings
 {
     public static class PersistentSettingsCollection
     {
-        private class PersistentCollection<TCollection> : IPersistentSettingsCollection
+        private class PersistentCollection<TCollection> : IPersistentSettingsCollection<TCollection>
             where TCollection : ISettingsCollection
         {
             private readonly Action<TCollection> saveFunc;
-            private readonly TCollection settingsCollection;
+            public TCollection TypedCollection { get; }
 
             public PersistentCollection(
                 TCollection settingsCollection,
                 Action<TCollection> saveFunc)
             {
-                this.settingsCollection = settingsCollection;
+                this.TypedCollection = settingsCollection;
                 this.saveFunc = saveFunc;
             }
 
-            public IEnumerable<ISetting> Settings => this.settingsCollection.Settings;
+            public IEnumerable<ISetting> Settings => this.TypedCollection.Settings;
 
-            public void Save() => this.saveFunc(this.settingsCollection);
+            public void Save() => this.saveFunc(this.TypedCollection);
         }
 
-        public static IPersistentSettingsCollection ToPersistentSettingsCollection<TCollection>(
+        public static IPersistentSettingsCollection<TCollection> ToPersistentSettingsCollection<TCollection>(
             this TCollection collection,
             Action<TCollection> saveFunc)
             where TCollection : ISettingsCollection

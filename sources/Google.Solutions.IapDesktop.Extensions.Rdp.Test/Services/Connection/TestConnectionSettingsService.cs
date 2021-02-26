@@ -138,7 +138,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Test.Services.Connection
             var projectNode = CreateProjectNode();
 
             var settings = this.service.GetConnectionSettings(projectNode);
-            Assert.AreEqual("project-domain", settings.Domain.Value);
+            Assert.AreEqual("project-domain", settings.TypedCollection.Domain.Value);
         }
 
         [Test]
@@ -147,11 +147,11 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Test.Services.Connection
             var projectNode = CreateProjectNode();
 
             var firstSettings = this.service.GetConnectionSettings(projectNode);
-            firstSettings.Username.Value = "bob";
-            this.service.SaveConnectionSettings(firstSettings);
+            firstSettings.TypedCollection.Username.Value = "bob";
+            firstSettings.Save();
 
             var secondSettings = this.service.GetConnectionSettings(projectNode);
-            Assert.AreEqual("bob", secondSettings.Username.Value);
+            Assert.AreEqual("bob", secondSettings.TypedCollection.Username.Value);
         }
 
         //---------------------------------------------------------------------
@@ -164,7 +164,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Test.Services.Connection
             var zoneNode = CreateZoneNode();
 
             var settings = this.service.GetConnectionSettings(zoneNode);
-            Assert.AreEqual("project-domain", settings.Domain.Value);
+            Assert.AreEqual("project-domain", settings.TypedCollection.Domain.Value);
         }
 
         [Test]
@@ -173,11 +173,11 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Test.Services.Connection
             var zoneNode = CreateZoneNode();
 
             var firstSettings = this.service.GetConnectionSettings(zoneNode);
-            firstSettings.Username.Value = "bob";
-            this.service.SaveConnectionSettings(firstSettings);
+            firstSettings.TypedCollection.Username.Value = "bob";
+            firstSettings.Save();
 
             var secondSettings = this.service.GetConnectionSettings(zoneNode);
-            Assert.AreEqual("bob", secondSettings.Username.Value);
+            Assert.AreEqual("bob", secondSettings.TypedCollection.Username.Value);
         }
 
         //---------------------------------------------------------------------
@@ -190,7 +190,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Test.Services.Connection
             var vmNode = CreateVmInstanceNode();
 
             var settings = this.service.GetConnectionSettings(vmNode);
-            Assert.AreEqual("project-domain", settings.Domain.Value);
+            Assert.AreEqual("project-domain", settings.TypedCollection.Domain.Value);
         }
 
         [Test]
@@ -199,11 +199,11 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Test.Services.Connection
             var vmNode = CreateVmInstanceNode();
 
             var firstSettings = this.service.GetConnectionSettings(vmNode);
-            firstSettings.Username.Value = "bob";
-            this.service.SaveConnectionSettings(firstSettings);
+            firstSettings.TypedCollection.Username.Value = "bob";
+            firstSettings.Save();
 
             var secondSettings = this.service.GetConnectionSettings(vmNode);
-            Assert.AreEqual("bob", secondSettings.Username.Value);
+            Assert.AreEqual("bob", secondSettings.TypedCollection.Username.Value);
         }
 
         //---------------------------------------------------------------------
@@ -216,34 +216,34 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Test.Services.Connection
                 string username)
         {
             var projectSettings = this.service.GetConnectionSettings(CreateProjectNode());
-            projectSettings.Username.Value = username;
-            this.service.SaveConnectionSettings(projectSettings);
+            projectSettings.TypedCollection.Username.Value = username;
+            projectSettings.Save();
 
             // Inherited value is shown...
             var instanceSettings = this.service.GetConnectionSettings(CreateVmInstanceNode());
-            Assert.AreEqual(username, instanceSettings.Username.Value);
-            Assert.IsTrue(instanceSettings.Username.IsDefault);
+            Assert.AreEqual(username, instanceSettings.TypedCollection.Username.Value);
+            Assert.IsTrue(instanceSettings.TypedCollection.Username.IsDefault);
         }
 
         [Test]
         public void WhenUsernameSetInProjectAndZone_ZoneValueIsInheritedDownToVm()
         {
             var projectSettings = this.service.GetConnectionSettings(CreateProjectNode());
-            projectSettings.Username.Value = "root-value";
-            this.service.SaveConnectionSettings(projectSettings);
+            projectSettings.TypedCollection.Username.Value = "root-value";
+            projectSettings.Save();
 
             var zoneSettings = this.service.GetConnectionSettings(CreateZoneNode());
-            zoneSettings.Username.Value = "overriden-value";
-            this.service.SaveConnectionSettings(zoneSettings);
+            zoneSettings.TypedCollection.Username.Value = "overriden-value";
+            zoneSettings.Save();
 
             // Inherited value is shown...
             zoneSettings = this.service.GetConnectionSettings(CreateZoneNode());
-            Assert.AreEqual("overriden-value", zoneSettings.Username.Value);
-            Assert.IsFalse(zoneSettings.Username.IsDefault);
+            Assert.AreEqual("overriden-value", zoneSettings.TypedCollection.Username.Value);
+            Assert.IsFalse(zoneSettings.TypedCollection.Username.IsDefault);
 
             var instanceSettings = this.service.GetConnectionSettings(CreateVmInstanceNode());
-            Assert.AreEqual("overriden-value", instanceSettings.Username.Value);
-            Assert.IsTrue(instanceSettings.Username.IsDefault);
+            Assert.AreEqual("overriden-value", instanceSettings.TypedCollection.Username.Value);
+            Assert.IsTrue(instanceSettings.TypedCollection.Username.IsDefault);
         }
     }
 }
