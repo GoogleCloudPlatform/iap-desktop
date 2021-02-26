@@ -93,10 +93,10 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RdpTunnel.cs" />
     <Compile Include="Services\SynchronousJobService.cs" />
-    <Compile Include="Services\Connection\TestConnectionSettingsService.cs" />
+    <Compile Include="Services\ConnectionSettings\TestConnectionSettingsService.cs" />
     <Compile Include="Services\Rdp\TestRdpConnectionService.cs" />
-    <Compile Include="Services\Connection\TestConnectionSettingsRepository.cs" />
-    <Compile Include="Services\Connection\TestIapRdpUrlConnectionSettings.cs" />
+    <Compile Include="Services\ConnectionSettings\TestConnectionSettingsRepository.cs" />
+    <Compile Include="Services\ConnectionSettings\TestIapRdpUrlConnectionSettings.cs" />
     <Compile Include="Services\Tunnel\TestTcpTable.cs" />
     <Compile Include="Services\Tunnel\TestTunnelServiceWithMtls.cs" />
     <Compile Include="Views\ConnectionSettings\TestConnectionSettingsViewModel.cs" />

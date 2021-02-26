@@ -33,7 +33,7 @@ using System.Security.Cryptography;
 
 #pragma warning disable CA1027 // Mark enums with FlagsAttribute
 
-namespace Google.Solutions.IapDesktop.Extensions.Rdp.Services.Connection
+namespace Google.Solutions.IapDesktop.Extensions.Rdp.Services.ConnectionSettings
 {
     //
     // NB. The values do not map to RDP interface values. But the numeric values

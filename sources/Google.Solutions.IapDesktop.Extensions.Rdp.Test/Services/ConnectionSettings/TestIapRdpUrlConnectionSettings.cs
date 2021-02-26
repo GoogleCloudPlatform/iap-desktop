@@ -21,10 +21,10 @@
 
 using Google.Solutions.Common.Locator;
 using Google.Solutions.IapDesktop.Application.Util;
-using Google.Solutions.IapDesktop.Extensions.Rdp.Services.Connection;
+using Google.Solutions.IapDesktop.Extensions.Rdp.Services.ConnectionSettings;
 using NUnit.Framework;
 
-namespace Google.Solutions.IapDesktop.Extensions.Rdp.Test.Services.Connection
+namespace Google.Solutions.IapDesktop.Extensions.Rdp.Test.Services.ConnectionSettings
 {
     [TestFixture]
     public class TestIapRdpUrlConnectionSettings

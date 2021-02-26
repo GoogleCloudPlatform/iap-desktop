@@ -22,13 +22,13 @@
 using Google.Solutions.Common.Test;
 using Google.Solutions.IapDesktop.Application.Services.Integration;
 using Google.Solutions.IapDesktop.Application.Services.Settings;
-using Google.Solutions.IapDesktop.Extensions.Rdp.Services.Connection;
+using Google.Solutions.IapDesktop.Extensions.Rdp.Services.ConnectionSettings;
 using Microsoft.Win32;
 using Moq;
 using NUnit.Framework;
 using System.Collections.Generic;
 
-namespace Google.Solutions.IapDesktop.Extensions.Rdp.Test.Services.Connection
+namespace Google.Solutions.IapDesktop.Extensions.Rdp.Test.Services.ConnectionSettings
 {
     [TestFixture]
     public class TestConnectionSettingsRepository : CommonFixtureBase

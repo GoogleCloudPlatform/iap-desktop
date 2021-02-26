@@ -28,7 +28,7 @@ using Google.Solutions.IapDesktop.Application.Test.ObjectModel;
 using Google.Solutions.IapDesktop.Application.Util;
 using Google.Solutions.IapDesktop.Application.Views;
 using Google.Solutions.IapDesktop.Application.Views.ProjectExplorer;
-using Google.Solutions.IapDesktop.Extensions.Rdp.Services.Connection;
+using Google.Solutions.IapDesktop.Extensions.Rdp.Services.ConnectionSettings;
 using Google.Solutions.IapDesktop.Extensions.Rdp.Services.Rdp;
 using Google.Solutions.IapDesktop.Extensions.Rdp.Services.Tunnel;
 using Google.Solutions.IapDesktop.Extensions.Rdp.Views.ConnectionSettings;

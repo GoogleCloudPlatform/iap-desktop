@@ -24,7 +24,7 @@ using Google.Solutions.IapDesktop.Application.Settings;
 using Google.Solutions.IapDesktop.Application.Views.ProjectExplorer;
 using System;
 
-namespace Google.Solutions.IapDesktop.Extensions.Rdp.Services.Connection
+namespace Google.Solutions.IapDesktop.Extensions.Rdp.Services.ConnectionSettings
 {
     public interface IConnectionSettingsService
     {
