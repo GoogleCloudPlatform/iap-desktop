@@ -55,7 +55,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Test.Views.Credentials
                     It.IsAny<string>()))
                 .Returns<string>(null); // Cancel dialog
 
-            var settings = RdpInstanceSettings.CreateNew(SampleInstance);
+            var settings = InstanceConnectionSettings.CreateNew(SampleInstance);
             settings.Username.Value = "alice";
 
             var credentialsService = new CredentialsService(serviceRegistry);
@@ -90,7 +90,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Test.Views.Credentials
                 .ReturnsAsync(new NetworkCredential("alice", "password"));
 
             var credDialog = serviceRegistry.AddMock<IGenerateCredentialsDialog>();
-            var settings = RdpInstanceSettings.CreateNew(SampleInstance);
+            var settings = InstanceConnectionSettings.CreateNew(SampleInstance);
             settings.Username.Value = "alice";
 
             var credentialsService = new CredentialsService(serviceRegistry);
@@ -126,7 +126,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Test.Views.Credentials
                 .ReturnsAsync(new NetworkCredential("bobsemail", "password"));
 
             var credDialog = serviceRegistry.AddMock<IGenerateCredentialsDialog>();
-            var settings = RdpInstanceSettings.CreateNew(SampleInstance);
+            var settings = InstanceConnectionSettings.CreateNew(SampleInstance);
 
             var credentialsService = new CredentialsService(serviceRegistry);
             await credentialsService.GenerateCredentialsAsync(
@@ -160,7 +160,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Test.Views.Credentials
                 .Returns<string>(null); // Cancel dialog
 
 
-            var settings = RdpInstanceSettings.CreateNew(SampleInstance);
+            var settings = InstanceConnectionSettings.CreateNew(SampleInstance);
             settings.Username.Value = "";
 
             var credentialsService = new CredentialsService(serviceRegistry);
@@ -195,7 +195,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Test.Views.Credentials
                 .Returns<string>(null); // Cancel dialog
 
 
-            var settings = RdpInstanceSettings.CreateNew(SampleInstance);
+            var settings = InstanceConnectionSettings.CreateNew(SampleInstance);
 
             var credentialsService = new CredentialsService(serviceRegistry);
             AssertEx.ThrowsAggregateException<TaskCanceledException>(

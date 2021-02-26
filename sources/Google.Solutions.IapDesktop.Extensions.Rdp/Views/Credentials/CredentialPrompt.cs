@@ -38,7 +38,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Views.Credentials
         Task ShowCredentialsPromptAsync(
            IWin32Window owner,
            InstanceLocator instanceLocator,
-           RdpSettingsBase settings,
+           ConnectionSettingsBase settings,
            bool allowJumpToSettings);
     }
 
@@ -78,7 +78,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Views.Credentials
         public async Task ShowCredentialsPromptAsync(
             IWin32Window owner,
             InstanceLocator instanceLocator,
-            RdpSettingsBase settings,
+            ConnectionSettingsBase settings,
             bool allowJumpToSettings)
         {
             var credentialsService = this.serviceProvider.GetService<ICredentialsService>();

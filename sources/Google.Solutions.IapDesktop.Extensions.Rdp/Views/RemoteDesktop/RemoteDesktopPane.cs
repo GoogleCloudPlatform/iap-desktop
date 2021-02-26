@@ -164,7 +164,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Views.RemoteDesktop
         public void Connect(
             string server,
             ushort port,
-            RdpInstanceSettings settings
+            InstanceConnectionSettings settings
             )
         {
             using (ApplicationTraceSources.Default.TraceMethod().WithParameters(

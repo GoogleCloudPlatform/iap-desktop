@@ -34,7 +34,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Views.ConnectionSettings
         public ConnectionSettingsWindow(IServiceProvider serviceProvider)
             : base(
                   serviceProvider,
-                  new ConnectionSettingsViewModel(serviceProvider.GetService<IRdpSettingsService>()))
+                  new ConnectionSettingsViewModel(serviceProvider.GetService<IConnectionSettingsService>()))
         {
         }
     }

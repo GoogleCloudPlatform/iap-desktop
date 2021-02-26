@@ -35,7 +35,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Views.Credentials
         Task GenerateCredentialsAsync(
             IWin32Window owner,
             InstanceLocator instanceRef,
-            RdpSettingsBase settings,
+            ConnectionSettingsBase settings,
             bool silent);
 
         Task<bool> IsGrantedPermissionToGenerateCredentials(
@@ -55,7 +55,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Views.Credentials
         public async Task GenerateCredentialsAsync(
             IWin32Window owner,
             InstanceLocator instanceLocator,
-            RdpSettingsBase settings,
+            ConnectionSettingsBase settings,
             bool silent)
         {
             // Prompt for username to use.

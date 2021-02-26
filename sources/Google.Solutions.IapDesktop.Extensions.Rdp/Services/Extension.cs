@@ -92,7 +92,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Services
                 if (node is IProjectExplorerVmInstanceNode vmNode)
                 {
                     var settingsService = this.serviceProvider
-                        .GetService<IRdpSettingsService>();
+                        .GetService<IConnectionSettingsService>();
                     var settings = settingsService.GetConnectionSettings(vmNode);
 
                     await this.serviceProvider.GetService<ICredentialsService>()
@@ -226,7 +226,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Services
             //
             // Connection settings.
             //
-            var settingsService = serviceProvider.GetService<IRdpSettingsService>();
+            var settingsService = serviceProvider.GetService<IConnectionSettingsService>();
             projectExplorer.ContextMenuCommands.AddCommand(
                 new Command<IProjectExplorerNode>(
                     "Connection settings",

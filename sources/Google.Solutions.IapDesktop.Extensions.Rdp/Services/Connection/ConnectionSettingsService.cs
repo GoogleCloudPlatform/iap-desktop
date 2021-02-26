@@ -26,30 +26,30 @@ using System;
 
 namespace Google.Solutions.IapDesktop.Extensions.Rdp.Services.Connection
 {
-    public interface IRdpSettingsService
+    public interface IConnectionSettingsService
     {
         bool IsConnectionSettingsAvailable(IProjectExplorerNode node);
-        IPersistentSettingsCollection<RdpSettingsBase> GetConnectionSettings(
+        IPersistentSettingsCollection<ConnectionSettingsBase> GetConnectionSettings(
             IProjectExplorerNode node);
     }
 
-    [Service(typeof(IRdpSettingsService))]
-    public class RdpSettingsService : IRdpSettingsService
+    [Service(typeof(IConnectionSettingsService))]
+    public class ConnectionSettingsService : IConnectionSettingsService
     {
-        private readonly RdpSettingsRepository repository;
+        private readonly ConnectionSettingsRepository repository;
 
         //---------------------------------------------------------------------
         // Ctor.
         //---------------------------------------------------------------------
 
-        public RdpSettingsService(
-            RdpSettingsRepository settingsRepository)
+        public ConnectionSettingsService(
+            ConnectionSettingsRepository settingsRepository)
         {
             this.repository = settingsRepository;
         }
 
-        public RdpSettingsService(IServiceProvider serviceProvider)
-            : this(serviceProvider.GetService<RdpSettingsRepository>())
+        public ConnectionSettingsService(IServiceProvider serviceProvider)
+            : this(serviceProvider.GetService<ConnectionSettingsRepository>())
         {
         }
 
@@ -64,7 +64,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Services.Connection
                    (node is IProjectExplorerVmInstanceNode vmNode && vmNode.IsWindowsInstance);
         }
 
-        public IPersistentSettingsCollection<RdpSettingsBase> GetConnectionSettings(
+        public IPersistentSettingsCollection<ConnectionSettingsBase> GetConnectionSettings(
             IProjectExplorerNode node)
         {
             if (node is IProjectExplorerProjectNode projectNode)
@@ -100,6 +100,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Services.Connection
                 return projectSettings
                     .OverlayBy(zoneSettings)
                     .OverlayBy(instanceSettings)
+                    // TODO: Apply view
                     .ToPersistentSettingsCollection(s => this.repository.SetVmInstanceSettings(s));
             }
             else
