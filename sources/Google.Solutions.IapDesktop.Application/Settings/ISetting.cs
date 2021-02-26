@@ -49,4 +49,9 @@ namespace Google.Solutions.IapDesktop.Application.Settings
     {
         IEnumerable<ISetting> Settings { get; }
     }
+
+    public interface IPersistentSettingsCollection : ISettingsCollection
+    {
+        void Save();
+    }
 }
