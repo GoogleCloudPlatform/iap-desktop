@@ -45,10 +45,10 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Test.Services.ConnectionSet
         public void WhenVmInstanceSettingsArePopulated_ThenToUrlQueryExcludesPassword()
         {
             var settings = InstanceConnectionSettings.CreateNew("pro-1", "instance-1");
-            settings.Username.Value = "bob";
-            settings.Password.ClearTextValue = "secret";
-            settings.RedirectClipboard.EnumValue = RdpRedirectClipboard.Disabled;
-            settings.ConnectionTimeout.IntValue = 123;
+            settings.RdpUsername.Value = "bob";
+            settings.RdpPassword.ClearTextValue = "secret";
+            settings.RdpRedirectClipboard.EnumValue = RdpRedirectClipboard.Disabled;
+            settings.RdpConnectionTimeout.IntValue = 123;
 
             var query = settings.ToUrlQuery();
 
@@ -62,8 +62,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Test.Services.ConnectionSet
         public void WhenSettingsContainsEscapableChars_ThenToStringEscapesThem()
         {
             var settings = InstanceConnectionSettings.CreateNew("project-1", "instance-1");
-            settings.Username.Value = "Tom & Jerry?";
-            settings.Domain.Value = "\"?\"";
+            settings.RdpUsername.Value = "Tom & Jerry?";
+            settings.RdpDomain.Value = "\"?\"";
 
             var url = new IapRdpUrl(
                 new InstanceLocator("project-1", "us-central1-a", "instance-1"),
@@ -79,15 +79,15 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Test.Services.ConnectionSet
         public void WhenParseStringCreatedByToString_ResultIsSame()
         {
             var settings = InstanceConnectionSettings.CreateNew("project-1", "instance-1");
-            settings.Username.Value = "user";
-            settings.Domain.Value = "domain";
-            settings.ConnectionBar.Value = RdpConnectionBarState.Off;
-            settings.DesktopSize.Value = RdpDesktopSize.ScreenSize;
-            settings.AuthenticationLevel.Value = RdpAuthenticationLevel.RequireServerAuthentication;
-            settings.ColorDepth.Value = RdpColorDepth.TrueColor;
-            settings.AudioMode.Value = RdpAudioMode.PlayOnServer;
-            settings.RedirectClipboard.Value = RdpRedirectClipboard.Disabled;
-            settings.CredentialGenerationBehavior.Value = RdpCredentialGenerationBehavior.Disallow;
+            settings.RdpUsername.Value = "user";
+            settings.RdpDomain.Value = "domain";
+            settings.RdpConnectionBar.Value = RdpConnectionBarState.Off;
+            settings.RdpDesktopSize.Value = RdpDesktopSize.ScreenSize;
+            settings.RdpAuthenticationLevel.Value = RdpAuthenticationLevel.RequireServerAuthentication;
+            settings.RdpColorDepth.Value = RdpColorDepth.TrueColor;
+            settings.RdpAudioMode.Value = RdpAudioMode.PlayOnServer;
+            settings.RdpRedirectClipboard.Value = RdpRedirectClipboard.Disabled;
+            settings.RdpCredentialGenerationBehavior.Value = RdpCredentialGenerationBehavior.Disallow;
 
             var url = new IapRdpUrl(
                 new InstanceLocator("project-1", "us-central1-a", "instance-1"),
@@ -95,15 +95,15 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Test.Services.ConnectionSet
 
             var copy = InstanceConnectionSettings.FromUrl(url);
 
-            Assert.AreEqual("user", copy.Username.Value);
-            Assert.AreEqual("domain", copy.Domain.Value);
-            Assert.AreEqual(RdpConnectionBarState.Off, copy.ConnectionBar.Value);
-            Assert.AreEqual(RdpDesktopSize.ScreenSize, copy.DesktopSize.Value);
-            Assert.AreEqual(RdpAuthenticationLevel.RequireServerAuthentication, copy.AuthenticationLevel.Value);
-            Assert.AreEqual(RdpColorDepth.TrueColor, copy.ColorDepth.Value);
-            Assert.AreEqual(RdpAudioMode.PlayOnServer, copy.AudioMode.Value);
-            Assert.AreEqual(RdpRedirectClipboard.Disabled, copy.RedirectClipboard.Value);
-            Assert.AreEqual(RdpCredentialGenerationBehavior.Disallow, copy.CredentialGenerationBehavior.Value);
+            Assert.AreEqual("user", copy.RdpUsername.Value);
+            Assert.AreEqual("domain", copy.RdpDomain.Value);
+            Assert.AreEqual(RdpConnectionBarState.Off, copy.RdpConnectionBar.Value);
+            Assert.AreEqual(RdpDesktopSize.ScreenSize, copy.RdpDesktopSize.Value);
+            Assert.AreEqual(RdpAuthenticationLevel.RequireServerAuthentication, copy.RdpAuthenticationLevel.Value);
+            Assert.AreEqual(RdpColorDepth.TrueColor, copy.RdpColorDepth.Value);
+            Assert.AreEqual(RdpAudioMode.PlayOnServer, copy.RdpAudioMode.Value);
+            Assert.AreEqual(RdpRedirectClipboard.Disabled, copy.RdpRedirectClipboard.Value);
+            Assert.AreEqual(RdpCredentialGenerationBehavior.Disallow, copy.RdpCredentialGenerationBehavior.Value);
         }
 
         //---------------------------------------------------------------------
@@ -116,16 +116,16 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Test.Services.ConnectionSet
             var url = IapRdpUrl.FromString("iap-rdp:///my-project/us-central1-a/my-instance");
             var settings = InstanceConnectionSettings.FromUrl(url);
 
-            Assert.IsNull(settings.Username.Value);
-            Assert.IsNull(settings.Password.Value);
-            Assert.IsNull(settings.Domain.Value);
-            Assert.AreEqual(RdpConnectionBarState._Default, settings.ConnectionBar.Value);
-            Assert.AreEqual(RdpDesktopSize._Default, settings.DesktopSize.Value);
-            Assert.AreEqual(RdpAuthenticationLevel._Default, settings.AuthenticationLevel.Value);
-            Assert.AreEqual(RdpColorDepth._Default, settings.ColorDepth.Value);
-            Assert.AreEqual(RdpAudioMode._Default, settings.AudioMode.Value);
-            Assert.AreEqual(RdpRedirectClipboard._Default, settings.RedirectClipboard.Value);
-            Assert.AreEqual(RdpCredentialGenerationBehavior._Default, settings.CredentialGenerationBehavior.Value);
+            Assert.IsNull(settings.RdpUsername.Value);
+            Assert.IsNull(settings.RdpPassword.Value);
+            Assert.IsNull(settings.RdpDomain.Value);
+            Assert.AreEqual(RdpConnectionBarState._Default, settings.RdpConnectionBar.Value);
+            Assert.AreEqual(RdpDesktopSize._Default, settings.RdpDesktopSize.Value);
+            Assert.AreEqual(RdpAuthenticationLevel._Default, settings.RdpAuthenticationLevel.Value);
+            Assert.AreEqual(RdpColorDepth._Default, settings.RdpColorDepth.Value);
+            Assert.AreEqual(RdpAudioMode._Default, settings.RdpAudioMode.Value);
+            Assert.AreEqual(RdpRedirectClipboard._Default, settings.RdpRedirectClipboard.Value);
+            Assert.AreEqual(RdpCredentialGenerationBehavior._Default, settings.RdpCredentialGenerationBehavior.Value);
         }
 
         [Test]
@@ -134,16 +134,16 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Test.Services.ConnectionSet
             var url = IapRdpUrl.FromString("iap-rdp:///my-project/us-central1-a/my-instance?a=b&user=wrongcase&_");
             var settings = InstanceConnectionSettings.FromUrl(url);
 
-            Assert.IsNull(settings.Username.Value);
-            Assert.IsNull(settings.Password.Value);
-            Assert.IsNull(settings.Domain.Value);
-            Assert.AreEqual(RdpConnectionBarState._Default, settings.ConnectionBar.Value);
-            Assert.AreEqual(RdpDesktopSize._Default, settings.DesktopSize.Value);
-            Assert.AreEqual(RdpAuthenticationLevel._Default, settings.AuthenticationLevel.Value);
-            Assert.AreEqual(RdpColorDepth._Default, settings.ColorDepth.Value);
-            Assert.AreEqual(RdpAudioMode._Default, settings.AudioMode.Value);
-            Assert.AreEqual(RdpRedirectClipboard._Default, settings.RedirectClipboard.Value);
-            Assert.AreEqual(RdpCredentialGenerationBehavior._Default, settings.CredentialGenerationBehavior.Value);
+            Assert.IsNull(settings.RdpUsername.Value);
+            Assert.IsNull(settings.RdpPassword.Value);
+            Assert.IsNull(settings.RdpDomain.Value);
+            Assert.AreEqual(RdpConnectionBarState._Default, settings.RdpConnectionBar.Value);
+            Assert.AreEqual(RdpDesktopSize._Default, settings.RdpDesktopSize.Value);
+            Assert.AreEqual(RdpAuthenticationLevel._Default, settings.RdpAuthenticationLevel.Value);
+            Assert.AreEqual(RdpColorDepth._Default, settings.RdpColorDepth.Value);
+            Assert.AreEqual(RdpAudioMode._Default, settings.RdpAudioMode.Value);
+            Assert.AreEqual(RdpRedirectClipboard._Default, settings.RdpRedirectClipboard.Value);
+            Assert.AreEqual(RdpCredentialGenerationBehavior._Default, settings.RdpCredentialGenerationBehavior.Value);
         }
 
         [Test]
@@ -155,16 +155,16 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Test.Services.ConnectionSet
                 "CredentialGenerationBehavior=-11");
             var settings = InstanceConnectionSettings.FromUrl(url);
 
-            Assert.IsNull(settings.Username.Value);
-            Assert.IsNull(settings.Password.Value);
-            Assert.IsNull(settings.Domain.Value);
-            Assert.AreEqual(RdpConnectionBarState._Default, settings.ConnectionBar.Value);
-            Assert.AreEqual(RdpDesktopSize._Default, settings.DesktopSize.Value);
-            Assert.AreEqual(RdpAuthenticationLevel._Default, settings.AuthenticationLevel.Value);
-            Assert.AreEqual(RdpColorDepth._Default, settings.ColorDepth.Value);
-            Assert.AreEqual(RdpAudioMode._Default, settings.AudioMode.Value);
-            Assert.AreEqual(RdpRedirectClipboard._Default, settings.RedirectClipboard.Value);
-            Assert.AreEqual(RdpCredentialGenerationBehavior._Default, settings.CredentialGenerationBehavior.Value);
+            Assert.IsNull(settings.RdpUsername.Value);
+            Assert.IsNull(settings.RdpPassword.Value);
+            Assert.IsNull(settings.RdpDomain.Value);
+            Assert.AreEqual(RdpConnectionBarState._Default, settings.RdpConnectionBar.Value);
+            Assert.AreEqual(RdpDesktopSize._Default, settings.RdpDesktopSize.Value);
+            Assert.AreEqual(RdpAuthenticationLevel._Default, settings.RdpAuthenticationLevel.Value);
+            Assert.AreEqual(RdpColorDepth._Default, settings.RdpColorDepth.Value);
+            Assert.AreEqual(RdpAudioMode._Default, settings.RdpAudioMode.Value);
+            Assert.AreEqual(RdpRedirectClipboard._Default, settings.RdpRedirectClipboard.Value);
+            Assert.AreEqual(RdpCredentialGenerationBehavior._Default, settings.RdpCredentialGenerationBehavior.Value);
         }
 
         [Test]
@@ -174,9 +174,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Test.Services.ConnectionSet
                 "userNAME=John%20Doe&PassworD=ignore&Domain=%20%20mydomain&");
             var settings = InstanceConnectionSettings.FromUrl(url);
 
-            Assert.AreEqual("John Doe", settings.Username.Value);
-            Assert.IsNull(settings.Password.Value);
-            Assert.AreEqual("  mydomain", settings.Domain.Value);
+            Assert.AreEqual("John Doe", settings.RdpUsername.Value);
+            Assert.IsNull(settings.RdpPassword.Value);
+            Assert.AreEqual("  mydomain", settings.RdpDomain.Value);
         }
 
         [Test]
@@ -187,13 +187,13 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Test.Services.ConnectionSet
                 "AudioMode=2&RedirectClipboard=0&CredentialGenerationBehavior=0&Rdpport=13389");
             var settings = InstanceConnectionSettings.FromUrl(url);
 
-            Assert.AreEqual(RdpConnectionBarState.Pinned, settings.ConnectionBar.Value);
-            Assert.AreEqual(RdpDesktopSize.ScreenSize, settings.DesktopSize.Value);
-            Assert.AreEqual(RdpAuthenticationLevel.AttemptServerAuthentication, settings.AuthenticationLevel.Value);
-            Assert.AreEqual(RdpColorDepth.DeepColor, settings.ColorDepth.Value);
-            Assert.AreEqual(RdpAudioMode.DoNotPlay, settings.AudioMode.Value);
-            Assert.AreEqual(RdpRedirectClipboard.Disabled, settings.RedirectClipboard.Value);
-            Assert.AreEqual(RdpCredentialGenerationBehavior.Allow, settings.CredentialGenerationBehavior.Value);
+            Assert.AreEqual(RdpConnectionBarState.Pinned, settings.RdpConnectionBar.Value);
+            Assert.AreEqual(RdpDesktopSize.ScreenSize, settings.RdpDesktopSize.Value);
+            Assert.AreEqual(RdpAuthenticationLevel.AttemptServerAuthentication, settings.RdpAuthenticationLevel.Value);
+            Assert.AreEqual(RdpColorDepth.DeepColor, settings.RdpColorDepth.Value);
+            Assert.AreEqual(RdpAudioMode.DoNotPlay, settings.RdpAudioMode.Value);
+            Assert.AreEqual(RdpRedirectClipboard.Disabled, settings.RdpRedirectClipboard.Value);
+            Assert.AreEqual(RdpCredentialGenerationBehavior.Allow, settings.RdpCredentialGenerationBehavior.Value);
             Assert.AreEqual(13389, settings.RdpPort.Value);
         }
     }

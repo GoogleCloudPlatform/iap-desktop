@@ -21,6 +21,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Google.Solutions.IapDesktop.Application.Settings
 {
@@ -45,12 +46,44 @@ namespace Google.Solutions.IapDesktop.Application.Settings
             public void Save() => this.saveFunc(this.TypedCollection);
         }
 
+        private class FilteredPersistentCollection<TCollection> : IPersistentSettingsCollection<TCollection>
+            where TCollection : ISettingsCollection
+        {
+            private IPersistentSettingsCollection<TCollection> collection;
+            private Func<TCollection, ISetting, bool> predicate;
+
+            public FilteredPersistentCollection(
+                IPersistentSettingsCollection<TCollection> collection,
+                Func<TCollection, ISetting, bool> predicate)
+            {
+                this.collection = collection;
+                this.predicate = predicate;
+            }
+
+            public TCollection TypedCollection
+                => this.collection.TypedCollection;
+
+            public IEnumerable<ISetting> Settings
+                => this.collection.Settings.Where(s => this.predicate(this.TypedCollection, s));
+
+            public void Save()
+                => this.collection.Save();
+        }
+
         public static IPersistentSettingsCollection<TCollection> ToPersistentSettingsCollection<TCollection>(
             this TCollection collection,
             Action<TCollection> saveFunc)
             where TCollection : ISettingsCollection
         {
             return new PersistentCollection<TCollection>(collection, saveFunc);
+        }
+
+        public static IPersistentSettingsCollection<TCollection> ToFilteredSettingsCollection<TCollection>(
+            this IPersistentSettingsCollection<TCollection> collection,
+            Func<TCollection, ISetting, bool> predicate)
+            where TCollection : ISettingsCollection
+        {
+            return new FilteredPersistentCollection<TCollection>(collection, predicate);
         }
     }
 }

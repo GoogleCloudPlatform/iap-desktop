@@ -73,7 +73,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Test.Views.RemoteDesktop
         public void WhenPortNotListening_ThenErrorIsShownAndWindowIsClosed()
         {
             var settings = InstanceConnectionSettings.CreateNew(this.SampleLocator);
-            settings.ConnectionTimeout.IntValue = 5;
+            settings.RdpConnectionTimeout.IntValue = 5;
 
             var rdpService = new RemoteDesktopSessionBroker(this.serviceProvider);
             rdpService.Connect(
@@ -123,11 +123,11 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Test.Views.RemoteDesktop
                 var settings = InstanceConnectionSettings.CreateNew(
                     locator.ProjectId,
                     locator.Name);
-                settings.Username.StringValue = "wrong";
-                settings.Password.Value = SecureStringExtensions.FromClearText("wrong");
-                settings.AuthenticationLevel.EnumValue = RdpAuthenticationLevel.NoServerAuthentication;
-                settings.UserAuthenticationBehavior.EnumValue = RdpUserAuthenticationBehavior.AbortOnFailure;
-                settings.DesktopSize.EnumValue = RdpDesktopSize.ClientSize;
+                settings.RdpUsername.StringValue = "wrong";
+                settings.RdpPassword.Value = SecureStringExtensions.FromClearText("wrong");
+                settings.RdpAuthenticationLevel.EnumValue = RdpAuthenticationLevel.NoServerAuthentication;
+                settings.RdpUserAuthenticationBehavior.EnumValue = RdpUserAuthenticationBehavior.AbortOnFailure;
+                settings.RdpDesktopSize.EnumValue = RdpDesktopSize.ClientSize;
 
                 var rdpService = new RemoteDesktopSessionBroker(this.serviceProvider);
                 var session = rdpService.Connect(
@@ -177,14 +177,14 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Test.Views.RemoteDesktop
                 var settings = InstanceConnectionSettings.CreateNew(
                     locator.ProjectId,
                     locator.Name);
-                settings.Username.StringValue = credentials.UserName;
-                settings.Password.Value = credentials.SecurePassword;
-                settings.ConnectionBar.EnumValue = connectionBarState;
-                settings.DesktopSize.EnumValue = desktopSize;
-                settings.AudioMode.EnumValue = audioMode;
-                settings.RedirectClipboard.EnumValue = redirectClipboard;
-                settings.AuthenticationLevel.EnumValue = RdpAuthenticationLevel.NoServerAuthentication;
-                settings.BitmapPersistence.EnumValue = RdpBitmapPersistence.Disabled;
+                settings.RdpUsername.StringValue = credentials.UserName;
+                settings.RdpPassword.Value = credentials.SecurePassword;
+                settings.RdpConnectionBar.EnumValue = connectionBarState;
+                settings.RdpDesktopSize.EnumValue = desktopSize;
+                settings.RdpAudioMode.EnumValue = audioMode;
+                settings.RdpRedirectClipboard.EnumValue = redirectClipboard;
+                settings.RdpAuthenticationLevel.EnumValue = RdpAuthenticationLevel.NoServerAuthentication;
+                settings.RdpBitmapPersistence.EnumValue = RdpBitmapPersistence.Disabled;
 
                 var rdpService = new RemoteDesktopSessionBroker(this.serviceProvider);
                 var session = rdpService.Connect(
@@ -233,11 +233,11 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Test.Views.RemoteDesktop
                 var settings = InstanceConnectionSettings.CreateNew(
                     locator.ProjectId,
                     locator.Name);
-                settings.Username.StringValue = credentials.UserName;
-                settings.Password.Value = credentials.SecurePassword;
-                settings.AuthenticationLevel.EnumValue = RdpAuthenticationLevel.NoServerAuthentication;
-                settings.BitmapPersistence.EnumValue = RdpBitmapPersistence.Disabled;
-                settings.DesktopSize.EnumValue = RdpDesktopSize.ClientSize;
+                settings.RdpUsername.StringValue = credentials.UserName;
+                settings.RdpPassword.Value = credentials.SecurePassword;
+                settings.RdpAuthenticationLevel.EnumValue = RdpAuthenticationLevel.NoServerAuthentication;
+                settings.RdpBitmapPersistence.EnumValue = RdpBitmapPersistence.Disabled;
+                settings.RdpDesktopSize.EnumValue = RdpDesktopSize.ClientSize;
 
                 var rdpService = new RemoteDesktopSessionBroker(this.serviceProvider);
                 var session = (RemoteDesktopPane)rdpService.Connect(
@@ -295,8 +295,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Test.Views.RemoteDesktop
                 var settings = InstanceConnectionSettings.CreateNew(
                     locator.ProjectId,
                     locator.Name);
-                settings.Username.StringValue = credentials.UserName;
-                settings.Password.Value = credentials.SecurePassword;
+                settings.RdpUsername.StringValue = credentials.UserName;
+                settings.RdpPassword.Value = credentials.SecurePassword;
 
                 // Connect
                 var rdpService = new RemoteDesktopSessionBroker(this.serviceProvider);

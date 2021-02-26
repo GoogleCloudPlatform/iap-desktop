@@ -170,7 +170,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Views.RemoteDesktop
             using (ApplicationTraceSources.Default.TraceMethod().WithParameters(
                 server,
                 port,
-                settings.ConnectionTimeout))
+                settings.RdpConnectionTimeout))
             {
                 // NB. The initialization needs to happen after the pane is shown, otherwise
                 // an error happens indicating that the control does not have a Window handle.
@@ -185,11 +185,11 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Views.RemoteDesktop
                 // Basic connection settings.
                 //
                 this.rdpClient.Server = server;
-                this.rdpClient.Domain = settings.Domain.StringValue;
-                this.rdpClient.UserName = settings.Username.StringValue;
+                this.rdpClient.Domain = settings.RdpDomain.StringValue;
+                this.rdpClient.UserName = settings.RdpUsername.StringValue;
                 advancedSettings.RDPPort = port;
                 advancedSettings.ClearTextPassword =
-                    settings.Password.ClearTextValue ?? string.Empty;
+                    settings.RdpPassword.ClearTextValue ?? string.Empty;
                 nonScriptable.AllowCredentialSaving = false;
 
                 //
@@ -199,7 +199,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Views.RemoteDesktop
                 nonScriptable.PromptForCredentials = false;
                 nonScriptable.NegotiateSecurityLayer = true;
 
-                switch (settings.AuthenticationLevel.EnumValue)
+                switch (settings.RdpAuthenticationLevel.EnumValue)
                 {
                     case RdpAuthenticationLevel.NoServerAuthentication:
                         advancedSettings.AuthenticationLevel = 0;
@@ -215,7 +215,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Views.RemoteDesktop
                 }
 
                 nonScriptable.AllowPromptingForCredentials =
-                    settings.UserAuthenticationBehavior.EnumValue == RdpUserAuthenticationBehavior.PromptOnFailure;
+                    settings.RdpUserAuthenticationBehavior.EnumValue == RdpUserAuthenticationBehavior.PromptOnFailure;
 
                 //
                 // Advanced connection settings.
@@ -230,17 +230,17 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Views.RemoteDesktop
                 // about twice the configured timeout before sending a 
                 // OnDisconnected event.
                 //
-                advancedSettings.singleConnectionTimeout = settings.ConnectionTimeout.IntValue;
-                advancedSettings.overallConnectionTimeout = settings.ConnectionTimeout.IntValue;
+                advancedSettings.singleConnectionTimeout = settings.RdpConnectionTimeout.IntValue;
+                advancedSettings.overallConnectionTimeout = settings.RdpConnectionTimeout.IntValue;
 
                 //
                 // Behavior settings.
                 //
                 advancedSettings.DisplayConnectionBar =
-                    (settings.ConnectionBar.EnumValue != RdpConnectionBarState.Off);
+                    (settings.RdpConnectionBar.EnumValue != RdpConnectionBarState.Off);
                 advancedSettings.ConnectionBarShowMinimizeButton = false;
                 advancedSettings.PinConnectionBar =
-                    (settings.ConnectionBar.EnumValue == RdpConnectionBarState.Pinned);
+                    (settings.RdpConnectionBar.EnumValue == RdpConnectionBarState.Pinned);
                 nonScriptable.ConnectionBarText = this.Instance.Name;
                 advancedSettings.EnableWindowsKey = 1;
 
@@ -253,9 +253,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Views.RemoteDesktop
                 // Local resources settings.
                 //
                 advancedSettings.RedirectClipboard =
-                    settings.RedirectClipboard.EnumValue == RdpRedirectClipboard.Enabled;
+                    settings.RdpRedirectClipboard.EnumValue == RdpRedirectClipboard.Enabled;
 
-                switch (settings.AudioMode.EnumValue)
+                switch (settings.RdpAudioMode.EnumValue)
                 {
                     case RdpAudioMode.PlayLocally:
                         securedSettings2.AudioRedirectionMode = 0;
@@ -273,7 +273,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Views.RemoteDesktop
                 //
                 this.rdpClient.FullScreen = false;
 
-                switch (settings.ColorDepth.EnumValue)
+                switch (settings.RdpColorDepth.EnumValue)
                 {
                     case RdpColorDepth.HighColor:
                         this.rdpClient.ColorDepth = 16;
@@ -286,7 +286,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Views.RemoteDesktop
                         break;
                 }
 
-                switch (settings.DesktopSize.EnumValue)
+                switch (settings.RdpDesktopSize.EnumValue)
                 {
                     case RdpDesktopSize.ScreenSize:
                         var screenSize = Screen.GetBounds(this);
@@ -308,7 +308,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Views.RemoteDesktop
                         break;
                 }
 
-                switch (settings.BitmapPersistence.EnumValue)
+                switch (settings.RdpBitmapPersistence.EnumValue)
                 {
                     case RdpBitmapPersistence.Disabled:
                         advancedSettings.BitmapPersistence = 0;

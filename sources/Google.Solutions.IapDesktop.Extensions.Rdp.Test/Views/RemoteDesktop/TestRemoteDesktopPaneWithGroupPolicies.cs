@@ -53,11 +53,11 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Test.Views.RemoteDesktop
                     CancellationToken.None);
 
                 var settings = InstanceConnectionSettings.CreateNew(vmInstanceReference);
-                settings.Username.Value = credentials.UserName;
-                settings.Password.Value = credentials.SecurePassword;
-                settings.AuthenticationLevel.Value = RdpAuthenticationLevel.NoServerAuthentication;
-                settings.BitmapPersistence.Value = RdpBitmapPersistence.Disabled;
-                settings.DesktopSize.Value = RdpDesktopSize.ClientSize;
+                settings.RdpUsername.Value = credentials.UserName;
+                settings.RdpPassword.Value = credentials.SecurePassword;
+                settings.RdpAuthenticationLevel.Value = RdpAuthenticationLevel.NoServerAuthentication;
+                settings.RdpBitmapPersistence.Value = RdpBitmapPersistence.Disabled;
+                settings.RdpDesktopSize.Value = RdpDesktopSize.ClientSize;
 
                 var rdpService = new RemoteDesktopSessionBroker(this.serviceProvider);
                 return rdpService.Connect(

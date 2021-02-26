@@ -62,12 +62,12 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Views.Credentials
             string username;
             if (silent)
             {
-                username = string.IsNullOrEmpty(settings.Username.StringValue)
+                username = string.IsNullOrEmpty(settings.RdpUsername.StringValue)
                     ? this.serviceProvider
                         .GetService<IAuthorizationAdapter>()
                         .Authorization
                         .SuggestWindowsUsername()
-                    : settings.Username.StringValue;
+                    : settings.RdpUsername.StringValue;
             }
             else
             {
@@ -75,12 +75,12 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Views.Credentials
                     .GetService<IGenerateCredentialsDialog>()
                     .PromptForUsername(
                         owner,
-                        string.IsNullOrEmpty(settings.Username.StringValue)
+                        string.IsNullOrEmpty(settings.RdpUsername.StringValue)
                             ? this.serviceProvider
                                 .GetService<IAuthorizationAdapter>()
                                 .Authorization
                                 .SuggestWindowsUsername()
-                            : settings.Username.StringValue);
+                            : settings.RdpUsername.StringValue);
                 if (username == null)
                 {
                     // Aborted.
@@ -108,11 +108,11 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Views.Credentials
                 }
 
                 // Save credentials.
-                settings.Username.StringValue = credentials.UserName;
-                settings.Password.ClearTextValue = credentials.Password;
+                settings.RdpUsername.StringValue = credentials.UserName;
+                settings.RdpPassword.ClearTextValue = credentials.Password;
 
                 // NB. The computer might be joined to a domain, therefore force a local logon.
-                settings.Domain.StringValue = ".";
+                settings.RdpDomain.StringValue = ".";
             }
         }
 

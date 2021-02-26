@@ -76,19 +76,19 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Test.Services.ConnectionSet
             var settings = this.repository.GetProjectSettings("pro-1");
 
             Assert.AreEqual("pro-1", settings.ProjectId);
-            Assert.IsTrue(settings.Username.IsDefault);
-            Assert.IsTrue(settings.Password.IsDefault);
-            Assert.IsTrue(settings.Domain.IsDefault);
-            Assert.IsTrue(settings.ConnectionBar.IsDefault);
-            Assert.IsTrue(settings.DesktopSize.IsDefault);
-            Assert.IsTrue(settings.AuthenticationLevel.IsDefault);
-            Assert.IsTrue(settings.ColorDepth.IsDefault);
-            Assert.IsTrue(settings.AudioMode.IsDefault);
-            Assert.IsTrue(settings.RedirectClipboard.IsDefault);
-            Assert.IsTrue(settings.UserAuthenticationBehavior.IsDefault);
-            Assert.IsTrue(settings.BitmapPersistence.IsDefault);
-            Assert.IsTrue(settings.ConnectionTimeout.IsDefault);
-            Assert.IsTrue(settings.CredentialGenerationBehavior.IsDefault);
+            Assert.IsTrue(settings.RdpUsername.IsDefault);
+            Assert.IsTrue(settings.RdpPassword.IsDefault);
+            Assert.IsTrue(settings.RdpDomain.IsDefault);
+            Assert.IsTrue(settings.RdpConnectionBar.IsDefault);
+            Assert.IsTrue(settings.RdpDesktopSize.IsDefault);
+            Assert.IsTrue(settings.RdpAuthenticationLevel.IsDefault);
+            Assert.IsTrue(settings.RdpColorDepth.IsDefault);
+            Assert.IsTrue(settings.RdpAudioMode.IsDefault);
+            Assert.IsTrue(settings.RdpRedirectClipboard.IsDefault);
+            Assert.IsTrue(settings.RdpUserAuthenticationBehavior.IsDefault);
+            Assert.IsTrue(settings.RdpBitmapPersistence.IsDefault);
+            Assert.IsTrue(settings.RdpConnectionTimeout.IsDefault);
+            Assert.IsTrue(settings.RdpCredentialGenerationBehavior.IsDefault);
         }
 
         [Test]
@@ -96,14 +96,14 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Test.Services.ConnectionSet
         {
             this.projectRepository.AddProjectAsync("pro-1").Wait();
             var originalSettings = this.repository.GetProjectSettings("pro-1");
-            originalSettings.Username.Value = "user";
+            originalSettings.RdpUsername.Value = "user";
 
             this.repository.SetProjectSettings(originalSettings);
 
             var settings = this.repository.GetProjectSettings(originalSettings.ProjectId);
 
             Assert.AreEqual(originalSettings.ProjectId, settings.ProjectId);
-            Assert.AreEqual(originalSettings.Username.Value, settings.Username.Value);
+            Assert.AreEqual(originalSettings.RdpUsername.Value, settings.RdpUsername.Value);
         }
 
         [Test]
@@ -111,17 +111,17 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Test.Services.ConnectionSet
         {
             this.projectRepository.AddProjectAsync("pro-1").Wait();
             var originalSettings = this.repository.GetProjectSettings("pro-1");
-            originalSettings.Username.Value = "user";
+            originalSettings.RdpUsername.Value = "user";
 
             this.repository.SetProjectSettings(originalSettings);
 
-            originalSettings.Username.Value = "new-user";
+            originalSettings.RdpUsername.Value = "new-user";
             this.repository.SetProjectSettings(originalSettings);
 
             var settings = this.repository.GetProjectSettings(originalSettings.ProjectId);
 
             Assert.AreEqual(originalSettings.ProjectId, settings.ProjectId);
-            Assert.AreEqual(originalSettings.Username.Value, settings.Username.Value);
+            Assert.AreEqual(originalSettings.RdpUsername.Value, settings.RdpUsername.Value);
         }
 
         [Test]
@@ -129,7 +129,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Test.Services.ConnectionSet
         {
             this.projectRepository.AddProjectAsync("pro-1").Wait();
             var originalSettings = this.repository.GetProjectSettings("pro-1");
-            originalSettings.Username.Value = "user";
+            originalSettings.RdpUsername.Value = "user";
             this.repository.SetProjectSettings(originalSettings);
 
             this.projectRepository.DeleteProjectAsync(originalSettings.ProjectId).Wait();
@@ -161,19 +161,19 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Test.Services.ConnectionSet
 
             Assert.AreEqual("pro-1", settings.ProjectId);
             Assert.AreEqual("zone-1", settings.ZoneId);
-            Assert.IsTrue(settings.Username.IsDefault);
-            Assert.IsTrue(settings.Password.IsDefault);
-            Assert.IsTrue(settings.Domain.IsDefault);
-            Assert.IsTrue(settings.ConnectionBar.IsDefault);
-            Assert.IsTrue(settings.DesktopSize.IsDefault);
-            Assert.IsTrue(settings.AuthenticationLevel.IsDefault);
-            Assert.IsTrue(settings.ColorDepth.IsDefault);
-            Assert.IsTrue(settings.AudioMode.IsDefault);
-            Assert.IsTrue(settings.RedirectClipboard.IsDefault);
-            Assert.IsTrue(settings.UserAuthenticationBehavior.IsDefault);
-            Assert.IsTrue(settings.BitmapPersistence.IsDefault);
-            Assert.IsTrue(settings.ConnectionTimeout.IsDefault);
-            Assert.IsTrue(settings.CredentialGenerationBehavior.IsDefault);
+            Assert.IsTrue(settings.RdpUsername.IsDefault);
+            Assert.IsTrue(settings.RdpPassword.IsDefault);
+            Assert.IsTrue(settings.RdpDomain.IsDefault);
+            Assert.IsTrue(settings.RdpConnectionBar.IsDefault);
+            Assert.IsTrue(settings.RdpDesktopSize.IsDefault);
+            Assert.IsTrue(settings.RdpAuthenticationLevel.IsDefault);
+            Assert.IsTrue(settings.RdpColorDepth.IsDefault);
+            Assert.IsTrue(settings.RdpAudioMode.IsDefault);
+            Assert.IsTrue(settings.RdpRedirectClipboard.IsDefault);
+            Assert.IsTrue(settings.RdpUserAuthenticationBehavior.IsDefault);
+            Assert.IsTrue(settings.RdpBitmapPersistence.IsDefault);
+            Assert.IsTrue(settings.RdpConnectionTimeout.IsDefault);
+            Assert.IsTrue(settings.RdpCredentialGenerationBehavior.IsDefault);
         }
 
         [Test]
@@ -181,11 +181,11 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Test.Services.ConnectionSet
         {
             this.projectRepository.AddProjectAsync("pro-1").Wait();
             var originalSettings = this.repository.GetZoneSettings("pro-1", "zone-1");
-            originalSettings.Username.Value = "user-1";
+            originalSettings.RdpUsername.Value = "user-1";
 
             this.repository.SetZoneSettings(originalSettings);
 
-            Assert.AreEqual("user-1", this.repository.GetZoneSettings("pro-1", "zone-1").Username.Value);
+            Assert.AreEqual("user-1", this.repository.GetZoneSettings("pro-1", "zone-1").RdpUsername.Value);
         }
 
         [Test]
@@ -193,7 +193,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Test.Services.ConnectionSet
         {
             this.projectRepository.AddProjectAsync("pro-1").Wait();
             var originalSettings = this.repository.GetZoneSettings("pro-1", "zone-1");
-            originalSettings.Username.Value = "user-1";
+            originalSettings.RdpUsername.Value = "user-1";
             this.repository.SetZoneSettings(originalSettings);
 
             projectRepository.DeleteProjectAsync("pro-1").Wait();
@@ -225,19 +225,19 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Test.Services.ConnectionSet
 
             Assert.AreEqual("pro-1", settings.ProjectId);
             Assert.AreEqual("instance-1", settings.InstanceName);
-            Assert.IsTrue(settings.Username.IsDefault);
-            Assert.IsTrue(settings.Password.IsDefault);
-            Assert.IsTrue(settings.Domain.IsDefault);
-            Assert.IsTrue(settings.ConnectionBar.IsDefault);
-            Assert.IsTrue(settings.DesktopSize.IsDefault);
-            Assert.IsTrue(settings.AuthenticationLevel.IsDefault);
-            Assert.IsTrue(settings.ColorDepth.IsDefault);
-            Assert.IsTrue(settings.AudioMode.IsDefault);
-            Assert.IsTrue(settings.RedirectClipboard.IsDefault);
-            Assert.IsTrue(settings.UserAuthenticationBehavior.IsDefault);
-            Assert.IsTrue(settings.BitmapPersistence.IsDefault);
-            Assert.IsTrue(settings.ConnectionTimeout.IsDefault);
-            Assert.IsTrue(settings.CredentialGenerationBehavior.IsDefault);
+            Assert.IsTrue(settings.RdpUsername.IsDefault);
+            Assert.IsTrue(settings.RdpPassword.IsDefault);
+            Assert.IsTrue(settings.RdpDomain.IsDefault);
+            Assert.IsTrue(settings.RdpConnectionBar.IsDefault);
+            Assert.IsTrue(settings.RdpDesktopSize.IsDefault);
+            Assert.IsTrue(settings.RdpAuthenticationLevel.IsDefault);
+            Assert.IsTrue(settings.RdpColorDepth.IsDefault);
+            Assert.IsTrue(settings.RdpAudioMode.IsDefault);
+            Assert.IsTrue(settings.RdpRedirectClipboard.IsDefault);
+            Assert.IsTrue(settings.RdpUserAuthenticationBehavior.IsDefault);
+            Assert.IsTrue(settings.RdpBitmapPersistence.IsDefault);
+            Assert.IsTrue(settings.RdpConnectionTimeout.IsDefault);
+            Assert.IsTrue(settings.RdpCredentialGenerationBehavior.IsDefault);
         }
 
         [Test]
@@ -245,26 +245,26 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Test.Services.ConnectionSet
         {
             this.projectRepository.AddProjectAsync("pro-1").Wait();
             var originalSettings = this.repository.GetVmInstanceSettings("pro-1", "vm-1");
-            originalSettings.Username.Value = "user-1";
-            originalSettings.ConnectionBar.Value = RdpConnectionBarState.Pinned;
-            originalSettings.DesktopSize.Value = RdpDesktopSize.ScreenSize;
-            originalSettings.AuthenticationLevel.Value = RdpAuthenticationLevel.RequireServerAuthentication;
-            originalSettings.ColorDepth.Value = RdpColorDepth.DeepColor;
-            originalSettings.AudioMode.Value = RdpAudioMode.DoNotPlay;
-            originalSettings.RedirectClipboard.Value = RdpRedirectClipboard.Enabled;
+            originalSettings.RdpUsername.Value = "user-1";
+            originalSettings.RdpConnectionBar.Value = RdpConnectionBarState.Pinned;
+            originalSettings.RdpDesktopSize.Value = RdpDesktopSize.ScreenSize;
+            originalSettings.RdpAuthenticationLevel.Value = RdpAuthenticationLevel.RequireServerAuthentication;
+            originalSettings.RdpColorDepth.Value = RdpColorDepth.DeepColor;
+            originalSettings.RdpAudioMode.Value = RdpAudioMode.DoNotPlay;
+            originalSettings.RdpRedirectClipboard.Value = RdpRedirectClipboard.Enabled;
 
             this.repository.SetVmInstanceSettings(originalSettings);
 
 
             var settings = this.repository.GetVmInstanceSettings("pro-1", "vm-1");
 
-            Assert.AreEqual("user-1", settings.Username.Value);
-            Assert.AreEqual(RdpConnectionBarState.Pinned, settings.ConnectionBar.Value);
-            Assert.AreEqual(RdpDesktopSize.ScreenSize, settings.DesktopSize.Value);
-            Assert.AreEqual(RdpAuthenticationLevel.RequireServerAuthentication, settings.AuthenticationLevel.Value);
-            Assert.AreEqual(RdpColorDepth.DeepColor, settings.ColorDepth.Value);
-            Assert.AreEqual(RdpAudioMode.DoNotPlay, settings.AudioMode.Value);
-            Assert.AreEqual(RdpRedirectClipboard.Enabled, settings.RedirectClipboard.Value);
+            Assert.AreEqual("user-1", settings.RdpUsername.Value);
+            Assert.AreEqual(RdpConnectionBarState.Pinned, settings.RdpConnectionBar.Value);
+            Assert.AreEqual(RdpDesktopSize.ScreenSize, settings.RdpDesktopSize.Value);
+            Assert.AreEqual(RdpAuthenticationLevel.RequireServerAuthentication, settings.RdpAuthenticationLevel.Value);
+            Assert.AreEqual(RdpColorDepth.DeepColor, settings.RdpColorDepth.Value);
+            Assert.AreEqual(RdpAudioMode.DoNotPlay, settings.RdpAudioMode.Value);
+            Assert.AreEqual(RdpRedirectClipboard.Enabled, settings.RdpRedirectClipboard.Value);
         }
 
         [Test]
@@ -272,7 +272,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Test.Services.ConnectionSet
         {
             this.projectRepository.AddProjectAsync("pro-1").Wait();
             var originalSettings = this.repository.GetVmInstanceSettings("pro-1", "vm-1");
-            originalSettings.Username.Value = "user-1";
+            originalSettings.RdpUsername.Value = "user-1";
             this.repository.SetVmInstanceSettings(originalSettings);
 
             projectRepository.DeleteProjectAsync("pro-1").Wait();
