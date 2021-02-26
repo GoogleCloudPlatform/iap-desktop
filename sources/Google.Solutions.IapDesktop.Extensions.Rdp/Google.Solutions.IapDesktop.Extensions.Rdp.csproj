@@ -86,7 +86,7 @@
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
     <Compile Include="Services\Connection\ConnectionSettingsService.cs" />
-    <Compile Include="Services\Connection\IapRdpConnectionService.cs" />
+    <Compile Include="Services\Rdp\RdpConnectionService.cs" />
     <Compile Include="Services\Connection\ConnectionSettings.cs" />
     <Compile Include="Services\Connection\ConnectionSettingsRepository.cs" />
     <Compile Include="Services\Tunnel\SameProcessRelayPolicy.cs" />

@@ -27,6 +27,7 @@ using Google.Solutions.IapDesktop.Application.Views.Dialog;
 using Google.Solutions.IapDesktop.Application.Views.ProjectExplorer;
 using Google.Solutions.IapDesktop.Extensions.Rdp.Properties;
 using Google.Solutions.IapDesktop.Extensions.Rdp.Services.Connection;
+using Google.Solutions.IapDesktop.Extensions.Rdp.Services.Rdp;
 using Google.Solutions.IapDesktop.Extensions.Rdp.Views.ConnectionSettings;
 using Google.Solutions.IapDesktop.Extensions.Rdp.Views.Credentials;
 using Google.Solutions.IapDesktop.Extensions.Rdp.Views.RemoteDesktop;
@@ -127,7 +128,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Services
                 if (node is IProjectExplorerVmInstanceNode vmNode)
                 {
                     await this.serviceProvider
-                        .GetService<IapRdpConnectionService>()
+                        .GetService<IRdpConnectionService>()
                         .ActivateOrConnectInstanceAsync(
                             vmNode,
                             allowPersistentCredentials)
@@ -168,7 +169,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Services
 
             public Task ActivateOrConnectInstanceAsync(IapRdpUrl url)
                 => this.serviceProvider
-                    .GetService<IapRdpConnectionService>()
+                    .GetService<RdpConnectionService>()
                     .ActivateOrConnectInstanceAsync(url);
         }
 

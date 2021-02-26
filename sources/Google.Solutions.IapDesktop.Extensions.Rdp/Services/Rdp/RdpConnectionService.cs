@@ -26,6 +26,7 @@ using Google.Solutions.IapDesktop.Application.Util;
 using Google.Solutions.IapDesktop.Application.Views;
 using Google.Solutions.IapDesktop.Application.Views.Dialog;
 using Google.Solutions.IapDesktop.Application.Views.ProjectExplorer;
+using Google.Solutions.IapDesktop.Extensions.Rdp.Services.Connection;
 using Google.Solutions.IapDesktop.Extensions.Rdp.Services.Tunnel;
 using Google.Solutions.IapDesktop.Extensions.Rdp.Views.Credentials;
 using Google.Solutions.IapDesktop.Extensions.Rdp.Views.RemoteDesktop;
@@ -35,10 +36,17 @@ using System;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-namespace Google.Solutions.IapDesktop.Extensions.Rdp.Services.Connection
+namespace Google.Solutions.IapDesktop.Extensions.Rdp.Services.Rdp
 {
-    [Service]
-    public class IapRdpConnectionService
+    public interface IRdpConnectionService
+    {
+        Task ActivateOrConnectInstanceAsync(
+            IProjectExplorerVmInstanceNode vmNode,
+            bool allowPersistentCredentials);
+    }
+
+    [Service(typeof(IRdpConnectionService))]
+    public class RdpConnectionService : IRdpConnectionService
     {
         private readonly IWin32Window window;
         private readonly IJobService jobService;
@@ -48,7 +56,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Services.Connection
         private readonly IProjectExplorer projectExplorer;
         private readonly IConnectionSettingsService settingsService;
 
-        public IapRdpConnectionService(IServiceProvider serviceProvider)
+        public RdpConnectionService(IServiceProvider serviceProvider)
         {
             this.jobService = serviceProvider.GetService<IJobService>();
             this.remoteDesktopService = serviceProvider.GetService<IRemoteDesktopSessionBroker>();

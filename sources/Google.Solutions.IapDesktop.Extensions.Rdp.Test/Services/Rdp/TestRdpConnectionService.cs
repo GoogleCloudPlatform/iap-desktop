@@ -29,6 +29,7 @@ using Google.Solutions.IapDesktop.Application.Util;
 using Google.Solutions.IapDesktop.Application.Views;
 using Google.Solutions.IapDesktop.Application.Views.ProjectExplorer;
 using Google.Solutions.IapDesktop.Extensions.Rdp.Services.Connection;
+using Google.Solutions.IapDesktop.Extensions.Rdp.Services.Rdp;
 using Google.Solutions.IapDesktop.Extensions.Rdp.Services.Tunnel;
 using Google.Solutions.IapDesktop.Extensions.Rdp.Views.ConnectionSettings;
 using Google.Solutions.IapDesktop.Extensions.Rdp.Views.Credentials;
@@ -40,10 +41,10 @@ using System;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-namespace Google.Solutions.IapDesktop.Extensions.Rdp.Test.Services.Connection
+namespace Google.Solutions.IapDesktop.Extensions.Rdp.Test.Services.Rdp
 {
     [TestFixture]
-    public class TestIapRdpConnectionService : CommonFixtureBase
+    public class TestRdpConnectionService : CommonFixtureBase
     {
         private readonly ServiceRegistry serviceRegistry = new ServiceRegistry();
 
@@ -102,7 +103,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Test.Services.Connection
 
             this.serviceRegistry.AddSingleton<IRemoteDesktopSessionBroker>(remoteDesktopService.Object);
 
-            var service = new IapRdpConnectionService(this.serviceRegistry);
+            var service = new RdpConnectionService(this.serviceRegistry);
             await service.ActivateOrConnectInstanceAsync(vmNode.Object, false);
 
             remoteDesktopService.Verify(s => s.Connect(
@@ -147,7 +148,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Test.Services.Connection
 
             this.serviceRegistry.AddSingleton<IRemoteDesktopSessionBroker>(remoteDesktopService.Object);
 
-            var service = new IapRdpConnectionService(this.serviceRegistry);
+            var service = new RdpConnectionService(this.serviceRegistry);
             await service.ActivateOrConnectInstanceAsync(vmNode.Object, true);
 
             remoteDesktopService.Verify(s => s.Connect(
@@ -189,7 +190,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Test.Services.Connection
 
             this.serviceRegistry.AddSingleton<IRemoteDesktopSessionBroker>(remoteDesktopService.Object);
 
-            var service = new IapRdpConnectionService(this.serviceRegistry);
+            var service = new RdpConnectionService(this.serviceRegistry);
             await service.ActivateOrConnectInstanceAsync(
                 IapRdpUrl.FromString("iap-rdp:///project/us-central-1/instance"));
 
@@ -226,7 +227,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Test.Services.Connection
 
             this.serviceRegistry.AddSingleton<IRemoteDesktopSessionBroker>(remoteDesktopService.Object);
 
-            var service = new IapRdpConnectionService(this.serviceRegistry);
+            var service = new RdpConnectionService(this.serviceRegistry);
             await service.ActivateOrConnectInstanceAsync(
                 IapRdpUrl.FromString("iap-rdp:///project/us-central-1/instance?username=john%20doe"));
 
@@ -276,7 +277,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Test.Services.Connection
 
             this.serviceRegistry.AddSingleton<IRemoteDesktopSessionBroker>(remoteDesktopService.Object);
 
-            var service = new IapRdpConnectionService(this.serviceRegistry);
+            var service = new RdpConnectionService(this.serviceRegistry);
             await service.ActivateOrConnectInstanceAsync(
                 IapRdpUrl.FromString("iap-rdp:///project/us-central-1/instance-1?username=john%20doe"));
 

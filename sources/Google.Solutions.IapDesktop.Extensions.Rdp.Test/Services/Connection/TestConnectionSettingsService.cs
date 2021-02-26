@@ -33,7 +33,7 @@ using System;
 namespace Google.Solutions.IapDesktop.Extensions.Rdp.Test.Services.Connection
 {
     [TestFixture]
-    public class TestRdpSettingsService : CommonFixtureBase
+    public class TestConnectionSettingsService : CommonFixtureBase
     {
         private const string SampleProjectId = "project-1";
         private const string TestKeyPath = @"Software\Google\__Test";
