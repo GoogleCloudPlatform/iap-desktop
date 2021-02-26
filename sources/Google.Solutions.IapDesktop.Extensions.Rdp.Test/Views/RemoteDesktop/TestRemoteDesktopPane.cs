@@ -257,5 +257,67 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Test.Views.RemoteDesktop
                 Assert.IsNull(this.ExceptionShown);
             }
         }
+
+        //---------------------------------------------------------------------
+        // TryGetExistingPane, TryGetActivePane
+        //---------------------------------------------------------------------
+
+        [Test]
+        public void WhenNotConnected_ThenTryGetExistingPaneReturnsNull()
+        {
+            var broker = new RemoteDesktopSessionBroker(this.serviceProvider);
+
+            Assert.IsNull(RemoteDesktopPane.TryGetExistingPane(this.mainForm, SampleLocator));
+        }
+
+        [Test]
+        public void WhenNotConnected_ThenTryGetActivePaneReturnsNull()
+        {
+            Assert.IsNull(RemoteDesktopPane.TryGetActivePane(this.mainForm));
+        }
+
+        [Test]
+        public async Task WhenConnected_ThenGetActivePaneReturnsPane(
+            [WindowsInstance(MachineType = MachineTypeForRdp)] ResourceTask<InstanceLocator> testInstance,
+            [Credential(Role = PredefinedRole.IapTunnelUser)] ResourceTask<ICredential> credential)
+        {
+            var locator = await testInstance;
+
+            using (var tunnel = RdpTunnel.Create(
+                locator,
+                await credential))
+            using (var gceAdapter = new ComputeEngineAdapter(this.serviceProvider.GetService<IAuthorizationAdapter>()))
+            {
+                var credentials = await gceAdapter.ResetWindowsUserAsync(
+                    locator,
+                    CreateRandomUsername(),
+                    TimeSpan.FromSeconds(60),
+                    CancellationToken.None);
+
+                var settings = RdpInstanceSettings.CreateNew(
+                    locator.ProjectId,
+                    locator.Name);
+                settings.Username.StringValue = credentials.UserName;
+                settings.Password.Value = credentials.SecurePassword;
+
+                // Connect
+                var rdpService = new RemoteDesktopSessionBroker(this.serviceProvider);
+                IRemoteDesktopSession session = null;
+                AssertRaisesEvent<SessionStartedEvent>(
+                    () => session = (RemoteDesktopPane)rdpService.Connect(
+                        locator,
+                        "localhost",
+                        (ushort)tunnel.LocalPort,
+                        settings));
+
+                Assert.IsNull(this.ExceptionShown);
+
+                Assert.AreSame(session, RemoteDesktopPane.TryGetActivePane(this.mainForm));
+                Assert.AreSame(session, RemoteDesktopPane.TryGetExistingPane(this.mainForm, locator));
+
+                AssertRaisesEvent<SessionEndedEvent>(
+                    () => session.Close());
+            }
+        }
     }
 }

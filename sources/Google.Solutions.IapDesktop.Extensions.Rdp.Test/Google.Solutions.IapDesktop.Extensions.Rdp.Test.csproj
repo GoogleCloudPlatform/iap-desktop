@@ -103,7 +103,6 @@
     <Compile Include="Views\Credentials\TestAuthorizationExtensions.cs" />
     <Compile Include="Views\Credentials\TestCredentialPrompt.cs" />
     <Compile Include="Views\Credentials\TestCredentialsService.cs" />
-    <Compile Include="Views\RemoteDesktop\TestRemoteDesktopSessionBroker.cs" />
     <Compile Include="Views\RemoteDesktop\TestRemoteDesktopPane.cs" />
     <Compile Include="Views\RemoteDesktop\TestRemoteDesktopPaneWithGroupPolicies.cs" />
     <Compile Include="Views\TunnelsViewer\TestTunnelsViewModel.cs" />
