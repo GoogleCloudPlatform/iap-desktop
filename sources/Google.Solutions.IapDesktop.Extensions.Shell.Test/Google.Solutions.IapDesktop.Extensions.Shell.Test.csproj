@@ -131,7 +131,7 @@
       <Project>{842b003e-6eeb-429d-a3a1-53b4e642e83b}</Project>
       <Name>Google.Solutions.IapDesktop.Application</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Google.Solutions.IapDesktop.Extensions.Rdp\Google.Solutions.IapDesktop.Extensions.Shell.csproj">
+    <ProjectReference Include="..\Google.Solutions.IapDesktop.Extensions.Shell\Google.Solutions.IapDesktop.Extensions.Shell.csproj">
       <Project>{b5f53a65-1b67-4ca1-9ab0-a81799c0c215}</Project>
       <Name>Google.Solutions.IapDesktop.Extensions.Shell</Name>
     </ProjectReference>
