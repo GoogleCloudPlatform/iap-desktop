@@ -24,7 +24,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Net;
 
-namespace Google.Solutions.IapDesktop.Extensions.Rdp.Services.Tunnel
+namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Tunnel
 {
     internal class SameProcessRelayPolicy : ISshRelayPolicy
     {

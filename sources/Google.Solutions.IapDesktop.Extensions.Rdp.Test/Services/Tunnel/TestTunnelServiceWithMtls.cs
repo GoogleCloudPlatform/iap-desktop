@@ -26,7 +26,7 @@ using Google.Solutions.Common.Test.Integration;
 using Google.Solutions.Common.Util;
 using Google.Solutions.IapDesktop.Application.Services.Settings;
 using Google.Solutions.IapDesktop.Application.Test;
-using Google.Solutions.IapDesktop.Extensions.Rdp.Services.Tunnel;
+using Google.Solutions.IapDesktop.Extensions.Shell.Services.Tunnel;
 using Google.Solutions.IapTunneling.Iap;
 using Microsoft.Win32;
 using Newtonsoft.Json.Linq;
@@ -36,7 +36,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace Google.Solutions.IapDesktop.Extensions.Rdp.Test.Services.Tunnel
+namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Tunnel
 {
     [TestFixture]
     [Category("IntegrationTest")]

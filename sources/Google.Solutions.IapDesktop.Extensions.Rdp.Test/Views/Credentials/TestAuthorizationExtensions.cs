@@ -21,12 +21,12 @@
 
 using Google.Solutions.Common.Auth;
 using Google.Solutions.Common.Test;
-using Google.Solutions.IapDesktop.Extensions.Rdp.Views.Credentials;
+using Google.Solutions.IapDesktop.Extensions.Shell.Views.Credentials;
 using Moq;
 using NUnit.Framework;
 using System;
 
-namespace Google.Solutions.IapDesktop.Extensions.Rdp.Test.Views.Credentials
+namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.Credentials
 {
     [TestFixture]
     public class TestAuthorizationExtensions : CommonFixtureBase

@@ -19,11 +19,11 @@
 // under the License.
 //
 
-using Google.Solutions.IapDesktop.Extensions.Rdp.Services.Tunnel;
+using Google.Solutions.IapDesktop.Extensions.Shell.Services.Tunnel;
 using NUnit.Framework;
 using System.Linq;
 
-namespace Google.Solutions.IapDesktop.Extensions.Rdp.Test.Services.Tunnel
+namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Tunnel
 {
     [TestFixture]
     public class TestTcpTable

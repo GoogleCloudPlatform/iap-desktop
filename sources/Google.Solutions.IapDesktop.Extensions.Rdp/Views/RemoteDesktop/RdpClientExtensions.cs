@@ -23,7 +23,7 @@ using MSTSCLib;
 using System;
 using System.Windows.Forms;
 
-namespace Google.Solutions.IapDesktop.Extensions.Rdp.Views.RemoteDesktop
+namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.RemoteDesktop
 {
     internal static class RdpClientExtensions
     {

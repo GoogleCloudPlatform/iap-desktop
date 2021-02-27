@@ -23,11 +23,11 @@ using Google.Solutions.IapDesktop.Application.ObjectModel;
 using Google.Solutions.IapDesktop.Application.Settings;
 using Google.Solutions.IapDesktop.Application.Views.ProjectExplorer;
 using Google.Solutions.IapDesktop.Application.Views.Properties;
-using Google.Solutions.IapDesktop.Extensions.Rdp.Services.ConnectionSettings;
+using Google.Solutions.IapDesktop.Extensions.Shell.Services.ConnectionSettings;
 using System.Diagnostics;
 using System.Threading.Tasks;
 
-namespace Google.Solutions.IapDesktop.Extensions.Rdp.Views.ConnectionSettings
+namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.ConnectionSettings
 {
     internal class ConnectionSettingsViewModel : ViewModelBase, IPropertiesInspectorViewModel
     {

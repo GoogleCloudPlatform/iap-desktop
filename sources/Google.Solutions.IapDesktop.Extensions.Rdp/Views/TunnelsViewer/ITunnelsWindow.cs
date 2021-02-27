@@ -19,7 +19,7 @@
 // under the License.
 //
 
-namespace Google.Solutions.IapDesktop.Extensions.Rdp.Views.TunnelsViewer
+namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.TunnelsViewer
 {
     public interface ITunnelsWindow
     {

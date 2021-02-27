@@ -19,7 +19,7 @@
 // under the License.
 //
 
-namespace Google.Solutions.IapDesktop.Extensions.Rdp.Views.Credentials
+namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Credentials
 {
     partial class ShowCredentialsDialog
     {

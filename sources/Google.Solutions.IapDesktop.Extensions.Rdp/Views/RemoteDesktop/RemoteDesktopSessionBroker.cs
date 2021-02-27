@@ -23,10 +23,10 @@ using Google.Solutions.Common.Locator;
 using Google.Solutions.IapDesktop.Application.ObjectModel;
 using Google.Solutions.IapDesktop.Application.Services.Integration;
 using Google.Solutions.IapDesktop.Application.Views;
-using Google.Solutions.IapDesktop.Extensions.Rdp.Services.ConnectionSettings;
+using Google.Solutions.IapDesktop.Extensions.Shell.Services.ConnectionSettings;
 using System;
 
-namespace Google.Solutions.IapDesktop.Extensions.Rdp.Views.RemoteDesktop
+namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.RemoteDesktop
 {
     public interface IRemoteDesktopSession
     {

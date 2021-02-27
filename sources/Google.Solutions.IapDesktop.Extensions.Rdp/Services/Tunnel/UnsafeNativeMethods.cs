@@ -23,7 +23,7 @@ using Microsoft.Win32.SafeHandles;
 using System;
 using System.Runtime.InteropServices;
 
-namespace Google.Solutions.IapDesktop.Extensions.Rdp.Services.Tunnel
+namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Tunnel
 {
     internal static class UnsafeNativeMethods
     {

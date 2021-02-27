@@ -24,9 +24,9 @@ using Google.Solutions.Common.Test;
 using Google.Solutions.IapDesktop.Application.ObjectModel;
 using Google.Solutions.IapDesktop.Application.Test.ObjectModel;
 using Google.Solutions.IapDesktop.Application.Views.Dialog;
-using Google.Solutions.IapDesktop.Extensions.Rdp.Services.ConnectionSettings;
-using Google.Solutions.IapDesktop.Extensions.Rdp.Views.ConnectionSettings;
-using Google.Solutions.IapDesktop.Extensions.Rdp.Views.Credentials;
+using Google.Solutions.IapDesktop.Extensions.Shell.Services.ConnectionSettings;
+using Google.Solutions.IapDesktop.Extensions.Shell.Views.ConnectionSettings;
+using Google.Solutions.IapDesktop.Extensions.Shell.Views.Credentials;
 using Moq;
 using NUnit.Framework;
 using System;
@@ -34,7 +34,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-namespace Google.Solutions.IapDesktop.Extensions.Rdp.Test.Views.Credentials
+namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.Credentials
 {
     [TestFixture]
     public class TestCredentialPrompt : CommonFixtureBase

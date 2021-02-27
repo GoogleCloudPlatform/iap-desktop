@@ -19,7 +19,7 @@
 // under the License.
 //
 
-namespace Google.Solutions.IapDesktop.Extensions.Rdp.Views.RemoteDesktop
+namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.RemoteDesktop
 {
     partial class ShortcutsWindow
     {

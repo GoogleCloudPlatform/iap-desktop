@@ -26,10 +26,10 @@ using Google.Solutions.IapDesktop.Application.ObjectModel;
 using Google.Solutions.IapDesktop.Application.Services.Adapters;
 using Google.Solutions.IapDesktop.Application.Services.Integration;
 using Google.Solutions.IapDesktop.Application.Test.ObjectModel;
-using Google.Solutions.IapDesktop.Extensions.Rdp.Services.ConnectionSettings;
-using Google.Solutions.IapDesktop.Extensions.Rdp.Test.Services;
-using Google.Solutions.IapDesktop.Extensions.Rdp.Test.Services.ConnectionSettings;
-using Google.Solutions.IapDesktop.Extensions.Rdp.Views.Credentials;
+using Google.Solutions.IapDesktop.Extensions.Shell.Services.ConnectionSettings;
+using Google.Solutions.IapDesktop.Extensions.Shell.Test.Services;
+using Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.ConnectionSettings;
+using Google.Solutions.IapDesktop.Extensions.Shell.Views.Credentials;
 using Moq;
 using NUnit.Framework;
 using System.Net;
@@ -37,7 +37,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-namespace Google.Solutions.IapDesktop.Extensions.Rdp.Test.Views.Credentials
+namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.Credentials
 {
     [TestFixture]
     public class TestCredentialsService : CommonFixtureBase

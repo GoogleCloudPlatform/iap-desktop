@@ -21,7 +21,7 @@
 
 using Google.Solutions.IapDesktop.Application.Controls;
 
-namespace Google.Solutions.IapDesktop.Extensions.Rdp.Views.TunnelsViewer
+namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.TunnelsViewer
 {
     partial class TunnelsWindow
     {
@@ -56,7 +56,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Views.TunnelsViewer
             this.toolStrip = new System.Windows.Forms.ToolStrip();
             this.disconnectToolStripButton = new System.Windows.Forms.ToolStripButton();
             this.refreshToolStripButton = new System.Windows.Forms.ToolStripButton();
-            this.tunnelsList = new Google.Solutions.IapDesktop.Extensions.Rdp.Views.TunnelsViewer.TunnelsListView();
+            this.tunnelsList = new Google.Solutions.IapDesktop.Extensions.Shell.Views.TunnelsViewer.TunnelsListView();
             this.instanceHeader = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.projectIdHeader = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.zoneHeader = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));

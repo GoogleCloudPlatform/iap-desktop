@@ -22,10 +22,10 @@
 using Google.Solutions.Common.Diagnostics;
 using Google.Solutions.IapDesktop.Application.ObjectModel;
 using Google.Solutions.IapDesktop.Application.Views.Properties;
-using Google.Solutions.IapDesktop.Extensions.Rdp.Services.ConnectionSettings;
+using Google.Solutions.IapDesktop.Extensions.Shell.Services.ConnectionSettings;
 using System;
 
-namespace Google.Solutions.IapDesktop.Extensions.Rdp.Views.ConnectionSettings
+namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.ConnectionSettings
 {
     [SkipCodeCoverage("All logic in view model")]
     [Service(typeof(IConnectionSettingsWindow), ServiceLifetime.Singleton)]

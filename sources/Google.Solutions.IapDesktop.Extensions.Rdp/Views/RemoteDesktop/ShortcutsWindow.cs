@@ -25,7 +25,7 @@ using System.IO;
 using System.Linq;
 using System.Windows.Forms;
 
-namespace Google.Solutions.IapDesktop.Extensions.Rdp.Views.RemoteDesktop
+namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.RemoteDesktop
 {
     [SkipCodeCoverage("View")]
     public partial class ShortcutsWindow : Form

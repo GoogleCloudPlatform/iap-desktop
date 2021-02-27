@@ -47,7 +47,7 @@ NUNIT_ASSEMBLIES = \
 	Google.Solutions.IapTunneling.Test\bin\release\Google.Solutions.IapTunneling.Test.dll \
 	Google.Solutions.IapDesktop.Extensions.Activity.Test\bin\release\Google.Solutions.IapDesktop.Extensions.Activity.Test.dll \
 	Google.Solutions.IapDesktop.Extensions.Os.Test\bin\release\Google.Solutions.IapDesktop.Extensions.Os.Test.dll \
-	Google.Solutions.IapDesktop.Extensions.Rdp.Test\bin\release\Google.Solutions.IapDesktop.Extensions.Rdp.Test.dll \
+	Google.Solutions.IapDesktop.Extensions.Shell.Test\bin\release\Google.Solutions.IapDesktop.Extensions.Shell.Test.dll \
 	Google.Solutions.IapDesktop.Extensions.Ssh.Test\bin\release\Google.Solutions.IapDesktop.Extensions.Ssh.Test.dll \
 	Google.Solutions.IapDesktop.Application.Test\bin\release\Google.Solutions.IapDesktop.Application.Test.dll
 
@@ -57,7 +57,7 @@ NUNIT_COVERAGE_FILTER = \
 	+[Google.Solutions.IapTunneling]* \
 	+[Google.Solutions.IapDesktop.Extensions.Activity]* \
 	+[Google.Solutions.IapDesktop.Extensions.Os]* \
-	+[Google.Solutions.IapDesktop.Extensions.Rdp]* \
+	+[Google.Solutions.IapDesktop.Extensions.Shell]* \
 	+[Google.Solutions.IapDesktop.Extensions.Ssh]* \
 	+[Google.Solutions.IapDesktop.Application]*
 	

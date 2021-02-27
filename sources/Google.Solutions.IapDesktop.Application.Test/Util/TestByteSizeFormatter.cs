@@ -19,7 +19,7 @@
 // under the License.
 //
 
-using Google.Solutions.IapDesktop.Extensions.Rdp.Views.TunnelsViewer;
+using Google.Solutions.IapDesktop.Extensions.Shell.Views.TunnelsViewer;
 using NUnit.Framework;
 
 namespace Google.Solutions.IapDesktop.Application.Test.Util

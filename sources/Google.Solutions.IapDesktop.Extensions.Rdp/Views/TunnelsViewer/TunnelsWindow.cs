@@ -23,14 +23,14 @@ using Google.Solutions.Common.Diagnostics;
 using Google.Solutions.IapDesktop.Application.Controls;
 using Google.Solutions.IapDesktop.Application.ObjectModel;
 using Google.Solutions.IapDesktop.Application.Views;
-using Google.Solutions.IapDesktop.Extensions.Rdp.Services.Tunnel;
+using Google.Solutions.IapDesktop.Extensions.Shell.Services.Tunnel;
 using System;
 using System.Runtime.InteropServices;
 using WeifenLuo.WinFormsUI.Docking;
 
 #pragma warning disable IDE1006 // Naming Styles
 
-namespace Google.Solutions.IapDesktop.Extensions.Rdp.Views.TunnelsViewer
+namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.TunnelsViewer
 {
     [ComVisible(false)]
     [Service(typeof(ITunnelsWindow), ServiceLifetime.Singleton)]

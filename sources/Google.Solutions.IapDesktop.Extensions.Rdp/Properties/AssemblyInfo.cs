@@ -22,8 +22,8 @@
 using System.Reflection;
 using System.Runtime.CompilerServices;
 
-[assembly: AssemblyTitle("RDP extension library")]
-[assembly: AssemblyDescription("RDP extension library")]
+[assembly: AssemblyTitle("Remote shell extension library")]
+[assembly: AssemblyDescription("Remote shell extension library")]
 [assembly: AssemblyCompany("Google LLC")]
 [assembly: AssemblyProduct("IAP Desktop")]
 [assembly: AssemblyCopyright("Copyright ©  2020")]
@@ -32,4 +32,4 @@ using System.Runtime.CompilerServices;
 [assembly: AssemblyVersion("1.0.1.0")]
 [assembly: AssemblyFileVersion("1.0.1.0")]
 
-[assembly: InternalsVisibleTo("Google.Solutions.IapDesktop.Extensions.Rdp.Test")]
+[assembly: InternalsVisibleTo("Google.Solutions.IapDesktop.Extensions.Shell.Test")]

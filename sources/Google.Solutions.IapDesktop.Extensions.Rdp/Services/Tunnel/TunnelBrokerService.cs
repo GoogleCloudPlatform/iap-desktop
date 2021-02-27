@@ -29,7 +29,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace Google.Solutions.IapDesktop.Extensions.Rdp.Services.Tunnel
+namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Tunnel
 {
     public interface ITunnelBrokerService
     {

@@ -23,14 +23,14 @@ using Google.Solutions.Common.Test;
 using Google.Solutions.IapDesktop.Application.Services.Integration;
 using Google.Solutions.IapDesktop.Application.Services.Settings;
 using Google.Solutions.IapDesktop.Application.Views.ProjectExplorer;
-using Google.Solutions.IapDesktop.Extensions.Rdp.Services.ConnectionSettings;
-using Google.Solutions.IapDesktop.Extensions.Rdp.Views.ConnectionSettings;
+using Google.Solutions.IapDesktop.Extensions.Shell.Services.ConnectionSettings;
+using Google.Solutions.IapDesktop.Extensions.Shell.Views.ConnectionSettings;
 using Microsoft.Win32;
 using Moq;
 using NUnit.Framework;
 using System.Threading.Tasks;
 
-namespace Google.Solutions.IapDesktop.Extensions.Rdp.Test.Views.ConnectionSettings
+namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.ConnectionSettings
 {
     [TestFixture]
     public class TestConnectionSettingsViewModel : CommonFixtureBase

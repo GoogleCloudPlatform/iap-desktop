@@ -21,7 +21,7 @@
 
 using System.Runtime.InteropServices;
 
-namespace Google.Solutions.IapDesktop.Extensions.Rdp.Views.RemoteDesktop
+namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.RemoteDesktop
 {
     internal static class UnsafeNativeMethods
     {

@@ -26,7 +26,7 @@ using Google.Solutions.IapTunneling.Iap;
 using System;
 using System.Threading;
 
-namespace Google.Solutions.IapDesktop.Extensions.Rdp.Test
+namespace Google.Solutions.IapDesktop.Extensions.Shell.Test
 {
     internal class RdpTunnel : IDisposable
     {

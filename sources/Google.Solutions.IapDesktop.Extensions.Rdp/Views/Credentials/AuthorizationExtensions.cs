@@ -22,7 +22,7 @@
 using Google.Solutions.Common.Auth;
 using System;
 
-namespace Google.Solutions.IapDesktop.Extensions.Rdp.Views.Credentials
+namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Credentials
 {
     internal static class AuthorizationExtensions
     {

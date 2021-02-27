@@ -22,7 +22,7 @@
 using Google.Solutions.IapDesktop.Application.ObjectModel;
 using Google.Solutions.IapDesktop.Application.Util;
 using Google.Solutions.IapDesktop.Application.Views.ProjectExplorer;
-using Google.Solutions.IapDesktop.Extensions.Rdp.Services.ConnectionSettings;
+using Google.Solutions.IapDesktop.Extensions.Shell.Services.ConnectionSettings;
 using System;
 using System.Diagnostics;
 using System.IO;
@@ -30,7 +30,7 @@ using System.Linq;
 using System.Text;
 using System.Web;
 
-namespace Google.Solutions.IapDesktop.Extensions.Rdp.Views.ConnectionSettings
+namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.ConnectionSettings
 {
     [Service(ServiceLifetime.Singleton)]
     public class HtmlPageGenerator

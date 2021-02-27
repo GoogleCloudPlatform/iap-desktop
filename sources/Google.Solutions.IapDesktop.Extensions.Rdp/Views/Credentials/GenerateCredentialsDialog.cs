@@ -23,7 +23,7 @@ using Google.Solutions.IapDesktop.Application.ObjectModel;
 using System;
 using System.Windows.Forms;
 
-namespace Google.Solutions.IapDesktop.Extensions.Rdp.Views.Credentials
+namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Credentials
 {
     public interface IGenerateCredentialsDialog
     {

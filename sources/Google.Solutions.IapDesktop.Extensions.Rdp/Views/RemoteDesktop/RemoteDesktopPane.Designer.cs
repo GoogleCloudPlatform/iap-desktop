@@ -19,9 +19,9 @@
 // under the License.
 //
 
-using Google.Solutions.IapDesktop.Extensions.Rdp.Properties;
+using Google.Solutions.IapDesktop.Extensions.Shell.Properties;
 
-namespace Google.Solutions.IapDesktop.Extensions.Rdp.Views.RemoteDesktop
+namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.RemoteDesktop
 {
     partial class RemoteDesktopPane
     {
@@ -93,7 +93,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Views.RemoteDesktop
             // 
             this.spinner.Anchor = System.Windows.Forms.AnchorStyles.None;
             this.spinner.BackColor = System.Drawing.Color.White;
-            this.spinner.Image = global::Google.Solutions.IapDesktop.Extensions.Rdp.Properties.Resources.Spinner;
+            this.spinner.Image = global::Google.Solutions.IapDesktop.Extensions.Shell.Properties.Resources.Spinner;
             this.spinner.Location = new System.Drawing.Point(107, 101);
             this.spinner.Name = "spinner";
             this.spinner.Size = new System.Drawing.Size(44, 44);
