@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Project="..\packages\NUnit.3.13.1\build\NUnit.props" Condition="Exists('..\packages\NUnit.3.13.1\build\NUnit.props')" />
   <Import Project="..\packages\NUnit3TestAdapter.3.17.0\build\net35\NUnit3TestAdapter.props" Condition="Exists('..\packages\NUnit3TestAdapter.3.17.0\build\net35\NUnit3TestAdapter.props')" />
+  <Import Project="..\packages\NUnit.3.13.1\build\NUnit.props" Condition="Exists('..\packages\NUnit.3.13.1\build\NUnit.props')" />
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -47,6 +47,9 @@
     <Reference Include="Google.Apis.Auth.PlatformServices, Version=1.49.0.0, Culture=neutral, PublicKeyToken=4b01fa6e34db77ab, processorArchitecture=MSIL">
       <HintPath>..\packages\Google.Apis.Auth.1.49.0\lib\net45\Google.Apis.Auth.PlatformServices.dll</HintPath>
     </Reference>
+    <Reference Include="Google.Apis.CloudOSLogin.v1, Version=1.49.0.2191, Culture=neutral, PublicKeyToken=4b01fa6e34db77ab, processorArchitecture=MSIL">
+      <HintPath>..\packages\Google.Apis.CloudOSLogin.v1.1.49.0.2191\lib\net45\Google.Apis.CloudOSLogin.v1.dll</HintPath>
+    </Reference>
     <Reference Include="Google.Apis.Compute.v1, Version=1.49.0.2202, Culture=neutral, PublicKeyToken=4b01fa6e34db77ab, processorArchitecture=MSIL">
       <HintPath>..\packages\Google.Apis.Compute.v1.1.49.0.2202\lib\net45\Google.Apis.Compute.v1.dll</HintPath>
     </Reference>
@@ -71,6 +74,7 @@
     <Reference Include="System" />
     <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Drawing" />
     <Reference Include="System.Net.Http" />
     <Reference Include="System.Runtime.CompilerServices.Unsafe, Version=5.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <HintPath>..\packages\System.Runtime.CompilerServices.Unsafe.5.0.0\lib\net45\System.Runtime.CompilerServices.Unsafe.dll</HintPath>
@@ -89,9 +93,16 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Controls\TestTerminalFont.cs" />
     <Compile Include="GlobalSuppressions.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="RdpTunnel.cs" />
+    <Compile Include="IapTunnel.cs" />
+    <Compile Include="Services\Adapter\TestKeyStoreAdapter.cs" />
+    <Compile Include="Services\Adapter\TestMetadataAuthorizedKey.cs" />
+    <Compile Include="Services\Adapter\TestMetadataAuthorizedKeySet.cs" />
+    <Compile Include="Services\Ssh\TestAuthorizedKey.cs" />
+    <Compile Include="Services\Ssh\TestAuthorizedKeyService.cs" />
+    <Compile Include="Services\Ssh\TestOsLoginService.cs" />
     <Compile Include="Services\SynchronousJobService.cs" />
     <Compile Include="Services\ConnectionSettings\TestConnectionSettingsService.cs" />
     <Compile Include="Services\Rdp\TestRdpConnectionService.cs" />
@@ -105,6 +116,7 @@
     <Compile Include="Views\Credentials\TestCredentialsService.cs" />
     <Compile Include="Views\RemoteDesktop\TestRemoteDesktopPane.cs" />
     <Compile Include="Views\RemoteDesktop\TestRemoteDesktopPaneWithGroupPolicies.cs" />
+    <Compile Include="Views\SshTerminal\TestSshTerminalPane.cs" />
     <Compile Include="Views\TunnelsViewer\TestTunnelsViewModel.cs" />
     <Compile Include="Services\Tunnel\TestTunnelBrokerService.cs" />
     <Compile Include="Services\Tunnel\TestTunnelService.cs" />
@@ -139,13 +151,17 @@
       <Project>{d9493479-1751-402b-880f-60ed33ebb885}</Project>
       <Name>Google.Solutions.IapTunneling</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Google.Solutions.Ssh\Google.Solutions.Ssh.csproj">
+      <Project>{3e4a828d-819b-40d2-89b3-47d5b52f67fb}</Project>
+      <Name>Google.Solutions.Ssh</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>
       <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
     </PropertyGroup>
-    <Error Condition="!Exists('..\packages\NUnit3TestAdapter.3.17.0\build\net35\NUnit3TestAdapter.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\NUnit3TestAdapter.3.17.0\build\net35\NUnit3TestAdapter.props'))" />
     <Error Condition="!Exists('..\packages\NUnit.3.13.1\build\NUnit.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\NUnit.3.13.1\build\NUnit.props'))" />
+    <Error Condition="!Exists('..\packages\NUnit3TestAdapter.3.17.0\build\net35\NUnit3TestAdapter.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\NUnit3TestAdapter.3.17.0\build\net35\NUnit3TestAdapter.props'))" />
   </Target>
 </Project>
