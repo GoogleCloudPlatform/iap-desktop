@@ -61,7 +61,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Services.ConnectionSettings
         {
             return node is IProjectExplorerProjectNode ||
                    node is IProjectExplorerZoneNode ||
-                   (node is IProjectExplorerVmInstanceNode vmNode && vmNode.IsWindowsInstance);
+                   node is IProjectExplorerVmInstanceNode;
         }
 
         public IPersistentSettingsCollection<ConnectionSettingsBase> GetConnectionSettings(
@@ -96,12 +96,20 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Services.ConnectionSettings
                     vmNode.ProjectId,
                     vmNode.InstanceName);
 
+                var isWindows = vmNode.IsWindowsInstance;
+
                 // Apply overlay to get effective settings.
                 return projectSettings
                     .OverlayBy(zoneSettings)
                     .OverlayBy(instanceSettings)
-                    // TODO: Apply view
-                    .ToPersistentSettingsCollection(s => this.repository.SetVmInstanceSettings(s));
+
+                    // Save back to same repository.
+                    .ToPersistentSettingsCollection(s => this.repository.SetVmInstanceSettings(s))
+
+                    // Hide any settings that are not applicable to the operating system.
+                    .ToFilteredSettingsCollection((coll, setting) => isWindows
+                        ? coll.IsRdpSetting(setting)
+                        : coll.IsSshSetting(setting));
             }
             else
             {

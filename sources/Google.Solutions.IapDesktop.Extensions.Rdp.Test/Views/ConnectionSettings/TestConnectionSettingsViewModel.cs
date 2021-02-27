@@ -58,7 +58,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Test.Views.ConnectionSettin
             projectRepository.AddProjectAsync(SampleProjectId).Wait();
 
             var projectSettings = settingsRepository.GetProjectSettings(SampleProjectId);
-            projectSettings.Domain.Value = "project-domain";
+            projectSettings.RdpDomain.Value = "project-domain";
             settingsRepository.SetProjectSettings(projectSettings);
         }
 

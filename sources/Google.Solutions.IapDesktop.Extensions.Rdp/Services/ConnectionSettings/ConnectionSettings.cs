@@ -136,121 +136,159 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Services.ConnectionSettings
 
     public abstract class ConnectionSettingsBase : IRegistrySettingsCollection
     {
-        public RegistryStringSetting Username { get; private set; }
-        public RegistrySecureStringSetting Password { get; private set; }
-        public RegistryStringSetting Domain { get; private set; }
-        public RegistryEnumSetting<RdpConnectionBarState> ConnectionBar { get; private set; }
-        public RegistryEnumSetting<RdpDesktopSize> DesktopSize { get; private set; }
-        public RegistryEnumSetting<RdpAuthenticationLevel> AuthenticationLevel { get; private set; }
-        public RegistryEnumSetting<RdpColorDepth> ColorDepth { get; private set; }
-        public RegistryEnumSetting<RdpAudioMode> AudioMode { get; private set; }
-        public RegistryEnumSetting<RdpRedirectClipboard> RedirectClipboard { get; private set; }
-        public RegistryEnumSetting<RdpUserAuthenticationBehavior> UserAuthenticationBehavior { get; private set; }
-        public RegistryEnumSetting<RdpBitmapPersistence> BitmapPersistence { get; private set; }
-        public RegistryDwordSetting ConnectionTimeout { get; private set; }
-        public RegistryEnumSetting<RdpCredentialGenerationBehavior> CredentialGenerationBehavior { get; private set; }
+        //---------------------------------------------------------------------
+        // RDP settings.
+        //---------------------------------------------------------------------
+
+        public RegistryStringSetting RdpUsername { get; private set; }
+        public RegistrySecureStringSetting RdpPassword { get; private set; }
+        public RegistryStringSetting RdpDomain { get; private set; }
+        public RegistryEnumSetting<RdpConnectionBarState> RdpConnectionBar { get; private set; }
+        public RegistryEnumSetting<RdpDesktopSize> RdpDesktopSize { get; private set; }
+        public RegistryEnumSetting<RdpAuthenticationLevel> RdpAuthenticationLevel { get; private set; }
+        public RegistryEnumSetting<RdpColorDepth> RdpColorDepth { get; private set; }
+        public RegistryEnumSetting<RdpAudioMode> RdpAudioMode { get; private set; }
+        public RegistryEnumSetting<RdpRedirectClipboard> RdpRedirectClipboard { get; private set; }
+        public RegistryEnumSetting<RdpUserAuthenticationBehavior> RdpUserAuthenticationBehavior { get; private set; }
+        public RegistryEnumSetting<RdpBitmapPersistence> RdpBitmapPersistence { get; private set; }
+        public RegistryDwordSetting RdpConnectionTimeout { get; private set; }
+        public RegistryEnumSetting<RdpCredentialGenerationBehavior> RdpCredentialGenerationBehavior { get; private set; }
         public RegistryDwordSetting RdpPort { get; private set; }
 
-        public IEnumerable<ISetting> Settings => new ISetting[]
+        internal IEnumerable<ISetting> RdpSettings => new ISetting[]
         {
-            this.Username,
-            this.Password,
-            this.Domain,
-            this.ConnectionBar,
-            this.DesktopSize,
-            this.AuthenticationLevel,
-            this.ColorDepth,
-            this.AudioMode,
-            this.RedirectClipboard,
-            this.UserAuthenticationBehavior,
-            this.BitmapPersistence,
-            this.ConnectionTimeout,
-            this.CredentialGenerationBehavior,
+            this.RdpUsername,
+            this.RdpPassword,
+            this.RdpDomain,
+            this.RdpConnectionBar,
+            this.RdpDesktopSize,
+            this.RdpAuthenticationLevel,
+            this.RdpColorDepth,
+            this.RdpAudioMode,
+            this.RdpRedirectClipboard,
+            this.RdpUserAuthenticationBehavior,
+            this.RdpBitmapPersistence,
+            this.RdpConnectionTimeout,
+            this.RdpCredentialGenerationBehavior,
             this.RdpPort
         };
 
+        internal bool IsRdpSetting(ISetting setting) => this.RdpSettings.Contains(setting);
+
+        //---------------------------------------------------------------------
+        // SSH settings.
+        //---------------------------------------------------------------------
+
+        public RegistryDwordSetting SshPort { get; private set; }
+
+        internal IEnumerable<ISetting> SshSettings => new ISetting[]
+        {
+            this.SshPort
+        };
+
+        internal bool IsSshSetting(ISetting setting) => this.SshSettings.Contains(setting);
+
+        //---------------------------------------------------------------------
+        // IRegistrySettingsCollection.
+        //---------------------------------------------------------------------
+
+        private static class Categories
+        {
+            public const string RdpCredentials = "Remote Desktop Credentials";
+            public const string RdpConnection = "Remote Desktop Connection";
+            public const string RdpDisplay = "Remote Desktop Display";
+            public const string RdpResources = "Remote Desktop Resources";
+
+            public const string SshConnection = "SSH Connection";
+        }
+
+        public IEnumerable<ISetting> Settings => this.RdpSettings.Concat(this.SshSettings);
+        
         protected void InitializeFromKey(RegistryKey key)
         {
-            this.Username = RegistryStringSetting.FromKey(
+            //
+            // RDP Settings.
+            //
+            this.RdpUsername = RegistryStringSetting.FromKey(
                 "Username",
                 "Username",
                 "Windows logon username",
-                "Credentials",
+                Categories.RdpCredentials,
                 null,
                 key,
                 _ => true);
-            this.Password = RegistrySecureStringSetting.FromKey(
+            this.RdpPassword = RegistrySecureStringSetting.FromKey(
                 "Password",
                 "Password",
                 "Windows logon password",
-                "Credentials",
+                Categories.RdpCredentials,
                 key,
                 DataProtectionScope.CurrentUser);
-            this.Domain = RegistryStringSetting.FromKey(
+            this.RdpDomain = RegistryStringSetting.FromKey(
                 "Domain",
                 "Domain",
                 "Windows logon domain",
-                "Credentials",
+                Categories.RdpCredentials,
                 null,
                 key,
                 _ => true);
-            this.ConnectionBar = RegistryEnumSetting<RdpConnectionBarState>.FromKey(
+            this.RdpConnectionBar = RegistryEnumSetting<RdpConnectionBarState>.FromKey(
                 "ConnectionBar",
                 "Show connection bar",
                 "Show connection bar in full-screen mode",
-                "Display",
+                Categories.RdpDisplay,
                 RdpConnectionBarState._Default,
                 key);
-            this.DesktopSize = RegistryEnumSetting<RdpDesktopSize>.FromKey(
+            this.RdpDesktopSize = RegistryEnumSetting<RdpDesktopSize>.FromKey(
                 "DesktopSize",
                 "Desktop size",
                 "Size of remote desktop",
-                "Display",
-                RdpDesktopSize._Default,
+                Categories.RdpDisplay,
+                ConnectionSettings.RdpDesktopSize._Default,
                 key);
-            this.AuthenticationLevel = RegistryEnumSetting<RdpAuthenticationLevel>.FromKey(
+            this.RdpAuthenticationLevel = RegistryEnumSetting<RdpAuthenticationLevel>.FromKey(
                 "AuthenticationLevel",
                 "Server authentication",
                 "Require server authentication when connecting",
-                "Connection",
-                RdpAuthenticationLevel._Default,
+                Categories.RdpConnection,
+                ConnectionSettings.RdpAuthenticationLevel._Default,
                 key);
-            this.ColorDepth = RegistryEnumSetting<RdpColorDepth>.FromKey(
+            this.RdpColorDepth = RegistryEnumSetting<RdpColorDepth>.FromKey(
                 "ColorDepth",
                 "Color depth",
                 "Color depth of remote desktop",
-                "Display",
-                RdpColorDepth._Default,
+                Categories.RdpDisplay,
+                ConnectionSettings.RdpColorDepth._Default,
                 key);
-            this.AudioMode = RegistryEnumSetting<RdpAudioMode>.FromKey(
+            this.RdpAudioMode = RegistryEnumSetting<RdpAudioMode>.FromKey(
                 "AudioMode",
                 "Audio mode",
                 "Redirect audio when playing on server",
-                "Local resources",
-                RdpAudioMode._Default,
+                Categories.RdpResources,
+                ConnectionSettings.RdpAudioMode._Default,
                 key);
-            this.RedirectClipboard = RegistryEnumSetting<RdpRedirectClipboard>.FromKey(
+            this.RdpRedirectClipboard = RegistryEnumSetting<RdpRedirectClipboard>.FromKey(
                 "RedirectClipboard",
                 "Redirect clipboard",
                 "Allow clipboard contents to be shared with remote desktop",
-                "Local resources",
-                RdpRedirectClipboard._Default,
+                Categories.RdpResources,
+                ConnectionSettings.RdpRedirectClipboard._Default,
                 key);
-            this.UserAuthenticationBehavior = RegistryEnumSetting<RdpUserAuthenticationBehavior>.FromKey(
+            this.RdpUserAuthenticationBehavior = RegistryEnumSetting<RdpUserAuthenticationBehavior>.FromKey(
                 "RdpUserAuthenticationBehavior",
                 null, // Hidden.
                 null, // Hidden.
                 null, // Hidden.
-                RdpUserAuthenticationBehavior._Default,
+                ConnectionSettings.RdpUserAuthenticationBehavior._Default,
                 key);
-            this.BitmapPersistence = RegistryEnumSetting<RdpBitmapPersistence>.FromKey(
+            this.RdpBitmapPersistence = RegistryEnumSetting<RdpBitmapPersistence>.FromKey(
                 "BitmapPersistence",
                 "Bitmap caching",
                 "Use persistent bitmap cache",
-                "Performance",
-                RdpBitmapPersistence._Default,
+                Categories.RdpResources,
+                ConnectionSettings.RdpBitmapPersistence._Default,
                 key);
-            this.ConnectionTimeout = RegistryDwordSetting.FromKey(
+            this.RdpConnectionTimeout = RegistryDwordSetting.FromKey(
                 "ConnectionTimeout",
                 null, // Hidden.
                 null, // Hidden.
@@ -258,19 +296,32 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Services.ConnectionSettings
                 30,
                 key,
                 0, 300);
-            this.CredentialGenerationBehavior = RegistryEnumSetting<RdpCredentialGenerationBehavior>.FromKey(
+            this.RdpCredentialGenerationBehavior = RegistryEnumSetting<RdpCredentialGenerationBehavior>.FromKey(
                 "CredentialGenerationBehavior",
                 null, // Hidden.
                 null, // Hidden.
                 null, // Hidden.
-                RdpCredentialGenerationBehavior._Default,
+                ConnectionSettings.RdpCredentialGenerationBehavior._Default,
                 key);
             this.RdpPort = RegistryDwordSetting.FromKey(
                 "RdpPort",
-                "RDP port",
-                "RDP port",
-                "Connection",
+                "Server port",
+                "Server port",
+                Categories.RdpConnection,
                 3389,
+                key,
+                1,
+                ushort.MaxValue);
+
+            //
+            // SSH Settings.
+            //
+            this.SshPort = RegistryDwordSetting.FromKey(
+                "SshPort",
+                "Server port",
+                "Server port",
+                Categories.SshConnection,
+                22,
                 key,
                 1,
                 ushort.MaxValue);
@@ -284,35 +335,39 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Services.ConnectionSettings
             ConnectionSettingsBase overlaySettings)
             where T : ConnectionSettingsBase
         {
-            prototype.Username = (RegistryStringSetting)
-                baseSettings.Username.OverlayBy(overlaySettings.Username);
-            prototype.Password = (RegistrySecureStringSetting)
-                baseSettings.Password.OverlayBy(overlaySettings.Password);
-            prototype.Domain = (RegistryStringSetting)
-                baseSettings.Domain.OverlayBy(overlaySettings.Domain);
-            prototype.ConnectionBar = (RegistryEnumSetting<RdpConnectionBarState>)
-                baseSettings.ConnectionBar.OverlayBy(overlaySettings.ConnectionBar);
-            prototype.DesktopSize = (RegistryEnumSetting<RdpDesktopSize>)
-                baseSettings.DesktopSize.OverlayBy(overlaySettings.DesktopSize);
-            prototype.AuthenticationLevel = (RegistryEnumSetting<RdpAuthenticationLevel>)
-                baseSettings.AuthenticationLevel.OverlayBy(overlaySettings.AuthenticationLevel);
-            prototype.ColorDepth = (RegistryEnumSetting<RdpColorDepth>)
-                baseSettings.ColorDepth.OverlayBy(overlaySettings.ColorDepth);
-            prototype.AudioMode = (RegistryEnumSetting<RdpAudioMode>)
-                baseSettings.AudioMode.OverlayBy(overlaySettings.AudioMode);
-            prototype.RedirectClipboard = (RegistryEnumSetting<RdpRedirectClipboard>)
-                baseSettings.RedirectClipboard.OverlayBy(overlaySettings.RedirectClipboard);
-            prototype.UserAuthenticationBehavior = (RegistryEnumSetting<RdpUserAuthenticationBehavior>)
-                baseSettings.UserAuthenticationBehavior.OverlayBy(overlaySettings.UserAuthenticationBehavior);
-            prototype.BitmapPersistence = (RegistryEnumSetting<RdpBitmapPersistence>)
-                baseSettings.BitmapPersistence.OverlayBy(overlaySettings.BitmapPersistence);
-            prototype.ConnectionTimeout = (RegistryDwordSetting)
-                baseSettings.ConnectionTimeout.OverlayBy(overlaySettings.ConnectionTimeout);
-            prototype.CredentialGenerationBehavior = (RegistryEnumSetting<RdpCredentialGenerationBehavior>)
-                baseSettings.CredentialGenerationBehavior.OverlayBy(overlaySettings.CredentialGenerationBehavior);
+            prototype.RdpUsername = (RegistryStringSetting)
+                baseSettings.RdpUsername.OverlayBy(overlaySettings.RdpUsername);
+            prototype.RdpPassword = (RegistrySecureStringSetting)
+                baseSettings.RdpPassword.OverlayBy(overlaySettings.RdpPassword);
+            prototype.RdpDomain = (RegistryStringSetting)
+                baseSettings.RdpDomain.OverlayBy(overlaySettings.RdpDomain);
+            prototype.RdpConnectionBar = (RegistryEnumSetting<RdpConnectionBarState>)
+                baseSettings.RdpConnectionBar.OverlayBy(overlaySettings.RdpConnectionBar);
+            prototype.RdpDesktopSize = (RegistryEnumSetting<RdpDesktopSize>)
+                baseSettings.RdpDesktopSize.OverlayBy(overlaySettings.RdpDesktopSize);
+            prototype.RdpAuthenticationLevel = (RegistryEnumSetting<RdpAuthenticationLevel>)
+                baseSettings.RdpAuthenticationLevel.OverlayBy(overlaySettings.RdpAuthenticationLevel);
+            prototype.RdpColorDepth = (RegistryEnumSetting<RdpColorDepth>)
+                baseSettings.RdpColorDepth.OverlayBy(overlaySettings.RdpColorDepth);
+            prototype.RdpAudioMode = (RegistryEnumSetting<RdpAudioMode>)
+                baseSettings.RdpAudioMode.OverlayBy(overlaySettings.RdpAudioMode);
+            prototype.RdpRedirectClipboard = (RegistryEnumSetting<RdpRedirectClipboard>)
+                baseSettings.RdpRedirectClipboard.OverlayBy(overlaySettings.RdpRedirectClipboard);
+            prototype.RdpUserAuthenticationBehavior = (RegistryEnumSetting<RdpUserAuthenticationBehavior>)
+                baseSettings.RdpUserAuthenticationBehavior.OverlayBy(overlaySettings.RdpUserAuthenticationBehavior);
+            prototype.RdpBitmapPersistence = (RegistryEnumSetting<RdpBitmapPersistence>)
+                baseSettings.RdpBitmapPersistence.OverlayBy(overlaySettings.RdpBitmapPersistence);
+            prototype.RdpConnectionTimeout = (RegistryDwordSetting)
+                baseSettings.RdpConnectionTimeout.OverlayBy(overlaySettings.RdpConnectionTimeout);
+            prototype.RdpCredentialGenerationBehavior = (RegistryEnumSetting<RdpCredentialGenerationBehavior>)
+                baseSettings.RdpCredentialGenerationBehavior.OverlayBy(overlaySettings.RdpCredentialGenerationBehavior);
             prototype.RdpPort = (RegistryDwordSetting)
                 baseSettings.RdpPort.OverlayBy(overlaySettings.RdpPort);
 
+            prototype.SshPort = (RegistryDwordSetting)
+                baseSettings.SshPort.OverlayBy(overlaySettings.SshPort);
+
+            Debug.Assert(prototype.Settings.All(s => s != null));
             Debug.Assert(baseSettings.Settings.All(s => s != null));
         }
     }

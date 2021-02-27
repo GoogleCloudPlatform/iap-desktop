@@ -87,10 +87,10 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Views.Credentials
             // Determine which options to show in prompt.
             //
             var credentialsExist =
-                !string.IsNullOrEmpty(settings.Username.StringValue) &&
-                !string.IsNullOrEmpty(settings.Password.ClearTextValue);
+                !string.IsNullOrEmpty(settings.RdpUsername.StringValue) &&
+                !string.IsNullOrEmpty(settings.RdpPassword.ClearTextValue);
 
-            if (settings.CredentialGenerationBehavior.EnumValue == RdpCredentialGenerationBehavior.Force
+            if (settings.RdpCredentialGenerationBehavior.EnumValue == RdpCredentialGenerationBehavior.Force
                 && await IsGrantedPermissionToGenerateCredentials(
                             credentialsService,
                             instanceLocator)
@@ -108,12 +108,12 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Views.Credentials
 
             var options = new List<CredentialOption>();
             if ((!credentialsExist
-                    && settings.CredentialGenerationBehavior.EnumValue == RdpCredentialGenerationBehavior.AllowIfNoCredentialsFound
+                    && settings.RdpCredentialGenerationBehavior.EnumValue == RdpCredentialGenerationBehavior.AllowIfNoCredentialsFound
                     && await IsGrantedPermissionToGenerateCredentials(
                                 credentialsService,
                                 instanceLocator)
                             .ConfigureAwait(true))
-                || settings.CredentialGenerationBehavior.EnumValue == RdpCredentialGenerationBehavior.Allow)
+                || settings.RdpCredentialGenerationBehavior.EnumValue == RdpCredentialGenerationBehavior.Allow)
             {
                 options.Add(
                     new CredentialOption()

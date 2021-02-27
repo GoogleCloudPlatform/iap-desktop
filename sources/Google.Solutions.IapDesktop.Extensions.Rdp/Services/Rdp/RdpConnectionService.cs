@@ -85,7 +85,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Services.Rdp
 
                         // Give IAP the same timeout for probing as RDP itself.
                         // Note that the timeouts are not additive.
-                        var timeout = TimeSpan.FromSeconds(settings.ConnectionTimeout.IntValue);
+                        var timeout = TimeSpan.FromSeconds(settings.RdpConnectionTimeout.IntValue);
 
                         return await this.tunnelBrokerService.ConnectAsync(
                                 destination,
@@ -155,7 +155,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Services.Rdp
                 // NB. Use an empty string (as opposed to null) to
                 // avoid an inherited setting from kicking in.
                 //
-                settings.TypedCollection.Password.Value = string.Empty;
+                settings.TypedCollection.RdpPassword.Value = string.Empty;
             }
 
             await ConnectInstanceAsync(

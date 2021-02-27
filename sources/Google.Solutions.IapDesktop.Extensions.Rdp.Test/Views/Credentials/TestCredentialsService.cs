@@ -57,7 +57,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Test.Views.Credentials
                 .Returns<string>(null); // Cancel dialog
 
             var settings = InstanceConnectionSettings.CreateNew(SampleInstance);
-            settings.Username.Value = "alice";
+            settings.RdpUsername.Value = "alice";
 
             var credentialsService = new CredentialsService(serviceRegistry);
             AssertEx.ThrowsAggregateException<TaskCanceledException>(
@@ -92,7 +92,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Test.Views.Credentials
 
             var credDialog = serviceRegistry.AddMock<IGenerateCredentialsDialog>();
             var settings = InstanceConnectionSettings.CreateNew(SampleInstance);
-            settings.Username.Value = "alice";
+            settings.RdpUsername.Value = "alice";
 
             var credentialsService = new CredentialsService(serviceRegistry);
             await credentialsService.GenerateCredentialsAsync(
@@ -101,8 +101,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Test.Views.Credentials
                 settings,
                 true);
 
-            Assert.AreEqual("alice", settings.Username.Value);
-            Assert.AreEqual("password", settings.Password.ClearTextValue);
+            Assert.AreEqual("alice", settings.RdpUsername.Value);
+            Assert.AreEqual("password", settings.RdpPassword.ClearTextValue);
             credDialog.Verify(d => d.PromptForUsername(
                 It.IsAny<IWin32Window>(),
                 It.IsAny<string>()), Times.Never);
@@ -136,8 +136,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Test.Views.Credentials
                 settings,
                 true);
 
-            Assert.AreEqual("bobsemail", settings.Username.Value);
-            Assert.AreEqual("password", settings.Password.ClearTextValue);
+            Assert.AreEqual("bobsemail", settings.RdpUsername.Value);
+            Assert.AreEqual("password", settings.RdpPassword.ClearTextValue);
             credDialog.Verify(d => d.PromptForUsername(
                 It.IsAny<IWin32Window>(),
                 It.IsAny<string>()), Times.Never);
@@ -162,7 +162,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Test.Views.Credentials
 
 
             var settings = InstanceConnectionSettings.CreateNew(SampleInstance);
-            settings.Username.Value = "";
+            settings.RdpUsername.Value = "";
 
             var credentialsService = new CredentialsService(serviceRegistry);
             AssertEx.ThrowsAggregateException<TaskCanceledException>(

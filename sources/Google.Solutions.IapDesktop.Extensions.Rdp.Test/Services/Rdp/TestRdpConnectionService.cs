@@ -76,8 +76,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Test.Services.Rdp
         public async Task WhenConnectingByNodeAndPersistentCredentialsDisallowed_ThenPasswordIsClear()
         {
             var settings = InstanceConnectionSettings.CreateNew("project", "instance-1");
-            settings.Username.Value = "existinguser";
-            settings.Password.Value = SecureStringExtensions.FromClearText("password");
+            settings.RdpUsername.Value = "existinguser";
+            settings.RdpPassword.Value = SecureStringExtensions.FromClearText("password");
 
             var settingsService = this.serviceRegistry.AddMock<IConnectionSettingsService>();
             settingsService.Setup(s => s.GetConnectionSettings(
@@ -111,16 +111,16 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Test.Services.Rdp
                 "localhost",
                 It.IsAny<ushort>(),
                 It.Is<InstanceConnectionSettings>(i => 
-                    i.Username.StringValue == "existinguser" && 
-                    i.Password.ClearTextValue == "")), Times.Once);
+                    i.RdpUsername.StringValue == "existinguser" && 
+                    i.RdpPassword.ClearTextValue == "")), Times.Once);
         }
 
         [Test]
         public async Task WhenConnectingByNodeAndPersistentCredentialsAllowed_ThenCredentialsAreUsed()
         {
             var settings = InstanceConnectionSettings.CreateNew("project", "instance-1");
-            settings.Username.Value = "existinguser";
-            settings.Password.Value = SecureStringExtensions.FromClearText("password");
+            settings.RdpUsername.Value = "existinguser";
+            settings.RdpPassword.Value = SecureStringExtensions.FromClearText("password");
 
             bool settingsSaved = false;
 
@@ -156,8 +156,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Test.Services.Rdp
                 "localhost",
                 It.IsAny<ushort>(),
                 It.Is<InstanceConnectionSettings>(i =>
-                    i.Username.StringValue == "existinguser" &&
-                    i.Password.ClearTextValue == "password")), Times.Once);
+                    i.RdpUsername.StringValue == "existinguser" &&
+                    i.RdpPassword.ClearTextValue == "password")), Times.Once);
 
             Assert.IsTrue(settingsSaved);
         }
@@ -198,7 +198,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Test.Services.Rdp
                 It.IsAny<InstanceLocator>(),
                 "localhost",
                 It.IsAny<ushort>(),
-                It.Is<InstanceConnectionSettings>(i => i.Username.Value == null)), Times.Once);
+                It.Is<InstanceConnectionSettings>(i => i.RdpUsername.Value == null)), Times.Once);
             settingsService.Verify(s => s.GetConnectionSettings(
                 It.IsAny<IProjectExplorerNode>()), Times.Never);
         }
@@ -235,7 +235,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Test.Services.Rdp
                 It.IsAny<InstanceLocator>(),
                 "localhost",
                 It.IsAny<ushort>(),
-                It.Is<InstanceConnectionSettings>(i => i.Username.StringValue == "john doe")), Times.Once);
+                It.Is<InstanceConnectionSettings>(i => i.RdpUsername.StringValue == "john doe")), Times.Once);
             settingsService.Verify(s => s.GetConnectionSettings(
                 It.IsAny<IProjectExplorerNode>()), Times.Never);
         }
@@ -244,8 +244,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Test.Services.Rdp
         public async Task WhenConnectingByUrlWithUsernameAndCredentialsExist_ThenConnectionIsMadeWithUsernameFromUrl()
         {
             var settings = InstanceConnectionSettings.CreateNew("project", "instance-1");
-            settings.Username.Value = "existinguser";
-            settings.Password.Value = SecureStringExtensions.FromClearText("password");
+            settings.RdpUsername.Value = "existinguser";
+            settings.RdpPassword.Value = SecureStringExtensions.FromClearText("password");
 
             var settingsService = this.serviceRegistry.AddMock<IConnectionSettingsService>();
             settingsService.Setup(s => s.GetConnectionSettings(
@@ -285,7 +285,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Rdp.Test.Services.Rdp
                 It.IsAny<InstanceLocator>(),
                 "localhost",
                 It.IsAny<ushort>(),
-                It.Is<InstanceConnectionSettings>(i => i.Username.StringValue == "john doe")), Times.Once);
+                It.Is<InstanceConnectionSettings>(i => i.RdpUsername.StringValue == "john doe")), Times.Once);
             settingsService.Verify(s => s.GetConnectionSettings(
                 It.IsAny<IProjectExplorerNode>()), Times.Once);
         }
