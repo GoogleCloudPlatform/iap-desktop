@@ -81,7 +81,7 @@ namespace Google.Solutions.Ssh
                 new []
                 {
                     //
-                    // Try to pass locale - but do not fail the connedction if
+                    // Try to pass locale - but do not fail the connection if
                     // the server rejects it.
                     //
                     new EnvironmentVariable(
