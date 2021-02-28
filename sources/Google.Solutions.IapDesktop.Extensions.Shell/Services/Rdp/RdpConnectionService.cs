@@ -24,7 +24,6 @@ using Google.Solutions.IapDesktop.Application.ObjectModel;
 using Google.Solutions.IapDesktop.Application.Services.Integration;
 using Google.Solutions.IapDesktop.Application.Util;
 using Google.Solutions.IapDesktop.Application.Views;
-using Google.Solutions.IapDesktop.Application.Views.Dialog;
 using Google.Solutions.IapDesktop.Application.Views.ProjectExplorer;
 using Google.Solutions.IapDesktop.Extensions.Shell.Services.ConnectionSettings;
 using Google.Solutions.IapDesktop.Extensions.Shell.Services.Tunnel;
@@ -33,6 +32,7 @@ using Google.Solutions.IapDesktop.Extensions.Shell.Views.RemoteDesktop;
 using Google.Solutions.IapTunneling.Iap;
 using Google.Solutions.IapTunneling.Net;
 using System;
+using System.Diagnostics;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
@@ -43,6 +43,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Rdp
         Task ActivateOrConnectInstanceAsync(
             IProjectExplorerVmInstanceNode vmNode,
             bool allowPersistentCredentials);
+
+        Task ActivateOrConnectInstanceAsync(IapRdpUrl url);
     }
 
     [Service(typeof(IRdpConnectionService))]
@@ -50,8 +52,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Rdp
     {
         private readonly IWin32Window window;
         private readonly IJobService jobService;
-        private readonly IRemoteDesktopSessionBroker remoteDesktopService;
-        private readonly ITunnelBrokerService tunnelBrokerService;
+        private readonly IRemoteDesktopSessionBroker sessionBroker;
+        private readonly ITunnelBrokerService tunnelBroker;
         private readonly ICredentialPrompt credentialPrompt;
         private readonly IProjectExplorer projectExplorer;
         private readonly IConnectionSettingsService settingsService;
@@ -59,8 +61,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Rdp
         public RdpConnectionService(IServiceProvider serviceProvider)
         {
             this.jobService = serviceProvider.GetService<IJobService>();
-            this.remoteDesktopService = serviceProvider.GetService<IRemoteDesktopSessionBroker>();
-            this.tunnelBrokerService = serviceProvider.GetService<ITunnelBrokerService>();
+            this.sessionBroker = serviceProvider.GetService<IRemoteDesktopSessionBroker>();
+            this.tunnelBroker = serviceProvider.GetService<ITunnelBrokerService>();
             this.credentialPrompt = serviceProvider.GetService<ICredentialPrompt>();
             this.projectExplorer = serviceProvider.GetService<IProjectExplorer>();
             this.settingsService = serviceProvider.GetService<IConnectionSettingsService>();
@@ -68,26 +70,26 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Rdp
         }
 
         private async Task ConnectInstanceAsync(
-            InstanceLocator instanceRef,
+            InstanceLocator instance,
             InstanceConnectionSettings settings)
         {
             var tunnel = await this.jobService.RunInBackground(
                 new JobDescription(
-                    $"Opening Cloud IAP tunnel to {instanceRef.Name}...",
+                    $"Opening Cloud IAP tunnel to {instance.Name}...",
                     JobUserFeedbackType.BackgroundFeedback),
                 async token =>
                 {
                     try
                     {
                         var destination = new TunnelDestination(
-                            instanceRef,
+                            instance,
                             (ushort)settings.RdpPort.IntValue);
 
                         // Give IAP the same timeout for probing as RDP itself.
                         // Note that the timeouts are not additive.
                         var timeout = TimeSpan.FromSeconds(settings.RdpConnectionTimeout.IntValue);
 
-                        return await this.tunnelBrokerService.ConnectAsync(
+                        return await this.tunnelBroker.ConnectAsync(
                                 destination,
                                 new SameProcessRelayPolicy(),
                                 timeout)
@@ -95,35 +97,41 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Rdp
                     }
                     catch (NetworkStreamClosedException e)
                     {
-                        throw new IapRdpConnectionFailedException(
+                        throw new ConnectionFailedException(
                             "Connecting to the instance failed. Make sure that you have " +
                             "configured your firewall rules to permit Cloud IAP access " +
-                            $"to {instanceRef.Name}",
+                            $"to {instance.Name}",
                             HelpTopics.CreateIapFirewallRule,
                             e);
                     }
                     catch (UnauthorizedException)
                     {
-                        throw new IapRdpConnectionFailedException(
+                        throw new ConnectionFailedException(
                             "You are not authorized to connect to this VM instance.\n\n" +
-                            $"Verify that the Cloud IAP API is enabled in the project {instanceRef.ProjectId} " +
+                            $"Verify that the Cloud IAP API is enabled in the project {instance.ProjectId} " +
                             "and that your user has the 'IAP-secured Tunnel User' role.",
                             HelpTopics.IapAccess);
                     }
                 }).ConfigureAwait(true);
 
-            this.remoteDesktopService.Connect(
-                instanceRef,
+            this.sessionBroker.Connect(
+                instance,
                 "localhost",
                 (ushort)tunnel.LocalPort,
                 settings);
         }
 
+        //---------------------------------------------------------------------
+        // IRdpConnectionService.
+        //---------------------------------------------------------------------
+
         public async Task ActivateOrConnectInstanceAsync(
             IProjectExplorerVmInstanceNode vmNode,
             bool allowPersistentCredentials)
         {
-            if (this.remoteDesktopService.TryActivate(vmNode.Reference))
+            Debug.Assert(vmNode.IsRdpSupported());
+
+            if (this.sessionBroker.TryActivate(vmNode.Reference))
             {
                 // RDP session was active, nothing left to do.
                 return;
@@ -166,7 +174,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Rdp
 
         public async Task ActivateOrConnectInstanceAsync(IapRdpUrl url)
         {
-            if (this.remoteDesktopService.TryActivate(url.Instance))
+            if (this.sessionBroker.TryActivate(url.Instance))
             {
                 // RDP session was active, nothing left to do.
                 return;
@@ -199,27 +207,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Rdp
                     url.Instance,
                     settings)
                 .ConfigureAwait(true);
-        }
-    }
-
-    public class IapRdpConnectionFailedException : ApplicationException, IExceptionWithHelpTopic
-    {
-        public IHelpTopic Help { get; }
-
-        public IapRdpConnectionFailedException(
-            string message,
-            IHelpTopic helpTopic) : base(message)
-        {
-            this.Help = helpTopic;
-        }
-
-        public IapRdpConnectionFailedException(
-            string message,
-            IHelpTopic helpTopic,
-            Exception innerException)
-            : base(message, innerException)
-        {
-            this.Help = helpTopic;
         }
     }
 }

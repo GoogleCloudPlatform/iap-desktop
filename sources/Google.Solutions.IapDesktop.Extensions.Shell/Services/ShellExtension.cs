@@ -172,7 +172,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services
 
             public Task ActivateOrConnectInstanceAsync(IapRdpUrl url)
                 => this.serviceProvider
-                    .GetService<RdpConnectionService>()
+                    .GetService<IRdpConnectionService>()
                     .ActivateOrConnectInstanceAsync(url);
         }
 
