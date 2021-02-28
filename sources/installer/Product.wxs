@@ -202,12 +202,18 @@
           DiskId="1"
           Source="$(var.BASEDIR)\obj\$(var.CONFIGURATION)\Google.Solutions.Ssh.dll"
           Vital="yes"/>
-        <!--<File
+        <File
           Id="FileLibssh2Dll"
           Name="Libssh2.dll"
           DiskId="1"
           Source="$(var.BASEDIR)\obj\$(var.CONFIGURATION)\Libssh2.dll"
-          Vital="yes"/>-->
+          Vital="yes"/>
+        <File
+          Id="FileVtnetcoreDll"
+          Name="Vtnetcore.dll"
+          DiskId="1"
+          Source="$(var.BASEDIR)\obj\$(var.CONFIGURATION)\Vtnetcore.dll"
+          Vital="yes"/>
         <File
           Id="FileGoogleSolutionsActivityDll"
           Name="Google.Solutions.IapDesktop.Extensions.Activity.dll"

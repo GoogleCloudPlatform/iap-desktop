@@ -41,7 +41,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.RemoteDesktop
     public class TestRemoteDesktopWithServerSideGroupPolicies : WindowTestFixtureBase
     {
         private async Task<IRemoteDesktopSession> Connect(
-            RdpTunnel tunnel,
+            IapTunnel tunnel,
             InstanceLocator vmInstanceReference)
         {
             using (var gceAdapter = new ComputeEngineAdapter(this.serviceProvider.GetService<IAuthorizationAdapter>()))
@@ -78,7 +78,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.RemoteDesktop
         {
             var locator = await testInstance;
 
-            using (var tunnel = RdpTunnel.Create(
+            using (var tunnel = IapTunnel.ForRdp(
                 locator,
                 await credential))
             {
@@ -100,7 +100,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.RemoteDesktop
         {
             var locator = await testInstance;
 
-            using (var tunnel = RdpTunnel.Create(
+            using (var tunnel = IapTunnel.ForRdp(
                 locator,
                 await credential))
             {
@@ -133,7 +133,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.RemoteDesktop
         {
             var locator = await testInstance;
 
-            using (var tunnel = RdpTunnel.Create(
+            using (var tunnel = IapTunnel.ForRdp(
                 locator,
                 await credential))
             {
@@ -166,7 +166,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.RemoteDesktop
         {
             var locator = await testInstance;
 
-            using (var tunnel = RdpTunnel.Create(
+            using (var tunnel = IapTunnel.ForRdp(
                 locator,
                 await credential))
             {
@@ -199,7 +199,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.RemoteDesktop
         {
             var locator = await testInstance;
 
-            using (var tunnel = RdpTunnel.Create(
+            using (var tunnel = IapTunnel.ForRdp(
                 locator,
                 await credential))
             {
@@ -232,7 +232,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.RemoteDesktop
         {
             var locator = await testInstance;
 
-            using (var tunnel = RdpTunnel.Create(
+            using (var tunnel = IapTunnel.ForRdp(
                 locator,
                 await credential))
             {
@@ -265,7 +265,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.RemoteDesktop
         {
             var locator = await testInstance;
 
-            using (var tunnel = RdpTunnel.Create(
+            using (var tunnel = IapTunnel.ForRdp(
                 locator,
                 await credential))
             {
@@ -298,7 +298,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.RemoteDesktop
         {
             var locator = await testInstance;
 
-            using (var tunnel = RdpTunnel.Create(
+            using (var tunnel = IapTunnel.ForRdp(
                 locator,
                 await credential))
             {
