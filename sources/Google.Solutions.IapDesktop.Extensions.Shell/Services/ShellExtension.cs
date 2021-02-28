@@ -21,6 +21,7 @@
 
 using Google.Solutions.Common.Util;
 using Google.Solutions.IapDesktop.Application.ObjectModel;
+using Google.Solutions.IapDesktop.Application.Services.Settings;
 using Google.Solutions.IapDesktop.Application.Util;
 using Google.Solutions.IapDesktop.Application.Views;
 using Google.Solutions.IapDesktop.Application.Views.Dialog;
@@ -44,6 +45,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services
     [Service(ServiceLifetime.Singleton)]
     public class ShellExtension
     {
+        internal static bool IsSshEnabled { get; private set; } = true;
+
         private readonly IServiceProvider serviceProvider;
         private readonly IWin32Window window;
 
@@ -176,6 +179,15 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services
         public ShellExtension(IServiceProvider serviceProvider)
         {
             this.serviceProvider = serviceProvider;
+
+            //
+            // Hide SSH feature by default.
+            //
+            IsSshEnabled = serviceProvider
+                .GetService<ApplicationSettingsRepository>()
+                .GetSettings()
+                .IsPreviewFeatureSetEnabled
+                .BoolValue;
 
             var mainForm = serviceProvider.GetService<IMainForm>();
 

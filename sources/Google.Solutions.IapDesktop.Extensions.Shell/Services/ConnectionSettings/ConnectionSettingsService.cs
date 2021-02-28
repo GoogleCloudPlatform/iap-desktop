@@ -97,6 +97,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.ConnectionSettin
                     vmNode.InstanceName);
 
                 var supportsRdp = vmNode.IsRdpSupported();
+                var supportsSsh = vmNode.IsSshSupported() && ShellExtension.IsSshEnabled;
 
                 // Apply overlay to get effective settings.
                 return projectSettings
@@ -109,7 +110,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.ConnectionSettin
                     // Hide any settings that are not applicable to the operating system.
                     .ToFilteredSettingsCollection((coll, setting) => supportsRdp
                         ? coll.IsRdpSetting(setting)
-                        : coll.IsSshSetting(setting));
+                        : supportsSsh ? coll.IsSshSetting(setting) : false);
             }
             else
             {
