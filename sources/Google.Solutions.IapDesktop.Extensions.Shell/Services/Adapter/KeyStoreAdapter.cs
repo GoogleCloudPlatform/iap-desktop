@@ -21,6 +21,7 @@
 
 using Google.Solutions.Common.Diagnostics;
 using Google.Solutions.IapDesktop.Application;
+using Google.Solutions.IapDesktop.Application.ObjectModel;
 using System;
 using System.Security.Cryptography;
 using System.Threading.Tasks;
@@ -30,30 +31,31 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Adapter
 {
     public interface IKeyStoreAdapter
     {
-        Task<RSA> CreateRsaKeyAsync(
+        RSA CreateRsaKey(
             string name,
             CngKeyUsages usage,
-            bool createNewIfNotExists);
+            bool createNewIfNotExists,
+            IWin32Window window);
     }
 
-    public class KeyStoreAdapter
+    [Service(typeof(IKeyStoreAdapter))]
+    public class KeyStoreAdapter : IKeyStoreAdapter
     {
-        private readonly CngProvider provider;
-        private readonly int keySize;
+        private const int DefaultKeySize = 3072;
 
-        public KeyStoreAdapter(
-            CngProvider provider,
-            int keySize)
+        // TODO: Make configurable.
+        private readonly CngProvider provider = CngProvider.MicrosoftSoftwareKeyStorageProvider;
+        private readonly int keySize = DefaultKeySize;
+
+        public KeyStoreAdapter()
         {
-            this.provider = provider;
-            this.keySize = keySize;
         }
 
         //---------------------------------------------------------------------
         // IKeyStoreAdapter
         //---------------------------------------------------------------------
 
-        public Task<RSA> CreateRsaKeyAsync(
+        public RSA CreateRsaKey(
             string name,
             CngKeyUsages usage,
             bool createNewIfNotExists,
@@ -72,68 +74,77 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Adapter
                 // certutil -csp "Microsoft Software Key Storage Provider" -key -user
                 //
 
-                return Task.Run<RSA>(() =>
+                if (CngKey.Exists(name))
                 {
-                    if (CngKey.Exists(name))
+                    var key = CngKey.Open(name);
+                    if (key.Algorithm != CngAlgorithm.Rsa)
                     {
-                        var key = CngKey.Open(name);
-                        if (key.Algorithm != CngAlgorithm.Rsa)
-                        {
-                            throw new CryptographicException(
-                                $"Key {name} is not an RSA key");
-                        }
-
-                        if ((key.KeyUsage & usage) == 0)
-                        {
-                            throw new CryptographicException(
-                                $"Key {name} exists, but does not support requested usage");
-
-                        }
-
-                        return new RSACng(key);
+                        key.Dispose();
+                        throw new CryptographicException(
+                            $"Key {name} is not an RSA key");
                     }
 
-                    if (createNewIfNotExists)
+                    if ((key.KeyUsage & usage) == 0)
                     {
-                        var keyParams = new CngKeyCreationParameters
-                        {
-                            // Do not overwrite, store in user profile.
-                            KeyCreationOptions = CngKeyCreationOptions.None,
+                        key.Dispose();
+                        throw new CryptographicException(
+                            $"Key {name} exists, but does not support requested usage");
 
-                            // Do not allow exporting.
-                            ExportPolicy = CngExportPolicies.None,
-
-                            Provider = this.provider,
-                            KeyUsage = usage
-                        };
-
-                        //
-                        // NB. If we're using the Smart Card provider, the key store
-                        // might show a UI dialog.
-                        //
-                        if (window != null && window.Handle != null)
-                        {
-                            keyParams.ParentWindowHandle = window.Handle;
-                        }
-
-                        keyParams.Parameters.Add(
-                            new CngProperty(
-                                "Length",
-                                BitConverter.GetBytes(this.keySize),
-                                CngPropertyOptions.None));
-
-                        //
-                        // Create the key. That's a bit expensive, so do it
-                        // asynchronously.
-                        //
-                        return new RSACng(CngKey.Create(
-                            CngAlgorithm.Rsa,
-                            name,
-                            keyParams));
                     }
 
+                    ApplicationTraceSources.Default.TraceInformation(
+                        "Found existing CNG key {0} in {1}", name, this.provider);
+
+                    return new RSACng(key);
+                }
+
+                if (createNewIfNotExists)
+                {
+                    var keyParams = new CngKeyCreationParameters
+                    {
+                        // Do not overwrite, store in user profile.
+                        KeyCreationOptions = CngKeyCreationOptions.None,
+
+                        // Do not allow exporting.
+                        ExportPolicy = CngExportPolicies.None,
+
+                        Provider = this.provider,
+                        KeyUsage = usage
+                    };
+
+                    //
+                    // NB. If we're using the Smart Card provider, the key store
+                    // might show a UI dialog. Therefore, this method must
+                    // be run on the UI thread.
+                    //
+                    if (window != null && window.Handle != null)
+                    {
+                        keyParams.ParentWindowHandle = window.Handle;
+                    }
+
+                    keyParams.Parameters.Add(
+                        new CngProperty(
+                            "Length",
+                            BitConverter.GetBytes(this.keySize),
+                            CngPropertyOptions.None));
+
+                    //
+                    // Create the key. 
+                    //
+                    var key = new RSACng(CngKey.Create(
+                        CngAlgorithm.Rsa,
+                        name,
+                        keyParams));
+
+                    ApplicationTraceSources.Default.TraceInformation(
+                        "Created new CNG key {0} in {1}", name, this.provider);
+
+                    return key;
+                }
+                else
+                {
                     return null;
-                });
+                }
             }
         }
     }

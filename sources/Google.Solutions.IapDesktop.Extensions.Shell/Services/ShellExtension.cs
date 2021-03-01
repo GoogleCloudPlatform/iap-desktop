@@ -29,11 +29,13 @@ using Google.Solutions.IapDesktop.Application.Views.ProjectExplorer;
 using Google.Solutions.IapDesktop.Extensions.Shell.Properties;
 using Google.Solutions.IapDesktop.Extensions.Shell.Services.ConnectionSettings;
 using Google.Solutions.IapDesktop.Extensions.Shell.Services.Rdp;
+using Google.Solutions.IapDesktop.Extensions.Shell.Services.Ssh;
 using Google.Solutions.IapDesktop.Extensions.Shell.Views.ConnectionSettings;
 using Google.Solutions.IapDesktop.Extensions.Shell.Views.Credentials;
 using Google.Solutions.IapDesktop.Extensions.Shell.Views.RemoteDesktop;
 using Google.Solutions.IapDesktop.Extensions.Shell.Views.TunnelsViewer;
 using System;
+using System.Diagnostics;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
@@ -54,13 +56,38 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services
             IProjectExplorerNode node)
         {
             return node is IProjectExplorerVmInstanceNode vmNode && 
-                        vmNode.IsRunning && 
+                        vmNode.IsRunning &&
+                        (IsSshEnabled || vmNode.IsRdpSupported())
+                ? CommandState.Enabled
+                : CommandState.Disabled;
+        }
+
+        private static CommandState GetToolbarCommandStateWhenRunningWindowsInstanceRequired(
+            IProjectExplorerNode node)
+        {
+            return node is IProjectExplorerVmInstanceNode vmNode &&
+                        vmNode.IsRunning &&
                         vmNode.IsWindowsInstance
                 ? CommandState.Enabled
                 : CommandState.Disabled;
         }
 
         private static CommandState GetContextMenuCommandStateWhenRunningInstanceRequired(IProjectExplorerNode node)
+        {
+            if (node is IProjectExplorerVmInstanceNode vmNode &&
+                        (IsSshEnabled || vmNode.IsRdpSupported()))
+            {
+                return vmNode.IsRunning
+                    ? CommandState.Enabled
+                    : CommandState.Disabled;
+            }
+            else
+            {
+                return CommandState.Unavailable;
+            }
+        }
+
+        private static CommandState GetContextMenuCommandStateWhenRunningWindowsInstanceRequired(IProjectExplorerNode node)
         {
             if (node is IProjectExplorerVmInstanceNode vmNode && vmNode.IsWindowsInstance)
             {
@@ -74,7 +101,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services
             }
         }
 
-        private CommandState GetCommandStateWhenActiveSessionRequired()
+        private CommandState GetCommandStateWhenActiveRemoteDesktopSessionRequired()
         {
             var activeSession = this.serviceProvider
                 .GetService<IRemoteDesktopSessionBroker>()
@@ -95,6 +122,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services
             {
                 if (node is IProjectExplorerVmInstanceNode vmNode)
                 {
+                    Debug.Assert(vmNode.IsWindowsInstance);
+
                     var settingsService = this.serviceProvider
                         .GetService<IConnectionSettingsService>();
                     var settings = settingsService.GetConnectionSettings(vmNode);
@@ -128,13 +157,22 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services
         {
             try
             {
-                if (node is IProjectExplorerVmInstanceNode vmNode)
-                {
+                if (node is IProjectExplorerVmInstanceNode rdpNode && rdpNode.IsRdpSupported())
+                { 
                     await this.serviceProvider
                         .GetService<IRdpConnectionService>()
                         .ActivateOrConnectInstanceAsync(
-                            vmNode,
+                            rdpNode,
                             allowPersistentCredentials)
+                        .ConfigureAwait(true);
+                }
+                else if (node is IProjectExplorerVmInstanceNode sshNode && 
+                         sshNode.IsSshSupported() &&
+                         IsSshEnabled)
+                {
+                    await this.serviceProvider
+                        .GetService<ISshConnectionService>()
+                        .ActivateOrConnectInstanceAsync(sshNode)
                         .ConfigureAwait(true);
                 }
             }
@@ -220,7 +258,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services
             projectExplorer.ContextMenuCommands.AddCommand(
                 new Command<IProjectExplorerNode>(
                     "Connect &as user...",
-                    GetContextMenuCommandStateWhenRunningInstanceRequired,
+                    GetContextMenuCommandStateWhenRunningWindowsInstanceRequired,   // Windows/RDP only.
                     node => Connect(node, false))
                 {
                     Image = Resources.Connect_16
@@ -229,7 +267,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services
 
             projectExplorer.ToolbarCommands.AddCommand(
                 new Command<IProjectExplorerNode>(
-                    "Connect to remote desktop",
+                    "Connect",
                     GetToolbarCommandStateWhenRunningInstanceRequired,
                     node => Connect(node, true))
                 {
@@ -266,12 +304,12 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services
                 3);
 
             //
-            // Generate credentials.
+            // Generate credentials (Windows/RDP only).
             //
             projectExplorer.ContextMenuCommands.AddCommand(
                 new Command<IProjectExplorerNode>(
                     "&Generate Windows logon credentials...",
-                    GetContextMenuCommandStateWhenRunningInstanceRequired,
+                    GetContextMenuCommandStateWhenRunningWindowsInstanceRequired,
                     GenerateCredentials)
                 {
                     Image = Resources.Password_16
@@ -281,7 +319,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services
             projectExplorer.ToolbarCommands.AddCommand(
                 new Command<IProjectExplorerNode>(
                     "Generate Windows logon credentials",
-                    GetToolbarCommandStateWhenRunningInstanceRequired,
+                    GetToolbarCommandStateWhenRunningWindowsInstanceRequired,
                     GenerateCredentials)
                 {
                     Image = Resources.Password_16
@@ -302,14 +340,14 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services
                 1);
 
             //
-            // Desktop menu.
+            // Desktop menu (Windows/RDP only).
             //
             var desktopMenu = mainForm.AddMenu("&Desktop", 1);
             desktopMenu.AddCommand(
                 new Command<IMainForm>(
                     "&Full screen",
-                    _ => GetCommandStateWhenActiveSessionRequired(),
-                    _ => DoWithActiveSession(session => session.TrySetFullscreen(FullScreenMode.SingleScreen)))
+                    _ => GetCommandStateWhenActiveRemoteDesktopSessionRequired(),
+                    _ => DoWithActiveRemoteDesktopSession(session => session.TrySetFullscreen(FullScreenMode.SingleScreen)))
                 {
                     Image = Resources.Fullscreen_16,
                     ShortcutKeys = Keys.F11
@@ -317,8 +355,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services
             desktopMenu.AddCommand(
                 new Command<IMainForm>(
                     "&Full screen (multiple displays)",
-                    _ => GetCommandStateWhenActiveSessionRequired(),
-                    _ => DoWithActiveSession(session => session.TrySetFullscreen(FullScreenMode.AllScreens)))
+                    _ => GetCommandStateWhenActiveRemoteDesktopSessionRequired(),
+                    _ => DoWithActiveRemoteDesktopSession(session => session.TrySetFullscreen(FullScreenMode.AllScreens)))
                 {
                     Image = Resources.Fullscreen_16,
                     ShortcutKeys = Keys.F11 | Keys.Shift
@@ -326,8 +364,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services
             desktopMenu.AddCommand(
                 new Command<IMainForm>(
                     "&Disconnect",
-                    _ => GetCommandStateWhenActiveSessionRequired(),
-                    _ => DoWithActiveSession(session => session.Close()))
+                    _ => GetCommandStateWhenActiveRemoteDesktopSessionRequired(),
+                    _ => DoWithActiveRemoteDesktopSession(session => session.Close()))
                 {
                     Image = Resources.Disconnect_16,
                     ShortcutKeys = Keys.Control | Keys.F4
@@ -335,22 +373,22 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services
             desktopMenu.AddCommand(
                 new Command<IMainForm>(
                     "&Keyboard shortcuts",
-                    _ => GetCommandStateWhenActiveSessionRequired(),
+                    _ => GetCommandStateWhenActiveRemoteDesktopSessionRequired(),
                     _ => new ShortcutsWindow().Show(this.window)));
             desktopMenu.AddSeparator();
             desktopMenu.AddCommand(
                 new Command<IMainForm>(
                     "Show &security screen (send Ctrl+Alt+Esc)",
-                    _ => GetCommandStateWhenActiveSessionRequired(),
-                    _ => DoWithActiveSession(session => session.ShowSecurityScreen())));
+                    _ => GetCommandStateWhenActiveRemoteDesktopSessionRequired(),
+                    _ => DoWithActiveRemoteDesktopSession(session => session.ShowSecurityScreen())));
             desktopMenu.AddCommand(
                 new Command<IMainForm>(
                     "Open &task manager (send Ctrl+Shift+Esc)",
-                    _ => GetCommandStateWhenActiveSessionRequired(),
-                    _ => DoWithActiveSession(session => session.ShowTaskManager())));
+                    _ => GetCommandStateWhenActiveRemoteDesktopSessionRequired(),
+                    _ => DoWithActiveRemoteDesktopSession(session => session.ShowTaskManager())));
         }
 
-        private void DoWithActiveSession(Action<IRemoteDesktopSession> action)
+        private void DoWithActiveRemoteDesktopSession(Action<IRemoteDesktopSession> action)
         {
             try
             {

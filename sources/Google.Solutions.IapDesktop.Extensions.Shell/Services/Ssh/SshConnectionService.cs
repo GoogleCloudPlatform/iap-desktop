@@ -20,9 +20,11 @@
 //
 
 using Google.Solutions.IapDesktop.Application.ObjectModel;
+using Google.Solutions.IapDesktop.Application.Services.Adapters;
 using Google.Solutions.IapDesktop.Application.Services.Integration;
 using Google.Solutions.IapDesktop.Application.Views;
 using Google.Solutions.IapDesktop.Application.Views.ProjectExplorer;
+using Google.Solutions.IapDesktop.Extensions.Shell.Services.Adapter;
 using Google.Solutions.IapDesktop.Extensions.Shell.Services.ConnectionSettings;
 using Google.Solutions.IapDesktop.Extensions.Shell.Services.Tunnel;
 using Google.Solutions.IapDesktop.Extensions.Shell.Views.SshTerminal;
@@ -32,7 +34,9 @@ using Google.Solutions.Ssh;
 using System;
 using System.Diagnostics;
 using System.Net;
+using System.Security.Cryptography;
 using System.Threading.Tasks;
+using System.Windows.Forms;
 
 namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Ssh
 {
@@ -45,12 +49,15 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Ssh
     [Service(typeof(ISshConnectionService))]
     public class SshConnectionService : ISshConnectionService
     {
+        private readonly IWin32Window window;
         private readonly IJobService jobService;
         private readonly ISshTerminalSessionBroker sessionBroker;
         private readonly ITunnelBrokerService tunnelBroker;
         private readonly IProjectExplorer projectExplorer;
         private readonly IConnectionSettingsService settingsService;
-        private readonly IAuthorizedKeyService keyService;
+        private readonly IAuthorizedKeyService authorizedKeyService;
+        private readonly IKeyStoreAdapter keyStoreAdapter;
+        private readonly IAuthorizationAdapter authorizationAdapter;
 
         public SshConnectionService(IServiceProvider serviceProvider)
         {
@@ -59,7 +66,10 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Ssh
             this.tunnelBroker = serviceProvider.GetService<ITunnelBrokerService>();
             this.projectExplorer = serviceProvider.GetService<IProjectExplorer>();
             this.settingsService = serviceProvider.GetService<IConnectionSettingsService>();
-            this.keyService = serviceProvider.GetService<IAuthorizedKeyService>();
+            this.authorizedKeyService = serviceProvider.GetService<IAuthorizedKeyService>();
+            this.keyStoreAdapter = serviceProvider.GetService<IKeyStoreAdapter>();
+            this.authorizationAdapter = serviceProvider.GetService<IAuthorizationAdapter>();
+            this.window = serviceProvider.GetService<IMainForm>().Window;
         }
 
         //---------------------------------------------------------------------
@@ -131,6 +141,18 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Ssh
                     }
                 });
 
+
+            //
+            // Load persistent CNG key. This must be done on the UI thread.
+            //
+            var email = this.authorizationAdapter.Authorization.Email;
+            var rsaKey = this.keyStoreAdapter.CreateRsaKey(
+                    $"IAPDESKTOP_{email}",
+                    CngKeyUsages.Signing,
+                    true,
+                    this.window);
+            Debug.Assert(rsaKey != null);
+
             //
             // Start job to publish key, using whatever mechanism is appropriate
             // for this instance.
@@ -142,13 +164,12 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Ssh
                     JobUserFeedbackType.BackgroundFeedback),
                 async token =>
                 {
-                    // TODO: Use proper key.
-                    var key = RsaSshKey.NewEphemeralKey();
-
-
-                    return await this.keyService.AuthorizeKeyAsync(
+                    //
+                    // Authorize the key.
+                    //
+                    return await this.authorizedKeyService.AuthorizeKeyAsync(
                             vmNode.Reference,
-                            key,
+                            new RsaSshKey(rsaKey),
                             TimeSpan.FromHours(2),  // TODO: Make configurable
                             "test",                 // TODO: Make configurable
                             AuthorizeKeyMethods.All,
@@ -162,6 +183,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Ssh
 
             await Task.WhenAll(tunnelTask, authorizedKeyTask)
                 .ConfigureAwait(true);
+
+            // TODO: make sure key is disposed
 
             await this.sessionBroker.ConnectAsync(
                     instance,
