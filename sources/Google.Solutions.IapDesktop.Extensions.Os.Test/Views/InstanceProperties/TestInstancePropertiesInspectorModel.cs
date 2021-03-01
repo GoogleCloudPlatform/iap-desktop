@@ -131,6 +131,21 @@ namespace Google.Solutions.IapDesktop.Extensions.Os.Test.Views.InstancePropertie
                         {
                             Key = "VmDnsSetting",
                             Value = "ZonalOnly"
+                        },
+                        new Metadata.ItemsData()
+                        {
+                            Key = "enable-oslogin",
+                            Value = "true"
+                        },
+                        new Metadata.ItemsData()
+                        {
+                            Key = "enable-oslogin-2fa",
+                            Value = "true"
+                        },
+                        new Metadata.ItemsData()
+                        {
+                            Key = "block-project-ssh-keys",
+                            Value = "false"
                         }
                     }
                 }
@@ -146,6 +161,21 @@ namespace Google.Solutions.IapDesktop.Extensions.Os.Test.Views.InstancePropertie
                         {
                             Key = "VmDnsSetting",
                             Value = "ZonalPreferred"
+                        },
+                        new Metadata.ItemsData()
+                        {
+                            Key = "enable-oslogin",
+                            Value = "false"
+                        },
+                        new Metadata.ItemsData()
+                        {
+                            Key = "enable-oslogin-2fa",
+                            Value = "false"
+                        },
+                        new Metadata.ItemsData()
+                        {
+                            Key = "block-project-ssh-keys",
+                            Value = "true"
                         }
                     }
                 }
@@ -153,6 +183,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Os.Test.Views.InstancePropertie
 
             var model = new InstancePropertiesInspectorModel(project, instance, null);
             Assert.AreEqual("ZonalPreferred", model.InternalDnsMode);
+            Assert.AreEqual(FeatureFlag.Disabled, model.OsLogin);
+            Assert.AreEqual(FeatureFlag.Disabled, model.OsLogin2FA);
+            Assert.AreEqual(FeatureFlag.Enabled, model.BlockProjectSshKeys);
         }
 
         [Test]
@@ -169,6 +202,11 @@ namespace Google.Solutions.IapDesktop.Extensions.Os.Test.Views.InstancePropertie
                         {
                             Key = "VmDnsSetting",
                             Value = "ZonalPreferred"
+                        },
+                        new Metadata.ItemsData()
+                        {
+                            Key = "enable-oslogin-2fa",
+                            Value = "true"
                         }
                     }
                 }
@@ -176,6 +214,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Os.Test.Views.InstancePropertie
 
             var model = new InstancePropertiesInspectorModel(project, instance, null);
             Assert.AreEqual("ZonalPreferred", model.InternalDnsMode);
+            Assert.AreEqual(FeatureFlag.Enabled, model.OsLogin2FA);
         }
 
         [Test]
