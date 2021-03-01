@@ -103,6 +103,7 @@
     <Compile Include="Services\Ssh\TestAuthorizedKey.cs" />
     <Compile Include="Services\Ssh\TestAuthorizedKeyService.cs" />
     <Compile Include="Services\Ssh\TestOsLoginService.cs" />
+    <Compile Include="Services\Ssh\TestSshConnectionService.cs" />
     <Compile Include="Services\SynchronousJobService.cs" />
     <Compile Include="Services\ConnectionSettings\TestConnectionSettingsService.cs" />
     <Compile Include="Services\Rdp\TestRdpConnectionService.cs" />

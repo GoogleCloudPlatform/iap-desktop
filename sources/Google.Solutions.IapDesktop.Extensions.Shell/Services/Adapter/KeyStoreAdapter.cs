@@ -24,7 +24,6 @@ using Google.Solutions.IapDesktop.Application;
 using Google.Solutions.IapDesktop.Application.ObjectModel;
 using System;
 using System.Security.Cryptography;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Adapter
@@ -43,7 +42,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Adapter
     {
         private const int DefaultKeySize = 3072;
 
-        // TODO: Make configurable.
+        // TODO: Make provider, key size configurable.
         private readonly CngProvider provider = CngProvider.MicrosoftSoftwareKeyStorageProvider;
         private readonly int keySize = DefaultKeySize;
 

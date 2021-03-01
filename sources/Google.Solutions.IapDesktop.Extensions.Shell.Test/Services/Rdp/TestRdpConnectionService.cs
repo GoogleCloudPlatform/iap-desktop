@@ -20,10 +20,10 @@
 //
 
 using Google.Solutions.Common.Locator;
-using Google.Solutions.Common.Test;
 using Google.Solutions.IapDesktop.Application.ObjectModel;
 using Google.Solutions.IapDesktop.Application.Services.Integration;
 using Google.Solutions.IapDesktop.Application.Settings;
+using Google.Solutions.IapDesktop.Application.Test;
 using Google.Solutions.IapDesktop.Application.Test.ObjectModel;
 using Google.Solutions.IapDesktop.Application.Util;
 using Google.Solutions.IapDesktop.Application.Views;
@@ -44,7 +44,7 @@ using System.Windows.Forms;
 namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Rdp
 {
     [TestFixture]
-    public class TestRdpConnectionService : CommonFixtureBase
+    public class TestRdpConnectionService : ApplicationFixtureBase
     {
         private readonly ServiceRegistry serviceRegistry = new ServiceRegistry();
 

@@ -53,7 +53,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Ssh
         private readonly IJobService jobService;
         private readonly ISshTerminalSessionBroker sessionBroker;
         private readonly ITunnelBrokerService tunnelBroker;
-        private readonly IProjectExplorer projectExplorer;
         private readonly IConnectionSettingsService settingsService;
         private readonly IAuthorizedKeyService authorizedKeyService;
         private readonly IKeyStoreAdapter keyStoreAdapter;
@@ -64,7 +63,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Ssh
             this.jobService = serviceProvider.GetService<IJobService>();
             this.sessionBroker = serviceProvider.GetService<ISshTerminalSessionBroker>();
             this.tunnelBroker = serviceProvider.GetService<ITunnelBrokerService>();
-            this.projectExplorer = serviceProvider.GetService<IProjectExplorer>();
             this.settingsService = serviceProvider.GetService<IConnectionSettingsService>();
             this.authorizedKeyService = serviceProvider.GetService<IAuthorizedKeyService>();
             this.keyStoreAdapter = serviceProvider.GetService<IKeyStoreAdapter>();
@@ -170,8 +168,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Ssh
                     return await this.authorizedKeyService.AuthorizeKeyAsync(
                             vmNode.Reference,
                             new RsaSshKey(rsaKey),
-                            TimeSpan.FromHours(2),  // TODO: Make configurable
-                            "test",                 // TODO: Make configurable
+                            TimeSpan.FromHours(2),  // TODO: Make timeout configurable
+                            "test",                 // TODO: Make username configurable
                             AuthorizeKeyMethods.All,
                             token)
                         .ConfigureAwait(true);
