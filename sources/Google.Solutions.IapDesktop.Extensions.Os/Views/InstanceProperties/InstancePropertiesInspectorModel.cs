@@ -45,6 +45,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Os.Views.InstanceProperties
         private const string OsCategory = "Operating system";
         private const string GuestAgentConfigurationCategory = "Guest agent configuration";
         private const string InstanceConfigurationCategory = "Instance configuration";
+        private const string SshConfigurationCategory = "SSH configuration";
 
         private readonly Project projectDetails;
         private readonly Instance instanceDetails;
@@ -234,19 +235,30 @@ namespace Google.Solutions.IapDesktop.Extensions.Os.Views.InstanceProperties
                      "collecting-diagnostic-information#collecting_diagnostic_information_from_a_vm")]
         public FeatureFlag Diagnostics => GetMetadataFeatureFlag("enable-diagnostics", true);
 
-        //
-        // NB. OS login not relevant yet for Windows.
-        //
+        //---------------------------------------------------------------------
+        // SSH configuration.
+        //---------------------------------------------------------------------
 
-        //[Browsable(true)]
-        //[Category(GuestAgentConfigurationCategory)]
-        //[DisplayName("OS Login")]
-        //public FeatureFlag OsLogin => GetMetadataFeatureFlag("enable-oslogin", true);
+        [Browsable(true)]
+        [Category(SshConfigurationCategory)]
+        [DisplayName("OS Login")]
+        [Description("Use OS Login for SSH key management, " +
+                     "see https://cloud.google.com/compute/docs/instances/managing-instance-access.")]
+        public FeatureFlag OsLogin => GetMetadataFeatureFlag("enable-oslogin", true);
 
-        //[Browsable(true)]
-        //[Category(GuestAgentConfigurationCategory)]
-        //[DisplayName("OS Login 2FA")]
-        //public FeatureFlag OsLogin2FA => GetMetadataFeatureFlag("enable-oslogin-2fa", true);
+        [Browsable(true)]
+        [Category(SshConfigurationCategory)]
+        [Description("Require multi-factor authentication for SSH login, " +
+                     "see https://cloud.google.com/compute/docs/oslogin/setup-two-factor-authentication.")]
+        [DisplayName("OS Login 2FA")]
+        public FeatureFlag OsLogin2FA => GetMetadataFeatureFlag("enable-oslogin-2fa", true);
+
+        [Browsable(true)]
+        [Category(SshConfigurationCategory)]
+        [DisplayName("Block project-wide SSH keys")]
+        [Description("Disallow project-side SSH keys, "+
+                     "see https://cloud.google.com/compute/docs/instances/adding-removing-ssh-keys#block-project-keys.")]
+        public FeatureFlag BlockProjectSshKeys => GetMetadataFeatureFlag("block-project-ssh-keys", true);
 
         //---------------------------------------------------------------------
         // Instance configuration.
