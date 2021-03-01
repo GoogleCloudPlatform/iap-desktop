@@ -57,6 +57,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.SshTerminal
 
         public InstanceLocator Instance => this.viewModel.Instance;
 
+        public bool IsFormClosing { get; private set; } = false;
 
         public override string Text
         {
@@ -76,7 +77,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.SshTerminal
                 .Documents
                 .EnsureNotNull()
                 .OfType<SshTerminalPane>()
-                .Where(pane => pane.Instance == vmInstance)
+                .Where(pane => pane.Instance == vmInstance && !pane.IsFormClosing)
                 .FirstOrDefault();
         }
 
@@ -205,6 +206,11 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.SshTerminal
 
         private void OnFormClosed(object sender, System.Windows.Forms.FormClosedEventArgs e)
         {
+            // Mark this pane as being in closing state even though it is still
+            // visible at this point. The flag ensures that this pane is
+            // not considered by TryGetExistingPane anymore.
+            this.IsFormClosing = true;
+
             this.viewModel.DisconnectAsync().Wait();
         }
 

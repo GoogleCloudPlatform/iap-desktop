@@ -475,8 +475,10 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.RemoteDesktop
                 }
 
                 // Mark this pane as being in closing state even though it is still
-                // visible at this point.
+                // visible at this point. The flag ensures that this pane is
+                // not considered by TryGetExistingPane anymore.
                 this.IsFormClosing = true;
+
                 await this.eventService.FireAsync(new SessionEndedEvent(this.Instance))
                     .ConfigureAwait(true);
             }
