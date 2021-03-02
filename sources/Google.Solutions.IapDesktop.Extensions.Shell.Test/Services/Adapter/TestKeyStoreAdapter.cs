@@ -32,9 +32,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Adapter
     public class TestKeyStoreAdapter : ApplicationFixtureBase
     {
         // This is for testing only, so use a weak key size.
-        private const int KeySize = 1024;
         private static readonly string KeyName = "test-" + typeof(TestKeyStoreAdapter).Name;
-
 
         [SetUp]
         public void SetUp()
@@ -48,13 +46,11 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Adapter
         }
 
         [Test]
-        public async Task WhenKeyNotFoundAndCreateNewIsFalse_ThenGetRsaKeyAsyncReturnsNull()
+        public void WhenKeyNotFoundAndCreateNewIsFalse_ThenGetRsaKeyAsyncReturnsNull()
         {
-            var adapter = new KeyStoreAdapter(
-                CngProvider.MicrosoftSoftwareKeyStorageProvider,
-                KeySize);
+            var adapter = new KeyStoreAdapter();
 
-            Assert.IsNull(await adapter.CreateRsaKeyAsync(
+            Assert.IsNull(adapter.CreateRsaKey(
                 KeyName,
                 CngKeyUsages.Signing,
                 false,
@@ -62,13 +58,11 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Adapter
         }
 
         [Test]
-        public async Task WhenKeyNotFoundAndCreateNewIsTrue_ThenGetRsaKeyAsyncReturnsNewKey()
+        public void WhenKeyNotFoundAndCreateNewIsTrue_ThenGetRsaKeyAsyncReturnsNewKey()
         {
-            var adapter = new KeyStoreAdapter(
-                CngProvider.MicrosoftSoftwareKeyStorageProvider,
-                KeySize);
+            var adapter = new KeyStoreAdapter();
 
-            var key = await adapter.CreateRsaKeyAsync(
+            var key = adapter.CreateRsaKey(
                 KeyName,
                 CngKeyUsages.Signing,
                 true,
@@ -79,19 +73,17 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Adapter
         }
 
         [Test]
-        public async Task WhenKeyExists_ThenGetRsaKeyAsyncReturnsKey()
+        public void WhenKeyExists_ThenGetRsaKeyAsyncReturnsKey()
         {
-            var adapter = new KeyStoreAdapter(
-                CngProvider.MicrosoftSoftwareKeyStorageProvider,
-                KeySize);
+            var adapter = new KeyStoreAdapter();
 
-            var key1 = await adapter.CreateRsaKeyAsync(
+            var key1 = adapter.CreateRsaKey(
                 KeyName,
                 CngKeyUsages.Signing,
                 true,
                 null);
 
-            var key2 = await adapter.CreateRsaKeyAsync(
+            var key2 = adapter.CreateRsaKey(
                 KeyName,
                 CngKeyUsages.Signing,
                 false,
@@ -103,24 +95,22 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Adapter
         }
 
         [Test]
-        public async Task WhenKeyExistsButUsageDoesNotMatch_ThenGetRsaKeyAsyncReturnsKey()
+        public void WhenKeyExistsButUsageDoesNotMatch_ThenGetRsaKeyAsyncReturnsKey()
         {
-            var adapter = new KeyStoreAdapter(
-                CngProvider.MicrosoftSoftwareKeyStorageProvider,
-                KeySize);
+            var adapter = new KeyStoreAdapter();
 
-            var key1 = await adapter.CreateRsaKeyAsync(
+            var key1 = adapter.CreateRsaKey(
                 KeyName,
                 CngKeyUsages.Signing,
                 true,
                 null);
 
-            AssertEx.ThrowsAggregateException<CryptographicException>(
-                () => adapter.CreateRsaKeyAsync(
+            Assert.Throws<CryptographicException>(
+                () => adapter.CreateRsaKey(
                     KeyName,
                     CngKeyUsages.Decryption,
                     false,
-                    null).Wait());
+                    null));
         }
     }
 }

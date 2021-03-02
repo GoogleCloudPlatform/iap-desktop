@@ -105,6 +105,7 @@
     <Compile Include="Services\Adapter\MetadataAuthorizedKey.cs" />
     <Compile Include="Services\Adapter\MetadataAuthorizedKeySet.cs" />
     <Compile Include="Services\Adapter\OsLoginAdapter.cs" />
+    <Compile Include="Services\ConnectionFailedException.cs" />
     <Compile Include="Services\ConnectionSettings\ProjectExplorerNodeExtensions.cs" />
     <Compile Include="Services\Ssh\AuthorizedKey.cs" />
     <Compile Include="Services\Ssh\AuthorizedKeyService.cs" />
@@ -114,7 +115,7 @@
     <Compile Include="Services\Rdp\RdpConnectionService.cs" />
     <Compile Include="Services\ConnectionSettings\ConnectionSettings.cs" />
     <Compile Include="Services\ConnectionSettings\ConnectionSettingsRepository.cs" />
-    <Compile Include="Services\SshExtension.cs" />
+    <Compile Include="Services\Ssh\SshConnectionService.cs" />
     <Compile Include="Services\Tunnel\SameProcessRelayPolicy.cs" />
     <Compile Include="Services\Tunnel\TcpTable.cs" />
     <Compile Include="Services\Tunnel\UnsafeNativeMethods.cs" />

@@ -19,6 +19,7 @@
 // under the License.
 //
 
+using Google.Solutions.Common.Diagnostics;
 using Google.Solutions.IapDesktop.Application.ObjectModel;
 using Google.Solutions.IapDesktop.Application.Util;
 using Google.Solutions.IapDesktop.Application.Views.ProjectExplorer;
@@ -32,6 +33,7 @@ using System.Web;
 
 namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.ConnectionSettings
 {
+    [SkipCodeCoverage("For testing only")]
     [Service(ServiceLifetime.Singleton)]
     public class HtmlPageGenerator
     {
