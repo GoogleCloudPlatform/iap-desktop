@@ -160,7 +160,8 @@ clean-libssh2: $(MAKEDIR)\obj\vcpkg\vcpkg.exe
 		--triplet libssh2-x86-windows-mixed \
 		--overlay-ports=$(MAKEDIR)\vcpkg-ports \
 		--overlay-triplets=$(MAKEDIR)\vcpkg-triplets
-        
+	rd /S /Q $(LOCALAPPDATA)\vcpkg
+
 #------------------------------------------------------------------------------
 # Main targets
 #------------------------------------------------------------------------------
