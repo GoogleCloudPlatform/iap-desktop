@@ -53,6 +53,11 @@ namespace Google.Solutions.Ssh
 
         public TimeSpan SocketWaitInterval { get; set; } = TimeSpan.FromSeconds(2);
 
+        /// <summary>
+        /// Timeout for blocking operations (used during connection phase).
+        /// </summary>
+        public TimeSpan BlockingTimeout { get; set; } = TimeSpan.FromSeconds(15);
+
         public string Banner { get; set; }
 
         //---------------------------------------------------------------------
@@ -198,6 +203,8 @@ namespace Google.Solutions.Ssh
                         {
                             session.SetLocalBanner(this.Banner);
                         }
+
+                        session.Timeout = this.BlockingTimeout;
 
                         //
                         // Open connection and perform handshake using blocking I/O.
@@ -400,7 +407,11 @@ namespace Google.Solutions.Ssh
         {
             // Stop worker thread.
             this.workerCancellationSource.Cancel();
-            this.workerThread.Join();
+            
+            //
+            // NB. Do not join the thread as this could block the current
+            // thread (which is likely the UI thread.
+            //
 
             if (!this.disposed && disposing)
             {

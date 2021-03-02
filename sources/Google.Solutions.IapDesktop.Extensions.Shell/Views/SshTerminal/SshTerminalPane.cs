@@ -110,6 +110,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.SshTerminal
                 View = this
             };
 
+            Debug.Assert(this.viewModel.View != null);
+
             this.DockAreas = DockAreas.Document;
 
             this.reconnectPanel.BindReadonlyProperty(
@@ -141,6 +143,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.SshTerminal
 
             this.Disposed += (sender, args) =>
             {
+                this.viewModel.ConnectionFailed -= OnErrorReceivedFromServerAsync;
+                this.viewModel.DataReceived -= OnDataReceivedFromServerAsync;
                 this.viewModel.Dispose();
             };
             this.FormClosed += OnFormClosed;
@@ -269,7 +273,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.SshTerminal
             ConnectionErrorEventArgs args)
         {
             Debug.Assert(!this.InvokeRequired);
-
             ShowErrorAndClose("SSH connection terminated", args.Error);
         }
 

@@ -104,15 +104,23 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.SshTerminal
             get => this.connectionStatus;
             private set
             {
-                Debug.Assert(this.ViewInvoker != null);
-                Debug.Assert(!this.ViewInvoker.InvokeRequired, "Accessed from UI thread");
-
                 this.connectionStatus = value;
 
-                RaisePropertyChange();
-                RaisePropertyChange((SshTerminalPaneViewModel m) => m.IsSpinnerVisible);
-                RaisePropertyChange((SshTerminalPaneViewModel m) => m.IsTerminalVisible);
-                RaisePropertyChange((SshTerminalPaneViewModel m) => m.IsReconnectPanelVisible);
+                Debug.Assert(this.ViewInvoker != null);
+                if (this.ViewInvoker != null)
+                {
+                    //
+                    // It's (unlikely but( possible that the View has already been torn down.
+                    // In that case, do not deliver events since they are likely to
+                    // cause trouble and touch disposed objects.
+                    //
+                    Debug.Assert(!this.ViewInvoker.InvokeRequired, "Accessed from UI thread");
+
+                    RaisePropertyChange();
+                    RaisePropertyChange((SshTerminalPaneViewModel m) => m.IsSpinnerVisible);
+                    RaisePropertyChange((SshTerminalPaneViewModel m) => m.IsTerminalVisible);
+                    RaisePropertyChange((SshTerminalPaneViewModel m) => m.IsReconnectPanelVisible);
+                }
             }
         }
 
@@ -148,6 +156,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.SshTerminal
 
         public async Task ConnectAsync(TerminalSize initialSize)
         {
+            Debug.Assert(this.View != null);
+            Debug.Assert(this.ViewInvoker != null);
+
             void OnErrorReceivedFromServerAsync(Exception exception)
             {
                 // NB. Callback runs on SSH thread, not on UI thread.
