@@ -313,6 +313,12 @@
           Source="$(var.BASEDIR)\obj\$(var.CONFIGURATION)\Google.Apis.PlatformServices.dll"
           Vital="yes"/>
         <File
+          Id="FileGoogleApisCloudOSLoginV1Dll"
+          Name="Google.Apis.CloudOSLogin.v1.dll"
+          DiskId="1"
+          Source="$(var.BASEDIR)\obj\$(var.CONFIGURATION)\Google.Apis.CloudOSLogin.v1.dll"
+          Vital="yes"/>
+        <File
           Id="FileNewtonsoftJsonDll"
           Name="Newtonsoft.Json.dll"
           DiskId="1"
