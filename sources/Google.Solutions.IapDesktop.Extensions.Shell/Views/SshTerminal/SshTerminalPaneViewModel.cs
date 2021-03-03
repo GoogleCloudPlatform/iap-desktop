@@ -239,7 +239,13 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.SshTerminal
                         OnDataReceivedFromServerAsync,
                         OnErrorReceivedFromServerAsync)
                     {
-                        Banner = SshSession.BannerPrefix + Globals.UserAgent
+                        Banner = SshSession.BannerPrefix + Globals.UserAgent,
+
+                        //
+                        // NB. Do not join worker thread as this could block the
+                        // UI thread.
+                        //
+                        JoinWorkerThreadOnDispose = false
                     };
 
                     await ConnectAndTranslateErrorsAsync().ConfigureAwait(true);

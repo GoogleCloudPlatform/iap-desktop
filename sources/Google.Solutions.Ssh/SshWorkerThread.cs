@@ -58,6 +58,8 @@ namespace Google.Solutions.Ssh
         /// </summary>
         public TimeSpan BlockingTimeout { get; set; } = TimeSpan.FromSeconds(15);
 
+        public bool JoinWorkerThreadOnDispose { get; set; } = true;
+
         public string Banner { get; set; }
 
         //---------------------------------------------------------------------
@@ -408,10 +410,10 @@ namespace Google.Solutions.Ssh
             // Stop worker thread.
             this.workerCancellationSource.Cancel();
             
-            //
-            // NB. Do not join the thread as this could block the current
-            // thread (which is likely the UI thread.
-            //
+            if (this.JoinWorkerThreadOnDispose)
+            {
+                this.workerThread.Join();
+            }
 
             if (!this.disposed && disposing)
             {
