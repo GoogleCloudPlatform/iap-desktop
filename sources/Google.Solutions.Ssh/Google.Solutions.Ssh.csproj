@@ -86,7 +86,6 @@
     <PostBuildEvent>
     </PostBuildEvent>
   </PropertyGroup>
-  <Import Project="..\packages\libssh2.1.9.0\build\libssh2.targets" Condition="Exists('..\packages\libssh2.1.9.0\build\libssh2.targets')" />
   <Import Project="..\packages\libssh2.1.9.0.10\build\libssh2.targets" Condition="Exists('..\packages\libssh2.1.9.0.10\build\libssh2.targets')" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>
