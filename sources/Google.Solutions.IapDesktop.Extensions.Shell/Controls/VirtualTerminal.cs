@@ -69,6 +69,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Controls
 
         public string WindowTitle { get; set; }
 
+        public bool EnableCtrlV { get; set; } = true;
+
         public VirtualTerminal()
         {
             InitializeComponent();
@@ -410,8 +412,24 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Controls
         }
 
         //---------------------------------------------------------------------
-        // Keybpard event handlers.
+        // Keyboard event handlers.
         //---------------------------------------------------------------------
+
+        private void PasteClipboard()
+        {
+            // Paste clipboard.
+            var text = Clipboard.GetText();
+            if (!string.IsNullOrEmpty(text))
+            {
+                //
+                // Convert to Unix line endings, otherwise pasting a multi-
+                // line command will be interpreted as a sequence of
+                // commands.
+                //
+                text = text.Replace("\r\n", "\n");
+                this.controller.Paste(Encoding.UTF8.GetBytes(text));
+            }
+        }
 
         protected override bool ProcessDialogKey(Keys keyData)
         {
@@ -495,14 +513,22 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Controls
                 control,
                 shift))
             {
-                //
-                // This is a key sequence that needs to be
-                // translated to some VT sequence.
-                //
-                return this.controller.KeyPressed(
-                    NameFromKey(keyCode),
-                    control,
-                    shift);
+                if (this.EnableCtrlV && control && keyCode == Keys.V)
+                {
+                    PasteClipboard();
+                    return true;
+                }
+                else
+                {
+                    //
+                    // This is a key sequence that needs to be
+                    // translated to some VT sequence.
+                    //
+                    return this.controller.KeyPressed(
+                        NameFromKey(keyCode),
+                        control,
+                        shift);
+                }
             }
             else if (alt && control)
             {
@@ -661,18 +687,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Controls
         {
             if (e.Button == MouseButtons.Right)
             {
-                // Paste clipboard.
-                var text = Clipboard.GetText();
-                if (!string.IsNullOrEmpty(text))
-                {
-                    //
-                    // Convert to Unix line endings, otherwise pasting a multi-
-                    // line command will be interpreted as a sequence of
-                    // commands.
-                    //
-                    text = text.Replace("\r\n", "\n");
-                    this.controller.Paste(Encoding.UTF8.GetBytes(text));
-                }
+                PasteClipboard();
             }
             else if (e.Button == MouseButtons.Left)
             {
