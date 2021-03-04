@@ -504,6 +504,13 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Controls
                     control,
                     shift);
             }
+            else if (alt && control)
+            {
+                //
+                // AltGr - let KeyPress handle the composition.
+                //
+                return false;
+            }
             else if (alt)
             {
                 //
