@@ -536,6 +536,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Controls
                 // This is a plain character. Defer handling to 
                 // KeyPress so that Windows does the nasty key
                 // composition and dead key handling for us.
+                //
                 return false;
             }
         }
@@ -727,11 +728,15 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Controls
             {
                 // We're tracking a selection.
 
+                //
+                // NB. If the mouse escapes the window borders, the coordinates
+                // can get negative - therefore, use the max.
+                //
                 var captured = this.controller.GetText(
-                    this.textSelection.Start.Column,
-                    this.textSelection.Start.Row,
-                    this.textSelection.End.Column,
-                    this.textSelection.End.Row);
+                    Math.Max(0, this.textSelection.Start.Column),
+                    Math.Max(0, this.textSelection.Start.Row),
+                    Math.Max(0, this.textSelection.End.Column),
+                    Math.Max(0, this.textSelection.End.Row));
 
                 if (!string.IsNullOrEmpty(captured))
                 {
