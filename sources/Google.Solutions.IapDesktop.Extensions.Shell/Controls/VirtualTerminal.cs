@@ -645,6 +645,12 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Controls
                 var text = Clipboard.GetText();
                 if (!string.IsNullOrEmpty(text))
                 {
+                    //
+                    // Convert to Unix line endings, otherwise pasting a multi-
+                    // line command will be interpreted as a sequence of
+                    // commands.
+                    //
+                    text = text.Replace("\r\n", "\n");
                     this.controller.Paste(Encoding.UTF8.GetBytes(text));
                 }
             }
