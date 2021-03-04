@@ -515,8 +515,20 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Controls
                 // shortcuts.
                 //
                 var ch = KeyUtil.CharFromKeyCode(keyCode);
-                OnInput(new InputEventArgs("\u001b" + ch));
-                return true;
+                if (ch.Length > 0)
+                {
+                    OnInput(new InputEventArgs("\u001b" + ch));
+                    return true;
+                }
+                else
+                {
+                    //
+                    // This is a stray Alt press, could be part
+                    // of an Alt+Tab action. Do not handle this
+                    // as it might screw up subsequent input.
+                    //
+                    return false;
+                }
             }
             else
             {
