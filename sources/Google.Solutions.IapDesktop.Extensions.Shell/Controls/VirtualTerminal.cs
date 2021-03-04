@@ -356,7 +356,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Controls
 
         private void PaintDiagnostics(Graphics graphics)
         {
-#if DEBUG
+#if TERMINAL_DEBUG
             var characterSize = this.CharacterSize;
             var diagnosticText =
                  $"Dimensions: {this.Columns}x{this.Rows}\n" +
@@ -602,6 +602,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Controls
                 e.KeyChar.ToString(),
                 false,
                 false);
+
+            ClearTextSelection();
         }
 
         protected override void OnResize(EventArgs e)
@@ -631,8 +633,18 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Controls
         }
 
         //---------------------------------------------------------------------
-        // Mouse event handlers.
+        // Mouse event handlers and text selection.
         //---------------------------------------------------------------------
+
+        private void ClearTextSelection()
+        {
+            if (this.textSelection != null)
+            {
+                // Clear selection.
+                this.textSelection = null;
+                Invalidate();
+            }
+        }
 
         protected override void OnMouseWheel(MouseEventArgs e)
         {
@@ -733,7 +745,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Controls
 
                     if (this.textSelection != newSelection)
                     {
-                        textSelection = newSelection;
+                        this.textSelection = newSelection;
 
                         // Repaint to show selection.
                         Invalidate();
