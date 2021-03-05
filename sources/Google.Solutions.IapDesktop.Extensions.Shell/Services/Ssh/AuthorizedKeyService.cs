@@ -41,7 +41,6 @@ using System.Threading.Tasks;
 
 namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Ssh
 {
-    
     [Service(typeof(IAuthorizedKeyService))]
     public class AuthorizedKeyService : IAuthorizedKeyService
     {
