@@ -117,6 +117,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
             this.osDropDownButton.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.osDropDownButton.Name = "osDropDownButton";
             this.osDropDownButton.Size = new System.Drawing.Size(29, 22);
+            this.osDropDownButton.Text = "Filter VM instances by operating system";
             // 
             // windowsInstancesToolStripMenuItem
             // 
