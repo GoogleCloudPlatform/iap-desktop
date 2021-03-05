@@ -156,39 +156,50 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Ssh
             // for this instance.
             //
 
-            var authorizedKeyTask = this.jobService.RunInBackground(
-                new JobDescription(
-                    $"Publishing SSH key for {instance.Name}...",
-                    JobUserFeedbackType.BackgroundFeedback),
-                async token =>
-                {
-                    //
-                    // Authorize the key.
-                    //
-                    return await this.authorizedKeyService.AuthorizeKeyAsync(
-                            vmNode.Reference,
-                            new RsaSshKey(rsaKey),
-                            TimeSpan.FromHours(2),  // TODO: Make timeout configurable
-                            "test",                 // TODO: Make username configurable
-                            AuthorizeKeyMethods.All,
-                            token)
-                        .ConfigureAwait(true);
-                });
+            var sshKey = new RsaSshKey(rsaKey);
+            try
+            {
+                var authorizedKeyTask = this.jobService.RunInBackground(
+                    new JobDescription(
+                        $"Publishing SSH key for {instance.Name}...",
+                        JobUserFeedbackType.BackgroundFeedback),
+                    async token =>
+                    {
+                        //
+                        // Authorize the key.
+                        //
+                        return await this.authorizedKeyService.AuthorizeKeyAsync(
+                                vmNode.Reference,
+                                sshKey,
+                                TimeSpan.FromHours(2),  // TODO: Make timeout configurable
+                                "test",                 // TODO: Make username configurable
+                                AuthorizeKeyMethods.All,
+                                token)
+                            .ConfigureAwait(true);
+                    });
 
-            //
-            // Wait for both jobs to continue (they are both fairly slow).
-            //
+                //
+                // Wait for both jobs to continue (they are both fairly slow).
+                //
 
-            await Task.WhenAll(tunnelTask, authorizedKeyTask)
-                .ConfigureAwait(true);
+                await Task.WhenAll(tunnelTask, authorizedKeyTask)
+                    .ConfigureAwait(true);
 
-            // TODO: make sure key is disposed
-
-            await this.sessionBroker.ConnectAsync(
-                    instance,
-                    new IPEndPoint(IPAddress.Loopback, tunnelTask.Result.LocalPort),
-                    authorizedKeyTask.Result)
-                .ConfigureAwait(true);
+                //
+                // NB. ConnectAsync takes ownership of the key and will retain
+                // it for the lifetime of the session.
+                //
+                await this.sessionBroker.ConnectAsync(
+                        instance,
+                        new IPEndPoint(IPAddress.Loopback, tunnelTask.Result.LocalPort),
+                        authorizedKeyTask.Result)
+                    .ConfigureAwait(true);
+            }
+            catch (Exception)
+            {
+                sshKey.Dispose();
+                throw;
+            }
         }
     }
 }

@@ -31,7 +31,7 @@ using System.Text.RegularExpressions;
 
 namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Ssh
 {
-    public class AuthorizedKey
+    public sealed class AuthorizedKey : IDisposable
     {
         //
         // NB. This is the pattern used by Debian's shadow-utils.
@@ -160,6 +160,15 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Ssh
                         : AuthorizeKeyMethods.ProjectMetadata,
                     username);
             }
+        }
+
+        //---------------------------------------------------------------------
+        // IDisposable.
+        //---------------------------------------------------------------------
+
+        public void Dispose()
+        {
+            this.Key.Dispose();
         }
     }
 }
