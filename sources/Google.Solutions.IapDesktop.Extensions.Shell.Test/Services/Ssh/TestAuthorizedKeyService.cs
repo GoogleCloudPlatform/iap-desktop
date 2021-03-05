@@ -426,8 +426,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Ssh
                     legacySshKeyPresent: false,
                     projectWideKeysBlockedForProject: false,
                     projectWideKeysBlockedForInstance: false,
-                    existingProjectKeySet,
-                    null);
+                    existingProjectKeySet: existingProjectKeySet,
+                    existingInstanceKeySet: null);
                 var service = new AuthorizedKeyService(
                     CreateAuthorizationAdapterMock().Object,
                     computeEngineAdapter.Object,
@@ -478,8 +478,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Ssh
                     legacySshKeyPresent: false,
                     projectWideKeysBlockedForProject: false,
                     projectWideKeysBlockedForInstance: false,
-                    existingProjectKeySet,
-                    null);
+                    existingProjectKeySet: existingProjectKeySet,
+                    existingInstanceKeySet: null);
                 var service = new AuthorizedKeyService(
                     CreateAuthorizationAdapterMock().Object,
                     computeEngineAdapter.Object,
@@ -530,8 +530,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Ssh
                     legacySshKeyPresent: false,
                     projectWideKeysBlockedForProject: false,
                     projectWideKeysBlockedForInstance: false,
-                    existingProjectKeySet,
-                    null);
+                    existingProjectKeySet: existingProjectKeySet,
+                    existingInstanceKeySet: null);
                 var service = new AuthorizedKeyService(
                     CreateAuthorizationAdapterMock().Object,
                     computeEngineAdapter.Object,
