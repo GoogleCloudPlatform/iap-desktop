@@ -27,6 +27,7 @@ using Google.Solutions.Common.Locator;
 using Google.Solutions.Common.Test;
 using Google.Solutions.IapDesktop.Application.Services.Adapters;
 using Google.Solutions.IapDesktop.Application.Test;
+using Google.Solutions.IapDesktop.Extensions.Shell.Services.Adapter;
 using Google.Solutions.IapDesktop.Extensions.Shell.Services.Ssh;
 using Google.Solutions.Ssh;
 using Moq;
@@ -41,6 +42,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Ssh
     [TestFixture]
     public class TestAuthorizedKeyService : ApplicationFixtureBase
     {
+        private const string SampleEmailAddress = "bob@example.com";
         private readonly static InstanceLocator SampleLocator
             = new InstanceLocator("project-1", "zone-1", "instance-1");
 
@@ -49,7 +51,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Ssh
             var authorization = new Mock<IAuthorization>();
             authorization
                 .SetupGet(a => a.Email)
-                .Returns("bob@example.com");
+                .Returns(SampleEmailAddress);
 
             var adapter = new Mock<IAuthorizationAdapter>();
             adapter
@@ -65,7 +67,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Ssh
             bool osLogin2fa,
             bool legacySshKeyPresent,
             bool projectWideKeysBlockedForProject,
-            bool projectWideKeysBlockedForInstance)
+            bool projectWideKeysBlockedForInstance,
+            MetadataAuthorizedKeySet existingProjectKeySet = null,
+            MetadataAuthorizedKeySet existingInstanceKeySet = null)
         {
             var projectMetadata = new Metadata();
             if (osLoginEnabledForProject.HasValue)
@@ -84,6 +88,12 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Ssh
                 projectMetadata.Add("block-project-ssh-keys", "true");
             }
 
+            if (existingProjectKeySet != null)
+            {
+                projectMetadata.Add(
+                    MetadataAuthorizedKeySet.MetadataKey,
+                    existingProjectKeySet.ToString());
+            }
 
             var instanceMetadata = new Metadata();
             if (osLoginEnabledForInstance.HasValue)
@@ -105,6 +115,13 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Ssh
             if (projectWideKeysBlockedForInstance)
             {
                 instanceMetadata.Add("block-project-ssh-keys", "true");
+            }
+
+            if (existingInstanceKeySet != null)
+            {
+                instanceMetadata.Add(
+                    MetadataAuthorizedKeySet.MetadataKey,
+                    existingInstanceKeySet.ToString());
             }
 
             var adapter = new Mock<IComputeEngineAdapter>();
@@ -361,7 +378,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Ssh
         }
 
         //---------------------------------------------------------------------
-        // Metadata.
+        // Metadata - using existing keys.
         //---------------------------------------------------------------------
 
         [Test]
@@ -388,6 +405,166 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Ssh
                     AuthorizeKeyMethods.All,
                     CancellationToken.None).Wait());
         }
+
+        [Test]
+        public async Task WhenExistingUnmanagedKeyFound_ThenKeyIsNotPushedAgain()
+        {
+            using (var key = RsaSshKey.NewEphemeralKey())
+            {
+                var existingProjectKeySet = MetadataAuthorizedKeySet
+                    .FromMetadata(new Metadata())
+                    .Add(new UnmanagedMetadataAuthorizedKey(
+                        "bob",
+                        "ssh-rsa",
+                        key.PublicKeyString,
+                        SampleEmailAddress));
+
+                var computeEngineAdapter = CreateComputeEngineAdapterMock(
+                    osLoginEnabledForProject: false,
+                    osLoginEnabledForInstance: false,
+                    osLogin2fa: false,
+                    legacySshKeyPresent: false,
+                    projectWideKeysBlockedForProject: false,
+                    projectWideKeysBlockedForInstance: false,
+                    existingProjectKeySet: existingProjectKeySet,
+                    existingInstanceKeySet: null);
+                var service = new AuthorizedKeyService(
+                    CreateAuthorizationAdapterMock().Object,
+                    computeEngineAdapter.Object,
+                    CreateResourceManagerAdapterMock(true).Object,
+                    CreateOsLoginServiceMock().Object);
+
+                var authorizedKey = await service.AuthorizeKeyAsync(
+                    SampleLocator,
+                    key,
+                    TimeSpan.FromMinutes(1),
+                    "bob",
+                    AuthorizeKeyMethods.All,
+                    CancellationToken.None);
+
+                Assert.IsNotNull(authorizedKey);
+                Assert.AreEqual(AuthorizeKeyMethods.ProjectMetadata, authorizedKey.AuthorizationMethod);
+                Assert.AreEqual("bob", authorizedKey.Username);
+
+                computeEngineAdapter.Verify(a => a.UpdateMetadataAsync(
+                    It.IsAny<InstanceLocator>(),
+                    It.IsAny<Action<Metadata>>(),
+                    It.IsAny<CancellationToken>()), Times.Never);
+
+                computeEngineAdapter.Verify(a => a.UpdateCommonInstanceMetadataAsync(
+                    It.IsAny<string>(),
+                    It.IsAny<Action<Metadata>>(),
+                    It.IsAny<CancellationToken>()), Times.Never);
+            }
+        }
+
+        [Test]
+        public async Task WhenExistingValidManagedKeyFound_ThenKeyIsNotPushedAgain()
+        {
+            using (var key = RsaSshKey.NewEphemeralKey())
+            {
+                var existingProjectKeySet = MetadataAuthorizedKeySet
+                    .FromMetadata(new Metadata())
+                    .Add(new ManagedMetadataAuthorizedKey(
+                        "bob",
+                        "ssh-rsa",
+                        key.PublicKeyString,
+                        new ManagedKeyMetadata(SampleEmailAddress, DateTime.UtcNow.AddMinutes(5))));
+
+                var computeEngineAdapter = CreateComputeEngineAdapterMock(
+                    osLoginEnabledForProject: false,
+                    osLoginEnabledForInstance: false,
+                    osLogin2fa: false,
+                    legacySshKeyPresent: false,
+                    projectWideKeysBlockedForProject: false,
+                    projectWideKeysBlockedForInstance: false,
+                    existingProjectKeySet: existingProjectKeySet,
+                    existingInstanceKeySet: null);
+                var service = new AuthorizedKeyService(
+                    CreateAuthorizationAdapterMock().Object,
+                    computeEngineAdapter.Object,
+                    CreateResourceManagerAdapterMock(true).Object,
+                    CreateOsLoginServiceMock().Object);
+
+                var authorizedKey = await service.AuthorizeKeyAsync(
+                    SampleLocator,
+                    key,
+                    TimeSpan.FromMinutes(1),
+                    "bob",
+                    AuthorizeKeyMethods.All,
+                    CancellationToken.None);
+
+                Assert.IsNotNull(authorizedKey);
+                Assert.AreEqual(AuthorizeKeyMethods.ProjectMetadata, authorizedKey.AuthorizationMethod);
+                Assert.AreEqual("bob", authorizedKey.Username);
+
+                computeEngineAdapter.Verify(a => a.UpdateMetadataAsync(
+                    It.IsAny<InstanceLocator>(),
+                    It.IsAny<Action<Metadata>>(),
+                    It.IsAny<CancellationToken>()), Times.Never);
+
+                computeEngineAdapter.Verify(a => a.UpdateCommonInstanceMetadataAsync(
+                    It.IsAny<string>(),
+                    It.IsAny<Action<Metadata>>(),
+                    It.IsAny<CancellationToken>()), Times.Never);
+            }
+        }
+
+        [Test]
+        public async Task WhenExistingInvalidManagedKeyFound_ThenNewKeyIsPushed()
+        {
+            using (var key = RsaSshKey.NewEphemeralKey())
+            {
+                var existingProjectKeySet = MetadataAuthorizedKeySet
+                    .FromMetadata(new Metadata())
+                    .Add(new ManagedMetadataAuthorizedKey(
+                        "bob",
+                        "ssh-rsa",
+                        key.PublicKeyString,
+                        new ManagedKeyMetadata(SampleEmailAddress, DateTime.UtcNow.AddMinutes(-5))));
+
+                var computeEngineAdapter = CreateComputeEngineAdapterMock(
+                    osLoginEnabledForProject: false,
+                    osLoginEnabledForInstance: false,
+                    osLogin2fa: false,
+                    legacySshKeyPresent: false,
+                    projectWideKeysBlockedForProject: false,
+                    projectWideKeysBlockedForInstance: false,
+                    existingProjectKeySet: existingProjectKeySet,
+                    existingInstanceKeySet: null);
+                var service = new AuthorizedKeyService(
+                    CreateAuthorizationAdapterMock().Object,
+                    computeEngineAdapter.Object,
+                    CreateResourceManagerAdapterMock(true).Object,
+                    CreateOsLoginServiceMock().Object);
+
+                var authorizedKey = await service.AuthorizeKeyAsync(
+                    SampleLocator,
+                    key,
+                    TimeSpan.FromMinutes(1),
+                    "bob",
+                    AuthorizeKeyMethods.All,
+                    CancellationToken.None);
+
+                Assert.IsNotNull(authorizedKey);
+                Assert.AreEqual(AuthorizeKeyMethods.ProjectMetadata, authorizedKey.AuthorizationMethod);
+                Assert.AreEqual("bob", authorizedKey.Username);
+
+                computeEngineAdapter.Verify(a => a.UpdateMetadataAsync(
+                    It.IsAny<InstanceLocator>(),
+                    It.IsAny<Action<Metadata>>(),
+                    It.IsAny<CancellationToken>()), Times.Never);
+
+                computeEngineAdapter.Verify(a => a.UpdateCommonInstanceMetadataAsync(
+                    It.IsAny<string>(),
+                    It.IsAny<Action<Metadata>>(),
+                    It.IsAny<CancellationToken>()), Times.Once);
+            }
+        }
+
+        //---------------------------------------------------------------------
+        // Metadata - pushing new keys.
+        //---------------------------------------------------------------------
 
         [Test]
         public async Task WhenProjectWideSshKeysBlockedInProject_ThenAuthorizeKeyAsyncPushesKeyToInstanceMetadata()
