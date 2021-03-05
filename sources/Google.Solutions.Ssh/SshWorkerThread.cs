@@ -260,6 +260,12 @@ namespace Google.Solutions.Ssh
                                 //
                                 session.ConfigureKeepAlive(false, this.KeepAliveInterval);
 
+                                var waitHandles = new[]
+                                {
+                                    readyToReceive.DangerousGetHandle(),
+                                    this.readyToSend.DangerousGetHandle()
+                                };
+
                                 while (!this.workerCancellationSource.IsCancellationRequested)
                                 {
                                     var currentOperation = Operation.Receiving | Operation.Sending;
@@ -267,14 +273,8 @@ namespace Google.Solutions.Ssh
                                     try
                                     {
                                         // 
-                                        // Wait for (data received on socket) OR (user data to send)
-                                        //
-                                        var waitHandles = new[]
-                                        {
-                                            readyToReceive.DangerousGetHandle(),
-                                            this.readyToSend.DangerousGetHandle()
-                                        };
-
+                                        // In each iteration, wait for 
+                                        // (data received on socket) OR (user data to send)
                                         //
                                         // NB. The timeout should not be lower than approx.
                                         // one second, otherwise we spend too much time calling
