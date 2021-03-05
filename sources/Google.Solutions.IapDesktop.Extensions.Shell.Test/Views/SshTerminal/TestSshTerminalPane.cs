@@ -271,6 +271,32 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.SshTerminal
         }
 
         //---------------------------------------------------------------------
+        // Clipboard
+        //---------------------------------------------------------------------
+
+        [Test]
+        public async Task WhenPastingMultiLineTextFromClipboard_ThenLineEndingsAreConverted(
+            [LinuxInstance] ResourceTask<InstanceLocator> instanceLocatorTask,
+            [Credential(Role = PredefinedRole.ComputeInstanceAdminV1)] ResourceTask<ICredential> credential)
+        {
+            using (var pane = await ConnectSshTerminalPane(
+                await instanceLocatorTask,
+                await credential))
+            {
+                // Copy command with a line continuation.
+                Clipboard.SetText("whoami \\\r\n--help;exit\n\n");
+                pane.Terminal.PasteClipboard();
+
+                AwaitEvent<SessionEndedEvent>();
+                var buffer = pane.Terminal.GetBuffer();
+
+                StringAssert.Contains(
+                    "Usage: whoami",
+                    buffer);
+            }
+        }
+
+        //---------------------------------------------------------------------
         // Terminal input processing
         //---------------------------------------------------------------------
 

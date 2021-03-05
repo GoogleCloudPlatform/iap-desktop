@@ -415,7 +415,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Controls
         // Keyboard event handlers.
         //---------------------------------------------------------------------
 
-        private void PasteClipboard()
+        internal void PasteClipboard()
         {
             // Paste clipboard.
             var text = Clipboard.GetText();
