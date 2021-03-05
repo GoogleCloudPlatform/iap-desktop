@@ -22,6 +22,7 @@
 using Google.Solutions.Common.Locator;
 using Google.Solutions.IapDesktop.Application.Settings;
 using Google.Solutions.IapDesktop.Application.Util;
+using Google.Solutions.IapDesktop.Extensions.Shell.Services.Ssh;
 using Microsoft.Win32;
 using System;
 using System.Collections.Generic;
@@ -181,9 +182,12 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.ConnectionSettin
 
         public RegistryDwordSetting SshPort { get; private set; }
 
+        public RegistryStringSetting SshUsername { get; private set; }
+
         internal IEnumerable<ISetting> SshSettings => new ISetting[]
         {
-            this.SshPort
+            this.SshPort,
+            this.SshUsername
         };
 
         internal bool IsSshSetting(ISetting setting) => this.SshSettings.Contains(setting);
@@ -200,6 +204,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.ConnectionSettin
             public const string RdpResources = "Remote Desktop Resources";
 
             public const string SshConnection = "SSH Connection";
+            public const string SshCredentials = "SSH Credentials";
         }
 
         public IEnumerable<ISetting> Settings => this.RdpSettings.Concat(this.SshSettings);
@@ -325,6 +330,15 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.ConnectionSettin
                 key,
                 1,
                 ushort.MaxValue);
+            this.SshUsername = RegistryStringSetting.FromKey(
+                "SshUsername",
+                "Username",
+                "Preferred Linux username (only applicable if OS Login is disabled)",
+                Categories.SshCredentials,
+                null,
+                key,
+                username => string.IsNullOrEmpty(username) || 
+                            AuthorizedKey.IsValidUsername(username));
 
             Debug.Assert(this.Settings.All(s => s != null));
         }
@@ -366,6 +380,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.ConnectionSettin
 
             prototype.SshPort = (RegistryDwordSetting)
                 baseSettings.SshPort.OverlayBy(overlaySettings.SshPort);
+            prototype.SshUsername = (RegistryStringSetting)
+                baseSettings.SshUsername.OverlayBy(overlaySettings.SshUsername);
 
             Debug.Assert(prototype.Settings.All(s => s != null));
             Debug.Assert(baseSettings.Settings.All(s => s != null));

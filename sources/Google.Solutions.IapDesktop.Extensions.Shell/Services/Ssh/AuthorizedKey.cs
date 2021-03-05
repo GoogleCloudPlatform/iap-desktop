@@ -67,7 +67,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Ssh
             return (c >= '0' && c <= '9') || IsAsciiLetter(c);
         }
 
-        private static bool IsValidUsername(string username)
+        internal static bool IsValidUsername(string username)
         {
             return !string.IsNullOrWhiteSpace(username) &&
                 username.Length > 0 &&
