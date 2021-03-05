@@ -349,7 +349,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Ssh
                             ? instanceMetadata
                             : projectMetadata);
 
-                    if (existingKeySet.Contains(metadataKey))
+                    if (existingKeySet
+                        .RemoveExpiredKeys()
+                        .Contains(metadataKey))
                     {
                         //
                         // The key is there already, so we are all set.
