@@ -21,12 +21,17 @@
 
 using Google.Solutions.Ssh.Cryptography;
 using System;
+using System.Diagnostics;
 using System.Security.Cryptography;
 
 namespace Google.Solutions.Ssh
 {
     public sealed class RsaSshKey : ISshKey
     {
+#if DEBUG
+        private bool disposed = false;
+#endif
+
         private readonly RSA key;
 
         public RsaSshKey(RSA key)
@@ -68,6 +73,11 @@ namespace Google.Solutions.Ssh
 
         public void Dispose()
         {
+#if DEBUG
+            Debug.Assert(!this.disposed);
+            this.disposed = true;
+#endif
+
             this.key.Dispose();
         }
     }

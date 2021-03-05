@@ -344,6 +344,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.SshTerminal
                 this.View = null;
 
                 this.currentConnection?.Dispose();
+                this.authorizedKey.Dispose();
             }
         }
 
