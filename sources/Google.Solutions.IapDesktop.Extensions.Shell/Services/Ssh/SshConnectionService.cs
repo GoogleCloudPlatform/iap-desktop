@@ -92,6 +92,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Ssh
             var settings = (InstanceConnectionSettings)this.settingsService
                 .GetConnectionSettings(vmNode)
                 .TypedCollection;
+            var timeout = TimeSpan.FromSeconds(settings.SshConnectionTimeout.IntValue);
 
             //
             // Start job to create IAP tunnel.
@@ -109,12 +110,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Ssh
                             vmNode.Reference,
                             (ushort)settings.SshPort.IntValue);
 
-                        // Give IAP the same timeout for probing as SSH itself.
-                        // Note that the timeouts are not additive.
-
-                        // TODO: Use SSH timeout
-                        var timeout = TimeSpan.FromSeconds(settings.RdpConnectionTimeout.IntValue);
-
+                        // NB. Give IAP the same timeout for probing as SSH itself.
                         return await this.tunnelBroker.ConnectAsync(
                                 destination,
                                 new SameProcessRelayPolicy(),
@@ -172,7 +168,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Ssh
                         return await this.authorizedKeyService.AuthorizeKeyAsync(
                                 vmNode.Reference,
                                 sshKey,
-                                TimeSpan.FromHours(2),  // TODO: Make timeout configurable
+                                TimeSpan.FromHours(2),  // TODO: Make expiry configurable
                                 NullIfEmpty(settings.SshUsername.StringValue),
                                 AuthorizeKeyMethods.All,
                                 token)
@@ -193,7 +189,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Ssh
                 await this.sessionBroker.ConnectAsync(
                         instance,
                         new IPEndPoint(IPAddress.Loopback, tunnelTask.Result.LocalPort),
-                        authorizedKeyTask.Result)
+                        authorizedKeyTask.Result,
+                        timeout)
                     .ConfigureAwait(true);
             }
             catch (Exception)

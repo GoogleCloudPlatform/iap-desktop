@@ -181,13 +181,14 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.ConnectionSettin
         //---------------------------------------------------------------------
 
         public RegistryDwordSetting SshPort { get; private set; }
-
         public RegistryStringSetting SshUsername { get; private set; }
+        public RegistryDwordSetting SshConnectionTimeout { get; private set; }
 
         internal IEnumerable<ISetting> SshSettings => new ISetting[]
         {
             this.SshPort,
-            this.SshUsername
+            this.SshUsername,
+            this.SshConnectionTimeout
         };
 
         internal bool IsSshSetting(ISetting setting) => this.SshSettings.Contains(setting);
@@ -339,6 +340,14 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.ConnectionSettin
                 key,
                 username => string.IsNullOrEmpty(username) || 
                             AuthorizedKey.IsValidUsername(username));
+            this.SshConnectionTimeout = RegistryDwordSetting.FromKey(
+                "SshConnectionTimeout",
+                null, // Hidden.
+                null, // Hidden.
+                null, // Hidden.
+                30,
+                key,
+                0, 300);
 
             Debug.Assert(this.Settings.All(s => s != null));
         }

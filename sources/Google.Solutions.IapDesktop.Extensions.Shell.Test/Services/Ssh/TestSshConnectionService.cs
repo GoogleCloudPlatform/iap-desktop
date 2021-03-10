@@ -196,6 +196,30 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Ssh
         }
 
         [Test]
+        public async Task WhenNoSessionExists_ThenActivateOrConnectInstanceAsyncUsesConnectionTimeout()
+        {
+            var settings = InstanceConnectionSettings.CreateNew(SampleLocator.ProjectId, SampleLocator.Name);
+            settings.SshPort.IntValue = 2222;
+            settings.SshConnectionTimeout.IntValue = (int)TimeSpan.FromSeconds(123).TotalSeconds;
+
+            var settingsService = this.serviceRegistry.AddMock<IConnectionSettingsService>();
+            settingsService.Setup(s => s.GetConnectionSettings(It.IsAny<IProjectExplorerNode>()))
+                .Returns(settings
+                    .ToPersistentSettingsCollection(s => Assert.Fail("should not be called")));
+
+            var vmNode = new Mock<IProjectExplorerVmInstanceNode>();
+            vmNode.SetupGet(n => n.Reference).Returns(SampleLocator);
+
+            var service = new SshConnectionService(this.serviceRegistry);
+            await service.ActivateOrConnectInstanceAsync(vmNode.Object);
+
+            this.tunnelBrokerService.Verify(s => s.ConnectAsync(
+                It.Is<TunnelDestination>(d => d.RemotePort == 2222),
+                It.IsAny<ISshRelayPolicy>(),
+                It.Is<TimeSpan>(t => t == TimeSpan.FromSeconds(123))), Times.Once);
+        }
+
+        [Test]
         public void WhenTunnelUnauthorized_ThenActivateOrConnectInstanceAsyncActivatesSessionThrowsConnectionFailedException()
         {
             var settingsService = this.serviceRegistry.AddMock<IConnectionSettingsService>();

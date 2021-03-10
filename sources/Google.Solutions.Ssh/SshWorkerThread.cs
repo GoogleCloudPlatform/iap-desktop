@@ -56,7 +56,7 @@ namespace Google.Solutions.Ssh
         /// <summary>
         /// Timeout for blocking operations (used during connection phase).
         /// </summary>
-        public TimeSpan BlockingTimeout { get; set; } = TimeSpan.FromSeconds(15);
+        public TimeSpan ConnectionTimeout { get; set; } = TimeSpan.FromSeconds(15);
 
         public bool JoinWorkerThreadOnDispose { get; set; } = true;
 
@@ -206,7 +206,7 @@ namespace Google.Solutions.Ssh
                             session.SetLocalBanner(this.Banner);
                         }
 
-                        session.Timeout = this.BlockingTimeout;
+                        session.Timeout = this.ConnectionTimeout;
 
                         //
                         // Open connection and perform handshake using blocking I/O.

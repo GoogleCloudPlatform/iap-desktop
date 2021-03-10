@@ -50,6 +50,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.SshTerminal
         private readonly IEventService eventService;
         private readonly IPEndPoint endpoint;
         private readonly AuthorizedKey authorizedKey;
+        private readonly TimeSpan connectionTimeout;
 
         private Status connectionStatus = Status.ConnectionFailed;
         private SshShellConnection currentConnection = null;
@@ -86,13 +87,14 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.SshTerminal
             IEventService eventService,
             InstanceLocator vmInstance,
             IPEndPoint endpoint,
-            AuthorizedKey authorizedKey)
+            AuthorizedKey authorizedKey,
+            TimeSpan connectionTimeout)
         {
             this.eventService = eventService;
             this.endpoint = endpoint;
             this.authorizedKey = authorizedKey;
             this.Instance = vmInstance;
-
+            this.connectionTimeout = connectionTimeout;
         }
 
         //---------------------------------------------------------------------
@@ -240,6 +242,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.SshTerminal
                         OnErrorReceivedFromServerAsync)
                     {
                         Banner = SshSession.BannerPrefix + Globals.UserAgent,
+                        ConnectionTimeout = this.connectionTimeout,
 
                         //
                         // NB. Do not join worker thread as this could block the

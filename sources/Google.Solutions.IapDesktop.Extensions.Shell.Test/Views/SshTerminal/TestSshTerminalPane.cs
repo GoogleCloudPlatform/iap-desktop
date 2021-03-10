@@ -107,7 +107,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.SshTerminal
                 var pane = await broker.ConnectAsync(
                         instanceLocator,
                         new IPEndPoint(await PublicAddressFromLocator(instanceLocator), 22),
-                        authorizedKey)
+                        authorizedKey,
+                        TimeSpan.FromSeconds(10))
                     .ConfigureAwait(true);
 
                 Assert.IsNotNull(connectedEvent, "ConnectionSuceededEvent event fired");
@@ -134,7 +135,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.SshTerminal
                 await broker.ConnectAsync(
                         new InstanceLocator("project-1", "zone-1", "instance-1"),
                         UnboundEndpoint,
-                        AuthorizedKey.ForMetadata(key, "test", true, null))
+                        AuthorizedKey.ForMetadata(key, "test", true, null),
+                        TimeSpan.FromSeconds(10))
                     .ConfigureAwait(true);
 
                 Assert.IsNotNull(deliveredEvent, "Event fired");
@@ -158,7 +160,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.SshTerminal
                 await broker.ConnectAsync(
                         new InstanceLocator("project-1", "zone-1", "instance-1"),
                         NonSshEndpoint,
-                        AuthorizedKey.ForMetadata(key, "test", true, null))
+                        AuthorizedKey.ForMetadata(key, "test", true, null),
+                        TimeSpan.FromSeconds(10))
                     .ConfigureAwait(true);
 
                 Assert.IsNotNull(deliveredEvent, "Event fired");
@@ -185,7 +188,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.SshTerminal
                 await broker.ConnectAsync(
                         instanceLocator,
                         new IPEndPoint(await PublicAddressFromLocator(instanceLocator), 22),
-                        AuthorizedKey.ForMetadata(key, "test", true, null))
+                        AuthorizedKey.ForMetadata(key, "test", true, null),
+                        TimeSpan.FromSeconds(10))
                     .ConfigureAwait(true);
 
                 Assert.IsNotNull(deliveredEvent, "Event fired");
