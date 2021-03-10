@@ -26,6 +26,7 @@ using NUnit.Framework.Interfaces;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Reflection;
 using System.Text;
 
 namespace Google.Solutions.Common.Test.Integration
@@ -50,7 +51,7 @@ namespace Google.Solutions.Common.Test.Integration
             return "completed-" + Guid.NewGuid().ToString().Substring(0, 8);
         }
 
-        private string CreateSpecificationFingerprint()
+        private string CreateSpecificationFingerprint(Assembly testAssembly)
         {
             // Create a hash of the image specification.
             var imageSpecification = new StringBuilder();
@@ -60,6 +61,12 @@ namespace Google.Solutions.Common.Test.Integration
             imageSpecification.Append(this.InitializeScript);
             imageSpecification.Append(this.EnableOsInventory);
             imageSpecification.Append(this.ServiceAccount.ToString());
+
+
+            // Include name of test assembly so that multiple
+            // test assembly that run in parallel use different
+            // hashes.
+            imageSpecification.Append(testAssembly.GetName().Name);
 
             var kokoroJobType = Environment.GetEnvironmentVariable("KOKORO_JOB_TYPE");
             if (!string.IsNullOrEmpty(kokoroJobType))
@@ -79,16 +86,11 @@ namespace Google.Solutions.Common.Test.Integration
             }
         }
 
-        public override string ToString()
-        {
-            return this.CreateSpecificationFingerprint();
-        }
-
         public IEnumerable GetData(IParameterInfo parameter)
         {
             if (parameter.ParameterType == typeof(ResourceTask<InstanceLocator>))
             {
-                var fingerprint = CreateSpecificationFingerprint();
+                var fingerprint = CreateSpecificationFingerprint(parameter.Method.TypeInfo.Assembly);
                 return new[] {
                     ResourceTask<InstanceLocator>.ProvisionOnce(
                         fingerprint,
