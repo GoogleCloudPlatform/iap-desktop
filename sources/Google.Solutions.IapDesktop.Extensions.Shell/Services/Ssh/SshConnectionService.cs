@@ -92,6 +92,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Ssh
             var settings = (InstanceConnectionSettings)this.settingsService
                 .GetConnectionSettings(vmNode)
                 .TypedCollection;
+            var timeout = TimeSpan.FromSeconds(settings.SshConnectionTimeout.IntValue);
 
             //
             // Start job to create IAP tunnel.
@@ -109,9 +110,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Ssh
                             vmNode.Reference,
                             (ushort)settings.SshPort.IntValue);
 
-                        // Give IAP the same timeout for probing as SSH itself.
-                        var timeout = TimeSpan.FromSeconds(settings.SshConnectionTimeout.IntValue);
-
+                        // NB. Give IAP the same timeout for probing as SSH itself.
                         return await this.tunnelBroker.ConnectAsync(
                                 destination,
                                 new SameProcessRelayPolicy(),
@@ -190,7 +189,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Ssh
                 await this.sessionBroker.ConnectAsync(
                         instance,
                         new IPEndPoint(IPAddress.Loopback, tunnelTask.Result.LocalPort),
-                        authorizedKeyTask.Result)
+                        authorizedKeyTask.Result,
+                        timeout)
                     .ConfigureAwait(true);
             }
             catch (Exception)

@@ -94,7 +94,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.SshTerminal
                     async () => session = await broker.ConnectAsync(
                         locator,
                         new IPEndPoint(instance.PublicAddress(), 22),
-                        authorizedKey));
+                        authorizedKey,
+                        TimeSpan.FromSeconds(10)));
 
                 Assert.IsNull(this.ExceptionShown);
 

@@ -95,7 +95,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.SshTerminal
             IServiceProvider serviceProvider,
             InstanceLocator vmInstance,
             IPEndPoint endpoint,
-            AuthorizedKey authorizedKey)
+            AuthorizedKey authorizedKey,
+            TimeSpan connectionTimeout)
             : base(serviceProvider, DockState.Document)
         {
             InitializeComponent();
@@ -105,7 +106,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.SshTerminal
                 serviceProvider.GetService<IEventService>(),
                 vmInstance,
                 endpoint,
-                authorizedKey)
+                authorizedKey,
+                connectionTimeout)
             {
                 View = this
             };
