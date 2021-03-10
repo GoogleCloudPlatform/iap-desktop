@@ -97,7 +97,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.ConnectionSettin
                     vmNode.InstanceName);
 
                 var supportsRdp = vmNode.IsRdpSupported();
-                var supportsSsh = vmNode.IsSshSupported() && ShellExtension.IsSshEnabled;
+                var supportsSsh = vmNode.IsSshSupported();
 
                 // Apply overlay to get effective settings.
                 return projectSettings

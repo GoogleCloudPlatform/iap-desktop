@@ -47,17 +47,13 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services
     [Service(ServiceLifetime.Singleton)]
     public class ShellExtension
     {
-        internal static bool IsSshEnabled { get; private set; } = true;
-
         private readonly IServiceProvider serviceProvider;
         private readonly IWin32Window window;
 
         private static CommandState GetToolbarCommandStateWhenRunningInstanceRequired(
             IProjectExplorerNode node)
         {
-            return node is IProjectExplorerVmInstanceNode vmNode && 
-                        vmNode.IsRunning &&
-                        (IsSshEnabled || vmNode.IsRdpSupported())
+            return node is IProjectExplorerVmInstanceNode vmNode && vmNode.IsRunning
                 ? CommandState.Enabled
                 : CommandState.Disabled;
         }
@@ -74,8 +70,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services
 
         private static CommandState GetContextMenuCommandStateWhenRunningInstanceRequired(IProjectExplorerNode node)
         {
-            if (node is IProjectExplorerVmInstanceNode vmNode &&
-                        (IsSshEnabled || vmNode.IsRdpSupported()))
+            if (node is IProjectExplorerVmInstanceNode vmNode)
             {
                 return vmNode.IsRunning
                     ? CommandState.Enabled
@@ -166,9 +161,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services
                             allowPersistentCredentials)
                         .ConfigureAwait(true);
                 }
-                else if (node is IProjectExplorerVmInstanceNode sshNode && 
-                         sshNode.IsSshSupported() &&
-                         IsSshEnabled)
+                else if (node is IProjectExplorerVmInstanceNode sshNode && sshNode.IsSshSupported())
                 {
                     await this.serviceProvider
                         .GetService<ISshConnectionService>()
@@ -217,15 +210,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services
         public ShellExtension(IServiceProvider serviceProvider)
         {
             this.serviceProvider = serviceProvider;
-
-            //
-            // Hide SSH feature by default.
-            //
-            IsSshEnabled = serviceProvider
-                .GetService<ApplicationSettingsRepository>()
-                .GetSettings()
-                .IsPreviewFeatureSetEnabled
-                .BoolValue;
 
             var mainForm = serviceProvider.GetService<IMainForm>();
 
