@@ -169,6 +169,33 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Ssh
         }
 
         [Test]
+        public async Task WhenNoSessionExists_ThenActivateOrConnectInstanceAsyncUsesPreferredUsername()
+        {
+            var settings = InstanceConnectionSettings.CreateNew(SampleLocator.ProjectId, SampleLocator.Name);
+            settings.SshPort.IntValue = 2222;
+            settings.SshUsername.StringValue = "bob";
+
+            var settingsService = this.serviceRegistry.AddMock<IConnectionSettingsService>();
+            settingsService.Setup(s => s.GetConnectionSettings(It.IsAny<IProjectExplorerNode>()))
+                .Returns(settings
+                    .ToPersistentSettingsCollection(s => Assert.Fail("should not be called")));
+
+            var vmNode = new Mock<IProjectExplorerVmInstanceNode>();
+            vmNode.SetupGet(n => n.Reference).Returns(SampleLocator);
+
+            var service = new SshConnectionService(this.serviceRegistry);
+            await service.ActivateOrConnectInstanceAsync(vmNode.Object);
+
+            this.authorizedKeyService.Verify(s => s.AuthorizeKeyAsync(
+                It.Is<InstanceLocator>(l => l == SampleLocator),
+                It.IsAny<ISshKey>(),
+                It.IsAny<TimeSpan>(),
+                It.Is<string>(user => user == "bob"),
+                It.IsAny<AuthorizeKeyMethods>(),
+                It.IsAny<CancellationToken>()), Times.Once);
+        }
+
+        [Test]
         public void WhenTunnelUnauthorized_ThenActivateOrConnectInstanceAsyncActivatesSessionThrowsConnectionFailedException()
         {
             var settingsService = this.serviceRegistry.AddMock<IConnectionSettingsService>();

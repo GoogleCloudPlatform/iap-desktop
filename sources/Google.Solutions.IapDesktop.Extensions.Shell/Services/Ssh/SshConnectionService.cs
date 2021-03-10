@@ -57,6 +57,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Ssh
         private readonly IAuthorizedKeyService authorizedKeyService;
         private readonly IKeyStoreAdapter keyStoreAdapter;
         private readonly IAuthorizationAdapter authorizationAdapter;
+        private static string NullIfEmpty(string s) => string.IsNullOrEmpty(s) ? null : s;
 
         public SshConnectionService(IServiceProvider serviceProvider)
         {
@@ -172,7 +173,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Ssh
                                 vmNode.Reference,
                                 sshKey,
                                 TimeSpan.FromHours(2),  // TODO: Make timeout configurable
-                                "test",                 // TODO: Make username configurable
+                                NullIfEmpty(settings.SshUsername.StringValue),
                                 AuthorizeKeyMethods.All,
                                 token)
                             .ConfigureAwait(true);
