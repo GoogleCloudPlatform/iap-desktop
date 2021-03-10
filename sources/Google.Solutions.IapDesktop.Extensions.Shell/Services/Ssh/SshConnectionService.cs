@@ -110,10 +110,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Ssh
                             (ushort)settings.SshPort.IntValue);
 
                         // Give IAP the same timeout for probing as SSH itself.
-                        // Note that the timeouts are not additive.
-
-                        // TODO: Use SSH timeout
-                        var timeout = TimeSpan.FromSeconds(settings.RdpConnectionTimeout.IntValue);
+                        var timeout = TimeSpan.FromSeconds(settings.SshConnectionTimeout.IntValue);
 
                         return await this.tunnelBroker.ConnectAsync(
                                 destination,
@@ -172,7 +169,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Ssh
                         return await this.authorizedKeyService.AuthorizeKeyAsync(
                                 vmNode.Reference,
                                 sshKey,
-                                TimeSpan.FromHours(2),  // TODO: Make timeout configurable
+                                TimeSpan.FromHours(2),  // TODO: Make expiry configurable
                                 NullIfEmpty(settings.SshUsername.StringValue),
                                 AuthorizeKeyMethods.All,
                                 token)
