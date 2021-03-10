@@ -21,7 +21,7 @@
 CONFIGURATION = Release
 
 # The tag should be increased whenever one of the dependencies is changed
-TAG = 10
+TAG = 11
 
 VTNETCORE_SHA = 9e68f5561dc52edb780615b3fe133289216b3dba
 VTNETCORE_URL = https://github.com/darrenstarr/VtNetCore.git
@@ -60,13 +60,19 @@ $(MAKEDIR)\obj\vtnetcore\VtNetCore\VtNetCore.csproj:
 
 	git clone $(VTNETCORE_URL) $(MAKEDIR)\obj\vtnetcore
 
+	cd $(MAKEDIR)\obj\vtnetcore
+
+	git checkout $(VTNETCORE_SHA)
+	git am $(MAKEDIR)\vtnetcore-patches\0001-Handle-OSC-sequences-with-empty-text-parameters.patch
+
+	cd $(MAKEDIR)
+
 $(MAKEDIR)\obj\vtnetcore\VtNetCore\bin\$(CONFIGURATION)\vtnetcore.$(VTNETCORE_VERSION).nupkg: \
 		$(MAKEDIR)\obj\vtnetcore\VtNetCore\VtNetCore.csproj
 	@echo "========================================================"
 	@echo "=== Building vtnetcore                               ==="
 	@echo "========================================================"
 	cd $(MAKEDIR)\obj\vtnetcore
-	git checkout $(VTNETCORE_SHA)
 
 	nuget restore
 	msbuild \
