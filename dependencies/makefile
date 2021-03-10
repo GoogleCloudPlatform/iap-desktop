@@ -63,6 +63,9 @@ $(MAKEDIR)\obj\vtnetcore\VtNetCore\VtNetCore.csproj:
 	cd $(MAKEDIR)\obj\vtnetcore
 
 	git checkout $(VTNETCORE_SHA)
+
+	git config user.email "iap-desktop+build@google.com"
+	git config user.name "IAP Desktop Build"
 	git am $(MAKEDIR)\vtnetcore-patches\0001-Handle-OSC-sequences-with-empty-text-parameters.patch
 
 	cd $(MAKEDIR)
