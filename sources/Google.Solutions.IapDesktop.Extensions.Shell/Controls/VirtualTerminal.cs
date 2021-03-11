@@ -361,12 +361,14 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Controls
 
         private void PaintDiagnostics(Graphics graphics)
         {
-#if TERMINAL_DEBUG
+#if DEBUG
             var characterSize = this.CharacterSize;
             var diagnosticText =
                  $"Dimensions: {this.Columns}x{this.Rows}\n" +
                  $"Char size: {characterSize.Width}x{characterSize.Height}\n" +
-                 $"ViewTop : {this.ViewTop}";
+                 $"ViewTop : {this.ViewTop}\n" +
+                 $"Cursor pos: {this.controller.ViewPort.CursorPosition}\n" +
+                 $"Screen cursor pos: {this.controller.ViewPort.ScreenCursorPosition}";
 
             using (var font = new Font(this.Font.FontFamily, 8))
             {
@@ -398,20 +400,46 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Controls
         {
             lock (this.controller)
             {
-                int oldTopRow = this.controller.ViewPort.TopRow;
+                var oldTopRow = this.controller.ViewPort.TopRow;
+                var oldViewTop = this.ViewTop;
+                var oldCursorRow = this.controller.ViewPort.CursorPosition.Row;
 
                 this.controllerSink.Push(Encoding.UTF8.GetBytes(text));
 
                 if (this.controller.Changed)
                 {
+                    var changeCount = this.controller.ChangeCount;
                     this.controller.ClearChanges();
 
                     if (oldTopRow != this.controller.ViewPort.TopRow && oldTopRow >= ViewTop)
                     {
-                        ViewTop = this.controller.ViewPort.TopRow;
+                        this.ViewTop = this.controller.ViewPort.TopRow;
                     }
 
-                    this.Invalidate();
+                    if (changeCount == 1 &&
+                        this.ViewTop == oldViewTop &&
+                        this.controller.ViewPort.CursorPosition.Row == oldCursorRow)
+                    {
+                        //
+                        // Single-character change that did not cause a line to wrap.
+                        // Avoid a full redraw and instead only redraw a small region
+                        // south of the cursor.
+                        //
+                        // NB. This optimization has a significant effect when the
+                        // application is running in an RDP session, but the effect
+                        // is negligble otherwise.
+                        //
+                        var caretPos = GetCaret().Position;
+                        Invalidate(new Rectangle(
+                            0,
+                            caretPos.Y,
+                            this.Width,
+                            Math.Min(100, this.Height - caretPos.Y)));
+                    }
+                    else
+                    {
+                        Invalidate();
+                    }
                 }
             }
         }
