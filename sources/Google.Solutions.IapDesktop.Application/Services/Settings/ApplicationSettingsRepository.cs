@@ -196,7 +196,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.Settings
                     "IncludeOperatingSystems",
                     null,
                     null,
-                    OperatingSystems.Windows,
+                    OperatingSystems.Windows | OperatingSystems.Linux,
                     registryKey)
             };
         }

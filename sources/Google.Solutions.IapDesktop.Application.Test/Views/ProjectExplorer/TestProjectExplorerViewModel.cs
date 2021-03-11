@@ -47,12 +47,12 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views.ProjectExplorer
         //---------------------------------------------------------------------
 
         [Test]
-        public void WhenUsingDefaultSettings_ThenOnlyWindowsIsIncluded()
+        public void WhenUsingDefaultSettings_ThenWindowsAndLinuxIsIncluded()
         {
             var viewModel = new ProjectExplorerViewModel(this.settingsRepository);
 
             Assert.IsTrue(viewModel.IsWindowsIncluded);
-            Assert.IsFalse(viewModel.IsLinuxIncluded);
+            Assert.IsTrue(viewModel.IsLinuxIncluded);
         }
 
         [Test]
