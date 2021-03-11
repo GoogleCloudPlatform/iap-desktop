@@ -88,6 +88,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
 
                 var instancesInZone = instances
                     .Where(i => InventoryNode.ShortIdFromUrl(i.Zone) == zoneId)
+                    .Where(i => i.Disks != null && i.Disks.Any())
                     .OrderBy(i => i.Name);
 
                 foreach (var instance in instancesInZone)

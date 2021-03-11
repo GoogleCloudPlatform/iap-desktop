@@ -123,7 +123,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views
         }
 
         [Test]
-        public void WhenProjectAdded_ThenLinuxInstancesAndInstancesWithoutDiskAreIgnored()
+        public void WhenProjectAdded_ThenLinuxInstancesAreListed()
         {
             // Add a project.
             this.serviceProvider.GetService<IProjectRepository>().AddProjectAsync("project-1").Wait();
@@ -132,7 +132,53 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views
             var instances = new[]
             {
                 CreateInstance("windows", "antarctica1-a", true),
-                CreateInstance("linux", "antarctica1-b", false),
+                CreateInstance("linux", "antarctica1-b", false)
+            };
+
+            // Open window.
+            var computeEngineAdapter = new Mock<IComputeEngineAdapter>();
+            this.serviceRegistry.AddSingleton<IComputeEngineAdapter>(computeEngineAdapter.Object);
+            computeEngineAdapter
+                .Setup(o => o.ListInstancesAsync("project-1", It.IsAny<CancellationToken>()))
+                .Returns(Task.FromResult<IEnumerable<Instance>>(instances));
+
+            var window = new ProjectExplorerWindow(this.serviceProvider);
+            window.ShowWindow();
+            Delay(TimeSpan.FromMilliseconds(100));
+
+            // Check tree.
+            var rootNode = GetRootNode(window);
+            Assert.IsInstanceOf(typeof(CloudNode), rootNode);
+            Assert.AreEqual(1, rootNode.Nodes.Count);
+
+            var projectNode = (ProjectNode)rootNode.FirstNode;
+            Assert.AreEqual("project-1", projectNode.Text);
+            Assert.AreEqual(2, projectNode.Nodes.Count);
+
+            var zoneAnode = (ZoneNode)projectNode.FirstNode;
+            Assert.AreEqual("antarctica1-a", zoneAnode.Text);
+            Assert.AreEqual(1, zoneAnode.Nodes.Count);
+
+            var zoneBnode = (ZoneNode)projectNode.LastNode;
+            Assert.AreEqual("antarctica1-b", zoneBnode.Text);
+            Assert.AreEqual(1, zoneBnode.Nodes.Count);
+
+            Assert.AreEqual("windows", ((VmInstanceNode)zoneAnode.FirstNode).Text);
+            Assert.AreEqual("linux", ((VmInstanceNode)zoneBnode.FirstNode).Text);
+
+            Assert.IsNull(this.ExceptionShown);
+        }
+
+        [Test]
+        public void WhenProjectAdded_ThenInstancesWithoutDiskAreIgnored()
+        {
+            // Add a project.
+            this.serviceProvider.GetService<IProjectRepository>().AddProjectAsync("project-1").Wait();
+
+            // Add some instances.
+            var instances = new[]
+            {
+                CreateInstance("windows", "antarctica1-a", true),
                 new Instance()
                 {
                     Id = 1,
