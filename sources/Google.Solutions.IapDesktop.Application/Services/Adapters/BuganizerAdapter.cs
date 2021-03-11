@@ -26,25 +26,12 @@ using System.Net;
 
 namespace Google.Solutions.IapDesktop.Application.Services.Adapters
 {
-    public class EmailAdapter
+    public class BuganizerAdapter
     {
-        private const string GroupAlias = "iap-desktop@google.com";
+        public const string BaseUrl = "https://issuetracker.google.com";
 
-        public void SendFeedback()
+        private void OpenUrl(string url)
         {
-            var version = typeof(GithubAdapter).Assembly.GetName().Version;
-            var body =
-                "Have feedback? We'd love to hear it, but please don't share " +
-                "sensitive information.\n" +
-                "\n\n\n\n\n" +
-                $"I am currently using IAP Desktop {version} " +
-                $"and .NET version {ClrVersion.Version} " +
-                $"on {Environment.OSVersion}";
-            var url =
-                $"mailto:{GroupAlias}?" +
-                $"subject={WebUtility.UrlEncode("IAP Desktop feedback")}&" +
-                $"body={WebUtility.UrlEncode(body)}";
-
             using (Process.Start(new ProcessStartInfo()
             {
                 UseShellExecute = true,
@@ -52,6 +39,25 @@ namespace Google.Solutions.IapDesktop.Application.Services.Adapters
                 FileName = url
             }))
             { };
+        }
+
+        public void ReportIssue()
+        {
+            var version = typeof(GithubAdapter).Assembly.GetName().Version;
+            var body = "Expected behavior:\n" +
+                       "* Step 1\n" +
+                       "* Step 2\n" +
+                       "* ...\n" +
+                       "\n" +
+                       "Observed behavior:\n" +
+                       "* Step 1\n" +
+                       "* Step 2\n" +
+                       "* ...\n" +
+                       "\n" +
+                       $"Installed version: {version}\n" +
+                       $".NET Version: {ClrVersion.Version}\n" +
+                       $"OS Version: {Environment.OSVersion}";
+            OpenUrl($"{BaseUrl}/issues/new?component=953762&template=1561579&description={WebUtility.UrlEncode(body)}");
         }
     }
 }

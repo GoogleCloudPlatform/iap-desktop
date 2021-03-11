@@ -205,7 +205,7 @@ namespace Google.Solutions.IapDesktop
             adapterLayer.AddTransient<IResourceManagerAdapter, ResourceManagerAdapter>();
             adapterLayer.AddTransient<IComputeEngineAdapter, ComputeEngineAdapter>();
             adapterLayer.AddTransient<GithubAdapter>();
-            adapterLayer.AddTransient<EmailAdapter>();
+            adapterLayer.AddTransient<BuganizerAdapter>();
             adapterLayer.AddTransient<IHttpProxyAdapter, HttpProxyAdapter>();
 
             try
