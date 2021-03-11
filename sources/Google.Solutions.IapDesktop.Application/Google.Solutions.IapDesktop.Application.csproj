@@ -119,7 +119,6 @@
     <Compile Include="Services\Adapters\CertificateStoreAdapter.cs" />
     <Compile Include="Services\Adapters\ClientServiceInitializer.cs" />
     <Compile Include="Services\Adapters\ComputeEngineAdapter.cs" />
-    <Compile Include="Services\Adapters\EmailAdapter.cs" />
     <Compile Include="Services\Adapters\GithubAdapter.cs" />
     <Compile Include="Services\Adapters\HttpProxyAdapter.cs" />
     <Compile Include="Services\Adapters\IComputeEngineAdapter.cs" />

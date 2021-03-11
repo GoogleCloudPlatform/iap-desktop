@@ -435,11 +435,6 @@ namespace Google.Solutions.IapDesktop.Windows
             this.serviceProvider.GetService<HelpService>().OpenTopic(HelpTopics.General);
         }
 
-        private void shareFeedbackToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            this.serviceProvider.GetService<EmailAdapter>().SendFeedback();
-        }
-
         private async void addProjectToolStripMenuItem_Click(object sender, EventArgs _)
         {
             try

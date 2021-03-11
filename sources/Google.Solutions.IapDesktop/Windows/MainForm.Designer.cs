@@ -68,7 +68,6 @@ namespace Google.Solutions.IapDesktop.Windows
             this.openIapDocsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.openIapAccessDocsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.aboutSeparatorToolStripMenuItem = new System.Windows.Forms.ToolStripSeparator();
-            this.shareFeedbackToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.reportIssueToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.aboutToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.vsToolStripExtender = new WeifenLuo.WinFormsUI.Docking.VisualStudioToolStripExtender(this.components);
@@ -92,7 +91,8 @@ namespace Google.Solutions.IapDesktop.Windows
             this.helpToolStripMenuItem});
             this.mainMenu.Location = new System.Drawing.Point(0, 0);
             this.mainMenu.Name = "mainMenu";
-            this.mainMenu.Size = new System.Drawing.Size(984, 24);
+            this.mainMenu.Padding = new System.Windows.Forms.Padding(8, 2, 0, 2);
+            this.mainMenu.Size = new System.Drawing.Size(1312, 24);
             this.mainMenu.TabIndex = 3;
             this.mainMenu.Text = "menuStrip1";
             // 
@@ -183,7 +183,6 @@ namespace Google.Solutions.IapDesktop.Windows
             this.openIapDocsToolStripMenuItem,
             this.openIapAccessDocsToolStripMenuItem,
             this.aboutSeparatorToolStripMenuItem,
-            this.shareFeedbackToolStripMenuItem,
             this.reportIssueToolStripMenuItem,
             this.aboutToolStripMenuItem});
             this.helpToolStripMenuItem.Name = "helpToolStripMenuItem";
@@ -220,13 +219,6 @@ namespace Google.Solutions.IapDesktop.Windows
             this.aboutSeparatorToolStripMenuItem.Name = "aboutSeparatorToolStripMenuItem";
             this.aboutSeparatorToolStripMenuItem.Size = new System.Drawing.Size(274, 6);
             // 
-            // shareFeedbackToolStripMenuItem
-            // 
-            this.shareFeedbackToolStripMenuItem.Name = "shareFeedbackToolStripMenuItem";
-            this.shareFeedbackToolStripMenuItem.Size = new System.Drawing.Size(277, 22);
-            this.shareFeedbackToolStripMenuItem.Text = "Send feedback...";
-            this.shareFeedbackToolStripMenuItem.Click += new System.EventHandler(this.shareFeedbackToolStripMenuItem_Click);
-            // 
             // reportIssueToolStripMenuItem
             // 
             this.reportIssueToolStripMenuItem.Name = "reportIssueToolStripMenuItem";
@@ -253,9 +245,10 @@ namespace Google.Solutions.IapDesktop.Windows
             this.toolStripStatus,
             this.toolStripSignInStateButton,
             this.toolStripDeviceStateButton});
-            this.statusStrip.Location = new System.Drawing.Point(0, 639);
+            this.statusStrip.Location = new System.Drawing.Point(0, 792);
             this.statusStrip.Name = "statusStrip";
-            this.statusStrip.Size = new System.Drawing.Size(984, 22);
+            this.statusStrip.Padding = new System.Windows.Forms.Padding(1, 0, 19, 0);
+            this.statusStrip.Size = new System.Drawing.Size(1312, 22);
             this.statusStrip.TabIndex = 5;
             this.statusStrip.Text = "statusStrip";
             // 
@@ -279,7 +272,7 @@ namespace Google.Solutions.IapDesktop.Windows
             // toolStripStatus
             // 
             this.toolStripStatus.Name = "toolStripStatus";
-            this.toolStripStatus.Size = new System.Drawing.Size(734, 17);
+            this.toolStripStatus.Size = new System.Drawing.Size(1057, 17);
             this.toolStripStatus.Spring = true;
             this.toolStripStatus.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
@@ -311,22 +304,24 @@ namespace Google.Solutions.IapDesktop.Windows
             this.dockPanel.DockLeftPortion = 0.15D;
             this.dockPanel.DockRightPortion = 0.15D;
             this.dockPanel.Location = new System.Drawing.Point(0, 24);
+            this.dockPanel.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.dockPanel.Name = "dockPanel";
-            this.dockPanel.Size = new System.Drawing.Size(984, 615);
+            this.dockPanel.Size = new System.Drawing.Size(1312, 768);
             this.dockPanel.TabIndex = 9;
             // 
             // MainForm
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(984, 661);
+            this.ClientSize = new System.Drawing.Size(1312, 814);
             this.Controls.Add(this.dockPanel);
             this.Controls.Add(this.statusStrip);
             this.Controls.Add(this.mainMenu);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.IsMdiContainer = true;
             this.MainMenuStrip = this.mainMenu;
-            this.MinimumSize = new System.Drawing.Size(1000, 700);
+            this.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.MinimumSize = new System.Drawing.Size(1328, 853);
             this.Name = "MainForm";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.MainForm_FormClosing);
             this.Load += new System.EventHandler(this.MainForm_Load);
@@ -364,7 +359,6 @@ namespace Google.Solutions.IapDesktop.Windows
         private System.Windows.Forms.ToolStripStatusLabel toolStripStatus;
         private System.Windows.Forms.ToolStripDropDownButton cancelBackgroundJobsButton;
         private System.Windows.Forms.ToolStripStatusLabel backgroundJobLabel;
-        private System.Windows.Forms.ToolStripMenuItem shareFeedbackToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem viewHelpToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem optionsToolStripMenuItem;
         private System.Windows.Forms.ToolStripDropDownButton toolStripSignInStateButton;
