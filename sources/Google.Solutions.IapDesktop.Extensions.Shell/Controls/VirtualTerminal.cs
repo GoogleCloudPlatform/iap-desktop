@@ -78,7 +78,12 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Controls
             this.controller = new VirtualTerminalController();
             this.controllerSink = new DataConsumer(this.controller);
 
-            this.DoubleBuffered = true;
+            //
+            // Use double-buffering to reduce flicker - unless we're in an
+            // RDP session, cf. https://devblogs.microsoft.com/oldnewthing/20060103-12/?p=32793.
+            //
+            this.DoubleBuffered = !SystemInformation.TerminalServerSession;
+
             this.Font = new Font(TerminalFont.FontFamily, 9.75f);
 
             this.controller.ShowCursor(true);
