@@ -111,6 +111,12 @@ namespace Google.Solutions.IapDesktop.Windows
                 bootstrappingServiceProvider.GetService<ApplicationSettingsRepository>(),
                 bootstrappingServiceProvider.GetService<AuthSettingsRepository>());
 
+            this.reportInternalIssueToolStripMenuItem.BindProperty(
+                c => c.Visible,
+                this.viewModel,
+                m => m.IsReportInternalIssueVisible,
+                this.components);
+
             // Status bar.
             this.statusStrip.BindProperty(
                 c => c.BackColor,
@@ -426,10 +432,16 @@ namespace Google.Solutions.IapDesktop.Windows
             this.serviceProvider.GetService<HelpService>().OpenTopic(HelpTopics.IapAccess);
         }
 
-        private void reportIssueToolStripMenuItem_Click(object sender, EventArgs e)
+        private void reportGithubIssueToolStripMenuItem_Click(object sender, EventArgs e)
         {
             this.serviceProvider.GetService<GithubAdapter>().ReportIssue();
         }
+
+        private void reportInternalIssueToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            this.serviceProvider.GetService<BuganizerAdapter>().ReportIssue();
+        }
+
         private void viewHelpToolStripMenuItem_Click(object sender, EventArgs e)
         {
             this.serviceProvider.GetService<HelpService>().OpenTopic(HelpTopics.General);
@@ -570,6 +582,5 @@ namespace Google.Solutions.IapDesktop.Windows
 
         public Task ReauthorizeAsync(CancellationToken token)
             => this.viewModel.ReauthorizeAsync(token);
-
     }
 }

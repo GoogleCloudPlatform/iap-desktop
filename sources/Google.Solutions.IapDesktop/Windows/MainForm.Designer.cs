@@ -78,6 +78,7 @@ namespace Google.Solutions.IapDesktop.Windows
             this.toolStripSignInStateButton = new System.Windows.Forms.ToolStripDropDownButton();
             this.toolStripDeviceStateButton = new System.Windows.Forms.ToolStripDropDownButton();
             this.dockPanel = new WeifenLuo.WinFormsUI.Docking.DockPanel();
+            this.reportInternalIssueToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.mainMenu.SuspendLayout();
             this.statusStrip.SuspendLayout();
             this.SuspendLayout();
@@ -184,6 +185,7 @@ namespace Google.Solutions.IapDesktop.Windows
             this.openIapAccessDocsToolStripMenuItem,
             this.aboutSeparatorToolStripMenuItem,
             this.reportIssueToolStripMenuItem,
+            this.reportInternalIssueToolStripMenuItem,
             this.aboutToolStripMenuItem});
             this.helpToolStripMenuItem.Name = "helpToolStripMenuItem";
             this.helpToolStripMenuItem.Size = new System.Drawing.Size(44, 20);
@@ -224,7 +226,7 @@ namespace Google.Solutions.IapDesktop.Windows
             this.reportIssueToolStripMenuItem.Name = "reportIssueToolStripMenuItem";
             this.reportIssueToolStripMenuItem.Size = new System.Drawing.Size(277, 22);
             this.reportIssueToolStripMenuItem.Text = "&Report issue...";
-            this.reportIssueToolStripMenuItem.Click += new System.EventHandler(this.reportIssueToolStripMenuItem_Click);
+            this.reportIssueToolStripMenuItem.Click += new System.EventHandler(this.reportGithubIssueToolStripMenuItem_Click);
             // 
             // aboutToolStripMenuItem
             // 
@@ -304,10 +306,17 @@ namespace Google.Solutions.IapDesktop.Windows
             this.dockPanel.DockLeftPortion = 0.15D;
             this.dockPanel.DockRightPortion = 0.15D;
             this.dockPanel.Location = new System.Drawing.Point(0, 24);
-            this.dockPanel.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.dockPanel.Margin = new System.Windows.Forms.Padding(4);
             this.dockPanel.Name = "dockPanel";
             this.dockPanel.Size = new System.Drawing.Size(1312, 768);
             this.dockPanel.TabIndex = 9;
+            // 
+            // reportInternalIssueToolStripMenuItem
+            // 
+            this.reportInternalIssueToolStripMenuItem.Name = "reportInternalIssueToolStripMenuItem";
+            this.reportInternalIssueToolStripMenuItem.Size = new System.Drawing.Size(277, 22);
+            this.reportInternalIssueToolStripMenuItem.Text = "Report &issue (Google internal)...";
+            this.reportInternalIssueToolStripMenuItem.Click += new System.EventHandler(this.reportInternalIssueToolStripMenuItem_Click);
             // 
             // MainForm
             // 
@@ -320,7 +329,7 @@ namespace Google.Solutions.IapDesktop.Windows
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.IsMdiContainer = true;
             this.MainMenuStrip = this.mainMenu;
-            this.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.Margin = new System.Windows.Forms.Padding(4);
             this.MinimumSize = new System.Drawing.Size(1328, 853);
             this.Name = "MainForm";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.MainForm_FormClosing);
@@ -363,5 +372,6 @@ namespace Google.Solutions.IapDesktop.Windows
         private System.Windows.Forms.ToolStripMenuItem optionsToolStripMenuItem;
         private System.Windows.Forms.ToolStripDropDownButton toolStripSignInStateButton;
         private System.Windows.Forms.ToolStripDropDownButton toolStripDeviceStateButton;
+        private System.Windows.Forms.ToolStripMenuItem reportInternalIssueToolStripMenuItem;
     }
 }

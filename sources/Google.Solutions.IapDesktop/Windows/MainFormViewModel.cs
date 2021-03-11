@@ -52,6 +52,7 @@ namespace Google.Solutions.IapDesktop.Windows
         private string signInState = null;
         private string deviceState = null;
         private bool isDeviceStateVisible = false;
+        private bool isReportInternalIssueVisible;
 
         public MainFormViewModel(
             Control view,
@@ -158,6 +159,16 @@ namespace Google.Solutions.IapDesktop.Windows
             }
         }
 
+        public bool IsReportInternalIssueVisible
+        {
+            get => this.isReportInternalIssueVisible;
+            set
+            {
+                this.isReportInternalIssueVisible = value;
+                RaisePropertyChange();
+            }
+        }
+
         //---------------------------------------------------------------------
         // Background job actions.
         //---------------------------------------------------------------------
@@ -219,6 +230,7 @@ namespace Google.Solutions.IapDesktop.Windows
             this.SignInStateCaption = this.Authorization.Email;
             this.DeviceStateCaption = "Endpoint Verification";
             this.IsDeviceStateVisible = this.DeviceEnrollment.State != DeviceEnrollmentState.Disabled;
+            this.IsReportInternalIssueVisible = this.Authorization.UserInfo?.HostedDomain == "google.com";
 
             Debug.Assert(this.SignInStateCaption != null);
             Debug.Assert(this.DeviceEnrollment != null);
