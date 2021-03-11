@@ -101,6 +101,12 @@
     <Compile Include="Windows\AuthorizeDialog.Designer.cs">
       <DependentUpon>AuthorizeDialog.cs</DependentUpon>
     </Compile>
+    <Compile Include="Windows\ErrorDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Windows\ErrorDialog.Designer.cs">
+      <DependentUpon>ErrorDialog.cs</DependentUpon>
+    </Compile>
     <Compile Include="Windows\MainForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -125,6 +131,9 @@
     </Compile>
     <EmbeddedResource Include="Windows\AuthorizeDialog.resx">
       <DependentUpon>AuthorizeDialog.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Windows\ErrorDialog.resx">
+      <DependentUpon>ErrorDialog.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Windows\MainForm.resx">
       <DependentUpon>MainForm.cs</DependentUpon>
