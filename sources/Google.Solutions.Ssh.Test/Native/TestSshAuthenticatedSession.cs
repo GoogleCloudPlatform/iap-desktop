@@ -92,5 +92,35 @@ namespace Google.Solutions.Ssh.Test.Native
                 }
             }
         }
+
+        [Test]
+        public async Task WhenClosingSessionBeforeChannel_ThenDoubleFreeIsPrevented(
+            [LinuxInstance] ResourceTask<InstanceLocator> instanceLocatorTask)
+        {
+            var instanceLocator = await instanceLocatorTask;
+            var endpoint = new IPEndPoint(
+                await InstanceUtil.PublicIpAddressForInstanceAsync(await instanceLocatorTask),
+                22);
+            using (var key = new RsaSshKey(new RSACng()))
+            {
+                await InstanceUtil.AddPublicKeyToMetadata(
+                    instanceLocator,
+                    "testuser",
+                    key).ConfigureAwait(true);
+
+                var session = CreateSession();
+                var connection = session.Connect(endpoint);
+                var authSession = connection.Authenticate("testuser", key);
+                var channel = authSession.OpenExecChannel(
+                    "whoami",
+                    LIBSSH2_CHANNEL_EXTENDED_DATA.NORMAL);
+                
+                session.Dispose();
+
+                // Free channel after session - note that this causes an assertion
+                // when debugging.
+                channel.Dispose();
+            }
+        }
     }
 }

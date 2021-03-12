@@ -86,6 +86,8 @@ namespace Google.Solutions.Ssh.Native
                     throw this.session.CreateException(result);
                 }
 
+                channelHandle.SessionHandle = this.session.Handle;
+
                 //
                 // Configure how extended data (stderr, in particular) should
                 // be handled.
