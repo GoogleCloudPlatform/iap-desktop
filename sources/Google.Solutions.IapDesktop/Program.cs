@@ -294,10 +294,13 @@ namespace Google.Solutions.IapDesktop
         }
 
         protected override void HandleSubsequentInvocationException(Exception e)
+            => ShowFatalError(e);
+
+        private static void ShowFatalError(Exception e)
         {
             // NB. This could be called on any thread, at any time, so avoid
             // touching the main form.
-            MessageBox.Show(e.Message, "Invocation failed", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            ErrorDialog.Show(e);
         }
 
         /// <summary>
@@ -310,7 +313,14 @@ namespace Google.Solutions.IapDesktop
             // command line to another instance of the app.
             CommandLineOptions.ParseOrExit(args);
 
-            new Program().Run(args);
+            try
+            {
+                new Program().Run(args);
+            }
+            catch (Exception e)
+            {
+                ShowFatalError(e);
+            }
         }
     }
 }
