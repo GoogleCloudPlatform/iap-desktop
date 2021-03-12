@@ -168,7 +168,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Ssh
                         return await this.authorizedKeyService.AuthorizeKeyAsync(
                                 vmNode.Reference,
                                 sshKey,
-                                TimeSpan.FromHours(2),  // TODO: Make expiry configurable
+                                TimeSpan.FromDays(30),  // TODO: Make expiry configurable
                                 NullIfEmpty(settings.SshUsername.StringValue),
                                 AuthorizeKeyMethods.All,
                                 token)
