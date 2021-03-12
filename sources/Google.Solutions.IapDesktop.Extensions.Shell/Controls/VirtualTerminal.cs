@@ -423,7 +423,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Controls
                         //
                         // Single-character change that did not cause a line to wrap.
                         // Avoid a full redraw and instead only redraw a small region
-                        // south of the cursor.
+                        // around the cursor.
                         //
                         // NB. This optimization has a significant effect when the
                         // application is running in an RDP session, but the effect
