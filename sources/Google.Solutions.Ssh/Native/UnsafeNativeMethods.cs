@@ -543,6 +543,11 @@ namespace Google.Solutions.Ssh.Native
         private readonly Thread owningThread = Thread.CurrentThread;
 #endif
 
+        /// <summary>
+        /// Handle to parent session.
+        /// </summary>
+        public SshSessionHandle SessionHandle { get; set; }
+
         private SshChannelHandle() : base(true)
         {
             HandleTable.OnHandleCreated(this, "SSH session");
@@ -559,6 +564,29 @@ namespace Google.Solutions.Ssh.Native
         [ReliabilityContract(Consistency.WillNotCorruptState, Cer.MayFail)]
         override protected bool ReleaseHandle()
         {
+            //
+            // NB. Libssh2 manages channels as a sub-resource of a session.
+            // Freeing a channel is fine if the session is still around,
+            // but trying to free a channel *after* freeing a session will
+            // cause an access violation.
+            //
+            // When calling dispose, it's therefore imporant to dispose
+            // channels before disposing their parent session - that's
+            // what the following assertion is for.
+            //
+            // When handles are not disposed (for example, because the app
+            // is being force-closed), then the finalizer may release
+            // resources in arbitrary order. 
+            //
+            Debug.Assert(this.SessionHandle != null);
+            Debug.Assert(!this.SessionHandle.IsClosed);
+
+            if (this.SessionHandle.IsClosed)
+            {
+                // Do not free the channel.
+                return false;
+            }
+
             var result = (LIBSSH2_ERROR)UnsafeNativeMethods.libssh2_channel_free(
                 this.handle);
             Debug.Assert(result == LIBSSH2_ERROR.NONE);
