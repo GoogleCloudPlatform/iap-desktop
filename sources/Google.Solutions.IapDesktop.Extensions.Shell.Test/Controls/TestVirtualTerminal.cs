@@ -16,9 +16,11 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Controls
     [Apartment(ApartmentState.STA)]
     public class TestVirtualTerminal : ApplicationFixtureBase
     {
+        private readonly string Esc = "\u001b";
+
         private VirtualTerminal terminal;
         private Form form;
-        private StringBuilder receivedInput;
+        private StringBuilder sendData;
 
         protected static void PumpWindowMessages()
             => System.Windows.Forms.Application.DoEvents();
@@ -33,7 +35,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Controls
         [SetUp]
         public void SetUp()
         {
-            this.receivedInput = new StringBuilder();
+            this.sendData = new StringBuilder();
             this.form = new Form()
             {
                 Size = new Size(800, 600)
@@ -47,21 +49,23 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Controls
 
             terminal.SendData += (sender, args) =>
             {
-                this.receivedInput.Append(args.Data);
+                this.sendData.Append(args.Data);
             };
 
             form.Show();
             PumpWindowMessages();
+
+            Clipboard.Clear();
         }
 
         [TearDown]
         public void TearDown()
         {
-            for (int i = 0; i < 50; i++)
-            {
-                PumpWindowMessages();
-                Thread.Sleep(100);
-            }
+            //for (int i = 0; i < 10; i++)
+            //{
+            //    PumpWindowMessages();
+            //    Thread.Sleep(100);
+            //}
 
             this.form.Close();
         }
@@ -82,14 +86,237 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Controls
         //---------------------------------------------------------------------
 
         [Test]
-        public void WhenPastingCrlf_ThenTerminalSendsNewline()
+        public void WhenPastingClipboardContentWithCrlf_ThenTerminalSendsClipboardContentWithNewline()
         {
             Clipboard.SetText("sample\r\ntext");
 
             this.terminal.PasteClipboard();
 
-            Assert.AreEqual("sample\ntext", this.receivedInput.ToString());
+            Assert.AreEqual("sample\ntext", this.sendData.ToString());
         }
 
+        [Test]
+        public void WhenTypingCtrlV_ThenClipboardContentIsSent()
+        {
+            Clipboard.SetText("sample\r\ntext");
+
+            this.terminal.SimulateKey(Keys.Control | Keys.V);
+
+            Assert.AreEqual("sample\ntext", this.sendData.ToString());
+        }
+
+
+        //---------------------------------------------------------------------
+        // Modifiers.
+        //---------------------------------------------------------------------
+
+        [Test]
+        public void WhenTypingUpArrow_ThenKeystrokeIsSent()
+        {
+            this.terminal.SimulateKey(Keys.Up);
+
+            Assert.AreEqual($"{Esc}[A", this.sendData.ToString());
+        }
+
+        [Test]
+        public void WhenTypingDownArrow_ThenKeystrokeIsSent()
+        {
+            this.terminal.SimulateKey(Keys.Down);
+
+            Assert.AreEqual($"{Esc}[B", this.sendData.ToString());
+        }
+
+        [Test]
+        public void WhenTypingRightArrow_ThenKeystrokeIsSent()
+        {
+            this.terminal.SimulateKey(Keys.Right);
+
+            Assert.AreEqual($"{Esc}[C", this.sendData.ToString());
+        }
+
+        [Test]
+        public void WhenTypingLeftArrow_ThenKeystrokeIsSent()
+        {
+            this.terminal.SimulateKey(Keys.Left);
+
+            Assert.AreEqual($"{Esc}[D", this.sendData.ToString());
+        }
+
+        [Test]
+        public void WhenTypingHome_ThenKeystrokeIsSent()
+        {
+            this.terminal.SimulateKey(Keys.Home);
+
+            Assert.AreEqual($"{Esc}[1~", this.sendData.ToString());
+        }
+
+        [Test]
+        public void WhenTypingEnd_ThenKeystrokeIsSent()
+        {
+            this.terminal.SimulateKey(Keys.End);
+
+            Assert.AreEqual($"{Esc}[4~", this.sendData.ToString());
+        }
+
+
+        //---------------------------------------------------------------------
+        // Numpad & Function Keys.
+        //---------------------------------------------------------------------
+
+        [Test]
+        public void WhenTypingAltV_ThenKeystrokeIsSent()
+        {
+            this.terminal.SimulateKey(Keys.Alt| Keys.V);
+
+            Assert.AreEqual($"{Esc}v", this.sendData.ToString());
+        }
+
+        [Test]
+        public void WhenTypingBackspace_ThenKeystrokeIsSent()
+        {
+            this.terminal.SimulateKey(Keys.Back);
+
+            Assert.AreEqual("\u007f", this.sendData.ToString());
+        }
+
+        [Test]
+        [Ignore("Not supported by vtnetcore")]
+        public void WhenTypingPause_ThenKeystrokeIsSent()
+        {
+            this.terminal.SimulateKey(Keys.Pause);
+
+            Assert.AreEqual("\u001a", this.sendData.ToString());
+        }
+
+        [Test]
+        public void WhenTypingEscape_ThenKeystrokeIsSent()
+        {
+            this.terminal.SimulateKey(Keys.Escape);
+
+            Assert.AreEqual(Esc + Esc, this.sendData.ToString());
+        }
+
+        [Test]
+        public void WhenTypingInsert_ThenKeystrokeIsSent()
+        {
+            this.terminal.SimulateKey(Keys.Insert);
+
+            Assert.AreEqual($"{Esc}[2~", this.sendData.ToString());
+        }
+
+        [Test]
+        public void WhenTypingDelete_ThenKeystrokeIsSent()
+        {
+            this.terminal.SimulateKey(Keys.Delete);
+
+            Assert.AreEqual($"{Esc}[3~", this.sendData.ToString());
+        }
+
+        [Test]
+        public void WhenTypingPageUp_ThenKeystrokeIsSent()
+        {
+            this.terminal.SimulateKey(Keys.PageUp);
+
+            Assert.AreEqual($"{Esc}[5~", this.sendData.ToString());
+        }
+
+        [Test]
+        public void WhenTypingPrior_ThenKeystrokeIsSent()
+        {
+            this.terminal.SimulateKey(Keys.Prior);
+
+            Assert.AreEqual($"{Esc}[5~", this.sendData.ToString());
+        }
+
+        [Test]
+        public void WhenTypingPageDown_ThenKeystrokeIsSent()
+        {
+            this.terminal.SimulateKey(Keys.PageDown);
+
+            Assert.AreEqual($"{Esc}[6~", this.sendData.ToString());
+        }
+
+        [Test]
+        public void WhenTypingNext_ThenKeystrokeIsSent()
+        {
+            this.terminal.SimulateKey(Keys.Next);
+
+            Assert.AreEqual($"{Esc}[6~", this.sendData.ToString());
+        }
+
+        [Test]
+        public void WhenTypingFunctionKeyInLowerRange_ThenKeystrokeIsSent(
+            [Range(1, 5)] int functionKey
+            )
+        {
+            this.terminal.SimulateKey((Keys)(Keys.F1 + functionKey - 1));
+
+            Assert.AreEqual($"{Esc}[{10 + functionKey}~", this.sendData.ToString());
+        }
+
+        [Test]
+        public void WhenTypingFunctionKeyInMiddleRange_ThenKeystrokeIsSent(
+            [Range(6, 10)] int functionKey
+            )
+        {
+            this.terminal.SimulateKey((Keys)(Keys.F1 + functionKey - 1));
+
+            Assert.AreEqual($"{Esc}[{11 + functionKey}~", this.sendData.ToString());
+        }
+
+        [Test]
+        public void WhenTypingFunctionKeyInUpperRange_ThenKeystrokeIsSent(
+            [Range(11, 12)] int functionKey
+            )
+        {
+            this.terminal.SimulateKey((Keys)(Keys.F1 + functionKey - 1));
+
+            Assert.AreEqual($"{Esc}[{12 + functionKey}~", this.sendData.ToString());
+        }
+
+        //---------------------------------------------------------------------
+        // Modifiers.
+        //---------------------------------------------------------------------
+
+        [Test]
+        [Ignore("Not supported by vtnetcore")]
+        public void WhenTypingCtrlSpace_ThenKeystrokeIsSent()
+        {
+            this.terminal.SimulateKey(Keys.Control | Keys.Space);
+
+            Assert.AreEqual("\u0000", this.sendData.ToString());
+        }
+
+        [Test]
+        public void WhenTypingCtrlUpArrow_ThenKeystrokeIsSent()
+        {
+            this.terminal.SimulateKey(Keys.Control | Keys.Up);
+
+            Assert.AreEqual($"{Esc}OA", this.sendData.ToString());
+        }
+
+        [Test]
+        public void WhenTypingCtrlDownArrow_ThenKeystrokeIsSent()
+        {
+            this.terminal.SimulateKey(Keys.Control | Keys.Down);
+
+            Assert.AreEqual($"{Esc}OB", this.sendData.ToString());
+        }
+
+        [Test]
+        public void WhenTypingCtrlRightArrow_ThenKeystrokeIsSent()
+        {
+            this.terminal.SimulateKey(Keys.Control | Keys.Right);
+
+            Assert.AreEqual($"{Esc}OC", this.sendData.ToString());
+        }
+
+        [Test]
+        public void WhenTypingCtrlLeftArrow_ThenKeystrokeIsSent()
+        {
+            this.terminal.SimulateKey(Keys.Control | Keys.Left);
+
+            Assert.AreEqual($"{Esc}OD", this.sendData.ToString());
+        }
     }
 }
