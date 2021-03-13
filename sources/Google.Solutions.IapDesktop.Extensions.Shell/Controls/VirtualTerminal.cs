@@ -573,8 +573,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Controls
                     PasteClipboard();
                     return true;
                 }
-                else if (control && !shift && keyCode == Keys.C && 
-                         this.textSelection != null)
+                else if (control && !shift && keyCode == Keys.C && this.IsTextSelected)
                 {
                     if (this.EnableCtrlC)
                     {
@@ -588,6 +587,12 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Controls
                 else if (this.EnableCtrlA && control && !shift && keyCode == Keys.A)
                 {
                     SelectAllText();
+                    return true;
+                }
+                else if (keyCode == Keys.Enter && this.IsTextSelected)
+                {
+                    // Just clear selection, but do not send the key.
+                    ClearTextSelection();
                     return true;
                 }
                 else

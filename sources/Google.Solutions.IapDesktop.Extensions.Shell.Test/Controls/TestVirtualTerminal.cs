@@ -81,11 +81,11 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Controls
         [TearDown]
         public void TearDown()
         {
-            for (int i = 0; i < 10; i++)
-            {
-                PumpWindowMessages();
-                Thread.Sleep(100);
-            }
+            //for (int i = 0; i < 10; i++)
+            //{
+            //    PumpWindowMessages();
+            //    Thread.Sleep(100);
+            //}
 
             this.form.Close();
         }
@@ -254,6 +254,36 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Controls
             this.terminal.SimulateKey(Keys.Control | Keys.A);
 
             Assert.AreEqual("\u0001", this.sendData.ToString());
+            Assert.IsFalse(this.terminal.IsTextSelected);
+        }
+
+        [Test]
+        public void WhenTextSelected_ThenTypingClearsSelectionAndSendsKey()
+        {
+            var textStraddlingViewPort = GenerateText(3, 20);
+            this.terminal.ReceiveData(textStraddlingViewPort);
+
+            this.terminal.SelectText(0, 0, 20, 2);
+            Assert.IsTrue(this.terminal.IsTextSelected);
+
+            this.terminal.SimulateKey(Keys.Space);
+
+            Assert.AreEqual(" ", this.sendData.ToString());
+            Assert.IsFalse(this.terminal.IsTextSelected);
+        }
+
+        [Test]
+        public void WhenTextSelected_ThenTypingEnterClearsSelectionWithoutSendingKey()
+        {
+            var textStraddlingViewPort = GenerateText(3, 20);
+            this.terminal.ReceiveData(textStraddlingViewPort);
+
+            this.terminal.SelectText(0, 0, 20, 2);
+            Assert.IsTrue(this.terminal.IsTextSelected);
+
+            this.terminal.SimulateKey(Keys.Enter);
+
+            Assert.AreEqual("", this.sendData.ToString());
             Assert.IsFalse(this.terminal.IsTextSelected);
         }
 
