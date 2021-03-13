@@ -79,6 +79,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Controls
         public string WindowTitle { get; set; }
 
         public bool EnableCtrlV { get; set; } = true;
+        public bool EnableCtrlC { get; set; } = true;
 
         public VirtualTerminal()
         {
@@ -457,6 +458,25 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Controls
         // Keyboard event handlers.
         //---------------------------------------------------------------------
 
+        private void CopyClipboard()
+        {
+            //
+            // NB. If the mouse escapes the window borders, the coordinates
+            // can get negative - therefore, use the max.
+            //
+            var captured = this.controller.GetText(
+                Math.Max(0, this.textSelection.Start.Column),
+                Math.Max(0, this.textSelection.Start.Row),
+                Math.Max(0, this.textSelection.End.Column),
+                Math.Max(0, this.textSelection.End.Row));
+
+            if (!string.IsNullOrEmpty(captured))
+            {
+                // Copy to clipboard.
+                Clipboard.SetText(captured);
+            }
+        }
+
         internal void PasteClipboard()
         {
             // Paste clipboard.
@@ -555,9 +575,21 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Controls
                 control,
                 shift))
             {
-                if (this.EnableCtrlV && control && keyCode == Keys.V)
+                if (this.EnableCtrlV && control && !shift && keyCode == Keys.V)
                 {
                     PasteClipboard();
+                    return true;
+                }
+                else if (control && !shift && keyCode == Keys.C && 
+                         this.textSelection != null)
+                {
+                    if (this.EnableCtrlC)
+                    {
+                        CopyClipboard();
+                    }
+
+                    // Clear selection, regardless of whether we copied or not.
+                    ClearTextSelection();
                     return true;
                 }
                 else
@@ -655,8 +687,20 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Controls
         }
 
         //---------------------------------------------------------------------
-        // For testing only.
+        // Actions, primarily for testing.
         //---------------------------------------------------------------------
+
+        internal bool IsTextSelected => this.textSelection != null;
+
+        internal void ClearTextSelection()
+        {
+            if (this.textSelection != null)
+            {
+                // Clear selection.
+                this.textSelection = null;
+                Invalidate();
+            }
+        }
 
         internal void SimulateKey(Keys keyCode)
         {
@@ -674,19 +718,23 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Controls
             }
         }
 
+        internal void SelectText(
+            ushort startColumn,
+            ushort startRow,
+            ushort endColumn,
+            ushort endRow)
+        {
+            this.textSelection = new TextRange()
+            {
+                Start = new TextPosition(startColumn, startRow),
+                End = new TextPosition(endColumn, endRow)
+            };
+            Invalidate();
+        }
+
         //---------------------------------------------------------------------
         // Mouse event handlers and text selection.
         //---------------------------------------------------------------------
-
-        private void ClearTextSelection()
-        {
-            if (this.textSelection != null)
-            {
-                // Clear selection.
-                this.textSelection = null;
-                Invalidate();
-            }
-        }
 
         protected override void OnMouseWheel(MouseEventArgs e)
         {
@@ -803,22 +851,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Controls
             if (e.Button == MouseButtons.Left && this.mouseDownPosition != null && this.textSelection != null)
             {
                 // We're tracking a selection.
-
-                //
-                // NB. If the mouse escapes the window borders, the coordinates
-                // can get negative - therefore, use the max.
-                //
-                var captured = this.controller.GetText(
-                    Math.Max(0, this.textSelection.Start.Column),
-                    Math.Max(0, this.textSelection.Start.Row),
-                    Math.Max(0, this.textSelection.End.Column),
-                    Math.Max(0, this.textSelection.End.Row));
-
-                if (!string.IsNullOrEmpty(captured))
-                {
-                    // Copy to clipboard.
-                    Clipboard.SetText(captured);
-                }
+                CopyClipboard();
 
                 return;
             }

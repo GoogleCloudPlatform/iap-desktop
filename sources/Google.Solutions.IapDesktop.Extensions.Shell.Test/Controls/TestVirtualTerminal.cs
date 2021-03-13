@@ -96,15 +96,94 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Controls
         }
 
         [Test]
-        public void WhenTypingCtrlV_ThenClipboardContentIsSent()
+        public void WhenCtrlVIsEnabled_ThenTypingCtrlVSendsClipboardContent()
         {
             Clipboard.SetText("sample\r\ntext");
 
+            this.terminal.EnableCtrlV = true;
             this.terminal.SimulateKey(Keys.Control | Keys.V);
 
             Assert.AreEqual("sample\ntext", this.sendData.ToString());
         }
 
+        [Test]
+        public void WhenCtrlVIsDisabled_ThenTypingCtrlVSendsKeystroke()
+        {
+            Clipboard.SetText("sample\r\ntext");
+
+            this.terminal.EnableCtrlV = false;
+            this.terminal.SimulateKey(Keys.Control | Keys.V);
+
+            Assert.AreEqual("\u0016", this.sendData.ToString());
+        }
+
+        [Test]
+        public void WhenCtrlCIsEnabledAndTextSelected_ThenTypingCtrlCSetsClipboardContentAndClearsSelection()
+        {
+            this.terminal.ReceiveData(
+                "first line\r\n" +
+                "second line\r\n" +
+                "third line");
+            this.terminal.SelectText(2, 0, 7, 1);
+
+            this.terminal.EnableCtrlC = true;
+            this.terminal.SimulateKey(Keys.Control | Keys.C);
+
+            Assert.AreEqual("rst line\nsecond l", Clipboard.GetText());
+            Assert.AreEqual(string.Empty, this.sendData.ToString());
+            Assert.IsFalse(this.terminal.IsTextSelected);
+        }
+
+        [Test]
+        public void WhenCtrlCIsEnabledButNoTextSelected_ThenTypingCtrlCSendsKeystroke()
+        {
+            this.terminal.ReceiveData(
+                "first line\r\n" +
+                "second line\r\n" +
+                "third line");
+            this.terminal.ClearTextSelection();
+
+            this.terminal.EnableCtrlC = true;
+            this.terminal.SimulateKey(Keys.Control | Keys.C);
+
+            Assert.AreEqual("", Clipboard.GetText());
+            Assert.AreEqual("\u0003", this.sendData.ToString());
+            Assert.IsFalse(this.terminal.IsTextSelected);
+        }
+
+        [Test]
+        public void WhenCtrlCIsDisabledAndTextSelected_ThenTypingCtrlCClearsSelection()
+        {
+            this.terminal.ReceiveData(
+                "first line\r\n" +
+                "second line\r\n" +
+                "third line");
+            this.terminal.SelectText(2, 0, 1, 7);
+
+            this.terminal.EnableCtrlC = false;
+            this.terminal.SimulateKey(Keys.Control | Keys.C);
+
+            Assert.AreEqual("", Clipboard.GetText());
+            Assert.AreEqual("", this.sendData.ToString());
+            Assert.IsFalse(this.terminal.IsTextSelected);
+        }
+
+        [Test]
+        public void WhenCtrlCIsDisabledAndNoTextSelected_ThenTypingCtrlCSendsKeystroke()
+        {
+            this.terminal.ReceiveData(
+                "first line\r\n" +
+                "second line\r\n" +
+                "third line");
+            this.terminal.ClearTextSelection();
+
+            this.terminal.EnableCtrlC = false;
+            this.terminal.SimulateKey(Keys.Control | Keys.C);
+
+            Assert.AreEqual("", Clipboard.GetText());
+            Assert.AreEqual("\u0003", this.sendData.ToString());
+            Assert.IsFalse(this.terminal.IsTextSelected);
+        }
 
         //---------------------------------------------------------------------
         // Modifiers.
