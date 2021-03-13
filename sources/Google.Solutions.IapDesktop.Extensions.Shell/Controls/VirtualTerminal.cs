@@ -80,6 +80,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Controls
 
         public bool EnableCtrlV { get; set; } = true;
         public bool EnableCtrlC { get; set; } = true;
+        public bool EnableCtrlA { get; set; } = true;
 
         public VirtualTerminal()
         {
@@ -460,15 +461,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Controls
 
         private void CopyClipboard()
         {
-            //
-            // NB. If the mouse escapes the window borders, the coordinates
-            // can get negative - therefore, use the max.
-            //
-            var captured = this.controller.GetText(
-                Math.Max(0, this.textSelection.Start.Column),
-                Math.Max(0, this.textSelection.Start.Row),
-                Math.Max(0, this.textSelection.End.Column),
-                Math.Max(0, this.textSelection.End.Row));
+            var captured = this.TextSelection;
 
             if (!string.IsNullOrEmpty(captured))
             {
@@ -592,6 +585,11 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Controls
                     ClearTextSelection();
                     return true;
                 }
+                else if (this.EnableCtrlA && control && !shift && keyCode == Keys.A)
+                {
+                    SelectAllText();
+                    return true;
+                }
                 else
                 {
                     //
@@ -687,10 +685,39 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Controls
         }
 
         //---------------------------------------------------------------------
-        // Actions, primarily for testing.
+        // Text selection tracking.
         //---------------------------------------------------------------------
 
+        private void SelectAllText()
+        {
+            this.textSelection = new TextRange()
+            {
+                Start = new TextPosition(0, 0),
+                End = new TextPosition(
+                    this.controller.CursorState.Position.Column,
+                    this.controller.CursorState.Position.Row + this.ViewTop)
+            };
+
+            Invalidate();
+        }
+
         internal bool IsTextSelected => this.textSelection != null;
+
+        internal string TextSelection
+        {
+            get
+            {
+                //
+                // NB. If the mouse escapes the window borders, the coordinates
+                // can get negative - therefore, use the max.
+                //
+                return this.controller.GetText(
+                    Math.Max(0, this.textSelection.Start.Column),
+                    Math.Max(0, this.textSelection.Start.Row),
+                    Math.Max(0, this.textSelection.End.Column),
+                    Math.Max(0, this.textSelection.End.Row));
+            }
+        }
 
         internal void ClearTextSelection()
         {
@@ -699,22 +726,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Controls
                 // Clear selection.
                 this.textSelection = null;
                 Invalidate();
-            }
-        }
-
-        internal void SimulateKey(Keys keyCode)
-        {
-            var keyDown = new KeyEventArgs(keyCode);
-            OnKeyDown(keyDown);
-            if (!keyDown.SuppressKeyPress)
-            {
-                // NB. This does not work for any combining characters, but
-                // that's ok sind the method is for testing only.
-                var ch = KeyUtil.CharFromKeyCode(keyCode);
-                if (ch.Length >= 1)
-                {
-                    OnKeyPress(new KeyPressEventArgs(ch[0]));
-                }
             }
         }
 
@@ -730,6 +741,27 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Controls
                 End = new TextPosition(endColumn, endRow)
             };
             Invalidate();
+        }
+
+
+        //---------------------------------------------------------------------
+        // For testing only.
+        //---------------------------------------------------------------------
+
+        internal void SimulateKey(Keys keyCode)
+        {
+            var keyDown = new KeyEventArgs(keyCode);
+            OnKeyDown(keyDown);
+            if (!keyDown.SuppressKeyPress)
+            {
+                // NB. This does not work for any combining characters, but
+                // that's ok sind the method is for testing only.
+                var ch = KeyUtil.CharFromKeyCode(keyCode);
+                if (ch.Length >= 1)
+                {
+                    OnKeyPress(new KeyPressEventArgs(ch[0]));
+                }
+            }
         }
 
         //---------------------------------------------------------------------

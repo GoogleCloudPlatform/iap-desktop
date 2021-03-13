@@ -23,6 +23,7 @@ using Google.Solutions.IapDesktop.Application.Test;
 using Google.Solutions.IapDesktop.Extensions.Shell.Controls;
 using NUnit.Framework;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
 using System.Text;
@@ -80,11 +81,11 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Controls
         [TearDown]
         public void TearDown()
         {
-            //for (int i = 0; i < 10; i++)
-            //{
-            //    PumpWindowMessages();
-            //    Thread.Sleep(100);
-            //}
+            for (int i = 0; i < 10; i++)
+            {
+                PumpWindowMessages();
+                Thread.Sleep(100);
+            }
 
             this.form.Close();
         }
@@ -201,6 +202,58 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Controls
 
             Assert.AreEqual("", Clipboard.GetText());
             Assert.AreEqual("\u0003", this.sendData.ToString());
+            Assert.IsFalse(this.terminal.IsTextSelected);
+        }
+
+        //---------------------------------------------------------------------
+        // Text selection.
+        //---------------------------------------------------------------------
+
+        private static string GenerateText(int rows, int columns)
+        {
+            Debug.Assert(columns > 10);
+            var buffer = new StringBuilder();
+
+            for (int i = 0; i < rows; i++)
+            {
+                buffer.Append($"{i:D8}: ");
+                for (int j = 0; j < columns - 10; j++)
+                {
+                    buffer.Append('.');
+                }
+
+                buffer.Append("\r\n");
+            }
+
+            return buffer.ToString().Trim();
+        }
+
+        [Test]
+        public void WhenCtrlAEnabled_ThenTypingCtrlASelectsAllText()
+        {
+            var textStraddlingViewPort = GenerateText(100, 20);
+            this.terminal.ReceiveData(textStraddlingViewPort);
+
+            this.terminal.EnableCtrlA = true;
+            this.terminal.SimulateKey(Keys.Control | Keys.A);
+
+            Assert.AreEqual("", this.sendData.ToString());
+            Assert.IsTrue(this.terminal.IsTextSelected);
+            Assert.AreEqual(
+                textStraddlingViewPort.Replace("\r\n", "\n"), 
+                this.terminal.TextSelection);
+        }
+
+        [Test]
+        public void WhenCtrlADisbled_ThenTypingCtrlASendsKeystroke()
+        {
+            var textStraddlingViewPort = GenerateText(100, 20);
+            this.terminal.ReceiveData(textStraddlingViewPort);
+
+            this.terminal.EnableCtrlA = false;
+            this.terminal.SimulateKey(Keys.Control | Keys.A);
+
+            Assert.AreEqual("\u0001", this.sendData.ToString());
             Assert.IsFalse(this.terminal.IsTextSelected);
         }
 
