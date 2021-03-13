@@ -102,7 +102,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Controls
         }
 
         //---------------------------------------------------------------------
-        // Clipboard.
+        // Clipboard
         //---------------------------------------------------------------------
 
         [Test]
@@ -114,6 +114,10 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Controls
 
             Assert.AreEqual("sample\ntext", this.sendData.ToString());
         }
+
+        //---------------------------------------------------------------------
+        // Clipboard: Ctrl+V
+        //---------------------------------------------------------------------
 
         [Test]
         public void WhenCtrlVIsEnabled_ThenTypingCtrlVSendsClipboardContent()
@@ -136,6 +140,36 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Controls
 
             Assert.AreEqual("\u0016", this.sendData.ToString());
         }
+
+        //---------------------------------------------------------------------
+        // Clipboard: Shift+Insert
+        //---------------------------------------------------------------------
+
+        [Test]
+        public void WhenShiftInsertIsEnabled_ThenTypingShiftInsertSendsClipboardContent()
+        {
+            Clipboard.SetText("sample\r\ntext");
+
+            this.terminal.EnableShiftInsert = true;
+            this.terminal.SimulateKey(Keys.Shift | Keys.Insert);
+
+            Assert.AreEqual("sample\ntext", this.sendData.ToString());
+        }
+
+        [Test]
+        public void WhenShiftInsertIsDisabled_ThenTypingShiftInsertSendsKeystroke()
+        {
+            Clipboard.SetText("sample\r\ntext");
+
+            this.terminal.EnableShiftInsert = false;
+            this.terminal.SimulateKey(Keys.Shift | Keys.Insert);
+
+            Assert.AreEqual("", this.sendData.ToString());
+        }
+
+        //---------------------------------------------------------------------
+        // Clipboard: Ctrl+C
+        //---------------------------------------------------------------------
 
         [Test]
         public void WhenCtrlCIsEnabledAndTextSelected_ThenTypingCtrlCSetsClipboardContentAndClearsSelection()
@@ -202,6 +236,78 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Controls
 
             Assert.AreEqual("", Clipboard.GetText());
             Assert.AreEqual("\u0003", this.sendData.ToString());
+            Assert.IsFalse(this.terminal.IsTextSelected);
+        }
+
+        //---------------------------------------------------------------------
+        // Clipboard: Ctrl+Insert
+        //---------------------------------------------------------------------
+
+        [Test]
+        public void WhenCtrlInsertIsEnabledAndTextSelected_ThenTypingCtrlInsertSetsClipboardContentAndClearsSelection()
+        {
+            this.terminal.ReceiveData(
+                "first line\r\n" +
+                "second line\r\n" +
+                "third line");
+            this.terminal.SelectText(2, 0, 7, 1);
+
+            this.terminal.EnableCtrlInsert = true;
+            this.terminal.SimulateKey(Keys.Control | Keys.Insert);
+
+            Assert.AreEqual("rst line\nsecond l", Clipboard.GetText());
+            Assert.AreEqual(string.Empty, this.sendData.ToString());
+            Assert.IsFalse(this.terminal.IsTextSelected);
+        }
+
+        [Test]
+        public void WhenCtrlInsertIsEnabledButNoTextSelected_ThenTypingCtrlInsertSendsKeystroke()
+        {
+            this.terminal.ReceiveData(
+                "first line\r\n" +
+                "second line\r\n" +
+                "third line");
+            this.terminal.ClearTextSelection();
+
+            this.terminal.EnableCtrlInsert = true;
+            this.terminal.SimulateKey(Keys.Control | Keys.Insert);
+
+            Assert.AreEqual("", Clipboard.GetText());
+            Assert.AreEqual("", this.sendData.ToString());
+            Assert.IsFalse(this.terminal.IsTextSelected);
+        }
+
+        [Test]
+        public void WhenCtrlInsertIsDisabledAndTextSelected_ThenTypingCtrlInsertClearsSelection()
+        {
+            this.terminal.ReceiveData(
+                "first line\r\n" +
+                "second line\r\n" +
+                "third line");
+            this.terminal.SelectText(2, 0, 1, 7);
+
+            this.terminal.EnableCtrlInsert = false;
+            this.terminal.SimulateKey(Keys.Control | Keys.Insert);
+
+            Assert.AreEqual("", Clipboard.GetText());
+            Assert.AreEqual("", this.sendData.ToString());
+            Assert.IsFalse(this.terminal.IsTextSelected);
+        }
+
+        [Test]
+        public void WhenCtrlInsertIsDisabledAndNoTextSelected_ThenTypingCtrlInsertSendsKeystroke()
+        {
+            this.terminal.ReceiveData(
+                "first line\r\n" +
+                "second line\r\n" +
+                "third line");
+            this.terminal.ClearTextSelection();
+
+            this.terminal.EnableCtrlInsert = false;
+            this.terminal.SimulateKey(Keys.Control | Keys.Insert);
+
+            Assert.AreEqual("", Clipboard.GetText());
+            Assert.AreEqual("", this.sendData.ToString());
             Assert.IsFalse(this.terminal.IsTextSelected);
         }
 

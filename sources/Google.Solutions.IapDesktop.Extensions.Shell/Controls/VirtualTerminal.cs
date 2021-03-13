@@ -81,6 +81,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Controls
         public bool EnableCtrlV { get; set; } = true;
         public bool EnableCtrlC { get; set; } = true;
         public bool EnableCtrlA { get; set; } = true;
+        public bool EnableShiftInsert { get; set; } = true;
+        public bool EnableCtrlInsert { get; set; } = true;
 
         public VirtualTerminal()
         {
@@ -559,53 +561,61 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Controls
         {
             this.scrolling = false;
 
-            //
-            // If Alt is pressed, it cannot be a key sequence. 
-            // Otherwise, it might.
-            //
-            if (!alt && IsKeySequence(
+            if ((this.EnableCtrlV && control && !shift && keyCode == Keys.V) ||
+                (this.EnableShiftInsert && !control && shift && keyCode == Keys.Insert))
+            {
+                PasteClipboard();
+                return true;
+            }
+            else if (control && !shift && keyCode == Keys.C && this.IsTextSelected)
+            {
+                if (this.EnableCtrlC)
+                {
+                    CopyClipboard();
+                }
+
+                // Clear selection, regardless of whether we copied or not.
+                ClearTextSelection();
+                return true;
+            }
+            else if (control && !shift && keyCode == Keys.Insert && this.IsTextSelected)
+            {
+                if (this.EnableCtrlInsert)
+                {
+                    CopyClipboard();
+                }
+
+                // Clear selection, regardless of whether we copied or not.
+                ClearTextSelection();
+                return true;
+            }
+            else if (this.EnableCtrlA && control && !shift && keyCode == Keys.A)
+            {
+                SelectAllText();
+                return true;
+            }
+            else if (keyCode == Keys.Enter && this.IsTextSelected)
+            {
+                // Just clear selection, but do not send the key.
+                ClearTextSelection();
+                return true;
+            }
+            else if (!alt && IsKeySequence(
                 NameFromKey(keyCode),
                 control,
                 shift))
             {
-                if (this.EnableCtrlV && control && !shift && keyCode == Keys.V)
-                {
-                    PasteClipboard();
-                    return true;
-                }
-                else if (control && !shift && keyCode == Keys.C && this.IsTextSelected)
-                {
-                    if (this.EnableCtrlC)
-                    {
-                        CopyClipboard();
-                    }
-
-                    // Clear selection, regardless of whether we copied or not.
-                    ClearTextSelection();
-                    return true;
-                }
-                else if (this.EnableCtrlA && control && !shift && keyCode == Keys.A)
-                {
-                    SelectAllText();
-                    return true;
-                }
-                else if (keyCode == Keys.Enter && this.IsTextSelected)
-                {
-                    // Just clear selection, but do not send the key.
-                    ClearTextSelection();
-                    return true;
-                }
-                else
-                {
-                    //
-                    // This is a key sequence that needs to be
-                    // translated to some VT sequence.
-                    //
-                    return this.controller.KeyPressed(
-                        NameFromKey(keyCode),
-                        control,
-                        shift);
-                }
+                //
+                // This is a key sequence that needs to be
+                // translated to some VT sequence.
+                //
+                // NB. If Alt is pressed, it cannot be a key sequence. 
+                // Otherwise, it might.
+                //
+                return this.controller.KeyPressed(
+                    NameFromKey(keyCode),
+                    control,
+                    shift);
             }
             else if (alt && control)
             {
