@@ -94,6 +94,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Controls\TestTerminalFont.cs" />
+    <Compile Include="Controls\TestVirtualTerminal.cs" />
     <Compile Include="GlobalSuppressions.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="IapTunnel.cs" />

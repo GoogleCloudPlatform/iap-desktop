@@ -35,6 +35,15 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Controls
 {
     /// <summary>
     /// Virtual terminal control.
+    /// 
+    /// 
+    ///    GUI        +----------+                       +--------+
+    ///   output  <-- |          | <===(ReceiveData)==== |        |
+    ///               | Terminal |                       | Server |
+    ///  Keyboard --> |          | ==(SendData event)==> |        | 
+    ///   events      +----------+                       +--------+
+    /// 
+    /// 
     /// </summary>
     [SkipCodeCoverage("UI code")]
     public partial class VirtualTerminal : UserControl
@@ -43,7 +52,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Controls
         private readonly VirtualTerminalController controller;
         private readonly DataConsumer controllerSink;
 
-        public event EventHandler<InputEventArgs> InputReceived;
+        public event EventHandler<SendDataEventArgs> SendData;
         public event EventHandler<TerminalResizeEventArgs> TerminalResized;
         public event EventHandler WindowTitleChanged;
 
@@ -89,7 +98,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Controls
             this.controller.ShowCursor(true);
             this.controller.SendData += (sender, args) =>
             {
-                OnInput(new InputEventArgs(Encoding.UTF8.GetString(args.Data)));
+                OnSendData(new SendDataEventArgs(Encoding.UTF8.GetString(args.Data)));
             };
 
             this.Disposed += (sender, args) =>
@@ -396,7 +405,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Controls
         // Actions.
         //---------------------------------------------------------------------
 
-        public void PushText(string text)
+        public void ReceiveData(string text)
         {
             lock (this.controller)
             {
@@ -583,7 +592,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Controls
                 var ch = KeyUtil.CharFromKeyCode(keyCode);
                 if (ch.Length > 0)
                 {
-                    OnInput(new InputEventArgs("\u001b" + ch));
+                    OnSendData(new SendDataEventArgs("\u001b" + ch));
                     return true;
                 }
                 else
@@ -857,9 +866,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Controls
             this.WindowTitleChanged?.Invoke(this, EventArgs.Empty);
         }
 
-        protected virtual void OnInput(InputEventArgs args)
+        protected virtual void OnSendData(SendDataEventArgs args)
         {
-            this.InputReceived?.Invoke(this, args);
+            this.SendData?.Invoke(this, args);
         }
 
         protected virtual void OnTerminalResize(TerminalResizeEventArgs args)
@@ -868,11 +877,11 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Controls
         }
     }
 
-    public class InputEventArgs : EventArgs
+    public class SendDataEventArgs : EventArgs
     {
         public string Data { get; }
 
-        public InputEventArgs(string data)
+        public SendDataEventArgs(string data)
         {
             this.Data = data;
         }

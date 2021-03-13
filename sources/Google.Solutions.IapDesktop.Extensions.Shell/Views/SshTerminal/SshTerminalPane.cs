@@ -150,7 +150,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.SshTerminal
                 this.viewModel.Dispose();
             };
             this.FormClosed += OnFormClosed;
-            this.Terminal.InputReceived += (sender, args) =>
+            this.Terminal.SendData += (sender, args) =>
             {
                 //
                 // Relay user input to SSH connection.
@@ -266,7 +266,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.SshTerminal
             }
             else
             {
-                this.Terminal.PushText(args.Data);
+                this.Terminal.ReceiveData(args.Data);
             }
         }
 
