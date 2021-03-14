@@ -107,6 +107,7 @@
     <Compile Include="Services\Adapter\OsLoginAdapter.cs" />
     <Compile Include="Services\ConnectionFailedException.cs" />
     <Compile Include="Services\ConnectionSettings\ProjectExplorerNodeExtensions.cs" />
+    <Compile Include="Services\Settings\TerminalSettings.cs" />
     <Compile Include="Services\Ssh\AuthorizedKey.cs" />
     <Compile Include="Services\Ssh\AuthorizedKeyService.cs" />
     <Compile Include="Services\Ssh\IAuthorizedKeyService.cs" />

@@ -77,7 +77,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Controls
 
         public bool EnableCtrlV { get; set; } = true;
         public bool EnableCtrlC { get; set; } = true;
-        public bool EnableCtrlA { get; set; } = true;
+        public bool EnableCtrlA { get; set; } = false;
         public bool EnableShiftInsert { get; set; } = true;
         public bool EnableCtrlInsert { get; set; } = true;
         public bool EnableShiftLeftRight { get; set; } = true;
