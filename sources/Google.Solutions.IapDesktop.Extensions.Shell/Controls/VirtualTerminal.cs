@@ -125,32 +125,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Controls
             }
         }
 
-        internal string GetBuffer()
-        {
-            var buffer = new StringBuilder();
-
-            var spans = this.controller.ViewPort.GetPageSpans(
-                this.ViewTop,
-                this.Rows,
-                this.Columns,
-                this.selection?.Range);
-
-            foreach (var textRow in spans)
-            {
-                foreach (var textSpan in textRow.Spans)
-                {
-                    if (!textSpan.Hidden)
-                    {
-                        buffer.Append(textSpan.Text);
-                    }
-                }
-
-                buffer.Append("\r\n");
-            }
-
-            return buffer.ToString();
-        }
-
         //---------------------------------------------------------------------
         // Painting.
         //---------------------------------------------------------------------
@@ -782,7 +756,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Controls
             if (!keyDown.SuppressKeyPress)
             {
                 // NB. This does not work for any combining characters, but
-                // that's ok sind the method is for testing only.
+                // that's ok since this method is for testing only.
                 var ch = KeyUtil.CharFromKeyCode(keyCode);
                 if (ch.Length >= 1)
                 {
@@ -791,8 +765,34 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Controls
             }
         }
 
+        internal string GetBuffer()
+        {
+            var buffer = new StringBuilder();
+
+            var spans = this.controller.ViewPort.GetPageSpans(
+                this.ViewTop,
+                this.Rows,
+                this.Columns,
+                this.selection?.Range);
+
+            foreach (var textRow in spans)
+            {
+                foreach (var textSpan in textRow.Spans)
+                {
+                    if (!textSpan.Hidden)
+                    {
+                        buffer.Append(textSpan.Text);
+                    }
+                }
+
+                buffer.Append("\r\n");
+            }
+
+            return buffer.ToString();
+        }
+
         //---------------------------------------------------------------------
-        // Mouse event handlers and text selection.
+        // Mouse event handlers.
         //---------------------------------------------------------------------
 
         protected override void OnMouseWheel(MouseEventArgs e)
