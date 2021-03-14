@@ -29,7 +29,6 @@ using VtNetCore.VirtualTerminal;
 using VtNetCore.XTermParser;
 using VtNetCore.VirtualTerminal.Layout;
 using Google.Solutions.Common.Diagnostics;
-using System.Linq;
 
 namespace Google.Solutions.IapDesktop.Extensions.Shell.Controls
 {
@@ -82,6 +81,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Controls
         public bool EnableShiftInsert { get; set; } = true;
         public bool EnableCtrlInsert { get; set; } = true;
         public bool EnableShiftLeftRight { get; set; } = true;
+        public bool EnableShiftUpDown { get; set; } = true;
 
         public VirtualTerminal()
         {
@@ -474,8 +474,10 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Controls
 
             switch (keyData)
             {
-                case Keys.Down:
                 case Keys.Up:
+                case Keys.Down:
+                case Keys.Up | Keys.Shift:
+                case Keys.Down | Keys.Shift:
                 case Keys.Left:
                 case Keys.Right:
                 case Keys.Left | Keys.Shift:
@@ -580,12 +582,22 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Controls
             }
             else if (this.EnableShiftLeftRight && !control && shift && !alt && keyCode == Keys.Left)
             {
-                ExtendSelection(-1);
+                ExtendSelection(0, -1);
                 return true;
             }
             else if (this.EnableShiftLeftRight && !control && shift && !alt && keyCode == Keys.Right)
             {
-                ExtendSelection(1);
+                ExtendSelection(0, 1);
+                return true;
+            }
+            else if (this.EnableShiftUpDown && !control && shift && !alt && keyCode == Keys.Up)
+            {
+                ExtendSelection(-1, 0);
+                return true;
+            }
+            else if (this.EnableShiftUpDown && !control && shift && !alt && keyCode == Keys.Down)
+            {
+                ExtendSelection(1, 0);
                 return true;
             }
             else if (!alt && IsKeySequence(
@@ -773,12 +785,17 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Controls
                 new TextPosition(endColumn, endRow),
                 direction);
 
-        private TextPosition MovePosition(TextPosition position, int charactersDelta)
+        private TextPosition MovePosition(TextPosition position, int rowsDelta, int columnsDelta)
         {
-            var row = position.Row;
-            var column = position.Column + charactersDelta;
+            var currentRowLength = this.controller.GetText(
+                0, 
+                position.Row, 
+                this.Columns, 
+                position.Row).Length;
+            
+            var row = Math.Max(0, Math.Min(position.Row + rowsDelta, this.controller.BottomRow));
+            var column = position.Column + columnsDelta;
 
-            var currentRowLength = this.controller.GetText(0, row, this.Columns, row).Length;
             if (column < 0)
             {
                 if (row == 0)
@@ -792,9 +809,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Controls
                     column += this.controller.GetText(0, row, this.Columns, row).Length;
                 }
             }
-            else if (column >= currentRowLength)
+            else if (columnsDelta != 0 && column >= currentRowLength)
             {
-                // Overflow -> wrap to next row.
+                // Overflow caused by columnsDelta -> wrap to next row.
                 row++;
                 column -= currentRowLength;
             }
@@ -802,7 +819,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Controls
             return new TextPosition(column, row);
         }
 
-        private void ExtendSelection(int charactersDelta)
+        private void ExtendSelection(int rowsDelta, int columnsDelta)
         {
             if (this.selection == null)
             {
@@ -816,14 +833,14 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Controls
                 // Move end of selection.
                 SelectText(
                     this.selection.Range.Start,
-                    MovePosition(this.selection.Range.End, charactersDelta),
+                    MovePosition(this.selection.Range.End, rowsDelta, columnsDelta),
                     this.selection.Direction);
             }
             else
             {
                 // Move start of selection.
                 SelectText(
-                    MovePosition(this.selection.Range.Start, charactersDelta),
+                    MovePosition(this.selection.Range.Start, rowsDelta, columnsDelta),
                     this.selection.Range.End,
                     this.selection.Direction);
             }

@@ -444,6 +444,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Controls
             // Invert selection.
             this.terminal.SimulateKey(Keys.Shift | Keys.Right, 2);
             Assert.AreEqual("56", this.terminal.TextSelection);
+
+            Assert.AreEqual(string.Empty, this.sendData.ToString());
         }
         [Test]
         public void WhenShiftLeftRightEnabled_ThenTypingShiftRightStartsSelection()
@@ -469,6 +471,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Controls
             // Invert selection.
             this.terminal.SimulateKey(Keys.Shift | Keys.Left, 2);
             Assert.AreEqual("45", this.terminal.TextSelection);
+
+            Assert.AreEqual(string.Empty, this.sendData.ToString());
         }
 
         [Test]
@@ -498,6 +502,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Controls
             // Move right till end.
             this.terminal.SimulateKey(Keys.Shift | Keys.Right, 10);
             Assert.AreEqual("56789\nvwxyz\n\n\n\n\n\n\n", this.terminal.TextSelection);
+            
+            Assert.AreEqual(string.Empty, this.sendData.ToString());
         }
 
         [Test]
@@ -517,6 +523,65 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Controls
             this.terminal.SimulateKey(Keys.Shift | Keys.Right);
 
             Assert.AreEqual($"{Esc}OC", this.sendData.ToString());
+            Assert.IsFalse(this.terminal.IsTextSelected);
+        }
+
+        //---------------------------------------------------------------------
+        // Text selection: Shift+Up/Down
+        //---------------------------------------------------------------------
+
+        [Test]
+        public void WhenShiftUpDownEnabled_ThenTypingUpOrDownExtendsSelectionBeyondCurrentRow()
+        {
+            this.terminal.ReceiveData(
+                "abcde\r\n" +
+                "0123456789\r\n" +
+                "vwxyz");
+
+            this.terminal.EnableShiftLeftRight = true;
+            this.terminal.MoveCursorRelative(-2, -1);
+            this.terminal.SimulateKey(Keys.Shift | Keys.Up, 1);
+
+            // Move Up to preceding line.
+            Assert.IsTrue(this.terminal.IsTextSelected);
+            Assert.AreEqual("de\n0123", this.terminal.TextSelection);
+
+            // Move up beyond top.
+            this.terminal.SimulateKey(Keys.Shift | Keys.Up, 2);
+            Assert.AreEqual("de\n0123", this.terminal.TextSelection);
+
+            // Move down till third line.
+            this.terminal.SimulateKey(Keys.Shift | Keys.Down, 2);
+            Assert.AreEqual("3456789\nvwxy", this.terminal.TextSelection);
+
+            // Move down beyond end.
+            this.terminal.SimulateKey(Keys.Shift | Keys.Down, 1);
+            Assert.AreEqual("3456789\nvwxyz\n", this.terminal.TextSelection);
+
+            // Move up again.
+            this.terminal.SimulateKey(Keys.Shift | Keys.Up, 1);
+            Assert.AreEqual("3456789\nvwxy", this.terminal.TextSelection);
+
+            Assert.AreEqual(string.Empty, this.sendData.ToString());
+        }
+
+        [Test]
+        public void WhenShiftUpDownDisabled_ThenTypingShiftDownSendsKeystroke()
+        {
+            this.terminal.EnableShiftUpDown = false;
+            this.terminal.SimulateKey(Keys.Shift | Keys.Down);
+
+            Assert.AreEqual($"{Esc}OB", this.sendData.ToString());
+            Assert.IsFalse(this.terminal.IsTextSelected);
+        }
+
+        [Test]
+        public void WhenShiftUpDownDisabled_ThenTypingShiftUpSendsKeystroke()
+        {
+            this.terminal.EnableShiftUpDown = false;
+            this.terminal.SimulateKey(Keys.Shift | Keys.Up);
+
+            Assert.AreEqual($"{Esc}OA", this.sendData.ToString());
             Assert.IsFalse(this.terminal.IsTextSelected);
         }
 
