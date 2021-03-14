@@ -60,7 +60,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Controls
         private Caret caret;
         #pragma warning restore IDE0069 // Disposable fields should be disposed
 
-        private TextRange textSelection;
+        private TextSelection selection;
         private bool scrolling;
         private TextPosition mouseDownPosition;
 
@@ -133,7 +133,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Controls
                 this.ViewTop,
                 this.Rows,
                 this.Columns,
-                this.textSelection);
+                this.selection?.Range);
 
             foreach (var textRow in spans)
             {
@@ -233,7 +233,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Controls
                 this.ViewTop,
                 this.Rows,
                 this.Columns,
-                this.textSelection);
+                this.selection?.Range);
 
             if (!this.scrolling && this.ViewTop != terminalTop)
             {
@@ -705,41 +705,50 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Controls
 
         private void SelectAllText()
         {
-            this.textSelection = new TextRange()
-            {
-                Start = new TextPosition(0, 0),
-                End = new TextPosition(
-                    this.controller.CursorState.Position.Column,
-                    this.controller.CursorState.Position.Row + this.ViewTop)
-            };
+            this.selection = new TextSelection(
+                new TextRange()
+                {
+                    Start = new TextPosition(0, 0),
+                    End = new TextPosition(
+                        this.controller.CursorState.Position.Column,
+                        this.controller.CursorState.Position.Row + this.ViewTop)
+                },
+                TextSelectionDirection.Forward);
 
             Invalidate();
         }
 
-        internal bool IsTextSelected => this.textSelection != null;
+        internal bool IsTextSelected => this.selection != null;
 
         internal string TextSelection
         {
             get
             {
-                //
-                // NB. If the mouse escapes the window borders, the coordinates
-                // can get negative - therefore, use the max.
-                //
-                return this.controller.GetText(
-                    Math.Max(0, this.textSelection.Start.Column),
-                    Math.Max(0, this.textSelection.Start.Row),
-                    Math.Max(0, this.textSelection.End.Column),
-                    Math.Max(0, this.textSelection.End.Row));
+                if (this.selection == null)
+                {
+                    return null;
+                }
+                else
+                {
+                    //
+                    // NB. If the mouse escapes the window borders, the coordinates
+                    // can get negative - therefore, use the max.
+                    //
+                    return this.controller.GetText(
+                        Math.Max(0, this.selection.Range.Start.Column),
+                        Math.Max(0, this.selection.Range.Start.Row),
+                        Math.Max(0, this.selection.Range.End.Column),
+                        Math.Max(0, this.selection.Range.End.Row));
+                }
             }
         }
 
         internal void ClearTextSelection()
         {
-            if (this.textSelection != null)
+            if (this.selection != null)
             {
                 // Clear selection.
-                this.textSelection = null;
+                this.selection = null;
                 Invalidate();
             }
         }
@@ -748,13 +757,16 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Controls
             ushort startColumn,
             ushort startRow,
             ushort endColumn,
-            ushort endRow)
+            ushort endRow,
+            TextSelectionDirection direction)
         {
-            this.textSelection = new TextRange()
-            {
-                Start = new TextPosition(startColumn, startRow),
-                End = new TextPosition(endColumn, endRow)
-            };
+            this.selection = new TextSelection(
+                new TextRange()
+                {
+                    Start = new TextPosition(startColumn, startRow),
+                    End = new TextPosition(endColumn, endRow)
+                },
+                direction);
             Invalidate();
         }
 
@@ -842,7 +854,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Controls
             {
                 // Begin a new selection. Memorize the location so that we
                 // can start tracking.
-                this.textSelection = null;
+                this.selection = null;
                 this.mouseDownPosition = PositionFromPoint(e.Location)
                     .OffsetBy(0, this.ViewTop);
 
@@ -862,31 +874,29 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Controls
 
                 if (this.mouseDownPosition != textPosition)
                 {
-                    TextRange newSelection;
                     if (this.mouseDownPosition <= textPosition)
                     {
-                        newSelection = new TextRange
-                        {
-                            Start = this.mouseDownPosition,
-                            End = textPosition.OffsetBy(-1, 0)
-                        };
+                        this.selection = new TextSelection(
+                            new TextRange
+                            {
+                                Start = this.mouseDownPosition,
+                                End = textPosition.OffsetBy(-1, 0)
+                            },
+                            TextSelectionDirection.Forward);
                     }
                     else
                     {
-                        newSelection = new TextRange
-                        {
-                            Start = textPosition,
-                            End = this.mouseDownPosition
-                        };
+                        this.selection = new TextSelection(
+                            new TextRange
+                            {
+                                Start = textPosition,
+                                End = this.mouseDownPosition
+                            },
+                            TextSelectionDirection.Backward);
                     }
 
-                    if (this.textSelection != newSelection)
-                    {
-                        this.textSelection = newSelection;
-
-                        // Repaint to show selection.
-                        Invalidate();
-                    }
+                    // Repaint to show selection.
+                    Invalidate();
                 }
             }
 
@@ -895,7 +905,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Controls
 
         protected override void OnMouseUp(MouseEventArgs e)
         {
-            if (e.Button == MouseButtons.Left && this.mouseDownPosition != null && this.textSelection != null)
+            if (e.Button == MouseButtons.Left && this.mouseDownPosition != null && this.selection != null)
             {
                 // We're tracking a selection.
                 CopyClipboard();
@@ -955,6 +965,26 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Controls
         {
             this.TerminalResized?.Invoke(this, args);
         }
+    }
+
+    public class TextSelection
+    {
+        public TextRange Range { get; }
+        public TextSelectionDirection Direction { get; }
+
+        public TextSelection(
+            TextRange range,
+            TextSelectionDirection direction)
+        {
+            this.Range = range;
+            this.Direction = direction;
+        }
+    }
+
+    public enum TextSelectionDirection
+    {
+        Forward,
+        Backward
     }
 
     public class SendDataEventArgs : EventArgs

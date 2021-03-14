@@ -178,7 +178,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Controls
                 "first line\r\n" +
                 "second line\r\n" +
                 "third line");
-            this.terminal.SelectText(2, 0, 7, 1);
+            this.terminal.SelectText(2, 0, 7, 1, TextSelectionDirection.Forward);
 
             this.terminal.EnableCtrlC = true;
             this.terminal.SimulateKey(Keys.Control | Keys.C);
@@ -212,7 +212,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Controls
                 "first line\r\n" +
                 "second line\r\n" +
                 "third line");
-            this.terminal.SelectText(2, 0, 1, 7);
+            this.terminal.SelectText(2, 0, 1, 7, TextSelectionDirection.Forward);
 
             this.terminal.EnableCtrlC = false;
             this.terminal.SimulateKey(Keys.Control | Keys.C);
@@ -250,7 +250,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Controls
                 "first line\r\n" +
                 "second line\r\n" +
                 "third line");
-            this.terminal.SelectText(2, 0, 7, 1);
+            this.terminal.SelectText(2, 0, 7, 1, TextSelectionDirection.Forward);
 
             this.terminal.EnableCtrlInsert = true;
             this.terminal.SimulateKey(Keys.Control | Keys.Insert);
@@ -284,7 +284,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Controls
                 "first line\r\n" +
                 "second line\r\n" +
                 "third line");
-            this.terminal.SelectText(2, 0, 1, 7);
+            this.terminal.SelectText(2, 0, 1, 7, TextSelectionDirection.Forward);
 
             this.terminal.EnableCtrlInsert = false;
             this.terminal.SimulateKey(Keys.Control | Keys.Insert);
@@ -369,7 +369,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Controls
             var textStraddlingViewPort = GenerateText(3, 20);
             this.terminal.ReceiveData(textStraddlingViewPort);
 
-            this.terminal.SelectText(0, 0, 20, 2);
+            this.terminal.SelectText(0, 0, 20, 2, TextSelectionDirection.Forward);
             Assert.IsTrue(this.terminal.IsTextSelected);
 
             this.terminal.SimulateKey(Keys.Space);
@@ -384,7 +384,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Controls
             var textStraddlingViewPort = GenerateText(3, 20);
             this.terminal.ReceiveData(textStraddlingViewPort);
 
-            this.terminal.SelectText(0, 0, 20, 2);
+            this.terminal.SelectText(0, 0, 20, 2, TextSelectionDirection.Forward);
             Assert.IsTrue(this.terminal.IsTextSelected);
 
             this.terminal.SimulateKey(Keys.Enter);
