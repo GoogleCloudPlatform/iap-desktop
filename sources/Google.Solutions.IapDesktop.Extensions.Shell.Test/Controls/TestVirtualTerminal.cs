@@ -346,7 +346,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Controls
             Assert.AreEqual("", this.sendData.ToString());
             Assert.IsTrue(this.terminal.IsTextSelected);
             Assert.AreEqual(
-                textStraddlingViewPort.Replace("\r\n", "\n"), 
+                textStraddlingViewPort.Replace("\r\n", "\n") + "\n", 
                 this.terminal.TextSelection);
         }
 
@@ -363,7 +363,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Controls
             Assert.AreEqual("", this.sendData.ToString());
             Assert.IsTrue(this.terminal.IsTextSelected);
             Assert.AreEqual(
-                textStraddlingViewPort.Replace("\r\n", "\n"),
+                textStraddlingViewPort.Replace("\r\n", "\n") + "\n",
                 this.terminal.TextSelection);
         }
 

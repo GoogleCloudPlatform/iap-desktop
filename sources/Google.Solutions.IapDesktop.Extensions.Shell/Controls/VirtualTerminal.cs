@@ -74,8 +74,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Controls
 
         public int Rows { get; private set; } = -1;
 
-        public int BottomRow => ViewTop + Rows - 1;
-
         public string WindowTitle { get; set; }
 
         public bool EnableCtrlV { get; set; } = true;
