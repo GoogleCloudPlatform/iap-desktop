@@ -81,7 +81,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Controls
         [TearDown]
         public void TearDown()
         {
-            //for (int i = 0; i < 10; i++)
+            //for (int i = 0; i < 20; i++)
             //{
             //    PumpWindowMessages();
             //    Thread.Sleep(100);
@@ -335,7 +335,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Controls
         }
 
         [Test]
-        public void WhenCtrlAEnabled_ThenTypingCtrlASelectsAllText()
+        public void WhenCtrlAEnabledAndCursorAtEnd_ThenTypingCtrlASelectsAllText()
         {
             var textStraddlingViewPort = GenerateText(100, 20);
             this.terminal.ReceiveData(textStraddlingViewPort);
@@ -347,6 +347,59 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Controls
             Assert.IsTrue(this.terminal.IsTextSelected);
             Assert.AreEqual(
                 textStraddlingViewPort.Replace("\r\n", "\n"), 
+                this.terminal.TextSelection);
+        }
+
+        [Test]
+        public void WhenCtrlAEnabledAndCursorNotAtEnd_ThenTypingCtrlASelectsAllText()
+        {
+            var textStraddlingViewPort = GenerateText(100, 20);
+            this.terminal.ReceiveData(textStraddlingViewPort);
+
+            this.terminal.EnableCtrlA = true;
+            this.terminal.MoveCursorRelative(-5, -1);
+            this.terminal.SimulateKey(Keys.Control | Keys.A);
+
+            Assert.AreEqual("", this.sendData.ToString());
+            Assert.IsTrue(this.terminal.IsTextSelected);
+            Assert.AreEqual(
+                textStraddlingViewPort.Replace("\r\n", "\n"),
+                this.terminal.TextSelection);
+        }
+
+        [Test]
+        public void WhenCtrlAEnabledAndCursorNotAtEnd_ThenTypingCtrlACtrlCCopiesTimmedTextToClipboard()
+        {
+            var textSmallerThanViewPort = GenerateText(3, 20);
+            this.terminal.ReceiveData(textSmallerThanViewPort);
+
+            this.terminal.EnableCtrlA = true;
+            this.terminal.EnableCtrlC = true;
+            this.terminal.MoveCursorRelative(-5, -1);
+            this.terminal.SimulateKey(Keys.Control | Keys.A);
+            this.terminal.SimulateKey(Keys.Control | Keys.C);
+
+            Assert.AreEqual("", this.sendData.ToString());
+            Assert.IsFalse(this.terminal.IsTextSelected);
+            Assert.AreEqual(
+                textSmallerThanViewPort.Replace("\r\n", "\n"),
+                Clipboard.GetText());
+        }
+
+        [Test]
+        public void WhenCtrlAEnabledAndScrolledToTop_ThenTypingCtrlASelectsAllText()
+        {
+            var textStraddlingViewPort = GenerateText(100, 20);
+            this.terminal.ReceiveData(textStraddlingViewPort);
+
+            this.terminal.EnableCtrlA = true;
+            this.terminal.ScrollViewPort(-100); // All the way up.
+            this.terminal.SimulateKey(Keys.Control | Keys.A);
+
+            Assert.AreEqual("", this.sendData.ToString());
+            Assert.IsTrue(this.terminal.IsTextSelected);
+            Assert.AreEqual(
+                textStraddlingViewPort.Replace("\r\n", "\n") + "\n",
                 this.terminal.TextSelection);
         }
 

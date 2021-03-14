@@ -442,7 +442,10 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Controls
             if (!string.IsNullOrEmpty(captured))
             {
                 // Copy to clipboard.
-                Clipboard.SetText(captured);
+                // Trim end since we might be copying empty rows
+                // instead (if we have not reached the bottom row
+                // yet).
+                Clipboard.SetText(captured.TrimEnd());
             }
         }
 
@@ -677,15 +680,21 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Controls
         // Text selection tracking.
         //---------------------------------------------------------------------
 
+        private TextPosition CursorPosition
+        {
+            // Return absolute cursor position (i.e., ignore view port)
+            get => new TextPosition(
+                this.controller.CursorState.Position.Column,
+                this.controller.CursorState.Position.Row + this.ViewTop);
+        }
+
         private void SelectAllText()
         {
             this.selection = new TextSelection(
                 new TextRange()
                 {
                     Start = new TextPosition(0, 0),
-                    End = new TextPosition(
-                        this.controller.CursorState.Position.Column,
-                        this.controller.CursorState.Position.Row + this.ViewTop)
+                    End = new TextPosition(this.Columns, this.controller.BottomRow)
                 },
                 TextSelectionDirection.Forward);
 
@@ -728,26 +737,73 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Controls
         }
 
         internal void SelectText(
-            ushort startColumn,
-            ushort startRow,
-            ushort endColumn,
-            ushort endRow,
+            TextPosition start,
+            TextPosition end,
             TextSelectionDirection direction)
         {
             this.selection = new TextSelection(
                 new TextRange()
                 {
-                    Start = new TextPosition(startColumn, startRow),
-                    End = new TextPosition(endColumn, endRow)
+                    Start = start,
+                    End = end
                 },
                 direction);
             Invalidate();
         }
 
+        internal void SelectText(
+            ushort startColumn,
+            ushort startRow,
+            ushort endColumn,
+            ushort endRow,
+            TextSelectionDirection direction)
+            => SelectText(
+                new TextPosition(startColumn, startRow),
+                new TextPosition(endColumn, endRow),
+                direction);
+
+        //private void ExtendSelectionByOneCharacter(TextSelectionDirection direction)
+        //{
+        //    if (this.selection != null)
+        //    {
+        //        // Extend current selection.
+        //    }
+        //    else
+        //    {
+        //        // Start new selection.
+        //        if (direction == TextSelectionDirection.Forward)
+        //        {
+        //            //SelectText(this.CursorPosition, this.)
+        //        }
+        //        else
+        //        {
+
+        //        }
+        //    }
+        //}
+
+        //private void ExtendSelectionTillEnd(TextSelectionDirection direction)
+        //{
+        //    if (direction == TextSelectionDirection.Forward)
+        //    {
+        //        SelectText(
+        //            this.selection?.Range.Start ?? this.CursorPosition,
+        //            )
+        //    }
+        //    else
+        //    {
+
+        //    }
+        //}
 
         //---------------------------------------------------------------------
         // For testing only.
         //---------------------------------------------------------------------
+
+        internal void MoveCursorRelative(int x, int y)
+        {
+            this.controller.MoveCursorRelative(x, y);
+        }
 
         internal void SimulateKey(Keys keyCode)
         {
@@ -795,6 +851,28 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Controls
         // Mouse event handlers.
         //---------------------------------------------------------------------
 
+        internal void ScrollViewPort(int rowsDelta)
+        {
+            int oldViewTop = this.ViewTop;
+
+            this.ViewTop += rowsDelta;
+            this.scrolling = true;
+
+            if (this.ViewTop < 0)
+            {
+                this.ViewTop = 0;
+            }
+            else if (this.ViewTop > this.controller.ViewPort.TopRow)
+            {
+                this.ViewTop = this.controller.ViewPort.TopRow;
+            }
+
+            if (oldViewTop != this.ViewTop)
+            {
+                Invalidate();
+            }
+        }
+
         protected override void OnMouseWheel(MouseEventArgs e)
         {
             if (ModifierKeys.HasFlag(Keys.Control))
@@ -819,26 +897,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Controls
             }
             else
             {
-                // Scroll.
-
-                int oldViewTop = this.ViewTop;
-
-                this.ViewTop -= e.Delta / 40;
-                this.scrolling = true;
-
-                if (this.ViewTop < 0)
-                {
-                    this.ViewTop = 0;
-                }
-                else if (this.ViewTop > this.controller.ViewPort.TopRow)
-                {
-                    this.ViewTop = this.controller.ViewPort.TopRow;
-                }
-
-                if (oldViewTop != this.ViewTop)
-                {
-                    Invalidate();
-                }
+                ScrollViewPort(-e.Delta / 40);
             }
 
             base.OnMouseWheel(e);
