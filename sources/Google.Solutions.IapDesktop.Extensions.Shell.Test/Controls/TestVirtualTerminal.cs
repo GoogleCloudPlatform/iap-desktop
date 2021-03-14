@@ -312,12 +312,12 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Controls
         }
 
         //---------------------------------------------------------------------
-        // Text selection.
+        // Text selection: Ctrl+A
         //---------------------------------------------------------------------
 
         private static string GenerateText(int rows, int columns)
         {
-            Debug.Assert(columns > 10);
+            Debug.Assert(columns >= 10);
             var buffer = new StringBuilder();
 
             for (int i = 0; i < rows; i++)
@@ -415,6 +415,114 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Controls
             Assert.AreEqual("\u0001", this.sendData.ToString());
             Assert.IsFalse(this.terminal.IsTextSelected);
         }
+
+        //---------------------------------------------------------------------
+        // Text selection: Shift+Left/Right
+        //---------------------------------------------------------------------
+
+        [Test]
+        public void WhenShiftLeftRightEnabled_ThenTypingShiftLeftStartsSelection()
+        {
+            this.terminal.ReceiveData("0123456789");
+
+            this.terminal.EnableShiftLeftRight = true;
+            this.terminal.MoveCursorRelative(-5, 0);
+            this.terminal.SimulateKey(Keys.Shift | Keys.Left);
+
+            // Start single-character selection.
+            Assert.IsTrue(this.terminal.IsTextSelected);
+            Assert.AreEqual("45", this.terminal.TextSelection);
+
+            // Extend selection.
+            this.terminal.SimulateKey(Keys.Shift | Keys.Left, 2);
+            Assert.AreEqual("2345", this.terminal.TextSelection);
+
+            // Shrink selection.
+            this.terminal.SimulateKey(Keys.Shift | Keys.Right, 2);
+            Assert.AreEqual("45", this.terminal.TextSelection);
+
+            // Invert selection.
+            this.terminal.SimulateKey(Keys.Shift | Keys.Right, 2);
+            Assert.AreEqual("56", this.terminal.TextSelection);
+        }
+        [Test]
+        public void WhenShiftLeftRightEnabled_ThenTypingShiftRightStartsSelection()
+        {
+            this.terminal.ReceiveData("0123456789");
+
+            this.terminal.EnableShiftLeftRight = true;
+            this.terminal.MoveCursorRelative(-5, 0);
+            this.terminal.SimulateKey(Keys.Shift | Keys.Right);
+
+            // Start single-character selection.
+            Assert.IsTrue(this.terminal.IsTextSelected);
+            Assert.AreEqual("56", this.terminal.TextSelection);
+
+            // Extend selection.
+            this.terminal.SimulateKey(Keys.Shift | Keys.Right, 2);
+            Assert.AreEqual("5678", this.terminal.TextSelection);
+
+            // Shrink selection.
+            this.terminal.SimulateKey(Keys.Shift | Keys.Left, 2);
+            Assert.AreEqual("56", this.terminal.TextSelection);
+
+            // Invert selection.
+            this.terminal.SimulateKey(Keys.Shift | Keys.Left, 2);
+            Assert.AreEqual("45", this.terminal.TextSelection);
+        }
+
+        [Test]
+        public void WhenShiftLeftRightEnabled_ThenTypingShiftLeftOrRightExtendsSelectionBeyondCurrentRow()
+        {
+            this.terminal.ReceiveData(
+                "abcde\r\n" +
+                "0123456789\r\n" +
+                "vwxyz");
+
+            this.terminal.EnableShiftLeftRight = true;
+            this.terminal.MoveCursorRelative(0, -1);
+            this.terminal.SimulateKey(Keys.Shift | Keys.Left, 6);
+
+            // Move left until preceding line.
+            Assert.IsTrue(this.terminal.IsTextSelected);
+            Assert.AreEqual("e\n012345", this.terminal.TextSelection);
+
+            // Move left till end.
+            this.terminal.SimulateKey(Keys.Shift | Keys.Left, 10);
+            Assert.AreEqual("abcde\n012345", this.terminal.TextSelection);
+
+            // Move right till third line.
+            this.terminal.SimulateKey(Keys.Shift | Keys.Right, 16);
+            Assert.AreEqual("56789\nvw", this.terminal.TextSelection);
+
+            // Move right till end.
+            this.terminal.SimulateKey(Keys.Shift | Keys.Right, 10);
+            Assert.AreEqual("56789\nvwxyz\n\n\n\n\n\n\n", this.terminal.TextSelection);
+        }
+
+        [Test]
+        public void WhenShiftLeftRightDisabled_ThenTypingShiftLeftSendsKeystroke()
+        {
+            this.terminal.EnableShiftLeftRight = false;
+            this.terminal.SimulateKey(Keys.Shift | Keys.Left);
+
+            Assert.AreEqual($"{Esc}OD", this.sendData.ToString());
+            Assert.IsFalse(this.terminal.IsTextSelected);
+        }
+
+        [Test]
+        public void WhenShiftLeftRightDisabled_ThenTypingShiftRightSendsKeystroke()
+        {
+            this.terminal.EnableShiftLeftRight = false;
+            this.terminal.SimulateKey(Keys.Shift | Keys.Right);
+
+            Assert.AreEqual($"{Esc}OC", this.sendData.ToString());
+            Assert.IsFalse(this.terminal.IsTextSelected);
+        }
+
+        //---------------------------------------------------------------------
+        // Text selection: Clearing
+        //---------------------------------------------------------------------
 
         [Test]
         public void WhenTextSelected_ThenTypingClearsSelectionAndSendsKey()

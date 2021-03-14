@@ -81,6 +81,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Controls
         public bool EnableCtrlA { get; set; } = true;
         public bool EnableShiftInsert { get; set; } = true;
         public bool EnableCtrlInsert { get; set; } = true;
+        public bool EnableShiftLeftRight { get; set; } = true;
 
         public VirtualTerminal()
         {
@@ -437,7 +438,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Controls
         {
             var captured = this.TextSelection;
 
-            if (!string.IsNullOrEmpty(captured))
+            if (!string.IsNullOrWhiteSpace(captured))
             {
                 // Copy to clipboard.
                 // Trim end since we might be copying empty rows
@@ -477,6 +478,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Controls
                 case Keys.Up:
                 case Keys.Left:
                 case Keys.Right:
+                case Keys.Left | Keys.Shift:
+                case Keys.Right | Keys.Shift:
                 case Keys.Home:
                 case Keys.Insert:
                 case Keys.Delete:
@@ -536,13 +539,13 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Controls
         {
             this.scrolling = false;
 
-            if ((this.EnableCtrlV && control && !shift && keyCode == Keys.V) ||
-                (this.EnableShiftInsert && !control && shift && keyCode == Keys.Insert))
+            if ((this.EnableCtrlV && control && !shift && !alt && keyCode == Keys.V) ||
+                (this.EnableShiftInsert && !control && shift && !alt && keyCode == Keys.Insert))
             {
                 PasteClipboard();
                 return true;
             }
-            else if (control && !shift && keyCode == Keys.C && this.IsTextSelected)
+            else if (control && !shift && !alt && keyCode == Keys.C && this.IsTextSelected)
             {
                 if (this.EnableCtrlC)
                 {
@@ -553,7 +556,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Controls
                 ClearTextSelection();
                 return true;
             }
-            else if (control && !shift && keyCode == Keys.Insert && this.IsTextSelected)
+            else if (control && !shift && !alt && keyCode == Keys.Insert && this.IsTextSelected)
             {
                 if (this.EnableCtrlInsert)
                 {
@@ -564,7 +567,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Controls
                 ClearTextSelection();
                 return true;
             }
-            else if (this.EnableCtrlA && control && !shift && keyCode == Keys.A)
+            else if (this.EnableCtrlA && control && !shift && !alt && keyCode == Keys.A)
             {
                 SelectAllText();
                 return true;
@@ -573,6 +576,16 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Controls
             {
                 // Just clear selection, but do not send the key.
                 ClearTextSelection();
+                return true;
+            }
+            else if (this.EnableShiftLeftRight && !control && shift && !alt && keyCode == Keys.Left)
+            {
+                ExtendSelection(-1);
+                return true;
+            }
+            else if (this.EnableShiftLeftRight && !control && shift && !alt && keyCode == Keys.Right)
+            {
+                ExtendSelection(1);
                 return true;
             }
             else if (!alt && IsKeySequence(
@@ -760,25 +773,61 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Controls
                 new TextPosition(endColumn, endRow),
                 direction);
 
-        //private void ExtendSelectionByOneCharacter(TextSelectionDirection direction)
-        //{
-        //    if (this.selection != null)
-        //    {
-        //        // Extend current selection.
-        //    }
-        //    else
-        //    {
-        //        // Start new selection.
-        //        if (direction == TextSelectionDirection.Forward)
-        //        {
-        //            //SelectText(this.CursorPosition, this.)
-        //        }
-        //        else
-        //        {
+        private TextPosition MovePosition(TextPosition position, int charactersDelta)
+        {
+            var row = position.Row;
+            var column = position.Column + charactersDelta;
 
-        //        }
-        //    }
-        //}
+            var currentRowLength = this.controller.GetText(0, row, this.Columns, row).Length;
+            if (column < 0)
+            {
+                if (row == 0)
+                {
+                    column = 0;
+                }
+                else
+                {
+                    // Underflow -> wrap to previous row - but skip any whitespace at end.
+                    row--;
+                    column += this.controller.GetText(0, row, this.Columns, row).Length;
+                }
+            }
+            else if (column >= currentRowLength)
+            {
+                // Overflow -> wrap to next row.
+                row++;
+                column -= currentRowLength;
+            }
+
+            return new TextPosition(column, row);
+        }
+
+        private void ExtendSelection(int charactersDelta)
+        {
+            if (this.selection == null)
+            {
+                // Start new selection.
+                SelectText(this.CursorPosition, this.CursorPosition, TextSelectionDirection.Forward);
+            }
+
+            // Keep the existing direction.
+            if (this.selection.Direction == TextSelectionDirection.Forward)
+            {
+                // Move end of selection.
+                SelectText(
+                    this.selection.Range.Start,
+                    MovePosition(this.selection.Range.End, charactersDelta),
+                    this.selection.Direction);
+            }
+            else
+            {
+                // Move start of selection.
+                SelectText(
+                    MovePosition(this.selection.Range.Start, charactersDelta),
+                    this.selection.Range.End,
+                    this.selection.Direction);
+            }
+        }
 
         //private void ExtendSelectionTillEnd(TextSelectionDirection direction)
         //{
@@ -842,6 +891,14 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Controls
                 {
                     OnKeyPress(new KeyPressEventArgs(ch[0]));
                 }
+            }
+        }
+
+        internal void SimulateKey(Keys keyCode, int repeat)
+        {
+            for (int i = 0; i < repeat; i++)
+            {
+                SimulateKey(keyCode);
             }
         }
 
