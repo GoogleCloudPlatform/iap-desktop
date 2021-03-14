@@ -795,6 +795,32 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Controls
         //}
 
         //---------------------------------------------------------------------
+        // Scrolling.
+        //---------------------------------------------------------------------
+
+        internal void ScrollViewPort(int rowsDelta)
+        {
+            int oldViewTop = this.ViewTop;
+
+            this.ViewTop += rowsDelta;
+            this.scrolling = true;
+
+            if (this.ViewTop < 0)
+            {
+                this.ViewTop = 0;
+            }
+            else if (this.ViewTop > this.controller.ViewPort.TopRow)
+            {
+                this.ViewTop = this.controller.ViewPort.TopRow;
+            }
+
+            if (oldViewTop != this.ViewTop)
+            {
+                Invalidate();
+            }
+        }
+
+        //---------------------------------------------------------------------
         // For testing only.
         //---------------------------------------------------------------------
 
@@ -848,28 +874,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Controls
         //---------------------------------------------------------------------
         // Mouse event handlers.
         //---------------------------------------------------------------------
-
-        internal void ScrollViewPort(int rowsDelta)
-        {
-            int oldViewTop = this.ViewTop;
-
-            this.ViewTop += rowsDelta;
-            this.scrolling = true;
-
-            if (this.ViewTop < 0)
-            {
-                this.ViewTop = 0;
-            }
-            else if (this.ViewTop > this.controller.ViewPort.TopRow)
-            {
-                this.ViewTop = this.controller.ViewPort.TopRow;
-            }
-
-            if (oldViewTop != this.ViewTop)
-            {
-                Invalidate();
-            }
-        }
 
         protected override void OnMouseWheel(MouseEventArgs e)
         {
