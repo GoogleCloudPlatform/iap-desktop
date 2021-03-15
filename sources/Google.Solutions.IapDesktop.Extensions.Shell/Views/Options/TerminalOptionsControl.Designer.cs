@@ -55,7 +55,7 @@
             this.clipboardBox.Size = new System.Drawing.Size(336, 85);
             this.clipboardBox.TabIndex = 2;
             this.clipboardBox.TabStop = false;
-            this.clipboardBox.Text = "Clipboard";
+            this.clipboardBox.Text = "Clipboard:";
             // 
             // keyboardIcon
             // 
@@ -109,7 +109,7 @@
             this.textSelectionBox.Size = new System.Drawing.Size(336, 70);
             this.textSelectionBox.TabIndex = 3;
             this.textSelectionBox.TabStop = false;
-            this.textSelectionBox.Text = "Text selection";
+            this.textSelectionBox.Text = "Text selection:";
             // 
             // pictureBox1
             // 
