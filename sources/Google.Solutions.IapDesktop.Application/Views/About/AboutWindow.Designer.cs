@@ -49,6 +49,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.About
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(AboutWindow));
             this.okButton = new System.Windows.Forms.Button();
             this.infoLabel = new System.Windows.Forms.Label();
             this.clrInfoLabel = new System.Windows.Forms.Label();
@@ -58,7 +59,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.About
             // okButton
             // 
             this.okButton.DialogResult = System.Windows.Forms.DialogResult.OK;
-            this.okButton.Location = new System.Drawing.Point(317, 235);
+            this.okButton.Location = new System.Drawing.Point(351, 261);
             this.okButton.Name = "okButton";
             this.okButton.Size = new System.Drawing.Size(75, 23);
             this.okButton.TabIndex = 0;
@@ -68,7 +69,8 @@ namespace Google.Solutions.IapDesktop.Application.Views.About
             // infoLabel
             // 
             this.infoLabel.AutoSize = true;
-            this.infoLabel.Location = new System.Drawing.Point(13, 93);
+            this.infoLabel.BackColor = System.Drawing.Color.White;
+            this.infoLabel.Location = new System.Drawing.Point(25, 93);
             this.infoLabel.Name = "infoLabel";
             this.infoLabel.Size = new System.Drawing.Size(10, 13);
             this.infoLabel.TabIndex = 1;
@@ -77,6 +79,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.About
             // clrInfoLabel
             // 
             this.clrInfoLabel.AutoSize = true;
+            this.clrInfoLabel.BackColor = System.Drawing.Color.White;
             this.clrInfoLabel.Location = new System.Drawing.Point(303, 93);
             this.clrInfoLabel.Name = "clrInfoLabel";
             this.clrInfoLabel.Size = new System.Drawing.Size(10, 13);
@@ -86,10 +89,11 @@ namespace Google.Solutions.IapDesktop.Application.Views.About
             // 
             // licenseText
             // 
-            this.licenseText.Location = new System.Drawing.Point(16, 133);
+            this.licenseText.BackColor = System.Drawing.Color.White;
+            this.licenseText.Location = new System.Drawing.Point(25, 125);
             this.licenseText.Name = "licenseText";
             this.licenseText.ReadOnly = true;
-            this.licenseText.Size = new System.Drawing.Size(376, 82);
+            this.licenseText.Size = new System.Drawing.Size(401, 130);
             this.licenseText.TabIndex = 2;
             this.licenseText.Text = "";
             this.licenseText.LinkClicked += new System.Windows.Forms.LinkClickedEventHandler(this.licenseText_LinkClicked);
@@ -99,10 +103,10 @@ namespace Google.Solutions.IapDesktop.Application.Views.About
             this.AcceptButton = this.okButton;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.BackgroundImage = global::Google.Solutions.IapDesktop.Application.Properties.Resources.About;
+            this.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("$this.BackgroundImage")));
             this.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
             this.CancelButton = this.okButton;
-            this.ClientSize = new System.Drawing.Size(414, 270);
+            this.ClientSize = new System.Drawing.Size(449, 297);
             this.Controls.Add(this.licenseText);
             this.Controls.Add(this.clrInfoLabel);
             this.Controls.Add(this.infoLabel);
