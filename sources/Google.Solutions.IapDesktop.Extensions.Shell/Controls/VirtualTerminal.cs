@@ -29,6 +29,7 @@ using VtNetCore.VirtualTerminal;
 using VtNetCore.XTermParser;
 using VtNetCore.VirtualTerminal.Layout;
 using Google.Solutions.Common.Diagnostics;
+using Google.Solutions.IapDesktop.Application.Util;
 
 namespace Google.Solutions.IapDesktop.Extensions.Shell.Controls
 {
@@ -82,6 +83,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Controls
         public bool EnableCtrlInsert { get; set; } = true;
         public bool EnableShiftLeftRight { get; set; } = true;
         public bool EnableShiftUpDown { get; set; } = true;
+        public bool EnableTypographicQuoteConversionOnPaste { get; set; } = true;
 
         public VirtualTerminal()
         {
@@ -460,6 +462,15 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Controls
                 // commands.
                 //
                 text = text.Replace("\r\n", "\n");
+
+                if (this.EnableTypographicQuoteConversionOnPaste)
+                {
+                    // Copied code snippets might contain typographic 
+                    // quotes (thanks to Word and Docs) - convert them
+                    // to plain ASCII single/double quotes.
+                    text = TypographicQuotes.ToAsciiQuotes(text);
+                }
+
                 this.controller.Paste(Encoding.UTF8.GetBytes(text));
             }
         }
