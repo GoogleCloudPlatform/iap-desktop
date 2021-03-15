@@ -19,29 +19,15 @@
 // under the License.
 //
 
-using Google.Solutions.Common.Net;
-using System;
-using System.Reflection;
-using System.Runtime.CompilerServices;
-
-[assembly: InternalsVisibleTo("Google.Solutions.IapDesktop.Application.Test")]
-
-namespace Google.Solutions.IapDesktop.Application
+namespace Google.Solutions.IapDesktop.Application.Util
 {
-    public static class Globals
+    public class EventArgs<T> : System.EventArgs
     {
-        public const string BaseRegistryKeyPath = @"Software\Google\IapDesktop\1.0";
+        public T Data { get; }
 
-        public static UserAgent UserAgent { get; }
-
-        public static Version Version { get; }
-
-        static Globals()
+        public EventArgs(T data)
         {
-            Version = Assembly.GetExecutingAssembly().GetName().Version;
-            UserAgent = new UserAgent("IAP-Desktop", Version);
+            this.Data = data;
         }
-
-        public static bool IsTestCase => Assembly.GetEntryAssembly() == null;
     }
 }

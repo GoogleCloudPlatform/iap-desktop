@@ -56,8 +56,6 @@ namespace Google.Solutions.IapDesktop
 {
     class Program : SingletonApplicationBase
     {
-        private const string BaseRegistryKeyPath = @"Software\Google\IapDesktop\1.0";
-
         private static bool tracingEnabled = false;
 
         private static readonly TraceSource[] Traces = new[]
@@ -185,11 +183,11 @@ namespace Google.Solutions.IapDesktop
             //
             persistenceLayer.AddTransient<IAppProtocolRegistry, AppProtocolRegistry>();
             persistenceLayer.AddSingleton(new ApplicationSettingsRepository(
-                hkcu.CreateSubKey($@"{BaseRegistryKeyPath}\Application")));
+                hkcu.CreateSubKey($@"{Globals.BaseRegistryKeyPath}\Application")));
             persistenceLayer.AddSingleton(new ToolWindowStateRepository(
-                hkcu.CreateSubKey($@"{BaseRegistryKeyPath}\ToolWindows")));
+                hkcu.CreateSubKey($@"{Globals.BaseRegistryKeyPath}\ToolWindows")));
             persistenceLayer.AddSingleton(new AuthSettingsRepository(
-                hkcu.CreateSubKey($@"{BaseRegistryKeyPath}\Auth"),
+                hkcu.CreateSubKey($@"{Globals.BaseRegistryKeyPath}\Auth"),
                 GoogleAuthAdapter.StoreUserId));
 
             var mainForm = new MainForm(persistenceLayer, windowAndWorkflowLayer)
@@ -227,7 +225,7 @@ namespace Google.Solutions.IapDesktop
             integrationLayer.AddSingleton<IEventService>(eventService);
             integrationLayer.AddSingleton<IGlobalSessionBroker, GlobalSessionBroker>();
             integrationLayer.AddSingleton<IProjectRepository>(new ProjectRepository(
-                hkcu.CreateSubKey($@"{BaseRegistryKeyPath}\Inventory"),
+                hkcu.CreateSubKey($@"{Globals.BaseRegistryKeyPath}\Inventory"),
                 eventService));
 
             //

@@ -29,12 +29,20 @@ using VtNetCore.VirtualTerminal;
 using VtNetCore.XTermParser;
 using VtNetCore.VirtualTerminal.Layout;
 using Google.Solutions.Common.Diagnostics;
-using System.Linq;
 
 namespace Google.Solutions.IapDesktop.Extensions.Shell.Controls
 {
     /// <summary>
     /// Virtual terminal control.
+    /// 
+    /// 
+    ///    GUI        +----------+                       +--------+
+    ///   output  <-- |          | <===(ReceiveData)==== |        |
+    ///               | Terminal |                       | Server |
+    ///  Keyboard --> |          | ==(SendData event)==> |        | 
+    ///   events      +----------+                       +--------+
+    /// 
+    /// 
     /// </summary>
     [SkipCodeCoverage("UI code")]
     public partial class VirtualTerminal : UserControl
@@ -43,7 +51,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Controls
         private readonly VirtualTerminalController controller;
         private readonly DataConsumer controllerSink;
 
-        public event EventHandler<InputEventArgs> InputReceived;
+        public event EventHandler<SendDataEventArgs> SendData;
         public event EventHandler<TerminalResizeEventArgs> TerminalResized;
         public event EventHandler WindowTitleChanged;
 
@@ -51,7 +59,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Controls
         private Caret caret;
         #pragma warning restore IDE0069 // Disposable fields should be disposed
 
-        private TextRange textSelection;
+        private TextSelection selection;
         private bool scrolling;
         private TextPosition mouseDownPosition;
 
@@ -65,11 +73,15 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Controls
 
         public int Rows { get; private set; } = -1;
 
-        public int BottomRow => ViewTop + Rows - 1;
-
         public string WindowTitle { get; set; }
 
         public bool EnableCtrlV { get; set; } = true;
+        public bool EnableCtrlC { get; set; } = true;
+        public bool EnableCtrlA { get; set; } = false;
+        public bool EnableShiftInsert { get; set; } = true;
+        public bool EnableCtrlInsert { get; set; } = true;
+        public bool EnableShiftLeftRight { get; set; } = true;
+        public bool EnableShiftUpDown { get; set; } = true;
 
         public VirtualTerminal()
         {
@@ -89,7 +101,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Controls
             this.controller.ShowCursor(true);
             this.controller.SendData += (sender, args) =>
             {
-                OnInput(new InputEventArgs(Encoding.UTF8.GetString(args.Data)));
+                OnSendData(new SendDataEventArgs(Encoding.UTF8.GetString(args.Data)));
             };
 
             this.Disposed += (sender, args) =>
@@ -110,32 +122,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Controls
 
                 base.Font = value;
             }
-        }
-
-        internal string GetBuffer()
-        {
-            var buffer = new StringBuilder();
-
-            var spans = this.controller.ViewPort.GetPageSpans(
-                this.ViewTop,
-                this.Rows,
-                this.Columns,
-                this.textSelection);
-
-            foreach (var textRow in spans)
-            {
-                foreach (var textSpan in textRow.Spans)
-                {
-                    if (!textSpan.Hidden)
-                    {
-                        buffer.Append(textSpan.Text);
-                    }
-                }
-
-                buffer.Append("\r\n");
-            }
-
-            return buffer.ToString();
         }
 
         //---------------------------------------------------------------------
@@ -220,7 +206,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Controls
                 this.ViewTop,
                 this.Rows,
                 this.Columns,
-                this.textSelection);
+                this.selection?.Range);
 
             if (!this.scrolling && this.ViewTop != terminalTop)
             {
@@ -396,7 +382,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Controls
         // Actions.
         //---------------------------------------------------------------------
 
-        public void PushText(string text)
+        public void ReceiveData(string text)
         {
             lock (this.controller)
             {
@@ -448,6 +434,20 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Controls
         // Keyboard event handlers.
         //---------------------------------------------------------------------
 
+        private void CopyClipboard()
+        {
+            var captured = this.TextSelection;
+
+            if (!string.IsNullOrWhiteSpace(captured))
+            {
+                // Copy to clipboard.
+                // Trim end since we might be copying empty rows
+                // instead (if we have not reached the bottom row
+                // yet).
+                Clipboard.SetText(captured.TrimEnd());
+            }
+        }
+
         internal void PasteClipboard()
         {
             // Paste clipboard.
@@ -474,10 +474,14 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Controls
 
             switch (keyData)
             {
-                case Keys.Down:
                 case Keys.Up:
+                case Keys.Down:
+                case Keys.Up | Keys.Shift:
+                case Keys.Down | Keys.Shift:
                 case Keys.Left:
                 case Keys.Right:
+                case Keys.Left | Keys.Shift:
+                case Keys.Right | Keys.Shift:
                 case Keys.Home:
                 case Keys.Insert:
                 case Keys.Delete:
@@ -537,31 +541,81 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Controls
         {
             this.scrolling = false;
 
-            //
-            // If Alt is pressed, it cannot be a key sequence. 
-            // Otherwise, it might.
-            //
-            if (!alt && IsKeySequence(
+            if ((this.EnableCtrlV && control && !shift && !alt && keyCode == Keys.V) ||
+                (this.EnableShiftInsert && !control && shift && !alt && keyCode == Keys.Insert))
+            {
+                PasteClipboard();
+                return true;
+            }
+            else if (control && !shift && !alt && keyCode == Keys.C && this.IsTextSelected)
+            {
+                if (this.EnableCtrlC)
+                {
+                    CopyClipboard();
+                }
+
+                // Clear selection, regardless of whether we copied or not.
+                ClearTextSelection();
+                return true;
+            }
+            else if (control && !shift && !alt && keyCode == Keys.Insert && this.IsTextSelected)
+            {
+                if (this.EnableCtrlInsert)
+                {
+                    CopyClipboard();
+                }
+
+                // Clear selection, regardless of whether we copied or not.
+                ClearTextSelection();
+                return true;
+            }
+            else if (this.EnableCtrlA && control && !shift && !alt && keyCode == Keys.A)
+            {
+                SelectAllText();
+                return true;
+            }
+            else if (keyCode == Keys.Enter && this.IsTextSelected)
+            {
+                // Just clear selection, but do not send the key.
+                ClearTextSelection();
+                return true;
+            }
+            else if (this.EnableShiftLeftRight && !control && shift && !alt && keyCode == Keys.Left)
+            {
+                ExtendSelection(0, -1);
+                return true;
+            }
+            else if (this.EnableShiftLeftRight && !control && shift && !alt && keyCode == Keys.Right)
+            {
+                ExtendSelection(0, 1);
+                return true;
+            }
+            else if (this.EnableShiftUpDown && !control && shift && !alt && keyCode == Keys.Up)
+            {
+                ExtendSelection(-1, 0);
+                return true;
+            }
+            else if (this.EnableShiftUpDown && !control && shift && !alt && keyCode == Keys.Down)
+            {
+                ExtendSelection(1, 0);
+                return true;
+            }
+            else if (!alt && IsKeySequence(
                 NameFromKey(keyCode),
                 control,
                 shift))
             {
-                if (this.EnableCtrlV && control && keyCode == Keys.V)
-                {
-                    PasteClipboard();
-                    return true;
-                }
-                else
-                {
-                    //
-                    // This is a key sequence that needs to be
-                    // translated to some VT sequence.
-                    //
-                    return this.controller.KeyPressed(
-                        NameFromKey(keyCode),
-                        control,
-                        shift);
-                }
+                //
+                // This is a key sequence that needs to be
+                // translated to some VT sequence.
+                //
+                // NB. If Alt is pressed, it cannot be a key sequence. 
+                // Otherwise, it might.
+                //
+                return this.controller.KeyPressed(
+                    NameFromKey(keyCode),
+                    control,
+                    shift);
             }
             else if (alt && control)
             {
@@ -583,7 +637,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Controls
                 var ch = KeyUtil.CharFromKeyCode(keyCode);
                 if (ch.Length > 0)
                 {
-                    OnInput(new InputEventArgs("\u001b" + ch));
+                    OnSendData(new SendDataEventArgs("\u001b" + ch));
                     return true;
                 }
                 else
@@ -646,8 +700,200 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Controls
         }
 
         //---------------------------------------------------------------------
+        // Text selection tracking.
+        //---------------------------------------------------------------------
+
+        private TextPosition CursorPosition
+        {
+            // Return absolute cursor position (i.e., ignore view port)
+            get => new TextPosition(
+                this.controller.CursorState.Position.Column,
+                this.controller.CursorState.Position.Row + this.ViewTop);
+        }
+
+        private void SelectAllText()
+        {
+            this.selection = new TextSelection(
+                new TextRange()
+                {
+                    Start = new TextPosition(0, 0),
+                    End = new TextPosition(this.Columns, this.controller.BottomRow)
+                },
+                TextSelectionDirection.Forward);
+
+            Invalidate();
+        }
+
+        internal bool IsTextSelected => this.selection != null;
+
+        internal string TextSelection
+        {
+            get
+            {
+                if (this.selection == null)
+                {
+                    return null;
+                }
+                else
+                {
+                    //
+                    // NB. If the mouse escapes the window borders, the coordinates
+                    // can get negative - therefore, use the max.
+                    //
+                    return this.controller.GetText(
+                        Math.Max(0, this.selection.Range.Start.Column),
+                        Math.Max(0, this.selection.Range.Start.Row),
+                        Math.Max(0, this.selection.Range.End.Column),
+                        Math.Max(0, this.selection.Range.End.Row));
+                }
+            }
+        }
+
+        internal void ClearTextSelection()
+        {
+            if (this.selection != null)
+            {
+                // Clear selection.
+                this.selection = null;
+                Invalidate();
+            }
+        }
+
+        internal void SelectText(
+            TextPosition start,
+            TextPosition end,
+            TextSelectionDirection direction)
+        {
+            this.selection = new TextSelection(
+                new TextRange()
+                {
+                    Start = start,
+                    End = end
+                },
+                direction);
+            Invalidate();
+        }
+
+        internal void SelectText(
+            ushort startColumn,
+            ushort startRow,
+            ushort endColumn,
+            ushort endRow,
+            TextSelectionDirection direction)
+            => SelectText(
+                new TextPosition(startColumn, startRow),
+                new TextPosition(endColumn, endRow),
+                direction);
+
+        private TextPosition MovePosition(TextPosition position, int rowsDelta, int columnsDelta)
+        {
+            var currentRowLength = this.controller.GetText(
+                0, 
+                position.Row, 
+                this.Columns, 
+                position.Row).Length;
+            
+            var row = Math.Max(0, Math.Min(position.Row + rowsDelta, this.controller.BottomRow));
+            var column = position.Column + columnsDelta;
+
+            if (column < 0)
+            {
+                if (row == 0)
+                {
+                    column = 0;
+                }
+                else
+                {
+                    // Underflow -> wrap to previous row - but skip any whitespace at end.
+                    row--;
+                    column += this.controller.GetText(0, row, this.Columns, row).Length;
+                }
+            }
+            else if (columnsDelta != 0 && column >= currentRowLength)
+            {
+                // Overflow caused by columnsDelta -> wrap to next row.
+                row++;
+                column -= currentRowLength;
+            }
+
+            return new TextPosition(column, row);
+        }
+
+        private void ExtendSelection(int rowsDelta, int columnsDelta)
+        {
+            if (this.selection == null)
+            {
+                // Start new selection.
+                SelectText(this.CursorPosition, this.CursorPosition, TextSelectionDirection.Forward);
+            }
+
+            // Keep the existing direction.
+            if (this.selection.Direction == TextSelectionDirection.Forward)
+            {
+                // Move end of selection.
+                SelectText(
+                    this.selection.Range.Start,
+                    MovePosition(this.selection.Range.End, rowsDelta, columnsDelta),
+                    this.selection.Direction);
+            }
+            else
+            {
+                // Move start of selection.
+                SelectText(
+                    MovePosition(this.selection.Range.Start, rowsDelta, columnsDelta),
+                    this.selection.Range.End,
+                    this.selection.Direction);
+            }
+        }
+
+        //private void ExtendSelectionTillEnd(TextSelectionDirection direction)
+        //{
+        //    if (direction == TextSelectionDirection.Forward)
+        //    {
+        //        SelectText(
+        //            this.selection?.Range.Start ?? this.CursorPosition,
+        //            )
+        //    }
+        //    else
+        //    {
+
+        //    }
+        //}
+
+        //---------------------------------------------------------------------
+        // Scrolling.
+        //---------------------------------------------------------------------
+
+        internal void ScrollViewPort(int rowsDelta)
+        {
+            int oldViewTop = this.ViewTop;
+
+            this.ViewTop += rowsDelta;
+            this.scrolling = true;
+
+            if (this.ViewTop < 0)
+            {
+                this.ViewTop = 0;
+            }
+            else if (this.ViewTop > this.controller.ViewPort.TopRow)
+            {
+                this.ViewTop = this.controller.ViewPort.TopRow;
+            }
+
+            if (oldViewTop != this.ViewTop)
+            {
+                Invalidate();
+            }
+        }
+
+        //---------------------------------------------------------------------
         // For testing only.
         //---------------------------------------------------------------------
+
+        internal void MoveCursorRelative(int x, int y)
+        {
+            this.controller.MoveCursorRelative(x, y);
+        }
 
         internal void SimulateKey(Keys keyCode)
         {
@@ -656,7 +902,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Controls
             if (!keyDown.SuppressKeyPress)
             {
                 // NB. This does not work for any combining characters, but
-                // that's ok sind the method is for testing only.
+                // that's ok since this method is for testing only.
                 var ch = KeyUtil.CharFromKeyCode(keyCode);
                 if (ch.Length >= 1)
                 {
@@ -665,19 +911,43 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Controls
             }
         }
 
-        //---------------------------------------------------------------------
-        // Mouse event handlers and text selection.
-        //---------------------------------------------------------------------
-
-        private void ClearTextSelection()
+        internal void SimulateKey(Keys keyCode, int repeat)
         {
-            if (this.textSelection != null)
+            for (int i = 0; i < repeat; i++)
             {
-                // Clear selection.
-                this.textSelection = null;
-                Invalidate();
+                SimulateKey(keyCode);
             }
         }
+
+        internal string GetBuffer()
+        {
+            var buffer = new StringBuilder();
+
+            var spans = this.controller.ViewPort.GetPageSpans(
+                this.ViewTop,
+                this.Rows,
+                this.Columns,
+                this.selection?.Range);
+
+            foreach (var textRow in spans)
+            {
+                foreach (var textSpan in textRow.Spans)
+                {
+                    if (!textSpan.Hidden)
+                    {
+                        buffer.Append(textSpan.Text);
+                    }
+                }
+
+                buffer.Append("\r\n");
+            }
+
+            return buffer.ToString();
+        }
+
+        //---------------------------------------------------------------------
+        // Mouse event handlers.
+        //---------------------------------------------------------------------
 
         protected override void OnMouseWheel(MouseEventArgs e)
         {
@@ -703,26 +973,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Controls
             }
             else
             {
-                // Scroll.
-
-                int oldViewTop = this.ViewTop;
-
-                this.ViewTop -= e.Delta / 40;
-                this.scrolling = true;
-
-                if (this.ViewTop < 0)
-                {
-                    this.ViewTop = 0;
-                }
-                else if (this.ViewTop > this.controller.ViewPort.TopRow)
-                {
-                    this.ViewTop = this.controller.ViewPort.TopRow;
-                }
-
-                if (oldViewTop != this.ViewTop)
-                {
-                    Invalidate();
-                }
+                ScrollViewPort(-e.Delta / 40);
             }
 
             base.OnMouseWheel(e);
@@ -738,7 +989,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Controls
             {
                 // Begin a new selection. Memorize the location so that we
                 // can start tracking.
-                this.textSelection = null;
+                this.selection = null;
                 this.mouseDownPosition = PositionFromPoint(e.Location)
                     .OffsetBy(0, this.ViewTop);
 
@@ -758,31 +1009,29 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Controls
 
                 if (this.mouseDownPosition != textPosition)
                 {
-                    TextRange newSelection;
                     if (this.mouseDownPosition <= textPosition)
                     {
-                        newSelection = new TextRange
-                        {
-                            Start = this.mouseDownPosition,
-                            End = textPosition.OffsetBy(-1, 0)
-                        };
+                        this.selection = new TextSelection(
+                            new TextRange
+                            {
+                                Start = this.mouseDownPosition,
+                                End = textPosition.OffsetBy(-1, 0)
+                            },
+                            TextSelectionDirection.Forward);
                     }
                     else
                     {
-                        newSelection = new TextRange
-                        {
-                            Start = textPosition,
-                            End = this.mouseDownPosition
-                        };
+                        this.selection = new TextSelection(
+                            new TextRange
+                            {
+                                Start = textPosition,
+                                End = this.mouseDownPosition
+                            },
+                            TextSelectionDirection.Backward);
                     }
 
-                    if (this.textSelection != newSelection)
-                    {
-                        this.textSelection = newSelection;
-
-                        // Repaint to show selection.
-                        Invalidate();
-                    }
+                    // Repaint to show selection.
+                    Invalidate();
                 }
             }
 
@@ -791,25 +1040,10 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Controls
 
         protected override void OnMouseUp(MouseEventArgs e)
         {
-            if (e.Button == MouseButtons.Left && this.mouseDownPosition != null && this.textSelection != null)
+            if (e.Button == MouseButtons.Left && this.mouseDownPosition != null && this.selection != null)
             {
                 // We're tracking a selection.
-
-                //
-                // NB. If the mouse escapes the window borders, the coordinates
-                // can get negative - therefore, use the max.
-                //
-                var captured = this.controller.GetText(
-                    Math.Max(0, this.textSelection.Start.Column),
-                    Math.Max(0, this.textSelection.Start.Row),
-                    Math.Max(0, this.textSelection.End.Column),
-                    Math.Max(0, this.textSelection.End.Row));
-
-                if (!string.IsNullOrEmpty(captured))
-                {
-                    // Copy to clipboard.
-                    Clipboard.SetText(captured);
-                }
+                CopyClipboard();
 
                 return;
             }
@@ -857,9 +1091,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Controls
             this.WindowTitleChanged?.Invoke(this, EventArgs.Empty);
         }
 
-        protected virtual void OnInput(InputEventArgs args)
+        protected virtual void OnSendData(SendDataEventArgs args)
         {
-            this.InputReceived?.Invoke(this, args);
+            this.SendData?.Invoke(this, args);
         }
 
         protected virtual void OnTerminalResize(TerminalResizeEventArgs args)
@@ -868,11 +1102,31 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Controls
         }
     }
 
-    public class InputEventArgs : EventArgs
+    public class TextSelection
+    {
+        public TextRange Range { get; }
+        public TextSelectionDirection Direction { get; }
+
+        public TextSelection(
+            TextRange range,
+            TextSelectionDirection direction)
+        {
+            this.Range = range;
+            this.Direction = direction;
+        }
+    }
+
+    public enum TextSelectionDirection
+    {
+        Forward,
+        Backward
+    }
+
+    public class SendDataEventArgs : EventArgs
     {
         public string Data { get; }
 
-        public InputEventArgs(string data)
+        public SendDataEventArgs(string data)
         {
             this.Data = data;
         }

@@ -35,12 +35,12 @@ namespace Google.Solutions.IapDesktop.Application.Services.Settings
             this.baseKey = baseKey;
         }
 
-        public TSettings GetSettings()
+        public virtual TSettings GetSettings()
         {
             return LoadSettings(this.baseKey);
         }
 
-        public void SetSettings(TSettings settings)
+        public virtual void SetSettings(TSettings settings)
         {
             settings.Save(this.baseKey);
         }

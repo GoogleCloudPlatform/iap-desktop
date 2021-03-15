@@ -27,10 +27,12 @@ using Google.Solutions.IapDesktop.Application.ObjectModel;
 using Google.Solutions.IapDesktop.Application.Services.Adapters;
 using Google.Solutions.IapDesktop.Application.Services.Integration;
 using Google.Solutions.IapDesktop.Application.Test.Views;
+using Google.Solutions.IapDesktop.Extensions.Shell.Services.Settings;
 using Google.Solutions.IapDesktop.Extensions.Shell.Services.Ssh;
 using Google.Solutions.IapDesktop.Extensions.Shell.Views.SshTerminal;
 using Google.Solutions.Ssh;
 using Google.Solutions.Ssh.Native;
+using Microsoft.Win32;
 using Moq;
 using NUnit.Framework;
 using System;
@@ -82,7 +84,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.SshTerminal
                 .Setup(a => a.Authorization)
                 .Returns(authorization.Object);
 
-            using (var key = new RsaSshKey(new RSACng()))
             using (var keyAdapter = new AuthorizedKeyService(
                 authorizationAdapter.Object,
                 new ComputeEngineAdapter(credential),
@@ -91,7 +92,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.SshTerminal
             {
                 var authorizedKey = await keyAdapter.AuthorizeKeyAsync(
                         instanceLocator,
-                        key,
+                        new RsaSshKey(new RSACng()),
                         TimeSpan.FromMinutes(10),
                         null,
                         AuthorizeKeyMethods.InstanceMetadata,
@@ -116,6 +117,14 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.SshTerminal
 
                 return (SshTerminalPane)pane;
             }
+        }
+
+        [SetUp]
+        public void SetUpTerminalSettingsRepository()
+        {
+            var hkcu = RegistryKey.OpenBaseKey(RegistryHive.CurrentUser, RegistryView.Default);
+            this.serviceRegistry.AddSingleton(new TerminalSettingsRepository(
+                hkcu.CreateSubKey(TestKeyPath)));
         }
 
         //---------------------------------------------------------------------
@@ -464,6 +473,33 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.SshTerminal
                     () => pane.Terminal.SimulateKey(Keys.D | Keys.Control));
 
                 StringAssert.Contains("ab", pane.Terminal.GetBuffer().Trim());
+            }
+        }
+
+        [Test]
+        public async Task WhenTerminalSettingsChange_ThenSettingsAreReapplied(
+            [LinuxInstance] ResourceTask<InstanceLocator> instanceLocatorTask,
+            [Credential(Role = PredefinedRole.ComputeInstanceAdminV1)] ResourceTask<ICredential> credential)
+        {
+            // Disable Ctrl+C/V.
+            var settingsRepository = this.serviceProvider.GetService<TerminalSettingsRepository>();
+            var settings = settingsRepository.GetSettings();
+            settings.IsCopyPasteUsingCtrlCAndCtrlVEnabled.BoolValue = false;
+            settingsRepository.SetSettings(settings);
+
+            using (var pane = await ConnectSshTerminalPane(
+                await instanceLocatorTask,
+                await credential))
+            {
+                Assert.IsFalse(pane.Terminal.EnableCtrlC);
+                Assert.IsFalse(pane.Terminal.EnableCtrlV);
+
+                // Re-enable Ctrl+C/V.
+                settings.IsCopyPasteUsingCtrlCAndCtrlVEnabled.BoolValue = true;
+                settingsRepository.SetSettings(settings);
+
+                Assert.IsTrue(pane.Terminal.EnableCtrlC);
+                Assert.IsTrue(pane.Terminal.EnableCtrlV);
             }
         }
     }

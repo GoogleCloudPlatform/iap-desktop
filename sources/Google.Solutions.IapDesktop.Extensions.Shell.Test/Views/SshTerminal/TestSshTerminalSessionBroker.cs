@@ -26,9 +26,11 @@ using Google.Solutions.IapDesktop.Application.ObjectModel;
 using Google.Solutions.IapDesktop.Application.Services.Adapters;
 using Google.Solutions.IapDesktop.Application.Services.Integration;
 using Google.Solutions.IapDesktop.Application.Test.Views;
+using Google.Solutions.IapDesktop.Extensions.Shell.Services.Settings;
 using Google.Solutions.IapDesktop.Extensions.Shell.Services.Ssh;
 using Google.Solutions.IapDesktop.Extensions.Shell.Views.SshTerminal;
 using Google.Solutions.Ssh;
+using Microsoft.Win32;
 using Moq;
 using NUnit.Framework;
 using System;
@@ -44,6 +46,14 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.SshTerminal
     [TestFixture]
     public class TestSshTerminalSessionBroker : WindowTestFixtureBase
     {
+        [SetUp]
+        public void SetUpTerminalSettingsRepository()
+        {
+            var hkcu = RegistryKey.OpenBaseKey(RegistryHive.CurrentUser, RegistryView.Default);
+            this.serviceRegistry.AddSingleton(new TerminalSettingsRepository(
+                hkcu.CreateSubKey(TestKeyPath)));
+        }
+
         //---------------------------------------------------------------------
         // TryActivate
         //---------------------------------------------------------------------
