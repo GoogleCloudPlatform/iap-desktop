@@ -100,7 +100,10 @@ namespace Google.Solutions.IapDesktop.Application.Services
                     {
                         if (selectedOption == 0 && latestRelease.Assets.Any())
                         {
-                            launchBrowser.StartInfo.FileName = latestRelease.Assets.First().DownloadUrl;
+                            launchBrowser.StartInfo.FileName = latestRelease
+                                .Assets
+                                .First(u => u.DownloadUrl.EndsWith(".msi", StringComparison.OrdinalIgnoreCase))
+                                .DownloadUrl;
                         }
                         else
                         {
