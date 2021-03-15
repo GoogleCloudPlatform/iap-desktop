@@ -52,8 +52,10 @@ namespace Google.Solutions.IapDesktop.Application.Views.About
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(AboutWindow));
             this.okButton = new System.Windows.Forms.Button();
             this.infoLabel = new System.Windows.Forms.Label();
-            this.clrInfoLabel = new System.Windows.Forms.Label();
+            this.authorLabel = new System.Windows.Forms.Label();
             this.licenseText = new System.Windows.Forms.RichTextBox();
+            this.authorLink = new System.Windows.Forms.LinkLabel();
+            this.copyrightLabel = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 
             // okButton
@@ -70,22 +72,22 @@ namespace Google.Solutions.IapDesktop.Application.Views.About
             // 
             this.infoLabel.AutoSize = true;
             this.infoLabel.BackColor = System.Drawing.Color.White;
-            this.infoLabel.Location = new System.Drawing.Point(25, 93);
+            this.infoLabel.Location = new System.Drawing.Point(25, 70);
             this.infoLabel.Name = "infoLabel";
             this.infoLabel.Size = new System.Drawing.Size(10, 13);
             this.infoLabel.TabIndex = 1;
             this.infoLabel.Text = "-";
             // 
-            // clrInfoLabel
+            // authorLabel
             // 
-            this.clrInfoLabel.AutoSize = true;
-            this.clrInfoLabel.BackColor = System.Drawing.Color.White;
-            this.clrInfoLabel.Location = new System.Drawing.Point(303, 93);
-            this.clrInfoLabel.Name = "clrInfoLabel";
-            this.clrInfoLabel.Size = new System.Drawing.Size(10, 13);
-            this.clrInfoLabel.TabIndex = 1;
-            this.clrInfoLabel.Text = "-";
-            this.clrInfoLabel.TextAlign = System.Drawing.ContentAlignment.TopRight;
+            this.authorLabel.AutoSize = true;
+            this.authorLabel.BackColor = System.Drawing.Color.White;
+            this.authorLabel.Location = new System.Drawing.Point(288, 70);
+            this.authorLabel.Name = "authorLabel";
+            this.authorLabel.Size = new System.Drawing.Size(41, 13);
+            this.authorLabel.TabIndex = 1;
+            this.authorLabel.Text = "Author:";
+            this.authorLabel.TextAlign = System.Drawing.ContentAlignment.TopRight;
             // 
             // licenseText
             // 
@@ -98,6 +100,29 @@ namespace Google.Solutions.IapDesktop.Application.Views.About
             this.licenseText.Text = "";
             this.licenseText.LinkClicked += new System.Windows.Forms.LinkClickedEventHandler(this.licenseText_LinkClicked);
             // 
+            // authorLink
+            // 
+            this.authorLink.ActiveLinkColor = System.Drawing.Color.Blue;
+            this.authorLink.AutoSize = true;
+            this.authorLink.BackColor = System.Drawing.Color.White;
+            this.authorLink.Location = new System.Drawing.Point(335, 70);
+            this.authorLink.Name = "authorLink";
+            this.authorLink.Size = new System.Drawing.Size(10, 13);
+            this.authorLink.TabIndex = 3;
+            this.authorLink.TabStop = true;
+            this.authorLink.Text = "-";
+            // 
+            // copyrightLabel
+            // 
+            this.copyrightLabel.AutoSize = true;
+            this.copyrightLabel.BackColor = System.Drawing.Color.White;
+            this.copyrightLabel.Location = new System.Drawing.Point(288, 85);
+            this.copyrightLabel.Name = "copyrightLabel";
+            this.copyrightLabel.Size = new System.Drawing.Size(51, 13);
+            this.copyrightLabel.TabIndex = 1;
+            this.copyrightLabel.Text = "Copyright";
+            this.copyrightLabel.TextAlign = System.Drawing.ContentAlignment.TopRight;
+            // 
             // AboutWindow
             // 
             this.AcceptButton = this.okButton;
@@ -107,8 +132,10 @@ namespace Google.Solutions.IapDesktop.Application.Views.About
             this.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
             this.CancelButton = this.okButton;
             this.ClientSize = new System.Drawing.Size(449, 297);
+            this.Controls.Add(this.authorLink);
             this.Controls.Add(this.licenseText);
-            this.Controls.Add(this.clrInfoLabel);
+            this.Controls.Add(this.copyrightLabel);
+            this.Controls.Add(this.authorLabel);
             this.Controls.Add(this.infoLabel);
             this.Controls.Add(this.okButton);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
@@ -129,7 +156,9 @@ namespace Google.Solutions.IapDesktop.Application.Views.About
 
         private System.Windows.Forms.Button okButton;
         private System.Windows.Forms.Label infoLabel;
-        private System.Windows.Forms.Label clrInfoLabel;
+        private System.Windows.Forms.Label authorLabel;
         private System.Windows.Forms.RichTextBox licenseText;
+        private System.Windows.Forms.LinkLabel authorLink;
+        private System.Windows.Forms.Label copyrightLabel;
     }
 }

@@ -33,6 +33,9 @@ namespace Google.Solutions.IapDesktop.Application.Views.About
     [SkipCodeCoverage("UI code")]
     public partial class AboutWindow : Form
     {
+        private const string AuthorText = "Johannes Passing";
+        private const string AuthorLink = "https://github.com/jpassing";
+
         public static Version ProgramVersion => typeof(AboutWindow).Assembly.GetName().Version;
 
         public AboutWindow(IServiceProvider serviceProvider)
@@ -40,8 +43,14 @@ namespace Google.Solutions.IapDesktop.Application.Views.About
             InitializeComponent();
 
             var updateService = serviceProvider.GetService<IUpdateService>();
-            this.infoLabel.Text = $"IAP Desktop\nVersion {updateService.InstalledVersion}";
-            this.clrInfoLabel.Text = $".NET {ClrVersion.Version}";
+            this.infoLabel.Text = $"IAP Desktop\nVersion {updateService.InstalledVersion}\n.NET {ClrVersion.Version}";
+            this.copyrightLabel.Text = $"\u00a9 2019-{DateTime.Now.Year} Google LLC";
+            this.authorLink.Text = AuthorText;
+            this.authorLink.LinkClicked += (sender, args) =>
+            {
+                using (Process.Start(AuthorLink))
+                { }
+            };
 
             var assembly = GetType().Assembly;
             var resourceName = assembly.GetManifestResourceNames().First(s => s.EndsWith("About.rtf"));
