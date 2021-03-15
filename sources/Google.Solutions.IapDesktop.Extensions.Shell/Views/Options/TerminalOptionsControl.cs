@@ -37,25 +37,37 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Options
 
             InitializeComponent();
 
+            //
+            // Clipboard box.
+            //
             this.copyPasteUsingCtrlCAndCtrlVEnabledCheckBox.BindProperty(
                 c => c.Checked,
                 viewModel,
                 m => m.IsCopyPasteUsingCtrlCAndCtrlVEnabled,
-                this.Container);
-            this.selectAllUsingCtrlAEnabledCheckBox.BindProperty(
-                c => c.Checked,
-                viewModel,
-                m => m.IsSelectAllUsingCtrlAEnabled,
                 this.Container);
             this.copyPasteUsingShiftInsertAndCtrlInsertEnabledCheckBox.BindProperty(
                 c => c.Checked,
                 viewModel,
                 m => m.IsCopyPasteUsingShiftInsertAndCtrlInsertEnabled,
                 this.Container);
+            this.convertTypographicQuotesCheckBox.BindProperty(
+                c => c.Checked,
+                viewModel,
+                m => m.IsQuoteConvertionOnPasteEnabled,
+                this.Container);
+
+            //
+            // Text selection box.
+            //
             this.selectUsingShiftArrrowEnabledCheckBox.BindProperty(
                 c => c.Checked,
                 viewModel,
                 m => m.IsSelectUsingShiftArrrowEnabled,
+                this.Container);
+            this.selectAllUsingCtrlAEnabledCheckBox.BindProperty(
+                c => c.Checked,
+                viewModel,
+                m => m.IsSelectAllUsingCtrlAEnabled,
                 this.Container);
         }
     }

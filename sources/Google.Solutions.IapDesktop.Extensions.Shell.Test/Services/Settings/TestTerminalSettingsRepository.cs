@@ -53,6 +53,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Settings
             Assert.IsFalse(settings.IsSelectAllUsingCtrlAEnabled.BoolValue);
             Assert.IsTrue(settings.IsCopyPasteUsingShiftInsertAndCtrlInsertEnabled.BoolValue);
             Assert.IsTrue(settings.IsSelectUsingShiftArrrowEnabled.BoolValue);
+            Assert.IsTrue(settings.IsQuoteConvertionOnPasteEnabled.BoolValue);
         }
 
         [Test]
