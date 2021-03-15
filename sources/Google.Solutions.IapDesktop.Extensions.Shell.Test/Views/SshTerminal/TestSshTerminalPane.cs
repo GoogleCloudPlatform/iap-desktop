@@ -120,7 +120,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.SshTerminal
         }
 
         [SetUp]
-        public void SetUpTerminalSettings()
+        public void SetUpTerminalSettingsRepository()
         {
             var hkcu = RegistryKey.OpenBaseKey(RegistryHive.CurrentUser, RegistryView.Default);
             this.serviceRegistry.AddSingleton(new TerminalSettingsRepository(
