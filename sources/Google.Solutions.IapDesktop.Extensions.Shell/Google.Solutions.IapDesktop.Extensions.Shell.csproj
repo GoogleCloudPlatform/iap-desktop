@@ -143,6 +143,13 @@
       <DependentUpon>ShowCredentialsDialog.cs</DependentUpon>
     </Compile>
     <Compile Include="Services\ShellExtension.cs" />
+    <Compile Include="Views\Options\TerminalOptionsControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Views\Options\TerminalOptionsControl.Designer.cs">
+      <DependentUpon>TerminalOptionsControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Options\TerminalOptionsViewModel.cs" />
     <Compile Include="Views\RemoteDesktop\RemoteDesktopSessionBroker.cs" />
     <Compile Include="Views\RemoteDesktop\RdpClientExtensions.cs" />
     <Compile Include="Views\RemoteDesktop\RdpExceptions.cs" />
@@ -232,6 +239,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Views\Credentials\ShowCredentialsDialog.resx">
       <DependentUpon>ShowCredentialsDialog.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Views\Options\TerminalOptionsControl.resx">
+      <DependentUpon>TerminalOptionsControl.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Views\RemoteDesktop\RemoteDesktopPane.resx">
       <DependentUpon>RemoteDesktopPane.cs</DependentUpon>
