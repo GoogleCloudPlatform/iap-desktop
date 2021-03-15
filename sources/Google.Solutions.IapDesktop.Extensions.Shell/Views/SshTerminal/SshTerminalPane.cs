@@ -23,9 +23,11 @@ using Google.Solutions.Common.Locator;
 using Google.Solutions.Common.Util;
 using Google.Solutions.IapDesktop.Application.ObjectModel;
 using Google.Solutions.IapDesktop.Application.Services.Integration;
+using Google.Solutions.IapDesktop.Application.Util;
 using Google.Solutions.IapDesktop.Application.Views;
 using Google.Solutions.IapDesktop.Application.Views.Dialog;
 using Google.Solutions.IapDesktop.Extensions.Shell.Controls;
+using Google.Solutions.IapDesktop.Extensions.Shell.Services.Settings;
 using Google.Solutions.IapDesktop.Extensions.Shell.Services.Ssh;
 using Google.Solutions.Ssh;
 using System;
@@ -116,6 +118,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.SshTerminal
 
             this.DockAreas = DockAreas.Document;
 
+            //
+            // Bind controls.
+            //
             this.reconnectPanel.BindReadonlyProperty(
                 c => c.Visible,
                 this.viewModel,
@@ -143,13 +148,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.SshTerminal
             
             Debug.Assert(this.Text != this.Name);
 
-            this.Disposed += (sender, args) =>
-            {
-                this.viewModel.ConnectionFailed -= OnErrorReceivedFromServerAsync;
-                this.viewModel.DataReceived -= OnDataReceivedFromServerAsync;
-                this.viewModel.Dispose();
-            };
-            this.FormClosed += OnFormClosed;
+            //
+            // Terminal I/O.
+            //
             this.Terminal.SendData += (sender, args) =>
             {
                 //
@@ -180,11 +181,53 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.SshTerminal
             this.viewModel.ConnectionFailed += OnErrorReceivedFromServerAsync;
             this.viewModel.DataReceived += OnDataReceivedFromServerAsync;
 
+            //
+            // Apply Terminal settings.
+            //
+            // Automatically reapply when settings change.
+            //
+            var terminalSettingsRepository = serviceProvider.GetService<TerminalSettingsRepository>();
+            var settings = terminalSettingsRepository.GetSettings();
+            ApplyTerminalSettings(settings);
+
+            EventHandler<EventArgs<TerminalSettings>> reapplyTerminalSettings = 
+                (s, e) => ApplyTerminalSettings(e.Data);
+            terminalSettingsRepository.SettingsChanged += reapplyTerminalSettings;
+
+            //
+            // Disposing.
+            //
+            this.Disposed += (sender, args) =>
+            {
+                if (!this.IsDisposed)
+                {
+                    this.viewModel.ConnectionFailed -= OnErrorReceivedFromServerAsync;
+                    this.viewModel.DataReceived -= OnDataReceivedFromServerAsync;
+                    this.viewModel.Dispose();
+
+                    terminalSettingsRepository.SettingsChanged -= reapplyTerminalSettings;
+                }
+            };
+            this.FormClosed += OnFormClosed;
 #if DEBUG
             var copyStream = new ToolStripMenuItem("DEBUG: Copy received data");
             copyStream.Click += (sender, args) => this.viewModel.CopyReceivedDataToClipboard();
             this.TabContextStrip.Items.Add(copyStream);
 #endif
+        }
+
+        private void ApplyTerminalSettings(TerminalSettings settings)
+        {
+            this.terminal.EnableCtrlC = settings.IsCopyPasteUsingCtrlCAndCtrlVEnabled.BoolValue;
+            this.terminal.EnableCtrlV = settings.IsCopyPasteUsingCtrlCAndCtrlVEnabled.BoolValue;
+
+            this.terminal.EnableCtrlA = settings.IsSelectAllUsingCtrlAEnabled.BoolValue;
+
+            this.terminal.EnableCtrlInsert = settings.IsCopyPasteUsingShiftInsertAndCtrlInsertEnabled.BoolValue;
+            this.terminal.EnableShiftInsert = settings.IsCopyPasteUsingShiftInsertAndCtrlInsertEnabled.BoolValue;
+
+            this.terminal.EnableShiftLeftRight = settings.IsSelectUsingShiftArrrowEnabled.BoolValue;
+            this.terminal.EnableShiftUpDown = settings.IsSelectUsingShiftArrrowEnabled.BoolValue;
         }
 
         //---------------------------------------------------------------------

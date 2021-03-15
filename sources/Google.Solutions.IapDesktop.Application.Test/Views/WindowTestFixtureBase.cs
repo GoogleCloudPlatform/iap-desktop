@@ -42,7 +42,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views
     [Timeout(10 * 60 * 1000)]
     public class WindowTestFixtureBase : ApplicationFixtureBase
     {
-        private const string TestKeyPath = @"Software\Google\__Test";
+        protected const string TestKeyPath = @"Software\Google\__Test";
 
         protected ServiceRegistry serviceRegistry;
         protected IServiceProvider serviceProvider;
