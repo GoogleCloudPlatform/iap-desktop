@@ -139,6 +139,7 @@
     <Compile Include="Services\Integration\TestJobService.cs" />
     <Compile Include="ObjectModel\TestServiceRegistry.cs" />
     <Compile Include="Util\TestIapRdpUrl.cs" />
+    <Compile Include="Util\TestTypographicQuotes.cs" />
     <Compile Include="Views\Authentication\TestDeviceFlyoutViewModel.cs" />
     <Compile Include="Views\Authentication\TestUserFlyoutViewModel.cs" />
     <Compile Include="Views\Options\TestScreenOptionsViewModel.cs" />

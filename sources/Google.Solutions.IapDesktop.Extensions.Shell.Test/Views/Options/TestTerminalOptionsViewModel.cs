@@ -273,5 +273,62 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.Options
 
             Assert.IsTrue(viewModel.IsDirty);
         }
+
+        //---------------------------------------------------------------------
+        // IsQuoteConvertionOnPasteEnabled.
+        //---------------------------------------------------------------------
+
+        [Test]
+        public void WhenSettingEnabled_ThenIsQuoteConvertionOnPasteEnabledIsTrue()
+        {
+            var settings = this.settingsRepository.GetSettings();
+            settings.IsQuoteConvertionOnPasteEnabled.BoolValue = true;
+            this.settingsRepository.SetSettings(settings);
+
+            var viewModel = new TerminalOptionsViewModel(this.settingsRepository);
+
+            Assert.IsTrue(viewModel.IsQuoteConvertionOnPasteEnabled);
+        }
+
+        [Test]
+        public void WhenSettingDisabled_ThenIsQuoteConvertionOnPasteEnabledIsTrue()
+        {
+            var settings = this.settingsRepository.GetSettings();
+            settings.IsQuoteConvertionOnPasteEnabled.BoolValue = false;
+            this.settingsRepository.SetSettings(settings);
+
+            var viewModel = new TerminalOptionsViewModel(this.settingsRepository);
+
+            Assert.IsFalse(viewModel.IsQuoteConvertionOnPasteEnabled);
+        }
+
+        [Test]
+        public void WhenDisablingIsQuoteConvertionOnPasteEnabled_ThenChangeIsApplied()
+        {
+            var settings = this.settingsRepository.GetSettings();
+            settings.IsQuoteConvertionOnPasteEnabled.BoolValue = true;
+            this.settingsRepository.SetSettings(settings);
+
+            var viewModel = new TerminalOptionsViewModel(this.settingsRepository)
+            {
+                IsQuoteConvertionOnPasteEnabled = false
+            };
+            viewModel.ApplyChanges();
+
+            settings = this.settingsRepository.GetSettings();
+            Assert.IsFalse(settings.IsQuoteConvertionOnPasteEnabled.BoolValue);
+        }
+
+        [Test]
+        public void WhenIsQuoteConvertionOnPasteEnabledChanged_ThenIsDirtyIsTrueUntilApplied()
+        {
+            var viewModel = new TerminalOptionsViewModel(this.settingsRepository);
+
+            Assert.IsFalse(viewModel.IsDirty);
+
+            viewModel.IsQuoteConvertionOnPasteEnabled = !viewModel.IsQuoteConvertionOnPasteEnabled;
+
+            Assert.IsTrue(viewModel.IsDirty);
+        }
     }
 }

@@ -69,6 +69,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Settings
         public RegistryBoolSetting IsSelectAllUsingCtrlAEnabled { get; private set; }
         public RegistryBoolSetting IsCopyPasteUsingShiftInsertAndCtrlInsertEnabled { get; private set; }
         public RegistryBoolSetting IsSelectUsingShiftArrrowEnabled { get; private set; }
+        public RegistryBoolSetting IsQuoteConvertionOnPasteEnabled { get; private set; }
 
         public IEnumerable<ISetting> Settings => new ISetting[]
         {
@@ -76,6 +77,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Settings
             IsSelectAllUsingCtrlAEnabled,
             IsCopyPasteUsingShiftInsertAndCtrlInsertEnabled,
             IsSelectUsingShiftArrrowEnabled,
+            IsQuoteConvertionOnPasteEnabled,
         };
 
         private TerminalSettings()
@@ -110,6 +112,13 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Settings
                 IsSelectUsingShiftArrrowEnabled = RegistryBoolSetting.FromKey(
                     "IsSelectUsingShiftArrrowEnabled",
                     "IsSelectUsingShiftArrrowEnabled",
+                    null,
+                    null,
+                    true,
+                    registryKey),
+                IsQuoteConvertionOnPasteEnabled = RegistryBoolSetting.FromKey(
+                    "IsQuoteConvertionOnPasteEnabled",
+                    "IsQuoteConvertionOnPasteEnabled",
                     null,
                     null,
                     true,
