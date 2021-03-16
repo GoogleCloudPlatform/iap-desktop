@@ -619,6 +619,50 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Controls
             Assert.IsFalse(this.terminal.IsTextSelected);
         }
 
+
+
+        //---------------------------------------------------------------------
+        // Navigation: Control+Left/Right
+        //---------------------------------------------------------------------
+
+        [Test]
+        public void WhenControlLeftRightEnabled_ThenTypingControlLeftSendsJumpWordKeystroke()
+        {
+            this.terminal.EnableCtrlLeftRight = true;
+            this.terminal.SimulateKey(Keys.Control | Keys.Left);
+
+            Assert.AreEqual($"{Esc}[1;5D", this.sendData.ToString());
+        }
+
+        [Test]
+        public void WhenControlLeftRightDisabled_ThenTypingControlLeftSendsKeystroke()
+        {
+            this.terminal.EnableCtrlLeftRight = true;
+            this.terminal.SimulateKey(Keys.Control | Keys.Right);
+
+            Assert.AreEqual($"{Esc}[1;5C", this.sendData.ToString());
+        }
+
+        [Test]
+        public void WhenControlLeftRightDisabled_ThenTypingControlRightSendsKeystroke()
+        {
+            this.terminal.EnableCtrlLeftRight = false;
+            this.terminal.SimulateKey(Keys.Control | Keys.Right);
+
+            Assert.AreEqual($"{Esc}OC", this.sendData.ToString());
+            Assert.IsFalse(this.terminal.IsTextSelected);
+        }
+
+        [Test]
+        public void WhenControlLeftRightDisabled_ThenTypingControlKeftSendsKeystroke()
+        {
+            this.terminal.EnableCtrlLeftRight = false;
+            this.terminal.SimulateKey(Keys.Control | Keys.Left);
+
+            Assert.AreEqual($"{Esc}OD", this.sendData.ToString());
+            Assert.IsFalse(this.terminal.IsTextSelected);
+        }
+
         //---------------------------------------------------------------------
         // Modifiers.
         //---------------------------------------------------------------------
@@ -814,22 +858,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Controls
             this.terminal.SimulateKey(Keys.Control | Keys.Down);
 
             Assert.AreEqual($"{Esc}OB", this.sendData.ToString());
-        }
-
-        [Test]
-        public void WhenTypingCtrlRightArrow_ThenKeystrokeIsSent()
-        {
-            this.terminal.SimulateKey(Keys.Control | Keys.Right);
-
-            Assert.AreEqual($"{Esc}OC", this.sendData.ToString());
-        }
-
-        [Test]
-        public void WhenTypingCtrlLeftArrow_ThenKeystrokeIsSent()
-        {
-            this.terminal.SimulateKey(Keys.Control | Keys.Left);
-
-            Assert.AreEqual($"{Esc}OD", this.sendData.ToString());
         }
     }
 }

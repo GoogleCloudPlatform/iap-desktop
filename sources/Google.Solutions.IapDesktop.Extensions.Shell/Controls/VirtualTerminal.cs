@@ -84,6 +84,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Controls
         public bool EnableShiftLeftRight { get; set; } = true;
         public bool EnableShiftUpDown { get; set; } = true;
         public bool EnableTypographicQuoteConversionOnPaste { get; set; } = true;
+        public bool EnableCtrlLeftRight { get; set; } = true;
 
         public VirtualTerminal()
         {
@@ -483,16 +484,12 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Controls
                 return false;
             }
 
-            switch (keyData)
+            switch (keyData & ~(Keys.Shift | Keys.Control | Keys.Alt))
             {
                 case Keys.Up:
                 case Keys.Down:
-                case Keys.Up | Keys.Shift:
-                case Keys.Down | Keys.Shift:
                 case Keys.Left:
                 case Keys.Right:
-                case Keys.Left | Keys.Shift:
-                case Keys.Right | Keys.Shift:
                 case Keys.Home:
                 case Keys.Insert:
                 case Keys.Delete:
@@ -609,6 +606,18 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Controls
             else if (this.EnableShiftUpDown && !control && shift && !alt && keyCode == Keys.Down)
             {
                 ExtendSelection(1, 0);
+                return true;
+            }
+            else if (this.EnableCtrlLeftRight && control && !shift && !alt && keyCode == Keys.Left)
+            {
+                // Jump to next word on the left.
+                OnSendData(new SendDataEventArgs("\u001b[1;5D"));
+                return true;
+            }
+            else if (this.EnableCtrlLeftRight && control && !shift && !alt && keyCode == Keys.Right)
+            {
+                // Jump to next word on the right.
+                OnSendData(new SendDataEventArgs("\u001b[1;5C"));
                 return true;
             }
             else if (!alt && IsKeySequence(
