@@ -37,6 +37,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Options
         private bool isCopyPasteUsingShiftInsertAndCtrlInsertEnabled;
         private bool isSelectUsingShiftArrrowEnabled;
         private bool isQuoteConvertionOnPasteEnabled;
+        private bool isNavigationUsingControlArrrowEnabled;
 
         private readonly TerminalSettingsRepository settingsRepository;
 
@@ -65,6 +66,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Options
                 settings.IsSelectUsingShiftArrrowEnabled.BoolValue;
             this.IsQuoteConvertionOnPasteEnabled =
                 settings.IsQuoteConvertionOnPasteEnabled.BoolValue;
+            this.IsNavigationUsingControlArrrowEnabled =
+                settings.IsNavigationUsingControlArrrowEnabled.BoolValue;
 
             this.isDirty = false;
         }
@@ -113,6 +116,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Options
                 this.IsSelectUsingShiftArrrowEnabled;
             settings.IsQuoteConvertionOnPasteEnabled.BoolValue =
                 this.IsQuoteConvertionOnPasteEnabled;
+            settings.IsNavigationUsingControlArrrowEnabled.BoolValue =
+                this.IsNavigationUsingControlArrrowEnabled;
 
             this.settingsRepository.SetSettings(settings);
 
@@ -174,6 +179,17 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Options
             {
                 this.IsDirty = true;
                 this.isQuoteConvertionOnPasteEnabled = value;
+                RaisePropertyChange();
+            }
+        }
+
+        public bool IsNavigationUsingControlArrrowEnabled
+        {
+            get => this.isNavigationUsingControlArrrowEnabled;
+            set
+            {
+                this.IsDirty = true;
+                this.isNavigationUsingControlArrrowEnabled = value;
                 RaisePropertyChange();
             }
         }

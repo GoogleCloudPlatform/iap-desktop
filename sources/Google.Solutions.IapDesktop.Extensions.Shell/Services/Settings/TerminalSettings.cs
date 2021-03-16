@@ -70,6 +70,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Settings
         public RegistryBoolSetting IsCopyPasteUsingShiftInsertAndCtrlInsertEnabled { get; private set; }
         public RegistryBoolSetting IsSelectUsingShiftArrrowEnabled { get; private set; }
         public RegistryBoolSetting IsQuoteConvertionOnPasteEnabled { get; private set; }
+        public RegistryBoolSetting IsNavigationUsingControlArrrowEnabled { get; private set; }
 
         public IEnumerable<ISetting> Settings => new ISetting[]
         {
@@ -78,6 +79,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Settings
             IsCopyPasteUsingShiftInsertAndCtrlInsertEnabled,
             IsSelectUsingShiftArrrowEnabled,
             IsQuoteConvertionOnPasteEnabled,
+            IsNavigationUsingControlArrrowEnabled,
         };
 
         private TerminalSettings()
@@ -119,6 +121,13 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Settings
                 IsQuoteConvertionOnPasteEnabled = RegistryBoolSetting.FromKey(
                     "IsQuoteConvertionOnPasteEnabled",
                     "IsQuoteConvertionOnPasteEnabled",
+                    null,
+                    null,
+                    true,
+                    registryKey),
+                IsNavigationUsingControlArrrowEnabled = RegistryBoolSetting.FromKey(
+                    "IsNavigationUsingControlArrrowEnabled",
+                    "IsNavigationUsingControlArrrowEnabled",
                     null,
                     null,
                     true,

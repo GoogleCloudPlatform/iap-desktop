@@ -69,6 +69,11 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Options
                 viewModel,
                 m => m.IsSelectAllUsingCtrlAEnabled,
                 this.Container);
+            this.navigationUsingControlArrrowEnabledCheckBox.BindProperty(
+                c => c.Checked,
+                viewModel,
+                m => m.IsNavigationUsingControlArrrowEnabled,
+                this.Container);
         }
     }
 }

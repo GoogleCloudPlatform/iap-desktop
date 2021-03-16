@@ -31,13 +31,14 @@
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(TerminalOptionsControl));
             this.clipboardBox = new System.Windows.Forms.GroupBox();
             this.keyboardIcon = new System.Windows.Forms.PictureBox();
+            this.convertTypographicQuotesCheckBox = new System.Windows.Forms.CheckBox();
             this.copyPasteUsingShiftInsertAndCtrlInsertEnabledCheckBox = new System.Windows.Forms.CheckBox();
             this.copyPasteUsingCtrlCAndCtrlVEnabledCheckBox = new System.Windows.Forms.CheckBox();
-            this.convertTypographicQuotesCheckBox = new System.Windows.Forms.CheckBox();
             this.textSelectionBox = new System.Windows.Forms.GroupBox();
-            this.pictureBox1 = new System.Windows.Forms.PictureBox();
             this.selectUsingShiftArrrowEnabledCheckBox = new System.Windows.Forms.CheckBox();
             this.selectAllUsingCtrlAEnabledCheckBox = new System.Windows.Forms.CheckBox();
+            this.pictureBox1 = new System.Windows.Forms.PictureBox();
+            this.navigationUsingControlArrrowEnabledCheckBox = new System.Windows.Forms.CheckBox();
             this.clipboardBox.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.keyboardIcon)).BeginInit();
             this.textSelectionBox.SuspendLayout();
@@ -66,6 +67,17 @@
             this.keyboardIcon.TabIndex = 2;
             this.keyboardIcon.TabStop = false;
             // 
+            // convertTypographicQuotesCheckBox
+            // 
+            this.convertTypographicQuotesCheckBox.AutoSize = true;
+            this.convertTypographicQuotesCheckBox.CheckAlign = System.Drawing.ContentAlignment.TopLeft;
+            this.convertTypographicQuotesCheckBox.Location = new System.Drawing.Point(58, 58);
+            this.convertTypographicQuotesCheckBox.Name = "convertTypographicQuotesCheckBox";
+            this.convertTypographicQuotesCheckBox.Size = new System.Drawing.Size(222, 17);
+            this.convertTypographicQuotesCheckBox.TabIndex = 3;
+            this.convertTypographicQuotesCheckBox.Text = "Convert typographic &quotes when pasting";
+            this.convertTypographicQuotesCheckBox.UseVisualStyleBackColor = true;
+            // 
             // copyPasteUsingShiftInsertAndCtrlInsertEnabledCheckBox
             // 
             this.copyPasteUsingShiftInsertAndCtrlInsertEnabledCheckBox.AutoSize = true;
@@ -88,37 +100,18 @@
             this.copyPasteUsingCtrlCAndCtrlVEnabledCheckBox.Text = "Use Ctrl+C/Ctrl+&V to copy/paste";
             this.copyPasteUsingCtrlCAndCtrlVEnabledCheckBox.UseVisualStyleBackColor = true;
             // 
-            // convertTypographicQuotesCheckBox
-            // 
-            this.convertTypographicQuotesCheckBox.AutoSize = true;
-            this.convertTypographicQuotesCheckBox.CheckAlign = System.Drawing.ContentAlignment.TopLeft;
-            this.convertTypographicQuotesCheckBox.Location = new System.Drawing.Point(58, 58);
-            this.convertTypographicQuotesCheckBox.Name = "convertTypographicQuotesCheckBox";
-            this.convertTypographicQuotesCheckBox.Size = new System.Drawing.Size(222, 17);
-            this.convertTypographicQuotesCheckBox.TabIndex = 3;
-            this.convertTypographicQuotesCheckBox.Text = "Convert typographic &quotes when pasting";
-            this.convertTypographicQuotesCheckBox.UseVisualStyleBackColor = true;
-            // 
             // textSelectionBox
             // 
             this.textSelectionBox.Controls.Add(this.selectUsingShiftArrrowEnabledCheckBox);
+            this.textSelectionBox.Controls.Add(this.navigationUsingControlArrrowEnabledCheckBox);
             this.textSelectionBox.Controls.Add(this.selectAllUsingCtrlAEnabledCheckBox);
             this.textSelectionBox.Controls.Add(this.pictureBox1);
             this.textSelectionBox.Location = new System.Drawing.Point(4, 94);
             this.textSelectionBox.Name = "textSelectionBox";
-            this.textSelectionBox.Size = new System.Drawing.Size(336, 70);
+            this.textSelectionBox.Size = new System.Drawing.Size(336, 87);
             this.textSelectionBox.TabIndex = 3;
             this.textSelectionBox.TabStop = false;
             this.textSelectionBox.Text = "Text selection:";
-            // 
-            // pictureBox1
-            // 
-            this.pictureBox1.Image = ((System.Drawing.Image)(resources.GetObject("pictureBox1.Image")));
-            this.pictureBox1.Location = new System.Drawing.Point(10, 21);
-            this.pictureBox1.Name = "pictureBox1";
-            this.pictureBox1.Size = new System.Drawing.Size(36, 36);
-            this.pictureBox1.TabIndex = 3;
-            this.pictureBox1.TabStop = false;
             // 
             // selectUsingShiftArrrowEnabledCheckBox
             // 
@@ -141,6 +134,26 @@
             this.selectAllUsingCtrlAEnabledCheckBox.TabIndex = 5;
             this.selectAllUsingCtrlAEnabledCheckBox.Text = "Use Ctrl+&A to select all text";
             this.selectAllUsingCtrlAEnabledCheckBox.UseVisualStyleBackColor = true;
+            // 
+            // pictureBox1
+            // 
+            this.pictureBox1.Image = ((System.Drawing.Image)(resources.GetObject("pictureBox1.Image")));
+            this.pictureBox1.Location = new System.Drawing.Point(10, 21);
+            this.pictureBox1.Name = "pictureBox1";
+            this.pictureBox1.Size = new System.Drawing.Size(36, 36);
+            this.pictureBox1.TabIndex = 3;
+            this.pictureBox1.TabStop = false;
+            // 
+            // navigationUsingControlArrrowEnabledCheckBox
+            // 
+            this.navigationUsingControlArrrowEnabledCheckBox.AutoSize = true;
+            this.navigationUsingControlArrrowEnabledCheckBox.CheckAlign = System.Drawing.ContentAlignment.TopLeft;
+            this.navigationUsingControlArrrowEnabledCheckBox.Location = new System.Drawing.Point(58, 57);
+            this.navigationUsingControlArrrowEnabledCheckBox.Name = "navigationUsingControlArrrowEnabledCheckBox";
+            this.navigationUsingControlArrrowEnabledCheckBox.Size = new System.Drawing.Size(239, 17);
+            this.navigationUsingControlArrrowEnabledCheckBox.TabIndex = 6;
+            this.navigationUsingControlArrrowEnabledCheckBox.Text = "Use Ctrl+Arrow to jump to next/previous &word";
+            this.navigationUsingControlArrrowEnabledCheckBox.UseVisualStyleBackColor = true;
             // 
             // TerminalOptionsControl
             // 
@@ -172,5 +185,6 @@
         private System.Windows.Forms.PictureBox pictureBox1;
         private System.Windows.Forms.CheckBox selectUsingShiftArrrowEnabledCheckBox;
         private System.Windows.Forms.CheckBox selectAllUsingCtrlAEnabledCheckBox;
+        private System.Windows.Forms.CheckBox navigationUsingControlArrrowEnabledCheckBox;
     }
 }
