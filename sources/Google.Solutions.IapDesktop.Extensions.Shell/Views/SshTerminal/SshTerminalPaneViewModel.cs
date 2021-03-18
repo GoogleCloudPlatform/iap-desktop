@@ -28,6 +28,7 @@ using Google.Solutions.IapDesktop.Application.ObjectModel;
 using Google.Solutions.IapDesktop.Application.Services.Integration;
 using Google.Solutions.IapDesktop.Application.Views;
 using Google.Solutions.IapDesktop.Application.Views.Dialog;
+using Google.Solutions.IapDesktop.Extensions.Shell.Services.Settings;
 using Google.Solutions.IapDesktop.Extensions.Shell.Services.Ssh;
 using Google.Solutions.Ssh;
 using Google.Solutions.Ssh.Native;
@@ -48,6 +49,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.SshTerminal
     public class SshTerminalPaneViewModel : ViewModelBase, IDisposable
     {
         private readonly IEventService eventService;
+        private readonly SshSettingsRepository settingsRepository;
         private readonly IPEndPoint endpoint;
         private readonly AuthorizedKey authorizedKey;
         private readonly TimeSpan connectionTimeout;
@@ -85,12 +87,14 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.SshTerminal
 
         public SshTerminalPaneViewModel(
             IEventService eventService,
+            SshSettingsRepository settingsRepository,
             InstanceLocator vmInstance,
             IPEndPoint endpoint,
             AuthorizedKey authorizedKey,
             TimeSpan connectionTimeout)
         {
             this.eventService = eventService;
+            this.settingsRepository = settingsRepository;
             this.endpoint = endpoint;
             this.authorizedKey = authorizedKey;
             this.Instance = vmInstance;
@@ -225,6 +229,11 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.SshTerminal
                     .ConfigureAwait(true);
                 Debug.Assert(this.currentConnection == null);
 
+                var sshSettings = this.settingsRepository.GetSettings();
+                var language = sshSettings.IsPropagateLocaleEnabled.BoolValue
+                    ? CultureInfo.CurrentUICulture
+                    : null;
+
                 //
                 // Establish a new connection and create a shell.
                 //
@@ -237,7 +246,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.SshTerminal
                         this.authorizedKey.Key,
                         SshShellConnection.DefaultTerminal,
                         initialSize,
-                        CultureInfo.CurrentUICulture,
+                        language,
                         OnDataReceivedFromServerAsync,
                         OnErrorReceivedFromServerAsync)
                     {

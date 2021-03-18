@@ -106,6 +106,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.SshTerminal
             this.exceptionDialog = serviceProvider.GetService<IExceptionDialog>();
             this.viewModel = new SshTerminalPaneViewModel(
                 serviceProvider.GetService<IEventService>(),
+                serviceProvider.GetService<SshSettingsRepository>(),
                 vmInstance,
                 endpoint,
                 authorizedKey,
