@@ -749,6 +749,93 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Controls
         }
 
         //---------------------------------------------------------------------
+        // Scrolling: Control+Home/End
+        //---------------------------------------------------------------------
+
+        [Test]
+        public void WhenControlHomeEndEnabledAndTerminalFull_ThenTypingControlHomeScrollsToTop()
+        {
+            var textStraddlingViewPort = GenerateText(100, 20);
+            this.terminal.ReceiveData(textStraddlingViewPort);
+
+            Assert.AreNotEqual(0, this.terminal.ViewTop);
+
+            this.terminal.EnableCtrlHomeEnd = true;
+            this.terminal.SimulateKey(Keys.Control | Keys.Home);
+
+            Assert.AreEqual(0, this.terminal.ViewTop);
+            Assert.AreEqual("", this.sendData.ToString());
+        }
+
+        [Test]
+        public void WhenControlHomeEndEnabledAndTerminalNotFull_ThenTypingControlHomeIsIgnored()
+        {
+            var textNotEnoughToFillViewPort = GenerateText(3, 20);
+            this.terminal.ReceiveData(textNotEnoughToFillViewPort);
+
+            Assert.AreEqual(0, this.terminal.ViewTop);
+
+            this.terminal.EnableCtrlHomeEnd = true;
+            this.terminal.SimulateKey(Keys.Control | Keys.Home);
+
+            Assert.AreEqual(0, this.terminal.ViewTop);
+            Assert.AreEqual("", this.sendData.ToString());
+        }
+
+        [Test]
+        public void WhenControlHomeEndEnabledAndTerminalScrolledToTop_ThenTypingControlDownScrollsToEnd()
+        {
+            var textStraddlingViewPort = GenerateText(100, 20);
+            this.terminal.ReceiveData(textStraddlingViewPort);
+
+            var previousViewTop = this.terminal.ViewTop;
+
+            this.terminal.ScrollToTop();
+            Assert.AreEqual(0, this.terminal.ViewTop);
+
+            this.terminal.EnableCtrlUpDown = true;
+            this.terminal.SimulateKey(Keys.Control | Keys.End);
+
+            Assert.AreEqual(previousViewTop, this.terminal.ViewTop);
+            Assert.AreEqual("", this.sendData.ToString());
+        }
+
+        [Test]
+        public void WhenControlHomeEndEnabledAndTerminalScrolledToEnd_ThenTypingControlDownIsIgnored()
+        {
+            var textStraddlingViewPort = GenerateText(100, 20);
+            this.terminal.ReceiveData(textStraddlingViewPort);
+
+            var previousViewTop = this.terminal.ViewTop;
+
+            this.terminal.EnableCtrlUpDown = true;
+            this.terminal.SimulateKey(Keys.Control | Keys.End);
+
+            Assert.AreEqual(previousViewTop, this.terminal.ViewTop);
+            Assert.AreEqual("", this.sendData.ToString());
+        }
+
+        [Test]
+        public void WhenControlHomeEndDisabled_ThenTypingControlHomeIsIgnored()
+        {
+            this.terminal.EnableCtrlHomeEnd = false;
+            this.terminal.SimulateKey(Keys.Control | Keys.Home);
+
+            Assert.AreEqual("", this.sendData.ToString());
+            Assert.IsFalse(this.terminal.IsTextSelected);
+        }
+
+        [Test]
+        public void WhenControlHomeEndDisabled_ThenTypingControlEndIsIgnored()
+        {
+            this.terminal.EnableCtrlHomeEnd = false;
+            this.terminal.SimulateKey(Keys.Control | Keys.End);
+
+            Assert.AreEqual("", this.sendData.ToString());
+            Assert.IsFalse(this.terminal.IsTextSelected);
+        }
+
+        //---------------------------------------------------------------------
         // Modifiers.
         //---------------------------------------------------------------------
 

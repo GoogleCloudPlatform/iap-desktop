@@ -86,6 +86,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Controls
         public bool EnableTypographicQuoteConversionOnPaste { get; set; } = true;
         public bool EnableCtrlLeftRight { get; set; } = true;
         public bool EnableCtrlUpDown { get; set; } = true;
+        public bool EnableCtrlHomeEnd { get; set; } = true;
 
         public VirtualTerminal()
         {
@@ -631,6 +632,16 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Controls
                 ScrollViewPort(1);
                 return true;
             }
+            else if (this.EnableCtrlHomeEnd && control && !shift && !alt && keyCode == Keys.Home)
+            {
+                ScrollToTop();
+                return true;
+            }
+            else if (this.EnableCtrlHomeEnd && control && !shift && !alt && keyCode == Keys.End)
+            {
+                ScrollToEnd();
+                return true;
+            }
             else if (!alt && IsKeySequence(
                 NameFromKey(keyCode),
                 control,
@@ -898,6 +909,15 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Controls
         public void ScrollToTop()
         {
             this.ViewTop = 0;
+            this.scrolling = true;
+            Invalidate();
+        }
+
+        public void ScrollToEnd()
+        {
+            this.ViewTop = this.controller.ViewPort.TopRow;
+            this.scrolling = true;
+            Invalidate();
         }
 
         internal void ScrollViewPort(int rowsDelta)
