@@ -282,5 +282,62 @@ namespace Google.Solutions.Ssh.Test
                 }
             }
         }
+
+        [Test]
+        public async Task WhenLocaleIsNull_ThenShellUsesDefaultLocale(
+            [LinuxInstance] ResourceTask<InstanceLocator> instanceLocatorTask)
+        {
+            var endpoint = new IPEndPoint(
+                await InstanceUtil.PublicIpAddressForInstanceAsync(await instanceLocatorTask),
+                22);
+
+            using (var key = new RsaSshKey(new RSACng()))
+            {
+                await InstanceUtil.AddPublicKeyToMetadata(
+                    await instanceLocatorTask,
+                    "testuser",
+                    key);
+
+                var receiveBuffer = new StringBuilder();
+
+                void receiveHandler(string data)
+                {
+                    lock (receiveBuffer)
+                    {
+                        receiveBuffer.Append(data);
+                    }
+                }
+
+                using (var connection = new SshShellConnection(
+                    "testuser",
+                    endpoint,
+                    key,
+                    SshShellConnection.DefaultTerminal,
+                    SshShellConnection.DefaultTerminalSize,
+                    null,
+                    receiveHandler,
+                    exception =>
+                    {
+                        Assert.Fail("Unexpected error");
+                    }))
+                {
+                    await connection.ConnectAsync();
+
+                    AssertEx.ThrowsAggregateException<InvalidOperationException>(
+                        () => connection.ConnectAsync().Wait());
+
+                    await connection.SendAsync("locale;sleep 1;exit\n");
+
+                    await AwaitBufferContentAsync(
+                        receiveBuffer,
+                        TimeSpan.FromSeconds(10),
+                        "testuser");
+
+                    StringAssert.Contains(
+                        "LC_ALL=\r\n",
+                        receiveBuffer.ToString());
+                }
+            }
+        }
     }
 }
