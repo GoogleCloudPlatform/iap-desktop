@@ -74,6 +74,20 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Options
                 viewModel,
                 m => m.IsNavigationUsingControlArrrowEnabled,
                 this.Container);
+            
+            //
+            // Scrolling box.
+            //
+            this.scrollUsingCtrlUpDownCheckBox.BindProperty(
+                c => c.Checked,
+                viewModel,
+                m => m.IsScrollingUsingCtrlUpDownEnabled,
+                this.Container);
+            this.scrollUsingCtrlHomeEndcheckBox.BindProperty(
+                c => c.Checked,
+                viewModel,
+                m => m.IsScrollingUsingCtrlHomeEndEnabled,
+                this.Container);
         }
     }
 }

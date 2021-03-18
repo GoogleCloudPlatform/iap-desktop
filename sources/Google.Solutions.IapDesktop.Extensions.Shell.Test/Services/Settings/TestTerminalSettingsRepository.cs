@@ -55,6 +55,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Settings
             Assert.IsTrue(settings.IsSelectUsingShiftArrrowEnabled.BoolValue);
             Assert.IsTrue(settings.IsQuoteConvertionOnPasteEnabled.BoolValue);
             Assert.IsTrue(settings.IsNavigationUsingControlArrrowEnabled.BoolValue);
+            Assert.IsTrue(settings.IsScrollingUsingCtrlUpDownEnabled.BoolValue);
+            Assert.IsTrue(settings.IsScrollingUsingCtrlHomeEndEnabled.BoolValue);
         }
 
         [Test]

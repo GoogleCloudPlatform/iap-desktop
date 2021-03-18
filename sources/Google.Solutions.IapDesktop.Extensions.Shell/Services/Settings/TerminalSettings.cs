@@ -71,6 +71,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Settings
         public RegistryBoolSetting IsSelectUsingShiftArrrowEnabled { get; private set; }
         public RegistryBoolSetting IsQuoteConvertionOnPasteEnabled { get; private set; }
         public RegistryBoolSetting IsNavigationUsingControlArrrowEnabled { get; private set; }
+        public RegistryBoolSetting IsScrollingUsingCtrlUpDownEnabled { get; private set; }
+        public RegistryBoolSetting IsScrollingUsingCtrlHomeEndEnabled { get; private set; }
 
         public IEnumerable<ISetting> Settings => new ISetting[]
         {
@@ -80,6 +82,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Settings
             IsSelectUsingShiftArrrowEnabled,
             IsQuoteConvertionOnPasteEnabled,
             IsNavigationUsingControlArrrowEnabled,
+            IsScrollingUsingCtrlUpDownEnabled,
+            IsScrollingUsingCtrlHomeEndEnabled
         };
 
         private TerminalSettings()
@@ -128,6 +132,20 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Settings
                 IsNavigationUsingControlArrrowEnabled = RegistryBoolSetting.FromKey(
                     "IsNavigationUsingControlArrrowEnabled",
                     "IsNavigationUsingControlArrrowEnabled",
+                    null,
+                    null,
+                    true,
+                    registryKey),
+                IsScrollingUsingCtrlUpDownEnabled = RegistryBoolSetting.FromKey(
+                    "IsScrollingUsingCtrlUpDownEnabled",
+                    "IsScrollingUsingCtrlUpDownEnabled",
+                    null,
+                    null,
+                    true,
+                    registryKey),
+                IsScrollingUsingCtrlHomeEndEnabled = RegistryBoolSetting.FromKey(
+                    "IsScrollingUsingCtrlHomeEndEnabled",
+                    "IsScrollingUsingCtrlHomeEndEnabled",
                     null,
                     null,
                     true,

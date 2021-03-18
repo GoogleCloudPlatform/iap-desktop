@@ -36,13 +36,19 @@
             this.copyPasteUsingCtrlCAndCtrlVEnabledCheckBox = new System.Windows.Forms.CheckBox();
             this.textSelectionBox = new System.Windows.Forms.GroupBox();
             this.selectUsingShiftArrrowEnabledCheckBox = new System.Windows.Forms.CheckBox();
-            this.selectAllUsingCtrlAEnabledCheckBox = new System.Windows.Forms.CheckBox();
-            this.pictureBox1 = new System.Windows.Forms.PictureBox();
             this.navigationUsingControlArrrowEnabledCheckBox = new System.Windows.Forms.CheckBox();
+            this.selectAllUsingCtrlAEnabledCheckBox = new System.Windows.Forms.CheckBox();
+            this.textSelectionIcon = new System.Windows.Forms.PictureBox();
+            this.scollingBox = new System.Windows.Forms.GroupBox();
+            this.scrollUsingCtrlUpDownCheckBox = new System.Windows.Forms.CheckBox();
+            this.scrollUsingCtrlHomeEndcheckBox = new System.Windows.Forms.CheckBox();
+            this.scrollingIcon = new System.Windows.Forms.PictureBox();
             this.clipboardBox.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.keyboardIcon)).BeginInit();
             this.textSelectionBox.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.textSelectionIcon)).BeginInit();
+            this.scollingBox.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.scrollingIcon)).BeginInit();
             this.SuspendLayout();
             // 
             // clipboardBox
@@ -105,7 +111,7 @@
             this.textSelectionBox.Controls.Add(this.selectUsingShiftArrrowEnabledCheckBox);
             this.textSelectionBox.Controls.Add(this.navigationUsingControlArrrowEnabledCheckBox);
             this.textSelectionBox.Controls.Add(this.selectAllUsingCtrlAEnabledCheckBox);
-            this.textSelectionBox.Controls.Add(this.pictureBox1);
+            this.textSelectionBox.Controls.Add(this.textSelectionIcon);
             this.textSelectionBox.Location = new System.Drawing.Point(4, 94);
             this.textSelectionBox.Name = "textSelectionBox";
             this.textSelectionBox.Size = new System.Drawing.Size(336, 87);
@@ -124,6 +130,17 @@
             this.selectUsingShiftArrrowEnabledCheckBox.Text = "Use Shift+Arrow key to &select text";
             this.selectUsingShiftArrrowEnabledCheckBox.UseVisualStyleBackColor = true;
             // 
+            // navigationUsingControlArrrowEnabledCheckBox
+            // 
+            this.navigationUsingControlArrrowEnabledCheckBox.AutoSize = true;
+            this.navigationUsingControlArrrowEnabledCheckBox.CheckAlign = System.Drawing.ContentAlignment.TopLeft;
+            this.navigationUsingControlArrrowEnabledCheckBox.Location = new System.Drawing.Point(58, 57);
+            this.navigationUsingControlArrrowEnabledCheckBox.Name = "navigationUsingControlArrrowEnabledCheckBox";
+            this.navigationUsingControlArrrowEnabledCheckBox.Size = new System.Drawing.Size(260, 17);
+            this.navigationUsingControlArrrowEnabledCheckBox.TabIndex = 6;
+            this.navigationUsingControlArrrowEnabledCheckBox.Text = "Use Ctrl+Left/Right to jump to next/previous &word";
+            this.navigationUsingControlArrrowEnabledCheckBox.UseVisualStyleBackColor = true;
+            // 
             // selectAllUsingCtrlAEnabledCheckBox
             // 
             this.selectAllUsingCtrlAEnabledCheckBox.AutoSize = true;
@@ -135,30 +152,63 @@
             this.selectAllUsingCtrlAEnabledCheckBox.Text = "Use Ctrl+&A to select all text";
             this.selectAllUsingCtrlAEnabledCheckBox.UseVisualStyleBackColor = true;
             // 
-            // pictureBox1
+            // textSelectionIcon
             // 
-            this.pictureBox1.Image = ((System.Drawing.Image)(resources.GetObject("pictureBox1.Image")));
-            this.pictureBox1.Location = new System.Drawing.Point(10, 21);
-            this.pictureBox1.Name = "pictureBox1";
-            this.pictureBox1.Size = new System.Drawing.Size(36, 36);
-            this.pictureBox1.TabIndex = 3;
-            this.pictureBox1.TabStop = false;
+            this.textSelectionIcon.Image = ((System.Drawing.Image)(resources.GetObject("textSelectionIcon.Image")));
+            this.textSelectionIcon.Location = new System.Drawing.Point(10, 21);
+            this.textSelectionIcon.Name = "textSelectionIcon";
+            this.textSelectionIcon.Size = new System.Drawing.Size(36, 36);
+            this.textSelectionIcon.TabIndex = 3;
+            this.textSelectionIcon.TabStop = false;
             // 
-            // navigationUsingControlArrrowEnabledCheckBox
+            // scollingBox
             // 
-            this.navigationUsingControlArrrowEnabledCheckBox.AutoSize = true;
-            this.navigationUsingControlArrrowEnabledCheckBox.CheckAlign = System.Drawing.ContentAlignment.TopLeft;
-            this.navigationUsingControlArrrowEnabledCheckBox.Location = new System.Drawing.Point(58, 57);
-            this.navigationUsingControlArrrowEnabledCheckBox.Name = "navigationUsingControlArrrowEnabledCheckBox";
-            this.navigationUsingControlArrrowEnabledCheckBox.Size = new System.Drawing.Size(239, 17);
-            this.navigationUsingControlArrrowEnabledCheckBox.TabIndex = 6;
-            this.navigationUsingControlArrrowEnabledCheckBox.Text = "Use Ctrl+Arrow to jump to next/previous &word";
-            this.navigationUsingControlArrrowEnabledCheckBox.UseVisualStyleBackColor = true;
+            this.scollingBox.Controls.Add(this.scrollUsingCtrlUpDownCheckBox);
+            this.scollingBox.Controls.Add(this.scrollUsingCtrlHomeEndcheckBox);
+            this.scollingBox.Controls.Add(this.scrollingIcon);
+            this.scollingBox.Location = new System.Drawing.Point(4, 189);
+            this.scollingBox.Name = "scollingBox";
+            this.scollingBox.Size = new System.Drawing.Size(336, 87);
+            this.scollingBox.TabIndex = 7;
+            this.scollingBox.TabStop = false;
+            this.scollingBox.Text = "Scrolling:";
+            // 
+            // scrollUsingCtrlUpDownCheckBox
+            // 
+            this.scrollUsingCtrlUpDownCheckBox.AutoSize = true;
+            this.scrollUsingCtrlUpDownCheckBox.CheckAlign = System.Drawing.ContentAlignment.TopLeft;
+            this.scrollUsingCtrlUpDownCheckBox.Location = new System.Drawing.Point(58, 21);
+            this.scrollUsingCtrlUpDownCheckBox.Name = "scrollUsingCtrlUpDownCheckBox";
+            this.scrollUsingCtrlUpDownCheckBox.Size = new System.Drawing.Size(155, 17);
+            this.scrollUsingCtrlUpDownCheckBox.TabIndex = 7;
+            this.scrollUsingCtrlUpDownCheckBox.Text = "Use Ctrl+Up/&Down to scroll";
+            this.scrollUsingCtrlUpDownCheckBox.UseVisualStyleBackColor = true;
+            // 
+            // scrollUsingCtrlHomeEndcheckBox
+            // 
+            this.scrollUsingCtrlHomeEndcheckBox.AutoSize = true;
+            this.scrollUsingCtrlHomeEndcheckBox.CheckAlign = System.Drawing.ContentAlignment.TopLeft;
+            this.scrollUsingCtrlHomeEndcheckBox.Location = new System.Drawing.Point(58, 39);
+            this.scrollUsingCtrlHomeEndcheckBox.Name = "scrollUsingCtrlHomeEndcheckBox";
+            this.scrollUsingCtrlHomeEndcheckBox.Size = new System.Drawing.Size(227, 17);
+            this.scrollUsingCtrlHomeEndcheckBox.TabIndex = 8;
+            this.scrollUsingCtrlHomeEndcheckBox.Text = "Use Ctrl+&Home/End to scroll to top/bottom";
+            this.scrollUsingCtrlHomeEndcheckBox.UseVisualStyleBackColor = true;
+            // 
+            // scrollingIcon
+            // 
+            this.scrollingIcon.Image = ((System.Drawing.Image)(resources.GetObject("scrollingIcon.Image")));
+            this.scrollingIcon.Location = new System.Drawing.Point(10, 21);
+            this.scrollingIcon.Name = "scrollingIcon";
+            this.scrollingIcon.Size = new System.Drawing.Size(36, 36);
+            this.scrollingIcon.TabIndex = 3;
+            this.scrollingIcon.TabStop = false;
             // 
             // TerminalOptionsControl
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.Controls.Add(this.scollingBox);
             this.Controls.Add(this.textSelectionBox);
             this.Controls.Add(this.clipboardBox);
             this.Margin = new System.Windows.Forms.Padding(2);
@@ -169,7 +219,10 @@
             ((System.ComponentModel.ISupportInitialize)(this.keyboardIcon)).EndInit();
             this.textSelectionBox.ResumeLayout(false);
             this.textSelectionBox.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.textSelectionIcon)).EndInit();
+            this.scollingBox.ResumeLayout(false);
+            this.scollingBox.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.scrollingIcon)).EndInit();
             this.ResumeLayout(false);
 
         }
@@ -182,9 +235,13 @@
         private System.Windows.Forms.CheckBox copyPasteUsingShiftInsertAndCtrlInsertEnabledCheckBox;
         private System.Windows.Forms.CheckBox convertTypographicQuotesCheckBox;
         private System.Windows.Forms.GroupBox textSelectionBox;
-        private System.Windows.Forms.PictureBox pictureBox1;
+        private System.Windows.Forms.PictureBox textSelectionIcon;
         private System.Windows.Forms.CheckBox selectUsingShiftArrrowEnabledCheckBox;
         private System.Windows.Forms.CheckBox selectAllUsingCtrlAEnabledCheckBox;
         private System.Windows.Forms.CheckBox navigationUsingControlArrrowEnabledCheckBox;
+        private System.Windows.Forms.GroupBox scollingBox;
+        private System.Windows.Forms.CheckBox scrollUsingCtrlUpDownCheckBox;
+        private System.Windows.Forms.CheckBox scrollUsingCtrlHomeEndcheckBox;
+        private System.Windows.Forms.PictureBox scrollingIcon;
     }
 }
