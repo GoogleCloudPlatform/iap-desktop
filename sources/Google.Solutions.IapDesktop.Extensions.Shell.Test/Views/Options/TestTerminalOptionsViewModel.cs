@@ -330,5 +330,119 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.Options
 
             Assert.IsTrue(viewModel.IsDirty);
         }
+
+        //---------------------------------------------------------------------
+        // IsScrollingUsingCtrlUpDownEnabled.
+        //---------------------------------------------------------------------
+
+        [Test]
+        public void WhenSettingEnabled_ThenIsScrollingUsingCtrlUpDownEnabledIsTrue()
+        {
+            var settings = this.settingsRepository.GetSettings();
+            settings.IsScrollingUsingCtrlUpDownEnabled.BoolValue = true;
+            this.settingsRepository.SetSettings(settings);
+
+            var viewModel = new TerminalOptionsViewModel(this.settingsRepository);
+
+            Assert.IsTrue(viewModel.IsScrollingUsingCtrlUpDownEnabled);
+        }
+
+        [Test]
+        public void WhenSettingDisabled_ThenIsScrollingUsingCtrlUpDownEnabledIsTrue()
+        {
+            var settings = this.settingsRepository.GetSettings();
+            settings.IsScrollingUsingCtrlUpDownEnabled.BoolValue = false;
+            this.settingsRepository.SetSettings(settings);
+
+            var viewModel = new TerminalOptionsViewModel(this.settingsRepository);
+
+            Assert.IsFalse(viewModel.IsScrollingUsingCtrlUpDownEnabled);
+        }
+
+        [Test]
+        public void WhenDisablingIsScrollingUsingCtrlUpDownEnabled_ThenChangeIsApplied()
+        {
+            var settings = this.settingsRepository.GetSettings();
+            settings.IsScrollingUsingCtrlUpDownEnabled.BoolValue = true;
+            this.settingsRepository.SetSettings(settings);
+
+            var viewModel = new TerminalOptionsViewModel(this.settingsRepository)
+            {
+                IsScrollingUsingCtrlUpDownEnabled = false
+            };
+            viewModel.ApplyChanges();
+
+            settings = this.settingsRepository.GetSettings();
+            Assert.IsFalse(settings.IsScrollingUsingCtrlUpDownEnabled.BoolValue);
+        }
+
+        [Test]
+        public void WhenIsScrollingUsingCtrlUpDownEnabledChanged_ThenIsDirtyIsTrueUntilApplied()
+        {
+            var viewModel = new TerminalOptionsViewModel(this.settingsRepository);
+
+            Assert.IsFalse(viewModel.IsDirty);
+
+            viewModel.IsScrollingUsingCtrlUpDownEnabled = !viewModel.IsScrollingUsingCtrlUpDownEnabled;
+
+            Assert.IsTrue(viewModel.IsDirty);
+        }
+
+        //---------------------------------------------------------------------
+        // IsScrollingUsingCtrlHomeEndEnabled.
+        //---------------------------------------------------------------------
+
+        [Test]
+        public void WhenSettingEnabled_ThenIsScrollingUsingCtrlHomeEndEnabledIsTrue()
+        {
+            var settings = this.settingsRepository.GetSettings();
+            settings.IsScrollingUsingCtrlHomeEndEnabled.BoolValue = true;
+            this.settingsRepository.SetSettings(settings);
+
+            var viewModel = new TerminalOptionsViewModel(this.settingsRepository);
+
+            Assert.IsTrue(viewModel.IsScrollingUsingCtrlHomeEndEnabled);
+        }
+
+        [Test]
+        public void WhenSettingDisabled_ThenIsScrollingUsingCtrlHomeEndEnabledIsTrue()
+        {
+            var settings = this.settingsRepository.GetSettings();
+            settings.IsScrollingUsingCtrlHomeEndEnabled.BoolValue = false;
+            this.settingsRepository.SetSettings(settings);
+
+            var viewModel = new TerminalOptionsViewModel(this.settingsRepository);
+
+            Assert.IsFalse(viewModel.IsScrollingUsingCtrlHomeEndEnabled);
+        }
+
+        [Test]
+        public void WhenDisablingIsScrollingUsingCtrlHomeEndEnabled_ThenChangeIsApplied()
+        {
+            var settings = this.settingsRepository.GetSettings();
+            settings.IsScrollingUsingCtrlHomeEndEnabled.BoolValue = true;
+            this.settingsRepository.SetSettings(settings);
+
+            var viewModel = new TerminalOptionsViewModel(this.settingsRepository)
+            {
+                IsScrollingUsingCtrlHomeEndEnabled = false
+            };
+            viewModel.ApplyChanges();
+
+            settings = this.settingsRepository.GetSettings();
+            Assert.IsFalse(settings.IsScrollingUsingCtrlHomeEndEnabled.BoolValue);
+        }
+
+        [Test]
+        public void WhenIsScrollingUsingCtrlHomeEndEnabledChanged_ThenIsDirtyIsTrueUntilApplied()
+        {
+            var viewModel = new TerminalOptionsViewModel(this.settingsRepository);
+
+            Assert.IsFalse(viewModel.IsDirty);
+
+            viewModel.IsScrollingUsingCtrlHomeEndEnabled = !viewModel.IsScrollingUsingCtrlHomeEndEnabled;
+
+            Assert.IsTrue(viewModel.IsDirty);
+        }
     }
 }

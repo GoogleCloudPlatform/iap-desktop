@@ -38,6 +38,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Options
         private bool isSelectUsingShiftArrrowEnabled;
         private bool isQuoteConvertionOnPasteEnabled;
         private bool isNavigationUsingControlArrrowEnabled;
+        private bool isScrollingUsingCtrlUpDownEnabled;
+        private bool isScrollingUsingCtrlHomeEndEnabled;
 
         private readonly TerminalSettingsRepository settingsRepository;
 
@@ -68,6 +70,10 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Options
                 settings.IsQuoteConvertionOnPasteEnabled.BoolValue;
             this.IsNavigationUsingControlArrrowEnabled =
                 settings.IsNavigationUsingControlArrrowEnabled.BoolValue;
+            this.IsScrollingUsingCtrlUpDownEnabled =
+                settings.IsScrollingUsingCtrlUpDownEnabled.BoolValue;
+            this.IsScrollingUsingCtrlHomeEndEnabled =
+                settings.IsScrollingUsingCtrlHomeEndEnabled.BoolValue;
 
             this.isDirty = false;
         }
@@ -118,6 +124,10 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Options
                 this.IsQuoteConvertionOnPasteEnabled;
             settings.IsNavigationUsingControlArrrowEnabled.BoolValue =
                 this.IsNavigationUsingControlArrrowEnabled;
+            settings.IsScrollingUsingCtrlUpDownEnabled.BoolValue =
+                this.IsScrollingUsingCtrlUpDownEnabled;
+            settings.IsScrollingUsingCtrlHomeEndEnabled.BoolValue =
+                this.IsScrollingUsingCtrlHomeEndEnabled;
 
             this.settingsRepository.SetSettings(settings);
 
@@ -190,6 +200,28 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Options
             {
                 this.IsDirty = true;
                 this.isNavigationUsingControlArrrowEnabled = value;
+                RaisePropertyChange();
+            }
+        }
+
+        public bool IsScrollingUsingCtrlUpDownEnabled
+        {
+            get => this.isScrollingUsingCtrlUpDownEnabled;
+            set
+            {
+                this.IsDirty = true;
+                this.isScrollingUsingCtrlUpDownEnabled = value;
+                RaisePropertyChange();
+            }
+        }
+
+        public bool IsScrollingUsingCtrlHomeEndEnabled
+        {
+            get => this.isScrollingUsingCtrlHomeEndEnabled;
+            set
+            {
+                this.IsDirty = true;
+                this.isScrollingUsingCtrlHomeEndEnabled = value;
                 RaisePropertyChange();
             }
         }

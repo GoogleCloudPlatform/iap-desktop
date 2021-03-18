@@ -231,6 +231,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.SshTerminal
             this.terminal.EnableShiftUpDown = settings.IsSelectUsingShiftArrrowEnabled.BoolValue;
 
             this.terminal.EnableCtrlLeftRight = settings.IsNavigationUsingControlArrrowEnabled.BoolValue;
+
+            this.terminal.EnableCtrlUpDown = settings.IsScrollingUsingCtrlUpDownEnabled.BoolValue;
+            this.terminal.EnableCtrlHomeEnd = settings.IsScrollingUsingCtrlHomeEndEnabled.BoolValue;
         }
 
         //---------------------------------------------------------------------
