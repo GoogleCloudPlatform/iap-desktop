@@ -107,6 +107,7 @@
     <Compile Include="Services\Adapter\OsLoginAdapter.cs" />
     <Compile Include="Services\ConnectionFailedException.cs" />
     <Compile Include="Services\ConnectionSettings\ProjectExplorerNodeExtensions.cs" />
+    <Compile Include="Services\Settings\SshSettings.cs" />
     <Compile Include="Services\Settings\TerminalSettings.cs" />
     <Compile Include="Services\Ssh\AuthorizedKey.cs" />
     <Compile Include="Services\Ssh\AuthorizedKeyService.cs" />
@@ -143,6 +144,13 @@
       <DependentUpon>ShowCredentialsDialog.cs</DependentUpon>
     </Compile>
     <Compile Include="Services\ShellExtension.cs" />
+    <Compile Include="Views\Options\SshOptionsControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Views\Options\SshOptionsControl.Designer.cs">
+      <DependentUpon>SshOptionsControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Options\SshOptionsViewModel.cs" />
     <Compile Include="Views\Options\TerminalOptionsControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -239,6 +247,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Views\Credentials\ShowCredentialsDialog.resx">
       <DependentUpon>ShowCredentialsDialog.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Views\Options\SshOptionsControl.resx">
+      <DependentUpon>SshOptionsControl.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Views\Options\TerminalOptionsControl.resx">
       <DependentUpon>TerminalOptionsControl.cs</DependentUpon>

@@ -28,9 +28,12 @@ using System.Windows.Forms;
 
 namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Options
 {
-    [Service(typeof(IOptionsDialogPane), ServiceLifetime.Transient, ServiceVisibility.Global)]
+    public interface ITerminalDialogPane : IOptionsDialogPane
+    { }
+
+    [Service(typeof(ITerminalDialogPane), ServiceLifetime.Transient, ServiceVisibility.Global)]
     [ServiceCategory(typeof(IOptionsDialogPane))]
-    public class TerminalOptionsViewModel : ViewModelBase, IOptionsDialogPane
+    public class TerminalOptionsViewModel : ViewModelBase, ITerminalDialogPane
     {
         private bool isCopyPasteUsingCtrlCAndCtrlVEnabled;
         private bool isSelectAllUsingCtrlAEnabled;
