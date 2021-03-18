@@ -26,6 +26,7 @@ using Google.Solutions.IapDesktop.Application.Views;
 using Google.Solutions.IapDesktop.Application.Views.ProjectExplorer;
 using Google.Solutions.IapDesktop.Extensions.Shell.Services.Adapter;
 using Google.Solutions.IapDesktop.Extensions.Shell.Services.ConnectionSettings;
+using Google.Solutions.IapDesktop.Extensions.Shell.Services.Settings;
 using Google.Solutions.IapDesktop.Extensions.Shell.Services.Tunnel;
 using Google.Solutions.IapDesktop.Extensions.Shell.Views.SshTerminal;
 using Google.Solutions.IapTunneling.Iap;
@@ -33,6 +34,7 @@ using Google.Solutions.IapTunneling.Net;
 using Google.Solutions.Ssh;
 using System;
 using System.Diagnostics;
+using System.Globalization;
 using System.Net;
 using System.Security.Cryptography;
 using System.Threading.Tasks;
@@ -57,6 +59,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Ssh
         private readonly IAuthorizedKeyService authorizedKeyService;
         private readonly IKeyStoreAdapter keyStoreAdapter;
         private readonly IAuthorizationAdapter authorizationAdapter;
+        private readonly SshSettingsRepository sshSettingsRepository;
+
         private static string NullIfEmpty(string s) => string.IsNullOrEmpty(s) ? null : s;
 
         public SshConnectionService(IServiceProvider serviceProvider)
@@ -68,6 +72,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Ssh
             this.authorizedKeyService = serviceProvider.GetService<IAuthorizedKeyService>();
             this.keyStoreAdapter = serviceProvider.GetService<IKeyStoreAdapter>();
             this.authorizationAdapter = serviceProvider.GetService<IAuthorizationAdapter>();
+            this.sshSettingsRepository = serviceProvider.GetService<SshSettingsRepository>();
             this.window = serviceProvider.GetService<IMainForm>().Window;
         }
 
@@ -156,6 +161,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Ssh
             var sshKey = new RsaSshKey(rsaKey);
             try
             {
+                var sshSettings = this.sshSettingsRepository.GetSettings();
                 var authorizedKeyTask = this.jobService.RunInBackground(
                     new JobDescription(
                         $"Publishing SSH key for {instance.Name}...",
@@ -168,7 +174,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Ssh
                         return await this.authorizedKeyService.AuthorizeKeyAsync(
                                 vmNode.Reference,
                                 sshKey,
-                                TimeSpan.FromDays(30),  // TODO: Make expiry configurable
+                                TimeSpan.FromSeconds(sshSettings.PublicKeyValidity.IntValue),
                                 NullIfEmpty(settings.SshUsername.StringValue),
                                 AuthorizeKeyMethods.All,
                                 token)
@@ -182,6 +188,10 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Ssh
                 await Task.WhenAll(tunnelTask, authorizedKeyTask)
                     .ConfigureAwait(true);
 
+                var language = sshSettings.IsPropagateLocaleEnabled.BoolValue
+                     ? CultureInfo.CurrentUICulture
+                     : null;
+
                 //
                 // NB. ConnectAsync takes ownership of the key and will retain
                 // it for the lifetime of the session.
@@ -190,6 +200,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Ssh
                         instance,
                         new IPEndPoint(IPAddress.Loopback, tunnelTask.Result.LocalPort),
                         authorizedKeyTask.Result,
+                        language,
                         timeout)
                     .ConfigureAwait(true);
             }

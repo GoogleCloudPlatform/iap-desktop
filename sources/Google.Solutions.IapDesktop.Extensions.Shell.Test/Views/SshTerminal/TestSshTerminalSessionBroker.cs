@@ -105,6 +105,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.SshTerminal
                         locator,
                         new IPEndPoint(instance.PublicAddress(), 22),
                         authorizedKey,
+                        null,
                         TimeSpan.FromSeconds(10)));
 
                 Assert.IsNull(this.ExceptionShown);

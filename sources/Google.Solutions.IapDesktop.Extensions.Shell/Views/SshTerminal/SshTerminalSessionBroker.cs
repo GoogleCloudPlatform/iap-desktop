@@ -25,6 +25,7 @@ using Google.Solutions.IapDesktop.Application.Services.Integration;
 using Google.Solutions.IapDesktop.Application.Views;
 using Google.Solutions.IapDesktop.Extensions.Shell.Services.Ssh;
 using System;
+using System.Globalization;
 using System.Net;
 using System.Threading.Tasks;
 
@@ -43,6 +44,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.SshTerminal
             InstanceLocator vmInstance,
             IPEndPoint endpoint,
             AuthorizedKey authorizedKey,
+            CultureInfo language,
             TimeSpan connectionTimeout);
     }
 
@@ -100,6 +102,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.SshTerminal
             InstanceLocator vmInstance,
             IPEndPoint endpoint,
             AuthorizedKey authorizedKey,
+            CultureInfo language,
             TimeSpan connectionTimeout)
         {
             var pane = new SshTerminalPane(
@@ -107,6 +110,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.SshTerminal
                 vmInstance,
                 endpoint,
                 authorizedKey,
+                language,
                 connectionTimeout);
             pane.ShowWindow(true);
 

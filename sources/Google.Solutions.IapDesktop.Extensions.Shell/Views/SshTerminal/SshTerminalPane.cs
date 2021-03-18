@@ -33,6 +33,7 @@ using Google.Solutions.Ssh;
 using System;
 using System.Diagnostics;
 using System.Drawing;
+using System.Globalization;
 using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
@@ -98,6 +99,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.SshTerminal
             InstanceLocator vmInstance,
             IPEndPoint endpoint,
             AuthorizedKey authorizedKey,
+            CultureInfo language,
             TimeSpan connectionTimeout)
             : base(serviceProvider, DockState.Document)
         {
@@ -106,10 +108,10 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.SshTerminal
             this.exceptionDialog = serviceProvider.GetService<IExceptionDialog>();
             this.viewModel = new SshTerminalPaneViewModel(
                 serviceProvider.GetService<IEventService>(),
-                serviceProvider.GetService<SshSettingsRepository>(),
                 vmInstance,
                 endpoint,
                 authorizedKey,
+                language,
                 connectionTimeout)
             {
                 View = this
