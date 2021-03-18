@@ -28,6 +28,7 @@ using Google.Solutions.IapDesktop.Application.Services.Integration;
 using Google.Solutions.IapDesktop.Application.Settings;
 using Google.Solutions.IapDesktop.Application.Test;
 using Google.Solutions.IapDesktop.Application.Test.ObjectModel;
+using Google.Solutions.IapDesktop.Application.Test.Views;
 using Google.Solutions.IapDesktop.Application.Util;
 using Google.Solutions.IapDesktop.Application.Views;
 using Google.Solutions.IapDesktop.Application.Views.ProjectExplorer;
@@ -35,6 +36,7 @@ using Google.Solutions.IapDesktop.Extensions.Shell.Services;
 using Google.Solutions.IapDesktop.Extensions.Shell.Services.Adapter;
 using Google.Solutions.IapDesktop.Extensions.Shell.Services.ConnectionSettings;
 using Google.Solutions.IapDesktop.Extensions.Shell.Services.Rdp;
+using Google.Solutions.IapDesktop.Extensions.Shell.Services.Settings;
 using Google.Solutions.IapDesktop.Extensions.Shell.Services.Ssh;
 using Google.Solutions.IapDesktop.Extensions.Shell.Services.Tunnel;
 using Google.Solutions.IapDesktop.Extensions.Shell.Views.ConnectionSettings;
@@ -43,6 +45,7 @@ using Google.Solutions.IapDesktop.Extensions.Shell.Views.RemoteDesktop;
 using Google.Solutions.IapDesktop.Extensions.Shell.Views.SshTerminal;
 using Google.Solutions.IapTunneling.Iap;
 using Google.Solutions.Ssh;
+using Microsoft.Win32;
 using Moq;
 using NUnit.Framework;
 using System;
@@ -101,6 +104,10 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Ssh
             this.authorizedKeyService = this.serviceRegistry.AddMock<IAuthorizedKeyService>();
 
             this.serviceRegistry.AddMock<IMainForm>();
+
+            var hkcu = RegistryKey.OpenBaseKey(RegistryHive.CurrentUser, RegistryView.Default);
+            this.serviceRegistry.AddSingleton(new SshSettingsRepository(
+                hkcu.CreateSubKey(@"Software\Google\__Test")));
         }
 
         [Test]
@@ -191,6 +198,38 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Ssh
                 It.IsAny<ISshKey>(),
                 It.IsAny<TimeSpan>(),
                 It.Is<string>(user => user == "bob"),
+                It.IsAny<AuthorizeKeyMethods>(),
+                It.IsAny<CancellationToken>()), Times.Once);
+        }
+
+        [Test]
+        public async Task WhenNoSessionExists_ThenActivateOrConnectInstanceAsyncUsesKeyValidityFromSettings()
+        {
+            var settings = InstanceConnectionSettings.CreateNew(SampleLocator.ProjectId, SampleLocator.Name);
+            settings.SshPort.IntValue = 2222;
+            settings.SshUsername.StringValue = "bob";
+
+            var settingsService = this.serviceRegistry.AddMock<IConnectionSettingsService>();
+            settingsService.Setup(s => s.GetConnectionSettings(It.IsAny<IProjectExplorerNode>()))
+                .Returns(settings
+                    .ToPersistentSettingsCollection(s => Assert.Fail("should not be called")));
+
+            var sshSettingsRepository = this.serviceRegistry.GetService<SshSettingsRepository>();
+            var sshSettings = sshSettingsRepository.GetSettings();
+            sshSettings.PublicKeyValidity.IntValue = (int)TimeSpan.FromDays(4).TotalSeconds;
+            sshSettingsRepository.SetSettings(sshSettings);
+
+            var vmNode = new Mock<IProjectExplorerVmInstanceNode>();
+            vmNode.SetupGet(n => n.Reference).Returns(SampleLocator);
+
+            var service = new SshConnectionService(this.serviceRegistry);
+            await service.ActivateOrConnectInstanceAsync(vmNode.Object);
+
+            this.authorizedKeyService.Verify(s => s.AuthorizeKeyAsync(
+                It.Is<InstanceLocator>(l => l == SampleLocator),
+                It.IsAny<ISshKey>(),
+                It.Is<TimeSpan>(validity => validity == TimeSpan.FromDays(4)),
+                It.IsAny<string>(),
                 It.IsAny<AuthorizeKeyMethods>(),
                 It.IsAny<CancellationToken>()), Times.Once);
         }
