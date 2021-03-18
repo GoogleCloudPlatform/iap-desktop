@@ -36,6 +36,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Options
     public class SshOptionsViewModel : ViewModelBase, ISshDialogPane
     { 
         private bool isPropagateLocaleEnabled;
+        private int publicKeyValidityInDays;
 
         private readonly SshSettingsRepository settingsRepository;
 
@@ -56,6 +57,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Options
 
             this.IsPropagateLocaleEnabled =
                 settings.IsPropagateLocaleEnabled.BoolValue;
+            this.PublicKeyValidityInDays =
+                (int)TimeSpan.FromSeconds(settings.PublicKeyValidity.IntValue).TotalDays;
 
             this.isDirty = false;
         }
@@ -95,6 +98,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Options
 
             settings.IsPropagateLocaleEnabled.BoolValue =
                 this.IsPropagateLocaleEnabled;
+            settings.PublicKeyValidity.IntValue =
+                (int)TimeSpan.FromDays((int)this.PublicKeyValidityInDays).TotalSeconds;
 
             this.settingsRepository.SetSettings(settings);
 
@@ -112,6 +117,17 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Options
             {
                 this.IsDirty = true;
                 this.isPropagateLocaleEnabled = value;
+                RaisePropertyChange();
+            }
+        }
+
+        public decimal PublicKeyValidityInDays
+        {
+            get => this.publicKeyValidityInDays;
+            set
+            {
+                this.IsDirty = true;
+                this.publicKeyValidityInDays = (int)value;
                 RaisePropertyChange();
             }
         }

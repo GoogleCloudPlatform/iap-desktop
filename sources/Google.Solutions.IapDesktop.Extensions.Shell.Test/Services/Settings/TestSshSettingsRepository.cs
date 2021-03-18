@@ -50,6 +50,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Settings
             var settings = repository.GetSettings();
 
             Assert.IsTrue(settings.IsPropagateLocaleEnabled.BoolValue);
+            Assert.AreEqual(60 * 60 * 24 * 30, settings.PublicKeyValidity.IntValue);
         }
     }
 }

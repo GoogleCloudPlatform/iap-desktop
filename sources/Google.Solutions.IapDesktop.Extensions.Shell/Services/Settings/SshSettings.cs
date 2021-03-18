@@ -58,10 +58,12 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Settings
     public class SshSettings : IRegistrySettingsCollection
     {
         public RegistryBoolSetting IsPropagateLocaleEnabled { get; private set; }
+        public RegistryDwordSetting PublicKeyValidity { get; private set; }
 
         public IEnumerable<ISetting> Settings => new ISetting[]
         {
             IsPropagateLocaleEnabled,
+            PublicKeyValidity
         };
 
         private SshSettings()
@@ -78,7 +80,16 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Settings
                     null,
                     null,
                     true,
-                    registryKey)
+                    registryKey),
+                PublicKeyValidity = RegistryDwordSetting.FromKey(
+                    "PublicKeyValidity",
+                    "PublicKeyValidity",
+                    "Validity of (OS Login/Metadata) keys in seconds",
+                    null,
+                    (int)TimeSpan.FromDays(30).TotalSeconds,
+                    registryKey,
+                    (int)TimeSpan.FromMinutes(1).TotalSeconds,
+                    int.MaxValue)
             };
         }
     }

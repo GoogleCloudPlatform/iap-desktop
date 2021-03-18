@@ -101,5 +101,50 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.Options
 
             Assert.IsTrue(viewModel.IsDirty);
         }
+
+        //---------------------------------------------------------------------
+        // PublicKeyValidityInDays.
+        //---------------------------------------------------------------------
+
+        [Test]
+        public void WhenSettingPopulated_ThenPublicKeyValidityInDaysHasCorrectValue()
+        {
+            var settings = this.settingsRepository.GetSettings();
+            settings.PublicKeyValidity.IntValue = 60 * 60 * 26; // 1.5 days
+            this.settingsRepository.SetSettings(settings);
+
+            var viewModel = new SshOptionsViewModel(this.settingsRepository);
+
+            Assert.AreEqual(1, viewModel.PublicKeyValidityInDays);
+        }
+
+        [Test]
+        public void WhenChangingPublicKeyValidityInDays_ThenChangeIsApplied()
+        {
+            var settings = this.settingsRepository.GetSettings();
+            settings.PublicKeyValidity.IntValue = 60 * 60 * 26; // 1.5 days
+            this.settingsRepository.SetSettings(settings);
+
+            var viewModel = new SshOptionsViewModel(this.settingsRepository)
+            {
+                PublicKeyValidityInDays = 365 * 2
+            };
+            viewModel.ApplyChanges();
+
+            settings = this.settingsRepository.GetSettings();
+            Assert.AreEqual(365 * 2 * 24 * 60 * 60, settings.PublicKeyValidity.IntValue);
+        }
+
+        [Test]
+        public void WhenPublicKeyValidityInDaysChanged_ThenIsDirtyIsTrueUntilApplied()
+        {
+            var viewModel = new SshOptionsViewModel(this.settingsRepository);
+
+            Assert.IsFalse(viewModel.IsDirty);
+
+            viewModel.PublicKeyValidityInDays++;
+
+            Assert.IsTrue(viewModel.IsDirty);
+        }
     }
 }

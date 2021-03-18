@@ -44,6 +44,11 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Options
                 viewModel,
                 m => m.IsPropagateLocaleEnabled,
                 this.Container);
+            this.publicKeyValidityUpDown.BindProperty(
+                c => c.Value,
+                this.viewModel,
+                m => m.PublicKeyValidityInDays,
+                this.Container);
         }
     }
 }
