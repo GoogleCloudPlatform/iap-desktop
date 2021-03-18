@@ -28,6 +28,7 @@ using Google.Solutions.IapDesktop.Application.ObjectModel;
 using Google.Solutions.IapDesktop.Application.Services.Integration;
 using Google.Solutions.IapDesktop.Application.Views;
 using Google.Solutions.IapDesktop.Application.Views.Dialog;
+using Google.Solutions.IapDesktop.Extensions.Shell.Services.Settings;
 using Google.Solutions.IapDesktop.Extensions.Shell.Services.Ssh;
 using Google.Solutions.Ssh;
 using Google.Solutions.Ssh.Native;
@@ -48,6 +49,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.SshTerminal
     public class SshTerminalPaneViewModel : ViewModelBase, IDisposable
     {
         private readonly IEventService eventService;
+        private readonly CultureInfo language;
         private readonly IPEndPoint endpoint;
         private readonly AuthorizedKey authorizedKey;
         private readonly TimeSpan connectionTimeout;
@@ -88,11 +90,13 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.SshTerminal
             InstanceLocator vmInstance,
             IPEndPoint endpoint,
             AuthorizedKey authorizedKey,
+            CultureInfo language,
             TimeSpan connectionTimeout)
         {
             this.eventService = eventService;
             this.endpoint = endpoint;
             this.authorizedKey = authorizedKey;
+            this.language = language;
             this.Instance = vmInstance;
             this.connectionTimeout = connectionTimeout;
         }
@@ -237,7 +241,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.SshTerminal
                         this.authorizedKey.Key,
                         SshShellConnection.DefaultTerminal,
                         initialSize,
-                        CultureInfo.CurrentUICulture,
+                        this.language,
                         OnDataReceivedFromServerAsync,
                         OnErrorReceivedFromServerAsync)
                     {

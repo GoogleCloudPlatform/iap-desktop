@@ -25,7 +25,6 @@ using Google.Solutions.IapDesktop.Application.ObjectModel;
 
 namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Options
 {
-
     [SkipCodeCoverage("UI code")]
     public partial class TerminalOptionsControl : UserControl
     {

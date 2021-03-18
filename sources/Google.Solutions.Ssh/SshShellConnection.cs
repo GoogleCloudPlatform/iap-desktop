@@ -71,24 +71,30 @@ namespace Google.Solutions.Ssh
 
         protected override SshChannelBase CreateChannel(SshAuthenticatedSession session)
         {
-            var currentLanguage = this.language.Name.Replace('-', '_');
-
-            return session.OpenShellChannel(
-                LIBSSH2_CHANNEL_EXTENDED_DATA.MERGE,
-                this.terminal,
-                this.terminalSize.Columns,
-                this.terminalSize.Rows,
-                new []
+            IEnumerable<EnvironmentVariable> environmentVariables = null;
+            if (this.language != null)
+            {
+                // Format language so that Linux understands it.
+                var languageFormatted = this.language.Name.Replace('-', '_');
+                environmentVariables = new[]
                 {
                     //
                     // Try to pass locale - but do not fail the connection if
                     // the server rejects it.
                     //
                     new EnvironmentVariable(
-                        "LC_ALL", 
-                        $"{currentLanguage}.UTF-8",
+                        "LC_ALL",
+                        $"{languageFormatted}.UTF-8",
                         false)
-                });
+                };
+            }
+
+            return session.OpenShellChannel(
+                LIBSSH2_CHANNEL_EXTENDED_DATA.MERGE,
+                this.terminal,
+                this.terminalSize.Columns,
+                this.terminalSize.Rows,
+                environmentVariables);
         }
 
         //---------------------------------------------------------------------

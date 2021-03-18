@@ -73,7 +73,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.SshTerminal
 
         private async Task<SshTerminalPane> ConnectSshTerminalPane(
             InstanceLocator instanceLocator,
-            ICredential credential)
+            ICredential credential,
+            CultureInfo language = null)
         {
             var authorization = new Mock<IAuthorization>();
             authorization
@@ -109,6 +110,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.SshTerminal
                         instanceLocator,
                         new IPEndPoint(await PublicAddressFromLocator(instanceLocator), 22),
                         authorizedKey,
+                        language,
                         TimeSpan.FromSeconds(10))
                     .ConfigureAwait(true);
 
@@ -124,6 +126,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.SshTerminal
         {
             var hkcu = RegistryKey.OpenBaseKey(RegistryHive.CurrentUser, RegistryView.Default);
             this.serviceRegistry.AddSingleton(new TerminalSettingsRepository(
+                hkcu.CreateSubKey(TestKeyPath)));
+            this.serviceRegistry.AddSingleton(new SshSettingsRepository(
                 hkcu.CreateSubKey(TestKeyPath)));
         }
 
@@ -145,6 +149,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.SshTerminal
                         new InstanceLocator("project-1", "zone-1", "instance-1"),
                         UnboundEndpoint,
                         AuthorizedKey.ForMetadata(key, "test", true, null),
+                        null,
                         TimeSpan.FromSeconds(10))
                     .ConfigureAwait(true);
 
@@ -170,6 +175,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.SshTerminal
                         new InstanceLocator("project-1", "zone-1", "instance-1"),
                         NonSshEndpoint,
                         AuthorizedKey.ForMetadata(key, "test", true, null),
+                        null,
                         TimeSpan.FromSeconds(10))
                     .ConfigureAwait(true);
 
@@ -198,6 +204,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.SshTerminal
                         instanceLocator,
                         new IPEndPoint(await PublicAddressFromLocator(instanceLocator), 22),
                         AuthorizedKey.ForMetadata(key, "test", true, null),
+                        null,
                         TimeSpan.FromSeconds(10))
                     .ConfigureAwait(true);
 
@@ -341,11 +348,10 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.SshTerminal
             [LinuxInstance] ResourceTask<InstanceLocator> instanceLocatorTask,
             [Credential(Role = PredefinedRole.ComputeInstanceAdminV1)] ResourceTask<ICredential> credential)
         {
-            CultureInfo.CurrentUICulture = new CultureInfo("en-AU");
-
             using (var pane = await ConnectSshTerminalPane(
                 await instanceLocatorTask,
-                await credential))
+                await credential,
+                new CultureInfo("en-AU")))
             {
                 await pane.SendAsync("locale;sleep 1;exit\n");
 
