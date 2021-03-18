@@ -31,7 +31,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.Options
 {
     public class GeneralOptionsViewModel : ViewModelBase, IOptionsDialogPane
     {
-        public const string FriendlyName = "IAP Desktop - Identity-Aware Proxy for Remote Desktop";
+        public const string FriendlyName = "IAP Desktop - Identity-Aware Proxy for Remote Desktop and SSH";
 
         private readonly ApplicationSettingsRepository settingsRepository;
         private readonly IAppProtocolRegistry protocolRegistry;

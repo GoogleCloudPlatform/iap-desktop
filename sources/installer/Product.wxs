@@ -146,7 +146,7 @@
         
         <Shortcut Id="Shortcut"
           Name="IAP Desktop"
-          Description="Identity-Aware Proxy for Remote Desktop"
+          Description="Identity-Aware Proxy for Remote Desktop and SSH"
           Target="[#FileIapDesktopExe]"
           WorkingDirectory="DirIapDesktop"/>
       </Component>
