@@ -122,7 +122,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.SshTerminal
             this.terminal.Name = "terminal";
             this.terminal.Size = new System.Drawing.Size(800, 450);
             this.terminal.TabIndex = 0;
-            this.terminal.ViewTop = 0;
             this.terminal.WindowTitle = null;
             // 
             // SshTerminalPane

@@ -68,7 +68,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Controls
         // Properties.
         //---------------------------------------------------------------------
 
-        public int ViewTop { get; set; } = 0;
+        public int ViewTop { get; private set; } = 0;
 
         public int Columns { get; private set; } = -1;
 
@@ -85,6 +85,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Controls
         public bool EnableShiftUpDown { get; set; } = true;
         public bool EnableTypographicQuoteConversionOnPaste { get; set; } = true;
         public bool EnableCtrlLeftRight { get; set; } = true;
+        public bool EnableCtrlUpDown { get; set; } = true;
 
         public VirtualTerminal()
         {
@@ -620,6 +621,16 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Controls
                 OnSendData(new SendDataEventArgs("\u001b[1;5C"));
                 return true;
             }
+            else if (this.EnableCtrlUpDown && control && !shift && !alt && keyCode == Keys.Up)
+            {
+                ScrollViewPort(-1);
+                return true;
+            }
+            else if (this.EnableCtrlUpDown && control && !shift && !alt && keyCode == Keys.Down)
+            {
+                ScrollViewPort(1);
+                return true;
+            }
             else if (!alt && IsKeySequence(
                 NameFromKey(keyCode),
                 control,
@@ -883,6 +894,11 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Controls
         //---------------------------------------------------------------------
         // Scrolling.
         //---------------------------------------------------------------------
+
+        public void ScrollToTop()
+        {
+            this.ViewTop = 0;
+        }
 
         internal void ScrollViewPort(int rowsDelta)
         {

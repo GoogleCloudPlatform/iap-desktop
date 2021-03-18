@@ -447,6 +447,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Controls
 
             Assert.AreEqual(string.Empty, this.sendData.ToString());
         }
+
         [Test]
         public void WhenShiftLeftRightEnabled_ThenTypingShiftRightStartsSelection()
         {
@@ -619,8 +620,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Controls
             Assert.IsFalse(this.terminal.IsTextSelected);
         }
 
-
-
         //---------------------------------------------------------------------
         // Navigation: Control+Left/Right
         //---------------------------------------------------------------------
@@ -660,6 +659,92 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Controls
             this.terminal.SimulateKey(Keys.Control | Keys.Left);
 
             Assert.AreEqual($"{Esc}OD", this.sendData.ToString());
+            Assert.IsFalse(this.terminal.IsTextSelected);
+        }
+
+        //---------------------------------------------------------------------
+        // Scrolling: Control+Up/Down
+        //---------------------------------------------------------------------
+
+        [Test]
+        public void WhenControlUpDownEnabledAndTerminalFull_ThenTypingControlUpScrollsUpOneLine()
+        {
+            var textStraddlingViewPort = GenerateText(100, 20);
+            this.terminal.ReceiveData(textStraddlingViewPort);
+
+            Assert.AreNotEqual(0, this.terminal.ViewTop);
+            var previousViewTop = this.terminal.ViewTop;
+
+            this.terminal.EnableCtrlUpDown = true;
+            this.terminal.SimulateKey(Keys.Control | Keys.Up);
+
+            Assert.AreEqual(previousViewTop - 1, this.terminal.ViewTop);
+            Assert.AreEqual("", this.sendData.ToString());
+        }
+
+        [Test]
+        public void WhenControlUpDownEnabledAndTerminalNotFull_ThenTypingControlUpIsIgnored()
+        {
+            var textNotEnoughToFillViewPort = GenerateText(3, 20);
+            this.terminal.ReceiveData(textNotEnoughToFillViewPort);
+
+            Assert.AreEqual(0, this.terminal.ViewTop);
+
+            this.terminal.EnableCtrlUpDown = true;
+            this.terminal.SimulateKey(Keys.Control | Keys.Up);
+
+            Assert.AreEqual(0, this.terminal.ViewTop);
+            Assert.AreEqual("", this.sendData.ToString());
+        }
+
+        [Test]
+        public void WhenControlUpDownEnabledAndTerminalFull_ThenTypingControlDownScrollsUpOneLine()
+        {
+            var textStraddlingViewPort = GenerateText(100, 20);
+            this.terminal.ReceiveData(textStraddlingViewPort);
+
+            this.terminal.ScrollToTop();
+            Assert.AreEqual(0, this.terminal.ViewTop);
+
+            this.terminal.EnableCtrlUpDown = true;
+            this.terminal.SimulateKey(Keys.Control | Keys.Down, 2);
+
+            Assert.AreEqual(2, this.terminal.ViewTop);
+            Assert.AreEqual("", this.sendData.ToString());
+        }
+
+        [Test]
+        public void WhenControlUpDownEnabledAndTerminalScrolledToEnd_ThenTypingControlDownIsIgnored()
+        {
+            var textStraddlingViewPort = GenerateText(100, 20);
+            this.terminal.ReceiveData(textStraddlingViewPort);
+
+            var previousViewTop = this.terminal.ViewTop;
+
+            this.terminal.EnableCtrlUpDown = true;
+            this.terminal.SimulateKey(Keys.Control | Keys.Down);
+
+            Assert.AreEqual(previousViewTop, this.terminal.ViewTop);
+            Assert.AreEqual("", this.sendData.ToString());
+        }
+
+        [Test]
+        public void WhenControlUpDownDisabled_ThenTypingControlUpSendsKeystroke()
+        {
+            this.terminal.EnableCtrlUpDown = false;
+            this.terminal.SimulateKey(Keys.Control | Keys.Up);
+
+            Assert.AreEqual($"{Esc}OA", this.sendData.ToString());
+            Assert.IsFalse(this.terminal.IsTextSelected);
+        }
+
+        [Test]
+        public void WhenControlUpDownDisabled_ThenTypingControlDownSendsKeystroke()
+        {
+            this.terminal.EnableCtrlUpDown = false;
+            this.terminal.SimulateKey(Keys.Control | Keys.Down);
+
+            Assert.AreEqual($"{Esc}OB", this.sendData.ToString());
             Assert.IsFalse(this.terminal.IsTextSelected);
         }
 
@@ -842,22 +927,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Controls
             this.terminal.SimulateKey(Keys.Control | Keys.Space);
 
             Assert.AreEqual("\u0000", this.sendData.ToString());
-        }
-
-        [Test]
-        public void WhenTypingCtrlUpArrow_ThenKeystrokeIsSent()
-        {
-            this.terminal.SimulateKey(Keys.Control | Keys.Up);
-
-            Assert.AreEqual($"{Esc}OA", this.sendData.ToString());
-        }
-
-        [Test]
-        public void WhenTypingCtrlDownArrow_ThenKeystrokeIsSent()
-        {
-            this.terminal.SimulateKey(Keys.Control | Keys.Down);
-
-            Assert.AreEqual($"{Esc}OB", this.sendData.ToString());
         }
     }
 }
