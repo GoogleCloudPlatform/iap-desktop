@@ -116,6 +116,19 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Controls
             };
         }
 
+        private string GetRow(int row, bool pad = false)
+        {
+            var text = this.controller.GetText(
+                0,
+                row,
+                this.Columns,
+                row);
+
+            return pad
+                ? text.PadRight(this.Columns, ' ')
+                : text;
+        }
+
         //---------------------------------------------------------------------
         // Painting.
         //---------------------------------------------------------------------
@@ -856,11 +869,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Controls
 
         private TextPosition MovePosition(TextPosition position, int rowsDelta, int columnsDelta)
         {
-            var currentRowLength = this.controller.GetText(
-                0, 
-                position.Row, 
-                this.Columns, 
-                position.Row).Length;
+            var currentRowLength = GetRow(position.Row).Length;
             
             var row = Math.Max(0, Math.Min(position.Row + rowsDelta, this.controller.BottomRow));
             var column = position.Column + columnsDelta;
@@ -875,7 +884,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Controls
                 {
                     // Underflow -> wrap to previous row - but skip any whitespace at end.
                     row--;
-                    column += this.controller.GetText(0, row, this.Columns, row).Length;
+                    column += GetRow(row).Length;
                 }
             }
             else if (columnsDelta != 0 && column >= currentRowLength)
@@ -915,19 +924,79 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Controls
             }
         }
 
-        //private void ExtendSelectionTillEnd(TextSelectionDirection direction)
-        //{
-        //    if (direction == TextSelectionDirection.Forward)
-        //    {
-        //        SelectText(
-        //            this.selection?.Range.Start ?? this.CursorPosition,
-        //            )
-        //    }
-        //    else
-        //    {
+        private void SelectWord(TextPosition position)
+        {
+            var hitChar = GetRow(position.Row, true)[position.Column];
 
-        //    }
-        //}
+            //
+            // Search for first occurance of a character that is
+            // different in whitespace-ness.
+            //
+            Predicate<char> predicate =
+                c => char.IsWhiteSpace(hitChar) != char.IsWhiteSpace(c);
+
+            SelectText(
+                ScanBackward(position, predicate).OffsetBy(1, 0),
+                ScanForward(position, predicate).OffsetBy(-1, 0),
+                TextSelectionDirection.Forward);
+        }
+
+        internal void SelectWord(int column, int row)
+            => SelectWord(new TextPosition(column, row));
+
+        private TextPosition ScanBackward(
+            TextPosition startPosition,
+            Predicate<char> predicate)
+        {
+            // Scan beginning of current row.
+            var column = GetRow(startPosition.Row, true)
+                .Substring(0, startPosition.Column)
+                .LastIndexOf(predicate);
+
+            if (column >= 0)
+            {
+                return new TextPosition(column, startPosition.Row);
+            }
+
+            // Scan preceeding rows.
+            for (int row = startPosition.Row - 1; row >= 0; row--)
+            {
+                column = GetRow(row, true).LastIndexOf(predicate);
+                if (column >= 0)
+                {
+                    return new TextPosition(column, row);
+                }
+            }
+
+            return new TextPosition(0, 0);
+        }
+
+        private TextPosition ScanForward(
+            TextPosition startPosition,
+            Predicate<char> predicate)
+        {
+            // Scan remainder of current row.
+            var index = GetRow(startPosition.Row, true)
+                .Substring(startPosition.Column)
+                .IndexOf(predicate);
+
+            if (index >= 0)
+            {
+                return new TextPosition(startPosition.Column + index, startPosition.Row);
+            }
+
+            // Scan subsequent rows.
+            for (int row = startPosition.Row + 1; row < this.controller.BottomRow; row++)
+            {
+                index = GetRow(row, true).IndexOf(predicate);
+                if (index >= 0)
+                {
+                    return new TextPosition(index, row);
+                }
+            }
+
+            return new TextPosition(this.Columns, this.controller.BottomRow);
+        }
 
         //---------------------------------------------------------------------
         // Scrolling.
@@ -1124,6 +1193,16 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Controls
             }
 
             base.OnMouseUp(e);
+        }
+
+        protected override void OnMouseDoubleClick(MouseEventArgs e)
+        {
+            if (e.Button == MouseButtons.Left)
+            {
+                SelectWord(PositionFromPoint(e.Location).OffsetBy(0, this.ViewTop));
+            }
+
+            base.OnMouseDoubleClick(e);
         }
 
         //---------------------------------------------------------------------
