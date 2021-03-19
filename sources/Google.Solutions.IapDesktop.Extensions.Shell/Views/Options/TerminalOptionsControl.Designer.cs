@@ -138,7 +138,7 @@
             this.navigationUsingControlArrrowEnabledCheckBox.Name = "navigationUsingControlArrrowEnabledCheckBox";
             this.navigationUsingControlArrrowEnabledCheckBox.Size = new System.Drawing.Size(260, 17);
             this.navigationUsingControlArrrowEnabledCheckBox.TabIndex = 6;
-            this.navigationUsingControlArrrowEnabledCheckBox.Text = "Use Ctrl+Left/Right to jump to next/previous &word";
+            this.navigationUsingControlArrrowEnabledCheckBox.Text = "Use Ctrl+Left/Right to jump to previous/next &word";
             this.navigationUsingControlArrrowEnabledCheckBox.UseVisualStyleBackColor = true;
             // 
             // selectAllUsingCtrlAEnabledCheckBox
