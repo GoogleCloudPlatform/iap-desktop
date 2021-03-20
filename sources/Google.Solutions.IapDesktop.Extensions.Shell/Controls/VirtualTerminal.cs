@@ -936,92 +936,89 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Controls
                 c => char.IsWhiteSpace(hitChar) == char.IsWhiteSpace(c);
 
             SelectText(
-                ScanBackward(position, predicate),
-                ScanForward(position, predicate),
+                FindPosition(position, predicate, TextSelectionDirection.Backward),
+                FindPosition(position, predicate, TextSelectionDirection.Forward),
                 TextSelectionDirection.Forward);
         }
 
         internal void SelectWord(int column, int row)
             => SelectWord(new TextPosition(column, row));
 
-        private TextPosition ScanBackward(
+        private TextPosition FindPosition(
             TextPosition startPosition,
-            Predicate<char> predicate)
+            Predicate<char> predicate,
+            TextSelectionDirection direction)
         {
             Debug.Assert(
                 predicate(GetRow(startPosition.Row, true)[startPosition.Column]),
                 "Start position must match predicate");
 
-            //
-            // Scan backwards for last character that does not match predicate anymore,
-            // then return the position of the last character that does.
-            //
-            var index = GetRow(startPosition.Row, true)
-                .Substring(0, startPosition.Column)
-                .LastIndexOf(c => !predicate(c));
-
-            Debug.Assert(index < startPosition.Column, "Start position must match predicate");
-
-            if (index >= 0)
+            if (direction == TextSelectionDirection.Backward)
             {
-                return new TextPosition(index + 1, startPosition.Row);
-            }
+                //
+                // Scan backwards for last character that does not match predicate anymore,
+                // then return the position of the last character that does.
+                //
+                var index = GetRow(startPosition.Row, true)
+                    .Substring(0, startPosition.Column)
+                    .LastIndexOf(c => !predicate(c));
 
-            // Scan preceeding rows.
-            for (int row = startPosition.Row - 1; row >= 0; row--)
+                Debug.Assert(index < startPosition.Column, "Start position must match predicate");
+
+                if (index >= 0)
+                {
+                    return new TextPosition(index + 1, startPosition.Row);
+                }
+
+                // Scan preceeding rows.
+                for (int row = startPosition.Row - 1; row >= 0; row--)
+                {
+                    index = GetRow(row, true).LastIndexOf(c => !predicate(c));
+                    if (index == this.Columns - 1)
+                    {
+                        return new TextPosition(0, row + 1);
+                    }
+                    else if (index >= 0)
+                    {
+                        return new TextPosition(index + 1, row);
+                    }
+                }
+
+                return new TextPosition(0, 0);
+            }
+            else
             {
-                index = GetRow(row, true).LastIndexOf(c => !predicate(c));
-                if (index == this.Columns - 1)
+                //
+                // Scan forwards for first character that does not match predicate anymore,
+                // then return the position of the last character that does.
+                //
+                var index = GetRow(startPosition.Row, true)
+                    .Substring(startPosition.Column)
+                    .IndexOf(c => !predicate(c));
+
+                Debug.Assert(index != 0, "Start position must match predicate");
+
+                if (index > 0)
                 {
-                    return new TextPosition(0, row + 1);
+                    return new TextPosition(startPosition.Column + index - 1, startPosition.Row);
                 }
-                else if (index >= 0)
+
+                // Scan subsequent rows.
+                for (int row = startPosition.Row + 1; row < this.controller.BottomRow; row++)
                 {
-                    return new TextPosition(index + 1, row);
+                    index = GetRow(row, true).IndexOf(c => !predicate(c));
+                    if (index == 0)
+                    {
+                        return new TextPosition(this.Columns - 1, row - 1);
+                    }
+                    else if (index > 0)
+                    {
+                        return new TextPosition(index - 1, row);
+                    }
                 }
+
+                return new TextPosition(this.Columns - 1, this.controller.BottomRow);
             }
-
-            return new TextPosition(0, 0);
-        }
-
-        private TextPosition ScanForward(
-            TextPosition startPosition,
-            Predicate<char> predicate)
-        {
-            Debug.Assert(
-                predicate(GetRow(startPosition.Row, true)[startPosition.Column]),
-                "Start position must match predicate");
-
-            //
-            // Scan forwards for first character that does not match predicate anymore,
-            // then return the position of the last character that does.
-            //
-            var index = GetRow(startPosition.Row, true)
-                .Substring(startPosition.Column)
-                .IndexOf(c => !predicate(c));
-
-            Debug.Assert(index != 0, "Start position must match predicate");
-
-            if (index > 0)
-            {
-                return new TextPosition(startPosition.Column + index - 1, startPosition.Row);
-            }
-
-            // Scan subsequent rows.
-            for (int row = startPosition.Row + 1; row < this.controller.BottomRow; row++)
-            {
-                index = GetRow(row, true).IndexOf(c => !predicate(c));
-                if (index == 0)
-                {
-                    return new TextPosition(this.Columns - 1, row - 1);
-                }
-                else if (index > 0)
-                {
-                    return new TextPosition(index - 1, row);
-                }
-            }
-
-            return new TextPosition(this.Columns - 1, this.controller.BottomRow);
         }
 
         //---------------------------------------------------------------------
