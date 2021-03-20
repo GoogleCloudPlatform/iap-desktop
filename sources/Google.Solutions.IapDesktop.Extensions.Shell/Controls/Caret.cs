@@ -49,6 +49,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Controls
         {
             this.Owner = owner;
             UnsafeNativeMethods.CreateCaret(owner.Handle, 0, size.Width, size.Height);
+            UnsafeNativeMethods.ShowCaret(owner.Handle);
         }
 
         public void Hide()

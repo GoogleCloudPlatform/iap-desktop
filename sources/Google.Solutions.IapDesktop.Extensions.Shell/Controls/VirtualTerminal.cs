@@ -30,6 +30,7 @@ using VtNetCore.XTermParser;
 using VtNetCore.VirtualTerminal.Layout;
 using Google.Solutions.Common.Diagnostics;
 using Google.Solutions.IapDesktop.Application.Util;
+using System.Linq;
 
 namespace Google.Solutions.IapDesktop.Extensions.Shell.Controls
 {
@@ -478,6 +479,36 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Controls
             }
         }
 
+        private static readonly Keys[] controlKeys = new[]
+        {
+            Keys.Up,
+            Keys.Down,
+            Keys.Left,
+            Keys.Right,
+            Keys.Home,
+            Keys.Insert,
+            Keys.Delete,
+            Keys.End,
+            Keys.PageUp,
+            Keys.PageDown,
+            Keys.F1,
+            Keys.F2,
+            Keys.F3,
+            Keys.F4,
+            Keys.F5,
+            Keys.F6,
+            Keys.F7,
+            Keys.F8,
+            Keys.F9,
+            Keys.F10,
+            Keys.F11,
+            Keys.F12,
+            Keys.Back,
+            Keys.Tab,
+            Keys.Enter,
+            Keys.Escape,
+        };
+
         protected override bool ProcessDialogKey(Keys keyData)
         {
             if ((keyData & Keys.Alt) != 0)
@@ -486,39 +517,28 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Controls
                 return false;
             }
 
-            switch (keyData & ~(Keys.Shift | Keys.Control | Keys.Alt))
+            if (controlKeys.Contains(keyData & ~(Keys.Shift | Keys.Control | Keys.Alt)))
             {
-                case Keys.Up:
-                case Keys.Down:
-                case Keys.Left:
-                case Keys.Right:
-                case Keys.Home:
-                case Keys.Insert:
-                case Keys.Delete:
-                case Keys.End:
-                case Keys.PageUp:
-                case Keys.PageDown:
-                case Keys.F1:
-                case Keys.F2:
-                case Keys.F3:
-                case Keys.F4:
-                case Keys.F5:
-                case Keys.F6:
-                case Keys.F7:
-                case Keys.F8:
-                case Keys.F9:
-                case Keys.F10:
-                case Keys.F11:
-                case Keys.F12:
-                case Keys.Back:
-                case Keys.Tab:
-                case Keys.Enter:
-                case Keys.Escape:
-                    // Pass all control keys to KeyDown.
-                    return false;
+                // Pass all control keys to KeyDown.
+                return false;
+            }
+            else
+            { 
+                return base.ProcessDialogKey(keyData);
+            }
+        }
 
-                default:
-                    return base.ProcessDialogKey(keyData);
+        protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
+        {
+            if (controlKeys.Contains(keyData & ~(Keys.Shift | Keys.Control | Keys.Alt)))
+            {
+                // Pass all control keys to KeyDown.
+                return false;
+            }
+            else
+            {
+                // Apply default behavior (i.e. process accelerators).
+                return base.ProcessCmdKey(ref msg, keyData);
             }
         }
 
