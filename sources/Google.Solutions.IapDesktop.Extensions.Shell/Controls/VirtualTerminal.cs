@@ -929,15 +929,15 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Controls
             var hitChar = GetRow(position.Row, true)[position.Column];
 
             //
-            // Search for first occurance of a character that is
+            // Extend selection until we hit a character that is
             // different in whitespace-ness.
             //
             Predicate<char> predicate =
-                c => char.IsWhiteSpace(hitChar) != char.IsWhiteSpace(c);
+                c => char.IsWhiteSpace(hitChar) == char.IsWhiteSpace(c);
 
             SelectText(
-                ScanBackward(position, predicate).OffsetBy(1, 0),
-                ScanForward(position, predicate).OffsetBy(-1, 0),
+                ScanBackward(position, predicate),
+                ScanForward(position, predicate),
                 TextSelectionDirection.Forward);
         }
 
@@ -948,23 +948,36 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Controls
             TextPosition startPosition,
             Predicate<char> predicate)
         {
-            // Scan beginning of current row.
-            var column = GetRow(startPosition.Row, true)
-                .Substring(0, startPosition.Column)
-                .LastIndexOf(predicate);
+            Debug.Assert(
+                predicate(GetRow(startPosition.Row, true)[startPosition.Column]),
+                "Start position must match predicate");
 
-            if (column >= 0)
+            //
+            // Scan backwards for last character that does not match predicate anymore,
+            // then return the position of the last character that does.
+            //
+            var index = GetRow(startPosition.Row, true)
+                .Substring(0, startPosition.Column)
+                .LastIndexOf(c => !predicate(c));
+
+            Debug.Assert(index < startPosition.Column, "Start position must match predicate");
+
+            if (index >= 0)
             {
-                return new TextPosition(column, startPosition.Row);
+                return new TextPosition(index + 1, startPosition.Row);
             }
 
             // Scan preceeding rows.
             for (int row = startPosition.Row - 1; row >= 0; row--)
             {
-                column = GetRow(row, true).LastIndexOf(predicate);
-                if (column >= 0)
+                index = GetRow(row, true).LastIndexOf(c => !predicate(c));
+                if (index == this.Columns - 1)
                 {
-                    return new TextPosition(column, row);
+                    return new TextPosition(0, row + 1);
+                }
+                else if (index >= 0)
+                {
+                    return new TextPosition(index + 1, row);
                 }
             }
 
@@ -975,27 +988,40 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Controls
             TextPosition startPosition,
             Predicate<char> predicate)
         {
-            // Scan remainder of current row.
+            Debug.Assert(
+                predicate(GetRow(startPosition.Row, true)[startPosition.Column]),
+                "Start position must match predicate");
+
+            //
+            // Scan forwards for first character that does not match predicate anymore,
+            // then return the position of the last character that does.
+            //
             var index = GetRow(startPosition.Row, true)
                 .Substring(startPosition.Column)
-                .IndexOf(predicate);
+                .IndexOf(c => !predicate(c));
 
-            if (index >= 0)
+            Debug.Assert(index != 0, "Start position must match predicate");
+
+            if (index > 0)
             {
-                return new TextPosition(startPosition.Column + index, startPosition.Row);
+                return new TextPosition(startPosition.Column + index - 1, startPosition.Row);
             }
 
             // Scan subsequent rows.
             for (int row = startPosition.Row + 1; row < this.controller.BottomRow; row++)
             {
-                index = GetRow(row, true).IndexOf(predicate);
-                if (index >= 0)
+                index = GetRow(row, true).IndexOf(c => !predicate(c));
+                if (index == 0)
                 {
-                    return new TextPosition(index, row);
+                    return new TextPosition(this.Columns - 1, row - 1);
+                }
+                else if (index > 0)
+                {
+                    return new TextPosition(index - 1, row);
                 }
             }
 
-            return new TextPosition(this.Columns, this.controller.BottomRow);
+            return new TextPosition(this.Columns - 1, this.controller.BottomRow);
         }
 
         //---------------------------------------------------------------------

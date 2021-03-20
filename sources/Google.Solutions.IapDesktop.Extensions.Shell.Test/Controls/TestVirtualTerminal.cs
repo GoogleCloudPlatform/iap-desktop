@@ -1021,12 +1021,12 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Controls
         //---------------------------------------------------------------------
 
         [Test]
-        public void WhenPositionHitsRowThatIsAllWhitespace_ThenSelectWordReturnsRow()
+        public void WhenPositionHitsRowThatIsAllWhitespace_ThenSelectWordIsWhitespace()
         {
             this.terminal.ReceiveData("\r\n\r\n\r\n\r\n\r\n\r\n");
             this.terminal.SelectWord(6, 3);
             Assert.AreEqual(
-                new string(' ', this.terminal.Columns), 
+                string.Empty, 
                 this.terminal.TextSelection);
         }
 
@@ -1058,15 +1058,72 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Controls
         }
 
         [Test]
-        public void WhenPositionHitsWordThatExtendsToNextLine_ThenSelectWordReturnsWord()
+        public void WhenPositionHitsWordThatExtendsToEndOfBuffer_ThenSelectWordReturnsWord()
         {
-            Assert.Fail();
+            var lineOfA = new string('a', this.terminal.Columns);
+            this.terminal.ReceiveData(lineOfA + "\r\n" + lineOfA);
+
+            this.terminal.SelectWord(0, 0);
+            Assert.AreEqual(lineOfA + "\n" + lineOfA, this.terminal.TextSelection);
+
+            this.terminal.SelectWord(this.terminal.Columns - 1, 1);
+            Assert.AreEqual(lineOfA + "\n" + lineOfA, this.terminal.TextSelection);
         }
 
         [Test]
-        public void WhenPositionHitsWordThatExtendsToPreviousLine_ThenSelectWordReturnsWord()
+        public void WhenPositionHitsWordThatExtendsToPartsOfNextLine_ThenSelectWordReturnsWord()
         {
-            Assert.Fail();
+            var lineOfA = new string('a', this.terminal.Columns);
+            this.terminal.ReceiveData(lineOfA + "b c");
+
+            this.terminal.SelectWord(0, 0);
+            Assert.AreEqual(lineOfA + "\nb", this.terminal.TextSelection);
+
+            this.terminal.SelectWord(this.terminal.Columns - 1, 0);
+            Assert.AreEqual(lineOfA + "\nb", this.terminal.TextSelection);
+        }
+
+        [Test]
+        public void WhenPositionHitsWordThatExtendsToEntireNextLine_ThenSelectWordReturnsWord()
+        {
+            var lineOfA = new string('a', this.terminal.Columns);
+            this.terminal.ReceiveData(lineOfA + "\r\n" + lineOfA + " b c");
+
+            this.terminal.SelectWord(0, 0);
+            Assert.AreEqual(lineOfA + "\n" + lineOfA, this.terminal.TextSelection);
+
+            this.terminal.SelectWord(this.terminal.Columns - 1, 0);
+            Assert.AreEqual(lineOfA + "\n" + lineOfA, this.terminal.TextSelection);
+        }
+
+        [Test]
+        public void WhenPositionHitsWordThatExtendsToStartOfBuffer_ThenSelectWordReturnsWord()
+        {
+            var lineOfA = new string('a', this.terminal.Columns);
+            this.terminal.ReceiveData(lineOfA + "b c");
+
+            this.terminal.SelectWord(0, 1);
+            Assert.AreEqual(lineOfA + "\nb", this.terminal.TextSelection);
+        }
+
+        [Test]
+        public void WhenPositionHitsWordThatExtendsToEntirePreviousLine_ThenSelectWordReturnsWord()
+        {
+            var lineOfA = new string('a', this.terminal.Columns);
+            this.terminal.ReceiveData("xxx yy zz\r\n" + lineOfA + "b c");
+
+            this.terminal.SelectWord(0, 1);
+            Assert.AreEqual(lineOfA + "\nb", this.terminal.TextSelection);
+        }
+
+        [Test]
+        public void WhenPositionHitsWordThatExtendsToPartsOfPreviousLine_ThenSelectWordReturnsWord()
+        {
+            var lineOfA = new string('a', this.terminal.Columns - 2);
+            this.terminal.ReceiveData("x " + lineOfA + "b c");
+
+            this.terminal.SelectWord(0, 1);
+            Assert.AreEqual(lineOfA + "\nb", this.terminal.TextSelection);
         }
 
         [Test]
