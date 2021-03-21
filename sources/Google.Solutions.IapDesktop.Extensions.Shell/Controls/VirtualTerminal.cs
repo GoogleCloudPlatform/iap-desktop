@@ -48,7 +48,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Controls
     [SkipCodeCoverage("UI code")]
     public partial class VirtualTerminal : UserControl
     {
-        private readonly Point TextOrigin = new Point(3, 0);
         private readonly VirtualTerminalController controller;
         private readonly DataConsumer controllerSink;
 
@@ -353,9 +352,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Controls
             var drawX = (int)(precedingTextDimensions.Width);
             var drawY = (int)(caretY * precedingTextDimensions.Height);
 
-            GetCaret(graphics).Position = new Point(
-                this.TextOrigin.X + drawX, 
-                this.TextOrigin.Y + drawY);
+            GetCaret(graphics).Position = new Point(drawX, drawY);
         }
 
         private void PaintDiagnostics(Graphics graphics)
