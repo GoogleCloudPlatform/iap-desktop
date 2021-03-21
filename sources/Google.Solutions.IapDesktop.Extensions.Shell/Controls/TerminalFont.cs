@@ -45,35 +45,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Controls
             return font.FontFamily.Name == FontFamily;
         }
 
-        //public SizeF CharacterSize
-        //{
-        //    get
-        //    {
-        //        //
-        //        // NB. MeasureText gives us a precise measure of a character's 
-        //        // hight, but not of its width. There are mutliple facors that
-        //        // seem to be playing into how wide a (monospace) character is,
-        //        // and MeasureText, for some reason, does not account for these.
-        //        // Therefore, use a "magic" factor to derive the width from
-        //        // a character's height.
-        //        //
-        //        // While only valid for Consolas, this factor yields sufficiently
-        //        // precise results that allow the width to be used as a basis for
-        //        // calculating screen corrdinates.
-        //        //
-
-        //        var sizeOfChar = TextRenderer.MeasureText(
-        //            "X",
-        //            this.Font,
-        //            new Size(short.MaxValue, short.MaxValue),
-        //            FormatFlags);
-
-        //        return new SizeF(
-        //            this.Font.Size * 0.75603f,   // Empirically determined ratio.
-        //            sizeOfChar.Height);
-        //    }
-        //}
-
         //---------------------------------------------------------------------
         // Ctor.
         //---------------------------------------------------------------------
