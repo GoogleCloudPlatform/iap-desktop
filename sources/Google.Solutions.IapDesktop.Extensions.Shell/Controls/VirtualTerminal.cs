@@ -120,11 +120,13 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Controls
         // Painting.
         //---------------------------------------------------------------------
 
-        private Caret GetCaret()
+        private Caret GetCaret(Graphics graphics)
         {
             if (this.caret == null)
             {
-                this.caret = new Caret(this, this.terminalFont.CharacterSize.ToSize());
+                this.caret = new Caret(
+                    this, 
+                    this.terminalFont.Measure(graphics, 1).ToSize());
             }
 
             return this.caret;
@@ -141,21 +143,24 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Controls
 
         private TextPosition PositionFromPoint(Point point)
         {
-            var characterSize = this.terminalFont.CharacterSize;
-
-            int overColumn = (int)Math.Floor(point.X / characterSize.Width);
-            if (overColumn >= this.Columns)
+            using (var graphics = CreateGraphics())
             {
-                overColumn = this.Columns - 1;
-            }
+                var rowDimensions = this.terminalFont.Measure(graphics, this.Columns);
 
-            int overRow = (int)Math.Floor(point.Y / characterSize.Height);
-            if (overRow >= this.Rows)
-            {
-                overRow = this.Rows - 1;
-            }
+                int overColumn = (int)Math.Floor(point.X / rowDimensions.Width * this.Columns);
+                if (overColumn >= this.Columns)
+                {
+                    overColumn = this.Columns - 1;
+                }
 
-            return new TextPosition(overColumn, overRow);
+                int overRow = (int)Math.Floor(point.Y / rowDimensions.Height);
+                if (overRow >= this.Rows)
+                {
+                    overRow = this.Rows - 1;
+                }
+
+                return new TextPosition(overColumn, overRow);
+            }
         }
 
         protected override void OnLayout(LayoutEventArgs e)
@@ -163,18 +168,20 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Controls
             //                
             // Update dimensions.
             //
-            var characterSize = this.terminalFont.CharacterSize;
-
-            int columns = (int)Math.Floor(this.Width / characterSize.Width);
-            int rows = (int)Math.Floor(this.Height / characterSize.Height);
-            if (this.Columns != columns || this.Rows != rows)
+            using (var graphics = CreateGraphics())
             {
-                this.Columns = columns;
-                this.Rows = rows;
+                int columns = this.terminalFont.MeasureColumns(graphics, this.Width);
+                int rows = this.terminalFont.MeasureRows(graphics, this.Height);
 
-                this.controller.ResizeView(this.Columns, this.Rows);
+                if (this.Columns != columns || this.Rows != rows)
+                {
+                    this.Columns = columns;
+                    this.Rows = rows;
 
-                OnTerminalResize(new TerminalResizeEventArgs((ushort)this.Columns, (ushort)this.Rows));
+                    this.controller.ResizeView(this.Columns, this.Rows);
+
+                    OnTerminalResize(new TerminalResizeEventArgs((ushort)this.Columns, (ushort)this.Rows));
+                }
             }
 
             base.OnLayout(e);
@@ -210,7 +217,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Controls
             if (this.controller.CursorState.ShowCursor)
             {
                 var caretPosition = this.controller.ViewPort.CursorPosition.Clone();
-                PaintCaret(caretPosition.OffsetBy(0, terminalTop - this.ViewTop));
+                PaintCaret(
+                    e.Graphics,
+                    caretPosition.OffsetBy(0, terminalTop - this.ViewTop));
             }
         }
 
@@ -218,44 +227,47 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Controls
             Graphics graphics,
             List<LayoutRow> spans)
         {
-            var characterSize = this.terminalFont.CharacterSize;
-
-            double drawY = 0;
+            // TODO: Use TextOrigin?
+            float drawY = 0;
             int rowsPainted = 0;
             foreach (var textRow in spans)
             {
-                int drawHeight;
+                var rowDimensions = this.terminalFont.Measure(graphics, this.Columns);
+
+                float drawHeight;
                 if (rowsPainted + 1 == this.Rows)
                 {
                     // Last row. Paint a little further so that we do not leave a gap 
                     // to the bottom.
-                    drawHeight = this.Height - (int)drawY;
+                    drawHeight = this.Height - drawY;
                 }
                 else
                 {
-                    drawHeight = (int)(characterSize.Height + 1);
+                    drawHeight = rowDimensions.Height + 1;
                 }
 
-                double drawX = 0;
+                float drawX = 0;
                 int columnsPainted = 0;
                 foreach (var textSpan in textRow.Spans)
                 {
-                    int drawWidth;
+                    var spanDimension = this.terminalFont.Measure(graphics, textSpan.Text.Length);
+
+                    float drawWidth;
                     if (columnsPainted + textSpan.Text.Length == this.Columns)
                     {
                         // This span extends till the end. Paint a little further
                         // so that we do not leave a gap to the right of the last
                         // column.
-                        drawWidth = this.Width - (int)drawX;
+                        drawWidth = this.Width - drawX;
                     }
                     else
                     {
-                        drawWidth = (int)(characterSize.Width * (textSpan.Text.Length) + 1);
+                        drawWidth = spanDimension.Width;
                     }
 
-                    var bounds = new Rectangle(
-                        (int)drawX,
-                        (int)drawY,
+                    var bounds = new RectangleF(
+                        drawX,
+                        drawY,
                         drawWidth,
                         drawHeight);
 
@@ -266,11 +278,11 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Controls
                             bounds);
                     }
 
-                    drawX += characterSize.Width * (textSpan.Text.Length);
+                    drawX += spanDimension.Width;
                     columnsPainted += textSpan.Text.Length;
                 }
 
-                drawY += characterSize.Height;
+                drawY += rowDimensions.Height;
                 rowsPainted++;
             }
         }
@@ -279,19 +291,18 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Controls
             Graphics graphics,
             List<LayoutRow> spans)
         {
-            double drawY = 0;
+            // TODO: Use TextOrigin?
+            float drawY = 0;
             foreach (var textRow in spans)
             {
-                var characterSize = this.terminalFont.CharacterSize;
-
-                double drawX = 0;
+                float drawX = 0;
                 foreach (var textSpan in textRow.Spans)
                 {
-                    var drawWidth = characterSize.Width * (textSpan.Text.Length);
+                    var spanDimension = this.terminalFont.Measure(graphics, textSpan.Text.Length);
 
                     if (textSpan.Hidden)
                     {
-                        drawX += drawWidth;
+                        drawX += spanDimension.Width;
                         continue;
                     }
 
@@ -301,26 +312,23 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Controls
                         fontStyle |= FontStyle.Underline;
                     }
 
-                    using (var brush = new SolidBrush(GetSolidColorBrush(textSpan.ForgroundColor)))
-                    {
-                        this.terminalFont.DrawString(
-                            graphics,
-                            new PointF(
-                                (float)drawX,
-                                (float)drawY),
-                            textSpan.Text,
-                            fontStyle,
-                            brush);
-                    }
+                    this.terminalFont.DrawString(
+                        graphics,
+                        new PointF(
+                            drawX,
+                            drawY),
+                        textSpan.Text,
+                        fontStyle,
+                        GetSolidColorBrush(textSpan.ForgroundColor));
 
-                    drawX += characterSize.Width * (textSpan.Text.Length);
+                    drawX += spanDimension.Width;
                 }
 
-                drawY += characterSize.Height;
+                drawY += this.terminalFont.Measure(graphics, 1).Height;
             }
         }
 
-        private void PaintCaret(TextPosition caretPosition)
+        private void PaintCaret(Graphics graphics, TextPosition caretPosition)
         {
             var caretY = caretPosition.Row;
             if (caretY < 0 || caretY >= Rows)
@@ -328,20 +336,26 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Controls
                 return;
             }
 
-            var characterSize = this.terminalFont.CharacterSize;
-            var drawX = (int)(caretPosition.Column * characterSize.Width);
-            var drawY = (int)(caretY * characterSize.Height);
+            var precedingTextDimensions = this.terminalFont.Measure(
+                graphics, 
+                caretPosition.Column);
 
-            GetCaret().Position = new Point(this.TextOrigin.X + drawX, this.TextOrigin.Y + drawY);
+            var drawX = (int)(precedingTextDimensions.Width);
+            var drawY = (int)(caretY * precedingTextDimensions.Height);
+
+            GetCaret(graphics).Position = new Point(
+                this.TextOrigin.X + drawX, 
+                this.TextOrigin.Y + drawY);
         }
 
         private void PaintDiagnostics(Graphics graphics)
         {
 #if DEBUG
-            var characterSize = this.terminalFont.CharacterSize;
+            var rowDimensions = this.terminalFont.Measure(graphics, this.Columns);
+
             var diagnosticText =
                  $"Dimensions: {this.Columns}x{this.Rows}\n" +
-                 $"Char size: {characterSize.Width}x{characterSize.Height}\n" +
+                 $"Char size: {rowDimensions.Width/this.Columns}x{rowDimensions.Height}\n" +
                  $"ViewTop : {this.ViewTop}\n" +
                  $"Cursor pos: {this.controller.ViewPort.CursorPosition}\n" +
                  $"Screen cursor pos: {this.controller.ViewPort.ScreenCursorPosition}";
@@ -350,19 +364,19 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Controls
 
             this.terminalFont.DrawString(
                 graphics,
-                new PointF(
-                    this.Width - size.Width - 5,
+                new Point(
+                    this.Width - (int)size.Width - 5,
                     5),
                 diagnosticText,
                 FontStyle.Regular,
-                Brushes.Red);
+                Color.Red);
             graphics.DrawRectangle(
                 Pens.Red,
                 new Rectangle(
                     0,
                     0,
-                    (int)(this.Columns * characterSize.Width),
-                    (int)(this.Rows * characterSize.Height)));
+                    (int)Math.Ceiling(rowDimensions.Width),
+                    (int)Math.Ceiling(rowDimensions.Height * this.Rows)));
 #endif
         }
 
@@ -390,27 +404,28 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Controls
                         this.ViewTop = this.controller.ViewPort.TopRow;
                     }
 
-                    if (changeCount == 1 &&
-                        this.ViewTop == oldViewTop &&
-                        this.controller.ViewPort.CursorPosition.Row == oldCursorRow)
-                    {
-                        //
-                        // Single-character change that did not cause a line to wrap.
-                        // Avoid a full redraw and instead only redraw a small region
-                        // around the cursor.
-                        //
-                        // NB. This optimization has a significant effect when the
-                        // application is running in an RDP session, but the effect
-                        // is negligble otherwise.
-                        //
-                        var caretPos = GetCaret().Position;
-                        Invalidate(new Rectangle(
-                            0,
-                            caretPos.Y,
-                            this.Width,
-                            Math.Min(100, this.Height - caretPos.Y)));
-                    }
-                    else
+                    // TODO: RESTORE OPTIMIZATION
+                    //if (changeCount == 1 &&
+                    //    this.ViewTop == oldViewTop &&
+                    //    this.controller.ViewPort.CursorPosition.Row == oldCursorRow)
+                    //{
+                    //    //
+                    //    // Single-character change that did not cause a line to wrap.
+                    //    // Avoid a full redraw and instead only redraw a small region
+                    //    // around the cursor.
+                    //    //
+                    //    // NB. This optimization has a significant effect when the
+                    //    // application is running in an RDP session, but the effect
+                    //    // is negligble otherwise.
+                    //    //
+                    //    var caretPos = GetCaret().Position;
+                    //    Invalidate(new Rectangle(
+                    //        0,
+                    //        caretPos.Y,
+                    //        this.Width,
+                    //        Math.Min(100, this.Height - caretPos.Y)));
+                    //}
+                    //else
                     {
                         Invalidate();
                     }
@@ -1004,7 +1019,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Controls
                     oldFont.Dispose();
 
                     // Force new caret so that it uses the new font size too.
-                    this.GetCaret()?.Dispose();
+                    this.caret?.Dispose();
                     this.caret = null;
 
                     Invalidate();
@@ -1114,7 +1129,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Controls
 
         protected override void OnLostFocus(EventArgs e)
         {
-            GetCaret()?.Dispose();
+            this.caret?.Dispose();
             this.caret = null;
 
             base.OnLostFocus(e);
