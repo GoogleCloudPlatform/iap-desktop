@@ -25,68 +25,105 @@ using System.Windows.Forms;
 
 namespace Google.Solutions.IapDesktop.Extensions.Shell.Controls
 {
-    internal static class TerminalFont
+    internal sealed class TerminalFont : IDisposable
     {
         public const string FontFamily = "Consolas";
+
+        internal Font Font {  get; private set; }
+
+        //---------------------------------------------------------------------
+        // Statics.
+        //---------------------------------------------------------------------
 
         public static bool IsValidFont(Font font)
         {
             return font.FontFamily.Name == FontFamily;
         }
 
-        public static SizeF GetCharacterSize(Font font)
+        public SizeF CharacterSize
         {
-            if (!IsValidFont(font))
+            get
             {
-                throw new ArgumentException(nameof(font));
+                //
+                // NB. MeasureText gives us a precise measure of a character's 
+                // hight, but not of its width. There are mutliple facors that
+                // seem to be playing into how wide a (monospace) character is,
+                // and MeasureText, for some reason, does not account for these.
+                // Therefore, use a "magic" factor to derive the width from
+                // a character's height.
+                //
+                // While only valid for Consolas, this factor yields sufficiently
+                // precise results that allow the width to be used as a basis for
+                // calculating screen corrdinates.
+                //
+
+                var sizeOfChar = TextRenderer.MeasureText(
+                    "X",
+                    this.Font,
+                    new Size(short.MaxValue, short.MaxValue),
+                    TextFormatFlags.NoPadding | TextFormatFlags.NoPrefix | TextFormatFlags.PreserveGraphicsClipping);
+
+                return new SizeF(
+                    this.Font.Size * 0.75603f,   // Empirically determined ratio.
+                    sizeOfChar.Height);
             }
-
-            //
-            // NB. MeasureText gives us a precise measure of a character's 
-            // hight, but not of its width. There are mutliple facors that
-            // seem to be playing into how wide a (monospace) character is,
-            // and MeasureText, for some reason, does not account for these.
-            // Therefore, use a "magic" factor to derive the width from
-            // a character's height.
-            //
-            // While only valid for Consolas, this factor yields sufficiently
-            // precise results that allow the width to be used as a basis for
-            // calculating screen corrdinates.
-            //
-
-            var sizeOfChar = TextRenderer.MeasureText(
-                "X",
-                font,
-                new Size(short.MaxValue, short.MaxValue),
-                TextFormatFlags.NoPadding | TextFormatFlags.NoPrefix | TextFormatFlags.PreserveGraphicsClipping);
-
-            return new SizeF(
-                font.Size * 0.75603f,   // Empirically determined ratio.
-                sizeOfChar.Height);
         }
 
-        public static Font NextSmallerFont(Font font)
-        {
-            if (!IsValidFont(font))
-            {
-                throw new ArgumentException(nameof(font));
-            }
+        //---------------------------------------------------------------------
+        // Ctor.
+        //---------------------------------------------------------------------
 
-            return new Font(
-                font.FontFamily,
-                font.Size - 1);
+        public TerminalFont(float emSize)
+        {
+            this.Font = new Font(FontFamily, emSize);
         }
 
-        public static Font NextLargerFont(Font font)
-        {
-            if (!IsValidFont(font))
-            {
-                throw new ArgumentException(nameof(font));
-            }
+        public TerminalFont() : this(9.75f)
+        { }
 
-            return new Font(
-                font.FontFamily,
-                font.Size + 1);
+        //---------------------------------------------------------------------
+        // Publics.
+        //---------------------------------------------------------------------
+
+        public SizeF Measure(Graphics graphics, string text)
+        {
+            return graphics.MeasureString(text, this.Font);
+        }
+
+        public TerminalFont NextSmallerFont()
+        {
+            return new TerminalFont(this.Font.Size - 1);
+        }
+
+        public TerminalFont NextLargerFont()
+        {
+            return new TerminalFont(this.Font.Size + 1);
+        }
+
+        public void DrawString(
+            Graphics graphics,
+            PointF point,
+            string text,
+            FontStyle fontStyle,
+            Brush fontBrush)
+        {
+            using (var font = new Font(this.Font, fontStyle))
+            {
+                graphics.DrawString(
+                    text,
+                    font,
+                    fontBrush,
+                    point);
+            }
+        }
+
+        //---------------------------------------------------------------------
+        // IDisposable.
+        //---------------------------------------------------------------------
+
+        public void Dispose()
+        {
+            this.Font.Dispose();
         }
     }
 }

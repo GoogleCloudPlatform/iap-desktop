@@ -63,6 +63,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Controls
         private TextSelection selection;
         private bool scrolling;
         private TextPosition mouseDownPosition;
+        private TerminalFont terminalFont;
 
         //---------------------------------------------------------------------
         // Properties.
@@ -101,7 +102,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Controls
             //
             this.DoubleBuffered = !SystemInformation.TerminalServerSession;
 
-            this.Font = new Font(TerminalFont.FontFamily, 9.75f);
+            this.terminalFont = new TerminalFont();
 
             this.controller.ShowCursor(true);
             this.controller.SendData += (sender, args) =>
@@ -115,20 +116,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Controls
             };
         }
 
-        public override Font Font
-        {
-            get => base.Font;
-            set
-            {
-                if (!TerminalFont.IsValidFont(value))
-                {
-                    throw new ArgumentException("Unsuitable font");
-                }
-
-                base.Font = value;
-            }
-        }
-
         //---------------------------------------------------------------------
         // Painting.
         //---------------------------------------------------------------------
@@ -137,7 +124,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Controls
         {
             if (this.caret == null)
             {
-                this.caret = new Caret(this, this.CharacterSize.ToSize());
+                this.caret = new Caret(this, this.terminalFont.CharacterSize.ToSize());
             }
 
             return this.caret;
@@ -152,11 +139,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Controls
             return Color.FromArgb(a, r, g, b);
         }
 
-        private SizeF CharacterSize => TerminalFont.GetCharacterSize(this.Font);
-
         private TextPosition PositionFromPoint(Point point)
         {
-            var characterSize = this.CharacterSize;
+            var characterSize = this.terminalFont.CharacterSize;
 
             int overColumn = (int)Math.Floor(point.X / characterSize.Width);
             if (overColumn >= this.Columns)
@@ -178,7 +163,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Controls
             //                
             // Update dimensions.
             //
-            var characterSize = this.CharacterSize;
+            var characterSize = this.terminalFont.CharacterSize;
 
             int columns = (int)Math.Floor(this.Width / characterSize.Width);
             int rows = (int)Math.Floor(this.Height / characterSize.Height);
@@ -233,7 +218,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Controls
             Graphics graphics,
             List<LayoutRow> spans)
         {
-            var characterSize = this.CharacterSize;
+            var characterSize = this.terminalFont.CharacterSize;
 
             double drawY = 0;
             int rowsPainted = 0;
@@ -297,7 +282,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Controls
             double drawY = 0;
             foreach (var textRow in spans)
             {
-                var characterSize = this.CharacterSize;
+                var characterSize = this.terminalFont.CharacterSize;
 
                 double drawX = 0;
                 foreach (var textSpan in textRow.Spans)
@@ -317,15 +302,15 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Controls
                     }
 
                     using (var brush = new SolidBrush(GetSolidColorBrush(textSpan.ForgroundColor)))
-                    using (var font = new Font(this.Font, fontStyle))
                     {
-                        graphics.DrawString(
-                            textSpan.Text,
-                            font,
-                            brush,
+                        this.terminalFont.DrawString(
+                            graphics,
                             new PointF(
                                 (float)drawX,
-                                (float)drawY));
+                                (float)drawY),
+                            textSpan.Text,
+                            fontStyle,
+                            brush);
                     }
 
                     drawX += characterSize.Width * (textSpan.Text.Length);
@@ -343,7 +328,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Controls
                 return;
             }
 
-            var characterSize = this.CharacterSize;
+            var characterSize = this.terminalFont.CharacterSize;
             var drawX = (int)(caretPosition.Column * characterSize.Width);
             var drawY = (int)(caretY * characterSize.Height);
 
@@ -353,7 +338,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Controls
         private void PaintDiagnostics(Graphics graphics)
         {
 #if DEBUG
-            var characterSize = this.CharacterSize;
+            var characterSize = this.terminalFont.CharacterSize;
             var diagnosticText =
                  $"Dimensions: {this.Columns}x{this.Rows}\n" +
                  $"Char size: {characterSize.Width}x{characterSize.Height}\n" +
@@ -361,25 +346,23 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Controls
                  $"Cursor pos: {this.controller.ViewPort.CursorPosition}\n" +
                  $"Screen cursor pos: {this.controller.ViewPort.ScreenCursorPosition}";
 
-            using (var font = new Font(this.Font.FontFamily, 8))
-            {
-                var size = graphics.MeasureString(diagnosticText, font);
+            var size = this.terminalFont.Measure(graphics, diagnosticText);
 
-                graphics.DrawString(
-                    diagnosticText,
-                    font,
-                    Brushes.Red,
-                    new PointF(
-                        this.Width - size.Width - 5,
-                        5));
-                graphics.DrawRectangle(
-                    Pens.Red,
-                    new Rectangle(
-                        0,
-                        0,
-                        (int)(this.Columns * characterSize.Width),
-                        (int)(this.Rows * characterSize.Height)));
-            }
+            this.terminalFont.DrawString(
+                graphics,
+                new PointF(
+                    this.Width - size.Width - 5,
+                    5),
+                diagnosticText,
+                FontStyle.Regular,
+                Brushes.Red);
+            graphics.DrawRectangle(
+                Pens.Red,
+                new Rectangle(
+                    0,
+                    0,
+                    (int)(this.Columns * characterSize.Width),
+                    (int)(this.Rows * characterSize.Height)));
 #endif
         }
 
@@ -1010,14 +993,14 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Controls
             if (ModifierKeys.HasFlag(Keys.Control))
             {
                 // Zoom.
-                Font newFont = (e.Delta >= 0)
-                    ? TerminalFont.NextLargerFont(this.Font)
-                    : TerminalFont.NextSmallerFont(this.Font);
+                var newFont = (e.Delta >= 0)
+                    ? this.terminalFont.NextLargerFont()
+                    : this.terminalFont.NextSmallerFont();
 
-                var oldFont = this.Font;
+                var oldFont = this.terminalFont;
                 if (newFont != oldFont)
                 {
-                    this.Font = newFont;
+                    this.terminalFont = newFont;
                     oldFont.Dispose();
 
                     // Force new caret so that it uses the new font size too.

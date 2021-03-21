@@ -22,64 +22,25 @@
 using Google.Solutions.IapDesktop.Application.Test;
 using Google.Solutions.IapDesktop.Extensions.Shell.Controls;
 using NUnit.Framework;
-using System;
-using System.Drawing;
 
 namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Controls
 {
     [TestFixture]
     public class TestTerminalFont : ApplicationFixtureBase
     {
-
-        //---------------------------------------------------------------------
-        // NextSmallerFont.
-        //---------------------------------------------------------------------
-
-        [Test]
-        public void WhenFontFamilyIsOk_ThenNextSmallerFontThrowsArgumentException()
-        {
-            using (var font = new Font(TerminalFont.FontFamily, 10f, FontStyle.Regular))
-            {
-                using (var smallerFont = TerminalFont.NextSmallerFont(font))
-                {
-                    Assert.AreEqual(smallerFont.Size, font.Size - 1);
-                }
-            }
-        }
-
-        [Test]
-        public void WhenFontFamilyIsWrong_ThenNextSmallerFontThrowsArgumentException()
-        {
-            using (var font = new Font(FontFamily.GenericSerif, 10f, FontStyle.Regular))
-            {
-                Assert.Throws<ArgumentException>(
-                    () => TerminalFont.NextSmallerFont(font));
-            }
-        }
-
         //---------------------------------------------------------------------
         // NextLargerFont.
         //---------------------------------------------------------------------
 
         [Test]
-        public void WhenFontFamilyIsOk_ThenNNextLargerFontThrowsArgumentException()
+        public void NextSmallerFontReturnsSmallerFont()
         {
-            using (var font = new Font(TerminalFont.FontFamily, 10f, FontStyle.Regular))
+            using (var font = new TerminalFont(10f))
             {
-                using (var smallerFont = TerminalFont.NextLargerFont(font))
+                using (var smallerFont = font.NextSmallerFont())
                 {
-                    Assert.AreEqual(smallerFont.Size, font.Size + 1);
+                    Assert.AreEqual(font.Font.Size - 1, smallerFont.Font.Size);
                 }
-            }
-        }
-
-        [Test]
-        public void WhenFontFamilyIsWrong_ThenNextLargerFontThrowsArgumentException()
-        {
-            using (var font = new Font(FontFamily.GenericSerif, 10f, FontStyle.Regular))
-            {
-                Assert.Throws<ArgumentException>(
-                    () => TerminalFont.NextLargerFont(font));
             }
         }
     }
