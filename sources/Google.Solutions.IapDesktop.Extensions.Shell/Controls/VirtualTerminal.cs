@@ -162,8 +162,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Controls
                 return new TextPosition(overColumn, overRow);
             }
         }
-
-        protected override void OnLayout(LayoutEventArgs e)
+        private void UpdateDimensions()
         {
             //                
             // Update dimensions.
@@ -184,6 +183,17 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Controls
                 }
             }
 
+            // Force new caret so that it uses the new font size too.
+            this.caret?.Dispose();
+            this.caret = null;
+
+            Invalidate();
+        }
+
+
+        protected override void OnLayout(LayoutEventArgs e)
+        {
+            UpdateDimensions();
             base.OnLayout(e);
         }
 
@@ -1008,22 +1018,14 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Controls
             if (ModifierKeys.HasFlag(Keys.Control))
             {
                 // Zoom.
-                var newFont = (e.Delta >= 0)
+                var oldFont = this.terminalFont;
+                this.terminalFont = (e.Delta >= 0)
                     ? this.terminalFont.NextLargerFont()
                     : this.terminalFont.NextSmallerFont();
 
-                var oldFont = this.terminalFont;
-                if (newFont != oldFont)
-                {
-                    this.terminalFont = newFont;
-                    oldFont.Dispose();
+                oldFont.Dispose();
 
-                    // Force new caret so that it uses the new font size too.
-                    this.caret?.Dispose();
-                    this.caret = null;
-
-                    Invalidate();
-                }
+                UpdateDimensions();
             }
             else
             {
