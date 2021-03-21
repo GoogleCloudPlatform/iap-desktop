@@ -161,6 +161,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Controls
                 return new TextPosition(overColumn, overRow);
             }
         }
+
         private void UpdateDimensions()
         {
             //                
@@ -182,13 +183,14 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Controls
                 }
             }
 
+            //
             // Force new caret so that it uses the new font size too.
+            //
             this.caret?.Dispose();
             this.caret = null;
 
             Invalidate();
         }
-
 
         protected override void OnLayout(LayoutEventArgs e)
         {
@@ -236,7 +238,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Controls
             Graphics graphics,
             List<LayoutRow> spans)
         {
-            // TODO: Use TextOrigin?
             float drawY = 0;
             int rowsPainted = 0;
             foreach (var textRow in spans)
@@ -300,7 +301,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Controls
             Graphics graphics,
             List<LayoutRow> spans)
         {
-            // TODO: Use TextOrigin?
             float drawY = 0;
             foreach (var textRow in spans)
             {
@@ -411,28 +411,30 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Controls
                         this.ViewTop = this.controller.ViewPort.TopRow;
                     }
 
-                    // TODO: RESTORE OPTIMIZATION
-                    //if (changeCount == 1 &&
-                    //    this.ViewTop == oldViewTop &&
-                    //    this.controller.ViewPort.CursorPosition.Row == oldCursorRow)
-                    //{
-                    //    //
-                    //    // Single-character change that did not cause a line to wrap.
-                    //    // Avoid a full redraw and instead only redraw a small region
-                    //    // around the cursor.
-                    //    //
-                    //    // NB. This optimization has a significant effect when the
-                    //    // application is running in an RDP session, but the effect
-                    //    // is negligble otherwise.
-                    //    //
-                    //    var caretPos = GetCaret().Position;
-                    //    Invalidate(new Rectangle(
-                    //        0,
-                    //        caretPos.Y,
-                    //        this.Width,
-                    //        Math.Min(100, this.Height - caretPos.Y)));
-                    //}
-                    //else
+                    if (changeCount == 1 &&
+                        this.ViewTop == oldViewTop &&
+                        this.controller.ViewPort.CursorPosition.Row == oldCursorRow)
+                    {
+                        //
+                        // Single-character change that did not cause a line to wrap.
+                        // Avoid a full redraw and instead only redraw a small region
+                        // around the cursor.
+                        //
+                        // NB. This optimization has a significant effect when the
+                        // application is running in an RDP session, but the effect
+                        // is negligble otherwise.
+                        //
+                        using (var graphics = CreateGraphics())
+                        {
+                            var caretPos = GetCaret(graphics).Position;
+                            Invalidate(new Rectangle(
+                                0,
+                                caretPos.Y,
+                                this.Width,
+                                Math.Min(100, this.Height - caretPos.Y)));
+                        }
+                    }
+                    else
                     {
                         Invalidate();
                     }
