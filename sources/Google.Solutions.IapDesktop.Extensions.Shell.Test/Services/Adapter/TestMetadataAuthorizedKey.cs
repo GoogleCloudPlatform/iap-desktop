@@ -71,9 +71,28 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Adapter
         }
 
         [Test]
-        public void WhenKeyIsManaged_ThenParseReturnsManagedKey()
+        public void WhenKeyIsManagedEcdsaKey_ThenParseReturnsManagedKey()
         {
-            var line = "login:ssh-rsa key google-ssh {\"userName\":\"username@example.com\",\"expireOn\":\"2021-01-15T15:22:35+0000\"}";
+            var line = "login:ecdsa-sha2-nistp256 AAAA google-ssh {\"userName\":" +
+              "\"ldap@machine.com\",\"expireOn\":\"2015-11-01T10:43:01+0000\"}";
+            var key = MetadataAuthorizedKey.Parse(line);
+            Assert.IsInstanceOf<ManagedMetadataAuthorizedKey>(key);
+
+            Assert.AreEqual("login", key.LoginUsername);
+            Assert.AreEqual("ecdsa-sha2-nistp256", key.KeyType);
+            Assert.AreEqual("AAAA", key.Key);
+            Assert.AreEqual("ldap@machine.com", ((ManagedMetadataAuthorizedKey)key).Metadata.Username);
+            Assert.AreEqual(new DateTime(2015, 11, 1, 10, 43, 1, 0, DateTimeKind.Utc),
+                ((ManagedMetadataAuthorizedKey)key).Metadata.ExpireOn.ToUniversalTime());
+
+            Assert.AreEqual(line, key.ToString());
+        }
+
+        [Test]
+        public void WhenKeyIsManagedRsaKey_ThenParseReturnsManagedKey()
+        {
+            var line = "login:ssh-rsa key google-ssh {\"userName\":\"username@example.com\"," + 
+                "\"expireOn\":\"2021-01-15T15:22:35+0000\"}";
             var key = MetadataAuthorizedKey.Parse(line);
             Assert.IsInstanceOf<ManagedMetadataAuthorizedKey>(key);
 

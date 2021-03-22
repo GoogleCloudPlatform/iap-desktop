@@ -59,7 +59,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Adapter
                 data.Value
                     .Split('\n')
                     .Where(line => !string.IsNullOrWhiteSpace(line))
-                    .Select(line => MetadataAuthorizedKey.Parse(line))
+                    .Select(line => MetadataAuthorizedKey.Parse(line.Trim()))
                     .ToList());
         }
 

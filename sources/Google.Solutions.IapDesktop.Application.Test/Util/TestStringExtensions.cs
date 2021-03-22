@@ -54,5 +54,18 @@ namespace Google.Solutions.IapDesktop.Application.Test.Util
             var text = "a a a";
             Assert.AreEqual(-1, text.LastIndexOf(c => char.IsDigit(c)));
         }
+
+        [Test]
+        public void WhenStringShortEnough_ThenTruncateReturnsStringVerbatim()
+        {
+            Assert.AreEqual("", "".Truncate(3));
+            Assert.AreEqual("foo", "foo".Truncate(3));
+        }
+
+        [Test]
+        public void WhenStringTooLong_ThenTruncateReturnsStringWithEllipsis()
+        {
+            Assert.AreEqual("abc...", "abcd".Truncate(3));
+        }
     }
 }
