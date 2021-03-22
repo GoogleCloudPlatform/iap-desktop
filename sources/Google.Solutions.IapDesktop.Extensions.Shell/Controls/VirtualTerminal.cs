@@ -116,6 +116,19 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Controls
             };
         }
 
+        private string GetRow(int row, bool pad = false)
+        {
+            var text = this.controller.GetText(
+                0,
+                row,
+                this.Columns,
+                row);
+
+            return pad
+                ? text.PadRight(this.Columns, ' ')
+                : text;
+        }
+
         //---------------------------------------------------------------------
         // Painting.
         //---------------------------------------------------------------------
@@ -856,11 +869,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Controls
 
         private TextPosition MovePosition(TextPosition position, int rowsDelta, int columnsDelta)
         {
-            var currentRowLength = this.controller.GetText(
-                0, 
-                position.Row, 
-                this.Columns, 
-                position.Row).Length;
+            var currentRowLength = GetRow(position.Row).Length;
             
             var row = Math.Max(0, Math.Min(position.Row + rowsDelta, this.controller.BottomRow));
             var column = position.Column + columnsDelta;
@@ -875,7 +884,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Controls
                 {
                     // Underflow -> wrap to previous row - but skip any whitespace at end.
                     row--;
-                    column += this.controller.GetText(0, row, this.Columns, row).Length;
+                    column += GetRow(row).Length;
                 }
             }
             else if (columnsDelta != 0 && column >= currentRowLength)
@@ -915,19 +924,102 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Controls
             }
         }
 
-        //private void ExtendSelectionTillEnd(TextSelectionDirection direction)
-        //{
-        //    if (direction == TextSelectionDirection.Forward)
-        //    {
-        //        SelectText(
-        //            this.selection?.Range.Start ?? this.CursorPosition,
-        //            )
-        //    }
-        //    else
-        //    {
+        private void SelectWord(TextPosition position)
+        {
+            var hitChar = GetRow(position.Row, true)[position.Column];
 
-        //    }
-        //}
+            //
+            // Extend selection until we hit a character that is
+            // different in whitespace-ness.
+            //
+            Predicate<char> predicate =
+                c => char.IsWhiteSpace(hitChar) == char.IsWhiteSpace(c);
+
+            SelectText(
+                FindPosition(position, predicate, TextSelectionDirection.Backward),
+                FindPosition(position, predicate, TextSelectionDirection.Forward),
+                TextSelectionDirection.Forward);
+        }
+
+        internal void SelectWord(int column, int row)
+            => SelectWord(new TextPosition(column, row));
+
+        private TextPosition FindPosition(
+            TextPosition startPosition,
+            Predicate<char> predicate,
+            TextSelectionDirection direction)
+        {
+            Debug.Assert(
+                predicate(GetRow(startPosition.Row, true)[startPosition.Column]),
+                "Start position must match predicate");
+
+            if (direction == TextSelectionDirection.Backward)
+            {
+                //
+                // Scan backwards for last character that does not match predicate anymore,
+                // then return the position of the last character that does.
+                //
+                var index = GetRow(startPosition.Row, true)
+                    .Substring(0, startPosition.Column)
+                    .LastIndexOf(c => !predicate(c));
+
+                Debug.Assert(index < startPosition.Column, "Start position must match predicate");
+
+                if (index >= 0)
+                {
+                    return new TextPosition(index + 1, startPosition.Row);
+                }
+
+                // Scan preceeding rows.
+                for (int row = startPosition.Row - 1; row >= 0; row--)
+                {
+                    index = GetRow(row, true).LastIndexOf(c => !predicate(c));
+                    if (index == this.Columns - 1)
+                    {
+                        return new TextPosition(0, row + 1);
+                    }
+                    else if (index >= 0)
+                    {
+                        return new TextPosition(index + 1, row);
+                    }
+                }
+
+                return new TextPosition(0, 0);
+            }
+            else
+            {
+                //
+                // Scan forwards for first character that does not match predicate anymore,
+                // then return the position of the last character that does.
+                //
+                var index = GetRow(startPosition.Row, true)
+                    .Substring(startPosition.Column)
+                    .IndexOf(c => !predicate(c));
+
+                Debug.Assert(index != 0, "Start position must match predicate");
+
+                if (index > 0)
+                {
+                    return new TextPosition(startPosition.Column + index - 1, startPosition.Row);
+                }
+
+                // Scan subsequent rows.
+                for (int row = startPosition.Row + 1; row < this.controller.BottomRow; row++)
+                {
+                    index = GetRow(row, true).IndexOf(c => !predicate(c));
+                    if (index == 0)
+                    {
+                        return new TextPosition(this.Columns - 1, row - 1);
+                    }
+                    else if (index > 0)
+                    {
+                        return new TextPosition(index - 1, row);
+                    }
+                }
+
+                return new TextPosition(this.Columns - 1, this.controller.BottomRow);
+            }
+        }
 
         //---------------------------------------------------------------------
         // Scrolling.
@@ -1124,6 +1216,16 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Controls
             }
 
             base.OnMouseUp(e);
+        }
+
+        protected override void OnMouseDoubleClick(MouseEventArgs e)
+        {
+            if (e.Button == MouseButtons.Left)
+            {
+                SelectWord(PositionFromPoint(e.Location).OffsetBy(0, this.ViewTop));
+            }
+
+            base.OnMouseDoubleClick(e);
         }
 
         //---------------------------------------------------------------------
