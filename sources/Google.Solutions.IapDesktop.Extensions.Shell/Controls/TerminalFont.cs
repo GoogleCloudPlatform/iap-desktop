@@ -25,68 +25,103 @@ using System.Windows.Forms;
 
 namespace Google.Solutions.IapDesktop.Extensions.Shell.Controls
 {
-    internal static class TerminalFont
+    internal sealed class TerminalFont : IDisposable
     {
         public const string FontFamily = "Consolas";
+
+        public const TextFormatFlags FormatFlags =
+            TextFormatFlags.NoPadding |
+            TextFormatFlags.NoPrefix |
+            TextFormatFlags.PreserveGraphicsClipping;
+
+        internal Font Font {  get; private set; }
+
+        //---------------------------------------------------------------------
+        // Statics.
+        //---------------------------------------------------------------------
 
         public static bool IsValidFont(Font font)
         {
             return font.FontFamily.Name == FontFamily;
         }
 
-        public static SizeF GetCharacterSize(Font font)
+        //---------------------------------------------------------------------
+        // Ctor.
+        //---------------------------------------------------------------------
+
+        public TerminalFont(float emSize)
         {
-            if (!IsValidFont(font))
-            {
-                throw new ArgumentException(nameof(font));
-            }
+            this.Font = new Font(FontFamily, emSize);
+        }
 
-            //
-            // NB. MeasureText gives us a precise measure of a character's 
-            // hight, but not of its width. There are mutliple facors that
-            // seem to be playing into how wide a (monospace) character is,
-            // and MeasureText, for some reason, does not account for these.
-            // Therefore, use a "magic" factor to derive the width from
-            // a character's height.
-            //
-            // While only valid for Consolas, this factor yields sufficiently
-            // precise results that allow the width to be used as a basis for
-            // calculating screen corrdinates.
-            //
+        public TerminalFont() : this(9.75f)
+        { }
 
-            var sizeOfChar = TextRenderer.MeasureText(
-                "X",
-                font,
+        //---------------------------------------------------------------------
+        // Publics.
+        //---------------------------------------------------------------------
+
+        public SizeF Measure(Graphics graphics, string text)
+        {
+            return graphics.MeasureString(
+                text,
+                this.Font,
                 new Size(short.MaxValue, short.MaxValue),
-                TextFormatFlags.NoPadding | TextFormatFlags.NoPrefix | TextFormatFlags.PreserveGraphicsClipping);
-
-            return new SizeF(
-                font.Size * 0.75603f,   // Empirically determined ratio.
-                sizeOfChar.Height);
+                StringFormat.GenericTypographic);
         }
 
-        public static Font NextSmallerFont(Font font)
-        {
-            if (!IsValidFont(font))
-            {
-                throw new ArgumentException(nameof(font));
-            }
+        public SizeF Measure(Graphics graphics, int numberOfChars)
+            => Measure(graphics, new string('m', numberOfChars));
 
-            return new Font(
-                font.FontFamily,
-                font.Size - 1);
+        public TerminalFont NextSmallerFont()
+        {
+            return new TerminalFont(this.Font.Size - 1);
         }
 
-        public static Font NextLargerFont(Font font)
+        public TerminalFont NextLargerFont()
         {
-            if (!IsValidFont(font))
-            {
-                throw new ArgumentException(nameof(font));
-            }
+            return new TerminalFont(this.Font.Size + 1);
+        }
 
-            return new Font(
-                font.FontFamily,
-                font.Size + 1);
+        public void DrawString(
+            Graphics graphics,
+            PointF point,
+            string text,
+            FontStyle fontStyle,
+            Color foregroundColor)
+        {
+            using (var brush = new SolidBrush(foregroundColor))
+            using (var font = new Font(this.Font, fontStyle))
+            {
+                graphics.DrawString(
+                    text,
+                    font,
+                    brush,
+                    point,
+                    StringFormat.GenericTypographic);
+            }
+        }
+
+        public int MeasureColumns(Graphics graphics, int width)
+        {
+            var sampleSize = Measure(graphics, 100);
+            var widthOfChar = sampleSize.Width / 100;
+            return (int)Math.Floor(width / widthOfChar);
+        }
+
+        public int MeasureRows(Graphics graphics, int height)
+        {
+            var sampleSize = Measure(graphics, 1);
+            return (int)Math.Floor(height / sampleSize.Height);
+        }
+
+        //---------------------------------------------------------------------
+        // IDisposable.
+        //---------------------------------------------------------------------
+
+        public void Dispose()
+        {
+            this.Font.Dispose();
         }
     }
 }
