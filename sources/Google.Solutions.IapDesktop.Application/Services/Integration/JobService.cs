@@ -192,7 +192,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.Integration
                         // Reauthorize. This might take a while since the user has to use 
                         // a browser - show the WaitDialog in the meantime.
                         await RunInBackgroundWithUserFeedback(
-                            new JobDescription("Authorizing"),
+                            new JobDescription("Authorizing..."),
                             async _ =>
                             {
                                 await this.authService

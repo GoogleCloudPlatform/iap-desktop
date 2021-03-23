@@ -74,7 +74,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.ConnectionSettings
                 foreach (var vmNode in zoneNode.Instances.Cast<VmInstanceNode>())
                 {
                     var settings = (InstanceConnectionSettings)this.settingsService
-                        .GetConnectionSettings(vmNode);
+                        .GetConnectionSettings(vmNode)
+                        .TypedCollection;
 
                     buffer.Append($"<li>");
                     buffer.Append($"<a href='{new IapRdpUrl(vmNode.Reference, settings.ToUrlQuery())}'>");
