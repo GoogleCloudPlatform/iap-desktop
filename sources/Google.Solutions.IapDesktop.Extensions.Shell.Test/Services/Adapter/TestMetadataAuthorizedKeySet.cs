@@ -109,6 +109,24 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Adapter
         }
 
         [Test]
+        public void WhenMetadataItemContainsUnnecessaryWhitespace_ThenKeySetIsPopulated()
+        {
+            var metadata = new Metadata.ItemsData()
+            {
+                Key = MetadataAuthorizedKeySet.MetadataKey,
+                Value = 
+                    "alice:ssh-rsa key alice\r\n" +
+                    "bob:ssh-rsa key google-ssh {\"userName\":\"bob@example.com\",\"expireOn\":\"2050-01-15T15:22:35Z\"}\n" + 
+                    "\n" +
+                    " carol:ssh-rsa key carol \t\r\n" +
+                    "dave:ssh-rsa key dave\r\n"
+            };
+
+            var keySet = MetadataAuthorizedKeySet.FromMetadata(metadata);
+            Assert.AreEqual(4, keySet.Keys.Count());
+        }
+
+        [Test]
         public void WhenAddingDuplicateKey_ThenAddReturnsThis()
         {
             var metadata = new Metadata.ItemsData()

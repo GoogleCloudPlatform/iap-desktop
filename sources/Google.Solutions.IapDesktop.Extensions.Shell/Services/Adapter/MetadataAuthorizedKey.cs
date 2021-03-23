@@ -25,6 +25,7 @@ using System;
 using System.Diagnostics;
 using System.Linq;
 using System.Text.RegularExpressions;
+using Google.Solutions.IapDesktop.Application.Util;
 
 namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Adapter
 {
@@ -68,7 +69,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Adapter
             var match = keyPattern.Match(line);
             if (!match.Success || match.Groups.Count != 6)
             {
-                throw new ArgumentException("Invalid key format");
+                throw new ArgumentException(
+                    $"Format of metadata key is invalid: {line.Truncate(20)}");
             }
 
             var username = match.Groups[1].Value;
