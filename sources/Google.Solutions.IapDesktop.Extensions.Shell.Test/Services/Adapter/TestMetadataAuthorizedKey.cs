@@ -71,6 +71,21 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Adapter
         }
 
         [Test]
+        public void WhenKeyIsUnmanagedButUsernameIsGoogleSsh_ThenParseReturnsUnmanagedKey()
+        {
+            var line = "login:ssh-rsa key google-ssh";
+            var key = MetadataAuthorizedKey.Parse(line);
+            Assert.IsInstanceOf<UnmanagedMetadataAuthorizedKey>(key);
+
+            Assert.AreEqual("login", key.LoginUsername);
+            Assert.AreEqual("ssh-rsa", key.KeyType);
+            Assert.AreEqual("key", key.Key);
+            Assert.AreEqual("google-ssh", ((UnmanagedMetadataAuthorizedKey)key).Username);
+
+            Assert.AreEqual(line, key.ToString());
+        }
+
+        [Test]
         public void WhenKeyIsManagedEcdsaKey_ThenParseReturnsManagedKey()
         {
             var line = "login:ecdsa-sha2-nistp256 AAAA google-ssh {\"userName\":" +

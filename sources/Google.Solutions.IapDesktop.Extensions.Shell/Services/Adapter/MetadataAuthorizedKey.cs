@@ -40,7 +40,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Adapter
         // this pattern matches both.
         //
         private static readonly Regex keyPattern = new Regex(
-            @"^([^\s]+):([^\s]+) ([^\s]+) ([^\s]+)( \{.*\})?$");
+            @"^([^\s]*):([^\s]+) ([^\s]+) ([^\s]+)( \{.*\})?$");
 
         protected const string ManagedKeyToken = "google-ssh";
 
@@ -53,7 +53,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Adapter
             string keyType,
             string key)
         {
-            Utilities.ThrowIfNullOrEmpty(loginUsername, nameof(loginUsername));
             Utilities.ThrowIfNullOrEmpty(keyType, nameof(keyType));
             Utilities.ThrowIfNullOrEmpty(key, nameof(key));
 
@@ -77,7 +76,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Adapter
             var keyType = match.Groups[2].Value;
             var key = match.Groups[3].Value;
 
-            if (match.Groups[4].Value == ManagedKeyToken)
+            // NB. "google-ssh" is also a valid username.
+            if (match.Groups[4].Value == ManagedKeyToken &&
+                !string.IsNullOrWhiteSpace(match.Groups[5].Value))
             {
                 // This is a managed key.
                 return new ManagedMetadataAuthorizedKey(

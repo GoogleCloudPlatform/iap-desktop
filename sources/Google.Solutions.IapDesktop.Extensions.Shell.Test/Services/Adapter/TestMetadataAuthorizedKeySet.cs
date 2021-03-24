@@ -159,6 +159,27 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Adapter
         }
 
         [Test]
+        public void WhenSetContainsEntriesWithEmptyUsername_ThenAddMaintainsEntry()
+        {
+            var metadata = new Metadata.ItemsData()
+            {
+                Key = MetadataAuthorizedKeySet.MetadataKey,
+                Value = $"alice:ssh-rsa key alice\n" +
+                        $":ssh-rsa phantomkey2 phantom\n" +
+                        $":ssh-rsa phantomkey3 google-ssh {{\"userName\":\"moe@example.com\",\"expireOn\":\"{DateTime.UtcNow.AddMinutes(1):O}\"}}\n" +
+                        $"moe:ssh-rsa key2 google-ssh {{\"userName\":\"moe@example.com\",\"expireOn\":\"{DateTime.UtcNow.AddMinutes(1):O}\"}}\n"
+            };
+
+            var keySet = MetadataAuthorizedKeySet.FromMetadata(metadata)
+                .RemoveExpiredKeys()
+                .Add(MetadataAuthorizedKey.Parse("bob:ssh-rsa key2 bob"));
+
+            Assert.AreEqual(5, keySet.Keys.Count());
+            Assert.AreEqual("", keySet.Keys.First(k => k.Key == "phantomkey2").LoginUsername);
+            Assert.AreEqual("", keySet.Keys.First(k => k.Key == "phantomkey3").LoginUsername);
+        }
+
+        [Test]
         public void WhenKeyExpired_ThenRemoveExpiredKeysStripsKey()
         {
             var metadata = new Metadata.ItemsData()
