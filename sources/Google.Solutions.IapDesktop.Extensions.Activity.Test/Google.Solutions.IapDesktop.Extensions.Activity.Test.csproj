@@ -90,6 +90,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Events\Access\TestSetCommonInstanceMetadataEvent.cs" />
     <Compile Include="Events\Access\TestSetMetadataEvent.cs" />
     <Compile Include="Events\Access\TestAuthorizeUserTunnelEvent.cs" />
     <Compile Include="Events\Lifecycle\TestResumeInstanceEvent.cs" />

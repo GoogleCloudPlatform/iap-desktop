@@ -86,9 +86,12 @@
   <ItemGroup>
     <Compile Include="DateTimeUtil.cs" />
     <Compile Include="Events\Access\AuthorizeUserTunnelEvent.cs" />
+    <Compile Include="Events\Access\SetCommonInstanceMetadataEvent.cs" />
     <Compile Include="Events\Access\SetMetadataEvent.cs" />
     <Compile Include="Events\IEventProcessor.cs" />
     <Compile Include="Events\IInstanceStateChangeEvent.cs" />
+    <Compile Include="Events\ProjectOperationEventBase.cs" />
+    <Compile Include="Events\ProjectEventBase.cs" />
     <Compile Include="Events\InstanceOperationEventBase.cs" />
     <Compile Include="Events\Lifecycle\ResumeInstanceEvent.cs" />
     <Compile Include="Events\Lifecycle\SuspendInstanceEvent.cs" />

@@ -202,7 +202,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.Services.Adapters
 
             Assert.AreEqual(
                 "protoPayload.methodName=(\"method-1\" OR \"method-2\") " +
-                    "AND severity=(\"INFO\" OR \"ERROR\") AND resource.type=\"gce_instance\" " +
+                    "AND severity=(\"INFO\" OR \"ERROR\") AND resource.type=(\"gce_instance\" OR \"gce_project\") " +
                     "AND timestamp > \"2020-01-02T03:04:05.0060000Z\"",
                 filter);
         }
@@ -218,7 +218,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.Services.Adapters
                 new DateTime(2020, 1, 2, 3, 4, 5, 6, DateTimeKind.Utc));
 
             Assert.AreEqual(
-                "resource.type=\"gce_instance\" " +
+                "resource.type=(\"gce_instance\" OR \"gce_project\") " +
                 "AND timestamp > \"2020-01-02T03:04:05.0060000Z\"",
                 filter);
         }
@@ -234,7 +234,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.Services.Adapters
                 new DateTime(2020, 1, 2, 3, 4, 5, 6, DateTimeKind.Utc));
 
             Assert.AreEqual(
-                "resource.type=\"gce_instance\" " +
+                "resource.type=(\"gce_instance\" OR \"gce_project\") " +
                 "AND timestamp > \"2020-01-02T03:04:05.0060000Z\"",
                 filter);
         }
@@ -251,7 +251,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.Services.Adapters
 
             Assert.AreEqual(
                 "resource.labels.instance_id=(\"123454321234\") " +
-                "AND resource.type=\"gce_instance\" " +
+                "AND resource.type=(\"gce_instance\" OR \"gce_project\") " +
                 "AND timestamp > \"2020-01-02T03:04:05.0060000Z\"",
                 filter);
         }
@@ -268,7 +268,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.Services.Adapters
 
             Assert.AreEqual(
                 "resource.labels.zone=(\"us-central1-a\") " +
-                "AND resource.type=\"gce_instance\" " +
+                "AND resource.type=(\"gce_instance\" OR \"gce_project\") " +
                 "AND timestamp > \"2020-01-02T03:04:05.0060000Z\"",
                 filter);
         }

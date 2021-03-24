@@ -175,7 +175,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services.Adapters
                 criteria.AddLast($"severity=(\"{string.Join("\" OR \"", severities)}\")");
             }
 
-            criteria.AddLast($"resource.type=\"gce_instance\"");
+            // NB. Some instance-related events use project scope, for example
+            // setCommonInstanceMetadata events.
+            criteria.AddLast($"resource.type=(\"gce_instance\" OR \"gce_project\")");
             criteria.AddLast($"timestamp > \"{startTime.ToString("o")}\"");
 
             return string.Join(" AND ", criteria);

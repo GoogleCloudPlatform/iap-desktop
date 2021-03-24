@@ -75,7 +75,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Events
             = new Dictionary<string, Func<LogRecord, EventBase>>()
             {
                 { AuthorizeUserTunnelEvent.Method, rec => new AuthorizeUserTunnelEvent(rec) },
-                { SetMetadataEvent.Method, rec => new SetMetadataEvent(rec) }
+                { SetMetadataEvent.Method, rec => new SetMetadataEvent(rec) },
+                { SetCommonInstanceMetadataEvent.Method, rec => new SetCommonInstanceMetadataEvent(rec) }
             };
 
         public static IEnumerable<string> LifecycleEventMethods => lifecycleEvents.Keys;
