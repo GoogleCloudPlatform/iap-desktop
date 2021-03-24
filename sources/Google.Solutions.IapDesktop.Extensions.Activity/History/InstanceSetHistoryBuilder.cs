@@ -210,7 +210,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.History
         {
             // NB. Some events (such as recreateInstance) might not have an instance ID.
             // These are useless for our purpose.
-            if (e is VmInstanceEventBase instanceEvent && instanceEvent.InstanceId != 0)
+            if (e is InstanceEventBase instanceEvent && instanceEvent.InstanceId != 0)
             {
                 GetInstanceHistoryBuilder(instanceEvent.InstanceId).Process(e);
             }

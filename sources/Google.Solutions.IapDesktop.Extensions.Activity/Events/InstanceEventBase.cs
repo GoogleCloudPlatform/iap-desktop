@@ -25,7 +25,7 @@ using System;
 
 namespace Google.Solutions.IapDesktop.Extensions.Activity.Events
 {
-    public abstract class VmInstanceEventBase : EventBase
+    public abstract class InstanceEventBase : EventBase
     {
         public InstanceLocator InstanceReference
         {
@@ -61,7 +61,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Events
             ? 0
             : ulong.Parse(base.LogRecord.Resource.Labels["instance_id"]);
 
-        protected VmInstanceEventBase(LogRecord logRecord)
+        protected InstanceEventBase(LogRecord logRecord)
             : base(logRecord)
         {
         }

@@ -26,7 +26,7 @@ using System.Linq;
 
 namespace Google.Solutions.IapDesktop.Extensions.Activity.Events.Access
 {
-    public class SetMetadataEvent : VmInstanceActivityEventBase
+    public class SetMetadataEvent : InstanceOperationEventBase
     {
         public const string Method = "v1.compute.instances.setMetadata";
 

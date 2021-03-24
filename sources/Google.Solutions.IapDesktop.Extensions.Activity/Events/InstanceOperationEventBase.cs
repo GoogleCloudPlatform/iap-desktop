@@ -24,7 +24,7 @@ using System.Diagnostics;
 
 namespace Google.Solutions.IapDesktop.Extensions.Activity.Events
 {
-    public abstract class VmInstanceActivityEventBase : VmInstanceEventBase
+    public abstract class InstanceOperationEventBase : InstanceEventBase
     {
         protected abstract string SuccessMessage { get; }
         protected abstract string ErrorMessage { get; }
@@ -58,7 +58,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Events
 
         public bool IsError => this.Severity == "ERROR";
 
-        protected VmInstanceActivityEventBase(LogRecord logRecord) : base(logRecord)
+        protected InstanceOperationEventBase(LogRecord logRecord) : base(logRecord)
         {
             Debug.Assert(!IsError || logRecord.ProtoPayload.Status != null);
         }

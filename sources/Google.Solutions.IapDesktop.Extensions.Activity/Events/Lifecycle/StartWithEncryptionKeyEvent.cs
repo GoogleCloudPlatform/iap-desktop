@@ -24,7 +24,7 @@ using System.Diagnostics;
 
 namespace Google.Solutions.IapDesktop.Extensions.Activity.Events.Lifecycle
 {
-    public class StartWithEncryptionKeyEvent : VmInstanceActivityEventBase, IInstanceStateChangeEvent
+    public class StartWithEncryptionKeyEvent : InstanceOperationEventBase, IInstanceStateChangeEvent
     {
         public const string Method = "v1.compute.instances.startWithEncryptionKey";
         public const string BetaMethod = "beta.compute.instances.startWithEncryptionKey";

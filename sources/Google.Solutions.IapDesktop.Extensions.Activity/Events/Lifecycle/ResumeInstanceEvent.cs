@@ -24,7 +24,7 @@ using System.Diagnostics;
 
 namespace Google.Solutions.IapDesktop.Extensions.Activity.Events.Lifecycle
 {
-    public class ResumeInstanceEvent : VmInstanceActivityEventBase, IInstanceStateChangeEvent
+    public class ResumeInstanceEvent : InstanceOperationEventBase, IInstanceStateChangeEvent
     {
         public const string Method = "v1.compute.instances.resume";
         public const string BetaMethod = "beta.compute.instances.resume";
