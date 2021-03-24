@@ -363,8 +363,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Controls
                 graphics, 
                 caretPosition.Column);
 
-            var drawX = (int)(precedingTextDimensions.Width);
-            var drawY = (int)(caretY * precedingTextDimensions.Height);
+            var drawX = (int)Math.Ceiling(precedingTextDimensions.Width);
+            var drawY = (int)Math.Ceiling(caretY * precedingTextDimensions.Height);
 
             GetCaret(graphics).Position = new Point(drawX, drawY);
         }
