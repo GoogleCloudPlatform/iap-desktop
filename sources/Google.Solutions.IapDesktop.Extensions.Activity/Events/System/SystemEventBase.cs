@@ -24,7 +24,7 @@ using System.Diagnostics;
 
 namespace Google.Solutions.IapDesktop.Extensions.Activity.Events.System
 {
-    public abstract class SystemEventBase : VmInstanceEventBase
+    public abstract class SystemEventBase : InstanceEventBase
     {
         public override EventCategory Category => EventCategory.System;
         protected SystemEventBase(LogRecord logRecord) : base(logRecord)

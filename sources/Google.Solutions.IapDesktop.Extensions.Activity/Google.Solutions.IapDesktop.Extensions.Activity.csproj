@@ -89,7 +89,7 @@
     <Compile Include="Events\Access\SetMetadataEvent.cs" />
     <Compile Include="Events\IEventProcessor.cs" />
     <Compile Include="Events\IInstanceStateChangeEvent.cs" />
-    <Compile Include="Events\VmInstanceActivityEventBase.cs" />
+    <Compile Include="Events\InstanceOperationEventBase.cs" />
     <Compile Include="Events\Lifecycle\ResumeInstanceEvent.cs" />
     <Compile Include="Events\Lifecycle\SuspendInstanceEvent.cs" />
     <Compile Include="Events\Lifecycle\ResetInstanceEvent.cs" />
@@ -113,7 +113,7 @@
     <Compile Include="Events\System\SystemEventBase.cs" />
     <Compile Include="Events\System\TerminateOnHostMaintenanceEvent.cs" />
     <Compile Include="Events\UnknownEvent.cs" />
-    <Compile Include="Events\VmInstanceEventBase.cs" />
+    <Compile Include="Events\InstanceEventBase.cs" />
     <Compile Include="Services\Adapters\AuditLogStorageSinkAdapter.cs" />
     <Compile Include="Services\Adapters\DateRange.cs" />
     <Compile Include="Services\Adapters\StorageAdapter.cs" />

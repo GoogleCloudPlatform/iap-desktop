@@ -381,11 +381,11 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.History
                 {
                     if (stateChange.IsStartingInstance)
                     {
-                        OnStart(e.Timestamp, ((VmInstanceEventBase)e).InstanceReference);
+                        OnStart(e.Timestamp, ((InstanceEventBase)e).InstanceReference);
                     }
                     else if (stateChange.IsTerminatingInstance)
                     {
-                        OnStop(e.Timestamp, ((VmInstanceEventBase)e).InstanceReference);
+                        OnStop(e.Timestamp, ((InstanceEventBase)e).InstanceReference);
                     }
                 }
             }

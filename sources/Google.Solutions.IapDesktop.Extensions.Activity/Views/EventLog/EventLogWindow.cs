@@ -145,7 +145,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Views.EventLog
 
         private static string GetInstanceName(EventBase e)
         {
-            if (e is VmInstanceEventBase vmEvent)
+            if (e is InstanceEventBase vmEvent)
             {
                 return vmEvent.InstanceReference?.Name;
             }

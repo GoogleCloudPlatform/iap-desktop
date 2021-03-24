@@ -24,7 +24,7 @@ using System.Diagnostics;
 
 namespace Google.Solutions.IapDesktop.Extensions.Activity.Events.Lifecycle
 {
-    public class SuspendInstanceEvent : VmInstanceActivityEventBase, IInstanceStateChangeEvent
+    public class SuspendInstanceEvent : InstanceOperationEventBase, IInstanceStateChangeEvent
     {
         public const string Method = "v1.compute.instances.suspend";
         public const string BetaMethod = "beta.compute.instances.suspend";
