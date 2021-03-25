@@ -96,6 +96,10 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Controls
             this.controller = new VirtualTerminalController();
             this.controllerSink = new DataConsumer(this.controller);
 
+#if DEBUG
+            this.controller.Debugging = true;
+#endif
+
             //
             // Use double-buffering to reduce flicker - unless we're in an
             // RDP session, cf. https://devblogs.microsoft.com/oldnewthing/20060103-12/?p=32793.
@@ -246,6 +250,10 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Controls
                     e.Graphics,
                     caretPosition.OffsetBy(0, terminalTop - this.ViewTop));
             }
+            else
+            {
+                GetCaret(e.Graphics).Hide();
+            }
         }
 
         private void PaintBackgroundLayer(
@@ -359,14 +367,29 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Controls
                 return;
             }
 
-            var precedingTextDimensions = this.terminalFont.Measure(
-                graphics, 
-                caretPosition.Column);
+            if (caretPosition.Column > 0)
+            {
+                // Make sure the cursor properly aligns with previous text,
+                // so use the previous text to determine the position.
+                var precedingTextDimensions = this.terminalFont.Measure(
+                    graphics,
+                    caretPosition.Column);
 
-            var drawX = (int)Math.Ceiling(precedingTextDimensions.Width);
-            var drawY = (int)Math.Ceiling(caretY * precedingTextDimensions.Height);
+                GetCaret(graphics).Position = new Point(
+                    (int)Math.Ceiling(precedingTextDimensions.Width),
+                    (int)Math.Ceiling(caretY * precedingTextDimensions.Height));
+            }
+            else
+            {
+                // At beginning of line, so there's no text to align with.
+                var characterHeight = this.terminalFont.Measure(
+                    graphics,
+                    1).Height;
 
-            GetCaret(graphics).Position = new Point(drawX, drawY);
+                GetCaret(graphics).Position = new Point(
+                    0,
+                    (int)Math.Ceiling(caretY * characterHeight));
+            }
         }
 
         private void PaintDiagnostics(Graphics graphics)
