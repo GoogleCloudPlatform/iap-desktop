@@ -37,7 +37,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.TunnelsViewer
     [SkipCodeCoverage("All logic in view model")]
     public partial class TunnelsWindow : ToolWindow, ITunnelsWindow
     {
-        private readonly DockPanel dockPanel;
         private readonly TunnelsViewModel viewModel;
 
         public TunnelsWindow(IServiceProvider serviceProvider)
@@ -45,7 +44,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.TunnelsViewer
         {
             InitializeComponent();
 
-            this.dockPanel = serviceProvider.GetService<IMainForm>().MainPanel;
             this.TabText = this.Text;
 
             this.theme.ApplyTo(this.toolStrip);

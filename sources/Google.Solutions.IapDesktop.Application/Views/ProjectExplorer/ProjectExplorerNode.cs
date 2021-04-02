@@ -84,7 +84,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
 
             foreach (var zoneId in zoneIds)
             {
-                var zoneNode = new ZoneNode(zoneId, this);
+                var zoneNode = new ZoneNode(zoneId);
 
                 var instancesInZone = instances
                     .Where(i => InventoryNode.ShortIdFromUrl(i.Zone) == zoneId)
@@ -93,7 +93,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
 
                 foreach (var instance in instancesInZone)
                 {
-                    var instanceNode = new VmInstanceNode(instance, zoneNode);
+                    var instanceNode = new VmInstanceNode(instance);
                     instanceNode.IsConnected = isConnected(
                         new InstanceLocator(this.ProjectId, zoneId, instance.Name));
 
@@ -120,9 +120,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
 
         public ZoneLocator Locator => new ZoneLocator(this.ProjectId, this.ZoneId);
 
-        internal ZoneNode(
-            string zoneId,
-            ProjectNode parent)
+        internal ZoneNode(string zoneId)
             : base(zoneId, IconIndex)
         {
         }
@@ -147,7 +145,6 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
 
         private VmInstanceNode(
             Instance instance,
-            ZoneNode parent,
             bool isWindowsInstance)
             : base(
                 instance.Name,
@@ -160,12 +157,9 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
             this.IsWindowsInstance = isWindowsInstance;
         }
 
-        internal VmInstanceNode(
-            Instance instance,
-            ZoneNode parent)
+        internal VmInstanceNode(Instance instance)
             : this(
                 instance,
-                parent,
                 instance.IsWindowsInstance())
         {
         }

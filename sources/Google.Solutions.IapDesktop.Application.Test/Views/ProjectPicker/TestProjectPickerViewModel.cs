@@ -141,8 +141,10 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views.ProjectPicker
         public async Task WhenFilteringFails_ThenLoadingErrorContainsException()
         {
             var resourceManagerMock = CreateResourceManagerAdapterMock();
-            var viewModel = new ProjectPickerViewModel(resourceManagerMock.Object);
-            viewModel.SelectedProject = ProjectOne;
+            var viewModel = new ProjectPickerViewModel(resourceManagerMock.Object)
+            {
+                SelectedProject = ProjectOne
+            };
 
             Assert.IsTrue(viewModel.IsProjectSelected);
             Assert.IsNotNull(viewModel.SelectedProject);

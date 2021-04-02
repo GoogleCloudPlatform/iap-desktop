@@ -49,8 +49,8 @@ namespace Google.Solutions.IapDesktop.Application.Settings
         private class FilteredPersistentCollection<TCollection> : IPersistentSettingsCollection<TCollection>
             where TCollection : ISettingsCollection
         {
-            private IPersistentSettingsCollection<TCollection> collection;
-            private Func<TCollection, ISetting, bool> predicate;
+            private readonly IPersistentSettingsCollection<TCollection> collection;
+            private readonly Func<TCollection, ISetting, bool> predicate;
 
             public FilteredPersistentCollection(
                 IPersistentSettingsCollection<TCollection> collection,
