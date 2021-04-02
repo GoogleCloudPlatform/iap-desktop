@@ -114,7 +114,7 @@ namespace Google.Solutions.Ssh.Test.Native
                 var channel = authSession.OpenExecChannel(
                     "whoami",
                     LIBSSH2_CHANNEL_EXTENDED_DATA.NORMAL);
-                
+
                 session.Dispose();
 
                 // Free channel after session - note that this causes an assertion

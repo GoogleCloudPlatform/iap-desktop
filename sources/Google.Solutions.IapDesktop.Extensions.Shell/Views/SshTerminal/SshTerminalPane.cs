@@ -48,9 +48,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.SshTerminal
     {
         private readonly IExceptionDialog exceptionDialog;
 
-        #pragma warning disable IDE0069 // Disposable fields should be disposed
+#pragma warning disable IDE0069 // Disposable fields should be disposed
         private readonly SshTerminalPaneViewModel viewModel;
-        #pragma warning restore IDE0069 // Disposable fields should be disposed
+#pragma warning restore IDE0069 // Disposable fields should be disposed
 
         //---------------------------------------------------------------------
         // Properties.
@@ -148,7 +148,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.SshTerminal
                         this.terminal.Focus();
                     }
                 });
-            
+
             Debug.Assert(this.Text != this.Name);
 
             //
@@ -193,7 +193,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.SshTerminal
             var settings = terminalSettingsRepository.GetSettings();
             ApplyTerminalSettings(settings);
 
-            EventHandler<EventArgs<TerminalSettings>> reapplyTerminalSettings = 
+            EventHandler<EventArgs<TerminalSettings>> reapplyTerminalSettings =
                 (s, e) => ApplyTerminalSettings(e.Data);
             terminalSettingsRepository.SettingsChanged += reapplyTerminalSettings;
 
@@ -356,10 +356,10 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.SshTerminal
             }
         }
 
-        public Task SendAsync(string command) 
+        public Task SendAsync(string command)
             => this.viewModel.SendAsync(command);
 
-        public Task DisconnectAsync() 
+        public Task DisconnectAsync()
             => this.viewModel.DisconnectAsync();
     }
 }

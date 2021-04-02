@@ -28,20 +28,14 @@ using Google.Solutions.IapDesktop.Application.Services.Integration;
 using Google.Solutions.IapDesktop.Application.Settings;
 using Google.Solutions.IapDesktop.Application.Test;
 using Google.Solutions.IapDesktop.Application.Test.ObjectModel;
-using Google.Solutions.IapDesktop.Application.Test.Views;
-using Google.Solutions.IapDesktop.Application.Util;
 using Google.Solutions.IapDesktop.Application.Views;
 using Google.Solutions.IapDesktop.Application.Views.ProjectExplorer;
 using Google.Solutions.IapDesktop.Extensions.Shell.Services;
 using Google.Solutions.IapDesktop.Extensions.Shell.Services.Adapter;
 using Google.Solutions.IapDesktop.Extensions.Shell.Services.ConnectionSettings;
-using Google.Solutions.IapDesktop.Extensions.Shell.Services.Rdp;
 using Google.Solutions.IapDesktop.Extensions.Shell.Services.Settings;
 using Google.Solutions.IapDesktop.Extensions.Shell.Services.Ssh;
 using Google.Solutions.IapDesktop.Extensions.Shell.Services.Tunnel;
-using Google.Solutions.IapDesktop.Extensions.Shell.Views.ConnectionSettings;
-using Google.Solutions.IapDesktop.Extensions.Shell.Views.Credentials;
-using Google.Solutions.IapDesktop.Extensions.Shell.Views.RemoteDesktop;
 using Google.Solutions.IapDesktop.Extensions.Shell.Views.SshTerminal;
 using Google.Solutions.IapTunneling.Iap;
 using Google.Solutions.Ssh;
@@ -138,7 +132,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Ssh
                     InstanceConnectionSettings
                         .CreateNew(SampleLocator.ProjectId, SampleLocator.Name)
                         .ToPersistentSettingsCollection(s => Assert.Fail("should not be called")));
-            
+
             var vmNode = new Mock<IProjectExplorerVmInstanceNode>();
             vmNode.SetupGet(n => n.Reference).Returns(SampleLocator);
 

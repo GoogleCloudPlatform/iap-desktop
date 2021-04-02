@@ -20,7 +20,6 @@
 //
 
 using Google.Apis.Auth.OAuth2;
-using Google.Solutions.Common.ApiExtensions.Instance;
 using Google.Solutions.Common.Locator;
 using Google.Solutions.Common.Test;
 using Google.Solutions.Common.Test.Integration;

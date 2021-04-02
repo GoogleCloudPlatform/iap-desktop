@@ -50,14 +50,14 @@ namespace Google.Solutions.IapDesktop.Application.Views
 
         public void OpenInstanceList(string projectId)
         {
-            OpenUrl("https://console.cloud.google.com/compute/instances" + 
+            OpenUrl("https://console.cloud.google.com/compute/instances" +
                 $"?project={projectId}");
         }
 
         public void OpenInstanceList(ZoneLocator zone)
         {
             var query = "[{\"k\":\"zoneForFilter\",\"v\":\"" + zone.Name + "\"}]";
-            OpenUrl("https://console.cloud.google.com/compute/instances" + 
+            OpenUrl("https://console.cloud.google.com/compute/instances" +
                 $"?project={zone.ProjectId}&instancesquery={WebUtility.UrlEncode(query)}");
         }
 

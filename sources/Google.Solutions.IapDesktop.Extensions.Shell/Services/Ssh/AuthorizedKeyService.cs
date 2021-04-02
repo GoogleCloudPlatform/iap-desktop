@@ -83,7 +83,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Ssh
 
         private bool IsFlagEnabled(
             Project project,
-            Instance instance, 
+            Instance instance,
             string flag)
         {
             var projectValue = project.CommonInstanceMetadata?.GetValue(flag);
@@ -219,8 +219,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Ssh
                 var projectDetails = await projectDetailsTask;
 
                 var osLoginEnabled = IsFlagEnabled(
-                    projectDetails, 
-                    instanceDetails, 
+                    projectDetails,
+                    instanceDetails,
                     EnableOsLoginFlag);
 
                 ApplicationTraceSources.Default.TraceVerbose(
@@ -256,7 +256,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Ssh
                             token)
                         .ConfigureAwait(false);
                 }
-                else 
+                else
                 {
                     var instanceMetadata = instanceDetails.Metadata;
                     var projectMetadata = projectDetails.CommonInstanceMetadata;

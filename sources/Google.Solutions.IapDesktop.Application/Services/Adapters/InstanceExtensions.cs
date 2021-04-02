@@ -62,7 +62,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.Adapters
         //---------------------------------------------------------------------
         // Public
         //---------------------------------------------------------------------
-        
+
         public static bool IsWindowsInstance(this Instance instance)
         {
             return IsWindowsInstanceByGuestOsFeature(instance) ||

@@ -256,7 +256,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Os.Views.InstanceProperties
         [Browsable(true)]
         [Category(SshConfigurationCategory)]
         [DisplayName("Block project-wide SSH keys")]
-        [Description("Disallow project-side SSH keys, "+
+        [Description("Disallow project-side SSH keys, " +
                      "see https://cloud.google.com/compute/docs/instances/adding-removing-ssh-keys#block-project-keys.")]
         public FeatureFlag BlockProjectSshKeys => GetMetadataFeatureFlag("block-project-ssh-keys", true);
 

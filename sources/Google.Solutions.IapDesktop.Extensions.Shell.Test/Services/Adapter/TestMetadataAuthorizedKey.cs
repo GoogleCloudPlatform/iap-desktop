@@ -106,7 +106,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Adapter
         [Test]
         public void WhenKeyIsManagedRsaKey_ThenParseReturnsManagedKey()
         {
-            var line = "login:ssh-rsa key google-ssh {\"userName\":\"username@example.com\"," + 
+            var line = "login:ssh-rsa key google-ssh {\"userName\":\"username@example.com\"," +
                 "\"expireOn\":\"2021-01-15T15:22:35+0000\"}";
             var key = MetadataAuthorizedKey.Parse(line);
             Assert.IsInstanceOf<ManagedMetadataAuthorizedKey>(key);

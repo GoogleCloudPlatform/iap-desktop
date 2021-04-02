@@ -218,7 +218,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.Options
                 RaisePropertyChange((NetworkOptionsViewModel m) => m.IsSystemProxyServerEnabled);
                 RaisePropertyChange((NetworkOptionsViewModel m) => m.IsCustomProxyServerEnabled);
                 RaisePropertyChange((NetworkOptionsViewModel m) => m.IsProxyAutoConfigurationEnabled);
-                RaisePropertyChange((NetworkOptionsViewModel m) => m.IsCustomProxyServerOrProxyAutoConfigurationEnabled); 
+                RaisePropertyChange((NetworkOptionsViewModel m) => m.IsCustomProxyServerOrProxyAutoConfigurationEnabled);
                 RaisePropertyChange((NetworkOptionsViewModel m) => m.IsProxyAuthenticationEnabled);
             }
             get
@@ -265,7 +265,8 @@ namespace Google.Solutions.IapDesktop.Application.Views.Options
         public bool IsSystemProxyServerEnabled
         {
             get => this.Proxy == ProxyType.System;
-            set {
+            set
+            {
                 if (value)
                 {
                     this.Proxy = ProxyType.System;

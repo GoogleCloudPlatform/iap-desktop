@@ -346,7 +346,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Controls
             Assert.AreEqual("", this.sendData.ToString());
             Assert.IsTrue(this.terminal.IsTextSelected);
             Assert.AreEqual(
-                textStraddlingViewPort.Replace("\r\n", "\n") + "\n", 
+                textStraddlingViewPort.Replace("\r\n", "\n") + "\n",
                 this.terminal.TextSelection);
         }
 
@@ -503,7 +503,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Controls
             // Move right till end.
             this.terminal.SimulateKey(Keys.Shift | Keys.Right, 10);
             Assert.AreEqual("56789\nvwxyz\n\n\n\n\n\n\n", this.terminal.TextSelection);
-            
+
             Assert.AreEqual(string.Empty, this.sendData.ToString());
         }
 
@@ -895,7 +895,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Controls
         [Test]
         public void WhenTypingAltV_ThenKeystrokeIsSent()
         {
-            this.terminal.SimulateKey(Keys.Alt| Keys.V);
+            this.terminal.SimulateKey(Keys.Alt | Keys.V);
 
             Assert.AreEqual($"{Esc}v", this.sendData.ToString());
         }
@@ -1026,7 +1026,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Controls
             this.terminal.ReceiveData("\r\n\r\n\r\n\r\n\r\n\r\n");
             this.terminal.SelectWord(6, 3);
             Assert.AreEqual(
-                string.Empty, 
+                string.Empty,
                 this.terminal.TextSelection);
         }
 

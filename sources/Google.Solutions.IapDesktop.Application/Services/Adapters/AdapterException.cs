@@ -66,7 +66,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.Adapters
         }
 
         public ResourceAccessDeniedException(
-            string message, 
+            string message,
             Exception inner)
             : base(message, inner)
         {

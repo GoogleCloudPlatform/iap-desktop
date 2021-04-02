@@ -32,7 +32,7 @@ namespace Google.Solutions.Ssh
     public abstract class SshConnectionBase : SshWorkerThread
     {
         private readonly Queue<SendOperation> sendQueue = new Queue<SendOperation>();
-        private readonly TaskCompletionSource<int> connectionCompleted 
+        private readonly TaskCompletionSource<int> connectionCompleted
             = new TaskCompletionSource<int>();
 
         private readonly StreamingDecoder receiveDecoder;
@@ -45,7 +45,7 @@ namespace Google.Solutions.Ssh
         //---------------------------------------------------------------------
 
         public delegate void ReceiveDataHandler(
-            byte[] data, 
+            byte[] data,
             uint offset,
             uint length);
 
@@ -72,7 +72,7 @@ namespace Google.Solutions.Ssh
                 dataEncoding,
                 s => receiveHandler(s));
 
-            this.receiveDataHandler = (buf, offset, count) 
+            this.receiveDataHandler = (buf, offset, count)
                 => this.receiveDecoder.Decode(buf, (int)offset, (int)count);
 
             this.receiveErrorHandler = receiveErrorHandler;

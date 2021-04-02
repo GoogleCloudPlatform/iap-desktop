@@ -110,8 +110,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Rdp
                 It.IsAny<InstanceLocator>(),
                 "localhost",
                 It.IsAny<ushort>(),
-                It.Is<InstanceConnectionSettings>(i => 
-                    i.RdpUsername.StringValue == "existinguser" && 
+                It.Is<InstanceConnectionSettings>(i =>
+                    i.RdpUsername.StringValue == "existinguser" &&
                     i.RdpPassword.ClearTextValue == "")), Times.Once);
         }
 

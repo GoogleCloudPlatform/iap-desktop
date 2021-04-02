@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace Google.Solutions.IapDesktop.Application.Views.ProjectPicker
 {
-    public sealed class ProjectPickerViewModel : ViewModelBase,  IDisposable
+    public sealed class ProjectPickerViewModel : ViewModelBase, IDisposable
     {
         private const int MaxResults = 100;
 
@@ -45,7 +45,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectPicker
                 RaisePropertyChange();
             }
         }
-        
+
         public bool IsProjectSelected => this.selectedProject != null;
 
         public Project SelectedProject

@@ -28,7 +28,6 @@ using Google.Solutions.IapDesktop.Application.ObjectModel;
 using Google.Solutions.IapDesktop.Application.Services.Integration;
 using Google.Solutions.IapDesktop.Application.Views;
 using Google.Solutions.IapDesktop.Application.Views.Dialog;
-using Google.Solutions.IapDesktop.Extensions.Shell.Services.Settings;
 using Google.Solutions.IapDesktop.Extensions.Shell.Services.Ssh;
 using Google.Solutions.Ssh;
 using Google.Solutions.Ssh.Native;
@@ -105,7 +104,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.SshTerminal
         // Observable properties.
         //---------------------------------------------------------------------
 
-        public Status ConnectionStatus 
+        public Status ConnectionStatus
         {
             get => this.connectionStatus;
             private set
@@ -152,7 +151,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.SshTerminal
                 throw new OsLoginAuthenticationFailedException(
                     "You do not have sufficient permissions to access this VM instance.\n\n" +
                     "To perform this action, you need the following roles (or an equivalent custom role):\n\n" +
-                    " 1. 'Compute OS Login' or 'Compute OS Admin Login'\n" + 
+                    " 1. 'Compute OS Login' or 'Compute OS Admin Login'\n" +
                     " 2. 'Service Account User' (if the VM uses a service account)\n" +
                     " 3. 'Compute OS Login External User' (if the VM belongs to a different GCP organization\n",
                     e,
@@ -207,7 +206,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.SshTerminal
             void OnDataReceivedFromServerAsync(string data)
             {
                 // NB. Callback runs on SSH thread, not on UI thread.
-                
+
                 ApplicationTraceSources.Default.TraceVerbose("Received {0} chars from server", data?.Length);
 
 #if DEBUG

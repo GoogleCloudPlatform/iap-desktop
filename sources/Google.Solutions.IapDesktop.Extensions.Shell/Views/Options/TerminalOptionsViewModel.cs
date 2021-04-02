@@ -115,13 +115,13 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Options
             //
             var settings = this.settingsRepository.GetSettings();
 
-            settings.IsCopyPasteUsingCtrlCAndCtrlVEnabled.BoolValue = 
+            settings.IsCopyPasteUsingCtrlCAndCtrlVEnabled.BoolValue =
                 this.IsCopyPasteUsingCtrlCAndCtrlVEnabled;
-            settings.IsCopyPasteUsingShiftInsertAndCtrlInsertEnabled.BoolValue = 
+            settings.IsCopyPasteUsingShiftInsertAndCtrlInsertEnabled.BoolValue =
                 this.IsCopyPasteUsingShiftInsertAndCtrlInsertEnabled;
-            settings.IsSelectAllUsingCtrlAEnabled.BoolValue = 
+            settings.IsSelectAllUsingCtrlAEnabled.BoolValue =
                 this.IsSelectAllUsingCtrlAEnabled;
-            settings.IsSelectUsingShiftArrrowEnabled.BoolValue = 
+            settings.IsSelectUsingShiftArrrowEnabled.BoolValue =
                 this.IsSelectUsingShiftArrrowEnabled;
             settings.IsQuoteConvertionOnPasteEnabled.BoolValue =
                 this.IsQuoteConvertionOnPasteEnabled;

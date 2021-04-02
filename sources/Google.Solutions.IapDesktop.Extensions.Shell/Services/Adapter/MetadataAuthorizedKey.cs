@@ -20,12 +20,12 @@
 //
 
 using Google.Apis.Util;
+using Google.Solutions.IapDesktop.Application.Util;
 using Newtonsoft.Json;
 using System;
 using System.Diagnostics;
 using System.Linq;
 using System.Text.RegularExpressions;
-using Google.Solutions.IapDesktop.Application.Util;
 
 namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Adapter
 {
@@ -92,9 +92,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Adapter
             {
                 // This is an unmanaged key.
                 return new UnmanagedMetadataAuthorizedKey(
-                    username, 
-                    keyType, 
-                    key, 
+                    username,
+                    keyType,
+                    key,
                     match.Groups[4].Value);
             }
         }
@@ -112,7 +112,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Adapter
             : base(loginUsername, keyType, key)
         {
             Utilities.ThrowIfNullOrEmpty(username, nameof(username));
-            
+
             this.Username = username;
         }
 

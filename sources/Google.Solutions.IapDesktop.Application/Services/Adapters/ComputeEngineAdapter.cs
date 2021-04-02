@@ -41,7 +41,7 @@ using System.Threading.Tasks;
 
 namespace Google.Solutions.IapDesktop.Application.Services.Adapters
 {
-    
+
     /// <summary>
     /// Adapter class for the Compute Engine API.
     /// </summary>
@@ -161,7 +161,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.Adapters
                         $"project {projectId}. " +
                         "You need the 'Compute Viewer' role (or an equivalent custom role) " +
                         "to perform this action.",
-                        HelpTopics.ProjectAccessControl, 
+                        HelpTopics.ProjectAccessControl,
                         e);
                 }
             }
@@ -223,7 +223,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.Adapters
                 {
                     throw new ResourceAccessDeniedException(
                         $"Access to VM instance {instanceLocator.Name} has been denied",
-                        HelpTopics.ProjectAccessControl, 
+                        HelpTopics.ProjectAccessControl,
                         e);
                 }
             }
@@ -260,7 +260,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.Adapters
                 {
                     throw new ResourceAccessDeniedException(
                         $"Access to VM instance {instanceLocator.Name} has been denied",
-                        HelpTopics.ProjectAccessControl, 
+                        HelpTopics.ProjectAccessControl,
                         e);
                 }
             }
@@ -303,7 +303,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.Adapters
                 {
                     throw new ResourceAccessDeniedException(
                         $"Access to node groups in project {projectId} has been denied",
-                        HelpTopics.ProjectAccessControl, 
+                        HelpTopics.ProjectAccessControl,
                         e);
                 }
             }
@@ -335,7 +335,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.Adapters
                 {
                     throw new ResourceAccessDeniedException(
                         $"Access to nodes in project {zone.ProjectId} has been denied",
-                        HelpTopics.ProjectAccessControl, 
+                        HelpTopics.ProjectAccessControl,
                         e);
                 }
             }
@@ -448,8 +448,8 @@ namespace Google.Solutions.IapDesktop.Application.Services.Adapters
             using (ApplicationTraceSources.Default.TraceMethod().WithParameters(instanceRef))
             {
                 return new SerialPortStream(
-                    this.service.Instances, 
-                    instanceRef, 
+                    this.service.Instances,
+                    instanceRef,
                     portNumber);
             }
         }

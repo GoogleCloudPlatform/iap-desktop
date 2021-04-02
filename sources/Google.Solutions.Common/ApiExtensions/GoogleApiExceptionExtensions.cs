@@ -28,7 +28,7 @@ namespace Google.Solutions.Common.ApiExtensions
 
         public static bool IsAccessDenied(this GoogleApiException e)
             => e.Error != null && e.Error.Code == 403;
-        
+
         public static bool IsNotFound(this GoogleApiException e)
             => e.Error != null && e.Error.Code == 404;
 

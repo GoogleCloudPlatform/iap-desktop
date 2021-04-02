@@ -92,6 +92,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Controls
             int cchBuff,
             uint wFlags,
             IntPtr dwhkl);
-        
+
     }
 }

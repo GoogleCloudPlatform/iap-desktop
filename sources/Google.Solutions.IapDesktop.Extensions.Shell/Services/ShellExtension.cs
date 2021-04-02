@@ -21,7 +21,6 @@
 
 using Google.Solutions.Common.Util;
 using Google.Solutions.IapDesktop.Application.ObjectModel;
-using Google.Solutions.IapDesktop.Application.Services.Settings;
 using Google.Solutions.IapDesktop.Application.Util;
 using Google.Solutions.IapDesktop.Application.Views;
 using Google.Solutions.IapDesktop.Application.Views.Dialog;
@@ -153,7 +152,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services
             try
             {
                 if (node is IProjectExplorerVmInstanceNode rdpNode && rdpNode.IsRdpSupported())
-                { 
+                {
                     await this.serviceProvider
                         .GetService<IRdpConnectionService>()
                         .ActivateOrConnectInstanceAsync(

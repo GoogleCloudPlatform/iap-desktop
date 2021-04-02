@@ -21,7 +21,6 @@
 
 using Google.Apis.Util;
 using Google.Solutions.Common.Diagnostics;
-using Google.Solutions.Ssh.Cryptography;
 using System;
 using System.Diagnostics;
 using System.Linq;
@@ -67,7 +66,7 @@ namespace Google.Solutions.Ssh.Native
 
         internal SshConnectedSession(SshSession session, Socket socket)
         {
-            this.session= session;
+            this.session = session;
             this.socket = socket;
         }
 

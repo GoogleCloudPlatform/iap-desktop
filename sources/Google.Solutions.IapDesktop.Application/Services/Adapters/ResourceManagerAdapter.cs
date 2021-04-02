@@ -23,7 +23,6 @@ using Google.Apis.Auth.OAuth2;
 using Google.Apis.CloudResourceManager.v1;
 using Google.Apis.CloudResourceManager.v1.Data;
 using Google.Apis.Requests;
-using Google.Apis.Util;
 using Google.Solutions.Common.Diagnostics;
 using Google.Solutions.Common.Util;
 using Google.Solutions.IapDesktop.Application.ObjectModel;

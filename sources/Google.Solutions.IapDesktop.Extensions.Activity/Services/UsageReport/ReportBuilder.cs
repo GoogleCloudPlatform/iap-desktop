@@ -57,7 +57,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services.UsageReport
 
         private readonly IAuditLogAdapter auditLogAdapter;
         private readonly IAuditLogStorageSinkAdapter auditExportAdapter;
-        private readonly IComputeEngineAdapter computeEngineAdapter; 
+        private readonly IComputeEngineAdapter computeEngineAdapter;
 
         public ReportBuilder(
             IAuditLogAdapter auditLogAdapter,

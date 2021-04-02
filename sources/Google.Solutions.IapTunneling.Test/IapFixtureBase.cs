@@ -21,7 +21,6 @@
 
 using Google.Solutions.Common;
 using Google.Solutions.Common.Test;
-using NUnit.Framework;
 using System.Collections.Generic;
 using System.Diagnostics;
 

@@ -154,7 +154,7 @@ namespace Google.Solutions.IapTunneling.Net
                     }
 
                     IapTraceSources.Default.TraceVerbose(
-                        "WebSocketStream: begin ReadAsync()... [socket: {0}]", 
+                        "WebSocketStream: begin ReadAsync()... [socket: {0}]",
                         this.socket.State);
 
                     result = await this.socket.ReceiveAsync(
@@ -234,7 +234,7 @@ namespace Google.Solutions.IapTunneling.Net
                     WebSocketMessageType.Binary,
                     true,
                     cancellationToken).ConfigureAwait(false);
-                
+
                 IapTraceSources.Default.TraceVerbose(
                     "WebSocketStream: end WriteAsync()... [socket: {0}]",
                     this.socket.State);

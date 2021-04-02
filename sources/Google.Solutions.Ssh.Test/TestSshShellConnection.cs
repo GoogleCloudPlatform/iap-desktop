@@ -227,7 +227,7 @@ namespace Google.Solutions.Ssh.Test
         [Test]
         public async Task WhenServerRejectsLocale_ThenShellUsesDefaultLocale(
             [LinuxInstance(InitializeScript =
-                "sed -i '/AcceptEnv/d' /etc/ssh/sshd_config && systemctl restart sshd")] 
+                "sed -i '/AcceptEnv/d' /etc/ssh/sshd_config && systemctl restart sshd")]
                 ResourceTask<InstanceLocator> instanceLocatorTask)
         {
             var endpoint = new IPEndPoint(

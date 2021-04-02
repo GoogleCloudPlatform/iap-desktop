@@ -105,7 +105,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.Options
 
             settings.FullScreenDevices.StringValue = selectedDevices.Any()
                 ? string.Join(
-                    ApplicationSettings.FullScreenDevicesSeparator.ToString(), 
+                    ApplicationSettings.FullScreenDevicesSeparator.ToString(),
                     selectedDevices)
                 : null;
 

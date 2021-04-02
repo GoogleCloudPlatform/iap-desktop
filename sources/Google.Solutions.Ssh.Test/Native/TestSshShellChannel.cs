@@ -23,7 +23,6 @@ using Google.Solutions.Common.Locator;
 using Google.Solutions.Common.Test.Integration;
 using Google.Solutions.Ssh.Native;
 using NUnit.Framework;
-using System.Collections.Generic;
 using System.Net;
 using System.Security.Cryptography;
 using System.Text;
@@ -193,7 +192,7 @@ namespace Google.Solutions.Ssh.Test.Native
                             DefaultTerminal,
                             80,
                             24,
-                            new []
+                            new[]
                             {
                                 new EnvironmentVariable("FOO", "foo", true),
                                 new EnvironmentVariable("BAR", "bar", true)

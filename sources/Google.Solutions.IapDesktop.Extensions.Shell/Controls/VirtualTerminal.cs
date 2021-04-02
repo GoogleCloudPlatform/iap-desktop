@@ -19,18 +19,18 @@
 // under the License.
 //
 
+using Google.Solutions.Common.Diagnostics;
+using Google.Solutions.IapDesktop.Application.Util;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
+using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 using VtNetCore.VirtualTerminal;
-using VtNetCore.XTermParser;
 using VtNetCore.VirtualTerminal.Layout;
-using Google.Solutions.Common.Diagnostics;
-using Google.Solutions.IapDesktop.Application.Util;
-using System.Linq;
+using VtNetCore.XTermParser;
 
 namespace Google.Solutions.IapDesktop.Extensions.Shell.Controls
 {
@@ -56,9 +56,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Controls
         public event EventHandler<TerminalResizeEventArgs> TerminalResized;
         public event EventHandler WindowTitleChanged;
 
-        #pragma warning disable IDE0069 // Disposable fields should be disposed
+#pragma warning disable IDE0069 // Disposable fields should be disposed
         private Caret caret;
-        #pragma warning restore IDE0069 // Disposable fields should be disposed
+#pragma warning restore IDE0069 // Disposable fields should be disposed
 
         private TextSelection selection;
         private bool scrolling;
@@ -142,7 +142,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Controls
             if (this.caret == null)
             {
                 this.caret = new Caret(
-                    this, 
+                    this,
                     this.terminalFont.Measure(graphics, 1).ToSize());
             }
 
@@ -399,7 +399,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Controls
 
             var diagnosticText =
                  $"Dimensions: {this.Columns}x{this.Rows}\n" +
-                 $"Char size: {rowDimensions.Width/this.Columns}x{rowDimensions.Height}\n" +
+                 $"Char size: {rowDimensions.Width / this.Columns}x{rowDimensions.Height}\n" +
                  $"ViewTop : {this.ViewTop}\n" +
                  $"Cursor pos: {this.controller.ViewPort.CursorPosition}\n" +
                  $"Screen cursor pos: {this.controller.ViewPort.ScreenCursorPosition}";
@@ -566,7 +566,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Controls
                 return false;
             }
             else
-            { 
+            {
                 return base.ProcessDialogKey(keyData);
             }
         }
@@ -893,7 +893,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Controls
         private TextPosition MovePosition(TextPosition position, int rowsDelta, int columnsDelta)
         {
             var currentRowLength = GetRow(position.Row).Length;
-            
+
             var row = Math.Max(0, Math.Min(position.Row + rowsDelta, this.controller.BottomRow));
             var column = position.Column + columnsDelta;
 

@@ -151,8 +151,8 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
             bool isWindowsInstance)
             : base(
                 instance.Name,
-                isWindowsInstance 
-                  ? WindowsDisconnectedIconIndex 
+                isWindowsInstance
+                  ? WindowsDisconnectedIconIndex
                   : LinuxDisconnectedIconIndex)
         {
             this.InstanceId = instance.Id.Value;

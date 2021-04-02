@@ -116,7 +116,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Ssh
                     //
                     return new AuthorizedKey(
                         key,
-                        useInstanceKeySet 
+                        useInstanceKeySet
                             ? AuthorizeKeyMethods.InstanceMetadata
                             : AuthorizeKeyMethods.ProjectMetadata,
                         preferredUsername);

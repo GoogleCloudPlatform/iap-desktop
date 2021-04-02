@@ -53,8 +53,8 @@ namespace Google.Solutions.Ssh
             ReceiveStringDataHandler receiveDataHandler,
             ReceiveErrorHandler receiveErrorHandler)
             : base(
-                  username, 
-                  endpoint, 
+                  username,
+                  endpoint,
                   key,
                   receiveDataHandler,
                   receiveErrorHandler,
@@ -106,8 +106,8 @@ namespace Google.Solutions.Ssh
             return base.SendAsync(Encoding.GetBytes(data));
         }
 
-        public Task ResizeTerminalAsync(TerminalSize size) 
-        { 
+        public Task ResizeTerminalAsync(TerminalSize size)
+        {
             return SendAsync(
                 channel => ((SshShellChannel)channel).ResizePseudoTerminal(
                     size.Columns,

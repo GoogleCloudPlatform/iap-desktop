@@ -151,8 +151,8 @@ namespace Google.Solutions.Ssh
         protected abstract SshChannelBase CreateChannel(
             SshAuthenticatedSession session);
 
-        protected bool IsConnected 
-            => this.workerThread.IsAlive && 
+        protected bool IsConnected
+            => this.workerThread.IsAlive &&
                !this.workerCancellationSource.IsCancellationRequested;
 
         /// <summary>
@@ -199,7 +199,7 @@ namespace Google.Solutions.Ssh
                             LIBSSH2_TRACE.SOCKET | LIBSSH2_TRACE.ERROR | LIBSSH2_TRACE.CONN |
                                                    LIBSSH2_TRACE.AUTH | LIBSSH2_TRACE.KEX,
                             SshTraceSources.Default.TraceVerbose);
-                        
+
 
                         if (!string.IsNullOrEmpty(this.Banner))
                         {
@@ -224,7 +224,7 @@ namespace Google.Solutions.Ssh
                             // Use a disposable scope to make sure that tearing down the 
                             // connection is done using blocking I/O again.
                             //
-                            using (session.AsNonBlocking()) 
+                            using (session.AsNonBlocking())
                             using (var readyToReceive = UnsafeNativeMethods.WSACreateEvent())
                             {
                                 //
@@ -409,7 +409,7 @@ namespace Google.Solutions.Ssh
         {
             // Stop worker thread.
             this.workerCancellationSource.Cancel();
-            
+
             if (this.JoinWorkerThreadOnDispose)
             {
                 this.workerThread.Join();
