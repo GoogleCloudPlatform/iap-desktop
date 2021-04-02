@@ -102,7 +102,7 @@ namespace Google.Solutions.Ssh.Test.Native
 
                 var exception = session.CreateException(LIBSSH2_ERROR.METHOD_NOT_SUPPORTED);
                 Assert.AreEqual(
-                    "The requested method(s) are not currently supported", 
+                    "The requested method(s) are not currently supported",
                     exception.Message);
                 Assert.AreEqual(LIBSSH2_ERROR.METHOD_NOT_SUPPORTED, exception.ErrorCode);
             }

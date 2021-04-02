@@ -34,7 +34,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Controls
             TextFormatFlags.NoPrefix |
             TextFormatFlags.PreserveGraphicsClipping;
 
-        internal Font Font {  get; private set; }
+        internal Font Font { get; private set; }
 
         //---------------------------------------------------------------------
         // Statics.

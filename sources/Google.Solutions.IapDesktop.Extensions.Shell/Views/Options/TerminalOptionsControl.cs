@@ -19,9 +19,9 @@
 // under the License.
 //
 
-using System.Windows.Forms;
 using Google.Solutions.Common.Diagnostics;
 using Google.Solutions.IapDesktop.Application.ObjectModel;
+using System.Windows.Forms;
 
 namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Options
 {
@@ -73,7 +73,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Options
                 viewModel,
                 m => m.IsNavigationUsingControlArrrowEnabled,
                 this.Container);
-            
+
             //
             // Scrolling box.
             //

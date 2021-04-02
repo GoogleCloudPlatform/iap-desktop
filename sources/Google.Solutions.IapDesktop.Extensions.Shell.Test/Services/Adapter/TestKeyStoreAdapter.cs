@@ -19,12 +19,10 @@
 // under the License.
 //
 
-using Google.Solutions.Common.Test;
 using Google.Solutions.IapDesktop.Application.Test;
 using Google.Solutions.IapDesktop.Extensions.Shell.Services.Adapter;
 using NUnit.Framework;
 using System.Security.Cryptography;
-using System.Threading.Tasks;
 
 namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Adapter
 {

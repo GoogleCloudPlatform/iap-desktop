@@ -97,7 +97,7 @@ namespace Google.Solutions.IapDesktop.Application.Views
         }
 
         public DocumentWindow(
-            IServiceProvider serviceProvider) 
+            IServiceProvider serviceProvider)
             : base(serviceProvider, DockState.Document)
         {
             this.settingsRepository = serviceProvider.GetService<ApplicationSettingsRepository>();
@@ -109,7 +109,7 @@ namespace Google.Solutions.IapDesktop.Application.Views
         // Full-screen support.
         //---------------------------------------------------------------------
 
-        protected static bool IsFullscreen 
+        protected static bool IsFullscreen
             => fullScreenForm != null && fullScreenForm.Visible;
 
         protected void EnterFullscreen(bool allScreens)

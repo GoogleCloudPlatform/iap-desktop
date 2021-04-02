@@ -78,7 +78,7 @@ namespace Google.Solutions.IapTunneling.Net
             {
                 this.readerSemaphore.Release();
             }
-        }   
+        }
 
         protected override async Task WriteAsyncWithCloseProtection(byte[] buffer, int offset, int count, CancellationToken cancellationToken)
         {

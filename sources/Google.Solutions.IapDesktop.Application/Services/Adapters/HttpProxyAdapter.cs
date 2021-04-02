@@ -27,7 +27,6 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Net;
-using System.Net.Http;
 using System.Reflection;
 using System.Security;
 
@@ -125,20 +124,20 @@ namespace Google.Solutions.IapDesktop.Application.Services.Adapters
                     //
 
                     var scriptLocation = typeof(WebProxy).GetProperty(
-                        "ScriptLocation", 
+                        "ScriptLocation",
                         BindingFlags.NonPublic | BindingFlags.Instance);
 
                     if (scriptLocation == null)
                     {
                         throw new InvalidOperationException(
-                            "Failed to set auto proxy settings because "+
+                            "Failed to set auto proxy settings because " +
                             "properties could not be accessed");
                     }
 
                     var proxy = new WebProxy();
                     scriptLocation.SetValue(proxy, pacAddress);
                     proxy.Credentials = credentials;
-                    
+
                     WebRequest.DefaultWebProxy = proxy;
                 }
             }

@@ -26,14 +26,12 @@ using Google.Solutions.IapDesktop.Application.ObjectModel;
 using Google.Solutions.IapDesktop.Application.Services.Adapters;
 using Google.Solutions.IapDesktop.Application.Services.Integration;
 using Google.Solutions.IapDesktop.Application.Test.Views;
-using Google.Solutions.IapDesktop.Application.Util;
 using Google.Solutions.IapDesktop.Extensions.Shell.Services.ConnectionSettings;
 using Google.Solutions.IapDesktop.Extensions.Shell.Views.RemoteDesktop;
 using NUnit.Framework;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
-using System.Windows.Forms;
 
 
 namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.RemoteDesktop

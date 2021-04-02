@@ -20,8 +20,6 @@
 //
 
 using Google.Solutions.IapDesktop.Application.Test;
-using NUnit.Framework;
-using System.Diagnostics;
 
 namespace Google.Solutions.IapDesktop.Extensions.Activity.Test
 {

@@ -47,7 +47,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
 
         public ProjectExplorerTrackingToolWindow(
             IServiceProvider serviceProvider,
-            DockState defaultDockState) 
+            DockState defaultDockState)
             : base(
                   serviceProvider,
                   defaultDockState)

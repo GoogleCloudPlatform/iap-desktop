@@ -134,7 +134,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
         }
 
         private void PopulateProjectNode(
-            string projectId, 
+            string projectId,
             IEnumerable<Instance> instances)
         {
             Debug.Assert(!this.InvokeRequired);
@@ -378,7 +378,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
                 //
                 this.refreshToolStripMenuItem.Visible =
                     this.unloadProjectToolStripMenuItem.Visible = (selectedNode is ProjectNode);
-                    this.refreshAllProjectsToolStripMenuItem.Visible = (selectedNode is CloudNode);
+                this.refreshAllProjectsToolStripMenuItem.Visible = (selectedNode is CloudNode);
 
                 this.openInCloudConsoleToolStripMenuItem.Visible =
                     this.iapSeparatorToolStripMenuItem.Visible =

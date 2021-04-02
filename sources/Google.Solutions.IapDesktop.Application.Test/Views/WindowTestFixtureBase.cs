@@ -202,7 +202,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views
                 {
                     action();
                     return Task.CompletedTask;
-                }, 
+                },
                 TimeSpan.FromSeconds(45)).Result;
 
         protected static void Delay(TimeSpan timeout)

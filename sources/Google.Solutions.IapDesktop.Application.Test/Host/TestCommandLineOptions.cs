@@ -32,7 +32,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Host
         public void WhenArgsEmpty_ThenParseReturnsValidOptions()
         {
             var options = CommandLineOptions.Parse(Array.Empty<string>());
-            
+
             Assert.IsFalse(options.IsLoggingEnabled);
             Assert.IsNull(options.StartupUrl);
         }
@@ -82,7 +82,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Host
                 () => CommandLineOptions.Parse(
                     new[] { "/url", "notaurl" }));
         }
-        
+
         [Test]
         public void WhenInvalidFlagSpecified_ThenParseRaisesInvalidCommandLineException()
         {

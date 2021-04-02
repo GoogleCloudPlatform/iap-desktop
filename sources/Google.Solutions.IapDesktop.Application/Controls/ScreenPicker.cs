@@ -19,14 +19,14 @@
 // under the License.
 //
 
+using Google.Solutions.Common.Diagnostics;
 using System;
 using System.Collections.Generic;
-using System.Drawing;
+using System.Collections.ObjectModel;
 using System.Data;
+using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
-using System.Collections.ObjectModel;
-using Google.Solutions.Common.Diagnostics;
 
 namespace Google.Solutions.IapDesktop.Application.Controls
 {
@@ -136,7 +136,7 @@ namespace Google.Solutions.IapDesktop.Application.Controls
                 foreach (var screenIcon in this.Screens)
                 {
                     e.Graphics.FillRectangle(
-                        screenIcon.Model.IsSelected 
+                        screenIcon.Model.IsSelected
                             ? SystemBrushes.Highlight
                             : SystemBrushes.ControlLight,
                         screenIcon.Bounds);
@@ -144,11 +144,11 @@ namespace Google.Solutions.IapDesktop.Application.Controls
                         pen,
                         screenIcon.Bounds);
                     e.Graphics.DrawString(
-                        (screenOrdinal++).ToString(), 
+                        (screenOrdinal++).ToString(),
                         this.Font,
                         screenIcon.Model.IsSelected
                             ? Brushes.White
-                            : SystemBrushes.ControlText, 
+                            : SystemBrushes.ControlText,
                         screenIcon.Bounds,
                         new StringFormat
                         {

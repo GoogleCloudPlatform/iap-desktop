@@ -43,9 +43,9 @@ namespace Google.Solutions.Common.Test.Net
 
         public static TraceSource Web => GetSource("Web");
 
-        public static bool Enabled 
+        public static bool Enabled
         {
-            get => (bool) LoggingType.GetField(
+            get => (bool)LoggingType.GetField(
                     "s_LoggingEnabled",
                     BindingFlags.NonPublic | BindingFlags.Static)
                 .GetValue(null);

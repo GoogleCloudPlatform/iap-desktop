@@ -209,7 +209,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.ConnectionSettin
         }
 
         public IEnumerable<ISetting> Settings => this.RdpSettings.Concat(this.SshSettings);
-        
+
         protected void InitializeFromKey(RegistryKey key)
         {
             //
@@ -338,7 +338,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.ConnectionSettin
                 Categories.SshCredentials,
                 null,
                 key,
-                username => string.IsNullOrEmpty(username) || 
+                username => string.IsNullOrEmpty(username) ||
                             AuthorizedKey.IsValidUsername(username));
             this.SshConnectionTimeout = RegistryDwordSetting.FromKey(
                 "SshConnectionTimeout",

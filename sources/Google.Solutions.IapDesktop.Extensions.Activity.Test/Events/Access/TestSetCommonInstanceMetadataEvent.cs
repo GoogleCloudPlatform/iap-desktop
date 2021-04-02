@@ -114,7 +114,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.Events.Access
             Assert.AreEqual("IAP-Desktop/1.0.1.0", e.UserAgent);
 
             Assert.AreEqual(
-                "Linux SSH keys or metadata update from 1.2.3.4 using IAP-Desktop/1.0.1.0 (operation started)", 
+                "Linux SSH keys or metadata update from 1.2.3.4 using IAP-Desktop/1.0.1.0 (operation started)",
                 e.Message);
         }
 
@@ -255,7 +255,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.Events.Access
 
             Assert.AreEqual(
                 "Linux SSH keys or metadata update from 1.2.3.4 using IAP-Desktop/1.1 failed " +
-                "[Required iam.serviceAccounts.actAs permission for projects/project-1]", 
+                "[Required iam.serviceAccounts.actAs permission for projects/project-1]",
                 e.Message);
         }
     }

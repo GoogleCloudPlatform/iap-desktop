@@ -115,7 +115,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.Dialog
             Exception e)
         {
             Debug.Assert(!(parent is Control) || !((Control)parent).InvokeRequired);
-            
+
             e = e.Unwrap();
 
             using (ApplicationTraceSources.Default.TraceMethod().WithParameters(caption, e))

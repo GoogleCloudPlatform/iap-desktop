@@ -94,7 +94,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Ssh
                     It.IsAny<CancellationToken>()))
                 .ReturnsAsync(new LoginProfile()
                 {
-                    PosixAccounts = new []
+                    PosixAccounts = new[]
                     {
                         new PosixAccount()
                         {

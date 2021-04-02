@@ -74,7 +74,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Ssh
             var projectMetadata = new Metadata();
             if (osLoginEnabledForProject.HasValue)
             {
-                projectMetadata.Add("enable-oslogin", 
+                projectMetadata.Add("enable-oslogin",
                     osLoginEnabledForProject.Value.ToString());
             }
 
@@ -98,7 +98,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Ssh
             var instanceMetadata = new Metadata();
             if (osLoginEnabledForInstance.HasValue)
             {
-                instanceMetadata.Add("enable-oslogin", 
+                instanceMetadata.Add("enable-oslogin",
                     osLoginEnabledForInstance.Value.ToString());
             }
 
@@ -780,7 +780,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Ssh
         [Test]
         public void WhenMetadataUpdatesFails_ThenAuthorizeKeyAsyncThrowsSshKeyPushFailedException(
             [Values(
-                HttpStatusCode.Forbidden, 
+                HttpStatusCode.Forbidden,
             HttpStatusCode.BadRequest)] HttpStatusCode httpStatus)
         {
             var computeEngineAdapter = CreateComputeEngineAdapterMock(

@@ -50,7 +50,6 @@ using System.Linq;
 using System.Net;
 using System.Reflection;
 using System.Threading;
-using System.Windows.Forms;
 
 namespace Google.Solutions.IapDesktop
 {

@@ -136,7 +136,7 @@ namespace Google.Solutions.Ssh.Native
         public void WaitForEndOfStream()
         {
             this.channelHandle.CheckCurrentThreadOwnsHandle();
-            
+
             using (SshTraceSources.Default.TraceMethod().WithoutParameters())
             {
                 var result = (LIBSSH2_ERROR)UnsafeNativeMethods.libssh2_channel_wait_eof(
@@ -152,7 +152,7 @@ namespace Google.Solutions.Ssh.Native
         public void Close()
         {
             this.channelHandle.CheckCurrentThreadOwnsHandle();
-            
+
             using (SshTraceSources.Default.TraceMethod().WithoutParameters())
             {
                 // Avoid closing more than once.

@@ -68,7 +68,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.Settings
         public RegistrySecureStringSetting ProxyPassword { get; private set; }
 
         public RegistryBoolSetting IsDeviceCertificateAuthenticationEnabled { get; private set; }
-        
+
         public RegistryStringSetting FullScreenDevices { get; private set; }
 
         public RegistryEnumSetting<OperatingSystems> IncludeOperatingSystems { get; private set; }

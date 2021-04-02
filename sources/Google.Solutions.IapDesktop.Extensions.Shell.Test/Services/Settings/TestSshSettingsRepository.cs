@@ -27,7 +27,7 @@ using NUnit.Framework;
 namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Settings
 {
     [TestFixture]
-    
+
     public class TestSshSettingsRepository : ApplicationFixtureBase
     {
         private const string TestKeyPath = @"Software\Google\__Test";

@@ -105,8 +105,8 @@ namespace Google.Solutions.IapDesktop.Application.Test.Settings
             using (var key = this.hkcu.CreateSubKey(TestKeyPath))
             {
                 key.SetValue(
-                    "test", 
-                    (int)(Toppings.Cheese | Toppings.Chocolate), 
+                    "test",
+                    (int)(Toppings.Cheese | Toppings.Chocolate),
                     RegistryValueKind.DWord);
 
                 var setting = RegistryEnumSetting<Toppings>.FromKey(

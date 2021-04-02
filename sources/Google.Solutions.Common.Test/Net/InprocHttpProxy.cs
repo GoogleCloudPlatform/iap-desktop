@@ -110,15 +110,15 @@ namespace Google.Solutions.Common.Test.Net
                         headers,
                         clientStream);
                 }
-                else if (GetRequestPattern.Match(firstLine) is Match getMatch && 
+                else if (GetRequestPattern.Match(firstLine) is Match getMatch &&
                     getMatch.Success &&
                     this.staticFiles.TryGetValue(getMatch.Groups[1].Value, out var responseBody))
                 {
                     var response = Encoding.ASCII.GetBytes(
-                        "HTTP/1.1 200 OK\r\n"+
+                        "HTTP/1.1 200 OK\r\n" +
                         $"Content-Length: {responseBody.Length}\r\n" +
                         $"Content-Type: application/x-ns-proxy-autoconfig\r\n" +
-                        "\r\n" + 
+                        "\r\n" +
                         responseBody);
                     clientStream.Write(response, 0, response.Length);
                 }

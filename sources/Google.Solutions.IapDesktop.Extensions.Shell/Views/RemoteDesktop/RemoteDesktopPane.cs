@@ -39,7 +39,6 @@ using System.Linq;
 using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using WeifenLuo.WinFormsUI.Docking;
 
 #pragma warning disable IDE1006 // Naming Styles
 #pragma warning disable CA1031 // catch Exception
@@ -127,7 +126,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.RemoteDesktop
 
         public RemoteDesktopPane(
             IServiceProvider serviceProvider,
-            InstanceLocator vmInstance) 
+            InstanceLocator vmInstance)
             : base(serviceProvider)
         {
             this.exceptionDialog = serviceProvider.GetService<IExceptionDialog>();
@@ -139,13 +138,13 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.RemoteDesktop
             this.AllowEndUserDocking = false;
 
             var singleScreenFullScreenMenuItem = new ToolStripMenuItem("&Full screen");
-            singleScreenFullScreenMenuItem.Click += (sender, _) 
+            singleScreenFullScreenMenuItem.Click += (sender, _)
                 => TrySetFullscreen(FullScreenMode.SingleScreen);
             this.TabContextStrip.Items.Add(singleScreenFullScreenMenuItem);
             this.TabContextStrip.Opening += tabContextStrip_Opening;
 
             var allScreensFullScreenMenuItem = new ToolStripMenuItem("&Full screen (multiple displays)");
-            allScreensFullScreenMenuItem.Click += (sender, _) 
+            allScreensFullScreenMenuItem.Click += (sender, _)
                 => TrySetFullscreen(FullScreenMode.AllScreens);
             this.TabContextStrip.Items.Add(allScreensFullScreenMenuItem);
             this.TabContextStrip.Opening += tabContextStrip_Opening;
@@ -155,9 +154,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.RemoteDesktop
         // Publics.
         //---------------------------------------------------------------------
 
-        public override string Text 
-        { 
-            get => this.Instance?.Name ?? "Remote Desktop"; 
+        public override string Text
+        {
+            get => this.Instance?.Name ?? "Remote Desktop";
             set { }
         }
 

@@ -166,7 +166,7 @@ namespace Google.Solutions.Common.Test.Integration
                         {
                             new NetworkInterface()
                             {
-                                AccessConfigs = publicIp 
+                                AccessConfigs = publicIp
                                     ? new [] { new AccessConfig() }
                                     : null
                             }

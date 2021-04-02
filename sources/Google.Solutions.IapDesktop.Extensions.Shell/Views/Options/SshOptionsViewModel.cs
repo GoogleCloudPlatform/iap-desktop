@@ -34,7 +34,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Options
     [Service(typeof(ISshDialogPane), ServiceLifetime.Transient, ServiceVisibility.Global)]
     [ServiceCategory(typeof(IOptionsDialogPane))]
     public class SshOptionsViewModel : ViewModelBase, ISshDialogPane
-    { 
+    {
         private bool isPropagateLocaleEnabled;
         private int publicKeyValidityInDays;
 

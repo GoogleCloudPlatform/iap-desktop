@@ -289,7 +289,7 @@ namespace Google.Solutions.Ssh.Native
                 var result = (LIBSSH2_ERROR)UnsafeNativeMethods.libssh2_keepalive_send(
                     this.sessionHandle,
                     out int secondsTillNextKeepalive);
-                
+
                 if (result != LIBSSH2_ERROR.NONE)
                 {
                     throw CreateException(result);
@@ -352,7 +352,7 @@ namespace Google.Solutions.Ssh.Native
                     this.sessionHandle);
             }
         }
-        
+
         public SshNativeException CreateException(LIBSSH2_ERROR error)
         {
             var lastError = (LIBSSH2_ERROR)UnsafeNativeMethods.libssh2_session_last_error(
@@ -362,7 +362,7 @@ namespace Google.Solutions.Ssh.Native
                 0);
 
             if (lastError == error)
-            { 
+            {
                 return new SshNativeException(
                     error,
                     Marshal.PtrToStringAnsi(errorMessage, errorMessageLength));

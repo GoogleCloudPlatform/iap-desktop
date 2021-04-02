@@ -24,7 +24,6 @@ using Google.Solutions.IapDesktop.Application;
 using Google.Solutions.IapDesktop.Application.ObjectModel;
 using Google.Solutions.IapDesktop.Application.Services.Settings;
 using Google.Solutions.IapDesktop.Application.Settings;
-using Google.Solutions.IapDesktop.Application.Util;
 using Microsoft.Win32;
 using System;
 using System.Collections.Generic;

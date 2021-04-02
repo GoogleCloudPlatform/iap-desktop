@@ -38,7 +38,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views.ProjectPicker
             Name = "Project #1",
             ProjectId = "project-1"
         };
-        
+
         private static readonly Project ProjectTwo = new Project()
         {
             Name = "Project #2",
@@ -124,7 +124,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views.ProjectPicker
         {
             var resourceManagerMock = CreateResourceManagerAdapterMock();
             var viewModel = new ProjectPickerViewModel(resourceManagerMock.Object);
-            
+
             await viewModel.FilterAsync(null);
             viewModel.SelectedProject = ProjectOne;
 

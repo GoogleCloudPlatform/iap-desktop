@@ -39,7 +39,7 @@ namespace Google.Solutions.IapDesktop.Application.Views
         private DockState lastDockState;
 
         public ContextMenuStrip TabContextStrip => this.contextMenuStrip;
-        
+
         public bool IsClosed { get; private set; } = false;
 
         public ToolWindow()
@@ -312,7 +312,7 @@ namespace Google.Solutions.IapDesktop.Application.Views
             // with active sessions).
 
             base.OnClosed(e);
-            
+
             this.IsClosed = true;
         }
 

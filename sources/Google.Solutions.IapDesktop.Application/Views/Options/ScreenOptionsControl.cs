@@ -21,7 +21,6 @@
 
 using Google.Solutions.Common.Diagnostics;
 using Google.Solutions.IapDesktop.Application.Controls;
-using Google.Solutions.IapDesktop.Application.ObjectModel;
 using System.Windows.Forms;
 
 #pragma warning disable IDE1006 // Naming Styles

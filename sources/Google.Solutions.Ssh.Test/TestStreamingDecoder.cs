@@ -34,7 +34,7 @@ namespace Google.Solutions.Ssh.Test
         public void SetUp()
         {
             this.output = new StringBuilder();
-            this.decoder  = new StreamingDecoder(
+            this.decoder = new StreamingDecoder(
                 Encoding.UTF8,
                 s => output.Append(s));
         }
@@ -49,7 +49,7 @@ namespace Google.Solutions.Ssh.Test
 
         [Test]
         public void WhenInputContainsTwoByteUtf8Sequence_ThenInputIsDecoded()
-        { 
+        {
             this.decoder.Decode(new byte[] { 0xC2, 0xA2 });
             Assert.AreEqual("\u00A2", this.output.ToString());
             this.output.Clear();
@@ -57,7 +57,7 @@ namespace Google.Solutions.Ssh.Test
 
         [Test]
         public void WhenInputContainsThreeByteUtf8Sequence_ThenInputIsDecoded()
-        { 
+        {
             this.decoder.Decode(new byte[] { 0xE0, 0xA4, 0xB9 });
             Assert.AreEqual("\u0939", this.output.ToString());
         }
@@ -67,7 +67,7 @@ namespace Google.Solutions.Ssh.Test
         {
             this.decoder.Decode(new byte[] { 0xC2 });
             Assert.AreEqual("", this.output.ToString());
-            
+
             this.decoder.Decode(new byte[] { 0xA2, 0x20 });
             Assert.AreEqual("\u00A2 ", this.output.ToString());
         }

@@ -47,7 +47,7 @@ namespace Google.Solutions.Ssh.Native
 
         internal SshAuthenticatedSession(SshSession session)
         {
-            this.session= session;
+            this.session = session;
         }
 
         //---------------------------------------------------------------------

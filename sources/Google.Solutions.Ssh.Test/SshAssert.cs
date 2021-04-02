@@ -54,8 +54,8 @@ namespace Google.Solutions.Ssh.Test
         }
 
         public static void ThrowsAggregateExceptionWithError(
-            LIBSSH2_ERROR expected, 
-            TestDelegate code) 
+            LIBSSH2_ERROR expected,
+            TestDelegate code)
         {
             ThrowsNativeExceptionWithError(
                 null,
