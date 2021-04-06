@@ -91,6 +91,18 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.Views.SerialOutpu
             "\u001B[2q", //Turn on LED #2", //DECLL2
             "\u001B[3q", //Turn on LED #3", //DECLL3
             "\u001B[4q", //Turn on LED #4", //DECLL4
+
+            "\u001B%@",  // Select default (ISO 646 / ISO 8859-1)
+            "\u001B%G",  // Select UTF-8
+            "\u001B%8",  // Select UTF-8 (obsolete)
+
+            "\u001B(B",  // Select default (ISO 8859-1 mapping)
+            "\u001B(0",  // Select VT100 graphics mapping
+            "\u001B(U",  // Select null mapping - straight to character ROM
+            "\u001B(K",  // Select user mapping - the map that is loaded by
+            "\u001B)",   // Start sequence defining G1
+            "\u001B>",   // Set numeric keypad mode
+            "\u001B=",   // Set application keypad mode
         };
 
         //---------------------------------------------------------------------
