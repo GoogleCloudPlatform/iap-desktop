@@ -35,25 +35,6 @@ namespace Google.Solutions.Ssh.Test
     [TestFixture]
     public class TestSshShellConnection : SshFixtureBase
     {
-        private async Task AwaitBufferAsync(
-            StringBuilder buffer,
-            TimeSpan timeout,
-            int minimumLength)
-        {
-            for (int i = 0; i < 10; i++)
-            {
-                await Task.Delay(TimeSpan.FromMilliseconds(timeout.TotalMilliseconds / 10));
-                if (buffer.Length > minimumLength)
-                {
-                    return;
-                }
-            }
-
-            throw new TimeoutException(
-                "Timeout waiting for buffer to contain at least " +
-                $"{minimumLength} characters of data");
-        }
-
         private async Task AwaitBufferContentAsync(
             StringBuilder buffer,
             TimeSpan timeout,

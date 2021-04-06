@@ -35,7 +35,7 @@ namespace Google.Solutions.IapDesktop.Application.Views
     public partial class ToolWindow : DockContent
     {
         private readonly DockPanel panel;
-        private DockState initialDockState;
+        private readonly DockState initialDockState;
         private DockState lastDockState;
 
         public ContextMenuStrip TabContextStrip => this.contextMenuStrip;

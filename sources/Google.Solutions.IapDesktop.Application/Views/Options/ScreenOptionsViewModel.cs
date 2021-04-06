@@ -126,9 +126,10 @@ namespace Google.Solutions.IapDesktop.Application.Views.Options
 
         public class ScreenDevice : IScreenPickerModelItem
         {
-            private ScreenOptionsViewModel model;
-            private bool isSelected;
+            private readonly ScreenOptionsViewModel model;
             private readonly Screen screen;
+            
+            private bool isSelected;
 
             public string DeviceName => this.screen.DeviceName;
 

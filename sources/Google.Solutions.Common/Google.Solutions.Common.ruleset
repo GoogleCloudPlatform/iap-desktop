@@ -58,11 +58,17 @@
     <Rule Id="CA2232" Action="Warning" />
     <Rule Id="CA2235" Action="Warning" />
     <Rule Id="CA2236" Action="Warning" />
-    <Rule Id="CA2237" Action="Warning" />
     <Rule Id="CA2238" Action="Warning" />
     <Rule Id="CA2240" Action="Warning" />
     <Rule Id="CA2241" Action="Warning" />
     <Rule Id="CA2242" Action="Warning" />
+  </Rules>
+  <Rules AnalyzerId="Microsoft.CodeAnalysis.CSharp" RuleNamespace="Microsoft.CodeAnalysis.CSharp">
+    <Rule Id="CS8019" Action="None" />
+  </Rules>
+  <Rules AnalyzerId="Microsoft.CodeAnalysis.CSharp.Features" RuleNamespace="Microsoft.CodeAnalysis.CSharp.Features">
+    <Rule Id="IDE1006" Action="None" />
+    <Rule Id="IDE1006WithoutSuggestion" Action="None" />
   </Rules>
   <Rules AnalyzerId="Microsoft.CodeAnalysis.Features" RuleNamespace="Microsoft.CodeAnalysis.Features">
     <Rule Id="IDE0067" Action="Info" />
@@ -83,8 +89,9 @@
     <Rule Id="CA1067" Action="Info" />
     <Rule Id="CA1502" Action="Info" />
     <Rule Id="CA1505" Action="Info" />
-    <Rule Id="CA1508" Action="Warning" />
+    <Rule Id="CA1506" Action="Warning" />
     <Rule Id="CA1714" Action="Warning" />
+    <Rule Id="CA1717" Action="Warning" />
     <Rule Id="CA1801" Action="Info" />
     <Rule Id="CA1806" Action="Info" />
     <Rule Id="CA1812" Action="Info" />
@@ -97,6 +104,13 @@
   </Rules>
   <Rules AnalyzerId="Microsoft.CodeQuality.CSharp.Analyzers" RuleNamespace="Microsoft.CodeQuality.CSharp.Analyzers">
     <Rule Id="CA2234" Action="Warning" />
+  </Rules>
+  <Rules AnalyzerId="Microsoft.NetCore.Analyzers" RuleNamespace="Microsoft.NetCore.Analyzers">
+    <Rule Id="CA2237" Action="None" />
+  </Rules>
+  <Rules AnalyzerId="Microsoft.NetCore.CSharp.Analyzers" RuleNamespace="Microsoft.NetCore.CSharp.Analyzers">
+    <Rule Id="CA1309" Action="Warning" />
+    <Rule Id="CA2201" Action="Warning" />
   </Rules>
   <Rules AnalyzerId="Microsoft.NetFramework.Analyzers" RuleNamespace="Microsoft.NetFramework.Analyzers">
     <Rule Id="CA1058" Action="Warning" />

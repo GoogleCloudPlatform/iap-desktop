@@ -59,12 +59,14 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views.ProjectExplorer
         public void WhenAllOsEnabledInSettings_ThenAllOsAreIncluded()
         {
             // Write settings.
-            var viewModel = new ProjectExplorerViewModel(this.settingsRepository);
-            viewModel.IsWindowsIncluded = true;
-            viewModel.IsLinuxIncluded = true;
+            new ProjectExplorerViewModel(this.settingsRepository)
+            {
+                IsWindowsIncluded = true,
+                IsLinuxIncluded = true
+            };
 
             // Read again.
-            viewModel = new ProjectExplorerViewModel(this.settingsRepository);
+            var viewModel = new ProjectExplorerViewModel(this.settingsRepository);
             Assert.IsTrue(viewModel.IsWindowsIncluded);
             Assert.IsTrue(viewModel.IsLinuxIncluded);
         }
@@ -73,12 +75,14 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views.ProjectExplorer
         public void WhenAllOsDisabledInSettings_ThenNoOsAreIncluded()
         {
             // Write settings.
-            var viewModel = new ProjectExplorerViewModel(this.settingsRepository);
-            viewModel.IsWindowsIncluded = false;
-            viewModel.IsLinuxIncluded = false;
+            new ProjectExplorerViewModel(this.settingsRepository)
+            {
+                IsWindowsIncluded = false,
+                IsLinuxIncluded = false
+            };
 
             // Read again.
-            viewModel = new ProjectExplorerViewModel(this.settingsRepository);
+            var viewModel = new ProjectExplorerViewModel(this.settingsRepository);
             Assert.IsFalse(viewModel.IsWindowsIncluded);
             Assert.IsFalse(viewModel.IsLinuxIncluded);
         }

@@ -28,12 +28,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Options
     [SkipCodeCoverage("UI code")]
     public partial class TerminalOptionsControl : UserControl
     {
-        private readonly TerminalOptionsViewModel viewModel;
-
         public TerminalOptionsControl(TerminalOptionsViewModel viewModel)
         {
-            this.viewModel = viewModel;
-
             InitializeComponent();
 
             //
