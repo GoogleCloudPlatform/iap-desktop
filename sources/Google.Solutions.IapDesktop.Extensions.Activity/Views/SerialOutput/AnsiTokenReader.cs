@@ -132,7 +132,12 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Views.SerialOutput
                                 state = ScannerState.InCsiSequence;
                                 buffer.Append(c);
                             }
-                            else if ((c >= 'A' && c <= '_'))
+                            else if (c == '%' || c == '(')
+                            {
+                                // Keep reading.
+                                buffer.Append(c);
+                            }
+                            else if ((c >= '0' && c <= '_') || c == ')')
                             {
                                 buffer.Append(c);
 
