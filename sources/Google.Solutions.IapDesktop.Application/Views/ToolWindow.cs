@@ -215,7 +215,7 @@ namespace Google.Solutions.IapDesktop.Application.Views
 
         private void ToolWindow_KeyUp(object sender, KeyEventArgs e)
         {
-            if (e.Shift && e.KeyCode == Keys.Escape)
+            if (this.DockState != DockState.Document && e.Shift && e.KeyCode == Keys.Escape)
             {
                 CloseSafely();
             }
