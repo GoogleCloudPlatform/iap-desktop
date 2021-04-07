@@ -56,10 +56,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Controls
         public event EventHandler<TerminalResizeEventArgs> TerminalResized;
         public event EventHandler WindowTitleChanged;
 
-#pragma warning disable IDE0069 // Disposable fields should be disposed
-        private Caret caret;
-#pragma warning restore IDE0069 // Disposable fields should be disposed
-
         private TextSelection selection;
         private bool scrolling;
         private TextPosition mouseDownPosition;
@@ -116,7 +112,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Controls
 
             this.Disposed += (sender, args) =>
             {
-                this.caret?.Dispose();
             };
         }
 
@@ -136,18 +131,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Controls
         //---------------------------------------------------------------------
         // Painting.
         //---------------------------------------------------------------------
-
-        private Caret GetCaret(Graphics graphics)
-        {
-            if (this.caret == null)
-            {
-                this.caret = new Caret(
-                    this,
-                    this.terminalFont.Measure(graphics, 1).ToSize());
-            }
-
-            return this.caret;
-        }
 
         private static Color GetSolidColorBrush(string hex)
         {
@@ -201,12 +184,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Controls
                 }
             }
 
-            //
-            // Force new caret so that it uses the new font size too.
-            //
-            this.caret?.Dispose();
-            this.caret = null;
-
             Invalidate();
         }
 
@@ -245,14 +222,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Controls
 
             if (this.controller.CursorState.ShowCursor)
             {
-                var caretPosition = this.controller.ViewPort.CursorPosition.Clone();
-                PaintCaret(
-                    e.Graphics,
-                    caretPosition.OffsetBy(0, terminalTop - this.ViewTop));
-            }
-            else
-            {
-                GetCaret(e.Graphics).Hide();
+                PaintCaret(e.Graphics, this.CaretPosition);
             }
         }
 
@@ -364,31 +334,30 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Controls
             var caretY = caretPosition.Row;
             if (caretY < 0 || caretY >= Rows)
             {
+                // When scrolling, the caret position might escape the viewport.
+                // Do not paint a caret if this happens.
                 return;
             }
 
-            if (caretPosition.Column > 0)
-            {
-                // Make sure the cursor properly aligns with previous text,
-                // so use the previous text to determine the position.
-                var precedingTextDimensions = this.terminalFont.Measure(
+            var caretRect = new Rectangle(
+                GetCaretLocation(graphics),
+                this.terminalFont.Measure(
                     graphics,
-                    caretPosition.Column);
+                    1).ToSize());
 
-                GetCaret(graphics).Position = new Point(
-                    (int)Math.Ceiling(precedingTextDimensions.Width),
-                    (int)Math.Ceiling(caretY * precedingTextDimensions.Height));
+            var brush = new SolidBrush(Color.White);
+            if (this.Focused)
+            {
+                // Draw solid box.
+                graphics.FillRectangle(brush, caretRect);
             }
             else
             {
-                // At beginning of line, so there's no text to align with.
-                var characterHeight = this.terminalFont.Measure(
-                    graphics,
-                    1).Height;
-
-                GetCaret(graphics).Position = new Point(
-                    0,
-                    (int)Math.Ceiling(caretY * characterHeight));
+                // Draw outline.
+                using (var pen = new Pen(brush))
+                {
+                    graphics.DrawRectangle(pen, caretRect);
+                }
             }
         }
 
@@ -400,9 +369,11 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Controls
             var diagnosticText =
                  $"Dimensions: {this.Columns}x{this.Rows}\n" +
                  $"Char size: {rowDimensions.Width / this.Columns}x{rowDimensions.Height}\n" +
-                 $"ViewTop : {this.ViewTop}\n" +
+                 $"ViewTop: {this.ViewTop}\n" +
+                 $"TopRow: {this.controller.ViewPort.TopRow}\n" +
+                 $"Screen cursor pos: {this.controller.ViewPort.ScreenCursorPosition}\n" +
                  $"Cursor pos: {this.controller.ViewPort.CursorPosition}\n" +
-                 $"Screen cursor pos: {this.controller.ViewPort.ScreenCursorPosition}";
+                 $"Caret pos (viewport): {this.CaretPosition}";
 
             var size = this.terminalFont.Measure(graphics, diagnosticText);
 
@@ -422,6 +393,70 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Controls
                     (int)Math.Ceiling(rowDimensions.Width),
                     (int)Math.Ceiling(rowDimensions.Height * this.Rows)));
 #endif
+        }
+
+        //---------------------------------------------------------------------
+        // Caret tracking.
+        //---------------------------------------------------------------------
+
+        internal TextPosition CaretPosition
+        {
+            get
+            {
+                var caretPosition = this.controller.ViewPort.CursorPosition.Clone();
+                return caretPosition.OffsetBy(
+                    0,
+                    this.controller.ViewPort.TopRow - this.ViewTop);
+            }
+        }
+
+        private Point GetCaretLocation(Graphics graphics)
+        {
+            var caretPosition = this.CaretPosition;
+            if (caretPosition.Column > 0)
+            {
+                // Make sure the cursor properly aligns with previous text,
+                // so use the previous text to determine the position.
+                var precedingTextDimensions = this.terminalFont.Measure(
+                    graphics,
+                    caretPosition.Column);
+
+                return new Point(
+                    (int)Math.Ceiling(precedingTextDimensions.Width),
+                    (int)Math.Ceiling(caretPosition.Row * precedingTextDimensions.Height));
+            }
+            else
+            {
+                // At beginning of line, so there's no text to align with.
+                var characterHeight = this.terminalFont.Measure(
+                    graphics,
+                    1).Height;
+
+                return new Point(
+                    0,
+                    (int)Math.Ceiling(caretPosition.Row * characterHeight));
+            }
+        }
+
+        private void InvalidateCaretArea(int chars = 20)
+        {
+            using (var graphics = CreateGraphics())
+            {
+                var characterDimensions = this.terminalFont.Measure(graphics, 1).ToSize();
+                var caretLocation = GetCaretLocation(graphics);
+
+                // 
+                // Invalidate [chars] before and after the caret,
+                // and a 10px line above/below.
+                //
+                var rectAroundCaret = new Rectangle(
+                    Math.Max(0, caretLocation.X - chars * characterDimensions.Width),
+                    Math.Max(0, caretLocation.Y - 10),
+                    2 * chars * characterDimensions.Width,
+                    characterDimensions.Height + 20);
+
+                Invalidate(rectAroundCaret);
+            }
         }
 
         //---------------------------------------------------------------------
@@ -461,15 +496,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Controls
                         // application is running in an RDP session, but the effect
                         // is negligble otherwise.
                         //
-                        using (var graphics = CreateGraphics())
-                        {
-                            var caretPos = GetCaret(graphics).Position;
-                            Invalidate(new Rectangle(
-                                0,
-                                caretPos.Y,
-                                this.Width,
-                                Math.Min(100, this.Height - caretPos.Y)));
-                        }
+                        InvalidateCaretArea();
                     }
                     else
                     {
@@ -1275,10 +1302,14 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Controls
 
         protected override void OnLostFocus(EventArgs e)
         {
-            this.caret?.Dispose();
-            this.caret = null;
-
+            InvalidateCaretArea();
             base.OnLostFocus(e);
+        }
+
+        protected override void OnGotFocus(EventArgs e)
+        {
+            InvalidateCaretArea();
+            base.OnGotFocus(e);
         }
 
         //---------------------------------------------------------------------

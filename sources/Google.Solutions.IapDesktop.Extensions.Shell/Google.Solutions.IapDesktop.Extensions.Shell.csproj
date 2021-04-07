@@ -84,7 +84,6 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Controls\Caret.cs" />
     <Compile Include="Controls\KeyUtil.cs" />
     <Compile Include="Controls\TerminalFont.cs" />
     <Compile Include="Controls\UnsafeNativeMethods.cs" />
