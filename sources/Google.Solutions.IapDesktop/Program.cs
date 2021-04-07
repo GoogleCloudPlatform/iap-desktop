@@ -138,6 +138,19 @@ namespace Google.Solutions.IapDesktop
 
             IsLoggingEnabled = options.IsLoggingEnabled;
 
+            //
+            // Set up process mitigations. This must be done early, otherwise it's
+            // ineffective.
+            //
+            try
+            {
+                ProcessMitigations.Apply();
+            }
+            catch (Exception e)
+            {
+                ApplicationTraceSources.Default.TraceError(e);
+            }
+
 #if DEBUG
             ApplicationTraceSources.Default.Switch.Level = SourceLevels.Verbose;
             //SshTraceSources.Default.Switch.Level = SourceLevels.Verbose;
