@@ -27,8 +27,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Controls
 {
     internal sealed class Caret : IDisposable
     {
-        public bool Visible { get; private set; } = true;
-
         public IWin32Window Owner { get; }
 
         public Point Position
@@ -54,20 +52,12 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Controls
 
         public void Hide()
         {
-            if (this.Visible)
-            {
-                UnsafeNativeMethods.HideCaret(this.Owner.Handle);
-                this.Visible = false;
-            }
+            UnsafeNativeMethods.HideCaret(this.Owner.Handle);
         }
 
         public void Show()
         {
-            if (!this.Visible)
-            {
-                UnsafeNativeMethods.ShowCaret(this.Owner.Handle);
-                this.Visible = true;
-            }
+            UnsafeNativeMethods.ShowCaret(this.Owner.Handle);
         }
 
         public void Dispose()

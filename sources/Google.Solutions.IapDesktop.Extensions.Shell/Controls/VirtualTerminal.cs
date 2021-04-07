@@ -133,6 +133,17 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Controls
                 : text;
         }
 
+        internal TextPosition CaretPosition
+        {
+            get
+            {
+                var caretPosition = this.controller.ViewPort.CursorPosition.Clone();
+                return caretPosition.OffsetBy(
+                    0, 
+                    this.controller.ViewPort.TopRow - this.ViewTop);
+            }
+        }
+
         //---------------------------------------------------------------------
         // Painting.
         //---------------------------------------------------------------------
@@ -245,10 +256,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Controls
 
             if (this.controller.CursorState.ShowCursor)
             {
-                var caretPosition = this.controller.ViewPort.CursorPosition.Clone();
-                PaintCaret(
-                    e.Graphics,
-                    caretPosition.OffsetBy(0, terminalTop - this.ViewTop));
+                GetCaret(e.Graphics).Show();
+
+                PaintCaret(e.Graphics, this.CaretPosition);
             }
             else
             {
@@ -424,6 +434,19 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Controls
 #endif
         }
 
+        private void InvalidateCaretArea()
+        {
+            using (var graphics = CreateGraphics())
+            {
+                var caretPos = GetCaret(graphics).Position;
+                Invalidate(new Rectangle(
+                    0,
+                    caretPos.Y,
+                    this.Width,
+                    Math.Min(100, this.Height - caretPos.Y)));
+            }
+        }
+
         //---------------------------------------------------------------------
         // Actions.
         //---------------------------------------------------------------------
@@ -461,15 +484,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Controls
                         // application is running in an RDP session, but the effect
                         // is negligble otherwise.
                         //
-                        using (var graphics = CreateGraphics())
-                        {
-                            var caretPos = GetCaret(graphics).Position;
-                            Invalidate(new Rectangle(
-                                0,
-                                caretPos.Y,
-                                this.Width,
-                                Math.Min(100, this.Height - caretPos.Y)));
-                        }
+                        InvalidateCaretArea();
                     }
                     else
                     {
