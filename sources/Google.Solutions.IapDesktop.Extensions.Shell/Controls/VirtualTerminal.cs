@@ -56,10 +56,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Controls
         public event EventHandler<TerminalResizeEventArgs> TerminalResized;
         public event EventHandler WindowTitleChanged;
 
-#pragma warning disable IDE0069 // Disposable fields should be disposed
-        private Caret caret;
-#pragma warning restore IDE0069 // Disposable fields should be disposed
-
         private TextSelection selection;
         private bool scrolling;
         private TextPosition mouseDownPosition;
@@ -116,7 +112,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Controls
 
             this.Disposed += (sender, args) =>
             {
-                this.caret?.Dispose();
             };
         }
 
@@ -136,18 +131,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Controls
         //---------------------------------------------------------------------
         // Painting.
         //---------------------------------------------------------------------
-
-        private Caret GetCaret(Graphics graphics)
-        {
-            if (this.caret == null)
-            {
-                this.caret = new Caret(
-                    this,
-                    this.terminalFont.Measure(graphics, 1).ToSize());
-            }
-
-            return this.caret;
-        }
 
         private static Color GetSolidColorBrush(string hex)
         {
@@ -201,12 +184,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Controls
                 }
             }
 
-            //
-            // Force new caret so that it uses the new font size too.
-            //
-            this.caret?.Dispose();
-            this.caret = null;
-
             Invalidate();
         }
 
@@ -245,13 +222,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Controls
 
             if (this.controller.CursorState.ShowCursor)
             {
-                GetCaret(e.Graphics).Show();
-
                 PaintCaret(e.Graphics, this.CaretPosition);
-            }
-            else
-            {
-                GetCaret(e.Graphics).Hide();
             }
         }
 
@@ -363,10 +334,31 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Controls
             var caretY = caretPosition.Row;
             if (caretY < 0 || caretY >= Rows)
             {
+                // When scrolling, the caret position might escape the viewport.
+                // Do not paint a caret if this happens.
                 return;
             }
 
-            GetCaret(graphics).Position = GetCaretLocation(graphics);
+            var caretRect = new Rectangle(
+                GetCaretLocation(graphics),
+                this.terminalFont.Measure(
+                    graphics,
+                    1).ToSize());
+
+            var brush = new SolidBrush(Color.White);
+            if (this.Focused)
+            {
+                // Draw solid box.
+                graphics.FillRectangle(brush, caretRect);
+            }
+            else
+            {
+                // Draw outline.
+                using (var pen = new Pen(brush))
+                {
+                    graphics.DrawRectangle(pen, caretRect);
+                }
+            }
         }
 
         private void PaintDiagnostics(Graphics graphics)
@@ -377,9 +369,11 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Controls
             var diagnosticText =
                  $"Dimensions: {this.Columns}x{this.Rows}\n" +
                  $"Char size: {rowDimensions.Width / this.Columns}x{rowDimensions.Height}\n" +
-                 $"ViewTop : {this.ViewTop}\n" +
+                 $"ViewTop: {this.ViewTop}\n" +
+                 $"TopRow: {this.controller.ViewPort.TopRow}\n" +
+                 $"Screen cursor pos: {this.controller.ViewPort.ScreenCursorPosition}\n" +
                  $"Cursor pos: {this.controller.ViewPort.CursorPosition}\n" +
-                 $"Screen cursor pos: {this.controller.ViewPort.ScreenCursorPosition}";
+                 $"Caret pos (viewport): {this.CaretPosition}";
 
             var size = this.terminalFont.Measure(graphics, diagnosticText);
 
@@ -444,16 +438,24 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Controls
             }
         }
 
-        private void InvalidateCaretArea()
+        private void InvalidateCaretArea(int chars = 20)
         {
             using (var graphics = CreateGraphics())
             {
-                var caretPos = GetCaret(graphics).Position;
-                Invalidate(new Rectangle(
-                    0,
-                    caretPos.Y,
-                    this.Width,
-                    Math.Min(100, this.Height - caretPos.Y)));
+                var characterDimensions = this.terminalFont.Measure(graphics, 1).ToSize();
+                var caretLocation = GetCaretLocation(graphics);
+
+                // 
+                // Invalidate [chars] before and after the caret,
+                // and a 10px line above/below.
+                //
+                var rectAroundCaret = new Rectangle(
+                    Math.Max(0, caretLocation.X - chars * characterDimensions.Width),
+                    Math.Max(0, caretLocation.Y - 10),
+                    2 * chars * characterDimensions.Width,
+                    characterDimensions.Height + 20);
+
+                Invalidate(rectAroundCaret);
             }
         }
 
@@ -1300,10 +1302,14 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Controls
 
         protected override void OnLostFocus(EventArgs e)
         {
-            this.caret?.Dispose();
-            this.caret = null;
-
+            InvalidateCaretArea();
             base.OnLostFocus(e);
+        }
+
+        protected override void OnGotFocus(EventArgs e)
+        {
+            InvalidateCaretArea();
+            base.OnGotFocus(e);
         }
 
         //---------------------------------------------------------------------
