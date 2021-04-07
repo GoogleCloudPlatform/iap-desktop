@@ -133,17 +133,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Controls
                 : text;
         }
 
-        internal TextPosition CaretPosition
-        {
-            get
-            {
-                var caretPosition = this.controller.ViewPort.CursorPosition.Clone();
-                return caretPosition.OffsetBy(
-                    0, 
-                    this.controller.ViewPort.TopRow - this.ViewTop);
-            }
-        }
-
         //---------------------------------------------------------------------
         // Painting.
         //---------------------------------------------------------------------
@@ -377,29 +366,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Controls
                 return;
             }
 
-            if (caretPosition.Column > 0)
-            {
-                // Make sure the cursor properly aligns with previous text,
-                // so use the previous text to determine the position.
-                var precedingTextDimensions = this.terminalFont.Measure(
-                    graphics,
-                    caretPosition.Column);
-
-                GetCaret(graphics).Position = new Point(
-                    (int)Math.Ceiling(precedingTextDimensions.Width),
-                    (int)Math.Ceiling(caretY * precedingTextDimensions.Height));
-            }
-            else
-            {
-                // At beginning of line, so there's no text to align with.
-                var characterHeight = this.terminalFont.Measure(
-                    graphics,
-                    1).Height;
-
-                GetCaret(graphics).Position = new Point(
-                    0,
-                    (int)Math.Ceiling(caretY * characterHeight));
-            }
+            GetCaret(graphics).Position = GetCaretLocation(graphics);
         }
 
         private void PaintDiagnostics(Graphics graphics)
@@ -432,6 +399,49 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Controls
                     (int)Math.Ceiling(rowDimensions.Width),
                     (int)Math.Ceiling(rowDimensions.Height * this.Rows)));
 #endif
+        }
+
+        //---------------------------------------------------------------------
+        // Caret tracking.
+        //---------------------------------------------------------------------
+
+        internal TextPosition CaretPosition
+        {
+            get
+            {
+                var caretPosition = this.controller.ViewPort.CursorPosition.Clone();
+                return caretPosition.OffsetBy(
+                    0,
+                    this.controller.ViewPort.TopRow - this.ViewTop);
+            }
+        }
+
+        private Point GetCaretLocation(Graphics graphics)
+        {
+            var caretPosition = this.CaretPosition;
+            if (caretPosition.Column > 0)
+            {
+                // Make sure the cursor properly aligns with previous text,
+                // so use the previous text to determine the position.
+                var precedingTextDimensions = this.terminalFont.Measure(
+                    graphics,
+                    caretPosition.Column);
+
+                return new Point(
+                    (int)Math.Ceiling(precedingTextDimensions.Width),
+                    (int)Math.Ceiling(caretPosition.Row * precedingTextDimensions.Height));
+            }
+            else
+            {
+                // At beginning of line, so there's no text to align with.
+                var characterHeight = this.terminalFont.Measure(
+                    graphics,
+                    1).Height;
+
+                return new Point(
+                    0,
+                    (int)Math.Ceiling(caretPosition.Row * characterHeight));
+            }
         }
 
         private void InvalidateCaretArea()
