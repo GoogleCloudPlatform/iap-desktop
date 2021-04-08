@@ -373,7 +373,7 @@ namespace Google.Solutions.IapDesktop.Windows
             var commandContainer = new CommandContainer<IMainForm>(
                 this,
                 menu.DropDownItems,
-                ToolStripItemDisplayStyle.Text,
+                ToolStripItemDisplayStyle.ImageAndText,
                 this.serviceProvider)
             {
                 Context = this // There is no real context for this.
