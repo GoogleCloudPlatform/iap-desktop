@@ -41,7 +41,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Rdp
     public interface IRdpConnectionService
     {
         Task ActivateOrConnectInstanceAsync(
-            IProjectExplorerVmInstanceNode vmNode,
+            IProjectExplorerInstanceNode vmNode,
             bool allowPersistentCredentials);
 
         Task ActivateOrConnectInstanceAsync(IapRdpUrl url);
@@ -126,12 +126,12 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Rdp
         //---------------------------------------------------------------------
 
         public async Task ActivateOrConnectInstanceAsync(
-            IProjectExplorerVmInstanceNode vmNode,
+            IProjectExplorerInstanceNode vmNode,
             bool allowPersistentCredentials)
         {
             Debug.Assert(vmNode.IsRdpSupported());
 
-            if (this.sessionBroker.TryActivate(vmNode.Reference))
+            if (this.sessionBroker.TryActivate(vmNode.Instance))
             {
                 // RDP session was active, nothing left to do.
                 return;
@@ -146,7 +146,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Rdp
             {
                 await this.credentialPrompt.ShowCredentialsPromptAsync(
                         this.window,
-                        vmNode.Reference,
+                        vmNode.Instance,
                         settings.TypedCollection,
                         true)
                     .ConfigureAwait(true);
@@ -167,7 +167,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Rdp
             }
 
             await ConnectInstanceAsync(
-                    vmNode.Reference,
+                    vmNode.Instance,
                     (InstanceConnectionSettings)settings.TypedCollection)
                 .ConfigureAwait(true);
         }
@@ -182,7 +182,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Rdp
 
             InstanceConnectionSettings settings;
             if (this.projectExplorer.TryFindNode(url.Instance)
-                is IProjectExplorerVmInstanceNode vmNode)
+                is IProjectExplorerInstanceNode vmNode)
             {
                 // We have a full set of settings for this VM, so use that as basis
                 settings = (InstanceConnectionSettings)

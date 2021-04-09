@@ -79,10 +79,10 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.ConnectionS
             return zoneNode.Object;
         }
 
-        private IProjectExplorerVmInstanceNode CreateVmInstanceNode(bool isWindows = false)
+        private IProjectExplorerInstanceNode CreateVmInstanceNode(bool isWindows = false)
         {
-            var vmNode = new Mock<IProjectExplorerVmInstanceNode>();
-            vmNode.SetupGet(n => n.Reference).Returns(
+            var vmNode = new Mock<IProjectExplorerInstanceNode>();
+            vmNode.SetupGet(n => n.Instance).Returns(
                 new InstanceLocator(SampleProjectId, "zone-1", "instance-1"));
             vmNode.SetupGet(n => n.IsWindowsInstance).Returns(isWindows);
 

@@ -44,9 +44,9 @@ namespace Google.Solutions.IapDesktop.Application.Views.Diagnostics
 
         protected override Task SwitchToNodeAsync(IProjectExplorerNode node)
         {
-            if (node is IProjectExplorerVmInstanceNode vmNode)
+            if (node is IProjectExplorerInstanceNode vmNode)
             {
-                this.instanceNameLabel.Text = vmNode.Reference.Name;
+                this.instanceNameLabel.Text = vmNode.Instance.Name;
             }
             else
             {

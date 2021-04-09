@@ -44,14 +44,14 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
     {
         ZoneLocator Zone { get; }
 
-        IEnumerable<IProjectExplorerVmInstanceNode> Instances { get; }
+        IEnumerable<IProjectExplorerInstanceNode> Instances { get; }
     }
 
-    public interface IProjectExplorerVmInstanceNode : IProjectExplorerNode
+    public interface IProjectExplorerInstanceNode : IProjectExplorerNode
     {
         ulong InstanceId { get; }
 
-        InstanceLocator Reference { get; }
+        InstanceLocator Instance { get; }
 
         bool IsRunning { get; }
         bool IsConnected { get; }

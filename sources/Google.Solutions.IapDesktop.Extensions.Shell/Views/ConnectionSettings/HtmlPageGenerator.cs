@@ -78,7 +78,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.ConnectionSettings
                         .TypedCollection;
 
                     buffer.Append($"<li>");
-                    buffer.Append($"<a href='{new IapRdpUrl(vmNode.Reference, settings.ToUrlQuery())}'>");
+                    buffer.Append($"<a href='{new IapRdpUrl(vmNode.Instance, settings.ToUrlQuery())}'>");
                     buffer.Append($"{HttpUtility.HtmlEncode(vmNode.InstanceName)}</a>");
                     buffer.Append($"</li>");
                 }

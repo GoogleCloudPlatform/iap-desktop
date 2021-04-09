@@ -227,7 +227,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Views.EventLog
         {
             if (node is IProjectExplorerProjectNode
                 || node is IProjectExplorerZoneNode
-                || node is IProjectExplorerVmInstanceNode)
+                || node is IProjectExplorerInstanceNode)
             {
                 return CommandState.Enabled;
             }
@@ -248,12 +248,12 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Views.EventLog
                 string projectIdFilter;
                 string displayName;
 
-                if (node is IProjectExplorerVmInstanceNode vmNode)
+                if (node is IProjectExplorerInstanceNode vmNode)
                 {
-                    displayName = vmNode.Reference.Name;
+                    displayName = vmNode.Instance.Name;
                     instanceIdFilter = new[] { vmNode.InstanceId };
                     zonesFilter = null;
-                    projectIdFilter = vmNode.Reference.ProjectId;
+                    projectIdFilter = vmNode.Instance.ProjectId;
                 }
                 else if (node is IProjectExplorerZoneNode zoneNode)
                 {

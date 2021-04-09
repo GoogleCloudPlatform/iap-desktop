@@ -121,8 +121,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Os.Test.Views.InstancePropertie
         {
             var viewModel = CreateInstanceDetailsViewModel();
 
-            var node = new Mock<IProjectExplorerVmInstanceNode>();
-            node.SetupGet(n => n.Reference).Returns(
+            var node = new Mock<IProjectExplorerInstanceNode>();
+            node.SetupGet(n => n.Instance).Returns(
                 new InstanceLocator("project-1", "zone-1", "instance-1"));
             await viewModel.SwitchToModelAsync(node.Object);
 
@@ -139,14 +139,14 @@ namespace Google.Solutions.IapDesktop.Extensions.Os.Test.Views.InstancePropertie
         {
             var viewModel = CreateInstanceDetailsViewModel();
 
-            var node = new Mock<IProjectExplorerVmInstanceNode>();
-            node.SetupGet(n => n.Reference).Returns(
+            var node = new Mock<IProjectExplorerInstanceNode>();
+            node.SetupGet(n => n.Instance).Returns(
                 new InstanceLocator("project-1", "zone-1", "instance-1"));
             await viewModel.SwitchToModelAsync(node.Object);
 
             // Switch to denied node.
-            var deniedNode = new Mock<IProjectExplorerVmInstanceNode>();
-            deniedNode.SetupGet(n => n.Reference).Returns(
+            var deniedNode = new Mock<IProjectExplorerInstanceNode>();
+            deniedNode.SetupGet(n => n.Instance).Returns(
                 new InstanceLocator("project-1", "zone-1", "denied-1"));
 
             AssertEx.ThrowsAggregateException<ResourceAccessDeniedException>(

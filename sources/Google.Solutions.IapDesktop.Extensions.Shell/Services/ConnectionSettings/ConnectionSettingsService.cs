@@ -61,7 +61,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.ConnectionSettin
         {
             return node is IProjectExplorerProjectNode ||
                    node is IProjectExplorerZoneNode ||
-                   node is IProjectExplorerVmInstanceNode;
+                   node is IProjectExplorerInstanceNode;
         }
 
         public IPersistentSettingsCollection<ConnectionSettingsBase> GetConnectionSettings(
@@ -85,16 +85,16 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.ConnectionSettin
                     .OverlayBy(zoneSettings)
                     .ToPersistentSettingsCollection(s => this.repository.SetZoneSettings(s));
             }
-            else if (node is IProjectExplorerVmInstanceNode vmNode)
+            else if (node is IProjectExplorerInstanceNode vmNode)
             {
                 var projectSettings = this.repository.GetProjectSettings(
-                    vmNode.Reference.ProjectId);
+                    vmNode.Instance.ProjectId);
                 var zoneSettings = this.repository.GetZoneSettings(
-                    vmNode.Reference.ProjectId,
-                    vmNode.Reference.Zone);
+                    vmNode.Instance.ProjectId,
+                    vmNode.Instance.Zone);
                 var instanceSettings = this.repository.GetVmInstanceSettings(
-                    vmNode.Reference.ProjectId,
-                    vmNode.Reference.Name);
+                    vmNode.Instance.ProjectId,
+                    vmNode.Instance.Name);
 
                 var supportsRdp = vmNode.IsRdpSupported();
                 var supportsSsh = vmNode.IsSshSupported();

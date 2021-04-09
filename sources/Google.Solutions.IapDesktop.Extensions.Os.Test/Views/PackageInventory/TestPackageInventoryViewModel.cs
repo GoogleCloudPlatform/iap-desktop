@@ -228,9 +228,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Os.Test.Views.PackageInventory
                 PackageInventoryType.AvailablePackages,
                 PackageInventoryType.InstalledPackages)]  PackageInventoryType type)
         {
-            var node = new Mock<IProjectExplorerVmInstanceNode>();
+            var node = new Mock<IProjectExplorerInstanceNode>();
             node.SetupGet(n => n.DisplayName).Returns("instance-1");
-            node.SetupGet(n => n.Reference).Returns(
+            node.SetupGet(n => n.Instance).Returns(
                 new InstanceLocator("project-1", "zone-1", "instance-1"));
 
             var viewModel = CreateViewModel(type);
@@ -254,9 +254,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Os.Test.Views.PackageInventory
                 PackageInventoryType.AvailablePackages,
                 PackageInventoryType.InstalledPackages)] PackageInventoryType type)
         {
-            var node = new Mock<IProjectExplorerVmInstanceNode>();
+            var node = new Mock<IProjectExplorerInstanceNode>();
             node.SetupGet(n => n.DisplayName).Returns("instance-3");
-            node.SetupGet(n => n.Reference).Returns(
+            node.SetupGet(n => n.Instance).Returns(
                 new InstanceLocator("project-1", "zone-1", "instance-3"));
 
             var viewModel = CreateViewModel(type);

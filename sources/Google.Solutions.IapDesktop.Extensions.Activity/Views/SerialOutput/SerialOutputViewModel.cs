@@ -192,7 +192,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Views.SerialOutput
 
         public static CommandState GetCommandState(IProjectExplorerNode node)
         {
-            if (node is IProjectExplorerVmInstanceNode vmNode)
+            if (node is IProjectExplorerInstanceNode vmNode)
             {
                 return vmNode.IsRunning ? CommandState.Enabled : CommandState.Disabled;
             }
@@ -208,23 +208,23 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Views.SerialOutput
         {
             using (ApplicationTraceSources.Default.TraceMethod().WithParameters(node))
             {
-                if (node is IProjectExplorerVmInstanceNode vmNode && vmNode.IsRunning)
+                if (node is IProjectExplorerInstanceNode vmNode && vmNode.IsRunning)
                 {
                     // Load data using a job so that the task is retried in case
                     // of authentication issues.
                     var jobService = this.serviceProvider.GetService<IJobService>();
                     return await jobService.RunInBackground(
                         new JobDescription(
-                            $"Reading serial port output for {vmNode.Reference.Name}",
+                            $"Reading serial port output for {vmNode.Instance.Name}",
                             JobUserFeedbackType.BackgroundFeedback),
                         async jobToken =>
                         {
                             using (var combinedTokenSource = jobToken.Combine(token))
                             {
                                 return await SerialOutputModel.LoadAsync(
-                                    vmNode.Reference.Name,
+                                    vmNode.Instance.Name,
                                     this.serviceProvider.GetService<IComputeEngineAdapter>(),
-                                    vmNode.Reference,
+                                    vmNode.Instance,
                                     this.serialPortNumber,
                                     combinedTokenSource.Token)
                                 .ConfigureAwait(false);

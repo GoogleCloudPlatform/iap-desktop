@@ -257,7 +257,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
 
             if (this.treeView.SelectedNode is VmInstanceNode vmInstanceNode)
             {
-                cloudConsoleService.OpenInstanceDetails(vmInstanceNode.Reference);
+                cloudConsoleService.OpenInstanceDetails(vmInstanceNode.Instance);
             }
             else if (this.treeView.SelectedNode is ZoneNode zoneNode)
             {
@@ -476,7 +476,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
             {
                 // Another connection might still be open, so re-check before
                 // marking the node as not connected.
-                node.IsConnected = this.sessionBroker.IsConnected(node.Reference);
+                node.IsConnected = this.sessionBroker.IsConnected(node.Instance);
             }
         }
 
@@ -576,7 +576,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
             }
         }
 
-        public IProjectExplorerVmInstanceNode TryFindNode(InstanceLocator reference)
+        public IProjectExplorerInstanceNode TryFindNode(InstanceLocator reference)
         {
             return this.rootNode.Nodes
                 .OfType<ProjectNode>()

@@ -95,10 +95,10 @@ namespace Google.Solutions.IapDesktop.Extensions.Os.Views.PackageInventory
             IEnumerable<GuestOsInfo> inventory;
             try
             {
-                if (node is IProjectExplorerVmInstanceNode vmNode)
+                if (node is IProjectExplorerInstanceNode vmNode)
                 {
                     var info = await inventoryService.GetInstanceInventoryAsync(
-                            vmNode.Reference,
+                            vmNode.Instance,
                             token)
                         .ConfigureAwait(false);
                     inventory = info != null

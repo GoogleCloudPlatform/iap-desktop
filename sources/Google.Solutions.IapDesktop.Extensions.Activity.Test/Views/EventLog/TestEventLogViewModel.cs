@@ -233,8 +233,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.Views.EventLog
         [Test]
         public async Task WhenSwitchingToInstanceNode_ThenListIsPopulated()
         {
-            var node = new Mock<IProjectExplorerVmInstanceNode>();
-            node.SetupGet(n => n.Reference).Returns(
+            var node = new Mock<IProjectExplorerInstanceNode>();
+            node.SetupGet(n => n.Instance).Returns(
                 new InstanceLocator("project-1", "zone-1", "instance-1"));
 
             await this.viewModel.SwitchToModelAsync(node.Object);
@@ -256,8 +256,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.Views.EventLog
         [Test]
         public async Task WhenChangingIsIncludeSystemEventsButtonChecked_ThenEventListIsUpdated()
         {
-            var node = new Mock<IProjectExplorerVmInstanceNode>();
-            node.SetupGet(n => n.Reference).Returns(
+            var node = new Mock<IProjectExplorerInstanceNode>();
+            node.SetupGet(n => n.Instance).Returns(
                 new InstanceLocator("project-1", "zone-1", "instance-1"));
 
             await this.viewModel.SwitchToModelAsync(node.Object);
@@ -272,8 +272,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.Views.EventLog
         [Test]
         public async Task WhenChangingIsIncludeLifecycleEventsButtonChecked_ThenEventListIsUpdated()
         {
-            var node = new Mock<IProjectExplorerVmInstanceNode>();
-            node.SetupGet(n => n.Reference).Returns(
+            var node = new Mock<IProjectExplorerInstanceNode>();
+            node.SetupGet(n => n.Instance).Returns(
                 new InstanceLocator("project-1", "zone-1", "instance-1"));
 
             await this.viewModel.SwitchToModelAsync(node.Object);
@@ -288,8 +288,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.Views.EventLog
         [Test]
         public async Task WhenChangingTimeframe_ThenReloadIsTriggered()
         {
-            var node = new Mock<IProjectExplorerVmInstanceNode>();
-            node.SetupGet(n => n.Reference).Returns(
+            var node = new Mock<IProjectExplorerInstanceNode>();
+            node.SetupGet(n => n.Instance).Returns(
                 new InstanceLocator("project-1", "zone-1", "instance-1"));
 
             await this.viewModel.SwitchToModelAsync(node.Object);

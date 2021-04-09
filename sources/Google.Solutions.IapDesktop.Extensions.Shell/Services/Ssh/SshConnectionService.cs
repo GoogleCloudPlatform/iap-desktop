@@ -45,7 +45,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Ssh
     public interface ISshConnectionService
     {
         Task ActivateOrConnectInstanceAsync(
-            IProjectExplorerVmInstanceNode vmNode);
+            IProjectExplorerInstanceNode vmNode);
     }
 
     [Service(typeof(ISshConnectionService))]
@@ -80,11 +80,11 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Ssh
         // ISshConnectionService.
         //---------------------------------------------------------------------
 
-        public async Task ActivateOrConnectInstanceAsync(IProjectExplorerVmInstanceNode vmNode)
+        public async Task ActivateOrConnectInstanceAsync(IProjectExplorerInstanceNode vmNode)
         {
             Debug.Assert(vmNode.IsSshSupported());
 
-            if (this.sessionBroker.TryActivate(vmNode.Reference))
+            if (this.sessionBroker.TryActivate(vmNode.Instance))
             {
                 // SSH session was active, nothing left to do.
                 return;
@@ -93,7 +93,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Ssh
             // Select node so that tracking windows are updated.
             vmNode.Select();
 
-            var instance = vmNode.Reference;
+            var instance = vmNode.Instance;
             var settings = (InstanceConnectionSettings)this.settingsService
                 .GetConnectionSettings(vmNode)
                 .TypedCollection;
@@ -112,7 +112,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Ssh
                     try
                     {
                         var destination = new TunnelDestination(
-                            vmNode.Reference,
+                            vmNode.Instance,
                             (ushort)settings.SshPort.IntValue);
 
                         // NB. Give IAP the same timeout for probing as SSH itself.
@@ -172,7 +172,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Ssh
                         // Authorize the key.
                         //
                         return await this.authorizedKeyService.AuthorizeKeyAsync(
-                                vmNode.Reference,
+                                vmNode.Instance,
                                 sshKey,
                                 TimeSpan.FromSeconds(sshSettings.PublicKeyValidity.IntValue),
                                 NullIfEmpty(settings.SshUsername.StringValue),

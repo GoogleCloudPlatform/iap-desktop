@@ -95,8 +95,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.ConnectionSettings
             if (this.settingsService.IsConnectionSettingsAvailable(node))
             {
                 this.IsInformationBarVisible =
-                    node is IProjectExplorerVmInstanceNode &&
-                    ((IProjectExplorerVmInstanceNode)node).IsConnected;
+                    node is IProjectExplorerInstanceNode &&
+                    ((IProjectExplorerInstanceNode)node).IsConnected;
 
                 this.InspectedObject = this.settingsService.GetConnectionSettings(node);
                 this.WindowTitle = DefaultWindowTitle + $": {node.DisplayName}";
