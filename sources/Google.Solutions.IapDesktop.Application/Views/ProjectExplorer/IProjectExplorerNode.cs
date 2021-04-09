@@ -42,8 +42,8 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
 
     public interface IProjectExplorerZoneNode : IProjectExplorerNode
     {
-        string ProjectId { get; }
-        string ZoneId { get; }
+        ZoneLocator Zone { get; }
+
         IEnumerable<IProjectExplorerVmInstanceNode> Instances { get; }
     }
 

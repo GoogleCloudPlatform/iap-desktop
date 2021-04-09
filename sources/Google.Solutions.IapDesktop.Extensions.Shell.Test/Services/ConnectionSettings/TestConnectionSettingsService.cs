@@ -74,8 +74,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.ConnectionS
         private IProjectExplorerZoneNode CreateZoneNode()
         {
             var zoneNode = new Mock<IProjectExplorerZoneNode>();
-            zoneNode.SetupGet(n => n.ProjectId).Returns(SampleProjectId);
-            zoneNode.SetupGet(n => n.ZoneId).Returns("zone-1");
+            zoneNode.SetupGet(n => n.Zone).Returns(new ZoneLocator(SampleProjectId, "zone-1"));
 
             return zoneNode.Object;
         }

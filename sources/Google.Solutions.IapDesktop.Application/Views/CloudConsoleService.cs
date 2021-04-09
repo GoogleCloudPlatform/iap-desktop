@@ -80,9 +80,9 @@ namespace Google.Solutions.IapDesktop.Application.Views
             else if (node is IProjectExplorerZoneNode zoneNode)
             {
                 OpenLogs(
-                    zoneNode.ProjectId,
+                    zoneNode.Zone.ProjectId,
                     "resource.type=\"gce_instance\"\n" +
-                        $"resource.labels.zone=\"{zoneNode.ZoneId}\"");
+                        $"resource.labels.zone=\"{zoneNode.Zone.Name}\"");
             }
             else if (node is IProjectExplorerProjectNode projectNode)
             {

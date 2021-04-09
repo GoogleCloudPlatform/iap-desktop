@@ -108,7 +108,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Os.Views.PackageInventory
                 else if (node is IProjectExplorerZoneNode zoneNode)
                 {
                     inventory = await inventoryService.ListZoneInventoryAsync(
-                            new ZoneLocator(zoneNode.ProjectId, zoneNode.ZoneId),
+                            new ZoneLocator(zoneNode.Zone.ProjectId, zoneNode.Zone.Name),
                             OperatingSystems.Windows,
                             token)
                         .ConfigureAwait(false);

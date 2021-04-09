@@ -75,10 +75,10 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.ConnectionSettin
             else if (node is IProjectExplorerZoneNode zoneNode)
             {
                 var projectSettings = this.repository.GetProjectSettings(
-                    zoneNode.ProjectId);
+                    zoneNode.Zone.ProjectId);
                 var zoneSettings = this.repository.GetZoneSettings(
-                    zoneNode.ProjectId,
-                    zoneNode.ZoneId);
+                    zoneNode.Zone.ProjectId,
+                    zoneNode.Zone.Name);
 
                 // Apply overlay to get effective settings.
                 return projectSettings

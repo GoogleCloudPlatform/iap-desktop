@@ -261,7 +261,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
             }
             else if (this.treeView.SelectedNode is ZoneNode zoneNode)
             {
-                cloudConsoleService.OpenInstanceList(zoneNode.Locator);
+                cloudConsoleService.OpenInstanceList(zoneNode.Zone);
             }
             else if (this.treeView.SelectedNode is ProjectNode projectNode)
             {
@@ -279,7 +279,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
             }
             else if (this.treeView.SelectedNode is ZoneNode zoneNode)
             {
-                cloudConsoleService.ConfigureIapAccess(zoneNode.ProjectId);
+                cloudConsoleService.ConfigureIapAccess(zoneNode.Zone.ProjectId);
             }
             else if (this.treeView.SelectedNode is VmInstanceNode vmInstanceNode)
             {
@@ -582,7 +582,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
                 .OfType<ProjectNode>()
                 .Where(p => p.Project.ProjectId == reference.ProjectId)
                 .SelectMany(p => p.Nodes.Cast<ZoneNode>())
-                .Where(z => z.ZoneId == reference.Zone)
+                .Where(z => z.Zone.Name == reference.Zone)
                 .SelectMany(z => z.Nodes.Cast<VmInstanceNode>())
                 .FirstOrDefault(vm => vm.InstanceName == reference.Name); ;
         }

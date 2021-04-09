@@ -257,10 +257,10 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Views.EventLog
                 }
                 else if (node is IProjectExplorerZoneNode zoneNode)
                 {
-                    displayName = zoneNode.ZoneId;
+                    displayName = zoneNode.Zone.Name;
                     instanceIdFilter = null;
-                    zonesFilter = new[] { zoneNode.ZoneId };
-                    projectIdFilter = zoneNode.ProjectId;
+                    zonesFilter = new[] { zoneNode.Zone.Name };
+                    projectIdFilter = zoneNode.Zone.ProjectId;
                 }
                 else if (node is IProjectExplorerProjectNode projectNode)
                 {

@@ -114,12 +114,12 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
     {
         private const int IconIndex = 3;
 
-        public string ProjectId => ((ProjectNode)this.Parent).Project.ProjectId;
-        public string ZoneId => this.Text;
+        public ZoneLocator Zone => new ZoneLocator(
+            ((ProjectNode)this.Parent).Project.ProjectId,
+            this.Text);
+
         public IEnumerable<IProjectExplorerVmInstanceNode> Instances
             => this.Nodes.OfType<VmInstanceNode>();
-
-        public ZoneLocator Locator => new ZoneLocator(this.ProjectId, this.ZoneId);
 
         internal ZoneNode(string zoneId)
             : base(zoneId, IconIndex)
@@ -141,8 +141,8 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
 
         public bool IsWindowsInstance { get; private set; }
 
-        public string ProjectId => ((ZoneNode)this.Parent).ProjectId;
-        public string ZoneId => ((ZoneNode)this.Parent).ZoneId;
+        public string ProjectId => ((ZoneNode)this.Parent).Zone.ProjectId;
+        public string ZoneId => ((ZoneNode)this.Parent).Zone.Name;
 
         private VmInstanceNode(
             Instance instance,

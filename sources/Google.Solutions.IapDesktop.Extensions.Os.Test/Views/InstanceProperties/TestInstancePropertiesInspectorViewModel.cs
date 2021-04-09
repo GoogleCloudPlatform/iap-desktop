@@ -108,8 +108,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Os.Test.Views.InstancePropertie
             var viewModel = CreateInstanceDetailsViewModel();
 
             var node = new Mock<IProjectExplorerZoneNode>();
-            node.SetupGet(n => n.ProjectId).Returns("project-1");
-            node.SetupGet(n => n.ZoneId).Returns("zone-1");
+            node.SetupGet(n => n.Zone).Returns(new ZoneLocator("project-1", "zone-1"));
             await viewModel.SwitchToModelAsync(node.Object);
 
             Assert.IsFalse(viewModel.IsInformationBarVisible);
