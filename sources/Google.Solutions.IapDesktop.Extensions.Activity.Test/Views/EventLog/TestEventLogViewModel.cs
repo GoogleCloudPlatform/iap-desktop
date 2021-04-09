@@ -234,9 +234,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.Views.EventLog
         public async Task WhenSwitchingToInstanceNode_ThenListIsPopulated()
         {
             var node = new Mock<IProjectExplorerVmInstanceNode>();
-            node.SetupGet(n => n.ProjectId).Returns("project-1");
-            node.SetupGet(n => n.ZoneId).Returns("zone-1");
-            node.SetupGet(n => n.InstanceName).Returns("instance-1");
+            node.SetupGet(n => n.Reference).Returns(
+                new InstanceLocator("project-1", "zone-1", "instance-1"));
 
             await this.viewModel.SwitchToModelAsync(node.Object);
 
@@ -258,9 +257,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.Views.EventLog
         public async Task WhenChangingIsIncludeSystemEventsButtonChecked_ThenEventListIsUpdated()
         {
             var node = new Mock<IProjectExplorerVmInstanceNode>();
-            node.SetupGet(n => n.ProjectId).Returns("project-1");
-            node.SetupGet(n => n.ZoneId).Returns("zone-1");
-            node.SetupGet(n => n.InstanceName).Returns("instance-1");
+            node.SetupGet(n => n.Reference).Returns(
+                new InstanceLocator("project-1", "zone-1", "instance-1"));
 
             await this.viewModel.SwitchToModelAsync(node.Object);
 
@@ -275,9 +273,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.Views.EventLog
         public async Task WhenChangingIsIncludeLifecycleEventsButtonChecked_ThenEventListIsUpdated()
         {
             var node = new Mock<IProjectExplorerVmInstanceNode>();
-            node.SetupGet(n => n.ProjectId).Returns("project-1");
-            node.SetupGet(n => n.ZoneId).Returns("zone-1");
-            node.SetupGet(n => n.InstanceName).Returns("instance-1");
+            node.SetupGet(n => n.Reference).Returns(
+                new InstanceLocator("project-1", "zone-1", "instance-1"));
 
             await this.viewModel.SwitchToModelAsync(node.Object);
 
@@ -292,9 +289,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.Views.EventLog
         public async Task WhenChangingTimeframe_ThenReloadIsTriggered()
         {
             var node = new Mock<IProjectExplorerVmInstanceNode>();
-            node.SetupGet(n => n.ProjectId).Returns("project-1");
-            node.SetupGet(n => n.ZoneId).Returns("zone-1");
-            node.SetupGet(n => n.InstanceName).Returns("instance-1");
+            node.SetupGet(n => n.Reference).Returns(
+                new InstanceLocator("project-1", "zone-1", "instance-1"));
 
             await this.viewModel.SwitchToModelAsync(node.Object);
 

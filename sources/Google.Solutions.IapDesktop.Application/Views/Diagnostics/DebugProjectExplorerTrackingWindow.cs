@@ -46,7 +46,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.Diagnostics
         {
             if (node is IProjectExplorerVmInstanceNode vmNode)
             {
-                this.instanceNameLabel.Text = vmNode.InstanceName;
+                this.instanceNameLabel.Text = vmNode.Reference.Name;
             }
             else
             {

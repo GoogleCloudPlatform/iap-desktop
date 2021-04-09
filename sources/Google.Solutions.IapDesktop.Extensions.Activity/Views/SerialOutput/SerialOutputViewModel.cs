@@ -210,26 +210,21 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Views.SerialOutput
             {
                 if (node is IProjectExplorerVmInstanceNode vmNode && vmNode.IsRunning)
                 {
-                    var instanceLocator = new InstanceLocator(
-                        vmNode.ProjectId,
-                        vmNode.ZoneId,
-                        vmNode.InstanceName);
-
                     // Load data using a job so that the task is retried in case
                     // of authentication issues.
                     var jobService = this.serviceProvider.GetService<IJobService>();
                     return await jobService.RunInBackground(
                         new JobDescription(
-                            $"Reading serial port output for {vmNode.InstanceName}",
+                            $"Reading serial port output for {vmNode.Reference.Name}",
                             JobUserFeedbackType.BackgroundFeedback),
                         async jobToken =>
                         {
                             using (var combinedTokenSource = jobToken.Combine(token))
                             {
                                 return await SerialOutputModel.LoadAsync(
-                                    vmNode.InstanceName,
+                                    vmNode.Reference.Name,
                                     this.serviceProvider.GetService<IComputeEngineAdapter>(),
-                                    instanceLocator,
+                                    vmNode.Reference,
                                     this.serialPortNumber,
                                     combinedTokenSource.Token)
                                 .ConfigureAwait(false);

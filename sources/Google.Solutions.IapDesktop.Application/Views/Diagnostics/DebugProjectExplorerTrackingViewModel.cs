@@ -35,7 +35,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.Diagnostics
 
         public string InstanceName
         {
-            get => this.node.InstanceName;
+            get => this.node.Reference.Name;
             set { }
         }
     }

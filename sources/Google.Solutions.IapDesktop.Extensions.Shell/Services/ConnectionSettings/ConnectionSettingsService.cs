@@ -88,13 +88,13 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.ConnectionSettin
             else if (node is IProjectExplorerVmInstanceNode vmNode)
             {
                 var projectSettings = this.repository.GetProjectSettings(
-                    vmNode.ProjectId);
+                    vmNode.Reference.ProjectId);
                 var zoneSettings = this.repository.GetZoneSettings(
-                    vmNode.ProjectId,
-                    vmNode.ZoneId);
+                    vmNode.Reference.ProjectId,
+                    vmNode.Reference.Zone);
                 var instanceSettings = this.repository.GetVmInstanceSettings(
-                    vmNode.ProjectId,
-                    vmNode.InstanceName);
+                    vmNode.Reference.ProjectId,
+                    vmNode.Reference.Name);
 
                 var supportsRdp = vmNode.IsRdpSupported();
                 var supportsSsh = vmNode.IsSshSupported();

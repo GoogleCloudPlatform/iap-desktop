@@ -73,7 +73,7 @@ namespace Google.Solutions.IapDesktop.Application.Views
             if (node is IProjectExplorerVmInstanceNode vmNode)
             {
                 OpenLogs(
-                    vmNode.ProjectId,
+                    vmNode.Reference.ProjectId,
                     "resource.type=\"gce_instance\"\n" +
                         $"resource.labels.instance_id=\"{vmNode.InstanceId}\"");
             }

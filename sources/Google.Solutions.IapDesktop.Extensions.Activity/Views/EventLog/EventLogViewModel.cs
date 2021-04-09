@@ -250,10 +250,10 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Views.EventLog
 
                 if (node is IProjectExplorerVmInstanceNode vmNode)
                 {
-                    displayName = vmNode.InstanceName;
+                    displayName = vmNode.Reference.Name;
                     instanceIdFilter = new[] { vmNode.InstanceId };
                     zonesFilter = null;
-                    projectIdFilter = vmNode.ProjectId;
+                    projectIdFilter = vmNode.Reference.ProjectId;
                 }
                 else if (node is IProjectExplorerZoneNode zoneNode)
                 {

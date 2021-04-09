@@ -122,9 +122,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Os.Test.Views.InstancePropertie
             var viewModel = CreateInstanceDetailsViewModel();
 
             var node = new Mock<IProjectExplorerVmInstanceNode>();
-            node.SetupGet(n => n.ProjectId).Returns("project-1");
-            node.SetupGet(n => n.ZoneId).Returns("zone-1");
-            node.SetupGet(n => n.InstanceName).Returns("instance-1");
+            node.SetupGet(n => n.Reference).Returns(
+                new InstanceLocator("project-1", "zone-1", "instance-1"));
             await viewModel.SwitchToModelAsync(node.Object);
 
             // Switch again.
@@ -141,16 +140,14 @@ namespace Google.Solutions.IapDesktop.Extensions.Os.Test.Views.InstancePropertie
             var viewModel = CreateInstanceDetailsViewModel();
 
             var node = new Mock<IProjectExplorerVmInstanceNode>();
-            node.SetupGet(n => n.ProjectId).Returns("project-1");
-            node.SetupGet(n => n.ZoneId).Returns("zone-1");
-            node.SetupGet(n => n.InstanceName).Returns("instance-1");
+            node.SetupGet(n => n.Reference).Returns(
+                new InstanceLocator("project-1", "zone-1", "instance-1"));
             await viewModel.SwitchToModelAsync(node.Object);
 
             // Switch to denied node.
             var deniedNode = new Mock<IProjectExplorerVmInstanceNode>();
-            deniedNode.SetupGet(n => n.ProjectId).Returns("project-1");
-            deniedNode.SetupGet(n => n.ZoneId).Returns("zone-1");
-            deniedNode.SetupGet(n => n.InstanceName).Returns("denied-1");
+            deniedNode.SetupGet(n => n.Reference).Returns(
+                new InstanceLocator("project-1", "zone-1", "denied-1"));
 
             AssertEx.ThrowsAggregateException<ResourceAccessDeniedException>(
                 () => viewModel.SwitchToModelAsync(deniedNode.Object).Wait());

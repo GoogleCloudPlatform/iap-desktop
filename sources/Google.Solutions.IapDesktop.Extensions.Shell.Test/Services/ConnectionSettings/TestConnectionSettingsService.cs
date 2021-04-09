@@ -82,9 +82,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.ConnectionS
         private IProjectExplorerVmInstanceNode CreateVmInstanceNode(bool isWindows = false)
         {
             var vmNode = new Mock<IProjectExplorerVmInstanceNode>();
-            vmNode.SetupGet(n => n.ProjectId).Returns(SampleProjectId);
-            vmNode.SetupGet(n => n.ZoneId).Returns("zone-1");
-            vmNode.SetupGet(n => n.InstanceName).Returns("instance-1");
             vmNode.SetupGet(n => n.Reference).Returns(
                 new InstanceLocator(SampleProjectId, "zone-1", "instance-1"));
             vmNode.SetupGet(n => n.IsWindowsInstance).Returns(isWindows);

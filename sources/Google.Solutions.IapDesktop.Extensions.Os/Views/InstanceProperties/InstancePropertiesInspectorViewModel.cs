@@ -132,7 +132,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Os.Views.InstanceProperties
                     var jobService = this.serviceProvider.GetService<IJobService>();
                     return await jobService.RunInBackground(
                         new JobDescription(
-                            $"Loading information about {vmNode.InstanceName}",
+                            $"Loading information about {vmNode.Reference.Name}",
                             JobUserFeedbackType.BackgroundFeedback),
                         async jobToken =>
                         {
@@ -141,10 +141,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Os.Views.InstanceProperties
                             using (var inventoryService = this.serviceProvider.GetService<IInventoryService>())
                             {
                                 return await InstancePropertiesInspectorModel.LoadAsync(
-                                    new InstanceLocator(
-                                        vmNode.ProjectId,
-                                        vmNode.ZoneId,
-                                        vmNode.InstanceName),
+                                    vmNode.Reference,
                                     gceAdapter,
                                     inventoryService,
                                     combinedTokenSource.Token)

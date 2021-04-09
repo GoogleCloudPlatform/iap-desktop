@@ -229,11 +229,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Os.Test.Views.PackageInventory
                 PackageInventoryType.InstalledPackages)]  PackageInventoryType type)
         {
             var node = new Mock<IProjectExplorerVmInstanceNode>();
-            node.SetupGet(n => n.ProjectId).Returns("project-1");
-            node.SetupGet(n => n.ZoneId).Returns("zone-1");
-            node.SetupGet(n => n.InstanceName).Returns("instance-1");
             node.SetupGet(n => n.DisplayName).Returns("instance-1");
-            node.SetupGet(n => n.Reference).Returns(new InstanceLocator("project-1", "zone-1", "instance-1"));
+            node.SetupGet(n => n.Reference).Returns(
+                new InstanceLocator("project-1", "zone-1", "instance-1"));
 
             var viewModel = CreateViewModel(type);
             await viewModel.SwitchToModelAsync(node.Object);
@@ -257,11 +255,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Os.Test.Views.PackageInventory
                 PackageInventoryType.InstalledPackages)] PackageInventoryType type)
         {
             var node = new Mock<IProjectExplorerVmInstanceNode>();
-            node.SetupGet(n => n.ProjectId).Returns("project-1");
-            node.SetupGet(n => n.ZoneId).Returns("zone-1");
-            node.SetupGet(n => n.InstanceName).Returns("instance-3");
             node.SetupGet(n => n.DisplayName).Returns("instance-3");
-            node.SetupGet(n => n.Reference).Returns(new InstanceLocator("project-1", "zone-1", "instance-3"));
+            node.SetupGet(n => n.Reference).Returns(
+                new InstanceLocator("project-1", "zone-1", "instance-3"));
 
             var viewModel = CreateViewModel(type);
             await viewModel.SwitchToModelAsync(node.Object);

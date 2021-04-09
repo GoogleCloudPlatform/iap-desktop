@@ -58,9 +58,11 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.Views.SerialOutpu
 
             var node = new Mock<IProjectExplorerVmInstanceNode>();
             node.SetupGet(n => n.IsRunning).Returns(markAsRunning);
-            node.SetupGet(n => n.ProjectId).Returns(instanceLocator.ProjectId);
-            node.SetupGet(n => n.ZoneId).Returns(instanceLocator.Zone);
-            node.SetupGet(n => n.InstanceName).Returns(instanceLocator.Name);
+            node.SetupGet(n => n.Reference).Returns(
+                new InstanceLocator(
+                    instanceLocator.ProjectId,
+                    instanceLocator.Zone,
+                    instanceLocator.Name));
 
             return node.Object;
         }

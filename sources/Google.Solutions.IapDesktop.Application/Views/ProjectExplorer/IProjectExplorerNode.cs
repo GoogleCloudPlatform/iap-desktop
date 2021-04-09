@@ -50,9 +50,6 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
     public interface IProjectExplorerVmInstanceNode : IProjectExplorerNode
     {
         ulong InstanceId { get; }
-        string ProjectId { get; }
-        string ZoneId { get; }
-        string InstanceName { get; }
 
         InstanceLocator Reference { get; }
 
