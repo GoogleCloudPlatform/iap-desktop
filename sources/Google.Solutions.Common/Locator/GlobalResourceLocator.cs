@@ -22,6 +22,7 @@
 using System;
 using System.Linq;
 using System.Text.RegularExpressions;
+using Newtonsoft.Json;
 
 namespace Google.Solutions.Common.Locator
 {
@@ -29,7 +30,8 @@ namespace Google.Solutions.Common.Locator
 		public class ImageLocator : ResourceLocator, IEquatable<ImageLocator>
 		{
             public override string ResourceType => "images";
-
+            
+            [JsonConstructor]
 		    public ImageLocator(string projectId, string name)
                 : base(projectId, name)
             {
@@ -103,7 +105,8 @@ namespace Google.Solutions.Common.Locator
 		public class LicenseLocator : ResourceLocator, IEquatable<LicenseLocator>
 		{
             public override string ResourceType => "licenses";
-
+            
+            [JsonConstructor]
 		    public LicenseLocator(string projectId, string name)
                 : base(projectId, name)
             {

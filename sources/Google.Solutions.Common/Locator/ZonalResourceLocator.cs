@@ -22,6 +22,7 @@
 using System;
 using System.Linq;
 using System.Text.RegularExpressions;
+using Newtonsoft.Json;
 
 namespace Google.Solutions.Common.Locator
 {
@@ -31,6 +32,7 @@ namespace Google.Solutions.Common.Locator
             public string Zone { get; }
             public override string ResourceType => "diskTypes";
 
+            [JsonConstructor]
 		    public DiskTypeLocator(string projectId, string zone, string name)
                 : base(projectId, name)
             {
@@ -110,6 +112,7 @@ namespace Google.Solutions.Common.Locator
             public string Zone { get; }
             public override string ResourceType => "instances";
 
+            [JsonConstructor]
 		    public InstanceLocator(string projectId, string zone, string name)
                 : base(projectId, name)
             {
@@ -189,6 +192,7 @@ namespace Google.Solutions.Common.Locator
             public string Zone { get; }
             public override string ResourceType => "machineTypes";
 
+            [JsonConstructor]
 		    public MachineTypeLocator(string projectId, string zone, string name)
                 : base(projectId, name)
             {
@@ -268,6 +272,7 @@ namespace Google.Solutions.Common.Locator
             public string Zone { get; }
             public override string ResourceType => "nodeTypes";
 
+            [JsonConstructor]
 		    public NodeTypeLocator(string projectId, string zone, string name)
                 : base(projectId, name)
             {
