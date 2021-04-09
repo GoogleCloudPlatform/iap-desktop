@@ -179,7 +179,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Os.Test.Views.PackageInventory
         {
 
             var node = new Mock<IProjectExplorerProjectNode>();
-            node.SetupGet(n => n.ProjectId).Returns("project-1");
+            node.SetupGet(n => n.Project).Returns(new ProjectLocator("project-1"));
             node.SetupGet(n => n.DisplayName).Returns("project-1");
 
             var viewModel = CreateViewModel(type);
@@ -287,7 +287,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Os.Test.Views.PackageInventory
         public async Task WhenLoaded_ThenFilteredPackagesContainsAllPackages()
         {
             var node = new Mock<IProjectExplorerProjectNode>();
-            node.SetupGet(n => n.ProjectId).Returns("project-1");
+            node.SetupGet(n => n.Project).Returns(new ProjectLocator("project-1"));
 
             var viewModel = CreateViewModel(PackageInventoryType.InstalledPackages);
             await viewModel.SwitchToModelAsync(node.Object);
@@ -299,7 +299,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Os.Test.Views.PackageInventory
         public async Task WhenFilterHasMultipleTerms_ThenFilteredPackagesContainsPackagesThatMatchAllTerms()
         {
             var node = new Mock<IProjectExplorerProjectNode>();
-            node.SetupGet(n => n.ProjectId).Returns("project-1");
+            node.SetupGet(n => n.Project).Returns(new ProjectLocator("project-1"));
 
             var viewModel = CreateViewModel(PackageInventoryType.InstalledPackages);
             await viewModel.SwitchToModelAsync(node.Object);
@@ -313,7 +313,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Os.Test.Views.PackageInventory
         public async Task WhenFilterIsReset_ThenFilteredPackagesContainsAllPackages()
         {
             var node = new Mock<IProjectExplorerProjectNode>();
-            node.SetupGet(n => n.ProjectId).Returns("project-1");
+            node.SetupGet(n => n.Project).Returns(new ProjectLocator("project-1"));
 
             var viewModel = CreateViewModel(PackageInventoryType.InstalledPackages);
             await viewModel.SwitchToModelAsync(node.Object);

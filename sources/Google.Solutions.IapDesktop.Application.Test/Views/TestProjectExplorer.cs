@@ -253,8 +253,8 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views
             Assert.AreEqual(2, rootNode.Nodes.Cast<ProjectNode>().Count());
 
             var projectNode = rootNode.Nodes.Cast<ProjectNode>()
-                .Where(n => n.ProjectId == "forbidden-project")
-                .FirstOrDefault(); ;
+                .Where(n => n.Project.ProjectId == "forbidden-project")
+                .FirstOrDefault();
             Assert.AreEqual(0, projectNode.Nodes.Count);
         }
     }

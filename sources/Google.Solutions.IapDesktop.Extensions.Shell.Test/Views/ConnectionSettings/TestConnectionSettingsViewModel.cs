@@ -19,6 +19,7 @@
 // under the License.
 //
 
+using Google.Solutions.Common.Locator;
 using Google.Solutions.Common.Test;
 using Google.Solutions.IapDesktop.Application.Services.Integration;
 using Google.Solutions.IapDesktop.Application.Services.Settings;
@@ -123,7 +124,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.ConnectionSett
             var viewModel = new ConnectionSettingsViewModel(this.service);
 
             var node = new Mock<IProjectExplorerProjectNode>();
-            node.SetupGet(n => n.ProjectId).Returns(SampleProjectId);
+            node.SetupGet(n => n.Project).Returns(new ProjectLocator(SampleProjectId));
             node.SetupGet(n => n.DisplayName).Returns("display");
 
             await viewModel.SwitchToModelAsync(node.Object);

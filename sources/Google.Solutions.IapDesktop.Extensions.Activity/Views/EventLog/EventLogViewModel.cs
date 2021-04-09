@@ -264,10 +264,10 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Views.EventLog
                 }
                 else if (node is IProjectExplorerProjectNode projectNode)
                 {
-                    displayName = projectNode.ProjectId;
+                    displayName = projectNode.Project.ProjectId;
                     instanceIdFilter = null;
                     zonesFilter = null;
-                    projectIdFilter = projectNode.ProjectId;
+                    projectIdFilter = projectNode.Project.ProjectId;
                 }
                 else
                 {

@@ -46,6 +46,11 @@ namespace Google.Solutions.Common.Locator
             {
             }
 
+            public <#= className #>Locator(ProjectLocator project, string name)
+                : base(project.ProjectId, name)
+            {
+            }
+
             public static <#= className #>Locator FromString(string resourceReference)
             {
                 resourceReference = StripUrlPrefix(resourceReference);

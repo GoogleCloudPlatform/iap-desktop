@@ -116,7 +116,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Os.Views.PackageInventory
                 else if (node is IProjectExplorerProjectNode projectNode)
                 {
                     inventory = await inventoryService.ListProjectInventoryAsync(
-                            projectNode.ProjectId,
+                            projectNode.Project.ProjectId,
                             OperatingSystems.Windows,
                             token)
                         .ConfigureAwait(false);

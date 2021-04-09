@@ -146,7 +146,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
 
             var projectNode = this.rootNode.Nodes
                 .Cast<ProjectNode>()
-                .FirstOrDefault(n => n.ProjectId == projectId);
+                .FirstOrDefault(n => n.Project.ProjectId == projectId);
             if (projectNode != null)
             {
                 projectNode.Populate(
@@ -225,7 +225,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
             {
                 if (this.treeView.SelectedNode is ProjectNode projectNode)
                 {
-                    await RefreshProject(projectNode.ProjectId)
+                    await RefreshProject(projectNode.Project.ProjectId)
                         .ConfigureAwait(true);
                 }
             }
@@ -246,7 +246,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
             if (this.treeView.SelectedNode is ProjectNode projectNode)
             {
                 await this.projectInventoryService
-                    .DeleteProjectAsync(projectNode.ProjectId)
+                    .DeleteProjectAsync(projectNode.Project.ProjectId)
                     .ConfigureAwait(true);
             }
         }
@@ -265,7 +265,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
             }
             else if (this.treeView.SelectedNode is ProjectNode projectNode)
             {
-                cloudConsoleService.OpenInstanceList(projectNode.ProjectId);
+                cloudConsoleService.OpenInstanceList(projectNode.Project.ProjectId);
             }
         }
 
@@ -275,7 +275,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
 
             if (this.treeView.SelectedNode is ProjectNode projectNode)
             {
-                cloudConsoleService.ConfigureIapAccess(projectNode.ProjectId);
+                cloudConsoleService.ConfigureIapAccess(projectNode.Project.ProjectId);
             }
             else if (this.treeView.SelectedNode is ZoneNode zoneNode)
             {
@@ -449,7 +449,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
             Debug.Assert(!this.InvokeRequired);
             var node = this.rootNode.Nodes
                 .Cast<ProjectNode>()
-                .Where(p => p.ProjectId == e.ProjectId)
+                .Where(p => p.Project.ProjectId == e.ProjectId)
                 .FirstOrDefault();
 
             if (node != null)
@@ -580,7 +580,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
         {
             return this.rootNode.Nodes
                 .OfType<ProjectNode>()
-                .Where(p => p.ProjectId == reference.ProjectId)
+                .Where(p => p.Project.ProjectId == reference.ProjectId)
                 .SelectMany(p => p.Nodes.Cast<ZoneNode>())
                 .Where(z => z.ZoneId == reference.Zone)
                 .SelectMany(z => z.Nodes.Cast<VmInstanceNode>())

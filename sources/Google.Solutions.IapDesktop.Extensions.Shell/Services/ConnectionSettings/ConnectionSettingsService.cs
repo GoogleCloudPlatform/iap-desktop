@@ -69,7 +69,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.ConnectionSettin
         {
             if (node is IProjectExplorerProjectNode projectNode)
             {
-                return this.repository.GetProjectSettings(projectNode.ProjectId)
+                return this.repository.GetProjectSettings(projectNode.Project.ProjectId)
                     .ToPersistentSettingsCollection(s => this.repository.SetProjectSettings(s));
             }
             else if (node is IProjectExplorerZoneNode zoneNode)

@@ -94,7 +94,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Os.Test.Views.InstancePropertie
             var viewModel = CreateInstanceDetailsViewModel();
 
             var node = new Mock<IProjectExplorerProjectNode>();
-            node.SetupGet(n => n.ProjectId).Returns("project-1");
+            node.SetupGet(n => n.Project).Returns(new ProjectLocator("project-1"));
             await viewModel.SwitchToModelAsync(node.Object);
 
             Assert.IsFalse(viewModel.IsInformationBarVisible);

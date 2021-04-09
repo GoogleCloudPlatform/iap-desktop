@@ -65,7 +65,8 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
     {
         private const int IconIndex = 1;
 
-        public string ProjectId => this.Text;
+        public ProjectLocator Project => new ProjectLocator(this.Text);
+
         public IEnumerable<IProjectExplorerZoneNode> Zones
             => this.Nodes.OfType<IProjectExplorerZoneNode>();
 
@@ -95,7 +96,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
                 {
                     var instanceNode = new VmInstanceNode(instance);
                     instanceNode.IsConnected = isConnected(
-                        new InstanceLocator(this.ProjectId, zoneId, instance.Name));
+                        new InstanceLocator(this.Project, zoneId, instance.Name));
 
                     zoneNode.Nodes.Add(instanceNode);
                 }
@@ -113,7 +114,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
     {
         private const int IconIndex = 3;
 
-        public string ProjectId => ((ProjectNode)this.Parent).ProjectId;
+        public string ProjectId => ((ProjectNode)this.Parent).Project.ProjectId;
         public string ZoneId => this.Text;
         public IEnumerable<IProjectExplorerVmInstanceNode> Instances
             => this.Nodes.OfType<VmInstanceNode>();

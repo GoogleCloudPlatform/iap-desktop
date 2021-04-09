@@ -20,6 +20,7 @@
 //
 
 using Google.Apis.Logging.v2.Data;
+using Google.Solutions.Common.Locator;
 using Google.Solutions.IapDesktop.Application.ObjectModel;
 using Google.Solutions.IapDesktop.Application.Services.Integration;
 using Google.Solutions.IapDesktop.Application.Views.ProjectExplorer;
@@ -197,7 +198,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.Views.EventLog
         public async Task WhenSwitchingToProjectNode_ThenListIsPopulated()
         {
             var node = new Mock<IProjectExplorerProjectNode>();
-            node.SetupGet(n => n.ProjectId).Returns("project-1");
+            node.SetupGet(n => n.Project).Returns(new ProjectLocator("project-1"));
 
             await this.viewModel.SwitchToModelAsync(node.Object);
 

@@ -66,7 +66,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.ConnectionS
         private IProjectExplorerProjectNode CreateProjectNode()
         {
             var projectNode = new Mock<IProjectExplorerProjectNode>();
-            projectNode.SetupGet(n => n.ProjectId).Returns(SampleProjectId);
+            projectNode.SetupGet(n => n.Project).Returns(new ProjectLocator(SampleProjectId));
 
             return projectNode.Object;
         }

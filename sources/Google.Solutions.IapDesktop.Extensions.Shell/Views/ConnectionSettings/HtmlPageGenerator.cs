@@ -63,7 +63,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.ConnectionSettings
             var buffer = new StringBuilder();
             buffer.Append("<html><body>");
 
-            buffer.Append($"<h1>{HttpUtility.HtmlEncode(projectNode.ProjectId)}</h1>");
+            buffer.Append($"<h1>{HttpUtility.HtmlEncode(projectNode.Project.ProjectId)}</h1>");
 
             foreach (var zoneNode in projectNode.Zones)
             {

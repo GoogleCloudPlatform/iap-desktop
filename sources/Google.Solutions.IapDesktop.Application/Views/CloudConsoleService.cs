@@ -87,7 +87,7 @@ namespace Google.Solutions.IapDesktop.Application.Views
             else if (node is IProjectExplorerProjectNode projectNode)
             {
                 OpenLogs(
-                    projectNode.ProjectId,
+                    projectNode.Project.ProjectId,
                     "resource.type=\"gce_instance\"");
             }
         }
