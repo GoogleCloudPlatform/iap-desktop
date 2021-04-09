@@ -48,10 +48,10 @@ namespace Google.Solutions.IapDesktop.Application.Views
                     $"{instance.Zone}/instances/{instance.Name}?project={instance.ProjectId}");
         }
 
-        public void OpenInstanceList(string projectId)
+        public void OpenInstanceList(ProjectLocator project)
         {
             OpenUrl("https://console.cloud.google.com/compute/instances" +
-                $"?project={projectId}");
+                $"?project={project.ProjectId}");
         }
 
         public void OpenInstanceList(ZoneLocator zone)

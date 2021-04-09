@@ -265,7 +265,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
             }
             else if (this.treeView.SelectedNode is ProjectNode projectNode)
             {
-                cloudConsoleService.OpenInstanceList(projectNode.Project.ProjectId);
+                cloudConsoleService.OpenInstanceList(projectNode.Project);
             }
         }
 
