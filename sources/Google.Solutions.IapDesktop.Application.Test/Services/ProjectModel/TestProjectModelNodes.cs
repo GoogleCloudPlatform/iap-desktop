@@ -326,5 +326,24 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.ProjectModel
             Assert.AreEqual(SampleLinuxInstanceInZone1.Name, running.DisplayName);
             Assert.IsTrue(running.IsRunning);
         }
+
+        [Test]
+        public void WhenConnectedChanges_ThenEventIsRaised()
+        {
+            var node = new InstanceNode(
+                0,
+                new InstanceLocator("project-1", "zone-1", "instance-1"),
+                OperatingSystems.Linux,
+                false);
+
+            int notifications = 0;
+            node.PropertyChanged += (sender, args) => notifications++;
+
+            node.IsConnected = true;
+            Assert.AreEqual(1, notifications);
+
+            node.IsConnected = false;
+            Assert.AreEqual(2, notifications);
+        }
     }
 }

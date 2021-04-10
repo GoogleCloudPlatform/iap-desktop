@@ -26,8 +26,10 @@ using Google.Solutions.IapDesktop.Application.Services.Adapters;
 using Google.Solutions.IapDesktop.Application.Views.ProjectExplorer;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -173,8 +175,24 @@ namespace Google.Solutions.IapDesktop.Application.Services.ProjectModel
         }
     }
 
-    internal class InstanceNode : IProjectExplorerInstanceNode
+    internal class InstanceNode : IProjectExplorerInstanceNode, INotifyPropertyChanged
     {
+        private bool isConnected = false;
+
+        //---------------------------------------------------------------------
+        // INotifyPropertyChanged.
+        //---------------------------------------------------------------------
+
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        /// <summary>
+        /// Notify observers about a property change.
+        /// </summary>
+        private void RaisePropertyChange([CallerMemberName] string propertyName = null)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
+
         //---------------------------------------------------------------------
         // Readonly properties.
         //---------------------------------------------------------------------
@@ -193,11 +211,18 @@ namespace Google.Solutions.IapDesktop.Application.Services.ProjectModel
             => this.Instance.Name;
 
         //---------------------------------------------------------------------
-        // Mutable properties.
+        // Mutable/overvable properties.
         //---------------------------------------------------------------------
 
-
-        public bool IsConnected { get; set; }
+        public bool IsConnected
+        {
+            get => this.isConnected;
+            set
+            {
+                this.isConnected = value;
+                RaisePropertyChange();
+            }
+        }
 
         //---------------------------------------------------------------------
         // Ctor.
