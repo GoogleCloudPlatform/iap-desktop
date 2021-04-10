@@ -32,6 +32,8 @@ namespace Google.Solutions.IapDesktop.Application.Services.Settings
     {
         Task AddProjectAsync(string projectId);
         Task DeleteProjectAsync(string projectId);
+
+        // TODO: change signature to ProjectLocator
         Task<IEnumerable<Project>> ListProjectsAsync();
 
         RegistryKey OpenRegistryKey(string projectId);

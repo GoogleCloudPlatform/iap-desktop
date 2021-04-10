@@ -26,6 +26,7 @@ using Google.Solutions.IapDesktop.Application.Services.Adapters;
 using Google.Solutions.IapDesktop.Application.Views.ProjectExplorer;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -34,7 +35,26 @@ namespace Google.Solutions.IapDesktop.Application.Services.ProjectModel
 {
     internal class CloudNode : IProjectExplorerCloudNode
     {
+        //---------------------------------------------------------------------
+        // Readonly properties.
+        //---------------------------------------------------------------------
+
         public string DisplayName => "Google Cloud";
+
+        public IEnumerable<IProjectExplorerProjectNode> Projects { get; }
+        public IEnumerable<ProjectLocator> InaccessibleProjects { get; }
+
+        //---------------------------------------------------------------------
+        // Ctor.
+        //---------------------------------------------------------------------
+
+        public CloudNode(
+            IEnumerable<IProjectExplorerProjectNode> projects,
+            IEnumerable<ProjectLocator> inaccessibleProjects)
+        {
+            this.Projects = projects;
+            this.InaccessibleProjects = inaccessibleProjects;
+        }
     }
 
     internal class ProjectNode : IProjectExplorerProjectNode
@@ -195,6 +215,8 @@ namespace Google.Solutions.IapDesktop.Application.Services.ProjectModel
             OperatingSystems os,
             bool isRunning)
         {
+            Debug.Assert(!os.IsFlagCombination());
+
             this.InstanceId = instanceId;
             this.Instance = locator;
             this.OperatingSystem = os;

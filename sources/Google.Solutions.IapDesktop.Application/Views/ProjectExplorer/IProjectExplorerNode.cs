@@ -33,6 +33,8 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
 
     public interface IProjectExplorerCloudNode : IProjectExplorerNode
     {
+        IEnumerable<IProjectExplorerProjectNode> Projects { get; }
+        IEnumerable<ProjectLocator> InaccessibleProjects { get; }
     }
 
     public interface IProjectExplorerProjectNode : IProjectExplorerNode

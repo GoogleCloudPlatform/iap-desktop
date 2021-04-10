@@ -43,6 +43,10 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
         }
 
         public string DisplayName => this.Text;
+
+        public IEnumerable<IProjectExplorerProjectNode> Projects => throw new NotImplementedException();
+
+        public IEnumerable<ProjectLocator> InaccessibleProjects => throw new NotImplementedException();
     }
 
     [ComVisible(false)]

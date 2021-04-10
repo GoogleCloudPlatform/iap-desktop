@@ -31,7 +31,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.ProjectModel
     [TestFixture]
     public class TestProjectModelNodes : ApplicationFixtureBase
     {
-        private readonly Instance SampleWindowsInstanceInZone1 = new Instance()
+        private static readonly Instance SampleWindowsInstanceInZone1 = new Instance()
         {
             Id = 1u,
             Name = "windows-1",
@@ -52,7 +52,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.ProjectModel
             Status = "RUNNING"
         };
 
-        private readonly Instance SampleLinuxInstanceInZone1 = new Instance()
+        private static readonly Instance SampleLinuxInstanceInZone1 = new Instance()
         {
             Id = 2u,
             Name = "linux-zone-1",
@@ -66,7 +66,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.ProjectModel
             Status = "RUNNING"
         };
 
-        private readonly Instance SampleLinuxInstanceWithoutDiskInZone1 = new Instance()
+        private static readonly Instance SampleLinuxInstanceWithoutDiskInZone1 = new Instance()
         {
             Id = 3u,
             Name = "linux-nodisk-zone-1",
@@ -74,7 +74,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.ProjectModel
             Zone = "https://www.googleapis.com/compute/v1/projects/project-1/zones/zone-1"
         };
 
-        private readonly Instance SampleTerminatedLinuxInstanceInZone1 = new Instance()
+        private static readonly Instance SampleTerminatedLinuxInstanceInZone1 = new Instance()
         {
             Id = 4u,
             Name = "linux-terminated-zone-1",
@@ -88,7 +88,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.ProjectModel
             Status = "TERMINATED"
         };
 
-        private readonly Instance SampleLinuxInstanceInZone2 = new Instance()
+        private static readonly Instance SampleLinuxInstanceInZone2 = new Instance()
         {
             Id = 5u,
             Name = "linux-zone-2",
