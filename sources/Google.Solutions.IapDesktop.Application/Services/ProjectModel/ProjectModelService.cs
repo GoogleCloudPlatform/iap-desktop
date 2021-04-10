@@ -39,13 +39,29 @@ namespace Google.Solutions.IapDesktop.Application.Services.ProjectModel
 {
     public interface IProjectModelService
     {
+        /// <summary>
+        /// Add a project so that it will be considered when
+        /// the model is next (force-) reloaded.
+        /// </summary>
         Task AddProjectAsync(ProjectLocator project);
 
+        /// <summary>
+        /// Remove project so that it will not be considered when
+        /// the model is next (force-) reloaded.
+        /// </summary>
         Task RemoveProjectAsync(ProjectLocator project);
 
+        /// <summary>
+        /// Get model, either from cache or from backend.
+        /// </summary>
         Task<IProjectExplorerCloudNode> GetModelAsync(
-            bool forceRefresh,
+            bool forceReload,
             CancellationToken token);
+
+        /// <summary>
+        /// Looks up a node by locator in the cached model.
+        /// </summary>
+        IProjectExplorerNode TryFindNode(ResourceLocator locator);
     }
 
     public class ProjectModelService : IProjectModelService
@@ -157,10 +173,10 @@ namespace Google.Solutions.IapDesktop.Application.Services.ProjectModel
         }
 
         public async Task<IProjectExplorerCloudNode> GetModelAsync(
-            bool forceRefresh,
+            bool forceReload,
             CancellationToken token)
         {
-            if (this.cachedModel == null || forceRefresh)
+            if (this.cachedModel == null || forceReload)
             {
                 //
                 // NB. If called concurrently, we might be triggering multiple
@@ -174,6 +190,37 @@ namespace Google.Solutions.IapDesktop.Application.Services.ProjectModel
             Debug.Assert(this.cachedModel != null);
 
             return this.cachedModel;
+        }
+
+        public IProjectExplorerNode TryFindNode(ResourceLocator locator)
+        {
+            var model = this.cachedModel;
+            if (model == null)
+            {
+                return null;
+            }
+            else if (locator is ProjectLocator projectLocator)
+            {
+                return model.Projects
+                    .FirstOrDefault(p => p.Project == projectLocator);
+            }
+            else if (locator is ZoneLocator zoneLocator)
+            {
+                return model.Projects
+                    .SelectMany(p => p.Zones)
+                    .FirstOrDefault(z => z.Zone == zoneLocator);
+            }
+            else if (locator is InstanceLocator instanceLocator)
+            {
+                return model.Projects
+                    .SelectMany(p => p.Zones)
+                    .SelectMany(z => z.Instances)
+                    .FirstOrDefault(i => i.Instance == instanceLocator);
+            }
+            else
+            {
+                throw new ArgumentException("Unrecognized locator " + locator);
+            }
         }
     }
 }

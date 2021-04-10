@@ -29,8 +29,10 @@ using Google.Solutions.IapDesktop.Application.Services.Integration;
 using Google.Solutions.IapDesktop.Application.Services.ProjectModel;
 using Google.Solutions.IapDesktop.Application.Services.Settings;
 using Google.Solutions.IapDesktop.Application.Test.ObjectModel;
+using Google.Solutions.IapDesktop.Application.Views.ProjectExplorer;
 using Moq;
 using NUnit.Framework;
+using System;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -132,15 +134,22 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.ProjectModel
             return computeAdapter;
         }
 
+        private Mock<IProjectRepository> CreateProjectRepositoryMock(
+            params string[] addedProjectIds)
+        {
+            var projectRepository = new Mock<IProjectRepository>();
+            projectRepository.Setup(r => r.ListProjectsAsync())
+                .ReturnsAsync(addedProjectIds.Select(id => new Application.Services.Settings.Project(id)));
+
+            return projectRepository;
+        }
+
         [Test]
         public async Task WhenModelNotCached_ThenGetModelAsyncLoadsModel()
         {
             var serviceRegistry = new ServiceRegistry();
             var eventService = serviceRegistry.AddMock<IEventService>();
-
-            var projectRepository = serviceRegistry.AddMock<IProjectRepository>();
-            projectRepository.Setup(r => r.ListProjectsAsync())
-                .ReturnsAsync(new[] { new Application.Services.Settings.Project("project-1") });
+            serviceRegistry.AddSingleton(CreateProjectRepositoryMock("project-1").Object);
 
             var computeAdapter = CreateComputeEngineAdapterMock("project-1");
             serviceRegistry.AddSingleton(computeAdapter.Object);
@@ -169,10 +178,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.ProjectModel
         {
             var serviceRegistry = new ServiceRegistry();
             var eventService = serviceRegistry.AddMock<IEventService>();
-
-            var projectRepository = serviceRegistry.AddMock<IProjectRepository>();
-            projectRepository.Setup(r => r.ListProjectsAsync())
-                .ReturnsAsync(new[] { new Application.Services.Settings.Project("project-1") });
+            serviceRegistry.AddSingleton(CreateProjectRepositoryMock("project-1").Object);
 
             var computeAdapter = CreateComputeEngineAdapterMock("project-1");
             serviceRegistry.AddSingleton(computeAdapter.Object);
@@ -199,10 +205,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.ProjectModel
         {
             var serviceRegistry = new ServiceRegistry();
             var eventService = serviceRegistry.AddMock<IEventService>();
-
-            var projectRepository = serviceRegistry.AddMock<IProjectRepository>();
-            projectRepository.Setup(r => r.ListProjectsAsync())
-                .ReturnsAsync(new[] { new Application.Services.Settings.Project("project-1") });
+            serviceRegistry.AddSingleton(CreateProjectRepositoryMock("project-1").Object);
 
             var computeAdapter = CreateComputeEngineAdapterMock("project-1");
             serviceRegistry.AddSingleton(computeAdapter.Object);
@@ -229,17 +232,10 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.ProjectModel
         {
             var serviceRegistry = new ServiceRegistry();
             var eventService = serviceRegistry.AddMock<IEventService>();
-
-            var projectRepository = serviceRegistry.AddMock<IProjectRepository>();
-            projectRepository.Setup(r => r.ListProjectsAsync())
-                .ReturnsAsync(new[] 
-                { 
-                    new Application.Services.Settings.Project("project-1"),
-                    new Application.Services.Settings.Project("nonexisting-1")
-                });
-
-            var computeAdapter = CreateComputeEngineAdapterMock("project-1");
-            serviceRegistry.AddSingleton(computeAdapter.Object);
+            serviceRegistry.AddSingleton(CreateProjectRepositoryMock(
+                "project-1", 
+                "nonexisting-1").Object);
+            serviceRegistry.AddSingleton(CreateComputeEngineAdapterMock("project-1").Object);
 
             var modelService = new ProjectModelService(serviceRegistry);
             var model = await modelService.GetModelAsync(false, CancellationToken.None);
@@ -256,10 +252,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.ProjectModel
         {
             var serviceRegistry = new ServiceRegistry();
             var eventService = serviceRegistry.AddMock<IEventService>();
-
-            var projectRepository = serviceRegistry.AddMock<IProjectRepository>();
-            projectRepository.Setup(r => r.ListProjectsAsync())
-                .ReturnsAsync(new[] { new Application.Services.Settings.Project("project-1") });
+            serviceRegistry.AddSingleton(CreateProjectRepositoryMock("project-1").Object);
 
             var computeAdapter = serviceRegistry.AddMock<IComputeEngineAdapter>();
             computeAdapter.Setup(a => a.GetProjectAsync(
@@ -276,6 +269,94 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.ProjectModel
 
             AssertEx.ThrowsAggregateException<TokenResponseException>(
                 () => modelService.GetModelAsync(false, CancellationToken.None).Wait());
+        }
+
+        //---------------------------------------------------------------------
+        // TryFindNode.
+        //---------------------------------------------------------------------
+
+        [Test]
+        public async Task WhenLocatorOfUnknownType_ThenTryFindNodeThrowsArgumentException()
+        {
+            var serviceRegistry = new ServiceRegistry();
+            serviceRegistry.AddMock<IEventService>();
+            serviceRegistry.AddSingleton(CreateProjectRepositoryMock("project-1").Object);
+            serviceRegistry.AddSingleton(CreateComputeEngineAdapterMock("project-1").Object);
+
+            var modelService = new ProjectModelService(serviceRegistry);
+            await modelService.GetModelAsync(false, CancellationToken.None);
+
+            Assert.Throws<ArgumentException>(() => modelService.TryFindNode(
+                new DiskTypeLocator("project-1", "zone-1", "type-1")));
+        }
+
+        [Test]
+        public void WhenModelNotCached_ThenTryFindNodeReturnsNull()
+        {
+            var serviceRegistry = new ServiceRegistry();
+            serviceRegistry.AddMock<IEventService>();
+            serviceRegistry.AddSingleton(CreateProjectRepositoryMock("project-1").Object);
+            serviceRegistry.AddSingleton(CreateComputeEngineAdapterMock("project-1").Object);
+
+            var modelService = new ProjectModelService(serviceRegistry);
+
+            Assert.IsNull(modelService.TryFindNode(new ProjectLocator("project-1")));
+        }
+
+        [Test]
+        public async Task WhenModelCachedAndProjectLocatorValid_ThenTryFindNodeReturnsNode()
+        {
+            var serviceRegistry = new ServiceRegistry();
+            serviceRegistry.AddMock<IEventService>();
+            serviceRegistry.AddSingleton(CreateProjectRepositoryMock("project-1").Object);
+            serviceRegistry.AddSingleton(CreateComputeEngineAdapterMock("project-1").Object);
+
+            var modelService = new ProjectModelService(serviceRegistry);
+            await modelService.GetModelAsync(false, CancellationToken.None);
+
+            Assert.IsNull(modelService.TryFindNode(new ProjectLocator("nonexisting-1")));
+
+            var project = modelService.TryFindNode(new ProjectLocator("project-1"));
+            Assert.IsInstanceOf(typeof(IProjectExplorerProjectNode), project);
+            Assert.IsNotNull(project);
+        }
+
+        [Test]
+        public async Task WhenModelCachedAndZoneLocatorValid_ThenTryFindNodeReturnsNode()
+        {
+            var serviceRegistry = new ServiceRegistry();
+            serviceRegistry.AddMock<IEventService>();
+            serviceRegistry.AddSingleton(CreateProjectRepositoryMock("project-1").Object);
+            serviceRegistry.AddSingleton(CreateComputeEngineAdapterMock("project-1").Object);
+
+            var modelService = new ProjectModelService(serviceRegistry);
+            await modelService.GetModelAsync(false, CancellationToken.None);
+
+            Assert.IsNull(modelService.TryFindNode(new ZoneLocator("nonexisting-1", "zone-1")));
+
+            var zone = modelService.TryFindNode(new ZoneLocator("project-1", "zone-1"));
+            Assert.IsInstanceOf(typeof(IProjectExplorerZoneNode), zone);
+            Assert.IsNotNull(zone);
+        }
+
+        [Test]
+        public async Task WhenModelCachedAndInstanceLocatorValid_ThenTryFindNodeReturnsNode()
+        {
+            var serviceRegistry = new ServiceRegistry();
+            serviceRegistry.AddMock<IEventService>();
+            serviceRegistry.AddSingleton(CreateProjectRepositoryMock("project-1").Object);
+            serviceRegistry.AddSingleton(CreateComputeEngineAdapterMock("project-1").Object);
+
+            var modelService = new ProjectModelService(serviceRegistry);
+            await modelService.GetModelAsync(false, CancellationToken.None);
+
+            Assert.IsNull(modelService.TryFindNode(
+                new InstanceLocator("nonexisting-1", "zone-1", SampleWindowsInstanceInZone1.Name)));
+
+            var instance = modelService.TryFindNode(
+                new InstanceLocator("project-1", "zone-1", SampleWindowsInstanceInZone1.Name));
+            Assert.IsInstanceOf(typeof(IProjectExplorerInstanceNode), instance);
+            Assert.IsNotNull(instance);
         }
     }
 }
