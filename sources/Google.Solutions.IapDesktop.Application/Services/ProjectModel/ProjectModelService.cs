@@ -62,12 +62,25 @@ namespace Google.Solutions.IapDesktop.Application.Services.ProjectModel
         /// Looks up a node by locator in the cached model.
         /// </summary>
         IProjectExplorerNode TryFindNode(ResourceLocator locator);
+
+        /// <summary>
+        /// Gets the active/selected node. The selection
+        /// is kept across reloads.
+        /// </summary>
+        IProjectExplorerNode ActiveNode { get; }
+
+        /// <summary>
+        /// Gets the active/selected node. The selection
+        /// is kept across reloads.
+        /// </summary>
+        Task SetActiveNodeAsync(IProjectExplorerNode node);
     }
 
     public class ProjectModelService : IProjectModelService
     {
         private readonly IServiceProvider serviceProvider;
 
+        private ResourceLocator activeNode;
         private CloudNode cachedModel = null;
 
         private async Task<CloudNode> LoadModelAsync(
@@ -190,6 +203,55 @@ namespace Google.Solutions.IapDesktop.Application.Services.ProjectModel
             Debug.Assert(this.cachedModel != null);
 
             return this.cachedModel;
+        }
+
+        public IProjectExplorerNode ActiveNode
+        {
+            get
+            {
+                //
+                // Look up the node. It's possible that no node has been 
+                // selected or that the node is not there anymore because 
+                // it was removed by a reload - then default to the root.
+                //
+                if (this.activeNode == null)
+                {
+                    return this.cachedModel;
+                }
+                else
+                {
+                    return TryFindNode(this.activeNode) ?? this.cachedModel;
+                }
+            }
+        }
+
+        public async Task SetActiveNodeAsync(IProjectExplorerNode node)
+        {
+            // TODO: Use polymorphism instead.
+            if (node is IProjectExplorerInstanceNode instanceNode)
+            {
+                this.activeNode = instanceNode.Instance;
+            }
+            else if (node is IProjectExplorerZoneNode zoneNode)
+            {
+                this.activeNode = zoneNode.Zone;
+            }
+            else if (node is IProjectExplorerProjectNode projectNode)
+            {
+                this.activeNode = projectNode.Project;
+            }
+            else
+            {
+                this.activeNode = null;
+            }
+
+            if (this.activeNode != null)
+            {
+                await this.serviceProvider
+                    .GetService<IEventService>()
+                    .FireAsync(new ProjectExplorerNodeSelectedEvent(node))
+                    .ConfigureAwait(true);
+            }
         }
 
         public IProjectExplorerNode TryFindNode(ResourceLocator locator)

@@ -358,5 +358,117 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.ProjectModel
             Assert.IsInstanceOf(typeof(IProjectExplorerInstanceNode), instance);
             Assert.IsNotNull(instance);
         }
+
+        //---------------------------------------------------------------------
+        // Active node.
+        //---------------------------------------------------------------------
+
+        [Test]
+        public void WhenNoActiveNodeSetAndModelNotCached_ThenActiveNodeReturnsRoot()
+        {
+            var serviceRegistry = new ServiceRegistry();
+            serviceRegistry.AddMock<IEventService>();
+            serviceRegistry.AddSingleton(CreateProjectRepositoryMock("project-1").Object);
+            serviceRegistry.AddSingleton(CreateComputeEngineAdapterMock("project-1").Object);
+
+            var modelService = new ProjectModelService(serviceRegistry);
+
+            Assert.IsNull(modelService.ActiveNode);
+        }
+
+        [Test]
+        public async Task WhenNoActiveNodeSetAndModelCached_ThenActiveNodeReturnsRoot()
+        {
+            var serviceRegistry = new ServiceRegistry();
+            serviceRegistry.AddMock<IEventService>();
+            serviceRegistry.AddSingleton(CreateProjectRepositoryMock("project-1").Object);
+            serviceRegistry.AddSingleton(CreateComputeEngineAdapterMock("project-1").Object);
+
+            var modelService = new ProjectModelService(serviceRegistry);
+            var model = await modelService.GetModelAsync(false, CancellationToken.None);
+
+            Assert.IsNotNull(modelService.ActiveNode);
+            Assert.AreSame(model, modelService.ActiveNode);
+        }
+
+        [Test]
+        public async Task WhenActiveNodeGone_ThenActiveNodeReturnsRoot()
+        {
+            var serviceRegistry = new ServiceRegistry();
+            serviceRegistry.AddMock<IEventService>();
+            serviceRegistry.AddSingleton(CreateProjectRepositoryMock("project-1").Object);
+            serviceRegistry.AddSingleton(CreateComputeEngineAdapterMock("project-1").Object);
+
+            var modelService = new ProjectModelService(serviceRegistry);
+            var model = await modelService.GetModelAsync(false, CancellationToken.None);
+
+            var goneZone = new Mock<IProjectExplorerZoneNode>();
+            goneZone.SetupGet(z => z.Zone).Returns(new ZoneLocator("project-1", "zone-gone"));
+
+            await modelService.SetActiveNodeAsync(goneZone.Object);
+
+            Assert.IsNotNull(modelService.ActiveNode);
+            Assert.AreSame(model, modelService.ActiveNode);
+        }
+
+        [Test]
+        public async Task WhenActiveNodeSet_ThenActiveNodeReturnsNode()
+        {
+            var serviceRegistry = new ServiceRegistry();
+            serviceRegistry.AddMock<IEventService>();
+            serviceRegistry.AddSingleton(CreateProjectRepositoryMock("project-1").Object);
+            serviceRegistry.AddSingleton(CreateComputeEngineAdapterMock("project-1").Object);
+
+            var modelService = new ProjectModelService(serviceRegistry);
+            await modelService.GetModelAsync(false, CancellationToken.None);
+
+            var instance = modelService.TryFindNode(
+                new InstanceLocator("project-1", "zone-1", SampleWindowsInstanceInZone1.Name));
+            Assert.IsNotNull(instance);
+
+            await modelService.SetActiveNodeAsync(instance);
+
+            Assert.IsNotNull(modelService.ActiveNode);
+            Assert.AreSame(instance, modelService.ActiveNode);
+        }
+
+        [Test]
+        public async Task WhenActiveNodeSet_ThenEventIsFired()
+        {
+
+            var serviceRegistry = new ServiceRegistry();
+            var eventService = serviceRegistry.AddMock<IEventService>();
+            serviceRegistry.AddSingleton(CreateProjectRepositoryMock("project-1").Object);
+            serviceRegistry.AddSingleton(CreateComputeEngineAdapterMock("project-1").Object);
+
+            var modelService = new ProjectModelService(serviceRegistry);
+            var model = await modelService.GetModelAsync(false, CancellationToken.None);
+
+            var project1 = model.Projects.First();
+            await modelService.SetActiveNodeAsync(project1);
+
+            eventService.Verify(s => s.FireAsync<ProjectExplorerNodeSelectedEvent>(
+                    It.Is<ProjectExplorerNodeSelectedEvent>(e => e.SelectedNode == project1)),
+                Times.Once);
+        }
+
+        [Test]
+        public async Task WhenActiveNodeSetToNull_ThenNoEventIsFired()
+        {
+
+            var serviceRegistry = new ServiceRegistry();
+            var eventService = serviceRegistry.AddMock<IEventService>();
+            serviceRegistry.AddSingleton(CreateProjectRepositoryMock("project-1").Object);
+            serviceRegistry.AddSingleton(CreateComputeEngineAdapterMock("project-1").Object);
+
+            var modelService = new ProjectModelService(serviceRegistry);
+            var model = await modelService.GetModelAsync(false, CancellationToken.None);
+
+            await modelService.SetActiveNodeAsync(null);
+
+            eventService.Verify(s => s.FireAsync<ProjectExplorerNodeSelectedEvent>(
+                    It.IsAny<ProjectExplorerNodeSelectedEvent>()),
+                Times.Never);
+        }
     }
 }
