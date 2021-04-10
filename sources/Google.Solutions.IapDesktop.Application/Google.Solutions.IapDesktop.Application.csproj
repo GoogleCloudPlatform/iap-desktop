@@ -214,6 +214,7 @@
       <DependentUpon>FlyoutWindow.cs</DependentUpon>
     </Compile>
     <Compile Include="Views\HelpService.cs" />
+    <Compile Include="Views\NewProjectExplorer\NewProjectExplorerViewModel.cs" />
     <Compile Include="Views\Options\ScreenOptionsViewModel.cs" />
     <Compile Include="Views\Options\ScreenOptionsControl.cs">
       <SubType>UserControl</SubType>

@@ -108,6 +108,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.ProjectModel
                     // lost access.
                     //
 
+                    // TODO: XXX: Allow parallel loading of projects!
                     try
                     {
                         var projectDetails = await computeEngineAdapter.GetProjectAsync(
