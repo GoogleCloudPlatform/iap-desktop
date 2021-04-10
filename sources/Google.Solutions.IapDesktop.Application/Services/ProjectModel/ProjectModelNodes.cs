@@ -175,24 +175,8 @@ namespace Google.Solutions.IapDesktop.Application.Services.ProjectModel
         }
     }
 
-    internal class InstanceNode : IProjectExplorerInstanceNode, INotifyPropertyChanged
+    internal class InstanceNode : IProjectExplorerInstanceNode
     {
-        private bool isConnected = false;
-
-        //---------------------------------------------------------------------
-        // INotifyPropertyChanged.
-        //---------------------------------------------------------------------
-
-        public event PropertyChangedEventHandler PropertyChanged;
-
-        /// <summary>
-        /// Notify observers about a property change.
-        /// </summary>
-        private void RaisePropertyChange([CallerMemberName] string propertyName = null)
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-        }
-
         //---------------------------------------------------------------------
         // Readonly properties.
         //---------------------------------------------------------------------
@@ -210,19 +194,8 @@ namespace Google.Solutions.IapDesktop.Application.Services.ProjectModel
         public string DisplayName
             => this.Instance.Name;
 
-        //---------------------------------------------------------------------
-        // Mutable/overvable properties.
-        //---------------------------------------------------------------------
-
-        public bool IsConnected
-        {
-            get => this.isConnected;
-            set
-            {
-                this.isConnected = value;
-                RaisePropertyChange();
-            }
-        }
+        // TODO: Remove method
+        public bool IsConnected => throw new NotImplementedException();
 
         //---------------------------------------------------------------------
         // Ctor.
