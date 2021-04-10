@@ -227,7 +227,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Views.EventLog
         {
             if (node is IProjectExplorerProjectNode
                 || node is IProjectExplorerZoneNode
-                || node is IProjectExplorerVmInstanceNode)
+                || node is IProjectExplorerInstanceNode)
             {
                 return CommandState.Enabled;
             }
@@ -248,26 +248,26 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Views.EventLog
                 string projectIdFilter;
                 string displayName;
 
-                if (node is IProjectExplorerVmInstanceNode vmNode)
+                if (node is IProjectExplorerInstanceNode vmNode)
                 {
-                    displayName = vmNode.InstanceName;
+                    displayName = vmNode.Instance.Name;
                     instanceIdFilter = new[] { vmNode.InstanceId };
                     zonesFilter = null;
-                    projectIdFilter = vmNode.ProjectId;
+                    projectIdFilter = vmNode.Instance.ProjectId;
                 }
                 else if (node is IProjectExplorerZoneNode zoneNode)
                 {
-                    displayName = zoneNode.ZoneId;
+                    displayName = zoneNode.Zone.Name;
                     instanceIdFilter = null;
-                    zonesFilter = new[] { zoneNode.ZoneId };
-                    projectIdFilter = zoneNode.ProjectId;
+                    zonesFilter = new[] { zoneNode.Zone.Name };
+                    projectIdFilter = zoneNode.Zone.ProjectId;
                 }
                 else if (node is IProjectExplorerProjectNode projectNode)
                 {
-                    displayName = projectNode.ProjectId;
+                    displayName = projectNode.Project.ProjectId;
                     instanceIdFilter = null;
                     zonesFilter = null;
-                    projectIdFilter = projectNode.ProjectId;
+                    projectIdFilter = projectNode.Project.ProjectId;
                 }
                 else
                 {

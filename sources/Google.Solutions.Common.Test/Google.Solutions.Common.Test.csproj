@@ -105,6 +105,7 @@
     <Compile Include="Integration\ResourceTask.cs" />
     <Compile Include="Locator\TestAccessLevelLocator.cs" />
     <Compile Include="Locator\TestNodeTypeLocator.cs" />
+    <Compile Include="Locator\TestProjectLocator.cs" />
     <Compile Include="Locator\TestZoneLocator.cs" />
     <Compile Include="Locator\TestLicenseLocator.cs" />
     <Compile Include="Locator\TestInstanceLocator.cs" />

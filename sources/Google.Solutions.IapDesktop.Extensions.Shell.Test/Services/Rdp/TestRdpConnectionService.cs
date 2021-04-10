@@ -85,8 +85,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Rdp
                 .Returns(
                     settings.ToPersistentSettingsCollection(s => Assert.Fail("should not be called")));
 
-            var vmNode = new Mock<IProjectExplorerVmInstanceNode>();
-            vmNode.SetupGet(n => n.Reference)
+            var vmNode = new Mock<IProjectExplorerInstanceNode>();
+            vmNode.SetupGet(n => n.Instance)
                 .Returns(new InstanceLocator("project-1", "zone-1", "instance-1"));
 
             this.serviceRegistry.AddMock<IProjectExplorer>()
@@ -130,8 +130,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Rdp
                 .Returns(
                     settings.ToPersistentSettingsCollection(s => settingsSaved = true));
 
-            var vmNode = new Mock<IProjectExplorerVmInstanceNode>();
-            vmNode.SetupGet(n => n.Reference)
+            var vmNode = new Mock<IProjectExplorerInstanceNode>();
+            vmNode.SetupGet(n => n.Instance)
                 .Returns(new InstanceLocator("project-1", "zone-1", "instance-1"));
 
             this.serviceRegistry.AddMock<IProjectExplorer>()
@@ -253,8 +253,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Rdp
                 .Returns(
                     settings.ToPersistentSettingsCollection(s => Assert.Fail("should not be called")));
 
-            var vmNode = new Mock<IProjectExplorerVmInstanceNode>();
-            vmNode.SetupGet(n => n.Reference)
+            var vmNode = new Mock<IProjectExplorerInstanceNode>();
+            vmNode.SetupGet(n => n.Instance)
                 .Returns(new InstanceLocator("project-1", "zone-1", "instance-1"));
 
             this.serviceRegistry.AddMock<ICredentialPrompt>()

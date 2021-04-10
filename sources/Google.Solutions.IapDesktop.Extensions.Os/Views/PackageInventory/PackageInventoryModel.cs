@@ -95,10 +95,10 @@ namespace Google.Solutions.IapDesktop.Extensions.Os.Views.PackageInventory
             IEnumerable<GuestOsInfo> inventory;
             try
             {
-                if (node is IProjectExplorerVmInstanceNode vmNode)
+                if (node is IProjectExplorerInstanceNode vmNode)
                 {
                     var info = await inventoryService.GetInstanceInventoryAsync(
-                            vmNode.Reference,
+                            vmNode.Instance,
                             token)
                         .ConfigureAwait(false);
                     inventory = info != null
@@ -108,7 +108,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Os.Views.PackageInventory
                 else if (node is IProjectExplorerZoneNode zoneNode)
                 {
                     inventory = await inventoryService.ListZoneInventoryAsync(
-                            new ZoneLocator(zoneNode.ProjectId, zoneNode.ZoneId),
+                            new ZoneLocator(zoneNode.Zone.ProjectId, zoneNode.Zone.Name),
                             OperatingSystems.Windows,
                             token)
                         .ConfigureAwait(false);
@@ -116,7 +116,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Os.Views.PackageInventory
                 else if (node is IProjectExplorerProjectNode projectNode)
                 {
                     inventory = await inventoryService.ListProjectInventoryAsync(
-                            projectNode.ProjectId,
+                            projectNode.Project.ProjectId,
                             OperatingSystems.Windows,
                             token)
                         .ConfigureAwait(false);

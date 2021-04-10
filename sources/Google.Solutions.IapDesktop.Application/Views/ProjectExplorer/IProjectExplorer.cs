@@ -32,7 +32,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
         Task RefreshAllProjects();
         Task ShowAddProjectDialogAsync();
 
-        IProjectExplorerVmInstanceNode TryFindNode(InstanceLocator reference);
+        IProjectExplorerInstanceNode TryFindNode(InstanceLocator reference);
 
         IProjectExplorerNode SelectedNode { get; }
 

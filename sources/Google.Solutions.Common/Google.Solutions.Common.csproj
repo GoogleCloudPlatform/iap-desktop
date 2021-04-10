@@ -93,6 +93,7 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>ZonalResourceLocator.tt</DependentUpon>
     </Compile>
+    <Compile Include="Locator\ProjectLocator.cs" />
     <Compile Include="Locator\ZoneLocator.cs" />
     <Compile Include="Text\IAsyncReader.cs" />
     <Compile Include="Net\RestClient.cs" />

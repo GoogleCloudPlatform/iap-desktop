@@ -65,7 +65,8 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
     {
         private const int IconIndex = 1;
 
-        public string ProjectId => this.Text;
+        public ProjectLocator Project => new ProjectLocator(this.Text);
+
         public IEnumerable<IProjectExplorerZoneNode> Zones
             => this.Nodes.OfType<IProjectExplorerZoneNode>();
 
@@ -95,7 +96,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
                 {
                     var instanceNode = new VmInstanceNode(instance);
                     instanceNode.IsConnected = isConnected(
-                        new InstanceLocator(this.ProjectId, zoneId, instance.Name));
+                        new InstanceLocator(this.Project, zoneId, instance.Name));
 
                     zoneNode.Nodes.Add(instanceNode);
                 }
@@ -113,12 +114,12 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
     {
         private const int IconIndex = 3;
 
-        public string ProjectId => ((ProjectNode)this.Parent).ProjectId;
-        public string ZoneId => this.Text;
-        public IEnumerable<IProjectExplorerVmInstanceNode> Instances
-            => this.Nodes.OfType<VmInstanceNode>();
+        public ZoneLocator Zone => new ZoneLocator(
+            ((ProjectNode)this.Parent).Project.ProjectId,
+            this.Text);
 
-        public ZoneLocator Locator => new ZoneLocator(this.ProjectId, this.ZoneId);
+        public IEnumerable<IProjectExplorerInstanceNode> Instances
+            => this.Nodes.OfType<VmInstanceNode>();
 
         internal ZoneNode(string zoneId)
             : base(zoneId, IconIndex)
@@ -127,7 +128,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
     }
 
     [ComVisible(false)]
-    public class VmInstanceNode : InventoryNode, IProjectExplorerVmInstanceNode
+    public class VmInstanceNode : InventoryNode, IProjectExplorerInstanceNode
     {
         private const int WindowsDisconnectedIconIndex = 4;
         private const int WindowsConnectedIconIndex = 5;
@@ -135,13 +136,13 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
         private const int LinuxDisconnectedIconIndex = 7;
         private const int LinuxConnectedIconIndex = 8;
 
-        public InstanceLocator Reference
+        public InstanceLocator Instance
             => new InstanceLocator(this.ProjectId, this.ZoneId, this.InstanceName);
 
         public bool IsWindowsInstance { get; private set; }
 
-        public string ProjectId => ((ZoneNode)this.Parent).ProjectId;
-        public string ZoneId => ((ZoneNode)this.Parent).ZoneId;
+        public string ProjectId => ((ZoneNode)this.Parent).Zone.ProjectId;
+        public string ZoneId => ((ZoneNode)this.Parent).Zone.Name;
 
         private VmInstanceNode(
             Instance instance,

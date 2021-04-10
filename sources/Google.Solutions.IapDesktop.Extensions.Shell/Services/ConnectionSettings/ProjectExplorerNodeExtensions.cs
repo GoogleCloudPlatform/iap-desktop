@@ -25,10 +25,10 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.ConnectionSettin
 {
     internal static class ProjectExplorerNodeExtensions
     {
-        public static bool IsRdpSupported(this IProjectExplorerVmInstanceNode node)
+        public static bool IsRdpSupported(this IProjectExplorerInstanceNode node)
             => node.IsWindowsInstance;
 
-        public static bool IsSshSupported(this IProjectExplorerVmInstanceNode node)
+        public static bool IsSshSupported(this IProjectExplorerInstanceNode node)
             => !node.IsWindowsInstance;
     }
 }

@@ -48,10 +48,10 @@ namespace Google.Solutions.IapDesktop.Application.Views
                     $"{instance.Zone}/instances/{instance.Name}?project={instance.ProjectId}");
         }
 
-        public void OpenInstanceList(string projectId)
+        public void OpenInstanceList(ProjectLocator project)
         {
             OpenUrl("https://console.cloud.google.com/compute/instances" +
-                $"?project={projectId}");
+                $"?project={project.ProjectId}");
         }
 
         public void OpenInstanceList(ZoneLocator zone)
@@ -70,24 +70,24 @@ namespace Google.Solutions.IapDesktop.Application.Views
 
         public void OpenLogs(IProjectExplorerNode node)
         {
-            if (node is IProjectExplorerVmInstanceNode vmNode)
+            if (node is IProjectExplorerInstanceNode vmNode)
             {
                 OpenLogs(
-                    vmNode.ProjectId,
+                    vmNode.Instance.ProjectId,
                     "resource.type=\"gce_instance\"\n" +
                         $"resource.labels.instance_id=\"{vmNode.InstanceId}\"");
             }
             else if (node is IProjectExplorerZoneNode zoneNode)
             {
                 OpenLogs(
-                    zoneNode.ProjectId,
+                    zoneNode.Zone.ProjectId,
                     "resource.type=\"gce_instance\"\n" +
-                        $"resource.labels.zone=\"{zoneNode.ZoneId}\"");
+                        $"resource.labels.zone=\"{zoneNode.Zone.Name}\"");
             }
             else if (node is IProjectExplorerProjectNode projectNode)
             {
                 OpenLogs(
-                    projectNode.ProjectId,
+                    projectNode.Project.ProjectId,
                     "resource.type=\"gce_instance\"");
             }
         }

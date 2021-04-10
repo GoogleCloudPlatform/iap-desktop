@@ -49,18 +49,20 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.Views.SerialOutpu
             }
         }
 
-        private static async Task<IProjectExplorerVmInstanceNode> CreateNode(
+        private static async Task<IProjectExplorerInstanceNode> CreateNode(
             ResourceTask<InstanceLocator> testInstance,
             bool markAsRunning)
         {
             await testInstance;
             var instanceLocator = await testInstance;
 
-            var node = new Mock<IProjectExplorerVmInstanceNode>();
+            var node = new Mock<IProjectExplorerInstanceNode>();
             node.SetupGet(n => n.IsRunning).Returns(markAsRunning);
-            node.SetupGet(n => n.ProjectId).Returns(instanceLocator.ProjectId);
-            node.SetupGet(n => n.ZoneId).Returns(instanceLocator.Zone);
-            node.SetupGet(n => n.InstanceName).Returns(instanceLocator.Name);
+            node.SetupGet(n => n.Instance).Returns(
+                new InstanceLocator(
+                    instanceLocator.ProjectId,
+                    instanceLocator.Zone,
+                    instanceLocator.Name));
 
             return node.Object;
         }
@@ -174,7 +176,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.Views.SerialOutpu
         [Test]
         public void WhenNodeIsVmNodeAndRunning_ThenCommandStateIsEnabled()
         {
-            var node = new Mock<IProjectExplorerVmInstanceNode>();
+            var node = new Mock<IProjectExplorerInstanceNode>();
             node.SetupGet(n => n.IsRunning).Returns(true);
             Assert.AreEqual(CommandState.Enabled, SerialOutputViewModel.GetCommandState(node.Object));
         }
@@ -182,7 +184,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.Views.SerialOutpu
         [Test]
         public void WhenNodeIsVmNodeAndStopped_ThenCommandStateIsEnabled()
         {
-            var node = new Mock<IProjectExplorerVmInstanceNode>();
+            var node = new Mock<IProjectExplorerInstanceNode>();
             node.SetupGet(n => n.IsRunning).Returns(false);
             Assert.AreEqual(CommandState.Disabled, SerialOutputViewModel.GetCommandState(node.Object));
         }

@@ -48,7 +48,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services
             var dialog = this.serviceProvider.GetService<CreateReportDialog>();
             if (contextNode is IProjectExplorerProjectNode projectNode)
             {
-                dialog.SelectProjectId(projectNode.ProjectId);
+                dialog.SelectProjectId(projectNode.Project.ProjectId);
             }
 
             var mainForm = this.serviceProvider.GetService<IMainForm>();

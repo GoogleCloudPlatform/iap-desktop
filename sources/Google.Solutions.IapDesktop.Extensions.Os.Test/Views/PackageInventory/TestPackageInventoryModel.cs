@@ -52,8 +52,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Os.Test.Views.PackageInventory
 
 
             var node = new Mock<IProjectExplorerZoneNode>();
-            node.SetupGet(n => n.ProjectId).Returns("project-1");
-            node.SetupGet(n => n.ZoneId).Returns("zone-1");
+            node.SetupGet(n => n.Zone).Returns(new ZoneLocator("project-1", "zone-1"));
             node.SetupGet(n => n.DisplayName).Returns("zone-1");
 
             var model = await PackageInventoryModel.LoadAsync(

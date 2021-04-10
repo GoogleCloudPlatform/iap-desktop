@@ -61,7 +61,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.ConnectionSettin
         {
             return node is IProjectExplorerProjectNode ||
                    node is IProjectExplorerZoneNode ||
-                   node is IProjectExplorerVmInstanceNode;
+                   node is IProjectExplorerInstanceNode;
         }
 
         public IPersistentSettingsCollection<ConnectionSettingsBase> GetConnectionSettings(
@@ -69,32 +69,32 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.ConnectionSettin
         {
             if (node is IProjectExplorerProjectNode projectNode)
             {
-                return this.repository.GetProjectSettings(projectNode.ProjectId)
+                return this.repository.GetProjectSettings(projectNode.Project.ProjectId)
                     .ToPersistentSettingsCollection(s => this.repository.SetProjectSettings(s));
             }
             else if (node is IProjectExplorerZoneNode zoneNode)
             {
                 var projectSettings = this.repository.GetProjectSettings(
-                    zoneNode.ProjectId);
+                    zoneNode.Zone.ProjectId);
                 var zoneSettings = this.repository.GetZoneSettings(
-                    zoneNode.ProjectId,
-                    zoneNode.ZoneId);
+                    zoneNode.Zone.ProjectId,
+                    zoneNode.Zone.Name);
 
                 // Apply overlay to get effective settings.
                 return projectSettings
                     .OverlayBy(zoneSettings)
                     .ToPersistentSettingsCollection(s => this.repository.SetZoneSettings(s));
             }
-            else if (node is IProjectExplorerVmInstanceNode vmNode)
+            else if (node is IProjectExplorerInstanceNode vmNode)
             {
                 var projectSettings = this.repository.GetProjectSettings(
-                    vmNode.ProjectId);
+                    vmNode.Instance.ProjectId);
                 var zoneSettings = this.repository.GetZoneSettings(
-                    vmNode.ProjectId,
-                    vmNode.ZoneId);
+                    vmNode.Instance.ProjectId,
+                    vmNode.Instance.Zone);
                 var instanceSettings = this.repository.GetVmInstanceSettings(
-                    vmNode.ProjectId,
-                    vmNode.InstanceName);
+                    vmNode.Instance.ProjectId,
+                    vmNode.Instance.Name);
 
                 var supportsRdp = vmNode.IsRdpSupported();
                 var supportsSsh = vmNode.IsSshSupported();

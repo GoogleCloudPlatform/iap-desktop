@@ -35,26 +35,23 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
 
     public interface IProjectExplorerProjectNode : IProjectExplorerNode
     {
-        string ProjectId { get; }
+        ProjectLocator Project { get; }
 
         IEnumerable<IProjectExplorerZoneNode> Zones { get; }
     }
 
     public interface IProjectExplorerZoneNode : IProjectExplorerNode
     {
-        string ProjectId { get; }
-        string ZoneId { get; }
-        IEnumerable<IProjectExplorerVmInstanceNode> Instances { get; }
+        ZoneLocator Zone { get; }
+
+        IEnumerable<IProjectExplorerInstanceNode> Instances { get; }
     }
 
-    public interface IProjectExplorerVmInstanceNode : IProjectExplorerNode
+    public interface IProjectExplorerInstanceNode : IProjectExplorerNode
     {
         ulong InstanceId { get; }
-        string ProjectId { get; }
-        string ZoneId { get; }
-        string InstanceName { get; }
 
-        InstanceLocator Reference { get; }
+        InstanceLocator Instance { get; }
 
         bool IsRunning { get; }
         bool IsConnected { get; }

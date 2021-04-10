@@ -63,11 +63,11 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.ConnectionSettings
             var buffer = new StringBuilder();
             buffer.Append("<html><body>");
 
-            buffer.Append($"<h1>{HttpUtility.HtmlEncode(projectNode.ProjectId)}</h1>");
+            buffer.Append($"<h1>{HttpUtility.HtmlEncode(projectNode.Project.ProjectId)}</h1>");
 
             foreach (var zoneNode in projectNode.Zones)
             {
-                buffer.Append($"<h2>{HttpUtility.HtmlEncode(zoneNode.ZoneId)}</h2>");
+                buffer.Append($"<h2>{HttpUtility.HtmlEncode(zoneNode.Zone.Name)}</h2>");
 
                 buffer.Append($"<ul>");
 
@@ -78,7 +78,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.ConnectionSettings
                         .TypedCollection;
 
                     buffer.Append($"<li>");
-                    buffer.Append($"<a href='{new IapRdpUrl(vmNode.Reference, settings.ToUrlQuery())}'>");
+                    buffer.Append($"<a href='{new IapRdpUrl(vmNode.Instance, settings.ToUrlQuery())}'>");
                     buffer.Append($"{HttpUtility.HtmlEncode(vmNode.InstanceName)}</a>");
                     buffer.Append($"</li>");
                 }

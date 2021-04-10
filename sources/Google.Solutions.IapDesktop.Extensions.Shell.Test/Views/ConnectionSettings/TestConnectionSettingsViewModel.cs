@@ -19,6 +19,7 @@
 // under the License.
 //
 
+using Google.Solutions.Common.Locator;
 using Google.Solutions.Common.Test;
 using Google.Solutions.IapDesktop.Application.Services.Integration;
 using Google.Solutions.IapDesktop.Application.Services.Settings;
@@ -71,10 +72,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.ConnectionSett
         {
             var viewModel = new ConnectionSettingsViewModel(this.service);
 
-            var node = new Mock<IProjectExplorerVmInstanceNode>();
-            node.SetupGet(n => n.ProjectId).Returns(SampleProjectId);
-            node.SetupGet(n => n.ZoneId).Returns("zone-1");
-            node.SetupGet(n => n.InstanceName).Returns("instance-1");
+            var node = new Mock<IProjectExplorerInstanceNode>();
+            node.SetupGet(n => n.Instance).Returns(
+                new InstanceLocator(SampleProjectId, "zone-1", "instance-1"));
             node.SetupGet(n => n.IsConnected).Returns(true);
             node.SetupGet(n => n.IsWindowsInstance).Returns(true);
 
@@ -88,10 +88,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.ConnectionSett
         {
             var viewModel = new ConnectionSettingsViewModel(this.service);
 
-            var node = new Mock<IProjectExplorerVmInstanceNode>();
-            node.SetupGet(n => n.ProjectId).Returns(SampleProjectId);
-            node.SetupGet(n => n.ZoneId).Returns("zone-1");
-            node.SetupGet(n => n.InstanceName).Returns("instance-1");
+            var node = new Mock<IProjectExplorerInstanceNode>();
+            node.SetupGet(n => n.Instance).Returns(
+                new InstanceLocator(SampleProjectId, "zone-1", "instance-1"));
             node.SetupGet(n => n.IsConnected).Returns(false);
             node.SetupGet(n => n.IsWindowsInstance).Returns(true);
 
@@ -123,7 +122,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.ConnectionSett
             var viewModel = new ConnectionSettingsViewModel(this.service);
 
             var node = new Mock<IProjectExplorerProjectNode>();
-            node.SetupGet(n => n.ProjectId).Returns(SampleProjectId);
+            node.SetupGet(n => n.Project).Returns(new ProjectLocator(SampleProjectId));
             node.SetupGet(n => n.DisplayName).Returns("display");
 
             await viewModel.SwitchToModelAsync(node.Object);
@@ -142,8 +141,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.ConnectionSett
             var viewModel = new ConnectionSettingsViewModel(this.service);
 
             var node = new Mock<IProjectExplorerZoneNode>();
-            node.SetupGet(n => n.ProjectId).Returns(SampleProjectId);
-            node.SetupGet(n => n.ZoneId).Returns("zone-1");
+            node.SetupGet(n => n.Zone).Returns(new ZoneLocator(SampleProjectId, "zone-1"));
             node.SetupGet(n => n.DisplayName).Returns("display");
 
             await viewModel.SwitchToModelAsync(node.Object);
@@ -161,10 +159,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.ConnectionSett
         {
             var viewModel = new ConnectionSettingsViewModel(this.service);
 
-            var node = new Mock<IProjectExplorerVmInstanceNode>();
-            node.SetupGet(n => n.ProjectId).Returns(SampleProjectId);
-            node.SetupGet(n => n.ZoneId).Returns("zone-1");
-            node.SetupGet(n => n.InstanceName).Returns("instance-1");
+            var node = new Mock<IProjectExplorerInstanceNode>();
+            node.SetupGet(n => n.Instance).Returns(
+                new InstanceLocator(SampleProjectId, "zone-1", "instance-1"));
             node.SetupGet(n => n.DisplayName).Returns("display");
             node.SetupGet(n => n.IsConnected).Returns(false);
             node.SetupGet(n => n.IsWindowsInstance).Returns(true);

@@ -26,6 +26,7 @@
 using System;
 using System.Linq;
 using System.Text.RegularExpressions;
+using Newtonsoft.Json;
 
 namespace Google.Solutions.Common.Locator
 {
@@ -40,9 +41,15 @@ namespace Google.Solutions.Common.Locator
 		public class <#= className #>Locator : ResourceLocator, IEquatable<<#= className #>Locator>
 		{
             public override string ResourceType => "<#= resourceType #>";
-
+            
+            [JsonConstructor]
 		    public <#= className #>Locator(string projectId, string name)
                 : base(projectId, name)
+            {
+            }
+
+            public <#= className #>Locator(ProjectLocator project, string name)
+                : base(project.ProjectId, name)
             {
             }
 

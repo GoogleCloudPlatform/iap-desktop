@@ -66,7 +66,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.ConnectionS
         private IProjectExplorerProjectNode CreateProjectNode()
         {
             var projectNode = new Mock<IProjectExplorerProjectNode>();
-            projectNode.SetupGet(n => n.ProjectId).Returns(SampleProjectId);
+            projectNode.SetupGet(n => n.Project).Returns(new ProjectLocator(SampleProjectId));
 
             return projectNode.Object;
         }
@@ -74,19 +74,15 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.ConnectionS
         private IProjectExplorerZoneNode CreateZoneNode()
         {
             var zoneNode = new Mock<IProjectExplorerZoneNode>();
-            zoneNode.SetupGet(n => n.ProjectId).Returns(SampleProjectId);
-            zoneNode.SetupGet(n => n.ZoneId).Returns("zone-1");
+            zoneNode.SetupGet(n => n.Zone).Returns(new ZoneLocator(SampleProjectId, "zone-1"));
 
             return zoneNode.Object;
         }
 
-        private IProjectExplorerVmInstanceNode CreateVmInstanceNode(bool isWindows = false)
+        private IProjectExplorerInstanceNode CreateVmInstanceNode(bool isWindows = false)
         {
-            var vmNode = new Mock<IProjectExplorerVmInstanceNode>();
-            vmNode.SetupGet(n => n.ProjectId).Returns(SampleProjectId);
-            vmNode.SetupGet(n => n.ZoneId).Returns("zone-1");
-            vmNode.SetupGet(n => n.InstanceName).Returns("instance-1");
-            vmNode.SetupGet(n => n.Reference).Returns(
+            var vmNode = new Mock<IProjectExplorerInstanceNode>();
+            vmNode.SetupGet(n => n.Instance).Returns(
                 new InstanceLocator(SampleProjectId, "zone-1", "instance-1"));
             vmNode.SetupGet(n => n.IsWindowsInstance).Returns(isWindows);
 

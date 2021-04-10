@@ -107,14 +107,14 @@ namespace Google.Solutions.IapDesktop.Extensions.Os.Views.InstanceProperties
 
         public static CommandState GetContextMenuCommandState(IProjectExplorerNode node)
         {
-            return node is IProjectExplorerVmInstanceNode
+            return node is IProjectExplorerInstanceNode
                 ? CommandState.Enabled
                 : CommandState.Unavailable;
         }
 
         public static CommandState GetToolbarCommandState(IProjectExplorerNode node)
         {
-            return node is IProjectExplorerVmInstanceNode
+            return node is IProjectExplorerInstanceNode
                 ? CommandState.Enabled
                 : CommandState.Disabled;
         }
@@ -125,14 +125,14 @@ namespace Google.Solutions.IapDesktop.Extensions.Os.Views.InstanceProperties
         {
             using (ApplicationTraceSources.Default.TraceMethod().WithParameters(node))
             {
-                if (node is IProjectExplorerVmInstanceNode vmNode)
+                if (node is IProjectExplorerInstanceNode vmNode)
                 {
                     // Load data using a job so that the task is retried in case
                     // of authentication issues.
                     var jobService = this.serviceProvider.GetService<IJobService>();
                     return await jobService.RunInBackground(
                         new JobDescription(
-                            $"Loading information about {vmNode.InstanceName}",
+                            $"Loading information about {vmNode.Instance.Name}",
                             JobUserFeedbackType.BackgroundFeedback),
                         async jobToken =>
                         {
@@ -141,10 +141,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Os.Views.InstanceProperties
                             using (var inventoryService = this.serviceProvider.GetService<IInventoryService>())
                             {
                                 return await InstancePropertiesInspectorModel.LoadAsync(
-                                    new InstanceLocator(
-                                        vmNode.ProjectId,
-                                        vmNode.ZoneId,
-                                        vmNode.InstanceName),
+                                    vmNode.Instance,
                                     gceAdapter,
                                     inventoryService,
                                     combinedTokenSource.Token)

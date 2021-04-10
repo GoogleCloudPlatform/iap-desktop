@@ -20,6 +20,7 @@
 //
 
 using Google.Apis.Logging.v2.Data;
+using Google.Solutions.Common.Locator;
 using Google.Solutions.IapDesktop.Application.ObjectModel;
 using Google.Solutions.IapDesktop.Application.Services.Integration;
 using Google.Solutions.IapDesktop.Application.Views.ProjectExplorer;
@@ -197,7 +198,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.Views.EventLog
         public async Task WhenSwitchingToProjectNode_ThenListIsPopulated()
         {
             var node = new Mock<IProjectExplorerProjectNode>();
-            node.SetupGet(n => n.ProjectId).Returns("project-1");
+            node.SetupGet(n => n.Project).Returns(new ProjectLocator("project-1"));
 
             await this.viewModel.SwitchToModelAsync(node.Object);
 
@@ -215,8 +216,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.Views.EventLog
         public async Task WhenSwitchingToZoneNode_ThenListIsPopulated()
         {
             var node = new Mock<IProjectExplorerZoneNode>();
-            node.SetupGet(n => n.ProjectId).Returns("project-1");
-            node.SetupGet(n => n.ZoneId).Returns("zone-1");
+            node.SetupGet(n => n.Zone).Returns(new ZoneLocator("project-1", "zone-1"));
 
             await this.viewModel.SwitchToModelAsync(node.Object);
 
@@ -233,10 +233,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.Views.EventLog
         [Test]
         public async Task WhenSwitchingToInstanceNode_ThenListIsPopulated()
         {
-            var node = new Mock<IProjectExplorerVmInstanceNode>();
-            node.SetupGet(n => n.ProjectId).Returns("project-1");
-            node.SetupGet(n => n.ZoneId).Returns("zone-1");
-            node.SetupGet(n => n.InstanceName).Returns("instance-1");
+            var node = new Mock<IProjectExplorerInstanceNode>();
+            node.SetupGet(n => n.Instance).Returns(
+                new InstanceLocator("project-1", "zone-1", "instance-1"));
 
             await this.viewModel.SwitchToModelAsync(node.Object);
 
@@ -257,10 +256,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.Views.EventLog
         [Test]
         public async Task WhenChangingIsIncludeSystemEventsButtonChecked_ThenEventListIsUpdated()
         {
-            var node = new Mock<IProjectExplorerVmInstanceNode>();
-            node.SetupGet(n => n.ProjectId).Returns("project-1");
-            node.SetupGet(n => n.ZoneId).Returns("zone-1");
-            node.SetupGet(n => n.InstanceName).Returns("instance-1");
+            var node = new Mock<IProjectExplorerInstanceNode>();
+            node.SetupGet(n => n.Instance).Returns(
+                new InstanceLocator("project-1", "zone-1", "instance-1"));
 
             await this.viewModel.SwitchToModelAsync(node.Object);
 
@@ -274,10 +272,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.Views.EventLog
         [Test]
         public async Task WhenChangingIsIncludeLifecycleEventsButtonChecked_ThenEventListIsUpdated()
         {
-            var node = new Mock<IProjectExplorerVmInstanceNode>();
-            node.SetupGet(n => n.ProjectId).Returns("project-1");
-            node.SetupGet(n => n.ZoneId).Returns("zone-1");
-            node.SetupGet(n => n.InstanceName).Returns("instance-1");
+            var node = new Mock<IProjectExplorerInstanceNode>();
+            node.SetupGet(n => n.Instance).Returns(
+                new InstanceLocator("project-1", "zone-1", "instance-1"));
 
             await this.viewModel.SwitchToModelAsync(node.Object);
 
@@ -291,10 +288,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.Views.EventLog
         [Test]
         public async Task WhenChangingTimeframe_ThenReloadIsTriggered()
         {
-            var node = new Mock<IProjectExplorerVmInstanceNode>();
-            node.SetupGet(n => n.ProjectId).Returns("project-1");
-            node.SetupGet(n => n.ZoneId).Returns("zone-1");
-            node.SetupGet(n => n.InstanceName).Returns("instance-1");
+            var node = new Mock<IProjectExplorerInstanceNode>();
+            node.SetupGet(n => n.Instance).Returns(
+                new InstanceLocator("project-1", "zone-1", "instance-1"));
 
             await this.viewModel.SwitchToModelAsync(node.Object);
 
