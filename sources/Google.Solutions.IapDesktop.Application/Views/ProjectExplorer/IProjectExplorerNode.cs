@@ -24,6 +24,8 @@ using System.Collections.Generic;
 
 namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
 {
+    // TODO: Move to ProjectModel namespace
+
     public interface IProjectExplorerNode
     {
         string DisplayName { get; }
@@ -56,7 +58,11 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
         bool IsRunning { get; }
         bool IsConnected { get; }
 
+        // TODO: Replace
         bool IsWindowsInstance { get; }
+
+
+        // TODO: Move to IProjectExplorer
         void Select();
     }
 }

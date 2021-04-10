@@ -46,15 +46,18 @@ namespace Google.Solutions.IapDesktop.Application.Services.Settings
             using (this.baseKey.CreateSubKey(projectId))
             { }
 
+            // TODO: Remove
             await this.eventService
                 .FireAsync(new ProjectAddedEvent(projectId))
                 .ConfigureAwait(false);
         }
 
+        // TODO: rename
         public async Task DeleteProjectAsync(string projectId)
         {
             this.baseKey.DeleteSubKeyTree(projectId, false);
 
+            // TODO: Remove
             await this.eventService
                 .FireAsync(new ProjectDeletedEvent(projectId))
                 .ConfigureAwait(false);
