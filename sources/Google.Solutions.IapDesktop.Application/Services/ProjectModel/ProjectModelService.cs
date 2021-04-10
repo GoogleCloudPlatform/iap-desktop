@@ -73,6 +73,5 @@ namespace Google.Solutions.IapDesktop.Application.Services.ProjectModel
         {
             throw new NotImplementedException();
         }
-
     }
 }

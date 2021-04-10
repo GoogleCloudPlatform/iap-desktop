@@ -64,6 +64,26 @@ namespace Google.Solutions.IapDesktop.Application.Services.ProjectModel
         }
 
         //---------------------------------------------------------------------
+        // Filter.
+        //---------------------------------------------------------------------
+
+        public ProjectNode FilterBy(OperatingSystems operatingSystems)
+        {
+            var filteredZones = this.Zones
+                .SelectMany(z => z.Instances)
+                .Cast<InstanceNode>()
+                .Where(i => (i.OperatingSystem & operatingSystems) != 0)
+                .GroupBy(i => new ZoneLocator(i.Instance.ProjectId, i.Instance.Zone))
+                .Select(group => new ZoneNode(group.Key, group.ToList()))
+                .ToList();
+
+            return new ProjectNode(
+                this.Project,
+                this.DisplayName,
+                filteredZones);
+        }
+
+        //---------------------------------------------------------------------
         // Factory.
         //---------------------------------------------------------------------
 

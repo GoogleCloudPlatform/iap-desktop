@@ -21,6 +21,7 @@
 
 using Google.Apis.Compute.v1.Data;
 using Google.Solutions.Common.Locator;
+using Google.Solutions.IapDesktop.Application.Services.Adapters;
 using Google.Solutions.IapDesktop.Application.Services.ProjectModel;
 using NUnit.Framework;
 using System.Linq;
@@ -133,6 +134,85 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.ProjectModel
 
             Assert.AreEqual("test", node.DisplayName);
             Assert.AreEqual(new ProjectLocator("project-1"), node.Project);
+        }
+
+        [Test]
+        public void WhenFilteringByAllOperatingSystems_ThenAllInstancesReturned()
+        {
+            var node = ProjectNode.FromProject(
+                new Project()
+                {
+                    Name = "project-1",
+                    Description = "test"
+                },
+                new[] 
+                { 
+                    SampleLinuxInstanceInZone1, 
+                    SampleWindowsInstanceInZone1, 
+                    SampleLinuxInstanceInZone2 
+                });
+
+            var filtered = node.FilterBy(OperatingSystems.All);
+
+            Assert.AreEqual(node.Zones.Count(), filtered.Zones.Count());
+
+            var zone1 = filtered.Zones.First();
+            var zone2 = filtered.Zones.Last();
+
+            CollectionAssert.AreEqual(
+                new[] { SampleLinuxInstanceInZone1.Name, SampleWindowsInstanceInZone1.Name },
+                zone1.Instances.Select(i => i.DisplayName));
+            CollectionAssert.AreEqual(
+                new[] { SampleLinuxInstanceInZone2.Name },
+                zone2.Instances.Select(i => i.DisplayName));
+        }
+
+        [Test]
+        public void WhenFilteringByNoOperatingSystems_ThenNoZonesReturned()
+        {
+            var node = ProjectNode.FromProject(
+                new Project()
+                {
+                    Name = "project-1",
+                    Description = "test"
+                },
+                new[]
+                {
+                    SampleLinuxInstanceInZone1,
+                    SampleWindowsInstanceInZone1,
+                    SampleLinuxInstanceInZone2
+                });
+
+            var filtered = node.FilterBy((OperatingSystems)0);
+            Assert.AreEqual(0, filtered.Zones.Count());
+        }
+
+        [Test]
+        public void WhenFilteringByOperatingSystems_ThenOnlyZonesWithMatchingInstancesReturned()
+        {
+            var node = ProjectNode.FromProject(
+                new Project()
+                {
+                    Name = "project-1",
+                    Description = "test"
+                },
+                new[]
+                {
+                    SampleLinuxInstanceInZone1,
+                    SampleWindowsInstanceInZone1,
+                    SampleLinuxInstanceInZone2
+                });
+
+            var filtered = node.FilterBy(OperatingSystems.Windows);
+
+            Assert.AreEqual(1, filtered.Zones.Count());
+            Assert.AreEqual("zone-1", filtered.Zones.First().DisplayName);
+
+            var zone1 = filtered.Zones.First();
+
+            CollectionAssert.AreEqual(
+                new[] { SampleWindowsInstanceInZone1.Name },
+                zone1.Instances.Select(i => i.DisplayName));
         }
 
         //---------------------------------------------------------------------
