@@ -592,18 +592,17 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.ProjectProjects
                 CancellationToken.None);
 
             await modelService.SetActiveNodeAsync(
-                root.Projects.First(),
+                new ProjectLocator("project-1"),
                 CancellationToken.None);
 
             var activeNode = await modelService.GetActiveNodeAsync(CancellationToken.None);
             Assert.IsNotNull(activeNode);
-            Assert.AreSame(root.Projects.First(), activeNode);
+            Assert.IsInstanceOf(typeof(IProjectExplorerProjectNode), activeNode);
         }
 
         [Test]
-        public async Task WhenActiveNodeSet_ThenEventIsFired()
+        public async Task WhenActiveNodeSetToValidLocator_ThenEventIsFired()
         {
-
             var serviceRegistry = new ServiceRegistry();
             var eventService = serviceRegistry.AddMock<IEventService>();
             serviceRegistry.AddSingleton(CreateProjectRepositoryMock("project-1").Object);
@@ -626,7 +625,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.ProjectProjects
         }
 
         [Test]
-        public async Task WhenActiveNodeSetToNull_ThenNoEventIsFired()
+        public async Task WhenActiveNodeSetToNull_ThenEventIsFired()
         {
             var serviceRegistry = new ServiceRegistry();
             var eventService = serviceRegistry.AddMock<IEventService>();
@@ -636,11 +635,74 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.ProjectProjects
             var modelService = new ProjectModelService(serviceRegistry);
             var model = await modelService.GetRootNodeAsync(false, CancellationToken.None);
 
-            await modelService.SetActiveNodeAsync(null, CancellationToken.None);
+            // Pre-warm cache.
+            await modelService.GetRootNodeAsync(
+                false,
+                CancellationToken.None);
+
+            await modelService.SetActiveNodeAsync((ResourceLocator)null, CancellationToken.None);
+
+            eventService.Verify(s => s.FireAsync<ProjectExplorerNodeSelectedEvent>(
+                    It.Is<ProjectExplorerNodeSelectedEvent>(e => e.SelectedNode is IProjectExplorerCloudNode)),
+                Times.Once);
+        }
+
+        [Test]
+        public async Task WhenActiveNodeSetToNonexistingLocator_ThenEventIsFired()
+        {
+            var serviceRegistry = new ServiceRegistry();
+            var eventService = serviceRegistry.AddMock<IEventService>();
+            serviceRegistry.AddSingleton(CreateProjectRepositoryMock("project-1").Object);
+            serviceRegistry.AddSingleton(CreateComputeEngineAdapterMock("project-1").Object);
+
+            var modelService = new ProjectModelService(serviceRegistry);
+            var model = await modelService.GetRootNodeAsync(false, CancellationToken.None);
+
+            // Pre-warm cache.
+            await modelService.GetRootNodeAsync(
+                false,
+                CancellationToken.None);
+
+            await modelService.SetActiveNodeAsync(
+                new ProjectLocator("nonexisting-1"), 
+                CancellationToken.None);
+
+            eventService.Verify(s => s.FireAsync<ProjectExplorerNodeSelectedEvent>(
+                    It.Is<ProjectExplorerNodeSelectedEvent>(e => e.SelectedNode is IProjectExplorerCloudNode)),
+                Times.Once);
+        }
+
+        [Test]
+        public async Task WhenCacheEmptyAndActiveNodeSetToNull_ThenNoEventIsFired()
+        {
+            var serviceRegistry = new ServiceRegistry();
+            var eventService = serviceRegistry.AddMock<IEventService>();
+            serviceRegistry.AddSingleton(CreateProjectRepositoryMock("project-1").Object);
+            serviceRegistry.AddSingleton(CreateComputeEngineAdapterMock("project-1").Object);
+
+            var modelService = new ProjectModelService(serviceRegistry);
+
+            await modelService.SetActiveNodeAsync((ResourceLocator)null, CancellationToken.None);
 
             eventService.Verify(s => s.FireAsync<ProjectExplorerNodeSelectedEvent>(
                     It.IsAny<ProjectExplorerNodeSelectedEvent>()),
                 Times.Never);
+        }
+
+        [Test]
+        public void WhenLocatorIsInvalid_ThenSetActiveNodeAsyncRaisesArgumentException()
+        {
+            var serviceRegistry = new ServiceRegistry();
+            var eventService = serviceRegistry.AddMock<IEventService>();
+            serviceRegistry.AddSingleton(CreateProjectRepositoryMock("project-1").Object);
+            serviceRegistry.AddSingleton(CreateComputeEngineAdapterMock("project-1").Object);
+
+            var modelService = new ProjectModelService(serviceRegistry);
+
+            AssertEx.ThrowsAggregateException<ArgumentException>(
+                () => modelService.SetActiveNodeAsync(
+                    new DiskTypeLocator("project-1", "zone-1", "type-1"),
+                    CancellationToken.None).Wait());
         }
     }
 }

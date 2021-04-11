@@ -28,7 +28,9 @@ namespace Google.Solutions.IapDesktop.Application.Views.NewProjectExplorer
         {
             this.View = view;
             this.projectModelService = projectModelService;
-            this.RootNode = new CloudViewModelNode(view, projectModelService);
+            this.RootNode = new CloudViewModelNode(
+                view, 
+                projectModelService);
         }
 
         //---------------------------------------------------------------------
@@ -36,11 +38,6 @@ namespace Google.Solutions.IapDesktop.Application.Views.NewProjectExplorer
         //---------------------------------------------------------------------
 
         public CloudViewModelNode RootNode { get; }
-
-        //public ViewModelNodeBase SelectedNode
-        //{
-        //    get => this.projectModelService.ActiveNode
-        //}
 
         //---------------------------------------------------------------------
         // Actions.
@@ -66,6 +63,15 @@ namespace Google.Solutions.IapDesktop.Application.Views.NewProjectExplorer
                     .GetChildren(jobService, true)
                     .ConfigureAwait(true);
             }
+        }
+
+        public Task SetActiveNodeAsync(
+            ViewModelNodeBase node,
+            CancellationToken token)
+        {
+            return this.projectModelService.SetActiveNodeAsync(
+                node.Locator, 
+                token);
         }
 
         //---------------------------------------------------------------------
@@ -222,23 +228,23 @@ namespace Google.Solutions.IapDesktop.Application.Views.NewProjectExplorer
 
         internal class ProjectViewModelNode : ViewModelNodeBase
         {
-            private readonly IProjectExplorerProjectNode projectNode;
+            private readonly IProjectExplorerProjectNode modelNode;
             private readonly IProjectModelService projectModelService;
 
             public ProjectViewModelNode(
                 CloudViewModelNode parent,
-                IProjectExplorerProjectNode projectNode,
+                IProjectExplorerProjectNode modelNode,
                 IProjectModelService projectModelService)
                 : base(
                       parent,
                       parent.View,
-                      projectNode.Project,
-                      projectNode.DisplayName,
+                      modelNode.Project,
+                      modelNode.DisplayName,
                       false,
                       0,
                       0)
             {
-                this.projectNode = projectNode;
+                this.modelNode = modelNode;
                 this.projectModelService = projectModelService;
             }
 
@@ -249,7 +255,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.NewProjectExplorer
                 CancellationToken token)
             {
                 var zones = await this.projectModelService.GetZoneNodesAsync(
-                        this.projectNode.Project,
+                        this.modelNode.Project,
                         forceReload,
                         token)
                     .ConfigureAwait(true);
@@ -289,21 +295,21 @@ namespace Google.Solutions.IapDesktop.Application.Views.NewProjectExplorer
 
         internal class ZoneViewModelNode : ViewModelNodeBase
         {
-            private readonly IProjectExplorerZoneNode zoneNode;
+            private readonly IProjectExplorerZoneNode modelNode;
 
             public ZoneViewModelNode(
                 ProjectViewModelNode parent,
-                IProjectExplorerZoneNode zoneNode)
+                IProjectExplorerZoneNode modelNode)
                 : base(
                       parent,
                       parent.View,
-                      zoneNode.Zone,
-                      zoneNode.DisplayName,
+                      modelNode.Zone,
+                      modelNode.DisplayName,
                       false,
                       0,
                       0)
             {
-                this.zoneNode = zoneNode;
+                this.modelNode = modelNode;
             }
 
             public override bool CanReload => false;
@@ -313,7 +319,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.NewProjectExplorer
                 CancellationToken token)
             {
                 Debug.Assert(!forceReload);
-                return Task.FromResult(this.zoneNode
+                return Task.FromResult(this.modelNode
                     .Instances
                     .Select(i => new InstanceViewModelNode(this, i))
                     .Cast<ViewModelNodeBase>());
@@ -322,22 +328,23 @@ namespace Google.Solutions.IapDesktop.Application.Views.NewProjectExplorer
 
         internal class InstanceViewModelNode : ViewModelNodeBase
         {
-            private readonly IProjectExplorerInstanceNode instanceNode;
+            private readonly IProjectExplorerInstanceNode modelNode;
 
             public InstanceViewModelNode(
                 ZoneViewModelNode parent,
-                IProjectExplorerInstanceNode instanceNode)
+                IProjectExplorerInstanceNode modelNode)
                 : base(
                       parent,
                       parent.View,
-                      instanceNode.Instance,
-                      instanceNode.DisplayName,
+                      modelNode.Instance,
+                      modelNode.DisplayName,
                       true,
                       0,
                       0)
             {
-                this.instanceNode = instanceNode;
+                this.modelNode = modelNode;
             }
+
             public override bool CanReload => false;
 
             protected override Task<IEnumerable<ViewModelNodeBase>> LoadChildren(

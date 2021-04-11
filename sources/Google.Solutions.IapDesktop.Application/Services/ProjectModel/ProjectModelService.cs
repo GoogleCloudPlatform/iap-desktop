@@ -73,7 +73,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.ProjectModel
             CancellationToken token);
 
         /// <summary>
-        /// Load any node.  Uses cached data if available.
+        /// Load any node. Uses cached data if available.
         /// </summary>
         Task<IProjectExplorerNode> GetNodeAsync(
             ResourceLocator locator,
@@ -92,6 +92,14 @@ namespace Google.Solutions.IapDesktop.Application.Services.ProjectModel
         Task SetActiveNodeAsync(
             IProjectExplorerNode node,
             CancellationToken token);
+
+        /// <summary>
+        /// Gets the active/selected node. The selection
+        /// is kept across reloads.
+        /// </summary>
+        Task SetActiveNodeAsync(
+            ResourceLocator locator,
+            CancellationToken token);
     }
 
     public class ProjectModelService : IProjectModelService, IDisposable
@@ -101,7 +109,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.ProjectModel
         private ResourceLocator activeNode;
 
         private readonly AsyncLock cacheLock = new AsyncLock();
-        private CloudNode cachedProjects = null;
+        private CloudNode cachedRoot = null;
         private IDictionary<ProjectLocator, IReadOnlyCollection<IProjectExplorerZoneNode>> cachedZones =
             new Dictionary<ProjectLocator, IReadOnlyCollection<IProjectExplorerZoneNode>>();
 
@@ -279,19 +287,19 @@ namespace Google.Solutions.IapDesktop.Application.Services.ProjectModel
         {
             using (await this.cacheLock.AcquireAsync(token).ConfigureAwait(false))
             { 
-                if (this.cachedProjects == null || forceReload)
+                if (this.cachedRoot == null || forceReload)
                 {
                     //
                     // Load from backend and cache.
                     //
-                    this.cachedProjects = await LoadProjectsAsync(token)
+                    this.cachedRoot = await LoadProjectsAsync(token)
                         .ConfigureAwait(false);
                 }
             }
 
-            Debug.Assert(this.cachedProjects != null);
+            Debug.Assert(this.cachedRoot != null);
 
-            return this.cachedProjects;
+            return this.cachedRoot;
         }
 
         public async Task<IReadOnlyCollection<IProjectExplorerZoneNode>> GetZoneNodesAsync(
@@ -378,34 +386,66 @@ namespace Google.Solutions.IapDesktop.Application.Services.ProjectModel
                 .ConfigureAwait(false);
         }
 
-        public async Task SetActiveNodeAsync(
+        public Task SetActiveNodeAsync(
             IProjectExplorerNode node,
             CancellationToken token)
         {
             // TODO: Use polymorphism instead.
             if (node is IProjectExplorerInstanceNode instanceNode)
             {
-                this.activeNode = instanceNode.Instance;
+                return SetActiveNodeAsync(instanceNode.Instance, token);
             }
             else if (node is IProjectExplorerZoneNode zoneNode)
             {
-                this.activeNode = zoneNode.Zone;
+                return SetActiveNodeAsync(zoneNode.Zone, token);
             }
             else if (node is IProjectExplorerProjectNode projectNode)
             {
-                this.activeNode = projectNode.Project;
+                return SetActiveNodeAsync(projectNode.Project, token);
             }
             else
             {
-                this.activeNode = null;
+                return SetActiveNodeAsync((ResourceLocator)null, token);
+            }
+        }
+
+        public async Task SetActiveNodeAsync(
+            ResourceLocator locator,
+            CancellationToken token)
+        {
+            IProjectExplorerNode node;
+            if (locator != null)
+            {
+                node = await GetNodeAsync(locator, token)
+                    .ConfigureAwait(false);
+
+                if (node != null)
+                {
+                    //
+                    // Node found -> set as active and fire event.
+                    //
+                    this.activeNode = locator;
+
+                    // TODO: rename event
+                    await this.serviceProvider
+                        .GetService<IEventService>()
+                        .FireAsync(new ProjectExplorerNodeSelectedEvent(node))
+                        .ConfigureAwait(true);
+
+                    return;
+                }
             }
 
-            if (this.activeNode != null)
+            //
+            // Locator was null or pointed to nonexisting node ->
+            // set root as active.
+            //
+            this.activeNode = null;
+            if (this.cachedRoot != null)
             {
-                // TODO: rename event
                 await this.serviceProvider
                     .GetService<IEventService>()
-                    .FireAsync(new ProjectExplorerNodeSelectedEvent(node))
+                    .FireAsync(new ProjectExplorerNodeSelectedEvent(this.cachedRoot))
                     .ConfigureAwait(true);
             }
         }
