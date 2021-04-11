@@ -37,6 +37,10 @@ namespace Google.Solutions.IapDesktop.Application.Views.NewProjectExplorer
 
         public CloudViewModelNode RootNode { get; }
 
+        //public ViewModelNodeBase SelectedNode
+        //{
+        //    get => this.projectModelService.ActiveNode
+        //}
 
         //---------------------------------------------------------------------
         // Actions.
@@ -203,7 +207,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.NewProjectExplorer
                 CancellationToken token)
             {
                 var model = await this.projectModelService
-                    .ListProjectsAsync(forceReload, token)
+                    .GetRootNodeAsync(forceReload, token)
                     .ConfigureAwait(true);
 
                 var children = new List<ViewModelNodeBase>();
@@ -244,7 +248,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.NewProjectExplorer
                 bool forceReload, 
                 CancellationToken token)
             {
-                var zones = await this.projectModelService.ListInstancesGroupedByZone(
+                var zones = await this.projectModelService.GetZoneNodesAsync(
                         this.projectNode.Project,
                         forceReload,
                         token)

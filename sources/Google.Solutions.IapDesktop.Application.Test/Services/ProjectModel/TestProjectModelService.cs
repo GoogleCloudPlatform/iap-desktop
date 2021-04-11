@@ -159,7 +159,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.ProjectProjects
         }
 
         //---------------------------------------------------------------------
-        // ListProjectsAsync.
+        // GetRootNodeAsync.
         //---------------------------------------------------------------------
 
         private static Mock<IComputeEngineAdapter> CreateComputeEngineAdapterMock(
@@ -194,7 +194,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.ProjectProjects
         }
 
         [Test]
-        public async Task WhenProjectsNotCached_ThenListProjectsAsyncLoadsProjects()
+        public async Task WhenProjectsNotCached_ThenGetRootNodeLoadsProjects()
         {
             var serviceRegistry = new ServiceRegistry();
             var eventService = serviceRegistry.AddMock<IEventService>();
@@ -204,7 +204,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.ProjectProjects
             serviceRegistry.AddSingleton(computeAdapter.Object);
 
             var modelService = new ProjectModelService(serviceRegistry);
-            var model = await modelService.ListProjectsAsync(false, CancellationToken.None);
+            var model = await modelService.GetRootNodeAsync(false, CancellationToken.None);
 
             Assert.AreEqual(1, model.Projects.Count());
             Assert.AreEqual(0, model.InaccessibleProjects.Count());
@@ -218,7 +218,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.ProjectProjects
         }
 
         [Test]
-        public async Task WhenProjectsCached_ThenListProjectsAsyncReturnsCachedProjects()
+        public async Task WhenProjectsCached_ThenGetRootNodeAsyncReturnsCachedProjects()
         {
             var serviceRegistry = new ServiceRegistry();
             var eventService = serviceRegistry.AddMock<IEventService>();
@@ -228,8 +228,8 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.ProjectProjects
             serviceRegistry.AddSingleton(computeAdapter.Object);
 
             var modelService = new ProjectModelService(serviceRegistry);
-            var model = await modelService.ListProjectsAsync(false, CancellationToken.None);
-            var modelSecondLoad = await modelService.ListProjectsAsync(false, CancellationToken.None);
+            var model = await modelService.GetRootNodeAsync(false, CancellationToken.None);
+            var modelSecondLoad = await modelService.GetRootNodeAsync(false, CancellationToken.None);
 
             Assert.AreSame(model, modelSecondLoad);
 
@@ -240,7 +240,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.ProjectProjects
         }
 
         [Test]
-        public async Task WhenProjectsCachedButForceRefreshIsTrue_ThenListProjectsAsyncLoadsProjects()
+        public async Task WhenProjectsCachedButForceRefreshIsTrue_ThenGetRootNodeAsyncLoadsProjects()
         {
             var serviceRegistry = new ServiceRegistry();
             var eventService = serviceRegistry.AddMock<IEventService>();
@@ -250,8 +250,8 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.ProjectProjects
             serviceRegistry.AddSingleton(computeAdapter.Object);
 
             var modelService = new ProjectModelService(serviceRegistry);
-            var model = await modelService.ListProjectsAsync(false, CancellationToken.None);
-            var modelSecondLoad = await modelService.ListProjectsAsync(true, CancellationToken.None);
+            var model = await modelService.GetRootNodeAsync(false, CancellationToken.None);
+            var modelSecondLoad = await modelService.GetRootNodeAsync(true, CancellationToken.None);
 
             Assert.AreNotSame(model, modelSecondLoad);
 
@@ -262,7 +262,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.ProjectProjects
         }
 
         [Test]
-        public async Task WhenProjectInaccessible_ThenOtherProjectsAreLoaded()
+        public async Task WhenProjectInaccessible_ThenGetRootNodeAsyncLoadsRemainingProjects()
         {
             var serviceRegistry = new ServiceRegistry();
             serviceRegistry.AddMock<IEventService>();
@@ -272,7 +272,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.ProjectProjects
             serviceRegistry.AddSingleton(CreateComputeEngineAdapterMock("project-1").Object);
 
             var modelService = new ProjectModelService(serviceRegistry);
-            var model = await modelService.ListProjectsAsync(false, CancellationToken.None);
+            var model = await modelService.GetRootNodeAsync(false, CancellationToken.None);
 
             Assert.AreEqual(1, model.Projects.Count());
             Assert.AreEqual(1, model.InaccessibleProjects.Count());
@@ -282,7 +282,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.ProjectProjects
         }
 
         [Test]
-        public void WhenLoadingDataCausesReauthError_ThenExceptionIsPropagated()
+        public void WhenLoadingDataCausesReauthError_ThenGetRootNodeAsyncPropagatesException()
         {
             var serviceRegistry = new ServiceRegistry();
             var eventService = serviceRegistry.AddMock<IEventService>();
@@ -302,15 +302,15 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.ProjectProjects
             var modelService = new ProjectModelService(serviceRegistry);
 
             AssertEx.ThrowsAggregateException<TokenResponseException>(
-                () => modelService.ListProjectsAsync(false, CancellationToken.None).Wait());
+                () => modelService.GetRootNodeAsync(false, CancellationToken.None).Wait());
         }
 
         //---------------------------------------------------------------------
-        // ListInstancesGroupedByZone.
+        // GetZoneNodesAsync.
         //---------------------------------------------------------------------
 
         [Test]
-        public async Task WhenZonesNotCached_ThenListInstancesGroupedByZoneLoadsZones()
+        public async Task WhenZonesNotCached_ThenGetZoneNodesAsyncLoadsZones()
         {
             var serviceRegistry = new ServiceRegistry();
             var eventService = serviceRegistry.AddMock<IEventService>();
@@ -323,7 +323,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.ProjectProjects
             serviceRegistry.AddSingleton(computeAdapter.Object);
 
             var modelService = new ProjectModelService(serviceRegistry);
-            var zones = await modelService.ListInstancesGroupedByZone(
+            var zones = await modelService.GetZoneNodesAsync(
                 new ProjectLocator("project-1"),
                 false,
                 CancellationToken.None);
@@ -344,7 +344,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.ProjectProjects
         }
 
         [Test]
-        public async Task WhenZonesCached_ThenListInstancesGroupedByZoneReturnsCachedZones()
+        public async Task WhenZonesCached_ThenGetZoneNodesAsyncReturnsCachedZones()
         {
             var serviceRegistry = new ServiceRegistry();
             var eventService = serviceRegistry.AddMock<IEventService>();
@@ -357,11 +357,11 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.ProjectProjects
             serviceRegistry.AddSingleton(computeAdapter.Object);
 
             var modelService = new ProjectModelService(serviceRegistry);
-            var zones = await modelService.ListInstancesGroupedByZone(
+            var zones = await modelService.GetZoneNodesAsync(
                 new ProjectLocator("project-1"),
                 false,
                 CancellationToken.None);
-            var zonesSecondLoad = await modelService.ListInstancesGroupedByZone(
+            var zonesSecondLoad = await modelService.GetZoneNodesAsync(
                 new ProjectLocator("project-1"),
                 false,
                 CancellationToken.None);
@@ -375,7 +375,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.ProjectProjects
         }
 
         [Test]
-        public async Task WhenZonesCachedButForceRefreshIsTrue_ThenListInstancesGroupedByZoneLoadsZones()
+        public async Task WhenZonesCachedButForceRefreshIsTrue_ThenGetZoneNodesAsyncLoadsZones()
         {
             var serviceRegistry = new ServiceRegistry();
             var eventService = serviceRegistry.AddMock<IEventService>();
@@ -388,11 +388,11 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.ProjectProjects
             serviceRegistry.AddSingleton(computeAdapter.Object);
 
             var modelService = new ProjectModelService(serviceRegistry);
-            var zones = await modelService.ListInstancesGroupedByZone(
+            var zones = await modelService.GetZoneNodesAsync(
                 new ProjectLocator("project-1"),
                 true,
                 CancellationToken.None);
-            var zonesSecondLoad = await modelService.ListInstancesGroupedByZone(
+            var zonesSecondLoad = await modelService.GetZoneNodesAsync(
                 new ProjectLocator("project-1"),
                 true,
                 CancellationToken.None);
@@ -406,7 +406,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.ProjectProjects
         }
 
         [Test]
-        public async Task WhenInstanceHasNoDisk_ThenListInstancesGroupedSkipsInstance()
+        public async Task WhenInstanceHasNoDisk_ThenGetZoneNodesAsyncSkipsInstance()
         {
             var serviceRegistry = new ServiceRegistry();
             var eventService = serviceRegistry.AddMock<IEventService>();
@@ -419,7 +419,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.ProjectProjects
             serviceRegistry.AddSingleton(computeAdapter.Object);
 
             var modelService = new ProjectModelService(serviceRegistry);
-            var zones = await modelService.ListInstancesGroupedByZone(
+            var zones = await modelService.GetZoneNodesAsync(
                 new ProjectLocator("project-1"),
                 false,
                 CancellationToken.None);
@@ -434,7 +434,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.ProjectProjects
         }
 
         [Test]
-        public async Task WhenInstanceIsTerminated_ThenListInstancesGroupedSkipsInstance()
+        public async Task WhenInstanceIsTerminated_ThenGetZoneNodesAsyncMarksInstanceAsNotRunning()
         {
             var serviceRegistry = new ServiceRegistry();
             var eventService = serviceRegistry.AddMock<IEventService>();
@@ -447,7 +447,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.ProjectProjects
             serviceRegistry.AddSingleton(computeAdapter.Object);
 
             var modelService = new ProjectModelService(serviceRegistry);
-            var zones = await modelService.ListInstancesGroupedByZone(
+            var zones = await modelService.GetZoneNodesAsync(
                 new ProjectLocator("project-1"),
                 false,
                 CancellationToken.None);
@@ -468,11 +468,11 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.ProjectProjects
         }
 
         //---------------------------------------------------------------------
-        // TryFindNode.
+        // GetNodeAsync.
         //---------------------------------------------------------------------
 
         [Test]
-        public async Task WhenLocatorOfUnknownType_ThenTryFindNodeThrowsArgumentException()
+        public async Task WhenLocatorOfUnknownType_ThenGetNodeAsyncThrowsArgumentException()
         {
             var serviceRegistry = new ServiceRegistry();
             serviceRegistry.AddMock<IEventService>();
@@ -480,14 +480,15 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.ProjectProjects
             serviceRegistry.AddSingleton(CreateComputeEngineAdapterMock("project-1").Object);
 
             var modelService = new ProjectModelService(serviceRegistry);
-            await modelService.ListProjectsAsync(false, CancellationToken.None);
+            await modelService.GetRootNodeAsync(false, CancellationToken.None);
 
-            Assert.Throws<ArgumentException>(() => modelService.TryFindNode(
-                new DiskTypeLocator("project-1", "zone-1", "type-1")));
+            AssertEx.ThrowsAggregateException<ArgumentException>(() => modelService.GetNodeAsync(
+                new DiskTypeLocator("project-1", "zone-1", "type-1"),
+                CancellationToken.None).Wait());
         }
 
         [Test]
-        public void WhenProjectsNotCached_ThenTryFindNodeReturnsNull()
+        public async Task WhenProjectLocatorValid_ThenGetNodeAsyncReturnsNode()
         {
             var serviceRegistry = new ServiceRegistry();
             serviceRegistry.AddMock<IEventService>();
@@ -495,43 +496,21 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.ProjectProjects
             serviceRegistry.AddSingleton(CreateComputeEngineAdapterMock("project-1").Object);
 
             var modelService = new ProjectModelService(serviceRegistry);
+            await modelService.GetRootNodeAsync(false, CancellationToken.None);
 
-            Assert.IsNull(modelService.TryFindNode(new ProjectLocator("project-1")));
-        }
+            Assert.IsNull(await modelService.GetNodeAsync(
+                new ProjectLocator("nonexisting-1"),
+                CancellationToken.None));
 
-        [Test]
-        public async Task WhenProjectsCachedAndProjectLocatorValid_ThenTryFindNodeReturnsNode()
-        {
-            var serviceRegistry = new ServiceRegistry();
-            serviceRegistry.AddMock<IEventService>();
-            serviceRegistry.AddSingleton(CreateProjectRepositoryMock("project-1").Object);
-            serviceRegistry.AddSingleton(CreateComputeEngineAdapterMock("project-1").Object);
-
-            var modelService = new ProjectModelService(serviceRegistry);
-            await modelService.ListProjectsAsync(false, CancellationToken.None);
-
-            Assert.IsNull(modelService.TryFindNode(new ProjectLocator("nonexisting-1")));
-
-            var project = modelService.TryFindNode(new ProjectLocator("project-1"));
+            var project = await modelService.GetNodeAsync(
+                new ProjectLocator("project-1"),
+                CancellationToken.None);
             Assert.IsInstanceOf(typeof(IProjectExplorerProjectNode), project);
             Assert.IsNotNull(project);
         }
 
         [Test]
-        public void WhenZonesNotCached_ThenTryFindNodeReturnsNull()
-        {
-            var serviceRegistry = new ServiceRegistry();
-            serviceRegistry.AddMock<IEventService>();
-            serviceRegistry.AddSingleton(CreateProjectRepositoryMock("project-1").Object);
-            serviceRegistry.AddSingleton(CreateComputeEngineAdapterMock("project-1").Object);
-
-            var modelService = new ProjectModelService(serviceRegistry);
-
-            Assert.IsNull(modelService.TryFindNode(new ZoneLocator("project-1", "zone-1")));
-        }
-
-        [Test]
-        public async Task WhenZonesCachedAndZoneLocatorValid_ThenTryFindNodeReturnsNode()
+        public async Task WhenZoneLocatorValid_ThenGetNodeAsyncReturnsNode()
         {
             var serviceRegistry = new ServiceRegistry();
             serviceRegistry.AddMock<IEventService>();
@@ -541,20 +520,20 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.ProjectProjects
                 SampleWindowsInstanceInZone1).Object);
 
             var modelService = new ProjectModelService(serviceRegistry);
-            await modelService.ListInstancesGroupedByZone(
-                new ProjectLocator("project-1"),
-                false, 
+
+            Assert.IsNull(await modelService.GetNodeAsync(
+                new ZoneLocator("nonexisting-1", "zone-1"),
+                CancellationToken.None));
+
+            var zone = await modelService.GetNodeAsync(
+                new ZoneLocator("project-1", "zone-1"),
                 CancellationToken.None);
-
-            Assert.IsNull(modelService.TryFindNode(new ZoneLocator("nonexisting-1", "zone-1")));
-
-            var zone = modelService.TryFindNode(new ZoneLocator("project-1", "zone-1"));
             Assert.IsInstanceOf(typeof(IProjectExplorerZoneNode), zone);
             Assert.IsNotNull(zone);
         }
 
         [Test]
-        public async Task WhenZonesCachedAndInstanceLocatorValid_ThenTryFindNodeReturnsNode()
+        public async Task WhenInstanceLocatorValid_ThenGetNodeAsyncReturnsNode()
         {
             var serviceRegistry = new ServiceRegistry();
             serviceRegistry.AddMock<IEventService>();
@@ -564,26 +543,24 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.ProjectProjects
                 SampleWindowsInstanceInZone1).Object);
 
             var modelService = new ProjectModelService(serviceRegistry);
-            await modelService.ListInstancesGroupedByZone(
-                new ProjectLocator("project-1"),
-                false,
+
+            Assert.IsNull(await modelService.GetNodeAsync(
+                new InstanceLocator("nonexisting-1", "zone-1", SampleWindowsInstanceInZone1.Name),
+                CancellationToken.None));
+
+            var instance = await modelService.GetNodeAsync(
+                new InstanceLocator("project-1", "zone-1", SampleWindowsInstanceInZone1.Name),
                 CancellationToken.None);
-
-            Assert.IsNull(modelService.TryFindNode(
-                new InstanceLocator("nonexisting-1", "zone-1", SampleWindowsInstanceInZone1.Name)));
-
-            var instance = modelService.TryFindNode(
-                new InstanceLocator("project-1", "zone-1", SampleWindowsInstanceInZone1.Name));
             Assert.IsInstanceOf(typeof(IProjectExplorerInstanceNode), instance);
             Assert.IsNotNull(instance);
         }
 
         //---------------------------------------------------------------------
-        // Active node.
+        // GetActiveNodeAsync.
         //---------------------------------------------------------------------
 
         [Test]
-        public void WhenNoActiveNodeSetAndProjectsNotCached_ThenActiveNodeReturnsRoot()
+        public async Task WhenNoActiveNodeSet_ThenGetActiveNodeAsyncReturnsRoot()
         {
             var serviceRegistry = new ServiceRegistry();
             serviceRegistry.AddMock<IEventService>();
@@ -591,47 +568,15 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.ProjectProjects
             serviceRegistry.AddSingleton(CreateComputeEngineAdapterMock("project-1").Object);
 
             var modelService = new ProjectModelService(serviceRegistry);
-
-            Assert.IsNull(modelService.ActiveNode);
+            var activeNode = await modelService.GetActiveNodeAsync(CancellationToken.None);
+            Assert.IsNotNull(activeNode);
+            Assert.AreSame(
+                await modelService.GetRootNodeAsync(false, CancellationToken.None),
+                activeNode);
         }
 
         [Test]
-        public async Task WhenNoActiveNodeSetAndProjectsCached_ThenActiveNodeReturnsRoot()
-        {
-            var serviceRegistry = new ServiceRegistry();
-            serviceRegistry.AddMock<IEventService>();
-            serviceRegistry.AddSingleton(CreateProjectRepositoryMock("project-1").Object);
-            serviceRegistry.AddSingleton(CreateComputeEngineAdapterMock("project-1").Object);
-
-            var modelService = new ProjectModelService(serviceRegistry);
-            var model = await modelService.ListProjectsAsync(false, CancellationToken.None);
-
-            Assert.IsNotNull(modelService.ActiveNode);
-            Assert.AreSame(model, modelService.ActiveNode);
-        }
-
-        [Test]
-        public async Task WhenActiveNodeGone_ThenActiveNodeReturnsRoot()
-        {
-            var serviceRegistry = new ServiceRegistry();
-            serviceRegistry.AddMock<IEventService>();
-            serviceRegistry.AddSingleton(CreateProjectRepositoryMock("project-1").Object);
-            serviceRegistry.AddSingleton(CreateComputeEngineAdapterMock("project-1").Object);
-
-            var modelService = new ProjectModelService(serviceRegistry);
-            var model = await modelService.ListProjectsAsync(false, CancellationToken.None);
-
-            var goneZone = new Mock<IProjectExplorerZoneNode>();
-            goneZone.SetupGet(z => z.Zone).Returns(new ZoneLocator("project-1", "zone-gone"));
-
-            await modelService.SetActiveNodeAsync(goneZone.Object);
-
-            Assert.IsNotNull(modelService.ActiveNode);
-            Assert.AreSame(model, modelService.ActiveNode);
-        }
-
-        [Test]
-        public async Task WhenActiveNodeSet_ThenActiveNodeReturnsNode()
+        public async Task WhenActiveNodeSet_ThenGetActiveNodeAsyncReturnsNode()
         {
             var serviceRegistry = new ServiceRegistry();
             serviceRegistry.AddMock<IEventService>();
@@ -642,21 +587,17 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.ProjectProjects
 
             var modelService = new ProjectModelService(serviceRegistry);
 
-            // Make sure cache is populated.
-            await modelService.ListProjectsAsync(false, CancellationToken.None);
-            await modelService.ListInstancesGroupedByZone(
-                new ProjectLocator("project-1"),
+            var root = await modelService.GetRootNodeAsync(
                 false,
                 CancellationToken.None);
 
-            var instance = modelService.TryFindNode(
-                new InstanceLocator("project-1", "zone-1", SampleWindowsInstanceInZone1.Name));
-            Assert.IsNotNull(instance);
+            await modelService.SetActiveNodeAsync(
+                root.Projects.First(),
+                CancellationToken.None);
 
-            await modelService.SetActiveNodeAsync(instance);
-
-            Assert.IsNotNull(modelService.ActiveNode);
-            Assert.AreSame(instance, modelService.ActiveNode);
+            var activeNode = await modelService.GetActiveNodeAsync(CancellationToken.None);
+            Assert.IsNotNull(activeNode);
+            Assert.AreSame(root.Projects.First(), activeNode);
         }
 
         [Test]
@@ -669,29 +610,33 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.ProjectProjects
             serviceRegistry.AddSingleton(CreateComputeEngineAdapterMock("project-1").Object);
 
             var modelService = new ProjectModelService(serviceRegistry);
-            var model = await modelService.ListProjectsAsync(false, CancellationToken.None);
+            var model = await modelService.GetRootNodeAsync(false, CancellationToken.None);
 
-            var project1 = model.Projects.First();
-            await modelService.SetActiveNodeAsync(project1);
+            var root = await modelService.GetRootNodeAsync(
+                false,
+                CancellationToken.None);
+
+            await modelService.SetActiveNodeAsync(
+                root.Projects.First(),
+                CancellationToken.None);
 
             eventService.Verify(s => s.FireAsync<ProjectExplorerNodeSelectedEvent>(
-                    It.Is<ProjectExplorerNodeSelectedEvent>(e => e.SelectedNode == project1)),
+                    It.Is<ProjectExplorerNodeSelectedEvent>(e => e.SelectedNode == root.Projects.First())),
                 Times.Once);
         }
 
         [Test]
         public async Task WhenActiveNodeSetToNull_ThenNoEventIsFired()
         {
-
             var serviceRegistry = new ServiceRegistry();
             var eventService = serviceRegistry.AddMock<IEventService>();
             serviceRegistry.AddSingleton(CreateProjectRepositoryMock("project-1").Object);
             serviceRegistry.AddSingleton(CreateComputeEngineAdapterMock("project-1").Object);
 
             var modelService = new ProjectModelService(serviceRegistry);
-            var model = await modelService.ListProjectsAsync(false, CancellationToken.None);
+            var model = await modelService.GetRootNodeAsync(false, CancellationToken.None);
 
-            await modelService.SetActiveNodeAsync(null);
+            await modelService.SetActiveNodeAsync(null, CancellationToken.None);
 
             eventService.Verify(s => s.FireAsync<ProjectExplorerNodeSelectedEvent>(
                     It.IsAny<ProjectExplorerNodeSelectedEvent>()),

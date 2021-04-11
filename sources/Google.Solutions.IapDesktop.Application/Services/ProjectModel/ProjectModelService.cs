@@ -60,34 +60,38 @@ namespace Google.Solutions.IapDesktop.Application.Services.ProjectModel
         /// Load projects without loading zones and instances.
         /// Uses cached data if available.
         /// </summary>
-        Task<IProjectExplorerCloudNode> ListProjectsAsync(
+        Task<IProjectExplorerCloudNode> GetRootNodeAsync(
             bool forceReload,
             CancellationToken token);
 
         /// <summary>
         /// Load zones and instances. Uses cached data if available.
         /// </summary>
-        Task<IReadOnlyCollection<IProjectExplorerZoneNode>> ListInstancesGroupedByZone(
+        Task<IReadOnlyCollection<IProjectExplorerZoneNode>> GetZoneNodesAsync(
             ProjectLocator project,
             bool forceReload,
             CancellationToken token);
 
         /// <summary>
-        /// Looks up a node by locator in the cached model.
+        /// Load any node.  Uses cached data if available.
         /// </summary>
-        IProjectExplorerNode TryFindNode(ResourceLocator locator);
+        Task<IProjectExplorerNode> GetNodeAsync(
+            ResourceLocator locator,
+            CancellationToken token);
 
         /// <summary>
         /// Gets the active/selected node. The selection
         /// is kept across reloads.
         /// </summary>
-        IProjectExplorerNode ActiveNode { get; }
+        Task<IProjectExplorerNode> GetActiveNodeAsync(CancellationToken token);
 
         /// <summary>
         /// Gets the active/selected node. The selection
         /// is kept across reloads.
         /// </summary>
-        Task SetActiveNodeAsync(IProjectExplorerNode node);
+        Task SetActiveNodeAsync(
+            IProjectExplorerNode node,
+            CancellationToken token);
     }
 
     public class ProjectModelService : IProjectModelService, IDisposable
@@ -269,7 +273,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.ProjectModel
             }
         }
 
-        public async Task<IProjectExplorerCloudNode> ListProjectsAsync(
+        public async Task<IProjectExplorerCloudNode> GetRootNodeAsync(
             bool forceReload,
             CancellationToken token)
         {
@@ -290,7 +294,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.ProjectModel
             return this.cachedProjects;
         }
 
-        public async Task<IReadOnlyCollection<IProjectExplorerZoneNode>> ListInstancesGroupedByZone(
+        public async Task<IReadOnlyCollection<IProjectExplorerZoneNode>> GetZoneNodesAsync(
             ProjectLocator project,
             bool forceReload,
             CancellationToken token)
@@ -316,27 +320,67 @@ namespace Google.Solutions.IapDesktop.Application.Services.ProjectModel
             return zones;
         }
 
-        public IProjectExplorerNode ActiveNode
+        public async Task<IProjectExplorerNode> GetNodeAsync(
+            ResourceLocator locator,
+            CancellationToken token)
         {
-            get
+            if (locator is ProjectLocator projectLocator)
             {
-                //
-                // Look up the node. It's possible that no node has been 
-                // selected or that the node is not there anymore because 
-                // it was removed by a reload - then default to the root.
-                //
-                if (this.activeNode == null)
-                {
-                    return this.cachedProjects;
-                }
-                else
-                {
-                    return TryFindNode(this.activeNode) ?? this.cachedProjects;
-                }
+                var root = await GetRootNodeAsync(false, token)
+                    .ConfigureAwait(false);
+
+                return root.Projects.FirstOrDefault(p => p.Project == projectLocator);
+            }
+            else if (locator is ZoneLocator zoneLocator)
+            {
+                var zones = await GetZoneNodesAsync(
+                        new ProjectLocator(zoneLocator.ProjectId),
+                        false,
+                        token)
+                    .ConfigureAwait(false);
+                return zones.FirstOrDefault(z => z.Zone == zoneLocator);
+            }
+            else if (locator is InstanceLocator instanceLocator)
+            {
+                var zones = await GetZoneNodesAsync(
+                        new ProjectLocator(instanceLocator.ProjectId),
+                        false,
+                        token)
+                    .ConfigureAwait(false);
+                return zones
+                    .SelectMany(z => z.Instances)
+                    .FirstOrDefault(i => i.Instance == instanceLocator);
+            }
+            else
+            {
+                throw new ArgumentException("Unrecognized locator " + locator);
             }
         }
 
-        public async Task SetActiveNodeAsync(IProjectExplorerNode node)
+        public async Task<IProjectExplorerNode> GetActiveNodeAsync(CancellationToken token)
+        {
+            //
+            // Look up the node. It's possible that no node has been 
+            // selected or that the node is not there anymore because 
+            // it was removed by a reload - then default to the root.
+            //
+            if (this.activeNode != null)
+            {
+                var node = await GetNodeAsync(this.activeNode, token)
+                    .ConfigureAwait(false);
+                if (node != null)
+                {
+                    return node;
+                }
+            }
+
+            return await GetRootNodeAsync(false, token)
+                .ConfigureAwait(false);
+        }
+
+        public async Task SetActiveNodeAsync(
+            IProjectExplorerNode node,
+            CancellationToken token)
         {
             // TODO: Use polymorphism instead.
             if (node is IProjectExplorerInstanceNode instanceNode)
@@ -364,48 +408,6 @@ namespace Google.Solutions.IapDesktop.Application.Services.ProjectModel
                     .FireAsync(new ProjectExplorerNodeSelectedEvent(node))
                     .ConfigureAwait(true);
             }
-        }
-
-        public IProjectExplorerNode TryFindNode(ResourceLocator locator)
-        {
-            using (this.cacheLock.Acquire())
-            {
-                var model = this.cachedProjects;
-                if (locator is ProjectLocator projectLocator)
-                {
-                    if (this.cachedProjects != null)
-                    {
-                        return model.Projects
-                            .FirstOrDefault(p => p.Project == projectLocator);
-                    }
-                }
-                else if (locator is ZoneLocator zoneLocator)
-                {
-                    if (this.cachedZones.TryGetValue(
-                        new ProjectLocator(zoneLocator.ProjectId),
-                        out IReadOnlyCollection<IProjectExplorerZoneNode> zones))
-                    {
-                        return zones.FirstOrDefault(z => z.Zone == zoneLocator);
-                    }
-                }
-                else if (locator is InstanceLocator instanceLocator)
-                {
-                    if (this.cachedZones.TryGetValue(
-                        new ProjectLocator(instanceLocator.ProjectId),
-                        out IReadOnlyCollection<IProjectExplorerZoneNode> zones))
-                    {
-                        return zones
-                            .SelectMany(z => z.Instances)
-                            .FirstOrDefault(i => i.Instance == instanceLocator);
-                    }
-                }
-                else
-                {
-                    throw new ArgumentException("Unrecognized locator " + locator);
-                }
-            }
-
-            return null;
         }
 
         //---------------------------------------------------------------------
