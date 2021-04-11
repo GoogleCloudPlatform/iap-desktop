@@ -20,16 +20,19 @@ namespace Google.Solutions.IapDesktop.Application.Views.NewProjectExplorer
 {
     internal class NewProjectExplorerViewModel : ViewModelBase, IDisposable
     {
+        private readonly IJobService jobService;
         private readonly IProjectModelService projectModelService;
 
         public NewProjectExplorerViewModel(
             IWin32Window view,
+            IJobService jobService,
             IProjectModelService projectModelService)
         {
             this.View = view;
+            this.jobService = jobService;
             this.projectModelService = projectModelService;
             this.RootNode = new CloudViewModelNode(
-                view, 
+                this, 
                 projectModelService);
         }
 
@@ -43,25 +46,20 @@ namespace Google.Solutions.IapDesktop.Application.Views.NewProjectExplorer
         // Actions.
         //---------------------------------------------------------------------
 
-        public Task RefreshAsync(IJobService jobService)
-            => RefreshAsync(jobService, this.RootNode);
+        public Task RefreshAsync()
+            => RefreshAsync(this.RootNode);
 
-        public async Task RefreshAsync(
-            IJobService jobService,
-            ViewModelNodeBase node)
+        public async Task RefreshAsync(ViewModelNodeBase node)
         {
             if (!node.CanReload)
             {
                 // Try reloading parent instead.
-                await RefreshAsync(jobService, node.Parent)
-                    .ConfigureAwait(true);
+                await RefreshAsync(node.Parent).ConfigureAwait(true);
             }
             else
             {
                 // Force-reload children and discard result.
-                await node
-                    .GetChildren(jobService, true)
-                    .ConfigureAwait(true);
+                await node.GetChildren(true).ConfigureAwait(true);
             }
         }
 
@@ -88,6 +86,8 @@ namespace Google.Solutions.IapDesktop.Application.Views.NewProjectExplorer
 
         internal abstract class ViewModelNodeBase : ViewModelBase
         {
+            protected readonly NewProjectExplorerViewModel viewModel;
+
             private bool isExpanded;
             private RangeObservableCollection<ViewModelNodeBase> children;
 
@@ -119,7 +119,6 @@ namespace Google.Solutions.IapDesktop.Application.Views.NewProjectExplorer
             //-----------------------------------------------------------------
 
             public async Task<ObservableCollection<ViewModelNodeBase>> GetChildren(
-                IJobService jobService,
                 bool forceReload)
             {
                 Debug.Assert(((Control)this.View).InvokeRequired);
@@ -133,14 +132,13 @@ namespace Google.Solutions.IapDesktop.Application.Views.NewProjectExplorer
 
                     this.children = new RangeObservableCollection<ViewModelNodeBase>();
                     this.children.AddRange(
-                        await LoadChildrenInJob(jobService, forceReload)
+                        await LoadChildrenInJob(forceReload)
                             .ConfigureAwait(true));
                 }
                 else if (forceReload)
                 {
-                    var newChildren = 
-                        await LoadChildrenInJob(jobService, forceReload)
-                            .ConfigureAwait(true);
+                    var newChildren = await LoadChildrenInJob(forceReload)
+                        .ConfigureAwait(true);
 
                     this.children.Clear();
                     this.children.AddRange(newChildren);
@@ -152,10 +150,9 @@ namespace Google.Solutions.IapDesktop.Application.Views.NewProjectExplorer
             }
 
             protected Task<IEnumerable<ViewModelNodeBase>> LoadChildrenInJob(
-                IJobService jobService,
                 bool forceReload)
             {
-                return jobService.RunInBackground(
+                return this.viewModel.jobService.RunInBackground(
                     new JobDescription($"Loading {this.Text}..."),
                     token => LoadChildren(forceReload, token));
             }
@@ -169,16 +166,16 @@ namespace Google.Solutions.IapDesktop.Application.Views.NewProjectExplorer
             //-----------------------------------------------------------------
 
             protected ViewModelNodeBase(
+                NewProjectExplorerViewModel viewModel,
                 ViewModelNodeBase parent,
-                IWin32Window view,
                 ResourceLocator locator,
                 string text,
                 bool isLeaf,
                 int imageIndex,
                 int selectedImageIndex)
             {
+                this.viewModel = viewModel;
                 this.Parent = parent;
-                this.View = view;
                 this.Locator = locator;
                 this.Text = text;
                 this.IsLeaf = isLeaf;
@@ -192,11 +189,11 @@ namespace Google.Solutions.IapDesktop.Application.Views.NewProjectExplorer
             private readonly IProjectModelService projectModelService;
 
             public CloudViewModelNode(
-                IWin32Window view,
+                NewProjectExplorerViewModel viewModel,
                 IProjectModelService projectModelService)
                 : base(
+                      viewModel,
                       null,
-                      view, 
                       null, 
                       "Google Cloud", 
                       false, 
@@ -218,9 +215,15 @@ namespace Google.Solutions.IapDesktop.Application.Views.NewProjectExplorer
 
                 var children = new List<ViewModelNodeBase>();
                 children.AddRange(model.Projects
-                    .Select(m => new ProjectViewModelNode(this, m, this.projectModelService)));
+                    .Select(m => new ProjectViewModelNode(
+                        this.viewModel,
+                        this, 
+                        m)));
                 children.AddRange(model.InaccessibleProjects
-                    .Select(m => new InaccessibleProjectViewModelNode(this, m)));
+                    .Select(m => new InaccessibleProjectViewModelNode(
+                        this.viewModel, 
+                        this, 
+                        m)));
 
                 return children;
             }
@@ -229,15 +232,14 @@ namespace Google.Solutions.IapDesktop.Application.Views.NewProjectExplorer
         internal class ProjectViewModelNode : ViewModelNodeBase
         {
             private readonly IProjectExplorerProjectNode modelNode;
-            private readonly IProjectModelService projectModelService;
 
             public ProjectViewModelNode(
+                NewProjectExplorerViewModel viewModel,
                 CloudViewModelNode parent,
-                IProjectExplorerProjectNode modelNode,
-                IProjectModelService projectModelService)
+                IProjectExplorerProjectNode modelNode)
                 : base(
+                      viewModel,
                       parent,
-                      parent.View,
                       modelNode.Project,
                       modelNode.DisplayName,
                       false,
@@ -245,7 +247,6 @@ namespace Google.Solutions.IapDesktop.Application.Views.NewProjectExplorer
                       0)
             {
                 this.modelNode = modelNode;
-                this.projectModelService = projectModelService;
             }
 
             public override bool CanReload => true;
@@ -254,14 +255,14 @@ namespace Google.Solutions.IapDesktop.Application.Views.NewProjectExplorer
                 bool forceReload, 
                 CancellationToken token)
             {
-                var zones = await this.projectModelService.GetZoneNodesAsync(
+                var zones = await this.viewModel.projectModelService.GetZoneNodesAsync(
                         this.modelNode.Project,
                         forceReload,
                         token)
                     .ConfigureAwait(true);
 
                 return zones
-                    .Select(z => new ZoneViewModelNode(this, z))
+                    .Select(z => new ZoneViewModelNode(this.viewModel, this, z))
                     .Cast<ViewModelNodeBase>();
             }
         }
@@ -269,11 +270,12 @@ namespace Google.Solutions.IapDesktop.Application.Views.NewProjectExplorer
         internal class InaccessibleProjectViewModelNode : ViewModelNodeBase
         {
             public InaccessibleProjectViewModelNode(
+                NewProjectExplorerViewModel viewModel,
                 CloudViewModelNode parent,
                 ProjectLocator projectLocator)
                 : base(
+                      viewModel,
                       parent,
-                      parent.View,
                       projectLocator,
                       $"{projectLocator} (inaccessible)",
                       true,
@@ -298,11 +300,12 @@ namespace Google.Solutions.IapDesktop.Application.Views.NewProjectExplorer
             private readonly IProjectExplorerZoneNode modelNode;
 
             public ZoneViewModelNode(
+                NewProjectExplorerViewModel viewModel,
                 ProjectViewModelNode parent,
                 IProjectExplorerZoneNode modelNode)
                 : base(
+                      viewModel,
                       parent,
-                      parent.View,
                       modelNode.Zone,
                       modelNode.DisplayName,
                       false,
@@ -321,7 +324,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.NewProjectExplorer
                 Debug.Assert(!forceReload);
                 return Task.FromResult(this.modelNode
                     .Instances
-                    .Select(i => new InstanceViewModelNode(this, i))
+                    .Select(i => new InstanceViewModelNode(this.viewModel, this, i))
                     .Cast<ViewModelNodeBase>());
             }
         }
@@ -331,11 +334,12 @@ namespace Google.Solutions.IapDesktop.Application.Views.NewProjectExplorer
             private readonly IProjectExplorerInstanceNode modelNode;
 
             public InstanceViewModelNode(
+                NewProjectExplorerViewModel viewModel,
                 ZoneViewModelNode parent,
                 IProjectExplorerInstanceNode modelNode)
                 : base(
+                      viewModel,
                       parent,
-                      parent.View,
                       modelNode.Instance,
                       modelNode.DisplayName,
                       true,
