@@ -437,7 +437,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.ProjectProjects
         public async Task WhenInstanceIsTerminated_ThenGetZoneNodesAsyncMarksInstanceAsNotRunning()
         {
             var serviceRegistry = new ServiceRegistry();
-            var eventService = serviceRegistry.AddMock<IEventService>();
+            serviceRegistry.AddMock<IEventService>();
             serviceRegistry.AddSingleton(CreateProjectRepositoryMock("project-1").Object);
 
             var computeAdapter = CreateComputeEngineAdapterMock(

@@ -266,18 +266,19 @@ namespace Google.Solutions.IapDesktop.Application.Services.ProjectModel
                     .DeleteProjectAsync(project.ProjectId)
                     .ConfigureAwait(false);
 
+                //
+                // Purge from cache.
+                //
+                using (await this.cacheLock.AcquireAsync(CancellationToken.None)
+                    .ConfigureAwait(false))
+                {
+                    this.cachedZones.Remove(project);
+                }
+
                 await this.serviceProvider
                     .GetService<IEventService>()
                     .FireAsync(new ProjectDeletedEvent(project.ProjectId))
                     .ConfigureAwait(false);
-
-                //
-                // Purge from cache.
-                //
-                using (this.cacheLock.Acquire())
-                {
-                    this.cachedZones.Remove(project);
-                }
             }
         }
 
@@ -307,61 +308,68 @@ namespace Google.Solutions.IapDesktop.Application.Services.ProjectModel
             bool forceReload,
             CancellationToken token)
         {
-            IReadOnlyCollection<IProjectExplorerZoneNode> zones = null;
-            using (await this.cacheLock.AcquireAsync(token).ConfigureAwait(false))
+            using (ApplicationTraceSources.Default.TraceMethod().WithParameters(project, forceReload))
             {
-                if (!this.cachedZones.TryGetValue(
-                    project,
-                    out zones) || forceReload)
+                IReadOnlyCollection<IProjectExplorerZoneNode> zones = null;
+                using (await this.cacheLock.AcquireAsync(token).ConfigureAwait(false))
                 {
-                    //
-                    // Load from backend and cache.
-                    //
-                    zones = await LoadZones(project, token)
-                        .ConfigureAwait(false);
-                    this.cachedZones[project] = zones;
+                    if (!this.cachedZones.TryGetValue(
+                        project,
+                        out zones) || forceReload)
+                    {
+                        //
+                        // Load from backend and cache.
+                        //
+                        zones = await LoadZones(project, token)
+                            .ConfigureAwait(false);
+                        this.cachedZones[project] = zones;
+                    }
                 }
+
+                Debug.Assert(zones != null);
+
+                return zones;
             }
-
-            Debug.Assert(zones != null);
-
-            return zones;
         }
 
         public async Task<IProjectExplorerNode> GetNodeAsync(
             ResourceLocator locator,
             CancellationToken token)
         {
-            if (locator is ProjectLocator projectLocator)
-            {
-                var root = await GetRootNodeAsync(false, token)
-                    .ConfigureAwait(false);
 
-                return root.Projects.FirstOrDefault(p => p.Project == projectLocator);
-            }
-            else if (locator is ZoneLocator zoneLocator)
+            using (ApplicationTraceSources.Default.TraceMethod().WithParameters(locator))
             {
-                var zones = await GetZoneNodesAsync(
-                        new ProjectLocator(zoneLocator.ProjectId),
-                        false,
-                        token)
-                    .ConfigureAwait(false);
-                return zones.FirstOrDefault(z => z.Zone == zoneLocator);
-            }
-            else if (locator is InstanceLocator instanceLocator)
-            {
-                var zones = await GetZoneNodesAsync(
-                        new ProjectLocator(instanceLocator.ProjectId),
-                        false,
-                        token)
-                    .ConfigureAwait(false);
-                return zones
-                    .SelectMany(z => z.Instances)
-                    .FirstOrDefault(i => i.Instance == instanceLocator);
-            }
-            else
-            {
-                throw new ArgumentException("Unrecognized locator " + locator);
+                if (locator is ProjectLocator projectLocator)
+                {
+                    var root = await GetRootNodeAsync(false, token)
+                        .ConfigureAwait(false);
+
+                    return root.Projects.FirstOrDefault(p => p.Project == projectLocator);
+                }
+                else if (locator is ZoneLocator zoneLocator)
+                {
+                    var zones = await GetZoneNodesAsync(
+                            new ProjectLocator(zoneLocator.ProjectId),
+                            false,
+                            token)
+                        .ConfigureAwait(false);
+                    return zones.FirstOrDefault(z => z.Zone == zoneLocator);
+                }
+                else if (locator is InstanceLocator instanceLocator)
+                {
+                    var zones = await GetZoneNodesAsync(
+                            new ProjectLocator(instanceLocator.ProjectId),
+                            false,
+                            token)
+                        .ConfigureAwait(false);
+                    return zones
+                        .SelectMany(z => z.Instances)
+                        .FirstOrDefault(i => i.Instance == instanceLocator);
+                }
+                else
+                {
+                    throw new ArgumentException("Unrecognized locator " + locator);
+                }
             }
         }
 
@@ -413,40 +421,43 @@ namespace Google.Solutions.IapDesktop.Application.Services.ProjectModel
             ResourceLocator locator,
             CancellationToken token)
         {
-            IProjectExplorerNode node;
-            if (locator != null)
+            using (ApplicationTraceSources.Default.TraceMethod().WithParameters(locator))
             {
-                node = await GetNodeAsync(locator, token)
-                    .ConfigureAwait(false);
-
-                if (node != null)
+                IProjectExplorerNode node;
+                if (locator != null)
                 {
-                    //
-                    // Node found -> set as active and fire event.
-                    //
-                    this.activeNode = locator;
+                    node = await GetNodeAsync(locator, token)
+                        .ConfigureAwait(false);
 
-                    // TODO: rename event
+                    if (node != null)
+                    {
+                        //
+                        // Node found -> set as active and fire event.
+                        //
+                        this.activeNode = locator;
+
+                        // TODO: rename event
+                        await this.serviceProvider
+                            .GetService<IEventService>()
+                            .FireAsync(new ProjectExplorerNodeSelectedEvent(node))
+                            .ConfigureAwait(true);
+
+                        return;
+                    }
+                }
+
+                //
+                // Locator was null or pointed to nonexisting node ->
+                // set root as active.
+                //
+                this.activeNode = null;
+                if (this.cachedRoot != null)
+                {
                     await this.serviceProvider
                         .GetService<IEventService>()
-                        .FireAsync(new ProjectExplorerNodeSelectedEvent(node))
+                        .FireAsync(new ProjectExplorerNodeSelectedEvent(this.cachedRoot))
                         .ConfigureAwait(true);
-
-                    return;
                 }
-            }
-
-            //
-            // Locator was null or pointed to nonexisting node ->
-            // set root as active.
-            //
-            this.activeNode = null;
-            if (this.cachedRoot != null)
-            {
-                await this.serviceProvider
-                    .GetService<IEventService>()
-                    .FireAsync(new ProjectExplorerNodeSelectedEvent(this.cachedRoot))
-                    .ConfigureAwait(true);
             }
         }
 
