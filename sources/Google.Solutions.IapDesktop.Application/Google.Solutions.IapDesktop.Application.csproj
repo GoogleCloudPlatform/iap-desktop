@@ -155,6 +155,7 @@
     <Compile Include="Settings\PersistentSettingsCollection.cs" />
     <Compile Include="Settings\RegistrySetting.cs" />
     <Compile Include="Settings\SettingBase.cs" />
+    <Compile Include="Util\AsyncLock.cs" />
     <Compile Include="Util\ByteSizeFormatter.cs" />
     <Compile Include="Util\EventArgs.cs" />
     <Compile Include="Util\StringExtensions.cs" />

@@ -26,6 +26,7 @@ using Google.Solutions.IapDesktop.Application.ObjectModel;
 using Google.Solutions.IapDesktop.Application.Services.Adapters;
 using Google.Solutions.IapDesktop.Application.Services.Integration;
 using Google.Solutions.IapDesktop.Application.Services.Settings;
+using Google.Solutions.IapDesktop.Application.Util;
 using Google.Solutions.IapDesktop.Application.Views.ProjectExplorer;
 using System;
 using System.Collections.Generic;
@@ -56,9 +57,18 @@ namespace Google.Solutions.IapDesktop.Application.Services.ProjectModel
         Task RemoveProjectAsync(ProjectLocator project);
 
         /// <summary>
-        /// Get model, either from cache or from backend.
+        /// Load projects without loading zones and instances.
+        /// Uses cached data if available.
         /// </summary>
-        Task<IProjectExplorerCloudNode> GetModelAsync(
+        Task<IProjectExplorerCloudNode> ListProjectsAsync(
+            bool forceReload,
+            CancellationToken token);
+
+        /// <summary>
+        /// Load zones and instances. Uses cached data if available.
+        /// </summary>
+        Task<IReadOnlyCollection<IProjectExplorerZoneNode>> ListInstancesGroupedByZone(
+            ProjectLocator project,
             bool forceReload,
             CancellationToken token);
 
@@ -80,14 +90,22 @@ namespace Google.Solutions.IapDesktop.Application.Services.ProjectModel
         Task SetActiveNodeAsync(IProjectExplorerNode node);
     }
 
-    public class ProjectModelService : IProjectModelService
+    public class ProjectModelService : IProjectModelService, IDisposable
     {
         private readonly IServiceProvider serviceProvider;
 
         private ResourceLocator activeNode;
-        private CloudNode cachedModel = null;
 
-        private async Task<CloudNode> LoadModelAsync(
+        private readonly AsyncLock cacheLock = new AsyncLock();
+        private CloudNode cachedProjects = null;
+        private IDictionary<ProjectLocator, IReadOnlyCollection<IProjectExplorerZoneNode>> cachedZones =
+            new Dictionary<ProjectLocator, IReadOnlyCollection<IProjectExplorerZoneNode>>();
+
+        //---------------------------------------------------------------------
+        // Data loading (uncached).
+        //---------------------------------------------------------------------
+
+        private async Task<CloudNode> LoadProjectsAsync(
             CancellationToken token)
         {
             using (ApplicationTraceSources.Default.TraceMethod().WithoutParameters())
@@ -97,57 +115,104 @@ namespace Google.Solutions.IapDesktop.Application.Services.ProjectModel
                 var accessibleProjects = new List<ProjectNode>();
                 var inaccessibleProjects = new List<ProjectLocator>();
 
+                //
+                // Load projects in parallel.
+                //
+                var tasks = new Dictionary<ProjectLocator, Task<Google.Apis.Compute.v1.Data.Project>>();
                 foreach (var project in await this.serviceProvider
-                        .GetService<IProjectRepository>()
-                        .ListProjectsAsync()
-                        .ConfigureAwait(false))
+                    .GetService<IProjectRepository>()
+                    .ListProjectsAsync()
+                    .ConfigureAwait(false))
+                {
+                    tasks.Add(
+                        new ProjectLocator(project.ProjectId),
+                        computeEngineAdapter.GetProjectAsync(
+                            project.ProjectId,
+                            token));
+                }
+
+                foreach (var task in tasks)
                 {
                     //
                     // NB. Some projects might not be accessible anymore,
                     // either because they have been deleted or the user
                     // lost access.
                     //
-
-                    // TODO: XXX: Allow parallel loading of projects!
                     try
                     {
-                        var projectDetails = await computeEngineAdapter.GetProjectAsync(
-                                project.ProjectId,
-                                token)
-                            .ConfigureAwait(false);
-                        var instances = await computeEngineAdapter
-                            .ListInstancesAsync(project.ProjectId, token)
-                            .ConfigureAwait(false);
-
-                        accessibleProjects.Add(ProjectNode.FromProject(
-                            projectDetails,
-                            instances));
+                        var project = task.Value.Result;
+                        accessibleProjects.Add(new ProjectNode(
+                            task.Key,
+                            project.Description));
 
                         ApplicationTraceSources.Default.TraceVerbose(
-                            "Successfully loaded project {0} with {1} instances", 
-                            projectDetails.Name, 
-                            instances.Count());
+                            "Successfully loaded project {0}", task.Key);
                     }
                     catch (Exception e) when (e.IsReauthError())
                     {
                         // Propagate reauth errors so that the reauth logic kicks in.
-                        throw;
+                        throw e.Unwrap();
                     }
                     catch (Exception e)
                     {
                         ApplicationTraceSources.Default.TraceError(
                             "Failed to load project {0}: {1}",
-                            project.ProjectId,
+                            task.Key,
                             e);
 
                         // 
                         // Continue with other projects.
                         //
-                        inaccessibleProjects.Add(new ProjectLocator(project.ProjectId));
+                        inaccessibleProjects.Add(task.Key);
                     }
                 }
 
                 return new CloudNode(accessibleProjects, inaccessibleProjects);
+            }
+        }
+
+        private async Task<IReadOnlyCollection<IProjectExplorerZoneNode>> LoadZones(
+            ProjectLocator project,
+            CancellationToken token)
+        {
+            using (ApplicationTraceSources.Default.TraceMethod().WithoutParameters())
+            using (var computeEngineAdapter = this.serviceProvider
+                .GetService<IComputeEngineAdapter>())
+            {
+                var instances = await computeEngineAdapter
+                    .ListInstancesAsync(project.ProjectId, token)
+                    .ConfigureAwait(false);
+
+                var zoneLocators = instances
+                    .EnsureNotNull()
+                    .Select(i => ZoneLocator.FromString(i.Zone))
+                    .ToHashSet();
+
+                var zones = new List<ZoneNode>();
+                foreach (var zoneLocator in zoneLocators.OrderBy(z => z.Name))
+                {
+                    var instancesInZone = instances
+                        .Where(i => ZoneLocator.FromString(i.Zone) == zoneLocator)
+                        .Where(i => i.Disks != null && i.Disks.Any())
+                        .OrderBy(i => i.Name)
+                        .Select(i => new InstanceNode(
+                            i.Id.Value,
+                            new InstanceLocator(
+                                zoneLocator.ProjectId,
+                                zoneLocator.Name,
+                                i.Name),
+                            i.IsWindowsInstance()
+                                ? OperatingSystems.Windows
+                                : OperatingSystems.Linux,
+                            i.Status == "RUNNING"))
+                        .ToList();
+
+                    zones.Add(new ZoneNode(
+                        zoneLocator,
+                        instancesInZone));
+                }
+
+                return zones;
             }
         }
 
@@ -166,48 +231,89 @@ namespace Google.Solutions.IapDesktop.Application.Services.ProjectModel
 
         public async Task AddProjectAsync(ProjectLocator project)
         {
-            await this.serviceProvider
-                .GetService<IProjectRepository>()
-                .AddProjectAsync(project.ProjectId)
-                .ConfigureAwait(false);
+            using (ApplicationTraceSources.Default.TraceMethod().WithParameters(project))
+            {
+                await this.serviceProvider
+                    .GetService<IProjectRepository>()
+                    .AddProjectAsync(project.ProjectId)
+                    .ConfigureAwait(false);
 
-            await this.serviceProvider
-                .GetService<IEventService>()
-                .FireAsync(new ProjectAddedEvent(project.ProjectId))
-                .ConfigureAwait(false);
+                await this.serviceProvider
+                    .GetService<IEventService>()
+                    .FireAsync(new ProjectAddedEvent(project.ProjectId))
+                    .ConfigureAwait(false);
+            }
         }
 
         public async Task RemoveProjectAsync(ProjectLocator project)
         {
-            await this.serviceProvider
-                .GetService<IProjectRepository>()
-                .DeleteProjectAsync(project.ProjectId)
-                .ConfigureAwait(false);
+            using (ApplicationTraceSources.Default.TraceMethod().WithParameters(project))
+            {
+                await this.serviceProvider
+                    .GetService<IProjectRepository>()
+                    .DeleteProjectAsync(project.ProjectId)
+                    .ConfigureAwait(false);
 
-            await this.serviceProvider
-                .GetService<IEventService>()
-                .FireAsync(new ProjectDeletedEvent(project.ProjectId))
-                .ConfigureAwait(false);
+                await this.serviceProvider
+                    .GetService<IEventService>()
+                    .FireAsync(new ProjectDeletedEvent(project.ProjectId))
+                    .ConfigureAwait(false);
+
+                //
+                // Purge from cache.
+                //
+                using (this.cacheLock.Acquire())
+                {
+                    this.cachedZones.Remove(project);
+                }
+            }
         }
 
-        public async Task<IProjectExplorerCloudNode> GetModelAsync(
+        public async Task<IProjectExplorerCloudNode> ListProjectsAsync(
             bool forceReload,
             CancellationToken token)
         {
-            if (this.cachedModel == null || forceReload)
-            {
-                //
-                // NB. If called concurrently, we might be triggering multiple
-                // loads, but that's ok since the operation is read-only.
-                //
-
-                this.cachedModel = await LoadModelAsync(token)
-                    .ConfigureAwait(false);
+            using (await this.cacheLock.AcquireAsync(token).ConfigureAwait(false))
+            { 
+                if (this.cachedProjects == null || forceReload)
+                {
+                    //
+                    // Load from backend and cache.
+                    //
+                    this.cachedProjects = await LoadProjectsAsync(token)
+                        .ConfigureAwait(false);
+                }
             }
 
-            Debug.Assert(this.cachedModel != null);
+            Debug.Assert(this.cachedProjects != null);
 
-            return this.cachedModel;
+            return this.cachedProjects;
+        }
+
+        public async Task<IReadOnlyCollection<IProjectExplorerZoneNode>> ListInstancesGroupedByZone(
+            ProjectLocator project,
+            bool forceReload,
+            CancellationToken token)
+        {
+            IReadOnlyCollection<IProjectExplorerZoneNode> zones = null;
+            using (await this.cacheLock.AcquireAsync(token).ConfigureAwait(false))
+            {
+                if (!this.cachedZones.TryGetValue(
+                    project,
+                    out zones) || forceReload)
+                {
+                    //
+                    // Load from backend and cache.
+                    //
+                    zones = await LoadZones(project, token)
+                        .ConfigureAwait(false);
+                    this.cachedZones[project] = zones;
+                }
+            }
+
+            Debug.Assert(zones != null);
+
+            return zones;
         }
 
         public IProjectExplorerNode ActiveNode
@@ -221,11 +327,11 @@ namespace Google.Solutions.IapDesktop.Application.Services.ProjectModel
                 //
                 if (this.activeNode == null)
                 {
-                    return this.cachedModel;
+                    return this.cachedProjects;
                 }
                 else
                 {
-                    return TryFindNode(this.activeNode) ?? this.cachedModel;
+                    return TryFindNode(this.activeNode) ?? this.cachedProjects;
                 }
             }
         }
@@ -262,33 +368,59 @@ namespace Google.Solutions.IapDesktop.Application.Services.ProjectModel
 
         public IProjectExplorerNode TryFindNode(ResourceLocator locator)
         {
-            var model = this.cachedModel;
-            if (model == null)
+            using (this.cacheLock.Acquire())
             {
-                return null;
+                var model = this.cachedProjects;
+                if (locator is ProjectLocator projectLocator)
+                {
+                    if (this.cachedProjects != null)
+                    {
+                        return model.Projects
+                            .FirstOrDefault(p => p.Project == projectLocator);
+                    }
+                }
+                else if (locator is ZoneLocator zoneLocator)
+                {
+                    if (this.cachedZones.TryGetValue(
+                        new ProjectLocator(zoneLocator.ProjectId),
+                        out IReadOnlyCollection<IProjectExplorerZoneNode> zones))
+                    {
+                        return zones.FirstOrDefault(z => z.Zone == zoneLocator);
+                    }
+                }
+                else if (locator is InstanceLocator instanceLocator)
+                {
+                    if (this.cachedZones.TryGetValue(
+                        new ProjectLocator(instanceLocator.ProjectId),
+                        out IReadOnlyCollection<IProjectExplorerZoneNode> zones))
+                    {
+                        return zones
+                            .SelectMany(z => z.Instances)
+                            .FirstOrDefault(i => i.Instance == instanceLocator);
+                    }
+                }
+                else
+                {
+                    throw new ArgumentException("Unrecognized locator " + locator);
+                }
             }
-            else if (locator is ProjectLocator projectLocator)
-            {
-                return model.Projects
-                    .FirstOrDefault(p => p.Project == projectLocator);
-            }
-            else if (locator is ZoneLocator zoneLocator)
-            {
-                return model.Projects
-                    .SelectMany(p => p.Zones)
-                    .FirstOrDefault(z => z.Zone == zoneLocator);
-            }
-            else if (locator is InstanceLocator instanceLocator)
-            {
-                return model.Projects
-                    .SelectMany(p => p.Zones)
-                    .SelectMany(z => z.Instances)
-                    .FirstOrDefault(i => i.Instance == instanceLocator);
-            }
-            else
-            {
-                throw new ArgumentException("Unrecognized locator " + locator);
-            }
+
+            return null;
+        }
+
+        //---------------------------------------------------------------------
+        // IDisposable.
+        //---------------------------------------------------------------------
+
+        protected virtual void Dispose(bool disposing)
+        {
+            this.cacheLock.Dispose();
+        }
+
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
         }
     }
 }

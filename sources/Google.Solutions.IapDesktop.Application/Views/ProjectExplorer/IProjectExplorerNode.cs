@@ -41,6 +41,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
     {
         ProjectLocator Project { get; }
 
+        // TODO: Remove
         IEnumerable<IProjectExplorerZoneNode> Zones { get; }
     }
 
@@ -60,7 +61,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
         bool IsRunning { get; }
         bool IsConnected { get; }
 
-        // TODO: Replace
+        // TODO: Replace by OperatingSystems
         bool IsWindowsInstance { get; }
 
 

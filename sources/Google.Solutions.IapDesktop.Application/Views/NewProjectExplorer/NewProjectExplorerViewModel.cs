@@ -20,26 +20,30 @@ namespace Google.Solutions.IapDesktop.Application.Views.NewProjectExplorer
 {
     internal class NewProjectExplorerViewModel : ViewModelBase, IDisposable
     {
+        private readonly IProjectModelService projectModelService;
+
         public NewProjectExplorerViewModel(
             IWin32Window view,
-            IProjectModelService projectModel)
+            IProjectModelService projectModelService)
         {
             this.View = view;
-            this.Root = new CloudViewModelNode(view, projectModel);
+            this.projectModelService = projectModelService;
+            this.RootNode = new CloudViewModelNode(view, projectModelService);
         }
 
         //---------------------------------------------------------------------
         // Observable properties.
         //---------------------------------------------------------------------
 
-        public CloudViewModelNode Root { get; }
+        public CloudViewModelNode RootNode { get; }
+
 
         //---------------------------------------------------------------------
         // Actions.
         //---------------------------------------------------------------------
 
         public Task RefreshAsync(IJobService jobService)
-            => RefreshAsync(jobService, this.Root);
+            => RefreshAsync(jobService, this.RootNode);
 
         public async Task RefreshAsync(
             IJobService jobService,
@@ -47,6 +51,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.NewProjectExplorer
         {
             if (!node.CanReload)
             {
+                // Try reloading parent instead.
                 await RefreshAsync(jobService, node.Parent)
                     .ConfigureAwait(true);
             }
@@ -174,11 +179,11 @@ namespace Google.Solutions.IapDesktop.Application.Views.NewProjectExplorer
 
         internal class CloudViewModelNode : ViewModelNodeBase
         {
-            private readonly IProjectModelService projectModel;
+            private readonly IProjectModelService projectModelService;
 
             public CloudViewModelNode(
                 IWin32Window view,
-                IProjectModelService projectModel)
+                IProjectModelService projectModelService)
                 : base(
                       null,
                       view, 
@@ -188,7 +193,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.NewProjectExplorer
                       0, 
                       0)
             {
-                this.projectModel = projectModel;
+                this.projectModelService = projectModelService;
             }
 
             public override bool CanReload => true;
@@ -197,13 +202,13 @@ namespace Google.Solutions.IapDesktop.Application.Views.NewProjectExplorer
                 bool forceReload,
                 CancellationToken token)
             {
-                var model = await this.projectModel
-                    .GetModelAsync(forceReload, token)
+                var model = await this.projectModelService
+                    .ListProjectsAsync(forceReload, token)
                     .ConfigureAwait(true);
 
                 var children = new List<ViewModelNodeBase>();
                 children.AddRange(model.Projects
-                    .Select(m => new ProjectViewModelNode(this, m)));
+                    .Select(m => new ProjectViewModelNode(this, m, this.projectModelService)));
                 children.AddRange(model.InaccessibleProjects
                     .Select(m => new InaccessibleProjectViewModelNode(this, m)));
 
@@ -214,10 +219,12 @@ namespace Google.Solutions.IapDesktop.Application.Views.NewProjectExplorer
         internal class ProjectViewModelNode : ViewModelNodeBase
         {
             private readonly IProjectExplorerProjectNode projectNode;
+            private readonly IProjectModelService projectModelService;
 
             public ProjectViewModelNode(
                 CloudViewModelNode parent,
-                IProjectExplorerProjectNode projectNode)
+                IProjectExplorerProjectNode projectNode,
+                IProjectModelService projectModelService)
                 : base(
                       parent,
                       parent.View,
@@ -228,19 +235,24 @@ namespace Google.Solutions.IapDesktop.Application.Views.NewProjectExplorer
                       0)
             {
                 this.projectNode = projectNode;
+                this.projectModelService = projectModelService;
             }
 
             public override bool CanReload => true;
 
-            protected override Task<IEnumerable<ViewModelNodeBase>> LoadChildren(
+            protected override async Task<IEnumerable<ViewModelNodeBase>> LoadChildren(
                 bool forceReload, 
                 CancellationToken token)
             {
-                // TODO: XXX: Force-reloading a project must be possible!
-                return Task.FromResult(this.projectNode
-                    .Zones
+                var zones = await this.projectModelService.ListInstancesGroupedByZone(
+                        this.projectNode.Project,
+                        forceReload,
+                        token)
+                    .ConfigureAwait(true);
+
+                return zones
                     .Select(z => new ZoneViewModelNode(this, z))
-                    .Cast<ViewModelNodeBase>());
+                    .Cast<ViewModelNodeBase>();
             }
         }
 

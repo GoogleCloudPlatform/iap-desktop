@@ -69,7 +69,8 @@ namespace Google.Solutions.IapDesktop.Application.Services.ProjectModel
 
         public string DisplayName { get; }
 
-        public IEnumerable<IProjectExplorerZoneNode> Zones { get; }
+        // TOOD: Remove
+        public IEnumerable<IProjectExplorerZoneNode> Zones => throw new NotImplementedException();
 
         //---------------------------------------------------------------------
         // Ctor.
@@ -77,75 +78,10 @@ namespace Google.Solutions.IapDesktop.Application.Services.ProjectModel
 
         public ProjectNode(
             ProjectLocator locator,
-            string displayName,
-            IEnumerable<IProjectExplorerZoneNode> zones)
+            string displayName)
         {
             this.Project = locator;
             this.DisplayName = displayName;
-            this.Zones = zones;
-        }
-
-        //---------------------------------------------------------------------
-        // Filter.
-        //---------------------------------------------------------------------
-
-        public ProjectNode FilterBy(OperatingSystems operatingSystems)
-        {
-            var filteredZones = this.Zones
-                .SelectMany(z => z.Instances)
-                .Cast<InstanceNode>()
-                .Where(i => (i.OperatingSystem & operatingSystems) != 0)
-                .GroupBy(i => new ZoneLocator(i.Instance.ProjectId, i.Instance.Zone))
-                .Select(group => new ZoneNode(group.Key, group.ToList()))
-                .ToList();
-
-            return new ProjectNode(
-                this.Project,
-                this.DisplayName,
-                filteredZones);
-        }
-
-        //---------------------------------------------------------------------
-        // Factory.
-        //---------------------------------------------------------------------
-
-        internal static ProjectNode FromProject(
-            Project project,
-            IEnumerable<Instance> instances)
-        {
-            var zoneLocators = instances
-                .EnsureNotNull()
-                .Select(i => ZoneLocator.FromString(i.Zone))
-                .ToHashSet();
-
-            var zones = new List<ZoneNode>();
-            foreach (var zoneLocator in zoneLocators.OrderBy(z => z.Name))
-            {
-                var instancesInZone = instances
-                    .Where(i => ZoneLocator.FromString(i.Zone) == zoneLocator)
-                    .Where(i => i.Disks != null && i.Disks.Any())
-                    .OrderBy(i => i.Name)
-                    .Select(i => new InstanceNode(
-                        i.Id.Value,
-                        new InstanceLocator(
-                            zoneLocator.ProjectId,
-                            zoneLocator.Name,
-                            i.Name),
-                        i.IsWindowsInstance()
-                            ? OperatingSystems.Windows
-                            : OperatingSystems.Linux,
-                        i.Status == "RUNNING"))
-                    .ToList();
-
-                zones.Add(new ZoneNode(
-                    zoneLocator,
-                    instancesInZone));
-            }
-
-            return new ProjectNode(
-                new ProjectLocator(project.Name),
-                project.Description,
-                zones);
         }
     }
 
