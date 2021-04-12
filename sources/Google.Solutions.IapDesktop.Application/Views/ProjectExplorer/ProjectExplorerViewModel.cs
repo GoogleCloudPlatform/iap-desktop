@@ -138,7 +138,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
 
         public Task RefreshAsync() => RefreshAsync(this.RootNode);
 
-        public async Task RefreshAsync(ViewModelNodeBase node)
+        public async Task RefreshAsync(ViewModelNode node)
         {
             if (!node.CanReload)
             {
@@ -166,7 +166,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
         }
 
         public Task SelectNodeAsync(
-            ViewModelNodeBase node,
+            ViewModelNode node,
             CancellationToken token)
         {
             return this.projectModelService.SetActiveNodeAsync(
@@ -194,15 +194,15 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
         // Nodes.
         //---------------------------------------------------------------------
 
-        internal abstract class ViewModelNodeBase : ViewModelBase
+        internal abstract class ViewModelNode : ViewModelBase
         {
             protected readonly ProjectExplorerViewModel viewModel;
 
             private bool isExpanded;
-            private RangeObservableCollection<ViewModelNodeBase> nodes;
-            private RangeObservableCollection<ViewModelNodeBase> filteredNodes;
+            private RangeObservableCollection<ViewModelNode> nodes;
+            private RangeObservableCollection<ViewModelNode> filteredNodes;
 
-            internal ViewModelNodeBase Parent { get; }
+            internal ViewModelNode Parent { get; }
 
             //-----------------------------------------------------------------
             // Observable properties.
@@ -229,16 +229,16 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
             // Children.
             //-----------------------------------------------------------------
 
-            protected virtual IEnumerable<ViewModelNodeBase> ApplyFilter(
-                RangeObservableCollection<ViewModelNodeBase> allNodes)
+            protected virtual IEnumerable<ViewModelNode> ApplyFilter(
+                RangeObservableCollection<ViewModelNode> allNodes)
             {
                 return allNodes;
             }
 
-            public async Task<ObservableCollection<ViewModelNodeBase>> GetFilteredNodesAsync(
+            public async Task<ObservableCollection<ViewModelNode>> GetFilteredNodesAsync(
                 bool forceReload)
             {
-                Debug.Assert(((Control)this.View).InvokeRequired);
+                Debug.Assert(!((Control)this.View).InvokeRequired);
 
                 if (this.nodes == null)
                 {
@@ -249,12 +249,12 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
                     // operating on the UI thread.
                     //
 
-                    this.nodes = new RangeObservableCollection<ViewModelNodeBase>();
+                    this.nodes = new RangeObservableCollection<ViewModelNode>();
                     this.nodes.AddRange(
                         await LoadNodesAsync(forceReload)
                             .ConfigureAwait(true));
 
-                    this.filteredNodes = new RangeObservableCollection<ViewModelNodeBase>();
+                    this.filteredNodes = new RangeObservableCollection<ViewModelNode>();
                     this.filteredNodes.AddRange(ApplyFilter(this.nodes));
                 }
                 else if (forceReload)
@@ -281,7 +281,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
                 return this.filteredNodes;
             }
 
-            protected Task<IEnumerable<ViewModelNodeBase>> LoadNodesAsync(
+            protected Task<IEnumerable<ViewModelNode>> LoadNodesAsync(
                 bool forceReload)
             {
                 //
@@ -295,7 +295,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
                     token => LoadNodesAsync(forceReload, token));
             }
 
-            protected abstract Task<IEnumerable<ViewModelNodeBase>> LoadNodesAsync(
+            protected abstract Task<IEnumerable<ViewModelNode>> LoadNodesAsync(
                 bool forceReload,
                 CancellationToken token);
 
@@ -303,9 +303,9 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
             // Ctor.
             //-----------------------------------------------------------------
 
-            protected ViewModelNodeBase(
+            protected ViewModelNode(
                 ProjectExplorerViewModel viewModel,
-                ViewModelNodeBase parent,
+                ViewModelNode parent,
                 ResourceLocator locator,
                 string text,
                 bool isLeaf,
@@ -313,6 +313,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
                 int selectedImageIndex)
             {
                 this.viewModel = viewModel;
+                this.View = viewModel.View;
                 this.Parent = parent;
                 this.Locator = locator;
                 this.Text = text;
@@ -322,7 +323,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
             }
         }
 
-        internal class CloudViewModelNode : ViewModelNodeBase
+        internal class CloudViewModelNode : ViewModelNode
         {
             private readonly IProjectModelService projectModelService;
 
@@ -343,7 +344,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
 
             public override bool CanReload => true;
 
-            protected override async Task<IEnumerable<ViewModelNodeBase>> LoadNodesAsync(
+            protected override async Task<IEnumerable<ViewModelNode>> LoadNodesAsync(
                 bool forceReload,
                 CancellationToken token)
             {
@@ -351,7 +352,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
                     .GetRootNodeAsync(forceReload, token)
                     .ConfigureAwait(true);
 
-                var children = new List<ViewModelNodeBase>();
+                var children = new List<ViewModelNode>();
                 children.AddRange(model.Projects
                     .Select(m => new ProjectViewModelNode(
                         this.viewModel,
@@ -367,7 +368,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
             }
         }
 
-        internal class ProjectViewModelNode : ViewModelNodeBase
+        internal class ProjectViewModelNode : ViewModelNode
         {
             private readonly IProjectExplorerProjectNode modelNode;
 
@@ -389,7 +390,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
 
             public override bool CanReload => true;
 
-            protected override async Task<IEnumerable<ViewModelNodeBase>> LoadNodesAsync(
+            protected override async Task<IEnumerable<ViewModelNode>> LoadNodesAsync(
                 bool forceReload,
                 CancellationToken token)
             {
@@ -401,11 +402,11 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
 
                 return zones
                     .Select(z => new ZoneViewModelNode(this.viewModel, this, z))
-                    .Cast<ViewModelNodeBase>();
+                    .Cast<ViewModelNode>();
             }
         }
 
-        internal class InaccessibleProjectViewModelNode : ViewModelNodeBase
+        internal class InaccessibleProjectViewModelNode : ViewModelNode
         {
             public InaccessibleProjectViewModelNode(
                 ProjectExplorerViewModel viewModel,
@@ -424,16 +425,16 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
 
             public override bool CanReload => false;
 
-            protected override Task<IEnumerable<ViewModelNodeBase>> LoadNodesAsync(
+            protected override Task<IEnumerable<ViewModelNode>> LoadNodesAsync(
                 bool forceReload,
                 CancellationToken token)
             {
                 Debug.Fail("Should not be called since this is a leaf node");
-                return Task.FromResult(Enumerable.Empty<ViewModelNodeBase>());
+                return Task.FromResult(Enumerable.Empty<ViewModelNode>());
             }
         }
 
-        internal class ZoneViewModelNode : ViewModelNodeBase
+        internal class ZoneViewModelNode : ViewModelNode
         {
             private readonly IProjectExplorerZoneNode modelNode;
 
@@ -455,18 +456,18 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
 
             public override bool CanReload => false;
 
-            protected override Task<IEnumerable<ViewModelNodeBase>> LoadNodesAsync(
+            protected override Task<IEnumerable<ViewModelNode>> LoadNodesAsync(
                 bool forceReload,
                 CancellationToken token)
             {
                 return Task.FromResult(this.modelNode
                     .Instances
                     .Select(i => new InstanceViewModelNode(this.viewModel, this, i))
-                    .Cast<ViewModelNodeBase>());
+                    .Cast<ViewModelNode>());
             }
 
-            protected override IEnumerable<ViewModelNodeBase> ApplyFilter(
-                RangeObservableCollection<ViewModelNodeBase> allNodes)
+            protected override IEnumerable<ViewModelNode> ApplyFilter(
+                RangeObservableCollection<ViewModelNode> allNodes)
             {
                 return allNodes
                     .Cast<InstanceViewModelNode>()
@@ -478,7 +479,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
             }
         }
 
-        internal class InstanceViewModelNode : ViewModelNodeBase
+        internal class InstanceViewModelNode : ViewModelNode
         {
             public IProjectExplorerInstanceNode ModelNode { get; }
 
@@ -503,12 +504,12 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
 
             public override bool CanReload => false;
 
-            protected override Task<IEnumerable<ViewModelNodeBase>> LoadNodesAsync(
+            protected override Task<IEnumerable<ViewModelNode>> LoadNodesAsync(
                 bool forceReload,
                 CancellationToken token)
             {
                 Debug.Fail("Should not be called since this is a leaf node");
-                return Task.FromResult(Enumerable.Empty<ViewModelNodeBase>());
+                return Task.FromResult(Enumerable.Empty<ViewModelNode>());
             }
         }
     }

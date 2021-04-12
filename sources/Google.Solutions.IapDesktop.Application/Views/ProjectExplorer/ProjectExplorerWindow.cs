@@ -56,7 +56,6 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
         private readonly ISessionBroker sessionBroker;
 
         private readonly ProjectExplorerViewModel viewModel;
-        private readonly CloudNode rootNode = new CloudNode();
 
         public CommandContainer<IProjectExplorerNode> ContextMenuCommands { get; }
         public CommandContainer<IProjectExplorerNode> ToolbarCommands { get; }
@@ -81,19 +80,12 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
                 VisualStudioToolStripExtender.VsVersion.Vs2015,
                 this.vs2015LightTheme);
 
-            this.treeView.Nodes.Add(this.rootNode);
-
             this.mainForm = serviceProvider.GetService<IMainForm>();
             this.eventService = serviceProvider.GetService<IEventService>();
             this.jobService = serviceProvider.GetService<IJobService>();
             this.projectInventoryService = serviceProvider.GetService<IProjectRepository>();
             this.authService = serviceProvider.GetService<IAuthorizationAdapter>();
             this.sessionBroker = serviceProvider.GetService<IGlobalSessionBroker>();
-
-            this.eventService.BindAsyncHandler<ProjectAddedEvent>(OnProjectAdded);
-            this.eventService.BindHandler<ProjectDeletedEvent>(OnProjectDeleted);
-            this.eventService.BindHandler<SessionStartedEvent>(OnRdpSessionStarted);
-            this.eventService.BindHandler<SessionEndedEvent>(OnRdpSessionEnded);
 
             this.ContextMenuCommands = new CommandContainer<IProjectExplorerNode>(
                 this,
@@ -117,7 +109,18 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
             };
 
             //
-            // Bind controls.
+            // Bind tree view.
+            //
+            this.treeView.BindChildren(node => node.GetFilteredNodesAsync(false));
+            this.treeView.BindImageIndex(node => node.ImageIndex);
+            this.treeView.BindSelectedImageIndex(node => node.SelectedImageIndex);
+            this.treeView.BindIsExpanded(node => node.IsExpanded);
+            this.treeView.BindIsLeaf(node => node.IsLeaf);
+            this.treeView.BindText(node => node.Text);
+            this.treeView.Bind(this.viewModel.RootNode);
+
+            //
+            // Bind toolbar controls.
             //
             this.linuxInstancesToolStripMenuItem.BindProperty(
                 c => c.Checked,
@@ -137,37 +140,37 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
             };
         }
 
-        private void PopulateProjectNode(
-            string projectId,
-            IEnumerable<Instance> instances)
-        {
-            Debug.Assert(!this.InvokeRequired);
+        //private void PopulateProjectNode(
+        //    string projectId,
+        //    IEnumerable<Instance> instances)
+        //{
+        //    Debug.Assert(!this.InvokeRequired);
 
-            // Narrow the list down by operating system.
-            instances = instances.Where(i => i.IsWindowsInstance()
-                ? this.viewModel.IsWindowsIncluded
-                : this.viewModel.IsLinuxIncluded);
+        //    // Narrow the list down by operating system.
+        //    instances = instances.Where(i => i.IsWindowsInstance()
+        //        ? this.viewModel.IsWindowsIncluded
+        //        : this.viewModel.IsLinuxIncluded);
 
-            var projectNode = this.rootNode.Nodes
-                .Cast<ProjectNode>()
-                .FirstOrDefault(n => n.Project.ProjectId == projectId);
-            if (projectNode != null)
-            {
-                projectNode.Populate(
-                    instances,
-                    this.sessionBroker.IsConnected);
-            }
-            else
-            {
-                projectNode = new ProjectNode(projectId);
-                projectNode.Populate(
-                    instances,
-                    this.sessionBroker.IsConnected);
-                this.rootNode.Nodes.Add(projectNode);
-            }
+        //    var projectNode = this.rootNode.Nodes
+        //        .Cast<ProjectNode>()
+        //        .FirstOrDefault(n => n.Project.ProjectId == projectId);
+        //    if (projectNode != null)
+        //    {
+        //        projectNode.Populate(
+        //            instances,
+        //            this.sessionBroker.IsConnected);
+        //    }
+        //    else
+        //    {
+        //        projectNode = new ProjectNode(projectId);
+        //        projectNode.Populate(
+        //            instances,
+        //            this.sessionBroker.IsConnected);
+        //        this.rootNode.Nodes.Add(projectNode);
+        //    }
 
-            this.rootNode.Expand();
-        }
+        //    this.rootNode.Expand();
+        //}
 
         private async Task<bool> AddProjectAsync()
         {
@@ -197,98 +200,95 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
         // Context menu event handlers.
         //---------------------------------------------------------------------
 
-        private void treeView_NodeMouseClick(object sender, TreeNodeMouseClickEventArgs e)
+        private void refreshAllProjectsToolStripMenuItem_Click(object sender, EventArgs _)
         {
-            if (e.Button == MouseButtons.Right)
-            {
-                this.treeView.SelectedNode = e.Node;
-            }
+            // TODO: Reimplement
+            //try
+            //{
+            //    await RefreshAllProjects().ConfigureAwait(true);
+            //}
+            //catch (Exception e) when (e.IsCancellation())
+            //{
+            //    // Ignore.
+            //}
+            //catch (Exception e)
+            //{
+            //    this.serviceProvider
+            //        .GetService<IExceptionDialog>()
+            //        .Show(this, "Refreshing project failed", e);
+            //}
         }
 
-        private async void refreshAllProjectsToolStripMenuItem_Click(object sender, EventArgs _)
+        private void refreshToolStripMenuItem_Click(object sender, EventArgs _)
         {
-            try
-            {
-                await RefreshAllProjects().ConfigureAwait(true);
-            }
-            catch (Exception e) when (e.IsCancellation())
-            {
-                // Ignore.
-            }
-            catch (Exception e)
-            {
-                this.serviceProvider
-                    .GetService<IExceptionDialog>()
-                    .Show(this, "Refreshing project failed", e);
-            }
-        }
-
-        private async void refreshToolStripMenuItem_Click(object sender, EventArgs _)
-        {
-            try
-            {
-                if (this.treeView.SelectedNode is ProjectNode projectNode)
-                {
-                    await RefreshProject(projectNode.Project.ProjectId)
-                        .ConfigureAwait(true);
-                }
-            }
-            catch (Exception e) when (e.IsCancellation())
-            {
-                // Ignore.
-            }
-            catch (Exception e)
-            {
-                this.serviceProvider
-                    .GetService<IExceptionDialog>()
-                    .Show(this, "Refreshing project failed", e);
-            }
+            // TODO: Reimplement
+            //try
+            //{
+            //    if (this.treeView.SelectedNode is ProjectNode projectNode)
+            //    {
+            //        await RefreshProject(projectNode.Project.ProjectId)
+            //            .ConfigureAwait(true);
+            //    }
+            //}
+            //catch (Exception e) when (e.IsCancellation())
+            //{
+            //    // Ignore.
+            //}
+            //catch (Exception e)
+            //{
+            //    this.serviceProvider
+            //        .GetService<IExceptionDialog>()
+            //        .Show(this, "Refreshing project failed", e);
+            //}
         }
 
         private async void unloadProjectToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            if (this.treeView.SelectedNode is ProjectNode projectNode)
-            {
-                await this.projectInventoryService
-                    .DeleteProjectAsync(projectNode.Project.ProjectId)
-                    .ConfigureAwait(true);
-            }
+            // TODO: Reimplement
+            //if (this.treeView.SelectedNode is ProjectNode projectNode)
+            //{
+            //    await this.projectInventoryService
+            //        .DeleteProjectAsync(projectNode.Project.ProjectId)
+            //        .ConfigureAwait(true);
+            //}
         }
 
         private void openInCloudConsoleToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            var cloudConsoleService = this.serviceProvider.GetService<CloudConsoleService>();
+            // TODO: Reimplement
+            //var cloudConsoleService = this.serviceProvider.GetService<CloudConsoleService>();
 
-            if (this.treeView.SelectedNode is VmInstanceNode vmInstanceNode)
-            {
-                cloudConsoleService.OpenInstanceDetails(vmInstanceNode.Instance);
-            }
-            else if (this.treeView.SelectedNode is ZoneNode zoneNode)
-            {
-                cloudConsoleService.OpenInstanceList(zoneNode.Zone);
-            }
-            else if (this.treeView.SelectedNode is ProjectNode projectNode)
-            {
-                cloudConsoleService.OpenInstanceList(projectNode.Project);
-            }
+            //if (this.treeView.SelectedNode is VmInstanceNode vmInstanceNode)
+            //{
+            //    cloudConsoleService.OpenInstanceDetails(vmInstanceNode.Instance);
+            //}
+            //else if (this.treeView.SelectedNode is ZoneNode zoneNode)
+            //{
+            //    cloudConsoleService.OpenInstanceList(zoneNode.Zone);
+            //}
+            //else if (this.treeView.SelectedNode is ProjectNode projectNode)
+            //{
+            //    cloudConsoleService.OpenInstanceList(projectNode.Project);
+            //}
         }
 
         private void configureIapAccessToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            var cloudConsoleService = this.serviceProvider.GetService<CloudConsoleService>();
+            // TODO: Reimplement
+            //var cloudConsoleService = this.serviceProvider.GetService<CloudConsoleService>();
 
-            if (this.treeView.SelectedNode is ProjectNode projectNode)
-            {
-                cloudConsoleService.ConfigureIapAccess(projectNode.Project.ProjectId);
-            }
-            else if (this.treeView.SelectedNode is ZoneNode zoneNode)
-            {
-                cloudConsoleService.ConfigureIapAccess(zoneNode.Zone.ProjectId);
-            }
-            else if (this.treeView.SelectedNode is VmInstanceNode vmInstanceNode)
-            {
-                cloudConsoleService.ConfigureIapAccess(vmInstanceNode.ProjectId);
-            }
+            //if (this.treeView.SelectedNode is ProjectNode projectNode)
+            //{
+            //    cloudConsoleService.ConfigureIapAccess(projectNode.Project.ProjectId);
+            //}
+            //else if (this.treeView.SelectedNode is ZoneNode zoneNode)
+            //{
+            //    cloudConsoleService.ConfigureIapAccess(zoneNode.Zone.ProjectId);
+            //}
+            //else if (this.treeView.SelectedNode is VmInstanceNode vmInstanceNode)
+            //{
+            //    cloudConsoleService.ConfigureIapAccess(vmInstanceNode.ProjectId);
+            //}
         }
 
         private void treeView_NodeMouseDoubleClick(object sender, TreeNodeMouseClickEventArgs e)
@@ -340,18 +340,19 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
         // Other Windows event handlers.
         //---------------------------------------------------------------------
 
-        private async void ProjectExplorerWindow_Shown(object sender, EventArgs _)
+        private void ProjectExplorerWindow_Shown(object sender, EventArgs _)
         {
             try
             {
-                await RefreshAllProjects().ConfigureAwait(true);
+                //await RefreshAllProjects().ConfigureAwait(true);
 
-                if (this.rootNode.Nodes.Count == 0)
-                {
-                    // No projects in inventory yet - pop open the 'Add Project'
-                    // dialog to get the user started.
-                    await AddProjectAsync().ConfigureAwait(true);
-                }
+                // TODO: Reimplement
+                //if (this.rootNode.Nodes.Count == 0)
+                //{
+                //    // No projects in inventory yet - pop open the 'Add Project'
+                //    // dialog to get the user started.
+                //    await AddProjectAsync().ConfigureAwait(true);
+                //}
             }
             catch (Exception e) when (e.IsCancellation())
             {
@@ -371,50 +372,51 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
             }
         }
 
-        private async void treeView_AfterSelect(object sender, TreeViewEventArgs args)
+        private void treeView_AfterSelect(object sender, TreeViewEventArgs args)
         {
-            try
-            {
-                var selectedNode = (IProjectExplorerNode)args.Node;
+            // TODO: Reimplement
+            //try
+            //{
+            //    var selectedNode = (IProjectExplorerNode)args.Node;
 
-                //
-                // Update context menu state.
-                //
-                this.refreshToolStripMenuItem.Visible =
-                    this.unloadProjectToolStripMenuItem.Visible = (selectedNode is ProjectNode);
-                this.refreshAllProjectsToolStripMenuItem.Visible = (selectedNode is CloudNode);
+            //    //
+            //    // Update context menu state.
+            //    //
+            //    this.refreshToolStripMenuItem.Visible =
+            //        this.unloadProjectToolStripMenuItem.Visible = (selectedNode is ProjectNode);
+            //    this.refreshAllProjectsToolStripMenuItem.Visible = (selectedNode is CloudNode);
 
-                this.openInCloudConsoleToolStripMenuItem.Visible =
-                    this.iapSeparatorToolStripMenuItem.Visible =
-                    this.cloudConsoleSeparatorToolStripMenuItem.Visible =
-                    this.configureIapAccessToolStripMenuItem.Visible =
-                        (selectedNode is VmInstanceNode ||
-                         selectedNode is ZoneNode ||
-                         selectedNode is ProjectNode);
+            //    this.openInCloudConsoleToolStripMenuItem.Visible =
+            //        this.iapSeparatorToolStripMenuItem.Visible =
+            //        this.cloudConsoleSeparatorToolStripMenuItem.Visible =
+            //        this.configureIapAccessToolStripMenuItem.Visible =
+            //            (selectedNode is VmInstanceNode ||
+            //             selectedNode is ZoneNode ||
+            //             selectedNode is ProjectNode);
 
-                // 
-                // Handle dynamic menu items.
-                //
-                this.ContextMenuCommands.Context = selectedNode;
-                this.ToolbarCommands.Context = selectedNode;
+            //    // 
+            //    // Handle dynamic menu items.
+            //    //
+            //    this.ContextMenuCommands.Context = selectedNode;
+            //    this.ToolbarCommands.Context = selectedNode;
 
-                //
-                // Fire event.
-                //
-                await this.eventService
-                    .FireAsync(new ProjectExplorerNodeSelectedEvent(selectedNode))
-                    .ConfigureAwait(true);
-            }
-            catch (Exception e) when (e.IsCancellation())
-            {
-                // Ignore.
-            }
-            catch (Exception e)
-            {
-                this.serviceProvider
-                    .GetService<IExceptionDialog>()
-                    .Show(this, "An error occured", e);
-            }
+            //    //
+            //    // Fire event.
+            //    //
+            //    await this.eventService
+            //        .FireAsync(new ProjectExplorerNodeSelectedEvent(selectedNode))
+            //        .ConfigureAwait(true);
+            //}
+            //catch (Exception e) when (e.IsCancellation())
+            //{
+            //    // Ignore.
+            //}
+            //catch (Exception e)
+            //{
+            //    this.serviceProvider
+            //        .GetService<IExceptionDialog>()
+            //        .Show(this, "An error occured", e);
+            //}
         }
 
         private void ProjectExplorerWindow_KeyDown(object sender, KeyEventArgs e)
@@ -441,48 +443,49 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
         // Service event handlers.
         //---------------------------------------------------------------------
 
-        private async Task OnProjectAdded(ProjectAddedEvent e)
-        {
-            Debug.Assert(!this.InvokeRequired);
+        // TODO: Reimplement in VM
+        //private async Task OnProjectAdded(ProjectAddedEvent e)
+        //{
+        //    Debug.Assert(!this.InvokeRequired);
 
-            await RefreshProject(e.ProjectId).ConfigureAwait(true);
-        }
+        //    await RefreshProject(e.ProjectId).ConfigureAwait(true);
+        //}
 
-        private void OnProjectDeleted(ProjectDeletedEvent e)
-        {
-            Debug.Assert(!this.InvokeRequired);
-            var node = this.rootNode.Nodes
-                .Cast<ProjectNode>()
-                .Where(p => p.Project.ProjectId == e.ProjectId)
-                .FirstOrDefault();
+        //private void OnProjectDeleted(ProjectDeletedEvent e)
+        //{
+        //    Debug.Assert(!this.InvokeRequired);
+        //    var node = this.rootNode.Nodes
+        //        .Cast<ProjectNode>()
+        //        .Where(p => p.Project.ProjectId == e.ProjectId)
+        //        .FirstOrDefault();
 
-            if (node != null)
-            {
-                // Remove corresponding node from tree.
-                this.rootNode.Nodes.Remove(node);
-            }
-        }
+        //    if (node != null)
+        //    {
+        //        // Remove corresponding node from tree.
+        //        this.rootNode.Nodes.Remove(node);
+        //    }
+        //}
 
-        private void OnRdpSessionStarted(SessionStartedEvent e)
-        {
-            var node = (VmInstanceNode)TryFindNode(e.Instance);
-            if (node != null)
-            {
-                node.IsConnected = true;
-            }
-        }
+        //private void OnRdpSessionStarted(SessionStartedEvent e)
+        //{
+        //    var node = (VmInstanceNode)TryFindNode(e.Instance);
+        //    if (node != null)
+        //    {
+        //        node.IsConnected = true;
+        //    }
+        //}
 
 
-        private void OnRdpSessionEnded(SessionEndedEvent e)
-        {
-            var node = (VmInstanceNode)TryFindNode(e.Instance);
-            if (node != null)
-            {
-                // Another connection might still be open, so re-check before
-                // marking the node as not connected.
-                node.IsConnected = this.sessionBroker.IsConnected(node.Instance);
-            }
-        }
+        //private void OnRdpSessionEnded(SessionEndedEvent e)
+        //{
+        //    var node = (VmInstanceNode)TryFindNode(e.Instance);
+        //    if (node != null)
+        //    {
+        //        // Another connection might still be open, so re-check before
+        //        // marking the node as not connected.
+        //        node.IsConnected = this.sessionBroker.IsConnected(node.Instance);
+        //    }
+        //}
 
         //---------------------------------------------------------------------
         // IProjectExplorer.
@@ -490,82 +493,87 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
 
         public async Task RefreshAllProjects()
         {
-            Debug.Assert(!this.InvokeRequired);
+            await this.viewModel.RefreshAsync().ConfigureAwait(false);
 
-            // Move selection to a "safe" spot.
-            this.treeView.SelectedNode = this.rootNode;
+            //Debug.Assert(!this.InvokeRequired);
+
+            //// Move selection to a "safe" spot.
+            //this.treeView.SelectedNode = this.rootNode;
 
 
-            var failedProjects = new Dictionary<string, Exception>();
+            //var failedProjects = new Dictionary<string, Exception>();
 
-            var projectsAndInstances = await this.jobService.RunInBackground(
-                new JobDescription("Loading projects..."),
-                async token =>
-                {
-                    // NB. It is important to create a new adapter instance _within_ the job func
-                    // so that when the job is retried due to reauth, we use a fresh instance.
-                    using (var computeEngineAdapter = this.serviceProvider.GetService<IComputeEngineAdapter>())
-                    {
-                        var accumulator = new Dictionary<string, IEnumerable<Instance>>();
+            //var projectsAndInstances = await this.jobService.RunInBackground(
+            //    new JobDescription("Loading projects..."),
+            //    async token =>
+            //    {
+            //        // NB. It is important to create a new adapter instance _within_ the job func
+            //        // so that when the job is retried due to reauth, we use a fresh instance.
+            //        using (var computeEngineAdapter = this.serviceProvider.GetService<IComputeEngineAdapter>())
+            //        {
+            //            var accumulator = new Dictionary<string, IEnumerable<Instance>>();
 
-                        foreach (var project in await this.projectInventoryService
-                            .ListProjectsAsync()
-                            .ConfigureAwait(false))
-                        {
-                            try
-                            {
-                                accumulator[project.ProjectId] = await computeEngineAdapter
-                                    .ListInstancesAsync(project.ProjectId, token)
-                                    .ConfigureAwait(false);
-                            }
-                            catch (Exception e) when (e.IsReauthError())
-                            {
-                                // Propagate reauth errors so that the reauth logic kicks in.
-                                throw;
-                            }
-                            catch (Exception e)
-                            {
-                                // If one project fails to load, we should stil load the other onces.
-                                failedProjects[project.ProjectId] = e;
-                            }
-                        }
+            //            foreach (var project in await this.projectInventoryService
+            //                .ListProjectsAsync()
+            //                .ConfigureAwait(false))
+            //            {
+            //                try
+            //                {
+            //                    accumulator[project.ProjectId] = await computeEngineAdapter
+            //                        .ListInstancesAsync(project.ProjectId, token)
+            //                        .ConfigureAwait(false);
+            //                }
+            //                catch (Exception e) when (e.IsReauthError())
+            //                {
+            //                    // Propagate reauth errors so that the reauth logic kicks in.
+            //                    throw;
+            //                }
+            //                catch (Exception e)
+            //                {
+            //                    // If one project fails to load, we should stil load the other onces.
+            //                    failedProjects[project.ProjectId] = e;
+            //                }
+            //            }
 
-                        return accumulator;
-                    }
-                }).ConfigureAwait(true);
+            //            return accumulator;
+            //        }
+            //    }).ConfigureAwait(true);
 
-            foreach (var entry in projectsAndInstances)
-            {
-                PopulateProjectNode(entry.Key, entry.Value);
-            }
+            //foreach (var entry in projectsAndInstances)
+            //{
+            //    PopulateProjectNode(entry.Key, entry.Value);
+            //}
 
-            if (failedProjects.Any())
-            {
-                // Add an (empty) project node so that the user can at least unload the project.
-                foreach (string projectId in failedProjects.Keys)
-                {
-                    PopulateProjectNode(projectId, Enumerable.Empty<Instance>());
-                }
+            //if (failedProjects.Any())
+            //{
+            //    // Add an (empty) project node so that the user can at least unload the project.
+            //    foreach (string projectId in failedProjects.Keys)
+            //    {
+            //        PopulateProjectNode(projectId, Enumerable.Empty<Instance>());
+            //    }
 
-                throw new AggregateException(
-                    $"The following projects failed to refresh: {string.Join(", ", failedProjects.Keys)}",
-                    failedProjects.Values.Cast<Exception>());
-            }
+            //    throw new AggregateException(
+            //        $"The following projects failed to refresh: {string.Join(", ", failedProjects.Keys)}",
+            //        failedProjects.Values.Cast<Exception>());
+            //}
         }
 
-        public async Task RefreshProject(string projectId)
+        public Task RefreshProject(string projectId)
         {
-            Debug.Assert(!this.InvokeRequired);
+            // TODO: Reimplement
+            throw new NotImplementedException();
 
-            using (var computeEngineAdapter = this.serviceProvider.GetService<IComputeEngineAdapter>())
-            {
-                var instances = await this.jobService.RunInBackground(
-                        new JobDescription("Loading project inventory..."),
-                        token => computeEngineAdapter.ListInstancesAsync(projectId, CancellationToken.None))
-                    .ConfigureAwait(true);
+            //Debug.Assert(!this.InvokeRequired);
 
-                PopulateProjectNode(projectId, instances);
-            }
+            //using (var computeEngineAdapter = this.serviceProvider.GetService<IComputeEngineAdapter>())
+            //{
+            //    var instances = await this.jobService.RunInBackground(
+            //            new JobDescription("Loading project inventory..."),
+            //            token => computeEngineAdapter.ListInstancesAsync(projectId, CancellationToken.None))
+            //        .ConfigureAwait(true);
+
+            //    PopulateProjectNode(projectId, instances);
+            //}
         }
 
         public async Task ShowAddProjectDialogAsync()
@@ -582,18 +590,24 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
 
         public IProjectExplorerInstanceNode TryFindNode(InstanceLocator reference)
         {
-            return this.rootNode.Nodes
-                .OfType<ProjectNode>()
-                .Where(p => p.Project.ProjectId == reference.ProjectId)
-                .SelectMany(p => p.Nodes.Cast<ZoneNode>())
-                .Where(z => z.Zone.Name == reference.Zone)
-                .SelectMany(z => z.Nodes.Cast<VmInstanceNode>())
-                .FirstOrDefault(vm => vm.InstanceName == reference.Name); ;
+            // TODO: Reimplement
+            throw new NotImplementedException();
+
+            //return this.rootNode.Nodes
+            //    .OfType<ProjectNode>()
+            //    .Where(p => p.Project.ProjectId == reference.ProjectId)
+            //    .SelectMany(p => p.Nodes.Cast<ZoneNode>())
+            //    .Where(z => z.Zone.Name == reference.Zone)
+            //    .SelectMany(z => z.Nodes.Cast<VmInstanceNode>())
+            //    .FirstOrDefault(vm => vm.InstanceName == reference.Name); ;
         }
 
         public IProjectExplorerNode SelectedNode
         {
-            get => (this.treeView.SelectedNode as IProjectExplorerNode) ?? this.rootNode;
+            // TODO: Reimplement
+            get => null;
+
+            // get => (this.treeView.SelectedNode as IProjectExplorerNode) ?? this.rootNode;
         }
     }
 }

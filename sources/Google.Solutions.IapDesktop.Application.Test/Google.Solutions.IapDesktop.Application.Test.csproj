@@ -156,7 +156,6 @@
     <Compile Include="Views\TestMainForm.Designer.cs">
       <DependentUpon>TestMainForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="Views\TestProjectExplorer.cs" />
     <Compile Include="Views\Properties\TestPropertiesInspectorWindow.cs" />
     <Compile Include="Views\WindowTestFixtureBase.cs" />
     <Compile Include="Util\TestSingletonApplicationBase.cs" />
