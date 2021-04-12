@@ -143,14 +143,24 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
                 .ConfigureAwait(true);
         }
 
-        public Task AddProjectAsync(ProjectLocator project)
+        public async Task AddProjectAsync(ProjectLocator project)
         {
-            return this.projectModelService.AddProjectAsync(project);
+            await this.projectModelService
+                .AddProjectAsync(project)
+                .ConfigureAwait(true);
+
+            // Make sure the new project is reflected.
+            await RefreshAsync().ConfigureAwait(true);
         }
 
-        public Task RemoveProjectAsync(ProjectLocator project)
+        public async Task RemoveProjectAsync(ProjectLocator project)
         {
-            return this.projectModelService.RemoveProjectAsync(project);
+            await this.projectModelService
+                .RemoveProjectAsync(project)
+                .ConfigureAwait(true);
+
+            // Make sure the new project is reflected.
+            await RefreshAsync().ConfigureAwait(true);
         }
 
         public Task RefreshAsync() => RefreshAsync(this.RootNode);
