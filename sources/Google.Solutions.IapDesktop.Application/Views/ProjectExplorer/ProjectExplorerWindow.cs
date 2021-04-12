@@ -20,6 +20,7 @@
 //
 
 using Google.Apis.Compute.v1.Data;
+using Google.Solutions.Common.Diagnostics;
 using Google.Solutions.Common.Locator;
 using Google.Solutions.Common.Util;
 using Google.Solutions.IapDesktop.Application.ObjectModel;
@@ -45,14 +46,13 @@ using WeifenLuo.WinFormsUI.Docking;
 namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
 {
     [ComVisible(false)]
+    [SkipCodeCoverage("Logic is in view model")]
     public partial class ProjectExplorerWindow : ToolWindow, IProjectExplorer
     {
         private readonly IMainForm mainForm;
-        private readonly IEventService eventService;
         private readonly IJobService jobService;
         private readonly IAuthorizationAdapter authService;
         private readonly IServiceProvider serviceProvider;
-        private readonly ISessionBroker sessionBroker;
 
         private readonly ProjectExplorerViewModel viewModel;
 
@@ -80,10 +80,8 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
                 this.vs2015LightTheme);
 
             this.mainForm = serviceProvider.GetService<IMainForm>();
-            this.eventService = serviceProvider.GetService<IEventService>();
             this.jobService = serviceProvider.GetService<IJobService>();
             this.authService = serviceProvider.GetService<IAuthorizationAdapter>();
-            this.sessionBroker = serviceProvider.GetService<IGlobalSessionBroker>();
 
             this.ContextMenuCommands = new CommandContainer<IProjectExplorerNode>(
                 this,
