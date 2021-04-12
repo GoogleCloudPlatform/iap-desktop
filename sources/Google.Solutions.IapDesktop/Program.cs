@@ -28,6 +28,7 @@ using Google.Solutions.IapDesktop.Application.ObjectModel;
 using Google.Solutions.IapDesktop.Application.Services;
 using Google.Solutions.IapDesktop.Application.Services.Adapters;
 using Google.Solutions.IapDesktop.Application.Services.Integration;
+using Google.Solutions.IapDesktop.Application.Services.ProjectModel;
 using Google.Solutions.IapDesktop.Application.Services.Settings;
 using Google.Solutions.IapDesktop.Application.Util;
 using Google.Solutions.IapDesktop.Application.Views;
@@ -252,6 +253,7 @@ namespace Google.Solutions.IapDesktop
             windowAndWorkflowLayer.AddTransient<IConfirmationDialog, ConfirmationDialog>();
             windowAndWorkflowLayer.AddTransient<ITaskDialog, TaskDialog>();
             windowAndWorkflowLayer.AddTransient<IUpdateService, UpdateService>();
+            windowAndWorkflowLayer.AddSingleton<IProjectModelService, ProjectModelService>();
             windowAndWorkflowLayer.AddSingleton<IProjectExplorer, ProjectExplorerWindow>();
             windowAndWorkflowLayer.AddTransient<OptionsDialog>();
 

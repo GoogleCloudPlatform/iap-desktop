@@ -25,6 +25,7 @@ using Google.Solutions.Common.Util;
 using Google.Solutions.IapDesktop.Application.ObjectModel;
 using Google.Solutions.IapDesktop.Application.Services.Adapters;
 using Google.Solutions.IapDesktop.Application.Services.Integration;
+using Google.Solutions.IapDesktop.Application.Services.ProjectModel;
 using Google.Solutions.IapDesktop.Application.Services.Settings;
 using Google.Solutions.IapDesktop.Application.Views.Dialog;
 using Google.Solutions.IapDesktop.Application.Views.ProjectPicker;
@@ -106,7 +107,10 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
                 this.serviceProvider);
 
             this.viewModel = new ProjectExplorerViewModel(
-                serviceProvider.GetService<ApplicationSettingsRepository>());
+                this,
+                serviceProvider.GetService<ApplicationSettingsRepository>(),
+                this.jobService,
+                serviceProvider.GetService<IProjectModelService>());
             this.Disposed += (sender, args) =>
             {
                 this.viewModel.Dispose();
