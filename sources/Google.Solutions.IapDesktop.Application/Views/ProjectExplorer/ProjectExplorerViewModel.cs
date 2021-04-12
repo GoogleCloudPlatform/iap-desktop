@@ -26,6 +26,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
         private readonly IJobService jobService;
         private readonly IProjectModelService projectModelService;
 
+        private ViewModelNode selectedNode;
         private string instanceFilter;
         private OperatingSystems operatingSystemsFilter = OperatingSystems.All;
 
@@ -57,6 +58,21 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
             // TODO: Listen for IsConnected changes
         }
 
+        private async Task RefreshAsync(ViewModelNode node)
+        {
+            if (!node.CanReload)
+            {
+                // Try reloading parent instead.
+                await RefreshAsync(node.Parent)
+                    .ConfigureAwait(true);
+            }
+            else
+            {
+                // Force-reload children and discard result.
+                await node.GetFilteredNodesAsync(true)
+                    .ConfigureAwait(true);
+            }
+        }
 
         //---------------------------------------------------------------------
         // Observable properties.
@@ -64,16 +80,16 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
 
         public bool IsLinuxIncluded
         {
-            get => this.operatingSystemsFilter.HasFlag(OperatingSystems.Linux);
+            get => this.OperatingSystemsFilter.HasFlag(OperatingSystems.Linux);
             set
             {
                 if (value)
                 {
-                    this.operatingSystemsFilter |= OperatingSystems.Linux;
+                    this.OperatingSystemsFilter |= OperatingSystems.Linux;
                 }
                 else
                 {
-                    this.operatingSystemsFilter &= ~OperatingSystems.Linux;
+                    this.OperatingSystemsFilter &= ~OperatingSystems.Linux;
                 }
 
                 RaisePropertyChange();
@@ -82,16 +98,16 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
         }
         public bool IsWindowsIncluded
         {
-            get => this.operatingSystemsFilter.HasFlag(OperatingSystems.Windows);
+            get => this.OperatingSystemsFilter.HasFlag(OperatingSystems.Windows);
             set
             {
                 if (value)
                 {
-                    this.operatingSystemsFilter |= OperatingSystems.Windows;
+                    this.OperatingSystemsFilter |= OperatingSystems.Windows;
                 }
                 else
                 {
-                    this.operatingSystemsFilter &= ~OperatingSystems.Windows;
+                    this.OperatingSystemsFilter &= ~OperatingSystems.Windows;
                 }
 
                 RaisePropertyChange();
@@ -114,7 +130,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
                 RaisePropertyChange();
 
                 // Refresh to cause filter to be reapplied.
-                RefreshAsync().ContinueWith(t => { });
+                RefreshAllAsync().ContinueWith(t => { });
             }
         }
 
@@ -128,7 +144,25 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
                 RaisePropertyChange();
 
                 // Refresh to cause filter to be reapplied.
-                RefreshAsync().ContinueWith(t => { });
+                RefreshAllAsync().ContinueWith(t => { });
+            }
+        }
+
+        public ViewModelNode SelectedNode
+        {
+            get => this.selectedNode;
+            set
+            {
+                this.selectedNode = value;
+                RaisePropertyChange();
+
+                //
+                // Update active node in model.
+                //
+                //this.projectModelService.SetActiveNodeAsync(
+                //        value?.Locator,
+                //        CancellationToken.None)
+                //    .ContinueWith(_ => { });
             }
         }
 
@@ -150,7 +184,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
                 .ConfigureAwait(true);
 
             // Make sure the new project is reflected.
-            await RefreshAsync().ConfigureAwait(true);
+            await RefreshAllAsync().ConfigureAwait(true);
         }
 
         public async Task RemoveProjectAsync(ProjectLocator project)
@@ -160,45 +194,15 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
                 .ConfigureAwait(true);
 
             // Make sure the new project is reflected.
-            await RefreshAsync().ConfigureAwait(true);
+            await RefreshAllAsync().ConfigureAwait(true);
         }
 
-        public Task RefreshAsync() => RefreshAsync(this.RootNode);
+        public Task RefreshAllAsync() => RefreshAsync(this.RootNode);
 
-        public async Task RefreshAsync(ViewModelNode node)
+        public async Task RefreshSelectedNodeAsync(CancellationToken token)
         {
-            if (!node.CanReload)
-            {
-                // Try reloading parent instead.
-                await RefreshAsync(node.Parent)
-                    .ConfigureAwait(true);
-            }
-            else
-            {
-                // Clear selection.
-                await ClearActiveNodeAsync(CancellationToken.None)
-                    .ConfigureAwait(false);
-
-                // Force-reload children and discard result.
-                await node.GetFilteredNodesAsync(true)
-                    .ConfigureAwait(true);
-            }
-        }
-
-        public Task ClearActiveNodeAsync(CancellationToken token)
-        {
-            return this.projectModelService.SetActiveNodeAsync(
-                (ResourceLocator)null,
-                token);
-        }
-
-        public Task SelectNodeAsync(
-            ViewModelNode node,
-            CancellationToken token)
-        {
-            return this.projectModelService.SetActiveNodeAsync(
-                node.Locator,
-                token);
+            await RefreshAsync(this.SelectedNode ?? this.RootNode)
+                .ConfigureAwait(true);
         }
 
         public void SaveSettings()
@@ -276,12 +280,13 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
                     // operating on the UI thread.
                     //
 
+                    var loadedNodes = await LoadNodesAsync(forceReload)
+                        .ConfigureAwait(true);
+
                     this.nodes = new RangeObservableCollection<ViewModelNode>();
                     this.filteredNodes = new RangeObservableCollection<ViewModelNode>();
 
-                    this.nodes.AddRange(
-                        await LoadNodesAsync(forceReload)
-                            .ConfigureAwait(true));
+                    this.nodes.AddRange(loadedNodes);
                     this.filteredNodes.AddRange(ApplyFilter(this.nodes));
                 }
                 else if (forceReload)
@@ -407,7 +412,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
                       viewModel,
                       parent,
                       modelNode.Project,
-                      modelNode.DisplayName,
+                      $"{modelNode.DisplayName} ({modelNode.Project.Name})",
                       false,
                       0,
                       0)

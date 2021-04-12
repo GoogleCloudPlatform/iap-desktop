@@ -28,8 +28,6 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
     public interface IProjectExplorer
     {
         void ShowWindow();
-        Task RefreshProject(string projectId);
-        Task RefreshAllProjects();
         Task ShowAddProjectDialogAsync();
 
         IProjectExplorerInstanceNode TryFindNode(InstanceLocator reference);
