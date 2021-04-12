@@ -32,8 +32,8 @@ using Microsoft.Win32;
 using Moq;
 using NUnit.Framework;
 using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Collections.Specialized;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -349,25 +349,173 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views.ProjectExplorer
         //---------------------------------------------------------------------
 
         [Test]
-        public void WhenRefreshingRoot_ThenProjectsAreReloaded()
+        public async Task WhenReloadProjectsIsTrue_ThenRefreshReloadsProjects()
         {
-            Assert.Fail();
+            var viewModel = CreateViewModel();
+            await viewModel.AddProjectAsync(new ProjectLocator("project-1"));
+
+            int nofifications = 0;
+            var projects = await viewModel.RootNode.GetFilteredNodesAsync(false);
+            projects.CollectionChanged += (sender, args) =>
+            {
+                Assert.AreEqual(NotifyCollectionChangedAction.Reset, args.Action);
+                nofifications++;
+            };
+
+            await viewModel.RefreshAsync(true);
+
+            Assert.AreEqual(2, nofifications, "expecting 2 resets (Clear, AddRange)");
+            Assert.AreEqual(1, (await viewModel.RootNode.GetFilteredNodesAsync(false)).Count);
         }
 
         [Test]
-        public void WhenRefreshingProject_ThenProjectIsReloaded()
+        public async Task WhenReloadProjectsIsFalse_ThenRefreshReloadsZones()
         {
-            Assert.Fail();
+            var viewModel = CreateViewModel();
+            await viewModel.AddProjectAsync(new ProjectLocator("project-1"));
+
+            int nofifications = 0;
+            var projects = await viewModel.RootNode.GetFilteredNodesAsync(false);
+            var zones = await projects[0].GetFilteredNodesAsync(false);
+            projects.CollectionChanged += (sender, args) =>
+            {
+                Assert.Fail("Projects should not be reloaded");
+            };
+            zones.CollectionChanged += (sender, args) =>
+            {
+                Assert.AreEqual(NotifyCollectionChangedAction.Reset, args.Action);
+                nofifications++;
+            };
+
+            await viewModel.RefreshAsync(false);
+
+            Assert.AreEqual(2, nofifications, "expecting 2 resets (Clear, AddRange)");
+            Assert.AreEqual(1, (await viewModel.RootNode.GetFilteredNodesAsync(false)).Count);
+            Assert.AreEqual(1, (await projects[0].GetFilteredNodesAsync(false)).Count);
         }
+
         [Test]
-        public void WhenRefreshingZone_ThenProjectIsReloaded()
+        public async Task WhenSelectedNodeIsNull_ThenRefreshSelectedNodeAsyncReloadsProjects()
         {
-            Assert.Fail();
+            var viewModel = CreateViewModel();
+            await viewModel.AddProjectAsync(new ProjectLocator("project-1"));
+
+            int nofifications = 0;
+            var projects = await viewModel.RootNode.GetFilteredNodesAsync(false);
+            projects.CollectionChanged += (sender, args) =>
+            {
+                Assert.AreEqual(NotifyCollectionChangedAction.Reset, args.Action);
+                nofifications++;
+            };
+
+            viewModel.SelectedNode = null;
+            await viewModel.RefreshSelectedNodeAsync();
+
+            Assert.AreEqual(2, nofifications, "expecting 2 resets (Clear, AddRange)");
+            Assert.AreEqual(1, (await viewModel.RootNode.GetFilteredNodesAsync(false)).Count);
         }
+
         [Test]
-        public void WhenRefreshingInstance_ThenProjectIsReloaded()
+        public async Task WhenSelectedNodeIsRoot_ThenRefreshSelectedNodeAsyncReloadsProjects()
         {
-            Assert.Fail();
+            var viewModel = CreateViewModel();
+            await viewModel.AddProjectAsync(new ProjectLocator("project-1"));
+
+            int nofifications = 0;
+            var projects = await viewModel.RootNode.GetFilteredNodesAsync(false);
+            projects.CollectionChanged += (sender, args) =>
+            {
+                Assert.AreEqual(NotifyCollectionChangedAction.Reset, args.Action);
+                nofifications++;
+            };
+
+            viewModel.SelectedNode = viewModel.RootNode;
+            await viewModel.RefreshSelectedNodeAsync();
+
+            Assert.AreEqual(2, nofifications, "expecting 2 resets (Clear, AddRange)");
+            Assert.AreEqual(1, (await viewModel.RootNode.GetFilteredNodesAsync(false)).Count);
+        }
+
+        [Test]
+        public async Task WhenSelectedNodeIsProject_ThenRefreshSelectedNodeAsyncReloadsZones()
+        {
+            var viewModel = CreateViewModel();
+            await viewModel.AddProjectAsync(new ProjectLocator("project-1"));
+
+            int nofifications = 0;
+            var projects = await viewModel.RootNode.GetFilteredNodesAsync(false);
+            var zones = await projects[0].GetFilteredNodesAsync(false);
+            projects.CollectionChanged += (sender, args) =>
+            {
+                Assert.Fail("Projects should not be reloaded");
+            };
+            zones.CollectionChanged += (sender, args) =>
+            {
+                Assert.AreEqual(NotifyCollectionChangedAction.Reset, args.Action);
+                nofifications++;
+            };
+
+            viewModel.SelectedNode = projects[0];
+            await viewModel.RefreshSelectedNodeAsync();
+
+            Assert.AreEqual(2, nofifications, "expecting 2 resets (Clear, AddRange)");
+            Assert.AreEqual(1, (await viewModel.RootNode.GetFilteredNodesAsync(false)).Count);
+            Assert.AreEqual(1, (await projects[0].GetFilteredNodesAsync(false)).Count);
+        }
+
+        [Test]
+        public async Task WhenSelectedNodeIsZone_ThenRefreshSelectedNodeAsyncReloadsZones()
+        {
+            var viewModel = CreateViewModel();
+            await viewModel.AddProjectAsync(new ProjectLocator("project-1"));
+
+            int nofifications = 0;
+            var projects = await viewModel.RootNode.GetFilteredNodesAsync(false);
+            var zones = await projects[0].GetFilteredNodesAsync(false);
+            projects.CollectionChanged += (sender, args) =>
+            {
+                Assert.Fail("Projects should not be reloaded");
+            };
+            zones.CollectionChanged += (sender, args) =>
+            {
+                Assert.AreEqual(NotifyCollectionChangedAction.Reset, args.Action);
+                nofifications++;
+            };
+
+            viewModel.SelectedNode = zones[0];
+            await viewModel.RefreshSelectedNodeAsync();
+
+            Assert.AreEqual(2, nofifications, "expecting 2 resets (Clear, AddRange)");
+            Assert.AreEqual(1, (await viewModel.RootNode.GetFilteredNodesAsync(false)).Count);
+            Assert.AreEqual(1, (await projects[0].GetFilteredNodesAsync(false)).Count);
+        }
+
+        [Test]
+        public async Task WhenSelectedNodeIsInstance_ThenRefreshSelectedNodeAsyncReloadsZones()
+        {
+            var viewModel = CreateViewModel();
+            await viewModel.AddProjectAsync(new ProjectLocator("project-1"));
+
+            int nofifications = 0;
+            var projects = await viewModel.RootNode.GetFilteredNodesAsync(false);
+            var zones = await projects[0].GetFilteredNodesAsync(false);
+            var instances = await zones[0].GetFilteredNodesAsync(false);
+            projects.CollectionChanged += (sender, args) =>
+            {
+                Assert.Fail("Projects should not be reloaded");
+            };
+            zones.CollectionChanged += (sender, args) =>
+            {
+                Assert.AreEqual(NotifyCollectionChangedAction.Reset, args.Action);
+                nofifications++;
+            };
+
+            viewModel.SelectedNode = instances[0];
+            await viewModel.RefreshSelectedNodeAsync();
+
+            Assert.AreEqual(2, nofifications, "expecting 2 resets (Clear, AddRange)");
+            Assert.AreEqual(1, (await viewModel.RootNode.GetFilteredNodesAsync(false)).Count);
+            Assert.AreEqual(1, (await projects[0].GetFilteredNodesAsync(false)).Count);
         }
     }
 }

@@ -59,22 +59,6 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
             // TODO: Listen for IsConnected changes
         }
 
-        private async Task<IReadOnlyCollection<ViewModelNode>> ListAllNodesAsync()
-        {
-            async Task VisitNodeAsync(
-                ViewModelNode node,
-                List<ViewModelNode> accumulator)
-            {
-                accumulator.AddRange(
-                    await node.GetFilteredNodesAsync(false)
-                        .ConfigureAwait(true));
-            }
-
-            var list = new List<ViewModelNode>();
-            await VisitNodeAsync(this.RootNode, list).ConfigureAwait(true);
-            return list;
-        }
-
         private async Task RefreshAsync(ViewModelNode node)
         {
             if (!node.CanReload)
@@ -267,7 +251,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
             }
         }
 
-        public async Task RefreshSelectedNodeAsync(CancellationToken token)
+        public async Task RefreshSelectedNodeAsync()
         {
             await RefreshAsync(this.SelectedNode ?? this.RootNode)
                 .ConfigureAwait(true);

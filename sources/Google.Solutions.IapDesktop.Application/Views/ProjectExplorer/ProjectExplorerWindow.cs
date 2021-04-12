@@ -195,7 +195,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
         {
             try
             {
-                await this.viewModel.RefreshSelectedNodeAsync(CancellationToken.None)
+                await this.viewModel.RefreshSelectedNodeAsync()
                     .ConfigureAwait(true);
             }
             catch (Exception e) when (e.IsCancellation())
