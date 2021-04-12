@@ -3,6 +3,7 @@ using Google.Solutions.IapDesktop.Application.ObjectModel;
 using Google.Solutions.IapDesktop.Application.Services.Adapters;
 using Google.Solutions.IapDesktop.Application.Services.Integration;
 using Google.Solutions.IapDesktop.Application.Services.ProjectModel;
+using Google.Solutions.IapDesktop.Application.Services.Settings;
 using Google.Solutions.IapDesktop.Application.Util;
 using Google.Solutions.IapDesktop.Application.Views.ProjectExplorer;
 using System;
@@ -22,6 +23,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.NewProjectExplorer
     // TODO: Add tests for NewProjectExplorerViewModel 
     internal class NewProjectExplorerViewModel : ViewModelBase, IDisposable
     {
+        private readonly ApplicationSettingsRepository settingsRepository;
         private readonly IJobService jobService;
         private readonly IProjectModelService projectModelService;
 
@@ -30,22 +32,73 @@ namespace Google.Solutions.IapDesktop.Application.Views.NewProjectExplorer
 
         public NewProjectExplorerViewModel(
             IWin32Window view,
+            ApplicationSettingsRepository settingsRepository,
             IJobService jobService,
             IProjectModelService projectModelService)
         {
             this.View = view;
+            this.settingsRepository = settingsRepository;
             this.jobService = jobService;
             this.projectModelService = projectModelService;
             this.RootNode = new CloudViewModelNode(
                 this, 
                 projectModelService);
 
+            //
+            // Read current settings.
+            //
+            // NB. Do not hold on to the settings object because it might change.
+            //
+
+            this.operatingSystemsFilter = settingsRepository
+                .GetSettings()
+                .IncludeOperatingSystems
+                .EnumValue;
+
             // TODO: Listen for IsConnected changes
         }
+
 
         //---------------------------------------------------------------------
         // Observable properties.
         //---------------------------------------------------------------------
+
+        public bool IsLinuxIncluded
+        {
+            get => this.operatingSystemsFilter.HasFlag(OperatingSystems.Linux);
+            set
+            {
+                if (value)
+                {
+                    this.operatingSystemsFilter |= OperatingSystems.Linux;
+                }
+                else
+                {
+                    this.operatingSystemsFilter &= ~OperatingSystems.Linux;
+                }
+
+                RaisePropertyChange();
+                SaveSettings();
+            }
+        }
+        public bool IsWindowsIncluded
+        {
+            get => this.operatingSystemsFilter.HasFlag(OperatingSystems.Windows);
+            set
+            {
+                if (value)
+                {
+                    this.operatingSystemsFilter |= OperatingSystems.Windows;
+                }
+                else
+                {
+                    this.operatingSystemsFilter &= ~OperatingSystems.Windows;
+                }
+
+                RaisePropertyChange();
+                SaveSettings();
+            }
+        }
 
         public CloudViewModelNode RootNode { get; }
 
@@ -122,16 +175,24 @@ namespace Google.Solutions.IapDesktop.Application.Views.NewProjectExplorer
                 token);
         }
 
+        public void SaveSettings()
+        {
+            var settings = this.settingsRepository.GetSettings();
+            settings.IncludeOperatingSystems.EnumValue = this.operatingSystemsFilter;
+            this.settingsRepository.SetSettings(settings);
+        }
+
         //---------------------------------------------------------------------
         // IDisposable.
         //---------------------------------------------------------------------
 
         public void Dispose()
         {
+            this.settingsRepository.Dispose();
         }
 
         //---------------------------------------------------------------------
-        // IDisposable.
+        // Nodes.
         //---------------------------------------------------------------------
 
         internal abstract class ViewModelNodeBase : ViewModelBase
@@ -412,6 +473,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.NewProjectExplorer
                     .Cast<InstanceViewModelNode>()
                     .Where(i => this.viewModel.InstanceFilter == null ||
                                 i.ModelNode.DisplayName.Contains(this.viewModel.instanceFilter))
+                    // TODO: Remove cast
                     .Where(i => (((InstanceNode)i.ModelNode).OperatingSystem &
                                 this.viewModel.OperatingSystemsFilter) != 0);
             }
