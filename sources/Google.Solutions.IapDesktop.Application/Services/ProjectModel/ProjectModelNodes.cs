@@ -69,9 +69,6 @@ namespace Google.Solutions.IapDesktop.Application.Services.ProjectModel
 
         public string DisplayName { get; }
 
-        // TOOD: Remove
-        public IEnumerable<IProjectExplorerZoneNode> Zones => throw new NotImplementedException();
-
         //---------------------------------------------------------------------
         // Ctor.
         //---------------------------------------------------------------------
@@ -122,10 +119,8 @@ namespace Google.Solutions.IapDesktop.Application.Services.ProjectModel
         public InstanceLocator Instance { get; }
 
         public OperatingSystems OperatingSystem { get; }
-        public bool IsRunning { get; }
 
-        public bool IsWindowsInstance
-            => this.OperatingSystem.HasFlag(OperatingSystems.Windows);
+        public bool IsRunning { get; }
 
         public string DisplayName
             => this.Instance.Name;
@@ -136,12 +131,6 @@ namespace Google.Solutions.IapDesktop.Application.Services.ProjectModel
         //---------------------------------------------------------------------
         // Ctor.
         //---------------------------------------------------------------------
-
-        public void Select()
-        {
-            // TODO: Remove this call
-            throw new NotImplementedException();
-        }
 
         public InstanceNode(
             ulong instanceId,

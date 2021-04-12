@@ -211,6 +211,57 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views.ProjectExplorer
                     It.IsAny<CancellationToken>()), Times.Once);
         }
 
+        [Test]
+        public void WhenIsWindowsIncludedChanged_ThenEventIsFired()
+        {
+            var initialViewModel = CreateViewModel();
+            var eventCount = 0;
+            initialViewModel.OnPropertyChange(
+                m => m.IsWindowsIncluded,
+                v =>
+                {
+                    Assert.IsTrue(v);
+                    eventCount++;
+                });
+
+            initialViewModel.IsWindowsIncluded = true;
+            Assert.AreEqual(1, eventCount);
+        }
+
+        [Test]
+        public void WhenIsLinuxIncludedChanged_ThenEventIsFired()
+        {
+            var initialViewModel = CreateViewModel();
+            var eventCount = 0;
+            initialViewModel.OnPropertyChange(
+                m => m.IsLinuxIncluded,
+                v =>
+                {
+                    Assert.IsTrue(v);
+                    eventCount++;
+                });
+
+            initialViewModel.IsLinuxIncluded = true;
+            Assert.AreEqual(1, eventCount);
+        }
+
+        [Test]
+        public void WhenOperatingSystemFilterChanged_ThenEventIsFired()
+        {
+            var initialViewModel = CreateViewModel();
+            var eventCount = 0;
+            initialViewModel.OnPropertyChange(
+                m => m.OperatingSystemsFilter,
+                v =>
+                {
+                    Assert.AreEqual(OperatingSystems.Linux, v);
+                    eventCount++;
+                });
+
+            initialViewModel.OperatingSystemsFilter = OperatingSystems.Linux;
+            Assert.AreEqual(1, eventCount);
+        }
+
         //---------------------------------------------------------------------
         // Instance filter.
         //---------------------------------------------------------------------
@@ -237,6 +288,23 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views.ProjectExplorer
                 a => a.ListInstancesAsync(
                     It.IsAny<string>(),
                     It.IsAny<CancellationToken>()), Times.Once);
+        }
+
+        [Test]
+        public void WhenInstanceFilterChanged_ThenEventIsFired()
+        {
+            var initialViewModel = CreateViewModel();
+            var eventCount = 0;
+            initialViewModel.OnPropertyChange(
+                m => m.InstanceFilter,
+                v =>
+                {
+                    Assert.AreEqual("test", v);
+                    eventCount++;
+                });
+
+            initialViewModel.InstanceFilter = "test";
+            Assert.AreEqual(1, eventCount);
         }
 
         //---------------------------------------------------------------------

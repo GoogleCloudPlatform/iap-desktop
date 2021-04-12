@@ -20,6 +20,7 @@
 //
 
 using Google.Solutions.Common.Locator;
+using Google.Solutions.IapDesktop.Application.Services.Adapters;
 using System.Collections.Generic;
 
 namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
@@ -40,9 +41,6 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
     public interface IProjectExplorerProjectNode : IProjectExplorerNode
     {
         ProjectLocator Project { get; }
-
-        // TODO: Remove
-        IEnumerable<IProjectExplorerZoneNode> Zones { get; }
     }
 
     public interface IProjectExplorerZoneNode : IProjectExplorerNode
@@ -61,11 +59,6 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
         bool IsRunning { get; }
         bool IsConnected { get; }
 
-        // TODO: Replace by OperatingSystems
-        bool IsWindowsInstance { get; }
-
-
-        // TODO: Move to IProjectExplorer
-        void Select();
+        OperatingSystems OperatingSystem { get; }
     }
 }
