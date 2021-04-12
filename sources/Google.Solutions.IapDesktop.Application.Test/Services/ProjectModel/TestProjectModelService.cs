@@ -37,7 +37,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Google.Solutions.IapDesktop.Application.Test.Services.ProjectProjects
+namespace Google.Solutions.IapDesktop.Application.Test.Services.ProjectModel
 {
     [TestFixture]
     public class TestProjectModelService : ApplicationFixtureBase
@@ -162,19 +162,27 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.ProjectProjects
         // GetRootNodeAsync.
         //---------------------------------------------------------------------
 
+        private static Mock<IResourceManagerAdapter> CreateResourceManagerAdapterMock(
+            string projectId,
+            params Instance[] instances)
+        {
+            var resourceManagerAdapter = new Mock<IResourceManagerAdapter>();
+            resourceManagerAdapter.Setup(a => a.GetProjectAsync(
+                    It.Is<string>(id => id == projectId),
+                    It.IsAny<CancellationToken>()))
+                .ReturnsAsync(new Apis.CloudResourceManager.v1.Data.Project()
+                {
+                    ProjectId = projectId,
+                    Name = $"[{projectId}]"
+                });
+            return resourceManagerAdapter;
+        }
+
         private static Mock<IComputeEngineAdapter> CreateComputeEngineAdapterMock(
             string projectId,
             params Instance[] instances)
         {
             var computeAdapter = new Mock<IComputeEngineAdapter>();
-            computeAdapter.Setup(a => a.GetProjectAsync(
-                    It.Is<string>(id => id == projectId),
-                    It.IsAny<CancellationToken>()))
-                .ReturnsAsync(new Apis.Compute.v1.Data.Project()
-                {
-                    Name = projectId,
-                    Description = $"[{projectId}]"
-                });
             computeAdapter.Setup(a => a.ListInstancesAsync(
                     It.Is<string>(id => id == projectId),
                     It.IsAny<CancellationToken>()))
@@ -199,9 +207,10 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.ProjectProjects
             var serviceRegistry = new ServiceRegistry();
             var eventService = serviceRegistry.AddMock<IEventService>();
             serviceRegistry.AddSingleton(CreateProjectRepositoryMock("project-1").Object);
-
-            var computeAdapter = CreateComputeEngineAdapterMock("project-1");
-            serviceRegistry.AddSingleton(computeAdapter.Object);
+            serviceRegistry.AddSingleton(CreateComputeEngineAdapterMock("project-1").Object);
+            
+            var resourceManagerAdapter = CreateResourceManagerAdapterMock("project-1");
+            serviceRegistry.AddSingleton(resourceManagerAdapter.Object);
 
             var modelService = new ProjectModelService(serviceRegistry);
             var model = await modelService.GetRootNodeAsync(false, CancellationToken.None);
@@ -211,7 +220,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.ProjectProjects
             Assert.AreEqual("project-1", model.Projects.First().Project.Name);
             Assert.AreEqual("[project-1]", model.Projects.First().DisplayName);
 
-            computeAdapter.Verify(a => a.GetProjectAsync(
+            resourceManagerAdapter.Verify(a => a.GetProjectAsync(
                     It.Is<string>(id => id == "project-1"),
                     It.IsAny<CancellationToken>()), 
                 Times.Once);
@@ -223,9 +232,10 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.ProjectProjects
             var serviceRegistry = new ServiceRegistry();
             var eventService = serviceRegistry.AddMock<IEventService>();
             serviceRegistry.AddSingleton(CreateProjectRepositoryMock("project-1").Object);
+            serviceRegistry.AddSingleton(CreateComputeEngineAdapterMock("project-1").Object);
 
-            var computeAdapter = CreateComputeEngineAdapterMock("project-1");
-            serviceRegistry.AddSingleton(computeAdapter.Object);
+            var resourceManagerAdapter = CreateResourceManagerAdapterMock("project-1");
+            serviceRegistry.AddSingleton(resourceManagerAdapter.Object);
 
             var modelService = new ProjectModelService(serviceRegistry);
             var model = await modelService.GetRootNodeAsync(false, CancellationToken.None);
@@ -233,7 +243,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.ProjectProjects
 
             Assert.AreSame(model, modelSecondLoad);
 
-            computeAdapter.Verify(a => a.GetProjectAsync(
+            resourceManagerAdapter.Verify(a => a.GetProjectAsync(
                     It.Is<string>(id => id == "project-1"),
                     It.IsAny<CancellationToken>()),
                 Times.Once);
@@ -245,9 +255,10 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.ProjectProjects
             var serviceRegistry = new ServiceRegistry();
             var eventService = serviceRegistry.AddMock<IEventService>();
             serviceRegistry.AddSingleton(CreateProjectRepositoryMock("project-1").Object);
+            serviceRegistry.AddSingleton(CreateComputeEngineAdapterMock("project-1").Object);
 
-            var computeAdapter = CreateComputeEngineAdapterMock("project-1");
-            serviceRegistry.AddSingleton(computeAdapter.Object);
+            var resourceManagerAdapter = CreateResourceManagerAdapterMock("project-1");
+            serviceRegistry.AddSingleton(resourceManagerAdapter.Object);
 
             var modelService = new ProjectModelService(serviceRegistry);
             var model = await modelService.GetRootNodeAsync(false, CancellationToken.None);
@@ -255,7 +266,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.ProjectProjects
 
             Assert.AreNotSame(model, modelSecondLoad);
 
-            computeAdapter.Verify(a => a.GetProjectAsync(
+            resourceManagerAdapter.Verify(a => a.GetProjectAsync(
                     It.Is<string>(id => id == "project-1"),
                     It.IsAny<CancellationToken>()),
                 Times.Exactly(2));
@@ -270,6 +281,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.ProjectProjects
                 "project-1", 
                 "nonexisting-1").Object);
             serviceRegistry.AddSingleton(CreateComputeEngineAdapterMock("project-1").Object);
+            serviceRegistry.AddSingleton(CreateResourceManagerAdapterMock("project-1").Object);
 
             var modelService = new ProjectModelService(serviceRegistry);
             var model = await modelService.GetRootNodeAsync(false, CancellationToken.None);
@@ -288,8 +300,9 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.ProjectProjects
             var eventService = serviceRegistry.AddMock<IEventService>();
             serviceRegistry.AddSingleton(CreateProjectRepositoryMock("project-1").Object);
 
-            var computeAdapter = serviceRegistry.AddMock<IComputeEngineAdapter>();
-            computeAdapter.Setup(a => a.GetProjectAsync(
+            serviceRegistry.AddSingleton(CreateComputeEngineAdapterMock("project-1").Object);
+            var resourceManagerAdapter = serviceRegistry.AddMock<IResourceManagerAdapter>();
+            resourceManagerAdapter.Setup(a => a.GetProjectAsync(
                     It.IsAny<string>(),
                     It.IsAny<CancellationToken>()))
                 .ThrowsAsync(new TokenResponseException(new TokenErrorResponse()
@@ -297,7 +310,8 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.ProjectProjects
                     Error = "invalid_grant"
                 }));
 
-            serviceRegistry.AddSingleton(computeAdapter.Object);
+            serviceRegistry.AddSingleton(resourceManagerAdapter.Object);
+            
 
             var modelService = new ProjectModelService(serviceRegistry);
 
@@ -321,6 +335,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.ProjectProjects
                 SampleLinuxInstanceInZone1,
                 SampleLinuxInstanceInZone2);
             serviceRegistry.AddSingleton(computeAdapter.Object);
+            serviceRegistry.AddSingleton(CreateResourceManagerAdapterMock("project-1").Object);
 
             var modelService = new ProjectModelService(serviceRegistry);
             var zones = await modelService.GetZoneNodesAsync(
@@ -355,6 +370,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.ProjectProjects
                 SampleLinuxInstanceInZone1,
                 SampleLinuxInstanceInZone2);
             serviceRegistry.AddSingleton(computeAdapter.Object);
+            serviceRegistry.AddSingleton(CreateResourceManagerAdapterMock("project-1").Object);
 
             var modelService = new ProjectModelService(serviceRegistry);
             var zones = await modelService.GetZoneNodesAsync(
@@ -386,6 +402,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.ProjectProjects
                 SampleLinuxInstanceInZone1,
                 SampleLinuxInstanceInZone2);
             serviceRegistry.AddSingleton(computeAdapter.Object);
+            serviceRegistry.AddSingleton(CreateResourceManagerAdapterMock("project-1").Object);
 
             var modelService = new ProjectModelService(serviceRegistry);
             var zones = await modelService.GetZoneNodesAsync(
@@ -417,6 +434,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.ProjectProjects
                 SampleLinuxInstanceInZone1, 
                 SampleLinuxInstanceWithoutDiskInZone1);
             serviceRegistry.AddSingleton(computeAdapter.Object);
+            serviceRegistry.AddSingleton(CreateResourceManagerAdapterMock("project-1").Object);
 
             var modelService = new ProjectModelService(serviceRegistry);
             var zones = await modelService.GetZoneNodesAsync(
@@ -445,6 +463,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.ProjectProjects
                 SampleTerminatedLinuxInstanceInZone1,
                 SampleLinuxInstanceInZone1);
             serviceRegistry.AddSingleton(computeAdapter.Object);
+            serviceRegistry.AddSingleton(CreateResourceManagerAdapterMock("project-1").Object);
 
             var modelService = new ProjectModelService(serviceRegistry);
             var zones = await modelService.GetZoneNodesAsync(
@@ -478,6 +497,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.ProjectProjects
             serviceRegistry.AddMock<IEventService>();
             serviceRegistry.AddSingleton(CreateProjectRepositoryMock("project-1").Object);
             serviceRegistry.AddSingleton(CreateComputeEngineAdapterMock("project-1").Object);
+            serviceRegistry.AddSingleton(CreateResourceManagerAdapterMock("project-1").Object);
 
             var modelService = new ProjectModelService(serviceRegistry);
             await modelService.GetRootNodeAsync(false, CancellationToken.None);
@@ -494,6 +514,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.ProjectProjects
             serviceRegistry.AddMock<IEventService>();
             serviceRegistry.AddSingleton(CreateProjectRepositoryMock("project-1").Object);
             serviceRegistry.AddSingleton(CreateComputeEngineAdapterMock("project-1").Object);
+            serviceRegistry.AddSingleton(CreateResourceManagerAdapterMock("project-1").Object);
 
             var modelService = new ProjectModelService(serviceRegistry);
             await modelService.GetRootNodeAsync(false, CancellationToken.None);
@@ -518,6 +539,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.ProjectProjects
             serviceRegistry.AddSingleton(CreateComputeEngineAdapterMock(
                 "project-1",
                 SampleWindowsInstanceInZone1).Object);
+            serviceRegistry.AddSingleton(CreateResourceManagerAdapterMock("project-1").Object);
 
             var modelService = new ProjectModelService(serviceRegistry);
 
@@ -541,6 +563,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.ProjectProjects
             serviceRegistry.AddSingleton(CreateComputeEngineAdapterMock(
                 "project-1",
                 SampleWindowsInstanceInZone1).Object);
+            serviceRegistry.AddSingleton(CreateResourceManagerAdapterMock("project-1").Object);
 
             var modelService = new ProjectModelService(serviceRegistry);
 
@@ -566,6 +589,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.ProjectProjects
             serviceRegistry.AddMock<IEventService>();
             serviceRegistry.AddSingleton(CreateProjectRepositoryMock("project-1").Object);
             serviceRegistry.AddSingleton(CreateComputeEngineAdapterMock("project-1").Object);
+            serviceRegistry.AddSingleton(CreateResourceManagerAdapterMock("project-1").Object);
 
             var modelService = new ProjectModelService(serviceRegistry);
             var activeNode = await modelService.GetActiveNodeAsync(CancellationToken.None);
@@ -584,6 +608,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.ProjectProjects
             serviceRegistry.AddSingleton(CreateComputeEngineAdapterMock(
                 "project-1",
                 SampleWindowsInstanceInZone1).Object);
+            serviceRegistry.AddSingleton(CreateResourceManagerAdapterMock("project-1").Object);
 
             var modelService = new ProjectModelService(serviceRegistry);
 
@@ -607,6 +632,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.ProjectProjects
             var eventService = serviceRegistry.AddMock<IEventService>();
             serviceRegistry.AddSingleton(CreateProjectRepositoryMock("project-1").Object);
             serviceRegistry.AddSingleton(CreateComputeEngineAdapterMock("project-1").Object);
+            serviceRegistry.AddSingleton(CreateResourceManagerAdapterMock("project-1").Object);
 
             var modelService = new ProjectModelService(serviceRegistry);
             var model = await modelService.GetRootNodeAsync(false, CancellationToken.None);
@@ -631,6 +657,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.ProjectProjects
             var eventService = serviceRegistry.AddMock<IEventService>();
             serviceRegistry.AddSingleton(CreateProjectRepositoryMock("project-1").Object);
             serviceRegistry.AddSingleton(CreateComputeEngineAdapterMock("project-1").Object);
+            serviceRegistry.AddSingleton(CreateResourceManagerAdapterMock("project-1").Object);
 
             var modelService = new ProjectModelService(serviceRegistry);
             var model = await modelService.GetRootNodeAsync(false, CancellationToken.None);
@@ -654,6 +681,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.ProjectProjects
             var eventService = serviceRegistry.AddMock<IEventService>();
             serviceRegistry.AddSingleton(CreateProjectRepositoryMock("project-1").Object);
             serviceRegistry.AddSingleton(CreateComputeEngineAdapterMock("project-1").Object);
+            serviceRegistry.AddSingleton(CreateResourceManagerAdapterMock("project-1").Object);
 
             var modelService = new ProjectModelService(serviceRegistry);
             var model = await modelService.GetRootNodeAsync(false, CancellationToken.None);
@@ -679,6 +707,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.ProjectProjects
             var eventService = serviceRegistry.AddMock<IEventService>();
             serviceRegistry.AddSingleton(CreateProjectRepositoryMock("project-1").Object);
             serviceRegistry.AddSingleton(CreateComputeEngineAdapterMock("project-1").Object);
+            serviceRegistry.AddSingleton(CreateResourceManagerAdapterMock("project-1").Object);
 
             var modelService = new ProjectModelService(serviceRegistry);
 
@@ -696,6 +725,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.ProjectProjects
             var eventService = serviceRegistry.AddMock<IEventService>();
             serviceRegistry.AddSingleton(CreateProjectRepositoryMock("project-1").Object);
             serviceRegistry.AddSingleton(CreateComputeEngineAdapterMock("project-1").Object);
+            serviceRegistry.AddSingleton(CreateResourceManagerAdapterMock("project-1").Object);
 
             var modelService = new ProjectModelService(serviceRegistry);
 

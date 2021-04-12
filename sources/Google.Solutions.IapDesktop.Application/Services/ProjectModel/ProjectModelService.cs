@@ -123,6 +123,8 @@ namespace Google.Solutions.IapDesktop.Application.Services.ProjectModel
             using (ApplicationTraceSources.Default.TraceMethod().WithoutParameters())
             using (var computeEngineAdapter = this.serviceProvider
                 .GetService<IComputeEngineAdapter>())
+            using (var resourceManagerAdapter = this.serviceProvider
+                .GetService<IResourceManagerAdapter>())
             {
                 var accessibleProjects = new List<ProjectNode>();
                 var inaccessibleProjects = new List<ProjectLocator>();
@@ -130,7 +132,10 @@ namespace Google.Solutions.IapDesktop.Application.Services.ProjectModel
                 //
                 // Load projects in parallel.
                 //
-                var tasks = new Dictionary<ProjectLocator, Task<Google.Apis.Compute.v1.Data.Project>>();
+                // NB. The Compute Engine project.get resource does not include the
+                // project name, so we have to use the Resource Manager API instead.
+                //
+                var tasks = new Dictionary<ProjectLocator, Task<Google.Apis.CloudResourceManager.v1.Data.Project>>();
                 foreach (var project in await this.serviceProvider
                     .GetService<IProjectRepository>()
                     .ListProjectsAsync()
@@ -138,13 +143,10 @@ namespace Google.Solutions.IapDesktop.Application.Services.ProjectModel
                 {
                     tasks.Add(
                         new ProjectLocator(project.ProjectId),
-                        computeEngineAdapter.GetProjectAsync(
+                        resourceManagerAdapter.GetProjectAsync(
                             project.ProjectId,
                             token));
                 }
-
-                // NB. The Compute Engine project.get resource does not include the
-                // project name, so we have to use the Resource Manager API instead.
 
                 foreach (var task in tasks)
                 {
@@ -158,7 +160,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.ProjectModel
                         var project = task.Value.Result;
                         accessibleProjects.Add(new ProjectNode(
                             task.Key,
-                            project.Description));
+                            project.Name));
 
                         ApplicationTraceSources.Default.TraceVerbose(
                             "Successfully loaded project {0}", task.Key);

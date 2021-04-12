@@ -511,7 +511,9 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
                       viewModel,
                       parent,
                       modelNode.Project,
-                      $"{modelNode.DisplayName} ({modelNode.Project.Name})",
+                      modelNode.Project.Name == modelNode.DisplayName
+                        ? modelNode.Project.Name
+                        : $"{modelNode.DisplayName} ({modelNode.Project.Name})",
                       false,
                       0,
                       0)

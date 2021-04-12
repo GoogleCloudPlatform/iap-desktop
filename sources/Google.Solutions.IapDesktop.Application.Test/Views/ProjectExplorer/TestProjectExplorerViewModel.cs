@@ -86,6 +86,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views.ProjectExplorer
         private ProjectRepository projectRepository;
 
         private Mock<IComputeEngineAdapter> computeEngineAdapterMock;
+        private Mock<IResourceManagerAdapter> resourceManagerAdapterMock;
 
         [SetUp]
         public void SetUp()
@@ -96,15 +97,17 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views.ProjectExplorer
                 hkcu.CreateSubKey(TestKeyPath),
                 new Mock<IEventService>().Object);
 
-            this.computeEngineAdapterMock = new Mock<IComputeEngineAdapter>();
-            this.computeEngineAdapterMock.Setup(a => a.GetProjectAsync(
+            this.resourceManagerAdapterMock = new Mock<IResourceManagerAdapter>();
+            this.resourceManagerAdapterMock.Setup(a => a.GetProjectAsync(
                     It.IsAny<string>(),
                     It.IsAny<CancellationToken>()))
-                .ReturnsAsync(new Apis.Compute.v1.Data.Project()
+                .ReturnsAsync(new Apis.CloudResourceManager.v1.Data.Project()
                 {
-                    Name = "project-1",
-                    Description = $"[project-1]"
+                    ProjectId = "project-1",
+                    Name = $"[project-1]"
                 });
+
+            this.computeEngineAdapterMock = new Mock<IComputeEngineAdapter>();
             this.computeEngineAdapterMock.Setup(a => a.ListInstancesAsync(
                     It.IsAny<string>(),
                     It.IsAny<CancellationToken>()))
@@ -119,8 +122,8 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views.ProjectExplorer
         {
             var serviceRegistry = new ServiceRegistry();
             serviceRegistry.AddSingleton<IProjectRepository>(this.projectRepository);
-            serviceRegistry.AddSingleton<IComputeEngineAdapter>(this.computeEngineAdapterMock.Object);
-
+            serviceRegistry.AddSingleton(this.computeEngineAdapterMock.Object);
+            serviceRegistry.AddSingleton(this.resourceManagerAdapterMock.Object);
             serviceRegistry.AddMock<IEventService>();
 
             return new ProjectExplorerViewModel(
