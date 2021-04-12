@@ -176,10 +176,9 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
 
         private async Task RefreshAllProjectsAsync()
         {
-
             try
             {
-                await this.viewModel.RefreshAllAsync()
+                await this.viewModel.RefreshAsync(false)
                     .ConfigureAwait(true);
             }
             catch (Exception e) when (e.IsCancellation())
@@ -193,6 +192,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
                     .Show(this, "Refreshing project failed", e);
             }
         }
+
         private async Task RefreshSelectedNodeAsync()
         {
             try

@@ -58,6 +58,22 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
             // TODO: Listen for IsConnected changes
         }
 
+        private async Task<IReadOnlyCollection<ViewModelNode>> ListAllNodesAsync()
+        {
+            async Task VisitNodeAsync(
+                ViewModelNode node,
+                List<ViewModelNode> accumulator)
+            {
+                accumulator.AddRange(
+                    await node.GetFilteredNodesAsync(false)
+                        .ConfigureAwait(true));
+            }
+
+            var list = new List<ViewModelNode>();
+            await VisitNodeAsync(this.RootNode, list).ConfigureAwait(true);
+            return list;
+        }
+
         private async Task RefreshAsync(ViewModelNode node)
         {
             if (!node.CanReload)
@@ -130,7 +146,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
                 RaisePropertyChange();
 
                 // Refresh to cause filter to be reapplied.
-                RefreshAllAsync().ContinueWith(t => { });
+                RefreshAsync(false).ContinueWith(t => { });
             }
         }
 
@@ -144,25 +160,38 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
                 RaisePropertyChange();
 
                 // Refresh to cause filter to be reapplied.
-                RefreshAllAsync().ContinueWith(t => { });
+                RefreshAsync(false).ContinueWith(t => { });
             }
         }
 
         public ViewModelNode SelectedNode
         {
-            get => this.selectedNode;
+            get
+            {
+                Debug.Assert(
+                    this.selectedNode == null || 
+                        this.RootNode.DebugIsValidNode(this.selectedNode), 
+                    "Node detached");
+                
+                return this.selectedNode;
+            }
             set
             {
+                Debug.Assert(
+                    this.selectedNode == null || 
+                        this.RootNode.DebugIsValidNode(this.selectedNode),
+                    "Node detached");
+
                 this.selectedNode = value;
                 RaisePropertyChange();
 
-                //
+                // 
                 // Update active node in model.
                 //
-                //this.projectModelService.SetActiveNodeAsync(
-                //        value?.Locator,
-                //        CancellationToken.None)
-                //    .ContinueWith(_ => { });
+                this.projectModelService.SetActiveNodeAsync(
+                        value?.Locator,
+                        CancellationToken.None)
+                    .ContinueWith(_ => { });
             }
         }
 
@@ -184,20 +213,46 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
                 .ConfigureAwait(true);
 
             // Make sure the new project is reflected.
-            await RefreshAllAsync().ConfigureAwait(true);
+            await RefreshAsync(true).ConfigureAwait(true);
         }
 
         public async Task RemoveProjectAsync(ProjectLocator project)
         {
+            // Reset selection to a safe place.
+            this.SelectedNode = this.RootNode;
+
             await this.projectModelService
                 .RemoveProjectAsync(project)
                 .ConfigureAwait(true);
 
             // Make sure the new project is reflected.
-            await RefreshAllAsync().ConfigureAwait(true);
+            await RefreshAsync(true).ConfigureAwait(true);
         }
 
-        public Task RefreshAllAsync() => RefreshAsync(this.RootNode);
+        public async Task RefreshAsync(bool reloadProjects)
+        {
+            // Reset selection to a safe place.
+            this.SelectedNode = this.RootNode;
+
+            if (reloadProjects)
+            {
+                // Refresh everything. 
+                await RefreshAsync(this.RootNode).ConfigureAwait(true);
+            }
+            else
+            {
+                // Retain project nodes, but refresh their descendents.
+                var projects = await this.RootNode
+                    .GetFilteredNodesAsync(false)
+                    .ConfigureAwait(true);
+
+                await Task
+                    .WhenAll(projects
+                        .Where(p => p.IsLoaded && p.CanReload)
+                        .Select(p => p.GetFilteredNodesAsync(true)))
+                    .ConfigureAwait(true);
+            }
+        }
 
         public async Task RefreshSelectedNodeAsync(CancellationToken token)
         {
@@ -234,6 +289,8 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
             private RangeObservableCollection<ViewModelNode> filteredNodes;
 
             internal ViewModelNode Parent { get; }
+
+            internal bool IsLoaded => this.nodes != null;
 
             //-----------------------------------------------------------------
             // Observable properties.
@@ -330,6 +387,22 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
             protected abstract Task<IEnumerable<ViewModelNode>> LoadNodesAsync(
                 bool forceReload,
                 CancellationToken token);
+
+            internal bool DebugIsValidNode(ViewModelNode node)
+            {
+                if (node == this)
+                {
+                    return true;
+                }
+                else if (this.filteredNodes == null)
+                {
+                    return false;
+                }
+                else
+                {
+                    return this.filteredNodes.Any(n => n.DebugIsValidNode(n));
+                }
+            }
 
             //-----------------------------------------------------------------
             // Ctor.
