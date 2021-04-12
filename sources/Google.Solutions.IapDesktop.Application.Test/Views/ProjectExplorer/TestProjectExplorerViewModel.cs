@@ -32,6 +32,8 @@ using Microsoft.Win32;
 using Moq;
 using NUnit.Framework;
 using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -63,11 +65,27 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views.ProjectExplorer
             Status = "RUNNING"
         };
 
+        private static readonly Instance SampleLinuxInstanceInZone1 = new Instance()
+        {
+            Id = 2u,
+            Name = "linux-zone-1",
+            Disks = new[]
+            {
+                new AttachedDisk()
+                {
+                }
+            },
+            Zone = "https://www.googleapis.com/compute/v1/projects/project-1/zones/zone-1",
+            Status = "RUNNING"
+        };
+
         private const string TestKeyPath = @"Software\Google\__Test";
         private readonly RegistryKey hkcu = RegistryKey.OpenBaseKey(RegistryHive.CurrentUser, RegistryView.Default);
 
         private ApplicationSettingsRepository settingsRepository;
         private ProjectRepository projectRepository;
+
+        private Mock<IComputeEngineAdapter> computeEngineAdapterMock;
 
         [SetUp]
         public void SetUp()
@@ -77,17 +95,9 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views.ProjectExplorer
             this.projectRepository = new ProjectRepository(
                 hkcu.CreateSubKey(TestKeyPath),
                 new Mock<IEventService>().Object);
-        }
 
-        private ProjectExplorerViewModel CreateViewModel()
-        {
-            var serviceRegistry = new ServiceRegistry();
-            serviceRegistry.AddSingleton<IProjectRepository>(this.projectRepository);
-
-            var eventServiceMock = serviceRegistry.AddMock<IEventService>();
-
-            var computeAdapter = serviceRegistry.AddMock<IComputeEngineAdapter>();
-            computeAdapter.Setup(a => a.GetProjectAsync(
+            this.computeEngineAdapterMock = new Mock<IComputeEngineAdapter>();
+            this.computeEngineAdapterMock.Setup(a => a.GetProjectAsync(
                     It.IsAny<string>(),
                     It.IsAny<CancellationToken>()))
                 .ReturnsAsync(new Apis.Compute.v1.Data.Project()
@@ -95,10 +105,23 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views.ProjectExplorer
                     Name = "project-1",
                     Description = $"[project-1]"
                 });
-            computeAdapter.Setup(a => a.ListInstancesAsync(
+            this.computeEngineAdapterMock.Setup(a => a.ListInstancesAsync(
                     It.IsAny<string>(),
                     It.IsAny<CancellationToken>()))
-                .ReturnsAsync(new[] { SampleWindowsInstanceInZone1 });
+                .ReturnsAsync(new[]
+                {
+                    SampleWindowsInstanceInZone1,
+                    SampleLinuxInstanceInZone1
+                });
+        }
+
+        private ProjectExplorerViewModel CreateViewModel()
+        {
+            var serviceRegistry = new ServiceRegistry();
+            serviceRegistry.AddSingleton<IProjectRepository>(this.projectRepository);
+            serviceRegistry.AddSingleton<IComputeEngineAdapter>(this.computeEngineAdapterMock.Object);
+
+            serviceRegistry.AddMock<IEventService>();
 
             return new ProjectExplorerViewModel(
                 new Control(),
@@ -113,6 +136,14 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views.ProjectExplorer
                 JobDescription jobDescription,
                 Func<CancellationToken, Task<T>> jobFunc)
                 => jobFunc(CancellationToken.None);
+        }
+
+        private async Task<ObservableCollection<ProjectExplorerViewModel.ViewModelNode>> GetInstancesAsync(
+            ProjectExplorerViewModel viewModel)
+        {
+            var projects = await viewModel.RootNode.GetFilteredNodesAsync(false);
+            var zones = await projects[0].GetFilteredNodesAsync(false);
+            return await zones[0].GetFilteredNodesAsync(false);
         }
 
         //---------------------------------------------------------------------
@@ -156,27 +187,56 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views.ProjectExplorer
             Assert.IsFalse(viewModel.IsLinuxIncluded);
         }
 
+        [Test]
+        public async Task WhenOsFilterChanged_ThenViewModelIsUpdated()
+        {
+            var viewModel = CreateViewModel();
+            await viewModel.AddProjectAsync(new ProjectLocator("project-1"));
+
+            var instances = await GetInstancesAsync(viewModel);
+            Assert.AreEqual(2, instances.Count);
+
+            viewModel.OperatingSystemsFilter = OperatingSystems.Linux;
+            instances = await GetInstancesAsync(viewModel);
+            Assert.AreEqual(1, instances.Count);
+
+            viewModel.OperatingSystemsFilter = OperatingSystems.All;
+            instances = await GetInstancesAsync(viewModel);
+            Assert.AreEqual(2, instances.Count);
+
+            // Reapplying filter must not cause reload.
+            this.computeEngineAdapterMock.Verify(
+                a => a.ListInstancesAsync(
+                    It.IsAny<string>(),
+                    It.IsAny<CancellationToken>()), Times.Once);
+        }
+
         //---------------------------------------------------------------------
         // Instance filter.
         //---------------------------------------------------------------------
 
         [Test]
-        public void WhenInstanceFilterChanged_ThenViewModelIsUpdated()
+        public async Task WhenInstanceFilterChanged_ThenViewModelIsUpdated()
         {
-            // set to name
-            // reset
+            var viewModel = CreateViewModel();
+            await viewModel.AddProjectAsync(new ProjectLocator("project-1"));
 
-            Assert.Fail();
-        }
+            var instances = await GetInstancesAsync(viewModel);
+            Assert.AreEqual(2, instances.Count);
 
-        //---------------------------------------------------------------------
-        // ExpandRootAsync.
-        //---------------------------------------------------------------------
+            viewModel.InstanceFilter = SampleLinuxInstanceInZone1.Name.Substring(4);
+            instances = await GetInstancesAsync(viewModel);
+            Assert.AreEqual(1, instances.Count);
 
-        [Test]
-        public void WhenNoProjectsAdded_ThenExpandRootAsyncReturnsEmptySet()
-        {
-            Assert.Fail();
+            viewModel.InstanceFilter = null;
+            instances = await GetInstancesAsync(viewModel);
+            Assert.AreEqual(2, instances.Count);
+
+            // Reapplying filter must not cause reload.
+            this.computeEngineAdapterMock.Verify(
+                a => a.ListInstancesAsync(
+                    It.IsAny<string>(),
+                    It.IsAny<CancellationToken>()), Times.Once);
         }
 
         //---------------------------------------------------------------------

@@ -1,4 +1,5 @@
 ﻿using Google.Solutions.Common.Locator;
+using Google.Solutions.Common.Util;
 using Google.Solutions.IapDesktop.Application.ObjectModel;
 using Google.Solutions.IapDesktop.Application.Services.Adapters;
 using Google.Solutions.IapDesktop.Application.Services.Integration;
@@ -145,8 +146,10 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
                 this.instanceFilter = value;
                 RaisePropertyChange();
 
-                // Refresh to cause filter to be reapplied.
-                RefreshAsync(false).ContinueWith(t => { });
+                if (this.RootNode.IsLoaded)
+                {
+                    this.RootNode.ReapplyFilter();
+                }
             }
         }
 
@@ -159,8 +162,10 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
 
                 RaisePropertyChange();
 
-                // Refresh to cause filter to be reapplied.
-                RefreshAsync(false).ContinueWith(t => { });
+                if (this.RootNode.IsLoaded)
+                {
+                    this.RootNode.ReapplyFilter();
+                }
             }
         }
 
@@ -201,9 +206,16 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
 
         public async Task<IEnumerable<ViewModelNode>> ExpandRootAsync()
         {
-            this.RootNode.IsExpanded = true;
-            return await this.RootNode.GetFilteredNodesAsync(false)
+            // Explicitly load nodes.
+            var nodes = await this.RootNode.GetFilteredNodesAsync(false)
                 .ConfigureAwait(true);
+
+            // NB. If we did not load the nodes explicitly before, 
+            // IsExpanded would asynchronously trigger a load without
+            // awaiting the result. To prevent this behavior.
+            this.RootNode.IsExpanded = true;
+
+            return nodes;
         }
 
         public async Task AddProjectAsync(ProjectLocator project)
@@ -229,7 +241,8 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
             await RefreshAsync(true).ConfigureAwait(true);
         }
 
-        public async Task RefreshAsync(bool reloadProjects)
+        public async Task RefreshAsync(
+            bool reloadProjects)
         {
             // Reset selection to a safe place.
             this.SelectedNode = this.RootNode;
@@ -344,20 +357,20 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
                     this.filteredNodes = new RangeObservableCollection<ViewModelNode>();
 
                     this.nodes.AddRange(loadedNodes);
-                    this.filteredNodes.AddRange(ApplyFilter(this.nodes));
+
+                    ReapplyFilter();
                 }
                 else if (forceReload)
                 {
                     Debug.Assert(this.filteredNodes != null);
 
-                    var newChildren = await LoadNodesAsync(forceReload)
+                    var loadedNodes = await LoadNodesAsync(forceReload)
                         .ConfigureAwait(true);
 
                     this.nodes.Clear();
-                    this.nodes.AddRange(newChildren);
+                    this.nodes.AddRange(loadedNodes);
 
-                    this.filteredNodes.Clear();
-                    this.filteredNodes.AddRange(ApplyFilter(this.nodes));
+                    ReapplyFilter();
                 }
                 else
                 {
@@ -401,6 +414,19 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
                 else
                 {
                     return this.filteredNodes.Any(n => n.DebugIsValidNode(n));
+                }
+            }
+
+            internal void ReapplyFilter()
+            {
+                Debug.Assert(this.IsLoaded);
+
+                this.filteredNodes.Clear();
+                this.filteredNodes.AddRange(ApplyFilter(this.nodes));
+
+                foreach (var n in this.nodes.Where(n => n.IsLoaded))
+                {
+                    n.ReapplyFilter();
                 }
             }
 
