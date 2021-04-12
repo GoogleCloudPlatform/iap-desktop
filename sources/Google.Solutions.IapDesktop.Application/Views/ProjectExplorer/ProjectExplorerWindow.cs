@@ -344,6 +344,17 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
         {
             try
             {
+                //
+                // Expand projects.
+                //
+                // NB. It's not safe to do this in the constructor
+                // because some of the dependencies might not be ready yet.
+                //
+                this.treeView.Nodes
+                    .Cast<TreeNode>()
+                    .First()
+                    .Expand();
+
                 //await RefreshAllProjects().ConfigureAwait(true);
 
                 // TODO: Reimplement

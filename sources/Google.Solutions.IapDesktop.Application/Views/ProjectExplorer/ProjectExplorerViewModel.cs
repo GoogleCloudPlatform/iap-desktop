@@ -452,6 +452,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
                       0)
             {
                 this.modelNode = modelNode;
+                this.IsExpanded = true;
             }
 
             public override bool CanReload => false;
