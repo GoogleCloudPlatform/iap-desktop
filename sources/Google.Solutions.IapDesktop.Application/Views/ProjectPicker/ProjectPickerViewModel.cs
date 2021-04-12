@@ -120,7 +120,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectPicker
             //
             try
             {
-                var result = await this.resourceManager.ListProjects(
+                var result = await this.resourceManager.ListProjectsAsync(
                         string.IsNullOrEmpty(this.filter)
                             ? null // All projects.
                             : ProjectFilter.ByPrefix(this.filter),

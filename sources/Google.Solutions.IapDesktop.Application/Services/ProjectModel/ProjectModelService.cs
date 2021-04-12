@@ -143,7 +143,8 @@ namespace Google.Solutions.IapDesktop.Application.Services.ProjectModel
                             token));
                 }
 
-                // TODO: Use Resource Manager to get project description
+                // NB. The Compute Engine project.get resource does not include the
+                // project name, so we have to use the Resource Manager API instead.
 
                 foreach (var task in tasks)
                 {
