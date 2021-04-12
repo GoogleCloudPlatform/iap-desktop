@@ -143,6 +143,8 @@ namespace Google.Solutions.IapDesktop.Application.Services.ProjectModel
                             token));
                 }
 
+                // TODO: Use Resource Manager to get project description
+
                 foreach (var task in tasks)
                 {
                     //

@@ -136,6 +136,23 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
         // Actions.
         //---------------------------------------------------------------------
 
+        public async Task<IEnumerable<ViewModelNode>> ExpandRootAsync()
+        {
+            this.RootNode.IsExpanded = true;
+            return await this.RootNode.GetFilteredNodesAsync(false)
+                .ConfigureAwait(true);
+        }
+
+        public Task AddProjectAsync(ProjectLocator project)
+        {
+            return this.projectModelService.AddProjectAsync(project);
+        }
+
+        public Task RemoveProjectAsync(ProjectLocator project)
+        {
+            return this.projectModelService.RemoveProjectAsync(project);
+        }
+
         public Task RefreshAsync() => RefreshAsync(this.RootNode);
 
         public async Task RefreshAsync(ViewModelNode node)
@@ -250,11 +267,11 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
                     //
 
                     this.nodes = new RangeObservableCollection<ViewModelNode>();
+                    this.filteredNodes = new RangeObservableCollection<ViewModelNode>();
+
                     this.nodes.AddRange(
                         await LoadNodesAsync(forceReload)
                             .ConfigureAwait(true));
-
-                    this.filteredNodes = new RangeObservableCollection<ViewModelNode>();
                     this.filteredNodes.AddRange(ApplyFilter(this.nodes));
                 }
                 else if (forceReload)
@@ -370,7 +387,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
 
         internal class ProjectViewModelNode : ViewModelNode
         {
-            private readonly IProjectExplorerProjectNode modelNode;
+            public IProjectExplorerProjectNode ModelNode { get; }
 
             public ProjectViewModelNode(
                 ProjectExplorerViewModel viewModel,
@@ -385,7 +402,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
                       0,
                       0)
             {
-                this.modelNode = modelNode;
+                this.ModelNode = modelNode;
             }
 
             public override bool CanReload => true;
@@ -395,7 +412,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
                 CancellationToken token)
             {
                 var zones = await this.viewModel.projectModelService.GetZoneNodesAsync(
-                        this.modelNode.Project,
+                        this.ModelNode.Project,
                         forceReload,
                         token)
                     .ConfigureAwait(true);
@@ -408,6 +425,8 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
 
         internal class InaccessibleProjectViewModelNode : ViewModelNode
         {
+            public ProjectLocator Project { get; }
+
             public InaccessibleProjectViewModelNode(
                 ProjectExplorerViewModel viewModel,
                 CloudViewModelNode parent,
@@ -416,11 +435,12 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
                       viewModel,
                       parent,
                       projectLocator,
-                      $"{projectLocator} (inaccessible)",
+                      $"{projectLocator.Name} (inaccessible)",
                       true,
                       0,
                       0)
             {
+                this.Project = projectLocator;
             }
 
             public override bool CanReload => false;

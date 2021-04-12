@@ -50,7 +50,6 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
         private readonly IMainForm mainForm;
         private readonly IEventService eventService;
         private readonly IJobService jobService;
-        private readonly IProjectRepository projectInventoryService;
         private readonly IAuthorizationAdapter authService;
         private readonly IServiceProvider serviceProvider;
         private readonly ISessionBroker sessionBroker;
@@ -83,7 +82,6 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
             this.mainForm = serviceProvider.GetService<IMainForm>();
             this.eventService = serviceProvider.GetService<IEventService>();
             this.jobService = serviceProvider.GetService<IJobService>();
-            this.projectInventoryService = serviceProvider.GetService<IProjectRepository>();
             this.authService = serviceProvider.GetService<IAuthorizationAdapter>();
             this.sessionBroker = serviceProvider.GetService<IGlobalSessionBroker>();
 
@@ -140,38 +138,6 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
             };
         }
 
-        //private void PopulateProjectNode(
-        //    string projectId,
-        //    IEnumerable<Instance> instances)
-        //{
-        //    Debug.Assert(!this.InvokeRequired);
-
-        //    // Narrow the list down by operating system.
-        //    instances = instances.Where(i => i.IsWindowsInstance()
-        //        ? this.viewModel.IsWindowsIncluded
-        //        : this.viewModel.IsLinuxIncluded);
-
-        //    var projectNode = this.rootNode.Nodes
-        //        .Cast<ProjectNode>()
-        //        .FirstOrDefault(n => n.Project.ProjectId == projectId);
-        //    if (projectNode != null)
-        //    {
-        //        projectNode.Populate(
-        //            instances,
-        //            this.sessionBroker.IsConnected);
-        //    }
-        //    else
-        //    {
-        //        projectNode = new ProjectNode(projectId);
-        //        projectNode.Populate(
-        //            instances,
-        //            this.sessionBroker.IsConnected);
-        //        this.rootNode.Nodes.Add(projectNode);
-        //    }
-
-        //    this.rootNode.Expand();
-        //}
-
         private async Task<bool> AddProjectAsync()
         {
             await this.jobService.RunInBackground(
@@ -189,8 +155,8 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
                 return false;
             }
 
-            await this.projectInventoryService
-                .AddProjectAsync(projectId)
+            await this.viewModel
+                .AddProjectAsync(new ProjectLocator(projectId))
                 .ConfigureAwait(true);
 
             return true;
@@ -244,13 +210,20 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
 
         private async void unloadProjectToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            // TODO: Reimplement
-            //if (this.treeView.SelectedNode is ProjectNode projectNode)
-            //{
-            //    await this.projectInventoryService
-            //        .DeleteProjectAsync(projectNode.Project.ProjectId)
-            //        .ConfigureAwait(true);
-            //}
+            if (this.treeView.SelectedModelNode 
+                is ProjectExplorerViewModel.ProjectViewModelNode projectNode)
+            {
+                await this.viewModel
+                    .RemoveProjectAsync(projectNode.ModelNode.Project)
+                    .ConfigureAwait(true);
+            }
+            else if (this.treeView.SelectedModelNode 
+                is ProjectExplorerViewModel.InaccessibleProjectViewModelNode inaccessibleNode)
+            {
+                await this.viewModel
+                    .RemoveProjectAsync(inaccessibleNode.Project)
+                    .ConfigureAwait(true);
+            }
         }
 
         private void openInCloudConsoleToolStripMenuItem_Click(object sender, EventArgs e)
@@ -340,7 +313,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
         // Other Windows event handlers.
         //---------------------------------------------------------------------
 
-        private void ProjectExplorerWindow_Shown(object sender, EventArgs _)
+        private async void ProjectExplorerWindow_Shown(object sender, EventArgs _)
         {
             try
             {
@@ -350,20 +323,15 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
                 // NB. It's not safe to do this in the constructor
                 // because some of the dependencies might not be ready yet.
                 //
-                this.treeView.Nodes
-                    .Cast<TreeNode>()
-                    .First()
-                    .Expand();
+                var projects = await this.viewModel.ExpandRootAsync()
+                    .ConfigureAwait(true);
 
-                //await RefreshAllProjects().ConfigureAwait(true);
-
-                // TODO: Reimplement
-                //if (this.rootNode.Nodes.Count == 0)
-                //{
-                //    // No projects in inventory yet - pop open the 'Add Project'
-                //    // dialog to get the user started.
-                //    await AddProjectAsync().ConfigureAwait(true);
-                //}
+                if (!projects.Any())
+                {
+                    // No projects in inventory yet - pop open the 'Add Project'
+                    // dialog to get the user started.
+                    await AddProjectAsync().ConfigureAwait(true);
+                }
             }
             catch (Exception e) when (e.IsCancellation())
             {
