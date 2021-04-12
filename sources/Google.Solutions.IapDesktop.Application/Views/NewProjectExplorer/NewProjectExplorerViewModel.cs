@@ -1,5 +1,6 @@
 ﻿using Google.Solutions.Common.Locator;
 using Google.Solutions.IapDesktop.Application.ObjectModel;
+using Google.Solutions.IapDesktop.Application.Services.Adapters;
 using Google.Solutions.IapDesktop.Application.Services.Integration;
 using Google.Solutions.IapDesktop.Application.Services.ProjectModel;
 using Google.Solutions.IapDesktop.Application.Util;
@@ -18,10 +19,14 @@ using System.Windows.Forms;
 
 namespace Google.Solutions.IapDesktop.Application.Views.NewProjectExplorer
 {
+    // TODO: Add tests for NewProjectExplorerViewModel 
     internal class NewProjectExplorerViewModel : ViewModelBase, IDisposable
     {
         private readonly IJobService jobService;
         private readonly IProjectModelService projectModelService;
+
+        private string instanceFilter;
+        private OperatingSystems operatingSystemsFilter = OperatingSystems.All;
 
         public NewProjectExplorerViewModel(
             IWin32Window view,
@@ -34,6 +39,8 @@ namespace Google.Solutions.IapDesktop.Application.Views.NewProjectExplorer
             this.RootNode = new CloudViewModelNode(
                 this, 
                 projectModelService);
+
+            // TODO: Listen for IsConnected changes
         }
 
         //---------------------------------------------------------------------
@@ -43,32 +50,75 @@ namespace Google.Solutions.IapDesktop.Application.Views.NewProjectExplorer
         public CloudViewModelNode RootNode { get; }
 
         //---------------------------------------------------------------------
+        // "Input" properties.
+        //---------------------------------------------------------------------
+
+        public string InstanceFilter
+        {
+            get => this.instanceFilter?.Trim();
+            set
+            {
+                this.instanceFilter = value;
+                RaisePropertyChange();
+
+                // Refresh to cause filter to be reapplied.
+                RefreshAsync().ContinueWith(t => { });
+            }
+        }
+
+        public OperatingSystems OperatingSystemsFilter
+        {
+            get => this.operatingSystemsFilter;
+            set
+            {
+                this.operatingSystemsFilter = value;
+
+                RaisePropertyChange();
+
+                // Refresh to cause filter to be reapplied.
+                RefreshAsync().ContinueWith(t => { });
+            }
+        }
+
+        //---------------------------------------------------------------------
         // Actions.
         //---------------------------------------------------------------------
 
-        public Task RefreshAsync()
-            => RefreshAsync(this.RootNode);
+        public Task RefreshAsync() => RefreshAsync(this.RootNode);
 
         public async Task RefreshAsync(ViewModelNodeBase node)
         {
             if (!node.CanReload)
             {
                 // Try reloading parent instead.
-                await RefreshAsync(node.Parent).ConfigureAwait(true);
+                await RefreshAsync(node.Parent)
+                    .ConfigureAwait(true);
             }
             else
             {
+                // Clear selection.
+                await ClearActiveNodeAsync(CancellationToken.None)
+                    .ConfigureAwait(false);
+
                 // Force-reload children and discard result.
-                await node.GetChildren(true).ConfigureAwait(true);
+                await node.GetFilteredNodesAsync(true)
+                    .ConfigureAwait(true);
             }
         }
 
-        public Task SetActiveNodeAsync(
+        public Task ClearActiveNodeAsync(CancellationToken token)
+        {
+            return this.projectModelService.SetActiveNodeAsync(
+                (ResourceLocator)null, 
+                token);
+        }
+
+        public Task SelectNodeAsync(
             ViewModelNodeBase node,
             CancellationToken token)
         {
             return this.projectModelService.SetActiveNodeAsync(
-                node.Locator, 
+                node.Locator,
                 token);
         }
 
@@ -89,7 +139,8 @@ namespace Google.Solutions.IapDesktop.Application.Views.NewProjectExplorer
             protected readonly NewProjectExplorerViewModel viewModel;
 
             private bool isExpanded;
-            private RangeObservableCollection<ViewModelNodeBase> children;
+            private RangeObservableCollection<ViewModelNodeBase> nodes;
+            private RangeObservableCollection<ViewModelNodeBase> filteredNodes;
 
             internal ViewModelNodeBase Parent { get; }
 
@@ -118,46 +169,73 @@ namespace Google.Solutions.IapDesktop.Application.Views.NewProjectExplorer
             // Children.
             //-----------------------------------------------------------------
 
-            public async Task<ObservableCollection<ViewModelNodeBase>> GetChildren(
+            protected virtual IEnumerable<ViewModelNodeBase> ApplyFilter(
+                RangeObservableCollection<ViewModelNodeBase> allNodes)
+            {
+                return allNodes;
+            }
+
+            public async Task<ObservableCollection<ViewModelNodeBase>> GetFilteredNodesAsync(
                 bool forceReload)
             {
                 Debug.Assert(((Control)this.View).InvokeRequired);
 
-                if (this.children == null)
+                if (this.nodes == null)
                 {
+                    Debug.Assert(this.filteredNodes == null);
+
                     //
                     // Load lazily. No locking required as we're
                     // operating on the UI thread.
                     //
 
-                    this.children = new RangeObservableCollection<ViewModelNodeBase>();
-                    this.children.AddRange(
-                        await LoadChildrenInJob(forceReload)
+                    this.nodes = new RangeObservableCollection<ViewModelNodeBase>();
+                    this.nodes.AddRange(
+                        await LoadNodesAsync(forceReload)
                             .ConfigureAwait(true));
+
+                    this.filteredNodes = new RangeObservableCollection<ViewModelNodeBase>();
+                    this.filteredNodes.AddRange(ApplyFilter(this.nodes));
                 }
                 else if (forceReload)
                 {
-                    var newChildren = await LoadChildrenInJob(forceReload)
+                    Debug.Assert(this.filteredNodes != null);
+                    
+                    var newChildren = await LoadNodesAsync(forceReload)
                         .ConfigureAwait(true);
 
-                    this.children.Clear();
-                    this.children.AddRange(newChildren);
+                    this.nodes.Clear();
+                    this.nodes.AddRange(newChildren);
+
+                    this.filteredNodes.Clear();
+                    this.filteredNodes.AddRange(ApplyFilter(this.nodes));
+                }
+                else
+                {
+                    // Use cached copy.
                 }
 
-                Debug.Assert(this.children != null);
+                Debug.Assert(this.filteredNodes != null);
+                Debug.Assert(this.nodes != null);
 
-                return this.children;
+                return this.filteredNodes;
             }
 
-            protected Task<IEnumerable<ViewModelNodeBase>> LoadChildrenInJob(
+            protected Task<IEnumerable<ViewModelNodeBase>> LoadNodesAsync(
                 bool forceReload)
             {
+                //
+                // Wrap loading task in a job since it might kick of
+                // I/O (if data has not been cached yet).
+                //
                 return this.viewModel.jobService.RunInBackground(
-                    new JobDescription($"Loading {this.Text}..."),
-                    token => LoadChildren(forceReload, token));
+                    new JobDescription(
+                        $"Loading {this.Text}...", 
+                        JobUserFeedbackType.BackgroundFeedback),
+                    token => LoadNodesAsync(forceReload, token));
             }
 
-            protected abstract Task<IEnumerable<ViewModelNodeBase>> LoadChildren(
+            protected abstract Task<IEnumerable<ViewModelNodeBase>> LoadNodesAsync(
                 bool forceReload,
                 CancellationToken token);
 
@@ -205,7 +283,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.NewProjectExplorer
 
             public override bool CanReload => true;
 
-            protected override async Task<IEnumerable<ViewModelNodeBase>> LoadChildren(
+            protected override async Task<IEnumerable<ViewModelNodeBase>> LoadNodesAsync(
                 bool forceReload,
                 CancellationToken token)
             {
@@ -251,7 +329,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.NewProjectExplorer
 
             public override bool CanReload => true;
 
-            protected override async Task<IEnumerable<ViewModelNodeBase>> LoadChildren(
+            protected override async Task<IEnumerable<ViewModelNodeBase>> LoadNodesAsync(
                 bool forceReload, 
                 CancellationToken token)
             {
@@ -286,7 +364,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.NewProjectExplorer
 
             public override bool CanReload => false;
 
-            protected override Task<IEnumerable<ViewModelNodeBase>> LoadChildren(
+            protected override Task<IEnumerable<ViewModelNodeBase>> LoadNodesAsync(
                 bool forceReload, 
                 CancellationToken token)
             {
@@ -317,21 +395,31 @@ namespace Google.Solutions.IapDesktop.Application.Views.NewProjectExplorer
 
             public override bool CanReload => false;
 
-            protected override Task<IEnumerable<ViewModelNodeBase>> LoadChildren(
+            protected override Task<IEnumerable<ViewModelNodeBase>> LoadNodesAsync(
                 bool forceReload,
                 CancellationToken token)
             {
-                Debug.Assert(!forceReload);
                 return Task.FromResult(this.modelNode
                     .Instances
                     .Select(i => new InstanceViewModelNode(this.viewModel, this, i))
                     .Cast<ViewModelNodeBase>());
             }
+
+            protected override IEnumerable<ViewModelNodeBase> ApplyFilter(
+                RangeObservableCollection<ViewModelNodeBase> allNodes)
+            {
+                return allNodes
+                    .Cast<InstanceViewModelNode>()
+                    .Where(i => this.viewModel.InstanceFilter == null ||
+                                i.ModelNode.DisplayName.Contains(this.viewModel.instanceFilter))
+                    .Where(i => (((InstanceNode)i.ModelNode).OperatingSystem &
+                                this.viewModel.OperatingSystemsFilter) != 0);
+            }
         }
 
         internal class InstanceViewModelNode : ViewModelNodeBase
         {
-            private readonly IProjectExplorerInstanceNode modelNode;
+            public IProjectExplorerInstanceNode ModelNode { get; }
 
             public InstanceViewModelNode(
                 NewProjectExplorerViewModel viewModel,
@@ -346,12 +434,15 @@ namespace Google.Solutions.IapDesktop.Application.Views.NewProjectExplorer
                       0,
                       0)
             {
-                this.modelNode = modelNode;
+                this.ModelNode = modelNode;
+
+                // TODO: Set icon based on OS, state
+                // TODO: Set icon based on IsConnected, and make observable
             }
 
             public override bool CanReload => false;
 
-            protected override Task<IEnumerable<ViewModelNodeBase>> LoadChildren(
+            protected override Task<IEnumerable<ViewModelNodeBase>> LoadNodesAsync(
                 bool forceReload,
                 CancellationToken token)
             {
