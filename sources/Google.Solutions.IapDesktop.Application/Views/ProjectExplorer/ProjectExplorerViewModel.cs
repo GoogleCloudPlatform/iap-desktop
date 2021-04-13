@@ -350,7 +350,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
         {
             if (this.SelectedNode is ProjectViewModelNode projectNode)
             {
-                await RemoveProjectAsync(projectNode.ModelNode.Project)
+                await RemoveProjectAsync(projectNode.ProjectNode.Project)
                     .ConfigureAwait(true);
             }
             else if (this.SelectedNode is InaccessibleProjectViewModelNode inaccessibleNode)
@@ -365,17 +365,17 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
             if (this.SelectedNode is InstanceViewModelNode vmInstanceNode)
             {
                 this.cloudConsoleService.OpenInstanceDetails(
-                    vmInstanceNode.ModelNode.Instance);
+                    vmInstanceNode.InstanceNode.Instance);
             }
             else if (this.SelectedNode is ZoneViewModelNode zoneNode)
             {
                 this.cloudConsoleService.OpenInstanceList(
-                    zoneNode.ModelNode.Zone);
+                    zoneNode.ZoneNode.Zone);
             }
             else if (this.SelectedNode is ProjectViewModelNode projectNode)
             {
                 this.cloudConsoleService.OpenInstanceList(
-                    projectNode.ModelNode.Project);
+                    projectNode.ProjectNode.Project);
             }
         }
 
@@ -384,17 +384,17 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
             if (this.SelectedNode is InstanceViewModelNode vmInstanceNode)
             {
                 this.cloudConsoleService.ConfigureIapAccess(
-                    vmInstanceNode.ModelNode.Instance.ProjectId);
+                    vmInstanceNode.InstanceNode.Instance.ProjectId);
             }
             else if (this.SelectedNode is ZoneViewModelNode zoneNode)
             {
                 this.cloudConsoleService.ConfigureIapAccess(
-                    zoneNode.ModelNode.Zone.ProjectId);
+                    zoneNode.ZoneNode.Zone.ProjectId);
             }
             else if (this.SelectedNode is ProjectViewModelNode projectNode)
             {
                 this.cloudConsoleService.ConfigureIapAccess(
-                    projectNode.ModelNode.Project.Name);
+                    projectNode.ProjectNode.Project.Name);
             }
         }
 
@@ -428,6 +428,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
             //-----------------------------------------------------------------
 
             public abstract bool CanReload { get; }
+            public abstract IProjectExplorerNode ModelNode { get; }
             public ResourceLocator Locator { get; }
             public string Text { get; }
             public bool IsLeaf { get; }
@@ -575,6 +576,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
         internal class CloudViewModelNode : ViewModelNode
         {
             private readonly IProjectModelService projectModelService;
+            private IProjectExplorerCloudNode cloudNode; // Loaded lazily.
 
             public CloudViewModelNode(
                 ProjectExplorerViewModel viewModel,
@@ -591,23 +593,25 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
                 this.projectModelService = projectModelService;
             }
 
+            public override IProjectExplorerNode ModelNode => this.cloudNode;
+
             public override bool CanReload => true;
 
             protected override async Task<IEnumerable<ViewModelNode>> LoadNodesAsync(
                 bool forceReload,
                 CancellationToken token)
             {
-                var model = await this.projectModelService
+                this.cloudNode = await this.projectModelService
                     .GetRootNodeAsync(forceReload, token)
                     .ConfigureAwait(true);
 
                 var children = new List<ViewModelNode>();
-                children.AddRange(model.Projects
+                children.AddRange(this.cloudNode.Projects
                     .Select(m => new ProjectViewModelNode(
                         this.viewModel,
                         this,
                         m)));
-                children.AddRange(model.InaccessibleProjects
+                children.AddRange(this.cloudNode.InaccessibleProjects
                     .Select(m => new InaccessibleProjectViewModelNode(
                         this.viewModel,
                         this,
@@ -619,7 +623,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
 
         internal class ProjectViewModelNode : ViewModelNode
         {
-            public IProjectExplorerProjectNode ModelNode { get; }
+            public IProjectExplorerProjectNode ProjectNode { get; }
 
             public ProjectViewModelNode(
                 ProjectExplorerViewModel viewModel,
@@ -636,9 +640,11 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
                       0,
                       0)
             {
-                this.ModelNode = modelNode;
+                this.ProjectNode = modelNode;
                 this.IsExpanded = true;
             }
+
+            public override IProjectExplorerNode ModelNode => this.ProjectNode;
 
             public override bool CanReload => true;
 
@@ -649,7 +655,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
                 try
                 {
                     var zones = await this.viewModel.projectModelService.GetZoneNodesAsync(
-                            this.ModelNode.Project,
+                            this.ProjectNode.Project,
                             forceReload,
                             token)
                         .ConfigureAwait(true);
@@ -689,6 +695,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
             {
                 this.Project = projectLocator;
             }
+            public override IProjectExplorerNode ModelNode => null;
 
             public override bool CanReload => false;
 
@@ -703,7 +710,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
 
         internal class ZoneViewModelNode : ViewModelNode
         {
-            public IProjectExplorerZoneNode ModelNode { get; }
+            public IProjectExplorerZoneNode ZoneNode { get; }
 
             public ZoneViewModelNode(
                 ProjectExplorerViewModel viewModel,
@@ -718,9 +725,11 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
                       0,
                       0)
             {
-                this.ModelNode = modelNode;
+                this.ZoneNode = modelNode;
                 this.IsExpanded = true;
             }
+
+            public override IProjectExplorerNode ModelNode => this.ZoneNode;
 
             public override bool CanReload => false;
 
@@ -728,7 +737,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
                 bool forceReload,
                 CancellationToken token)
             {
-                return Task.FromResult(this.ModelNode
+                return Task.FromResult(this.ZoneNode
                     .Instances
                     .Select(i => new InstanceViewModelNode(this.viewModel, this, i))
                     .Cast<ViewModelNode>());
@@ -740,15 +749,15 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
                 return allNodes
                     .Cast<InstanceViewModelNode>()
                     .Where(i => this.viewModel.InstanceFilter == null ||
-                                i.ModelNode.DisplayName.Contains(this.viewModel.instanceFilter))
-                    .Where(i => (i.ModelNode.OperatingSystem &
+                                i.InstanceNode.DisplayName.Contains(this.viewModel.instanceFilter))
+                    .Where(i => (i.InstanceNode.OperatingSystem &
                                 this.viewModel.OperatingSystemsFilter) != 0);
             }
         }
 
         internal class InstanceViewModelNode : ViewModelNode
         {
-            public IProjectExplorerInstanceNode ModelNode { get; }
+            public IProjectExplorerInstanceNode InstanceNode { get; }
 
             public InstanceViewModelNode(
                 ProjectExplorerViewModel viewModel,
@@ -763,11 +772,13 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
                       0,
                       0)
             {
-                this.ModelNode = modelNode;
+                this.InstanceNode = modelNode;
 
                 // TODO: Set icon based on OS, state
                 // TODO: Set icon based on IsConnected, and make observable
             }
+
+            public override IProjectExplorerNode ModelNode => this.InstanceNode;
 
             public override bool CanReload => false;
 

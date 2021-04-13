@@ -158,7 +158,6 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
             this.treeView.SelectedImageIndex = 0;
             this.treeView.Size = new System.Drawing.Size(800, 425);
             this.treeView.TabIndex = 1;
-            this.treeView.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.treeView_AfterSelect);
             this.treeView.NodeMouseDoubleClick += new System.Windows.Forms.TreeNodeMouseClickEventHandler(this.treeView_NodeMouseDoubleClick);
             // 
             // contextMenu

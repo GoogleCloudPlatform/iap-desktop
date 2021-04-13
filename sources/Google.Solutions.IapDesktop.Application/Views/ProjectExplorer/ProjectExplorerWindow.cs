@@ -100,6 +100,22 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
                 this.jobService,
                 serviceProvider.GetService<IProjectModelService>(),
                 serviceProvider.GetService<ICloudConsoleService>());
+
+            this.viewModel.OnPropertyChange(
+                m => m.SelectedNode,
+                node =>
+                {
+                    //
+                    // NB. Due to lazily loading and inaccessible projects,
+                    // ModelNode can be null.
+                    //
+                    if (node?.ModelNode != null)
+                    {
+                        this.ContextMenuCommands.Context = node.ModelNode;
+                        this.ToolbarCommands.Context = node.ModelNode;
+                    }
+                });
+
             this.Disposed += (sender, args) =>
             {
                 this.viewModel.Dispose();
@@ -347,39 +363,6 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
             }
         }
 
-        private void treeView_AfterSelect(object sender, TreeViewEventArgs args)
-        {
-            // TODO: Reimplement
-            //try
-            //{
-            //    var selectedNode = (IProjectExplorerNode)args.Node;
-
-
-            //    // 
-            //    // Handle dynamic menu items.
-            //    //
-            //    this.ContextMenuCommands.Context = selectedNode;
-            //    this.ToolbarCommands.Context = selectedNode;
-
-            //    //
-            //    // Fire event.
-            //    //
-            //    await this.eventService
-            //        .FireAsync(new ProjectExplorerNodeSelectedEvent(selectedNode))
-            //        .ConfigureAwait(true);
-            //}
-            //catch (Exception e) when (e.IsCancellation())
-            //{
-            //    // Ignore.
-            //}
-            //catch (Exception e)
-            //{
-            //    this.serviceProvider
-            //        .GetService<IExceptionDialog>()
-            //        .Show(this, "An error occured", e);
-            //}
-        }
-
         private void ProjectExplorerWindow_KeyDown(object sender, KeyEventArgs e)
         {
             // NB. Hook KeyDown instead of KeyUp event to not interfere with 
@@ -419,27 +402,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
             }
         }
 
-        public IProjectExplorerInstanceNode TryFindNode(InstanceLocator reference)
-        {
-            // TODO: Reimplement
-            throw new NotImplementedException();
-
-            //return this.rootNode.Nodes
-            //    .OfType<ProjectNode>()
-            //    .Where(p => p.Project.ProjectId == reference.ProjectId)
-            //    .SelectMany(p => p.Nodes.Cast<ZoneNode>())
-            //    .Where(z => z.Zone.Name == reference.Zone)
-            //    .SelectMany(z => z.Nodes.Cast<VmInstanceNode>())
-            //    .FirstOrDefault(vm => vm.InstanceName == reference.Name); ;
-        }
-
-        public IProjectExplorerNode SelectedNode
-        {
-            // TODO: Reimplement
-            get => null;
-
-            // get => (this.treeView.SelectedNode as IProjectExplorerNode) ?? this.rootNode;
-        }
+        public IProjectExplorerNode SelectedNode => this.viewModel.SelectedNode?.ModelNode;
     }
 }
 

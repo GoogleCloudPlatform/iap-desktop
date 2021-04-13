@@ -30,8 +30,6 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
         void ShowWindow();
         Task ShowAddProjectDialogAsync();
 
-        IProjectExplorerInstanceNode TryFindNode(InstanceLocator reference);
-
         IProjectExplorerNode SelectedNode { get; }
 
         CommandContainer<IProjectExplorerNode> ContextMenuCommands { get; }

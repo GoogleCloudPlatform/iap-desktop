@@ -65,7 +65,10 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
 
             // Use currently selected node.
             var projectExplorer = serviceProvider.GetService<IProjectExplorer>();
-            OnProjectExplorerNodeSelected(projectExplorer.SelectedNode);
+            if (projectExplorer.SelectedNode != null)
+            {
+                OnProjectExplorerNodeSelected(projectExplorer.SelectedNode);
+            }
 
             // Track current selection in project explorer.
             var eventService = serviceProvider.GetService<IEventService>();
