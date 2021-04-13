@@ -258,23 +258,22 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
             }
         }
 
-        private void configureIapAccessToolStripMenuItem_Click(object sender, EventArgs e)
+        private void configureIapAccessToolStripMenuItem_Click(object sender, EventArgs _)
         {
-            // TODO: Reimplement
-            //var cloudConsoleService = this.serviceProvider.GetService<CloudConsoleService>();
-
-            //if (this.treeView.SelectedNode is ProjectNode projectNode)
-            //{
-            //    cloudConsoleService.ConfigureIapAccess(projectNode.Project.ProjectId);
-            //}
-            //else if (this.treeView.SelectedNode is ZoneNode zoneNode)
-            //{
-            //    cloudConsoleService.ConfigureIapAccess(zoneNode.Zone.ProjectId);
-            //}
-            //else if (this.treeView.SelectedNode is VmInstanceNode vmInstanceNode)
-            //{
-            //    cloudConsoleService.ConfigureIapAccess(vmInstanceNode.ProjectId);
-            //}
+            try
+            {
+                this.viewModel.ConfigureIapAccess();
+            }
+            catch (Exception e) when (e.IsCancellation())
+            {
+                // Ignore.
+            }
+            catch (Exception e)
+            {
+                this.serviceProvider
+                    .GetService<IExceptionDialog>()
+                    .Show(this, "Unloading project failed", e);
+            }
         }
 
         private void treeView_NodeMouseDoubleClick(object sender, TreeNodeMouseClickEventArgs e)

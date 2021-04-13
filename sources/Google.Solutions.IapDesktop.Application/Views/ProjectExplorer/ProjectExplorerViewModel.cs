@@ -322,6 +322,25 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
             }
         }
 
+        public void ConfigureIapAccess()
+        {
+            if (this.SelectedNode is InstanceViewModelNode vmInstanceNode)
+            {
+                this.cloudConsoleService.ConfigureIapAccess(
+                    vmInstanceNode.ModelNode.Instance.ProjectId);
+            }
+            else if (this.SelectedNode is ZoneViewModelNode zoneNode)
+            {
+                this.cloudConsoleService.ConfigureIapAccess(
+                    zoneNode.ModelNode.Zone.ProjectId);
+            }
+            else if (this.SelectedNode is ProjectViewModelNode projectNode)
+            {
+                this.cloudConsoleService.ConfigureIapAccess(
+                    projectNode.ModelNode.Project.Name);
+            }
+        }
+
         //---------------------------------------------------------------------
         // IDisposable.
         //---------------------------------------------------------------------

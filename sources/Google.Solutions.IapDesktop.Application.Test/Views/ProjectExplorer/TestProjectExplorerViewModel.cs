@@ -604,5 +604,55 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views.ProjectExplorer
                 It.IsAny<InstanceLocator>()),
                 Times.Once);
         }
+
+        //---------------------------------------------------------------------
+        // ConfigureIapAccess.
+        //---------------------------------------------------------------------
+
+        [Test]
+        public async Task WhenSelectedNodeIsProject_ThenConfigureIapAccessOpensProjectConfig()
+        {
+            var viewModel = CreateViewModel();
+            await viewModel.AddProjectAsync(new ProjectLocator("project-1"));
+            var projects = await viewModel.RootNode.GetFilteredNodesAsync(false);
+
+            viewModel.SelectedNode = projects[0];
+            viewModel.ConfigureIapAccess();
+
+            this.cloudConsoleServiceMock.Verify(c => c.ConfigureIapAccess(
+                It.Is<string>(id => id == "project-1")),
+                Times.Once);
+        }
+
+        [Test]
+        public async Task WhenSelectedNodeIsZone_ThenConfigureIapAccessOpensProjectConfig()
+        {
+            var viewModel = CreateViewModel();
+            await viewModel.AddProjectAsync(new ProjectLocator("project-1"));
+            var projects = await viewModel.RootNode.GetFilteredNodesAsync(false);
+            var zones = await projects[0].GetFilteredNodesAsync(false);
+
+            viewModel.SelectedNode = zones[0];
+            viewModel.ConfigureIapAccess();
+
+            this.cloudConsoleServiceMock.Verify(c => c.ConfigureIapAccess(
+                It.Is<string>(id => id == "project-1")),
+                Times.Once);
+        }
+
+        [Test]
+        public async Task WhenSelectedNodeIsInstance_ThenConfigureIapAccessOpensProjectConfig()
+        {
+            var viewModel = CreateViewModel();
+            await viewModel.AddProjectAsync(new ProjectLocator("project-1"));
+            var instances = await GetInstancesAsync(viewModel);
+
+            viewModel.SelectedNode = instances[0];
+            viewModel.ConfigureIapAccess();
+
+            this.cloudConsoleServiceMock.Verify(c => c.ConfigureIapAccess(
+                It.Is<string>(id => id == "project-1")),
+                Times.Once);
+        }
     }
 }
