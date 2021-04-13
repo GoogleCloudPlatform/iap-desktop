@@ -779,9 +779,6 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
                       -1)
             {
                 this.InstanceNode = modelNode;
-
-                // TODO: Set icon based on OS, state
-                // TODO: Set icon based on IsConnected, and make observable
             }
 
             public override IProjectExplorerNode ModelNode => this.InstanceNode;
