@@ -53,6 +53,11 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
         private string instanceFilter;
         private OperatingSystems operatingSystemsFilter = OperatingSystems.All;
 
+        private bool isUnloadProjectCommandVisible;
+        private bool isRefreshProjectsCommandVisible;
+        private bool isRefreshAllProjectsCommandVisible;
+        private bool isCloudConsoleCommandVisible;
+
         private void SaveSettings()
         {
             var settings = this.settingsRepository.GetSettings();
@@ -151,6 +156,46 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
 
         public CloudViewModelNode RootNode { get; }
 
+        public bool IsUnloadProjectCommandVisible
+        {
+            get => this.isUnloadProjectCommandVisible;
+            set
+            {
+                this.isUnloadProjectCommandVisible = value;
+                RaisePropertyChange();
+            }
+        }
+
+        public bool IsRefreshProjectsCommandVisible
+        {
+            get => this.isRefreshProjectsCommandVisible;
+            set
+            {
+                this.isRefreshProjectsCommandVisible = value;
+                RaisePropertyChange();
+            }
+        }
+
+        public bool IsRefreshAllProjectsCommandVisible
+        {
+            get => this.isRefreshAllProjectsCommandVisible;
+            set
+            {
+                this.isRefreshAllProjectsCommandVisible = value;
+                RaisePropertyChange();
+            }
+        }
+
+        public bool IsCloudConsoleCommandVisible
+        {
+            get => this.isCloudConsoleCommandVisible;
+            set
+            {
+                this.isCloudConsoleCommandVisible = value;
+                RaisePropertyChange();
+            }
+        }
+
         //---------------------------------------------------------------------
         // "Input" properties.
         //---------------------------------------------------------------------
@@ -194,7 +239,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
                     this.selectedNode == null || 
                         this.RootNode.DebugIsValidNode(this.selectedNode), 
                     "Node detached");
-                
+
                 return this.selectedNode;
             }
             set
@@ -206,6 +251,18 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
 
                 this.selectedNode = value;
                 RaisePropertyChange();
+
+                this.IsUnloadProjectCommandVisible = value is ProjectViewModelNode;
+                this.IsRefreshAllProjectsCommandVisible = value is CloudViewModelNode;
+                this.IsRefreshProjectsCommandVisible = 
+                    value is ProjectViewModelNode ||
+                    value is ZoneViewModelNode ||
+                    value is InstanceViewModelNode;
+                this.IsCloudConsoleCommandVisible =
+                    value is ProjectViewModelNode ||
+                    value is ZoneViewModelNode ||
+                    value is InstanceViewModelNode;
+
 
                 // 
                 // Update active node in model.
@@ -603,9 +660,11 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
                 }
                 catch (ResourceAccessDeniedException)
                 {
+                    //
                     // Letting these exception propagate could cause a flurry
                     // of error messages when multiple projects have become
                     // inaccessible. So it's best to just swallow this error.
+                    //
                     return Enumerable.Empty<ViewModelNode>();
                 }
             }

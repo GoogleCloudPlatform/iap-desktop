@@ -654,5 +654,67 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views.ProjectExplorer
                 It.Is<string>(id => id == "project-1")),
                 Times.Once);
         }
+
+        //---------------------------------------------------------------------
+        // Command visibility.
+        //---------------------------------------------------------------------
+
+        [Test]
+        public void WhenSelectedNodeIsRoot_ThenCommandVisiblityIsUpdated()
+        {
+            var viewModel = CreateViewModel();
+            viewModel.SelectedNode = viewModel.RootNode;
+
+            Assert.IsFalse(viewModel.IsUnloadProjectCommandVisible);
+            Assert.IsFalse(viewModel.IsRefreshProjectsCommandVisible);
+            Assert.IsTrue(viewModel.IsRefreshAllProjectsCommandVisible);
+            Assert.IsFalse(viewModel.IsCloudConsoleCommandVisible);
+        }
+
+        [Test]
+        public async Task WhenSelectedNodeIsProject_ThenCommandVisiblityIsUpdated()
+        {
+            var viewModel = CreateViewModel();
+            await viewModel.AddProjectAsync(new ProjectLocator("project-1"));
+            var projects = await viewModel.RootNode.GetFilteredNodesAsync(false);
+
+            viewModel.SelectedNode = projects[0];
+
+            Assert.IsTrue(viewModel.IsUnloadProjectCommandVisible);
+            Assert.IsTrue(viewModel.IsRefreshProjectsCommandVisible);
+            Assert.IsFalse(viewModel.IsRefreshAllProjectsCommandVisible);
+            Assert.IsTrue(viewModel.IsCloudConsoleCommandVisible);
+        }
+
+        [Test]
+        public async Task WhenSelectedNodeIsZone_ThenCommandVisiblityIsUpdated()
+        {
+            var viewModel = CreateViewModel();
+            await viewModel.AddProjectAsync(new ProjectLocator("project-1"));
+            var projects = await viewModel.RootNode.GetFilteredNodesAsync(false);
+            var zones = await projects[0].GetFilteredNodesAsync(false);
+
+            viewModel.SelectedNode = zones[0];
+
+            Assert.IsFalse(viewModel.IsUnloadProjectCommandVisible);
+            Assert.IsTrue(viewModel.IsRefreshProjectsCommandVisible);
+            Assert.IsFalse(viewModel.IsRefreshAllProjectsCommandVisible);
+            Assert.IsTrue(viewModel.IsCloudConsoleCommandVisible);
+        }
+
+        [Test]
+        public async Task WhenSelectedNodeIsInstance_ThenCommandVisiblityIsUpdated()
+        {
+            var viewModel = CreateViewModel();
+            await viewModel.AddProjectAsync(new ProjectLocator("project-1"));
+            var instances = await GetInstancesAsync(viewModel);
+
+            viewModel.SelectedNode = instances[0];
+
+            Assert.IsFalse(viewModel.IsUnloadProjectCommandVisible);
+            Assert.IsTrue(viewModel.IsRefreshProjectsCommandVisible);
+            Assert.IsFalse(viewModel.IsRefreshAllProjectsCommandVisible);
+            Assert.IsTrue(viewModel.IsCloudConsoleCommandVisible);
+        }
     }
 }

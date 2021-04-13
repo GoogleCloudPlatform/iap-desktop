@@ -139,6 +139,45 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
                 this.viewModel,
                 m => m.IsWindowsIncluded,
                 this.Container);
+
+            //
+            // Bind menu items.
+            //
+            this.unloadProjectToolStripMenuItem.BindProperty(
+                c => c.Visible,
+                this.viewModel,
+                m => m.IsUnloadProjectCommandVisible,
+                this.Container);
+            this.refreshToolStripMenuItem.BindProperty(
+                c => c.Visible,
+                this.viewModel,
+                m => m.IsRefreshProjectsCommandVisible,
+                this.Container);
+            this.refreshAllProjectsToolStripMenuItem.BindProperty(
+                c => c.Visible,
+                this.viewModel,
+                m => m.IsRefreshAllProjectsCommandVisible,
+                this.Container);
+            this.openInCloudConsoleToolStripMenuItem.BindProperty(
+                c => c.Visible,
+                this.viewModel,
+                m => m.IsCloudConsoleCommandVisible,
+                this.Container);
+            this.iapSeparatorToolStripMenuItem.BindProperty(
+                c => c.Visible,
+                this.viewModel,
+                m => m.IsCloudConsoleCommandVisible,
+                this.Container);
+            this.cloudConsoleSeparatorToolStripMenuItem.BindProperty(
+                c => c.Visible,
+                this.viewModel,
+                m => m.IsCloudConsoleCommandVisible,
+                this.Container);
+            this.configureIapAccessToolStripMenuItem.BindProperty(
+                c => c.Visible,
+                this.viewModel,
+                m => m.IsCloudConsoleCommandVisible,
+                this.Container);
         }
 
         private async Task CallViewModelAsync(
@@ -315,20 +354,6 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
             //{
             //    var selectedNode = (IProjectExplorerNode)args.Node;
 
-            //    //
-            //    // Update context menu state.
-            //    //
-            //    this.refreshToolStripMenuItem.Visible =
-            //        this.unloadProjectToolStripMenuItem.Visible = (selectedNode is ProjectNode);
-            //    this.refreshAllProjectsToolStripMenuItem.Visible = (selectedNode is CloudNode);
-
-            //    this.openInCloudConsoleToolStripMenuItem.Visible =
-            //        this.iapSeparatorToolStripMenuItem.Visible =
-            //        this.cloudConsoleSeparatorToolStripMenuItem.Visible =
-            //        this.configureIapAccessToolStripMenuItem.Visible =
-            //            (selectedNode is VmInstanceNode ||
-            //             selectedNode is ZoneNode ||
-            //             selectedNode is ProjectNode);
 
             //    // 
             //    // Handle dynamic menu items.
@@ -363,8 +388,9 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
 
             if (e.KeyCode == Keys.F5)
             {
-                this.viewModel
-                    .RefreshSelectedNodeAsync()
+                CallViewModelAsync(
+                        vm => vm.RefreshSelectedNodeAsync(),
+                        "Refreshing projects")
                     .ContinueWith(_ => { });
             }
             else if (e.KeyCode == Keys.Enter)
