@@ -96,8 +96,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views.ProjectExplorer
             hkcu.DeleteSubKeyTree(TestKeyPath, false);
             this.settingsRepository = new ApplicationSettingsRepository(hkcu.CreateSubKey(TestKeyPath));
             this.projectRepository = new ProjectRepository(
-                hkcu.CreateSubKey(TestKeyPath),
-                new Mock<IEventService>().Object);
+                hkcu.CreateSubKey(TestKeyPath));
 
             this.resourceManagerAdapterMock = new Mock<IResourceManagerAdapter>();
             this.resourceManagerAdapterMock.Setup(a => a.GetProjectAsync(
@@ -336,7 +335,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views.ProjectExplorer
         [Test]
         public async Task WhenProjectRemoved_ThenViewModelIsUpdated()
         {
-            await this.projectRepository.AddProjectAsync("project-1");
+            this.projectRepository.AddProject("project-1");
 
             var viewModel = CreateViewModel();
             var initialProjectsList = await viewModel.ExpandRootAsync();

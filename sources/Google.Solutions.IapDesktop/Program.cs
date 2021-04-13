@@ -238,8 +238,7 @@ namespace Google.Solutions.IapDesktop
             integrationLayer.AddSingleton<IEventService>(eventService);
             integrationLayer.AddSingleton<IGlobalSessionBroker, GlobalSessionBroker>();
             integrationLayer.AddSingleton<IProjectRepository>(new ProjectRepository(
-                hkcu.CreateSubKey($@"{Globals.BaseRegistryKeyPath}\Inventory"),
-                eventService));
+                hkcu.CreateSubKey($@"{Globals.BaseRegistryKeyPath}\Inventory")));
 
             //
             // Window & workflow layer.

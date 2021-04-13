@@ -128,7 +128,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.ProjectModel
             var modelService = new ProjectModelService(serviceRegistry);
             await modelService.AddProjectAsync(new ProjectLocator("project-1"));
 
-            projectRepository.Verify(p => p.AddProjectAsync(
+            projectRepository.Verify(p => p.AddProject(
                     It.Is<string>(id => id == "project-1")),
                 Times.Once);
             eventService.Verify(s => s.FireAsync<ProjectAddedEvent>(
@@ -150,7 +150,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.ProjectModel
             var modelService = new ProjectModelService(serviceRegistry);
             await modelService.RemoveProjectAsync(new ProjectLocator("project-1"));
 
-            projectRepository.Verify(p => p.DeleteProjectAsync(
+            projectRepository.Verify(p => p.RemoveProject(
                     It.Is<string>(id => id == "project-1")),
                 Times.Once);
             eventService.Verify(s => s.FireAsync<ProjectDeletedEvent>(

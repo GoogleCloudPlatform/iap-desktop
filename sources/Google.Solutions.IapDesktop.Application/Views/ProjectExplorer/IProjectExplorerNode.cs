@@ -57,7 +57,6 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
         InstanceLocator Instance { get; }
 
         bool IsRunning { get; }
-        bool IsConnected { get; }
 
         OperatingSystems OperatingSystem { get; }
     }

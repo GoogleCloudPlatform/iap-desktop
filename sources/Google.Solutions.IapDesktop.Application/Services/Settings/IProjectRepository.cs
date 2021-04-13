@@ -30,8 +30,8 @@ namespace Google.Solutions.IapDesktop.Application.Services.Settings
     /// </summary>
     public interface IProjectRepository
     {
-        Task AddProjectAsync(string projectId);
-        Task DeleteProjectAsync(string projectId);
+        void AddProject(string projectId);
+        void RemoveProject(string projectId);
 
         // TODO: change signature to ProjectLocator
         Task<IEnumerable<Project>> ListProjectsAsync();

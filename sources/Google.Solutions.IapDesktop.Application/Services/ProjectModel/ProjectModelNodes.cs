@@ -125,9 +125,6 @@ namespace Google.Solutions.IapDesktop.Application.Services.ProjectModel
         public string DisplayName
             => this.Instance.Name;
 
-        // TODO: Remove method
-        public bool IsConnected => throw new NotImplementedException();
-
         //---------------------------------------------------------------------
         // Ctor.
         //---------------------------------------------------------------------

@@ -250,10 +250,9 @@ namespace Google.Solutions.IapDesktop.Application.Services.ProjectModel
         {
             using (ApplicationTraceSources.Default.TraceMethod().WithParameters(project))
             {
-                await this.serviceProvider
+                this.serviceProvider
                     .GetService<IProjectRepository>()
-                    .AddProjectAsync(project.ProjectId)
-                    .ConfigureAwait(false);
+                    .AddProject(project.ProjectId);
 
                 await this.serviceProvider
                     .GetService<IEventService>()
@@ -266,10 +265,9 @@ namespace Google.Solutions.IapDesktop.Application.Services.ProjectModel
         {
             using (ApplicationTraceSources.Default.TraceMethod().WithParameters(project))
             {
-                await this.serviceProvider
+                this.serviceProvider
                     .GetService<IProjectRepository>()
-                    .DeleteProjectAsync(project.ProjectId)
-                    .ConfigureAwait(false);
+                    .RemoveProject(project.ProjectId);
 
                 //
                 // Purge from cache.
@@ -403,7 +401,6 @@ namespace Google.Solutions.IapDesktop.Application.Services.ProjectModel
             IProjectExplorerNode node,
             CancellationToken token)
         {
-            // TODO: Use polymorphism instead.
             if (node is IProjectExplorerInstanceNode instanceNode)
             {
                 return SetActiveNodeAsync(instanceNode.Instance, token);

@@ -31,36 +31,21 @@ namespace Google.Solutions.IapDesktop.Application.Services.Settings
     public class ProjectRepository : IProjectRepository
     {
         protected readonly RegistryKey baseKey;
-        private readonly IEventService eventService;
 
-        public ProjectRepository(
-            RegistryKey baseKey,
-            IEventService eventService)
+        public ProjectRepository(RegistryKey baseKey)
         {
             this.baseKey = baseKey;
-            this.eventService = eventService;
         }
 
-        public async Task AddProjectAsync(string projectId)
+        public void AddProject(string projectId)
         {
             using (this.baseKey.CreateSubKey(projectId))
             { }
-
-            // TODO: Remove
-            await this.eventService
-                .FireAsync(new ProjectAddedEvent(projectId))
-                .ConfigureAwait(false);
         }
 
-        // TODO: rename
-        public async Task DeleteProjectAsync(string projectId)
+        public void RemoveProject(string projectId)
         {
             this.baseKey.DeleteSubKeyTree(projectId, false);
-
-            // TODO: Remove
-            await this.eventService
-                .FireAsync(new ProjectDeletedEvent(projectId))
-                .ConfigureAwait(false);
         }
 
         public Task<IEnumerable<Project>> ListProjectsAsync()

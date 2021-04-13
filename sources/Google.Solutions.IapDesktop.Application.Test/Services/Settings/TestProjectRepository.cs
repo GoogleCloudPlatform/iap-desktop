@@ -43,9 +43,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Settings
             hkcu.DeleteSubKeyTree(TestKeyPath, false);
 
             var baseKey = hkcu.CreateSubKey(TestKeyPath);
-            this.repository = new ProjectRepository(
-                baseKey,
-                new MockEventService());
+            this.repository = new ProjectRepository(baseKey);
         }
 
         [TearDown]
@@ -63,10 +61,10 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Settings
         }
 
         [Test]
-        public async Task WhenProjectsAddedTwice_ListProjectsReturnsProjectOnce()
+        public void WhenProjectsAddedTwice_ListProjectsReturnsProjectOnce()
         {
-            await repository.AddProjectAsync("test-123");
-            await repository.AddProjectAsync("test-123");
+            repository.AddProject("test-123");
+            repository.AddProject("test-123");
 
             var projects = this.repository.ListProjectsAsync().Result;
 
@@ -75,12 +73,12 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Settings
         }
 
         [Test]
-        public async Task WhenProjectsDeleted_ListProjectsExcludesProject()
+        public void  WhenProjectsDeleted_ListProjectsExcludesProject()
         {
-            await repository.AddProjectAsync("test-123");
-            await repository.AddProjectAsync("test-456");
-            await repository.DeleteProjectAsync("test-456");
-            await repository.DeleteProjectAsync("test-456");
+            repository.AddProject("test-123");
+            repository.AddProject("test-456");
+            repository.RemoveProject("test-456");
+            repository.RemoveProject("test-456");
 
             var projects = this.repository.ListProjectsAsync().Result;
 
@@ -89,9 +87,9 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Settings
         }
 
         [Test]
-        public async Task WhenProjectExists_ThenCreateRegistryKeyReturnsKey()
+        public void WhenProjectExists_ThenCreateRegistryKeyReturnsKey()
         {
-            await repository.AddProjectAsync("test-123");
+            repository.AddProject("test-123");
             using (var key = repository.OpenRegistryKey("test-123"))
             {
                 Assert.IsNotNull(key);
@@ -99,9 +97,9 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Settings
         }
 
         [Test]
-        public async Task WhenProjectExists_ThenCreateRegistryKeyWithSubkeyReturnsKey()
+        public void WhenProjectExists_ThenCreateRegistryKeyWithSubkeyReturnsKey()
         {
-            await repository.AddProjectAsync("test-123");
+            repository.AddProject("test-123");
             using (var key = repository.OpenRegistryKey("test-123", "subkey", true))
             {
                 Assert.IsNotNull(key);
@@ -109,9 +107,9 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Settings
         }
 
         [Test]
-        public async Task WhenSubkeyDoesNotExist_ThenOpenRegistryReturnsNull()
+        public void WhenSubkeyDoesNotExist_ThenOpenRegistryReturnsNull()
         {
-            await repository.AddProjectAsync("test-123");
+            repository.AddProject("test-123");
             using (var key = repository.OpenRegistryKey("test-123", "subkey", false))
             {
                 Assert.IsNull(key);
