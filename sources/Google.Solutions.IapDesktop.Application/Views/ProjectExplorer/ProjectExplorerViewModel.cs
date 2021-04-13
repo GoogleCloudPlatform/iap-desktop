@@ -47,6 +47,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
         private readonly ApplicationSettingsRepository settingsRepository;
         private readonly IJobService jobService;
         private readonly IProjectModelService projectModelService;
+        private readonly IGlobalSessionBroker sessionBroker;
         private readonly ICloudConsoleService cloudConsoleService;
 
         private ViewModelNode selectedNode;
@@ -85,18 +86,19 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
             IWin32Window view,
             ApplicationSettingsRepository settingsRepository,
             IJobService jobService,
+            IEventService eventService,
+            IGlobalSessionBroker sessionBroker,
             IProjectModelService projectModelService,
             ICloudConsoleService cloudConsoleService)
         {
             this.View = view;
             this.settingsRepository = settingsRepository;
             this.jobService = jobService;
+            this.sessionBroker = sessionBroker;
             this.projectModelService = projectModelService;
             this.cloudConsoleService = cloudConsoleService;
             
-            this.RootNode = new CloudViewModelNode(
-                this,
-                projectModelService);
+            this.RootNode = new CloudViewModelNode(this);
             
             //
             // Read current settings.
@@ -109,7 +111,48 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
                 .IncludeOperatingSystems
                 .EnumValue;
 
-            // TODO: Listen for IsConnected changes
+            eventService.BindAsyncHandler<SessionStartedEvent>(
+                e => UpdateInstanceAsync(e.Instance, i => i.IsConnected = true));
+            eventService.BindAsyncHandler<SessionEndedEvent>(
+                e => UpdateInstanceAsync(e.Instance, i => i.IsConnected = false));
+        }
+
+        private async Task UpdateInstanceAsync(
+            InstanceLocator locator,
+            Action<InstanceViewModelNode> action)
+        {
+            if (await TryFindInstanceNodeAsync(locator).ConfigureAwait(true)
+                is InstanceViewModelNode instance)
+            {
+                action(instance);
+            }
+        }
+
+        private async Task<InstanceViewModelNode> TryFindInstanceNodeAsync(
+            InstanceLocator locator)
+        {
+            var project = (await this.RootNode
+                .GetFilteredNodesAsync(false)
+                .ConfigureAwait(true))
+                .FirstOrDefault(p => p.Locator.ProjectId == locator.ProjectId);
+            if (project == null)
+            {
+                return null;
+            }
+
+            var zone = (await project
+                .GetFilteredNodesAsync(false)
+                .ConfigureAwait(true))
+                .FirstOrDefault(z => z.Locator.Name == locator.Zone);
+            if (zone == null)
+            {
+                return null;
+            }
+
+            return (InstanceViewModelNode)(await zone
+                .GetFilteredNodesAsync(false)
+                .ConfigureAwait(true))
+                .FirstOrDefault(i => i.Locator.Name == locator.Name);
         }
 
         //---------------------------------------------------------------------
@@ -575,12 +618,10 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
         internal class CloudViewModelNode : ViewModelNode
         {
             private const int DefaultIconIndex = 0;
-            private readonly IProjectModelService projectModelService;
             private IProjectExplorerCloudNode cloudNode; // Loaded lazily.
 
             public CloudViewModelNode(
-                ProjectExplorerViewModel viewModel,
-                IProjectModelService projectModelService)
+                ProjectExplorerViewModel viewModel)
                 : base(
                       viewModel,
                       null,
@@ -589,7 +630,6 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
                       false,
                       DefaultIconIndex)
             {
-                this.projectModelService = projectModelService;
             }
 
             public override IProjectExplorerNode ModelNode => this.cloudNode;
@@ -600,7 +640,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
                 bool forceReload,
                 CancellationToken token)
             {
-                this.cloudNode = await this.projectModelService
+                this.cloudNode = await this.viewModel.projectModelService
                     .GetRootNodeAsync(forceReload, token)
                     .ConfigureAwait(true);
 
@@ -764,6 +804,8 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
             private const int LinuxDisconnectedIconIndex = 7;
             private const int LinuxConnectedIconIndex = 8;
 
+            private bool isConnected = false;
+
             public IProjectExplorerInstanceNode InstanceNode { get; }
 
             public InstanceViewModelNode(
@@ -779,6 +821,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
                       -1)
             {
                 this.InstanceNode = modelNode;
+                this.IsConnected = viewModel.sessionBroker.IsConnected(modelNode.Instance);
             }
 
             public override IProjectExplorerNode ModelNode => this.InstanceNode;
@@ -808,7 +851,16 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
                 }
             }
 
-            public bool IsConnected => false; // TODO: Track IsConnected, RaiseEvent for ImageIndex
+            public bool IsConnected
+            {
+                get => this.isConnected;
+                set
+                {
+                    this.isConnected = value;
+                    RaisePropertyChange();
+                    RaisePropertyChange((InstanceViewModelNode n) => n.ImageIndex);
+                }
+            }
 
             protected override Task<IEnumerable<ViewModelNode>> LoadNodesAsync(
                 bool forceReload,

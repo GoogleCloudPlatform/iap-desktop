@@ -89,6 +89,8 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views.ProjectExplorer
         private Mock<IComputeEngineAdapter> computeEngineAdapterMock;
         private Mock<IResourceManagerAdapter> resourceManagerAdapterMock;
         private Mock<ICloudConsoleService> cloudConsoleServiceMock;
+        private Mock<IEventService> eventServiceMock;
+        private Mock<IGlobalSessionBroker> sessionBrokerMock;
 
         [SetUp]
         public void SetUp()
@@ -119,6 +121,8 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views.ProjectExplorer
                 });
 
             this.cloudConsoleServiceMock = new Mock<ICloudConsoleService>();
+            this.eventServiceMock = new Mock<IEventService>();
+            this.sessionBrokerMock = new Mock<IGlobalSessionBroker>();
         }
 
         private ProjectExplorerViewModel CreateViewModel()
@@ -133,6 +137,8 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views.ProjectExplorer
                 new Control(),
                 this.settingsRepository,
                 new SynchrounousJobService(),
+                this.eventServiceMock.Object,
+                this.sessionBrokerMock.Object,
                 new ProjectModelService(serviceRegistry),
                 this.cloudConsoleServiceMock.Object);
         }
@@ -520,6 +526,72 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views.ProjectExplorer
             Assert.AreEqual(2, nofifications, "expecting 2 resets (Clear, AddRange)");
             Assert.AreEqual(1, (await viewModel.RootNode.GetFilteredNodesAsync(false)).Count);
             Assert.AreEqual(1, (await projects[0].GetFilteredNodesAsync(false)).Count);
+        }
+
+        //---------------------------------------------------------------------
+        // IsConnected tracking.
+        //---------------------------------------------------------------------
+
+        [Test]
+        public async Task WhenInstanceConnected_ThenIsConnectedIsTrue()
+        {
+            this.sessionBrokerMock.Setup(b => b.IsConnected(
+                    It.IsAny<InstanceLocator>()))
+                .Returns(true);
+
+            var viewModel = CreateViewModel();
+            await viewModel.AddProjectAsync(new ProjectLocator("project-1"));
+            var instances = (await GetInstancesAsync(viewModel))
+                .Cast<ProjectExplorerViewModel.InstanceViewModelNode>()
+                .ToList();
+
+            Assert.IsTrue(instances[0].IsConnected);
+            Assert.IsTrue(instances[1].IsConnected);
+        }
+
+        [Test]
+        public async Task WhenSessionEventFired_ThenIsConnectedIsUpdated()
+        {
+            // Capture event handlers that the view model will register.
+            Func<SessionStartedEvent, Task> sessionStartedEventHandler = null;
+            this.eventServiceMock.Setup(e => e.BindAsyncHandler(
+                    It.IsAny<Func<SessionStartedEvent, Task>>()))
+                .Callback<Func<SessionStartedEvent, Task>>(e => sessionStartedEventHandler = e);
+
+            Func<SessionEndedEvent, Task> sessionEndedEventHandler = null;
+            this.eventServiceMock.Setup(e => e.BindAsyncHandler(
+                    It.IsAny<Func<SessionEndedEvent, Task>>()))
+                .Callback<Func<SessionEndedEvent, Task>>(e => sessionEndedEventHandler = e);
+
+            var viewModel = CreateViewModel();
+            await viewModel.AddProjectAsync(new ProjectLocator("project-1"));
+            var instances = (await GetInstancesAsync(viewModel))
+                .Cast<ProjectExplorerViewModel.InstanceViewModelNode>()
+                .ToList();
+
+            Assert.IsNotNull(sessionStartedEventHandler);
+            Assert.IsNotNull(sessionEndedEventHandler);
+
+            Assert.IsFalse(instances[0].IsConnected);
+            Assert.IsFalse(instances[1].IsConnected);
+
+            await sessionStartedEventHandler(
+                new SessionStartedEvent((InstanceLocator)instances[0].Locator));
+
+            Assert.IsTrue(instances[0].IsConnected);
+            Assert.IsFalse(instances[1].IsConnected);
+
+            await sessionEndedEventHandler(
+                new SessionEndedEvent((InstanceLocator)instances[0].Locator));
+
+            Assert.IsFalse(instances[0].IsConnected);
+            Assert.IsFalse(instances[1].IsConnected);
+
+            await sessionStartedEventHandler(
+                new SessionStartedEvent(new InstanceLocator("project-1", "zone-1", "unknown-1")));
+
+            Assert.IsFalse(instances[0].IsConnected);
+            Assert.IsFalse(instances[1].IsConnected);
         }
 
         //---------------------------------------------------------------------

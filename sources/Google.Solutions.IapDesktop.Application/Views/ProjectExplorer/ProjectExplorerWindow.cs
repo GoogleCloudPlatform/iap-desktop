@@ -98,6 +98,8 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
                 this,
                 serviceProvider.GetService<ApplicationSettingsRepository>(),
                 this.jobService,
+                serviceProvider.GetService<IEventService>(),
+                serviceProvider.GetService<IGlobalSessionBroker>(),
                 serviceProvider.GetService<IProjectModelService>(),
                 serviceProvider.GetService<ICloudConsoleService>());
 
