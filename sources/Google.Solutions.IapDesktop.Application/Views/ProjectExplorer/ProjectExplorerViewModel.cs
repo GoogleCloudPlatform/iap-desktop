@@ -416,6 +416,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
             protected readonly ProjectExplorerViewModel viewModel;
 
             private bool isExpanded;
+            private int defaultImageIndex;
             private RangeObservableCollection<ViewModelNode> nodes;
             private RangeObservableCollection<ViewModelNode> filteredNodes;
 
@@ -432,8 +433,8 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
             public ResourceLocator Locator { get; }
             public string Text { get; }
             public bool IsLeaf { get; }
-            public int ImageIndex { get; }
-            public int SelectedImageIndex { get; }
+            
+            public virtual int ImageIndex => this.defaultImageIndex;
 
             public bool IsExpanded
             {
@@ -559,8 +560,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
                 ResourceLocator locator,
                 string text,
                 bool isLeaf,
-                int imageIndex,
-                int selectedImageIndex)
+                int defaultImageIndex)
             {
                 this.viewModel = viewModel;
                 this.View = viewModel.View;
@@ -568,13 +568,13 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
                 this.Locator = locator;
                 this.Text = text;
                 this.IsLeaf = isLeaf;
-                this.ImageIndex = imageIndex;
-                this.SelectedImageIndex = selectedImageIndex;
+                this.defaultImageIndex = defaultImageIndex;
             }
         }
 
         internal class CloudViewModelNode : ViewModelNode
         {
+            private const int DefaultIconIndex = 0;
             private readonly IProjectModelService projectModelService;
             private IProjectExplorerCloudNode cloudNode; // Loaded lazily.
 
@@ -587,8 +587,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
                       null,
                       "Google Cloud",
                       false,
-                      0,
-                      0)
+                      DefaultIconIndex)
             {
                 this.projectModelService = projectModelService;
             }
@@ -623,6 +622,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
 
         internal class ProjectViewModelNode : ViewModelNode
         {
+            private const int DefaultIconIndex = 1;
             public IProjectExplorerProjectNode ProjectNode { get; }
 
             public ProjectViewModelNode(
@@ -637,8 +637,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
                         ? modelNode.Project.Name
                         : $"{modelNode.DisplayName} ({modelNode.Project.Name})",
                       false,
-                      0,
-                      0)
+                      DefaultIconIndex)
             {
                 this.ProjectNode = modelNode;
                 this.IsExpanded = true;
@@ -678,6 +677,8 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
 
         internal class InaccessibleProjectViewModelNode : ViewModelNode
         {
+            private const int DefaultIconIndex = 1;
+
             public ProjectLocator Project { get; }
 
             public InaccessibleProjectViewModelNode(
@@ -690,8 +691,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
                       projectLocator,
                       $"{projectLocator.Name} (inaccessible)",
                       true,
-                      0,
-                      0)
+                      DefaultIconIndex)
             {
                 this.Project = projectLocator;
             }
@@ -710,6 +710,8 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
 
         internal class ZoneViewModelNode : ViewModelNode
         {
+            private const int DefaultIconIndex = 3;
+
             public IProjectExplorerZoneNode ZoneNode { get; }
 
             public ZoneViewModelNode(
@@ -722,8 +724,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
                       modelNode.Zone,
                       modelNode.DisplayName,
                       false,
-                      0,
-                      0)
+                      DefaultIconIndex)
             {
                 this.ZoneNode = modelNode;
                 this.IsExpanded = true;
@@ -757,6 +758,12 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
 
         internal class InstanceViewModelNode : ViewModelNode
         {
+            private const int WindowsDisconnectedIconIndex = 4;
+            private const int WindowsConnectedIconIndex = 5;
+            private const int StoppedIconIndex = 6;
+            private const int LinuxDisconnectedIconIndex = 7;
+            private const int LinuxConnectedIconIndex = 8;
+
             public IProjectExplorerInstanceNode InstanceNode { get; }
 
             public InstanceViewModelNode(
@@ -769,8 +776,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
                       modelNode.Instance,
                       modelNode.DisplayName,
                       true,
-                      0,
-                      0)
+                      -1)
             {
                 this.InstanceNode = modelNode;
 
@@ -781,6 +787,31 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
             public override IProjectExplorerNode ModelNode => this.InstanceNode;
 
             public override bool CanReload => false;
+
+            public override int ImageIndex 
+            { 
+                get
+                {
+                    if (this.IsConnected)
+                    {
+                        return this.InstanceNode.OperatingSystem == OperatingSystems.Windows
+                            ? WindowsConnectedIconIndex
+                            : LinuxConnectedIconIndex;
+                    }
+                    else if (!this.InstanceNode.IsRunning)
+                    {
+                        return StoppedIconIndex;
+                    }
+                    else
+                    {
+                        return this.InstanceNode.OperatingSystem == OperatingSystems.Windows
+                            ? WindowsDisconnectedIconIndex
+                            : LinuxDisconnectedIconIndex;
+                    }
+                }
+            }
+
+            public bool IsConnected => false; // TODO: Track IsConnected, RaiseEvent for ImageIndex
 
             protected override Task<IEnumerable<ViewModelNode>> LoadNodesAsync(
                 bool forceReload,

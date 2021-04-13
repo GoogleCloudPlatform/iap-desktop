@@ -126,7 +126,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
             //
             this.treeView.BindChildren(node => node.GetFilteredNodesAsync(false));
             this.treeView.BindImageIndex(node => node.ImageIndex);
-            this.treeView.BindSelectedImageIndex(node => node.SelectedImageIndex);
+            this.treeView.BindSelectedImageIndex(node => node.ImageIndex);
             this.treeView.BindIsExpanded(node => node.IsExpanded);
             this.treeView.BindIsLeaf(node => node.IsLeaf);
             this.treeView.BindText(node => node.Text);
