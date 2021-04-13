@@ -119,6 +119,13 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
                 c => c.SelectedModelNode,
                 node => this.viewModel.SelectedNode = node);
 
+            this.treeView.LoadingChildrenFailed += (sender, args) =>
+            {
+                this.serviceProvider
+                    .GetService<IExceptionDialog>()
+                    .Show(this, "Loading project failed", args.Exception);
+            };
+
             //
             // Bind toolbar controls.
             //
@@ -134,7 +141,47 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
                 this.Container);
         }
 
-        private async Task<bool> AddProjectAsync()
+        private async Task CallViewModelAsync(
+            Func<ProjectExplorerViewModel, Task> action,
+            string actionName)
+        {
+            try
+            {
+                await action(this.viewModel).ConfigureAwait(true);
+            }
+            catch (Exception e) when (e.IsCancellation())
+            {
+                // Ignore.
+            }
+            catch (Exception e)
+            {
+                this.serviceProvider
+                    .GetService<IExceptionDialog>()
+                    .Show(this, $"{actionName} failed", e);
+            }
+        }
+
+        private void CallViewModel(
+            Action<ProjectExplorerViewModel> action,
+            string actionName)
+        {
+            try
+            {
+                action(this.viewModel);
+            }
+            catch (Exception e) when (e.IsCancellation())
+            {
+                // Ignore.
+            }
+            catch (Exception e)
+            {
+                this.serviceProvider
+                    .GetService<IExceptionDialog>()
+                    .Show(this, $"{actionName} failed", e);
+            }
+        }
+
+        private async Task<bool> AddNewProjectAsync()
         {
             try
             {
@@ -173,108 +220,34 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
             }
         }
 
-        private async Task RefreshAllProjectsAsync()
-        {
-            try
-            {
-                await this.viewModel.RefreshAsync(false)
-                    .ConfigureAwait(true);
-            }
-            catch (Exception e) when (e.IsCancellation())
-            {
-                // Ignore.
-            }
-            catch (Exception e)
-            {
-                this.serviceProvider
-                    .GetService<IExceptionDialog>()
-                    .Show(this, "Refreshing project failed", e);
-            }
-        }
-
-        private async Task RefreshSelectedNodeAsync()
-        {
-            try
-            {
-                await this.viewModel.RefreshSelectedNodeAsync()
-                    .ConfigureAwait(true);
-            }
-            catch (Exception e) when (e.IsCancellation())
-            {
-                // Ignore.
-            }
-            catch (Exception e)
-            {
-                this.serviceProvider
-                    .GetService<IExceptionDialog>()
-                    .Show(this, "Refreshing project failed", e);
-            }
-        }
-
         //---------------------------------------------------------------------
         // Context menu event handlers.
         //---------------------------------------------------------------------
 
         private async void refreshAllProjectsToolStripMenuItem_Click(object sender, EventArgs _)
-            => await RefreshAllProjectsAsync().ConfigureAwait(true);
+            => await CallViewModelAsync(
+                vm => vm.RefreshAsync(false),
+                "Refreshing projects").ConfigureAwait(true);
 
         private async void refreshToolStripMenuItem_Click(object sender, EventArgs _)
-            => await RefreshSelectedNodeAsync().ConfigureAwait(true);
+            => await CallViewModelAsync(
+                vm => vm.RefreshSelectedNodeAsync(),
+                "Refreshing projects").ConfigureAwait(true);
 
         private async void unloadProjectToolStripMenuItem_Click(object sender, EventArgs _)
-        {
-            try
-            {
-                await this.viewModel.UnloadSelectedProjectAsync()
-                    .ConfigureAwait(true);
-            }
-            catch (Exception e) when (e.IsCancellation())
-            {
-                // Ignore.
-            }
-            catch (Exception e)
-            {
-                this.serviceProvider
-                    .GetService<IExceptionDialog>()
-                    .Show(this, "Unloading project failed", e);
-            }
-        }
+            => await CallViewModelAsync(
+                vm => vm.UnloadSelectedProjectAsync(),
+                "Unloading projects").ConfigureAwait(true);
 
         private void openInCloudConsoleToolStripMenuItem_Click(object sender, EventArgs _)
-        {
-            try
-            {
-                this.viewModel.OpenInCloudConsole();
-            }
-            catch (Exception e) when (e.IsCancellation())
-            {
-                // Ignore.
-            }
-            catch (Exception e)
-            {
-                this.serviceProvider
-                    .GetService<IExceptionDialog>()
-                    .Show(this, "Unloading project failed", e);
-            }
-        }
+            => CallViewModel(
+                vm => vm.OpenInCloudConsole(),
+                "Opening Cloud Console");
 
         private void configureIapAccessToolStripMenuItem_Click(object sender, EventArgs _)
-        {
-            try
-            {
-                this.viewModel.ConfigureIapAccess();
-            }
-            catch (Exception e) when (e.IsCancellation())
-            {
-                // Ignore.
-            }
-            catch (Exception e)
-            {
-                this.serviceProvider
-                    .GetService<IExceptionDialog>()
-                    .Show(this, "Unloading project failed", e);
-            }
-        }
+            => CallViewModel(
+                vm => vm.ConfigureIapAccess(),
+                "Opening Cloud Console");
 
         private void treeView_NodeMouseDoubleClick(object sender, TreeNodeMouseClickEventArgs e)
         {
@@ -286,10 +259,12 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
         //---------------------------------------------------------------------
 
         private async void refreshButton_Click(object sender, EventArgs args)
-            => await RefreshSelectedNodeAsync().ConfigureAwait(true);
+            => await CallViewModelAsync(
+                vm => vm.RefreshSelectedNodeAsync(),
+                "Refreshing projects").ConfigureAwait(true);
 
         private async void addButton_Click(object sender, EventArgs args)
-            => await AddProjectAsync().ConfigureAwait(true);
+            => await AddNewProjectAsync().ConfigureAwait(true);
 
         //---------------------------------------------------------------------
         // Other Windows event handlers.
@@ -312,7 +287,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
                 {
                     // No projects in inventory yet - pop open the 'Add Project'
                     // dialog to get the user started.
-                    await AddProjectAsync().ConfigureAwait(true);
+                    await AddNewProjectAsync().ConfigureAwait(true);
                 }
             }
             catch (Exception e) when (e.IsCancellation())
@@ -388,7 +363,9 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
 
             if (e.KeyCode == Keys.F5)
             {
-                RefreshAllProjectsAsync().ContinueWith(_ => { });
+                this.viewModel
+                    .RefreshSelectedNodeAsync()
+                    .ContinueWith(_ => { });
             }
             else if (e.KeyCode == Keys.Enter)
             {
@@ -408,7 +385,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
         {
             // NB. The project explorer might be hidden and no project
             // might have been loaded yet.
-            if (await AddProjectAsync().ConfigureAwait(true))
+            if (await AddNewProjectAsync().ConfigureAwait(true))
             {
                 // Show the window. That might kick of an asynchronous
                 // Refresh if the window previously was not visible.

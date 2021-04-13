@@ -589,15 +589,25 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
                 bool forceReload,
                 CancellationToken token)
             {
-                var zones = await this.viewModel.projectModelService.GetZoneNodesAsync(
-                        this.ModelNode.Project,
-                        forceReload,
-                        token)
-                    .ConfigureAwait(true);
+                try
+                {
+                    var zones = await this.viewModel.projectModelService.GetZoneNodesAsync(
+                            this.ModelNode.Project,
+                            forceReload,
+                            token)
+                        .ConfigureAwait(true);
 
-                return zones
-                    .Select(z => new ZoneViewModelNode(this.viewModel, this, z))
-                    .Cast<ViewModelNode>();
+                    return zones
+                        .Select(z => new ZoneViewModelNode(this.viewModel, this, z))
+                        .Cast<ViewModelNode>();
+                }
+                catch (ResourceAccessDeniedException)
+                {
+                    // Letting these exception propagate could cause a flurry
+                    // of error messages when multiple projects have become
+                    // inaccessible. So it's best to just swallow this error.
+                    return Enumerable.Empty<ViewModelNode>();
+                }
             }
         }
 
