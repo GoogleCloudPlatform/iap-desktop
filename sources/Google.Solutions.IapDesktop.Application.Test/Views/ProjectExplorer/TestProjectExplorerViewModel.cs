@@ -335,7 +335,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views.ProjectExplorer
         [Test]
         public async Task WhenProjectRemoved_ThenViewModelIsUpdated()
         {
-            this.projectRepository.AddProject("project-1");
+            this.projectRepository.AddProject(new ProjectLocator("project-1"));
 
             var viewModel = CreateViewModel();
             var initialProjectsList = await viewModel.ExpandRootAsync();

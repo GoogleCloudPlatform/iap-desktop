@@ -19,6 +19,7 @@
 // under the License.
 //
 
+using Google.Solutions.Common.Locator;
 using Microsoft.Win32;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -30,25 +31,14 @@ namespace Google.Solutions.IapDesktop.Application.Services.Settings
     /// </summary>
     public interface IProjectRepository
     {
-        void AddProject(string projectId);
-        void RemoveProject(string projectId);
+        void AddProject(ProjectLocator projectId);
+        void RemoveProject(ProjectLocator projectId);
 
-        // TODO: change signature to ProjectLocator
-        Task<IEnumerable<Project>> ListProjectsAsync();
+        Task<IEnumerable<ProjectLocator>> ListProjectsAsync();
 
         RegistryKey OpenRegistryKey(string projectId);
 
         RegistryKey OpenRegistryKey(string projectId, string subkey, bool create);
-    }
-
-    public class Project
-    {
-        public string ProjectId { get; }
-
-        internal Project(string projectId)
-        {
-            this.ProjectId = projectId;
-        }
     }
 
     //---------------------------------------------------------------------

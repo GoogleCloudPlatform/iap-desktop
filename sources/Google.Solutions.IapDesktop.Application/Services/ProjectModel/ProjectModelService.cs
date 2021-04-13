@@ -252,7 +252,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.ProjectModel
             {
                 this.serviceProvider
                     .GetService<IProjectRepository>()
-                    .AddProject(project.ProjectId);
+                    .AddProject(project);
 
                 await this.serviceProvider
                     .GetService<IEventService>()
@@ -267,7 +267,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.ProjectModel
             {
                 this.serviceProvider
                     .GetService<IProjectRepository>()
-                    .RemoveProject(project.ProjectId);
+                    .RemoveProject(project);
 
                 //
                 // Purge from cache.
