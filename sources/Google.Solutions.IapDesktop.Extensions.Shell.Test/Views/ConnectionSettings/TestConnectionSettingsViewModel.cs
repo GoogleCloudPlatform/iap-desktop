@@ -21,6 +21,7 @@
 
 using Google.Solutions.Common.Locator;
 using Google.Solutions.Common.Test;
+using Google.Solutions.IapDesktop.Application.Services.Adapters;
 using Google.Solutions.IapDesktop.Application.Services.Integration;
 using Google.Solutions.IapDesktop.Application.Services.Settings;
 using Google.Solutions.IapDesktop.Application.Views.ProjectExplorer;
@@ -49,14 +50,12 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.ConnectionSett
         {
             hkcu.DeleteSubKeyTree(TestKeyPath, false);
 
-            var projectRepository = new ProjectRepository(
-                hkcu.CreateSubKey(TestKeyPath),
-                new Mock<IEventService>().Object);
+            var projectRepository = new ProjectRepository(hkcu.CreateSubKey(TestKeyPath));
             var settingsRepository = new ConnectionSettingsRepository(projectRepository);
             this.service = new ConnectionSettingsService(settingsRepository);
 
             // Set some initial project settings.
-            projectRepository.AddProjectAsync(SampleProjectId).Wait();
+            projectRepository.AddProject(new ProjectLocator(SampleProjectId));
 
             var projectSettings = settingsRepository.GetProjectSettings(SampleProjectId);
             projectSettings.RdpDomain.Value = "project-domain";
@@ -75,8 +74,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.ConnectionSett
             var node = new Mock<IProjectExplorerInstanceNode>();
             node.SetupGet(n => n.Instance).Returns(
                 new InstanceLocator(SampleProjectId, "zone-1", "instance-1"));
-            node.SetupGet(n => n.IsConnected).Returns(true);
-            node.SetupGet(n => n.IsWindowsInstance).Returns(true);
+            node.SetupGet(n => n.OperatingSystem).Returns(OperatingSystems.Windows);
 
             await viewModel.SwitchToModelAsync(node.Object);
 
@@ -91,8 +89,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.ConnectionSett
             var node = new Mock<IProjectExplorerInstanceNode>();
             node.SetupGet(n => n.Instance).Returns(
                 new InstanceLocator(SampleProjectId, "zone-1", "instance-1"));
-            node.SetupGet(n => n.IsConnected).Returns(false);
-            node.SetupGet(n => n.IsWindowsInstance).Returns(true);
+            node.SetupGet(n => n.OperatingSystem).Returns(OperatingSystems.Windows);
 
             await viewModel.SwitchToModelAsync(node.Object);
 
@@ -163,8 +160,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.ConnectionSett
             node.SetupGet(n => n.Instance).Returns(
                 new InstanceLocator(SampleProjectId, "zone-1", "instance-1"));
             node.SetupGet(n => n.DisplayName).Returns("display");
-            node.SetupGet(n => n.IsConnected).Returns(false);
-            node.SetupGet(n => n.IsWindowsInstance).Returns(true);
+            node.SetupGet(n => n.OperatingSystem).Returns(OperatingSystems.Windows);
 
             await viewModel.SwitchToModelAsync(node.Object);
 

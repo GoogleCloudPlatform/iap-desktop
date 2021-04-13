@@ -19,6 +19,7 @@
 // under the License.
 //
 
+using Google.Solutions.Common.Locator;
 using Google.Solutions.Common.Test;
 using Google.Solutions.IapDesktop.Application.Services.Integration;
 using Google.Solutions.IapDesktop.Application.Services.Settings;
@@ -49,9 +50,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.ConnectionS
 
             var baseKey = hkcu.CreateSubKey(TestKeyPath);
 
-            this.projectRepository = new ProjectRepository(
-                baseKey,
-                new Mock<IEventService>().Object);
+            this.projectRepository = new ProjectRepository(baseKey);
             this.repository = new ConnectionSettingsRepository(
                 this.projectRepository);
         }
@@ -72,7 +71,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.ConnectionS
         [Test]
         public void WhenProjectIdExists_GetProjectSettingsReturnsDefaults()
         {
-            this.projectRepository.AddProjectAsync("pro-1").Wait();
+            this.projectRepository.AddProject(new ProjectLocator("pro-1"));
             var settings = this.repository.GetProjectSettings("pro-1");
 
             Assert.AreEqual("pro-1", settings.ProjectId);
@@ -94,7 +93,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.ConnectionS
         [Test]
         public void WhenProjectSettingsSaved_GetProjectSettingsReturnsData()
         {
-            this.projectRepository.AddProjectAsync("pro-1").Wait();
+            this.projectRepository.AddProject(new ProjectLocator("pro-1"));
             var originalSettings = this.repository.GetProjectSettings("pro-1");
             originalSettings.RdpUsername.Value = "user";
 
@@ -109,7 +108,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.ConnectionS
         [Test]
         public void WhenProjectSettingsSavedTwice_GetProjectSettingsReturnsLatestData()
         {
-            this.projectRepository.AddProjectAsync("pro-1").Wait();
+            this.projectRepository.AddProject(new ProjectLocator("pro-1"));
             var originalSettings = this.repository.GetProjectSettings("pro-1");
             originalSettings.RdpUsername.Value = "user";
 
@@ -127,12 +126,12 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.ConnectionS
         [Test]
         public void WhenProjectSettingsDeleted_GetProjectSettingsThrowsKeyNotFoundException()
         {
-            this.projectRepository.AddProjectAsync("pro-1").Wait();
+            this.projectRepository.AddProject(new ProjectLocator("pro-1"));
             var originalSettings = this.repository.GetProjectSettings("pro-1");
             originalSettings.RdpUsername.Value = "user";
             this.repository.SetProjectSettings(originalSettings);
 
-            this.projectRepository.DeleteProjectAsync(originalSettings.ProjectId).Wait();
+            this.projectRepository.RemoveProject(new ProjectLocator(originalSettings.ProjectId));
 
             Assert.Throws<KeyNotFoundException>(() =>
             {
@@ -156,7 +155,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.ConnectionS
         [Test]
         public void WhenZoneIdDoesNotExist_GetZoneSettingsReturnsDefaults()
         {
-            this.projectRepository.AddProjectAsync("pro-1").Wait();
+            this.projectRepository.AddProject(new ProjectLocator("pro-1"));
             var settings = this.repository.GetZoneSettings("pro-1", "zone-1");
 
             Assert.AreEqual("pro-1", settings.ProjectId);
@@ -179,7 +178,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.ConnectionS
         [Test]
         public void WhenSetValidZoneSettings_GetZoneSettingsReturnSameValues()
         {
-            this.projectRepository.AddProjectAsync("pro-1").Wait();
+            this.projectRepository.AddProject(new ProjectLocator("pro-1"));
             var originalSettings = this.repository.GetZoneSettings("pro-1", "zone-1");
             originalSettings.RdpUsername.Value = "user-1";
 
@@ -191,12 +190,12 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.ConnectionS
         [Test]
         public void WhenProjectSettingsDeleted_ZoneSettingsAreDeletedToo()
         {
-            this.projectRepository.AddProjectAsync("pro-1").Wait();
+            this.projectRepository.AddProject(new ProjectLocator("pro-1"));
             var originalSettings = this.repository.GetZoneSettings("pro-1", "zone-1");
             originalSettings.RdpUsername.Value = "user-1";
             this.repository.SetZoneSettings(originalSettings);
 
-            projectRepository.DeleteProjectAsync("pro-1").Wait();
+            projectRepository.RemoveProject(new ProjectLocator("pro-1"));
 
             Assert.Throws<KeyNotFoundException>(() =>
             {
@@ -220,7 +219,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.ConnectionS
         [Test]
         public void WhenVmInstanceIdDoesNotExist_GetZoneSettingsReturnsDefaults()
         {
-            this.projectRepository.AddProjectAsync("pro-1").Wait();
+            this.projectRepository.AddProject(new ProjectLocator("pro-1"));
             var settings = this.repository.GetVmInstanceSettings("pro-1", "instance-1");
 
             Assert.AreEqual("pro-1", settings.ProjectId);
@@ -243,7 +242,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.ConnectionS
         [Test]
         public void WhenSetValidVmInstanceSettings_GetVmInstanceSettingsReturnSameValues()
         {
-            this.projectRepository.AddProjectAsync("pro-1").Wait();
+            this.projectRepository.AddProject(new ProjectLocator("pro-1"));
             var originalSettings = this.repository.GetVmInstanceSettings("pro-1", "vm-1");
             originalSettings.RdpUsername.Value = "user-1";
             originalSettings.RdpConnectionBar.Value = RdpConnectionBarState.Pinned;
@@ -270,12 +269,12 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.ConnectionS
         [Test]
         public void WhenProjectSettingsDeleted_VmInstanceSettingsAreDeletedToo()
         {
-            this.projectRepository.AddProjectAsync("pro-1").Wait();
+            this.projectRepository.AddProject(new ProjectLocator("pro-1"));
             var originalSettings = this.repository.GetVmInstanceSettings("pro-1", "vm-1");
             originalSettings.RdpUsername.Value = "user-1";
             this.repository.SetVmInstanceSettings(originalSettings);
 
-            projectRepository.DeleteProjectAsync("pro-1").Wait();
+            projectRepository.RemoveProject(new ProjectLocator("pro-1"));
 
             Assert.Throws<KeyNotFoundException>(() =>
             {

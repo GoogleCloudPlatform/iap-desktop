@@ -168,7 +168,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Ssh
         {
             var adapter = new Mock<IResourceManagerAdapter>();
             adapter
-                .Setup(a => a.IsGrantedPermission(
+                .Setup(a => a.IsGrantedPermissionAsync(
                         It.IsAny<string>(),
                         It.IsAny<string>(),
                         It.IsAny<CancellationToken>()))

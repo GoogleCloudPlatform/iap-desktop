@@ -21,6 +21,7 @@
 
 using Google.Solutions.Common.Diagnostics;
 using Google.Solutions.IapDesktop.Application.ObjectModel;
+using Google.Solutions.IapDesktop.Application.Services.Integration;
 using Google.Solutions.IapDesktop.Application.Views.Properties;
 using Google.Solutions.IapDesktop.Extensions.Shell.Services.ConnectionSettings;
 using System;
@@ -34,7 +35,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.ConnectionSettings
         public ConnectionSettingsWindow(IServiceProvider serviceProvider)
             : base(
                   serviceProvider,
-                  new ConnectionSettingsViewModel(serviceProvider.GetService<IConnectionSettingsService>()))
+                  new ConnectionSettingsViewModel(
+                      serviceProvider.GetService<IConnectionSettingsService>(),
+                      serviceProvider.GetService<IGlobalSessionBroker>()))
         {
         }
     }

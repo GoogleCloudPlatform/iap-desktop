@@ -65,26 +65,27 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.ConnectionSettings
 
             buffer.Append($"<h1>{HttpUtility.HtmlEncode(projectNode.Project.ProjectId)}</h1>");
 
-            foreach (var zoneNode in projectNode.Zones)
-            {
-                buffer.Append($"<h2>{HttpUtility.HtmlEncode(zoneNode.Zone.Name)}</h2>");
+            // TODO: Reimplement
+            //foreach (var zoneNode in projectNode.Zones)
+            //{
+            //    buffer.Append($"<h2>{HttpUtility.HtmlEncode(zoneNode.Zone.Name)}</h2>");
 
-                buffer.Append($"<ul>");
+            //    buffer.Append($"<ul>");
 
-                foreach (var vmNode in zoneNode.Instances.Cast<VmInstanceNode>())
-                {
-                    var settings = (InstanceConnectionSettings)this.settingsService
-                        .GetConnectionSettings(vmNode)
-                        .TypedCollection;
+            //    foreach (var vmNode in zoneNode.Instances.Cast<VmInstanceNode>())
+            //    {
+            //        var settings = (InstanceConnectionSettings)this.settingsService
+            //            .GetConnectionSettings(vmNode)
+            //            .TypedCollection;
 
-                    buffer.Append($"<li>");
-                    buffer.Append($"<a href='{new IapRdpUrl(vmNode.Instance, settings.ToUrlQuery())}'>");
-                    buffer.Append($"{HttpUtility.HtmlEncode(vmNode.InstanceName)}</a>");
-                    buffer.Append($"</li>");
-                }
+            //        buffer.Append($"<li>");
+            //        buffer.Append($"<a href='{new IapRdpUrl(vmNode.Instance, settings.ToUrlQuery())}'>");
+            //        buffer.Append($"{HttpUtility.HtmlEncode(vmNode.InstanceName)}</a>");
+            //        buffer.Append($"</li>");
+            //    }
 
-                buffer.Append($"</ul>");
-            }
+            //    buffer.Append($"</ul>");
+            //}
 
             buffer.Append("</body></html>");
 

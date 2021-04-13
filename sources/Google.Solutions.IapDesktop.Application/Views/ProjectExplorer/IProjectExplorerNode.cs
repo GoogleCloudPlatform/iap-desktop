@@ -25,7 +25,7 @@ using System.Collections.Generic;
 
 namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
 {
-    // TODO: Move to ProjectModel namespace
+    // TODO: Move to ProjectModel namespace and rename to ProjectModelNode
 
     public interface IProjectExplorerNode
     {

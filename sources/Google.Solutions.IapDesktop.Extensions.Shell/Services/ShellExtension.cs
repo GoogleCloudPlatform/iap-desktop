@@ -21,6 +21,7 @@
 
 using Google.Solutions.Common.Util;
 using Google.Solutions.IapDesktop.Application.ObjectModel;
+using Google.Solutions.IapDesktop.Application.Services.Adapters;
 using Google.Solutions.IapDesktop.Application.Util;
 using Google.Solutions.IapDesktop.Application.Views;
 using Google.Solutions.IapDesktop.Application.Views.Dialog;
@@ -62,7 +63,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services
         {
             return node is IProjectExplorerInstanceNode vmNode &&
                         vmNode.IsRunning &&
-                        vmNode.IsWindowsInstance
+                        vmNode.IsWindowsInstance()
                 ? CommandState.Enabled
                 : CommandState.Disabled;
         }
@@ -83,7 +84,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services
 
         private static CommandState GetContextMenuCommandStateWhenRunningWindowsInstanceRequired(IProjectExplorerNode node)
         {
-            if (node is IProjectExplorerInstanceNode vmNode && vmNode.IsWindowsInstance)
+            if (node is IProjectExplorerInstanceNode vmNode && vmNode.IsWindowsInstance())
             {
                 return vmNode.IsRunning
                     ? CommandState.Enabled
@@ -116,7 +117,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services
             {
                 if (node is IProjectExplorerInstanceNode vmNode)
                 {
-                    Debug.Assert(vmNode.IsWindowsInstance);
+                    Debug.Assert(vmNode.IsWindowsInstance());
 
                     var settingsService = this.serviceProvider
                         .GetService<IConnectionSettingsService>();

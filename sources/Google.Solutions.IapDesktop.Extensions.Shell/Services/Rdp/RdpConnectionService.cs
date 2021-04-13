@@ -22,6 +22,7 @@
 using Google.Solutions.Common.Locator;
 using Google.Solutions.IapDesktop.Application.ObjectModel;
 using Google.Solutions.IapDesktop.Application.Services.Integration;
+using Google.Solutions.IapDesktop.Application.Services.ProjectModel;
 using Google.Solutions.IapDesktop.Application.Util;
 using Google.Solutions.IapDesktop.Application.Views;
 using Google.Solutions.IapDesktop.Application.Views.ProjectExplorer;
@@ -33,6 +34,7 @@ using Google.Solutions.IapTunneling.Iap;
 using Google.Solutions.IapTunneling.Net;
 using System;
 using System.Diagnostics;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
@@ -55,7 +57,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Rdp
         private readonly IRemoteDesktopSessionBroker sessionBroker;
         private readonly ITunnelBrokerService tunnelBroker;
         private readonly ICredentialPrompt credentialPrompt;
-        private readonly IProjectExplorer projectExplorer;
+        private readonly IProjectModelService projectModelService;
         private readonly IConnectionSettingsService settingsService;
 
         public RdpConnectionService(IServiceProvider serviceProvider)
@@ -64,7 +66,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Rdp
             this.sessionBroker = serviceProvider.GetService<IRemoteDesktopSessionBroker>();
             this.tunnelBroker = serviceProvider.GetService<ITunnelBrokerService>();
             this.credentialPrompt = serviceProvider.GetService<ICredentialPrompt>();
-            this.projectExplorer = serviceProvider.GetService<IProjectExplorer>();
+            this.projectModelService = serviceProvider.GetService<IProjectModelService>();
             this.settingsService = serviceProvider.GetService<IConnectionSettingsService>();
             this.window = serviceProvider.GetService<IMainForm>().Window;
         }
@@ -138,7 +140,10 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Rdp
             }
 
             // Select node so that tracking windows are updated.
-            vmNode.Select();
+            await this.projectModelService.SetActiveNodeAsync(
+                    vmNode,
+                    CancellationToken.None)
+                .ConfigureAwait(true);
 
             var settings = this.settingsService.GetConnectionSettings(vmNode);
 
@@ -181,8 +186,10 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Rdp
             }
 
             InstanceConnectionSettings settings;
-            if (this.projectExplorer.TryFindNode(url.Instance)
-                is IProjectExplorerInstanceNode vmNode)
+            var existingNode = await this.projectModelService
+                .GetNodeAsync(url.Instance, CancellationToken.None)
+                .ConfigureAwait(true);
+            if (existingNode is IProjectExplorerInstanceNode vmNode)
             {
                 // We have a full set of settings for this VM, so use that as basis
                 settings = (InstanceConnectionSettings)

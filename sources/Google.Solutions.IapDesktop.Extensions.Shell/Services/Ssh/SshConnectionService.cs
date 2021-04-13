@@ -22,6 +22,7 @@
 using Google.Solutions.IapDesktop.Application.ObjectModel;
 using Google.Solutions.IapDesktop.Application.Services.Adapters;
 using Google.Solutions.IapDesktop.Application.Services.Integration;
+using Google.Solutions.IapDesktop.Application.Services.ProjectModel;
 using Google.Solutions.IapDesktop.Application.Views;
 using Google.Solutions.IapDesktop.Application.Views.ProjectExplorer;
 using Google.Solutions.IapDesktop.Extensions.Shell.Services.Adapter;
@@ -37,6 +38,7 @@ using System.Diagnostics;
 using System.Globalization;
 using System.Net;
 using System.Security.Cryptography;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
@@ -60,6 +62,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Ssh
         private readonly IKeyStoreAdapter keyStoreAdapter;
         private readonly IAuthorizationAdapter authorizationAdapter;
         private readonly SshSettingsRepository sshSettingsRepository;
+        private readonly IProjectModelService projectModelService;
 
         private static string NullIfEmpty(string s) => string.IsNullOrEmpty(s) ? null : s;
 
@@ -73,6 +76,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Ssh
             this.keyStoreAdapter = serviceProvider.GetService<IKeyStoreAdapter>();
             this.authorizationAdapter = serviceProvider.GetService<IAuthorizationAdapter>();
             this.sshSettingsRepository = serviceProvider.GetService<SshSettingsRepository>();
+            this.projectModelService = serviceProvider.GetService<IProjectModelService>();
             this.window = serviceProvider.GetService<IMainForm>().Window;
         }
 
@@ -91,7 +95,10 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Ssh
             }
 
             // Select node so that tracking windows are updated.
-            vmNode.Select();
+            await this.projectModelService.SetActiveNodeAsync(
+                    vmNode,
+                    CancellationToken.None)
+                .ConfigureAwait(true);
 
             var instance = vmNode.Instance;
             var settings = (InstanceConnectionSettings)this.settingsService
