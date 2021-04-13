@@ -28,8 +28,19 @@ using System.Net;
 
 namespace Google.Solutions.IapDesktop.Application.Views
 {
+    public interface ICloudConsoleService
+    {
+        void ConfigureIapAccess(string projectId);
+        void OpenInstanceDetails(InstanceLocator instance);
+        void OpenInstanceList(ProjectLocator project);
+        void OpenInstanceList(ZoneLocator zone);
+        void OpenLogs(IProjectExplorerNode node);
+        void OpenMyAccount();
+        void OpenVmInstanceLogDetails(string projectId, string insertId, DateTime timestamp);
+    }
+
     [SkipCodeCoverage("UI code")]
-    public class CloudConsoleService
+    public class CloudConsoleService : ICloudConsoleService
     {
         private void OpenUrl(string url)
         {

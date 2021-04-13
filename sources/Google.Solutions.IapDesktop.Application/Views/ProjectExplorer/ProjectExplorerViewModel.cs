@@ -1,4 +1,25 @@
-﻿using Google.Solutions.Common.Locator;
+﻿//
+// Copyright 2021 Google LLC
+//
+// Licensed to the Apache Software Foundation (ASF) under one
+// or more contributor license agreements.  See the NOTICE file
+// distributed with this work for additional information
+// regarding copyright ownership.  The ASF licenses this file
+// to you under the Apache License, Version 2.0 (the
+// "License"); you may not use this file except in compliance
+// with the License.  You may obtain a copy of the License at
+// 
+//   http://www.apache.org/licenses/LICENSE-2.0
+// 
+// Unless required by applicable law or agreed to in writing,
+// software distributed under the License is distributed on an
+// "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+// KIND, either express or implied.  See the License for the
+// specific language governing permissions and limitations
+// under the License.
+//
+
+using Google.Solutions.Common.Locator;
 using Google.Solutions.Common.Util;
 using Google.Solutions.IapDesktop.Application.ObjectModel;
 using Google.Solutions.IapDesktop.Application.Services.Adapters;
@@ -26,37 +47,17 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
         private readonly ApplicationSettingsRepository settingsRepository;
         private readonly IJobService jobService;
         private readonly IProjectModelService projectModelService;
+        private readonly ICloudConsoleService cloudConsoleService;
 
         private ViewModelNode selectedNode;
         private string instanceFilter;
         private OperatingSystems operatingSystemsFilter = OperatingSystems.All;
 
-        public ProjectExplorerViewModel(
-            IWin32Window view,
-            ApplicationSettingsRepository settingsRepository,
-            IJobService jobService,
-            IProjectModelService projectModelService)
+        private void SaveSettings()
         {
-            this.View = view;
-            this.settingsRepository = settingsRepository;
-            this.jobService = jobService;
-            this.projectModelService = projectModelService;
-            this.RootNode = new CloudViewModelNode(
-                this,
-                projectModelService);
-
-            //
-            // Read current settings.
-            //
-            // NB. Do not hold on to the settings object because it might change.
-            //
-
-            this.operatingSystemsFilter = settingsRepository
-                .GetSettings()
-                .IncludeOperatingSystems
-                .EnumValue;
-
-            // TODO: Listen for IsConnected changes
+            var settings = this.settingsRepository.GetSettings();
+            settings.IncludeOperatingSystems.EnumValue = this.operatingSystemsFilter;
+            this.settingsRepository.SetSettings(settings);
         }
 
         private async Task RefreshAsync(ViewModelNode node)
@@ -73,6 +74,37 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
                 await node.GetFilteredNodesAsync(true)
                     .ConfigureAwait(true);
             }
+        }
+
+        public ProjectExplorerViewModel(
+            IWin32Window view,
+            ApplicationSettingsRepository settingsRepository,
+            IJobService jobService,
+            IProjectModelService projectModelService,
+            ICloudConsoleService cloudConsoleService)
+        {
+            this.View = view;
+            this.settingsRepository = settingsRepository;
+            this.jobService = jobService;
+            this.projectModelService = projectModelService;
+            this.cloudConsoleService = cloudConsoleService;
+            
+            this.RootNode = new CloudViewModelNode(
+                this,
+                projectModelService);
+            
+            //
+            // Read current settings.
+            //
+            // NB. Do not hold on to the settings object because it might change.
+            //
+
+            this.operatingSystemsFilter = settingsRepository
+                .GetSettings()
+                .IncludeOperatingSystems
+                .EnumValue;
+
+            // TODO: Listen for IsConnected changes
         }
 
         //---------------------------------------------------------------------
@@ -97,6 +129,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
                 SaveSettings();
             }
         }
+
         public bool IsWindowsIncluded
         {
             get => this.OperatingSystemsFilter.HasFlag(OperatingSystems.Windows);
@@ -225,8 +258,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
             await RefreshAsync(true).ConfigureAwait(true);
         }
 
-        public async Task RefreshAsync(
-            bool reloadProjects)
+        public async Task RefreshAsync(bool reloadProjects)
         {
             // Reset selection to a safe place.
             this.SelectedNode = this.RootNode;
@@ -257,11 +289,37 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
                 .ConfigureAwait(true);
         }
 
-        public void SaveSettings()
+        public async Task UnloadSelectedProjectAsync()
         {
-            var settings = this.settingsRepository.GetSettings();
-            settings.IncludeOperatingSystems.EnumValue = this.operatingSystemsFilter;
-            this.settingsRepository.SetSettings(settings);
+            if (this.SelectedNode is ProjectViewModelNode projectNode)
+            {
+                await RemoveProjectAsync(projectNode.ModelNode.Project)
+                    .ConfigureAwait(true);
+            }
+            else if (this.SelectedNode is InaccessibleProjectViewModelNode inaccessibleNode)
+            {
+                await RemoveProjectAsync(inaccessibleNode.Project)
+                    .ConfigureAwait(true);
+            }
+        }
+
+        public void OpenInCloudConsole()
+        {
+            if (this.SelectedNode is InstanceViewModelNode vmInstanceNode)
+            {
+                this.cloudConsoleService.OpenInstanceDetails(
+                    vmInstanceNode.ModelNode.Instance);
+            }
+            else if (this.SelectedNode is ZoneViewModelNode zoneNode)
+            {
+                this.cloudConsoleService.OpenInstanceList(
+                    zoneNode.ModelNode.Zone);
+            }
+            else if (this.SelectedNode is ProjectViewModelNode projectNode)
+            {
+                this.cloudConsoleService.OpenInstanceList(
+                    projectNode.ModelNode.Project);
+            }
         }
 
         //---------------------------------------------------------------------
@@ -557,7 +615,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
 
         internal class ZoneViewModelNode : ViewModelNode
         {
-            private readonly IProjectExplorerZoneNode modelNode;
+            public IProjectExplorerZoneNode ModelNode { get; }
 
             public ZoneViewModelNode(
                 ProjectExplorerViewModel viewModel,
@@ -572,7 +630,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
                       0,
                       0)
             {
-                this.modelNode = modelNode;
+                this.ModelNode = modelNode;
                 this.IsExpanded = true;
             }
 
@@ -582,7 +640,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
                 bool forceReload,
                 CancellationToken token)
             {
-                return Task.FromResult(this.modelNode
+                return Task.FromResult(this.ModelNode
                     .Instances
                     .Select(i => new InstanceViewModelNode(this.viewModel, this, i))
                     .Cast<ViewModelNode>());
@@ -595,8 +653,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
                     .Cast<InstanceViewModelNode>()
                     .Where(i => this.viewModel.InstanceFilter == null ||
                                 i.ModelNode.DisplayName.Contains(this.viewModel.instanceFilter))
-                    // TODO: Remove cast
-                    .Where(i => (((InstanceNode)i.ModelNode).OperatingSystem &
+                    .Where(i => (i.ModelNode.OperatingSystem &
                                 this.viewModel.OperatingSystemsFilter) != 0);
             }
         }

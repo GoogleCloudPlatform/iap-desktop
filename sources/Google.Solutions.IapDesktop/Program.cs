@@ -245,7 +245,7 @@ namespace Google.Solutions.IapDesktop
             // Window & workflow layer.
             //
             windowAndWorkflowLayer.AddSingleton<IMainForm>(mainForm);
-            windowAndWorkflowLayer.AddTransient<CloudConsoleService>();
+            windowAndWorkflowLayer.AddTransient<ICloudConsoleService, CloudConsoleService>();
             windowAndWorkflowLayer.AddTransient<HelpService>();
             windowAndWorkflowLayer.AddTransient<IProjectPickerWindow, ProjectPickerWindow>();
             windowAndWorkflowLayer.AddTransient<AboutWindow>();

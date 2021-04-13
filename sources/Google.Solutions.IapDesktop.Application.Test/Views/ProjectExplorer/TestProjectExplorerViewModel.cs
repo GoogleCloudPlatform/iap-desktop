@@ -1,5 +1,5 @@
 ﻿//
-// Copyright 2020 Google LLC
+// Copyright 2021 Google LLC
 //
 // Licensed to the Apache Software Foundation (ASF) under one
 // or more contributor license agreements.  See the NOTICE file
@@ -27,6 +27,7 @@ using Google.Solutions.IapDesktop.Application.Services.Integration;
 using Google.Solutions.IapDesktop.Application.Services.ProjectModel;
 using Google.Solutions.IapDesktop.Application.Services.Settings;
 using Google.Solutions.IapDesktop.Application.Test.ObjectModel;
+using Google.Solutions.IapDesktop.Application.Views;
 using Google.Solutions.IapDesktop.Application.Views.ProjectExplorer;
 using Microsoft.Win32;
 using Moq;
@@ -87,6 +88,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views.ProjectExplorer
 
         private Mock<IComputeEngineAdapter> computeEngineAdapterMock;
         private Mock<IResourceManagerAdapter> resourceManagerAdapterMock;
+        private Mock<ICloudConsoleService> cloudConsoleServiceMock;
 
         [SetUp]
         public void SetUp()
@@ -116,6 +118,8 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views.ProjectExplorer
                     SampleWindowsInstanceInZone1,
                     SampleLinuxInstanceInZone1
                 });
+
+            this.cloudConsoleServiceMock = new Mock<ICloudConsoleService>();
         }
 
         private ProjectExplorerViewModel CreateViewModel()
@@ -130,7 +134,8 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views.ProjectExplorer
                 new Control(),
                 this.settingsRepository,
                 new SynchrounousJobService(),
-                new ProjectModelService(serviceRegistry));
+                new ProjectModelService(serviceRegistry),
+                this.cloudConsoleServiceMock.Object);
         }
 
         private class SynchrounousJobService : IJobService
@@ -516,6 +521,88 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views.ProjectExplorer
             Assert.AreEqual(2, nofifications, "expecting 2 resets (Clear, AddRange)");
             Assert.AreEqual(1, (await viewModel.RootNode.GetFilteredNodesAsync(false)).Count);
             Assert.AreEqual(1, (await projects[0].GetFilteredNodesAsync(false)).Count);
+        }
+
+        //---------------------------------------------------------------------
+        // UnloadSelectedProjectAsync.
+        //---------------------------------------------------------------------
+
+        [Test]
+        public async Task WhenSelectedNodeIsProject_ThenUnloadSelectedProjectAsyncUnloadsProject()
+        {
+            var viewModel = CreateViewModel();
+            await viewModel.AddProjectAsync(new ProjectLocator("project-1"));
+            var projects = await viewModel.RootNode.GetFilteredNodesAsync(false);
+
+            viewModel.SelectedNode = projects[0];
+
+            Assert.AreEqual(1, projects.Count);
+            await viewModel.UnloadSelectedProjectAsync();
+            Assert.AreEqual(0, projects.Count);
+        }
+
+        [Test]
+        public async Task WhenSelectedNodeIsInstance_ThenUnloadSelectedProjectAsyncDoesNothing()
+        {
+            var viewModel = CreateViewModel();
+            await viewModel.AddProjectAsync(new ProjectLocator("project-1"));
+            var instances = await GetInstancesAsync(viewModel);
+
+            viewModel.SelectedNode = instances[0];
+
+            Assert.AreEqual(2, instances.Count);
+            await viewModel.UnloadSelectedProjectAsync();
+            Assert.AreEqual(2, instances.Count);
+        }
+
+        //---------------------------------------------------------------------
+        // OpenInCloudConsole.
+        //---------------------------------------------------------------------
+
+        [Test]
+        public async Task WhenSelectedNodeIsProject_ThenOpenInCloudConsoleOpensInstancesList()
+        {
+            var viewModel = CreateViewModel();
+            await viewModel.AddProjectAsync(new ProjectLocator("project-1"));
+            var projects = await viewModel.RootNode.GetFilteredNodesAsync(false);
+
+            viewModel.SelectedNode = projects[0];
+            viewModel.OpenInCloudConsole();
+
+            this.cloudConsoleServiceMock.Verify(c => c.OpenInstanceList(
+                It.Is<ProjectLocator>(l => l.Name == "project-1")),
+                Times.Once);
+        }
+
+        [Test]
+        public async Task WhenSelectedNodeIsZone_ThenUnloadSelectedProjectOpensInstancesList()
+        {
+            var viewModel = CreateViewModel();
+            await viewModel.AddProjectAsync(new ProjectLocator("project-1"));
+            var projects = await viewModel.RootNode.GetFilteredNodesAsync(false);
+            var zones = await projects[0].GetFilteredNodesAsync(false);
+
+            viewModel.SelectedNode = zones[0];
+            viewModel.OpenInCloudConsole();
+
+            this.cloudConsoleServiceMock.Verify(c => c.OpenInstanceList(
+                It.Is<ZoneLocator>(l => l.Name == "zone-1")),
+                Times.Once);
+        }
+
+        [Test]
+        public async Task WhenSelectedNodeIsInstance_ThenUnloadSelectedProjectOpensInstanceDetails()
+        {
+            var viewModel = CreateViewModel();
+            await viewModel.AddProjectAsync(new ProjectLocator("project-1"));
+            var instances = await GetInstancesAsync(viewModel);
+
+            viewModel.SelectedNode = instances[0];
+            viewModel.OpenInCloudConsole();
+
+            this.cloudConsoleServiceMock.Verify(c => c.OpenInstanceDetails(
+                It.IsAny<InstanceLocator>()),
+                Times.Once);
         }
     }
 }

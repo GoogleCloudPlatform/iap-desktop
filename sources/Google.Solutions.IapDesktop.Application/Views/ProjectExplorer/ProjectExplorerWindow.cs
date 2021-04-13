@@ -98,7 +98,8 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
                 this,
                 serviceProvider.GetService<ApplicationSettingsRepository>(),
                 this.jobService,
-                serviceProvider.GetService<IProjectModelService>());
+                serviceProvider.GetService<IProjectModelService>(),
+                serviceProvider.GetService<ICloudConsoleService>());
             this.Disposed += (sender, args) =>
             {
                 this.viewModel.Dispose();
@@ -220,41 +221,41 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
         private async void refreshToolStripMenuItem_Click(object sender, EventArgs _)
             => await RefreshSelectedNodeAsync().ConfigureAwait(true);
 
-        private async void unloadProjectToolStripMenuItem_Click(object sender, EventArgs e)
+        private async void unloadProjectToolStripMenuItem_Click(object sender, EventArgs _)
         {
-            if (this.treeView.SelectedModelNode 
-                is ProjectExplorerViewModel.ProjectViewModelNode projectNode)
+            try
             {
-                await this.viewModel
-                    .RemoveProjectAsync(projectNode.ModelNode.Project)
+                await this.viewModel.UnloadSelectedProjectAsync()
                     .ConfigureAwait(true);
             }
-            else if (this.treeView.SelectedModelNode 
-                is ProjectExplorerViewModel.InaccessibleProjectViewModelNode inaccessibleNode)
+            catch (Exception e) when (e.IsCancellation())
             {
-                await this.viewModel
-                    .RemoveProjectAsync(inaccessibleNode.Project)
-                    .ConfigureAwait(true);
+                // Ignore.
+            }
+            catch (Exception e)
+            {
+                this.serviceProvider
+                    .GetService<IExceptionDialog>()
+                    .Show(this, "Unloading project failed", e);
             }
         }
 
-        private void openInCloudConsoleToolStripMenuItem_Click(object sender, EventArgs e)
+        private void openInCloudConsoleToolStripMenuItem_Click(object sender, EventArgs _)
         {
-            // TODO: Reimplement
-            //var cloudConsoleService = this.serviceProvider.GetService<CloudConsoleService>();
-
-            //if (this.treeView.SelectedNode is VmInstanceNode vmInstanceNode)
-            //{
-            //    cloudConsoleService.OpenInstanceDetails(vmInstanceNode.Instance);
-            //}
-            //else if (this.treeView.SelectedNode is ZoneNode zoneNode)
-            //{
-            //    cloudConsoleService.OpenInstanceList(zoneNode.Zone);
-            //}
-            //else if (this.treeView.SelectedNode is ProjectNode projectNode)
-            //{
-            //    cloudConsoleService.OpenInstanceList(projectNode.Project);
-            //}
+            try
+            {
+                this.viewModel.OpenInCloudConsole();
+            }
+            catch (Exception e) when (e.IsCancellation())
+            {
+                // Ignore.
+            }
+            catch (Exception e)
+            {
+                this.serviceProvider
+                    .GetService<IExceptionDialog>()
+                    .Show(this, "Unloading project failed", e);
+            }
         }
 
         private void configureIapAccessToolStripMenuItem_Click(object sender, EventArgs e)
