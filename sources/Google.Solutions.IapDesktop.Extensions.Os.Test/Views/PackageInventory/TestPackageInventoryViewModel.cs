@@ -160,7 +160,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Os.Test.Views.PackageInventory
         {
             var viewModel = CreateViewModel(PackageInventoryType.InstalledPackages);
 
-            var node = new Mock<IProjectExplorerCloudNode>();
+            var node = new Mock<IProjectModelCloudNode>();
             await viewModel.SwitchToModelAsync(node.Object);
 
             Assert.AreEqual(CommandState.Unavailable, PackageInventoryViewModel.GetCommandState(node.Object));
@@ -178,7 +178,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Os.Test.Views.PackageInventory
                 PackageInventoryType.InstalledPackages)]  PackageInventoryType type)
         {
 
-            var node = new Mock<IProjectExplorerProjectNode>();
+            var node = new Mock<IProjectModelProjectNode>();
             node.SetupGet(n => n.Project).Returns(new ProjectLocator("project-1"));
             node.SetupGet(n => n.DisplayName).Returns("project-1");
 
@@ -203,7 +203,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Os.Test.Views.PackageInventory
                 PackageInventoryType.AvailablePackages,
                 PackageInventoryType.InstalledPackages)]  PackageInventoryType type)
         {
-            var node = new Mock<IProjectExplorerZoneNode>();
+            var node = new Mock<IProjectModelZoneNode>();
             node.SetupGet(n => n.Zone).Returns(new ZoneLocator("project-1", "zone-1"));
             node.SetupGet(n => n.DisplayName).Returns("zone-1");
 
@@ -228,7 +228,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Os.Test.Views.PackageInventory
                 PackageInventoryType.AvailablePackages,
                 PackageInventoryType.InstalledPackages)]  PackageInventoryType type)
         {
-            var node = new Mock<IProjectExplorerInstanceNode>();
+            var node = new Mock<IProjectModelInstanceNode>();
             node.SetupGet(n => n.DisplayName).Returns("instance-1");
             node.SetupGet(n => n.Instance).Returns(
                 new InstanceLocator("project-1", "zone-1", "instance-1"));
@@ -254,7 +254,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Os.Test.Views.PackageInventory
                 PackageInventoryType.AvailablePackages,
                 PackageInventoryType.InstalledPackages)] PackageInventoryType type)
         {
-            var node = new Mock<IProjectExplorerInstanceNode>();
+            var node = new Mock<IProjectModelInstanceNode>();
             node.SetupGet(n => n.DisplayName).Returns("instance-3");
             node.SetupGet(n => n.Instance).Returns(
                 new InstanceLocator("project-1", "zone-1", "instance-3"));
@@ -281,7 +281,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Os.Test.Views.PackageInventory
         [Test]
         public async Task WhenLoaded_ThenFilteredPackagesContainsAllPackages()
         {
-            var node = new Mock<IProjectExplorerProjectNode>();
+            var node = new Mock<IProjectModelProjectNode>();
             node.SetupGet(n => n.Project).Returns(new ProjectLocator("project-1"));
 
             var viewModel = CreateViewModel(PackageInventoryType.InstalledPackages);
@@ -293,7 +293,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Os.Test.Views.PackageInventory
         [Test]
         public async Task WhenFilterHasMultipleTerms_ThenFilteredPackagesContainsPackagesThatMatchAllTerms()
         {
-            var node = new Mock<IProjectExplorerProjectNode>();
+            var node = new Mock<IProjectModelProjectNode>();
             node.SetupGet(n => n.Project).Returns(new ProjectLocator("project-1"));
 
             var viewModel = CreateViewModel(PackageInventoryType.InstalledPackages);
@@ -307,7 +307,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Os.Test.Views.PackageInventory
         [Test]
         public async Task WhenFilterIsReset_ThenFilteredPackagesContainsAllPackages()
         {
-            var node = new Mock<IProjectExplorerProjectNode>();
+            var node = new Mock<IProjectModelProjectNode>();
             node.SetupGet(n => n.Project).Returns(new ProjectLocator("project-1"));
 
             var viewModel = CreateViewModel(PackageInventoryType.InstalledPackages);

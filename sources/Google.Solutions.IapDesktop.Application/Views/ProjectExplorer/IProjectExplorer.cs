@@ -31,9 +31,9 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
         void ShowWindow();
         Task ShowAddProjectDialogAsync();
 
-        IProjectExplorerNode SelectedNode { get; }
+        IProjectModelNode SelectedNode { get; }
 
-        CommandContainer<IProjectExplorerNode> ContextMenuCommands { get; }
-        CommandContainer<IProjectExplorerNode> ToolbarCommands { get; }
+        CommandContainer<IProjectModelNode> ContextMenuCommands { get; }
+        CommandContainer<IProjectModelNode> ToolbarCommands { get; }
     }
 }

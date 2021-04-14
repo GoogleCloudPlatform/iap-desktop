@@ -47,7 +47,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Ssh
     public interface ISshConnectionService
     {
         Task ActivateOrConnectInstanceAsync(
-            IProjectExplorerInstanceNode vmNode);
+            IProjectModelInstanceNode vmNode);
     }
 
     [Service(typeof(ISshConnectionService))]
@@ -84,7 +84,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Ssh
         // ISshConnectionService.
         //---------------------------------------------------------------------
 
-        public async Task ActivateOrConnectInstanceAsync(IProjectExplorerInstanceNode vmNode)
+        public async Task ActivateOrConnectInstanceAsync(IProjectModelInstanceNode vmNode)
         {
             Debug.Assert(vmNode.IsSshSupported());
 

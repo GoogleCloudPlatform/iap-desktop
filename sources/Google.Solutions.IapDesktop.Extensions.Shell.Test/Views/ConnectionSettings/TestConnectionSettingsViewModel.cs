@@ -78,7 +78,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.ConnectionSett
                 this.service,
                 broker.Object);
 
-            var node = new Mock<IProjectExplorerInstanceNode>();
+            var node = new Mock<IProjectModelInstanceNode>();
             node.SetupGet(n => n.Instance).Returns(
                 new InstanceLocator(SampleProjectId, "zone-1", "instance-1"));
             node.SetupGet(n => n.OperatingSystem).Returns(OperatingSystems.Windows);
@@ -99,7 +99,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.ConnectionSett
                 this.service,
                 broker.Object);
 
-            var node = new Mock<IProjectExplorerInstanceNode>();
+            var node = new Mock<IProjectModelInstanceNode>();
             node.SetupGet(n => n.Instance).Returns(
                 new InstanceLocator(SampleProjectId, "zone-1", "instance-1"));
             node.SetupGet(n => n.OperatingSystem).Returns(OperatingSystems.Windows);
@@ -124,7 +124,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.ConnectionSett
                 this.service,
                 broker.Object);
 
-            var node = new Mock<IProjectExplorerCloudNode>();
+            var node = new Mock<IProjectModelCloudNode>();
             await viewModel.SwitchToModelAsync(node.Object);
 
             Assert.IsFalse(viewModel.IsInformationBarVisible);
@@ -143,7 +143,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.ConnectionSett
                 this.service,
                 broker.Object);
 
-            var node = new Mock<IProjectExplorerProjectNode>();
+            var node = new Mock<IProjectModelProjectNode>();
             node.SetupGet(n => n.Project).Returns(new ProjectLocator(SampleProjectId));
             node.SetupGet(n => n.DisplayName).Returns("display");
 
@@ -168,7 +168,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.ConnectionSett
                 this.service,
                 broker.Object);
 
-            var node = new Mock<IProjectExplorerZoneNode>();
+            var node = new Mock<IProjectModelZoneNode>();
             node.SetupGet(n => n.Zone).Returns(new ZoneLocator(SampleProjectId, "zone-1"));
             node.SetupGet(n => n.DisplayName).Returns("display");
 
@@ -193,7 +193,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.ConnectionSett
                 this.service,
                 broker.Object);
 
-            var node = new Mock<IProjectExplorerInstanceNode>();
+            var node = new Mock<IProjectModelInstanceNode>();
             node.SetupGet(n => n.Instance).Returns(
                 new InstanceLocator(SampleProjectId, "zone-1", "instance-1"));
             node.SetupGet(n => n.DisplayName).Returns("display");

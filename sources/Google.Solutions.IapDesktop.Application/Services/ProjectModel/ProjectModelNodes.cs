@@ -23,7 +23,6 @@ using Google.Apis.Compute.v1.Data;
 using Google.Solutions.Common.Locator;
 using Google.Solutions.Common.Util;
 using Google.Solutions.IapDesktop.Application.Services.Adapters;
-using Google.Solutions.IapDesktop.Application.Views.ProjectExplorer;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -35,7 +34,7 @@ using System.Threading.Tasks;
 
 namespace Google.Solutions.IapDesktop.Application.Services.ProjectModel
 {
-    internal class CloudNode : IProjectExplorerCloudNode
+    internal class CloudNode : IProjectModelCloudNode
     {
         //---------------------------------------------------------------------
         // Readonly properties.
@@ -43,7 +42,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.ProjectModel
 
         public string DisplayName => "Google Cloud";
 
-        public IEnumerable<IProjectExplorerProjectNode> Projects { get; }
+        public IEnumerable<IProjectModelProjectNode> Projects { get; }
         public IEnumerable<ProjectLocator> InaccessibleProjects { get; }
 
         //---------------------------------------------------------------------
@@ -51,7 +50,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.ProjectModel
         //---------------------------------------------------------------------
 
         public CloudNode(
-            IEnumerable<IProjectExplorerProjectNode> projects,
+            IEnumerable<IProjectModelProjectNode> projects,
             IEnumerable<ProjectLocator> inaccessibleProjects)
         {
             this.Projects = projects;
@@ -59,7 +58,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.ProjectModel
         }
     }
 
-    internal class ProjectNode : IProjectExplorerProjectNode
+    internal class ProjectNode : IProjectModelProjectNode
     {
         //---------------------------------------------------------------------
         // Readonly properties.
@@ -82,7 +81,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.ProjectModel
         }
     }
 
-    internal class ZoneNode : IProjectExplorerZoneNode
+    internal class ZoneNode : IProjectModelZoneNode
     {
         //---------------------------------------------------------------------
         // Readonly properties.
@@ -93,7 +92,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.ProjectModel
         public string DisplayName
             => this.Zone.Name;
 
-        public IEnumerable<IProjectExplorerInstanceNode> Instances { get; }
+        public IEnumerable<IProjectModelInstanceNode> Instances { get; }
 
         //---------------------------------------------------------------------
         // Ctor.
@@ -101,14 +100,14 @@ namespace Google.Solutions.IapDesktop.Application.Services.ProjectModel
 
         public ZoneNode(
             ZoneLocator locator,
-            IEnumerable<IProjectExplorerInstanceNode> instances)
+            IEnumerable<IProjectModelInstanceNode> instances)
         {
             this.Zone = locator;
             this.Instances = instances;
         }
     }
 
-    internal class InstanceNode : IProjectExplorerInstanceNode
+    internal class InstanceNode : IProjectModelInstanceNode
     {
         //---------------------------------------------------------------------
         // Readonly properties.

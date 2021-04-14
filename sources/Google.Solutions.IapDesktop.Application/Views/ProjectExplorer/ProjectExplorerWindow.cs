@@ -56,8 +56,8 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
 
         private readonly ProjectExplorerViewModel viewModel;
 
-        public CommandContainer<IProjectExplorerNode> ContextMenuCommands { get; }
-        public CommandContainer<IProjectExplorerNode> ToolbarCommands { get; }
+        public CommandContainer<IProjectModelNode> ContextMenuCommands { get; }
+        public CommandContainer<IProjectModelNode> ToolbarCommands { get; }
 
         public ProjectExplorerWindow(IServiceProvider serviceProvider)
             : base(serviceProvider, DockState.DockLeft)
@@ -83,12 +83,12 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
             this.jobService = serviceProvider.GetService<IJobService>();
             this.authService = serviceProvider.GetService<IAuthorizationAdapter>();
 
-            this.ContextMenuCommands = new CommandContainer<IProjectExplorerNode>(
+            this.ContextMenuCommands = new CommandContainer<IProjectModelNode>(
                 this,
                 this.contextMenu.Items,
                 ToolStripItemDisplayStyle.ImageAndText,
                 this.serviceProvider);
-            this.ToolbarCommands = new CommandContainer<IProjectExplorerNode>(
+            this.ToolbarCommands = new CommandContainer<IProjectModelNode>(
                 this,
                 this.toolStrip.Items,
                 ToolStripItemDisplayStyle.Image,
@@ -404,7 +404,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
             }
         }
 
-        public IProjectExplorerNode SelectedNode => this.viewModel.SelectedNode?.ModelNode;
+        public IProjectModelNode SelectedNode => this.viewModel.SelectedNode?.ModelNode;
     }
 }
 

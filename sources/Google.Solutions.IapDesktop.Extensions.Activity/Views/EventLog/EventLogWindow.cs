@@ -160,7 +160,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Views.EventLog
         // ProjectExplorerTrackingToolWindow.
         //---------------------------------------------------------------------
 
-        protected override async Task SwitchToNodeAsync(IProjectExplorerNode node)
+        protected override async Task SwitchToNodeAsync(IProjectModelNode node)
         {
             Debug.Assert(!InvokeRequired, "running on UI thread");
             await this.viewModel.SwitchToModelAsync(node)

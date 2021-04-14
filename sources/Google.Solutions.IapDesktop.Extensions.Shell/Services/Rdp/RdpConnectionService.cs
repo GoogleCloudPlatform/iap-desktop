@@ -43,7 +43,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Rdp
     public interface IRdpConnectionService
     {
         Task ActivateOrConnectInstanceAsync(
-            IProjectExplorerInstanceNode vmNode,
+            IProjectModelInstanceNode vmNode,
             bool allowPersistentCredentials);
 
         Task ActivateOrConnectInstanceAsync(IapRdpUrl url);
@@ -128,7 +128,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Rdp
         //---------------------------------------------------------------------
 
         public async Task ActivateOrConnectInstanceAsync(
-            IProjectExplorerInstanceNode vmNode,
+            IProjectModelInstanceNode vmNode,
             bool allowPersistentCredentials)
         {
             Debug.Assert(vmNode.IsRdpSupported());
@@ -189,7 +189,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Rdp
             var existingNode = await this.projectModelService
                 .GetNodeAsync(url.Instance, CancellationToken.None)
                 .ConfigureAwait(true);
-            if (existingNode is IProjectExplorerInstanceNode vmNode)
+            if (existingNode is IProjectModelInstanceNode vmNode)
             {
                 // We have a full set of settings for this VM, so use that as basis
                 settings = (InstanceConnectionSettings)

@@ -38,7 +38,7 @@ using System.Threading.Tasks;
 namespace Google.Solutions.IapDesktop.Extensions.Os.Views.PackageInventory
 {
     public class PackageInventoryViewModel
-        : ModelCachingViewModelBase<IProjectExplorerNode, PackageInventoryModel>
+        : ModelCachingViewModelBase<IProjectModelNode, PackageInventoryModel>
     {
         private const int ModelCacheCapacity = 5;
 
@@ -178,17 +178,17 @@ namespace Google.Solutions.IapDesktop.Extensions.Os.Views.PackageInventory
         // ModelCachingViewModelBase.
         //---------------------------------------------------------------------
 
-        internal static CommandState GetCommandState(IProjectExplorerNode node)
+        internal static CommandState GetCommandState(IProjectModelNode node)
         {
-            return (node is IProjectExplorerInstanceNode ||
-                    node is IProjectExplorerZoneNode ||
-                    node is IProjectExplorerProjectNode)
+            return (node is IProjectModelInstanceNode ||
+                    node is IProjectModelZoneNode ||
+                    node is IProjectModelProjectNode)
                 ? CommandState.Enabled
                 : CommandState.Unavailable;
         }
 
         protected override async Task<PackageInventoryModel> LoadModelAsync(
-            IProjectExplorerNode node,
+            IProjectModelNode node,
             CancellationToken token)
         {
             using (ApplicationTraceSources.Default.TraceMethod().WithParameters(node))

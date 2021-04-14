@@ -42,7 +42,7 @@ using System.Windows.Forms;
 namespace Google.Solutions.IapDesktop.Extensions.Activity.Views.EventLog
 {
     internal class EventLogViewModel
-        : ModelCachingViewModelBase<IProjectExplorerNode, EventLogModel>
+        : ModelCachingViewModelBase<IProjectModelNode, EventLogModel>
     {
         private const int ModelCacheCapacity = 5;
         internal const string DefaultWindowTitle = "Event log";
@@ -216,7 +216,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Views.EventLog
 
         public void OpenInCloudConsole()
         {
-            Debug.Assert(!(this.ModelKey is IProjectExplorerCloudNode));
+            Debug.Assert(!(this.ModelKey is IProjectModelCloudNode));
             this.serviceProvider.GetService<CloudConsoleService>().OpenLogs(this.ModelKey);
         }
 
@@ -224,11 +224,11 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Views.EventLog
         // ModelCachingViewModelBase.
         //---------------------------------------------------------------------
 
-        public static CommandState GetCommandState(IProjectExplorerNode node)
+        public static CommandState GetCommandState(IProjectModelNode node)
         {
-            if (node is IProjectExplorerProjectNode
-                || node is IProjectExplorerZoneNode
-                || node is IProjectExplorerInstanceNode)
+            if (node is IProjectModelProjectNode
+                || node is IProjectModelZoneNode
+                || node is IProjectModelInstanceNode)
             {
                 return CommandState.Enabled;
             }
@@ -239,7 +239,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Views.EventLog
         }
 
         protected override async Task<EventLogModel> LoadModelAsync(
-            IProjectExplorerNode node,
+            IProjectModelNode node,
             CancellationToken token)
         {
             using (ApplicationTraceSources.Default.TraceMethod().WithParameters(node))
@@ -249,21 +249,21 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Views.EventLog
                 string projectIdFilter;
                 string displayName;
 
-                if (node is IProjectExplorerInstanceNode vmNode)
+                if (node is IProjectModelInstanceNode vmNode)
                 {
                     displayName = vmNode.Instance.Name;
                     instanceIdFilter = new[] { vmNode.InstanceId };
                     zonesFilter = null;
                     projectIdFilter = vmNode.Instance.ProjectId;
                 }
-                else if (node is IProjectExplorerZoneNode zoneNode)
+                else if (node is IProjectModelZoneNode zoneNode)
                 {
                     displayName = zoneNode.Zone.Name;
                     instanceIdFilter = null;
                     zonesFilter = new[] { zoneNode.Zone.Name };
                     projectIdFilter = zoneNode.Zone.ProjectId;
                 }
-                else if (node is IProjectExplorerProjectNode projectNode)
+                else if (node is IProjectModelProjectNode projectNode)
                 {
                     displayName = projectNode.Project.ProjectId;
                     instanceIdFilter = null;

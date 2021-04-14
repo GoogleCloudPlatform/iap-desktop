@@ -526,7 +526,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.ProjectModel
             var project = await modelService.GetNodeAsync(
                 new ProjectLocator("project-1"),
                 CancellationToken.None);
-            Assert.IsInstanceOf(typeof(IProjectExplorerProjectNode), project);
+            Assert.IsInstanceOf(typeof(IProjectModelProjectNode), project);
             Assert.IsNotNull(project);
         }
 
@@ -550,7 +550,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.ProjectModel
             var zone = await modelService.GetNodeAsync(
                 new ZoneLocator("project-1", "zone-1"),
                 CancellationToken.None);
-            Assert.IsInstanceOf(typeof(IProjectExplorerZoneNode), zone);
+            Assert.IsInstanceOf(typeof(IProjectModelZoneNode), zone);
             Assert.IsNotNull(zone);
         }
 
@@ -574,7 +574,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.ProjectModel
             var instance = await modelService.GetNodeAsync(
                 new InstanceLocator("project-1", "zone-1", SampleWindowsInstanceInZone1.Name),
                 CancellationToken.None);
-            Assert.IsInstanceOf(typeof(IProjectExplorerInstanceNode), instance);
+            Assert.IsInstanceOf(typeof(IProjectModelInstanceNode), instance);
             Assert.IsNotNull(instance);
         }
 
@@ -622,7 +622,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.ProjectModel
 
             var activeNode = await modelService.GetActiveNodeAsync(CancellationToken.None);
             Assert.IsNotNull(activeNode);
-            Assert.IsInstanceOf(typeof(IProjectExplorerProjectNode), activeNode);
+            Assert.IsInstanceOf(typeof(IProjectModelProjectNode), activeNode);
         }
 
         [Test]
@@ -670,7 +670,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.ProjectModel
             await modelService.SetActiveNodeAsync((ResourceLocator)null, CancellationToken.None);
 
             eventService.Verify(s => s.FireAsync<ProjectExplorerNodeSelectedEvent>(
-                    It.Is<ProjectExplorerNodeSelectedEvent>(e => e.SelectedNode is IProjectExplorerCloudNode)),
+                    It.Is<ProjectExplorerNodeSelectedEvent>(e => e.SelectedNode is IProjectModelCloudNode)),
                 Times.Once);
         }
 
@@ -696,7 +696,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.ProjectModel
                 CancellationToken.None);
 
             eventService.Verify(s => s.FireAsync<ProjectExplorerNodeSelectedEvent>(
-                    It.Is<ProjectExplorerNodeSelectedEvent>(e => e.SelectedNode is IProjectExplorerCloudNode)),
+                    It.Is<ProjectExplorerNodeSelectedEvent>(e => e.SelectedNode is IProjectModelCloudNode)),
                 Times.Once);
         }
 

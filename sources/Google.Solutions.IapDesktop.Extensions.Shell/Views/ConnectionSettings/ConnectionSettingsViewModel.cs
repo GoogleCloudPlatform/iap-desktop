@@ -96,12 +96,12 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.ConnectionSettings
             this.inspectedObject.Save();
         }
 
-        public Task SwitchToModelAsync(IProjectExplorerNode node)
+        public Task SwitchToModelAsync(IProjectModelNode node)
         {
             if (this.settingsService.IsConnectionSettingsAvailable(node))
             {
                 this.IsInformationBarVisible =
-                    node is IProjectExplorerInstanceNode vmNode &&
+                    node is IProjectModelInstanceNode vmNode &&
                     this.globalSessionBroker.IsConnected(vmNode.Instance);
 
                 this.InspectedObject = this.settingsService.GetConnectionSettings(node);

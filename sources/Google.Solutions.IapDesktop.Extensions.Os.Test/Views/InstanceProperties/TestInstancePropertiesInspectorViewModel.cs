@@ -80,7 +80,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Os.Test.Views.InstancePropertie
         {
             var viewModel = CreateInstanceDetailsViewModel();
 
-            var node = new Mock<IProjectExplorerCloudNode>();
+            var node = new Mock<IProjectModelCloudNode>();
             await viewModel.SwitchToModelAsync(node.Object);
 
             Assert.IsFalse(viewModel.IsInformationBarVisible);
@@ -93,7 +93,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Os.Test.Views.InstancePropertie
         {
             var viewModel = CreateInstanceDetailsViewModel();
 
-            var node = new Mock<IProjectExplorerProjectNode>();
+            var node = new Mock<IProjectModelProjectNode>();
             node.SetupGet(n => n.Project).Returns(new ProjectLocator("project-1"));
             await viewModel.SwitchToModelAsync(node.Object);
 
@@ -107,7 +107,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Os.Test.Views.InstancePropertie
         {
             var viewModel = CreateInstanceDetailsViewModel();
 
-            var node = new Mock<IProjectExplorerZoneNode>();
+            var node = new Mock<IProjectModelZoneNode>();
             node.SetupGet(n => n.Zone).Returns(new ZoneLocator("project-1", "zone-1"));
             await viewModel.SwitchToModelAsync(node.Object);
 
@@ -121,7 +121,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Os.Test.Views.InstancePropertie
         {
             var viewModel = CreateInstanceDetailsViewModel();
 
-            var node = new Mock<IProjectExplorerInstanceNode>();
+            var node = new Mock<IProjectModelInstanceNode>();
             node.SetupGet(n => n.Instance).Returns(
                 new InstanceLocator("project-1", "zone-1", "instance-1"));
             await viewModel.SwitchToModelAsync(node.Object);
@@ -139,13 +139,13 @@ namespace Google.Solutions.IapDesktop.Extensions.Os.Test.Views.InstancePropertie
         {
             var viewModel = CreateInstanceDetailsViewModel();
 
-            var node = new Mock<IProjectExplorerInstanceNode>();
+            var node = new Mock<IProjectModelInstanceNode>();
             node.SetupGet(n => n.Instance).Returns(
                 new InstanceLocator("project-1", "zone-1", "instance-1"));
             await viewModel.SwitchToModelAsync(node.Object);
 
             // Switch to denied node.
-            var deniedNode = new Mock<IProjectExplorerInstanceNode>();
+            var deniedNode = new Mock<IProjectModelInstanceNode>();
             deniedNode.SetupGet(n => n.Instance).Returns(
                 new InstanceLocator("project-1", "zone-1", "denied-1"));
 

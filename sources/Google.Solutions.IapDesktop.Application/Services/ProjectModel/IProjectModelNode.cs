@@ -25,30 +25,30 @@ using System.Collections.Generic;
 
 namespace Google.Solutions.IapDesktop.Application.Services.ProjectModel
 {
-    public interface IProjectExplorerNode
+    public interface IProjectModelNode
     {
         string DisplayName { get; }
     }
 
-    public interface IProjectExplorerCloudNode : IProjectExplorerNode
+    public interface IProjectModelCloudNode : IProjectModelNode
     {
-        IEnumerable<IProjectExplorerProjectNode> Projects { get; }
+        IEnumerable<IProjectModelProjectNode> Projects { get; }
         IEnumerable<ProjectLocator> InaccessibleProjects { get; }
     }
 
-    public interface IProjectExplorerProjectNode : IProjectExplorerNode
+    public interface IProjectModelProjectNode : IProjectModelNode
     {
         ProjectLocator Project { get; }
     }
 
-    public interface IProjectExplorerZoneNode : IProjectExplorerNode
+    public interface IProjectModelZoneNode : IProjectModelNode
     {
         ZoneLocator Zone { get; }
 
-        IEnumerable<IProjectExplorerInstanceNode> Instances { get; }
+        IEnumerable<IProjectModelInstanceNode> Instances { get; }
     }
 
-    public interface IProjectExplorerInstanceNode : IProjectExplorerNode
+    public interface IProjectModelInstanceNode : IProjectModelNode
     {
         ulong InstanceId { get; }
 

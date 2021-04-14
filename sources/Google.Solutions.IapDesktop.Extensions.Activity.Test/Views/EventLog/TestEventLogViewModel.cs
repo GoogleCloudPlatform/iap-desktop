@@ -175,7 +175,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.Views.EventLog
         [Test]
         public void WhenNodeIsCloudNode_ThenCommandStateIsUnavailable()
         {
-            var node = new Mock<IProjectExplorerCloudNode>().Object;
+            var node = new Mock<IProjectModelCloudNode>().Object;
             Assert.AreEqual(CommandState.Unavailable, EventLogViewModel.GetCommandState(node));
         }
 
@@ -186,7 +186,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.Views.EventLog
         [Test]
         public async Task WhenSwitchingToCloudNode_ThenListIsDisabled()
         {
-            var node = new Mock<IProjectExplorerCloudNode>();
+            var node = new Mock<IProjectModelCloudNode>();
             await this.viewModel.SwitchToModelAsync(node.Object);
 
             Assert.IsFalse(this.viewModel.IsEventListEnabled);
@@ -198,7 +198,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.Views.EventLog
         [Test]
         public async Task WhenSwitchingToProjectNode_ThenListIsPopulated()
         {
-            var node = new Mock<IProjectExplorerProjectNode>();
+            var node = new Mock<IProjectModelProjectNode>();
             node.SetupGet(n => n.Project).Returns(new ProjectLocator("project-1"));
 
             await this.viewModel.SwitchToModelAsync(node.Object);
@@ -216,7 +216,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.Views.EventLog
         [Test]
         public async Task WhenSwitchingToZoneNode_ThenListIsPopulated()
         {
-            var node = new Mock<IProjectExplorerZoneNode>();
+            var node = new Mock<IProjectModelZoneNode>();
             node.SetupGet(n => n.Zone).Returns(new ZoneLocator("project-1", "zone-1"));
 
             await this.viewModel.SwitchToModelAsync(node.Object);
@@ -234,7 +234,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.Views.EventLog
         [Test]
         public async Task WhenSwitchingToInstanceNode_ThenListIsPopulated()
         {
-            var node = new Mock<IProjectExplorerInstanceNode>();
+            var node = new Mock<IProjectModelInstanceNode>();
             node.SetupGet(n => n.Instance).Returns(
                 new InstanceLocator("project-1", "zone-1", "instance-1"));
 
@@ -257,7 +257,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.Views.EventLog
         [Test]
         public async Task WhenChangingIsIncludeSystemEventsButtonChecked_ThenEventListIsUpdated()
         {
-            var node = new Mock<IProjectExplorerInstanceNode>();
+            var node = new Mock<IProjectModelInstanceNode>();
             node.SetupGet(n => n.Instance).Returns(
                 new InstanceLocator("project-1", "zone-1", "instance-1"));
 
@@ -273,7 +273,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.Views.EventLog
         [Test]
         public async Task WhenChangingIsIncludeLifecycleEventsButtonChecked_ThenEventListIsUpdated()
         {
-            var node = new Mock<IProjectExplorerInstanceNode>();
+            var node = new Mock<IProjectModelInstanceNode>();
             node.SetupGet(n => n.Instance).Returns(
                 new InstanceLocator("project-1", "zone-1", "instance-1"));
 
@@ -289,7 +289,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.Views.EventLog
         [Test]
         public async Task WhenChangingTimeframe_ThenReloadIsTriggered()
         {
-            var node = new Mock<IProjectExplorerInstanceNode>();
+            var node = new Mock<IProjectModelInstanceNode>();
             node.SetupGet(n => n.Instance).Returns(
                 new InstanceLocator("project-1", "zone-1", "instance-1"));
 

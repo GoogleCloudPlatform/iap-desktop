@@ -29,9 +29,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.ConnectionSettin
 {
     public interface IConnectionSettingsService
     {
-        bool IsConnectionSettingsAvailable(IProjectExplorerNode node);
+        bool IsConnectionSettingsAvailable(IProjectModelNode node);
         IPersistentSettingsCollection<ConnectionSettingsBase> GetConnectionSettings(
-            IProjectExplorerNode node);
+            IProjectModelNode node);
     }
 
     [Service(typeof(IConnectionSettingsService))]
@@ -58,22 +58,22 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.ConnectionSettin
         // IConnectionSettingsService.
         //---------------------------------------------------------------------
 
-        public bool IsConnectionSettingsAvailable(IProjectExplorerNode node)
+        public bool IsConnectionSettingsAvailable(IProjectModelNode node)
         {
-            return node is IProjectExplorerProjectNode ||
-                   node is IProjectExplorerZoneNode ||
-                   node is IProjectExplorerInstanceNode;
+            return node is IProjectModelProjectNode ||
+                   node is IProjectModelZoneNode ||
+                   node is IProjectModelInstanceNode;
         }
 
         public IPersistentSettingsCollection<ConnectionSettingsBase> GetConnectionSettings(
-            IProjectExplorerNode node)
+            IProjectModelNode node)
         {
-            if (node is IProjectExplorerProjectNode projectNode)
+            if (node is IProjectModelProjectNode projectNode)
             {
                 return this.repository.GetProjectSettings(projectNode.Project.ProjectId)
                     .ToPersistentSettingsCollection(s => this.repository.SetProjectSettings(s));
             }
-            else if (node is IProjectExplorerZoneNode zoneNode)
+            else if (node is IProjectModelZoneNode zoneNode)
             {
                 var projectSettings = this.repository.GetProjectSettings(
                     zoneNode.Zone.ProjectId);
@@ -86,7 +86,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.ConnectionSettin
                     .OverlayBy(zoneSettings)
                     .ToPersistentSettingsCollection(s => this.repository.SetZoneSettings(s));
             }
-            else if (node is IProjectExplorerInstanceNode vmNode)
+            else if (node is IProjectModelInstanceNode vmNode)
             {
                 var projectSettings = this.repository.GetProjectSettings(
                     vmNode.Instance.ProjectId);

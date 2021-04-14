@@ -63,25 +63,25 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.ConnectionS
         }
 
 
-        private IProjectExplorerProjectNode CreateProjectNode()
+        private IProjectModelProjectNode CreateProjectNode()
         {
-            var projectNode = new Mock<IProjectExplorerProjectNode>();
+            var projectNode = new Mock<IProjectModelProjectNode>();
             projectNode.SetupGet(n => n.Project).Returns(new ProjectLocator(SampleProjectId));
 
             return projectNode.Object;
         }
 
-        private IProjectExplorerZoneNode CreateZoneNode()
+        private IProjectModelZoneNode CreateZoneNode()
         {
-            var zoneNode = new Mock<IProjectExplorerZoneNode>();
+            var zoneNode = new Mock<IProjectModelZoneNode>();
             zoneNode.SetupGet(n => n.Zone).Returns(new ZoneLocator(SampleProjectId, "zone-1"));
 
             return zoneNode.Object;
         }
 
-        private IProjectExplorerInstanceNode CreateVmInstanceNode(bool isWindows = false)
+        private IProjectModelInstanceNode CreateVmInstanceNode(bool isWindows = false)
         {
-            var vmNode = new Mock<IProjectExplorerInstanceNode>();
+            var vmNode = new Mock<IProjectModelInstanceNode>();
             vmNode.SetupGet(n => n.Instance).Returns(
                 new InstanceLocator(SampleProjectId, "zone-1", "instance-1"));
             vmNode.SetupGet(n => n.OperatingSystem).Returns(
@@ -98,16 +98,16 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.ConnectionS
         public void WhenNodeUnsupported_ThenIsConnectionSettingsAvailableReturnsFalse()
         {
             Assert.IsFalse(service.IsConnectionSettingsAvailable(
-                new Mock<IProjectExplorerNode>().Object));
+                new Mock<IProjectModelNode>().Object));
             Assert.IsFalse(service.IsConnectionSettingsAvailable(
-                new Mock<IProjectExplorerCloudNode>().Object));
+                new Mock<IProjectModelCloudNode>().Object));
         }
 
         [Test]
         public void WhenNodeUnsupported_ThenGetConnectionSettingsRaisesArgumentException()
         {
             Assert.Throws<ArgumentException>(() => service.GetConnectionSettings(
-                new Mock<IProjectExplorerNode>().Object));
+                new Mock<IProjectModelNode>().Object));
         }
 
         //---------------------------------------------------------------------

@@ -49,14 +49,14 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.Views.SerialOutpu
             }
         }
 
-        private static async Task<IProjectExplorerInstanceNode> CreateNode(
+        private static async Task<IProjectModelInstanceNode> CreateNode(
             ResourceTask<InstanceLocator> testInstance,
             bool markAsRunning)
         {
             await testInstance;
             var instanceLocator = await testInstance;
 
-            var node = new Mock<IProjectExplorerInstanceNode>();
+            var node = new Mock<IProjectModelInstanceNode>();
             node.SetupGet(n => n.IsRunning).Returns(markAsRunning);
             node.SetupGet(n => n.Instance).Returns(
                 new InstanceLocator(
@@ -155,28 +155,28 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.Views.SerialOutpu
         [Test]
         public void WhenNodeIsCloudNode_ThenCommandStateIsUnavailable()
         {
-            var node = new Mock<IProjectExplorerCloudNode>().Object;
+            var node = new Mock<IProjectModelCloudNode>().Object;
             Assert.AreEqual(CommandState.Unavailable, SerialOutputViewModel.GetCommandState(node));
         }
 
         [Test]
         public void WhenNodeIsProjectNode_ThenCommandStateIsUnavailable()
         {
-            var node = new Mock<IProjectExplorerProjectNode>().Object;
+            var node = new Mock<IProjectModelProjectNode>().Object;
             Assert.AreEqual(CommandState.Unavailable, SerialOutputViewModel.GetCommandState(node));
         }
 
         [Test]
         public void WhenNodeIsZoneNode_ThenCommandStateIsUnavailable()
         {
-            var node = new Mock<IProjectExplorerZoneNode>().Object;
+            var node = new Mock<IProjectModelZoneNode>().Object;
             Assert.AreEqual(CommandState.Unavailable, SerialOutputViewModel.GetCommandState(node));
         }
 
         [Test]
         public void WhenNodeIsVmNodeAndRunning_ThenCommandStateIsEnabled()
         {
-            var node = new Mock<IProjectExplorerInstanceNode>();
+            var node = new Mock<IProjectModelInstanceNode>();
             node.SetupGet(n => n.IsRunning).Returns(true);
             Assert.AreEqual(CommandState.Enabled, SerialOutputViewModel.GetCommandState(node.Object));
         }
@@ -184,7 +184,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.Views.SerialOutpu
         [Test]
         public void WhenNodeIsVmNodeAndStopped_ThenCommandStateIsEnabled()
         {
-            var node = new Mock<IProjectExplorerInstanceNode>();
+            var node = new Mock<IProjectModelInstanceNode>();
             node.SetupGet(n => n.IsRunning).Returns(false);
             Assert.AreEqual(CommandState.Disabled, SerialOutputViewModel.GetCommandState(node.Object));
         }
@@ -198,7 +198,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Test.Views.SerialOutpu
             [Credential(Role = PredefinedRole.ComputeViewer)] ResourceTask<ICredential> credential)
         {
             var viewModel = CreateViewModel(await credential);
-            var node = new Mock<IProjectExplorerCloudNode>();
+            var node = new Mock<IProjectModelCloudNode>();
             await viewModel.SwitchToModelAsync(node.Object);
 
             Assert.IsFalse(viewModel.IsEnableTailingButtonEnabled);

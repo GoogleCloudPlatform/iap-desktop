@@ -71,9 +71,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Rdp
             this.serviceRegistry.AddMock<IMainForm>();
         }
 
-        private Mock<IProjectExplorerInstanceNode> CreateInstanceNodeMock()
+        private Mock<IProjectModelInstanceNode> CreateInstanceNodeMock()
         {
-            var vmNode = new Mock<IProjectExplorerInstanceNode>();
+            var vmNode = new Mock<IProjectModelInstanceNode>();
             vmNode.SetupGet(n => n.OperatingSystem).Returns(OperatingSystems.Windows);
             vmNode.SetupGet(n => n.Instance)
                 .Returns(new InstanceLocator("project-1", "zone-1", "instance-1"));
@@ -94,7 +94,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Rdp
 
             var settingsService = this.serviceRegistry.AddMock<IConnectionSettingsService>();
             settingsService.Setup(s => s.GetConnectionSettings(
-                    It.IsAny<IProjectExplorerNode>()))
+                    It.IsAny<IProjectModelNode>()))
                 .Returns(
                     settings.ToPersistentSettingsCollection(s => Assert.Fail("should not be called")));
 
@@ -138,7 +138,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Rdp
 
             var settingsService = this.serviceRegistry.AddMock<IConnectionSettingsService>();
             settingsService.Setup(s => s.GetConnectionSettings(
-                    It.IsAny<IProjectExplorerNode>()))
+                    It.IsAny<IProjectModelNode>()))
                 .Returns(
                     settings.ToPersistentSettingsCollection(s => settingsSaved = true));
 
@@ -191,7 +191,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Rdp
                 .Setup(p => p.GetNodeAsync(
                     It.IsAny<ResourceLocator>(),
                     It.IsAny<CancellationToken>()))
-                .ReturnsAsync((IProjectExplorerNode)null); // Not found
+                .ReturnsAsync((IProjectModelNode)null); // Not found
 
             var remoteDesktopService = new Mock<IRemoteDesktopSessionBroker>();
             remoteDesktopService.Setup(s => s.Connect(
@@ -212,7 +212,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Rdp
                 It.IsAny<ushort>(),
                 It.Is<InstanceConnectionSettings>(i => i.RdpUsername.Value == null)), Times.Once);
             settingsService.Verify(s => s.GetConnectionSettings(
-                It.IsAny<IProjectExplorerNode>()), Times.Never);
+                It.IsAny<IProjectModelNode>()), Times.Never);
         }
 
         [Test]
@@ -229,7 +229,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Rdp
                 .Setup(p => p.GetNodeAsync(
                     It.IsAny<ResourceLocator>(),
                     It.IsAny<CancellationToken>()))
-                .ReturnsAsync((IProjectExplorerNode)null); // Not found
+                .ReturnsAsync((IProjectModelNode)null); // Not found
 
             var remoteDesktopService = new Mock<IRemoteDesktopSessionBroker>();
             remoteDesktopService.Setup(s => s.Connect(
@@ -250,7 +250,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Rdp
                 It.IsAny<ushort>(),
                 It.Is<InstanceConnectionSettings>(i => i.RdpUsername.StringValue == "john doe")), Times.Once);
             settingsService.Verify(s => s.GetConnectionSettings(
-                It.IsAny<IProjectExplorerNode>()), Times.Never);
+                It.IsAny<IProjectModelNode>()), Times.Never);
         }
 
         [Test]
@@ -262,11 +262,11 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Rdp
 
             var settingsService = this.serviceRegistry.AddMock<IConnectionSettingsService>();
             settingsService.Setup(s => s.GetConnectionSettings(
-                    It.IsAny<IProjectExplorerNode>()))
+                    It.IsAny<IProjectModelNode>()))
                 .Returns(
                     settings.ToPersistentSettingsCollection(s => Assert.Fail("should not be called")));
 
-            var vmNode = new Mock<IProjectExplorerInstanceNode>();
+            var vmNode = new Mock<IProjectModelInstanceNode>();
             vmNode.SetupGet(n => n.Instance)
                 .Returns(new InstanceLocator("project-1", "zone-1", "instance-1"));
 
@@ -301,7 +301,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Rdp
                 It.IsAny<ushort>(),
                 It.Is<InstanceConnectionSettings>(i => i.RdpUsername.StringValue == "john doe")), Times.Once);
             settingsService.Verify(s => s.GetConnectionSettings(
-                It.IsAny<IProjectExplorerNode>()), Times.Once);
+                It.IsAny<IProjectModelNode>()), Times.Once);
         }
     }
 }

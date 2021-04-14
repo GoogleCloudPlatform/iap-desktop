@@ -25,9 +25,9 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
 {
     public class ProjectExplorerNodeSelectedEvent
     {
-        public IProjectExplorerNode SelectedNode { get; }
+        public IProjectModelNode SelectedNode { get; }
 
-        internal ProjectExplorerNodeSelectedEvent(IProjectExplorerNode selectedNode)
+        internal ProjectExplorerNodeSelectedEvent(IProjectModelNode selectedNode)
         {
             this.SelectedNode = selectedNode;
         }

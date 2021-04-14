@@ -472,7 +472,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
             //-----------------------------------------------------------------
 
             public abstract bool CanReload { get; }
-            public abstract IProjectExplorerNode ModelNode { get; }
+            public abstract IProjectModelNode ModelNode { get; }
             public ResourceLocator Locator { get; }
             public string Text { get; }
             public bool IsLeaf { get; }
@@ -618,7 +618,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
         internal class CloudViewModelNode : ViewModelNode
         {
             private const int DefaultIconIndex = 0;
-            private IProjectExplorerCloudNode cloudNode; // Loaded lazily.
+            private IProjectModelCloudNode cloudNode; // Loaded lazily.
 
             public CloudViewModelNode(
                 ProjectExplorerViewModel viewModel)
@@ -632,7 +632,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
             {
             }
 
-            public override IProjectExplorerNode ModelNode => this.cloudNode;
+            public override IProjectModelNode ModelNode => this.cloudNode;
 
             public override bool CanReload => true;
 
@@ -663,12 +663,12 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
         internal class ProjectViewModelNode : ViewModelNode
         {
             private const int DefaultIconIndex = 1;
-            public IProjectExplorerProjectNode ProjectNode { get; }
+            public IProjectModelProjectNode ProjectNode { get; }
 
             public ProjectViewModelNode(
                 ProjectExplorerViewModel viewModel,
                 CloudViewModelNode parent,
-                IProjectExplorerProjectNode modelNode)
+                IProjectModelProjectNode modelNode)
                 : base(
                       viewModel,
                       parent,
@@ -683,7 +683,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
                 this.IsExpanded = true;
             }
 
-            public override IProjectExplorerNode ModelNode => this.ProjectNode;
+            public override IProjectModelNode ModelNode => this.ProjectNode;
 
             public override bool CanReload => true;
 
@@ -735,7 +735,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
             {
                 this.Project = projectLocator;
             }
-            public override IProjectExplorerNode ModelNode => null;
+            public override IProjectModelNode ModelNode => null;
 
             public override bool CanReload => false;
 
@@ -752,12 +752,12 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
         {
             private const int DefaultIconIndex = 3;
 
-            public IProjectExplorerZoneNode ZoneNode { get; }
+            public IProjectModelZoneNode ZoneNode { get; }
 
             public ZoneViewModelNode(
                 ProjectExplorerViewModel viewModel,
                 ProjectViewModelNode parent,
-                IProjectExplorerZoneNode modelNode)
+                IProjectModelZoneNode modelNode)
                 : base(
                       viewModel,
                       parent,
@@ -770,7 +770,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
                 this.IsExpanded = true;
             }
 
-            public override IProjectExplorerNode ModelNode => this.ZoneNode;
+            public override IProjectModelNode ModelNode => this.ZoneNode;
 
             public override bool CanReload => false;
 
@@ -806,12 +806,12 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
 
             private bool isConnected = false;
 
-            public IProjectExplorerInstanceNode InstanceNode { get; }
+            public IProjectModelInstanceNode InstanceNode { get; }
 
             public InstanceViewModelNode(
                 ProjectExplorerViewModel viewModel,
                 ZoneViewModelNode parent,
-                IProjectExplorerInstanceNode modelNode)
+                IProjectModelInstanceNode modelNode)
                 : base(
                       viewModel,
                       parent,
@@ -824,7 +824,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
                 this.IsConnected = viewModel.sessionBroker.IsConnected(modelNode.Instance);
             }
 
-            public override IProjectExplorerNode ModelNode => this.InstanceNode;
+            public override IProjectModelNode ModelNode => this.InstanceNode;
 
             public override bool CanReload => false;
 

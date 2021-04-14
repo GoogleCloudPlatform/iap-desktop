@@ -60,14 +60,14 @@ namespace Google.Solutions.IapDesktop.Application.Services.ProjectModel
         /// Load projects without loading zones and instances.
         /// Uses cached data if available.
         /// </summary>
-        Task<IProjectExplorerCloudNode> GetRootNodeAsync(
+        Task<IProjectModelCloudNode> GetRootNodeAsync(
             bool forceReload,
             CancellationToken token);
 
         /// <summary>
         /// Load zones and instances. Uses cached data if available.
         /// </summary>
-        Task<IReadOnlyCollection<IProjectExplorerZoneNode>> GetZoneNodesAsync(
+        Task<IReadOnlyCollection<IProjectModelZoneNode>> GetZoneNodesAsync(
             ProjectLocator project,
             bool forceReload,
             CancellationToken token);
@@ -75,7 +75,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.ProjectModel
         /// <summary>
         /// Load any node. Uses cached data if available.
         /// </summary>
-        Task<IProjectExplorerNode> GetNodeAsync(
+        Task<IProjectModelNode> GetNodeAsync(
             ResourceLocator locator,
             CancellationToken token);
 
@@ -83,14 +83,14 @@ namespace Google.Solutions.IapDesktop.Application.Services.ProjectModel
         /// Gets the active/selected node. The selection
         /// is kept across reloads.
         /// </summary>
-        Task<IProjectExplorerNode> GetActiveNodeAsync(CancellationToken token);
+        Task<IProjectModelNode> GetActiveNodeAsync(CancellationToken token);
 
         /// <summary>
         /// Gets the active/selected node. The selection
         /// is kept across reloads.
         /// </summary>
         Task SetActiveNodeAsync(
-            IProjectExplorerNode node,
+            IProjectModelNode node,
             CancellationToken token);
 
         /// <summary>
@@ -110,8 +110,8 @@ namespace Google.Solutions.IapDesktop.Application.Services.ProjectModel
 
         private readonly AsyncLock cacheLock = new AsyncLock();
         private CloudNode cachedRoot = null;
-        private IDictionary<ProjectLocator, IReadOnlyCollection<IProjectExplorerZoneNode>> cachedZones =
-            new Dictionary<ProjectLocator, IReadOnlyCollection<IProjectExplorerZoneNode>>();
+        private IDictionary<ProjectLocator, IReadOnlyCollection<IProjectModelZoneNode>> cachedZones =
+            new Dictionary<ProjectLocator, IReadOnlyCollection<IProjectModelZoneNode>>();
 
         //---------------------------------------------------------------------
         // Data loading (uncached).
@@ -188,7 +188,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.ProjectModel
             }
         }
 
-        private async Task<IReadOnlyCollection<IProjectExplorerZoneNode>> LoadZones(
+        private async Task<IReadOnlyCollection<IProjectModelZoneNode>> LoadZones(
             ProjectLocator project,
             CancellationToken token)
         {
@@ -285,7 +285,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.ProjectModel
             }
         }
 
-        public async Task<IProjectExplorerCloudNode> GetRootNodeAsync(
+        public async Task<IProjectModelCloudNode> GetRootNodeAsync(
             bool forceReload,
             CancellationToken token)
         {
@@ -306,14 +306,14 @@ namespace Google.Solutions.IapDesktop.Application.Services.ProjectModel
             return this.cachedRoot;
         }
 
-        public async Task<IReadOnlyCollection<IProjectExplorerZoneNode>> GetZoneNodesAsync(
+        public async Task<IReadOnlyCollection<IProjectModelZoneNode>> GetZoneNodesAsync(
             ProjectLocator project,
             bool forceReload,
             CancellationToken token)
         {
             using (ApplicationTraceSources.Default.TraceMethod().WithParameters(project, forceReload))
             {
-                IReadOnlyCollection<IProjectExplorerZoneNode> zones = null;
+                IReadOnlyCollection<IProjectModelZoneNode> zones = null;
                 using (await this.cacheLock.AcquireAsync(token).ConfigureAwait(false))
                 {
                     if (!this.cachedZones.TryGetValue(
@@ -335,7 +335,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.ProjectModel
             }
         }
 
-        public async Task<IProjectExplorerNode> GetNodeAsync(
+        public async Task<IProjectModelNode> GetNodeAsync(
             ResourceLocator locator,
             CancellationToken token)
         {
@@ -376,7 +376,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.ProjectModel
             }
         }
 
-        public async Task<IProjectExplorerNode> GetActiveNodeAsync(CancellationToken token)
+        public async Task<IProjectModelNode> GetActiveNodeAsync(CancellationToken token)
         {
             //
             // Look up the node. It's possible that no node has been 
@@ -398,18 +398,18 @@ namespace Google.Solutions.IapDesktop.Application.Services.ProjectModel
         }
 
         public Task SetActiveNodeAsync(
-            IProjectExplorerNode node,
+            IProjectModelNode node,
             CancellationToken token)
         {
-            if (node is IProjectExplorerInstanceNode instanceNode)
+            if (node is IProjectModelInstanceNode instanceNode)
             {
                 return SetActiveNodeAsync(instanceNode.Instance, token);
             }
-            else if (node is IProjectExplorerZoneNode zoneNode)
+            else if (node is IProjectModelZoneNode zoneNode)
             {
                 return SetActiveNodeAsync(zoneNode.Zone, token);
             }
-            else if (node is IProjectExplorerProjectNode projectNode)
+            else if (node is IProjectModelProjectNode projectNode)
             {
                 return SetActiveNodeAsync(projectNode.Project, token);
             }
@@ -425,7 +425,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.ProjectModel
         {
             using (ApplicationTraceSources.Default.TraceMethod().WithParameters(locator))
             {
-                IProjectExplorerNode node;
+                IProjectModelNode node;
                 if (locator != null)
                 {
                     node = await GetNodeAsync(locator, token)

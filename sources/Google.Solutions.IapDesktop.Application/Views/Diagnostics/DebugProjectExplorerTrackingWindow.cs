@@ -43,9 +43,9 @@ namespace Google.Solutions.IapDesktop.Application.Views.Diagnostics
         // ProjectExplorerTrackingToolWindow.
         //---------------------------------------------------------------------
 
-        protected override Task SwitchToNodeAsync(IProjectExplorerNode node)
+        protected override Task SwitchToNodeAsync(IProjectModelNode node)
         {
-            if (node is IProjectExplorerInstanceNode vmNode)
+            if (node is IProjectModelInstanceNode vmNode)
             {
                 this.instanceNameLabel.Text = vmNode.Instance.Name;
             }

@@ -39,7 +39,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
         private readonly IExceptionDialog exceptionDialog;
         private readonly TaskScheduler taskScheduler;
 
-        private IProjectExplorerNode ignoredNode = null;
+        private IProjectModelNode ignoredNode = null;
 
         protected ProjectExplorerTrackingToolWindow()
         {
@@ -88,7 +88,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
             }
         }
 
-        protected void OnProjectExplorerNodeSelected(IProjectExplorerNode node)
+        protected void OnProjectExplorerNodeSelected(IProjectModelNode node)
         {
             using (ApplicationTraceSources.Default.TraceMethod().WithParameters(node, this.IsUserVisible))
             {
@@ -139,7 +139,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
         // abstract base classes for forms.
         //---------------------------------------------------------------------
 
-        protected virtual Task SwitchToNodeAsync(IProjectExplorerNode node)
+        protected virtual Task SwitchToNodeAsync(IProjectModelNode node)
         {
             throw new NotImplementedException();
         }

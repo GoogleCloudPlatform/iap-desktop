@@ -89,7 +89,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views.Properties
                 throw new System.NotImplementedException();
             }
 
-            public Task SwitchToModelAsync(IProjectExplorerNode node)
+            public Task SwitchToModelAsync(IProjectModelNode node)
             {
                 throw new System.NotImplementedException();
             }
