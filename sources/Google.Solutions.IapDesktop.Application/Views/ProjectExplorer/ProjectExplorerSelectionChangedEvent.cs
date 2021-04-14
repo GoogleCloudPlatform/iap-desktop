@@ -19,6 +19,8 @@
 // under the License.
 //
 
+using Google.Solutions.IapDesktop.Application.Services.ProjectModel;
+
 namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
 {
     public class ProjectExplorerNodeSelectedEvent

@@ -19,6 +19,7 @@
 // under the License.
 //
 
+using Google.Solutions.IapDesktop.Application.Services.ProjectModel;
 using Google.Solutions.IapDesktop.Application.Views.ProjectExplorer;
 using System.ComponentModel;
 using System.Threading.Tasks;

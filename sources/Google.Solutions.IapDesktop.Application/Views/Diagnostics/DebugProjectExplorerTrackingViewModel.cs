@@ -20,7 +20,7 @@
 //
 
 using Google.Solutions.IapDesktop.Application.ObjectModel;
-using Google.Solutions.IapDesktop.Application.Views.ProjectExplorer;
+using Google.Solutions.IapDesktop.Application.Services.ProjectModel;
 
 namespace Google.Solutions.IapDesktop.Application.Views.Diagnostics
 {

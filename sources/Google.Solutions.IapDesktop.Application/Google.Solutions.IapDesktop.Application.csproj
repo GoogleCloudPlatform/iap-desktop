@@ -296,8 +296,7 @@
     <Compile Include="Views\Dialog\ExceptionDialog.cs" />
     <Compile Include="Views\IMainForm.cs" />
     <Compile Include="Views\ProjectExplorer\IProjectExplorer.cs" />
-    <Compile Include="Views\ProjectExplorer\IProjectExplorerNode.cs" />
-    <Compile Include="Views\ProjectExplorer\ProjectExplorerNode.cs" />
+    <Compile Include="Services\ProjectModel\IProjectExplorerNode.cs" />
     <Compile Include="Views\ProjectExplorer\ProjectExplorerSelectionChangedEvent.cs" />
     <Compile Include="Views\ProjectExplorer\ProjectExplorerWindow.cs">
       <SubType>Form</SubType>

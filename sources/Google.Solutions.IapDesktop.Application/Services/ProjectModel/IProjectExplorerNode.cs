@@ -23,10 +23,8 @@ using Google.Solutions.Common.Locator;
 using Google.Solutions.IapDesktop.Application.Services.Adapters;
 using System.Collections.Generic;
 
-namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
+namespace Google.Solutions.IapDesktop.Application.Services.ProjectModel
 {
-    // TODO: Move to ProjectModel namespace and rename to ProjectModelNode
-
     public interface IProjectExplorerNode
     {
         string DisplayName { get; }
