@@ -127,7 +127,6 @@ namespace Google.Solutions.IapDesktop.Application.Services.ProjectModel
                 .GetService<IResourceManagerAdapter>())
             {
                 var accessibleProjects = new List<ProjectNode>();
-                var inaccessibleProjects = new List<ProjectLocator>();
 
                 //
                 // Load projects in parallel.
@@ -157,9 +156,12 @@ namespace Google.Solutions.IapDesktop.Application.Services.ProjectModel
                     //
                     try
                     {
-                        var project = task.Value.Result;
+                        var project = await task.Value.ConfigureAwait(false);
+                        Debug.Assert(project != null);
+
                         accessibleProjects.Add(new ProjectNode(
                             task.Key,
+                            true,
                             project.Name));
 
                         ApplicationTraceSources.Default.TraceVerbose(
@@ -172,19 +174,22 @@ namespace Google.Solutions.IapDesktop.Application.Services.ProjectModel
                     }
                     catch (Exception e)
                     {
+                        // 
+                        // Add as inaccessible project and continue.
+                        //
+                        accessibleProjects.Add(new ProjectNode(
+                            task.Key,
+                            false,
+                            null));
+
                         ApplicationTraceSources.Default.TraceError(
                             "Failed to load project {0}: {1}",
                             task.Key,
                             e);
-
-                        // 
-                        // Continue with other projects.
-                        //
-                        inaccessibleProjects.Add(task.Key);
                     }
                 }
 
-                return new CloudNode(accessibleProjects, inaccessibleProjects);
+                return new CloudNode(accessibleProjects);
             }
         }
 

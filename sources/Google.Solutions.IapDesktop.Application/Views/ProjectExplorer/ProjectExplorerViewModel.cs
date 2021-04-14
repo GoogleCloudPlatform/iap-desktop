@@ -396,11 +396,6 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
                 await RemoveProjectAsync(projectNode.ProjectNode.Project)
                     .ConfigureAwait(true);
             }
-            else if (this.SelectedNode is InaccessibleProjectViewModelNode inaccessibleNode)
-            {
-                await RemoveProjectAsync(inaccessibleNode.Project)
-                    .ConfigureAwait(true);
-            }
         }
 
         public void OpenInCloudConsole()
@@ -649,12 +644,8 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
                     .Select(m => new ProjectViewModelNode(
                         this.viewModel,
                         this,
-                        m)));
-                children.AddRange(this.cloudNode.InaccessibleProjects
-                    .Select(m => new InaccessibleProjectViewModelNode(
-                        this.viewModel,
-                        this,
-                        m)));
+                        m))
+                    .OrderBy(n => n.Text));
 
                 return children;
             }
@@ -665,6 +656,22 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
             private const int DefaultIconIndex = 1;
             public IProjectModelProjectNode ProjectNode { get; }
 
+            private static string CreateDisplayName(IProjectModelProjectNode node)
+            {
+                if (!node.IsAccesible)
+                {
+                    return $"inaccessible project ({node.Project.Name})";
+                }
+                else if (node.Project.Name == node.DisplayName)
+                {
+                    return node.Project.Name;
+                }
+                else
+                {
+                    return $"{node.DisplayName} ({node.Project.Name})";
+                }
+            }
+
             public ProjectViewModelNode(
                 ProjectExplorerViewModel viewModel,
                 CloudViewModelNode parent,
@@ -673,9 +680,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
                       viewModel,
                       parent,
                       modelNode.Project,
-                      modelNode.Project.Name == modelNode.DisplayName
-                        ? modelNode.Project.Name
-                        : $"{modelNode.DisplayName} ({modelNode.Project.Name})",
+                      CreateDisplayName(modelNode),
                       false,
                       DefaultIconIndex)
             {
@@ -703,48 +708,16 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
                         .Select(z => new ZoneViewModelNode(this.viewModel, this, z))
                         .Cast<ViewModelNode>();
                 }
-                catch (ResourceAccessDeniedException)
+                catch (Exception e) when (e.Is<ResourceAccessDeniedException>())
                 {
                     //
                     // Letting these exception propagate could cause a flurry
                     // of error messages when multiple projects have become
-                    // inaccessible. So it's best to just swallow this error.
+                    // inaccessible. So it's best to interpret this error as
+                    // "cannot list any VMs" and return an empty list.
                     //
-                    return Enumerable.Empty<ViewModelNode>();
+                    return Enumerable.Empty<ZoneViewModelNode>();
                 }
-            }
-        }
-
-        internal class InaccessibleProjectViewModelNode : ViewModelNode
-        {
-            private const int DefaultIconIndex = 1;
-
-            public ProjectLocator Project { get; }
-
-            public InaccessibleProjectViewModelNode(
-                ProjectExplorerViewModel viewModel,
-                CloudViewModelNode parent,
-                ProjectLocator projectLocator)
-                : base(
-                      viewModel,
-                      parent,
-                      projectLocator,
-                      $"{projectLocator.Name} (inaccessible)",
-                      true,
-                      DefaultIconIndex)
-            {
-                this.Project = projectLocator;
-            }
-            public override IProjectModelNode ModelNode => null;
-
-            public override bool CanReload => false;
-
-            protected override Task<IEnumerable<ViewModelNode>> LoadNodesAsync(
-                bool forceReload,
-                CancellationToken token)
-            {
-                Debug.Fail("Should not be called since this is a leaf node");
-                return Task.FromResult(Enumerable.Empty<ViewModelNode>());
             }
         }
 

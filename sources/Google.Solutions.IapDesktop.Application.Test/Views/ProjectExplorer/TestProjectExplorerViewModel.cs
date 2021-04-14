@@ -80,6 +80,8 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views.ProjectExplorer
             Status = "RUNNING"
         };
 
+        private const string SampleProjectId = "project-1";
+
         private const string TestKeyPath = @"Software\Google\__Test";
         private readonly RegistryKey hkcu = RegistryKey.OpenBaseKey(RegistryHive.CurrentUser, RegistryView.Default);
 
@@ -106,8 +108,8 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views.ProjectExplorer
                     It.IsAny<CancellationToken>()))
                 .ReturnsAsync(new Apis.CloudResourceManager.v1.Data.Project()
                 {
-                    ProjectId = "project-1",
-                    Name = $"[project-1]"
+                    ProjectId = SampleProjectId,
+                    Name = $"[{SampleProjectId}]"
                 });
 
             this.computeEngineAdapterMock = new Mock<IComputeEngineAdapter>();
@@ -204,7 +206,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views.ProjectExplorer
         public async Task WhenOsFilterChanged_ThenViewModelIsUpdated()
         {
             var viewModel = CreateViewModel();
-            await viewModel.AddProjectAsync(new ProjectLocator("project-1"));
+            await viewModel.AddProjectAsync(new ProjectLocator(SampleProjectId));
 
             var instances = await GetInstancesAsync(viewModel);
             Assert.AreEqual(2, instances.Count);
@@ -283,7 +285,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views.ProjectExplorer
         public async Task WhenInstanceFilterChanged_ThenViewModelIsUpdated()
         {
             var viewModel = CreateViewModel();
-            await viewModel.AddProjectAsync(new ProjectLocator("project-1"));
+            await viewModel.AddProjectAsync(new ProjectLocator(SampleProjectId));
 
             var instances = await GetInstancesAsync(viewModel);
             Assert.AreEqual(2, instances.Count);
@@ -332,7 +334,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views.ProjectExplorer
 
             Assert.IsFalse(initialProjectsList.Any());
 
-            await viewModel.AddProjectAsync(new ProjectLocator("project-1"));
+            await viewModel.AddProjectAsync(new ProjectLocator(SampleProjectId));
 
             var updatedProjectsList = await viewModel.RootNode.GetFilteredNodesAsync(false);
             Assert.AreEqual(1, updatedProjectsList.Count);
@@ -341,17 +343,50 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views.ProjectExplorer
         [Test]
         public async Task WhenProjectRemoved_ThenViewModelIsUpdated()
         {
-            this.projectRepository.AddProject(new ProjectLocator("project-1"));
+            this.projectRepository.AddProject(new ProjectLocator(SampleProjectId));
 
             var viewModel = CreateViewModel();
             var initialProjectsList = await viewModel.ExpandRootAsync();
 
             Assert.AreEqual(1, initialProjectsList.Count());
 
-            await viewModel.RemoveProjectAsync(new ProjectLocator("project-1"));
+            await viewModel.RemoveProjectAsync(new ProjectLocator(SampleProjectId));
 
             var updatedProjectsList = await viewModel.RootNode.GetFilteredNodesAsync(false);
             Assert.IsFalse(updatedProjectsList.Any());
+        }
+
+        //---------------------------------------------------------------------
+        // Project ordering.
+        //---------------------------------------------------------------------
+
+        [Test]
+        public async Task WhenMultipleProjectsAdded_ThenProjectsAreOrderedByDisplayName()
+        {
+            this.resourceManagerAdapterMock.Setup(a => a.GetProjectAsync(
+                    It.Is<string>(id => id == "project-2"),
+                    It.IsAny<CancellationToken>()))
+                .ReturnsAsync(new Apis.CloudResourceManager.v1.Data.Project()
+                {
+                    ProjectId = "project-2",
+                    Name = "project-2"  // Same as id
+                });
+            this.resourceManagerAdapterMock.Setup(a => a.GetProjectAsync(
+                    It.Is<string>(id => id == "inaccessible-1"),
+                    It.IsAny<CancellationToken>()))
+                .ThrowsAsync(new ResourceAccessDeniedException("inaccessible", null));
+
+            this.projectRepository.AddProject(new ProjectLocator("project-2"));
+            this.projectRepository.AddProject(new ProjectLocator("inaccessible-1"));
+            this.projectRepository.AddProject(new ProjectLocator(SampleProjectId));
+
+            var viewModel = CreateViewModel();
+
+            var projects = (await viewModel.ExpandRootAsync()).ToList();
+
+            Assert.AreEqual("[project-1] (project-1)", projects[0].Text);
+            Assert.AreEqual("inaccessible project (inaccessible-1)", projects[1].Text);
+            Assert.AreEqual("project-2", projects[2].Text);
         }
 
         //---------------------------------------------------------------------
@@ -362,7 +397,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views.ProjectExplorer
         public async Task WhenReloadProjectsIsTrue_ThenRefreshReloadsProjects()
         {
             var viewModel = CreateViewModel();
-            await viewModel.AddProjectAsync(new ProjectLocator("project-1"));
+            await viewModel.AddProjectAsync(new ProjectLocator(SampleProjectId));
 
             int nofifications = 0;
             var projects = await viewModel.RootNode.GetFilteredNodesAsync(false);
@@ -382,7 +417,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views.ProjectExplorer
         public async Task WhenReloadProjectsIsFalse_ThenRefreshReloadsZones()
         {
             var viewModel = CreateViewModel();
-            await viewModel.AddProjectAsync(new ProjectLocator("project-1"));
+            await viewModel.AddProjectAsync(new ProjectLocator(SampleProjectId));
 
             int nofifications = 0;
             var projects = await viewModel.RootNode.GetFilteredNodesAsync(false);
@@ -408,7 +443,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views.ProjectExplorer
         public async Task WhenSelectedNodeIsNull_ThenRefreshSelectedNodeAsyncReloadsProjects()
         {
             var viewModel = CreateViewModel();
-            await viewModel.AddProjectAsync(new ProjectLocator("project-1"));
+            await viewModel.AddProjectAsync(new ProjectLocator(SampleProjectId));
 
             int nofifications = 0;
             var projects = await viewModel.RootNode.GetFilteredNodesAsync(false);
@@ -429,7 +464,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views.ProjectExplorer
         public async Task WhenSelectedNodeIsRoot_ThenRefreshSelectedNodeAsyncReloadsProjects()
         {
             var viewModel = CreateViewModel();
-            await viewModel.AddProjectAsync(new ProjectLocator("project-1"));
+            await viewModel.AddProjectAsync(new ProjectLocator(SampleProjectId));
 
             int nofifications = 0;
             var projects = await viewModel.RootNode.GetFilteredNodesAsync(false);
@@ -450,7 +485,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views.ProjectExplorer
         public async Task WhenSelectedNodeIsProject_ThenRefreshSelectedNodeAsyncReloadsZones()
         {
             var viewModel = CreateViewModel();
-            await viewModel.AddProjectAsync(new ProjectLocator("project-1"));
+            await viewModel.AddProjectAsync(new ProjectLocator(SampleProjectId));
 
             int nofifications = 0;
             var projects = await viewModel.RootNode.GetFilteredNodesAsync(false);
@@ -477,7 +512,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views.ProjectExplorer
         public async Task WhenSelectedNodeIsZone_ThenRefreshSelectedNodeAsyncReloadsZones()
         {
             var viewModel = CreateViewModel();
-            await viewModel.AddProjectAsync(new ProjectLocator("project-1"));
+            await viewModel.AddProjectAsync(new ProjectLocator(SampleProjectId));
 
             int nofifications = 0;
             var projects = await viewModel.RootNode.GetFilteredNodesAsync(false);
@@ -504,7 +539,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views.ProjectExplorer
         public async Task WhenSelectedNodeIsInstance_ThenRefreshSelectedNodeAsyncReloadsZones()
         {
             var viewModel = CreateViewModel();
-            await viewModel.AddProjectAsync(new ProjectLocator("project-1"));
+            await viewModel.AddProjectAsync(new ProjectLocator(SampleProjectId));
 
             int nofifications = 0;
             var projects = await viewModel.RootNode.GetFilteredNodesAsync(false);
@@ -540,7 +575,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views.ProjectExplorer
                 .Returns(true);
 
             var viewModel = CreateViewModel();
-            await viewModel.AddProjectAsync(new ProjectLocator("project-1"));
+            await viewModel.AddProjectAsync(new ProjectLocator(SampleProjectId));
             var instances = (await GetInstancesAsync(viewModel))
                 .Cast<ProjectExplorerViewModel.InstanceViewModelNode>()
                 .ToList();
@@ -564,7 +599,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views.ProjectExplorer
                 .Callback<Func<SessionEndedEvent, Task>>(e => sessionEndedEventHandler = e);
 
             var viewModel = CreateViewModel();
-            await viewModel.AddProjectAsync(new ProjectLocator("project-1"));
+            await viewModel.AddProjectAsync(new ProjectLocator(SampleProjectId));
             var instances = (await GetInstancesAsync(viewModel))
                 .Cast<ProjectExplorerViewModel.InstanceViewModelNode>()
                 .ToList();
@@ -588,7 +623,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views.ProjectExplorer
             Assert.IsFalse(instances[1].IsConnected);
 
             await sessionStartedEventHandler(
-                new SessionStartedEvent(new InstanceLocator("project-1", "zone-1", "unknown-1")));
+                new SessionStartedEvent(new InstanceLocator(SampleProjectId, "zone-1", "unknown-1")));
 
             Assert.IsFalse(instances[0].IsConnected);
             Assert.IsFalse(instances[1].IsConnected);
@@ -606,7 +641,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views.ProjectExplorer
                 .Returns(true);
 
             var viewModel = CreateViewModel();
-            await viewModel.AddProjectAsync(new ProjectLocator("project-1"));
+            await viewModel.AddProjectAsync(new ProjectLocator(SampleProjectId));
             var instances = (await GetInstancesAsync(viewModel))
                 .Cast<ProjectExplorerViewModel.InstanceViewModelNode>()
                 .ToList();
@@ -627,7 +662,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views.ProjectExplorer
                 .Returns(false);
 
             var viewModel = CreateViewModel();
-            await viewModel.AddProjectAsync(new ProjectLocator("project-1"));
+            await viewModel.AddProjectAsync(new ProjectLocator(SampleProjectId));
             var instances = (await GetInstancesAsync(viewModel))
                 .Cast<ProjectExplorerViewModel.InstanceViewModelNode>()
                 .ToList();
@@ -648,7 +683,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views.ProjectExplorer
         public async Task WhenSelectedNodeIsProject_ThenUnloadSelectedProjectAsyncUnloadsProject()
         {
             var viewModel = CreateViewModel();
-            await viewModel.AddProjectAsync(new ProjectLocator("project-1"));
+            await viewModel.AddProjectAsync(new ProjectLocator(SampleProjectId));
             var projects = await viewModel.RootNode.GetFilteredNodesAsync(false);
 
             viewModel.SelectedNode = projects[0];
@@ -662,7 +697,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views.ProjectExplorer
         public async Task WhenSelectedNodeIsInstance_ThenUnloadSelectedProjectAsyncDoesNothing()
         {
             var viewModel = CreateViewModel();
-            await viewModel.AddProjectAsync(new ProjectLocator("project-1"));
+            await viewModel.AddProjectAsync(new ProjectLocator(SampleProjectId));
             var instances = await GetInstancesAsync(viewModel);
 
             viewModel.SelectedNode = instances[0];
@@ -680,14 +715,14 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views.ProjectExplorer
         public async Task WhenSelectedNodeIsProject_ThenOpenInCloudConsoleOpensInstancesList()
         {
             var viewModel = CreateViewModel();
-            await viewModel.AddProjectAsync(new ProjectLocator("project-1"));
+            await viewModel.AddProjectAsync(new ProjectLocator(SampleProjectId));
             var projects = await viewModel.RootNode.GetFilteredNodesAsync(false);
 
             viewModel.SelectedNode = projects[0];
             viewModel.OpenInCloudConsole();
 
             this.cloudConsoleServiceMock.Verify(c => c.OpenInstanceList(
-                It.Is<ProjectLocator>(l => l.Name == "project-1")),
+                It.Is<ProjectLocator>(l => l.Name == SampleProjectId)),
                 Times.Once);
         }
 
@@ -695,7 +730,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views.ProjectExplorer
         public async Task WhenSelectedNodeIsZone_ThenUnloadSelectedProjectOpensInstancesList()
         {
             var viewModel = CreateViewModel();
-            await viewModel.AddProjectAsync(new ProjectLocator("project-1"));
+            await viewModel.AddProjectAsync(new ProjectLocator(SampleProjectId));
             var projects = await viewModel.RootNode.GetFilteredNodesAsync(false);
             var zones = await projects[0].GetFilteredNodesAsync(false);
 
@@ -711,7 +746,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views.ProjectExplorer
         public async Task WhenSelectedNodeIsInstance_ThenUnloadSelectedProjectOpensInstanceDetails()
         {
             var viewModel = CreateViewModel();
-            await viewModel.AddProjectAsync(new ProjectLocator("project-1"));
+            await viewModel.AddProjectAsync(new ProjectLocator(SampleProjectId));
             var instances = await GetInstancesAsync(viewModel);
 
             viewModel.SelectedNode = instances[0];
@@ -730,14 +765,14 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views.ProjectExplorer
         public async Task WhenSelectedNodeIsProject_ThenConfigureIapAccessOpensProjectConfig()
         {
             var viewModel = CreateViewModel();
-            await viewModel.AddProjectAsync(new ProjectLocator("project-1"));
+            await viewModel.AddProjectAsync(new ProjectLocator(SampleProjectId));
             var projects = await viewModel.RootNode.GetFilteredNodesAsync(false);
 
             viewModel.SelectedNode = projects[0];
             viewModel.ConfigureIapAccess();
 
             this.cloudConsoleServiceMock.Verify(c => c.ConfigureIapAccess(
-                It.Is<string>(id => id == "project-1")),
+                It.Is<string>(id => id == SampleProjectId)),
                 Times.Once);
         }
 
@@ -745,7 +780,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views.ProjectExplorer
         public async Task WhenSelectedNodeIsZone_ThenConfigureIapAccessOpensProjectConfig()
         {
             var viewModel = CreateViewModel();
-            await viewModel.AddProjectAsync(new ProjectLocator("project-1"));
+            await viewModel.AddProjectAsync(new ProjectLocator(SampleProjectId));
             var projects = await viewModel.RootNode.GetFilteredNodesAsync(false);
             var zones = await projects[0].GetFilteredNodesAsync(false);
 
@@ -753,7 +788,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views.ProjectExplorer
             viewModel.ConfigureIapAccess();
 
             this.cloudConsoleServiceMock.Verify(c => c.ConfigureIapAccess(
-                It.Is<string>(id => id == "project-1")),
+                It.Is<string>(id => id == SampleProjectId)),
                 Times.Once);
         }
 
@@ -761,14 +796,14 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views.ProjectExplorer
         public async Task WhenSelectedNodeIsInstance_ThenConfigureIapAccessOpensProjectConfig()
         {
             var viewModel = CreateViewModel();
-            await viewModel.AddProjectAsync(new ProjectLocator("project-1"));
+            await viewModel.AddProjectAsync(new ProjectLocator(SampleProjectId));
             var instances = await GetInstancesAsync(viewModel);
 
             viewModel.SelectedNode = instances[0];
             viewModel.ConfigureIapAccess();
 
             this.cloudConsoleServiceMock.Verify(c => c.ConfigureIapAccess(
-                It.Is<string>(id => id == "project-1")),
+                It.Is<string>(id => id == SampleProjectId)),
                 Times.Once);
         }
 
@@ -792,7 +827,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views.ProjectExplorer
         public async Task WhenSelectedNodeIsProject_ThenCommandVisiblityIsUpdated()
         {
             var viewModel = CreateViewModel();
-            await viewModel.AddProjectAsync(new ProjectLocator("project-1"));
+            await viewModel.AddProjectAsync(new ProjectLocator(SampleProjectId));
             var projects = await viewModel.RootNode.GetFilteredNodesAsync(false);
 
             viewModel.SelectedNode = projects[0];
@@ -807,7 +842,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views.ProjectExplorer
         public async Task WhenSelectedNodeIsZone_ThenCommandVisiblityIsUpdated()
         {
             var viewModel = CreateViewModel();
-            await viewModel.AddProjectAsync(new ProjectLocator("project-1"));
+            await viewModel.AddProjectAsync(new ProjectLocator(SampleProjectId));
             var projects = await viewModel.RootNode.GetFilteredNodesAsync(false);
             var zones = await projects[0].GetFilteredNodesAsync(false);
 
@@ -823,7 +858,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views.ProjectExplorer
         public async Task WhenSelectedNodeIsInstance_ThenCommandVisiblityIsUpdated()
         {
             var viewModel = CreateViewModel();
-            await viewModel.AddProjectAsync(new ProjectLocator("project-1"));
+            await viewModel.AddProjectAsync(new ProjectLocator(SampleProjectId));
             var instances = await GetInstancesAsync(viewModel);
 
             viewModel.SelectedNode = instances[0];

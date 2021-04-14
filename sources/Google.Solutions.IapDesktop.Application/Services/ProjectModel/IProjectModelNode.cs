@@ -33,11 +33,11 @@ namespace Google.Solutions.IapDesktop.Application.Services.ProjectModel
     public interface IProjectModelCloudNode : IProjectModelNode
     {
         IEnumerable<IProjectModelProjectNode> Projects { get; }
-        IEnumerable<ProjectLocator> InaccessibleProjects { get; }
     }
 
     public interface IProjectModelProjectNode : IProjectModelNode
     {
+        bool IsAccesible { get; }
         ProjectLocator Project { get; }
     }
 

@@ -43,18 +43,15 @@ namespace Google.Solutions.IapDesktop.Application.Services.ProjectModel
         public string DisplayName => "Google Cloud";
 
         public IEnumerable<IProjectModelProjectNode> Projects { get; }
-        public IEnumerable<ProjectLocator> InaccessibleProjects { get; }
 
         //---------------------------------------------------------------------
         // Ctor.
         //---------------------------------------------------------------------
 
         public CloudNode(
-            IEnumerable<IProjectModelProjectNode> projects,
-            IEnumerable<ProjectLocator> inaccessibleProjects)
+            IEnumerable<IProjectModelProjectNode> projects)
         {
             this.Projects = projects;
-            this.InaccessibleProjects = inaccessibleProjects;
         }
     }
 
@@ -68,15 +65,19 @@ namespace Google.Solutions.IapDesktop.Application.Services.ProjectModel
 
         public string DisplayName { get; }
 
+        public bool IsAccesible { get; }
+
         //---------------------------------------------------------------------
         // Ctor.
         //---------------------------------------------------------------------
 
         public ProjectNode(
             ProjectLocator locator,
+            bool accessible,
             string displayName)
         {
             this.Project = locator;
+            this.IsAccesible = accessible;
             this.DisplayName = displayName;
         }
     }
