@@ -40,28 +40,4 @@ namespace Google.Solutions.IapDesktop.Application.Services.Settings
 
         RegistryKey OpenRegistryKey(string projectId, string subkey, bool create);
     }
-
-    //---------------------------------------------------------------------
-    // Events.
-    //---------------------------------------------------------------------
-
-    public class ProjectAddedEvent
-    {
-        public string ProjectId { get; }
-
-        public ProjectAddedEvent(string projectId)
-        {
-            this.ProjectId = projectId;
-        }
-    }
-
-    public class ProjectDeletedEvent
-    {
-        public string ProjectId { get; }
-
-        public ProjectDeletedEvent(string projectId)
-        {
-            this.ProjectId = projectId;
-        }
-    }
 }

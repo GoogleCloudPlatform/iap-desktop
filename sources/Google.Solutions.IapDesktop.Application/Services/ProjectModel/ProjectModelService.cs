@@ -438,10 +438,9 @@ namespace Google.Solutions.IapDesktop.Application.Services.ProjectModel
                         //
                         this.activeNode = locator;
 
-                        // TODO: rename event
                         await this.serviceProvider
                             .GetService<IEventService>()
-                            .FireAsync(new ProjectExplorerNodeSelectedEvent(node))
+                            .FireAsync(new ActiveProjectChangedEvent(node))
                             .ConfigureAwait(true);
 
                         return;
@@ -457,7 +456,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.ProjectModel
                 {
                     await this.serviceProvider
                         .GetService<IEventService>()
-                        .FireAsync(new ProjectExplorerNodeSelectedEvent(this.cachedRoot))
+                        .FireAsync(new ActiveProjectChangedEvent(this.cachedRoot))
                         .ConfigureAwait(true);
                 }
             }

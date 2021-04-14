@@ -645,8 +645,8 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.ProjectModel
                 root.Projects.First(),
                 CancellationToken.None);
 
-            eventService.Verify(s => s.FireAsync<ProjectExplorerNodeSelectedEvent>(
-                    It.Is<ProjectExplorerNodeSelectedEvent>(e => e.SelectedNode == root.Projects.First())),
+            eventService.Verify(s => s.FireAsync<ActiveProjectChangedEvent>(
+                    It.Is<ActiveProjectChangedEvent>(e => e.ActiveNode == root.Projects.First())),
                 Times.Once);
         }
 
@@ -669,8 +669,8 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.ProjectModel
 
             await modelService.SetActiveNodeAsync((ResourceLocator)null, CancellationToken.None);
 
-            eventService.Verify(s => s.FireAsync<ProjectExplorerNodeSelectedEvent>(
-                    It.Is<ProjectExplorerNodeSelectedEvent>(e => e.SelectedNode is IProjectModelCloudNode)),
+            eventService.Verify(s => s.FireAsync<ActiveProjectChangedEvent>(
+                    It.Is<ActiveProjectChangedEvent>(e => e.ActiveNode is IProjectModelCloudNode)),
                 Times.Once);
         }
 
@@ -695,8 +695,8 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.ProjectModel
                 new ProjectLocator("nonexisting-1"), 
                 CancellationToken.None);
 
-            eventService.Verify(s => s.FireAsync<ProjectExplorerNodeSelectedEvent>(
-                    It.Is<ProjectExplorerNodeSelectedEvent>(e => e.SelectedNode is IProjectModelCloudNode)),
+            eventService.Verify(s => s.FireAsync<ActiveProjectChangedEvent>(
+                    It.Is<ActiveProjectChangedEvent>(e => e.ActiveNode is IProjectModelCloudNode)),
                 Times.Once);
         }
 
@@ -713,8 +713,8 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.ProjectModel
 
             await modelService.SetActiveNodeAsync((ResourceLocator)null, CancellationToken.None);
 
-            eventService.Verify(s => s.FireAsync<ProjectExplorerNodeSelectedEvent>(
-                    It.IsAny<ProjectExplorerNodeSelectedEvent>()),
+            eventService.Verify(s => s.FireAsync<ActiveProjectChangedEvent>(
+                    It.IsAny<ActiveProjectChangedEvent>()),
                 Times.Never);
         }
 

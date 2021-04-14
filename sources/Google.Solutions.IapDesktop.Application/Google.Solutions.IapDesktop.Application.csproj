@@ -131,6 +131,7 @@
     <Compile Include="Services\Adapters\ResourceManagerAdapter.cs" />
     <Compile Include="Global.cs" />
     <Compile Include="Services\Adapters\SerialPortStream.cs" />
+    <Compile Include="Services\ProjectModel\ProjectModelEvents.cs" />
     <Compile Include="Services\ProjectModel\ProjectModelNodes.cs" />
     <Compile Include="Services\ProjectModel\ProjectModelService.cs" />
     <Compile Include="Services\SecureConnect\SecureConnectEnrollment.cs" />
@@ -297,7 +298,6 @@
     <Compile Include="Views\IMainForm.cs" />
     <Compile Include="Views\ProjectExplorer\IProjectExplorer.cs" />
     <Compile Include="Services\ProjectModel\IProjectModelNode.cs" />
-    <Compile Include="Views\ProjectExplorer\ProjectExplorerSelectionChangedEvent.cs" />
     <Compile Include="Views\ProjectExplorer\ProjectExplorerWindow.cs">
       <SubType>Form</SubType>
     </Compile>

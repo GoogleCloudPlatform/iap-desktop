@@ -1,5 +1,5 @@
 ﻿//
-// Copyright 2020 Google LLC
+// Copyright 2021 Google LLC
 //
 // Licensed to the Apache Software Foundation (ASF) under one
 // or more contributor license agreements.  See the NOTICE file
@@ -19,17 +19,41 @@
 // under the License.
 //
 
-using Google.Solutions.IapDesktop.Application.Services.ProjectModel;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
-namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
+namespace Google.Solutions.IapDesktop.Application.Services.ProjectModel
 {
-    public class ProjectExplorerNodeSelectedEvent
+    public class ProjectAddedEvent
     {
-        public IProjectModelNode SelectedNode { get; }
+        public string ProjectId { get; }
 
-        internal ProjectExplorerNodeSelectedEvent(IProjectModelNode selectedNode)
+        public ProjectAddedEvent(string projectId)
         {
-            this.SelectedNode = selectedNode;
+            this.ProjectId = projectId;
+        }
+    }
+
+    public class ProjectDeletedEvent
+    {
+        public string ProjectId { get; }
+
+        public ProjectDeletedEvent(string projectId)
+        {
+            this.ProjectId = projectId;
+        }
+    }
+
+    public class ActiveProjectChangedEvent
+    {
+        public IProjectModelNode ActiveNode { get; }
+
+        internal ActiveProjectChangedEvent(IProjectModelNode activeNode)
+        {
+            this.ActiveNode = activeNode;
         }
     }
 }

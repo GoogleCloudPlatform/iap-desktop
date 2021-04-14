@@ -73,8 +73,8 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
 
             // Track current selection in project explorer.
             var eventService = serviceProvider.GetService<IEventService>();
-            eventService.BindHandler<ProjectExplorerNodeSelectedEvent>(
-                e => OnProjectExplorerNodeSelected(e.SelectedNode));
+            eventService.BindHandler<ActiveProjectChangedEvent>(
+                e => OnProjectExplorerNodeSelected(e.ActiveNode));
         }
 
         protected override void OnUserVisibilityChanged(bool visible)
