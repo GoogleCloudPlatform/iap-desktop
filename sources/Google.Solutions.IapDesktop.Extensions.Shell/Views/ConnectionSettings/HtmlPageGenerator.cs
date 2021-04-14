@@ -85,7 +85,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.ConnectionSettings
 
                 buffer.Append($"<ul>");
 
-                foreach (var vmNode in zone.Instances)
+                foreach (var vmNode in zone.Instances.Where(i => i.IsWindowsInstance()))
                 {
                     var settings = (InstanceConnectionSettings)this.settingsService
                         .GetConnectionSettings(vmNode)

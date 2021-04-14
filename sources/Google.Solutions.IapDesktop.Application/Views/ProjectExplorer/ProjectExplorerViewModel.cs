@@ -798,11 +798,11 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
 
         internal class InstanceViewModelNode : ViewModelNode
         {
-            private const int WindowsDisconnectedIconIndex = 4;
-            private const int WindowsConnectedIconIndex = 5;
-            private const int StoppedIconIndex = 6;
-            private const int LinuxDisconnectedIconIndex = 7;
-            private const int LinuxConnectedIconIndex = 8;
+            internal const int WindowsDisconnectedIconIndex = 4;
+            internal const int WindowsConnectedIconIndex = 5;
+            internal const int StoppedIconIndex = 6;
+            internal const int LinuxDisconnectedIconIndex = 7;
+            internal const int LinuxConnectedIconIndex = 8;
 
             private bool isConnected = false;
 

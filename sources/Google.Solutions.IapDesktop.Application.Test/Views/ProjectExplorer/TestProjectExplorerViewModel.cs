@@ -595,6 +595,52 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views.ProjectExplorer
         }
 
         //---------------------------------------------------------------------
+        // IsConnected tracking.
+        //---------------------------------------------------------------------
+
+        [Test]
+        public async Task WhenInstanceConnected_ThenNodeUsesRightIcon()
+        {
+            this.sessionBrokerMock.Setup(b => b.IsConnected(
+                    It.IsAny<InstanceLocator>()))
+                .Returns(true);
+
+            var viewModel = CreateViewModel();
+            await viewModel.AddProjectAsync(new ProjectLocator("project-1"));
+            var instances = (await GetInstancesAsync(viewModel))
+                .Cast<ProjectExplorerViewModel.InstanceViewModelNode>()
+                .ToList();
+
+            Assert.AreEqual(
+                ProjectExplorerViewModel.InstanceViewModelNode.LinuxConnectedIconIndex, 
+                instances[0].ImageIndex);
+            Assert.AreEqual(
+                ProjectExplorerViewModel.InstanceViewModelNode.WindowsConnectedIconIndex,
+                instances[1].ImageIndex);
+        }
+
+        [Test]
+        public async Task WhenInstanceDisonnected_ThenNodeUsesRightIcon()
+        {
+            this.sessionBrokerMock.Setup(b => b.IsConnected(
+                    It.IsAny<InstanceLocator>()))
+                .Returns(false);
+
+            var viewModel = CreateViewModel();
+            await viewModel.AddProjectAsync(new ProjectLocator("project-1"));
+            var instances = (await GetInstancesAsync(viewModel))
+                .Cast<ProjectExplorerViewModel.InstanceViewModelNode>()
+                .ToList();
+
+            Assert.AreEqual(
+                ProjectExplorerViewModel.InstanceViewModelNode.LinuxDisconnectedIconIndex,
+                instances[0].ImageIndex);
+            Assert.AreEqual(
+                ProjectExplorerViewModel.InstanceViewModelNode.WindowsDisconnectedIconIndex,
+                instances[1].ImageIndex);
+        }
+
+        //---------------------------------------------------------------------
         // UnloadSelectedProjectAsync.
         //---------------------------------------------------------------------
 
