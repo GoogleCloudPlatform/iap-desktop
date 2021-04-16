@@ -1,5 +1,5 @@
 ﻿//
-// Copyright 2020 Google LLC
+// Copyright 2021 Google LLC
 //
 // Licensed to the Apache Software Foundation (ASF) under one
 // or more contributor license agreements.  See the NOTICE file
@@ -19,33 +19,140 @@
 // under the License.
 //
 
+using Google.Solutions.Common.Locator;
+using Google.Solutions.Common.Util;
 using Google.Solutions.IapDesktop.Application.ObjectModel;
 using Google.Solutions.IapDesktop.Application.Services.Adapters;
+using Google.Solutions.IapDesktop.Application.Services.Integration;
+using Google.Solutions.IapDesktop.Application.Services.ProjectModel;
 using Google.Solutions.IapDesktop.Application.Services.Settings;
+using Google.Solutions.IapDesktop.Application.Util;
+using Google.Solutions.IapDesktop.Application.Views.ProjectExplorer;
 using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.ComponentModel;
+using System.Diagnostics;
+using System.Linq;
+using System.Runtime.CompilerServices;
+using System.Text;
+using System.Threading;
+using System.Threading.Tasks;
+using System.Windows.Forms;
 
 namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
 {
     internal class ProjectExplorerViewModel : ViewModelBase, IDisposable
     {
         private readonly ApplicationSettingsRepository settingsRepository;
-        private OperatingSystems includedOperatingSystems;
+        private readonly IJobService jobService;
+        private readonly IProjectModelService projectModelService;
+        private readonly IGlobalSessionBroker sessionBroker;
+        private readonly ICloudConsoleService cloudConsoleService;
+
+        private ViewModelNode selectedNode;
+        private string instanceFilter;
+        private OperatingSystems operatingSystemsFilter = OperatingSystems.All;
+
+        private bool isUnloadProjectCommandVisible;
+        private bool isRefreshProjectsCommandVisible;
+        private bool isRefreshAllProjectsCommandVisible;
+        private bool isCloudConsoleCommandVisible;
+
+        private void SaveSettings()
+        {
+            var settings = this.settingsRepository.GetSettings();
+            settings.IncludeOperatingSystems.EnumValue = this.operatingSystemsFilter;
+            this.settingsRepository.SetSettings(settings);
+        }
+
+        private async Task RefreshAsync(ViewModelNode node)
+        {
+            if (!node.CanReload)
+            {
+                // Try reloading parent instead.
+                await RefreshAsync(node.Parent)
+                    .ConfigureAwait(true);
+            }
+            else
+            {
+                // Force-reload children and discard result.
+                await node.GetFilteredNodesAsync(true)
+                    .ConfigureAwait(true);
+            }
+        }
 
         public ProjectExplorerViewModel(
-            ApplicationSettingsRepository settingsRepository)
+            IWin32Window view,
+            ApplicationSettingsRepository settingsRepository,
+            IJobService jobService,
+            IEventService eventService,
+            IGlobalSessionBroker sessionBroker,
+            IProjectModelService projectModelService,
+            ICloudConsoleService cloudConsoleService)
         {
+            this.View = view;
             this.settingsRepository = settingsRepository;
-
+            this.jobService = jobService;
+            this.sessionBroker = sessionBroker;
+            this.projectModelService = projectModelService;
+            this.cloudConsoleService = cloudConsoleService;
+            
+            this.RootNode = new CloudViewModelNode(this);
+            
             //
             // Read current settings.
             //
             // NB. Do not hold on to the settings object because it might change.
             //
 
-            this.includedOperatingSystems = settingsRepository
+            this.operatingSystemsFilter = settingsRepository
                 .GetSettings()
                 .IncludeOperatingSystems
                 .EnumValue;
+
+            eventService.BindAsyncHandler<SessionStartedEvent>(
+                e => UpdateInstanceAsync(e.Instance, i => i.IsConnected = true));
+            eventService.BindAsyncHandler<SessionEndedEvent>(
+                e => UpdateInstanceAsync(e.Instance, i => i.IsConnected = false));
+        }
+
+        private async Task UpdateInstanceAsync(
+            InstanceLocator locator,
+            Action<InstanceViewModelNode> action)
+        {
+            if (await TryFindInstanceNodeAsync(locator).ConfigureAwait(true)
+                is InstanceViewModelNode instance)
+            {
+                action(instance);
+            }
+        }
+
+        private async Task<InstanceViewModelNode> TryFindInstanceNodeAsync(
+            InstanceLocator locator)
+        {
+            var project = (await this.RootNode
+                .GetFilteredNodesAsync(false)
+                .ConfigureAwait(true))
+                .FirstOrDefault(p => p.Locator.ProjectId == locator.ProjectId);
+            if (project == null)
+            {
+                return null;
+            }
+
+            var zone = (await project
+                .GetFilteredNodesAsync(false)
+                .ConfigureAwait(true))
+                .FirstOrDefault(z => z.Locator.Name == locator.Zone);
+            if (zone == null)
+            {
+                return null;
+            }
+
+            return (InstanceViewModelNode)(await zone
+                .GetFilteredNodesAsync(false)
+                .ConfigureAwait(true))
+                .FirstOrDefault(i => i.Locator.Name == locator.Name);
         }
 
         //---------------------------------------------------------------------
@@ -54,38 +161,159 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
 
         public bool IsLinuxIncluded
         {
-            get => this.includedOperatingSystems.HasFlag(OperatingSystems.Linux);
+            get => this.OperatingSystemsFilter.HasFlag(OperatingSystems.Linux);
             set
             {
                 if (value)
                 {
-                    this.includedOperatingSystems |= OperatingSystems.Linux;
+                    this.OperatingSystemsFilter |= OperatingSystems.Linux;
                 }
                 else
                 {
-                    this.includedOperatingSystems &= ~OperatingSystems.Linux;
+                    this.OperatingSystemsFilter &= ~OperatingSystems.Linux;
                 }
 
                 RaisePropertyChange();
                 SaveSettings();
             }
         }
+
         public bool IsWindowsIncluded
         {
-            get => this.includedOperatingSystems.HasFlag(OperatingSystems.Windows);
+            get => this.OperatingSystemsFilter.HasFlag(OperatingSystems.Windows);
             set
             {
                 if (value)
                 {
-                    this.includedOperatingSystems |= OperatingSystems.Windows;
+                    this.OperatingSystemsFilter |= OperatingSystems.Windows;
                 }
                 else
                 {
-                    this.includedOperatingSystems &= ~OperatingSystems.Windows;
+                    this.OperatingSystemsFilter &= ~OperatingSystems.Windows;
                 }
 
                 RaisePropertyChange();
                 SaveSettings();
+            }
+        }
+
+        public CloudViewModelNode RootNode { get; }
+
+        public bool IsUnloadProjectCommandVisible
+        {
+            get => this.isUnloadProjectCommandVisible;
+            set
+            {
+                this.isUnloadProjectCommandVisible = value;
+                RaisePropertyChange();
+            }
+        }
+
+        public bool IsRefreshProjectsCommandVisible
+        {
+            get => this.isRefreshProjectsCommandVisible;
+            set
+            {
+                this.isRefreshProjectsCommandVisible = value;
+                RaisePropertyChange();
+            }
+        }
+
+        public bool IsRefreshAllProjectsCommandVisible
+        {
+            get => this.isRefreshAllProjectsCommandVisible;
+            set
+            {
+                this.isRefreshAllProjectsCommandVisible = value;
+                RaisePropertyChange();
+            }
+        }
+
+        public bool IsCloudConsoleCommandVisible
+        {
+            get => this.isCloudConsoleCommandVisible;
+            set
+            {
+                this.isCloudConsoleCommandVisible = value;
+                RaisePropertyChange();
+            }
+        }
+
+        //---------------------------------------------------------------------
+        // "Input" properties.
+        //---------------------------------------------------------------------
+
+        public string InstanceFilter
+        {
+            get => this.instanceFilter?.Trim();
+            set
+            {
+                this.instanceFilter = value;
+                RaisePropertyChange();
+
+                if (this.RootNode.IsLoaded)
+                {
+                    this.RootNode.ReapplyFilter();
+                }
+            }
+        }
+
+        public OperatingSystems OperatingSystemsFilter
+        {
+            get => this.operatingSystemsFilter;
+            set
+            {
+                this.operatingSystemsFilter = value;
+
+                RaisePropertyChange();
+
+                if (this.RootNode.IsLoaded)
+                {
+                    this.RootNode.ReapplyFilter();
+                }
+            }
+        }
+
+        public ViewModelNode SelectedNode
+        {
+            get
+            {
+                Debug.Assert(
+                    this.selectedNode == null || 
+                        this.RootNode.DebugIsValidNode(this.selectedNode), 
+                    "Node detached");
+
+                return this.selectedNode;
+            }
+            set
+            {
+                Debug.Assert(
+                    this.selectedNode == null || 
+                        this.RootNode.DebugIsValidNode(this.selectedNode),
+                    "Node detached");
+
+                this.selectedNode = value;
+                RaisePropertyChange();
+
+                this.IsUnloadProjectCommandVisible = value is ProjectViewModelNode;
+                this.IsRefreshAllProjectsCommandVisible = value is CloudViewModelNode;
+                this.IsRefreshProjectsCommandVisible = 
+                    value is ProjectViewModelNode ||
+                    value is ZoneViewModelNode ||
+                    value is InstanceViewModelNode;
+                this.IsCloudConsoleCommandVisible =
+                    value is ProjectViewModelNode ||
+                    value is ZoneViewModelNode ||
+                    value is InstanceViewModelNode;
+
+
+                // 
+                // Update active node in model.
+                //
+                this.projectModelService.SetActiveNodeAsync(
+                        value?.Locator,
+                        CancellationToken.None)
+                    .ContinueWith(_ => { });
             }
         }
 
@@ -93,11 +321,119 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
         // Actions.
         //---------------------------------------------------------------------
 
-        public void SaveSettings()
+        public async Task<IEnumerable<ViewModelNode>> ExpandRootAsync()
         {
-            var settings = this.settingsRepository.GetSettings();
-            settings.IncludeOperatingSystems.EnumValue = this.includedOperatingSystems;
-            this.settingsRepository.SetSettings(settings);
+            // Explicitly load nodes.
+            var nodes = await this.RootNode.GetFilteredNodesAsync(false)
+                .ConfigureAwait(true);
+
+            // NB. If we did not load the nodes explicitly before, 
+            // IsExpanded would asynchronously trigger a load without
+            // awaiting the result. To prevent this behavior.
+            this.RootNode.IsExpanded = true;
+
+            return nodes;
+        }
+
+        public async Task AddProjectAsync(ProjectLocator project)
+        {
+            await this.projectModelService
+                .AddProjectAsync(project)
+                .ConfigureAwait(true);
+
+            // Make sure the new project is reflected.
+            await RefreshAsync(true).ConfigureAwait(true);
+        }
+
+        public async Task RemoveProjectAsync(ProjectLocator project)
+        {
+            // Reset selection to a safe place.
+            this.SelectedNode = this.RootNode;
+
+            await this.projectModelService
+                .RemoveProjectAsync(project)
+                .ConfigureAwait(true);
+
+            // Make sure the new project is reflected.
+            await RefreshAsync(true).ConfigureAwait(true);
+        }
+
+        public async Task RefreshAsync(bool reloadProjects)
+        {
+            // Reset selection to a safe place.
+            this.SelectedNode = this.RootNode;
+
+            if (reloadProjects)
+            {
+                // Refresh everything. 
+                await RefreshAsync(this.RootNode).ConfigureAwait(true);
+            }
+            else
+            {
+                // Retain project nodes, but refresh their descendents.
+                var projects = await this.RootNode
+                    .GetFilteredNodesAsync(false)
+                    .ConfigureAwait(true);
+
+                await Task
+                    .WhenAll(projects
+                        .Where(p => p.IsLoaded && p.CanReload)
+                        .Select(p => p.GetFilteredNodesAsync(true)))
+                    .ConfigureAwait(true);
+            }
+        }
+
+        public async Task RefreshSelectedNodeAsync()
+        {
+            await RefreshAsync(this.SelectedNode ?? this.RootNode)
+                .ConfigureAwait(true);
+        }
+
+        public async Task UnloadSelectedProjectAsync()
+        {
+            if (this.SelectedNode is ProjectViewModelNode projectNode)
+            {
+                await RemoveProjectAsync(projectNode.ProjectNode.Project)
+                    .ConfigureAwait(true);
+            }
+        }
+
+        public void OpenInCloudConsole()
+        {
+            if (this.SelectedNode is InstanceViewModelNode vmInstanceNode)
+            {
+                this.cloudConsoleService.OpenInstanceDetails(
+                    vmInstanceNode.InstanceNode.Instance);
+            }
+            else if (this.SelectedNode is ZoneViewModelNode zoneNode)
+            {
+                this.cloudConsoleService.OpenInstanceList(
+                    zoneNode.ZoneNode.Zone);
+            }
+            else if (this.SelectedNode is ProjectViewModelNode projectNode)
+            {
+                this.cloudConsoleService.OpenInstanceList(
+                    projectNode.ProjectNode.Project);
+            }
+        }
+
+        public void ConfigureIapAccess()
+        {
+            if (this.SelectedNode is InstanceViewModelNode vmInstanceNode)
+            {
+                this.cloudConsoleService.ConfigureIapAccess(
+                    vmInstanceNode.InstanceNode.Instance.ProjectId);
+            }
+            else if (this.SelectedNode is ZoneViewModelNode zoneNode)
+            {
+                this.cloudConsoleService.ConfigureIapAccess(
+                    zoneNode.ZoneNode.Zone.ProjectId);
+            }
+            else if (this.SelectedNode is ProjectViewModelNode projectNode)
+            {
+                this.cloudConsoleService.ConfigureIapAccess(
+                    projectNode.ProjectNode.Project.Name);
+            }
         }
 
         //---------------------------------------------------------------------
@@ -107,6 +443,405 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
         public void Dispose()
         {
             this.settingsRepository.Dispose();
+        }
+
+        //---------------------------------------------------------------------
+        // Nodes.
+        //---------------------------------------------------------------------
+
+        internal abstract class ViewModelNode : ViewModelBase
+        {
+            protected readonly ProjectExplorerViewModel viewModel;
+
+            private bool isExpanded;
+            private int defaultImageIndex;
+            private RangeObservableCollection<ViewModelNode> nodes;
+            private RangeObservableCollection<ViewModelNode> filteredNodes;
+
+            internal ViewModelNode Parent { get; }
+
+            internal bool IsLoaded => this.nodes != null;
+
+            //-----------------------------------------------------------------
+            // Observable properties.
+            //-----------------------------------------------------------------
+
+            public abstract bool CanReload { get; }
+            public abstract IProjectModelNode ModelNode { get; }
+            public ResourceLocator Locator { get; }
+            public string Text { get; }
+            public bool IsLeaf { get; }
+            
+            public virtual int ImageIndex => this.defaultImageIndex;
+
+            public bool IsExpanded
+            {
+                get => this.isExpanded;
+                set
+                {
+                    this.isExpanded = value;
+                    RaisePropertyChange();
+                }
+            }
+
+            //-----------------------------------------------------------------
+            // Children.
+            //-----------------------------------------------------------------
+
+            protected virtual IEnumerable<ViewModelNode> ApplyFilter(
+                RangeObservableCollection<ViewModelNode> allNodes)
+            {
+                return allNodes;
+            }
+
+            public async Task<ObservableCollection<ViewModelNode>> GetFilteredNodesAsync(
+                bool forceReload)
+            {
+                Debug.Assert(!((Control)this.View).InvokeRequired);
+
+                if (this.nodes == null)
+                {
+                    Debug.Assert(this.filteredNodes == null);
+
+                    //
+                    // Load lazily. No locking required as we're
+                    // operating on the UI thread.
+                    //
+
+                    var loadedNodes = await LoadNodesAsync(forceReload)
+                        .ConfigureAwait(true);
+
+                    this.nodes = new RangeObservableCollection<ViewModelNode>();
+                    this.filteredNodes = new RangeObservableCollection<ViewModelNode>();
+
+                    this.nodes.AddRange(loadedNodes);
+
+                    ReapplyFilter();
+                }
+                else if (forceReload)
+                {
+                    Debug.Assert(this.filteredNodes != null);
+
+                    var loadedNodes = await LoadNodesAsync(forceReload)
+                        .ConfigureAwait(true);
+
+                    this.nodes.Clear();
+                    this.nodes.AddRange(loadedNodes);
+
+                    ReapplyFilter();
+                }
+                else
+                {
+                    // Use cached copy.
+                }
+
+                Debug.Assert(this.filteredNodes != null);
+                Debug.Assert(this.nodes != null);
+
+                return this.filteredNodes;
+            }
+
+            protected Task<IEnumerable<ViewModelNode>> LoadNodesAsync(
+                bool forceReload)
+            {
+                //
+                // Wrap loading task in a job since it might kick of
+                // I/O (if data has not been cached yet).
+                //
+                return this.viewModel.jobService.RunInBackground(
+                    new JobDescription(
+                        $"Loading {this.Text}...",
+                        JobUserFeedbackType.BackgroundFeedback),
+                    token => LoadNodesAsync(forceReload, token));
+            }
+
+            protected abstract Task<IEnumerable<ViewModelNode>> LoadNodesAsync(
+                bool forceReload,
+                CancellationToken token);
+
+            internal bool DebugIsValidNode(ViewModelNode node)
+            {
+                if (node == this)
+                {
+                    return true;
+                }
+                else if (this.filteredNodes == null)
+                {
+                    return false;
+                }
+                else
+                {
+                    return this.filteredNodes.Any(n => n.DebugIsValidNode(n));
+                }
+            }
+
+            internal void ReapplyFilter()
+            {
+                Debug.Assert(this.IsLoaded);
+
+                this.filteredNodes.Clear();
+                this.filteredNodes.AddRange(ApplyFilter(this.nodes));
+
+                foreach (var n in this.nodes.Where(n => n.IsLoaded))
+                {
+                    n.ReapplyFilter();
+                }
+            }
+
+            //-----------------------------------------------------------------
+            // Ctor.
+            //-----------------------------------------------------------------
+
+            protected ViewModelNode(
+                ProjectExplorerViewModel viewModel,
+                ViewModelNode parent,
+                ResourceLocator locator,
+                string text,
+                bool isLeaf,
+                int defaultImageIndex)
+            {
+                this.viewModel = viewModel;
+                this.View = viewModel.View;
+                this.Parent = parent;
+                this.Locator = locator;
+                this.Text = text;
+                this.IsLeaf = isLeaf;
+                this.defaultImageIndex = defaultImageIndex;
+            }
+        }
+
+        internal class CloudViewModelNode : ViewModelNode
+        {
+            private const int DefaultIconIndex = 0;
+            private IProjectModelCloudNode cloudNode; // Loaded lazily.
+
+            public CloudViewModelNode(
+                ProjectExplorerViewModel viewModel)
+                : base(
+                      viewModel,
+                      null,
+                      null,
+                      "Google Cloud",
+                      false,
+                      DefaultIconIndex)
+            {
+            }
+
+            public override IProjectModelNode ModelNode => this.cloudNode;
+
+            public override bool CanReload => true;
+
+            protected override async Task<IEnumerable<ViewModelNode>> LoadNodesAsync(
+                bool forceReload,
+                CancellationToken token)
+            {
+                this.cloudNode = await this.viewModel.projectModelService
+                    .GetRootNodeAsync(forceReload, token)
+                    .ConfigureAwait(true);
+
+                var children = new List<ViewModelNode>();
+                children.AddRange(this.cloudNode.Projects
+                    .Select(m => new ProjectViewModelNode(
+                        this.viewModel,
+                        this,
+                        m))
+                    .OrderBy(n => n.Text));
+
+                return children;
+            }
+        }
+
+        internal class ProjectViewModelNode : ViewModelNode
+        {
+            private const int DefaultIconIndex = 1;
+            public IProjectModelProjectNode ProjectNode { get; }
+
+            private static string CreateDisplayName(IProjectModelProjectNode node)
+            {
+                if (!node.IsAccesible)
+                {
+                    return $"inaccessible project ({node.Project.Name})";
+                }
+                else if (node.Project.Name == node.DisplayName)
+                {
+                    return node.Project.Name;
+                }
+                else
+                {
+                    return $"{node.DisplayName} ({node.Project.Name})";
+                }
+            }
+
+            public ProjectViewModelNode(
+                ProjectExplorerViewModel viewModel,
+                CloudViewModelNode parent,
+                IProjectModelProjectNode modelNode)
+                : base(
+                      viewModel,
+                      parent,
+                      modelNode.Project,
+                      CreateDisplayName(modelNode),
+                      false,
+                      DefaultIconIndex)
+            {
+                this.ProjectNode = modelNode;
+                this.IsExpanded = true;
+            }
+
+            public override IProjectModelNode ModelNode => this.ProjectNode;
+
+            public override bool CanReload => true;
+
+            protected override async Task<IEnumerable<ViewModelNode>> LoadNodesAsync(
+                bool forceReload,
+                CancellationToken token)
+            {
+                try
+                {
+                    var zones = await this.viewModel.projectModelService.GetZoneNodesAsync(
+                            this.ProjectNode.Project,
+                            forceReload,
+                            token)
+                        .ConfigureAwait(true);
+
+                    return zones
+                        .Select(z => new ZoneViewModelNode(this.viewModel, this, z))
+                        .Cast<ViewModelNode>();
+                }
+                catch (Exception e) when (e.Is<ResourceAccessDeniedException>())
+                {
+                    //
+                    // Letting these exception propagate could cause a flurry
+                    // of error messages when multiple projects have become
+                    // inaccessible. So it's best to interpret this error as
+                    // "cannot list any VMs" and return an empty list.
+                    //
+                    return Enumerable.Empty<ZoneViewModelNode>();
+                }
+            }
+        }
+
+        internal class ZoneViewModelNode : ViewModelNode
+        {
+            private const int DefaultIconIndex = 3;
+
+            public IProjectModelZoneNode ZoneNode { get; }
+
+            public ZoneViewModelNode(
+                ProjectExplorerViewModel viewModel,
+                ProjectViewModelNode parent,
+                IProjectModelZoneNode modelNode)
+                : base(
+                      viewModel,
+                      parent,
+                      modelNode.Zone,
+                      modelNode.DisplayName,
+                      false,
+                      DefaultIconIndex)
+            {
+                this.ZoneNode = modelNode;
+                this.IsExpanded = true;
+            }
+
+            public override IProjectModelNode ModelNode => this.ZoneNode;
+
+            public override bool CanReload => false;
+
+            protected override Task<IEnumerable<ViewModelNode>> LoadNodesAsync(
+                bool forceReload,
+                CancellationToken token)
+            {
+                return Task.FromResult(this.ZoneNode
+                    .Instances
+                    .Select(i => new InstanceViewModelNode(this.viewModel, this, i))
+                    .Cast<ViewModelNode>());
+            }
+
+            protected override IEnumerable<ViewModelNode> ApplyFilter(
+                RangeObservableCollection<ViewModelNode> allNodes)
+            {
+                return allNodes
+                    .Cast<InstanceViewModelNode>()
+                    .Where(i => this.viewModel.InstanceFilter == null ||
+                                i.InstanceNode.DisplayName.Contains(this.viewModel.instanceFilter))
+                    .Where(i => (i.InstanceNode.OperatingSystem &
+                                this.viewModel.OperatingSystemsFilter) != 0);
+            }
+        }
+
+        internal class InstanceViewModelNode : ViewModelNode
+        {
+            internal const int WindowsDisconnectedIconIndex = 4;
+            internal const int WindowsConnectedIconIndex = 5;
+            internal const int StoppedIconIndex = 6;
+            internal const int LinuxDisconnectedIconIndex = 7;
+            internal const int LinuxConnectedIconIndex = 8;
+
+            private bool isConnected = false;
+
+            public IProjectModelInstanceNode InstanceNode { get; }
+
+            public InstanceViewModelNode(
+                ProjectExplorerViewModel viewModel,
+                ZoneViewModelNode parent,
+                IProjectModelInstanceNode modelNode)
+                : base(
+                      viewModel,
+                      parent,
+                      modelNode.Instance,
+                      modelNode.DisplayName,
+                      true,
+                      -1)
+            {
+                this.InstanceNode = modelNode;
+                this.IsConnected = viewModel.sessionBroker.IsConnected(modelNode.Instance);
+            }
+
+            public override IProjectModelNode ModelNode => this.InstanceNode;
+
+            public override bool CanReload => false;
+
+            public override int ImageIndex 
+            { 
+                get
+                {
+                    if (this.IsConnected)
+                    {
+                        return this.InstanceNode.OperatingSystem == OperatingSystems.Windows
+                            ? WindowsConnectedIconIndex
+                            : LinuxConnectedIconIndex;
+                    }
+                    else if (!this.InstanceNode.IsRunning)
+                    {
+                        return StoppedIconIndex;
+                    }
+                    else
+                    {
+                        return this.InstanceNode.OperatingSystem == OperatingSystems.Windows
+                            ? WindowsDisconnectedIconIndex
+                            : LinuxDisconnectedIconIndex;
+                    }
+                }
+            }
+
+            public bool IsConnected
+            {
+                get => this.isConnected;
+                set
+                {
+                    this.isConnected = value;
+                    RaisePropertyChange();
+                    RaisePropertyChange((InstanceViewModelNode n) => n.ImageIndex);
+                }
+            }
+
+            protected override Task<IEnumerable<ViewModelNode>> LoadNodesAsync(
+                bool forceReload,
+                CancellationToken token)
+            {
+                Debug.Fail("Should not be called since this is a leaf node");
+                return Task.FromResult(Enumerable.Empty<ViewModelNode>());
+            }
         }
     }
 }

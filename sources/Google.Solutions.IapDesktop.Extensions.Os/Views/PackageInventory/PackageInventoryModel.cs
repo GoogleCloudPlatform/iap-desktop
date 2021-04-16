@@ -25,6 +25,7 @@ using Google.Solutions.Common.Locator;
 using Google.Solutions.Common.Util;
 using Google.Solutions.IapDesktop.Application;
 using Google.Solutions.IapDesktop.Application.Services.Adapters;
+using Google.Solutions.IapDesktop.Application.Services.ProjectModel;
 using Google.Solutions.IapDesktop.Application.Views.ProjectExplorer;
 using Google.Solutions.IapDesktop.Extensions.Os.Inventory;
 using Google.Solutions.IapDesktop.Extensions.Os.Services.Inventory;
@@ -89,13 +90,13 @@ namespace Google.Solutions.IapDesktop.Extensions.Os.Views.PackageInventory
         public static async Task<PackageInventoryModel> LoadAsync(
             IInventoryService inventoryService,
             PackageInventoryType inventoryType,
-            IProjectExplorerNode node,
+            IProjectModelNode node,
             CancellationToken token)
         {
             IEnumerable<GuestOsInfo> inventory;
             try
             {
-                if (node is IProjectExplorerInstanceNode vmNode)
+                if (node is IProjectModelInstanceNode vmNode)
                 {
                     var info = await inventoryService.GetInstanceInventoryAsync(
                             vmNode.Instance,
@@ -105,7 +106,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Os.Views.PackageInventory
                         ? new GuestOsInfo[] { info }
                         : Enumerable.Empty<GuestOsInfo>();
                 }
-                else if (node is IProjectExplorerZoneNode zoneNode)
+                else if (node is IProjectModelZoneNode zoneNode)
                 {
                     inventory = await inventoryService.ListZoneInventoryAsync(
                             new ZoneLocator(zoneNode.Zone.ProjectId, zoneNode.Zone.Name),
@@ -113,7 +114,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Os.Views.PackageInventory
                             token)
                         .ConfigureAwait(false);
                 }
-                else if (node is IProjectExplorerProjectNode projectNode)
+                else if (node is IProjectModelProjectNode projectNode)
                 {
                     inventory = await inventoryService.ListProjectInventoryAsync(
                             projectNode.Project.ProjectId,

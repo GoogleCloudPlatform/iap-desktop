@@ -20,6 +20,7 @@
 //
 
 using Google.Solutions.Common.Diagnostics;
+using Google.Solutions.IapDesktop.Application.Services.ProjectModel;
 using Google.Solutions.IapDesktop.Application.Views.ProjectExplorer;
 using System;
 using System.Runtime.InteropServices;
@@ -42,9 +43,9 @@ namespace Google.Solutions.IapDesktop.Application.Views.Diagnostics
         // ProjectExplorerTrackingToolWindow.
         //---------------------------------------------------------------------
 
-        protected override Task SwitchToNodeAsync(IProjectExplorerNode node)
+        protected override Task SwitchToNodeAsync(IProjectModelNode node)
         {
-            if (node is IProjectExplorerInstanceNode vmNode)
+            if (node is IProjectModelInstanceNode vmNode)
             {
                 this.instanceNameLabel.Text = vmNode.Instance.Name;
             }

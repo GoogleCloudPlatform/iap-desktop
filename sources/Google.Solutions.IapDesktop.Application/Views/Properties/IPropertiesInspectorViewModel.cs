@@ -19,6 +19,7 @@
 // under the License.
 //
 
+using Google.Solutions.IapDesktop.Application.Services.ProjectModel;
 using Google.Solutions.IapDesktop.Application.Views.ProjectExplorer;
 using System.ComponentModel;
 using System.Threading.Tasks;
@@ -32,7 +33,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.Properties
         object InspectedObject { get; }
         string WindowTitle { get; }
 
-        Task SwitchToModelAsync(IProjectExplorerNode node);
+        Task SwitchToModelAsync(IProjectModelNode node);
         void SaveChanges();
     }
 }

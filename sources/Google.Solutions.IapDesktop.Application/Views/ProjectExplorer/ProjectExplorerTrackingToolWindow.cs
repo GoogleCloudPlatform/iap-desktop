@@ -22,6 +22,7 @@
 using Google.Solutions.Common.Diagnostics;
 using Google.Solutions.IapDesktop.Application.ObjectModel;
 using Google.Solutions.IapDesktop.Application.Services.Integration;
+using Google.Solutions.IapDesktop.Application.Services.ProjectModel;
 using Google.Solutions.IapDesktop.Application.Views.Dialog;
 using System;
 using System.Runtime.InteropServices;
@@ -38,7 +39,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
         private readonly IExceptionDialog exceptionDialog;
         private readonly TaskScheduler taskScheduler;
 
-        private IProjectExplorerNode ignoredNode = null;
+        private IProjectModelNode ignoredNode = null;
 
         protected ProjectExplorerTrackingToolWindow()
         {
@@ -65,12 +66,15 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
 
             // Use currently selected node.
             var projectExplorer = serviceProvider.GetService<IProjectExplorer>();
-            OnProjectExplorerNodeSelected(projectExplorer.SelectedNode);
+            if (projectExplorer.SelectedNode != null)
+            {
+                OnProjectExplorerNodeSelected(projectExplorer.SelectedNode);
+            }
 
             // Track current selection in project explorer.
             var eventService = serviceProvider.GetService<IEventService>();
-            eventService.BindHandler<ProjectExplorerNodeSelectedEvent>(
-                e => OnProjectExplorerNodeSelected(e.SelectedNode));
+            eventService.BindHandler<ActiveProjectChangedEvent>(
+                e => OnProjectExplorerNodeSelected(e.ActiveNode));
         }
 
         protected override void OnUserVisibilityChanged(bool visible)
@@ -84,7 +88,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
             }
         }
 
-        protected void OnProjectExplorerNodeSelected(IProjectExplorerNode node)
+        protected void OnProjectExplorerNodeSelected(IProjectModelNode node)
         {
             using (ApplicationTraceSources.Default.TraceMethod().WithParameters(node, this.IsUserVisible))
             {
@@ -135,7 +139,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
         // abstract base classes for forms.
         //---------------------------------------------------------------------
 
-        protected virtual Task SwitchToNodeAsync(IProjectExplorerNode node)
+        protected virtual Task SwitchToNodeAsync(IProjectModelNode node)
         {
             throw new NotImplementedException();
         }

@@ -21,15 +21,26 @@
 
 using Google.Solutions.Common.Diagnostics;
 using Google.Solutions.Common.Locator;
-using Google.Solutions.IapDesktop.Application.Views.ProjectExplorer;
+using Google.Solutions.IapDesktop.Application.Services.ProjectModel;
 using System;
 using System.Diagnostics;
 using System.Net;
 
 namespace Google.Solutions.IapDesktop.Application.Views
 {
+    public interface ICloudConsoleService
+    {
+        void ConfigureIapAccess(string projectId);
+        void OpenInstanceDetails(InstanceLocator instance);
+        void OpenInstanceList(ProjectLocator project);
+        void OpenInstanceList(ZoneLocator zone);
+        void OpenLogs(IProjectModelNode node);
+        void OpenMyAccount();
+        void OpenVmInstanceLogDetails(string projectId, string insertId, DateTime timestamp);
+    }
+
     [SkipCodeCoverage("UI code")]
-    public class CloudConsoleService
+    public class CloudConsoleService : ICloudConsoleService
     {
         private void OpenUrl(string url)
         {
@@ -68,23 +79,23 @@ namespace Google.Solutions.IapDesktop.Application.Views
                 $"project={projectId}");
         }
 
-        public void OpenLogs(IProjectExplorerNode node)
+        public void OpenLogs(IProjectModelNode node)
         {
-            if (node is IProjectExplorerInstanceNode vmNode)
+            if (node is IProjectModelInstanceNode vmNode)
             {
                 OpenLogs(
                     vmNode.Instance.ProjectId,
                     "resource.type=\"gce_instance\"\n" +
                         $"resource.labels.instance_id=\"{vmNode.InstanceId}\"");
             }
-            else if (node is IProjectExplorerZoneNode zoneNode)
+            else if (node is IProjectModelZoneNode zoneNode)
             {
                 OpenLogs(
                     zoneNode.Zone.ProjectId,
                     "resource.type=\"gce_instance\"\n" +
                         $"resource.labels.zone=\"{zoneNode.Zone.Name}\"");
             }
-            else if (node is IProjectExplorerProjectNode projectNode)
+            else if (node is IProjectModelProjectNode projectNode)
             {
                 OpenLogs(
                     projectNode.Project.ProjectId,

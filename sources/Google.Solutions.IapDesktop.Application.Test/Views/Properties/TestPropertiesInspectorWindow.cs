@@ -20,6 +20,7 @@
 //
 
 using Google.Solutions.IapDesktop.Application.ObjectModel;
+using Google.Solutions.IapDesktop.Application.Services.ProjectModel;
 using Google.Solutions.IapDesktop.Application.Settings;
 using Google.Solutions.IapDesktop.Application.Test.ObjectModel;
 using Google.Solutions.IapDesktop.Application.Views.ProjectExplorer;
@@ -88,7 +89,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views.Properties
                 throw new System.NotImplementedException();
             }
 
-            public Task SwitchToModelAsync(IProjectExplorerNode node)
+            public Task SwitchToModelAsync(IProjectModelNode node)
             {
                 throw new System.NotImplementedException();
             }

@@ -26,6 +26,7 @@ using Google.Solutions.IapDesktop.Application;
 using Google.Solutions.IapDesktop.Application.ObjectModel;
 using Google.Solutions.IapDesktop.Application.Services.Adapters;
 using Google.Solutions.IapDesktop.Application.Services.Integration;
+using Google.Solutions.IapDesktop.Application.Services.ProjectModel;
 using Google.Solutions.IapDesktop.Application.Views.ProjectExplorer;
 using System;
 using System.Diagnostics;
@@ -35,7 +36,7 @@ using System.Threading.Tasks;
 namespace Google.Solutions.IapDesktop.Extensions.Activity.Views.SerialOutput
 {
     internal class SerialOutputViewModel
-        : ModelCachingViewModelBase<IProjectExplorerNode, SerialOutputModel>
+        : ModelCachingViewModelBase<IProjectModelNode, SerialOutputModel>
     {
         private const int ModelCacheCapacity = 10;
         internal const string DefaultWindowTitle = "Serial log";
@@ -190,9 +191,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Views.SerialOutput
         // ModelCachingViewModelBase.
         //---------------------------------------------------------------------
 
-        public static CommandState GetCommandState(IProjectExplorerNode node)
+        public static CommandState GetCommandState(IProjectModelNode node)
         {
-            if (node is IProjectExplorerInstanceNode vmNode)
+            if (node is IProjectModelInstanceNode vmNode)
             {
                 return vmNode.IsRunning ? CommandState.Enabled : CommandState.Disabled;
             }
@@ -203,12 +204,12 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Views.SerialOutput
         }
 
         protected async override Task<SerialOutputModel> LoadModelAsync(
-            IProjectExplorerNode node,
+            IProjectModelNode node,
             CancellationToken token)
         {
             using (ApplicationTraceSources.Default.TraceMethod().WithParameters(node))
             {
-                if (node is IProjectExplorerInstanceNode vmNode && vmNode.IsRunning)
+                if (node is IProjectModelInstanceNode vmNode && vmNode.IsRunning)
                 {
                     // Load data using a job so that the task is retried in case
                     // of authentication issues.

@@ -20,6 +20,7 @@
 //
 
 using Google.Apis.Auth.OAuth2;
+using Google.Solutions.Common.Test;
 using Google.Solutions.Common.Test.Integration;
 using Google.Solutions.IapDesktop.Application.Services.Adapters;
 using NUnit.Framework;
@@ -39,7 +40,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Adapters
         {
             using (var adapter = new ResourceManagerAdapter(await credential))
             {
-                var result = await adapter.IsGrantedPermission(
+                var result = await adapter.IsGrantedPermissionAsync(
                     TestProject.ProjectId,
                     Permissions.ComputeInstancesGet,
                     CancellationToken.None);
@@ -58,7 +59,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Adapters
         {
             using (var adapter = new ResourceManagerAdapter(await credential))
             {
-                var result = await adapter.IsGrantedPermission(
+                var result = await adapter.IsGrantedPermissionAsync(
                     TestProject.ProjectId,
                     "compute.disks.create",
                     CancellationToken.None);
@@ -68,7 +69,52 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Adapters
         }
 
         //---------------------------------------------------------------------
-        // ListProjects.
+        // GetProject.
+        //---------------------------------------------------------------------
+
+        [Test]
+        public async Task WhenUserInViewerRole_ThenGetProjectReturnsProject(
+            [Credential(Role = PredefinedRole.ComputeViewer)] ResourceTask<ICredential> credential)
+        {
+            using (var adapter = new ResourceManagerAdapter(await credential))
+            {
+                var project = await adapter.GetProjectAsync(
+                    TestProject.ProjectId,
+                    CancellationToken.None);
+
+                Assert.IsNotNull(project);
+                Assert.AreEqual(TestProject.ProjectId, project.ProjectId);
+            }
+        }
+
+        [Test]
+        public async Task WhenUserNotInRole_ThenGetProjectThrowsResourceAccessDeniedException(
+            [Credential(Role = PredefinedRole.IapTunnelUser)] ResourceTask<ICredential> credential)
+        {
+            using (var adapter = new ResourceManagerAdapter(await credential))
+            {
+                AssertEx.ThrowsAggregateException<ResourceAccessDeniedException>(
+                    () => adapter.GetProjectAsync(
+                        TestProject.ProjectId,
+                        CancellationToken.None).Wait());
+            }
+        }
+
+        [Test]
+        public async Task WhenProjectIdInvalid_ThenGetProjectThrowsResourceAccessDeniedException(
+            [Credential(Role = PredefinedRole.IapTunnelUser)] ResourceTask<ICredential> credential)
+        {
+            using (var adapter = new ResourceManagerAdapter(await credential))
+            {
+                AssertEx.ThrowsAggregateException<ResourceAccessDeniedException>(
+                    () => adapter.GetProjectAsync(
+                        "invalid",
+                        CancellationToken.None).Wait());
+            }
+        }
+
+        //---------------------------------------------------------------------
+        // ListProjectsAsync.
         //---------------------------------------------------------------------
 
         [Test]
@@ -77,7 +123,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Adapters
         {
             using (var adapter = new ResourceManagerAdapter(await credential))
             {
-                var result = await adapter.ListProjects(
+                var result = await adapter.ListProjectsAsync(
                     ProjectFilter.ByProjectId(TestProject.ProjectId),
                     null,
                     CancellationToken.None);
@@ -98,7 +144,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.Adapters
                 // Remove last character from project ID.
                 var prefix = TestProject.ProjectId.Substring(0, TestProject.ProjectId.Length - 1);
 
-                var result = await adapter.ListProjects(
+                var result = await adapter.ListProjectsAsync(
                     ProjectFilter.ByPrefix(prefix),
                     10,
                     CancellationToken.None);

@@ -549,7 +549,7 @@ namespace Google.Solutions.IapDesktop.Windows
             new UserFlyoutWindow(
                     new UserFlyoutViewModel(
                         this.Authorization,
-                        this.serviceProvider.GetService<CloudConsoleService>()))
+                        this.serviceProvider.GetService<ICloudConsoleService>()))
                 .Show(
                     this,
                     screenPosition,

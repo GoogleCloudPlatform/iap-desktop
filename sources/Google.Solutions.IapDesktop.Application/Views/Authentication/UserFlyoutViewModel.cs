@@ -26,14 +26,14 @@ namespace Google.Solutions.IapDesktop.Application.Views.Authentication
 {
     public class UserFlyoutViewModel : ViewModelBase
     {
-        private readonly CloudConsoleService cloudConsole;
+        private readonly ICloudConsoleService cloudConsole;
 
         public string Email { get; }
         public string ManagedBy { get; }
 
         public UserFlyoutViewModel(
             IAuthorization authorization,
-            CloudConsoleService cloudConsole)
+            ICloudConsoleService cloudConsole)
         {
             this.cloudConsole = cloudConsole;
             this.Email = authorization.Email ?? string.Empty;

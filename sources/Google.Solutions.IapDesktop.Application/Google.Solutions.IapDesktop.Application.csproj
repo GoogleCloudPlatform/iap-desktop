@@ -131,6 +131,9 @@
     <Compile Include="Services\Adapters\ResourceManagerAdapter.cs" />
     <Compile Include="Global.cs" />
     <Compile Include="Services\Adapters\SerialPortStream.cs" />
+    <Compile Include="Services\ProjectModel\ProjectModelEvents.cs" />
+    <Compile Include="Services\ProjectModel\ProjectModelNodes.cs" />
+    <Compile Include="Services\ProjectModel\ProjectModelService.cs" />
     <Compile Include="Services\SecureConnect\SecureConnectEnrollment.cs" />
     <Compile Include="Services\Integration\SessionBroker.cs" />
     <Compile Include="Services\Integration\EventService.cs" />
@@ -153,6 +156,7 @@
     <Compile Include="Settings\PersistentSettingsCollection.cs" />
     <Compile Include="Settings\RegistrySetting.cs" />
     <Compile Include="Settings\SettingBase.cs" />
+    <Compile Include="Util\AsyncLock.cs" />
     <Compile Include="Util\ByteSizeFormatter.cs" />
     <Compile Include="Util\EventArgs.cs" />
     <Compile Include="Util\StringExtensions.cs" />
@@ -293,9 +297,7 @@
     <Compile Include="Views\Dialog\ExceptionDialog.cs" />
     <Compile Include="Views\IMainForm.cs" />
     <Compile Include="Views\ProjectExplorer\IProjectExplorer.cs" />
-    <Compile Include="Views\ProjectExplorer\IProjectExplorerNode.cs" />
-    <Compile Include="Views\ProjectExplorer\ProjectExplorerNode.cs" />
-    <Compile Include="Views\ProjectExplorer\ProjectExplorerSelectionChangedEvent.cs" />
+    <Compile Include="Services\ProjectModel\IProjectModelNode.cs" />
     <Compile Include="Views\ProjectExplorer\ProjectExplorerWindow.cs">
       <SubType>Form</SubType>
     </Compile>

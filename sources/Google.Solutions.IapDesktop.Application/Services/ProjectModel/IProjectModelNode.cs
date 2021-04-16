@@ -20,43 +20,42 @@
 //
 
 using Google.Solutions.Common.Locator;
+using Google.Solutions.IapDesktop.Application.Services.Adapters;
 using System.Collections.Generic;
 
-namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
+namespace Google.Solutions.IapDesktop.Application.Services.ProjectModel
 {
-    public interface IProjectExplorerNode
+    public interface IProjectModelNode
     {
         string DisplayName { get; }
     }
 
-    public interface IProjectExplorerCloudNode : IProjectExplorerNode
+    public interface IProjectModelCloudNode : IProjectModelNode
     {
+        IEnumerable<IProjectModelProjectNode> Projects { get; }
     }
 
-    public interface IProjectExplorerProjectNode : IProjectExplorerNode
+    public interface IProjectModelProjectNode : IProjectModelNode
     {
+        bool IsAccesible { get; }
         ProjectLocator Project { get; }
-
-        IEnumerable<IProjectExplorerZoneNode> Zones { get; }
     }
 
-    public interface IProjectExplorerZoneNode : IProjectExplorerNode
+    public interface IProjectModelZoneNode : IProjectModelNode
     {
         ZoneLocator Zone { get; }
 
-        IEnumerable<IProjectExplorerInstanceNode> Instances { get; }
+        IEnumerable<IProjectModelInstanceNode> Instances { get; }
     }
 
-    public interface IProjectExplorerInstanceNode : IProjectExplorerNode
+    public interface IProjectModelInstanceNode : IProjectModelNode
     {
         ulong InstanceId { get; }
 
         InstanceLocator Instance { get; }
 
         bool IsRunning { get; }
-        bool IsConnected { get; }
 
-        bool IsWindowsInstance { get; }
-        void Select();
+        OperatingSystems OperatingSystem { get; }
     }
 }

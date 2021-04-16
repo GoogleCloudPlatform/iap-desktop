@@ -19,6 +19,8 @@
 // under the License.
 //
 
+using Google.Solutions.IapDesktop.Application.Controls;
+
 namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
 {
     partial class ProjectExplorerWindow
@@ -60,7 +62,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
             this.vmToolStripSeparator = new System.Windows.Forms.ToolStripSeparator();
             this.vsToolStripExtender = new WeifenLuo.WinFormsUI.Docking.VisualStudioToolStripExtender(this.components);
             this.vs2015LightTheme = new WeifenLuo.WinFormsUI.Docking.VS2015LightTheme();
-            this.treeView = new System.Windows.Forms.TreeView();
+            this.treeView = new BindableTreeView<ProjectExplorerViewModel.ViewModelNode>();
             this.contextMenu = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.refreshToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.refreshAllProjectsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -156,8 +158,6 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
             this.treeView.SelectedImageIndex = 0;
             this.treeView.Size = new System.Drawing.Size(800, 425);
             this.treeView.TabIndex = 1;
-            this.treeView.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.treeView_AfterSelect);
-            this.treeView.NodeMouseClick += new System.Windows.Forms.TreeNodeMouseClickEventHandler(this.treeView_NodeMouseClick);
             this.treeView.NodeMouseDoubleClick += new System.Windows.Forms.TreeNodeMouseClickEventHandler(this.treeView_NodeMouseDoubleClick);
             // 
             // contextMenu
@@ -260,7 +260,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
         private WeifenLuo.WinFormsUI.Docking.VS2015LightTheme vs2015LightTheme;
         private System.Windows.Forms.ToolStripButton refreshButton;
         private System.Windows.Forms.ToolStripButton addButton;
-        private System.Windows.Forms.TreeView treeView;
+        private BindableTreeView<ProjectExplorerViewModel.ViewModelNode> treeView;
         private System.Windows.Forms.ImageList imageList;
         private System.Windows.Forms.ContextMenuStrip contextMenu;
         private System.Windows.Forms.ToolStripMenuItem refreshToolStripMenuItem;

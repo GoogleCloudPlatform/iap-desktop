@@ -28,6 +28,7 @@ using Google.Solutions.IapDesktop.Application.ObjectModel;
 using Google.Solutions.IapDesktop.Application.Services;
 using Google.Solutions.IapDesktop.Application.Services.Adapters;
 using Google.Solutions.IapDesktop.Application.Services.Integration;
+using Google.Solutions.IapDesktop.Application.Services.ProjectModel;
 using Google.Solutions.IapDesktop.Application.Services.Settings;
 using Google.Solutions.IapDesktop.Application.Util;
 using Google.Solutions.IapDesktop.Application.Views;
@@ -237,14 +238,13 @@ namespace Google.Solutions.IapDesktop
             integrationLayer.AddSingleton<IEventService>(eventService);
             integrationLayer.AddSingleton<IGlobalSessionBroker, GlobalSessionBroker>();
             integrationLayer.AddSingleton<IProjectRepository>(new ProjectRepository(
-                hkcu.CreateSubKey($@"{Globals.BaseRegistryKeyPath}\Inventory"),
-                eventService));
+                hkcu.CreateSubKey($@"{Globals.BaseRegistryKeyPath}\Inventory")));
 
             //
             // Window & workflow layer.
             //
             windowAndWorkflowLayer.AddSingleton<IMainForm>(mainForm);
-            windowAndWorkflowLayer.AddTransient<CloudConsoleService>();
+            windowAndWorkflowLayer.AddTransient<ICloudConsoleService, CloudConsoleService>();
             windowAndWorkflowLayer.AddTransient<HelpService>();
             windowAndWorkflowLayer.AddTransient<IProjectPickerWindow, ProjectPickerWindow>();
             windowAndWorkflowLayer.AddTransient<AboutWindow>();
@@ -252,6 +252,7 @@ namespace Google.Solutions.IapDesktop
             windowAndWorkflowLayer.AddTransient<IConfirmationDialog, ConfirmationDialog>();
             windowAndWorkflowLayer.AddTransient<ITaskDialog, TaskDialog>();
             windowAndWorkflowLayer.AddTransient<IUpdateService, UpdateService>();
+            windowAndWorkflowLayer.AddSingleton<IProjectModelService, ProjectModelService>();
             windowAndWorkflowLayer.AddSingleton<IProjectExplorer, ProjectExplorerWindow>();
             windowAndWorkflowLayer.AddTransient<OptionsDialog>();
 

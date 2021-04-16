@@ -21,7 +21,9 @@
 
 using Google.Solutions.Common.Locator;
 using Google.Solutions.Common.Test;
+using Google.Solutions.IapDesktop.Application.Services.Adapters;
 using Google.Solutions.IapDesktop.Application.Services.Integration;
+using Google.Solutions.IapDesktop.Application.Services.ProjectModel;
 using Google.Solutions.IapDesktop.Application.Services.Settings;
 using Google.Solutions.IapDesktop.Application.Views.ProjectExplorer;
 using Google.Solutions.IapDesktop.Extensions.Shell.Services.ConnectionSettings;
@@ -49,14 +51,12 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.ConnectionSett
         {
             hkcu.DeleteSubKeyTree(TestKeyPath, false);
 
-            var projectRepository = new ProjectRepository(
-                hkcu.CreateSubKey(TestKeyPath),
-                new Mock<IEventService>().Object);
+            var projectRepository = new ProjectRepository(hkcu.CreateSubKey(TestKeyPath));
             var settingsRepository = new ConnectionSettingsRepository(projectRepository);
             this.service = new ConnectionSettingsService(settingsRepository);
 
             // Set some initial project settings.
-            projectRepository.AddProjectAsync(SampleProjectId).Wait();
+            projectRepository.AddProject(new ProjectLocator(SampleProjectId));
 
             var projectSettings = settingsRepository.GetProjectSettings(SampleProjectId);
             projectSettings.RdpDomain.Value = "project-domain";
@@ -70,13 +70,18 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.ConnectionSett
         [Test]
         public async Task WhenInstanceIsRunning_ThenInformationBarIsShown()
         {
-            var viewModel = new ConnectionSettingsViewModel(this.service);
+            var broker = new Mock<IGlobalSessionBroker>();
+            broker.Setup(b => b.IsConnected(
+                    It.IsAny<InstanceLocator>()))
+                .Returns(true);
+            var viewModel = new ConnectionSettingsViewModel(
+                this.service,
+                broker.Object);
 
-            var node = new Mock<IProjectExplorerInstanceNode>();
+            var node = new Mock<IProjectModelInstanceNode>();
             node.SetupGet(n => n.Instance).Returns(
                 new InstanceLocator(SampleProjectId, "zone-1", "instance-1"));
-            node.SetupGet(n => n.IsConnected).Returns(true);
-            node.SetupGet(n => n.IsWindowsInstance).Returns(true);
+            node.SetupGet(n => n.OperatingSystem).Returns(OperatingSystems.Windows);
 
             await viewModel.SwitchToModelAsync(node.Object);
 
@@ -86,13 +91,18 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.ConnectionSett
         [Test]
         public async Task WhenInstanceIsNotRunning_ThenInformationBarIsNotShown()
         {
-            var viewModel = new ConnectionSettingsViewModel(this.service);
+            var broker = new Mock<IGlobalSessionBroker>();
+            broker.Setup(b => b.IsConnected(
+                    It.IsAny<InstanceLocator>()))
+                .Returns(false);
+            var viewModel = new ConnectionSettingsViewModel(
+                this.service,
+                broker.Object);
 
-            var node = new Mock<IProjectExplorerInstanceNode>();
+            var node = new Mock<IProjectModelInstanceNode>();
             node.SetupGet(n => n.Instance).Returns(
                 new InstanceLocator(SampleProjectId, "zone-1", "instance-1"));
-            node.SetupGet(n => n.IsConnected).Returns(false);
-            node.SetupGet(n => n.IsWindowsInstance).Returns(true);
+            node.SetupGet(n => n.OperatingSystem).Returns(OperatingSystems.Windows);
 
             await viewModel.SwitchToModelAsync(node.Object);
 
@@ -106,9 +116,15 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.ConnectionSett
         [Test]
         public async Task WhenSwitchingToCloudNode_ThenGridIsDisabled()
         {
-            var viewModel = new ConnectionSettingsViewModel(this.service);
+            var broker = new Mock<IGlobalSessionBroker>();
+            broker.Setup(b => b.IsConnected(
+                    It.IsAny<InstanceLocator>()))
+                .Returns(false);
+            var viewModel = new ConnectionSettingsViewModel(
+                this.service,
+                broker.Object);
 
-            var node = new Mock<IProjectExplorerCloudNode>();
+            var node = new Mock<IProjectModelCloudNode>();
             await viewModel.SwitchToModelAsync(node.Object);
 
             Assert.IsFalse(viewModel.IsInformationBarVisible);
@@ -119,9 +135,15 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.ConnectionSett
         [Test]
         public async Task WhenSwitchingToProjectNode_ThenGridIsPopulated()
         {
-            var viewModel = new ConnectionSettingsViewModel(this.service);
+            var broker = new Mock<IGlobalSessionBroker>();
+            broker.Setup(b => b.IsConnected(
+                    It.IsAny<InstanceLocator>()))
+                .Returns(false);
+            var viewModel = new ConnectionSettingsViewModel(
+                this.service,
+                broker.Object);
 
-            var node = new Mock<IProjectExplorerProjectNode>();
+            var node = new Mock<IProjectModelProjectNode>();
             node.SetupGet(n => n.Project).Returns(new ProjectLocator(SampleProjectId));
             node.SetupGet(n => n.DisplayName).Returns("display");
 
@@ -138,9 +160,15 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.ConnectionSett
         [Test]
         public async Task WhenSwitchingToZoneNode_ThenGridIsPopulated()
         {
-            var viewModel = new ConnectionSettingsViewModel(this.service);
+            var broker = new Mock<IGlobalSessionBroker>();
+            broker.Setup(b => b.IsConnected(
+                    It.IsAny<InstanceLocator>()))
+                .Returns(false);
+            var viewModel = new ConnectionSettingsViewModel(
+                this.service,
+                broker.Object);
 
-            var node = new Mock<IProjectExplorerZoneNode>();
+            var node = new Mock<IProjectModelZoneNode>();
             node.SetupGet(n => n.Zone).Returns(new ZoneLocator(SampleProjectId, "zone-1"));
             node.SetupGet(n => n.DisplayName).Returns("display");
 
@@ -157,14 +185,19 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.ConnectionSett
         [Test]
         public async Task WhenSwitchingToInstanceNode_ThenGridIsPopulated()
         {
-            var viewModel = new ConnectionSettingsViewModel(this.service);
+            var broker = new Mock<IGlobalSessionBroker>();
+            broker.Setup(b => b.IsConnected(
+                    It.IsAny<InstanceLocator>()))
+                .Returns(false);
+            var viewModel = new ConnectionSettingsViewModel(
+                this.service,
+                broker.Object);
 
-            var node = new Mock<IProjectExplorerInstanceNode>();
+            var node = new Mock<IProjectModelInstanceNode>();
             node.SetupGet(n => n.Instance).Returns(
                 new InstanceLocator(SampleProjectId, "zone-1", "instance-1"));
             node.SetupGet(n => n.DisplayName).Returns("display");
-            node.SetupGet(n => n.IsConnected).Returns(false);
-            node.SetupGet(n => n.IsWindowsInstance).Returns(true);
+            node.SetupGet(n => n.OperatingSystem).Returns(OperatingSystems.Windows);
 
             await viewModel.SwitchToModelAsync(node.Object);
 

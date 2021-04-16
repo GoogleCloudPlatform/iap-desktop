@@ -21,7 +21,9 @@
 
 using Google.Solutions.Common.Locator;
 using Google.Solutions.IapDesktop.Application.ObjectModel;
+using Google.Solutions.IapDesktop.Application.Services.Adapters;
 using Google.Solutions.IapDesktop.Application.Services.Integration;
+using Google.Solutions.IapDesktop.Application.Services.ProjectModel;
 using Google.Solutions.IapDesktop.Application.Settings;
 using Google.Solutions.IapDesktop.Application.Test;
 using Google.Solutions.IapDesktop.Application.Test.ObjectModel;
@@ -38,6 +40,7 @@ using Google.Solutions.IapTunneling.Iap;
 using Moq;
 using NUnit.Framework;
 using System;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
@@ -68,6 +71,16 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Rdp
             this.serviceRegistry.AddMock<IMainForm>();
         }
 
+        private Mock<IProjectModelInstanceNode> CreateInstanceNodeMock()
+        {
+            var vmNode = new Mock<IProjectModelInstanceNode>();
+            vmNode.SetupGet(n => n.OperatingSystem).Returns(OperatingSystems.Windows);
+            vmNode.SetupGet(n => n.Instance)
+                .Returns(new InstanceLocator("project-1", "zone-1", "instance-1"));
+
+            return vmNode;
+        }
+
         //---------------------------------------------------------------------
         // Connect by node.
         //---------------------------------------------------------------------
@@ -81,18 +94,17 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Rdp
 
             var settingsService = this.serviceRegistry.AddMock<IConnectionSettingsService>();
             settingsService.Setup(s => s.GetConnectionSettings(
-                    It.IsAny<IProjectExplorerNode>()))
+                    It.IsAny<IProjectModelNode>()))
                 .Returns(
                     settings.ToPersistentSettingsCollection(s => Assert.Fail("should not be called")));
 
-            var vmNode = new Mock<IProjectExplorerInstanceNode>();
-            vmNode.SetupGet(n => n.Instance)
-                .Returns(new InstanceLocator("project-1", "zone-1", "instance-1"));
+            var vmNode = CreateInstanceNodeMock();
 
-            this.serviceRegistry.AddMock<IProjectExplorer>()
-                .Setup(p => p.TryFindNode(
-                    It.IsAny<InstanceLocator>()))
-                .Returns(vmNode.Object);
+            this.serviceRegistry.AddMock<IProjectModelService>()
+                .Setup(p => p.GetNodeAsync(
+                    It.IsAny<ResourceLocator>(),
+                    It.IsAny<CancellationToken>()))
+                .ReturnsAsync(vmNode.Object);
 
             var remoteDesktopService = new Mock<IRemoteDesktopSessionBroker>();
             remoteDesktopService.Setup(s => s.Connect(
@@ -126,18 +138,17 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Rdp
 
             var settingsService = this.serviceRegistry.AddMock<IConnectionSettingsService>();
             settingsService.Setup(s => s.GetConnectionSettings(
-                    It.IsAny<IProjectExplorerNode>()))
+                    It.IsAny<IProjectModelNode>()))
                 .Returns(
                     settings.ToPersistentSettingsCollection(s => settingsSaved = true));
 
-            var vmNode = new Mock<IProjectExplorerInstanceNode>();
-            vmNode.SetupGet(n => n.Instance)
-                .Returns(new InstanceLocator("project-1", "zone-1", "instance-1"));
+            var vmNode = CreateInstanceNodeMock();
 
-            this.serviceRegistry.AddMock<IProjectExplorer>()
-                .Setup(p => p.TryFindNode(
-                    It.IsAny<InstanceLocator>()))
-                .Returns(vmNode.Object);
+            this.serviceRegistry.AddMock<IProjectModelService>()
+                .Setup(p => p.GetNodeAsync(
+                    It.IsAny<ResourceLocator>(),
+                    It.IsAny<CancellationToken>()))
+                .ReturnsAsync(vmNode.Object);
 
             var remoteDesktopService = new Mock<IRemoteDesktopSessionBroker>();
             remoteDesktopService.Setup(s => s.Connect(
@@ -176,10 +187,11 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Rdp
                     It.IsAny<InstanceLocator>(),
                     It.IsAny<ConnectionSettingsBase>(),
                     It.IsAny<bool>())); // Nop -> Connect without configuring credentials.
-            this.serviceRegistry.AddMock<IProjectExplorer>()
-                .Setup(p => p.TryFindNode(
-                    It.IsAny<InstanceLocator>()))
-                .Returns<VmInstanceNode>(null); // Not found
+            this.serviceRegistry.AddMock<IProjectModelService>()
+                .Setup(p => p.GetNodeAsync(
+                    It.IsAny<ResourceLocator>(),
+                    It.IsAny<CancellationToken>()))
+                .ReturnsAsync((IProjectModelNode)null); // Not found
 
             var remoteDesktopService = new Mock<IRemoteDesktopSessionBroker>();
             remoteDesktopService.Setup(s => s.Connect(
@@ -200,7 +212,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Rdp
                 It.IsAny<ushort>(),
                 It.Is<InstanceConnectionSettings>(i => i.RdpUsername.Value == null)), Times.Once);
             settingsService.Verify(s => s.GetConnectionSettings(
-                It.IsAny<IProjectExplorerNode>()), Times.Never);
+                It.IsAny<IProjectModelNode>()), Times.Never);
         }
 
         [Test]
@@ -213,10 +225,11 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Rdp
                     It.IsAny<InstanceLocator>(),
                     It.IsAny<ConnectionSettingsBase>(),
                     It.IsAny<bool>())); // Nop -> Connect without configuring credentials.
-            this.serviceRegistry.AddMock<IProjectExplorer>()
-                .Setup(p => p.TryFindNode(
-                    It.IsAny<InstanceLocator>()))
-                .Returns<VmInstanceNode>(null); // Not found
+            this.serviceRegistry.AddMock<IProjectModelService>()
+                .Setup(p => p.GetNodeAsync(
+                    It.IsAny<ResourceLocator>(),
+                    It.IsAny<CancellationToken>()))
+                .ReturnsAsync((IProjectModelNode)null); // Not found
 
             var remoteDesktopService = new Mock<IRemoteDesktopSessionBroker>();
             remoteDesktopService.Setup(s => s.Connect(
@@ -237,7 +250,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Rdp
                 It.IsAny<ushort>(),
                 It.Is<InstanceConnectionSettings>(i => i.RdpUsername.StringValue == "john doe")), Times.Once);
             settingsService.Verify(s => s.GetConnectionSettings(
-                It.IsAny<IProjectExplorerNode>()), Times.Never);
+                It.IsAny<IProjectModelNode>()), Times.Never);
         }
 
         [Test]
@@ -249,11 +262,11 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Rdp
 
             var settingsService = this.serviceRegistry.AddMock<IConnectionSettingsService>();
             settingsService.Setup(s => s.GetConnectionSettings(
-                    It.IsAny<IProjectExplorerNode>()))
+                    It.IsAny<IProjectModelNode>()))
                 .Returns(
                     settings.ToPersistentSettingsCollection(s => Assert.Fail("should not be called")));
 
-            var vmNode = new Mock<IProjectExplorerInstanceNode>();
+            var vmNode = new Mock<IProjectModelInstanceNode>();
             vmNode.SetupGet(n => n.Instance)
                 .Returns(new InstanceLocator("project-1", "zone-1", "instance-1"));
 
@@ -263,10 +276,11 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Rdp
                     It.IsAny<InstanceLocator>(),
                     It.IsAny<ConnectionSettingsBase>(),
                     It.IsAny<bool>()));
-            this.serviceRegistry.AddMock<IProjectExplorer>()
-                .Setup(p => p.TryFindNode(
-                    It.IsAny<InstanceLocator>()))
-                .Returns(vmNode.Object);
+            this.serviceRegistry.AddMock<IProjectModelService>()
+                .Setup(p => p.GetNodeAsync(
+                    It.IsAny<ResourceLocator>(),
+                    It.IsAny<CancellationToken>()))
+                .ReturnsAsync(vmNode.Object);
 
             var remoteDesktopService = new Mock<IRemoteDesktopSessionBroker>();
             remoteDesktopService.Setup(s => s.Connect(
@@ -287,7 +301,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Rdp
                 It.IsAny<ushort>(),
                 It.Is<InstanceConnectionSettings>(i => i.RdpUsername.StringValue == "john doe")), Times.Once);
             settingsService.Verify(s => s.GetConnectionSettings(
-                It.IsAny<IProjectExplorerNode>()), Times.Once);
+                It.IsAny<IProjectModelNode>()), Times.Once);
         }
     }
 }

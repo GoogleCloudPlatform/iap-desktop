@@ -296,7 +296,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Ssh
                         // - we do not have the permission to update project metadata.
                         //
                         var canUpdateProjectMetadata = await this.resourceManagerAdapter
-                            .IsGrantedPermission(
+                            .IsGrantedPermissionAsync(
                                 instance.ProjectId,
                                 Permissions.ComputeProjectsSetCommonInstanceMetadata,
                                 token)

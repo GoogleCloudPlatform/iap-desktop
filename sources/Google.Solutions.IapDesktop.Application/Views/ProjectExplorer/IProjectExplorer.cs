@@ -21,6 +21,7 @@
 
 using Google.Solutions.Common.Locator;
 using Google.Solutions.IapDesktop.Application.ObjectModel;
+using Google.Solutions.IapDesktop.Application.Services.ProjectModel;
 using System.Threading.Tasks;
 
 namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
@@ -28,15 +29,11 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
     public interface IProjectExplorer
     {
         void ShowWindow();
-        Task RefreshProject(string projectId);
-        Task RefreshAllProjects();
         Task ShowAddProjectDialogAsync();
 
-        IProjectExplorerInstanceNode TryFindNode(InstanceLocator reference);
+        IProjectModelNode SelectedNode { get; }
 
-        IProjectExplorerNode SelectedNode { get; }
-
-        CommandContainer<IProjectExplorerNode> ContextMenuCommands { get; }
-        CommandContainer<IProjectExplorerNode> ToolbarCommands { get; }
+        CommandContainer<IProjectModelNode> ContextMenuCommands { get; }
+        CommandContainer<IProjectModelNode> ToolbarCommands { get; }
     }
 }

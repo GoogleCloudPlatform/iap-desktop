@@ -106,7 +106,11 @@ namespace Google.Solutions.IapDesktop.Extensions.Os.Inventory
             var availablePackages = guestAttributes.FirstOrDefault(a => a.Key == "PackageUpdates")?.Value;
             var version = guestAttributes.FirstOrDefault(a => a.Key == "Version")?.Value;
 
-            if (version != null && version.IndexOf('.') == -1)
+            if (string.IsNullOrWhiteSpace(version))
+            {
+                version = null;
+            }
+            else if (version.IndexOf('.') == -1)
             {
                 // Version.Parse expects at least one dot-version.
                 version += ".0";

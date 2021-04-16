@@ -22,6 +22,7 @@
 using Google.Solutions.Common.Diagnostics;
 using Google.Solutions.IapDesktop.Application.Controls;
 using Google.Solutions.IapDesktop.Application.ObjectModel;
+using Google.Solutions.IapDesktop.Application.Services.ProjectModel;
 using Google.Solutions.IapDesktop.Application.Views.ProjectExplorer;
 using Google.Solutions.IapDesktop.Extensions.Activity.Events;
 using System;
@@ -159,7 +160,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Views.EventLog
         // ProjectExplorerTrackingToolWindow.
         //---------------------------------------------------------------------
 
-        protected override async Task SwitchToNodeAsync(IProjectExplorerNode node)
+        protected override async Task SwitchToNodeAsync(IProjectModelNode node)
         {
             Debug.Assert(!InvokeRequired, "running on UI thread");
             await this.viewModel.SwitchToModelAsync(node)

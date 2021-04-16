@@ -21,7 +21,7 @@
 
 using Google.Solutions.Common.Locator;
 using Google.Solutions.Common.Test;
-using Google.Solutions.IapDesktop.Application.Views.ProjectExplorer;
+using Google.Solutions.IapDesktop.Application.Services.ProjectModel;
 using Google.Solutions.IapDesktop.Extensions.Os.Services.Inventory;
 using Google.Solutions.IapDesktop.Extensions.Os.Views.PackageInventory;
 using Moq;
@@ -51,7 +51,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Os.Test.Views.PackageInventory
                 });
 
 
-            var node = new Mock<IProjectExplorerZoneNode>();
+            var node = new Mock<IProjectModelZoneNode>();
             node.SetupGet(n => n.Zone).Returns(new ZoneLocator("project-1", "zone-1"));
             node.SetupGet(n => n.DisplayName).Returns("zone-1");
 

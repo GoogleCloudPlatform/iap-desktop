@@ -20,6 +20,8 @@
 //
 
 using Google.Solutions.IapDesktop.Application.ObjectModel;
+using Google.Solutions.IapDesktop.Application.Services.Integration;
+using Google.Solutions.IapDesktop.Application.Services.ProjectModel;
 using Google.Solutions.IapDesktop.Application.Settings;
 using Google.Solutions.IapDesktop.Application.Views.ProjectExplorer;
 using Google.Solutions.IapDesktop.Application.Views.Properties;
@@ -34,6 +36,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.ConnectionSettings
         internal const string DefaultWindowTitle = "Connection settings";
 
         private readonly IConnectionSettingsService settingsService;
+        private readonly IGlobalSessionBroker globalSessionBroker;
 
         private bool isInformationBarVisible = false;
         private IPersistentSettingsCollection inspectedObject = null;
@@ -41,9 +44,12 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.ConnectionSettings
 
         public string InformationText => "Changes only take effect after reconnecting";
 
-        public ConnectionSettingsViewModel(IConnectionSettingsService settingsService)
+        public ConnectionSettingsViewModel(
+            IConnectionSettingsService settingsService,
+            IGlobalSessionBroker globalSessionBroker)
         {
             this.settingsService = settingsService;
+            this.globalSessionBroker = globalSessionBroker;
         }
 
         //---------------------------------------------------------------------
@@ -90,13 +96,13 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.ConnectionSettings
             this.inspectedObject.Save();
         }
 
-        public Task SwitchToModelAsync(IProjectExplorerNode node)
+        public Task SwitchToModelAsync(IProjectModelNode node)
         {
             if (this.settingsService.IsConnectionSettingsAvailable(node))
             {
                 this.IsInformationBarVisible =
-                    node is IProjectExplorerInstanceNode &&
-                    ((IProjectExplorerInstanceNode)node).IsConnected;
+                    node is IProjectModelInstanceNode vmNode &&
+                    this.globalSessionBroker.IsConnected(vmNode.Instance);
 
                 this.InspectedObject = this.settingsService.GetConnectionSettings(node);
                 this.WindowTitle = DefaultWindowTitle + $": {node.DisplayName}";

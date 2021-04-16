@@ -56,7 +56,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views.ProjectPicker
             var resourceManagerMock = new Mock<IResourceManagerAdapter>();
 
             resourceManagerMock
-                .Setup(a => a.ListProjects(
+                .Setup(a => a.ListProjectsAsync(
                     It.Is<ProjectFilter>(f => f == null),
                     It.IsAny<Nullable<int>>(),
                     It.IsAny<CancellationToken>()))
@@ -64,7 +64,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views.ProjectPicker
                     new[] { ProjectOne, ProjectTwo, ProjectThree },
                     true));
             resourceManagerMock
-                .Setup(a => a.ListProjects(
+                .Setup(a => a.ListProjectsAsync(
                     It.Is<ProjectFilter>(f => f != null && f.ToString().Contains("project-1")),
                     It.IsAny<Nullable<int>>(),
                     It.IsAny<CancellationToken>()))
@@ -72,7 +72,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views.ProjectPicker
                     new[] { ProjectOne },
                     true));
             resourceManagerMock
-                .Setup(a => a.ListProjects(
+                .Setup(a => a.ListProjectsAsync(
                     It.Is<ProjectFilter>(f => f != null && f.ToString().Contains("fail")),
                     It.IsAny<Nullable<int>>(),
                     It.IsAny<CancellationToken>()))

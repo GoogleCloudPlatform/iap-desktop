@@ -20,15 +20,15 @@
 //
 
 using Google.Solutions.IapDesktop.Application.ObjectModel;
-using Google.Solutions.IapDesktop.Application.Views.ProjectExplorer;
+using Google.Solutions.IapDesktop.Application.Services.ProjectModel;
 
 namespace Google.Solutions.IapDesktop.Application.Views.Diagnostics
 {
     public class DebugProjectExplorerTrackingViewModel : ViewModelBase
     {
-        private readonly IProjectExplorerInstanceNode node;
+        private readonly IProjectModelInstanceNode node;
 
-        public DebugProjectExplorerTrackingViewModel(IProjectExplorerInstanceNode node)
+        public DebugProjectExplorerTrackingViewModel(IProjectModelInstanceNode node)
         {
             this.node = node;
         }

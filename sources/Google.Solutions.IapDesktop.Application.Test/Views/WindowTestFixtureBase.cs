@@ -73,8 +73,7 @@ namespace Google.Solutions.IapDesktop.Application.Test.Views
 
             var registry = new ServiceRegistry();
             registry.AddSingleton<IProjectRepository>(new ProjectRepository(
-                hkcu.CreateSubKey(TestKeyPath),
-                eventService));
+                hkcu.CreateSubKey(TestKeyPath)));
             registry.AddSingleton(new ToolWindowStateRepository(
                 hkcu.CreateSubKey(TestKeyPath)));
             registry.AddSingleton(new ApplicationSettingsRepository(

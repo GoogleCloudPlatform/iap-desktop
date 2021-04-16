@@ -23,9 +23,11 @@ using Google.Apis.Auth.OAuth2;
 using Google.Apis.CloudResourceManager.v1;
 using Google.Apis.CloudResourceManager.v1.Data;
 using Google.Apis.Requests;
+using Google.Solutions.Common.ApiExtensions;
 using Google.Solutions.Common.Diagnostics;
 using Google.Solutions.Common.Util;
 using Google.Solutions.IapDesktop.Application.ObjectModel;
+using Google.Solutions.IapDesktop.Application.Views;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -37,12 +39,16 @@ namespace Google.Solutions.IapDesktop.Application.Services.Adapters
 {
     public interface IResourceManagerAdapter : IDisposable
     {
-        Task<FilteredProjectList> ListProjects(
+        Task<Project> GetProjectAsync(
+            string projectId,
+            CancellationToken cancellationToken);
+
+        Task<FilteredProjectList> ListProjectsAsync(
             ProjectFilter filter,
             int? maxResults,
             CancellationToken cancellationToken);
 
-        Task<bool> IsGrantedPermission(
+        Task<bool> IsGrantedPermissionAsync(
             string projectId,
             string permission,
             CancellationToken cancellationToken);
@@ -92,7 +98,31 @@ namespace Google.Solutions.IapDesktop.Application.Services.Adapters
         {
         }
 
-        public async Task<FilteredProjectList> ListProjects(
+        public async Task<Project> GetProjectAsync(
+            string projectId,
+            CancellationToken cancellationToken)
+        {
+            using (ApplicationTraceSources.Default.TraceMethod().WithParameters(projectId))
+            {
+                try
+                {
+                    return await this.service.Projects.Get(
+                        projectId).ExecuteAsync(cancellationToken)
+                        .ConfigureAwait(false);
+                }
+                catch (GoogleApiException e) when (e.IsAccessDenied())
+                {
+                    throw new ResourceAccessDeniedException(
+                        $"You do not have sufficient permissions to access project {projectId}. " +
+                        "You need the 'Compute Viewer' role (or an equivalent custom role) " +
+                        "to perform this action.",
+                        HelpTopics.ProjectAccessControl,
+                        e);
+                }
+            }
+        }
+
+        public async Task<FilteredProjectList> ListProjectsAsync(
             ProjectFilter filter,
             int? maxResults,
             CancellationToken cancellationToken)
@@ -145,7 +175,7 @@ namespace Google.Solutions.IapDesktop.Application.Services.Adapters
             }
         }
 
-        public async Task<bool> IsGrantedPermission(
+        public async Task<bool> IsGrantedPermissionAsync(
             string projectId,
             string permission,
             CancellationToken cancellationToken)

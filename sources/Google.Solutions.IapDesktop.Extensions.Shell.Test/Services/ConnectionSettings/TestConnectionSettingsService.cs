@@ -21,7 +21,9 @@
 
 using Google.Solutions.Common.Locator;
 using Google.Solutions.Common.Test;
+using Google.Solutions.IapDesktop.Application.Services.Adapters;
 using Google.Solutions.IapDesktop.Application.Services.Integration;
+using Google.Solutions.IapDesktop.Application.Services.ProjectModel;
 using Google.Solutions.IapDesktop.Application.Services.Settings;
 using Google.Solutions.IapDesktop.Application.Views.ProjectExplorer;
 using Google.Solutions.IapDesktop.Extensions.Shell.Services.ConnectionSettings;
@@ -48,14 +50,12 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.ConnectionS
         {
             hkcu.DeleteSubKeyTree(TestKeyPath, false);
 
-            var projectRepository = new ProjectRepository(
-                hkcu.CreateSubKey(TestKeyPath),
-                new Mock<IEventService>().Object);
+            var projectRepository = new ProjectRepository(hkcu.CreateSubKey(TestKeyPath));
             var settingsRepository = new ConnectionSettingsRepository(projectRepository);
             this.service = new ConnectionSettingsService(settingsRepository);
 
             // Set some initial project settings.
-            projectRepository.AddProjectAsync(SampleProjectId).Wait();
+            projectRepository.AddProject(new ProjectLocator(SampleProjectId));
 
             var projectSettings = settingsRepository.GetProjectSettings(SampleProjectId);
             projectSettings.RdpDomain.Value = "project-domain";
@@ -63,28 +63,29 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.ConnectionS
         }
 
 
-        private IProjectExplorerProjectNode CreateProjectNode()
+        private IProjectModelProjectNode CreateProjectNode()
         {
-            var projectNode = new Mock<IProjectExplorerProjectNode>();
+            var projectNode = new Mock<IProjectModelProjectNode>();
             projectNode.SetupGet(n => n.Project).Returns(new ProjectLocator(SampleProjectId));
 
             return projectNode.Object;
         }
 
-        private IProjectExplorerZoneNode CreateZoneNode()
+        private IProjectModelZoneNode CreateZoneNode()
         {
-            var zoneNode = new Mock<IProjectExplorerZoneNode>();
+            var zoneNode = new Mock<IProjectModelZoneNode>();
             zoneNode.SetupGet(n => n.Zone).Returns(new ZoneLocator(SampleProjectId, "zone-1"));
 
             return zoneNode.Object;
         }
 
-        private IProjectExplorerInstanceNode CreateVmInstanceNode(bool isWindows = false)
+        private IProjectModelInstanceNode CreateVmInstanceNode(bool isWindows = false)
         {
-            var vmNode = new Mock<IProjectExplorerInstanceNode>();
+            var vmNode = new Mock<IProjectModelInstanceNode>();
             vmNode.SetupGet(n => n.Instance).Returns(
                 new InstanceLocator(SampleProjectId, "zone-1", "instance-1"));
-            vmNode.SetupGet(n => n.IsWindowsInstance).Returns(isWindows);
+            vmNode.SetupGet(n => n.OperatingSystem).Returns(
+                isWindows ? OperatingSystems.Windows : OperatingSystems.Linux);
 
             return vmNode.Object;
         }
@@ -97,16 +98,16 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.ConnectionS
         public void WhenNodeUnsupported_ThenIsConnectionSettingsAvailableReturnsFalse()
         {
             Assert.IsFalse(service.IsConnectionSettingsAvailable(
-                new Mock<IProjectExplorerNode>().Object));
+                new Mock<IProjectModelNode>().Object));
             Assert.IsFalse(service.IsConnectionSettingsAvailable(
-                new Mock<IProjectExplorerCloudNode>().Object));
+                new Mock<IProjectModelCloudNode>().Object));
         }
 
         [Test]
         public void WhenNodeUnsupported_ThenGetConnectionSettingsRaisesArgumentException()
         {
             Assert.Throws<ArgumentException>(() => service.GetConnectionSettings(
-                new Mock<IProjectExplorerNode>().Object));
+                new Mock<IProjectModelNode>().Object));
         }
 
         //---------------------------------------------------------------------

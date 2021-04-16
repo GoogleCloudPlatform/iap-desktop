@@ -21,6 +21,7 @@
 
 using Google.Solutions.IapDesktop.Application.ObjectModel;
 using Google.Solutions.IapDesktop.Application.Services.Adapters;
+using Google.Solutions.IapDesktop.Application.Services.ProjectModel;
 using Google.Solutions.IapDesktop.Application.Views;
 using Google.Solutions.IapDesktop.Application.Views.ProjectExplorer;
 using Google.Solutions.IapDesktop.Extensions.Activity.Properties;
@@ -43,10 +44,10 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services
     {
         private readonly IServiceProvider serviceProvider;
 
-        private void CreateReport(IProjectExplorerNode contextNode)
+        private void CreateReport(IProjectModelNode contextNode)
         {
             var dialog = this.serviceProvider.GetService<CreateReportDialog>();
-            if (contextNode is IProjectExplorerProjectNode projectNode)
+            if (contextNode is IProjectModelProjectNode projectNode)
             {
                 dialog.SelectProjectId(projectNode.Project.ProjectId);
             }
@@ -85,16 +86,16 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services
             //
 
             var reportCommand = projectExplorer.ContextMenuCommands.AddCommand(
-                new Command<IProjectExplorerNode>(
+                new Command<IProjectModelNode>(
                     "Report",
-                    context => context is IProjectExplorerProjectNode
-                            || context is IProjectExplorerCloudNode
+                    context => context is IProjectModelProjectNode
+                            || context is IProjectModelCloudNode
                         ? CommandState.Enabled
                         : CommandState.Unavailable,
                     context => { }));
 
             reportCommand.AddCommand(
-                new Command<IProjectExplorerNode>(
+                new Command<IProjectModelNode>(
                     "New instance/node usage report...",
                     context => CommandState.Enabled,
                     context => CreateReport(context))
@@ -103,7 +104,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services
                 });
 
             projectExplorer.ContextMenuCommands.AddCommand(
-                new Command<IProjectExplorerNode>(
+                new Command<IProjectModelNode>(
                     "Show serial port &output (COM1)",
                     SerialOutputViewModel.GetCommandState,
                     context => this.serviceProvider.GetService<SerialOutputWindowCom1>().ShowWindow())
@@ -112,7 +113,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Services
                 },
                 7);
             projectExplorer.ContextMenuCommands.AddCommand(
-                new Command<IProjectExplorerNode>(
+                new Command<IProjectModelNode>(
                     "Show &event log",
                     EventLogViewModel.GetCommandState,
                     context => this.serviceProvider.GetService<EventLogWindow>().ShowWindow())

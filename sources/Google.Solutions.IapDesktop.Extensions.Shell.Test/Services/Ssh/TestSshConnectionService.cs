@@ -25,6 +25,7 @@ using Google.Solutions.Common.Test;
 using Google.Solutions.IapDesktop.Application.ObjectModel;
 using Google.Solutions.IapDesktop.Application.Services.Adapters;
 using Google.Solutions.IapDesktop.Application.Services.Integration;
+using Google.Solutions.IapDesktop.Application.Services.ProjectModel;
 using Google.Solutions.IapDesktop.Application.Settings;
 using Google.Solutions.IapDesktop.Application.Test;
 using Google.Solutions.IapDesktop.Application.Test.ObjectModel;
@@ -99,9 +100,23 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Ssh
 
             this.serviceRegistry.AddMock<IMainForm>();
 
+            this.serviceRegistry.AddMock<IProjectModelService>()
+                .Setup(p => p.GetNodeAsync(
+                    It.Is<ResourceLocator>(l => l == (ResourceLocator)SampleLocator),
+                    It.IsAny<CancellationToken>()))
+                .ReturnsAsync(CreateInstanceNodeMock().Object);
+
             var hkcu = RegistryKey.OpenBaseKey(RegistryHive.CurrentUser, RegistryView.Default);
             this.serviceRegistry.AddSingleton(new SshSettingsRepository(
                 hkcu.CreateSubKey(@"Software\Google\__Test")));
+        }
+
+        private Mock<IProjectModelInstanceNode> CreateInstanceNodeMock()
+        {
+            var vmNode = new Mock<IProjectModelInstanceNode>();
+            vmNode.SetupGet(n => n.OperatingSystem).Returns(OperatingSystems.Linux);
+            vmNode.SetupGet(n => n.Instance).Returns(SampleLocator);
+            return vmNode;
         }
 
         [Test]
@@ -113,8 +128,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Ssh
                     It.Is<InstanceLocator>(l => l == SampleLocator)))
                 .Returns(true);
 
-            var vmNode = new Mock<IProjectExplorerInstanceNode>();
-            vmNode.SetupGet(n => n.Instance).Returns(SampleLocator);
+            var vmNode = CreateInstanceNodeMock();
 
             var service = new SshConnectionService(this.serviceRegistry);
             await service.ActivateOrConnectInstanceAsync(vmNode.Object);
@@ -127,14 +141,13 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Ssh
         public async Task WhenNoSessionExists_ThenActivateOrConnectInstanceAsyncCreatesRsaKey()
         {
             var settingsService = this.serviceRegistry.AddMock<IConnectionSettingsService>();
-            settingsService.Setup(s => s.GetConnectionSettings(It.IsAny<IProjectExplorerNode>()))
+            settingsService.Setup(s => s.GetConnectionSettings(It.IsAny<IProjectModelNode>()))
                 .Returns(
                     InstanceConnectionSettings
                         .CreateNew(SampleLocator.ProjectId, SampleLocator.Name)
                         .ToPersistentSettingsCollection(s => Assert.Fail("should not be called")));
 
-            var vmNode = new Mock<IProjectExplorerInstanceNode>();
-            vmNode.SetupGet(n => n.Instance).Returns(SampleLocator);
+            var vmNode = CreateInstanceNodeMock();
 
             var service = new SshConnectionService(this.serviceRegistry);
             await service.ActivateOrConnectInstanceAsync(vmNode.Object);
@@ -153,12 +166,11 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Ssh
             settings.SshPort.IntValue = 2222;
 
             var settingsService = this.serviceRegistry.AddMock<IConnectionSettingsService>();
-            settingsService.Setup(s => s.GetConnectionSettings(It.IsAny<IProjectExplorerNode>()))
+            settingsService.Setup(s => s.GetConnectionSettings(It.IsAny<IProjectModelNode>()))
                 .Returns(settings
                     .ToPersistentSettingsCollection(s => Assert.Fail("should not be called")));
 
-            var vmNode = new Mock<IProjectExplorerInstanceNode>();
-            vmNode.SetupGet(n => n.Instance).Returns(SampleLocator);
+            var vmNode = CreateInstanceNodeMock();
 
             var service = new SshConnectionService(this.serviceRegistry);
             await service.ActivateOrConnectInstanceAsync(vmNode.Object);
@@ -177,12 +189,11 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Ssh
             settings.SshUsername.StringValue = "bob";
 
             var settingsService = this.serviceRegistry.AddMock<IConnectionSettingsService>();
-            settingsService.Setup(s => s.GetConnectionSettings(It.IsAny<IProjectExplorerNode>()))
+            settingsService.Setup(s => s.GetConnectionSettings(It.IsAny<IProjectModelNode>()))
                 .Returns(settings
                     .ToPersistentSettingsCollection(s => Assert.Fail("should not be called")));
 
-            var vmNode = new Mock<IProjectExplorerInstanceNode>();
-            vmNode.SetupGet(n => n.Instance).Returns(SampleLocator);
+            var vmNode = CreateInstanceNodeMock();
 
             var service = new SshConnectionService(this.serviceRegistry);
             await service.ActivateOrConnectInstanceAsync(vmNode.Object);
@@ -204,7 +215,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Ssh
             settings.SshUsername.StringValue = "bob";
 
             var settingsService = this.serviceRegistry.AddMock<IConnectionSettingsService>();
-            settingsService.Setup(s => s.GetConnectionSettings(It.IsAny<IProjectExplorerNode>()))
+            settingsService.Setup(s => s.GetConnectionSettings(It.IsAny<IProjectModelNode>()))
                 .Returns(settings
                     .ToPersistentSettingsCollection(s => Assert.Fail("should not be called")));
 
@@ -213,8 +224,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Ssh
             sshSettings.PublicKeyValidity.IntValue = (int)TimeSpan.FromDays(4).TotalSeconds;
             sshSettingsRepository.SetSettings(sshSettings);
 
-            var vmNode = new Mock<IProjectExplorerInstanceNode>();
-            vmNode.SetupGet(n => n.Instance).Returns(SampleLocator);
+            var vmNode = CreateInstanceNodeMock();
 
             var service = new SshConnectionService(this.serviceRegistry);
             await service.ActivateOrConnectInstanceAsync(vmNode.Object);
@@ -236,12 +246,11 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Ssh
             settings.SshConnectionTimeout.IntValue = (int)TimeSpan.FromSeconds(123).TotalSeconds;
 
             var settingsService = this.serviceRegistry.AddMock<IConnectionSettingsService>();
-            settingsService.Setup(s => s.GetConnectionSettings(It.IsAny<IProjectExplorerNode>()))
+            settingsService.Setup(s => s.GetConnectionSettings(It.IsAny<IProjectModelNode>()))
                 .Returns(settings
                     .ToPersistentSettingsCollection(s => Assert.Fail("should not be called")));
 
-            var vmNode = new Mock<IProjectExplorerInstanceNode>();
-            vmNode.SetupGet(n => n.Instance).Returns(SampleLocator);
+            var vmNode = CreateInstanceNodeMock();
 
             var service = new SshConnectionService(this.serviceRegistry);
             await service.ActivateOrConnectInstanceAsync(vmNode.Object);
@@ -256,7 +265,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Ssh
         public void WhenTunnelUnauthorized_ThenActivateOrConnectInstanceAsyncActivatesSessionThrowsConnectionFailedException()
         {
             var settingsService = this.serviceRegistry.AddMock<IConnectionSettingsService>();
-            settingsService.Setup(s => s.GetConnectionSettings(It.IsAny<IProjectExplorerNode>()))
+            settingsService.Setup(s => s.GetConnectionSettings(It.IsAny<IProjectModelNode>()))
                 .Returns(
                     InstanceConnectionSettings
                         .CreateNew(SampleLocator.ProjectId, SampleLocator.Name)
@@ -267,7 +276,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Ssh
                 It.IsAny<ISshRelayPolicy>(),
                 It.IsAny<TimeSpan>())).ThrowsAsync(new UnauthorizedException("mock"));
 
-            var vmNode = new Mock<IProjectExplorerInstanceNode>();
+            var vmNode = new Mock<IProjectModelInstanceNode>();
             vmNode.SetupGet(n => n.Instance).Returns(SampleLocator);
 
             var service = new SshConnectionService(this.serviceRegistry);
@@ -279,7 +288,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Ssh
         public void WhenKeyAuthorizationFails_ThenActivateOrConnectInstanceAsyncActivatesSessionThrowsSshKeyPushFailedException()
         {
             var settingsService = this.serviceRegistry.AddMock<IConnectionSettingsService>();
-            settingsService.Setup(s => s.GetConnectionSettings(It.IsAny<IProjectExplorerNode>()))
+            settingsService.Setup(s => s.GetConnectionSettings(It.IsAny<IProjectModelNode>()))
                 .Returns(
                     InstanceConnectionSettings
                         .CreateNew(SampleLocator.ProjectId, SampleLocator.Name)
@@ -294,8 +303,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Ssh
                     It.IsAny<CancellationToken>()))
                 .ThrowsAsync(new SshKeyPushFailedException("mock", HelpTopics.ManagingOsLogin));
 
-            var vmNode = new Mock<IProjectExplorerInstanceNode>();
-            vmNode.SetupGet(n => n.Instance).Returns(SampleLocator);
+            var vmNode = CreateInstanceNodeMock();
 
             var service = new SshConnectionService(this.serviceRegistry);
             AssertEx.ThrowsAggregateException<SshKeyPushFailedException>(

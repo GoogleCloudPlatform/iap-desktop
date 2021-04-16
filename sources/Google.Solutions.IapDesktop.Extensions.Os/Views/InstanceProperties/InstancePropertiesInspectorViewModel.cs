@@ -26,6 +26,7 @@ using Google.Solutions.IapDesktop.Application;
 using Google.Solutions.IapDesktop.Application.ObjectModel;
 using Google.Solutions.IapDesktop.Application.Services.Adapters;
 using Google.Solutions.IapDesktop.Application.Services.Integration;
+using Google.Solutions.IapDesktop.Application.Services.ProjectModel;
 using Google.Solutions.IapDesktop.Application.Views.ProjectExplorer;
 using Google.Solutions.IapDesktop.Application.Views.Properties;
 using Google.Solutions.IapDesktop.Extensions.Os.Services.Inventory;
@@ -37,7 +38,7 @@ using System.Threading.Tasks;
 namespace Google.Solutions.IapDesktop.Extensions.Os.Views.InstanceProperties
 {
     internal class InstancePropertiesInspectorViewModel
-        : ModelCachingViewModelBase<IProjectExplorerNode, InstancePropertiesInspectorModel>, IPropertiesInspectorViewModel
+        : ModelCachingViewModelBase<IProjectModelNode, InstancePropertiesInspectorModel>, IPropertiesInspectorViewModel
     {
         private const int ModelCacheCapacity = 5;
         internal const string DefaultWindowTitle = "VM instance";
@@ -105,27 +106,27 @@ namespace Google.Solutions.IapDesktop.Extensions.Os.Views.InstanceProperties
         // ModelCachingViewModelBase.
         //---------------------------------------------------------------------
 
-        public static CommandState GetContextMenuCommandState(IProjectExplorerNode node)
+        public static CommandState GetContextMenuCommandState(IProjectModelNode node)
         {
-            return node is IProjectExplorerInstanceNode
+            return node is IProjectModelInstanceNode
                 ? CommandState.Enabled
                 : CommandState.Unavailable;
         }
 
-        public static CommandState GetToolbarCommandState(IProjectExplorerNode node)
+        public static CommandState GetToolbarCommandState(IProjectModelNode node)
         {
-            return node is IProjectExplorerInstanceNode
+            return node is IProjectModelInstanceNode
                 ? CommandState.Enabled
                 : CommandState.Disabled;
         }
 
         protected async override Task<InstancePropertiesInspectorModel> LoadModelAsync(
-            IProjectExplorerNode node,
+            IProjectModelNode node,
             CancellationToken token)
         {
             using (ApplicationTraceSources.Default.TraceMethod().WithParameters(node))
             {
-                if (node is IProjectExplorerInstanceNode vmNode)
+                if (node is IProjectModelInstanceNode vmNode)
                 {
                     // Load data using a job so that the task is retried in case
                     // of authentication issues.

@@ -19,16 +19,21 @@
 // under the License.
 //
 
+using Google.Solutions.IapDesktop.Application.Services.Adapters;
+using Google.Solutions.IapDesktop.Application.Services.ProjectModel;
 using Google.Solutions.IapDesktop.Application.Views.ProjectExplorer;
 
 namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.ConnectionSettings
 {
     internal static class ProjectExplorerNodeExtensions
     {
-        public static bool IsRdpSupported(this IProjectExplorerInstanceNode node)
-            => node.IsWindowsInstance;
+        public static bool IsRdpSupported(this IProjectModelInstanceNode node)
+            => node.IsWindowsInstance();
 
-        public static bool IsSshSupported(this IProjectExplorerInstanceNode node)
-            => !node.IsWindowsInstance;
+        public static bool IsSshSupported(this IProjectModelInstanceNode node)
+            => !node.IsWindowsInstance();
+
+        public static bool IsWindowsInstance(this IProjectModelInstanceNode vmNode)
+            => vmNode.OperatingSystem == OperatingSystems.Windows;
     }
 }

@@ -20,6 +20,7 @@
 //
 
 using Google.Solutions.IapDesktop.Application.ObjectModel;
+using Google.Solutions.IapDesktop.Application.Services.ProjectModel;
 using Google.Solutions.IapDesktop.Application.Views;
 using Google.Solutions.IapDesktop.Application.Views.ProjectExplorer;
 using Google.Solutions.IapDesktop.Extensions.Os.Properties;
@@ -44,7 +45,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Os.Services
             var projectExplorer = serviceProvider.GetService<IProjectExplorer>();
 
             projectExplorer.ToolbarCommands.AddCommand(
-                new Command<IProjectExplorerNode>(
+                new Command<IProjectModelNode>(
                     "Properties",
                     InstancePropertiesInspectorViewModel.GetToolbarCommandState,
                     context => serviceProvider.GetService<InstancePropertiesInspectorWindow>().ShowWindow())
@@ -54,13 +55,13 @@ namespace Google.Solutions.IapDesktop.Extensions.Os.Services
                 4);
 
             var osCommand = projectExplorer.ContextMenuCommands.AddCommand(
-                new Command<IProjectExplorerNode>(
+                new Command<IProjectModelNode>(
                     "Soft&ware packages",
                     PackageInventoryViewModel.GetCommandState,
                     context => { }),
                 9);
             osCommand.AddCommand(
-                new Command<IProjectExplorerNode>(
+                new Command<IProjectModelNode>(
                     "Show &installed packages",
                     PackageInventoryViewModel.GetCommandState,
                     context => serviceProvider.GetService<InstalledPackageInventoryWindow>().ShowWindow())
@@ -68,7 +69,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Os.Services
                     Image = Resources.Package_16
                 });
             osCommand.AddCommand(
-                new Command<IProjectExplorerNode>(
+                new Command<IProjectModelNode>(
                     "Show &available updates",
                     PackageInventoryViewModel.GetCommandState,
                     context => serviceProvider.GetService<AvailablePackageInventoryWindow>().ShowWindow())
@@ -77,7 +78,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Os.Services
                 });
 
             projectExplorer.ContextMenuCommands.AddCommand(
-                new Command<IProjectExplorerNode>(
+                new Command<IProjectModelNode>(
                     "P&roperties",
                     InstancePropertiesInspectorViewModel.GetContextMenuCommandState,
                     context => serviceProvider.GetService<InstancePropertiesInspectorWindow>().ShowWindow())

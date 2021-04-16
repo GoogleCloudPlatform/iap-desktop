@@ -21,6 +21,8 @@
 
 using Google.Solutions.Common.Util;
 using Google.Solutions.IapDesktop.Application.ObjectModel;
+using Google.Solutions.IapDesktop.Application.Services.Adapters;
+using Google.Solutions.IapDesktop.Application.Services.ProjectModel;
 using Google.Solutions.IapDesktop.Application.Util;
 using Google.Solutions.IapDesktop.Application.Views;
 using Google.Solutions.IapDesktop.Application.Views.Dialog;
@@ -50,26 +52,26 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services
         private readonly IWin32Window window;
 
         private static CommandState GetToolbarCommandStateWhenRunningInstanceRequired(
-            IProjectExplorerNode node)
+            IProjectModelNode node)
         {
-            return node is IProjectExplorerInstanceNode vmNode && vmNode.IsRunning
+            return node is IProjectModelInstanceNode vmNode && vmNode.IsRunning
                 ? CommandState.Enabled
                 : CommandState.Disabled;
         }
 
         private static CommandState GetToolbarCommandStateWhenRunningWindowsInstanceRequired(
-            IProjectExplorerNode node)
+            IProjectModelNode node)
         {
-            return node is IProjectExplorerInstanceNode vmNode &&
+            return node is IProjectModelInstanceNode vmNode &&
                         vmNode.IsRunning &&
-                        vmNode.IsWindowsInstance
+                        vmNode.IsWindowsInstance()
                 ? CommandState.Enabled
                 : CommandState.Disabled;
         }
 
-        private static CommandState GetContextMenuCommandStateWhenRunningInstanceRequired(IProjectExplorerNode node)
+        private static CommandState GetContextMenuCommandStateWhenRunningInstanceRequired(IProjectModelNode node)
         {
-            if (node is IProjectExplorerInstanceNode vmNode)
+            if (node is IProjectModelInstanceNode vmNode)
             {
                 return vmNode.IsRunning
                     ? CommandState.Enabled
@@ -81,9 +83,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services
             }
         }
 
-        private static CommandState GetContextMenuCommandStateWhenRunningWindowsInstanceRequired(IProjectExplorerNode node)
+        private static CommandState GetContextMenuCommandStateWhenRunningWindowsInstanceRequired(IProjectModelNode node)
         {
-            if (node is IProjectExplorerInstanceNode vmNode && vmNode.IsWindowsInstance)
+            if (node is IProjectModelInstanceNode vmNode && vmNode.IsWindowsInstance())
             {
                 return vmNode.IsRunning
                     ? CommandState.Enabled
@@ -110,13 +112,13 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services
         // Commands.
         //---------------------------------------------------------------------
 
-        private async void GenerateCredentials(IProjectExplorerNode node)
+        private async void GenerateCredentials(IProjectModelNode node)
         {
             try
             {
-                if (node is IProjectExplorerInstanceNode vmNode)
+                if (node is IProjectModelInstanceNode vmNode)
                 {
-                    Debug.Assert(vmNode.IsWindowsInstance);
+                    Debug.Assert(vmNode.IsWindowsInstance());
 
                     var settingsService = this.serviceProvider
                         .GetService<IConnectionSettingsService>();
@@ -146,12 +148,12 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services
         }
 
         private async void Connect(
-            IProjectExplorerNode node,
+            IProjectModelNode node,
             bool allowPersistentCredentials)
         {
             try
             {
-                if (node is IProjectExplorerInstanceNode rdpNode && rdpNode.IsRdpSupported())
+                if (node is IProjectModelInstanceNode rdpNode && rdpNode.IsRdpSupported())
                 {
                     await this.serviceProvider
                         .GetService<IRdpConnectionService>()
@@ -160,7 +162,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services
                             allowPersistentCredentials)
                         .ConfigureAwait(true);
                 }
-                else if (node is IProjectExplorerInstanceNode sshNode && sshNode.IsSshSupported())
+                else if (node is IProjectModelInstanceNode sshNode && sshNode.IsSshSupported())
                 {
                     await this.serviceProvider
                         .GetService<ISshConnectionService>()
@@ -229,7 +231,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services
             var projectExplorer = serviceProvider.GetService<IProjectExplorer>();
 
             projectExplorer.ContextMenuCommands.AddCommand(
-                new Command<IProjectExplorerNode>(
+                new Command<IProjectModelNode>(
                     "&Connect",
                     GetContextMenuCommandStateWhenRunningInstanceRequired,
                     node => Connect(node, true))
@@ -239,7 +241,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services
                 },
                 0);
             projectExplorer.ContextMenuCommands.AddCommand(
-                new Command<IProjectExplorerNode>(
+                new Command<IProjectModelNode>(
                     "Connect &as user...",
                     GetContextMenuCommandStateWhenRunningWindowsInstanceRequired,   // Windows/RDP only.
                     node => Connect(node, false))
@@ -249,7 +251,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services
                 1);
 
             projectExplorer.ToolbarCommands.AddCommand(
-                new Command<IProjectExplorerNode>(
+                new Command<IProjectModelNode>(
                     "Connect",
                     GetToolbarCommandStateWhenRunningInstanceRequired,
                     node => Connect(node, true))
@@ -262,7 +264,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services
             //
             var settingsService = serviceProvider.GetService<IConnectionSettingsService>();
             projectExplorer.ContextMenuCommands.AddCommand(
-                new Command<IProjectExplorerNode>(
+                new Command<IProjectModelNode>(
                     "Connection settings",
                     node => settingsService.IsConnectionSettingsAvailable(node)
                         ? CommandState.Enabled
@@ -275,7 +277,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services
                 4);
 
             projectExplorer.ToolbarCommands.AddCommand(
-                new Command<IProjectExplorerNode>(
+                new Command<IProjectModelNode>(
                     "Connection &settings",
                     node => settingsService.IsConnectionSettingsAvailable(node)
                         ? CommandState.Enabled
@@ -290,7 +292,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services
             // Generate credentials (Windows/RDP only).
             //
             projectExplorer.ContextMenuCommands.AddCommand(
-                new Command<IProjectExplorerNode>(
+                new Command<IProjectModelNode>(
                     "&Generate Windows logon credentials...",
                     GetContextMenuCommandStateWhenRunningWindowsInstanceRequired,
                     GenerateCredentials)
@@ -300,7 +302,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services
                 2);
 
             projectExplorer.ToolbarCommands.AddCommand(
-                new Command<IProjectExplorerNode>(
+                new Command<IProjectModelNode>(
                     "Generate Windows logon credentials",
                     GetToolbarCommandStateWhenRunningWindowsInstanceRequired,
                     GenerateCredentials)

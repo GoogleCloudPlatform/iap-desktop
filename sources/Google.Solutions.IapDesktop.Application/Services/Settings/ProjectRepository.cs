@@ -19,6 +19,7 @@
 // under the License.
 //
 
+using Google.Solutions.Common.Locator;
 using Google.Solutions.IapDesktop.Application.Services.Integration;
 using Microsoft.Win32;
 using System;
@@ -31,39 +32,27 @@ namespace Google.Solutions.IapDesktop.Application.Services.Settings
     public class ProjectRepository : IProjectRepository
     {
         protected readonly RegistryKey baseKey;
-        private readonly IEventService eventService;
 
-        public ProjectRepository(
-            RegistryKey baseKey,
-            IEventService eventService)
+        public ProjectRepository(RegistryKey baseKey)
         {
             this.baseKey = baseKey;
-            this.eventService = eventService;
         }
 
-        public async Task AddProjectAsync(string projectId)
+        public void AddProject(ProjectLocator project)
         {
-            using (this.baseKey.CreateSubKey(projectId))
+            using (this.baseKey.CreateSubKey(project.Name))
             { }
-
-            await this.eventService
-                .FireAsync(new ProjectAddedEvent(projectId))
-                .ConfigureAwait(false);
         }
 
-        public async Task DeleteProjectAsync(string projectId)
+        public void RemoveProject(ProjectLocator project)
         {
-            this.baseKey.DeleteSubKeyTree(projectId, false);
-
-            await this.eventService
-                .FireAsync(new ProjectDeletedEvent(projectId))
-                .ConfigureAwait(false);
+            this.baseKey.DeleteSubKeyTree(project.Name, false);
         }
 
-        public Task<IEnumerable<Project>> ListProjectsAsync()
+        public Task<IEnumerable<ProjectLocator>> ListProjectsAsync()
         {
             var projects = this.baseKey.GetSubKeyNames()
-                .Select(projectId => new Project(projectId));
+                .Select(projectId => new ProjectLocator(projectId));
             return Task.FromResult(projects);
         }
 
