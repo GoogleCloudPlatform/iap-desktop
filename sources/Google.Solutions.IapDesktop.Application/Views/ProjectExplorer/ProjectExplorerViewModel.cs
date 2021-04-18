@@ -600,8 +600,17 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
             {
                 Debug.Assert(this.IsLoaded);
 
-                this.filteredNodes.Clear();
-                this.filteredNodes.AddRange(ApplyFilter(this.nodes));
+                //
+                // Avoid clearing and re-applying filter it's not really
+                // necessary. Excessive re-binding can otherwise cause
+                // significant CPU load.
+                //
+                var newFilteredNodes = ApplyFilter(this.nodes);
+                if (!Enumerable.SequenceEqual(this.filteredNodes, newFilteredNodes))
+                {
+                    this.filteredNodes.Clear();
+                    this.filteredNodes.AddRange(newFilteredNodes);
+                }
 
                 foreach (var n in this.nodes.Where(n => n.IsLoaded))
                 {
