@@ -23,7 +23,9 @@ using Google.Apis.Compute.v1.Data;
 using Google.Solutions.Common.Diagnostics;
 using Google.Solutions.Common.Locator;
 using Google.Solutions.Common.Util;
+using Google.Solutions.IapDesktop.Application.Controls;
 using Google.Solutions.IapDesktop.Application.ObjectModel;
+using Google.Solutions.IapDesktop.Application.Properties;
 using Google.Solutions.IapDesktop.Application.Services.Adapters;
 using Google.Solutions.IapDesktop.Application.Services.Integration;
 using Google.Solutions.IapDesktop.Application.Services.ProjectModel;
@@ -143,6 +145,27 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
                     .GetService<IExceptionDialog>()
                     .Show(this, "Loading project failed", args.Exception);
             };
+
+            //
+            // Bind search box and progress bar.
+            //
+            var searchButton = this.searchTextBox.AddOverlayButton(Resources.Search_16);
+            this.progressBar.BindProperty(
+                c => c.Enabled,
+                viewModel,
+                m => m.IsLoading,
+                this.Container);
+            this.progressBar.BindProperty(
+                c => c.Visible,
+                viewModel,
+                m => m.IsLoading,
+                this.Container);
+            this.searchTextBox.BindProperty(
+                c => c.Text,
+                viewModel,
+                m => m.InstanceFilter,
+                this.Container);
+            //searchButton.Click += (s, a) => StartSearch();
 
             //
             // Bind toolbar controls.
@@ -405,6 +428,9 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
         }
 
         public IProjectModelNode SelectedNode => this.viewModel.SelectedNode?.ModelNode;
+
+        internal class NodeTreeView : BindableTreeView<ProjectExplorerViewModel.ViewModelNode>
+        { }
     }
 }
 
