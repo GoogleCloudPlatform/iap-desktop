@@ -401,6 +401,10 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
                         "Refreshing projects")
                     .ContinueWith(_ => { });
             }
+            else if (e.KeyCode == Keys.F3 || (e.Control && e.KeyCode == Keys.F))
+            {
+                this.searchTextBox.Focus();
+            }
             else if (e.KeyCode == Keys.Enter)
             {
                 this.ContextMenuCommands.ExecuteDefaultCommand();

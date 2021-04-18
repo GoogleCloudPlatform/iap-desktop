@@ -266,8 +266,8 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(800, 450);
-            this.Controls.Add(this.progressBar);
             this.Controls.Add(this.searchTextBox);
+            this.Controls.Add(this.progressBar);
             this.Controls.Add(this.treeView);
             this.Controls.Add(this.toolStrip);
             this.Name = "ProjectExplorerWindow";
