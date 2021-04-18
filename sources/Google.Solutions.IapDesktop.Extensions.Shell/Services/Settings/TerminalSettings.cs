@@ -25,9 +25,11 @@ using Google.Solutions.IapDesktop.Application.ObjectModel;
 using Google.Solutions.IapDesktop.Application.Services.Settings;
 using Google.Solutions.IapDesktop.Application.Settings;
 using Google.Solutions.IapDesktop.Application.Util;
+using Google.Solutions.IapDesktop.Extensions.Shell.Controls;
 using Microsoft.Win32;
 using System;
 using System.Collections.Generic;
+using System.Drawing;
 
 namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Settings
 {
@@ -73,17 +75,21 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Settings
         public RegistryBoolSetting IsNavigationUsingControlArrrowEnabled { get; private set; }
         public RegistryBoolSetting IsScrollingUsingCtrlUpDownEnabled { get; private set; }
         public RegistryBoolSetting IsScrollingUsingCtrlHomeEndEnabled { get; private set; }
+        public RegistryStringSetting FontFamily { get; private set; }
+        public RegistryDwordSetting FontSizeAsDword { get; private set; }
 
         public IEnumerable<ISetting> Settings => new ISetting[]
         {
-            IsCopyPasteUsingCtrlCAndCtrlVEnabled,
-            IsSelectAllUsingCtrlAEnabled,
-            IsCopyPasteUsingShiftInsertAndCtrlInsertEnabled,
-            IsSelectUsingShiftArrrowEnabled,
-            IsQuoteConvertionOnPasteEnabled,
-            IsNavigationUsingControlArrrowEnabled,
-            IsScrollingUsingCtrlUpDownEnabled,
-            IsScrollingUsingCtrlHomeEndEnabled
+            this.IsCopyPasteUsingCtrlCAndCtrlVEnabled,
+            this.IsSelectAllUsingCtrlAEnabled,
+            this.IsCopyPasteUsingShiftInsertAndCtrlInsertEnabled,
+            this.IsSelectUsingShiftArrrowEnabled,
+            this.IsQuoteConvertionOnPasteEnabled,
+            this.IsNavigationUsingControlArrrowEnabled,
+            this.IsScrollingUsingCtrlUpDownEnabled,
+            this.IsScrollingUsingCtrlHomeEndEnabled,
+            this.FontFamily,
+            this.FontSizeAsDword
         };
 
         private TerminalSettings()
@@ -150,7 +156,32 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Settings
                     null,
                     true,
                     registryKey),
+                FontFamily = RegistryStringSetting.FromKey(
+                    "FontFamily",
+                    "FontFamily",
+                    null,
+                    null,
+                    TerminalFont.DefaultFontFamily,
+                    registryKey,
+                    f => f == null || TerminalFont.IsValidFont(f)),
+                FontSizeAsDword = RegistryDwordSetting.FromKey(
+                    "FontSize",
+                    "FontSize",
+                    null,
+                    null,
+                    DwordFromFontSize(TerminalFont.DefaultSize),
+                    registryKey,
+                    DwordFromFontSize(TerminalFont.MinimumSize),
+                    DwordFromFontSize(TerminalFont.MaximumSize))
             };
         }
+
+        //
+        // Font sizes are floats. To avoid loss of precision,
+        // multiple them by 100 before coercing them into a DWORD.
+        //
+
+        public static float FontSizeFromDword(int dw) => (float)dw / 100;
+        public static int DwordFromFontSize(float fontSize) => (int)(fontSize * 100);
     }
 }

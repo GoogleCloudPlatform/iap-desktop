@@ -91,6 +91,7 @@
     </Compile>
     <Compile Include="Controls\ControlExtensions.cs" />
     <Compile Include="Controls\ExceptionEventArgs.cs" />
+    <Compile Include="Controls\FontExtensions.cs" />
     <Compile Include="Controls\ListViewExtensions.cs" />
     <Compile Include="Controls\PropertyGridExtensions.cs" />
     <Compile Include="Controls\RichTextBoxExtensions.cs" />

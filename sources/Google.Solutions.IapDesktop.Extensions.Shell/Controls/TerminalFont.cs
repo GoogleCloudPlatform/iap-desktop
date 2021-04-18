@@ -19,6 +19,7 @@
 // under the License.
 //
 
+using Google.Solutions.IapDesktop.Application.Controls;
 using System;
 using System.Drawing;
 using System.Windows.Forms;
@@ -27,7 +28,10 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Controls
 {
     internal sealed class TerminalFont : IDisposable
     {
-        public const string FontFamily = "Consolas";
+        public const string DefaultFontFamily = "Consolas";
+        public const float DefaultSize = 9.75f;
+        public const float MinimumSize = 4.0f;
+        public const float MaximumSize = 36.0f;
 
         public const TextFormatFlags FormatFlags =
             TextFormatFlags.NoPadding |
@@ -42,19 +46,34 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Controls
 
         public static bool IsValidFont(Font font)
         {
-            return font.FontFamily.Name == FontFamily;
+            return font.IsMonospaced();
+        }
+
+        public static bool IsValidFont(string fontFamily)
+        {
+            try
+            {
+                using (var font = new Font(fontFamily, DefaultSize))
+                {
+                    return IsValidFont(font);
+                }
+            }
+            catch (Exception)
+            {
+                return false;
+            }
         }
 
         //---------------------------------------------------------------------
         // Ctor.
         //---------------------------------------------------------------------
 
-        public TerminalFont(float emSize)
+        public TerminalFont(string fontFamily, float emSize)
         {
-            this.Font = new Font(FontFamily, emSize);
+            this.Font = new Font(fontFamily, emSize);
         }
 
-        public TerminalFont() : this(9.75f)
+        public TerminalFont() : this(DefaultFontFamily, DefaultSize)
         { }
 
         //---------------------------------------------------------------------
@@ -75,12 +94,16 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Controls
 
         public TerminalFont NextSmallerFont()
         {
-            return new TerminalFont(this.Font.Size - 1);
+            return new TerminalFont(
+                this.Font.FontFamily.Name, 
+                Math.Max(MinimumSize, this.Font.Size - 1));
         }
 
         public TerminalFont NextLargerFont()
         {
-            return new TerminalFont(this.Font.Size + 1);
+            return new TerminalFont(
+                this.Font.FontFamily.Name, 
+                Math.Min(MaximumSize, this.Font.Size + 1));
         }
 
         public void DrawString(

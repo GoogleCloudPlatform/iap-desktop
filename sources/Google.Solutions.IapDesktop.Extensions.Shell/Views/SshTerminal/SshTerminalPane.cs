@@ -237,6 +237,10 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.SshTerminal
 
             this.terminal.EnableCtrlUpDown = settings.IsScrollingUsingCtrlUpDownEnabled.BoolValue;
             this.terminal.EnableCtrlHomeEnd = settings.IsScrollingUsingCtrlHomeEndEnabled.BoolValue;
+
+            this.terminal.TerminalFont = new TerminalFont(
+                settings.FontFamily.StringValue,
+                TerminalSettings.FontSizeFromDword(settings.FontSizeAsDword.IntValue));
         }
 
         //---------------------------------------------------------------------
