@@ -62,7 +62,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
             this.vmToolStripSeparator = new System.Windows.Forms.ToolStripSeparator();
             this.vsToolStripExtender = new WeifenLuo.WinFormsUI.Docking.VisualStudioToolStripExtender(this.components);
             this.vs2015LightTheme = new WeifenLuo.WinFormsUI.Docking.VS2015LightTheme();
-            this.treeView = new BindableTreeView<ProjectExplorerViewModel.ViewModelNode>();
+            this.treeView = new Google.Solutions.IapDesktop.Application.Views.ProjectExplorer.ProjectExplorerWindow.NodeTreeView();
             this.contextMenu = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.refreshToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.refreshAllProjectsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -72,6 +72,8 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
             this.configureIapAccessToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.cloudConsoleSeparatorToolStripMenuItem = new System.Windows.Forms.ToolStripSeparator();
             this.imageList = new System.Windows.Forms.ImageList(this.components);
+            this.searchTextBox = new System.Windows.Forms.TextBox();
+            this.progressBar = new System.Windows.Forms.ProgressBar();
             this.toolStrip.SuspendLayout();
             this.contextMenu.SuspendLayout();
             this.SuspendLayout();
@@ -126,7 +128,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
             this.windowsInstancesToolStripMenuItem.CheckOnClick = true;
             this.windowsInstancesToolStripMenuItem.Image = global::Google.Solutions.IapDesktop.Application.Properties.Resources.Computer_16;
             this.windowsInstancesToolStripMenuItem.Name = "windowsInstancesToolStripMenuItem";
-            this.windowsInstancesToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.windowsInstancesToolStripMenuItem.Size = new System.Drawing.Size(175, 22);
             this.windowsInstancesToolStripMenuItem.Text = "Windows instances";
             // 
             // linuxInstancesToolStripMenuItem
@@ -134,7 +136,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
             this.linuxInstancesToolStripMenuItem.CheckOnClick = true;
             this.linuxInstancesToolStripMenuItem.Image = global::Google.Solutions.IapDesktop.Application.Properties.Resources.ComputerTerminal_161;
             this.linuxInstancesToolStripMenuItem.Name = "linuxInstancesToolStripMenuItem";
-            this.linuxInstancesToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.linuxInstancesToolStripMenuItem.Size = new System.Drawing.Size(175, 22);
             this.linuxInstancesToolStripMenuItem.Text = "Linux instances";
             // 
             // vmToolStripSeparator
@@ -148,16 +150,19 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
             // 
             // treeView
             // 
+            this.treeView.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.treeView.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.treeView.ContextMenuStrip = this.contextMenu;
-            this.treeView.Dock = System.Windows.Forms.DockStyle.Fill;
             this.treeView.HideSelection = false;
             this.treeView.ImageIndex = 0;
             this.treeView.ImageList = this.imageList;
-            this.treeView.Location = new System.Drawing.Point(0, 25);
+            this.treeView.Location = new System.Drawing.Point(0, 53);
             this.treeView.Name = "treeView";
             this.treeView.SelectedImageIndex = 0;
-            this.treeView.Size = new System.Drawing.Size(800, 425);
-            this.treeView.TabIndex = 1;
+            this.treeView.Size = new System.Drawing.Size(800, 398);
+            this.treeView.TabIndex = 0;
             this.treeView.NodeMouseDoubleClick += new System.Windows.Forms.TreeNodeMouseClickEventHandler(this.treeView_NodeMouseDoubleClick);
             // 
             // contextMenu
@@ -234,11 +239,35 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
             this.imageList.Images.SetKeyName(7, "ComputerTerminal_16.png");
             this.imageList.Images.SetKeyName(8, "ComputerTerminalBlue_16.png");
             // 
+            // searchTextBox
+            // 
+            this.searchTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.searchTextBox.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.searchTextBox.Location = new System.Drawing.Point(0, 28);
+            this.searchTextBox.Name = "searchTextBox";
+            this.searchTextBox.Size = new System.Drawing.Size(800, 22);
+            this.searchTextBox.TabIndex = 1;
+            // 
+            // progressBar
+            // 
+            this.progressBar.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.progressBar.Location = new System.Drawing.Point(0, 48);
+            this.progressBar.Margin = new System.Windows.Forms.Padding(0);
+            this.progressBar.MarqueeAnimationSpeed = 50;
+            this.progressBar.Name = "progressBar";
+            this.progressBar.Size = new System.Drawing.Size(800, 5);
+            this.progressBar.Style = System.Windows.Forms.ProgressBarStyle.Marquee;
+            this.progressBar.TabIndex = 3;
+            // 
             // ProjectExplorerWindow
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(800, 450);
+            this.Controls.Add(this.searchTextBox);
+            this.Controls.Add(this.progressBar);
             this.Controls.Add(this.treeView);
             this.Controls.Add(this.toolStrip);
             this.Name = "ProjectExplorerWindow";
@@ -260,7 +289,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
         private WeifenLuo.WinFormsUI.Docking.VS2015LightTheme vs2015LightTheme;
         private System.Windows.Forms.ToolStripButton refreshButton;
         private System.Windows.Forms.ToolStripButton addButton;
-        private BindableTreeView<ProjectExplorerViewModel.ViewModelNode> treeView;
+        private NodeTreeView treeView;
         private System.Windows.Forms.ImageList imageList;
         private System.Windows.Forms.ContextMenuStrip contextMenu;
         private System.Windows.Forms.ToolStripMenuItem refreshToolStripMenuItem;
@@ -274,5 +303,7 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
         private System.Windows.Forms.ToolStripDropDownButton osDropDownButton;
         private System.Windows.Forms.ToolStripMenuItem windowsInstancesToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem linuxInstancesToolStripMenuItem;
+        private System.Windows.Forms.TextBox searchTextBox;
+        private System.Windows.Forms.ProgressBar progressBar;
     }
 }

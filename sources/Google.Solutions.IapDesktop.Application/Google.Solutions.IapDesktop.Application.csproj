@@ -106,6 +106,7 @@
     <Compile Include="Controls\SearchableList.Designer.cs">
       <DependentUpon>SearchableList.cs</DependentUpon>
     </Compile>
+    <Compile Include="Controls\TextBoxExtensions.cs" />
     <Compile Include="GlobalSuppressions.cs" />
     <Compile Include="Host\CommandLineOptions.cs" />
     <Compile Include="ObjectModel\BindingExtensions.cs" />
@@ -158,6 +159,7 @@
     <Compile Include="Settings\SettingBase.cs" />
     <Compile Include="Util\AsyncLock.cs" />
     <Compile Include="Util\ByteSizeFormatter.cs" />
+    <Compile Include="Util\Disposable.cs" />
     <Compile Include="Util\EventArgs.cs" />
     <Compile Include="Util\StringExtensions.cs" />
     <Compile Include="Util\TypographicQuotes.cs" />

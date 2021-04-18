@@ -93,31 +93,8 @@ namespace Google.Solutions.IapDesktop.Application.Controls
             //
             // Add Search button as overlay.
             //
-            var searchButton = new Button
-            {
-                Size = new Size(16, 16)
-            };
-            searchButton.Location = new Point(this.searchTextBox.ClientSize.Width - searchButton.Width - 4, 2);
-            searchButton.Anchor = AnchorStyles.Right | AnchorStyles.Top;
-            searchButton.FlatStyle = FlatStyle.Flat;
-            searchButton.FlatAppearance.BorderSize = 0;
-            searchButton.FlatAppearance.MouseOverBackColor = searchButton.BackColor;
-            searchButton.BackColorChanged += (s, _) =>
-            {
-                searchButton.FlatAppearance.MouseOverBackColor = searchButton.BackColor;
-            };
-            searchButton.TabStop = false;
-            searchButton.Image = Resources.Search_16;
-            searchButton.Cursor = Cursors.Default;
+            var searchButton = this.searchTextBox.AddOverlayButton(Resources.Search_16);
             searchButton.Click += (s, a) => StartSearch();
-            this.searchTextBox.Controls.Add(searchButton);
-
-            // Send EM_SETMARGINS to prevent text from disappearing underneath the button
-            UnsafeNativeMethods.SendMessage(
-                this.searchTextBox.Handle,
-                UnsafeNativeMethods.EM_SETMARGINS,
-                (IntPtr)2,
-                (IntPtr)(searchButton.Width << 16));
         }
 
         private void searchTextBox_KeyUp(object sender, KeyEventArgs e)

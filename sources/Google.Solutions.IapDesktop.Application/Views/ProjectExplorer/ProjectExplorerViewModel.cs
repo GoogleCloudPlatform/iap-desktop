@@ -58,12 +58,19 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
         private bool isRefreshProjectsCommandVisible;
         private bool isRefreshAllProjectsCommandVisible;
         private bool isCloudConsoleCommandVisible;
+        private bool isLoading = false;
 
         private void SaveSettings()
         {
             var settings = this.settingsRepository.GetSettings();
             settings.IncludeOperatingSystems.EnumValue = this.operatingSystemsFilter;
             this.settingsRepository.SetSettings(settings);
+        }
+
+        private IDisposable EnableLoadingStatus()
+        {
+            this.IsLoading = true;
+            return Disposable.For(() => this.IsLoading = false);
         }
 
         private async Task RefreshAsync(ViewModelNode node)
@@ -158,6 +165,16 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
         //---------------------------------------------------------------------
         // Observable properties.
         //---------------------------------------------------------------------
+
+        public bool IsLoading
+        {
+            get => this.isLoading;
+            set
+            {
+                this.isLoading = value;
+                RaisePropertyChange();
+            }
+        }
 
         public bool IsLinuxIncluded
         {
@@ -321,20 +338,6 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
         // Actions.
         //---------------------------------------------------------------------
 
-        public async Task<IEnumerable<ViewModelNode>> ExpandRootAsync()
-        {
-            // Explicitly load nodes.
-            var nodes = await this.RootNode.GetFilteredNodesAsync(false)
-                .ConfigureAwait(true);
-
-            // NB. If we did not load the nodes explicitly before, 
-            // IsExpanded would asynchronously trigger a load without
-            // awaiting the result. To prevent this behavior.
-            this.RootNode.IsExpanded = true;
-
-            return nodes;
-        }
-
         public async Task AddProjectAsync(ProjectLocator project)
         {
             await this.projectModelService
@@ -356,6 +359,20 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
 
             // Make sure the new project is reflected.
             await RefreshAsync(true).ConfigureAwait(true);
+        }
+
+        public async Task<IEnumerable<ViewModelNode>> ExpandRootAsync()
+        {
+            // Explicitly load nodes.
+            var nodes = await this.RootNode.GetFilteredNodesAsync(false)
+                .ConfigureAwait(true);
+
+            // NB. If we did not load the nodes explicitly before, 
+            // IsExpanded would asynchronously trigger a load without
+            // awaiting the result. To prevent this behavior.
+            this.RootNode.IsExpanded = true;
+
+            return nodes;
         }
 
         public async Task RefreshAsync(bool reloadProjects)
@@ -541,18 +558,22 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
                 return this.filteredNodes;
             }
 
-            protected Task<IEnumerable<ViewModelNode>> LoadNodesAsync(
+            protected async Task<IEnumerable<ViewModelNode>> LoadNodesAsync(
                 bool forceReload)
             {
-                //
-                // Wrap loading task in a job since it might kick of
-                // I/O (if data has not been cached yet).
-                //
-                return this.viewModel.jobService.RunInBackground(
-                    new JobDescription(
-                        $"Loading {this.Text}...",
-                        JobUserFeedbackType.BackgroundFeedback),
-                    token => LoadNodesAsync(forceReload, token));
+                using (this.viewModel.EnableLoadingStatus())
+                {
+                    //
+                    // Wrap loading task in a job since it might kick of
+                    // I/O (if data has not been cached yet).
+                    //
+                    return await this.viewModel.jobService.RunInBackground(
+                            new JobDescription(
+                                $"Loading {this.Text}...",
+                                JobUserFeedbackType.BackgroundFeedback),
+                            token => LoadNodesAsync(forceReload, token))
+                        .ConfigureAwait(true);
+                }
             }
 
             protected abstract Task<IEnumerable<ViewModelNode>> LoadNodesAsync(
@@ -579,8 +600,17 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
             {
                 Debug.Assert(this.IsLoaded);
 
-                this.filteredNodes.Clear();
-                this.filteredNodes.AddRange(ApplyFilter(this.nodes));
+                //
+                // Avoid clearing and re-applying filter it's not really
+                // necessary. Excessive re-binding can otherwise cause
+                // significant CPU load.
+                //
+                var newFilteredNodes = ApplyFilter(this.nodes);
+                if (!Enumerable.SequenceEqual(this.filteredNodes, newFilteredNodes))
+                {
+                    this.filteredNodes.Clear();
+                    this.filteredNodes.AddRange(newFilteredNodes);
+                }
 
                 foreach (var n in this.nodes.Where(n => n.IsLoaded))
                 {
