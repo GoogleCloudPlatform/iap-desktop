@@ -20,6 +20,7 @@
 //
 
 using Google.Solutions.IapDesktop.Application.Test;
+using Google.Solutions.IapDesktop.Extensions.Shell.Controls;
 using Google.Solutions.IapDesktop.Extensions.Shell.Services.Settings;
 using Microsoft.Win32;
 using NUnit.Framework;
@@ -57,6 +58,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Settings
             Assert.IsTrue(settings.IsNavigationUsingControlArrrowEnabled.BoolValue);
             Assert.IsTrue(settings.IsScrollingUsingCtrlUpDownEnabled.BoolValue);
             Assert.IsTrue(settings.IsScrollingUsingCtrlHomeEndEnabled.BoolValue);
+            Assert.AreEqual(TerminalFont.DefaultFontFamily, settings.FontFamily.StringValue);
+            Assert.AreEqual(TerminalFont.DefaultSize,
+                TerminalSettings.FontSizeFromDword(settings.FontSizeAsDword.IntValue));
         }
 
         [Test]

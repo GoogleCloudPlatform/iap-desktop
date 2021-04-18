@@ -22,6 +22,7 @@
 using Google.Solutions.IapDesktop.Application.Test;
 using Google.Solutions.IapDesktop.Extensions.Shell.Controls;
 using NUnit.Framework;
+using System.Drawing;
 
 namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Controls
 {
@@ -35,12 +36,56 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Controls
         [Test]
         public void NextSmallerFontReturnsSmallerFont()
         {
-            using (var font = new TerminalFont(10f))
+            using (var font = new TerminalFont(TerminalFont.DefaultFontFamily, 10f))
             {
                 using (var smallerFont = font.NextSmallerFont())
                 {
                     Assert.AreEqual(font.Font.Size - 1, smallerFont.Font.Size);
                 }
+            }
+        }
+
+        [Test]
+        public void WhenMinSizeReached_NextSmallerFontKeepsSize()
+        {
+            var font = new TerminalFont(TerminalFont.DefaultFontFamily, 10f);
+            for (int i = 0; i < 10; i++)
+            {
+                font = font.NextSmallerFont();
+            }
+
+            Assert.AreEqual(TerminalFont.MinimumSize, font.Font.Size);
+        }
+
+        [Test]
+        public void WhenMaxSizeReached_NextLargerFontKeepsSize()
+        {
+            var font = new TerminalFont(TerminalFont.DefaultFontFamily, 40f);
+            for (int i = 0; i < 10; i++)
+            {
+                font = font.NextLargerFont();
+            }
+
+            Assert.AreEqual(TerminalFont.MaximumSize, font.Font.Size);
+        }
+
+        //---------------------------------------------------------------------
+        // IsValidFont.
+        //---------------------------------------------------------------------
+
+        [Test]
+        public void WhenFontNotFound_ThenIsValidFontReturnsFalse()
+        {
+            Assert.IsFalse(TerminalFont.IsValidFont((string)null));
+            Assert.IsFalse(TerminalFont.IsValidFont("doesnotexist"));
+        }
+
+        [Test]
+        public void WhenFontNotMonospaced_ThenIsValidFontReturnsFalse()
+        {
+            using (var font = new Font(FontFamily.GenericSansSerif, 10))
+            {
+                Assert.IsFalse(TerminalFont.IsValidFont(font));
             }
         }
     }

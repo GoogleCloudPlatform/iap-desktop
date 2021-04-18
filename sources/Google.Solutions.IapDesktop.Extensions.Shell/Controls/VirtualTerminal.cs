@@ -59,7 +59,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Controls
         private TextSelection selection;
         private bool scrolling;
         private TextPosition mouseDownPosition;
-        private TerminalFont terminalFont;
+        private TerminalFont terminalFont = new TerminalFont();
 
         //---------------------------------------------------------------------
         // Properties.
@@ -85,6 +85,26 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Controls
         public bool EnableCtrlUpDown { get; set; } = true;
         public bool EnableCtrlHomeEnd { get; set; } = true;
 
+        internal TerminalFont TerminalFont
+        {
+            get => this.terminalFont;
+            set
+            {
+                Debug.Assert(value != null);
+
+                var oldFont = this.terminalFont;
+                this.terminalFont = value;
+                oldFont.Dispose();
+
+                //
+                // Recalculate dimensions as the font
+                // size might have changed.
+                //
+
+                UpdateDimensions();
+            }
+        }
+
         public VirtualTerminal()
         {
             InitializeComponent();
@@ -101,8 +121,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Controls
             // RDP session, cf. https://devblogs.microsoft.com/oldnewthing/20060103-12/?p=32793.
             //
             this.DoubleBuffered = !SystemInformation.TerminalServerSession;
-
-            this.terminalFont = new TerminalFont();
 
             this.controller.ShowCursor(true);
             this.controller.SendData += (sender, args) =>
@@ -1178,15 +1196,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Controls
         {
             if (ModifierKeys.HasFlag(Keys.Control))
             {
-                // Zoom.
-                var oldFont = this.terminalFont;
-                this.terminalFont = (e.Delta >= 0)
+                this.TerminalFont = (e.Delta >= 0)
                     ? this.terminalFont.NextLargerFont()
                     : this.terminalFont.NextSmallerFont();
-
-                oldFont.Dispose();
-
-                UpdateDimensions();
             }
             else
             {
