@@ -43,12 +43,18 @@
             this.scrollUsingCtrlUpDownCheckBox = new System.Windows.Forms.CheckBox();
             this.scrollUsingCtrlHomeEndcheckBox = new System.Windows.Forms.CheckBox();
             this.scrollingIcon = new System.Windows.Forms.PictureBox();
+            this.themeBox = new System.Windows.Forms.GroupBox();
+            this.selectFontButton = new System.Windows.Forms.Button();
+            this.terminalLook = new System.Windows.Forms.Label();
+            this.fontIcon = new System.Windows.Forms.PictureBox();
             this.clipboardBox.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.keyboardIcon)).BeginInit();
             this.textSelectionBox.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.textSelectionIcon)).BeginInit();
             this.scollingBox.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.scrollingIcon)).BeginInit();
+            this.themeBox.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.fontIcon)).BeginInit();
             this.SuspendLayout();
             // 
             // clipboardBox
@@ -204,10 +210,53 @@
             this.scrollingIcon.TabIndex = 3;
             this.scrollingIcon.TabStop = false;
             // 
+            // themeBox
+            // 
+            this.themeBox.Controls.Add(this.fontIcon);
+            this.themeBox.Controls.Add(this.terminalLook);
+            this.themeBox.Controls.Add(this.selectFontButton);
+            this.themeBox.Location = new System.Drawing.Point(4, 282);
+            this.themeBox.Name = "themeBox";
+            this.themeBox.Size = new System.Drawing.Size(336, 87);
+            this.themeBox.TabIndex = 8;
+            this.themeBox.TabStop = false;
+            this.themeBox.Text = "Theme:";
+            // 
+            // selectFontButton
+            // 
+            this.selectFontButton.Location = new System.Drawing.Point(255, 19);
+            this.selectFontButton.Name = "selectFontButton";
+            this.selectFontButton.Size = new System.Drawing.Size(75, 23);
+            this.selectFontButton.TabIndex = 9;
+            this.selectFontButton.Text = "Font...";
+            this.selectFontButton.UseVisualStyleBackColor = true;
+            this.selectFontButton.Click += new System.EventHandler(this.selectFontButton_Click);
+            // 
+            // terminalLook
+            // 
+            this.terminalLook.BackColor = System.Drawing.Color.Black;
+            this.terminalLook.ForeColor = System.Drawing.Color.White;
+            this.terminalLook.Location = new System.Drawing.Point(55, 19);
+            this.terminalLook.Name = "terminalLook";
+            this.terminalLook.Padding = new System.Windows.Forms.Padding(3);
+            this.terminalLook.Size = new System.Drawing.Size(194, 51);
+            this.terminalLook.TabIndex = 1;
+            this.terminalLook.Text = "[user@host ~]$";
+            // 
+            // fontIcon
+            // 
+            this.fontIcon.Image = ((System.Drawing.Image)(resources.GetObject("fontIcon.Image")));
+            this.fontIcon.Location = new System.Drawing.Point(10, 21);
+            this.fontIcon.Name = "fontIcon";
+            this.fontIcon.Size = new System.Drawing.Size(36, 36);
+            this.fontIcon.TabIndex = 4;
+            this.fontIcon.TabStop = false;
+            // 
             // TerminalOptionsControl
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.Controls.Add(this.themeBox);
             this.Controls.Add(this.scollingBox);
             this.Controls.Add(this.textSelectionBox);
             this.Controls.Add(this.clipboardBox);
@@ -223,6 +272,8 @@
             this.scollingBox.ResumeLayout(false);
             this.scollingBox.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.scrollingIcon)).EndInit();
+            this.themeBox.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.fontIcon)).EndInit();
             this.ResumeLayout(false);
 
         }
@@ -243,5 +294,9 @@
         private System.Windows.Forms.CheckBox scrollUsingCtrlUpDownCheckBox;
         private System.Windows.Forms.CheckBox scrollUsingCtrlHomeEndcheckBox;
         private System.Windows.Forms.PictureBox scrollingIcon;
+        private System.Windows.Forms.GroupBox themeBox;
+        private System.Windows.Forms.Button selectFontButton;
+        private System.Windows.Forms.Label terminalLook;
+        private System.Windows.Forms.PictureBox fontIcon;
     }
 }

@@ -21,9 +21,11 @@
 
 using Google.Solutions.IapDesktop.Application.ObjectModel;
 using Google.Solutions.IapDesktop.Application.Views.Options;
+using Google.Solutions.IapDesktop.Extensions.Shell.Controls;
 using Google.Solutions.IapDesktop.Extensions.Shell.Services.Settings;
 using System;
 using System.Diagnostics;
+using System.Drawing;
 using System.Windows.Forms;
 
 namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Options
@@ -43,6 +45,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Options
         private bool isNavigationUsingControlArrrowEnabled;
         private bool isScrollingUsingCtrlUpDownEnabled;
         private bool isScrollingUsingCtrlHomeEndEnabled;
+        private Font terminalFont;
 
         private readonly TerminalSettingsRepository settingsRepository;
 
@@ -77,6 +80,9 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Options
                 settings.IsScrollingUsingCtrlUpDownEnabled.BoolValue;
             this.IsScrollingUsingCtrlHomeEndEnabled =
                 settings.IsScrollingUsingCtrlHomeEndEnabled.BoolValue;
+            this.terminalFont = new Font(
+                settings.FontFamily.StringValue,
+                TerminalSettings.FontSizeFromDword(settings.FontSizeAsDword.IntValue));
 
             this.isDirty = false;
         }
@@ -131,6 +137,10 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Options
                 this.IsScrollingUsingCtrlUpDownEnabled;
             settings.IsScrollingUsingCtrlHomeEndEnabled.BoolValue =
                 this.IsScrollingUsingCtrlHomeEndEnabled;
+            settings.FontFamily.StringValue = 
+                this.terminalFont.FontFamily.Name;
+            settings.FontSizeAsDword.IntValue =
+                TerminalSettings.DwordFromFontSize(this.terminalFont.Size);
 
             this.settingsRepository.SetSettings(settings);
 
@@ -228,5 +238,19 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Options
                 RaisePropertyChange();
             }
         }
+
+        public Font Font
+        {
+            get => this.terminalFont;
+            set
+            {
+                this.IsDirty = true;
+                this.terminalFont = value;
+                RaisePropertyChange();
+            }
+        }
+
+        public float MaximumFontSize => TerminalFont.MaximumSize;
+        public float MinimumFontSize => TerminalFont.MinimumSize;
     }
 }

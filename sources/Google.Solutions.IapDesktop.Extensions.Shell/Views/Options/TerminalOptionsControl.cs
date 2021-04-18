@@ -21,6 +21,8 @@
 
 using Google.Solutions.Common.Diagnostics;
 using Google.Solutions.IapDesktop.Application.ObjectModel;
+using System;
+using System.Drawing;
 using System.Windows.Forms;
 
 namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Options
@@ -28,8 +30,12 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Options
     [SkipCodeCoverage("UI code")]
     public partial class TerminalOptionsControl : UserControl
     {
+        private readonly TerminalOptionsViewModel viewModel;
+
         public TerminalOptionsControl(TerminalOptionsViewModel viewModel)
         {
+            this.viewModel = viewModel;
+
             InitializeComponent();
 
             //
@@ -83,6 +89,54 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Options
                 viewModel,
                 m => m.IsScrollingUsingCtrlHomeEndEnabled,
                 this.Container);
+
+            //
+            // Font box.
+            //
+            this.terminalLook.BindReadonlyProperty(
+                c => c.Font,
+                viewModel,
+                m => m.Font,
+                this.Container);
+        }
+
+        private float PointsToPixelRatio
+        {
+            get
+            {
+                using (var graphics = this.CreateGraphics())
+                {
+                    return graphics.DpiX / 72;
+                }
+            }
+        }
+
+        private void selectFontButton_Click(object sender, System.EventArgs e)
+        {
+            using (var dialog = new FontDialog()
+            {
+                FixedPitchOnly = true,
+                AllowScriptChange = false,
+                FontMustExist = true,
+                ShowColor = false,
+                ShowApply = false,
+                ShowEffects = false,
+
+                // Sizes are in pixel, not points.
+                MinSize = (int)Math.Ceiling(this.viewModel.MinimumFontSize * PointsToPixelRatio),
+                MaxSize = (int)Math.Floor(this.viewModel.MaximumFontSize * PointsToPixelRatio),
+
+                Font = this.viewModel.Font
+            })
+            {
+                if (dialog.ShowDialog(this) == DialogResult.OK)
+                {
+                    // Strip the font style.
+                    this.viewModel.Font = new Font(
+                        dialog.Font.FontFamily,
+                        dialog.Font.Size);
+                }
+            }
         }
     }
 }
