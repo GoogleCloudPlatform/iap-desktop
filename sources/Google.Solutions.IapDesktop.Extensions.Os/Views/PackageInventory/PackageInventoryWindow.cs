@@ -50,7 +50,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Os.Views.PackageInventory
                 serviceProvider,
                 inventoryType);
 
-
             this.infoLabel.BindProperty(
                 c => c.Text,
                 this.viewModel,

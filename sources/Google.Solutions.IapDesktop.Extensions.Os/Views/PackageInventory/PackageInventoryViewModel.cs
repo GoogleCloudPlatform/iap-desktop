@@ -51,6 +51,11 @@ namespace Google.Solutions.IapDesktop.Extensions.Os.Views.PackageInventory
         private string windowTitle = "";
         private bool isInformationBarVisible = true;
 
+        private string WindowTitlePrefix =>
+                this.inventoryType == PackageInventoryType.AvailablePackages
+                    ? "Available updates"
+                    : "Installed packages";
+
         public string InformationText => "OS inventory data not available";
 
         public PackageInventoryViewModel(
@@ -197,6 +202,12 @@ namespace Google.Solutions.IapDesktop.Extensions.Os.Views.PackageInventory
                 {
                     this.IsLoading = true;
 
+                    //
+                    // Reset window title, otherwise the default or previous title
+                    // stays while data is loading.
+                    //
+                    this.WindowTitle = this.WindowTitlePrefix;
+
                     var jobService = this.serviceProvider.GetService<IJobService>();
 
                     // Load data using a job so that the task is retried in case
@@ -230,23 +241,18 @@ namespace Google.Solutions.IapDesktop.Extensions.Os.Views.PackageInventory
             this.AllPackages.Clear();
             this.FilteredPackages.Clear();
 
-            var windowTitlePrefix =
-                this.inventoryType == PackageInventoryType.AvailablePackages
-                    ? "Available updates"
-                    : "Installed packages";
-
             if (this.Model == null)
             {
                 // Unsupported node.
                 this.IsPackageListEnabled = false;
                 this.IsInformationBarVisible = false;
-                this.WindowTitle = windowTitlePrefix;
+                this.WindowTitle = this.WindowTitlePrefix;
             }
             else
             {
                 this.IsPackageListEnabled = true;
                 this.IsInformationBarVisible = !this.Model.IsInventoryDataAvailable;
-                this.WindowTitle = windowTitlePrefix + $": {this.Model.DisplayName}";
+                this.WindowTitle = this.WindowTitlePrefix + $": {this.Model.DisplayName}";
                 this.AllPackages.AddRange(this.Model.Packages);
             }
 
