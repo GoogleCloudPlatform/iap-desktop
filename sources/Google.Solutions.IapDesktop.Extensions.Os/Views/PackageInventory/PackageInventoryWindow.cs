@@ -93,6 +93,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Os.Views.PackageInventory
                 this.viewModel,
                 m => m.IsLoading,
                 this.components);
+            this.packageList.SearchOnKeyDown = true;
 
 
             var openUrl = new ToolStripMenuItem(
