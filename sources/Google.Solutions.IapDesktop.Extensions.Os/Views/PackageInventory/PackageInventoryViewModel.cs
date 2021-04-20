@@ -48,7 +48,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Os.Views.PackageInventory
         private string filter;
         private bool isLoading;
         private bool isPackageListEnabled = false;
-        private string windowTitle = "";
+        private string windowTitle;
         private bool isInformationBarVisible = true;
 
         private string WindowTitlePrefix =>
@@ -65,6 +65,11 @@ namespace Google.Solutions.IapDesktop.Extensions.Os.Views.PackageInventory
         {
             this.serviceProvider = serviceProvider;
             this.inventoryType = inventoryType;
+        }
+
+        public void ResetWindowTitle()
+        {
+            this.WindowTitle = WindowTitlePrefix;
         }
 
         //---------------------------------------------------------------------

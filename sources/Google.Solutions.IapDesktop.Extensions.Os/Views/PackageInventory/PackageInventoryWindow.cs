@@ -72,6 +72,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Os.Views.PackageInventory
                     this.TabText = title;
                     this.Text = title;
                 }));
+            this.viewModel.ResetWindowTitle();  // Fire event to set initial window title.
 
             // Bind list.
             this.packageList.BindProperty(
@@ -92,7 +93,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Os.Views.PackageInventory
                 this.viewModel,
                 m => m.IsLoading,
                 this.components);
-
 
             var openUrl = new ToolStripMenuItem(
                 "&Additional information...",
