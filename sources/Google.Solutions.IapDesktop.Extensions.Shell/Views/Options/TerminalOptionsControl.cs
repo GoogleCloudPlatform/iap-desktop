@@ -111,31 +111,43 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.Options
             }
         }
 
-        private void selectFontButton_Click(object sender, System.EventArgs e)
+        private void selectFontButton_Click(object sender, System.EventArgs _)
         {
-            using (var dialog = new FontDialog()
+            try
             {
-                FixedPitchOnly = true,
-                AllowScriptChange = false,
-                FontMustExist = true,
-                ShowColor = false,
-                ShowApply = false,
-                ShowEffects = false,
-
-                // Sizes are in pixel, not points.
-                MinSize = (int)Math.Ceiling(this.viewModel.MinimumFontSize * PointsToPixelRatio),
-                MaxSize = (int)Math.Floor(this.viewModel.MaximumFontSize * PointsToPixelRatio),
-
-                Font = this.viewModel.Font
-            })
-            {
-                if (dialog.ShowDialog(this) == DialogResult.OK)
+                using (var dialog = new FontDialog()
                 {
-                    // Strip the font style.
-                    this.viewModel.Font = new Font(
-                        dialog.Font.FontFamily,
-                        dialog.Font.Size);
+                    FixedPitchOnly = true,
+                    AllowScriptChange = false,
+                    FontMustExist = true,
+                    ShowColor = false,
+                    ShowApply = false,
+                    ShowEffects = false,
+
+                    // Sizes are in pixel, not points.
+                    MinSize = (int)Math.Ceiling(this.viewModel.MinimumFontSize * PointsToPixelRatio),
+                    MaxSize = (int)Math.Floor(this.viewModel.MaximumFontSize * PointsToPixelRatio),
+
+                    Font = this.viewModel.Font
+                })
+                {
+                    if (dialog.ShowDialog(this) == DialogResult.OK)
+                    {
+                        // Strip the font style.
+                        this.viewModel.Font = new Font(
+                            dialog.Font.FontFamily,
+                            dialog.Font.Size);
+                    }
                 }
+            }
+            catch (Exception e)
+            {
+                MessageBox.Show(
+                    this,
+                    e.Message,
+                    "Selecting font failed",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Error);
             }
         }
     }
