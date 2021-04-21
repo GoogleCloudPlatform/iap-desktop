@@ -117,8 +117,12 @@ namespace Google.Solutions.IapDesktop
         private IEnumerable<Assembly> LoadExtensionAssemblies()
         {
             return Directory.GetFiles(
-                Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location),
-                "*.Extensions.*.dll")
+                Path.GetDirectoryName(
+                    Assembly.GetExecutingAssembly().Location),
+                    "*.Extensions.*.dll")
+                .Where(name => !name.EndsWith( // Ignore leftover, outdated extension.
+                    "google.solutions.iapdesktop.extensions.rdp.dll",
+                    StringComparison.OrdinalIgnoreCase))
                 .Select(dllPath => Assembly.LoadFrom(dllPath));
         }
 
