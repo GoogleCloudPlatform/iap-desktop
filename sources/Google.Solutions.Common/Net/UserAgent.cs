@@ -29,7 +29,21 @@ namespace Google.Solutions.Common.Net
         public Version Version { get; }
         public string Platform { get; }
 
-        public UserAgent(string product, Version version, string platform)
+        private static string OsVersion
+        {
+            get
+            {
+                var version = Environment.OSVersion.VersionString;
+                if (!Environment.Is64BitOperatingSystem)
+                {
+                    version += " 32-bit";
+                }
+
+                return version;
+            }
+        }
+
+        internal UserAgent(string product, Version version, string platform)
         {
             this.Product = product;
             this.Version = version;
@@ -37,7 +51,7 @@ namespace Google.Solutions.Common.Net
         }
 
         public UserAgent(string product, Version version)
-            : this(product, version, Environment.OSVersion.VersionString)
+            : this(product, version, OsVersion)
         {
         }
 
