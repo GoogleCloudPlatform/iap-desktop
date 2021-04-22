@@ -286,6 +286,38 @@ namespace Google.Solutions.Ssh.Native
             SignCallback callback,
             IntPtr context);
 
+        public struct LIBSSH2_USERAUTH_KBDINT_PROMPT
+        {
+            public IntPtr TextPtr;
+            public int TextLength;
+            public byte Echo;
+        }
+
+        public struct LIBSSH2_USERAUTH_KBDINT_RESPONSE
+        {
+            public IntPtr TextPtr;
+            public int TextLength;
+        }
+
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+        public delegate void KeyboardInteractiveCallback(
+            IntPtr namePtr,
+            int nameLength,
+            IntPtr instructionPtr,
+            int instructionLength,
+            int numPrompts,
+            IntPtr prompts,
+            IntPtr responses,
+            IntPtr context);
+
+        [DllImport(Libssh2, CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
+        public static extern int libssh2_userauth_keyboard_interactive_ex(
+            SshSessionHandle session,
+            [MarshalAs(UnmanagedType.LPStr)] string username,
+            int usernameLength,
+            KeyboardInteractiveCallback callback,
+            IntPtr context);
+
         //---------------------------------------------------------------------
         // Channel.
         //---------------------------------------------------------------------
