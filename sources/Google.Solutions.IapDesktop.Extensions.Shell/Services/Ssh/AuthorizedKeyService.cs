@@ -238,11 +238,12 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Ssh
                             $"{instance} requires OS Login to beused");
                     }
 
-                    if (IsFlagEnabled(projectDetails, instanceDetails, EnableOsLoginMultiFactorFlag))
-                    {
-                        throw new NotImplementedException(
-                            "OS Login 2-factor authentication is not supported");
-                    }
+                    // TODO: Remove or change 2FA check!?
+                    //if (IsFlagEnabled(projectDetails, instanceDetails, EnableOsLoginMultiFactorFlag))
+                    //{
+                    //    throw new NotImplementedException(
+                    //        "OS Login 2-factor authentication is not supported");
+                    //}
 
                     //
                     // NB. It's cheaper to unconditionally push the key than

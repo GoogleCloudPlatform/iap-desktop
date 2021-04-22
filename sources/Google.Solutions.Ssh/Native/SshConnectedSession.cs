@@ -26,6 +26,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Net.Sockets;
 using System.Runtime.InteropServices;
+using System.Text;
 
 namespace Google.Solutions.Ssh.Native
 {
@@ -240,9 +241,16 @@ namespace Google.Solutions.Ssh.Native
             }
         }
 
+        public delegate string PromptCallback(
+            string name,
+            string instruction,
+            string prompt,
+            bool echo);
+
         public SshAuthenticatedSession Authenticate(
             string username,
-            ISshKey key)
+            ISshKey key,
+            PromptCallback callback = null) // TODO: Remove default null!
         {
             this.session.Handle.CheckCurrentThreadOwnsHandle();
             Utilities.ThrowIfNullOrEmpty(username, nameof(username));
@@ -285,6 +293,83 @@ namespace Google.Solutions.Ssh.Native
                 return (int)LIBSSH2_ERROR.NONE;
             }
 
+            void InteractiveCallback(
+                IntPtr namePtr,
+                int nameLength,
+                IntPtr instructionPtr,
+                int instructionLength,
+                int numPrompts,
+                IntPtr promptsPtr,
+                IntPtr responsesPtr,
+                IntPtr context)
+            {
+                var name = UnsafeNativeMethods.PtrToString(
+                    namePtr, 
+                    nameLength, 
+                    Encoding.UTF8);
+                var instruction = UnsafeNativeMethods.PtrToString(
+                    instructionPtr, 
+                    nameLength, 
+                    Encoding.UTF8);
+                var prompts = UnsafeNativeMethods.PtrToStructureArray<
+                        UnsafeNativeMethods.LIBSSH2_USERAUTH_KBDINT_PROMPT>(
+                    promptsPtr,
+                    numPrompts);
+
+                //
+                // NB. libssh2 allocates the responses structure for us, but frees
+                // the embedded text strings using its allocator.
+                // 
+                // NB. libssh2 assumes text to be encoded in UTF-8.
+                //
+                Debug.Assert(SshSession.Alloc != null);
+
+                var responses = new UnsafeNativeMethods.LIBSSH2_USERAUTH_KBDINT_RESPONSE[prompts.Length];
+                for (int i = 0; i < prompts.Length; i++)
+                {
+                    var promptText = UnsafeNativeMethods.PtrToString(
+                        prompts[i].TextPtr,
+                        prompts[i].TextLength, 
+                        Encoding.UTF8);
+
+                    //
+                    // NB. Name and instruction aren't used by OS Login,
+                    // so flatten the structure to a single level.
+                    //
+                    var responseText = "";
+                    // TODO: Call callback
+                    //callback(
+                    //    name,
+                    //    instruction,
+                    //    promptText,
+                    //    prompts[i].Echo != 0);
+
+                    responses[i] = new UnsafeNativeMethods.LIBSSH2_USERAUTH_KBDINT_RESPONSE();
+                    if (responseText == null)
+                    {
+                        responses[i].TextLength = 0;
+                        responses[i].TextPtr = IntPtr.Zero;
+                    }
+                    else
+                    { 
+                        var responseTextBytes = Encoding.UTF8.GetBytes(responseText);
+                        responses[i].TextLength = responseTextBytes.Length;
+                        responses[i].TextPtr = SshSession.Alloc(
+                            new IntPtr(responseTextBytes.Length), 
+                            IntPtr.Zero);
+                        Marshal.Copy(
+                            responseTextBytes, 
+                            0, 
+                            responses[i].TextPtr, 
+                            responseTextBytes.Length);
+                    }
+                }
+
+                UnsafeNativeMethods.StructureArrayToPtr(
+                    responsesPtr,
+                    responses);
+            }
+
             using (SshTraceSources.Default.TraceMethod().WithParameters(username))
             {
                 //
@@ -300,6 +385,33 @@ namespace Google.Solutions.Ssh.Native
                     new IntPtr(publicKey.Length),
                     Sign,
                     IntPtr.Zero);
+
+                if (result == LIBSSH2_ERROR.PUBLICKEY_UNVERIFIED) // TODO:  && callback != null)
+                {
+                    SshTraceSources.Default.TraceVerbose(
+                        "Server responded that public key is unverified, " +
+                        "trying keyboard/interactive auth for MFA challenges");
+
+                    //
+                    // Public key wasn't accepted - this might be because the
+                    // key is not authorized, or because we need to respond to
+                    // some more (MFA) challenges.
+                    //
+                    // NB. It's not worth checking GetAuthenticationMethods, it
+                    // won't indicate whether additional challenges are expected
+                    // or not.
+                    //
+                    
+                    // TODO: Reset timeout!?
+                    this.session.Timeout = TimeSpan.FromMinutes(5);
+
+                    result = (LIBSSH2_ERROR)UnsafeNativeMethods.libssh2_userauth_keyboard_interactive_ex(
+                        this.session.Handle,
+                        username,
+                        username.Length,
+                        InteractiveCallback,
+                        IntPtr.Zero);
+                }
 
                 if (result != LIBSSH2_ERROR.NONE)
                 {
