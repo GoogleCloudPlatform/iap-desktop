@@ -381,7 +381,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Controls
 
         private void PaintDiagnostics(Graphics graphics)
         {
-#if DEBUG
+#if TERMINAL_DEBUG
             var rowDimensions = this.terminalFont.Measure(graphics, this.Columns);
 
             var diagnosticText =
