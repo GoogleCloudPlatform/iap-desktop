@@ -141,9 +141,12 @@ namespace Google.Solutions.IapDesktop.Application.Views.ProjectExplorer
 
             this.treeView.LoadingChildrenFailed += (sender, args) =>
             {
-                this.serviceProvider
-                    .GetService<IExceptionDialog>()
-                    .Show(this, "Loading project failed", args.Exception);
+                if (!args.Exception.IsCancellation())
+                {
+                    this.serviceProvider
+                        .GetService<IExceptionDialog>()
+                        .Show(this, "Loading project failed", args.Exception);
+                }
             };
 
             //
