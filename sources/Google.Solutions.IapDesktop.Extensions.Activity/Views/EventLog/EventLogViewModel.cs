@@ -207,7 +207,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Views.EventLog
         {
             if (this.SelectedEvent != null)
             {
-                this.serviceProvider.GetService<CloudConsoleService>().OpenVmInstanceLogDetails(
+                this.serviceProvider.GetService<ICloudConsoleService>().OpenVmInstanceLogDetails(
                     this.SelectedEvent.LogRecord.ProjectId,
                     this.SelectedEvent.LogRecord.InsertId,
                     this.SelectedEvent.Timestamp);
@@ -217,7 +217,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Activity.Views.EventLog
         public void OpenInCloudConsole()
         {
             Debug.Assert(!(this.ModelKey is IProjectModelCloudNode));
-            this.serviceProvider.GetService<CloudConsoleService>().OpenLogs(this.ModelKey);
+            this.serviceProvider.GetService<ICloudConsoleService>().OpenLogs(this.ModelKey);
         }
 
         //---------------------------------------------------------------------
