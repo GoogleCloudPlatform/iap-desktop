@@ -582,6 +582,42 @@ namespace Google.Solutions.IapDesktop.Application.Test.Services.ProjectModel
             Assert.IsNotNull(instance);
         }
 
+        [Test]
+        public async Task WhenProjectNotAddedButZoneLocatorValid_ThenGetNodeAsyncReturnsNull()
+        {
+            var serviceRegistry = new ServiceRegistry();
+            serviceRegistry.AddMock<IEventService>();
+            serviceRegistry.AddSingleton(CreateProjectRepositoryMock().Object);
+            serviceRegistry.AddSingleton(CreateComputeEngineAdapterMock(
+                SampleProjectId,
+                SampleWindowsInstanceInZone1).Object);
+            serviceRegistry.AddSingleton(CreateResourceManagerAdapterMock().Object);
+
+            var modelService = new ProjectModelService(serviceRegistry);
+
+            Assert.IsNull(await modelService.GetNodeAsync(
+                new ZoneLocator(SampleProjectId, "zone-1"),
+                CancellationToken.None));
+        }
+
+        [Test]
+        public async Task WhenProjectNotAddedButInstanceLocatorValid_ThenGetNodeAsyncReturnsNull()
+        {
+            var serviceRegistry = new ServiceRegistry();
+            serviceRegistry.AddMock<IEventService>();
+            serviceRegistry.AddSingleton(CreateProjectRepositoryMock().Object);
+            serviceRegistry.AddSingleton(CreateComputeEngineAdapterMock(
+                SampleProjectId,
+                SampleWindowsInstanceInZone1).Object);
+            serviceRegistry.AddSingleton(CreateResourceManagerAdapterMock().Object);
+
+            var modelService = new ProjectModelService(serviceRegistry);
+
+            Assert.IsNull(await modelService.GetNodeAsync(
+                new InstanceLocator(SampleProjectId, "zone-1", SampleWindowsInstanceInZone1.Name),
+                CancellationToken.None));
+        }
+
         //---------------------------------------------------------------------
         // GetActiveNodeAsync.
         //---------------------------------------------------------------------

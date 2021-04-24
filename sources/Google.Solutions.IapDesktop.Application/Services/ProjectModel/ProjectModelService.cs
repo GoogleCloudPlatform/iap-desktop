@@ -356,6 +356,15 @@ namespace Google.Solutions.IapDesktop.Application.Services.ProjectModel
                 }
                 else if (locator is ZoneLocator zoneLocator)
                 {
+                    var project = await GetNodeAsync(
+                            new ProjectLocator(zoneLocator.ProjectId), token)
+                        .ConfigureAwait(false);
+                    if (project == null)
+                    {
+                        // Don't load a zone if the parent project has not been added.
+                        return null;
+                    }
+
                     var zones = await GetZoneNodesAsync(
                             new ProjectLocator(zoneLocator.ProjectId),
                             false,
@@ -365,6 +374,15 @@ namespace Google.Solutions.IapDesktop.Application.Services.ProjectModel
                 }
                 else if (locator is InstanceLocator instanceLocator)
                 {
+                    var project = await GetNodeAsync(
+                            new ProjectLocator(instanceLocator.ProjectId), token)
+                        .ConfigureAwait(false);
+                    if (project == null)
+                    {
+                        // Don't load a instance if the parent project has not been added.
+                        return null;
+                    }
+
                     var zones = await GetZoneNodesAsync(
                             new ProjectLocator(instanceLocator.ProjectId),
                             false,
