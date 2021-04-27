@@ -37,6 +37,9 @@ namespace Google.Solutions.IapDesktop.Windows
         public AuthorizeDialog()
         {
             InitializeComponent();
+
+            // Don't maximize when double-clicking title bar.
+            this.MaximumSize = this.Size;
         }
 
         private void ToggleSignInButton()
