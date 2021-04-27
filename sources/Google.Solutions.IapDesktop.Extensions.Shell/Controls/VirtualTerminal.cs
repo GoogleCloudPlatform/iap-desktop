@@ -20,7 +20,9 @@
 //
 
 using Google.Solutions.Common.Diagnostics;
+using Google.Solutions.IapDesktop.Application;
 using Google.Solutions.IapDesktop.Application.Util;
+using Google.Solutions.Ssh;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -112,9 +114,16 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Controls
             this.controller = new VirtualTerminalController();
             this.controllerSink = new DataConsumer(this.controller);
 
-#if DEBUG
-            this.controller.Debugging = true;
-#endif
+            //
+            // Forward debug output to SSH trace (disabled by default,
+            // even in debug builds).
+            //
+            this.controller.Debugging = SshTraceSources.Default.Switch
+                .ShouldTrace(TraceEventType.Verbose);
+            this.controller.OnLog += (sender, args) =>
+            {
+                SshTraceSources.Default.TraceVerbose(args.Text);
+            };
 
             //
             // Use double-buffering to reduce flicker - unless we're in an
