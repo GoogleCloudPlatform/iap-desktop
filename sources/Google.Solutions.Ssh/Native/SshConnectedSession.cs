@@ -241,7 +241,7 @@ namespace Google.Solutions.Ssh.Native
             }
         }
 
-        public delegate string PromptCallback(
+        public delegate string AuthenticationCallback(
             string name,
             string instruction,
             string prompt,
@@ -250,7 +250,7 @@ namespace Google.Solutions.Ssh.Native
         public SshAuthenticatedSession Authenticate(
             string username,
             ISshKey key,
-            PromptCallback callback = null) // TODO: Remove default null!
+            AuthenticationCallback callback)
         {
             this.session.Handle.CheckCurrentThreadOwnsHandle();
             Utilities.ThrowIfNullOrEmpty(username, nameof(username));
@@ -332,17 +332,17 @@ namespace Google.Solutions.Ssh.Native
                         prompts[i].TextLength, 
                         Encoding.UTF8);
 
+                    SshTraceSources.Default.TraceVerbose("Keyboard/interactive prompt: {0}", promptText);
+
                     //
                     // NB. Name and instruction aren't used by OS Login,
                     // so flatten the structure to a single level.
                     //
-                    var responseText = "";
-                    // TODO: Call callback
-                    //callback(
-                    //    name,
-                    //    instruction,
-                    //    promptText,
-                    //    prompts[i].Echo != 0);
+                    var responseText = callback(    // TODO: handle cancellation, retry
+                        name,
+                        instruction,
+                        promptText,
+                        prompts[i].Echo != 0);
 
                     responses[i] = new UnsafeNativeMethods.LIBSSH2_USERAUTH_KBDINT_RESPONSE();
                     if (responseText == null)

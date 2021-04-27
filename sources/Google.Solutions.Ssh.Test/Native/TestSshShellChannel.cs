@@ -75,6 +75,16 @@ namespace Google.Solutions.Ssh.Test.Native
             return text.ToString();
         }
 
+        private string UnexpectedAuthenticationCallback(
+            string name,
+            string instruction,
+            string prompt,
+            bool echo)
+        {
+            Assert.Fail("Unexpected callback");
+            return null;
+        }
+
         //---------------------------------------------------------------------
         // Shell.
         //---------------------------------------------------------------------
@@ -96,7 +106,10 @@ namespace Google.Solutions.Ssh.Test.Native
 
                 using (var session = CreateSession())
                 using (var connection = session.Connect(endpoint))
-                using (var authSession = connection.Authenticate("testuser", key))
+                using (var authSession = connection.Authenticate(
+                    "testuser", 
+                    key,
+                    UnexpectedAuthenticationCallback))
                 using (var channel = authSession.OpenShellChannel(
                     LIBSSH2_CHANNEL_EXTENDED_DATA.MERGE,
                     DefaultTerminal,
@@ -137,7 +150,10 @@ namespace Google.Solutions.Ssh.Test.Native
 
                 using (var session = CreateSession())
                 using (var connection = session.Connect(endpoint))
-                using (var authSession = connection.Authenticate("testuser", key))
+                using (var authSession = connection.Authenticate(
+                    "testuser", 
+                    key,
+                    UnexpectedAuthenticationCallback))
                 using (var channel = authSession.OpenShellChannel(
                     LIBSSH2_CHANNEL_EXTENDED_DATA.MERGE,
                     DefaultTerminal,
@@ -182,7 +198,10 @@ namespace Google.Solutions.Ssh.Test.Native
 
                 using (var session = CreateSession())
                 using (var connection = session.Connect(endpoint))
-                using (var authSession = connection.Authenticate("testuser", key))
+                using (var authSession = connection.Authenticate(
+                    "testuser", 
+                    key,
+                    UnexpectedAuthenticationCallback))
                 {
                     SshAssert.ThrowsNativeExceptionWithError(
                         session,
@@ -217,7 +236,10 @@ namespace Google.Solutions.Ssh.Test.Native
 
                 using (var session = CreateSession())
                 using (var connection = session.Connect(endpoint))
-                using (var authSession = connection.Authenticate("testuser", key))
+                using (var authSession = connection.Authenticate(
+                    "testuser", 
+                    key,
+                    UnexpectedAuthenticationCallback))
                 using (var channel = authSession.OpenShellChannel(
                     LIBSSH2_CHANNEL_EXTENDED_DATA.MERGE,
                     DefaultTerminal,

@@ -148,6 +148,15 @@ namespace Google.Solutions.Ssh
         /// </summary>
         protected abstract void Receive(SshChannelBase channel);
 
+        /// <summary>
+        /// Respond to keyboard/interactive callback.
+        /// </summary>
+        protected abstract string OnKeyboardInteractivePromptCallback(
+            string name,
+            string instruction,
+            string prompt,
+            bool echo);
+
         protected abstract SshChannelBase CreateChannel(
             SshAuthenticatedSession session);
 
@@ -216,7 +225,8 @@ namespace Google.Solutions.Ssh
                         using (var connectedSession = session.Connect(this.endpoint))
                         using (var authenticatedSession = connectedSession.Authenticate(
                             this.username,
-                            this.key))
+                            this.key,
+                            this.OnKeyboardInteractivePromptCallback))
                         using (var channel = CreateChannel(authenticatedSession))
                         {
                             //

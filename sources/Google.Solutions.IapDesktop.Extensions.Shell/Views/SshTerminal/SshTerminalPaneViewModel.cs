@@ -219,6 +219,16 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.SshTerminal
                         new DataReceivedEventArgs(data)));
             }
 
+            string OnAuthenticationCallback(
+                string name,
+                string instruction,
+                string prompt,
+                bool echo)
+            {
+                // TODO: Show UI for auth callbacks
+                throw new NotImplementedException();
+            }
+
             using (ApplicationTraceSources.Default.TraceMethod().WithoutParameters())
             {
                 //
@@ -241,6 +251,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.SshTerminal
                         SshShellConnection.DefaultTerminal,
                         initialSize,
                         this.language,
+                        OnAuthenticationCallback,
                         OnDataReceivedFromServerAsync,
                         OnErrorReceivedFromServerAsync)
                     {

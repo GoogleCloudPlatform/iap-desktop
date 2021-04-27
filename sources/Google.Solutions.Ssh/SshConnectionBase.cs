@@ -37,6 +37,8 @@ namespace Google.Solutions.Ssh
 
         private readonly StreamingDecoder receiveDecoder;
         private readonly byte[] receiveBuffer = new byte[64 * 1024];
+
+        private readonly ReceivedAuthenticationCallbackHandler authenticationCallbackHandler;
         private readonly ReceiveDataHandler receiveDataHandler;
         private readonly ReceiveErrorHandler receiveErrorHandler;
 
@@ -55,6 +57,12 @@ namespace Google.Solutions.Ssh
         public delegate void ReceiveStringDataHandler(
             string data);
 
+        public delegate string ReceivedAuthenticationCallbackHandler(
+            string name,
+            string instruction,
+            string prompt,
+            bool echo);
+
         //---------------------------------------------------------------------
         // Ctor.
         //---------------------------------------------------------------------
@@ -63,6 +71,7 @@ namespace Google.Solutions.Ssh
             string username,
             IPEndPoint endpoint,
             ISshKey key,
+            ReceivedAuthenticationCallbackHandler authenticationCallbackHandler,
             ReceiveStringDataHandler receiveHandler,
             ReceiveErrorHandler receiveErrorHandler,
             Encoding dataEncoding)
@@ -76,6 +85,7 @@ namespace Google.Solutions.Ssh
                 => this.receiveDecoder.Decode(buf, (int)offset, (int)count);
 
             this.receiveErrorHandler = receiveErrorHandler;
+            this.authenticationCallbackHandler = authenticationCallbackHandler;
         }
 
         //---------------------------------------------------------------------
@@ -109,6 +119,19 @@ namespace Google.Solutions.Ssh
         protected override void OnReceiveError(Exception exception)
         {
             this.receiveErrorHandler(exception);
+        }
+
+        protected override string OnKeyboardInteractivePromptCallback(
+            string name,
+            string instruction,
+            string prompt,
+            bool echo)
+        {
+            return this.authenticationCallbackHandler(
+                name, 
+                instruction, 
+                prompt, 
+                echo);
         }
 
         //---------------------------------------------------------------------

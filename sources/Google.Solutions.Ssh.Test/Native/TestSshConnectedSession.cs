@@ -220,6 +220,16 @@ namespace Google.Solutions.Ssh.Test.Native
         // User auth.
         //---------------------------------------------------------------------
 
+        private string UnexpectedAuthenticationCallback(
+            string name,
+            string instruction,
+            string prompt,
+            bool echo)
+        {
+            Assert.Fail("Unexpected callback");
+            return null;
+        }
+
         [Test]
         public async Task WhenConnected_ThenIsAuthenticatedIsFalse(
             [LinuxInstance] ResourceTask<InstanceLocator> instanceLocatorTask)
@@ -265,7 +275,10 @@ namespace Google.Solutions.Ssh.Test.Native
                 SshAssert.ThrowsNativeExceptionWithError(
                     session,
                     LIBSSH2_ERROR.AUTHENTICATION_FAILED,
-                    () => connection.Authenticate("invaliduser", key));
+                    () => connection.Authenticate(
+                        "invaliduser",
+                        key,
+                        this.UnexpectedAuthenticationCallback));
             }
         }
 
@@ -291,13 +304,16 @@ namespace Google.Solutions.Ssh.Test.Native
                     SshAssert.ThrowsNativeExceptionWithError(
                         session,
                         LIBSSH2_ERROR.SOCKET_SEND,
-                        () => connection.Authenticate("testuser", key));
+                        () => connection.Authenticate(
+                            "testuser",
+                            key,
+                            this.UnexpectedAuthenticationCallback));
                 }
             }
         }
 
         [Test]
-        public async Task WhenPublicKeyValidAndKnownFromMetadata_ThenAuthenticateThrowsAuthenticationSucceeds(
+        public async Task WhenPublicKeyValidAndKnownFromMetadata_ThenAuthenticationSucceeds(
             [LinuxInstance] ResourceTask<InstanceLocator> instanceLocatorTask)
         {
             var endpoint = new IPEndPoint(
@@ -313,10 +329,42 @@ namespace Google.Solutions.Ssh.Test.Native
                 using (var session = CreateSession())
                 using (var connection = session.Connect(endpoint))
                 {
-                    var authSession = connection.Authenticate("testuser", key);
+                    var authSession = connection.Authenticate(
+                        "testuser",
+                        key,
+                        this.UnexpectedAuthenticationCallback);
                     Assert.IsNotNull(authSession);
                 }
             }
+        }
+
+        //---------------------------------------------------------------------
+        // 2FA.
+        //---------------------------------------------------------------------
+
+        [Test]
+        public void When2faRequiredAndPromptReturnsWrongValue_ThenPromptIsRetried(
+            [LinuxInstance] ResourceTask<InstanceLocator> instanceLocatorTask)
+        {
+            // https://askubuntu.com/questions/1019999/key-based-ssh-login-that-requires-both-key-and-password
+
+            // Assert authn methods
+
+            Assert.Fail();
+        }
+
+        [Test]
+        public void When2faRequiredAndPromptReturnsNull_ThenPromptIsRetried(
+            [LinuxInstance] ResourceTask<InstanceLocator> instanceLocatorTask)
+        {
+            Assert.Fail();
+        }
+
+        [Test]
+        public void When2faRequiredAndPromptThrowsException_ThenAuthenticationFailsWithoutRetry(
+            [LinuxInstance] ResourceTask<InstanceLocator> instanceLocatorTask)
+        {
+            Assert.Fail();
         }
     }
 }

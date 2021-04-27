@@ -50,12 +50,14 @@ namespace Google.Solutions.Ssh
             string terminal,
             TerminalSize terminalSize,
             CultureInfo language,
+            ReceivedAuthenticationCallbackHandler authenticationCallbackHandler,
             ReceiveStringDataHandler receiveDataHandler,
             ReceiveErrorHandler receiveErrorHandler)
             : base(
                   username,
                   endpoint,
                   key,
+                  authenticationCallbackHandler,
                   receiveDataHandler,
                   receiveErrorHandler,
                   Encoding)
