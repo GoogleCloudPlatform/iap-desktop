@@ -305,9 +305,6 @@
   <ItemGroup>
     <None Include="Resources\Key_36.png" />
   </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\Key_361.png" />
-  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>copy /Y $(TargetDir)\$(TargetName).* $(SolutionDir)\Google.Solutions.IapDesktop\$(OutDir)
