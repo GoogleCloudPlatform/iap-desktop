@@ -66,6 +66,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.SshTerminal
             {
                 this.input = value;
                 RaisePropertyChange();
+                RaisePropertyChange((SshAuthenticationPromptViewModel m) => m.IsOkButtonEnabled);
             }
         }
 
@@ -77,6 +78,11 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.SshTerminal
                 this.isPasswordMasked = value;
                 RaisePropertyChange();
             }
+        }
+
+        public bool IsOkButtonEnabled
+        {
+            get => !string.IsNullOrWhiteSpace(this.input);
         }
     }
 }

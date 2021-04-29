@@ -57,6 +57,11 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.SshTerminal
                 viewModel,
                 () => viewModel.Input = "test",
                 v => v.Input);
+            
+            AssertEx.RaisesPropertyChangedNotification(
+                viewModel,
+                () => viewModel.Input = "test",
+                v => v.IsOkButtonEnabled);
         }
 
         [Test]

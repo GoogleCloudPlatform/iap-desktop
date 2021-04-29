@@ -58,10 +58,15 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.SshTerminal
                 viewModel,
                 m => m.Input,
                 this.Container);
-            this.inputTextBox.BindProperty(
+            this.inputTextBox.BindReadonlyProperty(
                 c => c.UseSystemPasswordChar,
                 viewModel,
                 m => m.IsPasswordMasked,
+                this.Container);
+            this.okButton.BindReadonlyProperty(
+                c => c.Enabled,
+                viewModel,
+                m => m.IsOkButtonEnabled,
                 this.Container);
         }
 

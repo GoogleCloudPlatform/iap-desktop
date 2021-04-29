@@ -45,7 +45,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Ssh
     public class AuthorizedKeyService : IAuthorizedKeyService
     {
         private const string EnableOsLoginFlag = "enable-oslogin";
-        private const string EnableOsLoginMultiFactorFlag = "enable-oslogin-2fa";
         private const string BlockProjectSshKeysFlag = "block-project-ssh-keys";
 
         private readonly IAuthorizationAdapter authorizationAdapter;
@@ -237,13 +236,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Services.Ssh
                         throw new InvalidOperationException(
                             $"{instance} requires OS Login to beused");
                     }
-
-                    // TODO: Remove or change 2FA check!?
-                    //if (IsFlagEnabled(projectDetails, instanceDetails, EnableOsLoginMultiFactorFlag))
-                    //{
-                    //    throw new NotImplementedException(
-                    //        "OS Login 2-factor authentication is not supported");
-                    //}
 
                     //
                     // NB. It's cheaper to unconditionally push the key than
