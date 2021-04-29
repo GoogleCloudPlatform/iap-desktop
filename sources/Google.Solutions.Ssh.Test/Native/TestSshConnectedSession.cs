@@ -342,29 +342,126 @@ namespace Google.Solutions.Ssh.Test.Native
         // 2FA.
         //---------------------------------------------------------------------
 
+        //
+        // Service acconts can't use 2FA, so emulate the 2FA prompting behavior
+        // by setting up SSHD to require a public key *and* a keyboard-interactive.
+        //
+        private const string RequireSshPassword =
+            "cat << EOF > /etc/ssh/sshd_config\n" +
+            "UsePam yes\n"+
+            "AuthenticationMethods publickey,keyboard-interactive\n" + 
+            "EOF\n" +
+            "systemctl restart sshd";
+
         [Test]
-        public void When2faRequiredAndPromptReturnsWrongValue_ThenPromptIsRetried(
-            [LinuxInstance] ResourceTask<InstanceLocator> instanceLocatorTask)
+        public async Task When2faRequiredAndPromptReturnsWrongValue_ThenPromptIsRetried(
+            [LinuxInstance(InitializeScript = RequireSshPassword)] ResourceTask<InstanceLocator> instanceLocatorTask)
         {
-            // https://askubuntu.com/questions/1019999/key-based-ssh-login-that-requires-both-key-and-password
+            var endpoint = new IPEndPoint(
+                await InstanceUtil.PublicIpAddressForInstanceAsync(await instanceLocatorTask),
+                22);
+            using (var key = new RsaSshKey(new RSACng()))
+            {
+                await InstanceUtil.AddPublicKeyToMetadata(
+                    await instanceLocatorTask,
+                    "testuser",
+                    key);
 
-            // Assert authn methods
+                using (var session = CreateSession())
+                using (var connection = session.Connect(endpoint))
+                {
+                    var callbackCount = 0;
+                    
+                    SshAssert.ThrowsNativeExceptionWithError(
+                        session,
+                        LIBSSH2_ERROR.AUTHENTICATION_FAILED,
+                        () => connection.Authenticate(
+                            "testuser",
+                            key,
+                            (name, instruction, prompt, echo) =>
+                            {
+                                callbackCount++;
 
-            Assert.Fail();
+                                Assert.AreEqual("Password: ", prompt);
+                                Assert.IsFalse(echo);
+
+                                return "wrong";
+                            }));
+                    Assert.AreEqual(SshConnectedSession.KeyboardInteractiveRetries, callbackCount);
+                }
+            }
         }
 
         [Test]
-        public void When2faRequiredAndPromptReturnsNull_ThenPromptIsRetried(
-            [LinuxInstance] ResourceTask<InstanceLocator> instanceLocatorTask)
+        public async Task When2faRequiredAndPromptReturnsNull_ThenPromptIsRetried(
+            [LinuxInstance(InitializeScript = RequireSshPassword)] ResourceTask<InstanceLocator> instanceLocatorTask)
         {
-            Assert.Fail();
+            var endpoint = new IPEndPoint(
+                await InstanceUtil.PublicIpAddressForInstanceAsync(await instanceLocatorTask),
+                22);
+            using (var key = new RsaSshKey(new RSACng()))
+            {
+                await InstanceUtil.AddPublicKeyToMetadata(
+                    await instanceLocatorTask,
+                    "testuser",
+                    key);
+
+                using (var session = CreateSession())
+                using (var connection = session.Connect(endpoint))
+                {
+                    var callbackCount = 0;
+
+                    SshAssert.ThrowsNativeExceptionWithError(
+                        session,
+                        LIBSSH2_ERROR.AUTHENTICATION_FAILED,
+                        () => connection.Authenticate(
+                            "testuser",
+                            key,
+                            (name, instruction, prompt, echo) =>
+                            {
+                                callbackCount++;
+
+                                Assert.AreEqual("Password: ", prompt);
+                                Assert.IsFalse(echo);
+
+                                return null;
+                            }));
+                    Assert.AreEqual(SshConnectedSession.KeyboardInteractiveRetries, callbackCount);
+                }
+            }
         }
 
         [Test]
-        public void When2faRequiredAndPromptThrowsException_ThenAuthenticationFailsWithoutRetry(
-            [LinuxInstance] ResourceTask<InstanceLocator> instanceLocatorTask)
+        public async Task When2faRequiredAndPromptThrowsException_ThenAuthenticationFailsWithoutRetry(
+            [LinuxInstance(InitializeScript = RequireSshPassword)] ResourceTask<InstanceLocator> instanceLocatorTask)
         {
-            Assert.Fail();
+            var endpoint = new IPEndPoint(
+                await InstanceUtil.PublicIpAddressForInstanceAsync(await instanceLocatorTask),
+                22);
+            using (var key = new RsaSshKey(new RSACng()))
+            {
+                await InstanceUtil.AddPublicKeyToMetadata(
+                    await instanceLocatorTask,
+                    "testuser",
+                    key);
+
+                using (var session = CreateSession())
+                using (var connection = session.Connect(endpoint))
+                {
+                    var callbackCount = 0;
+
+                    Assert.Throws<OperationCanceledException>(
+                        () => connection.Authenticate(
+                            "testuser",
+                            key,
+                            (name, instruction, prompt, echo) =>
+                            {
+                                callbackCount++;
+                                throw new OperationCanceledException();
+                            }));
+                    Assert.AreEqual(1, callbackCount);
+                }
+            }
         }
     }
 }

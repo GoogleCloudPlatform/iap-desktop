@@ -35,6 +35,8 @@ namespace Google.Solutions.Ssh.Native
     /// </summary>
     public class SshConnectedSession : IDisposable
     {
+        internal const int KeyboardInteractiveRetries = 3;
+
         // NB. This object does not own this handle and should not dispose it.
         private readonly SshSession session;
 
@@ -255,9 +257,12 @@ namespace Google.Solutions.Ssh.Native
             this.session.Handle.CheckCurrentThreadOwnsHandle();
             Utilities.ThrowIfNullOrEmpty(username, nameof(username));
             Utilities.ThrowIfNull(key, nameof(key));
+            Utilities.ThrowIfNull(callback, nameof(callback));
+
+            Exception interactiveCallbackException = null;
 
             //
-            // NB. The callbacks very sparsely documented in the libssh2 sources
+            // NB. The callbacks are sparsely documented in the libssh2 sources
             // and docs. For sample usage, the Guacamole sources can be helpful, cf.
             // https://github.com/stuntbadger/GuacamoleServer/blob/a06ae0743b0609cde0ceccc7ed136b0d71009105/src/common-ssh/ssh.c#L335
             //
@@ -338,11 +343,28 @@ namespace Google.Solutions.Ssh.Native
                     // NB. Name and instruction aren't used by OS Login,
                     // so flatten the structure to a single level.
                     //
-                    var responseText = callback(    // TODO: handle cancellation, retry
-                        name,
-                        instruction,
-                        promptText,
-                        prompts[i].Echo != 0);
+                    string responseText = null;
+                    try
+                    {
+                        responseText = callback(
+                            name,
+                            instruction,
+                            promptText,
+                            prompts[i].Echo != 0);
+                    }
+                    catch (Exception e)
+                    {
+                        SshTraceSources.Default.TraceError(
+                            "Authentication callback threw exception", e);
+
+                        //
+                        // Don't let the exception escape into unmanaged code,
+                        // instead return null and let the enclosing method
+                        // rethrow the exception once we're back on a managed
+                        // callstack.
+                        //
+                        interactiveCallbackException = e;
+                    }
 
                     responses[i] = new UnsafeNativeMethods.LIBSSH2_USERAUTH_KBDINT_RESPONSE();
                     if (responseText == null)
@@ -386,7 +408,7 @@ namespace Google.Solutions.Ssh.Native
                     Sign,
                     IntPtr.Zero);
 
-                if (result == LIBSSH2_ERROR.PUBLICKEY_UNVERIFIED) // TODO:  && callback != null)
+                if (result == LIBSSH2_ERROR.PUBLICKEY_UNVERIFIED)
                 {
                     SshTraceSources.Default.TraceVerbose(
                         "Server responded that public key is unverified, " +
@@ -401,16 +423,47 @@ namespace Google.Solutions.Ssh.Native
                     // won't indicate whether additional challenges are expected
                     // or not.
                     //
-                    
-                    // TODO: Reset timeout!?
-                    this.session.Timeout = TimeSpan.FromMinutes(5);
 
-                    result = (LIBSSH2_ERROR)UnsafeNativeMethods.libssh2_userauth_keyboard_interactive_ex(
-                        this.session.Handle,
-                        username,
-                        username.Length,
-                        InteractiveCallback,
-                        IntPtr.Zero);
+                    //
+                    // Temporarily change the timeout since we must give the
+                    // user some time to react.
+                    //
+                    var originalTimeout = this.session.Timeout;
+                    this.session.Timeout = this.session.KeyboardInteractivePromptTimeout;
+                    try
+                    {
+                        //
+                        // Retry to account for wrong user input.
+                        //
+                        for (int retry = 0; retry < KeyboardInteractiveRetries; retry++)
+                        {
+                            result = (LIBSSH2_ERROR)UnsafeNativeMethods.libssh2_userauth_keyboard_interactive_ex(
+                                this.session.Handle,
+                                username,
+                                username.Length,
+                                InteractiveCallback,
+                                IntPtr.Zero);
+
+                            if (result == LIBSSH2_ERROR.NONE)
+                            {
+                                break;
+                            }
+                            else if (interactiveCallbackException != null)
+                            {
+                                //
+                                // Restore exception thrown in callback.
+                                //
+                                throw interactiveCallbackException;
+                            }
+                        }
+                    }
+                    finally
+                    {
+                        //
+                        // Restore timeout.
+                        //
+                        this.session.Timeout = originalTimeout;
+                    }
                 }
 
                 if (result != LIBSSH2_ERROR.NONE)

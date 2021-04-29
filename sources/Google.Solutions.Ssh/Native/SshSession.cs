@@ -234,6 +234,9 @@ namespace Google.Solutions.Ssh.Native
         // Timeout.
         //---------------------------------------------------------------------
 
+        /// <summary>
+        /// Timeout for blocking operations.
+        /// </summary>
         public TimeSpan Timeout
         {
             get
@@ -260,6 +263,11 @@ namespace Google.Solutions.Ssh.Native
             }
         }
 
+        /// <summary>
+        /// Time to wait for user to react to keyboard/interactive prompts.
+        /// </summary>
+        public TimeSpan KeyboardInteractivePromptTimeout { get; set; } 
+            = TimeSpan.FromMinutes(1);
 
         //---------------------------------------------------------------------
         // Keepalive.
