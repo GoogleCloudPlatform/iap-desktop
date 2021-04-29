@@ -173,6 +173,13 @@
       <DependentUpon>ShortcutsWindow.cs</DependentUpon>
     </Compile>
     <Compile Include="Views\RemoteDesktop\UnsafeNativeMethods.cs" />
+    <Compile Include="Views\SshTerminal\SshAuthenticationPromptDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Views\SshTerminal\SshAuthenticationPromptDialog.Designer.cs">
+      <DependentUpon>SshAuthenticationPromptDialog.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Views\SshTerminal\SshAuthenticationPromptViewModel.cs" />
     <Compile Include="Views\SshTerminal\SshTerminalPane.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -259,6 +266,9 @@
     <EmbeddedResource Include="Views\RemoteDesktop\ShortcutsWindow.resx">
       <DependentUpon>ShortcutsWindow.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Views\SshTerminal\SshAuthenticationPromptDialog.resx">
+      <DependentUpon>SshAuthenticationPromptDialog.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Views\SshTerminal\SshTerminalPane.resx">
       <DependentUpon>SshTerminalPane.cs</DependentUpon>
     </EmbeddedResource>
@@ -291,6 +301,12 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\Settings_16.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Key_36.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Key_361.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

@@ -38,7 +38,7 @@ namespace Google.Solutions.Ssh
         private readonly StreamingDecoder receiveDecoder;
         private readonly byte[] receiveBuffer = new byte[64 * 1024];
 
-        private readonly ReceivedAuthenticationCallbackHandler authenticationCallbackHandler;
+        private readonly ReceivedAuthenticationPromptHandler authenticationPromptHandler;
         private readonly ReceiveDataHandler receiveDataHandler;
         private readonly ReceiveErrorHandler receiveErrorHandler;
 
@@ -57,7 +57,7 @@ namespace Google.Solutions.Ssh
         public delegate void ReceiveStringDataHandler(
             string data);
 
-        public delegate string ReceivedAuthenticationCallbackHandler(
+        public delegate string ReceivedAuthenticationPromptHandler(
             string name,
             string instruction,
             string prompt,
@@ -71,7 +71,7 @@ namespace Google.Solutions.Ssh
             string username,
             IPEndPoint endpoint,
             ISshKey key,
-            ReceivedAuthenticationCallbackHandler authenticationCallbackHandler,
+            ReceivedAuthenticationPromptHandler authenticationPromptHandler,
             ReceiveStringDataHandler receiveHandler,
             ReceiveErrorHandler receiveErrorHandler,
             Encoding dataEncoding)
@@ -85,7 +85,7 @@ namespace Google.Solutions.Ssh
                 => this.receiveDecoder.Decode(buf, (int)offset, (int)count);
 
             this.receiveErrorHandler = receiveErrorHandler;
-            this.authenticationCallbackHandler = authenticationCallbackHandler;
+            this.authenticationPromptHandler = authenticationPromptHandler;
         }
 
         //---------------------------------------------------------------------
@@ -127,7 +127,7 @@ namespace Google.Solutions.Ssh
             string prompt,
             bool echo)
         {
-            return this.authenticationCallbackHandler(
+            return this.authenticationPromptHandler(
                 name, 
                 instruction, 
                 prompt, 
