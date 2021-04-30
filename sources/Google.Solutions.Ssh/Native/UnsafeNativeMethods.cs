@@ -24,6 +24,7 @@ using System;
 using System.Diagnostics;
 using System.Runtime.ConstrainedExecution;
 using System.Runtime.InteropServices;
+using System.Text;
 using System.Threading;
 
 #pragma warning disable IDE1006 // Naming Styles
@@ -286,6 +287,40 @@ namespace Google.Solutions.Ssh.Native
             SignCallback callback,
             IntPtr context);
 
+        [StructLayout(LayoutKind.Sequential)]
+        public struct LIBSSH2_USERAUTH_KBDINT_PROMPT
+        {
+            public IntPtr TextPtr;
+            public int TextLength;
+            public byte Echo;
+        }
+
+        [StructLayout(LayoutKind.Sequential)]
+        public struct LIBSSH2_USERAUTH_KBDINT_RESPONSE
+        {
+            public IntPtr TextPtr;
+            public int TextLength;
+        }
+
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+        public delegate void KeyboardInteractiveCallback(
+            IntPtr namePtr,
+            int nameLength,
+            IntPtr instructionPtr,
+            int instructionLength,
+            int numPrompts,
+            IntPtr prompts,
+            IntPtr responses,
+            IntPtr context);
+
+        [DllImport(Libssh2, CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
+        public static extern int libssh2_userauth_keyboard_interactive_ex(
+            SshSessionHandle session,
+            [MarshalAs(UnmanagedType.LPStr)] string username,
+            int usernameLength,
+            KeyboardInteractiveCallback callback,
+            IntPtr context);
+
         //---------------------------------------------------------------------
         // Channel.
         //---------------------------------------------------------------------
@@ -502,6 +537,53 @@ namespace Google.Solutions.Ssh.Native
 
             [MarshalAs(UnmanagedType.ByValArray, SizeConst = 10)]
             public int[] iErrorCode;
+        }
+
+        //---------------------------------------------------------------------
+        // Utility functions.
+        //---------------------------------------------------------------------
+
+        public static string PtrToString(
+            IntPtr stringPtr,
+            int stringLength,
+            Encoding encoding)
+        {
+            if (stringPtr == IntPtr.Zero || stringLength == 0)
+            {
+                return null;
+            }
+
+            var buffer = new byte[stringLength];
+            Marshal.Copy(stringPtr, buffer, 0, stringLength);
+            return encoding.GetString(buffer);
+        }
+
+        public static T[] PtrToStructureArray<T>(
+            IntPtr ptr,
+            int count) where T : struct
+        {
+            var size = Marshal.SizeOf(typeof(T));
+            var array  = new T[count];
+
+            for (int i = 0; i < count; i++)
+            {
+                IntPtr elementPtr = new IntPtr(ptr.ToInt64() + i * size);
+                array[i] = Marshal.PtrToStructure<T>(elementPtr);
+            }
+
+            return array;
+        }
+
+        public static void StructureArrayToPtr<T>(
+            IntPtr ptr,
+            T[] array) where T : struct
+        {
+            var size = Marshal.SizeOf(typeof(T));
+            for (int i = 0; i < array.Length; i++)
+            {
+                IntPtr elementPtr = new IntPtr(ptr.ToInt64() + i * size);
+                Marshal.StructureToPtr(array[i], elementPtr, false);
+            }
         }
     }
 

@@ -123,6 +123,7 @@
     <Compile Include="Views\RemoteDesktop\TestRemoteDesktopPane.cs" />
     <Compile Include="Views\RemoteDesktop\TestRemoteDesktopPaneWithGroupPolicies.cs" />
     <Compile Include="Views\RemoteDesktop\TestSshTerminalSessionBroker.cs" />
+    <Compile Include="Views\SshTerminal\TestSshAuthenticationPromptViewModel.cs" />
     <Compile Include="Views\SshTerminal\TestSshTerminalPane.cs" />
     <Compile Include="Views\SshTerminal\TestSshTerminalSessionBroker.cs" />
     <Compile Include="Views\TunnelsViewer\TestTunnelsViewModel.cs" />

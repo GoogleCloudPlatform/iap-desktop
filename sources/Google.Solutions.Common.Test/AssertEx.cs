@@ -22,6 +22,9 @@
 using Google.Solutions.Common.Util;
 using NUnit.Framework;
 using System;
+using System.ComponentModel;
+using System.Diagnostics;
+using System.Linq.Expressions;
 using System.Reflection;
 
 namespace Google.Solutions.Common.Test
@@ -52,6 +55,52 @@ namespace Google.Solutions.Common.Test
                 var actualValue = property.GetValue(actual, null);
 
                 Assert.AreEqual(expectedValue, actualValue, $"{property.Name} must match");
+            }
+        }
+
+        public static void RaisesPropertyChangedNotification(
+            INotifyPropertyChanged obj,
+            Action action,
+            string property)
+        {
+            var callbacks = 0;
+
+            PropertyChangedEventHandler handler = (sender, args) =>
+            {
+                Assert.AreSame(obj, sender);
+                if (property == args.PropertyName)
+                {
+                    callbacks++;
+                }
+            };
+
+            obj.PropertyChanged += handler;
+            action();
+            obj.PropertyChanged -= handler;
+
+            Assert.AreEqual(
+                1, 
+                callbacks, 
+                $"Expected PropertyChanged callback for {property}");
+        }
+
+        public static void RaisesPropertyChangedNotification<T, TProperty>(
+            T obj,
+            Action action,
+            Expression<Func<T, TProperty>> property) where T : INotifyPropertyChanged
+        {
+            Debug.Assert(property.NodeType == ExpressionType.Lambda);
+            if (property.Body is MemberExpression memberExpression &&
+                memberExpression.Member is PropertyInfo propertyInfo)
+            {
+                RaisesPropertyChangedNotification(
+                    obj,
+                    action,
+                    propertyInfo.Name);
+            }
+            else
+            {
+                throw new ArgumentException("Expression does not resolve to a property");
             }
         }
     }

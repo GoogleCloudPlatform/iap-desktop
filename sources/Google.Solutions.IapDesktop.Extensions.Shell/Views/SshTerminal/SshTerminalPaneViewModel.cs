@@ -65,6 +65,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.SshTerminal
         public event EventHandler<ConnectionErrorEventArgs> ConnectionFailed;
         public event EventHandler<ConnectionErrorEventArgs> ConnectionLost;
         public event EventHandler<DataReceivedEventArgs> DataReceived;
+        public event EventHandler<AuthenticationPromptEventArgs> AuthenticationPrompt;
 
         private ISynchronizeInvoke ViewInvoker => (ISynchronizeInvoke)this.View;
 
@@ -219,6 +220,39 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.SshTerminal
                         new DataReceivedEventArgs(data)));
             }
 
+            string OnAuthenticationPrompt(
+                string name,
+                string instruction,
+                string prompt,
+                bool echo)
+            {
+                //
+                // Trigger UI to respond to the prompt by firing an event.
+                // As this method is invoked on a non-UI thread, switch to
+                // the GUI thread first.
+                //
+
+                var args = new AuthenticationPromptEventArgs(prompt, !echo);
+                this.ViewInvoker?.Invoke(
+                    (Action)(() => 
+                    {
+                        this.AuthenticationPrompt?.Invoke(this, args);
+                    }),
+                    null);
+
+                //
+                // Strip:
+                //  - spaces between group of digits (g.co/sc)
+                //  - "G-" prefix (text messages)
+                //
+                if (args.Response.StartsWith("g-", StringComparison.OrdinalIgnoreCase))
+                {
+                    args.Response = args.Response.Substring(2);
+                }
+
+                return args.Response.Replace(" ", string.Empty);
+            }
+
             using (ApplicationTraceSources.Default.TraceMethod().WithoutParameters())
             {
                 //
@@ -241,6 +275,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.SshTerminal
                         SshShellConnection.DefaultTerminal,
                         initialSize,
                         this.language,
+                        OnAuthenticationPrompt,
                         OnDataReceivedFromServerAsync,
                         OnErrorReceivedFromServerAsync)
                     {
@@ -379,6 +414,21 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.SshTerminal
         public ConnectionErrorEventArgs(Exception error)
         {
             this.Error = error;
+        }
+    }
+
+    public class AuthenticationPromptEventArgs
+    {
+        public bool IsPasswordPrompt { get; }
+        public string Prompt { get; }
+        public string Response { get; set; }
+
+        public AuthenticationPromptEventArgs(
+            string prompt,
+            bool isPasswordPrompt)
+        {
+            this.IsPasswordPrompt = isPasswordPrompt;
+            this.Prompt = prompt;
         }
     }
 

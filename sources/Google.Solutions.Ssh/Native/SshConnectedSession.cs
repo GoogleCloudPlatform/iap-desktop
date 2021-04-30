@@ -26,6 +26,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Net.Sockets;
 using System.Runtime.InteropServices;
+using System.Text;
 
 namespace Google.Solutions.Ssh.Native
 {
@@ -34,6 +35,8 @@ namespace Google.Solutions.Ssh.Native
     /// </summary>
     public class SshConnectedSession : IDisposable
     {
+        internal const int KeyboardInteractiveRetries = 3;
+
         // NB. This object does not own this handle and should not dispose it.
         private readonly SshSession session;
 
@@ -240,16 +243,26 @@ namespace Google.Solutions.Ssh.Native
             }
         }
 
+        public delegate string AuthenticationCallback(
+            string name,
+            string instruction,
+            string prompt,
+            bool echo);
+
         public SshAuthenticatedSession Authenticate(
             string username,
-            ISshKey key)
+            ISshKey key,
+            AuthenticationCallback callback)
         {
             this.session.Handle.CheckCurrentThreadOwnsHandle();
             Utilities.ThrowIfNullOrEmpty(username, nameof(username));
             Utilities.ThrowIfNull(key, nameof(key));
+            Utilities.ThrowIfNull(callback, nameof(callback));
+
+            Exception interactiveCallbackException = null;
 
             //
-            // NB. The callbacks very sparsely documented in the libssh2 sources
+            // NB. The callbacks are sparsely documented in the libssh2 sources
             // and docs. For sample usage, the Guacamole sources can be helpful, cf.
             // https://github.com/stuntbadger/GuacamoleServer/blob/a06ae0743b0609cde0ceccc7ed136b0d71009105/src/common-ssh/ssh.c#L335
             //
@@ -285,6 +298,100 @@ namespace Google.Solutions.Ssh.Native
                 return (int)LIBSSH2_ERROR.NONE;
             }
 
+            void InteractiveCallback(
+                IntPtr namePtr,
+                int nameLength,
+                IntPtr instructionPtr,
+                int instructionLength,
+                int numPrompts,
+                IntPtr promptsPtr,
+                IntPtr responsesPtr,
+                IntPtr context)
+            {
+                var name = UnsafeNativeMethods.PtrToString(
+                    namePtr, 
+                    nameLength, 
+                    Encoding.UTF8);
+                var instruction = UnsafeNativeMethods.PtrToString(
+                    instructionPtr, 
+                    nameLength, 
+                    Encoding.UTF8);
+                var prompts = UnsafeNativeMethods.PtrToStructureArray<
+                        UnsafeNativeMethods.LIBSSH2_USERAUTH_KBDINT_PROMPT>(
+                    promptsPtr,
+                    numPrompts);
+
+                //
+                // NB. libssh2 allocates the responses structure for us, but frees
+                // the embedded text strings using its allocator.
+                // 
+                // NB. libssh2 assumes text to be encoded in UTF-8.
+                //
+                Debug.Assert(SshSession.Alloc != null);
+
+                var responses = new UnsafeNativeMethods.LIBSSH2_USERAUTH_KBDINT_RESPONSE[prompts.Length];
+                for (int i = 0; i < prompts.Length; i++)
+                {
+                    var promptText = UnsafeNativeMethods.PtrToString(
+                        prompts[i].TextPtr,
+                        prompts[i].TextLength, 
+                        Encoding.UTF8);
+
+                    SshTraceSources.Default.TraceVerbose("Keyboard/interactive prompt: {0}", promptText);
+
+                    //
+                    // NB. Name and instruction aren't used by OS Login,
+                    // so flatten the structure to a single level.
+                    //
+                    string responseText = null;
+                    try
+                    {
+                        responseText = callback(
+                            name,
+                            instruction,
+                            promptText,
+                            prompts[i].Echo != 0);
+                    }
+                    catch (Exception e)
+                    {
+                        SshTraceSources.Default.TraceError(
+                            "Authentication callback threw exception", e);
+
+                        //
+                        // Don't let the exception escape into unmanaged code,
+                        // instead return null and let the enclosing method
+                        // rethrow the exception once we're back on a managed
+                        // callstack.
+                        //
+                        interactiveCallbackException = e;
+                    }
+
+                    responses[i] = new UnsafeNativeMethods.LIBSSH2_USERAUTH_KBDINT_RESPONSE();
+                    if (responseText == null)
+                    {
+                        responses[i].TextLength = 0;
+                        responses[i].TextPtr = IntPtr.Zero;
+                    }
+                    else
+                    { 
+                        var responseTextBytes = Encoding.UTF8.GetBytes(responseText);
+                        responses[i].TextLength = responseTextBytes.Length;
+                        responses[i].TextPtr = SshSession.Alloc(
+                            new IntPtr(responseTextBytes.Length), 
+                            IntPtr.Zero);
+                        Marshal.Copy(
+                            responseTextBytes, 
+                            0, 
+                            responses[i].TextPtr, 
+                            responseTextBytes.Length);
+                    }
+                }
+
+                UnsafeNativeMethods.StructureArrayToPtr(
+                    responsesPtr,
+                    responses);
+            }
+
             using (SshTraceSources.Default.TraceMethod().WithParameters(username))
             {
                 //
@@ -300,6 +407,64 @@ namespace Google.Solutions.Ssh.Native
                     new IntPtr(publicKey.Length),
                     Sign,
                     IntPtr.Zero);
+
+                if (result == LIBSSH2_ERROR.PUBLICKEY_UNVERIFIED)
+                {
+                    SshTraceSources.Default.TraceVerbose(
+                        "Server responded that public key is unverified, " +
+                        "trying keyboard/interactive auth for MFA challenges");
+
+                    //
+                    // Public key wasn't accepted - this might be because the
+                    // key is not authorized, or because we need to respond to
+                    // some more (MFA) challenges.
+                    //
+                    // NB. It's not worth checking GetAuthenticationMethods, it
+                    // won't indicate whether additional challenges are expected
+                    // or not.
+                    //
+
+                    //
+                    // Temporarily change the timeout since we must give the
+                    // user some time to react.
+                    //
+                    var originalTimeout = this.session.Timeout;
+                    this.session.Timeout = this.session.KeyboardInteractivePromptTimeout;
+                    try
+                    {
+                        //
+                        // Retry to account for wrong user input.
+                        //
+                        for (int retry = 0; retry < KeyboardInteractiveRetries; retry++)
+                        {
+                            result = (LIBSSH2_ERROR)UnsafeNativeMethods.libssh2_userauth_keyboard_interactive_ex(
+                                this.session.Handle,
+                                username,
+                                username.Length,
+                                InteractiveCallback,
+                                IntPtr.Zero);
+
+                            if (result == LIBSSH2_ERROR.NONE)
+                            {
+                                break;
+                            }
+                            else if (interactiveCallbackException != null)
+                            {
+                                //
+                                // Restore exception thrown in callback.
+                                //
+                                throw interactiveCallbackException;
+                            }
+                        }
+                    }
+                    finally
+                    {
+                        //
+                        // Restore timeout.
+                        //
+                        this.session.Timeout = originalTimeout;
+                    }
+                }
 
                 if (result != LIBSSH2_ERROR.NONE)
                 {

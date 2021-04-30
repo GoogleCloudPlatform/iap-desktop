@@ -32,6 +32,16 @@ namespace Google.Solutions.Ssh.Test.Native
     [TestFixture]
     public class TestSshAuthenticatedSession : SshFixtureBase
     {
+        private string UnexpectedAuthenticationCallback(
+            string name,
+            string instruction,
+            string prompt,
+            bool echo)
+        {
+            Assert.Fail("Unexpected callback");
+            return null;
+        }
+
         //---------------------------------------------------------------------
         // Channel.
         //---------------------------------------------------------------------
@@ -53,7 +63,10 @@ namespace Google.Solutions.Ssh.Test.Native
 
                 using (var session = CreateSession())
                 using (var connection = session.Connect(endpoint))
-                using (var authSession = connection.Authenticate("testuser", key))
+                using (var authSession = connection.Authenticate(
+                    "testuser", 
+                    key,
+                    UnexpectedAuthenticationCallback))
                 {
                     connection.Dispose();
                     SshAssert.ThrowsNativeExceptionWithError(
@@ -83,7 +96,10 @@ namespace Google.Solutions.Ssh.Test.Native
 
                 using (var session = CreateSession())
                 using (var connection = session.Connect(endpoint))
-                using (var authSession = connection.Authenticate("testuser", key))
+                using (var authSession = connection.Authenticate(
+                    "testuser", 
+                    key,
+                    UnexpectedAuthenticationCallback))
                 using (var channel = authSession.OpenExecChannel(
                     "whoami",
                     LIBSSH2_CHANNEL_EXTENDED_DATA.NORMAL))
@@ -110,7 +126,10 @@ namespace Google.Solutions.Ssh.Test.Native
 
                 var session = CreateSession();
                 var connection = session.Connect(endpoint);
-                var authSession = connection.Authenticate("testuser", key);
+                var authSession = connection.Authenticate(
+                    "testuser", 
+                    key,
+                    UnexpectedAuthenticationCallback);
                 var channel = authSession.OpenExecChannel(
                     "whoami",
                     LIBSSH2_CHANNEL_EXTENDED_DATA.NORMAL);

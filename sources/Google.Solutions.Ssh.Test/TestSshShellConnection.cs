@@ -57,6 +57,21 @@ namespace Google.Solutions.Ssh.Test
                 $"Timeout waiting for buffer to contain '{token}");
         }
 
+        private string UnexpectedAuthenticationCallback(
+            string name,
+            string instruction,
+            string prompt,
+            bool echo)
+        {
+            Assert.Fail("Unexpected callback");
+            return null;
+        }
+
+        private void UnexpectedErrorCallback(Exception exception)
+        {
+            Assert.Fail("Unexpected callback");
+        }
+
         [Test]
         public async Task WhenSendingEchoCommand_ThenEchoIsReceived(
             [LinuxInstance] ResourceTask<InstanceLocator> instanceLocatorTask)
@@ -89,11 +104,9 @@ namespace Google.Solutions.Ssh.Test
                     SshShellConnection.DefaultTerminal,
                     SshShellConnection.DefaultTerminalSize,
                     CultureInfo.InvariantCulture,
+                    UnexpectedAuthenticationCallback,
                     receiveHandler,
-                    exception =>
-                    {
-                        Assert.Fail("Unexpected error");
-                    }))
+                    UnexpectedErrorCallback))
                 {
                     await connection.ConnectAsync();
 
@@ -137,11 +150,9 @@ namespace Google.Solutions.Ssh.Test
                     SshShellConnection.DefaultTerminal,
                     SshShellConnection.DefaultTerminalSize,
                     CultureInfo.InvariantCulture,
+                    UnexpectedAuthenticationCallback,
                     _ => { },
-                    exception =>
-                    {
-                        Assert.Fail("Unexpected error");
-                    }))
+                    UnexpectedErrorCallback))
                 {
                     await connection.ConnectAsync();
                 }
@@ -180,11 +191,9 @@ namespace Google.Solutions.Ssh.Test
                     SshShellConnection.DefaultTerminal,
                     SshShellConnection.DefaultTerminalSize,
                     new CultureInfo("en-AU"),
+                    UnexpectedAuthenticationCallback,
                     receiveHandler,
-                    exception =>
-                    {
-                        Assert.Fail("Unexpected error");
-                    }))
+                    UnexpectedErrorCallback))
                 {
                     await connection.ConnectAsync();
 
@@ -239,11 +248,9 @@ namespace Google.Solutions.Ssh.Test
                     SshShellConnection.DefaultTerminal,
                     SshShellConnection.DefaultTerminalSize,
                     new CultureInfo("en-AU"),
+                    UnexpectedAuthenticationCallback,
                     receiveHandler,
-                    exception =>
-                    {
-                        Assert.Fail("Unexpected error");
-                    }))
+                    UnexpectedErrorCallback))
                 {
                     await connection.ConnectAsync();
 
@@ -296,11 +303,9 @@ namespace Google.Solutions.Ssh.Test
                     SshShellConnection.DefaultTerminal,
                     SshShellConnection.DefaultTerminalSize,
                     null,
+                    UnexpectedAuthenticationCallback,
                     receiveHandler,
-                    exception =>
-                    {
-                        Assert.Fail("Unexpected error");
-                    }))
+                    UnexpectedErrorCallback))
                 {
                     await connection.ConnectAsync();
 

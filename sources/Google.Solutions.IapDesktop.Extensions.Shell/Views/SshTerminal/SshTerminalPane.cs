@@ -183,6 +183,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.SshTerminal
 
             this.viewModel.ConnectionFailed += OnErrorReceivedFromServerAsync;
             this.viewModel.DataReceived += OnDataReceivedFromServerAsync;
+            this.viewModel.AuthenticationPrompt += OnAuthenticationPrompt;
 
             //
             // Apply Terminal settings.
@@ -262,7 +263,11 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.SshTerminal
         {
             Debug.Assert(!this.InvokeRequired);
 
-            this.exceptionDialog.Show(this, caption, e);
+            if (!e.IsCancellation())
+            {
+                this.exceptionDialog.Show(this, caption, e);
+            }
+
             Close();
         }
 
@@ -332,6 +337,16 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.SshTerminal
         {
             Debug.Assert(!this.InvokeRequired);
             ShowErrorAndClose("SSH connection terminated", args.Error);
+        }
+
+        private void OnAuthenticationPrompt(object sender, AuthenticationPromptEventArgs e)
+        {
+            Debug.Assert(!this.InvokeRequired);
+            e.Response = SshAuthenticationPromptDialog.ShowPrompt(
+                this,
+                "2-step verification",
+                e.Prompt,
+                e.IsPasswordPrompt);
         }
 
         private async void OnReconnectLinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
