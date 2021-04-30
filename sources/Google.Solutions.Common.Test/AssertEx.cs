@@ -68,15 +68,20 @@ namespace Google.Solutions.Common.Test
             PropertyChangedEventHandler handler = (sender, args) =>
             {
                 Assert.AreSame(obj, sender);
-                Assert.AreEqual(property, args.PropertyName);
-                callbacks++;
+                if (property == args.PropertyName)
+                {
+                    callbacks++;
+                }
             };
 
             obj.PropertyChanged += handler;
             action();
             obj.PropertyChanged -= handler;
 
-            Assert.AreEqual(1, callbacks, "Expected PropertyChanged callback");
+            Assert.AreEqual(
+                1, 
+                callbacks, 
+                $"Expected PropertyChanged callback for {property}");
         }
 
         public static void RaisesPropertyChangedNotification<T, TProperty>(

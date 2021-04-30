@@ -352,31 +352,6 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Services.Ssh
                     CancellationToken.None).Wait());
         }
 
-        [Test]
-        public void WhenOsLogin2faEnabled_ThenAuthorizeKeyThrowsNotImplementedException()
-        {
-            var service = new AuthorizedKeyService(
-                CreateAuthorizationAdapterMock().Object,
-                CreateComputeEngineAdapterMock(
-                    osLoginEnabledForProject: true,
-                    osLoginEnabledForInstance: null,
-                    osLogin2fa: true,
-                    legacySshKeyPresent: false,
-                    projectWideKeysBlockedForProject: false,
-                    projectWideKeysBlockedForInstance: false).Object,
-                CreateResourceManagerAdapterMock(true).Object,
-                CreateOsLoginServiceMock().Object);
-
-            AssertEx.ThrowsAggregateException<NotImplementedException>(
-                () => service.AuthorizeKeyAsync(
-                    SampleLocator,
-                    new Mock<ISshKey>().Object,
-                    TimeSpan.FromMinutes(1),
-                    null,
-                    AuthorizeKeyMethods.All,
-                    CancellationToken.None).Wait());
-        }
-
         //---------------------------------------------------------------------
         // Metadata - using existing keys.
         //---------------------------------------------------------------------
