@@ -241,11 +241,16 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.SshTerminal
                     null);
 
                 //
-                // The website adds spaces to group digits - remove those.
+                // Strip:
+                //  - spaces between group of digits (g.co/sc)
+                //  - "G-" prefix (text messages)
                 //
-                return args.Response.Replace(" ", string.Empty);
+                if (args.Response.StartsWith("g-", StringComparison.OrdinalIgnoreCase))
+                {
+                    args.Response = args.Response.Substring(2);
+                }
 
-                // TODO: Add test for 2fa prompt
+                return args.Response.Replace(" ", string.Empty);
             }
 
             using (ApplicationTraceSources.Default.TraceMethod().WithoutParameters())

@@ -21,6 +21,7 @@
 
 using Google.Solutions.Common.Diagnostics;
 using Google.Solutions.IapDesktop.Application.ObjectModel;
+using Google.Solutions.IapDesktop.Application.Views;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -43,7 +44,14 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.SshTerminal
 
             viewModel.View = this;
 
+            this.headlineLabel.ForeColor = ThemeColors.HighlightBlue;
+
             this.BindProperty(
+                c => c.Text,
+                viewModel,
+                m => m.Title,
+                this.Container);
+            this.headlineLabel.BindProperty(
                 c => c.Text,
                 viewModel,
                 m => m.Title,
@@ -68,6 +76,16 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.SshTerminal
                 viewModel,
                 m => m.IsOkButtonEnabled,
                 this.Container);
+        }
+
+        private void descriptionLabel_SizeChanged(object sender, EventArgs e)
+        {
+            //
+            // Resize window to make space for label.
+            //
+            this.Size = new Size(
+                this.Size.Width,
+                230 - 16 + this.descriptionLabel.Height);
         }
 
         public static string ShowPrompt(
