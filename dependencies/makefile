@@ -21,15 +21,19 @@
 CONFIGURATION = Release
 
 # The tag should be increased whenever one of the dependencies is changed
-TAG = 11
+TAG = 12
 
-VTNETCORE_SHA = 9e68f5561dc52edb780615b3fe133289216b3dba
+VTNETCORE_TAG = 9e68f5561dc52edb780615b3fe133289216b3dba
 VTNETCORE_URL = https://github.com/darrenstarr/VtNetCore.git
 VTNETCORE_VERSION = 1.0.30.$(TAG)
 
-# NB. The libssh2 version is defined in vcpkg-ports\libssh2\portfile.cmake,
-# with dependencies determined by the vcpkg tag.
-VCPKG_TAG = master
+#
+# NB. The exact versions of libssh2 and openssl are specified
+# in the ports file:
+# - libssh2: vcpkg-ports\libssh2\portfile.cmake
+# - openssl: https://github.com/microsoft/vcpkg/blob/master/ports/openssl/portfile.cmake
+#
+VCPKG_TAG = 85308d1a2135f65bf52603687360f54e9c4e25ba
 VCPKG_URL = https://github.com/microsoft/vcpkg.git
 LIBSSH2_VERSION = 1.9.0.$(TAG)
 
@@ -62,7 +66,7 @@ $(MAKEDIR)\obj\vtnetcore\VtNetCore\VtNetCore.csproj:
 
 	cd $(MAKEDIR)\obj\vtnetcore
 
-	git checkout $(VTNETCORE_SHA)
+	git checkout $(VTNETCORE_TAG)
 
 	git config user.email "iap-desktop+build@google.com"
 	git config user.name "IAP Desktop Build"
@@ -122,6 +126,10 @@ $(MAKEDIR)\obj\vcpkg\installed\libssh2-x86-windows-mixed\bin\libssh2.dll: $(MAKE
 	@echo "========================================================"
 	@echo "=== Building libssh2                                 ==="
 	@echo "========================================================"
+
+	-echo | set /p="$(LIBSSH2_VERSION)" > $(MAKEDIR)\vcpkg-ports\libssh2\build.tmp
+	-echo | set /p="$(LIBSSH2_VERSION:.=,)" > $(MAKEDIR)\vcpkg-ports\libssh2\build-comma.tmp
+
 	$(MAKEDIR)\obj\vcpkg\vcpkg.exe install libssh2 \
 		--triplet libssh2-x86-windows-mixed \
 		--overlay-ports=$(MAKEDIR)\vcpkg-ports \
