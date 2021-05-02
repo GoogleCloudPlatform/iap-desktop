@@ -39,6 +39,20 @@ vcpkg_from_github(
 # Strip the _DEV suffix from the version
 vcpkg_replace_string(${SOURCE_PATH}/include/libssh2.h "_DEV" "")
 
+# Read build number defined by makefile
+file(READ "${CMAKE_CURRENT_LIST_DIR}/build.tmp" LIBSSH2_BUILD)
+file(READ "${CMAKE_CURRENT_LIST_DIR}/build-comma.tmp" LIBSSH2_BUILD_COMMA)
+
+# Patch resource file to use custom build numbers
+vcpkg_replace_string(${SOURCE_PATH}/win32/libssh2.rc "#define RC_VERSION" "//#define UNUSED_VERSION")
+vcpkg_replace_string(${SOURCE_PATH}/win32/libssh2.rc "RC_VERSION" "${LIBSSH2_BUILD_COMMA}")
+vcpkg_replace_string(${SOURCE_PATH}/win32/libssh2.rc "LIBSSH2_VERSION" "\"${LIBSSH2_BUILD}\"")
+
+# Patch resource file to embed OpenSSL version number
+vcpkg_replace_string(${SOURCE_PATH}/win32/libssh2.rc "#include <winver.h>" "#include <winver.h>\n#include <openssl/opensslv.h>")
+vcpkg_replace_string(${SOURCE_PATH}/win32/libssh2.rc "libssh2 Shared Library" "libssh2 with \" OPENSSL_VERSION_TEXT \"")
+
+
 vcpkg_configure_cmake(
     SOURCE_PATH ${SOURCE_PATH}
     OPTIONS
