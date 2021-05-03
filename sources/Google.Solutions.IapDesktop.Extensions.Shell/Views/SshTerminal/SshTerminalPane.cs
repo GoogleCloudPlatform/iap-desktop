@@ -213,11 +213,17 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.SshTerminal
                 }
             };
             this.FormClosed += OnFormClosed;
-#if DEBUG
-            var copyStream = new ToolStripMenuItem("DEBUG: Copy received data");
+
+            //
+            // Add debug command, but only show it if Shift key is pressed.
+            //
+            var copyStream = new ToolStripMenuItem("Copy received data");
             copyStream.Click += (sender, args) => this.viewModel.CopyReceivedDataToClipboard();
+            this.TabContextStrip.Opening += (sender, args) =>
+            {
+                copyStream.Visible = Control.ModifierKeys.HasFlag(Keys.Shift);
+            };
             this.TabContextStrip.Items.Add(copyStream);
-#endif
         }
 
         private void ApplyTerminalSettings(TerminalSettings settings)
