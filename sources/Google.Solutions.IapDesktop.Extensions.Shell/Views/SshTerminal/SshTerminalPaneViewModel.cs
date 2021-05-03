@@ -56,9 +56,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.SshTerminal
         private Status connectionStatus = Status.ConnectionFailed;
         private SshShellConnection currentConnection = null;
 
-#if DEBUG
         private readonly StringBuilder receivedData = new StringBuilder();
-#endif
 
         public InstanceLocator Instance { get; }
 
@@ -210,9 +208,15 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.SshTerminal
 
                 ApplicationTraceSources.Default.TraceVerbose("Received {0} chars from server", data?.Length);
 
+                // Keep buffer if DEBUG or tracing enabled.
 #if DEBUG
-                this.receivedData.Append(data);
+#else
+                if (ApplicationTraceSources.Default.Switch.ShouldTrace(TraceEventType.Verbose))
 #endif
+                {
+                    this.receivedData.Append(data);
+                }
+                
 
                 this.ViewInvoker?.InvokeAndForget(
                     () => this.DataReceived?.Invoke(
@@ -358,12 +362,10 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.SshTerminal
 
         public void CopyReceivedDataToClipboard()
         {
-#if DEBUG
             if (this.receivedData.Length > 0)
             {
                 Clipboard.SetText(this.receivedData.ToString());
             }
-#endif
         }
 
         //---------------------------------------------------------------------
