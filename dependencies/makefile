@@ -70,7 +70,8 @@ $(MAKEDIR)\obj\vtnetcore\VtNetCore\VtNetCore.csproj:
 
 	git config user.email "iap-desktop+build@google.com"
 	git config user.name "IAP Desktop Build"
-	git am $(MAKEDIR)\vtnetcore-patches\
+	git am $(MAKEDIR)\vtnetcore-patches\0001-Handle-OSC-sequences-with-empty-text-parameters.patch
+	git am $(MAKEDIR)\vtnetcore-patches\0002-Fix-escape-sequences-for-bracketed-text-mode.patch
 
 	cd $(MAKEDIR)
 
