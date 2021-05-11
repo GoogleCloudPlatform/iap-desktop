@@ -1,7 +1,7 @@
-From d20637fc143d6bdb364fc1cd6ea4cbe76b42d51a Mon Sep 17 00:00:00 2001
+From 105ebfb49a381d9ecfc7f83b6a31aa2e851e4992 Mon Sep 17 00:00:00 2001
 From: Johannes Passing <jpassing@hotmail.com>
 Date: Thu, 4 Mar 2021 16:06:31 +0100
-Subject: [PATCH] Handle OSC sequences with empty text parameters
+Subject: [PATCH 1/2] Handle OSC sequences with empty text parameters
 
 Previously, the parser only handled sequences with non-empty text
 parameters and failed to handle sequences like `\e]2;\a` or `\e]0;\a`.
