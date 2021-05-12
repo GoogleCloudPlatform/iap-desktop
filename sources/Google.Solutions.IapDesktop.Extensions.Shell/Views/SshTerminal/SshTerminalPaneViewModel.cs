@@ -57,6 +57,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.SshTerminal
         private SshShellConnection currentConnection = null;
 
         private readonly StringBuilder receivedData = new StringBuilder();
+        private readonly StringBuilder sentData = new StringBuilder();
 
         public InstanceLocator Instance { get; }
 
@@ -208,15 +209,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.SshTerminal
 
                 ApplicationTraceSources.Default.TraceVerbose("Received {0} chars from server", data?.Length);
 
-                // Keep buffer if DEBUG or tracing enabled.
-#if DEBUG
-#else
-                if (ApplicationTraceSources.Default.Switch.ShouldTrace(TraceEventType.Verbose))
-#endif
-                {
-                    this.receivedData.Append(data);
-                }
-                
+                RecordReceivedData(data);
 
                 this.ViewInvoker?.InvokeAndForget(
                     () => this.DataReceived?.Invoke(
@@ -342,6 +335,7 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.SshTerminal
         {
             if (this.currentConnection != null)
             {
+                RecordSentData(command);
                 await this.currentConnection.SendAsync(command)
                     .ConfigureAwait(false);
             }
@@ -357,6 +351,42 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.SshTerminal
                     await this.currentConnection.ResizeTerminalAsync(newSize)
                         .ConfigureAwait(false);
                 }
+            }
+        }
+
+        //---------------------------------------------------------------------
+        // Diagnostics.
+        //---------------------------------------------------------------------
+
+        private void RecordReceivedData(string data)
+        {
+            // Keep buffer if DEBUG or tracing enabled.
+#if DEBUG
+#else
+            if (ApplicationTraceSources.Default.Switch.ShouldTrace(TraceEventType.Verbose))
+#endif
+            {
+                this.receivedData.Append(data);
+            }
+        }
+
+        private void RecordSentData(string data)
+        {
+            // Keep buffer if DEBUG or tracing enabled.
+#if DEBUG
+#else
+            if (ApplicationTraceSources.Default.Switch.ShouldTrace(TraceEventType.Verbose))
+#endif
+            {
+                this.sentData.Append(data);
+            }
+        }
+
+        public void CopySentDataToClipboard()
+        {
+            if (this.sentData.Length > 0)
+            {
+                Clipboard.SetText(this.sentData.ToString());
             }
         }
 
