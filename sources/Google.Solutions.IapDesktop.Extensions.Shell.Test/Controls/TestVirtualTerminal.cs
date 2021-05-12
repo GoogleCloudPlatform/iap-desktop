@@ -115,6 +115,24 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Controls
             Assert.AreEqual("sample\ntext", this.sendData.ToString());
         }
 
+        [Test]
+        public void WhenEnablingBracketedMode_ThenPastedTextIsBracketed()
+        {
+            //
+            // NB. This test requires a patched version of vtnetcore. If it fails,
+            // you're probably using an unpatched version.
+            //
+
+            Clipboard.SetText("text");
+
+            this.terminal.ReceiveData($"{Esc}[?2004h"); // Set bracketed paste mode.
+            this.terminal.PasteClipboard();
+            this.terminal.ReceiveData($"{Esc}[?2004l"); // Reset bracketed paste mode.
+            this.terminal.PasteClipboard();
+
+            Assert.AreEqual($"{Esc}[200~text{Esc}[201~text", this.sendData.ToString());
+        }
+
         //---------------------------------------------------------------------
         // Clipboard: Ctrl+V
         //---------------------------------------------------------------------
