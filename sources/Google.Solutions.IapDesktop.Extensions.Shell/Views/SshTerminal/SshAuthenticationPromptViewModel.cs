@@ -51,7 +51,8 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.SshTerminal
 
         public string Description
         {
-            get => this.description;
+            // Insert line breaks so that the lines don't get overly long.
+            get => this.description.Replace(". ", ".\n");
             set
             {
                 this.description = value;

@@ -48,7 +48,16 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Test.Views.SshTerminal
                 () => viewModel.Description = "test",
                 v => v.Description);
         }
-        
+
+        [Test]
+        public void WhenDescriptionSetToMultipleSentences_ThenLineBreaksAreAdded()
+        {
+            var viewModel = new SshAuthenticationPromptViewModel();
+            viewModel.Description = "first. second. third.";
+
+            Assert.AreEqual("first.\nsecond.\nthird.", viewModel.Description);
+        }
+
         [Test]
         public void WhenInputSet_ThenNotificationIsRaised()
         {
