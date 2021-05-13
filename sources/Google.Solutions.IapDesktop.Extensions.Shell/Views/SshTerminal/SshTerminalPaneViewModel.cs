@@ -237,17 +237,24 @@ namespace Google.Solutions.IapDesktop.Extensions.Shell.Views.SshTerminal
                     }),
                     null);
 
-                //
-                // Strip:
-                //  - spaces between group of digits (g.co/sc)
-                //  - "G-" prefix (text messages)
-                //
-                if (args.Response.StartsWith("g-", StringComparison.OrdinalIgnoreCase))
+                if (args.Response != null)
                 {
-                    args.Response = args.Response.Substring(2);
-                }
+                    //
+                    // Strip:
+                    //  - spaces between group of digits (g.co/sc)
+                    //  - "G-" prefix (text messages)
+                    //
+                    if (args.Response.StartsWith("g-", StringComparison.OrdinalIgnoreCase))
+                    {
+                        args.Response = args.Response.Substring(2);
+                    }
 
-                return args.Response.Replace(" ", string.Empty);
+                    return args.Response.Replace(" ", string.Empty);
+                }
+                else
+                {
+                    return null;
+                }
             }
 
             using (ApplicationTraceSources.Default.TraceMethod().WithoutParameters())
